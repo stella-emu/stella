@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.100 2006-12-15 16:12:35 stephena Exp $
+// $Id: Settings.cxx,v 1.101 2006-12-15 16:42:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -359,7 +359,7 @@ void Settings::usage()
   #endif
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -help                        Show the text you're now reading\n"
-  #ifdef DEVELOPER_SUPPORT
+  #ifdef DEBUGGER_SUPPORT
     << endl
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"

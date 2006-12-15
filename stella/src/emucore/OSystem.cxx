@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.79 2006-12-13 17:09:10 stephena Exp $
+// $Id: OSystem.cxx,v 1.80 2006-12-15 16:42:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -22,7 +22,7 @@
 
 #include "MediaFactory.hxx"
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
 
@@ -116,7 +116,7 @@ OSystem::~OSystem()
   // These must be deleted after all the others
   // This is a bit hacky, since it depends on ordering
   // of d'tor calls
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   delete myDebugger;
 #endif
 #ifdef CHEATCODE_SUPPORT
@@ -139,7 +139,7 @@ bool OSystem::create()
   myMenu = new Menu(this);
   myCommandMenu = new CommandMenu(this);
   myLauncher = new Launcher(this);
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myDebugger = new Debugger(this);
 #endif
 #ifdef CHEATCODE_SUPPORT
@@ -172,7 +172,7 @@ bool OSystem::create()
 #ifdef SNAPSHOT_SUPPORT
   myFeatures += "Snapshot ";
 #endif
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myFeatures += "Debugger ";
 #endif
 #ifdef CHEATCODE_SUPPORT
@@ -262,7 +262,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
       myLauncher->initializeVideo();
       break;  // S_LAUNCHER
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
       myDebugger->initializeVideo();
       break;  // S_DEBUGGER
@@ -453,7 +453,7 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
           // Grab 3-character extension
           char* ext = filename + strlen(filename) - 4;
 
-          if(!STR_CASE_CMP(ext, ".bin") || !STR_CASE_CMP(ext, ".a26"))
+          if(!BSPF_strcasecmp(ext, ".bin") || !BSPF_strcasecmp(ext, ".a26"))
             break;
         }
 

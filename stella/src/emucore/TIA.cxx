@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.73 2006-12-08 16:49:28 stephena Exp $
+// $Id: TIA.cxx,v 1.74 2006-12-15 16:43:02 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -589,7 +589,7 @@ inline void TIA::endFrame()
   myFrameGreyed = false;
 }
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
 {

@@ -13,12 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.19 2006-12-08 16:49:29 stephena Exp $
+// $Id: M6502.cxx,v 1.20 2006-12-15 16:43:03 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Expression.hxx"
 #endif
 
@@ -28,7 +28,7 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
       mySystem(0),
       mySystemCyclesPerProcessorCycle(systemCyclesPerProcessorCycle)
 {
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myDebugger    = NULL;
   myBreakPoints = NULL;
   myReadTraps   = NULL;
@@ -56,7 +56,7 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::~M6502()
 {
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myBreakConds.clear();
   myBreakCondNames.clear();
 #endif
@@ -352,7 +352,7 @@ const char* M6502::ourInstructionMnemonicTable[256] = {
   "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
 };
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // This needs to be a list of all 256 opcodes and the type of memory
 // access they do (read, write, read/modify/write, or none). The

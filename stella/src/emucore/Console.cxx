@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.107 2006-12-13 00:05:46 stephena Exp $
+// $Id: Console.cxx,v 1.108 2006-12-15 16:42:55 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -53,7 +53,7 @@
   #include "Snapshot.hxx"
 #endif
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
 
@@ -196,7 +196,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     m6502 = new M6502Low(1);
   else
     m6502 = new M6502High(1);
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   m6502->attach(myOSystem->debugger());
 #endif
 
@@ -419,7 +419,7 @@ void Console::initialize()
   // Initialize the command menu system with updated values from the framebuffer
   myOSystem->commandMenu().initialize();
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   // Finally, initialize the debugging system, since it depends on the current ROM
   myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();

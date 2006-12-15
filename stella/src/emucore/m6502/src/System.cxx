@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.19 2006-12-08 16:49:30 stephena Exp $
+// $Id: System.cxx,v 1.20 2006-12-15 16:43:11 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -318,7 +318,7 @@ uInt8 System::peek(uInt16 addr)
     result = access.device->peek(addr);
   }
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   if(!myDataBusLocked)
 #endif
     myDataBusState = result;
@@ -341,7 +341,7 @@ void System::poke(uInt16 addr, uInt8 value)
     access.device->poke(addr, value);
   }
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   if(!myDataBusLocked)
 #endif
     myDataBusState = value;

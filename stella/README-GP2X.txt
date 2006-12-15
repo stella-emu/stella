@@ -135,7 +135,7 @@ export PATH=<your arm-linux compiler path>:$PATH
 This is what my configure line looks like:
 ./configure
   --enable-cheats
-  --disable-developer
+  --disable-debugger
   --host=gp2x
   --with-zlib-prefix=<your gp2x zlib path>
   --with-sdl-prefix=<your sdl config path>

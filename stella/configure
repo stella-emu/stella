@@ -20,7 +20,7 @@ _zlib=auto
 # default option behaviour yes/no
 _build_gl=yes
 _build_sound=yes
-_build_developer=yes
+_build_debugger=yes
 _build_snapshot=yes
 _build_joystick=yes
 _build_cheats=yes
@@ -257,8 +257,8 @@ Optional Features:
   --disable-gl
   --enable-sound         enable/disable sound support [enabled]
   --disable-sound
-  --enable-developer     enable/disable all developer/debugger options [enabled]
-  --disable-developer
+  --enable-debugger      enable/disable all debugger options [enabled]
+  --disable-debugger
   --enable-snapshot      enable/disable snapshot support [enabled]
   --disable-snapshot
   --enable-joystick      enable/disable joystick support [enabled]
@@ -302,8 +302,8 @@ for ac_option in $@; do
       --disable-gl)             _build_gl=no         ;;
       --enable-sound)           _build_sound=yes     ;;
       --disable-sound)          _build_sound=no      ;;
-      --enable-developer)       _build_developer=yes ;;
-      --disable-developer)      _build_developer=no  ;;
+      --enable-debugger)        _build_debugger=yes ;;
+      --disable-debugger)       _build_debugger=no  ;;
       --enable-snapshot)        _build_snapshot=yes  ;;
       --disable-snapshot)       _build_snapshot=no   ;;
       --enable-joystick)        _build_joystick=yes  ;;
@@ -701,11 +701,11 @@ else
 	echo
 fi
 
-if test "$_build_developer" = "yes" ; then
-	echo_n "   Developer/debugger support enabled"
+if test "$_build_debugger" = "yes" ; then
+	echo_n "   Debugger support enabled"
 	echo
 else
-	echo_n "   Developer/debugger support disabled"
+	echo_n "   Debugger support disabled"
 	echo
 fi
 
@@ -734,10 +734,10 @@ else
 fi
 
 if test "$_build_atarivox" = yes ; then
-	echo_n "   AtariVox support enabled"
+	echo_n "   AtariVox support enabled (not yet working)"
 	echo
 else
-	echo_n "   AtariVox support disabled"
+	echo_n "   AtariVox support disabled (not yet working)"
 	echo
 fi
 
@@ -860,8 +860,8 @@ if test "$_build_sound" = yes ; then
 	DEFINES="$DEFINES -DSOUND_SUPPORT"
 fi
 
-if test "$_build_developer" = yes ; then
-	DEFINES="$DEFINES -DDEVELOPER_SUPPORT"
+if test "$_build_debugger" = yes ; then
+	DEFINES="$DEFINES -DDEBUGGER_SUPPORT"
 	MODULES="$MODULES $DBG $DBGGUI $YACC"
 	INCLUDES="$INCLUDES -I$DBG -I$DBGGUI -I$YACC"
 fi

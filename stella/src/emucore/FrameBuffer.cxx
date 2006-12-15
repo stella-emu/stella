@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.109 2006-12-13 22:46:28 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.110 2006-12-15 16:42:57 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -32,7 +32,7 @@
 #include "Launcher.hxx"
 #include "OSystem.hxx"
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
 
@@ -195,7 +195,7 @@ void FrameBuffer::update()
       break;  // S_LAUNCHER
     }
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
     {
       myOSystem->debugger().draw();
@@ -714,7 +714,7 @@ void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
   int pos = -1;
   for(unsigned int i = 0; i < myScalerList.size(); ++i)
   {
-    if(STR_CASE_CMP(myScalerList[i]->name, name.c_str()) == 0)
+    if(BSPF_strcasecmp(myScalerList[i]->name, name.c_str()) == 0)
     {
       pos = i;
       break;

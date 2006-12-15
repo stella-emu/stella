@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.12 2006-12-08 16:49:11 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.13 2006-12-15 16:42:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -761,7 +761,7 @@ int PromptWidget::printf(const char *format, ...)
 int PromptWidget::vprintf(const char *format, va_list argptr)
 {
   char buf[2048];
-  int count = VSNPRINTF(buf, sizeof(buf), format, argptr);
+  int count = BSPF_vsnprintf(buf, sizeof(buf), format, argptr);
 
   print(buf);
   return count;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.93 2006-12-14 00:07:47 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.94 2006-12-15 16:42:54 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -177,7 +177,7 @@ int DebuggerParser::countCompletions(const char *in)
   {
     const char *l = commands[i].cmdString.c_str();
 
-    if(STR_N_CASE_CMP(l, in, strlen(in)) == 0) {
+    if(BSPF_strncasecmp(l, in, strlen(in)) == 0) {
       if(compPrefix == "")
         compPrefix += l;
       else {
@@ -939,7 +939,7 @@ void DebuggerParser::executeHelp()
   static char buf[256];
   for(int i = 0; i < kNumCommands; ++i)
   {
-    SNPRINTF(buf, 255, "%13s - %s\n",
+    BSPF_snprintf(buf, 255, "%13s - %s\n",
       commands[i].cmdString.c_str(),
       commands[i].description.c_str());
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.18 2006-12-08 16:49:30 stephena Exp $
+// $Id: M6502.hxx,v 1.19 2006-12-15 16:43:03 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef Common::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.18 2006-12-08 16:49:30 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.19 2006-12-15 16:43:03 stephena Exp $ 
 */
 class M6502
 {
@@ -188,7 +188,7 @@ class M6502
     friend ostream& operator<<(ostream& out, const AddressingMode& mode);
 
   public:
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     /**
       Attach the specified debugger.
 
@@ -239,7 +239,7 @@ class M6502
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;
 

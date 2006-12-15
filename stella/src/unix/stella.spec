@@ -6,7 +6,7 @@
 
 %define enable_gl 1
 %define enable_sound 1
-%define enable_developer 1
+%define enable_debugger 1
 %define enable_snapshot 1
 %define enable_joystick 1
 %define enable_cheats 1
@@ -58,10 +58,10 @@ export CXXFLAGS=$RPM_OPT_FLAGS
 %else
   --disable-sound \
 %endif
-%if %enable_developer
-  --enable-developer \
+%if %enable_debugger
+  --enable-debugger \
 %else
-  --disable-developer \
+  --disable-debugger \
 %endif
 %if %enable_snapshot
   --enable-snapshot \

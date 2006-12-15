@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.37 2006-12-08 16:49:28 stephena Exp $
+// $Id: TIA.hxx,v 1.38 2006-12-15 16:43:03 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.37 2006-12-08 16:49:28 stephena Exp $
+  @version $Id: TIA.hxx,v 1.38 2006-12-15 16:43:03 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -208,7 +208,7 @@ class TIA : public Device , public MediaSource
     */
     void enableBits(bool mode) { for(uInt8 i = 0; i < 6; ++i) myBitEnabled[i] = mode; }
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     /**
       This method should be called to update the media source with
       a new scanline.

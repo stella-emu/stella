@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.23 2006-12-08 16:49:00 stephena Exp $
+// $Id: EquateList.cxx,v 1.24 2006-12-15 16:42:54 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -444,7 +444,7 @@ int EquateList::countCompletions(const char *in)
   {
     const char *l = iter->first.c_str();
 
-    if(STR_N_CASE_CMP(l, in, strlen(in)) == 0)
+    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
     {
       if(compPrefix == "")
         compPrefix += l;

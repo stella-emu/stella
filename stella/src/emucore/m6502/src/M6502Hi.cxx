@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.17 2006-12-08 16:49:30 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.18 2006-12-15 16:43:07 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
 
@@ -33,7 +33,7 @@ M6502High::M6502High(uInt32 systemCyclesPerProcessorCycle)
   myNumberOfDistinctAccesses = 0;
   myLastAddress = 0;
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   myJustHitTrapFlag = false;
 #endif
 }
@@ -53,7 +53,7 @@ inline uInt8 M6502High::peek(uInt16 address)
   }
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   if(myReadTraps != NULL && myReadTraps->isSet(address))
   {
     myJustHitTrapFlag = true;
@@ -78,7 +78,7 @@ inline void M6502High::poke(uInt16 address, uInt8 value)
   }
   mySystem->incrementCycles(mySystemCyclesPerProcessorCycle);
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   if(myWriteTraps != NULL && myWriteTraps->isSet(address))
   {
     myJustHitTrapFlag = true;
@@ -105,7 +105,7 @@ bool M6502High::execute(uInt32 number)
       uInt16 operandAddress = 0;
       uInt8 operand = 0;
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
       if(myJustHitTrapFlag)
       {
         if(myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address))

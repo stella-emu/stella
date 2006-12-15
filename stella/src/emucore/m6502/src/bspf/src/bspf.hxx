@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.14 2006-12-14 00:07:47 stephena Exp $
+// $Id: bspf.hxx,v 1.15 2006-12-15 16:43:11 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.14 2006-12-14 00:07:47 stephena Exp $
+  @version $Id: bspf.hxx,v 1.15 2006-12-15 16:43:11 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -75,19 +75,18 @@ typedef unsigned int uInt32;
 
 // I wish Windows had a complete POSIX layer
 #ifdef BSPF_WIN32
-  #define STR_CASE_CMP stricmp
-  #define STR_N_CASE_CMP strnicmp
-  #define IS_BLANK(c) ((c == ' ') || (c == '\t'))
-  #define SNPRINTF _snprintf
-  #define VSNPRINTF _vsnprintf
+  #define BSPF_strcasecmp stricmp
+  #define BSPF_strncasecmp strnicmp
+  #define BSPF_isblank(c) ((c == ' ') || (c == '\t'))
+  #define BSPF_snprintf _snprintf
+  #define BSPF_vsnprintf _vsnprintf
 #else
-  #define STR_CASE_CMP strcasecmp
-  #define STR_N_CASE_CMP strncasecmp
-  #define IS_BLANK(c) isblank(c)
-  #define SNPRINTF snprintf
-  #define VSNPRINTF vsnprintf
+  #define BSPF_strcasecmp strcasecmp
+  #define BSPF_strncasecmp strncasecmp
+  #define BSPF_isblank(c) isblank(c)
+  #define BSPF_snprintf snprintf
+  #define BSPF_vsnprintf vsnprintf
 #endif
-
 
 #ifdef _WIN32_WCE
   #include "missing.h"

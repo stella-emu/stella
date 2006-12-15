@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.45 2006-12-08 16:49:27 stephena Exp $
+// $Id: OSystem.hxx,v 1.46 2006-12-15 16:42:58 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -45,7 +45,7 @@ class VideoDialog;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.45 2006-12-08 16:49:27 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.46 2006-12-15 16:42:58 stephena Exp $
 */
 class OSystem
 {
@@ -139,7 +139,7 @@ class OSystem
     */
     inline Launcher& launcher(void) const { return *myLauncher; }
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     /**
       Get the ROM debugger of the system.
 

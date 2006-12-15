@@ -7,7 +7,7 @@ Building
 --------
 To build for the PSP, make sure psp-config is in the path and run:
 
-   ./configure --host=psp --disable-developer
+   ./configure --host=psp --disable-debugger
    make
    make psp-upload
    make psp-layout

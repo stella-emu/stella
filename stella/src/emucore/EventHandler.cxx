@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.186 2006-12-12 01:02:12 stephena Exp $
+// $Id: EventHandler.cxx,v 1.187 2006-12-15 16:42:57 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -38,7 +38,7 @@
 #include "PropsSet.hxx"
 #include "bspf.hxx"
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
 
@@ -2246,7 +2246,7 @@ void EventHandler::leaveMenuMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventHandler::enterDebugMode()
 {
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   if(myState == S_DEBUGGER)
     return false;
 
@@ -2275,7 +2275,7 @@ bool EventHandler::enterDebugMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::leaveDebugMode()
 {
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   // paranoia: this should never happen:
   if(myState != S_DEBUGGER)
     return;
@@ -2324,7 +2324,7 @@ void EventHandler::setEventState(State state)
       myOverlay = &myOSystem->launcher();
       break;
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     case S_DEBUGGER:
       myOverlay = &myOSystem->debugger();
       break;

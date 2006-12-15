@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.69 2006-12-08 16:48:56 stephena Exp $
+// $Id: mainSDL.cxx,v 1.70 2006-12-15 16:42:53 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -55,7 +55,7 @@
   #error Unsupported platform!
 #endif
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
 #endif
 
@@ -164,7 +164,7 @@ int main(int argc, char* argv[])
     if(theOSystem->settings().getBool("holdbutton0"))
       theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire, 1);
 
-#ifdef DEVELOPER_SUPPORT
+#ifdef DEBUGGER_SUPPORT
     Debugger& dbg = theOSystem->debugger();
 
     // Set up any breakpoint that was on the command line
