@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.99 2006-12-13 17:09:10 stephena Exp $
+// $Id: Settings.cxx,v 1.100 2006-12-15 16:12:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -24,6 +24,14 @@
 #include "Version.hxx"
 #include "bspf.hxx"
 #include "Settings.hxx"
+
+// Specifies the minimum version of the settings file that's valid
+// for this version of Stella.  If the settings file is too old,
+// the internal defaults are used.
+// For each new release, this should only be bumped if there have been
+// major changes in some settings; changes which could stop Stella from
+// actually working.
+#define MIN_SETTINGS_VERSION "2.3_alpha"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Settings::Settings(OSystem* osystem)
@@ -42,13 +50,12 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_lib", "");
   setInternal("gl_vsync", "true");
 
-  setInternal("scale_ui", "zoom1x");
-  setInternal("scale_tia", "zoom1x");
+  setInternal("scale_ui", "zoom2x");
+  setInternal("scale_tia", "zoom2x");
   setInternal("fullscreen", "false");
   setInternal("center", "true");
   setInternal("grabmouse", "false");
   setInternal("palette", "standard");
-  setInternal("debugheight", "0");
 
   setInternal("sound", "true");
   setInternal("fragsize", "512");
@@ -72,13 +79,14 @@ Settings::Settings(OSystem* osystem)
 
   setInternal("showinfo", "false");
 
-  setInternal("ssdir", "");
+  setInternal("ssdir", string(".") + BSPF_PATH_SEPARATOR);
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
   setInternal("rombrowse", "true");
   setInternal("lastrom", "");
-  setInternal("modtime", "");  // romdir last modification time
+  setInternal("modtime", "");
+  setInternal("debugheight", "0");
 
   setInternal("tiadefaults", "true");
   setInternal("autoslot", "false");
@@ -103,6 +111,21 @@ void Settings::loadConfig()
   {
     cout << "Error: Couldn't load settings file\n";
     return;
+  }
+
+  // Get the first line, and parse the version string (if it exists)
+  // If we don't have the minimum settings version, then ignore
+  // this settings file.
+  if(getline(in, line))
+  {
+    string minVersion = ";  Version ";
+    minVersion += MIN_SETTINGS_VERSION;
+    if(line.find(";  Version") != 0 || line < minVersion)
+    {
+      cout << "Error: Settings file too old, using internal defaults\n";
+      in.close();
+      return;
+    }
   }
 
   while(getline(in, line))
@@ -396,7 +419,8 @@ void Settings::saveConfig()
     return;
   }
 
-  out << ";  Stella configuration file" << endl
+  out << ";  Version " << STELLA_VERSION << endl
+      << ";  Stella configuration file" << endl
       << ";" << endl
       << ";  Lines starting with ';' are comments and are ignored." << endl
       << ";  Spaces and tabs are ignored." << endl
