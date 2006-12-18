@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.81 2006-12-18 14:01:58 stephena Exp $
+// $Id: OSystem.cxx,v 1.82 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -169,9 +169,7 @@ bool OSystem::create()
 #ifdef JOYSTICK_SUPPORT
   myFeatures += "Joystick ";
 #endif
-#ifdef SNAPSHOT_SUPPORT
   myFeatures += "Snapshot ";
-#endif
 #ifdef DEBUGGER_SUPPORT
   myFeatures += "Debugger ";
 #endif

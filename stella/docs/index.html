@@ -219,6 +219,11 @@
 	<h2><b>New in Release 2.3</b></h2>
 
 	<ul>
+<li><b>Note: Because of the many changes in this release, all settings
+will be reset to defaults.  If this doesn't happen for you, it will be necessary
+to manually delete your previous settings (see 'Settings' section for more
+information).</b></li>
+
 <li>Potentially huge speedups in software rendering mode, both in emulation
 and UI modes.  Deactivating 'dirty rects' uses these new modes, which
 can be 2-3 times faster for many configurations.</li>
@@ -246,8 +251,7 @@ fixes will come with the TIA rewrite, due in the next release.</li>
 
 <li>Added new scaler infrastructure, replacing the '-zoom' commandline argument
 with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can now
-be scaled independently.  In the future, support will be added for advanced
-scalers in TIA mode, such as Scale2x, Scale3x, HQ2x, HQ3x, etc.</li>
+be scaled independently.</li>
 
 <li>Added '-gl_vsync' commandline argument and associated UI elements, which
 uses synchronization to vertical blank interrupt in OpenGL on supported
@@ -301,8 +305,12 @@ packages.</li>
 <li>Removed dependency on PNG library (PNG snapshots are still present, but the
 actual library is no longer required).</li>
 
+<li>For the OSX port, improved OpenGL performance on Mac Mini using Intel GMA950
+video hardware.</li>
+
 <li>For the GP2X port, added support for PAL ROMs, and updated SDL to use hardware
 scaling.</li>
+
 	</ul>
 
 	<p>
@@ -378,8 +386,9 @@ scaling.</li>
 		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
 			the Stella source code; GNU C++ compiler version 3.2.x/4.x or later is highly
 			recommended</li>
-		<li>Pentium class machine required (Stella <b>may</b> compile on other
-			architectures, but it hasn't been extensively tested)</li>
+		<li>Pentium class machine required (in general, Stella will compile on other
+			architectures, both 32 and 64-bit, but it hasn't been extensively
+			tested)</li>
 	</ul>
 
 	<p>
@@ -893,6 +902,11 @@ scaling.</li>
 		<tr>
 			<td><pre>-tv &lt;Color|BlackAndWhite&gt;</pre></td>
 			<td>Set "Console.TelevisionType" property.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-sp &lt;Yes|No&gt;</pre></td>
+			<td>Set "Console.SwapPorts" property.</td>
 		</tr>
 
 		<tr>
@@ -1580,30 +1594,6 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td>Set "Display.YStart" to next <i>larger</i> value</td>
-			<td>Alt + PageUp</td>
-			<td>Shift-Cmd + PageUp</td>
-		</tr>
-
-		<tr>
-			<td>Set "Display.YStart" to next <i>smaller</i> value</td>
-			<td>Alt + PageDown</td>
-			<td>Shift-Cmd + PageDown</td>
-		</tr>
-
-		<tr>
-			<td>Set "Display.Height" to next <i>larger</i> value</td>
-			<td>Control + PageUp</td>
-			<td>Cmd + PageUp</td>
-		</tr>
-
-		<tr>
-			<td>Set "Display.Height" to next <i>smaller</i> value</td>
-			<td>Control + PageDown</td>
-			<td>Cmd + PageDown</td>
-		</tr>
-
-		<tr>
 			<td>Set "Display.XStart" to next <i>larger</i> value</td>
 			<td>Alt + End</td>
 			<td>Shift-Cmd + End</td>
@@ -1616,15 +1606,15 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td>Set "Display.Width" to next <i>larger</i> value</td>
-			<td>Control + End</td>
-			<td>Cmd + End</td>
+			<td>Set "Display.YStart" to next <i>larger</i> value</td>
+			<td>Alt + PageUp</td>
+			<td>Shift-Cmd + PageUp</td>
 		</tr>
 
 		<tr>
-			<td>Set "Display.Width" to next <i>smaller</i> value</td>
-			<td>Control + Home</td>
-			<td>Cmd + Home</td>
+			<td>Set "Display.YStart" to next <i>smaller</i> value</td>
+			<td>Alt + PageDown</td>
+			<td>Shift-Cmd + PageDown</td>
 		</tr>
 	</table>
 
@@ -1747,16 +1737,25 @@ scaling.</li>
 	<hr>
 
 	<p>This version of Stella has event remapping.  Almost every event in the emulator
-	can be remapped to another key on the keyboard or to buttons on up to four
+	can be remapped to another key on the keyboard or to buttons on up to eight
 	joysticks/gamepads (see <b>Section 8 - <a href="#Keyboard">Keyboard Layout</a></b>
 	for those event which can/cannot be remapped).</p>
+
+	<p>Note that there are currently two separate event modes in Stella; emulation
+	mode and user-interface (UI) mode.  Each mode has separate mappings, so (for example)
+	while in emulation mode, the left arrow could mean 'joystick 0 left', while in UI
+	mode it could mean 'move cursor to left'.  Emulation mode occurs whenever you're
+	actually playing a game.  UI mode occurs whenever a user interface is present
+	(ROM launcher, debugger, settings menu, etc).  Because of these different modes,
+	there are two separate mapping areas.
 
 	<p>To remap an event:
 	<ol>
 		<li>Start playing a game (ie, start the emulation).</li>
-		<li>Enter options mode be pressing <b>Tab</b>.</li>
+		<li>Enter options mode by pressing <b>Tab</b>.</li>
 		<li>Click the 'Input Settings' button.</li>
-		<li>Click the 'Event Mapping' tab.</li>
+		<li>If you wish to remap emulation events, click the 'Emul. Events' tab.
+			Otherwise, click the 'UI Events' tab for user interface events.</li>
 		<li>Select event you want to remap and click the 'Map' button.</li>
 		<li>Press a key or a joystick button, and that key/button will be bound
 			to the selected event.  If nothing seems to happen, either Stella
@@ -1765,13 +1764,38 @@ scaling.</li>
 		<li>Erase a mapping by clicking 'Erase', or cancel a remap in progress
 			by clicking 'Cancel'.</li>
 		<li>Reset default mappings by clicking 'Defaults'.</li>
-		<li>Change mouse/paddle emulation in the 'Mouse is paddle' dropdown box.</li>
 	</ol>
 
 	<p>The following screenshots illustrate the event remapping process:<br><br>
 	<img src="graphics/eventmapping.png">
 	<p>
 	<img src="graphics/eventmapping_remap.png">
+
+	<p>Virtual devices can be configured under the 'Virtual Devs' tab, shown below:<br><br>
+	<img src="graphics/eventmapping_virtualdevs.png"></p>
+
+	<p>Stelladaptor devices can be configured to either the left or right virtual
+	ports.  See the section 'Stelladaptor Support' for more information.</p>
+
+	<p>Paddle settings are also configured here.  The mouse can emulate either paddle
+	0, 1, 2, or 3.  Note that for games which don't normally default to paddle 0,
+	their ROM properties take care of that remapping.  So, for example, a ROM that
+	defaults to paddle 1 (Demons to Diamonds) will use paddle 0, as will a ROM
+	that defaults to paddle 3 (Tac-Scan).  So you never have to worry which paddle
+	a ROM will use; it will always default to paddle 0.</p>
+
+	<p>Paddle threshold is used to eliminate 'jitter', whereby the onscreen paddle
+	object seems to move slightly even when no input is present.  It specifies the amount
+	by which a paddle input has to move before it's considered a real event.  Hence,
+	it eliminates small movements (default of 600).</p>
+
+	<p>Paddle x speed is used when emulating a paddle using a digital device
+	(keyboard, digital joystick, etc).  Because of the on/off nature of digital
+	devices, there are no smooth analog values as would be present on a real
+	paddle.  When using digital devices, the paddle is moved a certain amount
+	each frame.  These speeds specify how much movement will occur.</p>
+
+
 
 	<br><br><br>
 	<p><h1>
@@ -2045,7 +2069,7 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP"><i>Display.Width:</i></td>
+			<td VALIGN="TOP"><i>Display.Width: (*)</i></td>
 			<td>This property indicates the number of pixels to display per
 			scan-line.  The value of this property must be <i>n</i> such that
 			80 &lt;= <i>n</i> &lt;= 160 and <i>n</i> is divisible by 4.</td>
@@ -2059,7 +2083,7 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP"><i>Display.Height:</i></td>
+			<td VALIGN="TOP"><i>Display.Height: (*)</i></td>
 			<td>This property indicates the number of scan-lines to display.
 			The value of this property must be <i>n</i> such that
 			100 &lt;= <i>n</i> &lt;= 256.</td>
@@ -2086,6 +2110,9 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 	</table>
 
+	<p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
+	removed in the next release.</p>
+
 	<br><br>
 	<p><h1>
 	<a name="Adaptor">13. Stelladaptor Support</a></h1>
@@ -2104,11 +2131,11 @@ Ms Pac-Man (Stella extended codes):
 	<ul>
 		<li>The first Stelladaptor found will act as the <b>left game port</b>
 		on a real Atari.  Depending on the device, Stella will detect it as
-		either the left joystick, paddles 1 & 2, or the left driving controller.</li>
+		either the left joystick, paddles 0 & 1, or the left driving controller.</li>
 
 		<li>The second Stelladaptor found will act as the <b>right game port</b>
 		on a real Atari.  Depending on the device, Stella will detect it as
-		either the right joystick, paddles 3 & 4, or the right driving controller.</li>
+		either the right joystick, paddles 2 & 3, or the right driving controller.</li>
 
 		<li>Any other Stelladaptors will be ignored.</li>
 
@@ -2132,7 +2159,7 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 		<tr>
 			<td><b>original</b></td>
-			<td>The palette used in the original StellaX.</td>
+			<td>The palette used in the original StellaX emulator.</td>
 		</tr>
 		<tr>
 			<td><b>z26</b></td>

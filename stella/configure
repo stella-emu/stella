@@ -259,8 +259,6 @@ Optional Features:
   --disable-sound
   --enable-debugger      enable/disable all debugger options [enabled]
   --disable-debugger
-  --enable-snapshot      enable/disable snapshot support [enabled]
-  --disable-snapshot
   --enable-joystick      enable/disable joystick support [enabled]
   --disable-joystick
   --enable-cheats        enable/disable cheatcode support [enabled]
@@ -302,10 +300,8 @@ for ac_option in $@; do
       --disable-gl)             _build_gl=no         ;;
       --enable-sound)           _build_sound=yes     ;;
       --disable-sound)          _build_sound=no      ;;
-      --enable-debugger)        _build_debugger=yes ;;
-      --disable-debugger)       _build_debugger=no  ;;
-      --enable-snapshot)        _build_snapshot=yes  ;;
-      --disable-snapshot)       _build_snapshot=no   ;;
+      --enable-debugger)        _build_debugger=yes  ;;
+      --disable-debugger)       _build_debugger=no   ;;
       --enable-joystick)        _build_joystick=yes  ;;
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;

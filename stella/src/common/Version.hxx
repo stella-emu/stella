@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Version.hxx,v 1.18 2006-12-15 20:22:29 stephena Exp $
+// $Id: Version.hxx,v 1.19 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
-#define STELLA_BASE_VERSION "2.3_alpha"
+#define STELLA_BASE_VERSION "2.3_rc1"
 
 #ifdef NIGHTLY_BUILD
 #define STELLA_VERSION STELLA_BASE_VERSION "pre-" NIGHTLY_BUILD
@@ -33,6 +33,6 @@
 // For each new release, this should only be bumped if there have been
 // major changes in some settings; changes which could stop Stella from
 // actually working.
-#define STELLA_SETTINGS_VERSION "2.3_alpha"
+#define STELLA_SETTINGS_VERSION "2.3_rc1"
 
 #endif

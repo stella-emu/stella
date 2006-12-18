@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.108 2006-12-15 16:42:55 stephena Exp $
+// $Id: Console.cxx,v 1.109 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -48,10 +48,6 @@
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
 #include "Version.hxx"
-
-#ifdef SNAPSHOT_SUPPORT
-  #include "Snapshot.hxx"
-#endif
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -562,88 +558,6 @@ void Console::changeYStart(int direction)
   initializeVideo();
 
   message = "YStart ";
-  message += strval.str();
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeWidth(int direction)
-{
-  uInt32 xstart = atoi(myProperties.get(Display_XStart).c_str());
-  Int32 width   = atoi(myProperties.get(Display_Width).c_str());
-  ostringstream strval;
-  string message;
-
-  if(direction == +1)    // increase Width
-  {
-    width += 4;
-    if((width > 160) || ((width % 4) != 0))
-    {
-      myOSystem->frameBuffer().showMessage("Width at maximum");
-      return;
-    }
-    else if((width + xstart) > 160)
-    {
-      myOSystem->frameBuffer().showMessage("Width no effect");
-      return;
-    }
-  }
-  else if(direction == -1)  // decrease Width
-  {
-    width -= 4;
-    if(width < 80)
-    {
-      myOSystem->frameBuffer().showMessage("Width at minimum");
-      return;
-    }
-  }
-  else
-    return;
-
-  strval << width;
-  myProperties.set(Display_Width, strval.str());
-  mySystem->reset();
-  initializeVideo();
-
-  message = "Width ";
-  message += strval.str();
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeHeight(int direction)
-{
-  Int32 height = atoi(myProperties.get(Display_Height).c_str());
-  ostringstream strval;
-  string message;
-
-  if(direction == +1)    // increase Height
-  {
-    height++;
-    if(height > 256)
-    {
-      myOSystem->frameBuffer().showMessage("Height at maximum");
-      return;
-    }
-  }
-  else if(direction == -1)  // decrease Height
-  {
-    height--;
-    if(height < 100)
-    {
-      myOSystem->frameBuffer().showMessage("Height at minimum");
-      return;
-    }
-  }
-  else
-    return;
-
-  strval << height;
-  myProperties.set(Display_Height, strval.str());
-  mySystem->reset();
-  initializeVideo();
-
-  message = "Height ";
   message += strval.str();
   myOSystem->frameBuffer().showMessage(message);
 }

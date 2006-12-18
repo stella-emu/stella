@@ -13,13 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.9 2006-12-08 16:48:56 stephena Exp $
+// $Id: Snapshot.hxx,v 1.10 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
 #define SNAPSHOT_HXX
-
-#ifdef SNAPSHOT_SUPPORT
 
 class Properties;
 class FrameBuffer;
@@ -44,7 +42,5 @@ class Snapshot
     static void writePNGChunk(ofstream& out, char* type, uInt8* data, int size);
     static void writePNGText(ofstream& out, const string& key, const string& text);
 };
-
-#endif  // SNAPSHOT_SUPPORT
 
 #endif

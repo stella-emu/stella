@@ -13,10 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.14 2006-12-08 16:48:56 stephena Exp $
+// $Id: Snapshot.cxx,v 1.15 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
-
-#ifdef SNAPSHOT_SUPPORT
 
 #include <zlib.h>
 #include <fstream>
@@ -164,5 +162,3 @@ void Snapshot::writePNGText(ofstream& out, const string& key, const string& text
 
   delete[] data;
 }
-
-#endif  // SNAPSHOT_SUPPORT

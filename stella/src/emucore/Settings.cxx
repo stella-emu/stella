@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.103 2006-12-15 20:22:29 stephena Exp $
+// $Id: Settings.cxx,v 1.104 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -344,11 +344,9 @@ void Settings::usage()
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif
-  #ifdef SNAPSHOT_SUPPORT
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << endl
-  #endif
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT

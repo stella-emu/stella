@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.188 2006-12-18 14:01:58 stephena Exp $
+// $Id: EventHandler.cxx,v 1.189 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -36,18 +36,14 @@
 #include "Deserializer.hxx"
 #include "Serializer.hxx"
 #include "PropsSet.hxx"
+#include "Snapshot.hxx"
 #include "bspf.hxx"
-
-#ifdef DEBUGGER_SUPPORT
-  #include "Debugger.hxx"
-#endif
-
-#ifdef SNAPSHOT_SUPPORT
-  #include "Snapshot.hxx"
-#endif
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
+#endif
+#ifdef DEBUGGER_SUPPORT
+  #include "Debugger.hxx"
 #endif
 
 #ifdef MAC_OSX
@@ -584,22 +580,6 @@ void EventHandler::poll(uInt32 time)
 
               case SDLK_r:  // Ctrl-r reloads the currently loaded ROM
                 myOSystem->createConsole();
-                break;
-
-              case SDLK_END:       // Ctrl-End increases Width
-                myOSystem->console().changeWidth(+1);
-                break;
-
-              case SDLK_HOME:      // Ctrl-Home decreases Width
-                myOSystem->console().changeWidth(-1);
-                break;
-
-              case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
-                myOSystem->console().changeHeight(+1);
-                break;
-
-              case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
-                myOSystem->console().changeHeight(-1);
                 break;
 
               case SDLK_s:         // Ctrl-s saves properties to a file
@@ -2140,7 +2120,6 @@ void EventHandler::loadState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::takeSnapshot()
 {
-#ifdef SNAPSHOT_SUPPORT
   // Figure out the correct snapshot name
   string filename;
   string sspath = myOSystem->settings().getString("ssdir");
@@ -2175,9 +2154,6 @@ void EventHandler::takeSnapshot()
   // Now create a PNG snapshot
   Snapshot::savePNG(myOSystem->frameBuffer(),
                     myOSystem->console().properties(), filename);
-#else
-  myOSystem->frameBuffer().showMessage("Snapshots unsupported");
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2579,10 +2555,10 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::ConsoleReset,                "Reset",                           0 },
   { Event::ConsoleColor,                "Color TV",                        0 },
   { Event::ConsoleBlackWhite,           "Black & White TV",                0 },
-  { Event::ConsoleLeftDifficultyA,      "P1 Difficulty A",                 0 },
-  { Event::ConsoleLeftDifficultyB,      "P1 Difficulty B",                 0 },
-  { Event::ConsoleRightDifficultyA,     "P2 Difficulty A",                 0 },
-  { Event::ConsoleRightDifficultyB,     "P2 Difficulty B",                 0 },
+  { Event::ConsoleLeftDifficultyA,      "P0 Difficulty A",                 0 },
+  { Event::ConsoleLeftDifficultyB,      "P0 Difficulty B",                 0 },
+  { Event::ConsoleRightDifficultyA,     "P1 Difficulty A",                 0 },
+  { Event::ConsoleRightDifficultyB,     "P1 Difficulty B",                 0 },
   { Event::SaveState,                   "Save State",                      0 },
   { Event::ChangeState,                 "Change State",                    0 },
   { Event::LoadState,                   "Load State",                      0 },
@@ -2597,77 +2573,77 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::LauncherMode,                "Enter ROM launcher",              0 },
   { Event::Quit,                        "Quit",                            0 },
 
-  { Event::JoystickZeroUp,              "P1 Joystick Up",                  0 },
-  { Event::JoystickZeroDown,            "P1 Joystick Down",                0 },
-  { Event::JoystickZeroLeft,            "P1 Joystick Left",                0 },
-  { Event::JoystickZeroRight,           "P1 Joystick Right",               0 },
-  { Event::JoystickZeroFire,            "P1 Joystick Fire",                0 },
+  { Event::JoystickZeroUp,              "P0 Joystick Up",                  0 },
+  { Event::JoystickZeroDown,            "P0 Joystick Down",                0 },
+  { Event::JoystickZeroLeft,            "P0 Joystick Left",                0 },
+  { Event::JoystickZeroRight,           "P0 Joystick Right",               0 },
+  { Event::JoystickZeroFire,            "P0 Joystick Fire",                0 },
 
-  { Event::JoystickOneUp,               "P2 Joystick Up",                  0 },
-  { Event::JoystickOneDown,             "P2 Joystick Down",                0 },
-  { Event::JoystickOneLeft,             "P2 Joystick Left",                0 },
-  { Event::JoystickOneRight,            "P2 Joystick Right",               0 },
-  { Event::JoystickOneFire,             "P2 Joystick Fire",                0 },
+  { Event::JoystickOneUp,               "P1 Joystick Up",                  0 },
+  { Event::JoystickOneDown,             "P1 Joystick Down",                0 },
+  { Event::JoystickOneLeft,             "P1 Joystick Left",                0 },
+  { Event::JoystickOneRight,            "P1 Joystick Right",               0 },
+  { Event::JoystickOneFire,             "P1 Joystick Fire",                0 },
 
-  { Event::PaddleZeroAnalog,            "Paddle 1 Analog",                 0 },
-  { Event::PaddleZeroDecrease,          "Paddle 1 Decrease",               0 },
-  { Event::PaddleZeroIncrease,          "Paddle 1 Increase",               0 },
-  { Event::PaddleZeroFire,              "Paddle 1 Fire",                   0 },
+  { Event::PaddleZeroAnalog,            "Paddle 0 Analog",                 0 },
+  { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",               0 },
+  { Event::PaddleZeroIncrease,          "Paddle 0 Increase",               0 },
+  { Event::PaddleZeroFire,              "Paddle 0 Fire",                   0 },
 
-  { Event::PaddleOneAnalog,             "Paddle 2 Analog",                 0 },
-  { Event::PaddleOneDecrease,           "Paddle 2 Decrease",               0 },
-  { Event::PaddleOneIncrease,           "Paddle 2 Increase",               0 },
-  { Event::PaddleOneFire,               "Paddle 2 Fire",                   0 },
+  { Event::PaddleOneAnalog,             "Paddle 1 Analog",                 0 },
+  { Event::PaddleOneDecrease,           "Paddle 1 Decrease",               0 },
+  { Event::PaddleOneIncrease,           "Paddle 1 Increase",               0 },
+  { Event::PaddleOneFire,               "Paddle 1 Fire",                   0 },
 
-  { Event::PaddleTwoAnalog,             "Paddle 3 Analog",                 0 },
-  { Event::PaddleTwoDecrease,           "Paddle 3 Decrease",               0 },
-  { Event::PaddleTwoIncrease,           "Paddle 3 Increase",               0 },
-  { Event::PaddleTwoFire,               "Paddle 3 Fire",                   0 },
+  { Event::PaddleTwoAnalog,             "Paddle 2 Analog",                 0 },
+  { Event::PaddleTwoDecrease,           "Paddle 2 Decrease",               0 },
+  { Event::PaddleTwoIncrease,           "Paddle 2 Increase",               0 },
+  { Event::PaddleTwoFire,               "Paddle 2 Fire",                   0 },
 
-  { Event::PaddleThreeAnalog,           "Paddle 4 Analog",                 0 },
-  { Event::PaddleThreeDecrease,         "Paddle 4 Decrease",               0 },
-  { Event::PaddleThreeIncrease,         "Paddle 4 Increase",               0 },
-  { Event::PaddleThreeFire,             "Paddle 4 Fire",                   0 },
+  { Event::PaddleThreeAnalog,           "Paddle 3 Analog",                 0 },
+  { Event::PaddleThreeDecrease,         "Paddle 3 Decrease",               0 },
+  { Event::PaddleThreeIncrease,         "Paddle 3 Increase",               0 },
+  { Event::PaddleThreeFire,             "Paddle 3 Fire",                   0 },
 
-  { Event::BoosterGripZeroTrigger,      "P1 Booster-Grip Trigger",         0 },
-  { Event::BoosterGripZeroBooster,      "P1 Booster-Grip Booster",         0 },
+  { Event::BoosterGripZeroTrigger,      "P0 Booster-Grip Trigger",         0 },
+  { Event::BoosterGripZeroBooster,      "P0 Booster-Grip Booster",         0 },
 
-  { Event::BoosterGripOneTrigger,       "P2 Booster-Grip Trigger",         0 },
-  { Event::BoosterGripOneBooster,       "P2 Booster-Grip Booster",         0 },
+  { Event::BoosterGripOneTrigger,       "P1 Booster-Grip Trigger",         0 },
+  { Event::BoosterGripOneBooster,       "P1 Booster-Grip Booster",         0 },
 
-  { Event::DrivingZeroCounterClockwise, "P1 Driving Controller Left",      0 },
-  { Event::DrivingZeroClockwise,        "P1 Driving Controller Right",     0 },
-  { Event::DrivingZeroFire,             "P1 Driving Controller Fire",      0 },
+  { Event::DrivingZeroCounterClockwise, "P0 Driving Controller Left",      0 },
+  { Event::DrivingZeroClockwise,        "P0 Driving Controller Right",     0 },
+  { Event::DrivingZeroFire,             "P0 Driving Controller Fire",      0 },
 
-  { Event::DrivingOneCounterClockwise,  "P2 Driving Controller Left",      0 },
-  { Event::DrivingOneClockwise,         "P2 Driving Controller Right",     0 },
-  { Event::DrivingOneFire,              "P2 Driving Controller Fire",      0 },
+  { Event::DrivingOneCounterClockwise,  "P1 Driving Controller Left",      0 },
+  { Event::DrivingOneClockwise,         "P1 Driving Controller Right",     0 },
+  { Event::DrivingOneFire,              "P1 Driving Controller Fire",      0 },
 
-  { Event::KeyboardZero1,               "P1 Keyboard 1",                   0 },
-  { Event::KeyboardZero2,               "P1 Keyboard 2",                   0 },
-  { Event::KeyboardZero3,               "P1 Keyboard 3",                   0 },
-  { Event::KeyboardZero4,               "P1 Keyboard 4",                   0 },
-  { Event::KeyboardZero5,               "P1 Keyboard 5",                   0 },
-  { Event::KeyboardZero6,               "P1 Keyboard 6",                   0 },
-  { Event::KeyboardZero7,               "P1 Keyboard 7",                   0 },
-  { Event::KeyboardZero8,               "P1 Keyboard 8",                   0 },
-  { Event::KeyboardZero9,               "P1 Keyboard 9",                   0 },
-  { Event::KeyboardZeroStar,            "P1 Keyboard *",                   0 },
-  { Event::KeyboardZero0,               "P1 Keyboard 0",                   0 },
-  { Event::KeyboardZeroPound,           "P1 Keyboard #",                   0 },
+  { Event::KeyboardZero1,               "P0 Keyboard 1",				   0 },
+  { Event::KeyboardZero2,               "P0 Keyboard 2",				   0 },
+  { Event::KeyboardZero3,               "P0 Keyboard 3",				   0 },
+  { Event::KeyboardZero4,               "P0 Keyboard 4",				   0 },
+  { Event::KeyboardZero5,               "P0 Keyboard 5",				   0 },
+  { Event::KeyboardZero6,               "P0 Keyboard 6",				   0 },
+  { Event::KeyboardZero7,               "P0 Keyboard 7",				   0 },
+  { Event::KeyboardZero8,               "P0 Keyboard 8",				   0 },
+  { Event::KeyboardZero9,               "P0 Keyboard 9",				   0 },
+  { Event::KeyboardZeroStar,            "P0 Keyboard *",				   0 },
+  { Event::KeyboardZero0,               "P0 Keyboard 0",				   0 },
+  { Event::KeyboardZeroPound,           "P0 Keyboard #",				   0 },
 
-  { Event::KeyboardOne1,                "P2 Keyboard 1",                   0 },
-  { Event::KeyboardOne2,                "P2 Keyboard 2",                   0 },
-  { Event::KeyboardOne3,                "P2 Keyboard 3",                   0 },
-  { Event::KeyboardOne4,                "P2 Keyboard 4",                   0 },
-  { Event::KeyboardOne5,                "P2 Keyboard 5",                   0 },
-  { Event::KeyboardOne6,                "P2 Keyboard 6",                   0 },
-  { Event::KeyboardOne7,                "P2 Keyboard 7",                   0 },
-  { Event::KeyboardOne8,                "P2 Keyboard 8",                   0 },
-  { Event::KeyboardOne9,                "P2 Keyboard 9",                   0 },
-  { Event::KeyboardOneStar,             "P2 Keyboard *",                   0 },
-  { Event::KeyboardOne0,                "P2 Keyboard 0",                   0 },
-  { Event::KeyboardOnePound,            "P2 Keyboard #",                   0 }
+  { Event::KeyboardOne1,                "P1 Keyboard 1", 				  0 },
+  { Event::KeyboardOne2,                "P1 Keyboard 2", 				  0 },
+  { Event::KeyboardOne3,                "P1 Keyboard 3", 				  0 },
+  { Event::KeyboardOne4,                "P1 Keyboard 4", 				  0 },
+  { Event::KeyboardOne5,                "P1 Keyboard 5", 				  0 },
+  { Event::KeyboardOne6,                "P1 Keyboard 6", 				  0 },
+  { Event::KeyboardOne7,                "P1 Keyboard 7", 				  0 },
+  { Event::KeyboardOne8,                "P1 Keyboard 8", 				  0 },
+  { Event::KeyboardOne9,                "P1 Keyboard 9", 				  0 },
+  { Event::KeyboardOneStar,             "P1 Keyboard *", 				  0 },
+  { Event::KeyboardOne0,                "P1 Keyboard 0", 				  0 },
+  { Event::KeyboardOnePound,            "P1 Keyboard #", 				  0 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

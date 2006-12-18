@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.20 2006-12-11 20:43:55 stephena Exp $
+// $Id: InputDialog.cxx,v 1.21 2006-12-18 16:44:40 stephena Exp $
 //============================================================================
 
 // FIXME - this whole dialog should be a dialog of buttons instead of
@@ -53,8 +53,8 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab->setParentWidget(tabID, myEmulEventMapper);
   addToFocusList(myEmulEventMapper->getFocusList(), tabID);
 
-  // 2) Event mapper for menu actions
-  tabID = myTab->addTab("Menu Events");
+  // 2) Event mapper for UI actions
+  tabID = myTab->addTab("UI Events");
   const StringList& mactions = instance()->eventHandler().getActionList(kMenuMode);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),

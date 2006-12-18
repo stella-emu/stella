@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.50 2006-12-08 16:49:23 stephena Exp $
+// $Id: Console.hxx,v 1.51 2006-12-18 16:44:39 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.50 2006-12-08 16:49:23 stephena Exp $
+  @version $Id: Console.hxx,v 1.51 2006-12-18 16:44:39 stephena Exp $
 */
 class Console
 {
@@ -194,7 +194,6 @@ class Console
     */
     void fry();
 
-  public:
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
       after the change.  GUI's may need to resize their viewports.
@@ -210,22 +209,6 @@ class Console
       @param direction +1 indicates increase, -1 indicates decrease.
     */
     void changeYStart(int direction);
-
-    /**
-      Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.  GUI's may need to resize their viewports.
-
-      @param direction +1 indicates increase, -1 indicates decrease.
-    */
-    void changeWidth(int direction);
-
-    /**
-      Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.  GUI's may need to resize their viewports.
-
-      @param direction +1 indicates increase, -1 indicates decrease.
-    */
-    void changeHeight(int direction);
 
     /**
       Toggles the TIA bit specified in the method name.
