@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.85 2006-12-08 16:48:59 stephena Exp $
+// $Id: Debugger.hxx,v 1.86 2006-12-18 14:01:57 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -69,7 +69,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.85 2006-12-08 16:48:59 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.86 2006-12-18 14:01:57 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -158,12 +158,6 @@ class Debugger : public DialogContainer
       Run the debugger command and return the result.
     */
     const string run(const string& command);
-
-    /**
-      Indicate if the debugger is currently running a command
-      (it shouldn't be exited in this case)
-    */
-    bool isBlocked() { return myParser->commandRunning(); }
 
     /**
       Give the contents of the CPU registers and disassembly of

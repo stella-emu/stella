@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.187 2006-12-15 16:42:57 stephena Exp $
+// $Id: EventHandler.cxx,v 1.188 2006-12-18 14:01:58 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2278,10 +2278,6 @@ void EventHandler::leaveDebugMode()
 #ifdef DEBUGGER_SUPPORT
   // paranoia: this should never happen:
   if(myState != S_DEBUGGER)
-    return;
-
-  // If for any reason a command is currently running, we can't exit the debugger
-  if(myOSystem->debugger().isBlocked())
     return;
 
   // Make sure debugger quits in a consistent state

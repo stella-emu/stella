@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.13 2006-12-15 16:42:55 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.14 2006-12-18 14:01:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -519,10 +519,6 @@ void PromptWidget::specialKeys(int keycode)
   {
     case 'a':
       _currentPos = _promptStartPos;
-      handled = true;
-      break;
-    case 'c':
-      instance()->debugger().parser()->cancel();
       handled = true;
       break;
     case 'd':

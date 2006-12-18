@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.46 2006-12-08 16:49:00 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.47 2006-12-18 14:01:58 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -41,12 +41,6 @@ class DebuggerParser
 
     /** Run the given command, and return the result */
     string run(const string& command);
-
-    /** Indicate if a command is currently running */
-    bool commandRunning() { return myRunningFlag; }
-
-    /** Cancel the currently running command, if any */
-    void cancel();
 
     /** Execute parser commands given in 'file' */
     string exec(const string& file, bool verbose = true);
@@ -128,12 +122,6 @@ class DebuggerParser
 
     // The results of the currently running command
     string commandResult;
-
-    // Indicates whether a command is currently running, or a cancel
-    // event has been received
-    // Commands which expect to block for long periods of time should
-    // occasionally check the myCancelFlag
-    bool myRunningFlag, myCancelFlag;
 
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;

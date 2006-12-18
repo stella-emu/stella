@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.94 2006-12-15 16:42:54 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.95 2006-12-18 14:01:57 stephena Exp $
 //============================================================================
 
 #include <fstream>
+#include <sstream>
 #include "bspf.hxx"
 
 #include "Dialog.hxx"
@@ -40,9 +41,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger* d)
-  : debugger(d),
-    myRunningFlag(false),
-    myCancelFlag(false)
+  : debugger(d)
 {
   defaultBase = kBASE_16;
 }
@@ -101,16 +100,13 @@ string DebuggerParser::run(const string& command)
   cerr << "Expression count: " << refCount << endl;
 #endif
   commandResult = "";
-  myCancelFlag = false;
 
   for(int i = 0; i < kNumCommands; ++i)
   {
     if(verb == commands[i].cmdString)
     {
-      myRunningFlag = true;
       if(validateArgs(i))
         CALL_METHOD(commands[i].executor);
-      myRunningFlag = false;
 
       if(commands[i].refreshRequired)
         debugger->myBaseDialog->loadConfig();
@@ -121,13 +117,6 @@ string DebuggerParser::run(const string& command)
 
   commandResult = "No such command (try \"help\")";
   return commandResult;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerParser::cancel()
-{
-  // Indicate to any blocking commands that it's time to quit
-  myCancelFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1174,29 +1163,25 @@ void DebuggerParser::executeRun()
 // "runto"
 void DebuggerParser::executeRunTo()
 {
+  ostringstream buf;
   bool done = false;
   int cycles = 0, count = 0;
 
   do {
-    if(myCancelFlag) break;
-
     cycles += debugger->step();
-
-    // This command can potentially block forever
-    // We should yield to the system, and check for cancellation
-    if(++count % 10000 == 0)
-    {
-      debugger->prompt()->putchar('.');
-      debugger->getOSystem()->run();
-    }
-
     string next = debugger->disassemble(debugger->cpuDebug().pc(), 1);
     done = (next.find(argStrings[0]) != string::npos);
-  } while(!done);
+    ++count;
+  } while(!done && count < 10000);
 
-  commandResult = "executed ";
-  commandResult += debugger->valueToString(cycles);
-  commandResult += " cycles";
+  if(done)
+    buf << "found " << argStrings[0] << " in " << debugger->valueToString(cycles)
+        << " cycles";
+  else
+    buf << argStrings[0] << " not found in " << debugger->valueToString(count)
+        << " disassembled instructions";
+
+  commandResult = buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

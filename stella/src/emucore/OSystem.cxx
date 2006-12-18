@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.80 2006-12-15 16:42:58 stephena Exp $
+// $Id: OSystem.cxx,v 1.81 2006-12-18 14:01:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -522,13 +522,6 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::run() const
-{
-  myEventHandler->poll(0);
-  myFrameBuffer->update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
