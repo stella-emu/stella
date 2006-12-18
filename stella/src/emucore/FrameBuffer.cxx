@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.110 2006-12-15 16:42:57 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.111 2006-12-18 12:53:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -152,11 +152,6 @@ void FrameBuffer::update()
       // Only update the screen if it's been invalidated
       if(mediaSourceChanged || theRedrawTIAIndicator)
         drawMediaSource();
-
-      // Draw any pending messages
-      if(myMessage.counter > 0 && !myOSystem->eventHandler().isPaused())
-        drawMessage();
-
       break;  // S_EMULATE
     }
 
@@ -177,21 +172,12 @@ void FrameBuffer::update()
         drawMediaSource();
 
       myOSystem->commandMenu().draw();
-
-      // Draw any pending messages
-      if(myMessage.counter > 0 && !myOSystem->eventHandler().isPaused())
-        drawMessage();
       break;  // S_CMDMENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
       myOSystem->launcher().draw();
-
-      // Draw any pending messages
-      if(myMessage.counter > 0)
-        drawMessage();
-
       break;  // S_LAUNCHER
     }
 
@@ -207,6 +193,10 @@ void FrameBuffer::update()
       return;
       break;
   }
+
+  // Draw any pending messages
+  if(myMessage.counter > 0)
+    drawMessage();
 
   // Do any post-frame stuff
   postFrameUpdate();
