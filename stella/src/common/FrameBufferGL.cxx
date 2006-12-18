@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.76 2006-12-13 22:46:28 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.77 2006-12-18 18:35:26 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -322,7 +322,9 @@ bool FrameBufferGL::createScreen()
   createTextures();
 
   // Make sure any old parts of the screen are erased
-  cls();
+  p_glClear(GL_COLOR_BUFFER_BIT);
+  SDL_GL_SwapBuffers();
+  p_glClear(GL_COLOR_BUFFER_BIT);
 
   return true;
 }
@@ -573,12 +575,6 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::cls()
 {
-  if(myFuncsLoaded && myTexture)
-  {
-    p_glClear(GL_COLOR_BUFFER_BIT);
-    SDL_GL_SwapBuffers();
-    p_glClear(GL_COLOR_BUFFER_BIT);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
