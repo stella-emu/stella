@@ -71,7 +71,6 @@ class FrameBufferWinCE : public FrameBuffer
 	virtual void enablePhosphor(bool enable, int blend)  { return; };
     virtual uInt32 lineDim();
 	void wipescreen(void);
-	virtual void cls() { return; };
 	void setmode(uInt8 mode);
 	uInt8 rotatedisplay(void);
 	

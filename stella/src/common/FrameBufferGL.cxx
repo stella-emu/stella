@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.77 2006-12-18 18:35:26 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.78 2006-12-19 12:40:29 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -570,11 +570,6 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::cls()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

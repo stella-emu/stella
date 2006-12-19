@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.65 2006-12-12 19:41:51 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.66 2006-12-19 12:40:29 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -661,7 +661,6 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
   chr -= desc.firstchar;
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
-#if 1
   // Scale the origins to the current zoom
   xorig *= myZoomLevel;
   yorig *= myZoomLevel;
@@ -729,25 +728,6 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
     default:
       break;
   }
-#else
-  SDL_Rect rect;
-  for(int y = 0; y < h; y++)
-  {
-    const uInt16 buffer = *tmp++;
-    uInt16 mask = 0x8000;
-
-    for(int x = 0; x < w; x++, mask >>= 1)
-    {
-      if ((buffer & mask) != 0)
-      {
-        rect.x = (x + xorig) * myZoomLevel;
-        rect.y = (y + yorig) * myZoomLevel;
-        rect.w = rect.h = myZoomLevel;
-        SDL_FillRect(myScreen, &rect, myDefPalette[color]);
-      }
-    }
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -809,16 +789,6 @@ void FrameBufferSoft::enablePhosphor(bool enable, int blend)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::cls()
-{
-  if(myScreen)
-  {
-    SDL_FillRect(myScreen, NULL, 0);
-    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::stateChanged(EventHandler::State state)
 {
   if(!myScreen)
@@ -826,7 +796,7 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
 
   // When in a UI mode, always use dirty rects
   // Otherwise, check the 'dirtyrects' setting
-  // Phosphor mode implies a full update, so turn on dirty rects
+  // Phosphor mode implies a full update, so turn off dirty rects
   bool emulation = state == EventHandler::S_EMULATE;
   if(emulation)
   {
@@ -877,7 +847,6 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
   }
 
   // Have the changes take effect
-  cls();
   myOSystem->eventHandler().refreshDisplay();
 
 //cerr << "Render type = " << myRenderType << ", dirty rects = " << myUseDirtyRects << endl;

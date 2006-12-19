@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.111 2006-12-18 12:53:32 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.112 2006-12-19 12:40:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -74,9 +74,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
       return;
   }
   myInitializedCount++;
-
-  // Erase old contents
-  cls();
 
   // Query the desktop size
   // This is really the job of SDL

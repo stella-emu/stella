@@ -20987,3 +20987,34 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 ""
+
+
+"Cartridge.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
+"Cartridge.Name" "Phantom II / Pirate (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+""
+
+"Cartridge.MD5" "cb96b0cf90ab7777a2f6f05e8ad3f694"
+"Cartridge.Manufacturer" "Silvio Mogno"
+"Cartridge.Name" "Rainbow Invaders"
+"Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "f047df70d3d08e331122cd2de61d6af8"
+"Cartridge.Manufacturer" "Dave Neuman"
+"Cartridge.Name" "Space Battle (NTSC)"
+"Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "cc12581e079cd18330a89902625b8347"
+"Cartridge.Manufacturer" "Dave Neuman"
+"Cartridge.Name" "Space Battle (PAL)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL"
+""
+
+"Cartridge.MD5" "e959b5a2c882ccaacb43c32790957c2d"
+"Cartridge.Name" "Phantom II / Pirate (NTSC)"
+"Cartridge.Rarity" "Homebrew"
+""

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.7 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.8 2006-12-19 12:40:30 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.7 2006-12-11 00:15:33 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.8 2006-12-19 12:40:30 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -204,11 +204,6 @@ class FrameBufferGP2X : public FrameBuffer
       Enable/disable phosphor effect.
     */
     virtual void enablePhosphor(bool enable, int blend);
-
-    /**
-      Completely erase contents of the screen.
-    */
-    virtual void cls();
 
     /**
       Shows or hides the cursor based on the given boolean value.

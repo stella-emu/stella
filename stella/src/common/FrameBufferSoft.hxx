@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.42 2006-12-12 19:41:52 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.43 2006-12-19 12:40:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.42 2006-12-12 19:41:52 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.43 2006-12-19 12:40:29 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -205,11 +205,6 @@ class FrameBufferSoft : public FrameBuffer
       Enable/disable phosphor effect.
     */
     virtual void enablePhosphor(bool enable, int blend);
-
-    /**
-      Completely erase contents of the screen.
-    */
-    virtual void cls();
 
     /**
       Informs the Framebuffer of a change in EventHandler state.

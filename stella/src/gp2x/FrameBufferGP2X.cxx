@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.12 2006-12-11 00:15:33 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.13 2006-12-19 12:40:30 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -68,8 +68,15 @@ void FrameBufferGP2X::setScaler(Scaler scaler)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGP2X::createScreen()
 {
-  myScreenDim.x = myScreenDim.y = 0;
+  // Make sure to clear the screen, since we're using different resolutions,
+  // and there tends to be lingering artifacts in hardware mode
+  if(myScreen)
+  {
+    SDL_FillRect(myScreen, NULL, 0);
+    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
+  }
 
+  myScreenDim.x = myScreenDim.y = 0;
   myScreenDim.w = myBaseDim.w;
   myScreenDim.h = myBaseDim.h;
 
@@ -308,16 +315,6 @@ void FrameBufferGP2X::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGP2X::cls()
-{
-  if(myScreen)
-  {
-    SDL_FillRect(myScreen, NULL, 0);
-    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
