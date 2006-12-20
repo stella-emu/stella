@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.29 2006-11-09 03:06:42 stephena Exp $
+## $Id: Makefile,v 1.30 2006-12-20 20:36:25 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -206,7 +206,7 @@ win32dist: stella$(EXEEXT)
 	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
-	cp /mingw/bin/SDL.dll $(DISTNAME)
+	cp /mingw/bin/SDL.dll /mingw/bin/zlib1.dll $(DISTNAME)
 #	u2d $(DISTNAME)/*.txt
 #	zip $(DISTNAME)-win32.zip $(DISTNAME)
 

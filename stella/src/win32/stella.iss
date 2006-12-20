@@ -22,9 +22,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "H:\windows\src\stella\stella.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.2\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.2\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.2\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "H:\windows\src\stella\stella-2.3\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "H:\windows\src\stella\stella-2.3\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "H:\windows\src\stella\stella-2.3\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
