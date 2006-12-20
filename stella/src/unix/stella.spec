@@ -1,5 +1,5 @@
 %define name    stella
-%define version 2.2
+%define version 2.3
 %define rel     1
 
 %define build_plf 0
@@ -7,7 +7,6 @@
 %define enable_gl 1
 %define enable_sound 1
 %define enable_debugger 1
-%define enable_snapshot 1
 %define enable_joystick 1
 %define enable_cheats 1
 %define enable_static 0
@@ -62,11 +61,6 @@ export CXXFLAGS=$RPM_OPT_FLAGS
   --enable-debugger \
 %else
   --disable-debugger \
-%endif
-%if %enable_snapshot
-  --enable-snapshot \
-%else
-   --disable-snapshot \
 %endif
 %if %enable_joystick
   --enable-joystick \
@@ -125,6 +119,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.xpm
 
 %changelog
+* Fri Dec 22 2006 Stephen Anthony <stephena@zarb.org> 2.3-1plf2007.0
+- Packaged 2.3 release for PLF
+
 * Fri Sep 08 2006 Stephen Anthony <stephena@zarb.org> 2.2-1plf2007.0
 - Packaged 2.2 release for PLF
 - Added XDG menu

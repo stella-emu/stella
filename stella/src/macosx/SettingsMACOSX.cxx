@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.16 2006-12-18 18:35:26 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.17 2006-12-20 12:42:56 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -42,8 +42,9 @@ extern "C" {
 SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("video", "gl");  // Use opengl mode by default
-  setInternal("gl_lib", "");   // Let the system decide which lib to use
+  setInternal("video", "gl");      // Use opengl mode by default
+  setInternal("gl_lib", "");       // Let the system decide which lib to use
+  setInternal("gl_vsync", "true"); // OSX almost always supports vsync; let's use it
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

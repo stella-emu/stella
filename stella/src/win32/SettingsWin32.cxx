@@ -13,12 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.23 2006-12-08 16:49:41 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.24 2006-12-20 12:42:56 stephena Exp $
 //============================================================================
-
-#include <sstream>
-#include <fstream>
-#include <direct.h>
 
 #include "bspf.hxx"
 #include "Settings.hxx"
@@ -28,10 +24,10 @@
 SettingsWin32::SettingsWin32(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("fragsize", "2048");     // Anything less than this usually causes sound skipping
-  setInternal("video", "hard");        // Use software mode with hardware surface
-  setInternal("dirtyrects", "false");  // Most Windows systems work better without this
-  setInternal("gl_lib", "opengl32.dll");
+  // Anything less than this usually causes sound skipping
+  setInternal("fragsize", "2048");
+  // Most Windows systems work better without this
+  setInternal("dirtyrects", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

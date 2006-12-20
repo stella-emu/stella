@@ -20966,7 +20966,7 @@
 "Cartridge.Rarity" "Homebrew"
 ""
 
-"Cartridge.MD5" "264e205ff090ddfdd16d507127f79090"
+"Cartridge.MD5" "4d520fcc619612969344d1dbeca5231e"
 "Cartridge.Manufacturer" "Spiceware"
 "Cartridge.ModelNo" "SW-01"
 "Cartridge.Name" "Medieval Mayhem (PAL)"
@@ -20975,10 +20975,9 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Display.Format" "PAL"
-"Display.Height" "250"
 ""
 
-"Cartridge.MD5" "2eb1277d623b303062ec5654eeaa3c73"
+"Cartridge.MD5" "2c1ed379ff4e9d3b933ed44c9fbe7ffa"
 "Cartridge.Manufacturer" "Spiceware"
 "Cartridge.ModelNo" "SW-01"
 "Cartridge.Name" "Medieval Mayhem (NTSC)"
@@ -20987,7 +20986,6 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 ""
-
 
 "Cartridge.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
 "Cartridge.Name" "Phantom II / Pirate (PAL60)"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.104 2006-12-18 16:44:39 stephena Exp $
+// $Id: Settings.cxx,v 1.105 2006-12-20 12:42:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -38,9 +38,9 @@ Settings::Settings(OSystem* osystem)
 
   setInternal("gl_filter", "nearest");
   setInternal("gl_aspect", "2.0");
-  setInternal("gl_fsmax", "false");
+  setInternal("gl_fsmax", "true");
   setInternal("gl_lib", "");
-  setInternal("gl_vsync", "true");
+  setInternal("gl_vsync", "false");
 
   setInternal("scale_ui", "zoom2x");
   setInternal("scale_tia", "zoom2x");
@@ -75,7 +75,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
-  setInternal("rombrowse", "true");
+  setInternal("rombrowse", "false");
   setInternal("lastrom", "");
   setInternal("modtime", "");
   setInternal("debugheight", "0");

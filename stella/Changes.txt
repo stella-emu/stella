@@ -12,6 +12,105 @@
                                Release History
 ===============================================================================
 
+2.2 to 2.3: (December 22, 2006)
+
+  * NOTE: Because of the many changes in this release, all settings
+    will be reset to defaults.  If this doesn't happen for you, it will be
+    necessary to manually delete your previous settings.
+
+  * Potentially huge speedups in software rendering mode, both in emulation
+    and UI modes.  Deactivating 'dirty rects' uses these new modes, which
+    can be 2-3 times faster for many configurations.
+
+  * For UI navigation, changed from using 'joymouse' to the more familiar
+    'tabbing' functionality, where you move from object to object by use of
+    some tab key.  As a result, completely removed the 'joymouse' commandline
+    argument and all associated functionality.
+
+  * Added event remapping for UI events, separate from events while in
+    emulation mode.
+
+  * Added support for PAL60 ROMs, which use the PAL palette and resolution
+    but run at NTSC timing (60Hz).  Added ROM property for this, and updated
+    the internal properties database for many PAL60 ROMs.
+
+  * Added support for user-definable palettes.  For now, only one extra palette
+    is supported, but in the future we may have them specified per-ROM.
+
+  * Fixed bug in PAL colour-loss emulation, which wasn't actually being done
+    for the original Stella and z26 palettes.
+
+  * Fixed several TIA-related emulation bugs as reported on AtariAge.  More
+    fixes will come with the TIA rewrite, due in the next release.
+
+  * Added new scaler infrastructure, replacing the '-zoom' commandline argument
+    with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can now
+    be scaled independently.
+
+  * Added '-gl_vsync' commandline argument and associated UI elements, which
+    uses synchronization to vertical blank interrupt in OpenGL on supported
+    systems.  This eliminates tearing in OpenGL rendering.
+
+  * Changed naming of snapshots and state files.  These files are now
+    named based on the names given in the properties database, and no longer
+    use the 'md5sum' name.  As a result, state files from previous versions
+    will no longer work unless they're manually renamed.  Related to this,
+    removed the '-ssname' commandline argument.
+
+  * Fixed bug where 'Snapshot saved' appeared when taking snapshots in
+    succession.
+
+  * Added a 'Previous directory' entry to the top of each listing while
+    in ROM Browse mode, which is equivalent to the 'Go Up' button.  This makes
+    it easier to navigate the filesystem, since you never have to 'tab out'
+    of the ROM listing.
+
+  * Added all sound related commandline options to the UI, so you no
+    longer have to use the commandline to set those options.
+
+  * Added new property to ROM properties specifying whether to swap paddles
+    plugged into a virtual port.  This eliminates the need to manually set the
+    paddle mode for those ROMs that don't use paddle zero by default.
+
+  * Added a 'Defaults' button to the Game Properties dialog, which resets
+    the ROM properties to the internal defaults, deleting that ROMs properties
+    from the external properties file.
+
+  * Fixed bug whereby modified ROM properties weren't being reloaded when
+    restarting a ROM.
+
+  * Made 'phosphor' and 'phosphor blend' a ROM property, meaning it can be
+    set per-ROM.
+
+  * Added support for relocating the base Stella directory, by setting the
+    environment variable 'STELLA_BASEDIR'.  This must be done each time before
+    Stella starts.
+
+  * Added '-fastscbios' commandline argument, which speeds up loading of 
+    vertical bars in Supercharger ROMs, and made it the default.
+
+  * Added '-autoslot' commandline argument, which automatically switches
+    to the next available slot after saving a state.  This defaults to off,
+    and must be set from the commandline.
+
+  * Fixed bug in debugger command 'runto', which could enter an infinite
+    loop under some conditions.
+
+  * Updated configure/build toolchain so patching is no longer required for
+    Debian packages.
+
+  * Removed dependency on PNG library (PNG snapshots are still present, but the
+    actual library is no longer required).
+
+  * For the OSX port, improved OpenGL performance on Mac Mini using Intel
+    GMA950 video hardware.
+
+  * For the GP2X port, added support for PAL ROMs, and updated SDL to use
+    hardware scaling.
+
+Have fun!
+
+
 2.1 to 2.2: (April 7, 2006)
 
   * Added new ROM browser option which works like a normal filesystem
@@ -78,8 +177,6 @@
   * For the GP2X port, fixed issue with PAL ROMs causing a crash because of
     screen size.  A message is now shown indicating that PAL ROMs are not
     yet supported.
-
-Have fun!
 
 
 2.0.1 to 2.1: (January 29, 2006)
