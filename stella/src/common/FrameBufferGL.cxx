@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.78 2006-12-19 12:40:29 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.79 2006-12-22 23:14:39 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -599,8 +599,8 @@ bool FrameBufferGL::createTextures()
     myBuffer.texture_width  = power_of_two(myBuffer.width);
     myBuffer.texture_height = power_of_two(myBuffer.height);
     myBuffer.target         = GL_TEXTURE_2D;
-    myBuffer.tex_coord[2] = (GLfloat) myBuffer.width / myBuffer.texture_width;
-    myBuffer.tex_coord[3] = (GLfloat) myBuffer.height / myBuffer.texture_height;
+    myBuffer.tex_coord[2]   = (GLfloat) myBuffer.width / myBuffer.texture_width;
+    myBuffer.tex_coord[3]   = (GLfloat) myBuffer.height / myBuffer.texture_height;
   }
 
   // Create a texture that best suits the current display depth and system

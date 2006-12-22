@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.82 2006-12-18 16:44:39 stephena Exp $
+// $Id: OSystem.cxx,v 1.83 2006-12-22 23:14:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -371,7 +371,7 @@ bool OSystem::createConsole(const string& romfile)
     // Create an instance of the 2600 game console
     // The Console c'tor takes care of updating the eventhandler state
     myConsole = new Console(image, size, md5, this);
-    if(myConsole)
+    if(myConsole && myConsole->isValid())
     {
     #ifdef CHEATCODE_SUPPORT
       myCheatManager->loadCheats(md5);

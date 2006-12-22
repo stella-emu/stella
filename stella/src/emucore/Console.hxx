@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.51 2006-12-18 16:44:39 stephena Exp $
+// $Id: Console.hxx,v 1.52 2006-12-22 23:14:39 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.51 2006-12-18 16:44:39 stephena Exp $
+  @version $Id: Console.hxx,v 1.52 2006-12-22 23:14:39 stephena Exp $
 */
 class Console
 {
@@ -168,9 +168,10 @@ class Console
     void initialize();
 
     /**
-      Determine whether the console was successfully initialized
+      Determine whether the console object is valid (no errors occurred
+      when it was created)
     */
-    bool isInitialized() { return myIsInitializedFlag; }
+    bool isValid() { return myIsValidFlag; }
 
     /**
       Initialize the video subsystem wrt this class.
@@ -274,9 +275,8 @@ class Console
     AtariVox *vox;
 #endif
 
-    // Indicates whether the console was correctly initialized
-    // We don't really care why it wasn't initialized ...
-    bool myIsInitializedFlag;
+    // Indicates whether the console was successfully created
+    bool myIsValidFlag;
 
     // Indicates whether an external palette was found and
     // successfully loaded

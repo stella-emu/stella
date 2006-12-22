@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.109 2006-12-18 16:44:39 stephena Exp $
+// $Id: Console.cxx,v 1.110 2006-12-22 23:14:39 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -61,7 +61,7 @@
 Console::Console(const uInt8* image, uInt32 size, const string& md5,
                  OSystem* osystem)
   : myOSystem(osystem),
-    myIsInitializedFlag(false),
+    myIsValidFlag(false),
     myUserPaletteDefined(false),
     ourUserNTSCPalette(NULL),
     ourUserPALPalette(NULL)
@@ -216,6 +216,8 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
 
   // Reset, the system to its power-on state
   mySystem->reset();
+
+  myIsValidFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -420,8 +422,6 @@ void Console::initialize()
   myOSystem->debugger().setConsole(this);
   myOSystem->debugger().initialize();
 #endif
-
-  myIsInitializedFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
