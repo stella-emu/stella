@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.27 2006-12-13 17:09:10 stephena Exp $
+// $Id: PropsSet.cxx,v 1.28 2006-12-22 22:32:49 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -119,8 +119,10 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
   // Reset TIA positioning to defaults if option is enabled
   if(myOSystem->settings().getBool("tiadefaults"))
   {
-//    properties.set(Display_XStart, Properties::ourDefaultProperties[Display_XStart]);
-//    properties.set(Display_YStart, Properties::ourDefaultProperties[Display_YStart]);
+#if !defined(GP2X)   // Quick GP2X hack, it only wants defaults for width and height
+    properties.set(Display_XStart, Properties::ourDefaultProperties[Display_XStart]);
+    properties.set(Display_YStart, Properties::ourDefaultProperties[Display_YStart]);
+#endif
     properties.set(Display_Width,  Properties::ourDefaultProperties[Display_Width]);
     properties.set(Display_Height, Properties::ourDefaultProperties[Display_Height]);
   }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.61 2006-12-09 04:02:40 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.62 2006-12-22 22:32:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -285,10 +285,7 @@ void LauncherDialog::loadDirListing()
 
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
-  {
-    const string& parent = myCurrentNode.getParent().path();
-    myGameList->appendGame(" [..]", parent, "", true);
-  }
+    myGameList->appendGame(" [..]", "", "", true);
 
   // Now add the directory entries
   for(unsigned int idx = 0; idx < files.size(); idx++)
@@ -440,7 +437,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         // Directory's should be selected (ie, enter them and redisplay)
         if(myBrowseModeFlag && myGameList->isDir(item))
         {
-          myCurrentNode = entry;
+          if(myGameList->name(item) == " [..]")
+            myCurrentNode = myCurrentNode.getParent();
+		  else
+            myCurrentNode = entry;
           updateListing();
         }
         else if(instance()->createConsole(entry))

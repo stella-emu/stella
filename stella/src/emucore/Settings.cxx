@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.105 2006-12-20 12:42:55 stephena Exp $
+// $Id: Settings.cxx,v 1.106 2006-12-22 22:32:49 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -75,12 +75,12 @@ Settings::Settings(OSystem* osystem)
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
-  setInternal("rombrowse", "false");
+  setInternal("rombrowse", "true");
   setInternal("lastrom", "");
   setInternal("modtime", "");
   setInternal("debugheight", "0");
 
-  setInternal("tiadefaults", "true");
+  setInternal("tiadefaults", "false");
   setInternal("autoslot", "false");
   setInternal("fastscbios", "true");
 }
