@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.66 2006-12-19 12:40:29 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.67 2006-12-22 21:47:27 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -289,6 +289,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
+      SDL_LockSurface(myScreen);
       uInt16* buffer    = (uInt16*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -321,6 +322,7 @@ void FrameBufferSoft::drawMediaSource()
         }
         bufofsY += width;
       }
+      SDL_UnlockSurface(myScreen);
       break;  // kSoftZoom_16
     }
 
@@ -330,6 +332,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
+      SDL_LockSurface(myScreen);
       uInt8* buffer     = (uInt8*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -367,6 +370,7 @@ void FrameBufferSoft::drawMediaSource()
         }
         bufofsY += width;
       }
+      SDL_UnlockSurface(myScreen);
       break;  // kSoftZoom_24
     }
 
@@ -376,6 +380,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
+      SDL_LockSurface(myScreen);
       uInt32* buffer    = (uInt32*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -408,6 +413,7 @@ void FrameBufferSoft::drawMediaSource()
         }
         bufofsY += width;
       }
+      SDL_UnlockSurface(myScreen);
       break;  // kSoftZoom_32
     }
 
@@ -417,6 +423,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
+      SDL_LockSurface(myScreen);
       uInt16* buffer    = (uInt16*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -444,6 +451,7 @@ void FrameBufferSoft::drawMediaSource()
         }
         bufofsY += width;
       }
+      SDL_UnlockSurface(myScreen);
       break;  // kPhosphor_16
     }
 
@@ -453,6 +461,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
+      SDL_LockSurface(myScreen);
       uInt8* buffer     = (uInt8*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -484,6 +493,7 @@ void FrameBufferSoft::drawMediaSource()
         }
         bufofsY += width;
       }
+      SDL_UnlockSurface(myScreen);
       break;  // kPhosphor_24
     }
 
@@ -493,6 +503,7 @@ void FrameBufferSoft::drawMediaSource()
       temp.x = temp.y = temp.w = temp.h = 0;
       myRectList->add(&temp);
 
+      SDL_LockSurface(myScreen);
       uInt32* buffer    = (uInt32*)myScreen->pixels;
       uInt32 bufofsY    = 0;
       uInt32 screenofsY = 0;
@@ -520,6 +531,7 @@ void FrameBufferSoft::drawMediaSource()
         }
         bufofsY += width;
       }
+      SDL_UnlockSurface(myScreen);
       break;  // kPhosphor_32
     }
   }
@@ -665,6 +677,8 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
   xorig *= myZoomLevel;
   yorig *= myZoomLevel;
 
+  SDL_LockSurface(myScreen);
+
   int screenofsY = 0;
   switch(myBytesPerPixel)
   {
@@ -728,6 +742,7 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
     default:
       break;
   }
+  SDL_UnlockSurface(myScreen);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
