@@ -617,18 +617,6 @@ SDLmain.lib
 				RelativePath="..\cheat\BankRomCheat.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\BinAndExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\BinNotExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\BinOrExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\BinXorExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\emucore\Booster.hxx">
 			</File>
 			<File
@@ -636,12 +624,6 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\emucore\m6502\src\bspf\src\bspf.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\ByteDerefExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\ByteDerefOffsetExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\Cart.hxx">
@@ -743,9 +725,6 @@ SDLmain.lib
 				RelativePath="..\gui\ConsoleFont.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\ConstExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\debugger\gui\ContextMenu.hxx">
 			</File>
 			<File
@@ -753,9 +732,6 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\debugger\CpuDebug.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\CpuMethodExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\gui\CpuWidget.hxx">
@@ -771,6 +747,9 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\debugger\gui\DebuggerDialog.hxx">
+			</File>
+			<File
+				RelativePath="..\debugger\DebuggerExpressions.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\DebuggerParser.hxx">
@@ -791,9 +770,6 @@ SDLmain.lib
 				RelativePath="..\gui\DialogContainer.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\DivExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\emucore\Driving.hxx">
 			</File>
 			<File
@@ -803,13 +779,7 @@ SDLmain.lib
 				RelativePath="..\gui\EditTextWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\EqualsExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\debugger\Equate.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\EquateExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\debugger\EquateList.hxx">
@@ -848,19 +818,10 @@ SDLmain.lib
 				RelativePath="..\emucore\FSNode.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\FunctionExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\gui\GameInfoDialog.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\GameList.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\GreaterEqualsExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\GreaterExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\GuiObject.hxx">
@@ -870,9 +831,6 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\gui\HelpDialog.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\HiByteExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\InputDialog.hxx">
@@ -896,25 +854,7 @@ SDLmain.lib
 				RelativePath="..\gui\LauncherOptionsDialog.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\LessEqualsExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\LessExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\gui\ListWidget.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\LoByteExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\LogAndExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\LogNotExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\LogOrExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\emucore\m6502\src\M6502.hxx">
@@ -941,18 +881,6 @@ SDLmain.lib
 				RelativePath="..\gui\Menu.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\MinusExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\ModExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\MultExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\NotEqualsExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\emucore\m6502\src\NullDev.hxx">
 			</File>
 			<File
@@ -969,9 +897,6 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\emucore\Paddles.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\PlusExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\gui\PopUpWidget.hxx">
@@ -1022,12 +947,6 @@ SDLmain.lib
 				RelativePath="..\win32\SettingsWin32.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\ShiftLeftExpression.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\ShiftRightExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\common\Snapshot.hxx">
 			</File>
 			<File
@@ -1073,9 +992,6 @@ SDLmain.lib
 				RelativePath="..\debugger\gui\TiaInfoWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\TiaMethodExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\debugger\gui\TiaOutputWidget.hxx">
 			</File>
 			<File
@@ -1097,9 +1013,6 @@ SDLmain.lib
 				RelativePath="..\debugger\gui\ToggleWidget.hxx">
 			</File>
 			<File
-				RelativePath="..\debugger\UnaryMinusExpression.hxx">
-			</File>
-			<File
 				RelativePath="..\emucore\unzip.h">
 			</File>
 			<File
@@ -1110,9 +1023,6 @@ SDLmain.lib
 			</File>
 			<File
 				RelativePath="..\gui\Widget.hxx">
-			</File>
-			<File
-				RelativePath="..\debugger\WordDerefExpression.hxx">
 			</File>
 			<File
 				RelativePath="..\yacc\YaccParser.hxx">
