@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.20 2006-12-08 16:49:42 stephena Exp $
+// $Id: YaccParser.cxx,v 1.21 2006-12-23 15:11:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,38 +29,7 @@
 #include "CpuDebug.hxx"
 #include "TIADebug.hxx"
 
-#include "BinAndExpression.hxx"
-#include "BinNotExpression.hxx"
-#include "BinOrExpression.hxx"
-#include "BinXorExpression.hxx"
-#include "ByteDerefExpression.hxx"
-#include "ByteDerefOffsetExpression.hxx"
-#include "ConstExpression.hxx"
-#include "CpuMethodExpression.hxx"
-#include "DivExpression.hxx"
-#include "EqualsExpression.hxx"
-#include "EquateExpression.hxx"
-#include "Expression.hxx"
-#include "FunctionExpression.hxx"
-#include "GreaterEqualsExpression.hxx"
-#include "GreaterExpression.hxx"
-#include "HiByteExpression.hxx"
-#include "LessEqualsExpression.hxx"
-#include "LessExpression.hxx"
-#include "LoByteExpression.hxx"
-#include "LogAndExpression.hxx"
-#include "LogNotExpression.hxx"
-#include "LogOrExpression.hxx"
-#include "MinusExpression.hxx"
-#include "ModExpression.hxx"
-#include "MultExpression.hxx"
-#include "NotEqualsExpression.hxx"
-#include "PlusExpression.hxx"
-#include "ShiftLeftExpression.hxx"
-#include "ShiftRightExpression.hxx"
-#include "TiaMethodExpression.hxx"
-#include "UnaryMinusExpression.hxx"
-#include "WordDerefExpression.hxx"
+#include "DebuggerExpressions.hxx"
 
 namespace YaccParser {
 #include <stdio.h>
