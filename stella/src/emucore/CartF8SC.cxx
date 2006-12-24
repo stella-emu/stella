@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8SC.cxx,v 1.10 2006-12-08 16:49:22 stephena Exp $
+// $Id: CartF8SC.cxx,v 1.11 2006-12-24 17:13:10 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -161,12 +161,14 @@ void CartridgeF8SC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF8SC::bank() {
+int CartridgeF8SC::bank()
+{
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF8SC::bankCount() {
+int CartridgeF8SC::bankCount()
+{
   return 2;
 }
 
@@ -265,7 +267,8 @@ bool CartridgeF8SC::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF8SC::getImage(int& size) {
+uInt8* CartridgeF8SC::getImage(int& size)
+{
   size = 8192;
   return &myImage[0];
 }

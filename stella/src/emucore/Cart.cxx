@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.22 2006-12-08 16:49:19 stephena Exp $
+// $Id: Cart.cxx,v 1.23 2006-12-24 17:13:10 stephena Exp $
 //============================================================================
 
-#include <assert.h>
+#include <cassert>
+#include <sstream>
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -54,9 +55,19 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   // Get the type of the cartridge we're creating
   string type = properties.get(Cartridge_Type);
 
+  // Collect some info about the ROM
+  ostringstream buf;
+  buf << "Size of ROM: " << size << endl
+      << "Specified type: " << type << endl;
+
   // See if we should try to auto-detect the cartridge type
   if(type == "AUTO-DETECT")
+  {
     type = autodetectType(image, size);
+    buf << "Auto-detected type: " << type << endl;
+  }
+
+//  cerr << buf.str() << endl;
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
@@ -128,71 +139,97 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     type = "AR";
   }
-  else if((size == 2048) || (memcmp(image, image + 2048, 2048) == 0))
+  else if(size == 2048)
   {
+    // TODO - autodetect CV
     type = "2K";
   }
-  else if((size == 4096) || (memcmp(image, image + 4096, 4096) == 0))
+  else if(size == 4096)
   {
-    type = "4K";
+    // 2K image in consecutive banks
+    if(memcmp(image, image + 2048, 2048) == 0)
+      type = "2K";
+    else
+      type = "4K";
   }
-  else if((size == 8192) || (memcmp(image, image + 8192, 8192) == 0))
+  else if(size == 8192)  // 8K
   {
-    type = isProbably3F(image, size) ? "3F" : "F8";
+    // TODO - autodetect E0, FE, UA
+    if(isProbablySC(image, size))
+      type = "F8SC";
+    else if(memcmp(image, image + 4096, 4096) == 0)
+      type = "4K";
+    else if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else
+      type = "F8";
   }
-  else if((size == 10495) || (size == 10240))
+  else if((size == 10495) || (size == 10496) || (size == 10240))  // 10K - Pitfall2
   {
     type = "DPC";
   }
-  else if(size == 12288)
+  else if(size == 12288)  // 12K
   {
+    // TODO - this should really be in a method that checks the first
+    // 512 bytes of ROM and finds if either the lower 256 bytes or
+    // higher 256 bytes are all the same.  For now, we assume that
+    // all carts of 12K are CBS RAM Plus/FASC.
     type = "FASC";
   }
-  else if(size == 32768)
+  else if(size == 16384)  // 16K
   {
-    // Assume this is a 32K super-cart then check to see if it is
-    type = "F4SC";
-
-    uInt8 first = image[0];
-    for(uInt32 i = 0; i < 256; ++i)
-    {
-      if(image[i] != first)
-      {
-        // It's not a super cart (probably)
-        type = isProbably3F(image, size) ? "3F" : "F4";
-        break;
-      }
-    }
+    // TODO - autodetect E7
+    if(isProbablySC(image, size))
+      type = "F6SC";
+    else if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else
+      type = "F6";
   }
-  else if(size == 65536)
+  else if(size == 32768)  // 32K
   {
-    type = isProbably3F(image, size) ? "3F" : "MB";
+    if(isProbablySC(image, size))
+      type = "F4SC";
+    else if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else
+      type = "F4";
   }
-  else if(size == 131072)
+  else if(size == 65536)  // 64K
   {
-    type = isProbably3F(image, size) ? "3F" : "MC";
+    // TODO - autodetect 4A50
+    if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else
+      type = "MB";
   }
-  else
+  else if(size == 131072)  // 128K
   {
-    // Assume this is a 16K super-cart then check to see if it is
-    type = "F6SC";
-
-    uInt8 first = image[0];
-    for(uInt32 i = 0; i < 256; ++i)
-    {
-      if(image[i] != first)
-      {
-        // It's not a super cart (probably)
-        type = isProbably3F(image, size) ? "3F" : "F6";
-        break;
-      }
-    }
+    // TODO - autodetect 4A50
+    if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else
+      type = "MC";
   }
-
-  /* The above logic was written long before 3E support existed. It will
-     detect a 3E cart as 3F. Let's remedy that situation: */
-  if(type == "3F" && isProbably3E(image, size))
-    type = "3E";
+  else  // what else can we do?
+  {
+    if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else
+      type = "4K";  // Most common bankswitching type
+  }
 
   return type;
 }
@@ -213,6 +250,25 @@ int Cartridge::searchForBytes(const uInt8* image, uInt32 size, uInt8 byte1, uInt
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
+{
+  // We assume a Superchip cart contains the same bytes for its entire
+  // RAM area; obviously this test will fail if it doesn't
+  // The RAM area will be the first 256 bytes of each 4K bank
+  uInt32 banks = size / 4096;
+  for(uInt32 i = 0; i < banks; ++i)
+  {
+    uInt8 first = image[i*4096];
+    for(uInt32 j = 0; j < 256; ++j)
+    {
+      if(image[i*4096+j] != first)
+        return false;
+    }
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
 {
   return (searchForBytes(image, size, 0x85, 0x3F) > 2);
@@ -225,18 +281,6 @@ bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::Cartridge(const Cartridge&)
-{
-  assert(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge& Cartridge::operator = (const Cartridge&)
-{
-  assert(false);
-  return *this;
-}
-
 // default implementations of bankswitching-related methods.
 // These are suitable to be inherited by a cart type that
 // doesn't support bankswitching at all.
@@ -288,4 +332,17 @@ uInt8* Cartridge::getImage(int& size)
 {
   size = 0;
   return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cartridge::Cartridge(const Cartridge&)
+{
+  assert(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cartridge& Cartridge::operator = (const Cartridge&)
+{
+  assert(false);
+  return *this;
 }
