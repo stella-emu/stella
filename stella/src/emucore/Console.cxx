@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.111 2006-12-26 00:39:43 stephena Exp $
+// $Id: Console.cxx,v 1.112 2006-12-26 02:09:29 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -277,29 +277,32 @@ const Properties& Console::properties() const
 void Console::toggleFormat()
 {
   uInt32 framerate = 60;
-
   if(myDisplayFormat == "NTSC")
   {
-    myProperties.set(Display_Format, "PAL");
+    myDisplayFormat = "PAL";
+    myProperties.set(Display_Format, myDisplayFormat);
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("PAL Mode");
     framerate = 50;
   }
   else if(myDisplayFormat == "PAL")
   {
-    myProperties.set(Display_Format, "PAL60");
+    myDisplayFormat = "PAL60";
+    myProperties.set(Display_Format, myDisplayFormat);
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("PAL60 Mode");
     framerate = 60;
   }
   else if(myDisplayFormat == "PAL60")
   {
-    myProperties.set(Display_Format, "NTSC");
+    myDisplayFormat = "NTSC";
+    myProperties.set(Display_Format, myDisplayFormat);
     mySystem->reset();
+    initializeVideo();
     myOSystem->frameBuffer().showMessage("NTSC Mode");
     framerate = 60;
   }
-  myDisplayFormat = myProperties.get(Display_Format);
+
   setPalette(myOSystem->settings().getString("palette"));
   myOSystem->setFramerate(framerate);
   myOSystem->sound().setFrameRate(framerate);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.33 2006-12-26 00:39:44 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.34 2006-12-26 02:09:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -572,7 +572,7 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   tag = myFormat->getSelectedTag();
-  s = (tag == 3) ? "PAL60" : (tag == 2) ? "PAL" : "NTSC";
+  s = (tag == 4) ? "PAL60" : (tag == 3) ? "PAL" : (tag == 2) ? "NTSC" : "AUTO-DETECT";
   myGameProperties.set(Display_Format, s);
 
   s = myXStart->getEditString();
