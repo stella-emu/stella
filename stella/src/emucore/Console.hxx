@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.53 2006-12-26 00:39:43 stephena Exp $
+// $Id: Console.hxx,v 1.54 2006-12-26 17:06:01 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.53 2006-12-26 00:39:43 stephena Exp $
+  @version $Id: Console.hxx,v 1.54 2006-12-26 17:06:01 stephena Exp $
 */
 class Console
 {
@@ -170,6 +170,11 @@ class Console
     void togglePhosphor();
 
     /**
+      Toggles the PAL color-loss effect.
+    */
+    void toggleColorLoss();
+
+    /**
       Initialize the basic properties of the console.
       TODO - This is a workaround for a bug in the TIA rendering, whereby
       XStart/YStart values cause incorrect coordinates to be passed to the
@@ -247,6 +252,12 @@ class Console
     void loadUserPalette();
 
     /**
+      Loads all defined palettes with PAL color-loss data depending
+      on 'state'.
+    */
+    void setColorLossPalette(bool state);
+
+    /**
       Returns a pointer to the palette data for the palette currently defined
       by the ROM properties.
     */
@@ -292,35 +303,27 @@ class Console
     // successfully loaded
     bool myUserPaletteDefined;
 
-    // User-defined NTSC and PAL RGB values
-    uInt32* ourUserNTSCPalette;
-    uInt32* ourUserPALPalette;
-
     // Contains info about this console in string format
     string myAboutString;
 
     // The currently defined display format (NTSC/PAL/PAL60)
     string myDisplayFormat;
 
-    // Table of RGB values for NTSC
-    static const uInt32 ourNTSCPalette[256];
+    // Table of RGB values for NTSC and PAL
+    static uInt32 ourNTSCPalette[256];
+    static uInt32 ourPALPalette[256];
 
-    // Table of RGB values for PAL.  NOTE: The odd numbered entries in
-    // this array are always shades of grey.  This is used to implement
-    // the PAL color loss effect.
-    static const uInt32 ourPALPalette[256];
+    // Table of RGB values for NTSC and PAL - Stella 1.1 version
+    static uInt32 ourNTSCPalette11[256];
+    static uInt32 ourPALPalette11[256];
 
-    // Table of RGB values for NTSC - Stella 1.1 version
-    static const uInt32 ourNTSCPalette11[256];
+    // Table of RGB values for NTSC and PAL - Z26 version
+    static uInt32 ourNTSCPaletteZ26[256];
+    static uInt32 ourPALPaletteZ26[256];
 
-    // Table of RGB values for PAL - Stella 1.1 version
-    static const uInt32 ourPALPalette11[256];
-
-    // Table of RGB values for NTSC - Z26 version
-    static const uInt32 ourNTSCPaletteZ26[256];
-
-    // Table of RGB values for PAL - Z26 version
-    static const uInt32 ourPALPaletteZ26[256];
+    // Table of RGB values for NTSC and PAL - user-defined
+    static uInt32 ourUserNTSCPalette[256];
+    static uInt32 ourUserPALPalette[256];
 };
 
 #endif

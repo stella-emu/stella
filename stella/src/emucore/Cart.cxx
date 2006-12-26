@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.24 2006-12-26 00:39:43 stephena Exp $
+// $Id: Cart.cxx,v 1.25 2006-12-26 17:06:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -162,10 +162,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "4K";
     else if(isProbablyE0(image, size))
       type = "E0";
-    else if(isProbably3E(image, size))
-      type = "3E";
     else if(isProbably3F(image, size))
-      type = "3F";
+      type = isProbably3E(image, size) ? "3E" : "3F";
     else
       type = "F8";
   }
@@ -187,10 +185,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "F6SC";
     else if(isProbablyE7(image, size))
       type = "E7";
-    else if(isProbably3E(image, size))
-      type = "3E";
     else if(isProbably3F(image, size))
-      type = "3F";
+      type = isProbably3E(image, size) ? "3E" : "3F";
     else
       type = "F6";
   }
@@ -198,39 +194,31 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbablySC(image, size))
       type = "F4SC";
-    else if(isProbably3E(image, size))
-      type = "3E";
     else if(isProbably3F(image, size))
-      type = "3F";
+      type = isProbably3E(image, size) ? "3E" : "3F";
     else
       type = "F4";
   }
   else if(size == 65536)  // 64K
   {
     // TODO - autodetect 4A50
-    if(isProbably3E(image, size))
-      type = "3E";
-    else if(isProbably3F(image, size))
-      type = "3F";
+    if(isProbably3F(image, size))
+      type = isProbably3E(image, size) ? "3E" : "3F";
     else
       type = "MB";
   }
   else if(size == 131072)  // 128K
   {
     // TODO - autodetect 4A50
-    if(isProbably3E(image, size))
-      type = "3E";
-    else if(isProbably3F(image, size))
-      type = "3F";
+    if(isProbably3F(image, size))
+      type = isProbably3E(image, size) ? "3E" : "3F";
     else
       type = "MC";
   }
   else  // what else can we do?
   {
-    if(isProbably3E(image, size))
-      type = "3E";
-    else if(isProbably3F(image, size))
-      type = "3F";
+    if(isProbably3F(image, size))
+      type = isProbably3E(image, size) ? "3E" : "3F";
     else
       type = "4K";  // Most common bankswitching type
   }

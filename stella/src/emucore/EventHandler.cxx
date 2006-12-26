@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.189 2006-12-18 16:44:39 stephena Exp $
+// $Id: EventHandler.cxx,v 1.190 2006-12-26 17:06:01 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -572,6 +572,10 @@ void EventHandler::poll(uInt32 time)
 
               case SDLK_f:  // Ctrl-f toggles NTSC/PAL mode
                 myOSystem->console().toggleFormat();
+                break;
+
+              case SDLK_l:  // Ctrl-l toggles PAL color-loss effect
+                myOSystem->console().toggleColorLoss();
                 break;
 
               case SDLK_p:  // Ctrl-p toggles different palettes

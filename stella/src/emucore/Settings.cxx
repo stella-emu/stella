@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.107 2006-12-26 00:39:44 stephena Exp $
+// $Id: Settings.cxx,v 1.108 2006-12-26 17:06:01 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,6 +48,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("center", "true");
   setInternal("grabmouse", "false");
   setInternal("palette", "standard");
+  setInternal("colorloss", "false");
 
   setInternal("sound", "true");
   setInternal("fragsize", "512");
@@ -320,6 +321,7 @@ void Settings::usage()
     << "                 standard|\n"
     << "                 z26|\n"
     << "                 user>\n"
+    << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -framerate    <number>       Display the given number of frames per second\n"
     << endl
   #ifdef SOUND_SUPPORT
