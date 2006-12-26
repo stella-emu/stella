@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.20 2006-12-16 23:36:42 azaballa Exp $
+// $Id: OSystemGP2X.cxx,v 1.21 2006-12-26 02:20:23 azaballa Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -83,32 +83,80 @@ void OSystemGP2X::mainLoop()
   // and are needed to calculate the overall frames per second.
   uInt32 frameTime = 0, numberOfFrames = 0;
 
-  // Set up less accurate timing stuff
-  uInt32 startTime, virtualTime, currentTime;
-
-  // Set the base for the timers
-  virtualTime = getTicks();
-  frameTime = 0;
-
-  // Main game loop
-  for(;;)
+  if(mySettings->getBool("accurate"))   // normal, CPU-intensive timing
   {
-    // Exit if the user wants to quit
-    if(myEventHandler->doQuit())
-      break;
+    // Set up accurate timing stuff
+    uInt32 startTime, delta;
 
-    startTime = getTicks();
-    myEventHandler->poll(startTime);
-    myFrameBuffer->update();
+    // Set the base for the timers
+    frameTime = 0;
 
-    currentTime = getTicks();
-    virtualTime += myTimePerFrame;
-    if(currentTime < virtualTime)
-      SDL_Delay((virtualTime - currentTime)/1000);
+    // Main game loop
+    for(;;)
+    {
+      // Exit if the user wants to quit
+      if(myEventHandler->doQuit())
+        break;
 
-    currentTime = getTicks() - startTime;
-    frameTime += currentTime;
-    ++numberOfFrames;
+      startTime = getTicks();
+      myEventHandler->poll(startTime);
+      myFrameBuffer->update();
+
+      // Now, waste time if we need to so that we are at the desired frame rate
+      for(;;)
+      {
+        delta = getTicks() - startTime;
+
+        if(delta >= myTimePerFrame)
+          break;
+      }
+
+      frameTime += getTicks() - startTime;
+      ++numberOfFrames;
+    }
+  }
+  else    // less accurate, less CPU-intensive timing
+  {
+    // Set up less accurate timing stuff
+    uInt32 startTime, virtualTime, currentTime;
+
+    // Set the base for the timers
+    virtualTime = getTicks();
+    frameTime = 0;
+
+    // Main game loop
+    for(;;)
+    {
+      // Exit if the user wants to quit
+      if(myEventHandler->doQuit())
+        break;
+
+      startTime = getTicks();
+      myEventHandler->poll(startTime);
+      myFrameBuffer->update();
+
+      currentTime = getTicks();
+      virtualTime += myTimePerFrame;
+      if(currentTime < virtualTime)
+      {
+        SDL_Delay((virtualTime - currentTime)/1000);
+      }
+
+      currentTime = getTicks() - startTime;
+      frameTime += currentTime;
+      ++numberOfFrames;
+    }
+  }
+
+  // Only print console information if a console was actually created
+  if(mySettings->getBool("showinfo"))
+  {
+    double executionTime = (double) frameTime / 1000000.0;
+    double framesPerSecond = (double) numberOfFrames / executionTime;
+
+    cout << endl;
+    cout << numberOfFrames << " total frames drawn\n";
+    cout << framesPerSecond << " frames/second\n";
   }
 }
 
