@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.8 2006-12-19 12:40:30 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.9 2006-12-26 23:53:27 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.8 2006-12-19 12:40:30 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.9 2006-12-26 23:53:27 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -211,6 +211,10 @@ class FrameBufferGP2X : public FrameBuffer
     virtual void showCursor(bool show);
 
   private:
+    // Origin at which to access the FrameBuffer
+    // This point is treated as (0, 0) wrt the TIA image
+    uInt16* myBasePtr;
+
     // Indicates that the buffer is dirty, and should be redrawn/flipped
     bool myDirtyFlag;
 

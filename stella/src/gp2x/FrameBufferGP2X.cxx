@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.13 2006-12-19 12:40:30 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.14 2006-12-26 23:53:27 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -29,6 +29,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGP2X::FrameBufferGP2X(OSystem* osystem)
   : FrameBuffer(osystem),
+    myBasePtr(0),
     myDirtyFlag(true)
 {
 }
@@ -76,12 +77,23 @@ bool FrameBufferGP2X::createScreen()
     SDL_UpdateRect(myScreen, 0, 0, 0, 0);
   }
 
+  // Determine the best screenmode to use; we only use 320x240 or 400x300
+  if(myBaseDim.w <= 320 && myBaseDim.h <= 240)
+  {
+    myScreenDim.w = 320;
+    myScreenDim.h = 240;
+  }
+  else
+  {
+    myScreenDim.w = 400;
+    myScreenDim.h = 300;
+  }
   myScreenDim.x = myScreenDim.y = 0;
-  myScreenDim.w = myBaseDim.w;
-  myScreenDim.h = myBaseDim.h;
 
-  // In software mode, the image and screen dimensions are always the same
-  myImageDim = myScreenDim;
+  // In software mode, the image and base dimensions are always the same
+  myImageDim = myBaseDim;
+  myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
+  myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
 
   // The GP2X always uses a 16-bit hardware buffer
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 16, mySDLFlags);
@@ -90,6 +102,8 @@ bool FrameBufferGP2X::createScreen()
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
+  myBasePtr = (uInt16*) myScreen->pixels +
+                        myImageDim.y * myScreen->pitch + myImageDim.x;
   myPitch = myScreen->pitch/2;
   myDirtyFlag = true;
 
@@ -105,7 +119,7 @@ void FrameBufferGP2X::drawMediaSource()
   uInt8* previousFrame = mediasrc.previousFrameBuffer();
   uInt32 width         = mediasrc.width();
   uInt32 height        = mediasrc.height();
-  uInt16* buffer       = (uInt16*) myScreen->pixels;
+  uInt16* buffer       = myBasePtr;
 
   uInt32 bufofsY    = 0;
   uInt32 screenofsY = 0;
@@ -181,12 +195,12 @@ void FrameBufferGP2X::scanline(uInt32 row, uInt8* data)
   SDL_LockSurface(myScreen);
 
   uInt32 bpp     = myScreen->format->BytesPerPixel;
-  uInt8* start   = (uInt8*) myScreen->pixels;
+  uInt8* start   = (uInt8*) myBasePtr;
   uInt32 yoffset = row * myScreen->pitch;
   uInt32 pixel = 0;
   uInt8 *p, r, g, b;
 
-  for(Int32 x = 0; x < myScreen->w; x++)
+  for(Int32 x = 0; x < myImageDim.w; x++)
   {
     p = (Uint8*) (start    +  // Start at top of RAM
                  (yoffset) +  // Go down 'row' lines
@@ -228,8 +242,8 @@ void FrameBufferGP2X::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
   SDL_Rect tmp;
 
   // Vertical line
-  tmp.x = x;
-  tmp.y = y;
+  tmp.x = x + myImageDim.x;
+  tmp.y = y + myImageDim.y;
   tmp.w = 1;
   tmp.h = (y2 - y + 1);
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
@@ -242,8 +256,8 @@ void FrameBufferGP2X::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
   SDL_Rect tmp;
 
   // Fill the rectangle
-  tmp.x = x;
-  tmp.y = y;
+  tmp.x = x + myImageDim.x;
+  tmp.y = y + myImageDim.y;
   tmp.w = w;
   tmp.h = h;
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
@@ -268,7 +282,7 @@ void FrameBufferGP2X::drawChar(const GUI::Font* font, uInt8 chr,
   chr -= desc.firstchar;
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
-  uInt16* buffer = (uInt16*) myScreen->pixels + yorig * myScreen->w + xorig;
+  uInt16* buffer = (uInt16*) myBasePtr + yorig * myScreen->w + xorig;
   for(int y = 0; y < h; ++y)
   {
     const uInt16 ptr = *tmp++;
@@ -285,7 +299,7 @@ void FrameBufferGP2X::drawChar(const GUI::Font* font, uInt8 chr,
 void FrameBufferGP2X::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
                                  int color, Int32 h)
 {
-  uInt16* buffer = (uInt16*) myScreen->pixels + yorig * myScreen->w + xorig;
+  uInt16* buffer = (uInt16*) myBasePtr + yorig * myScreen->w + xorig;
   for(int y = 0; y < h; ++y)
   {
     uInt32 mask = 0xF0000000;
