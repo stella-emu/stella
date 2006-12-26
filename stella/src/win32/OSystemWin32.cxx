@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.14 2006-12-08 16:49:41 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.15 2006-12-26 00:39:44 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -99,8 +99,7 @@ void OSystemWin32::mainLoop()
 	++numberOfFrames;
   }
 
-  // Only print console information if a console was actually created
-  if(mySettings->getBool("showinfo") && myConsole)
+  if(mySettings->getBool("showinfo"))
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;
@@ -108,11 +107,6 @@ void OSystemWin32::mainLoop()
     cout << endl;
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
-    cout << endl;
-    cout << "Cartridge Name: " << myConsole->properties().get(Cartridge_Name);
-    cout << endl;
-    cout << "Cartridge MD5:  " << myConsole->properties().get(Cartridge_MD5);
-    cout << endl << endl;
   }
 }
 

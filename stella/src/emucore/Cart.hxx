@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.12 2006-12-24 17:13:10 stephena Exp $
+// $Id: Cart.hxx,v 1.13 2006-12-26 00:39:43 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.12 2006-12-24 17:13:10 stephena Exp $
+  @version $Id: Cart.hxx,v 1.13 2006-12-26 00:39:43 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -46,10 +46,11 @@ class Cartridge : public Device
       @param size     The size of the ROM image 
       @param props    The properties associated with the game
       @param settings The settings associated with the system
+      @param about    Some info about this Cartridge
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static Cartridge* create(const uInt8* image, uInt32 size, 
-        const Properties& props, const Settings& settings);
+        const Properties& props, const Settings& settings, string& about);
 
   public:
     /**
@@ -93,7 +94,7 @@ class Cartridge : public Device
     static int searchForBytes(const uInt8* image, uInt32 size, uInt8 byte1, uInt8 byte2);
 
     /**
-      Returns true if the image contains a extra RAM (aka SuperChip)
+      Returns true if the image is probably a SuperChip (256 bytes RAM)
     */
     static bool isProbablySC(const uInt8* image, uInt32 size);
 
@@ -106,6 +107,16 @@ class Cartridge : public Device
       Returns true if the image is probably a 3E bankswitching cartridge
     */
     static bool isProbably3E(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a E0 bankswitching cartridge
+    */
+    static bool isProbablyE0(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a E7 bankswitching cartridge
+    */
+    static bool isProbablyE7(const uInt8* image, uInt32 size);
 
   private:
     // Copy constructor isn't supported by cartridges so make it private

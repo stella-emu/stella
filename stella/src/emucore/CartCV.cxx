@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.11 2006-12-08 16:49:21 stephena Exp $
+// $Id: CartCV.cxx,v 1.12 2006-12-26 00:39:43 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -196,7 +196,8 @@ bool CartridgeCV::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeCV::getImage(int& size) {
+uInt8* CartridgeCV::getImage(int& size)
+{
   size = 2048;
   return &myImage[0];
 }

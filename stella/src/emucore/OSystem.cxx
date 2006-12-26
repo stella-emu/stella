@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.83 2006-12-22 23:14:39 stephena Exp $
+// $Id: OSystem.cxx,v 1.84 2006-12-26 00:39:44 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -385,7 +385,9 @@ bool OSystem::createConsole(const string& romfile)
       if(showmessage)
         myFrameBuffer->showMessage("New console created");
       if(mySettings->getBool("showinfo"))
-        cout << "Game console created: " << myRomFile << endl;
+        cout << "Game console created:" << endl
+             << "  ROM file:  " << myRomFile << endl
+             << myConsole->about() << endl;
 
       retval = true;
     }
@@ -520,6 +522,36 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystem::getROMInfo(const string& romfile)
+{
+  ostringstream buf;
+  Console* console = (Console*) NULL;
+
+  // Open the cartridge image and read it in
+  uInt8* image;
+  int size = -1;
+  string md5;
+  if(openROM(romfile, md5, &image, &size))
+  {
+    // Create a temporary instance of the 2600 game console
+    console = new Console(image, size, md5, this);
+    if(console && console->isValid())
+      buf << console->about();
+    else
+      buf << "ERROR: Couldn't get ROM info for " << romfile << " ..." << endl;
+  }
+  else
+    buf << "ERROR: Couldn't open " << romfile << " ..." << endl;
+
+  // Free the image and console since we don't need it any longer
+  delete console;
+  if(size != -1)
+    delete[] image;
+
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

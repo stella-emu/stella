@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.52 2006-12-22 23:14:39 stephena Exp $
+// $Id: Console.hxx,v 1.53 2006-12-26 00:39:43 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.52 2006-12-22 23:14:39 stephena Exp $
+  @version $Id: Console.hxx,v 1.53 2006-12-26 00:39:43 stephena Exp $
 */
 class Console
 {
@@ -127,6 +127,11 @@ class Console
     */
     void setProperties(const Properties& props);
 
+    /**
+      Query some information about this console.
+    */
+    string about() { return myAboutString; }
+
   public:
     /**
       Overloaded assignment operator
@@ -138,9 +143,14 @@ class Console
 
   public:
     /**
-      Toggle between NTSC and PAL mode.
+      Toggle between NTSC/PAL/PAL60 display format.
     */
     void toggleFormat();
+
+    /**
+      Query the currently selected display format (NTSC/PAL/PAL60).
+    */
+    string getFormat() const { return myDisplayFormat; }
 
     /**
       Toggle between the available palettes.
@@ -171,7 +181,7 @@ class Console
       Determine whether the console object is valid (no errors occurred
       when it was created)
     */
-    bool isValid() { return myIsValidFlag; }
+    bool isValid() const { return myIsValidFlag; }
 
     /**
       Initialize the video subsystem wrt this class.
@@ -285,6 +295,12 @@ class Console
     // User-defined NTSC and PAL RGB values
     uInt32* ourUserNTSCPalette;
     uInt32* ourUserPALPalette;
+
+    // Contains info about this console in string format
+    string myAboutString;
+
+    // The currently defined display format (NTSC/PAL/PAL60)
+    string myDisplayFormat;
 
     // Table of RGB values for NTSC
     static const uInt32 ourNTSCPalette[256];

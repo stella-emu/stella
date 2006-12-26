@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.22 2006-12-08 16:49:39 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.23 2006-12-26 00:39:44 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -142,7 +142,7 @@ void OSystemUNIX::mainLoop()
   }
 
   // Only print console information if a console was actually created
-  if(mySettings->getBool("showinfo") && myConsole)
+  if(mySettings->getBool("showinfo"))
   {
     double executionTime = (double) frameTime / 1000000.0;
     double framesPerSecond = (double) numberOfFrames / executionTime;
@@ -150,11 +150,6 @@ void OSystemUNIX::mainLoop()
     cout << endl;
     cout << numberOfFrames << " total frames drawn\n";
     cout << framesPerSecond << " frames/second\n";
-    cout << endl;
-    cout << "Cartridge Name: " << myConsole->properties().get(Cartridge_Name);
-    cout << endl;
-    cout << "Cartridge MD5:  " << myConsole->properties().get(Cartridge_MD5);
-    cout << endl << endl;
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.74 2006-12-15 16:43:02 stephena Exp $
+// $Id: TIA.cxx,v 1.75 2006-12-26 00:39:44 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -237,7 +237,7 @@ void TIA::reset()
     myFrameWidth = 160;
   }
 
-  if(myConsole.properties().get(Display_Format).compare(0, 3, "PAL") == 0)
+  if(myConsole.getFormat().compare(0, 3, "PAL") == 0)
   {
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;

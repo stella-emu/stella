@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.70 2006-12-15 16:42:53 stephena Exp $
+// $Id: mainSDL.cxx,v 1.71 2006-12-26 00:39:43 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -131,11 +131,23 @@ int main(int argc, char* argv[])
   // probably needed for defaults
   theOSystem->create();
 
-  // Check to see if the 'listroms' argument was given
-  // If so, list the roms and immediately exit
+  // Check to see if the user requested info about a specific ROM,
+  // or the list of internal ROMs
+  // If so, show the information and immediately exit
   if(theOSystem->settings().getBool("listrominfo"))
   {
     theOSystem->propSet().print();
+    Cleanup();
+    return 0;
+  }
+  else if(theOSystem->settings().getBool("rominfo"))
+  {
+    string romfile = argv[argc - 1];
+    if(argc > 1 && FilesystemNode::fileExists(romfile))
+      cout << theOSystem->getROMInfo(romfile);
+    else
+      cout << "Error: Can't find " << romfile << endl;
+
     Cleanup();
     return 0;
   }

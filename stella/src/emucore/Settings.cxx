@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.106 2006-12-22 22:32:49 stephena Exp $
+// $Id: Settings.cxx,v 1.107 2006-12-26 00:39:44 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -172,6 +172,11 @@ bool Settings::loadCommandLine(int argc, char** argv)
       return false;
     }
     else if(key == "listrominfo")
+    {
+      setExternal(key, "true");
+      return true;
+    }
+    else if(key == "rominfo")
     {
       setExternal(key, "true");
       return true;
@@ -348,6 +353,7 @@ void Settings::usage()
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << endl
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
+    << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl

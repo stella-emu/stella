@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.32 2006-12-09 00:25:20 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.33 2006-12-26 00:39:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -214,14 +214,15 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("Use Phosphor: ");
-  pwidth = font.getStringWidth("PAL60");
+  pwidth = font.getStringWidth("Auto-detect");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
   myFormat = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, "", 0, 0);
-  myFormat->appendEntry("NTSC", 1);
-  myFormat->appendEntry("PAL", 2);
-  myFormat->appendEntry("PAL60", 3);
+  myFormat->appendEntry("Auto-detect", 1);
+  myFormat->appendEntry("NTSC", 2);
+  myFormat->appendEntry("PAL", 3);
+  myFormat->appendEntry("PAL60", 4);
   wid.push_back(myFormat);
 
   ypos += lineHeight + 3;
@@ -439,12 +440,14 @@ void GameInfoDialog::loadView()
 
   // Display properties
   s = myGameProperties.get(Display_Format);
-  if(s == "NTSC")
+  if(s == "AUTO-DETECT")
     myFormat->setSelectedTag(1);
-  else if(s == "PAL")
+  else if(s == "NTSC")
     myFormat->setSelectedTag(2);
-  else if(s == "PAL60")
+  else if(s == "PAL")
     myFormat->setSelectedTag(3);
+  else if(s == "PAL60")
+    myFormat->setSelectedTag(4);
   else
     myFormat->setSelectedTag(0);
 

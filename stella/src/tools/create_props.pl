@@ -48,7 +48,7 @@ my @prop_defaults = (
   "JOYSTICK",
   "JOYSTICK",
   "NO",
-  "NTSC",
+  "AUTO-DETECT",
   "0",
   "160",
   "34",

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.23 2006-12-24 17:13:10 stephena Exp $
+// $Id: Cart.cxx,v 1.24 2006-12-26 00:39:43 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,7 +48,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
-    const Properties& properties, const Settings& settings)
+    const Properties& properties, const Settings& settings, string& about)
 {
   Cartridge* cartridge = 0;
 
@@ -57,17 +57,21 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 
   // Collect some info about the ROM
   ostringstream buf;
-  buf << "Size of ROM: " << size << endl
-      << "Specified type: " << type << endl;
+  buf << "  Size of ROM: " << size << endl
+      << "  Specified bankswitch type: " << type << endl;
 
   // See if we should try to auto-detect the cartridge type
-  if(type == "AUTO-DETECT")
+  // If we ask for extended info, always do an autodetect
+  if(type == "AUTO-DETECT" || settings.getBool("rominfo"))
   {
-    type = autodetectType(image, size);
-    buf << "Auto-detected type: " << type << endl;
-  }
+    string detected = autodetectType(image, size);
+    buf << "  Auto-detected bankswitch type: " << detected << endl;
+    if(type != "AUTO-DETECT" && type != detected)
+      buf << "  ==> Bankswitch auto-detection not consistent" << endl;
 
-//  cerr << buf.str() << endl;
+    type = detected;
+  }
+  about = buf.str();
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
@@ -139,26 +143,25 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     type = "AR";
   }
-  else if(size == 2048)
+  else if((size == 2048) ||
+          (size == 4096 && memcmp(image, image + 2048, 2048) == 0))
   {
     // TODO - autodetect CV
     type = "2K";
   }
   else if(size == 4096)
   {
-    // 2K image in consecutive banks
-    if(memcmp(image, image + 2048, 2048) == 0)
-      type = "2K";
-    else
-      type = "4K";
+    type = "4K";
   }
   else if(size == 8192)  // 8K
   {
-    // TODO - autodetect E0, FE, UA
+    // TODO - autodetect FE and UA, probably not possible
     if(isProbablySC(image, size))
       type = "F8SC";
     else if(memcmp(image, image + 4096, 4096) == 0)
       type = "4K";
+    else if(isProbablyE0(image, size))
+      type = "E0";
     else if(isProbably3E(image, size))
       type = "3E";
     else if(isProbably3F(image, size))
@@ -180,9 +183,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 16384)  // 16K
   {
-    // TODO - autodetect E7
     if(isProbablySC(image, size))
       type = "F6SC";
+    else if(isProbablyE7(image, size))
+      type = "E7";
     else if(isProbably3E(image, size))
       type = "3E";
     else if(isProbably3F(image, size))
@@ -278,6 +282,66 @@ bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
 bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
 {
   return (searchForBytes(image, size, 0x85, 0x3E) > 2);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyE0(const uInt8* image, uInt32 size)
+{
+  // E0 cart bankswitching is triggered by accessing addresses
+  // $FE0 to $FF7 using absolute non-indexed addressing
+  // So we search for the pattern 'LDA Fxxx' or 'STA Fxxx' in hex
+  // using the regex (AD|8D, E0-F7, xF)
+  // This must be present at least three times, since there are
+  // three segments to be initialized (and a few more so that more
+  // of the ROM is used)
+  // Thanks to "stella@casperkitty.com" for this advice
+  uInt32 count = 0;
+  for(uInt32 i = 0; i < size - 2; ++i)
+  {
+    uInt8 b1 = image[i], b2 = image[i+1], b3 = image[i+2];
+    if((b1 == 0xAD || b1 == 0x8D) &&
+       (b2 >= 0xE0 && b2 <= 0xF7) &&
+       (b3 & 0xF == 0xF))
+    {
+      if(++count > 4)  return true;
+    }
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
+{
+  // E7 carts map their second 1K block of RAM at addresses
+  // $800 to $8FF.  However, since this occurs in the upper 2K address
+  // space, and the last 2K in the cart always points to the last 2K of the
+  // ROM image, the RAM area should fall in addresses $3800 to $38FF
+  // Similar to the Superchip cart, we assume this RAM block contains
+  // the same bytes for its entire area
+  // Also, we want to distinguish between ROMs that have large blocks
+  // of the same amount of (probably unused) data by making sure that
+  // something differs in the previous 32 or next 32 bytes
+  uInt8 first = image[0x3800];
+  for(uInt32 i = 0x3800; i < 0x3A00; ++i)
+  {
+    if(first != image[i])
+      return false;
+  }
+
+  // OK, now scan the surrounding 32 byte blocks
+  uInt32 count1 = 0, count2 = 0;
+  for(uInt32 i = 0x3800 - 32; i < 0x3800; ++i)
+  {
+    if(first != image[i])
+      ++count1;
+  }
+  for(uInt32 i = 0x3A00; i < 0x3A00 + 32; ++i)
+  {
+    if(first != image[i])
+      ++count2;
+  }
+
+  return (count1 > 0 || count2 > 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.47 2006-12-18 14:01:58 stephena Exp $
+// $Id: OSystem.hxx,v 1.48 2006-12-26 00:39:44 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -45,7 +45,7 @@ class VideoDialog;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.47 2006-12-18 14:01:58 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.48 2006-12-26 00:39:44 stephena Exp $
 */
 class OSystem
 {
@@ -251,6 +251,15 @@ class OSystem
       Creates a new ROM launcher, to select a new ROM to emulate.
     */
     void createLauncher();
+
+    /**
+      Gets all possible info about the ROM by creating a temporary
+      Console object and querying it.
+
+      @param romfile  The full pathname of the ROM to use
+      @return  Some information about this ROM
+    */
+    string getROMInfo(const string& romfile);
 
     /**
       The features which are conditionally compiled into Stella.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.110 2006-12-22 23:14:39 stephena Exp $
+// $Id: Console.cxx,v 1.111 2006-12-26 00:39:43 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -66,6 +66,8 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     ourUserNTSCPalette(NULL),
     ourUserPALPalette(NULL)
 {
+  Cartridge* cartridge = (Cartridge*) NULL;
+  ostringstream buf;
   myControllers[0] = 0;
   myControllers[1] = 0;
   myMediaSource = 0;
@@ -85,22 +87,9 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Load user-defined palette for this ROM
   loadUserPalette();
 
-  // Make sure height is set properly for PAL ROM
-  if(myProperties.get(Display_Format).compare(0, 3, "PAL") == 0)
-    if(myProperties.get(Display_Height) == "210")
-      myProperties.set(Display_Height, "250");
-
-  // Make sure this ROM can fit in the screen dimensions
-  int sWidth, sHeight, iWidth, iHeight;
-  myOSystem->getScreenDimensions(sWidth, sHeight);
-  iWidth  = atoi(myProperties.get(Display_Width).c_str()) << 1;
-  iHeight = atoi(myProperties.get(Display_Height).c_str());
-  if(iWidth > sWidth || iHeight > sHeight)
-  {
-    myOSystem->frameBuffer().showMessage("PAL ROMS not supported, screen too small",
-                                          kMiddleCenter, kTextColorEm);
-    return;
-  }
+  // Query some info about this console
+  buf << "  Cart Name: " << myProperties.get(Cartridge_Name) << endl
+      << "  Cart MD5:  " << md5 << endl;
 
   // Setup the controllers based on properties
   string left  = myProperties.get(Controller_Left);
@@ -199,8 +188,10 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   M6532* m6532 = new M6532(*this);
   TIA *tia = new TIA(*this, myOSystem->settings());
   tia->setSound(myOSystem->sound());
-  Cartridge* cartridge = Cartridge::create(image, size, myProperties,
-                                           myOSystem->settings());
+  cartridge = Cartridge::create(image, size, myProperties,
+                                myOSystem->settings(), myAboutString);
+  buf << myAboutString;
+
   if(!cartridge)
     return;
 
@@ -217,6 +208,46 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Reset, the system to its power-on state
   mySystem->reset();
 
+  // Auto-detect NTSC/PAL mode if it's requested
+  myDisplayFormat = myProperties.get(Display_Format);
+  buf << "  Specified display format: " << myDisplayFormat << endl;
+  if(myDisplayFormat == "AUTO-DETECT" ||
+     myOSystem->settings().getBool("rominfo"))
+  {
+    // Run the system for 20 frames, looking for PAL frames
+    int palCount = 0;
+    for(int i = 0; i < 20; ++i)
+    {
+      myMediaSource->update();
+      if(myMediaSource->scanlines() > 290)
+        ++palCount;
+    }
+
+    myDisplayFormat = (palCount >= 10) ? "PAL" : "NTSC";
+    if(myProperties.get(Display_Format) == "AUTO-DETECT")
+      buf << "  Auto-detected display format: " << myDisplayFormat << endl;
+  }
+
+  // Make sure height is set properly for PAL ROM
+  if(myDisplayFormat.compare(0, 3, "PAL") == 0)
+    if(myProperties.get(Display_Height) == "210")
+      myProperties.set(Display_Height, "250");
+
+  // Make sure this ROM can fit in the screen dimensions
+  int sWidth, sHeight, iWidth, iHeight;
+  myOSystem->getScreenDimensions(sWidth, sHeight);
+  iWidth  = atoi(myProperties.get(Display_Width).c_str()) << 1;
+  iHeight = atoi(myProperties.get(Display_Height).c_str());
+  if(iWidth > sWidth || iHeight > sHeight)
+  {
+    myOSystem->frameBuffer().showMessage("PAL ROMS not supported, screen too small",
+                                          kMiddleCenter, kTextColorEm);
+    return;
+  }
+
+  mySystem->reset();  // Restart ROM again
+
+  myAboutString = buf.str();
   myIsValidFlag = true;
 }
 
@@ -245,31 +276,30 @@ const Properties& Console::properties() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
-  const string& format = myProperties.get(Display_Format);
   uInt32 framerate = 60;
 
-  if(format == "NTSC")
+  if(myDisplayFormat == "NTSC")
   {
     myProperties.set(Display_Format, "PAL");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("PAL Mode");
     framerate = 50;
   }
-  else if(format == "PAL")
+  else if(myDisplayFormat == "PAL")
   {
     myProperties.set(Display_Format, "PAL60");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("PAL60 Mode");
     framerate = 60;
   }
-  else if(format == "PAL60")
+  else if(myDisplayFormat == "PAL60")
   {
     myProperties.set(Display_Format, "NTSC");
     mySystem->reset();
     myOSystem->frameBuffer().showMessage("NTSC Mode");
     framerate = 60;
   }
-
+  myDisplayFormat = myProperties.get(Display_Format);
   setPalette(myOSystem->settings().getString("palette"));
   myOSystem->setFramerate(framerate);
   myOSystem->sound().setFrameRate(framerate);
@@ -327,19 +357,17 @@ void Console::togglePalette()
 void Console::setPalette(const string& type)
 {
   // See which format we should be using
-  const string& format = myProperties.get(Display_Format);
-
   const uInt32* palette = NULL;
   if(type == "standard")
-    palette = (format.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
+    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
   else if(type == "original")
-    palette = (format.compare(0, 3, "PAL") == 0) ? ourPALPalette11 : ourNTSCPalette11;
+    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette11 : ourNTSCPalette11;
   else if(type == "z26")
-    palette = (format.compare(0, 3, "PAL") == 0) ? ourPALPaletteZ26 : ourNTSCPaletteZ26;
+    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPaletteZ26 : ourNTSCPaletteZ26;
   else if(type == "user" && myUserPaletteDefined)
-    palette = (format.compare(0, 3, "PAL") == 0) ? ourUserPALPalette : ourUserNTSCPalette;
+    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourUserPALPalette : ourUserNTSCPalette;
   else  // return normal palette by default
-    palette = (format.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
+    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
 
   myOSystem->frameBuffer().setPalette(palette);
 
@@ -381,13 +409,12 @@ void Console::initialize()
   // This can be overridden by changing the framerate in the
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now solely determined based on ROM format).
-  const string& format = myProperties.get(Display_Format);
   int framerate = myOSystem->settings().getInt("framerate");
   if(framerate == -1)
   {
-    if(format == "NTSC" || format == "PAL60")
+    if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60")
       framerate = 60;
-    else if(format == "PAL")
+    else if(myDisplayFormat == "PAL")
       framerate = 50;
     else
       framerate = 60;
