@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.33 2006-12-08 16:48:56 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.34 2006-12-26 22:57:31 azaballa Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -98,7 +98,11 @@ void SoundSDL::initialize()
       SDL_AudioSpec desired;
 #ifndef PSP
       desired.freq   = frequency;
+    #ifndef GP2X
       desired.format = AUDIO_U8;
+    #else
+      desired.format = AUDIO_U16;
+    #endif
 #else
       desired.freq   = 44100;
       desired.format = AUDIO_U16;
