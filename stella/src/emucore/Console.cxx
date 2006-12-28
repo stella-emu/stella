@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.114 2006-12-28 18:31:22 stephena Exp $
+// $Id: Console.cxx,v 1.115 2006-12-28 20:40:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -72,9 +72,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Attach the event subsystem to the current console
   myEvent = myOSystem->eventHandler().event();
-
-  // A developer can override properties from the commandline
-  setDeveloperProperties();
 
   // Load user-defined palette for this ROM and initialize them
   // depending on PAL colour-loss effect
@@ -677,84 +674,6 @@ void Console::enableBits(bool enable) const
   ((TIA*)myMediaSource)->enableBits(enable);
   string message = string("TIA bits") + (enable ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setDeveloperProperties()
-{
-  Settings& settings = myOSystem->settings();
-  string s;
-
-  s = settings.getString("type");
-  if(s != "")
-    myProperties.set(Cartridge_Type, s);
-
-  s = settings.getString("ld");
-  if(s != "")
-    myProperties.set(Console_LeftDifficulty, s);
-
-  s = settings.getString("rd");
-  if(s != "")
-    myProperties.set(Console_RightDifficulty, s);
-
-  s = settings.getString("tv");
-  if(s != "")
-    myProperties.set(Console_TelevisionType, s);
-
-  s = settings.getString("sp");
-  if(s != "")
-    myProperties.set(Console_SwapPorts, s);
-
-  s = settings.getString("lc");
-  if(s != "")
-    myProperties.set(Controller_Left, s);
-
-  s = settings.getString("rc");
-  if(s != "")
-    myProperties.set(Controller_Right, s);
-
-  s = settings.getString("bc");
-  if(s != "")
-  {
-    myProperties.set(Controller_Left, s);
-    myProperties.set(Controller_Right, s);
-  }
-
-  s = settings.getString("cp");
-  if(s != "")
-    myProperties.set(Controller_SwapPaddles, s);
-
-  s = settings.getString("format");
-  if(s != "")
-    myProperties.set(Display_Format, s);
-
-  s = settings.getString("xstart");
-  if(s != "")
-    myProperties.set(Display_XStart, s);
-
-  s = settings.getString("ystart");
-  if(s != "")
-    myProperties.set(Display_YStart, s);
-
-  s = settings.getString("width");
-  if(s != "")
-    myProperties.set(Display_Width, s);
-
-  s = settings.getString("height");
-  if(s != "")
-    myProperties.set(Display_Height, s);
-
-  s = settings.getString("pp");
-  if(s != "")
-    myProperties.set(Display_Phosphor, s);
-
-  s = settings.getString("ppblend");
-  if(s != "")
-    myProperties.set(Display_PPBlend, s);
-
-  s = settings.getString("hmove");
-  if(s != "")
-    myProperties.set(Emulation_HmoveBlanks, s);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

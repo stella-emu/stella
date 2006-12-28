@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.38 2006-12-13 17:09:11 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.39 2006-12-28 20:40:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -130,12 +130,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
-  // TIA defaults
-  myTiaDefaultsCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
-                                             "Use TIA defaults");
-  wid.push_back(myTiaDefaultsCheckbox);
-  ypos += lineHeight + 4;
-
   // Use desktop res in OpenGL
   myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                             "Desktop Res in FS");
@@ -239,10 +233,6 @@ void VideoDialog::loadConfig()
   b = instance()->settings().getBool("fullscreen");
   myFullscreenCheckbox->setState(b);
 
-  // Use TIA defaults instead of tweaked values
-  b = instance()->settings().getBool("tiadefaults");
-  myTiaDefaultsCheckbox->setState(b);
-
   // Use desktop resolution in fullscreen mode
   b = instance()->settings().getBool("gl_fsmax");
   myUseDeskResCheckbox->setState(b);
@@ -333,11 +323,6 @@ void VideoDialog::saveConfig()
   b = myFullscreenCheckbox->getState();
   instance()->frameBuffer().setFullscreen(b);
 
-  // Use TIA defaults instead of tweaked values
-  b = myTiaDefaultsCheckbox->getState();
-  instance()->settings().setBool("tiadefaults", b);
-  myTiaDefaultsCheckbox->setState(b);
-
   // Use desktop resolution in fullscreen mode
   b = myUseDeskResCheckbox->getState();
   if(b != instance()->settings().getBool("gl_fsmax"))
@@ -378,7 +363,6 @@ void VideoDialog::setDefaults()
   myAspectRatioLabel->setLabel("2.0");
 
   myFullscreenCheckbox->setState(false);
-  myTiaDefaultsCheckbox->setState(false);
   myUseDeskResCheckbox->setState(true);
   myUseVSyncCheckbox->setState(true);
 

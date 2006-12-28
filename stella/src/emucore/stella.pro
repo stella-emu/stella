@@ -126,13 +126,14 @@
 ""
 
 "Cartridge.MD5" "012b8e6ef3b5fd5aabc94075c527709d"
-"Cartridge.Name" "Party Mix (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4302"
+"Cartridge.Name" "Party Mix (1982) (Starpath)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "01297d9b450455dd716db9658efb2fae"
@@ -736,10 +737,11 @@
 ""
 
 "Cartridge.MD5" "0b1056f1091cfdc5eb0e2301f47ac6c3"
-"Cartridge.Name" "King Kong (1982) (Tigervision)"
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-001"
+"Cartridge.Name" "King Kong (1982) (Tigervision)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "0afe6ae18966795b89314c3797dd2b1e"
@@ -1005,6 +1007,7 @@
 
 "Cartridge.MD5" "0f341d1f4e144e3163d9a5fc5a662b79"
 "Cartridge.Name" "RUN Platform Demo (PD)"
+"Display.YStart" "0"
 "Display.Phosphor" "YES"
 ""
 
@@ -1434,14 +1437,16 @@
 ""
 
 "Cartridge.MD5" "1619bc27632f9148d8480cd813aa74c3"
-"Cartridge.Name" "Steeple Chase (Video Gems) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "Video Gems / Thomas Jentzsch"
+"Cartridge.Name" "Steeple Chase (Video Gems) (NTSC by Thomas Jentzsch)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Console.LeftDifficulty" "A"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
-"Display.Phosphor" "Yes"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Display.YStart" "21"
+"Display.Height" "209"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "163e7e757e2dc44469123ff0e5daec5e"
@@ -1537,10 +1542,11 @@
 ""
 
 "Cartridge.MD5" "17badbb3f54d1fc01ee68726882f26a6"
-"Cartridge.Name" "Space Attack (1982) (Mattel)"
 "Cartridge.Manufacturer" "Mattel"
 "Cartridge.ModelNo" "MT5659"
+"Cartridge.Name" "Space Attack (1982) (Mattel)"
 "Cartridge.Rarity" "Common"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "17ee158d15e4a34f57a837bc1ce2b0ce"
@@ -2088,9 +2094,11 @@
 ""
 
 "Cartridge.MD5" "21299c8c3ac1d54f8289d88702a738fd"
-"Cartridge.Name" "Spider Maze (K-Tel Vision)"
 "Cartridge.Manufacturer" "K-Tel Vision"
+"Cartridge.Name" "Spider Maze (K-Tel Vision)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "25"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "2179dfd7edee76efafe698c1bc763735"
@@ -2265,9 +2273,10 @@
 ""
 
 "Cartridge.MD5" "245f07c8603077a0caf5f83ee6cf8b43"
-"Cartridge.Name" "Parachute (HomeVision) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "HomeVision / Thomas Jentzsch"
+"Cartridge.Name" "Parachute (HomeVision) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "2450dfa1df70d12b60683185775efed8"
@@ -2370,6 +2379,7 @@
 "Cartridge.MD5" "25e73efb9a6edf119114718bd2f646ba"
 "Cartridge.Name" "Miss Piggy's Wedding (Prototype) [!]"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "260c787e8925bf3649c8aeae5b97dcc0"
@@ -2545,11 +2555,12 @@
 ""
 
 "Cartridge.MD5" "28d5df3ed036ed63d33a31d0d8b85c47"
-"Cartridge.Name" "Sesam, Oeffne Dich (AKA Open Sesame) (Bitcorp) (PAL) [!]"
 "Cartridge.Manufacturer" "Bitcorp"
 "Cartridge.ModelNo" "PG204"
+"Cartridge.Name" "Sesam, Oeffne Dich (AKA Open Sesame) (Bitcorp) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
-"Display.Phosphor" "Yes"
+"Display.Height" "256"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "28a4cd87fb9de4ee91693a38611cb53c"
@@ -2690,10 +2701,12 @@
 ""
 
 "Cartridge.MD5" "2ae700c9dba843a68dfdca40d7d86bd6"
-"Cartridge.Name" "Pharaoh's Curse (TechnoVision) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "TechnoVision / Thomas Jentzsch"
+"Cartridge.Name" "Pharaoh's Curse (TechnoVision) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
-"Display.Phosphor" "Yes"
+"Display.YStart" "40"
+"Display.Height" "240"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "2ac3a08cfbf1942ba169c3e9e6c47e09"
@@ -2750,10 +2763,11 @@
 ""
 
 "Cartridge.MD5" "2bd00beefdb424fa39931a75e890695d"
-"Cartridge.Name" "Road Runner (1989) (Atari) [a1]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2663"
+"Cartridge.Name" "Road Runner (1989) (Atari) [a1]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "2c29182edf0965a7f56fe0897d2f84ba"
@@ -3284,8 +3298,9 @@
 ""
 
 "Cartridge.MD5" "340f546d59e72fb358c49ac2ca8482bb"
-"Cartridge.Name" "Skindiver (AKA Aquatak) (Sancho) (PAL) [!]"
 "Cartridge.Manufacturer" "Sancho"
+"Cartridge.Name" "Skindiver (AKA Aquatak) (Sancho) (PAL) [!]"
+"Display.YStart" "39"
 ""
 
 "Cartridge.MD5" "34b269387fa1aa5a396636f5ecdd63dd"
@@ -3456,12 +3471,13 @@
 ""
 
 "Cartridge.MD5" "36c31bb5daeb103f488c66de67ac5075"
-"Cartridge.Name" "Party Mix (1 of 3) (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4302"
+"Cartridge.Name" "Party Mix (1 of 3) (1982) (Starpath)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "Paddles"
+"Controller.Left" "PADDLES"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "36edef446ab4c2395666efc672b92ed0"
@@ -3899,9 +3915,10 @@
 ""
 
 "Cartridge.MD5" "3e1682ddaec486d8b6b90b527aaa0fc4"
-"Cartridge.Name" "Robot City (V0.12) (TJ)"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Robot City (V0.12) (TJ)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "493daaf9fb1ba450eba6b8ed53ffb37d"
@@ -4081,6 +4098,7 @@
 
 "Cartridge.MD5" "4066d7d88ec4a2c656127a67fa52dcf1"
 "Cartridge.Name" "Overhead Adventure Demo 2 (PD)"
+"Display.YStart" "64"
 ""
 
 "Cartridge.MD5" "41810dd94bd0de1110bedc5092bef5b0"
@@ -4126,6 +4144,7 @@
 "Cartridge.MD5" "4181087389a79c7f59611fb51c263137"
 "Cartridge.Name" "Miss Piggy's Wedding (Prototype 2) [!]"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "41f252a66c6301f1e8ab3612c19bc5d4"
@@ -4182,6 +4201,7 @@
 
 "Cartridge.MD5" "4251b4557ea6953e88afb22a3a868724"
 "Cartridge.Name" "Robot City (V1.1) (TJ)"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "42b2c3b4545f1499a083cfbc4a3b7640"
@@ -4491,10 +4511,11 @@
 ""
 
 "Cartridge.MD5" "484b0076816a104875e00467d431c2d2"
-"Cartridge.Name" "Q-bert (1988) (Atari) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26150"
+"Cartridge.Name" "Q-bert (1988) (Atari) [!]"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "40"
 ""
 
 "Cartridge.MD5" "48f18d69799a5f5451a5f0d17876acef"
@@ -4567,6 +4588,8 @@
 
 "Cartridge.MD5" "49571b26f46620a85f93448359324c28"
 "Cartridge.Name" "Save Our Ship (PAL) [p1][!]"
+"Display.Format" "NTSC"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "497f3d2970c43e5224be99f75e97cbbb"
@@ -4684,13 +4707,14 @@
 ""
 
 "Cartridge.MD5" "4c0fb2544ae0f8b5f7ae8bce7bd7f134"
-"Cartridge.Name" "Party Mix Preview (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Party Mix Preview (1982) (Starpath)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
+"Cartridge.Rarity" "Extremely Rare"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "4bcc7f6ba501a26ee785b7efbfb0fdc8"
@@ -5080,10 +5104,11 @@
 ""
 
 "Cartridge.MD5" "52a0003efb3b1c49fcde4dbc2c685d8f"
-"Cartridge.Name" "Surround (1978) (Atari) [a1]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2641 / 99807 / 75105"
+"Cartridge.Name" "Surround (1978) (Atari) [a1]"
 "Cartridge.Rarity" "Common"
+"Cartridge.Type" "2K"
 ""
 
 "Cartridge.MD5" "528400fad9a77fd5ad7fc5fdc2b7d69d"
@@ -5186,10 +5211,11 @@
 ""
 
 "Cartridge.MD5" "54a1c1255ed45eb8f71414dadb1cf669"
-"Cartridge.Name" "Mangia' (1983) (Spectravideo)"
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-212"
+"Cartridge.Name" "Mangia' (1983) (Spectravideo)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "54785fa29e28aae6038929ba29d33d38"
@@ -5939,6 +5965,7 @@
 
 "Cartridge.MD5" "6272f348a9a7f2d500a4006aa93e0d08"
 "Cartridge.Name" "RealSports Soccer (1983) (Atari) (PAL) [a1][!]"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "624e0a77f9ec67d628211aaf24d8aea6"
@@ -6119,8 +6146,9 @@
 ""
 
 "Cartridge.MD5" "651d2b6743a3a18b426bce2c881af212"
-"Cartridge.Name" "Pac-Man (CCE) (PAL) [!]"
 "Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Pac-Man (CCE) (PAL) [!]"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "65490d61922f3e3883ee1d583ce10855"
@@ -6340,11 +6368,12 @@
 ""
 
 "Cartridge.MD5" "67931b0d37dc99af250dd06f1c095e8d"
-"Cartridge.Name" "Room of Doom (CommaVid)"
 "Cartridge.Manufacturer" "CommaVid"
 "Cartridge.ModelNo" "CM-004"
+"Cartridge.Name" "Room of Doom (CommaVid)"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "24"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "67bd3d4dc5ac6a42a99950b4245bdc81"
@@ -6387,10 +6416,12 @@
 ""
 
 "Cartridge.MD5" "68489e60268a5e6e052bad9c62681635"
-"Cartridge.Name" "Sea Monster (Bitcorp) (PAL) [!]"
 "Cartridge.Manufacturer" "Bitcorp"
 "Cartridge.ModelNo" "PG201"
+"Cartridge.Name" "Sea Monster (Bitcorp) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "36"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"
@@ -6417,8 +6448,10 @@
 ""
 
 "Cartridge.MD5" "68878250e106eb6c7754bc2519d780a0"
-"Cartridge.Name" "Snail Against Squirrel (1983) (CCE)"
 "Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Snail Against Squirrel (1983) (CCE)"
+"Display.YStart" "24"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "6a2c68f7a77736ba02c0f21a6ba0985b"
@@ -6574,6 +6607,7 @@
 
 "Cartridge.MD5" "6b6ca32228ae352b4267e4bd2cddf10c"
 "Cartridge.Name" "Pac-Man 4 (Pac-Man Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "6b7a56b6ac2ca4bf9254474bf6ed7d80"
@@ -6738,10 +6772,11 @@
 ""
 
 "Cartridge.MD5" "6e372f076fb9586aff416144f5cfe1cb"
-"Cartridge.Name" "Pac-Man (1981) (Atari)"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2646 / 4975185"
+"Cartridge.Name" "Pac-Man (1981) (Atari)"
 "Cartridge.Rarity" "Common"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "6e19428387686a77d8c8d2f731cb09e0"
@@ -6756,12 +6791,13 @@
 ""
 
 "Cartridge.MD5" "6ed5012793f5ddf4353a48c11ea9b8d3"
-"Cartridge.Name" "Party Mix (3 of 3) (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4302"
+"Cartridge.Name" "Party Mix (3 of 3) (1982) (Starpath)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "Paddles"
+"Controller.Left" "PADDLES"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "6e7ed74082f39ad4166c823765a59909"
@@ -6864,10 +6900,11 @@
 ""
 
 "Cartridge.MD5" "6ffc95108e5add6f9b8abcaf330be835"
-"Cartridge.Name" "TP Bug by Charles Morgan (Pac-Man Hack)"
 "Cartridge.Manufacturer" "Charles Morgan"
+"Cartridge.Name" "TP Bug by Charles Morgan (Pac-Man Hack)"
 "Cartridge.Note" "Hack of Pac-Man (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "707ecd80030e85751ef311ced66220bc"
@@ -7034,10 +7071,12 @@
 ""
 
 "Cartridge.MD5" "72a46e0c21f825518b7261c267ab886e"
-"Cartridge.Name" "Robin Hood (Xonox)"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99005"
+"Cartridge.Name" "Robin Hood (Xonox)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
+"Display.Height" "222"
 ""
 
 "Cartridge.MD5" "72b8dc752befbfb3ffda120eb98b2dd0"
@@ -7058,6 +7097,7 @@
 "Cartridge.Name" "Pac-Man (1981) (Atari) [h1]"
 "Cartridge.Note" "Hack of Pac-Man (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "75e8d8b9e9c5c67c2226dbfd77dcfa7d"
@@ -7112,11 +7152,12 @@
 ""
 
 "Cartridge.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
-"Cartridge.Name" "Mines of Minos (1982) (CommaVid) (PAL) [p1][!]"
 "Cartridge.Manufacturer" "CommaVid"
 "Cartridge.ModelNo" "CM-005"
+"Cartridge.Name" "Mines of Minos (1982) (CommaVid) (PAL) [p1][!]"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "24"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "73b4e8f8b04515d91937510e680214bc"
@@ -7671,8 +7712,9 @@
 ""
 
 "Cartridge.MD5" "7d3cdde63b16fa637c4484e716839c94"
-"Cartridge.Name" "Road Runner (CCE)"
 "Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Road Runner (CCE)"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "7e4783a59972ae2cd8384f231757ea0b"
@@ -8013,6 +8055,7 @@
 
 "Cartridge.MD5" "82337e5fe0f418ca9484ca851dfc226a"
 "Cartridge.Name" "Robot City (V1.0) (Alpha) (TJ)"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "822a950f27ff0122870558a89a49cad3"
@@ -8198,6 +8241,7 @@
 
 "Cartridge.MD5" "855a42078b14714bcfd490d2cf57e68d"
 "Cartridge.Name" "Miss Piggy's Wedding (Prototype) [b1]"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "88f74ec75ef696e7294b7b6ac5ca465f"
@@ -8229,11 +8273,12 @@
 ""
 
 "Cartridge.MD5" "85e564dae5687e431955056fbda10978"
-"Cartridge.Name" "Survival Run (1983) (Milton Bradley)"
 "Cartridge.Manufacturer" "Milton Bradley"
 "Cartridge.ModelNo" "4362"
+"Cartridge.Name" "Survival Run (1983) (Milton Bradley)"
 "Cartridge.Rarity" "Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "29"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "86b4aa76bbeb70e1a4f9211a9880ba8e"
@@ -8413,10 +8458,11 @@
 ""
 
 "Cartridge.MD5" "8917f7c1ac5eb05b82331cf01c495af2"
-"Cartridge.Name" "Space Tunnel (Bitcorp) (PAL)"
 "Cartridge.Manufacturer" "Bitcorp"
 "Cartridge.ModelNo" "PG202"
+"Cartridge.Name" "Space Tunnel (Bitcorp) (PAL)"
 "Cartridge.Rarity" "Rare"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "896ec58f26e930e02f5e4f046602c3a1"
@@ -8437,10 +8483,11 @@
 ""
 
 "Cartridge.MD5" "898b5467551d32af48a604802407b6e8"
-"Cartridge.Name" "Schnecke und Eichhoernchen (1983) (Bitcorp) (PAL) [!]"
 "Cartridge.Manufacturer" "Bitcorp"
 "Cartridge.ModelNo" "PG208"
+"Cartridge.Name" "Schnecke und Eichhoernchen (1983) (Bitcorp) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "44"
 ""
 
 "Cartridge.MD5" "8a49cf1785e3dea2012d331a3ad476e1"
@@ -8480,11 +8527,13 @@
 ""
 
 "Cartridge.MD5" "8a9d874a38608964f33ec0c35cab618d"
-"Cartridge.Name" "Rescue Bira Bira (Chris Cracknell) [!]"
 "Cartridge.Manufacturer" "Chris Cracknell"
+"Cartridge.Name" "Rescue Bira Bira (Chris Cracknell) [!]"
 "Cartridge.Note" "Hack of Jungle Fever (Mystique)"
 "Cartridge.Rarity" "New Release (Hack)"
-"Display.Phosphor" "Yes"
+"Display.YStart" "20"
+"Display.Height" "230"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "8b81af55cd2ef3c7444d6aec4e3a1c09"
@@ -8572,9 +8621,10 @@
 ""
 
 "Cartridge.MD5" "8c2fa33048f055f38358d51eefe417db"
-"Cartridge.Name" "Teddy Apple (HomeVision) (PAL) [!]"
 "Cartridge.Manufacturer" "HomeVision"
-"Display.Phosphor" "Yes"
+"Cartridge.Name" "Teddy Apple (HomeVision) (PAL) [!]"
+"Display.YStart" "42"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "8c36ed2352801031516695d1eeefe617"
@@ -8796,9 +8846,10 @@
 ""
 
 "Cartridge.MD5" "90578a63441de4520be5324e8f015352"
-"Cartridge.Name" "Sesam, Oeffne Dich (AKA Open Sesame) (Bitcorp) (PAL) [p1][!]"
 "Cartridge.Manufacturer" "Bitcorp"
-"Display.Phosphor" "Yes"
+"Cartridge.Name" "Sesam, Oeffne Dich (AKA Open Sesame) (Bitcorp) (PAL) [p1][!]"
+"Display.Height" "256"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "9057694dce8449521e6164d263702185"
@@ -9099,10 +9150,11 @@
 ""
 
 "Cartridge.MD5" "95c4576d6a14e2debfa0fd6f6ec254ab"
-"Cartridge.Name" "River Raid (1982) (Activision) [a2]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AX-020"
+"Cartridge.Name" "River Raid (1982) (Activision) [a2]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "10"
 ""
 
 "Cartridge.MD5" "95fd6097dc27c20666f039cfe34f7c69"
@@ -9191,9 +9243,10 @@
 ""
 
 "Cartridge.MD5" "97cd63c483fe3c68b7ce939ab8f7a318"
-"Cartridge.Name" "Robot City (V0.21) (15-09-2002) (TJ)"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Robot City (V0.21) (15-09-2002) (TJ)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "97d079315c09796ff6d95a06e4b70171"
@@ -9440,10 +9493,12 @@
 ""
 
 "Cartridge.MD5" "9c6faa4ff7f2ae549bbcb14f582b70e4"
-"Cartridge.Name" "Sneek 'n Peek (1982) (CCE)"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "VC 1002"
+"Cartridge.Name" "Sneek 'n Peek (1982) (CCE)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "30"
+"Display.Height" "218"
 ""
 
 "Cartridge.MD5" "9c7fa3cfcaaafb4e6daf1e2517d43d88"
@@ -9720,10 +9775,11 @@
 ""
 
 "Cartridge.MD5" "a100eff2d7ae61ca2b8e65baf7e2aae8"
-"Cartridge.Name" "Muncher by David Marli (Pac-Man Hack)"
 "Cartridge.Manufacturer" "David Marli"
+"Cartridge.Name" "Muncher by David Marli (Pac-Man Hack)"
 "Cartridge.Note" "Hack of Pac-Man (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "a0e2d310e3e98646268200c8f0f08f46"
@@ -9970,10 +10026,11 @@
 ""
 
 "Cartridge.MD5" "a4e885726af9d97b12bb5a36792eab63"
-"Cartridge.Name" "Spike's Peak (1983) (Xonox)"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99001"
+"Cartridge.Name" "Spike's Peak (1983) (Xonox)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Height" "217"
 ""
 
 "Cartridge.MD5" "a4d026a5c200ef98518ebb77719fe8dc"
@@ -10768,6 +10825,7 @@
 
 "Cartridge.MD5" "b2f0d7217147160b2f481954cedf814b"
 "Cartridge.Name" "Marquee Drawer (2001) (B. Watson)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "b2d5d200f0af8485413fad957828582a"
@@ -11043,10 +11101,11 @@
 ""
 
 "Cartridge.MD5" "b9336ed6d94a5cc81a16483b0a946a73"
-"Cartridge.Name" "RealSports Soccer (1983) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2667"
+"Cartridge.Name" "RealSports Soccer (1983) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "b9f6fa399b8cd386c235983ec45e4355"
@@ -11464,10 +11523,12 @@
 ""
 
 "Cartridge.MD5" "c0d2434348de72fa6edcc6d8e40f28d7"
-"Cartridge.Name" "Tapper (1983) (Sega) [!]"
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "010-01"
+"Cartridge.Name" "Tapper (1983) (Sega) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "24"
+"Display.Height" "225"
 ""
 
 "Cartridge.MD5" "c150c76cbde2c9b5a97eb5399d46c64f"
@@ -11744,6 +11805,7 @@
 
 "Cartridge.MD5" "c569e57dca93d3bee115a49923057fd7"
 "Cartridge.Name" "Pac-Space (Pac-Man Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "c54b4207ce1d4bf72fadbb1a805d4a39"
@@ -11923,10 +11985,12 @@
 ""
 
 "Cartridge.MD5" "c880c659cdc0f84c4a66bc818f89618e"
-"Cartridge.Name" "Sesam, Oeffne Dich (AKA Open Sesame) (Bitcorp) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "Bitcorp  / Thomas Jentzsch"
+"Cartridge.Name" "Sesam, Oeffne Dich (AKA Open Sesame) (Bitcorp) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
-"Display.Phosphor" "Yes"
+"Display.YStart" "20"
+"Display.Height" "254"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "c8fa5d69d9e555eb16068ef87b1c9c45"
@@ -12015,8 +12079,9 @@
 ""
 
 "Cartridge.MD5" "ca53fc8fd8b3c4a7df89ac86b222eba0"
-"Cartridge.Name" "Pac-Man (CCE)"
 "Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Pac-Man (CCE)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "ca50cc4b21b0155255e066fcd6396331"
@@ -12264,11 +12329,12 @@
 ""
 
 "Cartridge.MD5" "cddabfd68363a76cd30bee4e8094c646"
-"Cartridge.Name" "Magicard (CommaVid)"
 "Cartridge.Manufacturer" "CommaVid"
+"Cartridge.Name" "Magicard (CommaVid)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Type" "CV"
-"Controller.Left" "Keyboard"
+"Controller.Left" "KEYBOARD"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "cdc1a5c61d7488eadc9aba36166b253d"
@@ -12310,9 +12376,10 @@
 ""
 
 "Cartridge.MD5" "cedbd67d1ff321c996051eec843f8716"
-"Cartridge.Name" "Karate (1982) (Froggo)"
 "Cartridge.Manufacturer" "Froggo"
+"Cartridge.Name" "Karate (1982) (Froggo)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "25"
 ""
 
 "Cartridge.MD5" "cea9f72036dc6f7af5eff52459066290"
@@ -12546,6 +12613,7 @@
 
 "Cartridge.MD5" "d175258b2973b917a05b46df4e1cf15d"
 "Cartridge.Name" "Walker (198x)"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "d17a8c440d6be79fae393a4b46661164"
@@ -12893,6 +12961,8 @@
 
 "Cartridge.MD5" "d7b58303ec8d8c4dbcbf54d3b9734c7e"
 "Cartridge.Name" "Paddle Demo (Joe Grand) (PD)"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "d79df06894e3c1585a47c2807332b319"
@@ -13036,12 +13106,14 @@
 ""
 
 "Cartridge.MD5" "da79aad11572c80a96e261e4ac6392d0"
-"Cartridge.Name" "Pick 'n Pile (1990) (Salu) (PAL) [!]"
 "Cartridge.Manufacturer" "Salu"
+"Cartridge.Name" "Pick 'n Pile (1990) (Salu) (PAL) [!]"
 "Cartridge.Rarity" "Extremely Rare"
-"Console.SwapPorts" "Yes"
-"Display.Phosphor" "Yes"
-"Console.SwapPorts" "Yes"
+"Console.SwapPorts" "YES"
+"Display.Format" "PAL"
+"Display.YStart" "38"
+"Display.Height" "256"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "dac762e4d01d445bdef20b7771f6570e"
@@ -13127,10 +13199,11 @@
 ""
 
 "Cartridge.MD5" "db76f7a0819659d9e585f2cdde9175c7"
-"Cartridge.Name" "Robin Hood (1983) (Xonox) (PAL) [a1][!]"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99005"
+"Cartridge.Name" "Robin Hood (1983) (Xonox) (PAL) [a1][!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "dba2692a216cb6c262c78f8b111a813e"
@@ -13225,6 +13298,7 @@
 
 "Cartridge.MD5" "dd17711a30ad60109c8beace0d4a76e8"
 "Cartridge.Name" "Karate (1982) (PAL) [p1][!]"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "dd0cbe5351551a538414fb9e37fc56e8"
@@ -13239,10 +13313,11 @@
 ""
 
 "Cartridge.MD5" "dd7598b8bcb81590428900f71b720efb"
-"Cartridge.Name" "Robin Hood (1983) (Xonox) (PAL) [!]"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99005"
+"Cartridge.Name" "Robin Hood (1983) (Xonox) (PAL) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "dd4f4e0fbd81762533e39e6f5b55bb3a"
@@ -13275,8 +13350,9 @@
 ""
 
 "Cartridge.MD5" "dd92d6ad50976f881d86b52d38616118"
-"Cartridge.Name" "River Raid (SpkSoft) [h1]"
 "Cartridge.Manufacturer" "SpkSoft"
+"Cartridge.Name" "River Raid (SpkSoft) [h1]"
+"Display.YStart" "10"
 ""
 
 "Cartridge.MD5" "de0173ed6be9de6fd049803811e5f1a8"
@@ -13364,8 +13440,9 @@
 ""
 
 "Cartridge.MD5" "df2745d585238780101df812d00b49f4"
-"Cartridge.Name" "Space Tunnel (Cooper Black) (PAL) [p1]"
 "Cartridge.Manufacturer" "Cooper Black"
+"Cartridge.Name" "Space Tunnel (Cooper Black) (PAL) [p1]"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "df4aea767cdf6a3f138255092e84d713"
@@ -13373,10 +13450,11 @@
 ""
 
 "Cartridge.MD5" "df5cc5cccdc140eb7107f5b8adfacda1"
+"Cartridge.Manufacturer" "Cracker Jack Productions"
 "Cartridge.Name" "Lumberman by Cracker Jack Productions (Pac-Man Hack)"
 "Cartridge.Note" "Hack of Pac-Man (1981) (Atari)"
-"Cartridge.Manufacturer" "Cracker Jack Productions"
 "Cartridge.Rarity" "New Release (Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "e13c7627b2e136b9c449d9e8925b4547"
@@ -13474,11 +13552,12 @@
 ""
 
 "Cartridge.MD5" "e13818a5c0cb2f84dd84368070e9f099"
-"Cartridge.Name" "Misterious Thief, A (CCE)"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-839"
+"Cartridge.Name" "Misterious Thief, A (CCE)"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Phosphor" "Yes"
+"Display.Height" "216"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "e10bf1af6bf3b4a253c5bef6577fe923"
@@ -13561,10 +13640,11 @@
 ""
 
 "Cartridge.MD5" "e24d7d879281ffec0641e9c3f52e505a"
-"Cartridge.Name" "Lord of The Rings (1983) (Parker Bros) (Prototype)"
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5590"
+"Cartridge.Name" "Lord of The Rings (1983) (Parker Bros) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "26"
 ""
 
 "Cartridge.MD5" "e2389c0be5b5b84e0d3ca36ec7e67514"
@@ -13726,6 +13806,7 @@
 
 "Cartridge.MD5" "e4d41f2d59a56a9d917038682b8e0b8c"
 "Cartridge.Name" "Kiss Meets Pacman (Cody Pittman) (PD)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "e4c2077a18e3c27f4819aa7757903aa0"
@@ -14051,10 +14132,12 @@
 ""
 
 "Cartridge.MD5" "ead60451c28635b55ca8fea198444e16"
-"Cartridge.Name" "Nightmare (Sancho) (PAL) [!]"
 "Cartridge.Manufacturer" "Sancho"
 "Cartridge.ModelNo" "TEC004"
+"Cartridge.Name" "Nightmare (Sancho) (PAL) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "43"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "eae0c06ee61c63b81cd016096fc901b0"
@@ -14138,11 +14221,12 @@
 ""
 
 "Cartridge.MD5" "eb634650c3912132092b7aee540bbce3"
-"Cartridge.Name" "RealSports Baseball (1982) (Atari)"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2640"
+"Cartridge.Name" "RealSports Baseball (1982) (Atari)"
 "Cartridge.Rarity" "Uncommon"
-"Display.Phosphor" "Yes"
+"Display.YStart" "26"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "eddef10fdc0029301064115ae0cd41d4"
@@ -14243,6 +14327,7 @@
 "Cartridge.MD5" "ed1a784875538c7871d035b7a98c2433"
 "Cartridge.Name" "Save Our Ship (Technovision) [a1]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "ed1492d4cafd7ebf064f0c933249f5b0"
@@ -14268,8 +14353,9 @@
 ""
 
 "Cartridge.MD5" "edf69b123e06eaf8663cc78d8aeba06e"
-"Cartridge.Name" "River Raid (SpkSoft 98) [h1]"
 "Cartridge.Manufacturer" "SpkSoft 98"
+"Cartridge.Name" "River Raid (SpkSoft 98) [h1]"
+"Display.YStart" "10"
 ""
 
 "Cartridge.MD5" "ee4c186123d31a279ed7a84d3578df23"
@@ -14792,6 +14878,7 @@
 
 "Cartridge.MD5" "f5aa6bd10f662199c42e43863a30106c"
 "Cartridge.Name" "Music Kit (V1.0) - Song Player (Paul Slocum)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "f69a39b215852a0c2764d2a923c1e463"
@@ -14900,6 +14987,7 @@
 
 "Cartridge.MD5" "f7856e324bc56f45b9c8e6ff062ec033"
 "Cartridge.Name" "RealSports Soccer (1983) (Atari) [!]"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "f78c125b5da483c41e51522947d6c4ce"
@@ -15039,9 +15127,10 @@
 ""
 
 "Cartridge.MD5" "f954381f9e0f2009d1ac40dedd777b1a"
-"Cartridge.Name" "Robot City (V0.18) (01-09-2002) (TJ)"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Robot City (V0.18) (01-09-2002) (TJ)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "f96a763ced577e383d1102c4d0949525"
@@ -15204,8 +15293,9 @@
 ""
 
 "Cartridge.MD5" "faed2ef6b44894f8c83f2b50891c35c6"
-"Cartridge.Name" "Super Baseball (CCE)"
 "Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Super Baseball (CCE)"
+"Display.YStart" "26"
 ""
 
 "Cartridge.MD5" "fb09ee4ccd47ae74a3c314f0d8a40344"

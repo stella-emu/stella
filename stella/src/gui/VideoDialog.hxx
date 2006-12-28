@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.16 2006-12-08 16:49:37 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.17 2006-12-28 20:40:01 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,7 +59,6 @@ class VideoDialog : public Dialog
     StaticTextWidget* myFrameRateLabel;
     PopUpWidget*      myScalerPopup;
     CheckboxWidget*   myFullscreenCheckbox;
-    CheckboxWidget*   myTiaDefaultsCheckbox;
     CheckboxWidget*   myUseDeskResCheckbox;
     CheckboxWidget*   myUseVSyncCheckbox;
 

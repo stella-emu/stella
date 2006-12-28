@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.85 2006-12-28 18:31:26 stephena Exp $
+// $Id: OSystem.cxx,v 1.86 2006-12-28 20:40:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -569,7 +569,45 @@ bool OSystem::queryConsoleInfo(const uInt8* image, uInt32 size,
                                const string& md5,
                                Cartridge** cart, Properties& props)
 {
+  // Get a valid set of properties, including any entered on the commandline
+  string s;
   myPropSet->getMD5(md5, props);
+
+  s = mySettings->getString("type");
+  if(s != "") props.set(Cartridge_Type, s);
+  s = mySettings->getString("ld");
+  if(s != "") props.set(Console_LeftDifficulty, s);
+  s = mySettings->getString("rd");
+  if(s != "") props.set(Console_RightDifficulty, s);
+  s = mySettings->getString("tv");
+  if(s != "") props.set(Console_TelevisionType, s);
+  s = mySettings->getString("sp");
+  if(s != "") props.set(Console_SwapPorts, s);
+  s = mySettings->getString("lc");
+  if(s != "") props.set(Controller_Left, s);
+  s = mySettings->getString("rc");
+  if(s != "") props.set(Controller_Right, s);
+  s = mySettings->getString("bc");
+  if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
+  s = mySettings->getString("cp");
+  if(s != "") props.set(Controller_SwapPaddles, s);
+  s = mySettings->getString("format");
+  if(s != "") props.set(Display_Format, s);
+  s = mySettings->getString("xstart");
+  if(s != "") props.set(Display_XStart, s);
+  s = mySettings->getString("ystart");
+  if(s != "") props.set(Display_YStart, s);
+  s = mySettings->getString("width");
+  if(s != "") props.set(Display_Width, s);
+  s = mySettings->getString("height");
+  if(s != "") props.set(Display_Height, s);
+  s = mySettings->getString("pp");
+  if(s != "") props.set(Display_Phosphor, s);
+  s = mySettings->getString("ppblend");
+  if(s != "") props.set(Display_PPBlend, s);
+  s = mySettings->getString("hmove");
+  if(s != "") props.set(Emulation_HmoveBlanks, s);
+
   *cart = Cartridge::create(image, size, props, *mySettings);
   if(!*cart)
     return false;

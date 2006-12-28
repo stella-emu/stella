@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.108 2006-12-26 17:06:01 stephena Exp $
+// $Id: Settings.cxx,v 1.109 2006-12-28 20:40:00 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -81,7 +81,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("modtime", "");
   setInternal("debugheight", "0");
 
-  setInternal("tiadefaults", "false");
   setInternal("autoslot", "false");
   setInternal("fastscbios", "true");
 }
@@ -344,7 +343,6 @@ void Settings::usage()
     << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
-    << "  -tiadefaults  <1|0>          Use TIA positioning defaults instead of enhanced values\n"
     << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -fastscbios   <1|0>          Speed up loading of SuperCharger ROM BIOS\n"

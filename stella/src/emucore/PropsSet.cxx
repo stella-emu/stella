@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.29 2006-12-22 22:39:34 stephena Exp $
+// $Id: PropsSet.cxx,v 1.30 2006-12-28 20:40:00 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -114,15 +114,6 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
       else
         i = 2*i + 2;   // right child
     }
-  }
-
-  // Reset TIA positioning to defaults if option is enabled
-  if(myOSystem->settings().getBool("tiadefaults"))
-  {
-//    properties.set(Display_XStart, Properties::ourDefaultProperties[Display_XStart]);
-//    properties.set(Display_YStart, Properties::ourDefaultProperties[Display_YStart]);
-    properties.set(Display_Width,  Properties::ourDefaultProperties[Display_Width]);
-    properties.set(Display_Height, Properties::ourDefaultProperties[Display_Height]);
   }
 }
 
