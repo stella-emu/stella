@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.13 2006-12-26 00:39:43 stephena Exp $
+// $Id: Cart.hxx,v 1.14 2006-12-28 18:31:22 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.13 2006-12-26 00:39:43 stephena Exp $
+  @version $Id: Cart.hxx,v 1.14 2006-12-28 18:31:22 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -46,11 +46,10 @@ class Cartridge : public Device
       @param size     The size of the ROM image 
       @param props    The properties associated with the game
       @param settings The settings associated with the system
-      @param about    Some info about this Cartridge
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static Cartridge* create(const uInt8* image, uInt32 size, 
-        const Properties& props, const Settings& settings, string& about);
+        const Properties& props, const Settings& settings);
 
   public:
     /**
@@ -62,6 +61,11 @@ class Cartridge : public Device
       Destructor
     */
     virtual ~Cartridge();
+
+    /**
+      Query some information about this cartridge.
+    */
+    static const string& about() { return myAboutString; }
 
     virtual void bank(uInt16 b); // set bank
     virtual int bank(); // get current bank (-1 if no bankswitching supported)
@@ -78,7 +82,6 @@ class Cartridge : public Device
     bool bankLocked;
 
   private:
-
     /**
       Try to auto-detect the bankswitching type of the cartridge
 
@@ -119,6 +122,9 @@ class Cartridge : public Device
     static bool isProbablyE7(const uInt8* image, uInt32 size);
 
   private:
+    // Contains info about this cartridge in string format
+    static string myAboutString;
+
     // Copy constructor isn't supported by cartridges so make it private
     Cartridge(const Cartridge&);
 

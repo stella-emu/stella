@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.54 2006-12-26 17:06:01 stephena Exp $
+// $Id: Console.hxx,v 1.55 2006-12-28 18:31:22 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.54 2006-12-26 17:06:01 stephena Exp $
+  @version $Id: Console.hxx,v 1.55 2006-12-28 18:31:22 stephena Exp $
 */
 class Console
 {
@@ -47,13 +47,11 @@ class Console
       Create a new console for emulating the specified game using the
       given game image and operating system.
 
-      @param image       The ROM image of the game to emulate
-      @param size        The size of the ROM image  
-      @param md5         The md5 of the ROM image
-      @param osystem     The OSystem object to use
+      @param osystem  The OSystem object to use
+      @param cart     The cartridge to use with this console
+      @param props    The properties for the cartridge  
     */
-    Console(const uInt8* image, uInt32 size, const string& md5,
-            OSystem* osystem);
+    Console(OSystem* osystem, Cartridge* cart, const Properties& props);
 
     /**
       Create a new console object by copying another one
@@ -90,7 +88,7 @@ class Console
 
       @return The properties being used by the game
     */
-    const Properties& properties() const;
+    const Properties& properties() const { return myProperties; }
 
     /**
       Get the console switches
@@ -130,7 +128,7 @@ class Console
     /**
       Query some information about this console.
     */
-    string about() { return myAboutString; }
+    const string& about() const { return myAboutString; }
 
   public:
     /**
@@ -183,20 +181,10 @@ class Console
     void initialize();
 
     /**
-      Determine whether the console object is valid (no errors occurred
-      when it was created)
-    */
-    bool isValid() const { return myIsValidFlag; }
-
-    /**
       Initialize the video subsystem wrt this class.
+      This is required for changing window size, title, etc.
     */
     void initializeVideo();
-
-    /**
-      Initialize the audio subsystem wrt this class.
-    */
-    void initializeAudio();
 
     /**
       Sets the number of sound channels
@@ -208,11 +196,11 @@ class Console
     /**
       "Fry" the Atari (mangle memory/TIA contents)
     */
-    void fry();
+    void fry() const;
 
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.  GUI's may need to resize their viewports.
+      after the change.
 
       @param direction +1 indicates increase, -1 indicates decrease.
     */
@@ -220,29 +208,45 @@ class Console
 
     /**
       Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.  GUI's may need to resize their viewports.
+      after the change.
 
       @param direction +1 indicates increase, -1 indicates decrease.
     */
     void changeYStart(int direction);
 
     /**
+      Change the "Display.XStart" variable.  Currently, a system reset is issued
+      after the change.
+
+      @param direction +1 indicates increase, -1 indicates decrease.
+    */
+    void changeWidth(int direction);
+
+    /**
+      Change the "Display.XStart" variable.  Currently, a system reset is issued
+      after the change.
+
+      @param direction +1 indicates increase, -1 indicates decrease.
+    */
+    void changeHeight(int direction);
+
+    /**
       Toggles the TIA bit specified in the method name.
     */
-    void toggleP0Bit() { toggleTIABit(TIA::P0, "P0"); }
-    void toggleP1Bit() { toggleTIABit(TIA::P1, "P1"); }
-    void toggleM0Bit() { toggleTIABit(TIA::M0, "M0"); }
-    void toggleM1Bit() { toggleTIABit(TIA::M1, "M1"); }
-    void toggleBLBit() { toggleTIABit(TIA::BL, "BL"); }
-    void togglePFBit() { toggleTIABit(TIA::PF, "PF"); }
-    void enableBits(bool enable);
+    void toggleP0Bit() const { toggleTIABit(TIA::P0, "P0"); }
+    void toggleP1Bit() const { toggleTIABit(TIA::P1, "P1"); }
+    void toggleM0Bit() const { toggleTIABit(TIA::M0, "M0"); }
+    void toggleM1Bit() const { toggleTIABit(TIA::M1, "M1"); }
+    void toggleBLBit() const { toggleTIABit(TIA::BL, "BL"); }
+    void togglePFBit() const { toggleTIABit(TIA::PF, "PF"); }
+    void enableBits(bool enable) const;
 
 #ifdef ATARIVOX_SUPPORT
     AtariVox *atariVox() { return vox; }
 #endif
 
   private:
-    void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true);
+    void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true) const;
     void setDeveloperProperties();
 
     /**
@@ -277,7 +281,7 @@ class Console
     MediaSource* myMediaSource;
 
     // Properties for the game
-    Properties myProperties; 
+    Properties myProperties;
 
     // Pointer to the switches on the front of the console
     Switches* mySwitches;
@@ -296,8 +300,8 @@ class Console
     AtariVox *vox;
 #endif
 
-    // Indicates whether the console was successfully created
-    bool myIsValidFlag;
+    // The currently defined display format (NTSC/PAL/PAL60)
+    string myDisplayFormat;
 
     // Indicates whether an external palette was found and
     // successfully loaded
@@ -305,9 +309,6 @@ class Console
 
     // Contains info about this console in string format
     string myAboutString;
-
-    // The currently defined display format (NTSC/PAL/PAL60)
-    string myDisplayFormat;
 
     // Table of RGB values for NTSC and PAL
     static uInt32 ourNTSCPalette[256];

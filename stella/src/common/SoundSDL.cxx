@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.34 2006-12-26 22:57:31 azaballa Exp $
+// $Id: SoundSDL.cxx,v 1.35 2006-12-28 18:31:22 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -218,6 +218,7 @@ void SoundSDL::reset()
     SDL_PauseAudio(1);
     myIsMuted = false;
     myLastRegisterSetCycle = 0;
+    myTIASound.reset();
     myRegWriteQueue.clear();
     SDL_PauseAudio(0);
   }

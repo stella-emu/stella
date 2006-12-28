@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.15 2006-12-26 00:39:44 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.16 2006-12-28 18:31:27 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -60,54 +60,6 @@ OSystemWin32::OSystemWin32(const string& path) : OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemWin32::~OSystemWin32()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWin32::mainLoop()
-{
-  // These variables are common to both timing options
-  // and are needed to calculate the overall frames per second.
-  uInt32 frameTime = 0, numberOfFrames = 0;
-
-  // Set up less accurate timing stuff
-  uInt32 startTime, virtualTime, currentTime;
-
-  // Set the base for the timers
-  virtualTime = getTicks();
-  frameTime = 0;
-
-  // Main game loop
-  for(;;)
-  {
-	// Exit if the user wants to quit
-	if(myEventHandler->doQuit())
-	  break;
-
-	startTime = getTicks();
-	myEventHandler->poll(startTime);
-	myFrameBuffer->update();
-
-	currentTime = getTicks();
-	virtualTime += myTimePerFrame;
-	if(currentTime < virtualTime)
-	{
-	  SDL_Delay((virtualTime - currentTime)/1000);
-	}
-
-	currentTime = getTicks() - startTime;
-	frameTime += currentTime;
-	++numberOfFrames;
-  }
-
-  if(mySettings->getBool("showinfo"))
-  {
-    double executionTime = (double) frameTime / 1000000.0;
-    double framesPerSecond = (double) numberOfFrames / executionTime;
-
-    cout << endl;
-    cout << numberOfFrames << " total frames drawn\n";
-    cout << framesPerSecond << " frames/second\n";
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

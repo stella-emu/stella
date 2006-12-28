@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.22 2006-12-26 04:35:36 azaballa Exp $
+// $Id: OSystemGP2X.cxx,v 1.23 2006-12-28 18:31:26 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -74,42 +74,6 @@ OSystemGP2X::~OSystemGP2X()
 {
   delete[] myPreviousEvents;
   delete[] myCurrentEvents;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemGP2X::mainLoop()
-{
-  // These variables are common to both timing options
-  // and are needed to calculate the overall frames per second.
-  uInt32 frameTime = 0, numberOfFrames = 0;
-
-  // Set up less accurate timing stuff
-  uInt32 startTime, virtualTime, currentTime;
-
-  // Set the base for the timers
-  virtualTime = getTicks();
-  frameTime = 0;
-
-  // Main game loop
-  for(;;)
-  {
-    // Exit if the user wants to quit
-    if(myEventHandler->doQuit())
-      break;
-
-    startTime = getTicks();
-    myEventHandler->poll(startTime);
-    myFrameBuffer->update();
-
-    currentTime = getTicks();
-    virtualTime += myTimePerFrame;
-    if(currentTime < virtualTime)
-      SDL_Delay((virtualTime - currentTime)/1000);
-
-    currentTime = getTicks() - startTime;
-    frameTime += currentTime;
-    ++numberOfFrames;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

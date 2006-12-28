@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.190 2006-12-26 17:06:01 stephena Exp $
+// $Id: EventHandler.cxx,v 1.191 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -63,7 +63,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myState(S_NONE),
     myLSState(0),
     myPauseFlag(false),
-    myQuitFlag(false),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
     myFryingFlag(false),
@@ -163,7 +162,6 @@ void EventHandler::reset(State state)
 
   myLSState = 0;
   myPauseFlag = false;
-  myQuitFlag = false;
 
   pause(false);
   myEvent->clear();
@@ -583,7 +581,24 @@ void EventHandler::poll(uInt32 time)
                 break;
 
               case SDLK_r:  // Ctrl-r reloads the currently loaded ROM
+                myOSystem->deleteConsole();
                 myOSystem->createConsole();
+                break;
+
+              case SDLK_END:       // Ctrl-End increases Width
+                myOSystem->console().changeWidth(+1);
+                break;
+
+              case SDLK_HOME:      // Ctrl-Home decreases Width
+                myOSystem->console().changeWidth(-1);
+                break;
+
+              case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
+                myOSystem->console().changeHeight(+1);
+                break;
+
+              case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+                myOSystem->console().changeHeight(-1);
                 break;
 
               case SDLK_s:         // Ctrl-s saves properties to a file
@@ -1190,13 +1205,17 @@ void EventHandler::handleEvent(Event::Type event, int state)
       if(myState == S_EMULATE && myUseLauncherFlag && state)
       {
         myOSystem->settings().saveConfig();
+        myOSystem->deleteConsole();
         myOSystem->createLauncher();
       }
       return;
 
     case Event::Quit:
-      if(state) myQuitFlag = true;
-      myOSystem->settings().saveConfig();
+      if(state)
+      {
+        myOSystem->settings().saveConfig();
+        myOSystem->quit();
+      }
       return;
   }
 

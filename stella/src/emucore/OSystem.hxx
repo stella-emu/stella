@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.48 2006-12-26 00:39:44 stephena Exp $
+// $Id: OSystem.hxx,v 1.49 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -45,7 +45,7 @@ class VideoDialog;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.48 2006-12-26 00:39:44 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.49 2006-12-28 18:31:26 stephena Exp $
 */
 class OSystem
 {
@@ -248,6 +248,12 @@ class OSystem
     bool createConsole(const string& romfile = "");
 
     /**
+      Deletes the currently defined console, if it exists.
+      Also prints some statistics (fps, total frames, etc).
+    */
+    void deleteConsole();
+
+    /**
       Creates a new ROM launcher, to select a new ROM to emulate.
     */
     void createLauncher();
@@ -280,18 +286,16 @@ class OSystem
     */
     bool openROM(const string& rom, string& md5, uInt8** image, int* size);
 
+    /**
+      Issue a quit event to the OSystem.
+    */
+    void quit() { myQuitLoop = true; }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and must be implemented
     // in derived classes.
     //////////////////////////////////////////////////////////////////////
-    /**
-      This method runs the main loop.  Since different platforms
-      may use different timing methods and/or algorithms, this method has
-      been abstracted to each platform.
-    */
-    virtual void mainLoop() = 0;
-
     /**
       This method returns number of ticks in microseconds.
 
@@ -308,6 +312,14 @@ class OSystem
     // The following methods are system-specific and can be overrided in
     // derived classes.  Otherwise, the base methods will be used.
     //////////////////////////////////////////////////////////////////////
+    /**
+      This method runs the main loop.  Since different platforms
+      may use different timing methods and/or algorithms, this method can
+      be overrided.  However, the port then takes all responsibility for
+      running the emulation and taking care of timing.
+    */
+    virtual void mainLoop();
+
     /**
       This method determines the default mapping of joystick buttons to
       Stella events for a specific system/platform.
@@ -414,6 +426,9 @@ class OSystem
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;
 
+    // Indicates whether to stop the main loop
+    bool myQuitLoop;
+
   private:
     string myBaseDir;
     string myStateDir;
@@ -435,6 +450,16 @@ class OSystem
     // The font object to use for the console/debugger 
     GUI::Font* myConsoleFont;
 
+    // Indicates whether the main processing loop should proceed
+    struct TimingInfo {
+      uInt32 start;
+      uInt32 current;
+      uInt32 virt;
+      uInt32 totalTime;
+      uInt32 totalFrames;
+    };
+    TimingInfo myTimingInfo;
+
   private:
     /**
       Creates the various framebuffers/renderers available in this system
@@ -449,6 +474,20 @@ class OSystem
       (for now, that means either 'SDL' or 'Null').
     */
     void createSound();
+
+    /**
+      Query valid info for creating a valid console.
+
+      @return Success or failure for a valid console
+    */
+    bool queryConsoleInfo(const uInt8* image, uInt32 size, const string& md5,
+                          Cartridge** cart, Properties& props);
+
+    /**
+      Initializes the timing so that the mainloop is reset to its
+      initial values.
+    */
+    void resetLoopTiming();
 
     // Copy constructor isn't supported by this class so make it private
     OSystem(const OSystem&);

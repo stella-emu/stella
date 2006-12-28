@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.8 2006-12-08 16:49:31 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.9 2006-12-28 18:31:26 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -40,13 +40,6 @@ class OSystemGP2X : public OSystem
     virtual ~OSystemGP2X();
 
   public:
-    /**
-      This method runs the main loop.  Since different platforms
-      may use different timing methods and/or algorithms, this method has
-      been abstracted to each platform.
-    */
-    void mainLoop();
-
     /**
       This method returns number of ticks in microseconds.
 

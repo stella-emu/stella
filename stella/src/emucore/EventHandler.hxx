@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.95 2006-12-12 01:02:12 stephena Exp $
+// $Id: EventHandler.hxx,v 1.96 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.95 2006-12-12 01:02:12 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.96 2006-12-28 18:31:26 stephena Exp $
 */
 class EventHandler
 {
@@ -192,11 +192,6 @@ class EventHandler
       This method indicates that the system should terminate.
     */
     void quit() { handleEvent(Event::Quit, 1); }
-
-    /**
-      This method indicates whether a quit event has been received.
-    */
-    inline bool doQuit() { return myQuitFlag; }
 
     /**
       Save state to explicit state number (debugger uses this)
@@ -554,9 +549,6 @@ class EventHandler
 
     // Indicates the current pause status
     bool myPauseFlag;
-
-    // Indicates whether to quit the emulator
-    bool myQuitFlag;
 
     // Indicates whether the mouse cursor is grabbed
     bool myGrabMouseFlag;

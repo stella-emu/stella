@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.12 2006-12-08 16:49:41 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.13 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.12 2006-12-08 16:49:41 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.13 2006-12-28 18:31:26 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -42,13 +42,6 @@ class OSystemUNIX : public OSystem
     virtual ~OSystemUNIX();
 
   public:
-    /**
-      This method runs the main loop.  Since different platforms
-      may use different timing methods and/or algorithms, this method has
-      been abstracted to each platform.
-    */
-    void mainLoop();
-
     /**
       This method returns number of ticks in microseconds.
 

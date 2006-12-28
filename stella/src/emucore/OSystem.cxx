@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.84 2006-12-26 00:39:44 stephena Exp $
+// $Id: OSystem.cxx,v 1.85 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -59,6 +59,7 @@ OSystem::OSystem()
     myLauncher(NULL),
     myDebugger(NULL),
     myCheatManager(NULL),
+    myQuitLoop(false),
     myRomFile(""),
     myFeatures(""),
     myFont(NULL),
@@ -106,7 +107,7 @@ OSystem::~OSystem()
   delete myConsoleFont;
 
   // Remove any game console that is currently attached
-  delete myConsole;
+  deleteConsole();
 
   // OSystem takes responsibility for framebuffer and sound,
   // since it created them
@@ -317,36 +318,16 @@ void OSystem::toggleFrameBuffer()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createSound()
 {
-  // Delete the old sound device
   delete mySound;  mySound = NULL;
-
-  // And recreate a new sound device
   mySound = MediaFactory::createAudio(this);
 #ifndef SOUND_SUPPORT
   mySettings->setBool("sound", false);
 #endif
-
-  // Re-initialize the sound object to current settings
-  switch(myEventHandler->state())
-  {
-    case EventHandler::S_EMULATE:
-    case EventHandler::S_MENU:
-    case EventHandler::S_CMDMENU:
-    case EventHandler::S_DEBUGGER:
-      myConsole->initializeAudio();
-      break;  // S_EMULATE, S_MENU, S_DEBUGGER
-
-    default:
-      break;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createConsole(const string& romfile)
 {
-  // Delete any lingering console object
-  delete myConsole;  myConsole = NULL;
-
   bool retval = false, showmessage = false;
 
   // If a blank ROM has been given, we reload the current one (assuming one exists)
@@ -368,11 +349,13 @@ bool OSystem::createConsole(const string& romfile)
   string md5;
   if(openROM(myRomFile, md5, &image, &size))
   {
-    // Create an instance of the 2600 game console
-    // The Console c'tor takes care of updating the eventhandler state
-    myConsole = new Console(image, size, md5, this);
-    if(myConsole && myConsole->isValid())
+    // Get all required info for creating a valid console
+    Cartridge* cart = (Cartridge*) NULL;
+    Properties props;
+    if(queryConsoleInfo(image, size, md5, &cart, props))
     {
+      // Create an instance of the 2600 game console
+      myConsole = new Console(this, cart, props);
     #ifdef CHEATCODE_SUPPORT
       myCheatManager->loadCheats(md5);
     #endif
@@ -388,6 +371,9 @@ bool OSystem::createConsole(const string& romfile)
         cout << "Game console created:" << endl
              << "  ROM file:  " << myRomFile << endl
              << myConsole->about() << endl;
+
+      // Update the timing info for a new console run
+      resetLoopTiming();
 
       retval = true;
     }
@@ -411,9 +397,30 @@ bool OSystem::createConsole(const string& romfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::createLauncher()
+void OSystem::deleteConsole()
 {
   mySound->close();
+  if(myConsole)
+  {
+    if(mySettings->getBool("showinfo"))
+    {
+      double executionTime   = (double) myTimingInfo.totalTime / 1000000.0;
+      double framesPerSecond = (double) myTimingInfo.totalFrames / executionTime;
+      cout << "Game console stats:" << endl
+           << "  Total frames drawn: " << myTimingInfo.totalFrames << endl
+           << "  Total time (sec):   " << executionTime << endl
+           << "  Frames per second:  " << framesPerSecond << endl
+           << endl;
+    }
+    delete myConsole;  myConsole = NULL;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::createLauncher()
+{
+  resetLoopTiming();
+
   setFramerate(60);
   myEventHandler->reset(EventHandler::S_LAUNCHER);
   createFrameBuffer(false);
@@ -423,7 +430,6 @@ void OSystem::createLauncher()
   myLauncher->reStack();
 
   myEventHandler->refreshDisplay();
-
   myFrameBuffer->setCursorState();
 }
 
@@ -528,7 +534,6 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
 string OSystem::getROMInfo(const string& romfile)
 {
   ostringstream buf;
-  Console* console = (Console*) NULL;
 
   // Open the cartridge image and read it in
   uInt8* image;
@@ -536,22 +541,48 @@ string OSystem::getROMInfo(const string& romfile)
   string md5;
   if(openROM(romfile, md5, &image, &size))
   {
-    // Create a temporary instance of the 2600 game console
-    console = new Console(image, size, md5, this);
-    if(console && console->isValid())
-      buf << console->about();
-    else
-      buf << "ERROR: Couldn't get ROM info for " << romfile << " ..." << endl;
-  }
-  else
-    buf << "ERROR: Couldn't open " << romfile << " ..." << endl;
+    // Get all required info for creating a temporary console
+    Cartridge* cart = (Cartridge*) NULL;
+    Properties props;
+    if(queryConsoleInfo(image, size, md5, &cart, props))
+    {
+      Console* console = new Console(this, cart, props);
+      if(console)
+        buf << console->about();
+      else
+        buf << "ERROR: Couldn't get ROM info for " << romfile << " ..." << endl;
 
+      delete console;
+    }
+    else
+      buf << "ERROR: Couldn't open " << romfile << " ..." << endl;
+  }
   // Free the image and console since we don't need it any longer
-  delete console;
   if(size != -1)
     delete[] image;
 
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::queryConsoleInfo(const uInt8* image, uInt32 size,
+                               const string& md5,
+                               Cartridge** cart, Properties& props)
+{
+  myPropSet->getMD5(md5, props);
+  *cart = Cartridge::create(image, size, props, *mySettings);
+  if(!*cart)
+    return false;
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::resetLoopTiming()
+{
+  memset(&myTimingInfo, 0, sizeof(TimingInfo));
+  myTimingInfo.start = getTicks();
+  myTimingInfo.virt = getTicks();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -619,6 +650,27 @@ void OSystem::stateChanged(EventHandler::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::pauseChanged(bool status)
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::mainLoop()
+{
+  for(;;)
+  {
+    myTimingInfo.start = getTicks();
+    myEventHandler->poll(myTimingInfo.start);
+    if(myQuitLoop) break;  // Exit if the user wants to quit
+    myFrameBuffer->update();
+
+    myTimingInfo.current = getTicks();
+    myTimingInfo.virt += myTimePerFrame;
+
+    if(myTimingInfo.current < myTimingInfo.virt)
+      SDL_Delay((myTimingInfo.virt - myTimingInfo.current) / 1000);
+
+    myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
+    myTimingInfo.totalFrames++;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

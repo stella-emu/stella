@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.113 2006-12-26 17:06:01 stephena Exp $
+// $Id: Console.cxx,v 1.114 2006-12-28 18:31:22 stephena Exp $
 //============================================================================
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 #include <sstream>
 #include <fstream>
@@ -58,14 +58,11 @@
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console::Console(const uInt8* image, uInt32 size, const string& md5,
-                 OSystem* osystem)
+Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
-    myIsValidFlag(false),
+    myProperties(props),
     myUserPaletteDefined(false)
 {
-  Cartridge* cartridge = (Cartridge*) NULL;
-  ostringstream buf;
   myControllers[0] = 0;
   myControllers[1] = 0;
   myMediaSource = 0;
@@ -76,9 +73,6 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // Attach the event subsystem to the current console
   myEvent = myOSystem->eventHandler().event();
 
-  // Search for the properties based on MD5
-  myOSystem->propSet().getMD5(md5, myProperties);
-
   // A developer can override properties from the commandline
   setDeveloperProperties();
 
@@ -86,10 +80,6 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   // depending on PAL colour-loss effect
   loadUserPalette();
   setColorLossPalette(myOSystem->settings().getBool("colorloss"));
-
-  // Query some info about this console
-  buf << "  Cart Name: " << myProperties.get(Cartridge_Name) << endl
-      << "  Cart MD5:  " << md5 << endl;
 
   // Setup the controllers based on properties
   string left  = myProperties.get(Controller_Left);
@@ -188,25 +178,21 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
   M6532* m6532 = new M6532(*this);
   TIA *tia = new TIA(*this, myOSystem->settings());
   tia->setSound(myOSystem->sound());
-  cartridge = Cartridge::create(image, size, myProperties,
-                                myOSystem->settings(), myAboutString);
-  buf << myAboutString;
-
-  if(!cartridge)
-    return;
 
   mySystem->attach(m6502);
   mySystem->attach(m6532);
   mySystem->attach(tia);
-  mySystem->attach(cartridge);
+  mySystem->attach(cart);
 
   // Remember what my media source is
   myMediaSource = tia;
-  myCart = cartridge;
+  myCart = cart;
   myRiot = m6532;
 
-  // Reset, the system to its power-on state
-  mySystem->reset();
+  // Query some info about this console
+  ostringstream buf;
+  buf << "  Cart Name: " << myProperties.get(Cartridge_Name) << endl
+      << "  Cart MD5:  " << myProperties.get(Cartridge_MD5) << endl;
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);
@@ -219,6 +205,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     // the second 30 (useful to get past SuperCharger BIOS)
     // Unfortunately, this means we have to always enable 'fastscbios',
     // since otherwise the BIOS loading will take over 250 frames!
+    mySystem->reset();
     int palCount = 0;
     for(int i = 0; i < 60; ++i)
     {
@@ -231,6 +218,7 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       buf << "  Auto-detected display format: " << myDisplayFormat << endl;
   }
+  buf << cart->about();
 
   // Make sure height is set properly for PAL ROM
   if(myDisplayFormat.compare(0, 3, "PAL") == 0)
@@ -249,10 +237,10 @@ Console::Console(const uInt8* image, uInt32 size, const string& md5,
     return;
   }
 
-  mySystem->reset();  // Restart ROM again
+  // Reset, the system to its power-on state
+  mySystem->reset();
 
   myAboutString = buf.str();
-  myIsValidFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,12 +254,6 @@ Console::~Console()
   delete mySwitches;
   delete myControllers[0];
   delete myControllers[1];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Properties& Console::properties() const
-{
-  return myProperties;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -482,12 +464,6 @@ void Console::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::initializeAudio()
-{
-  myMediaSource->setSound(myOSystem->sound());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setChannels(int channels)
 {
   myOSystem->sound().setChannels(channels);
@@ -517,7 +493,7 @@ void Console::setChannels(int channels)
    Until someone comes up with a more accurate way to emulate frying, I'm
    leaving this as Fred posted it.   -- B.
 */
-void Console::fry()
+void Console::fry() const
 {
   for (int ZPmem=0; ZPmem<0x100; ZPmem += rand() % 4)
     mySystem->poke(ZPmem, mySystem->peek(ZPmem) & (uInt8)rand() % 256);
@@ -606,7 +582,89 @@ void Console::changeYStart(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show)
+void Console::changeWidth(int direction)
+{
+  uInt32 xstart = atoi(myProperties.get(Display_XStart).c_str());
+  Int32 width   = atoi(myProperties.get(Display_Width).c_str());
+  ostringstream strval;
+  string message;
+
+  if(direction == +1)    // increase Width
+  {
+    width += 4;
+    if((width > 160) || ((width % 4) != 0))
+    {
+      myOSystem->frameBuffer().showMessage("Width at maximum");
+      return;
+    }
+    else if((width + xstart) > 160)
+    {
+      myOSystem->frameBuffer().showMessage("Width no effect");
+      return;
+    }
+  }
+  else if(direction == -1)  // decrease Width
+  {
+    width -= 4;
+    if(width < 80)
+    {
+      myOSystem->frameBuffer().showMessage("Width at minimum");
+      return;
+    }
+  }
+  else
+    return;
+
+  strval << width;
+  myProperties.set(Display_Width, strval.str());
+  mySystem->reset();
+  initializeVideo();
+
+  message = "Width ";
+  message += strval.str();
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::changeHeight(int direction)
+{
+  Int32 height = atoi(myProperties.get(Display_Height).c_str());
+  ostringstream strval;
+  string message;
+
+  if(direction == +1)    // increase Height
+  {
+    height++;
+    if(height > 256)
+    {
+      myOSystem->frameBuffer().showMessage("Height at maximum");
+      return;
+    }
+  }
+  else if(direction == -1)  // decrease Height
+  {
+    height--;
+    if(height < 100)
+    {
+      myOSystem->frameBuffer().showMessage("Height at minimum");
+      return;
+    }
+  }
+  else
+    return;
+
+  strval << height;
+  myProperties.set(Display_Height, strval.str());
+  mySystem->reset();
+  initializeVideo();
+
+  message = "Height ";
+  message += strval.str();
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show) const
 {
   bool result = ((TIA*)myMediaSource)->toggleBit(bit);
   string message = bitname + (result ? " enabled" : " disabled");
@@ -614,7 +672,7 @@ void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::enableBits(bool enable)
+void Console::enableBits(bool enable) const
 {
   ((TIA*)myMediaSource)->enableBits(enable);
   string message = string("TIA bits") + (enable ? " enabled" : " disabled");

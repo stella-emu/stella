@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.7 2006-12-08 16:49:41 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.8 2006-12-28 18:31:27 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -25,7 +25,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.7 2006-12-08 16:49:41 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.8 2006-12-28 18:31:27 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {
@@ -41,13 +41,6 @@ class OSystemWin32 : public OSystem
     virtual ~OSystemWin32();
 
   public:
-    /**
-      This method runs the main loop.  Since different platforms
-      may use different timing methods and/or algorithms, this method has
-      been abstracted to each platform.
-    */
-    virtual void mainLoop();
-
     /**
       This method returns number of ticks in microseconds.
 

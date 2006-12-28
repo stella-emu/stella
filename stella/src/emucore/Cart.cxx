@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.25 2006-12-26 17:06:00 stephena Exp $
+// $Id: Cart.cxx,v 1.26 2006-12-28 18:31:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,7 +48,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
-    const Properties& properties, const Settings& settings, string& about)
+    const Properties& properties, const Settings& settings)
 {
   Cartridge* cartridge = 0;
 
@@ -71,7 +71,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 
     type = detected;
   }
-  about = buf.str();
+  myAboutString = buf.str();
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
@@ -398,3 +398,6 @@ Cartridge& Cartridge::operator = (const Cartridge&)
   assert(false);
   return *this;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge::myAboutString;

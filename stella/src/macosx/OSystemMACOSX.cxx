@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.13 2006-12-08 16:49:37 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.14 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -110,77 +110,6 @@ OSystemMACOSX::OSystemMACOSX(const string& path) : OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemMACOSX::~OSystemMACOSX()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemMACOSX::mainLoop()
-{
-#if 0
-    double lasttime = Atari_time();
-    double lastcurtime = 0;
-    double curtime, delaytime;
-	double timePerFrame = 1.0 / 60.0;
-
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(myEventHandler->doQuit())
-        break;
-
-      myEventHandler->poll();
-      myFrameBuffer->update();
-
-      if (timePerFrame > 0.0)
-      {
-	    curtime = Atari_time();
-	    delaytime = lasttime + timePerFrame - curtime;
-	    if (delaytime > 0)
-	      usleep((int) (delaytime * 1e6));
-	    curtime = Atari_time();
-
-	    lastcurtime = curtime;
-
-	    lasttime += timePerFrame;
-	    if ((lasttime + timePerFrame) < curtime)
-	      lasttime = curtime;
-	  }
-    }
-#else
-  // These variables are common to both timing options
-  // and are needed to calculate the overall frames per second.
-  uInt32 frameTime = 0, numberOfFrames = 0;
-
-    // Set up less accurate timing stuff
-    uInt32 startTime, virtualTime, currentTime;
-
-    // Set the base for the timers
-    virtualTime = getTicks();
-    frameTime = 0;
-
-    // Main game loop
-    for(;;)
-    {
-      // Exit if the user wants to quit
-      if(myEventHandler->doQuit())
-        break;
-
-      startTime = getTicks();
-      myEventHandler->poll(startTime);
-      myFrameBuffer->update();
-
-      currentTime = getTicks();
-      virtualTime = startTime + myTimePerFrame;
-      if(currentTime < virtualTime)
-      {
-      SDL_Delay((virtualTime - currentTime)/1000);
-      }
-	  
-      currentTime = getTicks() - startTime;
-      frameTime += currentTime;
-      ++numberOfFrames;
-    }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

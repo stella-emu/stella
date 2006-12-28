@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.hxx,v 1.6 2006-12-08 16:49:37 stephena Exp $
+// $Id: OSystemMACOSX.hxx,v 1.7 2006-12-28 18:31:26 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_MACOSX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Mark Grebe
-  @version $Id: OSystemMACOSX.hxx,v 1.6 2006-12-08 16:49:37 stephena Exp $
+  @version $Id: OSystemMACOSX.hxx,v 1.7 2006-12-28 18:31:26 stephena Exp $
 */
 class OSystemMACOSX : public OSystem
 {
@@ -42,13 +42,6 @@ class OSystemMACOSX : public OSystem
     virtual ~OSystemMACOSX();
 
   public:
-    /**
-      This method runs the main loop.  Since different platforms
-      may use different timing methods and/or algorithms, this method has
-      been abstracted to each platform.
-    */
-    virtual void mainLoop();
-
     /**
       This method returns number of ticks in microseconds.
 
