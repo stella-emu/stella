@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.17 2006-12-29 16:52:43 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.18 2006-12-29 18:01:17 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -78,7 +78,7 @@ bool FrameBufferGP2X::createScreen()
   }
 
   // We start out with the TIA buffer and SDL screen being the same size
-  myScreenDim = myBaseDim;
+  myImageDim = myScreenDim = myBaseDim;
 
   // If we got a screenmode that won't be scaled, center it vertically
   // Otherwise, SDL hardware scaling kicks in, and we won't mess with it
@@ -98,8 +98,8 @@ bool FrameBufferGP2X::createScreen()
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
-  myBasePtr = (uInt16*) myScreen->pixels + myScreenDim.y * myScreen->pitch;
   myPitch = myScreen->pitch/2;
+  myBasePtr = (uInt16*) myScreen->pixels + myScreenDim.y * myPitch;
   myDirtyFlag = true;
 
   return true;
@@ -191,7 +191,7 @@ void FrameBufferGP2X::scanline(uInt32 row, uInt8* data)
 
   uInt32 bpp     = myScreen->format->BytesPerPixel;
   uInt8* start   = (uInt8*) myBasePtr;
-  uInt32 yoffset = row * myScreen->pitch;
+  uInt32 yoffset = (row + myScreenDim.y) * myScreen->pitch;
   uInt32 pixel = 0;
   uInt8 *p, r, g, b;
 
