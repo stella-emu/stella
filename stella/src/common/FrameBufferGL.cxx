@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.79 2006-12-22 23:14:39 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.80 2006-12-29 15:16:47 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -43,6 +43,9 @@
 
 // These are not defined in the current version of SDL_opengl.h
 // Hopefully speed up OpenGL rendering in OSX
+#ifndef GL_TEXTURE_RECTANGLE_ARB
+  #define GL_TEXTURE_RECTANGLE_ARB 0x84F5
+#endif
 #ifndef GL_TEXTURE_STORAGE_HINT_APPLE
   #define GL_TEXTURE_STORAGE_HINT_APPLE 0x85BC
 #endif
