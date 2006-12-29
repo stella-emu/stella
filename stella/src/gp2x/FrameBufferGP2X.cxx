@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.18 2006-12-29 18:01:17 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.19 2006-12-29 18:19:50 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -191,7 +191,7 @@ void FrameBufferGP2X::scanline(uInt32 row, uInt8* data)
 
   uInt32 bpp     = myScreen->format->BytesPerPixel;
   uInt8* start   = (uInt8*) myBasePtr;
-  uInt32 yoffset = (row + myScreenDim.y) * myScreen->pitch;
+  uInt32 yoffset = row * myScreen->pitch;
   uInt32 pixel = 0;
   uInt8 *p, r, g, b;
 
