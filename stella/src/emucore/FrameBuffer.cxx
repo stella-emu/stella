@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.112 2006-12-19 12:40:30 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.113 2006-12-29 16:52:43 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -60,6 +60,7 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
 {
   bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
 
+  myBaseDim.x = myBaseDim.y = 0;
   myBaseDim.w = (uInt16) width;
   myBaseDim.h = (uInt16) height;
   myFrameRate = myOSystem->frameRate();

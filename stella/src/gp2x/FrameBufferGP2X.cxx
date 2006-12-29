@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.16 2006-12-29 15:15:18 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.17 2006-12-29 16:52:43 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -77,14 +77,19 @@ bool FrameBufferGP2X::createScreen()
     SDL_UpdateRect(myScreen, 0, 0, 0, 0);
   }
 
+  // We start out with the TIA buffer and SDL screen being the same size
+  myScreenDim = myBaseDim;
+
   // If we got a screenmode that won't be scaled, center it vertically
   // Otherwise, SDL hardware scaling kicks in, and we won't mess with it
-  myBaseDim.x = myBaseDim.y = 0;
   if(myBaseDim.h <= 240)
-    myBaseDim.y = (240 - myBaseDim.h) / 2;
-
-  // In software mode, all three dimensions are the same
-  myImageDim = myScreenDim = myBaseDim;
+  {
+    // If we can center vertically, do so
+    // It means the screen we open must be larger than the TIA buffer,
+    // since we're going to start drawing at an y offset
+    myScreenDim.y = (240 - myBaseDim.h) / 2;
+    myScreenDim.h = myScreenDim.y + myBaseDim.h;
+  }
 
   // The GP2X always uses a 16-bit hardware buffer
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 16, mySDLFlags);
@@ -93,7 +98,7 @@ bool FrameBufferGP2X::createScreen()
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
-  myBasePtr = (uInt16*) myScreen->pixels + myImageDim.y * myScreen->pitch;
+  myBasePtr = (uInt16*) myScreen->pixels + myScreenDim.y * myScreen->pitch;
   myPitch = myScreen->pitch/2;
   myDirtyFlag = true;
 
@@ -190,7 +195,7 @@ void FrameBufferGP2X::scanline(uInt32 row, uInt8* data)
   uInt32 pixel = 0;
   uInt8 *p, r, g, b;
 
-  for(Int32 x = 0; x < myImageDim.w; x++)
+  for(Int32 x = 0; x < myBaseDim.w; ++x)
   {
     p = (Uint8*) (start    +  // Start at top of RAM
                  (yoffset) +  // Go down 'row' lines
@@ -220,7 +225,7 @@ void FrameBufferGP2X::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 
   // Horizontal line
   tmp.x = x;
-  tmp.y = y + myImageDim.y;
+  tmp.y = y + myScreenDim.y;
   tmp.w = (x2 - x + 1);
   tmp.h = 1;
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
@@ -233,7 +238,7 @@ void FrameBufferGP2X::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 
   // Vertical line
   tmp.x = x;
-  tmp.y = y + myImageDim.y;
+  tmp.y = y + myScreenDim.y;
   tmp.w = 1;
   tmp.h = (y2 - y + 1);
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
@@ -247,7 +252,7 @@ void FrameBufferGP2X::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 
   // Fill the rectangle
   tmp.x = x;
-  tmp.y = y + myImageDim.y;
+  tmp.y = y + myScreenDim.y;
   tmp.w = w;
   tmp.h = h;
   SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
