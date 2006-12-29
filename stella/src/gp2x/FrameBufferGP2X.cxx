@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.15 2006-12-28 18:31:26 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.16 2006-12-29 15:15:18 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -83,8 +83,8 @@ bool FrameBufferGP2X::createScreen()
   if(myBaseDim.h <= 240)
     myBaseDim.y = (240 - myBaseDim.h) / 2;
 
-  // In software mode, the image and base dimensions are always the same
-  myImageDim = myBaseDim;
+  // In software mode, all three dimensions are the same
+  myImageDim = myScreenDim = myBaseDim;
 
   // The GP2X always uses a 16-bit hardware buffer
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 16, mySDLFlags);
