@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.56 2006-12-28 20:40:00 stephena Exp $
+// $Id: Console.hxx,v 1.57 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.56 2006-12-28 20:40:00 stephena Exp $
+  @version $Id: Console.hxx,v 1.57 2006-12-30 22:26:28 stephena Exp $
 */
 class Console
 {
@@ -173,25 +173,19 @@ class Console
     void toggleColorLoss();
 
     /**
-      Initialize the basic properties of the console.
-      TODO - This is a workaround for a bug in the TIA rendering, whereby
-      XStart/YStart values cause incorrect coordinates to be passed to the
-      in-game GUI rendering.
-    */
-    void initialize();
-
-    /**
       Initialize the video subsystem wrt this class.
       This is required for changing window size, title, etc.
+
+      @param full  Whether we want a full initialization,
+                   or only reset certain attributes.
     */
-    void initializeVideo();
+    void initializeVideo(bool full = true);
 
     /**
-      Sets the number of sound channels
-
-      @param channels  Number of channels (indicates stereo or mono)
+      Initialize the audio subsystem wrt this class.
+      This is required any time the sound settings change.
     */
-    void setChannels(int channels);
+    void initializeAudio();
 
     /**
       "Fry" the Atari (mangle memory/TIA contents)
@@ -265,6 +259,12 @@ class Console
       by the ROM properties.
     */
     const uInt32* getPalette(int direction) const;
+
+    /**
+      Returns the framerate based on a number of factors
+      (whether 'framerate' is set, what display format is in use, etc)
+    */
+    uInt32 getFrameRate() const;
 
   private:
     // Pointer to the osystem object

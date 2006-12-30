@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.86 2006-12-28 20:40:00 stephena Exp $
+// $Id: OSystem.cxx,v 1.87 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -136,6 +136,18 @@ bool OSystem::create()
   myLauncherFont = new GUI::Font(GUI::stellaDesc);  // FIXME
   myConsoleFont  = new GUI::Font(GUI::consoleDesc);
 
+  // Create the event handler for the system
+  myEventHandler = new EventHandler(this);
+  myEventHandler->initialize();
+
+  // Create a properties set for us to use and set it up
+  myPropSet = new PropertiesSet(this);
+
+#ifdef CHEATCODE_SUPPORT
+  myCheatManager = new CheatManager(this);
+  myCheatManager->loadCheatDatabase();
+#endif
+
   // Create menu and launcher GUI objects
   myMenu = new Menu(this);
   myCommandMenu = new CommandMenu(this);
@@ -143,17 +155,6 @@ bool OSystem::create()
 #ifdef DEBUGGER_SUPPORT
   myDebugger = new Debugger(this);
 #endif
-#ifdef CHEATCODE_SUPPORT
-  myCheatManager = new CheatManager(this);
-  myCheatManager->loadCheatDatabase();
-#endif
-
-  // Create the event handler for the system
-  myEventHandler = new EventHandler(this);
-  myEventHandler->initialize();
-
-  // Create a properties set for us to use and set it up
-  myPropSet = new PropertiesSet(this);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -170,7 +171,6 @@ bool OSystem::create()
 #ifdef JOYSTICK_SUPPORT
   myFeatures += "Joystick ";
 #endif
-  myFeatures += "Snapshot ";
 #ifdef DEBUGGER_SUPPORT
   myFeatures += "Debugger ";
 #endif
@@ -243,18 +243,6 @@ bool OSystem::createFrameBuffer(bool showmessage)
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
       myConsole->initializeVideo();
-      if(showmessage)
-      {
-        switch(myFrameBuffer->type())
-        {
-          case kSoftBuffer:
-            myFrameBuffer->showMessage("Software mode");
-            break;
-          case kGLBuffer:
-            myFrameBuffer->showMessage("OpenGL mode");
-            break;
-        }
-      }
       break;  // S_EMULATE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
@@ -274,6 +262,27 @@ bool OSystem::createFrameBuffer(bool showmessage)
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
   if(changeBuffer) myEventHandler->setupJoysticks();
 
+  // Update the UI palette
+  // For now, we just use the standard palette
+  // Once an interface is created for this, it will be changable
+  // within the emulation
+  int palette = 0;  // 1 indicates GP2X, but it should be called something else
+                    // Perhaps tweaked and called high-contrast or something??
+  myFrameBuffer->setUIPalette(&ourGUIColors[palette][0]);
+
+  if(showmessage)
+  {
+    switch(myFrameBuffer->type())
+    {
+      case kSoftBuffer:
+        myFrameBuffer->showMessage("Software mode");
+        break;
+      case kGLBuffer:
+        myFrameBuffer->showMessage("OpenGL mode");
+        break;
+    }
+  }
+
   return true;
 }
 
@@ -290,28 +299,14 @@ void OSystem::toggleFrameBuffer()
   else   // a driver that doesn't exist was requested, so use software mode
     video = "soft";
 
-  myEventHandler->handleEvent(Event::Pause, 0);
-
-  // Remember the pause state
-  bool pause = myEventHandler->isPaused();
-
   // Update the settings and create the framebuffer
   mySettings->setString("video", video);
-  createFrameBuffer(true);  // show onscreen message
-
-  // And re-pause the system
-  myEventHandler->pause(pause);
+  createFrameBuffer(true);  // show onscreen message, re-initialize framebuffer
 
   // The palette and phosphor info for the framebuffer will be lost
   // when a new framebuffer is created; we must restore it
   if(myConsole)
-  {
-    const Properties& props = myConsole->properties();
-    bool enable = props.get(Display_Phosphor) == "YES";
-    int blend = atoi(props.get(Display_PPBlend).c_str());
-    myFrameBuffer->enablePhosphor(enable, blend);
-    myConsole->setPalette(mySettings->getString("palette"));
-  }
+    myConsole->initializeVideo(false);
 #endif
 }
 
@@ -359,11 +354,13 @@ bool OSystem::createConsole(const string& romfile)
     #ifdef CHEATCODE_SUPPORT
       myCheatManager->loadCheats(md5);
     #endif
-      setFramerate(60);  // We need to set framerate to see messages
       myEventHandler->reset(EventHandler::S_EMULATE);
-      createFrameBuffer(false);
-      myFrameBuffer->setCursorState();
-      myConsole->initialize();  // Must be done *after* the framebuffer is created
+      createFrameBuffer(false);  // Takes care of initializeVideo()
+      myConsole->initializeAudio();
+    #ifdef DEBUGGER_SUPPORT
+      myDebugger->setConsole(myConsole);
+      myDebugger->initialize();
+    #endif
 
       if(showmessage)
         myFrameBuffer->showMessage("New console created");
@@ -375,6 +372,7 @@ bool OSystem::createConsole(const string& romfile)
       // Update the timing info for a new console run
       resetLoopTiming();
 
+      myFrameBuffer->setCursorState();
       retval = true;
     }
     else
@@ -686,11 +684,6 @@ void OSystem::stateChanged(EventHandler::State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::pauseChanged(bool status)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
   for(;;)
@@ -710,6 +703,25 @@ void OSystem::mainLoop()
     myTimingInfo.totalFrames++;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+/*
+  Palette is defined as follows:
+    kColor
+    kBGColor
+    kShadowColor
+    kHiliteColor
+    kTextColor
+    kTextColorHi
+    kTextColorEm
+*/
+uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
+  // Normal mode
+  { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x00ff00, 0xc80000 },
+  // GP2X
+  { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x0000ff, 0xc80000 }
+  // Others to be added ...
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem(const OSystem& osystem)

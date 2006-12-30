@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.82 2006-12-19 12:40:30 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.83 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -93,7 +93,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.82 2006-12-19 12:40:30 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.83 2006-12-30 22:26:28 stephena Exp $
 */
 class FrameBuffer
 {
@@ -172,13 +172,6 @@ class FrameBuffer
     */
     inline const uInt32 imageHeight() { return myImageDim.h; }
 
-     /**
-      Handle the pause event; currently this updates the palette.
-
-      @param status  Whether pause has been enabled or disabled
-    */
-    void pause(bool status);
-
     /**
       Indicates that the TIA area is dirty, and certain areas need
       to be redrawn.
@@ -238,11 +231,18 @@ class FrameBuffer
     void setWindowTitle(const string& title);
 
     /**
-      Set up the palette for a screen of any depth > 8.
+      Set up the TIA/emulation palette for a screen of any depth > 8.
 
       @param palette  The array of colors
     */
-    virtual void setPalette(const uInt32* palette);
+    virtual void setTIAPalette(const uInt32* palette);
+
+    /**
+      Set up the user interface palette for a screen of any depth > 8.
+
+      @param palette  The array of colors
+    */
+    virtual void setUIPalette(const uInt32* palette);
 
     /**
       This method should be called to draw a rectangular box with sides
@@ -492,9 +492,6 @@ class FrameBuffer
 
     // Amount to blend when using phosphor effect
     int myPhosphorBlend;
-
-    // Table of RGB values for GUI elements
-    static const uInt8 ourGUIColors[kNumColors-256][3];
 
   private:
     /**

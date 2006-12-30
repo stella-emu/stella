@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.hxx,v 1.13 2006-12-08 16:49:36 stephena Exp $
+// $Id: Menu.hxx,v 1.14 2006-12-30 22:26:29 stephena Exp $
 //============================================================================
 
 #ifndef MENU_HXX
@@ -27,7 +27,7 @@ class OSystem;
   The base dialog for all configuration menus in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Menu.hxx,v 1.13 2006-12-08 16:49:36 stephena Exp $
+  @version $Id: Menu.hxx,v 1.14 2006-12-30 22:26:29 stephena Exp $
 */
 class Menu : public DialogContainer
 {
@@ -41,11 +41,6 @@ class Menu : public DialogContainer
       Destructor
     */
     virtual ~Menu();
-
-    /**
-      Updates the basedialog to be of the type defined for this derived class.
-    */
-    void initialize();
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.115 2006-12-28 20:40:00 stephena Exp $
+// $Id: Console.cxx,v 1.116 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -73,10 +73,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Attach the event subsystem to the current console
   myEvent = myOSystem->eventHandler().event();
 
-  // Load user-defined palette for this ROM and initialize them
-  // depending on PAL colour-loss effect
+  // Load user-defined palette for this ROM
   loadUserPalette();
-  setColorLossPalette(myOSystem->settings().getBool("colorloss"));
 
   // Setup the controllers based on properties
   string left  = myProperties.get(Controller_Left);
@@ -256,7 +254,7 @@ Console::~Console()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
-  uInt32 framerate = 60;
+  int framerate = 60;
   if(myDisplayFormat == "NTSC")
   {
     myDisplayFormat = "PAL";
@@ -364,7 +362,7 @@ void Console::setPalette(const string& type)
   else  // return normal palette by default
     palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
 
-  myOSystem->frameBuffer().setPalette(palette);
+  myOSystem->frameBuffer().setTIAPalette(palette);
 
 // FIXME - maybe add an error message that requested palette not available?
 }
@@ -398,24 +396,29 @@ void Console::setProperties(const Properties& props)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::initialize()
+void Console::initializeVideo(bool full)
 {
-  // Set the correct framerate based on the format of the ROM
-  // This can be overridden by changing the framerate in the
-  // VideoDialog box or on the commandline, but it can't be saved
-  // (ie, framerate is now solely determined based on ROM format).
-  int framerate = myOSystem->settings().getInt("framerate");
-  if(framerate == -1)
+  if(full)
   {
-    if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60")
-      framerate = 60;
-    else if(myDisplayFormat == "PAL")
-      framerate = 50;
-    else
-      framerate = 60;
+    string title = string("Stella ") + STELLA_VERSION +
+                   ": \"" + myProperties.get(Cartridge_Name) + "\"";
+    myOSystem->frameBuffer().initialize(title,
+                                        myMediaSource->width() << 1,
+                                        myMediaSource->height());
   }
-  myOSystem->setFramerate(framerate);
 
+  bool enable = myProperties.get(Display_Phosphor) == "YES";
+  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
+  myOSystem->frameBuffer().enablePhosphor(enable, blend);
+  setColorLossPalette(myOSystem->settings().getBool("colorloss"));
+  setPalette(myOSystem->settings().getString("palette"));
+
+  myOSystem->setFramerate(getFrameRate());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::initializeAudio()
+{
   // Initialize the sound interface.
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
@@ -430,44 +433,8 @@ void Console::initialize()
 
   myOSystem->sound().close();
   myOSystem->sound().setChannels(channels);
-  myOSystem->sound().setFrameRate(framerate);
+  myOSystem->sound().setFrameRate(getFrameRate());
   myOSystem->sound().initialize();
-
-  // Initialize the options menu system with updated values from the framebuffer
-  myOSystem->menu().initialize();
-
-  // Initialize the command menu system with updated values from the framebuffer
-  myOSystem->commandMenu().initialize();
-
-#ifdef DEBUGGER_SUPPORT
-  // Finally, initialize the debugging system, since it depends on the current ROM
-  myOSystem->debugger().setConsole(this);
-  myOSystem->debugger().initialize();
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::initializeVideo()
-{
-  string title = string("Stella ") + STELLA_VERSION +
-                 ": \"" + myProperties.get(Cartridge_Name) + "\"";
-  myOSystem->frameBuffer().initialize(title,
-                                      myMediaSource->width() << 1,
-                                      myMediaSource->height());
-  bool enable = myProperties.get(Display_Phosphor) == "YES";
-  int blend = atoi(myProperties.get(Display_PPBlend).c_str());
-  myOSystem->frameBuffer().enablePhosphor(enable, blend);
-  setPalette(myOSystem->settings().getString("palette"));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setChannels(int channels)
-{
-  myOSystem->sound().setChannels(channels);
-
-  // Save to properties
-  string sound = channels == 2 ? "Stereo" : "Mono";
-  myProperties.set(Cartridge_Sound, sound);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -641,7 +608,7 @@ void Console::changeHeight(int direction)
   else if(direction == -1)  // decrease Height
   {
     height--;
-    if(height < 100)
+    if(height < 200)
     {
       myOSystem->frameBuffer().showMessage("Height at minimum");
       return;
@@ -741,7 +708,7 @@ void Console::setColorLossPalette(bool loss)
       continue;
 
     // If color-loss is enabled, fill the odd numbered palette entries
-    // with grays values (calculated using the standard RGB -> grayscale
+    // with gray values (calculated using the standard RGB -> grayscale
     // conversion formula)
     for(int j = 0; j < 128; ++j)
     {
@@ -759,6 +726,27 @@ void Console::setColorLossPalette(bool loss)
       palette[i][(j<<1)+1] = pixel;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Console::getFrameRate() const
+{
+  // Set the correct framerate based on the format of the ROM
+  // This can be overridden by changing the framerate in the
+  // VideoDialog box or on the commandline, but it can't be saved
+  // (ie, framerate is now solely determined based on ROM format).
+  int framerate = myOSystem->settings().getInt("framerate");
+  if(framerate == -1)
+  {
+    if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60")
+      framerate = 60;
+    else if(myDisplayFormat == "PAL")
+      framerate = 50;
+    else
+      framerate = 60;
+  }
+
+  return framerate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

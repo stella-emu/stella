@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.9 2006-12-08 16:49:12 stephena Exp $
+// $Id: RamWidget.cxx,v 1.10 2006-12-30 22:26:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -144,6 +144,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myInputBox = new InputTextDialog(boss, font, label,
                                    x + lwidth + 20, y + 2*lineHeight - 5);
   myInputBox->setTarget(this);
+  myInputBox->setCenter(false);
 
   // Start with these buttons disabled
   myCompareButton->clearFlags(WIDGET_ENABLED);
@@ -207,17 +208,17 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kSearchCmd:
+      parent()->addDialog(myInputBox);
       myInputBox->setEditString("");
       myInputBox->setTitle("");
       myInputBox->setEmitSignal(kSValEntered);
-      parent()->addDialog(myInputBox);
       break;
 
     case kCmpCmd:
+      parent()->addDialog(myInputBox);
       myInputBox->setEditString("");
       myInputBox->setTitle("");
       myInputBox->setEmitSignal(kCValEntered);
-      parent()->addDialog(myInputBox);
       break;
 
     case kRestartCmd:

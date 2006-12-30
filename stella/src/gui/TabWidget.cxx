@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.23 2006-12-08 16:49:37 stephena Exp $
+// $Id: TabWidget.cxx,v 1.24 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,6 +69,7 @@ int TabWidget::addTab(const string& title)
   newTab.title = title;
   newTab.firstWidget = NULL;
   newTab.parentWidget = NULL;
+  newTab.enabled = true;
 
   _tabs.push_back(newTab);
 
@@ -106,6 +107,15 @@ void TabWidget::setActiveTab(int tabID, bool show)
   // Let parent know about the tab change
   if(show)
     sendCommand(kTabChangedCmd, _activeTab, -1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TabWidget::disableTab(int tabID)
+{
+  assert(0 <= tabID && tabID < (int)_tabs.size());
+
+  _tabs[tabID].enabled = false;
+  // TODO - alsa disable all widgets belonging to this tab
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -255,12 +265,13 @@ void TabWidget::drawWidget(bool hilite)
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < (int)_tabs.size(); ++i)
   {
-    int color = (i == _activeTab) ? kColor : kShadowColor;
-    int yOffset = (i == _activeTab) ? 0 : 2; 
-    box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, color, color, (i == _activeTab));
+    int fontcolor = _tabs[i].enabled ? kTextColor : kColor;
+    int boxcolor = (i == _activeTab) ? kColor : kShadowColor;
+    int yOffset = (i == _activeTab) ? 0 : 2;
+    box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, boxcolor, boxcolor, (i == _activeTab));
     fb.drawString(_font, _tabs[i].title, x + kTabPadding,
                   _y + yOffset / 2 + (_tabHeight - _fontHeight - 1),
-                  _tabWidth - 2 * kTabPadding, kTextColor, kTextAlignCenter);
+                  _tabWidth - 2 * kTabPadding, fontcolor, kTextAlignCenter);
     x += _tabWidth + kTabSpacing;
   }
 

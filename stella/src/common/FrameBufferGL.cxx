@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.80 2006-12-29 15:16:47 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.81 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -123,8 +123,12 @@ bool FrameBufferGL::loadFuncs(const string& library)
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     SDL_Init(SDL_INIT_VIDEO);
 
-  const char* gl_ptr = library != "" ? library.c_str() : 0;
-  if(SDL_GL_LoadLibrary(gl_ptr) < 0)
+  // Try both the specified library and auto-detection
+  bool libLoaded = (library != "" && SDL_GL_LoadLibrary(library.c_str()) >= 0);
+  bool autoLoaded = false;
+  if(!libLoaded) autoLoaded = (SDL_GL_LoadLibrary(0) >= 0);
+
+  if(!libLoaded && !autoLoaded)
     return false;
 
   // Otherwise, fill the function pointers for GL functions

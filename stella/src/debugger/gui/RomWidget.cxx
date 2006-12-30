@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.18 2006-12-08 16:49:12 stephena Exp $
+// $Id: RomWidget.cxx,v 1.19 2006-12-30 22:26:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -102,6 +102,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   label.push_back("Filename: ");
   mySaveRom = new InputTextDialog(boss, font, label, _x + 50, _y + 80);
   mySaveRom->setTarget(this);
+  mySaveRom->setCenter(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

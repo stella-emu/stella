@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.10 2006-12-08 16:49:32 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.11 2006-12-30 22:26:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,8 +42,6 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
   // Set real dimensions
   _w = 4 * (lwidth) + 5;
   _h = 4 * (buttonHeight+5) + 5;
-  _x = (osystem->frameBuffer().baseWidth()  - _w) / 2;
-  _y = (osystem->frameBuffer().baseHeight() - _h) / 2;
 
   WidgetArray wid;
   ButtonWidget* b;
@@ -186,26 +184,28 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
     case kFormatCmd:
       instance()->eventHandler().leaveMenuMode();
       instance()->console().toggleFormat();
-      return;
+      execute = false;
       break;
 
     case kPaletteCmd:
       instance()->eventHandler().leaveMenuMode();
       instance()->console().togglePalette();
-      return;
+      execute = false;
       break;
 
     case kReloadRomCmd:
       instance()->eventHandler().leaveMenuMode();
+      instance()->deleteConsole();
       instance()->createConsole();
-      return;
+      execute = false;
       break;
 
     case kExitCmd:
       if(instance()->eventHandler().useLauncher())
-        event = Event::LauncherMode;
+        instance()->eventHandler().handleEvent(Event::LauncherMode, 1);
       else
-        event = Event::Quit;
+        instance()->quit();
+      execute = false;
       break;
 
     default:

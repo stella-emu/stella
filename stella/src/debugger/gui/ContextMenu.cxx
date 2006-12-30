@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.7 2006-12-08 16:49:10 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.8 2006-12-30 22:26:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,6 +33,8 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font)
     _rowHeight(font.getLineHeight()),
     _font(&font)
 {
+  // Context menus pop up wherever the mouse is clicked
+  setCenter(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

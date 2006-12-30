@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.22 2006-12-08 16:49:32 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.23 2006-12-30 22:26:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,11 +65,12 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                     "Fragment size: ", lwidth);
-  myFragsizePopup->appendEntry("256",  1);
-  myFragsizePopup->appendEntry("512",  2);
-  myFragsizePopup->appendEntry("1024", 3);
-  myFragsizePopup->appendEntry("2048", 4);
-  myFragsizePopup->appendEntry("4096", 5);
+  myFragsizePopup->appendEntry("128",  1);
+  myFragsizePopup->appendEntry("256",  2);
+  myFragsizePopup->appendEntry("512",  3);
+  myFragsizePopup->appendEntry("1024", 4);
+  myFragsizePopup->appendEntry("2048", 5);
+  myFragsizePopup->appendEntry("4096", 6);
   wid.push_back(myFragsizePopup);
   ypos += lineHeight + 4;
 
@@ -97,14 +98,8 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myTiaFreqPopup);
   ypos += lineHeight + 4;
 
-  // Stereo sound
-  mySoundTypeCheckbox = new CheckboxWidget(this, font, 20, ypos,
-                                           "Stereo mode", 0);
-  wid.push_back(mySoundTypeCheckbox);
-
   // Clip volume
-  myClipVolumeCheckbox = new CheckboxWidget(this, font,
-                                            40 + mySoundTypeCheckbox->getWidth(), ypos,
+  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
                                             "Clip volume", 0);
   wid.push_back(myClipVolumeCheckbox);
   ypos += lineHeight + 4;
@@ -155,11 +150,12 @@ void AudioDialog::loadConfig()
 
   // Fragsize
   i = instance()->settings().getInt("fragsize");
-  if(i == 256)       i = 1;
-  else if(i == 512)  i = 2;
-  else if(i == 1024) i = 3;
-  else if(i == 2048) i = 4;
-  else if(i == 4096) i = 5;
+  if(i == 128)       i = 1;
+  else if(i == 256)  i = 2;
+  else if(i == 512)  i = 3;
+  else if(i == 1024) i = 4;
+  else if(i == 2048) i = 5;
+  else if(i == 4096) i = 6;
   myFragsizePopup->setSelectedTag(i);
 
   // Output frequency
@@ -182,10 +178,6 @@ void AudioDialog::loadConfig()
   else i = 3;  // default to '31400'
   myTiaFreqPopup->setSelectedTag(i);
 
-  // Stereo mode
-  i = instance()->settings().getInt("channels");
-  mySoundTypeCheckbox->setState(i == 2);
-
   // Clip volume
   b = instance()->settings().getBool("clipvol");
   myClipVolumeCheckbox->setState(b);
@@ -201,71 +193,39 @@ void AudioDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::saveConfig()
 {
+  Settings& settings = instance()->settings();
   string s;
+  bool b;
   int i;
-  bool b, restart = false;
 
   // Volume
   i = myVolumeSlider->getValue();
   instance()->sound().setVolume(i);
 
-  // Fragsize (requires a restart to take effect)
-  i = 1;
-  i <<= (myFragsizePopup->getSelectedTag() + 7);
-  if(instance()->settings().getInt("fragsize") != i)
-  {
-    instance()->settings().setInt("fragsize", i);
-    restart = true;
-  }
+  // Fragsize
+  s = myFragsizePopup->getSelectedString();
+  settings.setString("fragsize", s);
 
-  // Output frequency (requires a restart to take effect)
+  // Output frequency
   s = myFreqPopup->getSelectedString();
-  if(instance()->settings().getString("freq") != s)
-  {
-    instance()->settings().setString("freq", s);
-    restart = true;
-  }
+  settings.setString("freq", s);
 
-  // TIA frequency (requires a restart to take effect)
+  // TIA frequency
   s = myTiaFreqPopup->getSelectedString();
-  if(instance()->settings().getString("tiafreq") != s)
-  {
-    instance()->settings().setString("tiafreq", s);
-    restart = true;
-  }
-
-  // Enable/disable stereo sound (requires a restart to take effect)
-  b = mySoundTypeCheckbox->getState();
-  if((instance()->settings().getInt("channels") == 2) != b)
-  {
-    instance()->console().setChannels(b ? 2 : 1);
-    restart = true;
-  }
+  settings.setString("tiafreq", s);
 
   // Enable/disable volume clipping (requires a restart to take effect)
   b = myClipVolumeCheckbox->getState();
-  if(instance()->settings().getBool("clipvol") != b)
-  {
-    instance()->settings().setBool("clipvol", b);
-    restart = true;
-  }
+  settings.setBool("clipvol", b);
 
   // Enable/disable sound (requires a restart to take effect)
   b = mySoundEnableCheckbox->getState();
-  if(instance()->settings().getBool("sound") != b)
-  {
-    instance()->sound().setEnabled(b);
-    restart = true;
-  }
+  instance()->sound().setEnabled(b);
 
   // Only force a re-initialization when necessary, since it can
   // be a time-consuming operation
-  if(restart)
-  {
-    instance()->sound().close();
-    instance()->sound().initialize();
-    instance()->sound().mute(true);
-  }
+  if(&instance()->console())
+    instance()->console().initializeAudio();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -275,15 +235,14 @@ void AudioDialog::setDefaults()
   myVolumeLabel->setLabel("100");
 
 #ifdef WIN32
-  myFragsizePopup->setSelectedTag(4);
+  myFragsizePopup->setSelectedTag(5);
 #else
-  myFragsizePopup->setSelectedTag(2);
+  myFragsizePopup->setSelectedTag(3);
 #endif
   myFreqPopup->setSelectedTag(3);
   myTiaFreqPopup->setSelectedTag(3);
 
   myClipVolumeCheckbox->setState(true);
-  mySoundTypeCheckbox->setState(false);
   mySoundEnableCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
@@ -300,7 +259,6 @@ void AudioDialog::handleSoundEnableChange(bool active)
   myFragsizePopup->setEnabled(active);
   myFreqPopup->setEnabled(active);
   myTiaFreqPopup->setEnabled(active);
-  mySoundTypeCheckbox->setEnabled(active);
   myClipVolumeCheckbox->setEnabled(active);
 }
 

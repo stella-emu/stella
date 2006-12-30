@@ -13,13 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.51 2006-12-08 20:19:58 stephena Exp $
+// $Id: Dialog.cxx,v 1.52 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
-
-#include <SDL.h>
 
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
@@ -46,6 +44,7 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _okWidget(0),
     _cancelWidget(0),
     _visible(true),
+    _center(true),
     _ourTab(NULL),
     _focusID(0)
 {
@@ -85,6 +84,17 @@ void Dialog::close()
 
   releaseFocus();
   parent()->removeDialog();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::center()
+{
+  FrameBuffer& fb = instance()->frameBuffer();
+  if(_center && &fb)
+  {
+    _x = (fb.baseWidth() - _w)  / 2;
+    _y = (fb.baseHeight() - _h) / 2;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

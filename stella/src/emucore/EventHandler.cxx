@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.191 2006-12-28 18:31:26 stephena Exp $
+// $Id: EventHandler.cxx,v 1.192 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -62,7 +62,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myOverlay(NULL),
     myState(S_NONE),
     myLSState(0),
-    myPauseFlag(false),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
     myFryingFlag(false),
@@ -161,9 +160,6 @@ void EventHandler::reset(State state)
   setEventState(state);
 
   myLSState = 0;
-  myPauseFlag = false;
-
-  pause(false);
   myEvent->clear();
 
   if(myState == S_LAUNCHER)
@@ -209,20 +205,6 @@ void EventHandler::refreshDisplay(bool forceUpdate)
 
   if(forceUpdate)
     myOSystem->frameBuffer().update();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::pause(bool status)
-{
-  myPauseFlag = status;
-
-  if(&myOSystem->frameBuffer())
-    myOSystem->frameBuffer().pause(myPauseFlag);
-  if(&myOSystem->sound())
-    myOSystem->sound().mute(myPauseFlag);
-
-  // Inform the OSystem of the change in pause
-  myOSystem->pauseChanged(myPauseFlag);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -657,8 +639,7 @@ void EventHandler::poll(uInt32 time)
 
       case SDL_ACTIVEEVENT:
         if((event.active.state & SDL_APPACTIVE) && (event.active.gain == 0))
-          if(!myPauseFlag)
-            handleEvent(Event::Pause, 1);
+          if(myState == S_EMULATE) enterMenuMode(S_MENU);
         break; // SDL_ACTIVEEVENT
 
       case SDL_QUIT:
@@ -1168,41 +1149,36 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::Fry:
-      if(!myPauseFlag)
-        myFryingFlag = bool(state);
+      myFryingFlag = bool(state);
       return;
 
     case Event::VolumeDecrease:
     case Event::VolumeIncrease:
-      if(state && !myPauseFlag)
+      if(state)
         myOSystem->sound().adjustVolume(event == Event::VolumeIncrease ? 1 : -1);
       return;
 
     case Event::SaveState:
-      if(state && !myPauseFlag) saveState();
+      if(state) saveState();
       return;
 
     case Event::ChangeState:
-      if(state && !myPauseFlag) changeState();
+      if(state) changeState();
       return;
 
     case Event::LoadState:
-      if(state && !myPauseFlag) loadState();
+      if(state) loadState();
       return;
 
     case Event::TakeSnapshot:
-      if(state && !myPauseFlag) takeSnapshot();
-      return;
-
-    case Event::Pause:
-      if(state)
-        pause(!myPauseFlag);
+      if(state) takeSnapshot();
       return;
 
     case Event::LauncherMode:
       // ExitGame will only work when we've launched stella using the ROM
       // launcher.  Otherwise, the only way to exit the main loop is to Quit.
-      if(myState == S_EMULATE && myUseLauncherFlag && state)
+      if((myState == S_EMULATE || myState == S_CMDMENU) &&
+          myUseLauncherFlag && state)
       {
         myOSystem->settings().saveConfig();
         myOSystem->deleteConsole();
@@ -1234,27 +1210,17 @@ bool EventHandler::eventStateChange(Event::Type type)
   switch(type)
   {
     case Event::MenuMode:
-      if(!myPauseFlag)
-      {
-        if(myState == S_EMULATE)
-          enterMenuMode(S_MENU);
-        else
-          handled = false;
-      }
+      if(myState == S_EMULATE)
+        enterMenuMode(S_MENU);
       else
         handled = false;
       break;
 
     case Event::CmdMenuMode:
-      if(!myPauseFlag)
-      {
-        if(myState == S_EMULATE)
-          enterMenuMode(S_CMDMENU);
-        else if(myState == S_CMDMENU)
-          leaveMenuMode();
-        else
-          handled = false;
-      }
+      if(myState == S_EMULATE)
+        enterMenuMode(S_CMDMENU);
+      else if(myState == S_CMDMENU)
+        leaveMenuMode();
       else
         handled = false;
       break;
@@ -1769,7 +1735,6 @@ void EventHandler::setDefaultKeymap(EventMode mode)
       myKeyTable[ SDLK_F10 ][mode]       = Event::ChangeState;
       myKeyTable[ SDLK_F11 ][mode]       = Event::LoadState;
       myKeyTable[ SDLK_F12 ][mode]       = Event::TakeSnapshot;
-      myKeyTable[ SDLK_PAUSE ][mode]     = Event::Pause;
       myKeyTable[ SDLK_BACKSPACE ][mode] = Event::Fry;
       myKeyTable[ SDLK_TAB ][mode]       = Event::MenuMode;
       myKeyTable[ SDLK_BACKSLASH ][mode] = Event::CmdMenuMode;
@@ -2224,8 +2189,8 @@ void EventHandler::enterMenuMode(State state)
   myOverlay->reStack();
 
   refreshDisplay();
-
   myOSystem->frameBuffer().setCursorState();
+
   myOSystem->sound().mute(true);
   myEvent->clear();
 }
@@ -2236,8 +2201,8 @@ void EventHandler::leaveMenuMode()
   setEventState(S_EMULATE);
 
   refreshDisplay();
-
   myOSystem->frameBuffer().setCursorState();
+
   myOSystem->sound().mute(false);
   myEvent->clear();
 }
@@ -2253,10 +2218,8 @@ bool EventHandler::enterDebugMode()
   myOSystem->createFrameBuffer();
   myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
+  myOSystem->sound().mute(true);
   myEvent->clear();
-
-  if(!myPauseFlag)  // Pause when entering debugger mode
-    handleEvent(Event::Pause, 1);
 
   // Make sure debugger starts in a consistent state
   myOSystem->debugger().setStartState();
@@ -2265,7 +2228,7 @@ bool EventHandler::enterDebugMode()
   // (sometimes entering on a breakpoint doesn't draw contents)
   refreshDisplay();
 #else
-  myOSystem->frameBuffer().showMessage("Developer/debugger unsupported");
+  myOSystem->frameBuffer().showMessage("Debugger unsupported");
 #endif
 
   return true;
@@ -2286,10 +2249,8 @@ void EventHandler::leaveDebugMode()
   myOSystem->createFrameBuffer();
   refreshDisplay();
   myOSystem->frameBuffer().setCursorState();
+  myOSystem->sound().mute(false);
   myEvent->clear();
-
-  if(myPauseFlag)  // Un-Pause when leaving debugger mode
-    handleEvent(Event::Pause, 1);
 #endif
 }
 
@@ -2586,7 +2547,6 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::ChangeState,                 "Change State",                    0 },
   { Event::LoadState,                   "Load State",                      0 },
   { Event::TakeSnapshot,                "Snapshot",                        0 },
-  { Event::Pause,                       "Pause",                           0 },
   { Event::Fry,                         "Fry cartridge",                   0 },
   { Event::VolumeDecrease,              "Decrease volume",                 0 },
   { Event::VolumeIncrease,              "Increase volume",                 0 },

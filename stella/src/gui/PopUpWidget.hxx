@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.15 2006-12-08 16:49:36 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.16 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,6 +107,7 @@ class PopUpDialog : public Dialog
     PopUpDialog(PopUpWidget* boss, int clickX, int clickY);
 	
     void drawDialog();
+    void center() { recalc(); }
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);

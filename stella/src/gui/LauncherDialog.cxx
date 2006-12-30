@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.62 2006-12-22 22:32:49 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.63 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,7 +34,7 @@
 #include "GuiUtils.hxx"
 #include "BrowserDialog.hxx"
 #include "ProgressDialog.hxx"
-#include "LauncherOptionsDialog.hxx"
+#include "OptionsDialog.hxx"
 #include "LauncherDialog.hxx"
 
 #include "bspf.hxx"
@@ -131,10 +131,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
-  // Create the launcher options dialog, where you can change ROM
-  // and snapshot paths
-  myOptions = new LauncherOptionsDialog(osystem, parent, font, this,
-                                        20, 60, _w - 40, _h - 120);
+  // Create an options dialog, similar to the in-game one
+  myOptions = new OptionsDialog(osystem, parent, this, true);  // not in game mode
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
@@ -184,17 +182,7 @@ void LauncherDialog::updateListing(bool fullReload)
   myGameList->clear();
   myNote->setLabel("");
 
-  // If this is the first time using Stella, the romdir won't be set.
-  // In that case, display the options dialog, and don't let Stella proceed
-  // until the options are set.
   string romdir = instance()->settings().getString("romdir");
-  if(romdir == "")
-  {
-    myOptionsButton->setEnabled(true);
-    myQuitButton->setEnabled(true);
-    parent()->addDialog(myOptions);
-    return;
-  }
 
   // If in ROM browse mode, just load the current directory and
   // don't translate by md5sum at all

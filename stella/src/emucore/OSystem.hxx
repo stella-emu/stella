@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.49 2006-12-28 18:31:26 stephena Exp $
+// $Id: OSystem.hxx,v 1.50 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -45,7 +45,7 @@ class VideoDialog;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.49 2006-12-28 18:31:26 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.50 2006-12-30 22:26:28 stephena Exp $
 */
 class OSystem
 {
@@ -355,11 +355,6 @@ class OSystem
     */
     virtual void stateChanged(EventHandler::State state);
 
-    /**
-      Informs the OSystem of a change in pause status.
-    */
-    virtual void pauseChanged(bool status);
-
   protected:
     /**
       Set the base directory for all Stella files
@@ -430,6 +425,7 @@ class OSystem
     bool myQuitLoop;
 
   private:
+    enum { kNumUIPalettes = 2 };
     string myBaseDir;
     string myStateDir;
 
@@ -459,6 +455,9 @@ class OSystem
       uInt32 totalFrames;
     };
     TimingInfo myTimingInfo;
+
+    // Table of RGB values for GUI elements
+    static uInt32 ourGUIColors[kNumUIPalettes][kNumColors-256];
 
   private:
     /**

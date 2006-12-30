@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.30 2006-12-08 20:19:58 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.31 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,6 @@ void PopUpDialog::drawDialog()
   {
     FrameBuffer& fb = instance()->frameBuffer();
 
-//cerr << "PopUpDialog::drawDialog()\n";
     // Draw the menu border
     fb.hLine(_x, _y, _x + _w - 1, kColor);
     fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
@@ -200,7 +199,6 @@ void PopUpDialog::handleEvent(Event::Type e)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpDialog::drawMenuEntry(int entry, bool hilite)
 {
-//cerr << "PopUpDialog::drawMenuEntry\n";
   FrameBuffer& fb = instance()->frameBuffer();
 
   // Draw one entry of the popup menu, including selection
@@ -252,6 +250,9 @@ void PopUpDialog::recalc()
 {
   // Perform clipping / switch to scrolling mode if we don't fit on the screen
   const int height = instance()->frameBuffer().baseHeight();
+
+  _x = _popUpBoss->getAbsX() + _popUpBoss->_labelWidth;
+  _y = _popUpBoss->getAbsY() + _popUpBoss->getHeight();
 
   _h = _popUpBoss->_entries.size() * _popUpBoss->_fontHeight + 2;
 
@@ -484,11 +485,6 @@ void PopUpWidget::appendEntry(const string& entry, int tag)
   e.name = entry;
   e.tag = tag;
   _entries.push_back(e);
-
-  // Each time an entry is added, the popup dialog gets larger
-  // This isn't as efficient as it could be, since it's called
-  // each time an entry is added (which can be dozens of times).
-  myPopUpDialog->recalc();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.113 2006-12-29 16:52:43 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.114 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -110,10 +110,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   // (lowercase vs. uppercase characters)
   SDL_EnableUNICODE(1);
 
-  // Set palette for GUI
-  for(int i = 0; i < kNumColors-256; i++)
-    myDefPalette[i+256] = mapRGB(ourGUIColors[i][0], ourGUIColors[i][1], ourGUIColors[i][2]);
-
   // Erase any messages from a previous run
   myMessage.counter = 0;
 
@@ -136,20 +132,14 @@ void FrameBuffer::update()
   {
     case EventHandler::S_EMULATE:
     {
-      bool mediaSourceChanged = false;
+      // Run the console for one frame
+      myOSystem->console().mediaSource().update();
+      if(myOSystem->eventHandler().frying())
+        myOSystem->console().fry();
 
-      // Draw changes to the mediasource
-      if(!myOSystem->eventHandler().isPaused())
-      {
-        myOSystem->console().mediaSource().update();
-        if(myOSystem->eventHandler().frying())
-          myOSystem->console().fry();
-          mediaSourceChanged = true;  // mediasource changed, so force an update
-      }
+      // And update the screen
+      drawMediaSource();
 
-      // Only update the screen if it's been invalidated
-      if(mediaSourceChanged || theRedrawTIAIndicator)
-        drawMediaSource();
       break;  // S_EMULATE
     }
 
@@ -302,27 +292,22 @@ inline void FrameBuffer::drawMessage()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::pause(bool status)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refresh()
 {
   theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setPalette(const uInt32* palette)
+void FrameBuffer::setTIAPalette(const uInt32* palette)
 {
   int i, j;
 
   // Set palette for normal fill
   for(i = 0; i < 256; ++i)
   {
-    Uint8 r = (Uint8) ((palette[i] & 0x00ff0000) >> 16);
-    Uint8 g = (Uint8) ((palette[i] & 0x0000ff00) >> 8);
-    Uint8 b = (Uint8) (palette[i] & 0x000000ff);
+    Uint8 r = (palette[i] >> 16) & 0xff;
+    Uint8 g = (palette[i] >> 8) & 0xff;
+    Uint8 b = palette[i] & 0xff;
 
     myDefPalette[i] = mapRGB(r, g, b);
   }
@@ -332,12 +317,12 @@ void FrameBuffer::setPalette(const uInt32* palette)
   {
     for(j = 0; j < 256; ++j)
     {
-      uInt8 ri = (uInt8) ((palette[i] & 0x00ff0000) >> 16);
-      uInt8 gi = (uInt8) ((palette[i] & 0x0000ff00) >> 8);
-      uInt8 bi = (uInt8) (palette[i] & 0x000000ff);
-      uInt8 rj = (uInt8) ((palette[j] & 0x00ff0000) >> 16);
-      uInt8 gj = (uInt8) ((palette[j] & 0x0000ff00) >> 8);
-      uInt8 bj = (uInt8) (palette[j] & 0x000000ff);
+      uInt8 ri = (palette[i] >> 16) & 0xff;
+      uInt8 gi = (palette[i] >> 8) & 0xff;
+      uInt8 bi = palette[i] & 0xff;
+      uInt8 rj = (palette[j] >> 16) & 0xff;
+      uInt8 gj = (palette[j] >> 8) & 0xff;
+      uInt8 bj = palette[j] & 0xff;
 
       Uint8 r = (Uint8) getPhosphor(ri, rj);
       Uint8 g = (Uint8) getPhosphor(gi, gj);
@@ -348,6 +333,19 @@ void FrameBuffer::setPalette(const uInt32* palette)
   }
 
   theRedrawTIAIndicator = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setUIPalette(const uInt32* palette)
+{
+  // Set palette for GUI
+  for(int i = 0; i < kNumColors-256; ++i)
+  {
+    Uint8 r = (palette[i] >> 16) & 0xff;
+    Uint8 g = (palette[i] >> 8) & 0xff;
+    Uint8 b = palette[i] & 0xff;
+    myDefPalette[i+256] = mapRGB(r, g, b);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -746,21 +744,6 @@ const string& FrameBuffer::currentScalerName()
      myOSystem->settings().getString("scale_tia") :
      myOSystem->settings().getString("scale_ui") );
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8 FrameBuffer::ourGUIColors[kNumColors-256][3] = {
-  { 104, 104, 104 },  // kColor
-  {   0,   0,   0 },  // kBGColor
-  {  64,  64,  64 },  // kShadowColor
-  { 200, 200, 255 },  // kHiliteColor
-  {  32, 160,  32 },  // kTextColor
-#if !defined(GP2X)  // Quick GP2X hack to change colours, until an in-game GUI is added
-  {   0, 255,   0 },  // kTextColorHi
-#else
-  {   0,   0, 255 },  // kTextColorHi
-#endif
-  { 200,   0,   0 }   // kTextColorEm
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Scaler FrameBuffer::ourScalers[kScalerListSize] = {

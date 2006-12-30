@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.23 2006-12-28 18:31:26 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.24 2006-12-30 22:26:28 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -106,7 +106,7 @@ void OSystemGP2X::setDefaultJoymap()
   myEventHandler->setDefaultJoyMapping(Event::CmdMenuMode, kEmulationMode, 0, 12);	// A
   myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, kEmulationMode, 0, 13);	// B
   myEventHandler->setDefaultJoyMapping(Event::MenuMode, kEmulationMode, 0, 14);         // Y
-  myEventHandler->setDefaultJoyMapping(Event::Pause, kEmulationMode, 0, 15);            // X
+//  myEventHandler->setDefaultJoyMapping(Event::Pause, kEmulationMode, 0, 15);            // X
   myEventHandler->setDefaultJoyMapping(Event::VolumeIncrease, kEmulationMode, 0, 16);	// Vol+
   myEventHandler->setDefaultJoyMapping(Event::VolumeDecrease, kEmulationMode, 0, 17);	// Vol-
   myEventHandler->setDefaultJoyMapping(Event::NoType, kEmulationMode, 0, 18);		// Click

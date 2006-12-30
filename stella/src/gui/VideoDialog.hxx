@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.17 2006-12-28 20:40:01 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.18 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,16 +49,19 @@ class VideoDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    PopUpWidget*      myDirtyPopup;
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myFilterPopup;
     SliderWidget*     myAspectRatioSlider;
     StaticTextWidget* myAspectRatioLabel;
     PopUpWidget*      myPalettePopup;
+    PopUpWidget*      myTIAScalerPopup;
+    PopUpWidget*      myUIScalerPopup;
+
     SliderWidget*     myFrameRateSlider;
     StaticTextWidget* myFrameRateLabel;
-    PopUpWidget*      myScalerPopup;
     CheckboxWidget*   myFullscreenCheckbox;
+    CheckboxWidget*   myColorLossCheckbox;
+    CheckboxWidget*   myDirtyRectCheckbox;
     CheckboxWidget*   myUseDeskResCheckbox;
     CheckboxWidget*   myUseVSyncCheckbox;
 

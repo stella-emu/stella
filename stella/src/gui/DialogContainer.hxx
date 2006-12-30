@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.19 2006-12-08 16:49:33 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.20 2006-12-30 22:26:29 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -36,7 +36,7 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.19 2006-12-08 16:49:33 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.20 2006-12-30 22:26:29 stephena Exp $
 */
 class DialogContainer
 {
@@ -124,30 +124,34 @@ class DialogContainer
     void draw();
 
     /**
-      Add a dialog box to the stack
+      Add a dialog box to the stack.
     */
     void addDialog(Dialog* d);
 
     /**
-      Remove the topmost dialog box from the stack
+      Remove the topmost dialog box from the stack.
     */
     void removeDialog();
 
     /**
-      Reset dialog stack to the main configuration menu
+      Reset dialog stack to the main configuration menu.
     */
     void reStack();
 
     /**
-      Redraw all dialogs on the stack
+      Redraw all dialogs on the stack.
     */
     void refresh() { myRefreshFlag = true; }
 
     /**
-      (Re)initialize the menuing system.  This is necessary if a new Console
-      has been loaded, since in most cases the screen dimensions will have changed.
+      Return the bottom-most dialog of this container.
     */
-    virtual void initialize() = 0;
+    const Dialog* baseDialog() const { return myBaseDialog; }
+
+    /**
+      (Re)initialize the menuing system.  This isn't necessary in most cases.
+    */
+    virtual void initialize() {}
 
   private:
     void reset();

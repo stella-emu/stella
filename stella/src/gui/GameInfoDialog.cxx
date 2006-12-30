@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.34 2006-12-26 02:09:29 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.35 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -332,8 +332,11 @@ GameInfoDialog::~GameInfoDialog()
 void GameInfoDialog::loadConfig()
 {
   myDefaultsSelected = false;
-  myGameProperties = myOSystem->console().properties();
-  loadView();
+  if(&myOSystem->console())
+  {
+    myGameProperties = myOSystem->console().properties();
+    loadView();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

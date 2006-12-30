@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.109 2006-12-28 20:40:00 stephena Exp $
+// $Id: Settings.cxx,v 1.110 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -241,14 +241,6 @@ void Settings::validate()
 #endif
 
 #ifdef SOUND_SUPPORT
-  i = getInt("fragsize");
-  if(i != 256 && i != 512 && i != 1024 && i != 2048 && i != 4096)
-  #ifdef WIN32
-    setInternal("fragsize", "2048");
-  #else
-    setInternal("fragsize", "512");
-  #endif
-
   i = getInt("volume");
   if(i < 0 || i > 100)
     setInternal("volume", "100");
@@ -325,7 +317,6 @@ void Settings::usage()
     << endl
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
-    << "  -channels     <1|2>          Enable mono or stereo sound\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
     << "  -freq         <number>       Set sound sample output frequency (0 - 48000)\n"
     << "  -tiafreq      <number>       Set sound sample generation frequency (0 - 48000)\n"

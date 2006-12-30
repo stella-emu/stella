@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.20 2006-12-08 16:49:36 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.21 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,8 +24,12 @@
 
 class CommandSender;
 class DialogContainer;
+class GuiObject;
+class VideoDialog;
 class AudioDialog;
 class InputDialog;
+class UIDialog;
+class FileSnapDialog;
 class GameInfoDialog;
 class CheatCodeDialog;
 class HelpDialog;
@@ -33,13 +37,13 @@ class AboutDialog;
 class OSystem;
 
 #include "Dialog.hxx"
-#include "GameInfoDialog.hxx"
 #include "bspf.hxx"
 
 class OptionsDialog : public Dialog
 {
   public:
-    OptionsDialog(OSystem* osystem, DialogContainer* parent);
+    OptionsDialog(OSystem* osystem, DialogContainer* parent, GuiObject* boss,
+                  bool global);
     virtual ~OptionsDialog();
 
   private:
@@ -50,10 +54,38 @@ class OptionsDialog : public Dialog
     VideoDialog*     myVideoDialog;
     AudioDialog*     myAudioDialog;
     InputDialog*     myInputDialog;
+    UIDialog*        myUIDialog;
+    FileSnapDialog*  myFileSnapDialog;
     GameInfoDialog*  myGameInfoDialog;
     CheatCodeDialog* myCheatCodeDialog;
     HelpDialog*      myHelpDialog;
     AboutDialog*     myAboutDialog;
+
+    ButtonWidget* myGameInfoButton;
+    ButtonWidget* myCheatCodeButton;
+
+    // Indicates if this dialog is used for global (vs. in-game) settings
+    bool myIsGlobal;
+
+    enum {
+      kVidCmd      = 'VIDO',
+      kAudCmd      = 'AUDO',
+      kInptCmd     = 'INPT',
+      kUsrIfaceCmd = 'URIF',
+      kFileSnapCmd = 'FLSN',
+      kInfoCmd     = 'INFO',
+      kCheatCmd    = 'CHET',
+      kHelpCmd     = 'HELP',
+      kAboutCmd    = 'ABOU',
+      kExitCmd     = 'EXIM'
+    };
+
+    enum {
+      kRowHeight      = 22,
+      kBigButtonWidth = 90,
+      kMainMenuWidth  = (2*kBigButtonWidth + 30),
+      kMainMenuHeight = 5*kRowHeight + 20
+    };
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.45 2006-12-08 16:49:36 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.46 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,8 @@
 #include "VideoDialog.hxx"
 #include "AudioDialog.hxx"
 #include "InputDialog.hxx"
+//#include "UIDialog.hxx"
+#include "FileSnapDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
@@ -38,49 +40,28 @@
 
 #include "bspf.hxx"
 
-enum {
-  kVidCmd   = 'VIDO',
-  kAudCmd   = 'AUDO',
-  kInptCmd  = 'INPT',
-  kInfoCmd  = 'INFO',
-  kHelpCmd  = 'HELP',
-  kAboutCmd = 'ABOU',
-  kExitCmd  = 'EXIM',
-  kCheatCmd = 'CHET'
-};
-
-enum {
-  kRowHeight      = 22,
-  kBigButtonWidth = 90,
-  kMainMenuWidth  = (kBigButtonWidth + 2 * 8),
-  kMainMenuHeight = 8 * kRowHeight + 10,
-};
-
 #define addBigButton(label, cmd) \
 	new ButtonWidget(this, font, xoffset, yoffset, kBigButtonWidth, 18, label, cmd); yoffset += kRowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
+OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
+                             GuiObject* boss, bool global)
   : Dialog(osystem, parent, 0, 0, kMainMenuWidth, kMainMenuHeight),
     myVideoDialog(NULL),
     myAudioDialog(NULL),
     myInputDialog(NULL),
+    myUIDialog(NULL),
+    myFileSnapDialog(NULL),
     myGameInfoDialog(NULL),
     myCheatCodeDialog(NULL),
     myHelpDialog(NULL),
-    myAboutDialog(NULL)
+    myAboutDialog(NULL),
+    myIsGlobal(global)
 {
-  int yoffset = 7;
-  const int xoffset = (_w - kBigButtonWidth) / 2;
-  const int fbWidth  = osystem->frameBuffer().baseWidth(),
-            fbHeight = osystem->frameBuffer().baseHeight();
   const GUI::Font& font = instance()->font(); // FIXME - change reference to optionsFont()
+  int xoffset = 10, yoffset = 10;
   WidgetArray wid;
   ButtonWidget* b = NULL;
-
-  // Set actual dialog dimensions
-  _x = (fbWidth - kMainMenuWidth) / 2;
-  _y = (fbHeight - kMainMenuHeight) / 2;
 
   b = addBigButton("Video Settings", kVidCmd);
   wid.push_back(b);
@@ -94,14 +75,23 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   b = addBigButton("Input Settings", kInptCmd);
   wid.push_back(b);
 
-  b = addBigButton("Game Properties", kInfoCmd);
+  b = addBigButton("UI Settings", kUsrIfaceCmd);
   wid.push_back(b);
 
-  b = addBigButton("Cheat Code", kCheatCmd);
-#ifndef CHEATCODE_SUPPORT
-  b->clearFlags(WIDGET_ENABLED);
-#endif
+  b = addBigButton("Files & Snapshots", kFileSnapCmd);
   wid.push_back(b);
+
+  // Move to second column
+  xoffset += kBigButtonWidth + 10;  yoffset = 10;
+
+  myGameInfoButton = addBigButton("Game Properties", kInfoCmd);
+  wid.push_back(myGameInfoButton);
+
+  myCheatCodeButton = addBigButton("Cheat Code", kCheatCmd);
+#ifndef CHEATCODE_SUPPORT
+  myCheatCodeButton->clearFlags(WIDGET_ENABLED);
+#endif
+  wid.push_back(myCheatCodeButton);
 
   b = addBigButton("Help", kHelpCmd);
   wid.push_back(b);
@@ -114,40 +104,49 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent)
   addCancelWidget(b);
 
   // Set some sane values for the dialog boxes
-  int x, y, w, h;
+  int x = 0, y = 0, w, h;
 
   // Now create all the dialogs attached to each menu button
   w = 230; h = 135;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myVideoDialog = new VideoDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 200; h = 140;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAudioDialog = new AudioDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 230; h = 185;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
+  w = 230; h = 185;
+  myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
+
+  w = 280; h = 120;
+  myFileSnapDialog = new FileSnapDialog(myOSystem, parent, font,
+                                        boss, x, y, w, h);
+
+
+
   w = 255; h = 190;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myGameInfoDialog = new GameInfoDialog(myOSystem, parent, font, this, x, y, w, h);
 
 #ifdef CHEATCODE_SUPPORT
   w = 230; h = 150;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, font, x, y, w, h);
 #endif
 
   w = 255; h = 150;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myHelpDialog = new HelpDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 255; h = 150;
-  checkBounds(fbWidth, fbHeight, &x, &y, &w, &h);
   myAboutDialog = new AboutDialog(myOSystem, parent, font, x, y, w, h);
 
   addToFocusList(wid);
+
+  // Certain buttons are always disabled while in game mode
+  if(myIsGlobal)
+  {
+    myGameInfoButton->clearFlags(WIDGET_ENABLED);
+    myCheatCodeButton->clearFlags(WIDGET_ENABLED);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,20 +155,12 @@ OptionsDialog::~OptionsDialog()
   delete myVideoDialog;
   delete myAudioDialog;
   delete myInputDialog;
+//  delete myUIDialog;
+  delete myFileSnapDialog;
   delete myGameInfoDialog;
   delete myCheatCodeDialog;
   delete myHelpDialog;
   delete myAboutDialog;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OptionsDialog::checkBounds(int width, int height,
-                                int* x, int* y, int* w, int* h)
-{
-  if(*w > width) *w = width;
-  if(*h > height) *h = height;
-  *x = (width - *w) / 2;
-  *y = (height - *h) / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,6 +179,15 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kInptCmd:
       parent()->addDialog(myInputDialog);
+      break;
+
+    case kUsrIfaceCmd:
+//      parent()->addDialog(myGameInfoDialog);
+cerr << "UI dialog\n";
+      break;
+
+    case kFileSnapCmd:
+      parent()->addDialog(myFileSnapDialog);
       break;
 
     case kInfoCmd:
@@ -209,7 +209,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      instance()->eventHandler().leaveMenuMode();
+      if(myIsGlobal)
+        close();
+      else
+        instance()->eventHandler().leaveMenuMode();
       break;
 
     default:

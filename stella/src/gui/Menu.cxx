@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Menu.cxx,v 1.14 2006-12-08 16:49:36 stephena Exp $
+// $Id: Menu.cxx,v 1.15 2006-12-30 22:26:29 stephena Exp $
 //============================================================================
 
 #include "Dialog.hxx"
@@ -27,16 +27,10 @@ class Properties;
 Menu::Menu(OSystem* osystem)
   : DialogContainer(osystem)
 {
+  myBaseDialog = new OptionsDialog(myOSystem, this, 0, false);  // in game mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Menu::~Menu()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Menu::initialize()
-{
-  delete myBaseDialog;
-  myBaseDialog = new OptionsDialog(myOSystem, this);
 }

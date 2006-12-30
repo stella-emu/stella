@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.hxx,v 1.12 2006-12-08 16:49:35 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.1 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifndef LAUNCHER_OPTIONS_DIALOG_HXX
-#define LAUNCHER_OPTIONS_DIALOG_HXX
+#ifndef FILE_SNAP_DIALOG_HXX
+#define FILE_SNAP_DIALOG_HXX
 
 class OSystem;
 class GuiObject;
@@ -34,13 +34,13 @@ class TabWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 
-class LauncherOptionsDialog : public Dialog, public CommandSender
+class FileSnapDialog : public Dialog, public CommandSender
 {
   public:
-    LauncherOptionsDialog(OSystem* osystem, DialogContainer* parent,
-                          const GUI::Font& font, GuiObject* boss,
-                          int x, int y, int w, int h);
-    ~LauncherOptionsDialog();
+    FileSnapDialog(OSystem* osystem, DialogContainer* parent,
+                   const GUI::Font& font, GuiObject* boss,
+                   int x, int y, int w, int h);
+    ~FileSnapDialog();
 
     virtual void loadConfig();
     virtual void saveConfig();
@@ -69,6 +69,9 @@ class LauncherOptionsDialog : public Dialog, public CommandSender
     // Snapshot controls
     StaticTextWidget* mySnapPath;
     CheckboxWidget*   mySnapSingleCheckbox;
+
+    // Indicates if this dialog is used for global (vs. in-game) settings
+    bool myIsGlobal;
 };
 
 #endif

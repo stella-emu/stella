@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.12 2006-12-08 16:48:55 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.13 2006-12-30 22:26:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,7 +67,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   StringList labels;
   labels.push_back("Name: ");
   labels.push_back("Code: ");
-  myCheatInput = new InputTextDialog(this, font, labels, _x+20, _y+20);
+  myCheatInput = new InputTextDialog(this, font, labels, 0, 0);
   myCheatInput->setTarget(this);
 
   // Add OK and Cancel buttons  **** FIXME - coordinates
@@ -139,12 +139,14 @@ void CheatCodeDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::addCheat()
 {
+  // We have to add the dialog first, so it can be centered
+  // The methods after this depend on the dialog having the correct dimensions
+  parent()->addDialog(myCheatInput);
   myCheatInput->setEditString("", 0);
   myCheatInput->setEditString("", 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(0);
   myCheatInput->setEmitSignal(kCheatAdded);
-  parent()->addDialog(myCheatInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,12 +160,14 @@ void CheatCodeDialog::editCheat()
   const string& name = list[idx]->name();
   const string& code = list[idx]->code();
 
+  // We have to add the dialog first, so it can be centered
+  // The methods after this depend on the dialog having the correct dimensions
+  parent()->addDialog(myCheatInput);
   myCheatInput->setEditString(name, 0);
   myCheatInput->setEditString(code, 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kCheatEdited);
-  parent()->addDialog(myCheatInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -176,12 +180,14 @@ void CheatCodeDialog::removeCheat()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::addOneShotCheat()
 {
+  // We have to add the dialog first, so it can be centered
+  // The methods after this depend on the dialog having the correct dimensions
+  parent()->addDialog(myCheatInput);
   myCheatInput->setEditString("One-shot cheat", 0);
   myCheatInput->setEditString("", 1);
   myCheatInput->setTitle("");
   myCheatInput->setFocus(1);
   myCheatInput->setEmitSignal(kOneShotCheatAdded);
-  parent()->addDialog(myCheatInput);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

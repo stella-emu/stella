@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.96 2006-12-28 18:31:26 stephena Exp $
+// $Id: EventHandler.hxx,v 1.97 2006-12-30 22:26:28 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.96 2006-12-28 18:31:26 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.97 2006-12-30 22:26:28 stephena Exp $
 */
 class EventHandler
 {
@@ -177,16 +177,6 @@ class EventHandler
                           of waiting for the next frame
     */
     void refreshDisplay(bool forceUpdate = false);
-
-    /**
-      This method pauses the entire emulator.
-    */
-    void pause(bool status);
-
-    /**
-      This method indicates whether a pause event has been received.
-    */
-    inline bool isPaused() { return myPauseFlag; }
 
     /**
       This method indicates that the system should terminate.
@@ -467,7 +457,7 @@ class EventHandler
 
   private:
     enum {
-      kEmulActionListSize = 81,
+      kEmulActionListSize = 80,
       kMenuActionListSize = 15
     };
 
@@ -546,9 +536,6 @@ class EventHandler
 
     // Indicates the current state to use for state loading/saving
     uInt32 myLSState;
-
-    // Indicates the current pause status
-    bool myPauseFlag;
 
     // Indicates whether the mouse cursor is grabbed
     bool myGrabMouseFlag;

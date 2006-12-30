@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherOptionsDialog.cxx,v 1.20 2006-12-08 16:49:35 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.1 2006-12-30 22:26:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,21 +21,21 @@
 
 #include "DialogContainer.hxx"
 #include "BrowserDialog.hxx"
-#include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
 #include "FSNode.hxx"
 #include "bspf.hxx"
 #include "LauncherDialog.hxx"
-#include "LauncherOptionsDialog.hxx"
+#include "FileSnapDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherOptionsDialog::LauncherOptionsDialog(
+FileSnapDialog::FileSnapDialog(
       OSystem* osystem, DialogContainer* parent,
       const GUI::Font& font, GuiObject* boss,
       int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     CommandSender(boss),
-    myBrowser(NULL)
+    myBrowser(NULL),
+    myIsGlobal(boss != 0)
 {
   const int vBorder = 4;
   int xpos, ypos, bwidth, bheight;
@@ -51,9 +51,9 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 2*bheight - ypos);
   addTabWidget(myTab);
 
-  // 1) The ROM locations tab
+  // 1) The browser settings tab
   wid.clear();
-  tabID = myTab->addTab("ROM Settings");
+  tabID = myTab->addTab("Browser Settings");
 
   // ROM path
   xpos = 15;  ypos += 5;
@@ -80,6 +80,16 @@ LauncherOptionsDialog::LauncherOptionsDialog(
 //  myReloadButton->setEditable(true);
   wid.push_back(myReloadButton); 
 
+  // ROM settings are disabled while in game mode
+  if(!myIsGlobal)
+  {
+    myTab->disableTab(0);
+    // TODO - until I get the above method working, we also need to
+    //        disable the specific widgets ourself
+    myRomPath->clearFlags(WIDGET_ENABLED);
+    for(unsigned int i = 0; i < wid.size(); ++i)
+      wid[i]->clearFlags(WIDGET_ENABLED);
+  }
   // Add focus widgets for ROM tab
   addToFocusList(wid, tabID);
 
@@ -134,19 +144,17 @@ LauncherOptionsDialog::LauncherOptionsDialog(
   addToFocusList(wid);
 
   // Create file browser dialog
-  int baseW = instance()->frameBuffer().baseWidth();
-  int baseH = instance()->frameBuffer().baseHeight();
-  myBrowser = new BrowserDialog(this, font, 60, 20, baseW - 120, baseH - 40);
+  myBrowser = new BrowserDialog(this, font, 60, 20, 200, 200);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-LauncherOptionsDialog::~LauncherOptionsDialog()
+FileSnapDialog::~FileSnapDialog()
 {
   delete myBrowser;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherOptionsDialog::loadConfig()
+void FileSnapDialog::loadConfig()
 {
   string s;
   bool b;
@@ -168,7 +176,7 @@ void LauncherOptionsDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherOptionsDialog::saveConfig()
+void FileSnapDialog::saveConfig()
 {
   string s;
   bool b;
@@ -190,36 +198,39 @@ void LauncherOptionsDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherOptionsDialog::openRomBrowser()
+void FileSnapDialog::openRomBrowser()
 {
+  parent()->addDialog(myBrowser);
+
   myBrowser->setTitle("Select ROM directory:");
   myBrowser->setEmitSignal(kRomDirChosenCmd);
   myBrowser->setStartPath(myRomPath->getLabel());
-
-  parent()->addDialog(myBrowser);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherOptionsDialog::openSnapBrowser()
+void FileSnapDialog::openSnapBrowser()
 {
+  parent()->addDialog(myBrowser);
+
   myBrowser->setTitle("Select snapshot directory:");
   myBrowser->setEmitSignal(kSnapDirChosenCmd);
   myBrowser->setStartPath(mySnapPath->getLabel());
-
-  parent()->addDialog(myBrowser);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
-                                          int data, int id)
+void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
+                                   int data, int id)
 {
   switch (cmd)
   {
     case kOKCmd:
       saveConfig();
       close();
-      sendCommand(kBrowseChangedCmd, 0, 0); // Call this before refreshing ROMs
-      sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
+      if(myIsGlobal)
+      {
+        sendCommand(kBrowseChangedCmd, 0, 0); // Call this before refreshing ROMs
+        sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
+      }
       break;
 
     case kChooseRomDirCmd:
@@ -229,12 +240,6 @@ void LauncherOptionsDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseSnapDirCmd:
       openSnapBrowser();
       break;
-
-/*
-    case kBrowseDirCmd:
-      myReloadButton->setEnabled(!myBrowseCheckbox->getState());
-      break;
-*/
 
     case kRomDirChosenCmd:
     {
