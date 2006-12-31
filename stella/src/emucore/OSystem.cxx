@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.88 2006-12-31 17:21:17 stephena Exp $
+// $Id: OSystem.cxx,v 1.89 2006-12-31 23:20:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -266,8 +266,8 @@ bool OSystem::createFrameBuffer(bool showmessage)
   // For now, we just use the standard palette
   // Once an interface is created for this, it will be changable
   // within the emulation
-  int palette = 0;  // 1 indicates GP2X, but it should be called something else
-                    // Perhaps tweaked and called high-contrast or something??
+  int palette = mySettings->getInt("uipalette") - 1;
+  if(palette < 0 || palette >= kNumUIPalettes) palette = 0;
   myFrameBuffer->setUIPalette(&ourGUIColors[palette][0]);
 
   if(showmessage)

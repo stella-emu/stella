@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.hxx,v 1.7 2006-12-31 17:21:17 stephena Exp $
+// $Id: Launcher.hxx,v 1.8 2006-12-31 23:20:13 stephena Exp $
 //============================================================================
 
 #ifndef LAUNCHER_HXX
@@ -23,18 +23,11 @@ class OSystem;
 
 #include "DialogContainer.hxx"
 
-enum {
-  kLauncherWidth  = 320,
-  kLauncherHeight = 240
-//  kLauncherWidth  = 639,
-//  kLauncherHeight = 479
-};
-
 /**
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Launcher.hxx,v 1.7 2006-12-31 17:21:17 stephena Exp $
+  @version $Id: Launcher.hxx,v 1.8 2006-12-31 23:20:13 stephena Exp $
 */
 class Launcher : public DialogContainer
 {
@@ -53,6 +46,12 @@ class Launcher : public DialogContainer
       Initialize the video subsystem wrt this class.
     */
     void initializeVideo();
+
+  private:
+    // The width and height of this dialog
+    // These can only be changed by exiting and restarting Stella
+    int myWidth;
+    int myHeight;
 };
 
 #endif

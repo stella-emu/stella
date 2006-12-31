@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.9 2006-12-31 17:21:17 stephena Exp $
+// $Id: Launcher.cxx,v 1.10 2006-12-31 23:20:13 stephena Exp $
 //============================================================================
 
 #include "Version.hxx"
 #include "OSystem.hxx"
+#include "Settings.hxx"
 #include "FrameBuffer.hxx"
 #include "LauncherDialog.hxx"
 #include "bspf.hxx"
@@ -25,10 +26,27 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem* osystem)
-  : DialogContainer(osystem)
+  : DialogContainer(osystem),
+    myWidth(320),
+    myHeight(240)
 {
-  myBaseDialog = new LauncherDialog(myOSystem, this,
-                                    0, 0, kLauncherWidth, kLauncherHeight);
+  int size = myOSystem->settings().getInt("launchersize");
+  switch(size)
+  {
+    case 1:
+      myWidth  = 320;
+      myHeight = 240;
+      break;
+    case 2:
+      myWidth  = 400;
+      myHeight = 300;
+      break;
+    case 3:
+      myWidth  = 512;
+      myHeight = 384;
+      break;
+  }
+  myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,5 +58,5 @@ Launcher::~Launcher()
 void Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
-  myOSystem->frameBuffer().initialize(title, kLauncherWidth, kLauncherHeight, false);
+  myOSystem->frameBuffer().initialize(title, myWidth, myHeight, false);
 }

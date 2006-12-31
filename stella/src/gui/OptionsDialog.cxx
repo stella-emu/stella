@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.46 2006-12-30 22:26:29 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.47 2006-12-31 23:20:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,7 +27,7 @@
 #include "VideoDialog.hxx"
 #include "AudioDialog.hxx"
 #include "InputDialog.hxx"
-//#include "UIDialog.hxx"
+#include "UIDialog.hxx"
 #include "FileSnapDialog.hxx"
 #include "GameInfoDialog.hxx"
 #include "HelpDialog.hxx"
@@ -119,11 +119,12 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   w = 230; h = 185;
   myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
+  w = 200; h = 90;
+  myUIDialog = new UIDialog(myOSystem, parent, font, x, y, w, h);
+
   w = 280; h = 120;
   myFileSnapDialog = new FileSnapDialog(myOSystem, parent, font,
                                         boss, x, y, w, h);
-
-
 
   w = 255; h = 190;
   myGameInfoDialog = new GameInfoDialog(myOSystem, parent, font, this, x, y, w, h);
@@ -155,7 +156,7 @@ OptionsDialog::~OptionsDialog()
   delete myVideoDialog;
   delete myAudioDialog;
   delete myInputDialog;
-//  delete myUIDialog;
+  delete myUIDialog;
   delete myFileSnapDialog;
   delete myGameInfoDialog;
   delete myCheatCodeDialog;
@@ -182,8 +183,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kUsrIfaceCmd:
-//      parent()->addDialog(myGameInfoDialog);
-cerr << "UI dialog\n";
+      parent()->addDialog(myUIDialog);
       break;
 
     case kFileSnapCmd:

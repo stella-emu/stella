@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.110 2006-12-30 22:26:28 stephena Exp $
+// $Id: Settings.cxx,v 1.111 2006-12-31 23:20:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -80,7 +80,8 @@ Settings::Settings(OSystem* osystem)
   setInternal("lastrom", "");
   setInternal("modtime", "");
   setInternal("debugheight", "0");
-
+  setInternal("launchersize", "2");
+  setInternal("uipalette", "0");
   setInternal("autoslot", "false");
   setInternal("fastscbios", "true");
 }
@@ -345,6 +346,8 @@ void Settings::usage()
     << endl
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
+    << "  -launchersize <1|2|3>        Set the size of the ROM launcher\n"
+    << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
