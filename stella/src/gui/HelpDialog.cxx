@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.19 2006-12-08 16:49:35 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.20 2006-12-31 23:42:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,8 +83,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       title = "Common commands:";
       ADD_BIND("Ctrl Q",    "Quit emulation");
       ADD_BIND("Escape",    "Exit current game");
-      ADD_BIND("Tab",       "Enter/exit configuration menu");
-      ADD_BIND("\\",        "Enter/exit command menu");
+      ADD_BIND("Tab",       "Enter options menu");
+      ADD_BIND("\\",        "Toggle command menu");
       ADD_BIND("Alt =",     "Increase window size");
       ADD_BIND("Alt -",     "Decrease window size");
       ADD_BIND("Alt Enter", "Toggle fullscreen/windowed mode");
@@ -96,9 +96,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
     case 2:
       title = "Special commands:";
       ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
-      ADD_BIND("Ctrl f", "Switch between NTSC and PAL");
+      ADD_BIND("Ctrl f", "Switch between NTSC/PAL/PAL60");
       ADD_BIND("Ctrl s", "Save game properties to new file");
-      ADD_BIND("Alt s",  "Merge game properties");
       ADD_LINE;
       ADD_BIND("Ctrl 0", "Mouse emulates paddle 0");
       ADD_BIND("Ctrl 1", "Mouse emulates paddle 1");
@@ -122,8 +121,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       title = "Common commands:";
       ADD_BIND("Cmd Q",        "Quit emulation");
       ADD_BIND("Escape",       "Exit current game");
-      ADD_BIND("Tab",          "Enter/exit configuration menu");
-      ADD_BIND("\\",           "Enter/exit command menu");
+      ADD_BIND("Tab",          "Enter options menu");
+      ADD_BIND("\\",           "Toggle command menu");
       ADD_BIND("Cmd =",        "Increase window size");
       ADD_BIND("Cmd -",        "Decrease window size");
       ADD_BIND("Cmd Enter",    "Toggle fullscreen/windowed mode");
@@ -135,9 +134,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
     case 2:
       title = "Special commands:";
       ADD_BIND("Cmd g",       "Grab mouse (keep in window)");
-      ADD_BIND("Cmd f",       "Switch between NTSC and PAL");
-      ADD_BIND("Cmd s",       "Save (or merge) game properties");
-      ADD_BIND("Shift-Cmd s", "Merge game properties");
+      ADD_BIND("Cmd f",       "Switch between NTSC/PAL/PAL60");
+      ADD_BIND("Cmd s",       "Save game properties to new file");
       ADD_LINE;
       ADD_BIND("Cmd 0",       "Mouse emulates paddle 0");
       ADD_BIND("Cmd 1",       "Mouse emulates paddle 1");
@@ -163,7 +161,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Remapped Events", "");
       ADD_TEXT("Most other commands can be");
       ADD_TEXT("remapped.  Please consult the");
-      ADD_TEXT("'Event Mapping' section for");
+      ADD_TEXT("'Input Settings' section for");
       ADD_TEXT("more information.");
       break;
   }

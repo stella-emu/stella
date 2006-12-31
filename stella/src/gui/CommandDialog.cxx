@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.11 2006-12-30 22:26:28 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.12 2006-12-31 23:42:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,15 +33,15 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
 {
   const GUI::Font& font = osystem->font();
   int lineHeight   = font.getLineHeight(),
-      buttonWidth  = 60,
-      buttonHeight = lineHeight + 2,
+      buttonWidth  = 65,
+      buttonHeight = 18,//lineHeight + 2,
       xoffset = 5,
       yoffset = 5,
       lwidth  = buttonWidth + 5;
 
   // Set real dimensions
   _w = 4 * (lwidth) + 5;
-  _h = 4 * (buttonHeight+5) + 5;
+  _h = 4 * (buttonHeight+3) + 7;
 
   WidgetArray wid;
   ButtonWidget* b;
@@ -62,7 +62,7 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
                        "B/W TV", kBWCmd);
   wid.push_back(b);
 
-  xoffset = 5;  yoffset += buttonHeight + 5;
+  xoffset = 5;  yoffset += buttonHeight + 3;
 
   b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Left Diff A", kLeftDiffACmd);
@@ -80,7 +80,7 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
                        "Right Diff B", kRightDiffBCmd);
   wid.push_back(b);
 
-  xoffset = 5;  yoffset += buttonHeight + 5;
+  xoffset = 5;  yoffset += buttonHeight + 3;
 
   b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "Save State", kSaveStateCmd);
@@ -98,7 +98,7 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
                        "Snapshot", kSnapshotCmd);
   wid.push_back(b);
 
-  xoffset = 5;  yoffset += buttonHeight + 5;
+  xoffset = 5;  yoffset += buttonHeight + 3;
 
   b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
                        "NTSC/PAL", kFormatCmd);

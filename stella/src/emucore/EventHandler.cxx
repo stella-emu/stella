@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.192 2006-12-30 22:26:28 stephena Exp $
+// $Id: EventHandler.cxx,v 1.193 2006-12-31 23:42:04 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2550,7 +2550,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::Fry,                         "Fry cartridge",                   0 },
   { Event::VolumeDecrease,              "Decrease volume",                 0 },
   { Event::VolumeIncrease,              "Increase volume",                 0 },
-  { Event::MenuMode,                    "Toggle options menu mode",        0 },
+  { Event::MenuMode,                    "Enter options menu mode",         0 },
   { Event::CmdMenuMode,                 "Toggle command menu mode",        0 },
   { Event::DebuggerMode,                "Toggle debugger mode",            0 },
   { Event::LauncherMode,                "Enter ROM launcher",              0 },

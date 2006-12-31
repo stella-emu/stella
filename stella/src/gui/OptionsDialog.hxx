@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.21 2006-12-30 22:26:29 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.22 2006-12-31 23:42:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -84,7 +84,7 @@ class OptionsDialog : public Dialog
       kRowHeight      = 22,
       kBigButtonWidth = 90,
       kMainMenuWidth  = (2*kBigButtonWidth + 30),
-      kMainMenuHeight = 5*kRowHeight + 20
+      kMainMenuHeight = 5*kRowHeight + 15
     };
 };
 

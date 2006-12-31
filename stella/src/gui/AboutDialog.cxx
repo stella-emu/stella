@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.16 2006-12-08 16:49:31 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.17 2006-12-31 23:42:04 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -92,7 +92,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
       ADD_ATEXT(string("\\C\\c2") + instance()->features());
       ADD_ALINE;
-      ADD_ATEXT("\\CCopyright (C) 1995-2005 The Stella team");
+      ADD_ATEXT("\\CCopyright (C) 1995-2007 The Stella team");
       ADD_ATEXT("\\Chttp://stella.sourceforge.net");
       ADD_ALINE;
       ADD_ATEXT("Stella is free software released under the GNU GPL");
@@ -131,7 +131,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       title = "Retired members / Contributors";
       ADD_ATEXT("\\L\\c0""See Stella manual for contribution details");
       ADD_ALINE;
-      ADD_ATEXT("\\L\\c0""  David Aspell, Christopher Bennett, Alexander Bilstein");
+      ADD_ATEXT("\\L\\c0""  David Aspell, Chris Bennett, Alexander Bilstein");
       ADD_ATEXT("\\L\\c0""  Dan Boris, Piero Cavina, Bob Colbert");
       ADD_ATEXT("\\L\\c0""  Renato Ferreira, Ron Fries, Aaron Giles");
       ADD_ATEXT("\\L\\c0""  Mark Hahn, Kevin Horton, Thomas Jentzsch");
