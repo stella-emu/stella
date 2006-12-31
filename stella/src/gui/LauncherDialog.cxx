@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.63 2006-12-30 22:26:29 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.64 2006-12-31 17:21:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -139,13 +139,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myGameList = new GameList();
 
   addToFocusList(wid);
-
-  // (De)activate browse mode
-  myBrowseModeFlag = instance()->settings().getBool("rombrowse");
-  myPrevDirButton->setEnabled(myBrowseModeFlag);
-  myNoteLabel->setLabel(myBrowseModeFlag ? "Dir:" : "Note:");
-
-  myCurrentNode = instance()->settings().getString("romdir");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,8 +154,15 @@ void LauncherDialog::loadConfig()
   // Assume that if the list is empty, this is the first time that loadConfig()
   // has been called (and we should reload the list).
   if(myList->getList().isEmpty())
-    updateListing();
+  {
+    // (De)activate browse mode
+    myBrowseModeFlag = instance()->settings().getBool("rombrowse");
+    myPrevDirButton->setEnabled(myBrowseModeFlag);
+    myNoteLabel->setLabel(myBrowseModeFlag ? "Dir:" : "Note:");
+    myCurrentNode = instance()->settings().getString("romdir");
 
+    updateListing();
+  }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
 }
 

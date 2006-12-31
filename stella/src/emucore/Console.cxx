@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.117 2006-12-31 02:16:37 stephena Exp $
+// $Id: Console.cxx,v 1.118 2006-12-31 17:21:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -229,10 +229,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::~Console()
 {
-#ifdef CHEATCODE_SUPPORT
-  myOSystem->cheat().saveCheats(myProperties.get(Cartridge_MD5));
-#endif
-
   delete mySystem;
   delete mySwitches;
   delete myControllers[0];

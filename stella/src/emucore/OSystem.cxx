@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.87 2006-12-30 22:26:28 stephena Exp $
+// $Id: OSystem.cxx,v 1.88 2006-12-31 17:21:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -397,9 +397,12 @@ bool OSystem::createConsole(const string& romfile)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::deleteConsole()
 {
-  mySound->close();
   if(myConsole)
   {
+    mySound->close();
+  #ifdef CHEATCODE_SUPPORT
+    myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
+  #endif
     if(mySettings->getBool("showinfo"))
     {
       double executionTime   = (double) myTimingInfo.totalTime / 1000000.0;
@@ -417,18 +420,14 @@ void OSystem::deleteConsole()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createLauncher()
 {
-  resetLoopTiming();
-
-  setFramerate(60);
   myEventHandler->reset(EventHandler::S_LAUNCHER);
   createFrameBuffer(false);
-
-  // And start the base dialog
-  myLauncher->initialize();
   myLauncher->reStack();
-
-  myEventHandler->refreshDisplay();
   myFrameBuffer->setCursorState();
+  myEventHandler->refreshDisplay();
+
+  setFramerate(60);
+  resetLoopTiming();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -692,7 +691,6 @@ void OSystem::mainLoop()
     myEventHandler->poll(myTimingInfo.start);
     if(myQuitLoop) break;  // Exit if the user wants to quit
     myFrameBuffer->update();
-
     myTimingInfo.current = getTicks();
     myTimingInfo.virt += myTimePerFrame;
 

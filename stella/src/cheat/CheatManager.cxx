@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.11 2006-12-08 16:48:55 stephena Exp $
+// $Id: CheatManager.cxx,v 1.12 2006-12-31 17:21:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -339,6 +339,7 @@ void CheatManager::saveCheats(const string& md5sum)
 
   // Update the dirty flag
   myListIsDirty = myListIsDirty || changed;
+  clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
