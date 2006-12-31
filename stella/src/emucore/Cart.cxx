@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.26 2006-12-28 18:31:22 stephena Exp $
+// $Id: Cart.cxx,v 1.27 2006-12-31 02:16:36 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -53,7 +53,18 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   Cartridge* cartridge = 0;
 
   // Get the type of the cartridge we're creating
+  const string& md5 = properties.get(Cartridge_MD5);
   string type = properties.get(Cartridge_Type);
+
+  // First consider the ROMs that are special and don't have a properties entry
+  // Hopefully this list will be very small
+  if(md5 == "bc24440b59092559a1ec26055fd1270e" ||
+     md5 == "75ee371ccfc4f43e7d9b8f24e1266b55")
+  {
+    // These two ROMs are normal 8K images, except they must be initialized
+    // from the opposite bank compared to normal ones
+    type = "F8 swapped";
+  }
 
   // Collect some info about the ROM
   ostringstream buf;
@@ -101,7 +112,9 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else if(type == "F6SC")
     cartridge = new CartridgeF6SC(image);
   else if(type == "F8")
-    cartridge = new CartridgeF8(image);
+    cartridge = new CartridgeF8(image, false);
+  else if(type == "F8 swapped")
+    cartridge = new CartridgeF8(image, true);
   else if(type == "F8SC")
     cartridge = new CartridgeF8SC(image);
   else if(type == "FASC")

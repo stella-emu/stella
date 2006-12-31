@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.116 2006-12-30 22:26:28 stephena Exp $
+// $Id: Console.cxx,v 1.117 2006-12-31 02:16:37 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -219,18 +219,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   if(myDisplayFormat.compare(0, 3, "PAL") == 0)
     if(myProperties.get(Display_Height) == "210")
       myProperties.set(Display_Height, "250");
-
-  // Make sure this ROM can fit in the screen dimensions
-  int sWidth, sHeight, iWidth, iHeight;
-  myOSystem->getScreenDimensions(sWidth, sHeight);
-  iWidth  = atoi(myProperties.get(Display_Width).c_str()) << 1;
-  iHeight = atoi(myProperties.get(Display_Height).c_str());
-  if(iWidth > sWidth || iHeight > sHeight)
-  {
-    myOSystem->frameBuffer().showMessage("PAL ROMS not supported, screen too small",
-                                          kMiddleCenter, kTextColorEm);
-    return;
-  }
 
   // Reset, the system to its power-on state
   mySystem->reset();

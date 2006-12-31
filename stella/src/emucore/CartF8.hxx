@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.hxx,v 1.7 2006-12-08 16:49:22 stephena Exp $
+// $Id: CartF8.hxx,v 1.8 2006-12-31 02:16:37 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF8_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF8.hxx,v 1.7 2006-12-08 16:49:22 stephena Exp $
+  @version $Id: CartF8.hxx,v 1.8 2006-12-31 02:16:37 stephena Exp $
 */
 class CartridgeF8 : public Cartridge
 {
@@ -39,9 +39,10 @@ class CartridgeF8 : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image Pointer to the ROM image
+      @param image     Pointer to the ROM image
+      @param swapbanks Whether to swap the startup bank
     */
-    CartridgeF8(const uInt8* image);
+    CartridgeF8(const uInt8* image, bool swapbanks);
  
     /**
       Destructor
@@ -117,6 +118,9 @@ class CartridgeF8 : public Cartridge
   private:
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
+
+    // Indicates the bank to use when resetting
+    uInt16 myResetBank;
 
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];

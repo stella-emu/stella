@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.14 2006-12-28 18:31:22 stephena Exp $
+// $Id: Cart.hxx,v 1.15 2006-12-31 02:16:36 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.14 2006-12-28 18:31:22 stephena Exp $
+  @version $Id: Cart.hxx,v 1.15 2006-12-31 02:16:36 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -85,8 +85,8 @@ class Cartridge : public Device
     /**
       Try to auto-detect the bankswitching type of the cartridge
 
-      @param image A pointer to the ROM image
-      @param size The size of the ROM image 
+      @param image  A pointer to the ROM image
+      @param size   The size of the ROM image 
       @return The "best guess" for the cartridge type
     */
     static string autodetectType(const uInt8* image, uInt32 size);

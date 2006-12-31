@@ -3143,9 +3143,6 @@
 "Cartridge.ModelNo" "C-817"
 "Cartridge.Name" "Air Raid (Men-A-Vision)"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Format" "NTSC"
-"Display.Height" "250"
-"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "335793736cbf6fc99c9359ed2a32a49d"
@@ -15685,4 +15682,10 @@
 "Cartridge.MD5" "e959b5a2c882ccaacb43c32790957c2d"
 "Cartridge.Name" "Phantom II / Pirate (NTSC)"
 "Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "504688d49a41bf03d8a955512609f3f2"
+"Cartridge.Name" "Swoops / Splatform"
+"Display.YStart" "30"
+"Emulation.HmoveBlanks" "NO"
 ""

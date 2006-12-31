@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.12 2006-12-08 16:49:22 stephena Exp $
+// $Id: CartF8.cxx,v 1.13 2006-12-31 02:16:37 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -24,13 +24,15 @@
 #include <iostream>
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8::CartridgeF8(const uInt8* image)
+CartridgeF8::CartridgeF8(const uInt8* image, bool swapbanks)
 {
   // Copy the ROM image into my buffer
   for(uInt32 addr = 0; addr < 8192; ++addr)
   {
     myImage[addr] = image[addr];
   }
+
+  myResetBank = swapbanks ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,8 +49,8 @@ const char* CartridgeF8::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::reset()
 {
-  // Upon reset we switch to bank 1
-  bank(1);
+  // Upon reset we switch to the reset bank (normally bank 1)
+  bank(myResetBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,16 +160,6 @@ void CartridgeF8::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF8::bank() {
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF8::bankCount() {
-  return 2;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF8::save(Serializer& out)
 {
   string cart = name();
@@ -222,7 +214,20 @@ bool CartridgeF8::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF8::getImage(int& size) {
+int CartridgeF8::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF8::bankCount()
+{
+  return 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF8::getImage(int& size)
+{
   size = 8192;
   return &myImage[0];
 }
