@@ -2510,9 +2510,11 @@
 ""
 
 "Cartridge.MD5" "278f14887d601b5e5b620f1870bc09f6"
-"Cartridge.Name" "Swoops! (v0.96) (Thomas Jentzsch)"
+"Cartridge.Name" "SWOOPS! (v0.96) (Thomas Jentzsch)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Controller.Right" "Paddles"
+"Display.YStart" "30"
+"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "27c8a76cf59a9fc6b667468ef1e3f9e9"
@@ -5660,9 +5662,11 @@
 ""
 
 "Cartridge.MD5" "5d8f1ab95362acdf3426d572a6301bf2"
-"Cartridge.Name" "Swoops! (v0.96) (Thomas Jentzsch) (PAL)"
+"Cartridge.Name" "SWOOPS! (v0.96) (Thomas Jentzsch) (PAL)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Controller.Right" "Paddles"
+"Display.YStart" "30"
+"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "5dccf215fdb9bbf5d4a6d0139e5e8bcb"
@@ -15685,7 +15689,9 @@
 ""
 
 "Cartridge.MD5" "504688d49a41bf03d8a955512609f3f2"
-"Cartridge.Name" "Swoops / Splatform"
+"Cartridge.Name" "SWOOPS!"
+"Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
+"Controller.Right" "Paddles"
 "Display.YStart" "30"
 "Emulation.HmoveBlanks" "NO"
 ""
