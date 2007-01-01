@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.24 2006-12-20 12:42:56 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.25 2007-01-01 01:55:26 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -28,6 +28,7 @@ SettingsWin32::SettingsWin32(OSystem* osystem)
   setInternal("fragsize", "2048");
   // Most Windows systems work better without this
   setInternal("dirtyrects", "false");
+  setInternal("romdir", "c:\\");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
