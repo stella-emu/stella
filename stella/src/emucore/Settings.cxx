@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.112 2007-01-01 18:04:49 stephena Exp $
+// $Id: Settings.cxx,v 1.113 2007-01-01 18:21:04 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -104,21 +104,6 @@ void Settings::loadConfig()
   {
     cout << "Error: Couldn't load settings file\n";
     return;
-  }
-
-  // Get the first line, and parse the version string (if it exists)
-  // If we don't have the minimum settings version, then ignore
-  // this settings file.
-  if(getline(in, line))
-  {
-    string minVersion = ";  Version ";
-    minVersion += STELLA_SETTINGS_VERSION;
-    if(line.find(";  Version") != 0 || line < minVersion)
-    {
-      cout << "Error: Settings file too old, using internal defaults\n";
-      in.close();
-      return;
-    }
   }
 
   while(getline(in, line))
@@ -409,8 +394,7 @@ void Settings::saveConfig()
     return;
   }
 
-  out << ";  Version " << STELLA_VERSION << endl
-      << ";  Stella configuration file" << endl
+  out << ";  Stella configuration file" << endl
       << ";" << endl
       << ";  Lines starting with ';' are comments and are ignored." << endl
       << ";  Spaces and tabs are ignored." << endl

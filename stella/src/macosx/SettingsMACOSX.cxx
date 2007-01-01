@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.cxx,v 1.18 2007-01-01 18:04:55 stephena Exp $
+// $Id: SettingsMACOSX.cxx,v 1.19 2007-01-01 18:21:04 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -42,9 +42,9 @@ extern "C" {
 SettingsMACOSX::SettingsMACOSX(OSystem* osystem)
   : Settings(osystem)
 {
-  setInternal("video", "gl");      // Use opengl mode by default
-  setInternal("gl_lib", "");       // Let the system decide which lib to use
-  setInternal("gl_vsync", "true"); // OSX almost always supports vsync; let's use it
+  setInternal("video", "gl");        // Use opengl mode by default
+  setInternal("gl_lib", "libGL.so"); // Try this one first, then let the system decide
+  setInternal("gl_vsync", "true");   // OSX almost always supports vsync; let's use it
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,11 +58,6 @@ void SettingsMACOSX::loadConfig()
   string key, value;
   char cvalue[2048];
   
-  // Check if the settings plist file is valid
-  prefsGetString("stella_version", cvalue);
-  if(cvalue[0] == 0 || string(cvalue) < string(STELLA_SETTINGS_VERSION))
-    return;
-
   // Read key/value pairs from the plist file
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
@@ -76,9 +71,6 @@ void SettingsMACOSX::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SettingsMACOSX::saveConfig()
 {
-  // Write out plist version
-  prefsSetString("stella_version", STELLA_VERSION);
-
   // Write out each of the key and value pairs
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
