@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.33 2006-12-30 22:26:29 stephena Exp $
+// $Id: Dialog.hxx,v 1.34 2007-01-01 18:04:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.33 2006-12-30 22:26:29 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.34 2007-01-01 18:04:52 stephena Exp $
 */
 class Dialog : public GuiObject
 {

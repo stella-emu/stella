@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.hxx,v 1.8 2006-12-31 02:16:37 stephena Exp $
+// $Id: CartF8.hxx,v 1.9 2007-01-01 18:04:46 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF8_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF8.hxx,v 1.8 2006-12-31 02:16:37 stephena Exp $
+  @version $Id: CartF8.hxx,v 1.9 2007-01-01 18:04:46 stephena Exp $
 */
 class CartridgeF8 : public Cartridge
 {

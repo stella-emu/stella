@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.86 2006-12-18 14:01:57 stephena Exp $
+// $Id: Debugger.hxx,v 1.87 2007-01-01 18:04:41 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -69,7 +69,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.86 2006-12-18 14:01:57 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.87 2007-01-01 18:04:41 stephena Exp $
 */
 class Debugger : public DialogContainer
 {

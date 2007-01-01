@@ -12,6 +12,13 @@
                                Release History
 ===============================================================================
 
+2.3 to 2.3.1: (January xx, 2007)
+
+  * 
+
+Have fun!
+
+
 2.2 to 2.3: (December 22, 2006)
 
   * NOTE: Because of the many changes in this release, all settings
@@ -107,8 +114,6 @@
 
   * For the GP2X port, added support for PAL ROMs, and updated SDL to use
     hardware scaling.
-
-Have fun!
 
 
 2.1 to 2.2: (April 7, 2006)

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.57 2006-12-30 22:26:28 stephena Exp $
+// $Id: Console.hxx,v 1.58 2007-01-01 18:04:47 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.57 2006-12-30 22:26:28 stephena Exp $
+  @version $Id: Console.hxx,v 1.58 2007-01-01 18:04:47 stephena Exp $
 */
 class Console
 {

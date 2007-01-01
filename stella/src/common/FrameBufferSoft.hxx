@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.43 2006-12-19 12:40:29 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.44 2007-01-01 18:04:40 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.43 2006-12-19 12:40:29 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.44 2007-01-01 18:04:40 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {

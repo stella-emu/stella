@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.8 2006-12-28 18:31:27 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.9 2007-01-01 18:04:56 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -25,7 +25,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.8 2006-12-28 18:31:27 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.9 2007-01-01 18:04:56 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {

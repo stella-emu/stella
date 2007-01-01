@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.hxx,v 1.4 2006-12-08 16:49:25 stephena Exp $
+// $Id: EventStreamer.hxx,v 1.5 2007-01-01 18:04:48 stephena Exp $
 //============================================================================
 
 #ifndef EVENTSTREAMER_HXX
@@ -48,7 +48,7 @@ class OSystem;
   the correct order at the correct time.
 
   @author  Stephen Anthony
-  @version $Id: EventStreamer.hxx,v 1.4 2006-12-08 16:49:25 stephena Exp $
+  @version $Id: EventStreamer.hxx,v 1.5 2007-01-01 18:04:48 stephena Exp $
 */
 class EventStreamer
 {

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.hxx,v 1.6 2006-12-08 16:49:23 stephena Exp $
+// $Id: CartMC.hxx,v 1.7 2007-01-01 18:04:47 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEMC_HXX
@@ -135,7 +135,7 @@ class Deserializer;
 
 
   @author  Bradford W. Mott
-  @version $Id: CartMC.hxx,v 1.6 2006-12-08 16:49:23 stephena Exp $
+  @version $Id: CartMC.hxx,v 1.7 2007-01-01 18:04:47 stephena Exp $
 */
 class CartridgeMC : public Cartridge
 {

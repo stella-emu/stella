@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.hxx,v 1.6 2006-12-08 16:49:22 stephena Exp $
+// $Id: CartFASC.hxx,v 1.7 2007-01-01 18:04:46 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEFASC_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   three 4K banks and 256 bytes of RAM.
 
   @author  Bradford W. Mott
-  @version $Id: CartFASC.hxx,v 1.6 2006-12-08 16:49:22 stephena Exp $
+  @version $Id: CartFASC.hxx,v 1.7 2007-01-01 18:04:46 stephena Exp $
 */
 class CartridgeFASC : public Cartridge
 {
