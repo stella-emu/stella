@@ -3145,6 +3145,7 @@
 "Cartridge.ModelNo" "C-817"
 "Cartridge.Name" "Air Raid (Men-A-Vision)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Phosphor" "Yes"
 ""
 
 "Cartridge.MD5" "335793736cbf6fc99c9359ed2a32a49d"

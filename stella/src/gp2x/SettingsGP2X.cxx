@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.cxx,v 1.25 2007-01-01 18:04:51 stephena Exp $
+// $Id: SettingsGP2X.cxx,v 1.26 2007-01-01 19:55:55 stephena Exp $
 // Modified on 2006/02/05 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -43,7 +43,7 @@ SettingsGP2X::SettingsGP2X(OSystem* osystem)
   setInternal("p2speed", "15");
   setInternal("p3speed", "15");
   setInternal("launchersize", "1");
-  setInternal("uipalette", "1");
+  setInternal("uipalette", "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

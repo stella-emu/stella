@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.13 2007-01-01 18:04:52 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.14 2007-01-01 19:55:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,9 +32,8 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
     mySelectedItem(0)
 {
   const GUI::Font& font = osystem->font();
-  int lineHeight   = font.getLineHeight(),
-      buttonWidth  = 65,
-      buttonHeight = 18,//lineHeight + 2,
+  int buttonWidth  = 65,
+      buttonHeight = 18,
       xoffset = 5,
       yoffset = 5,
       lwidth  = buttonWidth + 5;
