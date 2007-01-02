@@ -290,6 +290,7 @@
 
 "Cartridge.MD5" "04dfb4acac1d0909e4c360fd2ac04480"
 "Cartridge.Name" "Jammed (2001) (XYPE) (NTSC)"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "049626cbfb1a5f7a5dc885a0c4bb758e"
@@ -1037,8 +1038,9 @@
 ""
 
 "Cartridge.MD5" "0fbf618be43d4396856d4244126fe7dc"
-"Cartridge.Name" "Labyrinth (Starsoft) (PAL) [!]"
 "Cartridge.Manufacturer" "Starsoft"
+"Cartridge.Name" "Labyrinth (Starsoft) (PAL) [!]"
+"Display.Format" "PAL"
 ""
 
 "Cartridge.MD5" "102672bbd7e25cd79f4384dd7214c32b"
@@ -2818,6 +2820,7 @@
 "Cartridge.Name" "Jungle Fever (1982) (Playaround)"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "24"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "2dbdca3058035d2b40c734dcf06a86d9"
@@ -5427,10 +5430,11 @@
 ""
 
 "Cartridge.MD5" "58a82e1da64a692fd727c25faef2ecc9"
-"Cartridge.Name" "Jawbreaker (1982) (CCE)"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "7-002"
+"Cartridge.Name" "Jawbreaker (1982) (CCE)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "58e313e2b5613b2439b5f12bb41e3eef"
@@ -12985,13 +12989,10 @@
 ""
 
 "Cartridge.MD5" "d8295eff5dcc43360afa87221ea6021f"
-"Cartridge.Name" "Mangia' (1983) (Spectravideo) (PAL) [!]"
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-212"
-"Cartridge.Note" "Uses the Paddle Controllers"
+"Cartridge.Name" "Mangia' (1983) (Spectravideo) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "d82675ce67caf16afe5ed6b6fac8aa37"
@@ -14748,10 +14749,11 @@
 ""
 
 "Cartridge.MD5" "f367e58667a30e7482175809e3cec4d4"
-"Cartridge.Name" "Cosmic Corridor (Zimag)"
 "Cartridge.Manufacturer" "Zimag"
 "Cartridge.ModelNo" "GN-040 / 708-111"
+"Cartridge.Name" "Cosmic Corridor (Zimag)"
 "Cartridge.Rarity" "Rare"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "f3c431930e035a457fe370ed4d230659"
