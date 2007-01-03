@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.m,v 1.13 2006-04-05 02:18:58 markgrebe Exp $ */
+/* $Id: Menus.m,v 1.14 2007-01-03 12:59:23 stephena Exp $ */
 
 #import <Cocoa/Cocoa.h>
 #import "SDL.h"
@@ -178,11 +178,6 @@ static Menus *sharedInstance = nil;
 	[self pushKeyEvent:SDLK_r:NO:YES];
 }
 
-- (IBAction)pauseGame:(id)sender
-{
-    macOSXSendMenuEvent(MENU_PAUSE);
-}
-
 - (IBAction)ntscPalMode:(id)sender
 {
 	[self pushKeyEvent:SDLK_f:NO:YES];
@@ -258,22 +253,15 @@ static Menus *sharedInstance = nil;
 	[self pushKeyEvent:SDLK_s:NO:YES];
 }
 
-- (IBAction)mergeProps:(id)sender
-{
-	[self pushKeyEvent:SDLK_s:YES:YES];
-}
-
 - (void)setEmulationMenus
 {
     [preferencesMenuItem setTarget:self];
     [openMenuItem setTarget:self];
     [restartMenuItem setTarget:self];
     [savePropsMenuItem setTarget:self];
-    [mergePropsMenuItem setTarget:self];
     [screenBiggerMenuItem setTarget:self];
     [screenSmallerMenuItem setTarget:self];
     [fullScreenMenuItem setTarget:self];
-    [pauseMenuItem setTarget:self];
     [togglePalletteMenuItem setTarget:self];
     [ntscPalMenuItem setTarget:self];
     [increaseXStartMenuItem setTarget:self];
@@ -299,11 +287,9 @@ static Menus *sharedInstance = nil;
     [openMenuItem setTarget:nil];
     [restartMenuItem setTarget:nil];
     [savePropsMenuItem setTarget:nil];
-    [mergePropsMenuItem setTarget:nil];
     [screenBiggerMenuItem setTarget:self];
     [screenSmallerMenuItem setTarget:self];
     [fullScreenMenuItem setTarget:self];
-    [pauseMenuItem setTarget:nil];
     [togglePalletteMenuItem setTarget:nil];
     [ntscPalMenuItem setTarget:nil];
     [increaseXStartMenuItem setTarget:nil];
@@ -329,11 +315,9 @@ static Menus *sharedInstance = nil;
     [openMenuItem setTarget:nil];
     [restartMenuItem setTarget:nil];
     [savePropsMenuItem setTarget:nil];
-    [mergePropsMenuItem setTarget:nil];
     [screenBiggerMenuItem setTarget:self];
     [screenSmallerMenuItem setTarget:self];
     [fullScreenMenuItem setTarget:self];
-    [pauseMenuItem setTarget:nil];
     [togglePalletteMenuItem setTarget:nil];
     [ntscPalMenuItem setTarget:nil];
     [increaseXStartMenuItem setTarget:nil];
@@ -359,11 +343,9 @@ static Menus *sharedInstance = nil;
     [openMenuItem setTarget:nil];
     [restartMenuItem setTarget:nil];
     [savePropsMenuItem setTarget:nil];
-    [mergePropsMenuItem setTarget:nil];
     [screenBiggerMenuItem setTarget:self];
     [screenSmallerMenuItem setTarget:self];
     [fullScreenMenuItem setTarget:self];
-    [pauseMenuItem setTarget:nil];
     [togglePalletteMenuItem setTarget:nil];
     [ntscPalMenuItem setTarget:nil];
     [increaseXStartMenuItem setTarget:nil];
@@ -389,11 +371,9 @@ static Menus *sharedInstance = nil;
     [openMenuItem setTarget:nil];
     [restartMenuItem setTarget:nil];
     [savePropsMenuItem setTarget:nil];
-    [mergePropsMenuItem setTarget:nil];
     [screenBiggerMenuItem setTarget:self];
     [screenSmallerMenuItem setTarget:self];
     [fullScreenMenuItem setTarget:self];
-    [pauseMenuItem setTarget:nil];
     [togglePalletteMenuItem setTarget:nil];
     [ntscPalMenuItem setTarget:nil];
     [increaseXStartMenuItem setTarget:nil];

@@ -74,7 +74,6 @@
 		2D91740A09BA90380026E9FF /* HelpDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAB9084578BF00812C11 /* HelpDialog.hxx */; };
 		2D91740B09BA90380026E9FF /* Launcher.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEABB084578BF00812C11 /* Launcher.hxx */; };
 		2D91740C09BA90380026E9FF /* LauncherDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEABD084578BF00812C11 /* LauncherDialog.hxx */; };
-		2D91740D09BA90380026E9FF /* LauncherOptionsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEABF084578BF00812C11 /* LauncherOptionsDialog.hxx */; };
 		2D91740E09BA90380026E9FF /* ListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC1084578BF00812C11 /* ListWidget.hxx */; };
 		2D91740F09BA90380026E9FF /* Menu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC3084578BF00812C11 /* Menu.hxx */; };
 		2D91741009BA90380026E9FF /* OptionsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */; };
@@ -107,39 +106,8 @@
 		2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555DA0880E78000466554 /* Cart3E.hxx */; };
 		2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555DE0880E79600466554 /* CpuDebug.hxx */; };
 		2D91742D09BA90380026E9FF /* RamDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555E00880E79600466554 /* RamDebug.hxx */; };
-		2D91742E09BA90380026E9FF /* BinAndExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971C80892CEA400F64D23 /* BinAndExpression.hxx */; };
-		2D91742F09BA90380026E9FF /* BinNotExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971CA0892CEA400F64D23 /* BinNotExpression.hxx */; };
-		2D91743009BA90380026E9FF /* BinOrExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971CC0892CEA400F64D23 /* BinOrExpression.hxx */; };
-		2D91743109BA90380026E9FF /* BinXorExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971CE0892CEA400F64D23 /* BinXorExpression.hxx */; };
-		2D91743209BA90380026E9FF /* ByteDerefExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D00892CEA400F64D23 /* ByteDerefExpression.hxx */; };
-		2D91743309BA90380026E9FF /* ByteDerefOffsetExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D20892CEA400F64D23 /* ByteDerefOffsetExpression.hxx */; };
-		2D91743409BA90380026E9FF /* ConstExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D40892CEA400F64D23 /* ConstExpression.hxx */; };
-		2D91743509BA90380026E9FF /* CpuMethodExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D60892CEA400F64D23 /* CpuMethodExpression.hxx */; };
 		2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */; };
-		2D91743709BA90380026E9FF /* DivExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D90892CEA400F64D23 /* DivExpression.hxx */; };
-		2D91743809BA90380026E9FF /* EqualsExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971DB0892CEA400F64D23 /* EqualsExpression.hxx */; };
-		2D91743909BA90380026E9FF /* EquateExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971DD0892CEA400F64D23 /* EquateExpression.hxx */; };
 		2D91743A09BA90380026E9FF /* Expression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971DF0892CEA400F64D23 /* Expression.hxx */; };
-		2D91743B09BA90380026E9FF /* FunctionExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971E10892CEA400F64D23 /* FunctionExpression.hxx */; };
-		2D91743C09BA90380026E9FF /* GreaterEqualsExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971E30892CEA400F64D23 /* GreaterEqualsExpression.hxx */; };
-		2D91743D09BA90380026E9FF /* GreaterExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971E50892CEA400F64D23 /* GreaterExpression.hxx */; };
-		2D91743E09BA90380026E9FF /* HiByteExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971E70892CEA400F64D23 /* HiByteExpression.hxx */; };
-		2D91743F09BA90380026E9FF /* LessEqualsExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971E90892CEA400F64D23 /* LessEqualsExpression.hxx */; };
-		2D91744009BA90380026E9FF /* LessExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971EB0892CEA400F64D23 /* LessExpression.hxx */; };
-		2D91744109BA90380026E9FF /* LoByteExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971ED0892CEA400F64D23 /* LoByteExpression.hxx */; };
-		2D91744209BA90380026E9FF /* LogAndExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971EF0892CEA400F64D23 /* LogAndExpression.hxx */; };
-		2D91744309BA90380026E9FF /* LogNotExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971F10892CEA400F64D23 /* LogNotExpression.hxx */; };
-		2D91744409BA90380026E9FF /* LogOrExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971F30892CEA400F64D23 /* LogOrExpression.hxx */; };
-		2D91744509BA90380026E9FF /* MinusExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971F50892CEA400F64D23 /* MinusExpression.hxx */; };
-		2D91744609BA90380026E9FF /* ModExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971F70892CEA400F64D23 /* ModExpression.hxx */; };
-		2D91744709BA90380026E9FF /* MultExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971F90892CEA400F64D23 /* MultExpression.hxx */; };
-		2D91744809BA90380026E9FF /* NotEqualsExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971FB0892CEA400F64D23 /* NotEqualsExpression.hxx */; };
-		2D91744909BA90380026E9FF /* PlusExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971FD0892CEA400F64D23 /* PlusExpression.hxx */; };
-		2D91744A09BA90380026E9FF /* ShiftLeftExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971FF0892CEA400F64D23 /* ShiftLeftExpression.hxx */; };
-		2D91744B09BA90380026E9FF /* ShiftRightExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF972010892CEA400F64D23 /* ShiftRightExpression.hxx */; };
-		2D91744C09BA90380026E9FF /* TiaMethodExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF972050892CEA400F64D23 /* TiaMethodExpression.hxx */; };
-		2D91744D09BA90380026E9FF /* UnaryMinusExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF972090892CEA400F64D23 /* UnaryMinusExpression.hxx */; };
-		2D91744E09BA90380026E9FF /* WordDerefExpression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF9720B0892CEA400F64D23 /* WordDerefExpression.hxx */; };
 		2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D02208008A301F200B9C76B /* InputTextDialog.hxx */; };
 		2D91745009BA90380026E9FF /* CheckListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */; };
 		2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */; };
@@ -239,7 +207,6 @@
 		2D9174B109BA90380026E9FF /* HelpDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAB8084578BF00812C11 /* HelpDialog.cxx */; };
 		2D9174B209BA90380026E9FF /* Launcher.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEABA084578BF00812C11 /* Launcher.cxx */; };
 		2D9174B309BA90380026E9FF /* LauncherDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */; };
-		2D9174B409BA90380026E9FF /* LauncherOptionsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEABE084578BF00812C11 /* LauncherOptionsDialog.cxx */; };
 		2D9174B509BA90380026E9FF /* ListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAC0084578BF00812C11 /* ListWidget.cxx */; };
 		2D9174B609BA90380026E9FF /* Menu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAC2084578BF00812C11 /* Menu.cxx */; };
 		2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEAC4084578BF00812C11 /* OptionsDialog.cxx */; };
@@ -268,38 +235,7 @@
 		2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555D90880E78000466554 /* Cart3E.cxx */; };
 		2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555DD0880E79600466554 /* CpuDebug.cxx */; };
 		2D9174D009BA90380026E9FF /* RamDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555DF0880E79600466554 /* RamDebug.cxx */; };
-		2D9174D109BA90380026E9FF /* BinAndExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971C70892CEA400F64D23 /* BinAndExpression.cxx */; };
-		2D9174D209BA90380026E9FF /* BinNotExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971C90892CEA400F64D23 /* BinNotExpression.cxx */; };
-		2D9174D309BA90380026E9FF /* BinOrExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971CB0892CEA400F64D23 /* BinOrExpression.cxx */; };
-		2D9174D409BA90380026E9FF /* BinXorExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971CD0892CEA400F64D23 /* BinXorExpression.cxx */; };
-		2D9174D509BA90380026E9FF /* ByteDerefExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971CF0892CEA400F64D23 /* ByteDerefExpression.cxx */; };
-		2D9174D609BA90380026E9FF /* ByteDerefOffsetExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971D10892CEA400F64D23 /* ByteDerefOffsetExpression.cxx */; };
-		2D9174D709BA90380026E9FF /* ConstExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971D30892CEA400F64D23 /* ConstExpression.cxx */; };
-		2D9174D809BA90380026E9FF /* CpuMethodExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971D50892CEA400F64D23 /* CpuMethodExpression.cxx */; };
-		2D9174D909BA90380026E9FF /* DivExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971D80892CEA400F64D23 /* DivExpression.cxx */; };
-		2D9174DA09BA90380026E9FF /* EqualsExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971DA0892CEA400F64D23 /* EqualsExpression.cxx */; };
-		2D9174DB09BA90380026E9FF /* EquateExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971DC0892CEA400F64D23 /* EquateExpression.cxx */; };
 		2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971DE0892CEA400F64D23 /* Expression.cxx */; };
-		2D9174DD09BA90380026E9FF /* FunctionExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971E00892CEA400F64D23 /* FunctionExpression.cxx */; };
-		2D9174DE09BA90380026E9FF /* GreaterEqualsExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971E20892CEA400F64D23 /* GreaterEqualsExpression.cxx */; };
-		2D9174DF09BA90380026E9FF /* GreaterExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971E40892CEA400F64D23 /* GreaterExpression.cxx */; };
-		2D9174E009BA90380026E9FF /* HiByteExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971E60892CEA400F64D23 /* HiByteExpression.cxx */; };
-		2D9174E109BA90380026E9FF /* LessEqualsExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971E80892CEA400F64D23 /* LessEqualsExpression.cxx */; };
-		2D9174E209BA90380026E9FF /* LessExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971EA0892CEA400F64D23 /* LessExpression.cxx */; };
-		2D9174E309BA90380026E9FF /* LoByteExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971EC0892CEA400F64D23 /* LoByteExpression.cxx */; };
-		2D9174E409BA90380026E9FF /* LogAndExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971EE0892CEA400F64D23 /* LogAndExpression.cxx */; };
-		2D9174E509BA90380026E9FF /* LogNotExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971F00892CEA400F64D23 /* LogNotExpression.cxx */; };
-		2D9174E609BA90380026E9FF /* LogOrExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971F20892CEA400F64D23 /* LogOrExpression.cxx */; };
-		2D9174E709BA90380026E9FF /* MinusExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971F40892CEA400F64D23 /* MinusExpression.cxx */; };
-		2D9174E809BA90380026E9FF /* ModExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971F60892CEA400F64D23 /* ModExpression.cxx */; };
-		2D9174E909BA90380026E9FF /* MultExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971F80892CEA400F64D23 /* MultExpression.cxx */; };
-		2D9174EA09BA90380026E9FF /* NotEqualsExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971FA0892CEA400F64D23 /* NotEqualsExpression.cxx */; };
-		2D9174EB09BA90380026E9FF /* PlusExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971FC0892CEA400F64D23 /* PlusExpression.cxx */; };
-		2D9174EC09BA90380026E9FF /* ShiftLeftExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971FE0892CEA400F64D23 /* ShiftLeftExpression.cxx */; };
-		2D9174ED09BA90380026E9FF /* ShiftRightExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF972000892CEA400F64D23 /* ShiftRightExpression.cxx */; };
-		2D9174EE09BA90380026E9FF /* TiaMethodExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF972040892CEA400F64D23 /* TiaMethodExpression.cxx */; };
-		2D9174EF09BA90380026E9FF /* UnaryMinusExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF972080892CEA400F64D23 /* UnaryMinusExpression.cxx */; };
-		2D9174F009BA90380026E9FF /* WordDerefExpression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF9720A0892CEA400F64D23 /* WordDerefExpression.cxx */; };
 		2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D02207F08A301F200B9C76B /* InputTextDialog.cxx */; };
 		2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */; };
 		2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */; };
@@ -347,6 +283,11 @@
 		DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */; };
 		DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47455309C34BFA00EDDA3A /* RamCheat.cxx */; };
 		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
+		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
+		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
+		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
+		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
+		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
@@ -542,8 +483,6 @@
 		2DDBEABB084578BF00812C11 /* Launcher.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Launcher.hxx; path = ../gui/Launcher.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherDialog.cxx; path = ../gui/LauncherDialog.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEABD084578BF00812C11 /* LauncherDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LauncherDialog.hxx; path = ../gui/LauncherDialog.hxx; sourceTree = SOURCE_ROOT; };
-		2DDBEABE084578BF00812C11 /* LauncherOptionsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherOptionsDialog.cxx; path = ../gui/LauncherOptionsDialog.cxx; sourceTree = SOURCE_ROOT; };
-		2DDBEABF084578BF00812C11 /* LauncherOptionsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LauncherOptionsDialog.hxx; path = ../gui/LauncherOptionsDialog.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAC0084578BF00812C11 /* ListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ListWidget.cxx; path = ../gui/ListWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAC1084578BF00812C11 /* ListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ListWidget.hxx; path = ../gui/ListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAC2084578BF00812C11 /* Menu.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Menu.cxx; path = ../gui/Menu.cxx; sourceTree = SOURCE_ROOT; };
@@ -667,71 +606,9 @@
 		2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StringListWidget.cxx; path = ../gui/StringListWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StringListWidget.hxx; path = ../gui/StringListWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2DEFB40B09C3386F00754289 /* Cart.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Cart.icns; sourceTree = SOURCE_ROOT; };
-		2DF971C70892CEA400F64D23 /* BinAndExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BinAndExpression.cxx; path = ../debugger/BinAndExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971C80892CEA400F64D23 /* BinAndExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BinAndExpression.hxx; path = ../debugger/BinAndExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971C90892CEA400F64D23 /* BinNotExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BinNotExpression.cxx; path = ../debugger/BinNotExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971CA0892CEA400F64D23 /* BinNotExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BinNotExpression.hxx; path = ../debugger/BinNotExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971CB0892CEA400F64D23 /* BinOrExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BinOrExpression.cxx; path = ../debugger/BinOrExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971CC0892CEA400F64D23 /* BinOrExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BinOrExpression.hxx; path = ../debugger/BinOrExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971CD0892CEA400F64D23 /* BinXorExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BinXorExpression.cxx; path = ../debugger/BinXorExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971CE0892CEA400F64D23 /* BinXorExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BinXorExpression.hxx; path = ../debugger/BinXorExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971CF0892CEA400F64D23 /* ByteDerefExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ByteDerefExpression.cxx; path = ../debugger/ByteDerefExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971D00892CEA400F64D23 /* ByteDerefExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ByteDerefExpression.hxx; path = ../debugger/ByteDerefExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971D10892CEA400F64D23 /* ByteDerefOffsetExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ByteDerefOffsetExpression.cxx; path = ../debugger/ByteDerefOffsetExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971D20892CEA400F64D23 /* ByteDerefOffsetExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ByteDerefOffsetExpression.hxx; path = ../debugger/ByteDerefOffsetExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971D30892CEA400F64D23 /* ConstExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ConstExpression.cxx; path = ../debugger/ConstExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971D40892CEA400F64D23 /* ConstExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ConstExpression.hxx; path = ../debugger/ConstExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971D50892CEA400F64D23 /* CpuMethodExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CpuMethodExpression.cxx; path = ../debugger/CpuMethodExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971D60892CEA400F64D23 /* CpuMethodExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CpuMethodExpression.hxx; path = ../debugger/CpuMethodExpression.hxx; sourceTree = SOURCE_ROOT; };
 		2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerSystem.hxx; path = ../debugger/DebuggerSystem.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971D80892CEA400F64D23 /* DivExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DivExpression.cxx; path = ../debugger/DivExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971D90892CEA400F64D23 /* DivExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DivExpression.hxx; path = ../debugger/DivExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971DA0892CEA400F64D23 /* EqualsExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EqualsExpression.cxx; path = ../debugger/EqualsExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971DB0892CEA400F64D23 /* EqualsExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EqualsExpression.hxx; path = ../debugger/EqualsExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971DC0892CEA400F64D23 /* EquateExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EquateExpression.cxx; path = ../debugger/EquateExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971DD0892CEA400F64D23 /* EquateExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EquateExpression.hxx; path = ../debugger/EquateExpression.hxx; sourceTree = SOURCE_ROOT; };
 		2DF971DE0892CEA400F64D23 /* Expression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Expression.cxx; path = ../debugger/Expression.cxx; sourceTree = SOURCE_ROOT; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Expression.hxx; path = ../debugger/Expression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971E00892CEA400F64D23 /* FunctionExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FunctionExpression.cxx; path = ../debugger/FunctionExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971E10892CEA400F64D23 /* FunctionExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FunctionExpression.hxx; path = ../debugger/FunctionExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971E20892CEA400F64D23 /* GreaterEqualsExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GreaterEqualsExpression.cxx; path = ../debugger/GreaterEqualsExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971E30892CEA400F64D23 /* GreaterEqualsExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = GreaterEqualsExpression.hxx; path = ../debugger/GreaterEqualsExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971E40892CEA400F64D23 /* GreaterExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = GreaterExpression.cxx; path = ../debugger/GreaterExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971E50892CEA400F64D23 /* GreaterExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = GreaterExpression.hxx; path = ../debugger/GreaterExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971E60892CEA400F64D23 /* HiByteExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = HiByteExpression.cxx; path = ../debugger/HiByteExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971E70892CEA400F64D23 /* HiByteExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = HiByteExpression.hxx; path = ../debugger/HiByteExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971E80892CEA400F64D23 /* LessEqualsExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LessEqualsExpression.cxx; path = ../debugger/LessEqualsExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971E90892CEA400F64D23 /* LessEqualsExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LessEqualsExpression.hxx; path = ../debugger/LessEqualsExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971EA0892CEA400F64D23 /* LessExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LessExpression.cxx; path = ../debugger/LessExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971EB0892CEA400F64D23 /* LessExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LessExpression.hxx; path = ../debugger/LessExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971EC0892CEA400F64D23 /* LoByteExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LoByteExpression.cxx; path = ../debugger/LoByteExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971ED0892CEA400F64D23 /* LoByteExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LoByteExpression.hxx; path = ../debugger/LoByteExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971EE0892CEA400F64D23 /* LogAndExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LogAndExpression.cxx; path = ../debugger/LogAndExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971EF0892CEA400F64D23 /* LogAndExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LogAndExpression.hxx; path = ../debugger/LogAndExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971F00892CEA400F64D23 /* LogNotExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LogNotExpression.cxx; path = ../debugger/LogNotExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971F10892CEA400F64D23 /* LogNotExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LogNotExpression.hxx; path = ../debugger/LogNotExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971F20892CEA400F64D23 /* LogOrExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = LogOrExpression.cxx; path = ../debugger/LogOrExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971F30892CEA400F64D23 /* LogOrExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = LogOrExpression.hxx; path = ../debugger/LogOrExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971F40892CEA400F64D23 /* MinusExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MinusExpression.cxx; path = ../debugger/MinusExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971F50892CEA400F64D23 /* MinusExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MinusExpression.hxx; path = ../debugger/MinusExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971F60892CEA400F64D23 /* ModExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ModExpression.cxx; path = ../debugger/ModExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971F70892CEA400F64D23 /* ModExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ModExpression.hxx; path = ../debugger/ModExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971F80892CEA400F64D23 /* MultExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MultExpression.cxx; path = ../debugger/MultExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971F90892CEA400F64D23 /* MultExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MultExpression.hxx; path = ../debugger/MultExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971FA0892CEA400F64D23 /* NotEqualsExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NotEqualsExpression.cxx; path = ../debugger/NotEqualsExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971FB0892CEA400F64D23 /* NotEqualsExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = NotEqualsExpression.hxx; path = ../debugger/NotEqualsExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971FC0892CEA400F64D23 /* PlusExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PlusExpression.cxx; path = ../debugger/PlusExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971FD0892CEA400F64D23 /* PlusExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PlusExpression.hxx; path = ../debugger/PlusExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF971FE0892CEA400F64D23 /* ShiftLeftExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ShiftLeftExpression.cxx; path = ../debugger/ShiftLeftExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF971FF0892CEA400F64D23 /* ShiftLeftExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ShiftLeftExpression.hxx; path = ../debugger/ShiftLeftExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF972000892CEA400F64D23 /* ShiftRightExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ShiftRightExpression.cxx; path = ../debugger/ShiftRightExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF972010892CEA400F64D23 /* ShiftRightExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ShiftRightExpression.hxx; path = ../debugger/ShiftRightExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF972040892CEA400F64D23 /* TiaMethodExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TiaMethodExpression.cxx; path = ../debugger/TiaMethodExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF972050892CEA400F64D23 /* TiaMethodExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TiaMethodExpression.hxx; path = ../debugger/TiaMethodExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF972080892CEA400F64D23 /* UnaryMinusExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UnaryMinusExpression.cxx; path = ../debugger/UnaryMinusExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF972090892CEA400F64D23 /* UnaryMinusExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UnaryMinusExpression.hxx; path = ../debugger/UnaryMinusExpression.hxx; sourceTree = SOURCE_ROOT; };
-		2DF9720A0892CEA400F64D23 /* WordDerefExpression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = WordDerefExpression.cxx; path = ../debugger/WordDerefExpression.cxx; sourceTree = SOURCE_ROOT; };
-		2DF9720B0892CEA400F64D23 /* WordDerefExpression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = WordDerefExpression.hxx; path = ../debugger/WordDerefExpression.hxx; sourceTree = SOURCE_ROOT; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BankRomCheat.hxx; path = ../cheat/BankRomCheat.hxx; sourceTree = SOURCE_ROOT; };
@@ -744,6 +621,11 @@
 		DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheetahCheat.hxx; path = ../cheat/CheetahCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC47455309C34BFA00EDDA3A /* RamCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RamCheat.cxx; path = ../cheat/RamCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
+		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/debugger/DebuggerExpressions.hxx; sourceTree = "<absolute>"; };
+		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/FileSnapDialog.cxx; sourceTree = "<absolute>"; };
+		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/FileSnapDialog.hxx; sourceTree = "<absolute>"; };
+		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/UIDialog.cxx; sourceTree = "<absolute>"; };
+		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/UIDialog.hxx; sourceTree = "<absolute>"; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/emucore/Cart4A50.cxx; sourceTree = "<absolute>"; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/emucore/Cart4A50.hxx; sourceTree = "<absolute>"; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/common/RectList.cxx; sourceTree = "<absolute>"; };
@@ -1068,6 +950,10 @@
 		2D6050FA0898786C00C6DE89 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */,
+				DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */,
+				DC8078E60B4BD697005E9305 /* UIDialog.cxx */,
+				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
 				2DDBEAA3084578BF00812C11 /* AboutDialog.cxx */,
 				2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */,
 				2DDBEAA6084578BF00812C11 /* AudioDialog.cxx */,
@@ -1110,8 +996,6 @@
 				2DDBEABB084578BF00812C11 /* Launcher.hxx */,
 				2DDBEABC084578BF00812C11 /* LauncherDialog.cxx */,
 				2DDBEABD084578BF00812C11 /* LauncherDialog.hxx */,
-				2DDBEABE084578BF00812C11 /* LauncherOptionsDialog.cxx */,
-				2DDBEABF084578BF00812C11 /* LauncherOptionsDialog.hxx */,
 				2DDBEAC0084578BF00812C11 /* ListWidget.cxx */,
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				2DDBEAC2084578BF00812C11 /* Menu.cxx */,
@@ -1141,91 +1025,30 @@
 		2D605130089879BA00C6DE89 /* debugger */ = {
 			isa = PBXGroup;
 			children = (
+				DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */,
 				2D20F9E308C603C500A73076 /* gui */,
-				2DF971C70892CEA400F64D23 /* BinAndExpression.cxx */,
-				2DF971C80892CEA400F64D23 /* BinAndExpression.hxx */,
-				2DF971C90892CEA400F64D23 /* BinNotExpression.cxx */,
-				2DF971CA0892CEA400F64D23 /* BinNotExpression.hxx */,
-				2DF971CB0892CEA400F64D23 /* BinOrExpression.cxx */,
-				2DF971CC0892CEA400F64D23 /* BinOrExpression.hxx */,
-				2DF971CD0892CEA400F64D23 /* BinXorExpression.cxx */,
-				2DF971CE0892CEA400F64D23 /* BinXorExpression.hxx */,
-				2DF971CF0892CEA400F64D23 /* ByteDerefExpression.cxx */,
-				2DF971D00892CEA400F64D23 /* ByteDerefExpression.hxx */,
-				2DF971D10892CEA400F64D23 /* ByteDerefOffsetExpression.cxx */,
-				2DF971D20892CEA400F64D23 /* ByteDerefOffsetExpression.hxx */,
-				2DF971D30892CEA400F64D23 /* ConstExpression.cxx */,
-				2DF971D40892CEA400F64D23 /* ConstExpression.hxx */,
 				2D6CC10108C811A600B8F642 /* ContextMenu.cxx */,
 				2D6CC10208C811A600B8F642 /* ContextMenu.hxx */,
 				2D9555DD0880E79600466554 /* CpuDebug.cxx */,
 				2D9555DE0880E79600466554 /* CpuDebug.hxx */,
-				2DF971D50892CEA400F64D23 /* CpuMethodExpression.cxx */,
-				2DF971D60892CEA400F64D23 /* CpuMethodExpression.hxx */,
 				2D659E2D085D3DD6005D96C8 /* Debugger.cxx */,
 				2D659E2E085D3DD6005D96C8 /* Debugger.hxx */,
 				2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */,
 				2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */,
 				2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */,
-				2DF971D80892CEA400F64D23 /* DivExpression.cxx */,
-				2DF971D90892CEA400F64D23 /* DivExpression.hxx */,
-				2DF971DA0892CEA400F64D23 /* EqualsExpression.cxx */,
-				2DF971DB0892CEA400F64D23 /* EqualsExpression.hxx */,
 				2D403BC808611898001E31A1 /* Equate.hxx */,
-				2DF971DC0892CEA400F64D23 /* EquateExpression.cxx */,
-				2DF971DD0892CEA400F64D23 /* EquateExpression.hxx */,
 				2D403BCA08611898001E31A1 /* EquateList.hxx */,
 				2D403BC908611898001E31A1 /* EquateList.cxx */,
 				2DF971DE0892CEA400F64D23 /* Expression.cxx */,
 				2DF971DF0892CEA400F64D23 /* Expression.hxx */,
-				2DF971E00892CEA400F64D23 /* FunctionExpression.cxx */,
-				2DF971E10892CEA400F64D23 /* FunctionExpression.hxx */,
-				2DF971E20892CEA400F64D23 /* GreaterEqualsExpression.cxx */,
-				2DF971E30892CEA400F64D23 /* GreaterEqualsExpression.hxx */,
-				2DF971E40892CEA400F64D23 /* GreaterExpression.cxx */,
-				2DF971E50892CEA400F64D23 /* GreaterExpression.hxx */,
-				2DF971E60892CEA400F64D23 /* HiByteExpression.cxx */,
-				2DF971E70892CEA400F64D23 /* HiByteExpression.hxx */,
-				2DF971E80892CEA400F64D23 /* LessEqualsExpression.cxx */,
-				2DF971E90892CEA400F64D23 /* LessEqualsExpression.hxx */,
-				2DF971EA0892CEA400F64D23 /* LessExpression.cxx */,
-				2DF971EB0892CEA400F64D23 /* LessExpression.hxx */,
-				2DF971EC0892CEA400F64D23 /* LoByteExpression.cxx */,
-				2DF971ED0892CEA400F64D23 /* LoByteExpression.hxx */,
-				2DF971EE0892CEA400F64D23 /* LogAndExpression.cxx */,
-				2DF971EF0892CEA400F64D23 /* LogAndExpression.hxx */,
-				2DF971F00892CEA400F64D23 /* LogNotExpression.cxx */,
-				2DF971F10892CEA400F64D23 /* LogNotExpression.hxx */,
-				2DF971F20892CEA400F64D23 /* LogOrExpression.cxx */,
-				2DF971F30892CEA400F64D23 /* LogOrExpression.hxx */,
-				2DF971F40892CEA400F64D23 /* MinusExpression.cxx */,
-				2DF971F50892CEA400F64D23 /* MinusExpression.hxx */,
-				2DF971F60892CEA400F64D23 /* ModExpression.cxx */,
-				2DF971F70892CEA400F64D23 /* ModExpression.hxx */,
-				2DF971F80892CEA400F64D23 /* MultExpression.cxx */,
-				2DF971F90892CEA400F64D23 /* MultExpression.hxx */,
-				2DF971FA0892CEA400F64D23 /* NotEqualsExpression.cxx */,
-				2DF971FB0892CEA400F64D23 /* NotEqualsExpression.hxx */,
 				2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */,
 				2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */,
-				2DF971FC0892CEA400F64D23 /* PlusExpression.cxx */,
-				2DF971FD0892CEA400F64D23 /* PlusExpression.hxx */,
 				2D9555DF0880E79600466554 /* RamDebug.cxx */,
 				2D9555E00880E79600466554 /* RamDebug.hxx */,
-				2DF971FE0892CEA400F64D23 /* ShiftLeftExpression.cxx */,
-				2DF971FF0892CEA400F64D23 /* ShiftLeftExpression.hxx */,
-				2DF972000892CEA400F64D23 /* ShiftRightExpression.cxx */,
-				2DF972010892CEA400F64D23 /* ShiftRightExpression.hxx */,
 				2D30F8750868A4DB00938B9D /* TIADebug.cxx */,
 				2D30F8760868A4DB00938B9D /* TIADebug.hxx */,
-				2DF972040892CEA400F64D23 /* TiaMethodExpression.cxx */,
-				2DF972050892CEA400F64D23 /* TiaMethodExpression.hxx */,
 				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
 				2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */,
-				2DF972080892CEA400F64D23 /* UnaryMinusExpression.cxx */,
-				2DF972090892CEA400F64D23 /* UnaryMinusExpression.hxx */,
-				2DF9720A0892CEA400F64D23 /* WordDerefExpression.cxx */,
-				2DF9720B0892CEA400F64D23 /* WordDerefExpression.hxx */,
 			);
 			name = debugger;
 			sourceTree = "<group>";
@@ -1330,7 +1153,6 @@
 				2D91740A09BA90380026E9FF /* HelpDialog.hxx in Headers */,
 				2D91740B09BA90380026E9FF /* Launcher.hxx in Headers */,
 				2D91740C09BA90380026E9FF /* LauncherDialog.hxx in Headers */,
-				2D91740D09BA90380026E9FF /* LauncherOptionsDialog.hxx in Headers */,
 				2D91740E09BA90380026E9FF /* ListWidget.hxx in Headers */,
 				2D91740F09BA90380026E9FF /* Menu.hxx in Headers */,
 				2D91741009BA90380026E9FF /* OptionsDialog.hxx in Headers */,
@@ -1363,39 +1185,8 @@
 				2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */,
 				2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */,
 				2D91742D09BA90380026E9FF /* RamDebug.hxx in Headers */,
-				2D91742E09BA90380026E9FF /* BinAndExpression.hxx in Headers */,
-				2D91742F09BA90380026E9FF /* BinNotExpression.hxx in Headers */,
-				2D91743009BA90380026E9FF /* BinOrExpression.hxx in Headers */,
-				2D91743109BA90380026E9FF /* BinXorExpression.hxx in Headers */,
-				2D91743209BA90380026E9FF /* ByteDerefExpression.hxx in Headers */,
-				2D91743309BA90380026E9FF /* ByteDerefOffsetExpression.hxx in Headers */,
-				2D91743409BA90380026E9FF /* ConstExpression.hxx in Headers */,
-				2D91743509BA90380026E9FF /* CpuMethodExpression.hxx in Headers */,
 				2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */,
-				2D91743709BA90380026E9FF /* DivExpression.hxx in Headers */,
-				2D91743809BA90380026E9FF /* EqualsExpression.hxx in Headers */,
-				2D91743909BA90380026E9FF /* EquateExpression.hxx in Headers */,
 				2D91743A09BA90380026E9FF /* Expression.hxx in Headers */,
-				2D91743B09BA90380026E9FF /* FunctionExpression.hxx in Headers */,
-				2D91743C09BA90380026E9FF /* GreaterEqualsExpression.hxx in Headers */,
-				2D91743D09BA90380026E9FF /* GreaterExpression.hxx in Headers */,
-				2D91743E09BA90380026E9FF /* HiByteExpression.hxx in Headers */,
-				2D91743F09BA90380026E9FF /* LessEqualsExpression.hxx in Headers */,
-				2D91744009BA90380026E9FF /* LessExpression.hxx in Headers */,
-				2D91744109BA90380026E9FF /* LoByteExpression.hxx in Headers */,
-				2D91744209BA90380026E9FF /* LogAndExpression.hxx in Headers */,
-				2D91744309BA90380026E9FF /* LogNotExpression.hxx in Headers */,
-				2D91744409BA90380026E9FF /* LogOrExpression.hxx in Headers */,
-				2D91744509BA90380026E9FF /* MinusExpression.hxx in Headers */,
-				2D91744609BA90380026E9FF /* ModExpression.hxx in Headers */,
-				2D91744709BA90380026E9FF /* MultExpression.hxx in Headers */,
-				2D91744809BA90380026E9FF /* NotEqualsExpression.hxx in Headers */,
-				2D91744909BA90380026E9FF /* PlusExpression.hxx in Headers */,
-				2D91744A09BA90380026E9FF /* ShiftLeftExpression.hxx in Headers */,
-				2D91744B09BA90380026E9FF /* ShiftRightExpression.hxx in Headers */,
-				2D91744C09BA90380026E9FF /* TiaMethodExpression.hxx in Headers */,
-				2D91744D09BA90380026E9FF /* UnaryMinusExpression.hxx in Headers */,
-				2D91744E09BA90380026E9FF /* WordDerefExpression.hxx in Headers */,
 				2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */,
 				2D91745009BA90380026E9FF /* CheckListWidget.hxx in Headers */,
 				2D91745109BA90380026E9FF /* StringListWidget.hxx in Headers */,
@@ -1434,6 +1225,9 @@
 				2D28DDE509DC2D9F00A17585 /* MenusEvents.h in Headers */,
 				DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */,
 				DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */,
+				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
+				DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */,
+				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1597,7 +1391,6 @@
 				2D9174B109BA90380026E9FF /* HelpDialog.cxx in Sources */,
 				2D9174B209BA90380026E9FF /* Launcher.cxx in Sources */,
 				2D9174B309BA90380026E9FF /* LauncherDialog.cxx in Sources */,
-				2D9174B409BA90380026E9FF /* LauncherOptionsDialog.cxx in Sources */,
 				2D9174B509BA90380026E9FF /* ListWidget.cxx in Sources */,
 				2D9174B609BA90380026E9FF /* Menu.cxx in Sources */,
 				2D9174B709BA90380026E9FF /* OptionsDialog.cxx in Sources */,
@@ -1626,38 +1419,7 @@
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
 				2D9174D009BA90380026E9FF /* RamDebug.cxx in Sources */,
-				2D9174D109BA90380026E9FF /* BinAndExpression.cxx in Sources */,
-				2D9174D209BA90380026E9FF /* BinNotExpression.cxx in Sources */,
-				2D9174D309BA90380026E9FF /* BinOrExpression.cxx in Sources */,
-				2D9174D409BA90380026E9FF /* BinXorExpression.cxx in Sources */,
-				2D9174D509BA90380026E9FF /* ByteDerefExpression.cxx in Sources */,
-				2D9174D609BA90380026E9FF /* ByteDerefOffsetExpression.cxx in Sources */,
-				2D9174D709BA90380026E9FF /* ConstExpression.cxx in Sources */,
-				2D9174D809BA90380026E9FF /* CpuMethodExpression.cxx in Sources */,
-				2D9174D909BA90380026E9FF /* DivExpression.cxx in Sources */,
-				2D9174DA09BA90380026E9FF /* EqualsExpression.cxx in Sources */,
-				2D9174DB09BA90380026E9FF /* EquateExpression.cxx in Sources */,
 				2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */,
-				2D9174DD09BA90380026E9FF /* FunctionExpression.cxx in Sources */,
-				2D9174DE09BA90380026E9FF /* GreaterEqualsExpression.cxx in Sources */,
-				2D9174DF09BA90380026E9FF /* GreaterExpression.cxx in Sources */,
-				2D9174E009BA90380026E9FF /* HiByteExpression.cxx in Sources */,
-				2D9174E109BA90380026E9FF /* LessEqualsExpression.cxx in Sources */,
-				2D9174E209BA90380026E9FF /* LessExpression.cxx in Sources */,
-				2D9174E309BA90380026E9FF /* LoByteExpression.cxx in Sources */,
-				2D9174E409BA90380026E9FF /* LogAndExpression.cxx in Sources */,
-				2D9174E509BA90380026E9FF /* LogNotExpression.cxx in Sources */,
-				2D9174E609BA90380026E9FF /* LogOrExpression.cxx in Sources */,
-				2D9174E709BA90380026E9FF /* MinusExpression.cxx in Sources */,
-				2D9174E809BA90380026E9FF /* ModExpression.cxx in Sources */,
-				2D9174E909BA90380026E9FF /* MultExpression.cxx in Sources */,
-				2D9174EA09BA90380026E9FF /* NotEqualsExpression.cxx in Sources */,
-				2D9174EB09BA90380026E9FF /* PlusExpression.cxx in Sources */,
-				2D9174EC09BA90380026E9FF /* ShiftLeftExpression.cxx in Sources */,
-				2D9174ED09BA90380026E9FF /* ShiftRightExpression.cxx in Sources */,
-				2D9174EE09BA90380026E9FF /* TiaMethodExpression.cxx in Sources */,
-				2D9174EF09BA90380026E9FF /* UnaryMinusExpression.cxx in Sources */,
-				2D9174F009BA90380026E9FF /* WordDerefExpression.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
 				2D9174F309BA90380026E9FF /* StringListWidget.cxx in Sources */,
@@ -1694,6 +1456,8 @@
 				DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */,
 				DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */,
 				DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */,
+				DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */,
+				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1903,6 +1667,8 @@
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
 			};
 			name = Deployment;
 		};

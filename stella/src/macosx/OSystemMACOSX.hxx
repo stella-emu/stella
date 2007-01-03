@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.hxx,v 1.8 2007-01-01 18:04:55 stephena Exp $
+// $Id: OSystemMACOSX.hxx,v 1.9 2007-01-03 12:59:24 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_MACOSX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Mark Grebe
-  @version $Id: OSystemMACOSX.hxx,v 1.8 2007-01-01 18:04:55 stephena Exp $
+  @version $Id: OSystemMACOSX.hxx,v 1.9 2007-01-03 12:59:24 stephena Exp $
 */
 class OSystemMACOSX : public OSystem
 {
@@ -58,11 +58,6 @@ class OSystemMACOSX : public OSystem
       Informs the OSystem of a change in EventHandler state.
     */
     virtual void stateChanged(EventHandler::State state);
-
-    /**
-      Informs the OSystem of a change in pause status.
-    */
-    virtual void pauseChanged(bool status);
 };
 
 #endif

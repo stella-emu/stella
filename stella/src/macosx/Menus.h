@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: Menus.h,v 1.9 2006-03-29 04:45:10 markgrebe Exp $ */
+/* $Id: Menus.h,v 1.10 2007-01-03 12:59:23 stephena Exp $ */
 
 #import <Cocoa/Cocoa.h>
 
@@ -13,11 +13,9 @@
     IBOutlet id openMenuItem;
     IBOutlet id restartMenuItem;
     IBOutlet id savePropsMenuItem;
-    IBOutlet id mergePropsMenuItem;
     IBOutlet id screenBiggerMenuItem;
     IBOutlet id screenSmallerMenuItem;
     IBOutlet id fullScreenMenuItem;
-    IBOutlet id pauseMenuItem;
     IBOutlet id togglePalletteMenuItem;
     IBOutlet id ntscPalMenuItem;
     IBOutlet id increaseXStartMenuItem;
@@ -45,7 +43,6 @@
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)openCart:(id)sender;
 - (IBAction)restartGame:(id)sender;
-- (IBAction)pauseGame:(id)sender;
 - (IBAction)ntscPalMode:(id)sender;
 - (IBAction)togglePallette:(id)sender;
 - (IBAction)grabMouse:(id)sender;
@@ -61,7 +58,6 @@
 - (IBAction)volumePlus:(id)sender;
 - (IBAction)volumeMinus:(id)sender;
 - (IBAction)saveProps:(id)sender;
-- (IBAction)mergeProps:(id)sender;
 - (void)setEmulationMenus;
 - (void)setLauncherMenus;
 - (void)setOptionsMenus;

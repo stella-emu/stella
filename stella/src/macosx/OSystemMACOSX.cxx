@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.15 2007-01-01 18:04:55 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.16 2007-01-03 12:59:23 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -56,6 +56,7 @@ extern char parentdir[MAXPATHLEN];
 //  the OS into the application.
 void macOpenConsole(char *romname)
 {
+	theOSystem->deleteConsole();
 	theOSystem->createConsole(romname);
 }
 
@@ -64,9 +65,6 @@ void macOpenConsole(char *romname)
 void macOSXSendMenuEvent(int event)
 {
     switch(event) {
-        case MENU_PAUSE:
-            theOSystem->eventHandler().handleEvent(Event::Pause, 1);
-            break;
         case MENU_OPEN:
             theOSystem->eventHandler().handleEvent(Event::LauncherMode, 1);
             break;
@@ -160,9 +158,4 @@ void OSystemMACOSX::stateChanged(EventHandler::State state)
     default:
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemMACOSX::pauseChanged(bool status)
-{
 }

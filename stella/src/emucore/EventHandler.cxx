@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.194 2007-01-01 18:04:47 stephena Exp $
+// $Id: EventHandler.cxx,v 1.195 2007-01-03 12:59:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -217,13 +217,17 @@ void EventHandler::setupJoysticks()
   int saCount = 0;
 
   // First clear the joystick array, closing previously opened sticks
-  for(int i = 0; i < kNumJoysticks; i++)
+  if((SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK) > 0)
   {
-    if(ourJoysticks[i].stick && SDL_JoystickOpened(i))
-      SDL_JoystickClose(ourJoysticks[i].stick);
+    for(int i = 0; i < kNumJoysticks; i++)
+    {
+      if(ourJoysticks[i].stick && SDL_JoystickOpened(i))
+        SDL_JoystickClose(ourJoysticks[i].stick);
 
-    ourJoysticks[i].stick = (SDL_Joystick*) NULL;
-    ourJoysticks[i].type  = JT_NONE;
+      ourJoysticks[i].stick = (SDL_Joystick*) NULL;
+      ourJoysticks[i].type  = JT_NONE;
+    }
+    SDL_QuitSubSystem(SDL_INIT_JOYSTICK);
   }
 
   // (Re)-Initialize the joystick subsystem

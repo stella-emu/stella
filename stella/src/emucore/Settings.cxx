@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.113 2007-01-01 18:21:04 stephena Exp $
+// $Id: Settings.cxx,v 1.114 2007-01-03 12:59:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -39,7 +39,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_filter", "nearest");
   setInternal("gl_aspect", "2.0");
   setInternal("gl_fsmax", "true");
-  setInternal("gl_lib", "");
+  setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
 
   setInternal("scale_ui", "zoom2x");
