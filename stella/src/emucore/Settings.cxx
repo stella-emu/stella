@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.114 2007-01-03 12:59:22 stephena Exp $
+// $Id: Settings.cxx,v 1.115 2007-01-03 17:37:46 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -83,7 +83,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("launchersize", "2");
   setInternal("uipalette", "0");
   setInternal("autoslot", "false");
-  setInternal("fastscbios", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -322,7 +321,6 @@ void Settings::usage()
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
-    << "  -fastscbios   <1|0>          Speed up loading of SuperCharger ROM BIOS\n"
   #ifdef UNIX
     << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
   #endif

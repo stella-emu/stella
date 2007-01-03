@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.28 2007-01-01 18:04:45 stephena Exp $
+// $Id: Cart.cxx,v 1.29 2007-01-03 17:37:46 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -96,7 +96,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else if(type == "4K")
     cartridge = new Cartridge4K(image);
   else if(type == "AR")
-    cartridge = new CartridgeAR(image, size, settings.getBool("fastscbios"));
+    cartridge = new CartridgeAR(image, size, true); //settings.getBool("fastscbios")
   else if(type == "DPC")
     cartridge = new CartridgeDPC(image, size);
   else if(type == "E0")
