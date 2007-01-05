@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.cxx,v 1.6 2007-01-01 18:04:48 stephena Exp $
+// $Id: Joystick.cxx,v 1.7 2007-01-05 17:54:23 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -22,9 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Joystick::Joystick(Jack jack, const Event& event)
-    : Controller(jack, event)
+  : Controller(jack, event, Controller::Joystick)
 {
-  myType = Controller::Joystick;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

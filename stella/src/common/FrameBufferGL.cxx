@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.82 2007-01-01 18:04:40 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.83 2007-01-05 17:54:06 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -314,11 +314,6 @@ bool FrameBufferGL::createScreen()
   p_glDisable(GL_LIGHTING);
   p_glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
-  if(myHaveTexRectEXT)
-    p_glEnable(GL_TEXTURE_RECTANGLE_ARB);
-  else
-    p_glEnable(GL_TEXTURE_2D);
-
   p_glMatrixMode(GL_PROJECTION);
   p_glLoadIdentity();
   p_glOrtho(0.0, orthoWidth, orthoHeight, 0, -1.0, 1.0);
@@ -327,6 +322,8 @@ bool FrameBufferGL::createScreen()
 
   // Allocate GL textures
   createTextures();
+
+  p_glEnable(myBuffer.target);
 
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);

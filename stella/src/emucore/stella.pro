@@ -1441,13 +1441,10 @@
 "Cartridge.MD5" "1619bc27632f9148d8480cd813aa74c3"
 "Cartridge.Manufacturer" "Video Gems / Thomas Jentzsch"
 "Cartridge.Name" "Steeple Chase (Video Gems) (NTSC by Thomas Jentzsch)"
-"Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
-"Console.LeftDifficulty" "A"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
-"Display.YStart" "21"
-"Display.Height" "209"
+"Console.RightDifficulty" "A"
+"Display.YStart" "20"
+"Display.Height" "220"
 "Display.Phosphor" "YES"
 ""
 
@@ -2585,6 +2582,7 @@
 
 "Cartridge.MD5" "292f2446a0325b7b423e88a2ebfeb5a0"
 "Cartridge.Name" "Cube Conquest (Non Interlaced) (Billy Eno) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "292a0bb975b2587f9ac784c960e1b453"
@@ -3083,6 +3081,8 @@
 
 "Cartridge.MD5" "30e012e8d50330c8972f126b8e913bc4"
 "Cartridge.Name" "Indy 500 (1978) (Atari) [h3]"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
 ""
 
 "Cartridge.MD5" "313243fc41e49ef6bd3aa9ebc0d372dd"
@@ -3433,6 +3433,7 @@
 
 "Cartridge.MD5" "36a701c60a9f9768d057bc2a83526a80"
 "Cartridge.Name" "Cube Conquest (Interlaced) (Billy Eno) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "368d88a6c071caba60b4f778615aae94"
@@ -3733,6 +3734,7 @@
 
 "Cartridge.MD5" "3ac6c50a8e62d4ce71595134cbd8035e"
 "Cartridge.Name" "Tomcat - The F-14 Flight Simulator (1988) (Absolute) [a1]"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "3b37ebc0674e3d5e49ffbdc4b65607a6"
@@ -3753,12 +3755,12 @@
 ""
 
 "Cartridge.MD5" "3b76242691730b2dd22ec0ceab351bc6"
-"Cartridge.Name" "Masters of the Universe - The Power of He-Man (1983) (Mattel)"
 "Cartridge.Manufacturer" "Mattel"
 "Cartridge.ModelNo" "MT4318"
+"Cartridge.Name" "Masters of the Universe - The Power of He-Man (1983) (Mattel)"
 "Cartridge.Rarity" "Rare"
-"Console.LeftDifficulty" "A"
-"Display.Phosphor" "Yes"
+"Console.RightDifficulty" "A"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "3b6dba1a24bb2893bd3bd0593f92016b"
@@ -4956,10 +4958,11 @@
 ""
 
 "Cartridge.MD5" "4f6702c3ba6e0ee2e2868d054b00c064"
-"Cartridge.Name" "Space Shuttle - Journey Into Space (1983) (Activision) (PAL) [!]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AZ-033"
+"Cartridge.Name" "Space Shuttle - Journey Into Space (1983) (Activision) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
+"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "4f82d8d78099dd71e8e169646e799d05"
@@ -5439,6 +5442,7 @@
 
 "Cartridge.MD5" "58e313e2b5613b2439b5f12bb41e3eef"
 "Cartridge.Name" "Cube Conquest (Demo Interlace) (Billy Eno) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "58d331c23297ed98663d11b869636f16"
@@ -5600,10 +5604,11 @@
 ""
 
 "Cartridge.MD5" "5bcc83677d68f7ef74c1b4a0697ba2a8"
-"Cartridge.Name" "Ice Hockey (1981) (Activision) [o1]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AX-012"
+"Cartridge.Name" "Ice Hockey (1981) (Activision) [o1]"
 "Cartridge.Rarity" "Uncommon"
+"Cartridge.Type" "4K"
 ""
 
 "Cartridge.MD5" "5df32450b9fbcaf43f9d83bd66bd5a81"
@@ -6005,6 +6010,8 @@
 
 "Cartridge.MD5" "63166867f75869a3592b7a94ea62d147"
 "Cartridge.Name" "Indy 500 (1978) (Atari) [h2]"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
 ""
 
 "Cartridge.MD5" "6342afe9c9ad1b6120b8f6fb040d0926"
@@ -6256,9 +6263,9 @@
 ""
 
 "Cartridge.MD5" "66706459e62514d0c39c3797cbf73ff1"
-"Cartridge.Name" "Treasure Below (Video Gems) (PAL)"
 "Cartridge.Manufacturer" "Video Gems"
-"Console.LeftDifficulty" "A"
+"Cartridge.Name" "Treasure Below (Video Gems) (PAL)"
+"Console.RightDifficulty" "A"
 ""
 
 "Cartridge.MD5" "6b01a519b413f8cfa2f399f4d2841b42"
@@ -8030,10 +8037,12 @@
 ""
 
 "Cartridge.MD5" "81414174f1816d5c1e583af427ac89fc"
-"Cartridge.Name" "Treasure Below (Video Gems) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "Video Gems / Thomas Jentzsch"
+"Cartridge.Name" "Treasure Below (Video Gems) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
-"Console.LeftDifficulty" "A"
+"Console.RightDifficulty" "A"
+"Display.YStart" "20"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "8190b403d67bf9792fe22fa5d22f3556"
@@ -8617,9 +8626,10 @@
 ""
 
 "Cartridge.MD5" "8bc0d2052b4f259e7a50a7c771b45241"
-"Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
 "Cartridge.Manufacturer" "Xonox"
+"Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "8c136e97c0a4af66da4a249561ed17db"
@@ -9020,6 +9030,8 @@
 "Cartridge.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
 "Cartridge.Name" "Pac Kong (Starsoft) (NTSC Conversion)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "24"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "93acd5020ae8eb5673601e2edecbc158"
@@ -10958,10 +10970,10 @@
 ""
 
 "Cartridge.MD5" "b676a9b7094e0345a76ef027091d916b"
-"Cartridge.Name" "Mission Survive (1983) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "Video Gems / Thomas Jentzsch"
+"Cartridge.Name" "Mission Survive (1983) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
-"Console.LeftDifficulty" "A"
+"Console.RightDifficulty" "A"
 "Display.Phosphor" "YES"
 ""
 
@@ -11567,7 +11579,7 @@
 
 "Cartridge.MD5" "c221607529cabc93450ef25dbac6e8d2"
 "Cartridge.Name" "Color Test (26-09-2002) (Eckhard Stolberg)"
-"Console.LeftDifficulty" "A"
+"Console.RightDifficulty" "A"
 ""
 
 "Cartridge.MD5" "c1fdd44efda916414be3527a47752c75"
@@ -11615,9 +11627,10 @@
 ""
 
 "Cartridge.MD5" "c246e05b52f68ab2e9aee40f278cd158"
-"Cartridge.Name" "Star Wars - Ewok Adventure (Parker Bros) (Prototype) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "Parker Bros / Thomas Jentzsch"
+"Cartridge.Name" "Star Wars - Ewok Adventure (Parker Bros) (Prototype) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "Prototype (Video Format Conversion)"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "c28b29764c2338b0cf95537cc9aad8c9"
@@ -11716,8 +11729,9 @@
 
 "Cartridge.MD5" "c4060a31d61ba857e756430a0a15ed2e"
 "Cartridge.Name" "Pick 'n Pile (PAL Conversion) (2003) (TJ)"
-"Console.SwapPorts" "Yes"
-"Display.Phosphor" "Yes"
+"Display.YStart" "25"
+"Display.Height" "220"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "c469151655e333793472777052013f4f"
@@ -12453,10 +12467,10 @@
 ""
 
 "Cartridge.MD5" "cf9069f92a43f719974ee712c50cd932"
-"Cartridge.Name" "Mission Survive (1983) (Video Gems) (PAL)"
 "Cartridge.Manufacturer" "Video Gems"
-"Console.LeftDifficulty" "A"
-"Display.Phosphor" "Yes"
+"Cartridge.Name" "Mission Survive (1983) (Video Gems) (PAL)"
+"Console.RightDifficulty" "A"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "cfd6a8b23d12b0462baf6a05ef347cd8"
@@ -13915,10 +13929,12 @@
 ""
 
 "Cartridge.MD5" "e63a87c231ee9a506f9599aa4ef7dfb9"
-"Cartridge.Name" "Threshold (1982) (Tigervision)"
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-003"
+"Cartridge.Name" "Threshold (1982) (Tigervision)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "21"
+"Display.Height" "214"
 ""
 
 "Cartridge.MD5" "e64a8008812327853877a37befeb6465"
@@ -14309,16 +14325,18 @@
 ""
 
 "Cartridge.MD5" "ece908d77ab944f7bac84322b9973549"
-"Cartridge.Name" "Tom Boy (Suntek) (PAL)"
 "Cartridge.Manufacturer" "Suntek"
+"Cartridge.Name" "Tom Boy (Suntek) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "ed2218b3075d15eaa34e3356025ccca3"
-"Cartridge.Name" "Maze Craze (1978) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2635 / 4975157"
+"Cartridge.Name" "Maze Craze (1978) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
+"Display.Format" "PAL"
 ""
 
 "Cartridge.MD5" "ed0ab909cf7b30aff6fc28c3a4660b8e"
@@ -14563,6 +14581,7 @@
 
 "Cartridge.MD5" "f1929bb9b5db22d98dd992aa3fe72920"
 "Cartridge.Name" "Cube Conquest (Improved Interlace) (Billy Eno) (PD)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "f0e0addc07971561ab80d9abe1b8d333"
@@ -14682,13 +14701,10 @@
 ""
 
 "Cartridge.MD5" "f1eeeccc4bba6999345a2575ae96508e"
-"Cartridge.Name" "Steeple Chase (Video Gems) (PAL)"
 "Cartridge.Manufacturer" "Video Gems"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Console.LeftDifficulty" "A"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
-"Display.Phosphor" "Yes"
+"Cartridge.Name" "Steeple Chase (Video Gems) (PAL)"
+"Console.RightDifficulty" "A"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "f21813aa050437f0dbc8479864acec6d"
@@ -15308,6 +15324,7 @@
 
 "Cartridge.MD5" "fb5c8af97bd8ffe88323656f462645a7"
 "Cartridge.Name" "Interlace Demo (Glenn Saunders)"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "fb0e84cee4c108d24253bcb7e382cffd"

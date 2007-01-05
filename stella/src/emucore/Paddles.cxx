@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.7 2007-01-01 18:04:49 stephena Exp $
+// $Id: Paddles.cxx,v 1.8 2007-01-05 17:54:23 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -21,10 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, bool swap)
-  : Controller(jack, event)
+  : Controller(jack, event, Controller::Paddles)
 {
-  myType = Controller::Paddles;
-
   // Swap the paddle events, from paddle 0 <=> 1 and paddle 2 <=> 3
   if(!swap)
   {

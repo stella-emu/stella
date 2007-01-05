@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.8 2007-01-01 18:04:47 stephena Exp $
+// $Id: Driving.cxx,v 1.9 2007-01-05 17:54:14 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,10 +23,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Driving::Driving(Jack jack, const Event& event)
-    : Controller(jack, event)
+  : Controller(jack, event, Controller::Driving),
+    myCounter(0)
 {
-  myCounter = 0;
-  myType = Controller::Driving;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

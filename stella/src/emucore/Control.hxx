@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.7 2007-01-01 18:04:47 stephena Exp $
+// $Id: Control.hxx,v 1.8 2007-01-05 17:54:09 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -51,11 +51,11 @@ class Event;
   a capacitor.  A potentiometer is sometimes connected to these
   pins for analog input.
 
-  This is a base class for all controllers.  It provides a view 
-  of the controller from the prespective of the controller's jack.  
+  This is a base class for all controllers.  It provides a view
+  of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.7 2007-01-01 18:04:47 stephena Exp $
+  @version $Id: Control.hxx,v 1.8 2007-01-05 17:54:09 stephena Exp $
 */
 class Controller
 {
@@ -73,17 +73,19 @@ class Controller
     */
     enum Type
     {
-      BoosterGrip, Driving, Keyboard, Paddles, Joystick, AtariVox
+      BoosterGrip, Driving, Keyboard, Paddles, Joystick,
+      TrakBall, AtariVox
     };
 
   public:
     /**
       Create a new controller plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
+      @param jack  The jack the controller is plugged into
       @param event The event object to use for events
+      @param type  The type for this controller
     */
-    Controller(Jack jack, const Event& event);
+    Controller(Jack jack, const Event& event, Type type);
  
     /**
       Destructor
@@ -155,7 +157,7 @@ class Controller
     const Event& myEvent;
 
     /// Specifies which type of controller this is (defined by child classes)
-    Type myType;
+    const Type myType;
 
   protected:
     // Copy constructor isn't supported by controllers so make it private

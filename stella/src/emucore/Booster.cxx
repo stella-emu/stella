@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.cxx,v 1.7 2007-01-01 18:04:44 stephena Exp $
+// $Id: Booster.cxx,v 1.8 2007-01-05 17:54:08 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -21,9 +21,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BoosterGrip::BoosterGrip(Jack jack, const Event& event)
-    : Controller(jack, event)
+  : Controller(jack, event, Controller::BoosterGrip)
 {
-  myType = Controller::BoosterGrip;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

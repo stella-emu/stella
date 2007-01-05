@@ -13,17 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.5 2007-01-01 18:04:47 stephena Exp $
+// $Id: Control.cxx,v 1.6 2007-01-05 17:54:09 stephena Exp $
 //============================================================================
 
 #include <assert.h>
 #include "Control.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Controller(Jack jack, const Event& event)
-    : myJack(jack),
-      myEvent(event),
-      myType(Joystick)  // use joystick by default
+Controller::Controller(Jack jack, const Event& event, Type type)
+  : myJack(jack),
+    myEvent(event),
+    myType(type)
 {
 }
  
@@ -46,9 +46,9 @@ const Int32 Controller::minimumResistance = 0x00000000;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Controller(const Controller& c)
-    : myJack(c.myJack),
-      myEvent(c.myEvent),
-      myType(c.myType)
+  : myJack(c.myJack),
+    myEvent(c.myEvent),
+    myType(c.myType)
 {
   assert(false);
 }
