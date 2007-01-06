@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.84 2007-01-01 18:04:48 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.85 2007-01-06 16:28:38 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -93,7 +93,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.84 2007-01-01 18:04:48 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.85 2007-01-06 16:28:38 stephena Exp $
 */
 class FrameBuffer
 {
@@ -545,9 +545,6 @@ class FrameBuffer
     const string& currentScalerName();
 
   private:
-    // Indicates the current framerate of the system
-    uInt32 myFrameRate;
-
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
 

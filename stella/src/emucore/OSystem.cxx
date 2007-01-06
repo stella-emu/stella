@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.91 2007-01-06 16:21:31 stephena Exp $
+// $Id: OSystem.cxx,v 1.92 2007-01-06 16:28:38 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -324,7 +324,6 @@ void OSystem::createSound()
 bool OSystem::createConsole(const string& romfile)
 {
   // Do a little error checking; it shouldn't be necessary
-  setFramerate(60);  // make sure we can see messages
   if(myConsole) deleteConsole();
 
   bool retval = false, showmessage = false;

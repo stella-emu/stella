@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.115 2007-01-01 18:04:48 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.116 2007-01-06 16:28:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -44,7 +44,6 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     theRedrawTIAIndicator(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
-    myFrameRate(0),
     myInitializedCount(0)
 {
 }
@@ -63,7 +62,6 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
   myBaseDim.x = myBaseDim.y = 0;
   myBaseDim.w = (uInt16) width;
   myBaseDim.h = (uInt16) height;
-  myFrameRate = myOSystem->frameRate();
 
   // Now (re)initialize the SDL video system
   // These things only have to be done one per FrameBuffer creation
@@ -206,7 +204,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 
   // Precompute the message coordinates
   myMessage.text    = message;
-  myMessage.counter = myFrameRate << 1;   // Show message for 2 seconds
+  myMessage.counter = myOSystem->frameRate() << 1; // Show message for 2 seconds
   myMessage.color   = color;
 
   myMessage.w = myOSystem->font().getStringWidth(myMessage.text) + 10;
