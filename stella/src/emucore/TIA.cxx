@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.76 2007-01-01 18:04:50 stephena Exp $
+// $Id: TIA.cxx,v 1.77 2007-01-06 16:21:31 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -131,6 +131,37 @@ void TIA::reset()
   // Reset the sound device
   mySound->reset();
 
+  // Recalculate the size of the display
+  recalc();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::systemCyclesReset()
+{
+  // Get the current system cycle
+  uInt32 cycles = mySystem->cycles();
+
+  // Adjust the sound cycle indicator
+  mySound->adjustCycleCounter(-1 * cycles);
+
+  // Adjust the dump cycle
+  myDumpDisabledCycle -= cycles;
+
+  // Get the current color clock the system is using
+  uInt32 clocks = cycles * 3;
+
+  // Adjust the clocks by this amount since we're reseting the clock to zero
+  myClockWhenFrameStarted -= clocks;
+  myClockStartDisplay -= clocks;
+  myClockStopDisplay -= clocks;
+  myClockAtLastUpdate -= clocks;
+  myVSYNCFinishClock -= clocks;
+  myLastHMOVEClock -= clocks;
+}
+ 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::recalc()
+{
   // Clear frame buffers
   clearBuffers();
 
@@ -211,8 +242,7 @@ void TIA::reset()
   myM0CosmicArkMotionEnabled = false;
   myM0CosmicArkCounter = 0;
 
-  for(uInt32 i = 0; i < 6; ++i)
-    myBitEnabled[i] = true;
+  enableBits(true);
 
   myDumpEnabled = false;
   myDumpDisabledCycle = 0;
@@ -225,16 +255,20 @@ void TIA::reset()
   myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
   myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
 
-  // Make sure frameHeight is no less than 190 pixels
-  // This is a hack for the onscreen menus
-  myFrameHeight = MAX((int)myFrameHeight, 190);
-
-  // Make sure the starting x and width values are reasonable
-  if((myFrameXStart + myFrameWidth) > 160)
+  // Make sure the starting x and width/height values are reasonable
+  // This is partly due to restrictions on the internal buffer size,
+  // but also because we need a certain minimum amount of space for
+  // the onscreen GUI
+  if((myFrameXStart + myFrameWidth) > 160 || myFrameWidth < 140)
   {
     // Values are illegal so reset to default values
     myFrameXStart = 0;
     myFrameWidth = 160;
+  }
+  if(myFrameHeight < 200)
+  {
+    // Values are illegal so reset to default values
+    myFrameHeight = 200;
   }
 
   if(myConsole.getFormat().compare(0, 3, "PAL") == 0)
@@ -247,34 +281,8 @@ void TIA::reset()
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
   }
-
-  enableBits(true);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::systemCyclesReset()
-{
-  // Get the current system cycle
-  uInt32 cycles = mySystem->cycles();
-
-  // Adjust the sound cycle indicator
-  mySound->adjustCycleCounter(-1 * cycles);
-
-  // Adjust the dump cycle
-  myDumpDisabledCycle -= cycles;
-
-  // Get the current color clock the system is using
-  uInt32 clocks = cycles * 3;
-
-  // Adjust the clocks by this amount since we're reseting the clock to zero
-  myClockWhenFrameStarted -= clocks;
-  myClockStartDisplay -= clocks;
-  myClockStopDisplay -= clocks;
-  myClockAtLastUpdate -= clocks;
-  myVSYNCFinishClock -= clocks;
-  myLastHMOVEClock -= clocks;
-}
- 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::install(System& system)
 {

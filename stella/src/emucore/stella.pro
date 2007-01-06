@@ -3097,10 +3097,11 @@
 ""
 
 "Cartridge.MD5" "3105967f7222cc36a5ac6e5f6e89a0b4"
-"Cartridge.Name" "Spy Hunter (1983) (Sega) [!]"
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "011-02"
+"Cartridge.Name" "Spy Hunter (1983) (Sega) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
@@ -5514,10 +5515,11 @@
 ""
 
 "Cartridge.MD5" "5a8afe5422abbfb0a342fb15afd7415f"
-"Cartridge.Name" "Sprint Master (1988) (Atari)"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26155"
+"Cartridge.Name" "Sprint Master (1988) (Atari)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "26"
 ""
 
 "Cartridge.MD5" "5a9d188245aff829efde816fcade0b16"
@@ -12747,11 +12749,12 @@
 ""
 
 "Cartridge.MD5" "d3bb42228a6cd452c111c1932503cc03"
-"Cartridge.Name" "Funky Fish (UA Limited)"
 "Cartridge.Manufacturer" "UA Limited"
+"Cartridge.Name" "Funky Fish (UA Limited)"
 "Cartridge.Rarity" "Prototype"
 "Cartridge.Type" "UA"
-"Display.Phosphor" "Yes"
+"Display.YStart" "38"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "d36308387241e98f813646f346e7f9f7"
@@ -14194,10 +14197,11 @@
 ""
 
 "Cartridge.MD5" "ee6665683ebdb539e89ba620981cb0f6"
-"Cartridge.Name" "Berenstain Bears (1982) (Coleco)"
 "Cartridge.Manufacturer" "Coleco"
 "Cartridge.ModelNo" "2658"
+"Cartridge.Name" "Berenstain Bears (1982) (Coleco)"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Display.YStart" "25"
 ""
 
 "Cartridge.MD5" "ee456542b93fa8d7e6a8c689b5a0413c"
@@ -15234,10 +15238,11 @@
 ""
 
 "Cartridge.MD5" "fa2be8125c3c60ab83e1c0fe56922fcb"
-"Cartridge.Name" "Tooth Protectors (DSD-Camelot)"
 "Cartridge.Manufacturer" "DSD-Camelot"
+"Cartridge.Name" "Tooth Protectors (DSD-Camelot)"
 "Cartridge.Rarity" "Unbelievably Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "26"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "fa3de71841c0841db6a741884a6b6b2f"

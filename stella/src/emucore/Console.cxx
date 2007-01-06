@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.119 2007-01-01 18:04:47 stephena Exp $
+// $Id: Console.cxx,v 1.120 2007-01-06 16:21:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -483,8 +483,8 @@ void Console::changeXStart(int direction)
 
   strval << xstart;
   myProperties.set(Display_XStart, strval.str());
-  mySystem->reset();
-  initializeVideo();
+  ((TIA*)myMediaSource)->recalc();
+  myOSystem->frameBuffer().refresh();
 
   message = "XStart ";
   message += strval.str();
@@ -521,8 +521,8 @@ void Console::changeYStart(int direction)
 
   strval << ystart;
   myProperties.set(Display_YStart, strval.str());
-  mySystem->reset();
-  initializeVideo();
+  ((TIA*)myMediaSource)->recalc();
+  myOSystem->frameBuffer().refresh();
 
   message = "YStart ";
   message += strval.str();
@@ -554,7 +554,7 @@ void Console::changeWidth(int direction)
   else if(direction == -1)  // decrease Width
   {
     width -= 4;
-    if(width < 80)
+    if(width < 140)
     {
       myOSystem->frameBuffer().showMessage("Width at minimum");
       return;
@@ -565,8 +565,8 @@ void Console::changeWidth(int direction)
 
   strval << width;
   myProperties.set(Display_Width, strval.str());
-  mySystem->reset();
-  initializeVideo();
+  ((TIA*)myMediaSource)->recalc();
+  initializeVideo();  // takes care of refreshing the screen
 
   message = "Width ";
   message += strval.str();
@@ -603,8 +603,8 @@ void Console::changeHeight(int direction)
 
   strval << height;
   myProperties.set(Display_Height, strval.str());
-  mySystem->reset();
-  initializeVideo();
+  ((TIA*)myMediaSource)->recalc();
+  initializeVideo();  // takes care of refreshing the screen
 
   message = "Height ";
   message += strval.str();

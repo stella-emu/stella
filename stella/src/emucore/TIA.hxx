@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.39 2007-01-01 18:04:50 stephena Exp $
+// $Id: TIA.hxx,v 1.40 2007-01-06 16:21:31 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.39 2007-01-01 18:04:50 stephena Exp $
+  @version $Id: TIA.hxx,v 1.40 2007-01-06 16:21:31 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -81,6 +81,11 @@ class TIA : public Device , public MediaSource
       to override this method for devices that remember cycle counts.
     */
     virtual void systemCyclesReset();
+
+    /**
+      Recalculate set XStart/YStart/Width/Height properties
+    */
+    virtual void recalc();
 
     /**
       Install TIA in the specified system.  Invoked by the system
