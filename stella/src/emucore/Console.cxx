@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.120 2007-01-06 16:21:29 stephena Exp $
+// $Id: Console.cxx,v 1.121 2007-01-06 21:13:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -483,7 +483,7 @@ void Console::changeXStart(int direction)
 
   strval << xstart;
   myProperties.set(Display_XStart, strval.str());
-  ((TIA*)myMediaSource)->recalc();
+  ((TIA*)myMediaSource)->frameReset();
   myOSystem->frameBuffer().refresh();
 
   message = "XStart ";
@@ -521,7 +521,7 @@ void Console::changeYStart(int direction)
 
   strval << ystart;
   myProperties.set(Display_YStart, strval.str());
-  ((TIA*)myMediaSource)->recalc();
+  ((TIA*)myMediaSource)->frameReset();
   myOSystem->frameBuffer().refresh();
 
   message = "YStart ";
@@ -565,7 +565,7 @@ void Console::changeWidth(int direction)
 
   strval << width;
   myProperties.set(Display_Width, strval.str());
-  ((TIA*)myMediaSource)->recalc();
+  ((TIA*)myMediaSource)->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
   message = "Width ";
@@ -603,7 +603,7 @@ void Console::changeHeight(int direction)
 
   strval << height;
   myProperties.set(Display_Height, strval.str());
-  ((TIA*)myMediaSource)->recalc();
+  ((TIA*)myMediaSource)->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
   message = "Height ";

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.40 2007-01-06 16:21:31 stephena Exp $
+// $Id: TIA.hxx,v 1.41 2007-01-06 21:13:29 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.40 2007-01-06 16:21:31 stephena Exp $
+  @version $Id: TIA.hxx,v 1.41 2007-01-06 21:13:29 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -76,16 +76,16 @@ class TIA : public Device , public MediaSource
     virtual void reset();
 
     /**
+      Reset frame to change XStart/YStart/Width/Height properties
+    */
+    virtual void frameReset();
+
+    /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary
       to override this method for devices that remember cycle counts.
     */
     virtual void systemCyclesReset();
-
-    /**
-      Recalculate set XStart/YStart/Width/Height properties
-    */
-    virtual void recalc();
 
     /**
       Install TIA in the specified system.  Invoked by the system

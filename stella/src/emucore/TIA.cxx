@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.77 2007-01-06 16:21:31 stephena Exp $
+// $Id: TIA.cxx,v 1.78 2007-01-06 21:13:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -131,60 +131,6 @@ void TIA::reset()
   // Reset the sound device
   mySound->reset();
 
-  // Recalculate the size of the display
-  recalc();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::systemCyclesReset()
-{
-  // Get the current system cycle
-  uInt32 cycles = mySystem->cycles();
-
-  // Adjust the sound cycle indicator
-  mySound->adjustCycleCounter(-1 * cycles);
-
-  // Adjust the dump cycle
-  myDumpDisabledCycle -= cycles;
-
-  // Get the current color clock the system is using
-  uInt32 clocks = cycles * 3;
-
-  // Adjust the clocks by this amount since we're reseting the clock to zero
-  myClockWhenFrameStarted -= clocks;
-  myClockStartDisplay -= clocks;
-  myClockStopDisplay -= clocks;
-  myClockAtLastUpdate -= clocks;
-  myVSYNCFinishClock -= clocks;
-  myLastHMOVEClock -= clocks;
-}
- 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::recalc()
-{
-  // Clear frame buffers
-  clearBuffers();
-
-  // Reset pixel pointer and drawing flag
-  myFramePointer = myCurrentFrameBuffer;
-
-  myYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
-  myHeight = atoi(myConsole.properties().get(Display_Height).c_str());
-
-  // Calculate color clock offsets for starting and stoping frame drawing
-  myStartDisplayOffset = 228 * myYStart;
-  myStopDisplayOffset = myStartDisplayOffset + 228 * myHeight;
-
-  // Reasonable values to start and stop the current frame drawing
-  myClockWhenFrameStarted = mySystem->cycles() * 3;
-  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
-  myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
-  myClockAtLastUpdate = myClockWhenFrameStarted;
-  myClocksToEndOfScanLine = 228;
-  myVSYNCFinishClock = 0x7FFFFFFF;
-  myScanlineCountForLastFrame = 0;
-  myCurrentScanline = 0;
-
   // Currently no objects are enabled
   myEnabledObjects = 0;
 
@@ -250,6 +196,47 @@ void TIA::recalc()
   myAllowHMOVEBlanks = 
       (myConsole.properties().get(Emulation_HmoveBlanks) == "YES");
 
+  if(myConsole.getFormat().compare(0, 3, "PAL") == 0)
+  {
+    myColorLossEnabled = true;
+    myMaximumNumberOfScanlines = 342;
+  }
+  else  // NTSC
+  {
+    myColorLossEnabled = false;
+    myMaximumNumberOfScanlines = 290;
+  }
+
+  // Recalculate the size of the display
+  frameReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::frameReset()
+{
+  // Clear frame buffers
+  clearBuffers();
+
+  // Reset pixel pointer and drawing flag
+  myFramePointer = myCurrentFrameBuffer;
+
+  myYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
+  myHeight = atoi(myConsole.properties().get(Display_Height).c_str());
+
+  // Calculate color clock offsets for starting and stoping frame drawing
+  myStartDisplayOffset = 228 * myYStart;
+  myStopDisplayOffset = myStartDisplayOffset + 228 * myHeight;
+
+  // Reasonable values to start and stop the current frame drawing
+  myClockWhenFrameStarted = mySystem->cycles() * 3;
+  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
+  myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
+  myClockAtLastUpdate = myClockWhenFrameStarted;
+  myClocksToEndOfScanLine = 228;
+  myVSYNCFinishClock = 0x7FFFFFFF;
+  myScanlineCountForLastFrame = 0;
+  myCurrentScanline = 0;
+
   myFrameXStart = atoi(myConsole.properties().get(Display_XStart).c_str());
   myFrameWidth  = atoi(myConsole.properties().get(Display_Width).c_str());
   myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
@@ -270,19 +257,32 @@ void TIA::recalc()
     // Values are illegal so reset to default values
     myFrameHeight = 200;
   }
-
-  if(myConsole.getFormat().compare(0, 3, "PAL") == 0)
-  {
-    myColorLossEnabled = true;
-    myMaximumNumberOfScanlines = 342;
-  }
-  else  // NTSC
-  {
-    myColorLossEnabled = false;
-    myMaximumNumberOfScanlines = 290;
-  }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::systemCyclesReset()
+{
+  // Get the current system cycle
+  uInt32 cycles = mySystem->cycles();
+
+  // Adjust the sound cycle indicator
+  mySound->adjustCycleCounter(-1 * cycles);
+
+  // Adjust the dump cycle
+  myDumpDisabledCycle -= cycles;
+
+  // Get the current color clock the system is using
+  uInt32 clocks = cycles * 3;
+
+  // Adjust the clocks by this amount since we're reseting the clock to zero
+  myClockWhenFrameStarted -= clocks;
+  myClockStartDisplay -= clocks;
+  myClockStopDisplay -= clocks;
+  myClockAtLastUpdate -= clocks;
+  myVSYNCFinishClock -= clocks;
+  myLastHMOVEClock -= clocks;
+}
+ 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::install(System& system)
 {
