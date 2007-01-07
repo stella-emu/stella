@@ -11431,6 +11431,7 @@
 
 "Cartridge.MD5" "c02e1afa0671e438fd526055c556d231"
 "Cartridge.Name" "A-Team, The (Atari) (Prototype) (PAL-60) [!]"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "c00734a2233ef683d9b6e622ac97a5c8"

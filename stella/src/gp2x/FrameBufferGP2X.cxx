@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.20 2007-01-01 18:04:51 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.21 2007-01-07 17:59:52 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -324,6 +324,8 @@ void FrameBufferGP2X::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
+
+  theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

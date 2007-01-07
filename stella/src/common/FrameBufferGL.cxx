@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.83 2007-01-05 17:54:06 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.84 2007-01-07 17:59:48 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -574,6 +574,8 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 {
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
+
+  theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -701,8 +703,13 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
     float scaleX = 0.0f;
     float scaleY = 0.0f;
 
-    if(myOSystem->settings().getBool("gl_fsmax") &&
-       myDesktopDim.w != 0 && myDesktopDim.h != 0)
+    // When in a fullscreen, most text mode, attempt to do 'nice' scaling
+    // This means scaling will only use integral values (1, 2, 3, ...)
+    bool gl_fsmax = myOSystem->settings().getBool("gl_fsmax");
+    bool nicescale = myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
+                     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
+
+    if(gl_fsmax && myDesktopDim.w != 0 && myDesktopDim.h != 0)
     {
       // Use the largest available screen size
       myScreenDim.w = myDesktopDim.w;
@@ -716,11 +723,13 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
       else
         myFSScaleFactor = float(myScreenDim.h) / myImageDim.h;
 
+      if(nicescale)
+        myFSScaleFactor = (int)myFSScaleFactor;
+
       myImageDim.w = (Uint16) (myFSScaleFactor * myImageDim.w);
       myImageDim.h = (Uint16) (myFSScaleFactor * myImageDim.h);
     }
-    else if(myOSystem->settings().getBool("gl_fsmax") &&
-            myScreenmode != (SDL_Rect**) -1)
+    else if(gl_fsmax && myScreenmode != (SDL_Rect**) -1)
     {
       // Use the largest available screen size
       myScreenDim.w = myScreenmode[0]->w;
@@ -733,6 +742,9 @@ void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
         myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
       else
         myFSScaleFactor = float(myScreenDim.h) / myImageDim.h;
+
+      if(nicescale)
+        myFSScaleFactor = (int)myFSScaleFactor;
 
       myImageDim.w = (Uint16) (myFSScaleFactor * myImageDim.w);
       myImageDim.h = (Uint16) (myFSScaleFactor * myImageDim.h);

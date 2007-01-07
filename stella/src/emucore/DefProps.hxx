@@ -449,7 +449,7 @@ static const char* DefProps[][23] = {
   { "bce93984b920e9b56cf24064f740fe78", "Atari", "", "Checkers (32-in-1) (Atari) (PAL) [!]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "be1922bd8e09d74da471287e1e968653", "", "", "Hangman Pacman Demo (Cropsy) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bf6b753ec11acfec3b40f8a4c476e77d", "", "", "Image - Girl (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "c02e1afa0671e438fd526055c556d231", "", "", "A-Team, The (Atari) (Prototype) (PAL-60) [!]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "c02e1afa0671e438fd526055c556d231", "", "", "A-Team, The (Atari) (Prototype) (PAL-60) [!]", "", "", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "", "", "", "" }, 
   { "c1fdd44efda916414be3527a47752c75", "Parker Bros", "PB5920", "G.I. Joe - Cobra Strike (1983) (Parker Bros) [!]", "Uses the Paddle (left) and Joystick (right) Controllers", "Uncommon", "", "", "", "", "", "", "PADDLES", "", "", "", "", "", "30", "", "", "", "" }, 
   { "c2a37f1c7603c5fd97df47d6c562abfa", "", "", "Bar-Score Demo (2001) (Roger Williams)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "c3f53993ade534b0982ca3a286c85bb5", "", "", "Full Screen Bitmap Drawing System (12-02-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
