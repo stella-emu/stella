@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.29 2007-01-03 17:37:46 stephena Exp $
+// $Id: Cart.cxx,v 1.30 2007-01-07 01:26:52 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -68,20 +68,21 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 
   // Collect some info about the ROM
   ostringstream buf;
-  buf << "  Size of ROM: " << size << endl
-      << "  Specified bankswitch type: " << type << endl;
+  buf << "  ROM Size:        " << size << endl
+      << "  Bankswitch Type: " << type;
 
   // See if we should try to auto-detect the cartridge type
   // If we ask for extended info, always do an autodetect
   if(type == "AUTO-DETECT" || settings.getBool("rominfo"))
   {
     string detected = autodetectType(image, size);
-    buf << "  Auto-detected bankswitch type: " << detected << endl;
+    buf << " ==> " << detected;
     if(type != "AUTO-DETECT" && type != detected)
-      buf << "  ==> Bankswitch auto-detection not consistent" << endl;
+      buf << " (auto-detection not consistent)";
 
     type = detected;
   }
+  buf << endl;
   myAboutString = buf.str();
 
   // We should know the cart's type by now so let's create it

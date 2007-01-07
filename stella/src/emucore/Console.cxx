@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.121 2007-01-06 21:13:29 stephena Exp $
+// $Id: Console.cxx,v 1.122 2007-01-07 01:26:52 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -191,7 +191,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);
-  buf << "  Specified display format: " << myDisplayFormat << endl;
+  buf << "  Display Format:  " << myDisplayFormat;
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
   {
@@ -211,9 +211,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
-      buf << "  Auto-detected display format: " << myDisplayFormat << endl;
+      buf << " ==> " << myDisplayFormat;
   }
-  buf << cart->about();
+  buf << endl << cart->about();
 
   // Make sure height is set properly for PAL ROM
   if(myDisplayFormat.compare(0, 3, "PAL") == 0)

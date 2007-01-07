@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.2 2007-01-01 18:04:52 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.3 2007-01-07 01:26:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -164,7 +164,7 @@ void FileSnapDialog::loadConfig()
 
   b = instance()->settings().getBool("rombrowse");
   myBrowseCheckbox->setState(b);
-  myReloadButton->setEnabled(!b);
+  myReloadButton->setEnabled(myIsGlobal && !b);
 
   s = instance()->settings().getString("ssdir");
   mySnapPath->setLabel(s);
