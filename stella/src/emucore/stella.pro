@@ -111,6 +111,7 @@
 
 "Cartridge.MD5" "01b09872dcd9556427761f0ed64aa42a"
 "Cartridge.Name" "Galaga (River Raid clone) [p1]"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "01acf9881a2f8bfa2d49982b1b10fb64"
@@ -118,11 +119,12 @@
 ""
 
 "Cartridge.MD5" "0164f26f6b38a34208cd4a2d0212afc3"
-"Cartridge.Name" "Mr. Do! (1983) (CBS Electronics)"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "2656"
+"Cartridge.Name" "Mr. Do! (1983) (CBS Electronics)"
 "Cartridge.Rarity" "Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "26"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "012b8e6ef3b5fd5aabc94075c527709d"
@@ -147,10 +149,11 @@
 ""
 
 "Cartridge.MD5" "0173675d40a8d975763ee493377ca87d"
-"Cartridge.Name" "Roc n' Rope (CBS Electronics) (PAL) [!]"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "2667"
+"Cartridge.Name" "Roc n' Rope (CBS Electronics) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "50"
 ""
 
 "Cartridge.MD5" "01cb3e8dfab7203a9c62ba3b94b4e59f"
@@ -223,10 +226,11 @@
 ""
 
 "Cartridge.MD5" "033e21521e0bf4e54e8816873943406d"
-"Cartridge.Name" "Earth Dies Screaming (1983) (20th Century Fox)"
 "Cartridge.Manufacturer" "20th Century Fox"
 "Cartridge.ModelNo" "11020"
+"Cartridge.Name" "Earth Dies Screaming (1983) (20th Century Fox)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "0375f589f7da06d2d2be532e0d4d4b94"
@@ -281,11 +285,12 @@
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
-"Cartridge.Name" "Survival Island (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4401"
+"Cartridge.Name" "Survival Island (1982) (Starpath)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "No"
+"Display.YStart" "30"
+"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "04dfb4acac1d0909e4c360fd2ac04480"
@@ -493,11 +498,9 @@
 ""
 
 "Cartridge.MD5" "07a3af1e18b63765b6807876366f5e8a"
-"Cartridge.Name" "SCSIcide Pre-release 2 (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide Pre-release 2 (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "07f42847a79e4f5ae55cc03304b18c25"
@@ -532,13 +535,14 @@
 ""
 
 "Cartridge.MD5" "08188785e2b8300983529946dbeff4d2"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [o1]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2611 / 6699821 / 4975149"
+"Cartridge.Name" "Indy 500 (1978) (Atari) [o1]"
 "Cartridge.Note" "Uses Driving Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Driving"
-"Controller.Right" "Driving"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "083b17a1a6b3efc464ba7e789f1e194d"
@@ -546,10 +550,11 @@
 ""
 
 "Cartridge.MD5" "082fdc8bd47fef01482ce5883c4ffdb8"
-"Cartridge.Name" "Tanks DX by Charles Morgan (Tanks but no Tanks Hack)"
 "Cartridge.Manufacturer" "Charles Morgan"
+"Cartridge.Name" "Tanks DX by Charles Morgan (Tanks but no Tanks Hack)"
 "Cartridge.Note" "Hack of Tanks But No Tanks (Zimag)"
 "Cartridge.Rarity" "New Release (Hack)"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "083e7cae41a874b2f9b61736c37d2ffe"
@@ -777,10 +782,11 @@
 ""
 
 "Cartridge.MD5" "0bf1e354304f46c0caf8fc0f6f5e9525"
-"Cartridge.Name" "Frogger (Official Version by Sega) (1982) (Starpath) [a1]"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4105"
+"Cartridge.Name" "Frogger (Official Version by Sega) (1982) (Starpath) [a1]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "0b577e63b0c64f9779f315dca8967587"
@@ -988,15 +994,18 @@
 ""
 
 "Cartridge.MD5" "0ef64cdbecccb7049752a3de0b7ade14"
-"Cartridge.Name" "Combat (32-in-1) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "Combat (32-in-1) (Atari) (PAL) [!]"
+"Display.YStart" "39"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "0eecb5f58f55de9db4eedb3a0f6b74a8"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox)"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "0f643c34e40e3f1daafd9c524d3ffe64"
@@ -1603,12 +1612,13 @@
 ""
 
 "Cartridge.MD5" "19a9d3f9fa1b1358fb53009444247aaf"
-"Cartridge.Name" "Blackjack (1977) (Atari) (PAL) [p1][o1][!]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "Blackjack (1977) (Atari) (PAL) [p1][o1][!]"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Display.YStart" "56"
 ""
 
 "Cartridge.MD5" "19829cfe884e30219c868b2d9a5b3540"
@@ -1672,10 +1682,11 @@
 ""
 
 "Cartridge.MD5" "199eb0b8dce1408f3f7d46411b715ca9"
-"Cartridge.Name" "Spider-Man (1982) (Parker Bros)"
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5900"
+"Cartridge.Name" "Spider-Man (1982) (Parker Bros)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "1cca2197d95c5a41f2add49a13738055"
@@ -1908,6 +1919,7 @@
 
 "Cartridge.MD5" "1ec5bef77b91e59313cba205f15b06d7"
 "Cartridge.Name" "Overhead Adventure Demo 1 (PD)"
+"Display.YStart" "64"
 ""
 
 "Cartridge.MD5" "1e89f722494608d6ea15a00d99f81337"
@@ -2159,6 +2171,7 @@
 "Cartridge.MD5" "225522777dc7155627808bde0c1d0ef0"
 "Cartridge.Name" "This Planet Sucks Demo 1 (Greg Troutman) (PD)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "40"
 ""
 
 "Cartridge.MD5" "22f6b40fc82110d68e50a1208ae0bb97"
@@ -2310,10 +2323,11 @@
 ""
 
 "Cartridge.MD5" "24d018c4a6de7e5bd19a36f2b879b335"
-"Cartridge.Name" "Spider Fighter (1983) (Activision) [!]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AX-021"
+"Cartridge.Name" "Spider Fighter (1983) (Activision) [!]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "2517827950fee41a3b9de60275c8aa6a"
@@ -2364,10 +2378,11 @@
 ""
 
 "Cartridge.MD5" "25b6dc012cdba63704ea9535c6987beb"
-"Cartridge.Name" "Shuttle Orbiter (1983) (Avalon Hill)"
 "Cartridge.Manufacturer" "Avalon Hill"
 "Cartridge.ModelNo" "50040"
+"Cartridge.Name" "Shuttle Orbiter (1983) (Avalon Hill)"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "25bb080457351be724aac8a02021aa92"
@@ -2678,12 +2693,13 @@
 ""
 
 "Cartridge.MD5" "2bc26619e31710a9884c110d8430c1da"
-"Cartridge.Name" "Casino (1978) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2652"
+"Cartridge.Name" "Casino (1978) (Atari) (PAL) [!]"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Paddles"
+"Controller.Left" "PADDLES"
+"Display.YStart" "60"
 ""
 
 "Cartridge.MD5" "2b42da79a682ed6e2d735facbf70107e"
@@ -2758,10 +2774,11 @@
 ""
 
 "Cartridge.MD5" "2bee7f226d506c217163bad4ab1768c0"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox) [o1]"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox) [o1]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "2bd00beefdb424fa39931a75e890695d"
@@ -2997,13 +3014,14 @@
 ""
 
 "Cartridge.MD5" "3051b6071cb26377cd428af155e1bfc4"
-"Cartridge.Name" "Canyon Bomber (1978) (Atari) [o1]"
 "Cartridge.ModelNo" "CX2607 / 6699828 / 4975115"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Canyon Bomber (1978) (Atari) [o1]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
-"Controller.SwapPaddles" "Yes"
+"Cartridge.Rarity" "Uncommon"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Controller.SwapPaddles" "YES"
+"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "2fa5f90deb8b84ecaf64f5fb11c0fd93"
@@ -3083,6 +3101,7 @@
 "Cartridge.Name" "Indy 500 (1978) (Atari) [h3]"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "313243fc41e49ef6bd3aa9ebc0d372dd"
@@ -3163,6 +3182,7 @@
 
 "Cartridge.MD5" "324cb4a749bcac4f3db9da842b85d2f7"
 "Cartridge.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
+"Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
 
@@ -3260,19 +3280,21 @@
 ""
 
 "Cartridge.MD5" "332f01fd18e99c6584f61aa45ee7791e"
-"Cartridge.Name" "Raumpatrouille (CCE) (PAL)"
 "Cartridge.Manufacturer" "Zellers / CCE"
 "Cartridge.ModelNo" "C-845"
+"Cartridge.Name" "Raumpatrouille (CCE) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "0"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "33d68c3cd74e5bc4cf0df3716c5848bc"
-"Cartridge.Name" "Blueprint (1983) (CBS Electronics)"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "4L-2486"
+"Cartridge.Name" "Blueprint (1983) (CBS Electronics)"
 "Cartridge.Rarity" "Uncommon"
-"Display.Phosphor" "Yes"
+"Display.YStart" "32"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "3367eeba3269aa04720abe6169767502"
@@ -3312,11 +3334,9 @@
 ""
 
 "Cartridge.MD5" "34340c8eecd1e557314789cc6477e650"
-"Cartridge.Name" "SCSIcide Pre-release 4 (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide Pre-release 4 (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "345769d085113d57937198262af52298"
@@ -3722,6 +3742,7 @@
 
 "Cartridge.MD5" "3b10106836565e5db28c7823c0898fbb"
 "Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL) [a1][!]"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "3b097a7ed5bd2a84dc3d3ed361e9c31c"
@@ -3749,6 +3770,7 @@
 "Cartridge.MD5" "3b64a00ce147c3c29f7f8f8e531d08d8"
 "Cartridge.Name" "This Planet Sucks (16K) (Greg Troutman)"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "3b966bf3c2ca34ac6ca1de4cf6383582"
@@ -3761,6 +3783,7 @@
 "Cartridge.Name" "Masters of the Universe - The Power of He-Man (1983) (Mattel)"
 "Cartridge.Rarity" "Rare"
 "Console.RightDifficulty" "A"
+"Display.YStart" "25"
 "Display.Phosphor" "YES"
 ""
 
@@ -3842,7 +3865,8 @@
 
 "Cartridge.MD5" "3cdd91e1c28d28e856c0063d602da166"
 "Cartridge.Name" "Stell-A-Sketch (03-11-1997) (Bob Colbert) (PD)"
-"Display.Phosphor" "Yes"
+"Display.YStart" "20"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "3d6fc7a19be76d808aa233415cb583fc"
@@ -3932,8 +3956,9 @@
 ""
 
 "Cartridge.MD5" "402b1ca3c230a60fb279d4a2a10fa677"
-"Cartridge.Name" "3-D Tic-Tac-Toe (1978) (Atari) (PAL) [p1][o1]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "3-D Tic-Tac-Toe (1978) (Atari) (PAL) [p1][o1]"
+"Display.YStart" "62"
 ""
 
 "Cartridge.MD5" "3f039981255691d3859d04ef813a1264"
@@ -4123,10 +4148,11 @@
 ""
 
 "Cartridge.MD5" "40d8ed6a5106245aa79f05642a961485"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL) [!]"
 "Cartridge.Manufacturer" "Xonox"
 "Cartridge.ModelNo" "99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "40b58f2f93e503b14a5d1d0ae2ca5aa0"
@@ -4339,8 +4365,9 @@
 ""
 
 "Cartridge.MD5" "457e7d4fcd56ebc47f5925dbea3ee427"
-"Cartridge.Name" "Space Jockey (1982) (Carrere Video) (PAL) [!]"
 "Cartridge.Manufacturer" "Carrere Video"
+"Cartridge.Name" "Space Jockey (1982) (Carrere Video) (PAL) [!]"
+"Display.YStart" "58"
 ""
 
 "Cartridge.MD5" "4565c1a7abce773e53c75b35414adefd"
@@ -4450,18 +4477,18 @@
 ""
 
 "Cartridge.MD5" "4799a40b6e889370b7ee55c17ba65141"
-"Cartridge.Name" "Pooyan (1982) (Konami-Gakken)"
 "Cartridge.Manufacturer" "Konami-Gakken"
+"Cartridge.Name" "Pooyan (1982) (Konami-Gakken)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "26"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "47aef18509051bab493589cb2619170b"
 "Cartridge.Name" "Stell-A-Sketch (Bob Colbert) (PD)"
 "Cartridge.Note" "Uses Driving, Joystick, or Amiga/Atari ST mouse Controllers"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Driving"
-"Controller.Right" "Driving"
-"Display.Phosphor" "Yes"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "490e3cc59d82f85fae817cdf767ea7a0"
@@ -4740,11 +4767,12 @@
 ""
 
 "Cartridge.MD5" "4c462b2b6fb0a19a1437eb2c3dc20783"
-"Cartridge.Name" "Survival Island (1 of 3) (1983) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4401"
+"Cartridge.Name" "Survival Island (1 of 3) (1983) (Starpath)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "No"
+"Display.YStart" "30"
+"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "4c39a2c97917d3d71739b3e21f60bba5"
@@ -5043,10 +5071,11 @@
 ""
 
 "Cartridge.MD5" "517592e6e0c71731019c0cebc2ce044f"
-"Cartridge.Name" "Q-bert's Qubes (1983) (Parker Bros) [a1]"
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5550"
+"Cartridge.Name" "Q-bert's Qubes (1983) (Parker Bros) [a1]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "516ffd008057a1d78d007c851e6eff37"
@@ -5202,12 +5231,13 @@
 ""
 
 "Cartridge.MD5" "575c0fb61e66a31d982c95c9dea6865c"
-"Cartridge.Name" "Blackjack (1977) (Atari) (PAL) [p1][!]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "Blackjack (1977) (Atari) (PAL) [p1][!]"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Display.YStart" "56"
 ""
 
 "Cartridge.MD5" "551a64a945d7d6ece81e9c1047acedbc"
@@ -5455,10 +5485,11 @@
 ""
 
 "Cartridge.MD5" "5961d259115e99c30b64fe7058256bcf"
-"Cartridge.Name" "X-Man (1983) (CosmoVision-Universal Gamex)"
 "Cartridge.Manufacturer" "CosmoVision-Universal Gamex"
 "Cartridge.ModelNo" "GX-001"
+"Cartridge.Name" "X-Man (1983) (CosmoVision-Universal Gamex)"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "59e96de9628e8373d1c685f5e57dcf10"
@@ -5689,8 +5720,10 @@
 ""
 
 "Cartridge.MD5" "5db9e5bf663cad6bf159bc395f6ead53"
-"Cartridge.Name" "Time Race (Goliath) (PAL) [!]"
 "Cartridge.Manufacturer" "Goliath"
+"Cartridge.Name" "Time Race (Goliath) (PAL) [!]"
+"Display.YStart" "48"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "5de8803a59c36725888346fdc6e7429d"
@@ -5834,6 +5867,7 @@
 
 "Cartridge.MD5" "5fb71cc60e293fe10a5023f11c734e55"
 "Cartridge.Name" "This Planet Sucks (Fix) (27-12-2002) (Greg Troutman)"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "5faffe1c4c57430978dec5ced32b9f4a"
@@ -5876,6 +5910,7 @@
 
 "Cartridge.MD5" "604e09724555807c28108049efe34a13"
 "Cartridge.Name" "Sokoban (01-01-2003) (Adam Wozniak)"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "6041f400b45511aa3a69fab4b8fc8f41"
@@ -5886,11 +5921,12 @@
 ""
 
 "Cartridge.MD5" "605fd59bfef88901c8c4794193a4cbad"
-"Cartridge.Name" "Secret Agent (Data Age) (Prototype)"
 "Cartridge.Manufacturer" "Data Age"
+"Cartridge.Name" "Secret Agent (Data Age) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "Paddles"
+"Controller.Left" "PADDLES"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "60d304582d33e2957b73eb300a7495bb"
@@ -5968,6 +6004,7 @@
 "Cartridge.MD5" "619de46281eb2e0adbb98255732483b4"
 "Cartridge.Name" "UFO Patrol (Quelle)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "62992392ea651a16aa724a92e4596ed6"
@@ -5990,13 +6027,17 @@
 
 "Cartridge.MD5" "62921652f6634eb1a0940ed5489c7e18"
 "Cartridge.Name" "SCSIcide (V1.09) (2001) (Joe Grand)"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "62f74a2736841191135514422b20382d"
-"Cartridge.Name" "Pharoah's Curse (TechnoVision) (PAL) [p2]"
 "Cartridge.Manufacturer" "TechnoVision"
+"Cartridge.Name" "Pharoah's Curse (TechnoVision) (PAL) [p2]"
 "Cartridge.Rarity" "Extremely Rare"
-"Display.Phosphor" "Yes"
+"Display.Format" "PAL60"
+"Display.YStart" "20"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "6354f9c7588a27109c66905b0405825b"
@@ -6014,6 +6055,7 @@
 "Cartridge.Name" "Indy 500 (1978) (Atari) [h2]"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "6342afe9c9ad1b6120b8f6fb040d0926"
@@ -6045,10 +6087,11 @@
 ""
 
 "Cartridge.MD5" "63a6eda1da30446569ac76211d0f861c"
-"Cartridge.Name" "Dragster (1980) (Activision) [o1]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AG-001"
+"Cartridge.Name" "Dragster (1980) (Activision) [o1]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "6362396c8344eec3e86731a700b13abf"
@@ -6148,9 +6191,10 @@
 ""
 
 "Cartridge.MD5" "64d43859258dc8ca54949e9ff4174202"
-"Cartridge.Name" "Lilly Adventure (Starsoft) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "Starsoft / Thomas Jentzsch"
+"Cartridge.Name" "Lilly Adventure (Starsoft) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "6522717cfd75d1dba252cbde76992090"
@@ -6256,12 +6300,13 @@
 ""
 
 "Cartridge.MD5" "663ef22eb399504d5204c543b8a86bcd"
-"Cartridge.Name" "Wizard of Wor (1982) (CBS Electronics) (PAL) [!]"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "M8774"
+"Cartridge.Name" "Wizard of Wor (1982) (CBS Electronics) (PAL) [!]"
 "Cartridge.Note" "Uses the Joystick Controllers (swapped)"
 "Cartridge.Rarity" "Rare"
-"Console.SwapPorts" "Yes"
+"Console.SwapPorts" "YES"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "66706459e62514d0c39c3797cbf73ff1"
@@ -6503,10 +6548,11 @@
 ""
 
 "Cartridge.MD5" "691d67910b08b63de8631901d1887c1f"
-"Cartridge.Name" "Survival Island (1982) (Starpath) [a1]"
 "Cartridge.Manufacturer" "Starpath"
+"Cartridge.Name" "Survival Island (1982) (Starpath) [a1]"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "No"
+"Display.YStart" "30"
+"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "692202772d8b38ccf85a90c8003a1324"
@@ -7042,8 +7088,9 @@
 ""
 
 "Cartridge.MD5" "72876fd7c7435f41d571f1101fc456ea"
-"Cartridge.Name" "Die Ente und der Wolf (Starsoft) (PAL) [!]"
 "Cartridge.Manufacturer" "Starsoft"
+"Cartridge.Name" "Die Ente und der Wolf (Starsoft) (PAL) [!]"
+"Display.YStart" "26"
 ""
 
 "Cartridge.MD5" "71f8bacfbdca019113f3f0801849057e"
@@ -7346,16 +7393,18 @@
 ""
 
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
-"Cartridge.Name" "Cat Trax (1983) (UA)"
 "Cartridge.Manufacturer" "UA"
-"Display.Phosphor" "Yes"
+"Cartridge.Name" "Cat Trax (1983) (UA)"
+"Display.YStart" "30"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "77057d9d14b99e465ea9e29783af0ae3"
-"Cartridge.Name" "Dragster (1980) (Activision) [!]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AG-001"
+"Cartridge.Name" "Dragster (1980) (Activision) [!]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "777aece98d7373998ffb8bc0b5eff1a2"
@@ -7455,6 +7504,7 @@
 
 "Cartridge.MD5" "7f525b07bc98080cc8950f7284e52ede"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 4) (PAL) [!]"
+"Display.YStart" "62"
 ""
 
 "Cartridge.MD5" "7f430c33044e0354815392b53a9a772d"
@@ -7576,8 +7626,9 @@
 ""
 
 "Cartridge.MD5" "7b5207e68ee85b16998bea861987c690"
-"Cartridge.Name" "3-D Tic-Tac-Toe (32-in-1) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "3-D Tic-Tac-Toe (32-in-1) (Atari) (PAL) [!]"
+"Display.YStart" "62"
 ""
 
 "Cartridge.MD5" "7ac4f4fb425db38288fa07fb8ff4b21d"
@@ -7623,10 +7674,11 @@
 ""
 
 "Cartridge.MD5" "7adbcf78399b19596671edbffc3d34aa"
-"Cartridge.Name" "Super Baseball (1988) (Atari)"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26152"
+"Cartridge.Name" "Super Baseball (1988) (Atari)"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "7b24bfe1b61864e758ada1fe9adaa098"
@@ -7637,13 +7689,16 @@
 "Cartridge.MD5" "7b43c32e3d4ff5932f39afcb4c551627"
 "Cartridge.Name" "Kamikaze Saucers (198x) (Syncro)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "38"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "7b3cf0256e1fa0fdc538caf3d5d86337"
-"Cartridge.Name" "Stronghold (CommaVid)"
 "Cartridge.Manufacturer" "CommaVid"
 "Cartridge.ModelNo" "CM-009"
+"Cartridge.Name" "Stronghold (CommaVid)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "7c757bb151269b2a626c907a22f5dae7"
@@ -7785,11 +7840,12 @@
 ""
 
 "Cartridge.MD5" "7dcbfd2acc013e817f011309c7504daa"
-"Cartridge.Name" "Phaser Patrol (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4000"
+"Cartridge.Name" "Phaser Patrol (1982) (Starpath)"
 "Cartridge.Rarity" "Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "24"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "7e464186ba384069582d9f0c141f7491"
@@ -7833,12 +7889,13 @@
 ""
 
 "Cartridge.MD5" "7e8aa18bc9502eb57daaf5e7c1e94da7"
-"Cartridge.Name" "Wizard of Wor (1982) (CBS Electronics)"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "M8774"
+"Cartridge.Name" "Wizard of Wor (1982) (CBS Electronics)"
 "Cartridge.Note" "Uses the Joystick Controllers (swapped)"
 "Cartridge.Rarity" "Rare"
-"Console.SwapPorts" "Yes"
+"Console.SwapPorts" "YES"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "7f07cd2e89dda5a3a90d3ab064bfd1f6"
@@ -7988,7 +8045,7 @@
 "Cartridge.MD5" "80e1410ec98089e0733cc09e584dba4b"
 "Cartridge.Manufacturer" "Dynamics"
 "Cartridge.Name" "Jumping Jack (Dynamics) (PAL) [!]"
-"Display.YStart" "40"
+"Display.YStart" "46"
 ""
 
 "Cartridge.MD5" "81341f00b61ab37d19d1529f483d496d"
@@ -8328,6 +8385,7 @@
 
 "Cartridge.MD5" "87b460df21b7bbcfc57b1c082c6794b0"
 "Cartridge.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
+"Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
 
@@ -8993,10 +9051,11 @@
 ""
 
 "Cartridge.MD5" "9333172e3c4992ecf548d3ac1f2553eb"
-"Cartridge.Name" "Strategy X (1982) (Gakken) (PAL) [!]"
 "Cartridge.Manufacturer" "Gakken"
 "Cartridge.ModelNo" "010"
+"Cartridge.Name" "Strategy X (1982) (Gakken) (PAL) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "939ce554f5c0e74cc6e4e62810ec2111"
@@ -9451,9 +9510,11 @@
 ""
 
 "Cartridge.MD5" "9b21d8fc78cc4308990d99a4d906ec52"
-"Cartridge.Name" "Immies & Aggies (CCE)"
 "Cartridge.ModelNo" "C-838"
+"Cartridge.Name" "Immies & Aggies (CCE)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "18"
+"Display.Height" "223"
 ""
 
 "Cartridge.MD5" "9bd4e0d5f28ba6da417c26649171f8e4"
@@ -9487,6 +9548,7 @@
 
 "Cartridge.MD5" "9d4bc7c6fe9a7c8c4aa24a237c340adb"
 "Cartridge.Name" "Climber 5 (For Philly Classic 4) (16-04-2003) (Dennis Debro)"
+"Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
 
@@ -9690,9 +9752,10 @@
 ""
 
 "Cartridge.MD5" "a00ee0aed5c8979add4c170f5322c706"
-"Cartridge.Name" "Egghead by Barry Laws Jr. (Pac-Man Hack)"
 "Cartridge.Manufacturer" "Barry Laws Jr."
+"Cartridge.Name" "Egghead by Barry Laws Jr. (Pac-Man Hack)"
 "Cartridge.Rarity" "New Release (Hack)"
+"Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "9f901509f0474bf9760e6ebd80e629cd"
@@ -9738,11 +9801,9 @@
 ""
 
 "Cartridge.MD5" "a0028f057d496f22b549fd8deecc6f78"
-"Cartridge.Name" "SCSIcide Pre-release 6 (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide Pre-release 6 (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "a025a8f83a42a4d6d46c4887e799bfac"
@@ -9919,13 +9980,14 @@
 ""
 
 "Cartridge.MD5" "a47e26096de6f6487bf5dd2d1cced294"
-"Cartridge.Name" "Code Breaker (1978) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2643 / 99815"
+"Cartridge.Name" "Code Breaker (1978) (Atari) (PAL) [!]"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Keyboard"
-"Controller.Right" "Keyboard"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+"Display.YStart" "57"
 ""
 
 "Cartridge.MD5" "a422194290c64ef9d444da9d6a207807"
@@ -9993,11 +10055,12 @@
 ""
 
 "Cartridge.MD5" "a412c8577b2d57b09185ae51739ac54f"
-"Cartridge.Name" "Phaser Patrol (1982) (Starpath) [a1]"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4000"
+"Cartridge.Name" "Phaser Patrol (1982) (Starpath) [a1]"
 "Cartridge.Rarity" "Rare"
-"Display.Phosphor" "Yes"
+"Display.YStart" "24"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "a47878a760f5fa3aa99f95c3fdc70a0b"
@@ -10009,10 +10072,11 @@
 ""
 
 "Cartridge.MD5" "a499d720e7ee35c62424de882a3351b6"
-"Cartridge.Name" "Up 'n Down (1983) (Sega)"
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "009-01"
+"Cartridge.Name" "Up 'n Down (1983) (Sega)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "a537879d8e82e1061d3ad800479d3b84"
@@ -10202,6 +10266,7 @@
 
 "Cartridge.MD5" "a867b76098786c4091dba2fcee5084c3"
 "Cartridge.Name" "Dragrace (Dragster Hack)"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "a8435ec570141de5d833c4abec499e55"
@@ -10292,6 +10357,7 @@
 "Cartridge.MD5" "a98b649912b6ca19eaf5c2d2faf38562"
 "Cartridge.Name" "This Planet Sucks (Greg Troutman) (PAL) [!]"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "aa8e4b2cb8a78ffe6b20580033f4dec9"
@@ -10535,9 +10601,11 @@
 ""
 
 "Cartridge.MD5" "afe776db50e3378cd6f29c7cdd79104a"
-"Cartridge.Name" "Bobby is Going Home (CCE) (NTSC by Thomas Jentzsch)"
 "Cartridge.Manufacturer" "CCE / Thomas Jentzsch"
+"Cartridge.Name" "Bobby is Going Home (CCE) (NTSC by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Display.YStart" "23"
+"Display.Height" "245"
 ""
 
 "Cartridge.MD5" "afe4eefc7d885c277fc0649507fbcd84"
@@ -10652,11 +10720,12 @@
 ""
 
 "Cartridge.MD5" "afe88aae81d99e0947c0cfb687b16251"
-"Cartridge.Name" "Infiltrate (1982) (Apollo) [!]"
 "Cartridge.Manufacturer" "Apollo"
 "Cartridge.ModelNo" "AP 2006"
+"Cartridge.Name" "Infiltrate (1982) (Apollo) [!]"
 "Cartridge.Rarity" "Uncommon"
-"Display.Phosphor" "Yes"
+"Display.YStart" "29"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "b00e8217633e870bf39d948662a52aac"
@@ -10737,11 +10806,10 @@
 ""
 
 "Cartridge.MD5" "b1a6c96e9093352106bc335e96caa154"
-"Cartridge.Name" "SCSIcide Pre-release 1 (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide Pre-release 1 (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
+"Display.YStart" "38"
 ""
 
 "Cartridge.MD5" "b17b9cc4103844dcda54f77f44acc93a"
@@ -10917,6 +10985,7 @@
 
 "Cartridge.MD5" "b4daedb43511521db9036d503b3c1b69"
 "Cartridge.Name" "Sokoban (01-01-2003) (Adam Wozniak) [a1]"
+"Display.YStart" "36"
 ""
 
 "Cartridge.MD5" "b4f05e544834d0238a0c263491775edf"
@@ -10958,17 +11027,19 @@
 ""
 
 "Cartridge.MD5" "b5a1a189601a785bdb2f02a424080412"
-"Cartridge.Name" "Shootin' Gallery (1982) (Imagic)"
 "Cartridge.Manufacturer" "Imagic"
 "Cartridge.ModelNo" "IA3410"
+"Cartridge.Name" "Shootin' Gallery (1982) (Imagic)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "b6166f15720fdf192932f1f76df5b65d"
-"Cartridge.Name" "Off Your Rocker (1983) (Amiga)"
 "Cartridge.Manufacturer" "Amiga"
 "Cartridge.ModelNo" "3130"
+"Cartridge.Name" "Off Your Rocker (1983) (Amiga)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "b676a9b7094e0345a76ef027091d916b"
@@ -10999,6 +11070,7 @@
 "Cartridge.Name" "Cat Trax (PAL60 by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Display.Format" "PAL60"
+"Display.YStart" "11"
 "Display.Phosphor" "YES"
 ""
 
@@ -11070,10 +11142,11 @@
 ""
 
 "Cartridge.MD5" "b80d50ecee73919a507498d0a4d922ae"
-"Cartridge.Name" "Fantastic Voyage (1982) (20th Century Fox) [!]"
 "Cartridge.Manufacturer" "20th Century Fox"
 "Cartridge.ModelNo" "11008"
+"Cartridge.Name" "Fantastic Voyage (1982) (20th Century Fox) [!]"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "b8865f05676e64f3bec72b9defdacfa7"
@@ -11101,6 +11174,7 @@
 
 "Cartridge.MD5" "b879e13fd99382e09bcaf1d87ad84add"
 "Cartridge.Name" "Time Warp (Zellers) [!]"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "b9232c1de494875efe1858fc8390616d"
@@ -11189,10 +11263,11 @@
 ""
 
 "Cartridge.MD5" "ba3a17efd26db8b4f09c0cf7afdf84d1"
-"Cartridge.Name" "Spider Fighter (1983) (Activision) [o1]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AX-021"
+"Cartridge.Name" "Spider Fighter (1983) (Activision) [o1]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "ba3b0eebccc7b791107de5b4abb671b4"
@@ -11263,8 +11338,9 @@
 ""
 
 "Cartridge.MD5" "bc3057a35319aae3a5cd87a203736abe"
-"Cartridge.Name" "Time Warp (CCE) [!]"
 "Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Time Warp (CCE) [!]"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "bc703ea6afb20bc089f04d8c9d79a2bd"
@@ -11557,10 +11633,11 @@
 ""
 
 "Cartridge.MD5" "c16fbfdbfdf5590cc8179e4b0f5f5aeb"
-"Cartridge.Name" "Wall Defender (Bomb)"
 "Cartridge.Manufacturer" "Bomb"
 "Cartridge.ModelNo" "CA285"
+"Cartridge.Name" "Wall Defender (Bomb)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c1b1049b88bcd98437d8872d1d62ba31"
@@ -11738,10 +11815,11 @@
 ""
 
 "Cartridge.MD5" "c469151655e333793472777052013f4f"
-"Cartridge.Name" "Z-Tack (Bomb)"
 "Cartridge.Manufacturer" "Bomb"
 "Cartridge.ModelNo" "13"
+"Cartridge.Name" "Z-Tack (Bomb)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c4b73c35bc2f54b66cd786f55b668a82"
@@ -11813,13 +11891,14 @@
 ""
 
 "Cartridge.MD5" "c5301f549d0722049bb0add6b10d1e09"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2611 / 6699821 / 4975149"
+"Cartridge.Name" "Indy 500 (1978) (Atari) [!]"
 "Cartridge.Note" "Uses Driving Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Driving"
-"Controller.Right" "Driving"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "c58708c09ccb61625cda9d15ddcd8be6"
@@ -11926,10 +12005,11 @@
 ""
 
 "Cartridge.MD5" "c73ae5ba5a0a3f3ac77f0a9e14770e73"
-"Cartridge.Name" "Frogger (Official Version by Sega) (1982) (Starpath)"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4105"
+"Cartridge.Name" "Frogger (Official Version by Sega) (1982) (Starpath)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "32"
 ""
 
 "Cartridge.MD5" "c745487828a1a6a743488ecebc55ad44"
@@ -11970,10 +12050,11 @@
 ""
 
 "Cartridge.MD5" "c77d3b47f2293e69419b92522c6f6647"
-"Cartridge.Name" "Tank Brigade (Panda) (PAL)"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "101"
+"Cartridge.Name" "Tank Brigade (Panda) (PAL)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "c7e43ad79c5e5c029d9f5ffde23e32cf"
@@ -12308,6 +12389,7 @@
 
 "Cartridge.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
 "Cartridge.Name" "Laser Gate (Future Video Games) (PAL) [p1][!]"
+"Display.YStart" "14"
 ""
 
 "Cartridge.MD5" "cd3e26786136a4692fd2cb2dfbc1927e"
@@ -12369,7 +12451,7 @@
 "Cartridge.MD5" "ce243747bf34a2de366f846b3f4ca772"
 "Cartridge.Manufacturer" "Goliath"
 "Cartridge.Name" "Felix Return (Goliath) (PAL) [!]"
-"Display.YStart" "37"
+"Display.YStart" "39"
 "Display.Height" "256"
 ""
 
@@ -12422,10 +12504,11 @@
 ""
 
 "Cartridge.MD5" "cef2287d5fd80216b2200fb2ef1adfa8"
-"Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [!]"
 "Cartridge.Manufacturer" "Milton Bradley"
 "Cartridge.ModelNo" "4363"
+"Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [!]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "d0cdafcb000b9ae04ac465f17788ad11"
@@ -12691,10 +12774,11 @@
 ""
 
 "Cartridge.MD5" "e3600be9eb98146adafdc12d91323d0f"
-"Cartridge.Name" "3-D Tic-Tac-Toe (1978) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2618 / 4975123"
+"Cartridge.Name" "3-D Tic-Tac-Toe (1978) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "44"
 ""
 
 "Cartridge.MD5" "dafc3945677ccc322ce323d1e9930beb"
@@ -12743,10 +12827,11 @@
 ""
 
 "Cartridge.MD5" "d4806775693fcaaa24cf00fc00edcdf3"
-"Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26140"
+"Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Common"
+"Display.YStart" "22"
 ""
 
 "Cartridge.MD5" "d3bb42228a6cd452c111c1932503cc03"
@@ -12812,11 +12897,9 @@
 ""
 
 "Cartridge.MD5" "d483f65468d9a265661917bae1a54f3e"
-"Cartridge.Name" "SCSIcide Pre-release 3 (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide Pre-release 3 (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "d49aff83f77a1b9041ad7185df3c2277"
@@ -12954,10 +13037,11 @@
 ""
 
 "Cartridge.MD5" "d763e3a9cdcdd56c715ec826106fab6a"
-"Cartridge.Name" "Dragster (1980) (Activision) [o2]"
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.ModelNo" "AG-001"
+"Cartridge.Name" "Dragster (1980) (Activision) [o2]"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "d74a81fcd89c5cf0bd4c88eb207ebd62"
@@ -12976,6 +13060,7 @@
 
 "Cartridge.MD5" "d82c8a58098a6b46c5b81c16180354d1"
 "Cartridge.Name" "Climber 5 (Prototype) (30-10-2002) (Dennis Debro)"
+"Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
 
@@ -13138,13 +13223,14 @@
 ""
 
 "Cartridge.MD5" "dac762e4d01d445bdef20b7771f6570e"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [h1]"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2611 / 6699821 / 4975149"
+"Cartridge.Name" "Indy 500 (1978) (Atari) [h1]"
 "Cartridge.Note" "Uses Driving Controllers"
 "Cartridge.Rarity" "Uncommon"
-"Controller.Left" "Driving"
-"Controller.Right" "Driving"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "dac5c0fe74531f077c105b396874a9f1"
@@ -13533,6 +13619,7 @@
 "Cartridge.MD5" "dfe6aa7443bb813cefa35a4cf4887422"
 "Cartridge.Name" "This Planet Sucks (Greg Troutman) [a1]"
 "Cartridge.Rarity" "New Release"
+"Display.YStart" "37"
 ""
 
 "Cartridge.MD5" "e01e00504e6d4b88fa743c0bbe8a96e5"
@@ -13749,6 +13836,8 @@
 
 "Cartridge.MD5" "e377c3af4f54a51b85efe37d4b7029e6"
 "Cartridge.Name" "Save the Whales (2002) (20th Century Fox) [!]"
+"Display.YStart" "25"
+"Display.Height" "215"
 ""
 
 "Cartridge.MD5" "e363e467f605537f3777ad33e74e113a"
@@ -14164,11 +14253,9 @@
 ""
 
 "Cartridge.MD5" "eae0c06ee61c63b81cd016096fc901b0"
-"Cartridge.Name" "SCSIcide (v1.0) (2001) (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide (v1.0) (2001) (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "eaf744185d5e8def899950ba7c6e7bb5"
@@ -14762,11 +14849,9 @@
 ""
 
 "Cartridge.MD5" "f34dd3b8156aaf113cb621b2e51d90b8"
-"Cartridge.Name" "SCSIcide Pre-release 5 (Joe Grand)"
 "Cartridge.Manufacturer" "Joe Grand"
+"Cartridge.Name" "SCSIcide Pre-release 5 (Joe Grand)"
 "Cartridge.Rarity" "New Release"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
 ""
 
 "Cartridge.MD5" "f367e58667a30e7482175809e3cec4d4"
@@ -14785,10 +14870,11 @@
 ""
 
 "Cartridge.MD5" "f38358cd8f5ecfedffd5aca1aa939f18"
-"Cartridge.Name" "X-Man (1983) (CosmoVision-Universal Gamex) [a1]"
 "Cartridge.Manufacturer" "CosmoVision-Universal Gamex"
 "Cartridge.ModelNo" "GX-001"
+"Cartridge.Name" "X-Man (1983) (CosmoVision-Universal Gamex) [a1]"
 "Cartridge.Rarity" "Unbelievably Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "f3dfae774f3bd005a026e29894db40d3"
@@ -15023,9 +15109,11 @@
 ""
 
 "Cartridge.MD5" "f7e07080ed8396b68f2e5788a5c245e2"
-"Cartridge.Name" "Farmyard Fun (Telegames) (PAL)"
 "Cartridge.ModelNo" "TP-617"
+"Cartridge.Name" "Farmyard Fun (Telegames) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "33"
+"Display.Height" "217"
 ""
 
 "Cartridge.MD5" "f7d6592dcb773c81c278140ed4d01669"
@@ -15049,7 +15137,7 @@
 "Cartridge.MD5" "f802fa61011dd9eb6f80b271bac479d0"
 "Cartridge.Manufacturer" "Starsoft"
 "Cartridge.Name" "Gefaehrliche Maeusejagt (Starsoft) (PAL) [!]"
-"Display.YStart" "61"
+"Display.YStart" "60"
 ""
 
 "Cartridge.MD5" "f8bfd99163d2c4ec688357786e6fba28"
@@ -15145,9 +15233,9 @@
 ""
 
 "Cartridge.MD5" "f93d7fee92717e161e6763a88a293ffa"
-"Cartridge.Name" "Porky's (1983) (20th Century Fox)"
 "Cartridge.Manufacturer" "20th Century Fox"
 "Cartridge.ModelNo" "11013"
+"Cartridge.Name" "Porky's (1983) (20th Century Fox)"
 "Cartridge.Rarity" "Rare"
 ""
 
@@ -15281,10 +15369,11 @@
 ""
 
 "Cartridge.MD5" "fa6fe97a10efb9e74c0b5a816e6e1958"
-"Cartridge.Name" "Tanks But No Tanks (Zimag)"
 "Cartridge.Manufacturer" "Zimag"
 "Cartridge.ModelNo" "707-111"
+"Cartridge.Name" "Tanks But No Tanks (Zimag)"
 "Cartridge.Rarity" "Rare"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "fae0b86934a7c5a362281dffebdb43a0"
@@ -15455,10 +15544,11 @@
 ""
 
 "Cartridge.MD5" "fd4f5536fd80f35c64d365df85873418"
-"Cartridge.Name" "Desert Falcon (1987) (Atari)"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26140"
+"Cartridge.Name" "Desert Falcon (1987) (Atari)"
 "Cartridge.Rarity" "Common"
+"Display.YStart" "22"
 ""
 
 "Cartridge.MD5" "fd0e5148162e8ec6719445d559f018a9"
@@ -15531,22 +15621,24 @@
 ""
 
 "Cartridge.MD5" "ff3bd0c684f7144aeaa18758d8281a78"
-"Cartridge.Name" "Blackjack (1977) (Atari) [!]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "Blackjack (1977) (Atari) [!]"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Rare"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Display.YStart" "48"
 ""
 
 "Cartridge.MD5" "feedcc20bc3ca34851cd5d9e38aa2ca6"
-"Cartridge.Name" "Canyon Bomber (1978) (Atari) [!]"
 "Cartridge.ModelNo" "CX2607 / 6699828 / 4975115"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Canyon Bomber (1978) (Atari) [!]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "Paddles"
-"Controller.Right" "Paddles"
-"Controller.SwapPaddles" "Yes"
+"Cartridge.Rarity" "Uncommon"
+"Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
+"Controller.SwapPaddles" "YES"
+"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "feeae23f2eeac44b81a43e8292d0c574"
@@ -15568,10 +15660,11 @@
 ""
 
 "Cartridge.MD5" "ff7627207e8aa03730c35c735a82c26c"
-"Cartridge.Name" "Blackjack (32-in-1) (Atari) (PAL) [!]"
 "Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "Blackjack (32-in-1) (Atari) (PAL) [!]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "Paddles"
+"Controller.Left" "PADDLES"
+"Display.YStart" "63"
 ""
 
 "Cartridge.MD5" "ff4ed162386c795b4fb434903295b571"
@@ -15617,6 +15710,7 @@
 
 "Cartridge.MD5" "ffebb0070689b9d322687edd9c0a2bae"
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "adfbd2e8a38f96e03751717f7422851d"
