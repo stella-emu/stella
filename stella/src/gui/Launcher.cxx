@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.11 2007-01-01 18:04:53 stephena Exp $
+// $Id: Launcher.cxx,v 1.12 2007-01-10 20:29:10 stephena Exp $
 //============================================================================
 
 #include "Version.hxx"
@@ -46,6 +46,13 @@ Launcher::Launcher(OSystem* osystem)
       myHeight = 384;
       break;
   }
+
+  // Error check the resolution
+  int w, h;
+  osystem->getScreenDimensions(w, h);
+  if(myWidth > w) myWidth = w;
+  if(myHeight > h) myHeight = h;
+
   myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);
 }
 
