@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.84 2007-01-07 17:59:48 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.85 2007-01-12 16:03:10 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -45,12 +45,6 @@
 // Hopefully speed up OpenGL rendering in OSX
 #ifndef GL_TEXTURE_RECTANGLE_ARB
   #define GL_TEXTURE_RECTANGLE_ARB 0x84F5
-#endif
-#ifndef GL_TEXTURE_STORAGE_HINT_APPLE
-  #define GL_TEXTURE_STORAGE_HINT_APPLE 0x85BC
-#endif
-#ifndef GL_STORAGE_SHARED_APPLE
-  #define GL_STORAGE_SHARED_APPLE 0x85BF
 #endif
 
 // Maybe this code could be cleaner ...
@@ -94,8 +88,6 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myTexture(NULL),
     myHaveTexRectEXT(false),
-    myHaveAppleCStorageEXT(false),
-    myHaveAppleTexRangeEXT(false),
     myScreenmode(0),
     myScreenmodeCount(0),
     myFilterParamName("GL_NEAREST"),
@@ -240,8 +232,6 @@ string FrameBufferGL::about()
 {
   string extensions;
   if(myHaveTexRectEXT)       extensions += "GL_TEXTURE_RECTANGLE_ARB  ";
-  if(myHaveAppleCStorageEXT) extensions += "GL_TEXTURE_STORAGE_HINT_APPLE  ";
-  if(myHaveAppleTexRangeEXT) extensions += "GL_TEXTURE_STORAGE_HINT_APPLE  ";
   if(extensions == "")       extensions = "None";
 
   ostringstream out;
@@ -302,8 +292,6 @@ bool FrameBufferGL::createScreen()
   // Check for some extensions that can potentially speed up operation
   const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
   myHaveTexRectEXT       = strstr(extensions, "ARB_texture_rectangle") != NULL;
-  myHaveAppleCStorageEXT = strstr(extensions, "APPLE_client_storage") != NULL;
-  myHaveAppleTexRangeEXT = strstr(extensions, "APPLE_texture_range") != NULL;
 
   // Initialize GL display
   p_glViewport(myImageDim.x, myImageDim.y, myImageDim.w, myImageDim.h);
@@ -655,10 +643,6 @@ bool FrameBufferGL::createTextures()
 
   p_glGenTextures(1, &myBuffer.texture);
   p_glBindTexture(myBuffer.target, myBuffer.texture);
-  if(myHaveAppleCStorageEXT)
-    p_glPixelStorei(GL_UNPACK_CLIENT_STORAGE_APPLE, GL_TRUE);
-  if(myHaveAppleTexRangeEXT)
-    p_glTexParameteri(myBuffer.target, GL_TEXTURE_STORAGE_HINT_APPLE, GL_STORAGE_SHARED_APPLE);
   p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
   p_glTexParameteri(myBuffer.target, GL_TEXTURE_MIN_FILTER, myBuffer.filter);

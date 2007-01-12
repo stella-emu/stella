@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.42 2007-01-01 18:04:40 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.43 2007-01-12 16:03:10 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -36,7 +36,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.42 2007-01-01 18:04:40 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.43 2007-01-12 16:03:10 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -255,7 +255,7 @@ class FrameBufferGL : public FrameBuffer
     glBufferType myBuffer;
 
     // Optional GL extensions that may increase performance
-    bool myHaveTexRectEXT, myHaveAppleCStorageEXT, myHaveAppleTexRangeEXT;
+    bool myHaveTexRectEXT;
 
     // The possible OpenGL screenmodes to use
     SDL_Rect** myScreenmode;

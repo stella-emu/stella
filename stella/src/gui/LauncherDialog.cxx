@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.65 2007-01-01 18:04:53 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.66 2007-01-12 16:03:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -438,7 +438,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           instance()->settings().setString("lastrom",
               myList->getSelectedString());
 #endif
-          close();
         }
       }
       break;
