@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.98 2007-01-01 18:04:48 stephena Exp $
+// $Id: EventHandler.hxx,v 1.99 2007-01-13 15:55:14 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.98 2007-01-01 18:04:48 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.99 2007-01-13 15:55:14 stephena Exp $
 */
 class EventHandler
 {
@@ -352,6 +352,14 @@ class EventHandler
     */
     void setDefaultMapping(EventMode mode);
 
+    /**
+      Joystick emulates 'impossible' directions (ie, left & right
+      at the same time)
+
+      @param allow  Whether or not to allow impossible directions
+    */
+    void allowAllDirections(bool allow) { myAllowAllDirectionsFlag = allow; }
+
   private:
     /**
       Send a mouse motion event to the handler.
@@ -543,8 +551,8 @@ class EventHandler
     // Indicates whether to use launcher mode when exiting a game
     bool myUseLauncherFlag;
 
-    // Indicates whether the joystick emulates the mouse in GUI mode
-    bool myEmulateMouseFlag;
+    // Indicates whether the joystick emulates 'impossible' directions
+    bool myAllowAllDirectionsFlag;
 
     // Indicates whether or not we're in frying mode
     bool myFryingFlag;

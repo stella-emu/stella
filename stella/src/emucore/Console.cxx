@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.122 2007-01-07 01:26:52 stephena Exp $
+// $Id: Console.cxx,v 1.123 2007-01-13 15:55:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -222,6 +222,12 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Reset, the system to its power-on state
   mySystem->reset();
+
+  // Bumper Bash requires all 4 directions
+  const string& md5 = myProperties.get(Cartridge_MD5);
+  bool allow = (md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
+                md5 == "1bf503c724001b09be79c515ecfcbd03");
+  myOSystem->eventHandler().allowAllDirections(allow);
 
   myAboutString = buf.str();
 }

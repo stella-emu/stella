@@ -1,3 +1,4 @@
+
 //============================================================================
 //
 //   SSSS    tt          lll  lll
@@ -13,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.195 2007-01-03 12:59:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.196 2007-01-13 15:55:14 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -64,6 +65,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myLSState(0),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
+    myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
     myPaddleMode(0),
     myPaddleThreshold(0)
@@ -1011,17 +1013,20 @@ void EventHandler::handleEvent(Event::Type event, int state)
     // for almost all types of input.
     // Yes, this is messy, but it's also as fast as possible ...
     case Event::JoystickZeroUp:
-      if(state) myEvent->set(Event::JoystickZeroDown, 0);
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickZeroDown, 0);
       break;
     case Event::JoystickZeroDown:
-      if(state) myEvent->set(Event::JoystickZeroUp, 0);
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickZeroUp, 0);
       break;
     case Event::JoystickZeroLeft:
       switch((int)myController[0])
       {
         case Controller::Joystick:
         case Controller::BoosterGrip:
-          if(state) myEvent->set(Event::JoystickZeroRight, 0);
+          if(!myAllowAllDirectionsFlag && state)
+            myEvent->set(Event::JoystickZeroRight, 0);
           myEvent->set(Event::JoystickZeroLeft, state);
           return;
         case Controller::Paddles:
@@ -1037,7 +1042,8 @@ void EventHandler::handleEvent(Event::Type event, int state)
       {
         case Controller::Joystick:
         case Controller::BoosterGrip:
-          if(state) myEvent->set(Event::JoystickZeroLeft, 0);
+          if(!myAllowAllDirectionsFlag && state)
+            myEvent->set(Event::JoystickZeroLeft, 0);
           myEvent->set(Event::JoystickZeroRight, state);
           return;
         case Controller::Paddles:
@@ -1063,17 +1069,20 @@ void EventHandler::handleEvent(Event::Type event, int state)
       }
       break;
     case Event::JoystickOneUp:
-      if(state) myEvent->set(Event::JoystickOneDown, 0);
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickOneDown, 0);
       break;
     case Event::JoystickOneDown:
-      if(state) myEvent->set(Event::JoystickOneUp, 0);
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickOneUp, 0);
       break;
     case Event::JoystickOneLeft:
       switch((int)myController[1])
       {
         case Controller::Joystick:
         case Controller::BoosterGrip:
-          if(state) myEvent->set(Event::JoystickOneRight, 0);
+          if(!myAllowAllDirectionsFlag && state)
+            myEvent->set(Event::JoystickOneRight, 0);
           myEvent->set(Event::JoystickOneLeft, state);
           return;
         case Controller::Paddles:
@@ -1089,7 +1098,8 @@ void EventHandler::handleEvent(Event::Type event, int state)
       {
         case Controller::Joystick:
         case Controller::BoosterGrip:
-          if(state) myEvent->set(Event::JoystickOneLeft, 0);
+          if(!myAllowAllDirectionsFlag && state)
+            myEvent->set(Event::JoystickOneLeft, 0);
           myEvent->set(Event::JoystickOneRight, state);
           return;
         case Controller::Paddles:

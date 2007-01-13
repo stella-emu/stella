@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - October 16, 2005
+                         To Do List - January 2007
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
@@ -39,5 +39,4 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
   * Tracking Hiscores
 
-  * Improve frontend by adding snapshots, labels, manuals, etc.
-    Like KStella for Linux. (Suggestion from Brian Luttrull)
+  * Add support for uncommon controllers (KidVid, Lightgun, Amiga/ST mouse).
