@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.3</b></h4></center>
+	<center><h4><b>Release 2.3.5</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -37,7 +37,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - December 2006</b></center>
+	<center><b>February 1999 - January 2007</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -216,104 +216,66 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.3</b></h2>
+	<h2><b>New in Release 2.3.5</b></h2>
 
 	<ul>
-<li><b>Note: Because of the many changes in this release, all settings
-will be reset to defaults.  If this doesn't happen for you, it will be necessary
-to manually delete your previous settings (see 'Settings' section for more
-information).</b></li>
+<li>Greatly improved cartridge bankswitch type auto-detection.  Stella
+can now (mostly) autodetect cartridge types 'E0', 'E7', '3E', '3F' and
+Superchip carts.  Obviously, this autodetection is not infallible, but
+relies on patterns in the ROM data, and how it was compiled.  Because
+of the auto-detection types already supported, almost all bankswitch
+info was removed from internal ROM properties.  Set the ROM property
+"Cartridge.Type" to "Auto-detect" for this to take effect.</li>
 
-<li>Potentially huge speedups in software rendering mode, both in emulation
-and UI modes.  Deactivating 'dirty rects' uses these new modes, which
-can be 2-3 times faster for many configurations.</li>
+<li>Added auto-detection of display type (NTSC or PAL).  Currently, PAL60
+ROMs will be detected as NTSC.  This is almost 100% accurate, and fails
+in very few cases (for those that are mislabeled, the ROM properties
+can be set specifically).  Set the ROM property "Display.Format" to
+"Auto-detect" for this to take effect.</li>
 
-<li>For UI navigation, changed from using 'joymouse' to the more familiar
-'tabbing' functionality, where you move from object to object by use of
-some tab key.  As a result, completely removed the 'joymouse' commandline
-argument and all associated functionality.</li>
+<li>Improved emulation timing when exiting one ROM and starting another.
+Previously, this could result in the second ROM having its sound start
+later than it should have.</li>
 
-<li>Added event remapping for UI events, separate from events while in emulation
-mode.</li>
+<li>Removed pause functionality from the core, since it's been superceded
+by the other event states.  You can now enter one of the menus for a
+similar effect (options, command, debugger, etc).</li>
 
-<li>Added support for PAL60 ROMs, which use the PAL palette and resolution
-but run at NTSC timing (60Hz).  Added ROM property for this, and updated
-the internal properties database for many PAL60 ROMs.</li>
+<li>Added toggle for PAL color-loss emulation, which defaults to off.
+Previous versions of Stella always used color-loss emulation.
+Related to this, added 'colorloss' commandline argument.</li>
 
-<li>Added support for user-definable palettes.  For now, only one extra palette
-is supported, but in the future we may have them specified per-ROM.</li>
+<li>Added rudimentary support for configuring the UI palette ('uipalette'
+commandline argument) and ability to change the size of the launcher window
+('launchersize' commandline argument).  This will be expanded on in future
+releases.</li>
 
-<li>Fixed bug in PAL colour-loss emulation, which wasn't actually being done
-for the original Stella and z26 palettes.</li>
+<li>Reworked options menu so it's now accessible from the ROM launcher as
+well as while playing a ROM.</li>
 
-<li>Fixed several TIA-related emulation bugs as reported on AtariAge.  More
-fixes will come with the TIA rewrite, due in the next release.</li>
+<li>Re-added ability to change the width and height of a Console.  Related to
+this, changing XStart/YStart/Width/Height dynamically no longer resets
+the ROM.</li>
 
-<li>Added new scaler infrastructure, replacing the '-zoom' commandline argument
-with '-scale_ui' and '-scale_tia'.  This means the UI and emulation can now
-be scaled independently.</li>
+<li>Removed 'tiadefaults' commandline argument, since Stella will now default
+to using accurate positioning, and not use 'tweaks'.</li>
 
-<li>Added '-gl_vsync' commandline argument and associated UI elements, which
-uses synchronization to vertical blank interrupt in OpenGL on supported
-systems.  This eliminates tearing in OpenGL rendering.</li>
+<li>Joystick code now allows all 4 directions; 'Bumper Bash' now works
+correctly.</li>
 
-<li>Changed naming of snapshots and state files.  These files are now
-named based on the names given in the properties database, and no longer
-use the 'md5sum' name.  As a result, state files from previous versions
-will no longer work unless they're manually renamed.  Related to this,
-removed the '-ssname' commandline argument.</li>
+<li>Improved Keypad emulation; 'Alpha Beam with Ernie', 'Oscars Trash Race'
+and 'Magicard' now work correctly.</li>
 
-<li>Fixed bug where 'Snapshot saved' appeared when taking snapshots in
-succession.</li>
+<li>Reworked GUI code, so that all dialog boxes are automatically centered.</li>
 
-<li>Added a 'Previous directory' entry to the top of each listing while
-in ROM Browse mode, which is equivalent to the 'Go Up' button.  This makes
-it easier to navigate the filesystem, since you never have to 'tab out'
-of the ROM listing.</li>
+<li>Added 'rominfo' commandline argument, which prints some detailed info for
+a ROM.</li>
 
-<li>Added all sound related commandline options to the UI, so you no
-longer have to use the commandline to set those options.</li>
+<li>For the OSX port; fixed crashes in OpenGL mode.</li>
 
-<li>Added new property to ROM properties specifying whether to swap paddles
-plugged into a virtual port.  This eliminates the need to manually set the
-paddle mode for those ROMs that don't use paddle zero by default.</li>
+<li>For the GP2X port; some improvements to the sound code.</li>
 
-<li>Added a 'Defaults' button to the Game Properties dialog, which resets
-the ROM properties to the internal defaults, deleting that ROMs properties
-from the external properties file.</li>
-
-<li>Fixed bug whereby modified ROM properties weren't being reloaded when
-restarting a ROM.</li>
-
-<li>Made 'phosphor' and 'phosphor blend' a ROM property, meaning it can be
-set per-ROM.</li>
-
-<li>Added support for relocating the base Stella directory, by setting the
-environment variable 'STELLA_BASEDIR'.  This must be done each time before
-Stella starts.</li>
-
-<li>Added '-fastscbios' commandline argument, which speeds up loading of 
-vertical bars in Supercharger ROMs, and made it the default.</li>
-
-<li>Added '-autoslot' commandline argument, which automatically switches
-to the next available slot after saving a state.  This defaults to off,
-and must be set from the commandline.</li>
-
-<li>Fixed bug in debugger command 'runto', which could enter an infinite
-loop under some conditions.</li>
-
-<li>Updated configure/build toolchain so patching is no longer required for Debian
-packages.</li>
-
-<li>Removed dependency on PNG library (PNG snapshots are still present, but the
-actual library is no longer required).</li>
-
-<li>For the OSX port, improved OpenGL performance on Mac Mini using Intel GMA950
-video hardware.</li>
-
-<li>For the GP2X port, added support for PAL ROMs, and updated SDL to use hardware
-scaling.</li>
-
+<li>For the GP2X port; added vertical centering of the TIA image (when possible).</li>
 	</ul>
 
 	<p>
@@ -588,8 +550,8 @@ scaling.</li>
 	'ROM Launcher' mode:<br><br>
 	<img src="graphics/launcher.png"></p>
 
-	<p>The ROM and snapshot settings may be changed by clicking the 'Options'
-	button:<br><br>
+	<p>The ROM and snapshot settings may be changed by clicking the
+	'Options / Files &amp; Snapshots' button:<br><br>
 	<img src="graphics/launcher_options_rom.png">&nbsp;&nbsp;
 	<img src="graphics/launcher_options_snap.png"></p>
 
@@ -691,6 +653,11 @@ scaling.</li>
 			<td><pre>-palette &lt;original|standard|z26|user&gt;</pre></td>
 			<td>Set the palette to either pre-Stella 1.4, Stella 1.4 and above,
 				the palette used in the z26 emulator, or a user-defined palette.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-colorloss &lt;1|0&gt;</pre></td>
+			<td>Enable/disable the PAL color-loss effect.</td>
 		</tr>
 
 		<tr>
@@ -835,6 +802,23 @@ scaling.</li>
 		</tr>
 
 		<tr>
+			<td><pre>-rominfo &lt;rom&gt;</pre></td>
+			<td>Display detailed information about the given ROM, and then exit
+				Stella.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-launchersize &lt;1|2|3&gt;</pre></td>
+			<td>Set the size of the ROM launcher.  This isn't yet complete.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-uipalette &lt;1|2&gt;</pre></td>
+			<td>Used the specified palette for UI elements.  This isn't yet
+				complete.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-help</pre></td>
 			<td>Prints a help message describing these options, and then
 				exit Stella.</td>
@@ -936,7 +920,7 @@ scaling.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-format &lt;NTSC|PAL&gt;</pre></td>
+			<td><pre>-format &lt;NTSC|PAL|PAL60&gt;</pre></td>
 			<td>Set "Display.Format" property.</td>
 		</tr>
 
@@ -984,7 +968,12 @@ scaling.</li>
 
 	<p>As of version 2.0, all settings can be changed within the integrated Options
 	GUI while Stella is running.  The options are documented elsewhere in this manual
-	and are generally self-explanatory.</p>
+	and are generally self-explanatory.  The Options menu can be accessed from
+	the ROM launcher by clicking the 'Options' button, or in-game by pressing the
+	'Tab' key.</p>
+
+	<p><b>Options Menu</b> dialog:<br><br>
+	<img src="graphics/options.png">
 
 	<p><b>Video Options</b> dialog:<br><br>
 	<img src="graphics/options_video.png">
@@ -1619,6 +1608,31 @@ scaling.</li>
 			<td>Alt + PageDown</td>
 			<td>Shift-Cmd + PageDown</td>
 		</tr>
+
+
+		<tr>
+			<td>Set "Display.Width" to next <i>larger</i> value</td>
+			<td>Control + End</td>
+			<td>Cmd + End</td>
+		</tr>
+
+		<tr>
+			<td>Set "Display.Width" to next <i>smaller</i> value</td>
+			<td>Control + Home</td>
+			<td>Cmd + Home</td>
+		</tr>
+
+		<tr>
+			<td>Set "Display.Height" to next <i>larger</i> value</td>
+			<td>Control + PageUp</td>
+			<td>Cmd + PageUp</td>
+		</tr>
+
+		<tr>
+			<td>Set "Display.Height" to next <i>smaller</i> value</td>
+			<td>Control + PageDown</td>
+			<td>Cmd + PageDown</td>
+		</tr>
 	</table>
 
 	<p><b>Other Keys (can't be remapped)</b></p>
@@ -1732,6 +1746,12 @@ scaling.</li>
 			<td>Control + p</td>
 			<td>Cmd + p</td>
 		</tr>
+
+		<tr>
+			<td>Toggle PAL color-loss effect</td>
+			<td>Control + l</td>
+			<td>Cmd + l</td>
+		</tr>
 	</table>
 
 	<br><br><br>
@@ -1754,9 +1774,7 @@ scaling.</li>
 
 	<p>To remap an event:
 	<ol>
-		<li>Start playing a game (ie, start the emulation).</li>
-		<li>Enter options mode by pressing <b>Tab</b>.</li>
-		<li>Click the 'Input Settings' button.</li>
+		<li>Enter options menu and click the 'Input Settings' button.</li>
 		<li>If you wish to remap emulation events, click the 'Emul. Events' tab.
 			Otherwise, click the 'UI Events' tab for user interface events.</li>
 		<li>Select event you want to remap and click the 'Map' button.</li>
@@ -2030,7 +2048,7 @@ Ms Pac-Man (Stella extended codes):
 			<td VALIGN="TOP"><i>Console.SwapPorts:</i></td>
 			<td>This property indicates that the left and right ports should be
 			swapped internally.  This is used for ROMs like 'Raiders' where the
-			Player 1 joystick is plugged into the right joystick port.
+			Player 0 joystick is plugged into the right joystick port.
 			The value of this property must be Yes or No.</td>
 		</tr>
 
@@ -2061,11 +2079,12 @@ Ms Pac-Man (Stella extended codes):
 		<tr>
 			<td VALIGN="TOP"><i>Display.Format:</i></td>
 			<td>This property indicates the television format the game was
-			designed for.  The value of this property must be NTSC, PAL or PAL60.</td>
+			designed for.  The value of this property must be Auto-detect, NTSC,
+			PAL or PAL60.</td>
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP"><i>Display.XStart:</i></td>
+			<td VALIGN="TOP"><i>Display.XStart: (*)</i></td>
 			<td>This property indicates the horizontal location to start displaying
 			pixels at on a scan-line.  The value of this property must be <i>n</i>
 			such that 0 &lt;= <i>n</i> &lt;= 80 and <i>n</i> is divisible by 4.</td>
@@ -2086,7 +2105,7 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP"><i>Display.Height: (*)</i></td>
+			<td VALIGN="TOP"><i>Display.Height:</i></td>
 			<td>This property indicates the number of scan-lines to display.
 			The value of this property must be <i>n</i> such that
 			100 &lt;= <i>n</i> &lt;= 256.</td>
@@ -2114,7 +2133,7 @@ Ms Pac-Man (Stella extended codes):
 	</table>
 
 	<p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
-	removed in the next release.</p>
+	removed in a future release.</p>
 
 	<br><br>
 	<p><h1>

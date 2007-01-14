@@ -12,9 +12,65 @@
                                Release History
 ===============================================================================
 
-2.3 to 2.3.1: (January xx, 2007)
+2.3 to 2.3.5: (January 17, 2007)
 
-  * 
+  * Greatly improved cartridge bankswitch type auto-detection.  Stella
+    can now (mostly) autodetect cartridge types 'E0', 'E7', '3E', '3F' and
+    Superchip carts.  Obviously, this autodetection is not infallible, but
+    relies on patterns in the ROM data, and how it was compiled.  Because
+    of the auto-detection types already supported, almost all bankswitch
+    info was removed from internal ROM properties.  Set the ROM property
+    "Cartridge.Type" to "Auto-detect" for this to take effect.
+
+  * Added auto-detection of display type (NTSC or PAL).  Currently, PAL60
+    ROMs will be detected as NTSC.  This is almost 100% accurate, and fails
+    in very few cases (for those that are mislabeled, the ROM properties
+    can be set specifically).  Set the ROM property "Display.Format" to
+    "Auto-detect" for this to take effect.
+
+  * Improved emulation timing when exiting one ROM and starting another.
+    Previously, this could result in the second ROM having its sound start
+    later than it should have.
+
+  * Removed pause functionality from the core, since it's been superceded
+    by the other event states.  You can now enter one of the menus for a
+    similar effect (options, command, debugger, etc).
+
+  * Added toggle for PAL color-loss emulation, which defaults to off.
+    Previous versions of Stella always used color-loss emulation.
+    Related to this, added 'colorloss' commandline argument.
+
+  * Added rudimentary support for configuring the UI palette ('uipalette'
+    commandline argument) and ability to change the size of the launcher window
+    ('launchersize' commandline argument).  This will be expanded on in future
+    releases.
+
+  * Reworked options menu so it's now accessible from the ROM launcher as
+    well as while playing a ROM.
+
+  * Re-added ability to change the width and height of a Console.  Related to
+    this, changing XStart/YStart/Width/Height dynamically no longer resets
+    the ROM.
+
+  * Removed 'tiadefaults' commandline argument, since Stella will now default
+    to using accurate positioning, and not use 'tweaks'.
+
+  * Joystick code now allows all 4 directions; 'Bumper Bash' now works
+    correctly.
+
+  * Improved Keypad emulation; 'Alpha Beam with Ernie', 'Oscars Trash Race'
+    and 'Magicard' now work correctly.
+
+  * Reworked GUI code, so that all dialog boxes are automatically centered.
+
+  * Added 'rominfo' commandline argument, which prints some detailed info for
+    a ROM.
+
+  * For the OSX port; fixed crashes in OpenGL mode.
+
+  * For the GP2X port; some improvements to the sound code.
+
+  * For the GP2X port; added vertical centering of the TIA image (when possible).
 
 Have fun!
 
@@ -886,4 +942,3 @@ DOS 1.2 to DOS 1.2.1: (April 28, 2002)
   * Power Macintosh port (Aaron Giles)
 
   * Windows 95 & NT port (Jeff Miller)
-

@@ -16,11 +16,13 @@ If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
+  * Find people to handle new ports, and try to more actively recruit people
+    into the Stella project
+
   * Improve debugger support for cartridges with dedicated RAM, and add
     source-level debugging
 
-  * Find people to actually do the above ports, and try to more actively
-    recruit people into the Stella project
+  * Add support for uncommon controllers (KidVid, Lightgun, Amiga/ST mouse)
 
   * Either Support DASM as frontend or integrate a 6507 Assembler
 
@@ -38,5 +40,3 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Client/Server networked play for up to 4 Computers via LAN/Internet
 
   * Tracking Hiscores
-
-  * Add support for uncommon controllers (KidVid, Lightgun, Amiga/ST mouse).
