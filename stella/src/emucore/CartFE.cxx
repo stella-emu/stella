@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFE.cxx,v 1.7 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartFE.cxx,v 1.8 2007-01-14 16:17:54 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartFE.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartFE.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFE::CartridgeFE(const uInt8* image)
@@ -83,13 +83,6 @@ void CartridgeFE::poke(uInt16, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFE::patch(uInt16 address, uInt8 value)
-{
-	myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::save(Serializer& out)
 {
   string cart = name();
@@ -98,7 +91,7 @@ bool CartridgeFE::save(Serializer& out)
   {
     out.putString(cart);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -122,7 +115,7 @@ bool CartridgeFE::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -137,7 +130,34 @@ bool CartridgeFE::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeFE::getImage(int& size) {
+void CartridgeFE::bank(uInt16 b)
+{
+  // Doesn't support bankswitching in the normal sense
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeFE::bank()
+{
+  // Doesn't support bankswitching in the normal sense
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeFE::bankCount()
+{
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFE::patch(uInt16 address, uInt8 value)
+{
+  myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeFE::getImage(int& size)
+{
   size = 8192;
   return &myImage[0];
 }

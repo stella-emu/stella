@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.cxx,v 1.10 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartMB.cxx,v 1.11 2007-01-14 16:17:55 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartMB.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartMB.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMB::CartridgeMB(const uInt8* image)
@@ -98,14 +98,6 @@ void CartridgeMB::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::patch(uInt16 address, uInt8 value)
-{
-	address = address & 0x0FFF;
-	myImage[myCurrentBank * 4096 + address] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMB::incbank()
 {
   if(bankLocked) return;
@@ -132,22 +124,6 @@ void CartridgeMB::incbank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::bank(uInt16 b) {
-  myCurrentBank = (b - 1);
-  incbank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMB::bank() {
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMB::bankCount() {
-  return 16;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMB::save(Serializer& out)
 {
   string cart = name();
@@ -158,7 +134,7 @@ bool CartridgeMB::save(Serializer& out)
 
     out.putInt(myCurrentBank);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -184,7 +160,7 @@ bool CartridgeMB::load(Deserializer& in)
 
     myCurrentBank = (uInt16) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -203,7 +179,37 @@ bool CartridgeMB::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeMB::getImage(int& size) {
+void CartridgeMB::bank(uInt16 bank)
+{
+  if(bankLocked) return;
+
+  myCurrentBank = (bank - 1);
+  incbank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeMB::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeMB::bankCount()
+{
+  return 16;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMB::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeMB::getImage(int& size)
+{
   size = 65536;
   return &myImage[0];
 }

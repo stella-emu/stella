@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4.cxx,v 1.10 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartF4.cxx,v 1.11 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include <iostream>
-#include "CartF4.hxx"
+#include <cassert>
+
 #include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "CartF4.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF4::CartridgeF4(const uInt8* image)
@@ -103,49 +103,6 @@ void CartridgeF4::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF4::patch(uInt16 address, uInt8 value)
-{
-	address = address & 0x0FFF;
-	myImage[myCurrentBank * 4096 + address] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF4::bank(uInt16 bank)
-{ 
-  if(bankLocked) return;
-
-  // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map ROM image into the system
-  for(uInt32 address = 0x1000; address < (0x1FF4U & ~mask);
-      address += (1 << shift))
-  {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF4::bank() {
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF4::bankCount() {
-  return 8;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4::save(Serializer& out)
 {
   string cart = name();
@@ -155,7 +112,7 @@ bool CartridgeF4::save(Serializer& out)
     out.putString(cart);
     out.putInt(myCurrentBank);
   }
-  catch(char* msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -183,7 +140,7 @@ bool CartridgeF4::load(Deserializer& in)
 
     myCurrentBank = (uInt16)in.getInt();
   }
-  catch(char* msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -200,9 +157,54 @@ bool CartridgeF4::load(Deserializer& in)
   return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeF4::bank(uInt16 bank)
+{ 
+  if(bankLocked) return;
+
+  // Remember what bank we're in
+  myCurrentBank = bank;
+  uInt16 offset = myCurrentBank * 4096;
+  uInt16 shift = mySystem->pageShift();
+  uInt16 mask = mySystem->pageMask();
+
+  // Setup the page access methods for the current bank
+  System::PageAccess access;
+  access.device = this;
+  access.directPokeBase = 0;
+
+  // Map ROM image into the system
+  for(uInt32 address = 0x1000; address < (0x1FF4U & ~mask);
+      address += (1 << shift))
+  {
+    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF4::getImage(int& size) {
+int CartridgeF4::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF4::bankCount()
+{
+  return 8;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF4::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF4::getImage(int& size)
+{
   size = 32768;
   return &myImage[0];
 }

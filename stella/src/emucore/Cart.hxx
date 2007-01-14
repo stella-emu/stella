@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.16 2007-01-01 18:04:45 stephena Exp $
+// $Id: Cart.hxx,v 1.17 2007-01-14 16:17:52 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.16 2007-01-01 18:04:45 stephena Exp $
+  @version $Id: Cart.hxx,v 1.17 2007-01-14 16:17:52 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -51,7 +51,6 @@ class Cartridge : public Device
     static Cartridge* create(const uInt8* image, uInt32 size, 
         const Properties& props, const Settings& settings);
 
-  public:
     /**
       Create a new cartridge
     */
@@ -67,18 +66,61 @@ class Cartridge : public Device
     */
     static const string& about() { return myAboutString; }
 
-    virtual void bank(uInt16 b); // set bank
-    virtual int bank(); // get current bank (-1 if no bankswitching supported)
-    virtual int bankCount(); // count # of banks
-    virtual bool patch(uInt16 address, uInt8 value); // yes, this writes to ROM
-    bool save(ofstream& out); // need a way to save patched ROMs
-    virtual uInt8* getImage(int& size); // save() uses this
-    void lockBank() { bankLocked = true; }
+    /**
+      Save the internal (patched) ROM image.
+
+      @param out  The output file stream to save the image
+    */
+    bool save(ofstream& out);
+
+    /**
+      Lock/unlock bankswitching capability.
+    */
+    void lockBank()   { bankLocked = true;  }
     void unlockBank() { bankLocked = false; }
 
+  public:
+    //////////////////////////////////////////////////////////////////////
+    // The following methods are cart-specific and must be implemented
+    // in derived classes.
+    //////////////////////////////////////////////////////////////////////
+    /**
+      Set the specified bank.
+    */
+    virtual void bank(uInt16 bank) = 0;
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank() = 0;
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount() = 0;
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value) = 0;
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
+    virtual uInt8* getImage(int& size) = 0;
+
   protected:
-	 // If bankLocked is true, ignore attempts at bankswitching. This is used
-	 // by the debugger, when disassembling/dumping ROM.
+    // If bankLocked is true, ignore attempts at bankswitching. This is used
+    // by the debugger, when disassembling/dumping ROM.
     bool bankLocked;
 
   private:
@@ -131,5 +173,5 @@ class Cartridge : public Device
     // Assignment operator isn't supported by cartridges so make it private
     Cartridge& operator = (const Cartridge&);
 };
-#endif
 
+#endif

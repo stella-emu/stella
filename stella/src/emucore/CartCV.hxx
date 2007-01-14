@@ -13,13 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.hxx,v 1.8 2007-01-01 18:04:45 stephena Exp $
+// $Id: CartCV.hxx,v 1.9 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGECV_HXX
 #define CARTRIDGECV_HXX
 
-class CartridgeCV;
 class System;
 class Serializer;
 class Deserializer;
@@ -35,7 +34,7 @@ class Deserializer;
   $F800-$FFFF ROM
 
   @author  Eckhard Stolberg
-  @version $Id: CartCV.hxx,v 1.8 2007-01-01 18:04:45 stephena Exp $
+  @version $Id: CartCV.hxx,v 1.9 2007-01-14 16:17:53 stephena Exp $
 */
 class CartridgeCV : public Cartridge
 {
@@ -89,6 +88,40 @@ class CartridgeCV : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    virtual void bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank();
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount();
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value);
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
     virtual uInt8* getImage(int& size);
 
   public:
@@ -107,8 +140,6 @@ class CartridgeCV : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-	 bool patch(uInt16 address, uInt8 value);
-
   private:
     // The 2k ROM image for the cartridge
     uInt8 myImage[2048];
@@ -116,5 +147,5 @@ class CartridgeCV : public Cartridge
     // The 1024 bytes of RAM
     uInt8 myRAM[1024];
 };
-#endif
 
+#endif

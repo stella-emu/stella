@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6.cxx,v 1.12 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartF6.cxx,v 1.13 2007-01-14 16:17:54 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartF6.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartF6.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6::CartridgeF6(const uInt8* image)
@@ -144,12 +144,58 @@ void CartridgeF6::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6::patch(uInt16 address, uInt8 value)
+bool CartridgeF6::save(Serializer& out)
 {
-  address = address & 0x0FFF;
-  myImage[myCurrentBank * 4096 + address] = value;
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putInt(myCurrentBank);
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
   return true;
-} 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myCurrentBank);
+
+  return true;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6::bank(uInt16 bank)
@@ -177,71 +223,28 @@ void CartridgeF6::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6::bank() {
+int CartridgeF6::bank()
+{
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6::bankCount() {
+int CartridgeF6::bankCount()
+{
   return 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6::save(Serializer& out)
+bool CartridgeF6::patch(uInt16 address, uInt8 value)
 {
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-
-    out.putInt(myCurrentBank);
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
   return true;
-}
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6::load(Deserializer& in)
+uInt8* CartridgeF6::getImage(int& size)
 {
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Remember what bank we were in
-  bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF6::getImage(int& size) {
   size = 16384;
   return &myImage[0];
 }

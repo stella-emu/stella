@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Device.hxx,v 1.5 2007-01-01 18:04:50 stephena Exp $
+// $Id: Device.hxx,v 1.6 2007-01-14 16:17:57 stephena Exp $
 //============================================================================
 
 #ifndef DEVICE_HXX
@@ -30,7 +30,7 @@ class Deserializer;
   based system.
 
   @author  Bradford W. Mott
-  @version $Id: Device.hxx,v 1.5 2007-01-01 18:04:50 stephena Exp $
+  @version $Id: Device.hxx,v 1.6 2007-01-14 16:17:57 stephena Exp $
 */
 class Device
 {
@@ -109,5 +109,5 @@ class Device
     /// Pointer to the system the device is installed in or the null pointer
     System* mySystem;
 };
+
 #endif
- 

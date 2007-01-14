@@ -13,20 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.11 2007-01-01 18:04:47 stephena Exp $
+// $Id: CartMC.cxx,v 1.12 2007-01-14 16:17:55 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartMC.hxx"
+#include <cassert>
+
 #include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartMC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
-    : mySlot3Locked(false)
+  : mySlot3Locked(false)
 {
   uInt32 i;
 
@@ -220,13 +220,6 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMC::patch(uInt16 address, uInt8 value)
-{
-	// TODO: implement
-	return false;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::save(Serializer& out)
 {
   uInt32 i;
@@ -246,7 +239,7 @@ bool CartridgeMC::save(Serializer& out)
     for(i = 0; i < 32 * 1024; ++i)
       out.putInt(myRAM[i]);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -283,7 +276,7 @@ bool CartridgeMC::load(Deserializer& in)
     for(i = 0; i < limit; ++i)
       myRAM[i] = (uInt8) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -298,7 +291,35 @@ bool CartridgeMC::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeMC::getImage(int& size) {
+void CartridgeMC::bank(uInt16 b)
+{
+  // TODO: add support for debugger
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeMC::bank()
+{
+  // TODO: add support for debugger
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeMC::bankCount()
+{
+  // TODO: add support for debugger
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMC::patch(uInt16 address, uInt8 value)
+{
+  // TODO: implement
+  return false;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeMC::getImage(int& size)
+{
   size = 128 * 1024; // FIXME: keep track of original size
   return &myImage[0];
 }

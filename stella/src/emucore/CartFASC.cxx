@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.11 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartFASC.cxx,v 1.12 2007-01-14 16:17:54 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartFASC.hxx"
+#include <cassert>
+
 #include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartFASC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFASC::CartridgeFASC(const uInt8* image)
@@ -167,49 +167,6 @@ void CartridgeFASC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFASC::patch(uInt16 address, uInt8 value)
-{
-	address = address & 0x0FFF;
-	myImage[myCurrentBank * 4096 + address] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFASC::bank(uInt16 bank)
-{
-  if(bankLocked) return;
-
-  // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map ROM image into the system
-  for(uInt32 address = 0x1200; address < (0x1FF8U & ~mask);
-      address += (1 << shift))
-  {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeFASC::bank() {
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeFASC::bankCount() {
-  return 3;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFASC::save(Serializer& out)
 {
   string cart = name();
@@ -225,7 +182,7 @@ bool CartridgeFASC::save(Serializer& out)
     for(uInt32 i = 0; i < 256; ++i)
       out.putInt(myRAM[i]);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -255,7 +212,7 @@ bool CartridgeFASC::load(Deserializer& in)
     for(uInt32 i = 0; i < limit; ++i)
       myRAM[i] = (uInt8) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -273,7 +230,53 @@ bool CartridgeFASC::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeFASC::getImage(int& size) {
+void CartridgeFASC::bank(uInt16 bank)
+{
+  if(bankLocked) return;
+
+  // Remember what bank we're in
+  myCurrentBank = bank;
+  uInt16 offset = myCurrentBank * 4096;
+  uInt16 shift = mySystem->pageShift();
+  uInt16 mask = mySystem->pageMask();
+
+  // Setup the page access methods for the current bank
+  System::PageAccess access;
+  access.device = this;
+  access.directPokeBase = 0;
+
+  // Map ROM image into the system
+  for(uInt32 address = 0x1200; address < (0x1FF8U & ~mask);
+      address += (1 << shift))
+  {
+    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeFASC::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeFASC::bankCount()
+{
+  return 3;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFASC::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeFASC::getImage(int& size)
+{
   size = 12288;
   return &myImage[0];
 }

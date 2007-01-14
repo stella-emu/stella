@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.hxx,v 1.4 2007-01-01 18:04:45 stephena Exp $
+// $Id: Cart3E.hxx,v 1.5 2007-01-14 16:17:52 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3E_HXX
 #define CARTRIDGE3E_HXX
 
-class Cartridge3E;
+class System;
 class Serializer;
 class Deserializer;
 
@@ -59,7 +59,7 @@ class Deserializer;
   any problems. (Famous last words...)
 
   @author  B. Watson
-  @version $Id: Cart3E.hxx,v 1.4 2007-01-01 18:04:45 stephena Exp $
+  @version $Id: Cart3E.hxx,v 1.5 2007-01-14 16:17:52 stephena Exp $
 */
 
 class Cartridge3E : public Cartridge
@@ -115,6 +115,40 @@ class Cartridge3E : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    virtual void bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank();
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount();
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value);
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
     virtual uInt8* getImage(int& size);
 
   public:
@@ -133,18 +167,6 @@ class Cartridge3E : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-	 bool patch(uInt16 address, uInt8 value);
-
-    /** 
-      Map the specified bank into the first segment
-
-      @param bank The bank that should be mapped
-    */
-    void bank(uInt16 bank);
-
-    int bank();
-    int bankCount();
-
   private:
     // Indicates which bank is currently active for the first segment
     uInt16 myCurrentBank;
@@ -158,5 +180,5 @@ class Cartridge3E : public Cartridge
     // Size of the ROM image
     uInt32 mySize;
 };
-#endif
 
+#endif

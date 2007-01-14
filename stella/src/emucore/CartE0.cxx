@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.12 2007-01-01 18:04:45 stephena Exp $
+// $Id: CartE0.cxx,v 1.13 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartE0.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartE0.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::CartridgeE0(const uInt8* image)
@@ -137,14 +137,6 @@ void CartridgeE0::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeE0::patch(uInt16 address, uInt8 value)
-{
-	address = address & 0x0FFF;
-	myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentZero(uInt16 slice)
 { 
   // Remember the new slice
@@ -217,7 +209,7 @@ bool CartridgeE0::save(Serializer& out)
     for(uInt32 i = 0; i < 4; ++i)
       out.putInt(myCurrentSlice[i]);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -245,7 +237,7 @@ bool CartridgeE0::load(Deserializer& in)
     for(uInt32 i = 0; i < limit; ++i)
       myCurrentSlice[i] = (uInt16) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -259,9 +251,37 @@ bool CartridgeE0::load(Deserializer& in)
   return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeE0::bank(uInt16 bank)
+{
+  // FIXME - get this working, so we can debug E0 carts
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeE0::getImage(int& size) {
+int CartridgeE0::bank()
+{
+  // FIXME - get this working, so we can debug E0 carts
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeE0::bankCount()
+{
+  // FIXME - get this working, so we can debug E0 carts
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE0::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeE0::getImage(int& size)
+{
   size = 8192;
   return &myImage[0];
 }

@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.hxx,v 1.9 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartF8.hxx,v 1.10 2007-01-14 16:17:54 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF8_HXX
 #define CARTRIDGEF8_HXX
 
-class CartridgeF8;
+class System;
 class Serializer;
 class Deserializer;
 
@@ -31,7 +31,7 @@ class Deserializer;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF8.hxx,v 1.9 2007-01-01 18:04:46 stephena Exp $
+  @version $Id: CartF8.hxx,v 1.10 2007-01-14 16:17:54 stephena Exp $
 */
 class CartridgeF8 : public Cartridge
 {
@@ -86,6 +86,40 @@ class CartridgeF8 : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    virtual void bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank();
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount();
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value);
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
     virtual uInt8* getImage(int& size);
 
   public:
@@ -104,17 +138,6 @@ class CartridgeF8 : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-	 bool patch(uInt16 address, uInt8 value);
-
-    /**
-      Install pages for the specified bank in the system
-
-      @param bank The bank that should be installed in the system
-    */
-    void bank(uInt16 bank);
-    int bank();
-    int bankCount();
-
   private:
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
@@ -125,5 +148,5 @@ class CartridgeF8 : public Cartridge
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
 };
-#endif
 
+#endif

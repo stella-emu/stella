@@ -13,20 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.cxx,v 1.14 2007-01-01 18:04:45 stephena Exp $
+// $Id: Cart3F.cxx,v 1.15 2007-01-14 16:17:52 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "Cart3F.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "Cart3F.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size)
-    : mySize(size)
+  : mySize(size)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
@@ -123,19 +123,57 @@ void Cartridge3F::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3F::patch(uInt16 address, uInt8 value)
+bool Cartridge3F::save(Serializer& out)
 {
-  address = address & 0x0FFF;
-  if(address < 0x0800)
+  string cart = name();
+
+  try
   {
-    myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
+    out.putString(cart);
+    out.putInt(myCurrentBank);
   }
-  else
+  catch(const char* msg)
   {
-    myImage[(address & 0x07FF) + mySize - 2048] = value;
+    cerr << msg << endl;
+    return false;
   }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
   return true;
-} 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3F::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Now, go to the current bank
+  bank(myCurrentBank);
+
+  return true;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::bank(uInt16 bank)
@@ -171,71 +209,35 @@ void Cartridge3F::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3F::bank() {
+int Cartridge3F::bank()
+{
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3F::bankCount() {
-  return mySize/2048;
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3F::save(Serializer& out)
+int Cartridge3F::bankCount()
 {
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-    out.putInt(myCurrentBank);
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
+  return mySize / 2048;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3F::load(Deserializer& in)
+bool Cartridge3F::patch(uInt16 address, uInt8 value)
 {
-  string cart = name();
-
-  try
+  address = address & 0x0FFF;
+  if(address < 0x0800)
   {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
+    myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
   }
-  catch(char *msg)
+  else
   {
-    cerr << msg << endl;
-    return false;
+    myImage[(address & 0x07FF) + mySize - 2048] = value;
   }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Now, go to the current bank
-  bank(myCurrentBank);
-
   return true;
-}
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge3F::getImage(int& size) {
+uInt8* Cartridge3F::getImage(int& size)
+{
   size = mySize;
   return &myImage[0];
 }

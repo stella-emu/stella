@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.17 2007-01-01 18:04:45 stephena Exp $
+// $Id: CartDPC.cxx,v 1.18 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -428,50 +428,6 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::patch(uInt16 address, uInt8 value)
-{
-	address = address & 0x0FFF;
-	myProgramImage[myCurrentBank * 4096 + address] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::bank(uInt16 bank)
-{ 
-  if(bankLocked) return;
-
-  // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map Program ROM image into the system
-  for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);
-      address += (1 << shift))
-  {
-    access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeDPC::bank() {
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeDPC::bankCount() {
-  return 2; // TODO: support the display ROM somehow
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::save(Serializer& out)
 {
   string cart = name();
@@ -516,7 +472,7 @@ bool CartridgeDPC::save(Serializer& out)
     out.putInt(mySystemCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -577,7 +533,7 @@ bool CartridgeDPC::load(Deserializer& in)
     mySystemCycles = in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -593,6 +549,51 @@ bool CartridgeDPC::load(Deserializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPC::bank(uInt16 bank)
+{ 
+  if(bankLocked) return;
+
+  // Remember what bank we're in
+  myCurrentBank = bank;
+  uInt16 offset = myCurrentBank * 4096;
+  uInt16 shift = mySystem->pageShift();
+  uInt16 mask = mySystem->pageMask();
+
+  // Setup the page access methods for the current bank
+  System::PageAccess access;
+  access.device = this;
+  access.directPokeBase = 0;
+
+  // Map Program ROM image into the system
+  for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);
+      address += (1 << shift))
+  {
+    access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeDPC::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeDPC::bankCount()
+{
+  return 2; // TODO: support the display ROM somehow
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPC::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myProgramImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeDPC::getImage(int& size)

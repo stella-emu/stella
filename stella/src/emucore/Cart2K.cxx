@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.cxx,v 1.8 2007-01-01 18:04:45 stephena Exp $
+// $Id: Cart2K.cxx,v 1.9 2007-01-14 16:17:52 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "Cart2K.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::Cartridge2K(const uInt8* image)
@@ -84,13 +84,6 @@ void Cartridge2K::poke(uInt16, uInt8)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::patch(uInt16 address, uInt8 value)
-{
-	myImage[address & 0x07FF] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge2K::save(Serializer& out)
 {
   string cart = name();
@@ -99,7 +92,7 @@ bool Cartridge2K::save(Serializer& out)
   {
     out.putString(cart);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -123,7 +116,7 @@ bool Cartridge2K::load(Deserializer& in)
     if(in.getString() != cart)
       return false;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -138,7 +131,34 @@ bool Cartridge2K::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge2K::getImage(int& size) {
+void Cartridge2K::bank(uInt16 bank)
+{
+  // Doesn't support bankswitching
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge2K::bank()
+{
+  // Doesn't support bankswitching
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge2K::bankCount()
+{
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge2K::patch(uInt16 address, uInt8 value)
+{
+  myImage[address & 0x07FF] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge2K::getImage(int& size)
+{
   size = 2048;
   return &myImage[0];
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.cxx,v 1.4 2007-01-14 16:17:52 stephena Exp $
+// $Id: Cart0840.cxx,v 1.0 2006/11/17
 //============================================================================
 
 #include <cassert>
@@ -21,82 +21,82 @@
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include "Cart4A50.hxx"
+#include "Cart0840.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::Cartridge4A50(const uInt8* image)
+Cartridge0840::Cartridge0840(const uInt8* image)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::~Cartridge4A50()
+Cartridge0840::~Cartridge0840()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Cartridge4A50::name() const
+const char* Cartridge0840::name() const
 {
-  return "Cartridge4A50";
+  return "Cartridge0840";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::reset()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::install(System& system)
+void Cartridge0840::reset()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge4A50::peek(uInt16 address)
+void Cartridge0840::install(System& system)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Cartridge0840::peek(uInt16 address)
 {
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::poke(uInt16, uInt8)
+void Cartridge0840::poke(uInt16 address, uInt8 value)
 {
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4A50::save(Serializer& out)
+bool Cartridge0840::save(Serializer& out)
 {
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4A50::load(Deserializer& in)
+bool Cartridge0840::load(Deserializer& in)
 {
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::bank(uInt16 b)
-{
+void Cartridge0840::bank(uInt16 bank)
+{ 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4A50::bank()
+int Cartridge0840::bank()
 {
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4A50::bankCount()
+int Cartridge0840::bankCount()
 {
   return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4A50::patch(uInt16 address, uInt8 value)
+bool Cartridge0840::patch(uInt16 address, uInt8 value)
 {
   return false;
-} 
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge4A50::getImage(int& size)
+uInt8* Cartridge0840::getImage(int& size)
 {
   size = 0;
   return 0;

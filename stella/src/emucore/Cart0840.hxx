@@ -13,11 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.hxx,v 1.10 2007-01-14 16:17:52 stephena Exp $
+// $Id: Cart0840.hxx,v 1.0 2006/11/14
 //============================================================================
 
-#ifndef CARTRIDGE3F_HXX
-#define CARTRIDGE3F_HXX
+#ifndef CARTRIDGE0840_HXX
+#define CARTRIDGE0840_HXX
 
 class System;
 class Serializer;
@@ -27,33 +27,25 @@ class Deserializer;
 #include "Cart.hxx"
 
 /**
-  This is the cartridge class for Tigervision's bankswitched 
-  games.  In this bankswitching scheme the 2600's 4K cartridge 
-  address space is broken into two 2K segments.  The last 2K 
-  segment always points to the last 2K of the ROM image.  The 
-  desired bank number of the first 2K segment is selected by 
-  storing its value into $3F.  Actually, any write to location
-  $00 to $3F will change banks.  Although, the Tigervision games 
-  only used 8K this bankswitching scheme supports up to 512K.
-   
-  @author  Bradford W. Mott
-  @version $Id: Cart3F.hxx,v 1.10 2007-01-14 16:17:52 stephena Exp $
+  Cartridge class used for 0840 "Econobanking" 8K bankswitched games.  There
+  are two 4K banks.
+
+  @author  Fred X. Quimby
 */
-class Cartridge3F : public Cartridge
+class Cartridge0840 : public Cartridge
 {
   public:
     /**
-      Create a new cartridge using the specified image and size
+      Create a new cartridge using the specified image
 
       @param image Pointer to the ROM image
-      @param size The size of the ROM image
     */
-    Cartridge3F(const uInt8* image, uInt32 size);
+    Cartridge0840(const uInt8* image);
  
     /**
       Destructor
     */
-    virtual ~Cartridge3F();
+    virtual ~Cartridge0840();
 
   public:
     /**
@@ -130,7 +122,7 @@ class Cartridge3F : public Cartridge
 
   public:
     /**
-      Get the byte at the specified address
+      Get the byte at the specified address.
 
       @return The byte at the specified address
     */
@@ -143,16 +135,6 @@ class Cartridge3F : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
-
-  private:
-    // Indicates which bank is currently active for the first segment
-    uInt16 myCurrentBank;
-
-    // Pointer to a dynamically allocated ROM image of the cartridge
-    uInt8* myImage;
-
-    // Size of the ROM image
-    uInt32 mySize;
 };
 
 #endif

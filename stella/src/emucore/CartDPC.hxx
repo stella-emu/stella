@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.hxx,v 1.9 2007-01-01 18:04:45 stephena Exp $
+// $Id: CartDPC.hxx,v 1.10 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEDCP_HXX
 #define CARTRIDGEDCP_HXX
 
-class CartridgeDPC;
+class System;
 class Serializer;
 class Deserializer;
 
@@ -32,7 +32,7 @@ class Deserializer;
   see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Bradford W. Mott
-  @version $Id: CartDPC.hxx,v 1.9 2007-01-01 18:04:45 stephena Exp $
+  @version $Id: CartDPC.hxx,v 1.10 2007-01-14 16:17:53 stephena Exp $
 */
 class CartridgeDPC : public Cartridge
 {
@@ -93,6 +93,40 @@ class CartridgeDPC : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    virtual void bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank();
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount();
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value);
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
     virtual uInt8* getImage(int& size);
 
   public:
@@ -111,18 +145,7 @@ class CartridgeDPC : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-    /**
-      Install pages for the specified bank in the system
-
-      @param bank The bank that should be installed in the system
-    */
-    void bank(uInt16 bank);
-    int bank(); // get current bank (-1 if no bankswitching supported)
-    int bankCount(); // count # of banks
-	 bool patch(uInt16 address, uInt8 value);
-
   private:
-
     /** 
       Clocks the random number generator to move it to its next state
     */
@@ -171,5 +194,5 @@ class CartridgeDPC : public Cartridge
     // Fractional DPC music OSC clocks unused during the last update
     double myFractionalClocks;
 };
-#endif
 
+#endif

@@ -1572,10 +1572,10 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari)"
-"Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
+"Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Rare"
 "Controller.Left" "KEYBOARD"
-"Controller.Right" "NONE"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "180c234496f31a8671226277e0afbf2f"
@@ -1589,6 +1589,8 @@
 
 "Cartridge.MD5" "715dd9e0240638d441a3add49316c018"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 2) (PAL) [!]"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
 ""
 
 "Cartridge.MD5" "5b9c2e0012fbfd29efd3306359bbfc4a"
@@ -4500,6 +4502,16 @@
 "Display.Height" "220"
 ""
 
+"Cartridge.MD5" "47911752bf113a2496dbb66c70c9e70c"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26101"
+"Cartridge.Name" "Oscar's Trash Race (1983) (Atari) (PAL) [!]"
+"Cartridge.Note" "Uses Kids/Keypad Controllers"
+"Cartridge.Rarity" "Rare"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+""
+
 "Cartridge.MD5" "47aef18509051bab493589cb2619170b"
 "Cartridge.Name" "Stell-A-Sketch (Bob Colbert) (PD)"
 "Cartridge.Note" "Uses Driving, Joystick, or Amiga/Atari ST mouse Controllers"
@@ -4630,6 +4642,16 @@
 "Cartridge.Rarity" "Common"
 ""
 
+"Cartridge.MD5" "4ac9f40ddfcf194bd8732a75b3f2f214"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26106"
+"Cartridge.Name" "Grover's Music Maker (Atari) (Prototype)"
+"Cartridge.Note" "Uses Kids/Keypad Controllers"
+"Cartridge.Rarity" "Prototype"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+""
+
 "Cartridge.MD5" "4999b45be0ab5a85bac1b7c0e551542b"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Double Dragon (CCE)"
@@ -4683,15 +4705,6 @@
 "Cartridge.ModelNo" "11015"
 "Cartridge.Name" "Flash Gordon (1983) (20th Century Fox) (PAL) [p1][!]"
 "Cartridge.Rarity" "Rare"
-""
-
-"Cartridge.MD5" "4ac9f40ddfcf194bd8732a75b3f2f214"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26106"
-"Cartridge.Name" "Grover's Music Maker (Atari) (Prototype)"
-"Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
-"Cartridge.Rarity" "Prototype"
-"Controller.Left" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "4abb4c87a4c5f5d0c14ead2bb36251be"
@@ -7572,6 +7585,7 @@
 "Cartridge.Name" "Cookie Monster Munch (1983) (Atari) (PAL) [a1][!]"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "7972e5101fa548b952d852db24ad6060"
@@ -9674,6 +9688,21 @@
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "9f59eddf9ba91a7d93bce7ee4b7693bc"
+"Cartridge.Name" "Montezuma's Revenge - Starring Panama Joe (PAL by Thomas Jentzsch).a26"
+"Display.Format" "PAL60"
+""
+
+"Cartridge.MD5" "9e01f7f95cb8596765e03b9a36e8e33c"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26103"
+"Cartridge.Name" "Alpha Beam with Ernie (1983) (Atari)"
+"Cartridge.Note" "Uses Kids/Keypad Controllers"
+"Cartridge.Rarity" "Rare"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "9e792a59f8795664cbaaff1ba152d731"
@@ -13955,6 +13984,16 @@
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+""
+
+"Cartridge.MD5" "fa1b060fd8e0bca0c2a097dcffce93d3"
+"Cartridge.ModelNo" "CX26101"
+"Cartridge.Name" "Oscar's Trash Race (1983) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "Uses Kids/Keypad Controllers"
+"Cartridge.Rarity" "Prototype"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "e3ed4ba3361756970f076e46e9cad1d2"
@@ -14831,10 +14870,10 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari) (PAL) [!]"
-"Cartridge.Note" "Uses Kids/Keypad Controllers (left only)"
+"Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Rare"
 "Controller.Left" "KEYBOARD"
-"Controller.Right" "NONE"
+"Controller.Right" "KEYBOARD"
 ""
 
 "Cartridge.MD5" "f280976d69d6e27a48506bd6bad11dcd"
@@ -15789,4 +15828,3 @@
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley) [h1]"
 "Display.YStart" "28"
 ""
-

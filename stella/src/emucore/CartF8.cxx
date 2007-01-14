@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.14 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartF8.cxx,v 1.15 2007-01-14 16:17:54 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartF8.hxx"
+#include <cassert>
+
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartF8.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF8::CartridgeF8(const uInt8* image, bool swapbanks)
@@ -32,6 +32,8 @@ CartridgeF8::CartridgeF8(const uInt8* image, bool swapbanks)
     myImage[addr] = image[addr];
   }
 
+  // Normally bank 1 is the reset bank, unless we're dealing with ROMs
+  // that have been incorrectly created with banks in the opposite order
   myResetBank = swapbanks ? 0 : 1;
 }
 
@@ -49,7 +51,7 @@ const char* CartridgeF8::name() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::reset()
 {
-  // Upon reset we switch to the reset bank (normally bank 1)
+  // Upon reset we switch to the reset bank
   bank(myResetBank);
 }
 
@@ -126,13 +128,58 @@ void CartridgeF8::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF8::patch(uInt16 address, uInt8 value)
+bool CartridgeF8::save(Serializer& out)
 {
-	address &= 0xfff;
-	myImage[myCurrentBank * 4096 + address] = value;
-	bank(myCurrentBank);
-	return true;
-} 
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putInt(myCurrentBank);
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF8::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myCurrentBank);
+
+  return true;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::bank(uInt16 bank)
@@ -160,60 +207,6 @@ void CartridgeF8::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF8::save(Serializer& out)
-{
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-
-    out.putInt(myCurrentBank);
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF8::load(Deserializer& in)
-{
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Remember what bank we were in
-  bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeF8::bank()
 {
   return myCurrentBank;
@@ -224,6 +217,15 @@ int CartridgeF8::bankCount()
 {
   return 2;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF8::patch(uInt16 address, uInt8 value)
+{
+  address &= 0xfff;
+  myImage[myCurrentBank * 4096 + address] = value;
+  bank(myCurrentBank);
+  return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeF8::getImage(int& size)

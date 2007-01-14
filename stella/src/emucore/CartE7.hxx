@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.hxx,v 1.9 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartE7.hxx,v 1.10 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEE7_HXX
 #define CARTRIDGEE7_HXX
 
-class CartridgeE7;
+class System;
 class Serializer;
 class Deserializer;
 
@@ -53,7 +53,7 @@ class Deserializer;
     here by accessing 1FF8 to 1FFB.
 
   @author  Bradford W. Mott
-  @version $Id: CartE7.hxx,v 1.9 2007-01-01 18:04:46 stephena Exp $
+  @version $Id: CartE7.hxx,v 1.10 2007-01-14 16:17:53 stephena Exp $
 */
 class CartridgeE7 : public Cartridge
 {
@@ -107,6 +107,40 @@ class CartridgeE7 : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    virtual void bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank();
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount();
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value);
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
     virtual uInt8* getImage(int& size);
 
   public:
@@ -124,18 +158,6 @@ class CartridgeE7 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
-
-	 bool patch(uInt16 address, uInt8 value);
-
-    /**
-      Map the specfied bank into the first segment
-
-      @param bank The bank that should be installed in the system
-    */
-    void bank(uInt16 bank);
-
-    int bank();
-    int bankCount();
 
   private:
     /**
@@ -158,5 +180,5 @@ class CartridgeE7 : public Cartridge
     // The 2048 bytes of RAM
     uInt8 myRAM[2048];
 };
-#endif
 
+#endif

@@ -13,21 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.11 2007-01-01 18:04:45 stephena Exp $
+// $Id: Cart3E.cxx,v 1.12 2007-01-14 16:17:52 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "Cart3E.hxx"
+#include <cassert>
+
 #include "Random.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "Cart3E.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
-    : mySize(size)
+  : mySize(size)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
@@ -142,22 +142,67 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::patch(uInt16 address, uInt8 value)
+bool Cartridge3E::save(Serializer& out)
 {
-  address = address & 0x0FFF;
-  if(address < 0x0800)
+  string cart = name();
+
+  try
   {
-    if(myCurrentBank < 256)
-      myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
-    else
-      myRam[(address & 0x03FF) + (myCurrentBank - 256) * 1024] = value;
+    out.putString(cart);
+    out.putInt(myCurrentBank);
+
+    // Output RAM
+    out.putInt(32768);
+    for(uInt32 addr = 0; addr < 32768; ++addr)
+      out.putInt(myRam[addr]);
   }
-  else
+  catch(const char* msg)
   {
-    myImage[(address & 0x07FF) + mySize - 2048] = value;
+    cerr << msg << endl;
+    return false;
   }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
   return true;
-} 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3E::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+
+    // Input RAM
+    uInt32 limit = (uInt32) in.getInt();
+    for(uInt32 addr = 0; addr < limit; ++addr)
+      myRam[addr] = (uInt8) in.getInt();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Now, go to the current bank
+  bank(myCurrentBank);
+
+  return true;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::bank(uInt16 bank)
@@ -227,81 +272,38 @@ void Cartridge3E::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3E::bank() {
+int Cartridge3E::bank()
+{
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3E::bankCount() {
-  return mySize/2048;
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::save(Serializer& out)
+int Cartridge3E::bankCount()
 {
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-    out.putInt(myCurrentBank);
-
-    // Output RAM
-    out.putInt(32768);
-    for(uInt32 addr = 0; addr < 32768; ++addr)
-      out.putInt(myRam[addr]);
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
+  return mySize / 2048;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::load(Deserializer& in)
+bool Cartridge3E::patch(uInt16 address, uInt8 value)
 {
-  string cart = name();
-
-  try
+  address = address & 0x0FFF;
+  if(address < 0x0800)
   {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
-
-    // Input RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 addr = 0; addr < limit; ++addr)
-      myRam[addr] = (uInt8) in.getInt();
+    if(myCurrentBank < 256)
+      myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
+    else
+      myRam[(address & 0x03FF) + (myCurrentBank - 256) * 1024] = value;
   }
-  catch(char *msg)
+  else
   {
-    cerr << msg << endl;
-    return false;
+    myImage[(address & 0x07FF) + mySize - 2048] = value;
   }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Now, go to the current bank
-  bank(myCurrentBank);
-
   return true;
-}
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge3E::getImage(int& size) {
+uInt8* Cartridge3E::getImage(int& size)
+{
   size = mySize;
   return &myImage[0];
 }

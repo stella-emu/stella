@@ -13,22 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.17 2007-01-01 18:04:45 stephena Exp $
+// $Id: CartAR.cxx,v 1.18 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include <string.h>
-#include "CartAR.hxx"
+#include <cassert>
+
 #include "M6502Hi.hxx"
 #include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size, bool fastbios)
-    : my6502(0)
+  : my6502(0)
 {
   uInt32 i;
 
@@ -198,13 +197,6 @@ void CartridgeAR::poke(uInt16 addr, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::patch(uInt16 address, uInt8 value)
-{
-  // myImage[address & 0x0FFF] = value;
-  return false;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::bankConfiguration(uInt8 configuration)
 {
   // D7-D5 of this byte: Write Pulse Delay (n/a for emulator)
@@ -295,27 +287,6 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
       break;
     }
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::bank(uInt16 b)
-{
-  if(bankLocked)
-    return;
-
-  bankConfiguration(b);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bank()
-{
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bankCount()
-{
-  return 32;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -510,7 +481,7 @@ bool CartridgeAR::save(Serializer& out)
     // Indicates if a write is pending or not
     out.putBool(myWritePending);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -578,7 +549,7 @@ bool CartridgeAR::load(Deserializer& in)
     // Indicates if a write is pending or not
     myWritePending = in.getBool();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -591,6 +562,33 @@ bool CartridgeAR::load(Deserializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeAR::bank(uInt16 bank)
+{
+  if(bankLocked) return;
+
+  bankConfiguration(bank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeAR::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeAR::bankCount()
+{
+  return 32;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::patch(uInt16 address, uInt8 value)
+{
+  // myImage[address & 0x0FFF] = value;
+  return false;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeAR::getImage(int& size)

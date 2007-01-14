@@ -13,13 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.hxx,v 1.7 2007-01-01 18:04:47 stephena Exp $
+// $Id: CartMC.hxx,v 1.8 2007-01-14 16:17:55 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEMC_HXX
 #define CARTRIDGEMC_HXX
 
-class CartridgeMC;
+class System;
 class Serializer;
 class Deserializer;
 
@@ -135,7 +135,7 @@ class Deserializer;
 
 
   @author  Bradford W. Mott
-  @version $Id: CartMC.hxx,v 1.7 2007-01-01 18:04:47 stephena Exp $
+  @version $Id: CartMC.hxx,v 1.8 2007-01-14 16:17:55 stephena Exp $
 */
 class CartridgeMC : public Cartridge
 {
@@ -192,6 +192,40 @@ class CartridgeMC : public Cartridge
     */
     virtual bool load(Deserializer& in);
 
+    /**
+      Install pages for the specified bank in the system.
+
+      @param bank The bank that should be installed in the system
+    */
+    virtual void bank(uInt16 bank);
+
+    /**
+      Get the current bank.
+
+      @return  The current bank, or -1 if bankswitching not supported
+    */
+    virtual int bank();
+
+    /**
+      Query the number of banks supported by the cartridge.
+    */
+    virtual int bankCount();
+
+    /**
+      Patch the cartridge ROM.
+
+      @param address  The ROM address to patch
+      @param value    The value to place into the address
+      @return    Success or failure of the patch operation
+    */
+    virtual bool patch(uInt16 address, uInt8 value);
+
+    /**
+      Access the internal ROM image for this cartridge.
+
+      @param size  Set to the size of the internal ROM image data
+      @return  A pointer to the internal ROM image data
+    */
     virtual uInt8* getImage(int& size);
 
   public:
@@ -210,8 +244,6 @@ class CartridgeMC : public Cartridge
     */
     virtual void poke(uInt16 address, uInt8 value);
 
-	 bool patch(uInt16 address, uInt8 value);
-
   private:
     // Indicates which block is currently active for the four segments
     uInt8 myCurrentBlock[4];
@@ -225,4 +257,5 @@ class CartridgeMC : public Cartridge
     // Pointer to the 128K bytes of ROM for the cartridge
     uInt8* myImage;
 };
+
 #endif

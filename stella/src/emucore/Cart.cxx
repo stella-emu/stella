@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.30 2007-01-07 01:26:52 stephena Exp $
+// $Id: Cart.cxx,v 1.31 2007-01-14 16:17:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,6 +21,7 @@
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "Cart0840.hxx"
 #include "Cart2K.hxx"
 #include "Cart3E.hxx"
 #include "Cart3F.hxx"
@@ -130,6 +131,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeCV(image, size);
   else if(type == "UA")
     cartridge = new CartridgeUA(image);
+  else if(type == "0840")
+    cartridge = new Cartridge0840(image);
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 
@@ -145,6 +148,24 @@ Cartridge::Cartridge()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge::~Cartridge()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::save(ofstream& out)
+{
+  int size = -1;
+
+  uInt8* image = getImage(size);
+  if(image == 0 || size <= 0)
+  {
+    cerr << "save not supported" << endl;
+    return false;
+  }
+
+  for(int i=0; i<size; i++)
+    out << image[i];
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -344,60 +365,6 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
   }
 
   return (count1 > 0 || count2 > 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// default implementations of bankswitching-related methods.
-// These are suitable to be inherited by a cart type that
-// doesn't support bankswitching at all.
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::bank(uInt16 b)
-{
-  // do nothing.
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge::bank()
-{
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge::bankCount()
-{
-  return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::patch(uInt16 address, uInt8 value)
-{
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::save(ofstream& out)
-{
-  int size = -1;
-
-  uInt8* image = getImage(size);
-  if(image == 0 || size <= 0)
-  {
-    cerr << "save not supported" << endl;
-    return false;
-  }
-
-  for(int i=0; i<size; i++)
-    out << image[i];
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge::getImage(int& size)
-{
-  size = 0;
-  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6SC.cxx,v 1.12 2007-01-01 18:04:46 stephena Exp $
+// $Id: CartF6SC.cxx,v 1.13 2007-01-14 16:17:54 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartF6SC.hxx"
+#include <cassert>
+
 #include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartF6SC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6SC::CartridgeF6SC(const uInt8* image)
@@ -177,49 +177,6 @@ void CartridgeF6SC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6SC::patch(uInt16 address, uInt8 value)
-{
-	address = address & 0x0FFF;
-	myImage[myCurrentBank * 4096 + address] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6SC::bank(uInt16 bank)
-{ 
-  if(bankLocked) return;
-
-  // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map ROM image into the system
-  for(uInt32 address = 0x1100; address < (0x1FF6U & ~mask);
-      address += (1 << shift))
-  {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6SC::bank() {
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6SC::bankCount() {
-  return 4;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF6SC::save(Serializer& out)
 {
   string cart = name();
@@ -236,7 +193,7 @@ bool CartridgeF6SC::save(Serializer& out)
       out.putInt(myRAM[i]);
 
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -267,7 +224,7 @@ bool CartridgeF6SC::load(Deserializer& in)
     for(uInt32 i = 0; i < limit; ++i)
       myRAM[i] = (uInt8) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -285,7 +242,53 @@ bool CartridgeF6SC::load(Deserializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF6SC::getImage(int& size) {
+void CartridgeF6SC::bank(uInt16 bank)
+{ 
+  if(bankLocked) return;
+
+  // Remember what bank we're in
+  myCurrentBank = bank;
+  uInt16 offset = myCurrentBank * 4096;
+  uInt16 shift = mySystem->pageShift();
+  uInt16 mask = mySystem->pageMask();
+
+  // Setup the page access methods for the current bank
+  System::PageAccess access;
+  access.device = this;
+  access.directPokeBase = 0;
+
+  // Map ROM image into the system
+  for(uInt32 address = 0x1100; address < (0x1FF6U & ~mask);
+      address += (1 << shift))
+  {
+    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF6SC::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF6SC::bankCount()
+{
+  return 4;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6SC::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF6SC::getImage(int& size)
+{
   size = 16384;
   return &myImage[0];
 }

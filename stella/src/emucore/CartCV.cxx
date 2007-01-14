@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.13 2007-01-01 18:04:45 stephena Exp $
+// $Id: CartCV.cxx,v 1.14 2007-01-14 16:17:53 stephena Exp $
 //============================================================================
 
-#include <assert.h>
-#include "CartCV.hxx"
+#include <cassert>
+
 #include "Random.hxx"
 #include "System.hxx"
 #include "Serializer.hxx"
 #include "Deserializer.hxx"
-#include <iostream>
+#include "CartCV.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
@@ -132,13 +132,6 @@ void CartridgeCV::poke(uInt16, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::patch(uInt16 address, uInt8 value)
-{
-	myImage[address & 0x07FF] = value;
-	return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::save(Serializer& out)
 {
   string cart = name();
@@ -152,7 +145,7 @@ bool CartridgeCV::save(Serializer& out)
     for(uInt32 addr = 0; addr < 1024; ++addr)
       out.putInt(myRAM[addr]);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -181,7 +174,7 @@ bool CartridgeCV::load(Deserializer& in)
     for(uInt32 addr = 0; addr < limit; ++addr)
       myRAM[addr] = (uInt8) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -194,6 +187,32 @@ bool CartridgeCV::load(Deserializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCV::bank(uInt16 bank)
+{
+  // Doesn't support bankswitching
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeCV::bank()
+{
+  // Doesn't support bankswitching
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeCV::bankCount()
+{
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::patch(uInt16 address, uInt8 value)
+{
+  myImage[address & 0x07FF] = value;
+  return true;
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeCV::getImage(int& size)

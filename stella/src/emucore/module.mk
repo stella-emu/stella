@@ -25,6 +25,7 @@ MODULE_OBJS := \
 	src/emucore/CartMB.o \
 	src/emucore/CartMC.o \
 	src/emucore/CartUA.o \
+	src/emucore/Cart0840.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
 	src/emucore/Deserializer.o \
