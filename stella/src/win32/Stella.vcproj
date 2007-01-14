@@ -162,6 +162,9 @@ SDLmain.lib
 					RelativePath="..\emucore\Cart.cxx">
 				</File>
 				<File
+					RelativePath="..\emucore\Cart0840.cxx">
+				</File>
+				<File
 					RelativePath="..\emucore\Cart2K.cxx">
 				</File>
 				<File
@@ -568,6 +571,9 @@ SDLmain.lib
 				</File>
 				<File
 					RelativePath="..\emucore\Cart.hxx">
+				</File>
+				<File
+					RelativePath="..\emucore\Cart0840.hxx">
 				</File>
 				<File
 					RelativePath="..\emucore\Cart2K.hxx">
