@@ -10110,6 +10110,15 @@
 "Cartridge.Name" "2 Pak Special Orange - Space Voyage,Fire Alert (1992) (HES) (PAL) [!]"
 ""
 
+"Cartridge.MD5" "a5855d73d304d83ef07dde03e379619f"
+"Cartridge.Manufacturer" "David Crane"
+"Cartridge.Name" "Boggle (Prototype)"
+"Cartridge.Rarity" "Prototype"
+"Display.Height" "215"
+"Display.YStart" "27"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "a5b7f420ca6cc1384da0fed523920d8e"
 "Cartridge.Name" "Adventure (New Graphics) [h1]"
 ""

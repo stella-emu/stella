@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.47 2007-01-01 18:04:55 stephena Exp $
+// $Id: Widget.cxx,v 1.48 2007-01-15 13:51:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -503,7 +503,7 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
                            const string& label, int labelWidth, int cmd)
   : ButtonWidget(boss, font, x, y, w, h, label, cmd),
     _value(0),
-    _stepValue(5),
+    _stepValue(1),
     _valueMin(0),
     _valueMax(100),
     _isDragging(false),
@@ -542,14 +542,14 @@ void SliderWidget::setValue(int value)
 void SliderWidget::setMinValue(int value)
 {
   _valueMin = value;
-  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
+//  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setMaxValue(int value)
 {
   _valueMax = value;
-  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
+//  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
