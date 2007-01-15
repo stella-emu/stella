@@ -8292,6 +8292,17 @@
 "Cartridge.Rarity" "New Release"
 ""
 
+"Cartridge.MD5" "84df0704e6c777e1f9a16ec92ad80df0"
+"Cartridge.Manufacturer" "Gray Games & AtariAge"
+"Cartridge.Name" "E.T. Book Cart (PAL/60)"
+"Cartridge.Note" "Charles F. Gray & Michael Rideout"
+"Display.Format" "PAL60"
+"Display.YStart" "15"
+"Display.Height" "240"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "55"
+""
+
 "Cartridge.MD5" "840a5a2eaea24d95d289f514fd12f9bb"
 "Cartridge.Name" "GBImprov (Ghostbusters Hack)"
 ""
@@ -9035,6 +9046,16 @@
 "Cartridge.Name" "Jammed (V0.1) (Demo) (2001) (TJ)"
 "Cartridge.Rarity" "New Release"
 "Display.YStart" "24"
+""
+
+"Cartridge.MD5" "91191666186117f5bf78b40623d79039"
+"Cartridge.Manufacturer" "Gray Games & AtariAge"
+"Cartridge.Name" "E.T. Book Cart (PAL)"
+"Cartridge.Note" "Charles F. Gray & Michael Rideout"
+"Display.YStart" "23"
+"Display.Height" "280"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "55"
 ""
 
 "Cartridge.MD5" "913d5d959b5021f879033c89797bab5e"
@@ -15165,6 +15186,16 @@
 
 "Cartridge.MD5" "f714a223954c28eccf459295517dcae6"
 "Cartridge.Name" "Big - Move This Demo (PD)"
+""
+
+"Cartridge.MD5" "f71694bd8e89d5a28daa73bf856635df"
+"Cartridge.Manufacturer" "Gray Games & AtariAge"
+"Cartridge.Name" "E.T. Book Cart (NTSC)"
+"Cartridge.Note" "Charles F. Gray & Michael Rideout"
+"Display.YStart" "15"
+"Display.Height" "240"
+"Display.Phosphor" "YES"
+"Display.PPBlend" "55"
 ""
 
 "Cartridge.MD5" "f6f1b27efc247a0e8d473ddb4269ff9e"
