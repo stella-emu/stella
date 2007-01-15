@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.85 2007-01-12 16:03:10 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.86 2007-01-15 00:07:51 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -231,8 +231,8 @@ bool FrameBufferGL::initSubsystem()
 string FrameBufferGL::about()
 {
   string extensions;
-  if(myHaveTexRectEXT)       extensions += "GL_TEXTURE_RECTANGLE_ARB  ";
-  if(extensions == "")       extensions = "None";
+  if(myHaveTexRectEXT) extensions += "GL_TEXTURE_RECTANGLE_ARB  ";
+  if(extensions == "") extensions = "None";
 
   ostringstream out;
   out << "Video rendering: OpenGL mode" << endl

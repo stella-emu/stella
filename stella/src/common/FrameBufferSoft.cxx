@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.68 2007-01-01 18:04:40 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.69 2007-01-15 00:07:51 stephena Exp $
 //============================================================================
 
+#include <sstream>
 #include <SDL.h>
 
 #include "Console.hxx"
@@ -67,7 +68,21 @@ bool FrameBufferSoft::initSubsystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferSoft::about()
 {
-  return "Video rendering: Software mode\n";
+  ostringstream buf;
+
+  buf << "Video rendering: Software mode" << endl
+      << "  Color: " << (int)myFormat->BitsPerPixel << " bit" << endl
+      << "  Rmask = " << hex << setw(4) << (int)myFormat->Rmask
+      << ", Rshift = "<< dec << setw(2) << (int)myFormat->Rshift
+      << ", Rloss = " << dec << setw(2) << (int)myFormat->Rloss << endl
+      << "  Gmask = " << hex << setw(4) << (int)myFormat->Gmask
+      << ", Gshift = "<< dec << setw(2) << (int)myFormat->Gshift
+      << ", Gloss = " << dec << setw(2) << (int)myFormat->Gloss << endl
+      << "  Bmask = " << hex << setw(4) << (int)myFormat->Bmask
+      << ", Bshift = "<< dec << setw(2) << (int)myFormat->Bshift
+      << ", Bloss = " << dec << setw(2) << (int)myFormat->Bloss << endl;
+
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -114,6 +129,8 @@ bool FrameBufferSoft::createScreen()
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
+  myBytesPerPixel = myScreen->format->BytesPerPixel;
+  myFormat = myScreen->format;
 
   // Make sure drawMediaSource() knows which renderer to use
   stateChanged(myOSystem->eventHandler().state());
@@ -353,9 +370,9 @@ void FrameBufferSoft::drawMediaSource()
             if(v != w || theRedrawTIAIndicator)
             {
               uInt32 pixel = myDefPalette[v];
-              uInt8 r = pixel & 0xff;
-              uInt8 g = (pixel & 0xff00) >> 8;
-              uInt8 b = (pixel & 0xff0000) >> 16;
+              uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+              uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+              uInt8 b = (pixel & myFormat->Bmask) >> myFormat->Bshift;
 
               while(xstride--)
               {
@@ -479,9 +496,9 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
             uInt32 pixel = myAvgPalette[v][w];
-            uInt8 r = pixel & 0xff;
-            uInt8 g = (pixel & 0xff00) >> 8;
-            uInt8 b = (pixel & 0xff0000) >> 16;
+            uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+            uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+            uInt8 b = (pixel & myFormat->Bmask) >> myFormat->Bshift;
 
             while(xstride--)
             {
@@ -710,7 +727,37 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
     }
     case 3:
     {
-      // TODO ...
+      // Get buffer position where upper-left pixel of the character will be drawn
+      uInt8* buffer = (uInt8*) myScreen->pixels + yorig * myPitch + xorig;
+      uInt32 pixel = myDefPalette[color];
+      uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+      uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+      uInt8 b = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+
+      for(int y = h; y; --y)
+      {
+        const uInt16 fontbuf = *tmp++;
+        int ystride = myZoomLevel;
+        while(ystride--)
+        {
+          uInt16 mask = 0x8000;
+          int pos = screenofsY;
+          for(int x = 0; x < w; x++, mask >>= 1)
+          {
+            int xstride = myZoomLevel;
+            if((fontbuf & mask) != 0)
+            {
+              while(xstride--)
+              {
+                buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+              }
+            }
+            else
+              pos += xstride + xstride + xstride;
+          }
+          screenofsY += myPitch;
+        }
+      }
       break;
     }
     case 4:
@@ -826,7 +873,6 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
   // Make sure drawMediaSource() knows which renderer to use
   // Testing for dirty rects takes priority over phosphor mode,
   // since phosphor mode only exists while emulating a ROM
-  myBytesPerPixel = myScreen->format->BytesPerPixel;
   switch(myBytesPerPixel)
   {
     case 2:  // 16-bit
