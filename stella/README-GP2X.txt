@@ -14,6 +14,8 @@ Changes:
 * Pause function has been removed, pressing a menu button serves
 	the same function.
 * Vertical Centering during gameplay is now implemented.
+* UI Color Schemes are now implemented. At the moment there's only
+	Classic and GP2X. More are coming in the future. ;)
 >From 2.2-rv1
 * Moved away from using joymouse emulation, which was frustrating
 	many users, to a more effective GUI button control scheme.
