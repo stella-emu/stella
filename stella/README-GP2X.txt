@@ -1,5 +1,5 @@
 ---------------------------------------
-Stella 2.3 
+Stella 2.3.5 
 Ported to GP2X by Alex Zaballa
 Contact: azaballa@users.sourceforge.net
 Homepage: http://stella.sourceforge.net
@@ -8,6 +8,12 @@ Homepage: http://stella.sourceforge.net
 --------
 Changes:
 --------
+>From 2.3
+* All menus are now available through the Options button in the
+	Launcher.
+* Pause function has been removed, pressing a menu button serves
+	the same function.
+* Vertical Centering during gameplay is now implemented.
 >From 2.2-rv1
 * Moved away from using joymouse emulation, which was frustrating
 	many users, to a more effective GUI button control scheme.
@@ -96,7 +102,7 @@ Navigating Menus:
 During Emulation:
   A	 = Command Menu
   B	 = Fire
-  X	 = Pause
+  X	 = <Not Used>
   Y	 = Settings Menu
   L	 = Console Reset
   R	 = Console Select
