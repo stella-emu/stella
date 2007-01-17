@@ -292,6 +292,8 @@
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
 		DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D3B0B247DB40092F9F8 /* RectList.hxx */; };
+		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
+		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -621,15 +623,17 @@
 		DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheetahCheat.hxx; path = ../cheat/CheetahCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC47455309C34BFA00EDDA3A /* RamCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RamCheat.cxx; path = ../cheat/RamCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
-		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/debugger/DebuggerExpressions.hxx; sourceTree = "<absolute>"; };
-		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/FileSnapDialog.cxx; sourceTree = "<absolute>"; };
-		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/FileSnapDialog.hxx; sourceTree = "<absolute>"; };
-		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/UIDialog.cxx; sourceTree = "<absolute>"; };
-		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/gui/UIDialog.hxx; sourceTree = "<absolute>"; };
-		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/emucore/Cart4A50.cxx; sourceTree = "<absolute>"; };
-		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/emucore/Cart4A50.hxx; sourceTree = "<absolute>"; };
-		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/common/RectList.cxx; sourceTree = "<absolute>"; };
-		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = /var/automount/users/cs/staff/stephena/STELLA/stella/src/common/RectList.hxx; sourceTree = "<absolute>"; };
+		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
+		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
+		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
+		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
+		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = ../common/RectList.hxx; sourceTree = SOURCE_ROOT; };
+		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
+		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -824,6 +828,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCEECE540B5E5E540021D754 /* Cart0840.cxx */,
+				DCEECE550B5E5E540021D754 /* Cart0840.hxx */,
 				DCD56D360B247D920092F9F8 /* Cart4A50.cxx */,
 				DCD56D370B247D920092F9F8 /* Cart4A50.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
@@ -1228,6 +1234,7 @@
 				DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */,
 				DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
+				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1458,6 +1465,7 @@
 				DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */,
 				DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */,
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
+				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
