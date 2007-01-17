@@ -13,11 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.22 2007-01-01 18:04:53 stephena Exp $
+// $Id: InputDialog.cxx,v 1.23 2007-01-17 13:17:42 stephena Exp $
 //============================================================================
-
-// FIXME - this whole dialog should be a dialog of buttons instead of
-//         a tabwidget.  It would make things sooo much easier.
 
 #include "OSystem.hxx"
 #include "Widget.hxx"

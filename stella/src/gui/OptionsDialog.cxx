@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.48 2007-01-01 18:04:53 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.49 2007-01-17 13:17:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myAboutDialog(NULL),
     myIsGlobal(global)
 {
-  const GUI::Font& font = instance()->font(); // FIXME - change reference to optionsFont()
+  const GUI::Font& font = instance()->font();
   int xoffset = 10, yoffset = 10;
   WidgetArray wid;
   ButtonWidget* b = NULL;
