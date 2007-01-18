@@ -14,6 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: OSystemWinCE.cxx,v 1.10 2007-01-18 16:26:05 knakos Exp $
 //============================================================================
 
 #include <sstream>
@@ -33,15 +34,11 @@ extern bool RequestRefresh;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemWinCE::OSystemWinCE(const string& path) : OSystem()
 {
-  string basedir = ((string) getcwd()) + '\\';
-  setBaseDir(basedir);
-
-  setStateDir(basedir);
-
-  setPropertiesDir(basedir);
-  setConfigFile(basedir + "stella.ini");
-
-  setCacheFile(basedir + "stella.cache");
+  setBaseDir(path);
+  setStateDir(path);
+  setPropertiesDir(path);
+  setConfigFile(path + "stella.ini");
+  setCacheFile(path + "stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -87,7 +84,7 @@ void OSystemWinCE::mainLoop()
 	if (msg.message == WM_QUIT)
 		break;
 
-	if(myEventHandler->doQuit())
+	if(myQuitLoop)
 	  break;
 
 	KeyCheck();

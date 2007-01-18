@@ -8,12 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: FrameBufferWinCE.cpp,v 1.10 2007-01-18 16:26:04 knakos Exp $
 //============================================================================
 
 #include <windows.h>
@@ -86,15 +87,14 @@ void FrameBufferWinCE::GetDeviceProperties(void)
 		devres = QVGA;
 }
 
-void FrameBufferWinCE::setPalette(const uInt32* palette)
+void FrameBufferWinCE::setTIAPalette(const uInt32* palette)
 {
-	//setup palette
 	GetDeviceProperties();
 	for (uInt16 i=0; i<256; i++)
 	{
 		uInt8 r = (uInt8) ((palette[i] & 0xFF0000) >> 16);
 		uInt8 g = (uInt8) ((palette[i] & 0x00FF00) >> 8);
-		uInt8 b = (uInt8) (palette[i] & 0x0000FF);
+		uInt8 b = (uInt8)  (palette[i] & 0x0000FF);
 		if(gxdp.ffFormat & kfDirect565)
 			pal[i] = (uInt16) ( ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3) );
 		else if(gxdp.ffFormat & kfDirect555)
@@ -106,22 +106,28 @@ void FrameBufferWinCE::setPalette(const uInt32* palette)
 	SubsystemInited = false;
 }
 
-bool FrameBufferWinCE::initSubsystem()
+void FrameBufferWinCE::setUIPalette(const uInt32* palette)
 {
 	GetDeviceProperties();
 	for (int i=0; i<kNumColors - 256; i++)
 	{
-		uInt8 r = (ourGUIColors[i][0] & 0xFF);
-		uInt8 g = (ourGUIColors[i][1] & 0xFF);
-		uInt8 b = (ourGUIColors[i][2] & 0xFF);
+		uInt8 r = (uInt8) ((palette[i] & 0xFF0000) >> 16);
+		uInt8 g = (uInt8) ((palette[i] & 0x00FF00) >> 8);
+		uInt8 b = (uInt8)  (palette[i] & 0x0000FF);
 		if(gxdp.ffFormat & kfDirect565)
 			pal[i+256] = (uInt16) ( ((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3) );
 		else if(gxdp.ffFormat & kfDirect555)
 			pal[i+256] = (uInt16) ( ((r & 0xF8) << 7) | ((g & 0xF8) << 3) | ((b & 0xF8) >> 3) );
 		else
-			return false;
+			return;
 		paldouble[i+256] = pal[i+256] | (pal[i+256] << 16);
 	}
+	SubsystemInited = false;
+}
+
+bool FrameBufferWinCE::initSubsystem()
+{
+	GetDeviceProperties();
 	// screen extents
 	if(gxdp.ffFormat & kfDirect565)
 	{
@@ -643,7 +649,7 @@ void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt
   c -= desc.firstchar;
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[c] : (c * h));
 
-  if (x<0 || y<0 || (x>>1)+w>scrwidth || y+h>scrheight) return;
+  if ((Int32)x<0 || (Int32)y<0 || (x>>1)+w>scrwidth || y+h>scrheight) return;
 
   uInt8 *d;
   uInt32 stride;
@@ -757,7 +763,7 @@ void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 	if (devres == SM_LOW)
 	{
 		int kx = x >> 1; int ky = y; int kx2 = x2>> 1;
-		if (kx<0) kx=0; if (ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
+		if ((Int32)kx<0) kx=0; if ((Int32)ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
 		PlothLine(kx, ky, kx2, color);
 	}
 	else if (devres == QVGA)
@@ -792,7 +798,7 @@ void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 	if (devres == SM_LOW)
 	{
 		int kx = x >> 1; int ky = y; int ky2 = y2;
-		if (kx<0) kx=0; if (ky<0) ky=0; if (kx>scrwidth-1) return; if (ky>scrheight-1) ky=scrheight-1; if (ky2>scrheight-1) ky2=scrheight-1;
+		if ((Int32)kx<0) kx=0; if ((Int32)ky<0) ky=0; if (kx>scrwidth-1) return; if (ky>scrheight-1) ky=scrheight-1; if (ky2>scrheight-1) ky2=scrheight-1;
 		PlotvLine(kx, ky, ky2, color);
 	}
 	else if (devres == QVGA)
@@ -829,7 +835,7 @@ void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int colo
 	{
 		int kx = x >> 1; int ky = y; int kw = (w >> 1); int kh = h;
 		if (ky>scrheight-1) return; if (kx>scrwidth-1) return;
-		if (kx<0) kx=0; if (ky<0) ky=0;if (kw<0) kw=0; if (kh<0) kh=0;
+		if ((Int32)kx<0) kx=0; if ((Int32)ky<0) ky=0;if ((Int32)kw<0) kw=0; if ((Int32)kh<0) kh=0;
 		if (kx+kw>scrwidth-1) kw=scrwidth-kx-1; if (ky+kh>scrheight-1) kh=scrheight-ky-1;
 		PlotfillRect(kx, ky, kw, kh, color);
 	}
@@ -980,4 +986,12 @@ uInt32 FrameBufferWinCE::lineDim()
 	return 1;
 }
 
+string FrameBufferWinCE::about()
+{
+	string id = "Video rendering: ";
+	id += (issmartphone ? "SM " : "PPC ");
+	id += (legacygapi ? "GAPI " : "Direct ");
+	id += (devres == SM_LOW ? "176x220\n" : (devres == QVGA ? "240x320\n" : "480x640\n"));
+	return id;
+}
 

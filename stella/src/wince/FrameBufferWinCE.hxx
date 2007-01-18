@@ -14,6 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: FrameBufferWinCE.hxx,v 1.11 2007-01-18 16:26:05 knakos Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WINCE_HXX
@@ -32,6 +33,7 @@
 #define FORMAT_555 2
 #define FORMAT_OTHER 3
 
+#if _WIN32_WCE <= 300
 typedef struct _RawFrameBufferInfo
 {
    WORD wFormat;
@@ -42,7 +44,7 @@ typedef struct _RawFrameBufferInfo
    int  cxPixels;
    int  cyPixels;
 } RawFrameBufferInfo;
-
+#endif
 
 class FrameBufferWinCE : public FrameBuffer
 {
@@ -50,10 +52,11 @@ class FrameBufferWinCE : public FrameBuffer
 
 	FrameBufferWinCE(OSystem *osystem);
 	~FrameBufferWinCE();
-	virtual void setPalette(const uInt32* palette);
+	virtual void setTIAPalette(const uInt32* palette);
+	virtual void setUIPalette(const uInt32* palette);
 	virtual bool initSubsystem();
 	virtual BufferType type() { return kSoftBuffer; } 
-    	virtual void setAspectRatio() ;
+    virtual void setAspectRatio() ;
     virtual bool createScreen();
     virtual void toggleFilter();
     virtual void drawMediaSource();
@@ -70,6 +73,8 @@ class FrameBufferWinCE : public FrameBuffer
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 	virtual void enablePhosphor(bool enable, int blend)  { return; };
     virtual uInt32 lineDim();
+	virtual string about();
+	virtual void setScaler(Scaler scaler) { return; };
 	void wipescreen(void);
 	void setmode(uInt8 mode);
 	uInt8 rotatedisplay(void);

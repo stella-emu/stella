@@ -8,12 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: missing.cpp,v 1.7 2007-01-18 16:26:05 knakos Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -138,6 +139,8 @@ DECLSPEC void SDLCALL SDL_FreeSurface(SDL_Surface *surface) { return; }
 DECLSPEC void SDLCALL SDL_WM_SetIcon(SDL_Surface *icon, Uint8 *mask) { return; }
 DECLSPEC SDL_Surface * SDLCALL SDL_CreateRGBSurfaceFrom(void *pixels,	int width, int height, int depth, int pitch, Uint32 Rmask, Uint32 Gmask, Uint32 Bmask, Uint32 Amask) { return NULL; }
 DECLSPEC void SDLCALL SDL_WarpMouse(Uint16 x, Uint16 y) { return; }
+DECLSPEC void SDL_Delay(Uint32 ms) { Sleep(ms); }
+
 
 DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 {

@@ -8,20 +8,20 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: PocketStella.cpp,v 1.7 2007-01-18 16:26:05 knakos Exp $
 //============================================================================
 
-#include <windows.h>
+#include "FSNode.hxx"
 #include "EventHandler.hxx"
 #include "OSystemWinCE.hxx"
 #include "SettingsWinCE.hxx"
 #include "PropsSet.hxx"
-#include "FSNode.hxx"
 #include "FrameBufferWinCE.hxx"
 
 #define KEYSCHECK_ASYNC
@@ -120,21 +120,19 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 
 	case WM_SETFOCUS:
 	case WM_ACTIVATE:
-		if (theOSystem)
-		{
-			if (theOSystem->eventHandler().isPaused())
-				theOSystem->eventHandler().handleEvent(Event::Pause, theOSystem->eventHandler().state());
-			theOSystem->frameBuffer().refresh();
-		}
 		GXResume();
+		if (theOSystem)
+			theOSystem->frameBuffer().refresh();
 		return 0;
 
 	case WM_KILLFOCUS:
 	case WM_HIBERNATE:
-		if (theOSystem)
-			if (!theOSystem->eventHandler().isPaused())
-				theOSystem->eventHandler().handleEvent(Event::Pause, theOSystem->eventHandler().state());
 		GXSuspend();
+		if (theOSystem)
+			if (((FrameBufferWinCE &)theOSystem->frameBuffer()).IsSmartphoneLowRes())
+				theOSystem->eventHandler().handleEvent(Event::LauncherMode, theOSystem->eventHandler().state());
+			else
+				theOSystem->eventHandler().enterMenuMode(EventHandler::S_MENU);
 		return 0;
 
 	case WM_PAINT:
@@ -237,14 +235,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	ReleaseDC(hWnd, hDC);
 	DeleteObject(hFnt);
 	
-	theOSystem = new OSystemWinCE();
+	theOSystem = new OSystemWinCE(((string) getcwd()) + '\\');
 	SettingsWinCE theSettings(theOSystem);
 	theOSystem->settings().loadConfig();
 	theOSystem->settings().validate();
 	theOSystem->create();
-	EventHandler theEventHandler(theOSystem);
-	PropertiesSet propertiesSet(theOSystem);
-	theOSystem->attach(&propertiesSet);
 
 	if ( !GXOpenDisplay(hWnd, GX_FULLSCREEN) || !GXOpenInput() )
 	{
@@ -252,14 +247,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 		return 1;
 	}
 	KeySetup();
-
-	if(!theOSystem->createFrameBuffer())
-	{
-		CleanUp();
-		return 1;
-	}
-
-	theOSystem->createSound();
 
 	paddlespeed = theSettings.getInt("wce_smartphone_paddlespeed");
 

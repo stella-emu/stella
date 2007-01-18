@@ -14,6 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: SoundWinCE.cxx,v 1.6 2007-01-18 16:26:05 knakos Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -60,6 +61,8 @@ void SoundWinCE::setEnabled(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundWinCE::initialize()
 {
+  int i;
+
   if(!myIsEnabled)
   {
     close();
@@ -86,7 +89,7 @@ void SoundWinCE::initialize()
 
   myBuffnum = ((wf.nAvgBytesPerSec * myLatency / 1000) >> 9) + 1;
   myBuffers = (WAVEHDR *) malloc(myBuffnum * sizeof(*myBuffers));
-  for (int i = 0; i < myBuffnum; i++)
+  for (i = 0; i < myBuffnum; i++)
   {
     memset(&myBuffers[i], 0, sizeof (myBuffers[i]));
     if (!(myBuffers[i].lpData = (LPSTR) malloc(512)))
