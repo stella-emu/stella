@@ -13,9 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.12 2007-01-10 20:29:10 stephena Exp $
+// $Id: Launcher.cxx,v 1.13 2007-01-18 16:45:22 knakos Exp $
 //============================================================================
 
+#ifdef _WIN32_WCE
+  // different include order for the ce compiler
+  #include "LauncherDialog.hxx"
+#endif
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
