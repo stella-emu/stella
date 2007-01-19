@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.93 2007-01-18 16:45:21 knakos Exp $
+// $Id: OSystem.cxx,v 1.94 2007-01-19 21:53:26 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -30,13 +30,9 @@
   #include "CheatManager.hxx"
 #endif
 
-#ifdef _WIN32_WCE
-	// different include order for the ce compiler
-	#include "FSNode.hxx"
-#endif
+#include "FSNode.hxx"
 #include "unzip.h"
 #include "MD5.hxx"
-#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"

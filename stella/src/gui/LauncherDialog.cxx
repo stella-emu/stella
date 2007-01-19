@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.67 2007-01-18 16:45:22 knakos Exp $
+// $Id: LauncherDialog.cxx,v 1.68 2007-01-19 21:53:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,23 +21,18 @@
 
 #include <sstream>
 
-#ifdef _WIN32_WCE
-  // different include order for the ce compiler
-  #include "FSNode.hxx"
-  #include "BrowserDialog.hxx"
-#endif
+#include "FSNode.hxx"
+#include "BrowserDialog.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "Props.hxx"
 #include "MD5.hxx"
-#include "FSNode.hxx"
 #include "Widget.hxx"
 #include "StringListWidget.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
-#include "BrowserDialog.hxx"
 #include "ProgressDialog.hxx"
 #include "OptionsDialog.hxx"
 #include "LauncherDialog.hxx"

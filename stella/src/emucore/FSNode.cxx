@@ -13,19 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.8 2007-01-18 16:45:21 knakos Exp $
+// $Id: FSNode.cxx,v 1.9 2007-01-19 21:53:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifdef _WIN32_WCE
-  // different include order for the ce compiler
-  #include "FSNode.hxx"
-#endif
+#include "FSNode.hxx"
 #include "bspf.hxx"
 #include "GuiUtils.hxx"
-#include "FSNode.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FSList::sort()

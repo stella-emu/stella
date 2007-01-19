@@ -13,18 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.13 2007-01-18 16:45:22 knakos Exp $
+// $Id: Launcher.cxx,v 1.14 2007-01-19 21:53:27 stephena Exp $
 //============================================================================
 
-#ifdef _WIN32_WCE
-  // different include order for the ce compiler
-  #include "LauncherDialog.hxx"
-#endif
+#include "LauncherDialog.hxx"
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "FrameBuffer.hxx"
-#include "LauncherDialog.hxx"
 #include "bspf.hxx"
 #include "Launcher.hxx"
 

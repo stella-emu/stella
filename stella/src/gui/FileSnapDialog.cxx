@@ -13,20 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.4 2007-01-18 16:45:22 knakos Exp $
+// $Id: FileSnapDialog.cxx,v 1.5 2007-01-19 21:53:27 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#ifdef _WIN32_WCE
-  // different include order for the ce compiler
-  #include "FSNode.hxx"
-#endif
+#include "FSNode.hxx"
 #include "DialogContainer.hxx"
 #include "BrowserDialog.hxx"
 #include "TabWidget.hxx"
-#include "FSNode.hxx"
 #include "bspf.hxx"
 #include "LauncherDialog.hxx"
 #include "FileSnapDialog.hxx"

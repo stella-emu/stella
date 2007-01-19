@@ -14,16 +14,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.197 2007-01-18 16:45:21 knakos Exp $
+// $Id: EventHandler.cxx,v 1.198 2007-01-19 21:53:25 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <SDL.h>
 
-#ifdef _WIN32_WCE
-  // different include order for the ce compiler
-  #include "FSNode.hxx"
-#endif
+#include "FSNode.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
 #include "EventStreamer.hxx"
