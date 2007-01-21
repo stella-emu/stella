@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.cpp,v 1.10 2007-01-18 16:26:04 knakos Exp $
+// $Id: FrameBufferWinCE.cpp,v 1.11 2007-01-21 20:07:48 knakos Exp $
 //============================================================================
 
 #include <windows.h>
@@ -84,7 +84,13 @@ void FrameBufferWinCE::GetDeviceProperties(void)
 	else if (gxdp.cxWidth == 480 && gxdp.cyHeight == 640)
 		devres = VGA;
 	else
+	{
 		devres = QVGA;
+		// as a special case, qvga landscape devices are represented by the combination of:
+		// devres=QVGA && islandscape=true && displaymode=0
+		if (gxdp.cxWidth > gxdp.cyHeight)
+			islandscape = true;
+	}
 }
 
 void FrameBufferWinCE::setTIAPalette(const uInt32* palette)
@@ -152,6 +158,8 @@ bool FrameBufferWinCE::initSubsystem()
 
 void FrameBufferWinCE::setmode(uInt8 mode)
 {
+	bool qvga_l = (displaymode == 0) && islandscape;
+	
 	displaymode = mode % 3;
 	switch (displaymode)
 	{
@@ -159,23 +167,21 @@ void FrameBufferWinCE::setmode(uInt8 mode)
 		case 0:
 			pixelstep = gxdp.cbxPitch;
 			linestep = gxdp.cbyPitch;
-			islandscape = false;
 			break;
 
 		// landscape
 		case 1:
 			pixelstep = - gxdp.cbyPitch;
 			linestep = gxdp.cbxPitch;
-			islandscape = true;
 			break;
 
 		// inverted landscape
 		case 2:
 			pixelstep = gxdp.cbyPitch;
 			linestep = - gxdp.cbxPitch;
-			islandscape = true;
 			break;
 	}
+	islandscape = displaymode || qvga_l;
 
 	pixelstepdouble = pixelstep << 1;
 	linestepdouble = linestep << 1;
@@ -189,7 +195,8 @@ void FrameBufferWinCE::setmode(uInt8 mode)
 
 uInt8 FrameBufferWinCE::rotatedisplay(void)
 {
-	displaymode = (displaymode + 1) % 3;
+	if (!(displaymode == 0 && islandscape))
+		displaymode = (displaymode + 1) % 3;
 	setmode(displaymode);
 	wipescreen();
 	return displaymode;
@@ -633,129 +640,109 @@ void FrameBufferWinCE::postFrameUpdate()
 
 void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt32 y, int color)
 {
-  const FontDesc& desc = myfont->desc();
+	const FontDesc& desc = myfont->desc();
 
-  if (!myDstScreen) return;
+	if (!myDstScreen) return;
 
-  if(c < desc.firstchar || c >= desc.firstchar + desc.size)
-  {
-    if (c == ' ')
-      return;
-    c = desc.defaultchar;
-  }
+	if (c < desc.firstchar || c >= desc.firstchar + desc.size)
+	{
+		if (c == ' ')
+			return;
+		c = desc.defaultchar;
+	}
 
-  Int32 w = myfont->getCharWidth(c);
-  const Int32 h = myfont->getFontHeight();
-  c -= desc.firstchar;
-  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[c] : (c * h));
+	Int32 w = myfont->getCharWidth(c);
+	const Int32 h = myfont->getFontHeight();
+	c -= desc.firstchar;
+	const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[c] : (c * h));
 
-  if ((Int32)x<0 || (Int32)y<0 || (x>>1)+w>scrwidth || y+h>scrheight) return;
+	if ((Int32)x<0 || (Int32)y<0 || (x>>1)+w>scrwidth || y+h>scrheight) return;
 
-  uInt8 *d;
-  uInt32 stride;
-  if (devres == SM_LOW)
-  {
-	  d = myDstScreen + y * scrlinestep + ((x+1) >> 1) * scrpixelstep;
-	  stride = (scrwidth - w) * scrpixelstep;
-  }
-  else if (devres == QVGA)
-  {
-	  if (displaymode != 2)
-		d = myDstScreen + (scrheight-x-1) * scrlinestep + (y-1) * scrpixelstep;
-	  else
-		d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
-  }
-  else
-  {
-	  if (displaymode != 2)
-		d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + (y-1) * (scrpixelstep << 1);
-	  else
-		d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
-  }
-
-  uInt16 col = pal[color];
-  uInt32 cold = paldouble[color];
-
-  for(int y2 = 0; y2 < h; y2++)
-  {
-    const uInt16 buffer = *tmp++;
+	uInt8 *d;
+	uInt32 stride;
 	if (devres == SM_LOW)
 	{
-		uInt16 mask = 0xC000;
-		for(int x2 = 0; x2 < w; x2++, mask >>= 2)
-		{
-		  if (buffer & mask)
-			  *((uInt16 *)d) = col;
-		  d += scrpixelstep;
-		}
-		d += stride;
+		d = myDstScreen + y * scrlinestep + ((x+1) >> 1) * scrpixelstep;
+		stride = (scrwidth - w) * scrpixelstep;
 	}
 	else if (devres == QVGA)
 	{
-		uInt16 mask = 0x8000;
-		uInt8 *tmp = d;
-		for(int x2 = 0; x2 < w; x2++, mask >>= 1)
-		{
-		  if (buffer & mask)
-			  *((uInt16 *)d) = col;
-		  if (displaymode != 2)
-			d -= scrlinestep;
-		  else
-			d += scrlinestep;
-		}
-		if (displaymode != 2)
-			d = tmp + scrpixelstep;
+		if (!displaymode && islandscape)
+			d = myDstScreen + y * scrlinestep + x * scrpixelstep;
+		else if (displaymode != 2)
+			d = myDstScreen + (scrheight-x) * scrlinestep + y * scrpixelstep;
 		else
-			d = tmp - scrpixelstep;
+			d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
 	}
 	else
 	{
-		uInt16 mask = 0x8000;
-		uInt8 *tmp = d;
-		for(int x2 = 0; x2 < w; x2++, mask >>= 1)
-		{
-		  if (buffer & mask)
-		  {
-			  *((uInt32 *)d) = cold;
-			  *((uInt32 *)(d+scrlinestep)) = cold;
-		  }
-		  if (displaymode != 2)
-			d -= (scrlinestep<<1);
-		  else
-			d += (scrlinestep<<1);
-		}
 		if (displaymode != 2)
-			d = tmp + (scrpixelstep<<1);
+			d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + (y-1) * (scrpixelstep << 1);
 		else
-			d = tmp - (scrpixelstep<<1);
+			d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
 	}
 
-  }
-}
+	uInt16 col = pal[color];
+	uInt32 cold = paldouble[color];
 
-void FrameBufferWinCE::scanline(uInt32 row, uInt8* data)
-{
-	return;
-}
-
-void FrameBufferWinCE::setAspectRatio()
-{
-	return;
-}
-
-bool FrameBufferWinCE::createScreen()
-{
-	return true;
-}
-
-void FrameBufferWinCE::toggleFilter()
-{
-	return;
-}
-
-uInt32 FrameBufferWinCE::mapRGB(Uint8 r, Uint8 g, Uint8 b)
-{
-	return 0xFFFFFFFF;
+	for (int y2 = 0; y2 < h; y2++)
+	{
+		const uInt16 buffer = *tmp++;
+		if (devres == SM_LOW)
+		{
+			uInt16 mask = 0xC000;
+			for (int x2 = 0; x2 < w; x2++, mask >>= 2)
+			{
+				if (buffer & mask)
+					*((uInt16 *)d) = col;
+				d += scrpixelstep;
+			}
+			d += stride;
+		}
+		else if (devres == QVGA)
+		{
+			uInt16 mask = 0x8000;
+			uInt8 *tmp = d;
+			for (int x2 = 0; x2 < w; x2++, mask >>= 1)
+			{
+				if (buffer & mask)
+					*((uInt16 *)d) = col;
+				if (!displaymode && islandscape)
+					d += scrpixelstep;
+				else if (displaymode != 2)
+					d -= scrlinestep;
+				else
+					d += scrlinestep;
+			}
+			if (!displaymode && islandscape)
+				d = tmp + scrlinestep;
+			else if (displaymode != 2)
+				d = tmp + scrpixelstep;
+			else
+				d = tmp - scrpixelstep;
+		}
+		else
+		{
+			uInt16 mask = 0x8000;
+			uInt8 *tmp = d;
+			for (int x2 = 0; x2 < w; x2++, mask >>= 1)
+			{
+				if (buffer & mask)
+				{
+					*((uInt32 *)d) = cold;
+					*((uInt32 *)(d+scrlinestep)) = cold;
+				}
+				if (displaymode != 2)
+					d -= (scrlinestep<<1);
+				else
+					d += (scrlinestep<<1);
+			}
+			if (displaymode != 2)
+				d = tmp + (scrpixelstep<<1);
+			else
+				d = tmp - (scrpixelstep<<1);
+		}
+	}
 }
 
 void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
@@ -767,8 +754,10 @@ void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 		PlothLine(kx, ky, kx2, color);
 	}
 	else if (devres == QVGA)
-		if (displaymode != 2)
-			PlotvLine(y, scrheight-x, scrheight-x2-1, color);
+		if (!displaymode && islandscape)
+			PlothLine(x, y, x2, color);
+		else if (displaymode != 2)
+			PlotvLine(y, scrheight-x, scrheight-x2, color);
 		else
 			PlotvLine(scrwidth-y-1, x, x2+1, color);
 	else
@@ -790,7 +779,7 @@ void FrameBufferWinCE::PlothLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 	if (x>x2) { x2 ^= x; x ^= x2; x2 ^= x;} //lazy swap
 	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 	uInt16 col = pal[color];
-	for (;x < x2; x++, *((uInt16 *)d) = col, d += scrpixelstep);
+	for (;x <= x2; x++, *((uInt16 *)d) = col, d += scrpixelstep);
 }
 
 void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
@@ -802,8 +791,10 @@ void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 		PlotvLine(kx, ky, ky2, color);
 	}
 	else if (devres == QVGA)
-		if (displaymode != 2)
-			PlothLine(y, scrheight-x-1, y2, color);
+		if (!displaymode && islandscape)
+			PlotvLine(x, y, y2, color);
+		else if (displaymode != 2)
+			PlothLine(y, scrheight-x, y2, color);
 		else
 			PlothLine(scrwidth-y, x, scrwidth-y2, color);
 	else
@@ -825,7 +816,7 @@ void FrameBufferWinCE::PlotvLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 	if (!myDstScreen) return;
 	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 	uInt16 col = pal[color];
-	for (;y < y2; y++, *((uInt16 *)d) = col, d += scrlinestep);
+	for (;y <= y2; y++, *((uInt16 *)d) = col, d += scrlinestep);
 }
 
 void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
@@ -841,10 +832,15 @@ void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int colo
 	}
 	else if (devres == QVGA)
 	{
+		if (!displaymode && islandscape)
+		{
+			PlotfillRect(x, y, w, h, color);
+			return;
+		}
 		if (x>scrheight) return; if (y>scrwidth) return;
 		if (x+w>scrheight) w=scrheight-x; if (y+h>scrwidth) h=scrwidth-y;
 		if (displaymode != 2)
-			PlotfillRect(y, scrheight-x-w, h-1, w-1, color);
+			PlotfillRect(y, scrheight-x-w+1, h, w, color);
 		else
 			PlotfillRect(scrwidth-y-h, x, h-1, w-1, color);
 	}
@@ -865,79 +861,88 @@ void FrameBufferWinCE::PlotfillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int 
 	if (!myDstScreen) return;
 	uInt8 *d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 	uInt16 col = pal[color];
-	uInt32 stride = (scrwidth - w - 1) * scrpixelstep;
-	for (h++; h != 0; h--, d += stride)
-		for (int w2=w; w2>=0; w2--, *((uInt16 *)d) = col, d += scrpixelstep);
+	uInt32 stride = (scrwidth - w) * scrpixelstep;
+	for (;h != 0; h--, d += stride)
+		for (int w2=w; w2>0; w2--, *((uInt16 *)d) = col, d += scrpixelstep);
 }
 
 void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h)
 {
-  uInt8 *d;
-  uInt16 col;
-  uInt32 cold;
+	uInt8 *d;
+	uInt16 col;
+	uInt32 cold;
 
-  if (!myDstScreen) return;
-  if (devres == SM_LOW)
-	  return;
-  else if (devres == QVGA)
-	  if (displaymode != 2)
-		d = myDstScreen + (scrheight-x-1) * scrlinestep + y * scrpixelstep;
-	  else
-		d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
-  else
-	  if (displaymode != 2)
-		d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + y * (scrpixelstep<<1);
-	  else
-		d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
+	if (!myDstScreen) return;
 
-  col = pal[color];
-  cold = paldouble[color];
-  for(int i = 0; i < h; i++)
-  {
-    uInt32 mask = 0xF0000000;
-	uInt8 *tmp = d;
-    for(int j = 0; j < 8; j++, mask >>= 4)
-    {
-      if(bitmap[i] & mask)
-      {
-		  if (devres == QVGA)
-			  *((uInt16 *)d) = col;
-		  else
-		  {
-			  *((uInt32 *)d) = cold;
-			  *((uInt32 *)(d+scrlinestep)) = cold;
-		  }
-      }
-	  if (devres == QVGA)
-	  {
-	    if (displaymode != 2)
-		  d -= scrlinestep;
+	if (devres == SM_LOW)
+		return;
+	else if (devres == QVGA)
+		if (!displaymode && islandscape)
+			d = myDstScreen + y * scrlinestep + x * scrpixelstep;
+		else if (displaymode != 2)
+			d = myDstScreen + (scrheight-x) * scrlinestep + y * scrpixelstep;
 		else
-		  d += scrlinestep;
-	  }
-	  else
-	  {
-	    if (displaymode != 2)
-		  d -= (scrlinestep<<1);
-		else
-		  d += (scrlinestep<<1);
-	  }
-    }
-    if (devres == QVGA)
-	{
-	  if (displaymode != 2)
-		d = tmp + scrpixelstep;
-	  else
-		d = tmp - scrpixelstep;
-	}
+			d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
 	else
+		if (displaymode != 2)
+			d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + y * (scrpixelstep<<1);
+		else
+			d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
+
+	col = pal[color];
+	cold = paldouble[color];
+	for (int i = 0; i < h; i++)
 	{
-	  if (displaymode != 2)
-		d = tmp + (scrpixelstep<<1);
-	  else
-		d = tmp - (scrpixelstep<<1);
+		uInt32 mask = 0xF0000000;
+		uInt8 *tmp = d;
+		
+		for (int j = 0; j < 8; j++, mask >>= 4)
+		{
+			if(bitmap[i] & mask)
+			{
+				if (devres == QVGA)
+					*((uInt16 *)d) = col;
+				else
+				{
+					*((uInt32 *)d) = cold;
+					*((uInt32 *)(d+scrlinestep)) = cold;
+				}
+			}
+			if (devres == QVGA)
+			{
+				if (!displaymode && islandscape)
+					d += scrpixelstep;
+				else if (displaymode != 2)
+					d -= scrlinestep;
+				else
+					d += scrlinestep;
+			}
+			else
+			{
+				if (displaymode != 2)
+					d -= (scrlinestep<<1);
+				else
+					d += (scrlinestep<<1);
+			}
+		}
+
+		if (devres == QVGA)
+		{
+			if (!displaymode && islandscape)
+				d = tmp + scrlinestep;
+			else if (displaymode != 2)
+				d = tmp + scrpixelstep;
+			else
+				d = tmp - scrpixelstep;
+		}
+		else
+		{
+			if (displaymode != 2)
+				d = tmp + (scrpixelstep<<1);
+			else
+				d = tmp - (scrpixelstep<<1);
+		}
 	}
-  }
 }
 
 void FrameBufferWinCE::translateCoords(Int32* x, Int32* y)
@@ -979,11 +984,6 @@ void FrameBufferWinCE::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 	}
 
 	return;
-}
-
-uInt32 FrameBufferWinCE::lineDim()
-{
-	return 1;
 }
 
 string FrameBufferWinCE::about()
