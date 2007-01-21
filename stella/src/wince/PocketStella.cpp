@@ -14,9 +14,10 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: PocketStella.cpp,v 1.7 2007-01-18 16:26:05 knakos Exp $
+// $Id: PocketStella.cpp,v 1.8 2007-01-21 20:10:50 knakos Exp $
 //============================================================================
 
+#include <queue>
 #include "FSNode.hxx"
 #include "EventHandler.hxx"
 #include "OSystemWinCE.hxx"
@@ -24,51 +25,25 @@
 #include "PropsSet.hxx"
 #include "FrameBufferWinCE.hxx"
 
-#define KEYSCHECK_ASYNC
-
-struct key2event
-{
-	UINT keycode;
-	SDLKey sdlkey;
-	uInt32 state;
-	SDLKey launcherkey;
-};
-extern key2event keycodes[2][MAX_KEYS+NUM_MOUSEKEYS];
 extern void KeySetup(void);
 extern void KeySetMode(int);
+extern queue <SDL_Event> eventqueue;
+extern int EventHandlerState;
+
 bool RequestRefresh = false;
+SDLKey VK_keymap[SDLK_LAST];
 
 OSystemWinCE* theOSystem = (OSystemWinCE*) NULL;
 HWND hWnd;
 uInt16 rotkeystate = 0;
-int paddlespeed;
 
 DWORD REG_bat, REG_ac, REG_disp, bat_timeout;
-
-
-void KeyCheck(void)
-{
-#ifdef KEYSCHECK_ASYNC
-	if (GetAsyncKeyState(VK_F3))
-	{
-		if (rotkeystate == 0)
-			KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
-		rotkeystate = 1;
-	}
-	else
-		rotkeystate = 0;
-
-	for (int i=0; i<MAX_KEYS; i++)
-		if (GetAsyncKeyState(keycodes[0][i].keycode))
-			keycodes[0][i].state = 1;
-		else
-			keycodes[0][i].state = 0;
-#endif
-}
 
 LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 {
 	static PAINTSTRUCT ps;
+	SDL_Event e;
+	memset(&e, 0, sizeof(SDL_Event));
 
 	switch (uMsg)
 	{
@@ -82,32 +57,40 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 		}
 		else
 			rotkeystate = 0;
-#ifndef KEYSCHECK_ASYNC
-		uInt8 i;
-			for (i=0; i<MAX_KEYS; i++)
-				if (wParam == keycodes[0][i].keycode)
-					keycodes[0][i].state = 1;
-#endif
+		e.key.type = SDL_KEYDOWN;
+		e.key.keysym.sym = VK_keymap[wParam];
+		e.key.keysym.mod = (SDLMod) 0;
+		eventqueue.push(e);
 		return 0;
 
 	case WM_KEYUP:
-#ifndef KEYSCHECK_ASYNC
-		for (i=0; i<MAX_KEYS; i++)
-			if (wParam == keycodes[0][i].keycode)
-				keycodes[0][i].state = 0;
-#endif
+		e.key.type = SDL_KEYUP;
+		e.key.keysym.sym = VK_keymap[wParam];
+		e.key.keysym.mod = (SDLMod) 0;
+		eventqueue.push(e);
 		return 0;
 
 	case WM_MOUSEMOVE:
-		keycodes[0][M_POS].state = lParam;
+		e.type = SDL_MOUSEMOTION;
+		e.motion.x = LOWORD(lParam);
+		e.motion.y = HIWORD(lParam);
+		eventqueue.push(e);
 		return 0;
 
 	case WM_LBUTTONDOWN:
-		keycodes[0][M_BUT].state = lParam | 0x80000000;
+		e.type = SDL_MOUSEBUTTONDOWN;
+		e.motion.x = LOWORD(lParam);
+		e.motion.y = HIWORD(lParam);
+		e.button.button = SDL_BUTTON_LEFT;
+		eventqueue.push(e);
 		return 0;
 
 	case WM_LBUTTONUP:
-		keycodes[0][M_BUT].state = lParam & 0x7FFFFFFF;
+		e.type = SDL_MOUSEBUTTONUP;
+		e.motion.x = LOWORD(lParam);
+		e.motion.y = HIWORD(lParam);
+		e.button.button = SDL_BUTTON_LEFT;
+		eventqueue.push(e);
 		return 0;
 
 	case WM_DESTROY:
@@ -189,13 +172,12 @@ static void backlight_xchg(void)
 
 void CleanUp(void)
 {
-	if(theOSystem) delete theOSystem;
 	GXCloseDisplay();
 	GXCloseInput();
+	if(theOSystem) delete theOSystem;
 	backlight_xchg();
 	SystemParametersInfo(SPI_SETBATTERYIDLETIMEOUT, bat_timeout, NULL, SPIF_SENDCHANGE);
 }
-
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLine, int nShowCmd )
 {
@@ -239,7 +221,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 	SettingsWinCE theSettings(theOSystem);
 	theOSystem->settings().loadConfig();
 	theOSystem->settings().validate();
+	bool loaddefaultkeys = (theOSystem->settings().getString("keymap") == EmptyString);
 	theOSystem->create();
+	if (loaddefaultkeys)
+	{
+		// setup the default keybindings the first time we're run
+		theOSystem->eventHandler().addKeyMapping(Event::JoystickZeroFire, kEmulationMode, SDLK_F1);
+		theOSystem->eventHandler().addKeyMapping(Event::LauncherMode, kEmulationMode, SDLK_BACKSPACE);
+		theOSystem->eventHandler().addKeyMapping(Event::ConsoleReset, kEmulationMode, SDLK_F6);
+		theOSystem->eventHandler().addKeyMapping(Event::ConsoleSelect, kEmulationMode, SDLK_F5);
+
+		theOSystem->eventHandler().addKeyMapping(Event::UIPgUp, kMenuMode, SDLK_LEFT);
+		theOSystem->eventHandler().addKeyMapping(Event::UIPgDown, kMenuMode, SDLK_RIGHT);
+		theOSystem->eventHandler().addKeyMapping(Event::UISelect, kMenuMode, SDLK_F1);
+		theOSystem->eventHandler().addKeyMapping(Event::UICancel, kMenuMode, SDLK_BACKSPACE);
+	}
 
 	if ( !GXOpenDisplay(hWnd, GX_FULLSCREEN) || !GXOpenInput() )
 	{
@@ -247,8 +243,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPWSTR lpCmdLin
 		return 1;
 	}
 	KeySetup();
-
-	paddlespeed = theSettings.getInt("wce_smartphone_paddlespeed");
 
 	string romfile = ((string) getcwd()) + ((string) "\\") + theSettings.getString("GameFilename");
 	if (!FilesystemNode::fileExists(romfile))

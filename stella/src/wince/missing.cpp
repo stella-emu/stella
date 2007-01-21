@@ -14,12 +14,12 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: missing.cpp,v 1.7 2007-01-18 16:26:05 knakos Exp $
+// $Id: missing.cpp,v 1.8 2007-01-21 20:10:50 knakos Exp $
 //============================================================================
 
+#include <queue>
 #include "bspf.hxx"
 #include "SDL.h"
-//#include "gx.h"
 #include "OSystemWinCE.hxx"
 #include "FrameBufferWinCE.hxx"
 #include "EventHandler.hxx"
@@ -27,7 +27,9 @@
 char *msg = NULL;
 int EventHandlerState;
 extern OSystemWinCE *theOSystem;
-extern int paddlespeed;
+extern SDLKey VK_keymap[SDLK_LAST];
+
+queue <SDL_Event> eventqueue;
 
 int time(int dummy)
 {
@@ -49,55 +51,9 @@ char *getcwd(void)
 	return cwd;
 }
 
-
-struct key2event
-{
-	UINT keycode;
-	SDLKey sdlkey;
-	uInt32 state;
-	SDLKey launcherkey;
-};
-key2event keycodes[2][MAX_KEYS+NUM_MOUSEKEYS];
-
-void KeySetup(void)
-{
-	GXKeyList klist = GXGetDefaultKeys(GX_NORMALKEYS);
-
-	for (int i=0; i<2; i++)
-	{
-		for (int j=0; j<MAX_KEYS+NUM_MOUSEKEYS; j++,	keycodes[i][j].state = 0,
-										keycodes[i][j].launcherkey = SDLK_UNKNOWN);
-
-		keycodes[i][K_UP].keycode = klist.vkUp;
-		keycodes[i][K_DOWN].keycode = klist.vkDown;
-		keycodes[i][K_LEFT].keycode = klist.vkLeft;
-		keycodes[i][K_RIGHT].keycode = klist.vkRight;
-		keycodes[i][K_FIRE].keycode = klist.vkA;
-		keycodes[i][K_RESET].keycode = klist.vkStart;
-		keycodes[i][K_SELECT].keycode = klist.vkB;
-		keycodes[i][K_QUIT].keycode = klist.vkC;
-
-		keycodes[i][K_UP].sdlkey = SDLK_UP;
-		keycodes[i][K_DOWN].sdlkey = SDLK_DOWN;
-		keycodes[i][K_LEFT].sdlkey = SDLK_LEFT;
-		keycodes[i][K_RIGHT].sdlkey = SDLK_RIGHT;
-		keycodes[i][K_FIRE].sdlkey = SDLK_SPACE;
-		keycodes[i][K_RESET].sdlkey = SDLK_F2;
-		keycodes[i][K_SELECT].sdlkey = SDLK_F1;
-		keycodes[i][K_QUIT].sdlkey = SDLK_ESCAPE;
-
-		keycodes[i][K_UP].launcherkey = SDLK_UP;
-		keycodes[i][K_DOWN].launcherkey = SDLK_DOWN;
-		keycodes[i][K_LEFT].launcherkey = SDLK_PAGEUP;
-		keycodes[i][K_RIGHT].launcherkey = SDLK_PAGEDOWN;
-		keycodes[i][K_RESET].launcherkey = SDLK_RETURN;
-		keycodes[i][K_QUIT].launcherkey = SDLK_ESCAPE;
-	}
-}
-
 void KeySetMode(int mode)
 {
-	GXKeyList klist = GXGetDefaultKeys(GX_NORMALKEYS);
+/*	GXKeyList klist = GXGetDefaultKeys(GX_NORMALKEYS);
 
 	for (int i=0; i<2; i++)
 	{
@@ -125,7 +81,143 @@ void KeySetMode(int mode)
 			break;
 
 		}
-	}
+	}*/
+}
+
+void KeySetup(void)
+{
+	// Map the VK keysyms
+	// stolen from SDL_dibevents.c :-)
+	for (int i=0; i<SDLK_LAST; ++i )
+		VK_keymap[i] = SDLK_UNKNOWN;
+
+	VK_keymap[VK_BACK] = SDLK_BACKSPACE;
+	VK_keymap[VK_TAB] = SDLK_TAB;
+	VK_keymap[VK_CLEAR] = SDLK_CLEAR;
+	VK_keymap[VK_RETURN] = SDLK_RETURN;
+	VK_keymap[VK_PAUSE] = SDLK_PAUSE;
+	VK_keymap[VK_ESCAPE] = SDLK_ESCAPE;
+	VK_keymap[VK_SPACE] = SDLK_SPACE;
+	VK_keymap[VK_APOSTROPHE] = SDLK_QUOTE;
+	VK_keymap[VK_COMMA] = SDLK_COMMA;
+	VK_keymap[VK_PERIOD] = SDLK_PERIOD;
+	VK_keymap[VK_SLASH] = SDLK_SLASH;
+	VK_keymap['0'] = SDLK_0;
+	VK_keymap['1'] = SDLK_1;
+	VK_keymap['2'] = SDLK_2;
+	VK_keymap['3'] = SDLK_3;
+	VK_keymap['4'] = SDLK_4;
+	VK_keymap['5'] = SDLK_5;
+	VK_keymap['6'] = SDLK_6;
+	VK_keymap['7'] = SDLK_7;
+	VK_keymap['8'] = SDLK_8;
+	VK_keymap['9'] = SDLK_9;
+	VK_keymap[VK_SEMICOLON] = SDLK_SEMICOLON;
+	VK_keymap[VK_EQUAL] = SDLK_EQUALS;
+	VK_keymap[VK_LBRACKET] = SDLK_LEFTBRACKET;
+	VK_keymap[VK_BACKSLASH] = SDLK_BACKSLASH;
+	VK_keymap[VK_RBRACKET] = SDLK_RIGHTBRACKET;
+	VK_keymap[VK_BACKQUOTE] = SDLK_BACKQUOTE;
+	VK_keymap['A'] = SDLK_a;
+	VK_keymap['B'] = SDLK_b;
+	VK_keymap['C'] = SDLK_c;
+	VK_keymap['D'] = SDLK_d;
+	VK_keymap['E'] = SDLK_e;
+	VK_keymap['F'] = SDLK_f;
+	VK_keymap['G'] = SDLK_g;
+	VK_keymap['H'] = SDLK_h;
+	VK_keymap['I'] = SDLK_i;
+	VK_keymap['J'] = SDLK_j;
+	VK_keymap['K'] = SDLK_k;
+	VK_keymap['L'] = SDLK_l;
+	VK_keymap['M'] = SDLK_m;
+	VK_keymap['N'] = SDLK_n;
+	VK_keymap['O'] = SDLK_o;
+	VK_keymap['P'] = SDLK_p;
+	VK_keymap['Q'] = SDLK_q;
+	VK_keymap['R'] = SDLK_r;
+	VK_keymap['S'] = SDLK_s;
+	VK_keymap['T'] = SDLK_t;
+	VK_keymap['U'] = SDLK_u;
+	VK_keymap['V'] = SDLK_v;
+	VK_keymap['W'] = SDLK_w;
+	VK_keymap['X'] = SDLK_x;
+	VK_keymap['Y'] = SDLK_y;
+	VK_keymap['Z'] = SDLK_z;
+	VK_keymap[VK_DELETE] = SDLK_DELETE;
+
+	VK_keymap[VK_NUMPAD0] = SDLK_KP0;
+	VK_keymap[VK_NUMPAD1] = SDLK_KP1;
+	VK_keymap[VK_NUMPAD2] = SDLK_KP2;
+	VK_keymap[VK_NUMPAD3] = SDLK_KP3;
+	VK_keymap[VK_NUMPAD4] = SDLK_KP4;
+	VK_keymap[VK_NUMPAD5] = SDLK_KP5;
+	VK_keymap[VK_NUMPAD6] = SDLK_KP6;
+	VK_keymap[VK_NUMPAD7] = SDLK_KP7;
+	VK_keymap[VK_NUMPAD8] = SDLK_KP8;
+	VK_keymap[VK_NUMPAD9] = SDLK_KP9;
+	VK_keymap[VK_DECIMAL] = SDLK_KP_PERIOD;
+	VK_keymap[VK_DIVIDE] = SDLK_KP_DIVIDE;
+	VK_keymap[VK_MULTIPLY] = SDLK_KP_MULTIPLY;
+	VK_keymap[VK_SUBTRACT] = SDLK_KP_MINUS;
+	VK_keymap[VK_ADD] = SDLK_KP_PLUS;
+
+	VK_keymap[VK_UP] = SDLK_UP;
+	VK_keymap[VK_DOWN] = SDLK_DOWN;
+	VK_keymap[VK_RIGHT] = SDLK_RIGHT;
+	VK_keymap[VK_LEFT] = SDLK_LEFT;
+	VK_keymap[VK_INSERT] = SDLK_INSERT;
+	VK_keymap[VK_HOME] = SDLK_HOME;
+	VK_keymap[VK_END] = SDLK_END;
+	VK_keymap[VK_PRIOR] = SDLK_PAGEUP;
+	VK_keymap[VK_NEXT] = SDLK_PAGEDOWN;
+
+	VK_keymap[VK_F1] = SDLK_F1;
+	VK_keymap[VK_F2] = SDLK_F2;
+	VK_keymap[VK_F3] = SDLK_F3;
+	VK_keymap[VK_F4] = SDLK_F4;
+	VK_keymap[VK_F5] = SDLK_F5;
+	VK_keymap[VK_F6] = SDLK_F6;
+	VK_keymap[VK_F7] = SDLK_F7;
+	VK_keymap[VK_F8] = SDLK_F8;
+	VK_keymap[VK_F9] = SDLK_F9;
+	VK_keymap[VK_F10] = SDLK_F10;
+	VK_keymap[VK_F11] = SDLK_F11;
+	VK_keymap[VK_F12] = SDLK_F12;
+	VK_keymap[VK_F13] = SDLK_F13;
+	VK_keymap[VK_F14] = SDLK_F14;
+	VK_keymap[VK_F15] = SDLK_F15;
+
+	VK_keymap[VK_NUMLOCK] = SDLK_NUMLOCK;
+	VK_keymap[VK_CAPITAL] = SDLK_CAPSLOCK;
+	VK_keymap[VK_SCROLL] = SDLK_SCROLLOCK;
+	VK_keymap[VK_RSHIFT] = SDLK_RSHIFT;
+	VK_keymap[VK_LSHIFT] = SDLK_LSHIFT;
+	VK_keymap[VK_RCONTROL] = SDLK_RCTRL;
+	VK_keymap[VK_LCONTROL] = SDLK_LCTRL;
+	VK_keymap[VK_RMENU] = SDLK_RALT;
+	VK_keymap[VK_LMENU] = SDLK_LALT;
+	VK_keymap[VK_RWIN] = SDLK_RSUPER;
+	VK_keymap[VK_LWIN] = SDLK_LSUPER;
+
+	VK_keymap[VK_HELP] = SDLK_HELP;
+	VK_keymap[VK_PRINT] = SDLK_PRINT;
+	VK_keymap[VK_SNAPSHOT] = SDLK_PRINT;
+	VK_keymap[VK_CANCEL] = SDLK_BREAK;
+	VK_keymap[VK_APPS] = SDLK_MENU;
+
+	// fix wince keys
+	GXKeyList klist = GXGetDefaultKeys(GX_NORMALKEYS);
+
+	VK_keymap[klist.vkUp] = SDLK_UP;
+	VK_keymap[klist.vkDown] = SDLK_DOWN;
+	VK_keymap[klist.vkLeft] = SDLK_LEFT;
+	VK_keymap[klist.vkRight] = SDLK_RIGHT;
+	VK_keymap[klist.vkA] = SDLK_F1;
+	VK_keymap[klist.vkB] = SDLK_TAB;	// harwire softkey2 to tab
+	// VK_F3 => SDLK_F3 is call button, VK_F4 => SDLK_F4 is end call button
+	VK_keymap[klist.vkC] = SDLK_F5;
+	VK_keymap[klist.vkStart] = SDLK_F6;
 }
 
 // SDL
@@ -144,82 +236,11 @@ DECLSPEC void SDL_Delay(Uint32 ms) { Sleep(ms); }
 
 DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 {
-	static int paddleres = 300000;
-	static int cs = ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->IsVGA() ? 2 : 1; 
-
-	for (int i=0; i<MAX_KEYS+NUM_MOUSEKEYS; i++)
+	while (!eventqueue.empty())
 	{
-		if (keycodes[0][i].state != keycodes[1][i].state)
-		{
-			keycodes[1][i].state = keycodes[0][i].state;
-			if (i!=K_QUIT || EventHandlerState!=2)
-			{
-				if (i < MAX_KEYS)
-				{
-					if (keycodes[1][i].state == 1)
-						event->type = event->key.type = SDL_KEYDOWN;
-					else
-						event->type = event->key.type = SDL_KEYUP;
-
-					if (EventHandlerState != 2)
-						event->key.keysym.sym = keycodes[0][i].sdlkey;
-					else
-						event->key.keysym.sym = keycodes[0][i].launcherkey;
-					event->key.keysym.mod = (SDLMod) 0;
-					event->key.keysym.unicode = '\n';  // hack
-				}
-				else if (i == M_POS)
-				{
-					event->type = SDL_MOUSEMOTION;
-					event->motion.x = LOWORD(keycodes[0][M_POS].state);
-					event->motion.y = HIWORD(keycodes[0][M_POS].state);
-				}
-				else
-				{
-					if (keycodes[0][M_BUT].state & 0x80000000)
-						event->type = event->button.type = SDL_MOUSEBUTTONDOWN;
-					else
-						event->type = SDL_MOUSEBUTTONUP;
-					event->motion.x = LOWORD(keycodes[0][M_BUT].state);
-					event->motion.y = HIWORD(keycodes[0][M_BUT].state & 0x7FFFFFFF);
-					event->button.button = SDL_BUTTON_LEFT;
-
-					if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x>220*cs && event->motion.y>300*cs && EventHandlerState==1)
-					{
-						// bottom right corner for rotate
-						KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
-						event->type = SDL_NOEVENT;
-					}
-					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20*cs && event->motion.y>300*cs && EventHandlerState==1)
-					{
-						// bottom left corner for launcher
-						keycodes[0][K_QUIT].state = 1;
-						event->type = SDL_NOEVENT;
-					}
-					else if (event->type==SDL_MOUSEBUTTONDOWN && event->motion.x<20*cs && event->motion.y<20*cs && EventHandlerState==1)
-					{
-						// top left for menu
-						theOSystem->eventHandler().enterMenuMode((enum EventHandler::State)3); //S_MENU
-					}
-				}
-			}
-			else if (keycodes[1][i].state == 1)
-				event->type = SDL_QUIT;
-
-			return 1;
-		}
-
-		if ( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->IsSmartphone() )
-		{
-			if (keycodes[0][K_RIGHT].state == 1 && paddleres > 200000)
-				paddleres -= paddlespeed;
-			else if (keycodes[0][K_LEFT].state == 1 && paddleres < 900000)
-				paddleres += paddlespeed;
-
-			theOSystem->eventHandler().event()->set(Event::PaddleZeroResistance, paddleres);
-			theOSystem->eventHandler().event()->set(Event::PaddleZeroFire, keycodes[0][K_FIRE].state);
-		}
-
+		memcpy(event, &(eventqueue.front()), sizeof(SDL_Event));
+		eventqueue.pop();
+		return 1;
 	}
 	event->type = SDL_NOEVENT;
 	return 0;
