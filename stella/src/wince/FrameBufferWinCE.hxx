@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.hxx,v 1.11 2007-01-18 16:26:05 knakos Exp $
+// $Id: FrameBufferWinCE.hxx,v 1.12 2007-01-21 20:08:15 knakos Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WINCE_HXX
@@ -56,14 +56,14 @@ class FrameBufferWinCE : public FrameBuffer
 	virtual void setUIPalette(const uInt32* palette);
 	virtual bool initSubsystem();
 	virtual BufferType type() { return kSoftBuffer; } 
-    virtual void setAspectRatio() ;
-    virtual bool createScreen();
-    virtual void toggleFilter();
+    virtual void setAspectRatio() { return; };
+    virtual bool createScreen() { return true; };
+    virtual void toggleFilter() { return; };
     virtual void drawMediaSource();
     virtual void preFrameUpdate();
     virtual void postFrameUpdate();
-    virtual void scanline(uInt32 row, uInt8* data);
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b);
+	virtual void scanline(uInt32 row, uInt8* data) { return; };
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) { return 0xFFFFFFFF; };
     virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
     virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
@@ -72,7 +72,7 @@ class FrameBufferWinCE : public FrameBuffer
     virtual void translateCoords(Int32* x, Int32* y);
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 	virtual void enablePhosphor(bool enable, int blend)  { return; };
-    virtual uInt32 lineDim();
+    virtual uInt32 lineDim() { return 1; };
 	virtual string about();
 	virtual void setScaler(Scaler scaler) { return; };
 	void wipescreen(void);
