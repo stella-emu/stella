@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: missing.cpp,v 1.8 2007-01-21 20:10:50 knakos Exp $
+// $Id: missing.cpp,v 1.9 2007-01-23 09:44:55 knakos Exp $
 //============================================================================
 
 #include <queue>
@@ -25,7 +25,6 @@
 #include "EventHandler.hxx"
 
 char *msg = NULL;
-int EventHandlerState;
 extern OSystemWinCE *theOSystem;
 extern SDLKey VK_keymap[SDLK_LAST];
 
@@ -51,37 +50,56 @@ char *getcwd(void)
 	return cwd;
 }
 
-void KeySetMode(int mode)
+SDLKey RotateKey(SDLKey key)
 {
-/*	GXKeyList klist = GXGetDefaultKeys(GX_NORMALKEYS);
+	uInt8 dir = 0;
+	uInt8 mode = ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->getmode();
+	uInt8 state = theOSystem->eventHandler().state();
+	bool lscp = ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->IsLandscape();
 
-	for (int i=0; i<2; i++)
+	if (!(lscp && mode == 0))
+		if (state != EventHandler::S_EMULATE)
+			if (mode != 2)
+				dir = 1;
+			else
+				dir = 2;
+		else
+			dir = mode;
+
+	switch (dir)
 	{
-		switch (mode)
+	case 0:
+		return key;
+
+	case 1:
+		switch (key)
 		{
-		case 0:
-			keycodes[i][K_UP].keycode = klist.vkUp;
-			keycodes[i][K_DOWN].keycode = klist.vkDown;
-			keycodes[i][K_LEFT].keycode = klist.vkLeft;
-			keycodes[i][K_RIGHT].keycode = klist.vkRight;
-			break;
-
-		case 2:
-			keycodes[i][K_UP].keycode = klist.vkRight;
-			keycodes[i][K_DOWN].keycode = klist.vkLeft;
-			keycodes[i][K_LEFT].keycode = klist.vkUp;
-			keycodes[i][K_RIGHT].keycode = klist.vkDown;
-			break;
-
-		case 1:
-			keycodes[i][K_UP].keycode = klist.vkLeft;
-			keycodes[i][K_DOWN].keycode = klist.vkRight;
-			keycodes[i][K_LEFT].keycode = klist.vkDown;
-			keycodes[i][K_RIGHT].keycode = klist.vkUp;
-			break;
-
+		case SDLK_LEFT:
+			return SDLK_UP;
+		case SDLK_DOWN:
+			return SDLK_LEFT;
+		case SDLK_RIGHT:
+			return SDLK_DOWN;
+		case SDLK_UP:
+			return SDLK_RIGHT;
 		}
-	}*/
+		break;
+
+	case 2:
+		switch (key)
+		{
+		case SDLK_LEFT:
+			return SDLK_DOWN;
+		case SDLK_DOWN:
+			return SDLK_RIGHT;
+		case SDLK_RIGHT:
+			return SDLK_UP;
+		case SDLK_UP:
+			return SDLK_LEFT;
+		}
+		break;
+	}
+	return key;
 }
 
 void KeySetup(void)

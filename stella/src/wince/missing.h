@@ -8,12 +8,13 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2006 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: missing.h,v 1.6 2007-01-23 09:44:55 knakos Exp $
 //============================================================================
 
 #ifndef _WCE_MISSING_H_
@@ -39,10 +40,5 @@ typedef unsigned int  uintptr_t;
 
 int time(int dummy);
 char *getcwd(void);
-
-
-#define MAX_KEYS 8
-#define NUM_MOUSEKEYS 2
-enum key {K_UP = 0, K_DOWN, K_LEFT, K_RIGHT, K_FIRE, K_RESET, K_SELECT, K_QUIT, M_POS, M_BUT};
 
 #endif

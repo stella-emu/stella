@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: PocketStella.cpp,v 1.8 2007-01-21 20:10:50 knakos Exp $
+// $Id: PocketStella.cpp,v 1.9 2007-01-23 09:44:55 knakos Exp $
 //============================================================================
 
 #include <queue>
@@ -26,16 +26,15 @@
 #include "FrameBufferWinCE.hxx"
 
 extern void KeySetup(void);
-extern void KeySetMode(int);
 extern queue <SDL_Event> eventqueue;
-extern int EventHandlerState;
+extern SDLKey RotateKey(SDLKey);
 
 bool RequestRefresh = false;
 SDLKey VK_keymap[SDLK_LAST];
 
 OSystemWinCE* theOSystem = (OSystemWinCE*) NULL;
 HWND hWnd;
-uInt16 rotkeystate = 0;
+bool rotkeystate = 0;
 
 DWORD REG_bat, REG_ac, REG_disp, bat_timeout;
 
@@ -51,21 +50,27 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 		if (wParam == VK_F3)
 		{
 			if (rotkeystate == 0 && theOSystem)
-				if (theOSystem->eventHandler().state() == 1)
-					KeySetMode( ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay() );
-			rotkeystate = 1;
+				if (theOSystem->eventHandler().state() == EventHandler::S_EMULATE)
+					((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay();
+			rotkeystate = true;
+			return 0;
 		}
 		else
-			rotkeystate = 0;
+			rotkeystate = false;
 		e.key.type = SDL_KEYDOWN;
-		e.key.keysym.sym = VK_keymap[wParam];
+		e.key.keysym.sym = RotateKey(VK_keymap[wParam]);
 		e.key.keysym.mod = (SDLMod) 0;
 		eventqueue.push(e);
 		return 0;
 
 	case WM_KEYUP:
+		if (wParam == VK_F3 && rotkeystate)
+		{
+			rotkeystate = false;
+			return 0;
+		}
 		e.key.type = SDL_KEYUP;
-		e.key.keysym.sym = VK_keymap[wParam];
+		e.key.keysym.sym = RotateKey(VK_keymap[wParam]);
 		e.key.keysym.mod = (SDLMod) 0;
 		eventqueue.push(e);
 		return 0;
