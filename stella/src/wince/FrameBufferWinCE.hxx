@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.hxx,v 1.12 2007-01-21 20:08:15 knakos Exp $
+// $Id: FrameBufferWinCE.hxx,v 1.13 2007-01-23 09:40:57 knakos Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WINCE_HXX
@@ -75,7 +75,7 @@ class FrameBufferWinCE : public FrameBuffer
     virtual uInt32 lineDim() { return 1; };
 	virtual string about();
 	virtual void setScaler(Scaler scaler) { return; };
-	void wipescreen(void);
+	void wipescreen(bool atinit=false);
 	void setmode(uInt8 mode);
 	uInt8 rotatedisplay(void);
 	
@@ -93,7 +93,7 @@ class FrameBufferWinCE : public FrameBuffer
 	bool SubsystemInited;
 	uInt8 *myDstScreen;
 
-	bool issmartphone, islandscape, legacygapi;
+	bool issmartphone, islandscape, legacygapi, screenlocked;
 	enum {SM_LOW, QVGA, VGA} devres;
 	uInt16 minydim, optgreenmaskN, optgreenmask;
 	Int32 pixelsteptimes5, pixelsteptimes6, pixelsteptimes8, pixelsteptimes12, pixelsteptimes16;
@@ -105,6 +105,7 @@ class FrameBufferWinCE : public FrameBuffer
 	bool IsSmartphoneLowRes(void) { return (issmartphone && devres==SM_LOW); }
 	bool IsVGA(void) { return (devres==VGA); }
 	uInt8 getmode(void) { return displaymode; }
+	bool IsLandscape(void) { return islandscape; }
 };
 
 #endif

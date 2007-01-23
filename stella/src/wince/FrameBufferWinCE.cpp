@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.cpp,v 1.11 2007-01-21 20:07:48 knakos Exp $
+// $Id: FrameBufferWinCE.cpp,v 1.12 2007-01-23 09:40:57 knakos Exp $
 //============================================================================
 
 #include <windows.h>
@@ -27,7 +27,7 @@
 
 FrameBufferWinCE::FrameBufferWinCE(OSystem *osystem)
 : FrameBuffer(osystem), myDstScreen(NULL), SubsystemInited(false), displacement(0),
-issmartphone(true), islandscape(false), displaymode(0), legacygapi(true), devres(SM_LOW)
+issmartphone(true), islandscape(false), displaymode(0), legacygapi(true), devres(SM_LOW), screenlocked(false)
 {
 	gxdp.cxWidth = gxdp.cyHeight = gxdp.cbxPitch = gxdp.cbyPitch = gxdp.cBPP = gxdp.ffFormat = 0;
 }
@@ -133,7 +133,15 @@ void FrameBufferWinCE::setUIPalette(const uInt32* palette)
 
 bool FrameBufferWinCE::initSubsystem()
 {
+	static bool firsttime = true;
+
 	GetDeviceProperties();
+	if (IsSmartphoneLowRes())
+	{
+		// modify our basedim rect in order to center the ingame menu properly
+		myBaseDim.w = 220;
+		myBaseDim.h = 176;
+	}
 	// screen extents
 	if(gxdp.ffFormat & kfDirect565)
 	{
@@ -152,6 +160,9 @@ bool FrameBufferWinCE::initSubsystem()
 	scrlinestep = gxdp.cbyPitch;
 
 	setmode(displaymode);
+	if (!firsttime)
+		wipescreen(true);		// hold the 'initializing' screen on startup
+	firsttime = false;
 	SubsystemInited = false;
 	return true;
 }
@@ -196,7 +207,10 @@ void FrameBufferWinCE::setmode(uInt8 mode)
 uInt8 FrameBufferWinCE::rotatedisplay(void)
 {
 	if (!(displaymode == 0 && islandscape))
+	{
+		islandscape = false;
 		displaymode = (displaymode + 1) % 3;
+	}
 	setmode(displaymode);
 	wipescreen();
 	return displaymode;
@@ -293,6 +307,9 @@ void FrameBufferWinCE::preFrameUpdate()
 	static HDC hdc;
 	static RawFrameBufferInfo rfbi;
 
+	if (screenlocked)
+		return;
+
 	if (legacygapi)
 		myDstScreen = (uInt8 *) GXBeginDraw();
 	else
@@ -302,6 +319,8 @@ void FrameBufferWinCE::preFrameUpdate()
 		ReleaseDC(NULL, hdc);
 		myDstScreen = (uInt8 *) rfbi.pFramePointer;
 	}
+
+	screenlocked = true;
 }
 
 void FrameBufferWinCE::drawMediaSource()
@@ -618,15 +637,18 @@ void FrameBufferWinCE::drawMediaSource()
 
 }
 
-void FrameBufferWinCE::wipescreen(void)
+void FrameBufferWinCE::wipescreen(bool atinit)
 {
-	if (!SubsystemInited)
-		lateinit();
+	if (!atinit)
+	{
+		if (!SubsystemInited)
+			lateinit();
 
-	uInt8 *s = myOSystem->console().mediaSource().currentFrameBuffer();
-	memset(s, 0, myWidth*myHeight-1);
-	s = myOSystem->console().mediaSource().previousFrameBuffer();
-	memset(s, 0, myWidth*myHeight-1);
+		uInt8 *s = myOSystem->console().mediaSource().currentFrameBuffer();
+		memset(s, 0, myWidth*myHeight-1);
+		s = myOSystem->console().mediaSource().previousFrameBuffer();
+		memset(s, 0, myWidth*myHeight-1);
+	}
 
 	preFrameUpdate();
 	memset(myDstScreen, 0, scrwidth*scrheight*2);
@@ -635,7 +657,8 @@ void FrameBufferWinCE::wipescreen(void)
 
 void FrameBufferWinCE::postFrameUpdate()
 {
-	if (legacygapi) GXEndDraw();
+	if (!screenlocked)	return;
+	if (legacygapi)		GXEndDraw();
 }
 
 void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt32 y, int color)
@@ -659,20 +682,14 @@ void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt
 	if ((Int32)x<0 || (Int32)y<0 || (x>>1)+w>scrwidth || y+h>scrheight) return;
 
 	uInt8 *d;
-	uInt32 stride;
-	if (devres == SM_LOW)
-	{
-		d = myDstScreen + y * scrlinestep + ((x+1) >> 1) * scrpixelstep;
-		stride = (scrwidth - w) * scrpixelstep;
-	}
-	else if (devres == QVGA)
+	if (devres != VGA)
 	{
 		if (!displaymode && islandscape)
 			d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 		else if (displaymode != 2)
 			d = myDstScreen + (scrheight-x) * scrlinestep + y * scrpixelstep;
 		else
-			d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
+			d = myDstScreen + x * scrlinestep + (scrwidth-y) * scrpixelstep;
 	}
 	else
 	{
@@ -688,18 +705,7 @@ void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt
 	for (int y2 = 0; y2 < h; y2++)
 	{
 		const uInt16 buffer = *tmp++;
-		if (devres == SM_LOW)
-		{
-			uInt16 mask = 0xC000;
-			for (int x2 = 0; x2 < w; x2++, mask >>= 2)
-			{
-				if (buffer & mask)
-					*((uInt16 *)d) = col;
-				d += scrpixelstep;
-			}
-			d += stride;
-		}
-		else if (devres == QVGA)
+		if (devres != VGA)
 		{
 			uInt16 mask = 0x8000;
 			uInt8 *tmp = d;
@@ -747,19 +753,13 @@ void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt
 
 void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
-	if (devres == SM_LOW)
-	{
-		int kx = x >> 1; int ky = y; int kx2 = x2>> 1;
-		if ((Int32)kx<0) kx=0; if ((Int32)ky<0) ky=0; if (ky>scrheight-1) return; if (kx2>scrwidth-1) kx2=scrwidth-1;
-		PlothLine(kx, ky, kx2, color);
-	}
-	else if (devres == QVGA)
+	if (devres != VGA)
 		if (!displaymode && islandscape)
 			PlothLine(x, y, x2, color);
 		else if (displaymode != 2)
 			PlotvLine(y, scrheight-x, scrheight-x2, color);
 		else
-			PlotvLine(scrwidth-y-1, x, x2+1, color);
+			PlotvLine(scrwidth-y, x, x2, color);
 	else
 		if (displaymode != 2)
 		{
@@ -784,13 +784,7 @@ void FrameBufferWinCE::PlothLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 
 void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
-	if (devres == SM_LOW)
-	{
-		int kx = x >> 1; int ky = y; int ky2 = y2;
-		if ((Int32)kx<0) kx=0; if ((Int32)ky<0) ky=0; if (kx>scrwidth-1) return; if (ky>scrheight-1) ky=scrheight-1; if (ky2>scrheight-1) ky2=scrheight-1;
-		PlotvLine(kx, ky, ky2, color);
-	}
-	else if (devres == QVGA)
+	if (devres != VGA)
 		if (!displaymode && islandscape)
 			PlotvLine(x, y, y2, color);
 		else if (displaymode != 2)
@@ -822,15 +816,7 @@ void FrameBufferWinCE::PlotvLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 {
 	if (w==0 || h==0) return;
-	if (devres == SM_LOW)
-	{
-		int kx = x >> 1; int ky = y; int kw = (w >> 1); int kh = h;
-		if (ky>scrheight-1) return; if (kx>scrwidth-1) return;
-		if ((Int32)kx<0) kx=0; if ((Int32)ky<0) ky=0;if ((Int32)kw<0) kw=0; if ((Int32)kh<0) kh=0;
-		if (kx+kw>scrwidth-1) kw=scrwidth-kx-1; if (ky+kh>scrheight-1) kh=scrheight-ky-1;
-		PlotfillRect(kx, ky, kw, kh, color);
-	}
-	else if (devres == QVGA)
+	if (devres != VGA)
 	{
 		if (!displaymode && islandscape)
 		{
@@ -842,7 +828,7 @@ void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int colo
 		if (displaymode != 2)
 			PlotfillRect(y, scrheight-x-w+1, h, w, color);
 		else
-			PlotfillRect(scrwidth-y-h, x, h-1, w-1, color);
+			PlotfillRect(scrwidth-y-h+1, x, h, w, color);
 	}
 	else
 	{
@@ -874,15 +860,13 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, I
 
 	if (!myDstScreen) return;
 
-	if (devres == SM_LOW)
-		return;
-	else if (devres == QVGA)
+	if (devres != VGA)
 		if (!displaymode && islandscape)
 			d = myDstScreen + y * scrlinestep + x * scrpixelstep;
 		else if (displaymode != 2)
 			d = myDstScreen + (scrheight-x) * scrlinestep + y * scrpixelstep;
 		else
-			d = myDstScreen + x * scrlinestep + (scrwidth-y-1) * scrpixelstep;
+			d = myDstScreen + x * scrlinestep + (scrwidth-y) * scrpixelstep;
 	else
 		if (displaymode != 2)
 			d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + y * (scrpixelstep<<1);
@@ -900,7 +884,7 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, I
 		{
 			if(bitmap[i] & mask)
 			{
-				if (devres == QVGA)
+				if (devres != VGA)
 					*((uInt16 *)d) = col;
 				else
 				{
@@ -908,7 +892,7 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, I
 					*((uInt32 *)(d+scrlinestep)) = cold;
 				}
 			}
-			if (devres == QVGA)
+			if (devres != VGA)
 			{
 				if (!displaymode && islandscape)
 					d += scrpixelstep;
@@ -926,7 +910,7 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, I
 			}
 		}
 
-		if (devres == QVGA)
+		if (devres != VGA)
 		{
 			if (!displaymode && islandscape)
 				d = tmp + scrlinestep;
@@ -994,4 +978,3 @@ string FrameBufferWinCE::about()
 	id += (devres == SM_LOW ? "176x220\n" : (devres == QVGA ? "240x320\n" : "480x640\n"));
 	return id;
 }
-
