@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: OSystemWinCE.cxx,v 1.10 2007-01-18 16:26:05 knakos Exp $
+// $Id: OSystemWinCE.cxx,v 1.11 2007-01-23 09:43:38 knakos Exp $
 //============================================================================
 
 #include <sstream>
@@ -26,9 +26,6 @@
 #include "SoundWinCE.hxx"
 #include "FrameBufferWinCE.hxx"
 
-extern void KeyCheck(void);
-extern int EventHandlerState;
-extern void KeySetMode(int);
 extern bool RequestRefresh;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -59,19 +56,13 @@ void OSystemWinCE::mainLoop()
 
   uInt32 frameTime = 0, numberOfFrames = 0;
   uInt32 startTime, virtualTime, currentTime;
-  uInt8  lastkeyset;
 
   virtualTime = GetTickCount();
   frameTime = 0;
 
   // Main game loop
   MSG msg;
-  int laststate = -1;
-  if (!((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes())
-  {
-	  lastkeyset = 0;
-	  KeySetMode(1);
-  }
+
   for(;;)
   {
 	while (PeekMessage(&msg, NULL, 0U, 0U, PM_REMOVE))
@@ -84,10 +75,8 @@ void OSystemWinCE::mainLoop()
 	if (msg.message == WM_QUIT)
 		break;
 
-	if(myQuitLoop)
+	if (myQuitLoop)
 	  break;
-
-	KeyCheck();
 
 	if (RequestRefresh)
 	{
@@ -96,29 +85,6 @@ void OSystemWinCE::mainLoop()
 	}
 
 	startTime = GetTickCount();
-
-	EventHandlerState = (int) myEventHandler->state();
-	if ((laststate != -1) && (laststate != EventHandlerState))
-		if (EventHandlerState!=2 && EventHandlerState!=3)
-		{
-			((FrameBufferWinCE *)myFrameBuffer)->wipescreen();
-			KeySetMode(lastkeyset);
-		}
-		else
-		{
-			if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes() )
-			{
-				KeySetMode(0);
-				((FrameBufferWinCE *)myFrameBuffer)->setmode(0);
-			}
-			else
-			{
-				lastkeyset = ((FrameBufferWinCE *)myFrameBuffer)->getmode();
-				if (lastkeyset == 0)
-					KeySetMode(1);
-			}
-		}
-	laststate = EventHandlerState;
 
 	myEventHandler->poll(startTime);
 	myFrameBuffer->update();
@@ -135,20 +101,6 @@ void OSystemWinCE::mainLoop()
 	frameTime += currentTime;
 	++numberOfFrames;
   }
-
-  /* {
-    double executionTime = (double) frameTime / 1000000.0;
-    double framesPerSecond = (double) numberOfFrames / executionTime;
-	ostringstream a;
-    a << endl;
-    a << numberOfFrames << " total frames drawn\n";
-    a << framesPerSecond << " frames/second\n";
-    a << endl;
-  TCHAR unicodeString[MAX_PATH];
-  MultiByteToWideChar(CP_ACP, 0, a.str().c_str(), strlen(a.str().c_str()) + 1, unicodeString, sizeof(unicodeString));
-	MessageBox(GetDesktopWindow(),unicodeString, _T("..."),0);
-   }
-*/
 }
 
 uInt32 OSystemWinCE::getTicks(void)
@@ -156,10 +108,17 @@ uInt32 OSystemWinCE::getTicks(void)
 	return GetTickCount();
 }
 
-inline const GUI::Font& OSystemWinCE::launcherFont() const
+void OSystemWinCE::getScreenDimensions(int& width, int& height)
 {
-	if ( ((FrameBufferWinCE *)myFrameBuffer)->IsSmartphoneLowRes() )
-		return consoleFont();
+	// do not use the framebuffer issmartphonelowres method as the framebuffer has not been created yet
+	if ((unsigned int) GetSystemMetrics(SM_CXSCREEN) != 176 )
+	{
+		width = 320;
+		height = 240;
+	}
 	else
-		return OSystem::font();
+	{
+		width = 220;
+		height = 176;
+	}
 }

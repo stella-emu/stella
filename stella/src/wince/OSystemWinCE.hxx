@@ -14,6 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
+// $Id: OSystemWinCE.hxx,v 1.9 2007-01-23 09:43:38 knakos Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WINCE_HXX
@@ -32,10 +33,7 @@ class OSystemWinCE : public OSystem
     virtual void mainLoop();
 	virtual uInt32 getTicks(void);
     virtual void setFramerate(uInt32 framerate);
-	// ok, we lie a bit to Stephen here, but it's for a good purpose :)
-	// we can always display these resolutions anyway
-	virtual void getScreenDimensions(int& width, int& height) { width = 320; height = 240; };
-	inline const GUI::Font& launcherFont() const;
+	virtual void getScreenDimensions(int& width, int& height);
 };
 
 #endif
