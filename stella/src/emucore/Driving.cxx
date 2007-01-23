@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.9 2007-01-05 17:54:14 stephena Exp $
+// $Id: Driving.cxx,v 1.10 2007-01-23 09:30:22 knakos Exp $
 //============================================================================
 
 #include <assert.h>

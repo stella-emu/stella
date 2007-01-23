@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.25 2007-01-01 18:04:47 stephena Exp $
+// $Id: Event.hxx,v 1.26 2007-01-23 09:30:22 knakos Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -26,7 +26,7 @@ class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.25 2007-01-01 18:04:47 stephena Exp $
+  @version $Id: Event.hxx,v 1.26 2007-01-23 09:30:22 knakos Exp $
 */
 class Event
 {
