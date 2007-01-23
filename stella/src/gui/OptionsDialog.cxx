@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.50 2007-01-18 16:30:32 knakos Exp $
+// $Id: OptionsDialog.cxx,v 1.51 2007-01-23 09:37:38 knakos Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,14 +63,14 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
   ButtonWidget* b = NULL;
 
-  b = addBigButton("Video Settings", kVidCmd);
-  wid.push_back(b);
+  myVideoSettingsButton = addBigButton("Video Settings", kVidCmd);
+  wid.push_back(myVideoSettingsButton);
 
-  b = addBigButton("Audio Settings", kAudCmd);
+  myAudioSettingsButton = addBigButton("Audio Settings", kAudCmd);
 #ifndef SOUND_SUPPORT
   b->clearFlags(WIDGET_ENABLED);
 #endif
-  wid.push_back(b);
+  wid.push_back(myAudioSettingsButton);
 
   b = addBigButton("Input Settings", kInptCmd);
   wid.push_back(b);
@@ -78,8 +78,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   b = addBigButton("UI Settings", kUsrIfaceCmd);
   wid.push_back(b);
 
-  b = addBigButton("Files & Snapshots", kFileSnapCmd);
-  wid.push_back(b);
+  myFileSnapButton = addBigButton("Files & Snapshots", kFileSnapCmd);
+  wid.push_back(myFileSnapButton);
 
   // Move to second column
   xoffset += kBigButtonWidth + 10;  yoffset = 10;
@@ -93,11 +93,11 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   wid.push_back(myCheatCodeButton);
 
-  b = addBigButton("Help", kHelpCmd);
-  wid.push_back(b);
+  myHelpButton = addBigButton("Help", kHelpCmd);
+  wid.push_back(myHelpButton);
 
-  b = addBigButton("About", kAboutCmd);
-  wid.push_back(b);
+  myAboutButton = addBigButton("About", kAboutCmd);
+  wid.push_back(myAboutButton);
 
   b = addBigButton("Exit Menu", kExitCmd);
   wid.push_back(b);
@@ -113,10 +113,20 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   w = 200; h = 140;
   myAudioDialog = new AudioDialog(myOSystem, parent, font, x, y, w, h);
 
-  w = 230; h = 185;
-  myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
+  // knakos: I think this is wrong: (instantiating twice)
+  //w = 230; h = 185;
+  //myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
+#ifdef _WIN32_WCE
+  int sx, sy;
+  myOSystem->getScreenDimensions(sx, sy);
+  // we scale the input dialog down a bit in low res devices.
+  // looks only a little ugly, but the functionality is very welcome
+  if(sx < 320)  { w = 220; h = 176; }
+  else          { w = 230; h = 185; }
+#else
   w = 230; h = 185;
+#endif
   myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 200; h = 90;
@@ -148,6 +158,19 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myGameInfoButton->clearFlags(WIDGET_ENABLED);
     myCheatCodeButton->clearFlags(WIDGET_ENABLED);
   }
+
+#ifdef _WIN32_WCE
+  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);		// not honored in wince port
+  if(sx < 320)
+  {
+    // these cannot be displayed in low res devices
+    myVideoSettingsButton->clearFlags(WIDGET_ENABLED);
+    myFileSnapButton->clearFlags(WIDGET_ENABLED);
+    myGameInfoButton->clearFlags(WIDGET_ENABLED);
+    myHelpButton->clearFlags(WIDGET_ENABLED);
+    myAboutButton->clearFlags(WIDGET_ENABLED);
+  }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

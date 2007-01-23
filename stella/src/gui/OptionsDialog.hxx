@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.23 2007-01-01 18:04:54 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.24 2007-01-23 09:37:39 knakos Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,8 +61,13 @@ class OptionsDialog : public Dialog
     HelpDialog*      myHelpDialog;
     AboutDialog*     myAboutDialog;
 
+    ButtonWidget* myVideoSettingsButton;
+    ButtonWidget* myAudioSettingsButton;
+    ButtonWidget* myFileSnapButton;
     ButtonWidget* myGameInfoButton;
     ButtonWidget* myCheatCodeButton;
+    ButtonWidget* myHelpButton;
+    ButtonWidget* myAboutButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

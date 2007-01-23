@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.2 2007-01-01 18:04:54 stephena Exp $
+// $Id: UIDialog.cxx,v 1.3 2007-01-23 09:37:39 knakos Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -89,6 +89,10 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 #endif
 
   addToFocusList(wid);
+
+#ifdef _WIN32_WCE
+  myLauncherPopup->clearFlags(WIDGET_ENABLED);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

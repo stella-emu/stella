@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.41 2007-01-01 18:04:54 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.42 2007-01-23 09:37:39 knakos Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -176,6 +176,13 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 #endif
 
   addToFocusList(wid);
+
+#ifdef _WIN32_WCE
+  myTIAScalerPopup->clearFlags(WIDGET_ENABLED);
+  myUIScalerPopup->clearFlags(WIDGET_ENABLED);
+  myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
+  myDirtyRectCheckbox->clearFlags(WIDGET_ENABLED);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
