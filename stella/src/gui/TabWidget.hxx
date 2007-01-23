@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.16 2007-01-01 18:04:54 stephena Exp $
+// $Id: TabWidget.hxx,v 1.17 2007-01-23 14:57:14 knakos Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,6 +67,7 @@ class TabWidget : public Widget, public CommandSender
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    virtual bool handleEvent(Event::Type event);
 
     virtual void loadConfig();
 

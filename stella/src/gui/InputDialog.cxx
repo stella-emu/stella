@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.23 2007-01-17 13:17:42 stephena Exp $
+// $Id: InputDialog.cxx,v 1.24 2007-01-23 14:57:14 knakos Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -39,6 +39,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
   addTabWidget(myTab);
+  wid.push_back(myTab);
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab("Emul. Events");
