@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.36 2007-01-01 18:04:53 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.37 2007-01-24 19:17:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,6 +50,7 @@ GameInfoDialog::GameInfoDialog(
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos - 15);
   addTabWidget(myTab);
+  addFocusWidget(myTab);
 
   // 1) Cartridge properties
   wid.clear();
@@ -320,7 +321,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(b);
   addOKWidget(b);
 #endif
-  addToFocusList(wid);
+  addBGroupToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

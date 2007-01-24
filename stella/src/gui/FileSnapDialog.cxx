@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.5 2007-01-19 21:53:27 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.6 2007-01-24 19:17:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,6 +50,7 @@ FileSnapDialog::FileSnapDialog(
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 2*bheight - ypos);
   addTabWidget(myTab);
+  addFocusWidget(myTab);
 
   // 1) The browser settings tab
   wid.clear();
@@ -116,32 +117,24 @@ FileSnapDialog::FileSnapDialog(
   // Add focus widgets for Snapshot tab
   addToFocusList(wid, tabID);
 
-  // Activate the first tab
-  myTab->setActiveTab(0);
-
   // Add OK & Cancel buttons
   wid.clear();
 #ifndef MAC_OSX
-  xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK", kOKCmd);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
-  xpos += bwidth + 10;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel", kCloseCmd);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 #else
-  xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel", kCloseCmd);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
-  xpos += bwidth + 10;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "OK", kOKCmd);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
 #endif
-  // Add focus widgets for OK/Cancel buttons
-  addToFocusList(wid);
+  addBGroupToFocusList(wid);
 
   // Create file browser dialog
   myBrowser = new BrowserDialog(this, font, 60, 20, 200, 200);

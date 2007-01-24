@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.53 2007-01-01 18:04:52 stephena Exp $
+// $Id: Dialog.cxx,v 1.54 2007-01-24 19:17:33 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,6 +58,8 @@ Dialog::~Dialog()
 
   delete _firstWidget;
   _firstWidget = NULL;
+
+  _ourButtonGroup.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -186,6 +188,12 @@ void Dialog::buildFocusWidgetList(int id)
     // Append extra focus list
     if(_focusID > 0)
       _focusList.push_back(_ourFocusList[_focusID].focusList);
+
+    // Add button group at end of current focus list
+    // We do it this way for TabWidget, so that buttons are scanned
+    // *after* the widgets in the current tab
+    if(_ourButtonGroup.size() > 0)
+      _focusList.push_back(_ourButtonGroup);
 
     // Only update _focusedWidget if it doesn't belong to the main focus list
     // HACK - figure out how to properly deal with only one focus-able widget

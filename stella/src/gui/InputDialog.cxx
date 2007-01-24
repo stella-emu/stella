@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.24 2007-01-23 14:57:14 knakos Exp $
+// $Id: InputDialog.cxx,v 1.25 2007-01-24 19:17:33 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -40,6 +40,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
   addTabWidget(myTab);
   wid.push_back(myTab);
+  addToFocusList(wid);
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab("Emul. Events");
@@ -69,19 +70,24 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab->setActiveTab(0);
 
   // Add OK and Cancel buttons
+  wid.clear();
   ButtonWidget* b;
 #ifndef MAC_OSX
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
 #else
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
   wid.push_back(b);
+  addCancelWidget(b);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
+  addOKWidget(b);
 #endif
-  addToFocusList(wid);
+  addBGroupToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
