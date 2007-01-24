@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.54 2007-01-24 19:17:33 stephena Exp $
+// $Id: Dialog.cxx,v 1.55 2007-01-24 21:36:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -319,10 +319,16 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // not ascii??
   if(instance()->eventHandler().kbdShift(modifiers))
   {
-    if(ascii == 256+20)       // left arrow
-      e = Event::UITabPrev;
-    else if(ascii == 256+19)  // right arrow
-      e = Event::UITabNext;
+    if(ascii == 256+20 && _ourTab)      // left arrow
+    {
+      _ourTab->cycleTab(-1);
+      return;
+    }
+    else if(ascii == 256+19 && _ourTab) // right arrow
+    {
+      _ourTab->cycleTab(+1);
+      return;
+    }
     else if(keycode == 9)     // tab
       e = Event::UINavPrev;
   }
@@ -468,22 +474,6 @@ bool Dialog::handleNavEvent(Event::Type e)
 {
   switch(e)
   {
-    case Event::UITabPrev:
-      if(_ourTab)
-      {
-        _ourTab->cycleTab(-1);
-        return true;
-      }
-      break;
-
-    case Event::UITabNext:
-      if(_ourTab)
-      {
-        _ourTab->cycleTab(+1);
-        return true;
-      }
-      break;
-
     case Event::UINavPrev:
       if(_focusedWidget && !_focusedWidget->wantsTab())
       {

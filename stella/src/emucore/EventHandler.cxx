@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.198 2007-01-19 21:53:25 stephena Exp $
+// $Id: EventHandler.cxx,v 1.199 2007-01-24 21:36:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2661,9 +2661,7 @@ EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = 
   { Event::UISelect,    "Select item",          0 },
 
   { Event::UINavPrev,   "Previous object",      0 },
-  { Event::UINavNext,   "Next object",          0 },
-  { Event::UITabPrev,   "Previous tabgroup",    0 },
-  { Event::UITabNext,   "Next tabgroup",        0 }
+  { Event::UINavNext,   "Next object",          0 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

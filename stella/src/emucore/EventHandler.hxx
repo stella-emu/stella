@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.99 2007-01-13 15:55:14 stephena Exp $
+// $Id: EventHandler.hxx,v 1.100 2007-01-24 21:36:38 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.99 2007-01-13 15:55:14 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.100 2007-01-24 21:36:38 stephena Exp $
 */
 class EventHandler
 {
@@ -466,7 +466,7 @@ class EventHandler
   private:
     enum {
       kEmulActionListSize = 80,
-      kMenuActionListSize = 15
+      kMenuActionListSize = 13
     };
 
     // Structure used for action menu items
