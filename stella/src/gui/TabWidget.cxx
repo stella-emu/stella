@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.26 2007-01-23 14:57:14 knakos Exp $
+// $Id: TabWidget.cxx,v 1.27 2007-01-24 20:48:54 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -211,21 +211,26 @@ void TabWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TabWidget::handleEvent(Event::Type event)
 {
+  bool handled = false;
+
   switch (event)
   {
     case Event::UIDown:
     case Event::UIRight:
     case Event::UIPgDown:
       cycleTab(1);
-      return true;
-
+      handled = true;
+      break;
     case Event::UIUp:
     case Event::UILeft:
     case Event::UIPgUp:
       cycleTab(-1);
-      return true;
+      handled = true;
+      break;
+    default:
+      break;
   }
-  return false;
+  return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
