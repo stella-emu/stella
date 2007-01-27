@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: SettingsWinCE.cpp,v 1.7 2007-01-21 20:10:50 knakos Exp $
+// $Id: SettingsWinCE.cpp,v 1.8 2007-01-27 10:51:04 knakos Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,6 +28,7 @@
 SettingsWinCE::SettingsWinCE(OSystem* osystem) : Settings(osystem) 
 {
   setInternal("romdir", (string) getcwd() + "\\Roms\\");
+  setInternal("wince_orientation", "0");
 }
 
 SettingsWinCE::~SettingsWinCE()
