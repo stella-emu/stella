@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.cpp,v 1.12 2007-01-23 09:40:57 knakos Exp $
+// $Id: FrameBufferWinCE.cpp,v 1.13 2007-01-27 10:48:57 knakos Exp $
 //============================================================================
 
 #include <windows.h>
@@ -27,9 +27,11 @@
 
 FrameBufferWinCE::FrameBufferWinCE(OSystem *osystem)
 : FrameBuffer(osystem), myDstScreen(NULL), SubsystemInited(false), displacement(0),
-issmartphone(true), islandscape(false), displaymode(0), legacygapi(true), devres(SM_LOW), screenlocked(false)
+issmartphone(true), islandscape(false), legacygapi(true), devres(SM_LOW), screenlocked(false)
 {
 	gxdp.cxWidth = gxdp.cyHeight = gxdp.cbxPitch = gxdp.cbyPitch = gxdp.cBPP = gxdp.ffFormat = 0;
+	displaymode = myOSystem->settings().getInt("wince_orientation");
+	if (displaymode > 2) displaymode = 0;
 }
 
 FrameBufferWinCE::~FrameBufferWinCE()
@@ -213,6 +215,7 @@ uInt8 FrameBufferWinCE::rotatedisplay(void)
 	}
 	setmode(displaymode);
 	wipescreen();
+	myOSystem->settings().setInt("wince_orientation", displaymode);
 	return displaymode;
 }
 
@@ -326,7 +329,7 @@ void FrameBufferWinCE::preFrameUpdate()
 void FrameBufferWinCE::drawMediaSource()
 {
 	static uInt8 *sc, *sp, *sc_n, *sp_n;
-	static uInt8 *d, *pl, *p, *nl;
+	static uInt8 *d, *pl, *nl;
 	static uInt16 pix1, pix2, pix3, x, y;
 	uInt32 pix1d, pix2d, pix3d;
 
@@ -343,9 +346,8 @@ void FrameBufferWinCE::drawMediaSource()
 
 	if (theRedrawTIAIndicator)
 	{
-		p = sp;
-		for (uInt16 y=0; y<myHeight; y++)
-			for (uInt16 x=0; x<myWidth; x += 4, *p = *p + 1, p += 4);
+		memset(sp, 0, myWidth*myHeight-1);
+		memset(myDstScreen, 0, scrwidth*scrheight*2);
 		theRedrawTIAIndicator = false;
 	}
 	
@@ -694,9 +696,9 @@ void FrameBufferWinCE::drawChar(const GUI::Font* myfont, uInt8 c, uInt32 x, uInt
 	else
 	{
 		if (displaymode != 2)
-			d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + (y-1) * (scrpixelstep << 1);
+			d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + y * (scrpixelstep << 1);
 		else
-			d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
+			d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y) * (scrpixelstep<<1);
 	}
 
 	uInt16 col = pal[color];
@@ -763,13 +765,13 @@ void FrameBufferWinCE::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 	else
 		if (displaymode != 2)
 		{
-			PlotvLine((y<<1), ((scrheight>>1)-x)<<1, ((scrheight>>1)-x2-1)<<1, color);
-			PlotvLine((y<<1)+1, ((scrheight>>1)-x)<<1, ((scrheight>>1)-x2-1)<<1, color);
+			PlotvLine((y<<1), (((scrheight>>1)-x)<<1)-1, (((scrheight>>1)-x2)<<1)-1, color);
+			PlotvLine((y<<1)+1, (((scrheight>>1)-x)<<1)-1, (((scrheight>>1)-x2)<<1)-1, color);
 		}
 		else
 		{
-			PlotvLine(((scrwidth>>1)-y-1)<<1, x<<1, (x2+1)<<1, color);
-			PlotvLine((((scrwidth>>1)-y-1)<<1)+1, x<<1, (x2+1)<<1, color);
+			PlotvLine(((scrwidth>>1)-y)<<1, x<<1, x2<<1, color);
+			PlotvLine((((scrwidth>>1)-y)<<1)+1, x<<1, x2<<1, color);
 		}
 }
 
@@ -794,8 +796,8 @@ void FrameBufferWinCE::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 	else
 		if (displaymode != 2)
 		{
-			PlothLine(y<<1, ((scrheight>>1)-x-1)<<1, y2<<1, color);
-			PlothLine(y<<1, (((scrheight>>1)-x-1)<<1)+1, y2<<1, color);
+			PlothLine(y<<1, (((scrheight>>1)-x)<<1)-2, y2<<1, color);
+			PlothLine(y<<1, (((scrheight>>1)-x)<<1)-1, y2<<1, color);
 		}
 		else
 		{
@@ -835,9 +837,9 @@ void FrameBufferWinCE::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int colo
 		if ((int)x>(scrheight>>1)) return; if ((int)y>(scrwidth>>1)) return;
 		if ((int)(x+w)>(scrheight>>1)) w=(scrheight>>1)-x; if ((int)(y+h)>(scrwidth>>1)) h=(scrwidth>>1)-y;
 		if (displaymode != 2)
-			PlotfillRect(y<<1, ((scrheight>>1)-x-w)<<1, (h-1)<<1, (w-1)<<1, color);
+			PlotfillRect(y<<1, (((scrheight>>1)-x-w+1)<<1)-2, h<<1, w<<1, color);
 		else
-			PlotfillRect(((scrwidth>>1)-y-h)<<1, x<<1, (h-1)<<1, (w-1)<<1, color);
+			PlotfillRect(((scrwidth>>1)-y-h+1)<<1, x<<1, h<<1, w<<1, color);
 	}
 
 }
@@ -871,7 +873,7 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, I
 		if (displaymode != 2)
 			d = myDstScreen + ((scrheight>>1)-x-1) * (scrlinestep<<1) + y * (scrpixelstep<<1);
 		else
-			d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y-1) * (scrpixelstep<<1);
+			d = myDstScreen + x * (scrlinestep<<1) + ((scrwidth>>1)-y) * (scrpixelstep<<1);
 
 	col = pal[color];
 	cold = paldouble[color];
@@ -933,7 +935,7 @@ void FrameBufferWinCE::translateCoords(Int32* x, Int32* y)
 {
 	if (!issmartphone)
 	{
-		if ((displaymode == 1) || (displaymode==0 && myOSystem->eventHandler().state() != 1))
+		if ((displaymode == 1) || (displaymode==0 && myOSystem->eventHandler().state() != EventHandler::S_EMULATE))
 		{
 			Int32 x2 = *x;
 			*x = scrheight - *y;
@@ -958,14 +960,11 @@ void FrameBufferWinCE::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
 	static bool initflag = false;
 
-	if (myOSystem->eventHandler().state() == 3)
+	if (myOSystem->eventHandler().state() == EventHandler::S_MENU)
 		initflag = true;
 
-	if (myOSystem->eventHandler().state()==1 && initflag)
-	{
-		// TODO: optimize here
-		theRedrawTIAIndicator = true;
-	}
+	if (myOSystem->eventHandler().state() == EventHandler::S_EMULATE && initflag)
+		theRedrawTIAIndicator = true;		// TODO: optimize here
 
 	return;
 }
