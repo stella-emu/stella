@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: PocketStella.cpp,v 1.9 2007-01-23 09:44:55 knakos Exp $
+// $Id: PocketStella.cpp,v 1.10 2007-01-27 10:50:14 knakos Exp $
 //============================================================================
 
 #include <queue>
@@ -117,9 +117,7 @@ LRESULT CALLBACK WindowProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam )
 	case WM_HIBERNATE:
 		GXSuspend();
 		if (theOSystem)
-			if (((FrameBufferWinCE &)theOSystem->frameBuffer()).IsSmartphoneLowRes())
-				theOSystem->eventHandler().handleEvent(Event::LauncherMode, theOSystem->eventHandler().state());
-			else
+			if (theOSystem->eventHandler().state() == EventHandler::S_EMULATE)
 				theOSystem->eventHandler().enterMenuMode(EventHandler::S_MENU);
 		return 0;
 
