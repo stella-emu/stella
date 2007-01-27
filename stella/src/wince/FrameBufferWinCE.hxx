@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.hxx,v 1.13 2007-01-23 09:40:57 knakos Exp $
+// $Id: FrameBufferWinCE.hxx,v 1.14 2007-01-27 10:52:49 knakos Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WINCE_HXX
@@ -106,6 +106,7 @@ class FrameBufferWinCE : public FrameBuffer
 	bool IsVGA(void) { return (devres==VGA); }
 	uInt8 getmode(void) { return displaymode; }
 	bool IsLandscape(void) { return islandscape; }
+	void GetScreenExtents(uInt16 *x, uInt16 *y) { *x = scrwidth; *y = scrheight; return; }
 };
 
 #endif

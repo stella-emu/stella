@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: missing.cpp,v 1.9 2007-01-23 09:44:55 knakos Exp $
+// $Id: missing.cpp,v 1.10 2007-01-27 10:52:49 knakos Exp $
 //============================================================================
 
 #include <queue>
@@ -254,10 +254,45 @@ DECLSPEC void SDL_Delay(Uint32 ms) { Sleep(ms); }
 
 DECLSPEC int SDLCALL SDL_PollEvent(SDL_Event *event)
 {
+	static bool cornertap[4] = {false, false, false, false};
+
 	while (!eventqueue.empty())
 	{
 		memcpy(event, &(eventqueue.front()), sizeof(SDL_Event));
 		eventqueue.pop();
+
+		// tap in corners
+		if ((event->type == SDL_MOUSEBUTTONDOWN || event->type == SDL_MOUSEBUTTONUP) && theOSystem->eventHandler().state() == EventHandler::S_EMULATE)
+			if (event->type == SDL_MOUSEBUTTONDOWN)
+			{
+				uInt16 cs = ((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->IsVGA() ? 40 : 20;
+				uInt16 x = event->motion.x;
+				uInt16 y = event->motion.y;
+				uInt16 sx, sy;
+				((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->GetScreenExtents(&sx, &sy);
+				if (x > (sx - cs) && y > (sy - cs) && !cornertap[0])
+				{	// bottom right corner for rotate
+					((FrameBufferWinCE *) (&(theOSystem->frameBuffer())))->rotatedisplay();
+					cornertap[0] = true;
+					continue;
+				}
+				else if (x < cs && y > (sy - cs) && !cornertap[1])
+				{	// bottom left corner for launcher
+					theOSystem->eventHandler().handleEvent(Event::LauncherMode, EventHandler::S_EMULATE);
+					cornertap[1] = true;
+				}
+				else if (x < cs && y < cs && !cornertap[2])
+				{	// top left for menu
+					theOSystem->eventHandler().enterMenuMode(EventHandler::S_MENU);
+					cornertap[2] = true;
+					continue;
+				}
+			}
+			else
+			{
+				cornertap[0] = cornertap[1] = cornertap[2] = false;
+			}
+
 		return 1;
 	}
 	event->type = SDL_NOEVENT;
