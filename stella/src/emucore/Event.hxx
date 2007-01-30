@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.27 2007-01-24 21:36:38 stephena Exp $
+// $Id: Event.hxx,v 1.28 2007-01-30 17:13:07 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -26,7 +26,7 @@ class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.27 2007-01-24 21:36:38 stephena Exp $
+  @version $Id: Event.hxx,v 1.28 2007-01-30 17:13:07 stephena Exp $
 */
 class Event
 {
@@ -77,8 +77,8 @@ class Event
 	  DrivingOneFire,
 	  
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
-      MenuMode, CmdMenuMode, DebuggerMode, LauncherMode, Fry,
-      VolumeDecrease, VolumeIncrease,
+      PauseMode, MenuMode, CmdMenuMode, DebuggerMode, LauncherMode,
+      Fry, VolumeDecrease, VolumeIncrease,
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
       UISelect, UINavPrev, UINavNext, UIOK, UICancel,

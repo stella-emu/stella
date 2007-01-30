@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.199 2007-01-24 21:36:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.200 2007-01-30 17:13:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -190,15 +190,19 @@ void EventHandler::refreshDisplay(bool forceUpdate)
   switch(myState)
   {
     case S_EMULATE:
-      myOSystem->frameBuffer().refresh();
+    case S_PAUSE:
+      if(&myOSystem->frameBuffer())
+        myOSystem->frameBuffer().refresh();
       break;
 
-    case S_MENU:
+    case S_MENU:     // fall through to next case
     case S_CMDMENU:
-      myOSystem->frameBuffer().refresh();
+      if(&myOSystem->frameBuffer())
+        myOSystem->frameBuffer().refresh();
     case S_LAUNCHER:
     case S_DEBUGGER:
-      myOverlay->refresh();
+      if(myOverlay)
+        myOverlay->refresh();
       break;
 
     default:
@@ -206,7 +210,7 @@ void EventHandler::refreshDisplay(bool forceUpdate)
       break;
   }
 
-  if(forceUpdate)
+  if(forceUpdate && &myOSystem->frameBuffer())
     myOSystem->frameBuffer().update();
 }
 
@@ -1224,6 +1228,21 @@ bool EventHandler::eventStateChange(Event::Type type)
 
   switch(type)
   {
+    case Event::PauseMode:
+      if(myState == S_EMULATE)
+      {
+        myState = S_PAUSE;
+        myOSystem->sound().mute(true);
+      }
+      else if(myState == S_PAUSE)
+      {
+        myState = S_EMULATE;
+        myOSystem->sound().mute(false);
+      }
+      else
+        handled = false;
+      break;
+
     case Event::MenuMode:
       if(myState == S_EMULATE)
         enterMenuMode(S_MENU);
@@ -1751,6 +1770,7 @@ void EventHandler::setDefaultKeymap(EventMode mode)
       myKeyTable[ SDLK_F11 ][mode]       = Event::LoadState;
       myKeyTable[ SDLK_F12 ][mode]       = Event::TakeSnapshot;
       myKeyTable[ SDLK_BACKSPACE ][mode] = Event::Fry;
+      myKeyTable[ SDLK_PAUSE ][mode]     = Event::PauseMode;
       myKeyTable[ SDLK_TAB ][mode]       = Event::MenuMode;
       myKeyTable[ SDLK_BACKSLASH ][mode] = Event::CmdMenuMode;
       myKeyTable[ SDLK_BACKQUOTE ][mode] = Event::DebuggerMode;
@@ -2203,7 +2223,6 @@ void EventHandler::enterMenuMode(State state)
   setEventState(state);
   myOverlay->reStack();
 
-  refreshDisplay();
   myOSystem->frameBuffer().setCursorState();
 
   myOSystem->sound().mute(true);
@@ -2215,7 +2234,6 @@ void EventHandler::leaveMenuMode()
 {
   setEventState(S_EMULATE);
 
-  refreshDisplay();
   myOSystem->frameBuffer().setCursorState();
 
   myOSystem->sound().mute(false);
@@ -2238,10 +2256,6 @@ bool EventHandler::enterDebugMode()
 
   // Make sure debugger starts in a consistent state
   myOSystem->debugger().setStartState();
-
-  // Make sure screen is always refreshed when entering debug mode
-  // (sometimes entering on a breakpoint doesn't draw contents)
-  refreshDisplay();
 #else
   myOSystem->frameBuffer().showMessage("Debugger unsupported");
 #endif
@@ -2262,7 +2276,6 @@ void EventHandler::leaveDebugMode()
 
   setEventState(S_EMULATE);
   myOSystem->createFrameBuffer();
-  refreshDisplay();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(false);
   myEvent->clear();
@@ -2277,10 +2290,15 @@ void EventHandler::setEventState(State state)
   {
     case S_EMULATE:
       myOverlay = NULL;
+      myOSystem->sound().mute(false);
 
       // Controller types only make sense in Emulate mode
       myController[0] = myOSystem->console().controller(Controller::Left).type();
       myController[1] = myOSystem->console().controller(Controller::Right).type();
+      break;
+
+    case S_PAUSE:
+      myOSystem->sound().mute(true);
       break;
 
     case S_MENU:
@@ -2310,6 +2328,8 @@ void EventHandler::setEventState(State state)
   myOSystem->stateChanged(myState);
   if(&myOSystem->frameBuffer())
     myOSystem->frameBuffer().stateChanged(myState);
+
+  refreshDisplay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2565,6 +2585,7 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::Fry,                         "Fry cartridge",                   0 },
   { Event::VolumeDecrease,              "Decrease volume",                 0 },
   { Event::VolumeIncrease,              "Increase volume",                 0 },
+  { Event::PauseMode,                   "Pause",                           0 },
   { Event::MenuMode,                    "Enter options menu mode",         0 },
   { Event::CmdMenuMode,                 "Toggle command menu mode",        0 },
   { Event::DebuggerMode,                "Toggle debugger mode",            0 },

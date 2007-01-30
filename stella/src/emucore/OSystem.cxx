@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.94 2007-01-19 21:53:26 stephena Exp $
+// $Id: OSystem.cxx,v 1.95 2007-01-30 17:13:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -240,10 +240,11 @@ bool OSystem::createFrameBuffer(bool showmessage)
   switch(myEventHandler->state())
   {
     case EventHandler::S_EMULATE:
+    case EventHandler::S_PAUSE:
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
       myConsole->initializeVideo();
-      break;  // S_EMULATE, S_MENU, S_CMDMENU
+      break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
       myLauncher->initializeVideo();

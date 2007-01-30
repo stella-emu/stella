@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.116 2007-01-06 16:28:38 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.117 2007-01-30 17:13:10 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -44,7 +44,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     theRedrawTIAIndicator(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
-    myInitializedCount(0)
+    myInitializedCount(0),
+    myPausedCount(0)
 {
 }
 
@@ -139,6 +140,21 @@ void FrameBuffer::update()
       drawMediaSource();
 
       break;  // S_EMULATE
+    }
+
+    case EventHandler::S_PAUSE:
+    {
+      // Only update the screen if it's been invalidated
+      if(theRedrawTIAIndicator)
+        drawMediaSource();
+
+      // Show a pause message every 5 seconds
+      if(myPausedCount++ >= 7*myOSystem->frameRate())
+      {
+        myPausedCount = 0;
+        showMessage("Paused", kMiddleCenter);
+      }
+      break;  // S_PAUSE
     }
 
     case EventHandler::S_MENU:
@@ -386,6 +402,7 @@ bool FrameBuffer::scale(int direction, const string& type)
 
     EventHandler::State state = myOSystem->eventHandler().state();
     bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                      state == EventHandler::S_PAUSE   ||
                       state == EventHandler::S_MENU    ||
                       state == EventHandler::S_CMDMENU);
 
@@ -413,6 +430,7 @@ void FrameBuffer::setCursorState()
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
+    case EventHandler::S_PAUSE:
       showCursor(false);
       break;
     default:
@@ -735,6 +753,7 @@ const string& FrameBuffer::currentScalerName()
 {
   EventHandler::State state = myOSystem->eventHandler().state();
   bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                    state == EventHandler::S_PAUSE   ||
                     state == EventHandler::S_MENU    ||
                     state == EventHandler::S_CMDMENU);
 

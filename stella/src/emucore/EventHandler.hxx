@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.100 2007-01-24 21:36:38 stephena Exp $
+// $Id: EventHandler.hxx,v 1.101 2007-01-30 17:13:10 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.100 2007-01-24 21:36:38 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.101 2007-01-30 17:13:10 stephena Exp $
 */
 class EventHandler
 {
@@ -78,7 +78,15 @@ class EventHandler
     virtual ~EventHandler();
 
     // Enumeration representing the different states of operation
-    enum State { S_NONE, S_EMULATE, S_LAUNCHER, S_MENU, S_CMDMENU, S_DEBUGGER };
+    enum State {
+      S_NONE,
+      S_EMULATE,
+      S_PAUSE,
+      S_LAUNCHER,
+      S_MENU,
+      S_CMDMENU,
+      S_DEBUGGER
+    };
 
     /**
       Returns the event object associated with this handler class.
@@ -465,7 +473,7 @@ class EventHandler
 
   private:
     enum {
-      kEmulActionListSize = 80,
+      kEmulActionListSize = 81,
       kMenuActionListSize = 13
     };
 

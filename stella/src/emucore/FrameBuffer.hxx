@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.85 2007-01-06 16:28:38 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.86 2007-01-30 17:13:10 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -93,7 +93,7 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.85 2007-01-06 16:28:38 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.86 2007-01-30 17:13:10 stephena Exp $
 */
 class FrameBuffer
 {
@@ -547,6 +547,9 @@ class FrameBuffer
   private:
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
+
+    // Used to set intervals between messages while in pause mode
+    uInt32 myPausedCount;
 
     // Used for onscreen messages
     struct Message {

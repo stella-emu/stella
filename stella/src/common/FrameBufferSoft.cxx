@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.69 2007-01-15 00:07:51 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.70 2007-01-30 17:13:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -859,7 +859,8 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
   // When in a UI mode, always use dirty rects
   // Otherwise, check the 'dirtyrects' setting
   // Phosphor mode implies a full update, so turn off dirty rects
-  bool emulation = state == EventHandler::S_EMULATE;
+  bool emulation = (state == EventHandler::S_EMULATE ||
+                    state == EventHandler::S_PAUSE);
   if(emulation)
   {
     if(myUsePhosphor)
