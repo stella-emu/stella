@@ -1710,6 +1710,7 @@
 "Cartridge.MD5" "1bf503c724001b09be79c515ecfcbd03"
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.Name" "Bumper Bash (1983) (Spectravideo) (PAL) [!]"
+"Display.YStart" "54"
 ""
 
 "Cartridge.MD5" "19d6956ff17a959c48fcd8f4706a848d"
@@ -4755,6 +4756,8 @@
 "Cartridge.MD5" "4b9581c3100a1ef05eac1535d25385aa"
 "Cartridge.Name" "I.Q. 180 (HomeVision) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.YStart" "20"
+"Display.Height" "235"
 ""
 
 "Cartridge.MD5" "4b8e76a294a04036168f5b13c64911d2"
@@ -5106,12 +5109,6 @@
 "Cartridge.ModelNo" "AG-019"
 "Cartridge.Name" "Sky Jinks (1982) (Activision) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
-""
-
-"Cartridge.MD5" "50dd164c77c4df579843baf838327469"
-"Cartridge.Manufacturer" "Champ Games"
-"Cartridge.Name" "Conquest Of Mars"
-"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "515046e3061b7b18aa3a551c3ae12673"
@@ -6095,6 +6092,7 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Format" "PAL60"
 "Display.YStart" "20"
+"Display.Height" "225"
 "Display.Phosphor" "YES"
 ""
 
@@ -8377,6 +8375,13 @@
 "Controller.Left" "PADDLES"
 ""
 
+"Cartridge.MD5" "85bbefb90e16bf386b304c1e9a1f6084"
+"Cartridge.Manufacturer" "Champ Games"
+"Cartridge.Name" "Conquest Of Mars (PAL60)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+""
+
 "Cartridge.MD5" "85a4133f6dcf4180e36e70ad0fca0921"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Chopper Command (CCE)"
@@ -10463,6 +10468,7 @@
 "Cartridge.MD5" "aa1c41f86ec44c0a44eb64c332ce08af"
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.Name" "Bumper Bash (1983) (Spectravideo)"
+"Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "aa7bb54d2c189a31bb1fa20099e42859"
@@ -11176,7 +11182,7 @@
 "Cartridge.Name" "Cat Trax (PAL60 by Thomas Jentzsch)"
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 "Display.Format" "PAL60"
-"Display.YStart" "11"
+"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -11679,6 +11685,12 @@
 
 "Cartridge.MD5" "c2a37f1c7603c5fd97df47d6c562abfa"
 "Cartridge.Name" "Bar-Score Demo (2001) (Roger Williams)"
+""
+
+"Cartridge.MD5" "c2fbef02b6eea37d8df3e91107f89950"
+"Cartridge.Manufacturer" "Champ Games"
+"Cartridge.Name" "Conquest Of Mars (NTSC)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "c1cb228470a87beb5f36e90ac745da26"

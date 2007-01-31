@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.123 2007-01-13 15:55:12 stephena Exp $
+// $Id: Console.cxx,v 1.124 2007-01-31 22:37:02 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -216,9 +216,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   buf << endl << cart->about();
 
   // Make sure height is set properly for PAL ROM
-  if(myDisplayFormat.compare(0, 3, "PAL") == 0)
-    if(myProperties.get(Display_Height) == "210")
-      myProperties.set(Display_Height, "250");
+  if(myDisplayFormat == "PAL" && myProperties.get(Display_Height) == "210")
+    myProperties.set(Display_Height, "250");
 
   // Reset, the system to its power-on state
   mySystem->reset();
