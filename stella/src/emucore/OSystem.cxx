@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.95 2007-01-30 17:13:10 stephena Exp $
+// $Id: OSystem.cxx,v 1.96 2007-02-06 23:34:33 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -594,12 +594,8 @@ bool OSystem::queryConsoleInfo(const uInt8* image, uInt32 size,
   if(s != "") props.set(Controller_SwapPaddles, s);
   s = mySettings->getString("format");
   if(s != "") props.set(Display_Format, s);
-  s = mySettings->getString("xstart");
-  if(s != "") props.set(Display_XStart, s);
   s = mySettings->getString("ystart");
   if(s != "") props.set(Display_YStart, s);
-  s = mySettings->getString("width");
-  if(s != "") props.set(Display_Width, s);
   s = mySettings->getString("height");
   if(s != "") props.set(Display_Height, s);
   s = mySettings->getString("pp");

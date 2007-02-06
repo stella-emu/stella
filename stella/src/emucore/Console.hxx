@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.58 2007-01-01 18:04:47 stephena Exp $
+// $Id: Console.hxx,v 1.59 2007-02-06 23:34:31 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.58 2007-01-01 18:04:47 stephena Exp $
+  @version $Id: Console.hxx,v 1.59 2007-02-06 23:34:31 stephena Exp $
 */
 class Console
 {
@@ -193,32 +193,14 @@ class Console
     void fry() const;
 
     /**
-      Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.
-
-      @param direction +1 indicates increase, -1 indicates decrease.
-    */
-    void changeXStart(int direction);
-
-    /**
-      Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.
+      Change the "Display.YStart" variable.
 
       @param direction +1 indicates increase, -1 indicates decrease.
     */
     void changeYStart(int direction);
 
     /**
-      Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.
-
-      @param direction +1 indicates increase, -1 indicates decrease.
-    */
-    void changeWidth(int direction);
-
-    /**
-      Change the "Display.XStart" variable.  Currently, a system reset is issued
-      after the change.
+      Change the "Display.Height" variable.
 
       @param direction +1 indicates increase, -1 indicates decrease.
     */

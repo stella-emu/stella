@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.115 2007-01-03 17:37:46 stephena Exp $
+// $Id: Settings.cxx,v 1.116 2007-02-06 23:34:33 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -355,9 +355,7 @@ void Settings::usage()
     << "   -bc          <arg>          Same as using both -lc and -rc\n"
     << "   -cp          <arg>          Sets the 'Controller.SwapPaddles' property\n"
     << "   -format      <arg>          Sets the 'Display.Format' property\n"
-    << "   -xstart      <arg>          Sets the 'Display.XStart' property\n"
     << "   -ystart      <arg>          Sets the 'Display.YStart' property\n"
-    << "   -width       <arg>          Sets the 'Display.Width' property\n"
     << "   -height      <arg>          Sets the 'Display.Height' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"

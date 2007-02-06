@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.78 2007-01-06 21:13:29 stephena Exp $
+// $Id: TIA.cxx,v 1.79 2007-02-06 23:34:33 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -237,21 +237,13 @@ void TIA::frameReset()
   myScanlineCountForLastFrame = 0;
   myCurrentScanline = 0;
 
-  myFrameXStart = atoi(myConsole.properties().get(Display_XStart).c_str());
-  myFrameWidth  = atoi(myConsole.properties().get(Display_Width).c_str());
+  myFrameXStart = 0;    // Hardcoded in preparation for new TIA class
+  myFrameWidth  = 160;  // Hardcoded in preparation for new TIA class
   myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
   myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
 
-  // Make sure the starting x and width/height values are reasonable
-  // This is partly due to restrictions on the internal buffer size,
-  // but also because we need a certain minimum amount of space for
-  // the onscreen GUI
-  if((myFrameXStart + myFrameWidth) > 160 || myFrameWidth < 140)
-  {
-    // Values are illegal so reset to default values
-    myFrameXStart = 0;
-    myFrameWidth = 160;
-  }
+  // Make sure the height value is reasonable, because we need a certain
+  // minimum amount of space for the onscreen GUI
   if(myFrameHeight < 200)
   {
     // Values are illegal so reset to default values

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.37 2007-01-24 19:17:33 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.38 2007-02-06 23:34:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -226,35 +226,21 @@ GameInfoDialog::GameInfoDialog(
   myFormat->appendEntry("PAL60", 4);
   wid.push_back(myFormat);
 
-  ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "XStart:", kTextAlignLeft);
-  myXStart = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                25, fontHeight, "");
-  wid.push_back(myXStart);
-
-  ypos += lineHeight + 3;
-  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Width:", kTextAlignLeft);
-  myWidth = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                               25, fontHeight, "");
-  wid.push_back(myWidth);
-
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "YStart:", kTextAlignLeft);
   myYStart = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 25, fontHeight, "");
   wid.push_back(myYStart);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Height:", kTextAlignLeft);
   myHeight = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                 25, fontHeight, "");
   wid.push_back(myHeight);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use Phosphor:", kTextAlignLeft);
@@ -277,7 +263,7 @@ GameInfoDialog::GameInfoDialog(
                                         15, fontHeight, "", kTextAlignLeft);
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
-  ypos += lineHeight + 3;
+  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use HMBlanks:", kTextAlignLeft);
   myHmoveBlanks = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -455,12 +441,6 @@ void GameInfoDialog::loadView()
   else
     myFormat->setSelectedTag(0);
 
-  s = myGameProperties.get(Display_XStart);
-  myXStart->setEditString(s);
-
-  s = myGameProperties.get(Display_Width);
-  myWidth->setEditString(s);
-
   s = myGameProperties.get(Display_YStart);
   myYStart->setEditString(s);
 
@@ -578,12 +558,6 @@ void GameInfoDialog::saveConfig()
   tag = myFormat->getSelectedTag();
   s = (tag == 4) ? "PAL60" : (tag == 3) ? "PAL" : (tag == 2) ? "NTSC" : "AUTO-DETECT";
   myGameProperties.set(Display_Format, s);
-
-  s = myXStart->getEditString();
-  myGameProperties.set(Display_XStart, s);
-
-  s = myWidth->getEditString();
-  myGameProperties.set(Display_Width, s);
 
   s = myYStart->getEditString();
   myGameProperties.set(Display_YStart, s);

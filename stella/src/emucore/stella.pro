@@ -709,6 +709,9 @@
 "Cartridge.Note" "Uses the Joystick Controllers (swapped)"
 "Cartridge.Rarity" "Uncommon"
 "Console.SwapPorts" "YES"
+"Display.YStart" "30"
+"Display.Height" "220"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "0ac0d491763153fac75f5337ce32a9d6"
@@ -2212,6 +2215,12 @@
 
 "Cartridge.MD5" "23e4ca038aba11982e1694559f3be10f"
 "Cartridge.Name" "Big Dig (V3) (20-10-2002) (CT)"
+""
+
+"Cartridge.MD5" "23fad5a125bcd4463701c8ad8a0043a9"
+"Cartridge.Name" "Stone Age (CCE)"
+"Display.YStart" "26"
+"Display.Height" "220"
 ""
 
 "Cartridge.MD5" "2365e1534d67f94d8670394ab99150ce"
@@ -5660,6 +5669,13 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "5babe0cad3ec99d76b0aa1d36a695d2f"
+"Cartridge.Manufacturer" "Coleco (Ed Temple)"
+"Cartridge.Name" "Looping (Coleco)"
+"Cartridge.Rarity" "Prototype (never released)"
+"Display.YStart" "24"
+""
+
 "Cartridge.MD5" "63c7395d412a3cd095ccdd9b5711f387"
 "Cartridge.Manufacturer" "Eric Ball"
 "Cartridge.ModelNo" "ELB005"
@@ -7233,6 +7249,11 @@
 "Cartridge.Name" "Barber Pole Demo (PD)"
 ""
 
+"Cartridge.MD5" "73e66e82ac22b305eb4d9578e866236e"
+"Cartridge.Name" "Unknown Game #2 (Datatech)"
+"Display.YStart" "24"
+""
+
 "Cartridge.MD5" "73158ea51d77bf521e1369311d26c27b"
 "Cartridge.Manufacturer" "Zellers"
 "Cartridge.Name" "Challenge (Zellers) [!]"
@@ -8433,6 +8454,7 @@
 "Cartridge.Name" "Survival Run (1983) (Milton Bradley)"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "29"
+"Display.Height" "225"
 "Display.Phosphor" "YES"
 ""
 
@@ -9748,6 +9770,7 @@
 
 "Cartridge.MD5" "9e5007131695621d06902ab3c960622a"
 "Cartridge.Name" "Tac Scan (1983) (Sega) [h1]"
+"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -13016,6 +13039,7 @@
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Display.Height" "215"
 "Display.Phosphor" "YES"
 ""
 
@@ -13812,6 +13836,8 @@
 "Cartridge.ModelNo" "PB5910"
 "Cartridge.Name" "Strawberry Shortcake - Musical Match-Ups (1983) (Parker Bros)"
 "Cartridge.Rarity" "Uncommon"
+"Display.YStart" "25"
+"Display.Height" "225"
 ""
 
 "Cartridge.MD5" "e12e32dee68201b6765fcd0ed54d6646"

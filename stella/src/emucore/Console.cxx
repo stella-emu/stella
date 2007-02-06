@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.124 2007-01-31 22:37:02 stephena Exp $
+// $Id: Console.cxx,v 1.125 2007-02-06 23:34:31 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -453,50 +453,6 @@ void Console::fry() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeXStart(int direction)
-{
-  Int32 xstart = atoi(myProperties.get(Display_XStart).c_str());
-  uInt32 width = atoi(myProperties.get(Display_Width).c_str());
-  ostringstream strval;
-  string message;
-
-  if(direction == +1)    // increase XStart
-  {
-    xstart += 4;
-    if(xstart > 80)
-    {
-      myOSystem->frameBuffer().showMessage("XStart at maximum");
-      return;
-    }
-    else if((width + xstart) > 160)
-    {
-      myOSystem->frameBuffer().showMessage("XStart no effect");
-      return;
-    }
-  }
-  else if(direction == -1)  // decrease XStart
-  {
-    xstart -= 4;
-    if(xstart < 0)
-    {
-      myOSystem->frameBuffer().showMessage("XStart at minimum");
-      return;
-    }
-  }
-  else
-    return;
-
-  strval << xstart;
-  myProperties.set(Display_XStart, strval.str());
-  ((TIA*)myMediaSource)->frameReset();
-  myOSystem->frameBuffer().refresh();
-
-  message = "XStart ";
-  message += strval.str();
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeYStart(int direction)
 {
   Int32 ystart = atoi(myProperties.get(Display_YStart).c_str());
@@ -530,50 +486,6 @@ void Console::changeYStart(int direction)
   myOSystem->frameBuffer().refresh();
 
   message = "YStart ";
-  message += strval.str();
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeWidth(int direction)
-{
-  uInt32 xstart = atoi(myProperties.get(Display_XStart).c_str());
-  Int32 width   = atoi(myProperties.get(Display_Width).c_str());
-  ostringstream strval;
-  string message;
-
-  if(direction == +1)    // increase Width
-  {
-    width += 4;
-    if((width > 160) || ((width % 4) != 0))
-    {
-      myOSystem->frameBuffer().showMessage("Width at maximum");
-      return;
-    }
-    else if((width + xstart) > 160)
-    {
-      myOSystem->frameBuffer().showMessage("Width no effect");
-      return;
-    }
-  }
-  else if(direction == -1)  // decrease Width
-  {
-    width -= 4;
-    if(width < 140)
-    {
-      myOSystem->frameBuffer().showMessage("Width at minimum");
-      return;
-    }
-  }
-  else
-    return;
-
-  strval << width;
-  myProperties.set(Display_Width, strval.str());
-  ((TIA*)myMediaSource)->frameReset();
-  initializeVideo();  // takes care of refreshing the screen
-
-  message = "Width ";
   message += strval.str();
   myOSystem->frameBuffer().showMessage(message);
 }

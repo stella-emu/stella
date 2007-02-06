@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.21 2007-01-01 18:04:53 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.22 2007-02-06 23:34:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,10 +111,6 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Alt PageDown",  "Decrease Display.YStart");
       ADD_BIND("Ctrl PageUp",   "Increase Display.Height");
       ADD_BIND("Ctrl PageDown", "Decrease Display.Height");
-      ADD_BIND("Alt End",       "Increase Display.XStart");
-      ADD_BIND("Alt Home",      "Decrease Display.XStart");
-      ADD_BIND("Ctrl End",      "Increase Display.Width");
-      ADD_BIND("Ctrl Home",     "Decrease Display.Width");
       break;
 #else
     case 1:
@@ -149,10 +145,6 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("Shift-Cmd PageDown",  "Decrease Display.YStart");
       ADD_BIND("Cmd PageUp",          "Increase Display.Height");
       ADD_BIND("Cmd PageDown",        "Decrease Display.Height");
-      ADD_BIND("Shift-Cmd End",       "Increase Display.XStart");
-      ADD_BIND("Shift-Cmd Home",      "Decrease Display.XStart");
-      ADD_BIND("Cmd End",             "Increase Display.Width");
-      ADD_BIND("Cmd Home",            "Decrease Display.Width");
       break;
 #endif
     case 4:

@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.200 2007-01-30 17:13:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.201 2007-02-06 23:34:33 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -417,14 +417,6 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->sound().adjustVolume(+1);
                 break;
 
-              case SDLK_END:       // Alt-End increases XStart
-                myOSystem->console().changeXStart(+1);
-                break;
-
-              case SDLK_HOME:      // Alt-Home decreases XStart
-                myOSystem->console().changeXStart(-1);
-                break;
-
               case SDLK_PAGEUP:    // Alt-PageUp increases YStart
                 myOSystem->console().changeYStart(+1);
                 break;
@@ -576,14 +568,6 @@ void EventHandler::poll(uInt32 time)
               case SDLK_r:  // Ctrl-r reloads the currently loaded ROM
                 myOSystem->deleteConsole();
                 myOSystem->createConsole();
-                break;
-
-              case SDLK_END:       // Ctrl-End increases Width
-                myOSystem->console().changeWidth(+1);
-                break;
-
-              case SDLK_HOME:      // Ctrl-Home decreases Width
-                myOSystem->console().changeWidth(-1);
                 break;
 
               case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
