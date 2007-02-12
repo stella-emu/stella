@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.cpp,v 1.13 2007-01-27 10:48:57 knakos Exp $
+// $Id: FrameBufferWinCE.cpp,v 1.14 2007-02-12 11:16:59 knakos Exp $
 //============================================================================
 
 #include <windows.h>
@@ -25,9 +25,9 @@
 
 #define OPTPIXAVERAGE(pix1,pix2) ( ((((pix1 & optgreenmaskN) + (pix2 & optgreenmaskN)) >> 1) & optgreenmaskN) | ((((pix1 & optgreenmask) + (pix2 & optgreenmask)) >> 1) & optgreenmask) )
 
-FrameBufferWinCE::FrameBufferWinCE(OSystem *osystem)
-: FrameBuffer(osystem), myDstScreen(NULL), SubsystemInited(false), displacement(0),
-issmartphone(true), islandscape(false), legacygapi(true), devres(SM_LOW), screenlocked(false)
+FrameBufferWinCE::FrameBufferWinCE(OSystem *osystem): FrameBuffer(osystem), 
+	myDstScreen(NULL), SubsystemInited(false), displacement(0), issquare(false),
+	issmartphone(true), islandscape(false), legacygapi(true), devres(SM_LOW), screenlocked(false)
 {
 	gxdp.cxWidth = gxdp.cyHeight = gxdp.cbxPitch = gxdp.cbyPitch = gxdp.cBPP = gxdp.ffFormat = 0;
 	displaymode = myOSystem->settings().getInt("wince_orientation");
@@ -92,6 +92,10 @@ void FrameBufferWinCE::GetDeviceProperties(void)
 		// devres=QVGA && islandscape=true && displaymode=0
 		if (gxdp.cxWidth > gxdp.cyHeight)
 			islandscape = true;
+		// square QVGA (240x240) devices are portrait, landscape (as above) and square
+		else if (gxdp.cxWidth == gxdp.cyHeight)
+			issquare = islandscape = true;
+
 	}
 }
 
@@ -138,12 +142,20 @@ bool FrameBufferWinCE::initSubsystem()
 	static bool firsttime = true;
 
 	GetDeviceProperties();
+
+	// we need to modify our basedim rect in order to center the ingame menu properly
+	// this is, more or less, a hack
 	if (IsSmartphoneLowRes())
 	{
-		// modify our basedim rect in order to center the ingame menu properly
 		myBaseDim.w = 220;
 		myBaseDim.h = 176;
 	}
+	else if (issquare)
+	{
+		myBaseDim.w = 240;
+		myBaseDim.h = 240;
+	}
+
 	// screen extents
 	if(gxdp.ffFormat & kfDirect565)
 	{
@@ -233,7 +245,7 @@ void FrameBufferWinCE::lateinit(void)
 		else
 			w = (int) ((float) myWidth * 11.0f / 8.0f + 0.5f);
 	else if (devres == QVGA)
-		if (!islandscape)
+		if (!islandscape && !issquare)
 			w = (int) ((float) myWidth * 3.0f / 2.0f + 0.5f);
 		else
 			w = myWidth * 2;
@@ -493,7 +505,7 @@ void FrameBufferWinCE::drawMediaSource()
 			pl = d;
 		}
 	}
-	else if (devres == QVGA && !islandscape)
+	else if (devres == QVGA && (!islandscape || issquare))
 	{
 		// 3/2
 		for (y=0; y<minydim; y++)
@@ -933,26 +945,24 @@ void FrameBufferWinCE::drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, I
 
 void FrameBufferWinCE::translateCoords(Int32* x, Int32* y)
 {
-	if (!issmartphone)
+	if ((displaymode == 1) || (displaymode==0 && !islandscape && myOSystem->eventHandler().state() != EventHandler::S_EMULATE))
 	{
-		if ((displaymode == 1) || (displaymode==0 && myOSystem->eventHandler().state() != EventHandler::S_EMULATE))
-		{
-			Int32 x2 = *x;
-			*x = scrheight - *y;
-			*y = x2;
-		}
-		else if (displaymode == 2)
-		{
-			Int32 x2 = *x;
-			*x = *y;
-			*y = scrwidth - x2;
-		}
-		if (devres == VGA)
-		{
-			*x >>= 1;
-			*y >>= 1;
-		}
+		Int32 x2 = *x;
+		*x = scrheight - *y;
+		*y = x2;
 	}
+	else if (displaymode == 2)
+	{
+		Int32 x2 = *x;
+		*x = *y;
+		*y = scrwidth - x2;
+	}
+	if (devres == VGA)
+	{
+		*x >>= 1;
+		*y >>= 1;
+	}
+
 	return;
 }
 

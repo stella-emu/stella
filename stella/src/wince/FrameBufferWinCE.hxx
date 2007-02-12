@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.hxx,v 1.14 2007-01-27 10:52:49 knakos Exp $
+// $Id: FrameBufferWinCE.hxx,v 1.15 2007-02-12 11:16:59 knakos Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_WINCE_HXX
@@ -93,7 +93,7 @@ class FrameBufferWinCE : public FrameBuffer
 	bool SubsystemInited;
 	uInt8 *myDstScreen;
 
-	bool issmartphone, islandscape, legacygapi, screenlocked;
+	bool issmartphone, islandscape, issquare, legacygapi, screenlocked;
 	enum {SM_LOW, QVGA, VGA} devres;
 	uInt16 minydim, optgreenmaskN, optgreenmask;
 	Int32 pixelsteptimes5, pixelsteptimes6, pixelsteptimes8, pixelsteptimes12, pixelsteptimes16;

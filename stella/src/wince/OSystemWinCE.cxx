@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: OSystemWinCE.cxx,v 1.11 2007-01-23 09:43:38 knakos Exp $
+// $Id: OSystemWinCE.cxx,v 1.12 2007-02-12 11:16:59 knakos Exp $
 //============================================================================
 
 #include <sstream>
@@ -113,8 +113,15 @@ void OSystemWinCE::getScreenDimensions(int& width, int& height)
 	// do not use the framebuffer issmartphonelowres method as the framebuffer has not been created yet
 	if ((unsigned int) GetSystemMetrics(SM_CXSCREEN) != 176 )
 	{
-		width = 320;
-		height = 240;
+		if (GetSystemMetrics(SM_CXSCREEN) != GetSystemMetrics(SM_CYSCREEN) )
+		{
+			width = 320;
+			height = 240;
+		}
+		else
+		{
+			width = height = 240;
+		}
 	}
 	else
 	{
