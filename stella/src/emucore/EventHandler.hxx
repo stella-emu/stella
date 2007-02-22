@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.101 2007-01-30 17:13:10 stephena Exp $
+// $Id: EventHandler.hxx,v 1.102 2007-02-22 02:15:46 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.101 2007-01-30 17:13:10 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.102 2007-02-22 02:15:46 stephena Exp $
 */
 class EventHandler
 {
@@ -264,23 +264,6 @@ class EventHandler
     void handleEvent(Event::Type type, Int32 value);
 
     inline bool frying() { return myFryingFlag; }
-
-    /**
-      Create a synthetic SDL mouse motion event based on the given x,y values.
-
-      @param x  The x coordinate of motion, scaled in value
-      @param y  The y coordinate of motion, scaled in value
-    */
-    void createMouseMotionEvent(int x, int y);
-
-    /**
-      Create a synthetic SDL mouse button event based on the given x,y values.
-
-      @param x     The x coordinate of motion, scaled in value
-      @param y     The y coordinate of motion, scaled in value
-      @param state The state of the button click (on or off)
-    */
-    void createMouseButtonEvent(int x, int y, int state);
 
     inline SDL_Joystick* getJoystick(int i) { return ourJoysticks[i].stick; }
 

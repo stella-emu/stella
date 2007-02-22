@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.201 2007-02-06 23:34:33 stephena Exp $
+// $Id: EventHandler.cxx,v 1.202 2007-02-22 02:15:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1257,26 +1257,6 @@ bool EventHandler::eventStateChange(Event::Type type)
   }
 
   return handled;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::createMouseMotionEvent(int x, int y)
-{
-  SDL_WarpMouse(x, y);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::createMouseButtonEvent(int x, int y, int state)
-{
-  // Synthesize an left mouse button press/release event
-  SDL_MouseButtonEvent mouseEvent;
-  mouseEvent.type   = state ? SDL_MOUSEBUTTONDOWN : SDL_MOUSEBUTTONUP;
-  mouseEvent.button = SDL_BUTTON_LEFT;
-  mouseEvent.state  = state ? SDL_PRESSED : SDL_RELEASED;
-  mouseEvent.x      = x;
-  mouseEvent.y      = y;
-
-  handleMouseButtonEvent((SDL_Event&)mouseEvent, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

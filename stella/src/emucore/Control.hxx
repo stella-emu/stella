@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.8 2007-01-05 17:54:09 stephena Exp $
+// $Id: Control.hxx,v 1.9 2007-02-22 02:15:46 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -21,6 +21,7 @@
 
 class Controller;
 class Event;
+class System;
 
 #include "bspf.hxx"
 
@@ -55,7 +56,7 @@ class Event;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.8 2007-01-05 17:54:09 stephena Exp $
+  @version $Id: Control.hxx,v 1.9 2007-02-22 02:15:46 stephena Exp $
 */
 class Controller
 {
@@ -96,6 +97,11 @@ class Controller
       Returns the type of this controller.
     */
     const Type type();
+
+    /**
+      Inform this controller about the current System.
+    */
+    void setSystem(System* system) { mySystem = system; }
 
   public:
     /**
@@ -158,6 +164,9 @@ class Controller
 
     /// Specifies which type of controller this is (defined by child classes)
     const Type myType;
+
+    /// Pointer to the System object (used for timing purposes)
+    System* mySystem;
 
   protected:
     // Copy constructor isn't supported by controllers so make it private

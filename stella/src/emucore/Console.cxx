@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.125 2007-02-06 23:34:31 stephena Exp $
+// $Id: Console.cxx,v 1.126 2007-02-22 02:15:46 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -77,8 +77,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   loadUserPalette();
 
   // Setup the controllers based on properties
-  string left  = myProperties.get(Controller_Left);
-  string right = myProperties.get(Controller_Right);
+  const string& left  = myProperties.get(Controller_Left);
+  const string& right = myProperties.get(Controller_Right);
 
   // Swap the ports if necessary
   int leftPort, rightPort;
@@ -116,10 +116,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     myControllers[leftPort] = new Joystick(Controller::Left, *myEvent);
   }
  
-#ifdef ATARIVOX_SUPPORT 
-  vox = 0;
-#endif
-
   // Construct right controller
   if(right == "BOOSTER-GRIP")
   {
@@ -137,10 +133,10 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   {
     myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, swapPaddles);
   }
-#ifdef ATARIVOX_SUPPORT 
+#ifdef ATARIVOX_SUPPORT
   else if(right == "ATARIVOX")
   {
-    myControllers[rightPort] = vox = new AtariVox(Controller::Right, *myEvent);
+    myControllers[rightPort] = new AtariVox(Controller::Right, *myEvent);
   }
 #endif
   else
@@ -154,12 +150,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Now, we can construct the system and components
   mySystem = new System(13, 6);
 
-  // AtariVox is a smart peripheral; it needs access to the system
-  // cycles counter, so it needs a reference to the System
-#ifdef ATARIVOX_SUPPORT 
-  if(vox)
-    vox->setSystem(mySystem);
-#endif
+  // Inform the controllers about the system
+  myControllers[0]->setSystem(mySystem);
+  myControllers[1]->setSystem(mySystem);
 
   M6502* m6502;
   if(myOSystem->settings().getString("cpu") == "low")

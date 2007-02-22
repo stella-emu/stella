@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.41 2007-01-06 21:13:29 stephena Exp $
+// $Id: TIA.hxx,v 1.42 2007-02-22 02:15:46 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -42,7 +42,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.41 2007-01-06 21:13:29 stephena Exp $
+  @version $Id: TIA.hxx,v 1.42 2007-02-22 02:15:46 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -165,14 +165,14 @@ class TIA : public Device , public MediaSource
     /**
       Answers the total number of scanlines the media source generated
       in producing the current frame buffer. For partial frames, this
-		will be the current scanline.
+      will be the current scanline.
 
       @return The total number of scanlines generated
     */
     uInt32 scanlines() const;
 
     /**
-		Answers the current color clock we've gotten to on this scanline.
+      Answers the current color clock we've gotten to on this scanline.
 
       @return The current color clock
     */

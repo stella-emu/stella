@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.10 2007-01-23 09:30:22 knakos Exp $
+// $Id: Driving.cxx,v 1.11 2007-02-22 02:15:46 stephena Exp $
 //============================================================================
 
-#include <assert.h>
+#include <cassert>
+
 #include "Event.hxx"
 #include "Driving.hxx"
 #include "System.hxx"
