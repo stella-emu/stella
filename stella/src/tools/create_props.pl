@@ -1,10 +1,7 @@
 #!/usr/bin/perl
 
-use Btrees;
-
 my @props = ();
-my @propset = ();
-my @propset_ordered = ();
+my %propset = ();
 
 my %proptype = (
 "Cartridge.MD5"           => 0,
@@ -73,7 +70,9 @@ foreach $line (<INFILE>) {
 
 	# Start a new item
 	if ($line =~ /^""/) {
-		push @propset, [ @props ];
+		my $key = $props[$proptype{'Cartridge.MD5'}];
+#		print "Inserting properties for key = $key\n";
+		$propset{$key} = [ @props ];
 
 		undef @props;
 		while(($key, $value) = each(%proptype)) {
@@ -90,27 +89,8 @@ foreach $line (<INFILE>) {
 	}
 }
 
-# Fill the AVL tree with property indices
-my $tree;
-for($i = 0; $i < @propset; $i++) {
-	my $value = $propset[$i][$proptype{'Cartridge.MD5'}];
-#	printf "Adding $value to tree\n";
-	($tree, $node) = bal_tree_add($tree, $i, \&compare);
-}
-printf "\n";
-
-# Fill the results tree with the appropriate number of items
-my $height = $tree->{height};
-my $size = 2 ** $height - 1;
-printf "Tree has height = $height, output BST array will have size = $size\n";
-for($i = 0; $i < $size; $i++) {
-	$propset_ordered[$i] = -1;
-}
-
-# Label the tree nodes by index into a BST array
-label_tree($tree, \&store);
-printf "\n";
-
+my $size = keys (%propset);
+printf "Valid properties found: $size\n";
 
 # Construct the output file in C++ format
 # Walk the results array and print each item
@@ -124,20 +104,20 @@ print OUTFILE "  located in the src/tools directory.  All properties changes\n";
 print OUTFILE "  should be made in stella.pro, and then this file should be\n";
 print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
-print OUTFILE "static const char* DefProps[][" . keys( %proptype ) . "] = {\n";
-for ($i = 0; $i < @propset_ordered; $i++) {
-	my $idx = $propset_ordered[$i];
-	if ($idx != -1) {
-		print OUTFILE get_prop($idx);
-	} else {
-		print OUTFILE blank_prop();
-	}
+print OUTFILE "static const char* DefProps[" . $size . "][" . keys( %proptype ) . "] = {\n";
 
-	if ($i+1 < @propset_ordered) {
+my $idx = 0;
+for my $key ( sort keys %propset )
+{
+	print OUTFILE build_prop_string(@{ $propset{$key} });
+
+	if ($idx+1 < $size) {
 		print OUTFILE ", ";
 	}
 	print OUTFILE "\n";
+	$idx++;
 }
+
 print OUTFILE "};\n";
 print OUTFILE "\n";
 print OUTFILE "#endif\n";
@@ -151,35 +131,9 @@ sub usage {
 	exit(0);
 }
 
-sub compare {
-	my ($first, $second) = @_;
-
-	my $first_md5  = $propset[$first][$proptype{'Cartridge.MD5'}];
-	my $second_md5 = $propset[$second][$proptype{'Cartridge.MD5'}];
-
-	if ($first_md5 lt $second_md5) {
-		return -1;
-	} elsif ($first_md5 gt $second_md5) {
-		return 1;
-	} else {
-		return 0;
-	}
-}
-
-sub store {
-	my $tree = shift;
-
-	$propset_ordered[$tree->{index}] = $tree->{val};
-}
-
-sub get_prop {
-	my $idx = shift;
-
-	my $arr = $propset[$idx];
-	my @array = @$arr;
-
+sub build_prop_string {
+	my @array = @_;
 	my $result = "  { ";
-
 	my @items = ();
 	for (my $i = 0; $i < @array; $i++) {
 		if($prop_defaults[$i] ne $array[$i]) {
@@ -187,23 +141,6 @@ sub get_prop {
 		} else {
 			push(@items, "\"\"");
 		}
-	}
-
-	$result .= join(", ", @items);
-	$result .= " }";
-
-	return $result;
-}
-
-sub blank_prop {
-	my $arr = $propset[$idx];
-	my @array = @$arr;
-
-	my $result = "  { ";
-
-	my @items = ();
-	for my $key ( keys %proptype) {
-		push(@items, "\"\"");
 	}
 
 	$result .= join(", ", @items);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.31 2007-01-01 18:04:49 stephena Exp $
+// $Id: PropsSet.cxx,v 1.32 2007-04-09 18:12:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -93,14 +93,16 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
       properties = *(current->props);
   }
 
-  // Otherwise, search the internal BST array
+  // Otherwise, search the internal database using binary search
   if(!found)
   {
-    int i = 0;
-    while(i < ARRAYSIZE(DefProps))
+    int low = 0, high = ARRAYSIZE(DefProps) - 1;
+    while(low <= high)
     {
+      int i = (low + high) / 2;
       int cmp = strncmp(md5.c_str(), DefProps[i][Cartridge_MD5], 32);
-      if(cmp == 0)
+
+      if(cmp == 0)  // found it
       {
         for(int p = 0; p < LastPropType; ++p)
           if(DefProps[i][p][0] != 0)
@@ -110,9 +112,9 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
         break;
       }
       else if(cmp < 0)
-        i = 2*i + 1;   // left child
+        high = i - 1; // look at lower range
       else
-        i = 2*i + 2;   // right child
+        low = i + 1;  // look at upper range
     }
   }
 }
