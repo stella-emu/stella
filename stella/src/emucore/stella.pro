@@ -1370,7 +1370,6 @@
 
 "Cartridge.MD5" "14d365bbfaac3d20c6119591f57acca4"
 "Cartridge.Name" "Video Life (CommaVid) [h1]"
-"Cartridge.Type" "CV"
 "Display.Phosphor" "YES"
 ""
 
@@ -4677,7 +4676,6 @@
 "Cartridge.Manufacturer" "CommaVid"
 "Cartridge.Name" "Video Life (CommaVid)"
 "Cartridge.Rarity" "Extremely Rare"
-"Cartridge.Type" "CV"
 "Display.Phosphor" "YES"
 ""
 
@@ -5017,7 +5015,6 @@
 "Cartridge.ModelNo" "AZ-028"
 "Cartridge.Name" "Robot Tank (1983) (Activision) [!]"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "4f2d47792a06da224ba996c489a87939"
@@ -5047,7 +5044,6 @@
 "Cartridge.ModelNo" "AZ-033"
 "Cartridge.Name" "Space Shuttle - Journey Into Space (1983) (Activision) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "4f82d8d78099dd71e8e169646e799d05"
@@ -7470,7 +7466,7 @@
 ""
 
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
-"Cartridge.Manufacturer" "UA"
+"Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Cat Trax (1983) (UA)"
 "Display.YStart" "30"
 "Display.Phosphor" "YES"
@@ -8549,7 +8545,6 @@
 "Cartridge.ModelNo" "AZ-030"
 "Cartridge.Name" "Decathlon (1983) (Activision) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "87e79cd41ce136fd4f72cc6e2c161bee"
@@ -8780,7 +8775,6 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Pleiades (UA Limited)"
 "Cartridge.Rarity" "Prototype"
-"Cartridge.Type" "UA"
 "Display.Phosphor" "YES"
 ""
 
@@ -9739,7 +9733,7 @@
 ""
 
 "Cartridge.MD5" "9f59eddf9ba91a7d93bce7ee4b7693bc"
-"Cartridge.Name" "Montezuma's Revenge - Starring Panama Joe (PAL by Thomas Jentzsch).a26"
+"Cartridge.Name" "Montezuma's Revenge - Starring Panama Joe (PAL60 by Thomas Jentzsch).a26"
 "Display.Format" "PAL60"
 ""
 
@@ -10630,7 +10624,6 @@
 "Cartridge.ModelNo" "AZ-030"
 "Cartridge.Name" "Decathlon (1983) (Activision) [!]"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "ac5f78bae0638cf3f2a0c8d07eb4df69"
@@ -11745,7 +11738,6 @@
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.Name" "Thwocker (Activision) (Prototype) [!]"
 "Cartridge.Rarity" "Prototype"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "c126656df6badfa519cc63e681fb3596"
@@ -12359,7 +12351,6 @@
 "Cartridge.ModelNo" "AZ-028"
 "Cartridge.Name" "Robot Tank (1983) (Activision) (PAL) [b1]"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "cad982c9b45bc5eff34e4ea982d5f1ca"
@@ -12596,7 +12587,6 @@
 "Cartridge.Manufacturer" "CommaVid"
 "Cartridge.Name" "Magicard (CommaVid)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Cartridge.Type" "CV"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 "Display.YStart" "24"
@@ -12993,7 +12983,6 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Funky Fish (UA Limited)"
 "Cartridge.Rarity" "Prototype"
-"Cartridge.Type" "UA"
 "Display.YStart" "38"
 "Display.Phosphor" "YES"
 ""
@@ -15189,7 +15178,6 @@
 "Cartridge.ModelNo" "AZ-028"
 "Cartridge.Name" "Robot Tank (1983) (Activision) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "f613aad84d2163d6b197b220bfec1b7e"
@@ -15661,7 +15649,6 @@
 "Cartridge.Name" "Robot Tank TV by Thomas Jentzsch (2 Joystick Hack)"
 "Cartridge.Note" "Uses two simultaneous Joystick Controllers, Hack of Robot Tank (Activision)"
 "Cartridge.Rarity" "New Release (Hack)"
-"Cartridge.Type" "FE"
 ""
 
 "Cartridge.MD5" "fbd6102e17a5c02c6e1911381b7203f9"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.17 2007-01-14 16:17:52 stephena Exp $
+// $Id: Cart.hxx,v 1.18 2007-06-08 12:36:51 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.17 2007-01-14 16:17:52 stephena Exp $
+  @version $Id: Cart.hxx,v 1.18 2007-06-08 12:36:51 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -134,9 +134,17 @@ class Cartridge : public Device
     static string autodetectType(const uInt8* image, uInt32 size);
 
     /**
-      Utility method used by isProbably3F and isProbably3E
+      Search the image for the specified byte signature
+
+      @param image      A pointer to the ROM image
+      @param imagesize  The size of the ROM image 
+      @param signature  The byte sequence to search for
+      @param sigsize    The number of bytes in the signature
+
+      @return  The number of times the signature was found
     */
-    static int searchForBytes(const uInt8* image, uInt32 size, uInt8 byte1, uInt8 byte2);
+    static int searchForBytes(const uInt8* image, uInt32 imagesize,
+                              const uInt8* signature, uInt32 sigsize);
 
     /**
       Returns true if the image is probably a SuperChip (256 bytes RAM)
@@ -162,6 +170,21 @@ class Cartridge : public Device
       Returns true if the image is probably a E7 bankswitching cartridge
     */
     static bool isProbablyE7(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a UA bankswitching cartridge
+    */
+    static bool isProbablyUA(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a CV bankswitching cartridge
+    */
+    static bool isProbablyCV(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably an FE bankswitching cartridge
+    */
+    static bool isProbablyFE(const uInt8* image, uInt32 size);
 
   private:
     // Contains info about this cartridge in string format

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.31 2007-01-14 16:17:51 stephena Exp $
+// $Id: Cart.cxx,v 1.32 2007-06-08 12:36:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -181,16 +181,20 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   else if((size == 2048) ||
           (size == 4096 && memcmp(image, image + 2048, 2048) == 0))
   {
-    // TODO - autodetect CV
-    type = "2K";
+    if(isProbablyCV(image, size))
+      type = "CV";
+    else
+      type = "2K";
   }
   else if(size == 4096)
   {
-    type = "4K";
+    if(isProbablyCV(image, size))
+      type = "CV";
+    else
+      type = "4K";
   }
   else if(size == 8192)  // 8K
   {
-    // TODO - autodetect FE and UA, probably not possible
     if(isProbablySC(image, size))
       type = "F8SC";
     else if(memcmp(image, image + 4096, 4096) == 0)
@@ -199,6 +203,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "E0";
     else if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbablyUA(image, size))
+      type = "UA";
+    else if(isProbablyFE(image, size))
+      type = "FE";
     else
       type = "F8";
   }
@@ -262,15 +270,22 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge::searchForBytes(const uInt8* image, uInt32 size, uInt8 byte1, uInt8 byte2)
+int Cartridge::searchForBytes(const uInt8* image, uInt32 imagesize,
+                              const uInt8* signature, uInt32 sigsize)
 {
   uInt32 count = 0;
-  for(uInt32 i = 0; i < size - 1; ++i)
+  for(uInt32 i = 0; i < imagesize - sigsize; ++i)
   {
-    if((image[i] == byte1) && (image[i + 1] == byte2))
+    uInt32 matches = 0;
+    for(uInt32 j = 0; j < sigsize; ++j)
     {
-      ++count;
+      if(image[i+j] == signature[j])
+        ++matches;
+      else
+        break;
     }
+    if(matches == sigsize)
+      ++count;
   }
 
   return count;
@@ -298,13 +313,20 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
 {
-  return (searchForBytes(image, size, 0x85, 0x3F) > 2);
+  // 3F cart bankswitching is triggered by storing the bank number
+  // in address 3F using 'STA $3F'
+  // We expect it will be present at least 2 times, since there are
+  // at least two banks
+  uInt8 signature[] = { 0x85, 0x3F };  // STA $3F
+  return searchForBytes(image, size, signature, 2) > 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
 {
-  return (searchForBytes(image, size, 0x85, 0x3E) > 2);
+  // TODO - fix this one, once I find a test ROM
+  uInt8 signature[] = { 0x85, 0x3E };
+  return searchForBytes(image, size, signature, 2) > 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -365,6 +387,50 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
   }
 
   return (count1 > 0 || count2 > 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
+{
+  // UA cart bankswitching switches to bank 1 by accessing address 0x240
+  // using 'STA $240'
+  uInt8 signature[] = { 0x8D, 0x40, 0x02 };  // STA $240
+  return searchForBytes(image, size, signature, 3) > 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
+{
+  // CV RAM access occurs at addresses $f3ff and $f400
+  // These signatures are attributed to the MESS project
+  uInt8 signature[2][3] = {
+    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF
+    { 0x99, 0x00, 0xF4 }   // STA $F400
+  };
+  if(searchForBytes(image, size, signature[0], 3) > 0)
+    return true;
+  else
+    return searchForBytes(image, size, signature[1], 3) > 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
+{
+  // FE bankswitching is very weird, but always seems to include a
+  // 'JSR $xxxx'
+  // These signatures are attributed to the MESS project
+  uInt8 signature[4][5] = {
+    { 0x20, 0x00, 0xD0, 0xC6, 0xC5 },  // JSR $D000; DEC $C5
+    { 0x20, 0xC3, 0xF8, 0xA5, 0x82 },  // JSR $F8C3; LDA $82
+    { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73
+    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; STY $D6
+  };
+  for(uInt32 i = 0; i < 4; ++i)
+  {
+    if(searchForBytes(image, size, signature[i], 5) > 0)
+      return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
