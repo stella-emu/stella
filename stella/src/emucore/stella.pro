@@ -68,13 +68,11 @@
 "Cartridge.MD5" "9b150a42fc788960fbb4cbe250259ee2"
 "Cartridge.Manufacturer" "Kroko"
 "Cartridge.Name" "3E Bankswitch Test (TIA @ $40)"
-"Cartridge.Type" "3E"
 ""
 
 "Cartridge.MD5" "792b1d93eb1d8045260c840b0688ec8f"
 "Cartridge.Manufacturer" "Kroko"
 "Cartridge.Name" "3E Bankswitch Test (TIA @ $00)"
-"Cartridge.Type" "3E"
 ""
 
 "Cartridge.MD5" "0685bd0bcb975ceef7041749a5454a48"
@@ -8775,6 +8773,7 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Pleiades (UA Limited)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "32"
 "Display.Phosphor" "YES"
 ""
 
@@ -11144,6 +11143,7 @@
 
 "Cartridge.MD5" "b65d4a38d6047735824ee99684f3515e"
 "Cartridge.Name" "Megaboy (Brazil) (PAL) [!]"
+"Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "b5cb9cf6e668ea3f4cc2be00ea70ec3c"

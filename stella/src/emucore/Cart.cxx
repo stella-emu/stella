@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.32 2007-06-08 12:36:51 stephena Exp $
+// $Id: Cart.cxx,v 1.33 2007-06-09 23:20:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -203,6 +203,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "E0";
     else if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbably3E(image, size))
+      type = "3E";
     else if(isProbablyUA(image, size))
       type = "UA";
     else if(isProbablyFE(image, size))
@@ -230,6 +232,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "E7";
     else if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbably3E(image, size))
+      type = "3E";
     else
       type = "F6";
   }
@@ -239,6 +243,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "F4SC";
     else if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbably3E(image, size))
+      type = "3E";
     else
       type = "F4";
   }
@@ -247,6 +253,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     // TODO - autodetect 4A50
     if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbably3E(image, size))
+      type = "3E";
     else
       type = "MB";
   }
@@ -255,6 +263,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     // TODO - autodetect 4A50
     if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbably3E(image, size))
+      type = "3E";
     else
       type = "MC";
   }
@@ -262,6 +272,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbably3F(image, size))
       type = isProbably3E(image, size) ? "3E" : "3F";
+    else if(isProbably3E(image, size))
+      type = "3E";
     else
       type = "4K";  // Most common bankswitching type
   }
@@ -318,15 +330,17 @@ bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
   // We expect it will be present at least 2 times, since there are
   // at least two banks
   uInt8 signature[] = { 0x85, 0x3F };  // STA $3F
-  return searchForBytes(image, size, signature, 2) > 2;
+  return searchForBytes(image, size, signature, 2) > 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
 {
-  // TODO - fix this one, once I find a test ROM
-  uInt8 signature[] = { 0x85, 0x3E };
-  return searchForBytes(image, size, signature, 2) > 2;
+  // 3E cart bankswitching is triggered by storing the bank number
+  // in address 3E using 'STA $3E', commonly followed by an
+  // immediate mode LDA
+  uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
+  return searchForBytes(image, size, signature, 4) > 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
