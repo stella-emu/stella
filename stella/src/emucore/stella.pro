@@ -11487,7 +11487,6 @@
 "Cartridge.ModelNo" "CX2671"
 "Cartridge.Name" "SwordQuest - Waterworld (1983) (Atari)"
 "Cartridge.Rarity" "Unbelievably Rare"
-"Cartridge.Type" "F8"
 ""
 
 "Cartridge.MD5" "bc97d544f1d4834cc72bcc92a37b8c1b"

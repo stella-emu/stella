@@ -1962,7 +1962,7 @@ static const char* DefProps[2722][21] = {
   { "bc3057a35319aae3a5cd87a203736abe", "CCE", "", "Time Warp (CCE) [!]", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "", "" }, 
   { "bc4cf38a4bee45752dc466c98ed7ad09", "Atari", "CX26136", "Solaris (1986) (Atari) (PAL) [!]", "", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bc526185ad324241782dc68ba5d0540b", "", "", "Dodge Demo 1 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "bc5389839857612cfabeb810ba7effdc", "Atari", "CX2671", "SwordQuest - Waterworld (1983) (Atari)", "", "Unbelievably Rare", "", "F8", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "bc5389839857612cfabeb810ba7effdc", "Atari", "CX2671", "SwordQuest - Waterworld (1983) (Atari)", "", "Unbelievably Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bc6432cbed32c695658514c4eb41d905", "Manuel Polik", "", "Star Fire (MP) (2002) (PD)", "Won't work with Stella < V1.2", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bc703ea6afb20bc089f04d8c9d79a2bd", "", "", "Gunfight 2600 - Not mergeable with Colbert wizardry... (2001) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "bc97d544f1d4834cc72bcc92a37b8c1b", "", "", "Sky Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.33 2007-06-09 23:20:16 stephena Exp $
+// $Id: Cart.cxx,v 1.34 2007-06-14 13:47:50 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -201,10 +201,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "4K";
     else if(isProbablyE0(image, size))
       type = "E0";
-    else if(isProbably3F(image, size))
-      type = isProbably3E(image, size) ? "3E" : "3F";
     else if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
     else if(isProbablyUA(image, size))
       type = "UA";
     else if(isProbablyFE(image, size))
@@ -230,10 +230,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "F6SC";
     else if(isProbablyE7(image, size))
       type = "E7";
-    else if(isProbably3F(image, size))
-      type = isProbably3E(image, size) ? "3E" : "3F";
     else if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
     else
       type = "F6";
   }
@@ -241,39 +241,39 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     if(isProbablySC(image, size))
       type = "F4SC";
-    else if(isProbably3F(image, size))
-      type = isProbably3E(image, size) ? "3E" : "3F";
     else if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
     else
       type = "F4";
   }
   else if(size == 65536)  // 64K
   {
     // TODO - autodetect 4A50
-    if(isProbably3F(image, size))
-      type = isProbably3E(image, size) ? "3E" : "3F";
-    else if(isProbably3E(image, size))
+    if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
     else
       type = "MB";
   }
   else if(size == 131072)  // 128K
   {
     // TODO - autodetect 4A50
-    if(isProbably3F(image, size))
-      type = isProbably3E(image, size) ? "3E" : "3F";
-    else if(isProbably3E(image, size))
+    if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
     else
       type = "MC";
   }
   else  // what else can we do?
   {
-    if(isProbably3F(image, size))
-      type = isProbably3E(image, size) ? "3E" : "3F";
-    else if(isProbably3E(image, size))
+    if(isProbably3E(image, size))
       type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
     else
       type = "4K";  // Most common bankswitching type
   }
@@ -282,8 +282,9 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge::searchForBytes(const uInt8* image, uInt32 imagesize,
-                              const uInt8* signature, uInt32 sigsize)
+bool Cartridge::searchForBytes(const uInt8* image, uInt32 imagesize,
+                               const uInt8* signature, uInt32 sigsize,
+                               uInt32 minhits)
 {
   uInt32 count = 0;
   for(uInt32 i = 0; i < imagesize - sigsize; ++i)
@@ -297,10 +298,15 @@ int Cartridge::searchForBytes(const uInt8* image, uInt32 imagesize,
         break;
     }
     if(matches == sigsize)
+    {
       ++count;
+      i += sigsize;  // skip past this signature 'window' entirely
+    }
+    if(count >= minhits)
+      break;
   }
 
-  return count;
+  return (count >= minhits);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -330,7 +336,7 @@ bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
   // We expect it will be present at least 2 times, since there are
   // at least two banks
   uInt8 signature[] = { 0x85, 0x3F };  // STA $3F
-  return searchForBytes(image, size, signature, 2) > 1;
+  return searchForBytes(image, size, signature, 2, 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -340,30 +346,30 @@ bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
   // in address 3E using 'STA $3E', commonly followed by an
   // immediate mode LDA
   uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
-  return searchForBytes(image, size, signature, 4) > 0;
+  return searchForBytes(image, size, signature, 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyE0(const uInt8* image, uInt32 size)
 {
   // E0 cart bankswitching is triggered by accessing addresses
-  // $FE0 to $FF7 using absolute non-indexed addressing
-  // So we search for the pattern 'LDA Fxxx' or 'STA Fxxx' in hex
-  // using the regex (AD|8D, E0-F7, xF)
-  // This must be present at least three times, since there are
-  // three segments to be initialized (and a few more so that more
-  // of the ROM is used)
+  // $FE0 to $FF9 using absolute non-indexed addressing
+  // To eliminate false positives (and speed up processing), we
+  // search for only certain known signatures
   // Thanks to "stella@casperkitty.com" for this advice
-  uInt32 count = 0;
-  for(uInt32 i = 0; i < size - 2; ++i)
+  // These signatures are attributed to the MESS project
+  uInt8 signature[6][3] = {
+   { 0x8D, 0xE0, 0x1F },  // STA $1FE0
+   { 0x8D, 0xE0, 0x5F },  // STA $5FE0
+   { 0x8D, 0xE9, 0xFF },  // STA $FFE9
+   { 0xAD, 0xE9, 0xFF },  // LDA $FFE9
+   { 0xAD, 0xED, 0xFF },  // LDA $FFED
+   { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
+  };
+  for(uInt32 i = 0; i < 6; ++i)
   {
-    uInt8 b1 = image[i], b2 = image[i+1], b3 = image[i+2];
-    if((b1 == 0xAD || b1 == 0x8D) &&
-       (b2 >= 0xE0 && b2 <= 0xF7) &&
-       (b3 & 0xF == 0xF))
-    {
-      if(++count > 4)  return true;
-    }
+    if(searchForBytes(image, size, signature[i], 3, 1))
+      return true;
   }
   return false;
 }
@@ -409,7 +415,7 @@ bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
   // UA cart bankswitching switches to bank 1 by accessing address 0x240
   // using 'STA $240'
   uInt8 signature[] = { 0x8D, 0x40, 0x02 };  // STA $240
-  return searchForBytes(image, size, signature, 3) > 0;
+  return searchForBytes(image, size, signature, 3, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -421,10 +427,10 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
     { 0x9D, 0xFF, 0xF3 },  // STA $F3FF
     { 0x99, 0x00, 0xF4 }   // STA $F400
   };
-  if(searchForBytes(image, size, signature[0], 3) > 0)
+  if(searchForBytes(image, size, signature[0], 3, 1))
     return true;
   else
-    return searchForBytes(image, size, signature[1], 3) > 0;
+    return searchForBytes(image, size, signature[1], 3, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -441,7 +447,7 @@ bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
   };
   for(uInt32 i = 0; i < 4; ++i)
   {
-    if(searchForBytes(image, size, signature[i], 5) > 0)
+    if(searchForBytes(image, size, signature[i], 5, 1))
       return true;
   }
   return false;

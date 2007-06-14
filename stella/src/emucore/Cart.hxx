@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.18 2007-06-08 12:36:51 stephena Exp $
+// $Id: Cart.hxx,v 1.19 2007-06-14 13:47:50 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -33,7 +33,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.18 2007-06-08 12:36:51 stephena Exp $
+  @version $Id: Cart.hxx,v 1.19 2007-06-14 13:47:50 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -140,11 +140,13 @@ class Cartridge : public Device
       @param imagesize  The size of the ROM image 
       @param signature  The byte sequence to search for
       @param sigsize    The number of bytes in the signature
+      @param minhits    The minimum number of times a signature is to be found
 
-      @return  The number of times the signature was found
+      @return  True if the signature was found at least 'minhits' time, else false
     */
-    static int searchForBytes(const uInt8* image, uInt32 imagesize,
-                              const uInt8* signature, uInt32 sigsize);
+    static bool searchForBytes(const uInt8* image, uInt32 imagesize,
+                               const uInt8* signature, uInt32 sigsize,
+                               uInt32 minhits);
 
     /**
       Returns true if the image is probably a SuperChip (256 bytes RAM)
