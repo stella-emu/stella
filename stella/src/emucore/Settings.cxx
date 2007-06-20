@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.117 2007-06-20 16:33:22 stephena Exp $
+// $Id: Settings.cxx,v 1.118 2007-06-20 20:36:28 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
+#include <algorithm>
 
 #include "OSystem.hxx"
 #include "Version.hxx"

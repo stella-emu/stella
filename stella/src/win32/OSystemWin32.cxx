@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.17 2007-01-01 18:04:56 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.18 2007-06-20 20:36:28 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -66,11 +66,4 @@ OSystemWin32::~OSystemWin32()
 uInt32 OSystemWin32::getTicks()
 {
   return (uInt32) SDL_GetTicks() * 1000;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemWin32::getScreenDimensions(int& width, int& height)
-{
-  width  = (int) GetSystemMetrics(SM_CXSCREEN);
-  height = (int) GetSystemMetrics(SM_CYSCREEN);
 }
