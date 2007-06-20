@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.53 2007-01-01 18:04:55 stephena Exp $
+// $Id: Widget.hxx,v 1.54 2007-06-20 16:33:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -88,7 +88,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.53 2007-01-01 18:04:55 stephena Exp $
+  @version $Id: Widget.hxx,v 1.54 2007-06-20 16:33:23 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -289,6 +289,8 @@ class SliderWidget : public ButtonWidget
     int getMinValue() const      { return _valueMin; }
     void  setMaxValue(int value);
     int getMaxValue() const      { return _valueMax; }
+    void  setStepValue(int value);
+    int getStepValue() const      { return _stepValue; }
 
     virtual void handleMouseMoved(int x, int y, int button);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);

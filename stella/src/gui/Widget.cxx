@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.48 2007-01-15 13:51:55 stephena Exp $
+// $Id: Widget.cxx,v 1.49 2007-06-20 16:33:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -525,10 +525,8 @@ void SliderWidget::setValue(int value)
      << ", max = " << _valueMax
      << ", min = " << _valueMin
      << endl;*/
-  if(value < _valueMin)
-    value = _valueMin;
-  else if(value > _valueMax)
-    value = _valueMax;
+  if(value < _valueMin)      value = _valueMin;
+  else if(value > _valueMax) value = _valueMax;
 
   if(value != _value)
   {
@@ -542,14 +540,18 @@ void SliderWidget::setValue(int value)
 void SliderWidget::setMinValue(int value)
 {
   _valueMin = value;
-//  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setMaxValue(int value)
 {
   _valueMax = value;
-//  _stepValue = (int) ((_valueMax - _valueMin) * 0.05); // Step at 5% intervals
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::setStepValue(int value)
+{
+  _stepValue = value;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -637,11 +639,17 @@ void SliderWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int SliderWidget::valueToPos(int value)
 {
+  if(value < _valueMin)      value = _valueMin;
+  else if(value > _valueMax) value = _valueMax;
+
   return ((_w - _labelWidth - 4) * (value - _valueMin) / (_valueMax - _valueMin));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int SliderWidget::posToValue(int pos)
 {
-  return (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - 4) + _valueMin;
+  int value = (pos) * (_valueMax - _valueMin) / (_w - _labelWidth - 4) + _valueMin;
+
+  // Scale the position to the correct interval (according to step value)
+  return value - (value % _stepValue);
 }

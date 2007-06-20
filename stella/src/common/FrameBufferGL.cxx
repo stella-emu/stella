@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.86 2007-01-15 00:07:51 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.87 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -88,11 +88,8 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myTexture(NULL),
     myHaveTexRectEXT(false),
-    myScreenmode(0),
-    myScreenmodeCount(0),
     myFilterParamName("GL_NEAREST"),
-    myZoomLevel(1),
-    myFSScaleFactor(1.0),
+    myScaleFactor(1.0),
     myDirtyFlag(true)
 {
 }
@@ -186,7 +183,7 @@ bool FrameBufferGL::loadFuncs(const string& library)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::initSubsystem()
+bool FrameBufferGL::initSubsystem(VideoMode mode)
 {
   mySDLFlags |= SDL_OPENGL;
 
@@ -207,15 +204,8 @@ bool FrameBufferGL::initSubsystem()
       break;
   }
 
-  // Get the valid OpenGL screenmodes
-  myScreenmodeCount = 0;
-  myScreenmode = SDL_ListModes(NULL, SDL_FULLSCREEN|SDL_OPENGL);
-  if((myScreenmode != (SDL_Rect**) -1) && (myScreenmode != (SDL_Rect**) 0))
-    for(uInt32 i = 0; myScreenmode[i]; ++i)
-      myScreenmodeCount++;
-
   // Create the screen
-  if(!createScreen())
+  if(!setVidMode(mode))
     return false;
 
   // Now check to see what color components were actually created
@@ -248,22 +238,55 @@ string FrameBufferGL::about()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::setAspectRatio()
+bool FrameBufferGL::setVidMode(VideoMode mode)
 {
-  theAspectRatio = myOSystem->settings().getFloat("gl_aspect") / 2;
-  if(theAspectRatio <= 0.0)
-    theAspectRatio = 1.0;
-}
+  myScreenDim.x = myScreenDim.y = 0;
+  myScreenDim.w = mode.screen_w;
+  myScreenDim.h = mode.screen_h;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::setScaler(Scaler scaler)
-{
-  myZoomLevel = scaler.zoom;
-}
+  myImageDim.x = mode.image_x;
+  myImageDim.y = mode.image_y;
+  myImageDim.w = mode.image_w;
+  myImageDim.h = mode.image_h;
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::createScreen()
-{
+  // Activate stretching if its been requested and it makes sense to do so
+  myScaleFactor = 1.0;
+  if(fullScreen() && (mode.image_w < mode.screen_w) &&
+     (mode.image_h < mode.screen_h))
+  {
+    const string& gl_fsmax = myOSystem->settings().getString("gl_fsmax");
+    bool inUIMode =
+      myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
+      myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
+
+    // Only stretch in certain modes
+    if((gl_fsmax == "always") || 
+       (inUIMode && gl_fsmax == "ui") ||
+       (!inUIMode && gl_fsmax == "tia"))
+    {
+      float scaleX = float(myImageDim.w) / myScreenDim.w;
+      float scaleY = float(myImageDim.h) / myScreenDim.h;
+
+      if(scaleX > scaleY)
+        myScaleFactor = float(myScreenDim.w) / myImageDim.w;
+      else
+        myScaleFactor = float(myScreenDim.h) / myImageDim.h;
+
+      myImageDim.w = (Uint16) (myScaleFactor * myImageDim.w);
+      myImageDim.h = (Uint16) (myScaleFactor * myImageDim.h);
+      myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
+      myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
+    }
+  }
+
+  // Combine the zoom level and scaler into one quantity
+  myScaleFactor *= (float) mode.zoom;
+
+  GLdouble orthoWidth  = (GLdouble)
+      (myImageDim.w / myScaleFactor);
+  GLdouble orthoHeight = (GLdouble)
+      (myImageDim.h / myScaleFactor);
+
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   myRGB[0] );
   SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
@@ -276,11 +299,6 @@ bool FrameBufferGL::createScreen()
   int vsync = myOSystem->settings().getBool("gl_vsync") ? 1 : 0;
   SDL_GL_SetAttribute( SDL_GL_SWAP_CONTROL, vsync );
 
-  // Set the screen coordinates
-  GLdouble orthoWidth  = 0.0;
-  GLdouble orthoHeight = 0.0;
-  setDimensions(&orthoWidth, &orthoHeight);
-
   // Create screen containing GL context
   myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 0, mySDLFlags);
   if(myScreen == NULL)
@@ -291,7 +309,7 @@ bool FrameBufferGL::createScreen()
 
   // Check for some extensions that can potentially speed up operation
   const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
-  myHaveTexRectEXT       = strstr(extensions, "ARB_texture_rectangle") != NULL;
+  myHaveTexRectEXT = strstr(extensions, "ARB_texture_rectangle") != NULL;
 
   // Initialize GL display
   p_glViewport(myImageDim.x, myImageDim.y, myImageDim.w, myImageDim.h);
@@ -544,11 +562,11 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::translateCoords(Int32* x, Int32* y)
+void FrameBufferGL::translateCoords(Int32& x, Int32& y)
 {
   // Wow, what a mess :)
-  *x = (Int32) (((*x - myImageDim.x) / (myZoomLevel * myFSScaleFactor * theAspectRatio)));
-  *y = (Int32) (((*y - myImageDim.y) / (myZoomLevel * myFSScaleFactor)));
+  x = (Int32) ((x - myImageDim.x) / myScaleFactor);
+  y = (Int32) ((y - myImageDim.y) / myScaleFactor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -664,112 +682,6 @@ bool FrameBufferGL::createTextures()
                  myBuffer.format, myBuffer.type, myBuffer.pixels);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight)
-{
-  // We always know the initial image width and height
-  // We have to determine final image dimensions as well as screen dimensions
-  myImageDim.x = 0;
-  myImageDim.y = 0;
-  myImageDim.w = (Uint16) (myBaseDim.w * myZoomLevel * theAspectRatio);
-  myImageDim.h = (Uint16) (myBaseDim.h * myZoomLevel);
-  myScreenDim  = myImageDim;
-
-  myFSScaleFactor = 1.0f;
-
-  // Determine if we're in fullscreen or windowed mode
-  // In fullscreen mode, we clip the SDL screen to known resolutions
-  // In windowed mode, we use the actual image resolution for the SDL screen
-  if(mySDLFlags & SDL_FULLSCREEN)
-  {
-    float scaleX = 0.0f;
-    float scaleY = 0.0f;
-
-    // When in a fullscreen, most text mode, attempt to do 'nice' scaling
-    // This means scaling will only use integral values (1, 2, 3, ...)
-    bool gl_fsmax = myOSystem->settings().getBool("gl_fsmax");
-    bool nicescale = myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
-                     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
-
-    if(gl_fsmax && myDesktopDim.w != 0 && myDesktopDim.h != 0)
-    {
-      // Use the largest available screen size
-      myScreenDim.w = myDesktopDim.w;
-      myScreenDim.h = myDesktopDim.h;
-
-      scaleX = float(myImageDim.w) / myScreenDim.w;
-      scaleY = float(myImageDim.h) / myScreenDim.h;
-
-      if(scaleX > scaleY)
-        myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
-      else
-        myFSScaleFactor = float(myScreenDim.h) / myImageDim.h;
-
-      if(nicescale)
-        myFSScaleFactor = (int)myFSScaleFactor;
-
-      myImageDim.w = (Uint16) (myFSScaleFactor * myImageDim.w);
-      myImageDim.h = (Uint16) (myFSScaleFactor * myImageDim.h);
-    }
-    else if(gl_fsmax && myScreenmode != (SDL_Rect**) -1)
-    {
-      // Use the largest available screen size
-      myScreenDim.w = myScreenmode[0]->w;
-      myScreenDim.h = myScreenmode[0]->h;
-
-      scaleX = float(myImageDim.w) / myScreenDim.w;
-      scaleY = float(myImageDim.h) / myScreenDim.h;
-
-      if(scaleX > scaleY)
-        myFSScaleFactor = float(myScreenDim.w) / myImageDim.w;
-      else
-        myFSScaleFactor = float(myScreenDim.h) / myImageDim.h;
-
-      if(nicescale)
-        myFSScaleFactor = (int)myFSScaleFactor;
-
-      myImageDim.w = (Uint16) (myFSScaleFactor * myImageDim.w);
-      myImageDim.h = (Uint16) (myFSScaleFactor * myImageDim.h);
-    }
-    else if(myScreenmode == (SDL_Rect**) -1)
-    {
-      // All modes are available, so use the exact image resolution
-      myScreenDim.w = myImageDim.w;
-      myScreenDim.h = myImageDim.h;
-    }
-    else  // otherwise, search for a valid screenmode
-    {
-      for(uInt32 i = myScreenmodeCount-1; i >= 0; i--)
-      {
-        if(myImageDim.w <= myScreenmode[i]->w && myImageDim.h <= myScreenmode[i]->h)
-        {
-          myScreenDim.w = myScreenmode[i]->w;
-          myScreenDim.h = myScreenmode[i]->h;
-          break;
-        }
-      }
-    }
-
-    // Now calculate the OpenGL coordinates
-    myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
-    myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
-
-    *orthoWidth  = (GLdouble) (myImageDim.w / (myZoomLevel * theAspectRatio * myFSScaleFactor));
-    *orthoHeight = (GLdouble) (myImageDim.h / (myZoomLevel * myFSScaleFactor));
-  }
-  else
-  {
-    *orthoWidth  = (GLdouble) (myImageDim.w / (myZoomLevel * theAspectRatio));
-    *orthoHeight = (GLdouble) (myImageDim.h / myZoomLevel);
-  }
-/*
-  cerr << "myImageDim.x = " << myImageDim.x << ", myImageDim.y = " << myImageDim.y << endl;
-  cerr << "myImageDim.w = " << myImageDim.w << ", myImageDim.h = " << myImageDim.h << endl;
-  cerr << "myScreenDim.w = " << myScreenDim.w << ", myScreenDim.h = " << myScreenDim.h << endl;
-  cerr << endl;
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

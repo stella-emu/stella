@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.202 2007-02-22 02:15:46 stephena Exp $
+// $Id: EventHandler.cxx,v 1.203 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -388,11 +388,11 @@ void EventHandler::poll(uInt32 time)
           {
     #ifndef MAC_OSX
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().scale(+1);
+              myOSystem->frameBuffer().changeVidMode(+1);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().scale(-1);
+              myOSystem->frameBuffer().changeVidMode(-1);
               break;
 
             case SDLK_RETURN:
@@ -510,11 +510,11 @@ void EventHandler::poll(uInt32 time)
               break;
 
             case SDLK_EQUALS:
-              myOSystem->frameBuffer().scale(+1);
+              myOSystem->frameBuffer().changeVidMode(+1);
               break;
 
             case SDLK_MINUS:
-              myOSystem->frameBuffer().scale(-1);
+              myOSystem->frameBuffer().changeVidMode(-1);
               break;
 
             case SDLK_RETURN:
@@ -850,12 +850,13 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
   // Take window zooming into account
   int x = event.motion.x, y = event.motion.y;
-  myOSystem->frameBuffer().translateCoords(&x, &y);
+  myOSystem->frameBuffer().translateCoords(x, y);
 
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
   {
     int w = myOSystem->frameBuffer().baseWidth();
+    if(x < 0 || x > w) return;
 
     // Grabmouse introduces some lag into the mouse movement,
     // so we need to fudge the numbers a bit
@@ -882,7 +883,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
     // Take window zooming into account
     Int32 x = event.button.x, y = event.button.y;
 //if (state) cerr << "B: x = " << x << ", y = " << y << endl;
-    myOSystem->frameBuffer().translateCoords(&x, &y);
+    myOSystem->frameBuffer().translateCoords(x, y);
 //if (state) cerr << "A: x = " << x << ", y = " << y << endl << endl;
     MouseButton button;
 

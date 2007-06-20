@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.2 2007-01-01 18:04:54 stephena Exp $
+// $Id: UIDialog.hxx,v 1.3 2007-06-20 16:33:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,6 +26,8 @@ class CommandSender;
 class Dialog;
 class DialogContainer;
 class PopUpWidget;
+class SliderWidget;
+class StaticTextWidget;
 
 #include "OSystem.hxx"
 #include "bspf.hxx"
@@ -38,7 +40,11 @@ class UIDialog : public Dialog
     ~UIDialog();
 
   protected:
-    PopUpWidget* myLauncherPopup;
+    SliderWidget*     myLauncherWidthSlider;
+    StaticTextWidget* myLauncherWidthLabel;
+    SliderWidget*     myLauncherHeightSlider;
+    StaticTextWidget* myLauncherHeightLabel;
+
     PopUpWidget* myPalettePopup;
 
   private:
@@ -47,6 +53,11 @@ class UIDialog : public Dialog
     void setDefaults();
 
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
+    enum {
+      kLWidthChanged  = 'UIlw',
+      kLHeightChanged = 'UIlh',
+    };
 };
 
 #endif

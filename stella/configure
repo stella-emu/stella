@@ -19,6 +19,7 @@ _zlib=auto
 
 # default option behaviour yes/no
 _build_gl=yes
+_build_windowed=yes
 _build_sound=yes
 _build_debugger=yes
 _build_snapshot=yes
@@ -255,6 +256,8 @@ Installation directories:
 Optional Features:
   --enable-gl            enable/disable OpenGL rendering support [enabled]
   --disable-gl
+  --enable-windowed      enable/disable windowed rendering modes [enabled]
+  --disable-windowed
   --enable-sound         enable/disable sound support [enabled]
   --disable-sound
   --enable-debugger      enable/disable all debugger options [enabled]
@@ -298,6 +301,8 @@ for ac_option in $@; do
     case "$ac_option" in
       --enable-gl)              _build_gl=yes        ;;
       --disable-gl)             _build_gl=no         ;;
+      --enable-windowed)        _build_windowed=yes  ;;
+      --disable-windowed)       _build_windowed=no   ;;
       --enable-sound)           _build_sound=yes     ;;
       --disable-sound)          _build_sound=no      ;;
       --enable-debugger)        _build_debugger=yes  ;;
@@ -538,6 +543,7 @@ if test -n "$_host"; then
 			echo "Cross-compiling to $_host, forcing static build, and disabling OpenGL."
 			_build_static=yes
 			_build_gl=no
+			_build_windowed=no
 			;;
 		*)
 			echo "Cross-compiling to unknown target, please add your target to configure."
@@ -686,6 +692,14 @@ if test "$_build_gl" = "yes" ; then
 	fi
 else
 	echo_n "   OpenGL rendering disabled"
+	echo
+fi
+
+if test "$_build_windowed" = "yes" ; then
+	echo_n "   Windowed rendering modes enabled"
+	echo
+else
+	echo_n "   Windowed rendering modes disabled"
 	echo
 fi
 
@@ -850,6 +864,10 @@ esac
 
 if test "$_build_gl" = yes ; then
 	DEFINES="$DEFINES -DDISPLAY_OPENGL"
+fi
+
+if test "$_build_windowed" = yes ; then
+	DEFINES="$DEFINES -DWINDOWED_SUPPORT"
 fi
 
 if test "$_build_sound" = yes ; then

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.14 2007-01-01 18:04:55 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.15 2007-06-20 16:33:23 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -21,12 +21,11 @@
 
 #include "bspf.hxx"
 
-
 /**
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.14 2007-01-01 18:04:55 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.15 2007-06-20 16:33:23 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -41,19 +40,12 @@ class OSystemUNIX : public OSystem
     */
     virtual ~OSystemUNIX();
 
-  public:
     /**
       This method returns number of ticks in microseconds.
 
       @return Current time in microseconds.
     */
     uInt32 getTicks();
-
-    /**
-      This method queries the dimensions of the screen for this hardware.
-      It is assumed that a UNIX SDL framebuffer is using X11.
-    */
-    void getScreenDimensions(int& width, int& height);
 };
 
 #endif

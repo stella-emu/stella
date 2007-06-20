@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.31 2007-01-01 18:04:49 stephena Exp $
+// $Id: Settings.hxx,v 1.32 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.31 2007-01-01 18:04:49 stephena Exp $
+  @version $Id: Settings.hxx,v 1.32 2007-06-20 16:33:22 stephena Exp $
 */
 class Settings
 {
@@ -74,7 +74,7 @@ class Settings
 
     /**
       Get the value assigned to the specified key.  If the key does
-      not exist then 0 is returned.
+      not exist then -1 is returned.
 
       @param key The key of the setting to lookup
       @return The integer value of the setting
@@ -109,6 +109,15 @@ class Settings
     const string& getString(const string& key) const;
 
     /**
+      Get the x*y size assigned to the specified key.  If the key does
+      not exist (or is invalid) then results are -1 for each item.
+
+      @param key The key of the setting to lookup
+      @return The x and y values encoded in the key
+    */
+    void getSize(const string& key, int& x, int& y) const;
+
+    /**
       Set the value associated with key to the given value.
 
       @param key   The key of the setting
@@ -139,6 +148,14 @@ class Settings
       @param value The value to assign to the setting
     */
     void setString(const string& key, const string& value);
+
+    /**
+      Set the value associated with key to the given value.
+
+      @param key   The key of the setting
+      @param value The value to assign to the setting
+    */
+    void setSize(const string& key, const int value1, const int value2);
 
   private:
     // Copy constructor isn't supported by this class so make it private

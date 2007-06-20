@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.43 2007-01-12 16:03:10 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.44 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -36,7 +36,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.43 2007-01-12 16:03:10 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.44 2007-06-20 16:33:22 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -67,7 +67,7 @@ class FrameBufferGL : public FrameBuffer
       This method is called to initialize OpenGL video mode.
       Return false if any operation fails, otherwise return true.
     */
-    virtual bool initSubsystem();
+    virtual bool initSubsystem(VideoMode mode);
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -80,22 +80,11 @@ class FrameBufferGL : public FrameBuffer
     virtual string about();
 
     /**
-      This method is called to set the aspect ratio of the screen.
-    */
-    virtual void setAspectRatio();
+      This method is called to change to the given video mode.
 
-    /**
-      This method is called to change to the given scaler type.
-
-      @param scaler  The scaler to use for rendering the mediasource
+      @param mode  The mode to use for rendering the mediasource
     */
-    virtual void setScaler(Scaler scaler);
-
-    /**
-      This method is called whenever the screen needs to be recreated.
-      It updates the global screen variable.
-    */
-    virtual bool createScreen();
+    virtual bool setVidMode(VideoMode mode);
 
     /**
       Switches between the two filtering options in OpenGL.
@@ -200,7 +189,7 @@ class FrameBufferGL : public FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    inline virtual void translateCoords(Int32* x, Int32* y);
+    inline virtual void translateCoords(Int32& x, Int32& y);
 
     /**
       This method adds a dirty rectangle
@@ -220,8 +209,6 @@ class FrameBufferGL : public FrameBuffer
 
   private:
     bool createTextures();
-
-    void setDimensions(GLdouble* orthoWidth, GLdouble* orthoHeight);
 
     inline uInt32 power_of_two(uInt32 input)
     {
@@ -257,12 +244,6 @@ class FrameBufferGL : public FrameBuffer
     // Optional GL extensions that may increase performance
     bool myHaveTexRectEXT;
 
-    // The possible OpenGL screenmodes to use
-    SDL_Rect** myScreenmode;
-
-    // The number of usable OpenGL screenmodes
-    uInt32 myScreenmodeCount;
-
     // The depth of the texture buffer
     uInt32 myDepth;
 
@@ -272,12 +253,8 @@ class FrameBufferGL : public FrameBuffer
     // The name of the texture filtering to use
     string myFilterParamName;
 
-    // Used for zooming/scaling
-    uInt32 myZoomLevel;
-
-    // The scaling to use in fullscreen mode
-    // This is separate from both zoomlevel and aspect ratio
-    float myFSScaleFactor;
+    // The amount by which to scale the imagein fullscreen mode
+    float myScaleFactor;
 
     // TODO - will be removed when textured dirty rect support is added
     bool myDirtyFlag;

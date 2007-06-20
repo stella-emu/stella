@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.19 2007-01-01 18:04:55 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.20 2007-06-20 16:33:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,29 +46,32 @@ class VideoDialog : public Dialog
     void setDefaults();
 
     void handleRendererChange(int item);
+    void handleFullscreenChange(bool enable);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myFilterPopup;
-    SliderWidget*     myAspectRatioSlider;
-    StaticTextWidget* myAspectRatioLabel;
+    PopUpWidget*      myFSStretchPopup;
     PopUpWidget*      myPalettePopup;
-    PopUpWidget*      myTIAScalerPopup;
-    PopUpWidget*      myUIScalerPopup;
+    SliderWidget*     myUIZoomSlider;
+    StaticTextWidget* myUIZoomLabel;
+    SliderWidget*     myTIAZoomSlider;
+    StaticTextWidget* myTIAZoomLabel;
 
     SliderWidget*     myFrameRateSlider;
     StaticTextWidget* myFrameRateLabel;
     CheckboxWidget*   myFullscreenCheckbox;
     CheckboxWidget*   myColorLossCheckbox;
-    CheckboxWidget*   myDirtyRectCheckbox;
-    CheckboxWidget*   myUseDeskResCheckbox;
     CheckboxWidget*   myUseVSyncCheckbox;
+    CheckboxWidget*   myCenterCheckbox;
 
     enum {
-      kRendererChanged    = 'VDrd',
-      kAspectRatioChanged = 'VDar',
-      kFrameRateChanged   = 'VDfr'
+      kRendererChanged   = 'VDrd',
+      kUIZoomChanged     = 'VDui',
+      kTIAZoomChanged    = 'VDti',
+      kFrameRateChanged  = 'VDfr',
+      kFullScrChanged    = 'VDfs'
     };
 };
 

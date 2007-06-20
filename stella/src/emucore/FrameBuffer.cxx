@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.117 2007-01-30 17:13:10 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.118 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -40,7 +40,6 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
   : myOSystem(osystem),
     myScreen(0),
-    theAspectRatio(1.0),
     theRedrawTIAIndicator(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
@@ -55,48 +54,33 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height,
-                             bool useAspect)
+void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 {
-  bool isAlreadyInitialized = (SDL_WasInit(SDL_INIT_VIDEO) & SDL_INIT_VIDEO) > 0;
+  // Now (re)initialize the SDL video system
+  // These things only have to be done one per FrameBuffer creation
+  if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+      return;
+
+  myInitializedCount++;
 
   myBaseDim.x = myBaseDim.y = 0;
   myBaseDim.w = (uInt16) width;
   myBaseDim.h = (uInt16) height;
 
-  // Now (re)initialize the SDL video system
-  // These things only have to be done one per FrameBuffer creation
-  if(!isAlreadyInitialized)
-  {
-    Uint32 initflags = SDL_INIT_VIDEO | SDL_INIT_TIMER;
-
-    if(SDL_Init(initflags) < 0)
-      return;
-  }
-  myInitializedCount++;
-
-  // Query the desktop size
-  // This is really the job of SDL
-  int dwidth = 0, dheight = 0;
-  myOSystem->getScreenDimensions(dwidth, dheight);
-  myDesktopDim.w = dwidth;  myDesktopDim.h = dheight;
-
-  // Get the aspect ratio for the display if it's been enabled
-  theAspectRatio = 1.0;
-  if(useAspect) setAspectRatio();
-
   // Set fullscreen flag
+#ifdef WINDOWED_SUPPORT
   mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
+#else
+  mySDLFlags = 0;
+#endif
 
-  // Set the available scalers for this framebuffer, based on current eventhandler
-  // state and the maximum size of a window for the current desktop
-  setAvailableScalers();
+  // Set the available video modes for this framebuffer
+  setAvailableVidModes();
 
   // Initialize video subsystem
-  Scaler scaler;
-  getScaler(scaler, 0, currentScalerName());
-  setScaler(scaler);
-  initSubsystem();
+  VideoMode mode = getSavedVidMode();
+  initSubsystem(mode);
 
   // Set window title and icon
   setWindowTitle(title);
@@ -371,50 +355,73 @@ void FrameBuffer::toggleFullscreen()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
+#ifdef WINDOWED_SUPPORT
   // Update the settings
   myOSystem->settings().setBool("fullscreen", enable);
-
   if(enable)
     mySDLFlags |= SDL_FULLSCREEN;
   else
     mySDLFlags &= ~SDL_FULLSCREEN;
 
-  if(!createScreen())
-    return;
+  // Do a dummy call to getSavedVidMode to set up the modelists
+  // and have it point to the correct 'current' mode
+  getSavedVidMode();
 
-  myOSystem->eventHandler().refreshDisplay();
-  setCursorState();
+  // Do a mode change to the 'current' mode by not passing a '+1' or '-1'
+  // to changeVidMode()
+  changeVidMode(0);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::scale(int direction, const string& type)
+bool FrameBuffer::changeVidMode(int direction)
 {
-  Scaler newScaler;
-  const string& currentScaler = (direction == 0 ? type : currentScalerName());
-  getScaler(newScaler, direction, currentScaler);
+  VideoMode oldmode = myCurrentModeList->current();
+  if(direction == +1)
+    myCurrentModeList->next();
+  else if(direction == -1)
+    myCurrentModeList->previous();
 
-  // Only update the scaler if it's changed from the old one
-  if(currentScaler != string(newScaler.comparitor))
+  VideoMode newmode = myCurrentModeList->current();
+  if(!setVidMode(newmode))
+    return false;
+
+  myOSystem->eventHandler().refreshDisplay();
+  setCursorState();
+  showMessage(newmode.name);
+
+  // Determine which mode we're in, and save to the appropriate setting
+  if(fullScreen())
   {
-    setScaler(newScaler);
-    if(!createScreen())
-      return false;
-
+    myOSystem->settings().setSize("fullres", newmode.screen_w, newmode.screen_h);
+  }
+  else
+  {
     EventHandler::State state = myOSystem->eventHandler().state();
     bool inTIAMode = (state == EventHandler::S_EMULATE ||
                       state == EventHandler::S_PAUSE   ||
                       state == EventHandler::S_MENU    ||
                       state == EventHandler::S_CMDMENU);
 
-    myOSystem->eventHandler().refreshDisplay();
-    showMessage(newScaler.name);
-
     if(inTIAMode)
-      myOSystem->settings().setString("scale_tia", newScaler.comparitor);
+      myOSystem->settings().setInt("zoom_tia", newmode.zoom);
     else
-      myOSystem->settings().setString("scale_ui", newScaler.comparitor);
+      myOSystem->settings().setInt("zoom_ui", newmode.zoom);
   }
+
   return true;
+/*
+cerr << "New mode:" << endl
+	<< "    screen w = " << newmode.screen_w << endl
+	<< "    screen h = " << newmode.screen_h << endl
+	<< "    image x  = " << newmode.image_x << endl
+	<< "    image y  = " << newmode.image_y << endl
+	<< "    image w  = " << newmode.image_w << endl
+	<< "    image h  = " << newmode.image_h << endl
+	<< "    zoom     = " << newmode.zoom << endl
+	<< "    name     = " << newmode.name << endl
+	<< endl;
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -459,7 +466,11 @@ void FrameBuffer::grabMouse(bool grab)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::fullScreen()
 {
-  return myOSystem->settings().getBool("fullscreen");
+#ifdef WINDOWED_SUPPORT
+    return myOSystem->settings().getBool("fullscreen");
+#else
+    return true;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -666,108 +677,116 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBuffer::maxWindowSizeForScreen()
+uInt32 FrameBuffer::maxWindowSizeForScreen(uInt32 screenWidth, uInt32 screenHeight)
 {
-  uInt32 sWidth     = myDesktopDim.w;
-  uInt32 sHeight    = myDesktopDim.h;
-  uInt32 multiplier = 10;
-
-  // If screenwidth or height could not be found, use default zoom value
-  if(sWidth == 0 || sHeight == 0)
-    return 4;
-
-  bool found = false;
-  while(!found && (multiplier > 0))
+  uInt32 multiplier = 1;
+  for(;;)
   {
-    // Figure out the desired size of the window
-    uInt32 width  = (uInt32) (myBaseDim.w * multiplier * theAspectRatio);
+    // Figure out the zoomed size of the window
+    uInt32 width  = myBaseDim.w * multiplier;
     uInt32 height = myBaseDim.h * multiplier;
 
-    if((width < sWidth) && (height < sHeight))
-      found = true;
-    else
-      multiplier--;
-  }
-
-  if(found)
-    return multiplier;
-  else
-    return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::setAvailableScalers()
-{
-  /** Different emulation modes support different scalers, and the size
-      of the current desktop also determines how much a window can be
-      zoomed. */
-  int maxsize = maxWindowSizeForScreen();
-  myScalerList.clear();
-
-  for(int i = 0; i < kScalerListSize; ++i)
-    if(ourScalers[i].zoom <= maxsize)
-      myScalerList.push_back(&ourScalers[i]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::getScaler(Scaler& scaler, int direction, const string& name)
-{
-  // First search for the scaler specified by name
-  int pos = -1;
-  for(unsigned int i = 0; i < myScalerList.size(); ++i)
-  {
-    if(BSPF_strcasecmp(myScalerList[i]->name, name.c_str()) == 0)
-    {
-      pos = i;
+    if((width > screenWidth) || (height > screenHeight))
       break;
-    }
+
+    ++multiplier;
+  }
+  return multiplier > 1 ? multiplier - 1 : 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setAvailableVidModes()
+{
+  // First we look at windowed modes
+  // These can be sized exactly as required, since there's normally no
+  // restriction on window size (up the maximum size)
+  myWindowedModeList.clear();
+  int max_zoom = maxWindowSizeForScreen(myOSystem->desktopWidth(),
+                                        myOSystem->desktopHeight());
+  for(int i = 1; i <= max_zoom; ++i)
+  {
+    VideoMode m;
+    m.image_x = m.image_y = 0;
+    m.image_w = m.screen_w = myBaseDim.w * i;
+    m.image_h = m.screen_h = myBaseDim.h * i;
+    m.zoom = i;
+    ostringstream buf;
+    buf << "Zoom " << i << "x";
+    m.name = buf.str();
+
+    myWindowedModeList.add(m);
   }
 
-  // If we found a scaler, look at direction
-  if(pos >= 0)
+  // Now consider the fullscreen modes
+  // There are often stricter requirements on these, and they're normally
+  // different depending on the OSystem in use
+  // As well, we usually can't get fullscreen modes in the exact size
+  // we want, so we need to calculate image offsets
+  myFullscreenModeList.clear();
+  const ResolutionList& res = myOSystem->supportedResolutions();
+  for(unsigned int i = 0; i < res.size(); ++i)
   {
-    switch(direction)
+    VideoMode m;
+    m.screen_w = res[i].width;
+    m.screen_h = res[i].height;
+    m.zoom = maxWindowSizeForScreen(m.screen_w, m.screen_h);
+    m.name = res[i].name;
+
+    // Auto-calculate 'smart' centering; platform-specific framebuffers are
+    // free to ignore or augment it
+    m.image_w = myBaseDim.w * m.zoom;
+    m.image_h = myBaseDim.h * m.zoom;
+    m.image_x = (m.screen_w - m.image_w) / 2;
+    m.image_y = (m.screen_h - m.image_h) / 2;
+
+/*
+cerr << "Fullscreen modes:" << endl
+	<< "  Mode " << i << endl
+	<< "    screen w = " << m.screen_w << endl
+	<< "    screen h = " << m.screen_h << endl
+	<< "    image x  = " << m.image_x << endl
+	<< "    image y  = " << m.image_y << endl
+	<< "    image w  = " << m.image_w << endl
+	<< "    image h  = " << m.image_h << endl
+	<< "    zoom     = " << m.zoom << endl
+	<< endl;
+*/
+    myFullscreenModeList.add(m);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+VideoMode FrameBuffer::getSavedVidMode()
+{
+  if(myOSystem->settings().getBool("fullscreen"))
+  {
+    // Point the modelist to fullscreen modes, and set the iterator to
+    // the mode closest to the given resolution
+    int w = -1, h = -1;
+    myOSystem->settings().getSize("fullres", w, h);
+    if(w < 0 || h < 0)
     {
-      case 0:   // actual scaler specified in 'name'
-        // pos is already set from above
-        break;
-      case -1:  // previous scaler from one specified in 'name'
-        pos--;
-        if(pos < 0) pos = myScalerList.size() - 1;
-        break;
-      case +1:  // next scaler from one specified in 'name'
-        pos = (pos + 1) % myScalerList.size();
-        break;
+      w = myOSystem->desktopWidth();
+      h = myOSystem->desktopHeight();
     }
-    scaler = *(myScalerList[pos]);
+    myCurrentModeList = &myFullscreenModeList;
+    myCurrentModeList->setByResolution(w, h);
   }
   else
   {
-    // Otherwise, get the largest scaler that's available
-    scaler = *(myScalerList[myScalerList.size()-1]);
+    // Point the modelist to windowed modes, and set the iterator to
+    // the mode closest to the given zoom level
+    EventHandler::State state = myOSystem->eventHandler().state();
+    bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                      state == EventHandler::S_PAUSE   ||
+                      state == EventHandler::S_MENU    ||
+                      state == EventHandler::S_CMDMENU);
+    int zoom = (inTIAMode ? myOSystem->settings().getInt("zoom_tia") :
+                            myOSystem->settings().getInt("zoom_ui") );
+
+    myCurrentModeList = &myWindowedModeList;
+    myCurrentModeList->setByZoom(zoom);
   }
+
+  return myCurrentModeList->current();
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FrameBuffer::currentScalerName()
-{
-  EventHandler::State state = myOSystem->eventHandler().state();
-  bool inTIAMode = (state == EventHandler::S_EMULATE ||
-                    state == EventHandler::S_PAUSE   ||
-                    state == EventHandler::S_MENU    ||
-                    state == EventHandler::S_CMDMENU);
-
-  return (inTIAMode ?
-     myOSystem->settings().getString("scale_tia") :
-     myOSystem->settings().getString("scale_ui") );
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Scaler FrameBuffer::ourScalers[kScalerListSize] = {
-  { kZOOM1X,  "Zoom1x", "zoom1x", 1 },
-  { kZOOM2X,  "Zoom2x", "zoom2x", 2 },
-  { kZOOM3X,  "Zoom3x", "zoom3x", 3 },
-  { kZOOM4X,  "Zoom4x", "zoom4x", 4 },
-  { kZOOM5X,  "Zoom5x", "zoom5x", 5 },
-  { kZOOM6X,  "Zoom6x", "zoom6x", 6 }
-};

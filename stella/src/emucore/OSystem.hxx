@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.51 2007-01-01 18:04:49 stephena Exp $
+// $Id: OSystem.hxx,v 1.52 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -28,16 +28,22 @@ class Debugger;
 class CheatManager;
 class VideoDialog;
 
+#include "Array.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "Sound.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
-#include "StringList.hxx"
 #include "Font.hxx"
 
 #include "bspf.hxx"
 
+struct Resolution {
+  uInt32 width;
+  uInt32 height;
+  string name;
+};
+typedef Common::Array<Resolution> ResolutionList;
 
 /**
   This class provides an interface for accessing operating system specific
@@ -45,7 +51,7 @@ class VideoDialog;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.51 2007-01-01 18:04:49 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.52 2007-06-20 16:33:22 stephena Exp $
 */
 class OSystem
 {
@@ -194,6 +200,19 @@ class OSystem
     inline uInt32 frameRate() const { return myDisplayFrameRate; }
 
     /**
+      Get the maximum dimensions of a window for the video hardware.
+    */
+    const uInt32 desktopWidth() const  { return myDesktopWidth; }
+    const uInt32 desktopHeight() const { return myDesktopHeight; }
+
+    /**
+      Get the supported fullscreen resolutions for the video hardware.
+
+      @return  An array of supported resolutions
+    */
+    const ResolutionList& supportedResolutions() const { return myResolutions; }
+
+    /**
       Return the default directory for storing data.
     */
     const string& baseDir() const { return myBaseDir; }
@@ -303,11 +322,6 @@ class OSystem
     */
     virtual uInt32 getTicks() = 0;
 
-    /**
-      This method queries the dimensions of the screen for the given device.
-    */
-    virtual void getScreenDimensions(int& width, int& height) = 0;
-
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
     // derived classes.  Otherwise, the base methods will be used.
@@ -354,6 +368,12 @@ class OSystem
       Informs the OSystem of a change in EventHandler state.
     */
     virtual void stateChanged(EventHandler::State state);
+
+  protected:
+    /**
+      Query the OSystem video hardware for resolution information.
+    */
+    virtual void queryVideoHardware();
 
   protected:
     /**
@@ -415,6 +435,12 @@ class OSystem
     // Pointer to the CheatManager object
     CheatManager* myCheatManager;
 
+    // Maximum dimensions of the desktop area
+    uInt32 myDesktopWidth, myDesktopHeight;
+
+    // Supported fullscreen resolutions
+    ResolutionList myResolutions;
+
     // Number of times per second to iterate through the main loop
     uInt32 myDisplayFrameRate;
 
@@ -455,6 +481,9 @@ class OSystem
       uInt32 totalFrames;
     };
     TimingInfo myTimingInfo;
+
+    // Capabilities for this OSystem
+    uInt32 myCapabilities;
 
     // Table of RGB values for GUI elements
     static uInt32 ourGUIColors[kNumUIPalettes][kNumColors-256];

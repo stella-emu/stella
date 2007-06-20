@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.42 2007-01-23 09:37:39 knakos Exp $
+// $Id: VideoDialog.cxx,v 1.43 2007-06-20 16:33:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,16 +66,14 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myFilterPopup);
   ypos += lineHeight + 4;
 
-  // Aspect ratio
-  myAspectRatioSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                         "GL Aspect: ", lwidth, kAspectRatioChanged);
-  myAspectRatioSlider->setMinValue(1); myAspectRatioSlider->setMaxValue(100);
-  wid.push_back(myAspectRatioSlider);
-  myAspectRatioLabel = new StaticTextWidget(this, font,
-                                            xpos + myAspectRatioSlider->getWidth() + 4,
-                                            ypos + 1,
-                                            15, fontHeight, "", kTextAlignLeft);
-  myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
+  // GL FS stretch
+  myFSStretchPopup = new PopUpWidget(this, font, xpos, ypos,
+                                     pwidth, lineHeight, "GL Stretch: ", lwidth);
+  myFSStretchPopup->appendEntry("Never", 1);
+  myFSStretchPopup->appendEntry("UI mode", 2);
+  myFSStretchPopup->appendEntry("TIA mode", 3);
+  myFSStretchPopup->appendEntry("Always", 4);
+  wid.push_back(myFSStretchPopup);
   ypos += lineHeight + 4;
 
   // Palette
@@ -88,27 +86,28 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
-  // Available TIA scalers
-  myTIAScalerPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                  lineHeight, "TIA Scaler: ", lwidth);
-  myTIAScalerPopup->appendEntry("Zoom1x", 1);
-  myTIAScalerPopup->appendEntry("Zoom2x", 2);
-  myTIAScalerPopup->appendEntry("Zoom3x", 3);
-  myTIAScalerPopup->appendEntry("Zoom4x", 4);
-  myTIAScalerPopup->appendEntry("Zoom5x", 5);
-  myTIAScalerPopup->appendEntry("Zoom6x", 6);
-  wid.push_back(myTIAScalerPopup);
-
+  // Available UI zoom levels
+  myUIZoomSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                    "UI Zoom: ", lwidth, kUIZoomChanged);
+  myUIZoomSlider->setMinValue(1); myUIZoomSlider->setMaxValue(10);
+  wid.push_back(myUIZoomSlider);
+  myUIZoomLabel = new StaticTextWidget(this, font,
+                                       xpos + myUIZoomSlider->getWidth() + 4,
+                                       ypos + 1,
+                                       15, fontHeight, "", kTextAlignLeft);
+  myUIZoomLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
-  myUIScalerPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                    lineHeight, "UI Scaler: ", lwidth);
-  myUIScalerPopup->appendEntry("Zoom1x", 1);
-  myUIScalerPopup->appendEntry("Zoom2x", 2);
-  myUIScalerPopup->appendEntry("Zoom3x", 3);
-  myUIScalerPopup->appendEntry("Zoom4x", 4);
-  myUIScalerPopup->appendEntry("Zoom5x", 5);
-  myUIScalerPopup->appendEntry("Zoom6x", 6);
-  wid.push_back(myUIScalerPopup);
+
+  // Available TIA zoom levels
+  myTIAZoomSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                     "TIA Zoom: ", lwidth, kTIAZoomChanged);
+  myTIAZoomSlider->setMinValue(1); myTIAZoomSlider->setMaxValue(10);
+  wid.push_back(myTIAZoomSlider);
+  myTIAZoomLabel = new StaticTextWidget(this, font,
+                                        xpos + myTIAZoomSlider->getWidth() + 4,
+                                        ypos + 1,
+                                        15, fontHeight, "", kTextAlignLeft);
+  myTIAZoomLabel->setFlags(WIDGET_CLEARBG);
 
   // Move over to the next column
   xpos += 115;  ypos = 10;
@@ -127,7 +126,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Fullscreen
   myFullscreenCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
-                                            "Fullscreen mode");
+                                            "Fullscreen mode", kFullScrChanged);
   wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
@@ -137,23 +136,23 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myColorLossCheckbox);
   ypos += lineHeight + 4;
 
-  // Use dirty rectangle merging
-  myDirtyRectCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
-                                           "Dirty-rect merging");
-  wid.push_back(myDirtyRectCheckbox);
-  ypos += lineHeight + 4;
-
-  // Use desktop res in OpenGL
-  myUseDeskResCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
-                                            "Desktop Res in FS");
-  wid.push_back(myUseDeskResCheckbox);
-  ypos += lineHeight + 4;
-
   // Use sync to vblank in OpenGL
   myUseVSyncCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
                                           "GL VSync");
   wid.push_back(myUseVSyncCheckbox);
-  ypos += lineHeight + 20;
+  ypos += lineHeight + 4;
+
+  // Center window (in windowed mode)
+  myCenterCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+                                        "Center window (*)");
+  wid.push_back(myCenterCheckbox);
+  ypos += lineHeight + 4;
+
+  // Add message concerning usage
+  lwidth = font.getStringWidth("(*) Requires application restart");
+  new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
+                       "(*) Requires application restart",
+                       kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
@@ -177,11 +176,19 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   addToFocusList(wid);
 
-#ifdef _WIN32_WCE
-  myTIAScalerPopup->clearFlags(WIDGET_ENABLED);
-  myUIScalerPopup->clearFlags(WIDGET_ENABLED);
+  // Disable certain functions when we know they aren't present
+#ifndef DISPLAY_GL
+  myFilterPopup->clearFlags(WIDGET_ENABLED);
+  myFSStretchPopup->clearFlags(WIDGET_ENABLED);
+  myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
+#endif
+#ifndef WINDOWED_SUPPORT
+  myUIZoomSlider->clearFlags(WIDGET_ENABLED);
+  myUIZoomLabel->clearFlags(WIDGET_ENABLED);
+  myTIAZoomSlider->clearFlags(WIDGET_ENABLED);
+  myTIAZoomLabel->clearFlags(WIDGET_ENABLED);
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
-  myDirtyRectCheckbox->clearFlags(WIDGET_ENABLED);
+  myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 }
 
@@ -196,7 +203,6 @@ void VideoDialog::loadConfig()
   string s;
   bool b;
   int i;
-  double f;
 
   // Renderer setting
   s = instance()->settings().getString("video");
@@ -208,14 +214,13 @@ void VideoDialog::loadConfig()
   if(s == "linear")       myFilterPopup->setSelectedTag(1);
   else if(s == "nearest") myFilterPopup->setSelectedTag(2);
 
-  // Aspect ratio - another huge hack
-  s = instance()->settings().getString("gl_aspect");
-  f = instance()->settings().getFloat("gl_aspect");
-  if(f < 1.1)      { f = 1.1;  s = "1.1"; }
-  else if(f > 2.0) { f = 2.0;  s = "2.0"; }
-  i = (int)((f * 10) - 10) * 10;
-  myAspectRatioSlider->setValue(i);
-  myAspectRatioLabel->setLabel(s);
+  // GL stretch setting
+  s = instance()->settings().getString("gl_fsmax");
+  if(s == "never")        myFSStretchPopup->setSelectedTag(1);
+  else if(s == "ui")      myFSStretchPopup->setSelectedTag(2);
+  else if(s == "tia")     myFSStretchPopup->setSelectedTag(3);
+  else if(s == "always")  myFSStretchPopup->setSelectedTag(4);
+  else                    myFSStretchPopup->setSelectedTag(1);
 
   // Palette
   s = instance()->settings().getString("palette");
@@ -224,25 +229,17 @@ void VideoDialog::loadConfig()
   else if(s == "z26")      myPalettePopup->setSelectedTag(3);
   else if(s == "user")     myPalettePopup->setSelectedTag(4);
 
-  // TIA Scaler
-  s = instance()->settings().getString("scale_tia");
-  if(s == "zoom1x")       myTIAScalerPopup->setSelectedTag(1);
-  else if(s == "zoom2x")  myTIAScalerPopup->setSelectedTag(2);
-  else if(s == "zoom3x")  myTIAScalerPopup->setSelectedTag(3);
-  else if(s == "zoom4x")  myTIAScalerPopup->setSelectedTag(4);
-  else if(s == "zoom5x")  myTIAScalerPopup->setSelectedTag(5);
-  else if(s == "zoom6x")  myTIAScalerPopup->setSelectedTag(6);
-  else                    myTIAScalerPopup->setSelectedTag(0);
+  // UI zoom level
+  s = instance()->settings().getString("zoom_ui");
+  i = instance()->settings().getInt("zoom_ui");
+  myUIZoomSlider->setValue(i);
+  myUIZoomLabel->setLabel(s);
 
-  // UI Scaler
-  s = instance()->settings().getString("scale_ui");
-  if(s == "zoom1x")       myUIScalerPopup->setSelectedTag(1);
-  else if(s == "zoom2x")  myUIScalerPopup->setSelectedTag(2);
-  else if(s == "zoom3x")  myUIScalerPopup->setSelectedTag(3);
-  else if(s == "zoom4x")  myUIScalerPopup->setSelectedTag(4);
-  else if(s == "zoom5x")  myUIScalerPopup->setSelectedTag(5);
-  else if(s == "zoom6x")  myUIScalerPopup->setSelectedTag(6);
-  else                    myUIScalerPopup->setSelectedTag(0);
+  // TIA zoom level
+  s = instance()->settings().getString("zoom_tia");
+  i = instance()->settings().getInt("zoom_tia");
+  myTIAZoomSlider->setValue(i);
+  myTIAZoomLabel->setLabel(s);
 
   // FIXME - what to do with this??
   myFrameRateSlider->setEnabled(false);
@@ -250,22 +247,19 @@ void VideoDialog::loadConfig()
   // Fullscreen
   b = instance()->settings().getBool("fullscreen");
   myFullscreenCheckbox->setState(b);
+  handleFullscreenChange(b);
 
   // PAL color-loss effect
   b = instance()->settings().getBool("colorloss");
   myColorLossCheckbox->setState(b);
 
-  // Dirty-rect merging (software mode only)
-  b = instance()->settings().getBool("dirtyrects");
-  myDirtyRectCheckbox->setState(b);
-
-  // Use desktop resolution in fullscreen mode (GL mode only)
-  b = instance()->settings().getBool("gl_fsmax");
-  myUseDeskResCheckbox->setState(b);
-
   // Use sync to vertical blank (GL mode only)
   b = instance()->settings().getBool("gl_vsync");
   myUseVSyncCheckbox->setState(b);
+
+  // Center window
+  b = instance()->settings().getBool("center");
+  myCenterCheckbox->setState(b);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   i = myRendererPopup->getSelectedTag();
@@ -291,9 +285,19 @@ void VideoDialog::saveConfig()
   else if(i == 2) s = "nearest";
   instance()->settings().setString("gl_filter", s);
 
+  // GL stretch setting
+  i = myFSStretchPopup->getSelectedTag();
+  if(i == 1)       s = "never";
+  else if(i == 2)  s = "ui";
+  else if(i == 3)  s = "tia";
+  else if(i == 4)  s = "always";
+  instance()->settings().setString("gl_fsmax", s);
+
+/*
   // Aspect ratio
   s = myAspectRatioLabel->getLabel();
   instance()->settings().setString("gl_aspect", s);
+*/
 
   // Palette
   i = myPalettePopup->getSelectedTag();
@@ -303,25 +307,13 @@ void VideoDialog::saveConfig()
   else if(i == 4)  s = "user";
   instance()->settings().setString("palette", s);
 
-  // TIA Scaler
-  i = myTIAScalerPopup->getSelectedTag();
-  if(i == 1)       s = "zoom1x";
-  else if(i == 2)  s = "zoom2x";
-  else if(i == 3)  s = "zoom3x";
-  else if(i == 4)  s = "zoom4x";
-  else if(i == 5)  s = "zoom5x";
-  else if(i == 6)  s = "zoom6x";
-  instance()->settings().setString("scale_tia", s);
-
   // UI Scaler
-  i = myUIScalerPopup->getSelectedTag();
-  if(i == 1)       s = "zoom1x";
-  else if(i == 2)  s = "zoom2x";
-  else if(i == 3)  s = "zoom3x";
-  else if(i == 4)  s = "zoom4x";
-  else if(i == 5)  s = "zoom5x";
-  else if(i == 6)  s = "zoom6x";
-  instance()->settings().setString("scale_ui", s);
+  s = myUIZoomLabel->getLabel();
+  instance()->settings().setString("zoom_ui", s);
+
+  // TIA Scaler
+  s = myTIAZoomLabel->getLabel();
+  instance()->settings().setString("zoom_tia", s);
 
   // Framerate   FIXME - I haven't figured out what to do with this yet
 /*
@@ -338,17 +330,13 @@ void VideoDialog::saveConfig()
   b = myColorLossCheckbox->getState();
   instance()->settings().setBool("colorloss", b);
 
-  // Dirty rectangle merging (software mode only)
-  b = myDirtyRectCheckbox->getState();
-  instance()->settings().setBool("dirtyrects", b);
-
-  // Use desktop resolution in fullscreen mode (GL mode only)
-  b = myUseDeskResCheckbox->getState();
-  instance()->settings().setBool("gl_fsmax", b);
-
   // Use sync to vertical blank (GL mode only)
   b = myUseVSyncCheckbox->getState();
   instance()->settings().setBool("gl_vsync", b);
+
+  // Center window
+  b = myCenterCheckbox->getState();
+  instance()->settings().setBool("center", b);
 
   // Finally, issue a complete framebuffer re-initialization
   instance()->createFrameBuffer(false);
@@ -359,43 +347,52 @@ void VideoDialog::setDefaults()
 {
   myRendererPopup->setSelectedTag(1);
   myFilterPopup->setSelectedTag(1);
+  myFSStretchPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);
-  myTIAScalerPopup->setSelectedTag(2);
-  myUIScalerPopup->setSelectedTag(2);
+  myUIZoomSlider->setValue(2);
+  myUIZoomLabel->setLabel("2");
+  myTIAZoomSlider->setValue(2);
+  myTIAZoomLabel->setLabel("2");
 //  myFrameRateSlider->setValue(0);
 //  myFrameRateLabel->setLabel("0");
 
-  // For some unknown reason (ie, a bug), slider widgets can only
-  // take certain ranges of numbers.  So we have to fudge things ...
-  myAspectRatioSlider->setValue(100);
-  myAspectRatioLabel->setLabel("2.0");
-
   myFullscreenCheckbox->setState(false);
   myColorLossCheckbox->setState(false);
-  myDirtyRectCheckbox->setState(false);
-  myUseDeskResCheckbox->setState(true);
   myUseVSyncCheckbox->setState(true);
+  myCenterCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleRendererChange(1);  // 1 indicates software mode
+  handleFullscreenChange(false);  // indicates fullscreen deactivated
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::handleRendererChange(int item)
 {
+#ifdef DISPLAY_OPENGL
   // When we're in software mode, certain OpenGL-related options are disabled
   bool gl = (item > 1) ? true : false;
 
   myFilterPopup->setEnabled(gl);
-  myAspectRatioSlider->setEnabled(gl);
-  myAspectRatioLabel->setEnabled(gl);
-  myUseDeskResCheckbox->setEnabled(gl);
+  myFSStretchPopup->setEnabled(gl);
+  myFSStretchPopup->setEnabled(gl);
   myUseVSyncCheckbox->setEnabled(gl);
 
-  // Also, in OpenGL mode, certain software related items are disabled
-  myDirtyRectCheckbox->setEnabled(!gl);
+  _dirty = true;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleFullscreenChange(bool enable)
+{
+#ifdef WINDOWED_SUPPORT
+  myUIZoomSlider->setEnabled(!enable);
+  myUIZoomLabel->setEnabled(!enable);
+  myTIAZoomSlider->setEnabled(!enable);
+  myTIAZoomLabel->setEnabled(!enable);
 
   _dirty = true;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -417,21 +414,20 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       handleRendererChange(data);
       break;
 
-    case kAspectRatioChanged:
-    {
-      // This is terribly dirty, but what can we do?
-      float ratio = (((myAspectRatioSlider->getValue() + 9) / 10) / 10.0) + 1.0;
-      ostringstream r;
-      if(ratio == 2.0)
-        r << ratio << ".0";
-      else
-        r << ratio;
-      myAspectRatioLabel->setLabel(r.str());
+    case kUIZoomChanged:
+      myUIZoomLabel->setValue(myUIZoomSlider->getValue());
       break;
-    }
+
+    case kTIAZoomChanged:
+      myTIAZoomLabel->setValue(myTIAZoomSlider->getValue());
+      break;
 
     case kFrameRateChanged:
       myFrameRateLabel->setValue(myFrameRateSlider->getValue());
+      break;
+
+    case kFullScrChanged:
+      handleFullscreenChange(myFullscreenCheckbox->getState());
       break;
 
     default:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.86 2007-01-30 17:13:10 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.87 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -28,6 +28,7 @@
 #include "MediaSrc.hxx"
 #include "Font.hxx"
 #include "GuiUtils.hxx"
+#include "VideoModeList.hxx"
 
 class OSystem;
 class Console;
@@ -76,14 +77,6 @@ enum {
   kNumColors
 };
 
-// Different types of scalers available
-enum ScalerType { kZOOM1X, kZOOM2X, kZOOM3X, kZOOM4X, kZOOM5X, kZOOM6X };
-struct Scaler {
-  ScalerType type;
-  const char* name;
-  const char* comparitor;
-  int zoom;
-};
 
 /**
   This class encapsulates the MediaSource and is the basis for the video
@@ -93,10 +86,12 @@ struct Scaler {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.86 2007-01-30 17:13:10 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.87 2007-06-20 16:33:22 stephena Exp $
 */
 class FrameBuffer
 {
+  friend class TiaOutputWidget;
+
   public:
     /**
       Creates a new Frame Buffer
@@ -115,10 +110,8 @@ class FrameBuffer
       @param title   The title of the window
       @param width   The width of the framebuffer
       @param height  The height of the framebuffer
-      @param aspect  Whether to use the aspect ratio setting
     */
-    void initialize(const string& title, uInt32 width, uInt32 height,
-                    bool aspect = true);
+    void initialize(const string& title, uInt32 width, uInt32 height);
 
     /**
       Updates the display, which depending on the current mode could mean
@@ -193,16 +186,14 @@ class FrameBuffer
     void setFullscreen(bool enable);
 
     /**
-      This method is called when the user wants to scale the window, in effect
-      changing to another scaler.
-      direction = -1 means window should go to the next lower scaler
-      direction =  0 means window should be created with the given scaler
-      direction = +1 means window should go to the next higher scaler
+      This method is called when the user wants to switch to the next available
+      video mode (functionality depends on fullscreen or windowed mode).
+      direction = -1 means go to the next lower video mode
+      direction = +1 means go to the next higher video mode
 
       @param direction  Described above
-      @param type       The scaler to use if direction is set to 0
     */
-    bool scale(int direction, const string& type = "zoom1x");
+    bool changeVidMode(int direction);
 
     /**
       Sets the state of the cursor (hidden or grabbed) based on the
@@ -287,73 +278,18 @@ class FrameBuffer
     */
     void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
                     int color, TextAlignment align = kTextAlignLeft,
-                    int deltax = 0, bool useEllipsis = true);
+	                    int deltax = 0, bool useEllipsis = true);
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
     */
     virtual void stateChanged(EventHandler::State state) { }
 
+  //////////////////////////////////////////////////////////////////////
+  // The following methods are system-specific and must be implemented
+  // in derived classes.
+  //////////////////////////////////////////////////////////////////////
   public:
-    //////////////////////////////////////////////////////////////////////
-    // The following methods are system-specific and must be implemented
-    // in derived classes.
-    //////////////////////////////////////////////////////////////////////
-    /**
-      This method is called to initialize the subsystem-specific video mode
-      with the given scaler.
-    */
-    virtual bool initSubsystem() = 0;
-
-    /**
-      This method is called to query the type of the FrameBuffer.
-    */
-    virtual BufferType type() = 0;
-
-    /**
-      This method is called to provide information about the FrameBuffer.
-    */
-    virtual string about() = 0;
-
-    /**
-      This method is called to set the aspect ratio of the screen.
-    */
-    virtual void setAspectRatio() = 0;
-
-    /**
-      This method is called to change to the given scaler type.
-
-      @param scaler  The scaler to use for rendering the mediasource
-    */
-    virtual void setScaler(Scaler scaler) = 0;
-
-    /**
-      This method is called whenever the screen needs to be recreated.
-      It updates the global screen variable.
-    */
-    virtual bool createScreen() = 0;
-
-    /**
-      Switches between the filtering options in the video subsystem.
-    */
-    virtual void toggleFilter() = 0;
-
-    /**
-      This method should be called anytime the MediaSource needs to be redrawn
-      to the screen.
-    */
-    virtual void drawMediaSource() = 0;
-
-    /**
-      This method is called before any drawing is done (per-frame).
-    */
-    virtual void preFrameUpdate() = 0;
-
-    /**
-      This method is called after any drawing is done (per-frame).
-    */
-    virtual void postFrameUpdate() = 0;
-
     /**
       This method is called to get the specified scanline data.
 
@@ -361,15 +297,6 @@ class FrameBuffer
       @param data The actual pixel data (in bytes)
     */
     virtual void scanline(uInt32 row, uInt8* data) = 0;
-
-    /**
-      This method is called to map a given r,g,b triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
 
     /**
       This method should be called to draw a horizontal line.
@@ -434,7 +361,7 @@ class FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    virtual void translateCoords(Int32* x, Int32* y) = 0;
+    virtual void translateCoords(Int32& x, Int32& y) = 0;
 
     /**
       This method should be called to add a dirty rectangle
@@ -452,6 +379,62 @@ class FrameBuffer
     */
     virtual void enablePhosphor(bool enable, int blend) = 0;
 
+    /**
+      This method is called to query the type of the FrameBuffer.
+    */
+    virtual BufferType type() = 0;
+
+  protected:
+    /**
+      This method is called to initialize the video subsystem
+      with the given video mode.  Normally, it will also call setVidMode().
+    */
+    virtual bool initSubsystem(VideoMode mode) = 0;
+
+    /**
+      This method is called to change to the given video mode.
+
+      @param mode  The video mode to use for rendering the mediasource
+    */
+    virtual bool setVidMode(VideoMode mode) = 0;
+
+    /**
+      Switches between the filtering options in the video subsystem.
+    */
+    virtual void toggleFilter() = 0;
+
+    /**
+      This method should be called anytime the MediaSource needs to be redrawn
+      to the screen.
+    */
+    virtual void drawMediaSource() = 0;
+
+    /**
+      This method is called before any drawing is done (per-frame).
+    */
+    virtual void preFrameUpdate() = 0;
+
+    /**
+      This method is called after any drawing is done (per-frame).
+    */
+    virtual void postFrameUpdate() = 0;
+
+    /**
+      This method is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
+
+    /**
+      This method is called to provide information about the FrameBuffer.
+    */
+    virtual string about() = 0;
+
+
+
   protected:
     // The parent system for the framebuffer
     OSystem* myOSystem;
@@ -468,9 +451,6 @@ class FrameBuffer
     // Dimensions of the SDL window (not always the same as the image)
     SDL_Rect myScreenDim;
 
-    // Dimensions of the desktop area
-    SDL_Rect myDesktopDim;
-
     // The SDL video buffer
     SDL_Surface* myScreen;
 
@@ -480,9 +460,6 @@ class FrameBuffer
     // TIA palettes for normal and phosphor modes
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
-
-    // The aspect ratio of the window
-    float theAspectRatio;
 
     // Indicates if the TIA area should be redrawn
     bool theRedrawTIAIndicator;
@@ -515,34 +492,24 @@ class FrameBuffer
     uInt8 getPhosphor(uInt8 c1, uInt8 c2);
 
     /**
-      Calculate the maximum window size that the current screen can hold.
-      If not supported by platform, always return 4.
+      Calculate the maximum level by which the base window can be zoomed and
+      still fit in the given screen dimensions.
     */
-    int maxWindowSizeForScreen();
+    uInt32 maxWindowSizeForScreen(uInt32 screenWidth, uInt32 screenHeight);
 
     /**
-      Set the scalers available for this framebuffer based on current emulation
-      state and maximum window size.
+      Set all possible video modes (both windowed and fullscreen) available for
+      this framebuffer based on current emulation state and maximum window size.
     */
-    void setAvailableScalers();
+    void setAvailableVidModes();
 
     /**
-      Returns a scaler based on the current eventhandler mode and the value of direction.
-      If there's any error, default to 'zoom1x'.
-      direction = -1 means previous scaler based on value in 'name'
-      direction =  0 means actual scaler based on value in 'name'
-      direction = +1 means next scaler based on value in 'name'
+      Returns an appropriate video mode based on the current eventhandler
+      state, taking into account the maximum size of the window.
 
-      @param scaler     The reference to store the scaler we're looking for
-      @param direction  Described above
-      @param name       The name of the scaler
+      @return  A valid VideoMode for this framebuffer
     */
-    void getScaler(Scaler& scaler, int direction, const string& name);
-
-    /**
-      Get the current scaler based on the eventhandler mode.
-    */
-    const string& currentScalerName();
+    VideoMode getSavedVidMode();
 
   private:
     // Indicates the number of times the framebuffer was initialized
@@ -560,14 +527,10 @@ class FrameBuffer
     };
     Message myMessage;
 
-    // The various scalers available in TIA vs. non-TIA mode
-    // For the foreseeable future, the UI scalers will be restricted
-    // from using the more advanced scalers
-    enum { kScalerListSize = 6 };
-    static Scaler ourScalers[kScalerListSize];
-
-    // The list of scalers available in the current mode
-    Common::Array<Scaler*> myScalerList;
+    // The list of all available video modes for this framebuffer
+    VideoModeList myWindowedModeList;
+    VideoModeList myFullscreenModeList;
+    VideoModeList* myCurrentModeList;
 };
 
 #endif

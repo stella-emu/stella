@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.21 2007-01-07 17:59:52 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.22 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -40,10 +40,10 @@ FrameBufferGP2X::~FrameBufferGP2X()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGP2X::initSubsystem()
+bool FrameBufferGP2X::initSubsystem(VideoMode mode)
 {
   // Create the screen
-  return createScreen();
+  return setVidMode(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -54,20 +54,7 @@ string FrameBufferGP2X::about()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGP2X::setAspectRatio()
-{
-  // Aspect ratio correction not yet available in software mode
-  theAspectRatio = 1.0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGP2X::setScaler(Scaler scaler)
-{
-  // Not supported, we always use 1x zoom
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGP2X::createScreen()
+bool FrameBufferGP2X::setVidMode(VideoMode mode)
 {
   // Make sure to clear the screen, since we're using different resolutions,
   // and there tends to be lingering artifacts in hardware mode

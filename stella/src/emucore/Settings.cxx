@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.116 2007-02-06 23:34:33 stephena Exp $
+// $Id: Settings.cxx,v 1.117 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -34,17 +34,16 @@ Settings::Settings(OSystem* osystem)
 
   // Add options that are common to all versions of Stella
   setInternal("video", "soft");
-  setInternal("dirtyrects", "false"); // This only becomes useful at high resolutions
 
   setInternal("gl_filter", "nearest");
-  setInternal("gl_aspect", "2.0");
-  setInternal("gl_fsmax", "true");
+  setInternal("gl_fsmax", "never");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
 
-  setInternal("scale_ui", "zoom2x");
-  setInternal("scale_tia", "zoom2x");
+  setInternal("zoom_ui", "2");
+  setInternal("zoom_tia", "2");
   setInternal("fullscreen", "false");
+  setInternal("fullres", "");
   setInternal("center", "true");
   setInternal("grabmouse", "false");
   setInternal("palette", "standard");
@@ -80,7 +79,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("lastrom", "");
   setInternal("modtime", "");
   setInternal("debugheight", "0");
-  setInternal("launchersize", "2");
+  setInternal("launcherres", "320x240");
   setInternal("uipalette", "0");
   setInternal("autoslot", "false");
 }
@@ -220,9 +219,9 @@ void Settings::validate()
   if(s != "linear" && s != "nearest")
     setInternal("gl_filter", "nearest");
 
-  float f = getFloat("gl_aspect");
-  if(f < 1.1 || f > 2.0)
-    setInternal("gl_aspect", "2.0");
+  s = getString("gl_fsmax");
+  if(s != "never" && s != "ui" && s != "tia" && s != "always")
+    setInternal("gl_fsmax", "never");
 #endif
 
 #ifdef SOUND_SUPPORT
@@ -237,15 +236,13 @@ void Settings::validate()
     setInternal("tiafreq", "31400");
 #endif
 
-  s = getString("scale_ui");
-  if(s != "zoom1x" && s != "zoom2x" && s != "zoom3x" &&
-     s != "zoom4x" && s != "zoom5x" && s != "zoom6x")
-    setInternal("scale_ui", "zoom1x");
+  i = getInt("zoom_ui");
+  if(i < 1 || i > 10)
+    setInternal("zoom_ui", "2");
 
-  s = getString("scale_tia");
-  if(s != "zoom1x" && s != "zoom2x" && s != "zoom3x" &&
-     s != "zoom4x" && s != "zoom5x" && s != "zoom6x")
-    setInternal("scale_tia", "zoom1x");
+  i = getInt("zoom_tia");
+  if(i < 1 || i > 10)
+    setInternal("zoom_tia", "2");
 
   i = getInt("paddle");
   if(i < 0 || i > 3)
@@ -283,14 +280,15 @@ void Settings::usage()
     << "  -gl_filter    <type>         Type is one of the following:\n"
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
-    << "  -gl_aspect    <number>       Scale the width by the given amount\n"
-    << "  -gl_fsmax     <1|0>          Use the largest available screenmode in fullscreen OpenGL\n"
+    << "  -gl_fsmax     <never|always| Stretch GL image in fullscreen mode\n"
+    << "                 ui|tia\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << endl
   #endif
-    << "  -scale_tia    <scaler>       Use the specified scaler in emulation mode\n"
-    << "  -scale_ui     <scaler>       Use the specified scaler in non-emulation mode (ROM browser/debugger)\n"
+    << "  -zoom_tia     <zoom>         Use the specified zoom level in emulation mode\n"
+    << "  -zoom_ui      <zoom>         Use the specified zoom level in non-emulation mode (ROM browser/debugger)\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
+    << "  -fullres      <res>          The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -palette      <original|     Use the specified color palette\n"
@@ -329,7 +327,7 @@ void Settings::usage()
     << endl
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
-    << "  -launchersize <1|2|3>        Set the size of the ROM launcher\n"
+    << "  -launcherres  <res>          The resolution to use in ROM launcher mode\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
@@ -461,6 +459,16 @@ void Settings::setString(const string& key, const string& value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::getSize(const string& key, int& x, int& y) const
+{
+  string size = getString(key);
+  replace(size.begin(), size.end(), 'x', ' ');
+  istringstream buf(size);
+  buf >> x;
+  buf >> y;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Settings::getInt(const string& key) const
 {
   // Try to find the named setting and answer its value
@@ -526,6 +534,14 @@ const string& Settings::getString(const string& key) const
     return myExternalSettings[idx].value;
   else
     return EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Settings::setSize(const string& key, const int value1, const int value2)
+{
+  ostringstream buf;
+  buf << value1 << "x" << value2;
+  setString(key, buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

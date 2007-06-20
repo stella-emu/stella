@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.96 2007-02-06 23:34:33 stephena Exp $
+// $Id: OSystem.cxx,v 1.97 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -65,6 +65,22 @@ OSystem::OSystem()
     myFont(NULL),
     myConsoleFont(NULL)
 {
+#ifdef DISPLAY_OPENGL
+  myFeatures += "OpenGL ";
+#endif
+#ifdef SOUND_SUPPORT
+  myFeatures += "Sound ";
+#endif
+#ifdef JOYSTICK_SUPPORT
+  myFeatures += "Joystick ";
+#endif
+#ifdef DEBUGGER_SUPPORT
+  myFeatures += "Debugger ";
+#endif
+#ifdef CHEATCODE_SUPPORT
+  myFeatures += "Cheats";
+#endif
+
 #if 0
   // Debugging info for the GUI widgets
   cerr << "  kStaticTextWidget   = " << kStaticTextWidget   << endl;
@@ -131,6 +147,11 @@ OSystem::~OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::create()
 {
+  // Get relevant information about the video hardware
+  // This must be done before any graphics context is created, since
+  // it may be needed to initialize the size of graphical objects
+  queryVideoHardware();
+
   // Create fonts to draw text
   myFont         = new GUI::Font(GUI::stellaDesc);
   myLauncherFont = new GUI::Font(GUI::stellaDesc);  // FIXME
@@ -160,23 +181,6 @@ bool OSystem::create()
   // opened until needed, so this is non-blocking (on those systems
   // that only have a single sound device (no hardware mixing)
   createSound();
-
-  // Determine which features were conditionally compiled into Stella
-#ifdef DISPLAY_OPENGL
-  myFeatures += "OpenGL ";
-#endif
-#ifdef SOUND_SUPPORT
-  myFeatures += "Sound ";
-#endif
-#ifdef JOYSTICK_SUPPORT
-  myFeatures += "Joystick ";
-#endif
-#ifdef DEBUGGER_SUPPORT
-  myFeatures += "Debugger ";
-#endif
-#ifdef CHEATCODE_SUPPORT
-  myFeatures += "Cheats";
-#endif
 
   return true;
 }
@@ -498,9 +502,11 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
     if(!in)
       return false;
 
-    *image = new uInt8[512 * 1024];
-    in.read((char*)(*image), 512 * 1024);
-    *size = in.gcount();
+    in.seekg(0, ios::end);
+    *size = (int)in.tellg();
+    in.seekg(0, ios::beg);
+    *image = new uInt8[*size];
+    in.read((char*)(*image), *size);
     in.close();
   }
 
@@ -699,6 +705,45 @@ void OSystem::mainLoop()
 
     myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
     myTimingInfo.totalFrames++;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::queryVideoHardware()
+{
+  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+    return;
+
+  // First get the maximum windowed desktop resolution
+  const SDL_VideoInfo* info = SDL_GetVideoInfo();
+  myDesktopWidth  = info->current_w;
+  myDesktopHeight = info->current_h;
+
+  // Then get the valid fullscreen modes
+  // If there are any errors, just use the desktop resolution
+  ostringstream buf;
+  SDL_Rect** modes = SDL_ListModes(NULL, SDL_FULLSCREEN);
+  if((modes == (SDL_Rect**)0) || (modes == (SDL_Rect**)-1))
+  {
+    Resolution r;
+    r.width  = myDesktopWidth;
+    r.height = myDesktopHeight;
+    buf << r.width << "x" << r.height;
+    r.name = buf.str();
+    myResolutions.push_back(r);
+  }
+  else
+  {
+    for(uInt32 i = 0; modes[i]; ++i)
+    {
+      Resolution r;
+      r.width  = modes[i]->w;
+      r.height = modes[i]->h;
+      buf.str("");
+      buf << r.width << "x" << r.height;
+      r.name = buf.str();
+      myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
+    }
   }
 }
 

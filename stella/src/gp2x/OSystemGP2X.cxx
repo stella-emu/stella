@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.26 2007-01-24 21:36:38 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.27 2007-06-20 16:33:22 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -67,6 +67,9 @@ OSystemGP2X::OSystemGP2X(const string& path) : OSystem()
   // Set event arrays to a known state
   myPreviousEvents = new uInt8[8];  memset(myPreviousEvents, 0, 8);
   myCurrentEvents  = new uInt8[8];  memset(myCurrentEvents, 0, 8);
+
+  // GP2X doesn't have windowed mode; it's always in fullscreen
+  clearCapability(CAP_WINDOWED);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

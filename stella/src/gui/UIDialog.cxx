@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.3 2007-01-23 09:37:39 knakos Exp $
+// $Id: UIDialog.cxx,v 1.4 2007-06-20 16:33:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,13 +45,33 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   xpos = 10;  ypos = 10;
 
-  // Launcher size
-  myLauncherPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                    "Rom launcher size: ", lwidth);
-  myLauncherPopup->appendEntry("320x240", 1);
-  myLauncherPopup->appendEntry("400x300", 2);
-  myLauncherPopup->appendEntry("512x384", 3);
-  wid.push_back(myLauncherPopup);
+  // Launcher width and height
+  myLauncherWidthSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
+                                           lineHeight, "Launcher Width: ",
+                                           lwidth, kLWidthChanged);
+  myLauncherWidthSlider->setMinValue(320);
+  myLauncherWidthSlider->setMaxValue(800);
+  myLauncherWidthSlider->setStepValue(10);
+  wid.push_back(myLauncherWidthSlider);
+  myLauncherWidthLabel =
+      new StaticTextWidget(this, font,
+                           xpos + myLauncherWidthSlider->getWidth() + 4,
+                           ypos + 1, 15, fontHeight, "", kTextAlignLeft);
+  myLauncherWidthLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
+  myLauncherHeightSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
+                                            lineHeight, "Launcher Height: ",
+                                            lwidth, kLHeightChanged);
+  myLauncherHeightSlider->setMinValue(240);
+  myLauncherHeightSlider->setMaxValue(600);
+  myLauncherHeightSlider->setStepValue(10);
+  wid.push_back(myLauncherHeightSlider);
+  myLauncherHeightLabel =
+      new StaticTextWidget(this, font,
+                           xpos + myLauncherHeightSlider->getWidth() + 4,
+                           ypos + 1, 15, fontHeight, "", kTextAlignLeft);
+  myLauncherHeightLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // UI Palette
@@ -103,16 +123,21 @@ UIDialog::~UIDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::loadConfig()
 {
-  int i;
-
   // Launcher size
-  i = instance()->settings().getInt("launchersize");
-  if(i < 1 || i > 3)
-    i = 1;
-  myLauncherPopup->setSelectedTag(i);
+  int w, h;
+  instance()->settings().getSize("launcherres", w, h);
+  if(w < 320) w = 320;
+  if(w > 800) w = 800;
+  if(h < 240) h = 240;
+  if(h > 600) h = 600;
+
+  myLauncherWidthSlider->setValue(w);
+  myLauncherWidthLabel->setValue(w);
+  myLauncherHeightSlider->setValue(h);
+  myLauncherHeightLabel->setValue(h);
 
   // UI palette
-  i = instance()->settings().getInt("uipalette");
+  int i = instance()->settings().getInt("uipalette");
   if(i < 1 || i > 2)
     i = 1;
   myPalettePopup->setSelectedTag(i);
@@ -121,26 +146,28 @@ void UIDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::saveConfig()
 {
-  Settings& settings = instance()->settings();
-  int i;
-
   // Launcher size
-  i = myLauncherPopup->getSelectedTag();
-  settings.setInt("launchersize", i);
+  instance()->settings().setSize("launcherres", 
+    myLauncherWidthSlider->getValue(), myLauncherHeightSlider->getValue());
 
   // UI palette
-  i = myPalettePopup->getSelectedTag();
-  settings.setInt("uipalette", i);
+  instance()->settings().setInt("uipalette",
+    myPalettePopup->getSelectedTag());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::setDefaults()
 {
+  int w = MIN(instance()->desktopWidth(), (const uInt32) 400);
+  int h = MIN(instance()->desktopHeight(), (const uInt32) 300);
+  myLauncherWidthSlider->setValue(w);
+  myLauncherWidthLabel->setValue(w);
+  myLauncherHeightSlider->setValue(h);
+  myLauncherHeightLabel->setValue(h);
+
 #if !defined (GP2X)
-  myLauncherPopup->setSelectedTag(2);
   myPalettePopup->setSelectedTag(1);
 #else
-  myLauncherPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(2);
 #endif
 
@@ -152,6 +179,14 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
+    case kLWidthChanged:
+      myLauncherWidthLabel->setValue(myLauncherWidthSlider->getValue());
+      break;
+
+    case kLHeightChanged:
+      myLauncherHeightLabel->setValue(myLauncherHeightSlider->getValue());
+      break;
+
     case kOKCmd:
       saveConfig();
       close();

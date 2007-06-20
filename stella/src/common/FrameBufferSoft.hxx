@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.45 2007-01-15 00:07:51 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.46 2007-06-20 16:33:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.45 2007-01-15 00:07:51 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.46 2007-06-20 16:33:22 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -55,7 +55,7 @@ class FrameBufferSoft : public FrameBuffer
       This method is called to initialize software video mode.
       Return false if any operation fails, otherwise return true.
     */
-    virtual bool initSubsystem();
+    virtual bool initSubsystem(VideoMode mode);
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -68,22 +68,11 @@ class FrameBufferSoft : public FrameBuffer
     virtual string about();
 
     /**
-      This method is called to set the aspect ratio of the screen.
-    */
-    virtual void setAspectRatio();
+      This method is called to change to the given videomode type.
 
-    /**
-      This method is called to change to the given scaler type.
-
-      @param scaler  The scaler to use for rendering the mediasource
+      @param mode  The video mode to use for rendering the mediasource
     */
-    virtual void setScaler(Scaler scaler);
-
-    /**
-      This method is called whenever the screen needs to be recreated.
-      It updates the global screen variable.
-    */
-    virtual bool createScreen();
+    virtual bool setVidMode(VideoMode mode);
 
     /**
       Switches between the filtering options in software mode.
@@ -188,7 +177,7 @@ class FrameBufferSoft : public FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    virtual void translateCoords(Int32* x, Int32* y);
+    virtual void translateCoords(Int32& x, Int32& y);
 
     /**
       This method adds a dirty rectangle
@@ -215,10 +204,10 @@ class FrameBufferSoft : public FrameBuffer
     int myZoomLevel;
     int myBytesPerPixel;
     int myPitch;
+    int myBaseOffset;
     SDL_PixelFormat* myFormat;
 
     enum RenderType {
-      kDirtyRect,
       kSoftZoom_16,
       kSoftZoom_24,
       kSoftZoom_32,
@@ -228,14 +217,14 @@ class FrameBufferSoft : public FrameBuffer
     };
     RenderType myRenderType;
 
-    // Use dirty updates (SDL_UpdateRects instead of SDL_UpdateRect)
-    bool myUseDirtyRects;
+    // Indicates if the TIA image has been modified
+    bool myDirtyFlag;
 
-    // Used in the dirty update of the SDL surface
+    // Indicates if we're in a purely UI mode
+    bool myInUIMode;
+
+    // Used in the dirty update of rectangles in non-TIA modes
     RectList* myRectList;
-
-    // Used in the dirty update of the overlay surface
-    RectList* myOverlayRectList;
 };
 
 #endif

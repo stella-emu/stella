@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.14 2007-01-19 21:53:27 stephena Exp $
+// $Id: Launcher.cxx,v 1.15 2007-06-20 16:33:23 stephena Exp $
 //============================================================================
+
+#include <sstream>
 
 #include "LauncherDialog.hxx"
 #include "Version.hxx"
@@ -30,28 +32,16 @@ Launcher::Launcher(OSystem* osystem)
     myWidth(320),
     myHeight(240)
 {
-  int size = myOSystem->settings().getInt("launchersize");
-  switch(size)
-  {
-    case 1:
-      myWidth  = 320;
-      myHeight = 240;
-      break;
-    case 2:
-      myWidth  = 400;
-      myHeight = 300;
-      break;
-    case 3:
-      myWidth  = 512;
-      myHeight = 384;
-      break;
-  }
+  int w, h;
+  myOSystem->settings().getSize("launcherres", w, h);
+  myWidth = w >= 0 ? w : 0;
+  myHeight = h >= 0 ? h : 0;
 
   // Error check the resolution
-  int w, h;
-  osystem->getScreenDimensions(w, h);
-  if(myWidth > w) myWidth = w;
-  if(myHeight > h) myHeight = h;
+  if(myWidth < 320) myWidth = 320;
+  if(myWidth > osystem->desktopWidth()) myWidth = osystem->desktopWidth();
+  if(myHeight < 240) myHeight = 240;
+  if(myHeight > osystem->desktopHeight()) myHeight = osystem->desktopHeight();
 
   myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);
 }
@@ -65,5 +55,5 @@ Launcher::~Launcher()
 void Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
-  myOSystem->frameBuffer().initialize(title, myWidth, myHeight, false);
+  myOSystem->frameBuffer().initialize(title, myWidth, myHeight);
 }
