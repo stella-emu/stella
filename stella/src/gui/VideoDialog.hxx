@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.20 2007-06-20 16:33:23 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.21 2007-06-21 12:27:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,6 +54,7 @@ class VideoDialog : public Dialog
     PopUpWidget*      myFilterPopup;
     PopUpWidget*      myFSStretchPopup;
     PopUpWidget*      myPalettePopup;
+    PopUpWidget*      myFSResPopup;
     SliderWidget*     myUIZoomSlider;
     StaticTextWidget* myUIZoomLabel;
     SliderWidget*     myTIAZoomSlider;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.9 2007-01-01 18:04:48 stephena Exp $
+// $Id: M6532.cxx,v 1.10 2007-06-21 12:27:00 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -238,6 +238,7 @@ void M6532::poke(uInt16 addr, uInt8 value)
   else if((addr & 0x07) == 0x01)    // Port A Data Direction Register 
   {
     myDDRA = value;
+#ifdef ATARIVOX_SUPPORT
 	 /*
     20060608 bkw: Not the most elegant thing in the world...
 	 When a bit in the DDR is set as input, +5V is placed on its output
@@ -262,6 +263,7 @@ void M6532::poke(uInt16 addr, uInt8 value)
       c.write(Controller::Three, !(value & 0x04));
       c.write(Controller::Four, !(value & 0x08));
 	 }
+#endif
   }
   else if((addr & 0x07) == 0x02)    // Port B I/O Register (Console switches)
   {

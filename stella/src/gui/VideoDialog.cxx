@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.43 2007-06-20 16:33:23 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.44 2007-06-21 12:27:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -84,6 +84,14 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPalettePopup->appendEntry("Z26", 3);
   myPalettePopup->appendEntry("User", 4);
   wid.push_back(myPalettePopup);
+  ypos += lineHeight + 4;
+
+  // Fullscreen resolution
+  myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+                                 lineHeight, "FS Res: ", lwidth);
+  for(uInt32 i = 0; i < instance()->supportedResolutions().size(); ++i)
+    myFSResPopup->appendEntry(instance()->supportedResolutions()[i].name, i+1);
+  wid.push_back(myFSResPopup);
   ypos += lineHeight + 4;
 
   // Available UI zoom levels
@@ -229,6 +237,12 @@ void VideoDialog::loadConfig()
   else if(s == "z26")      myPalettePopup->setSelectedTag(3);
   else if(s == "user")     myPalettePopup->setSelectedTag(4);
 
+  // Fullscreen resolution
+  s = instance()->settings().getString("fullres");
+  myFSResPopup->setSelectedName(s);
+  if(myFSResPopup->getSelectedTag() < 0)
+    myFSResPopup->setSelectedMax();
+
   // UI zoom level
   s = instance()->settings().getString("zoom_ui");
   i = instance()->settings().getInt("zoom_ui");
@@ -293,12 +307,6 @@ void VideoDialog::saveConfig()
   else if(i == 4)  s = "always";
   instance()->settings().setString("gl_fsmax", s);
 
-/*
-  // Aspect ratio
-  s = myAspectRatioLabel->getLabel();
-  instance()->settings().setString("gl_aspect", s);
-*/
-
   // Palette
   i = myPalettePopup->getSelectedTag();
   if(i == 1)       s = "standard";
@@ -306,6 +314,10 @@ void VideoDialog::saveConfig()
   else if(i == 3)  s = "z26";
   else if(i == 4)  s = "user";
   instance()->settings().setString("palette", s);
+
+  // Fullscreen resolution
+  s = myFSResPopup->getSelectedString();
+  instance()->settings().setString("fullres", s);
 
   // UI Scaler
   s = myUIZoomLabel->getLabel();
@@ -349,6 +361,7 @@ void VideoDialog::setDefaults()
   myFilterPopup->setSelectedTag(1);
   myFSStretchPopup->setSelectedTag(1);
   myPalettePopup->setSelectedTag(1);
+  myFSResPopup->setSelectedMax();
   myUIZoomSlider->setValue(2);
   myUIZoomLabel->setLabel("2");
   myTIAZoomSlider->setValue(2);
@@ -386,6 +399,8 @@ void VideoDialog::handleRendererChange(int item)
 void VideoDialog::handleFullscreenChange(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
+  myFSResPopup->setEnabled(enable);
+
   myUIZoomSlider->setEnabled(!enable);
   myUIZoomLabel->setEnabled(!enable);
   myTIAZoomSlider->setEnabled(!enable);

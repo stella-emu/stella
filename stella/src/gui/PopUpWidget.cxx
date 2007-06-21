@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.32 2007-01-01 18:04:54 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.33 2007-06-21 12:27:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -510,6 +510,19 @@ void PopUpWidget::setSelected(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setSelectedName(const string& name)
+{
+  for(unsigned int item = 0; item < _entries.size(); ++item)
+  {
+    if(_entries[item].name == name)
+    {
+      setSelected(item);
+      return;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::setSelectedTag(int tag)
 {
   for(unsigned int item = 0; item < _entries.size(); ++item)
@@ -520,6 +533,12 @@ void PopUpWidget::setSelectedTag(int tag)
       return;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::setSelectedMax()
+{
+  setSelected(_entries.size() - 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

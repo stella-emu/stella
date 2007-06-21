@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.18 2007-01-01 18:04:43 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.19 2007-06-21 12:27:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -293,5 +293,5 @@ void DebuggerDialog::doScanlineAdvance()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExit()
 {
-  instance()->debugger().quit();
+  instance()->debugger().parser()->run("run");
 }

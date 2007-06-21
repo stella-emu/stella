@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.17 2007-01-01 18:04:54 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.18 2007-06-21 12:27:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,8 +72,14 @@ class PopUpWidget : public Widget, public CommandSender
     /** Select the entry at the given index. */
     void setSelected(int item);
 	
+    /** Select the first entry matching the given name. */
+    void setSelectedName(const string& name);
+
     /** Select the first entry matching the given tag. */
     void setSelectedTag(int tag);
+
+    /** Select the highest/last entry in the internal list. */
+    void setSelectedMax();
 
     int getSelected() const
       { return _selectedItem; }
