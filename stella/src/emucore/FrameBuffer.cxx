@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.118 2007-06-20 16:33:22 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.119 2007-07-11 15:08:10 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -758,6 +758,8 @@ cerr << "Fullscreen modes:" << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoMode FrameBuffer::getSavedVidMode()
 {
+  EventHandler::State state = myOSystem->eventHandler().state();
+
   if(myOSystem->settings().getBool("fullscreen"))
   {
     // Point the modelist to fullscreen modes, and set the iterator to
@@ -769,6 +771,22 @@ VideoMode FrameBuffer::getSavedVidMode()
       w = myOSystem->desktopWidth();
       h = myOSystem->desktopHeight();
     }
+
+    // The launcher and debugger modes are different, in that their size is
+    // set at program launch and can't be changed
+    // In these cases, the resolution must accommodate their size
+    if(state == EventHandler::S_LAUNCHER)
+    {
+      int lw, lh;
+      myOSystem->settings().getSize("launcherres", lw, lh);
+      w = MAX(w, lw);
+      h = MAX(h, lh);
+    }
+#ifdef DEBUGGER_SUPPORT
+    else if(state == EventHandler::S_DEBUGGER)
+      cerr << "TODO: check debugger size\n";
+#endif
+
     myCurrentModeList = &myFullscreenModeList;
     myCurrentModeList->setByResolution(w, h);
   }
@@ -776,7 +794,6 @@ VideoMode FrameBuffer::getSavedVidMode()
   {
     // Point the modelist to windowed modes, and set the iterator to
     // the mode closest to the given zoom level
-    EventHandler::State state = myOSystem->eventHandler().state();
     bool inTIAMode = (state == EventHandler::S_EMULATE ||
                       state == EventHandler::S_PAUSE   ||
                       state == EventHandler::S_MENU    ||

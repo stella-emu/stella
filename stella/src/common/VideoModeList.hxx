@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoModeList.hxx,v 1.1 2007-06-20 16:33:22 stephena Exp $
+// $Id: VideoModeList.hxx,v 1.2 2007-07-11 15:08:04 stephena Exp $
 //============================================================================
 
 #ifndef VIDMODE_LIST_HXX
@@ -33,7 +33,7 @@ struct VideoMode {
   This class implements an iterator around an array of VideoMode objects.
 
   @author  Stephen Anthony
-  @version $Id: VideoModeList.hxx,v 1.1 2007-06-20 16:33:22 stephena Exp $
+  @version $Id: VideoModeList.hxx,v 1.2 2007-07-11 15:08:04 stephena Exp $
 */
 class VideoModeList
 {
@@ -68,11 +68,11 @@ class VideoModeList
 
     void setByResolution(uInt32 width, uInt32 height)
     {
-      // Find the largest resolution within the given bounds
+      // Find the largest resolution able to hold the given bounds
       myIdx = 0;
       for(unsigned int i = myModeList.size() - 1; i; --i)
       {
-        if(myModeList[i].screen_w <= width && myModeList[i].screen_h <= height)
+        if(width <= myModeList[i].screen_w && height <= myModeList[i].screen_h)
         {
           myIdx = i;
           break;
