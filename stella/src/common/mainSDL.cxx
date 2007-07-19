@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.72 2007-01-01 18:04:40 stephena Exp $
+// $Id: mainSDL.cxx,v 1.73 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -45,12 +45,6 @@
 #elif defined(GP2X)
   #include "SettingsGP2X.hxx"
   #include "OSystemGP2X.hxx"
-#elif defined(PSP)
-  #include "SettingsPSP.hxx"
-  #include "OSystemPSP.hxx"
-  extern "C" {
-    int SDL_main(int argc, char* argv[]);
-  }
 #else
   #error Unsupported platform!
 #endif
@@ -80,36 +74,23 @@ void Cleanup()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #if defined(MAC_OSX)
 int stellaMain(int argc, char* argv[])
-#elif defined(PSP)
-int SDL_main(int argc, char* argv[])
 #else
 int main(int argc, char* argv[])
 #endif
 {
-  // Get the base directory for storing all Stella settings/statefiles/etc
-  // This can't be stored in the actual settings file for obvious reasons,
-  // so we get it from an environment var (if it exists)
-  const char* bd_ptr = getenv("STELLA_BASEDIR");
-  const string& basedir = bd_ptr ? string(bd_ptr) : "";
-
   // Create the parent OSystem object and settings
 #if defined(UNIX)
-  theOSystem = new OSystemUNIX(basedir);
+  theOSystem = new OSystemUNIX();
   SettingsUNIX settings(theOSystem);
 #elif defined(WIN32)
-  theOSystem = new OSystemWin32(basedir);
+  theOSystem = new OSystemWin32();
   SettingsWin32 settings(theOSystem);
 #elif defined(MAC_OSX)
-  theOSystem = new OSystemMACOSX(basedir);
+  theOSystem = new OSystemMACOSX();
   SettingsMACOSX settings(theOSystem);
 #elif defined(GP2X)
-  theOSystem = new OSystemGP2X(basedir);
+  theOSystem = new OSystemGP2X();
   SettingsGP2X settings(theOSystem);
-#elif defined(PSP)
-  fprintf(stderr,"---------------- Stderr Begins ----------------\n");
-  fprintf(stdout,"---------------- Stdout Begins ----------------\n");
-  theOSystem = new OSystemPSP(basedir);
-  SettingsPSP settings(theOSystem);
 #else
   #error Unsupported platform!
 #endif
@@ -153,7 +134,6 @@ int main(int argc, char* argv[])
   }
 
   // Request that the SDL window be centered, if possible
-  // At some point, this should be properly integrated into the UI
   if(theOSystem->settings().getBool("center"))
     putenv("SDL_VIDEO_CENTERED=1");
 

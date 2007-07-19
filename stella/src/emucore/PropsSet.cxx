@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.32 2007-04-09 18:12:40 stephena Exp $
+// $Id: PropsSet.cxx,v 1.33 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -31,28 +31,11 @@ PropertiesSet::PropertiesSet(OSystem* osystem)
     myRoot(NULL),
     mySize(0)
 {
-  // Several properties files can exist, so we attempt to load from
-  // all of them.  If the user has specified a properties file, use
-  // that one.  Otherwise, load both the system and user properties
-  // files, and have the user file override all entries from the
-  // system file.
-  ostringstream buf;
-
-  string altpro = myOSystem->settings().getString("pro");
-  if(altpro != "")
-  {
-    buf << "User game properties: \'" << altpro << "\'\n";
-    load(altpro, false);  // don't save alternate properties
-  }
-  else
-  {
-    const string& props = myOSystem->propertiesFile();
-    buf << "User game properties: \'" << props << "\'\n";
-    load(props, true);    // do save these properties
-  }
+  const string& props = myOSystem->propertiesFile();
+  load(props, true);    // do save these properties
 
   if(myOSystem->settings().getBool("showinfo"))
-    cout << buf.str() << endl;
+    cout << "User game properties: \'" << props << "\'\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

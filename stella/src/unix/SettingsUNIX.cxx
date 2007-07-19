@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsUNIX.cxx,v 1.21 2007-01-01 18:04:55 stephena Exp $
+// $Id: SettingsUNIX.cxx,v 1.22 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -29,8 +29,6 @@ SettingsUNIX::SettingsUNIX(OSystem* osystem)
   setInternal("gl_lib", "libGL.so");
   // Most Linux GL implementations don't support this yet
   setInternal("gl_vsync", "false");
-  // For whatever reason, this is very efficient in Linux
-  setInternal("dirtyrects", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

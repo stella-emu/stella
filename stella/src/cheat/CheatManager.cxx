@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.13 2007-01-01 18:04:39 stephena Exp $
+// $Id: CheatManager.cxx,v 1.14 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -230,7 +230,7 @@ void CheatManager::enable(const string& code, bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatManager::loadCheatDatabase()
 {
-  string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
+  const string& cheatfile = myOSystem->cheatFile();
   ifstream in(cheatfile.c_str(), ios::in);
   if(!in)
     return;
@@ -271,7 +271,7 @@ void CheatManager::saveCheatDatabase()
   if(!myListIsDirty)
     return;
 
-  string cheatfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "stella.cht";
+  const string& cheatfile = myOSystem->cheatFile();
   ofstream out(cheatfile.c_str(), ios::out);
   if(!out)
     return;

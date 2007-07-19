@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.cxx,v 1.9 2007-01-14 16:17:52 stephena Exp $
+// $Id: Cart2K.cxx,v 1.10 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -67,7 +67,7 @@ void Cartridge2K::install(System& system)
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
   {
     access.directPeekBase = &myImage[address & 0x07FF];
-    mySystem->setPageAccess(address >> mySystem->pageShift(), access);
+    mySystem->setPageAccess(address >> shift, access);
   }
 }
 

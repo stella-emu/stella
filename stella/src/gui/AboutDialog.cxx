@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.18 2007-01-01 18:04:51 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.19 2007-07-19 16:21:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -119,8 +119,6 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\L\\c2""    Maintainer for Solaris port");
       ADD_ATEXT("\\L\\c0""  Darrell Spice Jr. & Doodle");
       ADD_ATEXT("\\L\\c2""    Authors for OS/2 port");
-      ADD_ATEXT("\\L\\c0""  David Voswinkel");
-      ADD_ATEXT("\\L\\c2""    Maintainer for PSP port");
       ADD_ATEXT("\\L\\c0""  Kostas Nakos");
       ADD_ATEXT("\\L\\c2""    Author/maintainer for WinCE port");
       ADD_ATEXT("\\L\\c0""  Alex Zaballa");

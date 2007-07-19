@@ -242,9 +242,6 @@ DEP_CPP_ABOUT=\
 	".\sdl\SDL_version.h"\
 	".\sdl\SDL_video.h"\
 	
-NODEP_CPP_ABOUT=\
-	"..\emucore\m6502\src\bspf\src\pspstdint.h"\
-	
 
 !ELSEIF  "$(CFG)" == "PocketStella - Win32 (WCE ARM) Debug"
 
@@ -299,9 +296,6 @@ DEP_CPP_ABOUT=\
 	".\sdl\SDL_types.h"\
 	".\sdl\SDL_version.h"\
 	".\sdl\SDL_video.h"\
-	
-NODEP_CPP_ABOUT=\
-	"..\emucore\m6502\src\bspf\src\pspstdint.h"\
 	
 
 !ELSEIF  "$(CFG)" == "PocketStella - Win32 (WCE x86) Release"
@@ -358,9 +352,6 @@ DEP_CPP_ABOUT=\
 	".\sdl\SDL_version.h"\
 	".\sdl\SDL_video.h"\
 	
-NODEP_CPP_ABOUT=\
-	"..\emucore\m6502\src\bspf\src\pspstdint.h"\
-	
 
 !ELSEIF  "$(CFG)" == "PocketStella - Win32 (WCE x86) Debug"
 
@@ -415,9 +406,6 @@ DEP_CPP_ABOUT=\
 	".\sdl\SDL_types.h"\
 	".\sdl\SDL_version.h"\
 	".\sdl\SDL_video.h"\
-	
-NODEP_CPP_ABOUT=\
-	"..\emucore\m6502\src\bspf\src\pspstdint.h"\
 	
 
 !ENDIF 

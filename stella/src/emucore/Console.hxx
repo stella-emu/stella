@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.59 2007-02-06 23:34:31 stephena Exp $
+// $Id: Console.hxx,v 1.60 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.59 2007-02-06 23:34:31 stephena Exp $
+  @version $Id: Console.hxx,v 1.60 2007-07-19 16:21:39 stephena Exp $
 */
 class Console
 {
@@ -225,7 +225,7 @@ class Console
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true) const;
 
     /**
-      Loads a user-defined palette file from 'stella.pal', filling the
+      Loads a user-defined palette file (from OSystem::paletteFile), filling the
       appropriate user-defined palette arrays.
     */
     void loadUserPalette();

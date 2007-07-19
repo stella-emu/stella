@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.52 2007-06-20 16:33:22 stephena Exp $
+// $Id: OSystem.hxx,v 1.53 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -51,7 +51,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.52 2007-06-20 16:33:22 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.53 2007-07-19 16:21:39 stephena Exp $
 */
 class OSystem
 {
@@ -193,6 +193,11 @@ class OSystem
     virtual void setFramerate(uInt32 framerate);
 
     /**
+      Set all config file paths for the OSystem.
+    */
+    void setConfigPaths();
+
+    /**
       Get the current framerate for the video system.
 
       @return  The video framerate currently in use
@@ -223,6 +228,21 @@ class OSystem
     const string& stateDir() const { return myStateDir; }
 
     /**
+      This method should be called to get the full path of the gamelist
+      cache file (used by the Launcher to show a listing of available games).
+
+      @return String representing the full path of the gamelist cache file.
+    */
+    const string& cacheFile() const { return myGameListCacheFile; }
+
+    /**
+      This method should be called to get the full path of the cheat file.
+
+      @return String representing the full path of the cheat filename.
+    */
+    const string& cheatFile() const { return myCheatFile; }
+
+    /**
       This method should be called to get the full path of the config file.
 
       @return String representing the full path of the config filename.
@@ -231,19 +251,19 @@ class OSystem
 
     /**
       This method should be called to get the full path of the
+      (optional) palette file.
+
+      @return String representing the full path of the properties filename.
+    */
+    const string& paletteFile() const { return myPaletteFile; }
+
+    /**
+      This method should be called to get the full path of the
       properties file (stella.pro).
 
       @return String representing the full path of the properties filename.
     */
     const string& propertiesFile() const { return myPropertiesFile; }
-
-    /**
-      This method should be called to get the full path of the gamelist
-      cache file (used by the Launcher to show a listing of available games).
-
-      @return String representing the full path of the gamelist cache file.
-    */
-    const string& cacheFile() const { return myGameListCacheFile; }
 
     /**
       This method should be called to get the full path of the currently
@@ -375,31 +395,21 @@ class OSystem
     */
     virtual void queryVideoHardware();
 
-  protected:
     /**
-      Set the base directory for all Stella files
+      Set the base directory for all Stella files (these files may be
+      located in other places through settings).
     */
     void setBaseDir(const string& basedir);
-
-    /**
-      Set the directory where state files are stored
-    */
-    void setStateDir(const string& statedir);
-
-    /**
-      Set the locations of game properties file
-    */
-    void setPropertiesDir(const string& path);
-
-    /**
-      Set the locations of config file
-    */
-    void setConfigFile(const string& file);
 
     /**
       Set the location of the gamelist cache file
     */
     void setCacheFile(const string& cachefile) { myGameListCacheFile = cachefile; }
+
+    /**
+      Set the locations of config file
+    */
+    void setConfigFile(const string& file) { myConfigFile = file; }
 
   protected:
     // Pointer to the EventHandler object
@@ -455,7 +465,9 @@ class OSystem
     string myBaseDir;
     string myStateDir;
 
+    string myCheatFile;
     string myConfigFile;
+    string myPaletteFile;
     string myPropertiesFile;
 
     string myGameListCacheFile;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.97 2007-06-20 16:33:22 stephena Exp $
+// $Id: OSystem.cxx,v 1.98 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -147,6 +147,9 @@ OSystem::~OSystem()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::create()
 {
+  // Get updated paths for all configuration files
+  setConfigPaths();
+
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
@@ -186,31 +189,39 @@ bool OSystem::create()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setConfigPaths()
+{
+  myStateDir = mySettings->getString("statedir");
+  if(myStateDir == "")
+    myStateDir = myBaseDir + BSPF_PATH_SEPARATOR + "state";
+  if(!FilesystemNode::dirExists(myStateDir))
+    FilesystemNode::makeDir(myStateDir);
+  mySettings->setString("statedir", myStateDir);
+
+  myGameListCacheFile = myBaseDir + BSPF_PATH_SEPARATOR + "stella.cache";
+
+  myCheatFile = mySettings->getString("cheatfile");
+  if(myCheatFile == "")
+    myCheatFile = myBaseDir + BSPF_PATH_SEPARATOR + "stella.cht";
+  mySettings->setString("cheatfile", myCheatFile);
+
+  myPaletteFile = mySettings->getString("palettefile");
+  if(myPaletteFile == "")
+    myPaletteFile = myBaseDir + BSPF_PATH_SEPARATOR + "stella.pal";
+  mySettings->setString("palettefile", myPaletteFile);
+
+  myPropertiesFile = mySettings->getString("propsfile");
+  if(myPropertiesFile == "")
+    myPropertiesFile = myBaseDir + BSPF_PATH_SEPARATOR + "stella.pro";
+  mySettings->setString("propsfile", myPropertiesFile);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setBaseDir(const string& basedir)
 {
   myBaseDir = basedir;
   if(!FilesystemNode::dirExists(myBaseDir))
     FilesystemNode::makeDir(myBaseDir);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setStateDir(const string& statedir)
-{
-  myStateDir = statedir;
-  if(!FilesystemNode::dirExists(myStateDir))
-    FilesystemNode::makeDir(myStateDir);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setPropertiesDir(const string& path)
-{
-  myPropertiesFile  = path + BSPF_PATH_SEPARATOR + "stella.pro";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setConfigFile(const string& file)
-{
-  myConfigFile = file;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

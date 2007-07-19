@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.16 2007-01-03 12:59:23 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.17 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -56,25 +56,26 @@ extern char parentdir[MAXPATHLEN];
 //  the OS into the application.
 void macOpenConsole(char *romname)
 {
-	theOSystem->deleteConsole();
-	theOSystem->createConsole(romname);
+  theOSystem->deleteConsole();
+  theOSystem->createConsole(romname);
 }
 
 // Allow the Menus Objective-C object to pass event sends into the 
 //  application.
 void macOSXSendMenuEvent(int event)
 {
-    switch(event) {
-        case MENU_OPEN:
-            theOSystem->eventHandler().handleEvent(Event::LauncherMode, 1);
-            break;
-        case MENU_VOLUME_INCREASE:
-            theOSystem->eventHandler().handleEvent(Event::VolumeIncrease, 1);
-            break;
-        case MENU_VOLUME_DECREASE:
-            theOSystem->eventHandler().handleEvent(Event::VolumeDecrease, 1);
-            break;
-    }
+  switch(event)
+  {
+    case MENU_OPEN:
+      theOSystem->eventHandler().handleEvent(Event::LauncherMode, 1);
+      break;
+    case MENU_VOLUME_INCREASE:
+      theOSystem->eventHandler().handleEvent(Event::VolumeIncrease, 1);
+      break;
+    case MENU_VOLUME_DECREASE:
+      theOSystem->eventHandler().handleEvent(Event::VolumeDecrease, 1);
+      break;
+  }
 }
 
 /**
@@ -82,27 +83,18 @@ void macOSXSendMenuEvent(int event)
   in its constructor:
 
   setBaseDir()
-  setStateDir()
-  setPropertiesFiles()
   setConfigFile()
-  setCacheFile()
 
   See OSystem.hxx for a further explanation
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemMACOSX::OSystemMACOSX(const string& path) : OSystem()
+OSystemMACOSX::OSystemMACOSX()
+  : OSystem()
 {
-  const string& basedir = (path.length() > 0) ? path :
-                           string(getenv("HOME")) + "/.stella";
+  const string& basedir = string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
-
-  setStateDir(basedir + "/state");
-
-  setPropertiesDir(basedir);
   setConfigFile(basedir + "/stellarc");
-
-  setCacheFile(basedir + "/stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

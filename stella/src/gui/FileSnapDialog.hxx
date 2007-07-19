@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.2 2007-01-01 18:04:52 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.3 2007-07-19 16:21:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,15 +48,23 @@ class FileSnapDialog : public Dialog, public CommandSender
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    void openRomBrowser();
-    void openSnapBrowser();
+    void openBrowser(const string& title, const string& startpath, int cmd);
 
   private:
     enum {
-      kChooseRomDirCmd  = 'LOrm', // rom select
-      kChooseSnapDirCmd = 'LOsn', // snap select
-      kBrowseDirCmd     = 'LObd'  // browse mode
+      kChooseRomDirCmd      = 'LOrm', // rom select
+      kChooseStateDirCmd    = 'LOsd', // state dir
+      kChooseCheatFileCmd   = 'LOcf', // cheatfile (stella.cht)
+      kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
+      kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
+      kChooseSnapDirCmd     = 'LOsn', // snap select
+      kBrowseDirCmd         = 'LObd', // browse mode
+      kStateDirChosenCmd    = 'LOsc', // state dir changed
+      kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
+      kPaletteFileChosenCmd = 'LOpc', // palette file changed
+      kPropsFileChosenCmd   = 'LOrc'  // properties file changed
     };
+
 
     BrowserDialog* myBrowser;
     TabWidget* myTab;
@@ -66,7 +74,11 @@ class FileSnapDialog : public Dialog, public CommandSender
     CheckboxWidget*   myBrowseCheckbox;
     ButtonWidget*     myReloadButton;
 
-    // Snapshot controls
+    // Config paths
+    StaticTextWidget* myStatePath;
+    StaticTextWidget* myCheatFile;
+    StaticTextWidget* myPaletteFile;
+    StaticTextWidget* myPropsFile;
     StaticTextWidget* mySnapPath;
     CheckboxWidget*   mySnapSingleCheckbox;
 

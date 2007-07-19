@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.118 2007-06-20 20:36:28 stephena Exp $
+// $Id: Settings.cxx,v 1.119 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -83,6 +83,11 @@ Settings::Settings(OSystem* osystem)
   setInternal("launcherres", "320x240");
   setInternal("uipalette", "0");
   setInternal("autoslot", "false");
+
+  setInternal("statedir", "");
+  setInternal("cheatfile", "");
+  setInternal("palettefile", "");
+  setInternal("propsfile", "");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -330,6 +335,10 @@ void Settings::usage()
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -launcherres  <res>          The resolution to use in ROM launcher mode\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
+    << "  -statedir     <dir>          Directory in which to save state files\n"
+    << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
+    << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
+    << "  -propsfile    <file>         Full pathname of ROM properties file\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
@@ -343,7 +352,6 @@ void Settings::usage()
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
     << endl
-    << "   -pro         <props file>   Use the given properties file instead of stella.pro\n"
     << "   -type        <arg>          Sets the 'Cartridge.Type' property\n"
     << "   -ld          <arg>          Sets the 'Console.LeftDifficulty' property\n"
     << "   -rd          <arg>          Sets the 'Console.RightDifficulty' property\n"

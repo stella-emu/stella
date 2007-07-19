@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.126 2007-02-22 02:15:46 stephena Exp $
+// $Id: Console.cxx,v 1.127 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -540,9 +540,7 @@ void Console::enableBits(bool enable) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::loadUserPalette()
 {
-  const string& palette = myOSystem->baseDir() +
-      BSPF_PATH_SEPARATOR + "stella.pal";
-
+  const string& palette = myOSystem->paletteFile();
   ifstream in(palette.c_str(), ios::binary);
   if(!in)
     return;

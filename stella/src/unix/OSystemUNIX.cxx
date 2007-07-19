@@ -13,10 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.26 2007-06-20 16:33:23 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.27 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
-
-#include <SDL.h>
 
 #include <cstdlib>
 #include <sstream>
@@ -40,27 +38,18 @@
   in its constructor:
 
   setBaseDir()
-  setStateDir()
-  setPropertiesDir()
   setConfigFile()
-  setCacheFile()
 
   See OSystem.hxx for a further explanation
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemUNIX::OSystemUNIX(const string& path) : OSystem()
+OSystemUNIX::OSystemUNIX()
+  : OSystem()
 {
-  const string& basedir = (path.length() > 0) ? path :
-                           string(getenv("HOME")) + "/.stella";
+  const string& basedir = string(getenv("HOME")) + "/.stella";
   setBaseDir(basedir);
-
-  setStateDir(basedir + "/state");
-
-  setPropertiesDir(basedir);
   setConfigFile(basedir + "/stellarc");
-
-  setCacheFile(basedir + "/stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

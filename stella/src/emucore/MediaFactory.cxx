@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.cxx,v 1.7 2007-01-01 18:04:48 stephena Exp $
+// $Id: MediaFactory.cxx,v 1.8 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 ////////////////////////////////////////////////////////////////////
@@ -31,8 +31,6 @@
 
 #if defined(GP2X)
   #include "FrameBufferGP2X.hxx"
-#elif defined(PSP)
-  #include "FrameBufferPSP.hxx"
 #elif defined (_WIN32_WCE)
   #include "FrameBufferWinCE.hxx"
 #else
@@ -70,8 +68,6 @@ FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
   {
    #if defined (GP2X)
     fb = new FrameBufferGP2X(osystem);
-   #elif defined (PSP)
-    fb = new FrameBufferPSP(osystem);
    #elif defined (_WIN32_WCE)
     fb = new FrameBufferWinCE(osystem);
    #else

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.36 2007-01-01 18:04:40 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.37 2007-07-19 16:21:39 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -96,17 +96,12 @@ void SoundSDL::initialize()
       Int32 tiafreq   = myOSystem->settings().getInt("tiafreq");
 
       SDL_AudioSpec desired;
-#ifndef PSP
       desired.freq   = frequency;
     #ifndef GP2X
       desired.format = AUDIO_U8;
     #else
       desired.format = AUDIO_U16;
     #endif
-#else
-      desired.freq   = 44100;
-      desired.format = AUDIO_U16;
-#endif
       desired.channels = myNumChannels;
       desired.samples  = fragsize;
       desired.callback = callback;
