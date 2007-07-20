@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.7 2007-07-19 16:21:39 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.8 2007-07-20 13:31:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -198,10 +198,12 @@ void FileSnapDialog::loadConfig()
   bool b = instance()->settings().getBool("rombrowse");
   myBrowseCheckbox->setState(b);
   myReloadButton->setEnabled(myIsGlobal && !b);
+
   myStatePath->setLabel(instance()->stateDir());
   myCheatFile->setLabel(instance()->cheatFile());
   myPaletteFile->setLabel(instance()->paletteFile());
   myPropsFile->setLabel(instance()->propertiesFile());
+
   mySnapPath->setLabel(instance()->settings().getString("ssdir"));
   mySnapSingleCheckbox->setState(!instance()->settings().getBool("sssingle"));
 
@@ -211,34 +213,31 @@ void FileSnapDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::saveConfig()
 {
-  string s;
-  bool b;
+  instance()->settings().setString("romdir", myRomPath->getLabel());
+  instance()->settings().setBool("rombrowse", myBrowseCheckbox->getState());
 
-  s  = myRomPath->getLabel();
-  instance()->settings().setString("romdir", s);
+  instance()->settings().setString("statedir", myStatePath->getLabel());
+  instance()->settings().setString("cheatfile", myCheatFile->getLabel());
+  instance()->settings().setString("palettefile", myPaletteFile->getLabel());
+  instance()->settings().setString("propsfile", myPropsFile->getLabel());
 
-  b = myBrowseCheckbox->getState();
-  instance()->settings().setBool("rombrowse", b);
+  instance()->settings().setString("ssdir", mySnapPath->getLabel());
+  instance()->settings().setBool("sssingle", !mySnapSingleCheckbox->getState());
 
-  s = mySnapPath->getLabel();
-  instance()->settings().setString("ssdir", s);
-
-  b = mySnapSingleCheckbox->getState();
-  instance()->settings().setBool("sssingle", !b);
-
-  // Flush changes to disk
+  // Flush changes to disk and inform the OSystem
   instance()->settings().saveConfig();
+  instance()->setConfigPaths();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::openBrowser(const string& title, const string& startpath,
-                                 int cmd)
+                                 FilesystemNode::ListMode mode, int cmd)
 {
   parent()->addDialog(myBrowser);
 
   myBrowser->setTitle(title);
   myBrowser->setEmitSignal(cmd);
-  myBrowser->setStartPath(startpath);
+  myBrowser->setStartPath(startpath, mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,32 +258,32 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kChooseRomDirCmd:
       openBrowser("Select ROM directory:", myRomPath->getLabel(),
-                  kRomDirChosenCmd);
+                  FilesystemNode::kListDirectoriesOnly, kRomDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
       openBrowser("Select state directory:", myStatePath->getLabel(),
-                  kStateDirChosenCmd);
+                  FilesystemNode::kListDirectoriesOnly, kStateDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
       openBrowser("Select cheat file:", myCheatFile->getLabel(),
-                  kCheatFileChosenCmd);
+                  FilesystemNode::kListAll, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
       openBrowser("Select palette file:", myPaletteFile->getLabel(),
-                  kPaletteFileChosenCmd);
+                  FilesystemNode::kListAll, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
       openBrowser("Select properties file:", myPropsFile->getLabel(),
-                  kPropsFileChosenCmd);
+                  FilesystemNode::kListAll, kPropsFileChosenCmd);
       break;
 
     case kChooseSnapDirCmd:
       openBrowser("Select snapshot directory:", mySnapPath->getLabel(),
-                  kSnapDirChosenCmd);
+                  FilesystemNode::kListDirectoriesOnly, kSnapDirChosenCmd);
       break;
 
     case kRomDirChosenCmd:

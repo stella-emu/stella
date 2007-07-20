@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.3 2007-07-19 16:21:39 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.4 2007-07-20 13:31:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,6 +33,7 @@ class TabWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
+#include "FSNode.hxx"
 
 class FileSnapDialog : public Dialog, public CommandSender
 {
@@ -48,7 +49,8 @@ class FileSnapDialog : public Dialog, public CommandSender
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    void openBrowser(const string& title, const string& startpath, int cmd);
+    void openBrowser(const string& title, const string& startpath,
+                     FilesystemNode::ListMode mode, int cmd);
 
   private:
     enum {

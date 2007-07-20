@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.26 2007-01-19 21:53:27 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.27 2007-07-20 13:31:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss),
     _fileList(NULL),
     _currentPath(NULL),
-    _nodeList(NULL)
+    _nodeList(NULL),
+    _mode(AbstractFilesystemNode::kListDirectoriesOnly)
 {
   const int lineHeight = font.getLineHeight(),
             bwidth     = font.getStringWidth("Cancel") + 20,
@@ -113,14 +114,21 @@ BrowserDialog::~BrowserDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::setStartPath(const string& startpath)
+void BrowserDialog::setStartPath(const string& startpath,
+                                 FilesystemNode::ListMode mode)
 {
+  _mode = mode;
+
   // If no node has been set, or the last used one is now invalid,
   // go back to the root/default dir.
   _node = FilesystemNode(startpath);
 
   if(!_node.isValid())
     _node = FilesystemNode();
+
+  // Generally, we always want a directory listing 
+  if(!_node.isDirectory() && _node.hasParent())
+    _node = _node.getParent();
 
   // Alway refresh file list
   updateListing();
@@ -139,8 +147,7 @@ void BrowserDialog::updateListing()
   _currentPath->setLabel(_node.path());
 
   // Read in the data from the file system
-  FSList content = _node.listDir();
-  content.sort();
+  FSList content = _node.listDir(_mode);
 
   // Add '[..]' to indicate previous folder
   if(_node.hasParent())
@@ -159,6 +166,7 @@ void BrowserDialog::updateListing()
 
     _nodeList->appendGame(name, content[idx].path(), "", isDir);
   }
+  _nodeList->sortByName();
 
   // Now fill the list widget with the contents of the GameList
   StringList l;

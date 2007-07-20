@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.hxx,v 1.11 2007-01-01 18:04:52 stephena Exp $
+// $Id: BrowserDialog.hxx,v 1.12 2007-07-20 13:31:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ class BrowserDialog : public Dialog, public CommandSender
 
     void setTitle(const string& title) { _title->setLabel(title); }
     void setEmitSignal(int cmd) { _cmd = cmd; }
-    void setStartPath(const string& startpath);
+    void setStartPath(const string& startpath, FilesystemNode::ListMode mode);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
@@ -66,6 +66,8 @@ class BrowserDialog : public Dialog, public CommandSender
 
     FilesystemNode _node;
     GameList*      _nodeList;
+
+    FilesystemNode::ListMode _mode;
 };
 
 #endif
