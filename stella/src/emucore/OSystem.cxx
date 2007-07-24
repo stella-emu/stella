@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.98 2007-07-19 16:21:39 stephena Exp $
+// $Id: OSystem.cxx,v 1.99 2007-07-24 12:43:14 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
+#include <zlib.h>
 
 #include "MediaFactory.hxx"
 
@@ -45,6 +46,8 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
+
+#define MAX_ROM_SIZE  512 * 1024
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
@@ -453,7 +456,7 @@ void OSystem::createLauncher()
 bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
 {
   // Try to open the file as a zipped archive
-  // If that fails, we assume it's just a normal data file
+  // If that fails, we assume it's just a gzipped or normal data file
   unzFile tz;
   if((tz = unzOpen(rom.c_str())) != NULL)
   {
@@ -509,16 +512,14 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   }
   else
   {
-    ifstream in(rom.c_str(), ios_base::binary);
-    if(!in)
+    // Assume the file is either gzip'ed or not compressed at all
+    gzFile f = gzopen(rom.c_str(), "rb");
+    if(!f)
       return false;
 
-    in.seekg(0, ios::end);
-    *size = (int)in.tellg();
-    in.seekg(0, ios::beg);
-    *image = new uInt8[*size];
-    in.read((char*)(*image), *size);
-    in.close();
+    *image = new uInt8[MAX_ROM_SIZE];
+    *size = gzread(f, *image, MAX_ROM_SIZE);
+    gzclose(f);
   }
 
   // If we get to this point, we know we have a valid file to open
