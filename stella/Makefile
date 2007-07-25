@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.30 2006-12-20 20:36:25 stephena Exp $
+## $Id: Makefile,v 1.31 2007-07-25 13:07:15 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -179,9 +179,9 @@ install: all
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/mini"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/large"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons/mini"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.xpm" "$(DESTDIR)$(DATADIR)/icons/large"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons/mini"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons/large"
 
 install-strip: install
 	strip stella$(EXEEXT)
@@ -190,9 +190,9 @@ uninstall:
 	rm -f  "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
 	rm -rf "$(DESTDIR)$(DOCDIR)/"
 	rm -f  "$(DESTDIR)$(DATADIR)/applications/stella.desktop"
-	rm -f  "$(DESTDIR)$(DATADIR)/icons/stella.xpm"
-	rm -f  "$(DESTDIR)$(DATADIR)/icons/mini/stella.xpm"
-	rm -f  "$(DESTDIR)$(DATADIR)/icons/large/stella.xpm"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/mini/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/large/stella.png"
 
 # Special rule for Win32 icon stuff (there's probably a better way to do this ...)
 src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc

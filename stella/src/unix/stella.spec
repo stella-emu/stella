@@ -27,9 +27,7 @@ License:        GPL
 URL:            http://stella.sourceforge.net
 Source:         %{name}-%{version}.tar.bz2
 BuildRoot:      %_tmppath/%name-%version-%release-root
-BuildRequires:  SDL-devel
-BuildRequires:  MesaGLU-devel
-BuildRequires:  zlib-devel
+BuildRequires:  SDL-devel MesaGLU-devel zlib-devel
 
 %description
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most
@@ -90,7 +88,7 @@ make install-strip DESTDIR=%{buildroot}
 install -d -m0755 %{buildroot}%{_menudir}
 cat > %{buildroot}%{_menudir}/%{name} << EOF
 ?package(%{name}): command="stella" \
-icon="stella.xpm" \
+icon="stella.png" \
 needs="x11" \
 title="Stella" \
 longtitle="A multi-platform Atari 2600 emulator" \
@@ -114,9 +112,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %{_menudir}/%{name}
 %{_datadir}/applications/%{name}.desktop
 %_docdir/stella/*
-%_datadir/icons/%{name}.xpm
-%_datadir/icons/mini/%{name}.xpm
-%_datadir/icons/large/%{name}.xpm
+%_datadir/icons/%{name}.png
+%_datadir/icons/mini/%{name}.png
+%_datadir/icons/large/%{name}.png
 
 %changelog
 * Fri Dec 22 2006 Stephen Anthony <stephena@zarb.org> 2.3-1plf2007.0
