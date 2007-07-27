@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.38 2007-02-06 23:34:34 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.39 2007-07-27 14:12:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -224,6 +224,7 @@ GameInfoDialog::GameInfoDialog(
   myFormat->appendEntry("NTSC", 2);
   myFormat->appendEntry("PAL", 3);
   myFormat->appendEntry("PAL60", 4);
+  myFormat->appendEntry("SECAM", 5);
   wid.push_back(myFormat);
 
   ypos += lineHeight + 5;
@@ -438,6 +439,8 @@ void GameInfoDialog::loadView()
     myFormat->setSelectedTag(3);
   else if(s == "PAL60")
     myFormat->setSelectedTag(4);
+  else if(s == "SECAM")
+    myFormat->setSelectedTag(5);
   else
     myFormat->setSelectedTag(0);
 
@@ -556,7 +559,8 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   tag = myFormat->getSelectedTag();
-  s = (tag == 4) ? "PAL60" : (tag == 3) ? "PAL" : (tag == 2) ? "NTSC" : "AUTO-DETECT";
+  s = (tag == 5) ? "SECAM" : (tag == 4) ? "PAL60" : (tag == 3) ? "PAL" :
+      (tag == 2) ? "NTSC" : "AUTO-DETECT";
   myGameProperties.set(Display_Format, s);
 
   s = myYStart->getEditString();
