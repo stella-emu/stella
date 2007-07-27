@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.32 2007-06-20 16:33:22 stephena Exp $
+// $Id: Settings.hxx,v 1.33 2007-07-27 13:49:16 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.32 2007-06-20 16:33:22 stephena Exp $
+  @version $Id: Settings.hxx,v 1.33 2007-07-27 13:49:16 stephena Exp $
 */
 class Settings
 {
@@ -57,9 +57,9 @@ class Settings
     /**
       This method should be called to load the arguments from the commandline.
 
-      @return False on any errors, otherwise true
+      @return Name of the ROM to load, otherwise empty string
     */
-    bool loadCommandLine(int argc, char** argv);
+    string loadCommandLine(int argc, char** argv);
 
     /**
       This method should be called *after* settings have been read,

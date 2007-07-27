@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.4 2007-07-20 13:31:11 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.5 2007-07-27 13:49:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,7 @@ class DialogContainer;
 class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
-class StaticTextWidget;
+class EditTextWidget;
 class TabWidget;
 
 #include "Dialog.hxx"
@@ -72,17 +72,17 @@ class FileSnapDialog : public Dialog, public CommandSender
     TabWidget* myTab;
 
     // Rom path controls
-    StaticTextWidget* myRomPath;
-    CheckboxWidget*   myBrowseCheckbox;
-    ButtonWidget*     myReloadButton;
+    EditTextWidget* myRomPath;
+    CheckboxWidget* myBrowseCheckbox;
+    ButtonWidget*   myReloadButton;
 
     // Config paths
-    StaticTextWidget* myStatePath;
-    StaticTextWidget* myCheatFile;
-    StaticTextWidget* myPaletteFile;
-    StaticTextWidget* myPropsFile;
-    StaticTextWidget* mySnapPath;
-    CheckboxWidget*   mySnapSingleCheckbox;
+    EditTextWidget* myStatePath;
+    EditTextWidget* myCheatFile;
+    EditTextWidget* myPaletteFile;
+    EditTextWidget* myPropsFile;
+    EditTextWidget* mySnapPath;
+    CheckboxWidget* mySnapSingleCheckbox;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

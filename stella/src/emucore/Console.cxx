@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.127 2007-07-19 16:21:39 stephena Exp $
+// $Id: Console.cxx,v 1.128 2007-07-27 13:49:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -209,7 +209,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   buf << endl << cart->about();
 
   // Make sure height is set properly for PAL ROM
-  if(myDisplayFormat == "PAL" && myProperties.get(Display_Height) == "210")
+  if((myDisplayFormat == "PAL" || myDisplayFormat == "SECAM") &&
+      myProperties.get(Display_Height) == "210")
     myProperties.set(Display_Height, "250");
 
   // Reset, the system to its power-on state
@@ -255,6 +256,14 @@ void Console::toggleFormat()
   }
   else if(myDisplayFormat == "PAL60")
   {
+    myDisplayFormat = "SECAM";
+    myProperties.set(Display_Format, myDisplayFormat);
+    mySystem->reset();
+    myOSystem->frameBuffer().showMessage("SECAM Mode");
+    framerate = 50;
+  }
+  else if(myDisplayFormat == "SECAM")
+  {
     myDisplayFormat = "NTSC";
     myProperties.set(Display_Format, myDisplayFormat);
     mySystem->reset();
@@ -286,12 +295,7 @@ void Console::togglePalette()
   string palette, message;
   palette = myOSystem->settings().getString("palette");
  
-  if(palette == "standard")       // switch to original
-  {
-    palette = "original";
-    message = "Original Stella palette";
-  }
-  else if(palette == "original")  // switch to z26
+  if(palette == "standard")       // switch to z26
   {
     palette = "z26";
     message = "Z26 palette";
@@ -331,22 +335,36 @@ void Console::togglePalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setPalette(const string& type)
 {
+  // Look at all the palettes, since we don't know which one is
+  // currently active
+  uInt32* palettes[3][3] = {
+    { &ourNTSCPalette[0],    &ourPALPalette[0],    &ourSECAMPalette[0]    },
+    { &ourNTSCPaletteZ26[0], &ourPALPaletteZ26[0], &ourSECAMPaletteZ26[0] },
+    { 0, 0, 0 }
+  };
+  if(myUserPaletteDefined)
+  {
+    palettes[2][0] = &ourUserNTSCPalette[0];
+    palettes[2][1] = &ourUserPALPalette[0];
+    palettes[2][2] = &ourUserSECAMPalette[0];
+  }
+
   // See which format we should be using
-  const uInt32* palette = NULL;
+  int paletteNum = 0;
   if(type == "standard")
-    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
-  else if(type == "original")
-    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette11 : ourNTSCPalette11;
+    paletteNum = 0;
   else if(type == "z26")
-    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPaletteZ26 : ourNTSCPaletteZ26;
+    paletteNum = 1;
   else if(type == "user" && myUserPaletteDefined)
-    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourUserPALPalette : ourUserNTSCPalette;
-  else  // return normal palette by default
-    palette = (myDisplayFormat.compare(0, 3, "PAL") == 0) ? ourPALPalette : ourNTSCPalette;
+    paletteNum = 2;
+
+  // Now consider the current display format
+  const uInt32* palette =
+    (myDisplayFormat.compare(0, 3, "PAL") == 0)   ? palettes[paletteNum][1] :
+    (myDisplayFormat.compare(0, 5, "SECAM") == 0) ? palettes[paletteNum][2] :
+     palettes[paletteNum][0];
 
   myOSystem->frameBuffer().setTIAPalette(palette);
-
-// FIXME - maybe add an error message that requested palette not available?
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -404,14 +422,8 @@ void Console::initializeAudio()
   // Initialize the sound interface.
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
-  uInt32 channels;
   const string& sound = myProperties.get(Cartridge_Sound);
-  if(sound == "STEREO")
-    channels = 2;
-  else if(sound == "MONO")
-    channels = 1;
-  else
-    channels = 1;
+  uInt32 channels = (sound == "STEREO" ? 2 : 1);
 
   myOSystem->sound().close();
   myOSystem->sound().setChannels(channels);
@@ -545,12 +557,13 @@ void Console::loadUserPalette()
   if(!in)
     return;
 
-  // Make sure the contains enough data for both the NTSC and PAL palettes
-  // This means 128 colours each, at 3 bytes per pixel = 768 bytes
+  // Make sure the contains enough data for the NTSC, PAL and SECAM palettes
+  // This means 128 colours each for NTSC and PAL, at 3 bytes per pixel
+  // and 8 colours for SECAM at 3 bytes per pixel
   in.seekg(0, ios::end);
   streampos length = in.tellg();
   in.seekg(0, ios::beg);
-  if(length < 128 * 3 * 2)
+  if(length < 128 * 3 * 2 + 8 * 3)
   {
     in.close();
     cerr << "ERROR: invalid palette file " << palette << endl;
@@ -573,6 +586,22 @@ void Console::loadUserPalette()
     ourUserPALPalette[(i<<1)] = pixel;
   }
 
+  uInt32 secam[16];  // All 8 24-bit pixels, plus 8 colorloss pixels
+  for(int i = 0; i < 8; i++)    // SECAM palette
+  {
+    in.read((char*)pixbuf, 3);
+    uInt32 pixel = ((int)pixbuf[0] << 16) + ((int)pixbuf[1] << 8) + (int)pixbuf[2];
+    secam[(i<<1)]   = pixel;
+    secam[(i<<1)+1] = 0;
+  }
+  uInt32* ptr = ourUserSECAMPalette;
+  for(int i = 0; i < 16; ++i)
+  {
+    uInt32* s = secam;
+    for(int j = 0; j < 16; ++j)
+      *ptr++ = *s++;
+  }
+
   in.close();
   myUserPaletteDefined = true;
 }
@@ -582,19 +611,19 @@ void Console::setColorLossPalette(bool loss)
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
-  uInt32* palette[8] = {
-    &ourNTSCPalette[0],    &ourPALPalette[0],
-    &ourNTSCPalette11[0],  &ourPALPalette11[0],
-    &ourNTSCPaletteZ26[0], &ourPALPaletteZ26[0],
-    0, 0
+  uInt32* palette[9] = {
+    &ourNTSCPalette[0],    &ourPALPalette[0],    &ourSECAMPalette[0],
+    &ourNTSCPaletteZ26[0], &ourPALPaletteZ26[0], &ourSECAMPaletteZ26[0],
+    0, 0, 0
   };
   if(myUserPaletteDefined)
   {
     palette[6] = &ourUserNTSCPalette[0];
     palette[7] = &ourUserPALPalette[0];
+    palette[8] = &ourUserSECAMPalette[0];
   }
 
-  for(int i = 0; i < 8; ++i)
+  for(int i = 0; i < 9; ++i)
   {
     if(palette[i] == 0)
       continue;
@@ -632,7 +661,7 @@ uInt32 Console::getFrameRate() const
   {
     if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60")
       framerate = 60;
-    else if(myDisplayFormat == "PAL")
+    else if(myDisplayFormat == "PAL" || myDisplayFormat == "SECAM")
       framerate = 50;
     else
       framerate = 60;
@@ -714,75 +743,39 @@ uInt32 Console::ourPALPalette[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourNTSCPalette11[256] = {
-  0x000000, 0, 0x393939, 0, 0x797979, 0, 0xababab, 0,
-  0xcdcdcd, 0, 0xe6e6e6, 0, 0xf2f2f2, 0, 0xffffff, 0,
-  0x391701, 0, 0x833008, 0, 0xc85f24, 0, 0xff911d, 0,
-  0xffc51d, 0, 0xffd84c, 0, 0xfff456, 0, 0xffff98, 0,
-  0x451904, 0, 0x9f241e, 0, 0xc85122, 0, 0xff811e, 0,
-  0xff982c, 0, 0xffc545, 0, 0xffc66d, 0, 0xffe4a1, 0,
-  0x4a1704, 0, 0xb21d17, 0, 0xdf251c, 0, 0xfa5255, 0,
-  0xff706e, 0, 0xff8f8f, 0, 0xffabad, 0, 0xffc7ce, 0,
-  0x050568, 0, 0x712272, 0, 0xa532a6, 0, 0xcd3ecf, 0,
-  0xea51eb, 0, 0xfe6dff, 0, 0xff87fb, 0, 0xffa4ff, 0,
-  0x280479, 0, 0x590f90, 0, 0x8839aa, 0, 0xc04adc, 0,
-  0xe05eff, 0, 0xf27cff, 0, 0xff98ff, 0, 0xfeabff, 0,
-  0x35088a, 0, 0x500cd0, 0, 0x7945d0, 0, 0xa251d9, 0,
-  0xbe60ff, 0, 0xcc77ff, 0, 0xd790ff, 0, 0xdfaaff, 0,
-  0x051e81, 0, 0x082fca, 0, 0x444cde, 0, 0x5a68ff, 0,
-  0x7183ff, 0, 0x90a0ff, 0, 0x9fb2ff, 0, 0xc0cbff, 0,
-  0x0c048b, 0, 0x382db5, 0, 0x584fda, 0, 0x6b64ff, 0,
-  0x8a84ff, 0, 0x9998ff, 0, 0xb1aeff, 0, 0xc0c2ff, 0,
-  0x1d295a, 0, 0x1d4892, 0, 0x1c71c6, 0, 0x489bd9, 0,
-  0x55b6ff, 0, 0x8cd8ff, 0, 0x9bdfff, 0, 0xc3e9ff, 0,
-  0x2f4302, 0, 0x446103, 0, 0x3e9421, 0, 0x57ab3b, 0,
-  0x61d070, 0, 0x72f584, 0, 0x87ff97, 0, 0xadffb6, 0,
-  0x0a4108, 0, 0x10680d, 0, 0x169212, 0, 0x1cb917, 0,
-  0x21d91b, 0, 0x6ef040, 0, 0x83ff5b, 0, 0xb2ff9a, 0,
-  0x04410b, 0, 0x066611, 0, 0x088817, 0, 0x0baf1d, 0,
-  0x86d922, 0, 0x99f927, 0, 0xb7ff5b, 0, 0xdcff81, 0,
-  0x02350f, 0, 0x0c4a1c, 0, 0x4f7420, 0, 0x649228, 0,
-  0xa1b034, 0, 0xb2d241, 0, 0xd6e149, 0, 0xf2ff53, 0,
-  0x263001, 0, 0x234005, 0, 0x806931, 0, 0xaf993a, 0,
-  0xd5b543, 0, 0xe1cb38, 0, 0xe3e534, 0, 0xfbff7d, 0,
-  0x401a02, 0, 0x702408, 0, 0xab511f, 0, 0xbf7730, 0,
-  0xe19344, 0, 0xf9ad58, 0, 0xffc160, 0, 0xffcb83, 0
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourPALPalette11[256] = {
-  0x000000, 0, 0x242424, 0, 0x484848, 0, 0x6d6d6d, 0,
-  0x919191, 0, 0xb6b6b6, 0, 0xdadada, 0, 0xffffff, 0,
-  0x000000, 0, 0x242424, 0, 0x484848, 0, 0x6d6d6d, 0,
-  0x919191, 0, 0xb6b6b6, 0, 0xdadada, 0, 0xffffff, 0,
-  0x4a3700, 0, 0x705813, 0, 0x8c732a, 0, 0xa68d46, 0,
-  0xbea767, 0, 0xd4c18b, 0, 0xeadcb3, 0, 0xfff6de, 0,
-  0x284a00, 0, 0x44700f, 0, 0x5c8c21, 0, 0x74a638, 0,
-  0x8cbe51, 0, 0xa6d46e, 0, 0xc0ea8e, 0, 0xdbffb0, 0,
-  0x4a1300, 0, 0x70280f, 0, 0x8c3d21, 0, 0xa65438, 0,
-  0xbe6d51, 0, 0xd4886e, 0, 0xeaa58e, 0, 0xffc4b0, 0,
-  0x004a22, 0, 0x0f703b, 0, 0x218c52, 0, 0x38a66a, 0,
-  0x51be83, 0, 0x6ed49d, 0, 0x8eeab8, 0, 0xb0ffd4, 0,
-  0x4a0028, 0, 0x700f44, 0, 0x8c215c, 0, 0xa63874, 0,
-  0xbe518c, 0, 0xd46ea6, 0, 0xea8ec0, 0, 0xffb0db, 0,
-  0x00404a, 0, 0x0f6370, 0, 0x217e8c, 0, 0x3897a6, 0,
-  0x51afbe, 0, 0x6ec7d4, 0, 0x8edeea, 0, 0xb0f4ff, 0,
-  0x43002c, 0, 0x650f4b, 0, 0x7e2165, 0, 0x953880, 0,
-  0xa6519a, 0, 0xbf6eb7, 0, 0xd38ed3, 0, 0xe5b0f1, 0,
-  0x001d4a, 0, 0x0f3870, 0, 0x21538c, 0, 0x386ea6, 0,
-  0x518dbe, 0, 0x6ea8d4, 0, 0x8ec8ea, 0, 0xb0e9ff, 0,
-  0x37004a, 0, 0x570f70, 0, 0x70218c, 0, 0x8938a6, 0,
-  0xa151be, 0, 0xba6ed4, 0, 0xd28eea, 0, 0xeab0ff, 0,
-  0x00184a, 0, 0x0f2e70, 0, 0x21448c, 0, 0x385ba6, 0,
-  0x5174be, 0, 0x6e8fd4, 0, 0x8eabea, 0, 0xb0c9ff, 0,
-  0x13004a, 0, 0x280f70, 0, 0x3d218c, 0, 0x5438a6, 0,
-  0x6d51be, 0, 0x886ed4, 0, 0xa58eea, 0, 0xc4b0ff, 0,
-  0x00014a, 0, 0x0f1170, 0, 0x21248c, 0, 0x383aa6, 0,
-  0x5153be, 0, 0x6e70d4, 0, 0x8e8fea, 0, 0xb0b2ff, 0,
-  0x000000, 0, 0x242424, 0, 0x484848, 0, 0x6d6d6d, 0,
-  0x919191, 0, 0xb6b6b6, 0, 0xdadada, 0, 0xffffff, 0,
-  0x000000, 0, 0x242424, 0, 0x484848, 0, 0x6d6d6d, 0,
-  0x919191, 0, 0xb6b6b6, 0, 0xdadada, 0, 0xffffff, 0
+uInt32 Console::ourSECAMPalette[256] = {
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff50ff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -858,10 +851,49 @@ uInt32 Console::ourPALPaletteZ26[256] = {
 }; 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourUserNTSCPalette[256] = { 0 }; // filled from external file
+uInt32 Console::ourSECAMPaletteZ26[256] = {
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0, 
+  0x000000, 0, 0x2121ff, 0, 0xf03c79, 0, 0xff3cff, 0, 
+  0x7fff00, 0, 0x7fffff, 0, 0xffff3f, 0, 0xffffff, 0
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::ourUserPALPalette[256]  = { 0 }; // filled from external file
+uInt32 Console::ourUserNTSCPalette[256]  = { 0 }; // filled from external file
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Console::ourUserPALPalette[256]   = { 0 }; // filled from external file
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 Console::ourUserSECAMPalette[256] = { 0 }; // filled from external file
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)

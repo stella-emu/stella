@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.60 2007-07-19 16:21:39 stephena Exp $
+// $Id: Console.hxx,v 1.61 2007-07-27 13:49:16 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.60 2007-07-19 16:21:39 stephena Exp $
+  @version $Id: Console.hxx,v 1.61 2007-07-27 13:49:16 stephena Exp $
 */
 class Console
 {
@@ -291,21 +291,20 @@ class Console
     // Contains info about this console in string format
     string myAboutString;
 
-    // Table of RGB values for NTSC and PAL
+    // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];
     static uInt32 ourPALPalette[256];
+    static uInt32 ourSECAMPalette[256];
 
-    // Table of RGB values for NTSC and PAL - Stella 1.1 version
-    static uInt32 ourNTSCPalette11[256];
-    static uInt32 ourPALPalette11[256];
-
-    // Table of RGB values for NTSC and PAL - Z26 version
+    // Table of RGB values for NTSC, PAL and SECAM - Z26 version
     static uInt32 ourNTSCPaletteZ26[256];
     static uInt32 ourPALPaletteZ26[256];
+    static uInt32 ourSECAMPaletteZ26[256];
 
-    // Table of RGB values for NTSC and PAL - user-defined
+    // Table of RGB values for NTSC, PAL and SECAM - user-defined
     static uInt32 ourUserNTSCPalette[256];
     static uInt32 ourUserPALPalette[256];
+    static uInt32 ourUserSECAMPalette[256];
 };
 
 #endif

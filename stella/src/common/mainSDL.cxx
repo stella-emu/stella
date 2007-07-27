@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.73 2007-07-19 16:21:39 stephena Exp $
+// $Id: mainSDL.cxx,v 1.74 2007-07-27 13:49:16 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -98,11 +98,7 @@ int main(int argc, char* argv[])
   theOSystem->settings().loadConfig();
 
   // Take care of commandline arguments
-  if(!theOSystem->settings().loadCommandLine(argc, argv))
-  {
-    Cleanup();
-    return 0;
-  }
+  string romfile = theOSystem->settings().loadCommandLine(argc, argv);
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
@@ -123,12 +119,17 @@ int main(int argc, char* argv[])
   }
   else if(theOSystem->settings().getBool("rominfo"))
   {
-    string romfile = argv[argc - 1];
     if(argc > 1 && FilesystemNode::fileExists(romfile))
       cout << theOSystem->getROMInfo(romfile);
     else
-      cout << "Error: Can't find " << romfile << endl;
+      cout << "Error: ROM doesn't exist" << endl;
 
+    Cleanup();
+    return 0;
+  }
+  else if(theOSystem->settings().getBool("help"))
+  {
+    theOSystem->settings().usage();
     Cleanup();
     return 0;
   }
@@ -142,8 +143,7 @@ int main(int argc, char* argv[])
   //   the ROM actually exists, use it to create a new console.
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
-  string romfile = argv[argc - 1];
-  if(argc == 1 || !FilesystemNode::fileExists(romfile))
+  if(argc == 1 || romfile == "" || !FilesystemNode::fileExists(romfile))
     theOSystem->createLauncher();
   else if(theOSystem->createConsole(romfile))
   {

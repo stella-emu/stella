@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.8 2007-07-20 13:31:11 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.9 2007-07-27 13:49:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #include "FSNode.hxx"
 #include "DialogContainer.hxx"
 #include "BrowserDialog.hxx"
+#include "EditTextWidget.hxx"
 #include "TabWidget.hxx"
 #include "bspf.hxx"
 #include "LauncherDialog.hxx"
@@ -62,9 +63,9 @@ FileSnapDialog::FileSnapDialog(
                        kChooseRomDirCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myRomPath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
-                                   _w - xpos - 10, font.getLineHeight(),
-                                   "", kTextAlignLeft);
+  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + 2,
+                                 _w - xpos - 10, font.getLineHeight(), "");
+  wid.push_back(myRomPath);
 
   // Use ROM browse mode
   xpos = 30;  ypos += myRomPath->getHeight() + 8;
@@ -106,9 +107,9 @@ FileSnapDialog::FileSnapDialog(
                        kChooseStateDirCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myStatePath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
-                                     _w - xpos - 10, font.getLineHeight(),
-                                     "", kTextAlignLeft);
+  myStatePath = new EditTextWidget(myTab, font, xpos, ypos + 2,
+                                   _w - xpos - 10, font.getLineHeight(), "");
+  wid.push_back(myStatePath);
 
   // Cheat file
   xpos = 15;  ypos += b->getHeight() + 3;
@@ -116,9 +117,9 @@ FileSnapDialog::FileSnapDialog(
                        kChooseCheatFileCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myCheatFile = new StaticTextWidget(myTab, font, xpos, ypos + 3,
-                                     _w - xpos - 10, font.getLineHeight(),
-                                     "", kTextAlignLeft);
+  myCheatFile = new EditTextWidget(myTab, font, xpos, ypos + 2,
+                                   _w - xpos - 10, font.getLineHeight(), "");
+  wid.push_back(myCheatFile);
 
   // Palette file
   xpos = 15;  ypos += b->getHeight() + 3;
@@ -126,9 +127,9 @@ FileSnapDialog::FileSnapDialog(
                        kChoosePaletteFileCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myPaletteFile = new StaticTextWidget(myTab, font, xpos, ypos + 3,
-                                       _w - xpos - 10, font.getLineHeight(),
-                                       "", kTextAlignLeft);
+  myPaletteFile = new EditTextWidget(myTab, font, xpos, ypos + 2,
+                                     _w - xpos - 10, font.getLineHeight(), "");
+  wid.push_back(myPaletteFile);
 
   // Properties file
   xpos = 15;  ypos += b->getHeight() + 3;
@@ -136,9 +137,9 @@ FileSnapDialog::FileSnapDialog(
                        kChoosePropsFileCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myPropsFile = new StaticTextWidget(myTab, font, xpos, ypos + 3,
-                                     _w - xpos - 10, font.getLineHeight(),
-                                     "", kTextAlignLeft);
+  myPropsFile = new EditTextWidget(myTab, font, xpos, ypos + 2,
+                                   _w - xpos - 10, font.getLineHeight(), "");
+  wid.push_back(myPropsFile);
 
   // Snapshot path
   xpos = 15;  ypos += b->getHeight() + 3;
@@ -146,9 +147,9 @@ FileSnapDialog::FileSnapDialog(
                        kChooseSnapDirCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  mySnapPath = new StaticTextWidget(myTab, font, xpos, ypos + 3,
-                                    _w - xpos - 10, font.getLineHeight(),
-                                    "", kTextAlignLeft);
+  mySnapPath = new EditTextWidget(myTab, font, xpos, ypos + 2,
+                                  _w - xpos - 10, font.getLineHeight(), "");
+  wid.push_back(mySnapPath);
 
   // Snapshot single or multiple saves
   xpos = 30;  ypos += mySnapPath->getHeight() + 8;
@@ -194,17 +195,17 @@ FileSnapDialog::~FileSnapDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::loadConfig()
 {
-  myRomPath->setLabel(instance()->settings().getString("romdir"));
+  myRomPath->setEditString(instance()->settings().getString("romdir"));
   bool b = instance()->settings().getBool("rombrowse");
   myBrowseCheckbox->setState(b);
   myReloadButton->setEnabled(myIsGlobal && !b);
 
-  myStatePath->setLabel(instance()->stateDir());
-  myCheatFile->setLabel(instance()->cheatFile());
-  myPaletteFile->setLabel(instance()->paletteFile());
-  myPropsFile->setLabel(instance()->propertiesFile());
+  myStatePath->setEditString(instance()->stateDir());
+  myCheatFile->setEditString(instance()->cheatFile());
+  myPaletteFile->setEditString(instance()->paletteFile());
+  myPropsFile->setEditString(instance()->propertiesFile());
 
-  mySnapPath->setLabel(instance()->settings().getString("ssdir"));
+  mySnapPath->setEditString(instance()->settings().getString("ssdir"));
   mySnapSingleCheckbox->setState(!instance()->settings().getBool("sssingle"));
 
   myTab->loadConfig();
@@ -213,15 +214,15 @@ void FileSnapDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::saveConfig()
 {
-  instance()->settings().setString("romdir", myRomPath->getLabel());
+  instance()->settings().setString("romdir", myRomPath->getEditString());
   instance()->settings().setBool("rombrowse", myBrowseCheckbox->getState());
 
-  instance()->settings().setString("statedir", myStatePath->getLabel());
-  instance()->settings().setString("cheatfile", myCheatFile->getLabel());
-  instance()->settings().setString("palettefile", myPaletteFile->getLabel());
-  instance()->settings().setString("propsfile", myPropsFile->getLabel());
+  instance()->settings().setString("statedir", myStatePath->getEditString());
+  instance()->settings().setString("cheatfile", myCheatFile->getEditString());
+  instance()->settings().setString("palettefile", myPaletteFile->getEditString());
+  instance()->settings().setString("propsfile", myPropsFile->getEditString());
 
-  instance()->settings().setString("ssdir", mySnapPath->getLabel());
+  instance()->settings().setString("ssdir", mySnapPath->getEditString());
   instance()->settings().setBool("sssingle", !mySnapSingleCheckbox->getState());
 
   // Flush changes to disk and inform the OSystem
@@ -257,74 +258,74 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseRomDirCmd:
-      openBrowser("Select ROM directory:", myRomPath->getLabel(),
+      openBrowser("Select ROM directory:", myRomPath->getEditString(),
                   FilesystemNode::kListDirectoriesOnly, kRomDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
-      openBrowser("Select state directory:", myStatePath->getLabel(),
+      openBrowser("Select state directory:", myStatePath->getEditString(),
                   FilesystemNode::kListDirectoriesOnly, kStateDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
-      openBrowser("Select cheat file:", myCheatFile->getLabel(),
+      openBrowser("Select cheat file:", myCheatFile->getEditString(),
                   FilesystemNode::kListAll, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
-      openBrowser("Select palette file:", myPaletteFile->getLabel(),
+      openBrowser("Select palette file:", myPaletteFile->getEditString(),
                   FilesystemNode::kListAll, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
-      openBrowser("Select properties file:", myPropsFile->getLabel(),
+      openBrowser("Select properties file:", myPropsFile->getEditString(),
                   FilesystemNode::kListAll, kPropsFileChosenCmd);
       break;
 
     case kChooseSnapDirCmd:
-      openBrowser("Select snapshot directory:", mySnapPath->getLabel(),
+      openBrowser("Select snapshot directory:", mySnapPath->getEditString(),
                   FilesystemNode::kListDirectoriesOnly, kSnapDirChosenCmd);
       break;
 
     case kRomDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setLabel(dir.path());
+      myRomPath->setEditString(dir.path());
       break;
     }
 
     case kStateDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myStatePath->setLabel(dir.path());
+      myStatePath->setEditString(dir.path());
       break;
     }
 
     case kCheatFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myCheatFile->setLabel(dir.path());
+      myCheatFile->setEditString(dir.path());
       break;
     }
 
     case kPaletteFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPaletteFile->setLabel(dir.path());
+      myPaletteFile->setEditString(dir.path());
       break;
     }
 
     case kPropsFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPropsFile->setLabel(dir.path());
+      myPropsFile->setEditString(dir.path());
       break;
     }
 
     case kSnapDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      mySnapPath->setLabel(dir.path());
+      mySnapPath->setEditString(dir.path());
       break;
     }
 

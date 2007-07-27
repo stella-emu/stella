@@ -23,13 +23,13 @@
 		<li><a href="#Games">Games</a></li>
 		<li><a href="#Starting">Starting A Game</a></li>
 		<li><a href="#Options">Changing Options</a></li>
-		<li><a href="#Settings">Settings File</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
 		<li><a href="#Remapping">Event Remapping</a></li>
-		<li><a href="#Cheats">Cheatcode Manager</a></li>
-		<li><a href="#Debugger">Integrated Debugger</a></li>
-		<li><a href="#Properties">Game Properties</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
+		<li><a href="#Debugger">Integrated Debugger</a></li>
+		<li><a href="#Settings">Settings File</a></li>
+		<li><a href="#Cheats">Cheatcode Manager</a></li>
+		<li><a href="#Properties">Game Properties</a></li>
 		<li><a href="#Palette">Palette Support</a></li>
 		<li><a href="#Acknowledgments">Acknowledgments</a></li>
 		<li><a href="#License">License and Disclaimer</a></li>
@@ -37,7 +37,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - January 2007</b></center>
+	<center><b>February 1999 - August 2007</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -201,6 +201,8 @@
 
 	<p><i>Alexander Bilstein<br>February 1999</i></p>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Introduction">1. Introduction</a></h1>
@@ -311,12 +313,14 @@ a ROM.</li>
 		<li>Supports Supercharger single-load and multi-load games</li>
 		<li>Supports property file for setting the properties associated with games</li>
 		<li>Supports user specified frame rate</li>
-		<li>Supports the NTSC, PAL and PAL60 television standards</li>
+		<li>Supports the NTSC, PAL, PAL60 and SECAM television standards</li>
 		<li>Supports several "undocumented features" of the TIA graphics chip used by
 			some games</li>
 		<li>TIA emulation supports full collision checking</li>
 	</ul>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Requirements">2. What You Will Need</a></h1>
@@ -339,7 +343,7 @@ a ROM.</li>
 		<li>Latest version of the zlib library</li>
 		<li>Joysticks or gamepads are highly recommended</li>
 		<li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
-		<li>Some ROM images (no, we won't tell you where to find them)</li>
+		<li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
 	</ul>
 
 	<p>
@@ -351,9 +355,7 @@ a ROM.</li>
 		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
 			the Stella source code; GNU C++ compiler version 3.2.x/4.x or later is highly
 			recommended</li>
-		<li>Pentium class machine required (in general, Stella will compile on other
-			architectures, both 32 and 64-bit, but it hasn't been extensively
-			tested)</li>
+		<li>x86 or PowerPC class machine required, in either 32 or 64-bit mode</li>
 	</ul>
 
 	<p>
@@ -372,18 +374,20 @@ a ROM.</li>
 	<p>
 	<h2><b>Windows</b></h2>
 
-	<p>The Windows version of Stella is designed to work on Windows 98/ME/2000/XP with
-	the following:</p>
+	<p>The Windows version of Stella is designed to work on Windows 98/ME/2000/XP/Vista
+	with the following:</p>
 
 	<ul>
 		<li>Visual C++ 7 or MinGW compiler is required to compile the Stella
 			source code</li>
 		<li>Pentium class machine required; OpenGL accelerated video card highly
 			recommended</li>
-		<li>SDL version 1.2.8 or greater (or included SDL.dll) required for
+		<li>SDL version 1.2.8 or greater (included in release versions) required for
 			Stelladaptor support</li>
 	</ul>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Installation">3. Installation</a></h1>
@@ -451,8 +455,7 @@ a ROM.</li>
 				<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
 					file using Visual C++ 7</li>
 				<li>Build the 'Stella' solution</li>
-				<li>Copy the <b>Stella.exe</b> and <b>stella.pro</b> files
-					to some directory</li>
+				<li>Copy the <b>Stella.exe</b> file	to some directory</li>
 			</ul>
 		</ol>
 		<li><b>Binary ZIP file</b> (stella-<i>release</i>-win32.zip)</li>
@@ -466,6 +469,8 @@ a ROM.</li>
 		</ol>
 	</ul>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Games">4. Games</a></h1>
@@ -531,6 +536,8 @@ a ROM.</li>
 	<p>Once you have the multi-load ROM image file, survivl.bin in this case, you
 	can play the game using it.</p>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Starting">5. Starting A Game</a></h1>
@@ -550,28 +557,29 @@ a ROM.</li>
 	'ROM Launcher' mode:<br><br>
 	<img src="graphics/launcher.png"></p>
 
-	<p>The ROM and snapshot settings may be changed by clicking the
-	'Options / Files &amp; Snapshots' button:<br><br>
+	<p>The ROM browser, snapshot, and external file settings may be changed by
+	clicking the 'Options / Files &amp; Snapshots' button:<br><br>
 	<img src="graphics/launcher_options_rom.png">&nbsp;&nbsp;
-	<img src="graphics/launcher_options_snap.png"></p>
+	<img src="graphics/launcher_options_files.png"></p>
 
-	<p>Selecting a new path for ROM or snapshots is done by clicking the 'Path'
-	button(s):<br><br>
+	<p>Selecting a new path for an item is done by clicking the 'Path' button(s):<br><br>
 	<img src="graphics/rom_browser.png"></p>
 
 	<p>Once a ROM directory has been selected, clicking 'Reload' will update the
-	ROM listing.  You can start emulation by selecting a ROM and pressing 'Enter'
-	or clicking 'Play', or double-clicking a ROM.</p>
+	ROM listing (assuming you're not in 'rombrowse' mode).  You can start
+	emulation by selecting a ROM and pressing 'Enter' or clicking 'Play', or
+	double-clicking a ROM.</p>
 
 	<p>
 	<h2><b>Command Line</b></h2>
 
 	<p>Stella can also be used from the commandline (assuming your operating system
-	has a commandline).  When using this mode, the ROM launcher is disabled.</p>
+	has a commandline).  When using this mode and specifying a ROM, the ROM launcher
+	is disabled.</p>
 
 	<p>To run Stella from the commandline, use the following format:</p>
 
-	<pre>   stella [options ...] filename.bin</pre>
+	<pre>   stella [options ...] ROM_FILENAME</pre>
 
 	<p><b>Options</b> ('0' or 'false' indicates false, '1' or 'true' indicates true,
 		others are self-explanatory):</p>
@@ -601,6 +609,7 @@ a ROM.</li>
 				GL_LINEAR introduces blurring.</td>
 		</tr>
 
+<!--
 		<tr>
 			<td><pre>-gl_aspect &lt;number&gt;</pre></td>
 			<td>OpenGL mode only. Specify the aspect ratio of the window.  Normal
@@ -608,12 +617,10 @@ a ROM.</li>
 				many video modes do not use	square pixels, you may have to try
 				different values.  I find 1.6 or 1.7 gives the most authentic look.</td>
 		</tr>
-
+-->
 		<tr>
-			<td><pre>-gl_fsmax &lt;0|1&gt;</pre></td>
-			<td>OpenGL mode only. Use the current desktop resolution when switching
-				to fullscreen OpenGL mode (so a video-mode switch can be avoided).
-				If not supported, then use the maximum possible resolution available.</td>
+			<td><pre>-gl_fsmax &lt;never|always|ui|tia&gt;</pre></td>
+			<td>OpenGL mode only. Stretch fullscreen image while in the given mode.</td>
 		</tr>
 
 		<tr>
@@ -623,20 +630,24 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-scale_tia &lt;scaler&gt;</pre></td>
-			<td>Use the specified scaler while in TIA/emulation mode.  Possible
-				scalers are 'zoom1x, ..., zoom6x'.</td>
+			<td><pre>-zoom_tia &lt;scaler&gt;</pre></td>
+			<td>Use the specified zoom level while in TIA/emulation mode.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-scale_ui &lt;scaler&gt;</pre></td>
-			<td>Use the specified scaler while in UI mode (currently, the ROM
-				launcher and debugger).  Possible scalers are 'zoom1x, ..., zoom6x'.</td>
+			<td><pre>-zoom_ui &lt;scaler&gt;</pre></td>
+			<td>Use the specified scaler while in non-emulation mode (currently, the ROM
+				launcher and debugger).</td>
 		</tr>
 
 		<tr>
 			<td><pre>-fullscreen &lt;0|1&gt;</pre></td>
 			<td>Play the game in fullscreen mode.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-fullres &lt;WxH&gt;</pre></td>
+			<td>Use this resolution in fullscreen mode.</td>
 		</tr>
 
 		<tr>
@@ -650,9 +661,9 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-palette &lt;original|standard|z26|user&gt;</pre></td>
-			<td>Set the palette to either pre-Stella 1.4, Stella 1.4 and above,
-				the palette used in the z26 emulator, or a user-defined palette.</td>
+			<td><pre>-palette &lt;standard|z26|user&gt;</pre></td>
+			<td>Set the palette to either normal Stella, the one used in the z26
+				emulator, or a user-defined palette.</td>
 		</tr>
 
 		<tr>
@@ -755,13 +766,6 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-tiadefaults &lt;1|0&gt;</pre></td>
-			<td>Use TIA positioning defaults instead of enhanced values.  The
-				default values result in the image appearing as it does on
-				a real 2600 system (in most cases).</td>
-		</tr>
-
-		<tr>
 			<td><pre>-rombrowse &lt;1|0&gt;</pre></td>
 			<td>The ROM listing is treated as a filesystem, where one can traverse
 				folders.  As of Stella 2.3, this is the default browsing mode.</td>
@@ -771,18 +775,6 @@ a ROM.</li>
 			<td><pre>-autoslot &lt;1|0&gt;</pre></td>
 			<td>Automatically switch to the next available save state slot after
 				saving a ROM state file.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-fastscbios &lt;1|0&gt;</pre></td>
-			<td>Set loading of Supercharger BIOS bars to maximum speed (8x normal).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-accurate &lt;1|0&gt;</pre></td>
-			<td>Linux only, may be removed in future versions.  Use this when 
-				running under the Linux 2.4 kernel.  Otherwise, this should probably
-				not be used.</td>
 		</tr>
 
 		<tr>
@@ -808,14 +800,34 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-launchersize &lt;1|2|3&gt;</pre></td>
-			<td>Set the size of the ROM launcher.  This isn't yet complete.</td>
+			<td><pre>-launcherres &lt;WxH&gt;</pre></td>
+			<td>Set the size of the ROM launcher.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-uipalette &lt;1|2&gt;</pre></td>
 			<td>Used the specified palette for UI elements.  This isn't yet
 				complete.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-statdir &lt;dir&gt;</pre></td>
+			<td>Set the directory in which to save state files.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-cheatfile &lt;file&gt;</pre></td>
+			<td>Set the full pathname of the cheatfile database.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-palettefile &lt;file&gt;</pre></td>
+			<td>Set the full pathname of the user-defined palette file.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-propsfile &lt;file&gt;</pre></td>
+			<td>Set the full pathname of the ROM properties file.</td>
 		</tr>
 
 		<tr>
@@ -864,16 +876,16 @@ a ROM.</li>
 			<td><pre>-holdbutton0</pre></td>
 			<td>Start the emulator with the left joystick button held down.</td>
 		</tr>
-
-		<tr>
-			<td><pre>-pro &lt;props file&gt;</pre></td>
-			<td>Use the given properties file instead of stella.pro.</td>
-		</tr>
 	
 		<tr>
 			<td><pre>-type &lt;type&gt;</pre></td>
 			<td>Set "Cartridge.Type" property.  See the <i>Game Properties</i> section
 				for valid types.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-channels &lt;Mono|Stereo&gt;</pre></td>
+			<td>Set "Cartridge.Sound" property.</td>
 		</tr>
 
 		<tr>
@@ -920,7 +932,7 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td><pre>-format &lt;NTSC|PAL|PAL60&gt;</pre></td>
+			<td><pre>-format &lt;NTSC|PAL|PAL60|SECAM&gt;</pre></td>
 			<td>Set "Display.Format" property.</td>
 		</tr>
 
@@ -951,6 +963,8 @@ a ROM.</li>
 		</tr>
 	</table>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Options">6. Changing Options</a></h1>
@@ -980,84 +994,17 @@ a ROM.</li>
 	<p><b>About</b> dialog:<br><br>
 	<img src="graphics/options_about.png">
 
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Settings">7. Settings File</a></h1>
-	<hr>
-
-	<p>Stella will remember when you change a setting either at the command line
-	or while the emulation is running, and use the settings the next time
-	you start the emulator.  The settings are saved in a text file which can
-	be edited outside of Stella.  This file can contain your default options,
-	and eliminates the need to specify them on the command line.  Any
-	options specified on the command line will override those in the settings file.</p>
-
-	<p>The syntax for the settings file is very straightforward.  Any line starting with
-	a ';' character is considered a comment and is ignored.  Other lines must be of
-	the form: <b>command = value</b>, where <i>command</i> is the same as that
-	specified on the command line (without the '-' character), and <i>value</i>
-	is dependent on the command.</p>
-
-	<p>For example, the following table illustrates how command line and settings entries
-	are similar:</p>
-
-	<table BORDER=2>
-		<tr>
-			<th>Command Line</th>
-			<th>Settings File</th>
-		</tr>
-
-		<tr>
-			<td>-video gl</td>
-			<td>video = gl</td>
-		</tr>
-
-		<tr>
-			<td>-volume 75</td>
-			<td>volume = 75</td>
-		</tr>
-
-		<tr>
-			<td>-showinfo 1</td>
-			<td>showinfo = 1 (or showinfo = true)</td>
-		</tr>
-	</table>
-
-	<p>The settings file has a special name/location depending on which version of Stella
-	you use.  Note that if the environment variable 'STELLA_BASEDIR' is set, the
-	location of the settings file will change accordingly:</p>
-
-	<p>
-	<h2><b>Linux/UNIX</b></h2>
-	<p>The Linux and UNIX version of Stella searches for the <i>stellarc</i> file in
-	your $HOME/.stella directory, or in $STELLA_BASEDIR if that environment
-	variable is set.</p>
-
-	<p>
-	<h2><b>Macintosh</b></h2>
-	<p>The Macintosh version does not use an INI file, but stores it
-	preferences in the expected location for application preferences, in
-	the Users home directory, in the Library/Preferences/StellaOSX.plist
-	file.  The STELLA_BASEDIR environment variable has no effect for
-	the settings file in OSX.<br>
-
-	<p>
-	<h2><b>Windows</b></h2>
-	<p>The Windows version of Stella looks for the <i>stella.ini</i> file in the same
-	directory containing the application, or in $STELLA_BASEDIR if that environment
-	variable is set.  Future versions of Stella for Windows may look in
-	user-specific locations	(C:\Documents and Settings\...).</p>
-
-	<br><br>
-	<p><h1>
-	<a name="Keyboard">8. Keyboard Layout</a></h1>
+	<a name="Keyboard">7. Keyboard Layout</a></h1>
 	<hr>
 
 	<p>The Atari 2600 console controls and controllers are mapped to the computer's
 	keyboard as shown in the following tables.</p>
 
 	<p>As of Stella 1.4, most of these events can be remapped to other keys on your keyboard
-	or buttons on your joystick (see <b>Section 9 -
+	or buttons on your joystick (see <b>Section 8 -
 	<a href="#Remapping">Event Remapping</a></b>).  The tables below show the default
 	settings.</p>
 
@@ -1610,13 +1557,13 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td>Switch to next <i>larger</i> scaler</td>
+			<td>Switch to next <i>larger</i> zoom level</td>
 			<td>Alt + =</td>
 			<td>Cmd + =</td>
 		</tr>
 
 		<tr>
-			<td>Switch to next <i>smaller</i> scaler</td>
+			<td>Switch to next <i>smaller</i> zoom level</td>
 			<td>Alt + -</td>
 			<td>Cmd + -</td>
 		</tr>
@@ -1653,7 +1600,7 @@ a ROM.</li>
 		</tr>
 
 		<tr>
-			<td>Toggle display format between <i>NTSC, PAL, PAL60</i></td>
+			<td>Toggle display format between <i>NTSC/PAL/PAL60/SECAM</i></td>
 			<td>Control + f</td>
 			<td>Cmd + f</td>
 		</tr>
@@ -1719,14 +1666,15 @@ a ROM.</li>
 		</tr>
 	</table>
 
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br><br>
 	<p><h1>
-	<a name="Remapping">9. Event Remapping</a></h1>
+	<a name="Remapping">8. Event Remapping</a></h1>
 	<hr>
 
 	<p>This version of Stella has event remapping.  Almost every event in the emulator
 	can be remapped to another key on the keyboard or to buttons on up to eight
-	joysticks/gamepads (see <b>Section 8 - <a href="#Keyboard">Keyboard Layout</a></b>
+	joysticks/gamepads (see <b>Section 7 - <a href="#Keyboard">Keyboard Layout</a></b>
 	for those event which can/cannot be remapped).</p>
 
 	<p>Note that there are currently two separate event modes in Stella; emulation
@@ -1782,10 +1730,115 @@ a ROM.</li>
 	each frame.  These speeds specify how much movement will occur.</p>
 
 
-
-	<br><br><br>
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br>
 	<p><h1>
-	<a name="Cheats">10. Cheatcode Manager</a></h1>
+	<a name="Adaptor">9. Stelladaptor Support</a></h1>
+	<hr>
+
+	<p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
+	using the <a href="http://www.pixelspast.com/products">Stelladaptor</a> device.</p>
+
+	<p>Stella can use up to <b>two</b> Stelladaptors; any extra ones are ignored.
+	Stelladaptor devices will be automatically detected and configured.  Devices
+	can be plugged/unplugged while the emulation is running; Stella will detect the
+	change and act accordingly.</p>
+
+	<p>The detection and configuration is as follows:
+
+	<ul>
+		<li>The first Stelladaptor found will act as the <b>left game port</b>
+		on a real Atari.  Depending on the device, Stella will detect it as
+		either the left joystick, paddles 0 & 1, or the left driving controller.</li>
+
+		<li>The second Stelladaptor found will act as the <b>right game port</b>
+		on a real Atari.  Depending on the device, Stella will detect it as
+		either the right joystick, paddles 2 & 3, or the right driving controller.</li>
+
+		<li>Any other Stelladaptors will be ignored.</li>
+
+		<li>The assignment ordering of Stelladaptor to port can be redefined with
+		'sa1' and 'sa2' (see description in 'Starting a Game').</li>
+	</ul>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br>
+	<p><h1>
+	<a name="Debugger">10. Integrated Debugger</a></h1>
+	<hr>
+
+	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
+	documentation.
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br>
+	<p><h1>
+	<a name="Settings">11. Settings File</a></h1>
+	<hr>
+
+	<p>Stella will remember when you change a setting either at the command line
+	or while the emulation is running, and use the settings the next time
+	you start the emulator.  The settings are saved in a text file which can
+	be edited outside of Stella.  This file can contain your default options,
+	and eliminates the need to specify them on the command line.  Any
+	options specified on the command line will override those in the settings file.</p>
+
+	<p>The syntax for the settings file is very straightforward.  Any line starting with
+	a ';' character is considered a comment and is ignored.  Other lines must be of
+	the form: <b>command = value</b>, where <i>command</i> is the same as that
+	specified on the command line (without the '-' character), and <i>value</i>
+	is dependent on the command.</p>
+
+	<p>For example, the following table illustrates how command line and settings entries
+	are similar:</p>
+
+	<table BORDER=2>
+		<tr>
+			<th>Command Line</th>
+			<th>Settings File</th>
+		</tr>
+
+		<tr>
+			<td>-video gl</td>
+			<td>video = gl</td>
+		</tr>
+
+		<tr>
+			<td>-volume 75</td>
+			<td>volume = 75</td>
+		</tr>
+
+		<tr>
+			<td>-showinfo 1</td>
+			<td>showinfo = 1 (or showinfo = true)</td>
+		</tr>
+	</table>
+
+	<p>The settings file has a special name/location depending on which version of Stella
+	you use, which is currently not configurable:</p>
+
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>$HOME/.stella/stellarc</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td>Not applicable; settings are saved in <i>$HOME/Library/Preferences/StellaOSX.plist</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>stella.ini (in same directory as the application)</i></td>
+		</tr>
+	</table>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br>
+	<p><h1>
+	<a name="Cheats">12. Cheatcode Manager</a></h1>
 	<hr>
 
 	<p>Stella 2.0 contains support for Bob Colbert's Cheetah cheat codes, as
@@ -1857,17 +1910,33 @@ Ms Pac-Man (Stella extended codes):
    108fea1 - infinite lives
 	</pre>
 
-	<br>
-	<p><h1>
-	<a name="Debugger">11. Integrated Debugger</a></h1>
-	<hr>
+	<p>The name of the cheat database file is configurable through the
+	'<i>-cheatfile</i>' commandline argument and within the	application itself
+	(see <b>Section 5 - <a href="#Starting">Starting a Game</a></b>).  If the
+	path for this file hasn't been set, the default filename will depend on the
+	version of Stella, as follows:</p>
 
-	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
-	documentation.
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>$HOME/.stella/stella.cht</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td><i>$HOME/.stella/stella.cht</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>stella.cht</i> (in same directory as the application)</td>
+		</tr>
+	</table>
+	<p>Stella will require a restart for changes to this file to take effect.</p>
 
-	<br><br><br>
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br>
 	<p><h1>
-	<a name="Properties">12. Game Properties</a></h1>
+	<a name="Properties">13. Game Properties</a></h1>
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
@@ -1876,26 +1945,6 @@ Ms Pac-Man (Stella extended codes):
 	This per-user file will contain all properties modified by the user.  So this
 	means that when you upgrade Stella, your personal properties settings are
 	preserved.</p>
-
-	<p>
-	<h2><b>Linux/Unix</b></h2>
-	<p>The Linux and Unix versions of Stella looks for your personal properties
-	file in	<i>$HOME/.stella/stella.pro</i>, or if the STELLA_BASEDIR environment
-	variable is set, in <i>$STELLA_BASEDIR/stella.pro</i>.
-
-	<p>
-	<h2><b>Macintosh</b></h2>
-	<p>The Mac version of Stella looks for your personal properties	file in
-	<i>$HOME/.stella/stella.pro</i>, or if the STELLA_BASEDIR environment
-	variable is set, in <i>$STELLA_BASEDIR/stella.pro</i>.
-
-	<p>
-	<h2><b>Windows</b></h2>
-	<p>The Windows version of Stella looks for the properties file in the directory
-	containing the application, or if the STELLA_BASEDIR environment
-	variable is set, in <i>$STELLA_BASEDIR/stella.pro</i>.
-	Future versions of Stella for Windows may look in
-	user-specific locations	(C:\Documents and Settings\...).</p>
 
 	<p>
 	<h2><b>Property File</b></h2>
@@ -1907,24 +1956,24 @@ Ms Pac-Man (Stella extended codes):
 	<p>
 	<pre>
    ; Comments
-   "Cartridge.Name"      "Value"
-   "Property"            "Value"
+   "Cartridge.MD5"      "Value"
+   "Property"           "Value"
    ""
 
    ; Comments
-   "Cartridge.Name"      "Value"
-   "Property"            "Value"
+   "Cartridge.MD5"      "Value"
+   "Property"           "Value"
    ""
 
    . . .
 
    ; Comments
-   "Cartridge.Name"      "Value"
-   "Property"            "Value"
+   "Cartridge.MD5"      "Value"
+   "Property"           "Value"
    ""</pre>
 
 	<p>Every block in the property file must have a unique value for the
-	<i>Cartridge.Name</i> and <i>Cartridge.MD5</i> properties.</p>
+	<i>Cartridge.MD5</i> property.</p>
 
 	<p>
 	<h2><b>Properties</b></h2>
@@ -2086,53 +2135,43 @@ Ms Pac-Man (Stella extended codes):
 	<p><b>Note:</b> Items marked as '*' are deprecated, and will probably be
 	removed in a future release.</p>
 
-	<br><br>
-	<p><h1>
-	<a name="Adaptor">13. Stelladaptor Support</a></h1>
-	<hr>
+	<p>The name of the properties file is configurable through the
+	'<i>-propsfile</i>' commandline argument and within the	application itself
+	(see <b>Section 5 - <a href="#Starting">Starting a Game</a></b>).  If the
+	path for this file hasn't been set, the default filename will depend on the
+	version of Stella, as follows:</p>
 
-	<p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
-	using the <a href="http://www.pixelspast.com/products">Stelladaptor</a> device.</p>
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>$HOME/.stella/stella.pro</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td><i>$HOME/.stella/stella.pro</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>stella.pro</i> (in same directory as the application)</td>
+		</tr>
+	</table>
+	<p>Stella will require a restart for changes to this file to take effect.</p>
 
-	<p>Stella can use up to <b>two</b> Stelladaptors; any extra ones are ignored.
-	Stelladaptor devices will be automatically detected and configured.  Devices
-	can be plugged/unplugged while the emulation is running; Stella will detect the
-	change and act accordingly.</p>
 
-	<p>The detection and configuration is as follows:
-
-	<ul>
-		<li>The first Stelladaptor found will act as the <b>left game port</b>
-		on a real Atari.  Depending on the device, Stella will detect it as
-		either the left joystick, paddles 0 & 1, or the left driving controller.</li>
-
-		<li>The second Stelladaptor found will act as the <b>right game port</b>
-		on a real Atari.  Depending on the device, Stella will detect it as
-		either the right joystick, paddles 2 & 3, or the right driving controller.</li>
-
-		<li>Any other Stelladaptors will be ignored.</li>
-
-		<li>The assignment ordering of Stelladaptor to port can be redefined with
-		'sa1' and 'sa2' (see description in 'Starting a Game').</li>
-	</ul>
-
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Palette">14. Palette Support</a></h1>
 	<hr>
 
 	<p>An Atari 2600 palette consists of 128 colours, which are different
-	for the two major television standards (NTSC and PAL/PAL60).  Stella supports
-	three built-in palettes and one user-defined palette for each format.
+	for the three major television standards (NTSC, PAL/PAL60, SECAM).
+	Stella supports two built-in palettes and one user-defined palette for each format.
 	These are set using the '-palette' option, and are described as follows:</p>
 	<p><table cellpadding="5" border="1">
 		<tr>
 			<td><b>standard</b></td>
 			<td>The default palette from Stella 1.4 onwards.</td>
-		</tr>
-		<tr>
-			<td><b>original</b></td>
-			<td>The palette used in the original StellaX emulator.</td>
 		</tr>
 		<tr>
 			<td><b>z26</b></td>
@@ -2147,20 +2186,45 @@ Ms Pac-Man (Stella extended codes):
 	<p>Support for a user-defined palette is a new feature for Stella 2.3, and
 	is further described as follows:
 	<ul>
-		<li>The palette file must be called 'stella.pal', and will be located
-			in the base folder, in the same place as the stella properties file.</li>
-		<li>The palette file must be at least 768 bytes long.  Colours are stored
+		<li>The palette file must be at least 792 bytes long.  Colours are stored
 			in 24-bit RGB, with the first byte for red, the second for green, the
 			third for blue, for a total of 3 bytes per colour.</li>
 		<li>The first 384 bytes of the file (128 * 3) will be used for the NTSC
-			palette.  The second 384 bytes will be for the PAL/PAL60 palette.
-			Any extra data in the file will be ignored.</li>
+			palette.  The next 384 bytes (128 * 3) will be for the PAL/PAL60 palette.
+			The next 24 bytes (8 * 3) will be for the SECAM palette, which
+			consists of eight distinct colours.  Any extra data in the file
+			will be ignored.</li>
 		<li>The PAL colour-loss effect is calculated within Stella.  You do not
 			need to specify those colours in the palette file.
 	</ul>
-	<p>In the future, support may be added for specifying a palette for each ROM.</p>
+
+	<p>The name of the palette file is configurable through the
+	'<i>-palettefile</i>' commandline argument and within the application itself
+	(see <b>Section 5 - <a href="#Starting">Starting a Game</a></b>).  If the
+	path for this file hasn't been set, the default filename will depend on the
+	version of Stella, as follows:</p>
+
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>$HOME/.stella/stella.pal</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td><i>$HOME/.stella/stella.pal</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>stella.pal</i> (in same directory as the application)</td>
+		</tr>
+	</table>
+	<p>Note that to actually use the external palette, the palette file must
+	exist and be valid, <b>and</b> the palette should be set to <i>user</i>.
+	The current ROM will have to be reloaded for changes to this file to take
+	effect.</p>
 
 
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="Acknowledgments">15. Acknowledgments</a></h1>
@@ -2410,6 +2474,8 @@ Ms Pac-Man (Stella extended codes):
 
 	</table>
 
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
 	<a name="License">16. License and Disclaimer</a></h1>

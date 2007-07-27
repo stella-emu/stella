@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.119 2007-07-19 16:21:39 stephena Exp $
+// $Id: Settings.cxx,v 1.120 2007-07-27 13:49:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -143,71 +143,51 @@ void Settings::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Settings::loadCommandLine(int argc, char** argv)
+string Settings::loadCommandLine(int argc, char** argv)
 {
   for(int i = 1; i < argc; ++i)
   {
     // strip off the '-' character
     string key = argv[i];
-    if(key[0] != '-')
-      return true;     // stop processing here, ignore the remaining items
+    if(key[0] == '-')
+    {
+      key = key.substr(1, key.length());
 
-    key = key.substr(1, key.length());
+      // Take care of the arguments which are meant to be executed immediately
+      // (and then Stella should exit)
+      if(key == "help" || key == "listrominfo")
+      {
+        setExternal(key, "true");
+        return "";
+      }
 
-    // Take care of the arguments which are meant to be executed immediately
-    // (and then Stella should exit)
-    if(key == "help")
-    {
-      usage();
-      return false;
-    }
-    else if(key == "listrominfo")
-    {
-      setExternal(key, "true");
-      return true;
-    }
-    else if(key == "rominfo")
-    {
-      setExternal(key, "true");
-      return true;
-    }
-    else if(key == "debug") // this doesn't make Stella exit
-    {
-      setExternal(key, "true");
-      return true;
-    }
-    else if(key == "holdreset") // this doesn't make Stella exit
-    {
-      setExternal(key, "true");
-      return true;
-    }
-    else if(key == "holdselect") // this doesn't make Stella exit
-    {
-      setExternal(key, "true");
-      return true;
-    }
-    else if(key == "holdbutton0") // this doesn't make Stella exit
-    {
-      setExternal(key, "true");
-      return true;
-    }
+      // Take care of arguments without an option
+      if(key == "rominfo" || key == "debug" || key == "holdreset" ||
+         key == "holdselect" || key == "holdbutton0")
+      {
+        setExternal(key, "true");
+        continue;
+      }
 
-    if(++i >= argc)
-    {
-      cerr << "Missing argument for '" << key << "'" << endl;
-      return false;
-    }
-    string value = argv[i];
+      if(++i >= argc)
+      {
+        cerr << "Missing argument for '" << key << "'" << endl;
+        return "";
+      }
+      string value = argv[i];
 
-    // Settings read from the commandline must not be saved to 
-    // the rc-file, unless they were previously set
-    if(int idx = getInternalPos(key) != -1)
-      setInternal(key, value, idx);   // don't set initialValue here
+      // Settings read from the commandline must not be saved to 
+      // the rc-file, unless they were previously set
+      if(int idx = getInternalPos(key) != -1)
+        setInternal(key, value, idx);   // don't set initialValue here
+      else
+        setExternal(key, value);
+    }
     else
-      setExternal(key, value);
+      return key;
   }
 
-  return true;
+  return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -261,7 +241,7 @@ void Settings::validate()
     setInternal("pthresh", "800");
 
   s = getString("palette");
-  if(s != "standard" && s != "original" && s != "z26" && s != "user")
+  if(s != "standard" && s != "z26" && s != "user")
     setInternal("palette", "standard");
 }
 
@@ -294,11 +274,10 @@ void Settings::usage()
     << "  -zoom_tia     <zoom>         Use the specified zoom level in emulation mode\n"
     << "  -zoom_ui      <zoom>         Use the specified zoom level in non-emulation mode (ROM browser/debugger)\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
-    << "  -fullres      <res>          The resolution to use in fullscreen mode\n"
+    << "  -fullres      <WxH>          The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
-    << "  -palette      <original|     Use the specified color palette\n"
-    << "                 standard|\n"
+    << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
     << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
@@ -325,15 +304,12 @@ void Settings::usage()
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
-  #ifdef UNIX
-    << "  -accurate     <1|0>          Accurate game timing (uses more CPU)\n"
-  #endif
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << endl
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
-    << "  -launcherres  <res>          The resolution to use in ROM launcher mode\n"
+    << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -statedir     <dir>          Directory in which to save state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
@@ -353,6 +329,7 @@ void Settings::usage()
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
     << endl
     << "   -type        <arg>          Sets the 'Cartridge.Type' property\n"
+    << "   -channels    <arg>          Sets the 'Cartridge.Sound' property\n"
     << "   -ld          <arg>          Sets the 'Console.LeftDifficulty' property\n"
     << "   -rd          <arg>          Sets the 'Console.RightDifficulty' property\n"
     << "   -tv          <arg>          Sets the 'Console.TelevisionType' property\n"

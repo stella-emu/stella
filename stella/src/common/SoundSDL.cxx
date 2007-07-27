@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.37 2007-07-19 16:21:39 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.38 2007-07-27 13:49:16 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -271,10 +271,7 @@ void SoundSDL::adjustCycleCounter(Int32 amount)
 void SoundSDL::setChannels(uInt32 channels)
 {
   if(channels == 1 || channels == 2)
-  {
     myNumChannels = channels;
-    myOSystem->settings().setInt("channels", myNumChannels);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
