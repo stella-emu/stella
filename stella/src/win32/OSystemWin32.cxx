@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.18 2007-06-20 20:36:28 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.19 2007-07-31 00:45:28 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,32 +29,23 @@
   in its constructor:
 
   setBaseDir()
-  setStateDir()
-  setPropertiesDir()
   setConfigFile()
-  setCacheFile()
 
   See OSystem.hxx for a further explanation
 */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-OSystemWin32::OSystemWin32(const string& path) : OSystem()
+OSystemWin32::OSystemWin32()
+  : OSystem()
 {
   // TODO - there really should be code here to determine which version
   // of Windows is being used.
   // If using a version which supports multiple users (NT and above),
   // the relevant directories should be created in per-user locations.
   // For now, we just put it in the same directory as the executable.
-  const string& basedir = (path.length() > 0) ? path : ".";
-
+  const string& basedir = ".";
   setBaseDir(basedir);
-
-  setStateDir(basedir + "\\state\\");
-
-  setPropertiesDir(basedir);
   setConfigFile(basedir + "\\stella.ini");
-
-  setCacheFile(basedir + "\\stella.cache");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
