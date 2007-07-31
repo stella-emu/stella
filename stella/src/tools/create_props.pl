@@ -104,7 +104,9 @@ print OUTFILE "  located in the src/tools directory.  All properties changes\n";
 print OUTFILE "  should be made in stella.pro, and then this file should be\n";
 print OUTFILE "  regenerated and the application recompiled.\n";
 print OUTFILE "*/\n";
-print OUTFILE "static const char* DefProps[" . $size . "][" . keys( %proptype ) . "] = {\n";
+print OUTFILE "\n#define DEF_PROPS_SIZE " . $size;
+print OUTFILE "\n\n";
+print OUTFILE "static const char* DefProps[DEF_PROPS_SIZE][" . keys( %proptype ) . "] = {\n";
 
 my $idx = 0;
 for my $key ( sort keys %propset )

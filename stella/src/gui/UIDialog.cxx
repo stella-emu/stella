@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.4 2007-06-20 16:33:23 stephena Exp $
+// $Id: UIDialog.cxx,v 1.5 2007-07-31 15:46:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -158,8 +158,8 @@ void UIDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::setDefaults()
 {
-  int w = MIN(instance()->desktopWidth(), (const uInt32) 400);
-  int h = MIN(instance()->desktopHeight(), (const uInt32) 300);
+  int w = BSPF_min(instance()->desktopWidth(), (const uInt32) 400);
+  int h = BSPF_min(instance()->desktopHeight(), (const uInt32) 300);
   myLauncherWidthSlider->setValue(w);
   myLauncherWidthLabel->setValue(w);
   myLauncherHeightSlider->setValue(h);

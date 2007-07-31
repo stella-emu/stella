@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.33 2007-07-19 16:21:39 stephena Exp $
+// $Id: PropsSet.cxx,v 1.34 2007-07-31 15:46:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -79,7 +79,7 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
   // Otherwise, search the internal database using binary search
   if(!found)
   {
-    int low = 0, high = ARRAYSIZE(DefProps) - 1;
+    int low = 0, high = DEF_PROPS_SIZE - 1;
     while(low <= high)
     {
       int i = (low + high) / 2;

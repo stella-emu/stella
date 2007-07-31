@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.203 2007-06-20 16:33:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.204 2007-07-31 15:46:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -860,7 +860,7 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 
     // Grabmouse introduces some lag into the mouse movement,
     // so we need to fudge the numbers a bit
-    if(myGrabMouseFlag) x = MIN(w, (int) (x * 1.5));
+    if(myGrabMouseFlag) x = BSPF_min(w, (int) (x * 1.5));
 
     int resistance = (int)(1000000.0 * (w - x) / w);
     myEvent->set(Paddle_Resistance[myPaddleMode], resistance);

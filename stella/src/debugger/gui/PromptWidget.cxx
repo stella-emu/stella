@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.16 2007-06-21 12:27:00 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.17 2007-07-31 15:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -731,7 +731,7 @@ void PromptWidget::nextLine()
 // Call this (at least) when the current line changes or when a new line is added
 void PromptWidget::updateScrollBuffer()
 {
-  int lastchar = MAX(_promptEndPos, _currentPos);
+  int lastchar = BSPF_max(_promptEndPos, _currentPos);
   int line = lastchar / _lineWidth;
   int numlines = (line < _linesInBuffer) ? line + 1 : _linesInBuffer;
   int firstline = line - numlines + 1;

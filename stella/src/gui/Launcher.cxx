@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.16 2007-07-11 15:08:13 stephena Exp $
+// $Id: Launcher.cxx,v 1.17 2007-07-31 15:46:21 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -34,14 +34,14 @@ Launcher::Launcher(OSystem* osystem)
 {
   int w, h;
   myOSystem->settings().getSize("launcherres", w, h);
-  myWidth = MAX(w, 0);
-  myHeight = MAX(h, 0);
+  myWidth = BSPF_max(w, 0);
+  myHeight = BSPF_max(h, 0);
 
   // Error check the resolution
-  myWidth = MAX(myWidth, 320u);
-  myWidth = MIN(myWidth, osystem->desktopWidth());
-  myHeight = MAX(myHeight, 240u);
-  myHeight = MIN(myHeight, osystem->desktopHeight());
+  myWidth = BSPF_max(myWidth, 320u);
+  myWidth = BSPF_min(myWidth, osystem->desktopWidth());
+  myHeight = BSPF_max(myHeight, 240u);
+  myHeight = BSPF_min(myHeight, osystem->desktopHeight());
   myOSystem->settings().setSize("launcherres", myWidth, myHeight);
 
   myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Rect.hxx,v 1.4 2007-01-01 18:04:54 stephena Exp $
+// $Id: Rect.hxx,v 1.5 2007-07-31 15:46:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,7 +22,7 @@
 #ifndef RECT_HXX
 #define RECT_HXX
 
-#include "GuiUtils.hxx"
+#include "bspf.hxx"
 
 namespace GUI {
 
@@ -119,10 +119,10 @@ struct Rect
 		@param r the rectangle to extend by
 	*/
 	void extend(const Rect & r) {
-		left = MIN(left, r.left);
-		right = MAX(right, r.right);
-		top = MIN(top, r.top);
-		bottom = MAX(bottom, r.bottom);
+		left = BSPF_min(left, r.left);
+		right = BSPF_max(right, r.right);
+		top = BSPF_min(top, r.top);
+		bottom = BSPF_max(bottom, r.bottom);
 	}
 	
 	/*!	@brief extend this rectangle in all four directions by the given number of pixels

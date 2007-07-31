@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.10 2007-01-01 18:04:43 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.11 2007-07-31 15:46:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -170,8 +170,8 @@ void DataGridWidget::setSelectedValue(int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setRange(int lower, int upper)
 {
-  _lowerBound = MAX(0, lower);
-  _upperBound = MIN(1 << _bits, upper);
+  _lowerBound = BSPF_max(0, lower);
+  _upperBound = BSPF_min(1 << _bits, upper);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

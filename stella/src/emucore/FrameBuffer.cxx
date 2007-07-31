@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.119 2007-07-11 15:08:10 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.120 2007-07-31 15:46:20 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -671,7 +671,7 @@ void FrameBuffer::drawString(const GUI::Font* font, const string& s,
 uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 {
   if(c2 > c1)
-    SWAP(c1, c2);
+    BSPF_swap(c1, c2);
 
   return ((c1 - c2) * myPhosphorBlend)/100 + c2;
 }
@@ -779,8 +779,8 @@ VideoMode FrameBuffer::getSavedVidMode()
     {
       int lw, lh;
       myOSystem->settings().getSize("launcherres", lw, lh);
-      w = MAX(w, lw);
-      h = MAX(h, lh);
+      w = BSPF_max(w, lw);
+      h = BSPF_max(h, lh);
     }
 #ifdef DEBUGGER_SUPPORT
     else if(state == EventHandler::S_DEBUGGER)

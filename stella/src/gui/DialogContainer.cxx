@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.36 2007-01-01 18:04:52 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.37 2007-07-31 15:46:21 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -210,8 +210,8 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
       }
 
       if(myLastClick.count && (myTime < myLastClick.time + kDoubleClickDelay)
-         && ABS(myLastClick.x - x) < 3
-         && ABS(myLastClick.y - y) < 3)
+         && BSPF_abs(myLastClick.x - x) < 3
+         && BSPF_abs(myLastClick.y - y) < 3)
       {
         myLastClick.count++;
       }

@@ -7,7 +7,10 @@
   should be made in stella.pro, and then this file should be
   regenerated and the application recompiled.
 */
-static const char* DefProps[2722][21] = {
+
+#define DEF_PROPS_SIZE 2722
+
+static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "", "", "Jungle Jane (2003) (Greg Zumwalt) (Pitfall! Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "007d18dedc1f0565f09c42aa61a6f585", "CCE", "", "Worm War I (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "008543ae43497af015e9428a5e3e874e", "Retroactive", "", "Qb (V2.09) (PAL) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
