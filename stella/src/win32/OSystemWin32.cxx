@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.19 2007-07-31 00:45:28 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.20 2007-08-04 20:32:54 stephena Exp $
 //============================================================================
 
 #include <sstream>

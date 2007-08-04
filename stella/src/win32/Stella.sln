@@ -1,21 +1,19 @@
-Microsoft Visual Studio Solution File, Format Version 8.00
+Microsoft Visual Studio Solution File, Format Version 9.00
+# Visual Studio 2005
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stella", "Stella.vcproj", "{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}"
-	ProjectSection(ProjectDependencies) = postProject
-	EndProjectSection
 EndProject
 Global
-	GlobalSection(SolutionConfiguration) = preSolution
-		Debug = Debug
-		Release = Release
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ProjectConfiguration) = postSolution
-		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug.ActiveCfg = Debug|Win32
-		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug.Build.0 = Debug|Win32
-		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release.ActiveCfg = Release|Win32
-		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release.Build.0 = Release|Win32
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Debug|Win32.Build.0 = Debug|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|Win32.ActiveCfg = Release|Win32
+		{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-	EndGlobalSection
-	GlobalSection(ExtensibilityAddIns) = postSolution
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
 	EndGlobalSection
 EndGlobal

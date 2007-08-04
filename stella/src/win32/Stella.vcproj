@@ -1,75 +1,124 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="7.10"
+	Version="8.00"
 	Name="Stella"
 	ProjectGUID="{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}"
 	RootNamespace="Stella"
-	Keyword="Win32Proj">
+	Keyword="Win32Proj"
+	>
 	<Platforms>
 		<Platform
-			Name="Win32"/>
+			Name="Win32"
+		/>
 	</Platforms>
+	<ToolFiles>
+	</ToolFiles>
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory="Debug"
 			IntermediateDirectory="Debug"
 			ConfigurationType="1"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
-				MinimalRebuild="TRUE"
+				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
-				Detect64BitPortabilityProblems="TRUE"
-				DebugInformationFormat="4"/>
+				Detect64BitPortabilityProblems="true"
+				DebugInformationFormat="4"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="SDL.lib
-SDLmain.lib
-"
+				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
 				AdditionalDependencies="sdl.lib sdlmain.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
-				GenerateDebugInformation="TRUE"
+				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Stella.pdb"
 				SubSystem="2"
-				TargetMachine="1"/>
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 		<Configuration
 			Name="Release|Win32"
 			OutputDirectory="Release"
 			IntermediateDirectory="Release"
 			ConfigurationType="1"
-			CharacterSet="2">
+			InheritedPropertySheets="$(VCInstallDir)VCProjectDefaults\UpgradeFromVC71.vsprops"
+			CharacterSet="2"
+			>
+			<Tool
+				Name="VCPreBuildEventTool"
+			/>
+			<Tool
+				Name="VCCustomBuildTool"
+			/>
+			<Tool
+				Name="VCXMLDataGeneratorTool"
+			/>
+			<Tool
+				Name="VCWebServiceProxyGeneratorTool"
+			/>
+			<Tool
+				Name="VCMIDLTool"
+			/>
 			<Tool
 				Name="VCCLCompilerTool"
 				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
@@ -77,42 +126,53 @@ SDLmain.lib
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
-				Detect64BitPortabilityProblems="FALSE"
-				DebugInformationFormat="3"/>
+				Detect64BitPortabilityProblems="false"
+				DebugInformationFormat="3"
+			/>
 			<Tool
-				Name="VCCustomBuildTool"/>
+				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
+			/>
 			<Tool
 				Name="VCLinkerTool"
-				AdditionalOptions="SDL.lib
-SDLmain.lib
-"
+				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
 				AdditionalDependencies="sdl.lib sdlmain.lib zdll.lib"
 				OutputFile="$(OutDir)/Stella.exe"
-				GenerateDebugInformation="TRUE"
-				SubSystem="2"
+				GenerateDebugInformation="true"
+				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				TargetMachine="1"/>
+				TargetMachine="1"
+			/>
 			<Tool
-				Name="VCMIDLTool"/>
+				Name="VCALinkTool"
+			/>
 			<Tool
-				Name="VCPostBuildEventTool"/>
+				Name="VCManifestTool"
+			/>
 			<Tool
-				Name="VCPreBuildEventTool"/>
+				Name="VCXDCMakeTool"
+			/>
 			<Tool
-				Name="VCPreLinkEventTool"/>
+				Name="VCBscMakeTool"
+			/>
 			<Tool
-				Name="VCResourceCompilerTool"/>
+				Name="VCFxCopTool"
+			/>
 			<Tool
-				Name="VCWebServiceProxyGeneratorTool"/>
+				Name="VCAppVerifierTool"
+			/>
 			<Tool
-				Name="VCXMLDataGeneratorTool"/>
+				Name="VCWebDeploymentTool"
+			/>
 			<Tool
-				Name="VCWebDeploymentTool"/>
-			<Tool
-				Name="VCManagedWrapperGeneratorTool"/>
-			<Tool
-				Name="VCAuxiliaryManagedWrapperGeneratorTool"/>
+				Name="VCPostBuildEventTool"
+			/>
 		</Configuration>
 	</Configurations>
 	<References>
@@ -121,873 +181,1155 @@ SDLmain.lib
 		<Filter
 			Name="Source Files"
 			Filter="cpp;c;cxx;def;odl;idl;hpj;bat;asm;asmx"
-			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}">
+			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
+			>
 			<File
-				RelativePath="..\common\FrameBufferGL.cxx">
+				RelativePath="..\common\FrameBufferGL.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\FrameBufferSoft.cxx">
+				RelativePath="..\common\FrameBufferSoft.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\win32\FSNodeWin32.cxx">
+				RelativePath="..\win32\FSNodeWin32.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\mainSDL.cxx">
+				RelativePath="..\common\mainSDL.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\win32\OSystemWin32.cxx">
+				RelativePath="..\win32\OSystemWin32.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\RectList.cxx">
+				RelativePath="..\common\RectList.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\win32\SettingsWin32.cxx">
+				RelativePath="..\win32\SettingsWin32.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\Snapshot.cxx">
+				RelativePath="..\common\Snapshot.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\SoundNull.cxx">
+				RelativePath="..\common\SoundNull.cxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\SoundSDL.cxx">
+				RelativePath="..\common\SoundSDL.cxx"
+				>
 			</File>
 			<Filter
 				Name="emucore"
-				Filter="">
+				>
 				<File
-					RelativePath="..\emucore\Booster.cxx">
+					RelativePath="..\emucore\Booster.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart.cxx">
+					RelativePath="..\emucore\Cart.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart0840.cxx">
+					RelativePath="..\emucore\Cart0840.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart2K.cxx">
+					RelativePath="..\emucore\Cart2K.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart3E.cxx">
+					RelativePath="..\emucore\Cart3E.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart3F.cxx">
+					RelativePath="..\emucore\Cart3F.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart4A50.cxx">
+					RelativePath="..\emucore\Cart4A50.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart4K.cxx">
+					RelativePath="..\emucore\Cart4K.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartAR.cxx">
+					RelativePath="..\emucore\CartAR.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartCV.cxx">
+					RelativePath="..\emucore\CartCV.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartDPC.cxx">
+					RelativePath="..\emucore\CartDPC.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartE0.cxx">
+					RelativePath="..\emucore\CartE0.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartE7.cxx">
+					RelativePath="..\emucore\CartE7.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF4.cxx">
+					RelativePath="..\emucore\CartF4.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF4SC.cxx">
+					RelativePath="..\emucore\CartF4SC.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF6.cxx">
+					RelativePath="..\emucore\CartF6.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF6SC.cxx">
+					RelativePath="..\emucore\CartF6SC.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF8.cxx">
+					RelativePath="..\emucore\CartF8.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF8SC.cxx">
+					RelativePath="..\emucore\CartF8SC.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartFASC.cxx">
+					RelativePath="..\emucore\CartFASC.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartFE.cxx">
+					RelativePath="..\emucore\CartFE.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartMB.cxx">
+					RelativePath="..\emucore\CartMB.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartMC.cxx">
+					RelativePath="..\emucore\CartMC.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartUA.cxx">
+					RelativePath="..\emucore\CartUA.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Console.cxx">
+					RelativePath="..\emucore\Console.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Control.cxx">
+					RelativePath="..\emucore\Control.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Deserializer.cxx">
+					RelativePath="..\emucore\Deserializer.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\Device.cxx">
+					RelativePath="..\emucore\m6502\src\Device.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Driving.cxx">
+					RelativePath="..\emucore\Driving.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Event.cxx">
+					RelativePath="..\emucore\Event.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\EventHandler.cxx">
+					RelativePath="..\emucore\EventHandler.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\EventStreamer.cxx">
+					RelativePath="..\emucore\EventStreamer.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\FrameBuffer.cxx">
+					RelativePath="..\emucore\FrameBuffer.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\FSNode.cxx">
+					RelativePath="..\emucore\FSNode.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Joystick.cxx">
+					RelativePath="..\emucore\Joystick.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Keyboard.cxx">
+					RelativePath="..\emucore\Keyboard.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502.cxx">
+					RelativePath="..\emucore\m6502\src\M6502.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502Hi.cxx">
+					RelativePath="..\emucore\m6502\src\M6502Hi.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502Low.cxx">
+					RelativePath="..\emucore\m6502\src\M6502Low.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\M6532.cxx">
+					RelativePath="..\emucore\M6532.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\MD5.cxx">
+					RelativePath="..\emucore\MD5.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\MediaFactory.cxx">
+					RelativePath="..\emucore\MediaFactory.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\MediaSrc.cxx">
+					RelativePath="..\emucore\MediaSrc.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\NullDev.cxx">
+					RelativePath="..\emucore\m6502\src\NullDev.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\OSystem.cxx">
+					RelativePath="..\emucore\OSystem.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Paddles.cxx">
+					RelativePath="..\emucore\Paddles.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Props.cxx">
+					RelativePath="..\emucore\Props.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\PropsSet.cxx">
+					RelativePath="..\emucore\PropsSet.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Random.cxx">
+					RelativePath="..\emucore\Random.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Serializer.cxx">
+					RelativePath="..\emucore\Serializer.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Settings.cxx">
+					RelativePath="..\emucore\Settings.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Switches.cxx">
+					RelativePath="..\emucore\Switches.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\System.cxx">
+					RelativePath="..\emucore\m6502\src\System.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\TIA.cxx">
+					RelativePath="..\emucore\TIA.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\TIASnd.cxx">
+					RelativePath="..\emucore\TIASnd.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\unzip.c">
+					RelativePath="..\emucore\unzip.c"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="cheat"
-				Filter="">
+				>
 				<File
-					RelativePath="..\cheat\BankRomCheat.cxx">
+					RelativePath="..\cheat\BankRomCheat.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\CheatCodeDialog.cxx">
+					RelativePath="..\cheat\CheatCodeDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\CheatManager.cxx">
+					RelativePath="..\cheat\CheatManager.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\CheetahCheat.cxx">
+					RelativePath="..\cheat\CheetahCheat.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\RamCheat.cxx">
+					RelativePath="..\cheat\RamCheat.cxx"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="debugger"
-				Filter="">
+				>
 				<File
-					RelativePath="..\debugger\gui\AudioWidget.cxx">
+					RelativePath="..\debugger\gui\AudioWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ColorWidget.cxx">
+					RelativePath="..\debugger\gui\ColorWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ContextMenu.cxx">
+					RelativePath="..\debugger\gui\ContextMenu.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\CpuDebug.cxx">
+					RelativePath="..\debugger\CpuDebug.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\CpuWidget.cxx">
+					RelativePath="..\debugger\gui\CpuWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\DataGridOpsWidget.cxx">
+					RelativePath="..\debugger\gui\DataGridOpsWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\DataGridWidget.cxx">
+					RelativePath="..\debugger\gui\DataGridWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\Debugger.cxx">
+					RelativePath="..\debugger\Debugger.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\DebuggerDialog.cxx">
+					RelativePath="..\debugger\gui\DebuggerDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\DebuggerParser.cxx">
+					RelativePath="..\debugger\DebuggerParser.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\EquateList.cxx">
+					RelativePath="..\debugger\EquateList.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\Expression.cxx">
+					RelativePath="..\debugger\Expression.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\PackedBitArray.cxx">
+					RelativePath="..\debugger\PackedBitArray.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\PromptWidget.cxx">
+					RelativePath="..\debugger\gui\PromptWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\RamDebug.cxx">
+					RelativePath="..\debugger\RamDebug.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\RamWidget.cxx">
+					RelativePath="..\debugger\gui\RamWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\RomListWidget.cxx">
+					RelativePath="..\debugger\gui\RomListWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\RomWidget.cxx">
+					RelativePath="..\debugger\gui\RomWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\TIADebug.cxx">
+					RelativePath="..\debugger\TIADebug.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaInfoWidget.cxx">
+					RelativePath="..\debugger\gui\TiaInfoWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaOutputWidget.cxx">
+					RelativePath="..\debugger\gui\TiaOutputWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaWidget.cxx">
+					RelativePath="..\debugger\gui\TiaWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaZoomWidget.cxx">
+					RelativePath="..\debugger\gui\TiaZoomWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ToggleBitWidget.cxx">
+					RelativePath="..\debugger\gui\ToggleBitWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TogglePixelWidget.cxx">
+					RelativePath="..\debugger\gui\TogglePixelWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ToggleWidget.cxx">
+					RelativePath="..\debugger\gui\ToggleWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\yacc\YaccParser.cxx">
+					RelativePath="..\yacc\YaccParser.cxx"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="gui"
-				Filter="">
+				>
 				<File
-					RelativePath="..\gui\AboutDialog.cxx">
+					RelativePath="..\gui\AboutDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\AudioDialog.cxx">
+					RelativePath="..\gui\AudioDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\BrowserDialog.cxx">
+					RelativePath="..\gui\BrowserDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\CheckListWidget.cxx">
+					RelativePath="..\gui\CheckListWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\CommandDialog.cxx">
+					RelativePath="..\gui\CommandDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\CommandMenu.cxx">
+					RelativePath="..\gui\CommandMenu.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Dialog.cxx">
+					RelativePath="..\gui\Dialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\DialogContainer.cxx">
+					RelativePath="..\gui\DialogContainer.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\EditableWidget.cxx">
+					RelativePath="..\gui\EditableWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\EditTextWidget.cxx">
+					RelativePath="..\gui\EditTextWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\EventMappingWidget.cxx">
+					RelativePath="..\gui\EventMappingWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\FileSnapDialog.cxx">
+					RelativePath="..\gui\FileSnapDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Font.cxx">
+					RelativePath="..\gui\Font.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\GameInfoDialog.cxx">
+					RelativePath="..\gui\GameInfoDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\GameList.cxx">
+					RelativePath="..\gui\GameList.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\HelpDialog.cxx">
+					RelativePath="..\gui\HelpDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\InputDialog.cxx">
+					RelativePath="..\gui\InputDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\InputTextDialog.cxx">
+					RelativePath="..\gui\InputTextDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Launcher.cxx">
+					RelativePath="..\gui\Launcher.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\LauncherDialog.cxx">
+					RelativePath="..\gui\LauncherDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ListWidget.cxx">
+					RelativePath="..\gui\ListWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Menu.cxx">
+					RelativePath="..\gui\Menu.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\OptionsDialog.cxx">
+					RelativePath="..\gui\OptionsDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\PopUpWidget.cxx">
+					RelativePath="..\gui\PopUpWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ProgressDialog.cxx">
+					RelativePath="..\gui\ProgressDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ScrollBarWidget.cxx">
+					RelativePath="..\gui\ScrollBarWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\StringListWidget.cxx">
+					RelativePath="..\gui\StringListWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\TabWidget.cxx">
+					RelativePath="..\gui\TabWidget.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\UIDialog.cxx">
+					RelativePath="..\gui\UIDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\VideoDialog.cxx">
+					RelativePath="..\gui\VideoDialog.cxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Widget.cxx">
+					RelativePath="..\gui\Widget.cxx"
+					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Header Files"
 			Filter="h;hpp;hxx;hm;inl;inc;xsd"
-			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}">
+			UniqueIdentifier="{93995380-89BD-4b04-88EB-625FBE52EBFB}"
+			>
 			<File
-				RelativePath="..\common\Array.hxx">
+				RelativePath="..\common\Array.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\FrameBufferGL.hxx">
+				RelativePath="..\common\FrameBufferGL.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\FrameBufferSoft.hxx">
+				RelativePath="..\common\FrameBufferSoft.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\win32\OSystemWin32.hxx">
+				RelativePath="..\win32\OSystemWin32.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\RectList.hxx">
+				RelativePath="..\common\RectList.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\win32\SettingsWin32.hxx">
+				RelativePath="..\win32\SettingsWin32.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\Snapshot.hxx">
+				RelativePath="..\common\Snapshot.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\SoundNull.hxx">
+				RelativePath="..\common\SoundNull.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\SoundSDL.hxx">
+				RelativePath="..\common\SoundSDL.hxx"
+				>
 			</File>
 			<File
-				RelativePath="..\common\Version.hxx">
+				RelativePath="..\common\Version.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\VideoModeList.hxx"
+				>
 			</File>
 			<Filter
 				Name="emucore"
-				Filter="">
+				>
 				<File
-					RelativePath="..\emucore\Booster.hxx">
+					RelativePath="..\emucore\Booster.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\bspf\src\bspf.hxx">
+					RelativePath="..\emucore\m6502\src\bspf\src\bspf.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart.hxx">
+					RelativePath="..\emucore\Cart.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart0840.hxx">
+					RelativePath="..\emucore\Cart0840.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart2K.hxx">
+					RelativePath="..\emucore\Cart2K.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart3E.hxx">
+					RelativePath="..\emucore\Cart3E.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart3F.hxx">
+					RelativePath="..\emucore\Cart3F.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart4A50.hxx">
+					RelativePath="..\emucore\Cart4A50.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Cart4K.hxx">
+					RelativePath="..\emucore\Cart4K.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartAR.hxx">
+					RelativePath="..\emucore\CartAR.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartCV.hxx">
+					RelativePath="..\emucore\CartCV.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartDPC.hxx">
+					RelativePath="..\emucore\CartDPC.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartE0.hxx">
+					RelativePath="..\emucore\CartE0.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartE7.hxx">
+					RelativePath="..\emucore\CartE7.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF4.hxx">
+					RelativePath="..\emucore\CartF4.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF4SC.hxx">
+					RelativePath="..\emucore\CartF4SC.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF6.hxx">
+					RelativePath="..\emucore\CartF6.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF6SC.hxx">
+					RelativePath="..\emucore\CartF6SC.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF8.hxx">
+					RelativePath="..\emucore\CartF8.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartF8SC.hxx">
+					RelativePath="..\emucore\CartF8SC.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartFASC.hxx">
+					RelativePath="..\emucore\CartFASC.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartFE.hxx">
+					RelativePath="..\emucore\CartFE.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartMB.hxx">
+					RelativePath="..\emucore\CartMB.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartMC.hxx">
+					RelativePath="..\emucore\CartMC.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\CartUA.hxx">
+					RelativePath="..\emucore\CartUA.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Console.hxx">
+					RelativePath="..\emucore\Console.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Control.hxx">
+					RelativePath="..\emucore\Control.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\DefProps.hxx">
+					RelativePath="..\emucore\DefProps.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Deserializer.hxx">
+					RelativePath="..\emucore\Deserializer.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\Device.hxx">
+					RelativePath="..\emucore\m6502\src\Device.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Driving.hxx">
+					RelativePath="..\emucore\Driving.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Event.hxx">
+					RelativePath="..\emucore\Event.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\EventHandler.hxx">
+					RelativePath="..\emucore\EventHandler.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\EventStreamer.hxx">
+					RelativePath="..\emucore\EventStreamer.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\FrameBuffer.hxx">
+					RelativePath="..\emucore\FrameBuffer.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\FSNode.hxx">
+					RelativePath="..\emucore\FSNode.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Joystick.hxx">
+					RelativePath="..\emucore\Joystick.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Keyboard.hxx">
+					RelativePath="..\emucore\Keyboard.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502.hxx">
+					RelativePath="..\emucore\m6502\src\M6502.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502Hi.hxx">
+					RelativePath="..\emucore\m6502\src\M6502Hi.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502Low.hxx">
+					RelativePath="..\emucore\m6502\src\M6502Low.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\M6532.hxx">
+					RelativePath="..\emucore\M6532.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\MD5.hxx">
+					RelativePath="..\emucore\MD5.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\MediaFactory.hxx">
+					RelativePath="..\emucore\MediaFactory.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\MediaSrc.hxx">
+					RelativePath="..\emucore\MediaSrc.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\NullDev.hxx">
+					RelativePath="..\emucore\m6502\src\NullDev.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\OSystem.hxx">
+					RelativePath="..\emucore\OSystem.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Paddles.hxx">
+					RelativePath="..\emucore\Paddles.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Props.hxx">
+					RelativePath="..\emucore\Props.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\PropsSet.hxx">
+					RelativePath="..\emucore\PropsSet.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Random.hxx">
+					RelativePath="..\emucore\Random.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Serializer.hxx">
+					RelativePath="..\emucore\Serializer.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Settings.hxx">
+					RelativePath="..\emucore\Settings.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Sound.hxx">
+					RelativePath="..\emucore\Sound.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\Switches.hxx">
+					RelativePath="..\emucore\Switches.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\System.hxx">
+					RelativePath="..\emucore\m6502\src\System.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\TIA.hxx">
+					RelativePath="..\emucore\TIA.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\TIASnd.hxx">
+					RelativePath="..\emucore\TIASnd.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\emucore\unzip.h">
+					RelativePath="..\emucore\unzip.h"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="debugger"
-				Filter="">
+				>
 				<File
-					RelativePath="..\debugger\gui\AudioWidget.hxx">
+					RelativePath="..\debugger\gui\AudioWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ColorWidget.hxx">
+					RelativePath="..\debugger\gui\ColorWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ContextMenu.hxx">
+					RelativePath="..\debugger\gui\ContextMenu.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\CpuDebug.hxx">
+					RelativePath="..\debugger\CpuDebug.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\CpuWidget.hxx">
+					RelativePath="..\debugger\gui\CpuWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\DataGridOpsWidget.hxx">
+					RelativePath="..\debugger\gui\DataGridOpsWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\DataGridWidget.hxx">
+					RelativePath="..\debugger\gui\DataGridWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\Debugger.hxx">
+					RelativePath="..\debugger\Debugger.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\DebuggerDialog.hxx">
+					RelativePath="..\debugger\gui\DebuggerDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\DebuggerExpressions.hxx">
+					RelativePath="..\debugger\DebuggerExpressions.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\DebuggerParser.hxx">
+					RelativePath="..\debugger\DebuggerParser.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\DebuggerSystem.hxx">
+					RelativePath="..\debugger\DebuggerSystem.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\Equate.hxx">
+					RelativePath="..\debugger\Equate.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\EquateList.hxx">
+					RelativePath="..\debugger\EquateList.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\Expression.hxx">
+					RelativePath="..\debugger\Expression.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\PackedBitArray.hxx">
+					RelativePath="..\debugger\PackedBitArray.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\PromptWidget.hxx">
+					RelativePath="..\debugger\gui\PromptWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\RamDebug.hxx">
+					RelativePath="..\debugger\RamDebug.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\RamWidget.hxx">
+					RelativePath="..\debugger\gui\RamWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\RomListWidget.hxx">
+					RelativePath="..\debugger\gui\RomListWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\RomWidget.hxx">
+					RelativePath="..\debugger\gui\RomWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\TIADebug.hxx">
+					RelativePath="..\debugger\TIADebug.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaInfoWidget.hxx">
+					RelativePath="..\debugger\gui\TiaInfoWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaOutputWidget.hxx">
+					RelativePath="..\debugger\gui\TiaOutputWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\TiaWidget.hxx">
+					RelativePath="..\debugger\TiaWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TiaZoomWidget.hxx">
+					RelativePath="..\debugger\gui\TiaZoomWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ToggleBitWidget.hxx">
+					RelativePath="..\debugger\gui\ToggleBitWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\TogglePixelWidget.hxx">
+					RelativePath="..\debugger\gui\TogglePixelWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\debugger\gui\ToggleWidget.hxx">
+					RelativePath="..\debugger\gui\ToggleWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\yacc\YaccParser.hxx">
+					RelativePath="..\yacc\YaccParser.hxx"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="cheat"
-				Filter="">
+				>
 				<File
-					RelativePath="..\cheat\BankRomCheat.hxx">
+					RelativePath="..\cheat\BankRomCheat.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\Cheat.hxx">
+					RelativePath="..\cheat\Cheat.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\CheatCodeDialog.hxx">
+					RelativePath="..\cheat\CheatCodeDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\CheatManager.hxx">
+					RelativePath="..\cheat\CheatManager.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\CheetahCheat.hxx">
+					RelativePath="..\cheat\CheetahCheat.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\cheat\RamCheat.hxx">
+					RelativePath="..\cheat\RamCheat.hxx"
+					>
 				</File>
 			</Filter>
 			<Filter
 				Name="gui"
-				Filter="">
+				>
 				<File
-					RelativePath="..\gui\AboutDialog.hxx">
+					RelativePath="..\gui\AboutDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\AudioDialog.hxx">
+					RelativePath="..\gui\AudioDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\BrowserDialog.hxx">
+					RelativePath="..\gui\BrowserDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\CheckListWidget.hxx">
+					RelativePath="..\gui\CheckListWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Command.hxx">
+					RelativePath="..\gui\Command.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\CommandDialog.hxx">
+					RelativePath="..\gui\CommandDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\CommandMenu.hxx">
+					RelativePath="..\gui\CommandMenu.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ConsoleFont.hxx">
+					RelativePath="..\gui\ConsoleFont.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Dialog.hxx">
+					RelativePath="..\gui\Dialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\DialogContainer.hxx">
+					RelativePath="..\gui\DialogContainer.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\EditableWidget.hxx">
+					RelativePath="..\gui\EditableWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\EditTextWidget.hxx">
+					RelativePath="..\gui\EditTextWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\EventMappingWidget.hxx">
+					RelativePath="..\gui\EventMappingWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\FileSnapDialog.hxx">
+					RelativePath="..\gui\FileSnapDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Font.hxx">
+					RelativePath="..\gui\Font.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\GameInfoDialog.hxx">
+					RelativePath="..\gui\GameInfoDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\GameList.hxx">
+					RelativePath="..\gui\GameList.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\GuiObject.hxx">
+					RelativePath="..\gui\GuiObject.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\GuiUtils.hxx">
+					RelativePath="..\gui\GuiUtils.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\HelpDialog.hxx">
+					RelativePath="..\gui\HelpDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\InputDialog.hxx">
+					RelativePath="..\gui\InputDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\InputTextDialog.hxx">
+					RelativePath="..\gui\InputTextDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Launcher.hxx">
+					RelativePath="..\gui\Launcher.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\LauncherDialog.hxx">
+					RelativePath="..\gui\LauncherDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ListWidget.hxx">
+					RelativePath="..\gui\ListWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Menu.hxx">
+					RelativePath="..\gui\Menu.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\OptionsDialog.hxx">
+					RelativePath="..\gui\OptionsDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\PopUpWidget.hxx">
+					RelativePath="..\gui\PopUpWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ProgressDialog.hxx">
+					RelativePath="..\gui\ProgressDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Rect.hxx">
+					RelativePath="..\gui\Rect.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\ScrollBarWidget.hxx">
+					RelativePath="..\gui\ScrollBarWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Stack.hxx">
+					RelativePath="..\gui\Stack.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\StellaFont.hxx">
+					RelativePath="..\gui\StellaFont.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\StringList.hxx">
+					RelativePath="..\gui\StringList.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\StringListWidget.hxx">
+					RelativePath="..\gui\StringListWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\TabWidget.hxx">
+					RelativePath="..\gui\TabWidget.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\UIDialog.hxx">
+					RelativePath="..\gui\UIDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\VideoDialog.hxx">
+					RelativePath="..\gui\VideoDialog.hxx"
+					>
 				</File>
 				<File
-					RelativePath="..\gui\Widget.hxx">
+					RelativePath="..\gui\Widget.hxx"
+					>
 				</File>
 			</Filter>
 		</Filter>
 		<Filter
 			Name="Resource Files"
 			Filter="rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx"
-			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}">
+			UniqueIdentifier="{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}"
+			>
 			<File
-				RelativePath=".\stella.ico">
+				RelativePath=".\stella.ico"
+				>
 			</File>
 			<File
-				RelativePath=".\stella.rc">
+				RelativePath=".\stella.rc"
+				>
 			</File>
 		</Filter>
 	</Files>
