@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoModeList.hxx,v 1.2 2007-07-11 15:08:04 stephena Exp $
+// $Id: VideoModeList.hxx,v 1.3 2007-08-05 15:34:26 stephena Exp $
 //============================================================================
 
 #ifndef VIDMODE_LIST_HXX
@@ -33,7 +33,7 @@ struct VideoMode {
   This class implements an iterator around an array of VideoMode objects.
 
   @author  Stephen Anthony
-  @version $Id: VideoModeList.hxx,v 1.2 2007-07-11 15:08:04 stephena Exp $
+  @version $Id: VideoModeList.hxx,v 1.3 2007-08-05 15:34:26 stephena Exp $
 */
 class VideoModeList
 {
@@ -69,8 +69,8 @@ class VideoModeList
     void setByResolution(uInt32 width, uInt32 height)
     {
       // Find the largest resolution able to hold the given bounds
-      myIdx = 0;
-      for(unsigned int i = myModeList.size() - 1; i; --i)
+      myIdx = myModeList.size() - 1;
+      for(unsigned int i = 0; i < myModeList.size(); ++i)
       {
         if(width <= myModeList[i].screen_w && height <= myModeList[i].screen_h)
         {
@@ -92,18 +92,6 @@ class VideoModeList
           break;
         }
       }
-    }
-
-    static bool modesAreEqual(const VideoMode& m1, const VideoMode& m2)
-    {
-      return (m1.image_x == m2.image_x) &&
-             (m1.image_y == m2.image_y) &&
-             (m1.image_w == m2.image_w) &&
-             (m1.image_h == m2.image_h) &&
-             (m1.screen_w == m2.screen_w) &&
-             (m1.screen_h == m2.screen_h) &&
-             (m1.zoom == m2.zoom) &&
-             (m1.name == m2.name);
     }
 
   private:

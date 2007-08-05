@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.44 2007-06-21 12:27:00 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.45 2007-08-05 15:34:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -80,9 +80,8 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
                                    lineHeight, "Palette: ", lwidth);
   myPalettePopup->appendEntry("Standard", 1);
-  myPalettePopup->appendEntry("Original", 2);
-  myPalettePopup->appendEntry("Z26", 3);
-  myPalettePopup->appendEntry("User", 4);
+  myPalettePopup->appendEntry("Z26", 2);
+  myPalettePopup->appendEntry("User", 3);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
@@ -233,9 +232,8 @@ void VideoDialog::loadConfig()
   // Palette
   s = instance()->settings().getString("palette");
   if(s == "standard")      myPalettePopup->setSelectedTag(1);
-  else if(s == "original") myPalettePopup->setSelectedTag(2);
-  else if(s == "z26")      myPalettePopup->setSelectedTag(3);
-  else if(s == "user")     myPalettePopup->setSelectedTag(4);
+  else if(s == "z26")      myPalettePopup->setSelectedTag(2);
+  else if(s == "user")     myPalettePopup->setSelectedTag(3);
 
   // Fullscreen resolution
   s = instance()->settings().getString("fullres");
@@ -310,9 +308,8 @@ void VideoDialog::saveConfig()
   // Palette
   i = myPalettePopup->getSelectedTag();
   if(i == 1)       s = "standard";
-  else if(i == 2)  s = "original";
-  else if(i == 3)  s = "z26";
-  else if(i == 4)  s = "user";
+  else if(i == 2)  s = "z26";
+  else if(i == 3)  s = "user";
   instance()->settings().setString("palette", s);
 
   // Fullscreen resolution

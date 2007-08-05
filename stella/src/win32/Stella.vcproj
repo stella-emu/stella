@@ -184,6 +184,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath=".\FrameBufferD3D.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\FrameBufferGL.cxx"
 				>
 			</File>
@@ -723,6 +727,10 @@
 			>
 			<File
 				RelativePath="..\common\Array.hxx"
+				>
+			</File>
+			<File
+				RelativePath=".\FrameBufferD3D.hxx"
 				>
 			</File>
 			<File
