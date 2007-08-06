@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.21 2007-01-01 18:04:52 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.22 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,6 +36,11 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
   _caretInverse = false;
 
   _editScrollOffset = 0;
+
+  _bgcolor = kListColor;
+  _bgcolorhi = kListColor;
+  _textcolor = kTextColor;
+  _textcolorhi = kTextColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

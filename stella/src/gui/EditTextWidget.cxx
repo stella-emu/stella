@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.17 2007-01-01 18:04:52 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.18 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,7 +83,7 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   fb.drawString(_font, _editString, _x + 2, _y + 2, getEditRect().width(),
-                _color, kTextAlignLeft, -_editScrollOffset, false);
+                _textcolor, kTextAlignLeft, -_editScrollOffset, false);
 
   // Draw the caret 
   drawCaret();

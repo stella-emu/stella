@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.27 2007-01-24 20:48:54 stephena Exp $
+// $Id: TabWidget.cxx,v 1.28 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,6 +39,10 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kTabWidget;
+  _bgcolor = kDlgColor;
+  _bgcolorhi = kDlgColor;
+  _textcolor = kTextColor;
+  _textcolorhi = kTextColor;
 
   _tabHeight = font.getLineHeight() + 4;
 }

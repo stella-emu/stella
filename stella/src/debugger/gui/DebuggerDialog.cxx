@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.19 2007-06-21 12:27:00 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.20 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -215,7 +215,7 @@ void DebuggerDialog::addStatusArea()
                                     font.getLineHeight(), "");
   myMessageBox->setEditable(false);
   myMessageBox->clearFlags(WIDGET_RETAIN_FOCUS);
-  myMessageBox->setColor(kTextColorEm);
+  myMessageBox->setTextColor(kTextColorEm);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

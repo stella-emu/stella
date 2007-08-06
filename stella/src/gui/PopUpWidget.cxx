@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.33 2007-06-21 12:27:00 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.34 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -86,7 +86,7 @@ void PopUpDialog::drawDialog()
     // The last entry may be empty. Fill it with black.
     if(_twoColumns && (count & 1))
       fb.fillRect(_x + 1 + _w / 2, _y + 1 + _popUpBoss->_fontHeight * (_entriesPerColumn - 1),
-                  _w / 2 - 1, _popUpBoss->_fontHeight, kBGColor);
+                  _w / 2 - 1, _popUpBoss->_fontHeight, _popUpBoss->_bgcolor);
 
     _dirty = false;
     fb.addDirtyRect(_x, _y, _w, _h);
@@ -242,7 +242,7 @@ void PopUpDialog::drawMenuEntry(int entry, bool hilite)
   }
   else
     fb.drawString(_popUpBoss->font(), name, x + 1, y + 2, w - 2,
-                  hilite ? kBGColor : kTextColor);
+                  hilite ? _popUpBoss->_textcolorhi : _popUpBoss->_textcolor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -430,6 +430,10 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kPopUpWidget;
+  _bgcolor = kDlgColor;
+  _bgcolorhi = kListColor;
+  _textcolor = kTextColor;
+  _textcolorhi = kTextColor;
 
   _selectedItem = -1;
 
@@ -553,13 +557,16 @@ void PopUpWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if (_labelWidth > 0)
     fb.drawString(_font, _label, _x, _y + myTextY, _labelWidth,
-                  isEnabled() ? kTextColor : kColor, kTextAlignRight);
+                  isEnabled() ? _textcolor : kColor, kTextAlignRight);
 
   // Draw a thin frame around us.
   fb.hLine(x, _y, x + w - 1, kColor);
   fb.hLine(x, _y +_h-1, x + w - 1, kShadowColor);
   fb.vLine(x, _y, _y+_h-1, kColor);
   fb.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
+
+  // Fill the background
+  fb.fillRect(x + 1, _y + 1, w - 2, _h - 2, kListColor);
 
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   fb.drawBitmap(up_down_arrows, x+w - 10, _y + myArrowsY,

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.16 2007-01-01 18:04:53 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.17 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -80,7 +80,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   xpos = 10;
   myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 2*xpos, fontHeight,
                                  "", kTextAlignCenter);
-  myTitle->setColor(kTextColorEm);
+  myTitle->setTextColor(kTextColorEm);
 
   ButtonWidget* b;
 #ifndef MAC_OSX

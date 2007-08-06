@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.19 2007-01-01 18:04:52 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.20 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -129,7 +129,7 @@ void EventMappingWidget::startRemapping()
   buf << "Select action for '"
       << instance()->eventHandler().actionAtIndex(myActionSelected, myEventMode)
       << "' event";	 	
-  myKeyMapping->setColor(kTextColorEm);
+  myKeyMapping->setTextColor(kTextColorEm);
   myKeyMapping->setLabel(buf.str());
 
   // Make sure that this widget receives all raw data, before any
@@ -183,7 +183,7 @@ void EventMappingWidget::drawKeyMapping()
     ostringstream buf;
     buf << "Action: "
         << instance()->eventHandler().keyAtIndex(myActionSelected, myEventMode);
-    myKeyMapping->setColor(kTextColor);
+    myKeyMapping->setTextColor(kTextColor);
     myKeyMapping->setLabel(buf.str());
   }
 }

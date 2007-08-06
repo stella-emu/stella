@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.55 2007-01-24 21:36:38 stephena Exp $
+// $Id: Dialog.cxx,v 1.56 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -230,7 +230,7 @@ void Dialog::drawDialog()
 //    cerr << "Dialog::drawDialog()\n";
     FrameBuffer& fb = instance()->frameBuffer();
 
-    fb.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
+    fb.fillRect(_x+1, _y+1, _w-2, _h-2, kDlgColor);
     fb.box(_x, _y, _w, _h, kColor, kShadowColor);
 
     // Make all child widget dirty

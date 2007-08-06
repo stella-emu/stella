@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.50 2007-07-31 15:46:21 stephena Exp $
+// $Id: Widget.cxx,v 1.51 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,10 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
     _id(-1),
     _flags(0),
     _hasFocus(false),
-    _color(kTextColor)
+    _bgcolor(kBGColor),
+    _bgcolorhi(kBGColor),
+    _textcolor(kTextColor),
+    _textcolorhi(kTextColorHi)
 {
   // Insert into the widget list of the boss
   _next = _boss->_firstWidget;
@@ -81,7 +84,8 @@ void Widget::draw()
 
   // Clear background (unless alpha blending is enabled)
   if(_flags & WIDGET_CLEARBG)
-    fb.fillRect(_x, _y, _w, _h, kBGColor);
+    fb.fillRect(_x, _y, _w, _h,
+               (_flags & WIDGET_HILITED) ? _bgcolorhi : _bgcolor);
 
   // Draw border
   if(_flags & WIDGET_BORDER) {
@@ -239,7 +243,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     if(tmp->_hasFocus)
     {
       tmp->lostFocus();
-      fb.frameRect(x, y, w, h, kBGColor);
+      fb.frameRect(x, y, w, h, kDlgColor);  // FIXME - static issues
 
       tmp->setDirty(); tmp->draw();
       fb.addDirtyRect(x, y, w, h);
@@ -278,7 +282,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       w = rect.width(), h = rect.height();
 
   tmp->receivedFocus();
-  fb.frameRect(x, y, w, h, kTextColorEm, kDashLine);
+  fb.frameRect(x, y, w, h, kWidColor, kDashLine);
 
   tmp->setDirty(); tmp->draw();
   fb.addDirtyRect(x, y, w, h);
@@ -300,11 +304,16 @@ void Widget::setDirtyInChain(Widget* start)
 StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
                                    int x, int y, int w, int h,
                                    const string& text, TextAlignment align)
-    : Widget(boss, font, x, y, w, h),
-      _align(align)
+  : Widget(boss, font, x, y, w, h),
+    _align(align)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kStaticTextWidget;
+  _bgcolor = kDlgColor;
+  _bgcolorhi = kDlgColor;
+  _textcolor = kTextColor;
+  _textcolorhi = kTextColor;
+
   _label = text;
 }
 
@@ -330,7 +339,7 @@ void StaticTextWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   fb.drawString(_font, _label, _x, _y, _w,
-                isEnabled() ? _color : kColor, _align);
+                isEnabled() ? _textcolor : kColor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -344,6 +353,10 @@ ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _type = kButtonWidget;
+  _bgcolor = kBtnColor;
+  _bgcolorhi = kBtnColorHi;
+  _textcolor = kBtnFntColor;
+  _textcolorhi = kBtnFntColorHi;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -392,7 +405,7 @@ void ButtonWidget::drawWidget(bool hilite)
 {
   FrameBuffer& fb = _boss->instance()->frameBuffer();
   fb.drawString(_font, _label, _x, _y + (_h - _fontHeight)/2 + 1, _w,
-                !isEnabled() ? kColor : hilite ? kTextColorHi : _color, _align);
+                !isEnabled() ? kColor : hilite ? _textcolorhi : _textcolor, _align);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -417,7 +430,6 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
     _state(false),
     _editable(true),
     _holdFocus(true),
-    _fillRect(false),
     _drawBox(true),
     _fillColor(kColor),
     _boxY(0),
@@ -425,6 +437,10 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED;
   _type = kCheckboxWidget;
+  _bgcolor = kListColor;
+  _bgcolorhi = kBtnColorHi;
+  _textcolor = kBtnFntColor;
+  _textcolorhi = kBtnFntColorHi;
 
   if(label == "")
     _w = 14;
@@ -479,22 +495,16 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(_drawBox)
     fb.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
 
-  // If checked, draw cross inside the box
-  if(_state)
-  {
-    if(_fillRect)
-      fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10,
-                  isEnabled() ? _color : kColor);
-    else
-      fb.drawBitmap(checked_img, _x + 3, _y + _boxY + 3,
-                    isEnabled() ? _color : kColor);
-  }
-  else
-    fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kBGColor);
+  // Do we draw a square or cross?
+  int checked = !isEnabled() ? kColor : _state ? _bgcolorhi : _bgcolor;
+  fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, checked);
+
+  if(!_fillRect && isEnabled() && _state)  // draw a cross
+    fb.drawBitmap(checked_img, _x + 3, _y + _boxY + 3, _textcolor);
 
   // Finally draw the label
   fb.drawString(_font, _label, _x + 20, _y + _textY, _w,
-                isEnabled() ? _color : kColor);
+                isEnabled() ? kTextColor : kColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -511,6 +521,10 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
   _type = kSliderWidget;
+  _bgcolor = kDlgColor;
+  _bgcolorhi = kDlgColor;
+  _textcolor = kBtnColor;
+  _textcolorhi = kBtnColorHi;
 
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font->getStringWidth(_label);
@@ -625,7 +639,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the label, if any
   if(_labelWidth > 0)
     fb.drawString(_font, _label, _x, _y + 2, _labelWidth,
-                  isEnabled() ? _color : kColor, kTextAlignRight);
+                  isEnabled() ? kTextColor : kColor, kTextAlignRight);
 
   // Draw the box
   fb.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
@@ -633,7 +647,7 @@ void SliderWidget::drawWidget(bool hilite)
   // Draw the 'bar'
   fb.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
               !isEnabled() ? kColor :
-              hilite ? kTextColorHi : _color);
+              hilite ? _textcolorhi : _textcolor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

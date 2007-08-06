@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.54 2007-06-20 16:33:23 stephena Exp $
+// $Id: Widget.hxx,v 1.55 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -88,7 +88,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.54 2007-06-20 16:33:23 stephena Exp $
+  @version $Id: Widget.hxx,v 1.55 2007-08-06 20:16:51 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -138,8 +138,12 @@ class Widget : public GuiObject
     void setID(int id)  { _id = id;   }
     int  getID()        { return _id; }
 
-    void setColor(int color)        { _color = color; }
     virtual const GUI::Font* font() { return _font; }
+
+    void setTextColor(int color)   { _textcolor = color;   }
+    void setTextColorHi(int color) { _textcolorhi = color; }
+    void setBGColor(int color)     { _bgcolor = color;     }
+    void setBGColorHi(int color)   { _bgcolorhi = color;   }
 
     virtual void loadConfig() {}
 
@@ -165,9 +169,12 @@ class Widget : public GuiObject
     int        _id;
     int        _flags;
     bool       _hasFocus;
-    int        _color;
     int        _fontWidth;
     int        _fontHeight;
+    int        _bgcolor;
+    int        _bgcolorhi;
+    int        _textcolor;
+    int        _textcolorhi;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);

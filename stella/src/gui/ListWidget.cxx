@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.47 2007-01-01 18:04:53 stephena Exp $
+// $Id: ListWidget.cxx,v 1.48 2007-08-06 20:16:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,6 +46,10 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kListWidget;
+  _bgcolor = kListColor;
+  _bgcolorhi = kListColor;
+  _textcolor = kTextColor;
+  _textcolorhi = kTextColor;
 
   _cols = w / _fontWidth;
   _rows = h / _fontHeight;
