@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.101 2007-08-06 20:16:51 stephena Exp $
+// $Id: OSystem.cxx,v 1.102 2007-08-06 21:32:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -805,7 +805,7 @@ uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
     0x62a108,  // kTextColorHi
     0xc80000,  // kTextColorEm
     0xe69d10,  // kDlgColor
-    0xffffde,  // kListColor
+    0xf0f0cf,  // kListColor
     0xac3410,  // kBtnColor
     0xd55941,  // kBtnColorHi
     0xffffff,  // kBtnFntColor

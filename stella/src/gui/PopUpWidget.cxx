@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.34 2007-08-06 20:16:51 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.35 2007-08-06 21:32:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -232,7 +232,7 @@ void PopUpDialog::drawMenuEntry(int entry, bool hilite)
   }
 
   string& name = _popUpBoss->_entries[entry].name;
-  fb.fillRect(x, y, w, _popUpBoss->_fontHeight, hilite ? kTextColorHi : kBGColor);
+  fb.fillRect(x, y, w, _popUpBoss->_fontHeight, hilite ? kTextColorHi : kListColor);
 
   if(name.size() == 0)
   {
