@@ -2813,7 +2813,7 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
-"Cartridge.MD5" "2c1ed379ff4e9d3b933ed44c9fbe7ffa"
+"Cartridge.MD5" "4a5a2a33ccaf2f0c7ff6b60b9e1a0791"
 "Cartridge.Manufacturer" "Spiceware"
 "Cartridge.ModelNo" "SW-01"
 "Cartridge.Name" "Medieval Mayhem (NTSC)"
@@ -4899,7 +4899,7 @@
 "Cartridge.Name" "Save Mary (1990) (Atari) (Prototype) [!]"
 ""
 
-"Cartridge.MD5" "4d520fcc619612969344d1dbeca5231e"
+"Cartridge.MD5" "2b6f831ff8bca32d6ecc5a0964100bca"
 "Cartridge.Manufacturer" "Spiceware"
 "Cartridge.ModelNo" "SW-01"
 "Cartridge.Name" "Medieval Mayhem (PAL)"
