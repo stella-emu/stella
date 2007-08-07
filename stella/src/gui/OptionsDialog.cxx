@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.54 2007-07-19 16:21:39 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.55 2007-08-07 14:38:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -78,7 +78,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   b = addBigButton("UI Settings", kUsrIfaceCmd);
   wid.push_back(b);
 
-  myFileSnapButton = addBigButton("Files & Snapshots", kFileSnapCmd);
+  myFileSnapButton = addBigButton("Config Files", kFileSnapCmd);
   wid.push_back(myFileSnapButton);
 
   // Move to second column
@@ -127,7 +127,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   w = 200; h = 105;
   myUIDialog = new UIDialog(myOSystem, parent, font, x, y, w, h);
 
-  w = 280; h = 180;
+  w = 280; h = 170;
   myFileSnapDialog = new FileSnapDialog(myOSystem, parent, font,
                                         boss, x, y, w, h);
 

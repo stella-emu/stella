@@ -13,18 +13,18 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.9 2007-07-27 13:49:16 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.10 2007-08-07 14:38:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "bspf.hxx"
+
 #include "FSNode.hxx"
 #include "DialogContainer.hxx"
 #include "BrowserDialog.hxx"
 #include "EditTextWidget.hxx"
-#include "TabWidget.hxx"
-#include "bspf.hxx"
 #include "LauncherDialog.hxx"
 #include "FileSnapDialog.hxx"
 
@@ -38,130 +38,90 @@ FileSnapDialog::FileSnapDialog(
     myBrowser(NULL),
     myIsGlobal(boss != 0)
 {
-  const int vBorder = 4;
+  const int vBorder = 8;
   int xpos, ypos, bwidth, bheight;
   WidgetArray wid;
   ButtonWidget* b;
-  int tabID;
 
-  bwidth  = font.getStringWidth("Cancel") + 20;
+  bwidth  = font.getStringWidth("Properties file:") + 20;
   bheight = font.getLineHeight() + 4;
 
-  // The tab widget
-  xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 2*bheight - ypos);
-  addTabWidget(myTab);
-  addFocusWidget(myTab);
-
-  // 1) The browser settings tab
-  wid.clear();
-  tabID = myTab->addTab("Browser Settings");
+  xpos = vBorder;  ypos = vBorder;
 
   // ROM path
-  xpos = 15;  ypos += 5;
-  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Path",
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Rom path:",
                        kChooseRomDirCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myRomPath = new EditTextWidget(myTab, font, xpos, ypos + 2,
+  myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
                                  _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(myRomPath);
-
-  // Use ROM browse mode
-  xpos = 30;  ypos += myRomPath->getHeight() + 8;
-  myBrowseCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                        "Browse folders", kBrowseDirCmd);
-  wid.push_back(myBrowseCheckbox);
-
-  // Reload current ROM listing
-  xpos += myBrowseCheckbox->getWidth() + 20;
-  myReloadButton = new ButtonWidget(myTab, font, xpos, ypos-2,
-                                    font.getStringWidth("Reload ROM Listing") + 20,
-                                    bheight,
-                                    "Reload ROM Listing", kReloadRomDirCmd);
-//  myReloadButton->setEditable(true);
-  wid.push_back(myReloadButton); 
 
   // ROM settings are disabled while in game mode
   if(!myIsGlobal)
   {
-    myTab->disableTab(0);
-    // TODO - until I get the above method working, we also need to
-    //        disable the specific widgets ourself
-    myRomPath->clearFlags(WIDGET_ENABLED);
-    for(unsigned int i = 0; i < wid.size(); ++i)
-      wid[i]->clearFlags(WIDGET_ENABLED);
+    b->clearFlags(WIDGET_ENABLED);
+    myRomPath->setEditable(false);
   }
-  // Add focus widgets for ROM tab
-  addToFocusList(wid, tabID);
-
-  // 2) The configuration files tab
-  wid.clear();
-  tabID = myTab->addTab(" Config Files ");
-
-  bwidth  = font.getStringWidth("Properties file:") + 20;
 
   // State directory
-  xpos = 15;  ypos = vBorder + 5;
-  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "State path:",
+  xpos = vBorder;  ypos += b->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "State path:",
                        kChooseStateDirCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myStatePath = new EditTextWidget(myTab, font, xpos, ypos + 2,
+  myStatePath = new EditTextWidget(this, font, xpos, ypos + 2,
                                    _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(myStatePath);
 
   // Cheat file
-  xpos = 15;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Cheat file:",
+  xpos = vBorder;  ypos += b->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cheat file:",
                        kChooseCheatFileCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myCheatFile = new EditTextWidget(myTab, font, xpos, ypos + 2,
+  myCheatFile = new EditTextWidget(this, font, xpos, ypos + 2,
                                    _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(myCheatFile);
 
   // Palette file
-  xpos = 15;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Palette file:",
+  xpos = vBorder;  ypos += b->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Palette file:",
                        kChoosePaletteFileCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myPaletteFile = new EditTextWidget(myTab, font, xpos, ypos + 2,
+  myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 2,
                                      _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(myPaletteFile);
 
   // Properties file
-  xpos = 15;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Properties file:",
+  xpos = vBorder;  ypos += b->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Properties file:",
                        kChoosePropsFileCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  myPropsFile = new EditTextWidget(myTab, font, xpos, ypos + 2,
+  myPropsFile = new EditTextWidget(this, font, xpos, ypos + 2,
                                    _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(myPropsFile);
 
   // Snapshot path
-  xpos = 15;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(myTab, font, xpos, ypos, bwidth, bheight, "Snapshot path:",
+  xpos = vBorder;  ypos += b->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Snapshot path:",
                        kChooseSnapDirCmd);
   wid.push_back(b);
   xpos += bwidth + 10;
-  mySnapPath = new EditTextWidget(myTab, font, xpos, ypos + 2,
+  mySnapPath = new EditTextWidget(this, font, xpos, ypos + 2,
                                   _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(mySnapPath);
 
   // Snapshot single or multiple saves
   xpos = 30;  ypos += mySnapPath->getHeight() + 8;
-  mySnapSingleCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+  mySnapSingleCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                             "Multiple snapshots");
   wid.push_back(mySnapSingleCheckbox);
 
   // Add focus widgets for Snapshot tab
-  addToFocusList(wid, tabID);
-
-  // Activate the first tab
-  myTab->setActiveTab(0);
+  addToFocusList(wid);
 
   // Add OK & Cancel buttons
   wid.clear();
@@ -196,10 +156,6 @@ FileSnapDialog::~FileSnapDialog()
 void FileSnapDialog::loadConfig()
 {
   myRomPath->setEditString(instance()->settings().getString("romdir"));
-  bool b = instance()->settings().getBool("rombrowse");
-  myBrowseCheckbox->setState(b);
-  myReloadButton->setEnabled(myIsGlobal && !b);
-
   myStatePath->setEditString(instance()->stateDir());
   myCheatFile->setEditString(instance()->cheatFile());
   myPaletteFile->setEditString(instance()->paletteFile());
@@ -207,16 +163,12 @@ void FileSnapDialog::loadConfig()
 
   mySnapPath->setEditString(instance()->settings().getString("ssdir"));
   mySnapSingleCheckbox->setState(!instance()->settings().getBool("sssingle"));
-
-  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::saveConfig()
 {
   instance()->settings().setString("romdir", myRomPath->getEditString());
-  instance()->settings().setBool("rombrowse", myBrowseCheckbox->getState());
-
   instance()->settings().setString("statedir", myStatePath->getEditString());
   instance()->settings().setString("cheatfile", myCheatFile->getEditString());
   instance()->settings().setString("palettefile", myPaletteFile->getEditString());
@@ -251,10 +203,7 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       close();
       if(myIsGlobal)
-      {
-        sendCommand(kBrowseChangedCmd, 0, 0); // Call this before refreshing ROMs
         sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
-      }
       break;
 
     case kChooseRomDirCmd:
@@ -326,12 +275,6 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
     {
       FilesystemNode dir(myBrowser->getResult());
       mySnapPath->setEditString(dir.path());
-      break;
-    }
-
-    case kReloadRomDirCmd:
-    {
-      sendCommand(kReloadRomDirCmd, 0, 0);
       break;
     }
 

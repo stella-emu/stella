@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.102 2007-08-06 21:32:10 stephena Exp $
+// $Id: OSystem.cxx,v 1.103 2007-08-07 14:38:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -804,7 +804,7 @@ uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
     0x000000,  // kTextColor
     0x62a108,  // kTextColorHi
     0xc80000,  // kTextColorEm
-    0xe69d10,  // kDlgColor
+    0xc9af7c,  // kDlgColor
     0xf0f0cf,  // kListColor
     0xac3410,  // kBtnColor
     0xd55941,  // kBtnColorHi
@@ -814,9 +814,6 @@ uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
     0x000000,  // kScrollColorHi
     0xc80000   // kWidColor
   },
-
-/*  { 0x686868, 0xffe69c, 0x404040, 0xc8c8ff, 0x000000, 0x62a108, 0xc80000 }, */
-
 
   // GP2X
   { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x0000ff, 0xc80000,

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.120 2007-07-27 13:49:16 stephena Exp $
+// $Id: Settings.cxx,v 1.121 2007-08-07 14:38:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -76,18 +76,15 @@ Settings::Settings(OSystem* osystem)
   setInternal("sssingle", "false");
 
   setInternal("romdir", "");
-  setInternal("rombrowse", "true");
-  setInternal("lastrom", "");
-  setInternal("modtime", "");
-  setInternal("debugheight", "0");
-  setInternal("launcherres", "320x240");
-  setInternal("uipalette", "0");
-  setInternal("autoslot", "false");
-
   setInternal("statedir", "");
   setInternal("cheatfile", "");
   setInternal("palettefile", "");
   setInternal("propsfile", "");
+
+  setInternal("debugheight", "0");
+  setInternal("launcherres", "400x300");
+  setInternal("uipalette", "0");
+  setInternal("autoslot", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,7 +299,6 @@ void Settings::usage()
     << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
-    << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"

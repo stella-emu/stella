@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.51 2007-08-06 20:16:51 stephena Exp $
+// $Id: Widget.cxx,v 1.52 2007-08-07 14:38:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -82,10 +82,20 @@ void Widget::draw()
   _x = getAbsX();
   _y = getAbsY();
 
+
+//    fb.fillRect(_x+1, _y+1, _w-2, _h-2,
+
+
   // Clear background (unless alpha blending is enabled)
   if(_flags & WIDGET_CLEARBG)
-    fb.fillRect(_x, _y, _w, _h,
-               (_flags & WIDGET_HILITED) ? _bgcolorhi : _bgcolor);
+  {
+    int x = _x, y = _y, w = _w, h = _h;
+    if(_flags & WIDGET_BORDER)
+    {
+      x++; y++; w-=2; h-=2;
+    }
+    fb.fillRect(x, y, w, h, (_flags & WIDGET_HILITED) ? _bgcolorhi : _bgcolor);
+  }
 
   // Draw border
   if(_flags & WIDGET_BORDER) {
@@ -643,6 +653,10 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Draw the box
   fb.box(_x + _labelWidth, _y, _w - _labelWidth, _h, kColor, kShadowColor);
+
+  // Fill the box
+  fb.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
+              !isEnabled() ? kColor : kListColor);
 
   // Draw the 'bar'
   fb.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,

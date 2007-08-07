@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.11 2007-01-01 18:04:48 stephena Exp $
+// $Id: FSNode.hxx,v 1.12 2007-08-07 14:38:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -139,11 +139,6 @@ class AbstractFilesystemNode
       Create a directory from the given path.
      */
     static bool makeDir(const string& path);
-
-    /**
-      Return a string representing the last modification time of this file/dir.
-     */
-    static string modTime(const string& path);
 
     /* TODO:
     bool isReadable();

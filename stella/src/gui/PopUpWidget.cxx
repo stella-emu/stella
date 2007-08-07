@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.35 2007-08-06 21:32:10 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.36 2007-08-07 14:38:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -86,7 +86,7 @@ void PopUpDialog::drawDialog()
     // The last entry may be empty. Fill it with black.
     if(_twoColumns && (count & 1))
       fb.fillRect(_x + 1 + _w / 2, _y + 1 + _popUpBoss->_fontHeight * (_entriesPerColumn - 1),
-                  _w / 2 - 1, _popUpBoss->_fontHeight, _popUpBoss->_bgcolor);
+                  _w / 2 - 1, _popUpBoss->_fontHeight, kListColor);
 
     _dirty = false;
     fb.addDirtyRect(_x, _y, _w, _h);

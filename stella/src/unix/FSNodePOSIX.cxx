@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.10 2007-01-01 18:04:55 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.11 2007-08-07 14:38:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -230,17 +230,4 @@ bool AbstractFilesystemNode::dirExists(const string& path)
 bool AbstractFilesystemNode::makeDir(const string& path)
 {
   return mkdir(path.c_str(), 0777) == 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AbstractFilesystemNode::modTime(const string& path)
-{
-  struct stat st;
-  if(stat(path.c_str(), &st) != 0)
-    return "";
-
-  ostringstream buf;
-  buf << st.st_mtime;
-
-  return buf.str();
 }

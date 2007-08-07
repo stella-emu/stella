@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.5 2007-07-27 13:49:16 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.6 2007-08-07 14:38:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,6 @@ class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
 class EditTextWidget;
-class TabWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -59,24 +58,17 @@ class FileSnapDialog : public Dialog, public CommandSender
       kChooseCheatFileCmd   = 'LOcf', // cheatfile (stella.cht)
       kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
       kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
-      kChooseSnapDirCmd     = 'LOsn', // snap select
-      kBrowseDirCmd         = 'LObd', // browse mode
+      kChooseSnapDirCmd     = 'LOsn', // snapshot dir
       kStateDirChosenCmd    = 'LOsc', // state dir changed
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
       kPaletteFileChosenCmd = 'LOpc', // palette file changed
       kPropsFileChosenCmd   = 'LOrc'  // properties file changed
     };
 
-
     BrowserDialog* myBrowser;
-    TabWidget* myTab;
-
-    // Rom path controls
-    EditTextWidget* myRomPath;
-    CheckboxWidget* myBrowseCheckbox;
-    ButtonWidget*   myReloadButton;
 
     // Config paths
+    EditTextWidget* myRomPath;
     EditTextWidget* myStatePath;
     EditTextWidget* myCheatFile;
     EditTextWidget* myPaletteFile;
