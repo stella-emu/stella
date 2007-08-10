@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.52 2007-08-07 14:38:52 stephena Exp $
+// $Id: Widget.cxx,v 1.53 2007-08-10 18:27:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -76,21 +76,18 @@ void Widget::draw()
   if(!isVisible() || !_boss->isVisible())
     return;
 
+  bool hasBorder = _flags & WIDGET_BORDER;
   int oldX = _x, oldY = _y, oldW = _w, oldH = _h;
 
   // Account for our relative position in the dialog
   _x = getAbsX();
   _y = getAbsY();
 
-
-//    fb.fillRect(_x+1, _y+1, _w-2, _h-2,
-
-
   // Clear background (unless alpha blending is enabled)
   if(_flags & WIDGET_CLEARBG)
   {
     int x = _x, y = _y, w = _w, h = _h;
-    if(_flags & WIDGET_BORDER)
+    if(hasBorder)
     {
       x++; y++; w-=2; h-=2;
     }
@@ -98,12 +95,8 @@ void Widget::draw()
   }
 
   // Draw border
-  if(_flags & WIDGET_BORDER) {
-    int colorA = kColor;
-    int colorB = kShadowColor;
-    if((_flags & WIDGET_INV_BORDER) == WIDGET_INV_BORDER)
-      BSPF_swap(colorA, colorB);
-    fb.box(_x, _y, _w, _h, colorA, colorB);
+  if(hasBorder) {
+    fb.box(_x, _y, _w, _h, kColor, kShadowColor);
     _x += 4;
     _y += 4;
     _w -= 8;
@@ -114,7 +107,7 @@ void Widget::draw()
   drawWidget((_flags & WIDGET_HILITED) ? true : false);
 
   // Restore x/y
-  if (_flags & WIDGET_BORDER) {
+  if (hasBorder) {
     _x -= 4;
     _y -= 4;
     _w += 8;
@@ -358,8 +351,7 @@ ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
                            const string& label, int cmd)
   : StaticTextWidget(boss, font, x, y, w, h, label, kTextAlignCenter),
     CommandSender(boss),
-    _cmd(cmd),
-    _editable(false)
+    _cmd(cmd)
 {
   _flags = WIDGET_ENABLED | WIDGET_BORDER | WIDGET_CLEARBG;
   _type = kButtonWidget;
@@ -367,6 +359,8 @@ ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
   _bgcolorhi = kBtnColorHi;
   _textcolor = kBtnFntColor;
   _textcolorhi = kBtnFntColorHi;
+
+  _editable = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -420,7 +414,7 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-static unsigned int checked_img[8] =
+static unsigned int checked_img_x[8] =
 {
 	0x00000000,
 	0x01000010,
@@ -432,14 +426,26 @@ static unsigned int checked_img[8] =
 	0x00000000,
 };
 
+static unsigned int checked_img_o[8] =
+{
+	0x00000000,
+	0x01000010,
+	0x00100100,
+	0x00011000,
+	0x00011000,
+	0x00000000,
+	0x00000000,
+	0x00000000,
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
                                int x, int y, const string& label,
                                int cmd)
   : ButtonWidget(boss, font, x, y, 16, 16, label, cmd),
     _state(false),
-    _editable(true),
     _holdFocus(true),
+    _fillRect(false),
     _drawBox(true),
     _fillColor(kColor),
     _boxY(0),
@@ -451,6 +457,8 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
   _bgcolorhi = kBtnColorHi;
   _textcolor = kBtnFntColor;
   _textcolorhi = kBtnFntColorHi;
+
+  _editable = true;
 
   if(label == "")
     _w = 14;
@@ -506,11 +514,26 @@ void CheckboxWidget::drawWidget(bool hilite)
     fb.box(_x, _y + _boxY, 14, 14, kColor, kShadowColor);
 
   // Do we draw a square or cross?
+  fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, _bgcolor);
+  if(isEnabled())
+  {
+    if(_state)
+    {
+      unsigned int* img = _fillRect ? checked_img_o : checked_img_x;
+      fb.drawBitmap(img, _x + 3, _y + _boxY + 3, kBtnColor);
+    }
+  }
+  else
+    fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kColor);
+  
+/*
+
   int checked = !isEnabled() ? kColor : _state ? _bgcolorhi : _bgcolor;
   fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, checked);
 
   if(!_fillRect && isEnabled() && _state)  // draw a cross
     fb.drawBitmap(checked_img, _x + 3, _y + _boxY + 3, _textcolor);
+*/
 
   // Finally draw the label
   fb.drawString(_font, _label, _x + 20, _y + _textY, _w,

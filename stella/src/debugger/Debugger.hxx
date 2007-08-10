@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.87 2007-01-01 18:04:41 stephena Exp $
+// $Id: Debugger.hxx,v 1.88 2007-08-10 18:27:10 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -69,7 +69,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.87 2007-01-01 18:04:41 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.88 2007-08-10 18:27:10 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -321,8 +321,6 @@ class Debugger : public DialogContainer
     bool writeTrap(int t);
     void clearAllTraps();
 
-    int setHeight(int height);
-
     void reloadROM();
 
     /**
@@ -350,13 +348,6 @@ class Debugger : public DialogContainer
     const string invIfChanged(int reg, int oldReg);
 
   private:
-    enum {
-      kDebuggerWidth  = 1023,
-      kDebuggerHeight = 700,
-      kDebuggerLineHeight = 15,   // based on the height of the console font
-      kDebuggerLines = 27,
-    };
-
     typedef multimap<string,string> ListFile;
     typedef ListFile::const_iterator ListIter;
 
@@ -386,6 +377,10 @@ class Debugger : public DialogContainer
 
     FunctionMap functions;
     FunctionDefMap functionDefs;
+
+    // Dimensions of the entire debugger window
+    uInt32 myWidth;
+    uInt32 myHeight;
 };
 
 #endif

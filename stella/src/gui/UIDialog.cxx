@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.5 2007-07-31 15:46:21 stephena Exp $
+// $Id: UIDialog.cxx,v 1.6 2007-08-10 18:27:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,15 +39,15 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   const int lineHeight = font.getLineHeight(),
             fontHeight = font.getFontHeight();
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Rom launcher size: "),
-      pwidth = font.getStringWidth("xxxxxxx");
+  int lwidth = font.getStringWidth("Debugger Height (*): "),
+      pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
 
   xpos = 10;  ypos = 10;
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
-                                           lineHeight, "Launcher Width: ",
+                                           lineHeight, "Launcher Width (*): ",
                                            lwidth, kLWidthChanged);
   myLauncherWidthSlider->setMinValue(320);
   myLauncherWidthSlider->setMaxValue(800);
@@ -56,12 +56,12 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myLauncherWidthLabel =
       new StaticTextWidget(this, font,
                            xpos + myLauncherWidthSlider->getWidth() + 4,
-                           ypos + 1, 15, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
   myLauncherWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   myLauncherHeightSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
-                                            lineHeight, "Launcher Height: ",
+                                            lineHeight, "Launcher Height (*): ",
                                             lwidth, kLHeightChanged);
   myLauncherHeightSlider->setMinValue(240);
   myLauncherHeightSlider->setMaxValue(600);
@@ -70,22 +70,51 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myLauncherHeightLabel =
       new StaticTextWidget(this, font,
                            xpos + myLauncherHeightSlider->getWidth() + 4,
-                           ypos + 1, 15, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
   myLauncherHeightLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
+  // Debugger width and height
+  myDebuggerWidthSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
+                                           lineHeight, "Debugger Width (*): ",
+                                           lwidth, kDWidthChanged);
+  myDebuggerWidthSlider->setMinValue(1030);
+  myDebuggerWidthSlider->setMaxValue(1600);
+  myDebuggerWidthSlider->setStepValue(10);
+  wid.push_back(myDebuggerWidthSlider);
+  myDebuggerWidthLabel =
+      new StaticTextWidget(this, font,
+                           xpos + myDebuggerWidthSlider->getWidth() + 4,
+                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+  myDebuggerWidthLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
+  myDebuggerHeightSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
+                                            lineHeight, "Debugger Height (*): ",
+                                            lwidth, kDHeightChanged);
+  myDebuggerHeightSlider->setMinValue(690);
+  myDebuggerHeightSlider->setMaxValue(1200);
+  myDebuggerHeightSlider->setStepValue(10);
+  wid.push_back(myDebuggerHeightSlider);
+  myDebuggerHeightLabel =
+      new StaticTextWidget(this, font,
+                           xpos + myDebuggerHeightSlider->getWidth() + 4,
+                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+  myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // UI Palette
   myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
                                    "Interface Palette: ", lwidth);
-  myPalettePopup->appendEntry("Classic", 1);
-  myPalettePopup->appendEntry("GP2X",    2);
+  myPalettePopup->appendEntry("Standard", 1);
+  myPalettePopup->appendEntry("Classic", 2);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
   // Add message concerning usage
-  lwidth = font.getStringWidth("(*) Changes require application restart");
+  lwidth = font.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
-                       "(*) Changes require application restart",
+                       "(*) Requires application restart",
                        kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
@@ -110,6 +139,13 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   addToFocusList(wid);
 
+#ifndef DEBUGGER_SUPPORT
+  myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
+  myDebuggerWidthLabel->clearFlags(WIDGET_ENABLED);
+  myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
+  myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
+#endif
+
 #ifdef _WIN32_WCE
   myLauncherPopup->clearFlags(WIDGET_ENABLED);
 #endif
@@ -123,8 +159,9 @@ UIDialog::~UIDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::loadConfig()
 {
-  // Launcher size
   int w, h;
+
+  // Launcher size
   instance()->settings().getSize("launcherres", w, h);
   if(w < 320) w = 320;
   if(w > 800) w = 800;
@@ -135,6 +172,18 @@ void UIDialog::loadConfig()
   myLauncherWidthLabel->setValue(w);
   myLauncherHeightSlider->setValue(h);
   myLauncherHeightLabel->setValue(h);
+
+  // Debugger size
+  instance()->settings().getSize("debuggerres", w, h);
+  if(w < 1030) w = 1030;
+  if(w > 1600) w = 1600;
+  if(h < 690)  h = 690;
+  if(h > 1200) h = 1200;
+
+  myDebuggerWidthSlider->setValue(w);
+  myDebuggerWidthLabel->setValue(w);
+  myDebuggerHeightSlider->setValue(h);
+  myDebuggerHeightLabel->setValue(h);
 
   // UI palette
   int i = instance()->settings().getInt("uipalette");
@@ -149,6 +198,10 @@ void UIDialog::saveConfig()
   // Launcher size
   instance()->settings().setSize("launcherres", 
     myLauncherWidthSlider->getValue(), myLauncherHeightSlider->getValue());
+
+  // Debugger size
+  instance()->settings().setSize("debuggerres", 
+    myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
 
   // UI palette
   instance()->settings().setInt("uipalette",
@@ -165,11 +218,12 @@ void UIDialog::setDefaults()
   myLauncherHeightSlider->setValue(h);
   myLauncherHeightLabel->setValue(h);
 
-#if !defined (GP2X)
+  myDebuggerWidthSlider->setValue(1030);
+  myDebuggerWidthLabel->setValue(1030);
+  myDebuggerHeightSlider->setValue(690);
+  myDebuggerHeightLabel->setValue(690);
+
   myPalettePopup->setSelectedTag(1);
-#else
-  myPalettePopup->setSelectedTag(2);
-#endif
 
   _dirty = true;
 }
@@ -187,9 +241,18 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myLauncherHeightLabel->setValue(myLauncherHeightSlider->getValue());
       break;
 
+    case kDWidthChanged:
+      myDebuggerWidthLabel->setValue(myDebuggerWidthSlider->getValue());
+      break;
+
+    case kDHeightChanged:
+      myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
+      break;
+
     case kOKCmd:
       saveConfig();
       close();
+      instance()->setUIPalette();
       break;
 
     case kDefaultsCmd:

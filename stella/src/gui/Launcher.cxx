@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.17 2007-07-31 15:46:21 stephena Exp $
+// $Id: Launcher.cxx,v 1.18 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,8 +29,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem* osystem)
   : DialogContainer(osystem),
-    myWidth(320),
-    myHeight(240)
+    myWidth(400),
+    myHeight(300)
 {
   int w, h;
   myOSystem->settings().getSize("launcherres", w, h);

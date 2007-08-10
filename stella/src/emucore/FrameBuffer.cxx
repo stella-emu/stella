@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.121 2007-08-07 14:38:51 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.122 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -784,7 +784,12 @@ VideoMode FrameBuffer::getSavedVidMode()
     }
 #ifdef DEBUGGER_SUPPORT
     else if(state == EventHandler::S_DEBUGGER)
-      cerr << "TODO: check debugger size\n";
+    {
+      int lw, lh;
+      myOSystem->settings().getSize("debuggerres", lw, lh);
+      w = BSPF_max(w, lw);
+      h = BSPF_max(h, lh);
+    }
 #endif
 
     myCurrentModeList = &myFullscreenModeList;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.24 2007-01-23 09:37:39 knakos Exp $
+// $Id: OptionsDialog.hxx,v 1.25 2007-08-10 18:27:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -63,6 +63,7 @@ class OptionsDialog : public Dialog
 
     ButtonWidget* myVideoSettingsButton;
     ButtonWidget* myAudioSettingsButton;
+    ButtonWidget* myUIButton;
     ButtonWidget* myFileSnapButton;
     ButtonWidget* myGameInfoButton;
     ButtonWidget* myCheatCodeButton;

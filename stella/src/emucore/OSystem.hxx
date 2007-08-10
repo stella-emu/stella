@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.53 2007-07-19 16:21:39 stephena Exp $
+// $Id: OSystem.hxx,v 1.54 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -51,7 +51,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.53 2007-07-19 16:21:39 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.54 2007-08-10 18:27:11 stephena Exp $
 */
 class OSystem
 {
@@ -196,6 +196,11 @@ class OSystem
       Set all config file paths for the OSystem.
     */
     void setConfigPaths();
+
+    /**
+      Set the user-interface palette which is specified in current settings.
+    */
+    void setUIPalette();
 
     /**
       Get the current framerate for the video system.

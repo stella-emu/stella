@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.121 2007-08-07 14:38:51 stephena Exp $
+// $Id: Settings.cxx,v 1.122 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -81,7 +81,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("palettefile", "");
   setInternal("propsfile", "");
 
-  setInternal("debugheight", "0");
+  setInternal("debuggerres", "1030x690");
   setInternal("launcherres", "400x300");
   setInternal("uipalette", "0");
   setInternal("autoslot", "false");
@@ -317,8 +317,8 @@ void Settings::usage()
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
     << endl
+    << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
-    << "   -debugheight  <number>      Set height of debugger in lines of text (NOT pixels)\n"
     << "   -debug                      Start in debugger mode\n"
     << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.103 2007-08-07 14:38:51 stephena Exp $
+// $Id: OSystem.cxx,v 1.104 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -220,6 +220,15 @@ void OSystem::setConfigPaths()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::setUIPalette()
+{
+  int palette = mySettings->getInt("uipalette") - 1;
+  if(palette < 0 || palette >= kNumUIPalettes) palette = 0;
+  myFrameBuffer->setUIPalette(&ourGUIColors[palette][0]);
+  myEventHandler->refreshDisplay();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setBaseDir(const string& basedir)
 {
   myBaseDir = basedir;
@@ -282,12 +291,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
   if(changeBuffer) myEventHandler->setupJoysticks();
 
   // Update the UI palette
-  // For now, we just use the standard palette
-  // Once an interface is created for this, it will be changable
-  // within the emulation
-  int palette = mySettings->getInt("uipalette") - 1;
-  if(palette < 0 || palette >= kNumUIPalettes) palette = 0;
-  myFrameBuffer->setUIPalette(&ourGUIColors[palette][0]);
+  setUIPalette();
 
   if(showmessage)
   {
@@ -799,7 +803,7 @@ uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
   // Normal mode
   { 0x686868,  // kColor
     0x000000,  // kBGColor
-    0x606060,  // kShadowColor
+    0x404040,  // kShadowColor
     0xc8c8ff,  // kHiliteColor
     0x000000,  // kTextColor
     0x62a108,  // kTextColorHi
@@ -816,9 +820,9 @@ uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
   },
 
   // GP2X
-  { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x0000ff, 0xc80000,
-    0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000, 0x000000,
-    0x000000, 0x000000 }
+  { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x00ff00, 0xc80000,
+    0x000000, 0x000000, 0x000000, 0x000000, 0x20a020, 0x00ff00, 0x000000,
+    0x000000, 0xc80000 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

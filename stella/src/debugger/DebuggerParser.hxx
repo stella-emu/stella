@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.48 2007-01-01 18:04:42 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.49 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -156,7 +156,6 @@ class DebuggerParser
     void executeExec();
     void executeFrame();
     void executeFunction();
-    void executeHeight();
     void executeHelp();
     void executeList();
     void executeListbreaks();
@@ -194,6 +193,7 @@ class DebuggerParser
     void executeX();
     void executeY();
     void executeZ();
+    void executeResolution();
 
     // List of commands available
     static Command commands[kNumCommands];

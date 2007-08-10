@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.21 2007-01-01 18:04:52 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.22 2007-08-10 18:27:11 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -36,7 +36,7 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.21 2007-01-01 18:04:52 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.22 2007-08-10 18:27:11 stephena Exp $
 */
 class DialogContainer
 {
@@ -147,11 +147,6 @@ class DialogContainer
       Return the bottom-most dialog of this container.
     */
     const Dialog* baseDialog() const { return myBaseDialog; }
-
-    /**
-      (Re)initialize the menuing system.  This isn't necessary in most cases.
-    */
-    virtual void initialize() {}
 
   private:
     void reset();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.3 2007-06-20 16:33:23 stephena Exp $
+// $Id: UIDialog.hxx,v 1.4 2007-08-10 18:27:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,6 +45,11 @@ class UIDialog : public Dialog
     SliderWidget*     myLauncherHeightSlider;
     StaticTextWidget* myLauncherHeightLabel;
 
+    SliderWidget*     myDebuggerWidthSlider;
+    StaticTextWidget* myDebuggerWidthLabel;
+    SliderWidget*     myDebuggerHeightSlider;
+    StaticTextWidget* myDebuggerHeightLabel;
+
     PopUpWidget* myPalettePopup;
 
   private:
@@ -57,6 +62,8 @@ class UIDialog : public Dialog
     enum {
       kLWidthChanged  = 'UIlw',
       kLHeightChanged = 'UIlh',
+      kDWidthChanged  = 'UIdw',
+      kDHeightChanged = 'UIdh'
     };
 };
 

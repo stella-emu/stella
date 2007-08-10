@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.96 2007-01-01 18:04:42 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.97 2007-08-10 18:27:10 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -913,15 +913,6 @@ void DebuggerParser::executeExec()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "height"
-void DebuggerParser::executeHeight()
-{
-  int height = debugger->setHeight(args[0]);
-  commandResult = "height set to " + debugger->valueToString(height, kBASE_10) +
-                  "\nExit debugger and reload ROM to take effect";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "help"
 void DebuggerParser::executeHelp()
 {
@@ -1363,6 +1354,18 @@ void DebuggerParser::executeZ()
     debugger->cpuDebug().setZ(args[0]);
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "change resolution"
+void DebuggerParser::executeResolution()
+{
+  commandResult = "TODO - add functionality";
+
+/*
+  int height = debugger->setHeight(args[0]);
+  commandResult = "height set to " + debugger->valueToString(height, kBASE_10) +
+                  "\nExit debugger and reload ROM to take effect";
+*/
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // .hxx
@@ -1554,15 +1557,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeFunction
-  },
-
-  {
-    "height",
-    "Change height of debugger window",
-    true,
-    false,
-    { kARG_WORD, kARG_END_ARGS },
-    &DebuggerParser::executeHeight
   },
 
   {
@@ -1905,5 +1899,14 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_BOOL, kARG_END_ARGS },
     &DebuggerParser::executeZ
+  },
+
+  {
+    "resolution",
+    "Change resolution of debugger window",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    &DebuggerParser::executeResolution
   }
 };

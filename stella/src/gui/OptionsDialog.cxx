@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.55 2007-08-07 14:38:52 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.56 2007-08-10 18:27:11 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,8 +75,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   b = addBigButton("Input Settings", kInptCmd);
   wid.push_back(b);
 
-  b = addBigButton("UI Settings", kUsrIfaceCmd);
-  wid.push_back(b);
+  myUIButton = addBigButton("UI Settings", kUsrIfaceCmd);
+  wid.push_back(myUIButton);
 
   myFileSnapButton = addBigButton("Config Files", kFileSnapCmd);
   wid.push_back(myFileSnapButton);
@@ -114,17 +114,16 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   myAudioDialog = new AudioDialog(myOSystem, parent, font, x, y, w, h);
 
 #ifdef _WIN32_WCE
-  int sx = myOSystem->desktopWidth();
   // we scale the input dialog down a bit in low res devices.
   // looks only a little ugly, but the functionality is very welcome
-  if(sx < 320)  { w = 220; h = 176; }
-  else          { w = 230; h = 185; }
+  if(myOSystem->desktopWidth() < 320) { w = 220; h = 176; }
+  else                                { w = 230; h = 185; }
 #else
   w = 230; h = 185;
 #endif
   myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
-  w = 200; h = 105;
+  w = 200; h = 135;
   myUIDialog = new UIDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 280; h = 170;
@@ -147,7 +146,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 
   addToFocusList(wid);
 
-  // Certain buttons are always disabled while in game mode
+  // Certain buttons are disabled depending on mode
   if(myIsGlobal)
   {
     myGameInfoButton->clearFlags(WIDGET_ENABLED);
@@ -155,17 +154,17 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   }
 
 #ifdef _WIN32_WCE
-  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);		// not honored in wince port
-  if(sx < 320)
+  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);  // not honored in wince port
+#endif
+  if(myOSystem->desktopWidth() < 320)
   {
-    // these cannot be displayed in low res devices
+    // These cannot be displayed in low res devices
     myVideoSettingsButton->clearFlags(WIDGET_ENABLED);
     myFileSnapButton->clearFlags(WIDGET_ENABLED);
     myGameInfoButton->clearFlags(WIDGET_ENABLED);
     myHelpButton->clearFlags(WIDGET_ENABLED);
     myAboutButton->clearFlags(WIDGET_ENABLED);
   }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

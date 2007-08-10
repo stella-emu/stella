@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.110 2007-06-20 20:36:28 stephena Exp $
+// $Id: Debugger.cxx,v 1.111 2007-08-10 18:27:10 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -101,8 +101,19 @@ Debugger::Debugger(OSystem* osystem)
     equateList(NULL),
     breakPoints(NULL),
     readTraps(NULL),
-    writeTraps(NULL)
+    writeTraps(NULL),
+    myWidth(1030),
+    myHeight(690)
 {
+  // Get the dialog size
+  int w, h;
+  myOSystem->settings().getSize("debuggerres", w, h);
+  myWidth = BSPF_max(w, 0);
+  myHeight = BSPF_max(h, 0);
+  myWidth = BSPF_max(myWidth, 1030u);
+  myHeight = BSPF_max(myHeight, 690u);
+  myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
+
   // Init parser
   myParser = new DebuggerParser(this);
   equateList = new EquateList();
@@ -880,22 +891,6 @@ int Debugger::dpeek(int addr) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::setHeight(int height)
-{
-  if(height < kDebuggerLines)
-    height = kDebuggerLines;
-
-  myOSystem->settings().setInt("debugheight", height);
-
-  // Inform the debugger dialog about the new size
-  quit();
-  resizeDialog();
-  start();
-
-  return height;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::showWatches() {
 	return myParser->showWatches();
 }
@@ -974,25 +969,7 @@ void Debugger::setQuitState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getDialogBounds() const
 {
-  // FIXME - This whole method is due for an overall
-  //         We need to decide if Stella GUI size will be pixel based
-  //         or font based, and update the GUI code everywhere
-  GUI::Rect tia = getTiaBounds();
-
-  int userHeight = myOSystem->settings().getInt("debugheight");
-  if(userHeight < kDebuggerLines)
-  {
-    userHeight = kDebuggerLines;
-    myOSystem->settings().setInt("debugheight", userHeight);
-  }
-  userHeight = (userHeight + 3) * kDebuggerLineHeight - 8;
-
-  // Make sure window is always at least 'kDebuggerHeight' high
-  // We need this to make positioning of widget easier
-  if(userHeight + tia.height() < kDebuggerHeight)
-    userHeight = kDebuggerHeight;
-
-  GUI::Rect r(0, 0, kDebuggerWidth, userHeight + tia.height());
+  GUI::Rect r(0, 0, myWidth, myHeight);
   return r;
 }
 
