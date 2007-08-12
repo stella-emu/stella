@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.104 2007-08-10 18:27:11 stephena Exp $
+// $Id: OSystem.cxx,v 1.105 2007-08-12 23:05:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -768,15 +768,6 @@ void OSystem::queryVideoHardware()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
-    kColor           
-    kBGColor
-    kShadowColor
-    kHiliteColor
-    kTextColor
-    kTextColorHi
-    kTextColorEm
-
-
   Palette is defined as follows:
     kColor         TODO
     kBGColor       TODO
@@ -787,20 +778,20 @@ void OSystem::queryVideoHardware()
     kTextColorEm   TODO
 
     kDlgColor         Dialog background
-    kListColor        File list background
+    kWidColor         Widget background
 
     kBtnColor         Normal button background
     kBtnColorHi       Highlighted button background
-    kBtnFntColor      Normal button font color
-    kBtnFntColorHi    Highlighted button font color
+    kBtnTextColor     Normal button font color
+    kBtnTextColorHi   Highlighted button font color
 
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
 
-    kWidColor         Border for currently selected widget
+    kWidFrameColor    Border for currently selected widget
 */
 uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
-  // Normal mode
+  // Standard
   { 0x686868,  // kColor
     0x000000,  // kBGColor
     0x404040,  // kShadowColor
@@ -809,20 +800,23 @@ uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
     0x62a108,  // kTextColorHi
     0xc80000,  // kTextColorEm
     0xc9af7c,  // kDlgColor
-    0xf0f0cf,  // kListColor
+    0xf0f0cf,  // kWidColor
     0xac3410,  // kBtnColor
     0xd55941,  // kBtnColorHi
-    0xffffff,  // kBtnFntColor
-    0xffd652,  // kBtnFntColorHi
-    0x000000,  // kScrollColor
-    0x000000,  // kScrollColorHi
-    0xc80000   // kWidColor
+    0xffffff,  // kBtnTextColor
+    0xffd652,  // kBtnTextColorHi
+    0xac3410,  // kCheckColor
+    0xac3410,  // kScrollColor
+    0xd55941,  // kScrollColorHi
+    0xac3410,  // kSliderColor
+    0xd55941,  // kSliderColorHi
+	0xc80000   // kWidFrameColor
   },
 
-  // GP2X
+  // Classic
   { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x00ff00, 0xc80000,
-    0x000000, 0x000000, 0x000000, 0x000000, 0x20a020, 0x00ff00, 0x000000,
-    0x000000, 0xc80000 }
+    0x000000, 0x000000, 0x000000, 0x000000, 0x20a020, 0x00ff00, 0x20a020,
+    0x20a020, 0x00ff00, 0x20a020, 0x00ff00, 0xc80000 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

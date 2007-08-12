@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.20 2007-01-01 18:04:44 stephena Exp $
+// $Id: RomWidget.cxx,v 1.21 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,8 +47,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 {
   _type = kRomWidget;
 
-  int w = 58 * font.getMaxCharWidth(),
-      h = 0, xpos, ypos;
+  int xpos, ypos;
   StaticTextWidget* t;
 
   // Create bank editable area
@@ -60,7 +59,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   xpos += t->getWidth() + 10;
   myBank = new DataGridWidget(boss, font, xpos, ypos-2,
-                              1, 1, 1, 2, kBASE_16_4);
+                              1, 1, 2, 2, kBASE_16_4);
   myBank->setTarget(this);
   myBank->setRange(0, instance()->debugger().bankCount());
   if(instance()->debugger().bankCount() <= 1)
@@ -81,11 +80,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
-
-  // Update height of widget to use all remaining vertical space
   GUI::Rect dialog = instance()->debugger().getDialogBounds();
-  int rows = ((dialog.height() - ypos) / font.getLineHeight()) - 1;
-  h = rows * font.getLineHeight();
+  int w = dialog.width() - x - 5, h = dialog.height() - ypos - 3;
 
   myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
   myRomList->setTarget(this);

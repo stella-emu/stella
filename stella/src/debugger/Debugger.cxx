@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.111 2007-08-10 18:27:10 stephena Exp $
+// $Id: Debugger.cxx,v 1.112 2007-08-12 23:05:12 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -969,6 +969,7 @@ void Debugger::setQuitState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getDialogBounds() const
 {
+  // The dialog bounds are the actual size of the entire dialog container
   GUI::Rect r(0, 0, myWidth, myHeight);
   return r;
 }
@@ -976,6 +977,7 @@ GUI::Rect Debugger::getDialogBounds() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect Debugger::getTiaBounds() const
 {
+  // The area showing the TIA image (NTSC and PAL supported, up to 260 lines)
   GUI::Rect r(0, 0, 320, 260);
   return r;
 }
@@ -985,8 +987,9 @@ GUI::Rect Debugger::getRomBounds() const
 {
   // The ROM area is the full area to the right of the tabs
   GUI::Rect dialog = getDialogBounds();
+  GUI::Rect status = getStatusBounds();
 
-  int x1 = dialog.right - myOSystem->consoleFont().getMaxCharWidth() * 60;
+  int x1 = status.right + 1;
   int y1 = 0;
   int x2 = dialog.right;
   int y2 = dialog.bottom;
@@ -999,13 +1002,14 @@ GUI::Rect Debugger::getRomBounds() const
 GUI::Rect Debugger::getStatusBounds() const
 {
   // The status area is the full area to the right of the TIA image
-  // and left of the ROM area
+  // extending as far as necessary
+  GUI::Rect dlg = getDialogBounds();
   GUI::Rect tia = getTiaBounds();
-  GUI::Rect rom = getRomBounds();
 
   int x1 = tia.right + 1;
   int y1 = 0;
-  int x2 = rom.left - 1;
+  int x2 = tia.right + 225 + (dlg.width() > 1030 ?
+           (int) (0.2 * (dlg.width() - 1030)) : 0);
   int y2 = tia.bottom;
   GUI::Rect r(x1, y1, x2, y2);
 
@@ -1018,11 +1022,11 @@ GUI::Rect Debugger::getTabBounds() const
   // The tab area is the full area below the TIA image
   GUI::Rect dialog = getDialogBounds();
   GUI::Rect tia    = getTiaBounds();
-  GUI::Rect rom    = getRomBounds();
+  GUI::Rect status = getStatusBounds();
 
   int x1 = 0;
   int y1 = tia.bottom + 1;
-  int x2 = rom.left - 1;
+  int x2 = status.right + 1;
   int y2 = dialog.bottom;
   GUI::Rect r(x1, y1, x2, y2);
 

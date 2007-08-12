@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.17 2007-07-31 15:46:20 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.18 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,6 +54,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
   _type = kPromptWidget;
+  _bgcolor = kWidColor;
 
   _kConsoleCharWidth  = font.getMaxCharWidth();
   _kConsoleCharHeight = font.getFontHeight();

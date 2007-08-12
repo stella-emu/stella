@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.9 2007-01-01 18:04:43 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.10 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -191,7 +191,7 @@ void ContextMenu::drawDialog()
   {
     FrameBuffer& fb = instance()->frameBuffer();
 
-    fb.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
+    fb.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
     fb.box(_x, _y, _w, _h, kColor, kShadowColor);
 
     // Draw the entries
@@ -204,10 +204,10 @@ void ContextMenu::drawDialog()
       int w = _w - 4;
       string& name = _entries[i];
 
-      fb.fillRect(x, y, w, _rowHeight, hilite ? kTextColorHi : kBGColor);
+      fb.fillRect(x, y, w, _rowHeight, hilite ? kTextColorHi : kWidColor);
 
       fb.drawString(_font, name, x + 1, y + 2, w - 2,
-                    hilite ? kBGColor : kTextColor);
+                    hilite ? kWidColor : kTextColor);
     }
     _dirty = false;
     fb.addDirtyRect(_x, _y, _w, _h);

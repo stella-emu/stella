@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.56 2007-08-10 18:27:12 stephena Exp $
+// $Id: Widget.hxx,v 1.57 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,12 +41,11 @@ enum {
   WIDGET_INVISIBLE     = 1 << 1,
   WIDGET_HILITED       = 1 << 2,
   WIDGET_BORDER        = 1 << 3,
-  WIDGET_INV_BORDER    = 1 << 4,
-  WIDGET_CLEARBG       = 1 << 5,
-  WIDGET_TRACK_MOUSE   = 1 << 6,
-  WIDGET_RETAIN_FOCUS  = 1 << 7,
-  WIDGET_WANTS_TAB     = 1 << 8,
-  WIDGET_WANTS_RAWDATA = 1 << 9
+  WIDGET_CLEARBG       = 1 << 4,
+  WIDGET_TRACK_MOUSE   = 1 << 5,
+  WIDGET_RETAIN_FOCUS  = 1 << 6,
+  WIDGET_WANTS_TAB     = 1 << 7,
+  WIDGET_WANTS_RAWDATA = 1 << 8
 };
 
 enum {
@@ -88,7 +87,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.56 2007-08-10 18:27:12 stephena Exp $
+  @version $Id: Widget.hxx,v 1.57 2007-08-12 23:05:12 stephena Exp $
 */
 class Widget : public GuiObject
 {

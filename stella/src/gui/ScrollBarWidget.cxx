@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.17 2007-08-07 14:38:52 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.18 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,8 +69,8 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
   _type = kScrollBarWidget;
-  _bgcolor = kListColor;
-  _bgcolorhi = kListColor;
+  _bgcolor = kWidColor;
+  _bgcolorhi = kWidColor;
 
   _part = kNoPart;
   _sliderHeight = 0;
@@ -264,23 +264,23 @@ void ScrollBarWidget::drawWidget(bool hilite)
   fb.frameRect(_x, _y, _w, UP_DOWN_BOX_HEIGHT, kColor);
   fb.drawBitmap(up_arrow, _x, _y,
                 isSinglePage ? kColor :
-                (hilite && _part == kUpArrowPart) ? kBtnColorHi : kBtnColor);
+                (hilite && _part == kUpArrowPart) ? kScrollColorHi : kScrollColor);
 
   // Down arrow
   fb.frameRect(_x, bottomY - UP_DOWN_BOX_HEIGHT, _w, UP_DOWN_BOX_HEIGHT, kColor);
   fb.drawBitmap(down_arrow, _x, bottomY - UP_DOWN_BOX_HEIGHT,
                 isSinglePage ? kColor :
-                (hilite && _part == kDownArrowPart) ? kBtnColorHi : kBtnColor);
+                (hilite && _part == kDownArrowPart) ? kScrollColorHi : kScrollColor);
 
   // Slider
   if(!isSinglePage)
   {
     fb.fillRect(_x, _y + _sliderPos, _w, _sliderHeight,
-               (hilite && _part == kSliderPart) ? kBtnColorHi : kBtnColor);
+               (hilite && _part == kSliderPart) ? kScrollColorHi : kScrollColor);
     fb.frameRect(_x, _y + _sliderPos, _w, _sliderHeight, kColor);
     int y = _y + _sliderPos + _sliderHeight / 2;
-    fb.hLine(_x + 2, y - 2, _x + _w - 3, kBtnFntColorHi);
-    fb.hLine(_x + 2, y,     _x + _w - 3, kBtnFntColorHi);
-    fb.hLine(_x + 2, y + 2, _x + _w - 3, kBtnFntColorHi);
+    fb.hLine(_x + 2, y - 2, _x + _w - 3, kWidColor);
+    fb.hLine(_x + 2, y,     _x + _w - 3, kWidColor);
+    fb.hLine(_x + 2, y + 2, _x + _w - 3, kWidColor);
   }
 }

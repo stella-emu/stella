@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.53 2007-08-10 18:27:12 stephena Exp $
+// $Id: Widget.cxx,v 1.54 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,8 +41,8 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
     _id(-1),
     _flags(0),
     _hasFocus(false),
-    _bgcolor(kBGColor),
-    _bgcolorhi(kBGColor),
+    _bgcolor(kWidColor),
+    _bgcolorhi(kWidColor),
     _textcolor(kTextColor),
     _textcolorhi(kTextColorHi)
 {
@@ -285,7 +285,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
       w = rect.width(), h = rect.height();
 
   tmp->receivedFocus();
-  fb.frameRect(x, y, w, h, kWidColor, kDashLine);
+  fb.frameRect(x, y, w, h, kWidFrameColor, kDashLine);
 
   tmp->setDirty(); tmp->draw();
   fb.addDirtyRect(x, y, w, h);
@@ -357,8 +357,8 @@ ButtonWidget::ButtonWidget(GuiObject *boss, const GUI::Font& font,
   _type = kButtonWidget;
   _bgcolor = kBtnColor;
   _bgcolorhi = kBtnColorHi;
-  _textcolor = kBtnFntColor;
-  _textcolorhi = kBtnFntColorHi;
+  _textcolor = kBtnTextColor;
+  _textcolorhi = kBtnTextColorHi;
 
   _editable = false;
 }
@@ -428,14 +428,14 @@ static unsigned int checked_img_x[8] =
 
 static unsigned int checked_img_o[8] =
 {
-	0x00000000,
-	0x01000010,
-	0x00100100,
 	0x00011000,
+	0x00111100,
+	0x01111110,
+	0x11111111,
+	0x11111111,
+	0x01111110,
+	0x00111100,
 	0x00011000,
-	0x00000000,
-	0x00000000,
-	0x00000000,
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -453,10 +453,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
 {
   _flags = WIDGET_ENABLED;
   _type = kCheckboxWidget;
-  _bgcolor = kListColor;
-  _bgcolorhi = kBtnColorHi;
-  _textcolor = kBtnFntColor;
-  _textcolorhi = kBtnFntColorHi;
+  _bgcolor = _bgcolorhi = kWidColor;
 
   _editable = true;
 
@@ -499,7 +496,6 @@ void CheckboxWidget::setState(bool state)
   if(_state != state)
   {
     _state = state;
-    _flags ^= WIDGET_INV_BORDER;
     setDirty(); draw();
   }
 }
@@ -520,20 +516,12 @@ void CheckboxWidget::drawWidget(bool hilite)
     if(_state)
     {
       unsigned int* img = _fillRect ? checked_img_o : checked_img_x;
-      fb.drawBitmap(img, _x + 3, _y + _boxY + 3, kBtnColor);
+	  int color = _fillRect ? kWidFrameColor : kCheckColor;
+	  fb.drawBitmap(img, _x + 3, _y + _boxY + 3, color);
     }
   }
   else
     fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kColor);
-  
-/*
-
-  int checked = !isEnabled() ? kColor : _state ? _bgcolorhi : _bgcolor;
-  fb.fillRect(_x + 2, _y + _boxY + 2, 10, 10, checked);
-
-  if(!_fillRect && isEnabled() && _state)  // draw a cross
-    fb.drawBitmap(checked_img, _x + 3, _y + _boxY + 3, _textcolor);
-*/
 
   // Finally draw the label
   fb.drawString(_font, _label, _x + 20, _y + _textY, _w,
@@ -556,8 +544,6 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
   _type = kSliderWidget;
   _bgcolor = kDlgColor;
   _bgcolorhi = kDlgColor;
-  _textcolor = kBtnColor;
-  _textcolorhi = kBtnColorHi;
 
   if(!_label.empty() && _labelWidth == 0)
     _labelWidth = _font->getStringWidth(_label);
@@ -568,10 +554,6 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SliderWidget::setValue(int value)
 {
-/*cerr << "SliderWidget::setValue: " << value
-     << ", max = " << _valueMax
-     << ", min = " << _valueMin
-     << endl;*/
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
 
@@ -679,12 +661,12 @@ void SliderWidget::drawWidget(bool hilite)
 
   // Fill the box
   fb.fillRect(_x + _labelWidth + 2, _y + 2, _w - _labelWidth - 4, _h - 4,
-              !isEnabled() ? kColor : kListColor);
+              !isEnabled() ? kColor : kWidColor);
 
   // Draw the 'bar'
   fb.fillRect(_x + _labelWidth + 2, _y + 2, valueToPos(_value), _h - 4,
               !isEnabled() ? kColor :
-              hilite ? _textcolorhi : _textcolor);
+              hilite ? kSliderColorHi : kSliderColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

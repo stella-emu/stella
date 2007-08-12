@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.36 2007-08-07 14:38:52 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.37 2007-08-12 23:05:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -86,7 +86,7 @@ void PopUpDialog::drawDialog()
     // The last entry may be empty. Fill it with black.
     if(_twoColumns && (count & 1))
       fb.fillRect(_x + 1 + _w / 2, _y + 1 + _popUpBoss->_fontHeight * (_entriesPerColumn - 1),
-                  _w / 2 - 1, _popUpBoss->_fontHeight, kListColor);
+                  _w / 2 - 1, _popUpBoss->_fontHeight, kWidColor);
 
     _dirty = false;
     fb.addDirtyRect(_x, _y, _w, _h);
@@ -232,7 +232,7 @@ void PopUpDialog::drawMenuEntry(int entry, bool hilite)
   }
 
   string& name = _popUpBoss->_entries[entry].name;
-  fb.fillRect(x, y, w, _popUpBoss->_fontHeight, hilite ? kTextColorHi : kListColor);
+  fb.fillRect(x, y, w, _popUpBoss->_fontHeight, hilite ? kTextColorHi : kWidColor);
 
   if(name.size() == 0)
   {
@@ -431,7 +431,7 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kPopUpWidget;
   _bgcolor = kDlgColor;
-  _bgcolorhi = kListColor;
+  _bgcolorhi = kWidColor;
   _textcolor = kTextColor;
   _textcolorhi = kTextColor;
 
@@ -566,7 +566,7 @@ void PopUpWidget::drawWidget(bool hilite)
   fb.vLine(x + w - 1, _y, _y +_h - 1, kShadowColor);
 
   // Fill the background
-  fb.fillRect(x + 1, _y + 1, w - 2, _h - 2, kListColor);
+  fb.fillRect(x + 1, _y + 1, w - 2, _h - 2, kWidColor);
 
   // Draw an arrow pointing down at the right end to signal this is a dropdown/popup
   fb.drawBitmap(up_down_arrows, x+w - 10, _y + myArrowsY,
