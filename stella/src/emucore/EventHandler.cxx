@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.204 2007-07-31 15:46:20 stephena Exp $
+// $Id: EventHandler.cxx,v 1.205 2007-08-13 19:45:42 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -896,10 +896,12 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
         button = state ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP;
         break;
       case SDL_BUTTON_WHEELDOWN:
-        button = EVENT_WHEELDOWN;
+        if(state) button = EVENT_WHEELDOWN;
+        else return;
         break;
       case SDL_BUTTON_WHEELUP:
-        button = EVENT_WHEELUP;
+        if(state) button = EVENT_WHEELUP;
+        else return;
         break;
       default:
         return;

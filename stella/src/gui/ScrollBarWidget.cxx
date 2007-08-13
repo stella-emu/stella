@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.18 2007-08-12 23:05:12 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.19 2007-08-13 19:45:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,7 @@
  */
 
 #define UP_DOWN_BOX_HEIGHT	10
-#define WHEEL_LINES 2
+#define WHEEL_LINES 4
 
 // Up arrow
 static unsigned int up_arrow[8] = {
