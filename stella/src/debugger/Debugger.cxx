@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.112 2007-08-12 23:05:12 stephena Exp $
+// $Id: Debugger.cxx,v 1.113 2007-08-14 19:49:20 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -233,78 +233,81 @@ void Debugger::autoLoadSymbols(string fileName) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::loadListFile(string f) {
-	char buffer[255];
+string Debugger::loadListFile(string f)
+{
+  char buffer[255];
 
-	if(f == "") {
-		f = myOSystem->romFile();
+  if(f == "")
+  {
+    f = myOSystem->romFile();
 
-		string::size_type pos;
-		if( (pos = f.find_last_of('.')) != string::npos ) {
-			f.replace(pos, f.size(), ".lst");
-		} else {
-			f += ".lst";
-		}
-	}
+    string::size_type pos;
+    if( (pos = f.find_last_of('.')) != string::npos )
+      f.replace(pos, f.size(), ".lst");
+    else
+      f += ".lst";
+  }
 
-	ifstream in(f.c_str());
-	if(!in.is_open())
-		return "Unable to read listing from " + f;
+  ifstream in(f.c_str());
+  if(!in.is_open())
+    return "Unable to read listing from " + f;
 
-	sourceLines.clear();
-	int count = 0;
-	while( !in.eof() ) {
-		if(!in.getline(buffer, 255))
-			break;
+  sourceLines.clear();
+  int count = 0;
+  while( !in.eof() )
+  {
+    if(!in.getline(buffer, 255))
+      break;
 
-		if(	strlen(buffer) >= 14 &&
-				buffer[0] == ' '     &&
-				buffer[7] == ' '     &&
-				buffer[8] == ' '     &&
-				isxdigit(buffer[9])  &&
-				isxdigit(buffer[12]) &&
-				BSPF_isblank(buffer[13]))
-		{
-			count++;
-			char addr[5];
-			for(int i=0; i<4; i++)
-				addr[i] = buffer[9+i];
+    if(strlen(buffer) >= 14 &&
+       buffer[0] == ' '     &&
+       buffer[7] == ' '     &&
+       buffer[8] == ' '     &&
+       isxdigit(buffer[9])  &&
+       isxdigit(buffer[12]) &&
+       BSPF_isblank(buffer[13]))
+    {
+      count++;
+      char addr[5];
+      for(int i=0; i<4; i++)
+        addr[i] = buffer[9+i];
 
-			for(char *c = buffer; *c != '\0'; c++)
-				if(*c == '\t') *c = ' ';
+      for(char *c = buffer; *c != '\0'; c++)
+        if(*c == '\t') *c = ' ';
 
-			addr[4] = '\0';
-			string a = addr;
-			string b = buffer;
-			sourceLines.insert(make_pair(a, b));
-		}
-	}
+      addr[4] = '\0';
+      string a = addr;
+      string b = buffer;
+      sourceLines.insert(make_pair(a, b));
+    }
+  }
+  in.close();
 
-	in.close();
-
-	return valueToString(count) + " lines loaded from " + f;
+  return valueToString(count) + " lines loaded from " + f;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::getSourceLines(int addr) {
-	if(sourceLines.size() == 0)
-		return "no list file loaded (try \"loadlst file.lst\")";
+const string Debugger::getSourceLines(int addr)
+{
+  if(sourceLines.size() == 0)
+    return "";
 
-	string ret;
-	string want = to_hex_16(addr);
+  string ret;
+  string want = to_hex_16(addr);
 
-	bool found = false;
-	pair<ListIter, ListIter> lines = sourceLines.equal_range(want);
-	for(ListIter i = lines.first; i != lines.second; i++) {
-		found = true;
-		ret += i->second;
-		ret += "\n";
-	}
+  bool found = false;
+  pair<ListIter, ListIter> lines = sourceLines.equal_range(want);
+  for(ListIter i = lines.first; i != lines.second; i++)
+  {
+    found = true;
+    ret += i->second;
+    ret += "\n";
+  }
 
-	if(found)
-		return ret;
-	else
-		return "";
+  if(found)
+    return ret;
+  else
+    return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -901,8 +904,9 @@ void Debugger::addLabel(string label, int address) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::reloadROM() {
-  myOSystem->createConsole( myOSystem->romFile() );
+void Debugger::reloadROM()
+{
+  myOSystem->createConsole();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1003,13 +1007,14 @@ GUI::Rect Debugger::getStatusBounds() const
 {
   // The status area is the full area to the right of the TIA image
   // extending as far as necessary
+  // 30% of any space above 1030 pixels will be allocated to this area
   GUI::Rect dlg = getDialogBounds();
   GUI::Rect tia = getTiaBounds();
 
   int x1 = tia.right + 1;
   int y1 = 0;
   int x2 = tia.right + 225 + (dlg.width() > 1030 ?
-           (int) (0.2 * (dlg.width() - 1030)) : 0);
+           (int) (0.3 * (dlg.width() - 1030)) : 0);
   int y2 = tia.bottom;
   GUI::Rect r(x1, y1, x2, y2);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.11 2007-01-01 18:04:44 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.12 2007-08-14 19:49:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
-                             int x, int y)
+                             int x, int y, int w, int h)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     myMenu(NULL)
@@ -37,8 +37,12 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_RAWDATA;
   _type = kTiaZoomWidget;
-  _w = 210;
-  _h = 120;
+  _bgcolor = _bgcolorhi = kDlgColor;
+
+  // Use all available space, up to the maximum bounds of the TIA image
+  // Width myst 
+  _w = BSPF_min(w, 320);
+  _h = BSPF_min(h, 260);
 
   addFocusWidget(this);
 

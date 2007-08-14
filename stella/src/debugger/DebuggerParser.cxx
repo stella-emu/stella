@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.97 2007-08-10 18:27:10 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.98 2007-08-14 19:49:20 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -111,6 +111,7 @@ string DebuggerParser::run(const string& command)
       if(commands[i].refreshRequired)
         debugger->myBaseDialog->loadConfig();
 
+cerr << " ==> commandResult = " << commandResult << endl;
       return commandResult;
     }
   }
@@ -412,7 +413,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
     argStrings.push_back(curArg);
 
   argCount = argStrings.size();
-
+cerr << "count = " << argCount << endl;
   /*
   cerr << "verb = " << verb << endl;
   cerr << "arguments (" << argCount << "):\n";
@@ -964,6 +965,9 @@ void DebuggerParser::executeFunction()
 // "list"
 void DebuggerParser::executeList()
 {
+  if(!debugger->haveListFile())
+    commandResult = "no list file loaded (try \"loadlist file.lst\")";
+
   for(int i=args[0] - 2; i<args[0] + 3; i++)
     commandResult += debugger->getSourceLines(i);
 }
@@ -1097,9 +1101,10 @@ void DebuggerParser::executeRam()
 // "reload"
 void DebuggerParser::executeReload()
 {
-  debugger->reloadROM();
+  debugger->quit();
+  debugger->getOSystem()->createConsole();
   debugger->start();
-  commandResult = "reloaded";
+  commandResult = "_EXIT_DEBUGGER";  // Set PromptWidget for more info
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1147,7 +1152,7 @@ void DebuggerParser::executeRun()
 {
   debugger->saveOldState();
   debugger->quit();
-  commandResult = "exiting debugger";
+  commandResult = "_EXIT_DEBUGGER";  // See PromptWidget for more info
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1571,7 +1576,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "list",
     "List source (if loaded with loadlst)",
-    false,
+    true,
     false,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeList

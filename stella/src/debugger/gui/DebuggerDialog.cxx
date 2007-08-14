@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.20 2007-08-06 20:16:51 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.21 2007-08-14 19:49:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -199,6 +199,7 @@ void DebuggerDialog::addTabArea()
 void DebuggerDialog::addStatusArea()
 {
   const GUI::Font& font = instance()->consoleFont();
+  const int lineHeight = font.getLineHeight();
   GUI::Rect r = instance()->debugger().getStatusBounds();
   int xpos, ypos;
 
@@ -206,10 +207,11 @@ void DebuggerDialog::addStatusArea()
   myTiaInfo = new TiaInfoWidget(this, instance()->consoleFont(), xpos, ypos);
 
   ypos += myTiaInfo->getHeight() + 10;
-  myTiaZoom = new TiaZoomWidget(this, instance()->consoleFont(), xpos+10, ypos);
+  myTiaZoom = new TiaZoomWidget(this, instance()->consoleFont(), xpos+10, ypos,
+                                r.width()-10, r.height()-lineHeight-ypos-10);
   addToFocusList(myTiaZoom->getFocusList());
 
-  xpos += 10;  ypos += myTiaZoom->getHeight() + 20;
+  xpos += 10;  ypos += myTiaZoom->getHeight() + 10;
   myMessageBox = new EditTextWidget(this, instance()->consoleFont(),
                                     xpos, ypos, myTiaZoom->getWidth(),
                                     font.getLineHeight(), "");

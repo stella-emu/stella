@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.18 2007-08-12 23:05:12 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.19 2007-08-14 19:49:20 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -189,8 +189,17 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         addToHistory(command.c_str());
 
         // Pass the command to the debugger, and print the result
-        string result = instance()->debugger().run(command) + "\n";
-        print( result );
+        string result = instance()->debugger().run(command);
+
+        // This is a bit of a hack
+        // Certain commands remove the debugger dialog from underneath us,
+        // so we shouldn't print any messages
+        // Those commands will return 'EXIT_DEBUGGER' as their result
+//cerr << " ==> result = \'" << result << "\'\n";
+  if(result == "_EXIT_DEBUGGER")
+    return true;
+
+        print(result + "\n");
       }
 
       printPrompt();
@@ -500,6 +509,18 @@ GUI::Rect PromptWidget::getRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::loadConfig()
 {
+cerr << "loadConfig()" << endl
+     << "_promptStartPos = " << _promptStartPos << endl
+     << "_promptEndPos = " << _promptEndPos << endl
+     << "_currentPos = " << _currentPos << endl
+     << endl;
+
+  if(_promptStartPos != _currentPos)
+  {
+    print(PROMPT);
+    _promptStartPos = _promptEndPos = _currentPos;
+  }
+
   // See logic at the end of handleKeyDown for an explanation of this
   _makeDirty = true;
 
