@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.19 2007-08-14 19:49:20 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.20 2007-08-14 20:36:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,8 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   : Widget(boss, font, x, y, w - kScrollBarWidth, h),
     CommandSender(boss),
     _makeDirty(false),
-    _firstTime(true)
+    _firstTime(true),
+    _exitedEarly(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
@@ -194,12 +195,14 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         // This is a bit of a hack
         // Certain commands remove the debugger dialog from underneath us,
         // so we shouldn't print any messages
-        // Those commands will return 'EXIT_DEBUGGER' as their result
-//cerr << " ==> result = \'" << result << "\'\n";
-  if(result == "_EXIT_DEBUGGER")
-    return true;
-
-        print(result + "\n");
+        // Those commands will return '_EXIT_DEBUGGER' as their result
+        if(result == "_EXIT_DEBUGGER")
+        {
+          _exitedEarly = true;
+          return true;
+        }
+        else
+          print(result + "\n");
       }
 
       printPrompt();
@@ -509,18 +512,6 @@ GUI::Rect PromptWidget::getRect() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::loadConfig()
 {
-cerr << "loadConfig()" << endl
-     << "_promptStartPos = " << _promptStartPos << endl
-     << "_promptEndPos = " << _promptEndPos << endl
-     << "_currentPos = " << _currentPos << endl
-     << endl;
-
-  if(_promptStartPos != _currentPos)
-  {
-    print(PROMPT);
-    _promptStartPos = _promptEndPos = _currentPos;
-  }
-
   // See logic at the end of handleKeyDown for an explanation of this
   _makeDirty = true;
 
@@ -538,6 +529,11 @@ cerr << "loadConfig()" << endl
 
     // Take care of one-time debugger stuff
     instance()->debugger().autoExec();
+  }
+  else if(_exitedEarly)
+  {
+    printPrompt();
+    _exitedEarly = false;
   }
 }
 

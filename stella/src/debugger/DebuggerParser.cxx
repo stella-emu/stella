@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.98 2007-08-14 19:49:20 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.99 2007-08-14 20:36:18 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -111,7 +111,6 @@ string DebuggerParser::run(const string& command)
       if(commands[i].refreshRequired)
         debugger->myBaseDialog->loadConfig();
 
-cerr << " ==> commandResult = " << commandResult << endl;
       return commandResult;
     }
   }
@@ -413,7 +412,6 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
     argStrings.push_back(curArg);
 
   argCount = argStrings.size();
-cerr << "count = " << argCount << endl;
   /*
   cerr << "verb = " << verb << endl;
   cerr << "arguments (" << argCount << "):\n";
@@ -1729,7 +1727,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   {
     "runto",
     "Run until first occurrence of string in disassembly",
-    false,
+    true,
     true,
     { kARG_LABEL, kARG_END_ARGS },
     &DebuggerParser::executeRunTo

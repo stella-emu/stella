@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.10 2007-08-14 19:49:20 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.11 2007-08-14 20:36:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,13 +30,6 @@ class ScrollBarWidget;
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "bspf.hxx"
-
-enum {
-  kBufferSize	= 32768,
-  kLineBufferSize = 256,
-
-  kHistorySize = 20
-};
 
 class PromptWidget : public Widget, public CommandSender
 {
@@ -86,6 +79,12 @@ class PromptWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
+    enum {
+      kBufferSize     = 32768,
+      kLineBufferSize = 256,
+      kHistorySize    = 20
+    };
+
     int  _buffer[kBufferSize];
     int  _linesInBuffer;
 
@@ -115,6 +114,7 @@ class PromptWidget : public Widget, public CommandSender
     bool _inverse;
     bool _makeDirty;
     bool _firstTime;
+    bool _exitedEarly;
 
     int compareHistory(const char *histLine);
 };
