@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.205 2007-08-13 19:45:42 stephena Exp $
+// $Id: EventHandler.cxx,v 1.206 2007-08-15 19:14:49 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -39,6 +39,7 @@
 #include "Serializer.hxx"
 #include "PropsSet.hxx"
 #include "Snapshot.hxx"
+#include "ScrollBarWidget.hxx"
 #include "bspf.hxx"
 
 #ifdef CHEATCODE_SUPPORT
@@ -155,6 +156,9 @@ void EventHandler::initialize()
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
   setPaddleMode(myOSystem->settings().getInt("paddle"), false);
   setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
+
+  // Set number of lines a mousewheel will scroll
+  ScrollBarWidget::setWheelLines(myOSystem->settings().getInt("mwheel"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

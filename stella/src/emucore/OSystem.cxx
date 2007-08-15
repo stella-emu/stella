@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.106 2007-08-15 17:43:51 stephena Exp $
+// $Id: OSystem.cxx,v 1.107 2007-08-15 19:14:49 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -46,7 +46,6 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "ScrollBarWidget.hxx"
 
 #define MAX_ROM_SIZE  512 * 1024
 
@@ -183,9 +182,6 @@ bool OSystem::create()
 #ifdef DEBUGGER_SUPPORT
   myDebugger = new Debugger(this);
 #endif
-
-  // Set number of lines a mousewheel will scroll
-  ScrollBarWidget::setWheelLines(mySettings->getInt("mwheel"));
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
