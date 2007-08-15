@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.19 2007-08-13 19:45:42 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.20 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,16 +27,12 @@
 
 /*
  * TODO:
- * - Auto-repeat: if user clicks & holds on one of the arrows, then after a
- *   brief delay, it should start to contiously scroll
  * - Allow for a horizontal scrollbar, too?
  * - If there are less items than fit on one pages, no scrolling can be done
  *   and we thus should not highlight the arrows/slider.
- * - Allow the mouse wheel to scroll more than one line at a time
  */
 
 #define UP_DOWN_BOX_HEIGHT	10
-#define WHEEL_LINES 4
 
 // Up arrow
 static unsigned int up_arrow[8] = {
@@ -140,9 +136,9 @@ void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
     return;
 
   if(direction < 0)
-    _currentPos -= WHEEL_LINES;
+    _currentPos -= _WHEEL_LINES;
   else
-    _currentPos += WHEEL_LINES;
+    _currentPos += _WHEEL_LINES;
 
   // Make sure that _currentPos is still inside the bounds
   checkBounds(old_pos);
@@ -284,3 +280,7 @@ void ScrollBarWidget::drawWidget(bool hilite)
     fb.hLine(_x + 2, y + 2, _x + _w - 3, kWidColor);
   }
 }
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int ScrollBarWidget::_WHEEL_LINES = 4;

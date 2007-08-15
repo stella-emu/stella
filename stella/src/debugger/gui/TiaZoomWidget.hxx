@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.hxx,v 1.7 2007-08-14 19:49:21 stephena Exp $
+// $Id: TiaZoomWidget.hxx,v 1.8 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@ class TiaZoomWidget : public Widget, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
-    bool handleKeyDown(int ascii, int keycode, int modifiers);
+    bool handleEvent(Event::Type event);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void drawWidget(bool hilite);

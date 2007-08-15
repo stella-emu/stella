@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.49 2007-08-10 18:27:11 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.50 2007-08-15 17:43:51 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -24,6 +24,7 @@ struct Command;
 
 #include "bspf.hxx"
 #include "Array.hxx"
+#include "FrameBuffer.hxx"
 
 typedef enum {
 	kBASE_16,
@@ -63,8 +64,7 @@ class DebuggerParser
 
     static inline string red(const string& msg = "")
     {
-      // This is TIA color 0x34. The octal value is 0x80+(0x34>>1).
-      return "\232" + msg;
+      return char(kDbgChangedColor) + msg;
     }
     static inline string inverse(const string& msg = "")
     {
@@ -81,7 +81,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 59,
+      kNumCommands   = 58,
       kMAX_ARG_TYPES = 10 // TODO: put in separate header file Command.hxx
     };
 
@@ -193,7 +193,6 @@ class DebuggerParser
     void executeX();
     void executeY();
     void executeZ();
-    void executeResolution();
 
     // List of commands available
     static Command commands[kNumCommands];

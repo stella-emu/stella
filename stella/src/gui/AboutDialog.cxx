@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.20 2007-08-06 20:16:51 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.21 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,7 +54,7 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
 
   myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
                                  "", kTextAlignCenter);
-  myTitle->setTextColor(kTextColorHi);
+  myTitle->setTextColor(kTextColorEm);
 
   for(int i = 0; i < LINES_PER_PAGE; i++)
   {

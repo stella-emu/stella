@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.89 2007-08-12 23:05:12 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.90 2007-08-15 17:43:51 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -70,12 +70,12 @@ enum {
   kColor = 256,
   kBGColor,
   kShadowColor,
-  kHiliteColor,
   kTextColor,
   kTextColorHi,
   kTextColorEm,
   kDlgColor,
   kWidColor,
+  kWidFrameColor,
   kBtnColor,
   kBtnColorHi,
   kBtnTextColor,
@@ -85,7 +85,9 @@ enum {
   kScrollColorHi,
   kSliderColor,
   kSliderColorHi,
-  kWidFrameColor,
+  kDbgChangedColor,
+  kDbgChangedTextColor,
+  kDbgColorHi,
   kNumColors
 };
 
@@ -98,7 +100,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.89 2007-08-12 23:05:12 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.90 2007-08-15 17:43:51 stephena Exp $
 */
 class FrameBuffer
 {

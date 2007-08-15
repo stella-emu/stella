@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.99 2007-08-14 20:36:18 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.100 2007-08-15 17:43:51 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1357,27 +1357,6 @@ void DebuggerParser::executeZ()
     debugger->cpuDebug().setZ(args[0]);
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "change resolution"
-void DebuggerParser::executeResolution()
-{
-  commandResult = "TODO - add functionality";
-
-/*
-  int height = debugger->setHeight(args[0]);
-  commandResult = "height set to " + debugger->valueToString(height, kBASE_10) +
-                  "\nExit debugger and reload ROM to take effect";
-*/
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// .hxx
-// Table of RGB values for NTSC
-// static const uInt32 ourNTSCPalette[256];
-
-// .cxx
-//        const uInt32 Console::ourNTSCPalette[256] = {
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // List of all commands available to the parser
@@ -1902,14 +1881,5 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_BOOL, kARG_END_ARGS },
     &DebuggerParser::executeZ
-  },
-
-  {
-    "resolution",
-    "Change resolution of debugger window",
-    true,
-    false,
-    { kARG_WORD, kARG_END_ARGS },
-    &DebuggerParser::executeResolution
   }
 };

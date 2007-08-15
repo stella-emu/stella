@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.12 2007-08-14 19:49:20 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.13 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,8 +34,7 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
     CommandSender(boss),
     myMenu(NULL)
 {
-  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
-           WIDGET_WANTS_RAWDATA;
+  _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kTiaZoomWidget;
   _bgcolor = _bgcolorhi = kDlgColor;
 
@@ -147,30 +146,46 @@ void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TiaZoomWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool TiaZoomWidget::handleEvent(Event::Type event)
 {
-  bool handled = false;
+  bool handled = true;
 
-  switch(ascii)
+  switch(event)
   {
-    case 256+17:  // up arrow
+    case Event::UIUp:
       myYCenter -= 4;
-      handled = true;
       break;
 
-    case 256+18:  // down arrow
+    case Event::UIDown:
       myYCenter += 4;
-      handled = true;
       break;
 
-    case 256+20:  // left arrow
+    case Event::UILeft:
       myXCenter -= 2;
-      handled = true;
       break;
 
-    case 256+19:  // right arrow
+    case Event::UIRight:
       myXCenter += 2;
-      handled = true;
+      break;
+
+    case Event::UIPgUp:
+      myYCenter = 0;
+      break;
+
+    case Event::UIPgDown:
+      myYCenter = 260;
+      break;
+
+    case Event::UIHome:
+      myXCenter = 0;
+      break;
+
+    case Event::UIEnd:
+      myXCenter = 320;
+      break;
+
+    default:
+      handled = false;
       break;
   }
 

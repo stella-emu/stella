@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.9 2007-01-01 18:04:44 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.10 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -112,8 +112,7 @@ void RomListWidget::drawWidget(bool hilite)
     if (_highlightedItem == pos)
     {
       fb.frameRect(_x + l.left - 3, _y + 1 + _fontHeight * i,
-                   _w - l.left, _fontHeight,
-                   kHiliteColor);
+                   _w - l.left, _fontHeight, kDbgColorHi);
     }
 
     // Draw the selected item inverted, on a highlighted background.

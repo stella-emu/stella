@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.113 2007-08-14 19:49:20 stephena Exp $
+// $Id: Debugger.cxx,v 1.114 2007-08-15 17:43:51 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -389,15 +389,16 @@ const string Debugger::valueToString(int value, BaseFormat outputBase)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::invIfChanged(int reg, int oldReg) {
-	string ret;
+const string Debugger::invIfChanged(int reg, int oldReg)
+{
+  string ret;
 
-	bool changed = !(reg == oldReg);
-	if(changed) ret += "\177";
-	ret += valueToString(reg);
-	if(changed) ret += "\177";
+  bool changed = reg != oldReg;
+  if(changed) ret += "\177";
+  ret += valueToString(reg);
+  if(changed) ret += "\177";
 
-	return ret;
+  return ret;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1036,12 +1037,6 @@ GUI::Rect Debugger::getTabBounds() const
   GUI::Rect r(x1, y1, x2, y2);
 
   return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::resizeDialog()
-{
-//	cerr << "Debugger::resizeDialog()\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

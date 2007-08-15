@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.10 2007-08-07 14:38:51 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.11 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -120,11 +120,9 @@ FileSnapDialog::FileSnapDialog(
                                             "Multiple snapshots");
   wid.push_back(mySnapSingleCheckbox);
 
-  // Add focus widgets for Snapshot tab
-  addToFocusList(wid);
-
   // Add OK & Cancel buttons
-  wid.clear();
+  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  wid.push_back(b);
 #ifndef MAC_OSX
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);
@@ -140,7 +138,8 @@ FileSnapDialog::FileSnapDialog(
   wid.push_back(b);
   addOKWidget(b);
 #endif
-  addBGroupToFocusList(wid);
+
+  addToFocusList(wid);
 
   // Create file browser dialog
   myBrowser = new BrowserDialog(this, font, 60, 20, 200, 200);
@@ -183,6 +182,26 @@ void FileSnapDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FileSnapDialog::setDefaults()
+{
+  const string& basedir = instance()->baseDir();
+  const string& romdir = "roms";
+  const string& statedir = basedir + BSPF_PATH_SEPARATOR + "state";
+  const string& cheatfile = basedir + BSPF_PATH_SEPARATOR + "stella.cht";
+  const string& palettefile = basedir + BSPF_PATH_SEPARATOR + "stella.pal";
+  const string& propsfile = basedir + BSPF_PATH_SEPARATOR + "stella.pro";
+
+  myRomPath->setEditString(romdir);
+  myStatePath->setEditString(statedir);
+  myCheatFile->setEditString(cheatfile);
+  myPaletteFile->setEditString(palettefile);
+  myPropsFile->setEditString(propsfile);
+
+  mySnapPath->setEditString(string(".") + BSPF_PATH_SEPARATOR);
+  mySnapSingleCheckbox->setState(true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::openBrowser(const string& title, const string& startpath,
                                  FilesystemNode::ListMode mode, int cmd)
 {
@@ -204,6 +223,10 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       close();
       if(myIsGlobal)
         sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
+      break;
+
+    case kDefaultsCmd:
+      setDefaults();
       break;
 
     case kChooseRomDirCmd:

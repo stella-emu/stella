@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleBitWidget.cxx,v 1.6 2007-01-01 18:04:44 stephena Exp $
+// $Id: ToggleBitWidget.cxx,v 1.7 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,8 +107,8 @@ void ToggleBitWidget::drawWidget(bool hilite)
       // Highlight changes
       if(_changedList[pos])
       {
-        fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kTextColorEm);
-        fb.drawString(_font, buffer, x, y, _colWidth, kTextColorHi);
+        fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
+        fb.drawString(_font, buffer, x, y, _colWidth, kDbgChangedTextColor);
       }
       else
         fb.drawString(_font, buffer, x, y, _colWidth, kTextColor);

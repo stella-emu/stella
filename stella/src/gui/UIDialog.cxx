@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.6 2007-08-10 18:27:12 stephena Exp $
+// $Id: UIDialog.cxx,v 1.7 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "Dialog.hxx"
 #include "UIDialog.hxx"
 #include "GuiUtils.hxx"
+#include "ScrollBarWidget.hxx"
 
 #include "bspf.hxx"
 
@@ -103,7 +104,23 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
+  // Number of lines a mouse wheel will scroll
+  myWheelLinesSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
+                                        lineHeight, "Mouse wheel scroll: ",
+                                        lwidth, kWLinesChanged);
+  myWheelLinesSlider->setMinValue(1);
+  myWheelLinesSlider->setMaxValue(10);
+  myWheelLinesSlider->setStepValue(1);
+  wid.push_back(myWheelLinesSlider);
+  myWheelLinesLabel =
+      new StaticTextWidget(this, font,
+                           xpos + myWheelLinesSlider->getWidth() + 4,
+                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+  myWheelLinesLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
   // UI Palette
+  ypos += 1;
   myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
                                    "Interface Palette: ", lwidth);
   myPalettePopup->appendEntry("Standard", 1);
@@ -185,10 +202,15 @@ void UIDialog::loadConfig()
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
 
+  // Mouse wheel lines
+  int mw = instance()->settings().getInt("mwheel");
+  if(mw < 1 || mw > 10) mw = 1;
+  myWheelLinesSlider->setValue(mw);
+  myWheelLinesLabel->setValue(mw);
+
   // UI palette
   int i = instance()->settings().getInt("uipalette");
-  if(i < 1 || i > 2)
-    i = 1;
+  if(i < 1 || i > 2) i = 1;
   myPalettePopup->setSelectedTag(i);
 }
 
@@ -202,6 +224,11 @@ void UIDialog::saveConfig()
   // Debugger size
   instance()->settings().setSize("debuggerres", 
     myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
+
+  // Mouse wheel lines
+  int mw = myWheelLinesSlider->getValue();
+  instance()->settings().setInt("mwheel", mw);
+  ScrollBarWidget::setWheelLines(mw);
 
   // UI palette
   instance()->settings().setInt("uipalette",
@@ -222,6 +249,9 @@ void UIDialog::setDefaults()
   myDebuggerWidthLabel->setValue(1030);
   myDebuggerHeightSlider->setValue(690);
   myDebuggerHeightLabel->setValue(690);
+
+  myWheelLinesSlider->setValue(4);
+  myWheelLinesLabel->setValue(4);
 
   myPalettePopup->setSelectedTag(1);
 
@@ -247,6 +277,10 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDHeightChanged:
       myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
+      break;
+
+    case kWLinesChanged:
+      myWheelLinesLabel->setValue(myWheelLinesSlider->getValue());
       break;
 
     case kOKCmd:

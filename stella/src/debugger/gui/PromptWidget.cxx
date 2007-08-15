@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.20 2007-08-14 20:36:18 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.21 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,6 +55,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_TAB | WIDGET_WANTS_RAWDATA;
   _type = kPromptWidget;
+  _textcolor = kTextColor;
   _bgcolor = kWidColor;
 
   _kConsoleCharWidth  = font.getMaxCharWidth();
@@ -77,10 +78,6 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   _scrollBar->setTarget(this);
 
   // Init colors
-  defaultTextColor = kTextColor;
-  defaultBGColor = kBGColor;
-  textColor = defaultTextColor;
-  bgColor = defaultBGColor;
   _inverse = false;
 
   // Init History
@@ -119,12 +116,11 @@ void PromptWidget::drawWidget(bool hilite)
       int c = buffer((start + line) * _lineWidth + column);
 
       if(c & (1 << 17)) { // inverse video flag
-        fgcolor = bgColor;
+        fgcolor = _bgcolor;
         bgcolor = (c & 0x1ffff) >> 8;
         fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
       } else {
         fgcolor = c >> 8;
-        bgcolor = bgColor;
       }
       fb.drawChar(&instance()->consoleFont(), c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
@@ -526,6 +522,7 @@ void PromptWidget::loadConfig()
     _promptStartPos = _promptEndPos = _currentPos;
 
     _firstTime = false;
+    _exitedEarly = false;
 
     // Take care of one-time debugger stuff
     instance()->debugger().autoExec();
@@ -730,9 +727,8 @@ void PromptWidget::historyScroll(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::nextLine()
 {
-  // reset colors every line, so I don't have to remember to do it myself
-  textColor = defaultTextColor;
-  bgColor = defaultBGColor;
+  // Reset colors every line, so I don't have to remember to do it myself
+  _textcolor = kTextColor;
   _inverse = false;
 
   int line = _currentPos / _lineWidth;
@@ -807,17 +803,17 @@ void PromptWidget::putcharIntern(int c)
                       // don't print or advance cursor
                       // there are only 128 TIA colors, but
                       // OverlayColor contains 256 of them
-    textColor = (c & 0x7f) << 1;
+    _textcolor = (c & 0x7f) << 1;
   }
   else if(c < ' ') { // More colors (the regular GUI ones)
-    textColor = c + 0x100;
+    _textcolor = c + 0x100;
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)
     _inverse = !_inverse;
   }
   else
   {
-    buffer(_currentPos) = c | (textColor << 8) | (_inverse << 17);
+    buffer(_currentPos) = c | (_textcolor << 8) | (_inverse << 17);
     _currentPos++;
     if ((_scrollLine + 1) * _lineWidth == _currentPos)
     {

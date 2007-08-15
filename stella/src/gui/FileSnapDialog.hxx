@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.6 2007-08-07 14:38:51 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.7 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,12 +42,13 @@ class FileSnapDialog : public Dialog, public CommandSender
                    int x, int y, int w, int h);
     ~FileSnapDialog();
 
-    virtual void loadConfig();
-    virtual void saveConfig();
-
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    void loadConfig();
+    void saveConfig();
+    void setDefaults();
+
     void openBrowser(const string& title, const string& startpath,
                      FilesystemNode::ListMode mode, int cmd);
 

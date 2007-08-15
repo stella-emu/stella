@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.4 2007-08-10 18:27:12 stephena Exp $
+// $Id: UIDialog.hxx,v 1.5 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,6 +50,9 @@ class UIDialog : public Dialog
     SliderWidget*     myDebuggerHeightSlider;
     StaticTextWidget* myDebuggerHeightLabel;
 
+    SliderWidget*     myWheelLinesSlider;
+    StaticTextWidget* myWheelLinesLabel;
+
     PopUpWidget* myPalettePopup;
 
   private:
@@ -63,7 +66,8 @@ class UIDialog : public Dialog
       kLWidthChanged  = 'UIlw',
       kLHeightChanged = 'UIlh',
       kDWidthChanged  = 'UIdw',
-      kDHeightChanged = 'UIdh'
+      kDHeightChanged = 'UIdh',
+      kWLinesChanged  = 'UIsl'
     };
 };
 

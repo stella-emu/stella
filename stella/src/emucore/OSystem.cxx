@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.105 2007-08-12 23:05:12 stephena Exp $
+// $Id: OSystem.cxx,v 1.106 2007-08-15 17:43:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -46,6 +46,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
+#include "ScrollBarWidget.hxx"
 
 #define MAX_ROM_SIZE  512 * 1024
 
@@ -182,6 +183,9 @@ bool OSystem::create()
 #ifdef DEBUGGER_SUPPORT
   myDebugger = new Debugger(this);
 #endif
+
+  // Set number of lines a mousewheel will scroll
+  ScrollBarWidget::setWheelLines(mySettings->getInt("mwheel"));
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems
@@ -769,54 +773,57 @@ void OSystem::queryVideoHardware()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /*
   Palette is defined as follows:
+    // Base colors
     kColor         TODO
     kBGColor       TODO
     kShadowColor      Item is disabled
-    kHiliteColor      Highlighted color in debugger data cells
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
     kTextColorEm   TODO
 
+    // UI elements (dialog and widgets)
     kDlgColor         Dialog background
     kWidColor         Widget background
+    kWidFrameColor    Border for currently selected widget
 
+    // Button colors
     kBtnColor         Normal button background
     kBtnColorHi       Highlighted button background
     kBtnTextColor     Normal button font color
     kBtnTextColorHi   Highlighted button font color
 
+    // Checkbox colors
+    kCheckColor       Color of 'X' in checkbox
+
+    // Scrollbar colors
     kScrollColor      Normal scrollbar color
     kScrollColorHi    Highlighted scrollbar color
 
-    kWidFrameColor    Border for currently selected widget
+    // Debugger colors
+    kDbgChangedColor      Background color for changed cells
+    kDbgChangedTextColor  Text color for changed cells
+    kDbgColorHi           Highlighted color in debugger data cells
 */
 uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
   // Standard
-  { 0x686868,  // kColor
-    0x000000,  // kBGColor
-    0x404040,  // kShadowColor
-    0xc8c8ff,  // kHiliteColor
-    0x000000,  // kTextColor
-    0x62a108,  // kTextColorHi
-    0xc80000,  // kTextColorEm
-    0xc9af7c,  // kDlgColor
-    0xf0f0cf,  // kWidColor
-    0xac3410,  // kBtnColor
-    0xd55941,  // kBtnColorHi
-    0xffffff,  // kBtnTextColor
-    0xffd652,  // kBtnTextColorHi
-    0xac3410,  // kCheckColor
-    0xac3410,  // kScrollColor
-    0xd55941,  // kScrollColorHi
-    0xac3410,  // kSliderColor
-    0xd55941,  // kSliderColorHi
-	0xc80000   // kWidFrameColor
+  { 0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
+    0xc9af7c, 0xf0f0cf, 0xc80000,
+    0xac3410, 0xd55941, 0xffffff, 0xffd652,
+    0xac3410,
+    0xac3410, 0xd55941,
+    0xac3410, 0xd55941,
+    0xc80000, 0x00ff00, 0xc8c8ff
   },
 
   // Classic
-  { 0x686868, 0x000000, 0x404040, 0xc8c8ff, 0x20a020, 0x00ff00, 0xc80000,
-    0x000000, 0x000000, 0x000000, 0x000000, 0x20a020, 0x00ff00, 0x20a020,
-    0x20a020, 0x00ff00, 0x20a020, 0x00ff00, 0xc80000 }
+  { 0x686868, 0x000000, 0x404040, 0x20a020, 0x00ff00, 0xc80000,
+    0x000000, 0x000000, 0xc80000,
+    0x000000, 0x000000, 0x20a020, 0x00ff00,
+    0x20a020,
+    0x20a020, 0x00ff00,
+    0x20a020, 0x00ff00,
+    0xc80000, 0x00ff00, 0xc8c8ff
+  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.11 2007-07-31 15:46:20 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.12 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -524,15 +524,15 @@ void DataGridWidget::drawWidget(bool hilite)
         int color = kTextColor;
         if(_changedList[pos])
         {
-          fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kTextColorEm);
+          fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
 
           if(_hiliteList[pos])
-            color = kHiliteColor;
+            color = kDbgColorHi;
           else
-            color = kTextColorHi;
+            color = kDbgChangedTextColor;
         }
         else if(_hiliteList[pos])
-          color = kHiliteColor;
+          color = kDbgColorHi;
 
         fb.drawString(_font, buffer, x, y, _colWidth, color);
       }

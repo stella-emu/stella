@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.11 2007-08-14 20:36:18 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.12 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,10 +107,6 @@ class PromptWidget : public Widget, public CommandSender
 
     int _kConsoleCharWidth, _kConsoleCharHeight, _kConsoleLineHeight;
 
-    int  defaultTextColor;
-    int  defaultBGColor;
-    int  textColor;
-    int  bgColor;
     bool _inverse;
     bool _makeDirty;
     bool _firstTime;

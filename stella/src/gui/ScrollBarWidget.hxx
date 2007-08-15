@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.hxx,v 1.8 2007-01-01 18:04:54 stephena Exp $
+// $Id: ScrollBarWidget.hxx,v 1.9 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,14 +31,6 @@
 class ScrollBarWidget : public Widget, public CommandSender
 {
   protected:
-    typedef enum {
-      kNoPart,
-      kUpArrowPart,
-      kDownArrowPart,
-      kSliderPart,
-      kPageUpPart,
-      kPageDownPart
-    } Part;
 
   public:
     ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
@@ -56,21 +48,34 @@ class ScrollBarWidget : public Widget, public CommandSender
     // should these accessors force a redraw?
     void recalc();
 
+    static void setWheelLines(int lines) { _WHEEL_LINES = lines; }
+
+  private:
+    void drawWidget(bool hilite);
+    void checkBounds(int old_pos);
+
   public:
     int _numEntries;
     int _entriesPerPage;
     int _currentPos;
 
-  protected:
-    void drawWidget(bool hilite);
-    void checkBounds(int old_pos);
+  private:
+    typedef enum {
+      kNoPart,
+      kUpArrowPart,
+      kDownArrowPart,
+      kSliderPart,
+      kPageUpPart,
+      kPageDownPart
+    } Part;
 
-  protected:
-    Part  _part;
+    Part _part;
+    Part _draggingPart;
     int _sliderHeight;
     int _sliderPos;
-    Part  _draggingPart;
     int _sliderDeltaMouseDownPos;
+
+    static int _WHEEL_LINES;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.122 2007-08-10 18:27:11 stephena Exp $
+// $Id: Settings.cxx,v 1.123 2007-08-15 17:43:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -84,6 +84,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("debuggerres", "1030x690");
   setInternal("launcherres", "400x300");
   setInternal("uipalette", "0");
+  setInternal("mwheel", "4");
   setInternal("autoslot", "false");
 }
 
@@ -307,6 +308,7 @@ void Settings::usage()
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
+    << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
     << "  -statedir     <dir>          Directory in which to save state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"

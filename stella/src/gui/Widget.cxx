@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.54 2007-08-12 23:05:12 stephena Exp $
+// $Id: Widget.cxx,v 1.55 2007-08-15 17:43:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -246,7 +246,7 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     if(tmp->_hasFocus)
     {
       tmp->lostFocus();
-      fb.frameRect(x, y, w, h, kDlgColor);  // FIXME - static issues
+      fb.frameRect(x, y, w, h, kDlgColor);
 
       tmp->setDirty(); tmp->draw();
       fb.addDirtyRect(x, y, w, h);
