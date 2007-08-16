@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.122 2007-08-10 18:27:11 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.123 2007-08-16 16:42:46 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -276,7 +276,7 @@ inline void FrameBuffer::drawMessage()
 {
   // Draw the bounded box and text
   fillRect(myMessage.x+1, myMessage.y+2, myMessage.w-2, myMessage.h-4, kBGColor);
-  box(myMessage.x, myMessage.y+1, myMessage.w, myMessage.h-2, kColor, kColor);
+  box(myMessage.x, myMessage.y+1, myMessage.w, myMessage.h-2, kColor, kShadowColor);
   drawString(&myOSystem->font(), myMessage.text, myMessage.x+1, myMessage.y+4,
              myMessage.w, myMessage.color, kTextAlignCenter);
   myMessage.counter--;
@@ -376,11 +376,15 @@ void FrameBuffer::setFullscreen(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::changeVidMode(int direction)
 {
+  bool saveModeChange = true;
+
   VideoMode oldmode = myCurrentModeList->current();
   if(direction == +1)
     myCurrentModeList->next();
   else if(direction == -1)
     myCurrentModeList->previous();
+  else
+    saveModeChange = false;  // no resolution or zoom level actually changed
 
   VideoMode newmode = myCurrentModeList->current();
   if(!setVidMode(newmode))
@@ -390,25 +394,27 @@ bool FrameBuffer::changeVidMode(int direction)
   setCursorState();
   showMessage(newmode.name);
 
-  // Determine which mode we're in, and save to the appropriate setting
-  if(fullScreen())
+  if(saveModeChange)
   {
-    myOSystem->settings().setSize("fullres", newmode.screen_w, newmode.screen_h);
-  }
-  else
-  {
-    EventHandler::State state = myOSystem->eventHandler().state();
-    bool inTIAMode = (state == EventHandler::S_EMULATE ||
-                      state == EventHandler::S_PAUSE   ||
-                      state == EventHandler::S_MENU    ||
-                      state == EventHandler::S_CMDMENU);
-
-    if(inTIAMode)
-      myOSystem->settings().setInt("zoom_tia", newmode.zoom);
+    // Determine which mode we're in, and save to the appropriate setting
+    if(fullScreen())
+    {
+      myOSystem->settings().setSize("fullres", newmode.screen_w, newmode.screen_h);
+    }
     else
-      myOSystem->settings().setInt("zoom_ui", newmode.zoom);
-  }
+    {
+      EventHandler::State state = myOSystem->eventHandler().state();
+      bool inTIAMode = (state == EventHandler::S_EMULATE ||
+                        state == EventHandler::S_PAUSE   ||
+                        state == EventHandler::S_MENU    ||
+                        state == EventHandler::S_CMDMENU);
 
+      if(inTIAMode)
+        myOSystem->settings().setInt("zoom_tia", newmode.zoom);
+      else
+        myOSystem->settings().setInt("zoom_ui", newmode.zoom);
+    }
+  }
   return true;
 /*
 cerr << "New mode:" << endl
