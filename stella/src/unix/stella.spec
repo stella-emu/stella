@@ -1,5 +1,5 @@
 %define name    stella
-%define version 2.3
+%define version 2.4
 %define rel     1
 
 %define build_plf 0

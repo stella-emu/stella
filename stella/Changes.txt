@@ -12,6 +12,69 @@
                                Release History
 ===============================================================================
 
+2.3.5 to 2.4: (August 20, 2007)
+
+  * Added new video sub-system where fullscreen and windowed modes are treated
+    differently.  Windowed modes now use '-zoom_tia' and '-zoom_ui' arguments,
+    while fullscreen modes can be specified by resolution using the new
+    '-fullres' argument.
+
+  * Widescreen video modes are now supported; Stella will simply center the
+    image with surrounding black borders.
+
+  * Many UI-related changes, including resizable ROM launcher and debugger
+    windows, and a new UI palette (the previous 'classic' palette is still
+    available).  This is still a work in progress.
+
+  * The locations of all major config files (statedir, palette file,
+    cheat file, properties file, etc) are now configurable from the
+    commandline and within the UI.
+
+  * Updates to TIA palette support.  Added SECAM support, and removed the
+    built-in 'original' palette.  Standard, z26, and user are still
+    available.
+
+  * Various bugfixes to some debugger commands.  The 'run' command no
+    longer causes a crash, and several others have better error-checking.
+
+  * Added more complete cartridge auto-detection for Commavid (CV), 3E,
+    3F and Activision (FE) formats.
+
+  * Removed XStart and Width ROM properties, since the forthcoming TIA
+    rework won't be using them.
+
+  * Reworked internal storage of ROM properties to be faster and take up
+    less space.
+
+  * Added several different ways of stretching the OpenGL image to the
+    '-gl_fsmax' argument, for more flexibility.
+
+  * Removed OpenGL aspect ratio setting favour of the previously mentioned
+    video changes.  We'll see how this goes.
+
+  * Removed dirty-rect support from software rendering, since it was actually
+    sub-optimal in Windows and OSX and defaulted to off in previous versions.
+
+  * Added support for gzipped ROMs.
+
+  * Re-added pause support.
+
+  * Re-added support for Windows 98.
+
+  * Removed support for 'STELLA_BASEDIR' environment variable, since each
+    config file can be now configured separately.
+
+  * Removed '-fastscbios' argument, since it must always be turned on.
+
+  * Removed PSP support, since it hasn't been updated in over a year, and
+    someone else is maintaining another port elsewhere.
+
+  * For the Unix/Linux port; fixed 'make install' issues, and changed icon to
+    PNG format.
+
+Have fun!
+
+
 2.3 to 2.3.5: (January 17, 2007)
 
   * Greatly improved cartridge bankswitch type auto-detection.  Stella
@@ -71,8 +134,6 @@
   * For the GP2X port; some improvements to the sound code.
 
   * For the GP2X port; added vertical centering of the TIA image (when possible).
-
-Have fun!
 
 
 2.2 to 2.3: (December 22, 2006)
