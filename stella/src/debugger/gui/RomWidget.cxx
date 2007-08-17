@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.21 2007-08-12 23:05:12 stephena Exp $
+// $Id: RomWidget.cxx,v 1.22 2007-08-17 16:12:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,7 +59,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   xpos += t->getWidth() + 10;
   myBank = new DataGridWidget(boss, font, xpos, ypos-2,
-                              1, 1, 2, 2, kBASE_16_4);
+                              1, 1, 3, 8, kBASE_10);
   myBank->setTarget(this);
   myBank->setRange(0, instance()->debugger().bankCount());
   if(instance()->debugger().bankCount() <= 1)
@@ -75,7 +75,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   xpos += t->getWidth() + 10;
   myBankCount = new EditTextWidget(boss, font, xpos, ypos-2,
-                                   20, font.getLineHeight(), "");
+                                   30, font.getLineHeight(), "");
   myBankCount->setEditable(false);
 
   // Create rom listing
@@ -210,8 +210,7 @@ void RomWidget::loadConfig()
   myBank->setList(alist, vlist, changed);
 
   // Indicate total number of banks
-  int bankCount = dbg.bankCount();
-  myBankCount->setEditString(dbg.valueToString(bankCount));
+  myBankCount->setEditString(dbg.valueToString(dbg.bankCount(), kBASE_10));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

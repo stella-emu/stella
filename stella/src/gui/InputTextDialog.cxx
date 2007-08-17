@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.17 2007-08-06 20:16:51 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.18 2007-08-17 16:12:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -39,8 +39,8 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = font.getStringWidth(" Cancel "),
-            bheight = font.getLineHeight() + 2;
+            bwidth  = font.getStringWidth("  Cancel  "),
+            bheight = font.getLineHeight() + 4;
   unsigned int xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 

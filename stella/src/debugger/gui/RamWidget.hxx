@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.3 2007-01-01 18:04:44 stephena Exp $
+// $Id: RamWidget.hxx,v 1.4 2007-08-17 16:12:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,6 +53,16 @@ class RamWidget : public Widget, public CommandSender
     void doRestart();
 
   private:
+    enum {
+      kUndoCmd     = 'RWud',
+      kRevertCmd   = 'RWrv',
+      kSearchCmd   = 'RWse',
+      kCmpCmd      = 'RWcp',
+      kRestartCmd  = 'RWrs',
+      kSValEntered = 'RWsv',
+      kCValEntered = 'RWcv'
+    };
+
     int myUndoAddress;
     int myUndoValue;
 

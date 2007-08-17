@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.50 2007-08-15 17:43:51 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.51 2007-08-17 16:12:50 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX
@@ -81,7 +81,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 58,
+      kNumCommands   = 57,
       kMAX_ARG_TYPES = 10 // TODO: put in separate header file Command.hxx
     };
 
@@ -168,7 +168,6 @@ class DebuggerParser
     void executePc();
     void executePrint();
     void executeRam();  // also implements 'poke' command
-    void executeReload();
     void executeReset();
     void executeRiot();
     void executeRom();

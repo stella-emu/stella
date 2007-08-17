@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.11 2007-01-01 18:04:44 stephena Exp $
+// $Id: RamWidget.cxx,v 1.12 2007-08-17 16:12:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,16 +31,6 @@
 #include "DataGridWidget.hxx"
 #include "RamDebug.hxx"
 #include "RamWidget.hxx"
-
-enum {
-  kUndoCmd     = 'RWud',
-  kRevertCmd   = 'RWrv',
-  kSearchCmd   = 'RWse',
-  kCmpCmd      = 'RWcp',
-  kRestartCmd  = 'RWrs',
-  kSValEntered = 'RWsv',
-  kCValEntered = 'RWcv'
-};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)

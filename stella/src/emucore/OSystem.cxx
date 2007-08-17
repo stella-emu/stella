@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.107 2007-08-15 19:14:49 stephena Exp $
+// $Id: OSystem.cxx,v 1.108 2007-08-17 16:12:50 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -160,7 +160,7 @@ bool OSystem::create()
 
   // Create fonts to draw text
   myFont         = new GUI::Font(GUI::stellaDesc);
-  myLauncherFont = new GUI::Font(GUI::stellaDesc);  // FIXME
+  myLauncherFont = new GUI::Font(GUI::stellaDesc);
   myConsoleFont  = new GUI::Font(GUI::consoleDesc);
 
   // Create the event handler for the system

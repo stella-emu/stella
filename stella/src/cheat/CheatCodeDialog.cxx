@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.14 2007-01-01 18:04:39 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.15 2007-08-17 16:12:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -70,7 +70,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   myCheatInput = new InputTextDialog(this, font, labels, 0, 0);
   myCheatInput->setTarget(this);
 
-  // Add OK and Cancel buttons  **** FIXME - coordinates
+  // Add OK and Cancel buttons
 #ifndef MAC_OSX
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
   wid.push_back(b);

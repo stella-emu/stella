@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.100 2007-08-15 17:43:51 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.101 2007-08-17 16:12:50 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1096,16 +1096,6 @@ void DebuggerParser::executeRam()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "reload"
-void DebuggerParser::executeReload()
-{
-  debugger->quit();
-  debugger->getOSystem()->createConsole();
-  debugger->start();
-  commandResult = "_EXIT_DEBUGGER";  // Set PromptWidget for more info
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "reset"
 void DebuggerParser::executeReset()
 {
@@ -1656,15 +1646,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeRam
-  },
-
-  {
-    "reload",
-    "Reload ROM and symbol file",
-    false,
-    true,
-    { kARG_END_ARGS },
-    &DebuggerParser::executeReload
   },
 
   {
