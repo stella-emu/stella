@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.123 2007-08-15 17:43:51 stephena Exp $
+// $Id: Settings.cxx,v 1.124 2007-08-21 17:58:25 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -37,6 +37,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("video", "soft");
 
   setInternal("gl_filter", "nearest");
+  setInternal("gl_aspect", "100");
   setInternal("gl_fsmax", "never");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
@@ -203,6 +204,10 @@ void Settings::validate()
   if(s != "linear" && s != "nearest")
     setInternal("gl_filter", "nearest");
 
+  i = getInt("gl_aspect");
+  if(i < 50 || i > 100)
+    setInternal("gl_aspect", "100");
+
   s = getString("gl_fsmax");
   if(s != "never" && s != "ui" && s != "tia" && s != "always")
     setInternal("gl_fsmax", "never");
@@ -264,6 +269,7 @@ void Settings::usage()
     << "  -gl_filter    <type>         Type is one of the following:\n"
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
+    << "  -gl_aspect    <number>       Scale the width by the given percentage\n"
     << "  -gl_fsmax     <never|always| Stretch GL image in fullscreen mode\n"
     << "                 ui|tia\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"

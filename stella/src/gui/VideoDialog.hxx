@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.21 2007-06-21 12:27:00 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.22 2007-08-21 17:58:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,6 +53,8 @@ class VideoDialog : public Dialog
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myFilterPopup;
     PopUpWidget*      myFSStretchPopup;
+    SliderWidget*     myAspectRatioSlider;
+    StaticTextWidget* myAspectRatioLabel;
     PopUpWidget*      myPalettePopup;
     PopUpWidget*      myFSResPopup;
     SliderWidget*     myUIZoomSlider;
@@ -68,11 +70,12 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myCenterCheckbox;
 
     enum {
-      kRendererChanged   = 'VDrd',
-      kUIZoomChanged     = 'VDui',
-      kTIAZoomChanged    = 'VDti',
-      kFrameRateChanged  = 'VDfr',
-      kFullScrChanged    = 'VDfs'
+      kRendererChanged    = 'VDrd',
+      kAspectRatioChanged = 'VDar',
+      kUIZoomChanged      = 'VDui',
+      kTIAZoomChanged     = 'VDti',
+      kFrameRateChanged   = 'VDfr',
+      kFullScrChanged     = 'VDfs'
     };
 };
 

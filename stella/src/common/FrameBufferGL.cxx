@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.87 2007-06-20 16:33:22 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.88 2007-08-21 17:58:25 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -89,7 +89,8 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
     myTexture(NULL),
     myHaveTexRectEXT(false),
     myFilterParamName("GL_NEAREST"),
-    myScaleFactor(1.0),
+    myWidthScaleFactor(1.0),
+    myHeightScaleFactor(1.0),
     myDirtyFlag(true)
 {
 }
@@ -240,6 +241,10 @@ string FrameBufferGL::about()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::setVidMode(VideoMode mode)
 {
+  bool inUIMode =
+    myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
+    myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
+
   myScreenDim.x = myScreenDim.y = 0;
   myScreenDim.w = mode.screen_w;
   myScreenDim.h = mode.screen_h;
@@ -249,15 +254,16 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
   myImageDim.w = mode.image_w;
   myImageDim.h = mode.image_h;
 
-  // Activate stretching if its been requested and it makes sense to do so
-  myScaleFactor = 1.0;
+  // Normally, we just scale to the given zoom level
+  myWidthScaleFactor  = (float) mode.zoom;
+  myHeightScaleFactor = (float) mode.zoom;
+
+  // Activate stretching if its been requested in fullscreen mode
+  float stretchFactor = 1.0;
   if(fullScreen() && (mode.image_w < mode.screen_w) &&
      (mode.image_h < mode.screen_h))
   {
     const string& gl_fsmax = myOSystem->settings().getString("gl_fsmax");
-    bool inUIMode =
-      myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
-      myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
 
     // Only stretch in certain modes
     if((gl_fsmax == "always") || 
@@ -268,24 +274,34 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
       float scaleY = float(myImageDim.h) / myScreenDim.h;
 
       if(scaleX > scaleY)
-        myScaleFactor = float(myScreenDim.w) / myImageDim.w;
+        stretchFactor = float(myScreenDim.w) / myImageDim.w;
       else
-        myScaleFactor = float(myScreenDim.h) / myImageDim.h;
-
-      myImageDim.w = (Uint16) (myScaleFactor * myImageDim.w);
-      myImageDim.h = (Uint16) (myScaleFactor * myImageDim.h);
-      myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
-      myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
+        stretchFactor = float(myScreenDim.h) / myImageDim.h;
     }
   }
+  myWidthScaleFactor  *= stretchFactor;
+  myHeightScaleFactor *= stretchFactor;
 
-  // Combine the zoom level and scaler into one quantity
-  myScaleFactor *= (float) mode.zoom;
+  // Activate aspect ratio correction in TIA mode
+  int iaspect = myOSystem->settings().getInt("gl_aspect");
+  float aspectFactor = 1.0;
+  if(!inUIMode && iaspect < 100)
+  {
+    aspectFactor = float(iaspect) / 100.0;
+    myWidthScaleFactor *= aspectFactor;
+  }
+
+  // Now re-calculate the dimensions
+  myImageDim.w = (Uint16) (stretchFactor * aspectFactor * myImageDim.w);
+  myImageDim.h = (Uint16) (stretchFactor * myImageDim.h);
+  if(!fullScreen()) myScreenDim.w = myImageDim.w;
+  myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
+  myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
 
   GLdouble orthoWidth  = (GLdouble)
-      (myImageDim.w / myScaleFactor);
+      (myImageDim.w / myWidthScaleFactor);
   GLdouble orthoHeight = (GLdouble)
-      (myImageDim.h / myScaleFactor);
+      (myImageDim.h / myHeightScaleFactor);
 
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   myRGB[0] );
   SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
@@ -565,8 +581,8 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 void FrameBufferGL::translateCoords(Int32& x, Int32& y)
 {
   // Wow, what a mess :)
-  x = (Int32) ((x - myImageDim.x) / myScaleFactor);
-  y = (Int32) ((y - myImageDim.y) / myScaleFactor);
+  x = (Int32) ((x - myImageDim.x) / myWidthScaleFactor);
+  y = (Int32) ((y - myImageDim.y) / myHeightScaleFactor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

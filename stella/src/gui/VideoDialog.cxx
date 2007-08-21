@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.45 2007-08-05 15:34:26 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.46 2007-08-21 17:58:25 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -115,6 +115,18 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                                         ypos + 1,
                                         15, fontHeight, "", kTextAlignLeft);
   myTIAZoomLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
+  // GL aspect ratio
+  myAspectRatioSlider =
+    new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                     "GL Aspect: ", lwidth, kAspectRatioChanged);
+  myAspectRatioSlider->setMinValue(50); myAspectRatioSlider->setMaxValue(100);
+  wid.push_back(myAspectRatioSlider);
+  myAspectRatioLabel =
+    new StaticTextWidget(this, font, xpos + myAspectRatioSlider->getWidth() + 4,
+                         ypos + 1, 15, fontHeight, "", kTextAlignLeft);
+  myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
 
   // Move over to the next column
   xpos += 115;  ypos = 10;
@@ -186,6 +198,8 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Disable certain functions when we know they aren't present
 #ifndef DISPLAY_GL
   myFilterPopup->clearFlags(WIDGET_ENABLED);
+  myAspectRatioSlider->clearFlags(WIDGET_ENABLED);
+  myAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myFSStretchPopup->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
@@ -252,6 +266,12 @@ void VideoDialog::loadConfig()
   i = instance()->settings().getInt("zoom_tia");
   myTIAZoomSlider->setValue(i);
   myTIAZoomLabel->setLabel(s);
+
+  // GL aspect ratio setting
+  s = instance()->settings().getString("gl_aspect");
+  i = instance()->settings().getInt("gl_aspect");
+  myAspectRatioSlider->setValue(i);
+  myAspectRatioLabel->setLabel(s);
 
   // FIXME - what to do with this??
   myFrameRateSlider->setEnabled(false);
@@ -324,6 +344,10 @@ void VideoDialog::saveConfig()
   s = myTIAZoomLabel->getLabel();
   instance()->settings().setString("zoom_tia", s);
 
+  // GL aspect ratio setting
+  s = myAspectRatioLabel->getLabel();
+  instance()->settings().setString("gl_aspect", s);
+
   // Framerate   FIXME - I haven't figured out what to do with this yet
 /*
   i = myFrameRateSlider->getValue();
@@ -363,6 +387,8 @@ void VideoDialog::setDefaults()
   myUIZoomLabel->setLabel("2");
   myTIAZoomSlider->setValue(2);
   myTIAZoomLabel->setLabel("2");
+  myAspectRatioSlider->setValue(100);
+  myAspectRatioLabel->setLabel("100");
 //  myFrameRateSlider->setValue(0);
 //  myFrameRateLabel->setLabel("0");
 
@@ -385,7 +411,8 @@ void VideoDialog::handleRendererChange(int item)
 
   myFilterPopup->setEnabled(gl);
   myFSStretchPopup->setEnabled(gl);
-  myFSStretchPopup->setEnabled(gl);
+  myAspectRatioSlider->setEnabled(gl);
+  myAspectRatioLabel->setEnabled(gl);
   myUseVSyncCheckbox->setEnabled(gl);
 
   _dirty = true;
@@ -432,6 +459,10 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kTIAZoomChanged:
       myTIAZoomLabel->setValue(myTIAZoomSlider->getValue());
+      break;
+
+    case kAspectRatioChanged:
+      myAspectRatioLabel->setValue(myAspectRatioSlider->getValue());
       break;
 
     case kFrameRateChanged:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.44 2007-06-20 16:33:22 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.45 2007-08-21 17:58:25 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -36,7 +36,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.44 2007-06-20 16:33:22 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.45 2007-08-21 17:58:25 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -253,10 +253,10 @@ class FrameBufferGL : public FrameBuffer
     // The name of the texture filtering to use
     string myFilterParamName;
 
-    // The amount by which to scale the imagein fullscreen mode
-    float myScaleFactor;
+    // The amount by which to scale the image in each dimension in fullscreen mode
+    float myWidthScaleFactor, myHeightScaleFactor;
 
-    // TODO - will be removed when textured dirty rect support is added
+    // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
 
     // Indicates if the OpenGL functions have been properly loaded

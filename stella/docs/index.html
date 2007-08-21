@@ -604,15 +604,14 @@
 				GL_LINEAR introduces blurring.</td>
 		</tr>
 
-<!--
 		<tr>
 			<td><pre>-gl_aspect &lt;number&gt;</pre></td>
-			<td>OpenGL mode only. Specify the aspect ratio of the window.  Normal
-				TV mode would be 4:3, so you would specify 1.3333.  But since
-				many video modes do not use	square pixels, you may have to try
-				different values.  I find 1.6 or 1.7 gives the most authentic look.</td>
+			<td>OpenGL mode only. Specify the amount (as a percentage) to scale the
+				image width. Since many video modes do not use square pixels, you can
+				reduce width until the pixels appear square.  Allowable values are
+				50 - 100; I find 85 - 90 gives the most authentic look.</td>
 		</tr>
--->
+
 		<tr>
 			<td><pre>-gl_fsmax &lt;never|always|ui|tia&gt;</pre></td>
 			<td>OpenGL mode only. Stretch fullscreen image while in the given mode.</td>
