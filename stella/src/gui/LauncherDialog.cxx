@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.68 2007-01-19 21:53:27 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.69 2007-08-22 13:55:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -201,15 +201,7 @@ void LauncherDialog::updateListing(bool fullReload)
     // Disable buttons, pending a reload from disk
     enableButtons(false);
 
-    // Figure out if the ROM dir has changed since we last accessed it.
-    // If so, we do a full reload from disk (takes quite some time).
-    // Otherwise, we can use the cache file (which is much faster).
-    string currentModTime = FilesystemNode::modTime(romdir);
-    string oldModTime = instance()->settings().getString("modtime");
-
-    if(currentModTime != oldModTime)  // romdir has changed
-      loadListFromDisk();
-    else if(FilesystemNode::fileExists(instance()->cacheFile()) && !fullReload)
+    if(FilesystemNode::fileExists(instance()->cacheFile()) && !fullReload)
       loadListFromCache();
     else  // we have no other choice
       loadListFromDisk();
@@ -329,11 +321,6 @@ void LauncherDialog::loadListFromDisk()
   // And create a cache file, so that the next time Stella starts,
   // we don't have to do this time-consuming operation again
   createListCache();
-
-  // Finally, update the modification time so we don't have to needlessly
-  // call this method again
-  string currentModTime = FilesystemNode::modTime(romdir);
-  instance()->settings().setString("modtime", currentModTime);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.124 2007-08-21 17:58:25 stephena Exp $
+// $Id: Settings.cxx,v 1.125 2007-08-22 13:55:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -81,6 +81,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("cheatfile", "");
   setInternal("palettefile", "");
   setInternal("propsfile", "");
+
+  setInternal("rombrowse", "true");
+  setInternal("lastrom", "");
 
   setInternal("debuggerres", "1030x690");
   setInternal("launcherres", "400x300");
@@ -306,6 +309,7 @@ void Settings::usage()
     << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
+    << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"

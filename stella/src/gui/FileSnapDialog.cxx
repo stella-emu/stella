@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.11 2007-08-15 17:43:51 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.12 2007-08-22 13:55:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,23 +49,17 @@ FileSnapDialog::FileSnapDialog(
   xpos = vBorder;  ypos = vBorder;
 
   // ROM path
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Rom path:",
-                       kChooseRomDirCmd);
-  wid.push_back(b);
+  ButtonWidget* romButton = 
+    new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Rom path:",
+                     kChooseRomDirCmd);
+  wid.push_back(romButton);
   xpos += bwidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
                                  _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(myRomPath);
 
-  // ROM settings are disabled while in game mode
-  if(!myIsGlobal)
-  {
-    b->clearFlags(WIDGET_ENABLED);
-    myRomPath->setEditable(false);
-  }
-
   // State directory
-  xpos = vBorder;  ypos += b->getHeight() + 3;
+  xpos = vBorder;  ypos += romButton->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "State path:",
                        kChooseStateDirCmd);
   wid.push_back(b);
@@ -114,8 +108,23 @@ FileSnapDialog::FileSnapDialog(
                                   _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(mySnapPath);
 
-  // Snapshot single or multiple saves
+  // Use ROM browse mode
   xpos = 30;  ypos += mySnapPath->getHeight() + 8;
+  myBrowseCheckbox =
+    new CheckboxWidget(this, font, xpos, ypos, "Browse folders", kBrowseDirCmd);
+  wid.push_back(myBrowseCheckbox);
+	 	 
+  // Reload current ROM listing (in non-browse mode)
+  xpos += myBrowseCheckbox->getWidth() + 20;
+  myReloadRomButton =
+    new ButtonWidget(this, font, xpos, ypos-2,
+                     font.getStringWidth(" Reload ROM Listing "), bheight,
+                     "Reload ROM Listing", kReloadRomDirCmd);
+  //myReloadButton->setEditable(true);
+  wid.push_back(myReloadRomButton);
+
+  // Snapshot single or multiple saves
+  xpos = 30;  ypos += myBrowseCheckbox->getHeight() + 4;
   mySnapSingleCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                             "Multiple snapshots");
   wid.push_back(mySnapSingleCheckbox);
@@ -141,6 +150,15 @@ FileSnapDialog::FileSnapDialog(
 
   addToFocusList(wid);
 
+  // All ROM settings are disabled while in game mode
+  if(!myIsGlobal)
+  {
+    romButton->clearFlags(WIDGET_ENABLED);
+    myRomPath->setEditable(false);
+    myBrowseCheckbox->clearFlags(WIDGET_ENABLED);
+    myReloadRomButton->clearFlags(WIDGET_ENABLED);
+  }
+
   // Create file browser dialog
   myBrowser = new BrowserDialog(this, font, 60, 20, 200, 200);
 }
@@ -159,8 +177,10 @@ void FileSnapDialog::loadConfig()
   myCheatFile->setEditString(instance()->cheatFile());
   myPaletteFile->setEditString(instance()->paletteFile());
   myPropsFile->setEditString(instance()->propertiesFile());
-
   mySnapPath->setEditString(instance()->settings().getString("ssdir"));
+  bool b = instance()->settings().getBool("rombrowse");
+  myBrowseCheckbox->setState(b);
+  myReloadRomButton->setEnabled(myIsGlobal && !b);
   mySnapSingleCheckbox->setState(!instance()->settings().getBool("sssingle"));
 }
 
@@ -172,8 +192,8 @@ void FileSnapDialog::saveConfig()
   instance()->settings().setString("cheatfile", myCheatFile->getEditString());
   instance()->settings().setString("palettefile", myPaletteFile->getEditString());
   instance()->settings().setString("propsfile", myPropsFile->getEditString());
-
   instance()->settings().setString("ssdir", mySnapPath->getEditString());
+  instance()->settings().setBool("rombrowse", myBrowseCheckbox->getState());
   instance()->settings().setBool("sssingle", !mySnapSingleCheckbox->getState());
 
   // Flush changes to disk and inform the OSystem
@@ -222,7 +242,10 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       close();
       if(myIsGlobal)
+      {
+        sendCommand(kBrowseChangedCmd, 0, 0); // Call this before refreshing ROMs
         sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
+      }
       break;
 
     case kDefaultsCmd:
@@ -300,6 +323,10 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       mySnapPath->setEditString(dir.path());
       break;
     }
+
+    case kReloadRomDirCmd:
+      sendCommand(kReloadRomDirCmd, 0, 0);	 
+      break;
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.25 2007-01-18 16:45:22 knakos Exp $
+// $Id: LauncherDialog.hxx,v 1.26 2007-08-22 13:55:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,12 +31,8 @@ class StringListWidget;
 class ButtonWidget;
 class OSystem;
 
-#ifdef _WIN32_WCE
-  // different include order for the ce compiler
-  #include "FSNode.hxx"
-#endif
-#include "Dialog.hxx"
 #include "FSNode.hxx"
+#include "Dialog.hxx"
 #include "GameList.hxx"
 #include "bspf.hxx"
 
