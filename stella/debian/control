@@ -1,0 +1,17 @@
+Source: stella
+Section: games
+Priority: optional
+Maintainer: Stephen Anthony <stephena@users.sourceforge.net>
+Standards-Version: 3.7.2
+Build-Depends: debhelper (>= 5.0.0), libsdl1.2-dev, zlib1g-dev
+
+Package: stella
+Architecture: any
+Depends: ${shlibs:Depends}
+Description: Atari 2600 Emulator for SDL & X windows
+ The Atari 2600 Video Computer System (VCS), introduced in 1977, was
+ the most popular home video game system of the early 1980's.  This
+ emulator will run most Atari ROM images, so that you can play your
+ favorite old Atari 2600 games on your PC.
+ .
+  Homepage: http://stella.sf.net/
