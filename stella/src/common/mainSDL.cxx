@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.74 2007-07-27 13:49:16 stephena Exp $
+// $Id: mainSDL.cxx,v 1.75 2007-08-25 23:57:35 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -137,6 +137,15 @@ int main(int argc, char* argv[])
   // Request that the SDL window be centered, if possible
   if(theOSystem->settings().getBool("center"))
     putenv("SDL_VIDEO_CENTERED=1");
+
+#ifdef BSPF_UNIX
+  // Nvidia cards under UNIX don't currently support SDL_GL_SWAP_CONTROL
+  // So we need to do it with an Nvidia-specific environment variable
+  // This also means the setting can only be changed by restarting Stella
+  // This functionality should really be integrated into SDL directly
+  if(theOSystem->settings().getBool("gl_vsync"))
+    putenv("__GL_SYNC_TO_VBLANK=1");
+#endif
 
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
