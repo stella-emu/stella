@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                  Release 2.4 for Linux, Mac OSX and Windows
+                 Release 2.4.1 for Linux, Mac OSX and Windows
 ===============================================================================
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most 
@@ -21,21 +21,23 @@ of your favorite Atari 2600 games again!  Stella was originally developed for
 Linux by Bradford W. Mott, however, it has been ported to a number of other
 platforms.
 
-This is the 2.4 release of Stella for Linux, Mac OSX, Windows and GP2X.
+This is the 2.4.1 release of Stella for Linux, Mac OSX, Windows and GP2X.
 Distributions for other operating systems will appear as they become available.
 The distributions currently available are:
 
-  * Binary distribution in RPM format for Linux (stella-2.4-1.i586.rpm)
+  * Binary distribution in 32-bit RPM format for Linux (stella-2.4.1-1.i586.rpm)
 
-  * Binary distribution for Mac OSX (StellaOSX2.4.dmg.gz)
+  * Binary distribution in 32-bit Ubuntu DEB format (stella_2.4.1-1_i386.deb)
 
-  * Binary installer (exe) for Windows (stella-2.4-win32.exe)
+  * Binary distribution in 64-bit Ubuntu DEB format (stella_2.4.1-1_amd64.deb)
 
-  * Binary zip for Windows (stella-2.4-win32.zip)
+  * Binary distribution for Mac OSX (StellaOSX2.4.1.dmg.gz)
 
-  * Source code in SRPM format for Linux RPM-based systems (stella-2.4-1.src.rpm)
+  * Binary installer (exe) for Windows (stella-2.4.1-win32.exe)
 
-  * Source code distribution for all platforms (stella-2.4-src.tar.gz)
+  * Binary zip for Windows (stella-2.4.1-win32.zip)
+
+  * Source code distribution for all platforms (stella-2.4.1-src.tar.gz)
 
 PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
 REQUESTS WILL BE IGNORED!

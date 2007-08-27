@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.4</b></h4></center>
+	<center><h4><b>Release 2.4.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -218,66 +218,14 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.4</b></h2>
+	<h2><b>New in Release 2.4.1</b></h2>
 
 	<ul>
-<li>Added new video sub-system where fullscreen and windowed modes are treated
-    differently.  Windowed modes now use '-zoom_tia' and '-zoom_ui' arguments,
-    while fullscreen modes can be specified by resolution using the new
-    '-fullres' argument.</li>
+<li>Re-added OpenGL aspect ratio setting ('gl_aspect' commandline argument).</li>
 
-<li>Widescreen video modes are now supported; Stella will simply center the
-    image with surrounding black borders.</li>
+<li>Re-added non-browser mode to the ROM launcher.</li>
 
-<li>Many UI-related changes, including resizable ROM launcher and debugger
-    windows, and a new UI palette (the previous 'classic' palette is still
-    available).  This is still a work in progress.</li>
-
-<li>The locations of all major config files (statedir, palette file,
-    cheat file, properties file, etc) are now configurable from the
-    commandline and within the UI.</li>
-
-<li>Updates to TIA palette support.  Added SECAM support, and removed the
-    built-in 'original' palette.  Standard, z26, and user are still
-    available.</li>
-
-<li>Various bugfixes to some debugger commands.  The 'run' command no
-    longer causes a crash, and several others have better error-checking.</li>
-
-<li>Added more complete cartridge auto-detection for Commavid (CV), 3E,
-    3F and Activision (FE) formats.</li>
-
-<li>Removed XStart and Width ROM properties, since the forthcoming TIA
-    rework won't be using them.</li>
-
-<li>Reworked internal storage of ROM properties to be faster and take up
-    less space.</li>
-
-<li>Added several different ways of stretching the OpenGL image to the
-    '-gl_fsmax' argument, for more flexibility.</li>
-
-<li>Removed OpenGL aspect ratio setting favour of the previously mentioned
-    video changes.  We'll see how this goes.</li>
-
-<li>Removed dirty-rect support from software rendering, since it was actually
-    sub-optimal in Windows and OSX and defaulted to off in previous versions.</li>
-
-<li>Added support for gzipped ROMs.</li>
-
-<li>Re-added pause support.</li>
-
-<li>Re-added support for Windows 98.</li>
-
-<li>Removed support for 'STELLA_BASEDIR' environment variable, since each
-    config file can be now configured separately.</li>
-
-<li>Removed '-fastscbios' argument, since it must always be turned on.</li>
-
-<li>Removed PSP support, since it hasn't been updated in over a year, and
-    someone else is maintaining another port elsewhere.</li>
-
-<li>For the Unix/Linux port; fixed 'make install' issues, and changed icon to
-    PNG format.</li>
+<li>For the Linux/UNIX port; fixed OpenGL vsync issue with Nvidia video cards.</li>
 	</ul>
 
 	<p>
@@ -416,12 +364,10 @@
 			<li>Install the executable with the following command:
 				<pre>   make install</pre></li>
 		</ol>
-		<li><b>Source RPM</b> (stella-<i>release</i>-1.src.rpm)</li>
+		<li><b>Binary DEB</b> (stella-<i>release</i>-1_arch.deb)</li>
 		<ol>
-			<li>Rebuild the archive with the following command:
-				<pre>   rpmbuild --rebuild stella-<i>release</i>-1.src.rpm</pre></li>
-			<li>Follow the instructions under <i>Binary RPM</i> to install
-				the stella-<i>release</i>-1.ix86.rpm file</li>
+			<li>Install the binary DEB with the following command:
+				<pre>   dpkg -i stella-<i>release</i>-1_arch.deb</pre></li>
 		</ol>
 		<li><b>Binary RPM</b> (stella-<i>release</i>-1.ix86.rpm)</li>
 		<ol>
@@ -757,6 +703,11 @@
 		<tr>
 			<td><pre>-pthresh &lt;number&gt;</pre></td>
 			<td>Set threshold for eliminating paddle jitter.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-rombrowse &lt;1|0&gt;</pre></td>
+			<td>Use browser mode (shows files and folders) in ROM launcher.</td>
 		</tr>
 
 		<tr>

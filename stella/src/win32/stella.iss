@@ -3,14 +3,14 @@
 
 [Setup]
 AppName=Stella
-AppVerName=Stella 2.4
+AppVerName=Stella 2.4.1
 AppPublisher=Bradford W. Mott and the Stella team
 AppPublisherURL=http://stella.sourceforge.net
 AppSupportURL=http://stella.sourceforge.net
 AppUpdatesURL=http://stella.sourceforge.net
 DefaultDirName={pf}\Stella
 DefaultGroupName=Stella
-OutputBaseFilename=stella-2.4-win32
+OutputBaseFilename=stella-2.4.1-win32
 Compression=lzma
 SolidCompression=yes
 
@@ -21,10 +21,10 @@ Name: "eng"; MessagesFile: "compiler:Default.isl"
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
 
 [Files]
-Source: "H:\windows\src\stella\stella-2.4\stella.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.4\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.4\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "H:\windows\src\stella\stella-2.4\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "H:\windows\src\stella\stella-2.4.1\stella.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "H:\windows\src\stella\stella-2.4.1\zlib1.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "H:\windows\src\stella\stella-2.4.1\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "H:\windows\src\stella\stella-2.4.1\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
