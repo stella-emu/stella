@@ -1,6 +1,6 @@
-stella (2.4-1) unstable; urgency=low
+stella (2.4.1-1) stable; urgency=low
 
-  * Test compile
+  * Version 2.4.1 release
 
- -- Stephen Anthony <stephena@users.sf.net>  Fri, 24 Aug 2007 18:38:25 +0200
+ -- Stephen Anthony <stephena@users.sf.net>  Mon, 27 Aug 2007 18:38:25 +0200
 
