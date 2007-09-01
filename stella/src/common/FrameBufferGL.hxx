@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.45 2007-08-21 17:58:25 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.46 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -36,7 +36,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.45 2007-08-21 17:58:25 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.46 2007-09-01 23:31:18 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -127,6 +127,15 @@ class FrameBufferGL : public FrameBuffer
       { return SDL_MapRGB(myTexture->format, r, g, b); }
 
     /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param width   The requested width of the new surface.
+      @param height  The requested height of the new surface.
+    */
+    virtual SDL_Surface* cloneSurface(int width, int height);
+
+    /**
       This method is called to draw a horizontal line.
 
       @param x     The first x coordinate
@@ -181,6 +190,27 @@ class FrameBufferGL : public FrameBuffer
     */
     virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
                             Int32 h = 8);
+
+    /**
+      This method should be called to draw an SDL surface.
+
+      @param surface The data to draw
+      @param x       The x coordinate
+      @param y       The y coordinate
+    */
+    virtual void drawSurface(SDL_Surface* surface, Int32 x, Int32 y);
+
+    /**
+      This method should be called to convert and copy a given row of RGB
+      data into an SDL surface.
+
+      @param surface The data to draw
+      @param row     The row of the surface the data should be placed in
+      @param data    The data in uInt8 R/G/B format
+      @param rowsize The number of R/G/B triples in a data row
+    */
+    virtual void convertToSurface(SDL_Surface* surface, int row,
+                                  uInt8* data, int rowsize) const;
 
     /**
       This method translates the given coordinates to their

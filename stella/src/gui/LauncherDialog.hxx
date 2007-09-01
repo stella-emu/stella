@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.26 2007-08-22 13:55:40 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.27 2007-09-01 23:31:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class CommandSender;
 class StaticTextWidget;
 class StringListWidget;
 class ButtonWidget;
+class RomInfoWidget;
 class OSystem;
 
 #include "FSNode.hxx"
@@ -72,6 +73,8 @@ class LauncherDialog : public Dialog
     OptionsDialog*    myOptions;
     ProgressDialog*   myProgressBar;
 
+    RomInfoWidget*    myRomInfoWidget;
+
   private:
     void enableButtons(bool enable);
     void loadDirListing();
@@ -82,7 +85,8 @@ class LauncherDialog : public Dialog
 
   private:
     int mySelectedItem;
-    bool myBrowseModeFlag; 
+    bool myBrowseModeFlag;
+    bool myRomInfoFlag;
     FilesystemNode myCurrentNode;
 
     enum {

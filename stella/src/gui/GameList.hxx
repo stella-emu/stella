@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.hxx,v 1.13 2007-01-01 18:04:53 stephena Exp $
+// $Id: GameList.hxx,v 1.14 2007-09-01 23:31:18 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -38,15 +38,18 @@ class GameList
     { return i < (int)myArray.size() ? myArray[i]._name : EmptyString; }
     inline const string& path(int i)
     { return i < (int)myArray.size() ? myArray[i]._path : EmptyString; }
-    inline const string& note(int i)
-    { return i < (int)myArray.size() ? myArray[i]._note : EmptyString; }
+    inline const string& md5(int i)
+    { return i < (int)myArray.size() ? myArray[i]._md5 : EmptyString; }
     inline const bool isDir(int i)
     { return i < (int)myArray.size() ? myArray[i]._isdir: false; }
+
+    inline void setMd5(int i, const string& md5)
+    { myArray[i]._md5 = md5; }
 
     inline int size() { return myArray.size(); }
     inline void clear() { myArray.clear(); }
 
-    void appendGame(const string& name, const string& path, const string& note,
+    void appendGame(const string& name, const string& path, const string& md5,
                     bool isDir = false);
     void sortByName();
 
@@ -55,7 +58,7 @@ class GameList
       public:
         string _name;
         string _path;
-        string _note;
+        string _md5;
         bool   _isdir;
 
         bool operator < (const Entry& a) const;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.88 2007-08-21 17:58:25 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.89 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -578,6 +578,27 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::drawSurface(SDL_Surface* surface, Int32 x, Int32 y)
+{
+  SDL_Rect clip;
+  clip.x = x;
+  clip.y = y;
+
+  SDL_BlitSurface(surface, 0, myTexture, &clip);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::convertToSurface(SDL_Surface* surface, int row,
+                                     uInt8* data, int rowsize) const
+{
+  uInt16* pixels = (uInt16*) surface->pixels;
+  pixels += (row * surface->pitch/2);
+
+  for(int c = 0; c < rowsize; c += 3)
+    *pixels++ = SDL_MapRGB(surface->format, data[c], data[c+1], data[c+2]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::translateCoords(Int32& x, Int32& y)
 {
   // Wow, what a mess :)
@@ -698,6 +719,17 @@ bool FrameBufferGL::createTextures()
                  myBuffer.format, myBuffer.type, myBuffer.pixels);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SDL_Surface* FrameBufferGL::cloneSurface(int width, int height)
+{
+  SDL_PixelFormat* fmt = myTexture->format;
+  SDL_Surface* surface =
+    SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 16,
+                         fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+
+  return surface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

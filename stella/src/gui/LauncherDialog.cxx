@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.69 2007-08-22 13:55:40 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.70 2007-09-01 23:31:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,6 +30,7 @@
 #include "MD5.hxx"
 #include "Widget.hxx"
 #include "StringListWidget.hxx"
+#include "RomInfoWidget.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "GuiUtils.hxx"
@@ -51,8 +52,10 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myList(NULL),
     myGameList(NULL),
     myProgressBar(NULL),
+    myRomInfoWidget(NULL),
     mySelectedItem(0),
-    myBrowseModeFlag(false)
+    myBrowseModeFlag(true),
+    myRomInfoFlag(false)
 {
   const GUI::Font& font = instance()->launcherFont();
 
@@ -61,6 +64,15 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   const int bheight = font.getLineHeight() + 4;
   int xpos = 0, ypos = 0, lwidth = 0;
   WidgetArray wid;
+
+  // Check if we want the ROM info viewer
+  // Make sure it will fit within the current bounds
+  myRomInfoFlag = instance()->settings().getBool("romviewer");
+  if((w < 600 || h < 400) && myRomInfoFlag)
+  {
+    cerr << "Error: ROM launcher too small, deactivating ROM info viewer" << endl;
+    myRomInfoFlag = false;
+  }
 
   // Show game name
   lwidth = font.getStringWidth("Select an item from the list ...");
@@ -76,13 +88,23 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add list with game titles
   xpos = 10;  ypos += fontHeight + 5;
+  int listWidth = myRomInfoFlag ? _w - 350 : _w - 20;
   myList = new StringListWidget(this, font, xpos, ypos,
-                                _w - 20, _h - 28 - bheight - 2*fontHeight);
+                                listWidth, _h - 28 - bheight - 2*fontHeight);
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   wid.push_back(myList);
 
+  // Add ROM info area (if enabled)
+  if(myRomInfoFlag)
+  {
+    xpos += myList->getWidth() + 15;
+    myRomInfoWidget = new RomInfoWidget(this, font, xpos, ypos,
+                                        326, myList->getHeight());
+  }
+
   // Add note textwidget to show any notes for the currently selected ROM
+  xpos = 10;
   xpos += 5;  ypos += myList->getHeight() + 4;
   lwidth = font.getStringWidth("Note:");
   myNoteLabel = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
@@ -297,18 +319,16 @@ void LauncherDialog::loadListFromDisk()
 
   // Create a entry for the GameList for each file
   Properties props;
-  string md5, name, note;
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
     // Calculate the MD5 so we can get the rest of the info
     // from the PropertiesSet (stella.pro)
-    md5 = MD5FromFile(files[idx].path());
+    const string& md5 = MD5FromFile(files[idx].path());
     instance()->propSet().getMD5(md5, props);
-    name = props.get(Cartridge_Name);
-    note = props.get(Cartridge_Note);
+    const string& name = props.get(Cartridge_Name);
 
     // Indicate that this ROM doesn't have a properties entry
-    myGameList->appendGame(name, files[idx].path(), note);
+    myGameList->appendGame(name, files[idx].path(), md5);
 
     // Update the progress bar, indicating one more ROM has been processed
     progress.setProgress(idx);
@@ -373,7 +393,7 @@ void LauncherDialog::createListCache()
   {
     out << myGameList->path(i)  << "|"
         << myGameList->name(i) << "|"
-        << myGameList->note(i)
+        << myGameList->md5(i)
         << endl;
   }
   out.close();
@@ -407,7 +427,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       item = myList->getSelected();
       if(item >= 0)
       {
-        string entry = myGameList->path(item);
+        const string& rom = myGameList->path(item);
+        const string& md5 = myGameList->md5(item);
 
         // Directory's should be selected (ie, enter them and redisplay)
         if(myBrowseModeFlag && myGameList->isDir(item))
@@ -415,10 +436,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           if(myGameList->name(item) == " [..]")
             myCurrentNode = myCurrentNode.getParent();
 		  else
-            myCurrentNode = entry;
+            myCurrentNode = rom;
           updateListing();
         }
-        else if(instance()->createConsole(entry))
+        else if(instance()->createConsole(rom, md5))
         {
 #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
           // Make sure the console creation actually succeeded
@@ -441,13 +462,33 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kListSelectionChangedCmd:
-      if(!myBrowseModeFlag)
+    {
+      item = myList->getSelected();
+      if(item < 0) break;
+
+      if(myGameList->isDir(item))
       {
-        item = myList->getSelected();
-        if(item >= 0)
-          myNote->setLabel(myGameList->note(item));
+        if(myRomInfoFlag)
+          myRomInfoWidget->clearInfo();
+        break;
       }
+
+      // Make sure we have a valid md5 for this ROM
+      if(myGameList->md5(item) == "")
+        myGameList->setMd5(item, MD5FromFile(myGameList->path(item)));
+
+      // Get the properties for this entry
+      Properties props;
+      const string& md5 = myGameList->md5(item);
+      instance()->propSet().getMD5(md5, props);
+
+      if(!myBrowseModeFlag)
+        myNote->setLabel(props.get(Cartridge_Note));
+
+      if(myRomInfoFlag)
+        myRomInfoWidget->showInfo(props);
       break;
+    }
 
     case kQuitCmd:
       close();

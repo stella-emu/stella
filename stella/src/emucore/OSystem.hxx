@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.55 2007-08-12 23:05:12 stephena Exp $
+// $Id: OSystem.hxx,v 1.56 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -35,6 +35,7 @@ class VideoDialog;
 #include "Settings.hxx"
 #include "Console.hxx"
 #include "Font.hxx"
+#include "StringList.hxx"
 
 #include "bspf.hxx"
 
@@ -51,7 +52,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.55 2007-08-12 23:05:12 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.56 2007-09-01 23:31:18 stephena Exp $
 */
 class OSystem
 {
@@ -279,6 +280,23 @@ class OSystem
     const string& romFile() const { return myRomFile; }
 
     /**
+      Determines a valid filename for the given properties and extension.
+      Currently, there are three possibilities, in order of precedence:
+
+        Cart_Name.Cart_MD5.ext
+        Cart_Name.ext
+        Cart_MD5.ext
+
+      @param path   The full path to prepend to the filename
+      @param props  The ROM properties for the given ROM
+      @param ext    The extension to append to the filename
+
+      @return A valid file (which exists), or the empty string
+    */
+    string getFilename(const string& path, const Properties& props,
+                       const string& ext) const;
+
+    /**
       Switches between software and OpenGL framebuffer modes.
     */
     void toggleFrameBuffer();
@@ -287,9 +305,11 @@ class OSystem
       Creates a new game console from the specified romfile.
 
       @param romfile  The full pathname of the ROM to use
+      @param md5      The MD5sum of the ROM
+
       @return  True on successful creation, otherwise false
     */
-    bool createConsole(const string& romfile = "");
+    bool createConsole(const string& romfile = "", const string& md5 = "");
 
     /**
       Deletes the currently defined console, if it exists.

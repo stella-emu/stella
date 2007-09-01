@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.90 2007-08-15 17:43:51 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.91 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -100,7 +100,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.90 2007-08-15 17:43:51 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.91 2007-09-01 23:31:18 stephena Exp $
 */
 class FrameBuffer
 {
@@ -369,6 +369,27 @@ class FrameBuffer
                             Int32 h = 8) = 0;
 
     /**
+      This method should be called to draw an SDL surface.
+
+      @param surface The data to draw
+      @param x       The x coordinate
+      @param y       The y coordinate
+    */
+    virtual void drawSurface(SDL_Surface* surface, Int32 x, Int32 y) = 0;
+
+    /**
+      This method should be called to convert and copy a given row of RGB
+      data into an SDL surface.
+
+      @param surface The data to draw
+      @param row     The row of the surface the data should be placed in
+      @param data    The data in uInt8 R/G/B format
+      @param rowsize The number of R/G/B triples in a data row
+    */
+    virtual void convertToSurface(SDL_Surface* surface, int row,
+                                  uInt8* data, int rowsize) const = 0;
+
+    /**
       This method should be called to translate the given coordinates
       to their unzoomed/unscaled equivalents.
 
@@ -392,6 +413,24 @@ class FrameBuffer
       Enable/disable phosphor effect.
     */
     virtual void enablePhosphor(bool enable, int blend) = 0;
+
+    /**
+      This method is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
+
+    /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param width   The requested width of the new surface.
+      @param height  The requested height of the new surface.
+    */
+    virtual SDL_Surface* cloneSurface(int width, int height) = 0;
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -432,15 +471,6 @@ class FrameBuffer
       This method is called after any drawing is done (per-frame).
     */
     virtual void postFrameUpdate() = 0;
-
-    /**
-      This method is called to map a given r,g,b triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
 
     /**
       This method is called to provide information about the FrameBuffer.

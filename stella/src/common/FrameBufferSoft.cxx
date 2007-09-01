@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.71 2007-06-20 16:33:22 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.72 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -108,8 +108,8 @@ bool FrameBufferSoft::setVidMode(VideoMode mode)
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
-  myBytesPerPixel = myScreen->format->BytesPerPixel;
   myFormat = myScreen->format;
+  myBytesPerPixel = myFormat->BytesPerPixel;
 
   // Make sure drawMediaSource() knows which renderer to use
   stateChanged(myOSystem->eventHandler().state());
@@ -636,6 +636,22 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::drawSurface(SDL_Surface* surface, Int32 x, Int32 y)
+{
+  SDL_Rect clip;
+  clip.x = x;
+  clip.y = y;
+  
+  SDL_BlitSurface(surface, 0, myScreen, &clip);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::convertToSurface(SDL_Surface* surface, int row,
+                                       uInt8* data, int rowsize) const
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::translateCoords(Int32& x, Int32& y)
 {
   x = (x - myImageDim.x) / myZoomLevel;
@@ -708,4 +724,15 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
 
   // Have the changes take effect
   myOSystem->eventHandler().refreshDisplay();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+SDL_Surface* FrameBufferSoft::cloneSurface(int width, int height)
+{
+  SDL_Surface* surface =
+    SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, myBytesPerPixel << 3,
+                         myFormat->Rmask, myFormat->Gmask, myFormat->Bmask,
+                         myFormat->Amask);
+
+  return surface;
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.108 2007-08-17 16:12:50 stephena Exp $
+// $Id: OSystem.cxx,v 1.109 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -310,6 +310,28 @@ bool OSystem::createFrameBuffer(bool showmessage)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystem::getFilename(const string& path, const Properties& props,
+                            const string& ext) const
+{
+  const string& full_name =
+    path + BSPF_PATH_SEPARATOR + props.get(Cartridge_Name) + "." +
+    props.get(Cartridge_MD5) + "." + ext;
+  const string& rom_name =
+    path + BSPF_PATH_SEPARATOR + props.get(Cartridge_Name) + "." + ext;
+  const string& md5_name =
+    path + BSPF_PATH_SEPARATOR + props.get(Cartridge_MD5) + "." + ext;
+
+  if(FilesystemNode::fileExists(full_name))
+    return full_name;
+  else if(FilesystemNode::fileExists(rom_name))
+    return rom_name;
+  else if(FilesystemNode::fileExists(md5_name))
+    return md5_name;
+  else
+    return EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::toggleFrameBuffer()
 {
 #ifdef DISPLAY_OPENGL
@@ -344,7 +366,7 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createConsole(const string& romfile)
+bool OSystem::createConsole(const string& romfile, const string& md5sum)
 {
   // Do a little error checking; it shouldn't be necessary
   if(myConsole) deleteConsole();
@@ -367,7 +389,7 @@ bool OSystem::createConsole(const string& romfile)
   // Open the cartridge image and read it in
   uInt8* image;
   int size = -1;
-  string md5;
+  string md5 = md5sum;
   if(openROM(myRomFile, md5, &image, &size))
   {
     // Get all required info for creating a valid console
@@ -528,7 +550,9 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
 
   // If we get to this point, we know we have a valid file to open
   // Now we make sure that the file has a valid properties entry
-  md5 = MD5(*image, *size);
+  // To save time, only generate an MD5 if we really need one
+  if(md5 == "")
+    md5 = MD5(*image, *size);
 
   // Some games may not have a name, since there may not
   // be an entry in stella.pro.  In that case, we use the rom name
@@ -595,7 +619,6 @@ bool OSystem::queryConsoleInfo(const uInt8* image, uInt32 size,
   // Get a valid set of properties, including any entered on the commandline
   string s;
   myPropSet->getMD5(md5, props);
-
 
   s = mySettings->getString("type");
   if(s != "") props.set(Cartridge_Type, s);

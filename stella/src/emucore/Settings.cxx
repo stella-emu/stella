@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.125 2007-08-22 13:55:40 stephena Exp $
+// $Id: Settings.cxx,v 1.126 2007-09-01 23:31:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -84,6 +84,7 @@ Settings::Settings(OSystem* osystem)
 
   setInternal("rombrowse", "true");
   setInternal("lastrom", "");
+  setInternal("romviewer", "false");
 
   setInternal("debuggerres", "1030x690");
   setInternal("launcherres", "400x300");
@@ -310,6 +311,7 @@ void Settings::usage()
     << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
     << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
+    << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
