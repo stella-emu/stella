@@ -13,23 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.55 2007-08-15 17:43:51 stephena Exp $
+// $Id: Widget.cxx,v 1.56 2007-09-03 18:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "FrameBuffer.hxx"
-#include "Font.hxx"
-#include "Dialog.hxx"
-#include "DialogContainer.hxx"
-#include "Command.hxx"
-#include "GuiObject.hxx"
 #include "bspf.hxx"
-#include "GuiUtils.hxx"
-#include "Widget.hxx"
+
+#include "Command.hxx"
+#include "DialogContainer.hxx"
+#include "Dialog.hxx"
 #include "EditableWidget.hxx"
+#include "Font.hxx"
+#include "FrameBuffer.hxx"
+#include "GuiObject.hxx"
+#include "OSystem.hxx"
+
+#include "Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Widget::Widget(GuiObject* boss, const GUI::Font& font,

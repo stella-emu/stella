@@ -13,18 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.cxx,v 1.6 2007-01-01 18:04:43 stephena Exp $
+// $Id: ColorWidget.cxx,v 1.7 2007-09-03 18:37:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "FrameBuffer.hxx"
-#include "Command.hxx"
-#include "GuiObject.hxx"
 #include "bspf.hxx"
-#include "GuiUtils.hxx"
+
+#include "Command.hxx"
+#include "FrameBuffer.hxx"
+#include "GuiObject.hxx"
+#include "OSystem.hxx"
+
 #include "ColorWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

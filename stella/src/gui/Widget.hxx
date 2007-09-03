@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.57 2007-08-12 23:05:12 stephena Exp $
+// $Id: Widget.hxx,v 1.58 2007-09-03 18:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,15 +26,15 @@ class Dialog;
 
 #include <assert.h>
 
+#include "bspf.hxx"
+
+#include "Array.hxx"
 #include "Event.hxx"
-#include "OSystem.hxx"
+#include "Font.hxx"
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
-#include "GuiUtils.hxx"
-#include "Array.hxx"
+#include "OSystem.hxx"
 #include "Rect.hxx"
-#include "Font.hxx"
-#include "bspf.hxx"
 
 enum {
   WIDGET_ENABLED       = 1 << 0,
@@ -87,7 +87,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.57 2007-08-12 23:05:12 stephena Exp $
+  @version $Id: Widget.hxx,v 1.58 2007-09-03 18:37:24 stephena Exp $
 */
 class Widget : public GuiObject
 {

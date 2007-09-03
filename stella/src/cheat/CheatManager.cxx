@@ -13,13 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.cxx,v 1.14 2007-07-19 16:21:39 stephena Exp $
+// $Id: CheatManager.cxx,v 1.15 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
 
 #include "OSystem.hxx"
+#include "Console.hxx"
 #include "Cheat.hxx"
+#include "Settings.hxx"
 #include "CheetahCheat.hxx"
 #include "BankRomCheat.hxx"
 #include "RamCheat.hxx"

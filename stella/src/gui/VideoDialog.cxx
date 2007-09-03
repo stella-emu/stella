@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.46 2007-08-21 17:58:25 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.47 2007-09-03 18:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,17 +21,17 @@
 
 #include <sstream>
 
-#include "OSystem.hxx"
-#include "Settings.hxx"
-#include "Menu.hxx"
-#include "Control.hxx"
-#include "Widget.hxx"
-#include "PopUpWidget.hxx"
-#include "Dialog.hxx"
-#include "VideoDialog.hxx"
-#include "GuiUtils.hxx"
-
 #include "bspf.hxx"
+
+#include "Control.hxx"
+#include "Dialog.hxx"
+#include "Menu.hxx"
+#include "OSystem.hxx"
+#include "PopUpWidget.hxx"
+#include "Settings.hxx"
+#include "Widget.hxx"
+
+#include "VideoDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,

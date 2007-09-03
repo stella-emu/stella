@@ -13,24 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.79 2007-02-06 23:34:33 stephena Exp $
+// $Id: TIA.cxx,v 1.80 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
-#include <iostream>
+
+#include "bspf.hxx"
 
 #include "Console.hxx"
 #include "Control.hxx"
-#include "M6502.hxx"
-#include "System.hxx"
-#include "TIA.hxx"
-#include "Serializer.hxx"
 #include "Deserializer.hxx"
+#include "M6502.hxx"
+#include "Serializer.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
-#include "GuiUtils.hxx"
+#include "System.hxx"
+
+#include "TIA.hxx"
 
 #define HBLANK 68
 

@@ -13,19 +13,22 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.72 2007-09-01 23:31:18 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.73 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <SDL.h>
 
+#include "bspf.hxx"
+
 #include "Console.hxx"
-#include "MediaSrc.hxx"
-#include "Settings.hxx"
-#include "OSystem.hxx"
 #include "Font.hxx"
-#include "GuiUtils.hxx"
+#include "MediaSrc.hxx"
+#include "OSystem.hxx"
 #include "RectList.hxx"
+#include "Settings.hxx"
+#include "Surface.hxx"
+
 #include "FrameBufferSoft.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,7 +66,7 @@ bool FrameBufferSoft::initSubsystem(VideoMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBufferSoft::about()
+string FrameBufferSoft::about() const
 {
   ostringstream buf;
 
@@ -399,7 +402,7 @@ cerr << "FrameBufferSoft::postFrameUpdate()" << endl
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::scanline(uInt32 row, uInt8* data)
+void FrameBufferSoft::scanline(uInt32 row, uInt8* data) const
 {
   // Make sure no pixels are being modified
   SDL_LockSurface(myScreen);
@@ -480,8 +483,7 @@ void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                               int color)
+void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 {
   SDL_Rect tmp;
 
@@ -636,23 +638,46 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawSurface(SDL_Surface* surface, Int32 x, Int32 y)
+void FrameBufferSoft::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
 {
   SDL_Rect clip;
-  clip.x = x;
-  clip.y = y;
+  clip.x = x * myZoomLevel + myImageDim.x;
+  clip.y = y * myZoomLevel + myImageDim.y;
   
-  SDL_BlitSurface(surface, 0, myScreen, &clip);
+  SDL_BlitSurface(surface->myData, 0, myScreen, &clip);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::convertToSurface(SDL_Surface* surface, int row,
-                                       uInt8* data, int rowsize) const
+void FrameBufferSoft::bytesToSurface(GUI::Surface* surface, int row,
+                                     uInt8* data) const
 {
+  SDL_Surface* s = surface->myData;
+  int rowsize = s->w * 3;
+
+  switch(myBytesPerPixel)
+  {
+    case 2:
+    {
+      uInt16* pixels = (uInt16*) s->pixels;
+      pixels += (row * s->pitch/2);
+
+      for(int c = 0; c < rowsize/myZoomLevel; c += 3)
+      {
+        uInt32 pixel = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
+        uInt32 xstride = myZoomLevel;
+        while(xstride--)
+          *pixels++ = pixel;
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::translateCoords(Int32& x, Int32& y)
+void FrameBufferSoft::translateCoords(Int32& x, Int32& y) const
 {
   x = (x - myImageDim.x) / myZoomLevel;
   y = (y - myImageDim.y) / myZoomLevel;
@@ -727,12 +752,12 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SDL_Surface* FrameBufferSoft::cloneSurface(int width, int height)
+GUI::Surface* FrameBufferSoft::createSurface(int width, int height) const
 {
-  SDL_Surface* surface =
-    SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, myBytesPerPixel << 3,
-                         myFormat->Rmask, myFormat->Gmask, myFormat->Bmask,
-                         myFormat->Amask);
+  SDL_Surface* data =
+    SDL_CreateRGBSurface(SDL_SWSURFACE, width*myZoomLevel, height*myZoomLevel,
+                         myBytesPerPixel << 3, myFormat->Rmask, myFormat->Gmask,
+                         myFormat->Bmask, myFormat->Amask);
 
-  return surface;
+  return data ? new GUI::Surface(width, height, data) : NULL;
 }

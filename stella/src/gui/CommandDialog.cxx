@@ -13,18 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.15 2007-02-22 02:15:46 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.16 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "Dialog.hxx"
+#include "Console.hxx"
 #include "DialogContainer.hxx"
+#include "Dialog.hxx"
+#include "EventHandler.hxx"
+#include "OSystem.hxx"
 #include "Widget.hxx"
 #include "CommandDialog.hxx"
-#include "EventHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)

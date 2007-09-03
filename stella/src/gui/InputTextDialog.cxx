@@ -13,21 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.18 2007-08-17 16:12:50 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.19 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "bspf.hxx"
+
+#include "Dialog.hxx"
+#include "EditTextWidget.hxx"
+#include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "EditTextWidget.hxx"
-#include "Dialog.hxx"
-#include "GuiObject.hxx"
-#include "GuiUtils.hxx"
-#include "InputTextDialog.hxx"
 
-#include "bspf.hxx"
+#include "InputTextDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,

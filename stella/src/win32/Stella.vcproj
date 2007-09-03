@@ -1241,10 +1241,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\gui\GuiUtils.hxx"
-					>
-				</File>
-				<File
 					RelativePath="..\gui\HelpDialog.hxx"
 					>
 				</File>

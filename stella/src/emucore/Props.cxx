@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.20 2007-02-06 23:34:33 stephena Exp $
+// $Id: Props.cxx,v 1.21 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <cctype>
 #include <algorithm>
 #include <sstream>
 
-#include "GuiUtils.hxx"
+#include "bspf.hxx"
 #include "Props.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

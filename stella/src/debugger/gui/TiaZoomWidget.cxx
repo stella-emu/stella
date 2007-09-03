@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.13 2007-08-15 17:43:51 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.14 2007-09-03 18:37:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "OSystem.hxx"
+#include "Console.hxx"
 #include "FrameBuffer.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"

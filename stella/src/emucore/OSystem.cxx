@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.109 2007-09-01 23:31:18 stephena Exp $
+// $Id: OSystem.cxx,v 1.110 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -46,6 +46,7 @@
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
+#include "Console.hxx"
 
 #define MAX_ROM_SIZE  512 * 1024
 
@@ -289,6 +290,9 @@ bool OSystem::createFrameBuffer(bool showmessage)
 
   // Setup the SDL joysticks (must be done after FrameBuffer is created)
   if(changeBuffer) myEventHandler->setupJoysticks();
+
+  // Let the system know that we've possibly resized the display
+  if(changeBuffer) myEventHandler->handleResizeEvent();
 
   // Update the UI palette
   setUIPalette();

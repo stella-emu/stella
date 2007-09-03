@@ -13,20 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.37 2007-08-12 23:05:12 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.38 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "bspf.hxx"
-#include "OSystem.hxx"
-#include "FrameBuffer.hxx"
-#include "Stack.hxx"
-#include "Dialog.hxx"
+
 #include "DialogContainer.hxx"
-#include "GuiUtils.hxx"
+#include "Dialog.hxx"
+#include "FrameBuffer.hxx"
+#include "OSystem.hxx"
+#include "Stack.hxx"
 #include "StringListWidget.hxx"
+
 #include "PopUpWidget.hxx"
 
 #define UP_DOWN_BOX_HEIGHT	10

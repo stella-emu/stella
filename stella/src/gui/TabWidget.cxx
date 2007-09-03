@@ -13,19 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.29 2007-08-15 17:43:51 stephena Exp $
+// $Id: TabWidget.cxx,v 1.30 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "FrameBuffer.hxx"
-#include "GuiUtils.hxx"
 #include "bspf.hxx"
-#include "GuiObject.hxx"
-#include "Widget.hxx"
+
 #include "Dialog.hxx"
+#include "FrameBuffer.hxx"
+#include "GuiObject.hxx"
+#include "OSystem.hxx"
+#include "Widget.hxx"
+
 #include "TabWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.15 2007-08-17 16:12:50 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.16 2007-09-03 18:37:19 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,20 +21,19 @@
 
 #include <sstream>
 
-#include "OSystem.hxx"
-#include "Props.hxx"
-#include "Widget.hxx"
-#include "Dialog.hxx"
-#include "DialogContainer.hxx"
-#include "CheatCodeDialog.hxx"
-#include "GuiUtils.hxx"
-#include "CheckListWidget.hxx"
-#include "CheatManager.hxx"
-#include "InputTextDialog.hxx"
-#include "StringList.hxx"
-
 #include "bspf.hxx"
 
+#include "CheatManager.hxx"
+#include "CheckListWidget.hxx"
+#include "DialogContainer.hxx"
+#include "Dialog.hxx"
+#include "InputTextDialog.hxx"
+#include "OSystem.hxx"
+#include "Props.hxx"
+#include "StringList.hxx"
+#include "Widget.hxx"
+
+#include "CheatCodeDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,

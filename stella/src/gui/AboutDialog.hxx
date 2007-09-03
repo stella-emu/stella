@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.hxx,v 1.6 2007-01-01 18:04:51 stephena Exp $
+// $Id: AboutDialog.hxx,v 1.7 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,6 @@ class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
-
-#include "GuiUtils.hxx"
 
 
 class AboutDialog : public Dialog

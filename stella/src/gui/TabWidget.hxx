@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.17 2007-01-23 14:57:14 knakos Exp $
+// $Id: TabWidget.hxx,v 1.18 2007-09-03 18:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,11 +22,11 @@
 #ifndef TAB_WIDGET_HXX
 #define TAB_WIDGET_HXX
 
-#include "GuiUtils.hxx"
-#include "Widget.hxx"
-#include "Command.hxx"
-#include "Array.hxx"
 #include "bspf.hxx"
+
+#include "Array.hxx"
+#include "Command.hxx"
+#include "Widget.hxx"
 
 class TabWidget : public Widget, public CommandSender
 {

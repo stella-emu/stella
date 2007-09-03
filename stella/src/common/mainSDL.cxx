@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.75 2007-08-25 23:57:35 stephena Exp $
+// $Id: mainSDL.cxx,v 1.76 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -156,6 +156,15 @@ int main(int argc, char* argv[])
     theOSystem->createLauncher();
   else if(theOSystem->createConsole(romfile))
   {
+    if(theOSystem->settings().getBool("takesnapshot"))
+    {
+      for(int i = 0; i < 60; ++i)  theOSystem->frameBuffer().update();
+      theOSystem->console().system().reset();
+      theOSystem->eventHandler().takeSnapshot();
+      Cleanup();
+      return 0;
+    }
+
     if(theOSystem->settings().getBool("holdreset"))
       theOSystem->eventHandler().handleEvent(Event::ConsoleReset, 1);
 

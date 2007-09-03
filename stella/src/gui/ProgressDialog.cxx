@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.9 2007-08-06 20:16:51 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.10 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,19 +24,18 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "ProgressDialog.hxx"
-#include "GuiUtils.hxx"
 
 #include "bspf.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
-    : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
-      myMessage(NULL),
-      mySlider(NULL),
-      myStart(0),
-      myFinish(0),
-      myStep(0)
+  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
+    myMessage(NULL),
+    mySlider(NULL),
+    myStart(0),
+    myFinish(0),
+    myStep(0)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),

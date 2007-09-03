@@ -13,18 +13,21 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.25 2007-01-24 19:17:33 stephena Exp $
+// $Id: InputDialog.cxx,v 1.26 2007-09-03 18:37:23 stephena Exp $
 //============================================================================
 
-#include "OSystem.hxx"
-#include "Widget.hxx"
-#include "Array.hxx"
-#include "TabWidget.hxx"
-#include "EventMappingWidget.hxx"
-#include "InputDialog.hxx"
-#include "PopUpWidget.hxx"
-
 #include "bspf.hxx"
+
+#include "Array.hxx"
+#include "EventMappingWidget.hxx"
+#include "OSystem.hxx"
+#include "PopUpWidget.hxx"
+#include "Settings.hxx"
+#include "TabWidget.hxx"
+#include "Widget.hxx"
+
+#include "InputDialog.hxx"
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,

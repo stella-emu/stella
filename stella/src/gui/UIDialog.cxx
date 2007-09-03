@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.7 2007-08-15 17:43:51 stephena Exp $
+// $Id: UIDialog.cxx,v 1.8 2007-09-03 18:37:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,16 +21,16 @@
 
 #include <sstream>
 
+#include "bspf.hxx"
+
+#include "Dialog.hxx"
 #include "OSystem.hxx"
+#include "PopUpWidget.hxx"
+#include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
-#include "PopUpWidget.hxx"
-#include "Dialog.hxx"
-#include "UIDialog.hxx"
-#include "GuiUtils.hxx"
-#include "ScrollBarWidget.hxx"
 
-#include "bspf.hxx"
+#include "UIDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,

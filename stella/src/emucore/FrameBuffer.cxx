@@ -13,24 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.123 2007-08-16 16:42:46 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.124 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
 
 #include "bspf.hxx"
-#include "Console.hxx"
-#include "Event.hxx"
-#include "EventHandler.hxx"
-#include "Settings.hxx"
-#include "MediaSrc.hxx"
-#include "FrameBuffer.hxx"
-#include "Font.hxx"
-#include "GuiUtils.hxx"
-#include "Menu.hxx"
+
 #include "CommandMenu.hxx"
+#include "Console.hxx"
+#include "EventHandler.hxx"
+#include "Event.hxx"
+#include "Font.hxx"
 #include "Launcher.hxx"
+#include "MediaSrc.hxx"
+#include "Menu.hxx"
 #include "OSystem.hxx"
+#include "Settings.hxx"
+
+#include "FrameBuffer.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -390,7 +391,8 @@ bool FrameBuffer::changeVidMode(int direction)
   if(!setVidMode(newmode))
     return false;
 
-  myOSystem->eventHandler().refreshDisplay();
+  myOSystem->eventHandler().handleResizeEvent();
+  myOSystem->eventHandler().refreshDisplay(true);
   setCursorState();
   showMessage(newmode.name);
 
@@ -470,7 +472,7 @@ void FrameBuffer::grabMouse(bool grab)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::fullScreen()
+bool FrameBuffer::fullScreen() const
 {
 #ifdef WINDOWED_SUPPORT
     return myOSystem->settings().getBool("fullscreen");

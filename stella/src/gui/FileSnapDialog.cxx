@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.12 2007-08-22 13:55:40 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.13 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,11 +21,13 @@
 
 #include "bspf.hxx"
 
-#include "FSNode.hxx"
-#include "DialogContainer.hxx"
 #include "BrowserDialog.hxx"
+#include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
+#include "FSNode.hxx"
 #include "LauncherDialog.hxx"
+#include "Settings.hxx"
+
 #include "FileSnapDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

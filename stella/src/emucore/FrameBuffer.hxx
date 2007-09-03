@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.91 2007-09-01 23:31:18 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.92 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -21,17 +21,18 @@
 
 #include <SDL.h>
 
-#include "bspf.hxx"
-#include "Array.hxx"
-#include "Event.hxx"
-#include "EventHandler.hxx"
-#include "MediaSrc.hxx"
-#include "Font.hxx"
-#include "GuiUtils.hxx"
-#include "VideoModeList.hxx"
-
 class OSystem;
 class Console;
+
+namespace GUI {
+  class Font;
+  class Surface;
+}
+
+#include "EventHandler.hxx"
+#include "VideoModeList.hxx"
+#include "bspf.hxx"
+
 
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -100,7 +101,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.91 2007-09-01 23:31:18 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.92 2007-09-03 18:37:22 stephena Exp $
 */
 class FrameBuffer
 {
@@ -228,7 +229,7 @@ class FrameBuffer
     /**
       Answers if the display is currently in fullscreen mode.
     */
-    bool fullScreen();
+    bool fullScreen() const;
 
     /**
       Set the title for the main SDL window.
@@ -292,7 +293,7 @@ class FrameBuffer
     */
     void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
                     int color, TextAlignment align = kTextAlignLeft,
-	                    int deltax = 0, bool useEllipsis = true);
+                    int deltax = 0, bool useEllipsis = true);
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
@@ -310,7 +311,7 @@ class FrameBuffer
       @param row  The row we are looking for
       @param data The actual pixel data (in bytes)
     */
-    virtual void scanline(uInt32 row, uInt8* data) = 0;
+    virtual void scanline(uInt32 row, uInt8* data) const = 0;
 
     /**
       This method should be called to draw a horizontal line.
@@ -375,7 +376,7 @@ class FrameBuffer
       @param x       The x coordinate
       @param y       The y coordinate
     */
-    virtual void drawSurface(SDL_Surface* surface, Int32 x, Int32 y) = 0;
+    virtual void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y) = 0;
 
     /**
       This method should be called to convert and copy a given row of RGB
@@ -384,10 +385,9 @@ class FrameBuffer
       @param surface The data to draw
       @param row     The row of the surface the data should be placed in
       @param data    The data in uInt8 R/G/B format
-      @param rowsize The number of R/G/B triples in a data row
     */
-    virtual void convertToSurface(SDL_Surface* surface, int row,
-                                  uInt8* data, int rowsize) const = 0;
+    virtual void bytesToSurface(GUI::Surface* surface, int row,
+                                uInt8* data) const = 0;
 
     /**
       This method should be called to translate the given coordinates
@@ -396,7 +396,7 @@ class FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    virtual void translateCoords(Int32& x, Int32& y) = 0;
+    virtual void translateCoords(Int32& x, Int32& y) const = 0;
 
     /**
       This method should be called to add a dirty rectangle
@@ -421,7 +421,7 @@ class FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) = 0;
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const = 0;
 
     /**
       This method is called to create a surface compatible with the one
@@ -430,12 +430,12 @@ class FrameBuffer
       @param width   The requested width of the new surface.
       @param height  The requested height of the new surface.
     */
-    virtual SDL_Surface* cloneSurface(int width, int height) = 0;
+    virtual GUI::Surface* createSurface(int width, int height) const = 0;
 
     /**
       This method is called to query the type of the FrameBuffer.
     */
-    virtual BufferType type() = 0;
+    virtual BufferType type() const = 0;
 
   protected:
     /**
@@ -475,9 +475,7 @@ class FrameBuffer
     /**
       This method is called to provide information about the FrameBuffer.
     */
-    virtual string about() = 0;
-
-
+    virtual string about() const = 0;
 
   protected:
     // The parent system for the framebuffer

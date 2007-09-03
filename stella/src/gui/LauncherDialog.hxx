@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.27 2007-09-01 23:31:18 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.28 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,10 +31,10 @@ class StringListWidget;
 class ButtonWidget;
 class RomInfoWidget;
 class OSystem;
+class GameList;
 
 #include "FSNode.hxx"
 #include "Dialog.hxx"
-#include "GameList.hxx"
 #include "bspf.hxx"
 
 // These must be accessible from LauncherOptionsDialog
@@ -81,6 +81,7 @@ class LauncherDialog : public Dialog
     void loadListFromDisk();
     void loadListFromCache();
     void createListCache();
+    void loadRomInfo();
     string MD5FromFile(const string& path);
 
   private:

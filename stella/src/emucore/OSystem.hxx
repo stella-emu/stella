@@ -13,30 +13,32 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.56 2007-09-01 23:31:18 stephena Exp $
+// $Id: OSystem.hxx,v 1.57 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
 #define OSYSTEM_HXX
 
-class PropertiesSet;
-
-class Menu;
-class CommandMenu;
-class Launcher;
-class Debugger;
+class Cartridge;
 class CheatManager;
+class CommandMenu;
+class Console;
+class Debugger;
+class Launcher;
+class Menu;
+class Properties;
+class PropertiesSet;
+class Settings;
+class Sound;
 class VideoDialog;
+
+namespace GUI {
+  class Font;
+}
 
 #include "Array.hxx"
 #include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
-#include "Sound.hxx"
-#include "Settings.hxx"
-#include "Console.hxx"
-#include "Font.hxx"
-#include "StringList.hxx"
-
 #include "bspf.hxx"
 
 struct Resolution {
@@ -52,7 +54,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.56 2007-09-01 23:31:18 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.57 2007-09-03 18:37:22 stephena Exp $
 */
 class OSystem
 {

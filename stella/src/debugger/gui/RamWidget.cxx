@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.12 2007-08-17 16:12:50 stephena Exp $
+// $Id: RamWidget.cxx,v 1.13 2007-09-03 18:37:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,15 +21,15 @@
 
 #include <sstream>
 
-#include "OSystem.hxx"
+#include "DataGridWidget.hxx"
+#include "EditTextWidget.hxx"
 #include "FrameBuffer.hxx"
-#include "GuiUtils.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
-#include "Widget.hxx"
-#include "EditTextWidget.hxx"
-#include "DataGridWidget.hxx"
+#include "OSystem.hxx"
 #include "RamDebug.hxx"
+#include "Widget.hxx"
+
 #include "RamWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

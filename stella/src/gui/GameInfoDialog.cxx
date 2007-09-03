@@ -13,21 +13,22 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.39 2007-07-27 14:12:36 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.40 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "GuiUtils.hxx"
-#include "OSystem.hxx"
-#include "Props.hxx"
-#include "PropsSet.hxx"
-#include "Widget.hxx"
+#include "Console.hxx"
 #include "Dialog.hxx"
 #include "EditTextWidget.hxx"
+#include "OSystem.hxx"
 #include "PopUpWidget.hxx"
+#include "Props.hxx"
+#include "PropsSet.hxx"
 #include "TabWidget.hxx"
+#include "Widget.hxx"
+
 #include "GameInfoDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

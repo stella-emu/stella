@@ -14,33 +14,34 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.206 2007-08-15 19:14:49 stephena Exp $
+// $Id: EventHandler.cxx,v 1.207 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <SDL.h>
 
-#include "FSNode.hxx"
-#include "Event.hxx"
-#include "EventHandler.hxx"
-#include "EventStreamer.hxx"
-#include "FSNode.hxx"
-#include "Settings.hxx"
-#include "System.hxx"
-#include "FrameBuffer.hxx"
-#include "Sound.hxx"
-#include "OSystem.hxx"
-#include "DialogContainer.hxx"
-#include "Menu.hxx"
-#include "CommandMenu.hxx"
-#include "Launcher.hxx"
-#include "GuiUtils.hxx"
-#include "Deserializer.hxx"
-#include "Serializer.hxx"
-#include "PropsSet.hxx"
-#include "Snapshot.hxx"
-#include "ScrollBarWidget.hxx"
 #include "bspf.hxx"
+
+#include "CommandMenu.hxx"
+#include "Console.hxx"
+#include "Deserializer.hxx"
+#include "DialogContainer.hxx"
+#include "Event.hxx"
+#include "EventStreamer.hxx"
+#include "FrameBuffer.hxx"
+#include "FSNode.hxx"
+#include "Launcher.hxx"
+#include "Menu.hxx"
+#include "OSystem.hxx"
+#include "PropsSet.hxx"
+#include "ScrollBarWidget.hxx"
+#include "Serializer.hxx"
+#include "Settings.hxx"
+#include "Snapshot.hxx"
+#include "Sound.hxx"
+#include "System.hxx"
+
+#include "EventHandler.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
@@ -993,6 +994,14 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
   else if(myOverlay != NULL)
     myOverlay->handleJoyHatEvent(stick, hat, value);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::handleResizeEvent()
+{
+  // For now, only the overlay cares about resize events
+  if(myOverlay != NULL)
+    myOverlay->handleResizeEvent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2121,7 +2130,8 @@ void EventHandler::takeSnapshot()
   if(sspath.length() > 0)
     if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
       sspath += BSPF_PATH_SEPARATOR;
-  sspath += myOSystem->console().properties().get(Cartridge_Name);
+  sspath += myOSystem->console().properties().get(Cartridge_Name) + "." +
+            myOSystem->console().properties().get(Cartridge_MD5);
 
   // Check whether we want multiple snapshots created
   if(!myOSystem->settings().getBool("sssingle"))

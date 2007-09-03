@@ -13,14 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.hxx,v 1.1 2007-09-01 23:31:18 stephena Exp $
+// $Id: RomInfoWidget.hxx,v 1.2 2007-09-03 18:37:23 stephena Exp $
 //============================================================================
 
 #ifndef ROM_INFO_WIDGET_HXX
 #define ROM_INFO_WIDGET_HXX
 
-#include <SDL.h>
 #include <fstream>
+
+class GUI::Surface;
 
 #include "Props.hxx"
 #include "Widget.hxx"
@@ -47,13 +48,13 @@ class RomInfoWidget : public Widget
     static bool isValidPNGHeader(uInt8* header);
     static void readPNGChunk(ifstream& in, string& type, uInt8** data, int& size);
     static bool parseIHDR(int& width, int& height, uInt8* data, int size);
-    static bool parseIDATChunk(const FrameBuffer& fb, SDL_Surface* surface,
+    static bool parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
                                int width, int height, uInt8* data, int size);
     static string parseTextChunk(uInt8* data, int size);
 
   private:
-    // Surface holding the scaled PNG image, ready for drawing by SDL_BlitSurface
-    SDL_Surface* mySurface;
+    // Surface holding the scaled PNG image
+    GUI::Surface* mySurface;
 
     // Some ROM properties info, as well as 'tEXt' chunks from the PNG image
     StringList myRomInfo;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameList.cxx,v 1.13 2007-09-01 23:31:18 stephena Exp $
+// $Id: GameList.cxx,v 1.14 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from KStella - Stella frontend
 //   Copyright (C) 2003-2005 Stephen Anthony
@@ -22,7 +22,6 @@
 #include <cctype>
 #include <algorithm>
 
-#include "GuiUtils.hxx"
 #include "GameList.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

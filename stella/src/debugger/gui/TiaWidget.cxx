@@ -13,23 +13,23 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.7 2007-01-01 18:04:44 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.8 2007-09-03 18:37:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "FrameBuffer.hxx"
-#include "GuiUtils.hxx"
-#include "GuiObject.hxx"
-#include "TIADebug.hxx"
-#include "Widget.hxx"
-#include "EditTextWidget.hxx"
-#include "DataGridWidget.hxx"
 #include "ColorWidget.hxx"
+#include "DataGridWidget.hxx"
+#include "EditTextWidget.hxx"
+#include "FrameBuffer.hxx"
+#include "GuiObject.hxx"
+#include "OSystem.hxx"
+#include "TIADebug.hxx"
 #include "ToggleBitWidget.hxx"
 #include "TogglePixelWidget.hxx"
+#include "Widget.hxx"
+
 #include "TiaWidget.hxx"
 
 // ID's for the various widgets

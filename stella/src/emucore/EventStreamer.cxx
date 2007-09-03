@@ -13,16 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventStreamer.cxx,v 1.8 2007-01-01 18:04:48 stephena Exp $
+// $Id: EventStreamer.cxx,v 1.9 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
 
-#include "OSystem.hxx"
-#include "Event.hxx"
+#include "Console.hxx"
 #include "EventHandler.hxx"
-#include "EventStreamer.hxx"
+#include "Event.hxx"
+#include "OSystem.hxx"
 #include "System.hxx"
+#include "EventStreamer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventStreamer::EventStreamer(OSystem* osystem)

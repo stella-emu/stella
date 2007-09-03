@@ -13,19 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.22 2007-02-06 23:34:34 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.23 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "bspf.hxx"
+
+#include "Dialog.hxx"
 #include "OSystem.hxx"
 #include "Widget.hxx"
-#include "Dialog.hxx"
-#include "HelpDialog.hxx"
-#include "GuiUtils.hxx"
 
-#include "bspf.hxx"
+#include "HelpDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,

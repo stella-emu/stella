@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.20 2007-08-06 20:16:51 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.21 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,15 +21,15 @@
 
 #include <sstream>
 
-#include "OSystem.hxx"
-#include "Widget.hxx"
-#include "StringListWidget.hxx"
-#include "GuiUtils.hxx"
-#include "Event.hxx"
-#include "EventHandler.hxx"
-#include "EventMappingWidget.hxx"
-
 #include "bspf.hxx"
+
+#include "EventHandler.hxx"
+#include "Event.hxx"
+#include "OSystem.hxx"
+#include "StringListWidget.hxx"
+#include "Widget.hxx"
+
+#include "EventMappingWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,

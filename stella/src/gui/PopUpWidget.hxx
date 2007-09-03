@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.18 2007-06-21 12:27:00 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.19 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,14 +25,13 @@
 class GUIObject;
 class PopUpDialog;
 
-#include "Dialog.hxx"
-
-#include "Widget.hxx"
-#include "Command.hxx"
-#include "Array.hxx"
-#include "GuiUtils.hxx"
-
 #include "bspf.hxx"
+
+#include "Array.hxx"
+#include "Command.hxx"
+#include "Dialog.hxx"
+#include "Widget.hxx"
+
 
 /**
  * Popup or dropdown widget which, when clicked, "pop up" a list of items and

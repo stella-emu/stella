@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.47 2007-09-01 23:31:18 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.48 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.47 2007-09-01 23:31:18 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.48 2007-09-03 18:37:22 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -55,46 +55,46 @@ class FrameBufferSoft : public FrameBuffer
       This method is called to initialize software video mode.
       Return false if any operation fails, otherwise return true.
     */
-    virtual bool initSubsystem(VideoMode mode);
+    bool initSubsystem(VideoMode mode);
 
     /**
       This method is called to query the type of the FrameBuffer.
     */
-    virtual BufferType type() { return kSoftBuffer; }
+    BufferType type() const { return kSoftBuffer; }
 
     /**
       This method is called to provide information about the FrameBuffer.
     */
-    virtual string about();
+    string about() const;
 
     /**
       This method is called to change to the given videomode type.
 
       @param mode  The video mode to use for rendering the mediasource
     */
-    virtual bool setVidMode(VideoMode mode);
+    bool setVidMode(VideoMode mode);
 
     /**
       Switches between the filtering options in software mode.
       Currently, none exist.
     */
-    virtual void toggleFilter();
+    void toggleFilter();
 
     /**
       This method should be called anytime the MediaSource needs to be redrawn
       to the screen.
     */
-    virtual void drawMediaSource();
+    void drawMediaSource();
 
     /**
       This method is called before any drawing is done (per-frame).
     */
-    virtual void preFrameUpdate();
+    void preFrameUpdate();
 
     /**
       This method is called after any drawing is done (per-frame).
     */
-    virtual void postFrameUpdate();
+    void postFrameUpdate();
 
     /**
       This method is called to get the specified scanline data.
@@ -102,7 +102,7 @@ class FrameBufferSoft : public FrameBuffer
       @param row  The row we are looking for
       @param data The actual pixel data (in bytes)
     */
-    virtual void scanline(uInt32 row, uInt8* data);
+    void scanline(uInt32 row, uInt8* data) const;
 
     /**
       This method is called to map a given r,g,b triple to the screen palette.
@@ -111,7 +111,7 @@ class FrameBufferSoft : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
+    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
       { return SDL_MapRGB(myScreen->format, r, g, b); }
 
     /**
@@ -121,7 +121,7 @@ class FrameBufferSoft : public FrameBuffer
       @param width   The requested width of the new surface.
       @param height  The requested height of the new surface.
     */
-    virtual SDL_Surface* cloneSurface(int width, int height);
+    GUI::Surface* createSurface(int width, int height) const;
 
     /**
       This method is called to draw a horizontal line.
@@ -131,7 +131,7 @@ class FrameBufferSoft : public FrameBuffer
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
+    void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
 
     /**
       This method is called to draw a vertical line.
@@ -141,7 +141,7 @@ class FrameBufferSoft : public FrameBuffer
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
+    void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
 
     /**
       This method is called to draw a filled rectangle.
@@ -152,8 +152,7 @@ class FrameBufferSoft : public FrameBuffer
       @param h      The height of the area
       @param color  The color of the area
     */
-    virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          int color);
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
 
     /**
       This method is called to draw the specified character.
@@ -164,8 +163,7 @@ class FrameBufferSoft : public FrameBuffer
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          int color);
+    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
 
     /**
       This method is called to draw the bitmap image.
@@ -176,8 +174,7 @@ class FrameBufferSoft : public FrameBuffer
       @param color  The color of the character
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
-                            Int32 h = 8);
+    void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
 
     /**
       This method should be called to draw an SDL surface.
@@ -186,7 +183,7 @@ class FrameBufferSoft : public FrameBuffer
       @param x       The x coordinate
       @param y       The y coordinate
     */
-    virtual void drawSurface(SDL_Surface* surface, Int32 x, Int32 y);
+    void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y);
 
     /**
       This method should be called to convert and copy a given row of RGB
@@ -195,10 +192,8 @@ class FrameBufferSoft : public FrameBuffer
       @param surface The data to draw
       @param row     The row of the surface the data should be placed in
       @param data    The data in uInt8 R/G/B format
-      @param rowsize The number of R/G/B triples in a data row
     */
-    virtual void convertToSurface(SDL_Surface* surface, int row,
-                                  uInt8* data, int rowsize) const;
+    void bytesToSurface(GUI::Surface* surface, int row, uInt8* data) const;
 
     /**
       This method translates the given coordinates to their
@@ -207,7 +202,7 @@ class FrameBufferSoft : public FrameBuffer
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    virtual void translateCoords(Int32& x, Int32& y);
+    void translateCoords(Int32& x, Int32& y) const;
 
     /**
       This method adds a dirty rectangle
@@ -218,17 +213,17 @@ class FrameBufferSoft : public FrameBuffer
       @param w      The width of the area
       @param h      The height of the area
     */
-    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
 
     /**
       Enable/disable phosphor effect.
     */
-    virtual void enablePhosphor(bool enable, int blend);
+    void enablePhosphor(bool enable, int blend);
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
     */
-    virtual void stateChanged(EventHandler::State state);
+    void stateChanged(EventHandler::State state);
 
   private:
     int myZoomLevel;

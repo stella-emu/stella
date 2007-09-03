@@ -13,17 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.21 2007-08-15 17:43:51 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.22 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
-#include "Widget.hxx"
 #include "Dialog.hxx"
-#include "GuiUtils.hxx"
+#include "OSystem.hxx"
 #include "Version.hxx"
+#include "Widget.hxx"
+
 #include "AboutDialog.hxx"
 
 #define ADD_ATEXT(d) do { dsc[i] = d; i++; } while(0)

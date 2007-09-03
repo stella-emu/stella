@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.102 2007-02-22 02:15:46 stephena Exp $
+// $Id: EventHandler.hxx,v 1.103 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -21,18 +21,18 @@
 
 #include <SDL.h>
 
-#include "bspf.hxx"
-#include "Event.hxx"
-#include "Array.hxx"
-#include "Control.hxx"
-#include "StringList.hxx"
-#include "Serializer.hxx"
-
 class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
 class EventStreamer;
+
+#include "Array.hxx"
+#include "Event.hxx"
+#include "Control.hxx"
+#include "StringList.hxx"
+#include "bspf.hxx"
+
 
 enum MouseButton {
   EVENT_LBUTTONDOWN,
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.102 2007-02-22 02:15:46 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.103 2007-09-03 18:37:22 stephena Exp $
 */
 class EventHandler
 {
@@ -253,6 +253,12 @@ class EventHandler
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
+    void takeSnapshot();
+
+    /**
+      Send a resize event to the handler.
+    */
+    void handleResizeEvent();
 
     /**
       Send an event directly to the event handler.
@@ -451,7 +457,6 @@ class EventHandler
     void saveState();
     void changeState(bool show = true);
     void loadState();
-    void takeSnapshot();
     void setEventState(State state);
 
   private:

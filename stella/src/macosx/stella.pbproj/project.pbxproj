@@ -2852,15 +2852,6 @@
 			refType = 2;
 			sourceTree = SOURCE_ROOT;
 		};
-		2DDBEAB7084578BF00812C11 = {
-			fileEncoding = 30;
-			isa = PBXFileReference;
-			lastKnownFileType = sourcecode.cpp.h;
-			name = GuiUtils.hxx;
-			path = ../gui/GuiUtils.hxx;
-			refType = 2;
-			sourceTree = SOURCE_ROOT;
-		};
 		2DDBEAB8084578BF00812C11 = {
 			fileEncoding = 30;
 			isa = PBXFileReference;

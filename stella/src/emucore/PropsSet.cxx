@@ -13,17 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.34 2007-07-31 15:46:20 stephena Exp $
+// $Id: PropsSet.cxx,v 1.35 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
 
-#include "OSystem.hxx"
-#include "GuiUtils.hxx"
-#include "DefProps.hxx"
-#include "Props.hxx"
-#include "PropsSet.hxx"
 #include "bspf.hxx"
+
+#include "DefProps.hxx"
+#include "OSystem.hxx"
+#include "Props.hxx"
+#include "Settings.hxx"
+
+#include "PropsSet.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet(OSystem* osystem)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.126 2007-09-01 23:31:18 stephena Exp $
+// $Id: Settings.cxx,v 1.127 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,9 +21,11 @@
 #include <fstream>
 #include <algorithm>
 
+#include "bspf.hxx"
+
 #include "OSystem.hxx"
 #include "Version.hxx"
-#include "bspf.hxx"
+
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -166,7 +168,7 @@ string Settings::loadCommandLine(int argc, char** argv)
 
       // Take care of arguments without an option
       if(key == "rominfo" || key == "debug" || key == "holdreset" ||
-         key == "holdselect" || key == "holdbutton0")
+         key == "holdselect" || key == "holdbutton0" || key == "takesnapshot")
       {
         setExternal(key, "true");
         continue;

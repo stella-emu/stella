@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.37 2007-07-31 15:46:21 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.38 2007-09-03 18:37:23 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -322,6 +322,15 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
 
   // FIXME - add repeat processing, similar to axis/button events
   activeDialog->handleJoyHat(stick, hat, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DialogContainer::handleResizeEvent()
+{
+  // Send resize events to all dialogs
+  // It's up to a specific dialog to actually listen
+  for(int i = 0; i < myDialogStack.size(); i++)
+    myDialogStack[i]->handleCommand(NULL, kResizeCmd, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferD3D.hxx,v 1.1 2007-08-05 15:34:26 stephena Exp $
+// $Id: FrameBufferD3D.hxx,v 1.2 2007-09-03 18:37:24 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_D3D_HXX
@@ -29,7 +29,6 @@
 #include <d3dx9.h>
 
 #include "bspf.hxx"
-#include "GuiUtils.hxx"
 #include "FrameBuffer.hxx"
 
 class OSystem;
@@ -39,7 +38,7 @@ class GUI::Font;
   This class implements an SDL Direct3D framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferD3D.hxx,v 1.1 2007-08-05 15:34:26 stephena Exp $
+  @version $Id: FrameBufferD3D.hxx,v 1.2 2007-09-03 18:37:24 stephena Exp $
 */
 class FrameBufferD3D : public FrameBuffer
 {

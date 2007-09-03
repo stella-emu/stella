@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferD3D.cxx,v 1.1 2007-08-05 15:34:26 stephena Exp $
+// $Id: FrameBufferD3D.cxx,v 1.2 2007-09-03 18:37:24 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_D3D
@@ -29,7 +29,6 @@
 #include "Settings.hxx"
 #include "OSystem.hxx"
 #include "Font.hxx"
-#include "GuiUtils.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferD3D::FrameBufferD3D(OSystem* osystem)

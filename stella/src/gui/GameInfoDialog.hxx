@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.22 2007-02-06 23:34:34 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.23 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,12 +28,12 @@ class EditTextWidget;
 class PopUpWidget;
 class StaticTextWidget;
 class TabWidget;
-class Properties;
 class SliderWidget;
 
 #include "Array.hxx"
 #include "Dialog.hxx"
 #include "Command.hxx"
+#include "Props.hxx"
 
 class GameInfoDialog : public Dialog, public CommandSender
 {

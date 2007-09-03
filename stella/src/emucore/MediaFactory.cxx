@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.cxx,v 1.8 2007-07-19 16:21:39 stephena Exp $
+// $Id: MediaFactory.cxx,v 1.9 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 ////////////////////////////////////////////////////////////////////
@@ -23,6 +23,7 @@
 #include "MediaFactory.hxx"
 
 #include "OSystem.hxx"
+#include "Settings.hxx"
 
 #include "FrameBuffer.hxx"
 #ifdef DISPLAY_OPENGL

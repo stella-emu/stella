@@ -13,15 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.10 2007-07-31 15:46:20 stephena Exp $
+// $Id: FSNode.cxx,v 1.11 2007-09-03 18:37:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "FSNode.hxx"
 #include "bspf.hxx"
-#include "GuiUtils.hxx"
+#include "FSNode.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FSList::sort()

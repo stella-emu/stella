@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.22 2007-06-20 16:33:22 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.23 2007-09-03 18:37:23 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -22,7 +22,6 @@
 #include "MediaSrc.hxx"
 #include "OSystem.hxx"
 #include "Font.hxx"
-#include "GuiUtils.hxx"
 #include "FrameBufferGP2X.hxx"
 
 

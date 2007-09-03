@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamCheat.cxx,v 1.4 2007-01-01 18:04:39 stephena Exp $
+// $Id: RamCheat.cxx,v 1.5 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
+#include "Console.hxx"
 #include "System.hxx"
 #include "CheatManager.hxx"
 

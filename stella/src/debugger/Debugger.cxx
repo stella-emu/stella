@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.114 2007-08-15 17:43:51 stephena Exp $
+// $Id: Debugger.cxx,v 1.115 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -26,6 +26,7 @@
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
 

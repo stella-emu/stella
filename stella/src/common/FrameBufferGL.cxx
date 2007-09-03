@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.89 2007-09-01 23:31:18 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.90 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -22,14 +22,16 @@
 #include <SDL_syswm.h>
 #include <sstream>
 
+#include "bspf.hxx"
+
 #include "Console.hxx"
-#include "FrameBuffer.hxx"
-#include "FrameBufferGL.hxx"
-#include "MediaSrc.hxx"
-#include "Settings.hxx"
-#include "OSystem.hxx"
 #include "Font.hxx"
-#include "GuiUtils.hxx"
+#include "MediaSrc.hxx"
+#include "OSystem.hxx"
+#include "Settings.hxx"
+#include "Surface.hxx"
+
+#include "FrameBufferGL.hxx"
 
 // There's probably a cleaner way of doing this
 // These values come from SDL_video.c
@@ -219,7 +221,7 @@ bool FrameBufferGL::initSubsystem(VideoMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FrameBufferGL::about()
+string FrameBufferGL::about() const
 {
   string extensions;
   if(myHaveTexRectEXT) extensions += "GL_TEXTURE_RECTANGLE_ARB  ";
@@ -454,7 +456,7 @@ void FrameBufferGL::postFrameUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::scanline(uInt32 row, uInt8* data)
+void FrameBufferGL::scanline(uInt32 row, uInt8* data) const
 {
   // Invert the row, since OpenGL rows start at the bottom
   // of the framebuffer
@@ -515,8 +517,7 @@ void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                             int color)
+void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 {
   // Fill the rectangle
   SDL_Rect tmp;
@@ -578,28 +579,30 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawSurface(SDL_Surface* surface, Int32 x, Int32 y)
+void FrameBufferGL::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
 {
   SDL_Rect clip;
   clip.x = x;
   clip.y = y;
 
-  SDL_BlitSurface(surface, 0, myTexture, &clip);
+  SDL_BlitSurface(surface->myData, 0, myTexture, &clip);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::convertToSurface(SDL_Surface* surface, int row,
-                                     uInt8* data, int rowsize) const
+void FrameBufferGL::bytesToSurface(GUI::Surface* surface, int row,
+                                   uInt8* data) const
 {
-  uInt16* pixels = (uInt16*) surface->pixels;
-  pixels += (row * surface->pitch/2);
+  SDL_Surface* s = surface->myData;
+  uInt16* pixels = (uInt16*) s->pixels;
+  pixels += (row * s->pitch/2);
 
+  int rowsize = surface->getWidth() * 3;
   for(int c = 0; c < rowsize; c += 3)
-    *pixels++ = SDL_MapRGB(surface->format, data[c], data[c+1], data[c+2]);
+    *pixels++ = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::translateCoords(Int32& x, Int32& y)
+void FrameBufferGL::translateCoords(Int32& x, Int32& y) const
 {
   // Wow, what a mess :)
   x = (Int32) ((x - myImageDim.x) / myWidthScaleFactor);
@@ -722,14 +725,14 @@ bool FrameBufferGL::createTextures()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-SDL_Surface* FrameBufferGL::cloneSurface(int width, int height)
+GUI::Surface* FrameBufferGL::createSurface(int width, int height) const
 {
   SDL_PixelFormat* fmt = myTexture->format;
-  SDL_Surface* surface =
+  SDL_Surface* data =
     SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 16,
                          fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
 
-  return surface;
+  return data ? new GUI::Surface(width, height, data) : NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

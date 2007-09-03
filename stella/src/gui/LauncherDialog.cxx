@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.70 2007-09-01 23:31:18 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.71 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,24 +21,25 @@
 
 #include <sstream>
 
-#include "FSNode.hxx"
-#include "BrowserDialog.hxx"
-#include "OSystem.hxx"
-#include "Settings.hxx"
-#include "PropsSet.hxx"
-#include "Props.hxx"
-#include "MD5.hxx"
-#include "Widget.hxx"
-#include "StringListWidget.hxx"
-#include "RomInfoWidget.hxx"
-#include "Dialog.hxx"
-#include "DialogContainer.hxx"
-#include "GuiUtils.hxx"
-#include "ProgressDialog.hxx"
-#include "OptionsDialog.hxx"
-#include "LauncherDialog.hxx"
-
 #include "bspf.hxx"
+
+#include "BrowserDialog.hxx"
+#include "DialogContainer.hxx"
+#include "Dialog.hxx"
+#include "FSNode.hxx"
+#include "GameList.hxx"
+#include "MD5.hxx"
+#include "OptionsDialog.hxx"
+#include "OSystem.hxx"
+#include "ProgressDialog.hxx"
+#include "Props.hxx"
+#include "PropsSet.hxx"
+#include "RomInfoWidget.hxx"
+#include "Settings.hxx"
+#include "StringListWidget.hxx"
+#include "Widget.hxx"
+
+#include "LauncherDialog.hxx"
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,6 +102,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     xpos += myList->getWidth() + 15;
     myRomInfoWidget = new RomInfoWidget(this, font, xpos, ypos,
                                         326, myList->getHeight());
+    wid.push_back(myRomInfoWidget);
   }
 
   // Add note textwidget to show any notes for the currently selected ROM
@@ -400,6 +402,35 @@ void LauncherDialog::createListCache()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::loadRomInfo()
+{
+  int item = myList->getSelected();
+  if(item < 0) return;
+
+  if(myGameList->isDir(item))
+  {
+    if(myRomInfoFlag)
+      myRomInfoWidget->clearInfo();
+    return;
+  }
+
+  // Make sure we have a valid md5 for this ROM
+  if(myGameList->md5(item) == "")
+    myGameList->setMd5(item, MD5FromFile(myGameList->path(item)));
+
+  // Get the properties for this entry
+  Properties props;
+  const string& md5 = myGameList->md5(item);
+  instance()->propSet().getMD5(md5, props);
+
+  if(!myBrowseModeFlag)
+    myNote->setLabel(props.get(Cartridge_Note));
+
+  if(myRomInfoFlag)
+    myRomInfoWidget->showInfo(props);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string LauncherDialog::MD5FromFile(const string& path)
 {
   uInt8* image;
@@ -417,14 +448,13 @@ string LauncherDialog::MD5FromFile(const string& path)
 void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
-  int item;
-
   switch (cmd)
   {
     case kStartCmd:
     case kListItemActivatedCmd:
     case kListItemDoubleClickedCmd:
-      item = myList->getSelected();
+    {
+      int item = myList->getSelected();
       if(item >= 0)
       {
         const string& rom = myGameList->path(item);
@@ -449,46 +479,20 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         }
       }
       break;
+    }
 
     case kOptionsCmd:
       parent()->addDialog(myOptions);
       break;
 
     case kPrevDirCmd:
-    {
       myCurrentNode = myCurrentNode.getParent();
       updateListing(!myBrowseModeFlag);  // Force full update in non-browse mode
       break;
-    }
 
     case kListSelectionChangedCmd:
-    {
-      item = myList->getSelected();
-      if(item < 0) break;
-
-      if(myGameList->isDir(item))
-      {
-        if(myRomInfoFlag)
-          myRomInfoWidget->clearInfo();
-        break;
-      }
-
-      // Make sure we have a valid md5 for this ROM
-      if(myGameList->md5(item) == "")
-        myGameList->setMd5(item, MD5FromFile(myGameList->path(item)));
-
-      // Get the properties for this entry
-      Properties props;
-      const string& md5 = myGameList->md5(item);
-      instance()->propSet().getMD5(md5, props);
-
-      if(!myBrowseModeFlag)
-        myNote->setLabel(props.get(Cartridge_Note));
-
-      if(myRomInfoFlag)
-        myRomInfoWidget->showInfo(props);
+      loadRomInfo();
       break;
-    }
 
     case kQuitCmd:
       close();
@@ -513,6 +517,12 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kReloadRomDirCmd:
       updateListing(true);
+      break;
+
+    case kResizeCmd:
+      // Instead of figuring out how to resize the snapshot image,
+      // we just reload it
+      loadRomInfo();
       break;
 
     default:

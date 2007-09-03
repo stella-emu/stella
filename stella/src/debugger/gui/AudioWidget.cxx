@@ -13,19 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioWidget.cxx,v 1.5 2007-01-01 18:04:42 stephena Exp $
+// $Id: AudioWidget.cxx,v 1.6 2007-09-03 18:37:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
-#include "OSystem.hxx"
+#include "DataGridWidget.hxx"
 #include "FrameBuffer.hxx"
-#include "GuiUtils.hxx"
 #include "GuiObject.hxx"
+#include "OSystem.hxx"
 #include "TIADebug.hxx"
 #include "Widget.hxx"
-#include "DataGridWidget.hxx"
+
 #include "AudioWidget.hxx"
 
 // ID's for the various widgets

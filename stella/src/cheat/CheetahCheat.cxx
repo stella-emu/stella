@@ -13,9 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheetahCheat.cxx,v 1.3 2007-01-01 18:04:39 stephena Exp $
+// $Id: CheetahCheat.cxx,v 1.4 2007-09-03 18:37:22 stephena Exp $
 //============================================================================
 
+#include "Console.hxx"
 #include "CheetahCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

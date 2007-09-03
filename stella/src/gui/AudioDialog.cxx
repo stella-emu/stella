@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.24 2007-01-01 18:04:52 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.25 2007-09-03 18:37:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,18 +21,19 @@
 
 #include <sstream>
 
-#include "OSystem.hxx"
-#include "Sound.hxx"
-#include "Settings.hxx"
-#include "Menu.hxx"
-#include "Control.hxx"
-#include "Widget.hxx"
-#include "PopUpWidget.hxx"
-#include "Dialog.hxx"
-#include "AudioDialog.hxx"
-#include "GuiUtils.hxx"
-
 #include "bspf.hxx"
+
+#include "Console.hxx"
+#include "Control.hxx"
+#include "Dialog.hxx"
+#include "Menu.hxx"
+#include "OSystem.hxx"
+#include "PopUpWidget.hxx"
+#include "Settings.hxx"
+#include "Sound.hxx"
+#include "Widget.hxx"
+
+#include "AudioDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,

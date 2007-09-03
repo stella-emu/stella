@@ -13,17 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.1 2007-09-01 23:31:18 stephena Exp $
-//
-//   Based on code from ScummVM - Scumm Interpreter
-//   Copyright (C) 2002-2004 The ScummVM project
+// $Id: RomInfoWidget.cxx,v 1.2 2007-09-03 18:37:23 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
 #include <cstring>
 
-#include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "OSystem.hxx"
+#include "Settings.hxx"
+#include "Surface.hxx"
 #include "Widget.hxx"
 
 #include "RomInfoWidget.hxx"
@@ -45,6 +44,11 @@ RomInfoWidget::~RomInfoWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::loadConfig()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::showInfo(const Properties& props)
 {
   // The input stream for the PNG file
@@ -58,7 +62,7 @@ void RomInfoWidget::showInfo(const Properties& props)
   // 'tEXt' chucks from the PNG image
   StringList textChucks;
 
-  // Get all possible names representing a snapshot file for this rom
+  // Get a valid filename representing a snapshot file for this rom
   const string& path = instance()->settings().getString("ssdir");
   const string& filename = instance()->getFilename(path, props, "png");
 
@@ -89,7 +93,7 @@ void RomInfoWidget::showInfo(const Properties& props)
           int s_height = BSPF_min(250, height);
 
           FrameBuffer& fb = instance()->frameBuffer();
-          mySurface = fb.cloneSurface(s_width, s_height);
+          mySurface = fb.createSurface(s_width, s_height);
           if(!parseIDATChunk(fb, mySurface, width, height, data, size))
             throw "RomInfoWidget: IDAT processing failed";
         }
@@ -112,38 +116,34 @@ void RomInfoWidget::showInfo(const Properties& props)
   }
   // Now add some info for the message box below the image
   myRomInfo.push_back("Name:  " + props.get(Cartridge_Name));
-  myRomInfo.push_back("MD5:  " + props.get(Cartridge_MD5));
   myRomInfo.push_back("Manufacturer:  " + props.get(Cartridge_Manufacturer));
   myRomInfo.push_back("Model:  " + props.get(Cartridge_ModelNo));
   myRomInfo.push_back("Rarity:  " + props.get(Cartridge_Rarity));
   myRomInfo.push_back("Note:  " + props.get(Cartridge_Note));
-
+  myRomInfo.push_back("Controllers:  " + props.get(Controller_Left) +
+                      " (left), " + props.get(Controller_Right) + " (right)");
   // TODO - add the PNG tEXt chunks
 
-  loadConfig();
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::clearInfo(bool redraw)
 {
-  if(mySurface) SDL_FreeSurface(mySurface);
+  if(mySurface)
+    delete mySurface;
   mySurface = NULL;
   myRomInfo.clear();
 
   if(redraw)
-    loadConfig();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::loadConfig()
-{
-  setDirty(); draw();
+  {
+    setDirty(); draw();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::drawWidget(bool hilite)
 {
-//  cerr << "RomInfoWidget::drawWidget\n";
   FrameBuffer& fb = instance()->frameBuffer();
 
   fb.fillRect(_x+2, _y+2, _w-4, _h-4, kWidColor);
@@ -152,8 +152,8 @@ void RomInfoWidget::drawWidget(bool hilite)
 
   if(mySurface)
   {
-    int x = (_w - mySurface->w) >> 1;
-    int y = (256 - mySurface->h) >> 1;
+    int x = (_w - mySurface->getWidth()) >> 1;
+    int y = (256 - mySurface->getHeight()) >> 1;
     fb.drawSurface(mySurface, x + getAbsX(), y + getAbsY());
   }
   int xpos = _x + 5, ypos = _y + 256 + 5;
@@ -213,7 +213,7 @@ bool RomInfoWidget::parseIHDR(int& width, int& height, uInt8* data, int size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, SDL_Surface* surface,
+bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
                                    int width, int height, uInt8* data, int size)
 {
   // The entire decompressed image data
@@ -226,17 +226,16 @@ bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, SDL_Surface* surface,
   if(uncompress(buffer, &bufsize, data, size) == Z_OK)
   {
     uInt8* buf_ptr = buffer;
-    int i_pitch = width * 3;        // bytes per line of the image
-    int rowbytes = surface->w * 3;  // bytes per line of the surface
-    for(int row = 0; row < height; row++, buf_ptr += i_pitch)
+    int pitch = width * 3;  // bytes per line of the image
+    for(int row = 0; row < height; row++, buf_ptr += pitch)
     {
       buf_ptr++;           // skip past first byte (PNG filter type)
-      fb.convertToSurface(surface, row, buf_ptr, rowbytes);
+      fb.bytesToSurface(surface, row, buf_ptr);
     }
   }
   else
   {
-    cerr << "error decompressing data\n";
+    cerr << "RomInfoWidget: error decompressing data\n";
     return false;
   }
 
