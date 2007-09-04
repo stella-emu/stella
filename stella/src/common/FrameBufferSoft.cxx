@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.73 2007-09-03 18:37:22 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.74 2007-09-04 00:47:00 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -652,21 +652,33 @@ void FrameBufferSoft::bytesToSurface(GUI::Surface* surface, int row,
                                      uInt8* data) const
 {
   SDL_Surface* s = surface->myData;
-  int rowsize = s->w * 3;
+  int rowbytes = s->w * 3;
+  row *= myZoomLevel;
 
   switch(myBytesPerPixel)
   {
     case 2:
     {
       uInt16* pixels = (uInt16*) s->pixels;
-      pixels += (row * s->pitch/2);
+      int surfbytes = s->pitch/2;
+      pixels += (row * surfbytes);
+      uInt8* pixel_ptr = (uInt8*)pixels;
 
-      for(int c = 0; c < rowsize/myZoomLevel; c += 3)
+      // Calculate a scanline of zoomed surface data
+      for(int c = 0; c < rowbytes/myZoomLevel; c += 3)
       {
         uInt32 pixel = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
         uInt32 xstride = myZoomLevel;
         while(xstride--)
           *pixels++ = pixel;
+      }
+
+      // Now duplicate the scanlines (we've already done the first one)
+      uInt32 ystride = myZoomLevel-1;
+      while(ystride--)
+      {
+        memcpy(pixel_ptr + s->pitch, pixel_ptr, s->pitch);
+        pixel_ptr += s->pitch;
       }
       break;
     }
