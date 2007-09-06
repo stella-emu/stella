@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.59 2007-08-22 13:55:40 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.60 2007-09-06 02:15:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -149,7 +149,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   // Certain buttons are disabled depending on mode
   if(myIsGlobal)
   {
-    myGameInfoButton->clearFlags(WIDGET_ENABLED);
+//    myGameInfoButton->clearFlags(WIDGET_ENABLED);
     myCheatCodeButton->clearFlags(WIDGET_ENABLED);
   }
 

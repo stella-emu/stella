@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.cxx,v 1.35 2007-09-03 18:37:22 stephena Exp $
+// $Id: PropsSet.cxx,v 1.36 2007-09-06 02:15:00 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -107,6 +107,10 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
+  // Since the PropSet is keyed by md5, we can't insert without a valid one
+  if(properties.get(Cartridge_MD5) == "")
+    return;
+
   insertNode(myRoot, properties, save);
 }
 

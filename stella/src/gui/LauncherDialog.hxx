@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.28 2007-09-03 18:37:23 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.29 2007-09-06 02:15:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,20 +22,23 @@
 #ifndef LAUNCHER_DIALOG_HXX
 #define LAUNCHER_DIALOG_HXX
 
-class DialogContainer;
-class OptionsDialog;
-class ProgressDialog;
+#include "bspf.hxx"
+
+class ButtonWidget;
 class CommandSender;
+class DialogContainer;
+class GameList;
+class OptionsDialog;
+class OSystem;
+class ProgressDialog;
+class Properties;
+class RomInfoWidget;
 class StaticTextWidget;
 class StringListWidget;
-class ButtonWidget;
-class RomInfoWidget;
-class OSystem;
-class GameList;
 
-#include "FSNode.hxx"
 #include "Dialog.hxx"
-#include "bspf.hxx"
+#include "FSNode.hxx"
+
 
 // These must be accessible from LauncherOptionsDialog
 enum {
@@ -51,6 +54,8 @@ class LauncherDialog : public Dialog
     LauncherDialog(OSystem* osystem, DialogContainer* parent,
                    int x, int y, int w, int h);
     ~LauncherDialog();
+
+    string selectedRomMD5();
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

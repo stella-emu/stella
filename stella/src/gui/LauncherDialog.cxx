@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.71 2007-09-03 18:37:23 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.72 2007-09-06 02:15:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -170,6 +170,24 @@ LauncherDialog::~LauncherDialog()
 {
   delete myOptions;
   delete myGameList;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string LauncherDialog::selectedRomMD5()
+{
+  int item = myList->getSelected();
+  if(item < 0 || myGameList->isDir(item))
+    return "";
+
+  // Make sure we have a valid md5 for this ROM
+  if(myGameList->md5(item) == "")
+  {
+    const string& md5 = MD5FromFile(myGameList->path(item));
+    myGameList->setMd5(item, md5);
+    return md5;
+  }
+  else
+    return myGameList->md5(item);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

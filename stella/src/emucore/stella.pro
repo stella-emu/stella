@@ -199,7 +199,6 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "Aquaventure (1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Unbelievably Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "02e3f4ba156fb578bef7d7a0bf3400c1"
@@ -288,7 +287,6 @@
 "Cartridge.Name" "Survival Island (1982) (Starpath)"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "30"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "04dfb4acac1d0909e4c360fd2ac04480"
@@ -877,7 +875,6 @@
 "Cartridge.Name" "Dark Chambers (1988) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "0d1b3abf681a2fc9a6aa31a9b0e8b445"
@@ -1105,7 +1102,6 @@
 "Cartridge.Name" "Dark Chambers (1988) (Atari)"
 "Cartridge.Rarity" "Uncommon"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "106326c262dfd3e8eaeabd961d2a0519"
@@ -1960,7 +1956,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Starpath) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "1ee9c1ba95cef2cf987d63f176c54ac3"
@@ -1968,7 +1963,6 @@
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Common"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "200a9d2a7cb4441ce4f002df6aa47e38"
@@ -2507,7 +2501,6 @@
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (2 of 3) (1983) (Starpath) (PAL)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "281ff9bd0470643853de5cbd6d9e17f5"
@@ -2543,7 +2536,6 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Controller.Right" "PADDLES"
 "Display.YStart" "30"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "27c8a76cf59a9fc6b667468ef1e3f9e9"
@@ -2667,7 +2659,6 @@
 "Cartridge.ModelNo" "CX26123"
 "Cartridge.Name" "Jr. Pac-Man (1984) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "2982e655dffc89d218a0a3072cfc6811"
@@ -2873,7 +2864,6 @@
 "Cartridge.Rarity" "New Release (Hack)"
 "Controller.Right" "DRIVING"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "2d1cf85fbc732856bf76470cd4060f4a"
@@ -3395,7 +3385,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Starpath) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "3556e125681aea864e17b09f3f3b2a75"
@@ -3513,7 +3502,6 @@
 "Cartridge.ModelNo" "CX26123"
 "Cartridge.Name" "Jr. Pac-Man (1984) (Atari) [!]"
 "Cartridge.Rarity" "Uncommon"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "36e47ed74968c365121eab60f48c6517"
@@ -4218,7 +4206,6 @@
 "Cartridge.ModelNo" "CX2681"
 "Cartridge.Name" "Battlezone (1983) (Atari) [!]"
 "Cartridge.Rarity" "Uncommon"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "41c4e3d45a06df9d21b7aae6ae7e9912"
@@ -4731,7 +4718,6 @@
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (3 of 3) (1983) (Starpath)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "4af4103759d603c82b1c9c5acd2d8faf"
@@ -4809,7 +4795,6 @@
 "Cartridge.Name" "Survival Island (1 of 3) (1983) (Starpath)"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "30"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "4c39a2c97917d3d71739b3e21f60bba5"
@@ -5100,7 +5085,6 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Controller.Right" "PADDLES"
 "Display.YStart" "30"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "50ef88f9a5e0e1e6b86e175362a27fdb"
@@ -5774,7 +5758,6 @@
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
 "Controller.Right" "PADDLES"
 "Display.YStart" "30"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "5dccf215fdb9bbf5d4a6d0139e5e8bcb"
@@ -5945,7 +5928,6 @@
 "Cartridge.Name" "Battlezone TC by Thomas Jentzsch (2 joystick Hack)"
 "Cartridge.Note" "Uses two simultaneous Joystick Controllers, Hack of Battlezone (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "613abf596c304ef6dbd8f3351920c37a"
@@ -6205,7 +6187,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath) [a1]"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "63e783994df824caf289b69a084cbf3e"
@@ -6618,7 +6599,6 @@
 "Cartridge.Name" "Survival Island (1982) (Starpath) [a1]"
 "Cartridge.Rarity" "Rare"
 "Display.YStart" "30"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "692202772d8b38ccf85a90c8003a1324"
@@ -7460,7 +7440,6 @@
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (3 of 3) (1983) (Starpath) (PAL)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
@@ -7666,7 +7645,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Starpath)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "7a2af383014f5d810ad26d322823549d"
@@ -8106,7 +8084,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -8549,7 +8526,6 @@
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari)"
 "Cartridge.Rarity" "Common"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "87bea777a34278d29b3b6029833c5422"
@@ -8821,7 +8797,6 @@
 "Cartridge.Name" "Asteroids (1979) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Common"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "8cd26dcf249456fe4aeb8db42d49df74"
@@ -8851,7 +8826,6 @@
 "Cartridge.Name" "Asteroids SS (Asteroids Hack)"
 "Cartridge.Note" "Hack of Asteroids (Atari)"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "8d8b7d7b983f75debbdaac651e814768"
@@ -9247,7 +9221,6 @@
 "Cartridge.MD5" "9469d18238345d87768e8965f9f4a6b2"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Ms. Pac-Man (1982) (CCE)"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "9436b7ad131b5a1f7753ce4309ba3dee"
@@ -9917,7 +9890,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Starpath) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "a0675883f9b09a3595ddd66a6f5d3498"
@@ -10891,7 +10863,6 @@
 "Cartridge.Name" "Asteroids (1979) (Atari) [a1][!]"
 "Cartridge.Rarity" "Common"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "b0c9cf89a6d4e612524f4fd48b5bb562"
@@ -11080,7 +11051,6 @@
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (2 of 3) (1983) (Starpath)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "b451307b8b5e29f1c5f2cf064f6c7227"
@@ -11226,7 +11196,6 @@
 "Cartridge.ModelNo" "AR-4401"
 "Cartridge.Name" "Survival Island (1 of 3) (1983) (Starpath) (PAL)"
 "Cartridge.Rarity" "Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "b7345220a0c587f3b0c47af33ebe533c"
@@ -12294,7 +12263,6 @@
 "Cartridge.Name" "Asteroids [p1]"
 "Cartridge.Rarity" "Common"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "cb8afcbc4a779b588b0428ea7af211d5"
@@ -12464,7 +12432,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Starpath) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "cc3d942c6958bd16b1c602623f59e6e1"
@@ -12842,7 +12809,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Starpath)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "d17a671029b1532b197defca5f3649a7"
@@ -13657,7 +13623,6 @@
 "Cartridge.Name" "Asteroids 2 (Asteroids Hack)"
 "Cartridge.Note" "Hack of Asteroids (Atari)"
 "Display.Phosphor" "YES"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "dea0ade296f7093e71185e802b500db8"
@@ -14759,7 +14724,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Starpath)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "f032b2f2d8323404a6b4541f92dd1825"
@@ -14995,7 +14959,6 @@
 "Cartridge.MD5" "f69d4fcf76942fcd9bdf3fd8fde790fb"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Aquaventure (CCE)"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "f4204fc92d17ed4cb567c40361ad58f1"
@@ -15563,7 +15526,6 @@
 "Cartridge.ModelNo" "CX2681"
 "Cartridge.Name" "Battlezone (1983) (Atari) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "fb88c400d602fe759ae74ef1716ee84e"
@@ -15752,7 +15714,6 @@
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Starpath)"
 "Cartridge.Rarity" "Extremely Rare"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "fdd4995a50395db14f518f63c2d63438"

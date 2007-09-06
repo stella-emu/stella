@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.23 2007-09-03 18:37:23 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.24 2007-09-06 02:15:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -99,6 +99,9 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     /** Game properties for currently loaded ROM */
     Properties myGameProperties;
+
+    /** Indicates that we've got a valid properties entry */
+    bool myPropertiesLoaded;
 
     /** Indicates that the default properties have been loaded */
     bool myDefaultsSelected;

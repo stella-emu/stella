@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.40 2007-09-03 18:37:23 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.41 2007-09-06 02:15:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #include "Console.hxx"
 #include "Dialog.hxx"
 #include "EditTextWidget.hxx"
+#include "Launcher.hxx"
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
@@ -37,6 +38,7 @@ GameInfoDialog::GameInfoDialog(
       GuiObject* boss, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h),
     CommandSender(boss),
+    myPropertiesLoaded(false),
     myDefaultsSelected(false)
 {
   const int fontHeight = font.getFontHeight(),
@@ -320,17 +322,33 @@ GameInfoDialog::~GameInfoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
+  myPropertiesLoaded = false;
   myDefaultsSelected = false;
+
   if(&myOSystem->console())
   {
     myGameProperties = myOSystem->console().properties();
+    myPropertiesLoaded = true;
     loadView();
+  }
+  else if(&myOSystem->launcher())
+  {
+    const string& md5 = myOSystem->launcher().romMD5();
+    if(md5 != "")
+    {
+      instance()->propSet().getMD5(md5, myGameProperties);
+      myPropertiesLoaded = true;
+      loadView();
+    }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadView()
 {
+  if(!myPropertiesLoaded)
+    return;
+
   string s;
   int i;
 
@@ -483,6 +501,9 @@ void GameInfoDialog::loadView()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::saveConfig()
 {
+  if(!myPropertiesLoaded)
+    return;
+
   string s;
   int i, tag;
 
@@ -588,7 +609,8 @@ void GameInfoDialog::saveConfig()
     instance()->propSet().insert(myGameProperties, true);
 
   // In any event, inform the Console and save the properties
-  instance()->console().setProperties(myGameProperties);
+  if(&myOSystem->console())
+    instance()->console().setProperties(myGameProperties);
   instance()->propSet().save(myOSystem->propertiesFile());
 }
 
