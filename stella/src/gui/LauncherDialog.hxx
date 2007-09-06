@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.29 2007-09-06 02:15:00 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.30 2007-09-06 21:00:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,7 @@ class LauncherDialog : public Dialog
                    int x, int y, int w, int h);
     ~LauncherDialog();
 
-    string selectedRomMD5();
+    string selectedRomMD5(string& file);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

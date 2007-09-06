@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.hxx,v 1.12 2007-09-06 02:15:00 stephena Exp $
+// $Id: Launcher.hxx,v 1.13 2007-09-06 21:00:58 stephena Exp $
 //============================================================================
 
 #ifndef LAUNCHER_HXX
@@ -28,7 +28,7 @@ class OSystem;
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Launcher.hxx,v 1.12 2007-09-06 02:15:00 stephena Exp $
+  @version $Id: Launcher.hxx,v 1.13 2007-09-06 21:00:58 stephena Exp $
 */
 class Launcher : public DialogContainer
 {
@@ -51,7 +51,7 @@ class Launcher : public DialogContainer
     /**
       Get game properties for the currently selected ROM.
     */
-    string romMD5();
+    string romMD5(string& file);
 
   private:
     // The width and height of this dialog

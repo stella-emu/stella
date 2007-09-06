@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.19 2007-09-06 02:15:00 stephena Exp $
+// $Id: Launcher.cxx,v 1.20 2007-09-06 21:00:57 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -62,7 +62,7 @@ void Launcher::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Launcher::romMD5()
+string Launcher::romMD5(string& file)
 {
-  return ((LauncherDialog*)myBaseDialog)->selectedRomMD5();
+  return ((LauncherDialog*)myBaseDialog)->selectedRomMD5(file);
 }

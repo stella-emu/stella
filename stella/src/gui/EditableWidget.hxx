@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.12 2007-01-01 18:04:52 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.13 2007-09-06 21:00:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -73,6 +73,10 @@ class EditableWidget : public Widget, public CommandSender
     bool killLine(int direction);
     bool killLastWord();
 
+    // Clipboard
+    void copySelectedText();
+    void pasteSelectedText();
+
   protected:
     bool   _editable;
     string _editString;
@@ -84,6 +88,8 @@ class EditableWidget : public Widget, public CommandSender
     bool  _caretInverse;
 
     int   _editScrollOffset;
+
+    static string _clippedText;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.24 2007-08-12 23:05:12 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.25 2007-09-06 21:00:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -254,6 +254,10 @@ bool EditableWidget::specialKeys(int keycode)
       setCaretPos(0);
       break;
 
+    case 'c':
+      copySelectedText();
+      break;
+
     case 'e':
       setCaretPos(_editString.size());
       break;
@@ -268,6 +272,10 @@ bool EditableWidget::specialKeys(int keycode)
 
     case 'u':
       handled = killLine(-1);
+      break;
+
+    case 'v':
+      pasteSelectedText();
       break;
 
     case 'w':
@@ -365,3 +373,18 @@ bool EditableWidget::killLastWord()
 
   return handled;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::copySelectedText()
+{
+  _clippedText = _editString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EditableWidget::pasteSelectedText()
+{
+  _editString = _clippedText;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EditableWidget::_clippedText = "";

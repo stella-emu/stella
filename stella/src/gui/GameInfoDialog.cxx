@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.41 2007-09-06 02:15:00 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.42 2007-09-06 21:00:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -333,11 +333,15 @@ void GameInfoDialog::loadConfig()
   }
   else if(&myOSystem->launcher())
   {
-    const string& md5 = myOSystem->launcher().romMD5();
+    string file;
+    const string& md5 = myOSystem->launcher().romMD5(file);
     if(md5 != "")
     {
       instance()->propSet().getMD5(md5, myGameProperties);
       myPropertiesLoaded = true;
+myGameProperties.set(Cartridge_Name, file);
+myGameProperties.set(Cartridge_ModelNo, file);
+myGameProperties.set(Cartridge_Manufacturer, file);
       loadView();
     }
   }
