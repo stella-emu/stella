@@ -216,7 +216,10 @@
 ""
 
 "Cartridge.MD5" "02ab2c47bc21e7feafa015f90d7df776"
-"Cartridge.Name" "Diagnostic Cartridge (Atari)"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "MA017600"
+"Cartridge.Name" "Diagnostic Test Cartridge 2.6 (1982) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "02ced7ea2b7cb509748db6bfa227ebec"
@@ -293,8 +296,7 @@
 ""
 
 "Cartridge.MD5" "047ac3b9faea64522b7a23c4465a7aa8"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Defender (1981) (Atari) (PAL) [p1][!]"
+"Cartridge.Name" "Defender (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
@@ -554,9 +556,9 @@
 ""
 
 "Cartridge.MD5" "0894aa7be77521f9df562be8d9555fe6"
-"Cartridge.ModelNo" "2451"
-"Cartridge.Name" "Donkey Kong (1983) (CBS Electronics) (PAL) [a2][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
+"Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
+"Cartridge.Name" "Donkey Kong (1982) (CBS Electronics) (PAL) [a2]"
 ""
 
 "Cartridge.MD5" "0856f202b18cd46e44fd1dc3b42e9bfb"
@@ -728,6 +730,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "09f89bbfa2ab00f1964d200e12d7ced0"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "MA017600"
+"Cartridge.Name" "Diagnostic Test Cartridge 2.6 (1982) (Atari) (Prototype) (4K)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "0abf64ca504a116adca80f77f85e00fb"
 "Cartridge.Name" "Cube Conquest (Billy Eno) (PD)"
 ""
@@ -849,10 +858,10 @@
 ""
 
 "Cartridge.MD5" "0c54811cf3b1f1573c9164d5f19eca65"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-001"
-"Cartridge.Name" "Dragster (1980) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715"
+"Cartridge.Name" "Dragster (1980) (Activision) (PAL)"
+"Cartridge.Note" "AKA Dragster Rennen"
 ""
 
 "Cartridge.MD5" "0c48e820301251fbb6bcdc89bd3555d9"
@@ -907,10 +916,9 @@
 ""
 
 "Cartridge.MD5" "0d5af65ad3f19558e6f8e29bf2a9d0f8"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26151"
-"Cartridge.Name" "Dark Chambers (1988) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, John Howard Palevich"
+"Cartridge.ModelNo" "CX26151, CX26151P"
+"Cartridge.Name" "Dark Chambers (1988) (Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -1054,10 +1062,9 @@
 ""
 
 "Cartridge.MD5" "0f643c34e40e3f1daafd9c524d3ffe64"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2609 / 4975186"
-"Cartridge.Name" "Defender (1981) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro, Alan J. Murphy - Sears"
+"Cartridge.ModelNo" "CX2609 - 49-75186"
+"Cartridge.Name" "Defender (1982) (Atari)"
 ""
 
 "Cartridge.MD5" "0f341d1f4e144e3163d9a5fc5a662b79"
@@ -1139,10 +1146,9 @@
 ""
 
 "Cartridge.MD5" "106855474c69d08c8ffa308d47337269"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, John Howard Palevich"
 "Cartridge.ModelNo" "CX26151"
 "Cartridge.Name" "Dark Chambers (1988) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 "Display.Phosphor" "YES"
 ""
 
@@ -1178,7 +1184,9 @@
 ""
 
 "Cartridge.MD5" "10f62443f1ae087dc588a77f9e8f43e9"
-"Cartridge.Name" "Dodge 'em (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky"
+"Cartridge.ModelNo" "CX2637, CX2637P"
+"Cartridge.Name" "Dodge 'Em (1980) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "10a3cd14e5dcfdde6ff216a14ce7b7dd"
@@ -1232,10 +1240,7 @@
 ""
 
 "Cartridge.MD5" "1267e3c6ca951ff1df6f222c8f813d97"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "IA3611"
-"Cartridge.Name" "Dragonfire (1982) (Imagic) (PAL) [p1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Dragonfire (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "1266b3fd632c981f3ef9bdbf9f86ce9a"
@@ -1263,10 +1268,9 @@
 ""
 
 "Cartridge.MD5" "12cd04d3298633413a756795c49dc0c6"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper Preview (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
@@ -2039,8 +2043,8 @@
 ""
 
 "Cartridge.MD5" "1f773a94d919b2a3c647172bbb97f6b4"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2678"
+"Cartridge.Manufacturer" "Atari, Peter C. Niday"
+"Cartridge.ModelNo" "CX26115"
 "Cartridge.Name" "Dumbo's Flying Circus (1983) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
 ""
@@ -2123,7 +2127,8 @@
 
 "Cartridge.MD5" "2091af29b4e7b86914d79d9aaa4cbd20"
 "Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.Name" "Donkey Kong Junior (CBS Electronics) (PAL) [!]"
+"Cartridge.ModelNo" "4L1802"
+"Cartridge.Name" "Donkey Kong Junior (1983) (CBS Electronics) (PAL)"
 ""
 
 "Cartridge.MD5" "20dca534b997bf607d658e77fbb3c0ee"
@@ -2202,10 +2207,9 @@
 ""
 
 "Cartridge.MD5" "21d2c435bcccde7792d82844b3cf60f4"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2677"
-"Cartridge.Name" "Dig Dug (V2) (1983) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Doug Macrae"
+"Cartridge.ModelNo" "CX2677, CX2677P"
+"Cartridge.Name" "Dig Dug (1983) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "21b09c40295c2d7074a83ae040f22edf"
@@ -2445,8 +2449,10 @@
 ""
 
 "Cartridge.MD5" "25a21c47afe925a3ca0806876a2b4f3f"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Der kleine Baer (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "685.640 5"
+"Cartridge.Name" "Der kleine Baer (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Frostbite"
 ""
 
 "Cartridge.MD5" "25bcf07491f65012a70a528959c4881c"
@@ -2861,6 +2867,12 @@
 "Cartridge.Rarity" "Uncommon"
 ""
 
+"Cartridge.MD5" "2ba02f509a4991aa176ba8d9e540df3d"
+"Cartridge.Manufacturer" "Atari, Mark R. Hahn"
+"Cartridge.ModelNo" "CX2678"
+"Cartridge.Name" "Dukes of Hazzard (1983) (Atari) [a]"
+""
+
 "Cartridge.MD5" "2c3d5df0a55500cd59916dbb4fee3fa4"
 "Cartridge.Name" "Death Derby (Experiment 02) (PD)"
 ""
@@ -2959,8 +2971,10 @@
 ""
 
 "Cartridge.MD5" "2d16a8b59a225ea551667be45f554652"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Der Geheimkurier (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "802.744 3"
+"Cartridge.Name" "Der Geheimkurier (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Mr. Postman"
 ""
 
 "Cartridge.MD5" "2cfb188c1091cc7ec2a7e60064d2a758"
@@ -2968,10 +2982,10 @@
 ""
 
 "Cartridge.MD5" "2d9e65959808a6098c16c82a59c9d9dc"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "2d9e5d8d083b6367eda880e80dfdfaeb"
@@ -3317,8 +3331,10 @@
 ""
 
 "Cartridge.MD5" "31df1c50c4351e144c9a378adb8c10ba"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Die Ratte und die Karotten (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "687.463 0"
+"Cartridge.Name" "Die Ratte und die Karotten (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Gopher"
 ""
 
 "Cartridge.MD5" "31d08cb465965f80d3541a57ec82c625"
@@ -3437,12 +3453,10 @@
 ""
 
 "Cartridge.MD5" "34ca2fcbc8ba4a0b544acd94991cfb50"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Dukes of Hazzard V2 (Atari) (Prototype) [!]"
-"Cartridge.Note" "Uses the Paddle Controllers"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.Name" "Dukes of Hazzard (1980) (Atari) (Prototype) (4K)"
+"Cartridge.Note" "AKA Stunt Cycle"
 "Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "34303a7d4c9ad4500ca7f2ede9709595"
@@ -3578,8 +3592,9 @@
 ""
 
 "Cartridge.MD5" "3624e5568368929fabb55d7f9df1022e"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Double Dragon (1989) (Activision) (PAL) [!]"
+"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.ModelNo" "EAK-050-04"
+"Cartridge.Name" "Double Dragon (1989) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "36306070f0c90a72461551a7a4f3a209"
@@ -3595,10 +3610,10 @@
 ""
 
 "Cartridge.MD5" "368d88a6c071caba60b4f778615aae94"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Matthew L. Hubbard"
 "Cartridge.ModelNo" "CX26159"
 "Cartridge.Name" "Double Dunk (1989) (Atari)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Note" "AKA Super Basketball"
 ""
 
 "Cartridge.MD5" "3685060707df27d4091ba0ea2dc4b059"
@@ -3611,10 +3626,9 @@
 ""
 
 "Cartridge.MD5" "36b20c427975760cb9cf4a47e41369e4"
-"Cartridge.Manufacturer" "Coleco"
-"Cartridge.ModelNo" "2451"
-"Cartridge.Name" "Donkey Kong (198x)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26143"
+"Cartridge.Name" "Donkey Kong (1987) (Atari)"
 ""
 
 "Cartridge.MD5" "36c29ceee2c151b23a1ad7aa04bd529d"
@@ -3757,16 +3771,16 @@
 ""
 
 "Cartridge.MD5" "3a771876e4b61d42e3a3892ad885d889"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
 "Cartridge.ModelNo" "CX26120"
-"Cartridge.Name" "Defender II (1984) (Atari)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Defender II (1988) (Atari)"
+"Cartridge.Note" "AKA Stargate"
 ""
 
 "Cartridge.MD5" "3a526e6a1f9fe918af0f2ce997dfea73"
-"Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.Name" "Donkey Kong (1983) (CBS Electronics) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
+"Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
+"Cartridge.Name" "Donkey Kong (1982) (CBS Electronics) (PAL)"
 ""
 
 "Cartridge.MD5" "39bf392448c8bd39d48acc95ed3b423f"
@@ -3872,8 +3886,10 @@
 ""
 
 "Cartridge.MD5" "3b69f8929373598e1752f43f8da61aa4"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Die Springteufel (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "176.654 2"
+"Cartridge.Name" "Die Springteufel (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Infiltrate"
 "Display.Phosphor" "YES"
 ""
 
@@ -3978,6 +3994,11 @@
 
 "Cartridge.MD5" "3c3a2bb776dec245c7d6678b5a56ac10"
 "Cartridge.Name" "Unknown Title (bin00003) (PD)"
+""
+
+"Cartridge.MD5" "3bb9793c60c92911895cf44530846136"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Dragster (Jone Yuan) (4K)"
 ""
 
 "Cartridge.MD5" "3c7a96978f52b2b15426cdd50f2c4048"
@@ -4285,10 +4306,9 @@
 ""
 
 "Cartridge.MD5" "41810dd94bd0de1110bedc5092bef5b0"
-"Cartridge.Manufacturer" "Imagic"
+"Cartridge.Manufacturer" "Imagic, Bob Smith"
 "Cartridge.ModelNo" "IA3611"
-"Cartridge.Name" "Dragonfire (1982) (Imagic) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Dragonfire (1982) (Imagic)"
 ""
 
 "Cartridge.MD5" "40aa851e8d0f1c555176a5e209a5fabb"
@@ -4439,8 +4459,7 @@
 ""
 
 "Cartridge.MD5" "442602713cb45b9321ee93c6ea28a5d0"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.Name" "Demon Attack (1982) (Imagic) (PAL) [p1][!]"
+"Cartridge.Name" "Demon Attack (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "43f33c6dfdeaf5138ce6e6968ad7c5ce"
@@ -4588,11 +4607,18 @@
 "Cartridge.Rarity" "Uncommon"
 ""
 
+"Cartridge.MD5" "469473ff6fed8cc8d65f3c334f963aab"
+"Cartridge.Manufacturer" "Atari, Bruce Poehlman, Gary Stark"
+"Cartridge.Name" "Dune (1984) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+"Display.YStart" "23"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "47464694e9cce07fdbfd096605bf39d4"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AK-050-04"
-"Cartridge.Name" "Double Dragon (1989) (Activision) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.ModelNo" "EAK-050-04"
+"Cartridge.Name" "Double Dragon (1989) (Activision) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "470878b9917ea0348d64b5750af149aa"
@@ -4722,10 +4748,10 @@
 ""
 
 "Cartridge.MD5" "4901c05068512828367fde3fb22199fe"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "IA3200"
-"Cartridge.Name" "Demon Attack (1982) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Imagic, Rob Fulop"
+"Cartridge.ModelNo" "IA3200P, EIX-006-04I"
+"Cartridge.Name" "Demon Attack (1982) (Imagic) (PAL)"
+"Cartridge.Note" "AKA Death from Above"
 ""
 
 "Cartridge.MD5" "4904a2550759b9b4570e886374f9d092"
@@ -4760,7 +4786,7 @@
 
 "Cartridge.MD5" "4999b45be0ab5a85bac1b7c0e551542b"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Double Dragon (CCE)"
+"Cartridge.Name" "Double Dragon (CCE) (PAL)"
 ""
 
 "Cartridge.MD5" "49571b26f46620a85f93448359324c28"
@@ -4824,10 +4850,7 @@
 ""
 
 "Cartridge.MD5" "4a6be79310f86f0bebc7dfcba4d74161"
-"Cartridge.Manufacturer" "Telesys"
-"Cartridge.ModelNo" "1006"
-"Cartridge.Name" "Demolition Herby (1982) (Telesys) (PAL) [p1][!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Demolition Herby (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -5086,9 +5109,9 @@
 ""
 
 "Cartridge.MD5" "4e15ddfd48bca4f0bf999240c47b49f5"
-"Cartridge.ModelNo" "50010"
+"Cartridge.Manufacturer" "Avalon Hill, Jim Jacob"
+"Cartridge.ModelNo" "5001002"
 "Cartridge.Name" "Death Trap (1983) (Avalon Hill)"
-"Cartridge.Rarity" "Unbelievably Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -5190,10 +5213,9 @@
 ""
 
 "Cartridge.MD5" "51de328e79d919d7234cf19c1cd77fbc"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Mark R. Hahn"
 "Cartridge.ModelNo" "CX2678"
-"Cartridge.Name" "Dukes of Hazzard (Atari) (Prototype)"
-"Cartridge.Rarity" "Prototype"
+"Cartridge.Name" "Dukes of Hazzard (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "502044b1ac111b394e6fbb0d821fca41"
@@ -5722,9 +5744,9 @@
 
 "Cartridge.MD5" "5a6febb9554483d8c71c86a84a0aa74e"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.ModelNo" "2653"
-"Cartridge.Name" "Donkey Kong Junior (CCE)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.ModelNo" "C-1003"
+"Cartridge.Name" "Donkey Kong Jr (1983) (CCE)"
+"Cartridge.Note" "AKA Donkey Kong Junior"
 ""
 
 "Cartridge.MD5" "5a2f2dcd775207536d9299e768bcd2df"
@@ -6039,8 +6061,10 @@
 ""
 
 "Cartridge.MD5" "5f786b67e05fb9985b77d4beb35e06ee"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Defender II (1984) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Bill Aspromonte, Andrew Fuchs"
+"Cartridge.ModelNo" "CX26120"
+"Cartridge.Name" "Defender II (1988) (Atari) (PAL)"
+"Cartridge.Note" "AKA Stargate"
 ""
 
 "Cartridge.MD5" "5f73e7175474c1c22fb8030c3158e9b3"
@@ -6200,8 +6224,10 @@
 ""
 
 "Cartridge.MD5" "6141c095d0aee4e734bebfaac939030a"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Die Unterwasser-Bestien (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "463.734 4 - 550293"
+"Cartridge.Name" "Die Unterwasser Bestien (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Seaquest"
 ""
 
 "Cartridge.MD5" "615a3bf251a38eb6638cdc7ffbde5480"
@@ -6325,10 +6351,9 @@
 ""
 
 "Cartridge.MD5" "63a6eda1da30446569ac76211d0f861c"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
-"Cartridge.Name" "Dragster (1980) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Dragster (1980) (Activision) (4K)"
 "Display.YStart" "27"
 ""
 
@@ -6509,6 +6534,11 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (V2.05) (NTSC) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "6596b3737ae4b976e4aadb68d836c5c7"
+"Cartridge.Manufacturer" "Digivision"
+"Cartridge.Name" "Defender (Digivision)"
 ""
 
 "Cartridge.MD5" "65ba1a4c643d1ab44481bdddeb403827"
@@ -6847,9 +6877,9 @@
 ""
 
 "Cartridge.MD5" "6a882fb1413912d2ce5cf5fa62cf3875"
+"Cartridge.Manufacturer" "Video Game Cartridge - Ariola"
 "Cartridge.ModelNo" "TP-605"
-"Cartridge.Name" "Dragon Defender (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Dragon Defender (Ariola) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -7061,10 +7091,9 @@
 ""
 
 "Cartridge.MD5" "6dda84fb8e442ecf34241ac0d1d91d69"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - GCC, Doug Macrae"
 "Cartridge.ModelNo" "CX2677"
 "Cartridge.Name" "Dig Dug (1983) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 "Cartridge.Type" "F6SC"
 ""
 
@@ -7176,10 +7205,9 @@
 ""
 
 "Cartridge.MD5" "6fc394dbf21cf541a60e3b3631b817f1"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "IA3611"
-"Cartridge.Name" "Dragonfire (1982) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Imagic, Bob Smith"
+"Cartridge.ModelNo" "IA3611P"
+"Cartridge.Name" "Dragonfire (1982) (Imagic) (PAL)"
 ""
 
 "Cartridge.MD5" "6fc27a9233fc69d28d3f190b4ff80f03"
@@ -7360,8 +7388,10 @@
 ""
 
 "Cartridge.MD5" "72876fd7c7435f41d571f1101fc456ea"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Die Ente und der Wolf (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "688.383 9"
+"Cartridge.Name" "Die Ente und der Wolf (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Pooyan"
 "Display.YStart" "26"
 ""
 
@@ -7676,10 +7706,9 @@
 ""
 
 "Cartridge.MD5" "77057d9d14b99e465ea9e29783af0ae3"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
-"Cartridge.Name" "Dragster (1980) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Dragster (1980) (Activision)"
 "Display.YStart" "27"
 ""
 
@@ -7695,10 +7724,9 @@
 ""
 
 "Cartridge.MD5" "78b84cfb1c57b0488d674d2374e656e6"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "77cd9a9dd810ce8042bdb9d40e256dfe"
@@ -7776,6 +7804,12 @@
 "Cartridge.MD5" "79004f84bdeee78d142e445057883169"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Planet Patrol (CCE) [!]"
+""
+
+"Cartridge.MD5" "80cd42881e670e4b74a9ccd10d0d7b2e"
+"Cartridge.Manufacturer" "20th Century Fox Video Games - Sirius, Ed Hodapp"
+"Cartridge.ModelNo" "11004"
+"Cartridge.Name" "Deadly Duck (1982) (20th Century Fox) [a]"
 ""
 
 "Cartridge.MD5" "7f525b07bc98080cc8950f7284e52ede"
@@ -8141,6 +8175,12 @@
 "Cartridge.Name" "General Retreat (Playground) (PAL)"
 ""
 
+"Cartridge.MD5" "7e2fe40a788e56765fe56a3576019968"
+"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.ModelNo" "AK-050-04"
+"Cartridge.Name" "Double Dragon (1989) (Activision)"
+""
+
 "Cartridge.MD5" "7e51a58de2c0db7d33715f518893b0db"
 "Cartridge.Manufacturer" "CBS Electronics"
 "Cartridge.ModelNo" "4L-2738"
@@ -8225,32 +8265,6 @@
 "Cartridge.Name" "Vanguard (CCE)"
 ""
 
-"Cartridge.MD5" "8c8a26ed57870daba8e13162d497bad1"
-"Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Green - Dolphin, Oink (1990) (HES) (PAL)"
-""
-
-"Cartridge.MD5" "8aad33da907bed78b76b87fceaa838c1"
-"Cartridge.Manufacturer" "Atari, Larry Kaplan"
-"Cartridge.ModelNo" "CX26163P"
-"Cartridge.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL)"
-"Display.Height" "260"
-""
-
-"Cartridge.MD5" "89a68746eff7f266bbf08de2483abe55"
-"Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
-"Cartridge.ModelNo" "CX2696"
-"Cartridge.Name" "Asterix (1983) (Atari) (Prototype)"
-"Cartridge.Note" "AKA Taz"
-"Cartridge.Rarity" "Extremely Rare"
-""
-
-"Cartridge.MD5" "826481f6fc53ea47c9f272f7050eedf7"
-"Cartridge.Manufacturer" "Imagic, Dennis Koble"
-"Cartridge.ModelNo" "IA3203"
-"Cartridge.Name" "Atlantis II (1982) (Imagic)"
-""
-
 "Cartridge.MD5" "805f9a32ef97ac25f999a25014dc5c23"
 "Cartridge.Name" "Balthazar (aka Babylon 5) (SnailSoft)"
 "Display.Phosphor" "YES"
@@ -8322,6 +8336,32 @@
 "Cartridge.Manufacturer" "John Payson"
 "Cartridge.Name" "Strat-O-Gems Deluxe"
 "Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "8c8a26ed57870daba8e13162d497bad1"
+"Cartridge.Manufacturer" "HES"
+"Cartridge.Name" "2 Pak Special Green - Dolphin, Oink (1990) (HES) (PAL)"
+""
+
+"Cartridge.MD5" "8aad33da907bed78b76b87fceaa838c1"
+"Cartridge.Manufacturer" "Atari, Larry Kaplan"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL)"
+"Display.Height" "260"
+""
+
+"Cartridge.MD5" "89a68746eff7f266bbf08de2483abe55"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
+"Cartridge.ModelNo" "CX2696"
+"Cartridge.Name" "Asterix (1983) (Atari) (Prototype)"
+"Cartridge.Note" "AKA Taz"
+"Cartridge.Rarity" "Extremely Rare"
+""
+
+"Cartridge.MD5" "826481f6fc53ea47c9f272f7050eedf7"
+"Cartridge.Manufacturer" "Imagic, Dennis Koble"
+"Cartridge.ModelNo" "IA3203"
+"Cartridge.Name" "Atlantis II (1982) (Imagic)"
 ""
 
 "Cartridge.MD5" "81f4f0285f651399a12ff2e2f35bab77"
@@ -8468,8 +8508,10 @@
 ""
 
 "Cartridge.MD5" "82bf0dff20cee6a1ed4bb834b00074e6"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Der hungrige Panda (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "731.662 3 - 550425"
+"Cartridge.Name" "Der hungrige Panda (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Panda Chase"
 ""
 
 "Cartridge.MD5" "8290daea8391f96d7c8e1482e184d19c"
@@ -8490,8 +8532,10 @@
 ""
 
 "Cartridge.MD5" "834a2273e97aec3181ee127917b4b269"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Die Hungrigen Froesche (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "874.382 5"
+"Cartridge.Name" "Die hungrigen Froesche (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Frogs and Flies"
 ""
 
 "Cartridge.MD5" "836b955663d013300eaaa39f2403068f"
@@ -8510,10 +8554,9 @@
 ""
 
 "Cartridge.MD5" "83bdc819980db99bf89a7f2ed6a2de59"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2637"
-"Cartridge.Name" "Dodge 'em (1980) (Atari)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky - Sears"
+"Cartridge.ModelNo" "CX2637 - 49-75158"
+"Cartridge.Name" "Dodge 'Em (1980) (Atari)"
 ""
 
 "Cartridge.MD5" "83d15fb9843d9f84aa3710538403f434"
@@ -8952,9 +8995,10 @@
 ""
 
 "Cartridge.MD5" "8b5b1e3a434ebbdc2c2a49dc68f46360"
-"Cartridge.ModelNo" "2451"
-"Cartridge.Name" "Donkey Kong (1983) (CBS Electronics) (PAL) [a1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
+"Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
+"Cartridge.Name" "Donkey Kong (1982) (CBS Electronics) (PAL) [a1]"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "8ac18076d01a6b63acf6e2cab4968940"
@@ -8972,6 +9016,12 @@
 "Cartridge.ModelNo" "PB5360"
 "Cartridge.Name" "Q-bert (1983) (Parker Bros) (PAL) [!]"
 "Cartridge.Rarity" "Common"
+""
+
+"Cartridge.MD5" "8b04e9d132b8e30d447acaa6bd049c32"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "AR-4400"
+"Cartridge.Name" "Dragonstomper (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "8b504b417c8626167a7e02f44229f0e7"
@@ -9269,10 +9319,9 @@
 ""
 
 "Cartridge.MD5" "90ccf4f30a5ad8c801090b388ddd5613"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Dragonstomper (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "90b1799dddb8bf748ee286d22e609480"
@@ -9327,8 +9376,8 @@
 "Cartridge.MD5" "9222b25a0875022b412e8da37e7f6887"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "106"
-"Cartridge.Name" "Dice Puzzle (Panda)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Dice Puzzle (1983) (Panda)"
+"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -9360,9 +9409,9 @@
 ""
 
 "Cartridge.MD5" "929e8a84ed50601d9af8c49b0425c7ea"
+"Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG205"
-"Cartridge.Name" "Dancing Plates (1983) (BitCorp) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Dancing Plate (1982) (BitCorp) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -9402,16 +9451,18 @@
 ""
 
 "Cartridge.MD5" "939ce554f5c0e74cc6e4e62810ec2111"
-"Cartridge.Manufacturer" "Zimag"
-"Cartridge.Name" "Dishaster (AKA Mr. Chin) (Zimag) (PAL-M) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
+"Cartridge.ModelNo" "711-111 - GN-020"
+"Cartridge.Name" "Dishaster (1983) (ZiMAG)"
+"Cartridge.Note" "AKA Dancing Plate"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "937736d899337036de818391a87271e0"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Peter C. Niday"
 "Cartridge.ModelNo" "CX26108"
-"Cartridge.Name" "Donald Duck's Speedboat (Atari) (Prototype) (PAL)"
+"Cartridge.Name" "Donald Duck's Speedboat (1983) (Atari) (Prototype)"
+"Cartridge.Note" "AKA Donald Duck's Regatta"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -9554,8 +9605,9 @@
 ""
 
 "Cartridge.MD5" "95e542a7467c94b1e4ab24a3ebe907f1"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Im Schutz der Drachen (Starsoft) (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-021"
+"Cartridge.Name" "Dragon Defender (Suntek) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -9612,10 +9664,9 @@
 ""
 
 "Cartridge.MD5" "977294ae6526c31c7f9a166ee00964ad"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2677"
-"Cartridge.Name" "Dig Dug (V1) (1983) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Doug Macrae"
+"Cartridge.ModelNo" "CX2677, CX2677P"
+"Cartridge.Name" "Dig Dug (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "97327d6962f8c64e6f926f79cd01c6b9"
@@ -9922,6 +9973,12 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
+"Cartridge.MD5" "9d1556ae5890398be7e3d57449774b40"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-001"
+"Cartridge.Name" "Dragster (1980) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "9d37a1be4a6e898026414b8fee2fc826"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5665 A016"
@@ -10214,8 +10271,10 @@
 ""
 
 "Cartridge.MD5" "a1ca372388b6465a693e4626cc98b865"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Der Vielfrass (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "176.543 7"
+"Cartridge.Name" "Der Vielfrass (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Fast Food"
 ""
 
 "Cartridge.MD5" "a1ccf58ca588bd3e0fb35a1e2a41b423"
@@ -10233,10 +10292,10 @@
 ""
 
 "Cartridge.MD5" "a1f9159121142d42e63e6fb807d337aa"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.ModelNo" "11003"
-"Cartridge.Name" "Mr. T (AKA Fast Eddie) (Starsoft) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "700.223 1 - 781627"
+"Cartridge.Name" "Der moderne Ritter (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Fast Eddie"
 ""
 
 "Cartridge.MD5" "a1ead9c181d67859aa93c44e40f1709c"
@@ -10298,10 +10357,9 @@
 ""
 
 "Cartridge.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper Preview (1982) (Starpath) [a1]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath) [a]"
 ""
 
 "Cartridge.MD5" "a2eb84cfeed55acd7fece7fefdc83fbb"
@@ -10395,10 +10453,9 @@
 ""
 
 "Cartridge.MD5" "a422194290c64ef9d444da9d6a207807"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, Hal Finney"
 "Cartridge.ModelNo" "MT5667"
-"Cartridge.Name" "Dark Cavern (1982) (Mattel) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Dark Cavern (1982) (Mattel)"
 ""
 
 "Cartridge.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
@@ -10505,10 +10562,9 @@
 ""
 
 "Cartridge.MD5" "a5e9ed3033fb2836e80aa7a420376788"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2637"
-"Cartridge.Name" "Dodge 'em (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky"
+"Cartridge.ModelNo" "CX2637, CX2637P"
+"Cartridge.Name" "Dodge 'Em (1980) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "a5c96b046d5f8b7c96daaa12f925bef8"
@@ -11163,7 +11219,10 @@
 ""
 
 "Cartridge.MD5" "b12a7f63787a6bb08e683837a8ed3f18"
-"Cartridge.Name" "Demon Attack (1982) (Imagic) [!]"
+"Cartridge.Manufacturer" "Imagic, Rob Fulop"
+"Cartridge.ModelNo" "IA3200, IX-006-04"
+"Cartridge.Name" "Demon Attack (1982) (Imagic)"
+"Cartridge.Note" "AKA Death from Above"
 ""
 
 "Cartridge.MD5" "b0e1ee07fbc73493eac5651a52f90f00"
@@ -11254,6 +11313,12 @@
 "Cartridge.ModelNo" "4L-2520"
 "Cartridge.Name" "Tunnel Runner (1983) (CBS Electronics) [!]"
 "Cartridge.Rarity" "Rare"
+""
+
+"Cartridge.MD5" "b24f6a5820a4b7763a3d547e3e07441d"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-823"
+"Cartridge.Name" "Demon Attack (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "b438a6aa9d4b9b8f0b2ddb51323b21e4"
@@ -11383,7 +11448,8 @@
 ""
 
 "Cartridge.MD5" "b59417d083b0be2d49a7d93769880a4b"
-"Cartridge.Name" "Donkey Kong (1983) (Pet Boat) (PAL) [!]"
+"Cartridge.Manufacturer" "Pet Boat"
+"Cartridge.Name" "Donkey Kong (1983) (Pet Boat) (PAL)"
 ""
 
 "Cartridge.MD5" "b56264f738b2eb2c8f7cf5a2a75e5fdc"
@@ -11679,6 +11745,12 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "bae1a23f9b6acdadf465cfb330ba0acb"
+"Cartridge.Manufacturer" "Atari - GCC, Doug Macrae"
+"Cartridge.ModelNo" "CX2677"
+"Cartridge.Name" "Dig Dug (1983) (Atari) [a]"
+""
+
 "Cartridge.MD5" "bb579404924c40ca378b4aff6ccf302d"
 "Cartridge.Name" "Lightbulb Lightens, The (PD) (Non Functional)"
 ""
@@ -11698,6 +11770,13 @@
 "Cartridge.Name" "Star Fire - Warping!! (13-04-2003) (MP)"
 ""
 
+"Cartridge.MD5" "bb18189021d58362d9e4d317cd2e28b7"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-001, PAG-001, EAG-001-04B, EAG-001-04I - 711 001-715"
+"Cartridge.Name" "Dragster (1980) (Activision) (PAL) (4K)"
+"Cartridge.Note" "AKA Dragster Rennen"
+""
+
 "Cartridge.MD5" "bb5049e4558daade0f87fed69a244c59"
 "Cartridge.Manufacturer" "Atari, Brad Stewart"
 "Cartridge.ModelNo" "CX2649, CX2649P"
@@ -11707,7 +11786,8 @@
 
 "Cartridge.MD5" "bcb2967b6a9254bcccaf906468a22241"
 "Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Demon Attack (1983) (Activision) [!]"
+"Cartridge.ModelNo" "AIX-006"
+"Cartridge.Name" "Demon Attack (1988) (Activision)"
 ""
 
 "Cartridge.MD5" "bc526185ad324241782dc68ba5d0540b"
@@ -11850,7 +11930,7 @@
 
 "Cartridge.MD5" "bf84f528de44225dd733c0e6a8e400a0"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Demons to Diamonds (1982) (CCE)"
+"Cartridge.Name" "Demons to Diamonds (CCE)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
@@ -12055,6 +12135,13 @@
 "Controller.Right" "KEYBOARD"
 ""
 
+"Cartridge.MD5" "c1b7aeabc3ec41556d924c8372a9ba5b"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.Name" "Dukes of Hazard (1980) (Atari) (Prototype) (2K)"
+"Cartridge.Note" "AKA Stunt Cycle"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "c221607529cabc93450ef25dbac6e8d2"
 "Cartridge.Name" "Color Test (26-09-2002) (Eckhard Stolberg)"
 "Console.RightDifficulty" "A"
@@ -12072,9 +12159,8 @@
 
 "Cartridge.MD5" "c1f209d80f0624dada5866ce05dd3399"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.ModelNo" "MT5662"
-"Cartridge.Name" "TRON - Deadly Discs (1983) (Telegames) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Deadly Discs (1989) (Telegames) (PAL)"
+"Cartridge.Note" "AKA Tron - Deadly Discs"
 ""
 
 "Cartridge.MD5" "c21450c21efb7715746e9fa87ad6f145"
@@ -12156,10 +12242,9 @@
 ""
 
 "Cartridge.MD5" "c3472fa98c3b452fa2fd37d1c219fb6f"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2637 / 4975158"
-"Cartridge.Name" "Dodge 'em (1980) (Atari) [a1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky - Sears"
+"Cartridge.ModelNo" "CX2637 - 49-75158"
+"Cartridge.Name" "Dodge 'Em (1980) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "c31a17942d162b80962cb1f7571cd1d5"
@@ -12523,10 +12608,9 @@
 ""
 
 "Cartridge.MD5" "c8fa5d69d9e555eb16068ef87b1c9c45"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "Coleco"
 "Cartridge.ModelNo" "2653"
-"Cartridge.Name" "Donkey Kong Junior (Coleco)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Donkey Kong Junior (1983) (Coleco)"
 ""
 
 "Cartridge.MD5" "c8df076c7e4349ca8dcbdb773bf3c985"
@@ -12548,10 +12632,9 @@
 ""
 
 "Cartridge.MD5" "ca09fa7406b7d2aea10d969b6fc90195"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, Matthew L. Hubbard, Bob Whitehead"
 "Cartridge.ModelNo" "AX-024"
-"Cartridge.Name" "Dolphin (1983) (Activision) [a1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Dolphin (1983) (Activision)"
 ""
 
 "Cartridge.MD5" "c9d02d3cfeef8b48fb71cb4520a4aa84"
@@ -13002,10 +13085,10 @@
 ""
 
 "Cartridge.MD5" "cfc226d04d7490b69e155abd7741e98c"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Matthew L. Hubbard"
 "Cartridge.ModelNo" "CX26159"
-"Cartridge.Name" "Double Dunk (1989) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Double Dunk (1989) (Atari) (PAL)"
+"Cartridge.Note" "AKA Super Basketball"
 ""
 
 "Cartridge.MD5" "d05e371765929bf5d39c91c6ea189bec"
@@ -13069,10 +13152,9 @@
 ""
 
 "Cartridge.MD5" "d09935802d6760ae58253685ff649268"
-"Cartridge.Manufacturer" "Telesys"
+"Cartridge.Manufacturer" "Telesys, Don Ruffcorn"
 "Cartridge.ModelNo" "1006"
-"Cartridge.Name" "Demolition Herby (1982) (Telesys)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Demolition Herby (1983) (Telesys)"
 "Display.Phosphor" "YES"
 ""
 
@@ -13098,10 +13180,9 @@
 ""
 
 "Cartridge.MD5" "d09a7504ee8c8717ac3e24d263e7814d"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, Matthew L. Hubbard, Bob Whitehead"
 "Cartridge.ModelNo" "AX-024"
-"Cartridge.Name" "Dolphin (1983) (Activision) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Dolphin (1983) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "d09f1830fb316515b90694c45728d702"
@@ -13188,10 +13269,7 @@
 ""
 
 "Cartridge.MD5" "d28afe0517a046265c418181fa9dd9a1"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2637"
-"Cartridge.Name" "Dodge 'em (Atari) (PAL) [p1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Dodge 'Em (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "d245e2f27c84016041e9496b66b722fe"
@@ -13279,10 +13357,10 @@
 ""
 
 "Cartridge.MD5" "d4806775693fcaaa24cf00fc00edcdf3"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26140"
-"Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.ModelNo" "CX26140P"
+"Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
+"Cartridge.Note" "AKA Nile Flyer, Sphinx"
 "Display.YStart" "22"
 ""
 
@@ -13365,10 +13443,9 @@
 ""
 
 "Cartridge.MD5" "d536a84d4e1f170305e17f7078296a50"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Dragonstomper (1982) (Starpath) [a2]"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "d4aa89e96d2902692f5c45f36903d336"
@@ -13442,11 +13519,10 @@
 ""
 
 "Cartridge.MD5" "d62283aed0f4199adb2333de4c263e9c"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Alan J. Murphy, Nick 'Sandy Maiwald' Turner"
 "Cartridge.ModelNo" "CX2615"
-"Cartridge.Name" "Demons to Diamonds (1982) (Atari) (PAL) [!]"
+"Cartridge.Name" "Demons to Diamonds (1982) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 ""
@@ -13496,10 +13572,9 @@
 ""
 
 "Cartridge.MD5" "d763e3a9cdcdd56c715ec826106fab6a"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
-"Cartridge.Name" "Dragster (1980) (Activision) [o2]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Dragster (1980) (Activision) (16K)"
 "Display.YStart" "27"
 ""
 
@@ -13963,9 +14038,10 @@
 ""
 
 "Cartridge.MD5" "de61a0b171e909a5a4cfcf81d146dbcb"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Dschungle Boy (AKA Tom Boy) (Starsoft) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "262.894 9"
+"Cartridge.Name" "Dschungel Boy (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Pitfall!"
 ""
 
 "Cartridge.MD5" "de4436eaa41e5d7b7609512632b90078"
@@ -14055,8 +14131,9 @@
 ""
 
 "Cartridge.MD5" "e02156294393818ff872d4314fc2f38e"
-"Cartridge.Manufacturer" "Panda"
-"Cartridge.Name" "Dice Puzzle (Sancho) (PAL) [!]"
+"Cartridge.Manufacturer" "Sancho - Tang's Electronic Co."
+"Cartridge.ModelNo" "TEC005"
+"Cartridge.Name" "Dice Puzzle (1983) (Sancho) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -14245,6 +14322,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "e237ee91514d5ed535c95a14fc608c11"
+"Cartridge.Manufacturer" "Activision, Matthew L. Hubbard, Bob Whitehead"
+"Cartridge.ModelNo" "AX-024"
+"Cartridge.Name" "Dolphin (1983) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Keystone Kapers (CCE) [a1]"
@@ -14360,17 +14443,15 @@
 ""
 
 "Cartridge.MD5" "e4c00beb17fdc5881757855f2838c816"
-"Cartridge.Manufacturer" "20th Century Fox"
+"Cartridge.Manufacturer" "20th Century Fox Video Games - Sirius, Ed Hodapp"
 "Cartridge.ModelNo" "11004"
-"Cartridge.Name" "Deadly Duck (1982) (20th Century Fox) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Deadly Duck (1982) (20th Century Fox)"
 ""
 
 "Cartridge.MD5" "e4bff1d5df70163c0428a1ead309c22d"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2609 / 4975186"
-"Cartridge.Name" "Defender (1981) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro, Alan J. Murphy"
+"Cartridge.ModelNo" "CX2609, CX2609P"
+"Cartridge.Name" "Defender (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "e4a0b28befaaa2915df1fa01238b1e29"
@@ -15214,10 +15295,10 @@
 ""
 
 "Cartridge.MD5" "f0e0addc07971561ab80d9abe1b8d333"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "IA3200"
-"Cartridge.Name" "Demon Attack (1982) (Imagic w-Picture Label) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Imagic, Rob Fulop"
+"Cartridge.ModelNo" "IA3200, IX-006-04"
+"Cartridge.Name" "Demon Attack (1982) (Imagic) [a]"
+"Cartridge.Note" "AKA Death from Above"
 ""
 
 "Cartridge.MD5" "f0daaa966199ef2b49403e9a29d12c50"
@@ -15227,10 +15308,9 @@
 ""
 
 "Cartridge.MD5" "f0ee2b055fed6c1df4f3cbb2e12b2c15"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
 "Cartridge.Name" "Dragonstomper (1982) (Starpath) [a1]"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "f1127ade54037236e75a133b1dfc389d"
@@ -15459,7 +15539,7 @@
 ""
 
 "Cartridge.MD5" "f48735115ec302ba8bb2d2f3a442e814"
-"Cartridge.Name" "Dancing Plates (PAL) [p1][!]"
+"Cartridge.Name" "Dancing Plate (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -15764,10 +15844,10 @@
 ""
 
 "Cartridge.MD5" "f91fb8da3223b79f1c9a07b77ebfa0b2"
-"Cartridge.ModelNo" "CX2615 / 4975140"
-"Cartridge.Name" "Demons to Diamonds (1982)"
+"Cartridge.Manufacturer" "Atari, Alan J. Murphy, Nick 'Sandy Maiwald' Turner - Sears"
+"Cartridge.ModelNo" "CX2615 - 49-75140"
+"Cartridge.Name" "Demons to Diamonds (1982) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
 ""
@@ -15939,6 +16019,14 @@
 "Display.YStart" "30"
 ""
 
+"Cartridge.MD5" "fa7ce62e7fd77e02b3e2198d70742f80"
+"Cartridge.Manufacturer" "Atari, Peter C. Niday"
+"Cartridge.ModelNo" "CX26108"
+"Cartridge.Name" "Donald Duck's Speedboat (1983) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "AKA Donald Duck's Regatta"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "fae0b86934a7c5a362281dffebdb43a0"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (2.07) (Retroactive) (PAL)"
@@ -16009,10 +16097,9 @@
 ""
 
 "Cartridge.MD5" "fbac6476e7b2b20d246202af81662c88"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper Preview (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "fb91dfc36cddaa54b09924ae8fd96199"
@@ -16109,10 +16196,10 @@
 ""
 
 "Cartridge.MD5" "fd4f5536fd80f35c64d365df85873418"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26140"
 "Cartridge.Name" "Desert Falcon (1987) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Note" "AKA Nile Flyer, Sphinx"
 "Display.YStart" "22"
 ""
 
