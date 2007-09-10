@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.80 2007-09-03 18:37:22 stephena Exp $
+// $Id: TIA.cxx,v 1.81 2007-09-10 15:46:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -197,15 +197,15 @@ void TIA::reset()
   myAllowHMOVEBlanks = 
       (myConsole.properties().get(Emulation_HmoveBlanks) == "YES");
 
-  if(myConsole.getFormat().compare(0, 3, "PAL") == 0)
-  {
-    myColorLossEnabled = true;
-    myMaximumNumberOfScanlines = 342;
-  }
-  else  // NTSC
+  if(myConsole.getFramerate() > 55)  // NTSC
   {
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
+  }
+  else
+  {
+    myColorLossEnabled = true;
+    myMaximumNumberOfScanlines = 342;
   }
 
   // Recalculate the size of the display

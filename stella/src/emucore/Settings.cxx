@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.127 2007-09-03 18:37:22 stephena Exp $
+// $Id: Settings.cxx,v 1.128 2007-09-10 15:46:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -43,6 +43,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_fsmax", "never");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
+  setInternal("gl_texrect", "false");
 
   setInternal("zoom_ui", "2");
   setInternal("zoom_tia", "2");
@@ -279,6 +280,7 @@ void Settings::usage()
     << "  -gl_fsmax     <never|always| Stretch GL image in fullscreen mode\n"
     << "                 ui|tia\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
+    << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
     << endl
   #endif
     << "  -zoom_tia     <zoom>         Use the specified zoom level in emulation mode\n"

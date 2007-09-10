@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.128 2007-07-27 13:49:16 stephena Exp $
+// $Id: Console.cxx,v 1.129 2007-09-10 15:46:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -61,6 +61,8 @@
 Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
     myProperties(props),
+    myDisplayFormat("NTSC"),
+    myFramerate(60),
     myUserPaletteDefined(false)
 {
   myControllers[0] = 0;
@@ -208,10 +210,24 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   }
   buf << endl << cart->about();
 
-  // Make sure height is set properly for PAL ROM
-  if((myDisplayFormat == "PAL" || myDisplayFormat == "SECAM") &&
-      myProperties.get(Display_Height) == "210")
-    myProperties.set(Display_Height, "250");
+  // Set up the correct properties used when toggling format
+  // Note that this can be overridden if a format is forced
+  //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
+  //   properties (60Hz, 262 scanlines, etc) and cycle between NTSC-like modes
+  if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
+     myDisplayFormat == "SECAM60")
+  {
+    // Assume we've got ~262 scanlines (NTSC-like format)
+    myFramerate = 60;
+  }
+  else
+  {
+    // Assume we've got ~312 scanlines (PAL-like format)
+    myFramerate = 50;
+
+    if(myProperties.get(Display_Height) == "210")
+      myProperties.set(Display_Height, "250");
+  }
 
   // Reset, the system to its power-on state
   mySystem->reset();
@@ -237,43 +253,52 @@ Console::~Console()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleFormat()
 {
-  int framerate = 60;
-  if(myDisplayFormat == "NTSC")
+  string format, message;
+
+  if(myDisplayFormat.compare(0, 4, "NTSC") == 0)
   {
-    myDisplayFormat = "PAL";
-    myProperties.set(Display_Format, myDisplayFormat);
-    mySystem->reset();
-    myOSystem->frameBuffer().showMessage("PAL Mode");
-    framerate = 50;
+    if(myFramerate == 60)
+    {
+      format  = "PAL60";
+      message = "PAL palette (PAL60)";
+    }
+    else
+    {
+      format  = "PAL";
+      message = "PAL palette (PAL)";
+    }
   }
-  else if(myDisplayFormat == "PAL")
+  else if(myDisplayFormat.compare(0, 3, "PAL") == 0)
   {
-    myDisplayFormat = "PAL60";
-    myProperties.set(Display_Format, myDisplayFormat);
-    mySystem->reset();
-    myOSystem->frameBuffer().showMessage("PAL60 Mode");
-    framerate = 60;
+    if(myFramerate == 60)
+    {
+      format  = "SECAM";
+      message = "SECAM palette (SECAM60)";
+    }
+    else
+    {
+      format  = "SECAM";
+      message = "SECAM palette (SECAM)";
+    }
   }
-  else if(myDisplayFormat == "PAL60")
+  else if(myDisplayFormat.compare(0, 5, "SECAM") == 0)
   {
-    myDisplayFormat = "SECAM";
-    myProperties.set(Display_Format, myDisplayFormat);
-    mySystem->reset();
-    myOSystem->frameBuffer().showMessage("SECAM Mode");
-    framerate = 50;
-  }
-  else if(myDisplayFormat == "SECAM")
-  {
-    myDisplayFormat = "NTSC";
-    myProperties.set(Display_Format, myDisplayFormat);
-    mySystem->reset();
-    myOSystem->frameBuffer().showMessage("NTSC Mode");
-    framerate = 60;
+    if(myFramerate == 60)
+    {
+      format  = "NTSC";
+      message = "NTSC palette (NTSC)";
+    }
+    else
+    {
+      format  = "NTSC50";
+      message = "NTSC palette (NTSC50)";
+    }
   }
 
+  myDisplayFormat = format;
+  myProperties.set(Display_Format, myDisplayFormat);
+  myOSystem->frameBuffer().showMessage(message);
   setPalette(myOSystem->settings().getString("palette"));
-  myOSystem->setFramerate(framerate);
-  myOSystem->sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -413,7 +438,7 @@ void Console::initializeVideo(bool full)
   setColorLossPalette(myOSystem->settings().getBool("colorloss"));
   setPalette(myOSystem->settings().getString("palette"));
 
-  myOSystem->setFramerate(getFrameRate());
+  myOSystem->setFramerate(getFramerate());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -427,7 +452,7 @@ void Console::initializeAudio()
 
   myOSystem->sound().close();
   myOSystem->sound().setChannels(channels);
-  myOSystem->sound().setFrameRate(getFrameRate());
+  myOSystem->sound().setFrameRate(getFramerate());
   myOSystem->sound().initialize();
 }
 
@@ -650,24 +675,14 @@ void Console::setColorLossPalette(bool loss)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::getFrameRate() const
+uInt32 Console::getFramerate() const
 {
   // Set the correct framerate based on the format of the ROM
   // This can be overridden by changing the framerate in the
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now solely determined based on ROM format).
   int framerate = myOSystem->settings().getInt("framerate");
-  if(framerate == -1)
-  {
-    if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60")
-      framerate = 60;
-    else if(myDisplayFormat == "PAL" || myDisplayFormat == "SECAM")
-      framerate = 50;
-    else
-      framerate = 60;
-  }
-
-  return framerate;
+  return framerate == -1 ? myFramerate : framerate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

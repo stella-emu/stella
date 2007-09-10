@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.90 2007-09-03 18:37:22 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.91 2007-09-10 15:46:58 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -33,18 +33,6 @@
 
 #include "FrameBufferGL.hxx"
 
-// There's probably a cleaner way of doing this
-// These values come from SDL_video.c
-// If they change, this code will break horribly
-#ifndef SDL_GL_ACCELERATED_VISUAL
-  #define SDL_GL_ACCELERATED_VISUAL SDL_GLattr(15)
-#endif
-#ifndef SDL_GL_SWAP_CONTROL
-  #define SDL_GL_SWAP_CONTROL SDL_GLattr(16)
-#endif
-
-// These are not defined in the current version of SDL_opengl.h
-// Hopefully speed up OpenGL rendering in OSX
 #ifndef GL_TEXTURE_RECTANGLE_ARB
   #define GL_TEXTURE_RECTANGLE_ARB 0x84F5
 #endif
@@ -223,9 +211,8 @@ bool FrameBufferGL::initSubsystem(VideoMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferGL::about() const
 {
-  string extensions;
-  if(myHaveTexRectEXT) extensions += "GL_TEXTURE_RECTANGLE_ARB  ";
-  if(extensions == "") extensions = "None";
+  const string& extensions =
+    myHaveTexRectEXT ? "GL_TEXTURE_RECTANGLE_ARB" : "None";
 
   ostringstream out;
   out << "Video rendering: OpenGL mode" << endl
@@ -326,8 +313,14 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
   }
 
   // Check for some extensions that can potentially speed up operation
-  const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
-  myHaveTexRectEXT = strstr(extensions, "ARB_texture_rectangle") != NULL;
+  // Don't use it if we've been instructed not to
+  if(myOSystem->settings().getBool("gl_texrect"))
+  {
+    const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
+    myHaveTexRectEXT = strstr(extensions, "ARB_texture_rectangle") != NULL;
+  }
+  else
+    myHaveTexRectEXT = false;
 
   // Initialize GL display
   p_glViewport(myImageDim.x, myImageDim.y, myImageDim.w, myImageDim.h);
@@ -340,7 +333,7 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
 
   p_glMatrixMode(GL_PROJECTION);
   p_glLoadIdentity();
-  p_glOrtho(0.0, orthoWidth, orthoHeight, 0, -1.0, 1.0);
+  p_glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
   p_glLoadIdentity();
 
@@ -495,25 +488,20 @@ void FrameBufferGL::toggleFilter()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
 {
-  // Horizontal line
-  SDL_Rect tmp;
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = x2 - x + 1;
-  tmp.h = 1;
-  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myBuffer.pitch + x;
+  while(x++ <= x2)
+    *buffer++ = (uInt16) myDefPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
-  // Vertical line
-  SDL_Rect tmp;
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = 1;
-  tmp.h = y2 - y + 1;
-  SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myBuffer.pitch + x;
+  while(y++ <= y2)
+  {
+    *buffer = (uInt16) myDefPalette[color];
+    buffer += myTexture->w;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

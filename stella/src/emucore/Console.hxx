@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.61 2007-07-27 13:49:16 stephena Exp $
+// $Id: Console.hxx,v 1.62 2007-09-10 15:46:58 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -38,7 +38,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.61 2007-07-27 13:49:16 stephena Exp $
+  @version $Id: Console.hxx,v 1.62 2007-09-10 15:46:58 stephena Exp $
 */
 class Console
 {
@@ -146,11 +146,6 @@ class Console
     void toggleFormat();
 
     /**
-      Query the currently selected display format (NTSC/PAL/PAL60).
-    */
-    string getFormat() const { return myDisplayFormat; }
-
-    /**
       Toggle between the available palettes.
     */
     void togglePalette();
@@ -207,6 +202,12 @@ class Console
     void changeHeight(int direction);
 
     /**
+      Returns the framerate based on a number of factors
+      (whether 'framerate' is set, what display format is in use, etc)
+    */
+    uInt32 getFramerate() const;
+
+    /**
       Toggles the TIA bit specified in the method name.
     */
     void toggleP0Bit() const { toggleTIABit(TIA::P0, "P0"); }
@@ -242,12 +243,6 @@ class Console
     */
     const uInt32* getPalette(int direction) const;
 
-    /**
-      Returns the framerate based on a number of factors
-      (whether 'framerate' is set, what display format is in use, etc)
-    */
-    uInt32 getFrameRate() const;
-
   private:
     // Pointer to the osystem object
     OSystem* myOSystem;
@@ -281,8 +276,11 @@ class Console
     AtariVox *vox;
 #endif
 
-    // The currently defined display format (NTSC/PAL/PAL60)
+    // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;
+
+    // The currently defined display framerate
+    uInt32 myFramerate;
 
     // Indicates whether an external palette was found and
     // successfully loaded

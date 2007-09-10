@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.73 2007-09-06 21:00:58 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.74 2007-09-10 15:47:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -449,8 +449,6 @@ void LauncherDialog::loadRomInfo()
 
   if(myRomInfoFlag)
     myRomInfoWidget->showInfo(props);
-
-cerr << "\n ==> " << myGameList->path(item) << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

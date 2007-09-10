@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.42 2007-09-06 21:00:57 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.43 2007-09-10 15:46:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -226,8 +226,11 @@ GameInfoDialog::GameInfoDialog(
   myFormat->appendEntry("Auto-detect", 1);
   myFormat->appendEntry("NTSC", 2);
   myFormat->appendEntry("PAL", 3);
-  myFormat->appendEntry("PAL60", 4);
-  myFormat->appendEntry("SECAM", 5);
+  myFormat->appendEntry("SECAM", 4);
+  myFormat->appendEntry("NTSC50", 5);
+  myFormat->appendEntry("PAL60", 6);
+  myFormat->appendEntry("SECAM60", 7);
+
   wid.push_back(myFormat);
 
   ypos += lineHeight + 5;
@@ -460,10 +463,14 @@ void GameInfoDialog::loadView()
     myFormat->setSelectedTag(2);
   else if(s == "PAL")
     myFormat->setSelectedTag(3);
-  else if(s == "PAL60")
-    myFormat->setSelectedTag(4);
   else if(s == "SECAM")
+    myFormat->setSelectedTag(4);
+  else if(s == "NTSC50")
     myFormat->setSelectedTag(5);
+  else if(s == "PAL60")
+    myFormat->setSelectedTag(6);
+  else if(s == "SECAM60")
+    myFormat->setSelectedTag(7);
   else
     myFormat->setSelectedTag(0);
 
@@ -585,8 +592,9 @@ void GameInfoDialog::saveConfig()
 
   // Display properties
   tag = myFormat->getSelectedTag();
-  s = (tag == 5) ? "SECAM" : (tag == 4) ? "PAL60" : (tag == 3) ? "PAL" :
-      (tag == 2) ? "NTSC" : "AUTO-DETECT";
+  s = (tag == 7) ? "SECAM60" : (tag == 6) ? "PAL60" : (tag == 5) ? "NTSC50" :
+      (tag == 4) ? "SECAM"   : (tag == 3) ? "PAL"   : (tag == 2) ? "NTSC" :
+      "AUTO-DETECT";
   myGameProperties.set(Display_Format, s);
 
   s = myYStart->getEditString();
