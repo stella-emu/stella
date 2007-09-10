@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.60 2007-09-06 02:15:00 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.61 2007-09-10 18:06:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 
   myAudioSettingsButton = addBigButton("Audio Settings", kAudCmd);
 #ifndef SOUND_SUPPORT
-  b->clearFlags(WIDGET_ENABLED);
+  myAudioSettingsButton->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(myAudioSettingsButton);
 
