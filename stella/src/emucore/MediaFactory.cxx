@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.cxx,v 1.9 2007-09-03 18:37:22 stephena Exp $
+// $Id: MediaFactory.cxx,v 1.10 2007-09-11 19:46:16 stephena Exp $
 //============================================================================
 
 ////////////////////////////////////////////////////////////////////
@@ -60,6 +60,8 @@ FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
     const string& gl_lib = osystem->settings().getString("gl_lib");
     if(FrameBufferGL::loadFuncs(gl_lib))
       fb = new FrameBufferGL(osystem);
+    else
+      cerr << "ERROR: Couldn't dynamically load OpenGL library ...\n";
   }
 #endif
 
