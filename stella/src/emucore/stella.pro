@@ -177,9 +177,8 @@
 
 "Cartridge.MD5" "01e60a109a6a67c70d3c0528381d0187"
 "Cartridge.Manufacturer" "ITT Family Games"
-"Cartridge.ModelNo" "554-33383"
-"Cartridge.Name" "Fire Birds (AKA Scorpion) (ITT Family Games) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.ModelNo" "554-33 383"
+"Cartridge.Name" "Fire Birds (1983) (ITT Family Games) (PAL)"
 ""
 
 "Cartridge.MD5" "0277c449fae63f6f1c8f94dedfcf0058"
@@ -236,10 +235,9 @@
 ""
 
 "Cartridge.MD5" "033e21521e0bf4e54e8816873943406d"
-"Cartridge.Manufacturer" "20th Century Fox"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Dan Thompson"
 "Cartridge.ModelNo" "11020"
-"Cartridge.Name" "Earth Dies Screaming (1983) (20th Century Fox)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Earth Dies Screaming, The (1983) (20th Century Fox)"
 "Display.YStart" "29"
 ""
 
@@ -344,7 +342,7 @@
 
 "Cartridge.MD5" "04e737c9d53cd84bfd5ee679954e4706"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Checkers (Jone Yuan Telephonic Enterprise Co) (4K)"
+"Cartridge.Name" "Checkers (Jone Yuan) (4K)"
 ""
 
 "Cartridge.MD5" "05f11fb2e45c4e47424d3cb25414d278"
@@ -419,9 +417,16 @@
 "Cartridge.Name" "Narnia (Glenn Saunders) (PD)"
 ""
 
+"Cartridge.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Fishing Derby (Jone Yuan) (4K) (Hack)"
+"Cartridge.Rarity" "Hack"
+""
+
 "Cartridge.MD5" "1862fca4f98e66f363308b859b5863af"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 1) (1991) (Atari) (PAL)"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "0d6b974fe58a1bdd453600401c407856"
@@ -510,10 +515,9 @@
 ""
 
 "Cartridge.MD5" "074ec425ec20579e64a7ded592155d48"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Inc., Steve Aguirre"
 "Cartridge.ModelNo" "CX26162"
-"Cartridge.Name" "Fatal Run (1990) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Unbelievably Rare"
+"Cartridge.Name" "Fatal Run (1989) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "075ec8eb0aa39f0539bbaf5980203edb"
@@ -529,6 +533,7 @@
 "Cartridge.ModelNo" "C-803"
 "Cartridge.Name" "Bobby Is Going Home (1983) (CCE)"
 "Cartridge.Note" "AKA Bobby Vai Para Casa"
+"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "079fe9103515d15bc108577e234a484d"
@@ -816,10 +821,9 @@
 ""
 
 "Cartridge.MD5" "0b55399cf640a2a00ba72dd155a0c140"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "O3205"
+"Cartridge.Manufacturer" "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop"
+"Cartridge.ModelNo" "03205"
 "Cartridge.Name" "Fathom (1983) (Imagic)"
-"Cartridge.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -1493,8 +1497,7 @@
 "Cartridge.MD5" "15dd21c2608e0d7d9f54c0d3f08cca1f"
 "Cartridge.Manufacturer" "Data Age"
 "Cartridge.ModelNo" "112-008"
-"Cartridge.Name" "Frankenstein's Monster (1983) (Data Age) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Frankenstein's Monster (1983) (Data Age)"
 ""
 
 "Cartridge.MD5" "15c11ab6e4502b2010b18366133fc322"
@@ -1747,6 +1750,11 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "19162393786098d50587827588198a86"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Flag Capture (Jone Yuan) (4K)"
+""
+
 "Cartridge.MD5" "199985cae1c0123ab1aef921daace8be"
 "Cartridge.Name" "Euchre (Release Candidate 2) (PAL) (01-10-2002) (Erik Eid)"
 ""
@@ -1889,7 +1897,7 @@
 
 "Cartridge.MD5" "1cad3b56cc0e6e858554e46d08952861"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Chopper Command (Jone Yuan Telephonic Enterprise Co)"
+"Cartridge.Name" "Chopper Command (Jone Yuan)"
 ""
 
 "Cartridge.MD5" "1cf59fc7b11cdbcefe931e41641772f6"
@@ -1933,8 +1941,7 @@
 ""
 
 "Cartridge.MD5" "1d2a28eb8c95da0d6d6b18294211839f"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) (PAL) [p2][o1][!]"
+"Cartridge.Name" "Fishing Derby (Unknown) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "1d284d6a3f850bafb25635a12b316f3d"
@@ -2132,10 +2139,9 @@
 ""
 
 "Cartridge.MD5" "20dca534b997bf607d658e77fbb3c0ee"
-"Cartridge.Manufacturer" "Mythicon"
-"Cartridge.ModelNo" "MA-1002"
-"Cartridge.Name" "Fire Fly (1983) (Mythicon) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Mythicon, Bill Bryner, Bruce de Graaf"
+"Cartridge.ModelNo" "MA1002"
+"Cartridge.Name" "Fire Fly (1983) (Mythicon)"
 ""
 
 "Cartridge.MD5" "211774f4c5739042618be8ff67351177"
@@ -2153,16 +2159,15 @@
 ""
 
 "Cartridge.MD5" "211fbbdbbca1102dc5b43dc8157c09b3"
-"Cartridge.Manufacturer" "Apollo"
-"Cartridge.ModelNo" "AP 2009"
+"Cartridge.Manufacturer" "Apollo, Dan Oliver"
+"Cartridge.ModelNo" "AP-2009"
 "Cartridge.Name" "Final Approach (1982) (Apollo)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "213e5e82ecb42af237cfed8612c128ac"
-"Cartridge.Manufacturer" "Sancho"
-"Cartridge.Name" "Forest (Sancho) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Sancho - Tang's Electronic Co."
+"Cartridge.ModelNo" "TEC006"
+"Cartridge.Name" "Forest (1983) (Sancho) (PAL)"
 "Display.Height" "256"
 "Display.Phosphor" "YES"
 ""
@@ -2419,8 +2424,10 @@
 ""
 
 "Cartridge.MD5" "2517827950fee41a3b9de60275c8aa6a"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) [p1]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Fishing (32 in 1) (1988) (Atari) (PAL)"
+"Cartridge.Note" "AKA Fishing Derby"
 ""
 
 "Cartridge.MD5" "24fbf8250a71611e40ef18552e61b009"
@@ -2516,6 +2523,12 @@
 "Cartridge.Name" "Tunnel Demo (Cycling Colours) (29-03-2003) (AD)"
 ""
 
+"Cartridge.MD5" "265c74a956500bd31efd24adc6d5ccf6"
+"Cartridge.Manufacturer" "Activision, Larry Miller"
+"Cartridge.ModelNo" "AX-026, AX-026-04"
+"Cartridge.Name" "Enduro (1983) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "274d17ccd825ef9c728d68394b4569d2"
 "Cartridge.Manufacturer" "Playaround"
 "Cartridge.ModelNo" "202"
@@ -2529,10 +2542,9 @@
 ""
 
 "Cartridge.MD5" "271bfd5dc2673d382019f1fb6cab9332"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster Preview (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "26f4f8b098609164effef7809e0121e1"
@@ -2831,10 +2843,8 @@
 ""
 
 "Cartridge.MD5" "2ac3a08cfbf1942ba169c3e9e6c47e09"
-"Cartridge.Manufacturer" "Absolute"
-"Cartridge.ModelNo" "AK-046"
-"Cartridge.Name" "Tomcat - The F-14 Flight Simulator (1988) (Absolute) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Absolute Entertainment, Dan Kitchen"
+"Cartridge.Name" "F-14 Tomcat (1988) (Absolute Entertainment) (PAL)"
 ""
 
 "Cartridge.MD5" "2b27eb194e13f3b38d23c879cc1e3abf"
@@ -2842,6 +2852,15 @@
 "Cartridge.ModelNo" "SS-011"
 "Cartridge.Name" "Super Ferrari (Starsoft) (PAL) [!]"
 "Cartridge.Rarity" "Extremely Rare"
+""
+
+"Cartridge.MD5" "2b1589c7e1f394ae6a1c046944f06688"
+"Cartridge.Manufacturer" "Carrere Video, Todd Marshall, Wes Trager, Henry Will - Teldec"
+"Cartridge.ModelNo" "USC2003"
+"Cartridge.Name" "Eggomania (1983) (Carrere Video) (PAL)"
+"Cartridge.Note" "Uses the Paddle Controllers"
+"Controller.Left" "PADDLES"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "2b71a59a53be5883399917bf582b7772"
@@ -2882,10 +2901,7 @@
 ""
 
 "Cartridge.MD5" "2c0dc885d5ede94aa664bf3081add34e"
-"Cartridge.Manufacturer" "20th Century Fox"
-"Cartridge.ModelNo" "11020"
-"Cartridge.Name" "Earth Dies Screaming (1983) (20th Century Fox) (PAL) [p1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Earth Dies Screaming, The (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "2bf34b6ad7d2317a2d0808b3fb93571b"
@@ -3176,10 +3192,9 @@
 ""
 
 "Cartridge.MD5" "30512e0e83903fc05541d2f6a6a62654"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2644 / 99824 / 99824"
+"Cartridge.Manufacturer" "Atari, Jim Huether - Sears"
+"Cartridge.ModelNo" "CX2644 - 6-99824"
 "Cartridge.Name" "Flag Capture (1978) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "303242c239474f2d7763b843de58c1c3"
@@ -3238,8 +3253,7 @@
 ""
 
 "Cartridge.MD5" "313243fc41e49ef6bd3aa9ebc0d372dd"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Der Vielfrass (Starsoft) (PAL) [p1][!]"
+"Cartridge.Name" "Fast Food (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "310ba30e25ea8957e58180b663503c0c"
@@ -3303,6 +3317,8 @@
 "Cartridge.Manufacturer" "Men-A-Vision"
 "Cartridge.Name" "Air Raid (Men-A-Vision) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
+"Display.Format" "NTSC50"
+"Display.Height" "250"
 "Display.Phosphor" "YES"
 ""
 
@@ -3460,7 +3476,10 @@
 ""
 
 "Cartridge.MD5" "34303a7d4c9ad4500ca7f2ede9709595"
-"Cartridge.Name" "Excalibur 39 (PD)"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "AR-4400"
+"Cartridge.Name" "Excalibur V39 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "33ed6dfac4b9ea2f81f778ceddbb4a75"
@@ -3597,6 +3616,11 @@
 "Cartridge.Name" "Double Dragon (1989) (Activision) (PAL)"
 ""
 
+"Cartridge.MD5" "360c0dcb11506e73bd0b77207c81bc62"
+"Cartridge.Manufacturer" "Digitel"
+"Cartridge.Name" "Enduro (1983) (Digitel)"
+""
+
 "Cartridge.MD5" "36306070f0c90a72461551a7a4f3a209"
 "Cartridge.Manufacturer" "Carrere Video"
 "Cartridge.ModelNo" "VC 1007"
@@ -3659,6 +3683,8 @@
 "Cartridge.Manufacturer" "Gameworld"
 "Cartridge.ModelNo" "133-007"
 "Cartridge.Name" "Bermuda Triangle (1983) (Gameworld) (PAL)"
+"Display.YStart" "48"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "36edef446ab4c2395666efc672b92ed0"
@@ -3729,11 +3755,10 @@
 ""
 
 "Cartridge.MD5" "386ff28ac5e254ba1b1bac6916bcc93a"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball (1982) (Starpath)"
+"Cartridge.Name" "Fireball (1982) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -3974,10 +3999,9 @@
 ""
 
 "Cartridge.MD5" "3c82e808fe0e6a006dc0c4e714d36209"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-004"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Fishing Derby (1980) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "3c57748c8286cf9e821ecd064f21aaa9"
@@ -4230,7 +4254,9 @@
 
 "Cartridge.MD5" "3fe43915e5655cf69485364e9f464097"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Fisher Price (CCE) [!]"
+"Cartridge.ModelNo" "C-863"
+"Cartridge.Name" "Fisher Price (1983) (CCE)"
+"Cartridge.Note" "AKA Skindiver"
 ""
 
 "Cartridge.MD5" "3f9cb1aba8ec20e2c243ae642f9942bf"
@@ -4347,7 +4373,7 @@
 
 "Cartridge.MD5" "413c925c5fdcea62842a63a4c671a5f2"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Bridge (Jone Yuan Telephonic Enterprise Co)"
+"Cartridge.Name" "Bridge (Jone Yuan)"
 ""
 
 "Cartridge.MD5" "4181087389a79c7f59611fb51c263137"
@@ -4386,10 +4412,7 @@
 ""
 
 "Cartridge.MD5" "4279485e922b34f127a88904b31ce9fa"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-026"
-"Cartridge.Name" "Enduro (1983) (Activision) [p1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Enduro (Unknown)"
 ""
 
 "Cartridge.MD5" "425ee444a41d218598893d6b6e03431a"
@@ -4413,11 +4436,10 @@
 ""
 
 "Cartridge.MD5" "42b2c3b4545f1499a083cfbc4a3b7640"
-"Cartridge.Manufacturer" "US Games"
-"Cartridge.ModelNo" "VC 2003"
-"Cartridge.Name" "Eggomania (1982) (US Games)"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Todd Marshall, Wes Trager, Henry Will"
+"Cartridge.ModelNo" "VC2003"
+"Cartridge.Name" "Eggomania (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -4478,8 +4500,8 @@
 ""
 
 "Cartridge.MD5" "458883f1d952cd772cf0057abca57497"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) (PAL) [p1][!]"
+"Cartridge.Name" "Fishing Derby (Unknown) (PAL) (Hack)"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "442b7863683e5f084716fda050474feb"
@@ -4686,10 +4708,9 @@
 ""
 
 "Cartridge.MD5" "47cd61f83457a0890de381e478f5cf5f"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "O3205"
-"Cartridge.Name" "Fathom (1983) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop"
+"Cartridge.ModelNo" "13205"
+"Cartridge.Name" "Fathom (1983) (Imagic) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -4875,17 +4896,13 @@
 ""
 
 "Cartridge.MD5" "4b143d7dcf6c96796c37090cba045f4f"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2644 / 99824 / 99824"
-"Cartridge.Name" "Flag Capture (1978) (Atari) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Jim Huether - Sears"
+"Cartridge.ModelNo" "CX2644 - 6-99824"
+"Cartridge.Name" "Flag Capture (1978) (Atari) (4K)"
 ""
 
 "Cartridge.MD5" "4ae8c76cd6f24a2e181ae874d4d2aa3d"
-"Cartridge.Manufacturer" "20th Century Fox"
-"Cartridge.ModelNo" "11015"
-"Cartridge.Name" "Flash Gordon (1983) (20th Century Fox) (PAL) [p1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Flash Gordon (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "4af4103759d603c82b1c9c5acd2d8faf"
@@ -5276,6 +5293,12 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "5131ab3797fe8c127e3e135b18b4d2c8"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-004"
+"Cartridge.Name" "Fishing Derby (1980) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "517592e6e0c71731019c0cebc2ce044f"
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.ModelNo" "PB5550"
@@ -5289,9 +5312,18 @@
 "Cartridge.Name" "Strawberry Shortcake - Musical Match-Ups (1983) (Parker Bros) (PAL) [!]"
 ""
 
+"Cartridge.MD5" "5188fee071d3c5ef0d66fb45c123e4a5"
+"Cartridge.Manufacturer" "Gameworld"
+"Cartridge.ModelNo" "133-001"
+"Cartridge.Name" "Encounter at L-5 (1983) (Gameworld) (PAL)"
+"Cartridge.Note" "Uses the Paddle Controllers"
+"Controller.Left" "PADDLES"
+""
+
 "Cartridge.MD5" "51e390424f20e468d2b480030ce95d7b"
 "Cartridge.Manufacturer" "Video Game Program"
-"Cartridge.Name" "Fire Bird (Video Game Program) (PAL) [!]"
+"Cartridge.Name" "Fire Bird (Video Game Program) (PAL)"
+"Cartridge.Note" "AKA Phoenix"
 ""
 
 "Cartridge.MD5" "5355f80cacf0e63a49cbf4ade4e27034"
@@ -5411,7 +5443,9 @@
 ""
 
 "Cartridge.MD5" "540075f657d4b244a1f74da1b9e4bf92"
-"Cartridge.Name" "Festival (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Bit Corporation"
+"Cartridge.ModelNo" "PGP230"
+"Cartridge.Name" "Festival (1983) (BitCorp) (PAL)"
 ""
 
 "Cartridge.MD5" "53d181cde2e0219b5754caad246fcb66"
@@ -5529,10 +5563,10 @@
 ""
 
 "Cartridge.MD5" "571c6d9bc71cb97617422851f787f8fe"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-004"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-004, PAG-004 - 711 004-715"
+"Cartridge.Name" "Fishing Derby (1980) (Activision) (PAL)"
+"Cartridge.Note" "AKA Schneller als der Hai"
 ""
 
 "Cartridge.MD5" "5635cd67fb680424254ec156c42deee0"
@@ -5660,7 +5694,7 @@
 
 "Cartridge.MD5" "58746219d8094edff869f0f5c2aeaad5"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Bowling (Jone Yuan Telephonic Enterprise Co) (4K)"
+"Cartridge.Name" "Bowling (Jone Yuan) (4K)"
 ""
 
 "Cartridge.MD5" "5b124850de9eea66781a50b2e9837000"
@@ -5750,8 +5784,11 @@
 ""
 
 "Cartridge.MD5" "5a2f2dcd775207536d9299e768bcd2df"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Flippern (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "781698"
+"Cartridge.Name" "Flippern (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Video Pinball"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "59f596285d174233c84597dee6f34f1f"
@@ -5984,7 +6021,7 @@
 
 "Cartridge.MD5" "5df559a36347d8572f9a6e8075a31322"
 "Cartridge.Manufacturer" "Digivision"
-"Cartridge.Name" "Enduro (Digivision) (Brazil) (PAL) [p1][!]"
+"Cartridge.Name" "Enduro (Digivision)"
 ""
 
 "Cartridge.MD5" "5e0c37f534ab5ccc4661768e2ddf0162"
@@ -6124,6 +6161,13 @@
 "Cartridge.Name" "Volleyball (Dactar) (PAL) [p1][!]"
 ""
 
+"Cartridge.MD5" "5f9b62350b31be8bd270d9a241cbd50e"
+"Cartridge.Manufacturer" "Telegames"
+"Cartridge.ModelNo" "5658 A088"
+"Cartridge.Name" "Super Challenge Football (1989) (Telegames) (PAL)"
+"Display.Height" "250"
+""
+
 "Cartridge.MD5" "6015a9cef783e97e98a2aa2cf070ae06"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Battlezone TC by Thomas Jentzsch (2 joystick Hack)"
@@ -6231,10 +6275,9 @@
 ""
 
 "Cartridge.MD5" "615a3bf251a38eb6638cdc7ffbde5480"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Howard Scott Warshaw"
 "Cartridge.ModelNo" "CX2674"
-"Cartridge.Name" "E.T. The Extra-Terrestrial (1982) (Atari) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "E.T. - The Extra-Terrestrial (1982) (Atari)"
 ""
 
 "Cartridge.MD5" "61426cee013306e7f7367534ab124747"
@@ -6246,10 +6289,7 @@
 ""
 
 "Cartridge.MD5" "61719a8bdafbd8dab3ca9ce7b171b9e2"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-026"
-"Cartridge.Name" "Enduro (1983) (Activision-Dactar) (PAL-M) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Enduro (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "6205855cc848d1f6c4551391b9bfa279"
@@ -6360,8 +6400,7 @@
 "Cartridge.MD5" "6362396c8344eec3e86731a700b13abf"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "109"
-"Cartridge.Name" "Exocet (AKA Space Eagle) (Panda) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Exocet (1983) (Panda)"
 ""
 
 "Cartridge.MD5" "635cc7a0db33773959d739d04eff96c2"
@@ -6399,10 +6438,9 @@
 ""
 
 "Cartridge.MD5" "64198bb6470c78ac24fcf13fe76ab28c"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath) [a1]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath) [a]"
 ""
 
 "Cartridge.MD5" "63e783994df824caf289b69a084cbf3e"
@@ -6558,10 +6596,9 @@
 ""
 
 "Cartridge.MD5" "665b8f8ead0eef220ed53886fbd61ec9"
-"Cartridge.Manufacturer" "Telesys"
+"Cartridge.Manufacturer" "Telesys, Don Ruffcorn"
 "Cartridge.ModelNo" "1003"
-"Cartridge.Name" "Fast Food (1982) (Telesys) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Fast Food (1982) (Telesys)"
 ""
 
 "Cartridge.MD5" "6651e2791d38edc02c5a5fd7b47a1627"
@@ -6620,11 +6657,10 @@
 ""
 
 "Cartridge.MD5" "66bc1bef269ea59033928bac2d1d81e6"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball Preview (1982) (Starpath)"
+"Cartridge.Name" "Fireball (Preview) (1982) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -6680,11 +6716,10 @@
 ""
 
 "Cartridge.MD5" "683bb0d0f0c5df58557fba9dffc32c40"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball (1982) (Starpath) [a1]"
+"Cartridge.Name" "Fireball (1982) (Arcadia) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -6803,7 +6838,8 @@
 
 "Cartridge.MD5" "6982854657a2cc87d712f718e402bf85"
 "Cartridge.Manufacturer" "Zellers"
-"Cartridge.Name" "Earth Attack (Zellers) [!]"
+"Cartridge.Name" "Earth Attack (Zellers)"
+"Cartridge.Note" "AKA Defender"
 ""
 
 "Cartridge.MD5" "6913c90002636c1487538d4004f7cac2"
@@ -6884,10 +6920,9 @@
 ""
 
 "Cartridge.MD5" "6a82b8ecc663f371b19076d99f46c598"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-026"
-"Cartridge.Name" "Enduro (1983) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Larry Miller - Ariola"
+"Cartridge.ModelNo" "EAX-026, EAX-026-04B, EAX-026-04I - 711 026-725"
+"Cartridge.Name" "Enduro (1983) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "6a76d5f0ed721639474aa9bbde69ebf0"
@@ -6921,11 +6956,10 @@
 ""
 
 "Cartridge.MD5" "6b683be69f92958abe0e2a9945157ad5"
-"Cartridge.Manufacturer" "US Games"
-"Cartridge.ModelNo" "VC 2007 / VC 1007"
-"Cartridge.Name" "Entombed (1982) (US Games) [!]"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Jeff Corsiglia, Steve Kotleba, Paul Newell, Tom Sloper"
+"Cartridge.ModelNo" "VC2007"
+"Cartridge.Name" "Entombed (1982) (U.S. Games)"
 "Cartridge.Note" "Released as Name That Game for a contest (winning name was Entombed)"
-"Cartridge.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -6938,7 +6972,7 @@
 
 "Cartridge.MD5" "6b7e1c11448c4d3f28160d2de884ebc8"
 "Cartridge.Manufacturer" "Zirok"
-"Cartridge.Name" "Fast Food (Zirok) (Brazil) [!]"
+"Cartridge.Name" "Fast Food (Zirok)"
 ""
 
 "Cartridge.MD5" "6b71f20c857574b732e7a8e840bd3cb2"
@@ -6964,6 +6998,11 @@
 "Cartridge.Rarity" "New Release (Hack)"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+""
+
+"Cartridge.MD5" "6b72b691ea86f61438ed0d84c4d711de"
+"Cartridge.Name" "Fishing Derby (Unknown) (PAL) (4K) (Hack)"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6b853585764b8cfdc73310e372c828d9"
@@ -7396,8 +7435,9 @@
 ""
 
 "Cartridge.MD5" "71f8bacfbdca019113f3f0801849057e"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Elevator Action (Atari) (Prototype)"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
+"Cartridge.ModelNo" "CX26126"
+"Cartridge.Name" "Elevator Action (1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -7661,7 +7701,8 @@
 
 "Cartridge.MD5" "7628d3cadeee0fd2e41e68b3b8fbe229"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Fishing Derby (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Fishing Derby (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "7608abdfd9b26f4a0ecec18b232bea54"
@@ -7682,8 +7723,10 @@
 ""
 
 "Cartridge.MD5" "76ee917d817ef9a654bc4783e0273ac4"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Fox & Goat (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "311377"
+"Cartridge.Name" "Fox & Goat (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Nuts"
 ""
 
 "Cartridge.MD5" "76c88341017eae660efc6e49c4b6ab40"
@@ -7946,8 +7989,9 @@
 ""
 
 "Cartridge.MD5" "7ac4f4fb425db38288fa07fb8ff4b21d"
-"Cartridge.Manufacturer" "Sancho-Goliath"
-"Cartridge.Name" "Exocet (AKA Space Eagle) (Sancho-Goliath) (PAL) [!]"
+"Cartridge.Manufacturer" "Sancho - Tang's Electronic Co."
+"Cartridge.ModelNo" "TEC001"
+"Cartridge.Name" "Exocet (1982) (Sancho) (PAL)"
 ""
 
 "Cartridge.MD5" "7ab210f448de518fa61a5924120ba872"
@@ -8098,7 +8142,7 @@
 
 "Cartridge.MD5" "7cd900e9eccbb240fe9c37fa28f917b5"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Bi! Bi! (Jone Yuan Telephonic Enterprise Co) (PAL)"
+"Cartridge.Name" "Bi! Bi! (Jone Yuan) (PAL)"
 "Cartridge.Note" "AKA Skindiver"
 "Display.YStart" "38"
 "Display.Height" "250"
@@ -8108,6 +8152,12 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Road Runner (CCE)"
 "Display.YStart" "20"
+""
+
+"Cartridge.MD5" "7d0b49ea4fe3a5f1e119a6d14843db17"
+"Cartridge.Manufacturer" "Gameworld"
+"Cartridge.ModelNo" "133-008"
+"Cartridge.Name" "Frankenstein's Monster (1983) (Gameworld) (PAL)"
 ""
 
 "Cartridge.MD5" "7e4783a59972ae2cd8384f231757ea0b"
@@ -8228,7 +8278,7 @@
 
 "Cartridge.MD5" "7eab0284a0cd1043461d446a08d08cec"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Basic Math (4K)"
+"Cartridge.Name" "Basic Math (Jone Yuan) (4K)"
 ""
 
 "Cartridge.MD5" "7f07cd2e89dda5a3a90d3ab064bfd1f6"
@@ -8245,8 +8295,9 @@
 ""
 
 "Cartridge.MD5" "7eafc9827e8d5b1336905939e097aae7"
-"Cartridge.Name" "Elk Attack (1987) (Atari)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Manufacturer" "Atari, Mark R. Hahn - Hozer Video Games"
+"Cartridge.Name" "Elk Attack (1987) (Atari) (Protoype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "7ed7130a6e4020161836414332b11983"
@@ -8321,6 +8372,11 @@
 "Cartridge.Rarity" "New Release"
 ""
 
+"Cartridge.MD5" "804ed85eadf1ce3e93721547cbea7592"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Fishing Derby (CCE) (4K)"
+""
+
 "Cartridge.MD5" "8068e07b484dfd661158b3771d6621ca"
 "Cartridge.Manufacturer" "Epyx, Steven A. Baker, Peter Engelbrite"
 "Cartridge.ModelNo" "80561-00286"
@@ -8365,10 +8421,9 @@
 ""
 
 "Cartridge.MD5" "81f4f0285f651399a12ff2e2f35bab77"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -8629,10 +8684,9 @@
 ""
 
 "Cartridge.MD5" "85227160f37aaa29f5e3a6c7a3219f54"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-004"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) [o2]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Fishing Derby (1980) (Activision) (4K)"
 ""
 
 "Cartridge.MD5" "851cc1f3c64eaedd10361ea26345acea"
@@ -8656,10 +8710,17 @@
 "Cartridge.Name" "Oink! (1983) (Activision) (PAL) [p1][!]"
 ""
 
+"Cartridge.MD5" "85470dcb7989e5e856f36b962d815537"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Inc., Steve Aguirre"
+"Cartridge.ModelNo" "CX26162"
+"Cartridge.Name" "Fatal Run (1989) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "854b68b93e7123a3be42b5a2a41f75d7"
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
-"Cartridge.ModelNo" "CX26163P"
-"Cartridge.Name" "3-D Tic-Tac-Toe (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Cartridge.ModelNo" "CX2618, CX2618P"
+"Cartridge.Name" "3-D Tic-Tac-Toe (1980) (Atari) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "85b1bca93e69f13905107cc802a02470"
@@ -8803,10 +8864,9 @@
 ""
 
 "Cartridge.MD5" "8786c1e56ef221d946c64f6b65b697e9"
-"Cartridge.Manufacturer" "20th Century Fox / Zellers"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, David Lubar"
 "Cartridge.ModelNo" "11015"
-"Cartridge.Name" "Flash Gordon (1983) (20th Century Fox) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Flash Gordon (1983) (20th Century Fox)"
 ""
 
 "Cartridge.MD5" "8786f229b974c393222874f73a9f3206"
@@ -8960,6 +9020,12 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "RealSports Basketball (Atari) (Prototype) (PAL) [!]"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "8a159ee58b2f0a54805162984b0f07e5"
+"Cartridge.Manufacturer" "Atari - Sculptured Software, Inc., Steve Aguirre"
+"Cartridge.ModelNo" "CX26162"
+"Cartridge.Name" "Fatal Run (1989) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "8a9d953ac3db52a313a90d6a9b139c76"
@@ -9176,8 +9242,10 @@
 ""
 
 "Cartridge.MD5" "8e737a88a566cc94bd50174c2d019593"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Feuerwehr im Einsatz (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "343.173 1"
+"Cartridge.Name" "Feuerwehr im Einsatz (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Fire Fighter"
 ""
 
 "Cartridge.MD5" "8e0ab801b1705a740b476b7f588c6d16"
@@ -9272,10 +9340,9 @@
 ""
 
 "Cartridge.MD5" "8febdd9142960d084ab6eeb1d3e88969"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Howard Scott Warshaw"
 "Cartridge.ModelNo" "CX2674"
-"Cartridge.Name" "E.T. The Extra-Terrestrial (1982) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "E.T. - The Extra-Terrestrial (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "8fe00172e7fff4c1878dabcf11bb8dce"
@@ -9329,10 +9396,9 @@
 ""
 
 "Cartridge.MD5" "90d77e966793754ab4312c47b42900b1"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "IA3400"
-"Cartridge.Name" "Fire Fighter (1982) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Imagic, Brad Stewart"
+"Cartridge.ModelNo" "IA3400P, EIX-005-04I"
+"Cartridge.Name" "Fire Fighter (1982) (Imagic) (PAL)"
 ""
 
 "Cartridge.MD5" "914a8feaf6d0a1bbed9eb61d33817679"
@@ -9521,10 +9587,9 @@
 ""
 
 "Cartridge.MD5" "94b92a882f6dbaa6993a46e2dcc58402"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-026"
-"Cartridge.Name" "Enduro (1983) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Larry Miller"
+"Cartridge.ModelNo" "AX-026, AX-026-04"
+"Cartridge.Name" "Enduro (1983) (Activision)"
 ""
 
 "Cartridge.MD5" "94102febc53b4a78342d11b645342ed4"
@@ -9581,10 +9646,9 @@
 ""
 
 "Cartridge.MD5" "968efc79d500dce52a906870a97358ab"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26190"
-"Cartridge.Name" "BMX Air Master (1990) (Atari)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "TNT Games, Adam Clayton"
+"Cartridge.ModelNo" "26192"
+"Cartridge.Name" "BMX Air Master (1989) (TNT Games)"
 ""
 
 "Cartridge.MD5" "956b99511c0f47b3a11d18e8b7ac8d47"
@@ -9596,7 +9660,9 @@
 ""
 
 "Cartridge.MD5" "962ffd3eaf865230a7a312b80e6c5cfd"
-"Cartridge.Name" "Fathom (1983) (Imagic) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Rob Fulop"
+"Cartridge.ModelNo" "13205"
+"Cartridge.Name" "Fathom (1983) (Imagic) (PAL) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -9994,10 +10060,9 @@
 ""
 
 "Cartridge.MD5" "9de0d45731f90a0a922ab09228510393"
-"Cartridge.Manufacturer" "20th Century Fox"
+"Cartridge.Manufacturer" "20th Century Fox Video Games - Sirius, Mark Turmell"
 "Cartridge.ModelNo" "11003"
-"Cartridge.Name" "Fast Eddie (1982) (20th Century Fox) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Fast Eddie (1982) (20th Century Fox)"
 ""
 
 "Cartridge.MD5" "9d522a3759aa855668e75962c84546f7"
@@ -10114,6 +10179,13 @@
 "Cartridge.MD5" "9f59eddf9ba91a7d93bce7ee4b7693bc"
 "Cartridge.Name" "Montezuma's Revenge - Starring Panama Joe (PAL60 by Thomas Jentzsch).a26"
 "Display.Format" "PAL60"
+""
+
+"Cartridge.MD5" "9f5096a6f1a5049df87798eb59707583"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Mark Klein"
+"Cartridge.ModelNo" "11036"
+"Cartridge.Name" "Entity, The (1983) (20th Century Fox) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "a28d872fc50fa6b64eb35981d0f4bb8d"
@@ -10377,17 +10449,18 @@
 ""
 
 "Cartridge.MD5" "a3f2a0fcf74bbc5fa763b0ee979b05b1"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Eishockey-Fieber (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "873.790 0"
+"Cartridge.Name" "Eishockey-Fieber (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Ice Hockey"
 "Display.YStart" "52"
 ""
 
 "Cartridge.MD5" "a3d7c299fbcd7b637898ee0fdcfc47fc"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball Preview (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Fireball (Preview) (1982) (Starpath) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -10497,7 +10570,9 @@
 ""
 
 "Cartridge.MD5" "a511f7ee13e4b35512f9217a677b4028"
-"Cartridge.Name" "E.T. The Extra-Terrestrial (1982) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Howard Scott Warshaw"
+"Cartridge.ModelNo" "CX2674"
+"Cartridge.Name" "E.T. - The Extra-Terrestrial (1982) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "a4f1cea2c8479284e2a2292f8d51b5fa"
@@ -10760,7 +10835,8 @@
 
 "Cartridge.MD5" "a97733b0852ee3096300102cb0689175"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Fast Eddie (CCE)"
+"Cartridge.ModelNo" "C-834"
+"Cartridge.Name" "Fast Eddie (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "a9784c24cddb33bd0d14442b97784f3d"
@@ -11150,7 +11226,7 @@
 
 "Cartridge.MD5" "afc194534c1b346609ef05eff6d3cef6"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Boxing (Jone Yuan Telephonic Enterprise Co)"
+"Cartridge.Name" "Boxing (Jone Yuan)"
 ""
 
 "Cartridge.MD5" "aff8cba0f2d2eb239953dd7116894a08"
@@ -11462,8 +11538,7 @@
 
 "Cartridge.MD5" "b6812eaf87127f043e78f91f2028f9f4"
 "Cartridge.Manufacturer" "Simage"
-"Cartridge.Name" "Eli's Ladder (Simage)"
-"Cartridge.Rarity" "Unbelievably Rare"
+"Cartridge.Name" "Eli's Ladder (1982) (Simage)"
 ""
 
 "Cartridge.MD5" "b65d4a38d6047735824ee99684f3515e"
@@ -11600,18 +11675,16 @@
 ""
 
 "Cartridge.MD5" "b80d50ecee73919a507498d0a4d922ae"
-"Cartridge.Manufacturer" "20th Century Fox"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, David Lubar"
 "Cartridge.ModelNo" "11008"
-"Cartridge.Name" "Fantastic Voyage (1982) (20th Century Fox) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Fantastic Voyage (1982) (20th Century Fox)"
 "Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "b8865f05676e64f3bec72b9defdacfa7"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-004"
-"Cartridge.Name" "Fishing Derby (1980) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Fishing Derby (1980) (Activision)"
 ""
 
 "Cartridge.MD5" "b83df1f32b4539c324bdf94851b4db55"
@@ -11632,6 +11705,12 @@
 "Cartridge.MD5" "b879e13fd99382e09bcaf1d87ad84add"
 "Cartridge.Name" "Time Warp (Zellers) [!]"
 "Display.YStart" "30"
+""
+
+"Cartridge.MD5" "b897f9e3f939b9f21566d56db812a84e"
+"Cartridge.Manufacturer" "Atari, Jim Huether"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Flag Capture (32 in 1) (1988) (Atari) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "b9232c1de494875efe1858fc8390616d"
@@ -12002,7 +12081,10 @@
 ""
 
 "Cartridge.MD5" "bfb7850e3ca39f417f8e4bd5ae39f24b"
-"Cartridge.Name" "Excalibur Demo (PD)"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "AR-4400"
+"Cartridge.Name" "Excalibur Demo (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "bfcabc6995ef42d0b6c06786993dc4d6"
@@ -12347,6 +12429,12 @@
 "Cartridge.Name" "Star Fire (28-11-2002) (MP) [a1]"
 ""
 
+"Cartridge.MD5" "c47b7389e76974fd0de3f088fea35576"
+"Cartridge.Manufacturer" "Zellers"
+"Cartridge.Name" "Farmer Dan (Zellers)"
+"Cartridge.Note" "AKA Gopher"
+""
+
 "Cartridge.MD5" "c59633dbebd926c150fb6d30b0576405"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5861 A030"
@@ -12546,7 +12634,7 @@
 
 "Cartridge.MD5" "c82ec00335cbb4b74494aecf31608fa1"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "E.T. The Extra-Terrestrial (CCE)"
+"Cartridge.Name" "E.T. - The Extra-Terrestrial (CCE)"
 ""
 
 "Cartridge.MD5" "c7d5819b26b480a49eb26aeb63cc831e"
@@ -12659,6 +12747,12 @@
 "Controller.SwapPaddles" "YES"
 ""
 
+"Cartridge.MD5" "c9e721eb29c940c2e743485b044c0a3f"
+"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.ModelNo" "AR-4200"
+"Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath) (PAL)"
+""
+
 "Cartridge.MD5" "cf3a9ada2692bb42f81192897752b912"
 "Cartridge.Name" "Air Raiders (Unknown) (PAL)"
 ""
@@ -12758,8 +12852,7 @@
 ""
 
 "Cartridge.MD5" "cb8bf5a0df683cbf6ce50d614b12dd20"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Fast Eddie (1983) (Activision)"
+"Cartridge.Name" "Fast Eddie (Hack) (1983) (Unknown)"
 ""
 
 "Cartridge.MD5" "cbad928e10aeee848786cc55394fb692"
@@ -12933,11 +13026,10 @@
 ""
 
 "Cartridge.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
 "Cartridge.Name" "Fireball (1982) (Starpath) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -12967,8 +13059,10 @@
 ""
 
 "Cartridge.MD5" "ce243747bf34a2de366f846b3f4ca772"
-"Cartridge.Manufacturer" "Goliath"
-"Cartridge.Name" "Felix Return (Goliath) (PAL) [!]"
+"Cartridge.Manufacturer" "Goliath - Hot Shot"
+"Cartridge.ModelNo" "83-116"
+"Cartridge.Name" "Felix Return (1983) (Goliath) (PAL)"
+"Cartridge.Note" "AKA Bobby Is Going Home"
 "Display.YStart" "39"
 "Display.Height" "256"
 ""
@@ -13096,10 +13190,9 @@
 ""
 
 "Cartridge.MD5" "cfe62ed7125ff9fae99b4c8a367c0399"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-026"
-"Cartridge.Name" "Enduro (1983) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Larry Miller"
+"Cartridge.ModelNo" "AX-026, AX-026-04"
+"Cartridge.Name" "Enduro (1983) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "cfdb4d0427a1ea8085c6bc6eb90259d8"
@@ -13186,10 +13279,9 @@
 ""
 
 "Cartridge.MD5" "d09f1830fb316515b90694c45728d702"
-"Cartridge.Manufacturer" "Imagic"
+"Cartridge.Manufacturer" "Imagic, Brad Stewart"
 "Cartridge.ModelNo" "IA3400"
 "Cartridge.Name" "Fire Fighter (1982) (Imagic)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "d0b9df57bfea66378c0418ec68cfe37f"
@@ -13329,7 +13421,7 @@
 
 "Cartridge.MD5" "d2f713c78a9ebba9da6d10aeefc6f20f"
 "Cartridge.Manufacturer" "Digivision"
-"Cartridge.Name" "Enduro (Digivision) (PAL) [p1][!]"
+"Cartridge.Name" "Enduro (Digivision) [a]"
 ""
 
 "Cartridge.MD5" "d3171407c3a8bb401a3a62eb578f48fb"
@@ -13361,6 +13453,7 @@
 "Cartridge.ModelNo" "CX26140P"
 "Cartridge.Name" "Desert Falcon (1987) (Atari) (PAL)"
 "Cartridge.Note" "AKA Nile Flyer, Sphinx"
+"Display.Format" "PAL"
 "Display.YStart" "22"
 ""
 
@@ -13597,6 +13690,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "d782543818b6320e4f60d77da2b596de"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Fishing Derby (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "d90205e29bb73a4cdf28ea7662ba0c3c"
 "Cartridge.Name" "Boulderdash Demo (Brighter Version) (09-12-2002) (TJ)"
 ""
@@ -13646,10 +13745,9 @@
 ""
 
 "Cartridge.MD5" "d86deb100c6abed1588aa84b2f7b3a98"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2625 / 6699827 / 4975114"
-"Cartridge.Name" "Football (1978) (Atari) [o1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Bob Whitehead - Sears"
+"Cartridge.ModelNo" "CX2625 - 6-99827, 49-75114"
+"Cartridge.Name" "Football (1979) (Atari) (4K)"
 ""
 
 "Cartridge.MD5" "d84cda16d9303a7e2a658b168966c973"
@@ -13657,8 +13755,9 @@
 ""
 
 "Cartridge.MD5" "d85f1e35c5445ac898746719a3d93f09"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Tom's Eierjagd (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-034"
+"Cartridge.Name" "Farmyard Fun (Suntek) (PAL)"
 ""
 
 "Cartridge.MD5" "d8df256c0d89e494a9fb3e9abb8e44ac"
@@ -13872,10 +13971,9 @@
 
 "Cartridge.MD5" "dbc8829ef6f12db8f463e30f60af209f"
 "Cartridge.Manufacturer" "Data Age"
-"Cartridge.ModelNo" "DA 1001"
-"Cartridge.Name" "Encounter at L5 (1982) (Data Age)"
+"Cartridge.ModelNo" "DA1001"
+"Cartridge.Name" "Encounter at L-5 (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 ""
 
@@ -14061,7 +14159,8 @@
 
 "Cartridge.MD5" "de62f8a30298e2325249fe112ecb5c10"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Enduro (CCE)"
+"Cartridge.ModelNo" "C-810"
+"Cartridge.Name" "Enduro (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "df40af244a8d68b492bfba9e97dea4d6"
@@ -14352,7 +14451,7 @@
 
 "Cartridge.MD5" "e2904748da63dfefc8816652b924b642"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Catch Time (Jone Yuan Telephonic Enterprise Co)"
+"Cartridge.Name" "Catch Time (Jone Yuan)"
 "Cartridge.Note" "AKA Plaque Attack"
 ""
 
@@ -14520,10 +14619,9 @@
 ""
 
 "Cartridge.MD5" "e549f1178e038fa88dc6d657dc441146"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2625 / 6699827 / 4975114"
-"Cartridge.Name" "Football (1978) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Bob Whitehead - Sears"
+"Cartridge.ModelNo" "CX2625 - 6-99827, 49-75114"
+"Cartridge.Name" "Football (1979) (Atari)"
 ""
 
 "Cartridge.MD5" "e51030251e440cffaab1ac63438b44ae"
@@ -14659,6 +14757,11 @@
 "Cartridge.ModelNo" "AG-011"
 "Cartridge.Name" "Stampede (1981) (Activision) [o1]"
 "Cartridge.Rarity" "Uncommon"
+""
+
+"Cartridge.MD5" "e6d5948f451a24994dfaaca51dfdb4e1"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Football (Jone Yuan) (4K)"
 ""
 
 "Cartridge.MD5" "e72ee2d6e501f07ec5e8a0efbe520bee"
@@ -14809,7 +14912,7 @@
 
 "Cartridge.MD5" "e94632b0d863dd76459d689a9865bb33"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Combat (Jone Yuan Telephonic Enterprise Co) (4K)"
+"Cartridge.Name" "Combat (Jone Yuan) (4K)"
 ""
 
 "Cartridge.MD5" "e959b5a2c882ccaacb43c32790957c2d"
@@ -14903,6 +15006,7 @@
 "Cartridge.Manufacturer" "Coleco"
 "Cartridge.ModelNo" "2658"
 "Cartridge.Name" "Berenstain Bears (1983) (Coleco)"
+"Cartridge.Note" "Uses the KidVid Controller"
 "Cartridge.Rarity" "Unbelievably Rare"
 "Display.YStart" "25"
 ""
@@ -15036,6 +15140,13 @@
 "Cartridge.Name" "Tom Boy (Suntek) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "24"
+""
+
+"Cartridge.MD5" "ecfa04523dde82fe42cdc7315a8f61b6"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-004, PAG-004 - 711 004-715"
+"Cartridge.Name" "Fishing Derby (1980) (Activision) (PAL) (4K)"
+"Cartridge.Note" "AKA Schneller als der Hai"
 ""
 
 "Cartridge.MD5" "ed2218b3075d15eaa34e3356025ccca3"
@@ -15314,10 +15425,9 @@
 ""
 
 "Cartridge.MD5" "f1127ade54037236e75a133b1dfc389d"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster Preview (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "f10e3f45fb01416c87e5835ab270b53a"
@@ -15442,7 +15552,8 @@
 
 "Cartridge.MD5" "f2f59629d7341c97644405daeac08845"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Bobby Is Going Home (Jone Yuan Telephonic Enterprise Co)"
+"Cartridge.Name" "Bobby Is Going Home (Jone Yuan)"
+"Display.YStart" "31"
 ""
 
 "Cartridge.MD5" "f69d4fcf76942fcd9bdf3fd8fde790fb"
@@ -15466,7 +15577,9 @@
 ""
 
 "Cartridge.MD5" "f344ac1279152157d63e64aa39479599"
-"Cartridge.Name" "Espial (1983) (Tigervision) [b2]"
+"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.ModelNo" "7-012"
+"Cartridge.Name" "Espial (1984) (Tigervision)"
 ""
 
 "Cartridge.MD5" "f33f1d0f7819c74148dacb48cbf1c597"
@@ -15592,8 +15705,9 @@
 ""
 
 "Cartridge.MD5" "f5445b52999e229e3789c39e7ee99947"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Flag Capture (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Jim Huether"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Flag Capture (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "f542b5d0193a3959b54f3c4c803ba242"
@@ -15724,8 +15838,7 @@
 "Cartridge.MD5" "f7a138eed69665b5cd1bfa796a550b01"
 "Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-012"
-"Cartridge.Name" "Espial (1983) (Tigervision) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Espial (1984) (Tigervision) (PAL)"
 ""
 
 "Cartridge.MD5" "f750b5d613796963acecab1690f554ae"
@@ -15751,9 +15864,9 @@
 ""
 
 "Cartridge.MD5" "f7e07080ed8396b68f2e5788a5c245e2"
+"Cartridge.Manufacturer" "Video Game Cartridge - Ariola"
 "Cartridge.ModelNo" "TP-617"
-"Cartridge.Name" "Farmyard Fun (Telegames) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Farmyard Fun (Ariola)"
 "Display.YStart" "33"
 "Display.Height" "217"
 ""
@@ -15825,7 +15938,7 @@
 
 "Cartridge.MD5" "f8811d45a9935cca90c62f924712f8e6"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "Chopper Command (Jone Yuan Telephonic Enterprise Co) (Hack)"
+"Cartridge.Name" "Chopper Command (Jone Yuan) (Hack)"
 "Cartridge.Rarity" "Hack"
 ""
 
@@ -15936,6 +16049,13 @@
 "Cartridge.ModelNo" "AG-019"
 "Cartridge.Name" "Sky Jinks (1982) (Activision) (PAL) [p1][!]"
 "Cartridge.Rarity" "Rare"
+""
+
+"Cartridge.MD5" "f9967369943209b4788d4e92cefc0795"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Fishing (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Cartridge.Note" "AKA Fishing Derby"
 ""
 
 "Cartridge.MD5" "f9d51a4e5f8b48f68770c89ffd495ed1"

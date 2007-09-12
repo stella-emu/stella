@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.57 2007-09-03 18:37:22 stephena Exp $
+// $Id: OSystem.hxx,v 1.58 2007-09-12 00:57:51 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -54,7 +54,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.57 2007-09-03 18:37:22 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.58 2007-09-12 00:57:51 stephena Exp $
 */
 class OSystem
 {
@@ -346,8 +346,9 @@ class OSystem
       @param rom    The absolute pathname of the ROM file
       @param md5    The md5 calculated from the ROM file
       @param image  A pointer to store the ROM data
-                    Note, the calling method is responsible for deleting this
+                      Note, the calling method is responsible for deleting this
       @param size   The amount of data read into the image array
+
       @return  False on any errors, else true
     */
     bool openROM(const string& rom, string& md5, uInt8** image, int* size);

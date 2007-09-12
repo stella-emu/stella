@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.25 2007-09-06 21:00:57 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.26 2007-09-12 00:57:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -122,12 +122,16 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 256 + 20:  // left arrow
-		if (_caretPos > 0)
-          dirty = setCaretPos(_caretPos - 1);
-        break;
+      if(instance()->eventHandler().kbdControl(modifiers))
+        dirty = specialKeys(keycode);
+      else if(_caretPos > 0)
+        dirty = setCaretPos(_caretPos - 1);
+      break;
 
     case 256 + 19:  // right arrow
-      if (_caretPos < (int)_editString.size())
+      if(instance()->eventHandler().kbdControl(modifiers))
+        dirty = specialKeys(keycode);
+      else if(_caretPos < (int)_editString.size())
         dirty = setCaretPos(_caretPos + 1);
       break;
 
@@ -282,6 +286,14 @@ bool EditableWidget::specialKeys(int keycode)
       handled = killLastWord();
       break;
 
+    case 256 + 20:  // left arrow
+      handled = moveWord(-1);
+      break;
+
+    case 256 + 19:  // right arrow
+      handled = moveWord(+1);
+      break;
+
     default:
       handled = false;
   }
@@ -368,6 +380,51 @@ bool EditableWidget::killLastWord()
     for (int i = 0; i < count; i++)
       killChar(-1);
 
+    handled = true;
+  }
+
+  return handled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool EditableWidget::moveWord(int direction)
+{
+  bool handled = false;
+  bool space = true;
+  int currentPos = _caretPos;
+
+  if(direction == -1)  // move to first character of previous word
+  {
+    while (currentPos > 0)
+    {
+      if (_editString[currentPos - 1] == ' ')
+      {
+        if (!space)
+          break;
+      }
+      else
+        space = false;
+
+      currentPos--;
+    }
+    _caretPos = currentPos;
+    handled = true;
+  }
+  else if(direction == +1)  // move to first character of next word
+  {
+    while (currentPos < (int)_editString.size())
+    {
+      if (_editString[currentPos - 1] == ' ')
+      {
+        if (!space)
+          break;
+      }
+      else
+        space = false;
+
+      currentPos++;
+    }
+    _caretPos = currentPos;
     handled = true;
   }
 
