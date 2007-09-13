@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.91 2007-09-10 15:46:58 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.92 2007-09-13 15:35:56 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -32,10 +32,6 @@
 #include "Surface.hxx"
 
 #include "FrameBufferGL.hxx"
-
-#ifndef GL_TEXTURE_RECTANGLE_ARB
-  #define GL_TEXTURE_RECTANGLE_ARB 0x84F5
-#endif
 
 // Maybe this code could be cleaner ...
 static void (APIENTRY* p_glClear)( GLbitfield );
@@ -500,7 +496,7 @@ void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
   while(y++ <= y2)
   {
     *buffer = (uInt16) myDefPalette[color];
-    buffer += myTexture->w;
+    buffer += myBuffer.pitch;
   }
 }
 
