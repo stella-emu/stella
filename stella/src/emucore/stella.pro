@@ -165,10 +165,9 @@
 ""
 
 "Cartridge.MD5" "01cb3e8dfab7203a9c62ba3b94b4e59f"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Mimi Nyden, Scott Smith, Robert Vieira"
 "Cartridge.ModelNo" "CX26127"
 "Cartridge.Name" "Gremlins (1984) (Atari)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "02066b17f29082412c6754c1a2d6302e"
@@ -222,10 +221,9 @@
 ""
 
 "Cartridge.MD5" "02ced7ea2b7cb509748db6bfa227ebec"
-"Cartridge.Manufacturer" "Parker Bros"
-"Cartridge.ModelNo" "PB5300"
-"Cartridge.Name" "Frogger (1982) (Parker Bros) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Parker Brothers, Ed English, David Lamkins"
+"Cartridge.ModelNo" "931502"
+"Cartridge.Name" "Frogger (1982) (Parker Bros) (PAL)"
 ""
 
 "Cartridge.MD5" "02dcba28c614fec7ca25955327128abb"
@@ -350,7 +348,8 @@
 ""
 
 "Cartridge.MD5" "056ff67dd9715fafa91fb8b0ddcc4a46"
-"Cartridge.Name" "Brick Kick (PAL) [p1][!]"
+"Cartridge.Name" "Frisco (Unknown) (PAL) (Hack)"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "05d61b925d3d2474bab83f0a79bb5df1"
@@ -417,6 +416,13 @@
 "Cartridge.Name" "Narnia (Glenn Saunders) (PD)"
 ""
 
+"Cartridge.MD5" "060c865c782debb047e6fd101c8923fc"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Freeway Rabbit (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Cartridge.Note" "AKA Freeway"
+""
+
 "Cartridge.MD5" "0651216c4a4a9c9ac5ada3013a317c72"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Fishing Derby (Jone Yuan) (4K) (Hack)"
@@ -471,8 +477,8 @@
 ""
 
 "Cartridge.MD5" "06db908011065e5ebb37f4e253c2a0b0"
-"Cartridge.Manufacturer" "US Games"
-"Cartridge.Name" "Gopher (1982) (US Games) (PAL) [p1][!]"
+"Cartridge.Name" "Goufer (Unknown) (PAL)"
+"Cartridge.Note" "AKA Gopher"
 ""
 
 "Cartridge.MD5" "071f84d10b343c7c05ce3e32af631687"
@@ -571,18 +577,16 @@
 ""
 
 "Cartridge.MD5" "081e2c114c9c20b61acf25fc95c71bf4"
-"Cartridge.Manufacturer" "Parker Bros"
+"Cartridge.Manufacturer" "Parker Brothers, Ed English, David Lamkins"
 "Cartridge.ModelNo" "PB5300"
 "Cartridge.Name" "Frogger (1982) (Parker Bros)"
-"Cartridge.Rarity" "Common"
 ""
 
 "Cartridge.MD5" "08188785e2b8300983529946dbeff4d2"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2611 / 6699821 / 4975149"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [o1]"
-"Cartridge.Note" "Uses Driving Controllers"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky, Ed Riddle - Sears"
+"Cartridge.ModelNo" "CX2611 - 99821, 49-75149"
+"Cartridge.Name" "Indy 500 (1977) (Atari) (4K)"
+"Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Display.YStart" "28"
@@ -639,6 +643,12 @@
 "Cartridge.Name" "Phantom Panzer II (Starsoft) (PAL) [!]"
 ""
 
+"Cartridge.MD5" "08989fa4ff537f5dbd611aff4019521a"
+"Cartridge.Manufacturer" "Atari, Gary Palmer"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Fun with Numbers (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "08d60a58a691c7f690162850302dc0e1"
 "Cartridge.Name" "Poker Squares (V0.27) (PAL) (2001) (B. Watson)"
 ""
@@ -686,10 +696,9 @@
 ""
 
 "Cartridge.MD5" "09e1ecf9bd2a3030d5670dba7a65e78d"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, James Andreasen"
 "Cartridge.ModelNo" "CX2654"
-"Cartridge.Name" "Haunted House (1981) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Haunted House (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "097074f24cde141fe6a0f26a10333265"
@@ -856,9 +865,9 @@
 ""
 
 "Cartridge.MD5" "0bfabf1e98bdb180643f35f2165995d0"
-"Cartridge.ModelNo" "CX2623 / 99819 / 75125"
-"Cartridge.Name" "Home Run (1978) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Bob Whitehead - Sears"
+"Cartridge.ModelNo" "CX2623 - 6-99819, 49-75108, 49-75125"
+"Cartridge.Name" "Home Run (1978) (Atari)"
 ""
 
 "Cartridge.MD5" "0c54811cf3b1f1573c9164d5f19eca65"
@@ -907,6 +916,16 @@
 "Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+""
+
+"Cartridge.MD5" "0c7bd935d9a7f2522155e48315f44fa0"
+"Cartridge.Manufacturer" "Carrere Video, Paul Newell, Tom Sloper - Teldec"
+"Cartridge.ModelNo" "USC1009"
+"Cartridge.Name" "Infernal Tower (1983) (Carrere Video) (PAL)"
+"Cartridge.Note" "AKA Towering Inferno"
+"Console.SwapPorts" "YES"
+"Display.Height" "250"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "0cc8224ff1edfe458e8629e9e5fe3f5b"
@@ -990,11 +1009,8 @@
 ""
 
 "Cartridge.MD5" "103f1756d9dc0dd2b16b53ad0f0f1859"
-"Cartridge.Manufacturer" "ITT Family Games"
-"Cartridge.ModelNo" "554-33 391"
-"Cartridge.Name" "Alien's Return (1983) (ITT Family Games) (PAL)"
-"Cartridge.Note" "AKA Go Go Home Monster"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Name" "Go Go Home Monster (1983) (Home Vision) (PAL)"
 ""
 
 "Cartridge.MD5" "0fcff6fe3b0769ad5d0cf82814d2a6d9"
@@ -1015,8 +1031,10 @@
 ""
 
 "Cartridge.MD5" "0de53160a8b54c3aa5aed8d68c970b62"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Fuchs & Schweinchen Schlau (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "806.174 9"
+"Cartridge.Name" "Fuchs & Schweinchen Schlau (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Oink!"
 ""
 
 "Cartridge.MD5" "0dd4c69b5f9a7ae96a7a08329496779a"
@@ -1058,10 +1076,9 @@
 ""
 
 "Cartridge.MD5" "0eecb5f58f55de9db4eedb3a0f6b74a8"
-"Cartridge.Manufacturer" "Xonox"
-"Cartridge.ModelNo" "99002"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Xonox - Beck-Tech"
+"Cartridge.ModelNo" "6210, 06002, 06004, 99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox) (4K)"
 "Display.YStart" "30"
 ""
 
@@ -1102,6 +1119,17 @@
 "Cartridge.Name" "Robin Hood (Starsoft) (PAL) [!]"
 ""
 
+"Cartridge.MD5" "0f738dc44437557624eb277ed7ad91c9"
+"Cartridge.Name" "Gramd Priks (Unknown) (PAL)"
+"Cartridge.Note" "AKA Grand Prix"
+""
+
+"Cartridge.MD5" "0f95264089c99fc2a839a19872552004"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-009, AG-009-04"
+"Cartridge.Name" "Freeway (1981) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "0fbf618be43d4396856d4244126fe7dc"
 "Cartridge.Manufacturer" "Starsoft"
 "Cartridge.Name" "Labyrinth (Starsoft) (PAL) [!]"
@@ -1109,10 +1137,10 @@
 ""
 
 "Cartridge.MD5" "102672bbd7e25cd79f4384dd7214c32b"
-"Cartridge.ModelNo" "CX2642 / 6699814"
-"Cartridge.Name" "Concentration (1978) (Atari)"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX2642"
+"Cartridge.Name" "Game of Concentration (1980) (Atari)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -1195,7 +1223,8 @@
 
 "Cartridge.MD5" "10a3cd14e5dcfdde6ff216a14ce7b7dd"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Human Cannonball (AKA Cannon Man) (1979) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX262, CX2627P"
+"Cartridge.Name" "Human Cannonball (1979) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "111029770226b319524134193886a10e"
@@ -1206,7 +1235,7 @@
 
 "Cartridge.MD5" "11330eaa5dd2629052fac37cfe1a0b7d"
 "Cartridge.Manufacturer" "128-in-1 Junior Console"
-"Cartridge.Name" "Human Cannonball (AKA Cannon Man) (1979) (Atari) (PAL) [p1][!]"
+"Cartridge.Name" "Human Cannonball (128-in-1 Junior Console) (PAL)"
 ""
 
 "Cartridge.MD5" "113cd09c9771ac278544b7e90efe7df2"
@@ -1341,10 +1370,9 @@
 ""
 
 "Cartridge.MD5" "13a37cf8170a3a34ce311b89bde82032"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2684"
-"Cartridge.Name" "Galaxian (1983) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cartridge.ModelNo" "CX2684, CX2684P"
+"Cartridge.Name" "Galaxian (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "13895ef15610af0d0f89d588f376b3fe"
@@ -1699,7 +1727,9 @@
 ""
 
 "Cartridge.MD5" "18dc28bc22402f21e1c9b81344b3b8c5"
-"Cartridge.Name" "Galaxian (1983) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cartridge.ModelNo" "CX2684, CX2684P"
+"Cartridge.Name" "Galaxian (1983) (Atari) (PAL) [a1]"
 ""
 
 "Cartridge.MD5" "18b28b386abdadb3a700ac8fb68e639a"
@@ -1801,10 +1831,8 @@
 ""
 
 "Cartridge.MD5" "1b8c3c0bfb815b2a1010bba95998b66e"
-"Cartridge.Manufacturer" "Mattel"
-"Cartridge.ModelNo" "MT5664"
-"Cartridge.Name" "Frogs and Flies (1982) (Mattel) (PAL) [p1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Telegames"
+"Cartridge.Name" "Frogs and Flies (1989) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "19e739c2764a5ab9ed08f9095aa2af0b"
@@ -1869,15 +1897,16 @@
 ""
 
 "Cartridge.MD5" "1c5796d277d9e4df3f6648f7012884c4"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Wachroboter Jagt Jupy (AKA Hey! Stop!) (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-012"
+"Cartridge.Name" "Hey! Stop! (Rainbow Vision) (PAL)"
+"Cartridge.Note" "AKA Keystone Kapers"
 ""
 
 "Cartridge.MD5" "1c8c42d1aee5010b30e7f1992d69216e"
-"Cartridge.Manufacturer" "Mystique"
-"Cartridge.ModelNo" "1009"
-"Cartridge.Name" "Gigolo (1982) (Mystique)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "PlayAround"
+"Cartridge.ModelNo" "205"
+"Cartridge.Name" "Gigolo (1982) (PlayAround)"
 "Display.Phosphor" "YES"
 ""
 
@@ -1946,7 +1975,7 @@
 
 "Cartridge.MD5" "1d284d6a3f850bafb25635a12b316f3d"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "H.E.R.O. (1984) (CCE)"
+"Cartridge.Name" "H.E.R.O. (CCE)"
 ""
 
 "Cartridge.MD5" "1d4e0a034ad1275bc4d75165ae236105"
@@ -2101,8 +2130,8 @@
 ""
 
 "Cartridge.MD5" "2016726db38ad6a68b4c48ba6fe51557"
-"Cartridge.Manufacturer" "Eric Mooney"
-"Cartridge.Name" "Invaders 2 by Eric Mooney (PD)"
+"Cartridge.Manufacturer" "Piero Cavina, Erik Mooney"
+"Cartridge.Name" "INV 2 (Piero Cavina, Erik Mooney)"
 "Cartridge.Rarity" "New Release"
 ""
 
@@ -2145,17 +2174,15 @@
 ""
 
 "Cartridge.MD5" "211774f4c5739042618be8ff67351177"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cartridge.ModelNo" "CX2684"
-"Cartridge.Name" "Galaxian (1983) (Atari) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Galaxian (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "20edcc3aa6c189259fa7e2f044a99c49"
-"Cartridge.Manufacturer" "Spectravision"
+"Cartridge.Manufacturer" "Spectravision, Spectravideo"
 "Cartridge.ModelNo" "SA-201"
 "Cartridge.Name" "Gangster Alley (1982) (Spectravision)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "211fbbdbbca1102dc5b43dc8157c09b3"
@@ -2203,6 +2230,12 @@
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 "Display.Height" "250"
+""
+
+"Cartridge.MD5" "218b76f5a4142dc2ea9051a768583d70"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cartridge.ModelNo" "CX2684, CX2684P"
+"Cartridge.Name" "Galaxian (1983) (Atari) (PAL) [a2]"
 ""
 
 "Cartridge.MD5" "2319922df4d0c820b3e5f15faa870cc3"
@@ -2396,9 +2429,7 @@
 ""
 
 "Cartridge.MD5" "24b5f4bbdb853eca38ea0cae2dfe73a1"
-"Cartridge.ModelNo" "CX2623 / 99819 / 75125"
-"Cartridge.Name" "Home Run (1978) (PAL) [p1][a1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Home Run (Unknown) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "24aff972d58990f9b88a6d787c796f1e"
@@ -2610,10 +2641,9 @@
 ""
 
 "Cartridge.MD5" "27c6a2ca16ad7d814626ceea62fa8fb4"
-"Cartridge.Manufacturer" "Parker Bros"
+"Cartridge.Manufacturer" "Parker Brothers, Mark Lesser"
 "Cartridge.ModelNo" "PB5590"
-"Cartridge.Name" "Frogger II - Threedeep! (1983) (Parker Bros)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Frogger II (1984) (Parker Bros)"
 "Display.Phosphor" "YES"
 ""
 
@@ -2649,6 +2679,11 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "28148a52b1955ce12c7a74d3a3e620a4"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Freeway (CCE) (4K)"
+""
+
 "Cartridge.MD5" "2825f4d068feba6973e61c84649489fe"
 "Cartridge.Name" "Boom Bang (Unknown) (PAL)"
 "Cartridge.Note" "AKA Crackpots"
@@ -2656,10 +2691,9 @@
 ""
 
 "Cartridge.MD5" "2903896d88a341511586d69fcfc20f7d"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-014"
-"Cartridge.Name" "Grand Prix (1982) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AX-014, AX-014-04"
+"Cartridge.Name" "Grand Prix (1982) (Activision)"
 ""
 
 "Cartridge.MD5" "28a2bea8f84936cb2e063f857414cda0"
@@ -2743,10 +2777,9 @@
 ""
 
 "Cartridge.MD5" "29630a20d356fb58685b150bfa8f00c3"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, Kevin Miller"
 "Cartridge.ModelNo" "MT5687"
-"Cartridge.Name" "International Soccer (1982) (Mattel) [a1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "International Soccer (1982) (Mattel) [a]"
 ""
 
 "Cartridge.MD5" "297c405afd01f3ac48cdb67b00d273fe"
@@ -2909,10 +2942,9 @@
 ""
 
 "Cartridge.MD5" "2bee7f226d506c217163bad4ab1768c0"
-"Cartridge.Manufacturer" "Xonox"
-"Cartridge.ModelNo" "99002"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox) [o1]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Xonox - Beck-Tech"
+"Cartridge.ModelNo" "6210, 06002, 06004, 99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox)"
 "Display.YStart" "30"
 ""
 
@@ -3005,10 +3037,9 @@
 ""
 
 "Cartridge.MD5" "2d9e5d8d083b6367eda880e80dfdfaeb"
-"Cartridge.Manufacturer" "Selchow"
+"Cartridge.Manufacturer" "Selchow & Righter - QDI"
 "Cartridge.ModelNo" "87"
 "Cartridge.Name" "Glib (1983) (Selchow & Righter)"
-"Cartridge.Rarity" "Unbelievably Rare"
 ""
 
 "Cartridge.MD5" "2d76c5d1aad506442b9e9fb67765e051"
@@ -3051,10 +3082,9 @@
 ""
 
 "Cartridge.MD5" "2e663eaa0d6b723b645e643750b942fd"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2634 / 75121"
-"Cartridge.Name" "Golf (1978) (Atari) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Tom Rudadahl - Sears"
+"Cartridge.ModelNo" "CX2634 - 49-75121"
+"Cartridge.Name" "Golf (1980) (Atari)"
 ""
 
 "Cartridge.MD5" "2e3728f3086dc3e71047ffd6b2d9f015"
@@ -3117,10 +3147,9 @@
 ""
 
 "Cartridge.MD5" "2ec6b045cfd7bc52d9cdfd1b1447d1e5"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-009"
-"Cartridge.Name" "Freeway (1981) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-009, PAG-009 - 711 009-720"
+"Cartridge.Name" "Freeway (1981) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "2eda6a49a49fcb2b674ea9e160b6a617"
@@ -3141,6 +3170,12 @@
 "Cartridge.Name" "Super Futebol (American Style) (CCE)"
 "Cartridge.Rarity" "Common"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "2f0546c4d238551c7d64d884b618100c"
+"Cartridge.Manufacturer" "Sega, Stance Nixon"
+"Cartridge.Name" "Ixion (1984) (Sega) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "2f273c423471d125d32d1d54d58f063a"
@@ -3210,10 +3245,9 @@
 ""
 
 "Cartridge.MD5" "30516cfbaa1bc3b5335ee53ad811f17a"
-"Cartridge.Manufacturer" "Wizard Video"
+"Cartridge.Manufacturer" "Wizard Video Games"
 "Cartridge.ModelNo" "007"
-"Cartridge.Name" "Halloween (AKA Sexta Fiera 13) (Wizard Video) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Halloween (1983) (Wizard Video Games)"
 ""
 
 "Cartridge.MD5" "30e0ab8be713208ae9a978b34e9e8e8c"
@@ -3338,10 +3372,10 @@
 ""
 
 "Cartridge.MD5" "31f4692ee2ca07a7ce1f7a6a1dab4ac9"
-"Cartridge.ModelNo" "CX2642 / 6699814"
-"Cartridge.Name" "Concentration (1978) (Atari) [o1]"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX2642"
+"Cartridge.Name" "Game of Concentration (1980) (Atari) (4K)"
 "Cartridge.Note" "Uses Keypad Controllers"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 ""
@@ -3361,7 +3395,9 @@
 ""
 
 "Cartridge.MD5" "321c3451129357af42a375d12afd4450"
-"Cartridge.Name" "Ikari Warriors (1990) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26177"
+"Cartridge.Name" "Ikari Warriors (1989) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "32199271dc980eb31a2cc96e10a9e244"
@@ -3390,9 +3426,7 @@
 ""
 
 "Cartridge.MD5" "328949872e454181223a80389d03c122"
-"Cartridge.ModelNo" "CX2623 / 99819 / 75125"
-"Cartridge.Name" "Home Run (1978) (PAL) [p1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Home Run (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "3276c777cbe97cdd2b4a63ffc16b7151"
@@ -3911,10 +3945,9 @@
 ""
 
 "Cartridge.MD5" "3b69f8929373598e1752f43f8da61aa4"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "176.654 2"
-"Cartridge.Name" "Die Springteufel (1983) (Quelle) (PAL)"
-"Cartridge.Note" "AKA Infiltrate"
+"Cartridge.Manufacturer" "Apollo"
+"Cartridge.ModelNo" "AP-2006"
+"Cartridge.Name" "Infiltrate (1981) (Apollo) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -3924,7 +3957,9 @@
 ""
 
 "Cartridge.MD5" "3b10106836565e5db28c7823c0898fbb"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Xonox - Beck-Tech"
+"Cartridge.ModelNo" "6210, 06002, 06004, 99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL) [a]"
 "Display.YStart" "30"
 ""
 
@@ -4064,9 +4099,10 @@
 ""
 
 "Cartridge.MD5" "3d48b8b586a09bdbf49f1a016bf4d29a"
+"Cartridge.Manufacturer" "Video Game Cartridge - Ariola"
 "Cartridge.ModelNo" "TP-606"
-"Cartridge.Name" "Hole Hunter (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Hole Hunter (Video Game Cartridge)"
+"Cartridge.Note" "AKA Topy"
 ""
 
 "Cartridge.MD5" "3d2652cbea462a886a41791dd7c8d073"
@@ -4105,10 +4141,9 @@
 ""
 
 "Cartridge.MD5" "3e03086da53ecc29d855d8edf10962cb"
-"Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "M8793"
-"Cartridge.Name" "Gorf (1982) (CBS Electronics) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "CBS Electronics, Alex Leavens"
+"Cartridge.ModelNo" "4L1751, 4L1752, 4L1753, 4L2275"
+"Cartridge.Name" "Gorf (1982) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -4190,6 +4225,12 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "3eb21313ea5d5764c5ed9160a5a55a83"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AX-012, CAX-012, AX-012-04"
+"Cartridge.Name" "Ice Hockey (1981) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "3edd0525a19e4fc612d99c74dffd8716"
 "Cartridge.Name" "Pro Wrestling (Absolute-Activision) (PAL) [a2][!]"
 ""
@@ -4226,9 +4267,7 @@
 ""
 
 "Cartridge.MD5" "3f6dbf448f25e2bd06dea44248eb122d"
-"Cartridge.ModelNo" "MT5687"
-"Cartridge.Name" "Championship Soccer (AKA Pele's Soccer) [p1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "International Soccer (Unknown)"
 ""
 
 "Cartridge.MD5" "3f5a43602f960ede330cd2f43a25139e"
@@ -4304,10 +4343,7 @@
 ""
 
 "Cartridge.MD5" "4093382187f8387e6d011883e8ea519b"
-"Cartridge.Manufacturer" "HomeVision"
-"Cartridge.ModelNo" "554-33391"
-"Cartridge.Name" "Col 'N (HomeVision)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Go Go Home Monster (Unknown)"
 "Display.Height" "220"
 ""
 
@@ -4346,10 +4382,9 @@
 ""
 
 "Cartridge.MD5" "40d8ed6a5106245aa79f05642a961485"
-"Cartridge.Manufacturer" "Xonox"
-"Cartridge.ModelNo" "99002"
-"Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Xonox - Beck-Tech"
+"Cartridge.ModelNo" "6210, 06002, 06004, 99002"
+"Cartridge.Name" "Ghost Manor (1983) (Xonox) (PAL)"
 "Display.YStart" "30"
 ""
 
@@ -4391,7 +4426,8 @@
 
 "Cartridge.MD5" "41c4e3d45a06df9d21b7aae6ae7e9912"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Grand Prix (CCE)"
+"Cartridge.ModelNo" "C-826"
+"Cartridge.Name" "Grand Prix (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "4189adfc1b30c121248876e3a1a3ac7e"
@@ -4452,6 +4488,10 @@
 "Cartridge.ModelNo" "AG-007"
 "Cartridge.Name" "Tennis (1981) (Activision) [!]"
 "Cartridge.Rarity" "Common"
+""
+
+"Cartridge.MD5" "42dcc02777b0bcfacd85aeb61d33558a"
+"Cartridge.Name" "Human Cannonball (Unknown) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "4311a4115fb7bc68477c96cf44cebacf"
@@ -4578,6 +4618,11 @@
 "Cartridge.Rarity" "Common"
 ""
 
+"Cartridge.MD5" "45a4f55bb9a5083d470ad479afd8bca2"
+"Cartridge.Manufacturer" "CommaVid, Joseph Biel"
+"Cartridge.Name" "Frog Demo (1983) (CommaVid)"
+""
+
 "Cartridge.MD5" "45cb0f41774b78def53331e4c3bf3362"
 "Cartridge.Manufacturer" "US Games"
 "Cartridge.ModelNo" "VC 1007"
@@ -4585,12 +4630,19 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
+"Cartridge.MD5" "45c4413dd703b9cfea49a13709d560eb"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Galactic (Jone Yuan)"
+""
+
 "Cartridge.MD5" "4690fdb70c86604bb35da26696818667"
 "Cartridge.Name" "Euchre (Release Candidate) (NTSC) (28-09-2002) (Erik Eid)"
 ""
 
 "Cartridge.MD5" "467340a18158649aa5e02a4372dcfccd"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Activision, John Van Ryzin - Ariola"
+"Cartridge.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL) [a1]"
 ""
 
 "Cartridge.MD5" "463e66ad98806a49106cffa49c08e2ed"
@@ -4667,7 +4719,6 @@
 "Cartridge.MD5" "47711c44723da5d67047990157dcb5dd"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Ice Hockey (CCE)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "4799a40b6e889370b7ee55c17ba65141"
@@ -4695,6 +4746,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "47abfb993ff14f502f88cf988092e055"
+"Cartridge.Manufacturer" "Zellers"
+"Cartridge.Name" "Inca Gold (Zellers)"
+"Cartridge.Note" "AKA Spider Kong"
+"Display.YStart" "29"
+""
+
 "Cartridge.MD5" "490e3cc59d82f85fae817cdf767ea7a0"
 "Cartridge.Name" "Berzerk (Unknown) (PAL) [a]"
 ""
@@ -4719,14 +4777,16 @@
 ""
 
 "Cartridge.MD5" "481d20ec22e7a63e818d5ef9679d548b"
-"Cartridge.Name" "Freeway (AKA Rabbits) (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Freeway Rabbit (32 in 1) (1988) (Atari) (PAL)"
+"Cartridge.Note" "AKA Freeway"
 ""
 
 "Cartridge.MD5" "48bcf2c5a8c80f18b24c55db96845472"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AZ-036-04"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) [o1]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, John Van Ryzin - Ariola"
+"Cartridge.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL) (16K)"
 ""
 
 "Cartridge.MD5" "4868a81e1b6031ed66ecd60547e6ec85"
@@ -4827,6 +4887,12 @@
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Checkers (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
+"Cartridge.MD5" "4a196713a21ef07a3f74cf51784c6b12"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Frogs and Flies (Jone Yuan) (Hack)"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4a45c6d75b1ba131f94a9c13194d8e46"
@@ -4936,8 +5002,7 @@
 ""
 
 "Cartridge.MD5" "4b9581c3100a1ef05eac1535d25385aa"
-"Cartridge.Name" "I.Q. 180 (HomeVision) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "IQ-180 (Unknown)"
 "Display.YStart" "20"
 "Display.Height" "235"
 ""
@@ -4976,6 +5041,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "4bdae9246d6ee258c26665512c1c8de3"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Human Cannonball (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "4c205f166157154df2f1ef60d87e552f"
 "Cartridge.Name" "Single-Scanline Positioning Demo 2 (2001) (Roger Williams)"
 ""
@@ -5004,10 +5075,9 @@
 ""
 
 "Cartridge.MD5" "4ca73eb959299471788f0b685c3ba0b5"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright"
 "Cartridge.ModelNo" "AX-031"
 "Cartridge.Name" "Frostbite (1983) (Activision)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "4ca0959f846d2beada18ecf29efe137e"
@@ -5153,11 +5223,8 @@
 ""
 
 "Cartridge.MD5" "4f781f0476493c50dc578336f1132a67"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2611"
-"Cartridge.Name" "Indy 500 (1978) (Atari) (PAL) [p1][o1][!]"
+"Cartridge.Name" "Indy 500 (Unknown) (PAL) (4K)"
 "Cartridge.Note" "Uses Driving Controllers"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 ""
@@ -5809,10 +5876,9 @@
 ""
 
 "Cartridge.MD5" "5a93265095146458df2baf2162014889"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-031"
-"Cartridge.Name" "Frostbite (1983) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright - Ariola"
+"Cartridge.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
+"Cartridge.Name" "Frostbite (1983) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "5a734779d797ccef25dc8acfa47244c7"
@@ -5924,10 +5990,9 @@
 ""
 
 "Cartridge.MD5" "5bcc83677d68f7ef74c1b4a0697ba2a8"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-012"
-"Cartridge.Name" "Ice Hockey (1981) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AX-012, CAX-012, AX-012-04"
+"Cartridge.Name" "Ice Hockey (1981) (Activision) (16K)"
 "Cartridge.Type" "4K"
 ""
 
@@ -5943,8 +6008,13 @@
 ""
 
 "Cartridge.MD5" "5be03a1fe7b2c114725150be04b38704"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Hunt & Score (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX2642P"
+"Cartridge.Name" "Game of Concentration (1980) (Atari) (PAL)"
+"Cartridge.Note" "Uses Keypad Controllers"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "5c618a50dfa23daac97ba459b9ff5206"
@@ -6025,9 +6095,9 @@
 ""
 
 "Cartridge.MD5" "5e0c37f534ab5ccc4661768e2ddf0162"
+"Cartridge.Manufacturer" "Telegames, Ed Salvo"
 "Cartridge.ModelNo" "5667 A106"
-"Cartridge.Name" "Glacier Patrol (1983) (Telegames)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Glacier Patrol (1989) (Telegames)"
 ""
 
 "Cartridge.MD5" "5e1b4629426f4992cf3b2905a696e1a7"
@@ -6042,6 +6112,12 @@
 "Cartridge.Name" "Return of Mario Bros by Philip R. Frey (Mario Bros Hack)"
 "Cartridge.Note" "Hack of Mario Bros. (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
+""
+
+"Cartridge.MD5" "5e1b7a6078af428ef056fe85a37a95ca"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AX-014, AX-014-04"
+"Cartridge.Name" "Grand Prix (1982) (Activision) (8K)"
 ""
 
 "Cartridge.MD5" "5e2928f089490017e88e9f9e5a881a25"
@@ -6105,9 +6181,9 @@
 ""
 
 "Cartridge.MD5" "5f73e7175474c1c22fb8030c3158e9b3"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Nick 'Sandy Maiwald' Turner - Hozer Video Games"
 "Cartridge.ModelNo" "CX2665"
-"Cartridge.Name" "Frog Pond (Atari) (Prototype)"
+"Cartridge.Name" "Frog Pond (1982) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -6418,6 +6494,12 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
+"Cartridge.MD5" "63811ed69bdbc35c69d8aa7806c3d6e9"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Homerun (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "639ded0c9e53bc3f91defb5dde930286"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.Name" "SuperCharger - Escape from the Mindmaster (4 of 4) (1982) (Starpath) [a1]"
@@ -6463,7 +6545,9 @@
 ""
 
 "Cartridge.MD5" "643e6451eb6b8ab793eb60ba9c02e000"
-"Cartridge.Name" "Ghostbusters II (V2)"
+"Cartridge.Manufacturer" "Salu - Avantgarde Software, Michael Buetepage"
+"Cartridge.ModelNo" "460741"
+"Cartridge.Name" "Ghostbusters II (1992) (Salu) (PAL) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -6665,10 +6749,9 @@
 ""
 
 "Cartridge.MD5" "66b92ede655b73b402ecd1f4d8cd9c50"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AZ-036-04"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL) [a2][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, John Van Ryzin - Ariola"
+"Cartridge.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL) [a2]"
 ""
 
 "Cartridge.MD5" "66b54641b5786ea3ff0215aa39d61e01"
@@ -6872,10 +6955,9 @@
 ""
 
 "Cartridge.MD5" "69974dd5d6420b90898cde50aec5ef39"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-009"
-"Cartridge.Name" "Freeway (1981) (Activision) [o2]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-009, AG-009-04"
+"Cartridge.Name" "Freeway (1981) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "69ebf910ab9b63e5b8345f016095003b"
@@ -6931,10 +7013,7 @@
 ""
 
 "Cartridge.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-031"
-"Cartridge.Name" "Frostbite (1983) (Activision) (PAL) [p1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Frostbite (Unknown) (PAL) (Hack)"
 ""
 
 "Cartridge.MD5" "6aa66e9c3eea76a0c40ef05513497c40"
@@ -6976,10 +7055,7 @@
 ""
 
 "Cartridge.MD5" "6b71f20c857574b732e7a8e840bd3cb2"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-031"
-"Cartridge.Name" "Frostbite (1983) (Activision) (PAL) [p2][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Frostbite (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "6b6ca32228ae352b4267e4bd2cddf10c"
@@ -7309,9 +7385,9 @@
 ""
 
 "Cartridge.MD5" "70ce036e59be92821c4c7fd735ec6f68"
-"Cartridge.ModelNo" "AX-031"
-"Cartridge.Name" "Frostbite (1983) (Activision) [o1]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright - Ariola"
+"Cartridge.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
+"Cartridge.Name" "Frostbite (1983) (Activision) (PAL) (16K)"
 ""
 
 "Cartridge.MD5" "70a8480cfaf08776e5420365732159d2"
@@ -7332,10 +7408,9 @@
 ""
 
 "Cartridge.MD5" "7146dd477e019f81eac654a79be96cb5"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2685"
-"Cartridge.Name" "Gravitar (1988) (Atari) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Gravitar (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "713095cd968b1aff45a2562ea4bbcbfe"
@@ -7446,14 +7521,15 @@
 ""
 
 "Cartridge.MD5" "728152f5ae6fdd0d3a9b88709bee6c7a"
-"Cartridge.Manufacturer" "Spectravideo"
+"Cartridge.Manufacturer" "Spectravideo, Mark Turmell"
 "Cartridge.ModelNo" "SA-217"
-"Cartridge.Name" "Gas Hog (AKA Marspatrouille) (1983) (Spectravideo)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Gas Hog (1983) (Spectravideo)"
 ""
 
 "Cartridge.MD5" "721a5567f76856f6b50a6707aa8f8316"
-"Cartridge.Name" "Ghostbusters (1985) (Activision) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Activision, David Crane, Dan Kitchen"
+"Cartridge.ModelNo" "EAG-108-04, EAZ-108-04B"
+"Cartridge.Name" "Ghostbusters (1985) (Activision) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "72305c997f2cec414fe6f8c946172f83"
@@ -7643,10 +7719,9 @@
 ""
 
 "Cartridge.MD5" "757f529026696e13838364dea382a4ed"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-014"
-"Cartridge.Name" "Grand Prix (1982) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAX-014, PAX-014, EAX-014-04B, EAX-014-04I - 711 014-720"
+"Cartridge.Name" "Grand Prix (1982) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "756ca07a65a4fbbedeb5f0ddfc04d0be"
@@ -7814,7 +7889,9 @@
 ""
 
 "Cartridge.MD5" "78821ef76ebc3934850d1bc1b9e4f4b0"
-"Cartridge.Name" "Hot Action Pak - Ghostbusters, Tennis, Plaque Attack (1990) (HES) (PAL) [!]"
+"Cartridge.Manufacturer" "HES - Activision"
+"Cartridge.ModelNo" "542"
+"Cartridge.Name" "Hot Action Pak - Ghostbusters, Tennis, Plaque Attack (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "787ebc2609a31eb5c57c4a18837d1aee"
@@ -7888,10 +7965,10 @@
 ""
 
 "Cartridge.MD5" "7972e5101fa548b952d852db24ad6060"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2627 / 6699841"
-"Cartridge.Name" "Human Cannonball (AKA Cannon Man) (1978) (Atari)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - Sears"
+"Cartridge.ModelNo" "CX2627 - 6-99841"
+"Cartridge.Name" "Human Cannonball (1979) (Atari)"
+"Cartridge.Note" "AKA Cannon Man"
 ""
 
 "Cartridge.MD5" "798cc114f1623c14085868cd3494fe8e"
@@ -8000,10 +8077,9 @@
 
 "Cartridge.MD5" "7ab2f190d4e59e8742e76a6e870b567e"
 "Cartridge.Manufacturer" "Apollo"
-"Cartridge.ModelNo" "AP 2008"
+"Cartridge.ModelNo" "AP-2008"
 "Cartridge.Name" "Guardian (1982) (Apollo)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Rare"
 "Controller.Left" "PADDLES"
 ""
 
@@ -8082,6 +8158,11 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "7b7b4ac05232490c28f9b680c72998f9"
+"Cartridge.Manufacturer" "Zellers"
+"Cartridge.Name" "Freeway (Zellers)"
+""
+
 "Cartridge.MD5" "7c00e7a205d3fda98eb20da7c9c50a55"
 "Cartridge.ModelNo" "AP 2004"
 "Cartridge.Name" "Lost Luggage (1981) (Apollo) [a1]"
@@ -8129,8 +8210,8 @@
 ""
 
 "Cartridge.MD5" "7d5c3b7b908752b98e30690e2a3322c2"
-"Cartridge.Manufacturer" "Dactar"
-"Cartridge.Name" "Freeway (Dactar) (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Dactari"
+"Cartridge.Name" "Freeway (Dactari)"
 ""
 
 "Cartridge.MD5" "7ced6709f091e79a2ab9575d3516a4ac"
@@ -8221,8 +8302,10 @@
 ""
 
 "Cartridge.MD5" "7e464186ba384069582d9f0c141f7491"
-"Cartridge.Manufacturer" "Playaround"
-"Cartridge.Name" "General Retreat (Playground) (PAL)"
+"Cartridge.Manufacturer" "PlayAround"
+"Cartridge.ModelNo" "206"
+"Cartridge.Name" "General Re-Treat (1982) (PlayAround) (PAL)"
+"Cartridge.Note" "AKA Custer's Revenge"
 ""
 
 "Cartridge.MD5" "7e2fe40a788e56765fe56a3576019968"
@@ -8470,11 +8553,10 @@
 ""
 
 "Cartridge.MD5" "81591a221419024060b890665beb0fb8"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2611"
-"Cartridge.Name" "Indy 500 (1978) (Atari) (PAL) [!]"
-"Cartridge.Note" "Uses Driving Controllers"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky, Ed Riddle"
+"Cartridge.ModelNo" "CX2611, CX2611P"
+"Cartridge.Name" "Indy 500 (1977) (Atari) (PAL)"
+"Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 ""
@@ -8507,10 +8589,9 @@
 ""
 
 "Cartridge.MD5" "81b3bf17cf01039d311b4cd738ae608e"
-"Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "M8793"
+"Cartridge.Manufacturer" "CBS Electronics, Alex Leavens"
+"Cartridge.ModelNo" "M8776, M8793"
 "Cartridge.Name" "Gorf (1982) (CBS Electronics)"
-"Cartridge.Rarity" "Uncommon"
 "Display.Phosphor" "YES"
 ""
 
@@ -8690,10 +8771,9 @@
 ""
 
 "Cartridge.MD5" "851cc1f3c64eaedd10361ea26345acea"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-009"
-"Cartridge.Name" "Freeway (1981) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-009, AG-009-04"
+"Cartridge.Name" "Freeway (1981) (Activision) (4K)"
 ""
 
 "Cartridge.MD5" "850ffd5849c911946b24544ea1e60496"
@@ -9068,9 +9148,9 @@
 ""
 
 "Cartridge.MD5" "8ac18076d01a6b63acf6e2cab4968940"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2685"
-"Cartridge.Name" "Gravitar (1988) (Atari) [a1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Gravitar (1983) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "8ae7809702b7d618e45daa2ddb0ece26"
@@ -9249,10 +9329,9 @@
 ""
 
 "Cartridge.MD5" "8e0ab801b1705a740b476b7f588c6d16"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-009"
-"Cartridge.Name" "Freeway (1981) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-009, AG-009-04"
+"Cartridge.Name" "Freeway (1981) (Activision)"
 ""
 
 "Cartridge.MD5" "8e4cd60d93fcde8065c1a2b972a26377"
@@ -9346,8 +9425,10 @@
 ""
 
 "Cartridge.MD5" "8fe00172e7fff4c1878dabcf11bb8dce"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Hili Ball (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "689.302 8"
+"Cartridge.Name" "Hili Ball (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Racquetball"
 "Display.Phosphor" "YES"
 ""
 
@@ -9403,7 +9484,9 @@
 
 "Cartridge.MD5" "914a8feaf6d0a1bbed9eb61d33817679"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Freeway (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Freeway Chicken (32 in 1) (1988) (Atari) (PAL)"
+"Cartridge.Note" "AKA Freeway"
 ""
 
 "Cartridge.MD5" "910dd9bf98cc5bc080943e5128b15bf5"
@@ -9472,6 +9555,13 @@
 "Cartridge.ModelNo" "AX-020"
 "Cartridge.Name" "River Raid (1982) (Activision) (PAL) [!]"
 "Cartridge.Rarity" "Uncommon"
+""
+
+"Cartridge.MD5" "9245a84e9851565d565cb6c9fac5802b"
+"Cartridge.Manufacturer" "Bomb - Onbase"
+"Cartridge.ModelNo" "CA282"
+"Cartridge.Name" "Great Escape (1983) (Bomb)"
+"Cartridge.Note" "AKA Asteroid Fire"
 ""
 
 "Cartridge.MD5" "929e8a84ed50601d9af8c49b0425c7ea"
@@ -9576,6 +9666,11 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "93c8d9d24f9c5f1f570694848d087df7"
+"Cartridge.Manufacturer" "Digivision"
+"Cartridge.Name" "Galaxian (Digivision)"
+""
+
 "Cartridge.MD5" "93eb1795c8b1065b1b3d62bb9ec0ccdc"
 "Cartridge.Name" "Custer's Viagra (JSK) (Custer's Revenge Hack)"
 "Display.YStart" "32"
@@ -9638,7 +9733,8 @@
 
 "Cartridge.MD5" "95351b46fa9c45471d852d28b9b4e00b"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Golf (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Golf (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "955c408265ad6994f61f9b66657bbae9"
@@ -9775,8 +9871,7 @@
 "Cartridge.MD5" "9813b9e4b8a6fd919c86a40c6bda8c93"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26177"
-"Cartridge.Name" "Ikari Warriors (1990) (Atari) (PAL) [a1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Ikari Warriors (1989) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "97d0151beb84acbe82aa6db18cd91b98"
@@ -9795,6 +9890,12 @@
 "Cartridge.ModelNo" "AZ-032"
 "Cartridge.Name" "Pressure Cooker (1983) (Activision) [!]"
 "Cartridge.Rarity" "Rare"
+""
+
+"Cartridge.MD5" "9831efc7f4cb8ffb4df0082bab2f07a3"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright - Ariola"
+"Cartridge.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
+"Cartridge.Name" "Frostbite (1983) (Activision) (PAL) (8K)"
 ""
 
 "Cartridge.MD5" "98555b95cb38e0e0b22b482b2b60a5b6"
@@ -9921,7 +10022,9 @@
 ""
 
 "Cartridge.MD5" "9a21fba9ee9794e0fadd7c7eb6be4e12"
-"Cartridge.Name" "Ikari Warriors (1990) (Atari) [!]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26177"
+"Cartridge.Name" "Ikari Warriors (1989) (Atari)"
 ""
 
 "Cartridge.MD5" "9ab72d3fd2cc1a0c9adb504502579037"
@@ -9956,9 +10059,10 @@
 ""
 
 "Cartridge.MD5" "9b21d8fc78cc4308990d99a4d906ec52"
-"Cartridge.ModelNo" "C-838"
-"Cartridge.Name" "Immies & Aggies (CCE)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
+"Cartridge.ModelNo" "715-111 - GN-060"
+"Cartridge.Name" "Immies & Aggies (1983) (ZiMAG) (Prototype)"
+"Cartridge.Note" "AKA Spectracube Invasion"
 "Display.YStart" "18"
 "Display.Height" "223"
 ""
@@ -10066,10 +10170,9 @@
 ""
 
 "Cartridge.MD5" "9d522a3759aa855668e75962c84546f7"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2634"
-"Cartridge.Name" "Golf (1978) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Tom Rudadahl"
+"Cartridge.ModelNo" "CX2634, CX2634P"
+"Cartridge.Name" "Golf (1980) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "a29fc854838e08c247553a7d883dd65b"
@@ -10212,9 +10315,9 @@
 ""
 
 "Cartridge.MD5" "9f901509f0474bf9760e6ebd80e629cd"
-"Cartridge.ModelNo" "CX2623 / 99819 / 75125"
-"Cartridge.Name" "Home Run (1978) [o1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Bob Whitehead - Sears"
+"Cartridge.ModelNo" "CX2623 - 6-99819, 49-75108, 49-75125"
+"Cartridge.Name" "Home Run (1978) (Atari) (4K)"
 ""
 
 "Cartridge.MD5" "9f8fad4badcd7be61bbd2bcaeef3c58f"
@@ -10259,10 +10362,7 @@
 ""
 
 "Cartridge.MD5" "a0185c06297b2818f786d11a3f9e42c3"
-"Cartridge.Manufacturer" "Mattel"
-"Cartridge.ModelNo" "MT5687"
-"Cartridge.Name" "International Soccer (1982) (Mattel) (PAL) [p1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "International Soccer (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "a184846d8904396830951217b47d13d9"
@@ -10580,10 +10680,9 @@
 ""
 
 "Cartridge.MD5" "a4c08c4994eb9d24fb78be1793e82e26"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-012"
-"Cartridge.Name" "Ice Hockey (1981) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AX-012, CAX-012, AX-012-04"
+"Cartridge.Name" "Ice Hockey (1981) (Activision)"
 ""
 
 "Cartridge.MD5" "a4b99aa5ed85cfdb7d101923147de035"
@@ -10610,8 +10709,9 @@
 ""
 
 "Cartridge.MD5" "a56b642a3d3ab9bbeee63cd44eb73216"
-"Cartridge.Manufacturer" "Carrere Video"
-"Cartridge.Name" "Gopher (1982) (Carrere Video) (PAL) [!]"
+"Cartridge.Manufacturer" "Carrere Video, Sylvia Day - Teldec"
+"Cartridge.ModelNo" "USC2001"
+"Cartridge.Name" "Gopher (1983) (Carrere Video) (PAL)"
 ""
 
 "Cartridge.MD5" "a5b7f420ca6cc1384da0fed523920d8e"
@@ -10688,8 +10788,10 @@
 ""
 
 "Cartridge.MD5" "a7523db9a33e9417637be0e71fa4377c"
-"Cartridge.Manufacturer" "Ariola"
-"Cartridge.Name" "Gangster (Ariola) (PAL) [!]"
+"Cartridge.Manufacturer" "Videospielkassette - Ariola"
+"Cartridge.ModelNo" "PGP238"
+"Cartridge.Name" "Gangster (Ariola) (PAL)"
+"Cartridge.Note" "AKA Outlaw"
 ""
 
 "Cartridge.MD5" "a7673809068062106db8e9d10b56a5b3"
@@ -10728,7 +10830,7 @@
 
 "Cartridge.MD5" "a81697b0c8bbc338ae4d0046ede0646b"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Gravitar (1988) (CCE)"
+"Cartridge.Name" "Gravitar (CCE)"
 ""
 
 "Cartridge.MD5" "a8101cb667e50a46165c6fb48c608b6b"
@@ -10918,6 +11020,13 @@
 "Cartridge.Name" "Planet Patrol (1982) (Spectravision) (PAL) [p1][!]"
 ""
 
+"Cartridge.MD5" "ab301d3d7f2f4fe3fdd8a3540b7a74f5"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "IQ-180 (Jone Yuan)"
+"Display.YStart" "27"
+"Display.Height" "230"
+""
+
 "Cartridge.MD5" "bfa58198c6b9cd8062ee76a2b38e9b33"
 "Cartridge.Name" "20 Sprites at Once Demo 4 (PD)"
 ""
@@ -11019,10 +11128,9 @@
 ""
 
 "Cartridge.MD5" "ac9adbd6de786a242e19d4bec527982b"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-012"
-"Cartridge.Name" "Ice Hockey (1981) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Alan Miller - Ariola"
+"Cartridge.ModelNo" "EAG-012-04I, EAX-012, EAX-012-04B - 711 012-720"
+"Cartridge.Name" "Ice Hockey (1981) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "acaa27d214039d89d7031609aafa55c3"
@@ -11075,12 +11183,13 @@
 
 "Cartridge.MD5" "adb79f9ac1a633cdd44954e2eac14774"
 "Cartridge.Manufacturer" "Digivision"
-"Cartridge.Name" "Frostbite (Digivision) (PAL) [p1][!]"
+"Cartridge.Name" "Frostbite (Digivision)"
 ""
 
 "Cartridge.MD5" "ad42e3ca3144e2159e26be123471bffc"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Human Cannonball (AKA Cannon Man) (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Human Cannonball (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "adb770ff70e9adf08bbb907a7eccd240"
@@ -11238,9 +11347,8 @@
 
 "Cartridge.MD5" "afe88aae81d99e0947c0cfb687b16251"
 "Cartridge.Manufacturer" "Apollo"
-"Cartridge.ModelNo" "AP 2006"
-"Cartridge.Name" "Infiltrate (1982) (Apollo) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.ModelNo" "AP-2006"
+"Cartridge.Name" "Infiltrate (1981) (Apollo)"
 "Display.YStart" "29"
 "Display.Phosphor" "YES"
 ""
@@ -11313,10 +11421,9 @@
 ""
 
 "Cartridge.MD5" "b1486e12de717013376447ac6f7f3a80"
-"Cartridge.Manufacturer" "Spectravideo"
-"Cartridge.ModelNo" "SA-217"
-"Cartridge.Name" "Gas Hog (AKA Marspatrouille) (1983) (Spectravideo) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Spectravideo, Mark Turmell - Quelle"
+"Cartridge.ModelNo" "SA-217 - 413.723 8"
+"Cartridge.Name" "Gas Hog (1983) (Spectravideo) (PAL)"
 ""
 
 "Cartridge.MD5" "b15026b43c6758609667468434766dd8"
@@ -11397,6 +11504,16 @@
 "Cartridge.Name" "Demon Attack (1983) (CCE)"
 ""
 
+"Cartridge.MD5" "b26506fbf411009e5e3f7365f442960e"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX2642"
+"Cartridge.Name" "Hunt & Score (1978) (Atari) (PAL) (4K)"
+"Cartridge.Note" "Uses the Keypad Controllers"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+"Display.Height" "250"
+""
+
 "Cartridge.MD5" "b438a6aa9d4b9b8f0b2ddb51323b21e4"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5861 A030"
@@ -11432,10 +11549,9 @@
 ""
 
 "Cartridge.MD5" "b311ab95e85bc0162308390728a7361d"
-"Cartridge.Manufacturer" "Parker Bros"
+"Cartridge.Manufacturer" "Parker Brothers"
 "Cartridge.ModelNo" "PB5080"
 "Cartridge.Name" "Gyruss (1984) (Parker Bros)"
-"Cartridge.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -11458,10 +11574,9 @@
 ""
 
 "Cartridge.MD5" "b4030c38a720dd84b84178b6ce1fc749"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, Kevin Miller"
 "Cartridge.ModelNo" "MT5687"
 "Cartridge.Name" "International Soccer (1982) (Mattel)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "b392964e8b1c9c2bed12246f228011b2"
@@ -11674,6 +11789,13 @@
 "Cartridge.Name" "Push (V0.02) (1998) (AD)"
 ""
 
+"Cartridge.MD5" "b7b1d3ce07e75976c43a2dca3866237e"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Freeway Chicken (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Cartridge.Note" "AKA Freeway"
+""
+
 "Cartridge.MD5" "b80d50ecee73919a507498d0a4d922ae"
 "Cartridge.Manufacturer" "20th Century Fox Video Games, David Lubar"
 "Cartridge.ModelNo" "11008"
@@ -11702,6 +11824,11 @@
 "Controller.Left" "PADDLES"
 ""
 
+"Cartridge.MD5" "b822fba8b7c8a97ea4e92aeb2c455ef9"
+"Cartridge.Manufacturer" "Dactari"
+"Cartridge.Name" "Freeway (Dactari) (4K)"
+""
+
 "Cartridge.MD5" "b879e13fd99382e09bcaf1d87ad84add"
 "Cartridge.Name" "Time Warp (Zellers) [!]"
 "Display.YStart" "30"
@@ -11716,8 +11843,8 @@
 "Cartridge.MD5" "b9232c1de494875efe1858fc8390616d"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "110"
-"Cartridge.Name" "Harbor Escape (1983) (Panda) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Harbor Escape (1983) (Panda)"
+"Cartridge.Note" "AKA River Raid"
 ""
 
 "Cartridge.MD5" "b9040a7af6d0d13e7d8fea72b2fb7432"
@@ -11818,10 +11945,9 @@
 ""
 
 "Cartridge.MD5" "bae66907c3200bc63592efe5a9a69dbb"
-"Cartridge.Manufacturer" "Spectravideo"
-"Cartridge.ModelNo" "SA-201"
-"Cartridge.Name" "Gangster Alley (1983) (Spectravideo) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Spectravision, Spectravideo - Quelle"
+"Cartridge.ModelNo" "SA-201 - 412.783 3"
+"Cartridge.Name" "Gangster Alley (1982) (Spectravision) (PAL)"
 ""
 
 "Cartridge.MD5" "bae1a23f9b6acdadf465cfb330ba0acb"
@@ -12151,10 +12277,10 @@
 ""
 
 "Cartridge.MD5" "c16c79aad6272baffb8aae9a7fff0864"
-"Cartridge.Manufacturer" "US Games"
-"Cartridge.ModelNo" "VC 2001"
-"Cartridge.Name" "Gopher (1982) (US Games)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Sylvia Day"
+"Cartridge.ModelNo" "VC2001"
+"Cartridge.Name" "Gopher (1982) (U.S. Games)"
+"Cartridge.Note" "AKA Gopher Attack"
 ""
 
 "Cartridge.MD5" "c033dc1d7b6fde41b9cadce9638909bb"
@@ -12230,11 +12356,10 @@
 ""
 
 "Cartridge.MD5" "c1fdd44efda916414be3527a47752c75"
-"Cartridge.Manufacturer" "Parker Bros"
+"Cartridge.Manufacturer" "Parker Brothers, John Emerson"
 "Cartridge.ModelNo" "PB5920"
-"Cartridge.Name" "G.I. Joe - Cobra Strike (1983) (Parker Bros) [!]"
+"Cartridge.Name" "G.I. Joe - Cobra Strike (1983) (Parker Bros)"
 "Cartridge.Note" "Uses the Paddle (left) and Joystick (right) Controllers"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 "Display.YStart" "30"
 ""
@@ -12297,9 +12422,9 @@
 ""
 
 "Cartridge.MD5" "c2b5c50ccb59816867036d7cf730bf75"
-"Cartridge.Manufacturer" "Salu"
-"Cartridge.Name" "Ghostbusters II (1992) (Salu) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Salu - Avantgarde Software, Michael Buetepage"
+"Cartridge.ModelNo" "460741"
+"Cartridge.Name" "Ghostbusters II (1992) (Salu) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -12376,10 +12501,9 @@
 ""
 
 "Cartridge.MD5" "c450a285daa7a3b65188c2c3cf04fb3e"
-"Cartridge.Manufacturer" "Wizard Video"
+"Cartridge.Manufacturer" "Wizard Video Games"
 "Cartridge.ModelNo" "007"
-"Cartridge.Name" "Halloween (AKA Sexta Fiera 13) (Wizard Video) [a1][!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Halloween (1983) (Wizard Video Games) [a]"
 ""
 
 "Cartridge.MD5" "c446288fe62c0c2737639fd788ae4a21"
@@ -12454,7 +12578,8 @@
 ""
 
 "Cartridge.MD5" "c4bc8c2e130d76346ebf8eb544991b46"
-"Cartridge.Name" "Imagic Selector (Imagic)"
+"Cartridge.Manufacturer" "Imagic"
+"Cartridge.Name" "Imagic Selector (1982) (Imagic)"
 ""
 
 "Cartridge.MD5" "c504a71c411a601d1fc3173369cfdca4"
@@ -12470,8 +12595,9 @@
 ""
 
 "Cartridge.MD5" "c52d9bbdc5530e1ef8e8ba7be692b01e"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Holey Moley (Atari) (Prototype)"
+"Cartridge.Manufacturer" "Atari, Robert C. Polaro"
+"Cartridge.ModelNo" "CX26130"
+"Cartridge.Name" "Holey Moley (1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "KEYBOARD"
@@ -12479,11 +12605,10 @@
 ""
 
 "Cartridge.MD5" "c5301f549d0722049bb0add6b10d1e09"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2611 / 6699821 / 4975149"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [!]"
-"Cartridge.Note" "Uses Driving Controllers"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky, Ed Riddle - Sears"
+"Cartridge.ModelNo" "CX2611 - 99821, 49-75149"
+"Cartridge.Name" "Indy 500 (1977) (Atari)"
+"Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Display.YStart" "28"
@@ -12590,12 +12715,12 @@
 
 "Cartridge.MD5" "c6ae21caceaad734987cb24243793bd5"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Frostbite (1983) (CCE)"
+"Cartridge.Name" "Frostbite (CCE)"
 ""
 
 "Cartridge.MD5" "c6c63da3bc2e47291f63280e057061d0"
 "Cartridge.Manufacturer" "128-in-1 Junior Console"
-"Cartridge.Name" "Human Cannonball (AKA Cannon Man) (1979) (Atari) (PAL) [p1][o1][!]"
+"Cartridge.Name" "Human Cannonball (128-in-1 Junior Console) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "c6cedb25b7d390b580ea8edb614b168b"
@@ -12611,7 +12736,9 @@
 ""
 
 "Cartridge.MD5" "c745487828a1a6a743488ecebc55ad44"
-"Cartridge.Name" "Galactic (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-002"
+"Cartridge.Name" "Galactic (Rainbow Vision) (PAL)"
 ""
 
 "Cartridge.MD5" "c74bfd02c7f1877bbe712c1da5c4c194"
@@ -12638,9 +12765,9 @@
 ""
 
 "Cartridge.MD5" "c7d5819b26b480a49eb26aeb63cc831e"
-"Cartridge.ModelNo" "AX-012"
-"Cartridge.Name" "Ice Hockey (PAL) [p1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Bit Corporation"
+"Cartridge.ModelNo" "PGP210"
+"Cartridge.Name" "Ice Hockey (1983) (BitCorp) (PAL)"
 ""
 
 "Cartridge.MD5" "c7900a7fe95a47eef3b325072ad2c232"
@@ -12702,10 +12829,9 @@
 ""
 
 "Cartridge.MD5" "c8df076c7e4349ca8dcbdb773bf3c985"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, John Van Ryzin"
 "Cartridge.ModelNo" "AZ-036-04"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) [a1]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision) (4K)"
 ""
 
 "Cartridge.MD5" "c92cfa54b5d022637fdcbdc1ef640d82"
@@ -12779,7 +12905,8 @@
 
 "Cartridge.MD5" "ca7aaebd861a9ef47967d31c5a6c4555"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Home Run (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Homerun (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "ca53fc8fd8b3c4a7df89ac86b222eba0"
@@ -12833,9 +12960,9 @@
 ""
 
 "Cartridge.MD5" "cb4a7b507372c24f8b9390d22d54a918"
-"Cartridge.Manufacturer" "R.J.P.G."
-"Cartridge.Name" "Brick Kick (1983) (R.J.P.G.) (PAL)"
-"Cartridge.Note" "AKA Frisco"
+"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp. - R.J.P.G."
+"Cartridge.ModelNo" "VCS83104"
+"Cartridge.Name" "Frisco (1983) (Home Vision) (PAL)"
 ""
 
 "Cartridge.MD5" "cbeafd37f15e0dddb0540dbe15c545a4"
@@ -12974,7 +13101,10 @@
 ""
 
 "Cartridge.MD5" "ccd6ce508eee4b3fca67212833edcd85"
-"Cartridge.Name" "Hot Wave (Starsoft) (w-Black Label) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "746422"
+"Cartridge.Name" "Hot Wave (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Ram It"
 ""
 
 "Cartridge.MD5" "cccfe9e9a11b1dad04beba46eefb7351"
@@ -12992,10 +13122,10 @@
 ""
 
 "Cartridge.MD5" "cd568d6acb2f14477ebf7e59fb382292"
-"Cartridge.Manufacturer" "Ariola"
-"Cartridge.ModelNo" "MT5687"
-"Cartridge.Name" "Football (AKA Fussball) (Ariola) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Videospielkassette - Ariola"
+"Cartridge.ModelNo" "PGP235"
+"Cartridge.Name" "Fussball (Ariola) (PAL)"
+"Cartridge.Note" "AKA International Soccer"
 ""
 
 "Cartridge.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
@@ -13069,7 +13199,8 @@
 
 "Cartridge.MD5" "ce904c0ae58d36d085cd506989116b0b"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "International Soccer (1982) (Telegames) (PAL) [!]"
+"Cartridge.ModelNo" "5687 A279"
+"Cartridge.Name" "International Soccer (1989) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "ce89529d6e98a13ddf3d84827bbdfe68"
@@ -13299,6 +13430,13 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "d0cb28e1b7bd6c7f683a0917b59f707e"
+"Cartridge.Manufacturer" "Atari, Gary Palmer"
+"Cartridge.ModelNo" "CX2661P"
+"Cartridge.Name" "Fun with Numbers (1980) (Atari) (PAL) (4K)"
+"Cartridge.Note" "AKA Basic Math"
+""
+
 "Cartridge.MD5" "d2c957dd7746521b51bb09fde25c5774"
 "Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "Cubis (6K) (1997) (Eckhard Stolberg)"
@@ -13459,7 +13597,7 @@
 
 "Cartridge.MD5" "d3bb42228a6cd452c111c1932503cc03"
 "Cartridge.Manufacturer" "UA Limited"
-"Cartridge.Name" "Funky Fish (UA Limited)"
+"Cartridge.Name" "Funky Fish (1983) (UA Limited) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "38"
 "Display.Phosphor" "YES"
@@ -13634,7 +13772,7 @@
 
 "Cartridge.MD5" "d65028524761ef52fbbdebab46f79d0f"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Galaxian (1983) (CCE)"
+"Cartridge.Name" "Galaxian (CCE)"
 ""
 
 "Cartridge.MD5" "d65900fefa7dc18ac3ad99c213e2fa4e"
@@ -13725,8 +13863,9 @@
 ""
 
 "Cartridge.MD5" "d816fea559b47f9a672604df06f9d2e3"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Fun with Numbers (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Gary Palmer"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Fun with Numbers (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "d81bb6965e6c99b3be99ffd8978740e4"
@@ -13790,10 +13929,9 @@
 ""
 
 "Cartridge.MD5" "d9b49f0678776e04916fa5478685a819"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AZ-036-04"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, John Van Ryzin - Ariola"
+"Cartridge.ModelNo" "EAZ-036-04, EAZ-036-04B, EAZ-036-04I - 711 036-720"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "d9548ad44e67edec202d1b8b325e5adf"
@@ -13870,11 +14008,10 @@
 ""
 
 "Cartridge.MD5" "dac762e4d01d445bdef20b7771f6570e"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2611 / 6699821 / 4975149"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [h1]"
-"Cartridge.Note" "Uses Driving Controllers"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky, Ed Riddle - Sears"
+"Cartridge.ModelNo" "CX2611 - 99821, 49-75149"
+"Cartridge.Name" "Indy 500 (1977) (Atari) (4K) [a]"
+"Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Display.YStart" "28"
@@ -13965,6 +14102,12 @@
 "Display.YStart" "30"
 ""
 
+"Cartridge.MD5" "db5073bd75eb05f7d62a7268396d1e77"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Golf (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "dba2692a216cb6c262c78f8b111a813e"
 "Cartridge.Name" "Star Fire (08-10-2002) (MP)"
 ""
@@ -13996,15 +14139,15 @@
 ""
 
 "Cartridge.MD5" "dcc2956c7a39fdbf1e861fc5c595da0d"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, David Rolfe - INTV"
 "Cartridge.ModelNo" "MT5664"
-"Cartridge.Name" "Frogs and Flies (1982) (Mattel) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Frogs and Flies (1982) (Mattel)"
 ""
 
 "Cartridge.MD5" "dc13df8420ec69841a7c51e41b9fbba5"
+"Cartridge.Manufacturer" "Atari, Mimi Dodgett, Steve Woita"
 "Cartridge.ModelNo" "CX26132"
-"Cartridge.Name" "Garfield (Prototype)"
+"Cartridge.Name" "Garfield (1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -14030,6 +14173,13 @@
 
 "Cartridge.MD5" "dc6aa0bb21a6e66e80e75ba5edc5c0dd"
 "Cartridge.Name" "Star Fire - Kernel Done (MP)"
+""
+
+"Cartridge.MD5" "dc33479d66615a3b09670775de4c2a38"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-033"
+"Cartridge.Name" "I.Q. Memory Teaser (Suntek) (PAL)"
+"Cartridge.Note" "AKA IQ-180"
 ""
 
 "Cartridge.MD5" "dca90ea1084a2fdbe300d7178ca1a138"
@@ -14143,10 +14293,9 @@
 ""
 
 "Cartridge.MD5" "de4436eaa41e5d7b7609512632b90078"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-014"
-"Cartridge.Name" "Grand Prix (1982) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AX-014, AX-014-04"
+"Cartridge.Name" "Grand Prix (1982) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "de3d0e37729d85afcb25a8d052a6e236"
@@ -14265,6 +14414,13 @@
 
 "Cartridge.MD5" "dfafa3fa58f5cc3f0342cca475df6095"
 "Cartridge.Name" "Space Treat (V1.1 Beta) (24-12-2002) (Fabrizio Zavagli)"
+""
+
+"Cartridge.MD5" "dfc03ef371cf5163f54c50d8ee73c8cf"
+"Cartridge.Manufacturer" "Atari, Gary Palmer"
+"Cartridge.ModelNo" "CX2661"
+"Cartridge.Name" "Fun with Numbers (1980) (Atari) (4K)"
+"Cartridge.Note" "AKA Basic Math"
 ""
 
 "Cartridge.MD5" "dfe034297200dff672df9533ed1449a9"
@@ -14463,10 +14619,9 @@
 ""
 
 "Cartridge.MD5" "e314b42761cd13c03def744b4afc7b1b"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane, Dan Kitchen"
 "Cartridge.ModelNo" "AZ-108-04"
 "Cartridge.Name" "Ghostbusters (1985) (Activision)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "e2cff4a96b91fcf5de694b7480a612ae"
@@ -14596,6 +14751,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "e4afe157c09962cf39cdb25845d83d47"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-009, PAG-009 - 711 009-720"
+"Cartridge.Name" "Freeway (1981) (Activision) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "e4d41f2d59a56a9d917038682b8e0b8c"
 "Cartridge.Name" "Kiss Meets Pacman (Cody Pittman) (PD)"
 "Display.YStart" "33"
@@ -14648,10 +14809,9 @@
 ""
 
 "Cartridge.MD5" "e556e07cc06c803f2955986f53ef63ed"
-"Cartridge.Manufacturer" "Coleco"
+"Cartridge.Manufacturer" "Coleco, Ed Temple"
 "Cartridge.ModelNo" "2665"
-"Cartridge.Name" "Front Line (1982) (Coleco)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Front Line (1984) (Coleco)"
 ""
 
 "Cartridge.MD5" "e558be88eef569f33716e8e330d2f5bc"
@@ -14678,6 +14838,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "e5f84930aa468db33c0d0f7b26dd8293"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-826"
+"Cartridge.Name" "Grand Prix (1983) (CCE) [a]"
+""
+
 "Cartridge.MD5" "e73838c43040bcbc83e4204a3e72eef4"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Apples and Dolls (CCE)"
@@ -14698,7 +14864,9 @@
 ""
 
 "Cartridge.MD5" "e600f5e98a20fafa47676198efe6834d"
-"Cartridge.Name" "Gyruss (1984) (Parker Bros) (PAL) [!]"
+"Cartridge.Manufacturer" "Parker Brothers"
+"Cartridge.ModelNo" "PB5080"
+"Cartridge.Name" "Gyruss (1984) (Parker Bros) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -14723,9 +14891,9 @@
 ""
 
 "Cartridge.MD5" "e64a8008812327853877a37befeb6465"
+"Cartridge.Manufacturer" "Answer Software Corporation"
 "Cartridge.ModelNo" "ASC1002"
 "Cartridge.Name" "Gauntlet (1983) (Answer Software)"
-"Cartridge.Rarity" "Unbelievably Rare"
 ""
 
 "Cartridge.MD5" "e6f49a1053c79211f82be4d90dc9fe3d"
@@ -14790,8 +14958,10 @@
 ""
 
 "Cartridge.MD5" "e784a9d26707cfcd170a4c1c60422a72"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Gefecht im All (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "147.443 6"
+"Cartridge.Name" "Gefecht im All (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Space Jockey"
 ""
 
 "Cartridge.MD5" "e74022cfe31ec8908844718dfbdedf7a"
@@ -14803,6 +14973,12 @@
 "Cartridge.ModelNo" "PB5900"
 "Cartridge.Name" "Spider-Man (1982) (Parker Bros) (PAL) [!]"
 "Cartridge.Rarity" "Rare"
+""
+
+"Cartridge.MD5" "e77f332b71f13884c84771e7a121182d"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Hey! Stop! (Jone Yuan)"
+"Cartridge.Note" "AKA Keystone Kapers"
 ""
 
 "Cartridge.MD5" "e79c4432c518ca3e497f673a167ee526"
@@ -14818,9 +14994,7 @@
 ""
 
 "Cartridge.MD5" "e80a4026d29777c3c7993fbfaee8920f"
-"Cartridge.Manufacturer" "R.J.P.G."
-"Cartridge.Name" "Brick Kick (RJPG)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Frisco (Unknown)"
 ""
 
 "Cartridge.MD5" "e7f005ddb6902c648de098511f6ae2e5"
@@ -15028,8 +15202,10 @@
 ""
 
 "Cartridge.MD5" "eb46e99ec15858f8cd8c91cef384ce09"
-"Cartridge.Manufacturer" "Rainbow Vision"
-"Cartridge.Name" "Ground Zero (Rainbow Vision) (PAL) [!]"
+"Cartridge.Manufacturer" "Goliath - Hot Shot"
+"Cartridge.ModelNo" "83-113"
+"Cartridge.Name" "Ground Zero (1983) (Goliath) (PAL)"
+"Cartridge.Note" "AKA River Raid"
 ""
 
 "Cartridge.MD5" "eb4252faff7a4f2ba5284a98b8f78d1a"
@@ -15061,9 +15237,7 @@
 
 "Cartridge.MD5" "eddef10fdc0029301064115ae0cd41d4"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.ModelNo" "AG-009"
 "Cartridge.Name" "Freeway (CCE)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "ed014beeeb77dbb2bbcf9b5f6850b2f4"
@@ -15387,10 +15561,9 @@
 ""
 
 "Cartridge.MD5" "f0a6e99f5875891246c3dbecbf2d2cea"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2654 / 4975141"
-"Cartridge.Name" "Haunted House (1981) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, James Andreasen - Sears"
+"Cartridge.ModelNo" "CX2654 - 49-75141"
+"Cartridge.Name" "Haunted House (1982) (Atari)"
 ""
 
 "Cartridge.MD5" "f0b7db930ca0e548c41a97160b9f6275"
@@ -15437,9 +15610,9 @@
 ""
 
 "Cartridge.MD5" "f16c709df0a6c52f47ff52b9d95b7d8d"
-"Cartridge.ModelNo" "CX2662"
-"Cartridge.Name" "Hangman (1978) (Atari) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Alan Miller - Sears"
+"Cartridge.ModelNo" "CX2662 - 6-99811"
+"Cartridge.Name" "Hangman (1978) (Atari)"
 ""
 
 "Cartridge.MD5" "f137211537438b1fce3d811baef25457"
@@ -15644,7 +15817,7 @@
 
 "Cartridge.MD5" "f4469178cd8998cb437fa110a228eaca"
 "Cartridge.Manufacturer" "Digitel"
-"Cartridge.Name" "Frostbite (Digitel) (Brazil) (PAL) [p1][!]"
+"Cartridge.Name" "Frostbite (1983) (Digitel)"
 ""
 
 "Cartridge.MD5" "f45644ff82b533a781a1ee50f2e95f3c"
@@ -15711,10 +15884,9 @@
 ""
 
 "Cartridge.MD5" "f542b5d0193a3959b54f3c4c803ba242"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2634 / 75121"
-"Cartridge.Name" "Golf (1978) (Atari) [o1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Tom Rudadahl - Sears"
+"Cartridge.ModelNo" "CX2634 - 49-75121"
+"Cartridge.Name" "Golf (1980) (Atari) (4K)"
 ""
 
 "Cartridge.MD5" "f5d103a9ae36d1d4ee7eef657b75d2b3"
@@ -15756,10 +15928,10 @@
 ""
 
 "Cartridge.MD5" "f6a282374441012b01714e19699fc62a"
-"Cartridge.Manufacturer" "Zimag"
-"Cartridge.ModelNo" "GN-010 / 710-111"
-"Cartridge.Name" "I Want My Mommy (AKA Ursinho Esperto) (Zimag) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
+"Cartridge.ModelNo" "710-111 - GN-010"
+"Cartridge.Name" "I Want My Mommy (1983) (ZiMAG)"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.Phosphor" "YES"
 ""
 
@@ -15872,10 +16044,9 @@
 ""
 
 "Cartridge.MD5" "f7d6592dcb773c81c278140ed4d01669"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AZ-108-04"
-"Cartridge.Name" "Ghostbusters (1985) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, David Crane, Dan Kitchen"
+"Cartridge.ModelNo" "EAG-108-04, EAZ-108-04B"
+"Cartridge.Name" "Ghostbusters (1985) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "f7af41a87533524d9a478575b0d873d0"
@@ -16223,7 +16394,9 @@
 ""
 
 "Cartridge.MD5" "fb91dfc36cddaa54b09924ae8fd96199"
-"Cartridge.Name" "Frogger II - Threedeep! (1984) (Parker Bros) (PAL) [!]"
+"Cartridge.Manufacturer" "Parker Brothers, Mark Lesser"
+"Cartridge.ModelNo" "PB5590"
+"Cartridge.Name" "Frogger II (1984) (Parker Bros) (PAL)."
 "Display.Phosphor" "YES"
 ""
 
@@ -16296,10 +16469,9 @@
 ""
 
 "Cartridge.MD5" "fca4a5be1251927027f2c24774a02160"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, John Van Ryzin"
 "Cartridge.ModelNo" "AZ-036-04"
-"Cartridge.Name" "H.E.R.O. (1984) (Activision) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "H.E.R.O. (1984) (Activision)"
 ""
 
 "Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
@@ -16470,10 +16642,10 @@
 ""
 
 "Cartridge.MD5" "ffe51989ba6da2c6ae5a12d277862e16"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2627 / 6699841"
-"Cartridge.Name" "Human Cannonball (AKA Cannon Man) (1978) (Atari) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - Sears"
+"Cartridge.ModelNo" "CX2627 - 6-99841"
+"Cartridge.Name" "Human Cannonball (1979) (Atari) (4K)"
+"Cartridge.Note" "AKA Cannon Man"
 ""
 
 "Cartridge.MD5" "ffc0ff4305dd46b4b459885bd1818e2e"

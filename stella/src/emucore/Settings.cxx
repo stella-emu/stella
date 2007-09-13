@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.128 2007-09-10 15:46:58 stephena Exp $
+// $Id: Settings.cxx,v 1.129 2007-09-13 00:48:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -38,6 +38,7 @@ Settings::Settings(OSystem* osystem)
   // Add options that are common to all versions of Stella
   setInternal("video", "soft");
 
+  // OpenGL specific options
   setInternal("gl_filter", "nearest");
   setInternal("gl_aspect", "100");
   setInternal("gl_fsmax", "never");
@@ -45,6 +46,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_vsync", "false");
   setInternal("gl_texrect", "false");
 
+  // Framebuffer-related options
   setInternal("zoom_ui", "2");
   setInternal("zoom_tia", "2");
   setInternal("fullscreen", "false");
@@ -54,6 +56,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
 
+  // Sound options
   setInternal("sound", "true");
   setInternal("fragsize", "512");
   setInternal("freq", "31400");
@@ -61,6 +64,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("volume", "100");
   setInternal("clipvol", "true");
 
+  // Input event options
   setInternal("keymap", "");
   setInternal("joymap", "");
   setInternal("joyaxismap", "");
@@ -74,26 +78,31 @@ Settings::Settings(OSystem* osystem)
   setInternal("p3speed", "50");
   setInternal("pthresh", "600");
 
-  setInternal("showinfo", "false");
-
+  // Snapshot options
   setInternal("ssdir", string(".") + BSPF_PATH_SEPARATOR);
   setInternal("sssingle", "false");
 
+  // Config files and paths
   setInternal("romdir", "");
   setInternal("statedir", "");
   setInternal("cheatfile", "");
   setInternal("palettefile", "");
   setInternal("propsfile", "");
 
+  // ROM browser options
   setInternal("rombrowse", "true");
   setInternal("lastrom", "");
   setInternal("romviewer", "false");
 
+  // UI-related options
   setInternal("debuggerres", "1030x690");
   setInternal("launcherres", "400x300");
   setInternal("uipalette", "0");
   setInternal("mwheel", "4");
+
+  // Misc options
   setInternal("autoslot", "false");
+  setInternal("showinfo", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
