@@ -127,10 +127,9 @@
 ""
 
 "Cartridge.MD5" "0164f26f6b38a34208cd4a2d0212afc3"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "Coleco, Ed English"
 "Cartridge.ModelNo" "2656"
-"Cartridge.Name" "Mr. Do! (1983) (CBS Electronics)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Mr. Do! (1983) (Coleco)"
 "Display.YStart" "26"
 "Display.Phosphor" "YES"
 ""
@@ -309,10 +308,7 @@
 ""
 
 "Cartridge.MD5" "049626cbfb1a5f7a5dc885a0c4bb758e"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-017"
-"Cartridge.Name" "Megamania (1982) (Activision) (PAL) [p1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "MegaMania (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "04856e3006a4f5f7b4638da71dad3d88"
@@ -334,8 +330,9 @@
 ""
 
 "Cartridge.MD5" "04fccc7735155a6c1373d453b110c640"
-"Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "My Golf (1990) (HES) (PAL) [!]"
+"Cartridge.Manufacturer" "HES, David Lubar"
+"Cartridge.ModelNo" "535"
+"Cartridge.Name" "My Golf (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "04e737c9d53cd84bfd5ee679954e4706"
@@ -357,10 +354,7 @@
 ""
 
 "Cartridge.MD5" "05aedf04803c43eb5e09dfd098d3fd01"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-025"
-"Cartridge.Name" "Keystone Kapers (1983) (Activision) (PAL) [p1][!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Keystone Kapers (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "05824fcbe615dbca836d061a140a50e0"
@@ -370,8 +364,10 @@
 ""
 
 "Cartridge.MD5" "05ccf96247af12eef59698f1a060a54f"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "King Arthur (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "600273"
+"Cartridge.Name" "King Arthur (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Dragonfire"
 ""
 
 "Cartridge.MD5" "05aff8f626ef870432ae3b3d9d5aa301"
@@ -623,10 +619,9 @@
 ""
 
 "Cartridge.MD5" "090f0a7ef8a3f885048d213faa59b2f8"
-"Cartridge.Manufacturer" "Carrere Video"
-"Cartridge.ModelNo" "VC 1012"
-"Cartridge.Name" "M.A.D. (1982) (Carrere Video) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Carrere Video - Teldec"
+"Cartridge.ModelNo" "USC1012"
+"Cartridge.Name" "M.A.D. (1983) (Carrere Video) (PAL)"
 ""
 
 "Cartridge.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
@@ -806,15 +801,16 @@
 ""
 
 "Cartridge.MD5" "0b1056f1091cfdc5eb0e2301f47ac6c3"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Karl T. Olinger"
 "Cartridge.ModelNo" "7-001"
-"Cartridge.Name" "King Kong (1982) (Tigervision)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "King Kong (1982) (Tigervision) (PAL)"
 "Display.YStart" "20"
 ""
 
 "Cartridge.MD5" "0afe6ae18966795b89314c3797dd2b1e"
-"Cartridge.Name" "Moon Patrol (1983) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cartridge.ModelNo" "CX2692, CX2692P"
+"Cartridge.Name" "Moon Patrol (1983) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "0b01909ba84512fdaf224d3c3fd0cf8d"
@@ -838,9 +834,7 @@
 
 "Cartridge.MD5" "0b4e793c9425175498f5a65a3e960086"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.ModelNo" "AX-039"
 "Cartridge.Name" "Kung Fu Master (CCE)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "0bf1e354304f46c0caf8fc0f6f5e9525"
@@ -947,7 +941,8 @@
 
 "Cartridge.MD5" "0d1b3abf681a2fc9a6aa31a9b0e8b445"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Laser Blast (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Laser Blast (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "0cfdd2f3b243cac21f38a0f09f54bead"
@@ -1038,10 +1033,9 @@
 ""
 
 "Cartridge.MD5" "0dd4c69b5f9a7ae96a7a08329496779a"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Karl T. Olinger"
 "Cartridge.ModelNo" "7-001"
-"Cartridge.Name" "King Kong (1982) (Tigervision) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "King Kong (1982) (Tigervision) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "0dfbdadf8f1bc718e7e1bb3ccd5fef3d"
@@ -1055,7 +1049,9 @@
 ""
 
 "Cartridge.MD5" "0e224ea74310da4e7e2103400eb1b4bf"
-"Cartridge.Name" "Mind Maze (Atari) (Prototype)"
+"Cartridge.Manufacturer" "Atari, Peter C. Niday, Howard Scott Warshaw"
+"Cartridge.Name" "Mind Maze (1984) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "0e86470791b26292abe1c64545c47985"
@@ -1131,8 +1127,10 @@
 ""
 
 "Cartridge.MD5" "0fbf618be43d4396856d4244126fe7dc"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Labyrinth (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "805.784 6"
+"Cartridge.Name" "Labyrinth (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Maze Craze"
 "Display.Format" "PAL"
 ""
 
@@ -1313,6 +1311,11 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "12937db3d4a80da5c4452b752891252d"
+"Cartridge.Manufacturer" "Digitel"
+"Cartridge.Name" "Megamania (1983) (Digitel)"
+""
+
 "Cartridge.MD5" "130c5742cd6cbe4877704d733d5b08ca"
 "Cartridge.Manufacturer" "ITT Family Games"
 "Cartridge.Name" "Laser Base (AKA World End) (ITT Family Games) (PAL) [!]"
@@ -1346,7 +1349,7 @@
 
 "Cartridge.MD5" "1351c67b42770c1bd758c3e42f553fea"
 "Cartridge.Manufacturer" "Digivision"
-"Cartridge.Name" "Keystone Kapers (Digivision) (Brazil) [p1][!]"
+"Cartridge.Name" "Keystone Kapers (Digivision)"
 ""
 
 "Cartridge.MD5" "1367e41858be525710eb04d0dab53505"
@@ -1376,10 +1379,9 @@
 ""
 
 "Cartridge.MD5" "13895ef15610af0d0f89d588f376b3fe"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Rorke Weigandt"
 "Cartridge.ModelNo" "7-005"
 "Cartridge.Name" "Marauder (1982) (Tigervision)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "13aa1f9ac4249947e4af61319d9a08f2"
@@ -1402,7 +1404,9 @@
 
 "Cartridge.MD5" "1423f560062c4f3c669d55891a2bcbe7"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "M.A.S.H. (CCE) (no logo) (PAL) [!]"
+"Cartridge.ModelNo" "C-859"
+"Cartridge.Name" "MASH (1983) (CCE) [a]"
+"Cartridge.Note" "AKA M.A.S.H"
 ""
 
 "Cartridge.MD5" "140909d204abd6841c64cdad4d7765b4"
@@ -1652,7 +1656,9 @@
 ""
 
 "Cartridge.MD5" "17ee158d15e4a34f57a837bc1ce2b0ce"
-"Cartridge.Name" "Joust (1982) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Kevin Osborn"
+"Cartridge.ModelNo" "CX2691, CX2691P"
+"Cartridge.Name" "Joust (1983) (Atari) (PAL) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -1874,8 +1880,10 @@
 ""
 
 "Cartridge.MD5" "1b8d35d93697450ea26ebf7ff17bd4d1"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Marineflieger (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "176.764 9 - 781644"
+"Cartridge.Name" "Marineflieger (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Seahawk"
 ""
 
 "Cartridge.MD5" "1bef389e3dd2d4ca4f2f60d42c932509"
@@ -1993,8 +2001,10 @@
 ""
 
 "Cartridge.MD5" "1e0ef01e330e5b91387f75f700ccaf8f"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Mein Weg (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "686.561 2 - 781627"
+"Cartridge.Name" "Mein Weg (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Challenge"
 ""
 
 "Cartridge.MD5" "1db3bc4601f22cf43be7ce015d74f59a"
@@ -2065,10 +2075,9 @@
 ""
 
 "Cartridge.MD5" "1ee9c1ba95cef2cf987d63f176c54ac3"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2675"
-"Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cartridge.ModelNo" "CX2675, CX2675P"
+"Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "200a9d2a7cb4441ce4f002df6aa47e38"
@@ -2114,9 +2123,9 @@
 ""
 
 "Cartridge.MD5" "1fa58679d4a39052bd9db059e8cda4ad"
-"Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Laser Gates (1983) (CCE) [a1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Imagic, Dan Oliver"
+"Cartridge.ModelNo" "03208"
+"Cartridge.Name" "Laser Gates (1983) (Imagic)"
 ""
 
 "Cartridge.MD5" "200309c8fba0f248c13751ed4fc69bab"
@@ -2136,10 +2145,9 @@
 ""
 
 "Cartridge.MD5" "203abb713c00b0884206dcc656caa48f"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "O3207"
+"Cartridge.Manufacturer" "Imagic, Bob Smith"
+"Cartridge.ModelNo" "03207, IZ-001-04"
 "Cartridge.Name" "Moonsweeper (1983) (Imagic)"
-"Cartridge.Rarity" "Uncommon"
 "Display.Phosphor" "YES"
 ""
 
@@ -2324,6 +2332,11 @@
 "Cartridge.Name" "Warring Worms (19-01-2002) (Billy Eno)"
 ""
 
+"Cartridge.MD5" "2327456f86d7e0deda94758c518d05b3"
+"Cartridge.Manufacturer" "Digitel"
+"Cartridge.Name" "Mr. Postman (Digitel)"
+""
+
 "Cartridge.MD5" "23e4ca038aba11982e1694559f3be10f"
 "Cartridge.Name" "Big Dig (V3) (20-10-2002) (CT)"
 ""
@@ -2335,9 +2348,8 @@
 
 "Cartridge.MD5" "23d445ea19a18fb78d5035878d9fb649"
 "Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "2459"
-"Cartridge.Name" "Mouse Trap (1982) (CBS Electronics) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.ModelNo" "4L1818, 4L1819, 4L1820"
+"Cartridge.Name" "Mouse Trap (1982) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -2428,6 +2440,12 @@
 "Cartridge.Name" "Radar (CCE) (PAL) [!]"
 ""
 
+"Cartridge.MD5" "2496d404bfc561a40a80bea6a69695c3"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-1007"
+"Cartridge.Name" "Jungle Hunt (1983) (CCE) [a]"
+""
+
 "Cartridge.MD5" "24b5f4bbdb853eca38ea0cae2dfe73a1"
 "Cartridge.Name" "Home Run (Unknown) (PAL) (4K)"
 ""
@@ -2483,7 +2501,9 @@
 ""
 
 "Cartridge.MD5" "25265d0e7f88b3026003809f25ee025e"
-"Cartridge.Name" "Jr. Pac-Man (1986) (Atari) [!]"
+"Cartridge.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
+"Cartridge.ModelNo" "CX26123"
+"Cartridge.Name" "Jr. Pac-Man (1984) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "25a21c47afe925a3ca0806876a2b4f3f"
@@ -2519,7 +2539,9 @@
 ""
 
 "Cartridge.MD5" "25e73efb9a6edf119114718bd2f646ba"
-"Cartridge.Name" "Miss Piggy's Wedding (Prototype) [!]"
+"Cartridge.Manufacturer" "Atari, Suki Lee"
+"Cartridge.ModelNo" "CX26113"
+"Cartridge.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "24"
 ""
@@ -2783,10 +2805,9 @@
 ""
 
 "Cartridge.MD5" "297c405afd01f3ac48cdb67b00d273fe"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26123"
-"Cartridge.Name" "Jr. Pac-Man (1984) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
+"Cartridge.ModelNo" "CX26123, CX26123P"
+"Cartridge.Name" "Jr. Pac-Man (1984) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "2982e655dffc89d218a0a3072cfc6811"
@@ -2817,6 +2838,14 @@
 "Cartridge.ModelNo" "7-005"
 "Cartridge.Name" "Marauder (1982) (Tigervision) [b1]"
 "Cartridge.Rarity" "Extremely Rare"
+""
+
+"Cartridge.MD5" "2a1b454a5c3832b0240111e7fd73de8a"
+"Cartridge.Manufacturer" "Tigervision, Bill Hogue"
+"Cartridge.ModelNo" "7-011"
+"Cartridge.Name" "Miner 2049er Volume II (1983) (Tigervision)"
+"Display.YStart" "28"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "2cb42cf62b2f25f59f909b5447821b14"
@@ -2853,7 +2882,9 @@
 ""
 
 "Cartridge.MD5" "2a9f9001540c55a302befd8e9d54b47b"
-"Cartridge.Name" "Mario Bros (1983) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
+"Cartridge.ModelNo" "CX2697, CX2697P"
+"Cartridge.Name" "Mario Bros. (1983) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "2a360bc85bf22de438651cf92ffda1de"
@@ -2914,9 +2945,9 @@
 ""
 
 "Cartridge.MD5" "2bb9f4686f7e08c5fcc69ec1a1c66fe7"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
 "Cartridge.ModelNo" "CX2688"
-"Cartridge.Name" "Jungle Hunt (1982) (Atari) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Jungle Hunt (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "2ba02f509a4991aa176ba8d9e540df3d"
@@ -2957,10 +2988,10 @@
 ""
 
 "Cartridge.MD5" "2c29182edf0965a7f56fe0897d2f84ba"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - Axlon, Steve DeFrisco"
 "Cartridge.ModelNo" "CX26192"
-"Cartridge.Name" "Klax (1990) (Atari)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Klax (1990) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "2c3b9c171e214e9e46bbaa12bdf8977e"
@@ -2997,10 +3028,9 @@
 ""
 
 "Cartridge.MD5" "2cccc079c15e9af94246f867ffc7e9bf"
-"Cartridge.Manufacturer" "Mystique"
-"Cartridge.ModelNo" "1011"
-"Cartridge.Name" "Jungle Fever (1982) (Playaround)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "PlayAround"
+"Cartridge.ModelNo" "203"
+"Cartridge.Name" "Jungle Fever (1982) (PlayAround)"
 "Display.YStart" "24"
 "Display.Phosphor" "YES"
 ""
@@ -3043,8 +3073,9 @@
 ""
 
 "Cartridge.MD5" "2d76c5d1aad506442b9e9fb67765e051"
-"Cartridge.Manufacturer" "Apollo"
-"Cartridge.Name" "Lost Luggage (1981) (Apollo) (NTSC) [!]"
+"Cartridge.Manufacturer" "Apollo, Ed Salvo"
+"Cartridge.ModelNo" "AP-2004"
+"Cartridge.Name" "Lost Luggage (1981) (Apollo)"
 ""
 
 "Cartridge.MD5" "2d69a5f23784f1c2230143292a073b53"
@@ -3079,6 +3110,12 @@
 "Cartridge.MD5" "2dfec1615c49501fefc02165c81955e6"
 "Cartridge.Name" "Song (05-11-2002) (Paul Slocum)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "2dcf9ce486393cd36ca0928cd53b96cb"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
+"Cartridge.ModelNo" "CX2688, CX2688P"
+"Cartridge.Name" "Jungle Hunt (1983) (Atari) (PAL) [a2]"
 ""
 
 "Cartridge.MD5" "2e663eaa0d6b723b645e643750b942fd"
@@ -3314,10 +3351,9 @@
 ""
 
 "Cartridge.MD5" "318a9d6dda791268df92d72679914ac3"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-017"
-"Cartridge.Name" "Megamania (1982) (Activision) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright"
+"Cartridge.ModelNo" "AX-017, AX-017-04"
+"Cartridge.Name" "MegaMania (1982) (Activision)"
 ""
 
 "Cartridge.MD5" "317a4cdbab090dcc996833d07cb40165"
@@ -3394,6 +3430,14 @@
 "Cartridge.Rarity" "Common"
 ""
 
+"Cartridge.MD5" "31e518debba46df6226b535fa8bd2543"
+"Cartridge.Manufacturer" "Atari, Douglas 'Solaris' Neubauer"
+"Cartridge.ModelNo" "CX26134"
+"Cartridge.Name" "Last Starfighter (1984) (Atari) (Prototype)"
+"Cartridge.Note" "Solaris Beta"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "321c3451129357af42a375d12afd4450"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26177"
@@ -3430,9 +3474,9 @@
 ""
 
 "Cartridge.MD5" "3276c777cbe97cdd2b4a63ffc16b7151"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Kevin Osborn"
 "Cartridge.ModelNo" "CX2691"
-"Cartridge.Name" "Joust (1982) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Joust (1983) (Atari)"
 "Display.Phosphor" "YES"
 ""
 
@@ -3465,10 +3509,9 @@
 ""
 
 "Cartridge.MD5" "3347a6dd59049b15a38394aa2dafa585"
-"Cartridge.Manufacturer" "Parker Bros"
+"Cartridge.Manufacturer" "Parker Brothers, Robert Jaeger"
 "Cartridge.ModelNo" "PB5760"
-"Cartridge.Name" "Montezuma's Revenge - Starring Panama Joe (1983) (Parker Bros)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Montezuma's Revenge (1984) (Parker Bros)"
 ""
 
 "Cartridge.MD5" "332f01fd18e99c6584f61aa45ee7791e"
@@ -3606,13 +3649,16 @@
 ""
 
 "Cartridge.MD5" "35b43b54e83403bb3d71f519739a9549"
-"Cartridge.Name" "McDonald's (1983) (Parker Bros) (Prototype) [!]"
+"Cartridge.Manufacturer" "Parker Brothers, Dave Engman, Isabel Garret"
+"Cartridge.ModelNo" "PB5950"
+"Cartridge.Name" "McDonald's (1983) (Parker Bros) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "384db97670817103dd8c0bbdef132445"
-"Cartridge.ModelNo" "CX2626 / 99829 / 75116"
-"Cartridge.Name" "Arcade Golf (1979) (Sears) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - Sears"
+"Cartridge.ModelNo" "CX2626 - 6-99829, 49-75116"
+"Cartridge.Name" "Miniature Golf (1979) (Atari) (4K)"
 ""
 
 "Cartridge.MD5" "3604e725e81dd0abede07fd1c82eb058"
@@ -3690,17 +3736,15 @@
 ""
 
 "Cartridge.MD5" "36c29ceee2c151b23a1ad7aa04bd529d"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - GCC, Ava-Robin Cohen"
 "Cartridge.ModelNo" "CX26123"
-"Cartridge.Name" "Jr. Pac-Man (1984) (Atari) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Jr. Pac-Man (1984) (Atari)"
 ""
 
 "Cartridge.MD5" "36e47ed74968c365121eab60f48c6517"
-"Cartridge.Manufacturer" "Spectravideo"
-"Cartridge.ModelNo" "SA-210"
-"Cartridge.Name" "Master Builder (1983) (Spectravideo) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Spectravideo - Quelle"
+"Cartridge.ModelNo" "SA-210 - 413.582 8"
+"Cartridge.Name" "Master Builder (1983) (Spectravideo) (PAL)"
 ""
 
 "Cartridge.MD5" "36c31bb5daeb103f488c66de67ac5075"
@@ -3735,7 +3779,9 @@
 ""
 
 "Cartridge.MD5" "378a62af6e9c12a760795ff4fc939656"
-"Cartridge.Name" "Motorodeo (1990) (Atari) [!]"
+"Cartridge.Manufacturer" "Atari - Axlon, Steve DeFrisco"
+"Cartridge.ModelNo" "CX26171"
+"Cartridge.Name" "MotoRodeo (1990) (Atari)"
 "Display.Phosphor" "YES"
 ""
 
@@ -3847,15 +3893,16 @@
 ""
 
 "Cartridge.MD5" "393e41ca8bdd35b52bf6256a968a9b89"
-"Cartridge.Manufacturer" "US Games"
-"Cartridge.ModelNo" "VC 1012"
-"Cartridge.Name" "M.A.D. (1982) (US Games)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "U.S. Games Corporation"
+"Cartridge.ModelNo" "VC1012"
+"Cartridge.Name" "M.A.D. (1982) (U.S. Games)"
 ""
 
 "Cartridge.MD5" "391764720140c432aec454a468f77a40"
 "Cartridge.Manufacturer" "Video Game Program"
-"Cartridge.Name" "Miss Pack Man (Video Game Program) (PAL) [p1][!]"
+"Cartridge.Name" "Miss Pack Man (Video Game Program) (PAL)"
+"Cartridge.Note" "AKA Ms. Pac-Man"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "38de7b68379770b9bd3f7bf000136eb0"
@@ -3912,11 +3959,16 @@
 "Controller.SwapPaddles" "YES"
 ""
 
+"Cartridge.MD5" "3947eb7305b0c904256cdbc5c5956c0f"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Lilly Adventure (Jone Yuan)"
+"Display.YStart" "32"
+""
+
 "Cartridge.MD5" "3a2e2d0c6892aa14544083dfb7762782"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2638 / 4975166"
-"Cartridge.Name" "Missile Command (1981) (Atari) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Rob Fulop - Sears"
+"Cartridge.ModelNo" "CX2638 - 49-75166"
+"Cartridge.Name" "Missile Command (1981) (Atari)"
 "Display.Phosphor" "YES"
 ""
 
@@ -3996,10 +4048,9 @@
 ""
 
 "Cartridge.MD5" "3b76242691730b2dd22ec0ceab351bc6"
-"Cartridge.Manufacturer" "Mattel"
-"Cartridge.ModelNo" "MT4318"
-"Cartridge.Name" "Masters of the Universe - The Power of He-Man (1983) (Mattel)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "M Network, Connie Goldman, Joe King, Patricia Lewis Du Long, Gerald Moore, Mike Sanders, Jossef Wagner - INTV"
+"Cartridge.ModelNo" "MT4319"
+"Cartridge.Name" "Masters of the Universe (1983) (Mattel)"
 "Console.RightDifficulty" "A"
 "Display.YStart" "25"
 "Display.Phosphor" "YES"
@@ -4040,10 +4091,9 @@
 ""
 
 "Cartridge.MD5" "3c57748c8286cf9e821ecd064f21aaa9"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
 "Cartridge.ModelNo" "CX26118"
 "Cartridge.Name" "Millipede (1984) (Atari)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "3c4a6f613ca8ba27ce9e43c6c92a3128"
@@ -4114,10 +4164,9 @@
 ""
 
 "Cartridge.MD5" "3d934bb980e2e63e1ead3e7756928ccd"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-017"
-"Cartridge.Name" "Megamania (1982) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright - Ariola"
+"Cartridge.ModelNo" "EAX-017, EAX-017-04I - 711 017-720"
+"Cartridge.Name" "MegaMania (1982) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "3d8a2d6493123a53ade45e3e2c5cafa0"
@@ -4282,6 +4331,13 @@
 "Cartridge.Name" "Chuck Norris Superkicks (1983) (Xonox)"
 ""
 
+"Cartridge.MD5" "3f6938aa6ce66e6f42e582c1eb19b18c"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Laser Blast (Jone Yuan) (4K) (Hack)"
+"Cartridge.Rarity" "Hack"
+"Display.YStart" "30"
+""
+
 "Cartridge.MD5" "3f9431cc8c5e2f220b2ac14bbc8231f4"
 "Cartridge.Name" "Colors Demo (PD)"
 ""
@@ -4412,7 +4468,9 @@
 ""
 
 "Cartridge.MD5" "4181087389a79c7f59611fb51c263137"
-"Cartridge.Name" "Miss Piggy's Wedding (Prototype 2) [!]"
+"Cartridge.Manufacturer" "Atari, Suki Lee"
+"Cartridge.ModelNo" "CX26113"
+"Cartridge.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) (8K)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "24"
 ""
@@ -4514,10 +4572,9 @@
 ""
 
 "Cartridge.MD5" "4326edb70ff20d0ee5ba58fa5cb09d60"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - GCC, Kevin Osborn"
 "Cartridge.ModelNo" "CX2689"
 "Cartridge.Name" "Kangaroo (1983) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "442602713cb45b9321ee93c6ea28a5d0"
@@ -4555,10 +4612,9 @@
 ""
 
 "Cartridge.MD5" "4474b3ad3bf6aabe719a2d7f1d1fb4cc"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-039"
-"Cartridge.Name" "Kung Fu Master (1984) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.ModelNo" "EAX-039-04B, EAX-039-04I"
+"Cartridge.Name" "Kung-Fu Master (1987) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "44560e324ffb30741a483218ba5b4342"
@@ -4566,10 +4622,9 @@
 ""
 
 "Cartridge.MD5" "4543b7691914dfd69c3755a5287a95e1"
-"Cartridge.Manufacturer" "CommaVid"
+"Cartridge.Manufacturer" "CommaVid, Irwin Gaines"
 "Cartridge.ModelNo" "CM-005"
 "Cartridge.Name" "Mines of Minos (1982) (CommaVid)"
-"Cartridge.Rarity" "Extremely Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -4612,10 +4667,9 @@
 ""
 
 "Cartridge.MD5" "45beef9da1a7e45f37f3f445f769a0b3"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2658 / 4975128"
-"Cartridge.Name" "Math Gran Prix (1982) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Suki Lee"
+"Cartridge.ModelNo" "CX2658"
+"Cartridge.Name" "Math Gran Prix (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "45a4f55bb9a5083d470ad479afd8bca2"
@@ -4658,10 +4712,9 @@
 ""
 
 "Cartridge.MD5" "468f2dec984f3d4114ea84f05edf82b6"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Bill Hogue"
 "Cartridge.ModelNo" "7-011"
 "Cartridge.Name" "Miner 2049er Volume II (1983) (Tigervision) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -4696,10 +4749,9 @@
 ""
 
 "Cartridge.MD5" "470878b9917ea0348d64b5750af149aa"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2658 / 4975128"
-"Cartridge.Name" "Math Gran Prix (1982) (Atari) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Suki Lee - Sears"
+"Cartridge.ModelNo" "CX2658 - 49-75128"
+"Cartridge.Name" "Math Gran Prix (1982) (Atari)"
 ""
 
 "Cartridge.MD5" "4702d8d9b48a332724af198aeac9e469"
@@ -4710,10 +4762,10 @@
 ""
 
 "Cartridge.MD5" "47aad247cce2534fd70c412cb483c7e0"
-"Cartridge.Manufacturer" "Spectravideo"
-"Cartridge.ModelNo" "SA-201"
-"Cartridge.Name" "Gangster Alley (1983) (Spectravideo) (PAL) [p1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-010"
+"Cartridge.Name" "Mafia (Rainbow Vision) (PAL)"
+"Cartridge.Note" "AKA Gangster Alley"
 ""
 
 "Cartridge.MD5" "47711c44723da5d67047990157dcb5dd"
@@ -4797,8 +4849,8 @@
 
 "Cartridge.MD5" "48287a9323a0ae6ab15e671ac2a87598"
 "Cartridge.Manufacturer" "Zellers"
-"Cartridge.Name" "Laser Volley (1983) (Zellers) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Laser Volley (Zellers)"
+"Cartridge.Note" "AKA Laser Gates"
 ""
 
 "Cartridge.MD5" "481f9a742052801cc5f3defb41cb638e"
@@ -4816,8 +4868,11 @@
 ""
 
 "Cartridge.MD5" "48f18d69799a5f5451a5f0d17876acef"
-"Cartridge.Name" "Criminal Pursuit (Emag)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
+"Cartridge.ModelNo" "GN-070"
+"Cartridge.Name" "Mysterious Thief (1983) (ZiMAG) (Prototype)"
+"Cartridge.Note" "AKA Criminal Persuit"
+"Cartridge.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
 
@@ -4848,7 +4903,7 @@
 
 "Cartridge.MD5" "493e90602a4434b117c91c95e73828d1"
 "Cartridge.Manufacturer" "Telegames"
-"Cartridge.Name" "Lock 'N' Chase (1982) (Telegames) (PAL) [!]"
+"Cartridge.Name" "Lock 'n' Chase (1989) (Telegames) (PAL)"
 ""
 
 "Cartridge.MD5" "493de059b32f84ab29cde6213964aeee"
@@ -4972,10 +5027,9 @@
 ""
 
 "Cartridge.MD5" "4af4103759d603c82b1c9c5acd2d8faf"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "O3207"
-"Cartridge.Name" "Moonsweeper (1983) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Imagic, Bob Smith"
+"Cartridge.ModelNo" "13207, EIZ-001-04I"
+"Cartridge.Name" "Moonsweeper (1983) (Imagic) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -5008,14 +5062,14 @@
 ""
 
 "Cartridge.MD5" "4b8e76a294a04036168f5b13c64911d2"
-"Cartridge.Name" "Moon Patrol (1982) (Shock Vision-Brazil) [!]"
+"Cartridge.Manufacturer" "Shock Vision"
+"Cartridge.Name" "Moon Patrol (1982) (Shock Vision)"
 ""
 
 "Cartridge.MD5" "4baada22435320d185c95b7dd2bcdb24"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Dave Staugas"
 "Cartridge.ModelNo" "CX2682"
-"Cartridge.Name" "Krull (1983) (Atari) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Krull (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "4c0fb2544ae0f8b5f7ae8bce7bd7f134"
@@ -5072,6 +5126,12 @@
 "Cartridge.MD5" "4c606235f4ec5d2a4b89139093a69437"
 "Cartridge.Name" "notBoulderDashPAL.bin"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "4c6afb8a44adf8e28f49164c84144bfe"
+"Cartridge.Manufacturer" "Bit Corporation"
+"Cartridge.ModelNo" "PG207"
+"Cartridge.Name" "Mission 3,000 A.D. (1983) (BitCorp)"
 ""
 
 "Cartridge.MD5" "4ca73eb959299471788f0b685c3ba0b5"
@@ -5279,8 +5339,7 @@
 ""
 
 "Cartridge.MD5" "4f82d8d78099dd71e8e169646e799d05"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Miniature Golf (1979) (Atari) (PAL) [p1][o1][!]"
+"Cartridge.Name" "Miniature Golf (Unknown) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "4fae08027365d31c558e400b687adf21"
@@ -5307,20 +5366,23 @@
 ""
 
 "Cartridge.MD5" "4fc1b85b8074b4b9436d097900e34f29"
-"Cartridge.Name" "John K Harvey's Equalizer (NTSC) (PD) [a1]"
+"Cartridge.Manufacturer" "John K. Harvey"
+"Cartridge.Name" "John K. Harvey's Equalizer (John K. Harvey)"
 "Cartridge.Rarity" "New Release"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "4fbe0f10a6327a76f83f83958c3cbeff"
-"Cartridge.Name" "Keystone Kapers (CCE) [!]"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-816"
+"Cartridge.Name" "Keystone Kappers (1983) (CCE)"
+"Cartridge.Note" "AKA Keystone Kapers"
 ""
 
 "Cartridge.MD5" "512e874a240731d7378586a05f28aec6"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Rorke Weigandt"
 "Cartridge.ModelNo" "7-005"
-"Cartridge.Name" "Marauder (1982) (Tigervision) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Marauder (1982) (Tigervision) (PAL)"
 ""
 
 "Cartridge.MD5" "50568c80ac61cab789d9923c9b05b68e"
@@ -5347,10 +5409,9 @@
 ""
 
 "Cartridge.MD5" "515046e3061b7b18aa3a551c3ae12673"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
 "Cartridge.ModelNo" "CX2692"
 "Cartridge.Name" "Moon Patrol (1983) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "514f911ecff2be5eeff2f39c49a9725c"
@@ -5436,6 +5497,13 @@
 "Cartridge.Rarity" "Rare"
 ""
 
+"Cartridge.MD5" "5256f68d1491986aae5cfdff539bfeb5"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cartridge.ModelNo" "CX2692"
+"Cartridge.Name" "Moon Patrol (1983) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "52e9db3fe8b5d336843acac234aaea79"
 "Cartridge.Name" "Fu Kung! (V0.11) (28-01-2003) (AD)"
 ""
@@ -5471,10 +5539,10 @@
 ""
 
 "Cartridge.MD5" "534e23210dd1993c828d944c6ac4d9fb"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, Stephen Tatsumi, Jane Terjung - Kool Aid"
 "Cartridge.ModelNo" "MT4648"
-"Cartridge.Name" "Kool Aid Man (1982) (Mattel)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Kool-Aid Man (1983) (Mattel)"
+"Cartridge.Note" "AKA Kool Aid Pitcher Man"
 ""
 
 "Cartridge.MD5" "5336f86f6b982cc925532f2e80aa1e17"
@@ -5536,11 +5604,10 @@
 ""
 
 "Cartridge.MD5" "5428cdfada281c569c74c7308c7f2c26"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-010"
-"Cartridge.Name" "Kaboom! (1981) (Activision) [!]"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane"
+"Cartridge.ModelNo" "AG-010, AG-010-04"
+"Cartridge.Name" "Kaboom! (1981) (Activision)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 ""
 
@@ -5570,7 +5637,6 @@
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-212"
 "Cartridge.Name" "Mangia' (1983) (Spectravideo)"
-"Cartridge.Rarity" "Rare"
 "Display.YStart" "28"
 ""
 
@@ -5656,16 +5722,15 @@
 ""
 
 "Cartridge.MD5" "5641c0ff707630d2dd829b26a9f2e98f"
-"Cartridge.Manufacturer" "Xonox"
-"Cartridge.Name" "Motocross Racer - Joystick (1983) (Xonox)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Joystik"
+"Cartridge.Name" "Motocross (Joystik)"
+"Cartridge.Note" "AKA Motocross Racer"
 ""
 
 "Cartridge.MD5" "5678ebaa09ca3b699516dba4671643ed"
 "Cartridge.Manufacturer" "Coleco"
 "Cartridge.ModelNo" "2459"
-"Cartridge.Name" "Mouse Trap (1982) (Coleco) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Mouse Trap (1982) (Coleco)"
 "Display.Phosphor" "YES"
 ""
 
@@ -5790,10 +5855,9 @@
 ""
 
 "Cartridge.MD5" "58a82e1da64a692fd727c25faef2ecc9"
-"Cartridge.Manufacturer" "CCE"
+"Cartridge.Manufacturer" "Tigervision, John Harris"
 "Cartridge.ModelNo" "7-002"
-"Cartridge.Name" "Jawbreaker (1982) (CCE)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Jawbreaker (1982) (Tigervision)"
 "Display.YStart" "28"
 ""
 
@@ -5945,16 +6009,16 @@
 ""
 
 "Cartridge.MD5" "5b92a93b23523ff16e2789b820e2a4c5"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-039"
-"Cartridge.Name" "Kung Fu Master (1984) (Activision)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.ModelNo" "AG-039-04"
+"Cartridge.Name" "Kung-Fu Master (1987) (Activision)"
 ""
 
 "Cartridge.MD5" "5babe0cad3ec99d76b0aa1d36a695d2f"
-"Cartridge.Manufacturer" "Coleco (Ed Temple)"
-"Cartridge.Name" "Looping (Coleco)"
-"Cartridge.Rarity" "Prototype (never released)"
+"Cartridge.Manufacturer" "Coleco, Ed Temple"
+"Cartridge.ModelNo" "2654"
+"Cartridge.Name" "Looping (1983) (Coleco) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 "Display.YStart" "24"
 ""
 
@@ -6082,6 +6146,13 @@
 "Display.Height" "256"
 ""
 
+"Cartridge.MD5" "5d9592756425192ec621d2613d0e683d"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-839"
+"Cartridge.Name" "Misterious Thief (1983) (CCE) [a]"
+"Cartridge.Note" "AKA Criminal Persuit"
+""
+
 "Cartridge.MD5" "5de8803a59c36725888346fdc6e7429d"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX2631 / 6699845 / 4975152"
@@ -6122,6 +6193,11 @@
 
 "Cartridge.MD5" "5e2928f089490017e88e9f9e5a881a25"
 "Cartridge.Name" "Star Fire - Faster Skipping 1 (24-10-2002) (MP)"
+""
+
+"Cartridge.MD5" "5e2495d43b981010304af55efed1e798"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Math Gran Prix (Jone Yuan)"
 ""
 
 "Cartridge.MD5" "62ffd175cac3f781ef6e4870136a2520"
@@ -6268,8 +6344,9 @@
 ""
 
 "Cartridge.MD5" "603c7a0d12c935df5810f400f3971b67"
-"Cartridge.Manufacturer" "Bitcorp"
-"Cartridge.Name" "Mr. Postman (1983) (Bitcorp) (PAL) [!]"
+"Cartridge.Manufacturer" "Bit Corporation"
+"Cartridge.ModelNo" "PG209"
+"Cartridge.Name" "Mr. Postman (1983) (BitCorp) (PAL)"
 ""
 
 "Cartridge.MD5" "6058e40ce79d7434c7f7477b29abd4a5"
@@ -6344,9 +6421,9 @@
 ""
 
 "Cartridge.MD5" "6141c095d0aee4e734bebfaac939030a"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "463.734 4 - 550293"
-"Cartridge.Name" "Die Unterwasser Bestien (1983) (Quelle) (PAL)"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
+"Cartridge.ModelNo" "SS-017"
+"Cartridge.Name" "Mariana (Rainbow Vision) (PAL)"
 "Cartridge.Note" "AKA Seaquest"
 ""
 
@@ -6533,10 +6610,9 @@
 ""
 
 "Cartridge.MD5" "640a08e9ca019172d612df22a9190afb"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2691"
-"Cartridge.Name" "Joust (1982) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Kevin Osborn"
+"Cartridge.ModelNo" "CX2691, CX2691P"
+"Cartridge.Name" "Joust (1983) (Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -6584,9 +6660,9 @@
 
 "Cartridge.MD5" "6522717cfd75d1dba252cbde76992090"
 "Cartridge.Manufacturer" "ITT Family Games"
-"Cartridge.ModelNo" "554-33391"
-"Cartridge.Name" "Meteor Defense (ITT Family Games) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.ModelNo" "554-33 391"
+"Cartridge.Name" "Meteor Defense (1983) (ITT Family Games) (PAL)"
+"Cartridge.Note" "AKA Astrowar"
 ""
 
 "Cartridge.MD5" "651d2b6743a3a18b426bce2c881af212"
@@ -6596,10 +6672,9 @@
 ""
 
 "Cartridge.MD5" "65490d61922f3e3883ee1d583ce10855"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2692"
-"Cartridge.Name" "Moon Patrol (1983) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Noellie Alito"
+"Cartridge.ModelNo" "CX2692, CX2692P"
+"Cartridge.Name" "Moon Patrol (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "6538e454b0498ad2befe1ef0f87815c0"
@@ -6644,11 +6719,10 @@
 ""
 
 "Cartridge.MD5" "65b106eba3e45f3dab72ea907f39f8b4"
-"Cartridge.Manufacturer" "Sparrow"
+"Cartridge.Manufacturer" "Sparrow - HomeComputer Software Co., Dan Schafer, Glenn Stohel, Jon Tedesco"
 "Cartridge.ModelNo" "GCG 1001T"
 "Cartridge.Name" "Music Machine (1983) (Sparrow)"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Unbelievably Rare"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 ""
 
@@ -6664,8 +6738,10 @@
 ""
 
 "Cartridge.MD5" "65ba1a4c643d1ab44481bdddeb403827"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "River Raid II (AKA Katastrophen-Einsatz) (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "876.013 4"
+"Cartridge.Name" "Katastrophen-Einsatz (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA M.A.S.H."
 ""
 
 "Cartridge.MD5" "65bd29e8ab1b847309775b0de6b2e4fe"
@@ -6849,9 +6925,10 @@
 ""
 
 "Cartridge.MD5" "6805734a0b7bcc8925d9305b071bf147"
-"Cartridge.ModelNo" "99003"
-"Cartridge.Name" "Kung Fu (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Bit Corporation"
+"Cartridge.ModelNo" "PGP229"
+"Cartridge.Name" "Kung Fu (1983) (BitCorp) (PAL)"
+"Cartridge.Note" "AKA Karate"
 ""
 
 "Cartridge.MD5" "6803fa7c2c094b428b859a58dc1dd06a"
@@ -6886,7 +6963,10 @@
 ""
 
 "Cartridge.MD5" "68760b82fc5dcf3fedf84376a4944bf9"
-"Cartridge.Name" "Laser Gates (1983) (CCE) [!]"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-860"
+"Cartridge.Name" "Laser Gate (1983) (CCE)"
+"Cartridge.Note" "AKA Laser Gates"
 ""
 
 "Cartridge.MD5" "685e9668dc270b6deeb9cfbfd4d633c3"
@@ -6926,9 +7006,10 @@
 ""
 
 "Cartridge.MD5" "6913c90002636c1487538d4004f7cac2"
+"Cartridge.Manufacturer" "Atari, Bill Aspromonte"
 "Cartridge.ModelNo" "CX26131"
-"Cartridge.Name" "Monstercise (Atari) (Prototype)"
-"Cartridge.Note" "Uses Kids/Keypad Controllers"
+"Cartridge.Name" "Monster Cise (1984) (Atari) (Prototype)"
+"Cartridge.Note" "Uses the Keypad Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
@@ -6952,6 +7033,13 @@
 
 "Cartridge.MD5" "692202772d8b38ccf85a90c8003a1324"
 "Cartridge.Name" "Zi - The Flie Buster (2002) (Fernando Mora) (PD)"
+""
+
+"Cartridge.MD5" "6979f30204149be3e227558cffe21c1d"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Miniaturer Golf (32 in 1) (1988) (Atari) (PAL) (4K)"
+"Cartridge.Note" "AKA Miniature Golf"
 ""
 
 "Cartridge.MD5" "69974dd5d6420b90898cde50aec5ef39"
@@ -7086,10 +7174,9 @@
 ""
 
 "Cartridge.MD5" "6c1f3f2e359dbf55df462ccbcdd2f6bf"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-025"
-"Cartridge.Name" "Keystone Kapers (1983) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Garry Kitchen - Ariola"
+"Cartridge.ModelNo" "EAX-025, EAX-025-04I - 711 025-725"
+"Cartridge.Name" "Keystone Kapers (1983) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "6bde3f6ac31aceef447ce57d4d2c2ec0"
@@ -7107,7 +7194,9 @@
 
 "Cartridge.MD5" "6c1553ca90b413bf762dfc65f2b881c7"
 "Cartridge.Manufacturer" "ITT Family Games"
-"Cartridge.Name" "Mountain Man (AKA Winterjagt) (ITT Family Games) (PAL) [!]"
+"Cartridge.ModelNo" "554-37 737"
+"Cartridge.Name" "Mountain Man (1983) (ITT Family Games) (PAL)"
+"Cartridge.Note" "AKA Ski Hunt"
 ""
 
 "Cartridge.MD5" "703f0f7af350b0fa29dfe5fbf45d0d75"
@@ -7185,7 +7274,8 @@
 
 "Cartridge.MD5" "6d8a04ee15951480cb7c466e5951eee0"
 "Cartridge.Manufacturer" "Zirok"
-"Cartridge.Name" "Canguru (Zirok) (Brazil) [!]"
+"Cartridge.Name" "Kanguru (1983) (Zirok)"
+"Cartridge.Note" "AKA Kangaroo"
 ""
 
 "Cartridge.MD5" "6d74ebaba914a5cfc868de9dd1a5c434"
@@ -7222,16 +7312,16 @@
 ""
 
 "Cartridge.MD5" "6efe876168e2d45d4719b6a61355e5fe"
-"Cartridge.Manufacturer" "Bitcorp"
+"Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG207"
-"Cartridge.Name" "Mission 3000 A.D. (Bitcorp) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Mission 3,000 A.D. (1983) (BitCorp) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "6de924c2297c8733524952448d54a33c"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Moon Patrol (CCE)"
+"Cartridge.ModelNo" "C-1006"
+"Cartridge.Name" "Moon Patrol (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "6e372f076fb9586aff416144f5cfe1cb"
@@ -7332,10 +7422,9 @@
 ""
 
 "Cartridge.MD5" "6fe67f525c39200a798985e419431805"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2689"
-"Cartridge.Name" "Kangaroo (1983) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Kevin Osborn"
+"Cartridge.ModelNo" "CX2689, CX2689P"
+"Cartridge.Name" "Kangaroo (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "6fd7c7057eeab273b29c7aafc7429a96"
@@ -7423,18 +7512,18 @@
 ""
 
 "Cartridge.MD5" "712924a2c7b692f6e7b009285c2169a7"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission (no title screen) (1982) (Starpath)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Meteoroids (1982) (Arcadia) (Prototype)"
+"Cartridge.Note" "Suicide Mission Beta"
+"Cartridge.Rarity" "Prototype"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "71464c54da46adae9447926fdbfc1abe"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, Bruce Pedersen - INTV"
 "Cartridge.ModelNo" "MT5663"
-"Cartridge.Name" "Lock 'N' Chase (1982) (Mattel) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Lock 'n' Chase (1982) (Mattel)"
 ""
 
 "Cartridge.MD5" "714e13c08508ee9a7785ceac908ae831"
@@ -7470,16 +7559,17 @@
 ""
 
 "Cartridge.MD5" "718ae62c70af4e5fd8e932fee216948a"
+"Cartridge.Manufacturer" "Data Age"
 "Cartridge.ModelNo" "112-006"
-"Cartridge.Name" "Journey - Escape (1982) (Data Age) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Journey Escape (1982) (Data Age)"
 "Display.Height" "230"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "7187118674ff3c0bb932e049d9dbb379"
 "Cartridge.Manufacturer" "Zirok"
-"Cartridge.Name" "Keystone Keypers (Zirok) (Brazil) [p1][!]"
+"Cartridge.Name" "Keystone Keypers (1983) (Zirok)"
+"Cartridge.Note" "AKA Keystone Kapers"
 ""
 
 "Cartridge.MD5" "7197b6cbde6ecd10376155e6b848e80d"
@@ -7607,7 +7697,10 @@
 
 "Cartridge.MD5" "73521c6b9fed6a243d9b7b161a0fb793"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Miniature Golf (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Miniaturer Golf (32 in 1) (1988) (Atari) (PAL)"
+"Cartridge.Note" "AKA Miniature Golf"
+"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "73e66e82ac22b305eb4d9578e866236e"
@@ -7622,10 +7715,7 @@
 ""
 
 "Cartridge.MD5" "73cb1f1666f3fd30b52b4f3d760c928f"
-"Cartridge.Manufacturer" "CommaVid"
-"Cartridge.ModelNo" "CM-005"
-"Cartridge.Name" "Mines of Minos (1982) (CommaVid) (PAL) [p1][!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Mines of Minos (Unknown) (PAL)"
 "Display.YStart" "24"
 "Display.Phosphor" "YES"
 ""
@@ -7746,10 +7836,9 @@
 ""
 
 "Cartridge.MD5" "75e276ba12dc4504659481c31345703a"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
 "Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Killer Satellites (1983) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "75b22fdf632d76e246433db1ebccd3c4"
@@ -8042,10 +8131,9 @@
 ""
 
 "Cartridge.MD5" "7a7f6ab9215a3a6b5940b8737f116359"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
 "Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites Preview (1982) (Starpath)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Killer Satellites (Preview) (1983) (Starpath)"
 ""
 
 "Cartridge.MD5" "7a64b5a6e90619c6aacf244cdd7502f8"
@@ -8089,7 +8177,10 @@
 ""
 
 "Cartridge.MD5" "7ad782952e5147b88b65a25cadcdf9e0"
-"Cartridge.Name" "Kwibble (198x)"
+"Cartridge.Manufacturer" "Imagic, Dave Johnson"
+"Cartridge.ModelNo" "03211"
+"Cartridge.Name" "Kwibble (1983) (Imagic) (Prototype)"
+"Cartridge.Note" "Quick Step! Beta"
 ""
 
 "Cartridge.MD5" "7ad257833190bc60277c1ca475057051"
@@ -8103,8 +8194,7 @@
 "Cartridge.MD5" "7af40c1485ce9f29b1a7b069a2eb04a7"
 "Cartridge.Manufacturer" "Amiga"
 "Cartridge.ModelNo" "3120"
-"Cartridge.Name" "Mogul Maniac (1983) (Amiga) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Mogul Maniac (1983) (Amiga)"
 ""
 
 "Cartridge.MD5" "7adbcf78399b19596671edbffc3d34aa"
@@ -8121,7 +8211,8 @@
 ""
 
 "Cartridge.MD5" "7b43c32e3d4ff5932f39afcb4c551627"
-"Cartridge.Name" "Kamikaze Saucers (198x) (Syncro)"
+"Cartridge.Manufacturer" "Syncro, Dan Wolf - Hozer Video Games"
+"Cartridge.Name" "Kamikaze Saucers (1983) (Syncro) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "38"
 "Display.Height" "220"
@@ -8164,9 +8255,9 @@
 ""
 
 "Cartridge.MD5" "7c00e7a205d3fda98eb20da7c9c50a55"
-"Cartridge.ModelNo" "AP 2004"
-"Cartridge.Name" "Lost Luggage (1981) (Apollo) [a1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Apollo, Ed Salvo"
+"Cartridge.ModelNo" "AP-2004"
+"Cartridge.Name" "Lost Luggage (1981) (Apollo) [a]"
 ""
 
 "Cartridge.MD5" "7bc4fd254ec8c0a25a13f02fd3f762ff"
@@ -8286,6 +8377,16 @@
 "Controller.Right" "PADDLES"
 ""
 
+"Cartridge.MD5" "7da9de8d62fcdd3a2c545b2e720c2a61"
+"Cartridge.Manufacturer" "CommaVid, John Bronstein"
+"Cartridge.ModelNo" "CM-001"
+"Cartridge.Name" "MagiCard (1981) (CommaVid) (4K)"
+"Cartridge.Note" "Uses the Keypad Controllers"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+"Display.YStart" "24"
+""
+
 "Cartridge.MD5" "7dbc8fa2e488e3f6b87fbe0f76c5b89f"
 "Cartridge.Manufacturer" "Ed Federmeyer"
 "Cartridge.Name" "Sound X (1996) (Ed Federmeyer)"
@@ -8315,10 +8416,9 @@
 ""
 
 "Cartridge.MD5" "7e51a58de2c0db7d33715f518893b0db"
-"Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "4L-2738"
-"Cartridge.Name" "Mountain King (1983) (CBS Electronics) [a1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "CBS Electronics, E.F. Dreyer, Ed Salvo"
+"Cartridge.ModelNo" "4L 2738 0000"
+"Cartridge.Name" "Mountain King (1983) (CBS Electronics) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -8424,9 +8524,9 @@
 ""
 
 "Cartridge.MD5" "7fcd1766de75c614a3ccc31b25dd5b7a"
-"Cartridge.Manufacturer" "Playaround"
-"Cartridge.Name" "Knight on the Town (1982) (Playaround)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "PlayAround"
+"Cartridge.ModelNo" "203"
+"Cartridge.Name" "Knight on the Town (1982) (PlayAround)"
 "Display.Phosphor" "YES"
 ""
 
@@ -8522,7 +8622,9 @@
 
 "Cartridge.MD5" "80e1410ec98089e0733cc09e584dba4b"
 "Cartridge.Manufacturer" "Dynamics"
-"Cartridge.Name" "Jumping Jack (Dynamics) (PAL) [!]"
+"Cartridge.ModelNo" "DY-293005"
+"Cartridge.Name" "Jumping Jack (1983) (Dynamics) (PAL)"
+"Cartridge.Note" "AKA Bobby Is Going Home"
 "Display.YStart" "46"
 ""
 
@@ -8679,10 +8781,9 @@
 ""
 
 "Cartridge.MD5" "835759ff95c2cdc2324d7c1e7c5fa237"
-"Cartridge.Manufacturer" "20th Century Fox"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Frank Cohen, Douglas 'Dallas North' Neubauer"
 "Cartridge.ModelNo" "11011"
-"Cartridge.Name" "M.A.S.H. (1982) (20th Century Fox)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "M.A.S.H (1983) (20th Century Fox)"
 ""
 
 "Cartridge.MD5" "83f05ececae8be59ba1e51135f4bdcbf"
@@ -8826,7 +8927,10 @@
 ""
 
 "Cartridge.MD5" "855a42078b14714bcfd490d2cf57e68d"
-"Cartridge.Name" "Miss Piggy's Wedding (Prototype) [b1]"
+"Cartridge.Manufacturer" "Atari, Suki Lee"
+"Cartridge.ModelNo" "CX26113"
+"Cartridge.Name" "Miss Piggy's Wedding (1983) (Atari) (Prototype) [a]"
+"Cartridge.Rarity" "Prototype"
 "Display.YStart" "24"
 ""
 
@@ -8858,7 +8962,8 @@
 
 "Cartridge.MD5" "86128001e69ab049937f265911ce7e8a"
 "Cartridge.Manufacturer" "Apollo"
-"Cartridge.Name" "Lochjaw (1982) (Apollo)"
+"Cartridge.ModelNo" "AP-2005"
+"Cartridge.Name" "Lochjaw (1981) (Apollo)"
 ""
 
 "Cartridge.MD5" "85e48d68c8d802e3ba9d494a47d6e016"
@@ -8880,7 +8985,9 @@
 ""
 
 "Cartridge.MD5" "8644352b806985efde499ae6fc7b0fec"
-"Cartridge.Name" "Mr. Postman (CCE) [!]"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-801"
+"Cartridge.Name" "Mr. Postman (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "8654d7f0fb351960016e06646f639b02"
@@ -8967,9 +9074,9 @@
 ""
 
 "Cartridge.MD5" "87e79cd41ce136fd4f72cc6e2c161bee"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
 "Cartridge.ModelNo" "CX2675"
 "Cartridge.Name" "Ms. Pac-Man (1982) (Atari)"
-"Cartridge.Rarity" "Common"
 ""
 
 "Cartridge.MD5" "87bea777a34278d29b3b6029833c5422"
@@ -9021,9 +9128,8 @@
 
 "Cartridge.MD5" "88a6c9c88cb329ee5fa7d168bd6c7c63"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.ModelNo" "CX2688"
-"Cartridge.Name" "Jungle Hunt (1982) (CCE)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.ModelNo" "C-1007"
+"Cartridge.Name" "Jungle Hunt (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "88d300a38bdd7cab9edad271c18cd02b"
@@ -9113,8 +9219,9 @@
 ""
 
 "Cartridge.MD5" "8a8e401369e2b63a13e18a4d685387c6"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Laser Blast (1982) (Activision) (PAL) [!]"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-008, PAG-008, EAG-008-04I - 711 008-720"
+"Cartridge.Name" "Laser Blast (1981) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "8a6c84f481acf42abcb78ba5064ad755"
@@ -9191,6 +9298,12 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
+"Cartridge.MD5" "8b8152d6081f31365406cb716bd95567"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.ModelNo" "CX2626, CX2626P"
+"Cartridge.Name" "Miniature Golf (1979) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "8c103a79b007a2fd5af602334937b4e1"
 "Cartridge.Manufacturer" "ITT Family Games / Thomas Jentzsch"
 "Cartridge.Name" "Laser Base (AKA World End) (ITT Family Games) (NTSC by Thomas Jentzsch)"
@@ -9241,7 +9354,8 @@
 ""
 
 "Cartridge.MD5" "94e3fbc19107a169909e274187247a9d"
-"Cartridge.Name" "2-in-1 - Freeway and Tennis [p1]"
+"Cartridge.ModelNo" "2402-044-01"
+"Cartridge.Name" "Freeway (Unknown)"
 ""
 
 "Cartridge.MD5" "8d00a38f4c8f8800f1c237215ac243fc"
@@ -9307,6 +9421,10 @@
 "Controller.Right" "NONE"
 ""
 
+"Cartridge.MD5" "8db152458abaef3cfa7a4e420ddbda59"
+"Cartridge.Name" "Keystone Kapers (Unknown)"
+""
+
 "Cartridge.MD5" "8f53a3b925f0fd961d9b8c4d46ee6755"
 "Cartridge.Manufacturer" "Arctic"
 "Cartridge.ModelNo" "SM8002"
@@ -9335,9 +9453,9 @@
 ""
 
 "Cartridge.MD5" "8e4cd60d93fcde8065c1a2b972a26377"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.Name" "Laser Gates (1983) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Imagic, Dan Oliver"
+"Cartridge.ModelNo" "13208 - EIX-007-04I"
+"Cartridge.Name" "Laser Gates (1983) (Imagic) (PAL)"
 ""
 
 "Cartridge.MD5" "8e42674972d6805068fc653e014370fd"
@@ -9370,8 +9488,7 @@
 ""
 
 "Cartridge.MD5" "8f33bce5ba1053dcf4cea9c1c69981e4"
-"Cartridge.Manufacturer" "Tigervision"
-"Cartridge.Name" "Jawbreaker (1982) (Tigervision) (PAL) [p2][!]"
+"Cartridge.Name" "Jawbreaker (Unknown) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "93420cc4cb1af1f2175c63e52ec18332"
@@ -9522,6 +9639,12 @@
 "Cartridge.Name" "Sub Rescue (Real Title Unknown)"
 ""
 
+"Cartridge.MD5" "91925abce3a29e33b6a8b81482f4f5af"
+"Cartridge.Manufacturer" "Activision, Garry Kitchen - Ariola"
+"Cartridge.ModelNo" "EAX-025, EAX-025-04I - 711 025-725"
+"Cartridge.Name" "Keystone Kapers (1983) (Activision) (PAL) (8K)"
+""
+
 "Cartridge.MD5" "9222b25a0875022b412e8da37e7f6887"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "106"
@@ -9564,6 +9687,12 @@
 "Cartridge.Note" "AKA Asteroid Fire"
 ""
 
+"Cartridge.MD5" "925dda3c61b81eeb7bd8467b6e99dedc"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
+"Cartridge.Name" "Labyrinth (1982) (Arcadia)"
+"Cartridge.Note" "Escape from the Mindmaster Beta"
+""
+
 "Cartridge.MD5" "929e8a84ed50601d9af8c49b0425c7ea"
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG205"
@@ -9572,10 +9701,9 @@
 ""
 
 "Cartridge.MD5" "931b91a8ea2d39fe4dca1a23832b591a"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-008"
-"Cartridge.Name" "Laser Blast (1981) (Activision) [a1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Laser Blast (1981) (Activision)"
 ""
 
 "Cartridge.MD5" "92a1a605b7ad56d863a56373a866761b"
@@ -9627,15 +9755,16 @@
 ""
 
 "Cartridge.MD5" "9364ad51c321e0f15c96a8c0aff47ceb"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2638 / 4975166"
-"Cartridge.Name" "Missile Command (1981) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Rob Fulop"
+"Cartridge.ModelNo" "CX2638"
+"Cartridge.Name" "Missile Command (1981) (Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "936f555b4b1a2cd061b659ff63f4f5f2"
-"Cartridge.Name" "My Golf (1990) (HES) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "HES, David Lubar"
+"Cartridge.ModelNo" "535"
+"Cartridge.Name" "My Golf (1990) (HES) (PAL) [a1]"
 ""
 
 "Cartridge.MD5" "936ef1d6f8a57b9ff575dc195ee36b80"
@@ -9693,7 +9822,7 @@
 
 "Cartridge.MD5" "9469d18238345d87768e8965f9f4a6b2"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Ms. Pac-Man (1982) (CCE)"
+"Cartridge.Name" "Ms. Pac-Man (CCE)"
 ""
 
 "Cartridge.MD5" "9436b7ad131b5a1f7753ce4309ba3dee"
@@ -9774,9 +9903,9 @@
 ""
 
 "Cartridge.MD5" "95a89d1bf767d7cc9d0d5093d579ba61"
-"Cartridge.Manufacturer" "Playaround"
-"Cartridge.Name" "Lady in Wading (1982) (Playaround)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "PlayAround"
+"Cartridge.ModelNo" "204"
+"Cartridge.Name" "Lady in Wading (1982) (PlayAround)"
 "Display.Phosphor" "YES"
 ""
 
@@ -9832,8 +9961,7 @@
 ""
 
 "Cartridge.MD5" "97327d6962f8c64e6f926f79cd01c6b9"
-"Cartridge.Manufacturer" "Tigervision"
-"Cartridge.Name" "Jawbreaker (1982) (Tigervision) (PAL) [p1][!]"
+"Cartridge.Name" "Jawbreaker (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "96eccc2277043508a6c481ea432d7dd9"
@@ -9843,6 +9971,13 @@
 
 "Cartridge.MD5" "96bcb3d97ce4ff7586326d183ac338a2"
 "Cartridge.Name" "Revenge of the Apes (Planet of the Apes Hack) [h2]"
+""
+
+"Cartridge.MD5" "96e798995af6ed9d8601166d4350f276"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, David Ross"
+"Cartridge.ModelNo" "11029"
+"Cartridge.Name" "Meltdown (1983) (20th Century Fox) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "96f806fc62005205d851e758d050dfca"
@@ -9999,7 +10134,9 @@
 ""
 
 "Cartridge.MD5" "9945a22f60bbaf6d04a8d73b3cf3db75"
-"Cartridge.Name" "Kung Fu Master (1984) (Activision) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Activision, Dan Kitchen"
+"Cartridge.ModelNo" "EAX-039-04B, EAX-039-04I"
+"Cartridge.Name" "Kung-Fu Master (1987) (Activision) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "9947f1ebabb56fd075a96c6d37351efa"
@@ -10036,8 +10173,7 @@
 "Cartridge.MD5" "9a4274409216ff09ecde799f2a56ac73"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-801"
-"Cartridge.Name" "Mr. Postman (CCE) [b1]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Mr. Postman (1983) (CCE) [a]"
 ""
 
 "Cartridge.MD5" "9aeb5206c5bf974892a9cc59f1478db3"
@@ -10076,10 +10212,9 @@
 ""
 
 "Cartridge.MD5" "9c27ef3bd01c611cdb80182a59463a82"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
 "Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites (1982) (Starpath)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Killer Satellites (1983) (Starpath)"
 ""
 
 "Cartridge.MD5" "9d4bc7c6fe9a7c8c4aa24a237c340adb"
@@ -10250,10 +10385,9 @@
 ""
 
 "Cartridge.MD5" "9ec1b259a1bcffa63042a3c2b3b90f0a"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-008"
-"Cartridge.Name" "Laser Blast (1981) (Activision) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Laser Blast (1981) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "9f2d58dce1b81c6ba201ed103507c025"
@@ -10328,10 +10462,9 @@
 ""
 
 "Cartridge.MD5" "9fc2d1627dcdd8925f4c042e38eb0bc9"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2688"
-"Cartridge.Name" "Jungle Hunt (1982) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
+"Cartridge.ModelNo" "CX2688, CX2688P"
+"Cartridge.Name" "Jungle Hunt (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "9f93734c68f6479eb022cab40814142e"
@@ -10432,6 +10565,12 @@
 "Controller.Right" "PADDLES"
 ""
 
+"Cartridge.MD5" "a1770ef47146ab7b12e2c4beccd68806"
+"Cartridge.Manufacturer" "Digitel"
+"Cartridge.Name" "Kaystone Kapers (1983) (Digitel)"
+"Cartridge.Note" "AKA Keystone Kapers"
+""
+
 "Cartridge.MD5" "a19215975aeca1d98328173a124c47f7"
 "Cartridge.Name" "Death Derby (12-01-2003) (TJ)"
 ""
@@ -10458,9 +10597,9 @@
 ""
 
 "Cartridge.MD5" "a20b7abbcdf90fbc29ac0fafa195bd12"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Motocross (Starsoft) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "719.383 2 - 649635 - 781393"
+"Cartridge.Name" "Motocross (1983) (Quelle) (PAL)"
 ""
 
 "Cartridge.MD5" "a1f9159121142d42e63e6fb807d337aa"
@@ -10569,10 +10708,9 @@
 ""
 
 "Cartridge.MD5" "a35d47898b2b16ec641d1dfa8a45c2b7"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-017"
-"Cartridge.Name" "Megamania (1982) (Activision) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright"
+"Cartridge.ModelNo" "AX-017, AX-017-04"
+"Cartridge.Name" "MegaMania (1982) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "a3c1c70024d7aabb41381adbfb6d3b25"
@@ -10632,8 +10770,9 @@
 ""
 
 "Cartridge.MD5" "a406d2f6d84e61d842f4cb13b2b1cfa7"
-"Cartridge.Manufacturer" "Tigervision"
-"Cartridge.Name" "Jawbreaker (1982) (Tigervision) (PAL) [!]"
+"Cartridge.Manufacturer" "Tigervision, John Harris"
+"Cartridge.ModelNo" "7-002"
+"Cartridge.Name" "Jawbreaker (1982) (Tigervision) (PAL)"
 ""
 
 "Cartridge.MD5" "a412c8577b2d57b09185ae51739ac54f"
@@ -10795,10 +10934,9 @@
 ""
 
 "Cartridge.MD5" "a7673809068062106db8e9d10b56a5b3"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26118"
-"Cartridge.Name" "Millipede (1984) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Andrew Fuchs, Dave Staugas, Robert Vieira"
+"Cartridge.ModelNo" "CX26118, CX26118P"
+"Cartridge.Name" "Millipede (1984) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
@@ -10970,10 +11108,9 @@
 ""
 
 "Cartridge.MD5" "aa7bb54d2c189a31bb1fa20099e42859"
-"Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "2656"
-"Cartridge.Name" "Mr. Do! (1983) (CBS Electronics) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "CBS Electronics, Ed English"
+"Cartridge.ModelNo" "4L4478"
+"Cartridge.Name" "Mr. Do! (1983) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -10996,8 +11133,9 @@
 ""
 
 "Cartridge.MD5" "ab10f2974dee73dab4579f0cab35fca6"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Lilly Adventure (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.ModelNo" "VCS83117"
+"Cartridge.Name" "Lilly Adventure (1983) (Home Vision) (PAL)"
 ""
 
 "Cartridge.MD5" "aaea37b65db9e492798f0105a6915e96"
@@ -11235,7 +11373,6 @@
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-210"
 "Cartridge.Name" "Master Builder (1983) (Spectravideo)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "ae18c11e4d7ed2437f0bf5d167c0e96c"
@@ -11297,11 +11434,10 @@
 ""
 
 "Cartridge.MD5" "af6ab88d3d7c7417db2b3b3c70b0da0a"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-010"
-"Cartridge.Name" "Kaboom! (1981) (Activision) [o1]"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane"
+"Cartridge.ModelNo" "AG-010, AG-010-04"
+"Cartridge.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 ""
 
@@ -11355,9 +11491,8 @@
 
 "Cartridge.MD5" "b00e8217633e870bf39d948662a52aac"
 "Cartridge.Manufacturer" "Konami"
-"Cartridge.ModelNo" "011"
-"Cartridge.Name" "Marine Wars (1983) (Konami) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.ModelNo" "RC 102-X 02"
+"Cartridge.Name" "Marine Wars (1983) (Konami)"
 ""
 
 "Cartridge.MD5" "b00088418fc891f3faa3d4ddde6ace94"
@@ -11365,7 +11500,9 @@
 ""
 
 "Cartridge.MD5" "b06050f686c6b857d0df1b79fea47bb4"
-"Cartridge.Name" "Moonsweeper (1983) (Activision-PS2) [!]"
+"Cartridge.Manufacturer" "Activision"
+"Cartridge.ModelNo" "AIZ-001"
+"Cartridge.Name" "Moonsweeper (1988) (Activision)"
 "Display.Phosphor" "YES"
 ""
 
@@ -11381,6 +11518,14 @@
 "Cartridge.ModelNo" "002-01"
 "Cartridge.Name" "Sub Scan (1982) (Sega) (PAL) [p1][!]"
 "Cartridge.Rarity" "Uncommon"
+""
+
+"Cartridge.MD5" "b09b79c9628878be051e89f7f1e77378"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-010, PAG-010 - 711 010-720"
+"Cartridge.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
+"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "b227175699e372b8fe10ce243ad6dda5"
@@ -11450,7 +11595,9 @@
 
 "Cartridge.MD5" "b1d1e083dc9e7d9a5dc1627869d2ade7"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Mario Bros (1983) (CCE)"
+"Cartridge.ModelNo" "C-1004"
+"Cartridge.Name" "Mario's Bros. (1983) (CCE)"
+"Cartridge.Note" "AKA Mario Bros."
 ""
 
 "Cartridge.MD5" "b21ee4639476eaec8204f00c712b7497"
@@ -11461,10 +11608,9 @@
 ""
 
 "Cartridge.MD5" "b1e2d5dc1353af6d56cd2fe7cfe75254"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - Axlon, Steve DeFrisco"
 "Cartridge.ModelNo" "CX26171"
-"Cartridge.Name" "Motorodeo (1990) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Unbelievably Rare"
+"Cartridge.Name" "MotoRodeo (1990) (Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -11616,9 +11762,9 @@
 ""
 
 "Cartridge.MD5" "b4e2fd27d3180f0f4eb1065afc0d7fc9"
-"Cartridge.ModelNo" "50010"
+"Cartridge.Manufacturer" "Avalon Hill, Bill Heineman, William O. Sheppard"
+"Cartridge.ModelNo" "5002002"
 "Cartridge.Name" "London Blitz (1983) (Avalon Hill)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "b4a4c87840613f102acb5b3a647d0a67"
@@ -11657,15 +11803,15 @@
 ""
 
 "Cartridge.MD5" "b65d4a38d6047735824ee99684f3515e"
-"Cartridge.Name" "Megaboy (Brazil) (PAL) [!]"
+"Cartridge.Manufacturer" "Dynacom"
+"Cartridge.Name" "MegaBoy (Dynacom)"
 "Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "b5cb9cf6e668ea3f4cc2be00ea70ec3c"
-"Cartridge.Manufacturer" "CommaVid"
-"Cartridge.ModelNo" "CM-005"
-"Cartridge.Name" "Mines of Minos (1982) (CommaVid) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "CommaVid, Irwin Gaines - Ariola"
+"Cartridge.ModelNo" "CM-005 - 712 005-720"
+"Cartridge.Name" "Mines of Minos (1982) (CommaVid) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -11744,8 +11890,10 @@
 ""
 
 "Cartridge.MD5" "b7345220a0c587f3b0c47af33ebe533c"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Landungskommando (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "176.433 1"
+"Cartridge.Name" "Landungskommando (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Strategy X"
 ""
 
 "Cartridge.MD5" "b731d35e4ac6b3b47eba5dd0991f452f"
@@ -11766,7 +11914,9 @@
 ""
 
 "Cartridge.MD5" "b79fe32320388a197ac3a0b932cc2189"
-"Cartridge.Name" "Moonsweeper (1983) (Imagic) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Imagic, Bob Smith"
+"Cartridge.ModelNo" "13207, EIZ-001-04I"
+"Cartridge.Name" "Moonsweeper (1983) (Imagic) (PAL) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -11778,10 +11928,9 @@
 ""
 
 "Cartridge.MD5" "b7a7e34e304e4b7bc565ec01ba33ea27"
-"Cartridge.Manufacturer" "Parker Bros"
-"Cartridge.ModelNo" "2695 / PB5820"
-"Cartridge.Name" "Mr. Do!'s Castle (1983) (Parker Bros)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Parker Brothers"
+"Cartridge.ModelNo" "PB5820"
+"Cartridge.Name" "Mr. Do!'s Castle (1984) (Parker Bros)"
 "Display.Phosphor" "YES"
 ""
 
@@ -11834,6 +11983,13 @@
 "Display.YStart" "30"
 ""
 
+"Cartridge.MD5" "b86552198f52cfce721bafb496363099"
+"Cartridge.Manufacturer" "Apollo"
+"Cartridge.ModelNo" "AP-2007"
+"Cartridge.Name" "Kyphus (1982) (Apollo) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "b897f9e3f939b9f21566d56db812a84e"
 "Cartridge.Manufacturer" "Atari, Jim Huether"
 "Cartridge.ModelNo" "CX26163P"
@@ -11882,8 +12038,8 @@
 ""
 
 "Cartridge.MD5" "b9d1e3be30b131324482345959aed5e5"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Kabobber (Activision) (Prototype) [!]"
+"Cartridge.Manufacturer" "Activision, Rex Bradford"
+"Cartridge.Name" "Kabobber (1983) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -12093,10 +12249,9 @@
 ""
 
 "Cartridge.MD5" "bdbaeff1f7132358ea64c7be9e46c1ac"
-"Cartridge.Manufacturer" "20th Century Fox"
-"Cartridge.ModelNo" "11005"
-"Cartridge.Name" "Mega Force (1982) (20th Century Fox) (PAL) [a1]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer"
+"Cartridge.ModelNo" "11105"
+"Cartridge.Name" "Mega Force (1982) (20th Century Fox) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "be060a704803446c02e6f039ab12eb91"
@@ -12146,17 +12301,15 @@
 ""
 
 "Cartridge.MD5" "be929419902e21bd7830a7a7d746195d"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-025"
+"Cartridge.Manufacturer" "Activision, Garry Kitchen"
+"Cartridge.ModelNo" "AX-025, AX-025-04"
 "Cartridge.Name" "Keystone Kapers (1983) (Activision)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "bedfbde71fb606601f936b5b057f26f7"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AX-025"
-"Cartridge.Name" "Keystone Kapers (1983) (Activision) (PAL) [o1]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Activision, Garry Kitchen - Ariola"
+"Cartridge.ModelNo" "EAX-025, EAX-025-04I - 711 025-725"
+"Cartridge.Name" "Keystone Kapers (1983) (Activision) (PAL) (16K)"
 ""
 
 "Cartridge.MD5" "becd908f9d7bb361982c3dc02d6475c6"
@@ -12533,14 +12686,15 @@
 ""
 
 "Cartridge.MD5" "c47244f5557ae12c61e8e01c140e2173"
-"Cartridge.Name" "Jungle Hunt (1982) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, John Allred"
+"Cartridge.ModelNo" "CX2688, CX2688P"
+"Cartridge.Name" "Jungle Hunt (1983) (Atari) (PAL) [a1]"
 ""
 
 "Cartridge.MD5" "c49fe437800ad7fd9302f3a90a38fb7d"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2697"
-"Cartridge.Name" "Mario Bros (1983) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
+"Cartridge.ModelNo" "CX2697, CX2697P"
+"Cartridge.Name" "Mario Bros. (1983) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "c482f8eebd45e0b8d479d9b71dd72bb8"
@@ -12602,6 +12756,12 @@
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
+""
+
+"Cartridge.MD5" "c517144e3d3ac5c06f2f682ebf212dd7"
+"Cartridge.Manufacturer" "Tigervision, Bill Hogue"
+"Cartridge.ModelNo" "7-008"
+"Cartridge.Name" "Miner 2049er (1982) (Tigervision) (PAL)"
 ""
 
 "Cartridge.MD5" "c5301f549d0722049bb0add6b10d1e09"
@@ -12934,10 +13094,9 @@
 ""
 
 "Cartridge.MD5" "cb24210dc86d92df97b38cf2a51782da"
-"Cartridge.Manufacturer" "Ariola"
+"Cartridge.Manufacturer" "Video Gems"
 "Cartridge.ModelNo" "VG-01"
-"Cartridge.Name" "Missile Control (AKA Raketen-Angriff) (Ariola) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Missile Control (1983) (Video Gems) (PAL)"
 ""
 
 "Cartridge.MD5" "cb0b5b8458a13a074e1fe82d3c4e8f3c"
@@ -13053,6 +13212,11 @@
 "Cartridge.Rarity" "Homebrew"
 ""
 
+"Cartridge.MD5" "cc03c68b8348b62331964d7a3dbec381"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Marauder (Jone Yuan)"
+""
+
 "Cartridge.MD5" "cc1939e4769d0c157ace326efcfdcf80"
 "Cartridge.Manufacturer" "Starpath"
 "Cartridge.ModelNo" "AR-4200"
@@ -13065,9 +13229,9 @@
 ""
 
 "Cartridge.MD5" "ccb5fa954fb76f09caae9a8c66462190"
+"Cartridge.Manufacturer" "Answer Software Corporation"
 "Cartridge.ModelNo" "ASC1001"
 "Cartridge.Name" "Malagai (1983) (Answer Software)"
-"Cartridge.Rarity" "Unbelievably Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -13129,7 +13293,9 @@
 ""
 
 "Cartridge.MD5" "cd4ded1ede63c4dd09f3dd01bda7458c"
-"Cartridge.Name" "Laser Gate (Future Video Games) (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Future Video Games"
+"Cartridge.Name" "Laser Gate (Future Video Games) (PAL)"
+"Cartridge.Note" "AKA Laser Gates"
 "Display.YStart" "14"
 ""
 
@@ -13180,9 +13346,10 @@
 ""
 
 "Cartridge.MD5" "cddabfd68363a76cd30bee4e8094c646"
-"Cartridge.Manufacturer" "CommaVid"
-"Cartridge.Name" "Magicard (CommaVid)"
-"Cartridge.Note" "Uses Keypad Controllers"
+"Cartridge.Manufacturer" "CommaVid, John Bronstein"
+"Cartridge.ModelNo" "CM-001"
+"Cartridge.Name" "MagiCard (1981) (CommaVid)"
+"Cartridge.Note" "Uses the Keypad Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
 "Display.YStart" "24"
@@ -13224,9 +13391,8 @@
 ""
 
 "Cartridge.MD5" "cedbd67d1ff321c996051eec843f8716"
-"Cartridge.Manufacturer" "Froggo"
-"Cartridge.Name" "Karate (1982) (Froggo)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Ultravision"
+"Cartridge.Name" "Karate (1982) (Ultravision)"
 "Display.YStart" "25"
 ""
 
@@ -13285,7 +13451,9 @@
 
 "Cartridge.MD5" "cf63ffac9da89ef09c6c973083061a47"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "M.A.S.H. (CCE)"
+"Cartridge.ModelNo" "C-859"
+"Cartridge.Name" "MASH (1983) (CCE)"
+"Cartridge.Note" "AKA M.A.S.H"
 ""
 
 "Cartridge.MD5" "cf507910d6e74568a68ac949537bccf9"
@@ -13298,6 +13466,7 @@
 
 "Cartridge.MD5" "cf9069f92a43f719974ee712c50cd932"
 "Cartridge.Manufacturer" "Video Gems"
+"Cartridge.ModelNo" "VG-04"
 "Cartridge.Name" "Mission Survive (1983) (Video Gems) (PAL)"
 "Console.RightDifficulty" "A"
 "Display.Phosphor" "YES"
@@ -13420,6 +13589,12 @@
 "Cartridge.ModelNo" "11002"
 "Cartridge.Name" "Beany Bopper (1982) (20th Century Fox)"
 "Cartridge.Rarity" "Rare"
+""
+
+"Cartridge.MD5" "d0b26e908370683ad99bc6b52137a784"
+"Cartridge.Manufacturer" "Apollo, Ed Salvo"
+"Cartridge.ModelNo" "AP-2004"
+"Cartridge.Name" "Lost Luggage (1981) (Apollo) (PAL)"
 ""
 
 "Cartridge.MD5" "d0b9f705aa5f61f47a748a66009ae2d2"
@@ -13568,8 +13743,7 @@
 ""
 
 "Cartridge.MD5" "d339b95f273f8c3550dc4daa67a4aa94"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Laser Blast (1982) (Activision) (PAL) [p1][o1][!]"
+"Cartridge.Name" "Laser Blast (Unknown) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "d326db524d93fa2897ab69c42d6fb698"
@@ -13648,13 +13822,21 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "d45bf71871b196022829aa3b96bfcfd4"
+"Cartridge.Manufacturer" "Activision, Steve Cartwright"
+"Cartridge.ModelNo" "AX-017, AX-017-04"
+"Cartridge.Name" "MegaMania (1982) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "d47387658ed450db77c3f189b969cc00"
 "Cartridge.Manufacturer" "Playaround"
 "Cartridge.Name" "Westward Ho (Playground) (PAL)"
 ""
 
 "Cartridge.MD5" "d4942f4b55313ff269488527d84ce35c"
-"Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cartridge.ModelNo" "CX2675, CX2675P"
+"Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "d483f65468d9a265661917bae1a54f3e"
@@ -13689,7 +13871,8 @@
 
 "Cartridge.MD5" "d5618464dbdc2981f6aa8b955828eeb4"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Megamania (CCE)"
+"Cartridge.ModelNo" "C-829"
+"Cartridge.Name" "Megamania (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "d563ba38151b8204c9f5c9f58e781455"
@@ -13721,10 +13904,9 @@
 ""
 
 "Cartridge.MD5" "d5e27051512c1e7445a9bf91501bda09"
-"Cartridge.Manufacturer" "Activision"
+"Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-008"
-"Cartridge.Name" "Laser Blast (1981) (Activision) [o1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Laser Blast (1981) (Activision) (4K)"
 ""
 
 "Cartridge.MD5" "d5aa7472e7f2cc17e893a1a36f8dadf0"
@@ -13875,8 +14057,7 @@
 "Cartridge.MD5" "d8295eff5dcc43360afa87221ea6021f"
 "Cartridge.Manufacturer" "Spectravideo"
 "Cartridge.ModelNo" "SA-212"
-"Cartridge.Name" "Mangia' (1983) (Spectravideo) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Mangia' (1983) (Spectravideo) (PAL)"
 ""
 
 "Cartridge.MD5" "d82675ce67caf16afe5ed6b6fac8aa37"
@@ -13966,10 +14147,9 @@
 ""
 
 "Cartridge.MD5" "da732c57697ad7d7af414998fa527e75"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Glenn Axworthy"
 "Cartridge.ModelNo" "CX26129"
-"Cartridge.Name" "Midnight Magic (1984) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Midnight Magic (1984) (Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -14033,10 +14213,9 @@
 ""
 
 "Cartridge.MD5" "daeb54957875c50198a7e616f9cc8144"
-"Cartridge.Manufacturer" "20th Century Fox"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer"
 "Cartridge.ModelNo" "11005"
 "Cartridge.Name" "Mega Force (1982) (20th Century Fox)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "e2846af3e4d172b251ab77cbdd01761e"
@@ -14050,9 +14229,9 @@
 ""
 
 "Cartridge.MD5" "df62a658496ac98a3aa4a6ee5719c251"
-"Cartridge.ModelNo" "CX2626 / 99829 / 75116"
-"Cartridge.Name" "Arcade Golf (1979) (Sears)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari - Sears"
+"Cartridge.ModelNo" "CX2626 - 6-99829, 49-75116"
+"Cartridge.Name" "Miniature Golf (1979) (Atari)"
 ""
 
 "Cartridge.MD5" "de78b3a064d374390ac0710f95edde92"
@@ -14090,7 +14269,9 @@
 ""
 
 "Cartridge.MD5" "db4eb44bc5d652d9192451383d3249fc"
-"Cartridge.Name" "Mountain King (1983) (CBS Electronics) [!]"
+"Cartridge.Manufacturer" "CBS Electronics, E.F. Dreyer, Ed Salvo"
+"Cartridge.ModelNo" "4L 2738 0000"
+"Cartridge.Name" "Mountain King (1983) (CBS Electronics)"
 "Display.Phosphor" "YES"
 ""
 
@@ -14201,11 +14382,13 @@
 ""
 
 "Cartridge.MD5" "dd08e18cfee87a0e7fc19a684b36e124"
-"Cartridge.Name" "Kangaroo (1983) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari - GCC, Kevin Osborn"
+"Cartridge.ModelNo" "CX2689, CX2689P"
+"Cartridge.Name" "Kangaroo (1983) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "dd17711a30ad60109c8beace0d4a76e8"
-"Cartridge.Name" "Karate (1982) (PAL) [p1][!]"
+"Cartridge.Name" "Karate (Unknown) (PAL)"
 "Display.YStart" "20"
 ""
 
@@ -14266,9 +14449,9 @@
 ""
 
 "Cartridge.MD5" "de0173ed6be9de6fd049803811e5f1a8"
-"Cartridge.Manufacturer" "Xonox"
-"Cartridge.Name" "Motocross Racer (1983) (Xonox)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Xonox, Anthony R. Henderson"
+"Cartridge.ModelNo" "99008, 6240"
+"Cartridge.Name" "Motocross Racer (1984) (Xonox)"
 ""
 
 "Cartridge.MD5" "de07e9cb43ad8d06a35f6506e22c62e9"
@@ -14409,7 +14592,9 @@
 ""
 
 "Cartridge.MD5" "dfad86dd85a11c80259f3ddb6151f48f"
-"Cartridge.Name" "My Golf (1990)"
+"Cartridge.Manufacturer" "HES, David Lubar"
+"Cartridge.ModelNo" "535"
+"Cartridge.Name" "My Golf (1990) (HES) (PAL) [a2]"
 ""
 
 "Cartridge.MD5" "dfafa3fa58f5cc3f0342cca475df6095"
@@ -14473,8 +14658,8 @@
 "Cartridge.MD5" "e13818a5c0cb2f84dd84368070e9f099"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-839"
-"Cartridge.Name" "Misterious Thief, A (CCE)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Misterious Thief (1983) (CCE)"
+"Cartridge.Note" "AKA Criminal Persuit"
 "Display.Height" "216"
 "Display.Phosphor" "YES"
 ""
@@ -14513,11 +14698,10 @@
 ""
 
 "Cartridge.MD5" "e14dc36b24fe22c04fa076e298f2e15f"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-010"
-"Cartridge.Name" "Kaboom! (1981) (Activision) [o2]"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane"
+"Cartridge.ModelNo" "AG-010, AG-010-04"
+"Cartridge.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 ""
 
@@ -14564,9 +14748,9 @@
 ""
 
 "Cartridge.MD5" "e24d7d879281ffec0641e9c3f52e505a"
-"Cartridge.Manufacturer" "Parker Bros"
-"Cartridge.ModelNo" "PB5590"
-"Cartridge.Name" "Lord of The Rings (1983) (Parker Bros) (Prototype)"
+"Cartridge.Manufacturer" "Parker Brothers, Mark Lesser"
+"Cartridge.ModelNo" "PB5950"
+"Cartridge.Name" "Lord of the Rings (1983) (Parker Bros) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "26"
 ""
@@ -14583,9 +14767,18 @@
 "Cartridge.Name" "Dolphin (1983) (Activision) (8K)"
 ""
 
+"Cartridge.MD5" "e21ee3541ebd2c23e817ffb449939c37"
+"Cartridge.Manufacturer" "Tigervision, Karl T. Olinger"
+"Cartridge.ModelNo" "7-001"
+"Cartridge.Name" "King Kong (1982) (Tigervision)"
+"Display.YStart" "28"
+""
+
 "Cartridge.MD5" "e28113d10c0c14cc3b5f430b0d142fcb"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Keystone Kapers (CCE) [a1]"
+"Cartridge.ModelNo" "C-816"
+"Cartridge.Name" "Keystone Kappers (1983) (CCE) [a]"
+"Cartridge.Note" "AKA Keystone Kapers"
 ""
 
 "Cartridge.MD5" "e275cbe7d4e11e62c3bfcfb38fca3d49"
@@ -14666,7 +14859,7 @@
 
 "Cartridge.MD5" "e37c8055d70979af354251ebe9f1b7dd"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "Mega Funpak - Pac-Man, Planet Patrol, Skeet Shoot, Battles of Gorf (HES) (PAL) [!]"
+"Cartridge.Name" "Mega Funpak - Gorf, P. Patrol, Pacman, Skeet Shoot (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "e377c3af4f54a51b85efe37d4b7029e6"
@@ -14746,6 +14939,13 @@
 "Cartridge.Name" "Sorcerer's Apprentice (1983) (Atari) (PAL) [a1][!]"
 ""
 
+"Cartridge.MD5" "e49ac0ec879a0d7820bc2598fc2cfcd4"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Kaboom! (CCE) (4K)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
+"Controller.Left" "PADDLES"
+""
+
 "Cartridge.MD5" "e4b12deaafd1dbf5ac31afe4b8e9c233"
 "Cartridge.Name" "Lord of the Rings - Fellowship of the Ring by Adam Thornton (Dark Mage Hack) (PD) [a1]"
 "Display.Phosphor" "YES"
@@ -14815,7 +15015,8 @@
 ""
 
 "Cartridge.MD5" "e558be88eef569f33716e8e330d2f5bc"
-"Cartridge.Name" "Keystone Kapers (Shock Vision) [!]"
+"Cartridge.Manufacturer" "Shock Vision"
+"Cartridge.Name" "Keystone Kapers (Shock Vision)"
 ""
 
 "Cartridge.MD5" "e56da674188ba2f02c7a0a343a01236f"
@@ -14828,7 +15029,10 @@
 ""
 
 "Cartridge.MD5" "e5d72ff8bab4450be57785cc9e83f3c0"
-"Cartridge.Name" "Kung Fu Superkicks (Telegames) (PAL) [!]"
+"Cartridge.Manufacturer" "Telegames"
+"Cartridge.ModelNo" "6082 A145"
+"Cartridge.Name" "Kung Fu Superkicks (1989) (Telegames) (PAL)"
+"Cartridge.Note" "AKA Chuck Norris Superkicks"
 ""
 
 "Cartridge.MD5" "e5f17b3e62a21d0df1ca9aee1aa8c7c5"
@@ -15030,10 +15234,7 @@
 ""
 
 "Cartridge.MD5" "e88340f5bd2f03e2e9ce5ecfa9c644f5"
-"Cartridge.Manufacturer" "Mattel"
-"Cartridge.ModelNo" "MT5663"
-"Cartridge.Name" "Lock 'N' Chase (1982) (Mattel) (PAL) [p1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Lock 'n' Chase (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "e879b7093ac4cfad74c88d636ca97d00"
@@ -15050,9 +15251,9 @@
 ""
 
 "Cartridge.MD5" "e908611d99890733be31733a979c62d8"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2697"
-"Cartridge.Name" "Mario Bros (1983) (Atari)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Name" "Mario Bros. (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "e91d2ecf8803ae52b55bbf105af04d4b"
@@ -15215,8 +15416,9 @@
 ""
 
 "Cartridge.MD5" "eb503cc64c3560cd78b7051188b7ba56"
-"Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Moto Laser (CCE)"
+"Cartridge.Manufacturer" "Star Game"
+"Cartridge.Name" "Moto Laser (Star Game)"
+"Cartridge.Note" "AKA Mega Force"
 ""
 
 "Cartridge.MD5" "eb6d6e22a16f30687ade526d7a6f05c5"
@@ -15245,8 +15447,10 @@
 ""
 
 "Cartridge.MD5" "ec407a206b718a0a9f69b03e920a0185"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Landung in der Normandie (Starsoft) (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "876.482 1"
+"Cartridge.Name" "Landung in der Normandie (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Commando Raid"
 ""
 
 "Cartridge.MD5" "ebf9038e927e6a0db3e0d170c59911e6"
@@ -15291,10 +15495,9 @@
 ""
 
 "Cartridge.MD5" "ecf51385384b468834611d44a8429c03"
-"Cartridge.Manufacturer" "20th Century Fox"
-"Cartridge.ModelNo" "11005"
-"Cartridge.Name" "Mega Force (1982) (20th Century Fox) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer"
+"Cartridge.ModelNo" "11105"
+"Cartridge.Name" "Mega Force (1982) (20th Century Fox) (PAL)"
 ""
 
 "Cartridge.MD5" "ec5d04b7e6cc6641d74d3ba7bb41ebc9"
@@ -15324,10 +15527,9 @@
 ""
 
 "Cartridge.MD5" "ed2218b3075d15eaa34e3356025ccca3"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2635 / 4975157"
-"Cartridge.Name" "Maze Craze (1978) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Richard Maurer"
+"Cartridge.ModelNo" "CX2635, CX2635P"
+"Cartridge.Name" "Maze Craze (1980) (Atari) (PAL)"
 "Display.Format" "PAL"
 ""
 
@@ -15350,13 +15552,20 @@
 
 "Cartridge.MD5" "ed5ccfc93ad4561075436ee42a15438a"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2626"
-"Cartridge.Name" "Miniature Golf (1979) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.ModelNo" "CX2626, CX2626P"
+"Cartridge.Name" "Miniature Golf (1979) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "ed9999911b406dc5f75c850dcc17bdf4"
 "Cartridge.Name" "Star Fire - Shootable (Friendlier Collision Detection) (26-09-2002) (MP)"
+""
+
+"Cartridge.MD5" "ed8f319e82d355832195eb7715644795"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane"
+"Cartridge.ModelNo" "AG-010, AG-010-04"
+"Cartridge.Name" "Kaboom! (1981) (Activision) (8K)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
+"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "ee28424af389a7f3672182009472500c"
@@ -15404,7 +15613,7 @@
 
 "Cartridge.MD5" "ee6cbedf6c0aac90faa0a8dbc093ffbe"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "My Golf (CCE)"
+"Cartridge.Name" "My Golf (CCE) (PAL)"
 ""
 
 "Cartridge.MD5" "ee67dc0b01746372d2b983d88f48e24f"
@@ -15434,10 +15643,9 @@
 ""
 
 "Cartridge.MD5" "eed9eaf1a0b6a2b9bc4c8032cb43e3fb"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari - Axlon, Steve DeFrisco"
 "Cartridge.ModelNo" "CX26192"
-"Cartridge.Name" "Klax (1990) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Klax (1990) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "eec61cc4250df70939d48fe02d7122ac"
@@ -15503,8 +15711,9 @@
 ""
 
 "Cartridge.MD5" "efd387430a35a659ff569a9a0ec22209"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Milpede (Atari) (Prototype)"
+"Cartridge.Manufacturer" "Atari - GCC"
+"Cartridge.ModelNo" "CX26118"
+"Cartridge.Name" "Millipede (1984) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -15586,8 +15795,7 @@
 ""
 
 "Cartridge.MD5" "f0daaa966199ef2b49403e9a29d12c50"
-"Cartridge.ModelNo" "PG209"
-"Cartridge.Name" "Mr. Postman (1983) (Starsoft) (PAL) [!]"
+"Cartridge.Name" "Mr. Postman (Unknown)"
 "Cartridge.Rarity" "Rare"
 ""
 
@@ -15620,10 +15828,9 @@
 ""
 
 "Cartridge.MD5" "f1554569321dc933c87981cf5c239c43"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Glenn Axworthy"
 "Cartridge.ModelNo" "CX26129"
 "Cartridge.Name" "Midnight Magic (1984) (Atari)"
-"Cartridge.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -15898,9 +16105,9 @@
 ""
 
 "Cartridge.MD5" "f5a2f6efa33a3e5541bc680e9dc31d5b"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Motocross (Starsoft) (PAL) [a1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-022"
+"Cartridge.Name" "Motocross (Suntek) (PAL)"
 ""
 
 "Cartridge.MD5" "f5aa6bd10f662199c42e43863a30106c"
@@ -15923,6 +16130,12 @@
 "Cartridge.Name" "X-Doom V.27 (PD)"
 ""
 
+"Cartridge.MD5" "f6676e3fe901eb8515fc7ae310302c3c"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.ModelNo" "AG-008"
+"Cartridge.Name" "Laser Blast (1981) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "f6daebc0424fa0f8d9aaf26c86df50f4"
 "Cartridge.Name" "Color Tweaker (V1.0) (2001) (B. Watson)"
 ""
@@ -15936,9 +16149,7 @@
 ""
 
 "Cartridge.MD5" "f6a9ea814d15b85bffe980c927df606b"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2638 / 4975166"
-"Cartridge.Name" "Missile Command (1981) (Atari) (PAL) [p1][!]"
+"Cartridge.Name" "Missile Command (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -16061,9 +16272,17 @@
 ""
 
 "Cartridge.MD5" "f802fa61011dd9eb6f80b271bac479d0"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Gefaehrliche Maeusejagt (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Suntek"
+"Cartridge.ModelNo" "SS-023"
+"Cartridge.Name" "Mole Hunter (Suntek) (PAL)"
+"Cartridge.Note" "AKA Topy"
 "Display.YStart" "60"
+""
+
+"Cartridge.MD5" "f7f50d9c9d28bcc9f7d3075668b7ac89"
+"Cartridge.Manufacturer" "Activision, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-008, PAG-008, EAG-008-04I - 711 008-720"
+"Cartridge.Name" "Laser Blast (1981) (Activision) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "f8bfd99163d2c4ec688357786e6fba28"
@@ -16076,10 +16295,9 @@
 ""
 
 "Cartridge.MD5" "f825c538481f9a7a46d1e9bc06200aaf"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2635 / 4975157"
-"Cartridge.Name" "Maze Craze (1978) (Atari)"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Richard Maurer - Sears"
+"Cartridge.ModelNo" "CX2635 - 49-75157"
+"Cartridge.Name" "Maze Craze (1980) (Atari)"
 ""
 
 "Cartridge.MD5" "f8648d0c6ad1266434f6c485ff69ec40"
@@ -16170,6 +16388,11 @@
 "Display.YStart" "24"
 ""
 
+"Cartridge.MD5" "f9420173efcb4b9f2b01c2a7b595cca7"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Laser Blast (CCE) (4K)"
+""
+
 "Cartridge.MD5" "f96a763ced577e383d1102c4d0949525"
 "Cartridge.Name" "Death Derby (v0005) (2001) (Glenn Saunders) (PD)"
 ""
@@ -16182,11 +16405,10 @@
 ""
 
 "Cartridge.MD5" "f9e99596345a84358bc5d1fbe877134b"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-010"
-"Cartridge.Name" "Kaboom! (1981) (Activision) (PAL) [!]"
+"Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane - Ariola"
+"Cartridge.ModelNo" "EAG-010, PAG-010 - 711 010-720"
+"Cartridge.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Uncommon"
 "Controller.Left" "PADDLES"
 ""
 
@@ -16237,10 +16459,9 @@
 ""
 
 "Cartridge.MD5" "fa0570561aa80896f0ead05c46351389"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Bill Hogue"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision)"
-"Cartridge.Rarity" "Extremely Rare"
 "Display.YStart" "31"
 ""
 
