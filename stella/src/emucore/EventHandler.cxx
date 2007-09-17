@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.207 2007-09-03 18:37:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.208 2007-09-17 22:41:45 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -73,8 +73,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myPaddleMode(0),
     myPaddleThreshold(0)
 {
-  int i, j, k, m;
-
   // Create the streamer used for accessing eventstreams/recordings
   myEventStreamer = new EventStreamer(myOSystem);
 
@@ -82,36 +80,36 @@ EventHandler::EventHandler(OSystem* osystem)
   myEvent = new Event(myEventStreamer);
 
   // Erase the key mapping array
-  for(i = 0; i < SDLK_LAST; ++i)
+  for(int i = 0; i < SDLK_LAST; ++i)
   {
     ourSDLMapping[i] = "";
-    for(m = 0; m < kNumModes; ++m)
+    for(int m = 0; m < kNumModes; ++m)
       myKeyTable[i][m] = Event::NoType;
   }
 
 #ifdef JOYSTICK_SUPPORT
   // Erase the joystick button mapping array
-  for(m = 0; m < kNumModes; ++m)
-    for(i = 0; i < kNumJoysticks; ++i)
-      for(j = 0; j < kNumJoyButtons; ++j)
+  for(int m = 0; m < kNumModes; ++m)
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyButtons; ++j)
         myJoyTable[i][j][m] = Event::NoType;
 
   // Erase the joystick axis mapping array
-  for(m = 0; m < kNumModes; ++m)
-    for(i = 0; i < kNumJoysticks; ++i)
-      for(j = 0; j < kNumJoyAxis; ++j)
+  for(int m = 0; m < kNumModes; ++m)
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyAxis; ++j)
         myJoyAxisTable[i][j][0][m] = myJoyAxisTable[i][j][1][m] = Event::NoType;
 
   // Erase the joystick hat mapping array
-  for(m = 0; m < kNumModes; ++m)
-    for(i = 0; i < kNumJoysticks; ++i)
-      for(j = 0; j < kNumJoyHats; ++j)
-        for(k = 0; k < 4; ++k)
+  for(int m = 0; m < kNumModes; ++m)
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyHats; ++j)
+        for(int k = 0; k < 4; ++k)
           myJoyHatTable[i][j][k][m] = Event::NoType;
 #endif
 
   // Erase the Message array
-  for(i = 0; i < Event::LastType; ++i)
+  for(int i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
 
   // Set unchanging messages
@@ -1296,18 +1294,17 @@ void EventHandler::setActionMappings(EventMode mode)
       break;
   }
 
-  int i, j, stick, button, axis, hat, dir;
   ostringstream buf;
 
   // Fill the ActionList with the current key and joystick mappings
-  for(i = 0; i < listsize; ++i)
+  for(int i = 0; i < listsize; ++i)
   {
     Event::Type event = list[i].event;
     if(list[i].key)
       free(list[i].key);
     list[i].key = strdup("None");
     string key = "";
-    for(j = 0; j < SDLK_LAST; ++j)   // key mapping
+    for(int j = 0; j < SDLK_LAST; ++j)   // key mapping
     {
       if(myKeyTable[j][mode] == event)
       {
@@ -1319,9 +1316,9 @@ void EventHandler::setActionMappings(EventMode mode)
     }
 #ifdef JOYSTICK_SUPPORT
     // Joystick button mapping/labeling
-    for(stick = 0; stick < kNumJoysticks; ++stick)
+    for(int stick = 0; stick < kNumJoysticks; ++stick)
     {
-      for(button = 0; button < kNumJoyButtons; ++button)
+      for(int button = 0; button < kNumJoyButtons; ++button)
       {
         if(myJoyTable[stick][button][mode] == event)
         {
@@ -1337,9 +1334,9 @@ void EventHandler::setActionMappings(EventMode mode)
     // Joystick axis mapping/labeling
     for(stick = 0; stick < kNumJoysticks; ++stick)
     {
-      for(axis = 0; axis < kNumJoyAxis; ++axis)
+      for(int axis = 0; axis < kNumJoyAxis; ++axis)
       {
-        for(dir = 0; dir < 2; ++dir)
+        for(int dir = 0; dir < 2; ++dir)
         {
           if(myJoyAxisTable[stick][axis][dir][mode] == event)
           {
@@ -1364,11 +1361,11 @@ void EventHandler::setActionMappings(EventMode mode)
       }
     }
     // Joystick hat mapping/labeling
-    for(stick = 0; stick < kNumJoysticks; ++stick)
+    for(int stick = 0; stick < kNumJoysticks; ++stick)
     {
-      for(hat = 0; hat < kNumJoyHats; ++hat)
+      for(int hat = 0; hat < kNumJoyHats; ++hat)
       {
-        for(dir = 0; dir < 4; ++dir)
+        for(int dir = 0; dir < 4; ++dir)
         {
           if(myJoyHatTable[stick][hat][dir][mode] == event)
           {
@@ -1629,34 +1626,32 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::eraseMapping(Event::Type event, EventMode mode)
 {
-  int i, j, k;
-
   // Erase the KeyEvent arrays
-  for(i = 0; i < SDLK_LAST; ++i)
+  for(int i = 0; i < SDLK_LAST; ++i)
     if(myKeyTable[i][mode] == event && i != SDLK_TAB)
       myKeyTable[i][mode] = Event::NoType;
   saveKeyMapping();
 
 #ifdef JOYSTICK_SUPPORT
   // Erase the JoyEvent array
-  for(i = 0; i < kNumJoysticks; ++i)
-    for(j = 0; j < kNumJoyButtons; ++j)
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyButtons; ++j)
       if(myJoyTable[i][j][mode] == event)
         myJoyTable[i][j][mode] = Event::NoType;
   saveJoyMapping();
 
   // Erase the JoyAxisEvent array
-  for(i = 0; i < kNumJoysticks; ++i)
-    for(j = 0; j < kNumJoyAxis; ++j)
-      for(k = 0; k < 2; ++k)
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyAxis; ++j)
+      for(int k = 0; k < 2; ++k)
         if(myJoyAxisTable[i][j][k][mode] == event)
           myJoyAxisTable[i][j][k][mode] = Event::NoType;
   saveJoyAxisMapping();
 
   // Erase the JoyHatEvent array
-  for(i = 0; i < kNumJoysticks; ++i)
-    for(j = 0; j < kNumJoyHats; ++j)
-      for(k = 0; k < 4; ++k)
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyHats; ++j)
+      for(int k = 0; k < 4; ++k)
         if(myJoyHatTable[i][j][k][mode] == event)
           myJoyHatTable[i][j][k][mode] = Event::NoType;
   saveJoyHatMapping();

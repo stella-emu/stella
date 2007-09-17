@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.76 2007-09-03 18:37:22 stephena Exp $
+// $Id: mainSDL.cxx,v 1.77 2007-09-17 22:41:44 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -29,6 +29,7 @@
 #include "Settings.hxx"
 #include "FSNode.hxx"
 #include "OSystem.hxx"
+#include "System.hxx"
 
 #if defined(UNIX)
   #include "SettingsUNIX.hxx"
