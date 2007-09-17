@@ -305,10 +305,9 @@
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (1982) (Starpath)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Survival Island (1983) (Starpath)"
 "Display.YStart" "30"
 ""
 
@@ -328,8 +327,9 @@
 ""
 
 "Cartridge.MD5" "04b488d4eef622d022a0021375e7e339"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Tennis (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.ModelNo" "VCS83107"
+"Cartridge.Name" "Tennis (1983) (Home Vision) (PAL)"
 ""
 
 "Cartridge.MD5" "0546f4e6b946f38956799dd00caab3b1"
@@ -411,10 +411,9 @@
 ""
 
 "Cartridge.MD5" "05ebd183ea854c0a1b56c218246fbbae"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2656"
-"Cartridge.Name" "SwordQuest - Earthworld (1982) (Atari) [a1][!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Swordquest - EarthWorld (1982) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "06742cf522f23797157f215a1dc8a1a9"
@@ -498,8 +497,7 @@
 ""
 
 "Cartridge.MD5" "06e5dc181a8eda1c31cc7c581c68b6ef"
-"Cartridge.Manufacturer" "Sega"
-"Cartridge.Name" "Tac Scan (1982) (Sega) (PAL) [p1][!]"
+"Cartridge.Name" "Tac-Scan (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -540,7 +538,9 @@
 ""
 
 "Cartridge.MD5" "0751f342ee4cf28f2c9a6e8467c901be"
-"Cartridge.Name" "Super Baseball (1988) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Joseph Tung"
+"Cartridge.ModelNo" "CX26152, CX26152P"
+"Cartridge.Name" "Super Baseball (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "075069ad80cde15eca69e3c98bd66714"
@@ -642,15 +642,6 @@
 "Cartridge.Name" "M.A.D. (1983) (Carrere Video) (PAL)"
 ""
 
-"Cartridge.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (2 of 3) (1982) (Starpath) (PAL)"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "PADDLES"
-""
-
 "Cartridge.MD5" "08bd4c1dcc843f6a0b563d9fd80b3b11"
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "343.273 9"
@@ -746,10 +737,9 @@
 ""
 
 "Cartridge.MD5" "09abfe9a312ce7c9f661582fdf12eab6"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Douglas Neubauer"
 "Cartridge.ModelNo" "CX26154"
 "Cartridge.Name" "Super Football (1988) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "097936b07e0e0117b9026ae6835eb168"
@@ -796,11 +786,10 @@
 ""
 
 "Cartridge.MD5" "0ad9a358e361256b94f3fb4f2fa5a3b1"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2608 / 4975165"
-"Cartridge.Name" "Super Breakout (1978) (Atari) [!]"
+"Cartridge.Manufacturer" "Atari, Carol Shaw, Nick 'Sandy Maiwald' Turner - Sears"
+"Cartridge.ModelNo" "CX2608 - 49-75165"
+"Cartridge.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Common"
 "Controller.Left" "PADDLES"
 ""
 
@@ -898,9 +887,9 @@
 
 "Cartridge.MD5" "0c35806ff0019a270a7acae68de89d28"
 "Cartridge.Manufacturer" "Froggo"
-"Cartridge.ModelNo" "FG 1003"
+"Cartridge.ModelNo" "FG1003"
 "Cartridge.Name" "Task Force (1987) (Froggo)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Note" "AKA Gangster Alley"
 ""
 
 "Cartridge.MD5" "0cebb0bb45a856b23f56d21ce7d1bc34"
@@ -969,6 +958,13 @@
 
 "Cartridge.MD5" "0d07d2c1be1a5eaaea235a533bcda781"
 "Cartridge.Name" "Scrolling Playfield 1 (Junkosoft) (PD)"
+""
+
+"Cartridge.MD5" "0d09cff0d28033c02c3290edfc3a5cea"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
+"Cartridge.ModelNo" "CX2699"
+"Cartridge.Name" "Taz (1983) (Atari) (Prototype) [a]"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "0d27c7f5db349b592f70f68daf5e8f3b"
@@ -1071,13 +1067,11 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "0e86470791b26292abe1c64545c47985"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (3 of 3) (1982) (Starpath) (PAL)"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "PADDLES"
+"Cartridge.MD5" "0e7e73421606873b544e858c59dc283e"
+"Cartridge.Manufacturer" "Digivision"
+"Cartridge.Name" "Super Soccer (Digivision)"
+"Cartridge.Note" "AKA RealSports Soccer"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "0ef64cdbecccb7049752a3de0b7ade14"
@@ -1329,10 +1323,9 @@
 ""
 
 "Cartridge.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
-"Cartridge.Manufacturer" "Epyx"
-"Cartridge.ModelNo" "8056100250"
-"Cartridge.Name" "Summer Games (1987) (Epyx) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Epyx, Steven A. Baker, Tod Frye, Peter Engelbrite"
+"Cartridge.ModelNo" "80561-00250"
+"Cartridge.Name" "Summer Games (1987) (Epyx) (PAL)"
 ""
 
 "Cartridge.MD5" "12937db3d4a80da5c4452b752891252d"
@@ -1456,9 +1449,8 @@
 
 "Cartridge.MD5" "149b543c917c180a1b02d33c12415206"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.ModelNo" "CX2631"
-"Cartridge.Name" "Superman (CCE)"
-"Cartridge.Rarity" "Common"
+"Cartridge.ModelNo" "C-857"
+"Cartridge.Name" "Superman (1983) (CCE)"
 ""
 
 "Cartridge.MD5" "1442d1b35a6478fba22ae7dd1fcb5634"
@@ -1467,8 +1459,7 @@
 ""
 
 "Cartridge.MD5" "1428029e762797069ad795ce7c6a1a93"
-"Cartridge.Manufacturer" "Sega"
-"Cartridge.Name" "Thunderground (1983) (Sega) (PAL) [p1][!]"
+"Cartridge.Name" "Thunderground (Unknown) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -1596,8 +1587,7 @@
 ""
 
 "Cartridge.MD5" "169d4c7bd3a4d09e184a3b993823d048"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Superman (1978) (Atari) (PAL) [p1][!]"
+"Cartridge.Name" "Superman (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "170e7589a48739cfb9cc782cbb0fe25a"
@@ -1618,7 +1608,8 @@
 
 "Cartridge.MD5" "16e04823887c547dc24bc70dff693df4"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Tennis (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Tennis (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "16f494f20af5dc803bc35939ef924020"
@@ -1956,6 +1947,7 @@
 "Cartridge.MD5" "1c85c0fc480bbd69dc301591b6ecb422"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Super Box (CCE)"
+"Cartridge.Note" "AKA RealSports Boxing"
 ""
 
 "Cartridge.MD5" "1cafa9f3f9a2fce4af6e4b85a2bbd254"
@@ -2025,6 +2017,11 @@
 "Cartridge.ModelNo" "11034"
 "Cartridge.Name" "Pick Up (1983) (20th Century Fox) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "1d6ed6fe9dfbde32708e8353548cbb80"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Super Challenge Baseball (Jone Yuan)"
 ""
 
 "Cartridge.MD5" "1e587ca91518a47753a28217cd4fd586"
@@ -2166,7 +2163,7 @@
 
 "Cartridge.MD5" "1f5a2927a0b2faf87540b01d9d7d7fd1"
 "Cartridge.Manufacturer" "Pet Boat"
-"Cartridge.Name" "Tennis (Pet Boat) (PAL) [p1][!]"
+"Cartridge.Name" "Tennis (Pet Boat) (PAL)"
 ""
 
 "Cartridge.MD5" "2008c76deba5953201ef75a09b2ff7dc"
@@ -2209,8 +2206,10 @@
 ""
 
 "Cartridge.MD5" "203b1efc6101d4b9d83bb6cc1c71f67f"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Teller-Jonglieren! (AKA Tanzende Teller) (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "685.996 1"
+"Cartridge.Name" "Teller-Jonglieren! (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Dancing Plate"
 "Display.Phosphor" "YES"
 ""
 
@@ -2459,7 +2458,9 @@
 ""
 
 "Cartridge.MD5" "2447e17a4e18e6b609de498fe4ab52ba"
-"Cartridge.Name" "Super Futebol (Pussy Style) (CCE)"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.Name" "Super Futebol (Soccer) (CCE)"
+"Cartridge.Note" "AKA RealSports Soccer"
 "Display.Phosphor" "YES"
 ""
 
@@ -2633,10 +2634,9 @@
 ""
 
 "Cartridge.MD5" "262ccb882ff617d9b4b51f24aee02cbe"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26154"
-"Cartridge.Name" "Super Football (1988) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Atari, Douglas Neubauer"
+"Cartridge.ModelNo" "CX26154, CX26154P"
+"Cartridge.Name" "Super Football (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "265a85f66544eaf95fda06c3d9e48abf"
@@ -2710,13 +2710,6 @@
 "Cartridge.Manufacturer" "Activision, Bob Whitehead"
 "Cartridge.ModelNo" "AG-002, CAG-002, AG-002-04"
 "Cartridge.Name" "Boxing (1980) (Activision) (4K)"
-""
-
-"Cartridge.MD5" "277c7281ac945b8331e2e6fcad560c11"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (2 of 3) (1983) (Starpath) (PAL)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "281ff9bd0470643853de5cbd6d9e17f5"
@@ -2992,10 +2985,10 @@
 ""
 
 "Cartridge.MD5" "2b27eb194e13f3b38d23c879cc1e3abf"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.ModelNo" "SS-011"
-"Cartridge.Name" "Super Ferrari (Starsoft) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "402.272 9"
+"Cartridge.Name" "Super-Ferrari (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Enduro"
 ""
 
 "Cartridge.MD5" "2b1589c7e1f394ae6a1c046944f06688"
@@ -3175,6 +3168,13 @@
 "Cartridge.Name" "Secret Quest (1989) (Atari) (PAL)"
 ""
 
+"Cartridge.MD5" "2d6741cda3000230f6bbdd5e31941c01"
+"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.ModelNo" "80110"
+"Cartridge.Name" "Targ (1983) (CBS Electronics) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "2d6da0eb85eabc93270e5bb8a466ca51"
 "Cartridge.Name" "Sprite Demo 7 (PD)"
 ""
@@ -3297,9 +3297,8 @@
 
 "Cartridge.MD5" "2f0a8bb4e18839f9b1dcaa2f5d02fd1d"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.ModelNo" "CX2668"
-"Cartridge.Name" "Super Futebol (American Style) (CCE)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Super Futebol (Football) (CCE)"
+"Cartridge.Note" "AKA RealSports Football"
 "Display.Phosphor" "YES"
 ""
 
@@ -3400,8 +3399,8 @@
 ""
 
 "Cartridge.MD5" "30685b9b6ebd9ba71536dd7632a1e3b6"
-"Cartridge.Manufacturer" "Dactar"
-"Cartridge.Name" "Tennis (Dactar) (PAL) [p1][!]"
+"Cartridge.Manufacturer" "Dactari"
+"Cartridge.Name" "Tennis (Dactari)"
 ""
 
 "Cartridge.MD5" "3091af0ef1a61e801f4867783c21d45c"
@@ -3518,10 +3517,9 @@
 ""
 
 "Cartridge.MD5" "31d08cb465965f80d3541a57ec82c625"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2641 / 99807 / 75105"
-"Cartridge.Name" "Surround (1978) (Atari) [o1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Alan Miller - Sears"
+"Cartridge.ModelNo" "CX2641 - 99807, 49-75105"
+"Cartridge.Name" "Surround (1977) (Atari) (4K)"
 ""
 
 "Cartridge.MD5" "31e518debba46df6226b535fa8bd2543"
@@ -3633,6 +3631,11 @@
 "Cartridge.Manufacturer" "Sega - Beck-Tech - Teldec"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) (PAL)"
+""
+
+"Cartridge.MD5" "33cac5e767a534c95d292b04f439dc37"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Tapeworm (Jone Yuan)"
 ""
 
 "Cartridge.MD5" "35ae903dff7389755ad4a07f2fb7400c"
@@ -3796,6 +3799,12 @@
 "Cartridge.Name" "Enduro (1983) (Digitel)"
 ""
 
+"Cartridge.MD5" "3619786f6a32efc1e4a262d5aca8a070"
+"Cartridge.Manufacturer" "Atari, John Dunn - Sears"
+"Cartridge.ModelNo" "CX2631 - 49-75152"
+"Cartridge.Name" "Superman (1979) (Atari) (8K)"
+""
+
 "Cartridge.MD5" "36306070f0c90a72461551a7a4f3a209"
 "Cartridge.Manufacturer" "U.S. Games Corporation, Roger Booth, Sylvia Day, Ron Dubren, Todd Marshall, Wes Trager, Henry Will"
 "Cartridge.ModelNo" "VC1007"
@@ -3947,7 +3956,9 @@
 ""
 
 "Cartridge.MD5" "3882224adbd0ca7c748b2a1c9b87263e"
-"Cartridge.Name" "SwordQuest - Fireworld (1982) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari, Tod Frye"
+"Cartridge.ModelNo" "CX2657"
+"Cartridge.Name" "Swordquest - FireWorld (1982) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "38bd172da8b2a3a176e517c213fcd5a6"
@@ -4002,10 +4013,9 @@
 ""
 
 "Cartridge.MD5" "38de7b68379770b9bd3f7bf000136eb0"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "O3213"
-"Cartridge.Name" "Subterrenea (1983) (Imagic) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Imagic, Mark Klein"
+"Cartridge.ModelNo" "EIZ-003-04I"
+"Cartridge.Name" "Subterranea (1983) (Imagic) (PAL)"
 ""
 
 "Cartridge.MD5" "38cf93eacfb2fa9a2c5e39059ff35a74"
@@ -4131,7 +4141,9 @@
 ""
 
 "Cartridge.MD5" "3b2c32fcd331664d037952bcaa62df94"
-"Cartridge.Name" "Super Kung-Fu (1983) (Xonox) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Xonox"
+"Cartridge.ModelNo" "6230, 6250"
+"Cartridge.Name" "Super Kung-Fu (1983) (Xonox) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "3b64a00ce147c3c29f7f8f8e531d08d8"
@@ -4243,7 +4255,9 @@
 
 "Cartridge.MD5" "3d6fc7a19be76d808aa233415cb583fc"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Carnival (CCE)"
+"Cartridge.ModelNo" "C-833"
+"Cartridge.Name" "Target Practice (1983) (CCE)"
+"Cartridge.Note" "AKA Carnival"
 "Display.YStart" "26"
 "Display.Height" "214"
 ""
@@ -4276,8 +4290,9 @@
 ""
 
 "Cartridge.MD5" "3d7aad37c55692814211c8b590a0334c"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Telepathy (Prototype) (Atari) [!]"
+"Cartridge.Manufacturer" "Atari, Dan Oliver"
+"Cartridge.Name" "Telepathy (1983) (Atari) (Prototype)"
+"Cartridge.Note" "Uses the Mindlink Controller"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -4663,10 +4678,9 @@
 ""
 
 "Cartridge.MD5" "42cdd6a9e42a3639e190722b8ea3fc51"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-007"
-"Cartridge.Name" "Tennis (1981) (Activision) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AG-007, CAG-007"
+"Cartridge.Name" "Tennis (1981) (Activision)"
 ""
 
 "Cartridge.MD5" "42dcc02777b0bcfacd85aeb61d33558a"
@@ -4770,10 +4784,9 @@
 ""
 
 "Cartridge.MD5" "45027dde2be5bdd0cab522b80632717d"
-"Cartridge.Manufacturer" "Epyx"
-"Cartridge.ModelNo" "8056100250"
+"Cartridge.Manufacturer" "Epyx, Steven A. Baker, Tod Frye, Peter Engelbrite"
+"Cartridge.ModelNo" "80561-00250"
 "Cartridge.Name" "Summer Games (1987) (Epyx)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "457e7d4fcd56ebc47f5925dbea3ee427"
@@ -4833,10 +4846,9 @@
 ""
 
 "Cartridge.MD5" "463dd4770506e6c0ef993a40c52c47be"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission Preview (1982) (Starpath)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Suicide Mission (Preview) (1982) (Arcadia)"
 "Display.Phosphor" "YES"
 ""
 
@@ -4883,10 +4895,9 @@
 ""
 
 "Cartridge.MD5" "4702d8d9b48a332724af198aeac9e469"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
 "Cartridge.ModelNo" "CX2699"
-"Cartridge.Name" "Taz (1983) (Atari) [a1][!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Taz (1983) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "47aad247cce2534fd70c412cb483c7e0"
@@ -5148,13 +5159,6 @@
 "Cartridge.Rarity" "New Release"
 ""
 
-"Cartridge.MD5" "4a9009620038f7f30aaeb2a00ae58fde"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (3 of 3) (1983) (Starpath)"
-"Cartridge.Rarity" "Rare"
-""
-
 "Cartridge.MD5" "4b143d7dcf6c96796c37090cba045f4f"
 "Cartridge.Manufacturer" "Atari, Jim Huether - Sears"
 "Cartridge.ModelNo" "CX2644 - 6-99824"
@@ -5348,10 +5352,9 @@
 ""
 
 "Cartridge.MD5" "4d7517ae69f95cfbc053be01312b7dba"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2641 / 99807 / 75105"
-"Cartridge.Name" "Surround (1978) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Alan Miller - Sears"
+"Cartridge.ModelNo" "CX2641 - 99807, 49-75105"
+"Cartridge.Name" "Surround (1977) (Atari)"
 ""
 
 "Cartridge.MD5" "4f89b897444e7c3b36aed469b8836839"
@@ -5451,7 +5454,9 @@
 ""
 
 "Cartridge.MD5" "4f2d47792a06da224ba996c489a87939"
-"Cartridge.Name" "Super Action Pak - Pitf,GPrix,LaserB,Barn (1988) (Activision) (PAL) [!]"
+"Cartridge.Manufacturer" "HES - Activision"
+"Cartridge.ModelNo" "223"
+"Cartridge.Name" "Super Action Pak - Pitfall, Barnstorming, Grand Prix, Laser Blast (1988) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "4e99ebd65a967cabf350db54405d577c"
@@ -5676,18 +5681,16 @@
 ""
 
 "Cartridge.MD5" "52a0003efb3b1c49fcde4dbc2c685d8f"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2641 / 99807 / 75105"
-"Cartridge.Name" "Surround (1978) (Atari) [a1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Alan Miller - Sears"
+"Cartridge.ModelNo" "CX2641 - 99807, 49-75105"
+"Cartridge.Name" "Surround (1977) (Atari) (4K) [a]"
 "Cartridge.Type" "2K"
 ""
 
 "Cartridge.MD5" "528400fad9a77fd5ad7fc5fdc2b7d69d"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum, Jon Leupp"
 "Cartridge.ModelNo" "AR-4201"
 "Cartridge.Name" "Sword of Saros (1983) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "52b448757081fd9fabf859f4e2f91f6b"
@@ -5750,7 +5753,9 @@
 
 "Cartridge.MD5" "53b66f11f67c3b53b2995e0e02017bd7"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "RealSports Tennis (CCE)"
+"Cartridge.ModelNo" "C-1005"
+"Cartridge.Name" "Super Tennis (1983) (CCE)"
+"Cartridge.Note" "AKA RealSports Tennis"
 ""
 
 "Cartridge.MD5" "539b7038acec0ccedeae40f238998579"
@@ -5812,10 +5817,9 @@
 ""
 
 "Cartridge.MD5" "545048ccb045f9efc6cf2b125cd0dfa8"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum, Jon Leupp"
 "Cartridge.ModelNo" "AR-4201"
-"Cartridge.Name" "Sword of Saros (1983) (Starpath) [a1]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Sword of Saros (1983) (Starpath) [a]"
 ""
 
 "Cartridge.MD5" "5494b9ee403d9757f0fd1f749e80214a"
@@ -6082,6 +6086,13 @@
 "Cartridge.Rarity" "New Release (Video Format Conversion)"
 ""
 
+"Cartridge.MD5" "59e53894b3899ee164c91cfa7842da66"
+"Cartridge.Manufacturer" "Data Age"
+"Cartridge.Name" "Survival Run (1983) (Data Age) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+"Display.YStart" "40"
+""
+
 "Cartridge.MD5" "5acf9865a72c0ce944979f76ff9610f0"
 "Cartridge.Name" "Dodge Demo 2 (PD)"
 ""
@@ -6153,10 +6164,9 @@
 ""
 
 "Cartridge.MD5" "5aea9974b975a6a844e6df10d2b861c4"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2656"
-"Cartridge.Name" "SwordQuest - Earthworld (1982) (Atari) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Swordquest - EarthWorld (1982) (Atari)"
 ""
 
 "Cartridge.MD5" "5af9cd346266a1f2515e1fbc86f5186a"
@@ -6167,13 +6177,6 @@
 
 "Cartridge.MD5" "5b98e0536c3f60547dd708ae22adb04b"
 "Cartridge.Name" "Donkey Kong Gingerbread Man (Prototype) (Ben Hudman)"
-""
-
-"Cartridge.MD5" "5b7ea6aa6b35dc947c65ce665fde624b"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "5b6f5bcbbde42fc77d0bdb3146693565"
@@ -6303,6 +6306,12 @@
 "Cartridge.Name" "Wavy Line Test 2 (PD)"
 ""
 
+"Cartridge.MD5" "5c86e938e0845b9d61f458539e9a552b"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Surround (32 in 1) (1988) (Atari) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "5d8f1ab95362acdf3426d572a6301bf2"
 "Cartridge.Name" "SWOOPS! (v0.96) (Thomas Jentzsch) (PAL)"
 "Cartridge.Note" "Uses the Joystick (L) and Paddle (R) Controllers"
@@ -6338,10 +6347,9 @@
 ""
 
 "Cartridge.MD5" "5de8803a59c36725888346fdc6e7429d"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2631 / 6699845 / 4975152"
-"Cartridge.Name" "Superman (1978) (Atari) [a1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, John Dunn - Sears"
+"Cartridge.ModelNo" "CX2631 - 49-75152"
+"Cartridge.Name" "Superman (1979) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "5df559a36347d8572f9a6e8075a31322"
@@ -6392,10 +6400,9 @@
 ""
 
 "Cartridge.MD5" "5eeb81292992e057b290a5cd196f155d"
-"Cartridge.Manufacturer" "Wizard Video Games"
+"Cartridge.Manufacturer" "Wizard Video Games, Ed Salvo"
 "Cartridge.ModelNo" "008"
-"Cartridge.Name" "Texas Chainsaw Massacre, The (1983) (Wizard Video)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Texas Chainsaw Massacre (1983) (Wizard Video)"
 ""
 
 "Cartridge.MD5" "5ef303b9f0aa8cf20720c560e5f9baa1"
@@ -6745,10 +6752,10 @@
 ""
 
 "Cartridge.MD5" "638cc82ea96f67674595ba9ae05da6c6"
-"Cartridge.Manufacturer" "Rainbow Vision"
+"Cartridge.Manufacturer" "Rainbow Vision - Suntek"
 "Cartridge.ModelNo" "SS-011"
-"Cartridge.Name" "Super Ferrari (Rainbow Vision) (PAL) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Super Ferrari (Rainbow Vision) (PAL)"
+"Cartridge.Note" "AKA Enduro"
 ""
 
 "Cartridge.MD5" "63811ed69bdbc35c69d8aa7806c3d6e9"
@@ -6816,7 +6823,8 @@
 
 "Cartridge.MD5" "645bf7f9146f0e4811ff9c7898f5cd93"
 "Cartridge.Manufacturer" "Xonox"
-"Cartridge.Name" "Super Kung-Fu (1983) (Xonox) (PAL) [!]"
+"Cartridge.ModelNo" "6230, 6250"
+"Cartridge.Name" "Super Kung-Fu (1983) (Xonox) (PAL)"
 ""
 
 "Cartridge.MD5" "64b8e19c767191ccdc97acc6904c397b"
@@ -6990,13 +6998,6 @@
 "Cartridge.Name" "Demo Image Series #11 - Donald And Mario (28-02-2003) (AD)"
 ""
 
-"Cartridge.MD5" "66c4e0298d4120df333bc2f3e163657e"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
-""
-
 "Cartridge.MD5" "66bc1bef269ea59033928bac2d1d81e6"
 "Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
@@ -7029,6 +7030,10 @@
 "Cartridge.Name" "Pooyan (1983) (Gakken) (PAL)"
 ""
 
+"Cartridge.MD5" "6697f177847c70505824422e76aad586"
+"Cartridge.Name" "Tennis (Unknown) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "66c2380c71709efa7b166621e5bb4558"
 "Cartridge.Manufacturer" "Parker Bros"
 "Cartridge.Name" "Tutankham (1983) (Parker Bros) (PAL) [!]"
@@ -7039,14 +7044,14 @@
 ""
 
 "Cartridge.MD5" "67631ea5cfe44066a1e76ddcb6bcb512"
-"Cartridge.Name" "Termool (AKA Fast Eddie) (PAL) [p1][!]"
+"Cartridge.Name" "Termool (Unknown) (PAL)"
+"Cartridge.Note" "AKA Turmoil"
 ""
 
 "Cartridge.MD5" "67684a1d18c85ffa5d82dab48fd1cb51"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Warren Schwader"
 "Cartridge.ModelNo" "7-003"
-"Cartridge.Name" "Threshold (1982) (Tigervision) (PAL) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Threshold (1982) (Tigervision) (PAL)"
 ""
 
 "Cartridge.MD5" "683dc64ef7316c13ba04ee4398e2b93a"
@@ -7211,9 +7216,9 @@
 ""
 
 "Cartridge.MD5" "691d67910b08b63de8631901d1887c1f"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Survival Island (1982) (Starpath) [a1]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.ModelNo" "AR-4401"
+"Cartridge.Name" "Survival Island (1983) (Starpath) [a]"
 "Display.YStart" "30"
 ""
 
@@ -7531,16 +7536,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "6ed5012793f5ddf4353a48c11ea9b8d3"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (3 of 3) (1982) (Starpath)"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "PADDLES"
-"Display.YStart" "27"
-""
-
 "Cartridge.MD5" "6e7ed74082f39ad4166c823765a59909"
 "Cartridge.Name" "Poker Squares (V0.14) (2001) (B. Watson)"
 ""
@@ -7592,8 +7587,7 @@
 ""
 
 "Cartridge.MD5" "6fac680fc9a72e0e54255567c72afe34"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Superman (1978) (Atari) (PAL) [p2][!]"
+"Cartridge.Name" "Superman (Unknown) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "6fc394dbf21cf541a60e3b3631b817f1"
@@ -7822,9 +7816,8 @@
 ""
 
 "Cartridge.MD5" "724613effaf7743cbcd695fab469c2a8"
-"Cartridge.Manufacturer" "Quelle"
-"Cartridge.Name" "Super Ferrari (Quelle)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Super-Ferrari (Unknown)"
+"Cartridge.Note" "AKA Enduro"
 ""
 
 "Cartridge.MD5" "72a5b5052272ac785fa076709d16cef4"
@@ -7891,6 +7884,11 @@
 "Display.Height" "250"
 ""
 
+"Cartridge.MD5" "736388d73198552d77d423962000006f"
+"Cartridge.Manufacturer" "Dactari"
+"Cartridge.Name" "Tennis (Dactari) (4K)"
+""
+
 "Cartridge.MD5" "73e66e82ac22b305eb4d9578e866236e"
 "Cartridge.Name" "Unknown Game #2 (Datatech)"
 "Display.YStart" "24"
@@ -7937,6 +7935,12 @@
 "Cartridge.Name" "Dizzy Wiz (2001) (B. Watson)"
 ""
 
+"Cartridge.MD5" "73efa9f3cbe197f26e0fb87132829232"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-858"
+"Cartridge.Name" "Tennis (1983) (CCE)"
+""
+
 "Cartridge.MD5" "747d3031eb37e32abc7f6e5ee928cd8f"
 "Cartridge.Name" "Greeting Cart Goth (SnailSoft)(PD)"
 ""
@@ -7977,6 +7981,12 @@
 "Cartridge.Name" "Star Fire - New Shields (03-04-2003) (MP)"
 ""
 
+"Cartridge.MD5" "74ebaca101cc428cf219f15dda84b6f8"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AG-007, CAG-007"
+"Cartridge.Name" "Tennis (1981) (Activision) (8K)"
+""
+
 "Cartridge.MD5" "75028162bfc4cc8e74b04e320f9e6a3f"
 "Cartridge.Manufacturer" "Atari, Greg Easter"
 "Cartridge.ModelNo" "CX26107"
@@ -7993,10 +8003,9 @@
 ""
 
 "Cartridge.MD5" "753375d183c713cfa0aa7298d1f3067b"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission (1982) (Starpath) [a1]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Suicide Mission (1982) (Arcadia) [a]"
 "Display.Phosphor" "YES"
 ""
 
@@ -8019,10 +8028,9 @@
 ""
 
 "Cartridge.MD5" "7574480ae2ab0d282c887e9015fdb54c"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
 "Cartridge.ModelNo" "CX2699"
-"Cartridge.Name" "Taz (1983) (Atari) [!]"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Taz (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "7576dd46c2f8d8ab159d97e3a3f2052f"
@@ -8092,6 +8100,13 @@
 "Cartridge.Name" "Skiing (1980) (Activision) (8K)"
 ""
 
+"Cartridge.MD5" "76809eb1ee0db8a318308a5cdda0f4e2"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
+"Cartridge.ModelNo" "CX2699"
+"Cartridge.Name" "Taz (1983) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "76ee917d817ef9a654bc4783e0273ac4"
 "Cartridge.Manufacturer" "Quelle"
 "Cartridge.ModelNo" "311377"
@@ -8101,13 +8116,6 @@
 
 "Cartridge.MD5" "76c88341017eae660efc6e49c4b6ab40"
 "Cartridge.Name" "Indiana Pitfall (Pitfall Hack)"
-""
-
-"Cartridge.MD5" "76c685d1a60c0107aa54a772113a2972"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (3 of 3) (1983) (Starpath) (PAL)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
@@ -8397,10 +8405,9 @@
 ""
 
 "Cartridge.MD5" "7adbcf78399b19596671edbffc3d34aa"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Joseph Tung"
 "Cartridge.ModelNo" "CX26152"
 "Cartridge.Name" "Super Baseball (1988) (Atari)"
-"Cartridge.Rarity" "Uncommon"
 "Display.YStart" "30"
 ""
 
@@ -8594,6 +8601,13 @@
 "Cartridge.Name" "Phaser Patrol (1982) (Arcadia)"
 "Display.YStart" "24"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "7dd9c5284422f729066ab22a284c8283"
+"Cartridge.Manufacturer" "CCE"
+"Cartridge.ModelNo" "C-833"
+"Cartridge.Name" "Target Practice (1983) (CCE) [a]"
+"Cartridge.Note" "AKA Carnival"
 ""
 
 "Cartridge.MD5" "7e464186ba384069582d9f0c141f7491"
@@ -9094,6 +9108,12 @@
 "Display.PPBlend" "55"
 ""
 
+"Cartridge.MD5" "84db818cd4111542a15c2a795369a256"
+"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.ModelNo" "AR-4401"
+"Cartridge.Name" "Survival Island (1983) (Starpath) (PAL)"
+""
+
 "Cartridge.MD5" "8538c5e3ee83267774480649f83fa8d6"
 "Cartridge.Name" "Escape Demo (PD)"
 ""
@@ -9134,6 +9154,12 @@
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX2618, CX2618P"
 "Cartridge.Name" "3-D Tic-Tac-Toe (1980) (Atari) (PAL) (4K)"
+""
+
+"Cartridge.MD5" "85502d69fe46b7f54ef2598225678b47"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Super-Ferrari (Jone Yuan)"
+"Cartridge.Note" "AKA Enduro"
 ""
 
 "Cartridge.MD5" "85b1bca93e69f13905107cc802a02470"
@@ -9206,7 +9232,6 @@
 "Cartridge.Manufacturer" "Milton Bradley"
 "Cartridge.ModelNo" "4362"
 "Cartridge.Name" "Survival Run (1983) (Milton Bradley)"
-"Cartridge.Rarity" "Rare"
 "Display.YStart" "29"
 "Display.Height" "225"
 "Display.Phosphor" "YES"
@@ -9276,9 +9301,8 @@
 ""
 
 "Cartridge.MD5" "87662815bc4f3c3c86071dc994e3f30e"
-"Cartridge.Manufacturer" "Intellivision Productions"
-"Cartridge.Name" "Sword Fight (2000) (Intellevision Productions)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Manufacturer" "Intellivision Productions - M Network, Patricia Lewis Du Long, Stephen Tatsumi"
+"Cartridge.Name" "Swordfight (1983) (Intellivision)"
 ""
 
 "Cartridge.MD5" "8764462d7d19a33b0717af22b99fc88f"
@@ -9369,11 +9393,10 @@
 ""
 
 "Cartridge.MD5" "8885d0ce11c5b40c3a8a8d9ed28cefef"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2608 / 4975165"
-"Cartridge.Name" "Super Breakout (1978) (Atari) (PAL) [a1]"
+"Cartridge.Manufacturer" "Atari, Carol Shaw, Nick 'Sandy Maiwald' Turner - Sears"
+"Cartridge.ModelNo" "CX2608 - 49-75165"
+"Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Common"
 "Controller.Left" "PADDLES"
 ""
 
@@ -9541,10 +9564,9 @@
 ""
 
 "Cartridge.MD5" "8b7ca29a55432f886cee3d452fb00481"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum, Jon Leupp"
 "Cartridge.ModelNo" "AR-4201"
 "Cartridge.Name" "Sword of Saros (1983) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "8b8152d6081f31365406cb716bd95567"
@@ -9595,8 +9617,10 @@
 ""
 
 "Cartridge.MD5" "8c2fa33048f055f38358d51eefe417db"
-"Cartridge.Manufacturer" "HomeVision"
-"Cartridge.Name" "Teddy Apple (HomeVision) (PAL) [!]"
+"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.ModelNo" "VCS83137"
+"Cartridge.Name" "Teddy Apple (1983) (Home Vision) (PAL)"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.YStart" "42"
 "Display.Phosphor" "YES"
 ""
@@ -9731,8 +9755,9 @@
 ""
 
 "Cartridge.MD5" "8ed73106e2f42f91447fb90b6f0ea4a4"
-"Cartridge.Manufacturer" "Spectravideo"
-"Cartridge.Name" "Tape Worm (1982) (Spectravideo) (PAL) [!]"
+"Cartridge.Manufacturer" "Spectravision, Spectravideo"
+"Cartridge.ModelNo" "SA-204"
+"Cartridge.Name" "Tapeworm (1982) (Spectravision) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -10034,10 +10059,9 @@
 ""
 
 "Cartridge.MD5" "93c52141d3c4e1b5574d072f1afde6cd"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "O3213"
-"Cartridge.Name" "Subterrenea (1983) (Imagic)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "Imagic, Mark Klein"
+"Cartridge.ModelNo" "03213"
+"Cartridge.Name" "Subterranea (1983) (Imagic)"
 ""
 
 "Cartridge.MD5" "93c8d9d24f9c5f1f570694848d087df7"
@@ -10182,10 +10206,9 @@
 ""
 
 "Cartridge.MD5" "961112b74a920a5242e233480326c356"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-007"
-"Cartridge.Name" "Tennis (1981) (Activision) [o2]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AG-007, CAG-007"
+"Cartridge.Name" "Tennis (1981) (Activision) (16K)"
 ""
 
 "Cartridge.MD5" "9671b658286e276cc4a3d02aa25931d2"
@@ -10539,10 +10562,9 @@
 ""
 
 "Cartridge.MD5" "9d37a1be4a6e898026414b8fee2fc826"
-"Cartridge.Manufacturer" "Telegames"
-"Cartridge.ModelNo" "5665 A016"
-"Cartridge.Name" "Baseball (1989) (Telegames)"
-"Cartridge.Note" "AKA Super Challenge Baseball"
+"Cartridge.Manufacturer" "M Network, David Rolfe - INTV"
+"Cartridge.ModelNo" "MT5665"
+"Cartridge.Name" "Super Challenge Baseball (1982) (Mattel)"
 ""
 
 "Cartridge.MD5" "9dec0be14d899e1aac4337acef5ab94a"
@@ -10870,9 +10892,8 @@
 ""
 
 "Cartridge.MD5" "a1ead9c181d67859aa93c44e40f1709c"
-"Cartridge.Manufacturer" "American Videogame"
+"Cartridge.Manufacturer" "American Videogame - Dunhill Electronics, Darrell Wagner, Todd Clark Holm, John Simonds"
 "Cartridge.Name" "Tax Avoiders (1982) (American Videogame)"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "a204cd4fb1944c86e800120706512a64"
@@ -10894,7 +10915,11 @@
 ""
 
 "Cartridge.MD5" "a2170318a8ef4b50a1b1d38567c220d6"
-"Cartridge.Name" "Surf's Up (1983) (Amiga) [h1]"
+"Cartridge.Manufacturer" "Amiga"
+"Cartridge.ModelNo" "3125"
+"Cartridge.Name" "Surf's Up (1983) (Amiga) (Prototype) [a]"
+"Cartridge.Note" "Joyboard"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "a2424c1a0c783d7585d701b1c71b5fdc"
@@ -11144,15 +11169,15 @@
 ""
 
 "Cartridge.MD5" "a5c96b046d5f8b7c96daaa12f925bef8"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-007"
-"Cartridge.Name" "Tennis (1981) (Activision) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Activision, Alan Miller - Ariola"
+"Cartridge.ModelNo" "EAG-007, EAG-007-04I, PAG-007 - 711 007-720"
+"Cartridge.Name" "Tennis (1981) (Activision) (PAL)"
 ""
 
 "Cartridge.MD5" "a60598ad7ee9c5ccad42d5b0df1570a1"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Surround (32-in-1) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "Surround (32 in 1) (1988) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "a74689a08746a667a299b0507e1e6dd9"
@@ -11273,8 +11298,9 @@
 ""
 
 "Cartridge.MD5" "a875f0a919129b4f1b5103ddd200d2fe"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "SwordQuest - Earthworld (1982) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Dan Hitchens"
+"Cartridge.ModelNo" "CX2656"
+"Cartridge.Name" "Swordquest - EarthWorld (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "a93e8ea1f565c3c1e86b708cf0dc2fa9"
@@ -11343,10 +11369,9 @@
 ""
 
 "Cartridge.MD5" "a9531c763077464307086ec9a1fd057d"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2631 / 6699845 / 4975152"
-"Cartridge.Name" "Superman (1978) (Atari)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, John Dunn - Sears"
+"Cartridge.ModelNo" "CX2631 - 49-75152"
+"Cartridge.Name" "Superman (1979) (Atari)"
 ""
 
 "Cartridge.MD5" "a97733b0852ee3096300102cb0689175"
@@ -11414,15 +11439,6 @@
 "Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
 "Cartridge.ModelNo" "VCS83117"
 "Cartridge.Name" "Lilly Adventure (1983) (Home Vision) (PAL)"
-""
-
-"Cartridge.MD5" "aaea37b65db9e492798f0105a6915e96"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (2 of 3) (1982) (Starpath)"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Extremely Rare"
-"Controller.Left" "PADDLES"
 ""
 
 "Cartridge.MD5" "aad91be0bf78d33d29758876d999848a"
@@ -11552,10 +11568,9 @@
 ""
 
 "Cartridge.MD5" "aca09ffea77174b148b96b205109db4d"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AG-007"
-"Cartridge.Name" "Tennis (1981) (Activision) [o1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Activision, Alan Miller"
+"Cartridge.ModelNo" "AG-007, CAG-007"
+"Cartridge.Name" "Tennis (1981) (Activision) (4K)"
 ""
 
 "Cartridge.MD5" "acb962473185d7a652f90ed6591ae13b"
@@ -11740,20 +11755,14 @@
 "Cartridge.MD5" "aec9b885d0e8b24e871925630884095c"
 "Cartridge.Manufacturer" "Amiga"
 "Cartridge.ModelNo" "3125"
-"Cartridge.Name" "Surf's Up (1983) (Amiga)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Surf's Up (1983) (Amiga) (Prototype)"
+"Cartridge.Note" "Joyboard"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "afc194534c1b346609ef05eff6d3cef6"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Boxing (Jone Yuan)"
-""
-
-"Cartridge.MD5" "aff8cba0f2d2eb239953dd7116894a08"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "afe88aae81d99e0947c0cfb687b16251"
@@ -12015,13 +12024,6 @@
 "Cartridge.Name" "Spike's Peak (1983) (Xonox) (PAL)"
 ""
 
-"Cartridge.MD5" "b31dc989f594764eacfa7931cead0050"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (2 of 3) (1983) (Starpath)"
-"Cartridge.Rarity" "Rare"
-""
-
 "Cartridge.MD5" "b36040a2f9ecafa73d835d804a572dbf"
 "Cartridge.Manufacturer" "Digitel"
 "Cartridge.Name" "Pac Man (1983) (Digitel)"
@@ -12073,10 +12075,9 @@
 ""
 
 "Cartridge.MD5" "b4f05e544834d0238a0c263491775edf"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission Preview (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Suicide Mission (Preview) (1982) (Starpath) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -12474,10 +12475,9 @@
 ""
 
 "Cartridge.MD5" "bc5389839857612cfabeb810ba7effdc"
-"Cartridge.Manufacturer" "Atari"
+"Cartridge.Manufacturer" "Atari, Tod Frye"
 "Cartridge.ModelNo" "CX2671"
-"Cartridge.Name" "SwordQuest - Waterworld (1983) (Atari)"
-"Cartridge.Rarity" "Unbelievably Rare"
+"Cartridge.Name" "Swordquest - WaterWorld (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "bc97d544f1d4834cc72bcc92a37b8c1b"
@@ -12547,8 +12547,10 @@
 ""
 
 "Cartridge.MD5" "bdecc81f740200780db04a107c3a1eba"
-"Cartridge.Manufacturer" "Starsoft"
-"Cartridge.Name" "Super-Cowboy beim Rodeo (Starsoft) (PAL) [!]"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "874.254 6"
+"Cartridge.Name" "Super-Cowboy beim Rodeo (1983) (Quelle) (PAL)"
+"Cartridge.Note" "AKA Stampede"
 ""
 
 "Cartridge.MD5" "bdc381baf7c252c63739c5e9ed087a5c"
@@ -12624,10 +12626,9 @@
 ""
 
 "Cartridge.MD5" "bf976cf80bcf52c5f164c1d45f2b316b"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2656"
-"Cartridge.Name" "SwordQuest - Fireworld (1982) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Tod Frye"
+"Cartridge.ModelNo" "CX2657"
+"Cartridge.Name" "Swordquest - FireWorld (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "d2d8c4f1ea7f347c8bcc7d24f45aa338"
@@ -12733,8 +12734,8 @@
 ""
 
 "Cartridge.MD5" "c032c2bd7017fdfbba9a105ec50f800e"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Thwocker (Activision) (Prototype) [!]"
+"Cartridge.Manufacturer" "Activision, Charlie Heath"
+"Cartridge.Name" "Thwocker (1984) (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -12743,7 +12744,8 @@
 ""
 
 "Cartridge.MD5" "c08d0cee43077d3055febb00e5745c1d"
-"Cartridge.Name" "Super Hit Pak - RRaid,GPrix,Fishing,SkyJ,Chckrs (Activision) (PAL) [!]"
+"Cartridge.Manufacturer" "HES - Activision"
+"Cartridge.Name" "Super Hit Pak - River Raid, Sky Jinks, Grand Prix, Fishing Derby, Checkers (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "c05f367fa4767ceb27abadf0066df7f4"
@@ -12751,10 +12753,9 @@
 ""
 
 "Cartridge.MD5" "c0d2434348de72fa6edcc6d8e40f28d7"
-"Cartridge.Manufacturer" "Sega"
+"Cartridge.Manufacturer" "Sega - Bally Midway - Beck-Tech"
 "Cartridge.ModelNo" "010-01"
-"Cartridge.Name" "Tapper (1983) (Sega) [!]"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.Name" "Tapper (1983) (Sega)"
 "Display.YStart" "24"
 "Display.Height" "225"
 ""
@@ -12822,8 +12823,8 @@
 
 "Cartridge.MD5" "c20f15282a1aa8724d70c117e5c9709e"
 "Cartridge.Manufacturer" "Video Gems"
-"Cartridge.Name" "Surfer's Paradise - But Danger Below! (Video Gems) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
+"Cartridge.ModelNo" "VG-02"
+"Cartridge.Name" "Surfer's Paradise (1983) (Video Gems) (PAL)"
 ""
 
 "Cartridge.MD5" "c2778507b83d9540e9be5713758ff945"
@@ -12851,10 +12852,9 @@
 ""
 
 "Cartridge.MD5" "c29f8db680990cb45ef7fef6ab57a2c2"
-"Cartridge.Manufacturer" "Parker Bros"
+"Cartridge.Manufacturer" "Parker Brothers, Mike Brodie"
 "Cartridge.ModelNo" "PB5320"
 "Cartridge.Name" "Super Cobra (1982) (Parker Bros)"
-"Cartridge.Rarity" "Uncommon"
 ""
 
 "Cartridge.MD5" "c29d17eef6b0784db4586c12cb5fd454"
@@ -12928,10 +12928,9 @@
 ""
 
 "Cartridge.MD5" "c370c3268ad95b3266d6e36ff23d1f0c"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2641 / 99807 / 75105"
-"Cartridge.Name" "Surround (1978) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Alan Miller"
+"Cartridge.ModelNo" "CX2641, CX2641P"
+"Cartridge.Name" "Surround (1977) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "c3bbc673acf2701b5275e85d9372facf"
@@ -13240,8 +13239,8 @@
 "Cartridge.MD5" "c77d3b47f2293e69419b92522c6f6647"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "101"
-"Cartridge.Name" "Tank Brigade (Panda) (PAL)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Tank Brigade (1983) (Panda)"
+"Cartridge.Note" "AKA Phantom Tank"
 "Display.YStart" "30"
 ""
 
@@ -13269,8 +13268,9 @@
 ""
 
 "Cartridge.MD5" "c830f6ae7ee58bcc2a6712fb33e92d55"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Tempest (Atari) (Prototype) [!]"
+"Cartridge.Manufacturer" "Atari, Carla Meninsky"
+"Cartridge.ModelNo" "CX2687"
+"Cartridge.Name" "Tempest (1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -13415,6 +13415,12 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "ca7f166a94eed1a349dec6d6a358bcad"
+"Cartridge.Manufacturer" "Activision, Alan Miller - Ariola"
+"Cartridge.ModelNo" "EAG-007, EAG-007-04I, PAG-007 - 711 007-720"
+"Cartridge.Name" "Tennis (1981) (Activision) (PAL) (4K)"
+""
+
 "Cartridge.MD5" "cae8f83c06831ec7bb6a3c07e98e9342"
 "Cartridge.Manufacturer" "Colin Hughes"
 "Cartridge.Name" "Tetris 2600 (Colin Hughes) [o1]"
@@ -13479,7 +13485,8 @@
 
 "Cartridge.MD5" "cbc373fbcb1653b4c56bfabba33ea50d"
 "Cartridge.Manufacturer" "CCE"
-"Cartridge.Name" "Super VoleyBall (CCE)"
+"Cartridge.Name" "Super Voleyball (CCE)"
+"Cartridge.Note" "AKA RealSports Volleyball"
 ""
 
 "Cartridge.MD5" "cbd981a23c592fb9ab979223bb368cd5"
@@ -13530,6 +13537,13 @@
 "Cartridge.Manufacturer" "Atari, Bill Aspromonte, John Russell, Michael Sierchio, Robert Zdybel"
 "Cartridge.ModelNo" "CX26114"
 "Cartridge.Name" "Pigs in Space (1983) (Atari) (PAL) [a]"
+""
+
+"Cartridge.MD5" "cc2973680c150886cce1ed8693c3aca2"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "874.254 6"
+"Cartridge.Name" "Super-Cowboy beim Rodeo (1983) (Quelle) (PAL) (4K)"
+"Cartridge.Note" "AKA Stampede"
 ""
 
 "Cartridge.MD5" "ccb5fa954fb76f09caae9a8c66462190"
@@ -13767,7 +13781,6 @@
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "003-01"
 "Cartridge.Name" "Thunderground (1983) (Sega)"
-"Cartridge.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -14063,10 +14076,9 @@
 ""
 
 "Cartridge.MD5" "d326db524d93fa2897ab69c42d6fb698"
-"Cartridge.Manufacturer" "Parker Bros"
-"Cartridge.ModelNo" "PB5320"
-"Cartridge.Name" "Super Cobra (1982) (Parker Bros) (PAL) [!]"
-"Cartridge.Rarity" "Uncommon"
+"Cartridge.Manufacturer" "Parker Brothers, Mike Brodie"
+"Cartridge.ModelNo" "931505"
+"Cartridge.Name" "Super Cobra (1982) (Parker Bros) (PAL)"
 ""
 
 "Cartridge.MD5" "d4aa6d6095258ce46aaf6f144b09eea7"
@@ -14127,9 +14139,8 @@
 "Cartridge.MD5" "d45ebf130ed9070ea8ebd56176e48a38"
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "001-01"
-"Cartridge.Name" "Tac Scan (1983) (Sega) [!]"
+"Cartridge.Name" "Tac-Scan (1982) (Sega)"
 "Cartridge.Note" "Uses the Paddle Controllers (right only)"
-"Cartridge.Rarity" "Uncommon"
 "Console.SwapPorts" "YES"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -14426,8 +14437,7 @@
 ""
 
 "Cartridge.MD5" "d89fedded0436fdeda7c3c37e2fb7cf1"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Surround (1978) (Atari) (PAL) [p1][o1][!]"
+"Cartridge.Name" "Surround (Unknown) (PAL) (4K)"
 ""
 
 "Cartridge.MD5" "d88691c995008b9ab61a44bb686b32e4"
@@ -14439,7 +14449,9 @@
 ""
 
 "Cartridge.MD5" "d8e4c8e2d210270cd1e0f6d1b4582b91"
-"Cartridge.Name" "Subterrenea (1983) (Imagic) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Imagic, Mark Klein"
+"Cartridge.ModelNo" "EIZ-003-04I"
+"Cartridge.Name" "Subterranea (1983) (Imagic) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "d9b49f0678776e04916fa5478685a819"
@@ -14663,10 +14675,9 @@
 ""
 
 "Cartridge.MD5" "dbb10b904242fcfb8428f372e00c01af"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2631"
-"Cartridge.Name" "Superman (1978) (Atari) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, John Dunn"
+"Cartridge.ModelNo" "CX2631, CX2631P"
+"Cartridge.Name" "Superman (1979) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "dcc2956c7a39fdbf1e861fc5c595da0d"
@@ -14783,13 +14794,6 @@
 "Cartridge.Name" "Commando (1988) (Activision) (PAL)"
 ""
 
-"Cartridge.MD5" "dd8a2124d4eda200df715c698a6ea887"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
-""
-
 "Cartridge.MD5" "ddd1efc1862cd3eb3baf4cba81ff5050"
 "Cartridge.Name" "Max3 (2001) (Maxime Beauvais) (PD)"
 ""
@@ -14838,10 +14842,9 @@
 ""
 
 "Cartridge.MD5" "de3d0e37729d85afcb25a8d052a6e236"
-"Cartridge.Manufacturer" "Spectravideo"
+"Cartridge.Manufacturer" "Spectravision, Spectravideo"
 "Cartridge.ModelNo" "SA-204"
-"Cartridge.Name" "Tape Worm (1982) (Spectravideo)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Tapeworm (1982) (Spectravision)"
 "Display.Phosphor" "YES"
 ""
 
@@ -15152,10 +15155,9 @@
 ""
 
 "Cartridge.MD5" "e275cbe7d4e11e62c3bfcfb38fca3d49"
-"Cartridge.Manufacturer" "Mattel"
+"Cartridge.Manufacturer" "M Network, Ken Smith - INTV"
 "Cartridge.ModelNo" "MT5658"
 "Cartridge.Name" "Super Challenge Football (1982) (Mattel)"
-"Cartridge.Rarity" "Common"
 ""
 
 "Cartridge.MD5" "e2c89f270f72cd256ed667507fa038a2"
@@ -15309,8 +15311,7 @@
 ""
 
 "Cartridge.MD5" "e3ed4ba3361756970f076e46e9cad1d2"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Tennis (1981) (Activision) (PAL) [p1][o1]"
+"Cartridge.Name" "Tennis (Unknown) (PAL) (4K) [a]"
 ""
 
 "Cartridge.MD5" "e42b937c30c617241ca9e01e4510c3f6"
@@ -15351,10 +15352,9 @@
 ""
 
 "Cartridge.MD5" "e4c666ca0c36928b95b13d33474dbb44"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission (1982) (Starpath)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Name" "Suicide Mission (1982) (Arcadia)"
 "Display.Phosphor" "YES"
 ""
 
@@ -15378,8 +15378,9 @@
 ""
 
 "Cartridge.MD5" "e51c23389e43ab328ccfb05be7d451da"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Sweat! - The Decathalon Game (1982) (Starpath) (Prototype)"
+"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.ModelNo" "13"
+"Cartridge.Name" "Sweat! - The Decathlon Game (1983) (Starpath) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
@@ -15470,10 +15471,9 @@
 ""
 
 "Cartridge.MD5" "e63a87c231ee9a506f9599aa4ef7dfb9"
-"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.Manufacturer" "Tigervision, Warren Schwader"
 "Cartridge.ModelNo" "7-003"
 "Cartridge.Name" "Threshold (1982) (Tigervision)"
-"Cartridge.Rarity" "Rare"
 "Display.YStart" "21"
 "Display.Height" "214"
 ""
@@ -15841,10 +15841,9 @@
 ""
 
 "Cartridge.MD5" "eb92193f06b645df0b2a15d077ce435f"
-"Cartridge.Manufacturer" "Starpath"
+"Cartridge.Manufacturer" "Starpath Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
 "Cartridge.Name" "Suicide Mission (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Rare"
 "Display.Phosphor" "YES"
 ""
 
@@ -15956,11 +15955,10 @@
 ""
 
 "Cartridge.MD5" "ee4c186123d31a279ed7a84d3578df23"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2608 / 4975165"
-"Cartridge.Name" "Super Breakout (1978) (Atari) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari, Carol Shaw, Nick 'Sandy Maiwald' Turner"
+"Cartridge.ModelNo" "CX2608"
+"Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "Common"
 "Controller.Left" "PADDLES"
 ""
 
@@ -16868,10 +16866,9 @@
 ""
 
 "Cartridge.MD5" "f9d51a4e5f8b48f68770c89ffd495ed1"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2656"
-"Cartridge.Name" "SwordQuest - Fireworld (1982) (Atari) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Atari, Tod Frye"
+"Cartridge.ModelNo" "CX2657"
+"Cartridge.Name" "Swordquest - FireWorld (1982) (Atari)"
 ""
 
 "Cartridge.MD5" "fa0570561aa80896f0ead05c46351389"
@@ -16940,10 +16937,10 @@
 ""
 
 "Cartridge.MD5" "fa6fe97a10efb9e74c0b5a816e6e1958"
-"Cartridge.Manufacturer" "Zimag"
-"Cartridge.ModelNo" "707-111"
-"Cartridge.Name" "Tanks But No Tanks (Zimag)"
-"Cartridge.Rarity" "Rare"
+"Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
+"Cartridge.ModelNo" "707-111 - GN-030"
+"Cartridge.Name" "Tanks But No Tanks (1983) (ZiMAG)"
+"Cartridge.Note" "AKA Phantom Tank"
 "Display.YStart" "30"
 ""
 
@@ -16988,6 +16985,7 @@
 "Cartridge.MD5" "faed2ef6b44894f8c83f2b50891c35c6"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Super Baseball (CCE)"
+"Cartridge.Note" "AKA RealSports Baseball"
 "Display.YStart" "26"
 ""
 
@@ -17140,8 +17138,9 @@
 ""
 
 "Cartridge.MD5" "fd10915633aea4f9cd8b518a25d62b55"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.Name" "Superman (1978) (Atari) (PAL) [a1][!]"
+"Cartridge.Manufacturer" "Atari, John Dunn"
+"Cartridge.ModelNo" "CX2631, CX2631P"
+"Cartridge.Name" "Superman (1979) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "fdf6680b2b1e8054293a39700a765692"
@@ -17202,7 +17201,8 @@
 ""
 
 "Cartridge.MD5" "feba8686fd0376015258d1152923958a"
-"Cartridge.Name" "Super Circus (PAL) [!]"
+"Cartridge.Name" "Super Circus (Unknown) (PAL)"
+"Cartridge.Note" "AKA Circus Atari"
 ""
 
 "Cartridge.MD5" "ff3bd0c684f7144aeaa18758d8281a78"
