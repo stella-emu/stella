@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.208 2007-09-17 22:41:45 stephena Exp $
+// $Id: EventHandler.cxx,v 1.209 2007-09-20 00:13:35 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1315,10 +1315,12 @@ void EventHandler::setActionMappings(EventMode mode)
       }
     }
 #ifdef JOYSTICK_SUPPORT
+    int stick, button, axis, hat, dir;
+
     // Joystick button mapping/labeling
-    for(int stick = 0; stick < kNumJoysticks; ++stick)
+    for(stick = 0; stick < kNumJoysticks; ++stick)
     {
-      for(int button = 0; button < kNumJoyButtons; ++button)
+      for(button = 0; button < kNumJoyButtons; ++button)
       {
         if(myJoyTable[stick][button][mode] == event)
         {
@@ -1334,9 +1336,9 @@ void EventHandler::setActionMappings(EventMode mode)
     // Joystick axis mapping/labeling
     for(stick = 0; stick < kNumJoysticks; ++stick)
     {
-      for(int axis = 0; axis < kNumJoyAxis; ++axis)
+      for(axis = 0; axis < kNumJoyAxis; ++axis)
       {
-        for(int dir = 0; dir < 2; ++dir)
+        for(dir = 0; dir < 2; ++dir)
         {
           if(myJoyAxisTable[stick][axis][dir][mode] == event)
           {
@@ -1361,11 +1363,11 @@ void EventHandler::setActionMappings(EventMode mode)
       }
     }
     // Joystick hat mapping/labeling
-    for(int stick = 0; stick < kNumJoysticks; ++stick)
+    for(stick = 0; stick < kNumJoysticks; ++stick)
     {
-      for(int hat = 0; hat < kNumJoyHats; ++hat)
+      for(hat = 0; hat < kNumJoyHats; ++hat)
       {
-        for(int dir = 0; dir < 4; ++dir)
+        for(dir = 0; dir < 4; ++dir)
         {
           if(myJoyHatTable[stick][hat][dir][mode] == event)
           {
