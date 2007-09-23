@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.58 2007-09-12 00:57:51 stephena Exp $
+// $Id: OSystem.hxx,v 1.59 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -30,6 +30,7 @@ class Properties;
 class PropertiesSet;
 class Settings;
 class Sound;
+class StateManager;
 class VideoDialog;
 
 namespace GUI {
@@ -54,7 +55,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.58 2007-09-12 00:57:51 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.59 2007-09-23 17:04:17 stephena Exp $
 */
 class OSystem
 {
@@ -147,6 +148,13 @@ class OSystem
       @return The launcher object
     */
     inline Launcher& launcher(void) const { return *myLauncher; }
+
+    /**
+      Get the state manager of the system.
+
+      @return The statemanager object
+    */
+    inline StateManager& state(void) const { return *myStateManager; }
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -472,6 +480,9 @@ class OSystem
 
     // Pointer to the CheatManager object
     CheatManager* myCheatManager;
+
+    // Pointer to the StateManager object
+    StateManager* myStateManager;
 
     // Maximum dimensions of the desktop area
     uInt32 myDesktopWidth, myDesktopHeight;

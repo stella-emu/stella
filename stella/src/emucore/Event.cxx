@@ -13,16 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.11 2007-01-01 18:04:47 stephena Exp $
+// $Id: Event.cxx,v 1.12 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
-#include "EventStreamer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Event(EventStreamer* ev)
-  : myNumberOfTypes(Event::LastType),
-    myEventStreamer(ev)
+Event::Event()
+  : myNumberOfTypes(Event::LastType)
 {
   // Set all of the events to 0 / false to start with,
   // including analog paddle events.  Doing it this way
@@ -50,12 +48,6 @@ Int32 Event::get(Type type) const
 void Event::set(Type type, Int32 value)
 {
   myValues[type] = value;
-
-/* FIXME - add full functionality at some point
-  // Add to history if we're in recording mode
-  if(myEventStreamer->isRecording())
-    myEventStreamer->addEvent(type, value);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

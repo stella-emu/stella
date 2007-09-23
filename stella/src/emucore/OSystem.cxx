@@ -13,13 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.110 2007-09-03 18:37:22 stephena Exp $
+// $Id: OSystem.cxx,v 1.111 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <sstream>
 #include <fstream>
 #include <zlib.h>
+
+#include "bspf.hxx"
 
 #include "MediaFactory.hxx"
 
@@ -43,10 +45,11 @@
 #include "Font.hxx"
 #include "StellaFont.hxx"
 #include "ConsoleFont.hxx"
-#include "bspf.hxx"
-#include "OSystem.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
+#include "StateManager.hxx"
+
+#include "OSystem.hxx"
 
 #define MAX_ROM_SIZE  512 * 1024
 
@@ -63,6 +66,7 @@ OSystem::OSystem()
     myLauncher(NULL),
     myDebugger(NULL),
     myCheatManager(NULL),
+    myStateManager(NULL),
     myQuitLoop(false),
     myRomFile(""),
     myFeatures(""),
@@ -144,8 +148,10 @@ OSystem::~OSystem()
   delete myCheatManager;
 #endif
 
+  delete myStateManager;
   delete myPropSet;
   delete myEventHandler;
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,6 +189,7 @@ bool OSystem::create()
 #ifdef DEBUGGER_SUPPORT
   myDebugger = new Debugger(this);
 #endif
+  myStateManager = new StateManager(this);
 
   // Create the sound object; the sound subsystem isn't actually
   // opened until needed, so this is non-blocking (on those systems

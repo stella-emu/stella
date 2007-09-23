@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.21 2007-01-01 18:04:51 stephena Exp $
+// $Id: System.cxx,v 1.22 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -205,7 +205,6 @@ const System::PageAccess& System::getPageAccess(uInt16 page)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::saveState(const string& md5sum, Serializer& out)
 {
-  // Open the file as a new Serializer
   if(!out.isOpen())
     return false;
 
@@ -245,7 +244,6 @@ bool System::saveState(const string& md5sum, Serializer& out)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::loadState(const string& md5sum, Deserializer& in)
 {
-  // Open the file as a new Deserializer
   if(!in.isOpen())
     return false;
 

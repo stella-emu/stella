@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.28 2007-01-30 17:13:07 stephena Exp $
+// $Id: Event.hxx,v 1.29 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -22,11 +22,10 @@
 #include "bspf.hxx"
 
 class Event;
-class EventStreamer;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.28 2007-01-30 17:13:07 stephena Exp $
+  @version $Id: Event.hxx,v 1.29 2007-09-23 17:04:17 stephena Exp $
 */
 class Event
 {
@@ -88,9 +87,9 @@ class Event
 
   public:
     /**
-      Create a new event object and use the given eventstreamer
+      Create a new event object
     */
-    Event(EventStreamer* ev);
+    Event();
  
     /**
       Destructor
@@ -119,9 +118,6 @@ class Event
 
     // Array of values associated with each event type
     Int32 myValues[LastType];
-
-    // The eventstreamer to record events to
-    EventStreamer* myEventStreamer;
 };
 
 #endif

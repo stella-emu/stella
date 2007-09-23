@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.103 2007-09-03 18:37:22 stephena Exp $
+// $Id: EventHandler.hxx,v 1.104 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -62,7 +62,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.103 2007-09-03 18:37:22 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.104 2007-09-23 17:04:17 stephena Exp $
 */
 class EventHandler
 {
@@ -190,16 +190,6 @@ class EventHandler
       This method indicates that the system should terminate.
     */
     void quit() { handleEvent(Event::Quit, 1); }
-
-    /**
-      Save state to explicit state number (debugger uses this)
-    */
-    void saveState(int state);
-
-    /**
-      Load state from explicit state number (debugger uses this)
-    */
-    void loadState(int state);
 
     /**
       Sets the mouse to act as paddle 'num'
@@ -454,9 +444,6 @@ class EventHandler
     */
     inline bool isJitter(int paddle, int value);
 
-    void saveState();
-    void changeState(bool show = true);
-    void loadState();
     void setEventState(State state);
 
   private:
@@ -537,9 +524,6 @@ class EventHandler
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
-
-    // Indicates the current state to use for state loading/saving
-    uInt32 myLSState;
 
     // Indicates whether the mouse cursor is grabbed
     bool myGrabMouseFlag;

@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.209 2007-09-20 00:13:35 stephena Exp $
+// $Id: EventHandler.cxx,v 1.210 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -24,10 +24,8 @@
 
 #include "CommandMenu.hxx"
 #include "Console.hxx"
-#include "Deserializer.hxx"
 #include "DialogContainer.hxx"
 #include "Event.hxx"
-#include "EventStreamer.hxx"
 #include "FrameBuffer.hxx"
 #include "FSNode.hxx"
 #include "Launcher.hxx"
@@ -35,11 +33,10 @@
 #include "OSystem.hxx"
 #include "PropsSet.hxx"
 #include "ScrollBarWidget.hxx"
-#include "Serializer.hxx"
 #include "Settings.hxx"
 #include "Snapshot.hxx"
 #include "Sound.hxx"
-#include "System.hxx"
+#include "StateManager.hxx"
 
 #include "EventHandler.hxx"
 
@@ -62,10 +59,8 @@
 EventHandler::EventHandler(OSystem* osystem)
   : myOSystem(osystem),
     myEvent(NULL),
-    myEventStreamer(NULL),
     myOverlay(NULL),
     myState(S_NONE),
-    myLSState(0),
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
     myAllowAllDirectionsFlag(false),
@@ -73,11 +68,8 @@ EventHandler::EventHandler(OSystem* osystem)
     myPaddleMode(0),
     myPaddleThreshold(0)
 {
-  // Create the streamer used for accessing eventstreams/recordings
-  myEventStreamer = new EventStreamer(myOSystem);
-
   // Create the event object which will be used for this handler
-  myEvent = new Event(myEventStreamer);
+  myEvent = new Event();
 
   // Erase the key mapping array
   for(int i = 0; i < SDLK_LAST; ++i)
@@ -125,7 +117,6 @@ EventHandler::EventHandler(OSystem* osystem)
 EventHandler::~EventHandler()
 {
   delete myEvent;
-  delete myEventStreamer;
 
 #ifdef JOYSTICK_SUPPORT
   if(SDL_WasInit(SDL_INIT_JOYSTICK) & SDL_INIT_JOYSTICK)
@@ -165,8 +156,9 @@ void EventHandler::reset(State state)
 {
   setEventState(state);
 
-  myLSState = 0;
   myEvent->clear();
+
+  myOSystem->state().reset();
 
   if(myState == S_LAUNCHER)
     myUseLauncherFlag = true;
@@ -183,8 +175,6 @@ void EventHandler::reset(State state)
   setPaddleSpeed(1, myOSystem->settings().getInt("p1speed"));
   setPaddleSpeed(2, myOSystem->settings().getInt("p2speed"));
   setPaddleSpeed(3, myOSystem->settings().getInt("p3speed"));
-
-//  myEventStreamer->reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -357,6 +347,7 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt32 time)
 {
+// FIXME - change this to use StateManager stuff
   // Check if we have an event from the eventstreamer
   // TODO - should we lock out input from the user while getting synthetic events?
 //  int type, value;
@@ -846,6 +837,7 @@ void EventHandler::poll(uInt32 time)
   // Tell the eventstreamer that another frame has finished
   // This is used for event recording
 //  myEventStreamer->nextFrame();
+// FIXME - change this to use StateManager stuff
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1176,15 +1168,15 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::SaveState:
-      if(state) saveState();
+      if(state) myOSystem->state().saveState();
       return;
 
     case Event::ChangeState:
-      if(state) changeState();
+      if(state) myOSystem->state().changeState();
       return;
 
     case Event::LoadState:
-      if(state) loadState();
+      if(state) myOSystem->state().loadState();
       return;
 
     case Event::TakeSnapshot:
@@ -2020,101 +2012,6 @@ inline bool EventHandler::isJitter(int paddle, int value)
   myPaddle[paddle].val = value;
 
   return jitter;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::saveState()
-{
-  const string& name = myOSystem->console().properties().get(Cartridge_Name);
-  const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
-
-  ostringstream buf;
-  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
-      << name << ".st" << myLSState;
-
-  // Make sure the file can be opened for writing
-  Serializer out;
-  if(!out.open(buf.str()))
-  {
-    myOSystem->frameBuffer().showMessage("Error saving state file");
-    return;
-  }
-
-  // Do a state save using the System
-  buf.str("");
-  if(myOSystem->console().system().saveState(md5, out))
-  {
-    buf << "State " << myLSState << " saved";
-    if(myOSystem->settings().getBool("autoslot"))
-    {
-      changeState(false);  // don't show a message for state change
-      buf << ", switching to slot " << myLSState;
-    }
-  }
-  else
-    buf << "Error saving state " << myLSState;
-
-  out.close();
-  myOSystem->frameBuffer().showMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::saveState(int state)
-{
-  myLSState = state;
-  saveState();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::changeState(bool show)
-{
-  myLSState = (myLSState + 1) % 10;
-
-  // Print appropriate message
-  if(show)
-  {
-    ostringstream buf;
-    buf << "Changed to slot " << myLSState;
-    myOSystem->frameBuffer().showMessage(buf.str());
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::loadState()
-{
-  const string& name = myOSystem->console().properties().get(Cartridge_Name);
-  const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
-
-  ostringstream buf;
-  buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
-      << name << ".st" << myLSState;
-
-  // Make sure the file can be opened for reading
-  Deserializer in;
-  if(!in.open(buf.str()))
-  {
-    buf.str("");
-    buf << "Error loading state " << myLSState;
-    myOSystem->frameBuffer().showMessage(buf.str());
-    return;
-  }
-
-  // Do a state load using the System
-  buf.str("");
-  if(myOSystem->console().system().loadState(md5, in))
-    buf << "State " << myLSState << " loaded";
-  else
-    buf << "Invalid state " << myLSState << " file";
-
-  in.close();
-  myOSystem->frameBuffer().showMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::loadState(int state)
-{
-  myLSState = state;
-  loadState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

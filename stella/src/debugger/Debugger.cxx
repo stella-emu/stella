@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.115 2007-09-03 18:37:22 stephena Exp $
+// $Id: Debugger.cxx,v 1.116 2007-09-23 17:04:17 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -29,6 +29,7 @@
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "StateManager.hxx"
 
 #include "Console.hxx"
 #include "System.hxx"
@@ -671,13 +672,13 @@ const string Debugger::dumpTIA()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveState(int state)
 {
-  myOSystem->eventHandler().saveState(state);
+  myOSystem->state().saveState(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::loadState(int state)
 {
-  myOSystem->eventHandler().loadState(state);
+  myOSystem->state().loadState(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

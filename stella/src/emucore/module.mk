@@ -32,7 +32,6 @@ MODULE_OBJS := \
 	src/emucore/Driving.o \
 	src/emucore/Event.o \
 	src/emucore/EventHandler.o \
-	src/emucore/EventStreamer.o \
 	src/emucore/FrameBuffer.o \
 	src/emucore/FSNode.o \
 	src/emucore/Joystick.o \
@@ -49,6 +48,7 @@ MODULE_OBJS := \
 	src/emucore/Settings.o \
 	src/emucore/SpeakJet.o \
 	src/emucore/Switches.o \
+	src/emucore/StateManager.o \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
 	src/emucore/unzip.o \
