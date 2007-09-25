@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.210 2007-09-23 17:04:17 stephena Exp $
+// $Id: EventHandler.cxx,v 1.211 2007-09-25 13:04:24 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1326,7 +1326,7 @@ void EventHandler::setActionMappings(EventMode mode)
       }
     }
     // Joystick axis mapping/labeling
-    for(stick = 0; stick < kNumJoysticks; ++stick)
+    for(int stick = 0; stick < kNumJoysticks; ++stick)
     {
       for(axis = 0; axis < kNumJoyAxis; ++axis)
       {
