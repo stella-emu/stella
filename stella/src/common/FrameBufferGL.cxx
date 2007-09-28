@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.93 2007-09-16 23:18:26 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.94 2007-09-28 16:24:44 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -93,6 +93,9 @@ FrameBufferGL::~FrameBufferGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::loadFuncs(const string& library)
 {
+  if(myFuncsLoaded)
+    return true;
+
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     SDL_Init(SDL_INIT_VIDEO);
 
@@ -163,7 +166,7 @@ bool FrameBufferGL::loadFuncs(const string& library)
   p_glTexParameteri = (void(APIENTRY*)(GLenum, GLenum, GLint))
       SDL_GL_GetProcAddress("glTexParameteri"); if(!p_glTexParameteri) return false;
 
-  return true;
+  return myFuncsLoaded = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -715,5 +718,8 @@ GUI::Surface* FrameBufferGL::createSurface(int width, int height) const
 
   return data ? new GUI::Surface(width, height, data) : NULL;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::myFuncsLoaded = false;
 
 #endif  // DISPLAY_OPENGL
