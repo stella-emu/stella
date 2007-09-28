@@ -131,7 +131,6 @@
 		2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D6CC10408C811A600B8F642 /* TiaZoomWidget.hxx */; };
 		2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE7242E08CE910900C889A8 /* TIASnd.hxx */; };
 		2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D2331900900B5EF00613B1F /* AudioWidget.hxx */; };
-		2D91746709BA90380026E9FF /* EventStreamer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF51096E25F200A518FE /* EventStreamer.hxx */; };
 		2D91746809BA90380026E9FF /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5B096E261E00A518FE /* MediaFactory.hxx */; };
 		2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */; };
 		2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF61096E269100A518FE /* InputDialog.hxx */; };
@@ -259,7 +258,6 @@
 		2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */; };
 		2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7242D08CE910900C889A8 /* TIASnd.cxx */; };
 		2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D23318F0900B5EF00613B1F /* AudioWidget.cxx */; };
-		2D91750909BA90380026E9FF /* EventStreamer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF50096E25F200A518FE /* EventStreamer.cxx */; };
 		2D91750A09BA90380026E9FF /* MediaFactory.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5A096E261E00A518FE /* MediaFactory.cxx */; };
 		2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */; };
 		2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF60096E269100A518FE /* InputDialog.cxx */; };
@@ -271,6 +269,8 @@
 		2D91751409BA90380026E9FF /* SDL.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = 2D4764C806683C5F00F63D87 /* SDL.framework */; };
 		2D91753809BA91BC0026E9FF /* StellaOSX.xcconfig in Resources */ = {isa = PBXBuildFile; fileRef = 2D91753709BA91BC0026E9FF /* StellaOSX.xcconfig */; };
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
+		DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */; };
+		DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
 		DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */; };
 		DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454C09C34BFA00EDDA3A /* Cheat.hxx */; };
@@ -288,6 +288,7 @@
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
+		DC8211550CAD74FF00511571 /* VideoModeList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8211540CAD74FF00511571 /* VideoModeList.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
@@ -356,8 +357,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D02207F08A301F200B9C76B /* InputTextDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = InputTextDialog.cxx; path = ../gui/InputTextDialog.cxx; sourceTree = SOURCE_ROOT; };
 		2D02208008A301F200B9C76B /* InputTextDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = InputTextDialog.hxx; path = ../gui/InputTextDialog.hxx; sourceTree = SOURCE_ROOT; };
-		2D05FF50096E25F200A518FE /* EventStreamer.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EventStreamer.cxx; path = ../emucore/EventStreamer.cxx; sourceTree = SOURCE_ROOT; };
-		2D05FF51096E25F200A518FE /* EventStreamer.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EventStreamer.hxx; path = ../emucore/EventStreamer.hxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5A096E261E00A518FE /* MediaFactory.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MediaFactory.cxx; path = ../emucore/MediaFactory.cxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5B096E261E00A518FE /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MediaFactory.hxx; path = ../emucore/MediaFactory.hxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EventMappingWidget.cxx; path = ../gui/EventMappingWidget.cxx; sourceTree = SOURCE_ROOT; };
@@ -615,6 +614,8 @@
 		2DF971DE0892CEA400F64D23 /* Expression.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Expression.cxx; path = ../debugger/Expression.cxx; sourceTree = SOURCE_ROOT; };
 		2DF971DF0892CEA400F64D23 /* Expression.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Expression.hxx; path = ../debugger/Expression.hxx; sourceTree = SOURCE_ROOT; };
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
+		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateManager.cxx; path = ../emucore/StateManager.cxx; sourceTree = SOURCE_ROOT; };
+		DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StateManager.hxx; path = ../emucore/StateManager.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BankRomCheat.hxx; path = ../cheat/BankRomCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454C09C34BFA00EDDA3A /* Cheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cheat.hxx; path = ../cheat/Cheat.hxx; sourceTree = SOURCE_ROOT; };
@@ -632,6 +633,7 @@
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC8211540CAD74FF00511571 /* VideoModeList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = VideoModeList.hxx; path = ../common/VideoModeList.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
@@ -798,6 +800,7 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DC8211540CAD74FF00511571 /* VideoModeList.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
 				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */,
@@ -836,6 +839,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */,
+				DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */,
 				DCEECE540B5E5E540021D754 /* Cart0840.cxx */,
 				DCEECE550B5E5E540021D754 /* Cart0840.hxx */,
 				DCD56D360B247D920092F9F8 /* Cart4A50.cxx */,
@@ -896,8 +901,6 @@
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
-				2D05FF50096E25F200A518FE /* EventStreamer.cxx */,
-				2D05FF51096E25F200A518FE /* EventStreamer.hxx */,
 				2D733D70062895B2006265D9 /* FrameBuffer.cxx */,
 				2D733D71062895B2006265D9 /* FrameBuffer.hxx */,
 				2DDBEB7208457B7D00812C11 /* FSNode.cxx */,
@@ -1228,7 +1231,6 @@
 				2D91746409BA90380026E9FF /* TiaZoomWidget.hxx in Headers */,
 				2D91746509BA90380026E9FF /* TIASnd.hxx in Headers */,
 				2D91746609BA90380026E9FF /* AudioWidget.hxx in Headers */,
-				2D91746709BA90380026E9FF /* EventStreamer.hxx in Headers */,
 				2D91746809BA90380026E9FF /* MediaFactory.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
@@ -1249,6 +1251,8 @@
 				DC54CDA00C79CD7200DD0ACD /* Version.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
 				DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */,
+				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
+				DC8211550CAD74FF00511571 /* VideoModeList.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1465,7 +1469,6 @@
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
 				2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
-				2D91750909BA90380026E9FF /* EventStreamer.cxx in Sources */,
 				2D91750A09BA90380026E9FF /* MediaFactory.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
 				2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */,
@@ -1482,6 +1485,7 @@
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DCE3BBFB0C95CEDC00A671DF /* Surface.cxx in Sources */,
+				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
