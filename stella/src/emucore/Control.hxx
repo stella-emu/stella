@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.9 2007-02-22 02:15:46 stephena Exp $
+// $Id: Control.hxx,v 1.10 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -23,6 +23,7 @@ class Controller;
 class Event;
 class System;
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
@@ -56,9 +57,9 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.9 2007-02-22 02:15:46 stephena Exp $
+  @version $Id: Control.hxx,v 1.10 2007-10-03 21:41:17 stephena Exp $
 */
-class Controller
+class Controller : public Serializable
 {
   public:
     /**
@@ -75,7 +76,7 @@ class Controller
     enum Type
     {
       BoosterGrip, Driving, Keyboard, Paddles, Joystick,
-      TrakBall, AtariVox
+      TrackBall22, AtariVox
     };
 
   public:
@@ -96,7 +97,7 @@ class Controller
     /**
       Returns the type of this controller.
     */
-    const Type type();
+    const Type type() const;
 
     /**
       Inform this controller about the current System.
@@ -127,7 +128,7 @@ class Controller
       @param pin The pin of the controller jack to read
       @return The state of the pin
     */
-    virtual bool read(DigitalPin pin) = 0;
+    bool read(DigitalPin pin) const;
 
     /**
       Read the resistance at the specified analog pin for this controller.  
@@ -136,7 +137,7 @@ class Controller
       @param pin The pin of the controller jack to read
       @return The resistance at the specified pin
     */
-    virtual Int32 read(AnalogPin pin) = 0;
+    Int32 read(AnalogPin pin) const;
 
     /**
       Write the given value to the specified digital pin for this 
@@ -146,7 +147,34 @@ class Controller
       @param pin The pin of the controller jack to write to
       @param value The value to write to the pin
     */
-    virtual void write(DigitalPin pin, bool value) = 0;
+    virtual void write(DigitalPin pin, bool value) { };
+
+    /**
+      Update the entire digital and analog pin state according to the
+      events currently set.
+    */
+    virtual void update() = 0;
+
+    /**
+      Saves the current state of this controller to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    virtual bool save(Serializer& out) const;
+
+    /**
+      Loads the current state of this controller from the given Deserializer.
+
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    virtual bool load(Deserializer& in);
+
+    /**
+      Returns the name of this controller.
+    */
+    virtual string name() const;
 
   public:
     /// Constant which represents maximum resistance for analog pins
@@ -165,8 +193,17 @@ class Controller
     /// Specifies which type of controller this is (defined by child classes)
     const Type myType;
 
+    /// Specifies the name of this controller based on type
+    string myName;
+
     /// Pointer to the System object (used for timing purposes)
     System* mySystem;
+
+    /// The boolean value on each digital pin
+    bool myDigitalPinState[5];
+
+    /// The analog value on each analog pin
+    Int32 myAnalogPinValue[2];
 
   protected:
     // Copy constructor isn't supported by controllers so make it private

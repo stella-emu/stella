@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.cxx,v 1.12 2007-01-01 18:04:47 stephena Exp $
+// $Id: Deserializer.cxx,v 1.13 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include "Deserializer.hxx"
@@ -52,6 +52,18 @@ bool Deserializer::isOpen(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+char Deserializer::getByte(void)
+{
+  if(myStream.eof())
+    throw "Deserializer: end of file";
+
+  char buf[1];
+  myStream.read(buf, 1);
+
+  return buf[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Deserializer::getInt(void)
 {
   if(myStream.eof())
@@ -85,10 +97,10 @@ bool Deserializer::getBool(void)
 {
   bool result = false;
 
-  int b = getInt();
-  if(b == (int)TruePattern)
+  char b = getByte();
+  if(b == (char)TruePattern)
     result = true;
-  else if(b == (int)FalsePattern)
+  else if(b == (char)FalsePattern)
     result = false;
   else
     throw "Deserializer: data corruption";

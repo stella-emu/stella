@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.38 2007-07-27 13:49:16 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.39 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -438,12 +438,12 @@ bool SoundSDL::load(Deserializer& in)
       return false;
 
     uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
-    reg1 = (uInt8) in.getInt();
-    reg2 = (uInt8) in.getInt();
-    reg3 = (uInt8) in.getInt();
-    reg4 = (uInt8) in.getInt();
-    reg5 = (uInt8) in.getInt();
-    reg6 = (uInt8) in.getInt();
+    reg1 = (uInt8) in.getByte();
+    reg2 = (uInt8) in.getByte();
+    reg3 = (uInt8) in.getByte();
+    reg4 = (uInt8) in.getByte();
+    reg5 = (uInt8) in.getByte();
+    reg6 = (uInt8) in.getByte();
 
     myLastRegisterSetCycle = (Int32) in.getInt();
 
@@ -498,12 +498,12 @@ bool SoundSDL::save(Serializer& out)
       reg6 = myTIASound.get(0x1a);
     }
 
-    out.putInt(reg1);
-    out.putInt(reg2);
-    out.putInt(reg3);
-    out.putInt(reg4);
-    out.putInt(reg5);
-    out.putInt(reg6);
+    out.putByte((char)reg1);
+    out.putByte((char)reg2);
+    out.putByte((char)reg3);
+    out.putByte((char)reg4);
+    out.putByte((char)reg5);
+    out.putByte((char)reg6);
 
     out.putInt(myLastRegisterSetCycle);
   }

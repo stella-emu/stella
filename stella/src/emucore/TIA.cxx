@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.81 2007-09-10 15:46:59 stephena Exp $
+// $Id: TIA.cxx,v 1.82 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -118,12 +118,6 @@ TIA::~TIA()
 {
   delete[] myCurrentFrameBuffer;
   delete[] myPreviousFrameBuffer;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* TIA::name() const
-{
-  return "TIA";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -303,7 +297,7 @@ void TIA::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::save(Serializer& out)
+bool TIA::save(Serializer& out) const
 {
   string device = name();
 
@@ -320,36 +314,36 @@ bool TIA::save(Serializer& out)
     out.putInt(myCurrentScanline);
     out.putInt(myVSYNCFinishClock);
 
-    out.putInt(myEnabledObjects);
+    out.putByte((char)myEnabledObjects);
 
-    out.putInt(myVSYNC);
-    out.putInt(myVBLANK);
-    out.putInt(myNUSIZ0);
-    out.putInt(myNUSIZ1);
+    out.putByte((char)myVSYNC);
+    out.putByte((char)myVBLANK);
+    out.putByte((char)myNUSIZ0);
+    out.putByte((char)myNUSIZ1);
 
     out.putInt(myCOLUP0);
     out.putInt(myCOLUP1);
     out.putInt(myCOLUPF);
     out.putInt(myCOLUBK);
 
-    out.putInt(myCTRLPF);
-    out.putInt(myPlayfieldPriorityAndScore);
+    out.putByte((char)myCTRLPF);
+    out.putByte((char)myPlayfieldPriorityAndScore);
     out.putBool(myREFP0);
     out.putBool(myREFP1);
     out.putInt(myPF);
-    out.putInt(myGRP0);
-    out.putInt(myGRP1);
-    out.putInt(myDGRP0);
-    out.putInt(myDGRP1);
+    out.putByte((char)myGRP0);
+    out.putByte((char)myGRP1);
+    out.putByte((char)myDGRP0);
+    out.putByte((char)myDGRP1);
     out.putBool(myENAM0);
     out.putBool(myENAM1);
     out.putBool(myENABL);
     out.putBool(myDENABL);
-    out.putInt(myHMP0);
-    out.putInt(myHMP1);
-    out.putInt(myHMM0);
-    out.putInt(myHMM1);
-    out.putInt(myHMBL);
+    out.putByte((char)myHMP0);
+    out.putByte((char)myHMP1);
+    out.putByte((char)myHMM0);
+    out.putByte((char)myHMM1);
+    out.putByte((char)myHMBL);
     out.putBool(myVDELP0);
     out.putBool(myVDELP1);
     out.putBool(myVDELBL);
@@ -362,8 +356,8 @@ bool TIA::save(Serializer& out)
     out.putInt(myPOSM1);
     out.putInt(myPOSBL);
 
-    out.putInt(myCurrentGRP0);
-    out.putInt(myCurrentGRP1);
+    out.putByte((char)myCurrentGRP0);
+    out.putByte((char)myCurrentGRP1);
 
 // pointers
 //  myCurrentBLMask = ourBallMaskTable[0][0];
@@ -417,36 +411,36 @@ bool TIA::load(Deserializer& in)
     myCurrentScanline = (Int32) in.getInt();
     myVSYNCFinishClock = (Int32) in.getInt();
 
-    myEnabledObjects = (uInt8) in.getInt();
+    myEnabledObjects = (uInt8) in.getByte();
 
-    myVSYNC = (uInt8) in.getInt();
-    myVBLANK = (uInt8) in.getInt();
-    myNUSIZ0 = (uInt8) in.getInt();
-    myNUSIZ1 = (uInt8) in.getInt();
+    myVSYNC = (uInt8) in.getByte();
+    myVBLANK = (uInt8) in.getByte();
+    myNUSIZ0 = (uInt8) in.getByte();
+    myNUSIZ1 = (uInt8) in.getByte();
 
     myCOLUP0 = (uInt32) in.getInt();
     myCOLUP1 = (uInt32) in.getInt();
     myCOLUPF = (uInt32) in.getInt();
     myCOLUBK = (uInt32) in.getInt();
 
-    myCTRLPF = (uInt8) in.getInt();
-    myPlayfieldPriorityAndScore = (uInt8) in.getInt();
+    myCTRLPF = (uInt8) in.getByte();
+    myPlayfieldPriorityAndScore = (uInt8) in.getByte();
     myREFP0 = in.getBool();
     myREFP1 = in.getBool();
     myPF = (uInt32) in.getInt();
-    myGRP0 = (uInt8) in.getInt();
-    myGRP1 = (uInt8) in.getInt();
-    myDGRP0 = (uInt8) in.getInt();
-    myDGRP1 = (uInt8) in.getInt();
+    myGRP0 = (uInt8) in.getByte();
+    myGRP1 = (uInt8) in.getByte();
+    myDGRP0 = (uInt8) in.getByte();
+    myDGRP1 = (uInt8) in.getByte();
     myENAM0 = in.getBool();
     myENAM1 = in.getBool();
     myENABL = in.getBool();
     myDENABL = in.getBool();
-    myHMP0 = (Int8) in.getInt();
-    myHMP1 = (Int8) in.getInt();
-    myHMM0 = (Int8) in.getInt();
-    myHMM1 = (Int8) in.getInt();
-    myHMBL = (Int8) in.getInt();
+    myHMP0 = (Int8) in.getByte();
+    myHMP1 = (Int8) in.getByte();
+    myHMM0 = (Int8) in.getByte();
+    myHMM1 = (Int8) in.getByte();
+    myHMBL = (Int8) in.getByte();
     myVDELP0 = in.getBool();
     myVDELP1 = in.getBool();
     myVDELBL = in.getBool();
@@ -459,8 +453,8 @@ bool TIA::load(Deserializer& in)
     myPOSM1 = (Int16) in.getInt();
     myPOSBL = (Int16) in.getInt();
 
-    myCurrentGRP0 = (uInt8) in.getInt();
-    myCurrentGRP1 = (uInt8) in.getInt();
+    myCurrentGRP0 = (uInt8) in.getByte();
+    myCurrentGRP1 = (uInt8) in.getByte();
 
 // pointers
 //  myCurrentBLMask = ourBallMaskTable[0][0];
@@ -2016,9 +2010,9 @@ uInt8 TIA::peek(uInt16 addr)
       }
       else
       {
-        double t = (1.6 * r * 0.01E-6);
+        double t = (1.5327 * r * 0.01E-6);
         uInt32 needed = (uInt32)(t * 1.19E6);
-        if(mySystem->cycles() > (myDumpDisabledCycle + needed))
+        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
         {
           return 0x80 | noise;
         }
@@ -2042,9 +2036,9 @@ uInt8 TIA::peek(uInt16 addr)
       }
       else
       {
-        double t = (1.6 * r * 0.01E-6);
+        double t = (1.5327 * r * 0.01E-6);
         uInt32 needed = (uInt32)(t * 1.19E6);
-        if(mySystem->cycles() > (myDumpDisabledCycle + needed))
+        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
         {
           return 0x80 | noise;
         }
@@ -2068,9 +2062,9 @@ uInt8 TIA::peek(uInt16 addr)
       }
       else
       {
-        double t = (1.6 * r * 0.01E-6);
+        double t = (1.5327 * r * 0.01E-6);
         uInt32 needed = (uInt32)(t * 1.19E6);
-        if(mySystem->cycles() > (myDumpDisabledCycle + needed))
+        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
         {
           return 0x80 | noise;
         }
@@ -2094,9 +2088,9 @@ uInt8 TIA::peek(uInt16 addr)
       }
       else
       {
-        double t = (1.6 * r * 0.01E-6);
+        double t = (1.5327 * r * 0.01E-6);
         uInt32 needed = (uInt32)(t * 1.19E6);
-        if(mySystem->cycles() > (myDumpDisabledCycle + needed))
+        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
         {
           return 0x80 | noise;
         }
@@ -2146,7 +2140,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
   if(((clock - myClockWhenFrameStarted) / 228) > myMaximumNumberOfScanlines)
   {
     mySystem->m6502().stop();
-	 myPartialFrameFlag = false;
+    myPartialFrameFlag = false;
   }
 
   switch(addr)
@@ -2169,7 +2163,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
         // Since we're finished with the frame tell the processor to halt
         mySystem->m6502().stop();
-	     myPartialFrameFlag = false;
+        myPartialFrameFlag = false;
       }
       break;
     }

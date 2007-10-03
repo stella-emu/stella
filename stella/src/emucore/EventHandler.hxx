@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.104 2007-09-23 17:04:17 stephena Exp $
+// $Id: EventHandler.hxx,v 1.105 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -25,7 +25,6 @@ class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
-class EventStreamer;
 
 #include "Array.hxx"
 #include "Event.hxx"
@@ -62,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.104 2007-09-23 17:04:17 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.105 2007-10-03 21:41:18 stephena Exp $
 */
 class EventHandler
 {
@@ -448,7 +447,7 @@ class EventHandler
 
   private:
     enum {
-      kEmulActionListSize = 81,
+      kEmulActionListSize = 75,
       kMenuActionListSize = 13
     };
 
@@ -494,9 +493,6 @@ class EventHandler
 
     // Global Event object
     Event* myEvent;
-
-    // The EventStreamer to use for loading/saving eventstreams
-    EventStreamer* myEventStreamer;
 
     // Indicates current overlay object
     DialogContainer* myOverlay;
@@ -561,7 +557,7 @@ class EventHandler
 
     // Static lookup tables for Stelladaptor axis/button support
     static const Event::Type SA_Axis[2][2][3];
-    static const Event::Type SA_Button[2][2][3];
+    static const Event::Type SA_Button[2][2][2];
     static const Event::Type SA_DrivingValue[2];
 };
 

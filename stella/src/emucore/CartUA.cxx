@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.10 2007-01-14 16:17:55 stephena Exp $
+// $Id: CartUA.cxx,v 1.11 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartUA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,12 +34,6 @@ CartridgeUA::CartridgeUA(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeUA::~CartridgeUA()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeUA::name() const
-{
-  return "CartridgeUA";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,7 +130,59 @@ void CartridgeUA::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::save(Serializer& out)
+void CartridgeUA::bank(uInt16 bank)
+{ 
+  if(bankLocked) return;
+
+  // Remember what bank we're in
+  myCurrentBank = bank;
+  uInt16 offset = myCurrentBank * 4096;
+  uInt16 shift = mySystem->pageShift();
+//  uInt16 mask = mySystem->pageMask();
+
+  // Setup the page access methods for the current bank
+  System::PageAccess access;
+  access.device = this;
+  access.directPokeBase = 0;
+
+  // Map ROM image into the system
+  for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
+  {
+    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeUA::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeUA::bankCount()
+{
+  return 2;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeUA::patch(uInt16 address, uInt8 value)
+{
+  address &= 0x0fff;
+  myImage[myCurrentBank * 4096] = value;
+  bank(myCurrentBank); // TODO: see if this is really necessary
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeUA::getImage(int& size)
+{
+  size = 8192;
+  return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeUA::save(Serializer& out) const
 {
   string cart = name();
 
@@ -189,56 +233,4 @@ bool CartridgeUA::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeUA::bank(uInt16 bank)
-{ 
-  if(bankLocked) return;
-
-  // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
-  uInt16 shift = mySystem->pageShift();
-//  uInt16 mask = mySystem->pageMask();
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map ROM image into the system
-  for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
-  {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeUA::bank()
-{
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeUA::bankCount()
-{
-  return 2;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::patch(uInt16 address, uInt8 value)
-{
-  address &= 0x0fff;
-  myImage[myCurrentBank * 4096] = value;
-  bank(myCurrentBank); // TODO: see if this is really necessary
-  return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeUA::getImage(int& size)
-{
-  size = 8192;
-  return &myImage[0];
 }

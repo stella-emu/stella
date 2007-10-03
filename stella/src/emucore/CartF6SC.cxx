@@ -13,15 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6SC.cxx,v 1.13 2007-01-14 16:17:54 stephena Exp $
+// $Id: CartF6SC.cxx,v 1.14 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "Random.hxx"
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartF6SC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,12 +42,6 @@ CartridgeF6SC::CartridgeF6SC(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6SC::~CartridgeF6SC()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeF6SC::name() const
-{
-  return "CartridgeF6SC";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,71 +169,6 @@ void CartridgeF6SC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6SC::save(Serializer& out)
-{
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-
-    out.putInt(myCurrentBank);
-
-    // The 128 bytes of RAM
-    out.putInt(128);
-    for(uInt32 i = 0; i < 128; ++i)
-      out.putInt(myRAM[i]);
-
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6SC::load(Deserializer& in)
-{
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
-
-    // The 128 bytes of RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getInt();
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Remember what bank we were in
-  bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6SC::bank(uInt16 bank)
 { 
   if(bankLocked) return;
@@ -291,4 +218,69 @@ uInt8* CartridgeF6SC::getImage(int& size)
 {
   size = 16384;
   return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6SC::save(Serializer& out) const
+{
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putInt(myCurrentBank);
+
+    // The 128 bytes of RAM
+    out.putInt(128);
+    for(uInt32 i = 0; i < 128; ++i)
+      out.putByte((char)myRAM[i]);
+
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6SC::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+
+    // The 128 bytes of RAM
+    uInt32 limit = (uInt32) in.getInt();
+    for(uInt32 i = 0; i < limit; ++i)
+      myRAM[i] = (uInt8) in.getByte();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myCurrentBank);
+
+  return true;
 }

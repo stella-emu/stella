@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: NullDev.cxx,v 1.5 2007-01-01 18:04:51 stephena Exp $
+// $Id: NullDev.cxx,v 1.6 2007-10-03 21:41:19 stephena Exp $
 //============================================================================
 
 #include "NullDev.hxx"
@@ -28,12 +28,6 @@ NullDevice::NullDevice()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NullDevice::~NullDevice()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* NullDevice::name() const
-{
-  return "NULL";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,7 +55,7 @@ void NullDevice::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool NullDevice::save(Serializer& out)
+bool NullDevice::save(Serializer& out) const
 {
   return true;
 }

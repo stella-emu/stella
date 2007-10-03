@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.cxx,v 1.10 2007-07-19 16:21:39 stephena Exp $
+// $Id: Cart2K.cxx,v 1.11 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,12 +34,6 @@ Cartridge2K::Cartridge2K(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::~Cartridge2K()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Cartridge2K::name() const
-{
-  return "Cartridge2K";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +76,40 @@ void Cartridge2K::poke(uInt16, uInt8)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::save(Serializer& out)
+void Cartridge2K::bank(uInt16 bank)
+{
+  // Doesn't support bankswitching
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge2K::bank()
+{
+  // Doesn't support bankswitching
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge2K::bankCount()
+{
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge2K::patch(uInt16 address, uInt8 value)
+{
+  myImage[address & 0x07FF] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge2K::getImage(int& size)
+{
+  size = 2048;
+  return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge2K::save(Serializer& out) const
 {
   string cart = name();
 
@@ -128,37 +153,4 @@ bool Cartridge2K::load(Deserializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge2K::bank(uInt16 bank)
-{
-  // Doesn't support bankswitching
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge2K::bank()
-{
-  // Doesn't support bankswitching
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge2K::bankCount()
-{
-  return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::patch(uInt16 address, uInt8 value)
-{
-  myImage[address & 0x07FF] = value;
-  return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge2K::getImage(int& size)
-{
-  size = 2048;
-  return &myImage[0];
 }

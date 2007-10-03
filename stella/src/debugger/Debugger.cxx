@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.116 2007-09-23 17:04:17 stephena Exp $
+// $Id: Debugger.cxx,v 1.117 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -935,7 +935,8 @@ int Debugger::bankCount() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char *Debugger::getCartType() {
-  return myConsole->cartridge().name();
+  return myConsole->cartridge().name().c_str();
+// FIXME - maybe whatever is calling this should use a string instead
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

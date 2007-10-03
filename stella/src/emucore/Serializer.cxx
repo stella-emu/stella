@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.cxx,v 1.11 2007-01-01 18:04:49 stephena Exp $
+// $Id: Serializer.cxx,v 1.12 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #include "Serializer.hxx"
@@ -52,6 +52,16 @@ bool Serializer::isOpen(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Serializer::putByte(char value)
+{
+  char buf[1];
+  buf[0] = value;
+  myStream.write(buf, 1);
+  if(myStream.bad())
+    throw "Serializer: file write failed";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putInt(int value)
 {
   unsigned char buf[4];
@@ -77,5 +87,5 @@ void Serializer::putString(const string& str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putBool(bool b)
 {
-  putInt(b ? TruePattern: FalsePattern);
+  putByte(b ? TruePattern: FalsePattern);
 }

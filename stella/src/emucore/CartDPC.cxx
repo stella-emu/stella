@@ -13,15 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.18 2007-01-14 16:17:53 stephena Exp $
+// $Id: CartDPC.cxx,v 1.19 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
-#include "CartDPC.hxx"
+
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
+#include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
@@ -65,12 +64,6 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::~CartridgeDPC()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeDPC::name() const
-{
-  return "CartridgeDPC";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -428,129 +421,6 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::save(Serializer& out)
-{
-  string cart = name();
-
-  try
-  {
-    uInt32 i;
-
-    out.putString(cart);
-
-    // Indicates which bank is currently active
-    out.putInt(myCurrentBank);
-
-    // The top registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putInt(myTops[i]);
-
-    // The bottom registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putInt(myBottoms[i]);
-
-    // The counter registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putInt(myCounters[i]);
-
-    // The flag registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putInt(myFlags[i]);
-
-    // The music mode flags for the data fetchers
-    out.putInt(3);
-    for(i = 0; i < 3; ++i)
-      out.putBool(myMusicMode[i]);
-
-    // The random number generator register
-    out.putInt(myRandomNumber);
-
-    out.putInt(mySystemCycles);
-    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::load(Deserializer& in)
-{
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    uInt32 i, limit;
-
-    // Indicates which bank is currently active
-    myCurrentBank = (uInt16) in.getInt();
-
-    // The top registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myTops[i] = (uInt8) in.getInt();
-
-    // The bottom registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myBottoms[i] = (uInt8) in.getInt();
-
-    // The counter registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myCounters[i] = (uInt16) in.getInt();
-
-    // The flag registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myFlags[i] = (uInt8) in.getInt();
-
-    // The music mode flags for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myMusicMode[i] = in.getBool();
-
-    // The random number generator register
-    myRandomNumber = (uInt8) in.getInt();
-
-    // Get system cycles and fractional clocks
-    mySystemCycles = in.getInt();
-    myFractionalClocks = (double)in.getInt() / 100000000.0;
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Now, go to the current bank
-  bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::bank(uInt16 bank)
 { 
   if(bankLocked) return;
@@ -608,4 +478,127 @@ uInt8* CartridgeDPC::getImage(int& size)
     myImageCopy[i + 8192] = myDisplayImage[i];
 
   return &myImageCopy[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPC::save(Serializer& out) const
+{
+  string cart = name();
+
+  try
+  {
+    uInt32 i;
+
+    out.putString(cart);
+
+    // Indicates which bank is currently active
+    out.putInt(myCurrentBank);
+
+    // The top registers for the data fetchers
+    out.putInt(8);
+    for(i = 0; i < 8; ++i)
+      out.putByte((char)myTops[i]);
+
+    // The bottom registers for the data fetchers
+    out.putInt(8);
+    for(i = 0; i < 8; ++i)
+      out.putByte((char)myBottoms[i]);
+
+    // The counter registers for the data fetchers
+    out.putInt(8);
+    for(i = 0; i < 8; ++i)
+      out.putInt(myCounters[i]);
+
+    // The flag registers for the data fetchers
+    out.putInt(8);
+    for(i = 0; i < 8; ++i)
+      out.putByte((char)myFlags[i]);
+
+    // The music mode flags for the data fetchers
+    out.putInt(3);
+    for(i = 0; i < 3; ++i)
+      out.putBool(myMusicMode[i]);
+
+    // The random number generator register
+    out.putByte((char)myRandomNumber);
+
+    out.putInt(mySystemCycles);
+    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeDPC::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    uInt32 i, limit;
+
+    // Indicates which bank is currently active
+    myCurrentBank = (uInt16) in.getInt();
+
+    // The top registers for the data fetchers
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myTops[i] = (uInt8) in.getByte();
+
+    // The bottom registers for the data fetchers
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myBottoms[i] = (uInt8) in.getByte();
+
+    // The counter registers for the data fetchers
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myCounters[i] = (uInt16) in.getInt();
+
+    // The flag registers for the data fetchers
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myFlags[i] = (uInt8) in.getByte();
+
+    // The music mode flags for the data fetchers
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myMusicMode[i] = in.getBool();
+
+    // The random number generator register
+    myRandomNumber = (uInt8) in.getByte();
+
+    // Get system cycles and fractional clocks
+    mySystemCycles = in.getInt();
+    myFractionalClocks = (double)in.getInt() / 100000000.0;
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Now, go to the current bank
+  bank(myCurrentBank);
+
+  return true;
 }

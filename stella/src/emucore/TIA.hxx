@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.42 2007-02-22 02:15:46 stephena Exp $
+// $Id: TIA.hxx,v 1.43 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -21,8 +21,6 @@
 
 class Console;
 class System;
-class Serializer;
-class Deserializer;
 class Settings;
 
 #include "bspf.hxx"
@@ -42,7 +40,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.42 2007-02-22 02:15:46 stephena Exp $
+  @version $Id: TIA.hxx,v 1.43 2007-10-03 21:41:18 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -63,13 +61,6 @@ class TIA : public Device , public MediaSource
     virtual ~TIA();
 
   public:
-    /**
-      Get a null terminated string which is the device's name (i.e. "M6532")
-
-      @return The name of the device
-    */
-    virtual const char* name() const;
-
     /**
       Reset device to its power-on state
     */
@@ -96,20 +87,27 @@ class TIA : public Device , public MediaSource
     virtual void install(System& system);
 
     /**
-      Saves the current state of this device to the given Serializer.
+      Save the current state of this device to the given Serializer.
 
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out);
+    virtual bool save(Serializer& out) const;
 
     /**
-      Loads the current state of this device from the given Deserializer.
+      Load the current state of this device from the given Deserializer.
 
-      @param in The deserializer device to load from.
-      @return The result of the load.  True on success, false on failure.
+      @param in  The Deserializer object to use
+      @return  False on any errors, else true
     */
     virtual bool load(Deserializer& in);
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    virtual string name() const { return "TIA"; }
 
   public:
     /**

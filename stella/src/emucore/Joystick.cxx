@@ -13,10 +13,9 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.cxx,v 1.7 2007-01-05 17:54:23 stephena Exp $
+// $Id: Joystick.cxx,v 1.8 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
-#include <assert.h>
 #include "Event.hxx"
 #include "Joystick.hxx"
 
@@ -24,6 +23,25 @@
 Joystick::Joystick(Jack jack, const Event& event)
   : Controller(jack, event, Controller::Joystick)
 {
+  if(myJack == Left)
+  {
+    myUpEvent    = Event::JoystickZeroUp;
+    myDownEvent  = Event::JoystickZeroDown;
+    myLeftEvent  = Event::JoystickZeroLeft;
+    myRightEvent = Event::JoystickZeroRight;
+    myFireEvent  = Event::JoystickZeroFire;
+  }
+  else
+  {
+    myUpEvent    = Event::JoystickOneUp;
+    myDownEvent  = Event::JoystickOneDown;
+    myLeftEvent  = Event::JoystickOneLeft;
+    myRightEvent = Event::JoystickOneRight;
+    myFireEvent  = Event::JoystickOneFire;
+  }
+
+  // Analog pins are never used by the joystick
+  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -32,44 +50,11 @@ Joystick::~Joystick()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Joystick::read(DigitalPin pin)
+void Joystick::update()
 {
-  switch(pin)
-  {
-    case One:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroUp) == 0) : 
-          (myEvent.get(Event::JoystickOneUp) == 0);
-
-    case Two:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroDown) == 0) : 
-          (myEvent.get(Event::JoystickOneDown) == 0);
-
-    case Three:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroLeft) == 0) : 
-          (myEvent.get(Event::JoystickOneLeft) == 0);
-
-    case Four:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroRight) == 0) : 
-          (myEvent.get(Event::JoystickOneRight) == 0);
-
-    case Six:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroFire) == 0) : 
-          (myEvent.get(Event::JoystickOneFire) == 0);
-
-    default:
-      return true;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Joystick::read(AnalogPin)
-{
-  // Analog pins are not connect in joystick so we have infinite resistance 
-  return maximumResistance;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Joystick::write(DigitalPin, bool)
-{
-  // Writing doesn't do anything to the joystick...
+  myDigitalPinState[One]   = (myEvent.get(myUpEvent) == 0);
+  myDigitalPinState[Two]   = (myEvent.get(myDownEvent) == 0);
+  myDigitalPinState[Three] = (myEvent.get(myLeftEvent) == 0);
+  myDigitalPinState[Four]  = (myEvent.get(myRightEvent) == 0);
+  myDigitalPinState[Six]   = (myEvent.get(myFireEvent) == 0);
 }

@@ -19,8 +19,6 @@
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Cart0840.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -31,12 +29,6 @@ Cartridge0840::Cartridge0840(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge0840::~Cartridge0840()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Cartridge0840::name() const
-{
-  return "Cartridge0840";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,18 +50,6 @@ uInt8 Cartridge0840::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840::poke(uInt16 address, uInt8 value)
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::save(Serializer& out)
-{
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge0840::load(Deserializer& in)
-{
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,4 +80,16 @@ uInt8* Cartridge0840::getImage(int& size)
 {
   size = 0;
   return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge0840::save(Serializer& out) const
+{
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge0840::load(Deserializer& in)
+{
+  return false;
 }

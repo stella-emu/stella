@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.cxx,v 1.8 2007-01-05 17:54:08 stephena Exp $
+// $Id: Booster.cxx,v 1.9 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -23,6 +23,26 @@
 BoosterGrip::BoosterGrip(Jack jack, const Event& event)
   : Controller(jack, event, Controller::BoosterGrip)
 {
+  if(myJack == Left)
+  {
+    myUpEvent      = Event::JoystickZeroUp;
+    myDownEvent    = Event::JoystickZeroDown;
+    myLeftEvent    = Event::JoystickZeroLeft;
+    myRightEvent   = Event::JoystickZeroRight;
+    myFireEvent    = Event::JoystickZeroFire;
+    myBoosterEvent = Event::BoosterGripZeroBooster;
+    myTriggerEvent = Event::BoosterGripZeroTrigger;
+  }
+  else
+  {
+    myUpEvent      = Event::JoystickOneUp;
+    myDownEvent    = Event::JoystickOneDown;
+    myLeftEvent    = Event::JoystickOneLeft;
+    myRightEvent   = Event::JoystickOneRight;
+    myFireEvent    = Event::JoystickOneFire;
+    myBoosterEvent = Event::BoosterGripOneBooster;
+    myTriggerEvent = Event::BoosterGripOneTrigger;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -31,74 +51,18 @@ BoosterGrip::~BoosterGrip()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool BoosterGrip::read(DigitalPin pin)
+void BoosterGrip::update()
 {
-  switch(pin)
-  {
-    case One:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroUp) == 0) : 
-          (myEvent.get(Event::JoystickOneUp) == 0);
+  myDigitalPinState[One]   = (myEvent.get(myUpEvent) == 0);
+  myDigitalPinState[Two]   = (myEvent.get(myDownEvent) == 0);
+  myDigitalPinState[Three] = (myEvent.get(myLeftEvent) == 0);
+  myDigitalPinState[Four]  = (myEvent.get(myRightEvent) == 0);
+  myDigitalPinState[Six]   = (myEvent.get(myFireEvent) == 0);
 
-    case Two:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroDown) == 0) : 
-          (myEvent.get(Event::JoystickOneDown) == 0);
-
-    case Three:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroLeft) == 0) : 
-          (myEvent.get(Event::JoystickOneLeft) == 0);
-
-    case Four:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroRight) == 0) :
-          (myEvent.get(Event::JoystickOneRight) == 0);
-
-    case Six:
-      return (myJack == Left) ? (myEvent.get(Event::JoystickZeroFire) == 0) : 
-          (myEvent.get(Event::JoystickOneFire) == 0);
-
-    default:
-      return true;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 BoosterGrip::read(AnalogPin pin)
-{
   // The CBS Booster-grip has two more buttons on it.  These buttons are
   // connected to the inputs usually used by paddles.
-
-  switch(pin)
-  {
-    case Five:
-      if(myJack == Left)
-      {
-        return (myEvent.get(Event::BoosterGripZeroBooster) != 0) ? 
-            minimumResistance : maximumResistance;
-      }
-      else
-      {
-        return (myEvent.get(Event::BoosterGripOneBooster) != 0) ? 
-            minimumResistance : maximumResistance;
-      }
-
-    case Nine:
-      if(myJack == Left)
-      {
-        return (myEvent.get(Event::BoosterGripZeroTrigger) != 0) ? 
-            minimumResistance : maximumResistance;
-      }
-      else
-      {
-        return (myEvent.get(Event::BoosterGripOneTrigger) != 0) ? 
-            minimumResistance : maximumResistance;
-      }
-
-    default:
-      return maximumResistance;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BoosterGrip::write(DigitalPin, bool)
-{
-  // Writing doesn't do anything to the booster grip...
+  myAnalogPinValue[Five] = (myEvent.get(myBoosterEvent) != 0) ? 
+                            minimumResistance : maximumResistance;
+  myAnalogPinValue[Nine] = (myEvent.get(myTriggerEvent) != 0) ? 
+                            minimumResistance : maximumResistance;
 }

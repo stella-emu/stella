@@ -13,20 +13,39 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.11 2007-02-22 02:15:46 stephena Exp $
+// $Id: Driving.cxx,v 1.12 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
-#include <cassert>
-
 #include "Event.hxx"
-#include "Driving.hxx"
 #include "System.hxx"
+
+#include "Driving.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Driving::Driving(Jack jack, const Event& event)
   : Controller(jack, event, Controller::Driving),
     myCounter(0)
 {
+  if(myJack == Left)
+  {
+    myCCWEvent   = Event::JoystickZeroLeft;
+    myCWEvent    = Event::JoystickZeroRight;
+    myFireEvent  = Event::JoystickZeroFire;
+    myValueEvent = Event::DrivingZeroValue;
+  }
+  else
+  {
+    myCCWEvent   = Event::JoystickOneLeft;
+    myCWEvent    = Event::JoystickOneRight;
+    myFireEvent  = Event::JoystickOneFire;
+    myValueEvent = Event::DrivingOneValue;
+  }
+
+  // Digital pins 3 and 4 are not connected
+  myDigitalPinState[Three] = myDigitalPinState[Four] = true;
+
+  // Analog pins are not connected
+  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -35,6 +54,32 @@ Driving::~Driving()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Driving::update()
+{
+  // TODO - this isn't working with Stelladaptor and real driving controllers
+
+  // Gray codes for rotation
+  static const uInt8 graytable[] = { 0x03, 0x01, 0x00, 0x02 };
+
+  // Determine which gray code we're at
+  if(myEvent.get(myCCWEvent) != 0)
+    myCounter--;
+  else if(myEvent.get(myCWEvent) != 0)
+    myCounter++;
+
+  // Only consider the lower-most bits (corresponding to pins 1 & 2)
+  myCounter &= 0x0f;
+  uInt8 gray = graytable[myCounter >> 2];
+
+  // Determine which bits are set
+  myDigitalPinState[One] = (gray & 0x1) != 0;
+  myDigitalPinState[Two] = (gray & 0x2) != 0;
+
+  myDigitalPinState[Six] = (myEvent.get(myFireEvent) == 0);
+}
+
+
+/*
 bool Driving::read(DigitalPin pin)
 {
   // Gray codes for clockwise rotation
@@ -105,32 +150,6 @@ bool Driving::read(DigitalPin pin)
 		else 
 		  return(myEvent.get(Event::DrivingOneValue) & 0x02);
       }
-
-    case Three:
-      return true;
-
-    case Four:
-      return true;
-
-    case Six:
-      return (myJack == Left) ? (myEvent.get(Event::DrivingZeroFire) == 0) : 
-          (myEvent.get(Event::DrivingOneFire) == 0);
-
-    default:
-      return true;
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Driving::read(AnalogPin)
-{
-  // Analog pins are not connect in driving controller so we have 
-  // infinite resistance 
-  return maximumResistance;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Driving::write(DigitalPin, bool)
-{
-  // Writing doesn't do anything to the driving controller...
-}
+*/

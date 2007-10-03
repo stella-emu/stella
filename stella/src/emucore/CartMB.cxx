@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.cxx,v 1.11 2007-01-14 16:17:55 stephena Exp $
+// $Id: CartMB.cxx,v 1.12 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartMB.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,12 +34,6 @@ CartridgeMB::CartridgeMB(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMB::~CartridgeMB()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeMB::name() const
-{
-  return "CartridgeMB";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,7 +116,43 @@ void CartridgeMB::incbank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::save(Serializer& out)
+void CartridgeMB::bank(uInt16 bank)
+{
+  if(bankLocked) return;
+
+  myCurrentBank = (bank - 1);
+  incbank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeMB::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeMB::bankCount()
+{
+  return 16;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMB::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeMB::getImage(int& size)
+{
+  size = 65536;
+  return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMB::save(Serializer& out) const
 {
   string cart = name();
 
@@ -176,40 +204,4 @@ bool CartridgeMB::load(Deserializer& in)
   incbank();
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::bank(uInt16 bank)
-{
-  if(bankLocked) return;
-
-  myCurrentBank = (bank - 1);
-  incbank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMB::bank()
-{
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMB::bankCount()
-{
-  return 16;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::patch(uInt16 address, uInt8 value)
-{
-  address = address & 0x0FFF;
-  myImage[myCurrentBank * 4096 + address] = value;
-  return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeMB::getImage(int& size)
-{
-  size = 65536;
-  return &myImage[0];
 }

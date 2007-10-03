@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.cxx,v 1.7 2007-01-01 18:04:50 stephena Exp $
+// $Id: Switches.cxx,v 1.8 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -22,8 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
 Switches::Switches(const Event& event, const Properties& properties)
-    : myEvent(event),
-      mySwitches(0xFF)
+  : myEvent(event),
+    mySwitches(0xFF)
 {
   if(properties.get(Console_RightDifficulty) == "B")
   {
@@ -59,7 +59,7 @@ Switches::~Switches()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-uInt8 Switches::read()
+void Switches::update()
 {
   if(myEvent.get(Event::ConsoleColor) != 0)
   {
@@ -105,7 +105,34 @@ uInt8 Switches::read()
   {
     mySwitches |= 0x01;
   }
-
-  return mySwitches;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+bool Switches::save(Serializer& out) const
+{
+  try
+  {
+    out.putByte((char)mySwitches);
+  }
+  catch(...)
+  {
+    cerr << "Error: Switches::save() exception\n";
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
+bool Switches::load(Deserializer& in)
+{
+  try
+  {
+    mySwitches = (uInt8) in.getByte();
+  }
+  catch(...)
+  {
+    cerr << "Error: Switches::load() exception\n";
+    return false;
+  }
+  return true;
+}

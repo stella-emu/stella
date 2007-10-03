@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.hxx,v 1.5 2007-01-01 18:04:48 stephena Exp $
+// $Id: M6532.hxx,v 1.6 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef M6532_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   RIOT
 
   @author  Bradford W. Mott
-  @version $Id: M6532.hxx,v 1.5 2007-01-01 18:04:48 stephena Exp $
+  @version $Id: M6532.hxx,v 1.6 2007-10-03 21:41:18 stephena Exp $
 */
 class M6532 : public Device
 {
@@ -49,13 +49,6 @@ class M6532 : public Device
     virtual ~M6532();
 
    public:
-    /**
-      Get a null terminated string which is the device's name (i.e. "M6532")
-
-      @return The name of the device
-    */
-    virtual const char* name() const;
-
     /**
       Reset cartridge to its power-on state
     */
@@ -77,20 +70,27 @@ class M6532 : public Device
     virtual void install(System& system);
 
     /**
-      Saves the current state of this device to the given Serializer.
+      Save the current state of this device to the given Serializer.
 
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out);
+    virtual bool save(Serializer& out) const;
 
     /**
-      Loads the current state of this device from the given Deserializer.
+      Load the current state of this device from the given Deserializer.
 
-      @param in The deserializer device to load from.
-      @return The result of the load.  True on success, false on failure.
+      @param in  The Deserializer object to use
+      @return  False on any errors, else true
     */
     virtual bool load(Deserializer& in);
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    virtual string name() const { return "M6532"; }
 
    public:
     /**

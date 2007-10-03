@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.29 2007-09-23 17:04:17 stephena Exp $
+// $Id: Event.hxx,v 1.30 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.29 2007-09-23 17:04:17 stephena Exp $
+  @version $Id: Event.hxx,v 1.30 2007-10-03 21:41:17 stephena Exp $
 */
 class Event
 {
@@ -51,6 +51,9 @@ class Event
       BoosterGripZeroTrigger, BoosterGripZeroBooster,
       BoosterGripOneTrigger, BoosterGripOneBooster,
 
+      DrivingZeroValue,
+      DrivingOneValue,
+
       PaddleZeroResistance, PaddleZeroFire,
         PaddleZeroDecrease, PaddleZeroIncrease, PaddleZeroAnalog,
       PaddleOneResistance, PaddleOneFire,
@@ -69,12 +72,7 @@ class Event
       KeyboardOne4, KeyboardOne5, KeyboardOne6,
       KeyboardOne7, KeyboardOne8, KeyboardOne9,
       KeyboardOneStar, KeyboardOne0, KeyboardOnePound,
-
-      DrivingZeroClockwise, DrivingZeroCounterClockwise, DrivingZeroValue, 
-	  DrivingZeroFire,
-      DrivingOneClockwise, DrivingOneCounterClockwise, DrivingOneValue,
-	  DrivingOneFire,
-	  
+  
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
       PauseMode, MenuMode, CmdMenuMode, DebuggerMode, LauncherMode,
       Fry, VolumeDecrease, VolumeIncrease,

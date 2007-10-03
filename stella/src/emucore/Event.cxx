@@ -13,8 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.12 2007-09-23 17:04:17 stephena Exp $
+// $Id: Event.cxx,v 1.13 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
+
+#include "OSystem.hxx"
+#include "Console.hxx"
+#include "Control.hxx"
 
 #include "Event.hxx"
 

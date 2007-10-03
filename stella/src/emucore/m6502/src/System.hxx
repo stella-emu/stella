@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.16 2007-01-01 18:04:51 stephena Exp $
+// $Id: System.hxx,v 1.17 2007-10-03 21:41:19 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -23,12 +23,11 @@ class Device;
 class M6502;
 class TIA;
 class NullDevice;
-class Serializer;
-class Deserializer;
 
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "NullDev.hxx"
+#include "Serializable.hxx"
 
 /**
   This class represents a system consisting of a 6502 microprocessor
@@ -47,9 +46,9 @@ class Deserializer;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.16 2007-01-01 18:04:51 stephena Exp $
+  @version $Id: System.hxx,v 1.17 2007-10-03 21:41:19 stephena Exp $
 */
-class System
+class System : public Serializable
 {
   public:
     /**
@@ -74,23 +73,6 @@ class System
     void reset();
 
     /**
-      Saves the current state of this system class to the given Serializer.
-
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
-    */
-    bool save(Serializer& out);
-
-    /**
-      Loads the current state of this system class from the given Deserializer.
-
-      @param in The deserializer device to load from.
-      @return The result of the load.  True on success, false on failure.
-    */
-    bool load(Deserializer& in);
-
-  public:
-    /**
       Attach the specified device and claim ownership of it.  The device 
       will be asked to install itself.
 
@@ -113,28 +95,6 @@ class System
       @param tia The TIA device to attach to the system
     */
     void attach(TIA* tia);
-
-    /**
-      Saves the current state of Stella to the given file.  Calls
-      save on every device and CPU attached to this system.
-
-      @param md5sum   MD5 of the current ROM
-      @param out      The serializer device to save to
-
-      @return  False on any errors, else true
-    */
-    bool saveState(const string& md5sum, Serializer& out);
-
-    /**
-      Loads the current state of Stella from the given file.  Calls
-      load on every device and CPU attached to this system.
-
-      @param md5sum   MD5 of the current ROM
-      @param in       The deserializer device to load from
-
-      @return  False on any errors, else true
-    */
-    bool loadState(const string& md5sum, Deserializer& in);
 
   public:
     /**
@@ -237,7 +197,10 @@ class System
 
       @return the data bus state
     */  
-    uInt8 getDataBusState() const;
+    inline uInt8 getDataBusState() const
+    {
+      return myDataBusState;
+    }
 
     /**
       Get the byte at the specified address.  No masking of the
@@ -315,6 +278,29 @@ class System
     */
     const PageAccess& getPageAccess(uInt16 page);
  
+    /**
+      Save the current state of this system to the given Serializer.
+
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    bool save(Serializer& out) const;
+
+    /**
+      Load the current state of this system from the given Deserializer.
+
+      @param in  The Deserializer object to use
+      @return  False on any errors, else true
+    */
+    bool load(Deserializer& in);
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    virtual string name() const { return "System"; }
+
   private:
     // Mask to apply to an address before accessing memory
     const uInt16 myAddressMask;
@@ -364,11 +350,5 @@ class System
     // Assignment operator isn't supported by this class so make it private
     System& operator = (const System&);
 };
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 System::getDataBusState() const
-{
-  return myDataBusState;
-}
 
 #endif

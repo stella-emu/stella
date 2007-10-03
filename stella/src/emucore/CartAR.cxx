@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.18 2007-01-14 16:17:53 stephena Exp $
+// $Id: CartAR.cxx,v 1.19 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,8 +21,6 @@
 #include "M6502Hi.hxx"
 #include "Random.hxx"
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartAR.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -51,12 +49,6 @@ CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size, bool fastbios)
 CartridgeAR::~CartridgeAR()
 {
   delete[] myLoadImages;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeAR::name() const
-{
-  return "CartridgeAR";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -429,7 +421,41 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::save(Serializer& out)
+void CartridgeAR::bank(uInt16 bank)
+{
+  if(bankLocked) return;
+
+  bankConfiguration(bank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeAR::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeAR::bankCount()
+{
+  return 32;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::patch(uInt16 address, uInt8 value)
+{
+  // myImage[address & 0x0FFF] = value;
+  return false;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeAR::getImage(int& size)
+{
+  size = myNumberOfLoadImages * 8448;
+  return &myLoadImages[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeAR::save(Serializer& out) const
 {
   string cart = name();
 
@@ -447,12 +473,12 @@ bool CartridgeAR::save(Serializer& out)
     // The 6K of RAM and 2K of ROM contained in the Supercharger
     out.putInt(8192);
     for(i = 0; i < 8192; ++i)
-      out.putInt(myImage[i]);
+      out.putByte((char)myImage[i]);
 
     // The 256 byte header for the current 8448 byte load
     out.putInt(256);
     for(i = 0; i < 256; ++i)
-      out.putInt(myHeader[i]);
+      out.putByte((char)myHeader[i]);
 
     // All of the 8448 byte loads associated with the game 
     // Note that the size of this array is myNumberOfLoadImages * 8448
@@ -461,7 +487,7 @@ bool CartridgeAR::save(Serializer& out)
       out.putInt(myLoadImages[i]);
 
     // Indicates how many 8448 loads there are
-    out.putInt(myNumberOfLoadImages);
+    out.putByte((char)myNumberOfLoadImages);
 
     // Indicates if the RAM is write enabled
     out.putBool(myWriteEnabled);
@@ -473,7 +499,7 @@ bool CartridgeAR::save(Serializer& out)
     out.putInt(myPowerRomCycle);
 
     // Data hold register used for writing
-    out.putInt(myDataHoldRegister);
+    out.putByte((char)myDataHoldRegister);
 
     // Indicates number of distinct accesses when data hold register was set
     out.putInt(myNumberOfDistinctAccesses);
@@ -515,12 +541,12 @@ bool CartridgeAR::load(Deserializer& in)
     // The 6K of RAM and 2K of ROM contained in the Supercharger
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myImage[i] = (uInt8) in.getInt();
+      myImage[i] = (uInt8) in.getByte();
 
     // The 256 byte header for the current 8448 byte load
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myHeader[i] = (uInt8) in.getInt();
+      myHeader[i] = (uInt8) in.getByte();
 
     // All of the 8448 byte loads associated with the game 
     // Note that the size of this array is myNumberOfLoadImages * 8448
@@ -529,7 +555,7 @@ bool CartridgeAR::load(Deserializer& in)
       myLoadImages[i] = (uInt8) in.getInt();
 
     // Indicates how many 8448 loads there are
-    myNumberOfLoadImages = (uInt8) in.getInt();
+    myNumberOfLoadImages = (uInt8) in.getByte();
 
     // Indicates if the RAM is write enabled
     myWriteEnabled = in.getBool();
@@ -541,7 +567,7 @@ bool CartridgeAR::load(Deserializer& in)
     myPowerRomCycle = (Int32) in.getInt();
 
     // Data hold register used for writing
-    myDataHoldRegister = (uInt8) in.getInt();
+    myDataHoldRegister = (uInt8) in.getByte();
 
     // Indicates number of distinct accesses when data hold register was set
     myNumberOfDistinctAccesses = (uInt32) in.getInt();
@@ -561,38 +587,4 @@ bool CartridgeAR::load(Deserializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::bank(uInt16 bank)
-{
-  if(bankLocked) return;
-
-  bankConfiguration(bank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bank()
-{
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bankCount()
-{
-  return 32;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::patch(uInt16 address, uInt8 value)
-{
-  // myImage[address & 0x0FFF] = value;
-  return false;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeAR::getImage(int& size)
-{
-  size = myNumberOfLoadImages * 8448;
-  return &myLoadImages[0];
 }

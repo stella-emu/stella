@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.7 2007-01-01 18:04:49 stephena Exp $
+// $Id: Paddles.hxx,v 1.8 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -21,12 +21,13 @@
 
 #include "bspf.hxx"
 #include "Control.hxx"
+#include "Event.hxx"
 
 /**
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.7 2007-01-01 18:04:49 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.8 2007-10-03 21:41:18 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -47,36 +48,15 @@ class Paddles : public Controller
 
   public:
     /**
-      Read the value of the specified digital pin for this controller.
-
-      @param pin The pin of the controller jack to read
-      @return The state of the pin
+      Update the entire digital and analog pin state according to the
+      events currently set.
     */
-    virtual bool read(DigitalPin pin);
-
-    /**
-      Read the resistance at the specified analog pin for this controller.
-      The returned value is the resistance measured in ohms.
-
-      @param pin The pin of the controller jack to read
-      @return The resistance at the specified pin
-    */
-    virtual Int32 read(AnalogPin pin);
-
-    /**
-      Write the given value to the specified digital pin for this
-      controller.  Writing is only allowed to the pins associated
-      with the PIA.  Therefore you cannot write to pin six.
-
-      @param pin The pin of the controller jack to write to
-      @param value The value to write to the pin
-    */
-    virtual void write(DigitalPin pin, bool value);
+    virtual void update();
 
   private:
-    // Used to implement paddle swapping efficiently, and eliminate
-    // testing at runtime
-    Event::Type myPinEvents[4][2];
+    // Pre-compute the events we care about based on given port
+    // This will eliminate test for left or right port in update()
+    Event::Type myP1ResEvent, myP2ResEvent, myP1FireEvent, myP2FireEvent;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.cxx,v 1.8 2007-01-13 20:39:48 bwmott Exp $
+// $Id: Keyboard.cxx,v 1.9 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -24,162 +24,41 @@ Keyboard::Keyboard(Jack jack, const Event& event)
   : Controller(jack, event, Controller::Keyboard),
     myPinState(0)
 {
+  if(myJack == Left)
+  {
+    myOneEvent   = Event::KeyboardZero1;
+    myTwoEvent   = Event::KeyboardZero2;
+    myThreeEvent = Event::KeyboardZero3;
+    myFourEvent  = Event::KeyboardZero4;
+    myFiveEvent  = Event::KeyboardZero5;
+    mySixEvent   = Event::KeyboardZero6;
+    mySevenEvent = Event::KeyboardZero7;
+    myEightEvent = Event::KeyboardZero8;
+    myNineEvent  = Event::KeyboardZero9;
+    myStarEvent  = Event::KeyboardZeroStar;
+    myZeroEvent  = Event::KeyboardZero0;
+    myPoundEvent = Event::KeyboardZeroPound;
+  }
+  else
+  {
+    myOneEvent   = Event::KeyboardOne1;
+    myTwoEvent   = Event::KeyboardOne2;
+    myThreeEvent = Event::KeyboardOne3;
+    myFourEvent  = Event::KeyboardOne4;
+    myFiveEvent  = Event::KeyboardOne5;
+    mySixEvent   = Event::KeyboardOne6;
+    mySevenEvent = Event::KeyboardOne7;
+    myEightEvent = Event::KeyboardOne8;
+    myNineEvent  = Event::KeyboardOne9;
+    myStarEvent  = Event::KeyboardOneStar;
+    myZeroEvent  = Event::KeyboardOne0;
+    myPoundEvent = Event::KeyboardOnePound;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Keyboard::~Keyboard()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Keyboard::read(DigitalPin pin)
-{
-  switch(pin)
-  {
-    case One:
-      return (myPinState & 0x01);
-
-    case Two:
-      return (myPinState & 0x02);
-
-    case Three:
-      return (myPinState & 0x04);
-
-    case Four:
-      return (myPinState & 0x08);
-
-    case Six:
-      if((myPinState & 0x01) == 0)
-      {
-          return (myJack == Left) ? (myEvent.get(Event::KeyboardZero3) == 0) :
-              (myEvent.get(Event::KeyboardOne3) == 0);
-      }
-      else if((myPinState & 0x02) == 0)
-      {
-          return (myJack == Left) ? (myEvent.get(Event::KeyboardZero6) == 0) :
-              (myEvent.get(Event::KeyboardOne6) == 0);
-      }
-      else if((myPinState & 0x04) == 0)
-      {
-          return (myJack == Left) ? (myEvent.get(Event::KeyboardZero9) == 0) :
-              (myEvent.get(Event::KeyboardOne9) == 0);
-      }
-      else if((myPinState & 0x08) == 0)
-      {
-          return (myJack == Left) ? (myEvent.get(Event::KeyboardZeroPound) == 0) :
-              (myEvent.get(Event::KeyboardOnePound) == 0);
-      }
-      break;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Keyboard::read(AnalogPin pin)
-{
-  // NOTE: maximumResistance = GND, while minimumResistance = +5V
-
-  if(pin == Nine)
-  {
-    if(myJack == Left)
-    {
-      if(!(myPinState & 0x01) && (myEvent.get(Event::KeyboardZero1) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x02) && (myEvent.get(Event::KeyboardZero4) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x04) && (myEvent.get(Event::KeyboardZero7) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x08) && (myEvent.get(Event::KeyboardZeroStar) != 0))
-      {
-        return maximumResistance;
-      }
-      else
-      {
-        return minimumResistance;
-      }
-    }
-    else
-    {
-      if(!(myPinState & 0x01) && (myEvent.get(Event::KeyboardOne1) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x02) && (myEvent.get(Event::KeyboardOne4) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x04) && (myEvent.get(Event::KeyboardOne7) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x08) && (myEvent.get(Event::KeyboardOneStar) != 0))
-      {
-        return maximumResistance;
-      }
-      else
-      {
-        return minimumResistance;
-      }
-    }
-  }
-  else
-  {
-    if(myJack == Left)
-    {
-      if(!(myPinState & 0x01) && (myEvent.get(Event::KeyboardZero2) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x02) && (myEvent.get(Event::KeyboardZero5) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x04) && (myEvent.get(Event::KeyboardZero8) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x08) && (myEvent.get(Event::KeyboardZero0) != 0))
-      {
-        return maximumResistance;
-      }
-      else
-      {
-        return minimumResistance;
-      }
-    }
-    else
-    {
-      if(!(myPinState & 0x01) && (myEvent.get(Event::KeyboardOne2) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x02) && (myEvent.get(Event::KeyboardOne5) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x04) && (myEvent.get(Event::KeyboardOne8) != 0))
-      {
-        return maximumResistance; 
-      }
-      else if(!(myPinState & 0x08) && (myEvent.get(Event::KeyboardOne0) != 0))
-      {
-        return maximumResistance;
-      }
-      else
-      {
-        return minimumResistance;
-      }
-    }
-  }
-
-  return minimumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -207,4 +86,47 @@ void Keyboard::write(DigitalPin pin, bool value)
     default:
       break;
   } 
+
+  // State has probably changed, so recalculate it
+  update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Keyboard::update()
+{
+  myDigitalPinState[One]   = (myPinState & 0x01);
+  myDigitalPinState[Two]   = (myPinState & 0x02);
+  myDigitalPinState[Three] = (myPinState & 0x04);
+  myDigitalPinState[Four]  = (myPinState & 0x08);
+
+  // Set defaults
+  myDigitalPinState[Six] = true;
+  myAnalogPinValue[Five] = minimumResistance;
+  myAnalogPinValue[Nine] = minimumResistance;
+
+  // Now scan the rows and columns
+  if(!(myPinState & 0x08))
+  {
+    myDigitalPinState[Six] = (myEvent.get(myPoundEvent) == 0);
+    if(myEvent.get(myZeroEvent) != 0) myAnalogPinValue[Five] = maximumResistance;
+    if(myEvent.get(myStarEvent) != 0) myAnalogPinValue[Nine] = maximumResistance;
+  }
+  if(!(myPinState & 0x04))
+  {
+    myDigitalPinState[Six] = (myEvent.get(myNineEvent) == 0);
+    if(myEvent.get(myEightEvent) != 0) myAnalogPinValue[Five] = maximumResistance;
+    if(myEvent.get(mySevenEvent) != 0) myAnalogPinValue[Nine] = maximumResistance;
+  }
+  if(!(myPinState & 0x02))
+  {
+    myDigitalPinState[Six] = (myEvent.get(mySixEvent) == 0);
+    if(myEvent.get(myFiveEvent) != 0) myAnalogPinValue[Five] = maximumResistance;
+    if(myEvent.get(myFourEvent) != 0) myAnalogPinValue[Nine] = maximumResistance;
+  }
+  if(!(myPinState & 0x01))
+  {
+    myDigitalPinState[Six] = (myEvent.get(myThreeEvent) == 0);
+    if(myEvent.get(myTwoEvent) != 0) myAnalogPinValue[Five] = maximumResistance;
+    if(myEvent.get(myOneEvent) != 0) myAnalogPinValue[Nine] = maximumResistance;
+  }
 }

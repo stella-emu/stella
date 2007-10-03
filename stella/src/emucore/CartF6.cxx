@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6.cxx,v 1.13 2007-01-14 16:17:54 stephena Exp $
+// $Id: CartF6.cxx,v 1.14 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -36,12 +36,6 @@ CartridgeF6::CartridgeF6(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF6::~CartridgeF6()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeF6::name() const
-{
-  return "CartridgeF6";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -144,7 +138,59 @@ void CartridgeF6::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6::save(Serializer& out)
+void CartridgeF6::bank(uInt16 bank)
+{ 
+  if(bankLocked) return;
+
+  // Remember what bank we're in
+  myCurrentBank = bank;
+  uInt16 offset = myCurrentBank * 4096;
+  uInt16 shift = mySystem->pageShift();
+  uInt16 mask = mySystem->pageMask();
+
+  // Setup the page access methods for the current bank
+  System::PageAccess access;
+  access.device = this;
+  access.directPokeBase = 0;
+
+  // Map ROM image into the system
+  for(uInt32 address = 0x1000; address < (0x1FF6U & ~mask);
+      address += (1 << shift))
+  {
+    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF6::bank()
+{
+  return myCurrentBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeF6::bankCount()
+{
+  return 4;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[myCurrentBank * 4096 + address] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeF6::getImage(int& size)
+{
+  size = 16384;
+  return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6::save(Serializer& out) const
 {
   string cart = name();
 
@@ -195,56 +241,4 @@ bool CartridgeF6::load(Deserializer& in)
   bank(myCurrentBank);
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6::bank(uInt16 bank)
-{ 
-  if(bankLocked) return;
-
-  // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map ROM image into the system
-  for(uInt32 address = 0x1000; address < (0x1FF6U & ~mask);
-      address += (1 << shift))
-  {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6::bank()
-{
-  return myCurrentBank;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6::bankCount()
-{
-  return 4;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6::patch(uInt16 address, uInt8 value)
-{
-  address = address & 0x0FFF;
-  myImage[myCurrentBank * 4096 + address] = value;
-  return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF6::getImage(int& size)
-{
-  size = 16384;
-  return &myImage[0];
 }

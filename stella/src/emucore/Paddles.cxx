@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.8 2007-01-05 17:54:23 stephena Exp $
+// $Id: Paddles.cxx,v 1.9 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -24,42 +24,30 @@ Paddles::Paddles(Jack jack, const Event& event, bool swap)
   : Controller(jack, event, Controller::Paddles)
 {
   // Swap the paddle events, from paddle 0 <=> 1 and paddle 2 <=> 3
-  if(!swap)
+  // Also consider whether this is the left or right port
+  if(myJack == Left)
   {
-    // Pin Three
-    myPinEvents[0][0] = Event::PaddleOneFire;
-    myPinEvents[0][1] = Event::PaddleThreeFire;
-
-    // Pin Four
-    myPinEvents[1][0] = Event::PaddleZeroFire;
-    myPinEvents[1][1] = Event::PaddleTwoFire;
-
-    // Pin Five
-    myPinEvents[2][0] = Event::PaddleOneResistance;
-    myPinEvents[2][1] = Event::PaddleThreeResistance;
-
-    // Pin Nine
-    myPinEvents[3][0] = Event::PaddleZeroResistance;
-    myPinEvents[3][1] = Event::PaddleTwoResistance;
+    myP1ResEvent =
+      swap ? Event::PaddleZeroResistance : Event::PaddleOneResistance;
+    myP2ResEvent =
+      swap ? Event::PaddleOneResistance : Event::PaddleZeroResistance;
+    myP1FireEvent = swap ? Event::PaddleZeroFire : Event::PaddleOneFire;
+    myP2FireEvent = swap ? Event::PaddleOneFire : Event::PaddleZeroFire;
   }
   else
   {
-    // Pin Three (swapped)
-    myPinEvents[0][0] = Event::PaddleZeroFire;
-    myPinEvents[0][1] = Event::PaddleTwoFire;
-
-    // Pin Four (swapped)
-    myPinEvents[1][0] = Event::PaddleOneFire;
-    myPinEvents[1][1] = Event::PaddleThreeFire;
-
-    // Pin Five (swapped)
-    myPinEvents[2][0] = Event::PaddleZeroResistance;
-    myPinEvents[2][1] = Event::PaddleTwoResistance;
-
-    // Pin Nine (swapped)
-    myPinEvents[3][0] = Event::PaddleOneResistance;
-    myPinEvents[3][1] = Event::PaddleThreeResistance;
+    myP1ResEvent =
+      swap ? Event::PaddleTwoResistance : Event::PaddleThreeResistance;
+    myP2ResEvent =
+      swap ? Event::PaddleThreeResistance : Event::PaddleTwoResistance;
+    myP1FireEvent = swap ? Event::PaddleTwoFire : Event::PaddleThreeFire;
+    myP2FireEvent = swap ? Event::PaddleThreeFire : Event::PaddleTwoFire;
   }
+
+  // Digital pins 1, 2 and 6 are not connected
+  myDigitalPinState[One] =
+  myDigitalPinState[Two] =
+  myDigitalPinState[Six] = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,44 +56,11 @@ Paddles::~Paddles()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Paddles::read(DigitalPin pin)
+void Paddles::update()
 {
-  switch(pin)
-  {
-    case Three:
-      return (myJack == Left) ? (myEvent.get(myPinEvents[0][0]) == 0) : 
-          (myEvent.get(myPinEvents[0][1]) == 0);
+  myDigitalPinState[Three] = (myEvent.get(myP1FireEvent) == 0);
+  myDigitalPinState[Four]  = (myEvent.get(myP2FireEvent) == 0);
 
-    case Four:
-      return (myJack == Left) ? (myEvent.get(myPinEvents[1][0]) == 0) : 
-          (myEvent.get(myPinEvents[1][1]) == 0);
-
-    default:
-      // Other pins are not connected (floating high)
-      return true;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Paddles::read(AnalogPin pin)
-{
-  switch(pin)
-  {
-    case Five:
-      return (myJack == Left) ? myEvent.get(myPinEvents[2][0]) : 
-          myEvent.get(myPinEvents[2][1]);
-
-    case Nine:
-      return (myJack == Left) ? myEvent.get(myPinEvents[3][0]) : 
-          myEvent.get(myPinEvents[3][1]);
-
-    default:
-      return maximumResistance;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::write(DigitalPin, bool)
-{
-  // Writing doesn't do anything to the paddles...
+  myAnalogPinValue[Five] = myEvent.get(myP1ResEvent);
+  myAnalogPinValue[Nine] = myEvent.get(myP2ResEvent);
 }

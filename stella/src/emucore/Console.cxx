@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.129 2007-09-10 15:46:58 stephena Exp $
+// $Id: Console.cxx,v 1.130 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -43,10 +43,12 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
+#include "TrackBall22.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
 #include "CommandMenu.hxx"
+#include "Serializable.hxx"
 #include "Version.hxx"
 
 #ifdef DEBUGGER_SUPPORT
@@ -112,6 +114,10 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   else if(left == "PADDLES")
   {
     myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, swapPaddles);
+  }
+  else if(left == "TRACKBALL22")
+  {
+    myControllers[leftPort] = new TrackBall22(Controller::Left, *myEvent);
   }
   else
   {
@@ -248,6 +254,60 @@ Console::~Console()
   delete mySwitches;
   delete myControllers[0];
   delete myControllers[1];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Console::save(Serializer& out) const
+{
+  try
+  {
+    // First save state for the system
+    if(!mySystem->save(out))
+      return false;
+
+    // Now save the console switches
+    if(!mySwitches->save(out))
+      return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for \'Console\'" << endl;
+    return false;
+  }
+
+  return true;  // success
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Console::load(Deserializer& in)
+{
+  try
+  {
+    // First load state for the system
+    if(!mySystem->load(in))
+      return false;
+
+    // Then load the console switches
+    if(!mySwitches->load(in))
+      return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for \'Console\'" << endl;
+    return false;
+  }
+
+  return true;  // success
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

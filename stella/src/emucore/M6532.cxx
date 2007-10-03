@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.10 2007-06-21 12:27:00 stephena Exp $
+// $Id: M6532.cxx,v 1.11 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -45,12 +45,6 @@ M6532::M6532(const Console& console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::~M6532()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* M6532::name() const
-{
-  return "M6532";
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -321,7 +315,7 @@ void M6532::poke(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6532::save(Serializer& out)
+bool M6532::save(Serializer& out) const
 {
   string device = name();
 
@@ -332,15 +326,15 @@ bool M6532::save(Serializer& out)
     // Output the RAM
     out.putInt(128);
     for(uInt32 t = 0; t < 128; ++t)
-      out.putInt(myRAM[t]);
+      out.putByte((char)myRAM[t]);
 
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
     out.putInt(myCyclesWhenTimerSet);
     out.putInt(myCyclesWhenInterruptReset);
     out.putBool(myTimerReadAfterInterrupt);
-    out.putInt(myDDRA);
-    out.putInt(myDDRB);
+    out.putByte((char)myDDRA);
+    out.putByte((char)myDDRB);
   }
   catch(char *msg)
   {
@@ -369,7 +363,7 @@ bool M6532::load(Deserializer& in)
     // Input the RAM
     uInt32 limit = (uInt32) in.getInt();
     for(uInt32 t = 0; t < limit; ++t)
-      myRAM[t] = (uInt8) in.getInt();
+      myRAM[t] = (uInt8) in.getByte();
 
     myTimer = (uInt32) in.getInt();
     myIntervalShift = (uInt32) in.getInt();
@@ -377,8 +371,8 @@ bool M6532::load(Deserializer& in)
     myCyclesWhenInterruptReset = (uInt32) in.getInt();
     myTimerReadAfterInterrupt = in.getBool();
 
-    myDDRA = (uInt8) in.getInt();
-    myDDRB = (uInt8) in.getInt();
+    myDDRA = (uInt8) in.getByte();
+    myDDRB = (uInt8) in.getByte();
   }
   catch(char *msg)
   {
@@ -393,7 +387,6 @@ bool M6532::load(Deserializer& in)
 
   return true;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const M6532& c)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StateManager.hxx,v 1.1 2007-09-23 17:04:17 stephena Exp $
+// $Id: StateManager.hxx,v 1.2 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef STATE_MANAGER_HXX
@@ -21,13 +21,16 @@
 
 class OSystem;
 
+#include "Deserializer.hxx"
+#include "Serializer.hxx"
+
 /**
   This class provides an interface to all things related to emulation state.
   States can be loaded or saved here, as well as recorded, rewound, and later
   played back.
 
   @author  Stephen Anthony
-  @version $Id: StateManager.hxx,v 1.1 2007-09-23 17:04:17 stephena Exp $
+  @version $Id: StateManager.hxx,v 1.2 2007-10-03 21:41:18 stephena Exp $
 */
 class StateManager
 {
@@ -43,6 +46,19 @@ class StateManager
     virtual ~StateManager();
 
   public:
+    /**
+      Answers whether the manager is in record or playback mode
+    */
+    bool isActive();
+
+    bool toggleRecordMode();
+    bool toggleRewindMode();
+
+    /**
+      Updates the state of the system based on the currently active mode
+    */
+    void update();
+
     /**
       Load a state into the current system
 
@@ -75,11 +91,32 @@ class StateManager
     StateManager& operator = (const StateManager&);
 
   private:
+    enum Mode {
+      kOffMode,
+      kMoviePlaybackMode,
+      kMovieRecordMode,
+      kRewindPlaybackMode,
+      kRewindRecordMode
+    };
+
     // The parent OSystem object
     OSystem* myOSystem;
 
     // The current slot for load/save states
     int myCurrentSlot;
+
+    // Whether the manager is in record or playback mode
+    Mode myActiveMode;
+
+    // Current frame count (write full state every 60 frames)
+    int myFrameCounter;
+
+    // MD5 of the currently active ROM (either in movie or rewind mode)
+    string myMD5;
+
+    // Serializer classes used to save/load the eventstream
+    Serializer   myMovieWriter;
+    Deserializer myMovieReader;
 };
 
 #endif

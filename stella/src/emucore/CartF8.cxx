@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.15 2007-01-14 16:17:54 stephena Exp $
+// $Id: CartF8.cxx,v 1.16 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartF8.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -40,12 +38,6 @@ CartridgeF8::CartridgeF8(const uInt8* image, bool swapbanks)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeF8::~CartridgeF8()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeF8::name() const
-{
-  return "CartridgeF8";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,60 +120,6 @@ void CartridgeF8::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF8::save(Serializer& out)
-{
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-
-    out.putInt(myCurrentBank);
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF8::load(Deserializer& in)
-{
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Remember what bank we were in
-  bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8::bank(uInt16 bank)
 { 
   if(bankLocked) return;
@@ -232,4 +170,58 @@ uInt8* CartridgeF8::getImage(int& size)
 {
   size = 8192;
   return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF8::save(Serializer& out) const
+{
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    out.putInt(myCurrentBank);
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF8::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Remember what bank we were in
+  bank(myCurrentBank);
+
+  return true;
 }

@@ -51,6 +51,7 @@ MODULE_OBJS := \
 	src/emucore/StateManager.o \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
+	src/emucore/TrackBall22.o \
 	src/emucore/unzip.o \
 	src/emucore/MediaFactory.o
 

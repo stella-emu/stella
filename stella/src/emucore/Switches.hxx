@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.hxx,v 1.4 2007-01-01 18:04:50 stephena Exp $
+// $Id: Switches.hxx,v 1.5 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef SWITCHES_HXX
@@ -21,17 +21,17 @@
 
 class Event;
 class Properties;
-class Switches;
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
   This class represents the console switches of the game console.
 
   @author  Bradford W. Mott
-  @version $Id: Switches.hxx,v 1.4 2007-01-01 18:04:50 stephena Exp $
+  @version $Id: Switches.hxx,v 1.5 2007-10-03 21:41:18 stephena Exp $
 */
-class Switches
+class Switches : public Serializable
 {
   public:
     /**
@@ -53,7 +53,35 @@ class Switches
 
       @return The 8 bits which represent the state of the console switches
     */
-    uInt8 read();
+    uInt8 read() const { return mySwitches; }
+
+    /**
+      Update the switches variable
+    */
+    void update();
+
+    /**
+      Save the current state of the switches to the given Serializer.
+
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    bool save(Serializer& out) const;
+
+    /**
+      Load the current state of the switches from the given Deserializer.
+
+      @param in  The Deserializer object to use
+      @return  False on any errors, else true
+    */
+    bool load(Deserializer& in);
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    string name() const { return "Switches"; }
 
   private:
     // Reference to the event object to use
@@ -62,5 +90,5 @@ class Switches
     // State of the console switches
     uInt8 mySwitches;
 };
-#endif
 
+#endif

@@ -13,16 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Device.hxx,v 1.6 2007-01-14 16:17:57 stephena Exp $
+// $Id: Device.hxx,v 1.7 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
 #ifndef DEVICE_HXX
 #define DEVICE_HXX
 
 class System;
-class Serializer;
-class Deserializer;
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
@@ -30,9 +29,9 @@ class Deserializer;
   based system.
 
   @author  Bradford W. Mott
-  @version $Id: Device.hxx,v 1.6 2007-01-14 16:17:57 stephena Exp $
+  @version $Id: Device.hxx,v 1.7 2007-10-03 21:41:18 stephena Exp $
 */
-class Device
+class Device : public Serializable
 {
   public:
     /**
@@ -46,13 +45,6 @@ class Device
     virtual ~Device();
 
   public:
-    /**
-      Get a null terminated string which is the device's name (i.e. "M6532")
-
-      @return The name of the device
-    */
-    virtual const char* name() const = 0;
-
     /**
       Reset device to its power-on state
     */
@@ -74,20 +66,27 @@ class Device
     virtual void install(System& system) = 0;
 
     /**
-      Saves the current state of this device to the given Serializer.
+      Save the current state of this device to the given Serializer.
 
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out) = 0;
+    virtual bool save(Serializer& out) const = 0;
 
     /**
-      Loads the current state of this device from the given Deserializer.
+      Load the current state of this device from the given Deserializer.
 
-      @param in The deserializer device to load from.
-      @return The result of the load.  True on success, false on failure.
+      @param in  The Deserializer object to use
+      @return  False on any errors, else true
     */
     virtual bool load(Deserializer& in) = 0;
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    virtual string name() const = 0;
 
   public:
     /**

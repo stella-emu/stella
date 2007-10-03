@@ -13,18 +13,19 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.19 2007-06-14 13:47:50 stephena Exp $
+// $Id: Cart.hxx,v 1.20 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
 #define CARTRIDGE_HXX
+
+#include <fstream>
 
 class Cartridge;
 class System;
 class Properties;
 class Settings;
 
-#include <fstream>
 #include "bspf.hxx"
 #include "Device.hxx"
 
@@ -33,7 +34,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.19 2007-06-14 13:47:50 stephena Exp $
+  @version $Id: Cart.hxx,v 1.20 2007-10-03 21:41:17 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -117,6 +118,29 @@ class Cartridge : public Device
       @return  A pointer to the internal ROM image data
     */
     virtual uInt8* getImage(int& size) = 0;
+
+    /**
+      Save the current state of this device to the given Serializer.
+
+      @param out  The Serializer object to use
+      @return  False on any errors, else true
+    */
+    virtual bool save(Serializer& out) const = 0;
+
+    /**
+      Load the current state of this device from the given Deserializer.
+
+      @param in  The Deserializer object to use
+      @return  False on any errors, else true
+    */
+    virtual bool load(Deserializer& in) = 0;
+
+    /**
+      Get a descriptor for the device name (used in error checking).
+
+      @return The name of the object
+    */
+    virtual string name() const = 0;
 
   protected:
     // If bankLocked is true, ignore attempts at bankswitching. This is used

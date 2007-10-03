@@ -13,49 +13,39 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.hxx,v 1.7 2007-10-03 21:41:18 stephena Exp $
+// $Id: TrackBall22.hxx,v 1.1 2007-10-03 21:41:18 stephena Exp $
 //============================================================================
 
-#ifndef KEYBOARD_HXX
-#define KEYBOARD_HXX
+#ifndef TRACKBALL22_HXX
+#define TRACKBALL22_HXX
 
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
 
 /**
-  The standard Atari 2600 keyboard controller
+  The standard Atari 2600 CX-22 Trakball controller.
 
-  @author  Bradford W. Mott
-  @version $Id: Keyboard.hxx,v 1.7 2007-10-03 21:41:18 stephena Exp $
+  @author  Stephen Anthony
+  @version $Id: TrackBall22.hxx,v 1.1 2007-10-03 21:41:18 stephena Exp $
 */
-class Keyboard : public Controller
+class TrackBall22 : public Controller
 {
   public:
     /**
-      Create a new keyboard controller plugged into the specified jack
+      Create a new CX-22 TrackBall controller plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
+      @param jack  The jack the controller is plugged into
       @param event The event object to use for events
     */
-    Keyboard(Jack jack, const Event& event);
+    TrackBall22(Jack jack, const Event& event);
 
     /**
       Destructor
     */
-    virtual ~Keyboard();
+    virtual ~TrackBall22();
 
   public:
-    /**
-      Write the given value to the specified digital pin for this
-      controller.  Writing is only allowed to the pins associated
-      with the PIA.  Therefore you cannot write to pin six.
-
-      @param pin The pin of the controller jack to write to
-      @param value The value to write to the pin
-    */
-    virtual void write(DigitalPin pin, bool value);
-
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
@@ -63,15 +53,12 @@ class Keyboard : public Controller
     virtual void update();
 
   private:
-    // State of the output pins
-    uInt8 myPinState;
+    // Counter to iterate through the gray codes
+    uInt32 myHCounter, myVCounter;
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myOneEvent, myTwoEvent, myThreeEvent,
-                myFourEvent, myFiveEvent, mySixEvent,
-                mySevenEvent, myEightEvent, myNineEvent,
-                myStarEvent, myZeroEvent, myPoundEvent;
+    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent, myFireEvent;
 };
 
 #endif

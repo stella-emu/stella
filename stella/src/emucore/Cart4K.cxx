@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4K.cxx,v 1.10 2007-01-14 16:17:52 stephena Exp $
+// $Id: Cart4K.cxx,v 1.11 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Cart4K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,12 +34,6 @@ Cartridge4K::Cartridge4K(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4K::~Cartridge4K()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Cartridge4K::name() const
-{
-  return "Cartridge4K";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +76,40 @@ void Cartridge4K::poke(uInt16, uInt8)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::save(Serializer& out)
+void Cartridge4K::bank(uInt16 bank)
+{
+  // Doesn't support bankswitching
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge4K::bank()
+{
+  // Doesn't support bankswitching
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Cartridge4K::bankCount()
+{
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge4K::patch(uInt16 address, uInt8 value)
+{
+  myImage[address & 0x0FFF] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* Cartridge4K::getImage(int& size)
+{
+  size = 4096;
+  return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge4K::save(Serializer& out) const
 {
   string cart = name();
 
@@ -128,37 +153,4 @@ bool Cartridge4K::load(Deserializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::bank(uInt16 bank)
-{
-  // Doesn't support bankswitching
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4K::bank()
-{
-  // Doesn't support bankswitching
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4K::bankCount()
-{
-  return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::patch(uInt16 address, uInt8 value)
-{
-  myImage[address & 0x0FFF] = value;
-  return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge4K::getImage(int& size)
-{
-  size = 4096;
-  return &myImage[0];
 }

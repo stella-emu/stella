@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.211 2007-09-25 13:04:24 stephena Exp $
+// $Id: EventHandler.cxx,v 1.212 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -37,6 +37,7 @@
 #include "Snapshot.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
+#include "Switches.hxx"
 
 #include "EventHandler.hxx"
 
@@ -347,13 +348,6 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::poll(uInt32 time)
 {
-// FIXME - change this to use StateManager stuff
-  // Check if we have an event from the eventstreamer
-  // TODO - should we lock out input from the user while getting synthetic events?
-//  int type, value;
-//  while(myEventStreamer->pollEvent(type, value))
-//    myEvent->set((Event::Type)type, value);
-
   // Synthesize events for platform-specific hardware
   myOSystem->pollEvent();
 
@@ -455,26 +449,22 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().togglePhosphor();
                 break;
 
-#if 0
+#if 1
 // FIXME - these will be removed when a UI is added for event recording
               case SDLK_e:  // Alt-e starts/stops event recording
-                if(myEventStreamer->isRecording())
-                {
-                  if(myEventStreamer->stopRecording())
-                    myOSystem->frameBuffer().showMessage("Recording stopped");
-                  else
-                    myOSystem->frameBuffer().showMessage("Stop recording error");
-                }
+                if(myOSystem->state().toggleRecordMode())
+                  myOSystem->frameBuffer().showMessage("Recording started");
                 else
-                {
-                  if(myEventStreamer->startRecording())
-                    myOSystem->frameBuffer().showMessage("Recording started");
-                  else
-                    myOSystem->frameBuffer().showMessage("Start recording error");
-                }
-                return;
+                  myOSystem->frameBuffer().showMessage("Recording stopped");
                 break;
 
+              case SDLK_r:  // Alt-r starts/stops rewind mode
+                if(myOSystem->state().toggleRewindMode())
+                  myOSystem->frameBuffer().showMessage("Rewind mode started");
+                else
+                  myOSystem->frameBuffer().showMessage("Rewind mode stopped");
+                break;
+/*
               case SDLK_l:  // Alt-l loads a recording
                 if(myEventStreamer->loadRecording())
                   myOSystem->frameBuffer().showMessage("Playing recording");
@@ -482,6 +472,7 @@ void EventHandler::poll(uInt32 time)
                   myOSystem->frameBuffer().showMessage("Playing recording error");
                 return;
                 break;
+*/
 ////////////////////////////////////////////////////////////////////////
 #endif
             }
@@ -675,21 +666,20 @@ void EventHandler::poll(uInt32 time)
             // Since we can't detect what controller is attached to a
             // Stelladaptor, we only send events based on controller
             // type in ROM properties
+            // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
+            // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
+            // enum; subtracting two gives us Controller 0 and 1
             switch((int)myController[type-2])
             {
-              // Send button events for the joysticks
+              // Send button events for the joysticks and driving controllers
               case Controller::Joystick:
+              case Controller::Driving:
                 myEvent->set(SA_Button[type-2][button][0], state);
                 break;
 
               // Send axis events for the paddles
               case Controller::Paddles:
                 myEvent->set(SA_Button[type-2][button][1], state);
-                break;
-
-              // Send events for the driving controllers
-              case Controller::Driving:
-                myEvent->set(SA_Button[type-2][button][2], state);
                 break;
             }
             break;  // Stelladaptor button
@@ -729,10 +719,15 @@ void EventHandler::poll(uInt32 time)
             // Since we can't detect what controller is attached to a
             // Stelladaptor, we only send events based on controller
             // type in ROM properties
+            // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
+            // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
+            // enum; subtracting two gives us Controller 0 and 1
             switch((int)myController[type-2])
             {
               // Send axis events for the joysticks
               case Controller::Joystick:
+                // Disallow 4-direction movement by turning off the
+                // other extreme of the axis
                 myEvent->set(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
                 myEvent->set(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
                 break;
@@ -817,27 +812,42 @@ void EventHandler::poll(uInt32 time)
       }
       else
       {
-        int resistance = (int)(1000000.0 * (1000000.0 - myPaddle[i].x) / 1000000.0);
+        int resistance = (int)(1000000.0 * (1000000 - myPaddle[i].x) / 1000000);
         myEvent->set(Paddle_Resistance[i], resistance);
       }
     }
   }
 
-  // Update the current dialog container at regular intervals
-  // Used to implement continuous events
-  if(myState != S_EMULATE && myOverlay)
+  // Update controllers and console switches, and in general all other things
+  // related to emulation
+  if(myState == S_EMULATE)
+  {
+    myOSystem->console().controller(Controller::Left).update();
+    myOSystem->console().controller(Controller::Right).update();
+    myOSystem->console().switches().update();
+
+    // Now check if the StateManager should be saving or loading state
+    // Per-frame cheats are disabled if the StateManager is active, since
+    // it would interfere with proper playback
+    if(myOSystem->state().isActive())
+    {
+      myOSystem->state().update();
+    }
+    else
+    {
+    #ifdef CHEATCODE_SUPPORT
+      const CheatList& cheats = myOSystem->cheat().perFrame();
+      for(unsigned int i = 0; i < cheats.size(); i++)
+        cheats[i]->evaluate();
+    #endif
+    }
+  }
+  else if(myOverlay)
+  {
+    // Update the current dialog container at regular intervals
+    // Used to implement continuous events
     myOverlay->updateTime(time);
-
-#ifdef CHEATCODE_SUPPORT
-  const CheatList& cheats = myOSystem->cheat().perFrame();
-  for(unsigned int i = 0; i < cheats.size(); i++)
-    cheats[i]->evaluate();
-#endif
-
-  // Tell the eventstreamer that another frame has finished
-  // This is used for event recording
-//  myEventStreamer->nextFrame();
-// FIXME - change this to use StateManager stuff
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -845,18 +855,12 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
   // Take window zooming into account
   int x = event.motion.x, y = event.motion.y;
-  myOSystem->frameBuffer().translateCoords(x, y);
 
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
   {
     int w = myOSystem->frameBuffer().baseWidth();
     if(x < 0 || x > w) return;
-
-    // Grabmouse introduces some lag into the mouse movement,
-    // so we need to fudge the numbers a bit
-    if(myGrabMouseFlag) x = BSPF_min(w, (int) (x * 1.5));
-
     int resistance = (int)(1000000.0 * (w - x) / w);
     myEvent->set(Paddle_Resistance[myPaddleMode], resistance);
 
@@ -864,7 +868,10 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
     myPaddle[myPaddleMode].x = 1000000 - resistance;
   }
   else if(myOverlay)
+  {
+    myOSystem->frameBuffer().translateCoords(x, y);
     myOverlay->handleMouseMotionEvent(x, y, 0);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -877,9 +884,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
   {
     // Take window zooming into account
     Int32 x = event.button.x, y = event.button.y;
-//if (state) cerr << "B: x = " << x << ", y = " << y << endl;
     myOSystem->frameBuffer().translateCoords(x, y);
-//if (state) cerr << "A: x = " << x << ", y = " << y << endl << endl;
     MouseButton button;
 
     switch(event.button.button)
@@ -1027,9 +1032,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
         case Controller::Paddles:
           handleEvent(Event::PaddleZeroDecrease, state);
           return;
+/*
         case Controller::Driving:
           myEvent->set(Event::DrivingZeroCounterClockwise, state);
           return;
+*/
       }
       break;
     case Event::JoystickZeroRight:
@@ -1044,9 +1051,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
         case Controller::Paddles:
           handleEvent(Event::PaddleZeroIncrease, state);
           return;
+/*
         case Controller::Driving:
           myEvent->set(Event::DrivingZeroClockwise, state);
           return;
+*/
       }
       break;
     case Event::JoystickZeroFire:
@@ -1058,9 +1067,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
         case Controller::Paddles:
           myEvent->set(Event::PaddleZeroFire, state);
           return;
+/*
         case Controller::Driving:
           myEvent->set(Event::DrivingZeroFire, state);
           return;
+*/
       }
       break;
     case Event::JoystickOneUp:
@@ -1083,9 +1094,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
         case Controller::Paddles:
           handleEvent(Event::PaddleOneDecrease, state);
           return;
+/*
         case Controller::Driving:
           myEvent->set(Event::DrivingOneCounterClockwise, state);
           return;
+*/
       }
       break;
     case Event::JoystickOneRight:
@@ -1100,9 +1113,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
         case Controller::Paddles:
           handleEvent(Event::PaddleZeroIncrease, state);
           return;
+/*
         case Controller::Driving:
           myEvent->set(Event::DrivingOneClockwise, state);
           return;
+*/
       }
       break;
     case Event::JoystickOneFire:
@@ -1114,9 +1129,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
         case Controller::Paddles:
           myEvent->set(Event::PaddleOneFire, state);
           return;
+/*
         case Controller::Driving:
           myEvent->set(Event::DrivingOneFire, state);
           return;
+*/
       }
       break;
     ////////////////////////////////////////////////////////////////////////
@@ -1162,9 +1179,11 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::VolumeDecrease:
+      if(state) myOSystem->sound().adjustVolume(-1);
+      return;
+
     case Event::VolumeIncrease:
-      if(state)
-        myOSystem->sound().adjustVolume(event == Event::VolumeIncrease ? 1 : -1);
+      if(state) myOSystem->sound().adjustVolume(+1);
       return;
 
     case Event::SaveState:
@@ -1717,14 +1736,6 @@ void EventHandler::setDefaultKeymap(EventMode mode)
       myKeyTable[ SDLK_f ][mode]         = Event::JoystickOneFire;
       myKeyTable[ SDLK_6 ][mode]         = Event::BoosterGripOneTrigger;
       myKeyTable[ SDLK_7 ][mode]         = Event::BoosterGripOneBooster;
-
-      myKeyTable[ SDLK_INSERT ][mode]    = Event::DrivingZeroCounterClockwise;
-      myKeyTable[ SDLK_PAGEUP ][mode]    = Event::DrivingZeroClockwise;
-      myKeyTable[ SDLK_HOME ][mode]      = Event::DrivingZeroFire;
-
-      myKeyTable[ SDLK_DELETE ][mode]    = Event::DrivingOneCounterClockwise;
-      myKeyTable[ SDLK_PAGEDOWN ][mode]  = Event::DrivingOneClockwise;
-      myKeyTable[ SDLK_END ][mode]       = Event::DrivingOneFire;
 
       myKeyTable[ SDLK_F1 ][mode]        = Event::ConsoleSelect;
       myKeyTable[ SDLK_F2 ][mode]        = Event::ConsoleReset;
@@ -2505,13 +2516,13 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::BoosterGripOneTrigger,       "P1 Booster-Grip Trigger",         0 },
   { Event::BoosterGripOneBooster,       "P1 Booster-Grip Booster",         0 },
 
-  { Event::DrivingZeroCounterClockwise, "P0 Driving Controller Left",      0 },
-  { Event::DrivingZeroClockwise,        "P0 Driving Controller Right",     0 },
-  { Event::DrivingZeroFire,             "P0 Driving Controller Fire",      0 },
+//  { Event::DrivingZeroCounterClockwise, "P0 Driving Controller Left",      0 },
+//  { Event::DrivingZeroClockwise,        "P0 Driving Controller Right",     0 },
+//  { Event::DrivingZeroFire,             "P0 Driving Controller Fire",      0 },
 
-  { Event::DrivingOneCounterClockwise,  "P1 Driving Controller Left",      0 },
-  { Event::DrivingOneClockwise,         "P1 Driving Controller Right",     0 },
-  { Event::DrivingOneFire,              "P1 Driving Controller Fire",      0 },
+//  { Event::DrivingOneCounterClockwise,  "P1 Driving Controller Left",      0 },
+//  { Event::DrivingOneClockwise,         "P1 Driving Controller Right",     0 },
+//  { Event::DrivingOneFire,              "P1 Driving Controller Fire",      0 },
 
   { Event::KeyboardZero1,               "P0 Keyboard 1",				   0 },
   { Event::KeyboardZero2,               "P0 Keyboard 2",				   0 },
@@ -2573,22 +2584,27 @@ const Event::Type EventHandler::Paddle_Button[4] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Used by the Stelladaptor to disallow impossible directions (both up & down
+//  or left & right), or for resistance for paddles
 const Event::Type EventHandler::SA_Axis[2][2][3] = {
-  { {Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance},
-    {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance}   },
-  { {Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance},
+  { {Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance },
+    {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance  } },
+  { {Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance  },
     {Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance} }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Event::Type EventHandler::SA_Button[2][2][3] = {
-  { {Event::JoystickZeroFire, Event::PaddleZeroFire,  Event::DrivingZeroFire },
-    {Event::NoType,           Event::PaddleOneFire,   Event::NoType}            },
-  { {Event::JoystickOneFire,  Event::PaddleTwoFire,   Event::DrivingOneFire },
-    {Event::NoType,           Event::PaddleThreeFire, Event::NoType}            }
+// Used by the Stelladaptor to map button presses to joystick or paddles
+//  (driving controllers are considered the same as joysticks)
+const Event::Type EventHandler::SA_Button[2][2][2] = {
+  { {Event::JoystickZeroFire, Event::PaddleZeroFire  },
+    {Event::NoType,           Event::PaddleOneFire   } },
+  { {Event::JoystickOneFire,  Event::PaddleTwoFire   },
+    {Event::NoType,           Event::PaddleThreeFire } }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Used by the Stelladaptor to send simulated 'gray codes'
 const Event::Type EventHandler::SA_DrivingValue[2] = {
   Event::DrivingZeroValue, Event::DrivingOneValue
 };

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.62 2007-09-10 15:46:58 stephena Exp $
+// $Id: Console.hxx,v 1.63 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -33,14 +33,15 @@ class System;
 #include "Cart.hxx"
 #include "M6532.hxx"
 #include "AtariVox.hxx"
+#include "Serializable.hxx"
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.62 2007-09-10 15:46:58 stephena Exp $
+  @version $Id: Console.hxx,v 1.63 2007-10-03 21:41:17 stephena Exp $
 */
-class Console
+class Console : public Serializable
 {
   public:
     /**
@@ -119,6 +120,29 @@ class Console
     M6532& riot() const { return *myRiot; }
 
     /**
+      Saves the current state of this console class to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const;
+
+    /**
+      Loads the current state of this console class from the given Deserializer.
+
+      @param in The deserializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Deserializer& in);
+
+    /**
+      Get a descriptor for this console class (used in error checking).
+
+      @return The name of the object
+    */
+    string name() const { return "Console"; }
+
+    /**
       Set the properties to those given
 
       @param The properties to use for the current game
@@ -141,7 +165,7 @@ class Console
 
   public:
     /**
-      Toggle between NTSC/PAL/PAL60 display format.
+      Toggle between NTSC/PAL/SECAM (and variants) display format.
     */
     void toggleFormat();
 

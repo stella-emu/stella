@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.13 2007-01-14 16:17:53 stephena Exp $
+// $Id: CartE0.cxx,v 1.14 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartE0.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -36,12 +34,6 @@ CartridgeE0::CartridgeE0(const uInt8* image)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::~CartridgeE0()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeE0::name() const
-{
-  return "CartridgeE0";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -197,7 +189,42 @@ void CartridgeE0::segmentTwo(uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeE0::save(Serializer& out)
+void CartridgeE0::bank(uInt16 bank)
+{
+  // FIXME - get this working, so we can debug E0 carts
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeE0::bank()
+{
+  // FIXME - get this working, so we can debug E0 carts
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartridgeE0::bankCount()
+{
+  // FIXME - get this working, so we can debug E0 carts
+  return 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE0::patch(uInt16 address, uInt8 value)
+{
+  address = address & 0x0FFF;
+  myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
+  return true;
+} 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* CartridgeE0::getImage(int& size)
+{
+  size = 8192;
+  return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeE0::save(Serializer& out) const
 {
   string cart = name();
 
@@ -249,39 +276,4 @@ bool CartridgeE0::load(Deserializer& in)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::bank(uInt16 bank)
-{
-  // FIXME - get this working, so we can debug E0 carts
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeE0::bank()
-{
-  // FIXME - get this working, so we can debug E0 carts
-  return 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeE0::bankCount()
-{
-  // FIXME - get this working, so we can debug E0 carts
-  return 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeE0::patch(uInt16 address, uInt8 value)
-{
-  address = address & 0x0FFF;
-  myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
-  return true;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeE0::getImage(int& size)
-{
-  size = 8192;
-  return &myImage[0];
 }

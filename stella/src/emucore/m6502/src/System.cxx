@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.22 2007-09-23 17:04:17 stephena Exp $
+// $Id: System.cxx,v 1.23 2007-10-03 21:41:19 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -23,8 +23,6 @@
 #include "M6502.hxx"
 #include "TIA.hxx"
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(uInt16 n, uInt16 m)
@@ -123,52 +121,6 @@ void System::attach(TIA* tia)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::save(Serializer& out)
-{
-  try
-  {
-    out.putString("System");
-    out.putInt(myCycles);
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for \'System\'" << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::load(Deserializer& in)
-{
-  try
-  {
-    if(in.getString() != "System")
-      return false;
-
-    myCycles = (uInt32) in.getInt();
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for \'System\'" << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::resetCycles()
 {
   // First we let all of the device attached to me know about the reset
@@ -200,85 +152,6 @@ const System::PageAccess& System::getPageAccess(uInt16 page)
   assert(page <= myNumberOfPages);
 
   return myPageAccessTable[page];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::saveState(const string& md5sum, Serializer& out)
-{
-  if(!out.isOpen())
-    return false;
-
-  try
-  {
-    // Prepend the state file with the md5sum of this cartridge
-    // This is the first defensive check for an invalid state file
-    out.putString(md5sum);
-
-    // First save state for this system
-    if(!save(out))
-      return false;
-
-    // Next, save state for the CPU
-    if(!myM6502->save(out))
-      return false;
-
-    // Now save the state of each device
-    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-      if(!myDevices[i]->save(out))
-        return false;
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for \'System\'" << endl;
-    return false;
-  }
-
-  return true;  // success
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::loadState(const string& md5sum, Deserializer& in)
-{
-  if(!in.isOpen())
-    return false;
-
-  try
-  {
-    // Look at the beginning of the state file.  It should contain the md5sum
-    // of the current cartridge.  If it doesn't, this state file is invalid.
-    if(in.getString() != md5sum)
-      return false;
-
-    // First load state for this system
-    if(!load(in))
-      return false;
-
-    // Next, load state for the CPU
-    if(!myM6502->load(in))
-      return false;
-
-    // Now load the state of each device
-    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-      if(!myDevices[i]->load(in))
-        return false;
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for \'System\'" << endl;
-    return false;
-  }
-
-  return true;  // success
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -355,4 +228,69 @@ void System::lockDataBus()
 void System::unlockDataBus()
 {
   myDataBusLocked = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool System::save(Serializer& out) const
+{
+  const string& device = name();
+  try
+  {
+    out.putString(device);
+    out.putInt(myCycles);
+
+    if(!myM6502->save(out))
+      return false;
+
+    // Now save the state of each device
+    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+      if(!myDevices[i]->save(out))
+        return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << device << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool System::load(Deserializer& in)
+{
+  const string& device = name();
+  try
+  {
+    if(in.getString() != device)
+      return false;
+
+    myCycles = (uInt32) in.getInt();
+
+    // Next, load state for the CPU
+    if(!myM6502->load(in))
+      return false;
+
+    // Now load the state of each device
+    for(uInt32 i = 0; i < myNumberOfDevices; ++i)
+      if(!myDevices[i]->load(in))
+        return false;
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << device << endl;
+    return false;
+  }
+
+  return true;
 }

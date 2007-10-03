@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.12 2007-01-14 16:17:52 stephena Exp $
+// $Id: Cart3E.cxx,v 1.13 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -21,8 +21,6 @@
 #include "Random.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Cart3E.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,12 +48,6 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
 Cartridge3E::~Cartridge3E()
 {
   delete[] myImage;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* Cartridge3E::name() const
-{
-  return "Cartridge3E";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,69 +131,6 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
   // 64-byte chunk of address space is "owned" by only one device. If we
   // don't chain the poke to the TIA, then the TIA can't see it...
   mySystem->tia().poke(address, value);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::save(Serializer& out)
-{
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-    out.putInt(myCurrentBank);
-
-    // Output RAM
-    out.putInt(32768);
-    for(uInt32 addr = 0; addr < 32768; ++addr)
-      out.putInt(myRam[addr]);
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::load(Deserializer& in)
-{
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    myCurrentBank = (uInt16) in.getInt();
-
-    // Input RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 addr = 0; addr < limit; ++addr)
-      myRam[addr] = (uInt8) in.getInt();
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  // Now, go to the current bank
-  bank(myCurrentBank);
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,4 +235,67 @@ uInt8* Cartridge3E::getImage(int& size)
 {
   size = mySize;
   return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3E::save(Serializer& out) const
+{
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+    out.putInt(myCurrentBank);
+
+    // Output RAM
+    out.putInt(32768);
+    for(uInt32 addr = 0; addr < 32768; ++addr)
+      out.putByte((char)myRam[addr]);
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge3E::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    myCurrentBank = (uInt16) in.getInt();
+
+    // Input RAM
+    uInt32 limit = (uInt32) in.getInt();
+    for(uInt32 addr = 0; addr < limit; ++addr)
+      myRam[addr] = (uInt8) in.getByte();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  // Now, go to the current bank
+  bank(myCurrentBank);
+
+  return true;
 }

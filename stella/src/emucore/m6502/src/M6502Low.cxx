@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Low.cxx,v 1.12 2007-01-01 18:04:51 stephena Exp $
+// $Id: M6502Low.cxx,v 1.13 2007-10-03 21:41:19 stephena Exp $
 //============================================================================
 
 #include "M6502Low.hxx"
@@ -224,12 +224,12 @@ bool M6502Low::save(Serializer& out)
   {
     out.putString(CPU);
 
-    out.putInt(A);    // Accumulator
-    out.putInt(X);    // X index register
-    out.putInt(Y);    // Y index register
-    out.putInt(SP);   // Stack Pointer
-    out.putInt(IR);   // Instruction register
-    out.putInt(PC);   // Program Counter
+    out.putByte((char)A);  // Accumulator
+    out.putByte((char)X);  // X index register
+    out.putByte((char)Y);  // Y index register
+    out.putByte((char)SP); // Stack Pointer
+    out.putByte((char)IR); // Instruction register
+    out.putInt(PC);        // Program Counter
 
     out.putBool(N);     // N flag for processor status register
     out.putBool(V);     // V flag for processor status register
@@ -239,7 +239,7 @@ bool M6502Low::save(Serializer& out)
     out.putBool(notZ);  // Z flag complement for processor status register
     out.putBool(C);     // C flag for processor status register
 
-    out.putInt(myExecutionStatus);
+    out.putByte((char)myExecutionStatus);
   }
   catch(char *msg)
   {
@@ -265,11 +265,11 @@ bool M6502Low::load(Deserializer& in)
     if(in.getString() != CPU)
       return false;
 
-    A = (uInt8) in.getInt();    // Accumulator
-    X = (uInt8) in.getInt();    // X index register
-    Y = (uInt8) in.getInt();    // Y index register
-    SP = (uInt8) in.getInt();   // Stack Pointer
-    IR = (uInt8) in.getInt();   // Instruction register
+    A = (uInt8) in.getByte();   // Accumulator
+    X = (uInt8) in.getByte();   // X index register
+    Y = (uInt8) in.getByte();   // Y index register
+    SP = (uInt8) in.getByte();  // Stack Pointer
+    IR = (uInt8) in.getByte();  // Instruction register
     PC = (uInt16) in.getInt();  // Program Counter
 
     N = in.getBool();     // N flag for processor status register
@@ -280,7 +280,7 @@ bool M6502Low::load(Deserializer& in)
     notZ = in.getBool();  // Z flag complement for processor status register
     C = in.getBool();     // C flag for processor status register
 
-    myExecutionStatus = (uInt8) in.getInt();
+    myExecutionStatus = (uInt8) in.getByte();
   }
   catch(char *msg)
   {

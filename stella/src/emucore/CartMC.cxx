@@ -13,15 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.12 2007-01-14 16:17:55 stephena Exp $
+// $Id: CartMC.cxx,v 1.13 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "Random.hxx"
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartMC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,12 +62,6 @@ CartridgeMC::~CartridgeMC()
 {
   delete[] myRAM;
   delete[] myImage;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeMC::name() const
-{
-  return "CartridgeMC";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,77 +212,6 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMC::save(Serializer& out)
-{
-  uInt32 i;
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-
-    // The currentBlock array
-    out.putInt(4);
-    for(i = 0; i < 4; ++i)
-      out.putInt(myCurrentBlock[i]);
-
-    // The 32K of RAM
-    out.putInt(32 * 1024);
-    for(i = 0; i < 32 * 1024; ++i)
-      out.putInt(myRAM[i]);
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMC::load(Deserializer& in)
-{
-  uInt32 i;
-  string cart = name();
-
-  try
-  {
-    uInt32 limit;
-
-    if(in.getString() != cart)
-      return false;
-
-    // The currentBlock array
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myCurrentBlock[i] = (uInt8) in.getInt();
-
-    // The 32K of RAM
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getInt();
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::bank(uInt16 b)
 {
   // TODO: add support for debugger
@@ -322,4 +243,75 @@ uInt8* CartridgeMC::getImage(int& size)
 {
   size = 128 * 1024; // FIXME: keep track of original size
   return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMC::save(Serializer& out) const
+{
+  uInt32 i;
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    // The currentBlock array
+    out.putInt(4);
+    for(i = 0; i < 4; ++i)
+      out.putByte((char)myCurrentBlock[i]);
+
+    // The 32K of RAM
+    out.putInt(32 * 1024);
+    for(i = 0; i < 32 * 1024; ++i)
+      out.putByte((char)myRAM[i]);
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeMC::load(Deserializer& in)
+{
+  uInt32 i;
+  string cart = name();
+
+  try
+  {
+    uInt32 limit;
+
+    if(in.getString() != cart)
+      return false;
+
+    // The currentBlock array
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myCurrentBlock[i] = (uInt8) in.getByte();
+
+    // The 32K of RAM
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myRAM[i] = (uInt8) in.getByte();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  return true;
 }

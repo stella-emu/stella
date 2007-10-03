@@ -13,15 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.14 2007-01-14 16:17:53 stephena Exp $
+// $Id: CartCV.cxx,v 1.15 2007-10-03 21:41:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "Random.hxx"
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartCV.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,12 +64,6 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::~CartridgeCV()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartridgeCV::name() const
-{
-  return "CartridgeCV";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,63 +124,6 @@ void CartridgeCV::poke(uInt16, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::save(Serializer& out)
-{
-  string cart = name();
-
-  try
-  {
-    out.putString(cart);
-
-    // Output RAM
-    out.putInt(1024);
-    for(uInt32 addr = 0; addr < 1024; ++addr)
-      out.putInt(myRAM[addr]);
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::load(Deserializer& in)
-{
-  string cart = name();
-
-  try
-  {
-    if(in.getString() != cart)
-      return false;
-
-    // Input RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 addr = 0; addr < limit; ++addr)
-      myRAM[addr] = (uInt8) in.getInt();
-  }
-  catch(const char* msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::bank(uInt16 bank)
 {
   // Doesn't support bankswitching
@@ -219,4 +154,61 @@ uInt8* CartridgeCV::getImage(int& size)
 {
   size = 2048;
   return &myImage[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::save(Serializer& out) const
+{
+  string cart = name();
+
+  try
+  {
+    out.putString(cart);
+
+    // Output RAM
+    out.putInt(1024);
+    for(uInt32 addr = 0; addr < 1024; ++addr)
+      out.putByte((char)myRAM[addr]);
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for " << cart << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCV::load(Deserializer& in)
+{
+  string cart = name();
+
+  try
+  {
+    if(in.getString() != cart)
+      return false;
+
+    // Input RAM
+    uInt32 limit = (uInt32) in.getInt();
+    for(uInt32 addr = 0; addr < limit; ++addr)
+      myRAM[addr] = (uInt8) in.getByte();
+  }
+  catch(const char* msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << cart << endl;
+    return false;
+  }
+
+  return true;
 }
