@@ -12,7 +12,7 @@ Expression* lastExp = 0;
 int yylex();
 char *yytext;
 
-void yyerror(char *e) {
+void yyerror(const char *e) {
 	//if(DEBUG_EXP) fprintf(stderr, "%s at token \"%s\"\n", e, yytext);
 	if(DEBUG_EXP) fprintf(stderr, "%s\n", e);
 	errMsg = e;
@@ -97,6 +97,6 @@ expression:	expression '+' expression { if(DEBUG_EXP) fprintf(stderr, " +"); $$ 
 	|	CPU_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }
 	|	TIA_METHOD { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }
 	|	FUNCTION { if(DEBUG_EXP) fprintf(stderr, " (function)"); $$ = new FunctionExpression($1); lastExp = $$; }
-	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR"); yyerror("Invalid label or constant"); return 1; }
+	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR"); yyerror((char*)"Invalid label or constant"); return 1; }
 	;
 %%

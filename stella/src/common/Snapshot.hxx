@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.11 2007-01-01 18:04:40 stephena Exp $
+// $Id: Snapshot.hxx,v 1.12 2007-10-08 01:59:20 stephena Exp $
 //============================================================================
 
 #ifndef SNAPSHOT_HXX
@@ -39,7 +39,7 @@ class Snapshot
                         const string& filename);
 
   private:
-    static void writePNGChunk(ofstream& out, char* type, uInt8* data, int size);
+    static void writePNGChunk(ofstream& out, const char* type, uInt8* data, int size);
     static void writePNGText(ofstream& out, const string& key, const string& text);
 };
 

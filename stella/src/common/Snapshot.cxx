@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.16 2007-01-01 18:04:40 stephena Exp $
+// $Id: Snapshot.cxx,v 1.17 2007-10-08 01:59:20 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -117,7 +117,8 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Snapshot::writePNGChunk(ofstream& out, char* type, uInt8* data, int size)
+void Snapshot::writePNGChunk(ofstream& out, const char* type,
+                             uInt8* data, int size)
 {
   // Stuff the length/type into the buffer
   uInt8 temp[8];

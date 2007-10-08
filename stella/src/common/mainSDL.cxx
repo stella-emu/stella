@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.77 2007-09-17 22:41:44 stephena Exp $
+// $Id: mainSDL.cxx,v 1.78 2007-10-08 01:59:20 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -137,7 +137,7 @@ int main(int argc, char* argv[])
 
   // Request that the SDL window be centered, if possible
   if(theOSystem->settings().getBool("center"))
-    putenv("SDL_VIDEO_CENTERED=1");
+    putenv((char*)"SDL_VIDEO_CENTERED=1");
 
 #ifdef BSPF_UNIX
   // Nvidia cards under UNIX don't currently support SDL_GL_SWAP_CONTROL
@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
   // This also means the setting can only be changed by restarting Stella
   // This functionality should really be integrated into SDL directly
   if(theOSystem->settings().getBool("gl_vsync"))
-    putenv("__GL_SYNC_TO_VBLANK=1");
+    putenv((char*)"__GL_SYNC_TO_VBLANK=1");
 #endif
 
   //// Main loop ////
