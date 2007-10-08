@@ -355,10 +355,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\EventStreamer.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\FrameBuffer.cxx"
 					>
 				</File>
@@ -435,6 +431,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\StateManager.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Switches.cxx"
 					>
 				</File>
@@ -448,6 +448,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\TIASnd.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\TrackBall22.cxx"
 					>
 				</File>
 				<File
@@ -695,11 +699,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\RomInfoWidget.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\ScrollBarWidget.cxx"
 					>
 				</File>
 				<File
 					RelativePath="..\gui\StringListWidget.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\Surface.cxx"
 					>
 				</File>
 				<File
@@ -909,10 +921,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\EventStreamer.hxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\FrameBuffer.hxx"
 					>
 				</File>
@@ -981,6 +989,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\Serializable.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Serializer.hxx"
 					>
 				</File>
@@ -990,6 +1002,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\Sound.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\StateManager.hxx"
 					>
 				</File>
 				<File
@@ -1006,6 +1022,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\TIASnd.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\TrackBall22.hxx"
 					>
 				</File>
 				<File
@@ -1285,6 +1305,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\RomInfoWidget.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\ScrollBarWidget.hxx"
 					>
 				</File>
@@ -1302,6 +1326,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\StringListWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\Surface.hxx"
 					>
 				</File>
 				<File
