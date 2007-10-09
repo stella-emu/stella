@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.130 2007-10-03 21:41:17 stephena Exp $
+// $Id: Console.cxx,v 1.131 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -140,6 +140,10 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   else if(right == "PADDLES")
   {
     myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, swapPaddles);
+  }
+  else if(right == "TRACKBALL22")
+  {
+    myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent);
   }
 #ifdef ATARIVOX_SUPPORT
   else if(right == "ATARIVOX")

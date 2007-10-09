@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.13 2007-10-03 21:41:17 stephena Exp $
+// $Id: CartFASC.cxx,v 1.14 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -120,10 +120,16 @@ uInt8 CartridgeFASC::peek(uInt16 address)
       break;
   }
 
-  // NOTE: This does not handle accessing RAM, however, this function
-  // should never be called for RAM because of the way page accessing
-  // has been setup
-  return myImage[myCurrentBank * 4096 + address];
+  // Reading from the write port triggers an unwanted write
+  // Thanks to Kroko of AtariAge for this advice and code idea
+  if(address < 0x0100)  // Write port is at 0xF000 - 0xF100 (256 bytes)
+  {
+    return myRAM[address & 0x00FF] = 0;
+  }  
+  else
+  {
+    return myImage[myCurrentBank * 4096 + address];
+  }  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

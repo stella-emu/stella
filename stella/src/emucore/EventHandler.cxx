@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.212 2007-10-03 21:41:17 stephena Exp $
+// $Id: EventHandler.cxx,v 1.213 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1004,137 +1004,59 @@ void EventHandler::handleEvent(Event::Type event, int state)
 {
   // Take care of special events that aren't part of the emulation core
   // or need to be preprocessed before passing them on
-  switch((int)event)
+  switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
-    // Preprocess joystick events, converting them to events from whichever
-    // controller is plugged into the corresponding virtual port.
-    // This duplicates z26 behaviour, whereby the joystick can be used
-    // for almost all types of input.
-    // Yes, this is messy, but it's also as fast as possible ...
+    // Preprocess joystick events into equivalent paddle events.
+    // To speed processing, we won't care which type of controller
+    // is connected; we just set the events and let the controller
+    // decide how to interpret it.
     case Event::JoystickZeroUp:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickZeroDown, 0);
+      handleEvent(Event::PaddleOneDecrease, state);
       break;
+
     case Event::JoystickZeroDown:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickZeroUp, 0);
+      handleEvent(Event::PaddleOneIncrease, state);
       break;
+
     case Event::JoystickZeroLeft:
-      switch((int)myController[0])
-      {
-        case Controller::Joystick:
-        case Controller::BoosterGrip:
-          if(!myAllowAllDirectionsFlag && state)
-            myEvent->set(Event::JoystickZeroRight, 0);
-          myEvent->set(Event::JoystickZeroLeft, state);
-          return;
-        case Controller::Paddles:
-          handleEvent(Event::PaddleZeroDecrease, state);
-          return;
-/*
-        case Controller::Driving:
-          myEvent->set(Event::DrivingZeroCounterClockwise, state);
-          return;
-*/
-      }
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickZeroRight, 0);
+      handleEvent(Event::PaddleZeroDecrease, state);
       break;
+
     case Event::JoystickZeroRight:
-      switch((int)myController[0])
-      {
-        case Controller::Joystick:
-        case Controller::BoosterGrip:
-          if(!myAllowAllDirectionsFlag && state)
-            myEvent->set(Event::JoystickZeroLeft, 0);
-          myEvent->set(Event::JoystickZeroRight, state);
-          return;
-        case Controller::Paddles:
-          handleEvent(Event::PaddleZeroIncrease, state);
-          return;
-/*
-        case Controller::Driving:
-          myEvent->set(Event::DrivingZeroClockwise, state);
-          return;
-*/
-      }
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickZeroLeft, 0);
+      handleEvent(Event::PaddleZeroIncrease, state);
       break;
-    case Event::JoystickZeroFire:
-      switch((int)myController[0])
-      {
-        case Controller::Joystick:
-          myEvent->set(Event::JoystickZeroFire, state);
-          return;
-        case Controller::Paddles:
-          myEvent->set(Event::PaddleZeroFire, state);
-          return;
-/*
-        case Controller::Driving:
-          myEvent->set(Event::DrivingZeroFire, state);
-          return;
-*/
-      }
-      break;
+
     case Event::JoystickOneUp:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickOneDown, 0);
+      handleEvent(Event::PaddleThreeDecrease, state);
       break;
+
     case Event::JoystickOneDown:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickOneUp, 0);
+      handleEvent(Event::PaddleThreeIncrease, state);
       break;
+
     case Event::JoystickOneLeft:
-      switch((int)myController[1])
-      {
-        case Controller::Joystick:
-        case Controller::BoosterGrip:
-          if(!myAllowAllDirectionsFlag && state)
-            myEvent->set(Event::JoystickOneRight, 0);
-          myEvent->set(Event::JoystickOneLeft, state);
-          return;
-        case Controller::Paddles:
-          handleEvent(Event::PaddleOneDecrease, state);
-          return;
-/*
-        case Controller::Driving:
-          myEvent->set(Event::DrivingOneCounterClockwise, state);
-          return;
-*/
-      }
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickOneRight, 0);
+      handleEvent(Event::PaddleTwoDecrease, state);
       break;
+
     case Event::JoystickOneRight:
-      switch((int)myController[1])
-      {
-        case Controller::Joystick:
-        case Controller::BoosterGrip:
-          if(!myAllowAllDirectionsFlag && state)
-            myEvent->set(Event::JoystickOneLeft, 0);
-          myEvent->set(Event::JoystickOneRight, state);
-          return;
-        case Controller::Paddles:
-          handleEvent(Event::PaddleZeroIncrease, state);
-          return;
-/*
-        case Controller::Driving:
-          myEvent->set(Event::DrivingOneClockwise, state);
-          return;
-*/
-      }
-      break;
-    case Event::JoystickOneFire:
-      switch((int)myController[1])
-      {
-        case Controller::Joystick:
-          myEvent->set(Event::JoystickOneFire, state);
-          return;
-        case Controller::Paddles:
-          myEvent->set(Event::PaddleOneFire, state);
-          return;
-/*
-        case Controller::Driving:
-          myEvent->set(Event::DrivingOneFire, state);
-          return;
-*/
-      }
+      if(!myAllowAllDirectionsFlag && state)
+        myEvent->set(Event::JoystickOneLeft, 0);
+      handleEvent(Event::PaddleTwoIncrease, state);
       break;
     ////////////////////////////////////////////////////////////////////////
 
@@ -1221,6 +1143,9 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem->quit();
       }
       return;
+
+    default:
+      break;
   }
 
   if(state && ourMessageTable[event] != "")
@@ -1724,18 +1649,18 @@ void EventHandler::setDefaultKeymap(EventMode mode)
       myKeyTable[ SDLK_DOWN ][mode]      = Event::JoystickZeroDown;
       myKeyTable[ SDLK_LEFT ][mode]      = Event::JoystickZeroLeft;
       myKeyTable[ SDLK_RIGHT ][mode]     = Event::JoystickZeroRight;
-      myKeyTable[ SDLK_SPACE ][mode]     = Event::JoystickZeroFire;
-      myKeyTable[ SDLK_LCTRL ][mode]     = Event::JoystickZeroFire;
-      myKeyTable[ SDLK_4 ][mode]         = Event::BoosterGripZeroTrigger;
-      myKeyTable[ SDLK_5 ][mode]         = Event::BoosterGripZeroBooster;
+      myKeyTable[ SDLK_SPACE ][mode]     = Event::JoystickZeroFire1;
+      myKeyTable[ SDLK_LCTRL ][mode]     = Event::JoystickZeroFire1;
+      myKeyTable[ SDLK_4 ][mode]         = Event::JoystickZeroFire2;
+      myKeyTable[ SDLK_5 ][mode]         = Event::JoystickZeroFire3;
 
       myKeyTable[ SDLK_y ][mode]         = Event::JoystickOneUp;
       myKeyTable[ SDLK_h ][mode]         = Event::JoystickOneDown;
       myKeyTable[ SDLK_g ][mode]         = Event::JoystickOneLeft;
       myKeyTable[ SDLK_j ][mode]         = Event::JoystickOneRight;
-      myKeyTable[ SDLK_f ][mode]         = Event::JoystickOneFire;
-      myKeyTable[ SDLK_6 ][mode]         = Event::BoosterGripOneTrigger;
-      myKeyTable[ SDLK_7 ][mode]         = Event::BoosterGripOneBooster;
+      myKeyTable[ SDLK_f ][mode]         = Event::JoystickOneFire1;
+      myKeyTable[ SDLK_6 ][mode]         = Event::JoystickOneFire2;
+      myKeyTable[ SDLK_7 ][mode]         = Event::JoystickOneFire3;
 
       myKeyTable[ SDLK_F1 ][mode]        = Event::ConsoleSelect;
       myKeyTable[ SDLK_F2 ][mode]        = Event::ConsoleReset;
@@ -2456,99 +2381,89 @@ void EventHandler::setSDLMappings()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
-  { Event::ConsoleSelect,               "Select",                          0 },
-  { Event::ConsoleReset,                "Reset",                           0 },
-  { Event::ConsoleColor,                "Color TV",                        0 },
-  { Event::ConsoleBlackWhite,           "Black & White TV",                0 },
-  { Event::ConsoleLeftDifficultyA,      "P0 Difficulty A",                 0 },
-  { Event::ConsoleLeftDifficultyB,      "P0 Difficulty B",                 0 },
-  { Event::ConsoleRightDifficultyA,     "P1 Difficulty A",                 0 },
-  { Event::ConsoleRightDifficultyB,     "P1 Difficulty B",                 0 },
-  { Event::SaveState,                   "Save State",                      0 },
-  { Event::ChangeState,                 "Change State",                    0 },
-  { Event::LoadState,                   "Load State",                      0 },
-  { Event::TakeSnapshot,                "Snapshot",                        0 },
-  { Event::Fry,                         "Fry cartridge",                   0 },
-  { Event::VolumeDecrease,              "Decrease volume",                 0 },
-  { Event::VolumeIncrease,              "Increase volume",                 0 },
-  { Event::PauseMode,                   "Pause",                           0 },
-  { Event::MenuMode,                    "Enter options menu mode",         0 },
-  { Event::CmdMenuMode,                 "Toggle command menu mode",        0 },
-  { Event::DebuggerMode,                "Toggle debugger mode",            0 },
-  { Event::LauncherMode,                "Enter ROM launcher",              0 },
-  { Event::Quit,                        "Quit",                            0 },
+  { Event::ConsoleSelect,               "Select",                      0 },
+  { Event::ConsoleReset,                "Reset",                       0 },
+  { Event::ConsoleColor,                "Color TV",                    0 },
+  { Event::ConsoleBlackWhite,           "Black & White TV",            0 },
+  { Event::ConsoleLeftDifficultyA,      "P0 Difficulty A",             0 },
+  { Event::ConsoleLeftDifficultyB,      "P0 Difficulty B",             0 },
+  { Event::ConsoleRightDifficultyA,     "P1 Difficulty A",             0 },
+  { Event::ConsoleRightDifficultyB,     "P1 Difficulty B",             0 },
+  { Event::SaveState,                   "Save State",                  0 },
+  { Event::ChangeState,                 "Change State",                0 },
+  { Event::LoadState,                   "Load State",                  0 },
+  { Event::TakeSnapshot,                "Snapshot",                    0 },
+  { Event::Fry,                         "Fry cartridge",               0 },
+  { Event::VolumeDecrease,              "Decrease volume",             0 },
+  { Event::VolumeIncrease,              "Increase volume",             0 },
+  { Event::PauseMode,                   "Pause",                       0 },
+  { Event::MenuMode,                    "Enter options menu mode",     0 },
+  { Event::CmdMenuMode,                 "Toggle command menu mode",    0 },
+  { Event::DebuggerMode,                "Toggle debugger mode",        0 },
+  { Event::LauncherMode,                "Enter ROM launcher",          0 },
+  { Event::Quit,                        "Quit",                        0 },
 
-  { Event::JoystickZeroUp,              "P0 Joystick Up",                  0 },
-  { Event::JoystickZeroDown,            "P0 Joystick Down",                0 },
-  { Event::JoystickZeroLeft,            "P0 Joystick Left",                0 },
-  { Event::JoystickZeroRight,           "P0 Joystick Right",               0 },
-  { Event::JoystickZeroFire,            "P0 Joystick Fire",                0 },
+  { Event::JoystickZeroUp,              "P0 Joystick Up",              0 },
+  { Event::JoystickZeroDown,            "P0 Joystick Down",            0 },
+  { Event::JoystickZeroLeft,            "P0 Joystick Left",            0 },
+  { Event::JoystickZeroRight,           "P0 Joystick Right",           0 },
+  { Event::JoystickZeroFire1,           "P0 Joystick Fire",            0 },
+  { Event::JoystickZeroFire2,           "P0 Booster-Grip Trigger",     0 },
+  { Event::JoystickZeroFire3,           "P0 Booster-Grip Booster",     0 },
 
-  { Event::JoystickOneUp,               "P1 Joystick Up",                  0 },
-  { Event::JoystickOneDown,             "P1 Joystick Down",                0 },
-  { Event::JoystickOneLeft,             "P1 Joystick Left",                0 },
-  { Event::JoystickOneRight,            "P1 Joystick Right",               0 },
-  { Event::JoystickOneFire,             "P1 Joystick Fire",                0 },
+  { Event::JoystickOneUp,               "P1 Joystick Up",              0 },
+  { Event::JoystickOneDown,             "P1 Joystick Down",            0 },
+  { Event::JoystickOneLeft,             "P1 Joystick Left",            0 },
+  { Event::JoystickOneRight,            "P1 Joystick Right",           0 },
+  { Event::JoystickOneFire1,            "P1 Joystick Fire",            0 },
+  { Event::JoystickOneFire2,            "P1 Booster-Grip Trigger",     0 },
+  { Event::JoystickOneFire3,            "P1 Booster-Grip Booster",     0 },
 
-  { Event::PaddleZeroAnalog,            "Paddle 0 Analog",                 0 },
-  { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",               0 },
-  { Event::PaddleZeroIncrease,          "Paddle 0 Increase",               0 },
-  { Event::PaddleZeroFire,              "Paddle 0 Fire",                   0 },
+  { Event::PaddleZeroAnalog,            "Paddle 0 Analog",             0 },
+  { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",           0 },
+  { Event::PaddleZeroIncrease,          "Paddle 0 Increase",           0 },
+  { Event::PaddleZeroFire,              "Paddle 0 Fire",               0 },
 
-  { Event::PaddleOneAnalog,             "Paddle 1 Analog",                 0 },
-  { Event::PaddleOneDecrease,           "Paddle 1 Decrease",               0 },
-  { Event::PaddleOneIncrease,           "Paddle 1 Increase",               0 },
-  { Event::PaddleOneFire,               "Paddle 1 Fire",                   0 },
+  { Event::PaddleOneAnalog,             "Paddle 1 Analog",             0 },
+  { Event::PaddleOneDecrease,           "Paddle 1 Decrease",           0 },
+  { Event::PaddleOneIncrease,           "Paddle 1 Increase",           0 },
+  { Event::PaddleOneFire,               "Paddle 1 Fire",               0 },
 
-  { Event::PaddleTwoAnalog,             "Paddle 2 Analog",                 0 },
-  { Event::PaddleTwoDecrease,           "Paddle 2 Decrease",               0 },
-  { Event::PaddleTwoIncrease,           "Paddle 2 Increase",               0 },
-  { Event::PaddleTwoFire,               "Paddle 2 Fire",                   0 },
+  { Event::PaddleTwoAnalog,             "Paddle 2 Analog",             0 },
+  { Event::PaddleTwoDecrease,           "Paddle 2 Decrease",           0 },
+  { Event::PaddleTwoIncrease,           "Paddle 2 Increase",           0 },
+  { Event::PaddleTwoFire,               "Paddle 2 Fire",               0 },
 
-  { Event::PaddleThreeAnalog,           "Paddle 3 Analog",                 0 },
-  { Event::PaddleThreeDecrease,         "Paddle 3 Decrease",               0 },
-  { Event::PaddleThreeIncrease,         "Paddle 3 Increase",               0 },
-  { Event::PaddleThreeFire,             "Paddle 3 Fire",                   0 },
+  { Event::PaddleThreeAnalog,           "Paddle 3 Analog",             0 },
+  { Event::PaddleThreeDecrease,         "Paddle 3 Decrease",           0 },
+  { Event::PaddleThreeIncrease,         "Paddle 3 Increase",           0 },
+  { Event::PaddleThreeFire,             "Paddle 3 Fire",               0 },
 
-  { Event::BoosterGripZeroTrigger,      "P0 Booster-Grip Trigger",         0 },
-  { Event::BoosterGripZeroBooster,      "P0 Booster-Grip Booster",         0 },
+  { Event::KeyboardZero1,               "P0 Keyboard 1",               0 },
+  { Event::KeyboardZero2,               "P0 Keyboard 2",               0 },
+  { Event::KeyboardZero3,               "P0 Keyboard 3",               0 },
+  { Event::KeyboardZero4,               "P0 Keyboard 4",               0 },
+  { Event::KeyboardZero5,               "P0 Keyboard 5",               0 },
+  { Event::KeyboardZero6,               "P0 Keyboard 6",               0 },
+  { Event::KeyboardZero7,               "P0 Keyboard 7",               0 },
+  { Event::KeyboardZero8,               "P0 Keyboard 8",               0 },
+  { Event::KeyboardZero9,               "P0 Keyboard 9",               0 },
+  { Event::KeyboardZeroStar,            "P0 Keyboard *",               0 },
+  { Event::KeyboardZero0,               "P0 Keyboard 0",               0 },
+  { Event::KeyboardZeroPound,           "P0 Keyboard #",               0 },
 
-  { Event::BoosterGripOneTrigger,       "P1 Booster-Grip Trigger",         0 },
-  { Event::BoosterGripOneBooster,       "P1 Booster-Grip Booster",         0 },
-
-//  { Event::DrivingZeroCounterClockwise, "P0 Driving Controller Left",      0 },
-//  { Event::DrivingZeroClockwise,        "P0 Driving Controller Right",     0 },
-//  { Event::DrivingZeroFire,             "P0 Driving Controller Fire",      0 },
-
-//  { Event::DrivingOneCounterClockwise,  "P1 Driving Controller Left",      0 },
-//  { Event::DrivingOneClockwise,         "P1 Driving Controller Right",     0 },
-//  { Event::DrivingOneFire,              "P1 Driving Controller Fire",      0 },
-
-  { Event::KeyboardZero1,               "P0 Keyboard 1",				   0 },
-  { Event::KeyboardZero2,               "P0 Keyboard 2",				   0 },
-  { Event::KeyboardZero3,               "P0 Keyboard 3",				   0 },
-  { Event::KeyboardZero4,               "P0 Keyboard 4",				   0 },
-  { Event::KeyboardZero5,               "P0 Keyboard 5",				   0 },
-  { Event::KeyboardZero6,               "P0 Keyboard 6",				   0 },
-  { Event::KeyboardZero7,               "P0 Keyboard 7",				   0 },
-  { Event::KeyboardZero8,               "P0 Keyboard 8",				   0 },
-  { Event::KeyboardZero9,               "P0 Keyboard 9",				   0 },
-  { Event::KeyboardZeroStar,            "P0 Keyboard *",				   0 },
-  { Event::KeyboardZero0,               "P0 Keyboard 0",				   0 },
-  { Event::KeyboardZeroPound,           "P0 Keyboard #",				   0 },
-
-  { Event::KeyboardOne1,                "P1 Keyboard 1", 				  0 },
-  { Event::KeyboardOne2,                "P1 Keyboard 2", 				  0 },
-  { Event::KeyboardOne3,                "P1 Keyboard 3", 				  0 },
-  { Event::KeyboardOne4,                "P1 Keyboard 4", 				  0 },
-  { Event::KeyboardOne5,                "P1 Keyboard 5", 				  0 },
-  { Event::KeyboardOne6,                "P1 Keyboard 6", 				  0 },
-  { Event::KeyboardOne7,                "P1 Keyboard 7", 				  0 },
-  { Event::KeyboardOne8,                "P1 Keyboard 8", 				  0 },
-  { Event::KeyboardOne9,                "P1 Keyboard 9", 				  0 },
-  { Event::KeyboardOneStar,             "P1 Keyboard *", 				  0 },
-  { Event::KeyboardOne0,                "P1 Keyboard 0", 				  0 },
-  { Event::KeyboardOnePound,            "P1 Keyboard #", 				  0 }
+  { Event::KeyboardOne1,                "P1 Keyboard 1",               0 },
+  { Event::KeyboardOne2,                "P1 Keyboard 2",               0 },
+  { Event::KeyboardOne3,                "P1 Keyboard 3",               0 },
+  { Event::KeyboardOne4,                "P1 Keyboard 4",               0 },
+  { Event::KeyboardOne5,                "P1 Keyboard 5",               0 },
+  { Event::KeyboardOne6,                "P1 Keyboard 6",               0 },
+  { Event::KeyboardOne7,                "P1 Keyboard 7",               0 },
+  { Event::KeyboardOne8,                "P1 Keyboard 8",               0 },
+  { Event::KeyboardOne9,                "P1 Keyboard 9",               0 },
+  { Event::KeyboardOneStar,             "P1 Keyboard *",               0 },
+  { Event::KeyboardOne0,                "P1 Keyboard 0",               0 },
+  { Event::KeyboardOnePound,            "P1 Keyboard #",               0 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2597,10 +2512,10 @@ const Event::Type EventHandler::SA_Axis[2][2][3] = {
 // Used by the Stelladaptor to map button presses to joystick or paddles
 //  (driving controllers are considered the same as joysticks)
 const Event::Type EventHandler::SA_Button[2][2][2] = {
-  { {Event::JoystickZeroFire, Event::PaddleZeroFire  },
-    {Event::NoType,           Event::PaddleOneFire   } },
-  { {Event::JoystickOneFire,  Event::PaddleTwoFire   },
-    {Event::NoType,           Event::PaddleThreeFire } }
+  { {Event::JoystickZeroFire1, Event::PaddleZeroFire  },
+    {Event::NoType,            Event::PaddleOneFire   } },
+  { {Event::JoystickOneFire1,  Event::PaddleTwoFire   },
+    {Event::NoType,            Event::PaddleThreeFire } }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

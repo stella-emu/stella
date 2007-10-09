@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.111 2007-09-23 17:04:17 stephena Exp $
+// $Id: OSystem.cxx,v 1.112 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -686,9 +686,9 @@ void OSystem::setDefaultJoymap()
 
   mode = kEmulationMode;  // Default emulation events
   // Left joystick (assume joystick zero, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire, mode, 0, 0);
+  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire1, mode, 0, 0);
   // Right joystick (assume joystick one, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire, mode, 1, 0);
+  myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire1, mode, 1, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

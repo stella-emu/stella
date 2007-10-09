@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.12 2007-10-03 21:41:17 stephena Exp $
+// $Id: Driving.cxx,v 1.13 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -30,14 +30,14 @@ Driving::Driving(Jack jack, const Event& event)
   {
     myCCWEvent   = Event::JoystickZeroLeft;
     myCWEvent    = Event::JoystickZeroRight;
-    myFireEvent  = Event::JoystickZeroFire;
+    myFireEvent  = Event::JoystickZeroFire1;
     myValueEvent = Event::DrivingZeroValue;
   }
   else
   {
     myCCWEvent   = Event::JoystickOneLeft;
     myCWEvent    = Event::JoystickOneRight;
-    myFireEvent  = Event::JoystickOneFire;
+    myFireEvent  = Event::JoystickOneFire1;
     myValueEvent = Event::DrivingOneValue;
   }
 

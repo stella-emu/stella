@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.hxx,v 1.6 2007-10-03 21:41:17 stephena Exp $
+// $Id: Cart4A50.hxx,v 1.7 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE4A50_HXX
@@ -25,11 +25,19 @@ class System;
 #include "Cart.hxx"
 
 /**
-  This is the standard Atari 4K cartridge.  These cartridges are 
-  not bankswitched.
+  Bankswitching method as defined/created by John Payson (aka Supercat),
+  documented at http://www.casperkitty.com/stella/cartfmt.htm.
 
-  @author  Bradford W. Mott
-  @version $Id: Cart4A50.hxx,v 1.6 2007-10-03 21:41:17 stephena Exp $
+  In this bankswitching scheme the 2600's 4K cartridge address space 
+  is broken into four segments.  The first 2K segment accesses any 2K
+  region of RAM, or of the first 32K of ROM.  The second 1.5K segment
+  accesses the first 1.5K of any 2K region of RAM, or of the last 32K
+  of ROM.  The 3rd 256 byte segment points to any 256 byte page of
+  RAM or ROM.  The last 256 byte segment always points to the last 256
+  bytes of ROM.
+
+  @author  Stephen Anthony
+  @version $Id: Cart4A50.hxx,v 1.7 2007-10-09 23:56:57 stephena Exp $
 */
 class Cartridge4A50 : public Cartridge
 {
@@ -134,6 +142,38 @@ class Cartridge4A50 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+  private:
+    /**
+      Install the specified slice for segment zero
+
+      @param slice The slice to map into the segment
+    */
+    void segmentZero(uInt16 slice);
+
+    /**
+      Install the specified slice for segment one
+
+      @param slice The slice to map into the segment
+    */
+    void segmentOne(uInt16 slice);
+
+    /**
+      Install the specified slice for segment two
+
+      @param slice The slice to map into the segment
+    */
+    void segmentTwo(uInt16 slice);
+
+  private:
+    // Indicates the slice mapped into each of the four segments
+    uInt16 myCurrentSlice[4];
+
+    // The 64K ROM image of the cartridge
+    uInt8 myImage[65536];
+
+    // The 32K of RAM on the cartridge
+    uInt8 myRAM[32768];
 };
 
 #endif

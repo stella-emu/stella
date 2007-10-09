@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.43 2007-09-10 15:46:59 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.44 2007-10-09 23:56:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -119,7 +119,7 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("CV (Commavid extra ram)");
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, "", 0, 0);
-  for(i = 0; i < 21; ++i)
+  for(i = 0; i < 22; ++i)
     myType->appendEntry(ourCartridgeList[i][0], i+1);
   wid.push_back(myType);
 
@@ -681,11 +681,12 @@ const char* GameInfoDialog::ourControllerList[5][2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* GameInfoDialog::ourCartridgeList[21][2] = {
+const char* GameInfoDialog::ourCartridgeList[22][2] = {
   { "Auto-detect",     "AUTO-DETECT"   },
   { "2K (2K Atari)",            "2K"   },
   { "3E (32K Tigervision)",     "3E"   },
   { "3F (512K Tigervision)",    "3F"   },
+  { "4A50 (64K 4A50 + ram)",    "4A50" },
   { "4K (4K Atari)",            "4K"   },
   { "AR (Supercharger)",        "AR"   },
   { "CV (Commavid extra ram)",  "CV"   },

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.78 2007-10-08 01:59:20 stephena Exp $
+// $Id: mainSDL.cxx,v 1.79 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -173,7 +173,7 @@ int main(int argc, char* argv[])
       theOSystem->eventHandler().handleEvent(Event::ConsoleSelect, 1);
 
     if(theOSystem->settings().getBool("holdbutton0"))
-      theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire, 1);
+      theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire1, 1);
 
 #ifdef DEBUGGER_SUPPORT
     Debugger& dbg = theOSystem->debugger();

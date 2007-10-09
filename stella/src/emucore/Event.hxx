@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.30 2007-10-03 21:41:17 stephena Exp $
+// $Id: Event.hxx,v 1.31 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.30 2007-10-03 21:41:17 stephena Exp $
+  @version $Id: Event.hxx,v 1.31 2007-10-09 23:56:57 stephena Exp $
 */
 class Event
 {
@@ -43,16 +43,12 @@ class Event
       ConsoleRightDifficultyA, ConsoleRightDifficultyB,
       ConsoleSelect, ConsoleReset,
 
-      JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft,
-      JoystickZeroRight, JoystickZeroFire,
-      JoystickOneUp, JoystickOneDown, JoystickOneLeft,
-      JoystickOneRight, JoystickOneFire,
+      JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
+      JoystickZeroFire1, JoystickZeroFire2, JoystickZeroFire3,
+      JoystickOneUp, JoystickOneDown, JoystickOneLeft, JoystickOneRight,
+      JoystickOneFire1, JoystickOneFire2, JoystickOneFire3,
 
-      BoosterGripZeroTrigger, BoosterGripZeroBooster,
-      BoosterGripOneTrigger, BoosterGripOneBooster,
-
-      DrivingZeroValue,
-      DrivingOneValue,
+      DrivingZeroValue, DrivingOneValue,
 
       PaddleZeroResistance, PaddleZeroFire,
         PaddleZeroDecrease, PaddleZeroIncrease, PaddleZeroAnalog,

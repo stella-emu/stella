@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StateManager.hxx,v 1.2 2007-10-03 21:41:18 stephena Exp $
+// $Id: StateManager.hxx,v 1.3 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #ifndef STATE_MANAGER_HXX
@@ -30,7 +30,7 @@ class OSystem;
   played back.
 
   @author  Stephen Anthony
-  @version $Id: StateManager.hxx,v 1.2 2007-10-03 21:41:18 stephena Exp $
+  @version $Id: StateManager.hxx,v 1.3 2007-10-09 23:56:57 stephena Exp $
 */
 class StateManager
 {
@@ -97,6 +97,10 @@ class StateManager
       kMovieRecordMode,
       kRewindPlaybackMode,
       kRewindRecordMode
+    };
+
+    enum {
+      kVersion = 001
     };
 
     // The parent OSystem object

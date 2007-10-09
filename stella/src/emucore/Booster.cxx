@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.cxx,v 1.9 2007-10-03 21:41:17 stephena Exp $
+// $Id: Booster.cxx,v 1.10 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -29,9 +29,9 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event)
     myDownEvent    = Event::JoystickZeroDown;
     myLeftEvent    = Event::JoystickZeroLeft;
     myRightEvent   = Event::JoystickZeroRight;
-    myFireEvent    = Event::JoystickZeroFire;
-    myBoosterEvent = Event::BoosterGripZeroBooster;
-    myTriggerEvent = Event::BoosterGripZeroTrigger;
+    myFireEvent    = Event::JoystickZeroFire1;
+    myTriggerEvent = Event::JoystickZeroFire2;
+    myBoosterEvent = Event::JoystickZeroFire3;
   }
   else
   {
@@ -39,9 +39,9 @@ BoosterGrip::BoosterGrip(Jack jack, const Event& event)
     myDownEvent    = Event::JoystickOneDown;
     myLeftEvent    = Event::JoystickOneLeft;
     myRightEvent   = Event::JoystickOneRight;
-    myFireEvent    = Event::JoystickOneFire;
-    myBoosterEvent = Event::BoosterGripOneBooster;
-    myTriggerEvent = Event::BoosterGripOneTrigger;
+    myFireEvent    = Event::JoystickOneFire1;
+    myTriggerEvent = Event::JoystickOneFire2;
+    myBoosterEvent = Event::JoystickOneFire3;
   }
 }
 

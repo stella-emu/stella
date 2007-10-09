@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall22.cxx,v 1.1 2007-10-03 21:41:18 stephena Exp $
+// $Id: TrackBall22.cxx,v 1.2 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -31,7 +31,7 @@ TrackBall22::TrackBall22(Jack jack, const Event& event)
     myDownEvent  = Event::JoystickZeroDown;
     myLeftEvent  = Event::JoystickZeroLeft;
     myRightEvent = Event::JoystickZeroRight;
-    myFireEvent  = Event::JoystickZeroFire;
+    myFireEvent  = Event::JoystickZeroFire1;
   }
   else
   {
@@ -39,7 +39,7 @@ TrackBall22::TrackBall22(Jack jack, const Event& event)
     myDownEvent  = Event::JoystickOneDown;
     myLeftEvent  = Event::JoystickOneLeft;
     myRightEvent = Event::JoystickOneRight;
-    myFireEvent  = Event::JoystickOneFire;
+    myFireEvent  = Event::JoystickOneFire1;
   }
 
   // Analog pins are never used by the CX-22

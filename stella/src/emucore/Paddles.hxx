@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.8 2007-10-03 21:41:18 stephena Exp $
+// $Id: Paddles.hxx,v 1.9 2007-10-09 23:56:57 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.8 2007-10-03 21:41:18 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.9 2007-10-09 23:56:57 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -56,7 +56,8 @@ class Paddles : public Controller
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myP1ResEvent, myP2ResEvent, myP1FireEvent, myP2FireEvent;
+    Event::Type myP0ResEvent, myP1ResEvent, myP0FireEvent1, myP0FireEvent2,
+    myP1FireEvent1, myP1FireEvent2;
 };
 
 #endif
