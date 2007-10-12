@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.34 2007-06-14 13:47:50 stephena Exp $
+// $Id: Cart.cxx,v 1.35 2007-10-12 14:45:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -43,6 +43,7 @@
 #include "CartMB.hxx"
 #include "CartCV.hxx"
 #include "CartUA.hxx"
+#include "CartSB.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
 #include "Settings.hxx"
@@ -133,6 +134,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeUA(image);
   else if(type == "0840")
     cartridge = new Cartridge0840(image);
+  else if(type == "SB")
+    cartridge = new CartridgeSB(image, size);
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 
@@ -250,21 +253,25 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 65536)  // 64K
   {
-    // TODO - autodetect 4A50
     if(isProbably3E(image, size))
       type = "3E";
     else if(isProbably3F(image, size))
       type = "3F";
+    else if(isProbably4A50(image, size))
+      type = "4A50";
     else
       type = "MB";
   }
   else if(size == 131072)  // 128K
   {
-    // TODO - autodetect 4A50
     if(isProbably3E(image, size))
       type = "3E";
     else if(isProbably3F(image, size))
       type = "3F";
+    else if(isProbably4A50(image, size))
+      type = "4A50";
+    else if(isProbablySB(image, size))
+      type = "SB";
     else
       type = "MC";
   }
@@ -416,6 +423,20 @@ bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
   // using 'STA $240'
   uInt8 signature[] = { 0x8D, 0x40, 0x02 };  // STA $240
   return searchForBytes(image, size, signature, 3, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
+{
+  // TODO - add autodetection for this type
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablySB(const uInt8* image, uInt32 size)
+{
+  // TODO - add autodetection for this type
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

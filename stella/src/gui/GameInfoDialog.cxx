@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.44 2007-10-09 23:56:57 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.45 2007-10-12 14:45:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -116,10 +116,10 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
-  pwidth = font.getStringWidth("CV (Commavid extra ram)");
+  pwidth = font.getStringWidth("SB (128-256k SUPERbanking)");
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, "", 0, 0);
-  for(i = 0; i < 22; ++i)
+  for(i = 0; i < 23; ++i)
     myType->appendEntry(ourCartridgeList[i][0], i+1);
   wid.push_back(myType);
 
@@ -681,27 +681,28 @@ const char* GameInfoDialog::ourControllerList[5][2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* GameInfoDialog::ourCartridgeList[22][2] = {
-  { "Auto-detect",     "AUTO-DETECT"   },
-  { "2K (2K Atari)",            "2K"   },
-  { "3E (32K Tigervision)",     "3E"   },
-  { "3F (512K Tigervision)",    "3F"   },
-  { "4A50 (64K 4A50 + ram)",    "4A50" },
-  { "4K (4K Atari)",            "4K"   },
-  { "AR (Supercharger)",        "AR"   },
-  { "CV (Commavid extra ram)",  "CV"   },
-  { "DPC (Pitfall II)",         "DPC"  },
-  { "E0 (8K Parker Bros)",      "E0"   },
-  { "E7 (16K M-network)",       "E7"   },
-  { "F4 (32K Atari)",           "F4"   },
-  { "F4SC (32K Atari + ram)",   "F4SC" },
-  { "F6 (16K Atari)",           "F6"   },
-  { "F6SC (16K Atari + ram)",   "F6SC" },
-  { "F8 (8K Atari)",            "F8"   },
-  { "F8SC (8K Atari + ram)",    "F8SC" },
-  { "FASC (CBS RAM Plus)",      "FASC" },
-  { "FE (8K Decathlon)",        "FE"   },
-  { "MB (Dynacom Megaboy)",     "MB"   },
-  { "MC (C. Wilkson Megacart)", "MC"   },
-  { "UA (8K UA Ltd.)",          "UA"   }
+const char* GameInfoDialog::ourCartridgeList[23][2] = {
+  { "Auto-detect",       "AUTO-DETECT"   },
+  { "2K (2K Atari)",              "2K"   },
+  { "3E (32K Tigervision)",       "3E"   },
+  { "3F (512K Tigervision)",      "3F"   },
+  { "4A50 (64K 4A50 + ram)",      "4A50" },
+  { "4K (4K Atari)",              "4K"   },
+  { "AR (Supercharger)",          "AR"   },
+  { "CV (Commavid extra ram)",    "CV"   },
+  { "DPC (Pitfall II)",           "DPC"  },
+  { "E0 (8K Parker Bros)",        "E0"   },
+  { "E7 (16K M-network)",         "E7"   },
+  { "F4 (32K Atari)",             "F4"   },
+  { "F4SC (32K Atari + ram)",     "F4SC" },
+  { "F6 (16K Atari)",             "F6"   },
+  { "F6SC (16K Atari + ram)",     "F6SC" },
+  { "F8 (8K Atari)",              "F8"   },
+  { "F8SC (8K Atari + ram)",      "F8SC" },
+  { "FASC (CBS RAM Plus)",        "FASC" },
+  { "FE (8K Decathlon)",          "FE"   },
+  { "MB (Dynacom Megaboy)",       "MB"   },
+  { "MC (C. Wilkson Megacart)",   "MC"   },
+  { "SB (128-256k SUPERbanking)", "SB"   },
+  { "UA (8K UA Ltd.)",            "UA"   }
 };
