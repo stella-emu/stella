@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.94 2007-09-28 16:24:44 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.95 2008-01-20 18:16:41 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -91,9 +91,9 @@ FrameBufferGL::~FrameBufferGL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::loadFuncs(const string& library)
+bool FrameBufferGL::loadLibrary(const string& library)
 {
-  if(myFuncsLoaded)
+  if(myLibraryLoaded)
     return true;
 
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
@@ -103,70 +103,80 @@ bool FrameBufferGL::loadFuncs(const string& library)
   bool libLoaded = (library != "" && SDL_GL_LoadLibrary(library.c_str()) >= 0);
   bool autoLoaded = false;
   if(!libLoaded) autoLoaded = (SDL_GL_LoadLibrary(0) >= 0);
-
   if(!libLoaded && !autoLoaded)
     return false;
 
-  // Otherwise, fill the function pointers for GL functions
-  // If anything fails, we'll know it immediately, and return false
-  // Yes, this syntax is ugly, but I can type it out faster than the time
-  // it takes to figure our macro magic to do it neatly
-  p_glClear = (void(APIENTRY*)(GLbitfield))
+  return myLibraryLoaded = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::loadFuncs()
+{
+  if(myLibraryLoaded)
+  {
+    // Fill the function pointers for GL functions
+    // If anything fails, we'll know it immediately, and return false
+    // Yes, this syntax is ugly, but I can type it out faster than the time
+    // it takes to figure our macro magic to do it neatly
+    p_glClear = (void(APIENTRY*)(GLbitfield))
       SDL_GL_GetProcAddress("glClear"); if(!p_glClear) return false;
-  p_glEnable = (void(APIENTRY*)(GLenum))
+    p_glEnable = (void(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glEnable"); if(!p_glEnable) return false;
-  p_glDisable = (void(APIENTRY*)(GLenum))
+    p_glDisable = (void(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glDisable"); if(!p_glDisable) return false;
-  p_glPushAttrib = (void(APIENTRY*)(GLbitfield))
+    p_glPushAttrib = (void(APIENTRY*)(GLbitfield))
       SDL_GL_GetProcAddress("glPushAttrib"); if(!p_glPushAttrib) return false;
-  p_glGetString = (const GLubyte*(APIENTRY*)(GLenum))
+    p_glGetString = (const GLubyte*(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glGetString"); if(!p_glGetString) return false;
-  p_glHint = (void(APIENTRY*)(GLenum, GLenum))
+    p_glHint = (void(APIENTRY*)(GLenum, GLenum))
       SDL_GL_GetProcAddress("glHint"); if(!p_glHint) return false;
-  p_glShadeModel = (void(APIENTRY*)(GLenum))
+    p_glShadeModel = (void(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glShadeModel"); if(!p_glShadeModel) return false;
 
-  p_glMatrixMode = (void(APIENTRY*)(GLenum))
+    p_glMatrixMode = (void(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glMatrixMode"); if(!p_glMatrixMode) return false;
-  p_glOrtho = (void(APIENTRY*)(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble))
+    p_glOrtho = (void(APIENTRY*)(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble))
       SDL_GL_GetProcAddress("glOrtho"); if(!p_glOrtho) return false;
-  p_glViewport = (void(APIENTRY*)(GLint, GLint, GLsizei, GLsizei))
+    p_glViewport = (void(APIENTRY*)(GLint, GLint, GLsizei, GLsizei))
       SDL_GL_GetProcAddress("glViewport"); if(!p_glViewport) return false;
-  p_glPushMatrix = (void(APIENTRY*)(void))
+    p_glPushMatrix = (void(APIENTRY*)(void))
       SDL_GL_GetProcAddress("glPushMatrix"); if(!p_glPushMatrix) return false;
-  p_glLoadIdentity = (void(APIENTRY*)(void))
+    p_glLoadIdentity = (void(APIENTRY*)(void))
       SDL_GL_GetProcAddress("glLoadIdentity"); if(!p_glLoadIdentity) return false;
 
-  p_glBegin = (void(APIENTRY*)(GLenum))
+    p_glBegin = (void(APIENTRY*)(GLenum))
       SDL_GL_GetProcAddress("glBegin"); if(!p_glBegin) return false;
-  p_glEnd = (void(APIENTRY*)(void))
+    p_glEnd = (void(APIENTRY*)(void))
       SDL_GL_GetProcAddress("glEnd"); if(!p_glEnd) return false;
-  p_glVertex2i = (void(APIENTRY*)(GLint, GLint))
+    p_glVertex2i = (void(APIENTRY*)(GLint, GLint))
       SDL_GL_GetProcAddress("glVertex2i"); if(!p_glVertex2i) return false;
-  p_glTexCoord2f = (void(APIENTRY*)(GLfloat, GLfloat))
+    p_glTexCoord2f = (void(APIENTRY*)(GLfloat, GLfloat))
       SDL_GL_GetProcAddress("glTexCoord2f"); if(!p_glTexCoord2f) return false;
 
-  p_glReadPixels = (void(APIENTRY*)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*))
+    p_glReadPixels = (void(APIENTRY*)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*))
       SDL_GL_GetProcAddress("glReadPixels"); if(!p_glReadPixels) return false;
-  p_glPixelStorei = (void(APIENTRY*)(GLenum, GLint))
+    p_glPixelStorei = (void(APIENTRY*)(GLenum, GLint))
       SDL_GL_GetProcAddress("glPixelStorei"); if(!p_glPixelStorei) return false;
 
-  p_glTexEnvf = (void(APIENTRY*)(GLenum, GLenum, GLfloat))
+    p_glTexEnvf = (void(APIENTRY*)(GLenum, GLenum, GLfloat))
       SDL_GL_GetProcAddress("glTexEnvf"); if(!p_glTexEnvf) return false;
-  p_glGenTextures = (void(APIENTRY*)(GLsizei, GLuint*))
+    p_glGenTextures = (void(APIENTRY*)(GLsizei, GLuint*))
       SDL_GL_GetProcAddress("glGenTextures"); if(!p_glGenTextures) return false;
-  p_glDeleteTextures = (void(APIENTRY*)(GLsizei, const GLuint*))
+    p_glDeleteTextures = (void(APIENTRY*)(GLsizei, const GLuint*))
       SDL_GL_GetProcAddress("glDeleteTextures"); if(!p_glDeleteTextures) return false;
-  p_glBindTexture = (void(APIENTRY*)(GLenum, GLuint))
+    p_glBindTexture = (void(APIENTRY*)(GLenum, GLuint))
       SDL_GL_GetProcAddress("glBindTexture"); if(!p_glBindTexture) return false;
-  p_glTexImage2D = (void(APIENTRY*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*))
+    p_glTexImage2D = (void(APIENTRY*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*))
       SDL_GL_GetProcAddress("glTexImage2D"); if(!p_glTexImage2D) return false;
-  p_glTexSubImage2D = (void(APIENTRY*)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*))
+    p_glTexSubImage2D = (void(APIENTRY*)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*))
       SDL_GL_GetProcAddress("glTexSubImage2D"); if(!p_glTexSubImage2D) return false;
-  p_glTexParameteri = (void(APIENTRY*)(GLenum, GLenum, GLint))
+    p_glTexParameteri = (void(APIENTRY*)(GLenum, GLenum, GLint))
       SDL_GL_GetProcAddress("glTexParameteri"); if(!p_glTexParameteri) return false;
+  }
+  else
+    return false;
 
-  return myFuncsLoaded = true;
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -307,6 +317,11 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
+
+  // Reload OpenGL function pointers.  This only seems to be needed for Windows
+  // Vista, but it shouldn't hurt on other systems.
+  if(!loadFuncs())
+    return false;
 
   // Check for some extensions that can potentially speed up operation
   // Don't use it if we've been instructed not to
@@ -720,6 +735,6 @@ GUI::Surface* FrameBufferGL::createSurface(int width, int height) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myFuncsLoaded = false;
+bool FrameBufferGL::myLibraryLoaded = false;
 
 #endif  // DISPLAY_OPENGL

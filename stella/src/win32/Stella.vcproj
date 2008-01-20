@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
+	Version="9.00"
 	Name="Stella"
 	ProjectGUID="{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}"
 	RootNamespace="Stella"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -69,6 +70,8 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Stella.pdb"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -88,9 +91,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -121,6 +121,8 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
+				OmitFramePointers="true"
 				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="2"
@@ -147,6 +149,8 @@
 				SubSystem="1"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -166,9 +170,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -320,6 +321,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartMC.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartSB.cxx"
 					>
 				</File>
 				<File
@@ -882,6 +887,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartMC.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartSB.hxx"
 					>
 				</File>
 				<File

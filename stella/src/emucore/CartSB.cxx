@@ -124,10 +124,8 @@ uInt8 CartridgeSB::peek(uInt16 address)
         break;
     }
   }
-  else
-  {
-    return 0;
-  }
+
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

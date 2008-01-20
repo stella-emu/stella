@@ -271,6 +271,10 @@
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
 		DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */; };
 		DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */; };
+		DC09847B0D3983A80073C852 /* TrackBall22.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984790D3983A80073C852 /* TrackBall22.cxx */; };
+		DC09847C0D3983A80073C852 /* TrackBall22.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC09847A0D3983A80073C852 /* TrackBall22.hxx */; };
+		DC0984850D3985160073C852 /* CartSB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984830D3985160073C852 /* CartSB.cxx */; };
+		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
 		DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */; };
 		DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47454C09C34BFA00EDDA3A /* Cheat.hxx */; };
@@ -616,6 +620,10 @@
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
 		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateManager.cxx; path = ../emucore/StateManager.cxx; sourceTree = SOURCE_ROOT; };
 		DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StateManager.hxx; path = ../emucore/StateManager.hxx; sourceTree = SOURCE_ROOT; };
+		DC0984790D3983A80073C852 /* TrackBall22.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall22.cxx; path = ../emucore/TrackBall22.cxx; sourceTree = SOURCE_ROOT; };
+		DC09847A0D3983A80073C852 /* TrackBall22.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TrackBall22.hxx; path = ../emucore/TrackBall22.hxx; sourceTree = SOURCE_ROOT; };
+		DC0984830D3985160073C852 /* CartSB.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartSB.cxx; path = ../emucore/CartSB.cxx; sourceTree = SOURCE_ROOT; };
+		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartSB.hxx; path = ../emucore/CartSB.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47454B09C34BFA00EDDA3A /* BankRomCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = BankRomCheat.hxx; path = ../cheat/BankRomCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454C09C34BFA00EDDA3A /* Cheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cheat.hxx; path = ../cheat/Cheat.hxx; sourceTree = SOURCE_ROOT; };
@@ -839,6 +847,10 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC0984830D3985160073C852 /* CartSB.cxx */,
+				DC0984840D3985160073C852 /* CartSB.hxx */,
+				DC0984790D3983A80073C852 /* TrackBall22.cxx */,
+				DC09847A0D3983A80073C852 /* TrackBall22.hxx */,
 				DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */,
 				DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */,
 				DCEECE540B5E5E540021D754 /* Cart0840.cxx */,
@@ -1253,6 +1265,8 @@
 				DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */,
 				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
 				DC8211550CAD74FF00511571 /* VideoModeList.hxx in Headers */,
+				DC09847C0D3983A80073C852 /* TrackBall22.hxx in Headers */,
+				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1291,9 +1305,11 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */;
 			projectDirPath = "";
+			projectRoot = "";
 			targets = (
 				2D9173C809BA90380026E9FF /* StellaOSX */,
 			);
@@ -1486,6 +1502,8 @@
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DCE3BBFB0C95CEDC00A671DF /* Surface.cxx in Sources */,
 				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
+				DC09847B0D3983A80073C852 /* TrackBall22.cxx in Sources */,
+				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1700,6 +1718,7 @@
 				);
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
+				SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk;
 			};
 			name = Deployment;
 		};

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.49 2007-09-28 16:24:44 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.50 2008-01-20 18:16:41 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.49 2007-09-28 16:24:44 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.50 2008-01-20 18:16:41 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -51,13 +51,13 @@ class FrameBufferGL : public FrameBuffer
     virtual ~FrameBufferGL();
 
     /**
-      Check if OpenGL is available on this system and dynamically load
-      all required GL functions.  If any errors occur, we shouldn't attempt
-      to instantiate a FrameBufferGL object.
+      Check if OpenGL is available on this system, and then opens it.
+      If any errors occur, we shouldn't attempt to instantiate a
+      FrameBufferGL object.
 
       @param library  The filename of the OpenGL library
     */
-    static bool loadFuncs(const string& library);
+    static bool loadLibrary(const string& library);
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are derived from FrameBuffer.hxx
@@ -232,6 +232,8 @@ class FrameBufferGL : public FrameBuffer
     void enablePhosphor(bool enable, int blend);
 
   private:
+    bool loadFuncs();
+
     bool createTextures();
 
     inline uInt32 power_of_two(uInt32 input)
@@ -283,8 +285,8 @@ class FrameBufferGL : public FrameBuffer
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
 
-    // Indicates if the OpenGL functions have been properly loaded
-    static bool myFuncsLoaded;
+    // Indicates if the OpenGL library has been properly loaded
+    static bool myLibraryLoaded;
 };
 
 #endif  // DISPLAY_OPENGL
