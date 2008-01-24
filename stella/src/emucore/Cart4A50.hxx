@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.hxx,v 1.7 2007-10-09 23:56:57 stephena Exp $
+// $Id: Cart4A50.hxx,v 1.8 2008-01-24 20:43:41 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE4A50_HXX
@@ -37,7 +37,7 @@ class System;
   bytes of ROM.
 
   @author  Stephen Anthony
-  @version $Id: Cart4A50.hxx,v 1.7 2007-10-09 23:56:57 stephena Exp $
+  @version $Id: Cart4A50.hxx,v 1.8 2008-01-24 20:43:41 stephena Exp $
 */
 class Cartridge4A50 : public Cartridge
 {
@@ -144,36 +144,25 @@ class Cartridge4A50 : public Cartridge
     virtual void poke(uInt16 address, uInt8 value);
 
   private:
-    /**
-      Install the specified slice for segment zero
-
-      @param slice The slice to map into the segment
-    */
-    void segmentZero(uInt16 slice);
-
-    /**
-      Install the specified slice for segment one
-
-      @param slice The slice to map into the segment
-    */
-    void segmentOne(uInt16 slice);
-
-    /**
-      Install the specified slice for segment two
-
-      @param slice The slice to map into the segment
-    */
-    void segmentTwo(uInt16 slice);
-
-  private:
-    // Indicates the slice mapped into each of the four segments
-    uInt16 myCurrentSlice[4];
-
     // The 64K ROM image of the cartridge
     uInt8 myImage[65536];
 
     // The 32K of RAM on the cartridge
     uInt8 myRAM[32768];
+
+    // Indicates the slice mapped into each of the three segments
+    uInt16 mySliceLow;     /* index pointer for $1000-$17ff slice */
+    uInt16 mySliceMiddle;  /* index pointer for $1800-$1dff slice */
+    uInt16 mySliceHigh;    /* index pointer for $1e00-$1eff slice */
+
+    // Indicates whether the given slice is mapped to ROM or RAM
+    bool myIsRomLow;       /* true = ROM -- false = RAM at $1000-$17ff */
+    bool myIsRomMiddle;    /* true = ROM -- false = RAM at $1800-$1dff */
+    bool myIsRomHigh;      /* true = ROM -- false = RAM at $1e00-$1eFF */
+
+    // The previous address and data values (from peek and poke)
+    uInt16 myLastAddress;
+    uInt8 myLastData;
 };
 
 #endif
