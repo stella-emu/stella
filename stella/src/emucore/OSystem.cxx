@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.113 2008-01-24 20:43:41 stephena Exp $
+// $Id: OSystem.cxx,v 1.114 2008-01-24 20:45:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -769,8 +769,8 @@ void OSystem::queryVideoHardware()
 
   // First get the maximum windowed desktop resolution
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
-  myDesktopWidth  = 1024;//info->current_w;
-  myDesktopHeight = 768;//info->current_h;
+  myDesktopWidth  = info->current_w;
+  myDesktopHeight = info->current_h;
 
   // Then get the valid fullscreen modes
   // If there are any errors, just use the desktop resolution
