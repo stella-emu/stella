@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.cxx,v 1.7 2008-01-24 20:43:41 stephena Exp $
+// $Id: Cart4A50.cxx,v 1.8 2008-01-24 23:43:24 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
 #include "Random.hxx"
 #include "System.hxx"
+#include "TIA.hxx"
 #include "Cart4A50.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,7 +84,7 @@ uInt8 Cartridge4A50::peek(uInt16 address)
   if(!(address & 0x1000))
   {
     // ReadHardware();
-    bank(address);
+    checkBankSwitch(address, 0);
   }
   else
   {
@@ -126,7 +127,7 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
   if(!(address & 0x1000))
   {
     // WriteHardware();
-    bank(address);
+    checkBankSwitch(address, value);
   }
   else
   {
@@ -158,7 +159,7 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::bank(uInt16 address)
+void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 {
   // Not bankswitching in the normal sense
   // This scheme contains so many hotspots that it's easier to just check
@@ -247,6 +248,12 @@ void Cartridge4A50::bank(uInt16 address)
       mySliceMiddle = (value & 0xf) << 11;                         
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge4A50::bank(uInt16)
+{
+  // Doesn't support bankswitching in the normal sense
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

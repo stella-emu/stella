@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.hxx,v 1.8 2008-01-24 20:43:41 stephena Exp $
+// $Id: Cart4A50.hxx,v 1.9 2008-01-24 23:43:24 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE4A50_HXX
@@ -37,7 +37,7 @@ class System;
   bytes of ROM.
 
   @author  Stephen Anthony
-  @version $Id: Cart4A50.hxx,v 1.8 2008-01-24 20:43:41 stephena Exp $
+  @version $Id: Cart4A50.hxx,v 1.9 2008-01-24 23:43:24 stephena Exp $
 */
 class Cartridge4A50 : public Cartridge
 {
@@ -142,6 +142,12 @@ class Cartridge4A50 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+  private:
+    /**
+      Check all possible hotspots
+    */
+    void checkBankSwitch(uInt16 address, uInt8 value);
 
   private:
     // The 64K ROM image of the cartridge
