@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.hxx,v 1.11 2007-10-03 21:41:17 stephena Exp $
+// $Id: CartE7.hxx,v 1.12 2008-02-06 13:45:21 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEE7_HXX
@@ -51,7 +51,7 @@ class System;
     here by accessing 1FF8 to 1FFB.
 
   @author  Bradford W. Mott
-  @version $Id: CartE7.hxx,v 1.11 2007-10-03 21:41:17 stephena Exp $
+  @version $Id: CartE7.hxx,v 1.12 2008-02-06 13:45:21 stephena Exp $
 */
 class CartridgeE7 : public Cartridge
 {

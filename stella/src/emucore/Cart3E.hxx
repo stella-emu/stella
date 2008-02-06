@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.hxx,v 1.6 2007-10-03 21:41:17 stephena Exp $
+// $Id: Cart3E.hxx,v 1.7 2008-02-06 13:45:20 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3E_HXX
@@ -57,7 +57,7 @@ class System;
   any problems. (Famous last words...)
 
   @author  B. Watson
-  @version $Id: Cart3E.hxx,v 1.6 2007-10-03 21:41:17 stephena Exp $
+  @version $Id: Cart3E.hxx,v 1.7 2008-02-06 13:45:20 stephena Exp $
 */
 
 class Cartridge3E : public Cartridge

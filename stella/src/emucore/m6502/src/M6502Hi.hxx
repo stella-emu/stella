@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.hxx,v 1.5 2007-01-01 18:04:51 stephena Exp $
+// $Id: M6502Hi.hxx,v 1.6 2008-02-06 13:45:22 stephena Exp $
 //============================================================================
 
 #ifndef M6502HIGH_HXX
@@ -35,7 +35,7 @@ class Deserializer;
   effects and for games which are very time sensitive.
 
   @author  Bradford W. Mott
-  @version $Id: M6502Hi.hxx,v 1.5 2007-01-01 18:04:51 stephena Exp $
+  @version $Id: M6502Hi.hxx,v 1.6 2008-02-06 13:45:22 stephena Exp $
 */
 class M6502High : public M6502
 {

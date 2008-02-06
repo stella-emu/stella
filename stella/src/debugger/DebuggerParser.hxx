@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.hxx,v 1.51 2007-08-17 16:12:50 stephena Exp $
+// $Id: DebuggerParser.hxx,v 1.52 2008-02-06 13:45:20 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_PARSER_HXX

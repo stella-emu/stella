@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.cxx,v 1.6 2007-01-01 18:04:50 stephena Exp $
+// $Id: SpeakJet.cxx,v 1.7 2008-02-06 13:45:22 stephena Exp $
 //============================================================================
 
 #ifdef ATARIVOX_SUPPORT

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.13 2007-10-03 21:41:18 stephena Exp $
+// $Id: Serializer.hxx,v 1.14 2008-02-06 13:45:22 stephena Exp $
 //============================================================================
 
 #ifndef SERIALIZER_HXX
@@ -32,7 +32,7 @@
   string, boolean values are written using a special character pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.13 2007-10-03 21:41:18 stephena Exp $
+  @version $Id: Serializer.hxx,v 1.14 2008-02-06 13:45:22 stephena Exp $
 */
 class Serializer
 {

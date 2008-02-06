@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2007 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Device.hxx,v 1.7 2007-10-03 21:41:18 stephena Exp $
+// $Id: Device.hxx,v 1.8 2008-02-06 13:45:22 stephena Exp $
 //============================================================================
 
 #ifndef DEVICE_HXX
@@ -29,7 +29,7 @@ class System;
   based system.
 
   @author  Bradford W. Mott
-  @version $Id: Device.hxx,v 1.7 2007-10-03 21:41:18 stephena Exp $
+  @version $Id: Device.hxx,v 1.8 2008-02-06 13:45:22 stephena Exp $
 */
 class Device : public Serializable
 {
