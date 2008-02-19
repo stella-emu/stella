@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.83 2008-02-06 13:45:22 stephena Exp $
+// $Id: TIA.cxx,v 1.84 2008-02-19 12:33:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -273,17 +273,23 @@ void TIA::systemCyclesReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::install(System& system)
 {
+  install(system, *this);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::install(System& system, Device& device)
+{
   // Remember which system I'm installed in
   mySystem = &system;
 
   uInt16 shift = mySystem->pageShift();
   mySystem->resetCycles();
 
-  // All accesses are to this device
+  // All accesses are to the given device
   System::PageAccess access;
   access.directPeekBase = 0;
   access.directPokeBase = 0;
-  access.device = this;
+  access.device = &device;
 
   // We're installing in a 2600 system
   for(uInt32 i = 0; i < 8192; i += (1 << shift))

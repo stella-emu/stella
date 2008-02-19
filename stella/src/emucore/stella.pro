@@ -20,7 +20,10 @@
 ""
 
 "Cartridge.MD5" "000509d1ed2b8d30a9d94be1b3b5febb"
-"Cartridge.Name" "Jungle Jane (2003) (Greg Zumwalt) (Pitfall! Hack)"
+"Cartridge.Manufacturer" "Greg Zumwalt"
+"Cartridge.Name" "Jungle Jane (2003) (Greg Zumwalt) (Hack)"
+"Cartridge.Note" "Hack of Pitfall!"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "008543ae43497af015e9428a5e3e874e"
@@ -90,7 +93,7 @@
 "Cartridge.MD5" "0685bd0bcb975ceef7041749a5454a48"
 "Cartridge.Manufacturer" "Piero Cavina"
 "Cartridge.Name" "11 Sprite Demo (Piero Cavina) (PD)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "02a5fc90a0d183f870e8eebac1f16591"
@@ -100,10 +103,10 @@
 ""
 
 "Cartridge.MD5" "012020625a3227815e47b37fd025e480"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2632"
-"Cartridge.Name" "Better Space Invaders (1999) (Rob Kudla) (PAL) [!]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Manufacturer" "Rob Kudla"
+"Cartridge.Name" "Better Space Invaders (1999) (Rob Kudla) (Hack) [a]"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "028024fb8e5e5f18ea586652f9799c96"
@@ -337,9 +340,10 @@
 ""
 
 "Cartridge.MD5" "0546f4e6b946f38956799dd00caab3b1"
-"Cartridge.Manufacturer" "HES / Thomas Jentzsch"
-"Cartridge.Name" "My Golf (1990) (HES) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "My Golf (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "04fccc7735155a6c1373d453b110c640"
@@ -369,7 +373,9 @@
 ""
 
 "Cartridge.MD5" "05d61b925d3d2474bab83f0a79bb5df1"
+"Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "Cosmic Ark Stars (1997) (Eckhard Stolberg)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "05aedf04803c43eb5e09dfd098d3fd01"
@@ -453,7 +459,10 @@
 ""
 
 "Cartridge.MD5" "09274c3fc1c43bf1e362fda436651fd8"
-"Cartridge.Name" "Acid Drop (NTSC Conversion) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Acid Drop (TJ)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Display.YStart" "8"
 "Display.Height" "240"
 ""
@@ -521,7 +530,10 @@
 ""
 
 "Cartridge.MD5" "07c76f2d88552d20ad2c0ed7aef406c6"
-"Cartridge.Name" "Blob, The (Cody Pittman) (Halloween Hack)"
+"Cartridge.Manufacturer" "Cody Pittman"
+"Cartridge.Name" "Blob (Cody Pittman) (Hack)"
+"Cartridge.Note" "Hack of Halloween"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "07973be3ecfd55235bf59aa56bdef28c"
@@ -700,7 +712,9 @@
 ""
 
 "Cartridge.MD5" "0a1b98937911d621b004b1617446d124"
-"Cartridge.Name" "Hangman Pac-Man Biglist1 (Hangman Hack)"
+"Cartridge.Name" "Hangman Pac-Man Biglist1 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "09e1ecf9bd2a3030d5670dba7a65e78d"
@@ -811,9 +825,9 @@
 
 "Cartridge.MD5" "0af51ceb4aecc7a8fc89781ac44a1973"
 "Cartridge.Manufacturer" "Barry Laws Jr."
-"Cartridge.Name" "Face Invaders Deluxe by Barry Laws Jr. (Space Invaders Hack)"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Face Invaders Deluxe (Barry Laws Jr.) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "0b1056f1091cfdc5eb0e2301f47ac6c3"
@@ -1021,7 +1035,11 @@
 ""
 
 "Cartridge.MD5" "1287535256bf5dff404839ac9e25c3e7"
-"Cartridge.Name" "Alien Pac-Man (Rev 2) by PacManPlus (Alien Hack)"
+"Cartridge.Manufacturer" "PacManPlus"
+"Cartridge.ModelNo" "Rev 2"
+"Cartridge.Name" "Alien Pac-Man (PacManPlus) (Hack)"
+"Cartridge.Note" "Hack of Alien"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -1043,8 +1061,9 @@
 ""
 
 "Cartridge.MD5" "0e0808227ef41f6825c06f25082c2e56"
-"Cartridge.Name" "Candi (Space Invaders Hack)[o1]"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
+"Cartridge.Name" "Candi (Hack) [a]"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "0de53160a8b54c3aa5aed8d68c970b62"
@@ -1065,9 +1084,10 @@
 ""
 
 "Cartridge.MD5" "0eebfb60d437796d536039701ec43845"
-"Cartridge.Manufacturer" "Fabrizio Zavagli / CommaVid"
-"Cartridge.Name" "Cakewalk (PAL Conversion) (Fabrizio Zavagli)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
+"Cartridge.Name" "Cakewalk (Fabrizio Zavagli)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "0e224ea74310da4e7e2103400eb1b4bf"
@@ -1197,10 +1217,9 @@
 ""
 
 "Cartridge.MD5" "10958cd0a1a81d599005f1797ab0e51d"
-"Cartridge.Manufacturer" "Eduardo"
-"Cartridge.Name" "Centipede 2k (2000) (PD)"
-"Cartridge.Note" "Hack of Centipede (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Centipede 2k (2000) (PD) (Hack)"
+"Cartridge.Note" "Hack of Centipede"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "106855474c69d08c8ffa308d47337269"
@@ -1234,10 +1253,7 @@
 ""
 
 "Cartridge.MD5" "110ac8ecaf1b69f41bc94c59dfcb8b2d"
-"Cartridge.Manufacturer" "Imagic"
-"Cartridge.ModelNo" "IA3200"
-"Cartridge.Name" "Demon Attack (1982) (Imagic) [t1]"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Demon Attack (Unknown)"
 ""
 
 "Cartridge.MD5" "10f62443f1ae087dc588a77f9e8f43e9"
@@ -1366,12 +1382,14 @@
 "Cartridge.MD5" "1345e972dbe08ea3e70850902e20e1a5"
 "Cartridge.Manufacturer" "Greg Troutman"
 "Cartridge.Name" "Dark Mage (rough beta) (Greg Troutman) (PD)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "135708b9a7dd20576c1b66ab2a41860d"
-"Cartridge.Name" "Hangman Man Biglist1 (Hangman Hack)"
+"Cartridge.Name" "Hangman Man Biglist1 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "1351c67b42770c1bd758c3e42f553fea"
@@ -1394,9 +1412,9 @@
 
 "Cartridge.MD5" "13abc32f803165c458bb086fa57195fb"
 "Cartridge.Manufacturer" "Christian Samuel"
-"Cartridge.Name" "E.T. The Extra-Testical by Christian Samuel (E.T. Hack)"
-"Cartridge.Note" "Hack of E.T. The Extra-Terrestrial (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "E.T. The Extra-Testical (Christian Samuel) (Hack)"
+"Cartridge.Note" "Hack of E.T. The Extra-Terrestrial"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "13a991bc9c2ff03753aeb322d3e3e2e5"
@@ -1525,10 +1543,10 @@
 ""
 
 "Cartridge.MD5" "171cd6b55267573e6a9c2921fb720794"
-"Cartridge.Manufacturer" "Atari / Kurt Howe"
-"Cartridge.Name" "Adventure 34 by Kurt Howe (Adventure Hack)"
-"Cartridge.Rarity" "New Release (Hack)"
-"Controller.Right" "NONE"
+"Cartridge.Manufacturer" "Kurt Howe"
+"Cartridge.Name" "Adventure 34 (Kurt Howe) (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "16cb43492987d2f32b423817cdaaf7c4"
@@ -1630,7 +1648,9 @@
 ""
 
 "Cartridge.MD5" "1733772165d7b886a94e2b4ed0f74ccd"
-"Cartridge.Name" "Boring Journey Escape (Journey - Escape Hack)"
+"Cartridge.Name" "Boring Journey Escape (Hack)"
+"Cartridge.Note" "Hack of Journey - Escape"
+"Cartridge.Rarity" "Hack"
 "Display.Height" "230"
 ""
 
@@ -1641,11 +1661,15 @@
 ""
 
 "Cartridge.MD5" "176d3fba7d687f2b23158098e103c34a"
+"Cartridge.Manufacturer" "Zach Matley"
 "Cartridge.Name" "Combat AI (16-02-2003) (Zach Matley)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "1738b2e3f25ab3eef3cecb95e1d0d957"
-"Cartridge.Name" "Hangman Monkey Biglist1 (Hangman Hack)"
+"Cartridge.Name" "Hangman Monkey Biglist1 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "17515a4d0b7ea5029ffff7dfa8456671"
@@ -1712,7 +1736,10 @@
 ""
 
 "Cartridge.MD5" "183020a80848e06a1238a1ab74079d52"
-"Cartridge.Name" "Missile Command (Amiga Mouse) (PAL) (2002) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command (Amiga Mouse) (2002) (TJ) (PAL)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -2137,10 +2164,9 @@
 ""
 
 "Cartridge.MD5" "200a9d2a7cb4441ce4f002df6aa47e38"
-"Cartridge.Manufacturer" "Eduardo"
-"Cartridge.Name" "Doomzerk (PD)"
-"Cartridge.Note" "Hack of Berzerk (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Doomzerk (PD) (Hack)"
+"Cartridge.Note" "Hack of Berzerk"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "1f773a94d919b2a3c647172bbb97f6b4"
@@ -2151,7 +2177,9 @@
 ""
 
 "Cartridge.MD5" "1f562b89d081e36d58e6fc943512ec05"
-"Cartridge.Name" "Hangman Man Biglist2 (Hangman Hack)"
+"Cartridge.Name" "Hangman Man Biglist2 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "1f2ae0c70a04c980c838c2cdc412cf45"
@@ -2200,7 +2228,9 @@
 ""
 
 "Cartridge.MD5" "205070b6a0d454961dd9196a8e81d877"
-"Cartridge.Name" "Hangman Monkey Biglist2 (Hangman Hack)"
+"Cartridge.Name" "Hangman Monkey Biglist2 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2016726db38ad6a68b4c48ba6fe51557"
@@ -2231,7 +2261,10 @@
 ""
 
 "Cartridge.MD5" "211f76dff0b7dad3f6fcac9d938ee61a"
-"Cartridge.Name" "Custer's Viagra (JSK) (Custer's Revenge Hack) [a1]"
+"Cartridge.Manufacturer" "JSK"
+"Cartridge.Name" "Custer's Viagra (JSK) (Hack) [a]"
+"Cartridge.Note" "Hack of Custer's Revenge"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "32"
 ""
 
@@ -2351,7 +2384,9 @@
 ""
 
 "Cartridge.MD5" "227532d82505c3c185a878273c285d5f"
-"Cartridge.Name" "Hangman Man Original Words (Hangman Hack)"
+"Cartridge.Name" "Hangman Man Original Words (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "22675cacd9b71dea21800cbf8597f000"
@@ -2384,10 +2419,9 @@
 ""
 
 "Cartridge.MD5" "235436ab0832370e73677c9c6f0c8b06"
-"Cartridge.Manufacturer" "Jeff 'Yak' Minter"
-"Cartridge.Name" "Beast Invaders (double shot Hack)"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Beast Invaders (Double Shot) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2351d26d0bfdee3095bec9c05cbcf7b0"
@@ -2404,7 +2438,10 @@
 ""
 
 "Cartridge.MD5" "2365e1534d67f94d8670394ab99150ce"
-"Cartridge.Name" "Missile Command (CX-80 Trackball) (NTSC) (2002) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command (CX-80 Trackball) (2002) (TJ)"
+"Cartridge.Note" "Uses CX-80 TrackBall Controller"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -2453,8 +2490,10 @@
 ""
 
 "Cartridge.MD5" "24d9a55d8f0633e886a1b33ee1e0e797"
-"Cartridge.Name" "Dragon Defender (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Dragon Defender (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Display.YStart" "15"
 "Display.Height" "240"
 "Display.Phosphor" "YES"
@@ -2632,9 +2671,11 @@
 ""
 
 "Cartridge.MD5" "260c787e8925bf3649c8aeae5b97dcc0"
-"Cartridge.Manufacturer" "ITT Family Games / Thomas Jentzsch"
-"Cartridge.Name" "Hell Driver (ITT Family Games) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Hell Driver (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion, joystick ports swapped"
+"Cartridge.Rarity" "Homebrew"
+"Console.SwapPorts" "YES"
 "Display.YStart" "36"
 ""
 
@@ -2736,7 +2777,9 @@
 ""
 
 "Cartridge.MD5" "278155fc9956e9b6ef2359eb238f7c7f"
-"Cartridge.Name" "Donkey Kong Junior (Coleco) [h1]"
+"Cartridge.Name" "Donkey Kong Junior (Unknown) (Hack)"
+"Cartridge.Note" "Hack of Donkey Kong Junior"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "27c6a2ca16ad7d814626ceea62fa8fb4"
@@ -2803,7 +2846,10 @@
 ""
 
 "Cartridge.MD5" "28a2bea8f84936cb2e063f857414cda0"
-"Cartridge.Name" "Mega Mania Raid (1999) (Thiago Paiva)"
+"Cartridge.Manufacturer" "Thiago Paiva"
+"Cartridge.Name" "Mega Mania Raid (1999) (Thiago Paiva) (Hack)"
+"Cartridge.Note" "Hack of Megamania"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "283dee88f295834c4c077d788f151125"
@@ -2825,7 +2871,10 @@
 ""
 
 "Cartridge.MD5" "2cefa695df2ed020899a7df7bb1e3a95"
-"Cartridge.Name" "A-Team (2002) (Manuel Polik And Fabrizio Zavagli) (A-Team Hack)"
+"Cartridge.Manufacturer" "Manuel Polik, Fabrizio Zavagli"
+"Cartridge.Name" "A-Team (2002) (Manuel Polik) (Hack)"
+"Cartridge.Note" "Hack of A-Team"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2a10053fd08664c7cfbbb104386ed77f"
@@ -2871,9 +2920,9 @@
 ""
 
 "Cartridge.MD5" "295f3679bdf91ca5e37da3f787b29997"
-"Cartridge.Name" "Exorcise (Adventure Hack)"
-"Cartridge.Note" "Hack of Adventure (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Exorcise (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "294762000e853b4319f9991c1ced5dfc"
@@ -2893,7 +2942,9 @@
 ""
 
 "Cartridge.MD5" "2982e655dffc89d218a0a3072cfc6811"
-"Cartridge.Name" "Mini Golf 812631 (Miniature Golf Hack)"
+"Cartridge.Name" "Mini Golf 812631 (Hack)"
+"Cartridge.Note" "Hack of Miniature Golf"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2a0ba55e56e7a596146fa729acf0e109"
@@ -2903,7 +2954,9 @@
 ""
 
 "Cartridge.MD5" "2a33e21447bf9e13dcfed85077ff6b40"
-"Cartridge.Name" "Backwards Cannonball v2 (Human Cannonball Hack)"
+"Cartridge.Name" "Backwards Cannonball v2 (Hack)"
+"Cartridge.Note" "Hack of Human Cannonball"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2a2f46b3f4000495239cbdad70f17c59"
@@ -2955,7 +3008,9 @@
 ""
 
 "Cartridge.MD5" "2b42da79a682ed6e2d735facbf70107e"
-"Cartridge.Name" "DKjr Improved (Donkey Kong Junior Hack)"
+"Cartridge.Name" "DKjr Improved (Hack)"
+"Cartridge.Note" "Hack of Donkey Kong Jr."
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2abc3d46b3f2140160759e2e10bc86d9"
@@ -3020,7 +3075,7 @@
 "Cartridge.MD5" "2b71a59a53be5883399917bf582b7772"
 "Cartridge.Manufacturer" "Greg Troutman"
 "Cartridge.Name" "Dark Mage (final beta) (Greg Troutman) (PD)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -3117,11 +3172,17 @@
 ""
 
 "Cartridge.MD5" "2c9fadd510509cc7f28f1ccba931855f"
-"Cartridge.Name" "Hangman Invader Biglist1 (Hangman Hack)"
+"Cartridge.Name" "Hangman Invader Biglist1 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "2c8c11295d8613f875b7bcf5253ab9bb"
-"Cartridge.Name" "Kool Aid Man (PAL Conversion) (16-11-2002) (Fabrizio Zavagli)"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
+"Cartridge.Name" "Kool Aid Man (PAL Conversion) (16-11-2002) (Fabrizio Zavagli) (PAL60)"
+"Cartridge.Note" "PAL60 Conversion"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
 ""
 
 "Cartridge.MD5" "2cccc079c15e9af94246f867ffc7e9bf"
@@ -3134,9 +3195,9 @@
 
 "Cartridge.MD5" "2dbdca3058035d2b40c734dcf06a86d9"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Asteroids DC+ by Thomas Jentzsch (Asteroids Hack)"
+"Cartridge.Name" "Asteroids DC+ (Thomas Jentzsch) (Hack)"
 "Cartridge.Note" "Uses the Joystick (left) or Steering (right) Controller"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Rarity" "Hack"
 "Controller.Right" "DRIVING"
 "Display.Phosphor" "YES"
 ""
@@ -3407,7 +3468,9 @@
 ""
 
 "Cartridge.MD5" "30c92c685224dc7a72b9bbe5eb62d004"
-"Cartridge.Name" "Hangman Monkey Original Words (Hangman Hack)"
+"Cartridge.Name" "Hangman Monkey Original Words (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "30997031b668e37168d4d0e299ccc46f"
@@ -3428,7 +3491,9 @@
 ""
 
 "Cartridge.MD5" "30e012e8d50330c8972f126b8e913bc4"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [h3]"
+"Cartridge.Name" "Indy 500 (Hack) [a2]"
+"Cartridge.Note" "Hack of Indy 500"
+"Cartridge.Rarity" "Hack"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Display.YStart" "28"
@@ -3504,16 +3569,21 @@
 ""
 
 "Cartridge.MD5" "335793736cbf6fc99c9359ed2a32a49d"
-"Cartridge.Name" "Analog Clock (V0.0) (20-01-2003) (AD) [a1]"
+"Cartridge.Name" "Analog Clock (V0.0) (20-01-2003) (AD) [a]"
 ""
 
 "Cartridge.MD5" "327468d6c19697e65ab702f06502c7ed"
-"Cartridge.Name" "Aster-Hawk (2002) (Charles Morgan) (Asteroids Hack)"
+"Cartridge.Manufacturer" "Charles Morgan"
+"Cartridge.Name" "Aster-Hawk (2002) (Charles Morgan) (Hack)"
+"Cartridge.Note" "Hack of Asteroids"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "324cb4a749bcac4f3db9da842b85d2f7"
+"Cartridge.Manufacturer" "Dennis Debro"
 "Cartridge.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
+"Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
@@ -3601,7 +3671,9 @@
 ""
 
 "Cartridge.MD5" "331938989f0f33ca39c10af4c09ff640"
+"Cartridge.Manufacturer" "Zach Matley"
 "Cartridge.Name" "Combat - Tank AI (19-04-2003) (Zach Matley)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "32f4e47a71601ab06cfb59e1c6a0b846"
@@ -3733,7 +3805,10 @@
 ""
 
 "Cartridge.MD5" "34f4b1d809aa705ace6e46b13253fd3b"
-"Cartridge.Name" "Nothern Alliance (Aaron Bergstrom) (Space Invaders Hack)"
+"Cartridge.Manufacturer" "Aaron Bergstrom"
+"Cartridge.Name" "Nothern Alliance (Aaron Bergstrom) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "34e37eaffc0d34e05e40ed883f848b40"
@@ -3761,7 +3836,9 @@
 ""
 
 "Cartridge.MD5" "35b10a248a7e67493ec43aeb9743538c"
-"Cartridge.Name" "Defender (Dor-x) (Defender Hack)"
+"Cartridge.Manufacturer" "Dor-x"
+"Cartridge.Name" "Defender (Dor-x) (Hack)"
+"Cartridge.Note" "Hack of Defender"
 ""
 
 "Cartridge.MD5" "35b43b54e83403bb3d71f519739a9549"
@@ -3942,7 +4019,9 @@
 ""
 
 "Cartridge.MD5" "38c362dcd5cad5a62e73ae52631bd9d8"
+"Cartridge.Manufacturer" "Jake Patterson"
 "Cartridge.Name" "Baubles (14-11-2001) (Jake Patterson) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "384f5fbf57b5e92ed708935ebf8a8610"
@@ -4373,13 +4452,15 @@
 ""
 
 "Cartridge.MD5" "3eb1e34a4f0eec36f12e7336badcecf2"
+"Cartridge.Manufacturer" "Jake Patterson"
 "Cartridge.Name" "Baubles (V0.001) (2001) (Jake Patterson) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "3e6dab92009d6034618cb6b7844c5216"
-"Cartridge.Name" "Ed Invaders (Pepsi Invaders Hack)"
-"Cartridge.Note" "Hack of Pepsi Invaders (Coca-Cola)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Ed Invaders (Hack)"
+"Cartridge.Note" "Hack of Pepsi Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "3e90cf23106f2e08b2781e41299de556"
@@ -4448,9 +4529,10 @@
 ""
 
 "Cartridge.MD5" "3f251c50aa7237e61a38ab42315ebed4"
-"Cartridge.Manufacturer" "Atari / Thomas Jentzsch"
-"Cartridge.Name" "Ikari Warriors (1990) (Atari) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Ikari Warriors (1990) (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "3f6dbf448f25e2bd06dea44248eb122d"
@@ -4524,7 +4606,10 @@
 ""
 
 "Cartridge.MD5" "47b82d47e491ac7fdb5053a88fccc832"
-"Cartridge.Name" "Asteroid 2 (Atari Freak 1 and Franklin Cruz)"
+"Cartridge.Manufacturer" "Atari Freak 1, Franklin Cruz"
+"Cartridge.Name" "Asteroid 2 (Atari Freak 1) (Hack)"
+"Cartridge.Note" "Hack of Asteroids"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -4658,7 +4743,9 @@
 ""
 
 "Cartridge.MD5" "428b2d36f5d716765460701f7016ac91"
-"Cartridge.Name" "Brooni (NTSC) (2001) (Andrew Wallace) (PD)"
+"Cartridge.Manufacturer" "Andrew Wallace"
+"Cartridge.Name" "Brooni (2001) (Andrew Wallace) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "4279485e922b34f127a88904b31ce9fa"
@@ -5128,6 +5215,12 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "49b41972cbbc6d148c79b27967d828c9"
+"Cartridge.Name" "ultindy500_0.1.bin"
+"Controller.Left" "DRIVING"
+"Controller.Right" "DRIVING"
+""
+
 "Cartridge.MD5" "4a45c6d75b1ba131f94a9c13194d8e46"
 "Cartridge.Name" "How to Draw a Playfield II (Joystick Hack) (1997) (Eric Bacher) (PD)"
 ""
@@ -5156,7 +5249,7 @@
 "Cartridge.MD5" "4ac9f40ddfcf194bd8732a75b3f2f214"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26106"
-"Cartridge.Name" "Grover's Music Maker (Atari) (Prototype)"
+"Cartridge.Name" "Grover's Music Maker (1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "KEYBOARD"
@@ -5208,7 +5301,9 @@
 ""
 
 "Cartridge.MD5" "4b753a97aee91e4b3e4e02f5e9758c72"
-"Cartridge.Name" "Asymmetric Reflected Playfield (Glenn Saunders And Roger Williams)"
+"Cartridge.Manufacturer" "Glenn Saunders, Roger Williams"
+"Cartridge.Name" "Asymmetric Reflected Playfield (Glenn Saunders)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "4b71197153d651480830638cb6a03249"
@@ -5218,7 +5313,9 @@
 ""
 
 "Cartridge.MD5" "4d0a28443f7df5f883cf669894164cfa"
-"Cartridge.Name" "Beast Invaders (Space Invaders Hack)"
+"Cartridge.Name" "Beast Invaders (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4c4ce802cbfd160f7b3ec0f13f2a29df"
@@ -5331,7 +5428,9 @@
 ""
 
 "Cartridge.MD5" "4ca90ba45eced6f5ad560ea8938641b2"
-"Cartridge.Name" "Hangman Man Wordlist (Hangman Hack)"
+"Cartridge.Name" "Hangman Man Wordlist (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4cabc895ea546022c2ecaa5129036634"
@@ -5358,10 +5457,10 @@
 ""
 
 "Cartridge.MD5" "4d5f6db55f7f44fd0253258e810bde21"
-"Cartridge.Manufacturer" "Mattel / Fabrizio Zavagli"
-"Cartridge.Name" "Betterblast by Fabrizio Zavagli (Astroblast Hack)"
-"Cartridge.Note" "Hack of Astroblast (Mattel)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
+"Cartridge.Name" "Betterblast (Fabrizio Zavagli) (Hack)"
+"Cartridge.Note" "Hack of Astroblast"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4d38e1105c3a5f0b3119a805f261fcb5"
@@ -5392,12 +5491,15 @@
 
 "Cartridge.MD5" "4e2c884d04b57b43f23a5a2f4e9d9750"
 "Cartridge.Name" "Baby Center Animation (PD)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "4dbf47c7f5ac767a3b07843a530d29a5"
 "Cartridge.Manufacturer" "Ric Pryor"
-"Cartridge.Name" "Breaking News (2002) (Ric Pryor) (Bump 'n' Jump Hack)"
-"Cartridge.Note" "Bump 'n' Jump Hack"
+"Cartridge.Name" "Breaking News (2002) (Ric Pryor) (Hack)"
+"Cartridge.Note" "Hack of Bump 'n' Jump"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4d8396deeabb40b5e8578276eb5a8b6d"
@@ -5408,11 +5510,10 @@
 ""
 
 "Cartridge.MD5" "4df6124093ccb4f0b6c26a719f4b7706"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2622"
-"Cartridge.Name" "Breakout - Breakaway IV (1978) (Atari) [t1]"
+"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart - Sears"
+"Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
+"Cartridge.Name" "Breakout (1978) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Common"
 "Controller.Left" "PADDLES"
 ""
 
@@ -5449,11 +5550,16 @@
 ""
 
 "Cartridge.MD5" "4e4895c3381aa4220f8c2795d6338237"
-"Cartridge.Name" "Backwards Cannonball v1 (Human Cannonball Hack)"
+"Cartridge.Name" "Backwards Cannonball v1 (Hack)"
+"Cartridge.Note" "Hack of Human Cannonball"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4e37992a37ea36489283f7eb90913bbc"
-"Cartridge.Name" "Hangman Ghost Halloween (Kris) (Hangman Hack)"
+"Cartridge.Manufacturer" "Kris"
+"Cartridge.Name" "Hangman Ghost Halloween (Kris) (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4f781f0476493c50dc578336f1132a67"
@@ -5532,7 +5638,7 @@
 ""
 
 "Cartridge.MD5" "51f15b39d9f502c2361b6ba6a73464d4"
-"Cartridge.Name" "Amanda Invaders (PD) [o1]"
+"Cartridge.Name" "Amanda Invaders (PD) [a]"
 ""
 
 "Cartridge.MD5" "51de328e79d919d7234cf19c1cd77fbc"
@@ -5542,7 +5648,9 @@
 ""
 
 "Cartridge.MD5" "502044b1ac111b394e6fbb0d821fca41"
-"Cartridge.Name" "Hangman Invader 4letter (Hangman Hack)"
+"Cartridge.Name" "Hangman Invader 4letter (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "4fc1b85b8074b4b9436d097900e34f29"
@@ -5566,8 +5674,9 @@
 ""
 
 "Cartridge.MD5" "50568c80ac61cab789d9923c9b05b68e"
-"Cartridge.Manufacturer" "ebivision"
-"Cartridge.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision) [!]"
+"Cartridge.Manufacturer" "Ebivision"
+"Cartridge.Name" "Merlin's Walls - Standard Edition (1999) (Ebivision)"
+"Cartridge.Note" "Image rotated 90 degrees CW"
 ""
 
 "Cartridge.MD5" "504688d49a41bf03d8a955512609f3f2"
@@ -5640,9 +5749,9 @@
 
 "Cartridge.MD5" "5355f80cacf0e63a49cbf4ade4e27034"
 "Cartridge.Manufacturer" "Christian Samuel"
-"Cartridge.Name" "Cute Dead Things House by Christian Samuel (Haunted House Hack)"
-"Cartridge.Note" "Hack of Haunted House (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Cute Dead Things House (Christian Samuel) (Hack)"
+"Cartridge.Note" "Hack of Haunted House"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "52615ae358a68de6e76467e95eb404c7"
@@ -5759,7 +5868,10 @@
 ""
 
 "Cartridge.MD5" "543b4b8ff1d616fa250c648be428a75c"
-"Cartridge.Name" "Adventure (1978) (Atari) [t1]"
+"Cartridge.Manufacturer" "Warren Robinett"
+"Cartridge.Name" "Adventure (1978) (Warren Robinett) (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "5409d20c1aea0b89c56993aec5dc5740"
@@ -5767,7 +5879,10 @@
 ""
 
 "Cartridge.MD5" "5385cf2a04de1d36ab55c73174b84db0"
-"Cartridge.Name" "Combat Rock (PD)"
+"Cartridge.Manufacturer" "Paul Slocum"
+"Cartridge.Name" "Combat Rock (PD) (Hack)"
+"Cartridge.Note" "Hack of Combat"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "540075f657d4b244a1f74da1b9e4bf92"
@@ -5828,9 +5943,9 @@
 
 "Cartridge.MD5" "551a64a945d7d6ece81e9c1047acedbc"
 "Cartridge.Manufacturer" "Matthias Jaap"
-"Cartridge.Name" "Coffee Cup Soccer by matthias Jaap (Pele's Soccer Hack)"
-"Cartridge.Note" "Hack of Pele's Soccer (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Coffee Cup Soccer (Matthias Jaap) (Hack)"
+"Cartridge.Note" "Hack of Pele's Soccer"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "54a1c1255ed45eb8f71414dadb1cf669"
@@ -5986,9 +6101,9 @@
 
 "Cartridge.MD5" "579baa6a4aa44f035d245908ea7a044d"
 "Cartridge.Manufacturer" "Jess Ragan"
-"Cartridge.Name" "Galaxian by Jess Ragan (Enhanced Graphics)"
-"Cartridge.Note" "Hack of Galaxian (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Galaxian Enhanced Graphics (Jess Ragan) (Hack)"
+"Cartridge.Note" "Hack of Galaxian"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "57939b326df86b74ca6404f64f89fce9"
@@ -6058,11 +6173,15 @@
 ""
 
 "Cartridge.MD5" "599cbf919d47a05af975ad447df29497"
+"Cartridge.Manufacturer" "Jake Patterson"
 "Cartridge.Name" "Baubles (V0.002) (2001) (Jake Patterson) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "58c396323ea3e85671e34c98eb54e2a4"
+"Cartridge.Manufacturer" "Brian Watson"
 "Cartridge.Name" "Color Tweaker (B. Watson)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "58a82e1da64a692fd727c25faef2ecc9"
@@ -6203,7 +6322,9 @@
 ""
 
 "Cartridge.MD5" "5b98e0536c3f60547dd708ae22adb04b"
-"Cartridge.Name" "Donkey Kong Gingerbread Man (Prototype) (Ben Hudman)"
+"Cartridge.Manufacturer" "Ben Hudman"
+"Cartridge.Name" "Donkey Kong Gingerbread Man (Ben Hudman) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "5b6f5bcbbde42fc77d0bdb3146693565"
@@ -6242,11 +6363,16 @@
 ""
 
 "Cartridge.MD5" "5bd79139a0c03b63f6f2cf00a7d385d2"
+"Cartridge.Manufacturer" "Marc de Smet"
 "Cartridge.Name" "An Exercise In Minimalism (V1) (1999) (Marc de Smet) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "5bc9998b7e9a970e31d2cb60e8696cc4"
-"Cartridge.Name" "Borgwars Asteroids (2003) (Jack Kortkamp) (Asteroids Hack)"
+"Cartridge.Manufacturer" "Jack Kortkamp"
+"Cartridge.Name" "Borgwars Asteroids (2003) (Jack Kortkamp) (Hack)"
+"Cartridge.Note" "Hack of Asteroids"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -6267,14 +6393,16 @@
 ""
 
 "Cartridge.MD5" "5df32450b9fbcaf43f9d83bd66bd5a81"
+"Cartridge.Manufacturer" "Eric Ball"
 "Cartridge.Name" "Atari Logo Playfield Demo (2001) (Eric Ball) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "5c0227ad63300670a647fcebf595ea37"
-"Cartridge.Manufacturer" "Imagic / Josh"
-"Cartridge.Name" "Battle for Naboo by Josh (Atlantis Hack)"
-"Cartridge.Note" "Hack of Atlantis (Imagic)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Manufacturer" "Josh"
+"Cartridge.Name" "Battle for Naboo (Josh) (Hack)"
+"Cartridge.Note" "Hack of Atlantis"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "5be03a1fe7b2c114725150be04b38704"
@@ -6288,7 +6416,10 @@
 ""
 
 "Cartridge.MD5" "5c618a50dfa23daac97ba459b9ff5206"
-"Cartridge.Name" "Berzerk Renegade (2002) (Steve Engelhardt) (Room of Doom Hack)"
+"Cartridge.Manufacturer" "Steve Engelhardt"
+"Cartridge.Name" "Berzerk Renegade (2002) (Steve Engelhardt) (Hack)"
+"Cartridge.Note" "Hack of Room of Doom"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "29"
 "Display.Phosphor" "YES"
 ""
@@ -6326,7 +6457,9 @@
 ""
 
 "Cartridge.MD5" "5ce98f22ade915108860424d8dde0d35"
-"Cartridge.Name" "Hangman Man Biglist3 (Hangman Hack)"
+"Cartridge.Name" "Hangman Man Biglist3 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "5c73693a89b06e5a09f1721a13176f95"
@@ -6543,21 +6676,23 @@
 
 "Cartridge.MD5" "6015a9cef783e97e98a2aa2cf070ae06"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Battlezone TC by Thomas Jentzsch (2 joystick Hack)"
-"Cartridge.Note" "Uses two simultaneous Joystick Controllers, Hack of Battlezone (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Battlezone TC (Thomas Jentzsch) (Hack)"
+"Cartridge.Note" "Uses two simultaneous Joystick Controllers, Hack of Battlezone"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "613abf596c304ef6dbd8f3351920c37a"
-"Cartridge.Name" "Boring Pac-man (Pac-Man Hack)"
+"Cartridge.Name" "Boring Pac-Man (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
 "Cartridge.MD5" "60358edf0c2cc76b1e549e031e50e130"
 "Cartridge.Manufacturer" "Manuel Polik"
-"Cartridge.Name" "Cyber Goth Galaxian by Manuel Polik (Galaxian Hack)"
-"Cartridge.Note" "Hack of Galaxian (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Cyber Goth Galaxian (Manuel Polik) (Hack)"
+"Cartridge.Note" "Hack of Galaxian"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6076b187a5d8ea7a2a05111c19b5d5cd"
@@ -6721,18 +6856,23 @@
 ""
 
 "Cartridge.MD5" "6354f9c7588a27109c66905b0405825b"
-"Cartridge.Name" "Amidar DS (2003) (TJ) (Amidar Hack)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Amidar DS (2003) (TJ) (Hack)"
+"Cartridge.Note" "Hack of Amidar"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6333ef5b5cbb77acd47f558c8b7a95d3"
 "Cartridge.Manufacturer" "Greg Troutman"
-"Cartridge.Name" "Dark Mage (8K) (Greg Troutman) (PD)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Name" "Dark Mage (Greg Troutman) (PD) (8K)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "63166867f75869a3592b7a94ea62d147"
-"Cartridge.Name" "Indy 500 (1978) (Atari) [h2]"
+"Cartridge.Name" "Indy 500 (Hack) [a1]"
+"Cartridge.Note" "Hack of Indy 500"
+"Cartridge.Rarity" "Hack"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
 "Display.YStart" "28"
@@ -6761,8 +6901,9 @@
 
 "Cartridge.MD5" "63a7445b1d3046d3cdcdbd488dca38d9"
 "Cartridge.Manufacturer" "Rob Kudla"
-"Cartridge.Name" "Better Space Invaders (1999) (Rob Kudla) [!]"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
+"Cartridge.Name" "Better Space Invaders (1999) (Rob Kudla) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "63a6eda1da30446569ac76211d0f861c"
@@ -6826,9 +6967,9 @@
 
 "Cartridge.MD5" "63e783994df824caf289b69a084cbf3e"
 "Cartridge.Manufacturer" "David Marli"
-"Cartridge.Name" "Fat Albert by David Marli (Fast Food Hack)"
-"Cartridge.Note" "Hack of Fast Food (Telesys)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Fat Albert (David Marli) (Hack)"
+"Cartridge.Note" "Hack of Fast Food"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "640a08e9ca019172d612df22a9190afb"
@@ -6839,7 +6980,10 @@
 ""
 
 "Cartridge.MD5" "63e9e612bbee31045f8d184a4e53f8ec"
-"Cartridge.Name" "Moby Blues (2002) (ATARITALIA) (Mario Bros Hack)"
+"Cartridge.Manufacturer" "ATARITALIA"
+"Cartridge.Name" "Moby Blues (2002) (ATARITALIA) (Hack)"
+"Cartridge.Note" "Hack of Mario Bros"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "643e6451eb6b8ab793eb60ba9c02e000"
@@ -6877,9 +7021,10 @@
 ""
 
 "Cartridge.MD5" "64d43859258dc8ca54949e9ff4174202"
-"Cartridge.Manufacturer" "Starsoft / Thomas Jentzsch"
-"Cartridge.Name" "Lilly Adventure (Starsoft) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Lilly Adventure (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Display.Height" "230"
 ""
 
@@ -6912,7 +7057,9 @@
 ""
 
 "Cartridge.MD5" "6b8fb021bb2e1f1e9bd7ee57f2a8e709"
-"Cartridge.Name" "3-D Corridor (29-03-2003) (Paul Slocum) (PD) [a1]"
+"Cartridge.Manufacturer" "Paul Slocum"
+"Cartridge.Name" "3-D Corridor (29-03-2003) (Paul Slocum) (PD) [a]"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "6672de8f82c4f7b8f7f1ef8b6b4f614d"
@@ -6927,7 +7074,9 @@
 ""
 
 "Cartridge.MD5" "662eca7e3d89175ba0802e8e3425dedb"
-"Cartridge.Name" "Hangman Pac-Man Biglist3 (Hangman Hack)"
+"Cartridge.Name" "Hangman Pac-Man Biglist3 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "65917ae29a8c9785bb1f2acb0d6aafd0"
@@ -7007,7 +7156,9 @@
 ""
 
 "Cartridge.MD5" "6b01a519b413f8cfa2f399f4d2841b42"
-"Cartridge.Name" "Aphex Invaders (Space Invaders Hack)"
+"Cartridge.Name" "Aphex Invaders (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6a9e0c72fab92df70084eccd9061fdbd"
@@ -7017,7 +7168,10 @@
 ""
 
 "Cartridge.MD5" "68cd2adc6b1fc9a1f263ab4561112f30"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Boulderdash Demo (09-12-2002) (TJ)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "68597264c8e57ada93be3a5be4565096"
@@ -7048,9 +7202,9 @@
 ""
 
 "Cartridge.MD5" "66b54641b5786ea3ff0215aa39d61e01"
-"Cartridge.Name" "KC Pacman (Pac-Man Hack)"
-"Cartridge.Note" "Hack of Pac-Man (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "KC Pacman (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "669840b0411bfbab5c05b786947d55d4"
@@ -7105,7 +7259,9 @@
 ""
 
 "Cartridge.MD5" "67cf913d1df0bf2d7ae668060d0b6694"
-"Cartridge.Name" "Hangman Monkey 4letter (Hangman Hack)"
+"Cartridge.Name" "Hangman Monkey 4letter (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "679d30c7886b283cbe1db4e7dbe5f2a6"
@@ -7182,6 +7338,11 @@
 "Display.Height" "256"
 ""
 
+"Cartridge.MD5" "6847ce70819b74febcfd03e99610243b"
+"Cartridge.Name" "ruby_4A50.bin"
+"Cartridge.Type" "4A50"
+""
+
 "Cartridge.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"
 "Cartridge.Manufacturer" "Hozer Video Games"
 "Cartridge.Name" "Gunfight 2600 - One Step Forward & Two Steps Back (2001) (MP)"
@@ -7222,7 +7383,10 @@
 ""
 
 "Cartridge.MD5" "698f569eab5a9906eec3bc7c6b3e0980"
-"Cartridge.Name" "Demons! (2003) (SpkLeader) (Phoenix Hack)"
+"Cartridge.Manufacturer" "SpkLeader"
+"Cartridge.Name" "Demons! (2003) (SpkLeader) (Hack)"
+"Cartridge.Note" "Hack of Phoenix"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6982854657a2cc87d712f718e402bf85"
@@ -7304,7 +7468,10 @@
 ""
 
 "Cartridge.MD5" "6a3b0c33cf74b1e213a629e3c142b73c"
-"Cartridge.Name" "Cory The Interviewer - The Hunt For Begis Billboard (Cody Pittman) (PD)"
+"Cartridge.Manufacturer" "Cody Pittman"
+"Cartridge.Name" "Cory The Interviewer (Cody Pittman) (Hack)"
+"Cartridge.Note" "Hack of Ghostbusters"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6a882fb1413912d2ce5cf5fa62cf3875"
@@ -7330,7 +7497,9 @@
 ""
 
 "Cartridge.MD5" "6aa66e9c3eea76a0c40ef05513497c40"
-"Cartridge.Name" "Hangman Ghost Biglist2 (Hangman Hack)"
+"Cartridge.Name" "Hangman Ghost Biglist2 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6ac3fd31a51730358708c7fdc62487f8"
@@ -7433,7 +7602,9 @@
 ""
 
 "Cartridge.MD5" "6d218dafbf5a691045cdc1f67ceb6a8f"
+"Cartridge.Manufacturer" "Robin Harbron"
 "Cartridge.Name" "6 Digit Score Display (1998) (Robin Harbron) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "6c76fe09aa8b39ee52035e0da6d0808b"
@@ -7446,7 +7617,9 @@
 ""
 
 "Cartridge.MD5" "6c658b52d03e01828b9d2d4718a998ac"
-"Cartridge.Name" "Hangman Invader Biglist2 (Hangman Hack)"
+"Cartridge.Name" "Hangman Invader Biglist2 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "6c91ac51421cb9fc72c9833c4f440d65"
@@ -7466,7 +7639,7 @@
 "Cartridge.MD5" "6cd506509e8fd5627f55603780e862a8"
 "Cartridge.Manufacturer" "Greg Troutman"
 "Cartridge.Name" "Dark Mage (SuperCharger) (Greg Troutman) (PD)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -7500,7 +7673,9 @@
 ""
 
 "Cartridge.MD5" "6f74ed915ffe73b524ef0f63819e2a1d"
+"Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "An Exercise In Minimalism (V2) (1999) (Eckhard Stolberg)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "6d8a04ee15951480cb7c466e5951eee0"
@@ -7781,9 +7956,10 @@
 ""
 
 "Cartridge.MD5" "718ee85ea7ec27d5bea60d11f6d40030"
-"Cartridge.Manufacturer" "Salu / Thomas Jentzsch"
-"Cartridge.Name" "Ghostbusters II (1992) (Salu) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Ghostbusters II (1992) (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -7817,7 +7993,10 @@
 ""
 
 "Cartridge.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
-"Cartridge.Name" "Atlantis (Hack 01) (TJ) (Atlantis Hack)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Atlantis (TJ) (Hack)"
+"Cartridge.Note" "Hack of Atlantis"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "72876fd7c7435f41d571f1101fc456ea"
@@ -8039,6 +8218,7 @@
 ""
 
 "Cartridge.MD5" "755fed16b48e81de05130708a905d00d"
+"Cartridge.Manufacturer" "SnailSoft"
 "Cartridge.Name" "Comitoid beta 3 (SnailSoft)"
 ""
 
@@ -8159,7 +8339,9 @@
 ""
 
 "Cartridge.MD5" "76c88341017eae660efc6e49c4b6ab40"
-"Cartridge.Name" "Indiana Pitfall (Pitfall Hack)"
+"Cartridge.Name" "Indiana Pitfall (Hack)"
+"Cartridge.Note" "Hack of Pitfall!"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
@@ -8186,7 +8368,10 @@
 ""
 
 "Cartridge.MD5" "77cd9a9dd810ce8042bdb9d40e256dfe"
-"Cartridge.Name" "Evil Dead (2003) (Kyle Pittman) (Haunted House Hack)"
+"Cartridge.Manufacturer" "Kyle Pittman"
+"Cartridge.Name" "Evil Dead (2003) (Kyle Pittman) (Hack)"
+"Cartridge.Note" "Hack of Haunted House"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "77887e4192a6b0a781530e6cf9be7199"
@@ -8197,7 +8382,9 @@
 ""
 
 "Cartridge.MD5" "7860716fa5dbc0fffab93fb9a4cb4132"
-"Cartridge.Name" "Hangman Monkey Wordlist (Hangman Hack)"
+"Cartridge.Name" "Hangman Monkey Wordlist (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "78297db7f416af3052dd793b53ff014e"
@@ -8240,9 +8427,9 @@
 
 "Cartridge.MD5" "7926083ad423ed685de3b3a04a914315"
 "Cartridge.Manufacturer" "Barry Laws Jr."
-"Cartridge.Name" "Face Invaders 2 by Barry Laws Jr. (Space Invaders Hack)"
-"Cartridge.Note" "Hack of Astroblast (Mattel)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Face Invaders 2 (Barry Laws Jr.) (Hack)"
+"Cartridge.Note" "Hack of Astroblast"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "78c2de58e42cd1faac2ea7df783eaeb3"
@@ -8325,7 +8512,9 @@
 ""
 
 "Cartridge.MD5" "79d4af56036ec28f298cad964a2e2494"
-"Cartridge.Name" "Hangman Pac-Man Wordlist (Hangman Hack)"
+"Cartridge.Name" "Hangman Pac-Man Wordlist (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "79b649fb812c50b4347d12e7ddbb8400"
@@ -8420,7 +8609,8 @@
 ""
 
 "Cartridge.MD5" "7b33407b2b198af74906b936ce1eecbb"
-"Cartridge.Name" "Ghostbuster 2 (NTSC) (King Atari)"
+"Cartridge.Manufacturer" "King Atari"
+"Cartridge.Name" "Ghostbuster 2 (King Atari)"
 "Display.Phosphor" "YES"
 ""
 
@@ -8531,8 +8721,15 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "7cafc884a21aa3b7052f7109e690ca70"
+"Cartridge.Name" "sgems.bin"
+"Display.YStart" "30"
+""
+
 "Cartridge.MD5" "7eaf009a892f03d90682dc1e67e85f07"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
 "Cartridge.Name" "Bounce! (18-03-2003) (Fabrizio Zavagli)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -8759,7 +8956,9 @@
 ""
 
 "Cartridge.MD5" "805f9a32ef97ac25f999a25014dc5c23"
-"Cartridge.Name" "Balthazar (aka Babylon 5) (SnailSoft)"
+"Cartridge.Manufacturer" "SnailSoft"
+"Cartridge.Name" "Balthazar (SnailSoft)"
+"Cartridge.Note" "AKA Babylon 5"
 "Display.Phosphor" "YES"
 ""
 
@@ -8773,13 +8972,6 @@
 "Cartridge.Manufacturer" "Ishido"
 "Cartridge.Name" "Domino (Ishido) (PD)"
 "Cartridge.Rarity" "New Release"
-""
-
-"Cartridge.MD5" "7fd52208fb6391bae0cd7e68c27bde6f"
-"Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "2653"
-"Cartridge.Name" "Donkey Kong Junior (Coleco) [b1]"
-"Cartridge.Rarity" "Rare"
 ""
 
 "Cartridge.MD5" "7fcd1766de75c614a3ccc31b25dd5b7a"
@@ -9001,8 +9193,9 @@
 ""
 
 "Cartridge.MD5" "85478bb289dfa5c63726b9153992a920"
-"Cartridge.Name" "Candi (Space Invaders Hack)"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
+"Cartridge.Name" "Candi (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "83f50fa0fbae545e4b88bb53b788c341"
@@ -9094,14 +9287,10 @@
 "Cartridge.Name" "Death Derby (19-01-2003) (TJ)"
 ""
 
-"Cartridge.MD5" "84d1cf884f029e458db196548db9c2ad"
-"Cartridge.Manufacturer" "Ishido"
-"Cartridge.Name" "Domino (Ishido) (PD) [b1]"
-"Cartridge.Rarity" "New Release"
-""
-
 "Cartridge.MD5" "840a5a2eaea24d95d289f514fd12f9bb"
-"Cartridge.Name" "GBImprov (Ghostbusters Hack)"
+"Cartridge.Name" "GBImprov (Hack)"
+"Cartridge.Note" "Hack of Ghostbusters"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "83fafd7bd12e3335166c6314b3bde528"
@@ -9322,7 +9511,9 @@
 ""
 
 "Cartridge.MD5" "87b460df21b7bbcfc57b1c082c6794b0"
+"Cartridge.Manufacturer" "Dennis Debro"
 "Cartridge.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
+"Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
@@ -9471,7 +9662,9 @@
 ""
 
 "Cartridge.MD5" "898748d5eaac3164b0391a64ae1e0e32"
-"Cartridge.Name" "Hangman Man 4letter (Hangman Hack)"
+"Cartridge.Name" "Hangman Man 4letter (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "890c13590e0d8d5d6149737d930e4d95"
@@ -9518,7 +9711,9 @@
 ""
 
 "Cartridge.MD5" "8a42e2c7266439d8997a55d0124c912c"
-"Cartridge.Name" "Hangman Invader Wordlist (Hangman Hack)"
+"Cartridge.Name" "Hangman Invader Wordlist (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "89afff4a10807093c105740c73e9b544"
@@ -9539,7 +9734,9 @@
 ""
 
 "Cartridge.MD5" "8a9d953ac3db52a313a90d6a9b139c76"
-"Cartridge.Name" "Hangman Invader Biglist3 (Hangman Hack)"
+"Cartridge.Name" "Hangman Invader Biglist3 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "8a8e401369e2b63a13e18a4d685387c6"
@@ -9629,13 +9826,18 @@
 ""
 
 "Cartridge.MD5" "8c103a79b007a2fd5af602334937b4e1"
-"Cartridge.Manufacturer" "ITT Family Games / Thomas Jentzsch"
-"Cartridge.Name" "Laser Base (AKA World End) (ITT Family Games) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Laser Base (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "8bebac614571135933116045204f0f00"
-"Cartridge.Name" "Missile Command (CX-22 Trackball) (PAL) (2002) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command (CX-22 Trackball) (2002) (TJ) (PAL)"
+"Cartridge.Note" "Uses CX-22 Trackball Controller"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -9713,18 +9915,25 @@
 ""
 
 "Cartridge.MD5" "8ce9126066f2ddd5173e9f1f9ce1494e"
-"Cartridge.Name" "Missile Command (CX-22 Trackball) (NTSC) (2002) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command (CX-22 Trackball) (2002) (TJ)"
+"Cartridge.Note" "Uses CX-22 Trackball Controller"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "93b9229fc0ea4fb959d604f83f8f603c"
-"Cartridge.Name" "Amidar DS (Fast Enemies) (2003) (TJ) (Amidar Hack)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Amidar DS (Fast Enemies) (2003) (TJ) (Hack)"
+"Cartridge.Note" "Hack of Amidar"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "8df4be9ddc54ac363b13dc57ceaf161a"
-"Cartridge.Manufacturer" "Atari / Scott Stilphen"
-"Cartridge.Name" "Asteroids SS (Asteroids Hack)"
-"Cartridge.Note" "Hack of Asteroids (Atari)"
+"Cartridge.Manufacturer" "Scott Stilphen"
+"Cartridge.Name" "Asteroids SS (Scott Stilphen) (Hack)"
+"Cartridge.Note" "Hack of Asteroids"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -9733,7 +9942,10 @@
 ""
 
 "Cartridge.MD5" "8d1e2a6d2885966e6d86717180938f87"
-"Cartridge.Name" "Missile Command (Amiga Mouse) (NTSC) (2002) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command (Amiga Mouse) (2002) (TJ)"
+"Cartridge.Note" "Uses Amiga Mouse Controller"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -9760,9 +9972,10 @@
 ""
 
 "Cartridge.MD5" "8e879aa58db41edb67cbf318b77766c4"
-"Cartridge.Manufacturer" "CCE / Thomas Jentzsch"
-"Cartridge.Name" "Cosmic Commuter (PAL60 by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Cosmic Commuter (Thomas Jentzsch) (PAL60)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Hack"
 "Display.Format" "PAL60"
 ""
 
@@ -9803,7 +10016,9 @@
 ""
 
 "Cartridge.MD5" "8e822b39a71c84ac875f0107fb61d6f0"
-"Cartridge.Name" "Hangman Ghost Original Words (Hangman Hack)"
+"Cartridge.Name" "Hangman Ghost Original Words (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "8ee3f64dc0f349adc893fe93df5245d8"
@@ -9827,9 +10042,9 @@
 
 "Cartridge.MD5" "93420cc4cb1af1f2175c63e52ec18332"
 "Cartridge.Manufacturer" "Tim Snider"
-"Cartridge.Name" "Blair Witch Project by Tim Snider (Haunted House Hack)"
-"Cartridge.Note" "Hack of Haunted House (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Blair Witch Project (Tim Snider) (Hack)"
+"Cartridge.Note" "Hack of Haunted House"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "9295570a141cdec18074c55dc7229d08"
@@ -9845,9 +10060,11 @@
 ""
 
 "Cartridge.MD5" "9072c142728a3a3d994956d03bfacba2"
-"Cartridge.Manufacturer" "Fabrizio Zavagli / 20th Century Fox"
-"Cartridge.Name" "Crash Dive (PAL Conversion) (Fabrizio Zavagli)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
+"Cartridge.Name" "Crash Dive (Fabrizio Zavagli) (PAL60)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Hack"
+"Display.Format" "PAL60"
 "Display.YStart" "30"
 ""
 
@@ -10016,6 +10233,7 @@
 "Cartridge.ModelNo" "CA282"
 "Cartridge.Name" "Great Escape (1983) (Bomb)"
 "Cartridge.Note" "AKA Asteroid Fire"
+"Display.YStart" "28"
 ""
 
 "Cartridge.MD5" "925dda3c61b81eeb7bd8467b6e99dedc"
@@ -10130,7 +10348,10 @@
 ""
 
 "Cartridge.MD5" "93eb1795c8b1065b1b3d62bb9ec0ccdc"
-"Cartridge.Name" "Custer's Viagra (JSK) (Custer's Revenge Hack)"
+"Cartridge.Manufacturer" "JSK"
+"Cartridge.Name" "Custer's Viagra (JSK) (Hack)"
+"Cartridge.Note" "Hack of Custer's Revenge"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "32"
 ""
 
@@ -10214,7 +10435,9 @@
 ""
 
 "Cartridge.MD5" "96670d0bf3610da2afcabd8e21d8eabf"
-"Cartridge.Name" "Boring Pitfall (Pitfall Hack)"
+"Cartridge.Name" "Boring Pitfall (Hack)"
+"Cartridge.Note" "Hack of Pitfall!"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "962ffd3eaf865230a7a312b80e6c5cfd"
@@ -10272,7 +10495,9 @@
 ""
 
 "Cartridge.MD5" "9671b658286e276cc4a3d02aa25931d2"
-"Cartridge.Name" "Hangman Ghost Wordlist (Hangman Hack)"
+"Cartridge.Name" "Hangman Ghost Wordlist (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "966b11d3c147d894dd9e4ebb971ea309"
@@ -10280,7 +10505,8 @@
 ""
 
 "Cartridge.MD5" "9848b5ef7a0c02fe808b920a2ac566d2"
-"Cartridge.Name" "Baseball (2002) (Skyworks) [!]"
+"Cartridge.Manufacturer" "Skyworks Technology Inc."
+"Cartridge.Name" "Baseball (2002) (Skyworks)"
 ""
 
 "Cartridge.MD5" "969b968383d9f0e9d8ffd1056bcaef49"
@@ -10301,7 +10527,10 @@
 ""
 
 "Cartridge.MD5" "96eccc2277043508a6c481ea432d7dd9"
-"Cartridge.Name" "Missile Command (CX-80 Trackball) (PAL) (2002) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Command (CX-80 Trackball) (2002) (TJ) (PAL)"
+"Cartridge.Note" "Uses CX-80 Trackball Controller"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -10344,7 +10573,10 @@
 ""
 
 "Cartridge.MD5" "97d0151beb84acbe82aa6db18cd91b98"
-"Cartridge.Name" "Lunar Attack (2002) (Steve Engelhardt) (Z-Tack Hack)"
+"Cartridge.Manufacturer" "Steve Engelhardt"
+"Cartridge.Name" "Lunar Attack (2002) (Steve Engelhardt) (Hack)"
+"Cartridge.Note" "Hack of Z-Tack"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "97cd63c483fe3c68b7ce939ab8f7a318"
@@ -10378,9 +10610,9 @@
 ""
 
 "Cartridge.MD5" "98ba601a60172cb46c5bf9a962fd5b1f"
-"Cartridge.Name" "Gorilla Kong (Donkey Kong Hack)"
-"Cartridge.Note" "Hack of Donkey Kong (Coleco)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Gorilla Kong (Hack)"
+"Cartridge.Note" "Hack of Donkey Kong"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "98ccd15345b1aee6caf51e05955f0261"
@@ -10421,7 +10653,9 @@
 ""
 
 "Cartridge.MD5" "98e7caaab8ec237558378d2776c66616"
+"Cartridge.Manufacturer" "Bradford W. Mott"
 "Cartridge.Name" "HMOVE Test (Bradford W. Mott) (1998) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "98e6e34af45a0664597972c3bb31180f"
@@ -10449,7 +10683,9 @@
 ""
 
 "Cartridge.MD5" "9989f974c3cf9c641db6c8a70a2a2267"
-"Cartridge.Name" "Colours Selector (Eckhard Stolberg) (PAL)"
+"Cartridge.Manufacturer" "Eckhard Stolberg"
+"Cartridge.Name" "Colours Selector (Eckhard Stolberg)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "99112a46486b52b1110bae607bfa8cd6"
@@ -10487,11 +10723,14 @@
 ""
 
 "Cartridge.MD5" "99f7c6c26046bbe95f1c604b25da8360"
+"Cartridge.Manufacturer" "SnailSoft"
 "Cartridge.Name" "Comitoid beta 2 (SnailSoft)"
 ""
 
 "Cartridge.MD5" "99a24d7bb31d49b720b422550b32c35f"
-"Cartridge.Name" "Hangman Ghost Biglist1 (Hangman Hack)"
+"Cartridge.Name" "Hangman Ghost Biglist1 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "9a21fba9ee9794e0fadd7c7eb6be4e12"
@@ -10523,7 +10762,9 @@
 ""
 
 "Cartridge.MD5" "9be58a14e055b0e7581fc4d6c2f6b31d"
-"Cartridge.Name" "Adventure (Color Scrolling) [h1]"
+"Cartridge.Name" "Adventure (Color Scrolling) (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "9b246683f44c963a50e41d6b485bee77"
@@ -10540,7 +10781,9 @@
 ""
 
 "Cartridge.MD5" "9bd4e0d5f28ba6da417c26649171f8e4"
-"Cartridge.Name" "Hangman Pac-Man Original Words (Hangman Hack)"
+"Cartridge.Name" "Hangman Pac-Man Original Words (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "9bb136b62521c67ac893213e01dd338f"
@@ -10556,7 +10799,10 @@
 ""
 
 "Cartridge.MD5" "9d4bc7c6fe9a7c8c4aa24a237c340adb"
-"Cartridge.Name" "Climber 5 (For Philly Classic 4) (16-04-2003) (Dennis Debro)"
+"Cartridge.Manufacturer" "Dennis Debro"
+"Cartridge.Name" "Climber 5 (16-04-2003) (Dennis Debro)"
+"Cartridge.Note" "For Philly Classic 4"
+"Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
@@ -10567,9 +10813,9 @@
 ""
 
 "Cartridge.MD5" "9c729017dd2f9ccbadcb511187f80e6b"
-"Cartridge.Name" "J-Pac (Pac-Man Hack)"
-"Cartridge.Note" "Hack of Pac-Man (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "J-Pac (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "9c6fd6ed3599978ab7b6f900484b9be6"
@@ -10757,7 +11003,10 @@
 ""
 
 "Cartridge.MD5" "9f59eddf9ba91a7d93bce7ee4b7693bc"
-"Cartridge.Name" "Montezuma's Revenge - Starring Panama Joe (PAL60 by Thomas Jentzsch).a26"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Montezuma's Revenge (Thomas Jentzsch) (PAL60)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Display.Format" "PAL60"
 ""
 
@@ -10786,8 +11035,9 @@
 
 "Cartridge.MD5" "a00ee0aed5c8979add4c170f5322c706"
 "Cartridge.Manufacturer" "Barry Laws Jr."
-"Cartridge.Name" "Egghead by Barry Laws Jr. (Pac-Man Hack)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Egghead (Barry Laws Jr.) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
@@ -10877,9 +11127,9 @@
 
 "Cartridge.MD5" "a100eff2d7ae61ca2b8e65baf7e2aae8"
 "Cartridge.Manufacturer" "David Marli"
-"Cartridge.Name" "Muncher by David Marli (Pac-Man Hack)"
-"Cartridge.Note" "Hack of Pac-Man (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Muncher (David Marli) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
@@ -10989,9 +11239,7 @@
 
 "Cartridge.MD5" "a29df35557f31dfea2e2ae4609c6ebb7"
 "Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2630 / 4975122"
-"Cartridge.Name" "Circus Atari (1978) (Atari) (Joystick)"
-"Cartridge.Rarity" "Common"
+"Cartridge.Name" "Circus Atari (1980) (Atari) (Joystick)"
 ""
 
 "Cartridge.MD5" "a2aae759e4e76f85c8afec3b86529317"
@@ -11001,9 +11249,9 @@
 
 "Cartridge.MD5" "a2de0fc85548871279ed2a3c1325c13e"
 "Cartridge.Manufacturer" "George Veeder"
-"Cartridge.Name" "Cat and Mouse by George Veeder (Pac-Man Hack)"
-"Cartridge.Note" "Hack of Pac-Man (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Cat and Mouse (George Veeder) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
@@ -11019,6 +11267,7 @@
 
 "Cartridge.MD5" "a2eb84cfeed55acd7fece7fefdc83fbb"
 "Cartridge.Name" "Kool Aid Man (Fixed) (15-11-2002) (CT)"
+"Cartridge.Note" "HMOVE handling fixed in this version"
 ""
 
 "Cartridge.MD5" "a2f296ea2d6d4b59979bac5dfbf4edf0"
@@ -11100,7 +11349,9 @@
 ""
 
 "Cartridge.MD5" "a4aa7630e4c0ad7ebb9837d2d81de801"
-"Cartridge.Name" "Atari 2600 Invaders (Space Invaders Hack)"
+"Cartridge.Name" "Atari 2600 Invaders (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "a47e26096de6f6487bf5dd2d1cced294"
@@ -11155,7 +11406,9 @@
 ""
 
 "Cartridge.MD5" "a537879d8e82e1061d3ad800479d3b84"
-"Cartridge.Name" "Brooni (PAL) (2001) (Andrew Wallace) (PD)"
+"Cartridge.Manufacturer" "Andrew Wallace"
+"Cartridge.Name" "Brooni (2001) (Andrew Wallace) (PD) (PAL)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "a4ab331e8768eafdc20ce8b0411ff77a"
@@ -11207,7 +11460,9 @@
 ""
 
 "Cartridge.MD5" "a5b7f420ca6cc1384da0fed523920d8e"
-"Cartridge.Name" "Adventure (New Graphics) [h1]"
+"Cartridge.Name" "Adventure (New Graphics) (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "a591b5e8587aae0d984a0f6fe2cc7d1c"
@@ -11261,7 +11516,9 @@
 ""
 
 "Cartridge.MD5" "a62e3e19280ff958407e05ca0a2d5ec7"
-"Cartridge.Name" "Hangman Ghost Biglist3 (Hangman Hack)"
+"Cartridge.Name" "Hangman Ghost Biglist3 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "a641d14c516d00da81cd12c2dbaa06db"
@@ -11297,7 +11554,10 @@
 ""
 
 "Cartridge.MD5" "a7cf2b9afdbb3a161bf418dbcf0321dc"
-"Cartridge.Name" "Attack Of The Mutant Space Urchins (2002) (Barry Laws Jr.) (Alien Hack)"
+"Cartridge.Manufacturer" "Barry Laws Jr."
+"Cartridge.Name" "Attack Of The Mutant Space Urchins (2002) (Barry Laws Jr.) (Hack)"
+"Cartridge.Note" "Hack of Alien"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -11311,9 +11571,9 @@
 
 "Cartridge.MD5" "a81b29177f258494b499fbac69789cef"
 "Cartridge.Manufacturer" "Greg Thompson"
-"Cartridge.Name" "Console Wars (PD)"
-"Cartridge.Note" "Hack of Space Jockey (US Games)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Console Wars (Greg Thompson) (Hack)"
+"Cartridge.Note" "Hack of Space Jockey"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "a81697b0c8bbc338ae4d0046ede0646b"
@@ -11339,7 +11599,9 @@
 ""
 
 "Cartridge.MD5" "a867b76098786c4091dba2fcee5084c3"
-"Cartridge.Name" "Dragrace (Dragster Hack)"
+"Cartridge.Name" "Dragrace (Hack)"
+"Cartridge.Note" "Hack of Dragster"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "27"
 ""
 
@@ -11371,11 +11633,10 @@
 
 "Cartridge.MD5" "a93e8ea1f565c3c1e86b708cf0dc2fa9"
 "Cartridge.Manufacturer" "Jess Ragan"
-"Cartridge.Name" "Kabul! by Jess Ragan (Kaboom! Hack)"
-"Cartridge.Note" "Hack of Kaboom! (Activision); Uses the Paddle Controllers (left only)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Kabul! (Jess Ragan) (Hack)"
+"Cartridge.Note" "Hack of Kaboom!, Uses the Paddle Controllers (left only)"
+"Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
-"Controller.Right" "NONE"
 ""
 
 "Cartridge.MD5" "a8d4a9500b18b0a067a1f272f869e094"
@@ -11543,7 +11804,10 @@
 ""
 
 "Cartridge.MD5" "ac0ddbcff34d064009591607746e33b8"
-"Cartridge.Name" "Atlantis FH (2003) (TJ) (Atlantis Hack)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Atlantis FH (2003) (TJ) (Hack)"
+"Cartridge.Note" "Hack of Atlantis"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "ab4ac994865fb16ebb85738316309457"
@@ -11654,7 +11918,9 @@
 ""
 
 "Cartridge.MD5" "b95a6274ca0e0c773bfdc06b4c3daa42"
+"Cartridge.Manufacturer" "Paul Slocum"
 "Cartridge.Name" "3-D Corridor (29-03-2003) (Paul Slocum)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "b6960be26bee87d53ba4e2e71cfe772f"
@@ -11707,9 +11973,10 @@
 ""
 
 "Cartridge.MD5" "afe776db50e3378cd6f29c7cdd79104a"
-"Cartridge.Manufacturer" "CCE / Thomas Jentzsch"
-"Cartridge.Name" "Bobby is Going Home (CCE) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Bobby is Going Home (TJ)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Display.YStart" "23"
 "Display.Height" "245"
 ""
@@ -11806,10 +12073,9 @@
 ""
 
 "Cartridge.MD5" "aeb104f1e7b166bc0cbaca0a968fde51"
-"Cartridge.Manufacturer" "Rob Kudla"
-"Cartridge.Name" "Ms. Pac-Man (1982) (Atari) [h1]"
-"Cartridge.Note" "Hack of Ms. Pac-Man (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Ms. Pac-Man (1999) (Hack)"
+"Cartridge.Note" "Hack of Ms. Pac-Man"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "aed0b7bd64cc384f85fdea33e28daf3b"
@@ -11973,7 +12239,9 @@
 ""
 
 "Cartridge.MD5" "b5110f55ed99d5279f18266d001a8cd5"
+"Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "Auto-mobile Demo (2001) (Eckhard Stolberg)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "b4f87ce75f7329c18301a2505fe59cd3"
@@ -12028,12 +12296,10 @@
 ""
 
 "Cartridge.MD5" "b2d1e63f7f22864096b7b6c154151d55"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
 "Cartridge.Name" "Bounce! (17-03-2003) (Fabrizio Zavagli)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "b2b78febdbc0ac184084092c1375162a"
-"Cartridge.Name" "Decathlon (1983) (Activision) (PAL) [b1]"
 ""
 
 "Cartridge.MD5" "b28b3d07ffd5f56938a922b7448730b9"
@@ -12203,9 +12469,10 @@
 ""
 
 "Cartridge.MD5" "b676a9b7094e0345a76ef027091d916b"
-"Cartridge.Manufacturer" "Video Gems / Thomas Jentzsch"
-"Cartridge.Name" "Mission Survive (1983) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Mission Survive (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
 "Display.Phosphor" "YES"
 ""
@@ -12226,9 +12493,10 @@
 ""
 
 "Cartridge.MD5" "b7903268e235310dc346a164af4c7022"
-"Cartridge.Manufacturer" "UA / Thomas Jentzsch"
-"Cartridge.Name" "Cat Trax (PAL60 by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Cat Trax (Thomas Jentzsch) (PAL60)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Hack"
 "Display.Format" "PAL60"
 "Display.YStart" "30"
 "Display.Phosphor" "YES"
@@ -12236,9 +12504,9 @@
 
 "Cartridge.MD5" "b719ada17771a8d206c7976553825139"
 "Cartridge.Manufacturer" "Ron Corcoran"
-"Cartridge.Name" "DUP Space Invaders (Ron Corcoran)"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "DUP Space Invaders (Ron Corcoran) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "b6d52a0cf53ad4216feb04147301f87d"
@@ -12578,10 +12846,9 @@
 ""
 
 "Cartridge.MD5" "be41463cd918daef107d249f8cde3409"
-"Cartridge.Manufacturer" "Dan Hitchens and Mike Mika"
-"Cartridge.Name" "Berzerk (Voice Enhanced) (Berzerk Hack)"
-"Cartridge.Note" "Hack of Berzerk (Atari)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Name" "Berzerk (Voice Enhanced) (Hack)"
+"Cartridge.Note" "Hack of Berzerk"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "bd1bd6f6b928df17a702def0302f46f4"
@@ -12599,7 +12866,10 @@
 ""
 
 "Cartridge.MD5" "bdb4b584ddc90c9d2ec7e21632a236b6"
-"Cartridge.Name" "Nitemare at Sunshine Bowl-a-Rama (beta 1) (Atari Freak 1)"
+"Cartridge.Manufacturer" "Atari Freak 1"
+"Cartridge.Name" "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man Jr."
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "bd430c2193045c68d1a20a018a976248"
@@ -12613,7 +12883,10 @@
 ""
 
 "Cartridge.MD5" "be1922bd8e09d74da471287e1e968653"
-"Cartridge.Name" "Hangman Pacman Demo (Cropsy) (PD)"
+"Cartridge.Manufacturer" "Cropsy"
+"Cartridge.Name" "Hangman Pacman Demo (Cropsy) (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "bdbaeff1f7132358ea64c7be9e46c1ac"
@@ -12718,7 +12991,9 @@
 ""
 
 "Cartridge.MD5" "c02e1afa0671e438fd526055c556d231"
-"Cartridge.Name" "A-Team, The (Atari) (Prototype) (PAL-60) [!]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "A-Team (Atari) (Prototype) (PAL60)"
+"Cartridge.Rarity" "Prototype"
 "Display.Format" "PAL60"
 ""
 
@@ -12788,7 +13063,9 @@
 ""
 
 "Cartridge.MD5" "c2a37f1c7603c5fd97df47d6c562abfa"
+"Cartridge.Manufacturer" "Roger Williams"
 "Cartridge.Name" "Bar-Score Demo (2001) (Roger Williams)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "c1cb228470a87beb5f36e90ac745da26"
@@ -12877,7 +13154,9 @@
 ""
 
 "Cartridge.MD5" "c221607529cabc93450ef25dbac6e8d2"
+"Cartridge.Manufacturer" "Eckhard Stolberg"
 "Cartridge.Name" "Color Test (26-09-2002) (Eckhard Stolberg)"
+"Cartridge.Rarity" "Homebrew"
 "Console.RightDifficulty" "A"
 ""
 
@@ -12995,7 +13274,9 @@
 ""
 
 "Cartridge.MD5" "c3e4aa718f46291311f1cce53e6ccd79"
-"Cartridge.Name" "Hangman Ghost 4letter (Hangman Hack)"
+"Cartridge.Name" "Hangman Ghost 4letter (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "c3aeb796fdaf9429e8cd6af6346f337e"
@@ -13152,7 +13433,10 @@
 ""
 
 "Cartridge.MD5" "c58708c09ccb61625cda9d15ddcd8be6"
-"Cartridge.Name" "NOIZ Invaders by SPIKE the Percussionist (2002) (Space Invaders Hack)"
+"Cartridge.Manufacturer" "SPIKE the Percussionist"
+"Cartridge.Name" "NOIZ Invaders (SPIKE) (2002) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "c569e57dca93d3bee115a49923057fd7"
@@ -13646,7 +13930,9 @@
 ""
 
 "Cartridge.MD5" "ce17325834bf8b0a0d0d8de08478d436"
-"Cartridge.Name" "Boring Freeway (Freeway Hack)"
+"Cartridge.Name" "Boring Freeway (Hack)"
+"Cartridge.Note" "Hack of Freeway"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "cd88ef1736497288c4533bcca339f881"
@@ -13662,7 +13948,9 @@
 ""
 
 "Cartridge.MD5" "cd032ab6764b55438a7b0bfb5e78595a"
-"Cartridge.Name" "Hangman Pac-Man 4letter (Hangman Hack)"
+"Cartridge.Name" "Hangman Pac-Man 4letter (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "ccd6ce508eee4b3fca67212833edcd85"
@@ -13677,7 +13965,9 @@
 ""
 
 "Cartridge.MD5" "cd34b3b3ef9e485201e841ba71beb253"
+"Cartridge.Manufacturer" "Bradford W. Mott"
 "Cartridge.Name" "Hit HMOVE At Various Cycles After WSYNC Test (Bradford W. Mott) (1998) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "cd139ae6d09f3665ad09eb79da3f9e49"
@@ -13837,9 +14127,10 @@
 ""
 
 "Cartridge.MD5" "d0a379946ed77b1b126230ca68461333"
-"Cartridge.Name" "Atari Invaders by Ataripoll (Space Invaders Hack)"
-"Cartridge.Note" "Hack of Space Invaders (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Manufacturer" "Ataripoll"
+"Cartridge.Name" "Atari Invaders (Ataripoll) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "cf3c2725f736d4bcb84ad6f42de62a41"
@@ -13908,9 +14199,9 @@
 
 "Cartridge.MD5" "cff9950d4e650094f65f40d179a9882d"
 "Cartridge.Manufacturer" "Paul Slocum"
-"Cartridge.Name" "Mr. Roboto by Paul Slocum (Berzerk Hack)"
-"Cartridge.Note" "Hack of Berzerk (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Mr. Roboto (Paul Slocum) (Hack)"
+"Cartridge.Note" "Hack of Berzerk"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -14026,13 +14317,6 @@
 "Cartridge.Rarity" "New Release"
 ""
 
-"Cartridge.MD5" "d1fc4cf675c9b49fb7deb792f2f3a7a5"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX26120"
-"Cartridge.Name" "Defender II (1984) (Atari) [b1]"
-"Cartridge.Rarity" "Rare"
-""
-
 "Cartridge.MD5" "d1b4075925e8d3031a7616d2f02fdd1f"
 "Cartridge.Name" "Demo Image Series #7 - Two Marios (27-02-2003) (AD)"
 ""
@@ -14114,7 +14398,10 @@
 ""
 
 "Cartridge.MD5" "d2901c34bb6496bb96c7bc78a9e6142a"
-"Cartridge.Name" "Fish Revenge (2003) (Greg Zumwalt) (Space Invaders Hack)"
+"Cartridge.Manufacturer" "Greg Zumwalt"
+"Cartridge.Name" "Fish Revenge (2003) (Greg Zumwalt) (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "d2c4f8a4a98a905a9deef3ba7380ed64"
@@ -14140,7 +14427,9 @@
 ""
 
 "Cartridge.MD5" "dafc3945677ccc322ce323d1e9930beb"
-"Cartridge.Name" "A-Team, The (Atari) (Prototype) (PAL) [!]"
+"Cartridge.Manufacturer" "Atari"
+"Cartridge.Name" "A-Team (Atari) (Prototype) (PAL)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "d573089534ca596e64efef474be7b6bc"
@@ -14206,7 +14495,8 @@
 ""
 
 "Cartridge.MD5" "d36308387241e98f813646f346e7f9f7"
-"Cartridge.Name" "Ghostbuster 2 (PAL) (King Atari)"
+"Cartridge.Manufacturer" "King Atari"
+"Cartridge.Name" "Ghostbuster 2 (King Atari) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -14318,7 +14608,7 @@
 ""
 
 "Cartridge.MD5" "da0fb2a484d0d2d8f79d6e063c94063d"
-"Cartridge.Name" "Air Raiders (1982) (Mattel) [a1][!]"
+"Cartridge.Name" "Air Raiders (1982) (Unknown) [a]"
 ""
 
 "Cartridge.MD5" "d61629bbbe035f45552e31cef7d591b2"
@@ -14330,7 +14620,10 @@
 ""
 
 "Cartridge.MD5" "d57eb282d7540051bc9b5427cf966f03"
-"Cartridge.Name" "Custer's Viagra (Atari Troll) (Custer's Revenge Hack)"
+"Cartridge.Manufacturer" "Atari Troll"
+"Cartridge.Name" "Custer's Viagra (Atari Troll) (Hack)"
+"Cartridge.Note" "Hack of Custer's Revenge"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "32"
 ""
 
@@ -14462,11 +14755,16 @@
 ""
 
 "Cartridge.MD5" "d90205e29bb73a4cdf28ea7662ba0c3c"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Boulderdash Demo (Brighter Version) (09-12-2002) (TJ)"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "d82c8a58098a6b46c5b81c16180354d1"
-"Cartridge.Name" "Climber 5 (Prototype) (30-10-2002) (Dennis Debro)"
+"Cartridge.Manufacturer" "Dennis Debro"
+"Cartridge.Name" "Climber 5 (30-10-2002) (Dennis Debro) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 "Display.YStart" "28"
 "Emulation.HmoveBlanks" "NO"
 ""
@@ -14597,7 +14895,9 @@
 ""
 
 "Cartridge.MD5" "dac38b4dd3da73bb7b2e9d70c61d2b7c"
-"Cartridge.Name" "Hangman Monkey Biglist3 (Hangman Hack)"
+"Cartridge.Name" "Hangman Monkey Biglist3 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "da732c57697ad7d7af414998fa527e75"
@@ -14662,9 +14962,9 @@
 
 "Cartridge.MD5" "daef7d8e5a09981c4aa81573d4dbb380"
 "Cartridge.Manufacturer" "Adam Thornton"
-"Cartridge.Name" "Lord of the Rings - Fellowship of the Ring by Adam Thornton (Dark Mage Hack) (PD)"
-"Cartridge.Note" "Hack of Dark Mage by SuperCharger"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Lord of the Rings (Adam Thornton) (Hack)"
+"Cartridge.Note" "Hack of Dark Mage"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -14675,7 +14975,10 @@
 ""
 
 "Cartridge.MD5" "e2846af3e4d172b251ab77cbdd01761e"
-"Cartridge.Name" "Adventure Plus (2003) (Steve Engelhardt) (Adventure Hack)"
+"Cartridge.Manufacturer" "Steve Engelhardt"
+"Cartridge.Name" "Adventure Plus (2003) (Steve Engelhardt) (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e1a51690792838c5c687da80cd764d78"
@@ -14719,8 +15022,8 @@
 
 "Cartridge.MD5" "dba270850ae997969a18ee0001675821"
 "Cartridge.Manufacturer" "Greg Troutman"
-"Cartridge.Name" "Dark Mage (4K) (Greg Troutman) (PD)"
-"Cartridge.Rarity" "New Release"
+"Cartridge.Name" "Dark Mage (Greg Troutman) (PD) (4K)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -14805,7 +15108,9 @@
 ""
 
 "Cartridge.MD5" "dca941dab5c6f859b71883b13ade9744"
-"Cartridge.Name" "Hangman Pac-Man Biglist2 (Hangman Hack)"
+"Cartridge.Name" "Hangman Pac-Man Biglist2 (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "dc81c4805bf23959fcf2c649700b82bf"
@@ -14898,7 +15203,10 @@
 ""
 
 "Cartridge.MD5" "dda23757407c4e217f64962c87ad0c82"
-"Cartridge.Name" "Nitemare at Sunshine Bowl-a-Rama (beta 2) (Atari Freak 1)"
+"Cartridge.Manufacturer" "Atari Freak 1"
+"Cartridge.Name" "Nitemare at Sunshine Bowl-a-Rama (Atari Freak 1) (Hack) [a]"
+"Cartridge.Note" "Hack of Pac-Man Jr."
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "dd92d6ad50976f881d86b52d38616118"
@@ -14955,8 +15263,9 @@
 
 "Cartridge.MD5" "df40af244a8d68b492bfba9e97dea4d6"
 "Cartridge.Manufacturer" "Franklin Cruz"
-"Cartridge.Name" "Asteroids 2 (Asteroids Hack)"
-"Cartridge.Note" "Hack of Asteroids (Atari)"
+"Cartridge.Name" "Asteroids 2 (Franlin Cruz) (Hack)"
+"Cartridge.Note" "Hack of Asteroids"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -15000,9 +15309,9 @@
 
 "Cartridge.MD5" "df5cc5cccdc140eb7107f5b8adfacda1"
 "Cartridge.Manufacturer" "Cracker Jack Productions"
-"Cartridge.Name" "Lumberman by Cracker Jack Productions (Pac-Man Hack)"
-"Cartridge.Note" "Hack of Pac-Man (1981) (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Lumberman (Cracker Jack) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
@@ -15210,7 +15519,10 @@
 ""
 
 "Cartridge.MD5" "e1d5c8213e82820128fa9c4775f1e166"
-"Cartridge.Name" "Jungle King (2003) (Jess Ragan) (Jungle Hunt Hack)"
+"Cartridge.Manufacturer" "Jess Ragan"
+"Cartridge.Name" "Jungle King (2003) (Jess Ragan) (Hack)"
+"Cartridge.Note" "Hack of Jungle Hunt"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e1e09e2f280e8e142121a377d0dc1b46"
@@ -15325,7 +15637,9 @@
 ""
 
 "Cartridge.MD5" "e923001015bedd7901569f035d9c592c"
-"Cartridge.Name" "Adventure II (Adventure Hack)"
+"Cartridge.Name" "Adventure II (Hack)"
+"Cartridge.Note" "Hack of Adventure"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e5fcc62e1d73706be7b895e887e90f84"
@@ -15338,7 +15652,9 @@
 ""
 
 "Cartridge.MD5" "e39843c56b7a4a08b18fa7949ec3ee6b"
-"Cartridge.Name" "Joshua Invaders (Space Invaders Hack)"
+"Cartridge.Name" "Joshua Invaders (Hack)"
+"Cartridge.Note" "Hack of Space Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e37c8055d70979af354251ebe9f1b7dd"
@@ -15373,6 +15689,7 @@
 ""
 
 "Cartridge.MD5" "e4e9125a8741977583776729359614e1"
+"Cartridge.Manufacturer" "SnailSoft"
 "Cartridge.Name" "Comitoid beta 4 (SnailSoft)"
 ""
 
@@ -15438,7 +15755,10 @@
 ""
 
 "Cartridge.MD5" "e4b12deaafd1dbf5ac31afe4b8e9c233"
-"Cartridge.Name" "Lord of the Rings - Fellowship of the Ring by Adam Thornton (Dark Mage Hack) (PD) [a1]"
+"Cartridge.Manufacturer" "Adam Thornton"
+"Cartridge.Name" "Lord of the Rings (Adam Thornton) (Hack) [a]"
+"Cartridge.Note" "Hack of Dark Mage"
+"Cartridge.Rarity" "Hack"
 "Display.Phosphor" "YES"
 ""
 
@@ -15449,7 +15769,10 @@
 ""
 
 "Cartridge.MD5" "e4d41f2d59a56a9d917038682b8e0b8c"
-"Cartridge.Name" "Kiss Meets Pacman (Cody Pittman) (PD)"
+"Cartridge.Manufacturer" "Cody Pittman"
+"Cartridge.Name" "Kiss Meets Pacman (Cody Pittman) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
@@ -15547,7 +15870,9 @@
 ""
 
 "Cartridge.MD5" "e643aaec9a9e1c8ab7fe1eae90bc77d7"
+"Cartridge.Manufacturer" "Roger Williams"
 "Cartridge.Name" "Asymmetric Playfield (Roger Williams)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "e61210293b14c9c4ecc91705072c6a7e"
@@ -15571,9 +15896,9 @@
 
 "Cartridge.MD5" "e63efdfda9a4003dcd77a854a781a06a"
 "Cartridge.Manufacturer" "Paul Slocum"
-"Cartridge.Name" "Combat Rock (PD) [a1]"
-"Cartridge.Note" "Hack of Combat (1977) (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Combat Rock (PD) (Hack) [a]"
+"Cartridge.Note" "Hack of Combat"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e63a87c231ee9a506f9599aa4ef7dfb9"
@@ -15600,9 +15925,10 @@
 ""
 
 "Cartridge.MD5" "e6e5bb0e4f4350da573023256268313d"
-"Cartridge.Manufacturer" "Ariola / Thomas Jentzsch"
-"Cartridge.Name" "Missile Control (AKA Raketen-Angriff) (Ariola) (NTSC by Thomas Jentzsch)"
-"Cartridge.Rarity" "New Release (Video Format Conversion)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Missile Control (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "e6508b878145187b87b9cded097293e7"
@@ -15686,7 +16012,9 @@
 ""
 
 "Cartridge.MD5" "e8e7b9bdf4bf04930c2bcaa0278ee637"
-"Cartridge.Name" "Boring Taz (Taz Hack)"
+"Cartridge.Name" "Boring Taz (Hack)"
+"Cartridge.Note" "Hack of Taz"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e80a4026d29777c3c7993fbfaee8920f"
@@ -15738,7 +16066,9 @@
 ""
 
 "Cartridge.MD5" "e8f7679359c4f532f5d5e93af7d8a985"
-"Cartridge.Name" "Hangman Invader Original Words (Hangman Hack)"
+"Cartridge.Name" "Hangman Invader Original Words (Hack)"
+"Cartridge.Note" "Hack of Hangman"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e908611d99890733be31733a979c62d8"
@@ -15768,7 +16098,9 @@
 ""
 
 "Cartridge.MD5" "e9be3e8e4a7e73dd63ed4235a3a1a25f"
-"Cartridge.Name" "MMetall (Miniature Golf Hack)"
+"Cartridge.Name" "MMetall (Hack)"
+"Cartridge.Note" "Hack of Miniature Golf"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "e957eb4612d6bd5940d3492dfa749668"
@@ -15861,7 +16193,7 @@
 ""
 
 "Cartridge.MD5" "f066bea7ab0a37b83c83c924a87c5b67"
-"Cartridge.Name" "Air Raiders (1982) (Mattel) [h1]"
+"Cartridge.Name" "Air Raiders (1982) (Unknown)"
 ""
 
 "Cartridge.MD5" "ee6665683ebdb539e89ba620981cb0f6"
@@ -16084,7 +16416,10 @@
 ""
 
 "Cartridge.MD5" "eeb92f3f46df841487d1504f2896d61a"
-"Cartridge.Name" "Corys Adventure (Cody Pittman) (PD)"
+"Cartridge.Manufacturer" "Cody Pittman"
+"Cartridge.Name" "Corys Adventure (Cody Pittman) (Hack)"
+"Cartridge.Note" "Hack of Pac-Man"
+"Cartridge.Rarity" "Hack"
 "Display.YStart" "33"
 ""
 
@@ -16128,11 +16463,15 @@
 ""
 
 "Cartridge.MD5" "ef66af190840871409fe1702d2483554"
-"Cartridge.Name" "DiscoTech (12-02-2003) (Andrew Davie, Paul Slocum And Christopher Tumber)"
+"Cartridge.Manufacturer" "Andrew Davie, Paul Slocum, Christopher Tumber"
+"Cartridge.Name" "DiscoTech (12-02-2003) (Andrew Davie)"
 ""
 
 "Cartridge.MD5" "ef263d40a23483ab339cac44d9515a56"
-"Cartridge.Name" "Fatal Run (NTSC Conversion) (TJ)"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Fatal Run (TJ)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "eed9eaf1a0b6a2b9bc4c8032cb43e3fb"
@@ -16174,9 +16513,9 @@
 
 "Cartridge.MD5" "efa1098c7d091b940c2543abe372f036"
 "Cartridge.Manufacturer" "Scott Stilphen"
-"Cartridge.Name" "E.T. The Extra-Terrestrial by Scott Stilphen (Pits Hack)"
-"Cartridge.Note" "Hack of E.T. The Extra-Terrestrial (Atari)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "E.T. The Extra-Terrestrial (Scott Stilphen) (Hack)"
+"Cartridge.Note" "Hack of E.T. The Extra-Terrestrial"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "ef71e9fb0d8d477226d8d42261fbf0a7"
@@ -16263,7 +16602,9 @@
 ""
 
 "Cartridge.MD5" "f0cacae1d1b79ee92f0dc035f42e0560"
-"Cartridge.Name" "Boring Donkey Kong (Donkey Kong Hack)"
+"Cartridge.Name" "Boring Donkey Kong (Hack)"
+"Cartridge.Note" "Hack of Donkey Kong"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "f0a6e99f5875891246c3dbecbf2d2cea"
@@ -16453,9 +16794,9 @@
 
 "Cartridge.MD5" "f4204fc92d17ed4cb567c40361ad58f1"
 "Cartridge.Manufacturer" "Inky"
-"Cartridge.Name" "Beanie Baby Bash by Inky (Beany Bopper Hack)"
-"Cartridge.Note" "Hack of Beany Bopper (1982) (20th Century Fox)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Beanie Baby Bash (Inky) (Hack)"
+"Cartridge.Note" "Hack of Beany Bopper"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "f34f08e5eb96e500e851a80be3277a56"
@@ -16553,10 +16894,10 @@
 ""
 
 "Cartridge.MD5" "f473f99e47d4026a7a571184922ebf04"
-"Cartridge.Manufacturer" "Philp R. Frey"
-"Cartridge.Name" "Donkey Claus by Philip R. Frey (Donkey Kong Hack)"
-"Cartridge.Note" "Hack of Donkey Kong (Coleco)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Manufacturer" "Philip R. Frey"
+"Cartridge.Name" "Donkey Claus (Philip R. Frey) (Hack)"
+"Cartridge.Note" "Hack of Donkey Kong"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "f48022230bb774a7f22184b48a3385af"
@@ -16661,7 +17002,9 @@
 ""
 
 "Cartridge.MD5" "f6daebc0424fa0f8d9aaf26c86df50f4"
+"Cartridge.Manufacturer" "Brian Watson"
 "Cartridge.Name" "Color Tweaker (V1.0) (2001) (B. Watson)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "f6a282374441012b01714e19699fc62a"
@@ -17041,9 +17384,9 @@
 
 "Cartridge.MD5" "fa7e11a3dbea4365975cd2f094e61d25"
 "Cartridge.Manufacturer" "Tim Snider"
-"Cartridge.Name" "Mystery Science Theater 2600 by Tim Snider (Megamania Hack)"
-"Cartridge.Note" "Hack of Megamania (Activision)"
-"Cartridge.Rarity" "New Release (Hack)"
+"Cartridge.Name" "Mystery Science Theater 2600 (1999) (Tim Snider) (Hack)"
+"Cartridge.Note" "Hack of Megamania"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "fa6fe97a10efb9e74c0b5a816e6e1958"
@@ -17166,7 +17509,9 @@
 ""
 
 "Cartridge.MD5" "fbfebee9c14694719e3eda4854dc42ee"
+"Cartridge.Manufacturer" "Jake Patterson"
 "Cartridge.Name" "Baubles 3 (Jake Patterson) (PD)"
+"Cartridge.Rarity" "Homebrew"
 ""
 
 "Cartridge.MD5" "fc92d74f073a44bc6e46a3b3fa8256a2"
@@ -17208,7 +17553,9 @@
 ""
 
 "Cartridge.MD5" "fcea12625c071ddc49f4e409f4038c60"
+"Cartridge.Manufacturer" "Fabrizio Zavagli"
 "Cartridge.Name" "Balls! (16-09-2002) (Fabrizio Zavagli)"
+"Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
 
@@ -17310,7 +17657,10 @@
 ""
 
 "Cartridge.MD5" "fe9ae625d924b54c9f8a14ac9a0f6c6d"
-"Cartridge.Name" "High Bid! (BG Dodson) (Pepsi Invaders Hack)"
+"Cartridge.Manufacturer" "BG Dodson"
+"Cartridge.Name" "High Bid! (BG Dodson) (Hack)"
+"Cartridge.Note" "Hack of Pepsi Invaders"
+"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "fe870018332a0221eb59fb18b0c6bccc"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.hxx,v 1.18 2008-02-06 13:45:22 stephena Exp $
+// $Id: System.hxx,v 1.19 2008-02-19 12:33:07 stephena Exp $
 //============================================================================
 
 #ifndef SYSTEM_HXX
@@ -21,6 +21,7 @@
 
 class Device;
 class M6502;
+class M6532;
 class TIA;
 class NullDevice;
 
@@ -46,7 +47,7 @@ class NullDevice;
         dynamic code for that page of memory.
 
   @author  Bradford W. Mott
-  @version $Id: System.hxx,v 1.18 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: System.hxx,v 1.19 2008-02-19 12:33:07 stephena Exp $
 */
 class System : public Serializable
 {
@@ -89,6 +90,14 @@ class System : public Serializable
     void attach(M6502* m6502);
 
     /**
+      Attach the specified processor and claim ownership of it.  The
+      processor will be asked to install itself.
+
+      @param m6532 The 6532 microprocessor to attach to the system
+    */
+    void attach(M6532* m6532);
+
+    /**
       Attach the specified TIA device and claim ownership of it.  The device 
       will be asked to install itself.
 
@@ -106,6 +115,17 @@ class System : public Serializable
     M6502& m6502()
     {
       return *myM6502;
+    }
+
+    /**
+      Answer the 6532 processor attached to the system.  If a
+      processor has not been attached calling this function will fail.
+
+      @return The attached 6532 microprocessor
+    */
+    M6532& m6532()
+    {
+      return *myM6532;
     }
 
     /**
@@ -325,6 +345,9 @@ class System : public Serializable
 
     // 6502 processor attached to the system or the null pointer
     M6502* myM6502;
+
+    // 6532 processor attached to the system or the null pointer
+    M6532* myM6532;
 
     // TIA device attached to the system or the null pointer
     TIA* myTIA;

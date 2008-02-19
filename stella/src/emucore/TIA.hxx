@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.44 2008-02-06 13:45:22 stephena Exp $
+// $Id: TIA.hxx,v 1.45 2008-02-19 12:33:05 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -40,7 +40,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.44 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: TIA.hxx,v 1.45 2008-02-19 12:33:05 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -85,6 +85,17 @@ class TIA : public Device , public MediaSource
       @param system The system the device should install itself in
     */
     virtual void install(System& system);
+
+    /**
+      Install TIA in the specified system and device.  Invoked by
+      the system when the TIA is attached to it.  All devices
+      which invoke this method take responsibility for chaining
+      requests back to *this* device.
+
+      @param system The system the device should install itself in
+      @param device The device responsible for this address space
+    */
+    virtual void install(System& system, Device& device);
 
     /**
       Save the current state of this device to the given Serializer.

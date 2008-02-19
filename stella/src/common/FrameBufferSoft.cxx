@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.75 2008-02-06 13:45:19 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.76 2008-02-19 12:33:02 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -701,11 +701,17 @@ void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   // Add a dirty rect to the UI rectangle list
   // TODO - intelligent merging of rectangles, to avoid overlap
   SDL_Rect temp;
+#if 1
   temp.x = myImageDim.x + x * myZoomLevel;
   temp.y = myImageDim.y + y * myZoomLevel;
   temp.w = w * myZoomLevel;
   temp.h = h * myZoomLevel;
-
+#else
+  temp.x = 0;
+  temp.y = 0;
+  temp.w = myScreenDim.w;
+  temp.h = myScreenDim.h;
+#endif
   myRectList->add(&temp);
 
 //  cerr << "addDirtyRect():  "

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.24 2008-02-06 13:45:22 stephena Exp $
+// $Id: System.cxx,v 1.25 2008-02-19 12:33:07 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -21,6 +21,7 @@
 
 #include "Device.hxx"
 #include "M6502.hxx"
+#include "M6532.hxx"
 #include "TIA.hxx"
 #include "System.hxx"
 
@@ -111,6 +112,16 @@ void System::attach(M6502* m6502)
 
   // Ask the processor to install itself
   myM6502->install(*this);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::attach(M6532* m6532)
+{
+  // Remember the processor
+  myM6532 = m6532;
+
+  // Attach it as a normal device
+  attach((Device*) m6532);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

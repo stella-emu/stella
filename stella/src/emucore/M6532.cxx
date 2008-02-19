@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.12 2008-02-06 13:45:21 stephena Exp $
+// $Id: M6532.cxx,v 1.13 2008-02-19 12:33:05 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -75,6 +75,12 @@ void M6532::systemCyclesReset()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::install(System& system)
 {
+  install(system, *this);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::install(System& system, Device& device)
+{
   // Remember which system I'm installed in
   mySystem = &system;
 
@@ -84,27 +90,18 @@ void M6532::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1080 & mask) == 0);
   
-  // All accesses are to this device
+  // All accesses are to the given device
   System::PageAccess access;
-  access.device = this;
+  access.device = &device;
 
   // We're installing in a 2600 system
   for(int address = 0; address < 8192; address += (1 << shift))
   {
     if((address & 0x1080) == 0x0080)
     {
-      if((address & 0x0200) == 0x0000)
-      {
-        access.directPeekBase = &myRAM[address & 0x007f];
-        access.directPokeBase = &myRAM[address & 0x007f];
-        mySystem->setPageAccess(address >> shift, access);
-      }
-      else
-      {
-        access.directPeekBase = 0; 
-        access.directPokeBase = 0;
-        mySystem->setPageAccess(address >> shift, access);
-      }
+      access.directPeekBase = 0; 
+      access.directPokeBase = 0;
+      mySystem->setPageAccess(address >> shift, access);
     }
   }
 }
@@ -112,6 +109,15 @@ void M6532::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 M6532::peek(uInt16 addr)
 {
+  // Access RAM directly.  Originally, accesses to RAM could bypass
+  // this method and its pages could be installed directly into the
+  // system.  However, certain cartridges (notably 4A50) can mirror
+  // the RAM address space, making it necessary to chain accesses.
+  if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
+  {
+    return myRAM[addr & 0x007f];
+  }
+
   switch(addr & 0x07)
   {
     case 0x00:    // Port A I/O Register (Joystick)
@@ -215,7 +221,15 @@ uInt8 M6532::peek(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::poke(uInt16 addr, uInt8 value)
 {
-  if((addr & 0x07) == 0x00)         // Port A I/O Register (Joystick)
+  // Access RAM directly.  Originally, accesses to RAM could bypass
+  // this method and its pages could be installed directly into the
+  // system.  However, certain cartridges (notably 4A50) can mirror
+  // the RAM address space, making it necessary to chain accesses.
+  if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
+  {
+    myRAM[addr & 0x007f] = value;
+  }
+  else if((addr & 0x07) == 0x00)         // Port A I/O Register (Joystick)
   {
     uInt8 a = value & myDDRA;
 
@@ -251,12 +265,13 @@ void M6532::poke(uInt16 addr, uInt8 value)
 	 work on real hardware.
 	 */
     Controller &c = myConsole.controller(Controller::Right);
-	 if(c.type() == Controller::AtariVox) {
+    if(c.type() == Controller::AtariVox)
+    {
       c.write(Controller::One, !(value & 0x01));
       c.write(Controller::Two, !(value & 0x02));
       c.write(Controller::Three, !(value & 0x04));
       c.write(Controller::Four, !(value & 0x08));
-	 }
+    }
 #endif
   }
   else if((addr & 0x07) == 0x02)    // Port B I/O Register (Console switches)

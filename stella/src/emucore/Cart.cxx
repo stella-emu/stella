@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.36 2008-02-06 13:45:20 stephena Exp $
+// $Id: Cart.cxx,v 1.37 2008-02-19 12:33:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -95,7 +95,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else if(type == "3F")
     cartridge = new Cartridge3F(image, size);
   else if(type == "4A50")
-    cartridge = new Cartridge4A50(image);
+    cartridge = new Cartridge4A50(image, size);
   else if(type == "4K")
     cartridge = new Cartridge4K(image);
   else if(type == "AR")

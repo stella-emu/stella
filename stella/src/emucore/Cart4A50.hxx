@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.hxx,v 1.10 2008-02-06 13:45:20 stephena Exp $
+// $Id: Cart4A50.hxx,v 1.11 2008-02-19 12:33:03 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE4A50_HXX
@@ -36,8 +36,8 @@ class System;
   RAM or ROM.  The last 256 byte segment always points to the last 256
   bytes of ROM.
 
-  @author  Stephen Anthony
-  @version $Id: Cart4A50.hxx,v 1.10 2008-02-06 13:45:20 stephena Exp $
+  @author  Stephen Anthony & Eckhard Stolberg
+  @version $Id: Cart4A50.hxx,v 1.11 2008-02-19 12:33:03 stephena Exp $
 */
 class Cartridge4A50 : public Cartridge
 {
@@ -46,8 +46,9 @@ class Cartridge4A50 : public Cartridge
       Create a new cartridge using the specified image
 
       @param image Pointer to the ROM image
+      @param size  The size of the ROM image
     */
-    Cartridge4A50(const uInt8* image);
+    Cartridge4A50(const uInt8* image, uInt32 size);
  
     /**
       Destructor
@@ -147,11 +148,11 @@ class Cartridge4A50 : public Cartridge
     /**
       Check all possible hotspots
     */
-    void checkBankSwitch(uInt16 address, uInt8 value);
+    void checkBankSwitch(uInt16 address);
 
   private:
-    // The 64K ROM image of the cartridge
-    uInt8 myImage[65536];
+    // The 128K ROM image of the cartridge
+    uInt8 myImage[128*1024];
 
     // The 32K of RAM on the cartridge
     uInt8 myRAM[32768];

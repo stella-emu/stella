@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.hxx,v 1.12 2008-02-06 13:45:20 stephena Exp $
+// $Id: Cart3F.hxx,v 1.13 2008-02-19 12:33:03 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE3F_HXX
@@ -35,7 +35,7 @@ class System;
   only used 8K this bankswitching scheme supports up to 512K.
    
   @author  Bradford W. Mott
-  @version $Id: Cart3F.hxx,v 1.12 2008-02-06 13:45:20 stephena Exp $
+  @version $Id: Cart3F.hxx,v 1.13 2008-02-19 12:33:03 stephena Exp $
 */
 class Cartridge3F : public Cartridge
 {
@@ -44,7 +44,7 @@ class Cartridge3F : public Cartridge
       Create a new cartridge using the specified image and size
 
       @param image Pointer to the ROM image
-      @param size The size of the ROM image
+      @param size  The size of the ROM image
     */
     Cartridge3F(const uInt8* image, uInt32 size);
  

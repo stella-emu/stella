@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4K.cxx,v 1.12 2008-02-06 13:45:20 stephena Exp $
+// $Id: Cart4K.cxx,v 1.13 2008-02-19 12:33:03 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -76,7 +76,7 @@ void Cartridge4K::poke(uInt16, uInt8)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::bank(uInt16 bank)
+void Cartridge4K::bank(uInt16)
 {
   // Doesn't support bankswitching
 }

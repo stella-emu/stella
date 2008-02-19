@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.57 2008-02-06 13:45:23 stephena Exp $
+// $Id: Dialog.cxx,v 1.58 2008-02-19 12:33:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -250,6 +250,7 @@ void Dialog::drawDialog()
 
     // Tell the framebuffer this area is dirty
     fb.addDirtyRect(_x, _y, _w, _h);
+//cerr << "dirty: x = " << _x << ", y = " << _y << ", w = " << _w << ", h = " << _h << endl;
 
     _dirty = false;
   }

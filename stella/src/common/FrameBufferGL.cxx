@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.96 2008-02-06 13:45:19 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.97 2008-02-19 12:33:02 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -293,11 +293,6 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
   myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
   myImageDim.y = (myScreenDim.h - myImageDim.h) / 2;
 
-  GLdouble orthoWidth  = (GLdouble)
-      (myImageDim.w / myWidthScaleFactor);
-  GLdouble orthoHeight = (GLdouble)
-      (myImageDim.h / myHeightScaleFactor);
-
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   myRGB[0] );
   SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
@@ -344,7 +339,7 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
 
   p_glMatrixMode(GL_PROJECTION);
   p_glLoadIdentity();
-  p_glOrtho(0.0, orthoWidth, orthoHeight, 0.0, 0.0, 1.0);
+  p_glOrtho(0.0, myImageDim.w, myImageDim.h, 0.0, 0.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
   p_glLoadIdentity();
 
@@ -440,7 +435,7 @@ void FrameBufferGL::postFrameUpdate()
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
-    uInt32 w = myBuffer.width, h = myBuffer.height;
+    uInt32 w = myImageDim.w, h = myImageDim.h;
 
     p_glTexSubImage2D(myBuffer.target, 0, 0, 0,
                       myBuffer.texture_width, myBuffer.texture_height,
@@ -451,6 +446,9 @@ void FrameBufferGL::postFrameUpdate()
       p_glTexCoord2f(myBuffer.tex_coord[2], myBuffer.tex_coord[3]); p_glVertex2i(w, h);
       p_glTexCoord2f(myBuffer.tex_coord[0], myBuffer.tex_coord[3]); p_glVertex2i(0, h);
     p_glEnd();
+
+    // Overlay UI dialog boxes
+
 
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();

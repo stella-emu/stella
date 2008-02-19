@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.hxx,v 1.7 2008-02-06 13:45:22 stephena Exp $
+// $Id: M6532.hxx,v 1.8 2008-02-19 12:33:05 stephena Exp $
 //============================================================================
 
 #ifndef M6532_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   RIOT
 
   @author  Bradford W. Mott
-  @version $Id: M6532.hxx,v 1.7 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: M6532.hxx,v 1.8 2008-02-19 12:33:05 stephena Exp $
 */
 class M6532 : public Device
 {
@@ -68,6 +68,17 @@ class M6532 : public Device
       @param system The system the device should install itself in
     */
     virtual void install(System& system);
+
+    /**
+      Install 6532 in the specified system and device.  Invoked by
+      the system when the 6532 is attached to it.  All devices
+      which invoke this method take responsibility for chaining
+      requests back to *this* device.
+
+      @param system The system the device should install itself in
+      @param device The device responsible for this address space
+    */
+    virtual void install(System& system, Device& device);
 
     /**
       Save the current state of this device to the given Serializer.
