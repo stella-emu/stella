@@ -33,6 +33,7 @@ _build_atarivox=no
 _ranlib=ranlib
 _install=install
 _ar="ar cru"
+_strip=strip
 _mkdir="mkdir -p"
 _echo=printf
 _cat=cat
@@ -383,6 +384,7 @@ psp)
 gp2x)
 	_host_os=gp2x
 	_host_cpu=arm
+	_alt_tools=arm-open2x-linux
 	;;
 *)
 	guessed_host=`$_srcdir/config.guess`
@@ -436,21 +438,32 @@ else
 	compilers="$CXX g++ c++"
 fi
 
+for _tool in $_alt_tools ; do
+	if test -n "$_prefix"; then
+		compilers="$_prefix/bin/$_tool-g++ $compilers"
+	else
+		compilers="$_tool-g++ $compilers"
+	fi
+done
+
 CXX=
 if [ "$_host" = "psp" ] ; then
 	compilers="$CXX psp-g++ psp-c++"
 	CXX="psp-c++"
 fi
-if [ "$_host" = "gp2x" ] ; then
-	compilers="$CXX arm-linux-g++ arm-linux-c++"
-	CXX="arm-linux-c++"
-fi
 
 for compiler in $compilers; do
 	if test_compiler $compiler; then
-	CXX=$compiler
-	echo $CXX
-	break
+		CXX=$compiler
+		echo $CXX
+
+		_toolprefix=`echo arm-open2x-linux-g++ | sed 's/.++//'`
+
+		if test -n "$_toolprefix"; then
+			_strip="${_toolprefix}strip"
+		fi
+
+		break
 	fi
 done
 if test -z $CXX; then
@@ -854,7 +867,7 @@ case $_host_os in
 			_ar="arm-linux-ar cru"
 
 			# GP2X ARM Linux Specific strip
-			GP2X_STRIP="arm-linux-strip"
+			GP2X_STRIP="$_strip"
 			;;
 		*)
 			echo "WARNING: host system not currenty supported"
@@ -960,7 +973,7 @@ fi
 if test $_host_os = "gp2x" ; then
 cat >> config.mak << EOF
 
-GP2X-STRIP := $GP2X_STRIP
+GP2X-STRIP := \$(PREFIX)/bin/$GP2X_STRIP
 EOF
 fi
 

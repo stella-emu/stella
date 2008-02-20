@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.11 2008-02-06 13:45:23 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.12 2008-02-20 00:17:49 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.11 2008-02-06 13:45:23 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.12 2008-02-20 00:17:49 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -54,35 +54,24 @@ class FrameBufferGP2X : public FrameBuffer
       This method is called to initialize software video mode.
       Return false if any operation fails, otherwise return true.
     */
-    virtual bool initSubsystem();
+    virtual bool initSubsystem(VideoMode mode);
 
     /**
       This method is called to query the type of the FrameBuffer.
     */
-    virtual BufferType type() { return kSoftBuffer; }
+    virtual BufferType type() const { return kSoftBuffer; }
 
     /**
       This method is called to provide information about the FrameBuffer.
     */
-    virtual string about();
+    virtual string about() const;
 
     /**
-      This method is called to set the aspect ratio of the screen.
-    */
-    virtual void setAspectRatio();
+      This method is called to change to the given videomode type.
 
-    /**
-      This method is called to change to the given scaler type.
-
-      @param scaler  The scaler to use for rendering the mediasource
+      @param mode  The video mode to use for rendering the mediasource
     */
-    virtual void setScaler(Scaler scaler);
-
-    /**
-      This method is called whenever the screen needs to be recreated.
-      It updates the global screen variable.
-    */
-    virtual bool createScreen();
+    bool setVidMode(VideoMode mode);
 
     /**
       Switches between the filtering options in software mode.
@@ -112,7 +101,7 @@ class FrameBufferGP2X : public FrameBuffer
       @param row  The row we are looking for
       @param data The actual pixel data (in bytes)
     */
-    virtual void scanline(uInt32 row, uInt8* data);
+    virtual void scanline(uInt32 row, uInt8* data) const;
 
     /**
       This method is called to map a given r,g,b triple to the screen palette.
@@ -121,8 +110,17 @@ class FrameBufferGP2X : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b)
+    virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
       { return SDL_MapRGB(myScreen->format, r, g, b); }
+
+    /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param width   The requested width of the new surface.
+      @param height  The requested height of the new surface.
+    */
+    GUI::Surface* createSurface(int width, int height) const;
 
     /**
       This method is called to draw a horizontal line.
@@ -181,13 +179,33 @@ class FrameBufferGP2X : public FrameBuffer
                             Int32 h = 8);
 
     /**
+      This method should be called to draw an SDL surface.
+
+      @param surface The data to draw
+      @param x       The x coordinate
+      @param y       The y coordinate
+    */
+    void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y);
+
+    /**
+      This method should be called to convert and copy a given row of RGB
+      data into an SDL surface.
+
+      @param surface The data to draw
+      @param row     The row of the surface the data should be placed in
+      @param data    The data in uInt8 R/G/B format
+    */
+    void bytesToSurface(GUI::Surface* surface, int row, uInt8* data) const;
+
+
+    /**
       This method translates the given coordinates to their
       unzoomed/unscaled equivalents.
 
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    virtual void translateCoords(Int32* x, Int32* y);
+    virtual void translateCoords(Int32& x, Int32& y) const;
 
     /**
       This method adds a dirty rectangle
@@ -220,6 +238,12 @@ class FrameBufferGP2X : public FrameBuffer
 
     // Pitch (in bytes) of the current screen
     int myPitch;
+
+    // surface pixel format
+    SDL_PixelFormat* myFormat;
+
+    // the height of the display for TV output
+    int myTvHeight;
 };
 
 #endif
