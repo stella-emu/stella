@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.cxx,v 1.12 2008-02-21 23:58:09 stephena Exp $
+// $Id: Cart4A50.cxx,v 1.13 2008-02-22 16:27:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -234,49 +234,45 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
     }
   }
 
-  // Handle hotspots that mirror TIA or RIOT
-  if((address >= 0x80) && (address < 0x100))
+  // Zero-page hotspots for upper page
+  //   0xf4, 0xf6, 0xfc, 0xfe for ROM
+  //   0xf5, 0xf7, 0xfd, 0xff for RAM
+  //   0x74 - 0x7f (0x80 bytes lower)
+  if((address & 0xf75) == 0x74)         // Enable 256B of ROM at 0x1e00 - 0x1eff
   {
-    // Zero-page hotspots for upper page
-    //   0xf4, 0xf6, 0xfc, 0xfe for ROM
-    //   0xf5, 0xf7, 0xfd, 0xff for RAM
-    //   0x74 - 0x7f (0x80 bytes lower)
-    if((address & 0xf75) == 0x74)         // Enable 256B of ROM at 0x1e00 - 0x1eff
-    {
-      myIsRomHigh = true;
-      mySliceHigh = value << 8;
-    }
-    else if((address & 0xf75) == 0x75)    // Enable 256B of RAM at 0x1e00 - 0x1eff
-    {
-      myIsRomHigh = false;
-      mySliceHigh = (value & 0x7f) << 8;
-    }
+    myIsRomHigh = true;
+    mySliceHigh = value << 8;
+  }
+  else if((address & 0xf75) == 0x75)    // Enable 256B of RAM at 0x1e00 - 0x1eff
+  {
+    myIsRomHigh = false;
+    mySliceHigh = (value & 0x7f) << 8;
+  }
 
-    // Zero-page hotspots for lower and middle blocks
-    //   0xf8, 0xf9, 0xfa, 0xfb
-    //   0x78, 0x79, 0x7a, 0x7b (0x80 bytes lower)
-    else if((address & 0xf7c) == 0x78)
+  // Zero-page hotspots for lower and middle blocks
+  //   0xf8, 0xf9, 0xfa, 0xfb
+  //   0x78, 0x79, 0x7a, 0x7b (0x80 bytes lower)
+  else if((address & 0xf7c) == 0x78)
+  {
+    if((value & 0xf0) == 0)           // Enable 2K of ROM at 0x1000 - 0x17ff
     {
-      if((value & 0xf0) == 0)           // Enable 2K of ROM at 0x1000 - 0x17ff
-      {
-        myIsRomLow = true;
-        mySliceLow = (value & 0xf) << 11;
-      }
-      else if((value & 0xf0) == 0x40)   // Enable 2K of RAM at 0x1000 - 0x17ff
-      {
-        myIsRomLow = false;
-        mySliceLow = (value & 0xf) << 11;
-      }
-      else if((value & 0xf0) == 0x90)   // Enable 1.5K of ROM at 0x1800 - 0x1dff
-      {
-        myIsRomMiddle = true;
-        mySliceMiddle = ((value & 0xf) | 0x10) << 11;
-      }
-      else if((value & 0xf0) == 0xc0)   // Enable 1.5K of RAM at 0x1800 - 0x1dff
-      {
-        myIsRomMiddle = false;
-        mySliceMiddle = (value & 0xf) << 11;
-      }
+      myIsRomLow = true;
+      mySliceLow = (value & 0xf) << 11;
+    }
+    else if((value & 0xf0) == 0x40)   // Enable 2K of RAM at 0x1000 - 0x17ff
+    {
+      myIsRomLow = false;
+      mySliceLow = (value & 0xf) << 11;
+    }
+    else if((value & 0xf0) == 0x90)   // Enable 1.5K of ROM at 0x1800 - 0x1dff
+    {
+      myIsRomMiddle = true;
+      mySliceMiddle = ((value & 0xf) | 0x10) << 11;
+    }
+    else if((value & 0xf0) == 0xc0)   // Enable 1.5K of RAM at 0x1800 - 0x1dff
+    {
+      myIsRomMiddle = false;
+      mySliceMiddle = (value & 0xf) << 11;
     }
   }
 }
