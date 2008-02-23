@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4,v 1.5 2008-02-23 16:26:29 stephena Exp $
+// $Id: M6502.m4,v 1.6 2008-02-23 20:06:36 stephena Exp $
 //============================================================================
 
 /** 
   Code and cases to emulate each of the 6502 instruction 
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4,v 1.5 2008-02-23 16:26:29 stephena Exp $
+  @version $Id: M6502.m4,v 1.6 2008-02-23 20:06:36 stephena Exp $
 */
 
 #ifndef NOTSAMEPAGE
@@ -545,8 +545,9 @@ define(M6502_SBC, `{
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));

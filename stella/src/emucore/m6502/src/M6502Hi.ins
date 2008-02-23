@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.ins,v 1.3 2008-02-23 16:26:29 stephena Exp $
+// $Id: M6502Hi.ins,v 1.4 2008-02-23 20:06:37 stephena Exp $
 //============================================================================
 
 /**
@@ -21,7 +21,7 @@
   high compatibility emulation
 
   @author  Bradford W. Mott
-  @version $Id: M6502Hi.ins,v 1.3 2008-02-23 16:26:29 stephena Exp $
+  @version $Id: M6502Hi.ins,v 1.4 2008-02-23 20:06:37 stephena Exp $
 */
 
 #ifndef NOTSAMEPAGE
@@ -114,14 +114,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.ins,v 1.3 2008-02-23 16:26:29 stephena Exp $
+// $Id: M6502Hi.ins,v 1.4 2008-02-23 20:06:37 stephena Exp $
 //============================================================================
 
 /** 
   Code and cases to emulate each of the 6502 instruction 
 
   @author  Bradford W. Mott
-  @version $Id: M6502Hi.ins,v 1.3 2008-02-23 16:26:29 stephena Exp $
+  @version $Id: M6502Hi.ins,v 1.4 2008-02-23 20:06:37 stephena Exp $
 */
 
 #ifndef NOTSAMEPAGE
@@ -3501,8 +3501,9 @@ case 0xeb:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3538,8 +3539,9 @@ case 0xe5:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3578,8 +3580,9 @@ case 0xf5:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3617,8 +3620,9 @@ case 0xed:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3658,8 +3662,9 @@ case 0xfd:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3699,8 +3704,9 @@ case 0xf9:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3741,8 +3747,9 @@ case 0xe1:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
@@ -3783,8 +3790,9 @@ case 0xf1:
     if(difference < 0)
       difference += 100;
 
+    // Z flag calculation ignores D flag
+    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) && 0xff;
     A = ourBCDTable[1][difference];
-    notZ = A;
     N = A & 0x80;
 
     C = (oldA >= (operand + (C ? 0 : 1)));
