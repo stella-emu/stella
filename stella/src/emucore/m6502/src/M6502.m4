@@ -13,14 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4,v 1.4 2005-06-16 01:11:28 stephena Exp $
+// $Id: M6502.m4,v 1.5 2008-02-23 16:26:29 stephena Exp $
 //============================================================================
 
 /** 
   Code and cases to emulate each of the 6502 instruction 
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4,v 1.4 2005-06-16 01:11:28 stephena Exp $
+  @version $Id: M6502.m4,v 1.5 2008-02-23 16:26:29 stephena Exp $
 */
 
 #ifndef NOTSAMEPAGE
@@ -29,15 +29,15 @@
 
 define(M6502_ADC, `{
   uInt8 oldA = A;
+  Int16 nonBCDSum = (Int16)A + (Int16)operand + (C ? 1 : 0);
 
   if(!D)
   {
     Int16 sum = (Int16)((Int8)A) + (Int16)((Int8)operand) + (C ? 1 : 0);
     V = ((sum > 127) || (sum < -128));
 
-    sum = (Int16)A + (Int16)operand + (C ? 1 : 0);
-    A = sum;
-    C = (sum > 0xff);
+    A = nonBCDSum;
+    C = (nonBCDSum > 0xff);
     notZ = A;
     N = A & 0x80;
   }
@@ -45,9 +45,9 @@ define(M6502_ADC, `{
   {
     Int16 sum = ourBCDTable[0][A] + ourBCDTable[0][operand] + (C ? 1 : 0);
 
+    notZ = nonBCDSum & 0xff;  // Z flag calculation ignores D flag
     C = (sum > 99);
     A = ourBCDTable[1][sum & 0xff];
-    notZ = A;
     N = A & 0x80;
     V = ((oldA ^ A) & 0x80) && ((A ^ operand) & 0x80);
   }
