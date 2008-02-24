@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.118 2008-02-06 13:45:19 stephena Exp $
+// $Id: Debugger.cxx,v 1.119 2008-02-24 16:51:52 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -871,14 +871,16 @@ void Debugger::nextFrame(int frames)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::clearAllBreakPoints() {
+void Debugger::clearAllBreakPoints()
+{
   delete breakPoints;
   breakPoints = new PackedBitArray(0x10000);
   mySystem->m6502().setBreakPoints(NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::clearAllTraps() {
+void Debugger::clearAllTraps() 
+{
   delete readTraps;
   delete writeTraps;
   readTraps = new PackedBitArray(0x10000);
@@ -887,23 +889,27 @@ void Debugger::clearAllTraps() {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::peek(int addr) {
+int Debugger::peek(int addr)
+{
   return mySystem->peek(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::dpeek(int addr) {
+int Debugger::dpeek(int addr)
+{
   return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::showWatches() {
-	return myParser->showWatches();
+string Debugger::showWatches()
+{
+  return myParser->showWatches();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addLabel(string label, int address) {
-	equateList->addEquate(label, address);
+void Debugger::addLabel(string label, int address)
+{
+  equateList->addEquate(label, address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -913,8 +919,10 @@ void Debugger::reloadROM()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::setBank(int bank) {
-  if(myConsole->cartridge().bankCount() > 1) {
+bool Debugger::setBank(int bank)
+{
+  if(myConsole->cartridge().bankCount() > 1)
+  {
     myConsole->cartridge().unlockBank();
     myConsole->cartridge().bank(bank);
     myConsole->cartridge().lockBank();
@@ -924,23 +932,27 @@ bool Debugger::setBank(int bank) {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getBank() {
+int Debugger::getBank()
+{
   return myConsole->cartridge().bank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::bankCount() {
+int Debugger::bankCount()
+{
   return myConsole->cartridge().bankCount();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char *Debugger::getCartType() {
+const char *Debugger::getCartType()
+{
   return myConsole->cartridge().name().c_str();
 // FIXME - maybe whatever is calling this should use a string instead
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::patchROM(int addr, int value) {
+bool Debugger::patchROM(int addr, int value)
+{
   return myConsole->cartridge().patch(addr, value);
 }
 
@@ -1043,55 +1055,64 @@ GUI::Rect Debugger::getTabBounds() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addFunction(string name, string definition, Expression *exp, bool builtin) {
-	functions.insert(make_pair(name, exp));
-	if(!builtin) functionDefs.insert(make_pair(name, definition));
+void Debugger::addFunction(string name, string definition,
+                           Expression *exp, bool builtin)
+{
+  functions.insert(make_pair(name, exp));
+  if(!builtin)
+    functionDefs.insert(make_pair(name, definition));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::delFunction(string name) {
-	FunctionMap::iterator iter = functions.find(name);
-	if(iter == functions.end())
-		return;
+void Debugger::delFunction(string name)
+{
+  FunctionMap::iterator iter = functions.find(name);
+  if(iter == functions.end())
+    return;
 
-	functions.erase(name);
-	delete iter->second;
+  functions.erase(name);
+  delete iter->second;
 
-	FunctionDefMap::iterator def_iter = functionDefs.find(name);
-	if(def_iter == functionDefs.end())
-		return;
+  FunctionDefMap::iterator def_iter = functionDefs.find(name);
+  if(def_iter == functionDefs.end())
+    return;
 
-	functionDefs.erase(name);
+  functionDefs.erase(name);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Expression *Debugger::getFunction(string name) {
-	FunctionMap::iterator iter = functions.find(name);
-	if(iter == functions.end())
-		return 0;
-	else
-		return iter->second;
+Expression *Debugger::getFunction(string name)
+{
+  FunctionMap::iterator iter = functions.find(name);
+  if(iter == functions.end())
+    return 0;
+  else
+    return iter->second;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::getFunctionDef(string name) {
-	FunctionDefMap::iterator iter = functionDefs.find(name);
-	if(iter == functionDefs.end())
-		return "";
-	else
-		return iter->second;
+string Debugger::getFunctionDef(string name)
+{
+  FunctionDefMap::iterator iter = functionDefs.find(name);
+  if(iter == functionDefs.end())
+    return "";
+  else
+    return iter->second;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FunctionDefMap Debugger::getFunctionDefMap() {
-	return functionDefs;
+const FunctionDefMap Debugger::getFunctionDefMap()
+{
+  return functionDefs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::builtinHelp() {
+const string Debugger::builtinHelp()
+{
   string result;
 
-  for(int i=0; builtin_functions[i][0] != ""; i++) {
+  for(int i=0; builtin_functions[i][0] != ""; i++)
+  {
     result += builtin_functions[i][0];
     result += " {";
     result += builtin_functions[i][1];
@@ -1114,13 +1135,15 @@ bool Debugger::saveROM(string filename)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::lockState() {
+void Debugger::lockState()
+{
   mySystem->lockDataBus();
   myConsole->cartridge().lockBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::unlockState() {
+void Debugger::unlockState()
+{
   mySystem->unlockDataBus();
   myConsole->cartridge().unlockBank();
 }

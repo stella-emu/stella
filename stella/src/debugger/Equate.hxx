@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Equate.hxx,v 1.7 2008-02-06 13:45:20 stephena Exp $
+// $Id: Equate.hxx,v 1.8 2008-02-24 16:51:52 stephena Exp $
 //============================================================================
 
 #ifndef EQUATE_HXX
@@ -21,24 +21,24 @@
 
 #include "bspf.hxx"
 
-const int EQF_READ = 1;  // Address can be read from
-const int EQF_WRITE = 2; // Address can be written to
-const int EQF_USER = 4;  // Equate is user-defined, not built-in
-
-// When used in a search, EQF_ANY matches any type of label
-const int EQF_ANY = 0;
+enum {
+  EQF_ANY   = 1 << 0,   // matches any type of label
+  EQF_READ  = 1 << 1,   // address can be read from
+  EQF_WRITE = 1 << 2,   // address can be written to
+  EQF_USER  = 1 << 3,   // equate is user-defined, not built-in
 
 // When used in a search, EQF_ROM matches only ROM addresses,
 // and EQF_RAM only matches RAM addresses. Both RAM and ROM addresses
 // are by definition user-defined, since the built-in equates are
 // for the TIA and RIOT only.
-const int EQF_ROM = EQF_READ | EQF_USER;
-const int EQF_RAM = EQF_WRITE | EQF_READ | EQF_USER;
+  EQF_ROM = EQF_READ | EQF_USER,
+  EQF_RAM = EQF_WRITE | EQF_READ | EQF_USER
+};
 
 struct Equate {
-	string label;
-	int address;
-	int flags;
+  string label;
+  int address;
+  int flags;
 };
 
 #endif

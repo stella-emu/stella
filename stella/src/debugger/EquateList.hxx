@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.16 2008-02-06 13:45:20 stephena Exp $
+// $Id: EquateList.hxx,v 1.17 2008-02-24 16:51:52 stephena Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -25,47 +25,47 @@
 #include "Equate.hxx"
 #include "Array.hxx"
 
-using namespace std;
+class EquateList
+{
+  public:
+    EquateList();
+    ~EquateList();
 
-typedef map<int, Equate> addrToLabel;
-typedef map<string, Equate> labelToAddr;
+    const string& getLabel(int addr);
+    const string& getLabel(int addr, int flags);
+    const char *getFormatted(int addr, int places);
+    const char *getFormatted(int addr, int places, int flags);
+    int getAddress(const string& label);
+    int getAddress(const string& label, const int flags);
+    void addEquate(const string& label, int address);
+    // void addEquate(string label, int address, const int flags);
+    bool saveFile(const string& file);
+    string loadFile(const string& file);
+    bool undefine(const string& label);
+    bool undefine(const char *lbl);
+    //string dumpAll();
+    int countCompletions(const char *in);
+    const char *getCompletions();
+    const char *getCompletionPrefix();
 
-typedef Common::Array<Equate> Equates;
+  private:
+    int calcSize();
+    int parse4hex(char *c);
+    string extractLabel(char *c);
+    int extractValue(char *c);
 
-class EquateList {
-	public:
-		EquateList();
-		~EquateList();
-		const string& getLabel(int addr);
-		const string& getLabel(int addr, int flags);
-		const char *getFormatted(int addr, int places);
-		const char *getFormatted(int addr, int places, const int flags);
-		int getAddress(const string& label);
-		int getAddress(const string& label, const int flags);
-		void addEquate(string label, int address);
-		// void addEquate(string label, int address, const int flags);
-		bool saveFile(string file);
-		string loadFile(string file);
-		bool undefine(string& label);
-		bool undefine(const char *lbl);
-		//string dumpAll();
-		int countCompletions(const char *in);
-		const char *getCompletions();
-		const char *getCompletionPrefix();
+  private:
+    typedef map<int, Equate> addrToLabel;
+    typedef map<string, Equate> labelToAddr;
+    typedef Common::Array<Equate> Equates;
 
-	private:
-		int calcSize();
-		int parse4hex(char *c);
-		string extractLabel(char *c);
-		int extractValue(char *c);
-      string completions;
-      string compPrefix;
+    string completions;
+    string compPrefix;
 
-	private:
-		//Equates ourVcsEquates;
-		int currentSize;
-		labelToAddr myFwdMap;
-		addrToLabel myRevMap;
+    //Equates ourVcsEquates;
+    int currentSize;
+    labelToAddr myFwdMap;
+    addrToLabel myRevMap;
 };
 
 #endif

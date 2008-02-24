@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.14 2008-02-06 13:45:20 stephena Exp $
+// $Id: RamWidget.cxx,v 1.15 2008-02-24 16:51:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -153,7 +153,6 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
   // memory location
   int addr, value;
-  const char* buf;
 
   RamDebug& dbg = instance()->debugger().ramDebug();
   switch(cmd)
@@ -173,17 +172,16 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kDGSelectionChangedCmd:
+    {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      buf = instance()->debugger().equates()->getLabel(
-				addr+kRamStart, EQF_RAM).c_str();
-      if(*buf) myLabel->setEditString(buf);
-      else    myLabel->setEditString("");
-
+      myLabel->setEditString(
+        instance()->debugger().equates()->getLabel(addr+kRamStart, EQF_RAM));
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
       break;
+    }
 
     case kRevertCmd:
       for(unsigned int i = 0; i < kRamSize; i++)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.38 2008-02-22 15:29:52 stephena Exp $
+// $Id: Cart.cxx,v 1.39 2008-02-24 16:51:52 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -430,7 +430,7 @@ bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
 {
   // 4A50 carts store address $4A50 at the NMI vector, which
   // in this scheme is always in the last page of ROM at
-  // $1FFA - $1FFB
+  // $1FFA - $1FFB (at least this is true in rev 1 of the format)
   int idx = size - 6;  // $1FFA
   return (image[idx] == 0x50 && image[idx+1] == 0x4A);
 }
