@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.46 2008-02-06 13:45:23 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.47 2008-02-24 20:02:09 estolberg Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -387,12 +387,12 @@ void GameInfoDialog::loadView()
     mySound->setSelectedTag(0);
 
   s = myGameProperties.get(Cartridge_Type);
-  for(i = 0; i < 21; ++i)
+  for(i = 0; i < 23; ++i)
   {
     if(s == ourCartridgeList[i][1])
       break;
   }
-  i = (i == 21) ? 0: i + 1;
+  i = (i == 23) ? 0: i + 1;
   myType->setSelectedTag(i);
 
   // Console properties
@@ -539,7 +539,7 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Cartridge_Sound, s);
 
   tag = myType->getSelectedTag();
-  for(i = 0; i < 21; ++i)
+  for(i = 0; i < 23; ++i)
   {
     if(i == tag-1)
     {
