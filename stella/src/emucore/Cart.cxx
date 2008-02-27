@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.39 2008-02-24 16:51:52 stephena Exp $
+// $Id: Cart.cxx,v 1.40 2008-02-27 14:14:38 estolberg Exp $
 //============================================================================
 
 #include <cassert>
@@ -44,6 +44,7 @@
 #include "CartCV.hxx"
 #include "CartUA.hxx"
 #include "CartSB.hxx"
+#include "CartX07.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
 #include "Settings.hxx"
@@ -136,6 +137,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new Cartridge0840(image);
   else if(type == "SB")
     cartridge = new CartridgeSB(image, size);
+  else if(type == "X07")
+    cartridge = new CartridgeX07(image);
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 
