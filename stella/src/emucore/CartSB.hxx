@@ -135,22 +135,18 @@ class CartridgeSB : public Cartridge
     virtual void poke(uInt16 address, uInt8 value);
 
   private:
-    // Indicates which bank is currently active
-    uInt16 myCurrentBank;
-
     // The 128-256K ROM image and size of the cartridge
     uInt8* myImage;
     uInt32 mySize;
 
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
+
+    // Indicates the last bank
+    uInt16 myLastBank;
+
     // Previous Device's page access
-    System::PageAccess myHotSpotPageAccess0;
-    System::PageAccess myHotSpotPageAccess1;
-    System::PageAccess myHotSpotPageAccess2;
-    System::PageAccess myHotSpotPageAccess3;
-    System::PageAccess myHotSpotPageAccess4;
-    System::PageAccess myHotSpotPageAccess5;
-    System::PageAccess myHotSpotPageAccess6;
-    System::PageAccess myHotSpotPageAccess7;
+    System::PageAccess myHotSpotPageAccess[8];
 };
 
 #endif

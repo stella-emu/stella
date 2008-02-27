@@ -23,16 +23,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeSB::CartridgeSB(const uInt8* image, uInt32 size)
-  : mySize(size)
+  : mySize(size),
+    myLastBank((mySize>>12)-1)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
 
   // Copy the ROM image into my buffer
   for(uInt32 addr = 0; addr < mySize; ++addr)
-  {
     myImage[addr] = image[addr];
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,8 +43,8 @@ CartridgeSB::~CartridgeSB()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeSB::reset()
 {
-  // Upon reset we switch to bank 0
-  bank(0);
+  // Upon reset we switch to the last bank
+  bank(myLastBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -60,19 +59,17 @@ void CartridgeSB::install(System& system)
 
   // Get the page accessing methods for the hot spots since they overlap
   // areas within the TIA we'll need to forward requests to the TIA
-
-  myHotSpotPageAccess0 = mySystem->getPageAccess(0x0800 >> shift);
-  myHotSpotPageAccess1 = mySystem->getPageAccess(0x0900 >> shift);
-  myHotSpotPageAccess2 = mySystem->getPageAccess(0x0A00 >> shift);
-  myHotSpotPageAccess3 = mySystem->getPageAccess(0x0B00 >> shift);
-  myHotSpotPageAccess4 = mySystem->getPageAccess(0x0C00 >> shift);
-  myHotSpotPageAccess5 = mySystem->getPageAccess(0x0D00 >> shift);
-  myHotSpotPageAccess6 = mySystem->getPageAccess(0x0E00 >> shift);
-  myHotSpotPageAccess7 = mySystem->getPageAccess(0x0F00 >> shift);
+  myHotSpotPageAccess[0] = mySystem->getPageAccess(0x0800 >> shift);
+  myHotSpotPageAccess[1] = mySystem->getPageAccess(0x0900 >> shift);
+  myHotSpotPageAccess[2] = mySystem->getPageAccess(0x0A00 >> shift);
+  myHotSpotPageAccess[3] = mySystem->getPageAccess(0x0B00 >> shift);
+  myHotSpotPageAccess[4] = mySystem->getPageAccess(0x0C00 >> shift);
+  myHotSpotPageAccess[5] = mySystem->getPageAccess(0x0D00 >> shift);
+  myHotSpotPageAccess[6] = mySystem->getPageAccess(0x0E00 >> shift);
+  myHotSpotPageAccess[7] = mySystem->getPageAccess(0x0F00 >> shift);
 
   // Set the page accessing methods for the hot spots
   System::PageAccess access;
-
   for(uInt32 i = 0x0800; i < 0x0FFF; i += (1 << shift))
   {
     access.directPeekBase = 0;
@@ -81,48 +78,25 @@ void CartridgeSB::install(System& system)
     mySystem->setPageAccess(i >> shift, access);
   }
 
-  // Install pages for bank 0
-  bank(0);
+  // Install pages for startup bank
+  bank(myLastBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeSB::peek(uInt16 address)
 {
   address = address & (0x17FF+(mySize>>12));
+
   // Switch banks if necessary
-  if ((address & 0x1800) == 0x0800) bank(address & ((mySize>>12)-1));
+  if ((address & 0x1800) == 0x0800)
+    bank(address & myLastBank);
 
   if(!(address & 0x1000))
   {
-    switch (address & 0x0F00)
-    {
-      case 0x0800:
-        return myHotSpotPageAccess0.device->peek(address);
-	break;
-      case 0x0900:
-        return myHotSpotPageAccess1.device->peek(address);
-	break;
-      case 0x0A00:
-        return myHotSpotPageAccess2.device->peek(address);
-	break;
-      case 0x0B00:
-        return myHotSpotPageAccess3.device->peek(address);
-	break;
-      case 0x0C00:
-        return myHotSpotPageAccess4.device->peek(address);
-	break;
-      case 0x0D00:
-        return myHotSpotPageAccess5.device->peek(address);
-	break;
-      case 0x0E00:
-        return myHotSpotPageAccess6.device->peek(address);
-	break;
-      case 0x0F00:
-        return myHotSpotPageAccess7.device->peek(address);
-	break;
-      default:
-        break;
-    }
+    // Because of the way we've set up accessing above, we can only
+    // get here when the addresses are from 0x800 - 0xFFF
+    int hotspot = ((address & 0x0F00) >> 8) - 8;
+    return myHotSpotPageAccess[hotspot].device->peek(address);
   }
 
   return 0;
@@ -132,41 +106,17 @@ uInt8 CartridgeSB::peek(uInt16 address)
 void CartridgeSB::poke(uInt16 address, uInt8 value)
 {
   address = address & (0x17FF+(mySize>>12));
+
   // Switch banks if necessary
-  if ((address & 0x1800) == 0x0800) bank(address & ((mySize>>12)-1));
+  if((address & 0x1800) == 0x0800)
+    bank(address & myLastBank);
 
   if(!(address & 0x1000))
   {
-
-    switch (address & 0x0F00)
-    {
-      case 0x0800:
-        return myHotSpotPageAccess0.device->poke(address, value);
-	break;
-      case 0x0900:
-        return myHotSpotPageAccess1.device->poke(address, value);
-	break;
-      case 0x0A00:
-        return myHotSpotPageAccess2.device->poke(address, value);
-	break;
-      case 0x0B00:
-        return myHotSpotPageAccess3.device->poke(address, value);
-	break;
-      case 0x0C00:
-        return myHotSpotPageAccess4.device->poke(address, value);
-	break;
-      case 0x0D00:
-        return myHotSpotPageAccess5.device->poke(address, value);
-	break;
-      case 0x0E00:
-        return myHotSpotPageAccess6.device->poke(address, value);
-	break;
-      case 0x0F00:
-        return myHotSpotPageAccess7.device->poke(address, value);
-	break;
-      default:
-        break;
-    }
+    // Because of the way we've set up accessing above, we can only
+    // get here when the addresses are from 0x800 - 0xFFF
+    int hotspot = ((address & 0x0F00) >> 8) - 8;
+    myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
 }
 
@@ -179,7 +129,6 @@ void CartridgeSB::bank(uInt16 bank)
   myCurrentBank = bank;
   uInt32 offset = myCurrentBank * 4096;
   uInt16 shift = mySystem->pageShift();
-//  uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
