@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.27 2008-02-06 13:45:23 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.28 2008-02-27 14:16:52 estolberg Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,7 +107,7 @@ class GameInfoDialog : public Dialog, public CommandSender
     bool myDefaultsSelected;
 
     /** Holds static strings for Cartridge type */
-    static const char* ourCartridgeList[23][2];
+    static const char* ourCartridgeList[24][2];
 
     /** Holds static strings for Controller type */
     static const char* ourControllerList[5][2];

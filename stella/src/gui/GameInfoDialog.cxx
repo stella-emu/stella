@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.47 2008-02-24 20:02:09 estolberg Exp $
+// $Id: GameInfoDialog.cxx,v 1.48 2008-02-27 14:16:52 estolberg Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -119,7 +119,7 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("SB (128-256k SUPERbanking)");
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, "", 0, 0);
-  for(i = 0; i < 23; ++i)
+  for(i = 0; i < 24; ++i)
     myType->appendEntry(ourCartridgeList[i][0], i+1);
   wid.push_back(myType);
 
@@ -387,12 +387,12 @@ void GameInfoDialog::loadView()
     mySound->setSelectedTag(0);
 
   s = myGameProperties.get(Cartridge_Type);
-  for(i = 0; i < 23; ++i)
+  for(i = 0; i < 24; ++i)
   {
     if(s == ourCartridgeList[i][1])
       break;
   }
-  i = (i == 23) ? 0: i + 1;
+  i = (i == 24) ? 0: i + 1;
   myType->setSelectedTag(i);
 
   // Console properties
@@ -539,7 +539,7 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Cartridge_Sound, s);
 
   tag = myType->getSelectedTag();
-  for(i = 0; i < 23; ++i)
+  for(i = 0; i < 24; ++i)
   {
     if(i == tag-1)
     {
@@ -681,7 +681,7 @@ const char* GameInfoDialog::ourControllerList[5][2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* GameInfoDialog::ourCartridgeList[23][2] = {
+const char* GameInfoDialog::ourCartridgeList[24][2] = {
   { "Auto-detect",       "AUTO-DETECT"   },
   { "2K (2K Atari)",              "2K"   },
   { "3E (32K Tigervision)",       "3E"   },
@@ -704,5 +704,6 @@ const char* GameInfoDialog::ourCartridgeList[23][2] = {
   { "MB (Dynacom Megaboy)",       "MB"   },
   { "MC (C. Wilkson Megacart)",   "MC"   },
   { "SB (128-256k SUPERbanking)", "SB"   },
-  { "UA (8K UA Ltd.)",            "UA"   }
+  { "UA (8K UA Ltd.)",            "UA"   },
+  { "X07 (64K AtariAge)",         "X07"  }
 };
