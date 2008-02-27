@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.28 2008-02-27 14:16:52 estolberg Exp $
+// $Id: GameInfoDialog.hxx,v 1.29 2008-02-27 20:13:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -94,7 +94,9 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     enum {
       kPhosphorChanged = 'PPch',
-      kPPBlendChanged  = 'PBch'
+      kPPBlendChanged  = 'PBch',
+      kNumCartTypes       = 25,
+      kNumControllerTypes = 5
     };
 
     /** Game properties for currently loaded ROM */
@@ -107,10 +109,10 @@ class GameInfoDialog : public Dialog, public CommandSender
     bool myDefaultsSelected;
 
     /** Holds static strings for Cartridge type */
-    static const char* ourCartridgeList[24][2];
+    static const char* ourCartridgeList[kNumCartTypes][2];
 
     /** Holds static strings for Controller type */
-    static const char* ourControllerList[5][2];
+    static const char* ourControllerList[kNumControllerTypes][2];
 };
 
 #endif

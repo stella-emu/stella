@@ -19,12 +19,9 @@
 #ifndef CARTRIDGE0840_HXX
 #define CARTRIDGE0840_HXX
 
-class System;
-class Serializer;
-class Deserializer;
-
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "System.hxx"
 
 /**
   Cartridge class used for 0840 "Econobanking" 8K bankswitched games.  There
@@ -135,6 +132,16 @@ class Cartridge0840 : public Cartridge
       @param value The value to be stored at the address
     */
     virtual void poke(uInt16 address, uInt8 value);
+
+  private:
+    // The 8K ROM image of the cartridge
+    uInt8 myImage[8192];
+
+    // Indicates which bank is currently active
+    uInt16 myCurrentBank;
+   
+    // Previous Device's page access
+    System::PageAccess myHotSpotPageAccess[8];
 };
 
 #endif

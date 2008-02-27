@@ -19,10 +19,9 @@
 #ifndef CARTRIDGESB_HXX
 #define CARTRIDGESB_HXX
 
-class System;
-
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "System.hxx"
 
 /**
   Cartridge class used for SB "SUPERbanking" 128k-256k bankswitched games.

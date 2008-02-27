@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.40 2008-02-27 14:14:38 estolberg Exp $
+// $Id: Cart.cxx,v 1.41 2008-02-27 20:13:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -215,6 +215,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "UA";
     else if(isProbablyFE(image, size))
       type = "FE";
+    else if(isProbably0840(image, size))
+      type = "0840";
     else
       type = "F8";
   }
@@ -440,6 +442,13 @@ bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablySB(const uInt8* image, uInt32 size)
+{
+  // TODO - add autodetection for this type
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
 {
   // TODO - add autodetection for this type
   return false;

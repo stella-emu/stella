@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.22 2008-02-06 13:45:20 stephena Exp $
+// $Id: Cart.hxx,v 1.23 2008-02-27 20:13:55 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -34,7 +34,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.22 2008-02-06 13:45:20 stephena Exp $
+  @version $Id: Cart.hxx,v 1.23 2008-02-27 20:13:55 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -211,6 +211,11 @@ class Cartridge : public Device
       Returns true if the image is probably a SB bankswitching cartridge
     */
     static bool isProbablySB(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably a 0840 bankswitching cartridge
+    */
+    static bool isProbably0840(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably a CV bankswitching cartridge
