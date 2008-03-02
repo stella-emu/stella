@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.21 2008-02-06 13:45:24 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.22 2008-03-02 20:48:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -280,7 +280,6 @@ void ScrollBarWidget::drawWidget(bool hilite)
     fb.hLine(_x + 2, y + 2, _x + _w - 3, kWidColor);
   }
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int ScrollBarWidget::_WHEEL_LINES = 4;

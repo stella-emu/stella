@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.27 2008-02-06 13:45:23 stephena Exp $
+// $Id: InputDialog.cxx,v 1.28 2008-03-02 20:48:51 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -21,6 +21,7 @@
 #include "Array.hxx"
 #include "EventMappingWidget.hxx"
 #include "OSystem.hxx"
+#include "Paddles.hxx"
 #include "PopUpWidget.hxx"
 #include "Settings.hxx"
 #include "TabWidget.hxx"
@@ -139,66 +140,17 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleMode);
 
-  // Add 'paddle threshhold' setting
+  // Add paddle speed
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleThreshold = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                       "Paddle threshold: ",
-                                       lwidth, kPaddleThreshChanged);
-  myPaddleThreshold->setMinValue(400); myPaddleThreshold->setMaxValue(800);
-  xpos += myPaddleThreshold->getWidth() + 5;
-  myPaddleThresholdLabel = new StaticTextWidget(myTab, font, xpos, ypos+1,
-                                                24, lineHeight,
-                                                "", kTextAlignLeft);
-  myPaddleThresholdLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleThreshold);
-
-  // Add paddle 0 speed
-  xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[0] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 0 speed: ",
-                                      lwidth, kP0SpeedID);
-  myPaddleSpeed[0]->setMinValue(1); myPaddleSpeed[0]->setMaxValue(100);
-  xpos += myPaddleSpeed[0]->getWidth() + 5;
-  myPaddleLabel[0] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                          "", kTextAlignLeft);
-  myPaddleLabel[0]->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSpeed[0]);
-
-  // Add paddle 1 speed
-  xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[1] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 1 speed: ",
-                                      lwidth, kP1SpeedID);
-  myPaddleSpeed[1]->setMinValue(1); myPaddleSpeed[1]->setMaxValue(100);
-  xpos += myPaddleSpeed[1]->getWidth() + 5;
-  myPaddleLabel[1] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                          "", kTextAlignLeft);
-  myPaddleLabel[1]->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSpeed[1]);
-
-  // Add paddle 2 speed
-  xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[2] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 2 speed: ",
-                                      lwidth, kP2SpeedID);
-  myPaddleSpeed[2]->setMinValue(1); myPaddleSpeed[2]->setMaxValue(100);
-  xpos += myPaddleSpeed[2]->getWidth() + 5;
-  myPaddleLabel[2] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", kTextAlignLeft);
-  myPaddleLabel[2]->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSpeed[2]);
-
-  // Add paddle 3 speed
-  xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed[3] = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                      "Paddle 3 speed: ",
-                                      lwidth, kP3SpeedID);
-  myPaddleSpeed[3]->setMinValue(1); myPaddleSpeed[3]->setMaxValue(100);
-  xpos += myPaddleSpeed[3]->getWidth() + 5;
-  myPaddleLabel[3] = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                        "", kTextAlignLeft);
-  myPaddleLabel[3]->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSpeed[3]);
+  myPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                   "Paddle speed: ",
+                                   lwidth, kPSpeedChanged);
+  myPaddleSpeed->setMinValue(1); myPaddleSpeed->setMaxValue(15);
+  xpos += myPaddleSpeed->getWidth() + 5;
+  myPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                       "", kTextAlignLeft);
+  myPaddleLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSpeed);
 
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
@@ -219,19 +171,9 @@ void InputDialog::loadConfig()
   myPaddleMode->setValue(instance()->settings().getInt("paddle"));
   myPaddleModeLabel->setLabel(instance()->settings().getString("paddle"));
 
-  // Paddle threshold
-  myPaddleThreshold->setValue(instance()->settings().getInt("pthresh"));
-  myPaddleThresholdLabel->setLabel(instance()->settings().getString("pthresh"));
-
-  // Paddle speed settings
-  myPaddleSpeed[0]->setValue(instance()->settings().getInt("p0speed"));
-  myPaddleLabel[0]->setLabel(instance()->settings().getString("p0speed"));
-  myPaddleSpeed[1]->setValue(instance()->settings().getInt("p1speed"));
-  myPaddleLabel[1]->setLabel(instance()->settings().getString("p1speed"));
-  myPaddleSpeed[2]->setValue(instance()->settings().getInt("p2speed"));
-  myPaddleLabel[2]->setLabel(instance()->settings().getString("p2speed"));
-  myPaddleSpeed[3]->setValue(instance()->settings().getInt("p3speed"));
-  myPaddleLabel[3]->setLabel(instance()->settings().getString("p3speed"));
+  // Paddle speed
+  myPaddleSpeed->setValue(instance()->settings().getInt("pspeed"));
+  myPaddleLabel->setLabel(instance()->settings().getString("pspeed"));
 
   myTab->loadConfig();
 }
@@ -248,13 +190,10 @@ void InputDialog::saveConfig()
   int mode = myPaddleMode->getValue();
   instance()->eventHandler().setPaddleMode(mode);
 
-  // Paddle threshold
-  int threshold = myPaddleThreshold->getValue();
-  instance()->eventHandler().setPaddleThreshold(threshold);
-
-  // Paddle speed settings
-  for(int i = 0; i < 4; ++i)
-    instance()->eventHandler().setPaddleSpeed(i, myPaddleSpeed[i]->getValue());
+  // Paddle speed
+  int speed = myPaddleSpeed->getValue();
+  instance()->settings().setInt("pspeed", speed);
+  Paddles::setDigitalSpeed(speed);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -325,15 +264,8 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       myPaddleModeLabel->setValue(myPaddleMode->getValue());
       break;
 
-    case kPaddleThreshChanged:
-      myPaddleThresholdLabel->setValue(myPaddleThreshold->getValue());
-      break;
-
-    case kP0SpeedID:
-    case kP1SpeedID:
-    case kP2SpeedID:
-    case kP3SpeedID:
-      myPaddleLabel[cmd-100]->setValue(myPaddleSpeed[cmd-100]->getValue());
+    case kPSpeedChanged:
+      myPaddleLabel->setValue(myPaddleSpeed->getValue());
       break;
 
     default:

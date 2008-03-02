@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.11 2008-03-02 19:20:50 stephena Exp $
+// $Id: Paddles.hxx,v 1.12 2008-03-02 20:48:51 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.11 2008-03-02 19:20:50 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.12 2008-03-02 20:48:51 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -53,6 +53,14 @@ class Paddles : public Controller
     */
     virtual void update();
 
+    /**
+      Sets the speed for digital emulation of paddle movement.
+      This is only used for *digital* events (ie, buttons or keys
+      generating paddle movement events); axis events from joysticks,
+      Stelladaptors or the mouse are not modified.
+    */
+    static void setDigitalSpeed(int speed) { _PADDLE_SPEED = speed; }
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
@@ -71,6 +79,8 @@ class Paddles : public Controller
     int myLeftMotion[2];
 
     int myMouseBaseX, myMouseBaseY;
+
+    static int _PADDLE_SPEED;
 };
 
 #endif

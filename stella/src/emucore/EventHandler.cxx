@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.215 2008-03-02 19:20:50 stephena Exp $
+// $Id: EventHandler.cxx,v 1.216 2008-03-02 20:48:51 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -31,6 +31,7 @@
 #include "Launcher.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
+#include "Paddles.hxx"
 #include "PropsSet.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
@@ -66,8 +67,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myUseLauncherFlag(false),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
-    myPaddleMode(0),
-    myPaddleThreshold(0)
+    myPaddleMode(0)
 {
   // Create the event object which will be used for this handler
   myEvent = new Event();
@@ -145,8 +145,9 @@ void EventHandler::initialize()
   setActionMappings(kMenuMode);
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
+
   setPaddleMode(myOSystem->settings().getInt("paddle"), false);
-  setPaddleThreshold(myOSystem->settings().getInt("pthresh"));
+  Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem->settings().getInt("mwheel"));
@@ -163,12 +164,6 @@ void EventHandler::reset(State state)
 
   if(myState == S_LAUNCHER)
     myUseLauncherFlag = true;
-
-  // FIXME - this should go directly into the Paddles class
-  setPaddleSpeed(0, myOSystem->settings().getInt("p0speed"));
-  setPaddleSpeed(1, myOSystem->settings().getInt("p1speed"));
-  setPaddleSpeed(2, myOSystem->settings().getInt("p2speed"));
-  setPaddleSpeed(3, myOSystem->settings().getInt("p3speed"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1866,30 +1861,6 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
   }
 
   myOSystem->settings().setInt("paddle", myPaddleMode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setPaddleSpeed(int num, int speed)
-{
-/*  FIXME - move functionality to Paddles class
-  if(num < 0 || num > 3 || speed < 0 || speed > 100)
-    return;
-
-  myPaddle[num].amt = (int) (20000 + speed/100.0 * 50000);
-  ostringstream buf;
-  buf << "p" << num << "speed";
-  myOSystem->settings().setInt(buf.str(), speed);
-*/
-}
-
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setPaddleThreshold(int thresh)
-{
-/*  FIXME - move functionality to Paddles class
-  myPaddleThreshold = thresh;
-  myOSystem->settings().setInt("pthresh", thresh);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,10 +13,9 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.12 2008-03-02 19:20:50 stephena Exp $
+// $Id: Paddles.cxx,v 1.13 2008-03-02 20:48:51 stephena Exp $
 //============================================================================
 
-#define PADDLE_SENSITIVITY 6
 #define TRIGMAX 240
 #define TRIGMIN 1
 
@@ -148,12 +147,12 @@ void Paddles::update()
   if(myKeyRepeat0)
   {
     myPaddleRepeat0++;
-    if(myPaddleRepeat0 > PADDLE_SENSITIVITY)  myPaddleRepeat0 = 2;
+    if(myPaddleRepeat0 > _PADDLE_SPEED)  myPaddleRepeat0 = 2;
   }
   if(myKeyRepeat1)
   {
     myPaddleRepeat1++;
-    if(myPaddleRepeat1 > PADDLE_SENSITIVITY)  myPaddleRepeat1 = 2;
+    if(myPaddleRepeat1 > _PADDLE_SPEED)  myPaddleRepeat1 = 2;
   }
 
   myKeyRepeat0 = 0;
@@ -162,26 +161,26 @@ void Paddles::update()
   if(myEvent.get(myP0DecEvent1) || myEvent.get(myP0DecEvent2))
   {
     myKeyRepeat0 = 1;
-    if(myCharge[0] > (myPaddleRepeat0 >> 1))
-      myCharge[0] -= (myPaddleRepeat0 >> 1);
+    if(myCharge[0] > myPaddleRepeat0)
+      myCharge[0] -= myPaddleRepeat0;
   }
   if(myEvent.get(myP0IncEvent1) || myEvent.get(myP0IncEvent2))
   {
     myKeyRepeat0 = 1;
-    if((myCharge[0] + (myPaddleRepeat0 >> 1)) < TRIGMAX)
-      myCharge[0] += (myPaddleRepeat0 >> 1);
+    if((myCharge[0] + myPaddleRepeat0) < TRIGMAX)
+      myCharge[0] += myPaddleRepeat0;
   }
   if(myEvent.get(myP1DecEvent1) || myEvent.get(myP1DecEvent2))
   {
     myKeyRepeat1 = 1;
-    if(myCharge[1] > (myPaddleRepeat1 >> 1))
-      myCharge[1] -= (myPaddleRepeat1 >> 1);
+    if(myCharge[1] > myPaddleRepeat1)
+      myCharge[1] -= myPaddleRepeat1;
   }
   if(myEvent.get(myP1IncEvent1) || myEvent.get(myP1IncEvent2))
   {
     myKeyRepeat1 = 1;
-    if((myCharge[1] + (myPaddleRepeat1 >> 1)) < TRIGMAX)
-      myCharge[1] += (myPaddleRepeat1 >> 1);
+    if((myCharge[1] + myPaddleRepeat1) < TRIGMAX)
+      myCharge[1] += myPaddleRepeat1;
   }
 
   // Mouse events
@@ -304,3 +303,6 @@ void Paddles::update()
   myAnalogPinValue[Five] = (Int32)(1000000 * (myCharge[1] / 255.0));
   myAnalogPinValue[Nine] = (Int32)(1000000 * (myCharge[0] / 255.0));
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Paddles::_PADDLE_SPEED = 6;

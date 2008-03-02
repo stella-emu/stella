@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.107 2008-03-02 19:20:50 stephena Exp $
+// $Id: EventHandler.hxx,v 1.108 2008-03-02 20:48:51 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.107 2008-03-02 19:20:50 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.108 2008-03-02 20:48:51 stephena Exp $
 */
 class EventHandler
 {
@@ -197,23 +197,6 @@ class EventHandler
       @param showmessage  Print a message to the framebuffer
     */
     void setPaddleMode(int num, bool showmessage = false);
-
-    /**
-      Sets the speed of the given paddle
-
-      @param num    The paddle number (0-3)
-      @param speed  The speed of paddle movement for the given paddle
-    */
-    void setPaddleSpeed(int num, int speed);
-
-    /**
-      Sets the amount by which paddle jitter is detected.  Quick movements
-      of less than this amount constitute jitter, and do not generate
-      paddle events.
-
-      @param thresh  The threshold to use for jitter detection
-    */
-    void setPaddleThreshold(int thresh);
 
     inline bool kbdAlt(int mod)
     {
@@ -525,9 +508,6 @@ class EventHandler
 
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;
-
-    // Indicates the amount by which we consider a paddle to be jittering
-    int myPaddleThreshold;
 
     // Type of device on each controller port (based on ROM properties)
     Controller::Type myController[2];

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.130 2008-02-06 13:45:22 stephena Exp $
+// $Id: Settings.cxx,v 1.131 2008-03-02 20:48:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -52,7 +52,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("fullscreen", "false");
   setInternal("fullres", "");
   setInternal("center", "true");
-  setInternal("grabmouse", "false");
+  setInternal("grabmouse", "true");
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
 
@@ -70,13 +70,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("joyaxismap", "");
   setInternal("joyhatmap", "");
   setInternal("paddle", "0");
+  setInternal("pspeed", "6");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
-  setInternal("p0speed", "50");
-  setInternal("p1speed", "50");
-  setInternal("p2speed", "50");
-  setInternal("p3speed", "50");
-  setInternal("pthresh", "600");
 
   // Snapshot options
   setInternal("ssdir", string(".") + BSPF_PATH_SEPARATOR);
@@ -253,11 +249,11 @@ void Settings::validate()
   if(i < 0 || i > 3)
     setInternal("paddle", "0");
 
-  i = getInt("pthresh");
-  if(i < 400)
-    setInternal("pthresh", "400");
-  else if(i > 800)
-    setInternal("pthresh", "800");
+  i = getInt("pspeed");
+  if(i < 1)
+    setInternal("pspeed", "1");
+  else if(i > 15)
+    setInternal("pspeed", "15");
 
   s = getString("palette");
   if(s != "standard" && s != "z26" && s != "user")
@@ -316,13 +312,9 @@ void Settings::usage()
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
     << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
+    << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-    << "  -p0speed      <number>       Speed of emulated mouse movement for paddle 0 (0-100)\n"
-    << "  -p1speed      <number>       Speed of emulated mouse movement for paddle 1 (0-100)\n"
-    << "  -p2speed      <number>       Speed of emulated mouse movement for paddle 2 (0-100)\n"
-    << "  -p3speed      <number>       Speed of emulated mouse movement for paddle 3 (0-100)\n"
-    << "  -pthresh      <number>       Set threshold for eliminating paddle jitter\n"
     << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
