@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.hxx,v 1.9 2008-02-06 13:45:20 stephena Exp $
+// $Id: Booster.hxx,v 1.10 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #ifndef BOOSTERGRIP_HXX
@@ -29,7 +29,7 @@
   on it (a booster and a trigger).
 
   @author  Bradford W. Mott
-  @version $Id: Booster.hxx,v 1.9 2008-02-06 13:45:20 stephena Exp $
+  @version $Id: Booster.hxx,v 1.10 2008-03-02 19:20:50 stephena Exp $
 */
 class BoosterGrip : public Controller
 {
@@ -57,8 +57,9 @@ class BoosterGrip : public Controller
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent, myFireEvent;
-    Event::Type myBoosterEvent, myTriggerEvent;
+    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
+                myFireEvent, myBoosterEvent, myTriggerEvent,
+                myXAxisValue, myYAxisValue;
 };
 
 #endif

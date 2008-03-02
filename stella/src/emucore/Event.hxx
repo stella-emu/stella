@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.32 2008-02-06 13:45:21 stephena Exp $
+// $Id: Event.hxx,v 1.33 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.32 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: Event.hxx,v 1.33 2008-03-02 19:20:50 stephena Exp $
 */
 class Event
 {
@@ -44,20 +44,14 @@ class Event
       ConsoleSelect, ConsoleReset,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
-      JoystickZeroFire1, JoystickZeroFire2, JoystickZeroFire3,
+        JoystickZeroFire1, JoystickZeroFire2, JoystickZeroFire3,
       JoystickOneUp, JoystickOneDown, JoystickOneLeft, JoystickOneRight,
-      JoystickOneFire1, JoystickOneFire2, JoystickOneFire3,
+        JoystickOneFire1, JoystickOneFire2, JoystickOneFire3,
 
-      DrivingZeroValue, DrivingOneValue,
-
-      PaddleZeroResistance, PaddleZeroFire,
-        PaddleZeroDecrease, PaddleZeroIncrease, PaddleZeroAnalog,
-      PaddleOneResistance, PaddleOneFire,
-        PaddleOneDecrease, PaddleOneIncrease, PaddleOneAnalog,
-      PaddleTwoResistance, PaddleTwoFire,
-        PaddleTwoDecrease, PaddleTwoIncrease, PaddleTwoAnalog,
-      PaddleThreeResistance, PaddleThreeFire,
-        PaddleThreeDecrease, PaddleThreeIncrease, PaddleThreeAnalog,
+      PaddleZeroDecrease, PaddleZeroIncrease, PaddleZeroAnalog, PaddleZeroFire,
+      PaddleOneDecrease, PaddleOneIncrease, PaddleOneAnalog, PaddleOneFire,
+      PaddleTwoDecrease, PaddleTwoIncrease, PaddleTwoAnalog, PaddleTwoFire,
+      PaddleThreeDecrease, PaddleThreeIncrease, PaddleThreeAnalog, PaddleThreeFire,
 
       KeyboardZero1, KeyboardZero2, KeyboardZero3,
       KeyboardZero4, KeyboardZero5, KeyboardZero6,
@@ -69,6 +63,11 @@ class Event
       KeyboardOne7, KeyboardOne8, KeyboardOne9,
       KeyboardOneStar, KeyboardOne0, KeyboardOnePound,
   
+      SALeftAxis0Value, SALeftAxis1Value,
+      SARightAxis0Value, SARightAxis1Value,
+
+      MouseAxisXValue, MouseAxisYValue,
+
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
       PauseMode, MenuMode, CmdMenuMode, DebuggerMode, LauncherMode,
       Fry, VolumeDecrease, VolumeIncrease,

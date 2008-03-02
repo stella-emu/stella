@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.14 2008-02-06 13:45:21 stephena Exp $
+// $Id: Driving.cxx,v 1.15 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -31,14 +31,16 @@ Driving::Driving(Jack jack, const Event& event)
     myCCWEvent   = Event::JoystickZeroLeft;
     myCWEvent    = Event::JoystickZeroRight;
     myFireEvent  = Event::JoystickZeroFire1;
-    myValueEvent = Event::DrivingZeroValue;
+    myXAxisValue = Event::SALeftAxis0Value;
+    myYAxisValue = Event::SALeftAxis1Value;
   }
   else
   {
     myCCWEvent   = Event::JoystickOneLeft;
     myCWEvent    = Event::JoystickOneRight;
     myFireEvent  = Event::JoystickOneFire1;
-    myValueEvent = Event::DrivingOneValue;
+    myXAxisValue = Event::SARightAxis0Value;
+    myYAxisValue = Event::SARightAxis1Value;
   }
 
   // Digital pins 3 and 4 are not connected
@@ -56,100 +58,35 @@ Driving::~Driving()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::update()
 {
-  // TODO - this isn't working with Stelladaptor and real driving controllers
+  int grayIndex = 0;
 
-  // Gray codes for rotation
-  static const uInt8 graytable[] = { 0x03, 0x01, 0x00, 0x02 };
+  // Digital events (from keyboard or joystick hats & buttons)
+  myDigitalPinState[Six] = (myEvent.get(myFireEvent) == 0);
 
-  // Determine which gray code we're at
-  if(myEvent.get(myCCWEvent) != 0)
-    myCounter--;
-  else if(myEvent.get(myCWEvent) != 0)
-    myCounter++;
+  int xaxis = myEvent.get(myXAxisValue);
+  if(myEvent.get(myCCWEvent) != 0 || xaxis < -16384)     myCounter--;
+  else if(myEvent.get(myCWEvent) != 0 || xaxis > 16384)  myCounter++;
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
   myCounter &= 0x0f;
-  uInt8 gray = graytable[myCounter >> 2];
+  grayIndex = myCounter >> 2;
+ 
+  // Stelladaptor is the only controller that should set this
+  int yaxis = myEvent.get(myYAxisValue);
+  if(yaxis <= -16384-4096)
+    grayIndex = 2;
+  else if(yaxis > 16384+4096)
+    grayIndex = 1;
+  else if(yaxis >= 16384-4096)
+    grayIndex = 0;
+  else if(yaxis < -16384+4096)
+    grayIndex = 3;
+  
+  // Gray codes for rotation
+  static const uInt8 graytable[] = { 0x03, 0x01, 0x00, 0x02 };
 
   // Determine which bits are set
+  uInt8 gray = graytable[grayIndex];
   myDigitalPinState[One] = (gray & 0x1) != 0;
   myDigitalPinState[Two] = (gray & 0x2) != 0;
-
-  myDigitalPinState[Six] = (myEvent.get(myFireEvent) == 0);
 }
-
-
-/*
-bool Driving::read(DigitalPin pin)
-{
-  // Gray codes for clockwise rotation
-  static const uInt8 clockwise[] = { 0x03, 0x01, 0x00, 0x02 };
-
-  // Gray codes for counter-clockwise rotation
-  static const uInt8 counterclockwise[] = { 0x03, 0x02, 0x00, 0x01 };
-
-  // Delay used for moving through the gray code tables
-  const uInt32 delay = 20;
-
-  switch(pin)
-  {
-    case One:
-      ++myCounter;
-
-      if(myJack == Left)
-      {
-        if(myEvent.get(Event::DrivingZeroCounterClockwise) != 0)
-        {
-          return (counterclockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
-        }
-        else if(myEvent.get(Event::DrivingZeroClockwise) != 0)
-        {
-          return (clockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
-        }
-		else 
-		  return(myEvent.get(Event::DrivingZeroValue) & 0x01);
-      }
-      else
-      {
-        if(myEvent.get(Event::DrivingOneCounterClockwise) != 0)
-        {
-          return (counterclockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
-        }
-        else if(myEvent.get(Event::DrivingOneClockwise) != 0)
-        {
-          return (clockwise[(myCounter / delay) & 0x03] & 0x01) != 0;
-        }
-		else 
-		  return(myEvent.get(Event::DrivingOneValue) & 0x01);
-      }
-
-    case Two:
-      if(myJack == Left)
-      {
-        if(myEvent.get(Event::DrivingZeroCounterClockwise) != 0)
-        {
-          return (counterclockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
-        }
-        else if(myEvent.get(Event::DrivingZeroClockwise) != 0)
-        {
-          return (clockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
-        }
-		else 
-		  return(myEvent.get(Event::DrivingZeroValue) & 0x02);
-      }
-      else
-      {
-        if(myEvent.get(Event::DrivingOneCounterClockwise) != 0)
-        {
-          return (counterclockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
-        }
-        else if(myEvent.get(Event::DrivingOneClockwise) != 0)
-        {
-          return (clockwise[(myCounter / delay) & 0x03] & 0x02) != 0;
-        }
-		else 
-		  return(myEvent.get(Event::DrivingOneValue) & 0x02);
-      }
-  }
-}
-*/

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.hxx,v 1.8 2008-02-06 13:45:21 stephena Exp $
+// $Id: Joystick.hxx,v 1.9 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #ifndef JOYSTICK_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 joystick controller.
 
   @author  Bradford W. Mott
-  @version $Id: Joystick.hxx,v 1.8 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: Joystick.hxx,v 1.9 2008-03-02 19:20:50 stephena Exp $
 */
 class Joystick : public Controller
 {
@@ -55,7 +55,9 @@ class Joystick : public Controller
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent, myFireEvent;
+    Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
+                myXAxisValue, myYAxisValue, myFireEvent;
+
 };
 
 #endif

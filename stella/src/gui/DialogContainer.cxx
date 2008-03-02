@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.39 2008-02-06 13:45:23 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.40 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -282,6 +282,8 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
 {
+// FIXME - analog axis events cause autofire to inadvertently come on and not go off
+
   if(myDialogStack.empty())
     return;
 

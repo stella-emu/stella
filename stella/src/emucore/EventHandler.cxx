@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.214 2008-02-06 13:45:21 stephena Exp $
+// $Id: EventHandler.cxx,v 1.215 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -164,14 +164,7 @@ void EventHandler::reset(State state)
   if(myState == S_LAUNCHER)
     myUseLauncherFlag = true;
 
-  // Set all paddles to minimum resistance by default
-  for(int i = 0; i < 4; ++i)
-  {
-    memset(&myPaddle[i], 0, sizeof(JoyMouse));
-    myPaddle[i].x = myPaddle[i].y = 1000000;
-    int resistance = (int)(1000000.0 * (1000000.0 - myPaddle[i].x) / 1000000.0);
-    myEvent->set(Paddle_Resistance[i], resistance);
-  }
+  // FIXME - this should go directly into the Paddles class
   setPaddleSpeed(0, myOSystem->settings().getInt("p0speed"));
   setPaddleSpeed(1, myOSystem->settings().getInt("p1speed"));
   setPaddleSpeed(2, myOSystem->settings().getInt("p2speed"));
@@ -449,7 +442,7 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().togglePhosphor();
                 break;
 
-#if 1
+#if 0
 // FIXME - these will be removed when a UI is added for event recording
               case SDLK_e:  // Alt-e starts/stops event recording
                 if(myOSystem->state().toggleRecordMode())
@@ -663,25 +656,13 @@ void EventHandler::poll(uInt32 time)
             int button = event.jbutton.button;
             int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
-            // Since we can't detect what controller is attached to a
-            // Stelladaptor, we only send events based on controller
-            // type in ROM properties
             // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
             // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
-            switch((int)myController[type-2])
-            {
-              // Send button events for the joysticks and driving controllers
-              case Controller::Joystick:
-              case Controller::Driving:
-                myEvent->set(SA_Button[type-2][button][0], state);
-                break;
 
-              // Send axis events for the paddles
-              case Controller::Paddles:
-                myEvent->set(SA_Button[type-2][button][1], state);
-                break;
-            }
+            // These events don't have to pass through handleEvent, since
+            // they can never be remapped
+            myEvent->set(SA_Button[type-2][button], state);
             break;  // Stelladaptor button
           }
         }
@@ -716,49 +697,16 @@ void EventHandler::poll(uInt32 time)
             int axis  = event.jaxis.axis;
             int value = event.jaxis.value;
 
-            // Since we can't detect what controller is attached to a
-            // Stelladaptor, we only send events based on controller
-            // type in ROM properties
+            // Since the various controller classes deal with the
+            // Stelladaptor differently, we send the raw X and Y axis
+            // data directly, and let the controller handle it
             // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
             // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
-            switch((int)myController[type-2])
-            {
-              // Send axis events for the joysticks
-              case Controller::Joystick:
-                // Disallow 4-direction movement by turning off the
-                // other extreme of the axis
-                myEvent->set(SA_Axis[type-2][axis][0], (value < -16384) ? 1 : 0);
-                myEvent->set(SA_Axis[type-2][axis][1], (value > 16384) ? 1 : 0);
-                break;
 
-              // Send axis events for the paddles
-              case Controller::Paddles:
-              {
-                // Determine which paddle we're emulating and see if
-                // we're getting rapid movement (aka jittering)
-                if(isJitter(((type-2) << 1) + axis, value))
-                  break;
-
-                int resistance = (Int32) (1000000.0 * (32767 - value) / 65534);
-                myEvent->set(SA_Axis[type-2][axis][2], resistance);
-                break;
-              }
-
-              // Send events for the driving controllers
-              case Controller::Driving:
-                if(axis == 1)
-                {
-                  if(value <= -16384-4096)
-                    myEvent->set(SA_DrivingValue[type-2],2);
-                  else if(value > 16384+4096)
-                    myEvent->set(SA_DrivingValue[type-2],1);
-                  else if(value >= 16384-4096)
-                    myEvent->set(SA_DrivingValue[type-2],0);
-                  else
-                    myEvent->set(SA_DrivingValue[type-2],3);
-                }
-            }
+            // These events don't have to pass through handleEvent, since
+            // they can never be remapped
+            myEvent->set(SA_Axis[type-2][axis], value);
             break;  // Stelladaptor axis
           }
         }
@@ -796,28 +744,6 @@ void EventHandler::poll(uInt32 time)
     }
   }
 
-  // Handle paddle emulation using joystick or key events
-  for(int i = 0; i < 4; ++i)
-  {
-    if(myPaddle[i].active)
-    {
-      myPaddle[i].x += myPaddle[i].x_amt;
-      if(myPaddle[i].x < 0)
-      {
-        myPaddle[i].x = 0;  continue;
-      }
-      else if(myPaddle[i].x > 1000000)
-      {
-        myPaddle[i].x = 1000000;  continue;
-      }
-      else
-      {
-        int resistance = (int)(1000000.0 * (1000000 - myPaddle[i].x) / 1000000);
-        myEvent->set(Paddle_Resistance[i], resistance);
-      }
-    }
-  }
-
   // Update controllers and console switches, and in general all other things
   // related to emulation
   if(myState == S_EMULATE)
@@ -848,27 +774,25 @@ void EventHandler::poll(uInt32 time)
     // Used to implement continuous events
     myOverlay->updateTime(time);
   }
+
+  // Turn off relative events
+  myEvent->set(Event::MouseAxisXValue, 0);
+  myEvent->set(Event::MouseAxisYValue, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::handleMouseMotionEvent(SDL_Event& event)
 {
-  // Take window zooming into account
-  int x = event.motion.x, y = event.motion.y;
-
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
   {
-    int w = myOSystem->frameBuffer().baseWidth();
-    if(x < 0 || x > w) return;
-    int resistance = (int)(1000000.0 * (w - x) / w);
-    myEvent->set(Paddle_Resistance[myPaddleMode], resistance);
-
-    // Update the digital paddle emulation so it's consistent
-    myPaddle[myPaddleMode].x = 1000000 - resistance;
+    int x = event.motion.xrel, y = event.motion.yrel;
+    myEvent->set(Event::MouseAxisXValue, x);
+    myEvent->set(Event::MouseAxisYValue, y);
   }
   else if(myOverlay)
   {
+    int x = event.motion.x, y = event.motion.y;
     myOSystem->frameBuffer().translateCoords(x, y);
     myOverlay->handleMouseMotionEvent(x, y, 0);
   }
@@ -934,23 +858,21 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
   Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1][kEmulationMode];
 
   // Check for analog events, which are handled differently
+  // We'll pass them off as Stelladaptor events, and let the controllers
+  // handle it
   switch((int)eventAxisNeg)
   {
     case Event::PaddleZeroAnalog:
-      myEvent->set(Event::PaddleZeroResistance,
-                    (int)(1000000.0 * (32767 - value) / 65534));
+      myEvent->set(Event::SALeftAxis0Value, value);
       break;
     case Event::PaddleOneAnalog:
-      myEvent->set(Event::PaddleOneResistance,
-                    (int)(1000000.0 * (32767 - value) / 65534));
+      myEvent->set(Event::SALeftAxis1Value, value);
       break;
     case Event::PaddleTwoAnalog:
-      myEvent->set(Event::PaddleTwoResistance,
-                    (int)(1000000.0 * (32767 - value) / 65534));
+      myEvent->set(Event::SARightAxis0Value, value);
       break;
     case Event::PaddleThreeAnalog:
-      myEvent->set(Event::PaddleThreeResistance,
-                    (int)(1000000.0 * (32767 - value) / 65534));
+      myEvent->set(Event::SARightAxis1Value, value);
       break;
     default:
       // Otherwise, we know the event is digital
@@ -1007,94 +929,47 @@ void EventHandler::handleEvent(Event::Type event, int state)
   switch(event)
   {
     ////////////////////////////////////////////////////////////////////////
-    // Preprocess joystick events into equivalent paddle events.
-    // To speed processing, we won't care which type of controller
-    // is connected; we just set the events and let the controller
-    // decide how to interpret it.
+    // If enabled, make sure 'impossible' joystick directions aren't allowed
     case Event::JoystickZeroUp:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickZeroDown, 0);
-      handleEvent(Event::PaddleOneDecrease, state);
       break;
 
     case Event::JoystickZeroDown:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickZeroUp, 0);
-      handleEvent(Event::PaddleOneIncrease, state);
       break;
 
     case Event::JoystickZeroLeft:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickZeroRight, 0);
-      handleEvent(Event::PaddleZeroDecrease, state);
       break;
 
     case Event::JoystickZeroRight:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickZeroLeft, 0);
-      handleEvent(Event::PaddleZeroIncrease, state);
       break;
 
     case Event::JoystickOneUp:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickOneDown, 0);
-      handleEvent(Event::PaddleThreeDecrease, state);
       break;
 
     case Event::JoystickOneDown:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickOneUp, 0);
-      handleEvent(Event::PaddleThreeIncrease, state);
       break;
 
     case Event::JoystickOneLeft:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickOneRight, 0);
-      handleEvent(Event::PaddleTwoDecrease, state);
       break;
 
     case Event::JoystickOneRight:
       if(!myAllowAllDirectionsFlag && state)
         myEvent->set(Event::JoystickOneLeft, 0);
-      handleEvent(Event::PaddleTwoIncrease, state);
       break;
     ////////////////////////////////////////////////////////////////////////
-
-    case Event::PaddleZeroDecrease:
-      myPaddle[0].active = (bool) state;
-      myPaddle[0].x_amt  = -myPaddle[0].amt;
-      return;
-    case Event::PaddleZeroIncrease:
-      myPaddle[0].active = (bool) state;
-      myPaddle[0].x_amt  = myPaddle[0].amt;
-      return;
-    case Event::PaddleOneDecrease:
-      myPaddle[1].active = (bool) state;
-      myPaddle[1].x_amt  = -myPaddle[1].amt;
-      return;
-    case Event::PaddleOneIncrease:
-      myPaddle[1].active = (bool) state;
-      myPaddle[1].x_amt  = myPaddle[1].amt;
-      return;
-    case Event::PaddleTwoDecrease:
-      myPaddle[2].active = (bool) state;
-      myPaddle[2].x_amt  = -myPaddle[2].amt;
-      return;
-    case Event::PaddleTwoIncrease:
-      myPaddle[2].active = (bool) state;
-      myPaddle[2].x_amt  = myPaddle[2].amt;
-      return;
-    case Event::PaddleThreeDecrease:
-      myPaddle[3].active = (bool) state;
-      myPaddle[3].x_amt  = -myPaddle[3].amt;
-      return;
-    case Event::PaddleThreeIncrease:
-      myPaddle[3].active = (bool) state;
-      myPaddle[3].x_amt  = myPaddle[3].amt;
-      return;
-
-    case Event::NoType:  // Ignore unmapped events
-      return;
 
     case Event::Fry:
       myFryingFlag = bool(state);
@@ -1142,6 +1017,9 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem->settings().saveConfig();
         myOSystem->quit();
       }
+      return;
+
+    case Event::NoType:  // Ignore unmapped events
       return;
 
     default:
@@ -1932,25 +1810,6 @@ string EventHandler::keyAtIndex(int idx, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline bool EventHandler::isJitter(int paddle, int value)
-{
-  bool jitter = false;
-  bool leftMotion = myPaddle[paddle].val - myPaddle[paddle].old_val > 0;
-  int distance = value - myPaddle[paddle].val;
-
-  // Filter out jitter by not allowing rapid direction changes
-  if(distance > 0 && !leftMotion)     // movement switched from left to right
-    jitter = distance < myPaddleThreshold;
-  else if(distance < 0 && leftMotion) // movement switched from right to left
-    jitter = distance > -myPaddleThreshold;
-
-  myPaddle[paddle].old_val = myPaddle[paddle].val;
-  myPaddle[paddle].val = value;
-
-  return jitter;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::takeSnapshot()
 {
   // Figure out the correct snapshot name
@@ -1993,6 +1852,7 @@ void EventHandler::takeSnapshot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setPaddleMode(int num, bool showmessage)
 {
+// FIXME - communicate with Paddles class
   if(num < 0 || num > 3)
     return;
 
@@ -2011,6 +1871,7 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setPaddleSpeed(int num, int speed)
 {
+/*  FIXME - move functionality to Paddles class
   if(num < 0 || num > 3 || speed < 0 || speed > 100)
     return;
 
@@ -2018,14 +1879,17 @@ void EventHandler::setPaddleSpeed(int num, int speed)
   ostringstream buf;
   buf << "p" << num << "speed";
   myOSystem->settings().setInt(buf.str(), speed);
+*/
 }
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setPaddleThreshold(int thresh)
 {
+/*  FIXME - move functionality to Paddles class
   myPaddleThreshold = thresh;
   myOSystem->settings().setInt("pthresh", thresh);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2487,39 +2351,22 @@ EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = 
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Event::Type EventHandler::Paddle_Resistance[4] = {
-  Event::PaddleZeroResistance, Event::PaddleOneResistance,
-  Event::PaddleTwoResistance,  Event::PaddleThreeResistance
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Event::Type EventHandler::Paddle_Button[4] = {
   Event::PaddleZeroFire, Event::PaddleOneFire,
   Event::PaddleTwoFire,  Event::PaddleThreeFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Used by the Stelladaptor to disallow impossible directions (both up & down
-//  or left & right), or for resistance for paddles
-const Event::Type EventHandler::SA_Axis[2][2][3] = {
-  { {Event::JoystickZeroLeft, Event::JoystickZeroRight, Event::PaddleZeroResistance },
-    {Event::JoystickZeroUp,   Event::JoystickZeroDown,  Event::PaddleOneResistance  } },
-  { {Event::JoystickOneLeft,  Event::JoystickOneRight,  Event::PaddleTwoResistance  },
-    {Event::JoystickOneUp,    Event::JoystickOneDown,   Event::PaddleThreeResistance} }
+// Used by the Stelladaptor to send absolute axis values
+const Event::Type EventHandler::SA_Axis[2][2] = {
+  { Event::SALeftAxis0Value,  Event::SALeftAxis1Value  },
+  { Event::SARightAxis0Value, Event::SARightAxis1Value }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Used by the Stelladaptor to map button presses to joystick or paddles
 //  (driving controllers are considered the same as joysticks)
-const Event::Type EventHandler::SA_Button[2][2][2] = {
-  { {Event::JoystickZeroFire1, Event::PaddleZeroFire  },
-    {Event::NoType,            Event::PaddleOneFire   } },
-  { {Event::JoystickOneFire1,  Event::PaddleTwoFire   },
-    {Event::NoType,            Event::PaddleThreeFire } }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Used by the Stelladaptor to send simulated 'gray codes'
-const Event::Type EventHandler::SA_DrivingValue[2] = {
-  Event::DrivingZeroValue, Event::DrivingOneValue
+const Event::Type EventHandler::SA_Button[2][2] = {
+  { Event::JoystickZeroFire1, Event::JoystickZeroFire3 },
+  { Event::JoystickOneFire1,  Event::JoystickOneFire3  }
 };

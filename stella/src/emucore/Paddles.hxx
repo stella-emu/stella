@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.10 2008-02-06 13:45:22 stephena Exp $
+// $Id: Paddles.hxx,v 1.11 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.10 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.11 2008-03-02 19:20:50 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -56,8 +56,21 @@ class Paddles : public Controller
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myP0ResEvent, myP1ResEvent, myP0FireEvent1, myP0FireEvent2,
-    myP1FireEvent1, myP1FireEvent2;
+    Event::Type myP0AxisValue, myP1AxisValue,
+                myP0DecEvent1, myP0DecEvent2, myP0IncEvent1, myP0IncEvent2,
+                myP1DecEvent1, myP1DecEvent2, myP1IncEvent1, myP1IncEvent2,
+                myP0FireEvent1, myP0FireEvent2, myP1FireEvent1, myP1FireEvent2;
+
+    int myKeyRepeat0;
+    int myPaddleRepeat0;
+    int myKeyRepeat1;
+    int myPaddleRepeat1;
+
+    int myCharge[2];
+    int myLastCharge[2];
+    int myLeftMotion[2];
+
+    int myMouseBaseX, myMouseBaseY;
 };
 
 #endif

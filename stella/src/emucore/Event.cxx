@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.cxx,v 1.14 2008-02-06 13:45:21 stephena Exp $
+// $Id: Event.cxx,v 1.15 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -26,15 +26,7 @@
 Event::Event()
   : myNumberOfTypes(Event::LastType)
 {
-  // Set all of the events to 0 / false to start with,
-  // including analog paddle events.  Doing it this way
-  // is a bit of a hack ...
   clear();
-
-  myValues[PaddleZeroResistance]  =
-  myValues[PaddleOneResistance]   =
-  myValues[PaddleTwoResistance]   =
-  myValues[PaddleThreeResistance] = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -58,9 +50,5 @@ void Event::set(Type type, Int32 value)
 void Event::clear()
 {
   for(int i = 0; i < myNumberOfTypes; ++i)
-  {
-    if(i != PaddleZeroResistance && i != PaddleOneResistance &&
-       i != PaddleTwoResistance  && i != PaddleThreeResistance)
-      myValues[i] = 0;
-  }
+    myValues[i] = 0;
 }

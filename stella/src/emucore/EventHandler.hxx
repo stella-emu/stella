@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.106 2008-02-06 13:45:21 stephena Exp $
+// $Id: EventHandler.hxx,v 1.107 2008-03-02 19:20:50 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.106 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.107 2008-03-02 19:20:50 stephena Exp $
 */
 class EventHandler
 {
@@ -433,16 +433,6 @@ class EventHandler
     */
     inline bool eventIsAnalog(Event::Type event);
 
-    /**
-      Tests if the given paddle value is displaying a rapid left/right
-      motion, which is also known as jitter.
-
-      @param paddle The paddle to test
-      @param value  The value assigned to the paddle
-      @return       True if jittering, else false
-    */
-    inline bool isJitter(int paddle, int value);
-
     void setEventState(State state);
 
   private:
@@ -539,9 +529,6 @@ class EventHandler
     // Indicates the amount by which we consider a paddle to be jittering
     int myPaddleThreshold;
 
-    // Used for paddle emulation by keyboard or joystick
-    JoyMouse myPaddle[4];
-
     // Type of device on each controller port (based on ROM properties)
     Controller::Type myController[2];
 
@@ -549,16 +536,12 @@ class EventHandler
     static ActionList ourEmulActionList[kEmulActionListSize];
     static ActionList ourMenuActionList[kMenuActionListSize];
 
-    // Lookup table for paddle resistance events
-    static const Event::Type Paddle_Resistance[4];
-
     // Lookup table for paddle button events
     static const Event::Type Paddle_Button[4];
 
     // Static lookup tables for Stelladaptor axis/button support
-    static const Event::Type SA_Axis[2][2][3];
-    static const Event::Type SA_Button[2][2][2];
-    static const Event::Type SA_DrivingValue[2];
+    static const Event::Type SA_Axis[2][2];
+    static const Event::Type SA_Button[2][2];
 };
 
 #endif
