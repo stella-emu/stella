@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.84 2008-02-19 12:33:05 stephena Exp $
+// $Id: TIA.cxx,v 1.85 2008-03-03 17:51:55 estolberg Exp $
 //============================================================================
 
 #include <cassert>
@@ -190,6 +190,10 @@ void TIA::reset()
 
   myAllowHMOVEBlanks = 
       (myConsole.properties().get(Emulation_HmoveBlanks) == "YES");
+
+  myFloatTIAOutputPins = true;
+//      (myConsole.properties().get(Emulation_FloatOutputPins) == "YES");
+// TODO: add an actual command line switch to set this
 
   if(myConsole.getFramerate() > 55)  // NTSC
   {
@@ -1969,6 +1973,13 @@ uInt8 TIA::peek(uInt16 addr)
   updateFrame(mySystem->cycles() * 3);
 
   uInt8 noise = mySystem->getDataBusState() & 0x3F;
+  
+/*
+  On certain CMOS EPROM chips the unused TIA pins on a read are not
+  floating but pulled high. Programmers might want to check their
+  games for compatibility, so we make this optional. 
+*/  
+  if(myFloatTIAOutputPins == false) noise = 0x3F;
 
   switch(addr & 0x000f)
   {

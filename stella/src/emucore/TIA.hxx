@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.45 2008-02-19 12:33:05 stephena Exp $
+// $Id: TIA.hxx,v 1.46 2008-03-03 17:51:55 estolberg Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -40,7 +40,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.45 2008-02-19 12:33:05 stephena Exp $
+  @version $Id: TIA.hxx,v 1.46 2008-03-03 17:51:55 estolberg Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -506,6 +506,9 @@ class TIA : public Device , public MediaSource
     // Indicates if we're allowing HMOVE blanks to be enabled
     bool myAllowHMOVEBlanks;
 
+    // Indicates if unused TIA pins are floating on a peek
+    bool myFloatTIAOutputPins;
+    
     // TIA M0 "bug" used for stars in Cosmic Ark flag
     bool myM0CosmicArkMotionEnabled;
 
