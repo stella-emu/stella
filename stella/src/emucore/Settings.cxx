@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.132 2008-03-03 14:53:34 stephena Exp $
+// $Id: Settings.cxx,v 1.133 2008-03-03 18:54:51 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -99,6 +99,7 @@ Settings::Settings(OSystem* osystem)
   // Misc options
   setInternal("autoslot", "false");
   setInternal("showinfo", "false");
+  setInternal("tiafloat", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -342,6 +343,7 @@ void Settings::usage()
     << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
+    << "   -tiafloat     <1|0>         Set unused TIA pins floating on a read/peek\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"
