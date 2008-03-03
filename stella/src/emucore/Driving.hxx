@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.hxx,v 1.9 2008-03-02 19:20:50 stephena Exp $
+// $Id: Driving.hxx,v 1.10 2008-03-03 16:27:16 estolberg Exp $
 //============================================================================
 
 #ifndef DRIVING_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 Indy 500 driving controller.
 
   @author  Bradford W. Mott
-  @version $Id: Driving.hxx,v 1.9 2008-03-02 19:20:50 stephena Exp $
+  @version $Id: Driving.hxx,v 1.10 2008-03-03 16:27:16 estolberg Exp $
 */
 class Driving : public Controller
 {
@@ -56,6 +56,13 @@ class Driving : public Controller
   private:
     // Counter to iterate through the gray codes
     uInt32 myCounter;
+
+    // Index into the gray code table
+    uInt32 myGrayIndex;
+
+    // Y axis value from last yaxis event that was used to generate a new
+    // gray code
+    int myLastYaxis;
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
