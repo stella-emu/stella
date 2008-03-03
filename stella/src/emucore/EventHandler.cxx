@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.216 2008-03-02 20:48:51 stephena Exp $
+// $Id: EventHandler.cxx,v 1.217 2008-03-03 16:14:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -627,39 +627,32 @@ void EventHandler::poll(uInt32 time)
 
         // Stelladaptors handle buttons differently than regular joysticks
         int type = ourJoysticks[event.jbutton.which].type;
+        int stick  = event.jbutton.which;
+        int button = event.jbutton.button;
+        int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
+
         switch(type)
         {
           case JT_REGULAR:
-          {
             if(event.jbutton.button >= kNumJoyButtons)
               return;
-
-            int stick  = event.jbutton.which;
-            int button = event.jbutton.button;
-            int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
 
             // Filter out buttons handled by OSystem
             if(!myOSystem->joyButtonHandled(button))
               handleJoyEvent(stick, button, state);
 
             break;  // Regular button
-          }
 
           case JT_STELLADAPTOR_LEFT:
           case JT_STELLADAPTOR_RIGHT:
-          {
-            int button = event.jbutton.button;
-            int state  = event.jbutton.state == SDL_PRESSED ? 1 : 0;
-
             // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
             // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
 
             // These events don't have to pass through handleEvent, since
             // they can never be remapped
-            myEvent->set(SA_Button[type-2][button], state);
+            if(button < 2) myEvent->set(SA_Button[type-2][button], state);
             break;  // Stelladaptor button
-          }
         }
         break;  // SDL_JOYBUTTONUP, SDL_JOYBUTTONDOWN
       }  
@@ -671,27 +664,21 @@ void EventHandler::poll(uInt32 time)
 
         // Stelladaptors handle axis differently than regular joysticks
         int type = ourJoysticks[event.jbutton.which].type;
+        int stick = event.jaxis.which;
+        int axis  = event.jaxis.axis;
+        int value = event.jaxis.value;
+
         switch(type)
         {
           case JT_REGULAR:
-          {
-            int stick = event.jaxis.which;
-            int axis  = event.jaxis.axis;
-            int value = event.jaxis.value;
-
             if(myState == S_EMULATE)
               handleJoyAxisEvent(stick, axis, value);
             else if(myOverlay != NULL)
               myOverlay->handleJoyAxisEvent(stick, axis, value);
             break;  // Regular joystick axis
-          }
 
           case JT_STELLADAPTOR_LEFT:
           case JT_STELLADAPTOR_RIGHT:
-          {
-            int axis  = event.jaxis.axis;
-            int value = event.jaxis.value;
-
             // Since the various controller classes deal with the
             // Stelladaptor differently, we send the raw X and Y axis
             // data directly, and let the controller handle it
@@ -701,9 +688,8 @@ void EventHandler::poll(uInt32 time)
 
             // These events don't have to pass through handleEvent, since
             // they can never be remapped
-            myEvent->set(SA_Axis[type-2][axis], value);
+            if(axis < 2) myEvent->set(SA_Axis[type-2][axis], value);
             break;  // Stelladaptor axis
-          }
         }
         break;  // SDL_JOYAXISMOTION
       }
