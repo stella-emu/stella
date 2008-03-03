@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.115 2008-02-06 13:45:22 stephena Exp $
+// $Id: OSystem.cxx,v 1.116 2008-03-03 14:53:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -631,6 +631,8 @@ bool OSystem::queryConsoleInfo(const uInt8* image, uInt32 size,
   string s;
   myPropSet->getMD5(md5, props);
 
+  s = mySettings->getString("bs");
+  if(s != "") props.set(Cartridge_Type, s);
   s = mySettings->getString("type");
   if(s != "") props.set(Cartridge_Type, s);
   s = mySettings->getString("channels");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.131 2008-03-02 20:48:51 stephena Exp $
+// $Id: Settings.cxx,v 1.132 2008-03-03 14:53:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -343,7 +343,8 @@ void Settings::usage()
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
     << endl
-    << "   -type        <arg>          Sets the 'Cartridge.Type' property\n"
+    << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
+    << "   -type        <arg>          Same as using -bs\n"
     << "   -channels    <arg>          Sets the 'Cartridge.Sound' property\n"
     << "   -ld          <arg>          Sets the 'Console.LeftDifficulty' property\n"
     << "   -rd          <arg>          Sets the 'Console.RightDifficulty' property\n"
