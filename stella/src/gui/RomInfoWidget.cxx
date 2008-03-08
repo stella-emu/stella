@@ -13,11 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.3 2008-02-06 13:45:24 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.4 2008-03-08 13:22:12 stephena Exp $
 //============================================================================
 
-#include <zlib.h>
 #include <cstring>
+#include <zlib.h>
 
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"

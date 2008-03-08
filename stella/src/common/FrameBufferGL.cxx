@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.97 2008-02-19 12:33:02 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.98 2008-03-08 13:22:12 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -624,7 +624,13 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::createTextures()
 {
-  if(myTexture)         SDL_FreeSurface(myTexture);
+  if(myTexture)
+  {
+    p_glClear(GL_COLOR_BUFFER_BIT);
+    SDL_GL_SwapBuffers();
+    p_glClear(GL_COLOR_BUFFER_BIT);
+    SDL_FreeSurface(myTexture);
+  }
   if(myBuffer.texture)  p_glDeleteTextures(1, &myBuffer.texture);
   memset(&myBuffer, 0, sizeof(glBufferType));
   myBuffer.filter = GL_NEAREST;
