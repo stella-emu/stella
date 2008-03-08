@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall22.cxx,v 1.3 2008-02-06 13:45:22 stephena Exp $
+// $Id: TrackBall22.cxx,v 1.4 2008-03-08 23:34:23 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"

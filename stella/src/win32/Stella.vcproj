@@ -44,15 +44,15 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
-				MinimalRebuild="true"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
-				Detect64BitPortabilityProblems="true"
 				DebugInformationFormat="4"
 			/>
 			<Tool
@@ -67,12 +67,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
-				AdditionalDependencies="sdl.lib sdlmain.lib zdll.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib zlibwapi.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Stella.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -125,15 +125,16 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
+				AdditionalOptions="/MP"
 				Optimization="0"
 				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;_DEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
-				MinimalRebuild="true"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
-				RuntimeLibrary="2"
+				RuntimeLibrary="0"
 				UsePrecompiledHeader="0"
 				WarningLevel="2"
-				Detect64BitPortabilityProblems="true"
+				Detect64BitPortabilityProblems="false"
 				DebugInformationFormat="3"
 			/>
 			<Tool
@@ -148,12 +149,12 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
-				AdditionalDependencies="sdl.lib sdlmain.lib zdll.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib zlibwapi.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Stella.pdb"
-				SubSystem="2"
+				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="17"
@@ -497,6 +498,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartUA.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartX07.cxx"
 					>
 				</File>
 				<File
@@ -1059,6 +1064,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartUA.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartX07.hxx"
 					>
 				</File>
 				<File

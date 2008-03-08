@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.hxx,v 1.9 2008-02-06 13:45:24 stephena Exp $
+// $Id: SettingsWin32.hxx,v 1.10 2008-03-08 23:34:24 stephena Exp $
 //============================================================================
 
 #ifndef SETTINGS_WIN32_HXX
@@ -22,7 +22,6 @@
 class OSystem;
 
 #include "bspf.hxx"
-
 
 class SettingsWin32 : public Settings
 {
