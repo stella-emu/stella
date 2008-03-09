@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.32 2007-08-16 16:42:46 stephena Exp $
+## $Id: Makefile,v 1.33 2008-03-09 14:17:03 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -196,7 +196,7 @@ uninstall:
 
 # Special rule for Win32 icon stuff (there's probably a better way to do this ...)
 src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
-	windres --include-dir src/win32 src/win32/stella.rc src/win32/stella_icon.o 
+	$(WINDRES) --include-dir src/win32 src/win32/stella.rc src/win32/stella_icon.o 
 		
 # Special target to create a Win32 snapshot package
 win32dist: stella$(EXEEXT)

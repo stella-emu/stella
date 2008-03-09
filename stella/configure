@@ -42,11 +42,9 @@ _rm_rec="$_rm -r"
 _zip="zip -q"
 _cp=cp
 _win32path=""
+_windres="windres"
 _sdlconfig=sdl-config
 _sdlpath="$PATH"
-_nasmpath="$PATH"
-NASMFLAGS=""
-NASM=""
 _prefix=/usr/local
 _have_x86=""
 X_LIBS="/usr/X11R6/lib"
@@ -187,42 +185,6 @@ rm -f tmp_find_type_with_size$EXEEXT tmp_find_type_with_size.cpp
 echo $datatype
 }
 
-CheckNASM()
-{
-	echocheck "nasm"
-	if test "$_nasm" = no ; then
-		echo "disabled"
-		return;
-	fi
-
-	IFS="${IFS= 	}"; ac_save_ifs="$IFS"; IFS=":"
-		
-	for path_dir in $_nasmpath; do
-		if test -x "$path_dir/nasm" ; then
-			NASM="$path_dir/nasm"
-			echo $NASM
-			break
-		fi
-	done
-		
-	IFS="$ac_save_ifs"
-
-	if test x$NASM = x -o x$NASM = x'"$NASM"'; then
-		echo "not found"
-		_nasm=no
-	else
-		case $_host_os in
-			mingw* | cygwin*)
-				NASMFLAGS="-f win32"
-			;;
-			*)
-				NASMFLAGS="-f elf"
-			;;
-		esac
-		_nasm=yes
-	fi
-}
-
 #
 # Greet user
 #
@@ -280,9 +242,6 @@ Optional Libraries:
 
   --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
 
-  --with-nasm-prefix=DIR   Prefix where nasm executable is installed (optional)
-  --disable-nasm           disable assembly language optimizations [autodetect]
-
   --x-libraries            Path to X11 libraries [${X_LIBS}]
 
 Some influential environment variables:
@@ -314,8 +273,6 @@ for ac_option in $@; do
       --disable-cheats)         _build_cheats=no     ;;
       --enable-atarivox)        _build_atarivox=yes  ;;
       --disable-atarivox)       _build_atarivox=no   ;;
-      --enable-nasm)            _nasm=yes            ;;
-      --disable-nasm)           _nasm=no             ;;
       --enable-shared)          _build_static=no     ;;
       --enable-static)          _build_static=yes    ;;
       --disable-static)         _build_static=no     ;;
@@ -329,10 +286,6 @@ for ac_option in $@; do
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _sdlpath="$arg:$arg/bin"
-        ;;
-      --with-nasm-prefix=*)
-        arg=`echo $ac_option | cut -d '=' -f 2`
-        _nasmpath="$arg:$arg/bin"
         ;;
       --x-libraries=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
@@ -385,6 +338,11 @@ gp2x)
 	_host_os=gp2x
 	_host_cpu=arm
 	_alt_tools=arm-open2x-linux
+	;;
+mingw32-cross)
+	_host_os=mingw32msvc
+	_host_cpu=i386
+	_windres=i386-mingw32msvc-windres
 	;;
 *)
 	guessed_host=`$_srcdir/config.guess`
@@ -558,6 +516,11 @@ if test -n "$_host"; then
 			_build_gl=no
 			_build_windowed=no
 			;;
+		mingw32-cross)
+			echo "Cross-compiling for Win32 using MinGW."
+			DEFINES="$DEFINES -DWIN32"
+			_host_os=win32
+			;;
 		*)
 			echo "Cross-compiling to unknown target, please add your target to configure."
 			exit 1
@@ -668,22 +631,6 @@ fi
 echo "$_opengl"
 
 #
-# Check for nasm
-#
-if test "$_have_x86" = yes ; then
-    CheckNASM
-fi
-
-if test "$_nasm" = yes ; then
-	DEFINES="$DEFINES -DUSE_NASM"
-	_def_nasm='#define USE_NASM'
-	_make_def_HAVE_NASM='HAVE_NASM = 1'
-else
-	_def_nasm='#undef USE_NASM'
-	_make_def_HAVE_NASM='# HAVE_NASM = 1'
-fi
-
-#
 # figure out installation directories
 #
 test -z "$_bindir" && _bindir="$_prefix/bin"
@@ -761,14 +708,6 @@ if test "$_build_atarivox" = yes ; then
 	echo
 else
 	echo_n "   AtariVox support disabled (not yet working)"
-	echo
-fi
-
-if test "$_nasm" = yes ; then
-	echo_n "   NASM support enabled for x86 assembly code"
-	echo
-else
-	echo_n "   NASM support disabled"
 	echo
 fi
 
@@ -937,12 +876,11 @@ RM_REC := $_rm_rec
 ZIP := $_zip
 CP := $_cp
 WIN32PATH=$_win32path
+WINDRES=$_windres
 
 MODULES += $MODULES
 MODULE_DIRS += $MODULE_DIRS
 EXEEXT := $EXEEXT
-NASM := $NASM
-NASMFLAGS := $NASMFLAGS
 
 PREFIX := $_prefix
 BINDIR := $_bindir
@@ -951,7 +889,6 @@ DATADIR := $_datadir
 PROFILE := $_build_profile
 
 $_make_def_HAVE_GCC3
-$_make_def_HAVE_NASM
 
 INCLUDES += $INCLUDES
 OBJS += $OBJS
