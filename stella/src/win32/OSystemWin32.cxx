@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.21 2008-02-06 13:45:24 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.22 2008-03-09 17:52:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -21,6 +21,7 @@
 #include <windows.h>
 
 #include "bspf.hxx"
+#include "FSNode.hxx"
 #include "OSystem.hxx"
 #include "OSystemWin32.hxx"
 
@@ -38,12 +39,28 @@
 OSystemWin32::OSystemWin32()
   : OSystem()
 {
-  // TODO - there really should be code here to determine which version
-  // of Windows is being used.
-  // If using a version which supports multiple users (NT and above),
-  // the relevant directories should be created in per-user locations.
-  // For now, we just put it in the same directory as the executable.
-  const string& basedir = ".";
+  string basedir = ".";
+
+  if(!FilesystemNode::fileExists("disable_profiles.txt"))
+  {
+    OSVERSIONINFO win32OsVersion;
+    ZeroMemory(&win32OsVersion, sizeof(OSVERSIONINFO));
+    win32OsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+    GetVersionEx(&win32OsVersion);
+
+    // Check for non-9X version of Windows; Win9x will use the app directory
+    if(win32OsVersion.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
+    {
+      // If this doesn't exist, we just fall back to the default (same directory as app)
+      char configFile[256];
+      if(GetEnvironmentVariable("USERPROFILE", configFile, sizeof(configFile)))
+      {
+        strcat(configFile, "\\Stella");
+        basedir = configFile;
+      }
+    }
+  }
+
   setBaseDir(basedir);
   setConfigFile(basedir + "\\stella.ini");
 }

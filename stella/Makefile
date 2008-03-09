@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.34 2008-03-09 15:30:27 stephena Exp $
+## $Id: Makefile,v 1.35 2008-03-09 17:52:40 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -196,7 +196,7 @@ src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
 win32dist: stella$(EXEEXT)
 	rm -rf $(DISTNAME)
 	mkdir -p $(DISTNAME)/docs/graphics
-	$(STRIP) stella$(EXEEXT) -o $(DISTNAME)/stella$(EXEEXT)
+	$(STRIP) stella$(EXEEXT) -o $(DISTNAME)/Stella$(EXEEXT)
 	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
