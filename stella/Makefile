@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.33 2008-03-09 14:17:03 stephena Exp $
+## $Id: Makefile,v 1.34 2008-03-09 15:30:27 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -151,12 +151,6 @@ else
 	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 endif
 
-ifdef HAVE_NASM
-.SUFFIXES: .asm
-.asm.o:
-	$(NASM) -O1 $(NASMFLAGS) -g -o $*.o $(<)
-endif
-
 # Include the dependency tracking files. We add /dev/null at the end
 # of the list to avoid a warning/error if no .d file exist
 -include $(wildcard $(addsuffix /*.d,$(DEPDIRS))) /dev/null
@@ -184,7 +178,7 @@ install: all
 	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons/large"
 
 install-strip: install
-	strip stella$(EXEEXT)
+	$(STRIP) stella$(EXEEXT)
 
 uninstall:
 	rm -f  "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
@@ -202,52 +196,12 @@ src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
 win32dist: stella$(EXEEXT)
 	rm -rf $(DISTNAME)
 	mkdir -p $(DISTNAME)/docs/graphics
-	strip stella$(EXEEXT) -o $(DISTNAME)/stella$(EXEEXT)
+	$(STRIP) stella$(EXEEXT) -o $(DISTNAME)/stella$(EXEEXT)
 	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
-	cp /mingw/bin/SDL.dll /mingw/bin/zlib1.dll $(DISTNAME)
-#	u2d $(DISTNAME)/*.txt
-#	zip $(DISTNAME)-win32.zip $(DISTNAME)
-
-# Special target to create psp stuff
-psp-package: $(EXECUTABLE)
-	$(MKSFO) 'Stella' PARAM.SFO
-	mkdir -p "psp/stella"
-	$(PSP-FIX) stella.elf
-	$(PSP-STRIP) stella.elf -o psp/stella/EBOOT.PBP
-	mkdir -p "psp/stella%"
-	$(PACK-PBP) "psp/stella%/EBOOT.PBP" PARAM.SFO src/psp/data/ICON0.PNG NULL NULL src/psp/data/PIC1.PNG  NULL NULL NULL
-	rm -f PARAM.SFO
-	
-psp-upload: psp-package
-	mount | grep  $(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
-	cp -rv "psp/stella" "psp/stella%" $(PSP-MOUNTPOINT)/psp/game/
-	umount $(PSP-MOUNTPOINT)
-
-psp-debug:
-	mount | grep \$(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
-	@cat $(PSP-MOUNTPOINT)/stderr.txt
-	@echo -e "\n\n------------------------------------------------------------"
-	@cat $(PSP-MOUNTPOINT)/stdout.txt
-	umount $(PSP-MOUNTPOINT)
-
-psp-cleanup:
-	rm -rf psp
-	mount | grep $(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
-	rm -rf  $(PSP-MOUNTPOINT)/std*
-	umount $(PSP-MOUNTPOINT)
-	
-psp-layout:
-	mount | grep $(PSP-MOUNTPOINT) || mount $(PSP-MOUNTPOINT)
-	mkdir -p $(PSP-MOUNTPOINT)/stella/roms
-	mkdir -p $(PSP-MOUNTPOINT)/stella/snapshots
-	cp -v src/psp/data/stellarc.psp $(PSP-MOUNTPOINT)/stella/stellarc
-	umount $(PSP-MOUNTPOINT)
-
-# GP2X exec needs strip
-gp2x-strip: $(EXECUTABLE)
-	$(GP2X-STRIP) stella
+	flip -m $(DISTNAME)/docs/*.txt
+	zip -r $(DISTNAME)-win32.zip $(DISTNAME)
 
 # GP2X organize: groups necessary files into a gp2x folder for easy access.
 gp2x-organize:
@@ -257,7 +211,8 @@ gp2x-organize:
 	cp -v $(srcdir)/src/gp2x/stella.gpe $(srcdir)/gp2x
 	cp -v $(srcdir)/README-GP2X.txt $(srcdir)/gp2x
 	cp -v -r $(srcdir)/docs/* $(srcdir)/gp2x/docs
-	
+	$(STRIP) $(srcdir)/gp2x/stella
+
 .PHONY: deb bundle test win32dist install uninstall
 
 # Use Exuberant ctags (the one from Slackware's vim package, for instance),
