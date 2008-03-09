@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.22 2008-03-09 17:52:40 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.23 2008-03-09 20:38:44 stephena Exp $
 //============================================================================
 
 #include <sstream>
 #include <fstream>
 #include <windows.h>
+#include <shlobj.h>
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
@@ -43,21 +44,23 @@ OSystemWin32::OSystemWin32()
 
   if(!FilesystemNode::fileExists("disable_profiles.txt"))
   {
-    OSVERSIONINFO win32OsVersion;
-    ZeroMemory(&win32OsVersion, sizeof(OSVERSIONINFO));
-    win32OsVersion.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
-    GetVersionEx(&win32OsVersion);
+    /*
+       Use 'My Documents' folder for the Stella folder, which can be in many
+       different places depending on the version of Windows, as follows:
 
-    // Check for non-9X version of Windows; Win9x will use the app directory
-    if(win32OsVersion.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS)
+        98: C:\My Documents
+        XP: C:\Document and Settings\USERNAME\My Documents\
+        Vista: C:\Users\USERNAME\Documents\
+
+       This function is guaranteed to return a valid 'My Documents'
+       folder (as much as Windows *can* make that guarantee) 
+    */
+    char configPath[256];
+    if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL|CSIDL_FLAG_CREATE,
+                                 NULL, 0, configPath)))
     {
-      // If this doesn't exist, we just fall back to the default (same directory as app)
-      char configFile[256];
-      if(GetEnvironmentVariable("USERPROFILE", configFile, sizeof(configFile)))
-      {
-        strcat(configFile, "\\Stella");
-        basedir = configFile;
-      }
+      strcat(configPath, "\\Stella");
+      basedir = configPath;
     }
   }
 
