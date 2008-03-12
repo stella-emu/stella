@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.32 2008-03-12 19:42:36 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.33 2008-03-12 22:04:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -54,7 +54,12 @@ class LauncherDialog : public Dialog
                    int x, int y, int w, int h);
     ~LauncherDialog();
 
-    string selectedRomMD5(string& file);
+    /**
+      Get MD5sum for the currently selected file
+
+      @return md5sum if a valid ROM file, else the empty string
+    */
+    string selectedRomMD5();
 
     /**
       Is this a valid ROM filename (does it have a valid extension?)

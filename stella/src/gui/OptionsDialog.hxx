@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.26 2008-02-06 13:45:24 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.27 2008-03-12 22:04:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,6 +47,7 @@ class OptionsDialog : public Dialog
     virtual ~OptionsDialog();
 
   private:
+    void loadConfig();
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void checkBounds(int width, int height, int* x, int* y, int* w, int* h);
 

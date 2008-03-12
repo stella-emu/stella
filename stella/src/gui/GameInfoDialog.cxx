@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.49 2008-02-27 20:13:55 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.50 2008-03-12 22:04:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -336,15 +336,11 @@ void GameInfoDialog::loadConfig()
   }
   else if(&myOSystem->launcher())
   {
-    string file;
-    const string& md5 = myOSystem->launcher().romMD5(file);
+    const string& md5 = myOSystem->launcher().selectedRomMD5();
     if(md5 != "")
     {
       instance()->propSet().getMD5(md5, myGameProperties);
       myPropertiesLoaded = true;
-myGameProperties.set(Cartridge_Name, file);
-myGameProperties.set(Cartridge_ModelNo, file);
-myGameProperties.set(Cartridge_Manufacturer, file);
       loadView();
     }
   }
@@ -640,7 +636,7 @@ void GameInfoDialog::setDefaults()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
-                                          int data, int id)
+                                   int data, int id)
 {
   switch (cmd)
   {
@@ -683,6 +679,7 @@ const char* GameInfoDialog::ourControllerList[kNumControllerTypes][2] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* GameInfoDialog::ourCartridgeList[kNumCartTypes][2] = {
   { "Auto-detect",       "AUTO-DETECT"   },
+  { "0840 (8K ECONObanking)",     "0840" },
   { "2K (2K Atari)",              "2K"   },
   { "3E (32K Tigervision)",       "3E"   },
   { "3F (512K Tigervision)",      "3F"   },
@@ -705,6 +702,5 @@ const char* GameInfoDialog::ourCartridgeList[kNumCartTypes][2] = {
   { "MC (C. Wilkson Megacart)",   "MC"   },
   { "SB (128-256k SUPERbanking)", "SB"   },
   { "UA (8K UA Ltd.)",            "UA"   },
-  { "X07 (64K AtariAge)",         "X07"  },
-  { "0840 (8K ECONObanking)",     "0840" }
+  { "X07 (64K AtariAge)",         "X07"  }
 };

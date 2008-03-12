@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.63 2008-03-12 19:42:36 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.64 2008-03-12 22:04:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,6 +33,7 @@
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
+#include "Launcher.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatCodeDialog.hxx"
@@ -181,6 +182,28 @@ OptionsDialog::~OptionsDialog()
 #endif
   delete myHelpDialog;
   delete myAboutDialog;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OptionsDialog::loadConfig()
+{
+  // Determine whether we should show the 'Game Information' button
+  // We always show it in emulation mode, or if a valid ROM is selected
+  // in launcher mode
+  switch(instance()->eventHandler().state())
+  {
+    case EventHandler::S_EMULATE:
+      myGameInfoButton->setFlags(WIDGET_ENABLED);
+      break;
+    case EventHandler::S_LAUNCHER:
+      if(instance()->launcher().selectedRomMD5() != "")
+        myGameInfoButton->setFlags(WIDGET_ENABLED);
+      else
+        myGameInfoButton->clearFlags(WIDGET_ENABLED);
+      break;
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
