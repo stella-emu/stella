@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.14 2008-02-06 13:45:23 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.15 2008-03-12 19:42:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -110,23 +110,8 @@ FileSnapDialog::FileSnapDialog(
                                   _w - xpos - 10, font.getLineHeight(), "");
   wid.push_back(mySnapPath);
 
-  // Use ROM browse mode
-  xpos = 30;  ypos += mySnapPath->getHeight() + 8;
-  myBrowseCheckbox =
-    new CheckboxWidget(this, font, xpos, ypos, "Browse folders", kBrowseDirCmd);
-  wid.push_back(myBrowseCheckbox);
-	 	 
-  // Reload current ROM listing (in non-browse mode)
-  xpos += myBrowseCheckbox->getWidth() + 20;
-  myReloadRomButton =
-    new ButtonWidget(this, font, xpos, ypos-2,
-                     font.getStringWidth(" Reload ROM Listing "), bheight,
-                     "Reload ROM Listing", kReloadRomDirCmd);
-  //myReloadButton->setEditable(true);
-  wid.push_back(myReloadRomButton);
-
   // Snapshot single or multiple saves
-  xpos = 30;  ypos += myBrowseCheckbox->getHeight() + 4;
+  xpos = 30;  ypos += b->getHeight() + 5;
   mySnapSingleCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                             "Multiple snapshots");
   wid.push_back(mySnapSingleCheckbox);
@@ -157,8 +142,6 @@ FileSnapDialog::FileSnapDialog(
   {
     romButton->clearFlags(WIDGET_ENABLED);
     myRomPath->setEditable(false);
-    myBrowseCheckbox->clearFlags(WIDGET_ENABLED);
-    myReloadRomButton->clearFlags(WIDGET_ENABLED);
   }
 
   // Create file browser dialog
@@ -180,9 +163,6 @@ void FileSnapDialog::loadConfig()
   myPaletteFile->setEditString(instance()->paletteFile());
   myPropsFile->setEditString(instance()->propertiesFile());
   mySnapPath->setEditString(instance()->settings().getString("ssdir"));
-  bool b = instance()->settings().getBool("rombrowse");
-  myBrowseCheckbox->setState(b);
-  myReloadRomButton->setEnabled(myIsGlobal && !b);
   mySnapSingleCheckbox->setState(!instance()->settings().getBool("sssingle"));
 }
 
@@ -195,7 +175,6 @@ void FileSnapDialog::saveConfig()
   instance()->settings().setString("palettefile", myPaletteFile->getEditString());
   instance()->settings().setString("propsfile", myPropsFile->getEditString());
   instance()->settings().setString("ssdir", mySnapPath->getEditString());
-  instance()->settings().setBool("rombrowse", myBrowseCheckbox->getState());
   instance()->settings().setBool("sssingle", !mySnapSingleCheckbox->getState());
 
   // Flush changes to disk and inform the OSystem
@@ -212,6 +191,7 @@ void FileSnapDialog::setDefaults()
   const string& cheatfile = basedir + BSPF_PATH_SEPARATOR + "stella.cht";
   const string& palettefile = basedir + BSPF_PATH_SEPARATOR + "stella.pal";
   const string& propsfile = basedir + BSPF_PATH_SEPARATOR + "stella.pro";
+  const string& ssdir = basedir + BSPF_PATH_SEPARATOR;
 
   myRomPath->setEditString(romdir);
   myStatePath->setEditString(statedir);
@@ -219,7 +199,7 @@ void FileSnapDialog::setDefaults()
   myPaletteFile->setEditString(palettefile);
   myPropsFile->setEditString(propsfile);
 
-  mySnapPath->setEditString(string(".") + BSPF_PATH_SEPARATOR);
+  mySnapPath->setEditString(ssdir);
   mySnapSingleCheckbox->setState(true);
 }
 
@@ -244,10 +224,7 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       saveConfig();
       close();
       if(myIsGlobal)
-      {
-        sendCommand(kBrowseChangedCmd, 0, 0); // Call this before refreshing ROMs
         sendCommand(kRomDirChosenCmd, 0, 0);  // Let the boss know romdir has changed
-      }
       break;
 
     case kDefaultsCmd:

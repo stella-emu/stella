@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.9 2008-02-06 13:45:23 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.10 2008-03-12 19:42:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -60,7 +60,6 @@ class FileSnapDialog : public Dialog, public CommandSender
       kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
       kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
       kChooseSnapDirCmd     = 'LOsn', // snapshot dir
-      kBrowseDirCmd         = 'LObd', // browse mode
       kStateDirChosenCmd    = 'LOsc', // state dir changed
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
       kPaletteFileChosenCmd = 'LOpc', // palette file changed
@@ -77,9 +76,6 @@ class FileSnapDialog : public Dialog, public CommandSender
     EditTextWidget* myPropsFile;
     EditTextWidget* mySnapPath;
     CheckboxWidget* mySnapSingleCheckbox;
-
-    CheckboxWidget* myBrowseCheckbox;
-    ButtonWidget*   myReloadRomButton;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

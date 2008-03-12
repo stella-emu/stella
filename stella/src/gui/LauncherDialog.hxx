@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.31 2008-02-06 13:45:24 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.32 2008-03-12 19:42:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,6 @@ class StringListWidget;
 enum {
   kRomDirChosenCmd  = 'romc',  // rom chosen
   kSnapDirChosenCmd = 'snpc',  // snap chosen
-  kBrowseChangedCmd = 'broc',  // browse mode toggled
   kReloadRomDirCmd  = 'rdrl'   // reload the current listing
 };
 
@@ -56,6 +55,13 @@ class LauncherDialog : public Dialog
     ~LauncherDialog();
 
     string selectedRomMD5(string& file);
+
+    /**
+      Is this a valid ROM filename (does it have a valid extension?)
+
+      @param filename  Filename of potential ROM file
+     */
+    static bool isValidRomName(const string& filename);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
@@ -70,8 +76,8 @@ class LauncherDialog : public Dialog
     ButtonWidget* myQuitButton;
 
     StringListWidget* myList;
-    StaticTextWidget* myNoteLabel;
-    StaticTextWidget* myNote;
+    StaticTextWidget* myDirLabel;
+    StaticTextWidget* myDir;
     StaticTextWidget* myRomCount;
     GameList*         myGameList;
 
@@ -83,15 +89,11 @@ class LauncherDialog : public Dialog
   private:
     void enableButtons(bool enable);
     void loadDirListing();
-    void loadListFromDisk();
-    void loadListFromCache();
-    void createListCache();
     void loadRomInfo();
     string MD5FromFile(const string& path);
 
   private:
     int mySelectedItem;
-    bool myBrowseModeFlag;
     bool myRomInfoFlag;
     FilesystemNode myCurrentNode;
 

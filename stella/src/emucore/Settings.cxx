@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.133 2008-03-03 18:54:51 stephena Exp $
+// $Id: Settings.cxx,v 1.134 2008-03-12 19:42:36 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -86,8 +86,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("propsfile", "");
 
   // ROM browser options
-  setInternal("rombrowse", "true");
-  setInternal("lastrom", "");
   setInternal("romviewer", "false");
 
   // UI-related options
@@ -316,7 +314,6 @@ void Settings::usage()
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-    << "  -rombrowse    <1|0>          Use ROM browser mode (shows files and folders)\n"
     << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"

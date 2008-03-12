@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.76 2008-02-06 13:45:24 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.77 2008-03-12 19:42:36 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myProgressBar(NULL),
     myRomInfoWidget(NULL),
     mySelectedItem(0),
-    myBrowseModeFlag(true),
     myRomInfoFlag(false)
 {
   const GUI::Font& font = instance()->launcherFont();
@@ -109,15 +108,15 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 10;
   xpos += 5;  ypos += myList->getHeight() + 4;
   lwidth = font.getStringWidth("Note:");
-  myNoteLabel = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                                     "Note:", kTextAlignLeft);
+  myDirLabel = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+                                    "Dir:", kTextAlignLeft);
   xpos += lwidth + 5;
-  myNote = new StaticTextWidget(this, font, xpos, ypos,
+  myDir = new StaticTextWidget(this, font, xpos, ypos,
                                 _w - xpos - 10, fontHeight,
                                 "", kTextAlignLeft);
 
   // Add four buttons at the bottom
-  xpos = 10;  ypos += myNote->getHeight() + 4;
+  xpos = 10;  ypos += myDir->getHeight() + 4;
 #ifndef MAC_OSX
   myStartButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
                                   "Select", kStartCmd);
@@ -179,9 +178,6 @@ string LauncherDialog::selectedRomMD5(string& file)
   if(item < 0 || myGameList->isDir(item))
     return "";
 
-FilesystemNode node(myGameList->path(item));
-file = node.displayName();
-
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
   {
@@ -200,10 +196,7 @@ void LauncherDialog::loadConfig()
   // has been called (and we should reload the list).
   if(myList->getList().isEmpty())
   {
-    // (De)activate browse mode
-    myBrowseModeFlag = instance()->settings().getBool("rombrowse");
-    myPrevDirButton->setEnabled(myBrowseModeFlag);
-    myNoteLabel->setLabel(myBrowseModeFlag ? "Dir:" : "Note:");
+    myPrevDirButton->setEnabled(false);
     myCurrentNode = instance()->settings().getString("romdir");
 
     updateListing();
@@ -215,7 +208,7 @@ void LauncherDialog::loadConfig()
 void LauncherDialog::enableButtons(bool enable)
 {
   myStartButton->setEnabled(enable);
-  myPrevDirButton->setEnabled(enable && myBrowseModeFlag);
+  myPrevDirButton->setEnabled(enable);
   myOptionsButton->setEnabled(enable);
   myQuitButton->setEnabled(enable);
 }
@@ -225,35 +218,16 @@ void LauncherDialog::updateListing(bool fullReload)
 {
   // Start with empty list
   myGameList->clear();
-  myNote->setLabel("");
+  myDir->setLabel("");
 
   string romdir = instance()->settings().getString("romdir");
+  loadDirListing();
 
-  // If in ROM browse mode, just load the current directory and
-  // don't translate by md5sum at all
-  if(myBrowseModeFlag)
-  {
-    loadDirListing();
+  // Only hilite the 'up' button if there's a parent directory
+  myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
-    // Only hilite the 'up' button if there's a parent directory
-    myPrevDirButton->setEnabled(myCurrentNode.hasParent());
-
-    // Show current directory
-    myNote->setLabel(myCurrentNode.path());
-  }
-  else
-  {
-    // Disable buttons, pending a reload from disk
-    enableButtons(false);
-
-    if(FilesystemNode::fileExists(instance()->cacheFile()) && !fullReload)
-      loadListFromCache();
-    else  // we have no other choice
-      loadListFromDisk();
-
-    // Re-enable buttons
-    enableButtons(true);
-  }
+  // Show current directory
+  myDir->setLabel(myCurrentNode.path());
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
@@ -264,40 +238,10 @@ void LauncherDialog::updateListing(bool fullReload)
 
   // Indicate how many files were found
   ostringstream buf;
-  buf << (myBrowseModeFlag ? myGameList->size() -1 : myGameList->size())
-      << " items found";
+  buf << (myGameList->size() - 1) << " items found";
   myRomCount->setLabel(buf.str());
 
-  // Restore last selection
-  if(!myList->getList().isEmpty())
-  {
-    if(myBrowseModeFlag)
-      myList->setSelected(0);
-    else
-    {
-      string lastrom = instance()->settings().getString("lastrom");
-      if(lastrom == "")
-        myList->setSelected(0);
-      else
-      {
-        unsigned int itemToSelect = 0;
-        StringList::const_iterator iter;
-        for (iter = myList->getList().begin(); iter != myList->getList().end();
-             ++iter, ++itemToSelect)
-        {
-          if (lastrom == *iter)
-          {
-            myList->setSelected(itemToSelect);
-            break;
-          }
-        }
-        if(itemToSelect > myList->getList().size())
-          myList->setSelected(0);
-      }
-    }
-  }
-  else
-    myList->setSelected(-1);  // redraw the empty list
+  myList->setSelected(myList->getList().isEmpty() ? -1 : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,6 +271,7 @@ void LauncherDialog::loadDirListing()
   myGameList->sortByName();
 }
 
+/*
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadListFromDisk()
 {
@@ -421,34 +366,30 @@ void LauncherDialog::createListCache()
   }
   out.close();
 }
+*/
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
+  if(!myRomInfoFlag) return;
   int item = myList->getSelected();
-  if(item < 0) return;
+  if(item < 0 || myGameList->isDir(item)) return;
 
-  if(myGameList->isDir(item))
+  if(isValidRomName(myGameList->name(item)))
   {
-    if(myRomInfoFlag)
-      myRomInfoWidget->clearInfo();
-    return;
-  }
+    // Make sure we have a valid md5 for this ROM
+    if(myGameList->md5(item) == "")
+      myGameList->setMd5(item, MD5FromFile(myGameList->path(item)));
 
-  // Make sure we have a valid md5 for this ROM
-  if(myGameList->md5(item) == "")
-    myGameList->setMd5(item, MD5FromFile(myGameList->path(item)));
+    // Get the properties for this entry
+    Properties props;
+    const string& md5 = myGameList->md5(item);
+    instance()->propSet().getMD5(md5, props);
 
-  // Get the properties for this entry
-  Properties props;
-  const string& md5 = myGameList->md5(item);
-  instance()->propSet().getMD5(md5, props);
-
-  if(!myBrowseModeFlag)
-    myNote->setLabel(props.get(Cartridge_Note));
-
-  if(myRomInfoFlag)
     myRomInfoWidget->showInfo(props);
+  }
+  else
+    myRomInfoWidget->clearInfo();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -463,6 +404,22 @@ string LauncherDialog::MD5FromFile(const string& path)
       delete[] image;
 
   return md5;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool LauncherDialog::isValidRomName(const string& filename)
+{
+  string::size_type idx = filename.find_last_of('.');
+  if(idx != string::npos)
+  {
+    string ext = filename.substr(idx+1);
+    return BSPF_strncasecmp(ext.c_str(), "bin", 3) == 0 ||
+           BSPF_strncasecmp(ext.c_str(), "a26", 3) == 0 ||
+           BSPF_strncasecmp(ext.c_str(), "zip", 3) == 0 ||
+           BSPF_strncasecmp(ext.c_str(), "rom", 3) == 0 ||
+           BSPF_strncasecmp(ext.c_str(), "gz", 2)  == 0 ;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -482,7 +439,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         const string& md5 = myGameList->md5(item);
 
         // Directory's should be selected (ie, enter them and redisplay)
-        if(myBrowseModeFlag && myGameList->isDir(item))
+        if(myGameList->isDir(item))
         {
           if(myGameList->name(item) == " [..]")
             myCurrentNode = myCurrentNode.getParent();
@@ -490,11 +447,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             myCurrentNode = rom;
           updateListing();
         }
-        else if(instance()->createConsole(rom, md5))
+        else if(!isValidRomName(rom) || !instance()->createConsole(rom, md5))
         {
-#if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
-          instance()->settings().setString("lastrom", myList->getSelectedString());
-#endif
+          // TODO - show messagebox that ROM couldn't be started
+          cerr << "Error: invalid ROM (name or file)\n";
         }
       }
       break;
@@ -506,7 +462,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPrevDirCmd:
       myCurrentNode = myCurrentNode.getParent();
-      updateListing(!myBrowseModeFlag);  // Force full update in non-browse mode
+      updateListing(false);
       break;
 
     case kListSelectionChangedCmd:
@@ -525,13 +481,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSnapDirChosenCmd:
       // Stub just in case we need it
-      break;
-
-    case kBrowseChangedCmd:
-      myCurrentNode = instance()->settings().getString("romdir");
-      myBrowseModeFlag = instance()->settings().getBool("rombrowse");
-      myPrevDirButton->setEnabled(myBrowseModeFlag);
-      myNoteLabel->setLabel(myBrowseModeFlag ? "Dir:" : "Note:");
       break;
 
     case kReloadRomDirCmd:
