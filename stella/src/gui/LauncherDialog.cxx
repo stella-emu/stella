@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.78 2008-03-12 22:04:52 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.79 2008-03-13 22:58:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -201,6 +201,9 @@ void LauncherDialog::loadConfig()
     updateListing();
   }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
+
+  if(myRomInfoFlag)
+    myRomInfoWidget->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -370,7 +373,7 @@ void LauncherDialog::createListCache()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
-  if(!myRomInfoFlag) return;
+  if(!(myRomInfoFlag && myRomInfoWidget)) return;
   int item = myList->getSelected();
   if(item < 0 || myGameList->isDir(item)) return;
 
@@ -385,10 +388,10 @@ void LauncherDialog::loadRomInfo()
     const string& md5 = myGameList->md5(item);
     instance()->propSet().getMD5(md5, props);
 
-    myRomInfoWidget->showInfo(props);
+    myRomInfoWidget->setProperties(props);
   }
   else
-    myRomInfoWidget->clearInfo();
+    myRomInfoWidget->clearProperties();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -489,7 +492,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kResizeCmd:
       // Instead of figuring out how to resize the snapshot image,
       // we just reload it
-      loadRomInfo();
+      if(myRomInfoFlag)
+      {
+        myRomInfoWidget->initialize();
+        loadRomInfo();
+      }
       break;
 
     default:

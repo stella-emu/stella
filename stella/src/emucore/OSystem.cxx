@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.116 2008-03-03 14:53:34 stephena Exp $
+// $Id: OSystem.cxx,v 1.117 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -318,28 +318,6 @@ bool OSystem::createFrameBuffer(bool showmessage)
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getFilename(const string& path, const Properties& props,
-                            const string& ext) const
-{
-  const string& full_name =
-    path + BSPF_PATH_SEPARATOR + props.get(Cartridge_Name) + "." +
-    props.get(Cartridge_MD5) + "." + ext;
-  const string& rom_name =
-    path + BSPF_PATH_SEPARATOR + props.get(Cartridge_Name) + "." + ext;
-  const string& md5_name =
-    path + BSPF_PATH_SEPARATOR + props.get(Cartridge_MD5) + "." + ext;
-
-  if(FilesystemNode::fileExists(full_name))
-    return full_name;
-  else if(FilesystemNode::fileExists(rom_name))
-    return rom_name;
-  else if(FilesystemNode::fileExists(md5_name))
-    return md5_name;
-  else
-    return EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

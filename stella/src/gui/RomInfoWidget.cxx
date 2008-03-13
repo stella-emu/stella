@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.4 2008-03-08 13:22:12 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.5 2008-03-13 22:58:07 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -31,7 +31,9 @@
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    mySurface(NULL)
+    mySurface(NULL),
+    myDrawSurface(false),
+    myHaveProperties(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_RETAIN_FOCUS;
   _bgcolor = _bgcolorhi = kWidColor;
@@ -40,17 +42,75 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomInfoWidget::~RomInfoWidget()
 {
-  clearInfo(false);
+  if(mySurface)
+  {
+    delete mySurface;
+    mySurface = NULL;
+  }
+  myRomInfo.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::loadConfig()
 {
+  // The ROM may have changed since we were last in the browser, either
+  // by saving a different image or through a change in video renderer,
+  // so we reload the properties
+  if(myHaveProperties)
+  {
+    parseProperties();
+    setDirty(); draw();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::showInfo(const Properties& props)
+void RomInfoWidget::setProperties(const Properties& props)
 {
+  myHaveProperties = true;
+  myProperties = props;
+
+  // Decide whether the information should be shown immediately
+  if(instance()->eventHandler().state() == EventHandler::S_LAUNCHER)
+  {
+    parseProperties();
+    setDirty(); draw();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::clearProperties()
+{
+  myHaveProperties = myDrawSurface = false;
+
+  // Decide whether the information should be shown immediately
+  if(instance()->eventHandler().state() == EventHandler::S_LAUNCHER)
+  {
+    setDirty(); draw();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::initialize()
+{
+  // Delete surface; a new one will be created by parseProperties
+  delete mySurface;
+  mySurface = NULL;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomInfoWidget::parseProperties()
+{
+  // Initialize to empty properties entry
+  mySurfaceErrorMsg = "";
+  myDrawSurface = false;
+  myRomInfo.clear();
+
+  // Check if a surface has ever been created; if so, we use it
+  // The surface will always be the maximum size, but sometimes we'll
+  // only draw certain parts of it
+  if(mySurface == NULL)
+    mySurface = instance()->frameBuffer().createSurface(320, 250);
+
   // The input stream for the PNG file
   ifstream in;
 
@@ -63,11 +123,11 @@ void RomInfoWidget::showInfo(const Properties& props)
   StringList textChucks;
 
   // Get a valid filename representing a snapshot file for this rom
-  const string& path = instance()->settings().getString("ssdir");
-  const string& filename = instance()->getFilename(path, props, "png");
+  const string& filename =
+    instance()->settings().getString("ssdir") + BSPF_PATH_SEPARATOR +
+    myProperties.get(Cartridge_Name) + ".png";
 
   // Open the PNG and check for a valid signature
-  clearInfo(false);
   in.open(filename.c_str(), ios_base::binary);
   if(in)
   {
@@ -76,7 +136,7 @@ void RomInfoWidget::showInfo(const Properties& props)
       uInt8 header[8];
       in.read((char*)header, 8);
       if(!isValidPNGHeader(header))
-        throw "RomInfoWidget: Not a PNG image";
+        throw "Invalid PNG image";
 
       // Read all chunks until we reach the end
       int width = 0, height = 0;
@@ -84,18 +144,19 @@ void RomInfoWidget::showInfo(const Properties& props)
       {
         readPNGChunk(in, type, &data, size);
 
-        if(type == "IHDR" && !parseIHDR(width, height, data, size))
-          throw "RomInfoWidget: IHDR chunk not supported";
+        if(type == "IHDR")
+        {
+          if(!parseIHDR(width, height, data, size))
+            throw "Invalid PNG image (IHDR)";
+
+          mySurface->setClipWidth(width);
+          mySurface->setClipHeight(height);
+        }
         else if(type == "IDAT")
         {
-          // Restrict surface size to available space
-          int s_width = BSPF_min(320, width);
-          int s_height = BSPF_min(250, height);
-
-          FrameBuffer& fb = instance()->frameBuffer();
-          mySurface = fb.createSurface(s_width, s_height);
-          if(!parseIDATChunk(fb, mySurface, width, height, data, size))
-            throw "RomInfoWidget: IDAT processing failed";
+          if(!parseIDATChunk(instance()->frameBuffer(), mySurface,
+                             width, height, data, size))
+            throw "PNG image too large";
         }
         else if(type == "tEXt")
           textChucks.push_back(parseTextChunk(data, size));
@@ -104,41 +165,32 @@ void RomInfoWidget::showInfo(const Properties& props)
       }
 
       in.close();
+      myDrawSurface = true;
     }
-    catch(const char *msg)
+    catch(const char* msg)
     {
-      clearInfo(false);
+      myDrawSurface = false;
+      myRomInfo.clear();
       if(data) delete[] data;
       data = NULL;
+      in.close();
 
-      cerr << msg << endl;
+      mySurfaceErrorMsg = msg;
+      return;
     }
   }
+  else
+    mySurfaceErrorMsg = "No image found";
+
   // Now add some info for the message box below the image
-  myRomInfo.push_back("Name:  " + props.get(Cartridge_Name));
-  myRomInfo.push_back("Manufacturer:  " + props.get(Cartridge_Manufacturer));
-  myRomInfo.push_back("Model:  " + props.get(Cartridge_ModelNo));
-  myRomInfo.push_back("Rarity:  " + props.get(Cartridge_Rarity));
-  myRomInfo.push_back("Note:  " + props.get(Cartridge_Note));
-  myRomInfo.push_back("Controllers:  " + props.get(Controller_Left) +
-                      " (left), " + props.get(Controller_Right) + " (right)");
+  myRomInfo.push_back("Name:  " + myProperties.get(Cartridge_Name));
+  myRomInfo.push_back("Manufacturer:  " + myProperties.get(Cartridge_Manufacturer));
+  myRomInfo.push_back("Model:  " + myProperties.get(Cartridge_ModelNo));
+  myRomInfo.push_back("Rarity:  " + myProperties.get(Cartridge_Rarity));
+  myRomInfo.push_back("Note:  " + myProperties.get(Cartridge_Note));
+  myRomInfo.push_back("Controllers:  " + myProperties.get(Controller_Left) +
+                      " (left), " + myProperties.get(Controller_Right) + " (right)");
   // TODO - add the PNG tEXt chunks
-
-  setDirty(); draw();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomInfoWidget::clearInfo(bool redraw)
-{
-  if(mySurface)
-    delete mySurface;
-  mySurface = NULL;
-  myRomInfo.clear();
-
-  if(redraw)
-  {
-    setDirty(); draw();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,11 +202,18 @@ void RomInfoWidget::drawWidget(bool hilite)
   fb.box(_x, _y, _w, _h, kColor, kShadowColor);
   fb.box(_x, _y+254, _w, _h-254, kColor, kShadowColor);
 
-  if(mySurface)
+  if(!myHaveProperties) return;
+
+  if(myDrawSurface && mySurface)
   {
-    int x = (_w - mySurface->getWidth()) >> 1;
-    int y = (256 - mySurface->getHeight()) >> 1;
+    int x = (_w - mySurface->getClipWidth()) >> 1;
+    int y = (256 - mySurface->getClipHeight()) >> 1;
     fb.drawSurface(mySurface, x + getAbsX(), y + getAbsY());
+  }
+  else if(mySurfaceErrorMsg != "")
+  {
+    int x = _x + ((_w - _font->getStringWidth(mySurfaceErrorMsg)) >> 1);
+    fb.drawString(_font, mySurfaceErrorMsg, x, 120, _w - 10, _textcolor);
   }
   int xpos = _x + 5, ypos = _y + 256 + 5;
   for(unsigned int i = 0; i < myRomInfo.size(); ++i)
@@ -208,6 +267,10 @@ bool RomInfoWidget::parseIHDR(int& width, int& height, uInt8* data, int size)
   width  = data[0] << 24 | data[1] << 16 | data[2] << 8 | data[3];
   height = data[4] << 24 | data[5] << 16 | data[6] << 8 | data[7];
 
+  // Make sure image can fit in widget bounds
+  width  = BSPF_min(320, width);
+  height = BSPF_min(250, height);
+
   uInt8 trailer[5] = { 8, 2, 0, 0, 0 };  // 24-bit RGB
   return memcmp(trailer, data + 8, 5) == 0;
 }
@@ -220,27 +283,20 @@ bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
   uLongf bufsize = (width * 3 + 1) * height;
   uInt8* buffer = new uInt8[bufsize];
 
-  // Only get as many scanlines as necessary to fill the surface
-  height = BSPF_min(250, height);
-
+  int pitch = width * 3;  // bytes per line of the image
   if(uncompress(buffer, &bufsize, data, size) == Z_OK)
   {
     uInt8* buf_ptr = buffer;
-    int pitch = width * 3;  // bytes per line of the image
     for(int row = 0; row < height; row++, buf_ptr += pitch)
     {
       buf_ptr++;           // skip past first byte (PNG filter type)
-      fb.bytesToSurface(surface, row, buf_ptr);
+      fb.bytesToSurface(surface, row, buf_ptr, pitch);
     }
+    delete[] buffer;
+    return true;
   }
-  else
-  {
-    cerr << "RomInfoWidget: error decompressing data\n";
-    return false;
-  }
-
   delete[] buffer;
-  return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.49 2008-02-06 13:45:19 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.50 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.49 2008-02-06 13:45:19 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.50 2008-03-13 22:58:06 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -189,11 +189,13 @@ class FrameBufferSoft : public FrameBuffer
       This method should be called to convert and copy a given row of RGB
       data into an SDL surface.
 
-      @param surface The data to draw
-      @param row     The row of the surface the data should be placed in
-      @param data    The data in uInt8 R/G/B format
+      @param surface  The data to draw
+      @param row      The row of the surface the data should be placed in
+      @param data     The data in uInt8 R/G/B format
+      @param rowbytes The number of bytes in row of 'data'
     */
-    void bytesToSurface(GUI::Surface* surface, int row, uInt8* data) const;
+    void bytesToSurface(GUI::Surface* surface, int row,
+                        uInt8* data, int rowbytes) const;
 
     /**
       This method translates the given coordinates to their

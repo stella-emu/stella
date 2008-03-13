@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.98 2008-03-08 13:22:12 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.99 2008-03-13 22:58:05 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -578,23 +578,27 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
 {
-  SDL_Rect clip;
-  clip.x = x;
-  clip.y = y;
+  SDL_Rect dstrect;
+  dstrect.x = x;
+  dstrect.y = y;
+  SDL_Rect srcrect;
+  srcrect.x = 0;
+  srcrect.y = 0;
+  srcrect.w = surface->myClipWidth;
+  srcrect.h = surface->myClipHeight;
 
-  SDL_BlitSurface(surface->myData, 0, myTexture, &clip);
+  SDL_BlitSurface(surface->myData, &srcrect, myTexture, &dstrect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::bytesToSurface(GUI::Surface* surface, int row,
-                                   uInt8* data) const
+                                   uInt8* data, int rowbytes) const
 {
   SDL_Surface* s = surface->myData;
   uInt16* pixels = (uInt16*) s->pixels;
   pixels += (row * s->pitch/2);
 
-  int rowsize = surface->getWidth() * 3;
-  for(int c = 0; c < rowsize; c += 3)
+  for(int c = 0; c < rowbytes; c += 3)
     *pixels++ = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
 }
 

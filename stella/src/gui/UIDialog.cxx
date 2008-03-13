@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.9 2008-02-06 13:45:24 stephena Exp $
+// $Id: UIDialog.cxx,v 1.10 2008-03-13 22:58:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -128,6 +128,11 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
+  // ROM info viewer
+  xpos += ((_w - 40 - font.getStringWidth("ROM Info viewer (*)")) >> 1);
+  myRomViewerCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+                                           "ROM Info viewer (*)", 0);
+
   // Add message concerning usage
   lwidth = font.getStringWidth("(*) Requires application restart");
   new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
@@ -212,6 +217,10 @@ void UIDialog::loadConfig()
   int i = instance()->settings().getInt("uipalette");
   if(i < 1 || i > 2) i = 1;
   myPalettePopup->setSelectedTag(i);
+
+  // ROM info viewer
+  bool b = instance()->settings().getBool("romviewer");
+  myRomViewerCheckbox->setState(b);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -233,13 +242,17 @@ void UIDialog::saveConfig()
   // UI palette
   instance()->settings().setInt("uipalette",
     myPalettePopup->getSelectedTag());
+
+  // ROM info viewer
+  instance()->settings().setBool("romviewer", 
+    myRomViewerCheckbox->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::setDefaults()
 {
-  int w = BSPF_min(instance()->desktopWidth(), (const uInt32) 400);
-  int h = BSPF_min(instance()->desktopHeight(), (const uInt32) 300);
+  int w = BSPF_min(instance()->desktopWidth(), 400u);
+  int h = BSPF_min(instance()->desktopHeight(), 300u);
   myLauncherWidthSlider->setValue(w);
   myLauncherWidthLabel->setValue(w);
   myLauncherHeightSlider->setValue(h);

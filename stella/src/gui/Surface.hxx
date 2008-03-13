@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Surface.hxx,v 1.2 2008-02-06 13:45:24 stephena Exp $
+// $Id: Surface.hxx,v 1.3 2008-03-13 22:58:07 stephena Exp $
 //============================================================================
 
 #ifndef GUI_SURFACE_HXX
@@ -26,25 +26,35 @@ namespace GUI {
 /**
   This class is basically a thin wrapper around an SDL_Surface structure.
   We do it this way so the SDL stuff won't be dragged into the depths of
-  the codebase.
+  the codebase.  Although everything is public and SDL structures can be
+  used directly, it's recommended to only access the variables from the
+  advertised interface, or from FrameBuffer-derived classes.
 
   @author  Stephen Anthony
-  @version $Id: Surface.hxx,v 1.2 2008-02-06 13:45:24 stephena Exp $
+  @version $Id: Surface.hxx,v 1.3 2008-03-13 22:58:07 stephena Exp $
 */
 class Surface
 {
-  friend class FrameBuffer;
-
   public:
     Surface(int width, int height, SDL_Surface* surface);
     virtual ~Surface();
 
-    int getWidth() const  { return myBaseWidth;  }
-    int getHeight() const { return myBaseHeight; }
+    /** Actual width and height of the SDL surface */
+    inline int getWidth() const  { return myBaseWidth;  }
+    inline int getHeight() const { return myBaseHeight; }
+
+    /** Clipped/drawn width and height of the SDL surface */
+    inline int getClipWidth() const  { return myClipWidth;  }
+    inline int getClipHeight() const { return myClipHeight; }
+    inline void setClipWidth(int w)  { myClipWidth = w;  }
+    inline void setClipHeight(int h) { myClipHeight = h; }
 
   public:
     int myBaseWidth;
     int myBaseHeight;
+
+    int myClipWidth;
+    int myClipHeight;
 
     SDL_Surface* myData;
 };

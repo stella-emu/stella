@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.6 2008-02-06 13:45:24 stephena Exp $
+// $Id: UIDialog.hxx,v 1.7 2008-03-13 22:58:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 class CommandSender;
 class Dialog;
 class DialogContainer;
+class CheckboxWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -55,6 +56,8 @@ class UIDialog : public Dialog
 
     PopUpWidget* myPalettePopup;
 
+    CheckboxWidget* myRomViewerCheckbox;
+    
   private:
     void loadConfig();
     void saveConfig();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.40 2008-03-02 19:20:50 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.41 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -329,10 +329,8 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::handleResizeEvent()
 {
-  // Send resize events to all dialogs
-  // It's up to a specific dialog to actually listen
-  for(int i = 0; i < myDialogStack.size(); i++)
-    myDialogStack[i]->handleCommand(NULL, kResizeCmd, 0, 0);
+  // Send resize event to base dialog; it's up to the dialog to actually listen
+  myBaseDialog->handleCommand(NULL, kResizeCmd, 0, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

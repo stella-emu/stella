@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.hxx,v 1.3 2008-02-06 13:45:24 stephena Exp $
+// $Id: RomInfoWidget.hxx,v 1.4 2008-03-13 22:58:07 stephena Exp $
 //============================================================================
 
 #ifndef ROM_INFO_WIDGET_HXX
@@ -37,14 +37,16 @@ class RomInfoWidget : public Widget
                   int x, int y, int w, int h);
     virtual ~RomInfoWidget();
 
-    void showInfo(const Properties& props);
-    void clearInfo(bool redraw = true);
+    void setProperties(const Properties& props);
+    void clearProperties();
+    void initialize();
+    void loadConfig();
 
   protected:
-    void loadConfig();
     void drawWidget(bool hilite);
 
   private:
+    void parseProperties();
     static bool isValidPNGHeader(uInt8* header);
     static void readPNGChunk(ifstream& in, string& type, uInt8** data, int& size);
     static bool parseIHDR(int& width, int& height, uInt8* data, int size);
@@ -56,8 +58,20 @@ class RomInfoWidget : public Widget
     // Surface holding the scaled PNG image
     GUI::Surface* mySurface;
 
+    // Whether the surface should be redrawn by drawWidget()
+    bool myDrawSurface;
+
     // Some ROM properties info, as well as 'tEXt' chunks from the PNG image
     StringList myRomInfo;
+
+    // The properties for the currently selected ROM
+    Properties myProperties;
+
+    // Indicates if the current properties should actually be used
+    bool myHaveProperties;
+
+    // Indicates if an error occurred in creating/displaying the surface
+    string mySurfaceErrorMsg;
 };
 
 #endif

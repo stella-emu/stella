@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.76 2008-02-19 12:33:02 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.77 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -640,51 +640,33 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
 {
-  SDL_Rect clip;
-  clip.x = x * myZoomLevel + myImageDim.x;
-  clip.y = y * myZoomLevel + myImageDim.y;
-  
-  SDL_BlitSurface(surface->myData, 0, myScreen, &clip);
+  SDL_Rect dstrect;
+  dstrect.x = x * myZoomLevel + myImageDim.x;
+  dstrect.y = y * myZoomLevel + myImageDim.y;
+  SDL_Rect srcrect;
+  srcrect.x = 0;
+  srcrect.y = 0;
+  srcrect.w = surface->myClipWidth * myZoomLevel;
+  srcrect.h = surface->myClipHeight * myZoomLevel;
+
+  SDL_BlitSurface(surface->myData, &srcrect, myScreen, &dstrect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::bytesToSurface(GUI::Surface* surface, int row,
-                                     uInt8* data) const
+                                     uInt8* data, int rowbytes) const
 {
+  // Calculate a scanline of zoomed surface data
   SDL_Surface* s = surface->myData;
-  int rowbytes = s->w * 3;
-  row *= myZoomLevel;
-
-  switch(myBytesPerPixel)
+  SDL_Rect rect;
+  rect.x = 0;
+  rect.y = row * myZoomLevel;
+  for(int c = 0; c < rowbytes; c += 3)
   {
-    case 2:
-    {
-      uInt16* pixels = (uInt16*) s->pixels;
-      int surfbytes = s->pitch/2;
-      pixels += (row * surfbytes);
-      uInt8* pixel_ptr = (uInt8*)pixels;
-
-      // Calculate a scanline of zoomed surface data
-      for(int c = 0; c < rowbytes/myZoomLevel; c += 3)
-      {
-        uInt32 pixel = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
-        uInt32 xstride = myZoomLevel;
-        while(xstride--)
-          *pixels++ = pixel;
-      }
-
-      // Now duplicate the scanlines (we've already done the first one)
-      uInt32 ystride = myZoomLevel-1;
-      while(ystride--)
-      {
-        memcpy(pixel_ptr + s->pitch, pixel_ptr, s->pitch);
-        pixel_ptr += s->pitch;
-      }
-      break;
-    }
-
-    default:
-      break;
+    uInt32 pixel = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
+    rect.x += myZoomLevel;
+    rect.w = rect.h = myZoomLevel;
+    SDL_FillRect(surface->myData, &rect, pixel);
   }
 }
 

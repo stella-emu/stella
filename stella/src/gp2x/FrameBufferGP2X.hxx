@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.12 2008-02-20 00:17:49 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.13 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.12 2008-02-20 00:17:49 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.13 2008-03-13 22:58:06 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {
@@ -191,12 +191,13 @@ class FrameBufferGP2X : public FrameBuffer
       This method should be called to convert and copy a given row of RGB
       data into an SDL surface.
 
-      @param surface The data to draw
-      @param row     The row of the surface the data should be placed in
-      @param data    The data in uInt8 R/G/B format
+      @param surface  The data to draw
+      @param row      The row of the surface the data should be placed in
+      @param data     The data in uInt8 R/G/B format
+      @param rowbytes The number of bytes in row of 'data'
     */
-    void bytesToSurface(GUI::Surface* surface, int row, uInt8* data) const;
-
+    void bytesToSurface(GUI::Surface* surface, int row,
+                        uInt8* data, int rowbytes) const;
 
     /**
       This method translates the given coordinates to their

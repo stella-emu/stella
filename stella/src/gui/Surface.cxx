@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Surface.cxx,v 1.2 2008-02-06 13:45:24 stephena Exp $
+// $Id: Surface.cxx,v 1.3 2008-03-13 22:58:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,8 @@ namespace GUI {
 Surface::Surface(int width, int height, SDL_Surface* data)
   : myBaseWidth(width),
     myBaseHeight(height),
+    myClipWidth(width),
+    myClipHeight(height),
     myData(data)
 {
 }

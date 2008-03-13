@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.217 2008-03-03 16:14:50 stephena Exp $
+// $Id: EventHandler.cxx,v 1.218 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -756,7 +756,8 @@ void EventHandler::poll(uInt32 time)
     myOverlay->updateTime(time);
   }
 
-  // Turn off relative events
+  // Turn off relative events; we assume they've been taken care of
+  // in at least one of the ::update() methods above
   myEvent->set(Event::MouseAxisXValue, 0);
   myEvent->set(Event::MouseAxisYValue, 0);
 }
@@ -898,8 +899,10 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
 void EventHandler::handleResizeEvent()
 {
   // For now, only the overlay cares about resize events
-  if(myOverlay != NULL)
-    myOverlay->handleResizeEvent();
+  // We don't know which one wants it, so we send it to all of them
+  // These events need to be sent even if the overlay isn't active
+  if(&myOSystem->launcher())
+    myOSystem->launcher().handleResizeEvent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1800,8 +1803,7 @@ void EventHandler::takeSnapshot()
   if(sspath.length() > 0)
     if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
       sspath += BSPF_PATH_SEPARATOR;
-  sspath += myOSystem->console().properties().get(Cartridge_Name) + "." +
-            myOSystem->console().properties().get(Cartridge_MD5);
+  sspath += myOSystem->console().properties().get(Cartridge_Name);
 
   // Check whether we want multiple snapshots created
   if(!myOSystem->settings().getBool("sssingle"))

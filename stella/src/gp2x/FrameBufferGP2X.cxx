@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.25 2008-02-20 00:17:49 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.26 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -345,19 +345,21 @@ void FrameBufferGP2X::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGP2X::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
 {
+/* TODO - not supported yet
   SDL_Rect clip;
   clip.x = x;
   clip.y = y;
 
   SDL_BlitSurface(surface->myData, 0, myScreen, &clip);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGP2X::bytesToSurface(GUI::Surface* surface, int row,
-                                     uInt8* data) const
+                                     uInt8* data, int rowbytes) const
 {
+/* TODO - not supported yet
   SDL_Surface* s = surface->myData;
-  int rowbytes = s->w * 3;
 
   uInt16* pixels = (uInt16*) s->pixels;
   int surfbytes = s->pitch/2;
@@ -369,6 +371,7 @@ void FrameBufferGP2X::bytesToSurface(GUI::Surface* surface, int row,
     uInt32 pixel = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
     *pixels++ = pixel;
   }
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

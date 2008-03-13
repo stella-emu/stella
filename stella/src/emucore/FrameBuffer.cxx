@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.125 2008-02-06 13:45:21 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.126 2008-03-13 22:58:06 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -456,19 +456,13 @@ void FrameBuffer::setCursorState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showCursor(bool show)
 {
-  if(show)
-    SDL_ShowCursor(SDL_ENABLE);
-  else
-    SDL_ShowCursor(SDL_DISABLE);
+  SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::grabMouse(bool grab)
 {
-  if(grab)
-    SDL_WM_GrabInput(SDL_GRAB_ON);
-  else
-    SDL_WM_GrabInput(SDL_GRAB_OFF);
+  SDL_WM_GrabInput(grab ? SDL_GRAB_ON : SDL_GRAB_OFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
