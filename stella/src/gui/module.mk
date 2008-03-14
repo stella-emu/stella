@@ -25,6 +25,7 @@ MODULE_OBJS := \
 	src/gui/OptionsDialog.o \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \
+	src/gui/RomAuditDialog.o \
 	src/gui/RomInfoWidget.o \
 	src/gui/ScrollBarWidget.o \
 	src/gui/Surface.o \

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.27 2008-03-12 22:04:53 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.28 2008-03-14 15:23:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,6 +30,7 @@ class AudioDialog;
 class InputDialog;
 class UIDialog;
 class FileSnapDialog;
+class RomAuditDialog;
 class GameInfoDialog;
 class CheatCodeDialog;
 class HelpDialog;
@@ -57,6 +58,7 @@ class OptionsDialog : public Dialog
     InputDialog*     myInputDialog;
     UIDialog*        myUIDialog;
     FileSnapDialog*  myFileSnapDialog;
+    RomAuditDialog*  myRomAuditDialog;
     GameInfoDialog*  myGameInfoDialog;
     CheatCodeDialog* myCheatCodeDialog;
     HelpDialog*      myHelpDialog;
@@ -66,6 +68,7 @@ class OptionsDialog : public Dialog
     ButtonWidget* myAudioSettingsButton;
     ButtonWidget* myUIButton;
     ButtonWidget* myFileSnapButton;
+    ButtonWidget* myRomAuditButton;
     ButtonWidget* myGameInfoButton;
     ButtonWidget* myCheatCodeButton;
     ButtonWidget* myHelpButton;
@@ -80,6 +83,7 @@ class OptionsDialog : public Dialog
       kInptCmd     = 'INPT',
       kUsrIfaceCmd = 'URIF',
       kFileSnapCmd = 'FLSN',
+      kAuditCmd    = 'RAUD',
       kInfoCmd     = 'INFO',
       kCheatCmd    = 'CHET',
       kHelpCmd     = 'HELP',
@@ -91,7 +95,7 @@ class OptionsDialog : public Dialog
       kRowHeight      = 22,
       kBigButtonWidth = 90,
       kMainMenuWidth  = (2*kBigButtonWidth + 30),
-      kMainMenuHeight = 5*kRowHeight + 15
+      kMainMenuHeight = 6*kRowHeight + 15
     };
 };
 
