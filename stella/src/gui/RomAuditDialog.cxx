@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.2 2008-03-14 19:34:56 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.3 2008-03-14 23:52:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,8 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   const int vBorder = 8;
   const int bwidth  = font.getStringWidth("Audit path:") + 20,
             bheight = font.getLineHeight() + 4,
-            fontHeight = font.getLineHeight();
+            fontHeight = font.getLineHeight(),
+            lwidth = font.getStringWidth("ROMs with properties (renamed): ");
   int xpos = vBorder, ypos = vBorder;
   WidgetArray wid;
   ButtonWidget* b;
@@ -58,15 +59,25 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
-  xpos = 10;  ypos += bheight;
-  myResults1 = new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
-                                    "", kTextAlignLeft);
+  xpos = vBorder + 10;  ypos += bheight + 10;
+  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+                       "ROMs with properties (renamed): ", kTextAlignLeft);
+  myResults1 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
+                                    _w - lwidth - 20, fontHeight, "",
+                                    kTextAlignLeft);
   myResults1->setFlags(WIDGET_CLEARBG);
   ypos += bheight;
-  myResults2 = new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
-                                    "", kTextAlignLeft);
+  new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
+                       "ROMs without properties: ", kTextAlignLeft);
+  myResults2 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
+                                    _w - lwidth - 20, fontHeight, "",
+                                    kTextAlignLeft);
   myResults2->setFlags(WIDGET_CLEARBG);
 
+  ypos += bheight + 8;
+  new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
+                       "(*) Warning: this operation cannot be undone",
+                       kTextAlignLeft);
 
   // Add OK & Cancel buttons
 #ifndef MAC_OSX
@@ -101,12 +112,16 @@ RomAuditDialog::~RomAuditDialog()
 void RomAuditDialog::loadConfig()
 {
   myRomPath->setEditString(instance()->settings().getString("romdir"));
+  myResults1->setLabel("");
+  myResults2->setLabel("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::auditRoms()
 {
   const string& auditPath = myRomPath->getEditString();
+  myResults1->setLabel("");
+  myResults2->setLabel("");
 
   FilesystemNode node(auditPath);
   FSList files = node.listDir(FilesystemNode::kListFilesOnly);
@@ -115,7 +130,7 @@ void RomAuditDialog::auditRoms()
   // the ROMs, since this is usually a time-consuming operation
   ProgressDialog progress(this, instance()->launcherFont(),
                           "Auditing ROM files ...");
-  progress.setRange(0, files.size() - 1, 10);
+  progress.setRange(0, files.size() - 1, 5);
 
   // Create a entry for the GameList for each file
   Properties props;
@@ -133,11 +148,11 @@ void RomAuditDialog::auditRoms()
       const string& name = props.get(Cartridge_Name);
 
       // Only rename the file if we found a valid properties entry
-      if(name != "" && name != files[idx].path())
+      if(name != "" && name != files[idx].displayName())
       {
         const string& newfile =
           auditPath + BSPF_PATH_SEPARATOR + name + "." + extension;
-        if(FilesystemNode::rename(files[idx].path(), newfile))
+        if(FilesystemNode::renameFile(files[idx].path(), newfile))
           renamed++;
       }
       else
@@ -149,9 +164,8 @@ void RomAuditDialog::auditRoms()
   }
   progress.done();
 
-  cerr << "scanned files: " << (files.size() - 1) << endl;
-  cerr << "renamed files: " << renamed << endl;
-  cerr << "files without properties: " << notfound << endl;
+  myResults1->setValue(renamed);
+  myResults2->setValue(notfound);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -184,6 +198,8 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
     {
       FilesystemNode dir(myBrowser->getResult());
       myRomPath->setEditString(dir.path());
+      myResults1->setLabel("");
+      myResults2->setLabel("");
       break;
     }
 

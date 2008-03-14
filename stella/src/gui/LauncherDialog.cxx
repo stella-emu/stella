@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.80 2008-03-14 19:34:56 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.81 2008-03-14 23:52:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -278,10 +278,11 @@ void LauncherDialog::loadRomInfo()
 {
   if(!(myRomInfoFlag && myRomInfoWidget)) return;
   int item = myList->getSelected();
-  if(item < 0 || myGameList->isDir(item)) return;
+  if(item < 0) return;
 
   string extension;
-  if(instance()->isValidRomName(myGameList->name(item), extension))
+  if(!myGameList->isDir(item) &&
+     instance()->isValidRomName(myGameList->name(item), extension))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")

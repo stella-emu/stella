@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.66 2008-03-14 15:23:23 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.67 2008-03-14 23:52:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -135,7 +135,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   myFileSnapDialog = new FileSnapDialog(myOSystem, parent, font,
                                         boss, x, y, w, h);
 
-  w = 280; h = 120;
+  w = 240; h = 115;
   myRomAuditDialog = new RomAuditDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 255; h = 190;

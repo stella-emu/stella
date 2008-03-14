@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.13 2008-03-14 19:34:56 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.14 2008-03-14 23:52:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -282,10 +282,8 @@ bool AbstractFilesystemNode::makeDir(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractFilesystemNode::rename(const string& oldpath,
-                                    const string& newpath)
+bool AbstractFilesystemNode::renameFile(const string& oldfile,
+                                        const string& newfile)
 {
-  cerr << "rename: " << oldpath << " -> " << newpath << endl;
-  // TODO - implement this
-  return false;
+  return MoveFile(oldfile.c_str(), newfile.c_str()) != 0;
 }

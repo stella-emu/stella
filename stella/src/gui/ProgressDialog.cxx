@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.11 2008-02-06 13:45:24 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.12 2008-03-14 23:52:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,10 +56,8 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
 
   xpos = fontWidth; ypos += 2 * lineHeight;
   mySlider = new SliderWidget(this, font, xpos, ypos, lwidth, lineHeight, "", 0, 0);
-  mySlider->setMinValue(100);
-  mySlider->setMaxValue(200);
-  mySlider->setValue(100);  // Prevents the slider from initially drawing
-                            // across the entire screen for a split-second
+  mySlider->setMinValue(1);
+  mySlider->setMaxValue(100);
 
   parent()->addDialog(this);
   instance()->frameBuffer().update();
@@ -87,20 +85,19 @@ void ProgressDialog::setRange(int start, int finish, int step)
 {
   myStart = start;
   myFinish = finish;
-  myStep = step;
-  myCurrentStep = 100;
+  myStep = (int)((step / 100.0) * (myFinish - myStart + 1));
+
+  mySlider->setMinValue(myStart);
+  mySlider->setMaxValue(myFinish);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::setProgress(int progress)
 {
   // Only increase the progress bar if we have arrived at a new step
-  // IE, we only increase in intervals specified by setRange()
-  int p = (int) (((double)progress / myFinish) * 100 + 100);
-  if(p >= myCurrentStep)
+  if(progress - mySlider->getValue() > myStep)
   {
-    myCurrentStep += myStep;
-    mySlider->setValue(p);
+    mySlider->setValue(progress);
     instance()->frameBuffer().update();
   }
 }

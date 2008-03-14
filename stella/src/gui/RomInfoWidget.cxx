@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.5 2008-03-13 22:58:07 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.6 2008-03-14 23:52:17 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -176,7 +176,6 @@ void RomInfoWidget::parseProperties()
       in.close();
 
       mySurfaceErrorMsg = msg;
-      return;
     }
   }
   else

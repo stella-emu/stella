@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.14 2008-03-14 19:34:56 stephena Exp $
+// $Id: FSNode.hxx,v 1.15 2008-03-14 23:52:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -141,9 +141,9 @@ class AbstractFilesystemNode
     static bool makeDir(const string& path);
 
     /**
-      Rename the given file/directory with a new name.
+      Rename the given file with a new name.
      */
-    static bool rename(const string& oldpath, const string& newpath);
+    static bool renameFile(const string& oldfile, const string& newfile);
 
     /* TODO:
     bool isReadable();

@@ -486,7 +486,7 @@
 ""
 
 "Cartridge.MD5" "069c17beb1e8e0557adb8539fdcf6cba"
-"Cartridge.Name" "Phantom II / Pirate (PAL60)"
+"Cartridge.Name" "Phantom II & Pirate (PAL60)"
 "Cartridge.Rarity" "Homebrew"
 "Display.Format" "PAL60"
 ""
@@ -9342,7 +9342,7 @@
 
 "Cartridge.MD5" "84df0704e6c777e1f9a16ec92ad80df0"
 "Cartridge.Manufacturer" "Gray Games & AtariAge"
-"Cartridge.Name" "E.T. Book Cart (PAL/60)"
+"Cartridge.Name" "E.T. Book Cart (PAL60)"
 "Cartridge.Note" "Charles F. Gray & Michael Rideout"
 "Display.Format" "PAL60"
 "Display.YStart" "15"
@@ -16113,7 +16113,7 @@
 ""
 
 "Cartridge.MD5" "e959b5a2c882ccaacb43c32790957c2d"
-"Cartridge.Name" "Phantom II / Pirate (NTSC)"
+"Cartridge.Name" "Phantom II & Pirate (NTSC)"
 "Cartridge.Rarity" "Homebrew"
 ""
 
