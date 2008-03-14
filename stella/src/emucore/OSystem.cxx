@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.117 2008-03-13 22:58:06 stephena Exp $
+// $Id: OSystem.cxx,v 1.118 2008-03-14 19:34:56 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -564,6 +564,36 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::isValidRomName(const string& filename, string& extension)
+{
+  string::size_type idx = filename.find_last_of('.');
+  if(idx != string::npos)
+  {
+    extension = filename.substr(idx+1);
+    return BSPF_strncasecmp(extension.c_str(), "bin", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "a26", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "zip", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "rom", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "gz", 2)  == 0 ;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystem::MD5FromFile(const string& filename)
+{
+  uInt8* image;
+  int size = -1;
+  string md5 = "";
+
+  if(openROM(filename, md5, &image, &size))
+    if(size != -1)
+      delete[] image;
+
+  return md5;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

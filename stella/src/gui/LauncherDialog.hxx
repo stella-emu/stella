@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.33 2008-03-12 22:04:53 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.34 2008-03-14 19:34:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,13 +61,6 @@ class LauncherDialog : public Dialog
     */
     string selectedRomMD5();
 
-    /**
-      Is this a valid ROM filename (does it have a valid extension?)
-
-      @param filename  Filename of potential ROM file
-     */
-    static bool isValidRomName(const string& filename);
-
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
@@ -95,7 +88,6 @@ class LauncherDialog : public Dialog
     void enableButtons(bool enable);
     void loadDirListing();
     void loadRomInfo();
-    string MD5FromFile(const string& path);
 
   private:
     int mySelectedItem;

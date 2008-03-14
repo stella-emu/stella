@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeGP2X.cxx,v 1.6 2008-02-06 13:45:23 stephena Exp $
+// $Id: FSNodeGP2X.cxx,v 1.7 2008-03-14 19:34:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -226,4 +226,12 @@ bool AbstractFilesystemNode::dirExists(const string& path)
 bool AbstractFilesystemNode::makeDir(const string& path)
 {
   return mkdir(path.c_str(), 0777) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::rename(const string& oldpath,
+                                    const string& newpath)
+{
+  // TODO - implement this
+  return false;
 }

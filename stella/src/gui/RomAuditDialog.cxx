@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.1 2008-03-14 15:23:24 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.2 2008-03-14 19:34:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,7 +24,10 @@
 #include "BrowserDialog.hxx"
 #include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
+#include "ProgressDialog.hxx"
 #include "FSNode.hxx"
+#include "Props.hxx"
+#include "PropsSet.hxx"
 #include "Settings.hxx"
 
 #include "RomAuditDialog.hxx"
@@ -70,11 +73,11 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Audit", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
+  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Close", kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 #else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
+  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Close", kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
   b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Audit", kOKCmd);
@@ -103,7 +106,52 @@ void RomAuditDialog::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::auditRoms()
 {
-  cerr << "do rom audit\n";
+  const string& auditPath = myRomPath->getEditString();
+
+  FilesystemNode node(auditPath);
+  FSList files = node.listDir(FilesystemNode::kListFilesOnly);
+
+  // Create a progress dialog box to show the progress of processing
+  // the ROMs, since this is usually a time-consuming operation
+  ProgressDialog progress(this, instance()->launcherFont(),
+                          "Auditing ROM files ...");
+  progress.setRange(0, files.size() - 1, 10);
+
+  // Create a entry for the GameList for each file
+  Properties props;
+  int renamed = 0, notfound = 0;
+  for(unsigned int idx = 0; idx < files.size(); idx++)
+  {
+    string extension;
+    if(!files[idx].isDirectory() &&
+       instance()->isValidRomName(files[idx].path(), extension))
+    {
+      // Calculate the MD5 so we can get the rest of the info
+      // from the PropertiesSet (stella.pro)
+      const string& md5 = instance()->MD5FromFile(files[idx].path());
+      instance()->propSet().getMD5(md5, props);
+      const string& name = props.get(Cartridge_Name);
+
+      // Only rename the file if we found a valid properties entry
+      if(name != "" && name != files[idx].path())
+      {
+        const string& newfile =
+          auditPath + BSPF_PATH_SEPARATOR + name + "." + extension;
+        if(FilesystemNode::rename(files[idx].path(), newfile))
+          renamed++;
+      }
+      else
+        notfound++;
+    }
+
+    // Update the progress bar, indicating one more ROM has been processed
+    progress.setProgress(idx);
+  }
+  progress.done();
+
+  cerr << "scanned files: " << (files.size() - 1) << endl;
+  cerr << "renamed files: " << renamed << endl;
+  cerr << "files without properties: " << notfound << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

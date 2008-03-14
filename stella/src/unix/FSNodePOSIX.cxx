@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.12 2008-02-06 13:45:24 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.13 2008-03-14 19:34:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -230,4 +230,13 @@ bool AbstractFilesystemNode::dirExists(const string& path)
 bool AbstractFilesystemNode::makeDir(const string& path)
 {
   return mkdir(path.c_str(), 0777) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AbstractFilesystemNode::rename(const string& oldpath,
+                                    const string& newpath)
+{
+  cerr << "rename: " << oldpath << " -> " << newpath << endl;
+  // TODO - implement this
+  return true;
 }

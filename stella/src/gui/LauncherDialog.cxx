@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.79 2008-03-13 22:58:06 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.80 2008-03-14 19:34:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,7 +31,6 @@
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "OSystem.hxx"
-#include "ProgressDialog.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
@@ -174,15 +173,16 @@ LauncherDialog::~LauncherDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string LauncherDialog::selectedRomMD5()
 {
+  string extension;
   int item = myList->getSelected();
   if(item < 0 || myGameList->isDir(item) ||
-     !isValidRomName(myGameList->name(item)))
+     !instance()->isValidRomName(myGameList->name(item), extension))
     return "";
 
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
   {
-    const string& md5 = MD5FromFile(myGameList->path(item));
+    const string& md5 = instance()->MD5FromFile(myGameList->path(item));
     myGameList->setMd5(item, md5);
   }
   return myGameList->md5(item);
@@ -273,103 +273,6 @@ void LauncherDialog::loadDirListing()
   myGameList->sortByName();
 }
 
-/*
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadListFromDisk()
-{
-  string romdir = instance()->settings().getString("romdir");
-  FilesystemNode dir(romdir);
-  FSList files = dir.listDir(FilesystemNode::kListFilesOnly);
-
-  // Create a progress dialog box to show the progress of processing
-  // the ROMs, since this is usually a time-consuming operation
-  ProgressDialog progress(this, instance()->launcherFont(),
-                          "Loading ROM info from disk ...");
-  progress.setRange(0, files.size() - 1, 10);
-
-  // Create a entry for the GameList for each file
-  Properties props;
-  for(unsigned int idx = 0; idx < files.size(); idx++)
-  {
-    // Calculate the MD5 so we can get the rest of the info
-    // from the PropertiesSet (stella.pro)
-    const string& md5 = MD5FromFile(files[idx].path());
-    instance()->propSet().getMD5(md5, props);
-    const string& name = props.get(Cartridge_Name);
-
-    // Indicate that this ROM doesn't have a properties entry
-    myGameList->appendGame(name, files[idx].path(), md5);
-
-    // Update the progress bar, indicating one more ROM has been processed
-    progress.setProgress(idx);
-  }
-  progress.done();
-
-  // Sort the list by rom name (since that's what we see in the listview)
-  myGameList->sortByName();
-
-  // And create a cache file, so that the next time Stella starts,
-  // we don't have to do this time-consuming operation again
-  createListCache();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::loadListFromCache()
-{
-  string cacheFile = instance()->cacheFile();
-  ifstream in(cacheFile.c_str());
-  if(!in)
-  {
-    loadListFromDisk();
-    return;
-  }
-
-  // It seems terribly ugly that we need to use char arrays
-  // instead of strings.  Or maybe I don't know the correct way ??
-  char buf[2048];
-  string line, name, path, note;
-  string::size_type pos1, pos2;  // The locations of the two '|' characters
-
-  // Keep reading until all lines have been inspected
-  while(!in.eof())
-  {
-    in.getline(buf, 2048);
-    line = buf;
-
-    // Now split the line into three parts
-    pos1 = line.find("|", 0);
-    if(pos1 == string::npos) continue;
-    pos2 = line.find("|", pos1+1);
-    if(pos2 == string::npos) continue;
-
-    path = line.substr(0, pos1);
-    name = line.substr(pos1+1, pos2-pos1-1);
-    note = line.substr(pos2+1);
-
-    // Add this game to the list
-    // We don't do sorting, since it's assumed to be done by loadListFromDisk()
-    myGameList->appendGame(name, path, note);
-  }    
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::createListCache()
-{
-  string cacheFile = instance()->cacheFile();
-  ofstream out(cacheFile.c_str());
-
-  // Write the gamelist to the cachefile (sorting is already done)
-  for (int i = 0; i < (int) myGameList->size(); ++i)
-  {
-    out << myGameList->path(i)  << "|"
-        << myGameList->name(i) << "|"
-        << myGameList->md5(i)
-        << endl;
-  }
-  out.close();
-}
-*/
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
@@ -377,11 +280,12 @@ void LauncherDialog::loadRomInfo()
   int item = myList->getSelected();
   if(item < 0 || myGameList->isDir(item)) return;
 
-  if(isValidRomName(myGameList->name(item)))
+  string extension;
+  if(instance()->isValidRomName(myGameList->name(item), extension))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
-      myGameList->setMd5(item, MD5FromFile(myGameList->path(item)));
+      myGameList->setMd5(item, instance()->MD5FromFile(myGameList->path(item)));
 
     // Get the properties for this entry
     Properties props;
@@ -392,36 +296,6 @@ void LauncherDialog::loadRomInfo()
   }
   else
     myRomInfoWidget->clearProperties();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string LauncherDialog::MD5FromFile(const string& path)
-{
-  uInt8* image;
-  int size = -1;
-  string md5 = "";
-
-  if(instance()->openROM(path, md5, &image, &size))
-    if(size != -1)
-      delete[] image;
-
-  return md5;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::isValidRomName(const string& filename)
-{
-  string::size_type idx = filename.find_last_of('.');
-  if(idx != string::npos)
-  {
-    string ext = filename.substr(idx+1);
-    return BSPF_strncasecmp(ext.c_str(), "bin", 3) == 0 ||
-           BSPF_strncasecmp(ext.c_str(), "a26", 3) == 0 ||
-           BSPF_strncasecmp(ext.c_str(), "zip", 3) == 0 ||
-           BSPF_strncasecmp(ext.c_str(), "rom", 3) == 0 ||
-           BSPF_strncasecmp(ext.c_str(), "gz", 2)  == 0 ;
-  }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -439,6 +313,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       {
         const string& rom = myGameList->path(item);
         const string& md5 = myGameList->md5(item);
+        string extension;
 
         // Directory's should be selected (ie, enter them and redisplay)
         if(myGameList->isDir(item))
@@ -449,7 +324,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             myCurrentNode = rom;
           updateListing();
         }
-        else if(!isValidRomName(rom) || !instance()->createConsole(rom, md5))
+        else if(!instance()->isValidRomName(rom, extension) ||
+                !instance()->createConsole(rom, md5))
         {
           // TODO - show messagebox that ROM couldn't be started
           cerr << "Error: invalid ROM (name or file)\n";

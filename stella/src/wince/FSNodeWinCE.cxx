@@ -271,20 +271,9 @@ bool AbstractFilesystemNode::makeDir(const string& path)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AbstractFilesystemNode::modTime(const string& path)
+bool AbstractFilesystemNode::rename(const string& oldpath,
+                                    const string& newpath)
 {
-  WIN32_FILE_ATTRIBUTE_DATA attr;
-
-  static TCHAR unicodeString[MAX_PATH];
-  MultiByteToWideChar(CP_ACP, 0, path.c_str(), strlen(path.c_str()) + 1, unicodeString, sizeof(unicodeString));
-
-  BOOL b = GetFileAttributesEx(unicodeString, GetFileExInfoStandard, &attr);
-
-  if(b == 0) return "";
-
-  ostringstream buf;
-  buf << attr.ftLastWriteTime.dwHighDateTime << attr.ftLastWriteTime.dwLowDateTime;
-
-  return buf.str();
+  // TODO - implement this
+  return false;
 }
-
