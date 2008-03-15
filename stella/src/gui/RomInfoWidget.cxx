@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.6 2008-03-14 23:52:17 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.7 2008-03-15 19:11:00 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -109,7 +109,7 @@ void RomInfoWidget::parseProperties()
   // The surface will always be the maximum size, but sometimes we'll
   // only draw certain parts of it
   if(mySurface == NULL)
-    mySurface = instance()->frameBuffer().createSurface(320, 250);
+    mySurface = instance()->frameBuffer().createSurface(320, 260);
 
   // The input stream for the PNG file
   ifstream in;
@@ -199,14 +199,14 @@ void RomInfoWidget::drawWidget(bool hilite)
 
   fb.fillRect(_x+2, _y+2, _w-4, _h-4, kWidColor);
   fb.box(_x, _y, _w, _h, kColor, kShadowColor);
-  fb.box(_x, _y+254, _w, _h-254, kColor, kShadowColor);
+  fb.box(_x, _y+264, _w, _h-264, kColor, kShadowColor);
 
   if(!myHaveProperties) return;
 
   if(myDrawSurface && mySurface)
   {
     int x = (_w - mySurface->getClipWidth()) >> 1;
-    int y = (256 - mySurface->getClipHeight()) >> 1;
+    int y = (266 - mySurface->getClipHeight()) >> 1;
     fb.drawSurface(mySurface, x + getAbsX(), y + getAbsY());
   }
   else if(mySurfaceErrorMsg != "")
@@ -214,7 +214,7 @@ void RomInfoWidget::drawWidget(bool hilite)
     int x = _x + ((_w - _font->getStringWidth(mySurfaceErrorMsg)) >> 1);
     fb.drawString(_font, mySurfaceErrorMsg, x, 120, _w - 10, _textcolor);
   }
-  int xpos = _x + 5, ypos = _y + 256 + 5;
+  int xpos = _x + 5, ypos = _y + 266 + 5;
   for(unsigned int i = 0; i < myRomInfo.size(); ++i)
   {
     fb.drawString(_font, myRomInfo[i], xpos, ypos, _w - 10, _textcolor);
@@ -268,7 +268,7 @@ bool RomInfoWidget::parseIHDR(int& width, int& height, uInt8* data, int size)
 
   // Make sure image can fit in widget bounds
   width  = BSPF_min(320, width);
-  height = BSPF_min(250, height);
+  height = BSPF_min(260, height);
 
   uInt8 trailer[5] = { 8, 2, 0, 0, 0 };  // 24-bit RGB
   return memcmp(trailer, data + 8, 5) == 0;

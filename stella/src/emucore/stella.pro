@@ -3338,7 +3338,7 @@
 
 "Cartridge.MD5" "31bb9b8ceed46cb3e506777a9e65f3ce"
 "Cartridge.Manufacturer" "Bit Corporation"
-"Cartridge.Name" "4 Game in One Light Green) (1983) (BitCorp) (PAL)"
+"Cartridge.Name" "4 Game in One Light Green (1983) (BitCorp) (PAL)"
 "Cartridge.Note" "Ice Hockey, Phantom UFO, Spy Vs. Spy, Cosmic Avenger"
 ""
 
@@ -16327,8 +16327,9 @@
 ""
 
 "Cartridge.MD5" "ece908d77ab944f7bac84322b9973549"
-"Cartridge.Name" "Tom Boy (Unknown)"
+"Cartridge.Name" "Tom Boy (Unknown) (PAL60)"
 "Cartridge.Note" "AKA Pitfall!"
+"Display.Format" "PAL60"
 "Display.YStart" "24"
 ""
 

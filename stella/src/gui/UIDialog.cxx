@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.10 2008-03-13 22:58:07 stephena Exp $
+// $Id: UIDialog.cxx,v 1.11 2008-03-15 19:11:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,7 +51,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                                            lineHeight, "Launcher Width (*): ",
                                            lwidth, kLWidthChanged);
   myLauncherWidthSlider->setMinValue(320);
-  myLauncherWidthSlider->setMaxValue(800);
+  myLauncherWidthSlider->setMaxValue(1920);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
   myLauncherWidthLabel =
@@ -65,7 +65,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                                             lineHeight, "Launcher Height (*): ",
                                             lwidth, kLHeightChanged);
   myLauncherHeightSlider->setMinValue(240);
-  myLauncherHeightSlider->setMaxValue(600);
+  myLauncherHeightSlider->setMaxValue(1200);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
   myLauncherHeightLabel =
@@ -80,7 +80,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                                            lineHeight, "Debugger Width (*): ",
                                            lwidth, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(1030);
-  myDebuggerWidthSlider->setMaxValue(1600);
+  myDebuggerWidthSlider->setMaxValue(1920);
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
   myDebuggerWidthLabel =
