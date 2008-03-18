@@ -877,6 +877,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\RomAuditDialog.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\RomInfoWidget.cxx"
 					>
 				</File>
@@ -1484,6 +1488,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\Rect.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\RomAuditDialog.hxx"
 					>
 				</File>
 				<File
