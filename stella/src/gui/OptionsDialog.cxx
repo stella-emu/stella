@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.67 2008-03-14 23:52:17 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.68 2008-03-22 18:17:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -128,7 +128,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
-  w = 200; h = 175;
+  w = 200; h = 145;
   myUIDialog = new UIDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 280; h = 180;

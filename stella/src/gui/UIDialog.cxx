@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.11 2008-03-15 19:11:02 stephena Exp $
+// $Id: UIDialog.cxx,v 1.12 2008-03-22 18:17:59 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -128,6 +128,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
+#if 0
   // ROM info viewer
   xpos += ((_w - 40 - font.getStringWidth("ROM Info viewer (*)")) >> 1);
   myRomViewerCheckbox = new CheckboxWidget(this, font, xpos, ypos,
@@ -138,6 +139,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
                        "(*) Requires application restart",
                        kTextAlignLeft);
+#endif
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
@@ -218,9 +220,11 @@ void UIDialog::loadConfig()
   if(i < 1 || i > 2) i = 1;
   myPalettePopup->setSelectedTag(i);
 
+#if 0
   // ROM info viewer
   bool b = instance()->settings().getBool("romviewer");
   myRomViewerCheckbox->setState(b);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -243,9 +247,10 @@ void UIDialog::saveConfig()
   instance()->settings().setInt("uipalette",
     myPalettePopup->getSelectedTag());
 
+#if 0
   // ROM info viewer
-  instance()->settings().setBool("romviewer", 
-    myRomViewerCheckbox->getState());
+  instance()->settings().setBool("romviewer", myRomViewerCheckbox->getState());
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

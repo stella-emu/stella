@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.135 2008-03-22 17:35:02 stephena Exp $
+// $Id: Settings.cxx,v 1.136 2008-03-22 18:17:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -309,7 +309,7 @@ void Settings::usage()
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-    << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
+//    << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
