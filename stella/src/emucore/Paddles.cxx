@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.13 2008-03-02 20:48:51 stephena Exp $
+// $Id: Paddles.cxx,v 1.14 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #define TRIGMAX 240
@@ -24,9 +24,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, bool swap)
-  : Controller(jack, event, Controller::Paddles),
-    myMouseBaseX(-1),
-    myMouseBaseY(-1)
+  : Controller(jack, event, Controller::Paddles)
 {
   // Swap the paddle events, from paddle 0 <=> 1 and paddle 2 <=> 3
   // Also consider whether this is the left or right port
@@ -50,7 +48,7 @@ Paddles::Paddles(Jack jack, const Event& event, bool swap)
       myP1FireEvent1 = Event::PaddleOneFire;
       myP1FireEvent2 = Event::JoystickZeroFire3;
 
-      myMouseBaseX = 0;
+      if(_MOUSEX_PADDLE < 0)  _MOUSEX_PADDLE = 0;
     }
     else
     {
@@ -70,7 +68,7 @@ Paddles::Paddles(Jack jack, const Event& event, bool swap)
       myP1FireEvent1 = Event::PaddleZeroFire;
       myP1FireEvent2 = Event::JoystickZeroFire1;
 
-      myMouseBaseX = 1;
+      if(_MOUSEX_PADDLE < 0)  _MOUSEX_PADDLE = 1;
     }
   }
   else
@@ -93,7 +91,7 @@ Paddles::Paddles(Jack jack, const Event& event, bool swap)
       myP1FireEvent1 = Event::PaddleThreeFire;
       myP1FireEvent2 = Event::JoystickOneFire3;
 
-      myMouseBaseX = 2;
+      if(_MOUSEX_PADDLE < 0)  _MOUSEX_PADDLE = 0;
     }
     else
     {
@@ -113,7 +111,7 @@ Paddles::Paddles(Jack jack, const Event& event, bool swap)
       myP1FireEvent1 = Event::PaddleTwoFire;
       myP1FireEvent2 = Event::JoystickOneFire1;
 
-      myMouseBaseX = 3;
+      if(_MOUSEX_PADDLE < 0)  _MOUSEX_PADDLE = 1;
     }
   }
 
@@ -126,7 +124,7 @@ Paddles::Paddles(Jack jack, const Event& event, bool swap)
   myKeyRepeat0 = myPaddleRepeat0 = myKeyRepeat1 = myPaddleRepeat1 = 0;
 
   myCharge[0] = myCharge[1] =
-  myLastCharge[0] = myLastCharge[1] = 120;  // half of maximum paddle charge
+  myLastCharge[0] = myLastCharge[1] = TRIGMAX/2;  // half of maximum paddle charge
   myLeftMotion[0] = myLeftMotion[1] = 0;
 }
 
@@ -138,6 +136,8 @@ Paddles::~Paddles()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::update()
 {
+  myDigitalPinState[Three] = myDigitalPinState[Four] = true;
+
   // Digital events (from keyboard or joystick hats & buttons)
   myDigitalPinState[Three] =
     (myEvent.get(myP1FireEvent1) == 0 && myEvent.get(myP1FireEvent2) == 0);
@@ -184,16 +184,23 @@ void Paddles::update()
   }
 
   // Mouse events
-  if(myMouseBaseX == 0 || myMouseBaseX == 1)
+  if(myJack == Left && (_MOUSEX_PADDLE == 0 || _MOUSEX_PADDLE == 1))
   {
-    /*  FIXME
-    if (MPdirection & 0x01) Charge[MouseBaseX] = Charge[MouseBaseX] + srv_micky_x;
-    else Charge [MouseBaseX] = Charge[MouseBaseX] - srv_micky_x;
-    */
-    myCharge[myMouseBaseX] =
-        myCharge[myMouseBaseX] - myEvent.get(Event::MouseAxisXValue);
-    if(myCharge[myMouseBaseX] < TRIGMIN) myCharge[myMouseBaseX] = TRIGMIN;
-    if(myCharge[myMouseBaseX] > TRIGMAX) myCharge[myMouseBaseX] = TRIGMAX;
+    // TODO - add infrastructure to map mouse direction to increase or decrease charge
+    myCharge[_MOUSEX_PADDLE] -= myEvent.get(Event::MouseAxisXValue);
+    if(myCharge[_MOUSEX_PADDLE] < TRIGMIN) myCharge[_MOUSEX_PADDLE] = TRIGMIN;
+    if(myCharge[_MOUSEX_PADDLE] > TRIGMAX) myCharge[_MOUSEX_PADDLE] = TRIGMAX;
+    if(myEvent.get(Event::MouseButtonValue))
+      myDigitalPinState[ourButtonPin[_MOUSEX_PADDLE]] = false;
+  }
+  else if(myJack == Right && (_MOUSEX_PADDLE == 2 || _MOUSEX_PADDLE == 3))
+  {
+    // TODO - add infrastructure to map mouse direction to increase or decrease charge
+    myCharge[_MOUSEX_PADDLE-2] -= myEvent.get(Event::MouseAxisXValue);
+    if(myCharge[_MOUSEX_PADDLE-2] < TRIGMIN) myCharge[_MOUSEX_PADDLE-2] = TRIGMIN;
+    if(myCharge[_MOUSEX_PADDLE-2] > TRIGMAX) myCharge[_MOUSEX_PADDLE-2] = TRIGMAX;
+    if(myEvent.get(Event::MouseButtonValue))
+      myDigitalPinState[ourButtonPin[_MOUSEX_PADDLE-2]] = false;
   }
 
   // Axis events (possibly use analog values)
@@ -291,18 +298,25 @@ void Paddles::update()
       myLastCharge[1] = charge1;
     }
   }
-
-/* FIXME
-  if(PaddleAdjust)
-  {
-    myCharge[0] = (myCharge[0] >> 1) + PaddleAdjust;
-    myCharge[1] = (myCharge[1] >> 1) + PaddleAdjust;
-  }
-*/
  
   myAnalogPinValue[Five] = (Int32)(1000000 * (myCharge[1] / 255.0));
   myAnalogPinValue[Nine] = (Int32)(1000000 * (myCharge[0] / 255.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setMouseIsPaddle(int number, int dir)
+{
+  // TODO - make mouse Y axis be actually used in the code above
+  if(dir == 0)
+    _MOUSEX_PADDLE = number;
+  else
+    _MOUSEY_PADDLE = number;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Paddles::_PADDLE_SPEED = 6;
+int Paddles::_MOUSEX_PADDLE = -1;
+int Paddles::_MOUSEY_PADDLE = -1;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const Controller::DigitalPin Paddles::ourButtonPin[2] = { Four, Three };

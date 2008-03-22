@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.15 2008-03-02 20:48:51 stephena Exp $
+// $Id: InputDialog.hxx,v 1.16 2008-03-22 17:35:03 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -53,6 +53,8 @@ class InputDialog : public Dialog
 
   private:
     enum {
+      kLeftChanged   = 'LCch',
+      kRightChanged  = 'RCch',
       kPaddleChanged = 'PDch',
       kPSpeedChanged = 'PSch'
     };

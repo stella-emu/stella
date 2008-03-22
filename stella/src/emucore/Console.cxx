@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.132 2008-02-06 13:45:21 stephena Exp $
+// $Id: Console.cxx,v 1.133 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -97,6 +97,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Also check if we should swap the paddles plugged into a jack
   bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
+  Paddles::setMouseIsPaddle(-1);  // Reset to defaults
 
   // Construct left controller
   if(left == "BOOSTER-GRIP")

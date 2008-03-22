@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.50 2008-03-12 22:04:51 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.51 2008-03-22 17:35:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -160,15 +160,6 @@ GameInfoDialog::GameInfoDialog(
   myTVType->appendEntry("B & W", 2);
   wid.push_back(myTVType);
 
-  ypos += lineHeight + 5;
-  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Swap ports:", kTextAlignLeft);
-  mySwapPorts = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                pwidth, lineHeight, "", 0, 0);
-  mySwapPorts->appendEntry("Yes", 1);
-  mySwapPorts->appendEntry("No", 2);
-  wid.push_back(mySwapPorts);
-
   // Add items for tab 1
   addToFocusList(wid, tabID);
 
@@ -178,24 +169,40 @@ GameInfoDialog::GameInfoDialog(
   tabID = myTab->addTab("Controller");
 
   xpos = 10; ypos = vBorder;
-  lwidth = font.getStringWidth("Right Controller: ");
+  lwidth = font.getStringWidth("P0 Controller: ");
   pwidth = font.getStringWidth("Booster-Grip");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Left Controller:", kTextAlignLeft);
-  myLeftController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                     pwidth, lineHeight, "", 0, 0);
+                       "P0 Controller:", kTextAlignLeft);
+  myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                   pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 5; ++i)
-    myLeftController->appendEntry(ourControllerList[i][0], i+1);
-  wid.push_back(myLeftController);
+    myP0Controller->appendEntry(ourControllerList[i][0], i+1);
+  wid.push_back(myP0Controller);
+
+  myLeftPort =
+    new PopUpWidget(myTab, font, xpos+lwidth+myP0Controller->getWidth()+4, ypos,
+                    pwidth, lineHeight, "in ", font.getStringWidth("in "),
+                    kLeftCChanged);
+  myLeftPort->appendEntry("left port", 1);
+  myLeftPort->appendEntry("right port", 2);
+  wid.push_back(myLeftPort);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Right Controller:", kTextAlignLeft);
-  myRightController = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                      pwidth, lineHeight, "", 0, 0);
+                       "P1 Controller:", kTextAlignLeft);
+  myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                   pwidth, lineHeight, "", 0, 0);
   for(i = 0; i < 5; ++i)
-    myRightController->appendEntry(ourControllerList[i][0], i+1);
-  wid.push_back(myRightController);
+    myP1Controller->appendEntry(ourControllerList[i][0], i+1);
+  wid.push_back(myP1Controller);
+
+  myRightPort =
+    new PopUpWidget(myTab, font, xpos+lwidth+myP1Controller->getWidth()+4, ypos,
+                    pwidth, lineHeight, "in ", font.getStringWidth("in "),
+                    kRightCChanged);
+  myRightPort->appendEntry("left port", 1);
+  myRightPort->appendEntry("right port", 2);
+  wid.push_back(myRightPort);
 
   ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
@@ -417,12 +424,8 @@ void GameInfoDialog::loadView()
     myTVType->setSelectedTag(0);
 
   s = myGameProperties.get(Console_SwapPorts);
-  if(s == "YES")
-    mySwapPorts->setSelectedTag(1);
-  else if(s == "NO")
-    mySwapPorts->setSelectedTag(2);
-  else
-    mySwapPorts->setSelectedTag(0);
+  myLeftPort->setSelectedTag(s == "NO" ? 1 : 2);
+  myRightPort->setSelectedTag(s == "NO" ? 2 : 1);
 
   // Controller properties
   s = myGameProperties.get(Controller_Left);
@@ -432,7 +435,7 @@ void GameInfoDialog::loadView()
       break;
   }
   i = (i == 5) ? 0: i + 1;
-  myLeftController->setSelectedTag(i);
+  myP0Controller->setSelectedTag(i);
 
   s = myGameProperties.get(Controller_Right);
   for(i = 0; i < 5; ++i)
@@ -441,7 +444,7 @@ void GameInfoDialog::loadView()
       break;
   }
   i = (i == 5) ? 0: i + 1;
-  myRightController->setSelectedTag(i);
+  myP1Controller->setSelectedTag(i);
 
   s = myGameProperties.get(Controller_SwapPaddles);
   if(s == "YES")
@@ -557,12 +560,8 @@ void GameInfoDialog::saveConfig()
   s = (tag == 1) ? "Color" : "BlackAndWhite";
   myGameProperties.set(Console_TelevisionType, s);
 
-  tag = mySwapPorts->getSelectedTag();
-  s = (tag == 1) ? "Yes" : "No";
-  myGameProperties.set(Console_SwapPorts, s);
-
   // Controller properties
-  tag = myLeftController->getSelectedTag();
+  tag = myP0Controller->getSelectedTag();
   for(i = 0; i < 5; ++i)
   {
     if(i == tag-1)
@@ -572,7 +571,7 @@ void GameInfoDialog::saveConfig()
     }
   }
 
-  tag = myRightController->getSelectedTag();
+  tag = myP1Controller->getSelectedTag();
   for(i = 0; i < 5; ++i)
   {
     if(i == tag-1)
@@ -581,6 +580,10 @@ void GameInfoDialog::saveConfig()
       break;
     }
   }
+
+  tag = myLeftPort->getSelectedTag();
+  s = (tag == 1) ? "No" : "Yes";
+  myGameProperties.set(Console_SwapPorts, s);
 
   tag = mySwapPaddles->getSelectedTag();
   s = (tag == 1) ? "Yes" : "No";
@@ -647,6 +650,16 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDefaultsCmd:
       setDefaults();
+      break;
+
+    case kLeftCChanged:
+      myRightPort->setSelectedTag(
+        myLeftPort->getSelectedTag() == 2 ? 1 : 2);
+      break;
+
+    case kRightCChanged:
+      myLeftPort->setSelectedTag(
+        myRightPort->getSelectedTag() == 2 ? 1 : 2);
       break;
 
     case kPhosphorChanged:

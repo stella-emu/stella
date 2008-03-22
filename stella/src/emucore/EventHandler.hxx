@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.108 2008-03-02 20:48:51 stephena Exp $
+// $Id: EventHandler.hxx,v 1.109 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.108 2008-03-02 20:48:51 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.109 2008-03-22 17:35:02 stephena Exp $
 */
 class EventHandler
 {
@@ -515,9 +515,6 @@ class EventHandler
     // Holds static strings for the remap menu (emulation and menu events)
     static ActionList ourEmulActionList[kEmulActionListSize];
     static ActionList ourMenuActionList[kMenuActionListSize];
-
-    // Lookup table for paddle button events
-    static const Event::Type Paddle_Button[4];
 
     // Static lookup tables for Stelladaptor axis/button support
     static const Event::Type SA_Axis[2][2];

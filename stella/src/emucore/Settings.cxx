@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.134 2008-03-12 19:42:36 stephena Exp $
+// $Id: Settings.cxx,v 1.135 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -244,10 +244,6 @@ void Settings::validate()
   if(i < 1 || i > 10)
     setInternal("zoom_tia", "2");
 
-  i = getInt("paddle");
-  if(i < 0 || i > 3)
-    setInternal("paddle", "0");
-
   i = getInt("pspeed");
   if(i < 1)
     setInternal("pspeed", "1");
@@ -310,7 +306,6 @@ void Settings::usage()
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
-    << "  -paddle       <0|1|2|3>      Indicates which paddle the mouse should emulate\n"
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"

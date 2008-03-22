@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.218 2008-03-13 22:58:06 stephena Exp $
+// $Id: EventHandler.cxx,v 1.219 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -66,8 +66,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myGrabMouseFlag(false),
     myUseLauncherFlag(false),
     myAllowAllDirectionsFlag(false),
-    myFryingFlag(false),
-    myPaddleMode(0)
+    myFryingFlag(false)
 {
   // Create the event object which will be used for this handler
   myEvent = new Event();
@@ -146,7 +145,6 @@ void EventHandler::initialize()
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 
-  setPaddleMode(myOSystem->settings().getInt("paddle"), false);
   Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
 
   // Set number of lines a mousewheel will scroll
@@ -756,8 +754,8 @@ void EventHandler::poll(uInt32 time)
     myOverlay->updateTime(time);
   }
 
-  // Turn off relative events; we assume they've been taken care of
-  // in at least one of the ::update() methods above
+  // Turn off all mouse-related items; if they haven't been taken care of
+  // in the previous ::update() methods, they're now invalid
   myEvent->set(Event::MouseAxisXValue, 0);
   myEvent->set(Event::MouseAxisYValue, 0);
 }
@@ -785,7 +783,7 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
-    myEvent->set(Paddle_Button[myPaddleMode], state);
+    myEvent->set(Event::MouseButtonValue, state);
   else if(myOverlay)
   {
     // Take window zooming into account
@@ -1835,20 +1833,16 @@ void EventHandler::takeSnapshot()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setPaddleMode(int num, bool showmessage)
 {
-// FIXME - communicate with Paddles class
-  if(num < 0 || num > 3)
-    return;
-
-  myPaddleMode = num;
-
-  if(showmessage)
+  if(num >= 0 && num <= 3)
   {
-    ostringstream buf;
-    buf << "Mouse is paddle " << num;
-    myOSystem->frameBuffer().showMessage(buf.str());
+    Paddles::setMouseIsPaddle(num);
+    if(showmessage)
+    {
+      ostringstream buf;
+      buf << "Mouse is paddle " << num;
+      myOSystem->frameBuffer().showMessage(buf.str());
+    }
   }
-
-  myOSystem->settings().setInt("paddle", myPaddleMode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2307,12 +2301,6 @@ EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = 
 
   { Event::UINavPrev,   "Previous object",      0 },
   { Event::UINavNext,   "Next object",          0 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Event::Type EventHandler::Paddle_Button[4] = {
-  Event::PaddleZeroFire, Event::PaddleOneFire,
-  Event::PaddleTwoFire,  Event::PaddleThreeFire
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.28 2008-03-02 20:48:51 stephena Exp $
+// $Id: InputDialog.cxx,v 1.29 2008-03-22 17:35:03 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -115,14 +115,14 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   pwidth = font.getStringWidth("right virtual port");
 
   myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                               "Stelladaptor 1 is: ", lwidth);
+                               "Stelladaptor 1 is: ", lwidth, kLeftChanged);
   myLeftPort->appendEntry("left virtual port", 1);
   myLeftPort->appendEntry("right virtual port", 2);
   wid.push_back(myLeftPort);
 
   ypos += lineHeight + 5;
   myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                "Stelladaptor 2 is: ", lwidth);
+                                "Stelladaptor 2 is: ", lwidth, kRightChanged);
   myRightPort->appendEntry("left virtual port", 1);
   myRightPort->appendEntry("right virtual port", 2);
   wid.push_back(myRightPort);
@@ -168,8 +168,8 @@ void InputDialog::loadConfig()
   myRightPort->setSelectedTag(rport);
 
   // Paddle mode
-  myPaddleMode->setValue(instance()->settings().getInt("paddle"));
-  myPaddleModeLabel->setLabel(instance()->settings().getString("paddle"));
+  myPaddleMode->setValue(0);
+  myPaddleModeLabel->setLabel("0");
 
   // Paddle speed
   myPaddleSpeed->setValue(instance()->settings().getInt("pspeed"));
@@ -187,8 +187,7 @@ void InputDialog::saveConfig()
   instance()->eventHandler().mapStelladaptors(sa1, sa2);
 
   // Paddle mode
-  int mode = myPaddleMode->getValue();
-  instance()->eventHandler().setPaddleMode(mode);
+  Paddles::setMouseIsPaddle(myPaddleMode->getValue());
 
   // Paddle speed
   int speed = myPaddleSpeed->getValue();
@@ -258,6 +257,16 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloseCmd:
       // Revert changes made to event mapping
       close();
+      break;
+
+    case kLeftChanged:
+      myRightPort->setSelectedTag(
+        myLeftPort->getSelectedTag() == 2 ? 1 : 2);
+      break;
+
+    case kRightChanged:
+      myLeftPort->setSelectedTag(
+        myRightPort->getSelectedTag() == 2 ? 1 : 2);
       break;
 
     case kPaddleChanged:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Event.hxx,v 1.33 2008-03-02 19:20:50 stephena Exp $
+// $Id: Event.hxx,v 1.34 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #ifndef EVENT_HXX
@@ -25,7 +25,7 @@ class Event;
 
 /**
   @author  Bradford W. Mott
-  @version $Id: Event.hxx,v 1.33 2008-03-02 19:20:50 stephena Exp $
+  @version $Id: Event.hxx,v 1.34 2008-03-22 17:35:02 stephena Exp $
 */
 class Event
 {
@@ -66,7 +66,7 @@ class Event
       SALeftAxis0Value, SALeftAxis1Value,
       SARightAxis0Value, SARightAxis1Value,
 
-      MouseAxisXValue, MouseAxisYValue,
+      MouseAxisXValue, MouseAxisYValue, MouseButtonValue,
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
       PauseMode, MenuMode, CmdMenuMode, DebuggerMode, LauncherMode,

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.12 2008-03-02 20:48:51 stephena Exp $
+// $Id: Paddles.hxx,v 1.13 2008-03-22 17:35:02 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.12 2008-03-02 20:48:51 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.13 2008-03-22 17:35:02 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -61,6 +61,12 @@ class Paddles : public Controller
     */
     static void setDigitalSpeed(int speed) { _PADDLE_SPEED = speed; }
 
+    /**
+      Sets the mouse to emulate the paddle 'number' in the X or Y
+      axis.  X -> dir 0, Y -> dir 1
+    */
+    static void setMouseIsPaddle(int number, int dir = 0);
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
@@ -78,9 +84,13 @@ class Paddles : public Controller
     int myLastCharge[2];
     int myLeftMotion[2];
 
-    int myMouseBaseX, myMouseBaseY;
-
     static int _PADDLE_SPEED;
+    static int _MOUSEX_PADDLE;
+    static int _MOUSEY_PADDLE;
+
+    // Lookup table for associating paddle buttons with controller pins
+    // Yes, this is hideously complex
+    static const Controller::DigitalPin ourButtonPin[2];
 };
 
 #endif

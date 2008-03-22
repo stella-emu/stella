@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.29 2008-02-27 20:13:55 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.30 2008-03-22 17:35:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -70,12 +70,13 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget* myLeftDiff;
     PopUpWidget* myRightDiff;
     PopUpWidget* myTVType;
-    PopUpWidget* mySwapPorts;
 
     // Controller properties
-    PopUpWidget* myLeftController;
-    PopUpWidget* myRightController;
+    PopUpWidget* myP0Controller;
+    PopUpWidget* myP1Controller;
     PopUpWidget* mySwapPaddles;
+    PopUpWidget* myLeftPort;
+    PopUpWidget* myRightPort;
 
     // Display properties
     PopUpWidget*      myFormat;
@@ -93,6 +94,8 @@ class GameInfoDialog : public Dialog, public CommandSender
     };
 
     enum {
+      kLeftCChanged    = 'LCch',
+      kRightCChanged   = 'RCch',
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
       kNumCartTypes       = 25,
