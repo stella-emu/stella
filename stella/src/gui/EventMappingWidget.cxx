@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.22 2008-02-06 13:45:23 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.23 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,12 +42,14 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myRemapStatus(false),
     myFirstTime(true)
 {
-  const int fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
+  const int fontHeight   = font.getFontHeight(),
+            lineHeight   = font.getLineHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 10,
+            buttonHeight = font.getLineHeight() + 4;
   int xpos = 5, ypos = 5;
 
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
-                                       _w - 70, _h - 3*lineHeight);
+                                       _w - buttonWidth - 20, _h - 3*lineHeight);
   myActionsList->setTarget(this);
   myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
@@ -56,23 +58,27 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
 
   // Add remap, erase, cancel and default buttons
   xpos += myActionsList->getWidth() + 15;  ypos += 5;
-  myMapButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
+  myMapButton = new ButtonWidget(boss, font, xpos, ypos,
+                                 buttonWidth, buttonHeight,
                                  "Map", kStartMapCmd);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
-  ypos += 20;
-  myEraseButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
+  ypos += lineHeight + 10;
+  myEraseButton = new ButtonWidget(boss, font, xpos, ypos,
+                                   buttonWidth, buttonHeight,
                                    "Erase", kEraseCmd);
   myEraseButton->setTarget(this);
   addFocusWidget(myEraseButton);
-  ypos += 20;
-  myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
+  ypos += lineHeight + 10;
+  myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos,
+                                       buttonWidth, buttonHeight,
                                        "Cancel", kStopMapCmd);
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(WIDGET_ENABLED);
   addFocusWidget(myCancelMapButton);
-  ypos += 30;
-  myDefaultsButton = new ButtonWidget(boss, font, xpos, ypos, 50, 16,
+  ypos += lineHeight + 30;
+  myDefaultsButton = new ButtonWidget(boss, font, xpos, ypos,
+                                      buttonWidth, buttonHeight,
                                       "Defaults", kDefaultsCmd);
   myDefaultsButton->setTarget(this);
   addFocusWidget(myDefaultsButton);

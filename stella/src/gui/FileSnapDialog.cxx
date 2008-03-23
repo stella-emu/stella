@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.15 2008-03-12 19:42:36 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.16 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,6 +40,10 @@ FileSnapDialog::FileSnapDialog(
     myBrowser(NULL),
     myIsGlobal(boss != 0)
 {
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
   int xpos, ypos, bwidth, bheight;
   WidgetArray wid;
@@ -47,6 +51,10 @@ FileSnapDialog::FileSnapDialog(
 
   bwidth  = font.getStringWidth("Properties file:") + 20;
   bheight = font.getLineHeight() + 4;
+
+  // Set real dimensions
+//  _w = 50 * fontWidth + 10;
+//  _h = 11 * (lineHeight + 4) + 10;
 
   xpos = vBorder;  ypos = vBorder;
 
@@ -116,24 +124,11 @@ FileSnapDialog::FileSnapDialog(
                                             "Multiple snapshots");
   wid.push_back(mySnapSingleCheckbox);
 
-  // Add OK & Cancel buttons
-  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  // Add Defaults, OK and Cancel buttons
+  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
+  addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 

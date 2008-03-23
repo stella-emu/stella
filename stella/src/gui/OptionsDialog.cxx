@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.68 2008-03-22 18:17:59 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.69 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,12 +43,12 @@
 #include "bspf.hxx"
 
 #define addBigButton(label, cmd) \
-	new ButtonWidget(this, font, xoffset, yoffset, kBigButtonWidth, 18, label, cmd); yoffset += kRowHeight
+  new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); yoffset += rowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
                              GuiObject* boss, bool global)
-  : Dialog(osystem, parent, 0, 0, kMainMenuWidth, kMainMenuHeight),
+  : Dialog(osystem, parent, 0, 0, 1, 1),
     myVideoDialog(NULL),
     myAudioDialog(NULL),
     myInputDialog(NULL),
@@ -61,6 +61,13 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myIsGlobal(global)
 {
   const GUI::Font& font = instance()->font();
+  const int buttonWidth = font.getStringWidth("Game Properties") + 20,
+            buttonHeight = font.getLineHeight() + 6,
+            rowHeight = font.getLineHeight() + 10;
+
+  _w = 2 * buttonWidth + 30;
+  _h = 6 * rowHeight + 15;
+
   int xoffset = 10, yoffset = 10;
   WidgetArray wid;
   ButtonWidget* b = NULL;
@@ -87,7 +94,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myRomAuditButton);
 
   // Move to second column
-  xoffset += kBigButtonWidth + 10;  yoffset = 10;
+  xoffset += buttonWidth + 10;  yoffset = 10;
 
   myGameInfoButton = addBigButton("Game Properties", kInfoCmd);
   wid.push_back(myGameInfoButton);
@@ -112,7 +119,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   int x = 0, y = 0, w, h;
 
   // Now create all the dialogs attached to each menu button
-  w = 230; h = 185;
+  w = 240; h = 185;
   myVideoDialog = new VideoDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 200; h = 140;
@@ -128,7 +135,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
 
-  w = 200; h = 145;
+  w = 200; h = 155;
   myUIDialog = new UIDialog(myOSystem, parent, font, x, y, w, h);
 
   w = 280; h = 180;

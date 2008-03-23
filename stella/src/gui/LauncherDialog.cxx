@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.84 2008-03-22 18:17:59 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.85 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,8 +64,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   int xpos = 0, ypos = 0, lwidth = 0;
   WidgetArray wid;
 
-#if 0
-// FIXME - this isn't really useful until we get a resizable and font-aware UI
   // Check if we want the ROM info viewer
   // Make sure it will fit within the current bounds
   myRomInfoFlag = instance()->settings().getBool("romviewer");
@@ -74,7 +72,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     cerr << "Error: ROM launcher too small, deactivating ROM info viewer" << endl;
     myRomInfoFlag = false;
   }
-#endif
 
   // Show game name
   lwidth = font.getStringWidth("Select an item from the list ...");
@@ -101,7 +98,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   if(myRomInfoFlag)
   {
     xpos += myList->getWidth() + 15;
-    myRomInfoWidget = new RomInfoWidget(this, font, xpos, ypos,
+    myRomInfoWidget = new RomInfoWidget(this, instance()->font(), xpos, ypos,
                                         326, myList->getHeight());
     wid.push_back(myRomInfoWidget);
   }

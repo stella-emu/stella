@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StellaFont.hxx,v 1.8 2008-02-06 13:45:24 stephena Exp $
+// $Id: StellaFont.hxx,v 1.9 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -2592,12 +2592,14 @@ static const FontDesc stellaDesc = {
   "04b-16b-10",                            /* font name */
   9,                                       /* max width in pixels */
   10,                                      /* height in pixels */
+  9, 10, 0, -1,                            /* max bounding box */
   8,                                       /* ascent (baseline) height */
   33,                                      /* first character in bitmap */
   94,                                      /* font size in glyphs */
   _stella_font_bits,                       /* 16-bit right-padded bitmap data */
-  0,  /* no encode table*/                 /* offsets into bitmap data */
+  0,                                       /* offsets into bitmap data */
   _stella_sysfont_width,                   /* character widths or NULL if fixed */
+  0,                                       /* character bounding box or NULL if fixed */
   33,                                      /* default char (not glyph index) */
   sizeof(_stella_font_bits)/sizeof(uInt16) /* # words of bitmap_t bits */
 };

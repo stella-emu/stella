@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.12 2008-03-22 18:17:59 stephena Exp $
+// $Id: UIDialog.cxx,v 1.13 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "PopUpWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
+#include "TabWidget.hxx"
 #include "Widget.hxx"
 
 #include "UIDialog.hxx"
@@ -37,75 +38,148 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                    const GUI::Font& font, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight();
-  int xpos, ypos;
-  int lwidth = font.getStringWidth("Debugger Height (*): "),
-      pwidth = font.getStringWidth("Standard");
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
+  const int vBorder = 5;
+  int xpos, ypos, tabID;
+  int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
 
-  xpos = 10;  ypos = 10;
+  // Set real dimensions
+//  _w = 36 * fontWidth + 10;
+//  _h = 10 * (lineHeight + 4) + 10;
 
+  // The tab widget
+  xpos = ypos = vBorder;
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
+  addTabWidget(myTab);
+  addFocusWidget(myTab);
+
+  //////////////////////////////////////////////////////////
+  // 1) Launcher options
+  wid.clear();
+  tabID = myTab->addTab(" Launcher ");
+  lwidth = font.getStringWidth("Launcher Height: ");
+      
   // Launcher width and height
-  myLauncherWidthSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
-                                           lineHeight, "Launcher Width (*): ",
+  myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                           lineHeight, "Launcher Width: ",
                                            lwidth, kLWidthChanged);
   myLauncherWidthSlider->setMinValue(320);
   myLauncherWidthSlider->setMaxValue(1920);
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
   myLauncherWidthLabel =
-      new StaticTextWidget(this, font,
+      new StaticTextWidget(myTab, font,
                            xpos + myLauncherWidthSlider->getWidth() + 4,
-                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myLauncherWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
-  myLauncherHeightSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
-                                            lineHeight, "Launcher Height (*): ",
+  myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                            lineHeight, "Launcher Height: ",
                                             lwidth, kLHeightChanged);
   myLauncherHeightSlider->setMinValue(240);
   myLauncherHeightSlider->setMaxValue(1200);
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
   myLauncherHeightLabel =
-      new StaticTextWidget(this, font,
+      new StaticTextWidget(myTab, font,
                            xpos + myLauncherHeightSlider->getWidth() + 4,
-                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myLauncherHeightLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
+  // Launcher font
+  myLauncherFontPopup = new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight,
+                                        "Launcher Font: ", lwidth);
+  myLauncherFontPopup->appendEntry("Small", 1);
+  myLauncherFontPopup->appendEntry("Large", 2);
+  wid.push_back(myLauncherFontPopup);
+  ypos += lineHeight + 4;
+
+  // ROM launcher info/snapshot viewer
+  xpos += ((_w - 40 - font.getStringWidth("ROM Info viewer")) >> 1);
+  myRomViewerCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                           "ROM Info viewer", 0);
+  wid.push_back(myRomViewerCheckbox);
+
+  // Add message concerning usage
+  xpos = vBorder; ypos += 2*(lineHeight + 4);
+  lwidth = font.getStringWidth("(*) Changes require application restart");
+  new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
+                       "(*) Changes require application restart",
+                       kTextAlignLeft);
+
+  // Add items for tab 0
+  addToFocusList(wid, tabID);
+
+  //////////////////////////////////////////////////////////
+  // 2) Debugger options
+  wid.clear();
+  tabID = myTab->addTab(" Debugger ");
+  lwidth = font.getStringWidth("Debugger Height: ");
+  xpos = ypos = vBorder;
+
   // Debugger width and height
-  myDebuggerWidthSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
-                                           lineHeight, "Debugger Width (*): ",
+  myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                           lineHeight, "Debugger Width: ",
                                            lwidth, kDWidthChanged);
   myDebuggerWidthSlider->setMinValue(1030);
   myDebuggerWidthSlider->setMaxValue(1920);
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
   myDebuggerWidthLabel =
-      new StaticTextWidget(this, font,
+      new StaticTextWidget(myTab, font,
                            xpos + myDebuggerWidthSlider->getWidth() + 4,
-                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerWidthLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
-  myDebuggerHeightSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
-                                            lineHeight, "Debugger Height (*): ",
+  myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                            lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
   myDebuggerHeightSlider->setMinValue(690);
   myDebuggerHeightSlider->setMaxValue(1200);
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
   myDebuggerHeightLabel =
-      new StaticTextWidget(this, font,
+      new StaticTextWidget(myTab, font,
                            xpos + myDebuggerHeightSlider->getWidth() + 4,
-                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
+
+  // Add message concerning usage
+  xpos = vBorder; ypos += 2*(lineHeight + 4);
+  lwidth = font.getStringWidth("(*) Changes require application restart");
+  new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
+                       "(*) Changes require application restart",
+                       kTextAlignLeft);
+
+  // Add items for tab 1
+  addToFocusList(wid, tabID);
+
+  //////////////////////////////////////////////////////////
+  // 3) Misc. options
+  wid.clear();
+  tabID = myTab->addTab(" Misc. ");
+  lwidth = font.getStringWidth("Mouse wheel scroll: ");
+  xpos = ypos = vBorder;
+
+  // UI Palette
+  ypos += 1;
+  myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                   "Interface Palette: ", lwidth);
+  myPalettePopup->appendEntry("Standard", 1);
+  myPalettePopup->appendEntry("Classic", 2);
+  wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
   // Number of lines a mouse wheel will scroll
-  myWheelLinesSlider = new SliderWidget(this, font, xpos, ypos, pwidth,
+  myWheelLinesSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                         lineHeight, "Mouse wheel scroll: ",
                                         lwidth, kWLinesChanged);
   myWheelLinesSlider->setMinValue(1);
@@ -113,55 +187,26 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myWheelLinesSlider->setStepValue(1);
   wid.push_back(myWheelLinesSlider);
   myWheelLinesLabel =
-      new StaticTextWidget(this, font,
+      new StaticTextWidget(myTab, font,
                            xpos + myWheelLinesSlider->getWidth() + 4,
-                           ypos + 1, 20, fontHeight, "", kTextAlignLeft);
+                           ypos + 1, 2*fontWidth, fontHeight, "", kTextAlignLeft);
   myWheelLinesLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
-  // UI Palette
-  ypos += 1;
-  myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                   "Interface Palette: ", lwidth);
-  myPalettePopup->appendEntry("Standard", 1);
-  myPalettePopup->appendEntry("Classic", 2);
-  wid.push_back(myPalettePopup);
-  ypos += lineHeight + 4;
+  // Add items for tab 2
+  addToFocusList(wid, tabID);
 
-#if 0
-  // ROM info viewer
-  xpos += ((_w - 40 - font.getStringWidth("ROM Info viewer (*)")) >> 1);
-  myRomViewerCheckbox = new CheckboxWidget(this, font, xpos, ypos,
-                                           "ROM Info viewer (*)", 0);
-
-  // Add message concerning usage
-  lwidth = font.getStringWidth("(*) Requires application restart");
-  new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
-                       "(*) Requires application restart",
-                       kTextAlignLeft);
-#endif
+  // Activate the first tab
+  myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
+  wid.clear();
   ButtonWidget* b;
-  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
-
-  addToFocusList(wid);
+  addOKCancelBGroup(wid, font);
+  addBGroupToFocusList(wid);
 
 #ifndef DEBUGGER_SUPPORT
   myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
@@ -187,27 +232,40 @@ void UIDialog::loadConfig()
 
   // Launcher size
   instance()->settings().getSize("launcherres", w, h);
-  if(w < 320) w = 320;
-  if(w > 800) w = 800;
-  if(h < 240) h = 240;
-  if(h > 600) h = 600;
+  w = BSPF_max(w, 320);
+  h = BSPF_max(h, 240);
+  w = BSPF_min(w, 1920);
+  h = BSPF_min(h, 1200);
 
   myLauncherWidthSlider->setValue(w);
   myLauncherWidthLabel->setValue(w);
   myLauncherHeightSlider->setValue(h);
   myLauncherHeightLabel->setValue(h);
 
+  // Launcher font
+  const string& s = instance()->settings().getString("launcherfont");
+  myLauncherFontPopup->setSelectedTag(s == "large" ? 2 : 1);
+
+  // ROM launcher info viewer
+  bool b = instance()->settings().getBool("romviewer");
+  myRomViewerCheckbox->setState(b);
+
   // Debugger size
   instance()->settings().getSize("debuggerres", w, h);
-  if(w < 1030) w = 1030;
-  if(w > 1600) w = 1600;
-  if(h < 690)  h = 690;
-  if(h > 1200) h = 1200;
+  w = BSPF_max(w, 1030);
+  h = BSPF_max(h, 690);
+  w = BSPF_min(w, 1920);
+  h = BSPF_min(h, 1200);
 
   myDebuggerWidthSlider->setValue(w);
   myDebuggerWidthLabel->setValue(w);
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
+
+  // UI palette
+  int i = instance()->settings().getInt("uipalette");
+  if(i < 1 || i > 2) i = 1;
+  myPalettePopup->setSelectedTag(i);
 
   // Mouse wheel lines
   int mw = instance()->settings().getInt("mwheel");
@@ -215,16 +273,7 @@ void UIDialog::loadConfig()
   myWheelLinesSlider->setValue(mw);
   myWheelLinesLabel->setValue(mw);
 
-  // UI palette
-  int i = instance()->settings().getInt("uipalette");
-  if(i < 1 || i > 2) i = 1;
-  myPalettePopup->setSelectedTag(i);
-
-#if 0
-  // ROM info viewer
-  bool b = instance()->settings().getBool("romviewer");
-  myRomViewerCheckbox->setState(b);
-#endif
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,44 +283,60 @@ void UIDialog::saveConfig()
   instance()->settings().setSize("launcherres", 
     myLauncherWidthSlider->getValue(), myLauncherHeightSlider->getValue());
 
+  // Launcher font
+  instance()->settings().setString("launcherfont",
+    myLauncherFontPopup->getSelectedTag() == 1 ? "small" : "large");
+
+  // ROM launcher info viewer
+  instance()->settings().setBool("romviewer", myRomViewerCheckbox->getState());
+
   // Debugger size
   instance()->settings().setSize("debuggerres", 
     myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
-
-  // Mouse wheel lines
-  int mw = myWheelLinesSlider->getValue();
-  instance()->settings().setInt("mwheel", mw);
-  ScrollBarWidget::setWheelLines(mw);
 
   // UI palette
   instance()->settings().setInt("uipalette",
     myPalettePopup->getSelectedTag());
 
-#if 0
-  // ROM info viewer
-  instance()->settings().setBool("romviewer", myRomViewerCheckbox->getState());
-#endif
+  // Mouse wheel lines
+  int mw = myWheelLinesSlider->getValue();
+  instance()->settings().setInt("mwheel", mw);
+  ScrollBarWidget::setWheelLines(mw);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void UIDialog::setDefaults()
 {
-  int w = BSPF_min(instance()->desktopWidth(), 400u);
-  int h = BSPF_min(instance()->desktopHeight(), 300u);
-  myLauncherWidthSlider->setValue(w);
-  myLauncherWidthLabel->setValue(w);
-  myLauncherHeightSlider->setValue(h);
-  myLauncherHeightLabel->setValue(h);
+  switch(myTab->getActiveTab())
+  {
+    case 0:  // Launcher options
+    {
+      int w = BSPF_min(instance()->desktopWidth(), 640u);
+      int h = BSPF_min(instance()->desktopHeight(), 480u);
+      myLauncherWidthSlider->setValue(w);
+      myLauncherWidthLabel->setValue(w);
+      myLauncherHeightSlider->setValue(h);
+      myLauncherHeightLabel->setValue(h);
+      myRomViewerCheckbox->setState(false);
+      break;
+    }
 
-  myDebuggerWidthSlider->setValue(1030);
-  myDebuggerWidthLabel->setValue(1030);
-  myDebuggerHeightSlider->setValue(690);
-  myDebuggerHeightLabel->setValue(690);
+    case 1:  // Debugger options
+      myDebuggerWidthSlider->setValue(1030);
+      myDebuggerWidthLabel->setValue(1030);
+      myDebuggerHeightSlider->setValue(690);
+      myDebuggerHeightLabel->setValue(690);
+      break;
 
-  myWheelLinesSlider->setValue(4);
-  myWheelLinesLabel->setValue(4);
+    case 2:  // Misc. options
+      myPalettePopup->setSelectedTag(1);
+      myWheelLinesSlider->setValue(4);
+      myWheelLinesLabel->setValue(4);
+      break;
 
-  myPalettePopup->setSelectedTag(1);
+    default:
+      break;
+  }
 
   _dirty = true;
 }

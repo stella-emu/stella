@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.24 2008-02-06 13:45:23 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.25 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -96,7 +96,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
     case 2:
       title = "Special commands:";
       ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
-      ADD_BIND("Ctrl f", "Switch between NTSC/PAL/PAL60");
+      ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
       ADD_BIND("Ctrl s", "Save game properties to new file");
       ADD_LINE;
       ADD_BIND("Ctrl 0", "Mouse emulates paddle 0");
@@ -130,7 +130,7 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
     case 2:
       title = "Special commands:";
       ADD_BIND("Cmd g",       "Grab mouse (keep in window)");
-      ADD_BIND("Cmd f",       "Switch between NTSC/PAL/PAL60");
+      ADD_BIND("Cmd f",       "Switch between NTSC/PAL/SECAM");
       ADD_BIND("Cmd s",       "Save game properties to new file");
       ADD_LINE;
       ADD_BIND("Cmd 0",       "Mouse emulates paddle 0");

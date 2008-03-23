@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.19 2008-02-06 13:45:24 stephena Exp $
+// $Id: TabWidget.hxx,v 1.20 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -64,6 +64,7 @@ class TabWidget : public Widget, public CommandSender
 
     int getTabWidth()  { return _tabWidth;  }
     int getTabHeight() { return _tabHeight; }
+    int getActiveTab() { return _activeTab; }
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.26 2008-02-06 13:45:23 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.27 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,24 +40,31 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
                          const GUI::Font& font, int x, int y, int w, int h)
     : Dialog(osystem, parent, x, y, w, h)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight();
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   int lwidth = font.getStringWidth("Fragment Size: "),
       pwidth = font.getStringWidth("4096");
   WidgetArray wid;
 
-  // Volume
-  xpos = (w - lwidth - pwidth - 40) / 2;  ypos = 10;
+  // Set real dimensions
+//  _w = 35 * fontWidth + 10;
+//  _h = 8 * (lineHeight + 4) + 10;
 
-  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
+  // Volume
+  xpos = 3 * fontWidth;  ypos = 10;
+
+  myVolumeSlider = new SliderWidget(this, font, xpos, ypos, 6*fontWidth, lineHeight,
                                     "Volume: ", lwidth, kVolumeChanged);
   myVolumeSlider->setMinValue(1); myVolumeSlider->setMaxValue(100);
   wid.push_back(myVolumeSlider);
   myVolumeLabel = new StaticTextWidget(this, font,
                                        xpos + myVolumeSlider->getWidth() + 4,
                                        ypos + 1,
-                                       15, fontHeight, "", kTextAlignLeft);
+                                       3*fontWidth, fontHeight, "", kTextAlignLeft);
 
   myVolumeLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
@@ -113,23 +120,10 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
-  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
+  addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 }

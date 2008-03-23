@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.36 2008-02-06 13:45:23 stephena Exp $
+// $Id: Dialog.hxx,v 1.37 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,11 +32,21 @@ class TabWidget;
 
 #include "bspf.hxx"
 
+/*
+#ifdef SMALL_SCREEN
+  #define _DLG_MIN_SWIDTH  320
+  #define _DLG_MIN_SHEIGHT 210
+#else
+  #define _DLG_MIN_SWIDTH  640
+  #define _DLG_MIN_SHEIGHT 420
+#endif
+*/
+
 /**
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.36 2008-02-06 13:45:23 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.37 2008-03-23 16:22:46 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -95,6 +105,8 @@ class Dialog : public GuiObject
 
     ButtonWidget* addButton(const GUI::Font& font, int x, int y,
                             const string& label = "", int cmd = 0);
+
+    void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font);
 
     void setResult(int result) { _result = result; }
     int getResult() const { return _result; }

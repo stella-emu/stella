@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.29 2008-03-22 17:35:03 stephena Exp $
+// $Id: InputDialog.cxx,v 1.30 2008-03-23 16:22:46 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -35,13 +35,18 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
                          const GUI::Font& font, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
+  const int buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, tabID;
   WidgetArray wid;
 
+  // Set real dimensions
+//  _w = 42 * fontWidth + 10;
+//  _h = 12 * (lineHeight + 4) + 10;
+
   // The tab widget
   xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos);
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
   wid.push_back(myTab);
   addToFocusList(wid);
@@ -75,22 +80,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add OK and Cancel buttons
   wid.clear();
-  ButtonWidget* b;
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
+  addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
 }
 

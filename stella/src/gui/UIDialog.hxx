@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.7 2008-03-13 22:58:07 stephena Exp $
+// $Id: UIDialog.hxx,v 1.8 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@ class CheckboxWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
+class TabWidget;
 
 #include "OSystem.hxx"
 #include "bspf.hxx"
@@ -41,22 +42,26 @@ class UIDialog : public Dialog
     ~UIDialog();
 
   protected:
+    TabWidget* myTab;
+
+    // Launcher options
     SliderWidget*     myLauncherWidthSlider;
     StaticTextWidget* myLauncherWidthLabel;
     SliderWidget*     myLauncherHeightSlider;
     StaticTextWidget* myLauncherHeightLabel;
+    PopUpWidget*      myLauncherFontPopup;
+    CheckboxWidget* myRomViewerCheckbox;
 
+    // Debugger options
     SliderWidget*     myDebuggerWidthSlider;
     StaticTextWidget* myDebuggerWidthLabel;
     SliderWidget*     myDebuggerHeightSlider;
     StaticTextWidget* myDebuggerHeightLabel;
 
+    // Misc options
+    PopUpWidget* myPalettePopup;
     SliderWidget*     myWheelLinesSlider;
     StaticTextWidget* myWheelLinesLabel;
-
-    PopUpWidget* myPalettePopup;
-
-    CheckboxWidget* myRomViewerCheckbox;
     
   private:
     void loadConfig();

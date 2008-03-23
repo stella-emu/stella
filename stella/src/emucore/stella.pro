@@ -693,11 +693,6 @@
 "Cartridge.Name" "RealSports Soccer (1983) (Atari) [a]"
 ""
 
-"Cartridge.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Party Mix (2 of 3) (1982) (Starpath) (PAL)"
-""
-
 "Cartridge.MD5" "0c7926d660f903a2d6910c254660c32c"
 "Cartridge.Manufacturer" "Atari, Larry Kaplan"
 "Cartridge.ModelNo" "CX2602, CX2602P"
@@ -1116,11 +1111,6 @@
 "Cartridge.Name" "Super Soccer (Digivision)"
 "Cartridge.Note" "AKA RealSports Soccer"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "0e86470791b26292abe1c64545c47985"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Party Mix (3 of 3) (1982) (Starpath) (PAL)"
 ""
 
 "Cartridge.MD5" "0ef64cdbecccb7049752a3de0b7ade14"
@@ -2111,13 +2101,6 @@
 "Cartridge.Name" "Ship Demo (V 10) (PD)"
 ""
 
-"Cartridge.MD5" "1e060a8025512ad2127e3da11e212ccc"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Sweat! - Decathalon Game (2 of 2) (1982) (Starpath) (Prototype)"
-"Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
-""
-
 "Cartridge.MD5" "1e1817d9cbcc3ba75043b7db4e6c228f"
 "Cartridge.Name" "Star Fire (07-10-2002) (MP)"
 ""
@@ -2175,13 +2158,6 @@
 "Cartridge.Manufacturer" "Parker Brothers, Dave Hampton, Tom Sloper"
 "Cartridge.ModelNo" "931517"
 "Cartridge.Name" "Q-bert (1983) (Parker Bros) (PAL) [a]"
-""
-
-"Cartridge.MD5" "1ee2cfc7d0333b96bd11f7f3ec8ce8bc"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "1ee9c1ba95cef2cf987d63f176c54ac3"
@@ -3988,11 +3964,6 @@
 "Cartridge.Name" "Bermuda Triangle (1983) (Gameworld) (PAL)"
 "Display.YStart" "48"
 "Display.Height" "250"
-""
-
-"Cartridge.MD5" "36c31bb5daeb103f488c66de67ac5075"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Party Mix (1 of 3) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "36edef446ab4c2395666efc672b92ed0"
@@ -6621,13 +6592,6 @@
 "Cartridge.Name" "Texas Chainsaw Massacre (1983) (Wizard Video)"
 ""
 
-"Cartridge.MD5" "5ec73ac7d2ac95ac9530c6d33e713d14"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Sweat! - Decathalon Game (1 of 2) (1982) (Starpath) (Prototype)"
-"Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
-""
-
 "Cartridge.MD5" "5ef303b9f0aa8cf20720c560e5f9baa1"
 "Cartridge.Manufacturer" "Atari, Jim Huether"
 "Cartridge.ModelNo" "CX2629, CX2629P"
@@ -7000,11 +6964,6 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Homerun (32 in 1) (1988) (Atari) (PAL) (4K)"
-""
-
-"Cartridge.MD5" "639ded0c9e53bc3f91defb5dde930286"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "SuperCharger - Escape from the Mindmaster (4 of 4) (1982) (Starpath) [a1]"
 ""
 
 "Cartridge.MD5" "6c449db9bbbd90972ad1932d6af87330"
@@ -7834,11 +7793,6 @@
 "Cartridge.Name" "Video Pinball (1981) (Atari) (PAL)"
 ""
 
-"Cartridge.MD5" "6ed5012793f5ddf4353a48c11ea9b8d3"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Party Mix (3 of 3) (1982) (Starpath)"
-""
-
 "Cartridge.MD5" "6f084daf265599f65422ef4173b69bc7"
 "Cartridge.Name" "Music Kit (V2.0) - Song Player (Paul Slocum)"
 "Display.Phosphor" "YES"
@@ -7928,7 +7882,7 @@
 
 "Cartridge.MD5" "700a786471c8a91ec09e2f8e47f14a04"
 "Cartridge.Manufacturer" "Activision"
-"Cartridge.Name" "Unknown Activision Game #2 (1983) (Activision) (Prototype)"
+"Cartridge.Name" "Unknown Activision Game #2 (Activision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "37"
 ""
@@ -8613,13 +8567,6 @@
 
 "Cartridge.MD5" "79d6f61da3c64688ac8e075667f8a39f"
 "Cartridge.Name" "Tie-Fighters (MP)"
-""
-
-"Cartridge.MD5" "7a63d7ea3f2851bcf04f0bb4ba1a3929"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "7a2af383014f5d810ad26d322823549d"
@@ -10712,6 +10659,7 @@
 
 "Cartridge.MD5" "9ad362179c2eea4ea115c7640b4b003e"
 "Cartridge.Name" "Barnstorming (Unknown) (PAL)"
+"Display.Format" "NTSC50"
 ""
 
 "Cartridge.MD5" "9a25b3cfe2bbb847b66a97282200cca2"
@@ -11187,13 +11135,6 @@
 
 "Cartridge.MD5" "a0d502dc8b90b1d7daa5f6effb10d349"
 "Cartridge.Name" "Demo Image Series #5 - Sam (19-02-2003) (AD)"
-""
-
-"Cartridge.MD5" "a075ad332942740c386f4c3814925ece"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "a0675883f9b09a3595ddd66a6f5d3498"
@@ -11868,11 +11809,6 @@
 
 "Cartridge.MD5" "aafc79ffc32c4c9b2d73c8ada7602cfe"
 "Cartridge.Name" "Planet Patrol (Unknown) (PAL)"
-""
-
-"Cartridge.MD5" "aaea37b65db9e492798f0105a6915e96"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Party Mix (2 of 3) (1982) (Starpath)"
 ""
 
 "Cartridge.MD5" "ab301d3d7f2f4fe3fdd8a3540b7a74f5"
@@ -13999,13 +13935,6 @@
 "Cartridge.MD5" "cc03c68b8348b62331964d7a3dbec381"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Marauder (Jone Yuan)"
-""
-
-"Cartridge.MD5" "cc1939e4769d0c157ace326efcfdcf80"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Starpath) (PAL)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "cc3d942c6958bd16b1c602623f59e6e1"
@@ -16647,13 +16576,6 @@
 "Cartridge.Name" "Strategy X (1983) (Gakken) (PAL)"
 ""
 
-"Cartridge.MD5" "f0536303f49006806bac3aec15738336"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
-""
-
 "Cartridge.MD5" "f032b2f2d8323404a6b4541f92dd1825"
 "Cartridge.Name" "Many Blue Bars and Text Demo 3 (PD)"
 ""
@@ -17685,6 +17607,7 @@
 
 "Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
 "Cartridge.Name" "Andrew Davies early notBoulderDash demo (NTSC)"
+"Display.Format" "NTSC"
 "Display.Phosphor" "YES"
 ""
 
@@ -17718,13 +17641,6 @@
 
 "Cartridge.MD5" "fdf6680b2b1e8054293a39700a765692"
 "Cartridge.Name" "Alpha Demo - The Beta Demo 2 (2000) (MP)"
-""
-
-"Cartridge.MD5" "fdf0de38517e0cf7f0885f98ccc95836"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Starpath)"
-"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "fdd4995a50395db14f518f63c2d63438"
@@ -17855,11 +17771,6 @@
 "Cartridge.Name" "SCSIcide (Score Hack 1) (24-02-2001) (Joe Grand) (PD)"
 ""
 
-"Cartridge.MD5" "ff86fc8ffa717bb095e8471638c1c31c"
-"Cartridge.Manufacturer" "Starpath"
-"Cartridge.Name" "Party Mix (1 of 3) (1982) (Starpath) (PAL)"
-""
-
 "Cartridge.MD5" "ffe51989ba6da2c6ae5a12d277862e16"
 "Cartridge.Manufacturer" "Atari - Sears"
 "Cartridge.ModelNo" "CX2627 - 6-99841"
@@ -17885,3 +17796,14 @@
 "Display.YStart" "28"
 ""
 
+"Cartridge.MD5" "06b0194ce992584c365278e0d7323279"
+"Cartridge.Manufacturer" "Activision"
+"Cartridge.Name" "Unknown Activision Game #2 (Prototype) (PAL)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "8055b9c2622136fd91edfea6df642daf"
+"Cartridge.Manufacturer" "Activision"
+"Cartridge.Name" "Unknown Activision Game #1 (1983) (Activision) (Prototype) (PAL)"
+"Cartridge.Rarity" "Prototype"
+""

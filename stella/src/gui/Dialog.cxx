@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.58 2008-02-19 12:33:07 stephena Exp $
+// $Id: Dialog.cxx,v 1.59 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -544,10 +544,39 @@ Widget* Dialog::findWidget(int x, int y)
   return Widget::findWidgetInChain(_firstWidget, x, y);
 }
 
+ // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font)
+{
+  int buttonWidth  = font.getStringWidth("Cancel") + 15;
+  int buttonHeight = font.getLineHeight() + 4;
+#ifndef MAC_OSX
+  ButtonWidget* b;
+  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "OK", kOKCmd);
+  wid.push_back(b);
+  addOKWidget(b);
+  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Cancel", kCloseCmd);
+  wid.push_back(b);
+  addCancelWidget(b);
+#else
+  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Cancel", kCloseCmd);
+  wid.push_back(b);
+  addCancelWidget(b);
+  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "OK", kOKCmd);
+  wid.push_back(b);
+  addOKWidget(b);
+#endif
+}
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ButtonWidget* Dialog::addButton(const GUI::Font& font, int x, int y,
                                 const string& label, int cmd)
 {
+  // FIXME - this is deprecated, and the UI code should be refactored
+  //         to remove all references to it
 #if 0
   const int w = 6 * font.getMaxCharWidth(),
             h = font.getFontHeight() + 6;

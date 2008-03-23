@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.136 2008-03-22 18:17:59 stephena Exp $
+// $Id: Settings.cxx,v 1.137 2008-03-23 16:22:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -89,8 +89,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("romviewer", "false");
 
   // UI-related options
+  setInternal("launcherres", "640x480");
+  setInternal("launcherfont", "small");
   setInternal("debuggerres", "1030x690");
-  setInternal("launcherres", "400x300");
   setInternal("uipalette", "0");
   setInternal("mwheel", "4");
 
@@ -253,6 +254,10 @@ void Settings::validate()
   s = getString("palette");
   if(s != "standard" && s != "z26" && s != "user")
     setInternal("palette", "standard");
+
+  s = getString("launcherfont");
+  if(s != "small" && s != "large")
+    setInternal("launcherfont", "small");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -309,7 +314,7 @@ void Settings::usage()
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-//    << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
+    << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
@@ -317,6 +322,7 @@ void Settings::usage()
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
+    << "  -launcherfont <small|large>  Use small or large font in the ROM launcher\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
     << "  -statedir     <dir>          Directory in which to save state files\n"

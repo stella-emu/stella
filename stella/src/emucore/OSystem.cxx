@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.118 2008-03-14 19:34:56 stephena Exp $
+// $Id: OSystem.cxx,v 1.119 2008-03-23 16:22:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -44,6 +44,7 @@
 #include "Launcher.hxx"
 #include "Font.hxx"
 #include "StellaFont.hxx"
+#include "StellaLargeFont.hxx"
 #include "ConsoleFont.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
@@ -166,9 +167,16 @@ bool OSystem::create()
   queryVideoHardware();
 
   // Create fonts to draw text
+  // TODO - this should be configurable, and also depend on the minimum
+  //        size of the launcher and maximum size of the TIA window
+  //        The logic must be taken care of here, so the GUI classes
+  //        can just create the interface and not worry about checking
   myFont         = new GUI::Font(GUI::stellaDesc);
-  myLauncherFont = new GUI::Font(GUI::stellaDesc);
   myConsoleFont  = new GUI::Font(GUI::consoleDesc);
+  if(mySettings->getString("launcherfont") == "small")
+    myLauncherFont = new GUI::Font(GUI::stellaDesc);
+  else
+    myLauncherFont = new GUI::Font(GUI::stellaLargeDesc);
 
   // Create the event handler for the system
   myEventHandler = new EventHandler(this);

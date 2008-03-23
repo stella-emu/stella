@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.29 2008-02-06 13:45:23 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.30 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,11 +48,16 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
     _nodeList(NULL),
     _mode(AbstractFilesystemNode::kListDirectoriesOnly)
 {
-  const int lineHeight = font.getLineHeight(),
-            bwidth     = font.getStringWidth("Cancel") + 20,
-            bheight    = font.getLineHeight() + 4;
+  const int lineHeight   = font.getLineHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   ButtonWidget* b;
+
+  // Set real dimensions
+  // This is one dialog that can take as much space as is available
+//  _w = _DLG_MIN_SWIDTH - 30;
+//  _h = _DLG_MIN_SHEIGHT - 30;
 
   xpos = 10;  ypos = 4;
   _title = new StaticTextWidget(this, font, xpos, ypos,
@@ -68,35 +73,31 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   // Add file list
   ypos += lineHeight;
   _fileList = new StringListWidget(this, font, xpos, ypos,
-                                   _w - 2 * xpos, _h - bheight - ypos - 15);
+                                   _w - 2 * xpos, _h - buttonHeight - ypos - 20);
   _fileList->setNumberingMode(kListNumberingOff);
   _fileList->setEditable(false);
 
   // Buttons
-  xpos = 10;  ypos = _h - bheight - 8;
-  b = _goUpButton = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight,
-                                     "Go up", kGoUpCmd);
-  addFocusWidget(b);
+  _goUpButton = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                                 buttonWidth, buttonHeight, "Go up", kGoUpCmd);
+  addFocusWidget(_goUpButton);
+
 #ifndef MAC_OSX
-  xpos = _w - 2 *(bwidth + 10);  
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
-                       kChooseCmd);
+  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Choose", kChooseCmd);
   addFocusWidget(b);
   addOKWidget(b);
-  xpos += bwidth + 10;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
-                       kCloseCmd);
+  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Cancel", kCloseCmd);
   addFocusWidget(b);
   addCancelWidget(b);
 #else
-  xpos = _w - 2 *(bwidth + 10);  ypos = _h - bheight - 8;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cancel",
-                       kCloseCmd);
+  b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Cancel", kCloseCmd);
   addFocusWidget(b);
   addCancelWidget(b);
-  xpos += bwidth + 10;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Choose",
-                       kChooseCmd);
+  b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Choose", kChooseCmd);
   addFocusWidget(b);
   addOKWidget(b);
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.48 2008-02-06 13:45:24 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.49 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,12 +38,19 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                          const GUI::Font& font, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
-  const int lineHeight = font.getLineHeight(),
-            fontHeight = font.getFontHeight();
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   int lwidth = font.getStringWidth("Dirty Rects: "),
-      pwidth = font.getStringWidth("Software");
+      pwidth = font.getStringWidth("1920x1200");
   WidgetArray wid;
+
+  // Set real dimensions
+//  _w = 46 * fontWidth + 10;
+//  _h = 11 * (lineHeight + 4) + 10;
 
   xpos = 5;  ypos = 10;
 
@@ -98,10 +105,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                                     "UI Zoom: ", lwidth, kUIZoomChanged);
   myUIZoomSlider->setMinValue(1); myUIZoomSlider->setMaxValue(10);
   wid.push_back(myUIZoomSlider);
-  myUIZoomLabel = new StaticTextWidget(this, font,
-                                       xpos + myUIZoomSlider->getWidth() + 4,
-                                       ypos + 1,
-                                       15, fontHeight, "", kTextAlignLeft);
+  myUIZoomLabel =
+    new StaticTextWidget(this, font, xpos + myUIZoomSlider->getWidth() + 4,
+                         ypos + 1, fontWidth * 2, fontHeight, "", kTextAlignLeft);
   myUIZoomLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
@@ -110,10 +116,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                                      "TIA Zoom: ", lwidth, kTIAZoomChanged);
   myTIAZoomSlider->setMinValue(1); myTIAZoomSlider->setMaxValue(10);
   wid.push_back(myTIAZoomSlider);
-  myTIAZoomLabel = new StaticTextWidget(this, font,
-                                        xpos + myTIAZoomSlider->getWidth() + 4,
-                                        ypos + 1,
-                                        15, fontHeight, "", kTextAlignLeft);
+  myTIAZoomLabel =
+    new StaticTextWidget(this, font, xpos + myTIAZoomSlider->getWidth() + 4,
+                         ypos + 1, fontWidth * 2, fontHeight, "", kTextAlignLeft);
   myTIAZoomLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
@@ -125,11 +130,12 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myAspectRatioSlider);
   myAspectRatioLabel =
     new StaticTextWidget(this, font, xpos + myAspectRatioSlider->getWidth() + 4,
-                         ypos + 1, 15, fontHeight, "", kTextAlignLeft);
+                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
 
   // Move over to the next column
-  xpos += 115;  ypos = 10;
+  xpos += myAspectRatioSlider->getWidth() + myAspectRatioLabel->getWidth();
+  ypos = 10;
 
   // Framerate
   myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
@@ -144,54 +150,41 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Fullscreen
-  myFullscreenCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+  myFullscreenCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                             "Fullscreen mode", kFullScrChanged);
   wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
   // PAL color-loss effect
-  myColorLossCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+  myColorLossCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                            "PAL color-loss");
   wid.push_back(myColorLossCheckbox);
   ypos += lineHeight + 4;
 
   // Use sync to vblank in OpenGL
-  myUseVSyncCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+  myUseVSyncCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                           "GL VSync");
   wid.push_back(myUseVSyncCheckbox);
   ypos += lineHeight + 4;
 
   // Center window (in windowed mode)
-  myCenterCheckbox = new CheckboxWidget(this, font, xpos + 5, ypos,
+  myCenterCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                         "Center window (*)");
   wid.push_back(myCenterCheckbox);
   ypos += lineHeight + 4;
 
   // Add message concerning usage
   lwidth = font.getStringWidth("(*) Requires application restart");
-  new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
+  new StaticTextWidget(this, font, 10, _h - 2*buttonHeight - 10, lwidth, fontHeight,
                        "(*) Requires application restart",
                        kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;
-  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
+  addOKCancelBGroup(wid, font);
 
   addToFocusList(wid);
 

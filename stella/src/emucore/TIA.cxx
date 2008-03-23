@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.86 2008-03-03 18:54:51 stephena Exp $
+// $Id: TIA.cxx,v 1.87 2008-03-23 16:22:41 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -241,10 +241,10 @@ void TIA::frameReset()
 
   // Make sure the height value is reasonable, because we need a certain
   // minimum amount of space for the onscreen GUI
-  if(myFrameHeight < 200)
+  if(myFrameHeight < 210)
   {
     // Values are illegal so reset to default values
-    myFrameHeight = 200;
+    myFrameHeight = 210;
   }
 }
 

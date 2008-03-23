@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.hxx,v 1.28 2008-03-14 15:23:24 stephena Exp $
+// $Id: OptionsDialog.hxx,v 1.29 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -89,13 +89,6 @@ class OptionsDialog : public Dialog
       kHelpCmd     = 'HELP',
       kAboutCmd    = 'ABOU',
       kExitCmd     = 'EXIM'
-    };
-
-    enum {
-      kRowHeight      = 22,
-      kBigButtonWidth = 90,
-      kMainMenuWidth  = (2*kBigButtonWidth + 30),
-      kMainMenuHeight = 6*kRowHeight + 15
     };
 };
 

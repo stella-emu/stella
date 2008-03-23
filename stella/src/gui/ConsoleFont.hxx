@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ConsoleFont.hxx,v 1.7 2008-02-06 13:45:23 stephena Exp $
+// $Id: ConsoleFont.hxx,v 1.8 2008-03-23 16:22:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -3116,7 +3116,7 @@ static const uInt16 _console_font_bits[] = {
 };
 
 /* Character->glyph mapping. */
-static const uInt16 _console_sysfont_offset[] = {
+static const uInt32 _console_sysfont_offset[] = {
 	13, /* (0x00) */
 	0,	/* (0x01) */
 	0,	/* (0x02) */
@@ -3250,12 +3250,14 @@ static const FontDesc consoleDesc = {
 	"8x13",
 	8,
 	13,
+    8, 13, 0, -1,
 	11,
 	0,
 	127,
 	_console_font_bits,
 	_console_sysfont_offset,  /* encode table */
 	0,  /* fixed width*/
+	0,
 	0,
 	sizeof(_console_font_bits)/sizeof(uInt16)
 };
