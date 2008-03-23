@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.16 2008-03-23 16:22:46 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.17 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,16 +41,12 @@ FileSnapDialog::FileSnapDialog(
     myIsGlobal(boss != 0)
 {
   const int lineHeight   = font.getLineHeight(),
-            fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonWidth  = font.getStringWidth("Properties file:") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
-  int xpos, ypos, bwidth, bheight;
+  int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
-
-  bwidth  = font.getStringWidth("Properties file:") + 20;
-  bheight = font.getLineHeight() + 4;
 
   // Set real dimensions
 //  _w = 50 * fontWidth + 10;
@@ -60,62 +56,62 @@ FileSnapDialog::FileSnapDialog(
 
   // ROM path
   ButtonWidget* romButton = 
-    new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Rom path:",
-                     kChooseRomDirCmd);
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Rom path:", kChooseRomDirCmd);
   wid.push_back(romButton);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                 _w - xpos - 10, font.getLineHeight(), "");
+                                 _w - xpos - 10, lineHeight, "");
   wid.push_back(myRomPath);
 
   // State directory
   xpos = vBorder;  ypos += romButton->getHeight() + 3;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "State path:",
-                       kChooseStateDirCmd);
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "State path:", kChooseStateDirCmd);
   wid.push_back(b);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   myStatePath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, font.getLineHeight(), "");
+                                   _w - xpos - 10, lineHeight, "");
   wid.push_back(myStatePath);
 
   // Cheat file
   xpos = vBorder;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Cheat file:",
-                       kChooseCheatFileCmd);
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "Cheat file:", kChooseCheatFileCmd);
   wid.push_back(b);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   myCheatFile = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, font.getLineHeight(), "");
+                                   _w - xpos - 10, lineHeight, "");
   wid.push_back(myCheatFile);
 
   // Palette file
   xpos = vBorder;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Palette file:",
-                       kChoosePaletteFileCmd);
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "Palette file:", kChoosePaletteFileCmd);
   wid.push_back(b);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   myPaletteFile = new EditTextWidget(this, font, xpos, ypos + 2,
-                                     _w - xpos - 10, font.getLineHeight(), "");
+                                     _w - xpos - 10, lineHeight, "");
   wid.push_back(myPaletteFile);
 
   // Properties file
   xpos = vBorder;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Properties file:",
-                       kChoosePropsFileCmd);
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "Properties file:", kChoosePropsFileCmd);
   wid.push_back(b);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   myPropsFile = new EditTextWidget(this, font, xpos, ypos + 2,
-                                   _w - xpos - 10, font.getLineHeight(), "");
+                                   _w - xpos - 10, lineHeight, "");
   wid.push_back(myPropsFile);
 
   // Snapshot path
   xpos = vBorder;  ypos += b->getHeight() + 3;
-  b = new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Snapshot path:",
-                       kChooseSnapDirCmd);
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "Snapshot path:", kChooseSnapDirCmd);
   wid.push_back(b);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   mySnapPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                  _w - xpos - 10, font.getLineHeight(), "");
+                                  _w - xpos - 10, lineHeight, "");
   wid.push_back(mySnapPath);
 
   // Snapshot single or multiple saves
@@ -126,7 +122,8 @@ FileSnapDialog::FileSnapDialog(
 
   // Add Defaults, OK and Cancel buttons
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
+                       font.getStringWidth("Defaults") + 20, buttonHeight,
+                       "Defaults", kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
 

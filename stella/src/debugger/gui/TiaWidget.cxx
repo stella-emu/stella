@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.9 2008-02-06 13:45:20 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.10 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -800,7 +800,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myRamGrid->getSelectedAddr();
           value = myRamGrid->getSelectedValue();
 
-          myLabel->setEditString(dbg.equates()->getLabel(addr));
+          myLabel->setEditString(dbg.equates().getLabel(addr));
 
           myDecValue->setEditString(dbg.valueToString(value, kBASE_10));
           myBinValue->setEditString(dbg.valueToString(value, kBASE_2));

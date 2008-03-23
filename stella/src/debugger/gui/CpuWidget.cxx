@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.10 2008-02-06 13:45:20 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.11 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -281,5 +281,5 @@ void CpuWidget::fillGrid()
     changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
 
   myPSRegister->setState(state.PSbits, changed);
-  myPCLabel->setEditString(dbg.equates()->getLabel(state.PC, EQF_ROM));
+  myPCLabel->setEditString(dbg.equates().getLabel(state.PC, EQF_ROM));
 }

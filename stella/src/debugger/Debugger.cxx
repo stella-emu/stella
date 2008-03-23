@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.119 2008-02-24 16:51:52 stephena Exp $
+// $Id: Debugger.cxx,v 1.120 2008-03-23 17:43:21 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -100,10 +100,10 @@ Debugger::Debugger(OSystem* osystem)
     myTiaOutput(NULL),
     myTiaZoom(NULL),
     myRom(NULL),
-    equateList(NULL),
-    breakPoints(NULL),
-    readTraps(NULL),
-    writeTraps(NULL),
+    myEquateList(NULL),
+    myBreakPoints(NULL),
+    myReadTraps(NULL),
+    myWriteTraps(NULL),
     myWidth(1030),
     myHeight(690)
 {
@@ -118,10 +118,10 @@ Debugger::Debugger(OSystem* osystem)
 
   // Init parser
   myParser = new DebuggerParser(this);
-  equateList = new EquateList();
-  breakPoints = new PackedBitArray(0x10000);
-  readTraps = new PackedBitArray(0x10000);
-  writeTraps = new PackedBitArray(0x10000);
+  myEquateList = new EquateList();
+  myBreakPoints = new PackedBitArray(0x10000);
+  myReadTraps = new PackedBitArray(0x10000);
+  myWriteTraps = new PackedBitArray(0x10000);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -139,10 +139,10 @@ Debugger::~Debugger()
   delete myRamDebug;
   delete myTiaDebug;
 
-  delete equateList;
-  delete breakPoints;
-  delete readTraps;
-  delete writeTraps;
+  delete myEquateList;
+  delete myBreakPoints;
+  delete myReadTraps;
+  delete myWriteTraps;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,6 +191,12 @@ void Debugger::setConsole(Console* console)
   delete myTiaDebug;
   myTiaDebug = new TIADebug(this, myConsole);
 
+  // Initialize equates and breakpoints to known state
+  delete myEquateList;
+  myEquateList = new EquateList();
+  clearAllBreakPoints();
+  clearAllTraps();
+
   autoLoadSymbols(myOSystem->romFile());
   loadListFile();
 
@@ -221,17 +227,18 @@ void Debugger::quit()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::autoLoadSymbols(string fileName) {
-	string file = fileName;
+void Debugger::autoLoadSymbols(string fileName)
+{
+  string file = fileName;
 
-	string::size_type pos;
-	if( (pos = file.find_last_of('.')) != string::npos ) {
-		file.replace(pos, file.size(), ".sym");
-	} else {
-		file += ".sym";
-	}
-	string ret = equateList->loadFile(file);
-	//	cerr << "loading syms from file " << file << ": " << ret << endl;
+  string::size_type pos;
+  if( (pos = file.find_last_of('.')) != string::npos )
+    file.replace(pos, file.size(), ".sym");
+  else
+    file += ".sym";
+
+  string ret = myEquateList->loadFile(file);
+  //  cerr << "loading syms from file " << file << ": " << ret << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -289,7 +296,7 @@ string Debugger::loadListFile(string f)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::getSourceLines(int addr)
+string Debugger::getSourceLines(int addr) const
 {
   if(sourceLines.size() == 0)
     return "";
@@ -452,140 +459,115 @@ const string Debugger::cpuState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* The timers, joysticks, and switches can be read via peeks, so
    I didn't write a separate RIOTDebug class. */
-const string Debugger::riotState() {
-	string ret;
+const string Debugger::riotState()
+{
+  string ret;
 
-	// TODO: inverse video for changed regs. Core needs to track this.
-	// TODO: keyboard controllers?
+  // TODO: inverse video for changed regs. Core needs to track this.
+  // TODO: keyboard controllers?
 
-	for(int i=0x280; i<0x284; i++) {
-		ret += valueToString(i);
-		ret += "/";
-		ret += equates()->getFormatted(i, 2);
-		ret += "=";
-		ret += valueToString(mySystem->peek(i));
-		ret += " ";
-	}
-	ret += "\n";
+  for(int i=0x280; i<0x284; i++)
+  {
+    ret += valueToString(i);
+    ret += "/";
+    ret += equates().getFormatted(i, 2);
+    ret += "=";
+    ret += valueToString(mySystem->peek(i));
+    ret += " ";
+  }
+  ret += "\n";
 
-	// These are squirrely: some symbol files will define these as
-	// 0x284-0x287. Doesn't actually matter, these registers repeat
-   // every 16 bytes.
-	ret += valueToString(0x294);
-	ret += "/TIM1T=";
-	ret += valueToString(mySystem->peek(0x294));
-	ret += " ";
+  // These are squirrely: some symbol files will define these as
+  // 0x284-0x287. Doesn't actually matter, these registers repeat
+  // every 16 bytes.
+  ret += valueToString(0x294);
+  ret += "/TIM1T=";
+  ret += valueToString(mySystem->peek(0x294));
+  ret += " ";
 
-	ret += valueToString(0x295);
-	ret += "/TIM8T=";
-	ret += valueToString(mySystem->peek(0x295));
-	ret += " ";
+  ret += valueToString(0x295);
+  ret += "/TIM8T=";
+  ret += valueToString(mySystem->peek(0x295));
+  ret += " ";
 
-	ret += valueToString(0x296);
-	ret += "/TIM64T=";
-	ret += valueToString(mySystem->peek(0x296));
-	ret += " ";
+  ret += valueToString(0x296);
+  ret += "/TIM64T=";
+  ret += valueToString(mySystem->peek(0x296));
+  ret += " ";
 
-	ret += valueToString(0x297);
-	ret += "/TIM1024T=";
-	ret += valueToString(mySystem->peek(0x297));
-	ret += "\n";
+  ret += valueToString(0x297);
+  ret += "/TIM1024T=";
+  ret += valueToString(mySystem->peek(0x297));
+  ret += "\n";
 
-	ret += "Left/P0diff: ";
-	ret += (mySystem->peek(0x282) & 0x40) ? "hard/A" : "easy/B";
-	ret += "   ";
+  ret += "Left/P0diff: ";
+  ret += (mySystem->peek(0x282) & 0x40) ? "hard/A" : "easy/B";
+  ret += "   ";
 
-	ret += "Right/P1diff: ";
-	ret += (mySystem->peek(0x282) & 0x80) ? "hard/A" : "easy/B";
-	ret += "\n";
+  ret += "Right/P1diff: ";
+  ret += (mySystem->peek(0x282) & 0x80) ? "hard/A" : "easy/B";
+  ret += "\n";
 
-	ret += "TVType: ";
-	ret += (mySystem->peek(0x282) & 0x8) ? "Color" : "B&W";
-	ret += "   Switches: ";
-	ret += (mySystem->peek(0x282) & 0x2) ? "-" : "+";
-	ret += "select  ";
-	ret += (mySystem->peek(0x282) & 0x1) ? "-" : "+";
-	ret += "reset";
-	ret += "\n";
+  ret += "TVType: ";
+  ret += (mySystem->peek(0x282) & 0x8) ? "Color" : "B&W";
+  ret += "   Switches: ";
+  ret += (mySystem->peek(0x282) & 0x2) ? "-" : "+";
+  ret += "select  ";
+  ret += (mySystem->peek(0x282) & 0x1) ? "-" : "+";
+  ret += "reset";
+  ret += "\n";
 
-	// Yes, the fire buttons are in the TIA, but we might as well
-	// show them here for convenience.
-	ret += "Left/P0 stick:  ";
-	ret += (mySystem->peek(0x280) & 0x80) ? "" : "right ";
-	ret += (mySystem->peek(0x280) & 0x40) ? "" : "left ";
-	ret += (mySystem->peek(0x280) & 0x20) ? "" : "down ";
-	ret += (mySystem->peek(0x280) & 0x10) ? "" : "up ";
-	ret += ((mySystem->peek(0x280) & 0xf0) == 0xf0) ? "(no directions) " : "";
-	ret += (mySystem->peek(0x03c) & 0x80) ? "" : "(button) ";
-	ret += "\n";
-	ret += "Right/P1 stick: ";
-	ret += (mySystem->peek(0x280) & 0x08) ? "" : "right ";
-	ret += (mySystem->peek(0x280) & 0x04) ? "" : "left ";
-	ret += (mySystem->peek(0x280) & 0x02) ? "" : "down ";
-	ret += (mySystem->peek(0x280) & 0x01) ? "" : "up ";
-	ret += ((mySystem->peek(0x280) & 0x0f) == 0x0f) ? "(no directions) " : "";
-	ret += (mySystem->peek(0x03d) & 0x80) ? "" : "(button) ";
+  // Yes, the fire buttons are in the TIA, but we might as well
+  // show them here for convenience.
+  ret += "Left/P0 stick:  ";
+  ret += (mySystem->peek(0x280) & 0x80) ? "" : "right ";
+  ret += (mySystem->peek(0x280) & 0x40) ? "" : "left ";
+  ret += (mySystem->peek(0x280) & 0x20) ? "" : "down ";
+  ret += (mySystem->peek(0x280) & 0x10) ? "" : "up ";
+  ret += ((mySystem->peek(0x280) & 0xf0) == 0xf0) ? "(no directions) " : "";
+  ret += (mySystem->peek(0x03c) & 0x80) ? "" : "(button) ";
+  ret += "\n";
+  ret += "Right/P1 stick: ";
+  ret += (mySystem->peek(0x280) & 0x08) ? "" : "right ";
+  ret += (mySystem->peek(0x280) & 0x04) ? "" : "left ";
+  ret += (mySystem->peek(0x280) & 0x02) ? "" : "down ";
+  ret += (mySystem->peek(0x280) & 0x01) ? "" : "up ";
+  ret += ((mySystem->peek(0x280) & 0x0f) == 0x0f) ? "(no directions) " : "";
+  ret += (mySystem->peek(0x03d) & 0x80) ? "" : "(button) ";
 
-	//ret += "\n"; // caller will add
+  //ret += "\n"; // caller will add
 
-	return ret;
+  return ret;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::reset() {
-	int pc = myCpuDebug->dPeek(0xfffc);
-	myCpuDebug->setPC(pc);
+void Debugger::reset()
+{
+  int pc = myCpuDebug->dPeek(0xfffc);
+  myCpuDebug->setPC(pc);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::formatFlags(BoolArray& b, char *out) {
-	// NV-BDIZC
-
-	if(myCpuDebug->n())
-		out[0] = 'N';
-	else
-		out[0] = 'n';
-
-	if(myCpuDebug->v())
-		out[1] = 'V';
-	else
-		out[1] = 'v';
-
-	out[2] = '-';
-
-	if(myCpuDebug->b())
-		out[3] = 'B';
-	else
-		out[3] = 'b';
-
-	if(myCpuDebug->d())
-		out[4] = 'D';
-	else
-		out[4] = 'd';
-
-	if(myCpuDebug->i())
-		out[5] = 'I';
-	else
-		out[5] = 'i';
-
-	if(myCpuDebug->z())
-		out[6] = 'Z';
-	else
-		out[6] = 'z';
-
-	if(myCpuDebug->c())
-		out[7] = 'C';
-	else
-		out[7] = 'c';
-
-	out[8] = '\0';
+void Debugger::formatFlags(BoolArray& b, char *out)
+{
+  // NV-BDIZC
+  out[0] = myCpuDebug->n() ? 'N' : 'n';
+  out[1] = myCpuDebug->v() ? 'V' : 'v';
+  out[2] = '-';
+  out[3] = myCpuDebug->b() ? 'B' : 'b';
+  out[4] = myCpuDebug->d() ? 'D' : 'd';
+  out[5] = myCpuDebug->i() ? 'I' : 'i';
+  out[6] = myCpuDebug->z() ? 'Z' : 'z';
+  out[7] = myCpuDebug->c() ? 'C' : 'c';
+  out[8] = '\0';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* Element 0 of args is the address. The remaining elements are the data
    to poke, starting at the given address.
 */
-const string Debugger::setRAM(IntArray& args) {
+const string Debugger::setRAM(IntArray& args)
+{
   char buf[10];
 
   int count = args.size();
@@ -729,80 +711,84 @@ int Debugger::trace()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-EquateList *Debugger::equates() {
-  return equateList;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleBreakPoint(int bp) {
-  mySystem->m6502().setBreakPoints(breakPoints);
+void Debugger::toggleBreakPoint(int bp)
+{
+  mySystem->m6502().setBreakPoints(myBreakPoints);
   if(bp < 0) bp = myCpuDebug->pc();
-  breakPoints->toggle(bp);
+  myBreakPoints->toggle(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setBreakPoint(int bp, bool set)
 {
-  mySystem->m6502().setBreakPoints(breakPoints);
+  mySystem->m6502().setBreakPoints(myBreakPoints);
   if(bp < 0) bp = myCpuDebug->pc();
   if(set)
-    breakPoints->set(bp);
+    myBreakPoints->set(bp);
   else
-    breakPoints->clear(bp);
+    myBreakPoints->clear(bp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::breakPoint(int bp) {
+bool Debugger::breakPoint(int bp)
+{
   if(bp < 0) bp = myCpuDebug->pc();
-  return breakPoints->isSet(bp) != 0;
+  return myBreakPoints->isSet(bp) != 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleReadTrap(int t) {
-  mySystem->m6502().setTraps(readTraps, writeTraps);
-  readTraps->toggle(t);
+void Debugger::toggleReadTrap(int t)
+{
+  mySystem->m6502().setTraps(myReadTraps, myWriteTraps);
+  myReadTraps->toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleWriteTrap(int t) {
-  mySystem->m6502().setTraps(readTraps, writeTraps);
-  writeTraps->toggle(t);
+void Debugger::toggleWriteTrap(int t)
+{
+  mySystem->m6502().setTraps(myReadTraps, myWriteTraps);
+  myWriteTraps->toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::toggleTrap(int t) {
+void Debugger::toggleTrap(int t)
+{
   toggleReadTrap(t);
   toggleWriteTrap(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::readTrap(int t) {
-  return readTraps->isSet(t) != 0;
+bool Debugger::readTrap(int t)
+{
+  return myReadTraps->isSet(t) != 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::writeTrap(int t) {
-  return writeTraps->isSet(t) != 0;
+bool Debugger::writeTrap(int t)
+{
+  return myWriteTraps->isSet(t) != 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::cycles() {
+int Debugger::cycles()
+{
   return mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& Debugger::disassemble(int start, int lines) {
+const string& Debugger::disassemble(int start, int lines)
+{
   char buf[255], bbuf[255];
   static string result;
 
   result = "";
   do {
-    const char *label = equateList->getFormatted(start, 4);
+    const char *label = myEquateList->getFormatted(start, 4);
 
     result += label;
     result += ": ";
 
-    int count = myCpuDebug->disassemble(start, buf, equateList);
+    int count = myCpuDebug->disassemble(start, buf, myEquateList);
 
     for(int i=0; i<count; i++) {
       sprintf(bbuf, "%02x ", peek(start++));
@@ -830,11 +816,11 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 
   do
   {
-    tmp = equateList->getFormatted(start, 4);
+    tmp = myEquateList->getFormatted(start, 4);
     addrLabel.push_back(tmp + ":");
     addr.push_back(start);
 
-    int count = myCpuDebug->disassemble(start, buf, equateList);
+    int count = myCpuDebug->disassemble(start, buf, myEquateList);
 
     tmp = "";
     for(int i=0; i<count; i++) {
@@ -873,18 +859,18 @@ void Debugger::nextFrame(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::clearAllBreakPoints()
 {
-  delete breakPoints;
-  breakPoints = new PackedBitArray(0x10000);
+  delete myBreakPoints;
+  myBreakPoints = new PackedBitArray(0x10000);
   mySystem->m6502().setBreakPoints(NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::clearAllTraps() 
 {
-  delete readTraps;
-  delete writeTraps;
-  readTraps = new PackedBitArray(0x10000);
-  writeTraps = new PackedBitArray(0x10000);
+  delete myReadTraps;
+  delete myWriteTraps;
+  myReadTraps = new PackedBitArray(0x10000);
+  myWriteTraps = new PackedBitArray(0x10000);
   mySystem->m6502().setTraps(NULL, NULL);
 }
 
@@ -909,7 +895,7 @@ string Debugger::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::addLabel(string label, int address)
 {
-  equateList->addEquate(label, address);
+  myEquateList->addEquate(label, address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -944,10 +930,9 @@ int Debugger::bankCount()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char *Debugger::getCartType()
+string Debugger::getCartType()
 {
-  return myConsole->cartridge().name().c_str();
-// FIXME - maybe whatever is calling this should use a string instead
+  return myConsole->cartridge().name();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -982,7 +967,7 @@ void Debugger::setQuitState()
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
-  //	if(breakPoints->isSet(myCpuDebug->pc()))
+  //	if(myBreakPoints->isSet(myCpuDebug->pc()))
   mySystem->m6502().execute(1);
 }
 
@@ -1055,8 +1040,8 @@ GUI::Rect Debugger::getTabBounds() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addFunction(string name, string definition,
-                           Expression *exp, bool builtin)
+void Debugger::addFunction(const string& name, const string& definition,
+                           Expression* exp, bool builtin)
 {
   functions.insert(make_pair(name, exp));
   if(!builtin)
@@ -1064,7 +1049,7 @@ void Debugger::addFunction(string name, string definition,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::delFunction(string name)
+void Debugger::delFunction(const string& name)
 {
   FunctionMap::iterator iter = functions.find(name);
   if(iter == functions.end())
@@ -1081,7 +1066,7 @@ void Debugger::delFunction(string name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Expression *Debugger::getFunction(string name)
+Expression* Debugger::getFunction(const string& name)
 {
   FunctionMap::iterator iter = functions.find(name);
   if(iter == functions.end())
@@ -1091,7 +1076,7 @@ Expression *Debugger::getFunction(string name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::getFunctionDef(string name)
+string Debugger::getFunctionDef(const string& name)
 {
   FunctionDefMap::iterator iter = functionDefs.find(name);
   if(iter == functionDefs.end())
@@ -1101,13 +1086,13 @@ string Debugger::getFunctionDef(string name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const FunctionDefMap Debugger::getFunctionDefMap()
+const FunctionDefMap Debugger::getFunctionDefMap() const
 {
   return functionDefs;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::builtinHelp()
+const string Debugger::builtinHelp() const
 {
   string result;
 
@@ -1125,7 +1110,7 @@ const string Debugger::builtinHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::saveROM(string filename)
+bool Debugger::saveROM(const string& filename) const
 {
   // TODO: error checking
   ofstream *out = new ofstream(filename.c_str(), ios::out | ios::binary);

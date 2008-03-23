@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.23 2008-02-06 13:45:24 stephena Exp $
+// $Id: YaccParser.cxx,v 1.24 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -102,7 +102,7 @@ inline bool is_operator(char x) {
 // responsibility, not the lexer's
 int const_to_int(char *c) {
 	// what base is the input in?
-	BaseFormat base = Debugger::debugger().parser()->base();
+	BaseFormat base = Debugger::debugger().parser().base();
 
 	switch(*c) {
 		case '\\':
@@ -261,7 +261,7 @@ int yylex() {
 					// happen if the user defines a label that matches one of
 					// the specials. Who would do that, though?
 
-					if(Debugger::debugger().equates()->getAddress(idbuf) > -1) {
+					if(Debugger::debugger().equates().getAddress(idbuf) > -1) {
 						yylval.equate = idbuf;
 						return EQUATE;
 					} else if( (cpuMeth = getCpuSpecial(idbuf)) ) {

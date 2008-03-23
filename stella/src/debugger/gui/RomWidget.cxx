@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.23 2008-02-06 13:45:20 stephena Exp $
+// $Id: RomWidget.cxx,v 1.24 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -217,7 +217,7 @@ void RomWidget::loadConfig()
 void RomWidget::initialUpdate()
 {
   Debugger& dbg = instance()->debugger();
-  PackedBitArray* bp = dbg.breakpoints();
+  PackedBitArray& bp = dbg.breakpoints();
 
   // Reading from ROM might trigger a bankswitch, so save the current bank
   myCurrentBank = dbg.getBank();
@@ -238,7 +238,7 @@ void RomWidget::initialUpdate()
     dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 4096);
     for(unsigned int i = 0; i < data.size(); ++i)
     {
-      if(bp && bp->isSet(myAddrList[i]))
+      if(bp.isSet(myAddrList[i]))
         state.push_back(true);
       else
         state.push_back(false);
@@ -285,14 +285,14 @@ void RomWidget::patchROM(int data, const string& bytes)
   // Temporarily set to base 16, since that's the format the disassembled
   // byte string is in.  This eliminates the need to prefix each byte with
   // a '$' character
-  BaseFormat oldbase = instance()->debugger().parser()->base();
-  instance()->debugger().parser()->setBase(kBASE_16);
+  BaseFormat oldbase = instance()->debugger().parser().base();
+  instance()->debugger().parser().setBase(kBASE_16);
 
   command << "rom #" << myAddrList[data] << " " << bytes;
   instance()->debugger().run(command.str());
 
   // Restore previous base
-  instance()->debugger().parser()->setBase(oldbase);
+  instance()->debugger().parser().setBase(oldbase);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

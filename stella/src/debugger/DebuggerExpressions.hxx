@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerExpressions.hxx,v 1.3 2008-02-06 13:45:20 stephena Exp $
+// $Id: DebuggerExpressions.hxx,v 1.4 2008-03-23 17:43:21 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_EXPRESSIONS_HXX
@@ -123,7 +123,7 @@ class EquateExpression : public Expression
 {
   public:
     EquateExpression(const string& label) : Expression(0, 0), myLabel(label) {}
-    uInt16 evaluate() { return Debugger::debugger().equates()->getAddress(myLabel); }
+    uInt16 evaluate() { return Debugger::debugger().equates().getAddress(myLabel); }
 
   private:
     string myLabel;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.14 2008-02-06 13:45:20 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.15 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -118,7 +118,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
           if(lines > 0)
           {
             command << "scanline #" << lines;
-            instance()->debugger().parser()->run(command.str());
+            instance()->debugger().parser().run(command.str());
           }
           break;
         }
@@ -128,7 +128,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
           ostringstream command;
           int scanline = myClickY + ystart;
           command << "breakif _scan==#" << scanline;
-          instance()->debugger().parser()->run(command.str());
+          instance()->debugger().parser().run(command.str());
           break;
         }
 

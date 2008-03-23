@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.22 2008-02-06 13:45:20 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.23 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -271,29 +271,29 @@ void DebuggerDialog::addRomArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doStep()
 {
-  instance()->debugger().parser()->run("step");
+  instance()->debugger().parser().run("step");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doTrace()
 {
-  instance()->debugger().parser()->run("trace");
+  instance()->debugger().parser().run("trace");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doAdvance()
 {
-  instance()->debugger().parser()->run("frame #1");
+  instance()->debugger().parser().run("frame #1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doScanlineAdvance()
 {
-  instance()->debugger().parser()->run("scanline #1");
+  instance()->debugger().parser().run("scanline #1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::doExit()
 {
-  instance()->debugger().parser()->run("run");
+  instance()->debugger().parser().run("run");
 }

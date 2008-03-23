@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.91 2008-02-06 13:45:19 stephena Exp $
+// $Id: Debugger.hxx,v 1.92 2008-03-23 17:43:21 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -69,10 +69,13 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.91 2008-02-06 13:45:19 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.92 2008-03-23 17:43:21 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
+  // Make these friend classes, to ease communications with the debugger
+  // Although it isn't enforced, these classes should use accessor methods
+  // directly, and not touch the instance variables
   friend class DebuggerDialog;
   friend class DebuggerParser;
   friend class EventHandler;
@@ -121,12 +124,14 @@ class Debugger : public DialogContainer
     */
     void quit();
 
-	 void addFunction(string name, string def, Expression *exp, bool builtin=false);
-	 string getFunctionDef(string name);
-	 void delFunction(string name);
-	 Expression *getFunction(string name);
-	 const FunctionDefMap getFunctionDefMap();
-	 const string builtinHelp();
+    void addFunction(const string& name, const string& def,
+                     Expression* exp, bool builtin = false);
+    void delFunction(const string& name);
+    Expression* getFunction(const string& name);
+
+    string getFunctionDef(const string& name);
+    const FunctionDefMap getFunctionDefMap() const;
+    const string builtinHelp() const;
 
     /**
       The debugger subsystem responsible for all CPU state
@@ -146,13 +151,12 @@ class Debugger : public DialogContainer
     /**
       List of English-like aliases for 6502 opcodes and operands.
     */
-    EquateList *equates();
+    EquateList& equates() const { return *myEquateList; }
 
-    DebuggerParser *parser() { return myParser; }
-
-    PackedBitArray *breakpoints() { return breakPoints; }
-    PackedBitArray *readtraps() { return readTraps; }
-    PackedBitArray *writetraps() { return writeTraps; }
+    DebuggerParser& parser() const      { return *myParser;      }
+    PackedBitArray& breakpoints() const { return *myBreakPoints; }
+    PackedBitArray& readtraps() const   { return *myReadTraps;   }
+    PackedBitArray& writetraps() const  { return *myWriteTraps;  }
 
     /**
       Run the debugger command and return the result.
@@ -274,10 +278,10 @@ class Debugger : public DialogContainer
     void setBreakPoint(int bp, bool set);
 
     string loadListFile(string f = "");
-    const string getSourceLines(int addr);
-    bool haveListFile() { return sourceLines.size() > 0; }
+    string getSourceLines(int addr) const;
+    bool haveListFile() const { return sourceLines.size() > 0; }
 
-    bool saveROM(string filename);
+    bool saveROM(const string& filename) const;
 
     bool setBank(int bank);
     bool patchROM(int addr, int value);
@@ -336,7 +340,7 @@ class Debugger : public DialogContainer
     PromptWidget *prompt() { return myPrompt; }
     void addLabel(string label, int address);
 
-    const char *getCartType();
+    string getCartType();
     void saveState(int state);
     void loadState(int state);
 
@@ -347,7 +351,7 @@ class Debugger : public DialogContainer
     typedef ListFile::const_iterator ListIter;
 
     Console* myConsole;
-    System* mySystem;
+    System*  mySystem;
 
     DebuggerParser* myParser;
     CpuDebug* myCpuDebug;
@@ -360,11 +364,11 @@ class Debugger : public DialogContainer
     RomWidget*       myRom;
     EditTextWidget*  myMessage;
 
-    EquateList *equateList;
-    PackedBitArray *breakPoints;
-    PackedBitArray *readTraps;
-    PackedBitArray *writeTraps;
-    PromptWidget *myPrompt;
+    EquateList*     myEquateList;
+    PackedBitArray* myBreakPoints;
+    PackedBitArray* myReadTraps;
+    PackedBitArray* myWriteTraps;
+    PromptWidget*   myPrompt;
 
     ListFile sourceLines;
 

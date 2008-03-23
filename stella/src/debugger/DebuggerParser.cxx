@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.102 2008-02-06 13:45:20 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.103 2008-03-23 17:43:21 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -265,7 +265,7 @@ int DebuggerParser::decipher_arg(const string &str)
   else if(arg == "pc" || arg == ".") result = state.PC;
   else { // Not a special, must be a regular arg: check for label first
     const char *a = arg.c_str();
-    result = debugger->equateList->getAddress(arg);
+    result = debugger->equates().getAddress(arg);
 
     if(result < 0) { // if not label, must be a number
       if(bin) { // treat as binary
@@ -559,7 +559,7 @@ string DebuggerParser::eval()
   char buf[50];
   string ret;
   for(int i=0; i<argCount; i++) {
-    string label = debugger->equates()->getLabel(args[i]);
+    string label = debugger->equates().getLabel(args[i]);
     if(label != "") {
       ret += label;
       ret += ": ";
@@ -598,7 +598,7 @@ string DebuggerParser::trapStatus(int addr)
   else
     result += "   none   ";
 
-  string l = debugger->equateList->getLabel(addr);
+  string l = debugger->equates().getLabel(addr);
   if(l != "") {
     result += "  (";
     result += l;
@@ -978,8 +978,8 @@ void DebuggerParser::executeListbreaks()
   int count = 0;
 
   for(unsigned int i=0; i<0x10000; i++) {
-    if(debugger->breakPoints->isSet(i)) {
-      sprintf(buf, "%s ", debugger->equateList->getFormatted(i, 4));
+    if(debugger->breakpoints().isSet(i)) {
+      sprintf(buf, "%s ", debugger->equates().getFormatted(i, 4));
       commandResult += buf;
       if(! (++count % 8) ) commandResult += "\n";
     }
@@ -1057,7 +1057,7 @@ void DebuggerParser::executeLoadlist()
 // "loadsym"
 void DebuggerParser::executeLoadsym()
 {
-  commandResult = debugger->equateList->loadFile(argStrings[0]);
+  commandResult = debugger->equates().loadFile(argStrings[0]);
   debugger->myRom->invalidate();
 }
 
@@ -1221,7 +1221,7 @@ void DebuggerParser::executeSavestate()
 // "savesym"
 void DebuggerParser::executeSavesym()
 {
-  if(debugger->equateList->saveFile(argStrings[0]))
+  if(debugger->equates().saveFile(argStrings[0]))
     commandResult = "saved symbols to file " + argStrings[0];
   else
     commandResult = red("I/O error");
@@ -1296,7 +1296,7 @@ void DebuggerParser::executeTrapwrite()
 // "undef"
 void DebuggerParser::executeUndef()
 {
-  if(debugger->equateList->undefine(argStrings[0]))
+  if(debugger->equates().undefine(argStrings[0]))
   {
     debugger->myRom->invalidate();
     commandResult = argStrings[0] + " now undefined";

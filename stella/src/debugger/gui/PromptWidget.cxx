@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.22 2008-02-06 13:45:20 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.23 2008-03-23 17:43:22 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -239,30 +239,30 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       if(lastDelimPos < 0)
       {
         // no delimiters, do command completion:
-        DebuggerParser *parser = instance()->debugger().parser();
-        possibilities = parser->countCompletions(str);
+        DebuggerParser& parser = instance()->debugger().parser();
+        possibilities = parser.countCompletions(str);
 
         if(possibilities < 1) {
           delete[] str;
           break;
         }
 
-        completionList = parser->getCompletions();
-        prefix = parser->getCompletionPrefix();
+        completionList = parser.getCompletions();
+        prefix = parser.getCompletionPrefix();
       }
       else
       {
         // we got a delimiter, so this must be a label:
-        EquateList *equates = instance()->debugger().equates();
-        possibilities = equates->countCompletions(str + lastDelimPos + 1);
+        EquateList& equates = instance()->debugger().equates();
+        possibilities = equates.countCompletions(str + lastDelimPos + 1);
 
         if(possibilities < 1) {
           delete[] str;
           break;
         }
 
-        completionList = equates->getCompletions();
-        prefix = equates->getCompletionPrefix();
+        completionList = equates.getCompletions();
+        prefix = equates.getCompletionPrefix();
       }
 
       if(possibilities == 1)
