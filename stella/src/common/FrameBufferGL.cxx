@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.100 2008-03-23 16:22:39 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.101 2008-03-24 00:02:16 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -534,27 +534,26 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
   // If this character is not included in the font, use the default char.
   if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
   {
-    if (chr == ' ')
-      return;
+    if (chr == ' ') return;
     chr = desc.defaultchar;
   }
 
   const Int32 w = font->getCharWidth(chr);
   const Int32 h = font->getFontHeight();
   chr -= desc.firstchar;
-  const uInt16* tmp = desc.bits + (desc.offset ?
-                      desc.offset[chr] : (chr * h));
+  const uInt32* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
   uInt16* buffer = (uInt16*) myTexture->pixels + ty * myBuffer.pitch + tx;
   for(int y = 0; y < h; ++y)
   {
-    const uInt16 ptr = *tmp++;
-    uInt16 mask = 0x8000;
-
-    for(int x = 0; x < w; ++x, mask >>= 1)
-      if(ptr & mask)
-        buffer[x] = (uInt16) myDefPalette[color];
-
+    const uInt32 ptr = *tmp++;
+    if(ptr)
+    {
+      uInt32 mask = 0x80000000;
+      for(int x = 0; x < w; ++x, mask >>= 1)
+        if(ptr & mask)
+          buffer[x] = (uInt16) myDefPalette[color];
+    }
     buffer += myBuffer.pitch;
   }
 }

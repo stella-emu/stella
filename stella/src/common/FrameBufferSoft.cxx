@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.77 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.78 2008-03-24 00:02:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -499,19 +499,19 @@ void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color
 void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
                                uInt32 xorig, uInt32 yorig, int color)
 {
-  // If this character is not included in the font, use the default char.
   const FontDesc& desc = font->desc();
+
+  // If this character is not included in the font, use the default char.
   if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)
   {
-    if (chr == ' ')
-      return;
+    if (chr == ' ') return;
     chr = desc.defaultchar;
   }
 
   const Int32 w = font->getCharWidth(chr);
   const Int32 h = font->getFontHeight();
   chr -= desc.firstchar;
-  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
+  const uInt32* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
   // Scale the origins to the current zoom
   xorig *= myZoomLevel;
@@ -528,20 +528,23 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
       uInt16* buffer = (uInt16*) myScreen->pixels + myBaseOffset + yorig * myPitch + xorig;
       for(int y = h; y; --y)
       {
-        const uInt16 fontbuf = *tmp++;
+        const uInt32 fontbuf = *tmp++;
         int ystride = myZoomLevel;
         while(ystride--)
         {
-          uInt16 mask = 0x8000;
-          int pos = screenofsY;
-          for(int x = 0; x < w; x++, mask >>= 1)
+          if(fontbuf)
           {
-            int xstride = myZoomLevel;
-            if((fontbuf & mask) != 0)
-              while(xstride--)
-                buffer[pos++] = myDefPalette[color];
-            else
-              pos += xstride;
+            uInt32 mask = 0x80000000;
+            int pos = screenofsY;
+            for(int x = 0; x < w; x++, mask >>= 1)
+            {
+              int xstride = myZoomLevel;
+              if((fontbuf & mask) != 0)
+                while(xstride--)
+                  buffer[pos++] = myDefPalette[color];
+              else
+                pos += xstride;
+            }
           }
           screenofsY += myPitch;
         }
@@ -559,24 +562,27 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
 
       for(int y = h; y; --y)
       {
-        const uInt16 fontbuf = *tmp++;
+        const uInt32 fontbuf = *tmp++;
         int ystride = myZoomLevel;
         while(ystride--)
         {
-          uInt16 mask = 0x8000;
-          int pos = screenofsY;
-          for(int x = 0; x < w; x++, mask >>= 1)
+          if(fontbuf)
           {
-            int xstride = myZoomLevel;
-            if((fontbuf & mask) != 0)
+            uInt32 mask = 0x80000000;
+            int pos = screenofsY;
+            for(int x = 0; x < w; x++, mask >>= 1)
             {
-              while(xstride--)
+              int xstride = myZoomLevel;
+              if((fontbuf & mask) != 0)
               {
-                buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+                while(xstride--)
+                {
+                  buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+                }
               }
+              else
+                pos += xstride + xstride + xstride;
             }
-            else
-              pos += xstride + xstride + xstride;
           }
           screenofsY += myPitch;
         }
@@ -589,20 +595,23 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
       uInt32* buffer = (uInt32*) myScreen->pixels + myBaseOffset + yorig * myPitch + xorig;
       for(int y = h; y; --y)
       {
-        const uInt16 fontbuf = *tmp++;
+        const uInt32 fontbuf = *tmp++;
         int ystride = myZoomLevel;
         while(ystride--)
         {
-          uInt16 mask = 0x8000;
-          int pos = screenofsY;
-          for(int x = 0; x < w; x++, mask >>= 1)
+          if(fontbuf)
           {
-            int xstride = myZoomLevel;
-            if((fontbuf & mask) != 0)
-              while(xstride--)
-                buffer[pos++] = myDefPalette[color];
-            else
-              pos += xstride;
+            uInt32 mask = 0x80000000;
+            int pos = screenofsY;
+            for(int x = 0; x < w; x++, mask >>= 1)
+            {
+              int xstride = myZoomLevel;
+              if((fontbuf & mask) != 0)
+                while(xstride--)
+                  buffer[pos++] = myDefPalette[color];
+              else
+                pos += xstride;
+            }
           }
           screenofsY += myPitch;
         }
