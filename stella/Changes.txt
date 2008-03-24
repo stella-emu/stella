@@ -12,6 +12,17 @@
                                Release History
 ===============================================================================
 
+2.4.1 to 2.4.2: (September 17, 2007)
+
+  * Made usage of 'GL_TEXTURE_RECTANGLE_ARB' extension configurable, and
+    have it default to off.  This should take care of the black/white
+    screen many people were experiencing with ATI video hardware.  This
+    is accessible using the 'gl_texrect' commandline argument).  Set it to
+    'true' or 'false' to enable/disable the extension.
+
+-Have fun!
+
+
 2.4 to 2.4.1: (August 27, 2007)
 
   * Re-added OpenGL aspect ratio setting ('gl_aspect' commandline argument).
@@ -19,8 +30,6 @@
   * Re-added non-browser mode to the ROM launcher.
 
   * For the Linux/UNIX port; fixed OpenGL vsync issue with Nvidia video cards.
-
-Have fun!
 
 
 2.3.5 to 2.4: (August 20, 2007)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.13 2008-02-19 12:33:05 stephena Exp $
+// $Id: M6532.cxx,v 1.14 2008-03-24 20:31:31 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -414,7 +414,5 @@ M6532::M6532(const M6532& c)
 M6532& M6532::operator = (const M6532&)
 {
   assert(false);
-
   return *this;
 }
- 
