@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StateManager.cxx,v 1.3 2008-02-06 13:45:22 stephena Exp $
+// $Id: StateManager.cxx,v 1.4 2008-03-25 13:52:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,6 +28,9 @@
 #include "System.hxx"
 
 #include "StateManager.hxx"
+
+#define STATE_HEADER "02050000state"
+#define MOVIE_HEADER "02050000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem* osystem)
@@ -184,12 +187,16 @@ void StateManager::loadState(int slot)
       return;
     }
 
-    // Do a complete state load using the Console
     buf.str("");
-    if(in.getString() == md5 && myOSystem->console().load(in))
+
+    // First test if we have a valid header
+    // If so, do a complete state load using the Console
+    if(in.getString() != STATE_HEADER)
+      buf << "Incompatible state " << slot << " file";
+    else if(in.getString() == md5 && myOSystem->console().load(in))
       buf << "State " << slot << " loaded";
     else
-      buf << "Invalid state " << slot << " file";
+      buf << "Invalid data in state " << slot << " file";
 
     in.close();
     myOSystem->frameBuffer().showMessage(buf.str());
@@ -217,6 +224,10 @@ void StateManager::saveState(int slot)
       myOSystem->frameBuffer().showMessage("Error saving state file");
       return;
     }
+
+    // Add header so that if the state format changes in the future,
+    // we'll know right away, without having to parse the rest of the file
+    out.putString(STATE_HEADER);
 
     // Prepend the ROM md5 so this state file only works with that ROM
     out.putString(md5);
