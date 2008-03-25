@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.59 2008-03-23 16:22:46 stephena Exp $
+// $Id: Dialog.cxx,v 1.60 2008-03-25 13:11:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -549,8 +549,8 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font)
 {
   int buttonWidth  = font.getStringWidth("Cancel") + 15;
   int buttonHeight = font.getLineHeight() + 4;
-#ifndef MAC_OSX
   ButtonWidget* b;
+#ifndef MAC_OSX
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "OK", kOKCmd);
   wid.push_back(b);
