@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.138 2008-03-26 00:52:05 stephena Exp $
+// $Id: Settings.cxx,v 1.139 2008-03-26 23:59:21 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -52,7 +52,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("fullscreen", "false");
   setInternal("fullres", "");
   setInternal("center", "true");
-  setInternal("grabmouse", "true");
+  setInternal("grabmouse", "false");
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
 

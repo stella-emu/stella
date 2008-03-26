@@ -12,6 +12,104 @@
                                Release History
 ===============================================================================
 
+2.4.2 to 2.5: (March 28, 2008)
+
+  * Added RomInfo widget to the ROM launcher, which shows properties
+    information and a snapshot of the currently selected ROM.  Updated the UI
+    and added '-romviewer' commandline argument to activate this setting.
+    Note that the ROM launcher will have to be sized at least 640x480 for this
+    to be used.  Also note that the snapshots must be in 1x mode with a
+    maximum size of 320x260.  This will be expanded on in a future release.
+
+  * Added ROM audit functionality, whereby ROMs can be physically renamed
+    according to their properties' name.
+
+  * Added bankswitching support for 0840, SB, X07 and 4A50.  A special thanks
+    to Eckhard Stolberg for much help in this area.
+
+  * Removed "non-browse" functionality from the ROM launcher; it now always
+    uses browse/filesystem mode.  The previous 'pretty' names can now be
+    seen by renaming all your ROMs with the new ROM audit feature.
+
+  * Huge overhaul of controller handling and Stelladaptor support, making it
+    much easier to add new controller types in a future release.
+
+  * Fixed paddle issues in Night Driver; paddle emulation speed should be
+    much better.
+
+  * Fixed several 6507 emulation bugs related to BCD handling.
+
+  * Updated ROM properties based on info from RomHunter.
+
+  * ROM properties can now be edited from the ROM launcher; you no longer
+    have to start a ROM to do so.
+
+  * Added support for configurable font to ROM launcher (currently only
+    'small' and 'large').  Updated the UI and added -launcherfont' commandline
+    argument to change this setting.
+
+  * Added SECAM, NTSC50, PAL60 and SECAM60 to the list of formats that can
+    be used.  Also, switching between these modes with 'Ctrl-f' now switches
+    the palette only; the number of scanlines won't change.
+
+  * Fixed crash when switching between software and OpenGL mode with a
+    Stelladaptor plugged in.
+
+  * Added '-tiafloat' commandline argument, which determines whether or not
+    the TIA pins are in a 'floating' state.  This is useful for testing on
+    certain CMOS EPROM chips where the unused TIA pins on a read are not
+    floating but pulled high.
+
+  * Fixed issue in debugger where once a .sym file was loaded, it was used
+    in all ROMs loaded after that.
+
+  * Fixed issue in debugger where equate names weren't showing up in the RAM
+    and CPU widgets.  Note that this still isn't perfect, and needs support
+    from DASM for proper functionality.
+
+  * Updated state file format, creating smaller files (and in preparation
+    for state rewinding in a future release).  Old state saves will no longer
+    work.
+
+  * Added '-bs' commandline argument, which is an alias for '-type' (which
+    is still present).
+
+  * Removed -pXspeed' commandline arguments, and replaced them with a
+    single '-pspeed'.
+
+  * Removed '-paddle' commandline argument.  The paddle currently emulated
+    by the mouse can still be changed with Ctrl-0..3 or within the UI, but
+    the setting is no longer saved.
+
+  * Reworked UI for specifying that the console ports have been swapped,
+    hopefully making it easier to understand.
+
+  * Added 'Ctrl-c' & 'Ctrl-v' to EditTextWidgets, allowing to copy and paste
+    the text widget contents.  More work in this area is coming in a future
+    release.
+
+  * Added 'Ctrl-leftarrow' and 'Ctrl-rightarrow' to EditTextWidgets, to move
+    to the first character of previous and next words (respectively).
+
+  * For the Win32 port: fixed OpenGL crashes in Vista.  Graphical updates
+    are still slower in Vista compared to XP, though.
+
+  * For the Win32 port: default folder for Stella config files is now
+    'My Documents\Stella'; this can be disabled if necessary.  This should
+    fix issues with losing settings when launching Stella from an IDE,
+    and the creation of stella.ini and 'state' directories in many
+    different places.
+
+  * For the Win32 port: several fixes to the Visual Studio project files,
+    allowing building in debug or release mode, for both i386 and x86_64.
+    The project files have been upgraded to Visual Studio 2008, and Stella
+    can now be built and distributed without the VS runtime libraries.
+
+  * Updated configure script for cross-compiling Win32 version in Linux.
+
+-Have fun!
+
+
 2.4.1 to 2.4.2: (September 17, 2007)
 
   * Made usage of 'GL_TEXTURE_RECTANGLE_ARB' extension configurable, and
@@ -19,8 +117,6 @@
     screen many people were experiencing with ATI video hardware.  This
     is accessible using the 'gl_texrect' commandline argument).  Set it to
     'true' or 'false' to enable/disable the extension.
-
--Have fun!
 
 
 2.4 to 2.4.1: (August 27, 2007)
