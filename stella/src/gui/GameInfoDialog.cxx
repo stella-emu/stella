@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.51 2008-03-22 17:35:03 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.52 2008-03-26 00:52:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,9 +41,10 @@ GameInfoDialog::GameInfoDialog(
     myPropertiesLoaded(false),
     myDefaultsSelected(false)
 {
-  const int fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight();
-
+  const int lineHeight   = font.getLineHeight(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   unsigned int i;
@@ -179,15 +180,17 @@ GameInfoDialog::GameInfoDialog(
     myP0Controller->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myP0Controller);
 
-  myLeftPort =
-    new PopUpWidget(myTab, font, xpos+lwidth+myP0Controller->getWidth()+4, ypos,
-                    pwidth, lineHeight, "in ", font.getStringWidth("in "),
-                    kLeftCChanged);
+  xpos += lwidth+myP0Controller->getWidth() + 4;
+  new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
+                       fontHeight, "in ", kTextAlignLeft);
+  xpos += font.getStringWidth("in ");
+  myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                               "", 0, kLeftCChanged);
   myLeftPort->appendEntry("left port", 1);
   myLeftPort->appendEntry("right port", 2);
   wid.push_back(myLeftPort);
 
-  ypos += lineHeight + 5;
+  xpos = 10;  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P1 Controller:", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -196,15 +199,17 @@ GameInfoDialog::GameInfoDialog(
     myP1Controller->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myP1Controller);
 
-  myRightPort =
-    new PopUpWidget(myTab, font, xpos+lwidth+myP1Controller->getWidth()+4, ypos,
-                    pwidth, lineHeight, "in ", font.getStringWidth("in "),
-                    kRightCChanged);
+  xpos += lwidth+myP1Controller->getWidth() + 4;
+  new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
+                       fontHeight, "in ", kTextAlignLeft);
+  xpos += font.getStringWidth("in ");
+  myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                "", 0, kRightCChanged);
   myRightPort->appendEntry("left port", 1);
   myRightPort->appendEntry("right port", 2);
   wid.push_back(myRightPort);
 
-  ypos += lineHeight + 5;
+  xpos = 10;  ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Swap Paddles:", kTextAlignLeft);
@@ -300,27 +305,12 @@ GameInfoDialog::GameInfoDialog(
                        kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
-  ButtonWidget* b;
   wid.clear();
-  b = addButton(font, 10, _h - 24, "Defaults", kDefaultsCmd);
+  ButtonWidget* b;
+  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  myCancelButton =
-      addButton(font, _w - (kButtonWidth + 10), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(myCancelButton);
-  addCancelWidget(myCancelButton);
-#else
-  myCancelButton =
-      addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Cancel", kCloseCmd);
-  wid.push_back(myCancelButton);
-  addCancelWidget(myCancelButton);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "OK", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
+  addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
 }
 

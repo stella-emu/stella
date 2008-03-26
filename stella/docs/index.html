@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.4.1</b></h4></center>
+	<center><h4><b>Release 2.5</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -25,6 +25,8 @@
 		<li><a href="#Options">Changing Options</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
 		<li><a href="#Remapping">Event Remapping</a></li>
+		<li><a href="#ROMInfo">Viewing ROM Info</a></li>
+		<li><a href="#ROMAudit">ROM Audit Mode</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
 		<li><a href="#Debugger">Integrated Debugger</a></li>
 		<li><a href="#Settings">Settings File</a></li>
@@ -37,7 +39,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - August 2007</b></center>
+	<center><b>February 1999 - March 2008</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -218,14 +220,101 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.4.1</b></h2>
+	<h2><b>New in Release 2.5</b></h2>
 
 	<ul>
-<li>Re-added OpenGL aspect ratio setting ('gl_aspect' commandline argument).</li>
+<li>Added RomInfo widget to the ROM launcher, which shows properties
+    information and a snapshot of the currently selected ROM.  Updated the UI
+    and added '-romviewer' commandline argument to activate this setting.
+    Note that the ROM launcher will have to be sized at least 640x480 for this
+    to be used.  Also note that the snapshots must be in 1x mode with a
+    maximum size of 320x260.  This will be expanded on in a future release.</li>
 
-<li>Re-added non-browser mode to the ROM launcher.</li>
+<li>Added ROM audit functionality, whereby ROMs can be physically renamed
+    according to their properties' name.</li>
 
-<li>For the Linux/UNIX port; fixed OpenGL vsync issue with Nvidia video cards.</li>
+<li>Added bankswitching support for 0840, SB, X07 and 4A50.  A special thanks
+    to Eckhard Stolberg for much help in this area.</li>
+
+<li>Removed "non-browse" functionality from the ROM launcher; it now always
+    uses browse/filesystem mode.  The previous 'pretty' names can now be
+    seen by renaming all your ROMs with the new ROM audit feature.</li>
+
+<li>Huge overhaul of controller handling and Stelladaptor support, making it
+    much easier to add new controller types in a future release.</li>
+
+<li>Fixed paddle issues in Night Driver; paddle emulation speed should be
+    much better.</li>
+
+<li>Fixed several 6507 emulation bugs related to BCD handling.</li>
+
+<li>Updated ROM properties based on info from RomHunter.</li>
+
+<li>ROM properties can now be edited from the ROM launcher; you no longer
+    have to start a ROM to do so.</li>
+
+<li>Added support for configurable font to ROM launcher (currently only
+    'small' and 'large').  Updated the UI and added -launcherfont' commandline
+    argument to change this setting.</li>
+
+<li>Added SECAM, NTSC50, PAL60 and SECAM60 to the list of formats that can
+    be used.  Also, switching between these modes with 'Ctrl-f' now switches
+    the palette only; the number of scanlines won't change.</li>
+
+<li>Fixed crash when switching between software and OpenGL mode with a
+    Stelladaptor plugged in.</li>
+
+<li>Added '-tiafloat' commandline argument, which determines whether or not
+    the TIA pins are in a 'floating' state.  This is useful for testing on
+    certain CMOS EPROM chips where the unused TIA pins on a read are not
+    floating but pulled high.</li>
+
+<li>Fixed issue in debugger where once a .sym file was loaded, it was used
+    in all ROMs loaded after that.</li>
+
+<li>Fixed issue in debugger where equate names weren't showing up in the RAM
+    and CPU widgets.  Note that this still isn't perfect, and needs support
+    from DASM for proper functionality.</li>
+
+<li>Updated state file format, creating smaller files (and in preparation
+    for state rewinding in a future release).  Old state saves will no longer
+    work.</li>
+
+<li>Added '-bs' commandline argument, which is an alias for '-type' (which
+    is still present).</li>
+
+<li>Removed -pXspeed' commandline arguments, and replaced them with a
+    single '-pspeed'.</li>
+
+<li>Removed '-paddle' commandline argument.  The paddle currently emulated
+    by the mouse can still be changed with Ctrl-0..3 or within the UI, but
+    the setting is no longer saved.</li>
+
+<li>Reworked UI for specifying that the console ports have been swapped,
+    hopefully making it easier to understand.</li>
+
+<li>Added 'Ctrl-c' & 'Ctrl-v' to EditTextWidgets, allowing to copy and paste
+    the text widget contents.  More work in this area is coming in a future
+    release.</li>
+
+<li>Added 'Ctrl-leftarrow' and 'Ctrl-rightarrow' to EditTextWidgets, to move
+    to the first character of previous and next words (respectively).</li>
+
+<li>For the Win32 port: fixed OpenGL crashes in Vista.  Graphical updates
+    are still slower in Vista compared to XP, though.</li>
+
+<li>For the Win32 port: default folder for Stella config files is now
+    'My Documents\Stella'; this can be disabled if necessary.  This should
+    fix issues with losing settings when launching Stella from an IDE,
+    and the creation of stella.ini and 'state' directories in many
+    different places.</li>
+
+<li>For the Win32 port: several fixes to the Visual Studio project files,
+    allowing building in debug or release mode, for both i386 and x86_64.
+    The project files have been upgraded to Visual Studio 2008, and Stella
+    can now be built and distributed without the VS runtime libraries.</li>
+
+<li>Updated configure script for cross-compiling Win32 version in Linux.</li>
 	</ul>
 
 	<p>
@@ -238,30 +327,20 @@
 		<li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard
 			or joysticks</li>
 		<li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
-		<li>Emulates one Atari 2600 Paddle Controller using your computer's mouse</li>
-		<li>Support for real Atari 2600 controllers using the
-			<a href="http://www.pixelspast.com/products">Stelladaptor</a></li>
+		<li>Emulates one Atari 2600 Paddle Controller using your computer's mouse, keyboard
+			or joysticks</li>
 		<li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard
 			or joysticks</li>
 		<li>Emulates the CBS Booster-Grip Controller using your computer's keyboard or
 			joysticks</li>
-		<li>Supports cartridges using Atari's standard 2K and 4K format</li>
-		<li>Supports cartridges using Atari's 8K, 16K, and 32K bank-switching schemes</li>
-		<li>Supports cartridges using Activision's 8K bank-switching scheme
-			(Robot Tank and Decathlon)</li>
-		<li>Supports cartridges using CBS Electronics' 12K bank-switching scheme</li>
-		<li>Supports cartridges using Chris Wilkson's Megacart 128K bank-switching
-			scheme</li>
-		<li>Supports cartridges using Commavid bank-switching scheme</li>
-		<li>Supports cartridges using M-Network's 16K bank-switching scheme</li>
-		<li>Supports cartridges using Parker Brothers' 8K bank-switching scheme</li>
-		<li>Supports cartridges using Tigervision's bank-switching scheme with up to
-			512K ROM</li>
-		<li>Supports cartridges using UA Limited bank-switching scheme</li>
+		<li>Support for real Atari 2600 controllers using the
+			<a href="http://www.pixelspast.com/products">Stelladaptor</a></li>
+		<li>Supports almost all known bankswitching schemes (let us know if there's one we missed)</li>
+		<li>Supports cartridge autodetection for almost all bankswitching schemes</li>
 		<li>Supports Supercharger single-load and multi-load games</li>
 		<li>Supports property file for setting the properties associated with games</li>
-<!--		<li>Supports user specified frame rate</li> -->
-		<li>Supports the NTSC, PAL, PAL60 and SECAM television standards</li>
+		<li>Supports the NTSC, PAL, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
+		<li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
 		<li>Supports several "undocumented features" of the TIA graphics chip used by
 			some games</li>
 		<li>TIA emulation supports full collision checking</li>
@@ -303,7 +382,8 @@
 		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
 			the Stella source code; GNU C++ compiler version 3.2.x/4.x or later is highly
 			recommended</li>
-		<li>x86 or PowerPC class machine, in either 32 or 64-bit mode</li>
+		<li>i386, x86_64 or PowerPC class machine, in either 32 or 64-bit mode</li>
+		<li>Other architectures (MIPS, PPC64, etc) have been confirmed to work as well</li>
 	</ul>
 
 	<p>
@@ -326,11 +406,20 @@
 	with the following:</p>
 
 	<ul>
-		<li>Visual C++ 7 or MinGW compiler is required to compile the Stella
+		<li>Visual C++ 7/8 or MinGW compiler is required to compile the Stella
 			source code</li>
 		<li>Pentium class machine required; OpenGL accelerated video card highly
 			recommended</li>
 	</ul>
+
+	<p>
+	<h2><b>Other</b></h2>
+
+	<p>Stella is extremely portable, and in its lifetime has been ported to almost every
+	platform known.  It is 32/64 bit clean in Linux/Unix and Windows (Win32/Win64), and
+	is expected to be compatible with 64-bit OSX as well.  The Stella team is interested
+	in hearing about any problems you may encounter with diverse operating systems and
+	CPU types.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -509,7 +598,7 @@
 	<img src="graphics/rom_browser.png"></p>
 
 	<p>You can start emulation by selecting a ROM and pressing 'Enter' or
-	clicking 'Play', or double-clicking a ROM.</p>
+	clicking 'Select', or double-clicking a ROM.</p>
 
 	<p>
 	<h2><b>Command Line</b></h2>
@@ -570,6 +659,12 @@
 		</tr>
 
 		<tr>
+			<td><pre>-gl_texrect &lt;0|1&gt;</pre></td>
+			<td>OpenGL mode only. Enable GL_TEXTURE_RECTANGLE extension.  This causes
+				problems for some people using ATI video cards.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-zoom_tia &lt;scaler&gt;</pre></td>
 			<td>Use the specified zoom level while in TIA/emulation mode.</td>
 		</tr>
@@ -623,14 +718,10 @@
 		</tr>
 
 		<tr>
-			<td><pre>-channels &lt;1|2&gt;</pre></td>
-			<td>Enable mono or stereo sound.</td>
-		</tr>
-
-		<tr>
 			<td><pre>-fragsize &lt;number&gt;</pre></td>
 			<td>Specify the sound fragment size to use.  Linux/Mac seems to work
-				with 512, Windows may need 2048.</td>
+				with 512, Windows may need 2048 (but newer versions work with
+				512 as well).</td>
 		</tr>
 
 		<tr>
@@ -666,8 +757,8 @@
 		</tr>
 
 		<tr>
-			<td><pre>-paddle &lt;0|1|2|3&gt;</pre></td>
-			<td>Indicates which paddle the mouse should emulate (defaults to paddle 0).</td>
+			<td><pre>-pspeed &lt;number&gt;</pre></td>
+			<td>Speed of digital emulation for paddles (1-15).</td>
 		</tr>
 
 		<tr>
@@ -681,33 +772,8 @@
 		</tr>
 
 		<tr>
-			<td><pre>-p0speed &lt;number&gt;</pre></td>
-			<td>Speed of digital emulation for paddle 0 (0-100).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-p1speed &lt;number&gt;</pre></td>
-			<td>Speed of digital emulation for paddle 1 (0-100).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-p2speed &lt;number&gt;</pre></td>
-			<td>Speed of digital emulation for paddle 2 (0-100).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-p3speed &lt;number&gt;</pre></td>
-			<td>Speed of digital emulation for paddle 3 (0-100).</td>
-		</tr>
-
-		<tr>
-			<td><pre>-pthresh &lt;number&gt;</pre></td>
-			<td>Set threshold for eliminating paddle jitter.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-rombrowse &lt;1|0&gt;</pre></td>
-			<td>Use browser mode (shows files and folders) in ROM launcher.</td>
+			<td><pre>-romviewer &lt;1|0&gt;</pre></td>
+			<td>Show/hide ROM info viewer in ROM launcher mode.</td>
 		</tr>
 
 		<tr>
@@ -741,6 +807,11 @@
 		<tr>
 			<td><pre>-launcherres &lt;WxH&gt;</pre></td>
 			<td>Set the size of the ROM launcher.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-launcherfont &lt;small|large&gt;</pre></td>
+			<td>Set the size of the font in the ROM launcher.</td>
 		</tr>
 
 		<tr>
@@ -822,9 +893,19 @@
 		</tr>
 	
 		<tr>
-			<td><pre>-type &lt;type&gt;</pre></td>
+			<td><pre>-tiafloat &lt;1|0&gt;</pre></td>
+			<td>Set unused TIA pins to be floating on a read/peek.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-bs &lt;type&gt;</pre></td>
 			<td>Set "Cartridge.Type" property.  See the <i>Game Properties</i> section
 				for valid types.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-type &lt;type&gt;</pre></td>
+			<td>Same as using -bs.</td>
 		</tr>
 
 		<tr>
@@ -876,8 +957,9 @@
 		</tr>
 
 		<tr>
-			<td><pre>-format &lt;NTSC|PAL|PAL60|SECAM&gt;</pre></td>
-			<td>Set "Display.Format" property.</td>
+			<td><pre>-format &lt;format&gt;</pre></td>
+			<td>Set "Display.Format" property.  See the <i>Game Properties</i> section
+				for valid formats.</td></td>
 		</tr>
 
 		<tr>
@@ -922,18 +1004,47 @@
 
 	<p><b>Options Menu</b> dialog:<br><br>
 	<img src="graphics/options.png">
+	<br><br><br>
 
-	<p><b>Video Options</b> dialog:<br><br>
+	<p><b>Video Settings</b> dialog:<br><br>
 	<img src="graphics/options_video.png">
+	<br><br><br>
 
-	<p><b>Audio Options</b> dialog:<br><br>
+	<p><b>Audio Settings</b> dialog:<br><br>
 	<img src="graphics/options_audio.png">
+	<br><br><br>
+
+	<p><b>Input Settings</b> dialog:<br><br>
+	<img src="graphics/options_input.png">
+	<p>This dialog is described in further detail in <b>Section 8 -
+	<a href="#Remapping">Event Remapping</a></b>.
+	<br><br><br>
+
+	<p><b>UI Settings</b> dialog:<br><br>
+	<img src="graphics/options_ui.png">
+	<p>All UI related items can be changed here.  Such items include the width and
+	height of the ROM launcher and debugger windows, etc.  Note that most of the items
+	here require Stella to be restarted to take effect.  Specific information about
+	the ROM Info functionality is described in further detail in <b>Section 9 -
+	<a href="#ROMInfo">Viewing ROM Info</a></b>.
+
+	<br><br><br>
+
+	<p><b>Audit ROMs</b> dialog:<br><br>
+	<img src="graphics/options_romaudit.png">
+	<p>This dialog is described in further detail in <b>Section 10 -
+	<a href="#ROMAudit">ROM Audit Mode</a></b>.
+	<br><br><br>
 
 	<p><b>Game Information</b> dialog:<br><br>
 	<img src="graphics/options_gameinfo.png">
+	<p>This dialog allows you to change all ROM properties as described in
+	<b>Section 15 - <a href="#Properties">Game Properties</a></b>.
+	<br><br><br>
 
 	<p><b>Help</b> dialog:<br><br>
 	<img src="graphics/options_help.png">
+	<br><br><br>
 
 	<p><b>About</b> dialog:<br><br>
 	<img src="graphics/options_about.png">
@@ -1596,7 +1707,7 @@
 		</tr>
 
 		<tr>
-			<td>Emulate 'frying' effect</td>
+			<td>Emulate 'frying' effect (*)</td>
 			<td>Backspace</td>
 			<td>Backspace</td>
 		</tr>
@@ -1656,7 +1767,6 @@
 
 	<p>The following screenshots illustrate the event remapping process:<br><br>
 	<img src="graphics/eventmapping.png">
-	<p>
 	<img src="graphics/eventmapping_remap.png">
 
 	<p>Virtual devices can be configured under the 'Virtual Devs' tab, shown below:<br><br>
@@ -1666,28 +1776,43 @@
 	ports.  See the section 'Stelladaptor Support' for more information.</p>
 
 	<p>Paddle settings are also configured here.  The mouse can emulate either paddle
-	0, 1, 2, or 3.  Note that for games which don't normally default to paddle 0,
-	their ROM properties take care of that remapping.  So, for example, a ROM that
-	defaults to paddle 1 (Demons to Diamonds) will use paddle 0, as will a ROM
-	that defaults to paddle 3 (Tac-Scan).  So you never have to worry which paddle
-	a ROM will use; it will always default to paddle 0.</p>
+	0, 1, 2, or 3.  Note that some paddle games don't default to paddle 0.  In those
+	cases, the ROM properties will automatically set the mouse to emulate the paddle
+	used by Player 0.  So, for example, a ROM that defaults to paddle 1 (Demons to Diamonds)
+	will set 'Mouse is paddle' to 1, and a ROM that defaults to paddle 3 (Tac-Scan) will
+	set 'Mouse is paddle' to 3.</p>
 
-	<p>Paddle threshold is used to eliminate 'jitter', whereby the onscreen paddle
-	object seems to move slightly even when no input is present.  It specifies the amount
-	by which a paddle input has to move before it's considered a real event.  Hence,
-	it eliminates small movements (default of 600).</p>
-
-	<p>Paddle x speed is used when emulating a paddle using a digital device
+	<p>Paddle speed is used when emulating a paddle using a digital device
 	(keyboard, digital joystick, etc).  Because of the on/off nature of digital
 	devices, there are no smooth analog values as would be present on a real
 	paddle.  When using digital devices, the paddle is moved a certain amount
-	each frame.  These speeds specify how much movement will occur.</p>
+	each frame.  This speed setting specifies how much movement will occur.</p>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br><br>
+	<p><h1>
+	<a name="ROMInfo">9. Viewing ROM Info</a></h1>
+	<hr>
+
+	<p>
+	</p>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br><br>
+	<p><h1>
+	<a name="ROMAudit">10. ROM Audit Mode</a></h1>
+	<hr>
+
+	<p>
+	</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Adaptor">9. Stelladaptor Support</a></h1>
+	<a name="Adaptor">11. Stelladaptor Support</a></h1>
 	<hr>
 
 	<p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
@@ -1719,7 +1844,7 @@
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br>
 	<p><h1>
-	<a name="Debugger">10. Integrated Debugger</a></h1>
+	<a name="Debugger">12. Integrated Debugger</a></h1>
 	<hr>
 
 	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
@@ -1729,7 +1854,7 @@
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Settings">11. Settings File</a></h1>
+	<a name="Settings">13. Settings File</a></h1>
 	<hr>
 
 	<p>Stella will remember when you change a setting either at the command line
@@ -1784,7 +1909,8 @@
 		</tr>
 		<tr>
 			<td><b>Windows</b></td>
-			<td><i>stella.ini (in same directory as the application)</i></td>
+			<td><i>%MY_DOCUMENTS%\Stella\stella.ini</i>&nbsp;&nbsp;&nbsp;<b>OR</b><br>
+				<i>%CURRENT_DIR%\stella.ini</i> (if a file named 'disable_profiles.txt' exists in the application directory)</td>
 		</tr>
 	</table>
 
@@ -1792,7 +1918,7 @@
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Cheats">12. Cheatcode Manager</a></h1>
+	<a name="Cheats">14. Cheatcode Manager</a></h1>
 	<hr>
 
 	<p>Stella 2.0 contains support for Bob Colbert's Cheetah cheat codes, as
@@ -1881,7 +2007,8 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 		<tr>
 			<td><b>Windows</b></td>
-			<td><i>stella.cht</i> (in same directory as the application)</td>
+			<td><i>%MY_DOCUMENTS%\Stella\stella.cht</i>&nbsp;&nbsp;&nbsp;<b>OR</b><br>
+				<i>%CURRENT_DIR%\stella.cht</i> (if a file named 'disable_profiles.txt' exists in the application directory)</td>
 		</tr>
 	</table>
 	<p>Stella will require a restart for changes to this file to take effect.</p>
@@ -1890,7 +2017,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Properties">13. Game Properties</a></h1>
+	<a name="Properties">15. Game Properties</a></h1>
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
@@ -1938,7 +2065,7 @@ Ms Pac-Man (Stella extended codes):
 	<table CELLSPACING="10">
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.MD5:</i></td>
-			<td>This property indicates the MD5 checksum of the ROM image as a
+			<td>Indicates the MD5 checksum of the ROM image as a
 			string of hexadecimal digits.  Stella uses this property while
 			attempting to match a game with its block of properties.  If the
 			value of the property matches the MD5 checksum of the ROM image then
@@ -1949,140 +2076,159 @@ Ms Pac-Man (Stella extended codes):
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Manufacturer:</i></td>
-			<td>This property indicates the game's manufacturer.  Currently this
-			property is not being used, however, future versions of Stella will
-			probably allow the user to view this information.</td>
+			<td>Indicates the game's manufacturer.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.ModelNo:</i></td>
-			<td>This property indicates the manufacturer's model number for the
-			game.   Currently this property is not being used, however, future
-			versions of Stella will probably allow the user to view this information.</td>
+			<td>Indicates the manufacturer's model number for the game.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Name:</i></td>
-			<td>This property indicates the actual name of the game.</td>
+			<td>Indicates the actual name of the game.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Note:</i></td>
-			<td>This property contains any special notes about playing the game.</td>
+			<td>Contains any special notes about playing the game.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Rarity:</i></td>
-			<td>This property indicates how rare a cartridge is, based on the scale
-				described on AtariAge.</td>
+			<td>Indicates how rare a cartridge is, based on the scale described on AtariAge.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Sound:</i></td>
-			<td>This property determines if the game should use 1 or 2 channels for
-			sound output.  All original Atari 2600 machines supported 1 channel only,
+			<td>Indicates if the game should use 1 or 2 channels for sound output.
+			All original Atari 2600 machines supported 1 channel only,
 			but some homebrew games have been written to take advantage of stereo
-			sound.  The value of this property must be Mono or Stereo.</td>
+			sound.  The value must be <b>Mono</b> or <b>Stereo</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Type:</i></td>
-			<td>This property indicates the bank-switching type for the game.
-			The value of this property must be: Auto-detect, 2K, 3E, 3F, 4K, AR,
-			CV, DPC, E0, E7, F4, F4SC, F6, F6SC, F8, F8SC, FASC, FE, MB, MC or UA.
-			For more information about bank-switching see Kevin Horton's 2600
-			bank-switching document.</td>
+			<td>Indicates the bank-switching type for the game.
+			The value of this property must be either <b>Auto-detect</b> or one of the following
+			(for more information about bank-switching see Kevin Horton's 2600 bankswitching
+			document or the documentation in each cartridges source code file):
+			<table cellpadding="2" border="1">
+				<tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
+				<tr><td>0840 </td><td>8K ECONObanking </td></tr>
+				<tr><td>2K </td><td>2K Atari </td></tr>
+				<tr><td>3E </td><td>32K Tigervision </td></tr>
+				<tr><td>3F </td><td>512K Tigervision </td></tr>
+				<tr><td>4A50 </td><td>64K 4A50 + ram </td></tr>
+				<tr><td>4K </td><td>4K Atari </td></tr>
+				<tr><td>AR </td><td>Supercharger </td></tr>
+				<tr><td>CV </td><td>Commavid extra ram </td></tr>
+				<tr><td>DPC </td><td>Pitfall II </td></tr>
+				<tr><td>E0 </td><td>8K Parker Bros </td></tr>
+				<tr><td>E7 </td><td>16K M-network </td></tr>
+				<tr><td>F4 </td><td>32K Atari </td></tr>
+				<tr><td>F4SC </td><td>32K Atari + ram </td></tr>
+				<tr><td>F6 </td><td>16K Atari </td></tr>
+				<tr><td>F6SC </td><td>16K Atari + ram </td></tr>
+				<tr><td>F8 </td><td>8K Atari </td></tr>
+				<tr><td>F8SC </td><td>8K Atari + ram </td></tr>
+				<tr><td>FASC </td><td>CBS RAM Plus </td></tr>
+				<tr><td>FE </td><td>8K Decathlon </td></tr>
+				<tr><td>MB </td><td>Dynacom Megaboy </td></tr>
+				<tr><td>MC </td><td>C. Wilkson Megacart </td></tr>
+				<tr><td>SB </td><td>128-256k SUPERbanking </td></tr>
+				<tr><td>UA </td><td>8K UA Ltd. </td></tr>
+				<tr><td>X07 </td><td>64K AtariAge </td></tr>
+			</table></td>
 		</tr>
+
 
 		<tr>
 			<td VALIGN="TOP"><i>Console.LeftDifficulty:</i></td>
-			<td>This property indicates the default difficulty setting for the left
-			player.  The value of this property must be A or B.</td>
+			<td>Indicates the default difficulty setting for the left
+			player.  The value must be <b>A</b> or <b>B</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Console.RightDifficulty:</i></td>
-			<td>This property indicates the default difficulty setting for the
-			right player.  The value of this property must be A or B.</td>
+			<td>Indicates the default difficulty setting for the
+			right player.  The value must be <b>A</b> or <b>B</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Console.TelevisionType:</i></td>
-			<td>This property indicates the default television setting for the
-			game.  The value of this property must be Color or BlankAndWhite.</td>
+			<td>Indicates the default television setting for the
+			game.  The value must be <b>Color</b> or <b>BlankAndWhite</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Console.SwapPorts:</i></td>
-			<td>This property indicates that the left and right ports should be
+			<td>Indicates that the left and right ports should be
 			swapped internally.  This is used for ROMs like 'Raiders' where the
 			Player 0 joystick is plugged into the right joystick port.
-			The value of this property must be Yes or No.</td>
+			The value must be <b>Yes</b> or <b>No</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Controller.Left:</i></td>
-			<td>This property indicates what type of controller the left player
-			uses.  The value of this property must be Booster-Grip, Driving,
-			Keyboard, Paddles, or Joystick.</td>
+			<td>Indicates what type of controller the left player
+			uses.  The value must be <b>Booster-Grip</b>, <b>Driving</b>,
+			<b>Keyboard</b>, <b>Paddles</b>, or <b>Joystick</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Controller.Right:</i></td>
-			<td>This property indicates what type of controller the right player
-			uses.  The value of this property must be Booster-Grip, Driving,
-			Keyboard, Paddles, or Joystick.</td>
+			<td>Indicates what type of controller the right player
+			uses.  The value must be <b>Booster-Grip</b>, <b>Driving</b>,
+			<b>Keyboard</b>, <b>Paddles</b>, or <b>Joystick</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Controller.SwapPaddles:</i></td>
-			<td>This property indicates that the left and right paddles in
+			<td>Indicates that the left and right paddles in
 			a particular port should be	swapped.  This is used for ROMs like
 			'Demons to Diamonds' where the default paddle is paddle 1, not
 			paddle 0.  Other ROMs such as 'Tac-Scan' default to paddle 3,
 			which can be set using both 'Controller.SwapPaddles' and
-			'Console.SwapPorts'.  The value of this property must be Yes or No.</td>
+			'Console.SwapPorts'.  The value must be <b>Yes</b> or <b>No</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.Format:</i></td>
-			<td>This property indicates the television format the game was
-			designed for.  The value of this property must be Auto-detect, NTSC,
-			PAL or PAL60.</td>
+			<td>Indicates the television format the game was designed for.  The value
+			must be <b>Auto-detect</b>, <b>NTSC</b>, <b>PAL</b>, <b>SECAM</b>, <b>NTSC50</b>,
+			<b>PAL60</b> or <b>SECAM60</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.YStart:</i></td>
-			<td>This property indicates the scan-line to start displaying at.
-			The value of this property must be <i>n</i> such that
-			0 &lt;= <i>n</i> &lt;= 64.</td>
+			<td>Indicates the scan-line to start displaying at.
+			The value must be <i>n</i> such that 0 &lt;= <i>n</i> &lt;= 64.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.Height:</i></td>
-			<td>This property indicates the number of scan-lines to display.
-			The value of this property must be <i>n</i> such that
-			100 &lt;= <i>n</i> &lt;= 256.</td>
+			<td>Indicates the number of scan-lines to display.
+			The value must be <i>n</i> such that 100 &lt;= <i>n</i> &lt;= 256.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.Phosphor:</i></td>
-			<td>This property indicates whether the phosphor effect should be
-			emulated or not.  The value of this property must be Yes or No.</td>
+			<td>Indicates whether the phosphor effect should be emulated or not.
+				The value must be <b>Yes</b> or <b>No</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Display.PPBlend:</i></td>
-			<td>This property indicates the amount of blending which will occur
-			while using the phosphor effect.  The value of this property must be
-			<i>n</i> such that 0 &lt;= <i>n</i> &lt;= 100.  The default value
-			is 77.</td>
+			<td>Indicates the amount of blending which will occur while using the
+			phosphor effect.  The value must be <i>n</i> such that 0 &lt;= <i>n</i>
+			&lt;= 100.  The default value is 77.</td>
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP"><i>Emulation.HmoveBlanks:</i></td>
-			<td>This property indicates whether the TIA HMOVE blank bug should be
-			emulated or not.  The value of this property must be Yes or No.</td>
+			<td VALIGN="TOP"><i>Emulation.HmoveBlanks:&nbsp;(*)</i></td>
+			<td>Indicates whether the TIA HMOVE blank bug should be emulated or not.
+			The value must be <b>Yes</b> or <b>No</b>.</td>
 		</tr>
 	</table>
 
@@ -2106,7 +2252,8 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 		<tr>
 			<td><b>Windows</b></td>
-			<td><i>stella.pro</i> (in same directory as the application)</td>
+			<td><i>%MY_DOCUMENTS%\Stella\stella.pro</i>&nbsp;&nbsp;&nbsp;<b>OR</b><br>
+				<i>%CURRENT_DIR%\stella.pro</i> (if a file named 'disable_profiles.txt' exists in the application directory)</td>
 		</tr>
 	</table>
 	<p>Stella will require a restart for changes to this file to take effect.</p>
@@ -2115,11 +2262,11 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Palette">14. Palette Support</a></h1>
+	<a name="Palette">16. Palette Support</a></h1>
 	<hr>
 
 	<p>An Atari 2600 palette consists of 128 colours, which are different
-	for the three major television standards (NTSC, PAL/PAL60, SECAM).
+	for the three major television standards (NTSC, PAL, SECAM).
 	Stella supports two built-in palettes and one user-defined palette for each format.
 	These are set using the '-palette' option, and are described as follows:</p>
 	<p><table cellpadding="5" border="1">
@@ -2144,7 +2291,7 @@ Ms Pac-Man (Stella extended codes):
 			in 24-bit RGB, with the first byte for red, the second for green, the
 			third for blue, for a total of 3 bytes per colour.</li>
 		<li>The first 384 bytes of the file (128 * 3) will be used for the NTSC
-			palette.  The next 384 bytes (128 * 3) will be for the PAL/PAL60 palette.
+			palette.  The next 384 bytes (128 * 3) will be for the PAL palette.
 			The next 24 bytes (8 * 3) will be for the SECAM palette, which
 			consists of eight distinct colours.  Any extra data in the file
 			will be ignored.</li>
@@ -2169,11 +2316,12 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 		<tr>
 			<td><b>Windows</b></td>
-			<td><i>stella.pal</i> (in same directory as the application)</td>
+			<td><i>%MY_DOCUMENTS%\Stella\stella.pal</i>&nbsp;&nbsp;&nbsp;<b>OR</b><br>
+				<i>%CURRENT_DIR%\stella.pal</i> (if a file named 'disable_profiles.txt' exists in the application directory)</td>
 		</tr>
 	</table>
 	<p>Note that to actually use the external palette, the palette file must
-	exist and be valid, <b>and</b> the palette should be set to <i>user</i>.
+	exist and be valid, <b>and</b> the palette option should be set to <i>user</i>.
 	The current ROM will have to be reloaded for changes to this file to take
 	effect.</p>
 
@@ -2181,7 +2329,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Acknowledgments">15. Acknowledgments</a></h1>
+	<a name="Acknowledgments">17. Acknowledgments</a></h1>
 	<hr>
 
 	<p>Bradford W. Mott started developing Stella during the fall of 1995 and since
@@ -2372,8 +2520,8 @@ Ms Pac-Man (Stella extended codes):
 			<td>Provided a description of the TIA bug that produces the star field
 			effect in Cosmic Ark, provided the PAL television palette, and
 			participated in a helpful discussion on understanding the TIA's RESPx
-			multi-sprite trick.  He also provided the Commavid and Megaboy support
-                        for Stella as well as some improved Supercharger BIOS code.</td>
+			multi-sprite trick.  Provided the Commavid, Megaboy, 4A50 and X07 support
+			for Stella as well as some improved Supercharger BIOS code.</td>
 		</tr>
 
 		<tr>
@@ -2422,6 +2570,12 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
+			<td VALIGN="TOP">Albert&nbsp;Yarusso (aka Al from AtariAge)</td>
+			<td>Provided helpful feedback for the OSX port, and generously
+				donated an AtariVox device to help with development</td>
+		</tr>
+
+		<tr>
 			<td VALIGN="TOP">Alex&nbsp;Zaballa</td>
 			<td>Maintainer of the GP2X version of Stella starting with the 2.1 release</td>
 		</tr>
@@ -2432,7 +2586,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="License">16. License and Disclaimer</a></h1>
+	<a name="License">18. License and Disclaimer</a></h1>
 	<hr>
 
 	<p>

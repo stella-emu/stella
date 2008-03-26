@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.137 2008-03-23 16:22:40 stephena Exp $
+// $Id: Settings.cxx,v 1.138 2008-03-26 00:52:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -69,7 +69,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("joymap", "");
   setInternal("joyaxismap", "");
   setInternal("joyhatmap", "");
-  setInternal("paddle", "0");
   setInternal("pspeed", "6");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
@@ -86,11 +85,11 @@ Settings::Settings(OSystem* osystem)
   setInternal("propsfile", "");
 
   // ROM browser options
+  setInternal("launcherres", "640x480");
+  setInternal("launcherfont", "small");
   setInternal("romviewer", "false");
 
   // UI-related options
-  setInternal("launcherres", "640x480");
-  setInternal("launcherfont", "small");
   setInternal("debuggerres", "1030x690");
   setInternal("uipalette", "0");
   setInternal("mwheel", "4");
