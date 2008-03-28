@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.12 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartUA.cxx,v 1.13 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -132,7 +132,7 @@ void CartridgeUA::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUA::bank(uInt16 bank)
 { 
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   // Remember what bank we're in
   myCurrentBank = bank;

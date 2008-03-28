@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.15 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartE0.cxx,v 1.16 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -87,20 +87,18 @@ uInt8 CartridgeE0::peek(uInt16 address)
 {
   address = address & 0x0FFF;
 
-  if(!bankLocked) {
-    // Switch banks if necessary
-    if((address >= 0x0FE0) && (address <= 0x0FE7))
-    {
-      segmentZero(address & 0x0007);
-    }
-    else if((address >= 0x0FE8) && (address <= 0x0FEF))
-    {
-      segmentOne(address & 0x0007);
-    }
-    else if((address >= 0x0FF0) && (address <= 0x0FF7))
-    {
-      segmentTwo(address & 0x0007);
-    }
+  // Switch banks if necessary
+  if((address >= 0x0FE0) && (address <= 0x0FE7))
+  {
+    segmentZero(address & 0x0007);
+  }
+  else if((address >= 0x0FE8) && (address <= 0x0FEF))
+  {
+    segmentOne(address & 0x0007);
+  }
+  else if((address >= 0x0FF0) && (address <= 0x0FF7))
+  {
+    segmentTwo(address & 0x0007);
   }
 
   return myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)];
@@ -111,26 +109,26 @@ void CartridgeE0::poke(uInt16 address, uInt8)
 {
   address = address & 0x0FFF;
 
-  if(!bankLocked) {
-    // Switch banks if necessary
-    if((address >= 0x0FE0) && (address <= 0x0FE7))
-    {
-      segmentZero(address & 0x0007);
-    }
-    else if((address >= 0x0FE8) && (address <= 0x0FEF))
-    {
-      segmentOne(address & 0x0007);
-    }
-    else if((address >= 0x0FF0) && (address <= 0x0FF7))
-    {
-      segmentTwo(address & 0x0007);
-    }
+  // Switch banks if necessary
+  if((address >= 0x0FE0) && (address <= 0x0FE7))
+  {
+    segmentZero(address & 0x0007);
+  }
+  else if((address >= 0x0FE8) && (address <= 0x0FEF))
+  {
+    segmentOne(address & 0x0007);
+  }
+  else if((address >= 0x0FF0) && (address <= 0x0FF7))
+  {
+    segmentTwo(address & 0x0007);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentZero(uInt16 slice)
 { 
+  if(myBankLocked) return;
+
   // Remember the new slice
   myCurrentSlice[0] = slice;
   uInt16 offset = slice << 10;
@@ -151,6 +149,8 @@ void CartridgeE0::segmentZero(uInt16 slice)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentOne(uInt16 slice)
 { 
+  if(myBankLocked) return;
+
   // Remember the new slice
   myCurrentSlice[1] = slice;
   uInt16 offset = slice << 10;
@@ -171,6 +171,8 @@ void CartridgeE0::segmentOne(uInt16 slice)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentTwo(uInt16 slice)
 { 
+  if(myBankLocked) return;
+
   // Remember the new slice
   myCurrentSlice[2] = slice;
   uInt16 offset = slice << 10;
@@ -189,22 +191,22 @@ void CartridgeE0::segmentTwo(uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::bank(uInt16 bank)
+void CartridgeE0::bank(uInt16)
 {
-  // FIXME - get this working, so we can debug E0 carts
+  // Doesn't support bankswitching in the normal sense
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeE0::bank()
 {
-  // FIXME - get this working, so we can debug E0 carts
+  // Doesn't support bankswitching in the normal sense
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeE0::bankCount()
 {
-  // FIXME - get this working, so we can debug E0 carts
+  // Doesn't support bankswitching in the normal sense
   return 1;
 }
 

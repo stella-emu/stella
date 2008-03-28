@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8SC.cxx,v 1.15 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartF8SC.cxx,v 1.16 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -98,23 +98,21 @@ uInt8 CartridgeF8SC::peek(uInt16 address)
 {
   address = address & 0x0FFF;
 
-  if(!bankLocked) {
-    // Switch banks if necessary
-    switch(address)
-    {
-      case 0x0FF8:
-        // Set the current bank to the lower 4k bank
-        bank(0);
-        break;
+  // Switch banks if necessary
+  switch(address)
+  {
+    case 0x0FF8:
+      // Set the current bank to the lower 4k bank
+      bank(0);
+      break;
   
-      case 0x0FF9:
-        // Set the current bank to the upper 4k bank
-        bank(1);
-        break;
+    case 0x0FF9:
+      // Set the current bank to the upper 4k bank
+      bank(1);
+      break;
   
-      default:
-        break;
-    }
+    default:
+      break;
   }
 
   // NOTE: This does not handle accessing RAM, however, this function
@@ -128,23 +126,21 @@ void CartridgeF8SC::poke(uInt16 address, uInt8)
 {
   address = address & 0x0FFF;
 
-  if(!bankLocked) {
-    // Switch banks if necessary
-    switch(address)
-    {
-      case 0x0FF8:
-        // Set the current bank to the lower 4k bank
-        bank(0);
-        break;
+  // Switch banks if necessary
+  switch(address)
+  {
+    case 0x0FF8:
+      // Set the current bank to the lower 4k bank
+      bank(0);
+      break;
   
-      case 0x0FF9:
-        // Set the current bank to the upper 4k bank
-        bank(1);
-        break;
+    case 0x0FF9:
+      // Set the current bank to the upper 4k bank
+      bank(1);
+      break;
   
-      default:
-        break;
-    }
+    default:
+      break;
   }
 
   // NOTE: This does not handle accessing RAM, however, this function
@@ -155,7 +151,7 @@ void CartridgeF8SC::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF8SC::bank(uInt16 bank)
 { 
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   // Remember what bank we're in
   myCurrentBank = bank;

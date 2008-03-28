@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.23 2008-02-27 20:13:55 stephena Exp $
+// $Id: Cart.hxx,v 1.24 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -34,7 +34,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.23 2008-02-27 20:13:55 stephena Exp $
+  @version $Id: Cart.hxx,v 1.24 2008-03-28 23:29:13 stephena Exp $
 */
 class Cartridge : public Device
 {
@@ -77,8 +77,8 @@ class Cartridge : public Device
     /**
       Lock/unlock bankswitching capability.
     */
-    void lockBank()   { bankLocked = true;  }
-    void unlockBank() { bankLocked = false; }
+    void lockBank()   { myBankLocked = true;  }
+    void unlockBank() { myBankLocked = false; }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -143,9 +143,9 @@ class Cartridge : public Device
     virtual string name() const = 0;
 
   protected:
-    // If bankLocked is true, ignore attempts at bankswitching. This is used
+    // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
-    bool bankLocked;
+    bool myBankLocked;
 
   private:
     /**

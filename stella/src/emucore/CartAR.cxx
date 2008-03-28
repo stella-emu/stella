@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.20 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartAR.cxx,v 1.21 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -423,7 +423,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::bank(uInt16 bank)
 {
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   bankConfiguration(bank);
 }

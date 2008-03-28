@@ -116,13 +116,12 @@ void CartridgeX07::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeX07::bank(uInt16 bank)
 { 
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   // Remember what bank we're in
   myCurrentBank = (bank & 0x0f);
   uInt32 offset = myCurrentBank * 4096;
   uInt16 shift = mySystem->pageShift();
-//  uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
@@ -157,7 +156,6 @@ bool CartridgeX07::patch(uInt16 address, uInt8 value)
   bank(myCurrentBank); // TODO: see if this is really necessary
   return true;
 } 
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeX07::getImage(int& size)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.18 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartE7.cxx,v 1.19 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -163,7 +163,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bank(uInt16 slice)
 { 
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   // Remember what bank we're in
   myCurrentSlice[0] = slice;

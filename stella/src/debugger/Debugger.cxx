@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.120 2008-03-23 17:43:21 stephena Exp $
+// $Id: Debugger.cxx,v 1.121 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -669,11 +669,10 @@ int Debugger::step()
   saveOldState();
 
   int cyc = mySystem->cycles();
-  //	mySystem->unlockDataBus();
+
   unlockState();
   myOSystem->console().mediaSource().updateScanlineByStep();
-  //	mySystem->lockDataBus();
-  unlockState();
+  lockState();
 
   return mySystem->cycles() - cyc;
 }
@@ -692,22 +691,21 @@ int Debugger::step()
 int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
-  if(mySystem->peek(myCpuDebug->pc()) == 32) {
+  if(mySystem->peek(myCpuDebug->pc()) == 32)
+  {
     saveOldState();
 
     int cyc = mySystem->cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
-    //	mySystem->unlockDataBus();
-	 unlockState();
+    unlockState();
     myOSystem->console().mediaSource().updateScanlineByTrace(targetPC);
-    //	mySystem->lockDataBus();
-	 lockState();
+    lockState();
 
     return mySystem->cycles() - cyc;
-  } else {
-    return step();
   }
+  else
+    return step();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -838,10 +836,9 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 void Debugger::nextScanline(int lines)
 {
   saveOldState();
-  // mySystem->unlockDataBus();
+
   unlockState();
   myTiaOutput->advanceScanline(lines);
-  // mySystem->lockDataBus();
   lockState();
 }
 
@@ -849,10 +846,9 @@ void Debugger::nextScanline(int lines)
 void Debugger::nextFrame(int frames)
 {
   saveOldState();
-  //	mySystem->unlockDataBus();
+
   unlockState();
   myTiaOutput->advance(frames);
-  //	mySystem->lockDataBus();
   lockState();
 }
 
@@ -953,7 +949,6 @@ void Debugger::saveOldState()
 void Debugger::setStartState()
 {
   // Lock the bus each time the debugger is entered, so we don't disturb anything
-  //	mySystem->lockDataBus();
   lockState();
 }
 
@@ -961,7 +956,6 @@ void Debugger::setStartState()
 void Debugger::setQuitState()
 {
   // Bus must be unlocked for normal operation when leaving debugger mode
-  //	mySystem->unlockDataBus();
   unlockState();
 
   // execute one instruction on quit. If we're

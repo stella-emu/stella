@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.25 2008-02-19 12:33:07 stephena Exp $
+// $Id: System.cxx,v 1.26 2008-03-28 23:29:14 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -35,7 +35,8 @@ System::System(uInt16 n, uInt16 m)
     myM6502(0),
     myTIA(0),
     myCycles(0),
-    myDataBusState(0)
+    myDataBusState(0),
+    myDataBusLocked(false)
 {
   // Make sure the arguments are reasonable
   assert((1 <= m) && (m <= n) && (n <= 16));

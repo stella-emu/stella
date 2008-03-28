@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMB.cxx,v 1.13 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartMB.cxx,v 1.14 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -92,7 +92,7 @@ void CartridgeMB::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMB::incbank()
 {
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   // Remember what bank we're in
   myCurrentBank ++;
@@ -118,7 +118,7 @@ void CartridgeMB::incbank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMB::bank(uInt16 bank)
 {
-  if(bankLocked) return;
+  if(myBankLocked) return;
 
   myCurrentBank = (bank - 1);
   incbank();

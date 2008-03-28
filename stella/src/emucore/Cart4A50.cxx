@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.cxx,v 1.13 2008-02-22 16:27:07 stephena Exp $
+// $Id: Cart4A50.cxx,v 1.14 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -120,7 +120,7 @@ uInt8 Cartridge4A50::peek(uInt16 address)
     else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
     {
       value = myImage[(address & 0xff) + 0x1ff00];
-      if(((myLastData & 0xe0) == 0x60) &&
+      if(!myBankLocked && ((myLastData & 0xe0) == 0x60) &&
          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
         mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
                       ((address & 0x70) << 4);
@@ -166,7 +166,7 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
     }
     else if((address & 0x1f00) == 0x1f00)      // 256B region at 0x1f00 - 0x1fff
     {
-      if(((myLastData & 0xe0) == 0x60) &&
+      if(!myBankLocked && ((myLastData & 0xe0) == 0x60) &&
          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
         mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
                       ((address & 0x70) << 4);
@@ -179,6 +179,8 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 {
+  if(myBankLocked) return;
+
   // This scheme contains so many hotspots that it's easier to just check
   // all of them
   if(((myLastData & 0xe0) == 0x60) &&      // Switch lower/middle/upper bank
@@ -293,7 +295,8 @@ int Cartridge4A50::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Cartridge4A50::bankCount()
 {
-  return 1;  // TODO
+  // Doesn't support bankswitching in the normal sense
+  return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -305,10 +308,9 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* Cartridge4A50::getImage(int& size)
 {
-  size = 0;  // TODO
-  return 0;
+  size = 131072;
+  return &myImage[0];
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::save(Serializer& out) const

@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.219 2008-03-22 17:35:02 stephena Exp $
+// $Id: EventHandler.cxx,v 1.220 2008-03-28 23:29:13 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1875,15 +1875,18 @@ bool EventHandler::enterDebugMode()
   if(myState == S_DEBUGGER)
     return false;
 
+  // Make sure debugger starts in a consistent state
+  // This absolutely *has* to come before we actually change to debugger
+  // mode, since it takes care of locking the debugger state, which will
+  // probably be modified below
+  myOSystem->debugger().setStartState();
+
   setEventState(S_DEBUGGER);
   myOSystem->createFrameBuffer();
   myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);
   myEvent->clear();
-
-  // Make sure debugger starts in a consistent state
-  myOSystem->debugger().setStartState();
 #else
   myOSystem->frameBuffer().showMessage("Debugger unsupported");
 #endif
