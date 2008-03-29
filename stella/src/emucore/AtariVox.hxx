@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.8 2008-02-06 13:45:20 stephena Exp $
+// $Id: AtariVox.hxx,v 1.9 2008-03-29 19:15:57 stephena Exp $
 //============================================================================
 
 #ifdef ATARIVOX_SUPPORT
@@ -33,7 +33,7 @@
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.8 2008-02-06 13:45:20 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.9 2008-03-29 19:15:57 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -53,25 +53,6 @@ class AtariVox : public Controller
 
   public:
     /**
-      Read the value of the specified digital pin for this controller.
-
-      @param pin The pin of the controller jack to read
-      @return The state of the pin
-    */
-    virtual bool read(DigitalPin pin);
-
-    /**
-      Read the resistance at the specified analog pin for this controller.
-      The returned value is the resistance measured in ohms.
-
-      The AtariVox doesn't use the analog pins.
-
-      @param pin The pin of the controller jack to read
-      @return The resistance at the specified pin
-    */
-    virtual Int32 read(AnalogPin pin);
-
-    /**
       Write the given value to the specified digital pin for this
       controller.  Writing is only allowed to the pins associated
       with the PIA.  Therefore you cannot write to pin six.
@@ -80,6 +61,12 @@ class AtariVox : public Controller
       @param value The value to write to the pin
     */
     virtual void write(DigitalPin pin, bool value);
+
+    /**
+      Update the entire digital and analog pin state according to the
+      events currently set.
+    */
+    virtual void update();
 
     SpeakJet* getSpeakJet() { return mySpeakJet; }
 

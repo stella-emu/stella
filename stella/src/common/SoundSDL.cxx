@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.40 2008-02-06 13:45:19 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.41 2008-03-29 19:15:57 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -30,6 +30,9 @@
 #include "Settings.hxx"
 #include "System.hxx"
 #include "OSystem.hxx"
+
+#include "Console.hxx"
+#include "AtariVox.hxx"
 
 #include "SoundSDL.hxx"
 
@@ -406,7 +409,7 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
 #ifdef ATARIVOX_SUPPORT
-  cerr << "SoundSDL::callback(): len==" << len << endl;
+//  cerr << "SoundSDL::callback(): len==" << len << endl;
 
   // See if we need sound from the AtariVox
   AtariVox *vox = sound->myOSystem->console().atariVox();

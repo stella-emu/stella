@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.14 2008-03-24 20:31:31 stephena Exp $
+// $Id: M6532.cxx,v 1.15 2008-03-29 19:15:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -28,7 +28,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const Console& console)
-    : myConsole(console)
+  : myConsole(console)
 {
   // Randomize the 128 bytes of memory
   class Random random;
@@ -247,24 +247,29 @@ void M6532::poke(uInt16 addr, uInt8 value)
   {
     myDDRA = value;
 #ifdef ATARIVOX_SUPPORT
-	 /*
-    20060608 bkw: Not the most elegant thing in the world...
-	 When a bit in the DDR is set as input, +5V is placed on its output
-	 pin. When it's set as output, either +5V or 0V (depending on the
-	 contents of SWCHA) will be placed on the output pin.
-	 The standard macros for the AtariVox use this fact to send data
-	 to the port.
+    /*
+      20060608 bkw: Not the most elegant thing in the world...
+      When a bit in the DDR is set as input, +5V is placed on its output
+      pin. When it's set as output, either +5V or 0V (depending on the
+      contents of SWCHA) will be placed on the output pin.
+      The standard macros for the AtariVox use this fact to send data
+      to the port.
 
-	 This code isn't 100% correct: it assumes the SWCHA bits are all 0.
-	 This is good enough to emulate the AtariVox, if the programmer is
-	 using SWACNT to do output (e.g. the SPKOUT macro from speakjet.inc)
-	 and if he's leaving SWCHA alone.
+      This code isn't 100% correct: it assumes the SWCHA bits are all 0.
+      This is good enough to emulate the AtariVox, if the programmer is
+      using SWACNT to do output (e.g. the SPKOUT macro from speakjet.inc)
+      and if he's leaving SWCHA alone.
 
-	 The inaccuracy here means that wrongly-written code will still
-	 be able to drive the emulated AtariVox, even though it wouldn't
-	 work on real hardware.
-	 */
-    Controller &c = myConsole.controller(Controller::Right);
+      The inaccuracy here means that wrongly-written code will still
+      be able to drive the emulated AtariVox, even though it wouldn't
+      work on real hardware.
+    */
+    // TODO - Fix this properly in the core
+    //        Any time the core code needs to know what type of controller
+    //        is connected, it's by definition a bug
+    //        A real Atari doesn't 'know' that an AVox is connected, so we
+    //        shouldn't either
+    Controller& c = myConsole.controller(Controller::Right);
     if(c.type() == Controller::AtariVox)
     {
       c.write(Controller::One, !(value & 0x01));
@@ -405,7 +410,7 @@ bool M6532::load(Deserializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const M6532& c)
-    : myConsole(c.myConsole)
+  : myConsole(c.myConsole)
 {
   assert(false);
 }

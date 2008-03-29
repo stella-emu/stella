@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.6 2008-02-06 13:45:20 stephena Exp $
+// $Id: AtariVox.cxx,v 1.7 2008-03-29 19:15:57 stephena Exp $
 //============================================================================
 
 #ifdef ATARIVOX_SUPPORT
@@ -21,49 +21,87 @@
 #include "Event.hxx"
 #include "AtariVox.hxx"
 #include "SpeakJet.hxx"
+#include "System.hxx"
 
 #define DEBUG_ATARIVOX 0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::AtariVox(Jack jack, const Event& event)
-    : Controller(jack, event),
-      mySpeakJet(0),
-      mySystem(0),
-      myPinState(0),
-      myShiftCount(0),
-      myShiftRegister(0),
-      myLastDataWriteCycle(0)
+  : Controller(jack, event, Controller::AtariVox),
+    mySpeakJet(0),
+    myPinState(0),
+    myShiftCount(0),
+    myShiftRegister(0),
+    myLastDataWriteCycle(0)
 {
-  myType = Controller::AtariVox;
   mySpeakJet = new SpeakJet();
+
+  myDigitalPinState[One] = myDigitalPinState[Two] =
+  myDigitalPinState[Three] = myDigitalPinState[Four] = true;
+
+  myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::~AtariVox()
 {
+  delete mySpeakJet;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariVox::setSystem(System *system) {
-  mySystem = system;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AtariVox::read(DigitalPin pin)
+void AtariVox::write(DigitalPin pin, bool value)
 {
-  // For now, always return true, meaning the device is ready
-/*
   if(DEBUG_ATARIVOX)
-    cerr << "AtariVox: read from SWCHA" << endl;
-*/
-  return true;
+    cerr << "AtariVox: write to SWCHA" << endl;
+
+  // Change the pin state based on value
+  switch(pin)
+  {
+    // Pin 1: SpeakJet DATA
+    //        output serial data to the speakjet
+    case One:
+      clockDataIn(value);
+      break;
+  
+    // Pin 2: SpeakJet READY
+    case Two:
+      // TODO - see how this is used
+      break;
+
+    // Pin 3: EEPROM SDA
+    //        output data to the 24LC256 EEPROM using the I2C protocol
+    case Three:
+      // TODO - implement this
+      if(DEBUG_ATARIVOX)
+        cerr << "AtariVox: value "
+             << value
+             << " written to SDA line at cycle "
+             << mySystem->cycles()
+             << endl;
+      break;
+
+    // Pin 4: EEPROM SCL
+    //        output clock data to the 24LC256 EEPROM using the I2C protocol
+    case Four:
+      // TODO - implement this
+      if(DEBUG_ATARIVOX)
+        cerr << "AtariVox: value "
+             << value
+             << " written to SCLK line at cycle "
+             << mySystem->cycles()
+             << endl;
+      break;
+
+    case Six:
+      // Not connected
+      break;
+  } 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 AtariVox::read(AnalogPin)
+void AtariVox::update()
 {
-  // Analog pins are not connected in AtariVox, so we have infinite resistance 
-  return maximumResistance;
+  // Nothing to do, this seems to be an output-only device for now
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,22 +123,25 @@ void AtariVox::clockDataIn(bool value)
          << ")"
          << endl;
 
-  if(value && (myShiftCount == 0)) {
+  if(value && (myShiftCount == 0))
+  {
     if(DEBUG_ATARIVOX)
       cerr << "value && (myShiftCount == 0), returning" << endl;
     return;
   }
 
-  if(cycle < myLastDataWriteCycle || cycle > myLastDataWriteCycle + 1000) {
-    // If this is the first write this frame, or if it's been a long time
-    // since the last write, start a new data byte.
+  // If this is the first write this frame, or if it's been a long time
+  // since the last write, start a new data byte.
+  if(cycle < myLastDataWriteCycle || cycle > myLastDataWriteCycle + 1000)
+  {
     myShiftRegister = 0;
     myShiftCount = 0;
   }
 
-  if(cycle < myLastDataWriteCycle || cycle >= myLastDataWriteCycle + 62) {
-    // If this is the first write this frame, or if it's been 62 cycles
-    // since the last write, shift this bit into the current byte.
+  // If this is the first write this frame, or if it's been 62 cycles
+  // since the last write, shift this bit into the current byte.
+  if(cycle < myLastDataWriteCycle || cycle >= myLastDataWriteCycle + 62)
+  {
     if(DEBUG_ATARIVOX)
       cerr << "cycle >= myLastDataWriteCycle + 62, shiftIn("
            << value << ")" << endl;
@@ -115,7 +156,8 @@ void AtariVox::shiftIn(bool value)
 {
   myShiftRegister >>= 1;
   myShiftRegister |= (value << 15);
-  if(++myShiftCount == 10) {
+  if(++myShiftCount == 10)
+  {
     myShiftCount = 0;
     myShiftRegister >>= 6;
     if(!(myShiftRegister & (1<<9)))
@@ -130,51 +172,6 @@ void AtariVox::shiftIn(bool value)
     }
     myShiftRegister = 0;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariVox::write(DigitalPin pin, bool value)
-{
-  if(DEBUG_ATARIVOX)
-    cerr << "AtariVox: write to SWCHA" << endl;
-
-  // Change the pin state based on value
-  switch(pin)
-  {
-    // Pin 1 is the DATA line, used to output serial data to the
-    // speakjet
-    case One:
-		clockDataIn(value);
-      break;
-  
-    // Pin 2 is the SDA line, used to output data to the 24LC256
-    // serial EEPROM, using the I2C protocol.
-    // I'm not even trying to emulate this right now :(
-    case Two:
-      if(DEBUG_ATARIVOX)
-        cerr << "AtariVox: value "
-             << value
-             << " written to SDA line at cycle "
-             << mySystem->cycles()
-             << endl;
-      break;
-
-    // Pin 2 is the SCLK line, used to output clock data to the 24LC256
-    // serial EEPROM, using the I2C protocol.
-    // I'm not even trying to emulate this right now :(
-    case Three:
-      if(DEBUG_ATARIVOX)
-        cerr << "AtariVox: value "
-             << value
-             << " written to SCLK line at cycle "
-             << mySystem->cycles()
-             << endl;
-      break;
-
-    case Four:
-    default:
-      break;
-  } 
 }
 
 #endif

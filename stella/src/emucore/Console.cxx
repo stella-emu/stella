@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.133 2008-03-22 17:35:02 stephena Exp $
+// $Id: Console.cxx,v 1.134 2008-03-29 19:15:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -63,6 +63,7 @@
 Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
     myProperties(props),
+    vox(0),
     myDisplayFormat("NTSC"),
     myFramerate(60),
     myUserPaletteDefined(false)
@@ -149,7 +150,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 #ifdef ATARIVOX_SUPPORT
   else if(right == "ATARIVOX")
   {
-    myControllers[rightPort] = new AtariVox(Controller::Right, *myEvent);
+cerr << "atarivox added as right controller\n";
+    myControllers[rightPort] = vox = new AtariVox(Controller::Right, *myEvent);
   }
 #endif
   else
