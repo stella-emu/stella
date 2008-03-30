@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.140 2008-03-30 15:01:38 stephena Exp $
+// $Id: Settings.cxx,v 1.141 2008-03-30 15:47:10 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -88,6 +88,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "small");
   setInternal("romviewer", "false");
+  setInternal("lastrom", "");
 
   // UI-related options
   setInternal("debuggerres", "1030x690");

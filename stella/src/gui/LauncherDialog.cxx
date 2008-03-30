@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.85 2008-03-23 16:22:46 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.86 2008-03-30 15:47:10 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -243,7 +243,31 @@ void LauncherDialog::updateListing(bool fullReload)
   buf << (myGameList->size() - 1) << " items found";
   myRomCount->setLabel(buf.str());
 
-  myList->setSelected(myList->getList().isEmpty() ? -1 : 0);
+  // Restore last selection
+  int selected = -1;
+  if(!myList->getList().isEmpty())
+  {
+    string lastrom = instance()->settings().getString("lastrom");
+    if(lastrom == "")
+      selected = 0;
+    else
+    {
+      unsigned int itemToSelect = 0;
+      StringList::const_iterator iter;
+      for(iter = myList->getList().begin(); iter != myList->getList().end();
+          ++iter, ++itemToSelect)	 
+      {
+        if(lastrom == *iter)
+        {
+          selected = itemToSelect;
+          break;
+        }
+      }
+      if(itemToSelect > myList->getList().size())
+        selected = 0;
+    }
+  }
+  myList->setSelected(selected);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,6 +353,12 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
                 !instance()->createConsole(rom, md5))
         {
           instance()->frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
+        }
+        else
+        {
+        #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
+          instance()->settings().setString("lastrom", myList->getSelectedString());
+        #endif
         }
       }
       break;
