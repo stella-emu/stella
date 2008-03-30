@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.18 2008-02-06 13:45:19 stephena Exp $
+// $Id: Snapshot.cxx,v 1.19 2008-03-30 15:01:38 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -46,8 +46,8 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
     int height = framebuffer.imageHeight();
 
     out.open(filename.c_str(), ios_base::binary);
-    if(!out)
-      throw "Couldn't open snapshot file";
+    if(!out.is_open())
+      throw "Error: Couldn't create snapshot file";
 
     // PNG file header
     uInt8 header[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };

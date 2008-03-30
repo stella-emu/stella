@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.119 2008-03-23 16:22:40 stephena Exp $
+// $Id: OSystem.cxx,v 1.120 2008-03-30 15:01:38 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -217,7 +217,12 @@ void OSystem::setConfigPaths()
     FilesystemNode::makeDir(myStateDir);
   mySettings->setString("statedir", myStateDir);
 
-  myGameListCacheFile = myBaseDir + BSPF_PATH_SEPARATOR + "stella.cache";
+  mySnapshotDir = mySettings->getString("ssdir");
+  if(mySnapshotDir == "")
+    mySnapshotDir = myBaseDir + BSPF_PATH_SEPARATOR + "snapshots";
+  if(!FilesystemNode::dirExists(mySnapshotDir))
+    FilesystemNode::makeDir(mySnapshotDir);
+  mySettings->setString("ssdir", mySnapshotDir);
 
   myCheatFile = mySettings->getString("cheatfile");
   if(myCheatFile == "")

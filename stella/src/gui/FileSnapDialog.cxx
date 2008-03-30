@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.17 2008-03-23 17:43:22 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.18 2008-03-30 15:01:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -183,7 +183,7 @@ void FileSnapDialog::setDefaults()
   const string& cheatfile = basedir + BSPF_PATH_SEPARATOR + "stella.cht";
   const string& palettefile = basedir + BSPF_PATH_SEPARATOR + "stella.pal";
   const string& propsfile = basedir + BSPF_PATH_SEPARATOR + "stella.pro";
-  const string& ssdir = basedir + BSPF_PATH_SEPARATOR;
+  const string& ssdir = basedir + BSPF_PATH_SEPARATOR + "snapshots";
 
   myRomPath->setEditString(romdir);
   myStatePath->setEditString(statedir);

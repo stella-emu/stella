@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.17 2008-02-06 13:45:23 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.18 2008-03-30 15:01:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -204,10 +204,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kExitCmd:
-      if(instance()->eventHandler().useLauncher())
-        instance()->eventHandler().handleEvent(Event::LauncherMode, 1);
-      else
-        instance()->quit();
+      instance()->eventHandler().handleEvent(Event::LauncherMode, 1);
       execute = false;
       break;
 

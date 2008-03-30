@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.62 2008-03-14 19:34:56 stephena Exp $
+// $Id: OSystem.hxx,v 1.63 2008-03-30 15:01:38 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -55,7 +55,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.62 2008-03-14 19:34:56 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.63 2008-03-30 15:01:38 stephena Exp $
 */
 class OSystem
 {
@@ -244,12 +244,9 @@ class OSystem
     const string& stateDir() const { return myStateDir; }
 
     /**
-      This method should be called to get the full path of the gamelist
-      cache file (used by the Launcher to show a listing of available games).
-
-      @return String representing the full path of the gamelist cache file.
+      Return the directory for storing PNG snapshots.
     */
-    const string& cacheFile() const { return myGameListCacheFile; }
+    const string& snapshotDir() const { return mySnapshotDir; }
 
     /**
       This method should be called to get the full path of the cheat file.
@@ -436,11 +433,6 @@ class OSystem
     void setBaseDir(const string& basedir);
 
     /**
-      Set the location of the gamelist cache file
-    */
-    void setCacheFile(const string& cachefile) { myGameListCacheFile = cachefile; }
-
-    /**
       Set the locations of config file
     */
     void setConfigFile(const string& file) { myConfigFile = file; }
@@ -501,13 +493,13 @@ class OSystem
     enum { kNumUIPalettes = 2 };
     string myBaseDir;
     string myStateDir;
+    string mySnapshotDir;
 
     string myCheatFile;
     string myConfigFile;
     string myPaletteFile;
     string myPropertiesFile;
 
-    string myGameListCacheFile;
     string myRomFile;
 
     string myFeatures;

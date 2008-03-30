@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.109 2008-03-22 17:35:02 stephena Exp $
+// $Id: EventHandler.hxx,v 1.110 2008-03-30 15:01:38 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.109 2008-03-22 17:35:02 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.110 2008-03-30 15:01:38 stephena Exp $
 */
 class EventHandler
 {
@@ -163,12 +163,6 @@ class EventHandler
       @return The State type
     */
     inline State state() { return myState; }
-
-    /**
-      Returns the current launcher state (decide whether to enter launcher
-      on game exit).
-    */
-    inline bool useLauncher() { return myUseLauncherFlag; }
 
     /**
       Resets the state machine of the EventHandler to the defaults
@@ -496,9 +490,6 @@ class EventHandler
 
     // Indicates whether the mouse cursor is grabbed
     bool myGrabMouseFlag;
-
-    // Indicates whether to use launcher mode when exiting a game
-    bool myUseLauncherFlag;
 
     // Indicates whether the joystick emulates 'impossible' directions
     bool myAllowAllDirectionsFlag;

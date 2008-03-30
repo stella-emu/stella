@@ -14,7 +14,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.220 2008-03-28 23:29:13 stephena Exp $
+// $Id: EventHandler.cxx,v 1.221 2008-03-30 15:01:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -64,7 +64,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myOverlay(NULL),
     myState(S_NONE),
     myGrabMouseFlag(false),
-    myUseLauncherFlag(false),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false)
 {
@@ -155,13 +154,8 @@ void EventHandler::initialize()
 void EventHandler::reset(State state)
 {
   setEventState(state);
-
   myEvent->clear();
-
   myOSystem->state().reset();
-
-  if(myState == S_LAUNCHER)
-    myUseLauncherFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -982,10 +976,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::LauncherMode:
-      // ExitGame will only work when we've launched stella using the ROM
-      // launcher.  Otherwise, the only way to exit the main loop is to Quit.
-      if((myState == S_EMULATE || myState == S_CMDMENU) &&
-          myUseLauncherFlag && state)
+      if((myState == S_EMULATE || myState == S_CMDMENU) && state)
       {
         myOSystem->settings().saveConfig();
         myOSystem->deleteConsole();

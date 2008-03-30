@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.139 2008-03-26 23:59:21 stephena Exp $
+// $Id: Settings.cxx,v 1.140 2008-03-30 15:01:38 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -74,7 +74,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("sa2", "right");
 
   // Snapshot options
-  setInternal("ssdir", string(".") + BSPF_PATH_SEPARATOR);
+  setInternal("ssdir", "");
   setInternal("sssingle", "false");
 
   // Config files and paths
