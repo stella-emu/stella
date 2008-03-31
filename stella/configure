@@ -27,7 +27,7 @@ _build_joystick=yes
 _build_cheats=yes
 _build_static=no
 _build_profile=no
-_build_atarivox=no
+_build_speakjet=no
 
 # more defaults
 _ranlib=ranlib
@@ -192,8 +192,8 @@ Optional Features:
   --disable-joystick
   --enable-cheats        enable/disable cheatcode support [enabled]
   --disable-cheats
-  --enable-atarivox      enable/disable AtariVox support [disabled]
-  --disable-atarivox
+  --enable-speakjet      enable/disable SpeakJet emulation [disabled]
+  --disable-speakjet
   --enable-shared        build shared binary [enabled]
   --enable-static        build static binary (if possible) [disabled]
   --disable-static
@@ -232,8 +232,8 @@ for ac_option in $@; do
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
       --disable-cheats)         _build_cheats=no     ;;
-      --enable-atarivox)        _build_atarivox=yes  ;;
-      --disable-atarivox)       _build_atarivox=no   ;;
+      --enable-speakjet)        _build_speakjet=yes  ;;
+      --disable-speakjet)       _build_speakjet=no   ;;
       --enable-shared)          _build_static=no     ;;
       --enable-static)          _build_static=yes    ;;
       --disable-static)         _build_static=no     ;;
@@ -612,11 +612,11 @@ else
 	echo
 fi
 
-if test "$_build_atarivox" = yes ; then
-	echo_n "   AtariVox support enabled (not yet working)"
+if test "$_build_speakjet" = yes ; then
+	echo_n "   SpeakJet emulation enabled (not yet working)"
 	echo
 else
-	echo_n "   AtariVox support disabled (not yet working)"
+	echo_n "   SpeakJet emulation disabled (not yet working)"
 	echo
 fi
 
@@ -651,7 +651,7 @@ DBG="$SRC/debugger"
 DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
-ATARIVOX="$SRC/emucore/rsynth"
+SPEAKJET="$SRC/emucore/rsynth"
 
 INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
 
@@ -725,10 +725,10 @@ if test "$_build_cheats" = yes ; then
 	INCLUDES="$INCLUDES -I$CHEAT"
 fi
 
-if test "$_build_atarivox" = yes ; then
-	DEFINES="$DEFINES -DATARIVOX_SUPPORT"
-	MODULES="$MODULES $ATARIVOX"
-	INCLUDES="$INCLUDES -I$ATARIVOX"
+if test "$_build_speakjet" = yes ; then
+	DEFINES="$DEFINES -DSPEAKJET_EMULATION"
+	MODULES="$MODULES $SPEAKJET"
+	INCLUDES="$INCLUDES -I$SPEAKJET"
 fi
 
 if test "$_build_profile" = no ; then

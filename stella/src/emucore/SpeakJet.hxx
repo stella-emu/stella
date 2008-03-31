@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.9 2008-03-29 19:15:57 stephena Exp $
+// $Id: SpeakJet.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
-#ifdef ATARIVOX_SUPPORT
+#ifdef SPEAKJET_EMULATION
 
 #ifndef SPEAKJET_HXX
 #define SPEAKJET_HXX
@@ -77,7 +77,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.9 2008-03-29 19:15:57 stephena Exp $
+  @version $Id: SpeakJet.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
 */
 
 #include "bspf.hxx"

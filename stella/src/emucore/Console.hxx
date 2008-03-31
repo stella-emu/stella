@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.64 2008-02-06 13:45:21 stephena Exp $
+// $Id: Console.hxx,v 1.65 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -39,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.64 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: Console.hxx,v 1.65 2008-03-31 00:59:30 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -242,9 +242,8 @@ class Console : public Serializable
     void togglePFBit() const { toggleTIABit(TIA::PF, "PF"); }
     void enableBits(bool enable) const;
 
-#ifdef ATARIVOX_SUPPORT
-    AtariVox *atariVox() { return vox; }
-#endif
+    // TODO - make the core code work without needing to access this
+    AtariVox* atariVox() { return myAVox; }
 
   private:
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true) const;
@@ -296,9 +295,7 @@ class Console : public Serializable
     // A RIOT of my own! (...with apologies to The Clash...)
     M6532 *myRiot;
 
-#ifdef ATARIVOX_SUPPORT
-    AtariVox *vox;
-#endif
+    AtariVox* myAVox;
 
     // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;

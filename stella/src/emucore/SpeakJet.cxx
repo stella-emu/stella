@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.cxx,v 1.8 2008-03-29 19:15:57 stephena Exp $
+// $Id: SpeakJet.cxx,v 1.9 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
-#ifdef ATARIVOX_SUPPORT
+#ifdef SPEAKJET_EMULATION
 
 #include "SpeakJet.hxx"
 
@@ -84,6 +84,8 @@ int SpeakJet::thread(void *data) {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SpeakJet::write(uInt8 code)
 {
+  cerr << "SpeakJet: output byte " << ((int)(code)) << endl;
+
   // TODO: clean up this mess.
   const char *rsynthPhones = xlatePhoneme(code);
 //  cerr << "rsynth: \"" << rsynthPhones << "\"" << endl;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.63 2008-03-30 15:01:38 stephena Exp $
+// $Id: OSystem.hxx,v 1.64 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -28,6 +28,7 @@ class Launcher;
 class Menu;
 class Properties;
 class PropertiesSet;
+class SerialPort;
 class Settings;
 class Sound;
 class StateManager;
@@ -55,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.63 2008-03-30 15:01:38 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.64 2008-03-31 00:59:30 stephena Exp $
 */
 class OSystem
 {
@@ -126,35 +127,42 @@ class OSystem
 
       @return The console object
     */
-    inline Console& console(void) const { return *myConsole; }
+    inline Console& console() const { return *myConsole; }
+
+    /**
+      Get the serial port of the system.
+
+      @return The serial port object
+    */
+    inline SerialPort& serialPort() const { return *mySerialPort; }
 
     /**
       Get the settings menu of the system.
 
       @return The settings menu object
     */
-    inline Menu& menu(void) const { return *myMenu; }
+    inline Menu& menu() const { return *myMenu; }
 
     /**
       Get the command menu of the system.
 
       @return The command menu object
     */
-    inline CommandMenu& commandMenu(void) const { return *myCommandMenu; }
+    inline CommandMenu& commandMenu() const { return *myCommandMenu; }
 
     /**
       Get the ROM launcher of the system.
 
       @return The launcher object
     */
-    inline Launcher& launcher(void) const { return *myLauncher; }
+    inline Launcher& launcher() const { return *myLauncher; }
 
     /**
       Get the state manager of the system.
 
       @return The statemanager object
     */
-    inline StateManager& state(void) const { return *myStateManager; }
+    inline StateManager& state() const { return *myStateManager; }
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -162,7 +170,7 @@ class OSystem
 
       @return The debugger object
     */
-    inline Debugger& debugger(void) const { return *myDebugger; }
+    inline Debugger& debugger() const { return *myDebugger; }
 #endif
 
 #ifdef CHEATCODE_SUPPORT
@@ -171,7 +179,7 @@ class OSystem
 
       @return The cheatmanager object
     */
-    inline CheatManager& cheat(void) const { return *myCheatManager; }
+    inline CheatManager& cheat() const { return *myCheatManager; }
 #endif
 
     /**
@@ -455,6 +463,9 @@ class OSystem
 
     // Pointer to the (currently defined) Console object
     Console* myConsole;
+
+    // Pointer to the serial port object
+    SerialPort* mySerialPort;
 
     // Pointer to the Menu object
     Menu* myMenu;

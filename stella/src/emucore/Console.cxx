@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.134 2008-03-29 19:15:57 stephena Exp $
+// $Id: Console.cxx,v 1.135 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -63,7 +63,7 @@
 Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
     myProperties(props),
-    vox(0),
+    myAVox(0),
     myDisplayFormat("NTSC"),
     myFramerate(60),
     myUserPaletteDefined(false)
@@ -147,13 +147,11 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   {
     myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent);
   }
-#ifdef ATARIVOX_SUPPORT
   else if(right == "ATARIVOX")
   {
-cerr << "atarivox added as right controller\n";
-    myControllers[rightPort] = vox = new AtariVox(Controller::Right, *myEvent);
+    myControllers[rightPort] = myAVox =
+      new AtariVox(Controller::Right, *myEvent, myOSystem->serialPort());
   }
-#endif
   else
   {
     myControllers[rightPort] = new Joystick(Controller::Right, *myEvent);

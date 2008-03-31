@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.120 2008-03-30 15:01:38 stephena Exp $
+// $Id: OSystem.cxx,v 1.121 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -31,6 +31,15 @@
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
+#endif
+
+#include "SerialPort.hxx"
+#if defined(UNIX)
+  #include "SerialPortUNIX.hxx"
+//#elif defined(WIN32)
+//  #include "SerialPortWin32.hxx"
+//#elif defined(MAC_OSX)
+//  #include "SerialPortMACOSX.hxx"
 #endif
 
 #include "FSNode.hxx"
@@ -62,6 +71,7 @@ OSystem::OSystem()
     mySettings(NULL),
     myPropSet(NULL),
     myConsole(NULL),
+    mySerialPort(NULL),
     myMenu(NULL),
     myCommandMenu(NULL),
     myLauncher(NULL),
@@ -153,6 +163,7 @@ OSystem::~OSystem()
   delete myPropSet;
   delete myEventHandler;
 
+  delete mySerialPort;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -203,6 +214,20 @@ bool OSystem::create()
   // opened until needed, so this is non-blocking (on those systems
   // that only have a single sound device (no hardware mixing)
   createSound();
+
+  // Create the serial port object
+  // This is used by any controller that wants to directly access
+  // a real serial port on the system
+#if defined(UNIX)
+  mySerialPort = new SerialPortUNIX();
+//#elif defined(WIN32)
+//  mySerialPort = new SerialPortWin32();
+//#elif defined(MAC_OSX)
+//  mySerialPort = new SerialPortMACOSX();
+#else
+  // Create an 'empty' serial port
+  mySerialPort = new SerialPort();
+#endif
 
   return true;
 }

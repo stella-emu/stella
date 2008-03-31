@@ -1,4 +1,3 @@
-
 //============================================================================
 //
 //   SSSS    tt          lll  lll       
@@ -14,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.9 2008-03-29 19:15:57 stephena Exp $
+// $Id: AtariVox.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
-
-#ifdef ATARIVOX_SUPPORT
 
 #ifndef ATARIVOX_HXX
 #define ATARIVOX_HXX
 
+class SpeakJet;
+
 #include "Control.hxx"
-#include "SpeakJet.hxx"
+#include "SerialPort.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and
@@ -33,7 +32,7 @@
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.9 2008-03-29 19:15:57 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -44,7 +43,7 @@ class AtariVox : public Controller
       @param jack The jack the controller is plugged into
       @param event The event object to use for events
     */
-    AtariVox(Jack jack, const Event& event);
+    AtariVox(Jack jack, const Event& event, const SerialPort& port);
 
     /**
       Destructor
@@ -68,7 +67,9 @@ class AtariVox : public Controller
     */
     virtual void update();
 
+#ifdef SPEAKJET_EMULATION
     SpeakJet* getSpeakJet() { return mySpeakJet; }
+#endif
 
   private:
    void clockDataIn(bool value);
@@ -80,10 +81,15 @@ class AtariVox : public Controller
     // property... or it may turn out to be unnecessary.
     enum { TIMING_SLOP = 0 };
 
+    // Instance of an real serial port on the system
+    // Assuming there's a real AtariVox attached, we can send SpeakJet
+    // bytes directly to it
+    SerialPort* mySerialPort;
+
+#ifdef SPEAKJET_EMULATION
     // Instance of SpeakJet which will actually do the talking for us.
-    // In the future, we'll support both real and emulated SpeakJet
-    // chips; for now we only emulate it.
     SpeakJet *mySpeakJet;
+#endif
 
     // State of the output pins
     uInt8 myPinState;
@@ -105,5 +111,3 @@ class AtariVox : public Controller
 };
 
 #endif
-
-#endif  // ATARIVOX_SUPPORT

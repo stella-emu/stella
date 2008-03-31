@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.41 2008-03-29 19:15:57 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.42 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -33,6 +33,9 @@
 
 #include "Console.hxx"
 #include "AtariVox.hxx"
+#ifdef SPEAKJET_EMULATION
+  #include "SpeakJet.hxx"
+#endif
 
 #include "SoundSDL.hxx"
 
@@ -408,7 +411,8 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
-#ifdef ATARIVOX_SUPPORT
+
+#ifdef SPEAKJET_EMULATION
 //  cerr << "SoundSDL::callback(): len==" << len << endl;
 
   // See if we need sound from the AtariVox

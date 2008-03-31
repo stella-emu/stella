@@ -13,28 +13,31 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.7 2008-03-29 19:15:57 stephena Exp $
+// $Id: AtariVox.cxx,v 1.8 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
-#ifdef ATARIVOX_SUPPORT
+#ifdef SPEAKJET_EMULATION
+  #include "SpeakJet.hxx"
+#endif
 
-#include "Event.hxx"
-#include "AtariVox.hxx"
-#include "SpeakJet.hxx"
+#include "SerialPort.hxx"
 #include "System.hxx"
+#include "AtariVox.hxx"
 
 #define DEBUG_ATARIVOX 0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event)
+AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port)
   : Controller(jack, event, Controller::AtariVox),
-    mySpeakJet(0),
+    mySerialPort((SerialPort*)&port),
     myPinState(0),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
 {
+#ifdef SPEAKJET_EMULATION
   mySpeakJet = new SpeakJet();
+#endif
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
@@ -45,7 +48,9 @@ AtariVox::AtariVox(Jack jack, const Event& event)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::~AtariVox()
 {
+#ifdef SPEAKJET_EMULATION
   delete mySpeakJet;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,11 +172,11 @@ void AtariVox::shiftIn(bool value)
     else
     {
       uInt8 data = ((myShiftRegister >> 1) & 0xff);
-      cerr << "AtariVox: output byte " << ((int)(data)) << endl;
+#ifdef SPEAKJET_EMULATION
       mySpeakJet->write(data);
+#endif
+      mySerialPort->write(data);
     }
     myShiftRegister = 0;
   }
 }
-
-#endif

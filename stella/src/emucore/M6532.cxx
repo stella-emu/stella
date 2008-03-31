@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.15 2008-03-29 19:15:57 stephena Exp $
+// $Id: M6532.cxx,v 1.16 2008-03-31 00:59:30 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -246,7 +246,12 @@ void M6532::poke(uInt16 addr, uInt8 value)
   else if((addr & 0x07) == 0x01)    // Port A Data Direction Register 
   {
     myDDRA = value;
-#ifdef ATARIVOX_SUPPORT
+
+    // TODO - Fix this properly in the core
+    //        Any time the core code needs to know what type of controller
+    //        is connected, it's by definition a bug
+    //        A real Atari doesn't 'know' that an AVox is connected, so we
+    //        shouldn't either
     /*
       20060608 bkw: Not the most elegant thing in the world...
       When a bit in the DDR is set as input, +5V is placed on its output
@@ -264,11 +269,6 @@ void M6532::poke(uInt16 addr, uInt8 value)
       be able to drive the emulated AtariVox, even though it wouldn't
       work on real hardware.
     */
-    // TODO - Fix this properly in the core
-    //        Any time the core code needs to know what type of controller
-    //        is connected, it's by definition a bug
-    //        A real Atari doesn't 'know' that an AVox is connected, so we
-    //        shouldn't either
     Controller& c = myConsole.controller(Controller::Right);
     if(c.type() == Controller::AtariVox)
     {
@@ -277,7 +277,6 @@ void M6532::poke(uInt16 addr, uInt8 value)
       c.write(Controller::Three, !(value & 0x04));
       c.write(Controller::Four, !(value & 0x08));
     }
-#endif
   }
   else if((addr & 0x07) == 0x02)    // Port B I/O Register (Console switches)
   {
