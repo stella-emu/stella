@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.126 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.127 2008-04-02 21:22:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -79,13 +79,13 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   // Set the available video modes for this framebuffer
   setAvailableVidModes();
 
+  // Set window title and icon
+  setWindowTitle(title);
+  if(myInitializedCount == 1) setWindowIcon();
+
   // Initialize video subsystem
   VideoMode mode = getSavedVidMode();
   initSubsystem(mode);
-
-  // Set window title and icon
-  setWindowTitle(title);
-  setWindowIcon();
 
   // And refresh the display
   myOSystem->eventHandler().refreshDisplay();

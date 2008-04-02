@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.103 2008-03-23 17:43:21 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.104 2008-04-02 21:22:16 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -974,16 +974,19 @@ void DebuggerParser::executeList()
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
-  char buf[255];
+  ostringstream buf;
   int count = 0;
 
-  for(unsigned int i=0; i<0x10000; i++) {
-    if(debugger->breakpoints().isSet(i)) {
-      sprintf(buf, "%s ", debugger->equates().getFormatted(i, 4));
-      commandResult += buf;
-      if(! (++count % 8) ) commandResult += "\n";
+  for(unsigned int i = 0; i < 0x10000; i++)
+  {
+    if(debugger->breakpoints().isSet(i))
+    {
+      buf << debugger->equates().getFormatted(i, 4) << " ";
+      if(! (++count % 8) ) buf << "\n";
     }
   }
+  commandResult += buf.str();
+
   /*
   if(count)
     return ret;
