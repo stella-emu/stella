@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.27 2008-02-24 16:51:52 stephena Exp $
+// $Id: EquateList.cxx,v 1.28 2008-04-02 01:54:31 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -252,7 +252,7 @@ const string& EquateList::getLabel(int addr, int flags)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // DEPRECATED
-const char *EquateList::getFormatted(int addr, int places)
+string EquateList::getFormatted(int addr, int places)
 {
 	return getFormatted(addr, places, EQF_ANY);
 }
@@ -260,15 +260,15 @@ const char *EquateList::getFormatted(int addr, int places)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // returns either the label, or a formatted hex string
 // if no label found.
-const char *EquateList::getFormatted(int addr, int places, int flags)
+string EquateList::getFormatted(int addr, int places, int flags)
 {
-  static char fmt[10], buf[255];
-  string res = getLabel(addr, flags);
-  if(res != "")
-    return res.c_str();
+  char fmt[10], buf[255];
+  const string& label = getLabel(addr, flags);
+
+  if(label != "")
+    return label;
 
   sprintf(fmt, "$%%0%dx", places);
-  //cerr << addr << ", " << fmt << ", " << places << endl;
   sprintf(buf, fmt, addr);
 
   return buf;

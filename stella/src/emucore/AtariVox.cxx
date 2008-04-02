@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.8 2008-03-31 00:59:30 stephena Exp $
+// $Id: AtariVox.cxx,v 1.9 2008-04-02 01:54:31 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -113,7 +113,7 @@ void AtariVox::update()
 void AtariVox::clockDataIn(bool value)
 {
   // bool oldValue = myPinState & 0x01;
-  myPinState = (myPinState & 0xfe) | value;
+  myPinState = (myPinState & 0xfe) | (int)value;
 
   uInt32 cycle = mySystem->cycles();
   if(DEBUG_ATARIVOX)

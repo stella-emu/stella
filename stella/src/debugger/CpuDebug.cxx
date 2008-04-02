@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.cxx,v 1.9 2008-02-06 13:45:19 stephena Exp $
+// $Id: CpuDebug.cxx,v 1.10 2008-04-02 01:54:31 stephena Exp $
 //============================================================================
+
+#include <sstream>
 
 #include "Array.hxx"
 #include "EquateList.hxx"
@@ -72,91 +74,106 @@ void CpuDebug::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CpuDebug::disassemble(int address, char* buffer, EquateList* equateList)
+int CpuDebug::disassemble(int address, string& result, EquateList* equateList)
 {
-  // equateList->dumpAll();
+  ostringstream buf;
+  int count = 0;
   int opcode = mySystem->peek(address);
 
   switch(M6502::ourAddressingModeTable[opcode])
   {
     case M6502::Absolute:
-      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 3;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(dpeek(mySystem, address + 1), 4) << " ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 3;
+      break;
 
     case M6502::AbsoluteX:
-      sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 3;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(dpeek(mySystem, address + 1), 4) << ",x ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 3;
+      break;
 
     case M6502::AbsoluteY:
-      sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 3;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(dpeek(mySystem, address + 1), 4) << ",y ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 3;
+      break;
 
     case M6502::Immediate:
-      sprintf(buffer, "%s #$%02X ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          mySystem->peek(address + 1),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " #$"
+          << hex << setw(2) << setfill('0') << (int) mySystem->peek(address + 1) << " ; "
+          << dec << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     case M6502::Implied:
-      sprintf(buffer, "%s ; %d", M6502::ourInstructionMnemonicTable[opcode],
-				M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 1;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 1;
+      break;
 
     case M6502::Indirect:
-      sprintf(buffer, "%s (%s) ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(dpeek(mySystem, address + 1), 4),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 3;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
+          << equateList->getFormatted(dpeek(mySystem, address + 1), 4) << ") ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 3;
+      break;
 
     case M6502::IndirectX:
-      sprintf(buffer, "%s (%s,x) ; %d", 
-          M6502::ourInstructionMnemonicTable[opcode], 
-          equateList->getFormatted(mySystem->peek(address + 1), 2),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
+          << equateList->getFormatted(mySystem->peek(address + 1), 2) << ",x) ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     case M6502::IndirectY:
-      sprintf(buffer, "%s (%s),y ; %d", 
-          M6502::ourInstructionMnemonicTable[opcode], 
-          equateList->getFormatted(mySystem->peek(address + 1), 2),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
+          << equateList->getFormatted(mySystem->peek(address + 1), 2) << "),y ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     case M6502::Relative:
-      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)), 4),
-			 M6502::ourInstructionProcessorCycleTable[opcode]); 
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)), 4)
+          << " ; " << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     case M6502::Zero:
-      sprintf(buffer, "%s %s ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(mySystem->peek(address + 1), 2),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(mySystem->peek(address + 1), 2) << " ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     case M6502::ZeroX:
-      sprintf(buffer, "%s %s,x ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(mySystem->peek(address + 1), 2),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(mySystem->peek(address + 1), 2) << ",x ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     case M6502::ZeroY:
-      sprintf(buffer, "%s %s,y ; %d", M6502::ourInstructionMnemonicTable[opcode],
-          equateList->getFormatted(mySystem->peek(address + 1), 2),
-			 M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 2;
+      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+          << equateList->getFormatted(mySystem->peek(address + 1), 2) << ",y ; "
+          << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 2;
+      break;
 
     default:
-      sprintf(buffer, "dc  $%02X ; %d", opcode,
-				M6502::ourInstructionProcessorCycleTable[opcode]);
-      return 1;
-  } 
+      buf << "dc  $" << hex << setw(2) << setfill('0') << (int) opcode << " ; "
+          << dec << M6502::ourInstructionProcessorCycleTable[opcode];
+      count = 1;
+      break;
+  }
+
+  result = buf.str();
+  return count;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

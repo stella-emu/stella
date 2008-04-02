@@ -208,6 +208,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				OmitFramePointers="true"
+				WholeProgramOptimization="false"
 				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="0"
@@ -400,6 +401,10 @@
 			<Filter
 				Name="emucore"
 				>
+				<File
+					RelativePath="..\emucore\AtariVox.cxx"
+					>
+				</File>
 				<File
 					RelativePath="..\emucore\Booster.cxx"
 					>
@@ -966,6 +971,10 @@
 			<Filter
 				Name="emucore"
 				>
+				<File
+					RelativePath="..\emucore\AtariVox.hxx"
+					>
+				</File>
 				<File
 					RelativePath="..\emucore\Booster.hxx"
 					>

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.17 2008-02-24 16:51:52 stephena Exp $
+// $Id: EquateList.hxx,v 1.18 2008-04-02 01:54:31 stephena Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -33,8 +33,8 @@ class EquateList
 
     const string& getLabel(int addr);
     const string& getLabel(int addr, int flags);
-    const char *getFormatted(int addr, int places);
-    const char *getFormatted(int addr, int places, int flags);
+    string getFormatted(int addr, int places);
+    string getFormatted(int addr, int places, int flags);
     int getAddress(const string& label);
     int getAddress(const string& label, const int flags);
     void addEquate(const string& label, int address);

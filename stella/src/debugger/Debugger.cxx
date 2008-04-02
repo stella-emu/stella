@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.121 2008-03-28 23:29:13 stephena Exp $
+// $Id: Debugger.cxx,v 1.122 2008-04-02 01:54:31 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -776,31 +776,24 @@ int Debugger::cycles()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& Debugger::disassemble(int start, int lines)
 {
-  char buf[255], bbuf[255];
   static string result;
+  ostringstream buffer;
+  string cpubuf;
 
-  result = "";
   do {
-    const char *label = myEquateList->getFormatted(start, 4);
+    buffer << myEquateList->getFormatted(start, 4) << ": ";
 
-    result += label;
-    result += ": ";
+    int count = myCpuDebug->disassemble(start, cpubuf, myEquateList);
+    for(int i = 0; i < count; i++)
+      buffer << hex << setw(2) << setfill('0') << peek(start++) << dec;
 
-    int count = myCpuDebug->disassemble(start, buf, myEquateList);
+    if(count < 3) buffer << "   ";
+    if(count < 2) buffer << "   ";
 
-    for(int i=0; i<count; i++) {
-      sprintf(bbuf, "%02x ", peek(start++));
-      result += bbuf;
-    }
-
-    if(count < 3) result += "   ";
-    if(count < 2) result += "   ";
-
-    result += " ";
-    result += buf;
-    result += "\n";
+    buffer << " " << cpubuf << "\n";
   } while(--lines > 0 && start <= 0xffff);
 
+  result = buffer.str();
   return result;
 }
 
@@ -809,25 +802,25 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
                            StringList& bytes, StringList& data,
                            int start, int lines)
 {
-  char buf[255], bbuf[255];
-  string tmp;
+  string cpubuf, tmp;
+  char buf[255];
 
   do
   {
-    tmp = myEquateList->getFormatted(start, 4);
-    addrLabel.push_back(tmp + ":");
+    addrLabel.push_back(myEquateList->getFormatted(start, 4) + ":");
     addr.push_back(start);
 
-    int count = myCpuDebug->disassemble(start, buf, myEquateList);
+    cpubuf = "";
+    int count = myCpuDebug->disassemble(start, cpubuf, myEquateList);
 
     tmp = "";
     for(int i=0; i<count; i++) {
-      sprintf(bbuf, "%02x ", peek(start++));
-      tmp += bbuf;
+      sprintf(buf, "%02x ", peek(start++));
+      tmp += buf;
     }
     bytes.push_back(tmp);
 
-    data.push_back(buf);
+    data.push_back(cpubuf);
   }
   while(--lines > 0 && start <= 0xffff);
 }
