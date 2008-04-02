@@ -13,7 +13,7 @@
 ## See the file "license" for information on usage and redistribution of
 ## this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ##
-## $Id: Makefile,v 1.35 2008-03-09 17:52:40 stephena Exp $
+## $Id: Makefile,v 1.36 2008-04-02 23:24:21 stephena Exp $
 ##
 ##   Based on code from ScummVM - Scumm Interpreter
 ##   Copyright (C) 2002-2004 The ScummVM project
@@ -197,11 +197,12 @@ win32dist: stella$(EXEEXT)
 	rm -rf $(DISTNAME)
 	mkdir -p $(DISTNAME)/docs/graphics
 	$(STRIP) stella$(EXEEXT) -o $(DISTNAME)/Stella$(EXEEXT)
+	cp SDL.dll zlib1.dll $(DISTNAME)
 	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
 	cp -r docs/*.html $(DISTNAME)/docs
 	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
-	flip -m $(DISTNAME)/docs/*.txt
-	zip -r $(DISTNAME)-win32.zip $(DISTNAME)
+#	flip -m $(DISTNAME)/docs/*.txt
+#	zip -r $(DISTNAME)-win32.zip $(DISTNAME)
 
 # GP2X organize: groups necessary files into a gp2x folder for easy access.
 gp2x-organize:
