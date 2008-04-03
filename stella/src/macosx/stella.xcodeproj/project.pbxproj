@@ -288,6 +288,8 @@
 		DC47455D09C34BFA00EDDA3A /* CheetahCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */; };
 		DC47455E09C34BFA00EDDA3A /* RamCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47455309C34BFA00EDDA3A /* RamCheat.cxx */; };
 		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
+		DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC487FB40DA5350900E12499 /* AtariVox.cxx */; };
+		DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC487FB50DA5350900E12499 /* AtariVox.hxx */; };
 		DC54CDA00C79CD7200DD0ACD /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC54CD9F0C79CD7200DD0ACD /* Version.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
@@ -641,6 +643,8 @@
 		DC47455209C34BFA00EDDA3A /* CheetahCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CheetahCheat.hxx; path = ../cheat/CheetahCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC47455309C34BFA00EDDA3A /* RamCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RamCheat.cxx; path = ../cheat/RamCheat.cxx; sourceTree = SOURCE_ROOT; };
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
+		DC487FB40DA5350900E12499 /* AtariVox.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AtariVox.cxx; path = ../emucore/AtariVox.cxx; sourceTree = SOURCE_ROOT; };
+		DC487FB50DA5350900E12499 /* AtariVox.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = AtariVox.hxx; path = ../emucore/AtariVox.hxx; sourceTree = SOURCE_ROOT; };
 		DC54CD9F0C79CD7200DD0ACD /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Version.hxx; path = ../common/Version.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -855,6 +859,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
+				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
 				DCA23AE70D75B22500F77B33 /* CartX07.cxx */,
 				DCA23AE80D75B22500F77B33 /* CartX07.hxx */,
 				DC0984830D3985160073C852 /* CartSB.cxx */,
@@ -1281,6 +1287,7 @@
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
+				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1519,6 +1526,7 @@
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
+				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
