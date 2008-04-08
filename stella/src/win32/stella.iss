@@ -8,7 +8,7 @@
 
 AppName=Stella
 
-AppVerName=Stella 2.5
+AppVerName=Stella 2.5.1
 
 AppPublisher=Bradford W. Mott and the Stella team
 
@@ -22,7 +22,7 @@ DefaultDirName={pf}\Stella
 
 DefaultGroupName=Stella
 
-OutputBaseFilename=stella-2.5-win32
+OutputBaseFilename=stella-2.5.1-win32
 
 Compression=lzma
 
@@ -44,13 +44,13 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 
-Source: "C:\Users\stephena\src\stella\stella-2.5\Stella.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\stephena\src\stella\stella-2.5.1\Stella.exe"; DestDir: "{app}"; Flags: ignoreversion
 
-Source: "C:\Users\stephena\src\stella\stella-2.5\zlibwapi.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\stephena\src\stella\stella-2.5.1\zlibwapi.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-Source: "C:\Users\stephena\src\stella\stella-2.5\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
+Source: "C:\Users\stephena\src\stella\stella-2.5.1\SDL.dll"; DestDir: "{app}"; Flags: ignoreversion
 
-Source: "C:\Users\stephena\src\stella\stella-2.5\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "C:\Users\stephena\src\stella\stella-2.5.1\docs\*"; DestDir: "{app}\docs"; Flags: ignoreversion recursesubdirs createallsubdirs
 
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

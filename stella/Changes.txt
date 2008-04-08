@@ -12,6 +12,37 @@
                                Release History
 ===============================================================================
 
+2.5 to 2.5.1: (April 9, 2008)
+
+  * Fixed M6532 RIOT timer emulation.  More testing is needed, but the
+    changes so far have fixed several ROMs that didn't work before.
+
+  * Fixed issue with weird characters in the debugger disassembly when
+    loading .lst files.
+
+  * Fixed bug where entering the debugger for 4A50 and E0 carts caused
+    the ROM to be frozen afterwords.
+
+  * Removed logic whereby starting a ROM from something other than the
+    built-in launcher wouldn't allow the user to go back to the ROM launcher.
+
+  * Fixed bug (hopefully) with the app icon not showing on the Stella window.
+    Further testing is needed, since I can't duplicate the error myself.
+
+  * Fixed default snapshot folder issues; the folder will now be
+    automatically created in the same place as state folders, ini files,
+    etc (whereever that may be for your platform).
+
+  * Re-added 'lastrom' functionality, where Stella will remember and
+    auto-select the last ROM that was successfully launched in the ROM
+    launcher.
+
+  * For Stella developers, fixed SpeakJet emulation so it compiles again.
+    No improvements have been made to the emulation itself, though.
+
+-Have fun!
+
+
 2.4.2 to 2.5: (March 28, 2008)
 
   * Added RomInfo widget to the ROM launcher, which shows properties
@@ -106,8 +137,6 @@
     can now be built and distributed without the VS runtime libraries.
 
   * Updated configure script for cross-compiling Win32 version in Linux.
-
--Have fun!
 
 
 2.4.1 to 2.4.2: (September 17, 2007)

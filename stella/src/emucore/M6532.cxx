@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.16 2008-03-31 00:59:30 stephena Exp $
+// $Id: M6532.cxx,v 1.17 2008-04-08 19:17:26 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -163,44 +163,28 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x04:    // Timer Output
     case 0x06:
     {
-      uInt32 cycles = mySystem->cycles() - 1;
-      uInt32 delta = cycles - myCyclesWhenTimerSet;
-      Int32 timer = (Int32)myTimer - (Int32)(delta >> myIntervalShift) - 1;
+      uInt32 timer = myTimer - (mySystem->cycles() - myCyclesWhenTimerSet);
 
       // See if the timer has expired yet?
-      if(timer >= 0)
+      // Note that this constant comes from z26, and corresponds to
+      // 256 intervals of T1024T (ie, the maximum that the timer
+      // should hold)
+      if(!(timer & 0x40000))
       {
-        return (uInt8)timer; 
+        return (timer >> myIntervalShift) & 0xff;
       }
       else
       {
-        timer = (Int32)(myTimer << myIntervalShift) - (Int32)delta - 1;
-
-        if((timer <= -2) && !myTimerReadAfterInterrupt)
-        {
-          // Indicate that timer has been read after interrupt occured
-          myTimerReadAfterInterrupt = true;
-          myCyclesWhenInterruptReset = mySystem->cycles();
-        }
-
-        if(myTimerReadAfterInterrupt)
-        {
-          Int32 offset = myCyclesWhenInterruptReset - 
-              (myCyclesWhenTimerSet + (myTimer << myIntervalShift));
-
-          timer = (Int32)myTimer - (Int32)(delta >> myIntervalShift) - offset;
-        }
-
-        return (uInt8)timer;
+        myTimerReadAfterInterrupt = true;
+        myCyclesWhenInterruptReset = mySystem->cycles();
+        return timer & 0xff;
       }
     }
 
     case 0x05:    // Interrupt Flag
     case 0x07:
     {
-      uInt32 cycles = mySystem->cycles() - 1;
-      uInt32 delta = cycles - myCyclesWhenTimerSet;
-      Int32 timer = (Int32)myTimer - (Int32)(delta >> myIntervalShift) - 1;
+      Int32 timer = myTimer - (mySystem->cycles() - myCyclesWhenTimerSet);
 
       if((timer >= 0) || myTimerReadAfterInterrupt)
         return 0x00;
@@ -289,29 +273,29 @@ void M6532::poke(uInt16 addr, uInt8 value)
   }
   else if((addr & 0x17) == 0x14)    // Write timer divide by 1 
   {
-    myTimer = value;
     myIntervalShift = 0;
+    myTimer = value << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
   else if((addr & 0x17) == 0x15)    // Write timer divide by 8
   {
-    myTimer = value;
     myIntervalShift = 3;
+    myTimer = value << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
   else if((addr & 0x17) == 0x16)    // Write timer divide by 64
   {
-    myTimer = value;
     myIntervalShift = 6;
+    myTimer = value << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
   else if((addr & 0x17) == 0x17)    // Write timer divide by 1024
   {
-    myTimer = value;
     myIntervalShift = 10;
+    myTimer = value << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
