@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.9 2008-04-02 01:54:31 stephena Exp $
+// $Id: AtariVox.cxx,v 1.10 2008-04-09 17:19:15 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -175,7 +175,7 @@ void AtariVox::shiftIn(bool value)
 #ifdef SPEAKJET_EMULATION
       mySpeakJet->write(data);
 #endif
-      mySerialPort->write(data);
+      mySerialPort->writeByte(data);
     }
     myShiftRegister = 0;
   }

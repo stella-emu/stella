@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.cxx,v 1.1 2008-03-31 00:59:30 stephena Exp $
+// $Id: SerialPortUNIX.cxx,v 1.2 2008-04-09 17:19:15 stephena Exp $
 //============================================================================
 
 #include "SerialPortUNIX.hxx"
@@ -30,26 +30,20 @@ SerialPortUNIX::~SerialPortUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::open(const string& device, int baud, int data,
-                          int stop, int parity)
+bool SerialPortUNIX::openPort(const string& device, int baud, int data,
+                              int stop, int parity)
 {
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SerialPortUNIX::close()
+void SerialPortUNIX::closePort()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::read(uInt8& data)
+bool SerialPortUNIX::writeByte(const uInt8 data)
 {
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::write(const uInt8 data)
-{
-  cerr << "SerialPortUNIX::write " << (int)data << endl;
+  cerr << "SerialPortUNIX::writeByte " << (int)data << endl;
   return false;
 }

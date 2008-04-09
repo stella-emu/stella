@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPort.hxx,v 1.1 2008-03-31 00:59:30 stephena Exp $
+// $Id: SerialPort.hxx,v 1.2 2008-04-09 17:19:15 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_HXX
@@ -27,7 +27,7 @@
   but it may be used for other devices in the future.
 
   @author  Stephen Anthony
-  @version $Id: SerialPort.hxx,v 1.1 2008-03-31 00:59:30 stephena Exp $
+  @version $Id: SerialPort.hxx,v 1.2 2008-04-09 17:19:15 stephena Exp $
 */
 class SerialPort
 {
@@ -46,13 +46,13 @@ class SerialPort
 
       @return  False on any errors, else true
     */
-    virtual bool open(const string& device, int baud, int data,
-                      int stop, int parity) { return false; }
+    virtual bool openPort(const string& device, int baud, int data,
+                          int stop, int parity) { return false; }
 
     /**
       Close a previously opened serial port.
     */
-    virtual void close() { }
+    virtual void closePort() { }
 
     /**
       Read a byte from the serial port.
@@ -60,7 +60,7 @@ class SerialPort
       @param data  Destination for the byte read from the port
       @return  True if a byte was read, else false
     */
-    virtual bool read(uInt8& data) { return false; }
+    virtual bool readByte(uInt8& data) { return false; }
 
     /**
       Write a byte to the serial port.
@@ -68,7 +68,7 @@ class SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    virtual bool write(const uInt8 data) { return false; }
+    virtual bool writeByte(const uInt8 data) { return false; }
 };
 
 #endif

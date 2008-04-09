@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.hxx,v 1.1 2008-03-31 00:59:30 stephena Exp $
+// $Id: SerialPortUNIX.hxx,v 1.2 2008-04-09 17:19:16 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_UNIX_HXX
@@ -22,10 +22,11 @@
 #include "SerialPort.hxx"
 
 /**
-  Implement reading and writing from a serial port under UNIX.
+  Implement reading and writing from a serial port under UNIX.  For now,
+  it seems to be Linux-only, and reading isn't actually supported at all.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortUNIX.hxx,v 1.1 2008-03-31 00:59:30 stephena Exp $
+  @version $Id: SerialPortUNIX.hxx,v 1.2 2008-04-09 17:19:16 stephena Exp $
 */
 class SerialPortUNIX : public SerialPort
 {
@@ -44,20 +45,12 @@ class SerialPortUNIX : public SerialPort
 
       @return  False on any errors, else true
     */
-    bool open(const string& device, int baud, int data, int stop, int parity);
+    bool openPort(const string& device, int baud, int data, int stop, int parity);
 
     /**
       Close a previously opened serial port.
     */
-    void close();
-
-    /**
-      Read a byte from the serial port.
-
-      @param data  Destination for the byte read from the port
-      @return  True if a byte was read, else false
-    */
-    bool read(uInt8& data);
+    void closePort();
 
     /**
       Write a byte to the serial port.
@@ -65,7 +58,7 @@ class SerialPortUNIX : public SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    bool write(const uInt8 data);
+    bool writeByte(const uInt8 data);
 };
 
 #endif
