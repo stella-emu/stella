@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.11 2008-04-11 00:29:15 stephena Exp $
+// $Id: AtariVox.cxx,v 1.12 2008-04-11 01:28:35 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -38,7 +38,6 @@ AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port)
 #ifdef SPEAKJET_EMULATION
   mySpeakJet = new SpeakJet();
 #endif
-
   mySerialPort->openPort("", -1, -1, -1, -1);
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
@@ -53,7 +52,6 @@ AtariVox::~AtariVox()
 #ifdef SPEAKJET_EMULATION
   delete mySpeakJet;
 #endif
-
   mySerialPort->closePort();
 }
 

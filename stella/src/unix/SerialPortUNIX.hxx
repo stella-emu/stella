@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.hxx,v 1.2 2008-04-09 17:19:16 stephena Exp $
+// $Id: SerialPortUNIX.hxx,v 1.3 2008-04-11 01:28:35 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_UNIX_HXX
@@ -26,7 +26,7 @@
   it seems to be Linux-only, and reading isn't actually supported at all.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortUNIX.hxx,v 1.2 2008-04-09 17:19:16 stephena Exp $
+  @version $Id: SerialPortUNIX.hxx,v 1.3 2008-04-11 01:28:35 stephena Exp $
 */
 class SerialPortUNIX : public SerialPort
 {
@@ -58,7 +58,11 @@ class SerialPortUNIX : public SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    bool writeByte(const uInt8 data);
+    bool writeByte(const uInt8* data);
+
+  private:
+    // File descriptor for serial connection
+    int myHandle;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.21 2008-02-06 13:45:22 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.22 2008-04-11 01:28:35 stephena Exp $
 //============================================================================
 
 #include "M6502Hi.hxx"
@@ -61,7 +61,6 @@ inline uInt8 M6502High::peek(uInt16 address)
     myHitTrapInfo.address = address;
   }
 #endif
-
 
   uInt8 result = mySystem->peek(address);
   myLastAccessWasRead = true;

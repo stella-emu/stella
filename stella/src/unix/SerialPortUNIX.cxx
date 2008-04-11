@@ -13,14 +13,23 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.cxx,v 1.2 2008-04-09 17:19:15 stephena Exp $
+// $Id: SerialPortUNIX.cxx,v 1.3 2008-04-11 01:28:35 stephena Exp $
 //============================================================================
+
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <sys/termios.h>
+#include <sys/types.h>
+#include <sys/ioctl.h>
 
 #include "SerialPortUNIX.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortUNIX::SerialPortUNIX()
-  : SerialPort()
+  : SerialPort(),
+    myHandle(0)
 {
 }
 
@@ -33,17 +42,36 @@ SerialPortUNIX::~SerialPortUNIX()
 bool SerialPortUNIX::openPort(const string& device, int baud, int data,
                               int stop, int parity)
 {
-  return false;
+  myHandle = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NONBLOCK);
+  if(myHandle <= 0)
+    return false;
+
+  struct termios termios;
+  memset(&termios, 0, sizeof(struct termios));
+
+  termios.c_cflag = CREAD | CLOCAL;
+  termios.c_cflag |= B19200;
+  termios.c_cflag |= CS8;
+  tcflush(myHandle, TCIFLUSH);
+  tcsetattr(myHandle, TCSANOW, &termios);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SerialPortUNIX::closePort()
 {
+  if(myHandle)
+    close(myHandle);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::writeByte(const uInt8 data)
+bool SerialPortUNIX::writeByte(const uInt8* data)
 {
-  cerr << "SerialPortUNIX::writeByte " << (int)data << endl;
+  if(myHandle)
+  {
+//    cerr << "SerialPortUNIX::writeByte " << (int)(*data) << endl;
+    return write(myHandle, data, 1) == 1;
+  }
   return false;
 }
