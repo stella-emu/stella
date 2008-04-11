@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPort.hxx,v 1.3 2008-04-11 00:29:15 stephena Exp $
+// $Id: SerialPort.hxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_HXX
@@ -23,11 +23,11 @@
 
 /**
   This class provides an interface for a standard serial port.
-  For now, this used when connecting a real AtariVox device,
-  but it may be used for other devices in the future.
+  For now, this is used when connecting a real AtariVox device,
+  and as such it always uses 19200, 8n1, no flow control.
 
   @author  Stephen Anthony
-  @version $Id: SerialPort.hxx,v 1.3 2008-04-11 00:29:15 stephena Exp $
+  @version $Id: SerialPort.hxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
 */
 class SerialPort
 {
@@ -39,15 +39,9 @@ class SerialPort
       Open the given serial port with the specified attributes.
 
       @param device  The name of the port
-      @param baud    Baud rate
-      @param data    Number of data bits
-      @param stop    Number of stop bits
-      @param parity  Type of parity bit (0=none, 1=odd, 2=even)
-
       @return  False on any errors, else true
     */
-    virtual bool openPort(const string& device, int baud, int data,
-                          int stop, int parity) { return false; }
+    virtual bool openPort(const string& device) { return false; }
 
     /**
       Close a previously opened serial port.

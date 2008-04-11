@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.16 2008-03-22 17:35:03 stephena Exp $
+// $Id: InputDialog.hxx,v 1.17 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -24,6 +24,7 @@ class GuiObject;
 class TabWidget;
 class EventMappingWidget;
 class CheckBoxWidget;
+class EditTextWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -71,6 +72,7 @@ class InputDialog : public Dialog
     StaticTextWidget* myPaddleModeLabel;
     SliderWidget*     myPaddleSpeed;
     StaticTextWidget* myPaddleLabel;
+    EditTextWidget*   myAVoxPort;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.11 2008-02-06 13:45:21 stephena Exp $
+// $Id: Control.hxx,v 1.12 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -57,7 +57,7 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.11 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: Control.hxx,v 1.12 2008-04-11 17:56:34 stephena Exp $
 */
 class Controller : public Serializable
 {
@@ -175,6 +175,11 @@ class Controller : public Serializable
       Returns the name of this controller.
     */
     virtual string name() const;
+
+    /**
+      Returns more detailed information about this controller.
+    */
+    virtual string about() const;
 
   public:
     /// Constant which represents maximum resistance for analog pins

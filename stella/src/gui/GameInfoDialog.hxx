@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.30 2008-03-22 17:35:03 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.31 2008-04-11 17:56:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -99,7 +99,7 @@ class GameInfoDialog : public Dialog, public CommandSender
       kPhosphorChanged = 'PPch',
       kPPBlendChanged  = 'PBch',
       kNumCartTypes       = 25,
-      kNumControllerTypes = 5
+      kNumControllerTypes = 6
     };
 
     /** Game properties for currently loaded ROM */

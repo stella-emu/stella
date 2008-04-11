@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.cxx,v 1.3 2008-04-11 01:28:35 stephena Exp $
+// $Id: SerialPortUNIX.cxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #include <sys/types.h>
@@ -39,10 +39,9 @@ SerialPortUNIX::~SerialPortUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortUNIX::openPort(const string& device, int baud, int data,
-                              int stop, int parity)
+bool SerialPortUNIX::openPort(const string& device)
 {
-  myHandle = open("/dev/ttyUSB0", O_RDWR | O_NOCTTY | O_NONBLOCK);
+  myHandle = open(device.c_str(), O_RDWR | O_NOCTTY | O_NONBLOCK);
   if(myHandle <= 0)
     return false;
 

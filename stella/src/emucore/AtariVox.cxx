@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.12 2008-04-11 01:28:35 stephena Exp $
+// $Id: AtariVox.cxx,v 1.13 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -27,7 +27,8 @@
 #define DEBUG_ATARIVOX 0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port)
+AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port,
+                   const string& device)
   : Controller(jack, event, Controller::AtariVox),
     mySerialPort((SerialPort*)&port),
     myPinState(0),
@@ -35,10 +36,15 @@ AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port)
     myShiftRegister(0),
     myLastDataWriteCycle(0)
 {
-#ifdef SPEAKJET_EMULATION
+#ifndef SPEAKJET_EMULATION
+  if(mySerialPort->openPort(device))
+    myAboutString = " (using serial port \'" + device + "\')";
+  else
+    myAboutString = " (invalid serial port \'" + device + "\')";
+#else
   mySpeakJet = new SpeakJet();
+  myAboutString = " (emulating SpeakJet device)";
 #endif
-  mySerialPort->openPort("", -1, -1, -1, -1);
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
@@ -49,10 +55,11 @@ AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::~AtariVox()
 {
-#ifdef SPEAKJET_EMULATION
+#ifndef SPEAKJET_EMULATION
+  mySerialPort->closePort();
+#else
   delete mySpeakJet;
 #endif
-  mySerialPort->closePort();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,7 +79,7 @@ void AtariVox::write(DigitalPin pin, bool value)
   
     // Pin 2: SpeakJet READY
     case Two:
-      // TODO - see how this is used
+      // TODO - read READY signal from serial port
       break;
 
     // Pin 3: EEPROM SDA
@@ -152,33 +159,35 @@ void AtariVox::clockDataIn(bool value)
     if(DEBUG_ATARIVOX)
       cerr << "cycle >= myLastDataWriteCycle + 62, shiftIn("
            << value << ")" << endl;
-    shiftIn(value);
+
+    myShiftRegister >>= 1;
+    myShiftRegister |= (value << 15);
+    if(++myShiftCount == 10)
+    {
+      myShiftCount = 0;
+      myShiftRegister >>= 6;
+      if(!(myShiftRegister & (1<<9)))
+        cerr << "AtariVox: bad start bit" << endl;
+      else if((myShiftRegister & 1))
+        cerr << "AtariVox: bad stop bit" << endl;
+      else
+      {
+        uInt8 data = ((myShiftRegister >> 1) & 0xff);
+    #ifndef SPEAKJET_EMULATION
+        mySerialPort->writeByte(&data);
+    #else
+        mySpeakJet->write(data);
+    #endif
+      }
+      myShiftRegister = 0;
+    }
   }
 
   myLastDataWriteCycle = cycle;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariVox::shiftIn(bool value)
+string AtariVox::about() const
 {
-  myShiftRegister >>= 1;
-  myShiftRegister |= (value << 15);
-  if(++myShiftCount == 10)
-  {
-    myShiftCount = 0;
-    myShiftRegister >>= 6;
-    if(!(myShiftRegister & (1<<9)))
-      cerr << "AtariVox: bad start bit" << endl;
-    else if((myShiftRegister & 1))
-      cerr << "AtariVox: bad stop bit" << endl;
-    else
-    {
-      uInt8 data = ((myShiftRegister >> 1) & 0xff);
-#ifdef SPEAKJET_EMULATION
-      mySpeakJet->write(data);
-#endif
-      mySerialPort->writeByte(&data);
-    }
-    myShiftRegister = 0;
-  }
+  return Controller::about() + myAboutString;
 }

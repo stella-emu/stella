@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
+// $Id: AtariVox.hxx,v 1.11 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #ifndef ATARIVOX_HXX
@@ -32,7 +32,7 @@ class SpeakJet;
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.11 2008-04-11 17:56:34 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -40,10 +40,13 @@ class AtariVox : public Controller
     /**
       Create a new AtariVox controller plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
-      @param event The event object to use for events
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param port   The serial port object
+      @param device Name of the port used for reading and writing
     */
-    AtariVox(Jack jack, const Event& event, const SerialPort& port);
+    AtariVox(Jack jack, const Event& event, const SerialPort& port,
+             const string& device);
 
     /**
       Destructor
@@ -66,6 +69,8 @@ class AtariVox : public Controller
       events currently set.
     */
     virtual void update();
+
+    virtual string about() const;
 
 #ifdef SPEAKJET_EMULATION
     SpeakJet* getSpeakJet() { return mySpeakJet; }
@@ -108,6 +113,9 @@ class AtariVox : public Controller
     // driver code sends data at 62 CPU cycles per bit, which is
     // "close enough".
     uInt32 myLastDataWriteCycle;
+
+    // Holds information concerning serial port usage
+    string myAboutString;
 };
 
 #endif

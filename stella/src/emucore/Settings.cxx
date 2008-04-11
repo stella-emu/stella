@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.141 2008-03-30 15:47:10 stephena Exp $
+// $Id: Settings.cxx,v 1.142 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -99,6 +99,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("autoslot", "false");
   setInternal("showinfo", "false");
   setInternal("tiafloat", "true");
+  setInternal("avoxport", "");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.52 2008-03-26 00:52:05 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.53 2008-04-11 17:56:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -176,7 +176,7 @@ GameInfoDialog::GameInfoDialog(
                        "P0 Controller:", kTextAlignLeft);
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, "", 0, 0);
-  for(i = 0; i < 5; ++i)
+  for(i = 0; i < kNumControllerTypes; ++i)
     myP0Controller->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myP0Controller);
 
@@ -195,7 +195,7 @@ GameInfoDialog::GameInfoDialog(
                        "P1 Controller:", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, "", 0, 0);
-  for(i = 0; i < 5; ++i)
+  for(i = 0; i < kNumControllerTypes; ++i)
     myP1Controller->appendEntry(ourControllerList[i][0], i+1);
   wid.push_back(myP1Controller);
 
@@ -419,21 +419,21 @@ void GameInfoDialog::loadView()
 
   // Controller properties
   s = myGameProperties.get(Controller_Left);
-  for(i = 0; i < 5; ++i)
+  for(i = 0; i < kNumControllerTypes; ++i)
   {
     if(s == ourControllerList[i][1])
       break;
   }
-  i = (i == 5) ? 0: i + 1;
+  i = (i == kNumControllerTypes) ? 0: i + 1;
   myP0Controller->setSelectedTag(i);
 
   s = myGameProperties.get(Controller_Right);
-  for(i = 0; i < 5; ++i)
+  for(i = 0; i < kNumControllerTypes; ++i)
   {
     if(s == ourControllerList[i][1])
       break;
   }
-  i = (i == 5) ? 0: i + 1;
+  i = (i == kNumControllerTypes) ? 0: i + 1;
   myP1Controller->setSelectedTag(i);
 
   s = myGameProperties.get(Controller_SwapPaddles);
@@ -672,6 +672,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* GameInfoDialog::ourControllerList[kNumControllerTypes][2] = {
+  { "AtariVox",     "ATARIVOX"     },
   { "Booster-Grip", "BOOSTER-GRIP" },
   { "Driving",      "DRIVING"      },
   { "Keyboard",     "KEYBOARD"     },

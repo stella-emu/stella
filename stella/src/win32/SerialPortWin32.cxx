@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.cxx,v 1.1 2008-04-11 00:29:15 stephena Exp $
+// $Id: SerialPortWin32.cxx,v 1.2 2008-04-11 17:56:35 stephena Exp $
 //============================================================================
 
 #include <windows.h>
@@ -33,8 +33,7 @@ SerialPortWin32::~SerialPortWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SerialPortWin32::openPort(const string& device, int baud, int data,
-                               int stop, int parity)
+bool SerialPortWin32::openPort(const string& device)
 {
   if(!myHandle)
   {
@@ -43,7 +42,7 @@ bool SerialPortWin32::openPort(const string& device, int baud, int data,
     //
 //  GetDlgItemText(IDC_CMB_PORTS, str);
 
-    myHandle = CreateFile("COM3", GENERIC_READ|GENERIC_WRITE, 0,
+    myHandle = CreateFile(device.c_str(), GENERIC_READ|GENERIC_WRITE, 0,
                           NULL, OPEN_EXISTING, 0, NULL);
 
     if(myHandle)

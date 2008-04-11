@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.135 2008-03-31 00:59:30 stephena Exp $
+// $Id: Console.cxx,v 1.136 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -150,7 +150,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   else if(right == "ATARIVOX")
   {
     myControllers[rightPort] = myAVox =
-      new AtariVox(Controller::Right, *myEvent, myOSystem->serialPort());
+      new AtariVox(Controller::Right, *myEvent, myOSystem->serialPort(),
+                   myOSystem->settings().getString("avoxport"));
   }
   else
   {
@@ -192,8 +193,10 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Query some info about this console
   ostringstream buf;
-  buf << "  Cart Name: " << myProperties.get(Cartridge_Name) << endl
-      << "  Cart MD5:  " << myProperties.get(Cartridge_MD5) << endl;
+  buf << "  Cart Name:       " << myProperties.get(Cartridge_Name) << endl
+      << "  Cart MD5:        " << myProperties.get(Cartridge_MD5) << endl
+      << "  Controller 0:    " << myControllers[0]->about() << endl
+      << "  Controller 1:    " << myControllers[1]->about() << endl;
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);

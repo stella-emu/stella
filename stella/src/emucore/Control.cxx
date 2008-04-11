@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.8 2008-02-06 13:45:21 stephena Exp $
+// $Id: Control.cxx,v 1.9 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -155,6 +155,12 @@ bool Controller::load(Deserializer& in)
 string Controller::name() const
 {
   return myName;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Controller::about() const
+{
+  return name() + " in " + (myJack == Left ? "left port" : "right port");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

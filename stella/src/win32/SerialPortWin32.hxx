@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.hxx,v 1.1 2008-04-11 00:29:15 stephena Exp $
+// $Id: SerialPortWin32.hxx,v 1.2 2008-04-11 17:56:35 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_WIN32_HXX
@@ -25,7 +25,7 @@
   Implement reading and writing from a serial port under Windows systems.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortWin32.hxx,v 1.1 2008-04-11 00:29:15 stephena Exp $
+  @version $Id: SerialPortWin32.hxx,v 1.2 2008-04-11 17:56:35 stephena Exp $
 */
 class SerialPortWin32 : public SerialPort
 {
@@ -37,14 +37,9 @@ class SerialPortWin32 : public SerialPort
       Open the given serial port with the specified attributes.
 
       @param device  The name of the port
-      @param baud    Baud rate
-      @param data    Number of data bits
-      @param stop    Number of stop bits
-      @param parity  Type of parity bit (0=none, 1=odd, 2=even)
-
       @return  False on any errors, else true
     */
-    bool openPort(const string& device, int baud, int data, int stop, int parity);
+    bool openPort(const string& device);
 
     /**
       Close a previously opened serial port.

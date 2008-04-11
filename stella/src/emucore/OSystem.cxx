@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.122 2008-04-11 00:29:15 stephena Exp $
+// $Id: OSystem.cxx,v 1.123 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -441,7 +441,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
         myFrameBuffer->showMessage("New console created");
       if(mySettings->getBool("showinfo"))
         cout << "Game console created:" << endl
-             << "  ROM file:  " << myRomFile << endl
+             << "  ROM file: " << myRomFile << endl << endl
              << myConsole->about() << endl;
 
       // Update the timing info for a new console run

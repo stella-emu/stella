@@ -13,17 +13,18 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.30 2008-03-23 16:22:46 stephena Exp $
+// $Id: InputDialog.cxx,v 1.31 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
 
 #include "Array.hxx"
-#include "EventMappingWidget.hxx"
 #include "OSystem.hxx"
 #include "Paddles.hxx"
-#include "PopUpWidget.hxx"
 #include "Settings.hxx"
+#include "EventMappingWidget.hxx"
+#include "EditTextWidget.hxx"
+#include "PopUpWidget.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 
@@ -92,7 +93,8 @@ InputDialog::~InputDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::addVDeviceTab(const GUI::Font& font)
 {
-  const int lineHeight = font.getLineHeight();
+  const int lineHeight = font.getLineHeight(),
+            fontHeight = font.getFontHeight();
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
 
@@ -142,6 +144,15 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   myPaddleLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleSpeed);
 
+  // Add AtariVox serial port
+  xpos = 5;  ypos += 2*lineHeight;
+  int fwidth = _w - xpos - lwidth - 20;
+  new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
+                       "AVox serial port:", kTextAlignLeft);
+  myAVoxPort = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
+                                  fwidth, fontHeight, "");
+  wid.push_back(myAVoxPort);
+
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
 }
@@ -165,6 +176,9 @@ void InputDialog::loadConfig()
   myPaddleSpeed->setValue(instance()->settings().getInt("pspeed"));
   myPaddleLabel->setLabel(instance()->settings().getString("pspeed"));
 
+  // AtariVox serial port
+  myAVoxPort->setEditString(instance()->settings().getString("avoxport"));
+
   myTab->loadConfig();
 }
 
@@ -172,8 +186,8 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  string sa1 = myLeftPort->getSelectedTag() == 2 ? "right" : "left";
-  string sa2 = myRightPort->getSelectedTag() == 2 ? "right" : "left";
+  const string& sa1 = myLeftPort->getSelectedTag() == 2 ? "right" : "left";
+  const string& sa2 = myRightPort->getSelectedTag() == 2 ? "right" : "left";
   instance()->eventHandler().mapStelladaptors(sa1, sa2);
 
   // Paddle mode
@@ -183,6 +197,9 @@ void InputDialog::saveConfig()
   int speed = myPaddleSpeed->getValue();
   instance()->settings().setInt("pspeed", speed);
   Paddles::setDigitalSpeed(speed);
+
+  // AtariVox serial port
+  instance()->settings().setString("avoxport", myAVoxPort->getEditString());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

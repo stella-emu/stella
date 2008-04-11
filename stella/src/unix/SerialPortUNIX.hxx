@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.hxx,v 1.3 2008-04-11 01:28:35 stephena Exp $
+// $Id: SerialPortUNIX.hxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_UNIX_HXX
@@ -26,7 +26,7 @@
   it seems to be Linux-only, and reading isn't actually supported at all.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortUNIX.hxx,v 1.3 2008-04-11 01:28:35 stephena Exp $
+  @version $Id: SerialPortUNIX.hxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
 */
 class SerialPortUNIX : public SerialPort
 {
@@ -38,14 +38,9 @@ class SerialPortUNIX : public SerialPort
       Open the given serial port with the specified attributes.
 
       @param device  The name of the port
-      @param baud    Baud rate
-      @param data    Number of data bits
-      @param stop    Number of stop bits
-      @param parity  Type of parity bit (0=none, 1=odd, 2=even)
-
       @return  False on any errors, else true
     */
-    bool openPort(const string& device, int baud, int data, int stop, int parity);
+    bool openPort(const string& device);
 
     /**
       Close a previously opened serial port.
