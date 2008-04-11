@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.121 2008-03-31 00:59:30 stephena Exp $
+// $Id: OSystem.cxx,v 1.122 2008-04-11 00:29:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -36,8 +36,8 @@
 #include "SerialPort.hxx"
 #if defined(UNIX)
   #include "SerialPortUNIX.hxx"
-//#elif defined(WIN32)
-//  #include "SerialPortWin32.hxx"
+#elif defined(WIN32)
+  #include "SerialPortWin32.hxx"
 //#elif defined(MAC_OSX)
 //  #include "SerialPortMACOSX.hxx"
 #endif
@@ -220,8 +220,8 @@ bool OSystem::create()
   // a real serial port on the system
 #if defined(UNIX)
   mySerialPort = new SerialPortUNIX();
-//#elif defined(WIN32)
-//  mySerialPort = new SerialPortWin32();
+#elif defined(WIN32)
+  mySerialPort = new SerialPortWin32();
 //#elif defined(MAC_OSX)
 //  mySerialPort = new SerialPortMACOSX();
 #else

@@ -383,6 +383,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\SerialPortWin32.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\win32\SettingsWin32.cxx"
 				>
 			</File>
@@ -942,6 +946,10 @@
 			</File>
 			<File
 				RelativePath="..\common\RectList.hxx"
+				>
+			</File>
+			<File
+				RelativePath=".\SerialPortWin32.hxx"
 				>
 			</File>
 			<File

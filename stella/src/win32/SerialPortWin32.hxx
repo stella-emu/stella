@@ -13,27 +13,25 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPort.hxx,v 1.3 2008-04-11 00:29:15 stephena Exp $
+// $Id: SerialPortWin32.hxx,v 1.1 2008-04-11 00:29:15 stephena Exp $
 //============================================================================
 
-#ifndef SERIALPORT_HXX
-#define SERIALPORT_HXX
+#ifndef SERIALPORT_WIN32_HXX
+#define SERIALPORT_WIN32_HXX
 
-#include "bspf.hxx"
+#include "SerialPort.hxx"
 
 /**
-  This class provides an interface for a standard serial port.
-  For now, this used when connecting a real AtariVox device,
-  but it may be used for other devices in the future.
+  Implement reading and writing from a serial port under Windows systems.
 
   @author  Stephen Anthony
-  @version $Id: SerialPort.hxx,v 1.3 2008-04-11 00:29:15 stephena Exp $
+  @version $Id: SerialPortWin32.hxx,v 1.1 2008-04-11 00:29:15 stephena Exp $
 */
-class SerialPort
+class SerialPortWin32 : public SerialPort
 {
   public:
-    SerialPort() { }
-    virtual ~SerialPort() { }
+    SerialPortWin32();
+    virtual ~SerialPortWin32();
 
     /**
       Open the given serial port with the specified attributes.
@@ -46,21 +44,12 @@ class SerialPort
 
       @return  False on any errors, else true
     */
-    virtual bool openPort(const string& device, int baud, int data,
-                          int stop, int parity) { return false; }
+    bool openPort(const string& device, int baud, int data, int stop, int parity);
 
     /**
       Close a previously opened serial port.
     */
-    virtual void closePort() { }
-
-    /**
-      Read a byte from the serial port.
-
-      @param data  Destination for the byte read from the port
-      @return  True if a byte was read, else false
-    */
-    virtual bool readByte(uInt8* data) { return false; }
+    void closePort();
 
     /**
       Write a byte to the serial port.
@@ -68,7 +57,11 @@ class SerialPort
       @param data  The byte to write to the port
       @return  True if a byte was written, else false
     */
-    virtual bool writeByte(const uInt8* data) { return false; }
+    bool writeByte(const uInt8* data);
+
+  private:
+    // Handle to serial port
+    HANDLE myHandle;
 };
 
 #endif
