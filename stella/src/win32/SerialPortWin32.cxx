@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.cxx,v 1.2 2008-04-11 17:56:35 stephena Exp $
+// $Id: SerialPortWin32.cxx,v 1.3 2008-04-12 23:20:05 stephena Exp $
 //============================================================================
 
 #include <windows.h>
@@ -37,11 +37,6 @@ bool SerialPortWin32::openPort(const string& device)
 {
   if(!myHandle)
   {
-    //
-    // Get Selected COM (or other if prefix has changed) port name from list box
-    //
-//  GetDlgItemText(IDC_CMB_PORTS, str);
-
     myHandle = CreateFile(device.c_str(), GENERIC_READ|GENERIC_WRITE, 0,
                           NULL, OPEN_EXISTING, 0, NULL);
 
@@ -60,16 +55,7 @@ bool SerialPortWin32::openPort(const string& device)
       dcb.ByteSize = 8;
       dcb.Parity = NOPARITY;
       dcb.StopBits = ONESTOPBIT;
-    //  dcb.fOutxCtsFlow = TRUE;
-    //  dcb.fRtsControl = RTS_CONTROL_HANDSHAKE;
       SetCommState(myHandle, &dcb);
-
-//      cto.ReadIntervalTimeout = 0;
-//      cto.ReadTotalTimeoutMultiplier = 0;
-//      cto.ReadTotalTimeoutConstant = 0;
-//      cto.WriteTotalTimeoutMultiplier = 0;
-//      cto.WriteTotalTimeoutConstant = 0;
-//      SetCommTimeouts(myHandle, &cto);
     }
     else 
       return false;

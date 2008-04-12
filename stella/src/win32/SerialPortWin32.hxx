@@ -13,11 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.hxx,v 1.2 2008-04-11 17:56:35 stephena Exp $
+// $Id: SerialPortWin32.hxx,v 1.3 2008-04-12 23:20:05 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_WIN32_HXX
 #define SERIALPORT_WIN32_HXX
+
+#include <windows.h>
 
 #include "SerialPort.hxx"
 
@@ -25,7 +27,7 @@
   Implement reading and writing from a serial port under Windows systems.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortWin32.hxx,v 1.2 2008-04-11 17:56:35 stephena Exp $
+  @version $Id: SerialPortWin32.hxx,v 1.3 2008-04-12 23:20:05 stephena Exp $
 */
 class SerialPortWin32 : public SerialPort
 {
