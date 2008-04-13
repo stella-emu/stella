@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.cxx,v 1.3 2008-04-12 23:20:05 stephena Exp $
+// $Id: SerialPortWin32.cxx,v 1.4 2008-04-13 11:08:36 estolberg Exp $
 //============================================================================
 
 #include <windows.h>
@@ -43,7 +43,6 @@ bool SerialPortWin32::openPort(const string& device)
     if(myHandle)
     {
       DCB dcb;
-      COMMTIMEOUTS cto;
 
       FillMemory(&dcb, sizeof(dcb), 0);
       dcb.DCBlength = sizeof(dcb);
@@ -68,7 +67,6 @@ void SerialPortWin32::closePort()
 {
   if(myHandle)
   {
-cerr << "port closed\n";
     CloseHandle(myHandle);
     myHandle = NULL;
   }
@@ -79,8 +77,6 @@ bool SerialPortWin32::writeByte(const uInt8* data)
 {
   if(myHandle)
   {
-    cerr << "SerialPortWin32::write " << (int)(*data) << endl;
-
     DWORD written;
     return WriteFile(myHandle, data, 1, &written, 0) == TRUE;
   }
