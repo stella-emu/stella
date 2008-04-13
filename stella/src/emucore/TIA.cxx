@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.87 2008-03-23 16:22:41 stephena Exp $
+// $Id: TIA.cxx,v 1.88 2008-04-13 00:14:38 stephena Exp $
 //============================================================================
+
+//#define DEBUG_HMOVE
 
 #include <cassert>
 #include <cstdlib>
@@ -2387,6 +2389,13 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // Find out under what condition the player is being reset
       Int8 when = ourPlayerPositionResetWhenTable[myNUSIZ0 & 7][myPOSP0][newx];
 
+#ifdef DEBUG_HMOVE
+      if((clock - myLastHMOVEClock) < (24 * 3))
+        cerr << "Reset Player 0 within 24 cycles of HMOVE: "
+             << ((clock - myLastHMOVEClock)/3)
+             << "  hpos: " << hpos << ", newx = " << newx << endl;
+#endif
+
       // Player is being reset during the display of one of its copies
       if(when == 1)
       {
@@ -2431,6 +2440,13 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // Find out under what condition the player is being reset
       Int8 when = ourPlayerPositionResetWhenTable[myNUSIZ1 & 7][myPOSP1][newx];
 
+#ifdef DEBUG_HMOVE
+      if((clock - myLastHMOVEClock) < (24 * 3))
+        cerr << "Reset Player 1 within 24 cycles of HMOVE: "
+             << ((clock - myLastHMOVEClock)/3)
+             << "  hpos: " << hpos << ", newx = " << newx << endl;
+#endif
+
       // Player is being reset during the display of one of its copies
       if(when == 1)
       {
@@ -2472,10 +2488,24 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM0 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
 
+#ifdef DEBUG_HMOVE
+      if((clock - myLastHMOVEClock) < (24 * 3))
+        cerr << "Reset Missle 0 within 24 cycles of HMOVE: "
+             << ((clock - myLastHMOVEClock)/3)
+             << "  hpos: " << hpos << ", myPOSM0 = " << myPOSM0 << endl;
+#endif
+
       // TODO: Remove the following special hack for Dolphin by
       // figuring out what really happens when Reset Missle 
       // occurs 20 cycles after an HMOVE (04/13/02).
       if(((clock - myLastHMOVEClock) == (20 * 3)) && (hpos == 69))
+      {
+        myPOSM0 = 8;
+      }
+      // TODO: Remove the following special hack for Solaris by
+      // figuring out what really happens when Reset Missle 
+      // occurs 9 cycles after an HMOVE (04/11/08).
+      if(((clock - myLastHMOVEClock) == (9 * 3)) && (hpos == 36))
       {
         myPOSM0 = 8;
       }
@@ -2489,6 +2519,13 @@ void TIA::poke(uInt16 addr, uInt8 value)
     {
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM1 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
+
+#ifdef DEBUG_HMOVE
+      if((clock - myLastHMOVEClock) < (24 * 3))
+        cerr << "Reset Missle 1 within 24 cycles of HMOVE: "
+             << ((clock - myLastHMOVEClock)/3)
+             << "  hpos: " << hpos << ", myPOSM1 = " << myPOSM1 << endl;
+#endif
 
       // TODO: Remove the following special hack for Pitfall II by
       // figuring out what really happens when Reset Missle 
@@ -2508,14 +2545,31 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228 ;
       myPOSBL = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
 
-      // TODO: Remove the following special hack for Escape from the 
+#ifdef DEBUG_HMOVE
+      if((clock - myLastHMOVEClock) < (24 * 3))
+        cerr << "Reset Ball within 24 cycles of HMOVE: "
+             << ((clock - myLastHMOVEClock)/3)
+             << "  hpos: " << hpos << ", myPOSBL = " << myPOSBL << endl;
+#endif
+
+      // TODO: Remove the following special hack by figuring out what
+      // really happens when Reset Ball occurs 18 cycles after an HMOVE.
+      if((clock - myLastHMOVEClock) == (18 * 3))
+      {
+        // Escape from the Mindmaster (01/09/99)
+        if((hpos == 60) || (hpos == 69))
+          myPOSBL = 10;
+        // Mission Survive (04/11/08)
+        else if(hpos == 63)
+          myPOSBL = 7;
+      }
+      // TODO: Remove the following special hack for Escape from the
       // Mindmaster by figuring out what really happens when Reset Ball 
-      // occurs 18 cycles after an HMOVE (01/09/99).
-      if(((clock - myLastHMOVEClock) == (18 * 3)) && 
-          ((hpos == 60) || (hpos == 69)))
+      // occurs 15 cycles after an HMOVE (04/11/08).
+      else if(((clock - myLastHMOVEClock) == (15 * 3)) && (hpos == 60))
       {
         myPOSBL = 10;
-      }
+      } 
       // TODO: Remove the following special hack for Decathlon by
       // figuring out what really happens when Reset Ball 
       // occurs 3 cycles after an HMOVE (04/13/02).
@@ -2536,6 +2590,20 @@ void TIA::poke(uInt16 addr, uInt8 value)
       else if(((clock - myLastHMOVEClock) == (6 * 3)) && (hpos == 27))
       {
         myPOSBL = 5;
+      }
+      // TODO: Remove the following special hack for Swoops! by
+      // figuring out what really happens when Reset Ball 
+      // occurs 9 cycles after an HMOVE (04/11/08).
+      else if(((clock - myLastHMOVEClock) == (9 * 3)) && (hpos == 36))
+      {
+        myPOSBL = 7;
+      }
+      // TODO: Remove the following special hack for Solaris by
+      // figuring out what really happens when Reset Ball 
+      // occurs 12 cycles after an HMOVE (04/11/08).
+      else if(((clock - myLastHMOVEClock) == (12 * 3)) && (hpos == 45))
+      {
+        myPOSBL = 8;
       }
  
       myCurrentBLMask = &ourBallMaskTable[myPOSBL & 0x03]
