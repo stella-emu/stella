@@ -39,6 +39,7 @@ MODULE_OBJS := \
 	src/emucore/Joystick.o \
 	src/emucore/Keyboard.o \
 	src/emucore/M6532.o \
+	src/emucore/MT24LC256.o \
 	src/emucore/MD5.o \
 	src/emucore/MediaSrc.o \
 	src/emucore/OSystem.o \
