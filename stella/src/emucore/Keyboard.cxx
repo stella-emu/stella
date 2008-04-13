@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.cxx,v 1.10 2008-02-06 13:45:21 stephena Exp $
+// $Id: Keyboard.cxx,v 1.11 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
 #include "Keyboard.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Keyboard::Keyboard(Jack jack, const Event& event)
-  : Controller(jack, event, Controller::Keyboard),
+Keyboard::Keyboard(Jack jack, const Event& event, const System& system)
+  : Controller(jack, event, system, Controller::Keyboard),
     myPinState(0)
 {
   if(myJack == Left)

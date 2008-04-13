@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.14 2008-03-22 17:35:02 stephena Exp $
+// $Id: Paddles.cxx,v 1.15 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #define TRIGMAX 240
@@ -23,8 +23,8 @@
 #include "Paddles.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Paddles::Paddles(Jack jack, const Event& event, bool swap)
-  : Controller(jack, event, Controller::Paddles)
+Paddles::Paddles(Jack jack, const Event& event, const System& system, bool swap)
+  : Controller(jack, event, system, Controller::Paddles)
 {
   // Swap the paddle events, from paddle 0 <=> 1 and paddle 2 <=> 3
   // Also consider whether this is the left or right port

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.cxx,v 1.16 2008-03-03 16:27:16 estolberg Exp $
+// $Id: Driving.cxx,v 1.17 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -22,8 +22,8 @@
 #include "Driving.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Driving::Driving(Jack jack, const Event& event)
-  : Controller(jack, event, Controller::Driving),
+Driving::Driving(Jack jack, const Event& event, const System& system)
+  : Controller(jack, event, system, Controller::Driving),
     myCounter(0)
 {
   if(myJack == Left)

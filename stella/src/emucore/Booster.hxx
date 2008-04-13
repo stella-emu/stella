@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.hxx,v 1.10 2008-03-02 19:20:50 stephena Exp $
+// $Id: Booster.hxx,v 1.11 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef BOOSTERGRIP_HXX
@@ -29,7 +29,7 @@
   on it (a booster and a trigger).
 
   @author  Bradford W. Mott
-  @version $Id: Booster.hxx,v 1.10 2008-03-02 19:20:50 stephena Exp $
+  @version $Id: Booster.hxx,v 1.11 2008-04-13 23:43:14 stephena Exp $
 */
 class BoosterGrip : public Controller
 {
@@ -37,10 +37,11 @@ class BoosterGrip : public Controller
     /**
       Create a new booster grip joystick plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
-      @param event The event object to use for events
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
     */
-    BoosterGrip(Jack jack, const Event& event);
+    BoosterGrip(Jack jack, const Event& event, const System& system);
 
     /**
       Destructor

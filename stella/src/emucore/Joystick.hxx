@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.hxx,v 1.9 2008-03-02 19:20:50 stephena Exp $
+// $Id: Joystick.hxx,v 1.10 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef JOYSTICK_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 joystick controller.
 
   @author  Bradford W. Mott
-  @version $Id: Joystick.hxx,v 1.9 2008-03-02 19:20:50 stephena Exp $
+  @version $Id: Joystick.hxx,v 1.10 2008-04-13 23:43:14 stephena Exp $
 */
 class Joystick : public Controller
 {
@@ -35,10 +35,11 @@ class Joystick : public Controller
     /**
       Create a new joystick controller plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
-      @param event The event object to use for events
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
     */
-    Joystick(Jack jack, const Event& event);
+    Joystick(Jack jack, const Event& event, const System& system);
 
     /**
       Destructor

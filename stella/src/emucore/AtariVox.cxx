@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.13 2008-04-11 17:56:34 stephena Exp $
+// $Id: AtariVox.cxx,v 1.14 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
   #include "SpeakJet.hxx"
 #endif
 
+#include "MT24LC256.hxx"
 #include "SerialPort.hxx"
 #include "System.hxx"
 #include "AtariVox.hxx"
@@ -27,24 +28,28 @@
 #define DEBUG_ATARIVOX 0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AtariVox::AtariVox(Jack jack, const Event& event, const SerialPort& port,
-                   const string& device)
-  : Controller(jack, event, Controller::AtariVox),
+AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
+                   const SerialPort& port, const string& portname,
+                   const string& eepromfile)
+  : Controller(jack, event, system, Controller::AtariVox),
     mySerialPort((SerialPort*)&port),
+    myEEPROM(NULL),
     myPinState(0),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
 {
 #ifndef SPEAKJET_EMULATION
-  if(mySerialPort->openPort(device))
-    myAboutString = " (using serial port \'" + device + "\')";
+  if(mySerialPort->openPort(portname))
+    myAboutString = " (using serial port \'" + portname + "\')";
   else
-    myAboutString = " (invalid serial port \'" + device + "\')";
+    myAboutString = " (invalid serial port \'" + portname + "\')";
 #else
   mySpeakJet = new SpeakJet();
   myAboutString = " (emulating SpeakJet device)";
 #endif
+
+  myEEPROM = new MT24LC256(eepromfile, system);
 
   myDigitalPinState[One] = myDigitalPinState[Two] =
   myDigitalPinState[Three] = myDigitalPinState[Four] = true;
@@ -60,6 +65,30 @@ AtariVox::~AtariVox()
 #else
   delete mySpeakJet;
 #endif
+  delete myEEPROM;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool AtariVox::read(DigitalPin pin)
+{
+  // We need to override the Controller::read() method, since the timing
+  // of the actual read is important for the EEPROM (we can't just read
+  // 60 times per second in the ::update() method)
+  switch(pin)
+  {
+    // Pin 2: SpeakJet READY
+    case Two:
+      // For now, we just assume the device is always ready
+      return myDigitalPinState[Two] = true;
+
+    // Pin 3: EEPROM SDA
+    //        input data from the 24LC256 EEPROM using the I2C protocol
+    case Three:
+      return myDigitalPinState[Three] = myEEPROM->readSDA();
+
+    default:
+      return Controller::read(pin);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,11 +106,6 @@ void AtariVox::write(DigitalPin pin, bool value)
       clockDataIn(value);
       break;
   
-    // Pin 2: SpeakJet READY
-    case Two:
-      // TODO - read READY signal from serial port
-      break;
-
     // Pin 3: EEPROM SDA
     //        output data to the 24LC256 EEPROM using the I2C protocol
     case Three:
@@ -90,8 +114,9 @@ void AtariVox::write(DigitalPin pin, bool value)
         cerr << "AtariVox: value "
              << value
              << " written to SDA line at cycle "
-             << mySystem->cycles()
+             << mySystem.cycles()
              << endl;
+      myEEPROM->writeSDA(value);
       break;
 
     // Pin 4: EEPROM SCL
@@ -102,20 +127,14 @@ void AtariVox::write(DigitalPin pin, bool value)
         cerr << "AtariVox: value "
              << value
              << " written to SCLK line at cycle "
-             << mySystem->cycles()
+             << mySystem.cycles()
              << endl;
+      myEEPROM->writeSCL(value);
       break;
 
-    case Six:
-      // Not connected
+    default:
       break;
   } 
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void AtariVox::update()
-{
-  // Nothing to do, this seems to be an output-only device for now
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,16 +143,16 @@ void AtariVox::clockDataIn(bool value)
   // bool oldValue = myPinState & 0x01;
   myPinState = (myPinState & 0xfe) | (int)value;
 
-  uInt32 cycle = mySystem->cycles();
+  uInt32 cycle = mySystem.cycles();
   if(DEBUG_ATARIVOX)
     cerr << "AtariVox: value "
          << value
          << " written to DATA line at "
-         << mySystem->cycles()
+         << mySystem.cycles()
          << " (-"
          << myLastDataWriteCycle
          << "=="
-         << (mySystem->cycles() - myLastDataWriteCycle)
+         << (mySystem.cycles() - myLastDataWriteCycle)
          << ")"
          << endl;
 

@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.hxx,v 1.1 2008-04-13 15:05:58 stephena Exp $
+// $Id: MT24LC256.hxx,v 1.2 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef MT24LC256_HXX
 #define MT24LC256_HXX
 
 class Controller;
+class System;
 
 #include "bspf.hxx"
 
@@ -29,7 +30,7 @@ class Controller;
   (aka Supercat) for the bulk of this code.
 
   @author  Stephen Anthony & J. Payson
-  @version $Id: MT24LC256.hxx,v 1.1 2008-04-13 15:05:58 stephena Exp $
+  @version $Id: MT24LC256.hxx,v 1.2 2008-04-13 23:43:14 stephena Exp $
 */
 class MT24LC256
 {
@@ -37,10 +38,10 @@ class MT24LC256
     /**
       Create a new 24LC256 with its data stored in the given file
 
-      @param filename   Data file representing the EEPROM data
-      @param controller The controller attached to this device
+      @param filename Data file containing the EEPROM data
+      @param system   The system using the controller of this device
     */
-    MT24LC256(const string& filename, const Controller* controller);
+    MT24LC256(const string& filename, const System& system);
  
     /**
       Destructor
@@ -61,15 +62,18 @@ class MT24LC256
     void jpee_data_start();
     void jpee_data_stop();
     void jpee_clock_fall();
-//    int  jpee_logproc(char const *st);
-    int  jpee_timercheck(int mode);
+    int  jpee_logproc(char const *st);
+    bool jpee_timercheck(int mode);
 
   private:
-    // The controller attached to this device
-    const Controller* myController;
+    // The system of the parent controller
+    const System& mySystem;
 
     // The EEPROM data
     uInt8 myData[32768];
+
+    // Indicates when the timer was set
+    uInt32 myCyclesWhenTimerSet;
 
     // The file containing the EEPROM data
     string myDataFile;

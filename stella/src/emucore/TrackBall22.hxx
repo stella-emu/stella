@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall22.hxx,v 1.2 2008-02-06 13:45:22 stephena Exp $
+// $Id: TrackBall22.hxx,v 1.3 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef TRACKBALL22_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 CX-22 Trakball controller.
 
   @author  Stephen Anthony
-  @version $Id: TrackBall22.hxx,v 1.2 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: TrackBall22.hxx,v 1.3 2008-04-13 23:43:14 stephena Exp $
 */
 class TrackBall22 : public Controller
 {
@@ -35,10 +35,11 @@ class TrackBall22 : public Controller
     /**
       Create a new CX-22 TrackBall controller plugged into the specified jack
 
-      @param jack  The jack the controller is plugged into
-      @param event The event object to use for events
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
     */
-    TrackBall22(Jack jack, const Event& event);
+    TrackBall22(Jack jack, const Event& event, const System& system);
 
     /**
       Destructor

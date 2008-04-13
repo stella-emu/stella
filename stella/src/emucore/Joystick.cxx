@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.cxx,v 1.11 2008-03-02 19:20:50 stephena Exp $
+// $Id: Joystick.cxx,v 1.12 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
 #include "Joystick.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Joystick::Joystick(Jack jack, const Event& event)
-  : Controller(jack, event, Controller::Joystick)
+Joystick::Joystick(Jack jack, const Event& event, const System& system)
+  : Controller(jack, event, system, Controller::Joystick)
 {
   if(myJack == Left)
   {

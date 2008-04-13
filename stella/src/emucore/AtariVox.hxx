@@ -13,16 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.11 2008-04-11 17:56:34 stephena Exp $
+// $Id: AtariVox.hxx,v 1.12 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef ATARIVOX_HXX
 #define ATARIVOX_HXX
 
 class SpeakJet;
+class SerialPort;
+class MT24LC256;
 
 #include "Control.hxx"
-#include "SerialPort.hxx"
 
 /**
   Richard Hutchinson's AtariVox "controller": A speech synthesizer and
@@ -32,7 +33,7 @@ class SpeakJet;
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.11 2008-04-11 17:56:34 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.12 2008-04-13 23:43:14 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -40,13 +41,16 @@ class AtariVox : public Controller
     /**
       Create a new AtariVox controller plugged into the specified jack
 
-      @param jack   The jack the controller is plugged into
-      @param event  The event object to use for events
-      @param port   The serial port object
-      @param device Name of the port used for reading and writing
+      @param jack       The jack the controller is plugged into
+      @param event      The event object to use for events
+      @param system     The system using this controller
+      @param port       The serial port object
+      @param portname   Name of the port used for reading and writing
+      @param eepromfile The file containing the EEPROM data
     */
-    AtariVox(Jack jack, const Event& event, const SerialPort& port,
-             const string& device);
+    AtariVox(Jack jack, const Event& event, const System& system,
+             const SerialPort& port, const string& portname,
+             const string& eepromfile);
 
     /**
       Destructor
@@ -54,6 +58,14 @@ class AtariVox : public Controller
     virtual ~AtariVox();
 
   public:
+    /**
+      Read the value of the specified digital pin for this controller.
+
+      @param pin The pin of the controller jack to read
+      @return The state of the pin
+    */
+    virtual bool read(DigitalPin pin);
+
     /**
       Write the given value to the specified digital pin for this
       controller.  Writing is only allowed to the pins associated
@@ -68,7 +80,7 @@ class AtariVox : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update();
+    virtual void update() { }
 
     virtual string about() const;
 
@@ -90,6 +102,9 @@ class AtariVox : public Controller
     // Assuming there's a real AtariVox attached, we can send SpeakJet
     // bytes directly to it
     SerialPort* mySerialPort;
+
+    // The EEPROM used in the AtariVox
+    MT24LC256* myEEPROM;
 
 #ifdef SPEAKJET_EMULATION
     // Instance of SpeakJet which will actually do the talking for us.

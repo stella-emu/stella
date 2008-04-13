@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.12 2008-04-11 17:56:34 stephena Exp $
+// $Id: Control.hxx,v 1.13 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -57,7 +57,7 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.12 2008-04-11 17:56:34 stephena Exp $
+  @version $Id: Control.hxx,v 1.13 2008-04-13 23:43:14 stephena Exp $
 */
 class Controller : public Serializable
 {
@@ -83,11 +83,13 @@ class Controller : public Serializable
     /**
       Create a new controller plugged into the specified jack
 
-      @param jack  The jack the controller is plugged into
-      @param event The event object to use for events
-      @param type  The type for this controller
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param type   The type for this controller
+      @param system The system using this controller
     */
-    Controller(Jack jack, const Event& event, Type type);
+    Controller(Jack jack, const Event& event, const System& system,
+               Type type);
  
     /**
       Destructor
@@ -98,11 +100,6 @@ class Controller : public Serializable
       Returns the type of this controller.
     */
     const Type type() const;
-
-    /**
-      Inform this controller about the current System.
-    */
-    void setSystem(System* system) { mySystem = system; }
 
   public:
     /**
@@ -128,7 +125,7 @@ class Controller : public Serializable
       @param pin The pin of the controller jack to read
       @return The state of the pin
     */
-    bool read(DigitalPin pin) const;
+    virtual bool read(DigitalPin pin);
 
     /**
       Read the resistance at the specified analog pin for this controller.  
@@ -137,7 +134,7 @@ class Controller : public Serializable
       @param pin The pin of the controller jack to read
       @return The resistance at the specified pin
     */
-    Int32 read(AnalogPin pin) const;
+    virtual Int32 read(AnalogPin pin);
 
     /**
       Write the given value to the specified digital pin for this 
@@ -195,14 +192,14 @@ class Controller : public Serializable
     /// Reference to the event object this controller uses
     const Event& myEvent;
 
+    /// Pointer to the System object (used for timing purposes)
+    const System& mySystem;
+
     /// Specifies which type of controller this is (defined by child classes)
     const Type myType;
 
     /// Specifies the name of this controller based on type
     string myName;
-
-    /// Pointer to the System object (used for timing purposes)
-    System* mySystem;
 
     /// The boolean value on each digital pin
     bool myDigitalPinState[5];

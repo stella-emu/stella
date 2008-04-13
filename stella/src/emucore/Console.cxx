@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.136 2008-04-11 17:56:34 stephena Exp $
+// $Id: Console.cxx,v 1.137 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -81,92 +81,11 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Load user-defined palette for this ROM
   loadUserPalette();
 
-  // Setup the controllers based on properties
-  const string& left  = myProperties.get(Controller_Left);
-  const string& right = myProperties.get(Controller_Right);
-
-  // Swap the ports if necessary
-  int leftPort, rightPort;
-  if(myProperties.get(Console_SwapPorts) == "NO")
-  {
-    leftPort = 0; rightPort = 1;
-  }
-  else
-  {
-    leftPort = 1; rightPort = 0;
-  }
-
-  // Also check if we should swap the paddles plugged into a jack
-  bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
-  Paddles::setMouseIsPaddle(-1);  // Reset to defaults
-
-  // Construct left controller
-  if(left == "BOOSTER-GRIP")
-  {
-    myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent);
-  }
-  else if(left == "DRIVING")
-  {
-    myControllers[leftPort] = new Driving(Controller::Left, *myEvent);
-  }
-  else if((left == "KEYBOARD") || (left == "KEYPAD"))
-  {
-    myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent);
-  }
-  else if(left == "PADDLES")
-  {
-    myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, swapPaddles);
-  }
-  else if(left == "TRACKBALL22")
-  {
-    myControllers[leftPort] = new TrackBall22(Controller::Left, *myEvent);
-  }
-  else
-  {
-    myControllers[leftPort] = new Joystick(Controller::Left, *myEvent);
-  }
- 
-  // Construct right controller
-  if(right == "BOOSTER-GRIP")
-  {
-    myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent);
-  }
-  else if(right == "DRIVING")
-  {
-    myControllers[rightPort] = new Driving(Controller::Right, *myEvent);
-  }
-  else if((right == "KEYBOARD") || (right == "KEYPAD"))
-  {
-    myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent);
-  }
-  else if(right == "PADDLES")
-  {
-    myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, swapPaddles);
-  }
-  else if(right == "TRACKBALL22")
-  {
-    myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent);
-  }
-  else if(right == "ATARIVOX")
-  {
-    myControllers[rightPort] = myAVox =
-      new AtariVox(Controller::Right, *myEvent, myOSystem->serialPort(),
-                   myOSystem->settings().getString("avoxport"));
-  }
-  else
-  {
-    myControllers[rightPort] = new Joystick(Controller::Right, *myEvent);
-  }
-
   // Create switches for the console
   mySwitches = new Switches(*myEvent, myProperties);
 
-  // Now, we can construct the system and components
+  // Construct the system and components
   mySystem = new System(13, 6);
-
-  // Inform the controllers about the system
-  myControllers[0]->setSystem(mySystem);
-  myControllers[1]->setSystem(mySystem);
 
   M6502* m6502;
   if(myOSystem->settings().getString("cpu") == "low")
@@ -190,6 +109,86 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myMediaSource = tia;
   myCart = cart;
   myRiot = m6532;
+
+  // Setup the controllers based on properties
+  const string& left  = myProperties.get(Controller_Left);
+  const string& right = myProperties.get(Controller_Right);
+
+  // Swap the ports if necessary
+  int leftPort, rightPort;
+  if(myProperties.get(Console_SwapPorts) == "NO")
+  {
+    leftPort = 0; rightPort = 1;
+  }
+  else
+  {
+    leftPort = 1; rightPort = 0;
+  }
+
+  // Also check if we should swap the paddles plugged into a jack
+  bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
+  Paddles::setMouseIsPaddle(-1);  // Reset to defaults
+
+  // Construct left controller
+  if(left == "BOOSTER-GRIP")
+  {
+    myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent, *mySystem);
+  }
+  else if(left == "DRIVING")
+  {
+    myControllers[leftPort] = new Driving(Controller::Left, *myEvent, *mySystem);
+  }
+  else if((left == "KEYBOARD") || (left == "KEYPAD"))
+  {
+    myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent, *mySystem);
+  }
+  else if(left == "PADDLES")
+  {
+    myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, *mySystem, swapPaddles);
+  }
+  else if(left == "TRACKBALL22")
+  {
+    myControllers[leftPort] = new TrackBall22(Controller::Left, *myEvent, *mySystem);
+  }
+  else
+  {
+    myControllers[leftPort] = new Joystick(Controller::Left, *myEvent, *mySystem);
+  }
+ 
+  // Construct right controller
+  if(right == "BOOSTER-GRIP")
+  {
+    myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "DRIVING")
+  {
+    myControllers[rightPort] = new Driving(Controller::Right, *myEvent, *mySystem);
+  }
+  else if((right == "KEYBOARD") || (right == "KEYPAD"))
+  {
+    myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "PADDLES")
+  {
+    myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, *mySystem, swapPaddles);
+  }
+  else if(right == "TRACKBALL22")
+  {
+    myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "ATARIVOX")
+  {
+    
+    string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+                        "atarivox_eeprom.dat";
+    myControllers[rightPort] = myAVox =
+      new AtariVox(Controller::Right, *myEvent, *mySystem, myOSystem->serialPort(),
+                   myOSystem->settings().getString("avoxport"), eepromfile);
+  }
+  else
+  {
+    myControllers[rightPort] = new Joystick(Controller::Right, *myEvent, *mySystem);
+  }
 
   // Query some info about this console
   ostringstream buf;

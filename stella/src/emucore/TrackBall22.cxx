@@ -13,15 +13,15 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall22.cxx,v 1.4 2008-03-08 23:34:23 stephena Exp $
+// $Id: TrackBall22.cxx,v 1.5 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
 #include "TrackBall22.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TrackBall22::TrackBall22(Jack jack, const Event& event)
-  : Controller(jack, event, Controller::TrackBall22),
+TrackBall22::TrackBall22(Jack jack, const Event& event, const System& system)
+  : Controller(jack, event, system, Controller::TrackBall22),
     myHCounter(0),
     myVCounter(0)
 {

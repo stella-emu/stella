@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.hxx,v 1.13 2008-03-22 17:35:02 stephena Exp $
+// $Id: Paddles.hxx,v 1.14 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef PADDLES_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 pair of paddle controllers.
 
   @author  Bradford W. Mott
-  @version $Id: Paddles.hxx,v 1.13 2008-03-22 17:35:02 stephena Exp $
+  @version $Id: Paddles.hxx,v 1.14 2008-04-13 23:43:14 stephena Exp $
 */
 class Paddles : public Controller
 {
@@ -35,11 +35,12 @@ class Paddles : public Controller
     /**
       Create a new pair of paddle controllers plugged into the specified jack
 
-      @param jack  The jack the controller is plugged into
-      @param event The event object to use for events
-      @param swap  Whether to swap the paddles plugged into this jack
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
+      @param swap   Whether to swap the paddles plugged into this jack
     */
-    Paddles(Jack jack, const Event& event, bool swap);
+    Paddles(Jack jack, const Event& event, const System& system, bool swap);
 
     /**
       Destructor

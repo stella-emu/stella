@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.hxx,v 1.10 2008-03-03 16:27:16 estolberg Exp $
+// $Id: Driving.hxx,v 1.11 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef DRIVING_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 Indy 500 driving controller.
 
   @author  Bradford W. Mott
-  @version $Id: Driving.hxx,v 1.10 2008-03-03 16:27:16 estolberg Exp $
+  @version $Id: Driving.hxx,v 1.11 2008-04-13 23:43:14 stephena Exp $
 */
 class Driving : public Controller
 {
@@ -36,10 +36,11 @@ class Driving : public Controller
       Create a new Indy 500 driving controller plugged into 
       the specified jack
 
-      @param jack The jack the controller is plugged into
-      @param event The event object to use for events
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
     */
-    Driving(Jack jack, const Event& event);
+    Driving(Jack jack, const Event& event, const System& system);
 
     /**
       Destructor

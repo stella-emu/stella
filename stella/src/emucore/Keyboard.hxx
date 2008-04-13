@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.hxx,v 1.8 2008-02-06 13:45:21 stephena Exp $
+// $Id: Keyboard.hxx,v 1.9 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #ifndef KEYBOARD_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 keyboard controller
 
   @author  Bradford W. Mott
-  @version $Id: Keyboard.hxx,v 1.8 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: Keyboard.hxx,v 1.9 2008-04-13 23:43:14 stephena Exp $
 */
 class Keyboard : public Controller
 {
@@ -35,10 +35,11 @@ class Keyboard : public Controller
     /**
       Create a new keyboard controller plugged into the specified jack
 
-      @param jack The jack the controller is plugged into
-      @param event The event object to use for events
+      @param jack   The jack the controller is plugged into
+      @param event  The event object to use for events
+      @param system The system using this controller
     */
-    Keyboard(Jack jack, const Event& event);
+    Keyboard(Jack jack, const Event& event, const System& system);
 
     /**
       Destructor

@@ -13,17 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.9 2008-04-11 17:56:34 stephena Exp $
+// $Id: Control.cxx,v 1.10 2008-04-13 23:43:14 stephena Exp $
 //============================================================================
 
 #include <cassert>
 
+#include "System.hxx"
 #include "Control.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::Controller(Jack jack, const Event& event, Type type)
+Controller::Controller(Jack jack, const Event& event, const System& system,
+                       Type type)
   : myJack(jack),
     myEvent(event),
+    mySystem(system),
     myType(type)
 {
   myDigitalPinState[One]   = 
@@ -73,7 +76,7 @@ const Controller::Type Controller::type() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Controller::read(DigitalPin pin) const
+bool Controller::read(DigitalPin pin)
 {
   switch(pin)
   {
@@ -90,7 +93,7 @@ bool Controller::read(DigitalPin pin) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Controller::read(AnalogPin pin) const
+Int32 Controller::read(AnalogPin pin)
 {
   switch(pin)
   {
@@ -173,6 +176,7 @@ const Int32 Controller::minimumResistance = 0x00000000;
 Controller::Controller(const Controller& c)
   : myJack(c.myJack),
     myEvent(c.myEvent),
+    mySystem(c.mySystem),
     myType(c.myType)
 {
   assert(false);
