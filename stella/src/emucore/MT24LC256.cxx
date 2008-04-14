@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.2 2008-04-13 23:43:14 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.3 2008-04-14 01:39:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -323,7 +323,7 @@ bool MT24LC256::jpee_timercheck(int mode)
   {
     uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
 cerr << " --> elapsed: " << elapsed << endl;
-    return elapsed < (uInt32)(5000.0 / 838.0);
+    return elapsed < (uInt32)(5000000.0 / 838.0);
   }
 }
 
