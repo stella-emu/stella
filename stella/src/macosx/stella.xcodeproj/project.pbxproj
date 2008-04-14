@@ -277,6 +277,8 @@
 		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
 		DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC11F78B0DB36933003B505E /* MT24LC256.cxx */; };
 		DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC11F78C0DB36933003B505E /* MT24LC256.hxx */; };
+		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
+		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -634,6 +636,8 @@
 		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartSB.hxx; path = ../emucore/CartSB.hxx; sourceTree = SOURCE_ROOT; };
 		DC11F78B0DB36933003B505E /* MT24LC256.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MT24LC256.cxx; path = ../emucore/MT24LC256.cxx; sourceTree = SOURCE_ROOT; };
 		DC11F78C0DB36933003B505E /* MT24LC256.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MT24LC256.hxx; path = ../emucore/MT24LC256.hxx; sourceTree = SOURCE_ROOT; };
+		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
+		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomAuditDialog.hxx; path = ../gui/RomAuditDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
@@ -841,6 +845,8 @@
 		2D6050C60898771C00C6DE89 /* macosx */ = {
 			isa = PBXGroup;
 			children = (
+				DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */,
+				DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */,
 				2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */,
 				2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */,
 				2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */,
@@ -1295,6 +1301,7 @@
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
+				DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1535,6 +1542,7 @@
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
+				DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
