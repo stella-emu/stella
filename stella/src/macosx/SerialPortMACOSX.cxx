@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortMACOSX.cxx,v 1.1 2008-04-14 15:12:55 stephena Exp $
+// $Id: SerialPortMACOSX.cxx,v 1.2 2008-04-14 18:50:35 stephena Exp $
 //============================================================================
 
 #include <stdio.h>
@@ -48,12 +48,13 @@ bool SerialPortMACOSX::openPort(const string& device)
     return false;
 
   struct termios termios;
+  tcgetattr(myHandle, &termios);
   memset(&termios, 0, sizeof(struct termios));
-
-  termios.c_cflag = CREAD | CLOCAL;
-  termios.c_cflag |= B19200;
-  termios.c_cflag |= CS8;
-  tcflush(myHandle, TCIFLUSH);
+  cfmakeraw(&termios);
+  cfsetspeed(&termios, 19200);       // change to 19200 baud
+  termios.c_cflag = CREAD | CLOCAL;  // turn on READ and ignore modem control lines
+  termios.c_cflag |= CS8;            // 8 bit
+  termios.c_cflag |= CDTR_IFLOW;     // inbound DTR
   tcsetattr(myHandle, TCSANOW, &termios);
 
   return true;
