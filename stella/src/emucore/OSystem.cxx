@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.123 2008-04-11 17:56:34 stephena Exp $
+// $Id: OSystem.cxx,v 1.124 2008-04-14 15:12:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -38,8 +38,8 @@
   #include "SerialPortUNIX.hxx"
 #elif defined(WIN32)
   #include "SerialPortWin32.hxx"
-//#elif defined(MAC_OSX)
-//  #include "SerialPortMACOSX.hxx"
+#elif defined(MAC_OSX)
+  #include "SerialPortMACOSX.hxx"
 #endif
 
 #include "FSNode.hxx"
@@ -222,8 +222,8 @@ bool OSystem::create()
   mySerialPort = new SerialPortUNIX();
 #elif defined(WIN32)
   mySerialPort = new SerialPortWin32();
-//#elif defined(MAC_OSX)
-//  mySerialPort = new SerialPortMACOSX();
+#elif defined(MAC_OSX)
+  mySerialPort = new SerialPortMACOSX();
 #else
   // Create an 'empty' serial port
   mySerialPort = new SerialPort();
