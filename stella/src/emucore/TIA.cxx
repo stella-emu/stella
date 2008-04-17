@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.88 2008-04-13 00:14:38 stephena Exp $
+// $Id: TIA.cxx,v 1.89 2008-04-17 13:39:14 stephena Exp $
 //============================================================================
 
-//#define DEBUG_HMOVE
+#define DEBUG_HMOVE
 
 #include <cassert>
 #include <cstdlib>
@@ -2505,7 +2505,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // TODO: Remove the following special hack for Solaris by
       // figuring out what really happens when Reset Missle 
       // occurs 9 cycles after an HMOVE (04/11/08).
-      if(((clock - myLastHMOVEClock) == (9 * 3)) && (hpos == 36))
+      else if(((clock - myLastHMOVEClock) == (9 * 3)) && (hpos == 36))
       {
         myPOSM0 = 8;
       }

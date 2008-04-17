@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.hxx,v 1.8 2008-02-19 12:33:05 stephena Exp $
+// $Id: M6532.hxx,v 1.9 2008-04-17 13:39:14 stephena Exp $
 //============================================================================
 
 #ifndef M6532_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   RIOT
 
   @author  Bradford W. Mott
-  @version $Id: M6532.hxx,v 1.8 2008-02-19 12:33:05 stephena Exp $
+  @version $Id: M6532.hxx,v 1.9 2008-04-17 13:39:14 stephena Exp $
 */
 class M6532 : public Device
 {
@@ -135,11 +135,11 @@ class M6532 : public Device
     // Indicates the number of cycles when the timer was last set
     Int32 myCyclesWhenTimerSet;
 
-    // Indicates when the timer was read after timer interrupt occured
-    Int32 myCyclesWhenInterruptReset;
-
     // Indicates if a read from timer has taken place after interrupt occured
     bool myTimerReadAfterInterrupt;
+
+    // Last value written to Port A
+    uInt8 myOutA;
 
     // Data Direction Register for Port A
     uInt8 myDDRA;

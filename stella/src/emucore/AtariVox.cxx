@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.14 2008-04-13 23:43:14 stephena Exp $
+// $Id: AtariVox.cxx,v 1.15 2008-04-17 13:39:14 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -109,7 +109,6 @@ void AtariVox::write(DigitalPin pin, bool value)
     // Pin 3: EEPROM SDA
     //        output data to the 24LC256 EEPROM using the I2C protocol
     case Three:
-      // TODO - implement this
       if(DEBUG_ATARIVOX)
         cerr << "AtariVox: value "
              << value
@@ -122,7 +121,6 @@ void AtariVox::write(DigitalPin pin, bool value)
     // Pin 4: EEPROM SCL
     //        output clock data to the 24LC256 EEPROM using the I2C protocol
     case Four:
-      // TODO - implement this
       if(DEBUG_ATARIVOX)
         cerr << "AtariVox: value "
              << value

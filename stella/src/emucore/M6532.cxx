@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.17 2008-04-08 19:17:26 stephena Exp $
+// $Id: M6532.cxx,v 1.18 2008-04-17 13:39:14 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -55,10 +55,10 @@ void M6532::reset()
   myTimer = 25 + (random.next() % 75);
   myIntervalShift = 6;
   myCyclesWhenTimerSet = 0;
-  myCyclesWhenInterruptReset = 0;
   myTimerReadAfterInterrupt = false;
 
   // Zero the I/O registers
+  myOutA = 0x00;
   myDDRA = 0x00;
   myDDRB = 0x00;
 }
@@ -69,7 +69,6 @@ void M6532::systemCyclesReset()
   // System cycles are being reset to zero so we need to adjust
   // the cycle count we remembered when the timer was last set
   myCyclesWhenTimerSet -= mySystem->cycles();
-  myCyclesWhenInterruptReset -= mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -142,7 +141,9 @@ uInt8 M6532::peek(uInt16 addr)
       if(myConsole.controller(Controller::Right).read(Controller::Four))
         value |= 0x08;
 
-      return value;
+      // Return the input bits set by the controller *and* the
+      // output bits set by the last write to SWCHA
+      return (value & ~myDDRA) | (myOutA & myDDRA);
     }
 
     case 0x01:    // Port A Data Direction Register 
@@ -176,7 +177,6 @@ uInt8 M6532::peek(uInt16 addr)
       else
       {
         myTimerReadAfterInterrupt = true;
-        myCyclesWhenInterruptReset = mySystem->cycles();
         return timer & 0xff;
       }
     }
@@ -213,9 +213,10 @@ void M6532::poke(uInt16 addr, uInt8 value)
   {
     myRAM[addr & 0x007f] = value;
   }
-  else if((addr & 0x07) == 0x00)         // Port A I/O Register (Joystick)
+  else if((addr & 0x07) == 0x00)    // Port A I/O Register (Joystick)
   {
-    uInt8 a = value & myDDRA;
+    myOutA = value;
+    uInt8 a = myOutA & myDDRA;
 
     myConsole.controller(Controller::Left).write(Controller::One, a & 0x10);
     myConsole.controller(Controller::Left).write(Controller::Two, a & 0x20);
@@ -264,12 +265,11 @@ void M6532::poke(uInt16 addr, uInt8 value)
   }
   else if((addr & 0x07) == 0x02)    // Port B I/O Register (Console switches)
   {
-    return;
+    return;  // hardwired as read-only
   }
   else if((addr & 0x07) == 0x03)    // Port B Data Direction Register
   {
-//        myDDRB = value;
-    return;
+    return;  // hardwired as read-only
   }
   else if((addr & 0x17) == 0x14)    // Write timer divide by 1 
   {
@@ -334,8 +334,8 @@ bool M6532::save(Serializer& out) const
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
     out.putInt(myCyclesWhenTimerSet);
-    out.putInt(myCyclesWhenInterruptReset);
     out.putBool(myTimerReadAfterInterrupt);
+    out.putByte((char)myOutA);
     out.putByte((char)myDDRA);
     out.putByte((char)myDDRB);
   }
@@ -371,9 +371,9 @@ bool M6532::load(Deserializer& in)
     myTimer = (uInt32) in.getInt();
     myIntervalShift = (uInt32) in.getInt();
     myCyclesWhenTimerSet = (uInt32) in.getInt();
-    myCyclesWhenInterruptReset = (uInt32) in.getInt();
     myTimerReadAfterInterrupt = in.getBool();
 
+    myOutA = (uInt8) in.getByte();
     myDDRA = (uInt8) in.getByte();
     myDDRB = (uInt8) in.getByte();
   }
