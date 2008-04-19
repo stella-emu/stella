@@ -301,6 +301,8 @@
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
 		DC8211550CAD74FF00511571 /* VideoModeList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8211540CAD74FF00511571 /* VideoModeList.hxx */; };
+		DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */; };
+		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
@@ -660,6 +662,8 @@
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8211540CAD74FF00511571 /* VideoModeList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = VideoModeList.hxx; path = ../common/VideoModeList.hxx; sourceTree = SOURCE_ROOT; };
+		DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotDebug.cxx; path = ../debugger/RiotDebug.cxx; sourceTree = SOURCE_ROOT; };
+		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotDebug.hxx; path = ../debugger/RiotDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartX07.hxx; path = ../emucore/CartX07.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
@@ -1088,6 +1092,8 @@
 		2D605130089879BA00C6DE89 /* debugger */ = {
 			isa = PBXGroup;
 			children = (
+				DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */,
+				DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */,
 				DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */,
 				2D20F9E308C603C500A73076 /* gui */,
 				2D6CC10108C811A600B8F642 /* ContextMenu.cxx */,
@@ -1302,6 +1308,7 @@
 				DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */,
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
 				DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */,
+				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1544,6 +1551,7 @@
 				DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */,
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
 				DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */,
+				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
