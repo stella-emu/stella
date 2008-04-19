@@ -13,10 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.89 2008-04-17 13:39:14 stephena Exp $
+// $Id: TIA.cxx,v 1.90 2008-04-19 22:49:00 stephena Exp $
 //============================================================================
 
-#define DEBUG_HMOVE
+//#define DEBUG_HMOVE
 
 #include <cassert>
 #include <cstdlib>

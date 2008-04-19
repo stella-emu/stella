@@ -742,6 +742,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\RiotDebug.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\gui\RomListWidget.cxx"
 					>
 				</File>
@@ -1321,6 +1325,10 @@
 				</File>
 				<File
 					RelativePath="..\debugger\gui\RamWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\RiotDebug.hxx"
 					>
 				</File>
 				<File
