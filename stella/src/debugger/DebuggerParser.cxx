@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.104 2008-04-02 21:22:16 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.105 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -23,6 +23,9 @@
 #include "Dialog.hxx"
 #include "Debugger.hxx"
 #include "CpuDebug.hxx"
+#include "RamDebug.hxx"
+#include "RiotDebug.hxx"
+#include "TIADebug.hxx"
 #include "DebuggerParser.hxx"
 #include "YaccParser.hxx"
 #include "M6502.hxx"
@@ -1093,7 +1096,7 @@ void DebuggerParser::executePrint()
 void DebuggerParser::executeRam()
 {
   if(argCount == 0)
-    commandResult = debugger->dumpRAM();
+    commandResult = debugger->ramDebug().toString();
   else
     commandResult = debugger->setRAM(args);
 }
@@ -1110,7 +1113,7 @@ void DebuggerParser::executeReset()
 // "riot"
 void DebuggerParser::executeRiot()
 {
-  commandResult = debugger->riotState();
+  commandResult = debugger->riotDebug().toString();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1257,7 +1260,7 @@ void DebuggerParser::executeStep()
 // "tia"
 void DebuggerParser::executeTia()
 {
-  commandResult = debugger->dumpTIA();
+  commandResult = debugger->tiaDebug().toString();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

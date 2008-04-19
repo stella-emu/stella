@@ -13,28 +13,35 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.hxx,v 1.9 2008-04-17 13:39:14 stephena Exp $
+// $Id: M6532.hxx,v 1.10 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #ifndef M6532_HXX
 #define M6532_HXX
 
 class Console;
-class System;
+class RiotDebug;
 class Serializer;
 class Deserializer;
 
 #include "bspf.hxx"
 #include "Device.hxx"
+#include "System.hxx"
 
 /**
   RIOT
 
   @author  Bradford W. Mott
-  @version $Id: M6532.hxx,v 1.9 2008-04-17 13:39:14 stephena Exp $
+  @version $Id: M6532.hxx,v 1.10 2008-04-19 21:11:52 stephena Exp $
 */
 class M6532 : public Device
 {
+  public:
+    /**
+      The RIOT debugger class is a friend who needs special access
+    */
+    friend class RiotDebug;
+
   public:
     /**
       Create a new 6532 for the specified console
@@ -120,6 +127,10 @@ class M6532 : public Device
     virtual void poke(uInt16 address, uInt8 value);
 
   private:
+    inline Int32 timerClocks()
+      { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
+
+  private:
     // Reference to the console
     const Console& myConsole;
 
@@ -146,6 +157,9 @@ class M6532 : public Device
 
     // Data Direction Register for Port B
     uInt8 myDDRB;
+
+    // Last value written to the timer registers
+    uInt8 myOutTimer[4];
 
   private:
     // Copy constructor isn't supported by this class so make it private

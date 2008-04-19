@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.cxx,v 1.10 2008-04-02 01:54:31 stephena Exp $
+// $Id: CpuDebug.cxx,v 1.11 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -21,34 +21,27 @@
 #include "Array.hxx"
 #include "EquateList.hxx"
 #include "M6502.hxx"
+#include "TIADebug.hxx"
 
 #include "CpuDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CpuDebug::CpuDebug(Debugger* dbg, Console* console)
-  : DebuggerSystem(dbg, console),
-    mySystem(&(console->system()))
+CpuDebug::CpuDebug(Debugger& dbg, Console& console)
+  : DebuggerSystem(dbg, console)
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DebuggerState& CpuDebug::getState()
+const DebuggerState& CpuDebug::getState()
 {
-  myState.PC = mySystem->m6502().PC;
-  myState.SP = mySystem->m6502().SP;
-  myState.PS = mySystem->m6502().PS();
-  myState.A  = mySystem->m6502().A;
-  myState.X  = mySystem->m6502().X;
-  myState.Y  = mySystem->m6502().Y;
+  myState.PC = mySystem.m6502().PC;
+  myState.SP = mySystem.m6502().SP;
+  myState.PS = mySystem.m6502().PS();
+  myState.A  = mySystem.m6502().A;
+  myState.X  = mySystem.m6502().X;
+  myState.Y  = mySystem.m6502().Y;
 
-  myState.PSbits.clear();
-  for(int i = 0; i < 8; ++i)
-  {
-    if(myState.PS & (1<<(7-i)))
-      myState.PSbits.push_back(true);
-    else
-      myState.PSbits.push_back(false);
-  }
+  Debugger::set_bits(myState.PS, myState.PSbits);
 
   return myState;
 }
@@ -56,21 +49,72 @@ DebuggerState& CpuDebug::getState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::saveOldState()
 {
-  myOldState.PC = mySystem->m6502().PC;
-  myOldState.SP = mySystem->m6502().SP;
-  myOldState.PS = mySystem->m6502().PS();
-  myOldState.A  = mySystem->m6502().A;
-  myOldState.X  = mySystem->m6502().X;
-  myOldState.Y  = mySystem->m6502().Y;
+  myOldState.PC = mySystem.m6502().PC;
+  myOldState.SP = mySystem.m6502().SP;
+  myOldState.PS = mySystem.m6502().PS();
+  myOldState.A  = mySystem.m6502().A;
+  myOldState.X  = mySystem.m6502().X;
+  myOldState.Y  = mySystem.m6502().Y;
 
-  myOldState.PSbits.clear();
-  for(int i = 0; i < 8; ++i)
-  {
-    if(myOldState.PS & (1<<(7-i)))
-      myOldState.PSbits.push_back(true);
-    else
-      myOldState.PSbits.push_back(false);
-  }
+  Debugger::set_bits(myOldState.PS, myOldState.PSbits);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CpuDebug::toString()
+{
+  // TODO - this doesn't seem to be used anywhere ??
+  string result;
+  char buf[255];
+
+  const CpuState& state = (CpuState&) getState();
+  const CpuState& oldstate = (CpuState&) getOldState();
+
+  result += "\nPC=";
+  result += myDebugger.invIfChanged(state.PC, oldstate.PC);
+  result += " A=";
+  result += myDebugger.invIfChanged(state.A, oldstate.A);
+  result += " X=";
+  result += myDebugger.invIfChanged(state.X, oldstate.X);
+  result += " Y=";
+  result += myDebugger.invIfChanged(state.Y, oldstate.Y);
+  result += " S=";
+  result += myDebugger.invIfChanged(state.SP, oldstate.SP);
+  result += " P=";
+  result += myDebugger.invIfChanged(state.PS, oldstate.PS);
+  result += "/";
+
+  // NV-BDIZC
+  buf[0] = n() ? 'N' : 'n';
+  buf[1] = v() ? 'V' : 'v';
+  buf[2] = '-';
+  buf[3] = b() ? 'B' : 'b';
+  buf[4] = d() ? 'D' : 'd';
+  buf[5] = i() ? 'I' : 'i';
+  buf[6] = z() ? 'Z' : 'z';
+  buf[7] = c() ? 'C' : 'c';
+  buf[8] = '\0';
+
+  result += buf;
+  result += "\n  FrameCyc:";
+  sprintf(buf, "%d", mySystem.cycles());
+  result += buf;
+  result += " Frame:";
+  sprintf(buf, "%d", myDebugger.tiaDebug().frameCount());
+  result += buf;
+  result += " ScanLine:";
+  sprintf(buf, "%d", myDebugger.tiaDebug().scanlines());
+  result += buf;
+  result += " Clk/Pix/Cyc:";
+  int clk = myDebugger.tiaDebug().clocksThisLine();
+  sprintf(buf, "%d/%d/%d", clk, clk-68, clk/3);
+  result += buf;
+  result += " 6502Ins:";
+  sprintf(buf, "%d", mySystem.m6502().totalInstructionCount());
+  result += buf;
+  result += "\n  ";
+
+  result += myDebugger.disassemble(state.PC, 1);
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,7 +122,7 @@ int CpuDebug::disassemble(int address, string& result, EquateList* equateList)
 {
   ostringstream buf;
   int count = 0;
-  int opcode = mySystem->peek(address);
+  int opcode = mySystem.peek(address);
 
   switch(M6502::ourAddressingModeTable[opcode])
   {
@@ -105,7 +149,7 @@ int CpuDebug::disassemble(int address, string& result, EquateList* equateList)
 
     case M6502::Immediate:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " #$"
-          << hex << setw(2) << setfill('0') << (int) mySystem->peek(address + 1) << " ; "
+          << hex << setw(2) << setfill('0') << (int) mySystem.peek(address + 1) << " ; "
           << dec << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
@@ -125,42 +169,42 @@ int CpuDebug::disassemble(int address, string& result, EquateList* equateList)
 
     case M6502::IndirectX:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
-          << equateList->getFormatted(mySystem->peek(address + 1), 2) << ",x) ; "
+          << equateList->getFormatted(mySystem.peek(address + 1), 2) << ",x) ; "
           << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::IndirectY:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
-          << equateList->getFormatted(mySystem->peek(address + 1), 2) << "),y ; "
+          << equateList->getFormatted(mySystem.peek(address + 1), 2) << "),y ; "
           << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::Relative:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " "
-          << equateList->getFormatted(address + 2 + ((Int16)(Int8)mySystem->peek(address + 1)), 4)
+          << equateList->getFormatted(address + 2 + ((Int16)(Int8)mySystem.peek(address + 1)), 4)
           << " ; " << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::Zero:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " "
-          << equateList->getFormatted(mySystem->peek(address + 1), 2) << " ; "
+          << equateList->getFormatted(mySystem.peek(address + 1), 2) << " ; "
           << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::ZeroX:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " "
-          << equateList->getFormatted(mySystem->peek(address + 1), 2) << ",x ; "
+          << equateList->getFormatted(mySystem.peek(address + 1), 2) << ",x ; "
           << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::ZeroY:
       buf << M6502::ourInstructionMnemonicTable[opcode] << " "
-          << equateList->getFormatted(mySystem->peek(address + 1), 2) << ",y ; "
+          << equateList->getFormatted(mySystem.peek(address + 1), 2) << ",y ; "
           << M6502::ourInstructionProcessorCycleTable[opcode];
       count = 2;
       break;
@@ -193,119 +237,119 @@ int CpuDebug::dPeek(int address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
-  mySystem->m6502().PC = pc;
+  mySystem.m6502().PC = pc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setSP(int sp)
 {
-  mySystem->m6502().SP = sp;
+  mySystem.m6502().SP = sp;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPS(int ps)
 {
-  mySystem->m6502().PS(ps);
+  mySystem.m6502().PS(ps);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setA(int a)
 {
-  mySystem->m6502().A = a;
+  mySystem.m6502().A = a;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setX(int x)
 {
-  mySystem->m6502().X = x;
+  mySystem.m6502().X = x;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setY(int y)
 {
-  mySystem->m6502().Y = y;
+  mySystem.m6502().Y = y;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setN(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 7, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 7, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setV(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 6, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 6, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setB(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 4, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 4, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setD(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 3, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 3, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setI(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 2, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 2, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setZ(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 1, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 1, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setC(bool on)
 {
-  setPS( set_bit(mySystem->m6502().PS(), 0, on) );
+  setPS( Debugger::set_bit(mySystem.m6502().PS(), 0, on) );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleN()
 {
-  setPS( mySystem->m6502().PS() ^ 0x80 );
+  setPS( mySystem.m6502().PS() ^ 0x80 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleV()
 {
-  setPS( mySystem->m6502().PS() ^ 0x40 );
+  setPS( mySystem.m6502().PS() ^ 0x40 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleB()
 {
-  setPS( mySystem->m6502().PS() ^ 0x10 );
+  setPS( mySystem.m6502().PS() ^ 0x10 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleD()
 {
-  setPS( mySystem->m6502().PS() ^ 0x08 );
+  setPS( mySystem.m6502().PS() ^ 0x08 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleI()
 {
-  setPS( mySystem->m6502().PS() ^ 0x04 );
+  setPS( mySystem.m6502().PS() ^ 0x04 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleZ()
 {
-  setPS( mySystem->m6502().PS() ^ 0x02 );
+  setPS( mySystem.m6502().PS() ^ 0x02 );
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::toggleC()
 {
-  setPS( mySystem->m6502().PS() ^ 0x01 );
+  setPS( mySystem.m6502().PS() ^ 0x01 );
 }

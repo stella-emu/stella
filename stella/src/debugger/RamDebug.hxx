@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamDebug.hxx,v 1.6 2008-02-06 13:45:20 stephena Exp $
+// $Id: RamDebug.hxx,v 1.7 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #ifndef RAM_DEBUG_HXX
@@ -33,12 +33,13 @@ class RamState : public DebuggerState
 class RamDebug : public DebuggerSystem
 {
   public:
-    RamDebug(Debugger* dbg, Console* console);
+    RamDebug(Debugger& dbg, Console& console);
 
-    DebuggerState& getState();
-    DebuggerState& getOldState() { return myOldState; }
+    const DebuggerState& getState();
+    const DebuggerState& getOldState() { return myOldState; }
 
     void saveOldState();
+    string toString();
 
     int read(int offset);
     void write(int offset, int value);
@@ -46,8 +47,6 @@ class RamDebug : public DebuggerSystem
   private:
     RamState myState;
     RamState myOldState;
-
-    System* mySystem;
 };
 
 #endif

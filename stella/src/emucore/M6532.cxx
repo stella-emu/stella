@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.18 2008-04-17 13:39:14 stephena Exp $
+// $Id: M6532.cxx,v 1.19 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -61,6 +61,9 @@ void M6532::reset()
   myOutA = 0x00;
   myDDRA = 0x00;
   myDDRB = 0x00;
+
+  // Zero the timer registers
+  myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -164,7 +167,7 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x04:    // Timer Output
     case 0x06:
     {
-      uInt32 timer = myTimer - (mySystem->cycles() - myCyclesWhenTimerSet);
+      uInt32 timer = timerClocks();
 
       // See if the timer has expired yet?
       // Note that this constant comes from z26, and corresponds to
@@ -184,9 +187,7 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x05:    // Interrupt Flag
     case 0x07:
     {
-      Int32 timer = myTimer - (mySystem->cycles() - myCyclesWhenTimerSet);
-
-      if((timer >= 0) || myTimerReadAfterInterrupt)
+      if((timerClocks() >= 0) || myTimerReadAfterInterrupt)
         return 0x00;
       else
         return 0x80;
@@ -273,29 +274,33 @@ void M6532::poke(uInt16 addr, uInt8 value)
   }
   else if((addr & 0x17) == 0x14)    // Write timer divide by 1 
   {
+    myOutTimer[0] = value;
     myIntervalShift = 0;
-    myTimer = value << myIntervalShift;
+    myTimer = myOutTimer[0] << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
   else if((addr & 0x17) == 0x15)    // Write timer divide by 8
   {
+    myOutTimer[1] = value;
     myIntervalShift = 3;
-    myTimer = value << myIntervalShift;
+    myTimer = myOutTimer[1] << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
   else if((addr & 0x17) == 0x16)    // Write timer divide by 64
   {
+    myOutTimer[2] = value;
     myIntervalShift = 6;
-    myTimer = value << myIntervalShift;
+    myTimer = myOutTimer[2] << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
   else if((addr & 0x17) == 0x17)    // Write timer divide by 1024
   {
+    myOutTimer[3] = value;
     myIntervalShift = 10;
-    myTimer = value << myIntervalShift;
+    myTimer = myOutTimer[3] << myIntervalShift;
     myCyclesWhenTimerSet = mySystem->cycles();
     myTimerReadAfterInterrupt = false;
   }
@@ -338,6 +343,10 @@ bool M6532::save(Serializer& out) const
     out.putByte((char)myOutA);
     out.putByte((char)myDDRA);
     out.putByte((char)myDDRB);
+    out.putByte((char)myOutTimer[0]);
+    out.putByte((char)myOutTimer[1]);
+    out.putByte((char)myOutTimer[2]);
+    out.putByte((char)myOutTimer[3]);
   }
   catch(char *msg)
   {
@@ -376,6 +385,11 @@ bool M6532::load(Deserializer& in)
     myOutA = (uInt8) in.getByte();
     myDDRA = (uInt8) in.getByte();
     myDDRB = (uInt8) in.getByte();
+
+    myOutTimer[0] = (uInt8) in.getByte();
+    myOutTimer[1] = (uInt8) in.getByte();
+    myOutTimer[2] = (uInt8) in.getByte();
+    myOutTimer[3] = (uInt8) in.getByte();
   }
   catch(char *msg)
   {

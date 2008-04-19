@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerSystem.hxx,v 1.6 2008-02-06 13:45:20 stephena Exp $
+// $Id: DebuggerSystem.hxx,v 1.7 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_SYSTEM_HXX
@@ -42,16 +42,20 @@ class DebuggerState
 class DebuggerSystem
 {
   public:
-    DebuggerSystem(Debugger* dbg, Console* console) { myDebugger = dbg; }
+    DebuggerSystem(Debugger& dbg, Console& console) :
+      myDebugger(dbg), myConsole(console), mySystem(console.system()) { }
     virtual ~DebuggerSystem() { }
 
-    virtual DebuggerState& getState() = 0;
-    virtual DebuggerState& getOldState() = 0;
+    virtual const DebuggerState& getState() = 0;
+    virtual const DebuggerState& getOldState() = 0;
 
     virtual void saveOldState() = 0;
+    virtual string toString() = 0;
 
   protected:
-    Debugger* myDebugger;
+    Debugger& myDebugger;
+    Console& myConsole;
+    System& mySystem;
 };
 
 #endif

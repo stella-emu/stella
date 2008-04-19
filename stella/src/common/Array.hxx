@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Array.hxx,v 1.5 2008-02-06 13:45:19 stephena Exp $
+// $Id: Array.hxx,v 1.6 2008-04-19 21:11:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,7 +22,7 @@
 #ifndef ARRAY_HXX
 #define ARRAY_HXX
 
-#include <assert.h>
+#include <cassert>
 
 #include "bspf.hxx"
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuDebug.hxx,v 1.12 2008-04-02 01:54:31 stephena Exp $
+// $Id: CpuDebug.hxx,v 1.13 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #ifndef CPU_DEBUG_HXX
@@ -41,34 +41,35 @@ class CpuState : public DebuggerState
 class CpuDebug : public DebuggerSystem
 {
   public:
-    CpuDebug(Debugger* dbg, Console* console);
+    CpuDebug(Debugger& dbg, Console& console);
 
-    DebuggerState& getState();
-    DebuggerState& getOldState() { return myOldState; }
+    const DebuggerState& getState();
+    const DebuggerState& getOldState() { return myOldState; }
 
     void saveOldState();
+    string toString();
 
 	 // I know, we ain't supposed to do this...
-    M6502 &m6502() { return mySystem->m6502(); }
+    M6502 &m6502() { return mySystem.m6502(); }
 
     int disassemble(int address, string& result, EquateList* equateList);
     int dPeek(int address);
     int getBank();
 
-    int pc() { return mySystem->m6502().PC; }
-    int sp() { return mySystem->m6502().SP; }
-    int a() { return mySystem->m6502().A; }
-    int x() { return mySystem->m6502().X; }
-    int y() { return mySystem->m6502().Y; }
+    int pc() { return mySystem.m6502().PC; }
+    int sp() { return mySystem.m6502().SP; }
+    int a()  { return mySystem.m6502().A;  }
+    int x()  { return mySystem.m6502().X;  }
+    int y()  { return mySystem.m6502().Y;  }
 
 	 // these return int, not boolean!
-    int n() { return mySystem->m6502().N; }
-    int v() { return mySystem->m6502().V; }
-    int b() { return mySystem->m6502().B; }
-    int d() { return mySystem->m6502().D; }
-    int i() { return mySystem->m6502().I; }
-    int z() { return !mySystem->m6502().notZ; }
-    int c() { return mySystem->m6502().C; }
+    int n() { return mySystem.m6502().N;     }
+    int v() { return mySystem.m6502().V;     }
+    int b() { return mySystem.m6502().B;     }
+    int d() { return mySystem.m6502().D;     }
+    int i() { return mySystem.m6502().I;     }
+    int z() { return !mySystem.m6502().notZ; }
+    int c() { return mySystem.m6502().C;     }
 
     void setPC(int pc);
     void setSP(int sp);
@@ -94,24 +95,14 @@ class CpuDebug : public DebuggerSystem
     void toggleC();
 
   private:
-    static unsigned char set_bit(unsigned char input, int bit, bool on)
+    static int dpeek(System& system, int address)
     {
-      if(on)
-        return input | (1 << bit);
-      else
-        return input & (~(1 << bit));
-    }
-
-    static int dpeek(System* system, int address)
-    {
-      return system->peek(address) | (system->peek(address + 1) << 8);
+      return system.peek(address) | (system.peek(address + 1) << 8);
     }
 
   private:
     CpuState myState;
     CpuState myOldState;
-
-    System* mySystem;
 };
 
 #endif

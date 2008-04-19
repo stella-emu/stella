@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.10 2008-03-23 17:43:22 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.11 2008-04-19 21:11:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -271,17 +271,6 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   b = new ButtonWidget(boss, font, buttonX, buttonY, 50, lineHeight,
                        "CxClr", kCxclrCmd);
   b->setTarget(this);
-
-  // Set the strings to be used in the grPx registers
-  // We only do this once because it's the state that changes, not the strings
-  const char* offstr[] = { "0", "0", "0", "0", "0", "0", "0", "0" };
-  const char* onstr[]  = { "1", "1", "1", "1", "1", "1", "1", "1" };
-  StringList off, on;
-  for(int i = 0; i < 8; ++i)
-  {
-    off.push_back(offstr[i]);
-    on.push_back(onstr[i]);
-  }
 
   ////////////////////////////
   // P0 register info
@@ -931,8 +920,8 @@ void TiaWidget::fillGrid()
 
   Debugger& dbg = instance()->debugger();
   TIADebug& tia = dbg.tiaDebug();
-  TiaState state    = (TiaState&) tia.getState();
-  TiaState oldstate = (TiaState&) tia.getOldState();
+  TiaState& state    = (TiaState&) tia.getState();
+  TiaState& oldstate = (TiaState&) tia.getOldState();
 
   // TIA RAM
   alist.clear();  vlist.clear();  changed.clear();

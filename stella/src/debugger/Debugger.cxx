@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.122 2008-04-02 01:54:31 stephena Exp $
+// $Id: Debugger.cxx,v 1.123 2008-04-19 21:11:52 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -38,6 +38,7 @@
 #include "EquateList.hxx"
 #include "CpuDebug.hxx"
 #include "RamDebug.hxx"
+#include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 
 #include "TiaInfoWidget.hxx"
@@ -95,6 +96,7 @@ Debugger::Debugger(OSystem* osystem)
     myParser(NULL),
     myCpuDebug(NULL),
     myRamDebug(NULL),
+    myRiotDebug(NULL),
     myTiaDebug(NULL),
     myTiaInfo(NULL),
     myTiaOutput(NULL),
@@ -137,6 +139,7 @@ Debugger::~Debugger()
 
   delete myCpuDebug;
   delete myRamDebug;
+  delete myRiotDebug;
   delete myTiaDebug;
 
   delete myEquateList;
@@ -183,13 +186,16 @@ void Debugger::setConsole(Console* console)
 
   // Create debugger subsystems
   delete myCpuDebug;
-  myCpuDebug = new CpuDebug(this, myConsole);
+  myCpuDebug = new CpuDebug(*this, *myConsole);
 
   delete myRamDebug;
-  myRamDebug = new RamDebug(this, myConsole);
+  myRamDebug = new RamDebug(*this, *myConsole);
+
+  delete myRiotDebug;
+  myRiotDebug = new RiotDebug(*this, *myConsole);
 
   delete myTiaDebug;
-  myTiaDebug = new TIADebug(this, myConsole);
+  myTiaDebug = new TIADebug(*this, *myConsole);
 
   // Initialize equates and breakpoints to known state
   delete myEquateList;
@@ -411,155 +417,10 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::cpuState()
-{
-  string result;
-  char buf[255];
-
-  CpuState state    = (CpuState&) myCpuDebug->getState();
-  CpuState oldstate = (CpuState&) myCpuDebug->getOldState();
-
-  result += "\nPC=";
-  result += invIfChanged(state.PC, oldstate.PC);
-  result += " A=";
-  result += invIfChanged(state.A, oldstate.A);
-  result += " X=";
-  result += invIfChanged(state.X, oldstate.X);
-  result += " Y=";
-  result += invIfChanged(state.Y, oldstate.Y);
-  result += " S=";
-  result += invIfChanged(state.SP, oldstate.SP);
-  result += " P=";
-  result += invIfChanged(state.PS, oldstate.PS);
-  result += "/";
-  formatFlags(state.PSbits, buf);
-  result += buf;
-  result += "\n  FrameCyc:";
-  sprintf(buf, "%d", mySystem->cycles());
-  result += buf;
-  result += " Frame:";
-  sprintf(buf, "%d", myTiaDebug->frameCount());
-  result += buf;
-  result += " ScanLine:";
-  sprintf(buf, "%d", myTiaDebug->scanlines());
-  result += buf;
-  result += " Clk/Pix/Cyc:";
-  int clk = myTiaDebug->clocksThisLine();
-  sprintf(buf, "%d/%d/%d", clk, clk-68, clk/3);
-  result += buf;
-  result += " 6502Ins:";
-  sprintf(buf, "%d", mySystem->m6502().totalInstructionCount());
-  result += buf;
-  result += "\n  ";
-
-  result += disassemble(state.PC, 1);
-  return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/* The timers, joysticks, and switches can be read via peeks, so
-   I didn't write a separate RIOTDebug class. */
-const string Debugger::riotState()
-{
-  string ret;
-
-  // TODO: inverse video for changed regs. Core needs to track this.
-  // TODO: keyboard controllers?
-
-  for(int i=0x280; i<0x284; i++)
-  {
-    ret += valueToString(i);
-    ret += "/";
-    ret += equates().getFormatted(i, 2);
-    ret += "=";
-    ret += valueToString(mySystem->peek(i));
-    ret += " ";
-  }
-  ret += "\n";
-
-  // These are squirrely: some symbol files will define these as
-  // 0x284-0x287. Doesn't actually matter, these registers repeat
-  // every 16 bytes.
-  ret += valueToString(0x294);
-  ret += "/TIM1T=";
-  ret += valueToString(mySystem->peek(0x294));
-  ret += " ";
-
-  ret += valueToString(0x295);
-  ret += "/TIM8T=";
-  ret += valueToString(mySystem->peek(0x295));
-  ret += " ";
-
-  ret += valueToString(0x296);
-  ret += "/TIM64T=";
-  ret += valueToString(mySystem->peek(0x296));
-  ret += " ";
-
-  ret += valueToString(0x297);
-  ret += "/TIM1024T=";
-  ret += valueToString(mySystem->peek(0x297));
-  ret += "\n";
-
-  ret += "Left/P0diff: ";
-  ret += (mySystem->peek(0x282) & 0x40) ? "hard/A" : "easy/B";
-  ret += "   ";
-
-  ret += "Right/P1diff: ";
-  ret += (mySystem->peek(0x282) & 0x80) ? "hard/A" : "easy/B";
-  ret += "\n";
-
-  ret += "TVType: ";
-  ret += (mySystem->peek(0x282) & 0x8) ? "Color" : "B&W";
-  ret += "   Switches: ";
-  ret += (mySystem->peek(0x282) & 0x2) ? "-" : "+";
-  ret += "select  ";
-  ret += (mySystem->peek(0x282) & 0x1) ? "-" : "+";
-  ret += "reset";
-  ret += "\n";
-
-  // Yes, the fire buttons are in the TIA, but we might as well
-  // show them here for convenience.
-  ret += "Left/P0 stick:  ";
-  ret += (mySystem->peek(0x280) & 0x80) ? "" : "right ";
-  ret += (mySystem->peek(0x280) & 0x40) ? "" : "left ";
-  ret += (mySystem->peek(0x280) & 0x20) ? "" : "down ";
-  ret += (mySystem->peek(0x280) & 0x10) ? "" : "up ";
-  ret += ((mySystem->peek(0x280) & 0xf0) == 0xf0) ? "(no directions) " : "";
-  ret += (mySystem->peek(0x03c) & 0x80) ? "" : "(button) ";
-  ret += "\n";
-  ret += "Right/P1 stick: ";
-  ret += (mySystem->peek(0x280) & 0x08) ? "" : "right ";
-  ret += (mySystem->peek(0x280) & 0x04) ? "" : "left ";
-  ret += (mySystem->peek(0x280) & 0x02) ? "" : "down ";
-  ret += (mySystem->peek(0x280) & 0x01) ? "" : "up ";
-  ret += ((mySystem->peek(0x280) & 0x0f) == 0x0f) ? "(no directions) " : "";
-  ret += (mySystem->peek(0x03d) & 0x80) ? "" : "(button) ";
-
-  //ret += "\n"; // caller will add
-
-  return ret;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reset()
 {
   int pc = myCpuDebug->dPeek(0xfffc);
   myCpuDebug->setPC(pc);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::formatFlags(BoolArray& b, char *out)
-{
-  // NV-BDIZC
-  out[0] = myCpuDebug->n() ? 'N' : 'n';
-  out[1] = myCpuDebug->v() ? 'V' : 'v';
-  out[2] = '-';
-  out[3] = myCpuDebug->b() ? 'B' : 'b';
-  out[4] = myCpuDebug->d() ? 'D' : 'd';
-  out[5] = myCpuDebug->i() ? 'I' : 'i';
-  out[6] = myCpuDebug->z() ? 'Z' : 'z';
-  out[7] = myCpuDebug->c() ? 'C' : 'c';
-  out[8] = '\0';
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -582,73 +443,6 @@ const string Debugger::setRAM(IntArray& args)
   if(count != 0)
     ret += "s";
   return ret;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-/* Warning: this method really is for dumping *RAM*, not ROM or I/O! */
-const string Debugger::dumpRAM()
-{
-  string result;
-  char buf[128];
-  int bytesPerLine;
-  int start = kRamStart, len = kRamSize;
-
-  switch(myParser->base())
-  {
-    case kBASE_16:
-    case kBASE_10:
-      bytesPerLine = 0x10;
-      break;
-
-    case kBASE_2:
-      bytesPerLine = 0x04;
-      break;
-
-    case kBASE_DEFAULT:
-    default:
-      return DebuggerParser::red("invalid base, this is a BUG");
-  }
-
-  RamState state    = (RamState&) myRamDebug->getState();
-  RamState oldstate = (RamState&) myRamDebug->getOldState();
-  for (uInt8 i = 0x00; i < len; i += bytesPerLine)
-  {
-    sprintf(buf, "%.2x: ", start+i);
-    result += buf;
-
-    for (uInt8 j = 0; j < bytesPerLine; j++)
-    {
-      result += invIfChanged(state.ram[i+j], oldstate.ram[i+j]);
-      result += " ";
-
-      if(j == 0x07) result += " ";
-    }
-    result += "\n";
-  }
-
-  return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::dumpTIA()
-{
-  string result;
-  char buf[128];
-
-  sprintf(buf, "%.2x: ", 0);
-  result += buf;
-  for (uInt8 j = 0; j < 0x010; j++)
-  {
-    sprintf(buf, "%.2x ", mySystem->peek(j));
-    result += buf;
-
-    if(j == 0x07) result += "- ";
-  }
-
-  result += "\n";
-  result += myTiaDebug->state();
-
-  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -935,6 +729,7 @@ void Debugger::saveOldState()
 {
   myCpuDebug->saveOldState();
   myRamDebug->saveOldState();
+  myRiotDebug->saveOldState();
   myTiaDebug->saveOldState();
 }
 
