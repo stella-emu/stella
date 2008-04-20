@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.hxx,v 1.10 2008-04-19 21:11:52 stephena Exp $
+// $Id: M6532.hxx,v 1.11 2008-04-20 19:52:33 stephena Exp $
 //============================================================================
 
 #ifndef M6532_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   RIOT
 
   @author  Bradford W. Mott
-  @version $Id: M6532.hxx,v 1.10 2008-04-19 21:11:52 stephena Exp $
+  @version $Id: M6532.hxx,v 1.11 2008-04-20 19:52:33 stephena Exp $
 */
 class M6532 : public Device
 {
@@ -168,5 +168,5 @@ class M6532 : public Device
     // Assignment operator isn't supported by this class so make it private
     M6532& operator = (const M6532&);
 };
-#endif
 
+#endif

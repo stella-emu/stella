@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.4 2008-04-17 13:39:14 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.5 2008-04-20 19:52:33 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -93,7 +93,7 @@ bool MT24LC256::readSDA()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::writeSDA(bool state)
 {
-//cerr << "writeSDA: " << state << endl;
+cerr << "writeSDA: " << state << endl;
 
 #define jpee_data(x) ( (x) ? \
   (!jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_stop(),1), jpee_mdat = 1) : \
@@ -105,7 +105,7 @@ void MT24LC256::writeSDA(bool state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::writeSCL(bool state)
 {
-//cerr << "writeSCL: " << state << endl;
+cerr << "writeSCL: " << state << endl;
 
 #define jpee_clock(x) ( (x) ? \
   (jpee_mclk = 1) : \
@@ -331,7 +331,7 @@ cerr << " --> elapsed: " << elapsed << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int MT24LC256::jpee_logproc(char const *st)
 {
-//  cerr << "    " << st << endl;
+  cerr << "    " << st << endl;
   return 0;
 }
 

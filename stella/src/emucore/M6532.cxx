@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.19 2008-04-19 21:11:52 stephena Exp $
+// $Id: M6532.cxx,v 1.20 2008-04-20 19:52:33 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -126,23 +126,17 @@ uInt8 M6532::peek(uInt16 addr)
     {
       uInt8 value = 0x00;
 
-      if(myConsole.controller(Controller::Left).read(Controller::One))
-        value |= 0x10;
-      if(myConsole.controller(Controller::Left).read(Controller::Two))
-        value |= 0x20;
-      if(myConsole.controller(Controller::Left).read(Controller::Three))
-        value |= 0x40;
-      if(myConsole.controller(Controller::Left).read(Controller::Four))
-        value |= 0x80;
+      Controller& port0 = myConsole.controller(Controller::Left);
+      if(port0.read(Controller::One))   value |= 0x10;
+      if(port0.read(Controller::Two))   value |= 0x20;
+      if(port0.read(Controller::Three)) value |= 0x40;
+      if(port0.read(Controller::Four))  value |= 0x80;
 
-      if(myConsole.controller(Controller::Right).read(Controller::One))
-        value |= 0x01;
-      if(myConsole.controller(Controller::Right).read(Controller::Two))
-        value |= 0x02;
-      if(myConsole.controller(Controller::Right).read(Controller::Three))
-        value |= 0x04;
-      if(myConsole.controller(Controller::Right).read(Controller::Four))
-        value |= 0x08;
+      Controller& port1 = myConsole.controller(Controller::Right);
+      if(port1.read(Controller::One))   value |= 0x01;
+      if(port1.read(Controller::Two))   value |= 0x02;
+      if(port1.read(Controller::Three)) value |= 0x04;
+      if(port1.read(Controller::Four))  value |= 0x08;
 
       // Return the input bits set by the controller *and* the
       // output bits set by the last write to SWCHA
@@ -187,6 +181,9 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x05:    // Interrupt Flag
     case 0x07:
     {
+      // TODO - test this
+      //        it seems as if myTimerReadAfterInterrupt being true
+      //        would mean that the interrupt has been enabled??
       if((timerClocks() >= 0) || myTimerReadAfterInterrupt)
         return 0x00;
       else
@@ -219,19 +216,23 @@ void M6532::poke(uInt16 addr, uInt8 value)
     myOutA = value;
     uInt8 a = myOutA & myDDRA;
 
-    myConsole.controller(Controller::Left).write(Controller::One, a & 0x10);
-    myConsole.controller(Controller::Left).write(Controller::Two, a & 0x20);
-    myConsole.controller(Controller::Left).write(Controller::Three, a & 0x40);
-    myConsole.controller(Controller::Left).write(Controller::Four, a & 0x80);
+    Controller& port0 = myConsole.controller(Controller::Left);
+    port0.write(Controller::One, a & 0x10);
+    port0.write(Controller::Two, a & 0x20);
+    port0.write(Controller::Three, a & 0x40);
+    port0.write(Controller::Four, a & 0x80);
     
-    myConsole.controller(Controller::Right).write(Controller::One, a & 0x01);
-    myConsole.controller(Controller::Right).write(Controller::Two, a & 0x02);
-    myConsole.controller(Controller::Right).write(Controller::Three, a & 0x04);
-    myConsole.controller(Controller::Right).write(Controller::Four, a & 0x08);
+    Controller& port1 = myConsole.controller(Controller::Right);
+    port1.write(Controller::One, a & 0x01);
+    port1.write(Controller::Two, a & 0x02);
+    port1.write(Controller::Three, a & 0x04);
+    port1.write(Controller::Four, a & 0x08);
   }
   else if((addr & 0x07) == 0x01)    // Port A Data Direction Register 
   {
     myDDRA = value;
+
+    uInt8 a = myOutA | ~myDDRA;
 
     // TODO - Fix this properly in the core
     //        Any time the core code needs to know what type of controller
@@ -255,14 +256,17 @@ void M6532::poke(uInt16 addr, uInt8 value)
       be able to drive the emulated AtariVox, even though it wouldn't
       work on real hardware.
     */
-    Controller& c = myConsole.controller(Controller::Right);
-    if(c.type() == Controller::AtariVox)
-    {
-      c.write(Controller::One, !(value & 0x01));
-      c.write(Controller::Two, !(value & 0x02));
-      c.write(Controller::Three, !(value & 0x04));
-      c.write(Controller::Four, !(value & 0x08));
-    }
+    Controller& port0 = myConsole.controller(Controller::Left);
+    port0.write(Controller::One, a & 0x10);
+    port0.write(Controller::Two, a & 0x20);
+    port0.write(Controller::Three, a & 0x40);
+    port0.write(Controller::Four, a & 0x80);
+
+    Controller& port1 = myConsole.controller(Controller::Right);
+    port1.write(Controller::One, a & 0x01);
+    port1.write(Controller::Two, a & 0x02);
+    port1.write(Controller::Three, a & 0x04);
+    port1.write(Controller::Four, a & 0x08);
   }
   else if((addr & 0x07) == 0x02)    // Port B I/O Register (Console switches)
   {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.15 2008-04-17 13:39:14 stephena Exp $
+// $Id: AtariVox.cxx,v 1.16 2008-04-20 19:52:33 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -34,7 +34,6 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
   : Controller(jack, event, system, Controller::AtariVox),
     mySerialPort((SerialPort*)&port),
     myEEPROM(NULL),
-    myPinState(0),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
@@ -138,8 +137,9 @@ void AtariVox::write(DigitalPin pin, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::clockDataIn(bool value)
 {
-  // bool oldValue = myPinState & 0x01;
-  myPinState = (myPinState & 0xfe) | (int)value;
+  // Data is normally inverted when sending to the SpeakJet;
+  // we need to reverse that
+//  value = !value;
 
   uInt32 cycle = mySystem.cycles();
   if(DEBUG_ATARIVOX)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.12 2008-04-13 23:43:14 stephena Exp $
+// $Id: AtariVox.hxx,v 1.13 2008-04-20 19:52:33 stephena Exp $
 //============================================================================
 
 #ifndef ATARIVOX_HXX
@@ -33,7 +33,7 @@ class MT24LC256;
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.12 2008-04-13 23:43:14 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.13 2008-04-20 19:52:33 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -110,9 +110,6 @@ class AtariVox : public Controller
     // Instance of SpeakJet which will actually do the talking for us.
     SpeakJet *mySpeakJet;
 #endif
-
-    // State of the output pins
-    uInt8 myPinState;
 
     // How many bits have been shifted into the shift register?
     uInt8 myShiftCount;
