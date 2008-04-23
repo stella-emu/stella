@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.20 2008-04-20 19:52:33 stephena Exp $
+// $Id: M6532.cxx,v 1.21 2008-04-23 16:51:11 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -55,15 +55,14 @@ void M6532::reset()
   myTimer = 25 + (random.next() % 75);
   myIntervalShift = 6;
   myCyclesWhenTimerSet = 0;
-  myTimerReadAfterInterrupt = false;
+  myInterruptEnabled = false;
+  myInterruptTriggered = false;
 
   // Zero the I/O registers
-  myOutA = 0x00;
-  myDDRA = 0x00;
-  myDDRB = 0x00;
+  myDDRA = myDDRB = myOutA = 0x00;
 
   // Zero the timer registers
-  myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x0;
+  myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x00;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -161,30 +160,26 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x04:    // Timer Output
     case 0x06:
     {
-      uInt32 timer = timerClocks();
+      myInterruptTriggered = false;
+      Int32 timer = timerClocks();
 
-      // See if the timer has expired yet?
-      // Note that this constant comes from z26, and corresponds to
-      // 256 intervals of T1024T (ie, the maximum that the timer
-      // should hold)
-      if(!(timer & 0x40000))
+      if(timer >= 0)
       {
-        return (timer >> myIntervalShift) & 0xff;
+        return (uInt8)(timer >> myIntervalShift);
       }
       else
       {
-        myTimerReadAfterInterrupt = true;
-        return timer & 0xff;
+        if(timer != -1)
+          myInterruptTriggered = true;
+
+        return (uInt8)(timer >= -256 ? timer : 0);
       }
     }
 
     case 0x05:    // Interrupt Flag
     case 0x07:
     {
-      // TODO - test this
-      //        it seems as if myTimerReadAfterInterrupt being true
-      //        would mean that the interrupt has been enabled??
-      if((timerClocks() >= 0) || myTimerReadAfterInterrupt)
+      if((timerClocks() >= 0) || myInterruptEnabled && myInterruptTriggered)
         return 0x00;
       else
         return 0x80;
@@ -210,120 +205,91 @@ void M6532::poke(uInt16 addr, uInt8 value)
   if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
   {
     myRAM[addr & 0x007f] = value;
+    return;
   }
-  else if((addr & 0x07) == 0x00)    // Port A I/O Register (Joystick)
-  {
-    myOutA = value;
-    uInt8 a = myOutA & myDDRA;
 
-    Controller& port0 = myConsole.controller(Controller::Left);
-    port0.write(Controller::One, a & 0x10);
-    port0.write(Controller::Two, a & 0x20);
-    port0.write(Controller::Three, a & 0x40);
-    port0.write(Controller::Four, a & 0x80);
-    
-    Controller& port1 = myConsole.controller(Controller::Right);
-    port1.write(Controller::One, a & 0x01);
-    port1.write(Controller::Two, a & 0x02);
-    port1.write(Controller::Three, a & 0x04);
-    port1.write(Controller::Four, a & 0x08);
-  }
-  else if((addr & 0x07) == 0x01)    // Port A Data Direction Register 
+  // A2 Distingusishes I/O registers from the timer
+  if((addr & 0x04) != 0)
   {
-    myDDRA = value;
-
-    uInt8 a = myOutA | ~myDDRA;
-
-    // TODO - Fix this properly in the core
-    //        Any time the core code needs to know what type of controller
-    //        is connected, it's by definition a bug
-    //        A real Atari doesn't 'know' that an AVox is connected, so we
-    //        shouldn't either
-    /*
-      20060608 bkw: Not the most elegant thing in the world...
-      When a bit in the DDR is set as input, +5V is placed on its output
-      pin. When it's set as output, either +5V or 0V (depending on the
-      contents of SWCHA) will be placed on the output pin.
-      The standard macros for the AtariVox use this fact to send data
-      to the port.
-
-      This code isn't 100% correct: it assumes the SWCHA bits are all 0.
-      This is good enough to emulate the AtariVox, if the programmer is
-      using SWACNT to do output (e.g. the SPKOUT macro from speakjet.inc)
-      and if he's leaving SWCHA alone.
-
-      The inaccuracy here means that wrongly-written code will still
-      be able to drive the emulated AtariVox, even though it wouldn't
-      work on real hardware.
-    */
-    Controller& port0 = myConsole.controller(Controller::Left);
-    port0.write(Controller::One, a & 0x10);
-    port0.write(Controller::Two, a & 0x20);
-    port0.write(Controller::Three, a & 0x40);
-    port0.write(Controller::Four, a & 0x80);
-
-    Controller& port1 = myConsole.controller(Controller::Right);
-    port1.write(Controller::One, a & 0x01);
-    port1.write(Controller::Two, a & 0x02);
-    port1.write(Controller::Three, a & 0x04);
-    port1.write(Controller::Four, a & 0x08);
-  }
-  else if((addr & 0x07) == 0x02)    // Port B I/O Register (Console switches)
-  {
-    return;  // hardwired as read-only
-  }
-  else if((addr & 0x07) == 0x03)    // Port B Data Direction Register
-  {
-    return;  // hardwired as read-only
-  }
-  else if((addr & 0x17) == 0x14)    // Write timer divide by 1 
-  {
-    myOutTimer[0] = value;
-    myIntervalShift = 0;
-    myTimer = myOutTimer[0] << myIntervalShift;
-    myCyclesWhenTimerSet = mySystem->cycles();
-    myTimerReadAfterInterrupt = false;
-  }
-  else if((addr & 0x17) == 0x15)    // Write timer divide by 8
-  {
-    myOutTimer[1] = value;
-    myIntervalShift = 3;
-    myTimer = myOutTimer[1] << myIntervalShift;
-    myCyclesWhenTimerSet = mySystem->cycles();
-    myTimerReadAfterInterrupt = false;
-  }
-  else if((addr & 0x17) == 0x16)    // Write timer divide by 64
-  {
-    myOutTimer[2] = value;
-    myIntervalShift = 6;
-    myTimer = myOutTimer[2] << myIntervalShift;
-    myCyclesWhenTimerSet = mySystem->cycles();
-    myTimerReadAfterInterrupt = false;
-  }
-  else if((addr & 0x17) == 0x17)    // Write timer divide by 1024
-  {
-    myOutTimer[3] = value;
-    myIntervalShift = 10;
-    myTimer = myOutTimer[3] << myIntervalShift;
-    myCyclesWhenTimerSet = mySystem->cycles();
-    myTimerReadAfterInterrupt = false;
-  }
-  else if((addr & 0x14) == 0x04)    // Write Edge Detect Control
-  {
-#ifdef DEBUG_ACCESSES
-    cerr << "M6532 Poke (Write Edge Detect): "
-        << ((addr & 0x02) ? "PA7 enabled" : "PA7 disabled")
-        << ", "
-        << ((addr & 0x01) ? "Positive edge" : "Negative edge")
-        << endl;
-#endif
+    if((addr & 0x10) != 0)
+    {
+      myInterruptEnabled = (addr & 0x08);
+      setTimerRegister(value, addr & 0x03);
+    }
   }
   else
   {
-#ifdef DEBUG_ACCESSES
-    cerr << "BAD M6532 Poke: " << hex << addr << endl;
-#endif
+    switch(addr & 0x03)
+    {
+      case 0:     // Port A I/O Register (Joystick)
+      {
+        myOutA = value;
+        uInt8 a = myOutA & myDDRA;
+
+        Controller& port0 = myConsole.controller(Controller::Left);
+        port0.write(Controller::One, a & 0x10);
+        port0.write(Controller::Two, a & 0x20);
+        port0.write(Controller::Three, a & 0x40);
+        port0.write(Controller::Four, a & 0x80);
+    
+        Controller& port1 = myConsole.controller(Controller::Right);
+        port1.write(Controller::One, a & 0x01);
+        port1.write(Controller::Two, a & 0x02);
+        port1.write(Controller::Three, a & 0x04);
+        port1.write(Controller::Four, a & 0x08);
+        break;
+      }
+
+      case 1:     // Port A Data Direction Register 
+      {
+        myDDRA = value;
+
+        /*
+          Undocumented feature used by the AtariVox and SaveKey.
+          When the DDR is changed, the ORA (output register A) cached
+          from a previous write to SWCHA is 'applied' to the controller pins.
+
+          When a bit in the DDR is set as input, +5V is placed on its output
+          pin.  When it's set as output, either +5V or 0V (depending on the
+          contents of SWCHA) will be placed on the output pin.
+          The standard macros for the AtariVox use this fact to send data
+          to the port.  This is represented by the following algorithm:
+
+            if(DDR bit is input)       set output as 1
+            else if(DDR bit is output) set output as bit in ORA
+        */
+        uInt8 a = myOutA | ~myDDRA;
+
+        Controller& port0 = myConsole.controller(Controller::Left);
+        port0.write(Controller::One, a & 0x10);
+        port0.write(Controller::Two, a & 0x20);
+        port0.write(Controller::Three, a & 0x40);
+        port0.write(Controller::Four, a & 0x80);
+
+        Controller& port1 = myConsole.controller(Controller::Right);
+        port1.write(Controller::One, a & 0x01);
+        port1.write(Controller::Two, a & 0x02);
+        port1.write(Controller::Three, a & 0x04);
+        port1.write(Controller::Four, a & 0x08);
+        break;
+      }
+
+      default:    // Port B I/O & DDR Registers (Console switches)
+        break;    // hardwired as read-only
+     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::setTimerRegister(uInt8 value, uInt8 interval)
+{
+  static const uInt8 shift[] = { 0, 3, 6, 10 };
+
+  myInterruptTriggered = false;
+  myIntervalShift = shift[interval];
+  myOutTimer[interval] = value;
+  myTimer = value << myIntervalShift;
+  myCyclesWhenTimerSet = mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,10 +309,12 @@ bool M6532::save(Serializer& out) const
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
     out.putInt(myCyclesWhenTimerSet);
-    out.putBool(myTimerReadAfterInterrupt);
-    out.putByte((char)myOutA);
+    out.putBool(myInterruptEnabled);
+    out.putBool(myInterruptTriggered);
+
     out.putByte((char)myDDRA);
     out.putByte((char)myDDRB);
+    out.putByte((char)myOutA);
     out.putByte((char)myOutTimer[0]);
     out.putByte((char)myOutTimer[1]);
     out.putByte((char)myOutTimer[2]);
@@ -384,12 +352,12 @@ bool M6532::load(Deserializer& in)
     myTimer = (uInt32) in.getInt();
     myIntervalShift = (uInt32) in.getInt();
     myCyclesWhenTimerSet = (uInt32) in.getInt();
-    myTimerReadAfterInterrupt = in.getBool();
+    myInterruptEnabled = in.getBool();
+    myInterruptTriggered = in.getBool();
 
-    myOutA = (uInt8) in.getByte();
     myDDRA = (uInt8) in.getByte();
     myDDRB = (uInt8) in.getByte();
-
+    myOutA = (uInt8) in.getByte();
     myOutTimer[0] = (uInt8) in.getByte();
     myOutTimer[1] = (uInt8) in.getByte();
     myOutTimer[2] = (uInt8) in.getByte();
