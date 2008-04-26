@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.23 2008-03-09 20:38:44 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.24 2008-04-26 16:51:13 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -55,12 +55,15 @@ OSystemWin32::OSystemWin32()
        This function is guaranteed to return a valid 'My Documents'
        folder (as much as Windows *can* make that guarantee) 
     */
-    char configPath[256];
-    if(SUCCEEDED(SHGetFolderPath(NULL, CSIDL_PERSONAL|CSIDL_FLAG_CREATE,
-                                 NULL, 0, configPath)))
+    try
     {
-      strcat(configPath, "\\Stella");
-      basedir = configPath;
+      GetFolderPathWin32 win32FolderPath;
+      string path = win32FolderPath(GetFolderPathWin32::PERSONAL) + "\\Stella";
+      basedir = path;
+    }
+    catch(char* msg)
+    {
+      cerr << msg << endl;
     }
   }
 
@@ -77,4 +80,51 @@ OSystemWin32::~OSystemWin32()
 uInt32 OSystemWin32::getTicks()
 {
   return (uInt32) SDL_GetTicks() * 1000;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GetFolderPathWin32::GetFolderPathWin32()
+  : myFolderModule(0),
+    myFolderPathFunc(0)
+{
+  myFolderModule = LoadLibrary("shfolder.dll");
+  if(!myFolderModule)
+    throw "ERROR: GetFolderPathWin32() failed; cannot determine \'My Documents\' folder";
+
+  myFolderPathFunc = reinterpret_cast<function_pointer>
+    (::GetProcAddress(myFolderModule, "SHGetFolderPathA"));
+  if(myFolderPathFunc == 0)
+    throw "ERROR: GetFolderPathWin32() failed; cannot determine \'My Documents\' folder";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+GetFolderPathWin32::~GetFolderPathWin32()
+{
+  if(myFolderModule)
+    FreeLibrary(myFolderModule);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Given a folder ID, returns the folder name.
+string const GetFolderPathWin32::operator()(kFolderId _id) const
+{
+  char folder_path[MAX_PATH];
+  int id = 0;
+
+  switch(_id)
+  {
+    case PERSONAL:
+      id = CSIDL_PERSONAL;
+      break;
+    case APPDATA:
+      id = CSIDL_APPDATA;
+      break;
+    default:
+      return "";
+  }
+
+  HRESULT const result =
+    (myFolderPathFunc)(NULL, id | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
+
+  return (result == 0) ? folder_path : "";
 }
