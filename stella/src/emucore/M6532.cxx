@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.22 2008-04-28 20:59:39 stephena Exp $
+// $Id: M6532.cxx,v 1.23 2008-04-28 21:31:40 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -173,8 +173,8 @@ uInt8 M6532::peek(uInt16 addr)
           myInterruptTriggered = true;
 
         // According to the M6532 documentation, the timer continues to count
-        // down to -256 timer clocks after wraparound.  However, it isn't
-        // entirely clear what happens *after* if reaches -256.  If we go
+        // down to -255 timer clocks after wraparound.  However, it isn't
+        // entirely clear what happens *after* if reaches -255.  If we go
         // to zero at that time, Solaris fails to load correctly.
         // However, if the count goes on forever, HERO fails to load
         // correctly.
@@ -219,7 +219,7 @@ void M6532::poke(uInt16 addr, uInt8 value)
     return;
   }
 
-  // A2 Distingusishes I/O registers from the timer
+  // A2 distinguishes I/O registers from the timer
   if((addr & 0x04) != 0)
   {
     if((addr & 0x10) != 0)
