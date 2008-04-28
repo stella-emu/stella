@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.101 2008-03-24 00:02:16 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.102 2008-04-28 15:53:05 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -253,10 +253,19 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
   myWidthScaleFactor  = (float) mode.zoom;
   myHeightScaleFactor = (float) mode.zoom;
 
+  // Activate aspect ratio correction in TIA mode
+  int iaspect = myOSystem->settings().getInt("gl_aspect");
+  if(!inUIMode && iaspect < 100)
+  {
+    float aspectFactor = float(iaspect) / 100.0;
+    myWidthScaleFactor *= aspectFactor;
+    myImageDim.w = (uInt16)(float(myImageDim.w) * aspectFactor);
+  }
+
   // Activate stretching if its been requested in fullscreen mode
   float stretchFactor = 1.0;
-  if(fullScreen() && (mode.image_w < mode.screen_w) &&
-     (mode.image_h < mode.screen_h))
+  if(fullScreen() && (myImageDim.w < myScreenDim.w) &&
+     (myImageDim.h < myScreenDim.h))
   {
     const string& gl_fsmax = myOSystem->settings().getString("gl_fsmax");
 
@@ -277,17 +286,8 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
   myWidthScaleFactor  *= stretchFactor;
   myHeightScaleFactor *= stretchFactor;
 
-  // Activate aspect ratio correction in TIA mode
-  int iaspect = myOSystem->settings().getInt("gl_aspect");
-  float aspectFactor = 1.0;
-  if(!inUIMode && iaspect < 100)
-  {
-    aspectFactor = float(iaspect) / 100.0;
-    myWidthScaleFactor *= aspectFactor;
-  }
-
   // Now re-calculate the dimensions
-  myImageDim.w = (Uint16) (stretchFactor * aspectFactor * myImageDim.w);
+  myImageDim.w = (Uint16) (stretchFactor * myImageDim.w);
   myImageDim.h = (Uint16) (stretchFactor * myImageDim.h);
   if(!fullScreen()) myScreenDim.w = myImageDim.w;
   myImageDim.x = (myScreenDim.w - myImageDim.w) / 2;
