@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.23 2008-03-23 17:43:22 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.24 2008-04-29 15:13:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,6 +29,7 @@
 #include "PromptWidget.hxx"
 #include "CpuWidget.hxx"
 #include "RamWidget.hxx"
+#include "RiotWidget.hxx"
 #include "RomWidget.hxx"
 #include "TiaWidget.hxx"
 #include "DataGridOpsWidget.hxx"
@@ -182,15 +183,19 @@ void DebuggerDialog::addTabArea()
   myTab->setParentWidget(tabID, tia);
   addToFocusList(tia->getFocusList(), tabID);
 
+  // The input/output tab (includes RIOT and INPTx from TIA)
+  tabID = myTab->addTab("I/O");
+  RiotWidget* riot = new RiotWidget(myTab, instance()->consoleFont(),
+                                    2, 2, widWidth, widHeight);
+  myTab->setParentWidget(tabID, riot);
+  addToFocusList(riot->getFocusList(), tabID);
+
   // The Audio tab
   tabID = myTab->addTab("Audio");
   AudioWidget* aud = new AudioWidget(myTab, instance()->consoleFont(),
                                      2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, aud);
   addToFocusList(aud->getFocusList(), tabID);
-
-  // The input/output tab (part of RIOT)
-//  tabID = myTab->addTab("I/O");
 
   myTab->setActiveTab(0);
 }

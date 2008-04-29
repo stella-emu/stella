@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.59 2008-02-06 13:45:24 stephena Exp $
+// $Id: Widget.hxx,v 1.60 2008-04-29 15:13:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,6 +67,7 @@ enum {
   kDataGridWidget     = 'BGRI',
   kPromptWidget       = 'PROM',
   kRamWidget          = 'RAMW',
+  kRiotWidget         = 'RIOW',
   kRomListWidget      = 'ROML',
   kRomWidget          = 'ROMW',
   kTiaInfoWidget      = 'TIAI',
@@ -87,7 +88,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.59 2008-02-06 13:45:24 stephena Exp $
+  @version $Id: Widget.hxx,v 1.60 2008-04-29 15:13:16 stephena Exp $
 */
 class Widget : public GuiObject
 {

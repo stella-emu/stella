@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.137 2008-04-13 23:43:14 stephena Exp $
+// $Id: Console.cxx,v 1.138 2008-04-29 15:13:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -38,6 +38,7 @@
 #include "Paddles.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "SaveKey.hxx"
 #include "Settings.hxx" 
 #include "Sound.hxx"
 #include "Switches.hxx"
@@ -178,12 +179,18 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   }
   else if(right == "ATARIVOX")
   {
-    
     string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
                         "atarivox_eeprom.dat";
     myControllers[rightPort] = myAVox =
       new AtariVox(Controller::Right, *myEvent, *mySystem, myOSystem->serialPort(),
                    myOSystem->settings().getString("avoxport"), eepromfile);
+  }
+  else if(right == "SAVEKEY")
+  {
+    string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+                        "savekey_eeprom.dat";
+    myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
+                                           eepromfile);
   }
   else
   {

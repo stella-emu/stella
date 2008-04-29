@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.10 2008-04-13 23:43:14 stephena Exp $
+// $Id: Control.cxx,v 1.11 2008-04-29 15:13:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -60,6 +60,9 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
       break;
     case AtariVox:
       myName = "AtariVox";
+      break;
+    case SaveKey:
+      myName = "SaveKey";
       break;
   }
 }

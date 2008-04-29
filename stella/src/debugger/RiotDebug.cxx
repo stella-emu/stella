@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.1 2008-04-19 21:11:52 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.2 2008-04-29 15:13:15 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -37,10 +37,10 @@ const DebuggerState& RiotDebug::getState()
   myState.SWCHB = swchb();
   myState.SWACNT = swacnt();
   myState.SWBCNT = swbcnt();
-  Debugger::set_bits(swcha(), myState.swchaBits);
-  Debugger::set_bits(swchb(), myState.swchbBits);
-  Debugger::set_bits(swacnt(), myState.swacntBits);
-  Debugger::set_bits(swbcnt(), myState.swbcntBits);
+  Debugger::set_bits(myState.SWCHA, myState.swchaBits);
+  Debugger::set_bits(myState.SWCHB, myState.swchbBits);
+  Debugger::set_bits(myState.SWACNT, myState.swacntBits);
+  Debugger::set_bits(myState.SWBCNT, myState.swbcntBits);
 
   // Timer registers
   myState.TIM1T    = tim1T();
@@ -62,10 +62,10 @@ void RiotDebug::saveOldState()
   myOldState.SWCHB = swchb();
   myOldState.SWACNT = swacnt();
   myOldState.SWBCNT = swbcnt();
-  Debugger::set_bits(swcha(), myOldState.swchaBits);
-  Debugger::set_bits(swchb(), myOldState.swchbBits);
-  Debugger::set_bits(swacnt(), myOldState.swacntBits);
-  Debugger::set_bits(swbcnt(), myOldState.swbcntBits);
+  Debugger::set_bits(myOldState.SWCHA, myOldState.swchaBits);
+  Debugger::set_bits(myOldState.SWCHB, myOldState.swchbBits);
+  Debugger::set_bits(myOldState.SWACNT, myOldState.swacntBits);
+  Debugger::set_bits(myOldState.SWBCNT, myOldState.swbcntBits);
 
   // Timer registers
   myOldState.TIM1T    = tim1T();
@@ -214,8 +214,8 @@ string RiotDebug::tvTypeString()
 string RiotDebug::switchesString()
 {
   ostringstream buf;
-  buf << (swchb() & 0x2 ? "-" : "+") << "select  " <<
-         (swchb() & 0x1 ? "-" : "+") << "reset";
+  buf << (swchb() & 0x2 ? "-" : "+") << "select "
+      << (swchb() & 0x1 ? "-" : "+") << "reset";
   return buf.str();
 }
 
@@ -233,10 +233,10 @@ string RiotDebug::toString()
          myDebugger.invIfChanged(state.SWCHA, oldstate.SWCHA) + " ";
   ret += myDebugger.valueToString(0x281) + "/" +
          myDebugger.equates().getFormatted(0x281, 2) + "=" +
-         myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) + " ";
+         myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) + " ";
   ret += myDebugger.valueToString(0x282) + "/" +
          myDebugger.equates().getFormatted(0x282, 2) + "=" +
-         myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) + " ";
+         myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) + " ";
   ret += myDebugger.valueToString(0x283) + "/" +
          myDebugger.equates().getFormatted(0x283, 2) + "=" +
          myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT) + " ";

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.5 2008-04-20 19:52:33 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.6 2008-04-29 15:13:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -86,7 +86,7 @@ MT24LC256::~MT24LC256()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MT24LC256::readSDA()
 {
-//cerr << "readSDA: <== " << (jpee_mdat && jpee_sdat) << endl;
+cerr << "readSDA: <== " << (jpee_mdat && jpee_sdat) << endl;
   return jpee_mdat && jpee_sdat;
 }
 
