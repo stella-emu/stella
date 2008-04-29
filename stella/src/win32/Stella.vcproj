@@ -614,6 +614,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\SaveKey.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Serializer.cxx"
 					>
 				</File>
@@ -743,6 +747,10 @@
 				</File>
 				<File
 					RelativePath="..\debugger\RiotDebug.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\RiotWidget.cxx"
 					>
 				</File>
 				<File
@@ -1204,6 +1212,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\SaveKey.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Serializable.hxx"
 					>
 				</File>
@@ -1329,6 +1341,10 @@
 				</File>
 				<File
 					RelativePath="..\debugger\RiotDebug.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\RiotWidget.hxx"
 					>
 				</File>
 				<File
