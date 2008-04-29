@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.17 2008-04-29 15:13:15 stephena Exp $
+// $Id: AtariVox.cxx,v 1.18 2008-04-29 20:06:14 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -158,7 +158,7 @@ void AtariVox::clockDataIn(bool value)
   {
     if(DEBUG_ATARIVOX)
       cerr << "value && (myShiftCount == 0), returning" << endl;
-cerr << "!!!!! INVALID START BIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+//cerr << "!!!!! INVALID START BIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     return;
   }
 
@@ -168,16 +168,16 @@ cerr << "!!!!! INVALID START BIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
   {
     myShiftRegister = 0;
     myShiftCount = 0;
-cerr << "!!!!! START NEW BYTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+//cerr << "!!!!! START NEW BYTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
   }
   else if(cycle > myLastDataWriteCycle + 1000)
   {
     myShiftRegister = 0;
     myShiftCount = 0;
-cerr << "!!!!! DELAY TOO LONG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
+//cerr << "!!!!! DELAY TOO LONG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
   }
 
-cerr << "value = " << value << " (" << (int)myShiftCount << ")" << endl;
+//cerr << "value = " << value << " (" << (int)myShiftCount << ")" << endl;
 
   // If this is the first write this frame, or if it's been 62 cycles
   // since the last write, shift this bit into the current byte.
@@ -205,8 +205,8 @@ cerr << "value = " << value << " (" << (int)myShiftCount << ")" << endl;
     #else
         mySpeakJet->write(data);
     #endif
-cerr << " ==> " << (int)data << endl;
-cerr << "----------------------------------------------------------\n";
+//cerr << " ==> " << (int)data << endl;
+//cerr << "----------------------------------------------------------\n";
       }
       myShiftRegister = 0;
     }

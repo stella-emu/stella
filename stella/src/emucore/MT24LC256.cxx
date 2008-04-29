@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.6 2008-04-29 15:13:16 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.7 2008-04-29 20:06:14 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -86,14 +86,14 @@ MT24LC256::~MT24LC256()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MT24LC256::readSDA()
 {
-cerr << "readSDA: <== " << (jpee_mdat && jpee_sdat) << endl;
+//cerr << "readSDA: <== " << (jpee_mdat && jpee_sdat) << endl;
   return jpee_mdat && jpee_sdat;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::writeSDA(bool state)
 {
-cerr << "writeSDA: " << state << endl;
+//cerr << "writeSDA: " << state << endl;
 
 #define jpee_data(x) ( (x) ? \
   (!jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_stop(),1), jpee_mdat = 1) : \
@@ -105,7 +105,7 @@ cerr << "writeSDA: " << state << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::writeSCL(bool state)
 {
-cerr << "writeSCL: " << state << endl;
+//cerr << "writeSCL: " << state << endl;
 
 #define jpee_clock(x) ( (x) ? \
   (jpee_mclk = 1) : \
@@ -186,7 +186,7 @@ void MT24LC256::jpee_data_stop()
     }
     for (i=3; i<jpee_pptr; i++)
     {
-cerr << " => writing\n";
+//cerr << " => writing\n";
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -323,7 +323,7 @@ bool MT24LC256::jpee_timercheck(int mode)
   else     // read timer
   {
     uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
-cerr << " --> elapsed: " << elapsed << endl;
+//cerr << " --> elapsed: " << elapsed << endl;
     return elapsed < (uInt32)(5000000.0 / 838.0);
   }
 }
@@ -331,7 +331,7 @@ cerr << " --> elapsed: " << elapsed << endl;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int MT24LC256::jpee_logproc(char const *st)
 {
-  cerr << "    " << st << endl;
+//  cerr << "    " << st << endl;
   return 0;
 }
 
