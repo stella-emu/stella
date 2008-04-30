@@ -294,6 +294,10 @@
 		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
 		DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC487FB40DA5350900E12499 /* AtariVox.cxx */; };
 		DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC487FB50DA5350900E12499 /* AtariVox.hxx */; };
+		DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */; };
+		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
+		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
+		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
 		DC54CDA00C79CD7200DD0ACD /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC54CD9F0C79CD7200DD0ACD /* Version.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
@@ -655,6 +659,10 @@
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC487FB40DA5350900E12499 /* AtariVox.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AtariVox.cxx; path = ../emucore/AtariVox.cxx; sourceTree = SOURCE_ROOT; };
 		DC487FB50DA5350900E12499 /* AtariVox.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = AtariVox.hxx; path = ../emucore/AtariVox.hxx; sourceTree = SOURCE_ROOT; };
+		DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RiotWidget.cxx; path = ../debugger/gui/RiotWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RiotWidget.hxx; path = ../debugger/gui/RiotWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKey.cxx; path = ../emucore/SaveKey.cxx; sourceTree = SOURCE_ROOT; };
+		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SaveKey.hxx; path = ../emucore/SaveKey.hxx; sourceTree = SOURCE_ROOT; };
 		DC54CD9F0C79CD7200DD0ACD /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Version.hxx; path = ../common/Version.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -793,6 +801,8 @@
 		2D20F9E308C603C500A73076 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */,
+				DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */,
 				2D23318F0900B5EF00613B1F /* AudioWidget.cxx */,
 				2D2331900900B5EF00613B1F /* AudioWidget.hxx */,
 				2D20F9E408C603EC00A73076 /* ColorWidget.cxx */,
@@ -873,6 +883,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
+				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
 				DC11F78B0DB36933003B505E /* MT24LC256.cxx */,
 				DC11F78C0DB36933003B505E /* MT24LC256.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
@@ -1309,6 +1321,8 @@
 				DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */,
 				DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */,
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
+				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
+				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1347,7 +1361,6 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
-			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */;
 			projectDirPath = "";
@@ -1552,6 +1565,8 @@
 				DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */,
 				DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */,
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
+				DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */,
+				DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
