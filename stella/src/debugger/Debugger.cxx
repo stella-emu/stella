@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.123 2008-04-19 21:11:52 stephena Exp $
+// $Id: Debugger.cxx,v 1.124 2008-05-01 23:08:24 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -678,7 +678,7 @@ string Debugger::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::addLabel(string label, int address)
 {
-  myEquateList->addEquate(label, address);
+  myEquateList->addEquate(label, address, EQF_USER);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

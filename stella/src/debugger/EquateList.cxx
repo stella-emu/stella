@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.28 2008-04-02 01:54:31 stephena Exp $
+// $Id: EquateList.cxx,v 1.29 2008-05-01 23:08:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -203,14 +203,13 @@ EquateList::EquateList()
 {
   int size = sizeof(hardCodedEquates)/sizeof(struct Equate);
 
-  for(int i=0; i<size; i++)
+  for(int i = 0; i < size; i++)
   {
     Equate e = hardCodedEquates[i];
 
     myFwdMap.insert(make_pair(e.label, e));
     myRevMap.insert(make_pair(e.address, e));
   }
-  calcSize();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -221,73 +220,22 @@ EquateList::~EquateList()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EquateList::calcSize()
+void EquateList::addEquate(const string& label, int address, const int flags)
 {
-  currentSize = myFwdMap.size();
-  return currentSize;
+  Equate e;
+  e.label = label;
+  e.address = address;
+  e.flags = flags;
+
+  removeEquate(label);
+  myFwdMap.insert(make_pair(label, e));
+  myRevMap.insert(make_pair(address, e));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// DEPRECATED
-const string& EquateList::getLabel(int addr)
+bool EquateList::removeEquate(const string& label)
 {
-  return getLabel(addr, EQF_ANY);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& EquateList::getLabel(int addr, int flags)
-{
-  addrToLabel::const_iterator iter = myRevMap.find(addr);
-
-  if(iter != myRevMap.end())
-  {
-    // FIXME - until we fix the issue of correctly setting the equate
-    //         flags to something other than 'EQF_ANY' by default,
-    //         this comparison will almost always fail
-    if(1)//flags == EQF_ANY || iter->second.flags & flags)
-      return iter->second.label;
-  }
-  return EmptyString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// DEPRECATED
-string EquateList::getFormatted(int addr, int places)
-{
-	return getFormatted(addr, places, EQF_ANY);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// returns either the label, or a formatted hex string
-// if no label found.
-string EquateList::getFormatted(int addr, int places, int flags)
-{
-  char fmt[10], buf[255];
-  const string& label = getLabel(addr, flags);
-
-  if(label != "")
-    return label;
-
-  sprintf(fmt, "$%%0%dx", places);
-  sprintf(buf, fmt, addr);
-
-  return buf;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EquateList::getAddress(const string& label)
-{
-  labelToAddr::const_iterator iter = myFwdMap.find(label);
-  if(iter == myFwdMap.end())
-    return -1;
-  else
-    return iter->second.address;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EquateList::undefine(const string& label)
-{
-  labelToAddr::iterator iter = myFwdMap.find(label);
+  LabelToAddr::iterator iter = myFwdMap.find(label);
   if(iter == myFwdMap.end())
   {
     return false;
@@ -303,26 +251,44 @@ bool EquateList::undefine(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EquateList::saveFile(const string& file)
+const string& EquateList::getLabel(int addr, const int flags)
 {
-  char buf[256];
+  AddrToLabel::const_iterator iter = myRevMap.find(addr);
 
-  ofstream out(file.c_str());
-  if(!out.is_open())
-    return false;
-
-  out << "--- Symbol List (sorted by symbol)" << endl;
-
-  labelToAddr::iterator iter;
-  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  if(iter != myRevMap.end())
   {
-    sprintf(buf, "%-24s %04x                  \n", iter->second.label.c_str(), iter->second.address);
-    out << buf;
+    // FIXME - until we fix the issue of correctly setting the equate
+    //         flags to something other than 'EQF_ANY' by default,
+    //         this comparison will almost always fail
+    if(1)//flags == EQF_ANY || iter->second.flags & flags)
+      return iter->second.label;
   }
+  return EmptyString;
+}
 
-  out << "--- End of Symbol List." << endl;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EquateList::getFormatted(int addr, int places, const int flags)
+{
+  char fmt[10], buf[255];
+  const string& label = getLabel(addr, flags);
 
-  return true;
+  if(label != "")
+    return label;
+
+  sprintf(fmt, "$%%0%dx", places);
+  sprintf(buf, fmt, addr);
+
+  return buf;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int EquateList::getAddress(const string& label, const int flags)
+{
+  LabelToAddr::const_iterator iter = myFwdMap.find(label);
+  if(iter == myFwdMap.end())
+    return -1;
+  else
+    return iter->second.address;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -356,7 +322,9 @@ string EquateList::loadFile(const string& file)
         if((curVal = extractValue(line)) < 0)
           return "invalid symbol file";
   
-        addEquate(curLabel, curVal);
+        // For now, just make this equate EQF_ANY
+        // At some point, we should do some analysis to figure out its real type
+        addEquate(curLabel, curVal, EQF_ANY);
   
         lines++;
       }
@@ -368,40 +336,77 @@ string EquateList::loadFile(const string& file)
   }
   in.close();
 
-  calcSize();
+//  calcSize();
 
   return "loaded " + file + " OK";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EquateList::addEquate(const string& label, int address)
+bool EquateList::saveFile(const string& file)
 {
-  Equate e;
-  e.label = label;
-  e.address = address;
-  e.flags = EQF_ANY;   // FIXME - this should be specified as a parameter
+  char buf[256];
 
-  undefine(label);
-  myFwdMap.insert(make_pair(label, e));
-  myRevMap.insert(make_pair(address, e));
+  ofstream out(file.c_str());
+  if(!out.is_open())
+    return false;
+
+  out << "--- Symbol List (sorted by symbol)" << endl;
+
+  LabelToAddr::iterator iter;
+  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  {
+    sprintf(buf, "%-24s %04x                  \n", iter->second.label.c_str(), iter->second.address);
+    out << buf;
+  }
+
+  out << "--- End of Symbol List." << endl;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EquateList::parse4hex(char *c)
+int EquateList::countCompletions(const char *in)
 {
-  int ret = 0;
-  for(int i=0; i<4; i++)
+  int count = 0;
+  myCompletions = myCompPrefix = "";
+
+  LabelToAddr::iterator iter;
+  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
   {
-    if(*c >= '0' && *c <= '9')
-      ret = (ret << 4) + (*c) - '0';
-    else if(*c >= 'a' && *c <= 'f')
-      ret = (ret << 4) + (*c) - 'a' + 10;
-    else
-      return -1;
-    c++;
+    const char *l = iter->first.c_str();
+
+    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
+    {
+      if(myCompPrefix == "")
+        myCompPrefix += l;
+      else
+      {
+        int nonMatch = 0;
+        const char *c = myCompPrefix.c_str();
+        while(*c != '\0' && tolower(*c) == tolower(l[nonMatch]))
+        {
+          c++;
+          nonMatch++;
+        }
+        myCompPrefix.erase(nonMatch, myCompPrefix.length());
+      }
+
+      if(count++) myCompletions += "  ";
+        myCompletions += l;
+    }
   }
 
-  return ret;
+  return count;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string EquateList::extractLabel(char *c)
+{
+  string l = "";
+  while(*c != ' ')
+    l += *c++;
+
+  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -421,62 +426,16 @@ int EquateList::extractValue(char *c)
     c++;
   }
 
-  return parse4hex(c);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EquateList::extractLabel(char *c)
-{
-  string l = "";
-  while(*c != ' ')
-    l += *c++;
-
-  return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int EquateList::countCompletions(const char *in)
-{
-  int count = 0;
-  completions = compPrefix = "";
-
-  labelToAddr::iterator iter;
-  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  int ret = 0;
+  for(int i=0; i<4; i++)
   {
-    const char *l = iter->first.c_str();
-
-    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
-    {
-      if(compPrefix == "")
-        compPrefix += l;
-      else
-      {
-        int nonMatch = 0;
-        const char *c = compPrefix.c_str();
-        while(*c != '\0' && tolower(*c) == tolower(l[nonMatch]))
-        {
-          c++;
-          nonMatch++;
-        }
-        compPrefix.erase(nonMatch, compPrefix.length());
-      }
-
-      if(count++) completions += "  ";
-        completions += l;
-    }
+    if(*c >= '0' && *c <= '9')
+      ret = (ret << 4) + (*c) - '0';
+    else if(*c >= 'a' && *c <= 'f')
+      ret = (ret << 4) + (*c) - 'a' + 10;
+    else
+      return -1;
+    c++;
   }
-
-  return count;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char *EquateList::getCompletions()
-{
-  return completions.c_str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char *EquateList::getCompletionPrefix()
-{
-  return compPrefix.c_str();
+  return ret;
 }

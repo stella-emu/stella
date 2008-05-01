@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.23 2008-03-23 17:43:22 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.24 2008-05-01 23:08:24 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -261,8 +261,9 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           break;
         }
 
-        completionList = equates.getCompletions();
-        prefix = equates.getCompletionPrefix();
+        // TODO - perhaps use strings instead of char pointers
+        completionList = equates.getCompletions().c_str();
+        prefix = equates.getCompletionPrefix().c_str();
       }
 
       if(possibilities == 1)

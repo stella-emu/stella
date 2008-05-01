@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.105 2008-04-19 21:11:52 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.106 2008-05-01 23:08:24 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -1302,7 +1302,7 @@ void DebuggerParser::executeTrapwrite()
 // "undef"
 void DebuggerParser::executeUndef()
 {
-  if(debugger->equates().undefine(argStrings[0]))
+  if(debugger->equates().removeEquate(argStrings[0]))
   {
     debugger->myRom->invalidate();
     commandResult = argStrings[0] + " now undefined";
