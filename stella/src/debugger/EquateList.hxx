@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.hxx,v 1.19 2008-05-01 23:08:24 stephena Exp $
+// $Id: EquateList.hxx,v 1.20 2008-05-02 01:19:48 stephena Exp $
 //============================================================================
 
 #ifndef EQUATELIST_HXX
@@ -33,7 +33,7 @@ class EquateList
     /**
       Add an equate consisting of the given label and address
     */
-    void addEquate(const string& label, int address, const int flags);
+    void addEquate(const string& label, int address);
 
     /**
       Remove the equate with the given label
@@ -76,8 +76,11 @@ class EquateList
     string myCompletions;
     string myCompPrefix;
 
-    LabelToAddr myFwdMap;
-    AddrToLabel myRevMap;
+    LabelToAddr myHardcodedFwdMap;
+    AddrToLabel myHardcodedRevMap;
+
+    LabelToAddr myUserFwdMap;
+    AddrToLabel myUserRevMap;
 };
 
 #endif

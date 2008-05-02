@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.29 2008-05-01 23:08:24 stephena Exp $
+// $Id: EquateList.cxx,v 1.30 2008-05-02 01:19:48 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -207,36 +207,56 @@ EquateList::EquateList()
   {
     Equate e = hardCodedEquates[i];
 
-    myFwdMap.insert(make_pair(e.label, e));
-    myRevMap.insert(make_pair(e.address, e));
+    myHardcodedFwdMap.insert(make_pair(e.label, e));
+    myHardcodedRevMap.insert(make_pair(e.address, e));
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EquateList::~EquateList()
 {
-  myFwdMap.clear();
-  myRevMap.clear();
+  myHardcodedFwdMap.clear();
+  myHardcodedRevMap.clear();
+
+  myUserFwdMap.clear();
+  myUserRevMap.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EquateList::addEquate(const string& label, int address, const int flags)
+void EquateList::addEquate(const string& label, int address)
 {
+  // First check if this already exists as a hard-coded equate
+  LabelToAddr::const_iterator iter = myHardcodedFwdMap.find(label);
+  if(iter != myHardcodedFwdMap.end() && iter->second.address == address)
+  {
+    cerr << "skipping " << label << endl;
+    return;
+  }
+  removeEquate(label);
+
+cerr << "add: label = " << label << ", address = " << hex << address << endl;
+
+  // Create a new user equate, and analyze the address to determine its
+  // probable type (ie, what flags?)
   Equate e;
   e.label = label;
   e.address = address;
-  e.flags = flags;
+  e.flags = EQF_USER;
 
-  removeEquate(label);
-  myFwdMap.insert(make_pair(label, e));
-  myRevMap.insert(make_pair(address, e));
+  if(address >= 0x80 && address <= 0xff)
+    e.flags |= EQF_RAM;
+  else if(address & 0xf000 == 0xf000)
+    e.flags |= EQF_ROM;
+
+  myUserFwdMap.insert(make_pair(label, e));
+  myUserRevMap.insert(make_pair(address, e));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EquateList::removeEquate(const string& label)
 {
-  LabelToAddr::iterator iter = myFwdMap.find(label);
-  if(iter == myFwdMap.end())
+  LabelToAddr::iterator iter = myUserFwdMap.find(label);
+  if(iter == myUserFwdMap.end())
   {
     return false;
   }
@@ -244,8 +264,8 @@ bool EquateList::removeEquate(const string& label)
   {
 	 // FIXME: error check?
     // FIXME: memory leak!
-    myRevMap.erase( myRevMap.find(iter->second.address) );
-    myFwdMap.erase(iter);
+    myUserRevMap.erase( myUserRevMap.find(iter->second.address) );
+    myUserFwdMap.erase(iter);
     return true;
   }
 }
@@ -253,9 +273,9 @@ bool EquateList::removeEquate(const string& label)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& EquateList::getLabel(int addr, const int flags)
 {
-  AddrToLabel::const_iterator iter = myRevMap.find(addr);
+  AddrToLabel::const_iterator iter = myHardcodedRevMap.find(addr);
 
-  if(iter != myRevMap.end())
+  if(iter != myHardcodedRevMap.end())
   {
     // FIXME - until we fix the issue of correctly setting the equate
     //         flags to something other than 'EQF_ANY' by default,
@@ -284,8 +304,8 @@ string EquateList::getFormatted(int addr, int places, const int flags)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int EquateList::getAddress(const string& label, const int flags)
 {
-  LabelToAddr::const_iterator iter = myFwdMap.find(label);
-  if(iter == myFwdMap.end())
+  LabelToAddr::const_iterator iter = myHardcodedFwdMap.find(label);
+  if(iter == myHardcodedFwdMap.end())
     return -1;
   else
     return iter->second.address;
@@ -302,8 +322,8 @@ string EquateList::loadFile(const string& file)
   if(!in.is_open())
     return "Unable to read symbols from " + file;
 
-  myFwdMap.clear();
-  myRevMap.clear();
+  myUserFwdMap.clear();
+  myUserRevMap.clear();
 
   while( !in.eof() )
   {
@@ -322,9 +342,7 @@ string EquateList::loadFile(const string& file)
         if((curVal = extractValue(line)) < 0)
           return "invalid symbol file";
   
-        // For now, just make this equate EQF_ANY
-        // At some point, we should do some analysis to figure out its real type
-        addEquate(curLabel, curVal, EQF_ANY);
+        addEquate(curLabel, curVal);
   
         lines++;
       }
@@ -335,8 +353,6 @@ string EquateList::loadFile(const string& file)
     }
   }
   in.close();
-
-//  calcSize();
 
   return "loaded " + file + " OK";
 }
@@ -353,7 +369,7 @@ bool EquateList::saveFile(const string& file)
   out << "--- Symbol List (sorted by symbol)" << endl;
 
   LabelToAddr::iterator iter;
-  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  for(iter = myHardcodedFwdMap.begin(); iter != myHardcodedFwdMap.end(); iter++)
   {
     sprintf(buf, "%-24s %04x                  \n", iter->second.label.c_str(), iter->second.address);
     out << buf;
@@ -371,7 +387,7 @@ int EquateList::countCompletions(const char *in)
   myCompletions = myCompPrefix = "";
 
   LabelToAddr::iterator iter;
-  for(iter = myFwdMap.begin(); iter != myFwdMap.end(); iter++)
+  for(iter = myHardcodedFwdMap.begin(); iter != myHardcodedFwdMap.end(); iter++)
   {
     const char *l = iter->first.c_str();
 
