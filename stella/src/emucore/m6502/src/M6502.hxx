@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.21 2008-02-06 13:45:22 stephena Exp $
+// $Id: M6502.hxx,v 1.22 2008-05-04 17:16:39 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef Common::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.21 2008-02-06 13:45:22 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.22 2008-05-04 17:16:39 stephena Exp $ 
 */
 class M6502
 {
@@ -55,11 +55,19 @@ class M6502
     /**
       Enumeration of the 6502 addressing modes
     */
-    enum AddressingMode 
+    enum AddressingMode
     {
       Absolute, AbsoluteX, AbsoluteY, Immediate, Implied,
       Indirect, IndirectX, IndirectY, Invalid, Relative,
       Zero, ZeroX, ZeroY
+    };
+
+    /**
+      Enumeration of the 6502 access modes
+    */
+    enum AccessMode
+    {
+      Read, Write, None
     };
 
   public:
@@ -133,7 +141,17 @@ class M6502
       @param opcode The opcode of the instruction
       @return The addressing mode of the instruction
     */
-    AddressingMode addressingMode(uInt8 opcode) const;
+    AddressingMode addressingMode(uInt8 opcode) const
+      { return ourAddressingModeTable[opcode]; }
+
+    /**
+      Get the access mode of the specified instruction
+
+      @param opcode The opcode of the instruction
+      @return The access mode of the instruction
+    */
+    AccessMode accessMode(uInt8 opcode) const
+      { return ourAccessModeTable[opcode]; }
 
   public:
     /**
@@ -174,9 +192,16 @@ class M6502
     /**
       Answer true iff the last memory access was a read.
 
-      @return true iff last access was a read.
+      @return true iff last access was a read
     */ 
     bool lastAccessWasRead() const { return myLastAccessWasRead; }
+
+    /**
+      Get the total number of instructions executed so far.
+
+      @return The number of executed instructions
+    */
+    int totalInstructionCount() const { return myTotalInstructionCount; }
 
   public:
     /**
@@ -199,12 +224,11 @@ class M6502
     // TODO - document these methods
     void setBreakPoints(PackedBitArray *bp);
     void setTraps(PackedBitArray *read, PackedBitArray *write);
-    int totalInstructionCount() { return myTotalInstructionCount; }
 
-    unsigned int addCondBreak(Expression *e, string name);
+    unsigned int addCondBreak(Expression *e, const string& name);
     void delCondBreak(unsigned int brk);
     void clearCondBreaks();
-    const StringList& getCondBreakNames();
+    const StringList& getCondBreakNames() const;
     int evalCondBreaks();
 #endif
 
@@ -239,26 +263,6 @@ class M6502
     bool notZ;  // Z flag complement for processor status register
     bool C;     // C flag for processor status register
 
-#ifdef DEBUGGER_SUPPORT
-    /// Pointer to the debugger for this processor or the null pointer
-    Debugger* myDebugger;
-
-    PackedBitArray* myBreakPoints;
-    PackedBitArray* myReadTraps;
-    PackedBitArray* myWriteTraps;
-
-    // Did we just now hit a trap?
-    bool myJustHitTrapFlag;
-    struct HitTrapInfo {
-      string message;
-      int address;
-    };
-    HitTrapInfo myHitTrapInfo;
-
-    StringList myBreakCondNames;
-    ExpressionList myBreakConds;
-#endif
-
     /** 
       Bit fields used to indicate that certain conditions need to be 
       handled such as stopping execution, fatal errors, maskable interrupts 
@@ -289,9 +293,37 @@ class M6502
     /// Indicates if the last memory access was a read or not
     bool myLastAccessWasRead;
 
+    /// The total number of instructions executed so far
+    int myTotalInstructionCount;
+
+#ifdef DEBUGGER_SUPPORT
+    /// Pointer to the debugger for this processor or the null pointer
+    Debugger* myDebugger;
+
+    PackedBitArray* myBreakPoints;
+    PackedBitArray* myReadTraps;
+    PackedBitArray* myWriteTraps;
+
+    // Did we just now hit a trap?
+    bool myJustHitTrapFlag;
+    struct HitTrapInfo {
+      string message;
+      int address;
+    };
+    HitTrapInfo myHitTrapInfo;
+
+    StringList myBreakCondNames;
+    ExpressionList myBreakConds;
+#endif
+
   protected:
     /// Addressing mode for each of the 256 opcodes
+    /// This specifies how the opcode argument is addressed
     static AddressingMode ourAddressingModeTable[256];
+
+    /// Access mode for each of the 256 opcodes
+    /// This specifies how the opcode will access its argument
+    static AccessMode ourAccessModeTable[256];
 
     /// Lookup table used for binary-code-decimal math
     static uInt8 ourBCDTable[2][256];
@@ -304,8 +336,6 @@ class M6502
 
     /// Table of instruction mnemonics
     static const char* ourInstructionMnemonicTable[256];
-
-    int myTotalInstructionCount;
 };
 
 #endif

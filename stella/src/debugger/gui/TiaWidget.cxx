@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.11 2008-04-19 21:11:52 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.12 2008-05-04 17:16:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -789,7 +789,9 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           addr  = myRamGrid->getSelectedAddr();
           value = myRamGrid->getSelectedValue();
 
-          myLabel->setEditString(dbg.equates().getLabel(addr));
+          // We're using the read-addresses here
+          // Should we also add write-addresses, or remove this entirely?
+          myLabel->setEditString(dbg.equates().getLabel(addr, true));
 
           myDecValue->setEditString(dbg.valueToString(value, kBASE_10));
           myBinValue->setEditString(dbg.valueToString(value, kBASE_2));

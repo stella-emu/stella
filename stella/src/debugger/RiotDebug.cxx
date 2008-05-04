@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.2 2008-04-29 15:13:15 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.3 2008-05-04 17:16:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -228,17 +228,13 @@ string RiotDebug::toString()
   const RiotState& oldstate = (RiotState&) getOldState();
   string ret;
 
-  ret += myDebugger.valueToString(0x280) + "/" +
-         myDebugger.equates().getFormatted(0x280, 2) + "=" +
+  ret += myDebugger.valueToString(0x280) + "/SWCHA" +
          myDebugger.invIfChanged(state.SWCHA, oldstate.SWCHA) + " ";
-  ret += myDebugger.valueToString(0x281) + "/" +
-         myDebugger.equates().getFormatted(0x281, 2) + "=" +
+  ret += myDebugger.valueToString(0x281) + "/SWACNT" +
          myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) + " ";
-  ret += myDebugger.valueToString(0x282) + "/" +
-         myDebugger.equates().getFormatted(0x282, 2) + "=" +
+  ret += myDebugger.valueToString(0x282) + "/SWCHB" +
          myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) + " ";
-  ret += myDebugger.valueToString(0x283) + "/" +
-         myDebugger.equates().getFormatted(0x283, 2) + "=" +
+  ret += myDebugger.valueToString(0x283) + "/SWBCNT" +
          myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT) + " ";
   ret += "\n";
 

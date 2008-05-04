@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.28 2008-03-08 23:34:24 stephena Exp $
+// $Id: SettingsWin32.cxx,v 1.29 2008-05-04 17:16:39 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -24,6 +24,7 @@
 SettingsWin32::SettingsWin32(OSystem* osystem)
   : Settings(osystem)
 {
+  setInternal("gl_lib", "opengl32.dll");
   // Anything less than this usually causes sound skipping
   setInternal("fragsize", "2048");
   // Most Windows systems work better without this

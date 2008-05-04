@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.125 2008-05-02 01:19:48 stephena Exp $
+// $Id: Debugger.cxx,v 1.126 2008-05-04 17:16:39 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -120,7 +120,6 @@ Debugger::Debugger(OSystem* osystem)
 
   // Init parser
   myParser = new DebuggerParser(this);
-  myEquateList = new EquateList();
   myBreakPoints = new PackedBitArray(0x10000);
   myReadTraps = new PackedBitArray(0x10000);
   myWriteTraps = new PackedBitArray(0x10000);
@@ -575,9 +574,9 @@ const string& Debugger::disassemble(int start, int lines)
   string cpubuf;
 
   do {
-    buffer << myEquateList->getFormatted(start, 4) << ": ";
+    buffer << myEquateList->getFormatted(start, 4, true) << ": ";
 
-    int count = myCpuDebug->disassemble(start, cpubuf, myEquateList);
+    int count = myCpuDebug->disassemble(start, cpubuf, *myEquateList);
     for(int i = 0; i < count; i++)
       buffer << hex << setw(2) << setfill('0') << peek(start++) << dec;
 
@@ -592,7 +591,7 @@ const string& Debugger::disassemble(int start, int lines)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::disassemble(IntArray& addr, StringList& addrLabel, 
+void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
                            StringList& bytes, StringList& data,
                            int start, int lines)
 {
@@ -601,11 +600,11 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 
   do
   {
-    addrLabel.push_back(myEquateList->getFormatted(start, 4) + ":");
+    addrLabel.push_back(myEquateList->getFormatted(start, 4, true) + ":");
     addr.push_back(start);
 
     cpubuf = "";
-    int count = myCpuDebug->disassemble(start, cpubuf, myEquateList);
+    int count = myCpuDebug->disassemble(start, cpubuf, *myEquateList);
 
     tmp = "";
     for(int i=0; i<count; i++) {

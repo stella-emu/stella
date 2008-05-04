@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.16 2008-03-23 17:43:22 stephena Exp $
+// $Id: RamWidget.cxx,v 1.17 2008-05-04 17:16:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -177,7 +177,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       value = myRamGrid->getSelectedValue();
 
       myLabel->setEditString(
-        instance()->debugger().equates().getLabel(addr+kRamStart, EQF_RAM));
+        instance()->debugger().equates().getLabel(addr+kRamStart, true));
       myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
       break;

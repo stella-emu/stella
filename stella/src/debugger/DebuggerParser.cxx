@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.106 2008-05-01 23:08:24 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.107 2008-05-04 17:16:39 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -562,7 +562,8 @@ string DebuggerParser::eval()
   char buf[50];
   string ret;
   for(int i=0; i<argCount; i++) {
-    string label = debugger->equates().getLabel(args[i]);
+    // TODO - technically, we should determine if the label is read or write
+    string label = debugger->equates().getLabel(args[i], true);
     if(label != "") {
       ret += label;
       ret += ": ";
@@ -601,7 +602,8 @@ string DebuggerParser::trapStatus(int addr)
   else
     result += "   none   ";
 
-  string l = debugger->equates().getLabel(addr);
+  // TODO - technically, we should determine if the label is read or write
+  const string& l = debugger->equates().getLabel(addr, true);
   if(l != "") {
     result += "  (";
     result += l;
@@ -984,7 +986,7 @@ void DebuggerParser::executeListbreaks()
   {
     if(debugger->breakpoints().isSet(i))
     {
-      buf << debugger->equates().getFormatted(i, 4) << " ";
+      buf << debugger->equates().getFormatted(i, 4, true) << " ";
       if(! (++count % 8) ) buf << "\n";
     }
   }
