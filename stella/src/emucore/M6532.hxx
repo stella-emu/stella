@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.hxx,v 1.12 2008-04-23 16:51:11 stephena Exp $
+// $Id: M6532.hxx,v 1.13 2008-05-06 16:39:11 stephena Exp $
 //============================================================================
 
 #ifndef M6532_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   RIOT
 
   @author  Bradford W. Mott
-  @version $Id: M6532.hxx,v 1.12 2008-04-23 16:51:11 stephena Exp $
+  @version $Id: M6532.hxx,v 1.13 2008-05-06 16:39:11 stephena Exp $
 */
 class M6532 : public Device
 {
@@ -131,6 +131,7 @@ class M6532 : public Device
       { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
 
     void setTimerRegister(uInt8 data, uInt8 interval);
+    void setOutputState();
 
   private:
     // Reference to the console

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.23 2008-04-28 21:31:40 stephena Exp $
+// $Id: M6532.cxx,v 1.24 2008-05-06 16:39:11 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -137,9 +137,11 @@ uInt8 M6532::peek(uInt16 addr)
       if(port1.read(Controller::Three)) value |= 0x04;
       if(port1.read(Controller::Four))  value |= 0x08;
 
-      // Return the input bits set by the controller *and* the
-      // output bits set by the last write to SWCHA
-      return (value & ~myDDRA) | (myOutA & myDDRA);
+      // Each pin is high (1) by default and will only go low (0) if either
+      //  (a) External device drives the pin low
+      //  (b) Corresponding bit in SWACNT = 1 and SWCHA = 0
+      // Thanks to A. Herbert for this info
+      return (myOutA | ~myDDRA) & value;
     }
 
     case 0x01:    // Port A Data Direction Register 
@@ -235,59 +237,20 @@ void M6532::poke(uInt16 addr, uInt8 value)
       case 0:     // Port A I/O Register (Joystick)
       {
         myOutA = value;
-        uInt8 a = myOutA & myDDRA;
-
-        Controller& port0 = myConsole.controller(Controller::Left);
-        port0.write(Controller::One, a & 0x10);
-        port0.write(Controller::Two, a & 0x20);
-        port0.write(Controller::Three, a & 0x40);
-        port0.write(Controller::Four, a & 0x80);
-    
-        Controller& port1 = myConsole.controller(Controller::Right);
-        port1.write(Controller::One, a & 0x01);
-        port1.write(Controller::Two, a & 0x02);
-        port1.write(Controller::Three, a & 0x04);
-        port1.write(Controller::Four, a & 0x08);
+        setOutputState();
         break;
       }
 
       case 1:     // Port A Data Direction Register 
       {
         myDDRA = value;
-
-        /*
-          Undocumented feature used by the AtariVox and SaveKey.
-          When the DDR is changed, the ORA (output register A) cached
-          from a previous write to SWCHA is 'applied' to the controller pins.
-
-          When a bit in the DDR is set as input, +5V is placed on its output
-          pin.  When it's set as output, either +5V or 0V (depending on the
-          contents of SWCHA) will be placed on the output pin.
-          The standard macros for the AtariVox use this fact to send data
-          to the port.  This is represented by the following algorithm:
-
-            if(DDR bit is input)       set output as 1
-            else if(DDR bit is output) set output as bit in ORA
-        */
-        uInt8 a = myOutA | ~myDDRA;
-
-        Controller& port0 = myConsole.controller(Controller::Left);
-        port0.write(Controller::One, a & 0x10);
-        port0.write(Controller::Two, a & 0x20);
-        port0.write(Controller::Three, a & 0x40);
-        port0.write(Controller::Four, a & 0x80);
-
-        Controller& port1 = myConsole.controller(Controller::Right);
-        port1.write(Controller::One, a & 0x01);
-        port1.write(Controller::Two, a & 0x02);
-        port1.write(Controller::Three, a & 0x04);
-        port1.write(Controller::Four, a & 0x08);
+        setOutputState();
         break;
       }
 
       default:    // Port B I/O & DDR Registers (Console switches)
         break;    // hardwired as read-only
-     }
+    }
   }
 }
 
@@ -301,6 +264,34 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
   myOutTimer[interval] = value;
   myTimer = value << myIntervalShift;
   myCyclesWhenTimerSet = mySystem->cycles();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::setOutputState()
+{
+  /*
+    When a bit in the DDR is set as input, +5V is placed on its output
+    pin.  When it's set as output, either +5V or 0V (depending on the
+    contents of SWCHA) will be placed on the output pin.
+    The standard macros for the AtariVox use this fact to send data
+    to the port.  This is represented by the following algorithm:
+
+      if(DDR bit is input)       set output as 1
+      else if(DDR bit is output) set output as bit in ORA
+  */
+  uInt8 a = myOutA | ~myDDRA;
+
+  Controller& port0 = myConsole.controller(Controller::Left);
+  port0.write(Controller::One, a & 0x10);
+  port0.write(Controller::Two, a & 0x20);
+  port0.write(Controller::Three, a & 0x40);
+  port0.write(Controller::Four, a & 0x80);
+
+  Controller& port1 = myConsole.controller(Controller::Right);
+  port1.write(Controller::One, a & 0x01);
+  port1.write(Controller::Two, a & 0x02);
+  port1.write(Controller::Three, a & 0x04);
+  port1.write(Controller::Four, a & 0x08);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

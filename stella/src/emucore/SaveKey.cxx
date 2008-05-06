@@ -13,14 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SaveKey.cxx,v 1.1 2008-04-29 15:49:34 stephena Exp $
+// $Id: SaveKey.cxx,v 1.2 2008-05-06 16:39:12 stephena Exp $
 //============================================================================
 
 #include "MT24LC256.hxx"
 #include "System.hxx"
 #include "SaveKey.hxx"
-
-#define DEBUG_SAVEKEY 0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
@@ -67,24 +65,14 @@ void SaveKey::write(DigitalPin pin, bool value)
     // Pin 3: EEPROM SDA
     //        output data to the 24LC256 EEPROM using the I2C protocol
     case Three:
-      if(DEBUG_SAVEKEY)
-        cerr << "SaveKey: value "
-             << value
-             << " written to SDA line at cycle "
-             << mySystem.cycles()
-             << endl;
+      myDigitalPinState[Three] = value;
       myEEPROM->writeSDA(value);
       break;
 
     // Pin 4: EEPROM SCL
     //        output clock data to the 24LC256 EEPROM using the I2C protocol
     case Four:
-      if(DEBUG_SAVEKEY)
-        cerr << "SaveKey: value "
-             << value
-             << " written to SCLK line at cycle "
-             << mySystem.cycles()
-             << endl;
+      myDigitalPinState[Four] = value;
       myEEPROM->writeSCL(value);
       break;
 

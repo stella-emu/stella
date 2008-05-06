@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.hxx,v 1.2 2008-04-13 23:43:14 stephena Exp $
+// $Id: MT24LC256.hxx,v 1.3 2008-05-06 16:39:12 stephena Exp $
 //============================================================================
 
 #ifndef MT24LC256_HXX
@@ -30,7 +30,7 @@ class System;
   (aka Supercat) for the bulk of this code.
 
   @author  Stephen Anthony & J. Payson
-  @version $Id: MT24LC256.hxx,v 1.2 2008-04-13 23:43:14 stephena Exp $
+  @version $Id: MT24LC256.hxx,v 1.3 2008-05-06 16:39:12 stephena Exp $
 */
 class MT24LC256
 {
@@ -65,6 +65,8 @@ class MT24LC256
     int  jpee_logproc(char const *st);
     bool jpee_timercheck(int mode);
 
+    void update();
+
   private:
     // The system of the parent controller
     const System& mySystem;
@@ -72,8 +74,14 @@ class MT24LC256
     // The EEPROM data
     uInt8 myData[32768];
 
+    // Cached state of the SDA and SCL pins on the last write
+    bool mySDA, mySCL;
+
     // Indicates when the timer was set
     uInt32 myCyclesWhenTimerSet;
+
+    // Indicates when the SDA and SCL pins were set/written
+    uInt32 myCyclesWhenSDASet, myCyclesWhenSCLSet;
 
     // The file containing the EEPROM data
     string myDataFile;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.31 2008-05-04 17:16:39 stephena Exp $
+// $Id: EquateList.cxx,v 1.32 2008-05-06 16:39:10 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -71,9 +71,9 @@ void EquateList::addEquate(const string& label, int address)
   else if((address & 0x1000) == 0x1000)
     flags = EQF_RW;
   else
-{ cerr << "label = " << label << ", address = " << hex << address << " discarded\n";
+//{ cerr << "label = " << label << ", address = " << hex << address << " discarded\n";
     return;  // don't know what else to do for now
-}
+//}
 
   removeEquate(label);
 

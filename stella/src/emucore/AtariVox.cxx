@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.18 2008-04-29 20:06:14 stephena Exp $
+// $Id: AtariVox.cxx,v 1.19 2008-05-06 16:39:10 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -102,6 +102,7 @@ void AtariVox::write(DigitalPin pin, bool value)
     // Pin 1: SpeakJet DATA
     //        output serial data to the speakjet
     case One:
+      myDigitalPinState[One] = value;
       clockDataIn(value);
       break;
   
@@ -114,6 +115,7 @@ void AtariVox::write(DigitalPin pin, bool value)
              << " written to SDA line at cycle "
              << mySystem.cycles()
              << endl;
+      myDigitalPinState[Three] = value;
       myEEPROM->writeSDA(value);
       break;
 
@@ -126,6 +128,7 @@ void AtariVox::write(DigitalPin pin, bool value)
              << " written to SCLK line at cycle "
              << mySystem.cycles()
              << endl;
+      myDigitalPinState[Four] = value;
       myEEPROM->writeSCL(value);
       break;
 
@@ -137,10 +140,6 @@ void AtariVox::write(DigitalPin pin, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::clockDataIn(bool value)
 {
-  // Data is normally inverted when sending to the SpeakJet;
-  // we need to reverse that
-//  value = !value;
-
   uInt32 cycle = mySystem.cycles();
   if(DEBUG_ATARIVOX)
     cerr << "AtariVox: value "

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.7 2008-04-29 20:06:14 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.8 2008-05-06 16:39:11 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -48,7 +48,11 @@ char jpee_msg[256];
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::MT24LC256(const string& filename, const System& system)
   : mySystem(system),
+    mySDA(false),
+    mySCL(false),
     myCyclesWhenTimerSet(0),
+    myCyclesWhenSDASet(0),
+    myCyclesWhenSCLSet(0),
     myDataFile(filename)
 {
   // First initialize the I2C state
@@ -93,25 +97,42 @@ bool MT24LC256::readSDA()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::writeSDA(bool state)
 {
-//cerr << "writeSDA: " << state << endl;
+  mySDA = state;
+  myCyclesWhenSDASet = mySystem.cycles();
 
-#define jpee_data(x) ( (x) ? \
-  (!jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_stop(),1), jpee_mdat = 1) : \
-  (jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_start(),1), jpee_mdat = 0))
-
-  jpee_data(state);
+  update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::writeSCL(bool state)
 {
-//cerr << "writeSCL: " << state << endl;
+  mySCL = state;
+  myCyclesWhenSCLSet = mySystem.cycles();
 
+  update();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MT24LC256::update()
+{
 #define jpee_clock(x) ( (x) ? \
   (jpee_mclk = 1) : \
   (jpee_mclk && (jpee_clock_fall(),1), jpee_mclk = 0))
 
-  jpee_clock(state);
+#define jpee_data(x) ( (x) ? \
+  (!jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_stop(),1), jpee_mdat = 1) : \
+  (jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_start(),1), jpee_mdat = 0))
+
+  // These pins have to be updated at the same time
+  // However, the there's no guarantee that the writeSDA() and writeSDL()
+  // methods will be called at the same time or in the correct order, so
+  // we only do the write when they have the same 'timestamp'
+  if(myCyclesWhenSDASet == myCyclesWhenSCLSet)
+  {
+cerr << endl << "--> SCL = " << mySCL << ", SDA = " << mySDA << "       @ " << myCyclesWhenSDASet << endl;
+    jpee_clock(mySCL);
+    jpee_data(mySDA);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -127,12 +148,14 @@ void MT24LC256::jpee_init()
   for(int i = 0; i < 256; i++)
     for(int j = 0; j < 128; j++)
       myData[i + j*256] = (i+1)*(j+1);
+
+//  jpee_timercheck(1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_data_start()
 {
-//cerr << " ==> jpee_data_start()\n";
+cerr << " ==> jpee_data_start()\n";
   /* We have a start condition */
   if (jpee_state == 1 && (jpee_nb != 1 || jpee_pptr != 3))
   {
@@ -161,7 +184,7 @@ void MT24LC256::jpee_data_start()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_data_stop()
 {
-//cerr << " ==> jpee_data_stop()\n";
+cerr << " ==> jpee_data_stop()\n";
   int i;
 
   if (jpee_state == 1 && jpee_nb != 1)
@@ -186,7 +209,7 @@ void MT24LC256::jpee_data_stop()
     }
     for (i=3; i<jpee_pptr; i++)
     {
-//cerr << " => writing\n";
+cerr << " => writing\n";
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -202,7 +225,7 @@ void MT24LC256::jpee_data_stop()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_clock_fall()
 {
-//cerr << " ==> jpee_clock_fall()\n";
+cerr << " ==> jpee_clock_fall()\n";
   switch(jpee_state)
   {
     case 1:
@@ -318,12 +341,19 @@ bool MT24LC256::jpee_timercheck(int mode)
   if(mode)  // set timer
   {
     myCyclesWhenTimerSet = mySystem.cycles();
+cerr << " --> timer set: " << myCyclesWhenTimerSet << endl;
+
     return true;
   }
   else     // read timer
   {
     uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
-//cerr << " --> elapsed: " << elapsed << endl;
+
+if(elapsed < (uInt32)(5000000.0 / 838.0))
+cerr << " --> timer still running: " << elapsed << endl;
+else
+cerr << " --> timer expired: " << elapsed << endl;
+
     return elapsed < (uInt32)(5000000.0 / 838.0);
   }
 }
@@ -331,7 +361,7 @@ bool MT24LC256::jpee_timercheck(int mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int MT24LC256::jpee_logproc(char const *st)
 {
-//  cerr << "    " << st << endl;
+  cerr << "    " << st << endl;
   return 0;
 }
 
