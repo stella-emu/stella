@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.65 2008-03-31 00:59:30 stephena Exp $
+// $Id: Console.hxx,v 1.66 2008-05-08 20:23:31 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -39,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.65 2008-03-31 00:59:30 stephena Exp $
+  @version $Id: Console.hxx,v 1.66 2008-05-08 20:23:31 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -246,6 +246,11 @@ class Console : public Serializable
     AtariVox* atariVox() { return myAVox; }
 
   private:
+    /**
+      Adds the left and right controllers to the console
+    */
+    void setControllers();
+
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true) const;
 
     /**

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.138 2008-04-29 15:13:16 stephena Exp $
+// $Id: Console.cxx,v 1.139 2008-05-08 20:23:31 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -111,102 +111,19 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myCart = cart;
   myRiot = m6532;
 
-  // Setup the controllers based on properties
-  const string& left  = myProperties.get(Controller_Left);
-  const string& right = myProperties.get(Controller_Right);
-
-  // Swap the ports if necessary
-  int leftPort, rightPort;
-  if(myProperties.get(Console_SwapPorts) == "NO")
-  {
-    leftPort = 0; rightPort = 1;
-  }
-  else
-  {
-    leftPort = 1; rightPort = 0;
-  }
-
-  // Also check if we should swap the paddles plugged into a jack
-  bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
-  Paddles::setMouseIsPaddle(-1);  // Reset to defaults
-
-  // Construct left controller
-  if(left == "BOOSTER-GRIP")
-  {
-    myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent, *mySystem);
-  }
-  else if(left == "DRIVING")
-  {
-    myControllers[leftPort] = new Driving(Controller::Left, *myEvent, *mySystem);
-  }
-  else if((left == "KEYBOARD") || (left == "KEYPAD"))
-  {
-    myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent, *mySystem);
-  }
-  else if(left == "PADDLES")
-  {
-    myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, *mySystem, swapPaddles);
-  }
-  else if(left == "TRACKBALL22")
-  {
-    myControllers[leftPort] = new TrackBall22(Controller::Left, *myEvent, *mySystem);
-  }
-  else
-  {
-    myControllers[leftPort] = new Joystick(Controller::Left, *myEvent, *mySystem);
-  }
- 
-  // Construct right controller
-  if(right == "BOOSTER-GRIP")
-  {
-    myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent, *mySystem);
-  }
-  else if(right == "DRIVING")
-  {
-    myControllers[rightPort] = new Driving(Controller::Right, *myEvent, *mySystem);
-  }
-  else if((right == "KEYBOARD") || (right == "KEYPAD"))
-  {
-    myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent, *mySystem);
-  }
-  else if(right == "PADDLES")
-  {
-    myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, *mySystem, swapPaddles);
-  }
-  else if(right == "TRACKBALL22")
-  {
-    myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent, *mySystem);
-  }
-  else if(right == "ATARIVOX")
-  {
-    string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                        "atarivox_eeprom.dat";
-    myControllers[rightPort] = myAVox =
-      new AtariVox(Controller::Right, *myEvent, *mySystem, myOSystem->serialPort(),
-                   myOSystem->settings().getString("avoxport"), eepromfile);
-  }
-  else if(right == "SAVEKEY")
-  {
-    string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                        "savekey_eeprom.dat";
-    myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
-                                           eepromfile);
-  }
-  else
-  {
-    myControllers[rightPort] = new Joystick(Controller::Right, *myEvent, *mySystem);
-  }
+  // The real controllers for this console will be added later
+  // For now, we just add dummy joystick controllers, since autodetection
+  // runs the emulation for a while, and this may interfere with 'smart'
+  // controllers such as the AVox and SaveKey
+  myControllers[0] = new Joystick(Controller::Left, *myEvent, *mySystem);
+  myControllers[1] = new Joystick(Controller::Right, *myEvent, *mySystem);
 
   // Query some info about this console
-  ostringstream buf;
-  buf << "  Cart Name:       " << myProperties.get(Cartridge_Name) << endl
-      << "  Cart MD5:        " << myProperties.get(Cartridge_MD5) << endl
-      << "  Controller 0:    " << myControllers[0]->about() << endl
-      << "  Controller 1:    " << myControllers[1]->about() << endl;
+  ostringstream about, vidinfo;
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);
-  buf << "  Display Format:  " << myDisplayFormat;
+  vidinfo << "  Display Format:  " << myDisplayFormat;
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
   {
@@ -226,9 +143,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
-      buf << " ==> " << myDisplayFormat;
+      vidinfo << " ==> " << myDisplayFormat;
   }
-  buf << endl << cart->about();
 
   // Set up the correct properties used when toggling format
   // Note that this can be overridden if a format is forced
@@ -249,8 +165,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
       myProperties.set(Display_Height, "250");
   }
 
-  // Reset, the system to its power-on state
-  mySystem->reset();
+  // Add the real controllers for this system
+  setControllers();
 
   // Bumper Bash requires all 4 directions
   const string& md5 = myProperties.get(Cartridge_MD5);
@@ -258,7 +174,19 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
                 md5 == "1bf503c724001b09be79c515ecfcbd03");
   myOSystem->eventHandler().allowAllDirections(allow);
 
-  myAboutString = buf.str();
+  // Reset the system to its power-on state
+  // TODO - a reset still isn't completely working with Boulderdash
+  mySystem->reset();
+
+  // Finally, show some info about the console
+  about << "  Cart Name:       " << myProperties.get(Cartridge_Name) << endl
+        << "  Cart MD5:        " << myProperties.get(Cartridge_MD5) << endl
+        << "  Controller 0:    " << myControllers[0]->about() << endl
+        << "  Controller 1:    " << myControllers[1]->about() << endl
+        << vidinfo.str() << endl
+        << cart->about();
+
+  myAboutString = about.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -630,6 +558,99 @@ void Console::changeHeight(int direction)
   message = "Height ";
   message += strval.str();
   myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setControllers()
+{
+  delete myControllers[0];
+  delete myControllers[1];
+
+  // Setup the controllers based on properties
+  const string& left  = myProperties.get(Controller_Left);
+  const string& right = myProperties.get(Controller_Right);
+
+  // Swap the ports if necessary
+  int leftPort, rightPort;
+  if(myProperties.get(Console_SwapPorts) == "NO")
+  {
+    leftPort = 0; rightPort = 1;
+  }
+  else
+  {
+    leftPort = 1; rightPort = 0;
+  }
+
+  // Also check if we should swap the paddles plugged into a jack
+  bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
+  Paddles::setMouseIsPaddle(-1);  // Reset to defaults
+
+  // Construct left controller
+  if(left == "BOOSTER-GRIP")
+  {
+    myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent, *mySystem);
+  }
+  else if(left == "DRIVING")
+  {
+    myControllers[leftPort] = new Driving(Controller::Left, *myEvent, *mySystem);
+  }
+  else if((left == "KEYBOARD") || (left == "KEYPAD"))
+  {
+    myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent, *mySystem);
+  }
+  else if(left == "PADDLES")
+  {
+    myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, *mySystem, swapPaddles);
+  }
+  else if(left == "TRACKBALL22")
+  {
+    myControllers[leftPort] = new TrackBall22(Controller::Left, *myEvent, *mySystem);
+  }
+  else
+  {
+    myControllers[leftPort] = new Joystick(Controller::Left, *myEvent, *mySystem);
+  }
+ 
+  // Construct right controller
+  if(right == "BOOSTER-GRIP")
+  {
+    myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "DRIVING")
+  {
+    myControllers[rightPort] = new Driving(Controller::Right, *myEvent, *mySystem);
+  }
+  else if((right == "KEYBOARD") || (right == "KEYPAD"))
+  {
+    myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "PADDLES")
+  {
+    myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, *mySystem, swapPaddles);
+  }
+  else if(right == "TRACKBALL22")
+  {
+    myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "ATARIVOX")
+  {
+    string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+                        "atarivox_eeprom.dat";
+    myControllers[rightPort] = myAVox =
+      new AtariVox(Controller::Right, *myEvent, *mySystem, myOSystem->serialPort(),
+                   myOSystem->settings().getString("avoxport"), eepromfile);
+  }
+  else if(right == "SAVEKEY")
+  {
+    string eepromfile = // fixme myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+                        "savekey_eeprom.dat";
+    myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
+                                           eepromfile);
+  }
+  else
+  {
+    myControllers[rightPort] = new Joystick(Controller::Right, *myEvent, *mySystem);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
