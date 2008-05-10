@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.8 2008-05-06 16:39:11 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.9 2008-05-10 22:21:09 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -22,6 +22,19 @@
 
 #include "System.hxx"
 #include "MT24LC256.hxx"
+
+#define DEBUG_EEPROM 0
+
+#if DEBUG_EEPROM
+  char jpee_msg[256];
+  #define JPEE_LOG0(msg) jpee_logproc(msg)
+  #define JPEE_LOG1(msg,arg1) sprintf(jpee_msg,(msg),(arg1)), jpee_logproc(jpee_msg)
+  #define JPEE_LOG2(msg,arg1,arg2) sprintf(jpee_msg,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg)
+#else
+  #define JPEE_LOG0(msg)
+  #define JPEE_LOG1(msg,arg1)
+  #define JPEE_LOG2(msg,arg1,arg2)
+#endif
 
 /*
   State values for I2C:
@@ -32,24 +45,12 @@
     4 - Chip waiting for acknowledgement
 */
 
-#define LOG_EDGES 256
-#define LOG_EVENTS 128
-#define LOG_BUSY    4
-#define LOG_UNCLEAN 2
-#define LOG_ODDBALL 1
-
-char jpee_msg[256];
-
-#define JPEE_LOG0(vm,msg) jpee_logproc(msg)
-#define JPEE_LOG1(vm,msg,arg1) sprintf(jpee_msg,(msg),(arg1)), jpee_logproc(jpee_msg)
-#define JPEE_LOG2(vm,msg,arg1,arg2) sprintf(jpee_msg,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg)
-
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::MT24LC256(const string& filename, const System& system)
   : mySystem(system),
     mySDA(false),
     mySCL(false),
+    myTimerActive(false),
     myCyclesWhenTimerSet(0),
     myCyclesWhenSDASet(0),
     myCyclesWhenSCLSet(0),
@@ -90,7 +91,6 @@ MT24LC256::~MT24LC256()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MT24LC256::readSDA()
 {
-//cerr << "readSDA: <== " << (jpee_mdat && jpee_sdat) << endl;
   return jpee_mdat && jpee_sdat;
 }
 
@@ -124,12 +124,15 @@ void MT24LC256::update()
   (jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_start(),1), jpee_mdat = 0))
 
   // These pins have to be updated at the same time
-  // However, the there's no guarantee that the writeSDA() and writeSDL()
+  // However, there's no guarantee that the writeSDA() and writeSDL()
   // methods will be called at the same time or in the correct order, so
   // we only do the write when they have the same 'timestamp'
   if(myCyclesWhenSDASet == myCyclesWhenSCLSet)
   {
-cerr << endl << "--> SCL = " << mySCL << ", SDA = " << mySDA << "       @ " << myCyclesWhenSDASet << endl;
+#if DEBUG_EEPROM
+    cerr << endl << "  I2C_PIN_WRITE(SCL = " << mySCL
+         << ", SDA = " << mySDA << ")" << endl;
+#endif
     jpee_clock(mySCL);
     jpee_data(mySDA);
   }
@@ -148,32 +151,29 @@ void MT24LC256::jpee_init()
   for(int i = 0; i < 256; i++)
     for(int j = 0; j < 128; j++)
       myData[i + j*256] = (i+1)*(j+1);
-
-//  jpee_timercheck(1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_data_start()
 {
-cerr << " ==> jpee_data_start()\n";
   /* We have a start condition */
   if (jpee_state == 1 && (jpee_nb != 1 || jpee_pptr != 3))
   {
-    JPEE_LOG0(LOG_UNCLEAN,"I2C_WARNING ABANDON WRITE");
+    JPEE_LOG0("I2C_WARNING ABANDON WRITE");
     jpee_ad_known = 0;
   }
   if (jpee_state == 3)
   {
-    JPEE_LOG0(LOG_UNCLEAN,"I2C_WARNING ABANDON READ");
+    JPEE_LOG0("I2C_WARNING ABANDON READ");
   }
   if (!jpee_timercheck(0))
   {
-    JPEE_LOG0(LOG_EVENTS,"I2C_START");
+    JPEE_LOG0("I2C_START");
     jpee_state = 2;
   }
   else
   {
-    JPEE_LOG0(LOG_BUSY,"I2C_BUSY");
+    JPEE_LOG0("I2C_BUSY");
     jpee_state = 0;
   }
   jpee_pptr = 0;
@@ -184,32 +184,30 @@ cerr << " ==> jpee_data_start()\n";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_data_stop()
 {
-cerr << " ==> jpee_data_stop()\n";
   int i;
 
   if (jpee_state == 1 && jpee_nb != 1)
   {
-    JPEE_LOG0(LOG_UNCLEAN,"I2C_WARNING ABANDON_WRITE");
+    JPEE_LOG0("I2C_WARNING ABANDON_WRITE");
     jpee_ad_known = 0;
   }
   if (jpee_state == 3)
   {
-    JPEE_LOG0(LOG_UNCLEAN,"I2C_WARNING ABANDON_READ");
+    JPEE_LOG0("I2C_WARNING ABANDON_READ");
     jpee_ad_known = 0;
   }
   /* We have a stop condition. */
   if (jpee_state == 1 && jpee_nb == 1 && jpee_pptr > 3)
   {
     jpee_timercheck(1);
-    JPEE_LOG2(LOG_EVENTS,"I2C_STOP(Write %d bytes at %04X)",jpee_pptr-3,jpee_address);
+    JPEE_LOG2("I2C_STOP(Write %d bytes at %04X)",jpee_pptr-3,jpee_address);
     if (((jpee_address + jpee_pptr-4) ^ jpee_address) & ~jpee_pagemask)
     {
       jpee_pptr = 4+jpee_pagemask-(jpee_address & jpee_pagemask);
-      JPEE_LOG1(LOG_ODDBALL,"I2C_WARNING PAGECROSSING!(Truncate to %d bytes)",jpee_pptr-3);
+      JPEE_LOG1("I2C_WARNING PAGECROSSING!(Truncate to %d bytes)",jpee_pptr-3);
     }
     for (i=3; i<jpee_pptr; i++)
     {
-cerr << " => writing\n";
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */
@@ -217,7 +215,7 @@ cerr << " => writing\n";
     jpee_ad_known = 0;
   }
   else
-    JPEE_LOG0(LOG_EVENTS,"I2C_STOP");
+    JPEE_LOG0("I2C_STOP");
 
   jpee_state = 0;
 }
@@ -225,7 +223,6 @@ cerr << " => writing\n";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MT24LC256::jpee_clock_fall()
 {
-cerr << " ==> jpee_clock_fall()\n";
   switch(jpee_state)
   {
     case 1:
@@ -240,27 +237,27 @@ cerr << " ==> jpee_clock_fall()\n";
           {
             jpee_packet[1] = (jpee_nb >> 1) & 7;
             if (jpee_packet[1] != (jpee_address >> 8) && (jpee_packet[0] & 1))
-              JPEE_LOG0(LOG_ODDBALL,"I2C_WARNING ADDRESS MSB CHANGED");
+              JPEE_LOG0("I2C_WARNING ADDRESS MSB CHANGED");
             jpee_nb &= 0x1A1;
           }
           if (jpee_nb == 0x1A0)
           {
-            JPEE_LOG1(LOG_EVENTS,"I2C_SENT(%02X--start write)",jpee_packet[0]);
+            JPEE_LOG1("I2C_SENT(%02X--start write)",jpee_packet[0]);
             jpee_state = 2;
             jpee_sdat = 0;
           }
           else if (jpee_nb == 0x1A1)
           {
             jpee_state = 4;
-            JPEE_LOG2(LOG_EVENTS,"I2C_SENT(%02X--start read @%04X)",
+            JPEE_LOG2("I2C_SENT(%02X--start read @%04X)",
             jpee_packet[0],jpee_address);
             if (!jpee_ad_known)
-              JPEE_LOG0(LOG_ODDBALL,"I2C_WARNING ADDRESS IS UNKNOWN");
+              JPEE_LOG0("I2C_WARNING ADDRESS IS UNKNOWN");
             jpee_sdat = 0;
           }
           else
           {
-            JPEE_LOG1(LOG_ODDBALL,"I2C_WARNING ODDBALL FIRST BYTE!(%02X)",jpee_nb & 0xFF);
+            JPEE_LOG1("I2C_WARNING ODDBALL FIRST BYTE!(%02X)",jpee_nb & 0xFF);
             jpee_state = 0;
           }
         }
@@ -285,14 +282,14 @@ cerr << " ==> jpee_clock_fall()\n";
         }
         else if (jpee_pptr < 70)
         {
-          JPEE_LOG1(LOG_EVENTS,"I2C_SENT(%02X)",jpee_nb & 0xFF);
+          JPEE_LOG1("I2C_SENT(%02X)",jpee_nb & 0xFF);
           jpee_packet[jpee_pptr++] = (unsigned char)jpee_nb;
           jpee_address = (jpee_packet[1] << 8) | jpee_packet[2];
           if (jpee_pptr > 2)
             jpee_ad_known = 1;
         }
         else
-          JPEE_LOG0(LOG_ODDBALL,"I2C_WARNING OUTPUT_OVERFLOW!");
+          JPEE_LOG0("I2C_WARNING OUTPUT_OVERFLOW!");
       }
       jpee_sdat = 1;
       jpee_nb = 1;
@@ -302,13 +299,13 @@ cerr << " ==> jpee_clock_fall()\n";
     case 4:
       if (jpee_mdat && jpee_sdat)
       {
-        JPEE_LOG0(LOG_EVENTS,"I2C_READ_NAK");
+        JPEE_LOG0("I2C_READ_NAK");
         jpee_state=0;
         break;
       }
       jpee_state=3;
       jpee_nb = (myData[jpee_address & jpee_sizemask] << 1) | 1;  /* Fall through */
-      JPEE_LOG2(LOG_EVENTS,"I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
+      JPEE_LOG2("I2C_READ(%04X=%02X)",jpee_address,jpee_nb/2);
 
     case 3:
       jpee_sdat = !!(jpee_nb & 256);
@@ -325,9 +322,8 @@ cerr << " ==> jpee_clock_fall()\n";
       /* Do nothing */
       break;
   }
-  JPEE_LOG2(LOG_EDGES,"I2C_CLOCK (dat=%d/%d)",jpee_mdat,jpee_sdat);
+  JPEE_LOG2("I2C_CLOCK (dat=%d/%d)",jpee_mdat,jpee_sdat);
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool MT24LC256::jpee_timercheck(int mode)
@@ -341,20 +337,16 @@ bool MT24LC256::jpee_timercheck(int mode)
   if(mode)  // set timer
   {
     myCyclesWhenTimerSet = mySystem.cycles();
-cerr << " --> timer set: " << myCyclesWhenTimerSet << endl;
-
-    return true;
+    return myTimerActive = true;
   }
-  else     // read timer
+  else      // read timer
   {
-    uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
-
-if(elapsed < (uInt32)(5000000.0 / 838.0))
-cerr << " --> timer still running: " << elapsed << endl;
-else
-cerr << " --> timer expired: " << elapsed << endl;
-
-    return elapsed < (uInt32)(5000000.0 / 838.0);
+    if(myTimerActive)
+    {
+      uInt32 elapsed = mySystem.cycles() - myCyclesWhenTimerSet;
+      myTimerActive = elapsed < (uInt32)(5000000.0 / 838.0);
+    }
+    return myTimerActive;
   }
 }
 
@@ -368,7 +360,6 @@ int MT24LC256::jpee_logproc(char const *st)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::MT24LC256(const MT24LC256& c)
   : mySystem(c.mySystem),
-    myCyclesWhenTimerSet(c.myCyclesWhenTimerSet),
     myDataFile(c.myDataFile)
 {
   assert(false);

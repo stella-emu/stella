@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.hxx,v 1.3 2008-05-06 16:39:12 stephena Exp $
+// $Id: MT24LC256.hxx,v 1.4 2008-05-10 22:21:09 stephena Exp $
 //============================================================================
 
 #ifndef MT24LC256_HXX
@@ -30,7 +30,7 @@ class System;
   (aka Supercat) for the bulk of this code.
 
   @author  Stephen Anthony & J. Payson
-  @version $Id: MT24LC256.hxx,v 1.3 2008-05-06 16:39:12 stephena Exp $
+  @version $Id: MT24LC256.hxx,v 1.4 2008-05-10 22:21:09 stephena Exp $
 */
 class MT24LC256
 {
@@ -76,6 +76,9 @@ class MT24LC256
 
     // Cached state of the SDA and SCL pins on the last write
     bool mySDA, mySCL;
+
+    // Indicates that a timer has been set and hasn't expired yet
+    bool myTimerActive;
 
     // Indicates when the timer was set
     uInt32 myCyclesWhenTimerSet;
