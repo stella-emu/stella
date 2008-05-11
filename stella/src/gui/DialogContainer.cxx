@@ -13,17 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.41 2008-03-13 22:58:06 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.42 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "Stack.hxx"
 #include "EventHandler.hxx"
+#include "Joystick.hxx"
 #include "bspf.hxx"
 #include "DialogContainer.hxx"
-
-#define JOY_DEADZONE 3200
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DialogContainer::DialogContainer(OSystem* osystem)
@@ -290,10 +289,11 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
 
-  if(value > JOY_DEADZONE)
-    value -= JOY_DEADZONE;
-  else if(value < -JOY_DEADZONE )
-    value += JOY_DEADZONE;
+  int deadzone = Joystick::deadzone();
+  if(value > deadzone)
+    value -= deadzone;
+  else if(value < -deadzone )
+    value += deadzone;
   else
     value = 0;
 

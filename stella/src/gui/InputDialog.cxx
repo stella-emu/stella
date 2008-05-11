@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.31 2008-04-11 17:56:34 stephena Exp $
+// $Id: InputDialog.cxx,v 1.32 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
 
 #include "Array.hxx"
 #include "OSystem.hxx"
+#include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "Settings.hxx"
 #include "EventMappingWidget.hxx"
@@ -119,10 +120,22 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   myRightPort->appendEntry("right virtual port", 2);
   wid.push_back(myRightPort);
 
-  // Add 'mouse to paddle' mapping
-  ypos += 2*lineHeight;
   lwidth = font.getStringWidth("Paddle threshold: ");
   pwidth = font.getMaxCharWidth() * 5;
+
+  // Add joystick deadzone setting
+  ypos += 2*lineHeight;
+  myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                "Joy deadzone: ", lwidth, kDeadzoneChanged);
+  myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
+  xpos += myDeadzone->getWidth() + 5;
+  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                         "", kTextAlignLeft);
+  myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myDeadzone);
+
+  // Add 'mouse to paddle' mapping
+  xpos = 5;  ypos += lineHeight + 3;
   myPaddleMode = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                   "Mouse is paddle: ", lwidth, kPaddleChanged);
   myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
@@ -168,6 +181,10 @@ void InputDialog::loadConfig()
   int rport = sa2 == "right" ? 2 : 1;
   myRightPort->setSelectedTag(rport);
 
+  // Joystick deadzone
+  myDeadzone->setValue(instance()->settings().getInt("joydeadzone"));
+  myDeadzoneLabel->setLabel(instance()->settings().getString("joydeadzone"));
+
   // Paddle mode
   myPaddleMode->setValue(0);
   myPaddleModeLabel->setLabel("0");
@@ -189,6 +206,11 @@ void InputDialog::saveConfig()
   const string& sa1 = myLeftPort->getSelectedTag() == 2 ? "right" : "left";
   const string& sa2 = myRightPort->getSelectedTag() == 2 ? "right" : "left";
   instance()->eventHandler().mapStelladaptors(sa1, sa2);
+
+  // Joystick deadzone
+  int deadzone = myDeadzone->getValue();
+  instance()->settings().setInt("joydeadzone", deadzone);
+  Joystick::setDeadZone(deadzone);
 
   // Paddle mode
   Paddles::setMouseIsPaddle(myPaddleMode->getValue());
@@ -274,6 +296,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kRightChanged:
       myLeftPort->setSelectedTag(
         myRightPort->getSelectedTag() == 2 ? 1 : 2);
+      break;
+
+    case kDeadzoneChanged:
+      myDeadzoneLabel->setValue(myDeadzone->getValue());
       break;
 
     case kPaddleChanged:

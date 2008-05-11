@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.hxx,v 1.4 2008-05-10 22:21:09 stephena Exp $
+// $Id: MT24LC256.hxx,v 1.5 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #ifndef MT24LC256_HXX
@@ -30,7 +30,7 @@ class System;
   (aka Supercat) for the bulk of this code.
 
   @author  Stephen Anthony & J. Payson
-  @version $Id: MT24LC256.hxx,v 1.4 2008-05-10 22:21:09 stephena Exp $
+  @version $Id: MT24LC256.hxx,v 1.5 2008-05-11 21:18:35 stephena Exp $
 */
 class MT24LC256
 {
@@ -88,6 +88,12 @@ class MT24LC256
 
     // The file containing the EEPROM data
     string myDataFile;
+
+    // Indicates if a valid EEPROM data file exists/was successfully loaded
+    bool myDataFileExists;
+
+    // Indicates if the EEPROM has changed since class invocation
+    bool myDataChanged;
 
     // Required for I2C functionality
     int jpee_mdat, jpee_sdat, jpee_mclk;

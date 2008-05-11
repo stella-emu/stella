@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.17 2008-04-11 17:56:34 stephena Exp $
+// $Id: InputDialog.hxx,v 1.18 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -54,10 +54,11 @@ class InputDialog : public Dialog
 
   private:
     enum {
-      kLeftChanged   = 'LCch',
-      kRightChanged  = 'RCch',
-      kPaddleChanged = 'PDch',
-      kPSpeedChanged = 'PSch'
+      kLeftChanged     = 'LCch',
+      kRightChanged    = 'RCch',
+      kDeadzoneChanged = 'DZch',
+      kPaddleChanged   = 'PDch',
+      kPSpeedChanged   = 'PSch'
     };
 
     TabWidget* myTab;
@@ -68,6 +69,8 @@ class InputDialog : public Dialog
     PopUpWidget* myLeftPort;
     PopUpWidget* myRightPort;
 
+    SliderWidget*     myDeadzone;
+    StaticTextWidget* myDeadzoneLabel;
     SliderWidget*     myPaddleMode;
     StaticTextWidget* myPaddleModeLabel;
     SliderWidget*     myPaddleSpeed;

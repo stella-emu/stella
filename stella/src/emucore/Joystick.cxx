@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.cxx,v 1.12 2008-04-13 23:43:14 stephena Exp $
+// $Id: Joystick.cxx,v 1.13 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -85,3 +85,15 @@ void Joystick::update()
   if(yaxis < -16384)
     myDigitalPinState[One] = false;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Joystick::setDeadZone(int deadzone)
+{
+  if(deadzone < 0)  deadzone = 0;
+  if(deadzone > 29) deadzone = 29;
+
+  _DEAD_ZONE = 3200 + deadzone * 1000;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Joystick::_DEAD_ZONE = 3200;

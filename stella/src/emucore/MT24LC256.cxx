@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.9 2008-05-10 22:21:09 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.10 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -54,7 +54,9 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     myCyclesWhenTimerSet(0),
     myCyclesWhenSDASet(0),
     myCyclesWhenSCLSet(0),
-    myDataFile(filename)
+    myDataFile(filename),
+    myDataFileExists(false),
+    myDataChanged(false)
 {
   // First initialize the I2C state
   jpee_init();
@@ -70,21 +72,27 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     {
       in.seekg(0, ios::beg);
       in.read((char*)myData, 32768);
+      myDataFileExists = true;
     }
     in.close();
   }
+  else
+    myDataFileExists = false;
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MT24LC256::~MT24LC256()
 {
-  // Save EEPROM data to external file
-  ofstream out;
-  out.open(myDataFile.c_str(), ios_base::binary);
-  if(out.is_open())
+  // Save EEPROM data to external file only when necessary
+  if(!myDataFileExists || myDataChanged)
   {
-    out.write((char*)myData, 32768);
-    out.close();
+    ofstream out;
+    out.open(myDataFile.c_str(), ios_base::binary);
+    if(out.is_open())
+    {
+      out.write((char*)myData, 32768);
+      out.close();
+    }
   }
 }
 
@@ -208,6 +216,7 @@ void MT24LC256::jpee_data_stop()
     }
     for (i=3; i<jpee_pptr; i++)
     {
+      myDataChanged = true;
       myData[(jpee_address++) & jpee_sizemask] = jpee_packet[i];
       if (!(jpee_address & jpee_pagemask))
         break;  /* Writes can't cross page boundary! */

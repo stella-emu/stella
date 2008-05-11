@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Joystick.hxx,v 1.10 2008-04-13 23:43:14 stephena Exp $
+// $Id: Joystick.hxx,v 1.11 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #ifndef JOYSTICK_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 joystick controller.
 
   @author  Bradford W. Mott
-  @version $Id: Joystick.hxx,v 1.10 2008-04-13 23:43:14 stephena Exp $
+  @version $Id: Joystick.hxx,v 1.11 2008-05-11 21:18:35 stephena Exp $
 */
 class Joystick : public Controller
 {
@@ -53,12 +53,22 @@ class Joystick : public Controller
     */
     virtual void update();
 
+    /**
+      Sets the deadzone amount for real analog joysticks.
+      Technically, this isn't really used by the Joystick class at all,
+      but it seemed like the best place to put it.
+    */
+    static void setDeadZone(int deadzone);
+    inline static int deadzone() { return _DEAD_ZONE;  }
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
                 myXAxisValue, myYAxisValue, myFireEvent;
 
+
+    static int _DEAD_ZONE;
 };
 
 #endif

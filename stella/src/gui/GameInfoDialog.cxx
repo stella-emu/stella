@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.53 2008-04-11 17:56:34 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.54 2008-05-11 21:18:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -552,7 +552,7 @@ void GameInfoDialog::saveConfig()
 
   // Controller properties
   tag = myP0Controller->getSelectedTag();
-  for(i = 0; i < 5; ++i)
+  for(i = 0; i < kNumControllerTypes; ++i)
   {
     if(i == tag-1)
     {
@@ -562,7 +562,7 @@ void GameInfoDialog::saveConfig()
   }
 
   tag = myP1Controller->getSelectedTag();
-  for(i = 0; i < 5; ++i)
+  for(i = 0; i < kNumControllerTypes; ++i)
   {
     if(i == tag-1)
     {
@@ -672,12 +672,13 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* GameInfoDialog::ourControllerList[kNumControllerTypes][2] = {
-  { "AtariVox",     "ATARIVOX"     },
+  { "Joystick",     "JOYSTICK"     },
+  { "Paddles",      "PADDLES"      },
   { "Booster-Grip", "BOOSTER-GRIP" },
   { "Driving",      "DRIVING"      },
   { "Keyboard",     "KEYBOARD"     },
-  { "Paddles",      "PADDLES"      },
-  { "Joystick",     "JOYSTICK"     }
+  { "AtariVox",     "ATARIVOX"     },
+  { "SaveKey",      "SAVEKEY"      }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

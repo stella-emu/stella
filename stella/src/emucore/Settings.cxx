@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.142 2008-04-11 17:56:34 stephena Exp $
+// $Id: Settings.cxx,v 1.143 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -69,6 +69,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("joymap", "");
   setInternal("joyaxismap", "");
   setInternal("joyhatmap", "");
+  setInternal("joydeadzone", "0");
   setInternal("pspeed", "6");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
@@ -246,6 +247,12 @@ void Settings::validate()
   if(i < 1 || i > 10)
     setInternal("zoom_tia", "2");
 
+  i = getInt("joydeadzone");
+  if(i < 0)
+    setInternal("joydeadzone", "0");
+  else if(i > 29)
+    setInternal("joydeadzone", "29");
+
   i = getInt("pspeed");
   if(i < 1)
     setInternal("pspeed", "1");
@@ -312,6 +319,7 @@ void Settings::usage()
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
     << "  -showinfo     <1|0>          Shows some game info\n"
+    << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"

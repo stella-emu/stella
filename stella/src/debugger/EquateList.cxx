@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.32 2008-05-06 16:39:10 stephena Exp $
+// $Id: EquateList.cxx,v 1.33 2008-05-11 21:18:34 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -66,14 +66,21 @@ void EquateList::addEquate(const string& label, int address)
   // as well, and we don't yet have an infrastructure to determine that,
   // so the entire region is marked as read-write
   equate_t flags = EQF_READ;
+#if 0
   if(address >= 0x80 && address <= 0xff)
     flags = EQF_RW;
   else if((address & 0x1000) == 0x1000)
     flags = EQF_RW;
   else
-//{ cerr << "label = " << label << ", address = " << hex << address << " discarded\n";
+  { 
+    cerr << "label = " << label << ", address = " << hex << address << " discarded\n";
     return;  // don't know what else to do for now
-//}
+  }
+#else
+  // The above section of code is deactivated until a better means of
+  // determining constants vs. addresses is found
+  flags = EQF_RW;
+#endif
 
   removeEquate(label);
 

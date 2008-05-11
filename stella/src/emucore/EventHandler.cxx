@@ -1,4 +1,3 @@
-
 //============================================================================
 //
 //   SSSS    tt          lll  lll
@@ -14,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.221 2008-03-30 15:01:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.222 2008-05-11 21:18:35 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -31,6 +30,7 @@
 #include "Launcher.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
+#include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PropsSet.hxx"
 #include "ScrollBarWidget.hxx"
@@ -54,8 +54,6 @@
     void handleMacOSXKeypress(int key);
   }
 #endif
-
-#define JOY_DEADZONE 3200
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
@@ -144,6 +142,7 @@ void EventHandler::initialize()
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
 
+  Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
   Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
 
   // Set number of lines a mousewheel will scroll
@@ -849,8 +848,10 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
       myEvent->set(Event::SARightAxis1Value, value);
       break;
     default:
+    {
       // Otherwise, we know the event is digital
-      if(value > -JOY_DEADZONE && value < JOY_DEADZONE)
+      int deadzone = Joystick::deadzone();
+      if(value > -deadzone && value < deadzone)
       {
         // Turn off both events, since we don't know exactly which one
         // was previously activated.
@@ -860,6 +861,7 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
       else
         handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
       break;
+    }
   }
 #endif
 }
