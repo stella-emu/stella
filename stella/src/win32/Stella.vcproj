@@ -646,7 +646,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\TrackBall22.cxx"
+					RelativePath="..\emucore\TrackBall.cxx"
 					>
 				</File>
 				<File
@@ -1252,7 +1252,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\TrackBall22.hxx"
+					RelativePath="..\emucore\TrackBall.hxx"
 					>
 				</File>
 				<File
