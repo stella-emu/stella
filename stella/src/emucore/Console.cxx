@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.140 2008-05-11 21:18:35 stephena Exp $
+// $Id: Console.cxx,v 1.141 2008-05-12 22:40:23 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -44,7 +44,7 @@
 #include "Switches.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
-#include "TrackBall22.hxx"
+#include "TrackBall.hxx"
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Menu.hxx"
@@ -604,7 +604,18 @@ void Console::setControllers()
   }
   else if(left == "TRACKBALL22")
   {
-    myControllers[leftPort] = new TrackBall22(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+                                            Controller::TrackBall22);
+  }
+  else if(left == "TRACKBALL80")
+  {
+    myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+                                            Controller::TrackBall80);
+  }
+  else if(left == "AMIGAMOUSE")
+  {
+    myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+                                            Controller::AmigaMouse);
   }
   else
   {
@@ -630,7 +641,18 @@ void Console::setControllers()
   }
   else if(right == "TRACKBALL22")
   {
-    myControllers[rightPort] = new TrackBall22(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+                                             Controller::TrackBall22);
+  }
+  else if(right == "TRACKBALL80")
+  {
+    myControllers[rightPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+                                             Controller::TrackBall80);
+  }
+  else if(right == "AMIGAMOUSE")
+  {
+    myControllers[rightPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+                                             Controller::AmigaMouse);
   }
   else if(right == "ATARIVOX")
   {

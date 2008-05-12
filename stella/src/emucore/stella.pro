@@ -1758,6 +1758,7 @@
 "Cartridge.Name" "Missile Command (Amiga Mouse) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "AMIGAMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -2443,8 +2444,9 @@
 "Cartridge.MD5" "2365e1534d67f94d8670394ab99150ce"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Missile Command (CX-80 Trackball) (2002) (TJ)"
-"Cartridge.Note" "Uses CX-80 TrackBall Controller"
+"Cartridge.Note" "Uses CX-80 Trackball Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "TRACKBALL80"
 "Display.Phosphor" "YES"
 ""
 
@@ -9862,6 +9864,7 @@
 "Cartridge.Name" "Missile Command (CX-22 Trackball) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses CX-22 Trackball Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "TRACKBALL22"
 "Display.Phosphor" "YES"
 ""
 
@@ -9943,6 +9946,7 @@
 "Cartridge.Name" "Missile Command (CX-22 Trackball) (2002) (TJ)"
 "Cartridge.Note" "Uses CX-22 Trackball Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "TRACKBALL22"
 "Display.Phosphor" "YES"
 ""
 
@@ -9970,6 +9974,7 @@
 "Cartridge.Name" "Missile Command (Amiga Mouse) (2002) (TJ)"
 "Cartridge.Note" "Uses Amiga Mouse Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "AMIGAMOUSE"
 "Display.Phosphor" "YES"
 ""
 
@@ -10555,6 +10560,7 @@
 "Cartridge.Name" "Missile Command (CX-80 Trackball) (2002) (TJ) (PAL)"
 "Cartridge.Note" "Uses CX-80 Trackball Controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Left" "TRACKBALL80"
 "Display.Phosphor" "YES"
 ""
 

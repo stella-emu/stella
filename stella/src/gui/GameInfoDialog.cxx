@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.54 2008-05-11 21:18:35 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.55 2008-05-12 22:40:26 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -171,7 +171,7 @@ GameInfoDialog::GameInfoDialog(
 
   xpos = 10; ypos = vBorder;
   lwidth = font.getStringWidth("P0 Controller: ");
-  pwidth = font.getStringWidth("Booster-Grip");
+  pwidth = font.getStringWidth("CX-22 Trakball");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -556,7 +556,7 @@ void GameInfoDialog::saveConfig()
   {
     if(i == tag-1)
     {
-      myGameProperties.set(Controller_Left, ourControllerList[i][0]);
+      myGameProperties.set(Controller_Left, ourControllerList[i][1]);
       break;
     }
   }
@@ -566,7 +566,7 @@ void GameInfoDialog::saveConfig()
   {
     if(i == tag-1)
     {
-      myGameProperties.set(Controller_Right, ourControllerList[i][0]);
+      myGameProperties.set(Controller_Right, ourControllerList[i][1]);
       break;
     }
   }
@@ -672,13 +672,16 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* GameInfoDialog::ourControllerList[kNumControllerTypes][2] = {
-  { "Joystick",     "JOYSTICK"     },
-  { "Paddles",      "PADDLES"      },
-  { "Booster-Grip", "BOOSTER-GRIP" },
-  { "Driving",      "DRIVING"      },
-  { "Keyboard",     "KEYBOARD"     },
-  { "AtariVox",     "ATARIVOX"     },
-  { "SaveKey",      "SAVEKEY"      }
+  { "Joystick",       "JOYSTICK"     },
+  { "Paddles",        "PADDLES"      },
+  { "Booster-Grip",   "BOOSTER-GRIP" },
+  { "Driving",        "DRIVING"      },
+  { "Keyboard",       "KEYBOARD"     },
+  { "CX-22 Trakball", "TRACKBALL22"  },
+  { "CX-80 Mouse",    "TRACKBALL80"  },
+  { "AmigaMouse",     "AMIGAMOUSE"   },
+  { "AtariVox",       "ATARIVOX"     },
+  { "SaveKey",        "SAVEKEY"      }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
