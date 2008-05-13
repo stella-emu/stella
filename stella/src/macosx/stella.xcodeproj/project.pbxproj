@@ -271,8 +271,6 @@
 		2DEFB40C09C3386F00754289 /* Cart.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2DEFB40B09C3386F00754289 /* Cart.icns */; };
 		DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */; };
 		DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */; };
-		DC09847B0D3983A80073C852 /* TrackBall22.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984790D3983A80073C852 /* TrackBall22.cxx */; };
-		DC09847C0D3983A80073C852 /* TrackBall22.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC09847A0D3983A80073C852 /* TrackBall22.hxx */; };
 		DC0984850D3985160073C852 /* CartSB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984830D3985160073C852 /* CartSB.cxx */; };
 		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
 		DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC11F78B0DB36933003B505E /* MT24LC256.cxx */; };
@@ -317,6 +315,8 @@
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE3BBFB0C95CEDC00A671DF /* Surface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF70C95CEDC00A671DF /* Surface.cxx */; };
 		DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF80C95CEDC00A671DF /* Surface.hxx */; };
+		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
+		DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
 /* End PBXBuildFile section */
@@ -636,8 +636,6 @@
 		B2F367C504C7ADC700A80002 /* SDLMain.nib */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; path = SDLMain.nib; sourceTree = "<group>"; };
 		DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = StateManager.cxx; path = ../emucore/StateManager.cxx; sourceTree = SOURCE_ROOT; };
 		DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StateManager.hxx; path = ../emucore/StateManager.hxx; sourceTree = SOURCE_ROOT; };
-		DC0984790D3983A80073C852 /* TrackBall22.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall22.cxx; path = ../emucore/TrackBall22.cxx; sourceTree = SOURCE_ROOT; };
-		DC09847A0D3983A80073C852 /* TrackBall22.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TrackBall22.hxx; path = ../emucore/TrackBall22.hxx; sourceTree = SOURCE_ROOT; };
 		DC0984830D3985160073C852 /* CartSB.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartSB.cxx; path = ../emucore/CartSB.cxx; sourceTree = SOURCE_ROOT; };
 		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartSB.hxx; path = ../emucore/CartSB.hxx; sourceTree = SOURCE_ROOT; };
 		DC11F78B0DB36933003B505E /* MT24LC256.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MT24LC256.cxx; path = ../emucore/MT24LC256.cxx; sourceTree = SOURCE_ROOT; };
@@ -682,6 +680,8 @@
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF70C95CEDC00A671DF /* Surface.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Surface.cxx; path = ../gui/Surface.cxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF80C95CEDC00A671DF /* Surface.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Surface.hxx; path = "..//gui/Surface.hxx"; sourceTree = SOURCE_ROOT; };
+		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
+		DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TrackBall.hxx; path = ../emucore/TrackBall.hxx; sourceTree = SOURCE_ROOT; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
@@ -883,6 +883,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */,
+				DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
 				DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */,
 				DC11F78B0DB36933003B505E /* MT24LC256.cxx */,
@@ -893,8 +895,6 @@
 				DCA23AE80D75B22500F77B33 /* CartX07.hxx */,
 				DC0984830D3985160073C852 /* CartSB.cxx */,
 				DC0984840D3985160073C852 /* CartSB.hxx */,
-				DC0984790D3983A80073C852 /* TrackBall22.cxx */,
-				DC09847A0D3983A80073C852 /* TrackBall22.hxx */,
 				DC07A3C60CAD738A009B4BC9 /* StateManager.cxx */,
 				DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */,
 				DCEECE540B5E5E540021D754 /* Cart0840.cxx */,
@@ -1313,7 +1313,6 @@
 				DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */,
 				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
 				DC8211550CAD74FF00511571 /* VideoModeList.hxx in Headers */,
-				DC09847C0D3983A80073C852 /* TrackBall22.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
 				DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */,
@@ -1323,6 +1322,7 @@
 				DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */,
 				DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */,
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
+				DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1557,7 +1557,6 @@
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
 				DCE3BBFB0C95CEDC00A671DF /* Surface.cxx in Sources */,
 				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
-				DC09847B0D3983A80073C852 /* TrackBall22.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
 				DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */,
@@ -1567,6 +1566,7 @@
 				DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */,
 				DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */,
 				DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */,
+				DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
