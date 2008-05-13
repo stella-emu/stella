@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.cxx,v 1.1 2008-04-29 19:11:42 stephena Exp $
+// $Id: RiotWidget.cxx,v 1.2 2008-05-13 15:13:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,7 @@
 
 #include "RiotWidget.hxx"
 
-#define CREATE_IO_REGS(desc, bits, bitsID, reg)                          \
+#define CREATE_IO_REGS(desc, bits, bitsID)                               \
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth, fontHeight, \
                            desc, kTextAlignLeft);                        \
   xpos += t->getWidth() + 5;                                             \
@@ -39,10 +39,6 @@
   bits->setID(bitsID);                                                   \
   addFocusWidget(bits);                                                  \
   xpos += bits->getWidth() + 5;                                          \
-  reg = new DataGridWidget(boss, font, xpos, ypos, 1, 1, 2, 8, kBASE_16);\
-  reg->setTarget(this);                                                  \
-  reg->setEditable(false);                                               \
-  addFocusWidget(reg);                                                   \
   bits->setList(off, on);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,7 +52,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = 7 * fontWidth;
+  int xpos = 10, ypos = 25, lwidth = 9 * fontWidth;
   StaticTextWidget* t;
 
   // Set the strings to be used in the various bit registers
@@ -68,21 +64,20 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
     on.push_back("1");
   }
 
-  // SWCHA bits and actual value
-  CREATE_IO_REGS("SWCHA:", mySWCHABits, kSWCHABitsID, mySWCHA);
+  // SWCHA bits in 'poke' mode
+  CREATE_IO_REGS("SWCHA(W):", mySWCHAWriteBits, kSWCHABitsID);
 
-  // SWACNT bits and actual value
+  // SWACNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWACNT:", mySWACNTBits, kSWACNTBitsID, mySWACNT);
+  CREATE_IO_REGS("SWACNT:", mySWACNTBits, kSWACNTBitsID);
 
-  // SWCHB bits and actual value
+  // SWCHA bits in 'peek' mode
+  xpos = 10;  ypos += lineHeight + 5;
+  CREATE_IO_REGS("SWCHA(R):", mySWCHAReadBits, 0);
+
+  // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += 2 * lineHeight;
-  CREATE_IO_REGS("SWCHB:", mySWCHBBits, kSWCHBBitsID, mySWCHB);
-
-  // SWBCNT bits and actual value
-  xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWBCNT:", mySWBCNTBits, kSWBCNTBitsID, mySWBCNT);
-//  mySWBCNTBits->setEnabled(false);
+  CREATE_IO_REGS("SWCHB:", mySWCHBBits, 0);
 
 }
 
@@ -94,12 +89,11 @@ RiotWidget::~RiotWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotWidget::loadConfig()
 {
-#define IO_REGS_UPDATE(bits, reg, s_bits, s_reg)              \
+#define IO_REGS_UPDATE(bits, s_bits)                          \
   changed.clear();                                            \
   for(unsigned int i = 0; i < state.s_bits.size(); ++i)       \
     changed.push_back(state.s_bits[i] != oldstate.s_bits[i]); \
-  bits->setState(state.s_bits, changed);                      \
-  reg->setList(state.s_reg, oldstate.s_reg, state.s_reg != oldstate.s_reg);
+  bits->setState(state.s_bits, changed);
 
   IntArray alist;
   IntArray vlist;
@@ -112,17 +106,17 @@ void RiotWidget::loadConfig()
   const RiotState& state    = (RiotState&) riot.getState();
   const RiotState& oldstate = (RiotState&) riot.getOldState();
 
-  // Update the SWCHA register booleans
-  IO_REGS_UPDATE(mySWCHABits, mySWCHA, swchaBits, SWCHA);
+  // Update the SWCHA register booleans (poke mode)
+  IO_REGS_UPDATE(mySWCHAWriteBits, swchaWriteBits);
 
   // Update the SWACNT register booleans
-  IO_REGS_UPDATE(mySWACNTBits, mySWACNT, swacntBits, SWACNT);
+  IO_REGS_UPDATE(mySWACNTBits, swacntBits);
+
+  // Update the SWCHA register booleans (peek mode)
+  IO_REGS_UPDATE(mySWCHAReadBits, swchaReadBits);
 
   // Update the SWCHB register booleans
-  IO_REGS_UPDATE(mySWCHBBits, mySWCHB, swchbBits, SWCHB);
-
-  // Update the SWBCNT register booleans
-  IO_REGS_UPDATE(mySWBCNTBits, mySWBCNT, swbcntBits, SWBCNT);
+  IO_REGS_UPDATE(mySWCHBBits, swchbBits);
 
 }
 

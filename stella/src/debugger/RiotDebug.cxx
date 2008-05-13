@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.3 2008-05-04 17:16:39 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.4 2008-05-13 15:13:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -33,14 +33,14 @@ RiotDebug::RiotDebug(Debugger& dbg, Console& console)
 const DebuggerState& RiotDebug::getState()
 {
   // Port A & B registers
-  myState.SWCHA = swcha();
-  myState.SWCHB = swchb();
-  myState.SWACNT = swacnt();
-  myState.SWBCNT = swbcnt();
-  Debugger::set_bits(myState.SWCHA, myState.swchaBits);
-  Debugger::set_bits(myState.SWCHB, myState.swchbBits);
+  myState.SWCHA_R = swcha();
+  myState.SWCHA_W = mySystem.m6532().myOutA;
+  myState.SWACNT  = swacnt();
+  myState.SWCHB   = swchb();
+  Debugger::set_bits(myState.SWCHA_R, myState.swchaReadBits);
+  Debugger::set_bits(myState.SWCHA_W, myState.swchaWriteBits);
   Debugger::set_bits(myState.SWACNT, myState.swacntBits);
-  Debugger::set_bits(myState.SWBCNT, myState.swbcntBits);
+  Debugger::set_bits(myState.SWCHB, myState.swchbBits);
 
   // Timer registers
   myState.TIM1T    = tim1T();
@@ -58,14 +58,14 @@ const DebuggerState& RiotDebug::getState()
 void RiotDebug::saveOldState()
 {
   // Port A & B registers
-  myOldState.SWCHA = swcha();
-  myOldState.SWCHB = swchb();
-  myOldState.SWACNT = swacnt();
-  myOldState.SWBCNT = swbcnt();
-  Debugger::set_bits(myOldState.SWCHA, myOldState.swchaBits);
-  Debugger::set_bits(myOldState.SWCHB, myOldState.swchbBits);
+  myOldState.SWCHA_R = swcha();
+  myOldState.SWCHA_W = mySystem.m6532().myOutA;
+  myOldState.SWACNT  = swacnt();
+  myOldState.SWCHB   = swchb();
+  Debugger::set_bits(myOldState.SWCHA_R, myOldState.swchaReadBits);
+  Debugger::set_bits(myOldState.SWCHA_W, myOldState.swchaWriteBits);
   Debugger::set_bits(myOldState.SWACNT, myOldState.swacntBits);
-  Debugger::set_bits(myOldState.SWBCNT, myOldState.swbcntBits);
+  Debugger::set_bits(myOldState.SWCHB, myOldState.swchbBits);
 
   // Timer registers
   myOldState.TIM1T    = tim1T();
@@ -103,13 +103,6 @@ uInt8 RiotDebug::swacnt(int newVal)
     mySystem.poke(0x281, newVal);
 
   return mySystem.peek(0x281);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 RiotDebug::swbcnt(int newVal)
-{
-  // This is read-only on a real system; it makes no sense to change it
-  return mySystem.peek(0x283);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -228,14 +221,14 @@ string RiotDebug::toString()
   const RiotState& oldstate = (RiotState&) getOldState();
   string ret;
 
-  ret += myDebugger.valueToString(0x280) + "/SWCHA" +
-         myDebugger.invIfChanged(state.SWCHA, oldstate.SWCHA) + " ";
-  ret += myDebugger.valueToString(0x281) + "/SWACNT" +
+  ret += myDebugger.valueToString(0x280) + "/SWCHA(R)=" +
+         myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R) + " ";
+  ret += myDebugger.valueToString(0x280) + "/SWCHA(W)=" +
+         myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W) + " ";
+  ret += myDebugger.valueToString(0x281) + "/SWACNT=" +
          myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) + " ";
-  ret += myDebugger.valueToString(0x282) + "/SWCHB" +
+  ret += myDebugger.valueToString(0x282) + "/SWCHB=" +
          myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) + " ";
-  ret += myDebugger.valueToString(0x283) + "/SWBCNT" +
-         myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT) + " ";
   ret += "\n";
 
   // These are squirrely: some symbol files will define these as

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.hxx,v 1.1 2008-04-19 21:11:52 stephena Exp $
+// $Id: RiotDebug.hxx,v 1.2 2008-05-13 15:13:17 stephena Exp $
 //============================================================================
 
 #ifndef RIOT_DEBUG_HXX
@@ -28,11 +28,11 @@ class RiotDebug;
 class RiotState : public DebuggerState
 {
   public:
-    uInt8 SWCHA, SWCHB, SWACNT, SWBCNT;
-    BoolArray swchaBits;
-    BoolArray swchbBits;
+    uInt8 SWCHA_R, SWCHA_W, SWACNT, SWCHB;
+    BoolArray swchaReadBits;
+    BoolArray swchaWriteBits;
     BoolArray swacntBits;
-    BoolArray swbcntBits;
+    BoolArray swchbBits;
 
     uInt8 TIM1T, TIM8T, TIM64T, TIM1024T, INTIM, TIMINT;
     Int32 TIMCLKS;
@@ -51,9 +51,8 @@ class RiotDebug : public DebuggerSystem
 
     /* Port A and B registers */
     uInt8 swcha(int newVal = -1);
-    uInt8 swchb(int newVal = -1);
     uInt8 swacnt(int newVal = -1);
-    uInt8 swbcnt(int newVal = -1);
+    uInt8 swchb(int newVal = -1);
 
     /* Timer registers & associated clock */
     uInt8 tim1T(int newVal = -1);
@@ -73,7 +72,7 @@ class RiotDebug : public DebuggerSystem
     string diffP1String();
     string tvTypeString();
     string switchesString();
-
+    
   private:
     RiotState myState;
     RiotState myOldState;

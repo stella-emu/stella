@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.hxx,v 1.1 2008-04-29 19:11:42 stephena Exp $
+// $Id: RiotWidget.hxx,v 1.2 2008-05-13 15:13:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,7 +25,6 @@
 class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
-class EditTextWidget;
 class ToggleBitWidget;
 
 #include "Array.hxx"
@@ -45,23 +44,23 @@ class RiotWidget : public Widget, public CommandSender
   private:
 
   private:
-    ToggleBitWidget* mySWCHABits;
-    ToggleBitWidget* mySWCHBBits;
+    ToggleBitWidget* mySWCHAReadBits;
+    ToggleBitWidget* mySWCHAWriteBits;
     ToggleBitWidget* mySWACNTBits;
-    ToggleBitWidget* mySWBCNTBits;
-
-    DataGridWidget* mySWCHA;
-    DataGridWidget* mySWCHB;
-    DataGridWidget* mySWACNT;
-    DataGridWidget* mySWBCNT;
+    ToggleBitWidget* mySWCHBBits;
 
     DataGridWidget* myTim[4];
     DataGridWidget* myTimResults[4];
 
-    EditTextWidget* myP0Dir,  *myP1Dir;
-    EditTextWidget* myP0Diff, *myP1Diff;
-    EditTextWidget* myTVType;
-    EditTextWidget* mySwitches;
+    CheckboxWidget* myP0Dir,  *myP1Dir;
+    CheckboxWidget* myP0Diff, *myP1Diff;
+    CheckboxWidget* myTVType;
+    CheckboxWidget* mySwitches;
+
+    StaticTextWidget* myP0DirText,  *myP1DirText;
+    StaticTextWidget* myP0DiffText, *myP1DiffText;
+    StaticTextWidget* myTVTypeText;
+    StaticTextWidget* mySwitchesText;
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
