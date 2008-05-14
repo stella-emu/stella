@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleWidget.cxx,v 1.7 2008-02-06 13:45:20 stephena Exp $
+// $Id: ToggleWidget.cxx,v 1.8 2008-05-14 18:04:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,8 @@ ToggleWidget::ToggleWidget(GuiObject* boss, const GUI::Font& font,
     _cols(cols),
     _currentRow(0),
     _currentCol(0),
-    _selectedItem(0)
+    _selectedItem(0),
+    _editable(true)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_RAWDATA;
@@ -68,6 +69,9 @@ void ToggleWidget::handleMouseDown(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
 {
+  if (!isEnabled() || !_editable)
+    return;
+
   // If this was a double click and the mouse is still over the selected item,
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
@@ -185,7 +189,7 @@ bool ToggleWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   {
     _selectedItem = _currentRow*_cols + _currentCol;
 
-    if(toggle)
+    if(toggle && _editable)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
       _changedList[_selectedItem] = !_changedList[_selectedItem];

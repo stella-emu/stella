@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ToggleWidget.hxx,v 1.5 2008-02-06 13:45:20 stephena Exp $
+// $Id: ToggleWidget.hxx,v 1.6 2008-05-14 18:04:58 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,7 +51,8 @@ class ToggleWidget : public Widget, public CommandSender
 
     virtual bool wantsFocus() { return true; }
 
-    int colWidth() { return _colWidth; }
+    int colWidth() const { return _colWidth; }
+    void setEditable(bool editable) { _editable = editable; }
 
   protected:
     void drawWidget(bool hilite) = 0;
@@ -65,6 +66,7 @@ class ToggleWidget : public Widget, public CommandSender
     int  _rowHeight;
     int  _colWidth;
     int  _selectedItem;
+    bool _editable;
 
     BoolArray  _stateList;
     BoolArray  _changedList;

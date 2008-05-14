@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.93 2008-04-19 21:11:52 stephena Exp $
+// $Id: Debugger.hxx,v 1.94 2008-05-14 18:04:57 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -70,7 +70,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.93 2008-04-19 21:11:52 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.94 2008-05-14 18:04:57 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -267,12 +267,8 @@ class Debugger : public DialogContainer
     {
       uInt8 result = 0x0;
       for(int i = 0; i < 8; ++i)
-      {
         if(bits[i])
           result |= (1<<(7-i));
-        else
-          return result &= ~(1<<(7-i));
-      }
       return result;
     }
 

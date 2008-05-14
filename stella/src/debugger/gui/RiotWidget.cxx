@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.cxx,v 1.2 2008-05-13 15:13:17 stephena Exp $
+// $Id: RiotWidget.cxx,v 1.3 2008-05-14 18:04:57 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -74,10 +74,41 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
   CREATE_IO_REGS("SWCHA(R):", mySWCHAReadBits, 0);
+  mySWCHAReadBits->setEditable(false);
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += 2 * lineHeight;
   CREATE_IO_REGS("SWCHB:", mySWCHBBits, 0);
+  mySWCHBBits->setEditable(false);
+
+  // Timer registers (R/W)
+  const char* writeNames[] = { "TIM1T:", "TIM8T:", "TIM64T:", "TIM1024T:" };
+  xpos = 10;  ypos += 2*lineHeight;
+  for(int row = 0; row < 4; ++row)
+  {
+    t = new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+                             9*fontWidth, fontHeight, writeNames[row], kTextAlignLeft);
+  }
+  xpos += 9*fontWidth + 5;
+  myTimWrite = new DataGridWidget(boss, font, xpos, ypos, 1, 4, 2, 8, kBASE_16);
+  myTimWrite->setTarget(this);
+  myTimWrite->setID(kTimWriteID);
+  addFocusWidget(myTimWrite);
+
+  // Timer registers (RO)
+  const char* readNames[] = { "INTIM:", "TIMINT:", "Tim Clks:" };
+  xpos = 10;  ypos += myTimWrite->getHeight() + lineHeight;
+  for(int row = 0; row < 3; ++row)
+  {
+    t = new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+                             9*fontWidth, fontHeight, readNames[row], kTextAlignLeft);
+  }
+  xpos += 9*fontWidth + 5;
+  myTimRead = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 8, 32, kBASE_16);
+  myTimRead->setTarget(this);
+  myTimRead->setEditable(false);
+  addFocusWidget(myTimRead);
+
 
 }
 
@@ -118,9 +149,77 @@ void RiotWidget::loadConfig()
   // Update the SWCHB register booleans
   IO_REGS_UPDATE(mySWCHBBits, swchbBits);
 
+  // Update timer write registers
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(kTim1TID);  vlist.push_back(state.TIM1T);
+    changed.push_back(state.TIM1T != oldstate.TIM1T);
+  alist.push_back(kTim8TID);  vlist.push_back(state.TIM8T);
+    changed.push_back(state.TIM8T != oldstate.TIM8T);
+  alist.push_back(kTim64TID);  vlist.push_back(state.TIM64T);
+    changed.push_back(state.TIM64T != oldstate.TIM64T);
+  alist.push_back(kTim1024TID);  vlist.push_back(state.TIM1024T);
+    changed.push_back(state.TIM1024T != oldstate.TIM1024T);
+  myTimWrite->setList(alist, vlist, changed);
+
+  // Update timer read registers
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(state.INTIM);
+    changed.push_back(state.INTIM != oldstate.INTIM);
+  alist.push_back(0);  vlist.push_back(state.TIMINT);
+    changed.push_back(state.TIMINT != oldstate.TIMINT);
+  alist.push_back(0);  vlist.push_back(state.TIMCLKS);
+    changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
+  myTimRead->setList(alist, vlist, changed);
+
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
+  int addr = -1, value = -1;
+  RiotDebug& riot = instance()->debugger().riotDebug();
+
+  switch(cmd)
+  {
+    case kDGItemDataChangedCmd:
+      switch(id)
+      {
+        case kTimWriteID:
+        {
+          addr  = myTimWrite->getSelectedAddr();
+          value = myTimWrite->getSelectedValue();
+          switch(addr)
+          {
+            case kTim1TID:
+              riot.tim1T(value);
+              break;
+            case kTim8TID:
+              riot.tim8T(value);
+              break;
+            case kTim64TID:
+              riot.tim64T(value);
+              break;
+            case kTim1024TID:
+              riot.tim1024T(value);
+              break;
+          }
+        }
+      }
+      break;
+
+    case kTWItemDataChangedCmd:
+      switch(id)
+      {
+        case kSWCHABitsID:
+          value = Debugger::get_bits((BoolArray&)mySWCHAWriteBits->getState());
+          riot.swcha(value & 0xff);
+          break;
+        case kSWACNTBitsID:
+          value = Debugger::get_bits((BoolArray&)mySWACNTBits->getState());
+          riot.swacnt(value & 0xff);
+          break;
+      }
+      break;
+  }
 }
