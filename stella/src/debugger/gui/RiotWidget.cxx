@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.cxx,v 1.4 2008-05-15 15:07:29 stephena Exp $
+// $Id: RiotWidget.cxx,v 1.5 2008-05-15 18:59:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "RiotDebug.hxx"
+#include "PopUpWidget.hxx"
 #include "ToggleBitWidget.hxx"
 #include "Widget.hxx"
 
@@ -75,8 +76,7 @@
                                kCheckActionCmd);                   \
   pins[4]->setID(pinsID);                                          \
   pins[4]->setTarget(this);                                        \
-  addFocusWidget(pins[4]);                                         \
-  col += t->getWidth() + 20;
+  addFocusWidget(pins[4]);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
@@ -150,8 +150,49 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   // Controller port pins (for now, only the latched pins)
   xpos = col;  ypos = 10;
   CREATE_PORT_PINS("P0 Controller:", myP0Pins, kP0PinsID);
-  xpos = col;  ypos = 10;
+  xpos = col + font.getStringWidth("P0 Controller:") + 20;  ypos = 10;
   CREATE_PORT_PINS("P1 Controller:", myP1Pins, kP1PinsID);
+
+  // PO & P1 difficulty switches
+  int pwidth = font.getStringWidth("B/easy");
+  lwidth = font.getStringWidth("P0 Diff: ");
+  xpos = col;  ypos += 3 * lineHeight;
+  myP0Diff = new PopUpWidget(boss, font, xpos, ypos, pwidth, lineHeight,
+                             "P0 Diff: ", lwidth, kP0DiffChanged);
+  myP0Diff->appendEntry("B/easy", 0);
+  myP0Diff->appendEntry("A/hard", 1);
+  myP0Diff->setTarget(this);
+  addFocusWidget(myP0Diff);
+  ypos += myP0Diff->getHeight() + 5;
+  myP1Diff = new PopUpWidget(boss, font, xpos, ypos, pwidth, lineHeight,
+                             "P1 Diff: ", lwidth, kP1DiffChanged);
+  myP1Diff->appendEntry("B/easy", 0);
+  myP1Diff->appendEntry("A/hard", 1);
+  myP1Diff->setTarget(this);
+  addFocusWidget(myP1Diff);
+
+  // TV Type
+  ypos += myP1Diff->getHeight() + 5;
+  myTVType = new PopUpWidget(boss, font, xpos, ypos, pwidth, lineHeight,
+                             "TV Type: ", lwidth, kTVTypeChanged);
+  myTVType->appendEntry("B&W", 0);
+  myTVType->appendEntry("Color", 1);
+  myTVType->setTarget(this);
+  addFocusWidget(myTVType);
+
+  // Select and Reset
+  xpos += 20;  ypos += myTVType->getHeight() + 5;
+  mySelect = new CheckboxWidget(boss, font, xpos, ypos, "Select",
+                                kCheckActionCmd);
+  mySelect->setID(kSelectID);
+  mySelect->setTarget(this);
+  addFocusWidget(mySelect);
+  ypos += myTVType->getHeight() + 5;
+  myReset = new CheckboxWidget(boss, font, xpos, ypos, "Reset",
+                               kCheckActionCmd);
+  myReset->setID(kResetID);
+  myReset->setTarget(this);
+  addFocusWidget(myReset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,6 +267,13 @@ void RiotWidget::loadConfig()
   myP1Pins[2]->setState(!state.P1_PIN3);
   myP1Pins[3]->setState(!state.P1_PIN4);
   myP1Pins[4]->setState(!state.P1_PIN6);
+
+  // Console switches (invert reset/select for same reason as the pins)
+  myP0Diff->setSelectedTag((int)riot.diffP0());
+  myP1Diff->setSelectedTag((int)riot.diffP1());
+  myTVType->setSelectedTag((int)riot.tvType());
+  mySelect->setState(!riot.select());
+  myReset->setState(!riot.reset());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -286,7 +334,25 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
                          !myP1Pins[2]->getState(), !myP1Pins[3]->getState(),
                          !myP1Pins[4]->getState());
           break;
+        case kSelectID:
+          riot.select(!mySelect->getState());
+          break;
+        case kResetID:
+          riot.reset(!myReset->getState());
+          break;
       }
+      break;
+
+    case kP0DiffChanged:
+      riot.diffP0((bool)myP0Diff->getSelectedTag());
+      break;
+
+    case kP1DiffChanged:
+      riot.diffP1((bool)myP1Diff->getSelectedTag());
+      break;
+
+    case kTVTypeChanged:
+      riot.tvType((bool)myTVType->getSelectedTag());
       break;
   }
 }

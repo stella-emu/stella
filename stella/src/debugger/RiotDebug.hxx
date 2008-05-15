@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.hxx,v 1.3 2008-05-15 15:07:29 stephena Exp $
+// $Id: RiotDebug.hxx,v 1.4 2008-05-15 18:59:56 stephena Exp $
 //============================================================================
 
 #ifndef RIOT_DEBUG_HXX
@@ -73,6 +73,13 @@ class RiotDebug : public DebuggerSystem
     */
     void setP0Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6);
     void setP1Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6);
+
+    /* Console switches */
+    bool diffP0(int newVal = -1);
+    bool diffP1(int newVal = -1);
+    bool tvType(int newVal = -1);
+    bool select(int newVal = -1);
+    bool reset(int newVal = -1);
 
     /* Port A description */
     string dirP0String();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.12 2008-05-04 17:16:39 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.13 2008-05-15 18:59:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -243,8 +243,8 @@ void CpuWidget::fillGrid()
   // address in the callback (handleCommand)
   Debugger& dbg = instance()->debugger();
   CpuDebug& cpu = dbg.cpuDebug();
-  CpuState state    = (CpuState&) cpu.getState();
-  CpuState oldstate = (CpuState&) cpu.getOldState();
+  const CpuState& state    = (CpuState&) cpu.getState();
+  const CpuState& oldstate = (CpuState&) cpu.getOldState();
 
   // Add PC to its own DataGridWidget
   alist.push_back(kPCRegAddr);

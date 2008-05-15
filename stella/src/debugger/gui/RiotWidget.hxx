@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.hxx,v 1.4 2008-05-15 15:07:29 stephena Exp $
+// $Id: RiotWidget.hxx,v 1.5 2008-05-15 18:59:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 class GuiObject;
 class ButtonWidget;
 class DataGridWidget;
+class PopUpWidget;
 class ToggleBitWidget;
 
 #include "Array.hxx"
@@ -54,22 +55,18 @@ class RiotWidget : public Widget, public CommandSender
 
     CheckboxWidget* myP0Pins[5], *myP1Pins[5];
 
-    CheckboxWidget* myP0Diff, *myP1Diff;
-    CheckboxWidget* myTVType;
+    PopUpWidget *myP0Diff, *myP1Diff;
+    PopUpWidget *myTVType;
     CheckboxWidget* mySelect;
     CheckboxWidget* myReset;
-
-    StaticTextWidget* myP0DirText,  *myP1DirText;
-    StaticTextWidget* myP0DiffText, *myP1DiffText;
-    StaticTextWidget* myTVTypeText;
-    StaticTextWidget* mySwitchesText;
 
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kTimWriteID,
-      kP0PinsID, kP1PinsID
+      kP0PinsID, kP1PinsID,
+      kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID
     };
 };
 
