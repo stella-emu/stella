@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.10 2008-05-11 21:18:35 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.11 2008-05-15 19:05:09 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -58,10 +58,7 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
     myDataFileExists(false),
     myDataChanged(false)
 {
-  // First initialize the I2C state
-  jpee_init();
-
-  // Now load the data from an external file (if it exists)
+  // Load the data from an external file (if it exists)
   ifstream in;
   in.open(myDataFile.c_str(), ios_base::binary);
   if(in.is_open())
@@ -78,6 +75,9 @@ MT24LC256::MT24LC256(const string& filename, const System& system)
   }
   else
     myDataFileExists = false;
+
+  // Then initialize the I2C state
+  jpee_init();
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -156,9 +156,10 @@ void MT24LC256::jpee_init()
   jpee_pagemask = 63;
   jpee_smallmode = 0;
   jpee_logmode = -1;
-  for(int i = 0; i < 256; i++)
-    for(int j = 0; j < 128; j++)
-      myData[i + j*256] = (i+1)*(j+1);
+  if(!myDataFileExists)
+    for(int i = 0; i < 256; i++)
+      for(int j = 0; j < 128; j++)
+        myData[i + j*256] = (i+1)*(j+1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
