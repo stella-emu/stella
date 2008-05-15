@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StateManager.cxx,v 1.4 2008-03-25 13:52:38 stephena Exp $
+// $Id: StateManager.cxx,v 1.5 2008-05-15 19:10:10 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -29,8 +29,8 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "02050000state"
-#define MOVIE_HEADER "02050000movie"
+#define STATE_HEADER "02060000state"
+#define MOVIE_HEADER "02060000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem* osystem)
