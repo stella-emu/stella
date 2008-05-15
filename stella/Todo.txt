@@ -22,7 +22,7 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Improve debugger support for cartridges with dedicated RAM, and add
     source-level debugging
 
-  * Add support for uncommon controllers (KidVid, Lightgun, Amiga/ST mouse)
+  * Add support for uncommon controllers (KidVid, Lightgun, etc)
 
   * Either Support DASM as frontend or integrate a 6507 Assembler
 

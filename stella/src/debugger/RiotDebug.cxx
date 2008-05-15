@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.4 2008-05-13 15:13:17 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.5 2008-05-15 15:07:29 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -51,6 +51,20 @@ const DebuggerState& RiotDebug::getState()
   myState.TIMINT   = timint();
   myState.TIMCLKS  = timClocks();
 
+  // Controller port pins
+  Controller& port0 = mySystem.m6532().myConsole.controller(Controller::Left);
+  myState.P0_PIN1 = port0.myDigitalPinState[Controller::One];
+  myState.P0_PIN2 = port0.myDigitalPinState[Controller::Two];
+  myState.P0_PIN3 = port0.myDigitalPinState[Controller::Three];
+  myState.P0_PIN4 = port0.myDigitalPinState[Controller::Four];
+  myState.P0_PIN6 = port0.myDigitalPinState[Controller::Six];
+  Controller& port1 = mySystem.m6532().myConsole.controller(Controller::Right);
+  myState.P1_PIN1 = port1.myDigitalPinState[Controller::One];
+  myState.P1_PIN2 = port1.myDigitalPinState[Controller::Two];
+  myState.P1_PIN3 = port1.myDigitalPinState[Controller::Three];
+  myState.P1_PIN4 = port1.myDigitalPinState[Controller::Four];
+  myState.P1_PIN6 = port1.myDigitalPinState[Controller::Six];
+
   return myState;
 }
 
@@ -75,6 +89,20 @@ void RiotDebug::saveOldState()
   myOldState.INTIM    = intim();
   myOldState.TIMINT   = timint();
   myOldState.TIMCLKS  = timClocks();
+
+  // Controller port pins
+  Controller& port0 = mySystem.m6532().myConsole.controller(Controller::Left);
+  myOldState.P0_PIN1 = port0.myDigitalPinState[Controller::One];
+  myOldState.P0_PIN2 = port0.myDigitalPinState[Controller::Two];
+  myOldState.P0_PIN3 = port0.myDigitalPinState[Controller::Three];
+  myOldState.P0_PIN4 = port0.myDigitalPinState[Controller::Four];
+  myOldState.P0_PIN6 = port0.myDigitalPinState[Controller::Six];
+  Controller& port1 = mySystem.m6532().myConsole.controller(Controller::Right);
+  myOldState.P1_PIN1 = port1.myDigitalPinState[Controller::One];
+  myOldState.P1_PIN2 = port1.myDigitalPinState[Controller::Two];
+  myOldState.P1_PIN3 = port1.myDigitalPinState[Controller::Three];
+  myOldState.P1_PIN4 = port1.myDigitalPinState[Controller::Four];
+  myOldState.P1_PIN6 = port1.myDigitalPinState[Controller::Six];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,6 +185,28 @@ uInt8 RiotDebug::timint()
 Int32 RiotDebug::timClocks()
 {
   return mySystem.m6532().timerClocks();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotDebug::setP0Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6)
+{
+  Controller& port0 = mySystem.m6532().myConsole.controller(Controller::Left);
+  port0.myDigitalPinState[Controller::One]   = Pin1;
+  port0.myDigitalPinState[Controller::Two]   = Pin2;
+  port0.myDigitalPinState[Controller::Three] = Pin3;
+  port0.myDigitalPinState[Controller::Four]  = Pin4;
+  port0.myDigitalPinState[Controller::Six]   = Pin6;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RiotDebug::setP1Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6)
+{
+  Controller& port1 = mySystem.m6532().myConsole.controller(Controller::Right);
+  port1.myDigitalPinState[Controller::One]   = Pin1;
+  port1.myDigitalPinState[Controller::Two]   = Pin2;
+  port1.myDigitalPinState[Controller::Three] = Pin3;
+  port1.myDigitalPinState[Controller::Four]  = Pin4;
+  port1.myDigitalPinState[Controller::Six]   = Pin6;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

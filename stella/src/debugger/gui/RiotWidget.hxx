@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.hxx,v 1.3 2008-05-14 18:04:58 stephena Exp $
+// $Id: RiotWidget.hxx,v 1.4 2008-05-15 15:07:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -52,10 +52,12 @@ class RiotWidget : public Widget, public CommandSender
     DataGridWidget* myTimWrite;
     DataGridWidget* myTimRead;
 
-    CheckboxWidget* myP0Dir,  *myP1Dir;
+    CheckboxWidget* myP0Pins[5], *myP1Pins[5];
+
     CheckboxWidget* myP0Diff, *myP1Diff;
     CheckboxWidget* myTVType;
-    CheckboxWidget* mySwitches;
+    CheckboxWidget* mySelect;
+    CheckboxWidget* myReset;
 
     StaticTextWidget* myP0DirText,  *myP1DirText;
     StaticTextWidget* myP0DiffText, *myP1DiffText;
@@ -65,8 +67,9 @@ class RiotWidget : public Widget, public CommandSender
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
-      kTim1TID = 0, kTim8TID = 1, kTim64TID = 2, kTim1024TID = 3,
-      kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kTimWriteID
+      kTim1TID, kTim8TID, kTim64TID, kTim1024TID,
+      kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kTimWriteID,
+      kP0PinsID, kP1PinsID
     };
 };
 

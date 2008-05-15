@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.15 2008-05-12 22:40:23 stephena Exp $
+// $Id: Control.hxx,v 1.16 2008-05-15 15:07:29 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -57,10 +57,15 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.15 2008-05-12 22:40:23 stephena Exp $
+  @version $Id: Control.hxx,v 1.16 2008-05-15 15:07:29 stephena Exp $
 */
 class Controller : public Serializable
 {
+  /**
+    Riot debug class needs special access to the underlying controller state
+  */
+  friend class RiotDebug;
+
   public:
     /**
       Enumeration of the controller jacks

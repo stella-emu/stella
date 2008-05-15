@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.cxx,v 1.3 2008-05-14 18:04:57 stephena Exp $
+// $Id: RiotWidget.cxx,v 1.4 2008-05-15 15:07:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,6 +41,43 @@
   xpos += bits->getWidth() + 5;                                          \
   bits->setList(off, on);
 
+#define CREATE_PORT_PINS(label, pins, pinsID)                      \
+  t = new StaticTextWidget(boss, font, xpos, ypos+2, 14*fontWidth, \
+                           fontHeight, label, kTextAlignLeft);     \
+  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 5;        \
+  pins[0] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
+                               kCheckActionCmd);                   \
+  pins[0]->setID(pinsID);                                          \
+  pins[0]->setTarget(this);                                        \
+  addFocusWidget(pins[0]);                                         \
+  ypos += pins[0]->getHeight() * 2 + 10;                           \
+  pins[1] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
+                               kCheckActionCmd);                   \
+  pins[1]->setID(pinsID);                                          \
+  pins[1]->setTarget(this);                                        \
+  addFocusWidget(pins[1]);                                         \
+  xpos -= pins[0]->getWidth() + 5;                                 \
+  ypos -= pins[0]->getHeight() + 5;                                \
+  pins[2] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
+                               kCheckActionCmd);                   \
+  pins[2]->setID(pinsID);                                          \
+  pins[2]->setTarget(this);                                        \
+  addFocusWidget(pins[2]);                                         \
+  xpos += (pins[0]->getWidth() + 5) * 2;                           \
+  pins[3] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
+                               kCheckActionCmd);                   \
+  pins[3]->setID(pinsID);                                          \
+  pins[3]->setTarget(this);                                        \
+  addFocusWidget(pins[3]);                                         \
+  xpos -= (pins[0]->getWidth() + 5) * 2;                           \
+  ypos = 20 + (pins[0]->getHeight() + 10) * 3;                     \
+  pins[4] = new CheckboxWidget(boss, font, xpos, ypos, "Fire",     \
+                               kCheckActionCmd);                   \
+  pins[4]->setID(pinsID);                                          \
+  pins[4]->setTarget(this);                                        \
+  addFocusWidget(pins[4]);                                         \
+  col += t->getWidth() + 20;
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
                      int x, int y, int w, int h)
@@ -52,7 +89,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = 9 * fontWidth;
+  int xpos = 10, ypos = 25, lwidth = 9 * fontWidth, col = 0;
   StaticTextWidget* t;
 
   // Set the strings to be used in the various bit registers
@@ -66,6 +103,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
 
   // SWCHA bits in 'poke' mode
   CREATE_IO_REGS("SWCHA(W):", mySWCHAWriteBits, kSWCHABitsID);
+  col = xpos + 20;  // remember this for adding widgets to the second column
 
   // SWACNT bits
   xpos = 10;  ypos += lineHeight + 5;
@@ -109,7 +147,11 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   myTimRead->setEditable(false);
   addFocusWidget(myTimRead);
 
-
+  // Controller port pins (for now, only the latched pins)
+  xpos = col;  ypos = 10;
+  CREATE_PORT_PINS("P0 Controller:", myP0Pins, kP0PinsID);
+  xpos = col;  ypos = 10;
+  CREATE_PORT_PINS("P1 Controller:", myP1Pins, kP1PinsID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -171,13 +213,25 @@ void RiotWidget::loadConfig()
     changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
   myTimRead->setList(alist, vlist, changed);
 
-
+  // Update port pins
+  // We invert the booleans, since in the UI it makes more sense that
+  // if, for example, the 'up' checkbox is set, it means 'go up'
+  myP0Pins[0]->setState(!state.P0_PIN1);
+  myP0Pins[1]->setState(!state.P0_PIN2);
+  myP0Pins[2]->setState(!state.P0_PIN3);
+  myP0Pins[3]->setState(!state.P0_PIN4);
+  myP0Pins[4]->setState(!state.P0_PIN6);
+  myP1Pins[0]->setState(!state.P1_PIN1);
+  myP1Pins[1]->setState(!state.P1_PIN2);
+  myP1Pins[2]->setState(!state.P1_PIN3);
+  myP1Pins[3]->setState(!state.P1_PIN4);
+  myP1Pins[4]->setState(!state.P1_PIN6);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  int addr = -1, value = -1;
+  int value = -1;
   RiotDebug& riot = instance()->debugger().riotDebug();
 
   switch(cmd)
@@ -186,25 +240,22 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       switch(id)
       {
         case kTimWriteID:
-        {
-          addr  = myTimWrite->getSelectedAddr();
-          value = myTimWrite->getSelectedValue();
-          switch(addr)
+          switch(myTimWrite->getSelectedAddr())
           {
             case kTim1TID:
-              riot.tim1T(value);
+              riot.tim1T(myTimWrite->getSelectedValue());
               break;
             case kTim8TID:
-              riot.tim8T(value);
+              riot.tim8T(myTimWrite->getSelectedValue());
               break;
             case kTim64TID:
-              riot.tim64T(value);
+              riot.tim64T(myTimWrite->getSelectedValue());
               break;
             case kTim1024TID:
-              riot.tim1024T(value);
+              riot.tim1024T(myTimWrite->getSelectedValue());
               break;
           }
-        }
+          break;
       }
       break;
 
@@ -218,6 +269,22 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kSWACNTBitsID:
           value = Debugger::get_bits((BoolArray&)mySWACNTBits->getState());
           riot.swacnt(value & 0xff);
+          break;
+      }
+      break;
+
+    case kCheckActionCmd:
+      switch(id)
+      {
+        case kP0PinsID:
+          riot.setP0Pins(!myP0Pins[0]->getState(), !myP0Pins[1]->getState(),
+                         !myP0Pins[2]->getState(), !myP0Pins[3]->getState(),
+                         !myP0Pins[4]->getState());
+          break;
+        case kP1PinsID:
+          riot.setP1Pins(!myP1Pins[0]->getState(), !myP1Pins[1]->getState(),
+                         !myP1Pins[2]->getState(), !myP1Pins[3]->getState(),
+                         !myP1Pins[4]->getState());
           break;
       }
       break;
