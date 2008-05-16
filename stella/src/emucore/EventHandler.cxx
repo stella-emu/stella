@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.222 2008-05-11 21:18:35 stephena Exp $
+// $Id: EventHandler.cxx,v 1.223 2008-05-16 12:17:22 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -2221,16 +2221,16 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::JoystickZeroLeft,            "P0 Joystick Left",            0 },
   { Event::JoystickZeroRight,           "P0 Joystick Right",           0 },
   { Event::JoystickZeroFire1,           "P0 Joystick Fire",            0 },
-  { Event::JoystickZeroFire2,           "P0 Booster-Grip Trigger",     0 },
-  { Event::JoystickZeroFire3,           "P0 Booster-Grip Booster",     0 },
+  { Event::JoystickZeroFire2,           "P0 BoosterGrip Trigger",      0 },
+  { Event::JoystickZeroFire3,           "P0 BoosterGrip Booster",      0 },
 
   { Event::JoystickOneUp,               "P1 Joystick Up",              0 },
   { Event::JoystickOneDown,             "P1 Joystick Down",            0 },
   { Event::JoystickOneLeft,             "P1 Joystick Left",            0 },
   { Event::JoystickOneRight,            "P1 Joystick Right",           0 },
   { Event::JoystickOneFire1,            "P1 Joystick Fire",            0 },
-  { Event::JoystickOneFire2,            "P1 Booster-Grip Trigger",     0 },
-  { Event::JoystickOneFire3,            "P1 Booster-Grip Booster",     0 },
+  { Event::JoystickOneFire2,            "P1 BoosterGrip Trigger",      0 },
+  { Event::JoystickOneFire3,            "P1 BoosterGrip Booster",      0 },
 
   { Event::PaddleZeroAnalog,            "Paddle 0 Analog",             0 },
   { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",           0 },

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.55 2008-05-12 22:40:26 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.56 2008-05-16 12:17:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -672,16 +672,16 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* GameInfoDialog::ourControllerList[kNumControllerTypes][2] = {
-  { "Joystick",       "JOYSTICK"     },
-  { "Paddles",        "PADDLES"      },
-  { "Booster-Grip",   "BOOSTER-GRIP" },
-  { "Driving",        "DRIVING"      },
-  { "Keyboard",       "KEYBOARD"     },
-  { "CX-22 Trakball", "TRACKBALL22"  },
-  { "CX-80 Mouse",    "TRACKBALL80"  },
-  { "AmigaMouse",     "AMIGAMOUSE"   },
-  { "AtariVox",       "ATARIVOX"     },
-  { "SaveKey",        "SAVEKEY"      }
+  { "Joystick",       "JOYSTICK"    },
+  { "Paddles",        "PADDLES"     },
+  { "BoosterGrip",    "BOOSTERGRIP" },
+  { "Driving",        "DRIVING"     },
+  { "Keyboard",       "KEYBOARD"    },
+  { "CX-22 Trakball", "TRACKBALL22" },
+  { "CX-80 Mouse",    "TRACKBALL80" },
+  { "AmigaMouse",     "AMIGAMOUSE"  },
+  { "AtariVox",       "ATARIVOX"    },
+  { "SaveKey",        "SAVEKEY"     }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
