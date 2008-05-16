@@ -97,7 +97,6 @@
 		2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */; };
 		2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BA1086116D1001E31A1 /* EditableWidget.hxx */; };
 		2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */; };
-		2D91742609BA90380026E9FF /* Equate.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BC808611898001E31A1 /* Equate.hxx */; };
 		2D91742709BA90380026E9FF /* EquateList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BCA08611898001E31A1 /* EquateList.hxx */; };
 		2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */; };
 		2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D30F8760868A4DB00938B9D /* TIADebug.hxx */; };
@@ -434,7 +433,6 @@
 		2D403BA1086116D1001E31A1 /* EditableWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EditableWidget.hxx; path = ../gui/EditableWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2D403BA4086116D1001E31A1 /* EditTextWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EditTextWidget.cxx; path = ../gui/EditTextWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EditTextWidget.hxx; path = ../gui/EditTextWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2D403BC808611898001E31A1 /* Equate.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Equate.hxx; path = ../debugger/Equate.hxx; sourceTree = SOURCE_ROOT; };
 		2D403BC908611898001E31A1 /* EquateList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EquateList.cxx; path = ../debugger/EquateList.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BCA08611898001E31A1 /* EquateList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EquateList.hxx; path = ../debugger/EquateList.hxx; sourceTree = SOURCE_ROOT; };
 		2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PackedBitArray.cxx; path = ../debugger/PackedBitArray.cxx; sourceTree = SOURCE_ROOT; };
@@ -1117,7 +1115,6 @@
 				2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */,
 				2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */,
 				2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */,
-				2D403BC808611898001E31A1 /* Equate.hxx */,
 				2D403BCA08611898001E31A1 /* EquateList.hxx */,
 				2D403BC908611898001E31A1 /* EquateList.cxx */,
 				2DF971DE0892CEA400F64D23 /* Expression.cxx */,
@@ -1257,7 +1254,6 @@
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
 				2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
-				2D91742609BA90380026E9FF /* Equate.hxx in Headers */,
 				2D91742709BA90380026E9FF /* EquateList.hxx in Headers */,
 				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
 				2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */,
