@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.141 2008-05-12 22:40:23 stephena Exp $
+// $Id: Console.cxx,v 1.142 2008-05-16 12:04:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -586,7 +586,7 @@ void Console::setControllers()
   Paddles::setMouseIsPaddle(-1);  // Reset to defaults
 
   // Construct left controller
-  if(left == "BOOSTER-GRIP")
+  if(left == "BOOSTERGRIP")
   {
     myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent, *mySystem);
   }
@@ -623,7 +623,7 @@ void Console::setControllers()
   }
  
   // Construct right controller
-  if(right == "BOOSTER-GRIP")
+  if(right == "BOOSTERGRIP")
   {
     myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent, *mySystem);
   }

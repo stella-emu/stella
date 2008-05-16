@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.143 2008-05-11 21:18:35 stephena Exp $
+// $Id: Settings.cxx,v 1.144 2008-05-16 12:04:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -338,6 +338,8 @@ void Settings::usage()
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
+    << "  -tiafloat     <1|0>          Set unused TIA pins floating on a read/peek\n"
+    << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
@@ -350,7 +352,6 @@ void Settings::usage()
     << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
-    << "   -tiafloat     <1|0>         Set unused TIA pins floating on a read/peek\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"

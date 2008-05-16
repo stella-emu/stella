@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.5.1</b></h4></center>
+	<center><h4><b>Release 2.6</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -24,10 +24,11 @@
 		<li><a href="#Starting">Starting A Game</a></li>
 		<li><a href="#Options">Changing Options</a></li>
 		<li><a href="#Keyboard">Keyboard Layout</a></li>
-		<li><a href="#Remapping">Event Remapping</a></li>
+		<li><a href="#Remapping">Event Remapping / Input Devices</a></li>
 		<li><a href="#ROMInfo">Viewing ROM Info</a></li>
 		<li><a href="#ROMAudit">ROM Audit Mode</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
+		<li><a href="#AtariVox">AtariVox/SaveKey Support</a></li>
 		<li><a href="#Debugger">Integrated Debugger</a></li>
 		<li><a href="#Settings">Settings File</a></li>
 		<li><a href="#Cheats">Cheatcode Manager</a></li>
@@ -39,7 +40,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - April 2008</b></center>
+	<center><b>February 1999 - May 2008</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -220,34 +221,49 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.5.1</b></h2>
+	<h2><b>New in Release 2.6</b></h2>
 
 	<ul>
-<li>Fixed M6532 RIOT timer emulation.  More testing is needed, but the
-    changes so far have fixed several ROMs that didn't work before.</li>
+    <li>Added AtariVox support using a real AtariVox device, where Stella
+    sends data directly to the AtariVox.  For now, this is supported in
+    Linux/UNIX, OSX, and Win32 only.  You'll obviously need a real
+    AtariVox, and a serial<->USB adaptor to connect it to your system.
+    Added '-avoxport' commandline argument used to set the serial port
+    to which the AtariVox is connected.  Special thanks to Al Yarusso
+    and Richard H. for providing sample hardware.</li>
 
-<li>Fixed issue with weird characters in the debugger disassembly when
-    loading .lst files.</li>
+    <li>Added AtariVox and SaveKey EEPROM emulation.  This reads/writes data
+    to a 32KB file, not to the actual hardware.  Very useful for testing
+    EEPROM support without actually wearing out the real device.  Special
+    thanks to J. Payson for providing the EEPROM emulation code, and A.
+    Herbert for answering many driver-related questions.</li>
 
-<li>Fixed bug where entering the debugger for 4A50 and E0 carts caused
-    the ROM to be frozen afterwords.</li>
+    <li>Added support for CX-22, CX-80, and AmigaMouse trackball controllers.</li>
 
-<li>Removed logic whereby starting a ROM from something other than the
-    built-in launcher wouldn't allow the user to go back to the ROM launcher.</li>
+    <li>Improved debugger symfile handling so that addresses accessed as
+    read-only won't use write-only labels (and vice-versa).  More work
+    is still needed in this area.</li>
 
-<li>Fixed bug (hopefully) with the app icon not showing on the Stella window.
-    Further testing is needed, since I can't duplicate the error myself.</li>
+    <li>Added M6532/RIOT tab to the debugger.  This will be expanded on in a
+    future release.</li>
 
-<li>Fixed default snapshot folder issues; the folder will now be
-    automatically created in the same place as state folders, ini files,
-    etc (whereever that may be for your platform).</li>
+    <li>Added TIA emulation fixes for graphical glitches in Escape from the
+    Mindmaster, Mission Survive, Solaris, and SWOOPS!</li>
 
-<li>Re-added 'lastrom' functionality, where Stella will remember and
-    auto-select the last ROM that was successfully launched in the ROM
-    launcher.</li>
+    <li>Fixed bug where fullscreen OpenGL scaling wasn't working on 4:3 monitors.</li>
 
-<li>For Stella developers, fixed SpeakJet emulation so it compiles again.
-    No improvements have been made to the emulation itself, though.</li>
+    <li>Further improvements to the M6532/RIOT emulation, which unfortunately
+    have broken old state files (again).</li>
+
+    <li>Added deadzone setting, for adjusting the deadzone amount for
+    analog joysticks.  This can be set using the commandline argument
+    '-joydeadzone' or dynamically within the UI.</li>
+
+    <li>Make ROM disassembly in debugger take advantage of a wide window.</li>
+
+    <li>Fixed bug in 6507 BCD handling introduced in the last release.</li>
+
+    <li>For the Win32 port; Win9x should be fully supported again.</li>
 	</ul>
 
 	<p>
@@ -260,14 +276,20 @@
 		<li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard
 			or joysticks</li>
 		<li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
-		<li>Emulates one Atari 2600 Paddle Controller using your computer's mouse, keyboard
+		<li>Emulates the Atari 2600 Paddle Controllers using your computer's mouse, keyboard
 			or joysticks</li>
 		<li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard
 			or joysticks</li>
 		<li>Emulates the CBS Booster-Grip Controller using your computer's keyboard or
 			joysticks</li>
+		<li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
+			computer's mouse</li>
 		<li>Support for real Atari 2600 controllers using the
 			<a href="http://www.pixelspast.com/products">Stelladaptor</a></li>
+		<li>Support for the speech portion of a real  
+			<a href="http://www.atariage.com/store/product_info.php?products_id=295">
+			AtariVox</a> device using a USB adaptor</li>
+		<li>Supports EEPROM emulation for AtariVox and SaveKey controllers</li>
 		<li>Supports almost all known bankswitching schemes (let us know if there's one we missed)</li>
 		<li>Supports cartridge autodetection for almost all bankswitching schemes</li>
 		<li>Supports Supercharger single-load and multi-load games</li>
@@ -277,6 +299,7 @@
 		<li>Supports several "undocumented features" of the TIA graphics chip used by
 			some games</li>
 		<li>TIA emulation supports full collision checking</li>
+		<li>Built-in extensive debugger</li>
 	</ul>
 
 
@@ -690,6 +713,14 @@
 		</tr>
 
 		<tr>
+			<td><pre>-joydeadzone &lt;number&gt;</pre></td>
+			<td>Sets the joystick deadzone area for analog joysticks.
+				Accepts a number from 0 - 29, and uses the formula
+				3200 + number * 1000.  So the possible deadzone values
+				range from 3200 to 32200.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-pspeed &lt;number&gt;</pre></td>
 			<td>Speed of digital emulation for paddles (1-15).</td>
 		</tr>
@@ -779,6 +810,16 @@
 		</tr>
 
 		<tr>
+			<td><pre>-tiafloat &lt;1|0&gt;</pre></td>
+			<td>Set unused TIA pins to be floating on a read/peek.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-avoxport &lt;name&gt;</pre></td>
+			<td>Set the name of the serial port where an AtariVox is connected.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-help</pre></td>
 			<td>Prints a help message describing these options, and then
 				exit Stella.</td>
@@ -825,11 +866,6 @@
 			<td>Start the emulator with the left joystick button held down.</td>
 		</tr>
 	
-		<tr>
-			<td><pre>-tiafloat &lt;1|0&gt;</pre></td>
-			<td>Set unused TIA pins to be floating on a read/peek.</td>
-		</tr>
-
 		<tr>
 			<td><pre>-bs &lt;type&gt;</pre></td>
 			<td>Set "Cartridge.Type" property.  See the <i>Game Properties</i> section
@@ -972,7 +1008,7 @@
 	<p><b>Game Information</b> dialog:<br><br>
 	<img src="graphics/options_gameinfo.png">
 	<p>This dialog allows you to change all ROM properties as described in
-	<b>Section 15 - <a href="#Properties">Game Properties</a></b>.
+	<b>Section 16 - <a href="#Properties">Game Properties</a></b>.
 	<br><br><br>
 
 	<p><b>Help</b> dialog:<br><br>
@@ -1667,7 +1703,7 @@
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br><br>
 	<p><h1>
-	<a name="Remapping">8. Event Remapping</a></h1>
+	<a name="Remapping">8. Event Remapping / Input Devices</a></h1>
 	<hr>
 
 	<p>This version of Stella has event remapping.  Almost every event in the emulator
@@ -1706,7 +1742,12 @@
 	<img src="graphics/eventmapping_virtualdevs.png"></p>
 
 	<p>Stelladaptor devices can be configured to either the left or right virtual
-	ports.  See the section 'Stelladaptor Support' for more information.</p>
+	ports.  See <b>Section 11 - <a href="#Adaptor">Stelladaptor Support</a></b>
+	for further information.</p>
+
+	<p>Joystick deadzone area for analog joysticks can be set here.  The deadzone
+	can be adjusted in an interval from 0 - 29, which internally is converted to
+	the range 3200 - 32200 using the formula '3200 + DEADZONE * 1000'.</p>
 
 	<p>Paddle settings are also configured here.  The mouse can emulate either paddle
 	0, 1, 2, or 3.  Note that some paddle games don't default to paddle 0.  In those
@@ -1720,6 +1761,10 @@
 	devices, there are no smooth analog values as would be present on a real
 	paddle.  When using digital devices, the paddle is moved a certain amount
 	each frame.  This speed setting specifies how much movement will occur.</p>
+
+	<p>The serial port to which a real AtariVox is connected can be set here.
+	See <b>Section 12 - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> for
+	further information.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -1839,9 +1884,70 @@
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
+	<br><br>
+	<p><h1>
+	<a name="AtariVox">12. AtariVox/SaveKey Support</a></h1>
+	<hr>
+
+	<p>Stella supports a real AtariVox device for the speech/SpeakJet portion
+	of the controller.  You will need a real AtariVox device, located
+	<a href="http://www.atariage.com/store/product_info.php?products_id=295">here</a>,
+	as well as some means of connecting it to your computer (some sort of
+	serial port/USB adaptor).  There should be drivers for your serial convertor,
+	which allow your particular operating system to 'see' the device.  Configuring
+	this is outside the scope of this document.  Once your operating system
+	properly detects the AtariVox, you will need to tell Stella which serial
+	port it is connected to.  This is done by using the '-avoxport' commandline
+	argument, or by setting it in the UI under the 'Virtual Devs' tab in
+	'Input Settings', as described in Section 8.</p>
+
+	<p>Note that you must use the entire name of the port as specified by
+	your operating system.  For example, in Windows this would be COM1,
+	COM2, etc; Linux and OSX tend to use '/dev/xxxxxx'.  For now, only
+	Linux/UNIX, OSX, and Win32 are supported.</p>
+
+	<p>Support for the EEPROM portion of the AtariVox and SaveKey is currently
+	emulated.  That is, a file will be created on your computer simulating the
+	EEPROM; the actual EEPROM hardware itself will not be used or modified.
+	This is very useful in the testing stages of creating a new game, since
+	writing to a real EEPROM many times will eventually wear it out.</p>
+
+	<p>The EEPROM files have a special name/location depending on which
+	version of Stella you use, which are currently not configurable:</p>
+
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>$HOME/.stella/atarivox_eeprom.dat<br>
+				$HOME/.stella/savekey_eeprom.dat</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td><i>$HOME/.stella/atarivox_eeprom.dat<br>
+				$HOME/.stella/savekey_eeprom.dat</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>%MY_DOCUMENTS%\Stella\atarivox_eeprom.dat<br>
+				%MY_DOCUMENTS%\Stella\savekey_eeprom.dat</i>&nbsp;&nbsp;&nbsp;
+				<b>OR</b><br>
+				<i>%CURRENT_DIR%\atarivox_eeprom.dat<br>
+				%CURRENT_DIR%\savekey_eeprom.dat<br></i>
+				(if a file named 'disable_profiles.txt' exists in the
+				application directory)</td>
+		</tr>
+	</table>
+
+	<p>Note that these EEPROM files will be created when necessary, and
+	initialized as a real EEPROM would be (with randomized data).  The
+	files can be manually deleted, which is very useful in testing
+	cases where a ROM is accessing the EEPROM for the first time.</p>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br>
 	<p><h1>
-	<a name="Debugger">12. Integrated Debugger</a></h1>
+	<a name="Debugger">13. Integrated Debugger</a></h1>
 	<hr>
 
 	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
@@ -1851,7 +1957,7 @@
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Settings">13. Settings File</a></h1>
+	<a name="Settings">14. Settings File</a></h1>
 	<hr>
 
 	<p>Stella will remember when you change a setting either at the command line
@@ -1915,7 +2021,7 @@
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Cheats">14. Cheatcode Manager</a></h1>
+	<a name="Cheats">15. Cheatcode Manager</a></h1>
 	<hr>
 
 	<p>Stella 2.0 contains support for Bob Colbert's Cheetah cheat codes, as
@@ -2014,7 +2120,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Properties">15. Game Properties</a></h1>
+	<a name="Properties">16. Game Properties</a></h1>
 	<hr>
 
 	<p>Stella uses game properties to specify the "best" emulator settings for a
@@ -2171,15 +2277,18 @@ Ms Pac-Man (Stella extended codes):
 		<tr>
 			<td VALIGN="TOP"><i>Controller.Left:</i></td>
 			<td>Indicates what type of controller the left player
-			uses.  The value must be <b>Booster-Grip</b>, <b>Driving</b>,
-			<b>Keyboard</b>, <b>Paddles</b>, or <b>Joystick</b>.</td>
+			uses.  The value must be <b>BoosterGrip</b>, <b>Driving</b>,
+			<b>Keyboard</b>, <b>Paddles</b>, <b>Trackball22</b>,
+			<b>Trackball80</b>, <b>AmigaMouse</b> or <b>Joystick</b>.</td>
 		</tr>
 
 		<tr>
 			<td VALIGN="TOP"><i>Controller.Right:</i></td>
 			<td>Indicates what type of controller the right player
-			uses.  The value must be <b>Booster-Grip</b>, <b>Driving</b>,
-			<b>Keyboard</b>, <b>Paddles</b>, or <b>Joystick</b>.</td>
+			uses.  The value must be <b>BoosterGrip</b>, <b>Driving</b>,
+			<b>Keyboard</b>, <b>Paddles</b>, <b>Trackball22</b>,
+			<b>Trackball80</b>, <b>AmigaMouse</b>, <b>AtariVox</b>,
+			<b>SaveKey</b> or <b>Joystick</b>.</td>
 		</tr>
 
 		<tr>
@@ -2261,7 +2370,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Palette">16. Palette Support</a></h1>
+	<a name="Palette">17. Palette Support</a></h1>
 	<hr>
 
 	<p>An Atari 2600 palette consists of 128 colours, which are different
@@ -2328,7 +2437,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="Acknowledgments">17. Acknowledgments</a></h1>
+	<a name="Acknowledgments">18. Acknowledgments</a></h1>
 	<hr>
 
 	<p>Bradford W. Mott started developing Stella during the fall of 1995 and since
@@ -2405,7 +2514,12 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP">Richard&nbsp;H.</td>
+			<td VALIGN="TOP">Alex&nbsp;Herbert</td>
+			<td>Provided much information on AtariVox and SaveKey functionality</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Richard&nbsp;Hutchinson</td>
 			<td>Provided an AtariVox USB adaptor to help with AVox development</td>
 		</tr>
 
@@ -2464,6 +2578,11 @@ Ms Pac-Man (Stella extended codes):
 		<tr>
 			<td VALIGN="TOP">Jack&nbsp;Nutting</td>
 			<td>Author of the OpenStep version of Stella</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">John&nbsp;Payson</td>
+			<td>Provided EEPROM emulation code for AtariVox and SaveKey support</td>
 		</tr>
 
 		<tr>
@@ -2595,7 +2714,7 @@ Ms Pac-Man (Stella extended codes):
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
 	<p><h1>
-	<a name="License">18. License and Disclaimer</a></h1>
+	<a name="License">19. License and Disclaimer</a></h1>
 	<hr>
 
 	<p>

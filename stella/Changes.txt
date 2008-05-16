@@ -12,6 +12,52 @@
                                Release History
 ===============================================================================
 
+2.5.1 to 2.6: (May 16, 2008)
+
+  * Added AtariVox support using a real AtariVox device, where Stella
+    sends data directly to the AtariVox.  For now, this is supported in
+    Linux/UNIX, OSX, and Win32 only.  You'll obviously need a real
+    AtariVox, and a serial<->USB adaptor to connect it to your system.
+    Added '-avoxport' commandline argument used to set the serial port
+    to which the AtariVox is connected.  Special thanks to Al Yarusso
+    and Richard H. for providing sample hardware.
+
+  * Added AtariVox and SaveKey EEPROM emulation.  This reads/writes data
+    to a 32KB file, not to the actual hardware.  Very useful for testing
+    EEPROM support without actually wearing out the real device.  Special
+    thanks to J. Payson for providing the EEPROM emulation code, and A.
+    Herbert for answering many driver-related questions.
+
+  * Added support for CX-22, CX-80, and AmigaMouse trackball controllers.
+
+  * Improved debugger symfile handling so that addresses accessed as
+    read-only won't use write-only labels (and vice-versa).  More work
+    is still needed in this area.
+
+  * Added M6532/RIOT tab to the debugger.  This will be expanded on in a
+    future release.
+
+  * Added TIA emulation fixes for graphical glitches in Escape from the
+    Mindmaster, Mission Survive, Solaris, and SWOOPS!
+
+  * Fixed bug where fullscreen OpenGL scaling wasn't working on 4:3 monitors.
+
+  * Further improvements to the M6532/RIOT emulation, which unfortunately
+    have broken old state files (again).
+
+  * Added deadzone setting, for adjusting the deadzone amount for
+    analog joysticks.  This can be set using the commandline argument
+    '-joydeadzone' or dynamically within the UI.
+
+  * Make ROM disassembly in debugger take advantage of a wide window.
+
+  * Fixed bug in 6507 BCD handling introduced in the last release.
+
+  * For the Win32 port; Win9x should be fully supported again.
+
+-Have fun!
+
+
 2.5 to 2.5.1: (April 9, 2008)
 
   * Fixed M6532 RIOT timer emulation.  More testing is needed, but the
@@ -39,8 +85,6 @@
 
   * For Stella developers, fixed SpeakJet emulation so it compiles again.
     No improvements have been made to the emulation itself, though.
-
--Have fun!
 
 
 2.4.2 to 2.5: (March 28, 2008)

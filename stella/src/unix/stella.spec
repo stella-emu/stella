@@ -1,5 +1,5 @@
 %define name    stella
-%define version 2.5.1
+%define version 2.6
 %define rel     1
 
 %define enable_gl 1
@@ -107,6 +107,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Fri May 16 2008 Stephen Anthony <stephena@users.sf.net> 2.6-1
+- Version 2.6 release
+
 * Wed Apr 9 2008 Stephen Anthony <stephena@users.sf.net> 2.5.1-1
 - Version 2.5.1 release
 
