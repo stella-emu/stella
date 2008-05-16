@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.13 2008-04-26 16:51:13 stephena Exp $
+// $Id: OSystemWin32.hxx,v 1.14 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -27,7 +27,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.13 2008-04-26 16:51:13 stephena Exp $
+  @version $Id: OSystemWin32.hxx,v 1.14 2008-05-16 23:56:31 stephena Exp $
 */
 class OSystemWin32 : public OSystem
 {
@@ -48,7 +48,7 @@ class OSystemWin32 : public OSystem
 
       @return Current time in microseconds.
     */
-    virtual uInt32 getTicks();
+    virtual uInt32 getTicks() const;
 };
 
 /**

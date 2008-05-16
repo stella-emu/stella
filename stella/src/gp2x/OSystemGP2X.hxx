@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.hxx,v 1.12 2008-02-20 00:17:49 stephena Exp $
+// $Id: OSystemGP2X.hxx,v 1.13 2008-05-16 23:56:31 stephena Exp $
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 
@@ -45,7 +45,7 @@ class OSystemGP2X : public OSystem
 
       @return Current time in microseconds.
     */
-    uInt32 getTicks();
+    uInt32 getTicks() const;
 
     /**
       This method queries the dimensions of the screen for this hardware.

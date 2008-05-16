@@ -13,30 +13,20 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Random.cxx,v 1.5 2008-02-06 13:45:22 stephena Exp $
+// $Id: Random.cxx,v 1.6 2008-05-16 23:56:30 stephena Exp $
 //============================================================================
 
 #include <time.h>
+#include "OSystem.hxx"
 #include "Random.hxx"
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Random::seed(uInt32 value)
-{
-  ourSeed = value;
-  ourSeeded = true;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Random::Random()
 {
-  // If we haven't been seeded then seed ourself
-  if(!ourSeeded)
-  {
-    ourSeed = (uInt32)time(0);
-    ourSeeded = true;
-  }
-
-  myValue = ourSeed;
+  if(ourSystem)
+    myValue = ourSystem->getTicks();
+  else
+    myValue = (uInt32)time(0);
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -46,8 +36,4 @@ uInt32 Random::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Random::ourSeed = 0;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Random::ourSeeded = false;
-
+const OSystem* Random::ourSystem = NULL;

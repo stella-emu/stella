@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.24 2008-05-06 16:39:11 stephena Exp $
+// $Id: M6532.cxx,v 1.25 2008-05-16 23:56:30 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -52,8 +52,10 @@ void M6532::reset()
 {
   class Random random;
 
-  myTimer = 25 + (random.next() % 75);
-  myIntervalShift = 6;
+  // The timer absolutely cannot be initialized to zero; some games will
+  // loop or hang (notably Solaris and H.E.R.O.)
+  myTimer = (0xff - (random.next() % 0xfe)) << 10;
+  myIntervalShift = 10;
   myCyclesWhenTimerSet = 0;
   myInterruptEnabled = false;
   myInterruptTriggered = false;
@@ -176,16 +178,9 @@ uInt8 M6532::peek(uInt16 addr)
 
         // According to the M6532 documentation, the timer continues to count
         // down to -255 timer clocks after wraparound.  However, it isn't
-        // entirely clear what happens *after* if reaches -255.  If we go
-        // to zero at that time, Solaris fails to load correctly.
-        // However, if the count goes on forever, HERO fails to load
-        // correctly.
-        // So we use the approach of z26, and let the counter continue
-        // downward (after wraparound) for the maximum number of clocks
-        // (256 * 1024) = 0x40000.  I suspect this is a hack that works
-        // for all the ROMs we've tested; it would be nice to determine
-        // what really happens in hardware.
-        return (uInt8)(timer >= -0x40000 ? timer : 0);
+        // entirely clear what happens *after* if reaches -255.
+        // For now, we'll set it to 0.
+        return (uInt8)(timer >= -255 ? timer : 0);
       }
     }
 
@@ -237,14 +232,14 @@ void M6532::poke(uInt16 addr, uInt8 value)
       case 0:     // Port A I/O Register (Joystick)
       {
         myOutA = value;
-        setOutputState();
+        setPinState();
         break;
       }
 
       case 1:     // Port A Data Direction Register 
       {
         myDDRA = value;
-        setOutputState();
+        setPinState();
         break;
       }
 
@@ -267,14 +262,14 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setOutputState()
+void M6532::setPinState()
 {
   /*
     When a bit in the DDR is set as input, +5V is placed on its output
     pin.  When it's set as output, either +5V or 0V (depending on the
     contents of SWCHA) will be placed on the output pin.
-    The standard macros for the AtariVox use this fact to send data
-    to the port.  This is represented by the following algorithm:
+    The standard macros for the AtariVox and SaveKey use this fact to
+    send data to the port.  This is represented by the following algorithm:
 
       if(DDR bit is input)       set output as 1
       else if(DDR bit is output) set output as bit in ORA

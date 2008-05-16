@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: OSystemWinCE.hxx,v 1.10 2008-02-06 13:45:24 stephena Exp $
+// $Id: OSystemWinCE.hxx,v 1.11 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_WINCE_HXX
@@ -31,7 +31,7 @@ class OSystemWinCE : public OSystem
 
   public:
     virtual void mainLoop();
-	virtual uInt32 getTicks(void);
+	virtual uInt32 getTicks(void) const;
     virtual void setFramerate(uInt32 framerate);
 	virtual void getScreenDimensions(int& width, int& height);
 };

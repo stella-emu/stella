@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.41 2008-02-27 20:13:55 stephena Exp $
+// $Id: Cart.cxx,v 1.42 2008-05-16 23:56:21 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -389,36 +389,22 @@ bool Cartridge::isProbablyE0(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
 {
-  // E7 carts map their second 1K block of RAM at addresses
-  // $800 to $8FF.  However, since this occurs in the upper 2K address
-  // space, and the last 2K in the cart always points to the last 2K of the
-  // ROM image, the RAM area should fall in addresses $3800 to $38FF
-  // Similar to the Superchip cart, we assume this RAM block contains
-  // the same bytes for its entire area
-  // Also, we want to distinguish between ROMs that have large blocks
-  // of the same amount of (probably unused) data by making sure that
-  // something differs in the previous 32 or next 32 bytes
-  uInt8 first = image[0x3800];
-  for(uInt32 i = 0x3800; i < 0x3A00; ++i)
+  // E7 cart bankswitching is triggered by accessing addresses
+  // $FE0 to $FE6 using absolute non-indexed addressing
+  // To eliminate false positives (and speed up processing), we
+  // search for only certain known signatures
+  // Thanks to "stella@casperkitty.com" for this advice
+  // These signatures are attributed to the MESS project
+  uInt8 signature[2][3] = {
+   { 0x8D, 0xE7, 0xFF },  // STA $FFE7
+   { 0xAD, 0xE5, 0xFF }   // LDA $FFE5
+  };
+  for(uInt32 i = 0; i < 2; ++i)
   {
-    if(first != image[i])
-      return false;
+    if(searchForBytes(image, size, signature[i], 3, 1))
+      return true;
   }
-
-  // OK, now scan the surrounding 32 byte blocks
-  uInt32 count1 = 0, count2 = 0;
-  for(uInt32 i = 0x3800 - 32; i < 0x3800; ++i)
-  {
-    if(first != image[i])
-      ++count1;
-  }
-  for(uInt32 i = 0x3A00; i < 0x3A00 + 32; ++i)
-  {
-    if(first != image[i])
-      ++count2;
-  }
-
-  return (count1 > 0 || count2 > 0);
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

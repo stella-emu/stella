@@ -8,7 +8,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 2979
+#define DEF_PROPS_SIZE 2981
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -520,7 +520,6 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "2b27eb194e13f3b38d23c879cc1e3abf", "Quelle", "402.272 9", "Super-Ferrari (1983) (Quelle) (PAL)", "AKA Enduro", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2b42da79a682ed6e2d735facbf70107e", "", "", "DKjr Improved (Hack)", "Hack of Donkey Kong Jr.", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2b430c00dc79e495762ac59b2f9b4fcd", "Activision, David Crane", "AX-018, AX-018-04", "Pitfall! (1982) (Activision) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "2b6f831ff8bca32d6ecc5a0964100bca", "Spiceware", "SW-01", "Medieval Mayhem (PAL)", "", "Homebrew", "STEREO", "", "", "", "", "", "PADDLES", "PADDLES", "", "", "", "", "", "", "" }, 
   { "2b71a59a53be5883399917bf582b7772", "Greg Troutman", "", "Dark Mage (final beta) (Greg Troutman) (PD)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "2ba02f509a4991aa176ba8d9e540df3d", "Atari, Mark R. Hahn", "CX2678", "Dukes of Hazzard (1983) (Atari) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2bb9f4686f7e08c5fcc69ec1a1c66fe7", "Atari - GCC, Mike Feinstein, John Allred", "CX2688", "Jungle Hunt (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -539,6 +538,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "2c8835aed7f52a0da9ade5226ee5aa75", "Arcadia Corporation, Stephen Harland Landrum", "AR-4101", "Communist Mutants from Space (1982) (Arcadia)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2c8c11295d8613f875b7bcf5253ab9bb", "Fabrizio Zavagli", "", "Kool Aid Man (PAL Conversion) (16-11-2002) (Fabrizio Zavagli) (PAL60)", "PAL60 Conversion", "Homebrew", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "", "" }, 
   { "2c9fadd510509cc7f28f1ccba931855f", "", "", "Hangman Invader Biglist1 (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "2ca6445204ffb7686ddee3e33ba64d5b", "Alex Herbert", "", "AtariVox Test ROM", "Uses the AtariVox controller", "", "", "", "", "", "", "", "", "ATARIVOX", "", "", "", "", "", "", "" }, 
   { "2cb42cf62b2f25f59f909b5447821b14", "Atari, Christopher H. Omarzu", "CX26104", "Big Bird's Egg Catch (1983) (Atari) (PAL) [a]", "Uses Kids/Keypad Controllers", "", "", "", "", "", "", "", "KEYBOARD", "KEYBOARD", "", "", "", "250", "", "", "" }, 
   { "2cccc079c15e9af94246f867ffc7e9bf", "PlayAround", "203", "Jungle Fever (1982) (PlayAround)", "", "", "", "", "", "", "", "", "", "", "", "", "24", "", "YES", "", "" }, 
   { "2cefa695df2ed020899a7df7bb1e3a95", "Manuel Polik, Fabrizio Zavagli", "", "A-Team (2002) (Manuel Polik) (Hack)", "Hack of A-Team", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -778,6 +778,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "3fe43915e5655cf69485364e9f464097", "CCE", "C-863", "Fisher Price (1983) (CCE)", "AKA Skindiver", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "3ff5165378213dab531ffa4f1a41ae45", "Quelle", "311377", "Pygmy (1983) (Quelle) (PAL)", "AKA Lock 'n' Chase", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "402b1ca3c230a60fb279d4a2a10fa677", "", "", "3-D Tic-Tac-Toe (Unknown) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "62", "", "", "", "" }, 
+  { "402d876ec4a73f9e3133f8f7f7992a1e", "Alex Herbert", "", "Man Goes Down (2006) (A. Herbert) (Prototype)", "Uses AtariVox controller", "Homebrew", "", "", "", "", "", "", "", "ATARIVOX", "", "", "", "", "", "", "" }, 
   { "405f8591b6941cff56c9b392c2d5e4e5", "Telegames", "", "Star Strike (1989) (Telegames) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4066309eb3fa3e7a725585b9814bc375", "", "", "Multi Ball Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4066d7d88ec4a2c656127a67fa52dcf1", "", "", "Overhead Adventure Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "64", "", "", "", "" }, 
@@ -888,7 +889,6 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "4a1a0509bfc1015273a542dfe2040958", "Atari", "CX2628 / 6699842 / 4975117", "Bowling (1978) (Atari) [b1]", "", "Common", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4a2fe6f0f6317f006fd6d4b34515448b", "", "", "Warring Worms (Midwest Classic Edition) (08-06-2002) (Billy Eno)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4a45c6d75b1ba131f94a9c13194d8e46", "", "", "How to Draw a Playfield II (Joystick Hack) (1997) (Eric Bacher) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "4a5a2a33ccaf2f0c7ff6b60b9e1a0791", "Spiceware", "SW-01", "Medieval Mayhem (NTSC)", "", "Homebrew", "STEREO", "", "", "", "", "", "PADDLES", "PADDLES", "", "", "", "", "", "", "" }, 
   { "4a6be79310f86f0bebc7dfcba4d74161", "", "", "Demolition Herby (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "4a7eee19c2dfb6aeb4d9d0a01d37e127", "Hozer Video Games", "", "Crazy Valet (Hozer Video Games)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4ab4af3adcdae8cdacc3d06084fc8d6a", "Nick Bensema", "", "Sucky Zepplin (Nick Bensema) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1523,7 +1523,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "8055b9c2622136fd91edfea6df642daf", "Activision", "", "Unknown Activision Game #1 (1983) (Activision) (Prototype) (PAL)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "805f9a32ef97ac25f999a25014dc5c23", "SnailSoft", "", "Balthazar (SnailSoft)", "AKA Babylon 5", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "8068e07b484dfd661158b3771d6621ca", "Epyx, Steven A. Baker, Peter Engelbrite", "80561-00286", "California Games (1988) (Epyx) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "807a8ff6216b00d52aba2dfea5d8d860", "John Payson", "", "Strat-O-Gems Deluxe", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "807a8ff6216b00d52aba2dfea5d8d860", "John Payson", "", "Strat-O-Gems Deluxe (2005) (J. Payson)", "Uses the AtariVox controller", "Homebrew", "", "", "", "", "", "", "", "ATARIVOX", "", "", "", "", "", "", "" }, 
   { "808c3b1e60ee0e7c65205fa4bd772221", "CCE", "", "Defender (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "80cd42881e670e4b74a9ccd10d0d7b2e", "20th Century Fox Video Games - Sirius, Ed Hodapp", "11004", "Deadly Duck (1982) (20th Century Fox) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "80cec82239913cb8c4016eb13749de44", "David Marli", "", "Invaders from Space by David Marli (Space Invaders Hack)", "Hack of Space Invaders (Atari)", "New Release (Hack)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2387,6 +2387,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "cff1e9170bdbc29859b815203edf18fa", "Retroactive", "", "Push (V0.01) (1998) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "cff578e5c60de8caecbee7f2c9bbb57b", "George Veeder", "", "Suicide Adventure (George Veeder) (Hack)", "Hack of Adventure", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "cff9950d4e650094f65f40d179a9882d", "Paul Slocum", "", "Mr. Roboto (Paul Slocum) (Hack)", "Hack of Berzerk", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
+  { "d00f6f8ba89559e4b20972a478fc0370", "Spiceware", "SW-01", "Medieval Mayhem (PAL)", "", "Homebrew", "STEREO", "", "", "", "", "", "PADDLES", "PADDLES", "", "", "", "", "", "", "" }, 
   { "d010e3dfe7366e47561c088079a59439", "Retroactive", "", "Qb (V0.10) (Stella) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "d026716b3c5be2c951cc4c064317c524", "", "", "Fu Kung! (V0.06) (14-01-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "d0498baca989e792db4b8270a02b9624", "", "", "Pac Ghost Sprite Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2884,6 +2885,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "f7d6592dcb773c81c278140ed4d01669", "Activision, David Crane, Dan Kitchen", "EAG-108-04, EAZ-108-04B", "Ghostbusters (1985) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f7e07080ed8396b68f2e5788a5c245e2", "Video Game Cartridge - Ariola", "TP-617", "Farmyard Fun (Ariola)", "", "", "", "", "", "", "", "", "", "", "", "", "33", "217", "", "", "" }, 
   { "f7f50d9c9d28bcc9f7d3075668b7ac89", "Activision, David Crane - Ariola", "EAG-008, PAG-008, EAG-008-04I - 711 008-720", "Laser Blast (1981) (Activision) (PAL) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "f7fac15cf54b55c5597718b6742dbec2", "Spiceware", "SW-01", "Medieval Mayhem (NTSC)", "", "Homebrew", "STEREO", "", "", "", "", "", "PADDLES", "PADDLES", "", "", "", "", "", "", "" }, 
   { "f802fa61011dd9eb6f80b271bac479d0", "Suntek", "SS-023", "Mole Hunter (Suntek) (PAL)", "AKA Topy", "", "", "", "", "", "", "", "", "", "", "", "60", "", "", "", "" }, 
   { "f80cf77164079d774b9b0fae33dffca9", "", "", "Fu Kung! (V0.15) (Negative Version) (05-02-2003) (AD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f8240e62d8c0a64a61e19388414e3104", "Activision, Steve Cartwright", "AX-013", "Barnstorming (1982) (Activision)", "", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

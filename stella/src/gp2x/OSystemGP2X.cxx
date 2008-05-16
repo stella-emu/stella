@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.29 2008-02-20 00:17:49 stephena Exp $
+// $Id: OSystemGP2X.cxx,v 1.30 2008-05-16 23:56:31 stephena Exp $
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 
@@ -74,7 +74,7 @@ OSystemGP2X::~OSystemGP2X()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemGP2X::getTicks()
+uInt32 OSystemGP2X::getTicks() const
 {
 #ifdef HAVE_GETTIMEOFDAY
   timeval now;

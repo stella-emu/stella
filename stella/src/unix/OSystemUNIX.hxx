@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.17 2008-02-06 13:45:24 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.18 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -25,7 +25,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.17 2008-02-06 13:45:24 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.18 2008-05-16 23:56:31 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {
@@ -45,7 +45,7 @@ class OSystemUNIX : public OSystem
 
       @return Current time in microseconds.
     */
-    uInt32 getTicks();
+    uInt32 getTicks() const;
 };
 
 #endif

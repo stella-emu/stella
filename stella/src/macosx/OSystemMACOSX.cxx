@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.18 2008-02-06 13:45:24 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.19 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -103,7 +103,7 @@ OSystemMACOSX::~OSystemMACOSX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemMACOSX::getTicks()
+uInt32 OSystemMACOSX::getTicks() const
 {
 #ifdef HAVE_GETTIMEOFDAY
   timeval now;

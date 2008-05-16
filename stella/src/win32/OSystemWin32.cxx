@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.24 2008-04-26 16:51:13 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.25 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -77,7 +77,7 @@ OSystemWin32::~OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemWin32::getTicks()
+uInt32 OSystemWin32::getTicks() const
 {
   return (uInt32) SDL_GetTicks() * 1000;
 }

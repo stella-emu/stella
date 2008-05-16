@@ -3092,7 +3092,7 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "2b6f831ff8bca32d6ecc5a0964100bca"
+"Cartridge.MD5" "d00f6f8ba89559e4b20972a478fc0370"
 "Cartridge.Manufacturer" "Spiceware"
 "Cartridge.ModelNo" "SW-01"
 "Cartridge.Name" "Medieval Mayhem (PAL)"
@@ -3335,7 +3335,7 @@
 "Cartridge.Name" "Star Voyager (1983) (CCE) [a]"
 ""
 
-"Cartridge.MD5" "4a5a2a33ccaf2f0c7ff6b60b9e1a0791"
+"Cartridge.MD5" "f7fac15cf54b55c5597718b6742dbec2"
 "Cartridge.Manufacturer" "Spiceware"
 "Cartridge.ModelNo" "SW-01"
 "Cartridge.Name" "Medieval Mayhem (NTSC)"
@@ -9061,8 +9061,10 @@
 
 "Cartridge.MD5" "807a8ff6216b00d52aba2dfea5d8d860"
 "Cartridge.Manufacturer" "John Payson"
-"Cartridge.Name" "Strat-O-Gems Deluxe"
+"Cartridge.Name" "Strat-O-Gems Deluxe (2005) (J. Payson)"
+"Cartridge.Note" "Uses the AtariVox controller"
 "Cartridge.Rarity" "Homebrew"
+"Controller.Right" "ATARIVOX"
 ""
 
 "Cartridge.MD5" "8c8a26ed57870daba8e13162d497bad1"
@@ -17812,4 +17814,19 @@
 "Cartridge.Manufacturer" "Activision"
 "Cartridge.Name" "Unknown Activision Game #1 (1983) (Activision) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "402d876ec4a73f9e3133f8f7f7992a1e"
+"Cartridge.Manufacturer" "Alex Herbert"
+"Cartridge.Name" "Man Goes Down (2006) (A. Herbert) (Prototype)"
+"Cartridge.Note" "Uses AtariVox controller"
+"Cartridge.Rarity" "Homebrew"
+"Controller.Right" "ATARIVOX"
+""
+
+"Cartridge.MD5" "2ca6445204ffb7686ddee3e33ba64d5b"
+"Cartridge.Manufacturer" "Alex Herbert"
+"Cartridge.Name" "AtariVox Test ROM"
+"Cartridge.Note" "Uses the AtariVox controller"
+"Controller.Right" "ATARIVOX"
 ""

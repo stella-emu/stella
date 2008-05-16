@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.124 2008-04-14 15:12:55 stephena Exp $
+// $Id: OSystem.cxx,v 1.125 2008-05-16 23:56:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -57,6 +57,7 @@
 #include "ConsoleFont.hxx"
 #include "Widget.hxx"
 #include "Console.hxx"
+#include "Random.hxx"
 #include "StateManager.hxx"
 
 #include "OSystem.hxx"
@@ -228,6 +229,9 @@ bool OSystem::create()
   // Create an 'empty' serial port
   mySerialPort = new SerialPort();
 #endif
+
+  // Let the random class know about us; it needs access to getTicks()
+  Random::setSystem(this);
 
   return true;
 }

@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: OSystemWinCE.cxx,v 1.13 2008-02-06 13:45:24 stephena Exp $
+// $Id: OSystemWinCE.cxx,v 1.14 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -103,7 +103,7 @@ void OSystemWinCE::mainLoop()
   }
 }
 
-uInt32 OSystemWinCE::getTicks(void)
+uInt32 OSystemWinCE::getTicks(void) const
 {
 	return GetTickCount();
 }

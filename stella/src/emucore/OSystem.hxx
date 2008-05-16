@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.64 2008-03-31 00:59:30 stephena Exp $
+// $Id: OSystem.hxx,v 1.65 2008-05-16 23:56:30 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.64 2008-03-31 00:59:30 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.65 2008-05-16 23:56:30 stephena Exp $
 */
 class OSystem
 {
@@ -379,7 +379,7 @@ class OSystem
 
       @return Current time in microseconds.
     */
-    virtual uInt32 getTicks() = 0;
+    virtual uInt32 getTicks() const = 0;
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in

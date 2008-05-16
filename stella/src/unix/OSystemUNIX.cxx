@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.28 2008-02-06 13:45:24 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.29 2008-05-16 23:56:31 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -58,7 +58,7 @@ OSystemUNIX::~OSystemUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemUNIX::getTicks()
+uInt32 OSystemUNIX::getTicks() const
 {
 #ifdef HAVE_GETTIMEOFDAY
   timeval now;
