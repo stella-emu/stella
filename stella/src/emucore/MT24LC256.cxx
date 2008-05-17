@@ -13,11 +13,12 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.11 2008-05-15 19:05:09 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.12 2008-05-17 15:16:45 stephena Exp $
 //============================================================================
 
 #include <cassert>
 #include <cstdio>
+#include <cstring>
 #include <fstream>
 
 #include "System.hxx"
@@ -157,9 +158,7 @@ void MT24LC256::jpee_init()
   jpee_smallmode = 0;
   jpee_logmode = -1;
   if(!myDataFileExists)
-    for(int i = 0; i < 256; i++)
-      for(int j = 0; j < 128; j++)
-        myData[i + j*256] = (i+1)*(j+1);
+    memset(myData, 0xff, 32768);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

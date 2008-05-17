@@ -13,13 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.18 2008-03-30 15:01:38 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.19 2008-05-17 15:16:45 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "Console.hxx"
+#include "Switches.hxx"
 #include "DialogContainer.hxx"
 #include "Dialog.hxx"
 #include "EventHandler.hxx"
@@ -128,96 +129,105 @@ CommandDialog::~CommandDialog()
 void CommandDialog::handleCommand(CommandSender* sender, int cmd,
                                   int data, int id)
 {
-  bool execute = true;
+  bool consoleCmd = false, stateCmd = false;
   Event::Type event = Event::NoType;
 
   switch(cmd)
   {
     case kSelectCmd:
       event = Event::ConsoleSelect;
+      consoleCmd = true;
       break;
 
     case kResetCmd:
       event = Event::ConsoleReset;
+      consoleCmd = true;
       break;
 
     case kColorCmd:
       event = Event::ConsoleColor;
+      consoleCmd = true;
       break;
 
     case kBWCmd:
       event = Event::ConsoleBlackWhite;
+      consoleCmd = true;
       break;
 
     case kLeftDiffACmd:
       event = Event::ConsoleLeftDifficultyA;
+      consoleCmd = true;
       break;
 
     case kLeftDiffBCmd:
       event = Event::ConsoleLeftDifficultyB;
+      consoleCmd = true;
       break;
 
     case kRightDiffACmd:
       event = Event::ConsoleRightDifficultyA;
+      consoleCmd = true;
       break;
 
     case kRightDiffBCmd:
       event = Event::ConsoleRightDifficultyB;
+      consoleCmd = true;
       break;
 
     case kSaveStateCmd:
       event = Event::SaveState;
+      stateCmd = true;
       break;
 
     case kStateSlotCmd:
       event = Event::ChangeState;
+      stateCmd = true;
       break;
 
     case kLoadStateCmd:
       event = Event::LoadState;
+      stateCmd = true;
       break;
 
     case kSnapshotCmd:
       instance()->eventHandler().leaveMenuMode();
       instance()->eventHandler().refreshDisplay(true);
       instance()->eventHandler().handleEvent(Event::TakeSnapshot, 1);
-      execute = false;
       break;
 
     case kFormatCmd:
       instance()->eventHandler().leaveMenuMode();
       instance()->console().toggleFormat();
-      execute = false;
       break;
 
     case kPaletteCmd:
       instance()->eventHandler().leaveMenuMode();
       instance()->console().togglePalette();
-      execute = false;
       break;
 
     case kReloadRomCmd:
       instance()->eventHandler().leaveMenuMode();
       instance()->deleteConsole();
       instance()->createConsole();
-      execute = false;
       break;
 
     case kExitCmd:
       instance()->eventHandler().handleEvent(Event::LauncherMode, 1);
-      execute = false;
       break;
-
-    default:
-      execute = false;
   }
 
-  // Show changes onscreen
-  if(execute)
+  // Console commands show be performed right away, after leaving the menu
+  // State commands require you to exit the menu manually
+  if(consoleCmd)
   {
     instance()->eventHandler().leaveMenuMode();
     instance()->eventHandler().handleEvent(event, 1);
+    instance()->console().switches().update();
     instance()->console().mediaSource().update();
     instance()->eventHandler().handleEvent(event, 0);
+  }
+  else if(stateCmd)
+  {
+    instance()->eventHandler().handleEvent(event, 1);
   }
 }
