@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.90 2008-04-19 22:49:00 stephena Exp $
+// $Id: TIA.cxx,v 1.91 2008-05-18 20:04:30 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -205,6 +205,8 @@ void TIA::reset()
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
   }
+
+  myFrameCounter = 0;
 
   // Recalculate the size of the display
   frameReset();

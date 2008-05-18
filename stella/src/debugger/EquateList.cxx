@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EquateList.cxx,v 1.33 2008-05-11 21:18:34 stephena Exp $
+// $Id: EquateList.cxx,v 1.34 2008-05-18 20:04:30 stephena Exp $
 //============================================================================
 
 #include <fstream>
+#include <sstream>
 
 #include "bspf.hxx"
 #include "Debugger.hxx"
@@ -52,7 +53,7 @@ EquateList::~EquateList()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EquateList::addEquate(const string& label, int address)
+void EquateList::addEquate(const string& label, uInt16 address)
 {
   // First check if this already exists as a hard-coded equate
   LabelToAddr::const_iterator iter = mySystemAddresses.find(label);
@@ -114,42 +115,48 @@ bool EquateList::removeEquate(const string& label)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& EquateList::getLabel(int addr, bool isRead) const
+const string& EquateList::getLabel(uInt16 addr, bool isRead, int places)
 {
   AddrToLabel::const_iterator iter;
 
   // Is this a read or write?
   // For now, there aren't separate read & write lists for user labels
-  if(isRead)
+  AddrToLabel& systemLabels = isRead ? mySystemReadLabels : mySystemWriteLabels;
+
+  // Determine the type of address to access the correct list
+  addressType(addr);
+  switch(myAddressType)
   {
-    if((iter = mySystemReadLabels.find(addr)) != mySystemReadLabels.end())
-      return iter->second.label;
-    else if((iter = myUserLabels.find(addr)) != myUserLabels.end())
-      return iter->second.label;
+    case ADDR_TIA:
+      if((iter = systemLabels.find(addr&0x7f)) != systemLabels.end())
+        return iter->second.label;
+      else if((iter = myUserLabels.find(addr)) != myUserLabels.end())
+        return iter->second.label;
+      break;
+
+    case ADDR_RIOT:  // FIXME - add mirrors for RIOT
+      if((iter = systemLabels.find(addr)) != systemLabels.end())
+        return iter->second.label;
+      else if((iter = myUserLabels.find(addr)) != myUserLabels.end())
+        return iter->second.label;
+      break;
+
+    case ADDR_RAM:
+    case ADDR_ROM:
+      // These addresses can never be in the system labels list
+      if((iter = myUserLabels.find(addr)) != myUserLabels.end())
+        return iter->second.label;
+      break;
   }
-  else
+
+  if(places > -1)
   {
-    if((iter = mySystemWriteLabels.find(addr)) != mySystemWriteLabels.end())
-      return iter->second.label;
-    else if((iter = myUserLabels.find(addr)) != myUserLabels.end())
-      return iter->second.label;
+    ostringstream buf;
+    buf << "$" << setw(places) << hex << addr;
+    return myCurrentLabel = buf.str();
   }
+
   return EmptyString;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EquateList::getFormatted(int addr, int places, bool isRead) const
-{
-  char fmt[10], buf[255];
-  const string& label = getLabel(addr, isRead);
-
-  if(label != "")
-    return label;
-
-  sprintf(fmt, "$%%0%dx", places);
-  sprintf(buf, fmt, addr);
-
-  return buf;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,6 +327,46 @@ int EquateList::extractValue(char *c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void EquateList::addressType(uInt16 addr)
+{
+  // These addresses were based on (and checked against) Kroko's 2600 memory
+  // map, found at http://www.qotile.net/minidig/docs/2600_mem_map.txt
+  myAddressType = ADDR_ROM;
+  if(addr % 0x2000 < 0x1000)
+  {
+    uInt16 z = addr & 0x00ff;
+    if(z < 0x80)
+      myAddressType = ADDR_TIA;
+    else
+    {
+      switch(addr & 0x0f00)
+      {
+        case 0x000:
+        case 0x100:
+        case 0x400:
+        case 0x500:
+        case 0x800:
+        case 0x900:
+        case 0xc00:
+        case 0xd00:
+          myAddressType = ADDR_RAM;
+          break;
+        case 0x200:
+        case 0x300:
+        case 0x600:
+        case 0x700:
+        case 0xa00:
+        case 0xb00:
+        case 0xe00:
+        case 0xf00:
+          myAddressType = ADDR_RIOT;
+          break;
+      }
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const EquateList::Equate EquateList::ourSystemEquates[kSystemEquateSize] = {
 // Standard $00-based TIA write locations:
   { "VSYNC",  0x00, EQF_WRITE },
@@ -369,53 +416,53 @@ const EquateList::Equate EquateList::ourSystemEquates[kSystemEquateSize] = {
   { "HMCLR",  0x2B, EQF_WRITE },
   { "CXCLR",  0x2C, EQF_WRITE },
 
-// Mirrored $30-based TIA write locations:
-  { "VSYNC.30",  0x30, EQF_WRITE },
-  { "VBLANK.30", 0x31, EQF_WRITE },
-  { "WSYNC.30",  0x32, EQF_WRITE },
-  { "RSYNC.30",  0x33, EQF_WRITE },
-  { "NUSIZ0.30", 0x34, EQF_WRITE },
-  { "NUSIZ1.30", 0x35, EQF_WRITE },
-  { "COLUP0.30", 0x36, EQF_WRITE },
-  { "COLUP1.30", 0x37, EQF_WRITE },
-  { "COLUPF.30", 0x38, EQF_WRITE },
-  { "COLUBK.30", 0x39, EQF_WRITE },
-  { "CTRLPF.30", 0x3A, EQF_WRITE },
-  { "REFP0.30",  0x3B, EQF_WRITE },
-  { "REFP1.30",  0x3C, EQF_WRITE },
-  { "PF0.30",    0x3D, EQF_WRITE },
-  { "PF1.30",    0x3E, EQF_WRITE },
-  { "PF2.30",    0x3F, EQF_WRITE },
-  { "RESP0.30",  0x40, EQF_WRITE },
-  { "RESP1.30",  0x41, EQF_WRITE },
-  { "RESM0.30",  0x42, EQF_WRITE },
-  { "RESM1.30",  0x43, EQF_WRITE },
-  { "RESBL.30",  0x44, EQF_WRITE },
-  { "AUDC0.30",  0x45, EQF_WRITE },
-  { "AUDC1.30",  0x46, EQF_WRITE },
-  { "AUDF0.30",  0x47, EQF_WRITE },
-  { "AUDF1.30",  0x48, EQF_WRITE },
-  { "AUDV0.30",  0x49, EQF_WRITE },
-  { "AUDV1.30",  0x4A, EQF_WRITE },
-  { "GRP0.30",   0x4B, EQF_WRITE },
-  { "GRP1.30",   0x4C, EQF_WRITE },
-  { "ENAM0.30",  0x4D, EQF_WRITE },
-  { "ENAM1.30",  0x4E, EQF_WRITE },
-  { "ENABL.30",  0x4F, EQF_WRITE },
-  { "HMP0.30",   0x50, EQF_WRITE },
-  { "HMP1.30",   0x51, EQF_WRITE },
-  { "HMM0.30",   0x52, EQF_WRITE },
-  { "HMM1.30",   0x53, EQF_WRITE },
-  { "HMBL.30",   0x54, EQF_WRITE },
-  { "VDELP0.30", 0x55, EQF_WRITE },
-  { "VDEL01.30", 0x56, EQF_WRITE },
-  { "VDELP1.30", 0x56, EQF_WRITE },
-  { "VDELBL.30", 0x57, EQF_WRITE },
-  { "RESMP0.30", 0x58, EQF_WRITE },
-  { "RESMP1.30", 0x59, EQF_WRITE },
-  { "HMOVE.30",  0x5A, EQF_WRITE },
-  { "HMCLR.30",  0x5B, EQF_WRITE },
-  { "CXCLR.30",  0x5C, EQF_WRITE },
+// Mirrored $40-based TIA write locations:
+  { "VSYNC.40",  0x40, EQF_WRITE },
+  { "VBLANK.40", 0x41, EQF_WRITE },
+  { "WSYNC.40",  0x42, EQF_WRITE },
+  { "RSYNC.40",  0x43, EQF_WRITE },
+  { "NUSIZ0.40", 0x44, EQF_WRITE },
+  { "NUSIZ1.40", 0x45, EQF_WRITE },
+  { "COLUP0.40", 0x46, EQF_WRITE },
+  { "COLUP1.40", 0x47, EQF_WRITE },
+  { "COLUPF.40", 0x48, EQF_WRITE },
+  { "COLUBK.40", 0x49, EQF_WRITE },
+  { "CTRLPF.40", 0x4A, EQF_WRITE },
+  { "REFP0.40",  0x4B, EQF_WRITE },
+  { "REFP1.40",  0x4C, EQF_WRITE },
+  { "PF0.40",    0x4D, EQF_WRITE },
+  { "PF1.40",    0x4E, EQF_WRITE },
+  { "PF2.40",    0x4F, EQF_WRITE },
+  { "RESP0.40",  0x50, EQF_WRITE },
+  { "RESP1.40",  0x51, EQF_WRITE },
+  { "RESM0.40",  0x52, EQF_WRITE },
+  { "RESM1.40",  0x53, EQF_WRITE },
+  { "RESBL.40",  0x54, EQF_WRITE },
+  { "AUDC0.40",  0x55, EQF_WRITE },
+  { "AUDC1.40",  0x56, EQF_WRITE },
+  { "AUDF0.40",  0x57, EQF_WRITE },
+  { "AUDF1.40",  0x58, EQF_WRITE },
+  { "AUDV0.40",  0x59, EQF_WRITE },
+  { "AUDV1.40",  0x5A, EQF_WRITE },
+  { "GRP0.40",   0x5B, EQF_WRITE },
+  { "GRP1.40",   0x5C, EQF_WRITE },
+  { "ENAM0.40",  0x5D, EQF_WRITE },
+  { "ENAM1.40",  0x5E, EQF_WRITE },
+  { "ENABL.40",  0x5F, EQF_WRITE },
+  { "HMP0.40",   0x60, EQF_WRITE },
+  { "HMP1.40",   0x61, EQF_WRITE },
+  { "HMM0.40",   0x62, EQF_WRITE },
+  { "HMM1.40",   0x63, EQF_WRITE },
+  { "HMBL.40",   0x64, EQF_WRITE },
+  { "VDELP0.40", 0x65, EQF_WRITE },
+  { "VDEL01.40", 0x66, EQF_WRITE },
+  { "VDELP1.40", 0x66, EQF_WRITE },
+  { "VDELBL.40", 0x67, EQF_WRITE },
+  { "RESMP0.40", 0x68, EQF_WRITE },
+  { "RESMP1.40", 0x69, EQF_WRITE },
+  { "HMOVE.40",  0x6A, EQF_WRITE },
+  { "HMCLR.40",  0x6B, EQF_WRITE },
+  { "CXCLR.40",  0x6C, EQF_WRITE },
 
 // Standard $00-based TIA read locations:
   { "CXM0P",  0x00, EQF_READ },

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.107 2008-05-04 17:16:39 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.108 2008-05-18 20:04:30 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -986,7 +986,7 @@ void DebuggerParser::executeListbreaks()
   {
     if(debugger->breakpoints().isSet(i))
     {
-      buf << debugger->equates().getFormatted(i, 4, true) << " ";
+      buf << debugger->equates().getLabel(i, true, 4) << " ";
       if(! (++count % 8) ) buf << "\n";
     }
   }

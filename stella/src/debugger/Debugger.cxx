@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.126 2008-05-04 17:16:39 stephena Exp $
+// $Id: Debugger.cxx,v 1.127 2008-05-18 20:04:30 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -574,7 +574,7 @@ const string& Debugger::disassemble(int start, int lines)
   string cpubuf;
 
   do {
-    buffer << myEquateList->getFormatted(start, 4, true) << ": ";
+    buffer << myEquateList->getLabel(start, true, 4) << ": ";
 
     int count = myCpuDebug->disassemble(start, cpubuf, *myEquateList);
     for(int i = 0; i < count; i++)
@@ -600,7 +600,7 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 
   do
   {
-    addrLabel.push_back(myEquateList->getFormatted(start, 4, true) + ":");
+    addrLabel.push_back(myEquateList->getLabel(start, true, 4) + ":");
     addr.push_back(start);
 
     cpubuf = "";
