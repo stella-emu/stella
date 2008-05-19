@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.143 2008-05-19 02:53:57 stephena Exp $
+// $Id: Console.cxx,v 1.144 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -66,7 +66,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     myProperties(props),
     myAVox(0),
     myDisplayFormat("NTSC"),
-    myFramerate(60),
+    myFramerate(60.0),
     myUserPaletteDefined(false)
 {
   myControllers[0] = 0;
@@ -126,6 +126,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);
+  float avgScanlineCount = 0.0;
   vidinfo << "  Display Format:  " << myDisplayFormat;
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
@@ -136,14 +137,18 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     // Unfortunately, this means we have to always enable 'fastscbios',
     // since otherwise the BIOS loading will take over 250 frames!
     mySystem->reset();
-    int palCount = 0;
+    int palCount = 0, scanlineCount = 0;
     for(int i = 0; i < 60; ++i)
     {
       myMediaSource->update();
-      if(i >= 30 && myMediaSource->scanlines() > 285)
-        ++palCount;
+      if(i >= 30)
+      {
+        if(myMediaSource->scanlines() > 285)
+          ++palCount;
+        scanlineCount += myMediaSource->scanlines();
+      }
     }
-
+    avgScanlineCount = scanlineCount / 30.0;
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       vidinfo << " ==> " << myDisplayFormat;
@@ -156,13 +161,23 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
   {
-    // Assume we've got ~262 scanlines (NTSC-like format)
-    myFramerate = 60;
+    // Try to be as accurate as possible with the framerate
+    // Use the scanline count if available, otherwise assume we've got
+    // ~262 scanlines (NTSC-like format)
+    if(avgScanlineCount > 0.0)
+      myFramerate = 15720.0 / avgScanlineCount;
+    else
+      myFramerate = 60.0;
   }
   else
   {
-    // Assume we've got ~312 scanlines (PAL-like format)
-    myFramerate = 50;
+    // Try to be as accurate as possible with the framerate
+    // Use the scanline count if available, otherwise assume we've got
+    // ~312 scanlines (PAL-like format)
+    if(avgScanlineCount > 0.0)
+      myFramerate = 15600.0 / avgScanlineCount;
+    else
+      myFramerate = 50.0;
 
     if(myProperties.get(Display_Height) == "210")
       myProperties.set(Display_Height, "250");
@@ -262,7 +277,7 @@ void Console::toggleFormat()
 
   if(myDisplayFormat.compare(0, 4, "NTSC") == 0)
   {
-    if(myFramerate == 60)
+    if(myFramerate > 55.0)
     {
       format  = "PAL60";
       message = "PAL palette (PAL60)";
@@ -275,7 +290,7 @@ void Console::toggleFormat()
   }
   else if(myDisplayFormat.compare(0, 3, "PAL") == 0)
   {
-    if(myFramerate == 60)
+    if(myFramerate > 55.0)
     {
       format  = "SECAM";
       message = "SECAM palette (SECAM60)";
@@ -288,7 +303,7 @@ void Console::toggleFormat()
   }
   else if(myDisplayFormat.compare(0, 5, "SECAM") == 0)
   {
-    if(myFramerate == 60)
+    if(myFramerate > 55.0)
     {
       format  = "NTSC";
       message = "NTSC palette (NTSC)";
@@ -795,14 +810,14 @@ void Console::setColorLossPalette(bool loss)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 Console::getFramerate() const
+float Console::getFramerate() const
 {
   // Set the correct framerate based on the format of the ROM
   // This can be overridden by changing the framerate in the
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now solely determined based on ROM format).
   int framerate = myOSystem->settings().getInt("framerate");
-  return framerate == -1 ? myFramerate : framerate;
+  return (float) framerate == -1 ? myFramerate : framerate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

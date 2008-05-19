@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.24 2008-02-06 13:45:22 stephena Exp $
+// $Id: Sound.hxx,v 1.25 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -30,7 +30,7 @@ class Deserializer;
   It has no functionality whatsoever.
 
   @author Stephen Anthony
-  @version $Id: Sound.hxx,v 1.24 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: Sound.hxx,v 1.25 2008-05-19 21:16:58 stephena Exp $
 */
 class Sound
 {
@@ -75,7 +75,7 @@ class Sound
 
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    virtual void setFrameRate(uInt32 framerate) = 0;
+    virtual void setFrameRate(float framerate) = 0;
 
     /**
       Initializes the sound device.  This must be called before any

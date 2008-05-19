@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.19 2008-02-06 13:45:19 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.20 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
@@ -34,7 +34,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.19 2008-02-06 13:45:19 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.20 2008-05-19 21:16:58 stephena Exp $
 */
 class SoundSDL : public Sound
 {
@@ -79,7 +79,7 @@ class SoundSDL : public Sound
 
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    void setFrameRate(uInt32 framerate);
+    void setFrameRate(float framerate);
 
     /**
       Initializes the sound device.  This must be called before any
@@ -253,7 +253,7 @@ class SoundSDL : public Sound
     Int32 myLastRegisterSetCycle;
 
     // Indicates the base framerate depending on if the ROM is NTSC or PAL
-    uInt32 myDisplayFrameRate;
+    float myDisplayFrameRate;
 
     // Indicates the number of channels (mono or stereo)
     uInt32 myNumChannels;

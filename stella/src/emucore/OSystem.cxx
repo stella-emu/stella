@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.125 2008-05-16 23:56:30 stephena Exp $
+// $Id: OSystem.cxx,v 1.126 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -287,10 +287,10 @@ void OSystem::setBaseDir(const string& basedir)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setFramerate(uInt32 framerate)
+void OSystem::setFramerate(float framerate)
 {
   myDisplayFrameRate = framerate;
-  myTimePerFrame = (uInt32)(1000000.0 / (double)myDisplayFrameRate);
+  myTimePerFrame = (uInt32)(1000000.0 / myDisplayFrameRate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

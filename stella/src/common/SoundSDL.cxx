@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.42 2008-03-31 00:59:30 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.43 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -45,7 +45,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
     myIsEnabled(osystem->settings().getBool("sound")),
     myIsInitializedFlag(false),
     myLastRegisterSetCycle(0),
-    myDisplayFrameRate(60),
+    myDisplayFrameRate(60.0),
     myNumChannels(1),
     myFragmentSizeLogBase2(0),
     myIsMuted(false),
@@ -281,7 +281,7 @@ void SoundSDL::setChannels(uInt32 channels)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::setFrameRate(uInt32 framerate)
+void SoundSDL::setFrameRate(float framerate)
 {
   // FIXME, we should clear out the queue or adjust the values in it
   myDisplayFrameRate = framerate;

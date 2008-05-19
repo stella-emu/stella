@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.hxx,v 1.7 2008-02-06 13:45:19 stephena Exp $
+// $Id: SoundNull.hxx,v 1.8 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_NULL_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   is completely disabled.
 
   @author Stephen Anthony
-  @version $Id: SoundNull.hxx,v 1.7 2008-02-06 13:45:19 stephena Exp $
+  @version $Id: SoundNull.hxx,v 1.8 2008-05-19 21:16:58 stephena Exp $
 */
 class SoundNull : public Sound
 {
@@ -77,7 +77,7 @@ class SoundNull : public Sound
 
       @param framerate The base framerate depending on NTSC or PAL ROM
     */
-    void setFrameRate(uInt32 framerate) { }
+    void setFrameRate(float framerate) { }
 
     /**
       Initializes the sound device.  This must be called before any

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.66 2008-05-08 20:23:31 stephena Exp $
+// $Id: Console.hxx,v 1.67 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -39,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.66 2008-05-08 20:23:31 stephena Exp $
+  @version $Id: Console.hxx,v 1.67 2008-05-19 21:16:58 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -229,7 +229,7 @@ class Console : public Serializable
       Returns the framerate based on a number of factors
       (whether 'framerate' is set, what display format is in use, etc)
     */
-    uInt32 getFramerate() const;
+    float getFramerate() const;
 
     /**
       Toggles the TIA bit specified in the method name.
@@ -306,7 +306,7 @@ class Console : public Serializable
     string myDisplayFormat;
 
     // The currently defined display framerate
-    uInt32 myFramerate;
+    float myFramerate;
 
     // Indicates whether an external palette was found and
     // successfully loaded

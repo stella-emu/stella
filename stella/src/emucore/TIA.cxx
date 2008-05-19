@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.91 2008-05-18 20:04:30 stephena Exp $
+// $Id: TIA.cxx,v 1.92 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -195,7 +195,7 @@ void TIA::reset()
 
   myFloatTIAOutputPins = mySettings.getBool("tiafloat");
 
-  if(myConsole.getFramerate() > 55)  // NTSC
+  if(myConsole.getFramerate() > 55.0)  // NTSC
   {
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;

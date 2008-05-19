@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.65 2008-05-16 23:56:30 stephena Exp $
+// $Id: OSystem.hxx,v 1.66 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.65 2008-05-16 23:56:30 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.66 2008-05-19 21:16:58 stephena Exp $
 */
 class OSystem
 {
@@ -209,7 +209,7 @@ class OSystem
 
       @param framerate  The video framerate to use
     */
-    virtual void setFramerate(uInt32 framerate);
+    virtual void setFramerate(float framerate);
 
     /**
       Set all config file paths for the OSystem.
@@ -226,7 +226,7 @@ class OSystem
 
       @return  The video framerate currently in use
     */
-    inline uInt32 frameRate() const { return myDisplayFrameRate; }
+    inline float frameRate() const { return myDisplayFrameRate; }
 
     /**
       Get the maximum dimensions of a window for the video hardware.
@@ -492,7 +492,7 @@ class OSystem
     ResolutionList myResolutions;
 
     // Number of times per second to iterate through the main loop
-    uInt32 myDisplayFrameRate;
+    float myDisplayFrameRate;
 
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.127 2008-04-02 21:22:16 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.128 2008-05-19 21:16:58 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -205,7 +205,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 
   // Precompute the message coordinates
   myMessage.text    = message;
-  myMessage.counter = myOSystem->frameRate() << 1; // Show message for 2 seconds
+  myMessage.counter = uInt32(myOSystem->frameRate()) << 1; // Show message for 2 seconds
   myMessage.color   = color;
 
   myMessage.w = myOSystem->font().getStringWidth(myMessage.text) + 10;
