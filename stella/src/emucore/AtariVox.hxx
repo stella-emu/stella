@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.13 2008-04-20 19:52:33 stephena Exp $
+// $Id: AtariVox.hxx,v 1.14 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #ifndef ATARIVOX_HXX
@@ -33,7 +33,7 @@ class MT24LC256;
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.13 2008-04-20 19:52:33 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.14 2008-05-19 02:53:57 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -81,6 +81,13 @@ class AtariVox : public Controller
       events currently set.
     */
     virtual void update() { }
+
+    /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.  It may be necessary 
+      to override this method for devices that remember cycle counts.
+    */
+    virtual void systemCyclesReset();
 
     virtual string about() const;
 

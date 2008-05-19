@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.142 2008-05-16 12:04:34 stephena Exp $
+// $Id: Console.cxx,v 1.143 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -88,6 +88,16 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Construct the system and components
   mySystem = new System(13, 6);
 
+  // The real controllers for this console will be added later
+  // For now, we just add dummy joystick controllers, since autodetection
+  // runs the emulation for a while, and this may interfere with 'smart'
+  // controllers such as the AVox and SaveKey
+  // Note that the controllers must be added directly after the system
+  // has been created, and before any other device is added
+  // (particularly the M6532)
+  myControllers[0] = new Joystick(Controller::Left, *myEvent, *mySystem);
+  myControllers[1] = new Joystick(Controller::Right, *myEvent, *mySystem);
+
   M6502* m6502;
   if(myOSystem->settings().getString("cpu") == "low")
     m6502 = new M6502Low(1);
@@ -110,13 +120,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myMediaSource = tia;
   myCart = cart;
   myRiot = m6532;
-
-  // The real controllers for this console will be added later
-  // For now, we just add dummy joystick controllers, since autodetection
-  // runs the emulation for a while, and this may interfere with 'smart'
-  // controllers such as the AVox and SaveKey
-  myControllers[0] = new Joystick(Controller::Left, *myEvent, *mySystem);
-  myControllers[1] = new Joystick(Controller::Right, *myEvent, *mySystem);
 
   // Query some info about this console
   ostringstream about, vidinfo;

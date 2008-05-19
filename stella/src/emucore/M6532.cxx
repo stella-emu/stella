@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.25 2008-05-16 23:56:30 stephena Exp $
+// $Id: M6532.cxx,v 1.26 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -73,6 +73,10 @@ void M6532::systemCyclesReset()
   // System cycles are being reset to zero so we need to adjust
   // the cycle count we remembered when the timer was last set
   myCyclesWhenTimerSet -= mySystem->cycles();
+
+  // We should also inform any 'smart' controllers as well
+  myConsole.controller(Controller::Left).systemCyclesReset();
+  myConsole.controller(Controller::Right).systemCyclesReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

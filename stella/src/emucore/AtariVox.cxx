@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.19 2008-05-06 16:39:10 stephena Exp $
+// $Id: AtariVox.cxx,v 1.20 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -24,8 +24,6 @@
 #include "SerialPort.hxx"
 #include "System.hxx"
 #include "AtariVox.hxx"
-
-#define DEBUG_ATARIVOX 0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
@@ -93,9 +91,6 @@ bool AtariVox::read(DigitalPin pin)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::write(DigitalPin pin, bool value)
 {
-  if(DEBUG_ATARIVOX)
-    cerr << "AtariVox: write to SWCHA" << endl;
-
   // Change the pin state based on value
   switch(pin)
   {
@@ -109,12 +104,6 @@ void AtariVox::write(DigitalPin pin, bool value)
     // Pin 3: EEPROM SDA
     //        output data to the 24LC256 EEPROM using the I2C protocol
     case Three:
-      if(DEBUG_ATARIVOX)
-        cerr << "AtariVox: value "
-             << value
-             << " written to SDA line at cycle "
-             << mySystem.cycles()
-             << endl;
       myDigitalPinState[Three] = value;
       myEEPROM->writeSDA(value);
       break;
@@ -122,12 +111,6 @@ void AtariVox::write(DigitalPin pin, bool value)
     // Pin 4: EEPROM SCL
     //        output clock data to the 24LC256 EEPROM using the I2C protocol
     case Four:
-      if(DEBUG_ATARIVOX)
-        cerr << "AtariVox: value "
-             << value
-             << " written to SCLK line at cycle "
-             << mySystem.cycles()
-             << endl;
       myDigitalPinState[Four] = value;
       myEEPROM->writeSCL(value);
       break;
@@ -141,25 +124,9 @@ void AtariVox::write(DigitalPin pin, bool value)
 void AtariVox::clockDataIn(bool value)
 {
   uInt32 cycle = mySystem.cycles();
-  if(DEBUG_ATARIVOX)
-    cerr << "AtariVox: value "
-         << value
-         << " written to DATA line at "
-         << mySystem.cycles()
-         << " (-"
-         << myLastDataWriteCycle
-         << "=="
-         << (mySystem.cycles() - myLastDataWriteCycle)
-         << ")"
-         << endl;
 
   if(value && (myShiftCount == 0))
-  {
-    if(DEBUG_ATARIVOX)
-      cerr << "value && (myShiftCount == 0), returning" << endl;
-//cerr << "!!!!! INVALID START BIT !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
     return;
-  }
 
   // If this is the first write this frame, or if it's been a long time
   // since the last write, start a new data byte.
@@ -167,25 +134,17 @@ void AtariVox::clockDataIn(bool value)
   {
     myShiftRegister = 0;
     myShiftCount = 0;
-//cerr << "!!!!! START NEW BYTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
   }
   else if(cycle > myLastDataWriteCycle + 1000)
   {
     myShiftRegister = 0;
     myShiftCount = 0;
-//cerr << "!!!!! DELAY TOO LONG !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n";
   }
-
-//cerr << "value = " << value << " (" << (int)myShiftCount << ")" << endl;
 
   // If this is the first write this frame, or if it's been 62 cycles
   // since the last write, shift this bit into the current byte.
   if(cycle < myLastDataWriteCycle || cycle >= myLastDataWriteCycle + 62)
   {
-    if(DEBUG_ATARIVOX)
-      cerr << "cycle >= myLastDataWriteCycle + 62, shiftIn("
-           << value << ")" << endl;
-
     myShiftRegister >>= 1;
     myShiftRegister |= (value << 15);
     if(++myShiftCount == 10)
@@ -204,14 +163,22 @@ void AtariVox::clockDataIn(bool value)
     #else
         mySpeakJet->write(data);
     #endif
-//cerr << " ==> " << (int)data << endl;
-//cerr << "----------------------------------------------------------\n";
       }
       myShiftRegister = 0;
     }
   }
 
   myLastDataWriteCycle = cycle;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void AtariVox::systemCyclesReset()
+{
+  myLastDataWriteCycle -= mySystem.cycles();
+
+  // The EEPROM keeps track of cycle counts, and needs to know when the
+  // cycles are reset
+  myEEPROM->systemCyclesReset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

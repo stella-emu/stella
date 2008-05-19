@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SaveKey.cxx,v 1.2 2008-05-06 16:39:12 stephena Exp $
+// $Id: SaveKey.cxx,v 1.3 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #include "MT24LC256.hxx"
@@ -79,4 +79,12 @@ void SaveKey::write(DigitalPin pin, bool value)
     default:
       break;
   } 
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SaveKey::systemCyclesReset()
+{
+  // The EEPROM keeps track of cycle counts, and needs to know when the
+  // cycles are reset
+  myEEPROM->systemCyclesReset();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.cxx,v 1.12 2008-05-17 15:16:45 stephena Exp $
+// $Id: MT24LC256.cxx,v 1.13 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -140,11 +140,22 @@ void MT24LC256::update()
   {
 #if DEBUG_EEPROM
     cerr << endl << "  I2C_PIN_WRITE(SCL = " << mySCL
-         << ", SDA = " << mySDA << ")" << endl;
+         << ", SDA = " << mySDA << ")" << " @ " << mySystem.cycles() << endl;
 #endif
     jpee_clock(mySCL);
     jpee_data(mySDA);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MT24LC256::systemCyclesReset()
+{
+  // System cycles are being reset to zero so we need to adjust
+  // the cycle counts we remembered
+  uInt32 cycles = mySystem.cycles();
+  myCyclesWhenSDASet -= cycles;
+  myCyclesWhenSCLSet -= cycles;
+  myCyclesWhenTimerSet -= cycles;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SaveKey.hxx,v 1.1 2008-04-29 15:49:34 stephena Exp $
+// $Id: SaveKey.hxx,v 1.2 2008-05-19 02:53:58 stephena Exp $
 //============================================================================
 
 #ifndef SAVEKEY_HXX
@@ -31,7 +31,7 @@ class MT24LC256;
   driver code.
 
   @author  Stephen Anthony
-  @version $Id: SaveKey.hxx,v 1.1 2008-04-29 15:49:34 stephena Exp $
+  @version $Id: SaveKey.hxx,v 1.2 2008-05-19 02:53:58 stephena Exp $
 */
 class SaveKey : public Controller
 {
@@ -76,6 +76,13 @@ class SaveKey : public Controller
       events currently set.
     */
     virtual void update() { }
+
+    /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.  It may be necessary 
+      to override this method for devices that remember cycle counts.
+    */
+    virtual void systemCyclesReset();
 
   private:
     // The EEPROM used in the SaveKey

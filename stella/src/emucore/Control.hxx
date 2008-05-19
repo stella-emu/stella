@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.16 2008-05-15 15:07:29 stephena Exp $
+// $Id: Control.hxx,v 1.17 2008-05-19 02:53:57 stephena Exp $
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -57,7 +57,7 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.16 2008-05-15 15:07:29 stephena Exp $
+  @version $Id: Control.hxx,v 1.17 2008-05-19 02:53:57 stephena Exp $
 */
 class Controller : public Serializable
 {
@@ -156,6 +156,13 @@ class Controller : public Serializable
       events currently set.
     */
     virtual void update() = 0;
+
+    /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.  It may be necessary 
+      to override this method for devices that remember cycle counts.
+    */
+    virtual void systemCyclesReset() { };
 
     /**
       Saves the current state of this controller to the given Serializer.
