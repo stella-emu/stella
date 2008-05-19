@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall.hxx,v 1.1 2008-05-12 22:40:25 stephena Exp $
+// $Id: TrackBall.hxx,v 1.2 2008-05-19 03:15:12 stephena Exp $
 //============================================================================
 
 #ifndef TRACKBALL_HXX
@@ -35,7 +35,7 @@
     AmigaMouse:  Amiga Mouse
 
   @author  Stephen Anthony & z26 team
-  @version $Id: TrackBall.hxx,v 1.1 2008-05-12 22:40:25 stephena Exp $
+  @version $Id: TrackBall.hxx,v 1.2 2008-05-19 03:15:12 stephena Exp $
 */
 class TrackBall : public Controller
 {
@@ -69,6 +69,13 @@ class TrackBall : public Controller
       events currently set.
     */
     virtual void update();
+
+    /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.  It may be necessary 
+      to override this method for devices that remember cycle counts.
+    */
+    virtual void systemCyclesReset();
 
   private:
     // Counter to iterate through the gray codes

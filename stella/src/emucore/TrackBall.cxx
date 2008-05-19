@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall.cxx,v 1.1 2008-05-12 22:40:25 stephena Exp $
+// $Id: TrackBall.cxx,v 1.2 2008-05-19 03:15:12 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -153,6 +153,13 @@ void TrackBall::update()
   // Get mouse button state
   myDigitalPinState[Six] = (myEvent.get(Event::MouseButtonValue) == 0);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TrackBall::systemCyclesReset()
+{
+  myCyclesWhenSWCHARead -= mySystem.cycles();
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt32 TrackBall::ourTrakBallTableTB_H[2][2] = {
