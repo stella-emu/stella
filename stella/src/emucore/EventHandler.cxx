@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.223 2008-05-16 12:17:22 stephena Exp $
+// $Id: EventHandler.cxx,v 1.224 2008-05-20 13:42:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -428,6 +428,9 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->console().togglePhosphor();
                 break;
 
+              case SDLK_l:
+                myOSystem->frameBuffer().toggleFrameStats();
+                break;
 #if 0
 // FIXME - these will be removed when a UI is added for event recording
               case SDLK_e:  // Alt-e starts/stops event recording

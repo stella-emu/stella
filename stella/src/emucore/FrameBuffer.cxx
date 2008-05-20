@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.128 2008-05-19 21:16:58 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.129 2008-05-20 13:42:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -45,7 +45,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myInitializedCount(0),
-    myPausedCount(0)
+    myPausedCount(0),
+    myFrameStatsEnabled(false)
 {
 }
 
@@ -123,6 +124,18 @@ void FrameBuffer::update()
 
       // And update the screen
       drawMediaSource();
+
+      // Show frame statistics
+      if(myFrameStatsEnabled)
+      {
+        // FIXME - sizes hardcoded for now; fix during UI refactoring
+        uInt32 scanlines = myOSystem->console().mediaSource().scanlines();
+        float fps = (scanlines <= 285 ? 15720.0 : 15600.0) / scanlines;
+        char msg[30];
+        sprintf(msg, "%u LINES  %2.2f FPS", scanlines, fps);
+        fillRect(3, 3, 95, 9, kBGColor);
+        drawString(&myOSystem->font(), msg, 3, 3, 95, kBtnTextColor, kTextAlignCenter);
+      }
 
       break;  // S_EMULATE
     }
@@ -261,12 +274,36 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::hideMessage()
+void FrameBuffer::toggleFrameStats()
 {
-  // Erase old messages on the screen
-  if(myMessage.counter > 0)
+  showFrameStats(!myOSystem->settings().getBool("stats"));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showFrameStats(bool enable)
+{
+  myOSystem->settings().setBool("stats", enable);
+  myFrameStatsEnabled = enable;
+  myOSystem->eventHandler().refreshDisplay(true);  // Do this twice for
+  myOSystem->eventHandler().refreshDisplay(true);  // double-buffered modes
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::enableMessages(bool enable)
+{
+  if(enable)
   {
+    // Only re-anable frame stats if they were already enabled before
+    myFrameStatsEnabled = myOSystem->settings().getBool("stats");
+  }
+  else
+  {
+    // Temporarily disable frame stats
+    myFrameStatsEnabled = false;
+
+    // Erase old messages on the screen
     myMessage.counter = 0;
+
     myOSystem->eventHandler().refreshDisplay(true);  // Do this twice for
     myOSystem->eventHandler().refreshDisplay(true);  // double-buffered modes
   }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.19 2008-03-30 15:01:38 stephena Exp $
+// $Id: Snapshot.cxx,v 1.20 2008-05-20 13:42:50 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -38,7 +38,7 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
   try
   {
     // Make sure we have a 'clean' image, with no onscreen messages
-    framebuffer.hideMessage();
+    framebuffer.enableMessages(false);
 
     // Get actual image dimensions. which are not always the same
     // as the framebuffer dimensions
@@ -105,6 +105,8 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
     if(compmem) delete[] compmem;
     out.close();
 
+    // Re-enabled old messages
+    framebuffer.enableMessages(true);
     framebuffer.showMessage("Snapshot saved");
   }
   catch(const char *msg)

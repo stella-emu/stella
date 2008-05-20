@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.94 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.95 2008-05-20 13:42:50 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -101,7 +101,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.94 2008-03-13 22:58:06 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.95 2008-05-20 13:42:50 stephena Exp $
 */
 class FrameBuffer
 {
@@ -146,9 +146,20 @@ class FrameBuffer
                      int color = kTextColorHi);
 
     /**
-      Hides any onscreen messages.
+      Toggles showing or hiding framerate statistics.
     */
-    void hideMessage();
+    void toggleFrameStats();
+
+    /**
+      Shows a message containing frame statistics for the current frame.
+    */
+    void showFrameStats(bool enable);
+
+    /**
+      Enable/disable any pending messages.  Disabled messages aren't removed
+      from the message queue; they're just not redrawn into the framebuffer.
+    */
+    void enableMessages(bool enable);
 
     /**
       Returns the current width of the framebuffer *before* any scaling.
@@ -520,7 +531,7 @@ class FrameBuffer
     void setWindowIcon();
 
     /**
-      Set the icon for the main SDL window.
+      Draw pending messages.
     */
     void drawMessage();
 
@@ -569,6 +580,10 @@ class FrameBuffer
       uInt32 color;
     };
     Message myMessage;
+
+    // Used to show frame statistics (scanline count and framerate)
+    Message myFrameStats;
+    bool myFrameStatsEnabled;
 
     // The list of all available video modes for this framebuffer
     VideoModeList myWindowedModeList;

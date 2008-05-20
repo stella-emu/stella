@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.144 2008-05-16 12:04:34 stephena Exp $
+// $Id: Settings.cxx,v 1.145 2008-05-20 13:42:50 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -101,6 +101,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("showinfo", "false");
   setInternal("tiafloat", "true");
   setInternal("avoxport", "");
+  setInternal("stats", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,6 +328,7 @@ void Settings::usage()
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
+    << "  -stats        <1|0>          Show scanline and framerate info during emulation\n"
     << endl
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"

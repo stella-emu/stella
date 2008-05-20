@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.126 2008-05-19 21:16:58 stephena Exp $
+// $Id: OSystem.cxx,v 1.127 2008-05-20 13:42:50 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -358,6 +358,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
         break;
     }
   }
+  myFrameBuffer->showFrameStats(mySettings->getBool("stats"));
 
   return true;
 }
