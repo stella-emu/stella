@@ -12,6 +12,41 @@
                                Release History
 ===============================================================================
 
+2.6 to 2.6.1: (May 21, 2008)
+
+  * Introduced more accurate timing for NTSC vs. PAL modes, where the
+    framerate is based on the number of scanlines per frame.  This should
+    eliminate 'clicking' sounds when emulating ROMs that don't follow
+    the exact NTSC or PAL specs.
+
+  * Added ability to see the current number of scanlines and corresponding
+    framerate to the TIA emulation.  This can be set with the '-stats'
+    commandline argument, or dynamically turned on and off with the
+    'Alt-l' key combo.
+
+  * Fixed issue with debugger disassembly and mirrored $40 TIA write
+    addresses.  They were actually defined at $30, and generating incorrect
+    labels.
+
+  * Fixed issue in AtariVox and SaveKey controllers where accessing the
+    EEPROM sometimes failed after the first write.
+
+  * Changed AtariVox and SaveKey EEPROM emulation to default to $FF for
+    a blank EEPROM.
+
+  * Fixed regression in cart auto-detection logic; some F6 ROMs were being
+    misdetected as E7.
+
+  * Fixed issue with M6532/RIOT timer initialization; it was causing some
+    ROMs to hang (most notably Summer Games).  Related to this, reworked
+    the built-in random number generator to generate 'more random' numbers.
+
+  * Fixed bug in CommandMenu where console buttons (Select, Reset, etc)
+    weren't doing anything.
+
+-Have fun!
+
+
 2.5.1 to 2.6: (May 16, 2008)
 
   * Added AtariVox support using a real AtariVox device, where Stella
@@ -54,8 +89,6 @@
   * Fixed bug in 6507 BCD handling introduced in the last release.
 
   * For the Win32 port; Win9x should be fully supported again.
-
--Have fun!
 
 
 2.5 to 2.5.1: (April 9, 2008)

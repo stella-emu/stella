@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.20 2008-05-20 13:42:50 stephena Exp $
+// $Id: Snapshot.cxx,v 1.21 2008-05-20 14:35:50 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -105,7 +105,7 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
     if(compmem) delete[] compmem;
     out.close();
 
-    // Re-enabled old messages
+    // Re-enable old messages
     framebuffer.enableMessages(true);
     framebuffer.showMessage("Snapshot saved");
   }

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# $Id: stella.SlackBuild,v 1.11 2008-05-16 12:04:35 stephena Exp $
+# $Id: stella.SlackBuild,v 1.12 2008-05-20 14:35:50 stephena Exp $
 
 # stella.SlackBuild for Stella 2.x, B. Watson, 2005
 
@@ -13,7 +13,7 @@ die() {
 	exit 1
 }
 
-VERSION=2.6
+VERSION=2.6.1
 ARCH=${ARCH-i486}
 BUILD=1
 

@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.6</b></h4></center>
+	<center><h4><b>Release 2.6.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -221,49 +221,38 @@
     Sega Dreamcast, Unix, and Windows.
 	</p>
 
-	<h2><b>New in Release 2.6</b></h2>
+	<h2><b>New in Release 2.6.1</b></h2>
 
 	<ul>
-    <li>Added AtariVox support using a real AtariVox device, where Stella
-    sends data directly to the AtariVox.  For now, this is supported in
-    Linux/UNIX, OSX, and Win32 only.  You'll obviously need a real
-    AtariVox, and a serial<->USB adaptor to connect it to your system.
-    Added '-avoxport' commandline argument used to set the serial port
-    to which the AtariVox is connected.  Special thanks to Al Yarusso
-    and Richard H. for providing sample hardware.</li>
+<li>Introduced more accurate timing for NTSC vs. PAL modes, where the
+    framerate is based on the number of scanlines per frame.  This should
+    eliminate 'clicking' sounds when emulating ROMs that don't follow
+    the exact NTSC or PAL specs.</li>
 
-    <li>Added AtariVox and SaveKey EEPROM emulation.  This reads/writes data
-    to a 32KB file, not to the actual hardware.  Very useful for testing
-    EEPROM support without actually wearing out the real device.  Special
-    thanks to J. Payson for providing the EEPROM emulation code, and A.
-    Herbert for answering many driver-related questions.</li>
+<li>Added ability to see the current number of scanlines and corresponding
+    framerate to the TIA emulation.  This can be set with the '-stats'
+    commandline argument, or dynamically turned on and off with the
+    'Alt-l' key combo.</li>
 
-    <li>Added support for CX-22, CX-80, and AmigaMouse trackball controllers.</li>
+<li>Fixed issue with debugger disassembly and mirrored $40 TIA write
+    addresses.  They were actually defined at $30, and generating incorrect
+    labels.</li>
 
-    <li>Improved debugger symfile handling so that addresses accessed as
-    read-only won't use write-only labels (and vice-versa).  More work
-    is still needed in this area.</li>
+<li>Fixed issue in AtariVox and SaveKey controllers where accessing the
+    EEPROM sometimes failed after the first write.</li>
 
-    <li>Added M6532/RIOT tab to the debugger.  This will be expanded on in a
-    future release.</li>
+<li>Changed AtariVox and SaveKey EEPROM emulation to default to $FF for
+    a blank EEPROM.</li>
 
-    <li>Added TIA emulation fixes for graphical glitches in Escape from the
-    Mindmaster, Mission Survive, Solaris, and SWOOPS!</li>
+<li>Fixed regression in cart auto-detection logic; some F6 ROMs were being
+    misdetected as E7.</li>
 
-    <li>Fixed bug where fullscreen OpenGL scaling wasn't working on 4:3 monitors.</li>
+<li>Fixed issue with M6532/RIOT timer initialization; it was causing some
+    ROMs to hang (most notably Summer Games).  Related to this, reworked
+    the built-in random number generator to generate 'more random' numbers.</li>
 
-    <li>Further improvements to the M6532/RIOT emulation, which unfortunately
-    have broken old state files (again).</li>
-
-    <li>Added deadzone setting, for adjusting the deadzone amount for
-    analog joysticks.  This can be set using the commandline argument
-    '-joydeadzone' or dynamically within the UI.</li>
-
-    <li>Make ROM disassembly in debugger take advantage of a wide window.</li>
-
-    <li>Fixed bug in 6507 BCD handling introduced in the last release.</li>
-
-    <li>For the Win32 port; Win9x should be fully supported again.</li>
+<li>Fixed bug in CommandMenu where console buttons (Select, Reset, etc)
+    weren't doing anything.</li>
 	</ul>
 
 	<p>
@@ -754,6 +743,11 @@
 		<tr>
 			<td><pre>-sssingle &lt;0|1&gt;</pre></td>
 			<td>Generate single snapshot instead of many.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-stats &lt;0|1&gt;</pre></td>
+			<td>Show scanline and framerate info during emulation.</td>
 		</tr>
 
 		<tr>
@@ -1698,6 +1692,12 @@
 			<td>Control + l</td>
 			<td>Cmd + l</td>
 		</tr>
+
+		<tr>
+			<td>Toggle frame stats (scanline count and fps)</td>
+			<td>Alt + l</td>
+			<td>Shift-Cmd + l</td>
+		</tr>
 	</table>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -1939,7 +1939,7 @@
 	</table>
 
 	<p>Note that these EEPROM files will be created when necessary, and
-	initialized as a real EEPROM would be (with randomized data).  The
+	initialized as a real EEPROM would be (containing all $FF).  The
 	files can be manually deleted, which is very useful in testing
 	cases where a ROM is accessing the EEPROM for the first time.</p>
 
