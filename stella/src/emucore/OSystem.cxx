@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.129 2008-05-21 16:49:07 stephena Exp $
+// $Id: OSystem.cxx,v 1.130 2008-05-21 21:01:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -321,7 +321,6 @@ bool OSystem::createFrameBuffer(bool showmessage)
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
       myConsole->initializeVideo();
-      myFrameBuffer->showFrameStats(mySettings->getBool("stats"));
       break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.145 2008-05-21 14:01:29 stephena Exp $
+// $Id: Console.cxx,v 1.146 2008-05-21 21:01:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -450,6 +450,9 @@ void Console::initializeVideo(bool full)
     myOSystem->frameBuffer().initialize(title,
                                         myMediaSource->width() << 1,
                                         myMediaSource->height());
+
+    myOSystem->frameBuffer().showFrameStats(
+      myOSystem->settings().getBool("stats"));
   }
 
   bool enable = myProperties.get(Display_Phosphor) == "YES";

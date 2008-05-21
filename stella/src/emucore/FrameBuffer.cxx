@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.130 2008-05-21 14:01:29 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.131 2008-05-21 21:01:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -284,8 +284,7 @@ void FrameBuffer::showFrameStats(bool enable)
 {
   myOSystem->settings().setBool("stats", enable);
   myFrameStatsEnabled = enable;
-  myOSystem->eventHandler().refreshDisplay(true);  // Do this twice for
-  myOSystem->eventHandler().refreshDisplay(true);  // double-buffered modes
+  myOSystem->eventHandler().refreshDisplay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
