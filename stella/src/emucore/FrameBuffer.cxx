@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.129 2008-05-20 13:42:50 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.130 2008-05-21 14:01:29 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -129,10 +129,10 @@ void FrameBuffer::update()
       if(myFrameStatsEnabled)
       {
         // FIXME - sizes hardcoded for now; fix during UI refactoring
-        uInt32 scanlines = myOSystem->console().mediaSource().scanlines();
-        float fps = (scanlines <= 285 ? 15720.0 : 15600.0) / scanlines;
         char msg[30];
-        sprintf(msg, "%u LINES  %2.2f FPS", scanlines, fps);
+        sprintf(msg, "%u LINES  %2.2f FPS",
+                myOSystem->console().mediaSource().scanlines(),
+                myOSystem->console().getFramerate());
         fillRect(3, 3, 95, 9, kBGColor);
         drawString(&myOSystem->font(), msg, 3, 3, 95, kBtnTextColor, kTextAlignCenter);
       }

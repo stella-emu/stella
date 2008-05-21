@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.18 2008-02-06 13:45:22 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.19 2008-05-21 14:01:30 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -30,7 +30,7 @@ class Sound;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.18 2008-02-06 13:45:22 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.19 2008-05-21 14:01:30 stephena Exp $
 */
 class MediaSource
 {
@@ -107,6 +107,14 @@ class MediaSource
     virtual uInt32 width() const = 0;
 
   public:
+    /**
+      Enables/disables auto-frame calculation.  If enabled, the
+      MediaSource should re-adjust the framerate at regular intervals.
+
+      @param mode  Whether to enable or disable all auto-frame calculation
+    */
+    virtual void enableAutoFrame(bool mode) = 0;
+
     /**
       Answers the total number of scanlines the media source generated
       in producing the current frame buffer.

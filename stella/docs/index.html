@@ -227,12 +227,18 @@
 <li>Introduced more accurate timing for NTSC vs. PAL modes, where the
     framerate is based on the number of scanlines per frame.  This should
     eliminate 'clicking' sounds when emulating ROMs that don't follow
-    the exact NTSC or PAL specs.</li>
+    the exact NTSC or PAL scanline specs.</li>
 
 <li>Added ability to see the current number of scanlines and corresponding
     framerate to the TIA emulation.  This can be set with the '-stats'
     commandline argument, or dynamically turned on and off with the
     'Alt-l' key combo.</li>
+
+<li>Modified '-framerate' commandline argument, where a non-zero value
+    overrides the automatic framerate calculation (based on number of
+    scanlines).  Setting 'framerate' to zero re-enables auto-frame
+    calculation.  Also, re-enabled changing the framerate from within the
+    UI.</li>
 
 <li>Fixed issue with debugger disassembly and mirrored $40 TIA write
     addresses.  They were actually defined at $30, and generating incorrect
@@ -654,7 +660,9 @@
 		<tr>
 			<td><pre>-framerate &lt;number&gt;</pre></td>
 			<td>Display the given number of frames per second.  Normally, Stella
-				will determine framerate based on ROM format.</td>
+				will determine framerate based on number of scanlines.
+				Setting this to 0 automatically enables auto-frame
+				calculation (ie, framerate based on scanlines).</td>
 		</tr>
 
 		<tr>

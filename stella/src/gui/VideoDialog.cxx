@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.49 2008-03-23 16:22:46 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.50 2008-05-21 14:01:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,6 +28,7 @@
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "PopUpWidget.hxx"
+#include "Console.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
 
@@ -140,7 +141,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Framerate
   myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
                                        "Framerate: ", lwidth, kFrameRateChanged);
-  myFrameRateSlider->setMinValue(1); myFrameRateSlider->setMaxValue(300);
+  myFrameRateSlider->setMinValue(0); myFrameRateSlider->setMaxValue(300);
   wid.push_back(myFrameRateSlider);
   myFrameRateLabel = new StaticTextWidget(this, font,
                                           xpos + myFrameRateSlider->getWidth() + 4,
@@ -266,8 +267,11 @@ void VideoDialog::loadConfig()
   myAspectRatioSlider->setValue(i);
   myAspectRatioLabel->setLabel(s);
 
-  // FIXME - what to do with this??
-  myFrameRateSlider->setEnabled(false);
+  // Framerate (0 or -1 means disabled)
+  s = instance()->settings().getString("framerate");
+  i = instance()->settings().getInt("framerate");
+  myFrameRateSlider->setValue(i < 0 ? 0 : i);
+  myFrameRateLabel->setLabel(i < 0 ? "0" : s);
 
   // Fullscreen
   b = instance()->settings().getBool("fullscreen");
@@ -341,12 +345,15 @@ void VideoDialog::saveConfig()
   s = myAspectRatioLabel->getLabel();
   instance()->settings().setString("gl_aspect", s);
 
-  // Framerate   FIXME - I haven't figured out what to do with this yet
-/*
+  // Framerate
   i = myFrameRateSlider->getValue();
-  if(i > 0)
-    instance()->setFramerate(i);
-*/
+  instance()->settings().setInt("framerate", i);
+  if(&instance()->console())
+  {
+    // Make sure auto-frame calculation is only enabled when necessary
+    instance()->console().mediaSource().enableAutoFrame(i <= 0);
+    instance()->console().setFramerate(i);
+  }
 
   // Fullscreen
   b = myFullscreenCheckbox->getState();
@@ -382,8 +389,8 @@ void VideoDialog::setDefaults()
   myTIAZoomLabel->setLabel("2");
   myAspectRatioSlider->setValue(100);
   myAspectRatioLabel->setLabel("100");
-//  myFrameRateSlider->setValue(0);
-//  myFrameRateLabel->setLabel("0");
+  myFrameRateSlider->setValue(0);
+  myFrameRateLabel->setLabel("0");
 
   myFullscreenCheckbox->setState(false);
   myColorLossCheckbox->setState(false);

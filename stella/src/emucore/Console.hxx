@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.67 2008-05-19 21:16:58 stephena Exp $
+// $Id: Console.hxx,v 1.68 2008-05-21 14:01:29 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -39,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.67 2008-05-19 21:16:58 stephena Exp $
+  @version $Id: Console.hxx,v 1.68 2008-05-21 14:01:29 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -226,10 +226,16 @@ class Console : public Serializable
     void changeHeight(int direction);
 
     /**
+      Sets the framerate of the console, which in turn communicates
+      this to all applicable subsystems.
+    */
+    void setFramerate(float framerate);
+
+    /**
       Returns the framerate based on a number of factors
       (whether 'framerate' is set, what display format is in use, etc)
     */
-    float getFramerate() const;
+    float getFramerate() const { return myFramerate; }
 
     /**
       Toggles the TIA bit specified in the method name.

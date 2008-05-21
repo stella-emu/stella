@@ -12,17 +12,23 @@
                                Release History
 ===============================================================================
 
-2.6 to 2.6.1: (May 21, 2008)
+2.6 to 2.6.1: (May 23, 2008)
 
   * Introduced more accurate timing for NTSC vs. PAL modes, where the
     framerate is based on the number of scanlines per frame.  This should
     eliminate 'clicking' sounds when emulating ROMs that don't follow
-    the exact NTSC or PAL specs.
+    the exact NTSC or PAL scanline specs.
 
   * Added ability to see the current number of scanlines and corresponding
     framerate to the TIA emulation.  This can be set with the '-stats'
     commandline argument, or dynamically turned on and off with the
     'Alt-l' key combo.
+
+  * Modified '-framerate' commandline argument, where a non-zero value
+    overrides the automatic framerate calculation (based on number of
+    scanlines).  Setting 'framerate' to zero re-enables auto-frame
+    calculation.  Also, re-enabled changing the framerate from within the
+    UI.
 
   * Fixed issue with debugger disassembly and mirrored $40 TIA write
     addresses.  They were actually defined at $30, and generating incorrect
@@ -39,7 +45,7 @@
 
   * Fixed issue with M6532/RIOT timer initialization; it was causing some
     ROMs to hang (most notably Summer Games).  Related to this, reworked
-    the built-in random number generator to generate 'more random' numbers.
+    the built-in random number generator to generate 'more' random numbers.
 
   * Fixed bug in CommandMenu where console buttons (Select, Reset, etc)
     weren't doing anything.

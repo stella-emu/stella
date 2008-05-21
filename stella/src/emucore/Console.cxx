@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.144 2008-05-19 21:16:58 stephena Exp $
+// $Id: Console.cxx,v 1.145 2008-05-21 14:01:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -458,7 +458,16 @@ void Console::initializeVideo(bool full)
   setColorLossPalette(myOSystem->settings().getBool("colorloss"));
   setPalette(myOSystem->settings().getString("palette"));
 
-  myOSystem->setFramerate(getFramerate());
+  // Set the correct framerate based on the format of the ROM
+  // This can be overridden by changing the framerate in the
+  // VideoDialog box or on the commandline, but it can't be saved
+  // (ie, framerate is now determined based on number of scanlines).
+  int framerate = myOSystem->settings().getInt("framerate");
+  if(framerate > 0) myFramerate = framerate;
+  myOSystem->setFramerate(myFramerate);
+
+  // Make sure auto-frame calculation is only enabled when necessary
+  myMediaSource->enableAutoFrame(framerate <= 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -467,13 +476,18 @@ void Console::initializeAudio()
   // Initialize the sound interface.
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
+  int framerate = myOSystem->settings().getInt("framerate");
+  if(framerate > 0) myFramerate = framerate;
   const string& sound = myProperties.get(Cartridge_Sound);
   uInt32 channels = (sound == "STEREO" ? 2 : 1);
 
   myOSystem->sound().close();
   myOSystem->sound().setChannels(channels);
-  myOSystem->sound().setFrameRate(getFramerate());
+  myOSystem->sound().setFrameRate(myFramerate);
   myOSystem->sound().initialize();
+
+  // Make sure auto-frame calculation is only enabled when necessary
+  myMediaSource->enableAutoFrame(framerate <= 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -810,14 +824,11 @@ void Console::setColorLossPalette(bool loss)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float Console::getFramerate() const
+void Console::setFramerate(float framerate)
 {
-  // Set the correct framerate based on the format of the ROM
-  // This can be overridden by changing the framerate in the
-  // VideoDialog box or on the commandline, but it can't be saved
-  // (ie, framerate is now solely determined based on ROM format).
-  int framerate = myOSystem->settings().getInt("framerate");
-  return (float) framerate == -1 ? myFramerate : framerate;
+  myFramerate = framerate;
+  myOSystem->setFramerate(framerate);
+  myOSystem->sound().setFrameRate(framerate);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

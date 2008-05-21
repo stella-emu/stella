@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.43 2008-05-20 13:42:50 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.44 2008-05-21 14:01:31 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -135,9 +135,6 @@ void DialogContainer::reStack()
   while(!myDialogStack.empty())
     myDialogStack.pop();
   addDialog(myBaseDialog);
-
-  // Erase any previous messages
-  myOSystem->frameBuffer().enableMessages(false);
 
   // Reset all continuous events
   reset();

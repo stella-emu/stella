@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.145 2008-05-20 13:42:50 stephena Exp $
+// $Id: Settings.cxx,v 1.146 2008-05-21 14:01:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -307,7 +307,7 @@ void Settings::usage()
     << "                 z26|\n"
     << "                 user>\n"
     << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
-    << "  -framerate    <number>       Display the given number of frames per second\n"
+    << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"

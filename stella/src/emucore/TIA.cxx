@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.92 2008-05-19 21:16:58 stephena Exp $
+// $Id: TIA.cxx,v 1.93 2008-05-21 14:01:30 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -38,7 +38,7 @@
 #define HBLANK 68
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(const Console& console, Settings& settings)
+TIA::TIA(Console& console, Settings& settings)
     : myConsole(console),
       mySettings(settings),
       mySound(NULL),
@@ -56,6 +56,7 @@ TIA::TIA(const Console& console, Settings& settings)
   myPreviousFrameBuffer = new uInt8[160 * 300];
 
   myFrameGreyed = false;
+  myAutoFrameEnabled = false;
 
   for(i = 0; i < 6; ++i)
     myBitEnabled[i] = true;
@@ -194,6 +195,8 @@ void TIA::reset()
       (myConsole.properties().get(Emulation_HmoveBlanks) == "YES");
 
   myFloatTIAOutputPins = mySettings.getBool("tiafloat");
+
+  myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
 
   if(myConsole.getFramerate() > 55.0)  // NTSC
   {
@@ -592,6 +595,15 @@ inline void TIA::endFrame()
 
   // Stats counters
   myFrameCounter++;
+
+  // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
+  if(myFrameCounter % 64 == 0 && myAutoFrameEnabled)
+  {
+    float framerate =
+      (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /
+       myScanlineCountForLastFrame;
+    myConsole.setFramerate(framerate);
+  }
 
   myFrameGreyed = false;
 }

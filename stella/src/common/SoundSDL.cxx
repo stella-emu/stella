@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.43 2008-05-19 21:16:58 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.44 2008-05-21 14:01:29 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -285,7 +285,6 @@ void SoundSDL::setFrameRate(float framerate)
 {
   // FIXME, we should clear out the queue or adjust the values in it
   myDisplayFrameRate = framerate;
-  myLastRegisterSetCycle = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -302,7 +301,8 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
   // the sound to "scale" correctly, we have to know the games real frame 
   // rate (e.g., 50 or 60) and the currently emulated frame rate. We use these
   // values to "scale" the time before the register change occurs.
-  delta = delta * (myDisplayFrameRate / (double)myOSystem->frameRate());
+// FIXME - this always results in 1.0, so we don't really need it
+//  delta = delta * (myDisplayFrameRate / myOSystem->frameRate());
   RegWrite info;
   info.addr = addr;
   info.value = value;

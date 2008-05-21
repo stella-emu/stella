@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.46 2008-03-03 17:51:55 estolberg Exp $
+// $Id: TIA.hxx,v 1.47 2008-05-21 14:01:31 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -40,7 +40,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.46 2008-03-03 17:51:55 estolberg Exp $
+  @version $Id: TIA.hxx,v 1.47 2008-05-21 14:01:31 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -53,7 +53,7 @@ class TIA : public Device , public MediaSource
       @param console  The console the TIA is associated with
       @param settings The settings object for this TIA device
     */
-    TIA(const Console& console, Settings& settings);
+    TIA(Console& console, Settings& settings);
  
     /**
       Destructor
@@ -172,6 +172,14 @@ class TIA : public Device , public MediaSource
     uInt32 width() const;
 
     /**
+      Enables/disables auto-frame calculation.  If enabled, the TIA
+      re-adjusts the framerate at regular intervals.
+
+      @param mode  Whether to enable or disable all auto-frame calculation
+    */
+    void enableAutoFrame(bool mode) { myAutoFrameEnabled = mode; }
+
+    /**
       Answers the total number of scanlines the media source generated
       in producing the current frame buffer. For partial frames, this
       will be the current scanline.
@@ -181,16 +189,16 @@ class TIA : public Device , public MediaSource
     uInt32 scanlines() const;
 
     /**
+      Sets the sound device for the TIA.
+    */
+    void setSound(Sound& sound);
+
+    /**
       Answers the current color clock we've gotten to on this scanline.
 
       @return The current color clock
     */
     uInt32 clocksThisLine() const;
-
-    /**
-      Sets the sound device for the TIA.
-    */
-    void setSound(Sound& sound);
 
     enum TIABit {
       P0,   // Descriptor for Player 0 Bit
@@ -288,10 +296,10 @@ class TIA : public Device , public MediaSource
 
   private:
     // Console the TIA is associated with
-    const Console& myConsole;
+    Console& myConsole;
 
     // Settings object the TIA is associated with
-    const Settings& mySettings;
+    Settings& mySettings;
 
     // Sound object the TIA is associated with
     Sound* mySound;
@@ -518,8 +526,11 @@ class TIA : public Device , public MediaSource
     // Answers whether specified bits (from TIABit) are enabled or disabled
     bool myBitEnabled[6];
 
-	 // Has current frame been "greyed out" (has updateScanline() been run?)
-	 bool myFrameGreyed;
+    // Has current frame been "greyed out" (has updateScanline() been run?)
+    bool myFrameGreyed;
+
+    // Automatic framerate correction based on number of scanlines
+    bool myAutoFrameEnabled;
 
   private:
     // Ball mask table (entries are true or false)
