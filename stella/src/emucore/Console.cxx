@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.146 2008-05-21 21:01:40 stephena Exp $
+// $Id: Console.cxx,v 1.147 2008-05-21 21:36:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -126,7 +126,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);
-  float avgScanlineCount = 0.0;
   vidinfo << "  Display Format:  " << myDisplayFormat;
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
@@ -137,18 +136,13 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     // Unfortunately, this means we have to always enable 'fastscbios',
     // since otherwise the BIOS loading will take over 250 frames!
     mySystem->reset();
-    int palCount = 0, scanlineCount = 0;
+    int palCount = 0;
     for(int i = 0; i < 60; ++i)
     {
       myMediaSource->update();
-      if(i >= 30)
-      {
-        if(myMediaSource->scanlines() > 285)
-          ++palCount;
-        scanlineCount += myMediaSource->scanlines();
-      }
+      if(i >= 30 && myMediaSource->scanlines() > 285)
+        ++palCount;
     }
-    avgScanlineCount = scanlineCount / 30.0;
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       vidinfo << " ==> " << myDisplayFormat;
@@ -158,26 +152,17 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Note that this can be overridden if a format is forced
   //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
   //   properties (60Hz, 262 scanlines, etc) and cycle between NTSC-like modes
+  // The TIA will self-adjust the framerate if necessary
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
   {
-    // Try to be as accurate as possible with the framerate
-    // Use the scanline count if available, otherwise assume we've got
-    // ~262 scanlines (NTSC-like format)
-    if(avgScanlineCount > 0.0)
-      myFramerate = 15720.0 / avgScanlineCount;
-    else
+    // Assume we've got ~262 scanlines (NTSC-like format)
       myFramerate = 60.0;
   }
   else
   {
-    // Try to be as accurate as possible with the framerate
-    // Use the scanline count if available, otherwise assume we've got
-    // ~312 scanlines (PAL-like format)
-    if(avgScanlineCount > 0.0)
-      myFramerate = 15600.0 / avgScanlineCount;
-    else
-      myFramerate = 50.0;
+    // Assume we've got ~312 scanlines (PAL-like format)
+    myFramerate = 50.0;
 
     if(myProperties.get(Display_Height) == "210")
       myProperties.set(Display_Height, "250");
