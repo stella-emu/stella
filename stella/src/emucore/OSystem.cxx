@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.128 2008-05-21 14:50:41 stephena Exp $
+// $Id: OSystem.cxx,v 1.129 2008-05-21 16:49:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -797,20 +797,42 @@ void OSystem::stateChanged(EventHandler::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::mainLoop()
 {
-  for(;;)
+  if(mySettings->getString("timing") == "sleep")
   {
-    myTimingInfo.start = getTicks();
-    myEventHandler->poll(myTimingInfo.start);
-    if(myQuitLoop) break;  // Exit if the user wants to quit
-    myFrameBuffer->update();
-    myTimingInfo.current = getTicks();
-    myTimingInfo.virt += myTimePerFrame;
+    // Sleep-based wait: good for CPU, bad for graphical sync
+    for(;;)
+    {
+      myTimingInfo.start = getTicks();
+      myEventHandler->poll(myTimingInfo.start);
+      if(myQuitLoop) break;  // Exit if the user wants to quit
+      myFrameBuffer->update();
+      myTimingInfo.current = getTicks();
+      myTimingInfo.virt += myTimePerFrame;
 
-    if(myTimingInfo.current < myTimingInfo.virt)
-      SDL_Delay((myTimingInfo.virt - myTimingInfo.current) / 1000);
+      if(myTimingInfo.current < myTimingInfo.virt)
+        SDL_Delay((myTimingInfo.virt - myTimingInfo.current) / 1000);
 
-    myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
-    myTimingInfo.totalFrames++;
+      myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
+      myTimingInfo.totalFrames++;
+    }
+  }
+  else
+  {
+    // Busy-wait: bad for CPU, good for graphical sync
+    for(;;)
+    {
+      myTimingInfo.start = getTicks();
+      myEventHandler->poll(myTimingInfo.start);
+      if(myQuitLoop) break;  // Exit if the user wants to quit
+      myFrameBuffer->update();
+      myTimingInfo.virt += myTimePerFrame;
+
+      while(getTicks() < myTimingInfo.virt)
+        ;  // busy-wait
+
+      myTimingInfo.totalTime += (getTicks() - myTimingInfo.start);
+      myTimingInfo.totalFrames++;
+    }
   }
 }
 

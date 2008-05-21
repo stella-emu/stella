@@ -30,6 +30,12 @@
     calculation.  Also, re-enabled changing the framerate from within the
     UI.
 
+  * Added '-timing' commandline argument, which sets the type of waiting
+    between processing frames.  Setting it to 'sleep' emulates the
+    previous behaviour in Stella; setting it to 'busy' emulates z26,
+    and can in some cases eliminate screen tearing (at the expense of
+    using all available CPU time).
+
   * Fixed issue with debugger disassembly and mirrored $40 TIA write
     addresses.  They were actually defined at $30, and generating incorrect
     labels.

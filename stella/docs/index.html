@@ -240,6 +240,12 @@
     calculation.  Also, re-enabled changing the framerate from within the
     UI.</li>
 
+<li>Added '-timing' commandline argument, which sets the type of waiting
+    between processing frames.  Setting it to 'sleep' emulates the
+    previous behaviour in Stella; setting it to 'busy' emulates z26,
+    and can in some cases eliminate screen tearing (at the expense of
+    using all available CPU time).</li>
+
 <li>Fixed issue with debugger disassembly and mirrored $40 TIA write
     addresses.  They were actually defined at $30, and generating incorrect
     labels.</li>
@@ -655,6 +661,16 @@
 		<tr>
 			<td><pre>-colorloss &lt;1|0&gt;</pre></td>
 			<td>Enable/disable the PAL color-loss effect.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-timing &lt;sleep|busy&gt;</pre></td>
+			<td>Determines type of wait to perform between processing frames.
+				Sleep will release the CPU as much as possible, and is the
+				preferred method on laptops (and other low-powered devices)
+				and when using GL VSync.  Busy will emulate z26 busy-wait
+				behaviour, and use all possible CPU time, but may eliminate
+				graphical 'tearing'.</td>
 		</tr>
 
 		<tr>

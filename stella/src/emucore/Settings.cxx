@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.146 2008-05-21 14:01:30 stephena Exp $
+// $Id: Settings.cxx,v 1.147 2008-05-21 16:49:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -55,6 +55,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("grabmouse", "false");
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
+  setInternal("timing", "sleep");
 
   // Sound options
   setInternal("sound", "true");
@@ -214,6 +215,10 @@ void Settings::validate()
   if(s != "soft" && s != "gl")
     setInternal("video", "soft");
 
+  s = getString("timing");
+  if(s != "sleep" && s != "busy")
+    setInternal("timing", "sleep");
+
 #ifdef DISPLAY_OPENGL
   s = getString("gl_filter");
   if(s != "linear" && s != "nearest")
@@ -308,6 +313,7 @@ void Settings::usage()
     << "                 user>\n"
     << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
+    << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
