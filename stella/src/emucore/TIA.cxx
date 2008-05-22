@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.93 2008-05-21 14:01:30 stephena Exp $
+// $Id: TIA.cxx,v 1.94 2008-05-22 17:54:54 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -597,7 +597,7 @@ inline void TIA::endFrame()
   myFrameCounter++;
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
-  if(myFrameCounter % 64 == 0 && myAutoFrameEnabled)
+  if(myFrameCounter % 32 == 0 && myAutoFrameEnabled)
   {
     float framerate =
       (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /

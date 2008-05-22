@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.26 2008-05-19 02:53:57 stephena Exp $
+// $Id: M6532.cxx,v 1.27 2008-05-22 17:54:54 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -171,9 +171,14 @@ uInt8 M6532::peek(uInt16 addr)
       myInterruptTriggered = false;
       Int32 timer = timerClocks();
 
-      if(timer >= 0)
+      // See if the timer has expired yet?
+      // Note that this constant comes from z26, and corresponds to
+      // 256 intervals of T1024T (ie, the maximum that the timer should hold)
+      // I'm not sure why this is required, but quite a few PAL ROMs fail
+      // if we just check >= 0.
+      if(!(timer & 0x40000))
       {
-        return (uInt8)(timer >> myIntervalShift);
+        return (timer >> myIntervalShift) & 0xff;
       }
       else
       {
@@ -183,8 +188,8 @@ uInt8 M6532::peek(uInt16 addr)
         // According to the M6532 documentation, the timer continues to count
         // down to -255 timer clocks after wraparound.  However, it isn't
         // entirely clear what happens *after* if reaches -255.
-        // For now, we'll set it to 0.
-        return (uInt8)(timer >= -255 ? timer : 0);
+        // For now, we'll let it continuously wrap around.
+        return timer & 0xff;
       }
     }
 
