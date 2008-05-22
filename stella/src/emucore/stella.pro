@@ -4179,7 +4179,8 @@
 "Cartridge.MD5" "3947eb7305b0c904256cdbc5c5956c0f"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Lilly Adventure (Jone Yuan)"
-"Display.YStart" "32"
+"Display.YStart" "30"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "3a2e2d0c6892aa14544083dfb7762782"
@@ -15963,6 +15964,7 @@
 "Cartridge.MD5" "e62e60a3e6cb5563f72982fcd83de25a"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "World End (Jone Yuan)"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "e64a8008812327853877a37befeb6465"
