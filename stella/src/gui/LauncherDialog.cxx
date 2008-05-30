@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.86 2008-03-30 15:47:10 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.87 2008-05-30 19:07:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,7 +69,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myRomInfoFlag = instance()->settings().getBool("romviewer");
   if((w < 640 || h < 480) && myRomInfoFlag)
   {
-    cerr << "Error: ROM launcher too small, deactivating ROM info viewer" << endl;
+    cerr << "ERROR: ROM launcher too small, deactivating ROM info viewer" << endl;
     myRomInfoFlag = false;
   }
 

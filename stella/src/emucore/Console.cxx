@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.147 2008-05-21 21:36:18 stephena Exp $
+// $Id: Console.cxx,v 1.148 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -426,15 +426,15 @@ void Console::setProperties(const Properties& props)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::initializeVideo(bool full)
+bool Console::initializeVideo(bool full)
 {
   if(full)
   {
     string title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
-    myOSystem->frameBuffer().initialize(title,
-                                        myMediaSource->width() << 1,
-                                        myMediaSource->height());
+    if(!myOSystem->frameBuffer().initialize(title,
+          myMediaSource->width() << 1, myMediaSource->height()))
+      return false;
 
     myOSystem->frameBuffer().showFrameStats(
       myOSystem->settings().getBool("stats"));
@@ -456,6 +456,8 @@ void Console::initializeVideo(bool full)
 
   // Make sure auto-frame calculation is only enabled when necessary
   myMediaSource->enableAutoFrame(framerate <= 0);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.12 2008-05-12 22:40:23 stephena Exp $
+// $Id: Control.cxx,v 1.13 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -133,7 +133,7 @@ bool Controller::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "Error: Controller::save() exception\n";
+    cerr << "ERROR: Controller::save() exception\n";
     return false;
   }
   return true;
@@ -157,7 +157,7 @@ bool Controller::load(Deserializer& in)
   }
   catch(...)
   {
-    cerr << "Error: Controller::load() exception\n";
+    cerr << "ERROR: Controller::load() exception\n";
     return false;
   }
   return true;

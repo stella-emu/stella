@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.cxx,v 1.9 2008-02-06 13:45:22 stephena Exp $
+// $Id: Switches.cxx,v 1.10 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include "Event.hxx"
@@ -116,7 +116,7 @@ bool Switches::save(Serializer& out) const
   }
   catch(...)
   {
-    cerr << "Error: Switches::save() exception\n";
+    cerr << "ERROR: Switches::save() exception\n";
     return false;
   }
   return true;
@@ -131,7 +131,7 @@ bool Switches::load(Deserializer& in)
   }
   catch(...)
   {
-    cerr << "Error: Switches::load() exception\n";
+    cerr << "ERROR: Switches::load() exception\n";
     return false;
   }
   return true;

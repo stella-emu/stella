@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.127 2008-05-18 20:04:30 stephena Exp $
+// $Id: Debugger.cxx,v 1.128 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -166,12 +166,12 @@ void Debugger::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::initializeVideo()
+bool Debugger::initializeVideo()
 {
   GUI::Rect r = getDialogBounds();
 
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
-  myOSystem->frameBuffer().initialize(title, r.width(), r.height());
+  return myOSystem->frameBuffer().initialize(title, r.width(), r.height());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

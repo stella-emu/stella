@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.hxx,v 1.15 2008-03-12 22:04:51 stephena Exp $
+// $Id: Launcher.hxx,v 1.16 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #ifndef LAUNCHER_HXX
@@ -28,7 +28,7 @@ class OSystem;
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Launcher.hxx,v 1.15 2008-03-12 22:04:51 stephena Exp $
+  @version $Id: Launcher.hxx,v 1.16 2008-05-30 19:07:55 stephena Exp $
 */
 class Launcher : public DialogContainer
 {
@@ -46,7 +46,7 @@ class Launcher : public DialogContainer
     /**
       Initialize the video subsystem wrt this class.
     */
-    void initializeVideo();
+    bool initializeVideo();
 
     /**
       Wrapper for LauncherDialog::selectedRomMD5() method.

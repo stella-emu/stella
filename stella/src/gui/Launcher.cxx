@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.22 2008-03-12 22:04:51 stephena Exp $
+// $Id: Launcher.cxx,v 1.23 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -55,10 +55,10 @@ Launcher::~Launcher()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Launcher::initializeVideo()
+bool Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
-  myOSystem->frameBuffer().initialize(title, myWidth, myHeight);
+  return myOSystem->frameBuffer().initialize(title, myWidth, myHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

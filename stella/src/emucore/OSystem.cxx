@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.130 2008-05-21 21:01:40 stephena Exp $
+// $Id: OSystem.cxx,v 1.131 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -306,6 +306,7 @@ bool OSystem::createFrameBuffer(bool showmessage)
         myFrameBuffer->type() != kGLBuffer))
       changeBuffer = true;
   }
+
   // Now we only create when absolutely necessary
   if(changeBuffer)
   {
@@ -320,16 +321,19 @@ bool OSystem::createFrameBuffer(bool showmessage)
     case EventHandler::S_PAUSE:
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
-      myConsole->initializeVideo();
+      if(!myConsole->initializeVideo())
+        return false;
       break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
-      myLauncher->initializeVideo();
+      if(!myLauncher->initializeVideo())
+        return false;
       break;  // S_LAUNCHER
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
-      myDebugger->initializeVideo();
+      if(!myDebugger->initializeVideo())
+        return false;
       break;  // S_DEBUGGER
 #endif
 
@@ -434,7 +438,11 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       myCheatManager->loadCheats(md5);
     #endif
       myEventHandler->reset(EventHandler::S_EMULATE);
-      createFrameBuffer(false);  // Takes care of initializeVideo()
+      if(!createFrameBuffer(false))  // Takes care of initializeVideo()
+      {
+        cerr << "ERROR: Couldn't create framebuffer for console" << endl;
+        return false;
+      }
       myConsole->initializeAudio();
     #ifdef DEBUGGER_SUPPORT
       myDebugger->setConsole(myConsole);
@@ -456,13 +464,13 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     }
     else
     {
-      cerr << "ERROR: Couldn't create console for " << myRomFile << " ..." << endl;
+      cerr << "ERROR: Couldn't create console for " << myRomFile << endl;
       retval = false;
     }
   }
   else
   {
-    cerr << "ERROR: Couldn't open " << myRomFile << " ..." << endl;
+    cerr << "ERROR: Couldn't open " << myRomFile << endl;
     retval = false;
   }
 
@@ -497,16 +505,22 @@ void OSystem::deleteConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::createLauncher()
+bool OSystem::createLauncher()
 {
   myEventHandler->reset(EventHandler::S_LAUNCHER);
-  createFrameBuffer(false);
+  if(!createFrameBuffer(false))
+  {
+    cerr << "ERROR: Couldn't create launcher" << endl;
+    return false;
+  }
   myLauncher->reStack();
   myFrameBuffer->setCursorState();
   myEventHandler->refreshDisplay();
 
   setFramerate(60);
   resetLoopTiming();
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

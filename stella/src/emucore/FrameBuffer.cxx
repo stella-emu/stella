@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.131 2008-05-21 21:01:40 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.132 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -56,14 +56,18 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
+bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 {
   // Now (re)initialize the SDL video system
   // These things only have to be done one per FrameBuffer creation
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
+  {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-      return;
-
+    {
+      cerr << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
+      return false;
+    }
+  }
   myInitializedCount++;
 
   myBaseDim.x = myBaseDim.y = 0;
@@ -86,7 +90,11 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
   // Initialize video subsystem
   VideoMode mode = getSavedVidMode();
-  initSubsystem(mode);
+  if(!initSubsystem(mode))
+  {
+    cerr << "ERROR: Couldn't initialize video subsystem" << endl;
+    return false;
+  }
 
   // And refresh the display
   myOSystem->eventHandler().refreshDisplay();
@@ -102,6 +110,8 @@ void FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   // but only on the first initialization
   if(myInitializedCount == 1 && myOSystem->settings().getBool("showinfo"))
     cout << about() << endl;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.66 2008-05-19 21:16:58 stephena Exp $
+// $Id: OSystem.hxx,v 1.67 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.66 2008-05-19 21:16:58 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.67 2008-05-30 19:07:55 stephena Exp $
 */
 class OSystem
 {
@@ -317,8 +317,10 @@ class OSystem
 
     /**
       Creates a new ROM launcher, to select a new ROM to emulate.
+
+      @return  True on successful creation, otherwise false
     */
-    void createLauncher();
+    bool createLauncher();
 
     /**
       Gets all possible info about the ROM by creating a temporary

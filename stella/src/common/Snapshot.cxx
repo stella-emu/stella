@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.21 2008-05-20 14:35:50 stephena Exp $
+// $Id: Snapshot.cxx,v 1.22 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -47,7 +47,7 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
 
     out.open(filename.c_str(), ios_base::binary);
     if(!out.is_open())
-      throw "Error: Couldn't create snapshot file";
+      throw "ERROR: Couldn't create snapshot file";
 
     // PNG file header
     uInt8 header[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
@@ -86,7 +86,7 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
     compmem = new uInt8[compmemsize];
     if(compmem == NULL ||
        (compress(compmem, &compmemsize, buffer, height * (width * 3 + 1)) != Z_OK))
-      throw "Error: Couldn't compress PNG";
+      throw "ERROR: Couldn't compress PNG";
 
     // Write the compressed framebuffer data
     writePNGChunk(out, "IDAT", compmem, compmemsize);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.224 2008-05-20 13:42:50 stephena Exp $
+// $Id: EventHandler.cxx,v 1.225 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1918,10 +1918,6 @@ void EventHandler::setEventState(State state)
     case S_EMULATE:
       myOverlay = NULL;
       myOSystem->sound().mute(false);
-
-      // Controller types only make sense in Emulate mode
-      myController[0] = myOSystem->console().controller(Controller::Left).type();
-      myController[1] = myOSystem->console().controller(Controller::Right).type();
       break;
 
     case S_PAUSE:

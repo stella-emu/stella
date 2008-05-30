@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.95 2008-05-20 13:42:50 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.96 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -101,7 +101,7 @@ enum {
   All GUI elements (ala ScummVM) are drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.95 2008-05-20 13:42:50 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.96 2008-05-30 19:07:55 stephena Exp $
 */
 class FrameBuffer
 {
@@ -125,8 +125,10 @@ class FrameBuffer
       @param title   The title of the window
       @param width   The width of the framebuffer
       @param height  The height of the framebuffer
+
+      @return  False on any errors, else true
     */
-    void initialize(const string& title, uInt32 width, uInt32 height);
+    bool initialize(const string& title, uInt32 width, uInt32 height);
 
     /**
       Updates the display, which depending on the current mode could mean

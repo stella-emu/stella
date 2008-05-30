@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.68 2008-05-21 14:01:29 stephena Exp $
+// $Id: Console.hxx,v 1.69 2008-05-30 19:07:55 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -39,7 +39,7 @@ class System;
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.68 2008-05-21 14:01:29 stephena Exp $
+  @version $Id: Console.hxx,v 1.69 2008-05-30 19:07:55 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -197,8 +197,10 @@ class Console : public Serializable
 
       @param full  Whether we want a full initialization,
                    or only reset certain attributes.
+
+      @return  False on any errors, else true
     */
-    void initializeVideo(bool full = true);
+    bool initializeVideo(bool full = true);
 
     /**
       Initialize the audio subsystem wrt this class.
