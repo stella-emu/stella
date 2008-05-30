@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall.cxx,v 1.2 2008-05-19 03:15:12 stephena Exp $
+// $Id: TrackBall.cxx,v 1.3 2008-05-30 12:06:17 stephena Exp $
 //============================================================================
+
+#include <cstdlib>
 
 #include "Event.hxx"
 #include "System.hxx"

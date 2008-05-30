@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.cxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
+// $Id: SerialPortUNIX.cxx,v 1.5 2008-05-30 12:06:17 stephena Exp $
 //============================================================================
 
 #include <sys/types.h>
@@ -23,6 +23,7 @@
 #include <sys/termios.h>
 #include <sys/types.h>
 #include <sys/ioctl.h>
+#include <cstring>
 
 #include "SerialPortUNIX.hxx"
 

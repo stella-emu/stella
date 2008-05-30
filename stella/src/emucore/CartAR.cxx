@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.21 2008-03-28 23:29:13 stephena Exp $
+// $Id: CartAR.cxx,v 1.22 2008-05-30 12:06:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
+#include <cstring>
 
 #include "M6502Hi.hxx"
 #include "Random.hxx"
