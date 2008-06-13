@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.15 2008-02-06 13:45:20 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.16 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,14 +56,11 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   myYCenter = myNumRows >> 1;
 
   // Create context menu for zoom levels
-  myMenu = new ContextMenu(this, font);
-
   StringList l;
   l.push_back("2x zoom");
   l.push_back("4x zoom");
   l.push_back("8x zoom");
-
-  myMenu->setList(l);
+  myMenu = new ContextMenu(this, font, l);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,8 +104,8 @@ void TiaZoomWidget::zoom(int level)
 void TiaZoomWidget::recalc()
 {
   // Don't go past end of framebuffer
-  const int width  = instance()->console().mediaSource().width(),
-            height = instance()->console().mediaSource().height();
+  const int width  = instance().console().mediaSource().width(),
+            height = instance().console().mediaSource().height();
 
   // Figure out the bounding rectangle for the current center coords
   const int xoff = myNumCols >> 1,
@@ -140,10 +137,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   // Grab right mouse button for zoom context menu
   if(button == 2)
-  {
-    myMenu->setPos(x + getAbsX(), y + getAbsY());
-    myMenu->show();
-  }
+    myMenu->show(x + getAbsX(), y + getAbsY());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -222,16 +216,16 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 void TiaZoomWidget::drawWidget(bool hilite)
 {
 //cerr << "TiaZoomWidget::drawWidget\n";
-  FrameBuffer& fb = instance()->frameBuffer();
+  FBSurface& s = dialog().surface();
 
-  fb.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
-  fb.box(_x, _y, _w, _h, kColor, kShadowColor);
+  s.fillRect(_x+1, _y+1, _w-2, _h-2, kBGColor);
+  s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area
   // and I don't have time to make it faster :)
-  uInt8* currentFrame  = instance()->console().mediaSource().currentFrameBuffer();
-  const int pitch  = instance()->console().mediaSource().width(),
+  uInt8* currentFrame  = instance().console().mediaSource().currentFrameBuffer();
+  const int pitch  = instance().console().mediaSource().width(),
             width  = myZoomLevel << 1,
             height = myZoomLevel;
 
@@ -240,8 +234,8 @@ void TiaZoomWidget::drawWidget(bool hilite)
   {
     for(x = myXoff, col = 0; x < myNumCols+myXoff; ++x, col += width)
     {
-      fb.fillRect(_x + col + 2, _y + row + 2, width, height,
-                  currentFrame[y*pitch + x]);
+      s.fillRect(_x + col + 2, _y + row + 2, width, height,
+                 currentFrame[y*pitch + x]);
     }
   }
 }

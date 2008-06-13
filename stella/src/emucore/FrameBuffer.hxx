@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.96 2008-05-30 19:07:55 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.97 2008-06-13 13:14:51 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -21,6 +21,7 @@
 
 #include <SDL.h>
 
+class FBSurface;
 class OSystem;
 class Console;
 
@@ -32,20 +33,6 @@ namespace GUI {
 #include "EventHandler.hxx"
 #include "VideoModeList.hxx"
 #include "bspf.hxx"
-
-
-// Text alignment modes for drawString()
-enum TextAlignment {
-  kTextAlignLeft,
-  kTextAlignCenter,
-  kTextAlignRight
-};
-
-// Line types for drawing rectangular frames
-enum FrameStyle {
-  kSolidLine,
-  kDashLine
-};
 
 // Different types of framebuffer derived objects
 enum BufferType {
@@ -98,10 +85,11 @@ enum {
   display in Stella.  All graphics ports should derive from this class for
   platform-specific video stuff.
 
-  All GUI elements (ala ScummVM) are drawn here as well.
+  All GUI elements (ala ScummVM) are drawn into FBSurfaces, which are in
+  turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.96 2008-05-30 19:07:55 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.97 2008-06-13 13:14:51 stephena Exp $
 */
 class FrameBuffer
 {
@@ -125,8 +113,6 @@ class FrameBuffer
       @param title   The title of the window
       @param width   The width of the framebuffer
       @param height  The height of the framebuffer
-
-      @return  False on any errors, else true
     */
     bool initialize(const string& title, uInt32 width, uInt32 height);
 
@@ -264,51 +250,6 @@ class FrameBuffer
     virtual void setUIPalette(const uInt32* palette);
 
     /**
-      This method should be called to draw a rectangular box with sides
-      at the specified coordinates.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the box
-      @param h      The height of the box
-      @param colorA Lighter color for outside line.
-      @param colorB Darker color for inside line.
-    */
-    void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-             int colorA, int colorB);
-
-    /**
-      This method should be called to draw a framed rectangle.
-      I'm not exactly sure what it is, so I can't explain it :)
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the surrounding frame
-    */
-    void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                   int color, FrameStyle style = kSolidLine);
-
-    /**
-      This method should be called to draw the specified string.
-
-      @param font   The font to draw the string with
-      @param str    The string to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the string area
-      @param h      The height of the string area
-      @param color  The color of the text
-      @param align  The alignment of the text in the string width area
-      @param deltax 
-      @param useEllipsis  Whether to use '...' when the string is too long
-    */
-    void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
-                    int color, TextAlignment align = kTextAlignLeft,
-                    int deltax = 0, bool useEllipsis = true);
-
-    /**
       Informs the Framebuffer of a change in EventHandler state.
     */
     virtual void stateChanged(EventHandler::State state) { }
@@ -318,111 +259,6 @@ class FrameBuffer
   // in derived classes.
   //////////////////////////////////////////////////////////////////////
   public:
-    /**
-      This method is called to get the specified scanline data.
-
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
-    */
-    virtual void scanline(uInt32 row, uInt8* data) const = 0;
-
-    /**
-      This method should be called to draw a horizontal line.
-
-      @param x     The first x coordinate
-      @param y     The y coordinate
-      @param x2    The second x coordinate
-      @param color The color of the line
-    */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color) = 0;
-
-    /**
-      This method should be called to draw a vertical line.
-
-      @param x     The x coordinate
-      @param y     The first y coordinate
-      @param y2    The second y coordinate
-      @param color The color of the line
-    */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color) = 0;
-
-    /**
-      This method should be called to draw a filled rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the area
-    */
-    virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          int color) = 0;
-
-    /**
-      This method should be called to draw the specified character.
-
-      @param font   The font to use to draw the character
-      @param c      The character to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the character
-    */
-    virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          int color) = 0;
-
-    /**
-      This method should be called to draw the bitmap image.
-
-      @param bitmap The data to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the character
-      @param h      The height of the data image
-    */
-    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
-                            Int32 h = 8) = 0;
-
-    /**
-      This method should be called to draw an SDL surface.
-
-      @param surface The data to draw
-      @param x       The x coordinate
-      @param y       The y coordinate
-    */
-    virtual void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y) = 0;
-
-    /**
-      This method should be called to convert and copy a given row of RGB
-      data into an SDL surface.
-
-      @param surface  The data to draw
-      @param row      The row of the surface the data should be placed in
-      @param data     The data in uInt8 R/G/B format
-      @param rowbytes The number of bytes in row of 'data'
-    */
-    virtual void bytesToSurface(GUI::Surface* surface, int row,
-                                uInt8* data, int rowbytes) const = 0;
-
-    /**
-      This method should be called to translate the given coordinates
-      to their unzoomed/unscaled equivalents.
-
-      @param x  X coordinate to translate
-      @param y  Y coordinate to translate
-    */
-    virtual void translateCoords(Int32& x, Int32& y) const = 0;
-
-    /**
-      This method should be called to add a dirty rectangle
-      (ie, an area of the screen that has changed)
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-    */
-    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
-
     /**
       Enable/disable phosphor effect.
     */
@@ -438,18 +274,27 @@ class FrameBuffer
     virtual Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const = 0;
 
     /**
-      This method is called to create a surface compatible with the one
-      currently in use, but having the given dimensions.
-
-      @param width   The requested width of the new surface.
-      @param height  The requested height of the new surface.
-    */
-    virtual GUI::Surface* createSurface(int width, int height) const = 0;
-
-    /**
       This method is called to query the type of the FrameBuffer.
     */
     virtual BufferType type() const = 0;
+
+    /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
+    */
+    virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
+
+    /**
+      This method is called to get the specified scanline data.
+
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
+    */
+    virtual void scanline(uInt32 row, uInt8* data) const = 0;
 
   protected:
     /**
@@ -477,16 +322,6 @@ class FrameBuffer
     virtual void drawMediaSource() = 0;
 
     /**
-      This method is called before any drawing is done (per-frame).
-    */
-    virtual void preFrameUpdate() = 0;
-
-    /**
-      This method is called after any drawing is done (per-frame).
-    */
-    virtual void postFrameUpdate() = 0;
-
-    /**
       This method is called to provide information about the FrameBuffer.
     */
     virtual string about() const = 0;
@@ -494,6 +329,21 @@ class FrameBuffer
   protected:
     // The parent system for the framebuffer
     OSystem* myOSystem;
+
+    // The SDL video buffer
+    SDL_Surface* myScreen;
+
+    // SDL initialization flags
+    uInt32 mySDLFlags;
+
+    // Indicates if the TIA area should be redrawn
+    bool theRedrawTIAIndicator;
+
+    // Use phosphor effect (aka no flicker on 30Hz screens)
+    bool myUsePhosphor;
+
+    // Amount to blend when using phosphor effect
+    int myPhosphorBlend;
 
     // Dimensions of the base image, before scaling.
     // All external GUI items should refer to these dimensions,
@@ -507,24 +357,9 @@ class FrameBuffer
     // Dimensions of the SDL window (not always the same as the image)
     SDL_Rect myScreenDim;
 
-    // The SDL video buffer
-    SDL_Surface* myScreen;
-
-    // SDL initialization flags
-    uInt32 mySDLFlags;
-
     // TIA palettes for normal and phosphor modes
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
-
-    // Indicates if the TIA area should be redrawn
-    bool theRedrawTIAIndicator;
-
-    // Use phosphor effect (aka no flicker on 30Hz screens)
-    bool myUsePhosphor;
-
-    // Amount to blend when using phosphor effect
-    int myPhosphorBlend;
 
   private:
     /**
@@ -593,4 +428,209 @@ class FrameBuffer
     VideoModeList* myCurrentModeList;
 };
 
+
+/**
+  This class is basically a thin wrapper around an SDL_Surface structure.
+  We do it this way so the SDL stuff won't be dragged into the depths of
+  the codebase.  All drawing is done into FBSurfaces, which are then
+  drawn into the FrameBuffer.  Each FrameBuffer-derived class is
+  responsible for extending an FBSurface object suitable to the
+  FrameBuffer type.
+
+  @author  Stephen Anthony
+  @version $Id: FrameBuffer.hxx,v 1.97 2008-06-13 13:14:51 stephena Exp $
+*/
+// Text alignment modes for drawString()
+enum TextAlignment {
+  kTextAlignLeft,
+  kTextAlignCenter,
+  kTextAlignRight
+};
+// Line types for drawing rectangular frames
+enum FrameStyle {
+  kSolidLine,
+  kDashLine
+};
+
+class FBSurface
+{
+  public:
+    /**
+      Creates a new FBSurface object
+    */
+    FBSurface() { }
+
+    /**
+      Destructor
+    */
+    virtual ~FBSurface() { }
+
+    /**
+      This method should be called to draw a horizontal line.
+
+      @param x     The first x coordinate
+      @param y     The y coordinate
+      @param x2    The second x coordinate
+      @param color The color of the line
+    */
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color) = 0;
+
+    /**
+      This method should be called to draw a vertical line.
+
+      @param x     The x coordinate
+      @param y     The first y coordinate
+      @param y2    The second y coordinate
+      @param color The color of the line
+    */
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color) = 0;
+
+    /**
+      This method should be called to draw a filled rectangle.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the area
+    */
+    virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                          int color) = 0;
+
+    /**
+      This method should be called to draw the specified character.
+
+      @param font   The font to use to draw the character
+      @param c      The character to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the character
+    */
+    virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
+                          int color) = 0;
+
+    /**
+      This method should be called to draw the bitmap image.
+
+      @param bitmap The data to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param color  The color of the character
+      @param h      The height of the data image
+    */
+    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
+                            Int32 h = 8) = 0;
+
+    /**
+      This method should be called to add a dirty rectangle
+      (ie, an area of the screen that has changed)
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+    */
+    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
+
+    /**
+      This method should be called to center the position of the surface.
+    */
+    virtual void centerPos() = 0;
+
+    /**
+      This method should be called to set the position of the surface.
+    */
+    virtual void setPos(uInt32 x, uInt32 y) = 0;
+
+    /**
+      This method answers the current coordinates of the surface.
+    */
+    virtual void getPos(uInt32& x, uInt32& y) const = 0;
+
+    /**
+      This method should be called to translate the given coordinates
+      to the surface coordinates.
+
+      @param x  X coordinate to translate
+      @param y  Y coordinate to translate
+    */
+    virtual void translateCoords(Int32& x, Int32& y) const = 0;
+
+    /**
+      This method should be called to draw the surface to the screen.
+    */
+    virtual void update() = 0;
+
+    /**
+      This method should be called to draw a rectangular box with sides
+      at the specified coordinates.
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the box
+      @param h      The height of the box
+      @param colorA Lighter color for outside line.
+      @param colorB Darker color for inside line.
+    */
+    void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+             int colorA, int colorB);
+
+    /**
+      This method should be called to draw a framed rectangle.
+      I'm not exactly sure what it is, so I can't explain it :)
+
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the area
+      @param h      The height of the area
+      @param color  The color of the surrounding frame
+    */
+    void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                   int color, FrameStyle style = kSolidLine);
+
+    /**
+      This method should be called to draw the specified string.
+
+      @param font   The font to draw the string with
+      @param str    The string to draw
+      @param x      The x coordinate
+      @param y      The y coordinate
+      @param w      The width of the string area
+      @param h      The height of the string area
+      @param color  The color of the text
+      @param align  The alignment of the text in the string width area
+      @param deltax 
+      @param useEllipsis  Whether to use '...' when the string is too long
+    */
+    void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
+                    int color, TextAlignment align = kTextAlignLeft,
+                    int deltax = 0, bool useEllipsis = true);
+};
+
 #endif
+
+
+
+#if 0
+    /**
+      This method should be called to draw an SDL surface.
+
+      @param surface The data to draw
+      @param x       The x coordinate
+      @param y       The y coordinate
+    */
+    virtual void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y) = 0;
+
+    /**
+      This method should be called to convert and copy a given row of RGB
+      data into an SDL surface.
+
+      @param surface  The data to draw
+      @param row      The row of the surface the data should be placed in
+      @param data     The data in uInt8 R/G/B format
+      @param rowbytes The number of bytes in row of 'data'
+    */
+    virtual void bytesToSurface(GUI::Surface* surface, int row,
+                                uInt8* data, int rowbytes) const = 0;
+#endif
+

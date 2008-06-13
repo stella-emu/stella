@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.cxx,v 1.24 2008-05-01 23:08:24 stephena Exp $
+// $Id: PromptWidget.cxx,v 1.25 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -103,7 +103,7 @@ void PromptWidget::drawWidget(bool hilite)
 //cerr << "PromptWidget::drawWidget\n";
   int fgcolor, bgcolor;
 
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  FBSurface& s = _boss->dialog().surface();
 
   // Draw text
   int start = _scrollLine - _linesPerPage + 1;
@@ -118,11 +118,11 @@ void PromptWidget::drawWidget(bool hilite)
       if(c & (1 << 17)) { // inverse video flag
         fgcolor = _bgcolor;
         bgcolor = (c & 0x1ffff) >> 8;
-        fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
+        s.fillRect(x, y, _kConsoleCharWidth, _kConsoleCharHeight, bgcolor);
       } else {
         fgcolor = c >> 8;
       }
-      fb.drawChar(&instance()->consoleFont(), c & 0x7f, x, y, fgcolor);
+      s.drawChar(&instance().consoleFont(), c & 0x7f, x, y, fgcolor);
       x += _kConsoleCharWidth;
     }
     y += _kConsoleLineHeight;
@@ -150,7 +150,7 @@ void PromptWidget::handleMouseWheel(int x, int y, int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::printPrompt()
 {
-  string watches = instance()->debugger().showWatches();
+  string watches = instance().debugger().showWatches();
   if(watches.length() > 0)
     print(watches);
 
@@ -186,7 +186,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         addToHistory(command.c_str());
 
         // Pass the command to the debugger, and print the result
-        string result = instance()->debugger().run(command);
+        string result = instance().debugger().run(command);
 
         // This is a bit of a hack
         // Certain commands remove the debugger dialog from underneath us,
@@ -239,7 +239,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       if(lastDelimPos < 0)
       {
         // no delimiters, do command completion:
-        DebuggerParser& parser = instance()->debugger().parser();
+        DebuggerParser& parser = instance().debugger().parser();
         possibilities = parser.countCompletions(str);
 
         if(possibilities < 1) {
@@ -253,7 +253,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       else
       {
         // we got a delimiter, so this must be a label:
-        EquateList& equates = instance()->debugger().equates();
+        EquateList& equates = instance().debugger().equates();
         possibilities = equates.countCompletions(str + lastDelimPos + 1);
 
         if(possibilities < 1) {
@@ -317,7 +317,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 256 + 24:  // pageup
-      if (instance()->eventHandler().kbdShift(modifiers))
+      if (instance().eventHandler().kbdShift(modifiers))
       {
         // Don't scroll up when at top of buffer
         if(_scrollLine < _linesPerPage)
@@ -333,7 +333,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 256 + 25:  // pagedown
-      if (instance()->eventHandler().kbdShift(modifiers))
+      if (instance().eventHandler().kbdShift(modifiers))
       {
         // Don't scroll down when at bottom of buffer
         if(_scrollLine >= _promptEndPos / _lineWidth)
@@ -349,7 +349,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 256 + 22:  // home
-      if (instance()->eventHandler().kbdShift(modifiers))
+      if (instance().eventHandler().kbdShift(modifiers))
       {
         _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
         updateScrollBuffer();
@@ -361,7 +361,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 256 + 23:  // end
-      if (instance()->eventHandler().kbdShift(modifiers))
+      if (instance().eventHandler().kbdShift(modifiers))
       {
         _scrollLine = _promptEndPos / _lineWidth;
         if (_scrollLine < _linesPerPage - 1)
@@ -375,7 +375,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 273:  // cursor up
-      if (instance()->eventHandler().kbdShift(modifiers))
+      if (instance().eventHandler().kbdShift(modifiers))
       {
         if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
           break;
@@ -390,7 +390,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 274:  // cursor down
-      if (instance()->eventHandler().kbdShift(modifiers))
+      if (instance().eventHandler().kbdShift(modifiers))
       {
         // Don't scroll down when at bottom of buffer
         if(_scrollLine >= _promptEndPos / _lineWidth)
@@ -420,11 +420,11 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     default:
-      if (instance()->eventHandler().kbdControl(modifiers))
+      if (instance().eventHandler().kbdControl(modifiers))
       {
         specialKeys(keycode);
       }
-      else if (instance()->eventHandler().kbdAlt(modifiers))
+      else if (instance().eventHandler().kbdAlt(modifiers))
       {
       }
       else if (isprint(ascii))
@@ -526,7 +526,7 @@ void PromptWidget::loadConfig()
     _exitedEarly = false;
 
     // Take care of one-time debugger stuff
-    instance()->debugger().autoExec();
+    instance().debugger().autoExec();
   }
   else if(_exitedEarly)
   {
@@ -836,7 +836,7 @@ void PromptWidget::print(const string& str)
 void PromptWidget::drawCaret()
 {
 //cerr << "PromptWidget::drawCaret()\n";
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  FBSurface& s = _boss->dialog().surface();
 
   int line = _currentPos / _lineWidth;
 
@@ -849,8 +849,8 @@ void PromptWidget::drawCaret()
   int y = _y + displayLine * _kConsoleLineHeight;
 
   char c = buffer(_currentPos);
-  fb.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
-  fb.drawChar(&_boss->instance()->consoleFont(), c, x, y + 2, kBGColor);
+  s.fillRect(x, y, _kConsoleCharWidth, _kConsoleLineHeight, kTextColor);
+  s.drawChar(&_boss->instance().consoleFont(), c, x, y + 2, kBGColor);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

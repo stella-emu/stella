@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.69 2008-03-23 16:22:46 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.70 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -60,7 +60,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myAboutDialog(NULL),
     myIsGlobal(global)
 {
-  const GUI::Font& font = instance()->font();
+  const GUI::Font& font = instance().font();
   const int buttonWidth = font.getStringWidth("Game Properties") + 20,
             buttonHeight = font.getLineHeight() + 6,
             rowHeight = font.getLineHeight() + 10;
@@ -120,44 +120,44 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 
   // Now create all the dialogs attached to each menu button
   w = 240; h = 185;
-  myVideoDialog = new VideoDialog(myOSystem, parent, font, x, y, w, h);
+  myVideoDialog = new VideoDialog(osystem, parent, font, x, y, w, h);
 
   w = 200; h = 140;
-  myAudioDialog = new AudioDialog(myOSystem, parent, font, x, y, w, h);
+  myAudioDialog = new AudioDialog(osystem, parent, font, x, y, w, h);
 
 #ifdef _WIN32_WCE
   // we scale the input dialog down a bit in low res devices.
   // looks only a little ugly, but the functionality is very welcome
-  if(myOSystem->desktopWidth() < 320) { w = 220; h = 176; }
+  if(instance().desktopWidth() < 320) { w = 220; h = 176; }
   else                                { w = 230; h = 185; }
 #else
   w = 230; h = 185;
 #endif
-  myInputDialog = new InputDialog(myOSystem, parent, font, x, y, w, h);
+  myInputDialog = new InputDialog(osystem, parent, font, x, y, w, h);
 
   w = 200; h = 155;
-  myUIDialog = new UIDialog(myOSystem, parent, font, x, y, w, h);
+  myUIDialog = new UIDialog(osystem, parent, font, x, y, w, h);
 
   w = 280; h = 180;
-  myFileSnapDialog = new FileSnapDialog(myOSystem, parent, font,
+  myFileSnapDialog = new FileSnapDialog(osystem, parent, font,
                                         boss, x, y, w, h);
 
   w = 240; h = 115;
-  myRomAuditDialog = new RomAuditDialog(myOSystem, parent, font, x, y, w, h);
+  myRomAuditDialog = new RomAuditDialog(osystem, parent, font, x, y, w, h);
 
   w = 255; h = 190;
-  myGameInfoDialog = new GameInfoDialog(myOSystem, parent, font, this, x, y, w, h);
+  myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this, x, y, w, h);
 
 #ifdef CHEATCODE_SUPPORT
   w = 230; h = 150;
-  myCheatCodeDialog = new CheatCodeDialog(myOSystem, parent, font, x, y, w, h);
+  myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font, x, y, w, h);
 #endif
 
   w = 255; h = 150;
-  myHelpDialog = new HelpDialog(myOSystem, parent, font, x, y, w, h);
+  myHelpDialog = new HelpDialog(osystem, parent, font, x, y, w, h);
 
   w = 255; h = 150;
-  myAboutDialog = new AboutDialog(myOSystem, parent, font, x, y, w, h);
+  myAboutDialog = new AboutDialog(osystem, parent, font, x, y, w, h);
 
   addToFocusList(wid);
 
@@ -173,7 +173,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef _WIN32_WCE
   myAudioSettingsButton->clearFlags(WIDGET_ENABLED);  // not honored in wince port
 #endif
-  if(myOSystem->desktopWidth() < 320)
+  if(instance().desktopWidth() < 320)
   {
     // These cannot be displayed in low res devices
     myVideoSettingsButton->clearFlags(WIDGET_ENABLED);
@@ -207,13 +207,13 @@ void OptionsDialog::loadConfig()
   // Determine whether we should show the 'Game Information' button
   // We always show it in emulation mode, or if a valid ROM is selected
   // in launcher mode
-  switch(instance()->eventHandler().state())
+  switch(instance().eventHandler().state())
   {
     case EventHandler::S_EMULATE:
       myGameInfoButton->setFlags(WIDGET_ENABLED);
       break;
     case EventHandler::S_LAUNCHER:
-      if(instance()->launcher().selectedRomMD5() != "")
+      if(instance().launcher().selectedRomMD5() != "")
         myGameInfoButton->setFlags(WIDGET_ENABLED);
       else
         myGameInfoButton->clearFlags(WIDGET_ENABLED);
@@ -230,52 +230,52 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kVidCmd:
-      parent()->addDialog(myVideoDialog);
+      parent().addDialog(myVideoDialog);
       break;
 
     case kAudCmd:
-      parent()->addDialog(myAudioDialog);
+      parent().addDialog(myAudioDialog);
       break;
 
     case kInptCmd:
-      parent()->addDialog(myInputDialog);
+      parent().addDialog(myInputDialog);
       break;
 
     case kUsrIfaceCmd:
-      parent()->addDialog(myUIDialog);
+      parent().addDialog(myUIDialog);
       break;
 
     case kFileSnapCmd:
-      parent()->addDialog(myFileSnapDialog);
+      parent().addDialog(myFileSnapDialog);
       break;
 
     case kAuditCmd:
-      parent()->addDialog(myRomAuditDialog);
+      parent().addDialog(myRomAuditDialog);
       break;
 
     case kInfoCmd:
-      parent()->addDialog(myGameInfoDialog);
+      parent().addDialog(myGameInfoDialog);
       break;
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
-      parent()->addDialog(myCheatCodeDialog);
+      parent().addDialog(myCheatCodeDialog);
       break;
 #endif
 
     case kHelpCmd:
-      parent()->addDialog(myHelpDialog);
+      parent().addDialog(myHelpDialog);
       break;
 
     case kAboutCmd:
-      parent()->addDialog(myAboutDialog);
+      parent().addDialog(myAboutDialog);
       break;
 
     case kExitCmd:
       if(myIsGlobal)
         close();
       else
-        instance()->eventHandler().leaveMenuMode();
+        instance().eventHandler().leaveMenuMode();
       break;
 
     default:

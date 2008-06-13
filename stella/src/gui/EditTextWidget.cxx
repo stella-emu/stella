@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditTextWidget.cxx,v 1.19 2008-02-06 13:45:23 stephena Exp $
+// $Id: EditTextWidget.cxx,v 1.20 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,18 +72,18 @@ void EditTextWidget::handleMouseDown(int x, int y, int button, int clickCount)
 void EditTextWidget::drawWidget(bool hilite)
 {
 //cerr << "EditTextWidget::drawWidget\n";
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  FBSurface& s = _boss->dialog().surface();
 
   // Draw a thin frame around us.
-  fb.hLine(_x, _y, _x + _w - 1, kColor);
-  fb.hLine(_x, _y + _h - 1, _x +_w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y + _h - 1, kColor);
-  fb.vLine(_x + _w - 1, _y, _y + _h - 1, kShadowColor);
+  s.hLine(_x, _y, _x + _w - 1, kColor);
+  s.hLine(_x, _y + _h - 1, _x +_w - 1, kShadowColor);
+  s.vLine(_x, _y, _y + _h - 1, kColor);
+  s.vLine(_x + _w - 1, _y, _y + _h - 1, kShadowColor);
 
   // Draw the text
   adjustOffset();
-  fb.drawString(_font, _editString, _x + 2, _y + 2, getEditRect().width(),
-                _textcolor, kTextAlignLeft, -_editScrollOffset, false);
+  s.drawString(_font, _editString, _x + 2, _y + 2, getEditRect().width(),
+               _textcolor, kTextAlignLeft, -_editScrollOffset, false);
 
   // Draw the caret 
   drawCaret();

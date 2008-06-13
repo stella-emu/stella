@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.13 2008-05-15 18:59:56 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.14 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -133,7 +133,7 @@ CpuWidget::~CpuWidget()
 void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   int addr = -1, value = -1;
-  CpuDebug& dbg = instance()->debugger().cpuDebug();
+  CpuDebug& dbg = instance().debugger().cpuDebug();
 
   switch(cmd)
   {
@@ -159,7 +159,7 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           // event the rest of the debugger widgets
           ostringstream command;
           command << "pc #" << value;
-          instance()->debugger().run(command.str());
+          instance().debugger().run(command.str());
           break;
         }
 
@@ -241,7 +241,7 @@ void CpuWidget::fillGrid()
 
   // We push the enumerated items as addresses, and deal with the real
   // address in the callback (handleCommand)
-  Debugger& dbg = instance()->debugger();
+  Debugger& dbg = instance().debugger();
   CpuDebug& cpu = dbg.cpuDebug();
   const CpuState& state    = (CpuState&) cpu.getState();
   const CpuState& oldstate = (CpuState&) cpu.getOldState();

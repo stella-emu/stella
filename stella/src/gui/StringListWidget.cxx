@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringListWidget.cxx,v 1.10 2008-02-06 13:45:24 stephena Exp $
+// $Id: StringListWidget.cxx,v 1.11 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,15 +48,15 @@ void StringListWidget::setList(const StringList& list)
 void StringListWidget::drawWidget(bool hilite)
 {
 //cerr << "StringListWidget::drawWidget\n";
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  FBSurface& s = _boss->dialog().surface();
   int i, pos, len = _list.size();
   string buffer;
   int deltax;
 
   // Draw a thin frame around the list.
-  fb.hLine(_x, _y, _x + _w - 1, kColor);
-  fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y + _h - 1, kColor);
+  s.hLine(_x, _y, _x + _w - 1, kColor);
+  s.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
+  s.vLine(_x, _y, _y + _h - 1, kColor);
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
@@ -69,9 +69,9 @@ void StringListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos)
     {
       if (_hasFocus && !_editMode)
-        fb.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
+        s.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
       else
-        fb.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
+        s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
     }
 
     // If in numbering mode, we first print a number prefix
@@ -80,7 +80,7 @@ void StringListWidget::drawWidget(bool hilite)
       char temp[10];
       sprintf(temp, "%2d. ", (pos + _numberingMode));
       buffer = temp;
-      fb.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
+      s.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
     }
 
     GUI::Rect r(getEditRect());
@@ -90,14 +90,14 @@ void StringListWidget::drawWidget(bool hilite)
       adjustOffset();
       deltax = -_editScrollOffset;
 
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
-                    kTextAlignLeft, deltax, false);
+      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
+                   kTextAlignLeft, deltax, false);
     }
     else
     {
       buffer = _list[pos];
       deltax = 0;
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
+      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
     }
   }
 

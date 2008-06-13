@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.20 2008-02-06 13:45:23 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.21 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  const StringList& labels, int x, int y)
-  : Dialog(boss->instance(), boss->parent(), x, y, 16, 16),
+  : Dialog(&boss->instance(), &boss->parent(), x, y, 16, 16),
     CommandSender(boss),
     myErrorFlag(false)
 {

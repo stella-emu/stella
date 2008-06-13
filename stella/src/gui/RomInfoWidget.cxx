@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.7 2008-03-15 19:11:00 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.8 2008-06-13 13:14:51 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -70,7 +70,7 @@ void RomInfoWidget::setProperties(const Properties& props)
   myProperties = props;
 
   // Decide whether the information should be shown immediately
-  if(instance()->eventHandler().state() == EventHandler::S_LAUNCHER)
+  if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
   {
     parseProperties();
     setDirty(); draw();
@@ -83,7 +83,7 @@ void RomInfoWidget::clearProperties()
   myHaveProperties = myDrawSurface = false;
 
   // Decide whether the information should be shown immediately
-  if(instance()->eventHandler().state() == EventHandler::S_LAUNCHER)
+  if(instance().eventHandler().state() == EventHandler::S_LAUNCHER)
   {
     setDirty(); draw();
   }
@@ -100,6 +100,8 @@ void RomInfoWidget::initialize()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::parseProperties()
 {
+// FIXME 
+#if 0
   // Initialize to empty properties entry
   mySurfaceErrorMsg = "";
   myDrawSurface = false;
@@ -109,7 +111,7 @@ void RomInfoWidget::parseProperties()
   // The surface will always be the maximum size, but sometimes we'll
   // only draw certain parts of it
   if(mySurface == NULL)
-    mySurface = instance()->frameBuffer().createSurface(320, 260);
+    mySurface = instance().frameBuffer().createSurface(320, 260);
 
   // The input stream for the PNG file
   ifstream in;
@@ -124,7 +126,7 @@ void RomInfoWidget::parseProperties()
 
   // Get a valid filename representing a snapshot file for this rom
   const string& filename =
-    instance()->settings().getString("ssdir") + BSPF_PATH_SEPARATOR +
+    instance().settings().getString("ssdir") + BSPF_PATH_SEPARATOR +
     myProperties.get(Cartridge_Name) + ".png";
 
   // Open the PNG and check for a valid signature
@@ -154,7 +156,7 @@ void RomInfoWidget::parseProperties()
         }
         else if(type == "IDAT")
         {
-          if(!parseIDATChunk(instance()->frameBuffer(), mySurface,
+          if(!parseIDATChunk(instance().frameBuffer(), mySurface,
                              width, height, data, size))
             throw "PNG image too large";
         }
@@ -190,12 +192,15 @@ void RomInfoWidget::parseProperties()
   myRomInfo.push_back("Controllers:  " + myProperties.get(Controller_Left) +
                       " (left), " + myProperties.get(Controller_Right) + " (right)");
   // TODO - add the PNG tEXt chunks
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::drawWidget(bool hilite)
 {
-  FrameBuffer& fb = instance()->frameBuffer();
+// FIXME
+#if 0
+  FrameBuffer& fb = instance().frameBuffer();
 
   fb.fillRect(_x+2, _y+2, _w-4, _h-4, kWidColor);
   fb.box(_x, _y, _w, _h, kColor, kShadowColor);
@@ -220,6 +225,7 @@ void RomInfoWidget::drawWidget(bool hilite)
     fb.drawString(_font, myRomInfo[i], xpos, ypos, _w - 10, _textcolor);
     ypos += _font->getLineHeight();
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -278,6 +284,8 @@ bool RomInfoWidget::parseIHDR(int& width, int& height, uInt8* data, int size)
 bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
                                    int width, int height, uInt8* data, int size)
 {
+// FIXME
+#if 0
   // The entire decompressed image data
   uLongf bufsize = (width * 3 + 1) * height;
   uInt8* buffer = new uInt8[bufsize];
@@ -296,6 +304,7 @@ bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
   }
   delete[] buffer;
   return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

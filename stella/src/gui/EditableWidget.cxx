@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.27 2008-02-06 13:45:23 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.28 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "Dialog.hxx"
 #include "EditableWidget.hxx"
 
 
@@ -91,7 +92,7 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     return true;
 
   // Ignore all alt-mod keys
-  if(instance()->eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdAlt(modifiers))
     return true;
 
   bool handled = true;
@@ -122,14 +123,14 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     case 256 + 20:  // left arrow
-      if(instance()->eventHandler().kbdControl(modifiers))
+      if(instance().eventHandler().kbdControl(modifiers))
         dirty = specialKeys(keycode);
       else if(_caretPos > 0)
         dirty = setCaretPos(_caretPos - 1);
       break;
 
     case 256 + 19:  // right arrow
-      if(instance()->eventHandler().kbdControl(modifiers))
+      if(instance().eventHandler().kbdControl(modifiers))
         dirty = specialKeys(keycode);
       else if(_caretPos < (int)_editString.size())
         dirty = setCaretPos(_caretPos + 1);
@@ -144,7 +145,7 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     default:
-      if (instance()->eventHandler().kbdControl(modifiers))
+      if (instance().eventHandler().kbdControl(modifiers))
       {
         dirty = specialKeys(keycode);
       }
@@ -197,8 +198,8 @@ void EditableWidget::drawCaret()
   x += _x;
   y += _y;
 
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
-  fb.vLine(x, y+2, y + editRect.height() - 3, color);
+  FBSurface& s = _boss->dialog().surface();
+  s.vLine(x, y+2, y + editRect.height() - 3, color);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.hxx,v 1.7 2008-02-06 13:45:20 stephena Exp $
+// $Id: ContextMenu.hxx,v 1.1 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,27 +36,47 @@ enum {
  * Popup context menu which, when clicked, "pop up" a list of items and
  * lets the user pick on of them.
  *
- * Implementation wise, when the user selects an item, then a kCMenuItemSelectedCmd
+ * Implementation wise, when the user selects an item, then the given 'cmd'
  * is broadcast, with data being equal to the tag value of the selected entry.
  */
 class ContextMenu : public Dialog, public CommandSender
 {
   public:
-    ContextMenu(GuiObject* boss, const GUI::Font& font);
+    ContextMenu(GuiObject* boss, const GUI::Font& font,
+                const StringList& items, int cmd = 0);
 	virtual ~ContextMenu();
 
-    /** Show context menu onscreen */
-    void show();
+    /** Show context menu onscreen at the specified coordinates */
+    void show(uInt32 x, uInt32 y, int item = -1);
 
-    void setList(const StringList& list);
+    /** Select the entry at the given index. */
+    void setSelected(int item);
+	
+    /** Select the first entry matching the given name. */
+    void setSelected(const string& name);
+
+    /** Select the highest/last entry in the internal list. */
+    void setSelectedMax();
+
+    /** Clear selection (reset to default). */
+    void clearSelection();
+
+    /** Accessor methods for the currently selected item. */
+    int getSelected() const;
     const string& getSelectedString() const;
-    int getSelected() const { return _selectedItem; }
+
+    /** This dialog uses its own positioning, so we override Dialog::center() */
+    void center();
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseWheel(int x, int y, int direction);
     void handleMouseMoved(int x, int y, int button);
-    void handleKeyDown(int ascii, int keycode, int modifiers);
+    void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc
+    void handleJoyDown(int stick, int button);
+    void handleJoyAxis(int stick, int axis, int value);
+    bool handleJoyHat(int stick, int hat, int value);
+    void handleEvent(Event::Type e);
 
     void drawDialog();
 
@@ -64,7 +84,7 @@ class ContextMenu : public Dialog, public CommandSender
     void drawMenuEntry(int entry, bool hilite);
 	
     int findItem(int x, int y) const;
-    void setSelection(int item);
+    void drawCurrentSelection(int item);
 	
     void moveUp();
     void moveDown();
@@ -74,11 +94,13 @@ class ContextMenu : public Dialog, public CommandSender
   protected:
     StringList _entries;
 
+    int _currentItem;
     int _selectedItem;
     int _rowHeight;
 
   private:
     const GUI::Font* _font;
+    int _cmd;
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.87 2008-05-30 19:07:55 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.88 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,7 +44,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+  : Dialog(osystem, parent, x, y, w, h, true),  // use base surface
     myStartButton(NULL),
     myPrevDirButton(NULL),
     myOptionsButton(NULL),
@@ -56,7 +56,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     mySelectedItem(0),
     myRomInfoFlag(false)
 {
-  const GUI::Font& font = instance()->launcherFont();
+  const GUI::Font& font = instance().launcherFont();
 
   const int fontHeight  = font.getFontHeight();
   const int bwidth  = (_w - 2 * 10 - 8 * (4 - 1)) / 4;
@@ -66,7 +66,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Check if we want the ROM info viewer
   // Make sure it will fit within the current bounds
-  myRomInfoFlag = instance()->settings().getBool("romviewer");
+  myRomInfoFlag = instance().settings().getBool("romviewer");
   if((w < 640 || h < 480) && myRomInfoFlag)
   {
     cerr << "ERROR: ROM launcher too small, deactivating ROM info viewer" << endl;
@@ -98,7 +98,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   if(myRomInfoFlag)
   {
     xpos += myList->getWidth() + 15;
-    myRomInfoWidget = new RomInfoWidget(this, instance()->font(), xpos, ypos,
+    myRomInfoWidget = new RomInfoWidget(this, instance().font(), xpos, ypos,
                                         326, myList->getHeight());
     wid.push_back(myRomInfoWidget);
   }
@@ -176,13 +176,13 @@ string LauncherDialog::selectedRomMD5()
   string extension;
   int item = myList->getSelected();
   if(item < 0 || myGameList->isDir(item) ||
-     !instance()->isValidRomName(myGameList->name(item), extension))
+     !instance().isValidRomName(myGameList->name(item), extension))
     return "";
 
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
   {
-    const string& md5 = instance()->MD5FromFile(myGameList->path(item));
+    const string& md5 = instance().MD5FromFile(myGameList->path(item));
     myGameList->setMd5(item, md5);
   }
   return myGameList->md5(item);
@@ -196,7 +196,7 @@ void LauncherDialog::loadConfig()
   if(myList->getList().isEmpty())
   {
     myPrevDirButton->setEnabled(false);
-    myCurrentNode = instance()->settings().getString("romdir");
+    myCurrentNode = instance().settings().getString("romdir");
 
     updateListing();
   }
@@ -222,7 +222,7 @@ void LauncherDialog::updateListing(bool fullReload)
   myGameList->clear();
   myDir->setLabel("");
 
-  string romdir = instance()->settings().getString("romdir");
+  string romdir = instance().settings().getString("romdir");
   loadDirListing();
 
   // Only hilite the 'up' button if there's a parent directory
@@ -247,7 +247,7 @@ void LauncherDialog::updateListing(bool fullReload)
   int selected = -1;
   if(!myList->getList().isEmpty())
   {
-    string lastrom = instance()->settings().getString("lastrom");
+    string lastrom = instance().settings().getString("lastrom");
     if(lastrom == "")
       selected = 0;
     else
@@ -306,16 +306,16 @@ void LauncherDialog::loadRomInfo()
 
   string extension;
   if(!myGameList->isDir(item) &&
-     instance()->isValidRomName(myGameList->name(item), extension))
+     instance().isValidRomName(myGameList->name(item), extension))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
-      myGameList->setMd5(item, instance()->MD5FromFile(myGameList->path(item)));
+      myGameList->setMd5(item, instance().MD5FromFile(myGameList->path(item)));
 
     // Get the properties for this entry
     Properties props;
     const string& md5 = myGameList->md5(item);
-    instance()->propSet().getMD5(md5, props);
+    instance().propSet().getMD5(md5, props);
 
     myRomInfoWidget->setProperties(props);
   }
@@ -349,15 +349,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             myCurrentNode = rom;
           updateListing();
         }
-        else if(!instance()->isValidRomName(rom, extension) ||
-                !instance()->createConsole(rom, md5))
+        else if(!instance().isValidRomName(rom, extension) ||
+                !instance().createConsole(rom, md5))
         {
-          instance()->frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
+          instance().frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
         }
         else
         {
         #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
-          instance()->settings().setString("lastrom", myList->getSelectedString());
+          instance().settings().setString("lastrom", myList->getSelectedString());
         #endif
         }
       }
@@ -365,7 +365,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kOptionsCmd:
-      parent()->addDialog(myOptions);
+      parent().addDialog(myOptions);
       break;
 
     case kPrevDirCmd:
@@ -379,11 +379,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kQuitCmd:
       close();
-      instance()->eventHandler().quit();
+      instance().eventHandler().quit();
       break;
 
     case kRomDirChosenCmd:
-      myCurrentNode = instance()->settings().getString("romdir");
+      myCurrentNode = instance().settings().getString("romdir");
       updateListing();
       break;
 

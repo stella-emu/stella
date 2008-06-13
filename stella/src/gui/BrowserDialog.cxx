@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.30 2008-03-23 16:22:46 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.31 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -41,7 +41,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
-  : Dialog(boss->instance(), boss->parent(), x, y, w, h),
+  : Dialog(&boss->instance(), &boss->parent(), x, y, w, h),
     CommandSender(boss),
     _fileList(NULL),
     _currentPath(NULL),

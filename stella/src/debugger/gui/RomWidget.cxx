@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.24 2008-03-23 17:43:22 stephena Exp $
+// $Id: RomWidget.cxx,v 1.25 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,8 +61,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBank = new DataGridWidget(boss, font, xpos, ypos-2,
                               1, 1, 3, 8, kBASE_10);
   myBank->setTarget(this);
-  myBank->setRange(0, instance()->debugger().bankCount());
-  if(instance()->debugger().bankCount() <= 1)
+  myBank->setRange(0, instance().debugger().bankCount());
+  if(instance().debugger().bankCount() <= 1)
     myBank->setEditable(false);
   addFocusWidget(myBank);
 
@@ -80,7 +80,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
-  GUI::Rect dialog = instance()->debugger().getDialogBounds();
+  GUI::Rect dialog = instance().debugger().getDialogBounds();
   int w = dialog.width() - x - 5, h = dialog.height() - ypos - 3;
 
   myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
@@ -133,7 +133,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       {
         mySaveRom->setTitle("");
         mySaveRom->setEmitSignal(kRomNameEntered);
-        parent()->addDialog(mySaveRom);
+        parent().addDialog(mySaveRom);
       }
       else if(rmb == "Set PC")
         setPC(myRomList->getSelected());
@@ -149,7 +149,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       else
       {
         saveROM(rom);
-        parent()->removeDialog();
+        parent().removeDialog();
       }
       break;
     }
@@ -157,7 +157,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kDGItemDataChangedCmd:
     {
       int bank = myBank->getSelectedValue();
-      instance()->debugger().setBank(bank);
+      instance().debugger().setBank(bank);
     }
   }
 }
@@ -165,7 +165,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::loadConfig()
 {
-  Debugger& dbg = instance()->debugger();
+  Debugger& dbg = instance().debugger();
   bool bankChanged = myCurrentBank != dbg.getBank();
 
   // Only reload full bank when necessary
@@ -216,7 +216,7 @@ void RomWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::initialUpdate()
 {
-  Debugger& dbg = instance()->debugger();
+  Debugger& dbg = instance().debugger();
   PackedBitArray& bp = dbg.breakpoints();
 
   // Reading from ROM might trigger a bankswitch, so save the current bank
@@ -266,7 +266,7 @@ void RomWidget::incrementalUpdate(int line, int rows)
 void RomWidget::setBreak(int data)
 {
   bool state = myRomList->getState(data);
-  instance()->debugger().setBreakPoint(myAddrList[data], state);
+  instance().debugger().setBreakPoint(myAddrList[data], state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,7 +274,7 @@ void RomWidget::setPC(int data)
 {
   ostringstream command;
   command << "pc #" << myAddrList[data];
-  instance()->debugger().run(command.str());
+  instance().debugger().run(command.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -285,14 +285,14 @@ void RomWidget::patchROM(int data, const string& bytes)
   // Temporarily set to base 16, since that's the format the disassembled
   // byte string is in.  This eliminates the need to prefix each byte with
   // a '$' character
-  BaseFormat oldbase = instance()->debugger().parser().base();
-  instance()->debugger().parser().setBase(kBASE_16);
+  BaseFormat oldbase = instance().debugger().parser().base();
+  instance().debugger().parser().setBase(kBASE_16);
 
   command << "rom #" << myAddrList[data] << " " << bytes;
-  instance()->debugger().run(command.str());
+  instance().debugger().run(command.str());
 
   // Restore previous base
-  instance()->debugger().parser().setBase(oldbase);
+  instance().debugger().parser().setBase(oldbase);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -300,5 +300,5 @@ void RomWidget::saveROM(const string& rom)
 {
   ostringstream command;
   command << "saverom " << rom;
-  instance()->debugger().run(command.str());
+  instance().debugger().run(command.str());
 }

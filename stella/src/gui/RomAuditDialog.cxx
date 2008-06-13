@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.3 2008-03-14 23:52:17 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.4 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,7 +111,7 @@ RomAuditDialog::~RomAuditDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::loadConfig()
 {
-  myRomPath->setEditString(instance()->settings().getString("romdir"));
+  myRomPath->setEditString(instance().settings().getString("romdir"));
   myResults1->setLabel("");
   myResults2->setLabel("");
 }
@@ -128,7 +128,7 @@ void RomAuditDialog::auditRoms()
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
-  ProgressDialog progress(this, instance()->launcherFont(),
+  ProgressDialog progress(this, instance().launcherFont(),
                           "Auditing ROM files ...");
   progress.setRange(0, files.size() - 1, 5);
 
@@ -139,12 +139,12 @@ void RomAuditDialog::auditRoms()
   {
     string extension;
     if(!files[idx].isDirectory() &&
-       instance()->isValidRomName(files[idx].path(), extension))
+       instance().isValidRomName(files[idx].path(), extension))
     {
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = instance()->MD5FromFile(files[idx].path());
-      instance()->propSet().getMD5(md5, props);
+      const string& md5 = instance().MD5FromFile(files[idx].path());
+      instance().propSet().getMD5(md5, props);
       const string& name = props.get(Cartridge_Name);
 
       // Only rename the file if we found a valid properties entry
@@ -172,7 +172,7 @@ void RomAuditDialog::auditRoms()
 void RomAuditDialog::openBrowser(const string& title, const string& startpath,
                                  FilesystemNode::ListMode mode, int cmd)
 {
-  parent()->addDialog(myBrowser);
+  parent().addDialog(myBrowser);
 
   myBrowser->setTitle(title);
   myBrowser->setEmitSignal(cmd);

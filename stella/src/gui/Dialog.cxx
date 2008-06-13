@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.60 2008-03-25 13:11:34 stephena Exp $
+// $Id: Dialog.cxx,v 1.61 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,8 +36,8 @@
  */
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Dialog::Dialog(OSystem* instance, DialogContainer* parent,
-               int x, int y, int w, int h)
-  : GuiObject(instance, parent, x, y, w, h),
+               int x, int y, int w, int h, bool isBase)
+  : GuiObject(*instance, *parent, *this, x, y, w, h),
     _mouseWidget(0),
     _focusedWidget(0),
     _dragWidget(0),
@@ -45,7 +45,9 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _cancelWidget(0),
     _visible(true),
     _center(true),
+    _isBase(isBase),
     _ourTab(NULL),
+    _surface(NULL),
     _focusID(0)
 {
 }
@@ -60,6 +62,8 @@ Dialog::~Dialog()
   _firstWidget = NULL;
 
   _ourButtonGroup.clear();
+
+  delete _surface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,6 +71,17 @@ void Dialog::open()
 {
   _result = 0;
   _visible = true;
+
+  // Make sure we have a valid surface to draw into
+  // Technically, this shouldn't be needed until drawDialog(), but some
+  // dialogs cause drawing to occur within loadConfig()
+  // Base surfaces are typically large, and will probably cause slow
+  // performance if we update the whole area each frame
+  // Instead, dirty rectangle updates should be performed
+  if(_surface == NULL)
+    _surface = instance().frameBuffer().createSurface(_w, _h, _isBase);
+
+  center();
 
   loadConfig();
 
@@ -85,18 +100,14 @@ void Dialog::close()
   }
 
   releaseFocus();
-  parent()->removeDialog();
+  parent().removeDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::center()
 {
-  FrameBuffer& fb = instance()->frameBuffer();
-  if(_center && &fb)
-  {
-    _x = (fb.baseWidth() - _w)  / 2;
-    _y = (fb.baseHeight() - _h) / 2;
-  }
+  if(_center && _surface)
+    _surface->centerPos();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -225,13 +236,14 @@ void Dialog::drawDialog()
   if(!isVisible())
     return;
 
+  FBSurface& s = surface();
+
   if(_dirty)
   {
-//    cerr << "Dialog::drawDialog()\n";
-    FrameBuffer& fb = instance()->frameBuffer();
+    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << endl << endl;
 
-    fb.fillRect(_x+1, _y+1, _w-2, _h-2, kDlgColor);
-    fb.box(_x, _y, _w, _h, kColor, kShadowColor);
+    s.fillRect(_x+1, _y+1, _w-2, _h-2, kDlgColor);
+    s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
     // Make all child widget dirty
     Widget* w = _firstWidget;
@@ -248,12 +260,13 @@ void Dialog::drawDialog()
     // Draw outlines for focused widgets
     redrawFocus();
 
-    // Tell the framebuffer this area is dirty
-    fb.addDirtyRect(_x, _y, _w, _h);
-//cerr << "dirty: x = " << _x << ", y = " << _y << ", w = " << _w << ", h = " << _h << endl;
-
+    // Tell the surface this area is dirty
+    s.addDirtyRect(_x, _y, _w, _h);
     _dirty = false;
   }
+
+  // Commit surface changes to screen
+  s.update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -318,7 +331,7 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Detect selection of previous and next tab headers and objects
   // For some strange reason, 'tab' needs to be interpreted as keycode,
   // not ascii??
-  if(instance()->eventHandler().kbdShift(modifiers))
+  if(instance().eventHandler().kbdShift(modifiers))
   {
     if(ascii == 256+20 && _ourTab)      // left arrow
     {
@@ -339,7 +352,7 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
-    e = instance()->eventHandler().eventForKey(keycode, kMenuMode);
+    e = instance().eventHandler().eventForKey(keycode, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -414,7 +427,7 @@ void Dialog::handleMouseMoved(int x, int y, int button)
 void Dialog::handleJoyDown(int stick, int button)
 {
   Event::Type e =
-    instance()->eventHandler().eventForJoyButton(stick, button, kMenuMode);
+    instance().eventHandler().eventForJoyButton(stick, button, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -439,7 +452,7 @@ void Dialog::handleJoyUp(int stick, int button)
 void Dialog::handleJoyAxis(int stick, int axis, int value)
 {
   Event::Type e =
-    instance()->eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
+    instance().eventHandler().eventForJoyAxis(stick, axis, value, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
@@ -456,7 +469,7 @@ void Dialog::handleJoyAxis(int stick, int axis, int value)
 bool Dialog::handleJoyHat(int stick, int hat, int value)
 {
   Event::Type e =
-    instance()->eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);
+    instance().eventHandler().eventForJoyHat(stick, hat, value, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.

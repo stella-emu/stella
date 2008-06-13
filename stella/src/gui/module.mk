@@ -6,6 +6,7 @@ MODULE_OBJS := \
 	src/gui/BrowserDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
+	src/gui/ContextMenu.o \
 	src/gui/DialogContainer.o \
 	src/gui/Dialog.o \
 	src/gui/EditableWidget.o \

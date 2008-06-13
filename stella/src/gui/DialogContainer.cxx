@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.44 2008-05-21 14:01:31 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.45 2008-06-13 13:14:51 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -94,6 +94,7 @@ void DialogContainer::draw()
   {
     for(int i = 0; i < myDialogStack.size(); i++)
     {
+      myDialogStack[i]->center();
       myDialogStack[i]->setDirty();
       myDialogStack[i]->drawDialog();
     }
@@ -101,6 +102,7 @@ void DialogContainer::draw()
   }
   else if(!myDialogStack.empty())
   {
+    myDialogStack.top()->center();
     myDialogStack.top()->drawDialog();
   }
 }
@@ -110,7 +112,6 @@ void DialogContainer::addDialog(Dialog* d)
 {
   myDialogStack.push(d);
 
-  d->center();
   d->open();
   d->setDirty();  // Next update() will take care of drawing
 }
@@ -175,6 +176,7 @@ void DialogContainer::handleMouseMotionEvent(int x, int y, int button)
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
+  activeDialog->surface().translateCoords(x, y);
   activeDialog->handleMouseMoved(x - activeDialog->_x,
                                  y - activeDialog->_y,
                                  button);
@@ -191,6 +193,7 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
+  activeDialog->surface().translateCoords(x, y);
 
   int button = (b == EVENT_LBUTTONDOWN || b == EVENT_LBUTTONUP) ? 1 : 2;
   switch(b)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.102 2008-04-28 15:53:05 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.103 2008-06-13 13:14:50 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -424,11 +424,6 @@ void FrameBufferGL::drawMediaSource()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::preFrameUpdate()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
   if(myDirtyFlag)
@@ -458,14 +453,12 @@ void FrameBufferGL::postFrameUpdate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::scanline(uInt32 row, uInt8* data) const
+void FrameBufferGL::enablePhosphor(bool enable, int blend)
 {
-  // Invert the row, since OpenGL rows start at the bottom
-  // of the framebuffer
-  row = myImageDim.h + myImageDim.y - row - 1;
+  myUsePhosphor   = enable;
+  myPhosphorBlend = blend;
 
-  p_glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  p_glReadPixels(myImageDim.x, row, myImageDim.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+  theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -495,27 +488,83 @@ void FrameBufferGL::toggleFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
+FBSurface* FrameBufferGL::createSurface(int w, int h, bool isBase) const
 {
-  uInt16* buffer = (uInt16*) myTexture->pixels + y * myBuffer.pitch + x;
-  while(x++ <= x2)
-    *buffer++ = (uInt16) myDefPalette[color];
+return 0;
+#if 0
+  SDL_PixelFormat* fmt = myTexture->format;
+  SDL_Surface* data =
+    SDL_CreateRGBSurface(SDL_SWSURFACE, width, height, 16,
+                         fmt->Rmask, fmt->Gmask, fmt->Bmask, fmt->Amask);
+
+  return data ? new GUI::Surface(width, height, data) : NULL;
+
+/*
+  SDL_Surface* surface = isBase ? myScreen :
+      SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, myFormat->BitsPerPixel,
+                           myFormat->Rmask, myFormat->Gmask, myFormat->Bmask,
+                           myFormat->Amask);
+
+  return new FBSurfaceSoft(*this, surface, w, h, isBase);
+*/
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
+void FrameBufferGL::scanline(uInt32 row, uInt8* data) const
 {
+  // Invert the row, since OpenGL rows start at the bottom
+  // of the framebuffer
+  row = myImageDim.h + myImageDim.y - row - 1;
+
+  p_glPixelStorei(GL_PACK_ALIGNMENT, 1);
+  p_glReadPixels(myImageDim.x, row, myImageDim.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+}
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+//  FBSurfaceGL implementation follows ...
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurfaceGL::FBSurfaceGL(const FrameBufferGL& buffer, SDL_Surface* surface,
+                             uInt32 w, uInt32 h, bool isBase)
+  : myFB(buffer)
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurfaceGL::~FBSurfaceGL()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
+{
+/*
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myBuffer.pitch + x;
+  while(x++ <= x2)
+    *buffer++ = (uInt16) myDefPalette[color];
+*/
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
+{
+/*
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myBuffer.pitch + x;
   while(y++ <= y2)
   {
     *buffer = (uInt16) myDefPalette[color];
     buffer += myBuffer.pitch;
   }
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
+void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 {
+/*
   // Fill the rectangle
   SDL_Rect tmp;
   tmp.x = x;
@@ -523,12 +572,14 @@ void FrameBufferGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
   tmp.w = w;
   tmp.h = h;
   SDL_FillRect(myTexture, &tmp, myDefPalette[color]);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
-                             uInt32 tx, uInt32 ty, int color)
+void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
+                           uInt32 tx, uInt32 ty, int color)
 {
+/*
   const FontDesc& desc = font->desc();
 
   // If this character is not included in the font, use the default char.
@@ -556,12 +607,14 @@ void FrameBufferGL::drawChar(const GUI::Font* font, uInt8 chr,
     }
     buffer += myBuffer.pitch;
   }
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
-                               int color, Int32 h)
+void FBSurfaceGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
+                             int color, Int32 h)
 {
+/*
   uInt16* buffer = (uInt16*) myTexture->pixels + ty * myBuffer.pitch + tx;
 
   for(int y = 0; y < h; ++y)
@@ -573,56 +626,88 @@ void FrameBufferGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 
     buffer += myBuffer.pitch;
   }
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
+void FBSurfaceGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
-  SDL_Rect dstrect;
-  dstrect.x = x;
-  dstrect.y = y;
-  SDL_Rect srcrect;
-  srcrect.x = 0;
-  srcrect.y = 0;
-  srcrect.w = surface->myClipWidth;
-  srcrect.h = surface->myClipHeight;
-
-  SDL_BlitSurface(surface->myData, &srcrect, myTexture, &dstrect);
+//  myDirtyFlag = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::bytesToSurface(GUI::Surface* surface, int row,
-                                   uInt8* data, int rowbytes) const
+void FBSurfaceGL::centerPos()
 {
-  SDL_Surface* s = surface->myData;
-  uInt16* pixels = (uInt16*) s->pixels;
-  pixels += (row * s->pitch/2);
+#if 0
+  // Make sure pitch is valid
+  recalc();
 
-  for(int c = 0; c < rowbytes; c += 3)
-    *pixels++ = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
+  // X/Y Orig are the coordinates to use when blitting an entire (non-base)
+  // surface to the screen.  As such, they're concerned with the 'usable'
+  // area of a surface, not its entire size (ie, we use the originally
+  // requested width & height, which are not necessarily the same as
+  // the surface width & height).
+  // These coordinates are not used at all for drawing base surfaces
+  myXOrig = (myFB.myScreenDim.w - myWidth) >> 1;
+  myYOrig = (myFB.myScreenDim.h - myHeight) >> 1;
+
+  // X/Y/Base Offset determine 'how far' to go into a surface, since base
+  // surfaces are defined larger than necessary in some cases, and have a
+  // 'non-usable' area.
+  if(myIsBaseSurface)
+  {
+    myXOffset = myFB.myImageDim.x;
+    myYOffset = myFB.myImageDim.y;
+    myBaseOffset = myYOffset * myPitch + myXOffset;
+  }
+  else
+  {
+    myXOffset = myYOffset = myBaseOffset = 0;
+  }
+//cerr << "center: xorig = " << myXOrig << ", yorig = " << myYOrig << endl
+//     << "        xoffset = " << myXOffset << ", yoffset = " << myYOffset << endl;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::translateCoords(Int32& x, Int32& y) const
+void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 {
+#if 0
+  // Only non-base surfaces can be arbitrarily 'moved'
+  if(!myIsBaseSurface)
+  {
+    // Make sure pitch is valid
+    recalc();
+
+    myXOrig = x;
+    myYOrig = y;
+    myXOffset = myYOffset = myBaseOffset = 0;
+  }
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::getPos(uInt32& x, uInt32& y) const
+{
+#if 0
+  x = myXOrig;
+  y = myYOrig;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::translateCoords(Int32& x, Int32& y) const
+{
+/*
   // Wow, what a mess :)
   x = (Int32) ((x - myImageDim.x) / myWidthScaleFactor);
   y = (Int32) ((y - myImageDim.y) / myHeightScaleFactor);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+void FBSurfaceGL::update()
 {
-  myDirtyFlag = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::enablePhosphor(bool enable, int blend)
-{
-  myUsePhosphor   = enable;
-  myPhosphorBlend = blend;
-
-  theRedrawTIAIndicator = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -731,6 +816,7 @@ bool FrameBufferGL::createTextures()
   return true;
 }
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Surface* FrameBufferGL::createSurface(int width, int height) const
 {
@@ -741,6 +827,35 @@ GUI::Surface* FrameBufferGL::createSurface(int width, int height) const
 
   return data ? new GUI::Surface(width, height, data) : NULL;
 }
+
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
+{
+  SDL_Rect dstrect;
+  dstrect.x = x;
+  dstrect.y = y;
+  SDL_Rect srcrect;
+  srcrect.x = 0;
+  srcrect.y = 0;
+  srcrect.w = surface->myClipWidth;
+  srcrect.h = surface->myClipHeight;
+
+  SDL_BlitSurface(surface->myData, &srcrect, myTexture, &dstrect);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::bytesToSurface(GUI::Surface* surface, int row,
+                                   uInt8* data, int rowbytes) const
+{
+  SDL_Surface* s = surface->myData;
+  uInt16* pixels = (uInt16*) s->pixels;
+  pixels += (row * s->pitch/2);
+
+  for(int c = 0; c < rowbytes; c += 3)
+    *pixels++ = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::myLibraryLoaded = false;

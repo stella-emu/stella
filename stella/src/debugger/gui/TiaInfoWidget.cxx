@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaInfoWidget.cxx,v 1.9 2008-02-06 13:45:20 stephena Exp $
+// $Id: TiaInfoWidget.cxx,v 1.10 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -121,7 +121,7 @@ void TiaInfoWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaInfoWidget::loadConfig()
 {
-  Debugger& dbg = instance()->debugger();
+  Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
 
   myFrameCount->setEditString(dbg.valueToString(tia.frameCount(), kBASE_10));

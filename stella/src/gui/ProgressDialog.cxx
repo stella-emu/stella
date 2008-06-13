@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.12 2008-03-14 23:52:17 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.13 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
                                const string& message)
-  : Dialog(boss->instance(), boss->parent(), 0, 0, 16, 16),
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     myMessage(NULL),
     mySlider(NULL),
     myStart(0),
@@ -59,8 +59,8 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  parent()->addDialog(this);
-  instance()->frameBuffer().update();
+  parent().addDialog(this);
+  instance().frameBuffer().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +71,7 @@ ProgressDialog::~ProgressDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ProgressDialog::done()
 {
-  parent()->removeDialog();
+  parent().removeDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +98,6 @@ void ProgressDialog::setProgress(int progress)
   if(progress - mySlider->getValue() > myStep)
   {
     mySlider->setValue(progress);
-    instance()->frameBuffer().update();
+    instance().frameBuffer().update();
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.50 2008-02-06 13:45:24 stephena Exp $
+// $Id: ListWidget.cxx,v 1.51 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -223,7 +223,7 @@ static bool matchingCharsIgnoringCase(string s, string pattern)
 bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Ignore all Alt-mod keys
-  if(instance()->eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdAlt(modifiers))
     return true;
 
   bool handled = true;
@@ -236,7 +236,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // Only works in a useful fashion if the list entries are sorted.
     // TODO: Maybe this should be off by default, and instead we add a
     // method "enableQuickSelect()" or so ?
-    int time = instance()->getTicks() / 1000;
+    int time = instance().getTicks() / 1000;
     if (_quickSelectTime < time)
       _quickSelectStr = (char)ascii;
     else

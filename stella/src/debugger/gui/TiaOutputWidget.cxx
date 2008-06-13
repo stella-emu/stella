@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.15 2008-03-23 17:43:22 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.16 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,14 +44,11 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   _type = kTiaOutputWidget;
 
   // Create context menu for commands
-  myMenu = new ContextMenu(this, font);
-
   StringList l;
   l.push_back("Fill to scanline");
   l.push_back("Set breakpoint");
   l.push_back("Set zoom position");
-
-  myMenu->setList(l);
+  myMenu = new ContextMenu(this, font, l);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -71,7 +68,7 @@ void TiaOutputWidget::advanceScanline(int lines)
 {
   while(lines)
   {
-    instance()->console().mediaSource().updateScanline();
+    instance().console().mediaSource().updateScanline();
     --lines;
   }
 }
@@ -81,7 +78,7 @@ void TiaOutputWidget::advance(int frames)
 {
   while(frames)
   {
-    instance()->console().mediaSource().update();
+    instance().console().mediaSource().update();
     --frames;
   }
 }
@@ -95,15 +92,14 @@ void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
     myClickX = x;
     myClickY = y;
 
-    myMenu->setPos(x + getAbsX(), y + getAbsY());
-    myMenu->show();
+    myMenu->show(x + getAbsX(), y + getAbsY());
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  int ystart = atoi(instance()->console().properties().get(Display_YStart).c_str());
+  int ystart = atoi(instance().console().properties().get(Display_YStart).c_str());
 
   switch(cmd)
   {
@@ -114,11 +110,11 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
         {
           ostringstream command;
           int lines = myClickY + ystart -
-              instance()->debugger().tiaDebug().scanlines();
+              instance().debugger().tiaDebug().scanlines();
           if(lines > 0)
           {
             command << "scanline #" << lines;
-            instance()->debugger().parser().run(command.str());
+            instance().debugger().parser().run(command.str());
           }
           break;
         }
@@ -128,7 +124,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
           ostringstream command;
           int scanline = myClickY + ystart;
           command << "breakif _scan==#" << scanline;
-          instance()->debugger().parser().run(command.str());
+          instance().debugger().parser().run(command.str());
           break;
         }
 
@@ -145,6 +141,6 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 void TiaOutputWidget::drawWidget(bool hilite)
 {
   // FIXME - check if we're in 'greyed out mode' and act accordingly
-  instance()->frameBuffer().refresh();
-  instance()->frameBuffer().drawMediaSource();
+  instance().frameBuffer().refresh();
+  instance().frameBuffer().drawMediaSource();
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.17 2008-05-04 17:16:39 stephena Exp $
+// $Id: RamWidget.cxx,v 1.18 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -154,7 +154,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // memory location
   int addr, value;
 
-  RamDebug& dbg = instance()->debugger().ramDebug();
+  RamDebug& dbg = instance().debugger().ramDebug();
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
@@ -165,8 +165,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myUndoValue = dbg.read(addr);
 
       dbg.write(addr, value);
-      myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+      myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
+      myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
       myRevertButton->setEnabled(true);
       myUndoButton->setEnabled(true);
       break;
@@ -177,9 +177,9 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       value = myRamGrid->getSelectedValue();
 
       myLabel->setEditString(
-        instance()->debugger().equates().getLabel(addr+kRamStart, true));
-      myDecValue->setEditString(instance()->debugger().valueToString(value, kBASE_10));
-      myBinValue->setEditString(instance()->debugger().valueToString(value, kBASE_2));
+        instance().debugger().equates().getLabel(addr+kRamStart, true));
+      myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
+      myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
       break;
     }
 
@@ -196,14 +196,14 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kSearchCmd:
-      parent()->addDialog(myInputBox);
+      parent().addDialog(myInputBox);
       myInputBox->setEditString("");
       myInputBox->setTitle("");
       myInputBox->setEmitSignal(kSValEntered);
       break;
 
     case kCmpCmd:
-      parent()->addDialog(myInputBox);
+      parent().addDialog(myInputBox);
       myInputBox->setEditString("");
       myInputBox->setTitle("");
       myInputBox->setEmitSignal(kCValEntered);
@@ -219,7 +219,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        parent()->removeDialog();
+        parent().removeDialog();
       break;
     }
 
@@ -229,7 +229,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        parent()->removeDialog();
+        parent().removeDialog();
       break;
     }
   }
@@ -251,7 +251,7 @@ void RamWidget::fillGrid(bool updateOld)
 
   if(updateOld) myOldValueList.clear();
 
-  RamDebug& dbg = instance()->debugger().ramDebug();
+  RamDebug& dbg = instance().debugger().ramDebug();
 
   RamState state    = (RamState&) dbg.getState();
   RamState oldstate = (RamState&) dbg.getOldState();
@@ -289,7 +289,7 @@ const string RamWidget::doSearch(const string& str)
     return "Invalid input +|-";
   }
 
-  int searchVal = instance()->debugger().stringToValue(str);
+  int searchVal = instance().debugger().stringToValue(str);
 
   // Clear the search array of previous items
   mySearchAddr.clear();
@@ -297,7 +297,7 @@ const string RamWidget::doSearch(const string& str)
 
   // Now, search all memory locations for this value, and add it to the
   // search array
-  RamDebug& dbg = instance()->debugger().ramDebug();
+  RamDebug& dbg = instance().debugger().ramDebug();
   for(int addr = 0; addr < kRamSize; ++addr)
   {
     int value = dbg.read(addr);
@@ -351,15 +351,15 @@ const string RamWidget::doCompare(const string& str)
 
     string tmp = str;
     tmp.erase(0, 1);  // remove the operator
-    offset = instance()->debugger().stringToValue(tmp);
+    offset = instance().debugger().stringToValue(tmp);
     if(negative)
       offset = -offset;
   }
   else
-    searchVal = instance()->debugger().stringToValue(str);
+    searchVal = instance().debugger().stringToValue(str);
 
   // Now, search all memory locations specified in mySearchArray for this value
-  RamDebug& dbg = instance()->debugger().ramDebug();
+  RamDebug& dbg = instance().debugger().ramDebug();
   IntArray tempAddrList, tempValueList;
   for(unsigned int i = 0; i < mySearchAddr.size(); ++i)
   {

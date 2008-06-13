@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.56 2008-05-16 12:17:23 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.57 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@
 #include "PopUpWidget.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
+#include "StringList.hxx"
 #include "TabWidget.hxx"
 #include "Widget.hxx"
 
@@ -49,6 +50,7 @@ GameInfoDialog::GameInfoDialog(
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   unsigned int i;
   WidgetArray wid;
+  StringList items;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -108,20 +110,22 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Sound:", kTextAlignLeft);
   pwidth = font.getStringWidth("Stereo");
+  items.clear();
+  items.push_back("Mono");
+  items.push_back("Stereo");
   mySound = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                            pwidth, lineHeight, "", 0, 0);
-  mySound->appendEntry("Mono", 1);
-  mySound->appendEntry("Stereo", 2);
+                            pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySound);
 
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
   pwidth = font.getStringWidth("SB (128-256k SUPERbanking)");
-  myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                           pwidth, lineHeight, "", 0, 0);
+  items.clear();
   for(i = 0; i < kNumCartTypes; ++i)
-    myType->appendEntry(ourCartridgeList[i][0], i+1);
+    items.push_back(ourCartridgeList[i][0]);
+  myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                           pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myType);
 
   // Add items for tab 0
@@ -137,28 +141,29 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("B & W");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
+  items.clear();
+  items.push_back("B");
+  items.push_back("A");
   myLeftDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                               pwidth, lineHeight, "", 0, 0);
-  myLeftDiff->appendEntry("B", 1);
-  myLeftDiff->appendEntry("A", 2);
+                               pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myLeftDiff);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Right Difficulty:", kTextAlignLeft);
+  // ... use same items as above
   myRightDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                pwidth, lineHeight, "", 0, 0);
-  myRightDiff->appendEntry("B", 1);
-  myRightDiff->appendEntry("A", 2);
+                                pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myRightDiff);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
+  items.clear();
+  items.push_back("Color");
+  items.push_back("B & W");
   myTVType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                             pwidth, lineHeight, "", 0, 0);
-  myTVType->appendEntry("Color", 1);
-  myTVType->appendEntry("B & W", 2);
+                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
 
   // Add items for tab 1
@@ -174,49 +179,54 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("CX-22 Trakball");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
-  myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                   pwidth, lineHeight, "", 0, 0);
+  items.clear();
   for(i = 0; i < kNumControllerTypes; ++i)
-    myP0Controller->appendEntry(ourControllerList[i][0], i+1);
+    items.push_back(ourControllerList[i][0]);
+  myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                   pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myP0Controller);
 
   xpos += lwidth+myP0Controller->getWidth() + 4;
   new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
                        fontHeight, "in ", kTextAlignLeft);
   xpos += font.getStringWidth("in ");
+  items.clear();
+  items.push_back("left port");
+  items.push_back("right port");
   myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                               "", 0, kLeftCChanged);
-  myLeftPort->appendEntry("left port", 1);
-  myLeftPort->appendEntry("right port", 2);
+                               items, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
 
   xpos = 10;  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P1 Controller:", kTextAlignLeft);
-  myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                   pwidth, lineHeight, "", 0, 0);
+  items.clear();
   for(i = 0; i < kNumControllerTypes; ++i)
-    myP1Controller->appendEntry(ourControllerList[i][0], i+1);
+    items.push_back(ourControllerList[i][0]);
+  myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
+                                   pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myP1Controller);
 
   xpos += lwidth+myP1Controller->getWidth() + 4;
   new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
                        fontHeight, "in ", kTextAlignLeft);
   xpos += font.getStringWidth("in ");
+  items.clear();
+  items.push_back("left port");
+  items.push_back("right port");
   myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                "", 0, kRightCChanged);
-  myRightPort->appendEntry("left port", 1);
-  myRightPort->appendEntry("right port", 2);
+                                items, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
 
   xpos = 10;  ypos += lineHeight + 5;
   pwidth = font.getStringWidth("Yes");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Swap Paddles:", kTextAlignLeft);
+  items.clear();
+  items.push_back("Yes");
+  items.push_back("No");
   mySwapPaddles = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                  pwidth, lineHeight, "", 0, 0);
-  mySwapPaddles->appendEntry("Yes", 1);
-  mySwapPaddles->appendEntry("No", 2);
+                                  pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySwapPaddles);
 
 
@@ -233,16 +243,16 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("Auto-detect");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
+  items.clear();
+  items.push_back("Auto-detect");
+  items.push_back("NTSC");
+  items.push_back("PAL");
+  items.push_back("SECAM");
+  items.push_back("NTSC50");
+  items.push_back("PAL60");
+  items.push_back("SECAM60");
   myFormat = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                             pwidth, lineHeight, "", 0, 0);
-  myFormat->appendEntry("Auto-detect", 1);
-  myFormat->appendEntry("NTSC", 2);
-  myFormat->appendEntry("PAL", 3);
-  myFormat->appendEntry("SECAM", 4);
-  myFormat->appendEntry("NTSC50", 5);
-  myFormat->appendEntry("PAL60", 6);
-  myFormat->appendEntry("SECAM60", 7);
-
+                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
 
   ypos += lineHeight + 5;
@@ -263,10 +273,11 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("Yes");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use Phosphor:", kTextAlignLeft);
-  myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                               pwidth, lineHeight, "", 0, kPhosphorChanged);
-  myPhosphor->appendEntry("Yes", 1);
-  myPhosphor->appendEntry("No", 2);
+  items.clear();
+  items.push_back("Yes");
+  items.push_back("No");
+  myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
+                               lineHeight, items, "", 0, kPhosphorChanged);
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(myTab, font, xpos + lwidth + myPhosphor->getWidth() + 10,
@@ -285,10 +296,11 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use HMBlanks:", kTextAlignLeft);
-  myHmoveBlanks = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                  pwidth, lineHeight, "", 0, 0);
-  myHmoveBlanks->appendEntry("Yes", 1);
-  myHmoveBlanks->appendEntry("No", 2);
+  items.clear();
+  items.push_back("Yes");
+  items.push_back("No");
+  myHmoveBlanks = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
+                                  lineHeight, items, "", 0, 0);
   wid.push_back(myHmoveBlanks);
 
   // Add items for tab 3
@@ -322,21 +334,22 @@ GameInfoDialog::~GameInfoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
+// FIXME - check comparisons
   myPropertiesLoaded = false;
   myDefaultsSelected = false;
 
-  if(&myOSystem->console())
+  if(&instance().console())
   {
-    myGameProperties = myOSystem->console().properties();
+    myGameProperties = instance().console().properties();
     myPropertiesLoaded = true;
     loadView();
   }
-  else if(&myOSystem->launcher())
+  else if(&instance().launcher())
   {
-    const string& md5 = myOSystem->launcher().selectedRomMD5();
+    const string& md5 = instance().launcher().selectedRomMD5();
     if(md5 != "")
     {
-      instance()->propSet().getMD5(md5, myGameProperties);
+      instance().propSet().getMD5(md5, myGameProperties);
       myPropertiesLoaded = true;
       loadView();
     }
@@ -372,96 +385,75 @@ void GameInfoDialog::loadView()
   myNote->setEditString(s);
 
   s = myGameProperties.get(Cartridge_Sound);
-  if(s == "MONO")
-    mySound->setSelectedTag(1);
-  else if(s == "STEREO")
-    mySound->setSelectedTag(2);
-  else
-    mySound->setSelectedTag(0);
+  mySound->clearSelection();
+  if(s == "MONO")         mySound->setSelected(0);
+  else if(s == "STEREO")  mySound->setSelected(1);
 
   s = myGameProperties.get(Cartridge_Type);
+  myType->clearSelection();
   for(i = 0; i < kNumCartTypes; ++i)
   {
     if(s == ourCartridgeList[i][1])
       break;
   }
-  i = (i == kNumCartTypes) ? 0: i + 1;
-  myType->setSelectedTag(i);
+  myType->setSelected(i);
 
   // Console properties
   s = myGameProperties.get(Console_LeftDifficulty);
-  if(s == "B")
-    myLeftDiff->setSelectedTag(1);
-  else if(s == "A")
-    myLeftDiff->setSelectedTag(2);
-  else
-    myLeftDiff->setSelectedTag(0);
+  myLeftDiff->clearSelection();
+  if(s == "B")       myLeftDiff->setSelected(0);
+  else if(s == "A")  myLeftDiff->setSelected(1);
 
   s = myGameProperties.get(Console_RightDifficulty);
-  if(s == "B")
-    myRightDiff->setSelectedTag(1);
-  else if(s == "A")
-    myRightDiff->setSelectedTag(2);
-  else
-    myRightDiff->setSelectedTag(0);
+  myRightDiff->clearSelection();
+  if(s == "B")       myRightDiff->setSelected(0);
+  else if(s == "A")  myRightDiff->setSelected(1);
 
   s = myGameProperties.get(Console_TelevisionType);
-  if(s == "COLOR")
-    myTVType->setSelectedTag(1);
-  else if(s == "BLACKANDWHITE")
-    myTVType->setSelectedTag(2);
-  else
-    myTVType->setSelectedTag(0);
+  myTVType->clearSelection();
+  if(s == "COLOR")               myTVType->setSelected(0);
+  else if(s == "BLACKANDWHITE")  myTVType->setSelected(1);
 
   s = myGameProperties.get(Console_SwapPorts);
-  myLeftPort->setSelectedTag(s == "NO" ? 1 : 2);
-  myRightPort->setSelectedTag(s == "NO" ? 2 : 1);
+  myLeftPort->clearSelection();
+  myRightPort->clearSelection();
+  myLeftPort->setSelected(s == "NO" ? 0 : 1);
+  myRightPort->setSelected(s == "NO" ? 1 : 0);
 
   // Controller properties
   s = myGameProperties.get(Controller_Left);
+  myP0Controller->clearSelection();
   for(i = 0; i < kNumControllerTypes; ++i)
   {
     if(s == ourControllerList[i][1])
       break;
   }
-  i = (i == kNumControllerTypes) ? 0: i + 1;
-  myP0Controller->setSelectedTag(i);
+  myP0Controller->setSelected(i);
 
   s = myGameProperties.get(Controller_Right);
+  myP1Controller->clearSelection();
   for(i = 0; i < kNumControllerTypes; ++i)
   {
     if(s == ourControllerList[i][1])
       break;
   }
-  i = (i == kNumControllerTypes) ? 0: i + 1;
-  myP1Controller->setSelectedTag(i);
+  myP1Controller->setSelected(i);
 
   s = myGameProperties.get(Controller_SwapPaddles);
-  if(s == "YES")
-    mySwapPaddles->setSelectedTag(1);
-  else if(s == "NO")
-    mySwapPaddles->setSelectedTag(2);
-  else
-    mySwapPaddles->setSelectedTag(0);
+  mySwapPaddles->clearSelection();
+  if(s == "YES")      mySwapPaddles->setSelected(0);
+  else if(s == "NO")  mySwapPaddles->setSelected(1);
 
   // Display properties
   s = myGameProperties.get(Display_Format);
-  if(s == "AUTO-DETECT")
-    myFormat->setSelectedTag(1);
-  else if(s == "NTSC")
-    myFormat->setSelectedTag(2);
-  else if(s == "PAL")
-    myFormat->setSelectedTag(3);
-  else if(s == "SECAM")
-    myFormat->setSelectedTag(4);
-  else if(s == "NTSC50")
-    myFormat->setSelectedTag(5);
-  else if(s == "PAL60")
-    myFormat->setSelectedTag(6);
-  else if(s == "SECAM60")
-    myFormat->setSelectedTag(7);
-  else
-    myFormat->setSelectedTag(0);
+  myFormat->clearSelection();
+  if(s == "AUTO-DETECT")   myFormat->setSelected(0);
+  else if(s == "NTSC")     myFormat->setSelected(1);
+  else if(s == "PAL")      myFormat->setSelected(2);
+  else if(s == "SECAM")    myFormat->setSelected(3);
+  else if(s == "NTSC50")   myFormat->setSelected(4);
+  else if(s == "PAL60")    myFormat->setSelected(5);
+  else if(s == "SECAM60")  myFormat->setSelected(6);
 
   s = myGameProperties.get(Display_YStart);
   myYStart->setEditString(s);
@@ -469,31 +461,27 @@ void GameInfoDialog::loadView()
   s = myGameProperties.get(Display_Height);
   myHeight->setEditString(s);
 
+  s = myGameProperties.get(Display_Phosphor);
+  myPhosphor->clearSelection();
   myPPBlend->setEnabled(false);
   myPPBlendLabel->setEnabled(false);
-  s = myGameProperties.get(Display_Phosphor);
   if(s == "YES")
   {
-    myPhosphor->setSelectedTag(1);
+    myPhosphor->setSelected(0);
     myPPBlend->setEnabled(true);
     myPPBlendLabel->setEnabled(true);
   }
   else if(s == "NO")
-    myPhosphor->setSelectedTag(2);
-  else
-    myPhosphor->setSelectedTag(0);
+    myPhosphor->setSelected(1);
 
   s = myGameProperties.get(Display_PPBlend);
   myPPBlend->setValue(atoi(s.c_str()));
   myPPBlendLabel->setLabel(s);
 
   s = myGameProperties.get(Emulation_HmoveBlanks);
-  if(s == "YES")
-    myHmoveBlanks->setSelectedTag(1);
-  else if(s == "NO")
-    myHmoveBlanks->setSelectedTag(2);
-  else
-    myHmoveBlanks->setSelectedTag(0);
+  myHmoveBlanks->clearSelection();
+  if(s == "YES")      myHmoveBlanks->setSelected(0);
+  else if(s == "NO")  myHmoveBlanks->setSelected(1);
 
   myTab->loadConfig();
 }
@@ -523,14 +511,14 @@ void GameInfoDialog::saveConfig()
   s = myNote->getEditString();
   myGameProperties.set(Cartridge_Note, s);
 
-  tag = mySound->getSelectedTag();
-  s = (tag == 1) ? "Mono" : "Stereo";
+  tag = mySound->getSelected();
+  s = (tag == 0) ? "Mono" : "Stereo";
   myGameProperties.set(Cartridge_Sound, s);
 
-  tag = myType->getSelectedTag();
+  tag = myType->getSelected();
   for(i = 0; i < kNumCartTypes; ++i)
   {
-    if(i == tag-1)
+    if(i == tag)
     {
       myGameProperties.set(Cartridge_Type, ourCartridgeList[i][1]);
       break;
@@ -538,52 +526,49 @@ void GameInfoDialog::saveConfig()
   }
 
   // Console properties
-  tag = myLeftDiff->getSelectedTag();
-  s = (tag == 1) ? "B" : "A";
+  tag = myLeftDiff->getSelected();
+  s = (tag == 0) ? "B" : "A";
   myGameProperties.set(Console_LeftDifficulty, s);
 
-  tag = myRightDiff->getSelectedTag();
-  s = (tag == 1) ? "B" : "A";
+  tag = myRightDiff->getSelected();
+  s = (tag == 0) ? "B" : "A";
   myGameProperties.set(Console_RightDifficulty, s);
 
-  tag = myTVType->getSelectedTag();
-  s = (tag == 1) ? "Color" : "BlackAndWhite";
+  tag = myTVType->getSelected();
+  s = (tag == 0) ? "Color" : "BlackAndWhite";
   myGameProperties.set(Console_TelevisionType, s);
 
   // Controller properties
-  tag = myP0Controller->getSelectedTag();
+  tag = myP0Controller->getSelected();
   for(i = 0; i < kNumControllerTypes; ++i)
   {
-    if(i == tag-1)
+    if(i == tag)
     {
       myGameProperties.set(Controller_Left, ourControllerList[i][1]);
       break;
     }
   }
 
-  tag = myP1Controller->getSelectedTag();
+  tag = myP1Controller->getSelected();
   for(i = 0; i < kNumControllerTypes; ++i)
   {
-    if(i == tag-1)
+    if(i == tag)
     {
       myGameProperties.set(Controller_Right, ourControllerList[i][1]);
       break;
     }
   }
 
-  tag = myLeftPort->getSelectedTag();
-  s = (tag == 1) ? "No" : "Yes";
+  tag = myLeftPort->getSelected();
+  s = (tag == 0) ? "No" : "Yes";
   myGameProperties.set(Console_SwapPorts, s);
 
-  tag = mySwapPaddles->getSelectedTag();
-  s = (tag == 1) ? "Yes" : "No";
+  tag = mySwapPaddles->getSelected();
+  s = (tag == 0) ? "Yes" : "No";
   myGameProperties.set(Controller_SwapPaddles, s);
 
   // Display properties
-  tag = myFormat->getSelectedTag();
-  s = (tag == 7) ? "SECAM60" : (tag == 6) ? "PAL60" : (tag == 5) ? "NTSC50" :
-      (tag == 4) ? "SECAM"   : (tag == 3) ? "PAL"   : (tag == 2) ? "NTSC" :
-      "AUTO-DETECT";
+  s = myFormat->getSelectedString();  // use string directly
   myGameProperties.set(Display_Format, s);
 
   s = myYStart->getEditString();
@@ -592,27 +577,27 @@ void GameInfoDialog::saveConfig()
   s = myHeight->getEditString();
   myGameProperties.set(Display_Height, s);
 
-  tag = myPhosphor->getSelectedTag();
-  s = (tag == 1) ? "Yes" : "No";
+  tag = myPhosphor->getSelected();
+  s = (tag == 0) ? "Yes" : "No";
   myGameProperties.set(Display_Phosphor, s);
 
   s = myPPBlendLabel->getLabel();
   myGameProperties.set(Display_PPBlend, s);
 
-  tag = myHmoveBlanks->getSelectedTag();
-  s = (tag == 1) ? "Yes" : "No";
+  tag = myHmoveBlanks->getSelected();
+  s = (tag == 0) ? "Yes" : "No";
   myGameProperties.set(Emulation_HmoveBlanks, s);
 
   // Determine whether to add or remove an entry from the properties set
   if(myDefaultsSelected)
-    instance()->propSet().removeMD5(myGameProperties.get(Cartridge_MD5));
+    instance().propSet().removeMD5(myGameProperties.get(Cartridge_MD5));
   else
-    instance()->propSet().insert(myGameProperties, true);
+    instance().propSet().insert(myGameProperties, true);
 
   // In any event, inform the Console and save the properties
-  if(&myOSystem->console())
-    instance()->console().setProperties(myGameProperties);
-  instance()->propSet().save(myOSystem->propertiesFile());
+  if(&instance().console())
+    instance().console().setProperties(myGameProperties);
+  instance().propSet().save(instance().propertiesFile());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -620,7 +605,7 @@ void GameInfoDialog::setDefaults()
 {
   // Load the default properties
   string md5 = myGameProperties.get(Cartridge_MD5);
-  instance()->propSet().getMD5(md5, myGameProperties, true);
+  instance().propSet().getMD5(md5, myGameProperties, true);
 
   // Reload the current dialog
   loadView();
@@ -643,18 +628,18 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLeftCChanged:
-      myRightPort->setSelectedTag(
-        myLeftPort->getSelectedTag() == 2 ? 1 : 2);
+      myRightPort->setSelected(
+        myLeftPort->getSelected() == 1 ? 0 : 1);
       break;
 
     case kRightCChanged:
-      myLeftPort->setSelectedTag(
-        myRightPort->getSelectedTag() == 2 ? 1 : 2);
+      myLeftPort->setSelected(
+        myRightPort->getSelected() == 1 ? 0 : 1);
       break;
 
     case kPhosphorChanged:
     {
-      bool status = myPhosphor->getSelectedTag() == 1 ? true : false;
+      bool status = myPhosphor->getSelected() == 0 ? true : false;
       myPPBlend->setEnabled(status);
       myPPBlendLabel->setEnabled(status);
       break;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.50 2008-05-21 14:01:31 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.51 2008-06-13 13:14:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,6 +30,7 @@
 #include "PopUpWidget.hxx"
 #include "Console.hxx"
 #include "Settings.hxx"
+#include "StringList.hxx"
 #include "Widget.hxx"
 
 #include "VideoDialog.hxx"
@@ -48,6 +49,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   int lwidth = font.getStringWidth("Dirty Rects: "),
       pwidth = font.getStringWidth("1920x1200");
   WidgetArray wid;
+  StringList items;
 
   // Set real dimensions
 //  _w = 46 * fontWidth + 10;
@@ -56,48 +58,53 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 5;  ypos = 10;
 
   // Video renderer
-  myRendererPopup = new PopUpWidget(this, font, xpos, ypos,
-                                    pwidth, lineHeight, "Renderer: ", lwidth,
-                                    kRendererChanged);
-  myRendererPopup->appendEntry("Software", 1);
+  items.clear();
+  items.push_back("Software");
 #ifdef DISPLAY_OPENGL
-  myRendererPopup->appendEntry("OpenGL", 2);
+  items.push_back("OpenGL");
 #endif
+  myRendererPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                    items, "Renderer: ", lwidth,
+                                    kRendererChanged);
   wid.push_back(myRendererPopup);
   ypos += lineHeight + 4;
 
   // Video filter
-  myFilterPopup = new PopUpWidget(this, font, xpos, ypos,
-                                  pwidth, lineHeight, "GL Filter: ", lwidth);
-  myFilterPopup->appendEntry("Linear", 1);
-  myFilterPopup->appendEntry("Nearest", 2);
+  items.clear();
+  items.push_back("Linear");
+  items.push_back("Nearest");
+  myFilterPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                  items, "GL Filter: ", lwidth);
   wid.push_back(myFilterPopup);
   ypos += lineHeight + 4;
 
   // GL FS stretch
-  myFSStretchPopup = new PopUpWidget(this, font, xpos, ypos,
-                                     pwidth, lineHeight, "GL Stretch: ", lwidth);
-  myFSStretchPopup->appendEntry("Never", 1);
-  myFSStretchPopup->appendEntry("UI mode", 2);
-  myFSStretchPopup->appendEntry("TIA mode", 3);
-  myFSStretchPopup->appendEntry("Always", 4);
+  items.clear();
+  items.push_back("Never");
+  items.push_back("UI mode");
+  items.push_back("TIA mode");
+  items.push_back("Always");
+  myFSStretchPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                     items, "GL Stretch: ", lwidth);
   wid.push_back(myFSStretchPopup);
   ypos += lineHeight + 4;
 
   // Palette
+  items.clear();
+  items.push_back("Standard");
+  items.push_back("Z26");
+  items.push_back("User");
   myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                   lineHeight, "Palette: ", lwidth);
-  myPalettePopup->appendEntry("Standard", 1);
-  myPalettePopup->appendEntry("Z26", 2);
-  myPalettePopup->appendEntry("User", 3);
+                                   lineHeight, items, "Palette: ", lwidth);
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
   // Fullscreen resolution
+  items.clear();
+  for(uInt32 i = 0; i < instance().supportedResolutions().size(); ++i)
+    items.push_back(instance().supportedResolutions()[i].name);
   myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                 lineHeight, "FS Res: ", lwidth);
-  for(uInt32 i = 0; i < instance()->supportedResolutions().size(); ++i)
-    myFSResPopup->appendEntry(instance()->supportedResolutions()[i].name, i+1);
+                                 lineHeight, items, "FS Res: ", lwidth);
   wid.push_back(myFSResPopup);
   ypos += lineHeight + 4;
 
@@ -220,78 +227,82 @@ void VideoDialog::loadConfig()
   int i;
 
   // Renderer setting
-  s = instance()->settings().getString("video");
-  if(s == "soft")    myRendererPopup->setSelectedTag(1);
-  else if(s == "gl") myRendererPopup->setSelectedTag(2);
+  s = instance().settings().getString("video");
+  myRendererPopup->clearSelection();
+  if(s == "soft")    myRendererPopup->setSelected(0);
+  else if(s == "gl") myRendererPopup->setSelected(1);
 
   // Filter setting
-  s = instance()->settings().getString("gl_filter");
-  if(s == "linear")       myFilterPopup->setSelectedTag(1);
-  else if(s == "nearest") myFilterPopup->setSelectedTag(2);
+  s = instance().settings().getString("gl_filter");
+  myFilterPopup->clearSelection();
+  if(s == "linear")       myFilterPopup->setSelected(0);
+  else if(s == "nearest") myFilterPopup->setSelected(1);
 
   // GL stretch setting
-  s = instance()->settings().getString("gl_fsmax");
-  if(s == "never")        myFSStretchPopup->setSelectedTag(1);
-  else if(s == "ui")      myFSStretchPopup->setSelectedTag(2);
-  else if(s == "tia")     myFSStretchPopup->setSelectedTag(3);
-  else if(s == "always")  myFSStretchPopup->setSelectedTag(4);
-  else                    myFSStretchPopup->setSelectedTag(1);
+  s = instance().settings().getString("gl_fsmax");
+  myFSStretchPopup->clearSelection();
+  if(s == "never")        myFSStretchPopup->setSelected(0);
+  else if(s == "ui")      myFSStretchPopup->setSelected(1);
+  else if(s == "tia")     myFSStretchPopup->setSelected(2);
+  else if(s == "always")  myFSStretchPopup->setSelected(3);
 
   // Palette
-  s = instance()->settings().getString("palette");
-  if(s == "standard")      myPalettePopup->setSelectedTag(1);
-  else if(s == "z26")      myPalettePopup->setSelectedTag(2);
-  else if(s == "user")     myPalettePopup->setSelectedTag(3);
+  s = instance().settings().getString("palette");
+  myPalettePopup->clearSelection();
+  if(s == "standard")     myPalettePopup->setSelected(0);
+  else if(s == "z26")     myPalettePopup->setSelected(1);
+  else if(s == "user")    myPalettePopup->setSelected(2);
 
   // Fullscreen resolution
-  s = instance()->settings().getString("fullres");
-  myFSResPopup->setSelectedName(s);
-  if(myFSResPopup->getSelectedTag() < 0)
+  s = instance().settings().getString("fullres");
+  myFSResPopup->clearSelection();
+  myFSResPopup->setSelected(s);
+  if(myFSResPopup->getSelected() < 0)
     myFSResPopup->setSelectedMax();
 
   // UI zoom level
-  s = instance()->settings().getString("zoom_ui");
-  i = instance()->settings().getInt("zoom_ui");
+  s = instance().settings().getString("zoom_ui");
+  i = instance().settings().getInt("zoom_ui");
   myUIZoomSlider->setValue(i);
   myUIZoomLabel->setLabel(s);
 
   // TIA zoom level
-  s = instance()->settings().getString("zoom_tia");
-  i = instance()->settings().getInt("zoom_tia");
+  s = instance().settings().getString("zoom_tia");
+  i = instance().settings().getInt("zoom_tia");
   myTIAZoomSlider->setValue(i);
   myTIAZoomLabel->setLabel(s);
 
   // GL aspect ratio setting
-  s = instance()->settings().getString("gl_aspect");
-  i = instance()->settings().getInt("gl_aspect");
+  s = instance().settings().getString("gl_aspect");
+  i = instance().settings().getInt("gl_aspect");
   myAspectRatioSlider->setValue(i);
   myAspectRatioLabel->setLabel(s);
 
   // Framerate (0 or -1 means disabled)
-  s = instance()->settings().getString("framerate");
-  i = instance()->settings().getInt("framerate");
+  s = instance().settings().getString("framerate");
+  i = instance().settings().getInt("framerate");
   myFrameRateSlider->setValue(i < 0 ? 0 : i);
   myFrameRateLabel->setLabel(i < 0 ? "0" : s);
 
   // Fullscreen
-  b = instance()->settings().getBool("fullscreen");
+  b = instance().settings().getBool("fullscreen");
   myFullscreenCheckbox->setState(b);
   handleFullscreenChange(b);
 
   // PAL color-loss effect
-  b = instance()->settings().getBool("colorloss");
+  b = instance().settings().getBool("colorloss");
   myColorLossCheckbox->setState(b);
 
   // Use sync to vertical blank (GL mode only)
-  b = instance()->settings().getBool("gl_vsync");
+  b = instance().settings().getBool("gl_vsync");
   myUseVSyncCheckbox->setState(b);
 
   // Center window
-  b = instance()->settings().getBool("center");
+  b = instance().settings().getBool("center");
   myCenterCheckbox->setState(b);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  i = myRendererPopup->getSelectedTag();
+  i = myRendererPopup->getSelected();
   handleRendererChange(i);
 }
 
@@ -303,85 +314,85 @@ void VideoDialog::saveConfig()
   bool b;
 
   // Renderer setting
-  i = myRendererPopup->getSelectedTag();
-  if(i == 1)       s = "soft";
-  else if(i == 2)  s = "gl";
-  instance()->settings().setString("video", s);
+  i = myRendererPopup->getSelected();
+  if(i == 0)       s = "soft";
+  else if(i == 1)  s = "gl";
+  instance().settings().setString("video", s);
 
   // Filter setting
-  i = myFilterPopup->getSelectedTag();
-  if(i == 1)      s = "linear";
-  else if(i == 2) s = "nearest";
-  instance()->settings().setString("gl_filter", s);
+  i = myFilterPopup->getSelected();
+  if(i == 0)      s = "linear";
+  else if(i == 1) s = "nearest";
+  instance().settings().setString("gl_filter", s);
 
   // GL stretch setting
-  i = myFSStretchPopup->getSelectedTag();
-  if(i == 1)       s = "never";
-  else if(i == 2)  s = "ui";
-  else if(i == 3)  s = "tia";
-  else if(i == 4)  s = "always";
-  instance()->settings().setString("gl_fsmax", s);
+  i = myFSStretchPopup->getSelected();
+  if(i == 0)       s = "never";
+  else if(i == 1)  s = "ui";
+  else if(i == 2)  s = "tia";
+  else if(i == 3)  s = "always";
+  instance().settings().setString("gl_fsmax", s);
 
   // Palette
-  i = myPalettePopup->getSelectedTag();
-  if(i == 1)       s = "standard";
-  else if(i == 2)  s = "z26";
-  else if(i == 3)  s = "user";
-  instance()->settings().setString("palette", s);
+  i = myPalettePopup->getSelected();
+  if(i == 0)       s = "standard";
+  else if(i == 1)  s = "z26";
+  else if(i == 2)  s = "user";
+  instance().settings().setString("palette", s);
 
   // Fullscreen resolution
   s = myFSResPopup->getSelectedString();
-  instance()->settings().setString("fullres", s);
+  instance().settings().setString("fullres", s);
 
   // UI Scaler
   s = myUIZoomLabel->getLabel();
-  instance()->settings().setString("zoom_ui", s);
+  instance().settings().setString("zoom_ui", s);
 
   // TIA Scaler
   s = myTIAZoomLabel->getLabel();
-  instance()->settings().setString("zoom_tia", s);
+  instance().settings().setString("zoom_tia", s);
 
   // GL aspect ratio setting
   s = myAspectRatioLabel->getLabel();
-  instance()->settings().setString("gl_aspect", s);
+  instance().settings().setString("gl_aspect", s);
 
   // Framerate
   i = myFrameRateSlider->getValue();
-  instance()->settings().setInt("framerate", i);
-  if(&instance()->console())
+  instance().settings().setInt("framerate", i);
+  if(&instance().console())
   {
     // Make sure auto-frame calculation is only enabled when necessary
-    instance()->console().mediaSource().enableAutoFrame(i <= 0);
-    instance()->console().setFramerate(i);
+    instance().console().mediaSource().enableAutoFrame(i <= 0);
+    instance().console().setFramerate(i);
   }
 
   // Fullscreen
   b = myFullscreenCheckbox->getState();
-  instance()->settings().setBool("fullscreen", b);
+  instance().settings().setBool("fullscreen", b);
 
   // PAL color-loss effect
   b = myColorLossCheckbox->getState();
-  instance()->settings().setBool("colorloss", b);
+  instance().settings().setBool("colorloss", b);
 
   // Use sync to vertical blank (GL mode only)
   b = myUseVSyncCheckbox->getState();
-  instance()->settings().setBool("gl_vsync", b);
+  instance().settings().setBool("gl_vsync", b);
 
   // Center window
   b = myCenterCheckbox->getState();
-  instance()->settings().setBool("center", b);
+  instance().settings().setBool("center", b);
 
   // Finally, issue a complete framebuffer re-initialization
-  instance()->createFrameBuffer(false);
+  instance().createFrameBuffer(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::setDefaults()
 {
-  myRendererPopup->setSelectedTag(1);
-  myFilterPopup->setSelectedTag(1);
-  myFSStretchPopup->setSelectedTag(1);
-  myPalettePopup->setSelectedTag(1);
+  myRendererPopup->setSelected(0);
+  myFilterPopup->setSelected(0);
+  myFSStretchPopup->setSelected(0);
+  myPalettePopup->setSelected(0);
   myFSResPopup->setSelectedMax();
   myUIZoomSlider->setValue(2);
   myUIZoomLabel->setLabel("2");
@@ -398,7 +409,7 @@ void VideoDialog::setDefaults()
   myCenterCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  handleRendererChange(1);  // 1 indicates software mode
+  handleRendererChange(0);        // 0 indicates software mode
   handleFullscreenChange(false);  // indicates fullscreen deactivated
 }
 
@@ -407,7 +418,7 @@ void VideoDialog::handleRendererChange(int item)
 {
 #ifdef DISPLAY_OPENGL
   // When we're in software mode, certain OpenGL-related options are disabled
-  bool gl = (item > 1) ? true : false;
+  bool gl = (item > 0) ? true : false;
 
   myFilterPopup->setEnabled(gl);
   myFSStretchPopup->setEnabled(gl);

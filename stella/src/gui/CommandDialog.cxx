@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.19 2008-05-17 15:16:45 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.20 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -190,29 +190,29 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kSnapshotCmd:
-      instance()->eventHandler().leaveMenuMode();
-      instance()->eventHandler().refreshDisplay(true);
-      instance()->eventHandler().handleEvent(Event::TakeSnapshot, 1);
+      instance().eventHandler().leaveMenuMode();
+      instance().eventHandler().refreshDisplay(true);
+      instance().eventHandler().handleEvent(Event::TakeSnapshot, 1);
       break;
 
     case kFormatCmd:
-      instance()->eventHandler().leaveMenuMode();
-      instance()->console().toggleFormat();
+      instance().eventHandler().leaveMenuMode();
+      instance().console().toggleFormat();
       break;
 
     case kPaletteCmd:
-      instance()->eventHandler().leaveMenuMode();
-      instance()->console().togglePalette();
+      instance().eventHandler().leaveMenuMode();
+      instance().console().togglePalette();
       break;
 
     case kReloadRomCmd:
-      instance()->eventHandler().leaveMenuMode();
-      instance()->deleteConsole();
-      instance()->createConsole();
+      instance().eventHandler().leaveMenuMode();
+      instance().deleteConsole();
+      instance().createConsole();
       break;
 
     case kExitCmd:
-      instance()->eventHandler().handleEvent(Event::LauncherMode, 1);
+      instance().eventHandler().handleEvent(Event::LauncherMode, 1);
       break;
   }
 
@@ -220,14 +220,14 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
   // State commands require you to exit the menu manually
   if(consoleCmd)
   {
-    instance()->eventHandler().leaveMenuMode();
-    instance()->eventHandler().handleEvent(event, 1);
-    instance()->console().switches().update();
-    instance()->console().mediaSource().update();
-    instance()->eventHandler().handleEvent(event, 0);
+    instance().eventHandler().leaveMenuMode();
+    instance().eventHandler().handleEvent(event, 1);
+    instance().console().switches().update();
+    instance().console().mediaSource().update();
+    instance().eventHandler().handleEvent(event, 0);
   }
   else if(stateCmd)
   {
-    instance()->eventHandler().handleEvent(event, 1);
+    instance().eventHandler().handleEvent(event, 1);
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheckListWidget.cxx,v 1.16 2008-02-06 13:45:23 stephena Exp $
+// $Id: CheckListWidget.cxx,v 1.17 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -106,17 +106,17 @@ void CheckListWidget::setLine(int line, const string& str, const bool& state)
 void CheckListWidget::drawWidget(bool hilite)
 {
 //cerr << "CheckListWidget::drawWidget\n";
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  FBSurface& s = _boss->dialog().surface();
   int i, pos, len = _list.size();
   string buffer;
   int deltax;
 
   // Draw a thin frame around the list and to separate columns
-  fb.hLine(_x, _y, _x + _w - 1, kColor);
-  fb.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
-  fb.vLine(_x, _y, _y + _h - 1, kColor);
+  s.hLine(_x, _y, _x + _w - 1, kColor);
+  s.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
+  s.vLine(_x, _y, _y + _h - 1, kColor);
 
-  fb.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
+  s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
@@ -134,13 +134,11 @@ void CheckListWidget::drawWidget(bool hilite)
     if (_selectedItem == pos)
     {
       if (_hasFocus && !_editMode)
-        fb.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
-                    _w - r.left, _fontHeight,
-                    kTextColorHi);
+        s.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+                   _w - r.left, _fontHeight, kTextColorHi);
       else
-        fb.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
-                     _w - r.left, _fontHeight,
-                     kTextColorHi);
+        s.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+                    _w - r.left, _fontHeight, kTextColorHi);
     }
 
     if (_selectedItem == pos && _editMode)
@@ -149,14 +147,14 @@ void CheckListWidget::drawWidget(bool hilite)
       adjustOffset();
       deltax = -_editScrollOffset;
 
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
-                    kTextAlignLeft, deltax, false);
+      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
+                   kTextAlignLeft, deltax, false);
     }
     else
     {
       buffer = _list[pos];
       deltax = 0;
-      fb.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
+      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
     }
   }
 

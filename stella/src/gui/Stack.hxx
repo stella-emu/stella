@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Stack.hxx,v 1.5 2008-02-06 13:45:24 stephena Exp $
+// $Id: Stack.hxx,v 1.6 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,7 +56,7 @@ class FixedStack
       return tmp;
     }
     int size() const { return _size; }
-    T operator [](int i)
+    T operator [](int i) const
     {
       assert(0 <= i && i < MAX_SIZE);
       return _stack[i];

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.13 2008-05-15 15:07:29 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.14 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -589,7 +589,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   int addr, value;
   string buf;
 
-  Debugger& dbg = instance()->debugger();
+  Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
 
   switch(cmd)
@@ -872,7 +872,7 @@ void TiaWidget::fillGrid()
   IntArray vlist;
   BoolArray blist, changed, grNew, grOld;
 
-  Debugger& dbg = instance()->debugger();
+  Debugger& dbg = instance().debugger();
   TIADebug& tia = dbg.tiaDebug();
   TiaState& state    = (TiaState&) tia.getState();
   TiaState& oldstate = (TiaState&) tia.getOldState();
@@ -1051,22 +1051,22 @@ void TiaWidget::changeColorRegs()
   switch(addr)
   {
     case kCOLUP0Addr:
-      instance()->debugger().tiaDebug().coluP0(value);
+      instance().debugger().tiaDebug().coluP0(value);
       myCOLUP0Color->setColor(value);
       break;
 
     case kCOLUP1Addr:
-      instance()->debugger().tiaDebug().coluP1(value);
+      instance().debugger().tiaDebug().coluP1(value);
       myCOLUP1Color->setColor(value);
       break;
 
     case kCOLUPFAddr:
-      instance()->debugger().tiaDebug().coluPF(value);
+      instance().debugger().tiaDebug().coluPF(value);
       myCOLUPFColor->setColor(value);
       break;
 
     case kCOLUBKAddr:
-      instance()->debugger().tiaDebug().coluBK(value);
+      instance().debugger().tiaDebug().coluBK(value);
       myCOLUBKColor->setColor(value);
       break;
   }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.50 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.51 2008-06-13 13:14:50 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,10 +33,12 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.50 2008-03-13 22:58:06 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.51 2008-06-13 13:14:50 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
+  friend class FBSurfaceSoft;
+
   public:
     /**
       Creates a new software framebuffer
@@ -49,60 +51,12 @@ class FrameBufferSoft : public FrameBuffer
     virtual ~FrameBufferSoft();
 
     //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBuffer.hxx
+    // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
     /**
-      This method is called to initialize software video mode.
-      Return false if any operation fails, otherwise return true.
+      Enable/disable phosphor effect.
     */
-    bool initSubsystem(VideoMode mode);
-
-    /**
-      This method is called to query the type of the FrameBuffer.
-    */
-    BufferType type() const { return kSoftBuffer; }
-
-    /**
-      This method is called to provide information about the FrameBuffer.
-    */
-    string about() const;
-
-    /**
-      This method is called to change to the given videomode type.
-
-      @param mode  The video mode to use for rendering the mediasource
-    */
-    bool setVidMode(VideoMode mode);
-
-    /**
-      Switches between the filtering options in software mode.
-      Currently, none exist.
-    */
-    void toggleFilter();
-
-    /**
-      This method should be called anytime the MediaSource needs to be redrawn
-      to the screen.
-    */
-    void drawMediaSource();
-
-    /**
-      This method is called before any drawing is done (per-frame).
-    */
-    void preFrameUpdate();
-
-    /**
-      This method is called after any drawing is done (per-frame).
-    */
-    void postFrameUpdate();
-
-    /**
-      This method is called to get the specified scanline data.
-
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
-    */
-    void scanline(uInt32 row, uInt8* data) const;
+    void enablePhosphor(bool enable, int blend);
 
     /**
       This method is called to map a given r,g,b triple to the screen palette.
@@ -115,112 +69,61 @@ class FrameBufferSoft : public FrameBuffer
       { return SDL_MapRGB(myScreen->format, r, g, b); }
 
     /**
+      This method is called to query the type of the FrameBuffer.
+    */
+    BufferType type() const { return kSoftBuffer; }
+
+    /**
       This method is called to create a surface compatible with the one
       currently in use, but having the given dimensions.
 
-      @param width   The requested width of the new surface.
-      @param height  The requested height of the new surface.
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
     */
-    GUI::Surface* createSurface(int width, int height) const;
+    FBSurface* createSurface(int w, int h, bool useBase = false) const;
 
     /**
-      This method is called to draw a horizontal line.
+      This method is called to get the specified scanline data.
 
-      @param x     The first x coordinate
-      @param y     The y coordinate
-      @param x2    The second x coordinate
-      @param color The color of the line
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
     */
-    void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
+    void scanline(uInt32 row, uInt8* data) const;
+
+  protected:
+    //////////////////////////////////////////////////////////////////////
+    // The following are derived from protected methods in FrameBuffer.hxx
+    //////////////////////////////////////////////////////////////////////
+    /**
+      This method is called to initialize software video mode.
+      Return false if any operation fails, otherwise return true.
+    */
+    bool initSubsystem(VideoMode mode);
 
     /**
-      This method is called to draw a vertical line.
+      This method is called to change to the given videomode type.
 
-      @param x     The x coordinate
-      @param y     The first y coordinate
-      @param y2    The second y coordinate
-      @param color The color of the line
+      @param mode  The video mode to use for rendering the mediasource
     */
-    void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
+    bool setVidMode(VideoMode mode);
 
     /**
-      This method is called to draw a filled rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the area
+      Switches between the filtering options in software mode.
+      Currently, none exist.
     */
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
+    void toggleFilter() { /* No filter added yet */ }
 
     /**
-      This method is called to draw the specified character.
-
-      @param font   The font to use to draw the character
-      @param c      The character to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the character
+      This method should be called anytime the MediaSource needs to be redrawn
+      to the screen.
     */
-    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
+    void drawMediaSource();
 
     /**
-      This method is called to draw the bitmap image.
-
-      @param bitmap The data to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the character
-      @param h      The height of the data image
+      This method is called to provide information about the FrameBuffer.
     */
-    void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
-
-    /**
-      This method should be called to draw an SDL surface.
-
-      @param surface The data to draw
-      @param x       The x coordinate
-      @param y       The y coordinate
-    */
-    void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y);
-
-    /**
-      This method should be called to convert and copy a given row of RGB
-      data into an SDL surface.
-
-      @param surface  The data to draw
-      @param row      The row of the surface the data should be placed in
-      @param data     The data in uInt8 R/G/B format
-      @param rowbytes The number of bytes in row of 'data'
-    */
-    void bytesToSurface(GUI::Surface* surface, int row,
-                        uInt8* data, int rowbytes) const;
-
-    /**
-      This method translates the given coordinates to their
-      unzoomed/unscaled equivalents.
-
-      @param x  X coordinate to translate
-      @param y  Y coordinate to translate
-    */
-    void translateCoords(Int32& x, Int32& y) const;
-
-    /**
-      This method adds a dirty rectangle
-      (ie, an area of the screen that has changed)
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-    */
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    /**
-      Enable/disable phosphor effect.
-    */
-    void enablePhosphor(bool enable, int blend);
+    string about() const;
 
     /**
       Informs the Framebuffer of a change in EventHandler state.
@@ -230,8 +133,8 @@ class FrameBufferSoft : public FrameBuffer
   private:
     int myZoomLevel;
     int myBytesPerPixel;
-    int myPitch;
     int myBaseOffset;
+    int myPitch;
     SDL_PixelFormat* myFormat;
 
     enum RenderType {
@@ -244,14 +147,49 @@ class FrameBufferSoft : public FrameBuffer
     };
     RenderType myRenderType;
 
-    // Indicates if the TIA image has been modified
-    bool myDirtyFlag;
-
-    // Indicates if we're in a purely UI mode
-    bool myInUIMode;
-
     // Used in the dirty update of rectangles in non-TIA modes
     RectList* myRectList;
+};
+
+/**
+  A surface suitable for software rendering mode.
+
+  @author  Stephen Anthony
+  @version $Id: FrameBufferSoft.hxx,v 1.51 2008-06-13 13:14:50 stephena Exp $
+*/
+class FBSurfaceSoft : public FBSurface
+{
+  public:
+    FBSurfaceSoft(const FrameBufferSoft& buffer, SDL_Surface* surface,
+                  uInt32 w, uInt32 h, bool isBase);
+    virtual ~FBSurfaceSoft();
+
+    void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
+    void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
+    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
+    void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
+    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+    void centerPos();
+    void setPos(uInt32 x, uInt32 y);
+    void getPos(uInt32& x, uInt32& y) const;
+    void translateCoords(Int32& x, Int32& y) const;
+    void update();
+
+  private:
+    void recalc();
+
+  private:
+    const FrameBufferSoft& myFB;
+    SDL_Surface* mySurface;
+    uInt32 myWidth, myHeight;
+    bool myIsBaseSurface;
+    bool mySurfaceIsDirty;
+    int myBaseOffset;
+    int myPitch;
+
+    uInt32 myXOrig, myYOrig;
+    uInt32 myXOffset, myYOffset;
 };
 
 #endif

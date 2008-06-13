@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.37 2008-03-23 16:22:46 stephena Exp $
+// $Id: Dialog.hxx,v 1.38 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #ifndef DIALOG_HXX
 #define DIALOG_HXX
 
+class FBSurface;
 class OSystem;
 class DialogContainer;
 class TabWidget;
@@ -46,7 +47,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.37 2008-03-23 16:22:46 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.38 2008-06-13 13:14:51 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -60,11 +61,12 @@ class Dialog : public GuiObject
 
   public:
     Dialog(OSystem* instance, DialogContainer* parent,
-           int x, int y, int w, int h);
+           int x, int y, int w, int h, bool isBase = false);
 
     virtual ~Dialog();
 
     bool isVisible() const { return _visible; }
+    bool isBase() const    { return _isBase;  }
 
     virtual void open();
     virtual void close();
@@ -83,6 +85,8 @@ class Dialog : public GuiObject
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
     void setCenter(bool state) { _center = state; }
+
+    inline FBSurface& surface() { return *_surface; }
 
   protected:
     virtual void draw();
@@ -123,11 +127,13 @@ class Dialog : public GuiObject
     Widget* _cancelWidget;
     bool    _visible;
     bool    _center;
+    bool    _isBase;
 
   private:
     FocusList   _ourFocusList;
     TabWidget*  _ourTab;
     WidgetArray _ourButtonGroup;
+    FBSurface*  _surface;
 
     int _result;
     int _focusID;

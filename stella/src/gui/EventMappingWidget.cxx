@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.23 2008-03-23 16:22:46 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.24 2008-06-13 13:14:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -133,7 +133,7 @@ void EventMappingWidget::startRemapping()
   // And show a message indicating which key is being remapped
   ostringstream buf;
   buf << "Select action for '"
-      << instance()->eventHandler().actionAtIndex(myActionSelected, myEventMode)
+      << instance().eventHandler().actionAtIndex(myActionSelected, myEventMode)
       << "' event";	 	
   myKeyMapping->setTextColor(kTextColorEm);
   myKeyMapping->setLabel(buf.str());
@@ -150,8 +150,8 @@ void EventMappingWidget::eraseRemapping()
     return;
 
   Event::Type event =
-    instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
-  instance()->eventHandler().eraseMapping(event, myEventMode);
+    instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+  instance().eventHandler().eraseMapping(event, myEventMode);
 
   drawKeyMapping();
 }
@@ -188,7 +188,7 @@ void EventMappingWidget::drawKeyMapping()
   {
     ostringstream buf;
     buf << "Action: "
-        << instance()->eventHandler().keyAtIndex(myActionSelected, myEventMode);
+        << instance().eventHandler().keyAtIndex(myActionSelected, myEventMode);
     myKeyMapping->setTextColor(kTextColor);
     myKeyMapping->setLabel(buf.str());
   }
@@ -201,8 +201,8 @@ bool EventMappingWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event =
-      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance()->eventHandler().addKeyMapping(event, myEventMode, keycode))
+      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance().eventHandler().addKeyMapping(event, myEventMode, keycode))
       stopRemapping();
   }
   return true;
@@ -215,8 +215,8 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event =
-      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance()->eventHandler().addJoyMapping(event, myEventMode, stick, button))
+      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance().eventHandler().addJoyMapping(event, myEventMode, stick, button))
       stopRemapping();
   }
 }
@@ -228,8 +228,8 @@ void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event =
-      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance()->eventHandler().addJoyAxisMapping(event, myEventMode,
+      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance().eventHandler().addJoyAxisMapping(event, myEventMode,
                                                     stick, axis, value))
       stopRemapping();
   }
@@ -244,8 +244,8 @@ bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
   if(myRemapStatus && myActionSelected >= 0)
   {
     Event::Type event =
-      instance()->eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance()->eventHandler().addJoyHatMapping(event, myEventMode,
+      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+    if(instance().eventHandler().addJoyHatMapping(event, myEventMode,
                                                    stick, hat, value))
     {
       stopRemapping();
@@ -296,7 +296,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDefaultsCmd:
-      instance()->eventHandler().setDefaultMapping(myEventMode);
+      instance().eventHandler().setDefaultMapping(myEventMode);
       drawKeyMapping();
       break;
   }

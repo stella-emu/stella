@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.13 2008-02-06 13:45:20 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.14 2008-06-13 13:14:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,7 +98,7 @@ cerr << "alist.size() = "     << alist.size()
   string temp;
   for(int i = 0; i < size; ++i)
   {
-    temp = instance()->debugger().valueToString(_valueList[i], _base);
+    temp = instance().debugger().valueToString(_valueList[i], _base);
     _valueStringList.push_back(temp);
   }
 
@@ -156,7 +156,7 @@ void DataGridWidget::setHiliteList(const IntArray& hilitelist)
 void DataGridWidget::setSelectedValue(int value)
 {
   // Correctly format the data for viewing
-  _editString = instance()->debugger().valueToString(value, _base);
+  _editString = instance().debugger().valueToString(value, _base);
 
   _valueStringList[_selectedItem] = _editString;
   _changedList[_selectedItem] = (_valueList[_selectedItem] != value);
@@ -231,8 +231,8 @@ int DataGridWidget::findItem(int x, int y)
 bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Ignore all mod keys
-  if(instance()->eventHandler().kbdControl(modifiers) ||
-     instance()->eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdControl(modifiers) ||
+     instance().eventHandler().kbdAlt(modifiers))
     return true;
 
   bool handled = true;
@@ -481,17 +481,17 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
 void DataGridWidget::drawWidget(bool hilite)
 {
 //cerr << "DataGridWidget::drawWidget\n";
-  FrameBuffer& fb = _boss->instance()->frameBuffer();
+  FBSurface& s = _boss->dialog().surface();
   int row, col, deltax;
   string buffer;
 
   // Draw the internal grid and labels
   int linewidth = _cols * _colWidth;
   for (row = 0; row <= _rows; row++)
-    fb.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
+    s.hLine(_x, _y + (row * _rowHeight), _x + linewidth, kColor);
   int lineheight = _rows * _rowHeight;
   for (col = 0; col <= _cols; col++)
-    fb.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
+    s.vLine(_x + (col * _colWidth), _y, _y + lineheight, kColor);
 
   // Draw the list items
   for (row = 0; row < _rows; row++)
@@ -505,7 +505,7 @@ void DataGridWidget::drawWidget(bool hilite)
       // Draw the selected item inverted, on a highlighted background.
       if (_currentRow == row && _currentCol == col &&
           _hasFocus && !_editMode)
-        fb.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
+        s.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
 
       if (_selectedItem == pos && _editMode)
       {
@@ -513,8 +513,8 @@ void DataGridWidget::drawWidget(bool hilite)
         adjustOffset();
         deltax = -_editScrollOffset;
 
-        fb.drawString(_font, buffer, x, y, _colWidth, kTextColor,
-                      kTextAlignLeft, deltax, false);
+        s.drawString(_font, buffer, x, y, _colWidth, kTextColor,
+                     kTextAlignLeft, deltax, false);
       }
       else
       {
@@ -524,7 +524,7 @@ void DataGridWidget::drawWidget(bool hilite)
         int color = kTextColor;
         if(_changedList[pos])
         {
-          fb.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
+          s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);
 
           if(_hiliteList[pos])
             color = kDbgColorHi;
@@ -534,7 +534,7 @@ void DataGridWidget::drawWidget(bool hilite)
         else if(_hiliteList[pos])
           color = kDbgColorHi;
 
-        fb.drawString(_font, buffer, x, y, _colWidth, color);
+        s.drawString(_font, buffer, x, y, _colWidth, color);
       }
     }
   }
@@ -578,7 +578,7 @@ void DataGridWidget::endEditMode()
   _editMode = false;
 
   // Update the both the string representation and the real data
-  int value = instance()->debugger().stringToValue(_editString);
+  int value = instance().debugger().stringToValue(_editString);
   if(value < _lowerBound || value >= _upperBound)
   {
     abortEditMode();

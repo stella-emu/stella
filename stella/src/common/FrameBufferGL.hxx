@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.52 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.53 2008-06-13 13:14:50 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,10 +35,12 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.52 2008-03-13 22:58:06 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.53 2008-06-13 13:14:50 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
+  friend class FBSurfaceGL;
+
   public:
     /**
       Creates a new OpenGL framebuffer
@@ -60,13 +62,22 @@ class FrameBufferGL : public FrameBuffer
     static bool loadLibrary(const string& library);
 
     //////////////////////////////////////////////////////////////////////
-    // The following methods are derived from FrameBuffer.hxx
+    // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
     /**
-      This method is called to initialize OpenGL video mode.
-      Return false if any operation fails, otherwise return true.
+      Enable/disable phosphor effect.
     */
-    bool initSubsystem(VideoMode mode);
+    void enablePhosphor(bool enable, int blend);
+
+    /**
+      This method is called to map a given r,g,b triple to the screen palette.
+
+      @param r  The red component of the color.
+      @param g  The green component of the color.
+      @param b  The blue component of the color.
+    */
+    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
+      { return SDL_MapRGB(myTexture->format, r, g, b); }
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -74,9 +85,32 @@ class FrameBufferGL : public FrameBuffer
     BufferType type() const { return kGLBuffer; }
 
     /**
-      This method is called to provide information about the FrameBuffer.
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
     */
-    string about() const;
+    FBSurface* createSurface(int w, int h, bool useBase = false) const;
+
+    /**
+      This method is called to get the specified scanline data.
+
+      @param row  The row we are looking for
+      @param data The actual pixel data (in bytes)
+    */
+    void scanline(uInt32 row, uInt8* data) const;
+
+  protected:
+    //////////////////////////////////////////////////////////////////////
+    // The following are derived from protected methods in FrameBuffer.hxx
+    //////////////////////////////////////////////////////////////////////
+    /**
+      This method is called to initialize OpenGL video mode.
+      Return false if any operation fails, otherwise return true.
+    */
+    bool initSubsystem(VideoMode mode);
 
     /**
       This method is called to change to the given video mode.
@@ -98,147 +132,21 @@ class FrameBufferGL : public FrameBuffer
     void drawMediaSource();
 
     /**
-      This method is called before any drawing is done (per-frame).
+      This method is called to provide information about the FrameBuffer.
     */
-    void preFrameUpdate();
+    string about() const;
 
     /**
       This method is called after any drawing is done (per-frame).
     */
     void postFrameUpdate();
 
-    /**
-      This method is called to get the specified scanline data.
-
-      @param row  The row we are looking for
-      @param data The actual pixel data (in bytes)
-    */
-    void scanline(uInt32 row, uInt8* data) const;
-
-    /**
-      This method is called to map a given r,g,b triple to the screen palette.
-
-      @param r  The red component of the color.
-      @param g  The green component of the color.
-      @param b  The blue component of the color.
-    */
-    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
-      { return SDL_MapRGB(myTexture->format, r, g, b); }
-
-    /**
-      This method is called to create a surface compatible with the one
-      currently in use, but having the given dimensions.
-
-      @param width   The requested width of the new surface.
-      @param height  The requested height of the new surface.
-    */
-    GUI::Surface* createSurface(int width, int height) const;
-
-    /**
-      This method is called to draw a horizontal line.
-
-      @param x     The first x coordinate
-      @param y     The y coordinate
-      @param x2    The second x coordinate
-      @param color The color of the line
-    */
-    void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
-
-    /**
-      This method is called to draw a vertical line.
-
-      @param x     The x coordinate
-      @param y     The first y coordinate
-      @param y2    The second y coordinate
-      @param color The color of the line
-    */
-    void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
-
-    /**
-      This method is called to draw a filled rectangle.
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-      @param color  The color of the area
-    */
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
-
-    /**
-      This method is called to draw the specified character.
-
-      @param font   The font to use to draw the character
-      @param c      The character to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the character
-    */
-    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
-
-    /**
-      This method is called to draw the bitmap image.
-
-      @param bitmap The data to draw
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param color  The color of the character
-      @param h      The height of the data image
-    */
-    void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
-
-    /**
-      This method should be called to draw an SDL surface.
-
-      @param surface The data to draw
-      @param x       The x coordinate
-      @param y       The y coordinate
-    */
-    void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y);
-
-    /**
-      This method should be called to convert and copy a given row of RGB
-      data into an SDL surface.
-
-      @param surface  The data to draw
-      @param row      The row of the surface the data should be placed in
-      @param data     The data in uInt8 R/G/B format
-      @param rowbytes The number of bytes in row of 'data'
-    */
-    void bytesToSurface(GUI::Surface* surface, int row,
-                        uInt8* data, int rowbytes) const;
-
-    /**
-      This method translates the given coordinates to their
-      unzoomed/unscaled equivalents.
-
-      @param x  X coordinate to translate
-      @param y  Y coordinate to translate
-    */
-    void translateCoords(Int32& x, Int32& y) const;
-
-    /**
-      This method adds a dirty rectangle
-      (ie, an area of the screen that has changed)
-
-      @param x      The x coordinate
-      @param y      The y coordinate
-      @param w      The width of the area
-      @param h      The height of the area
-    */
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-
-    /**
-      Enable/disable phosphor effect.
-    */
-    void enablePhosphor(bool enable, int blend);
-
   private:
     bool loadFuncs();
 
     bool createTextures();
 
-    inline uInt32 power_of_two(uInt32 input)
+    static uInt32 power_of_two(uInt32 input)
     {
       uInt32 value = 1;
       while( value < input )
@@ -289,6 +197,47 @@ class FrameBufferGL : public FrameBuffer
 
     // Indicates if the OpenGL library has been properly loaded
     static bool myLibraryLoaded;
+};
+
+/**
+  A surface suitable for software rendering mode.
+
+  @author  Stephen Anthony
+  @version $Id: FrameBufferGL.hxx,v 1.53 2008-06-13 13:14:50 stephena Exp $
+*/
+class FBSurfaceGL : public FBSurface
+{
+  public:
+    FBSurfaceGL(const FrameBufferGL& buffer, SDL_Surface* surface,
+                  uInt32 w, uInt32 h, bool isBase);
+    virtual ~FBSurfaceGL();
+
+    void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
+    void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
+    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
+    void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
+    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
+    void centerPos();
+    void setPos(uInt32 x, uInt32 y);
+    void getPos(uInt32& x, uInt32& y) const;
+    void translateCoords(Int32& x, Int32& y) const;
+    void update();
+
+  private:
+    void recalc();
+
+  private:
+    const FrameBufferGL& myFB;
+    SDL_Surface* myTexture;
+    uInt32 myWidth, myHeight;
+    bool myIsBaseSurface;
+    bool mySurfaceIsDirty;
+    int myBaseOffset;
+    int myPitch;
+
+    uInt32 myXOrig, myYOrig;
+    uInt32 myXOffset, myYOffset;
 };
 
 #endif  // DISPLAY_OPENGL

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.225 2008-05-30 19:07:55 stephena Exp $
+// $Id: EventHandler.cxx,v 1.226 2008-06-13 13:14:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -769,7 +769,6 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
   else if(myOverlay)
   {
     int x = event.motion.x, y = event.motion.y;
-    myOSystem->frameBuffer().translateCoords(x, y);
     myOverlay->handleMouseMotionEvent(x, y, 0);
   }
 }
@@ -784,7 +783,6 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
   {
     // Take window zooming into account
     Int32 x = event.button.x, y = event.button.y;
-    myOSystem->frameBuffer().translateCoords(x, y);
     MouseButton button;
 
     switch(event.button.button)
@@ -1913,6 +1911,7 @@ void EventHandler::leaveDebugMode()
 void EventHandler::setEventState(State state)
 {
   myState = state;
+
   switch(myState)
   {
     case S_EMULATE:

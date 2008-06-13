@@ -13,16 +13,16 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.61 2008-05-11 21:18:35 stephena Exp $
+// $Id: Widget.hxx,v 1.62 2008-06-13 13:14:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include "Dialog.hxx"
+
 #ifndef WIDGET_HXX
 #define WIDGET_HXX
-
-class Dialog;
 
 #include <assert.h>
 
@@ -88,7 +88,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.61 2008-05-11 21:18:35 stephena Exp $
+  @version $Id: Widget.hxx,v 1.62 2008-06-13 13:14:52 stephena Exp $
 */
 class Widget : public GuiObject
 {

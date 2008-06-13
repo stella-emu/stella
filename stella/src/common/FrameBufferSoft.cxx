@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.78 2008-03-24 00:02:16 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.79 2008-06-13 13:14:50 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -34,10 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
-    myZoomLevel(1),
     myRenderType(kSoftZoom_16),
-    myDirtyFlag(false),
-    myInUIMode(false),
     myRectList(NULL)
 {
 }
@@ -136,6 +133,8 @@ void FrameBufferSoft::drawMediaSource()
   uInt32 width  = mediasrc.width();
   uInt32 height = mediasrc.height();
 
+  bool tiaChanged = false;
+
   switch(myRenderType)
   {
     case kSoftZoom_16:
@@ -165,7 +164,7 @@ void FrameBufferSoft::drawMediaSource()
                 buffer[pos++] = (uInt16) myDefPalette[v];
                 buffer[pos++] = (uInt16) myDefPalette[v];
               }
-              myDirtyFlag = true;
+              tiaChanged = true;
             }
             else
               pos += xstride + xstride;
@@ -210,7 +209,7 @@ void FrameBufferSoft::drawMediaSource()
                 buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
                 buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
               }
-              myDirtyFlag = true;
+              tiaChanged = true;
             }
             else  // try to eliminate multply whereever possible
               pos += xstride + xstride + xstride + xstride + xstride + xstride;
@@ -250,7 +249,7 @@ void FrameBufferSoft::drawMediaSource()
                 buffer[pos++] = (uInt32) myDefPalette[v];
                 buffer[pos++] = (uInt32) myDefPalette[v];
               }
-              myDirtyFlag = true;
+              tiaChanged = true;
             }
             else
               pos += xstride + xstride;
@@ -294,7 +293,7 @@ void FrameBufferSoft::drawMediaSource()
         bufofsY += width;
       }
       SDL_UnlockSurface(myScreen);
-      myDirtyFlag = true;
+      tiaChanged = true;
       break;  // kPhosphor_16
     }
 
@@ -333,7 +332,7 @@ void FrameBufferSoft::drawMediaSource()
         bufofsY += width;
       }
       SDL_UnlockSurface(myScreen);
-      myDirtyFlag = true;
+      tiaChanged = true;
       break;  // kPhosphor_24
     }
 
@@ -368,37 +367,63 @@ void FrameBufferSoft::drawMediaSource()
         bufofsY += width;
       }
       SDL_UnlockSurface(myScreen);
-      myDirtyFlag = true;
+      tiaChanged = true;
       break;  // kPhosphor_32
     }
   }
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::preFrameUpdate()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::postFrameUpdate()
-{
-/*
-cerr << "FrameBufferSoft::postFrameUpdate()" << endl
-	<< "  myInUIMode:             " << myInUIMode << endl
-	<< "  myRectList->numRects(): " << myRectList->numRects() << endl
-	<< "  myDirtyFlag:            " << myDirtyFlag << endl
-	<< endl;
-*/
-  if(myInUIMode && myRectList->numRects() > 0)
-  {
-    SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
-  }
-  else if(myDirtyFlag || myRectList->numRects() > 0)
+  if(tiaChanged)
   {
     SDL_Flip(myScreen);
-    myDirtyFlag = false;
+    tiaChanged = false;
   }
-  myRectList->start();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::enablePhosphor(bool enable, int blend)
+{
+  myUsePhosphor   = enable;
+  myPhosphorBlend = blend;
+
+  stateChanged(myOSystem->eventHandler().state());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::stateChanged(EventHandler::State state)
+{
+  if(!myScreen)
+    return;
+
+  // Make sure drawMediaSource() knows which renderer to use
+  switch(myBytesPerPixel)
+  {
+    case 2:  // 16-bit
+      myPitch = myScreen->pitch >> 1;
+      myRenderType = myUsePhosphor ? kPhosphor_16 : kSoftZoom_16;
+      break;
+    case 3:  // 24-bit
+      myPitch = myScreen->pitch;
+      myRenderType = myUsePhosphor ? kPhosphor_24 : kSoftZoom_24;
+      break;
+    case 4:  // 32-bit
+      myPitch = myScreen->pitch >> 2;
+      myRenderType = myUsePhosphor ? kPhosphor_32 : kSoftZoom_32;
+      break;
+  }
+
+  // Have the changes take effect
+  myOSystem->eventHandler().refreshDisplay();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurface* FrameBufferSoft::createSurface(int w, int h, bool isBase) const
+{
+  SDL_Surface* surface = isBase ? myScreen :
+      SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, myFormat->BitsPerPixel,
+                           myFormat->Rmask, myFormat->Gmask, myFormat->Bmask,
+                           myFormat->Amask);
+
+  return new FBSurfaceSoft(*this, surface, w, h, isBase);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -450,54 +475,76 @@ void FrameBufferSoft::scanline(uInt32 row, uInt8* data) const
   SDL_UnlockSurface(myScreen);
 }
 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::toggleFilter()
+//  FBSurfaceSoft implementation follows ...
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurfaceSoft::FBSurfaceSoft(const FrameBufferSoft& buffer, SDL_Surface* surface,
+                             uInt32 w, uInt32 h, bool isBase)
+  : myFB(buffer),
+    mySurface(surface),
+    myWidth(w),
+    myHeight(h),
+    myIsBaseSurface(isBase),
+    mySurfaceIsDirty(false),
+    myBaseOffset(0),
+    myPitch(0),
+    myXOrig(0),
+    myYOrig(0),
+    myXOffset(0),
+    myYOffset(0)
 {
-  // No filter added yet ...
+  recalc();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
+FBSurfaceSoft::~FBSurfaceSoft()
 {
-  SDL_Rect tmp;
+  if(!myIsBaseSurface)
+    SDL_FreeSurface(mySurface);
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
+{
   // Horizontal line
-  tmp.x = myImageDim.x + x * myZoomLevel;
-  tmp.y = myImageDim.y + y * myZoomLevel;
-  tmp.w = (x2 - x + 1) * myZoomLevel;
-  tmp.h = myZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
+  SDL_Rect tmp;
+  tmp.x = x + myXOffset;
+  tmp.y = y + myYOffset;
+  tmp.w = x2 - x + 1;
+  tmp.h = 1;
+  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
+void FBSurfaceSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
 {
-  SDL_Rect tmp;
-
   // Vertical line
-  tmp.x = myImageDim.x + x * myZoomLevel;
-  tmp.y = myImageDim.y + y * myZoomLevel;
-  tmp.w = myZoomLevel;
-  tmp.h = (y2 - y + 1) * myZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
-{
   SDL_Rect tmp;
-
-  // Fill the rectangle
-  tmp.x = myImageDim.x + x * myZoomLevel;
-  tmp.y = myImageDim.y + y * myZoomLevel;
-  tmp.w = w * myZoomLevel;
-  tmp.h = h * myZoomLevel;
-  SDL_FillRect(myScreen, &tmp, myDefPalette[color]);
+  tmp.x = x + myXOffset;
+  tmp.y = y + myYOffset;
+  tmp.w = 1;
+  tmp.h = y2 - y + 1;
+  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
-                               uInt32 xorig, uInt32 yorig, int color)
+void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
+{
+  // Fill the rectangle
+  SDL_Rect tmp;
+  tmp.x = x + myXOffset;
+  tmp.y = y + myYOffset;
+  tmp.w = w;
+  tmp.h = h;
+  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
+                             uInt32 tx, uInt32 ty, int color)
 {
   const FontDesc& desc = font->desc();
 
@@ -513,48 +560,33 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
   chr -= desc.firstchar;
   const uInt32* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
 
-  // Scale the origins to the current zoom
-  xorig *= myZoomLevel;
-  yorig *= myZoomLevel;
+  SDL_LockSurface(mySurface);
 
-  SDL_LockSurface(myScreen);
-
-  int screenofsY = 0;
-  switch(myBytesPerPixel)
+  switch(myFB.myBytesPerPixel)
   {
     case 2:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt16* buffer = (uInt16*) myScreen->pixels + myBaseOffset + yorig * myPitch + xorig;
-      for(int y = h; y; --y)
+      uInt16* buffer = (uInt16*) mySurface->pixels + myBaseOffset + ty * myPitch + tx;
+      for(int y = 0; y < h; ++y)
       {
-        const uInt32 fontbuf = *tmp++;
-        int ystride = myZoomLevel;
-        while(ystride--)
+        const uInt32 ptr = *tmp++;
+        if(ptr)
         {
-          if(fontbuf)
-          {
-            uInt32 mask = 0x80000000;
-            int pos = screenofsY;
-            for(int x = 0; x < w; x++, mask >>= 1)
-            {
-              int xstride = myZoomLevel;
-              if((fontbuf & mask) != 0)
-                while(xstride--)
-                  buffer[pos++] = myDefPalette[color];
-              else
-                pos += xstride;
-            }
-          }
-          screenofsY += myPitch;
+          uInt32 mask = 0x80000000;
+          for(int x = 0; x < w; ++x, mask >>= 1)
+            if(ptr & mask)
+              buffer[x] = (uInt16) myFB.myDefPalette[color];
         }
+        buffer += myFB.myPitch;
       }
       break;
     }
     case 3:
     {
+#if 0
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt8* buffer = (uInt8*) myScreen->pixels + myBaseOffset + yorig * myPitch + xorig;
+      uInt8* buffer = (uInt8*) surface->pixels + myBaseOffset + yorig * myPitch + xorig;
       uInt32 pixel = myDefPalette[color];
       uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
       uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
@@ -587,46 +619,36 @@ void FrameBufferSoft::drawChar(const GUI::Font* font, uInt8 chr,
           screenofsY += myPitch;
         }
       }
+#endif
       break;
     }
     case 4:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt32* buffer = (uInt32*) myScreen->pixels + myBaseOffset + yorig * myPitch + xorig;
-      for(int y = h; y; --y)
+      uInt32* buffer = (uInt32*) mySurface->pixels + myBaseOffset + ty * myPitch + tx;
+      for(int y = 0; y < h; ++y)
       {
-        const uInt32 fontbuf = *tmp++;
-        int ystride = myZoomLevel;
-        while(ystride--)
+        const uInt32 ptr = *tmp++;
+        if(ptr)
         {
-          if(fontbuf)
-          {
-            uInt32 mask = 0x80000000;
-            int pos = screenofsY;
-            for(int x = 0; x < w; x++, mask >>= 1)
-            {
-              int xstride = myZoomLevel;
-              if((fontbuf & mask) != 0)
-                while(xstride--)
-                  buffer[pos++] = myDefPalette[color];
-              else
-                pos += xstride;
-            }
-          }
-          screenofsY += myPitch;
+          uInt32 mask = 0x80000000;
+          for(int x = 0; x < w; ++x, mask >>= 1)
+            if(ptr & mask)
+              buffer[x] = (uInt32) myFB.myDefPalette[color];
         }
+        buffer += myPitch;
       }
       break;
     }
     default:
       break;
   }
-  SDL_UnlockSurface(myScreen);
+  SDL_UnlockSurface(mySurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
-                                 int color, Int32 h)
+void FBSurfaceSoft::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
+                               int color, Int32 h)
 {
   SDL_Rect rect;
   for(int y = 0; y < h; y++)
@@ -637,15 +659,152 @@ void FrameBufferSoft::drawBitmap(uInt32* bitmap, Int32 xorig, Int32 yorig,
     {
       if(bitmap[y] & mask)
       {
-        rect.x = myImageDim.x + (x + xorig) * myZoomLevel;
-        rect.y = myImageDim.y + (y + yorig) * myZoomLevel;
-        rect.w = rect.h = myZoomLevel;
-        SDL_FillRect(myScreen, &rect, myDefPalette[color]);
+        rect.x = x + tx + myXOffset;
+        rect.y = y + ty + myYOffset;
+        rect.w = rect.h = 1;
+        SDL_FillRect(mySurface, &rect, myFB.myDefPalette[color]);
       }
     }
   }
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
+{
+  // Base surfaces use dirty-rectangle updates, since they can be quite
+  // large, and updating the entire surface each frame would be too slow
+  // Non-base surfaces are usually smaller, and can be updated entirely
+  if(myIsBaseSurface)
+  {
+    // Add a dirty rect to the UI rectangle list
+    // TODO - intelligent merging of rectangles, to avoid overlap
+    SDL_Rect temp;
+    temp.x = x + myXOrig;  temp.y = y + myYOrig;  temp.w = w;  temp.h = h;
+    myFB.myRectList->add(&temp);
+  }
+  else
+  {
+    // Indicate that at least one dirty rect has been added
+    // This is an optimization for the update() method
+    mySurfaceIsDirty = true;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::centerPos()
+{
+  // Make sure pitch is valid
+  recalc();
+
+  // X/Y Orig are the coordinates to use when blitting an entire (non-base)
+  // surface to the screen.  As such, they're concerned with the 'usable'
+  // area of a surface, not its entire size (ie, we use the originally
+  // requested width & height, which are not necessarily the same as
+  // the surface width & height).
+  // These coordinates are not used at all for drawing base surfaces
+  myXOrig = (myFB.myScreenDim.w - myWidth) >> 1;
+  myYOrig = (myFB.myScreenDim.h - myHeight) >> 1;
+
+  // X/Y/Base Offset determine 'how far' to go into a surface, since base
+  // surfaces are defined larger than necessary in some cases, and have a
+  // 'non-usable' area.
+  if(myIsBaseSurface)
+  {
+    myXOffset = myFB.myImageDim.x;
+    myYOffset = myFB.myImageDim.y;
+    myBaseOffset = myYOffset * myPitch + myXOffset;
+  }
+  else
+  {
+    myXOffset = myYOffset = myBaseOffset = 0;
+  }
+//cerr << "center: xorig = " << myXOrig << ", yorig = " << myYOrig << endl
+//     << "        xoffset = " << myXOffset << ", yoffset = " << myYOffset << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::setPos(uInt32 x, uInt32 y)
+{
+  // Only non-base surfaces can be arbitrarily 'moved'
+  if(!myIsBaseSurface)
+  {
+    // Make sure pitch is valid
+    recalc();
+
+    myXOrig = x;
+    myYOrig = y;
+    myXOffset = myYOffset = myBaseOffset = 0;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::getPos(uInt32& x, uInt32& y) const
+{
+  x = myXOrig;
+  y = myYOrig;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::translateCoords(Int32& x, Int32& y) const
+{
+  x -= myXOrig;
+  y -= myYOrig;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::update()
+{
+  // Since this method is called each frame, we only blit the surfaces when
+  // absolutely necessary
+  if(myIsBaseSurface)
+  {
+    if(myFB.myRectList->numRects() > 0)
+    {
+      SDL_UpdateRects(mySurface, myFB.myRectList->numRects(), myFB.myRectList->rects());
+      myFB.myRectList->start();
+    }
+  }
+  else if(mySurfaceIsDirty /* && !myIsBaseSurface */)
+  {
+    SDL_Rect dstrect;
+    dstrect.x = myXOrig;
+    dstrect.y = myYOrig;
+    dstrect.w = myWidth;
+    dstrect.h = myHeight;
+/*
+    cerr << "blit sub-surface:" << endl
+         << "  src x = " << dstrect.x << endl
+         << "  src y = " << dstrect.y << endl
+         << "  dst w = " << dstrect.w << endl
+         << "  dst h = " << dstrect.h << endl
+         << endl;
+*/
+    SDL_BlitSurface(mySurface, NULL, myFB.myScreen, &dstrect);
+    SDL_UpdateRect(myFB.myScreen, myXOrig, myYOrig, myWidth, myHeight);
+
+    mySurfaceIsDirty = false;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::recalc()
+{
+  switch(mySurface->format->BytesPerPixel)
+  {
+    case 2:  // 16-bit
+      myPitch = mySurface->pitch/2;
+      break;
+    case 3:  // 24-bit
+      myPitch = mySurface->pitch;
+      break;
+    case 4:  // 32-bit
+      myPitch = mySurface->pitch/4;
+      break;
+  }
+}
+
+
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
 {
@@ -678,95 +837,4 @@ void FrameBufferSoft::bytesToSurface(GUI::Surface* surface, int row,
     SDL_FillRect(surface->myData, &rect, pixel);
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::translateCoords(Int32& x, Int32& y) const
-{
-  x = (x - myImageDim.x) / myZoomLevel;
-  y = (y - myImageDim.y) / myZoomLevel;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
-{
-  // Add a dirty rect to the UI rectangle list
-  // TODO - intelligent merging of rectangles, to avoid overlap
-  SDL_Rect temp;
-#if 1
-  temp.x = myImageDim.x + x * myZoomLevel;
-  temp.y = myImageDim.y + y * myZoomLevel;
-  temp.w = w * myZoomLevel;
-  temp.h = h * myZoomLevel;
-#else
-  temp.x = 0;
-  temp.y = 0;
-  temp.w = myScreenDim.w;
-  temp.h = myScreenDim.h;
 #endif
-  myRectList->add(&temp);
-
-//  cerr << "addDirtyRect():  "
-//       << "x=" << temp.x << ", y=" << temp.y << ", w=" << temp.w << ", h=" << temp.h << endl;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::enablePhosphor(bool enable, int blend)
-{
-  myUsePhosphor   = enable;
-  myPhosphorBlend = blend;
-
-  stateChanged(myOSystem->eventHandler().state());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::stateChanged(EventHandler::State state)
-{
-  if(!myScreen)
-    return;
-
-  myInUIMode = (state == EventHandler::S_LAUNCHER ||
-                state == EventHandler::S_DEBUGGER);
-
-  // Make sure drawMediaSource() knows which renderer to use
-  switch(myBytesPerPixel)
-  {
-    case 2:  // 16-bit
-      myPitch = myScreen->pitch/2;
-      if(myUsePhosphor)
-        myRenderType = kPhosphor_16;
-      else
-        myRenderType = kSoftZoom_16;
-      break;
-    case 3:  // 24-bit
-      myPitch = myScreen->pitch;
-      if(myUsePhosphor)
-        myRenderType = kPhosphor_24;
-      else
-        myRenderType = kSoftZoom_24;
-      break;
-    case 4:  // 32-bit
-      myPitch = myScreen->pitch/4;
-      if(myUsePhosphor)
-        myRenderType = kPhosphor_32;
-      else
-        myRenderType = kSoftZoom_32;
-      break;
-    default:
-      myRenderType = kSoftZoom_16; // What else should we do here?
-      break;
-  }
-
-  // Have the changes take effect
-  myOSystem->eventHandler().refreshDisplay();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Surface* FrameBufferSoft::createSurface(int width, int height) const
-{
-  SDL_Surface* data =
-    SDL_CreateRGBSurface(SDL_SWSURFACE, width*myZoomLevel, height*myZoomLevel,
-                         myBytesPerPixel << 3, myFormat->Rmask, myFormat->Gmask,
-                         myFormat->Bmask, myFormat->Amask);
-
-  return data ? new GUI::Surface(width, height, data) : NULL;
-}
