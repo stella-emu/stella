@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.1 2008-06-13 13:14:51 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.2 2008-06-15 15:44:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,9 +34,25 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _currentItem(-1),
     _selectedItem(-1),
     _rowHeight(font.getLineHeight()),
+    _twoColumns(false),
     _font(&font),
     _cmd(cmd)
 {
+  // Create two columns of entries if there are more than 10 items
+  if(_entries.size() > 10)
+  {
+    _twoColumns = true;
+    _entriesPerColumn = _entries.size() / 2;
+  
+    if(_entries.size() & 1)
+      _entriesPerColumn++;
+  }
+  else
+  {
+    _twoColumns = false;
+    _entriesPerColumn = _entries.size();
+  }
+
   // Resize to largest string
   int maxwidth = 0;
   for(unsigned int i = 0; i < _entries.size(); ++i)
@@ -47,8 +63,8 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
   }
 
   _x = _y = 0;
-  _w = maxwidth + 8;
-  _h = _rowHeight * _entries.size() + 4;
+  _w = maxwidth * (_twoColumns ? 2 : 1) + 10;
+  _h = _entriesPerColumn * _rowHeight + 4;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -208,8 +224,21 @@ void ContextMenu::handleEvent(Event::Type e)
 int ContextMenu::findItem(int x, int y) const
 {
   if(x >= 0 && x < _w && y >= 0 && y < _h)
-    return (y-4) / _rowHeight;
-
+  {
+    if(_twoColumns)
+    {
+      unsigned int entry = (y - 4) / _rowHeight;
+      if(x > _w / 2)
+      {
+        entry += _entriesPerColumn;
+  
+        if(entry >= _entries.size())
+          return -1;
+      }
+      return entry;
+    }
+    return (y - 4) / _rowHeight;
+  }
   return -1;
 }
 
@@ -271,18 +300,42 @@ void ContextMenu::drawDialog()
   {
     FBSurface& s = surface();
 
+    // Draw menu border and background
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
+    // If necessary, draw dividing line
+    if(_twoColumns)
+      s.vLine(_x + _w / 2, _y, _y + _h - 2, kColor);
+
     // Draw the entries
+    int x, y, w;
     int count = _entries.size();
     for(int i = 0; i < count; i++)
     {
       bool hilite = i == _currentItem;
-      int x = _x + 2;
-      int y = _y + 2 + i * _rowHeight;
-      int w = _w - 4;
-
+      if(_twoColumns)
+      {
+        int n = _entries.size() / 2;
+        if(_entries.size() & 1) n++;
+        if(i >= n)
+        {
+          x = _x + 2 + _w / 2;
+          y = _y + 2 + _rowHeight * (i - n);
+        }
+        else
+        {
+          x = _x + 2;
+          y = _y + 2 + _rowHeight * i;
+        }
+        w = _w / 2 - 2;
+      }
+      else
+      {
+        x = _x + 2;
+        y = _y + 2 + i * _rowHeight;
+        w = _w - 4;
+      }
       if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
       s.drawString(_font, _entries[i], x + 1, y + 2, w - 2,
                    hilite ? kWidColor : kTextColor);
