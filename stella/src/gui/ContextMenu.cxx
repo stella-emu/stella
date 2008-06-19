@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.2 2008-06-15 15:44:30 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.3 2008-06-19 12:01:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -79,6 +79,14 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
   // Make sure position is set *after* the dialog is added, since the surface
   // may not exist before then
   parent().addDialog(this);
+
+  // Are we in the current screen bounds?
+  const GUI::Rect& image = instance().frameBuffer().imageRect();
+  uInt32 dx = image.x() + image.width();
+  uInt32 dy = image.y() + image.height();
+  if(x + _w > dx) x -= (x + _w - dx);
+  if(y + _h > dy) y -= (y + _h - dy);
+
   surface().setPos(x, y);
   setSelected(item);
 }
@@ -281,14 +289,6 @@ void ContextMenu::moveDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::center()
-{
-  // Adjust dialog, making sure it doesn't fall outside screen area
-
-  // FIXME - add code to do this ...
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::drawDialog()
 {
   // Normally we add widgets and let Dialog::draw() take care of this
@@ -320,7 +320,7 @@ void ContextMenu::drawDialog()
         if(_entries.size() & 1) n++;
         if(i >= n)
         {
-          x = _x + 2 + _w / 2;
+          x = _x + 1 + _w / 2;
           y = _y + 2 + _rowHeight * (i - n);
         }
         else
@@ -328,7 +328,7 @@ void ContextMenu::drawDialog()
           x = _x + 2;
           y = _y + 2 + _rowHeight * i;
         }
-        w = _w / 2 - 2;
+        w = _w / 2 - 3;
       }
       else
       {

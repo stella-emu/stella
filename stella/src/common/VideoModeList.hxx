@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoModeList.hxx,v 1.4 2008-02-06 13:45:19 stephena Exp $
+// $Id: VideoModeList.hxx,v 1.5 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #ifndef VIDMODE_LIST_HXX
@@ -33,7 +33,7 @@ struct VideoMode {
   This class implements an iterator around an array of VideoMode objects.
 
   @author  Stephen Anthony
-  @version $Id: VideoModeList.hxx,v 1.4 2008-02-06 13:45:19 stephena Exp $
+  @version $Id: VideoModeList.hxx,v 1.5 2008-06-19 12:01:30 stephena Exp $
 */
 class VideoModeList
 {
@@ -91,6 +91,23 @@ class VideoModeList
           myIdx = i;
           break;
         }
+      }
+    }
+
+    void print()
+    {
+      for(Common::Array<VideoMode>::const_iterator i = myModeList.begin(); i != myModeList.end(); ++i)
+      {
+        cerr << "  Mode " << i << endl
+             << "    screen w = " << i->screen_w << endl
+             << "    screen h = " << i->screen_h << endl
+             << "    image x  = " << i->image_x << endl
+             << "    image y  = " << i->image_y << endl
+             << "    image w  = " << i->image_w << endl
+             << "    image h  = " << i->image_h << endl
+             << "    zoom     = " << i->zoom << endl
+             << "    name     = " << i->name << endl
+             << endl;
       }
     }
 

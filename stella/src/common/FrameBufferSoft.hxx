@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.51 2008-06-13 13:14:50 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.52 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.51 2008-06-13 13:14:50 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.52 2008-06-19 12:01:30 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -96,17 +96,24 @@ class FrameBufferSoft : public FrameBuffer
     // The following are derived from protected methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
     /**
-      This method is called to initialize software video mode.
-      Return false if any operation fails, otherwise return true.
+      This method is called to initialize the video subsystem
+      with the given video mode.  Normally, it will also call setVidMode().
+
+      @param mode  The video mode to use
+
+      @return  False on any errors, else true
     */
-    bool initSubsystem(VideoMode mode);
+    bool initSubsystem(VideoMode& mode);
 
     /**
-      This method is called to change to the given videomode type.
+      This method is called to change to the given video mode.  If the mode
+      is successfully changed, 'mode' holds the actual dimensions used.
 
-      @param mode  The video mode to use for rendering the mediasource
+      @param mode  The video mode to use
+
+      @return  False on any errors (in which case 'mode' is invalid), else true
     */
-    bool setVidMode(VideoMode mode);
+    bool setVidMode(VideoMode& mode);
 
     /**
       Switches between the filtering options in software mode.
@@ -155,7 +162,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.51 2008-06-13 13:14:50 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.52 2008-06-19 12:01:30 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {
@@ -170,9 +177,10 @@ class FBSurfaceSoft : public FBSurface
     void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
     void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-    void centerPos();
-    void setPos(uInt32 x, uInt32 y);
     void getPos(uInt32& x, uInt32& y) const;
+    void setPos(uInt32 x, uInt32 y);
+    void setWidth(uInt32 w);
+    void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;
     void update();
 

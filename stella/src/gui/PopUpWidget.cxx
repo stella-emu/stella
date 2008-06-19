@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.40 2008-06-13 13:14:51 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.41 2008-06-19 12:01:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -81,12 +81,11 @@ void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if(isEnabled())
   {
     // Add menu just underneath parent widget
-    uInt32 x, y;
-    dialog().surface().getPos(x, y);
-    x += getAbsX() + _labelWidth;
-    y += getAbsY() + getHeight();
-
-    myMenu->show(x, y, myMenu->getSelected());
+    uInt32 tx, ty;
+    dialog().surface().getPos(tx, ty);
+    tx += getAbsX() + _labelWidth;
+    ty += getAbsY() + getHeight();
+    myMenu->show(tx, ty, myMenu->getSelected());
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Rect.hxx,v 1.6 2008-02-06 13:45:24 stephena Exp $
+// $Id: Rect.hxx,v 1.7 2008-06-19 12:01:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -72,8 +72,10 @@ struct Rect
   {
     assert(isValidRect());
   }
-	int width() const { return right - left; }
-	int height() const { return bottom - top; }
+	inline int x() const { return left; }
+	inline int y() const { return top; }
+	inline int width() const { return right - left; }
+	inline int height() const { return bottom - top; }
 	
 	void setWidth(int aWidth) {
 		right = left + aWidth;

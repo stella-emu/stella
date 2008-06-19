@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.79 2008-06-13 13:14:50 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.80 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -46,7 +46,7 @@ FrameBufferSoft::~FrameBufferSoft()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSoft::initSubsystem(VideoMode mode)
+bool FrameBufferSoft::initSubsystem(VideoMode& mode)
 {
   // Set up the rectangle list to be used in the dirty update
   delete myRectList;
@@ -83,26 +83,15 @@ string FrameBufferSoft::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferSoft::setVidMode(VideoMode mode)
+bool FrameBufferSoft::setVidMode(VideoMode& mode)
 {
-  myScreenDim.x = myScreenDim.y = 0;
-  myScreenDim.w = mode.screen_w;
-  myScreenDim.h = mode.screen_h;
-
-  myImageDim.x = mode.image_x;
-  myImageDim.y = mode.image_y;
-  myImageDim.w = mode.image_w;
-  myImageDim.h = mode.image_h;
-
-  myZoomLevel = mode.zoom;
-
   // Make sure to clear the screen
   if(myScreen)
   {
     SDL_FillRect(myScreen, NULL, 0);
     SDL_UpdateRect(myScreen, 0, 0, 0, 0);
   }
-  myScreen = SDL_SetVideoMode(myScreenDim.w, myScreenDim.h, 0, mySDLFlags);
+  myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
@@ -111,9 +100,16 @@ bool FrameBufferSoft::setVidMode(VideoMode mode)
   myFormat = myScreen->format;
   myBytesPerPixel = myFormat->BytesPerPixel;
 
+  // If software mode can open the given screen, it will always be in the
+  // requested format, or not at all; we only update mode when the screen
+  // is successfully created
+  mode.screen_w = myScreen->w;
+  mode.screen_h = myScreen->h;
+  myZoomLevel = mode.zoom;
+
   // Make sure drawMediaSource() knows which renderer to use
   stateChanged(myOSystem->eventHandler().state());
-  myBaseOffset = myImageDim.y * myPitch + myImageDim.x;
+  myBaseOffset = mode.image_y * myPitch + mode.image_x;
 
   // Erase old rects, since they've probably been scaled for
   // a different sized screen
@@ -436,12 +432,13 @@ void FrameBufferSoft::scanline(uInt32 row, uInt8* data) const
   uInt8 *p, r, g, b;
 
   // Row will be offset by the amount the actual image is shifted down
-  row += myImageDim.y;
+  const GUI::Rect& image = imageRect();
+  row += image.y();
   for(Int32 x = 0; x < myScreen->w; ++x)
   {
     p = (Uint8*) ((uInt8*)myScreen->pixels +              // Start at top of RAM
                  (row * myScreen->pitch) +                // Go down 'row' lines
-                 ((x + myImageDim.x) * myBytesPerPixel)); // Go in 'x' pixels
+                 ((x + image.x()) * myBytesPerPixel));    // Go in 'x' pixels
 
     switch(myBytesPerPixel)
     {
@@ -691,57 +688,53 @@ void FBSurfaceSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::centerPos()
+void FBSurfaceSoft::getPos(uInt32& x, uInt32& y) const
+{
+  // Return the origin of the 'usable' area of a surface
+  if(myIsBaseSurface)
+  {
+    x = myXOffset;
+    y = myYOffset;
+  }
+  else
+  {
+    x = myXOrig;
+    y = myYOrig;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::setPos(uInt32 x, uInt32 y)
 {
   // Make sure pitch is valid
   recalc();
 
-  // X/Y Orig are the coordinates to use when blitting an entire (non-base)
-  // surface to the screen.  As such, they're concerned with the 'usable'
-  // area of a surface, not its entire size (ie, we use the originally
-  // requested width & height, which are not necessarily the same as
-  // the surface width & height).
-  // These coordinates are not used at all for drawing base surfaces
-  myXOrig = (myFB.myScreenDim.w - myWidth) >> 1;
-  myYOrig = (myFB.myScreenDim.h - myHeight) >> 1;
+  myXOrig = x;
+  myYOrig = y;
 
-  // X/Y/Base Offset determine 'how far' to go into a surface, since base
-  // surfaces are defined larger than necessary in some cases, and have a
-  // 'non-usable' area.
   if(myIsBaseSurface)
   {
-    myXOffset = myFB.myImageDim.x;
-    myYOffset = myFB.myImageDim.y;
+    const GUI::Rect& image = myFB.imageRect();
+    myXOffset = image.x();
+    myYOffset = image.y();
     myBaseOffset = myYOffset * myPitch + myXOffset;
   }
   else
   {
     myXOffset = myYOffset = myBaseOffset = 0;
   }
-//cerr << "center: xorig = " << myXOrig << ", yorig = " << myYOrig << endl
-//     << "        xoffset = " << myXOffset << ", yoffset = " << myYOffset << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::setPos(uInt32 x, uInt32 y)
+void FBSurfaceSoft::setWidth(uInt32 w)
 {
-  // Only non-base surfaces can be arbitrarily 'moved'
-  if(!myIsBaseSurface)
-  {
-    // Make sure pitch is valid
-    recalc();
-
-    myXOrig = x;
-    myYOrig = y;
-    myXOffset = myYOffset = myBaseOffset = 0;
-  }
+  myWidth = w;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::getPos(uInt32& x, uInt32& y) const
+void FBSurfaceSoft::setHeight(uInt32 h)
 {
-  x = myXOrig;
-  y = myYOrig;
+  myHeight = h;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -766,6 +759,12 @@ void FBSurfaceSoft::update()
   }
   else if(mySurfaceIsDirty /* && !myIsBaseSurface */)
   {
+    SDL_Rect srcrect;
+    srcrect.x = 0;
+    srcrect.y = 0;
+    srcrect.w = myWidth;
+    srcrect.h = myHeight;
+
     SDL_Rect dstrect;
     dstrect.x = myXOrig;
     dstrect.y = myYOrig;
@@ -779,7 +778,7 @@ void FBSurfaceSoft::update()
          << "  dst h = " << dstrect.h << endl
          << endl;
 */
-    SDL_BlitSurface(mySurface, NULL, myFB.myScreen, &dstrect);
+    SDL_BlitSurface(mySurface, &srcrect, myFB.myScreen, &dstrect);
     SDL_UpdateRect(myFB.myScreen, myXOrig, myYOrig, myWidth, myHeight);
 
     mySurfaceIsDirty = false;

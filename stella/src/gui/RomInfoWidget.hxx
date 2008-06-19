@@ -13,15 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.hxx,v 1.4 2008-03-13 22:58:07 stephena Exp $
+// $Id: RomInfoWidget.hxx,v 1.5 2008-06-19 12:01:31 stephena Exp $
 //============================================================================
 
 #ifndef ROM_INFO_WIDGET_HXX
 #define ROM_INFO_WIDGET_HXX
 
 #include <fstream>
-
-class GUI::Surface;
 
 #include "Props.hxx"
 #include "Widget.hxx"
@@ -50,13 +48,13 @@ class RomInfoWidget : public Widget
     static bool isValidPNGHeader(uInt8* header);
     static void readPNGChunk(ifstream& in, string& type, uInt8** data, int& size);
     static bool parseIHDR(int& width, int& height, uInt8* data, int size);
-    static bool parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
-                               int width, int height, uInt8* data, int size);
+//    static bool parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
+//                               int width, int height, uInt8* data, int size);
     static string parseTextChunk(uInt8* data, int size);
 
   private:
     // Surface holding the scaled PNG image
-    GUI::Surface* mySurface;
+//    GUI::Surface* mySurface;
 
     // Whether the surface should be redrawn by drawWidget()
     bool myDrawSurface;

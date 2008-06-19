@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.8 2008-06-13 13:14:51 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.9 2008-06-19 12:01:31 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -31,7 +31,7 @@
 RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : Widget(boss, font, x, y, w, h),
-    mySurface(NULL),
+//    mySurface(NULL),
     myDrawSurface(false),
     myHaveProperties(false)
 {
@@ -42,11 +42,13 @@ RomInfoWidget::RomInfoWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomInfoWidget::~RomInfoWidget()
 {
+/*
   if(mySurface)
   {
     delete mySurface;
     mySurface = NULL;
   }
+*/
   myRomInfo.clear();
 }
 
@@ -93,8 +95,8 @@ void RomInfoWidget::clearProperties()
 void RomInfoWidget::initialize()
 {
   // Delete surface; a new one will be created by parseProperties
-  delete mySurface;
-  mySurface = NULL;
+//  delete mySurface;
+//  mySurface = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -280,12 +282,12 @@ bool RomInfoWidget::parseIHDR(int& width, int& height, uInt8* data, int size)
   return memcmp(trailer, data + 8, 5) == 0;
 }
 
+// FIXME
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
                                    int width, int height, uInt8* data, int size)
 {
-// FIXME
-#if 0
   // The entire decompressed image data
   uLongf bufsize = (width * 3 + 1) * height;
   uInt8* buffer = new uInt8[bufsize];
@@ -304,8 +306,8 @@ bool RomInfoWidget::parseIDATChunk(const FrameBuffer& fb, GUI::Surface* surface,
   }
   delete[] buffer;
   return false;
-#endif
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RomInfoWidget::parseTextChunk(uInt8* data, int size)

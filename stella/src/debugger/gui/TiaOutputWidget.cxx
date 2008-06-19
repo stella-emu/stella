@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.16 2008-06-13 13:14:50 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.17 2008-06-19 12:01:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -92,7 +92,12 @@ void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
     myClickX = x;
     myClickY = y;
 
-    myMenu->show(x + getAbsX(), y + getAbsY());
+    // Add menu at current x,y mouse location
+    uInt32 tx, ty;
+    dialog().surface().getPos(tx, ty);
+    x += getAbsX() + tx;
+    y += getAbsY() + ty;
+    myMenu->show(x, y);
   }
 }
 

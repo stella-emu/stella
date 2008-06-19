@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.13 2008-06-13 13:14:50 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.14 2008-06-19 12:01:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -67,9 +67,16 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   // Grab right mouse button for context menu, send left to base class
   if(button == 2)
-    myMenu->show(x + getAbsX(), y + getAbsY());
-
-  ListWidget::handleMouseDown(x, y, button, clickCount);
+  {
+    // Add menu at current x,y mouse location
+    uInt32 tx, ty;
+    dialog().surface().getPos(tx, ty);
+    x += getAbsX() + tx;
+    y += getAbsY() + ty;
+    myMenu->show(x, y);
+  }
+  else
+    ListWidget::handleMouseDown(x, y, button, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.61 2008-06-13 13:14:51 stephena Exp $
+// $Id: Dialog.cxx,v 1.62 2008-06-19 12:01:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -106,8 +106,13 @@ void Dialog::close()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::center()
 {
-  if(_center && _surface)
-    _surface->centerPos();
+  if(_surface)
+  {
+    const GUI::Rect& screen = instance().frameBuffer().screenRect();
+    uInt32 x = (screen.width() - getWidth()) >> 1;
+    uInt32 y = (screen.height() - getHeight()) >> 1;
+    _surface->setPos(x, y);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

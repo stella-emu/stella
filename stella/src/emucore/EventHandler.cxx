@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.226 2008-06-13 13:14:50 stephena Exp $
+// $Id: EventHandler.cxx,v 1.227 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -344,38 +344,35 @@ void EventHandler::poll(uInt32 time)
         SDLKey key  = event.key.keysym.sym;
         SDLMod mod  = event.key.keysym.mod;
         uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
+        bool handled = true;
 
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
         // Control/Cmd or Alt/Shift-Cmd keys.  So we quickly check for those.
         if(kbdAlt(mod) && state)
         {
+      #ifndef MAC_OSX
           // These keys work in all states
-          switch(int(key))
+          if(key == SDLK_RETURN)
           {
-    #ifndef MAC_OSX
-            case SDLK_EQUALS:
-              myOSystem->frameBuffer().changeVidMode(+1);
-              break;
-
-            case SDLK_MINUS:
-              myOSystem->frameBuffer().changeVidMode(-1);
-              break;
-
-            case SDLK_RETURN:
-              myOSystem->frameBuffer().toggleFullscreen();
-              break;
-    #endif
-            case SDLK_g:
-              myOSystem->toggleFrameBuffer();
-              break;
+            myOSystem->frameBuffer().toggleFullscreen();
           }
-
+          else
+      #endif
           // These only work when in emulation mode
           if(myState == S_EMULATE)
           {
             switch(int(key))
             {
+      #ifndef MAC_OSX
+              case SDLK_EQUALS:
+                myOSystem->frameBuffer().changeVidMode(+1);
+                break;
+
+              case SDLK_MINUS:
+                myOSystem->frameBuffer().changeVidMode(-1);
+                break;
+      #endif
               case SDLK_LEFTBRACKET:
                 myOSystem->sound().adjustVolume(-1);
                 break;
@@ -457,8 +454,13 @@ void EventHandler::poll(uInt32 time)
 */
 ////////////////////////////////////////////////////////////////////////
 #endif
+              default:
+                handled = false;
+                break;
             }
           }
+          else
+            handled = false;
         }
         else if(kbdControl(mod) && state)
         {
@@ -469,25 +471,6 @@ void EventHandler::poll(uInt32 time)
               handleEvent(Event::Quit, 1);
               break;
 
-  #ifdef MAC_OSX
-            case SDLK_h:
-            case SDLK_m:
-            case SDLK_SLASH:
-              handleMacOSXKeypress(int(key));
-              break;
-
-            case SDLK_EQUALS:
-              myOSystem->frameBuffer().changeVidMode(+1);
-              break;
-
-            case SDLK_MINUS:
-              myOSystem->frameBuffer().changeVidMode(-1);
-              break;
-
-            case SDLK_RETURN:
-              myOSystem->frameBuffer().toggleFullscreen();
-              break;
-  #endif
             case SDLK_g:
               // don't change grabmouse in fullscreen mode
               if(!myOSystem->frameBuffer().fullScreen())
@@ -497,6 +480,11 @@ void EventHandler::poll(uInt32 time)
                 myOSystem->frameBuffer().grabMouse(myGrabMouseFlag);
               }
               break;
+        #ifdef MAC_OSX
+            case SDLK_RETURN:
+              myOSystem->frameBuffer().toggleFullscreen();
+              break;
+        #endif
           }
 
           // These only work when in emulation mode
@@ -504,6 +492,21 @@ void EventHandler::poll(uInt32 time)
           {
             switch(int(key))
             {
+            #ifdef MAC_OSX
+              case SDLK_h:
+              case SDLK_m:
+              case SDLK_SLASH:
+                handleMacOSXKeypress(int(key));
+                break;
+
+              case SDLK_EQUALS:
+                myOSystem->frameBuffer().changeVidMode(+1);
+                break;
+
+              case SDLK_MINUS:
+                myOSystem->frameBuffer().changeVidMode(-1);
+                break;
+            #endif
               case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
                 setPaddleMode(0, true);
                 break;
@@ -560,9 +563,20 @@ void EventHandler::poll(uInt32 time)
                   myOSystem->frameBuffer().showMessage("Error saving properties");
                 break;
               }
+
+              default:
+                handled = false;
+                break;
             }
           }
+          else
+            handled = false;
         }
+        else
+          handled = false;
+
+        // Don't pass the key on if we've already taken care of it
+        if(handled) break;
 
         // Handle keys which switch eventhandler state
         // Arrange the logic to take advantage of short-circuit evaluation
@@ -1874,9 +1888,14 @@ bool EventHandler::enterDebugMode()
   // mode, since it takes care of locking the debugger state, which will
   // probably be modified below
   myOSystem->debugger().setStartState();
-
   setEventState(S_DEBUGGER);
-  myOSystem->createFrameBuffer();
+  if(!myOSystem->createFrameBuffer())
+  {
+    myOSystem->debugger().setQuitState();
+    setEventState(S_EMULATE);
+    myOSystem->frameBuffer().showMessage("Error creating debugger window, check dimensions");
+    return false;
+  }
   myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);

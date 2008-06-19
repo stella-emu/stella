@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.22 2008-05-30 19:07:55 stephena Exp $
+// $Id: Snapshot.cxx,v 1.23 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -42,8 +42,8 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
 
     // Get actual image dimensions. which are not always the same
     // as the framebuffer dimensions
-    int width  = framebuffer.imageWidth();
-    int height = framebuffer.imageHeight();
+    const GUI::Rect& image = framebuffer.imageRect();
+    int width = image.width(), height = image.height();
 
     out.open(filename.c_str(), ios_base::binary);
     if(!out.is_open())

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.97 2008-06-13 13:14:51 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.98 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -27,11 +27,12 @@ class Console;
 
 namespace GUI {
   class Font;
-  class Surface;
+  class Rect;
 }
 
 #include "EventHandler.hxx"
 #include "VideoModeList.hxx"
+#include "Rect.hxx"
 #include "bspf.hxx"
 
 // Different types of framebuffer derived objects
@@ -89,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.97 2008-06-13 13:14:51 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.98 2008-06-19 12:01:30 stephena Exp $
 */
 class FrameBuffer
 {
@@ -150,34 +151,18 @@ class FrameBuffer
     void enableMessages(bool enable);
 
     /**
-      Returns the current width of the framebuffer *before* any scaling.
-
-      @return  The current unscaled width
+      Returns the current dimensions of the framebuffer image.
+      Note that this will take into account the current scaling (if any)
+      as well as image 'centering'.
     */
-    inline const uInt32 baseWidth()  { return myBaseDim.w; }
+    inline const GUI::Rect& imageRect() const { return myImageRect; }
 
     /**
-      Returns the current height of the framebuffer *before* any scaling.
-
-      @return  The current unscaled height
+      Returns the current dimensions of the framebuffer window.
+      This is the entire area containing the framebuffer image as well as any
+      'unusable' area.
     */
-    inline const uInt32 baseHeight() { return myBaseDim.h; }
-
-    /**
-      Returns the current width of the framebuffer image.
-      Note that this will take into account the current scaling (if any).
-
-      @return  The current width
-    */
-    inline const uInt32 imageWidth()  { return myImageDim.w; }
-
-    /**
-      Returns the current height of the framebuffer image.
-      Note that this will take into account the current scaling (if any).
-
-      @return  The current height
-    */
-    inline const uInt32 imageHeight() { return myImageDim.h; }
+    inline const GUI::Rect& screenRect() const { return myScreenRect; }
 
     /**
       Indicates that the TIA area is dirty, and certain areas need
@@ -300,15 +285,22 @@ class FrameBuffer
     /**
       This method is called to initialize the video subsystem
       with the given video mode.  Normally, it will also call setVidMode().
+
+      @param mode  The video mode to use
+
+      @return  False on any errors, else true
     */
-    virtual bool initSubsystem(VideoMode mode) = 0;
+    virtual bool initSubsystem(VideoMode& mode) = 0;
 
     /**
-      This method is called to change to the given video mode.
+      This method is called to change to the given video mode.  If the mode
+      is successfully changed, 'mode' holds the actual dimensions used.
 
-      @param mode  The video mode to use for rendering the mediasource
+      @param mode  The video mode to use
+
+      @return  False on any errors (in which case 'mode' is invalid), else true
     */
-    virtual bool setVidMode(VideoMode mode) = 0;
+    virtual bool setVidMode(VideoMode& mode) = 0;
 
     /**
       Switches between the filtering options in the video subsystem.
@@ -345,18 +337,6 @@ class FrameBuffer
     // Amount to blend when using phosphor effect
     int myPhosphorBlend;
 
-    // Dimensions of the base image, before scaling.
-    // All external GUI items should refer to these dimensions,
-    //  since this is the *real* size of the image.
-    // The other sizes are simply scaled versions of these dimensions.
-    SDL_Rect myBaseDim;
-
-    // Dimensions of the actual image, after zooming
-    SDL_Rect myImageDim;
-
-    // Dimensions of the SDL window (not always the same as the image)
-    SDL_Rect myScreenDim;
-
     // TIA palettes for normal and phosphor modes
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
@@ -386,13 +366,14 @@ class FrameBuffer
       Calculate the maximum level by which the base window can be zoomed and
       still fit in the given screen dimensions.
     */
-    uInt32 maxWindowSizeForScreen(uInt32 screenWidth, uInt32 screenHeight);
+    uInt32 maxWindowSizeForScreen(uInt32 baseWidth, uInt32 baseHeight,
+                                  uInt32 screenWidth, uInt32 screenHeight);
 
     /**
       Set all possible video modes (both windowed and fullscreen) available for
-      this framebuffer based on current emulation state and maximum window size.
+      this framebuffer based on given image dimensions and maximum window size.
     */
-    void setAvailableVidModes();
+    void setAvailableVidModes(uInt32 basewidth, uInt32 baseheight);
 
     /**
       Returns an appropriate video mode based on the current eventhandler
@@ -409,18 +390,25 @@ class FrameBuffer
     // Used to set intervals between messages while in pause mode
     uInt32 myPausedCount;
 
-    // Used for onscreen messages
+    // Dimensions of the actual image, after zooming, and taking into account
+    // any image 'centering'
+    GUI::Rect myImageRect;
+
+    // Dimensions of the SDL window (not always the same as the image)
+    GUI::Rect myScreenRect;
+
+    // Used for onscreen messages and frame statistics
+    // (scanline count and framerate)
     struct Message {
       string text;
       int counter;
       int x, y, w, h;
       uInt32 color;
+      FBSurface* surface;
+      bool enabled;
     };
-    Message myMessage;
-
-    // Used to show frame statistics (scanline count and framerate)
-    Message myFrameStats;
-    bool myFrameStatsEnabled;
+    Message myMsg;
+    Message myStatsMsg;
 
     // The list of all available video modes for this framebuffer
     VideoModeList myWindowedModeList;
@@ -438,7 +426,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.97 2008-06-13 13:14:51 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.98 2008-06-19 12:01:30 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -533,9 +521,9 @@ class FBSurface
     virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
 
     /**
-      This method should be called to center the position of the surface.
+      This method answers the current position of the surface.
     */
-    virtual void centerPos() = 0;
+    virtual void getPos(uInt32& x, uInt32& y) const = 0;
 
     /**
       This method should be called to set the position of the surface.
@@ -543,9 +531,14 @@ class FBSurface
     virtual void setPos(uInt32 x, uInt32 y) = 0;
 
     /**
-      This method answers the current coordinates of the surface.
+      This method sets the width of the drawable area of the surface.
     */
-    virtual void getPos(uInt32& x, uInt32& y) const = 0;
+    virtual void setWidth(uInt32 w) = 0;
+
+    /**
+      This method sets the width of the drawable area of the surface.
+    */
+    virtual void setHeight(uInt32 h) = 0;
 
     /**
       This method should be called to translate the given coordinates

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.103 2008-06-13 13:14:50 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.104 2008-06-19 12:01:30 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -180,7 +180,7 @@ bool FrameBufferGL::loadFuncs()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::initSubsystem(VideoMode mode)
+bool FrameBufferGL::initSubsystem(VideoMode& mode)
 {
   mySDLFlags |= SDL_OPENGL;
 
@@ -234,8 +234,10 @@ string FrameBufferGL::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::setVidMode(VideoMode mode)
+bool FrameBufferGL::setVidMode(VideoMode& mode)
 {
+return false;
+#if 0
   bool inUIMode =
     myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
@@ -354,6 +356,7 @@ bool FrameBufferGL::setVidMode(VideoMode mode)
   p_glClear(GL_COLOR_BUFFER_BIT);
 
   return true;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -430,7 +433,8 @@ void FrameBufferGL::postFrameUpdate()
   {
     // Texturemap complete texture to surface so we have free scaling 
     // and antialiasing 
-    uInt32 w = myImageDim.w, h = myImageDim.h;
+// FIXME    uInt32 w = myImageDim.w, h = myImageDim.h;
+uInt32 w = 0, h = 0;
 
     p_glTexSubImage2D(myBuffer.target, 0, 0, 0,
                       myBuffer.texture_width, myBuffer.texture_height,
@@ -515,10 +519,11 @@ void FrameBufferGL::scanline(uInt32 row, uInt8* data) const
 {
   // Invert the row, since OpenGL rows start at the bottom
   // of the framebuffer
-  row = myImageDim.h + myImageDim.y - row - 1;
+  const GUI::Rect& image = imageRect();
+  row = image.height() + image.y() - row - 1;
 
   p_glPixelStorei(GL_PACK_ALIGNMENT, 1);
-  p_glReadPixels(myImageDim.x, row, myImageDim.w, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+  p_glReadPixels(image.x(), row, image.width(), 1, GL_RGB, GL_UNSIGNED_BYTE, data);
 }
 
 
@@ -636,36 +641,11 @@ void FBSurfaceGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::centerPos()
+void FBSurfaceGL::getPos(uInt32& x, uInt32& y) const
 {
 #if 0
-  // Make sure pitch is valid
-  recalc();
-
-  // X/Y Orig are the coordinates to use when blitting an entire (non-base)
-  // surface to the screen.  As such, they're concerned with the 'usable'
-  // area of a surface, not its entire size (ie, we use the originally
-  // requested width & height, which are not necessarily the same as
-  // the surface width & height).
-  // These coordinates are not used at all for drawing base surfaces
-  myXOrig = (myFB.myScreenDim.w - myWidth) >> 1;
-  myYOrig = (myFB.myScreenDim.h - myHeight) >> 1;
-
-  // X/Y/Base Offset determine 'how far' to go into a surface, since base
-  // surfaces are defined larger than necessary in some cases, and have a
-  // 'non-usable' area.
-  if(myIsBaseSurface)
-  {
-    myXOffset = myFB.myImageDim.x;
-    myYOffset = myFB.myImageDim.y;
-    myBaseOffset = myYOffset * myPitch + myXOffset;
-  }
-  else
-  {
-    myXOffset = myYOffset = myBaseOffset = 0;
-  }
-//cerr << "center: xorig = " << myXOrig << ", yorig = " << myYOrig << endl
-//     << "        xoffset = " << myXOffset << ", yoffset = " << myYOffset << endl;
+  x = myXOrig;
+  y = myYOrig;
 #endif
 }
 
@@ -687,12 +667,13 @@ void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::getPos(uInt32& x, uInt32& y) const
+void FBSurfaceGL::setWidth(uInt32 w)
 {
-#if 0
-  x = myXOrig;
-  y = myYOrig;
-#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::setHeight(uInt32 h)
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -726,8 +707,8 @@ bool FrameBufferGL::createTextures()
 
   // Fill buffer struct with valid data
   // This changes depending on the texturing used
-  myBuffer.width  = myBaseDim.w;
-  myBuffer.height = myBaseDim.h;
+  myBuffer.width  = 0;//FIXME myBaseDim.w;
+  myBuffer.height = 0;//FIXME myBaseDim.h;
   myBuffer.tex_coord[0] = 0.0f;
   myBuffer.tex_coord[1] = 0.0f;
   if(myHaveTexRectEXT)

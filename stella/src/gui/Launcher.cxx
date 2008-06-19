@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.23 2008-05-30 19:07:55 stephena Exp $
+// $Id: Launcher.cxx,v 1.24 2008-06-19 12:01:31 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -31,8 +31,8 @@ class Properties;
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem* osystem)
   : DialogContainer(osystem),
-    myWidth(400),
-    myHeight(300)
+    myWidth(640),
+    myHeight(480)
 {
   int w, h;
   myOSystem->settings().getSize("launcherres", w, h);
@@ -40,9 +40,9 @@ Launcher::Launcher(OSystem* osystem)
   myHeight = BSPF_max(h, 0);
 
   // Error check the resolution
-  myWidth = BSPF_max(myWidth, 320u);
+  myWidth = BSPF_max(myWidth, 640u);
   myWidth = BSPF_min(myWidth, osystem->desktopWidth());
-  myHeight = BSPF_max(myHeight, 240u);
+  myHeight = BSPF_max(myHeight, 480u);
   myHeight = BSPF_min(myHeight, osystem->desktopHeight());
   myOSystem->settings().setSize("launcherres", myWidth, myHeight);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.hxx,v 1.2 2008-06-15 15:44:30 stephena Exp $
+// $Id: ContextMenu.hxx,v 1.3 2008-06-19 12:01:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -66,7 +66,7 @@ class ContextMenu : public Dialog, public CommandSender
     const string& getSelectedString() const;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center();
+    void center() { }
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
