@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.25 2008-06-13 13:14:50 stephena Exp $
+// $Id: RomWidget.cxx,v 1.26 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -96,9 +96,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Create dialog box for save ROM (get name)
   StringList label;
   label.push_back("Filename: ");
-  mySaveRom = new InputTextDialog(boss, font, label, _x + 50, _y + 80);
+  mySaveRom = new InputTextDialog(boss, font, label);
   mySaveRom->setTarget(this);
-  mySaveRom->setCenter(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,9 +130,9 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
       if(rmb == "Save ROM")
       {
+        mySaveRom->show(_x + 50, _y + 80);
         mySaveRom->setTitle("");
         mySaveRom->setEmitSignal(kRomNameEntered);
-        parent().addDialog(mySaveRom);
       }
       else if(rmb == "Set PC")
         setPC(myRomList->getSelected());

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.38 2008-06-13 13:14:51 stephena Exp $
+// $Id: Dialog.hxx,v 1.39 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.38 2008-06-13 13:14:51 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.39 2008-06-19 19:15:44 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -84,7 +84,6 @@ class Dialog : public GuiObject
     void addOKWidget(Widget* w)     { _okWidget = w; }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
-    void setCenter(bool state) { _center = state; }
 
     inline FBSurface& surface() { return *_surface; }
 
@@ -126,7 +125,6 @@ class Dialog : public GuiObject
     Widget* _okWidget;
     Widget* _cancelWidget;
     bool    _visible;
-    bool    _center;
     bool    _isBase;
 
   private:

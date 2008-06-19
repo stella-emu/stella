@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.21 2008-06-13 13:14:51 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.22 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #include "bspf.hxx"
 
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
@@ -31,16 +32,14 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
-                                 const StringList& labels, int x, int y)
-  : Dialog(&boss->instance(), &boss->parent(), x, y, 16, 16),
+                                 const StringList& labels)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     myErrorFlag(false)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
-            lineHeight = font.getLineHeight(),
-            bwidth  = font.getStringWidth("  Cancel  "),
-            bheight = font.getLineHeight() + 4;
+            lineHeight = font.getLineHeight();
   unsigned int xpos, ypos, i, lwidth = 0, maxIdx = 0;
   WidgetArray wid;
 
@@ -82,34 +81,35 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  "", kTextAlignCenter);
   myTitle->setTextColor(kTextColorEm);
 
-  ButtonWidget* b;
-#ifndef MAC_OSX
-  b = new ButtonWidget(this, font, _w - 2 * (bwidth + 10), _h - bheight - 10,
-                   bwidth, bheight, "OK", kAcceptCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = new ButtonWidget(this, font, _w - (bwidth + 10), _h - bheight - 10,
-                   bwidth, bheight, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = new ButtonWidget(this, font, _w - 2 * (bwidth + 10), _h - bheight - 10,
-                   bwidth, bheight, "Cancel", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = new ButtonWidget(this, font, _w - (bwidth + 10), _h - bheight - 10,
-                   bwidth, bheight, "OK", kAcceptCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
-
   addToFocusList(wid);
+
+  // Add OK and Cancel buttons
+  wid.clear();
+  addOKCancelBGroup(wid, font);
+  addBGroupToFocusList(wid);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputTextDialog::~InputTextDialog()
 {
   myInput.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::show(uInt32 x, uInt32 y)
+{
+  // Make sure position is set *after* the dialog is added, since the surface
+  // may not exist before then
+  parent().addDialog(this);
+
+  // Are we in the current screen bounds?
+  const GUI::Rect& image = instance().frameBuffer().imageRect();
+  uInt32 dx = image.x() + image.width();
+  uInt32 dy = image.y() + image.height();
+  if(x + _w > dx) x -= (x + _w - dx);
+  if(y + _h > dy) y -= (y + _h - dy);
+
+  surface().setPos(x, y);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,9 +146,9 @@ void InputTextDialog::setFocus(int idx)
 void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
                                     int data, int id)
 {
-  switch (cmd)
+  switch(cmd)
   {
-    case kAcceptCmd:
+    case kOKCmd:
     case kEditAcceptCmd:
     {
       // Send a signal to the calling class that a selection has been made

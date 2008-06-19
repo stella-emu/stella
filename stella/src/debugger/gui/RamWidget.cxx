@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.18 2008-06-13 13:14:50 stephena Exp $
+// $Id: RamWidget.cxx,v 1.19 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -129,12 +129,10 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   _h = ypos + lineHeight - y;
 
   // Inputbox which will pop up when searching RAM
-  StringList label;
-  label.push_back("Search: ");
-  myInputBox = new InputTextDialog(boss, font, label,
-                                   x + lwidth + 20, y + 2*lineHeight - 5);
+  StringList labels;
+  labels.push_back("Search: ");
+  myInputBox = new InputTextDialog(boss, font, labels);
   myInputBox->setTarget(this);
-  myInputBox->setCenter(false);
 
   // Start with these buttons disabled
   myCompareButton->clearFlags(WIDGET_ENABLED);
@@ -196,17 +194,11 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kSearchCmd:
-      parent().addDialog(myInputBox);
-      myInputBox->setEditString("");
-      myInputBox->setTitle("");
-      myInputBox->setEmitSignal(kSValEntered);
+      showInputBox(kSValEntered);
       break;
 
     case kCmpCmd:
-      parent().addDialog(myInputBox);
-      myInputBox->setEditString("");
-      myInputBox->setTitle("");
-      myInputBox->setEmitSignal(kCValEntered);
+      showInputBox(kCValEntered);
       break;
 
     case kRestartCmd:
@@ -274,7 +266,22 @@ void RamWidget::fillGrid(bool updateOld)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string RamWidget::doSearch(const string& str)
+void RamWidget::showInputBox(int cmd)
+{
+  // Add inputbox in the middle of the RAM widget
+  uInt32 tx, ty;
+  dialog().surface().getPos(tx, ty);
+  tx += getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
+  ty += getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
+  myInputBox->show(tx, ty);
+  myInputBox->setEditString("");
+  myInputBox->setTitle("");
+  myInputBox->setFocus(0);
+  myInputBox->setEmitSignal(cmd);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RamWidget::doSearch(const string& str)
 {
   bool comparisonSearch = true;
 
@@ -324,7 +331,7 @@ const string RamWidget::doSearch(const string& str)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string RamWidget::doCompare(const string& str)
+string RamWidget::doCompare(const string& str)
 {
   bool comparitiveSearch = false;
   int searchVal = 0, offset = 0;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.3 2008-06-19 12:01:31 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.4 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,7 +36,9 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _rowHeight(font.getLineHeight()),
     _twoColumns(false),
     _font(&font),
-    _cmd(cmd)
+    _cmd(cmd),
+    _xorig(0),
+    _yorig(0)
 {
   // Create two columns of entries if there are more than 10 items
   if(_entries.size() > 10)
@@ -79,16 +81,37 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
   // Make sure position is set *after* the dialog is added, since the surface
   // may not exist before then
   parent().addDialog(this);
+  _xorig = x;
+  _yorig = y;
+  center();
+  setSelected(item);
+}
 
-  // Are we in the current screen bounds?
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::center()
+{
+cerr << " ==> ContextMenu::center()" << endl;
+
+  // Make sure the menu is exactly where it should be, in case the image
+  // offset has changed
+  uInt32 x = _xorig, y = _yorig;
   const GUI::Rect& image = instance().frameBuffer().imageRect();
-  uInt32 dx = image.x() + image.width();
-  uInt32 dy = image.y() + image.height();
-  if(x + _w > dx) x -= (x + _w - dx);
-  if(y + _h > dy) y -= (y + _h - dy);
+  uInt32 tx = image.x() + image.width();
+  uInt32 ty = image.y() + image.height();
+  if(x + _w > tx) x -= (x + _w - tx);
+  if(y + _h > ty) y -= (y + _h - ty);
 
   surface().setPos(x, y);
-  setSelected(item);
+
+
+/*
+  uInt32 tx, ty;
+  const GUI::Rect& image = instance().frameBuffer().imageRect();
+  dialog().surface().getPos(tx, ty);
+  tx += image.x();
+  ty += image.y();
+  surface().setPos(tx, ty);
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -264,12 +287,15 @@ void ContextMenu::drawCurrentSelection(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::sendSelection()
 {
+  // We remove the dialog when the user has selected an item
+  // Make sure the dialog is removed before sending any commands,
+  // since one consequence of sending a command may be to add another
+  // dialog/menu
+  parent().removeDialog();
+
   // Send any command associated with the selection
   _selectedItem = _currentItem;
   sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
-
-  // We remove the dialog when the user has selected an item
-  parent().removeDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

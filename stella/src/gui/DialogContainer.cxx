@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.45 2008-06-13 13:14:51 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.46 2008-06-19 19:15:44 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -102,7 +102,7 @@ void DialogContainer::draw()
   }
   else if(!myDialogStack.empty())
   {
-    myDialogStack.top()->center();
+//    myDialogStack.top()->center();
     myDialogStack.top()->drawDialog();
   }
 }

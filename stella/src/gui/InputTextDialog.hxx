@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.10 2008-02-06 13:45:23 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.11 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,8 +35,11 @@ class InputTextDialog : public Dialog, public CommandSender
 {
   public:
     InputTextDialog(GuiObject* boss, const GUI::Font& font,
-                    const StringList& labels, int x, int y);
+                    const StringList& labels);
     virtual ~InputTextDialog();
+
+    /** Show input dialog onscreen at the specified coordinates */
+    void show(uInt32 x, uInt32 y);
 
     const string& getResult(int idx = 0);
 
@@ -46,20 +49,18 @@ class InputTextDialog : public Dialog, public CommandSender
 
     void setFocus(int idx = 0);
 
+    /** This dialog uses its own positioning, so we override Dialog::center() */
+    void center() { }
+
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-  private:
   private:
     InputWidget       myInput;
     StaticTextWidget* myTitle;
 
     bool myErrorFlag;
     int	 myCmd;
-
-    enum {
-      kAcceptCmd = 'ACPT'
-    };
 };
 
 #endif

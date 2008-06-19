@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.hxx,v 1.5 2008-02-06 13:45:20 stephena Exp $
+// $Id: RamWidget.hxx,v 1.6 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,8 +48,9 @@ class RamWidget : public Widget, public CommandSender
   private:
     void fillGrid(bool updateOld);
 
-    const string doSearch(const string& str);
-    const string doCompare(const string& str);
+    void showInputBox(int cmd);
+    string doSearch(const string& str);
+    string doCompare(const string& str);
     void doRestart();
 
   private:

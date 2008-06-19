@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.hxx,v 1.9 2008-02-06 13:45:19 stephena Exp $
+// $Id: CheatCodeDialog.hxx,v 1.10 2008-06-19 19:15:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,7 +62,6 @@ class CheatCodeDialog : public Dialog
 
     ButtonWidget* myEditButton;
     ButtonWidget* myRemoveButton;
-    ButtonWidget* myCancelButton;
 
     enum {
       kAddCheatCmd       = 'CHTa',
