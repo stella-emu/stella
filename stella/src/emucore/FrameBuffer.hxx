@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.98 2008-06-19 12:01:30 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.99 2008-06-20 12:19:42 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -27,7 +27,7 @@ class Console;
 
 namespace GUI {
   class Font;
-  class Rect;
+  struct Rect;
 }
 
 #include "EventHandler.hxx"
@@ -90,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.98 2008-06-19 12:01:30 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.99 2008-06-20 12:19:42 stephena Exp $
 */
 class FrameBuffer
 {
@@ -426,7 +426,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.98 2008-06-19 12:01:30 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.99 2008-06-20 12:19:42 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

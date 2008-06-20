@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.51 2008-06-13 13:14:52 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.52 2008-06-20 12:19:42 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -363,7 +363,7 @@ void VideoDialog::saveConfig()
   {
     // Make sure auto-frame calculation is only enabled when necessary
     instance().console().mediaSource().enableAutoFrame(i <= 0);
-    instance().console().setFramerate(i);
+    instance().console().setFramerate(float(i));
   }
 
   // Fullscreen

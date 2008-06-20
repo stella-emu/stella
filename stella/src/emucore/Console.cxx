@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.148 2008-05-30 19:07:55 stephena Exp $
+// $Id: Console.cxx,v 1.149 2008-06-20 12:19:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -451,7 +451,7 @@ bool Console::initializeVideo(bool full)
   // VideoDialog box or on the commandline, but it can't be saved
   // (ie, framerate is now determined based on number of scanlines).
   int framerate = myOSystem->settings().getInt("framerate");
-  if(framerate > 0) myFramerate = framerate;
+  if(framerate > 0) myFramerate = float(framerate);
   myOSystem->setFramerate(myFramerate);
 
   // Make sure auto-frame calculation is only enabled when necessary
@@ -467,7 +467,7 @@ void Console::initializeAudio()
   // The # of channels can be overridden in the AudioDialog box or on
   // the commandline, but it can't be saved.
   int framerate = myOSystem->settings().getInt("framerate");
-  if(framerate > 0) myFramerate = framerate;
+  if(framerate > 0) myFramerate = float(framerate);
   const string& sound = myProperties.get(Cartridge_Sound);
   uInt32 channels = (sound == "STEREO" ? 2 : 1);
 
