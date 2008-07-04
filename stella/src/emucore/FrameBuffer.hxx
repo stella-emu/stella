@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.99 2008-06-20 12:19:42 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.100 2008-07-04 14:27:17 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -31,7 +31,7 @@ namespace GUI {
 }
 
 #include "EventHandler.hxx"
-#include "VideoModeList.hxx"
+//#include "VideoModeList.hxx"
 #include "Rect.hxx"
 #include "bspf.hxx"
 
@@ -90,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.99 2008-06-20 12:19:42 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.100 2008-07-04 14:27:17 stephena Exp $
 */
 class FrameBuffer
 {
@@ -282,6 +282,41 @@ class FrameBuffer
     virtual void scanline(uInt32 row, uInt8* data) const = 0;
 
   protected:
+    // Different types of graphic filters to apply to the TIA image
+    enum GfxID {
+      GFX_Zoom1x,
+      GFX_Zoom2x,
+      GFX_Zoom3x,
+      GFX_Zoom4x,
+      GFX_Zoom5x,
+      GFX_Zoom6x,
+      GFX_Zoom7x,
+      GFX_Zoom8x,
+      GFX_Zoom9x,
+      GFX_Zoom10x,
+      GFX_NumModes
+    };
+
+    struct GraphicsMode {
+      GfxID type;
+      const char* name;
+      const char* description;
+      uInt32 zoom;
+    };
+
+    // Contains all relevant info for the dimensions of an SDL screen
+    // Also takes care of the case when the SDL image should be 'centered'
+    // within the given screen
+    //   image_XXX are the image offsets into the SDL screen
+    //   screen_XXX are the dimensions of the SDL screen itself
+    // Also contains relevant info for the graphics mode/filter to use
+    // when rendering the image
+    struct VideoMode {
+      uInt32 image_x, image_y, image_w, image_h;
+      uInt32 screen_w, screen_h;
+      GraphicsMode gfxmode;
+    };
+
     /**
       This method is called to initialize the video subsystem
       with the given video mode.  Normally, it will also call setVidMode().
@@ -384,6 +419,38 @@ class FrameBuffer
     VideoMode getSavedVidMode();
 
   private:
+    /**
+      This class implements an iterator around an array of VideoMode objects.
+    */
+    class VideoModeList
+    {
+      public:
+        VideoModeList();
+        ~VideoModeList();
+
+        void add(VideoMode mode);
+        void clear();
+
+        bool isEmpty() const;
+        uInt32 size() const;
+
+        const FrameBuffer::VideoMode& previous();
+        const FrameBuffer::VideoMode& current() const;
+        const FrameBuffer::VideoMode& next();
+
+        void setByGfxMode(GfxID id);
+        void setByGfxMode(const string& name);
+        void print();
+
+      private:
+        void set(const GraphicsMode& gfxmode);
+
+      private:
+        Common::Array<VideoMode> myModeList;
+        int myIdx;
+    };
+
+  private:
     // Indicates the number of times the framebuffer was initialized
     uInt32 myInitializedCount;
 
@@ -414,6 +481,9 @@ class FrameBuffer
     VideoModeList myWindowedModeList;
     VideoModeList myFullscreenModeList;
     VideoModeList* myCurrentModeList;
+
+    // Holds static strings for the remap menu (emulation and menu events)
+    static GraphicsMode ourGraphicsModes[GFX_NumModes];
 };
 
 
@@ -426,7 +496,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.99 2008-06-20 12:19:42 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.100 2008-07-04 14:27:17 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.80 2008-06-19 12:01:30 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.81 2008-07-04 14:27:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -105,7 +105,9 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   // is successfully created
   mode.screen_w = myScreen->w;
   mode.screen_h = myScreen->h;
-  myZoomLevel = mode.zoom;
+  myZoomLevel = mode.gfxmode.zoom;
+
+// FIXME - look at gfxmode directly
 
   // Make sure drawMediaSource() knows which renderer to use
   stateChanged(myOSystem->eventHandler().state());

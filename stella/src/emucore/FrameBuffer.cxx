@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.134 2008-06-19 12:01:30 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.135 2008-07-04 14:27:17 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -457,7 +457,6 @@ bool FrameBuffer::changeVidMode(int direction)
   // Only save mode changes in TIA mode with a valid selector
   bool saveModeChange = !inUIMode && (direction == -1 || direction == +1);
 
-  VideoMode oldmode = myCurrentModeList->current();
   if(!inUIMode)
   {
     if(direction == +1)
@@ -466,15 +465,15 @@ bool FrameBuffer::changeVidMode(int direction)
       myCurrentModeList->previous();
   }
 
-  VideoMode newmode = myCurrentModeList->current();
-  if(setVidMode(newmode))
+  VideoMode video = myCurrentModeList->current();
+  if(setVidMode(video))
   {
-    myImageRect.setWidth(newmode.image_w);
-    myImageRect.setHeight(newmode.image_h);
-    myImageRect.moveTo(newmode.image_x, newmode.image_y);
+    myImageRect.setWidth(video.image_w);
+    myImageRect.setHeight(video.image_h);
+    myImageRect.moveTo(video.image_x, video.image_y);
 
-    myScreenRect.setWidth(newmode.screen_w);
-    myScreenRect.setHeight(newmode.screen_h);
+    myScreenRect.setWidth(video.screen_w);
+    myScreenRect.setHeight(video.screen_h);
   }
   else
     return false;
@@ -482,12 +481,12 @@ bool FrameBuffer::changeVidMode(int direction)
   myOSystem->eventHandler().handleResizeEvent();
   myOSystem->eventHandler().refreshDisplay(true);
   setCursorState();
-  showMessage(newmode.name);
+  showMessage(video.gfxmode.description);
 
   if(!inUIMode && saveModeChange)
   {
     // FIXME - adapt to scaler infrastructure
-    myOSystem->settings().setInt("zoom_tia", newmode.zoom);
+//    myOSystem->settings().setInt("zoom_tia", newmode.zoom);
   }
   return true;
 /*
@@ -662,31 +661,33 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     m.image_x = m.image_y = 0;
     m.image_w = m.screen_w = baseWidth;
     m.image_h = m.screen_h = baseHeight;
-    m.zoom = 1;
+    m.gfxmode = ourGraphicsModes[0];  // this should be zoom1x
 
     myWindowedModeList.add(m);
   }
   else
   {
-    // FIXME - scan list of scalers, see which ones are appropriate
+    // Scan list of filters, adding only those which are appropriate
     // for the given dimensions
-    int max_zoom = maxWindowSizeForScreen(baseWidth, baseHeight,
-                   myOSystem->desktopWidth(), myOSystem->desktopHeight());
-    for(int i = 1; i <= max_zoom; ++i)
+    uInt32 max_zoom = maxWindowSizeForScreen(baseWidth, baseHeight,
+                      myOSystem->desktopWidth(), myOSystem->desktopHeight());
+    for(unsigned int i = 0; i < GFX_NumModes; ++i)
     {
-      VideoMode m;
-      m.image_x = m.image_y = 0;
-      m.image_w = m.screen_w = baseWidth * i;
-      m.image_h = m.screen_h = baseHeight * i;
-      m.zoom = i;
-      ostringstream buf;
-      buf << "Zoom " << i << "x";
-      m.name = buf.str();
+      uInt32 zoom = ourGraphicsModes[i].zoom;
+      if(zoom <= max_zoom)
+      {
+        VideoMode m;
+        m.image_x = m.image_y = 0;
+        m.image_w = m.screen_w = baseWidth * zoom;
+        m.image_h = m.screen_h = baseHeight * zoom;
+        m.gfxmode = ourGraphicsModes[i];
 
-      myWindowedModeList.add(m);
+        myWindowedModeList.add(m);
+      }
     }
   }
 
+#if 0
   // Now consider the fullscreen modes
   // There are often stricter requirements on these, and they're normally
   // different depending on the OSystem in use
@@ -751,10 +752,11 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
       myFullscreenModeList.add(m);
     }
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-VideoMode FrameBuffer::getSavedVidMode()
+FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
 {
   EventHandler::State state = myOSystem->eventHandler().state();
 
@@ -763,21 +765,206 @@ VideoMode FrameBuffer::getSavedVidMode()
   else
     myCurrentModeList = &myWindowedModeList;
 
+myCurrentModeList->print();
+
   // Now select the best resolution depending on the state
   // UI modes (launcher and debugger) have only one supported resolution
   // so the 'current' one is the only valid one
   if(state == EventHandler::S_DEBUGGER || state == EventHandler::S_LAUNCHER)
   {
-    myCurrentModeList->setByZoom(1);
+    myCurrentModeList->setByGfxMode(GFX_Zoom1x);
   }
   else
   {
-    // FIXME - get dimensions from scaler
-    int zoom = myOSystem->settings().getInt("zoom_tia");
-    myCurrentModeList->setByZoom(zoom);
+    const string& name = myOSystem->settings().getString("tia_filter");
+    myCurrentModeList->setByGfxMode(name);
   }
 
-  return myCurrentModeList->current();
+  // Check if 'auto-size' is enabled for fullscreen modes
+  if(myOSystem->settings().getBool("fullscreen"))
+  {
+    VideoMode mode = myCurrentModeList->current();
+    // FIXME - add centering
+    return mode;
+  }
+  else
+    return myCurrentModeList->current();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::VideoModeList::VideoModeList()
+{
+  myIdx = -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::VideoModeList::~VideoModeList()
+{
+  clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::add(VideoMode mode)
+{
+  myModeList.push_back(mode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::clear()
+{
+  myModeList.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBuffer::VideoModeList::isEmpty() const
+{
+  return myModeList.isEmpty();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameBuffer::VideoModeList::size() const
+{
+  return myModeList.size();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FrameBuffer::VideoMode& FrameBuffer::VideoModeList::previous()
+{
+  --myIdx;
+  if(myIdx < 0) myIdx = myModeList.size() - 1;
+  return current();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FrameBuffer::VideoMode& FrameBuffer::VideoModeList::current() const
+{
+  return myModeList[myIdx];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FrameBuffer::VideoMode& FrameBuffer::VideoModeList::next()
+{
+  myIdx = (myIdx + 1) % myModeList.size();
+  return current();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::setByGfxMode(GfxID id)
+{
+  // First we determine which graphics mode is being requested
+  bool found = false;
+  GraphicsMode gfxmode;
+  for(uInt32 i = 0; i < GFX_NumModes; ++i)
+  {
+    if(ourGraphicsModes[i].type == id)
+    {
+      gfxmode = ourGraphicsModes[i];
+      found = true;
+      break;
+    }
+  }
+  if(!found) gfxmode = ourGraphicsModes[0];
+
+  // Now we scan the list for the applicable video mode
+  set(gfxmode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::setByGfxMode(const string& name)
+{
+  // First we determine which graphics mode is being requested
+  bool found = false;
+  GraphicsMode gfxmode;
+  for(uInt32 i = 0; i < GFX_NumModes; ++i)
+  {
+    if(ourGraphicsModes[i].name == name)
+    {
+      gfxmode = ourGraphicsModes[i];
+      found = true;
+      break;
+    }
+  }
+  if(!found) gfxmode = ourGraphicsModes[0];
+
+  // Now we scan the list for the applicable video mode
+  set(gfxmode);
+}
+
+#if 0
+  // Find the largest resolution able to hold the given bounds
+  myIdx = myModeList.size() - 1;
+  for(unsigned int i = 0; i < myModeList.size(); ++i)
+  {
+    if(width <= myModeList[i].screen_w && height <= myModeList[i].screen_h)
+    {
+      myIdx = i;
+      break;
+    }
+  }
+
+  // Find the largest zoom within the given bounds
+  myIdx = 0;
+  for(unsigned int i = myModeList.size() - 1; i; --i)
+  {
+    if(myModeList[i].zoom <= zoom)
+    {
+      myIdx = i;
+      break;
+    }
+  }
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::set(const GraphicsMode& gfxmode)
+{
+  // Attempt to point the current mode to the one given
+  myIdx = -1;
+
+  // First search for the given gfx id
+  for(unsigned int i = 0; i < myModeList.size(); ++i)
+  {
+    if(myModeList[i].gfxmode.type == gfxmode.type)
+    {
+      myIdx = i;
+      return;
+    }
+  }
+
+  // If we get here, then the gfx type couldn't be found, so we search
+  // for the first mode with the same zoomlevel
+  for(unsigned int i = 0; i < myModeList.size(); ++i)
+  {
+    if(myModeList[i].gfxmode.zoom == gfxmode.zoom)
+    {
+      myIdx = i;
+      return;
+    }
+  }
+
+  // Finally, just pick the lowes video mode
+  myIdx = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::print()
+{
+  cerr << "VideoModeList: " << endl << endl;
+  for(Common::Array<VideoMode>::const_iterator i = myModeList.begin();
+      i != myModeList.end(); ++i)
+  {
+    cerr << "  Mode " << i << endl
+         << "    screen w = " << i->screen_w << endl
+         << "    screen h = " << i->screen_h << endl
+         << "    image x  = " << i->image_x << endl
+         << "    image y  = " << i->image_y << endl
+         << "    image w  = " << i->image_w << endl
+         << "    image h  = " << i->image_h << endl
+         << "    gfx id   = " << i->gfxmode.type << endl
+         << "    gfx name = " << i->gfxmode.name << endl
+         << "    gfx desc = " << i->gfxmode.description << endl
+         << "    gfx zoom = " << i->gfxmode.zoom << endl
+         << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -906,3 +1093,17 @@ void FBSurface::drawString(const GUI::Font* font, const string& s,
     x += w;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FrameBuffer::GraphicsMode FrameBuffer::ourGraphicsModes[GFX_NumModes] = {
+  { GFX_Zoom1x,  "zoom1x",  "Zoom 1x",  1  },
+  { GFX_Zoom2x,  "zoom2x",  "Zoom 2x",  2  },
+  { GFX_Zoom3x,  "zoom3x",  "Zoom 3x",  3  },
+  { GFX_Zoom4x,  "zoom4x",  "Zoom 4x",  4  },
+  { GFX_Zoom5x,  "zoom5x",  "Zoom 5x",  5  },
+  { GFX_Zoom6x,  "zoom6x",  "Zoom 6x",  6  },
+  { GFX_Zoom7x,  "zoom7x",  "Zoom 7x",  7  },
+  { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8  },
+  { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9  },
+  { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10 }
+};
