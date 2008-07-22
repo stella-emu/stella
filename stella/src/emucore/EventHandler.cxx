@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.227 2008-06-19 12:01:30 stephena Exp $
+// $Id: EventHandler.cxx,v 1.228 2008-07-22 14:54:38 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -357,6 +357,14 @@ void EventHandler::poll(uInt32 time)
           {
             myOSystem->frameBuffer().toggleFullscreen();
           }
+          else if(key == SDLK_EQUALS)
+          {
+            myOSystem->frameBuffer().changeVidMode(+1);
+          }
+          else if(key == SDLK_MINUS)
+          {
+            myOSystem->frameBuffer().changeVidMode(-1);
+          }
           else
       #endif
           // These only work when in emulation mode
@@ -364,15 +372,6 @@ void EventHandler::poll(uInt32 time)
           {
             switch(int(key))
             {
-      #ifndef MAC_OSX
-              case SDLK_EQUALS:
-                myOSystem->frameBuffer().changeVidMode(+1);
-                break;
-
-              case SDLK_MINUS:
-                myOSystem->frameBuffer().changeVidMode(-1);
-                break;
-      #endif
               case SDLK_LEFTBRACKET:
                 myOSystem->sound().adjustVolume(-1);
                 break;
@@ -484,6 +483,14 @@ void EventHandler::poll(uInt32 time)
             case SDLK_RETURN:
               myOSystem->frameBuffer().toggleFullscreen();
               break;
+
+            case SDLK_EQUALS:
+              myOSystem->frameBuffer().changeVidMode(+1);
+              break;
+
+            case SDLK_MINUS:
+              myOSystem->frameBuffer().changeVidMode(-1);
+              break;
         #endif
           }
 
@@ -497,14 +504,6 @@ void EventHandler::poll(uInt32 time)
               case SDLK_m:
               case SDLK_SLASH:
                 handleMacOSXKeypress(int(key));
-                break;
-
-              case SDLK_EQUALS:
-                myOSystem->frameBuffer().changeVidMode(+1);
-                break;
-
-              case SDLK_MINUS:
-                myOSystem->frameBuffer().changeVidMode(-1);
                 break;
             #endif
               case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0

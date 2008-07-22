@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.52 2008-06-20 12:19:42 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.53 2008-07-22 14:54:39 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,6 +101,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Fullscreen resolution
   items.clear();
+  items.push_back("Auto");
   for(uInt32 i = 0; i < instance().supportedResolutions().size(); ++i)
     items.push_back(instance().supportedResolutions()[i].name);
   myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
@@ -108,6 +109,18 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myFSResPopup);
   ypos += lineHeight + 4;
 
+#if 0
+  // Available TIA filters
+  items.clear();
+  for(uInt32 i = 0; i < instance().frameBuffer().supportedTIAFilters().size(); ++i)
+    items.push_back(instance().supportedResolutions()[i].name);
+  myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+                                 lineHeight, items, "FS Res: ", lwidth);
+  wid.push_back(myFSResPopup);
+  ypos += lineHeight + 4;
+#endif
+
+#if 0
   // Available UI zoom levels
   myUIZoomSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
                                     "UI Zoom: ", lwidth, kUIZoomChanged);
@@ -118,6 +131,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
                          ypos + 1, fontWidth * 2, fontHeight, "", kTextAlignLeft);
   myUIZoomLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
+#endif
 
   // Available TIA zoom levels
   myTIAZoomSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
@@ -205,8 +219,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
-  myUIZoomSlider->clearFlags(WIDGET_ENABLED);
-  myUIZoomLabel->clearFlags(WIDGET_ENABLED);
   myTIAZoomSlider->clearFlags(WIDGET_ENABLED);
   myTIAZoomLabel->clearFlags(WIDGET_ENABLED);
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
@@ -227,19 +239,19 @@ void VideoDialog::loadConfig()
   int i;
 
   // Renderer setting
-  s = instance().settings().getString("video");
+  s = BSPF_tolower(instance().settings().getString("video"));
   myRendererPopup->clearSelection();
   if(s == "soft")    myRendererPopup->setSelected(0);
   else if(s == "gl") myRendererPopup->setSelected(1);
 
   // Filter setting
-  s = instance().settings().getString("gl_filter");
+  s = BSPF_tolower(instance().settings().getString("gl_filter"));
   myFilterPopup->clearSelection();
   if(s == "linear")       myFilterPopup->setSelected(0);
   else if(s == "nearest") myFilterPopup->setSelected(1);
 
   // GL stretch setting
-  s = instance().settings().getString("gl_fsmax");
+  s = BSPF_tolower(instance().settings().getString("gl_fsmax"));
   myFSStretchPopup->clearSelection();
   if(s == "never")        myFSStretchPopup->setSelected(0);
   else if(s == "ui")      myFSStretchPopup->setSelected(1);
@@ -247,30 +259,27 @@ void VideoDialog::loadConfig()
   else if(s == "always")  myFSStretchPopup->setSelected(3);
 
   // Palette
-  s = instance().settings().getString("palette");
+  s = BSPF_tolower(instance().settings().getString("palette"));
   myPalettePopup->clearSelection();
   if(s == "standard")     myPalettePopup->setSelected(0);
   else if(s == "z26")     myPalettePopup->setSelected(1);
   else if(s == "user")    myPalettePopup->setSelected(2);
 
   // Fullscreen resolution
-  s = instance().settings().getString("fullres");
+  s = BSPF_tolower(instance().settings().getString("fullres"));
   myFSResPopup->clearSelection();
-  myFSResPopup->setSelected(s);
+  if(s == "auto")  myFSResPopup->setSelected(0);
+  else             myFSResPopup->setSelected(s);
   if(myFSResPopup->getSelected() < 0)
     myFSResPopup->setSelectedMax();
 
-  // UI zoom level
-  s = instance().settings().getString("zoom_ui");
-  i = instance().settings().getInt("zoom_ui");
-  myUIZoomSlider->setValue(i);
-  myUIZoomLabel->setLabel(s);
-
+/*
   // TIA zoom level
   s = instance().settings().getString("zoom_tia");
   i = instance().settings().getInt("zoom_tia");
   myTIAZoomSlider->setValue(i);
   myTIAZoomLabel->setLabel(s);
+*/
 
   // GL aspect ratio setting
   s = instance().settings().getString("gl_aspect");
@@ -344,10 +353,6 @@ void VideoDialog::saveConfig()
   s = myFSResPopup->getSelectedString();
   instance().settings().setString("fullres", s);
 
-  // UI Scaler
-  s = myUIZoomLabel->getLabel();
-  instance().settings().setString("zoom_ui", s);
-
   // TIA Scaler
   s = myTIAZoomLabel->getLabel();
   instance().settings().setString("zoom_tia", s);
@@ -394,8 +399,6 @@ void VideoDialog::setDefaults()
   myFSStretchPopup->setSelected(0);
   myPalettePopup->setSelected(0);
   myFSResPopup->setSelectedMax();
-  myUIZoomSlider->setValue(2);
-  myUIZoomLabel->setLabel("2");
   myTIAZoomSlider->setValue(2);
   myTIAZoomLabel->setLabel("2");
   myAspectRatioSlider->setValue(100);
@@ -436,8 +439,6 @@ void VideoDialog::handleFullscreenChange(bool enable)
 #ifdef WINDOWED_SUPPORT
   myFSResPopup->setEnabled(enable);
 
-  myUIZoomSlider->setEnabled(!enable);
-  myUIZoomLabel->setEnabled(!enable);
   myTIAZoomSlider->setEnabled(!enable);
   myTIAZoomLabel->setEnabled(!enable);
 
@@ -462,10 +463,6 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRendererChanged:
       handleRendererChange(data);
-      break;
-
-    case kUIZoomChanged:
-      myUIZoomLabel->setValue(myUIZoomSlider->getValue());
       break;
 
     case kTIAZoomChanged:

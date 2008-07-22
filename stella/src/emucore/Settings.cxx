@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.148 2008-05-30 19:07:55 stephena Exp $
+// $Id: Settings.cxx,v 1.149 2008-07-22 14:54:39 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -47,10 +47,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_texrect", "false");
 
   // Framebuffer-related options
-  setInternal("zoom_ui", "2");
-  setInternal("zoom_tia", "2");
+  setInternal("tia_filter", "zoom2x");
   setInternal("fullscreen", "false");
-  setInternal("fullres", "");
+  setInternal("fullres", "auto");
   setInternal("center", "true");
   setInternal("grabmouse", "false");
   setInternal("palette", "standard");
@@ -245,14 +244,6 @@ void Settings::validate()
     setInternal("tiafreq", "31400");
 #endif
 
-  i = getInt("zoom_ui");
-  if(i < 1 || i > 10)
-    setInternal("zoom_ui", "2");
-
-  i = getInt("zoom_tia");
-  if(i < 1 || i > 10)
-    setInternal("zoom_tia", "2");
-
   i = getInt("joydeadzone");
   if(i < 0)
     setInternal("joydeadzone", "0");
@@ -302,10 +293,9 @@ void Settings::usage()
     << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
     << endl
   #endif
-    << "  -zoom_tia     <zoom>         Use the specified zoom level in emulation mode\n"
-    << "  -zoom_ui      <zoom>         Use the specified zoom level in non-emulation mode (ROM browser/debugger)\n"
+    << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
     << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
-    << "  -fullres      <WxH>          The resolution to use in fullscreen mode\n"
+    << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -palette      <standard|     Use the specified color palette\n"
@@ -481,11 +471,12 @@ void Settings::setString(const string& key, const string& value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::getSize(const string& key, int& x, int& y) const
 {
+  char c;
   string size = getString(key);
-  replace(size.begin(), size.end(), 'x', ' ');
   istringstream buf(size);
-  buf >> x;
-  buf >> y;
+  buf >> x >> c >> y;
+  if(c != 'x')
+    x = y = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

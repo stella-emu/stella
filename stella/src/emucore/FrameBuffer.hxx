@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.100 2008-07-04 14:27:17 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.101 2008-07-22 14:54:39 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -31,7 +31,7 @@ namespace GUI {
 }
 
 #include "EventHandler.hxx"
-//#include "VideoModeList.hxx"
+#include "Settings.hxx"
 #include "Rect.hxx"
 #include "bspf.hxx"
 
@@ -90,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.100 2008-07-04 14:27:17 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.101 2008-07-22 14:54:39 stephena Exp $
 */
 class FrameBuffer
 {
@@ -219,6 +219,11 @@ class FrameBuffer
       Set the title for the main SDL window.
     */
     void setWindowTitle(const string& title);
+
+    /**
+      Get the supported TIA filters for the given framebuffer type.
+    */
+    const StringList& supportedTIAFilters(const string& type);
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
@@ -376,6 +381,9 @@ class FrameBuffer
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
 
+    // Names of the TIA filters that can be used for this framebuffer
+    StringList myTIAFilters;
+
   private:
     /**
       Set the icon for the main SDL window.
@@ -411,6 +419,12 @@ class FrameBuffer
     void setAvailableVidModes(uInt32 basewidth, uInt32 baseheight);
 
     /**
+      Adds the given video mode to both windowed and fullscreen lists.
+      In the case of fullscreen, we make sure a valid resolution exists.
+    */
+    void addVidMode(VideoMode& mode);
+
+    /**
       Returns an appropriate video mode based on the current eventhandler
       state, taking into account the maximum size of the window.
 
@@ -434,9 +448,9 @@ class FrameBuffer
         bool isEmpty() const;
         uInt32 size() const;
 
-        const FrameBuffer::VideoMode& previous();
-        const FrameBuffer::VideoMode& current() const;
-        const FrameBuffer::VideoMode& next();
+        void previous();
+        const FrameBuffer::VideoMode current(const Settings& settings) const;
+        void next();
 
         void setByGfxMode(GfxID id);
         void setByGfxMode(const string& name);
@@ -496,7 +510,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.100 2008-07-04 14:27:17 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.101 2008-07-22 14:54:39 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

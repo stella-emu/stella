@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.24 2008-06-19 12:01:31 stephena Exp $
+// $Id: Launcher.cxx,v 1.25 2008-07-22 14:54:39 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -28,11 +28,19 @@ class Properties;
 #include "bspf.hxx"
 #include "Launcher.hxx"
 
+#ifdef SMALL_SCREEN
+  #define MIN_WIDTH  320
+  #define MIN_HEIGHT 240
+#else
+  #define MIN_WIDTH  640
+  #define MIN_HEIGHT 480
+#endif
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem* osystem)
   : DialogContainer(osystem),
-    myWidth(640),
-    myHeight(480)
+    myWidth(MIN_WIDTH),
+    myHeight(MIN_HEIGHT)
 {
   int w, h;
   myOSystem->settings().getSize("launcherres", w, h);
@@ -40,9 +48,9 @@ Launcher::Launcher(OSystem* osystem)
   myHeight = BSPF_max(h, 0);
 
   // Error check the resolution
-  myWidth = BSPF_max(myWidth, 640u);
+  myWidth = BSPF_max(myWidth, (uInt32)MIN_WIDTH);
   myWidth = BSPF_min(myWidth, osystem->desktopWidth());
-  myHeight = BSPF_max(myHeight, 480u);
+  myHeight = BSPF_max(myHeight, (uInt32)MIN_HEIGHT);
   myHeight = BSPF_min(myHeight, osystem->desktopHeight());
   myOSystem->settings().setSize("launcherres", myWidth, myHeight);
 
