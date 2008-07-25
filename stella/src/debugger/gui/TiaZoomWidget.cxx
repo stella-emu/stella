@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.17 2008-06-19 12:01:30 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.18 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,10 +56,10 @@ TiaZoomWidget::TiaZoomWidget(GuiObject* boss, const GUI::Font& font,
   myYCenter = myNumRows >> 1;
 
   // Create context menu for zoom levels
-  StringList l;
-  l.push_back("2x zoom");
-  l.push_back("4x zoom");
-  l.push_back("8x zoom");
+  StringMap l;
+  l.push_back("2x zoom", "2");
+  l.push_back("4x zoom", "4");
+  l.push_back("8x zoom", "8");
   myMenu = new ContextMenu(this, font, l);
 }
 
@@ -204,14 +204,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
   {
     case kCMenuItemSelectedCmd:
     {
-      int item = myMenu->getSelected(), level = 0;
-      if(item == 0)
-        level = 2;
-      else if(item == 1)
-        level = 4;
-      else if(item == 2)
-        level = 8;
-
+      int level = (int) atoi(myMenu->getSelectedTag().c_str());
       if(level > 0)
         zoom(level);
       break;

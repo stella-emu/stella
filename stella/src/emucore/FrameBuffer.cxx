@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.136 2008-07-22 14:54:39 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.137 2008-07-25 12:41:41 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -625,21 +625,25 @@ uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringList& FrameBuffer::supportedTIAFilters(const string& type)
+const StringMap& FrameBuffer::supportedTIAFilters(const string& type)
 {
-  myTIAFilters.clear();
-
+  uInt32 max_zoom = maxWindowSizeForScreen(320, 210,
+                    myOSystem->desktopWidth(), myOSystem->desktopHeight());
 #ifdef SMALL_SCREEN
   uInt32 firstmode = 0;
 #else
   uInt32 firstmode = 1;
 #endif
+  myTIAFilters.clear();
   for(uInt32 i = firstmode; i < GFX_NumModes; ++i)
   {
     // For now, just include all filters
     // This will change once OpenGL-only filters are added
-    myTIAFilters.push_back(ourGraphicsModes[i].description);
-    cerr << ourGraphicsModes[i].description << endl;
+    if(ourGraphicsModes[i].zoom <= max_zoom)
+    {
+      myTIAFilters.push_back(ourGraphicsModes[i].description,
+                             ourGraphicsModes[i].name);
+    }
   }
   return myTIAFilters;
 }
@@ -1073,14 +1077,14 @@ void FBSurface::drawString(const GUI::Font* font, const string& s,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::GraphicsMode FrameBuffer::ourGraphicsModes[GFX_NumModes] = {
-  { GFX_Zoom1x,  "zoom1x",  "Zoom 1x",  1  },
-  { GFX_Zoom2x,  "zoom2x",  "Zoom 2x",  2  },
-  { GFX_Zoom3x,  "zoom3x",  "Zoom 3x",  3  },
-  { GFX_Zoom4x,  "zoom4x",  "Zoom 4x",  4  },
-  { GFX_Zoom5x,  "zoom5x",  "Zoom 5x",  5  },
-  { GFX_Zoom6x,  "zoom6x",  "Zoom 6x",  6  },
-  { GFX_Zoom7x,  "zoom7x",  "Zoom 7x",  7  },
-  { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8  },
-  { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9  },
-  { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10 }
+  { GFX_Zoom1x,  "zoom1x",  "Zoom 1x",  1,  0x3 },
+  { GFX_Zoom2x,  "zoom2x",  "Zoom 2x",  2,  0x3 },
+  { GFX_Zoom3x,  "zoom3x",  "Zoom 3x",  3,  0x3 },
+  { GFX_Zoom4x,  "zoom4x",  "Zoom 4x",  4,  0x3 },
+  { GFX_Zoom5x,  "zoom5x",  "Zoom 5x",  5,  0x3 },
+  { GFX_Zoom6x,  "zoom6x",  "Zoom 6x",  6,  0x3 },
+  { GFX_Zoom7x,  "zoom7x",  "Zoom 7x",  7,  0x3 },
+  { GFX_Zoom8x,  "zoom8x",  "Zoom 8x",  8,  0x3 },
+  { GFX_Zoom9x,  "zoom9x",  "Zoom 9x",  9,  0x3 },
+  { GFX_Zoom10x, "zoom10x", "Zoom 10x", 10, 0x3 }
 };

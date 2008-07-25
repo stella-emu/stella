@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotWidget.cxx,v 1.6 2008-06-13 13:14:50 stephena Exp $
+// $Id: RiotWidget.cxx,v 1.7 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,7 +91,7 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
             lineHeight = font.getLineHeight();
   int xpos = 10, ypos = 25, lwidth = 9 * fontWidth, col = 0;
   StaticTextWidget* t;
-  StringList items;
+  StringMap items;
 
   // Set the strings to be used in the various bit registers
   // We only do this once because it's the state that changes, not the strings
@@ -159,8 +159,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   lwidth = font.getStringWidth("P0 Diff: ");
   xpos = col;  ypos += 3 * lineHeight;
   items.clear();
-  items.push_back("B/easy");
-  items.push_back("A/hard");
+  items.push_back("B/easy", "b");
+  items.push_back("A/hard", "a");
   myP0Diff = new PopUpWidget(boss, font, xpos, ypos, pwidth, lineHeight, items,
                              "P0 Diff: ", lwidth, kP0DiffChanged);
   myP0Diff->setTarget(this);
@@ -174,8 +174,8 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   // TV Type
   ypos += myP1Diff->getHeight() + 5;
   items.clear();
-  items.push_back("B&W");
-  items.push_back("Color");
+  items.push_back("B&W", "bw");
+  items.push_back("Color", "color");
   myTVType = new PopUpWidget(boss, font, xpos, ypos, pwidth, lineHeight, items,
                              "TV Type: ", lwidth, kTVTypeChanged);
   myTVType->setTarget(this);
@@ -345,11 +345,11 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kP0DiffChanged:
-      riot.diffP0((bool)myP0Diff->getSelected());
+      riot.diffP0(myP0Diff->getSelectedTag() != "b");
       break;
 
     case kP1DiffChanged:
-      riot.diffP1((bool)myP1Diff->getSelected());
+      riot.diffP1(myP1Diff->getSelectedTag() != "b");
       break;
 
     case kTVTypeChanged:

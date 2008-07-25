@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringList.hxx,v 1.8 2008-02-06 13:45:24 stephena Exp $
+// $Id: StringList.hxx,v 1.9 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -59,6 +59,16 @@ class StringList : public Common::Array<string>
         if(!match) tmp += str[i];
       }
       return tmp;
+    }
+};
+
+class StringMap : public Common::Array< pair<string,string> >
+{
+  public:
+    void push_back(const string& name, const string& tag)
+    {
+      ensureCapacity(_size + 1);
+      _data[_size++] = make_pair(name, tag);
     }
 };
 

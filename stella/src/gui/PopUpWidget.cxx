@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.41 2008-06-19 12:01:31 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.42 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,7 +43,7 @@ static unsigned int up_down_arrows[8] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                         int x, int y, int w, int h, const StringList& list,
+                         int x, int y, int w, int h, const StringMap& list,
                          const string& label, int labelWidth, int cmd)
   : Widget(boss, font, x, y - 1, w, h + 2),
     CommandSender(boss),
@@ -133,7 +133,7 @@ void PopUpWidget::drawWidget(bool hilite)
                !isEnabled() ? kColor : hilite ? kTextColorHi : kTextColor);
 
   // Draw the selected entry, if any
-  const string& name = myMenu->getSelectedString();
+  const string& name = myMenu->getSelectedName();
   TextAlignment align = (_font->getStringWidth(name) > w-6) ?
                          kTextAlignRight : kTextAlignLeft;
   s.drawString(_font, name, x+2, _y+myTextY, w-6,

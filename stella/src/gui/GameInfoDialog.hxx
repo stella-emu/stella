@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.33 2008-05-12 22:40:26 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.34 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -87,19 +87,11 @@ class GameInfoDialog : public Dialog, public CommandSender
     StaticTextWidget* myPPBlendLabel;
     PopUpWidget*      myHmoveBlanks;
 
-    // Structure used for cartridge and controller types
-    struct PropType {
-      const char* name;
-      const char* comparitor;
-    };
-
     enum {
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
       kPhosphorChanged = 'PPch',
-      kPPBlendChanged  = 'PBch',
-      kNumCartTypes       = 25,
-      kNumControllerTypes = 10
+      kPPBlendChanged  = 'PBch'
     };
 
     /** Game properties for currently loaded ROM */
@@ -110,12 +102,6 @@ class GameInfoDialog : public Dialog, public CommandSender
 
     /** Indicates that the default properties have been loaded */
     bool myDefaultsSelected;
-
-    /** Holds static strings for Cartridge type */
-    static const char* ourCartridgeList[kNumCartTypes][2];
-
-    /** Holds static strings for Controller type */
-    static const char* ourControllerList[kNumControllerTypes][2];
 };
 
 #endif

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.57 2008-06-13 13:14:51 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.58 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,9 +48,8 @@ GameInfoDialog::GameInfoDialog(
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
-  unsigned int i;
   WidgetArray wid;
-  StringList items;
+  StringMap items, ports, ctrls;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -111,8 +110,8 @@ GameInfoDialog::GameInfoDialog(
                        "Sound:", kTextAlignLeft);
   pwidth = font.getStringWidth("Stereo");
   items.clear();
-  items.push_back("Mono");
-  items.push_back("Stereo");
+  items.push_back("Mono", "MONO");
+  items.push_back("Stereo", "STEREO");
   mySound = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                             pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySound);
@@ -122,8 +121,31 @@ GameInfoDialog::GameInfoDialog(
                        "Type:", kTextAlignLeft);
   pwidth = font.getStringWidth("SB (128-256k SUPERbanking)");
   items.clear();
-  for(i = 0; i < kNumCartTypes; ++i)
-    items.push_back(ourCartridgeList[i][0]);
+  items.push_back("Auto-detect",          "AUTO-DETECT");
+  items.push_back("0840 (8K ECONObanking)",     "0840" );
+  items.push_back("2K (2K Atari)",              "2K"   );
+  items.push_back("3E (32K Tigervision)",       "3E"   );
+  items.push_back("3F (512K Tigervision)",      "3F"   );
+  items.push_back("4A50 (64K 4A50 + ram)",      "4A50" );
+  items.push_back("4K (4K Atari)",              "4K"   );
+  items.push_back("AR (Supercharger)",          "AR"   );
+  items.push_back("CV (Commavid extra ram)",    "CV"   );
+  items.push_back("DPC (Pitfall II)",           "DPC"  );
+  items.push_back("E0 (8K Parker Bros)",        "E0"   );
+  items.push_back("E7 (16K M-network)",         "E7"   );
+  items.push_back("F4 (32K Atari)",             "F4"   );
+  items.push_back("F4SC (32K Atari + ram)",     "F4SC" );
+  items.push_back("F6 (16K Atari)",             "F6"   );
+  items.push_back("F6SC (16K Atari + ram)",     "F6SC" );
+  items.push_back("F8 (8K Atari)",              "F8"   );
+  items.push_back("F8SC (8K Atari + ram)",      "F8SC" );
+  items.push_back("FASC (CBS RAM Plus)",        "FASC" );
+  items.push_back("FE (8K Decathlon)",          "FE"   );
+  items.push_back("MB (Dynacom Megaboy)",       "MB"   );
+  items.push_back("MC (C. Wilkson Megacart)",   "MC"   );
+  items.push_back("SB (128-256k SUPERbanking)", "SB"   );
+  items.push_back("UA (8K UA Ltd.)",            "UA"   );
+  items.push_back("X07 (64K AtariAge)",         "X07"  );
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                            pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myType);
@@ -142,8 +164,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Left Difficulty:", kTextAlignLeft);
   items.clear();
-  items.push_back("B");
-  items.push_back("A");
+  items.push_back("B", "B");
+  items.push_back("A", "A");
   myLeftDiff = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myLeftDiff);
@@ -160,8 +182,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "TV Type:", kTextAlignLeft);
   items.clear();
-  items.push_back("Color");
-  items.push_back("B & W");
+  items.push_back("Color", "COLOR");
+  items.push_back("B & W", "BLACKANDWHITE");
   myTVType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);
@@ -179,43 +201,45 @@ GameInfoDialog::GameInfoDialog(
   pwidth = font.getStringWidth("CX-22 Trakball");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
-  items.clear();
-  for(i = 0; i < kNumControllerTypes; ++i)
-    items.push_back(ourControllerList[i][0]);
+  ctrls.clear();
+  ctrls.push_back("Joystick",       "JOYSTICK"    );
+  ctrls.push_back("Paddles",        "PADDLES"     );
+  ctrls.push_back("BoosterGrip",    "BOOSTERGRIP" );
+  ctrls.push_back("Driving",        "DRIVING"     );
+  ctrls.push_back("Keyboard",       "KEYBOARD"    );
+  ctrls.push_back("CX-22 Trakball", "TRACKBALL22" );
+  ctrls.push_back("CX-80 Mouse",    "TRACKBALL80" );
+  ctrls.push_back("AmigaMouse",     "AMIGAMOUSE"  );
+  ctrls.push_back("AtariVox",       "ATARIVOX"    );
+  ctrls.push_back("SaveKey",        "SAVEKEY"     );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                   pwidth, lineHeight, items, "", 0, 0);
+                                   pwidth, lineHeight, ctrls, "", 0, 0);
   wid.push_back(myP0Controller);
 
   xpos += lwidth+myP0Controller->getWidth() + 4;
   new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
                        fontHeight, "in ", kTextAlignLeft);
   xpos += font.getStringWidth("in ");
-  items.clear();
-  items.push_back("left port");
-  items.push_back("right port");
+  ports.clear();
+  ports.push_back("left port", "L");
+  ports.push_back("right port", "R");
   myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                               items, "", 0, kLeftCChanged);
+                               ports, "", 0, kLeftCChanged);
   wid.push_back(myLeftPort);
 
   xpos = 10;  ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P1 Controller:", kTextAlignLeft);
-  items.clear();
-  for(i = 0; i < kNumControllerTypes; ++i)
-    items.push_back(ourControllerList[i][0]);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
-                                   pwidth, lineHeight, items, "", 0, 0);
+                                   pwidth, lineHeight, ctrls, "", 0, 0);
   wid.push_back(myP1Controller);
 
   xpos += lwidth+myP1Controller->getWidth() + 4;
   new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
                        fontHeight, "in ", kTextAlignLeft);
   xpos += font.getStringWidth("in ");
-  items.clear();
-  items.push_back("left port");
-  items.push_back("right port");
   myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                items, "", 0, kRightCChanged);
+                                ports, "", 0, kRightCChanged);
   wid.push_back(myRightPort);
 
   xpos = 10;  ypos += lineHeight + 5;
@@ -223,8 +247,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Swap Paddles:", kTextAlignLeft);
   items.clear();
-  items.push_back("Yes");
-  items.push_back("No");
+  items.push_back("Yes", "YES");
+  items.push_back("No", "NO");
   mySwapPaddles = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                   pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySwapPaddles);
@@ -244,13 +268,13 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
   items.clear();
-  items.push_back("Auto-detect");
-  items.push_back("NTSC");
-  items.push_back("PAL");
-  items.push_back("SECAM");
-  items.push_back("NTSC50");
-  items.push_back("PAL60");
-  items.push_back("SECAM60");
+  items.push_back("Auto-detect", "AUTO-DETECT");
+  items.push_back("NTSC",    "NTSC");
+  items.push_back("PAL",     "PAL");
+  items.push_back("SECAM",   "SECAM");
+  items.push_back("NTSC50",  "NTSC50");
+  items.push_back("PAL60",   "PAL60");
+  items.push_back("SECAM60", "SECAM60");
   myFormat = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myFormat);
@@ -274,8 +298,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use Phosphor:", kTextAlignLeft);
   items.clear();
-  items.push_back("Yes");
-  items.push_back("No");
+  items.push_back("Yes", "YES");
+  items.push_back("No", "NO");
   myPhosphor = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
                                lineHeight, items, "", 0, kPhosphorChanged);
   wid.push_back(myPhosphor);
@@ -297,8 +321,8 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Use HMBlanks:", kTextAlignLeft);
   items.clear();
-  items.push_back("Yes");
-  items.push_back("No");
+  items.push_back("Yes", "YES");
+  items.push_back("No", "NO");
   myHmoveBlanks = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
                                   lineHeight, items, "", 0, 0);
   wid.push_back(myHmoveBlanks);
@@ -362,126 +386,45 @@ void GameInfoDialog::loadView()
   if(!myPropertiesLoaded)
     return;
 
-  string s;
-  int i;
-
   // Cartridge properties
-  s = myGameProperties.get(Cartridge_Name);
-  myName->setEditString(s);
-
-  s = myGameProperties.get(Cartridge_MD5);
-  myMD5->setLabel(s);
-
-  s = myGameProperties.get(Cartridge_Manufacturer);
-  myManufacturer->setEditString(s);
-
-  s = myGameProperties.get(Cartridge_ModelNo);
-  myModelNo->setEditString(s);
-
-  s = myGameProperties.get(Cartridge_Rarity);
-  myRarity->setEditString(s);
-
-  s = myGameProperties.get(Cartridge_Note);
-  myNote->setEditString(s);
-
-  s = myGameProperties.get(Cartridge_Sound);
-  mySound->clearSelection();
-  if(s == "MONO")         mySound->setSelected(0);
-  else if(s == "STEREO")  mySound->setSelected(1);
-
-  s = myGameProperties.get(Cartridge_Type);
-  myType->clearSelection();
-  for(i = 0; i < kNumCartTypes; ++i)
-  {
-    if(s == ourCartridgeList[i][1])
-      break;
-  }
-  myType->setSelected(i);
+  myName->setEditString(myGameProperties.get(Cartridge_Name));
+  myMD5->setLabel(myGameProperties.get(Cartridge_MD5));
+  myManufacturer->setEditString(myGameProperties.get(Cartridge_Manufacturer));
+  myModelNo->setEditString(myGameProperties.get(Cartridge_ModelNo));
+  myRarity->setEditString(myGameProperties.get(Cartridge_Rarity));
+  myNote->setEditString(myGameProperties.get(Cartridge_Note));
+  mySound->setSelected(myGameProperties.get(Cartridge_Sound), "MONO");
+  myType->setSelected(myGameProperties.get(Cartridge_Type), "AUTO-DETECT");
 
   // Console properties
-  s = myGameProperties.get(Console_LeftDifficulty);
-  myLeftDiff->clearSelection();
-  if(s == "B")       myLeftDiff->setSelected(0);
-  else if(s == "A")  myLeftDiff->setSelected(1);
+  myLeftDiff->setSelected(myGameProperties.get(Console_LeftDifficulty), "B");
+  myRightDiff->setSelected(myGameProperties.get(Console_RightDifficulty), "B");
+  myTVType->setSelected(myGameProperties.get(Console_TelevisionType), "COLOR");
 
-  s = myGameProperties.get(Console_RightDifficulty);
-  myRightDiff->clearSelection();
-  if(s == "B")       myRightDiff->setSelected(0);
-  else if(s == "A")  myRightDiff->setSelected(1);
-
-  s = myGameProperties.get(Console_TelevisionType);
-  myTVType->clearSelection();
-  if(s == "COLOR")               myTVType->setSelected(0);
-  else if(s == "BLACKANDWHITE")  myTVType->setSelected(1);
-
-  s = myGameProperties.get(Console_SwapPorts);
-  myLeftPort->clearSelection();
-  myRightPort->clearSelection();
-  myLeftPort->setSelected(s == "NO" ? 0 : 1);
-  myRightPort->setSelected(s == "NO" ? 1 : 0);
+  const string& swap = myGameProperties.get(Console_SwapPorts);
+  myLeftPort->setSelected((swap == "NO" ? "L" : "R"), "L");
+  myRightPort->setSelected((swap == "NO" ? "R" : "L"), "R");
 
   // Controller properties
-  s = myGameProperties.get(Controller_Left);
-  myP0Controller->clearSelection();
-  for(i = 0; i < kNumControllerTypes; ++i)
-  {
-    if(s == ourControllerList[i][1])
-      break;
-  }
-  myP0Controller->setSelected(i);
-
-  s = myGameProperties.get(Controller_Right);
-  myP1Controller->clearSelection();
-  for(i = 0; i < kNumControllerTypes; ++i)
-  {
-    if(s == ourControllerList[i][1])
-      break;
-  }
-  myP1Controller->setSelected(i);
-
-  s = myGameProperties.get(Controller_SwapPaddles);
-  mySwapPaddles->clearSelection();
-  if(s == "YES")      mySwapPaddles->setSelected(0);
-  else if(s == "NO")  mySwapPaddles->setSelected(1);
+  myP0Controller->setSelected(myGameProperties.get(Controller_Left), "JOYSTICK");
+  myP1Controller->setSelected(myGameProperties.get(Controller_Right), "JOYSTICK");
+  mySwapPaddles->setSelected(myGameProperties.get(Controller_SwapPaddles), "NO");
 
   // Display properties
-  s = myGameProperties.get(Display_Format);
-  myFormat->clearSelection();
-  if(s == "AUTO-DETECT")   myFormat->setSelected(0);
-  else if(s == "NTSC")     myFormat->setSelected(1);
-  else if(s == "PAL")      myFormat->setSelected(2);
-  else if(s == "SECAM")    myFormat->setSelected(3);
-  else if(s == "NTSC50")   myFormat->setSelected(4);
-  else if(s == "PAL60")    myFormat->setSelected(5);
-  else if(s == "SECAM60")  myFormat->setSelected(6);
+  myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO-DETECT");
+  myYStart->setEditString(myGameProperties.get(Display_YStart));
+  myHeight->setEditString(myGameProperties.get(Display_Height));
 
-  s = myGameProperties.get(Display_YStart);
-  myYStart->setEditString(s);
+  const string& phos = myGameProperties.get(Display_Phosphor);
+  myPhosphor->setSelected(phos, "NO");
+  myPPBlend->setEnabled(phos != "NO");
+  myPPBlendLabel->setEnabled(phos != "NO");
 
-  s = myGameProperties.get(Display_Height);
-  myHeight->setEditString(s);
+  const string& blend = myGameProperties.get(Display_PPBlend);
+  myPPBlend->setValue(atoi(blend.c_str()));
+  myPPBlendLabel->setLabel(blend);
 
-  s = myGameProperties.get(Display_Phosphor);
-  myPhosphor->clearSelection();
-  myPPBlend->setEnabled(false);
-  myPPBlendLabel->setEnabled(false);
-  if(s == "YES")
-  {
-    myPhosphor->setSelected(0);
-    myPPBlend->setEnabled(true);
-    myPPBlendLabel->setEnabled(true);
-  }
-  else if(s == "NO")
-    myPhosphor->setSelected(1);
-
-  s = myGameProperties.get(Display_PPBlend);
-  myPPBlend->setValue(atoi(s.c_str()));
-  myPPBlendLabel->setLabel(s);
-
-  s = myGameProperties.get(Emulation_HmoveBlanks);
-  myHmoveBlanks->clearSelection();
-  if(s == "YES")      myHmoveBlanks->setSelected(0);
-  else if(s == "NO")  myHmoveBlanks->setSelected(1);
+  myHmoveBlanks->setSelected(myGameProperties.get(Emulation_HmoveBlanks), "YES");
 
   myTab->loadConfig();
 }
@@ -492,101 +435,33 @@ void GameInfoDialog::saveConfig()
   if(!myPropertiesLoaded)
     return;
 
-  string s;
-  int i, tag;
-
   // Cartridge properties
-  s = myName->getEditString();
-  myGameProperties.set(Cartridge_Name, s);
-
-  s = myManufacturer->getEditString();
-  myGameProperties.set(Cartridge_Manufacturer, s);
-
-  s = myModelNo->getEditString();
-  myGameProperties.set(Cartridge_ModelNo, s);
-
-  s = myRarity->getEditString();
-  myGameProperties.set(Cartridge_Rarity, s);
-
-  s = myNote->getEditString();
-  myGameProperties.set(Cartridge_Note, s);
-
-  tag = mySound->getSelected();
-  s = (tag == 0) ? "Mono" : "Stereo";
-  myGameProperties.set(Cartridge_Sound, s);
-
-  tag = myType->getSelected();
-  for(i = 0; i < kNumCartTypes; ++i)
-  {
-    if(i == tag)
-    {
-      myGameProperties.set(Cartridge_Type, ourCartridgeList[i][1]);
-      break;
-    }
-  }
+  myGameProperties.set(Cartridge_Name, myName->getEditString());
+  myGameProperties.set(Cartridge_Manufacturer, myManufacturer->getEditString());
+  myGameProperties.set(Cartridge_ModelNo, myModelNo->getEditString());
+  myGameProperties.set(Cartridge_Rarity, myRarity->getEditString());
+  myGameProperties.set(Cartridge_Note, myNote->getEditString());
+  myGameProperties.set(Cartridge_Sound, mySound->getSelectedTag());
+  myGameProperties.set(Cartridge_Type, myType->getSelectedTag());
 
   // Console properties
-  tag = myLeftDiff->getSelected();
-  s = (tag == 0) ? "B" : "A";
-  myGameProperties.set(Console_LeftDifficulty, s);
-
-  tag = myRightDiff->getSelected();
-  s = (tag == 0) ? "B" : "A";
-  myGameProperties.set(Console_RightDifficulty, s);
-
-  tag = myTVType->getSelected();
-  s = (tag == 0) ? "Color" : "BlackAndWhite";
-  myGameProperties.set(Console_TelevisionType, s);
+  myGameProperties.set(Console_LeftDifficulty, myLeftDiff->getSelectedTag());
+  myGameProperties.set(Console_RightDifficulty, myRightDiff->getSelectedTag());
+  myGameProperties.set(Console_TelevisionType, myTVType->getSelectedTag());
 
   // Controller properties
-  tag = myP0Controller->getSelected();
-  for(i = 0; i < kNumControllerTypes; ++i)
-  {
-    if(i == tag)
-    {
-      myGameProperties.set(Controller_Left, ourControllerList[i][1]);
-      break;
-    }
-  }
-
-  tag = myP1Controller->getSelected();
-  for(i = 0; i < kNumControllerTypes; ++i)
-  {
-    if(i == tag)
-    {
-      myGameProperties.set(Controller_Right, ourControllerList[i][1]);
-      break;
-    }
-  }
-
-  tag = myLeftPort->getSelected();
-  s = (tag == 0) ? "No" : "Yes";
-  myGameProperties.set(Console_SwapPorts, s);
-
-  tag = mySwapPaddles->getSelected();
-  s = (tag == 0) ? "Yes" : "No";
-  myGameProperties.set(Controller_SwapPaddles, s);
+  myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag());
+  myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag());
+  myGameProperties.set(Console_SwapPorts, myLeftPort->getSelectedTag());
+  myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag());
 
   // Display properties
-  s = myFormat->getSelectedString();  // use string directly
-  myGameProperties.set(Display_Format, s);
-
-  s = myYStart->getEditString();
-  myGameProperties.set(Display_YStart, s);
-
-  s = myHeight->getEditString();
-  myGameProperties.set(Display_Height, s);
-
-  tag = myPhosphor->getSelected();
-  s = (tag == 0) ? "Yes" : "No";
-  myGameProperties.set(Display_Phosphor, s);
-
-  s = myPPBlendLabel->getLabel();
-  myGameProperties.set(Display_PPBlend, s);
-
-  tag = myHmoveBlanks->getSelected();
-  s = (tag == 0) ? "Yes" : "No";
-  myGameProperties.set(Emulation_HmoveBlanks, s);
+  myGameProperties.set(Display_Format, myFormat->getSelectedTag());
+  myGameProperties.set(Display_YStart, myYStart->getEditString());
+  myGameProperties.set(Display_Height, myHeight->getEditString());
+  myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag());
+  myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
+  myGameProperties.set(Emulation_HmoveBlanks, myHmoveBlanks->getSelectedTag());
 
   // Determine whether to add or remove an entry from the properties set
   if(myDefaultsSelected)
@@ -639,7 +514,7 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPhosphorChanged:
     {
-      bool status = myPhosphor->getSelected() == 0 ? true : false;
+      bool status = myPhosphor->getSelectedTag() == "YES";
       myPPBlend->setEnabled(status);
       myPPBlendLabel->setEnabled(status);
       break;
@@ -654,46 +529,3 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
   }
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* GameInfoDialog::ourControllerList[kNumControllerTypes][2] = {
-  { "Joystick",       "JOYSTICK"    },
-  { "Paddles",        "PADDLES"     },
-  { "BoosterGrip",    "BOOSTERGRIP" },
-  { "Driving",        "DRIVING"     },
-  { "Keyboard",       "KEYBOARD"    },
-  { "CX-22 Trakball", "TRACKBALL22" },
-  { "CX-80 Mouse",    "TRACKBALL80" },
-  { "AmigaMouse",     "AMIGAMOUSE"  },
-  { "AtariVox",       "ATARIVOX"    },
-  { "SaveKey",        "SAVEKEY"     }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* GameInfoDialog::ourCartridgeList[kNumCartTypes][2] = {
-  { "Auto-detect",       "AUTO-DETECT"   },
-  { "0840 (8K ECONObanking)",     "0840" },
-  { "2K (2K Atari)",              "2K"   },
-  { "3E (32K Tigervision)",       "3E"   },
-  { "3F (512K Tigervision)",      "3F"   },
-  { "4A50 (64K 4A50 + ram)",      "4A50" },
-  { "4K (4K Atari)",              "4K"   },
-  { "AR (Supercharger)",          "AR"   },
-  { "CV (Commavid extra ram)",    "CV"   },
-  { "DPC (Pitfall II)",           "DPC"  },
-  { "E0 (8K Parker Bros)",        "E0"   },
-  { "E7 (16K M-network)",         "E7"   },
-  { "F4 (32K Atari)",             "F4"   },
-  { "F4SC (32K Atari + ram)",     "F4SC" },
-  { "F6 (16K Atari)",             "F6"   },
-  { "F6SC (16K Atari + ram)",     "F6SC" },
-  { "F8 (8K Atari)",              "F8"   },
-  { "F8SC (8K Atari + ram)",      "F8SC" },
-  { "FASC (CBS RAM Plus)",        "FASC" },
-  { "FE (8K Decathlon)",          "FE"   },
-  { "MB (Dynacom Megaboy)",       "MB"   },
-  { "MC (C. Wilkson Megacart)",   "MC"   },
-  { "SB (128-256k SUPERbanking)", "SB"   },
-  { "UA (8K UA Ltd.)",            "UA"   },
-  { "X07 (64K AtariAge)",         "X07"  }
-};

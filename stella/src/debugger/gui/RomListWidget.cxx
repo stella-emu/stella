@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.14 2008-06-19 12:01:30 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.15 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,10 +32,10 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
 {
   _type = kRomListWidget;
 
-  StringList l;
+  StringMap l;
 //  l.push_back("Add bookmark");
-  l.push_back("Save ROM");
-  l.push_back("Set PC");
+  l.push_back("Save ROM", "saverom");
+  l.push_back("Set PC", "setpc");
   myMenu = new ContextMenu(this, font, l);
 
   // Take advantage of a wide debugger window when possible

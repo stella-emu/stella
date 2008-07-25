@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.53 2008-07-22 14:54:39 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.54 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   int lwidth = font.getStringWidth("Dirty Rects: "),
       pwidth = font.getStringWidth("1920x1200");
   WidgetArray wid;
-  StringList items;
+  StringMap items;
 
   // Set real dimensions
 //  _w = 46 * fontWidth + 10;
@@ -59,9 +59,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Video renderer
   items.clear();
-  items.push_back("Software");
+  items.push_back("Software", "soft");
 #ifdef DISPLAY_OPENGL
-  items.push_back("OpenGL");
+  items.push_back("OpenGL", "gl");
 #endif
   myRendererPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
                                     items, "Renderer: ", lwidth,
@@ -69,79 +69,52 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myRendererPopup);
   ypos += lineHeight + 4;
 
-  // Video filter
+  // TIA filters (will be dynamically filled later)
   items.clear();
-  items.push_back("Linear");
-  items.push_back("Nearest");
-  myFilterPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                  items, "GL Filter: ", lwidth);
-  wid.push_back(myFilterPopup);
+  myTIAFilterPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+                                     lineHeight, items, "TIA Filter: ", lwidth);
+  wid.push_back(myTIAFilterPopup);
   ypos += lineHeight + 4;
 
-  // GL FS stretch
+  // TIA Palette
   items.clear();
-  items.push_back("Never");
-  items.push_back("UI mode");
-  items.push_back("TIA mode");
-  items.push_back("Always");
-  myFSStretchPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "GL Stretch: ", lwidth);
-  wid.push_back(myFSStretchPopup);
-  ypos += lineHeight + 4;
-
-  // Palette
-  items.clear();
-  items.push_back("Standard");
-  items.push_back("Z26");
-  items.push_back("User");
-  myPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                   lineHeight, items, "Palette: ", lwidth);
-  wid.push_back(myPalettePopup);
+  items.push_back("Standard", "standard");
+  items.push_back("Z26", "z26");
+  items.push_back("User", "user");
+  myTIAPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+                                      lineHeight, items, "TIA Palette: ", lwidth);
+  wid.push_back(myTIAPalettePopup);
   ypos += lineHeight + 4;
 
   // Fullscreen resolution
   items.clear();
-  items.push_back("Auto");
+  items.push_back("Auto", "auto");
   for(uInt32 i = 0; i < instance().supportedResolutions().size(); ++i)
-    items.push_back(instance().supportedResolutions()[i].name);
+    items.push_back(instance().supportedResolutions()[i].name,
+                    instance().supportedResolutions()[i].name);
   myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
                                  lineHeight, items, "FS Res: ", lwidth);
   wid.push_back(myFSResPopup);
   ypos += lineHeight + 4;
 
-#if 0
-  // Available TIA filters
+  // GL Video filter
   items.clear();
-  for(uInt32 i = 0; i < instance().frameBuffer().supportedTIAFilters().size(); ++i)
-    items.push_back(instance().supportedResolutions()[i].name);
-  myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "FS Res: ", lwidth);
-  wid.push_back(myFSResPopup);
+  items.push_back("Linear", "linear");
+  items.push_back("Nearest", "nearest");
+  myGLFilterPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                  items, "GL Filter: ", lwidth);
+  wid.push_back(myGLFilterPopup);
   ypos += lineHeight + 4;
-#endif
 
-#if 0
-  // Available UI zoom levels
-  myUIZoomSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                    "UI Zoom: ", lwidth, kUIZoomChanged);
-  myUIZoomSlider->setMinValue(1); myUIZoomSlider->setMaxValue(10);
-  wid.push_back(myUIZoomSlider);
-  myUIZoomLabel =
-    new StaticTextWidget(this, font, xpos + myUIZoomSlider->getWidth() + 4,
-                         ypos + 1, fontWidth * 2, fontHeight, "", kTextAlignLeft);
-  myUIZoomLabel->setFlags(WIDGET_CLEARBG);
-  ypos += lineHeight + 4;
-#endif
-
-  // Available TIA zoom levels
-  myTIAZoomSlider = new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                     "TIA Zoom: ", lwidth, kTIAZoomChanged);
-  myTIAZoomSlider->setMinValue(1); myTIAZoomSlider->setMaxValue(10);
-  wid.push_back(myTIAZoomSlider);
-  myTIAZoomLabel =
-    new StaticTextWidget(this, font, xpos + myTIAZoomSlider->getWidth() + 4,
-                         ypos + 1, fontWidth * 2, fontHeight, "", kTextAlignLeft);
-  myTIAZoomLabel->setFlags(WIDGET_CLEARBG);
+  // GL FS stretch
+  items.clear();
+  items.push_back("Never", "never");
+  items.push_back("UI mode", "ui");
+  items.push_back("TIA mode", "tia");
+  items.push_back("Always", "always");
+  myGLStretchPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                     items, "GL Stretch: ", lwidth);
+  wid.push_back(myGLStretchPopup);
   ypos += lineHeight + 4;
 
   // GL aspect ratio
@@ -212,15 +185,13 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Disable certain functions when we know they aren't present
 #ifndef DISPLAY_GL
-  myFilterPopup->clearFlags(WIDGET_ENABLED);
+  myGLFilterPopup->clearFlags(WIDGET_ENABLED);
+  myGLStretchPopup->clearFlags(WIDGET_ENABLED);
   myAspectRatioSlider->clearFlags(WIDGET_ENABLED);
   myAspectRatioLabel->clearFlags(WIDGET_ENABLED);
-  myFSStretchPopup->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
-  myTIAZoomSlider->clearFlags(WIDGET_ENABLED);
-  myTIAZoomLabel->clearFlags(WIDGET_ENABLED);
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
@@ -234,135 +205,84 @@ VideoDialog::~VideoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::loadConfig()
 {
-  string s;
-  bool b;
-  int i;
-
   // Renderer setting
-  s = BSPF_tolower(instance().settings().getString("video"));
-  myRendererPopup->clearSelection();
-  if(s == "soft")    myRendererPopup->setSelected(0);
-  else if(s == "gl") myRendererPopup->setSelected(1);
+  myRendererPopup->setSelected(
+    instance().settings().getString("video"), "soft");
 
-  // Filter setting
-  s = BSPF_tolower(instance().settings().getString("gl_filter"));
-  myFilterPopup->clearSelection();
-  if(s == "linear")       myFilterPopup->setSelected(0);
-  else if(s == "nearest") myFilterPopup->setSelected(1);
+  // TIA Filter
+  //  taken care of in ::handleRendererChange()
 
-  // GL stretch setting
-  s = BSPF_tolower(instance().settings().getString("gl_fsmax"));
-  myFSStretchPopup->clearSelection();
-  if(s == "never")        myFSStretchPopup->setSelected(0);
-  else if(s == "ui")      myFSStretchPopup->setSelected(1);
-  else if(s == "tia")     myFSStretchPopup->setSelected(2);
-  else if(s == "always")  myFSStretchPopup->setSelected(3);
-
-  // Palette
-  s = BSPF_tolower(instance().settings().getString("palette"));
-  myPalettePopup->clearSelection();
-  if(s == "standard")     myPalettePopup->setSelected(0);
-  else if(s == "z26")     myPalettePopup->setSelected(1);
-  else if(s == "user")    myPalettePopup->setSelected(2);
+  // TIA Palette
+  myTIAPalettePopup->setSelected(
+    instance().settings().getString("palette"), "standard");
 
   // Fullscreen resolution
-  s = BSPF_tolower(instance().settings().getString("fullres"));
-  myFSResPopup->clearSelection();
-  if(s == "auto")  myFSResPopup->setSelected(0);
-  else             myFSResPopup->setSelected(s);
-  if(myFSResPopup->getSelected() < 0)
-    myFSResPopup->setSelectedMax();
+  myFSResPopup->setSelected(
+    instance().settings().getString("fullres"), "auto");
 
-/*
-  // TIA zoom level
-  s = instance().settings().getString("zoom_tia");
-  i = instance().settings().getInt("zoom_tia");
-  myTIAZoomSlider->setValue(i);
-  myTIAZoomLabel->setLabel(s);
-*/
+  // GL Filter setting
+  myGLFilterPopup->setSelected(
+    instance().settings().getString("gl_filter"), "linear");
+
+  // GL stretch setting
+  myGLStretchPopup->setSelected(
+    instance().settings().getString("gl_fsmax"), "never");
 
   // GL aspect ratio setting
-  s = instance().settings().getString("gl_aspect");
-  i = instance().settings().getInt("gl_aspect");
-  myAspectRatioSlider->setValue(i);
-  myAspectRatioLabel->setLabel(s);
+  myAspectRatioSlider->setValue(instance().settings().getInt("gl_aspect"));
+  myAspectRatioLabel->setLabel(instance().settings().getString("gl_aspect"));
 
   // Framerate (0 or -1 means disabled)
-  s = instance().settings().getString("framerate");
-  i = instance().settings().getInt("framerate");
-  myFrameRateSlider->setValue(i < 0 ? 0 : i);
-  myFrameRateLabel->setLabel(i < 0 ? "0" : s);
+  int rate = instance().settings().getInt("framerate");
+  myFrameRateSlider->setValue(rate < 0 ? 0 : rate);
+  myFrameRateLabel->setLabel(rate < 0 ? "0" :
+    instance().settings().getString("framerate"));
 
   // Fullscreen
-  b = instance().settings().getBool("fullscreen");
+  bool b = instance().settings().getBool("fullscreen");
   myFullscreenCheckbox->setState(b);
   handleFullscreenChange(b);
 
   // PAL color-loss effect
-  b = instance().settings().getBool("colorloss");
-  myColorLossCheckbox->setState(b);
+  myColorLossCheckbox->setState(instance().settings().getBool("colorloss"));
 
   // Use sync to vertical blank (GL mode only)
-  b = instance().settings().getBool("gl_vsync");
-  myUseVSyncCheckbox->setState(b);
+  myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
 
   // Center window
-  b = instance().settings().getBool("center");
-  myCenterCheckbox->setState(b);
+  myCenterCheckbox->setState(instance().settings().getBool("center"));
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  i = myRendererPopup->getSelected();
-  handleRendererChange(i);
+  // Also, this sets the TIA filters, so it cannot be removed from here
+  handleRendererChange(myRendererPopup->getSelectedTag());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::saveConfig()
 {
-  string s;
-  int i;
-  bool b;
-
   // Renderer setting
-  i = myRendererPopup->getSelected();
-  if(i == 0)       s = "soft";
-  else if(i == 1)  s = "gl";
-  instance().settings().setString("video", s);
+  instance().settings().setString("video", myRendererPopup->getSelectedTag());
 
-  // Filter setting
-  i = myFilterPopup->getSelected();
-  if(i == 0)      s = "linear";
-  else if(i == 1) s = "nearest";
-  instance().settings().setString("gl_filter", s);
+  // TIA Filter
+  instance().settings().setString("tia_filter", myTIAFilterPopup->getSelectedTag());
 
-  // GL stretch setting
-  i = myFSStretchPopup->getSelected();
-  if(i == 0)       s = "never";
-  else if(i == 1)  s = "ui";
-  else if(i == 2)  s = "tia";
-  else if(i == 3)  s = "always";
-  instance().settings().setString("gl_fsmax", s);
-
-  // Palette
-  i = myPalettePopup->getSelected();
-  if(i == 0)       s = "standard";
-  else if(i == 1)  s = "z26";
-  else if(i == 2)  s = "user";
-  instance().settings().setString("palette", s);
+  // TIA Palette
+  instance().settings().setString("palette", myTIAPalettePopup->getSelectedTag());
 
   // Fullscreen resolution
-  s = myFSResPopup->getSelectedString();
-  instance().settings().setString("fullres", s);
+  instance().settings().setString("fullres", myFSResPopup->getSelectedTag());
 
-  // TIA Scaler
-  s = myTIAZoomLabel->getLabel();
-  instance().settings().setString("zoom_tia", s);
+  // GL Filter setting
+  instance().settings().setString("gl_filter", myGLFilterPopup->getSelectedTag());
+
+  // GL stretch setting
+  instance().settings().setString("gl_fsmax", myGLStretchPopup->getSelectedTag());
 
   // GL aspect ratio setting
-  s = myAspectRatioLabel->getLabel();
-  instance().settings().setString("gl_aspect", s);
+  instance().settings().setString("gl_aspect", myAspectRatioLabel->getLabel());
 
   // Framerate
-  i = myFrameRateSlider->getValue();
+  int i = myFrameRateSlider->getValue();
   instance().settings().setInt("framerate", i);
   if(&instance().console())
   {
@@ -372,20 +292,16 @@ void VideoDialog::saveConfig()
   }
 
   // Fullscreen
-  b = myFullscreenCheckbox->getState();
-  instance().settings().setBool("fullscreen", b);
+  instance().settings().setBool("fullscreen", myFullscreenCheckbox->getState());
 
   // PAL color-loss effect
-  b = myColorLossCheckbox->getState();
-  instance().settings().setBool("colorloss", b);
+  instance().settings().setBool("colorloss", myColorLossCheckbox->getState());
 
   // Use sync to vertical blank (GL mode only)
-  b = myUseVSyncCheckbox->getState();
-  instance().settings().setBool("gl_vsync", b);
+  instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
 
   // Center window
-  b = myCenterCheckbox->getState();
-  instance().settings().setBool("center", b);
+  instance().settings().setBool("center", myCenterCheckbox->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer(false);
@@ -394,13 +310,17 @@ void VideoDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::setDefaults()
 {
-  myRendererPopup->setSelected(0);
-  myFilterPopup->setSelected(0);
-  myFSStretchPopup->setSelected(0);
-  myPalettePopup->setSelected(0);
-  myFSResPopup->setSelectedMax();
-  myTIAZoomSlider->setValue(2);
-  myTIAZoomLabel->setLabel("2");
+  myRendererPopup->setSelected("soft", "");
+  myTIAFilterPopup->setSelected(
+#ifdef SMALL_SCREEN
+    "zoom1x", "");
+#else
+    "zoom2x", "");
+#endif
+  myTIAPalettePopup->setSelected("standard", "");
+  myFSResPopup->setSelected("auto", "");
+  myGLFilterPopup->setSelected("linear", "");
+  myGLStretchPopup->setSelected("never", "");
   myAspectRatioSlider->setValue(100);
   myAspectRatioLabel->setLabel("100");
   myFrameRateSlider->setValue(0);
@@ -412,25 +332,36 @@ void VideoDialog::setDefaults()
   myCenterCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  handleRendererChange(0);        // 0 indicates software mode
-  handleFullscreenChange(false);  // indicates fullscreen deactivated
+  handleRendererChange("soft");
+  handleFullscreenChange(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleRendererChange(int item)
+void VideoDialog::handleRendererChange(const string& mode)
 {
+  // TIA filters are dynamically loaded, since they depend on the size of
+  // the desktop and which renderer we're using
+  const StringMap& items = instance().frameBuffer().supportedTIAFilters(mode);
+  myTIAFilterPopup->addItems(items);
+  myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
+#ifdef SMALL_SCREEN
+    "zoom1x");
+#else
+    "zoom2x");
+#endif
+
 #ifdef DISPLAY_OPENGL
   // When we're in software mode, certain OpenGL-related options are disabled
-  bool gl = (item > 0) ? true : false;
+  bool gl = (mode == "gl");
 
-  myFilterPopup->setEnabled(gl);
-  myFSStretchPopup->setEnabled(gl);
+  myGLFilterPopup->setEnabled(gl);
+  myGLStretchPopup->setEnabled(gl);
   myAspectRatioSlider->setEnabled(gl);
   myAspectRatioLabel->setEnabled(gl);
   myUseVSyncCheckbox->setEnabled(gl);
+#endif
 
   _dirty = true;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -438,9 +369,6 @@ void VideoDialog::handleFullscreenChange(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
   myFSResPopup->setEnabled(enable);
-
-  myTIAZoomSlider->setEnabled(!enable);
-  myTIAZoomLabel->setEnabled(!enable);
 
   _dirty = true;
 #endif
@@ -462,11 +390,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRendererChanged:
-      handleRendererChange(data);
-      break;
-
-    case kTIAZoomChanged:
-      myTIAZoomLabel->setValue(myTIAZoomSlider->getValue());
+      handleRendererChange(myRendererPopup->getSelectedTag());
       break;
 
     case kAspectRatioChanged:

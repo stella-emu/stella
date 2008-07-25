@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.hxx,v 1.4 2008-06-19 19:15:44 stephena Exp $
+// $Id: ContextMenu.hxx,v 1.5 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,8 +43,11 @@ class ContextMenu : public Dialog, public CommandSender
 {
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
-                const StringList& items, int cmd = 0);
+                const StringMap& items, int cmd = 0);
 	virtual ~ContextMenu();
+
+    /** Add the given items to the widget. */
+    void addItems(const StringMap& items);
 
     /** Show context menu onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y, int item = -1);
@@ -52,8 +55,8 @@ class ContextMenu : public Dialog, public CommandSender
     /** Select the entry at the given index. */
     void setSelected(int item);
 	
-    /** Select the first entry matching the given name. */
-    void setSelected(const string& name);
+    /** Select the first entry matching the given tag. */
+    void setSelected(const string& tag, const string& defaultTag);
 
     /** Select the highest/last entry in the internal list. */
     void setSelectedMax();
@@ -63,7 +66,8 @@ class ContextMenu : public Dialog, public CommandSender
 
     /** Accessor methods for the currently selected item. */
     int getSelected() const;
-    const string& getSelectedString() const;
+    const string& getSelectedName() const;
+    const string& getSelectedTag() const;
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center();
@@ -92,7 +96,7 @@ class ContextMenu : public Dialog, public CommandSender
     void sendSelection();
 
   private:
-    StringList _entries;
+    StringMap _entries;
 
     int _currentItem;
     int _selectedItem;

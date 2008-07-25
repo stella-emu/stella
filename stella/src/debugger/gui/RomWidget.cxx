@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomWidget.cxx,v 1.26 2008-06-19 19:15:44 stephena Exp $
+// $Id: RomWidget.cxx,v 1.27 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -126,15 +126,15 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kCMenuItemSelectedCmd:
     {
-      const string& rmb = myRomList->myMenu->getSelectedString();
+      const string& rmb = myRomList->myMenu->getSelectedTag();
 
-      if(rmb == "Save ROM")
+      if(rmb == "saverom")
       {
         mySaveRom->show(_x + 50, _y + 80);
         mySaveRom->setTitle("");
         mySaveRom->setEmitSignal(kRomNameEntered);
       }
-      else if(rmb == "Set PC")
+      else if(rmb == "setpc")
         setPC(myRomList->getSelected());
 
       break;

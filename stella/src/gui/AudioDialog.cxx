@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.28 2008-06-13 13:14:51 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.29 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   int lwidth = font.getStringWidth("Fragment Size: "),
       pwidth = font.getStringWidth("4096");
   WidgetArray wid;
-  StringList items;
+  StringMap items;
 
   // Set real dimensions
 //  _w = 35 * fontWidth + 10;
@@ -73,12 +73,12 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Fragment size
   items.clear();
-  items.push_back("128");
-  items.push_back("256");
-  items.push_back("512");
-  items.push_back("1024");
-  items.push_back("2048");
-  items.push_back("4096");
+  items.push_back("128", "128");
+  items.push_back("256", "256");
+  items.push_back("512", "512");
+  items.push_back("1024", "1024");
+  items.push_back("2048", "2048");
+  items.push_back("4096", "4096");
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                     items, "Fragment size: ", lwidth);
@@ -87,11 +87,11 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Output frequency
   items.clear();
-  items.push_back("11025");
-  items.push_back("22050");
-  items.push_back("31400");
-  items.push_back("44100");
-  items.push_back("48000");
+  items.push_back("11025", "11025");
+  items.push_back("22050", "22050");
+  items.push_back("31400", "31400");
+  items.push_back("44100", "44100");
+  items.push_back("48000", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                 items, "Output freq: ", lwidth);
@@ -136,50 +136,24 @@ AudioDialog::~AudioDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioDialog::loadConfig()
 {
-  bool b;
-  int i;
-
   // Volume
   myVolumeSlider->setValue(instance().settings().getInt("volume"));
   myVolumeLabel->setLabel(instance().settings().getString("volume"));
 
   // Fragsize
-  i = instance().settings().getInt("fragsize");
-  if(i == 128)       i = 0;
-  else if(i == 256)  i = 1;
-  else if(i == 512)  i = 2;
-  else if(i == 1024) i = 3;
-  else if(i == 2048) i = 4;
-  else if(i == 4096) i = 5;
-  else               i = 2;  // default to '512'
-  myFragsizePopup->setSelected(i);
+  myFragsizePopup->setSelected(instance().settings().getString("fragsize"), "512");
 
   // Output frequency
-  i = instance().settings().getInt("freq");
-  if(i == 11025)      i = 0;
-  else if(i == 22050) i = 1;
-  else if(i == 31400) i = 2;
-  else if(i == 44100) i = 3;
-  else if(i == 48000) i = 4;
-  else                i = 2;  // default to '31400'
-  myFreqPopup->setSelected(i);
+  myFreqPopup->setSelected(instance().settings().getString("freq"), "31400");
 
   // TIA frequency
-  i = instance().settings().getInt("tiafreq");
-  if(i == 11025)      i = 0;
-  else if(i == 22050) i = 1;
-  else if(i == 31400) i = 2;
-  else if(i == 44100) i = 3;
-  else if(i == 48000) i = 4;
-  else                i = 2;  // default to '31400'
-  myTiaFreqPopup->setSelected(i);
+  myTiaFreqPopup->setSelected(instance().settings().getString("tiafreq"), "31400");
 
   // Clip volume
-  b = instance().settings().getBool("clipvol");
-  myClipVolumeCheckbox->setState(b);
+  myClipVolumeCheckbox->setState(instance().settings().getBool("clipvol"));
 
   // Enable sound
-  b = instance().settings().getBool("sound");
+  bool b = instance().settings().getBool("sound");
   mySoundEnableCheckbox->setState(b);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
@@ -190,33 +164,24 @@ void AudioDialog::loadConfig()
 void AudioDialog::saveConfig()
 {
   Settings& settings = instance().settings();
-  string s;
-  bool b;
-  int i;
 
   // Volume
-  i = myVolumeSlider->getValue();
-  instance().sound().setVolume(i);
+  instance().sound().setVolume(myVolumeSlider->getValue());
 
   // Fragsize
-  s = myFragsizePopup->getSelectedString();
-  settings.setString("fragsize", s);
+  settings.setString("fragsize", myFragsizePopup->getSelectedTag());
 
   // Output frequency
-  s = myFreqPopup->getSelectedString();
-  settings.setString("freq", s);
+  settings.setString("freq", myFreqPopup->getSelectedTag());
 
   // TIA frequency
-  s = myTiaFreqPopup->getSelectedString();
-  settings.setString("tiafreq", s);
+  settings.setString("tiafreq", myTiaFreqPopup->getSelectedTag());
 
   // Enable/disable volume clipping (requires a restart to take effect)
-  b = myClipVolumeCheckbox->getState();
-  settings.setBool("clipvol", b);
+  settings.setBool("clipvol", myClipVolumeCheckbox->getState());
 
   // Enable/disable sound (requires a restart to take effect)
-  b = mySoundEnableCheckbox->getState();
-  instance().sound().setEnabled(b);
+  instance().sound().setEnabled(mySoundEnableCheckbox->getState());
 
   // Only force a re-initialization when necessary, since it can
   // be a time-consuming operation
@@ -230,9 +195,9 @@ void AudioDialog::setDefaults()
   myVolumeSlider->setValue(100);
   myVolumeLabel->setLabel("100");
 
-  myFragsizePopup->setSelected(2);  // 512 bytes
-  myFreqPopup->setSelected(2);      // 31400 Hz
-  myTiaFreqPopup->setSelected(2);   // 31400 Hz
+  myFragsizePopup->setSelected("512", "");
+  myFreqPopup->setSelected("31400", "");
+  myTiaFreqPopup->setSelected("31400", "");
 
   myClipVolumeCheckbox->setState(true);
   mySoundEnableCheckbox->setState(true);

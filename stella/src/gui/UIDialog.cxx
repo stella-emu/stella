@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.14 2008-06-13 13:14:52 stephena Exp $
+// $Id: UIDialog.cxx,v 1.15 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,7 +48,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   int xpos, ypos, tabID;
   int lwidth, pwidth = font.getStringWidth("Standard");
   WidgetArray wid;
-  StringList items;
+  StringMap items;
 
   // Set real dimensions
 //  _w = 36 * fontWidth + 10;
@@ -97,8 +97,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Launcher font
   items.clear();
-  items.push_back("Small");
-  items.push_back("Large");
+  items.push_back("Small", "small");
+  items.push_back("Large", "large");
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "Launcher Font: ", lwidth);
@@ -176,8 +176,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   // UI Palette
   ypos += 1;
   items.clear();
-  items.push_back("Standard");
-  items.push_back("Classic");
+  items.push_back("Standard", "1");
+  items.push_back("Classic", "2");
   myPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    items, "Interface Palette: ", lwidth);
   wid.push_back(myPalettePopup);
@@ -249,11 +249,10 @@ void UIDialog::loadConfig()
 
   // Launcher font
   const string& s = instance().settings().getString("launcherfont");
-  myLauncherFontPopup->setSelected(s == "large" ? 1 : 0);
+  myLauncherFontPopup->setSelected(s, "small");
 
   // ROM launcher info viewer
-  bool b = instance().settings().getBool("romviewer");
-  myRomViewerCheckbox->setState(b);
+  myRomViewerCheckbox->setState(instance().settings().getBool("romviewer"));
 
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
@@ -268,9 +267,8 @@ void UIDialog::loadConfig()
   myDebuggerHeightLabel->setValue(h);
 
   // UI palette
-  int i = instance().settings().getInt("uipalette");
-  if(i < 1 || i > 2) i = 1;
-  myPalettePopup->setSelected(i-1);
+  const string& pal = instance().settings().getString("uipalette");
+  myPalettePopup->setSelected(pal, "1");
 
   // Mouse wheel lines
   int mw = instance().settings().getInt("mwheel");
@@ -290,7 +288,7 @@ void UIDialog::saveConfig()
 
   // Launcher font
   instance().settings().setString("launcherfont",
-    myLauncherFontPopup->getSelected() == 1 ? "large" : "small");
+    myLauncherFontPopup->getSelectedTag());
 
   // ROM launcher info viewer
   instance().settings().setBool("romviewer", myRomViewerCheckbox->getState());
@@ -300,8 +298,8 @@ void UIDialog::saveConfig()
     myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
 
   // UI palette
-  instance().settings().setInt("uipalette",
-    myPalettePopup->getSelected() + 1);
+  instance().settings().setString("uipalette",
+    myPalettePopup->getSelectedTag());
 
   // Mouse wheel lines
   int mw = myWheelLinesSlider->getValue();
@@ -334,7 +332,7 @@ void UIDialog::setDefaults()
       break;
 
     case 2:  // Misc. options
-      myPalettePopup->setSelected(0);
+      myPalettePopup->setSelected("1", "1");
       myWheelLinesSlider->setValue(4);
       myWheelLinesLabel->setValue(4);
       break;

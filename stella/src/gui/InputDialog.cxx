@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.33 2008-06-13 13:14:51 stephena Exp $
+// $Id: InputDialog.cxx,v 1.34 2008-07-25 12:41:41 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -99,7 +99,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
             fontHeight = font.getFontHeight();
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
-  StringList items;
+  StringMap items;
 
   // Virtual device/ports
   tabID = myTab->addTab("Virtual Devs");
@@ -110,8 +110,8 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   pwidth = font.getStringWidth("right virtual port");
 
   items.clear();
-  items.push_back("left virtual port");
-  items.push_back("right virtual port");
+  items.push_back("left virtual port", "left");
+  items.push_back("right virtual port", "right");
   myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                                "Stelladaptor 1 is: ", lwidth, kLeftChanged);
   wid.push_back(myLeftPort);
@@ -205,8 +205,8 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  const string& sa1 = myLeftPort->getSelected() == 1 ? "right" : "left";
-  const string& sa2 = myRightPort->getSelected() == 1 ? "right" : "left";
+  const string& sa1 = myLeftPort->getSelectedTag();
+  const string& sa2 = myRightPort->getSelectedTag();
   instance().eventHandler().mapStelladaptors(sa1, sa2);
 
   // Joystick deadzone

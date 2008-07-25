@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.101 2008-07-22 14:54:39 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.102 2008-07-25 12:41:41 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -90,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.101 2008-07-22 14:54:39 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.102 2008-07-25 12:41:41 stephena Exp $
 */
 class FrameBuffer
 {
@@ -223,7 +223,7 @@ class FrameBuffer
     /**
       Get the supported TIA filters for the given framebuffer type.
     */
-    const StringList& supportedTIAFilters(const string& type);
+    const StringMap& supportedTIAFilters(const string& type);
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
@@ -307,6 +307,7 @@ class FrameBuffer
       const char* name;
       const char* description;
       uInt32 zoom;
+      uInt8 avail;  // 0x1 bit -> software, 0x2 bit -> opengl
     };
 
     // Contains all relevant info for the dimensions of an SDL screen
@@ -382,7 +383,7 @@ class FrameBuffer
     Uint32 myAvgPalette[256][256];
 
     // Names of the TIA filters that can be used for this framebuffer
-    StringList myTIAFilters;
+    StringMap myTIAFilters;
 
   private:
     /**
@@ -510,7 +511,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.101 2008-07-22 14:54:39 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.102 2008-07-25 12:41:41 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

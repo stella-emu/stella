@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.17 2008-06-19 12:01:30 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.18 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,10 +44,10 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   _type = kTiaOutputWidget;
 
   // Create context menu for commands
-  StringList l;
-  l.push_back("Fill to scanline");
-  l.push_back("Set breakpoint");
-  l.push_back("Set zoom position");
+  StringMap l;
+  l.push_back("Fill to scanline", "scanline");
+  l.push_back("Set breakpoint", "bp");
+  l.push_back("Set zoom position", "zoom");
   myMenu = new ContextMenu(this, font, l);
 }
 
@@ -109,36 +109,34 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
   switch(cmd)
   {
     case kCMenuItemSelectedCmd:
-      switch(myMenu->getSelected())
+    {
+      const string& rmb = myMenu->getSelectedTag();
+
+      if(rmb == "scanline")
       {
-        case 0:
+        ostringstream command;
+        int lines = myClickY + ystart -
+            instance().debugger().tiaDebug().scanlines();
+        if(lines > 0)
         {
-          ostringstream command;
-          int lines = myClickY + ystart -
-              instance().debugger().tiaDebug().scanlines();
-          if(lines > 0)
-          {
-            command << "scanline #" << lines;
-            instance().debugger().parser().run(command.str());
-          }
-          break;
-        }
-
-        case 1:
-        {
-          ostringstream command;
-          int scanline = myClickY + ystart;
-          command << "breakif _scan==#" << scanline;
+          command << "scanline #" << lines;
           instance().debugger().parser().run(command.str());
-          break;
         }
-
-        case 2:
-          if(myZoom)
-            myZoom->setPos(myClickX, myClickY);
-          break;
+      }
+      else if(rmb == "bp")
+      {
+        ostringstream command;
+        int scanline = myClickY + ystart;
+        command << "breakif _scan==#" << scanline;
+        instance().debugger().parser().run(command.str());
+      }
+      else if(rmb == "zoom")
+      {
+        if(myZoom)
+          myZoom->setPos(myClickX, myClickY);
       }
       break;
+    }
   }
 }
 

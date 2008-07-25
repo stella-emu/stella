@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.21 2008-06-13 13:14:51 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.22 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -44,19 +44,24 @@ class PopUpWidget : public Widget, public CommandSender
 {
   public:
     PopUpWidget(GuiObject* boss, const GUI::Font& font,
-                int x, int y, int w, int h, const StringList& items,
+                int x, int y, int w, int h, const StringMap& items,
                 const string& label, int labelWidth = 0, int cmd = 0);
     ~PopUpWidget();
 
+    /** Add the given items to the widget. */
+
     /** Various selection methods passed directly to the underlying menu
         See ContextMenu.hxx for more information. */
-    void setSelected(int item)           { myMenu->setSelected(item); }
-    void setSelected(const string& name) { myMenu->setSelected(name); }
-    void setSelectedMax()                { myMenu->setSelectedMax();  }
-    void clearSelection()                { myMenu->clearSelection();  }
+    void addItems(const StringMap& items) { myMenu->addItems(items);       }
+    void setSelected(int item)            { myMenu->setSelected(item);     }
+    void setSelected(const string& tag,
+                     const string& def)   { myMenu->setSelected(tag, def); }
+    void setSelectedMax()                 { myMenu->setSelectedMax();      }
+    void clearSelection()                 { myMenu->clearSelection();      }
 
-    int getSelected() const                 { return myMenu->getSelected();       }
-    const string& getSelectedString() const { return myMenu->getSelectedString(); }
+    int getSelected() const               { return myMenu->getSelected();     }
+    const string& getSelectedName() const { return myMenu->getSelectedName(); }
+    const string& getSelectedTag() const  { return myMenu->getSelectedTag();  }
 
     bool wantsFocus()  { return true; }
 

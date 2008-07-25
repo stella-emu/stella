@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.4 2008-06-19 19:15:44 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.5 2008-07-25 12:41:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,10 +27,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
-                         const StringList& items, int cmd)
+                         const StringMap& items, int cmd)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
-    _entries(items),
     _currentItem(-1),
     _selectedItem(-1),
     _rowHeight(font.getLineHeight()),
@@ -40,6 +39,21 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _xorig(0),
     _yorig(0)
 {
+  addItems(items);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ContextMenu::~ContextMenu()
+{
+  _entries.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::addItems(const StringMap& items)
+{
+  _entries.clear();
+  _entries = items;
+
   // Create two columns of entries if there are more than 10 items
   if(_entries.size() > 10)
   {
@@ -59,7 +73,7 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
   int maxwidth = 0;
   for(unsigned int i = 0; i < _entries.size(); ++i)
   {
-    int length = _font->getStringWidth(_entries[i]);
+    int length = _font->getStringWidth(_entries[i].first);
     if(length > maxwidth)
       maxwidth = length;
   }
@@ -67,12 +81,6 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
   _x = _y = 0;
   _w = maxwidth * (_twoColumns ? 2 : 1) + 10;
   _h = _entriesPerColumn * _rowHeight + 4;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ContextMenu::~ContextMenu()
-{
-  _entries.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,11 +132,21 @@ void ContextMenu::setSelected(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::setSelected(const string& name)
+void ContextMenu::setSelected(const string& tag, const string& defaultTag)
 {
   for(unsigned int item = 0; item < _entries.size(); ++item)
   {
-    if(_entries[item] == name)
+    if(BSPF_strcasecmp(_entries[item].second.c_str(), tag.c_str()) == 0)
+    {
+      setSelected(item);
+      return;
+    }
+  }
+
+  // If we get this far, the value wasn't found; use the default value
+  for(unsigned int item = 0; item < _entries.size(); ++item)
+  {
+    if(BSPF_strcasecmp(_entries[item].second.c_str(), defaultTag.c_str()) == 0)
     {
       setSelected(item);
       return;
@@ -155,9 +173,15 @@ int ContextMenu::getSelected() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& ContextMenu::getSelectedString() const
+const string& ContextMenu::getSelectedName() const
 {
-  return (_selectedItem >= 0) ? _entries[_selectedItem] : EmptyString;
+  return (_selectedItem >= 0) ? _entries[_selectedItem].first : EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& ContextMenu::getSelectedTag() const
+{
+  return (_selectedItem >= 0) ? _entries[_selectedItem].second : EmptyString;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -324,8 +348,6 @@ void ContextMenu::drawDialog()
 
   if(_dirty)
   {
-    FBSurface& s = surface();
-
     // Draw menu border and background
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
@@ -363,7 +385,7 @@ void ContextMenu::drawDialog()
         w = _w - 4;
       }
       if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
-      s.drawString(_font, _entries[i], x + 1, y + 2, w - 2,
+      s.drawString(_font, _entries[i].first, x + 1, y + 2, w - 2,
                    hilite ? kWidColor : kTextColor);
     }
     s.addDirtyRect(_x, _y, _w, _h);
