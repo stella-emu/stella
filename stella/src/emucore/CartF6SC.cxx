@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6SC.cxx,v 1.16 2008-03-28 23:29:13 stephena Exp $
+// $Id: CartF6SC.cxx,v 1.17 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -26,17 +26,7 @@
 CartridgeF6SC::CartridgeF6SC(const uInt8* image)
 {
   // Copy the ROM image into my buffer
-  for(uInt32 addr = 0; addr < 16384; ++addr)
-  {
-    myImage[addr] = image[addr];
-  }
-
-  // Initialize RAM with random values
-  class Random random;
-  for(uInt32 i = 0; i < 128; ++i)
-  {
-    myRAM[i] = random.next();
-  }
+  memcpy(myImage, image, 16384);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,6 +37,11 @@ CartridgeF6SC::~CartridgeF6SC()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6SC::reset()
 {
+  // Initialize RAM with random values
+  class Random random;
+  for(uInt32 i = 0; i < 128; ++i)
+    myRAM[i] = random.next();
+
   // Upon reset we switch to bank 0
   bank(0);
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.63 2008-06-19 19:15:44 stephena Exp $
+// $Id: Dialog.cxx,v 1.64 2008-08-01 12:16:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -79,6 +79,16 @@ void Dialog::open()
   // Instead, dirty rectangle updates should be performed
   if(_surface == NULL)
     _surface = instance().frameBuffer().createSurface(_w, _h, _isBase);
+  else if((uInt32)_w > _surface->getWidth() || (uInt32)_h > _surface->getHeight())
+  {
+    delete _surface;
+    _surface = instance().frameBuffer().createSurface(_w, _h, _isBase);
+  }
+  else
+  {
+    _surface->setWidth(_w);
+    _surface->setHeight(_h);
+  }
 
   center();
 

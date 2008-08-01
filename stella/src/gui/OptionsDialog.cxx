@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.70 2008-06-13 13:14:51 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.71 2008-08-01 12:16:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,7 +48,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
                              GuiObject* boss, bool global)
-  : Dialog(osystem, parent, 0, 0, 1, 1),
+  : Dialog(osystem, parent, 0, 0, 0, 0),
     myVideoDialog(NULL),
     myAudioDialog(NULL),
     myInputDialog(NULL),

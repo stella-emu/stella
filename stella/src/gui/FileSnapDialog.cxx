@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.19 2008-06-13 13:14:51 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.20 2008-08-01 12:16:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -137,7 +137,8 @@ FileSnapDialog::FileSnapDialog(
   }
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, 60, 20, 200, 200);
+  // FIXME - let dialog determine its own size
+  myBrowser = new BrowserDialog(this, font, 0, 0, 300, 300);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,6 +200,7 @@ void FileSnapDialog::setDefaults()
 void FileSnapDialog::openBrowser(const string& title, const string& startpath,
                                  FilesystemNode::ListMode mode, int cmd)
 {
+cerr << " ==> add browser: " << title << " -> " << startpath << endl;
   parent().addDialog(myBrowser);
 
   myBrowser->setTitle(title);

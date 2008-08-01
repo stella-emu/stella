@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.16 2008-03-28 23:29:13 stephena Exp $
+// $Id: CartFASC.cxx,v 1.17 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -26,17 +26,7 @@
 CartridgeFASC::CartridgeFASC(const uInt8* image)
 {
   // Copy the ROM image into my buffer
-  for(uInt32 addr = 0; addr < 12288; ++addr)
-  {
-    myImage[addr] = image[addr];
-  }
-
-  // Initialize RAM with random values
-  class Random random;
-  for(uInt32 i = 0; i < 256; ++i)
-  {
-    myRAM[i] = random.next();
-  }
+  memcpy(myImage, image, 12288);
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,6 +37,11 @@ CartridgeFASC::~CartridgeFASC()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFASC::reset()
 {
+  // Initialize RAM with random values
+  class Random random;
+  for(uInt32 i = 0; i < 256; ++i)
+    myRAM[i] = random.next();
+
   // Upon reset we switch to bank 2
   bank(2);
 }

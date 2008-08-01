@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.102 2008-07-25 12:41:41 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.103 2008-08-01 12:16:00 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -90,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.102 2008-07-25 12:41:41 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.103 2008-08-01 12:16:00 stephena Exp $
 */
 class FrameBuffer
 {
@@ -511,7 +511,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.102 2008-07-25 12:41:41 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.103 2008-08-01 12:16:00 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -614,6 +614,12 @@ class FBSurface
       This method should be called to set the position of the surface.
     */
     virtual void setPos(uInt32 x, uInt32 y) = 0;
+
+    /**
+      This method answers the current dimensions of the surface.
+    */
+    virtual uInt32 getWidth() const = 0;
+    virtual uInt32 getHeight() const = 0;
 
     /**
       This method sets the width of the drawable area of the surface.

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.58 2008-07-25 12:41:41 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.59 2008-08-01 12:16:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -452,7 +452,8 @@ void GameInfoDialog::saveConfig()
   // Controller properties
   myGameProperties.set(Controller_Left, myP0Controller->getSelectedTag());
   myGameProperties.set(Controller_Right, myP1Controller->getSelectedTag());
-  myGameProperties.set(Console_SwapPorts, myLeftPort->getSelectedTag());
+  myGameProperties.set(Console_SwapPorts,
+    myLeftPort->getSelectedTag() == "L" ? "NO" : "YES");
   myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag());
 
   // Display properties

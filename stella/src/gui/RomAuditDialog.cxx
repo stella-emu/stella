@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.4 2008-06-13 13:14:51 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.5 2008-08-01 12:16:00 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -99,7 +99,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   addToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, 60, 20, 200, 200);
+  myBrowser = new BrowserDialog(this, font, 0, 0, 200, 200);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

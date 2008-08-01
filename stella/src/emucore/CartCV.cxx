@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.16 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartCV.cxx,v 1.17 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -24,51 +24,45 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
+  : myROM(0),
+    mySize(size)
 {
-  uInt32 addr;
-  if(size == 2048)
-  {
-    // Copy the ROM image into my buffer
-    for(uInt32 addr = 0; addr < 2048; ++addr)
-    {
-      myImage[addr] = image[addr];
-    }
+  myROM = new uInt8[mySize];
+  memcpy(myROM, image, mySize);
 
-    // Initialize RAM with random values
-    class Random random;
-    for(uInt32 i = 0; i < 1024; ++i)
-    {
-      myRAM[i] = random.next();
-    }
-  }
-  else if(size == 4096)
-  {
-    // The game has something saved in the RAM
-    // Usefull for MagiCard program listings
-
-    // Copy the ROM image into my buffer
-    for(addr = 0; addr < 2048; ++addr)
-    {
-      myImage[addr] = image[addr + 2048];
-    }
-
-    // Copy the RAM image into my buffer
-    for(addr = 0; addr < 1024; ++addr)
-    {
-      myRAM[addr] = image[addr];
-    }
-
-  }
+  reset();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::~CartridgeCV()
 {
+  delete[] myROM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::reset()
 {
+  if(mySize == 2048)
+  {
+    // Copy the ROM data into my buffer
+    memcpy(myImage, myROM, 2048);
+
+    // Initialize RAM with random values
+    class Random random;
+    for(uInt32 i = 0; i < 1024; ++i)
+      myRAM[i] = random.next();
+  }
+  else if(mySize == 4096)
+  {
+    // The game has something saved in the RAM
+    // Useful for MagiCard program listings
+
+    // Copy the ROM data into my buffer
+    memcpy(myImage, myROM + 2048, 2048);
+
+    // Copy the RAM image into my buffer
+    memcpy(myRAM, myROM, 1024);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

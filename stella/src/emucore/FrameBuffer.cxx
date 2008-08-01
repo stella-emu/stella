@@ -1,4 +1,4 @@
-//============================================================================
+
 //
 //   SSSS    tt          lll  lll       
 //  SS  SS   tt           ll   ll        
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.137 2008-07-25 12:41:41 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.138 2008-08-01 12:15:59 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -629,6 +629,8 @@ const StringMap& FrameBuffer::supportedTIAFilters(const string& type)
 {
   uInt32 max_zoom = maxWindowSizeForScreen(320, 210,
                     myOSystem->desktopWidth(), myOSystem->desktopHeight());
+  uInt8 mask = (type == "soft" ? 0x1 : 0x2);
+
 #ifdef SMALL_SCREEN
   uInt32 firstmode = 0;
 #else
@@ -639,7 +641,7 @@ const StringMap& FrameBuffer::supportedTIAFilters(const string& type)
   {
     // For now, just include all filters
     // This will change once OpenGL-only filters are added
-    if(ourGraphicsModes[i].zoom <= max_zoom)
+    if((ourGraphicsModes[i].avail & mask) && ourGraphicsModes[i].zoom <= max_zoom)
     {
       myTIAFilters.push_back(ourGraphicsModes[i].description,
                              ourGraphicsModes[i].name);

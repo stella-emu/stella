@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.cxx,v 1.22 2008-05-30 12:06:17 stephena Exp $
+// $Id: CartAR.cxx,v 1.23 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -28,19 +28,10 @@
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size, bool fastbios)
   : my6502(0)
 {
-  uInt32 i;
-
   // Create a load image buffer and copy the given image
   myLoadImages = new uInt8[size];
   myNumberOfLoadImages = size / 8448;
   memcpy(myLoadImages, image, size);
-
-  // Initialize RAM with random values
-  class Random random;
-  for(i = 0; i < 6 * 1024; ++i)
-  {
-    myImage[i] = random.next();
-  }
 
   // Initialize SC BIOS ROM
   initializeROM(fastbios);
@@ -55,6 +46,11 @@ CartridgeAR::~CartridgeAR()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::reset()
 {
+  // Initialize RAM with random values
+  class Random random;
+  for(uInt32 i = 0; i < 6 * 1024; ++i)
+    myImage[i] = random.next();
+
   myPower = true;
   myPowerRomCycle = mySystem->cycles();
   myWriteEnabled = false;

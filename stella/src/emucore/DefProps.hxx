@@ -2957,7 +2957,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "fc6052438f339aea373bbc999433388a", "Atari, David Crane", "CX2653P", "Slot Machine (1979) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fc668a2251dd79cbd903d4fa0e558f96", "", "", "Thrust (V1.1) (2000) (TJ) [a1]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fc92d74f073a44bc6e46a3b3fa8256a2", "", "", "Megademo (19xx) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "fc9c1652fe3a2cade6188f4d3692481f", "", "", "Andrew Davies early notBoulderDash demo (NTSC)", "", "", "", "", "", "", "", "", "", "", "", "NTSC", "", "", "YES", "", "" }, 
+  { "fc9c1652fe3a2cade6188f4d3692481f", "", "", "Andrew Davies early notBoulderDash demo (NTSC)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "fca4a5be1251927027f2c24774a02160", "Activision, John Van Ryzin", "AZ-036-04", "H.E.R.O. (1984) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fcea12625c071ddc49f4e409f4038c60", "Fabrizio Zavagli", "", "Balls! (16-09-2002) (Fabrizio Zavagli)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "", "" }, 
   { "fcf8e306f6615f74feba5cb25550038c", "", "", "Blue Dot Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

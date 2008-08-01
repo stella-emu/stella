@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.52 2008-06-19 12:01:30 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.53 2008-08-01 12:15:57 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.52 2008-06-19 12:01:30 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.53 2008-08-01 12:15:57 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -162,7 +162,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.52 2008-06-19 12:01:30 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.53 2008-08-01 12:15:57 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {
@@ -179,6 +179,8 @@ class FBSurfaceSoft : public FBSurface
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
     void getPos(uInt32& x, uInt32& y) const;
     void setPos(uInt32 x, uInt32 y);
+    uInt32 getWidth() const  { return myWidth;  }
+    uInt32 getHeight() const { return myHeight; }
     void setWidth(uInt32 w);
     void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;

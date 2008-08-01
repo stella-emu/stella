@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.27 2008-05-22 17:54:54 stephena Exp $
+// $Id: M6532.cxx,v 1.28 2008-08-01 12:16:00 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -30,15 +30,6 @@
 M6532::M6532(const Console& console)
   : myConsole(console)
 {
-  // Randomize the 128 bytes of memory
-  class Random random;
-
-  for(uInt32 t = 0; t < 128; ++t)
-  {
-    myRAM[t] = random.next();
-  }
-
-  // Initialize other data members
   reset();
 }
  
@@ -51,6 +42,10 @@ M6532::~M6532()
 void M6532::reset()
 {
   class Random random;
+
+  // Randomize the 128 bytes of memory
+  for(uInt32 t = 0; t < 128; ++t)
+    myRAM[t] = random.next();
 
   // The timer absolutely cannot be initialized to zero; some games will
   // loop or hang (notably Solaris and H.E.R.O.)

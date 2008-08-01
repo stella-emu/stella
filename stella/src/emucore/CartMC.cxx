@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.14 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartMC.cxx,v 1.15 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -26,47 +26,28 @@
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
   : mySlot3Locked(false)
 {
-  uInt32 i;
-
   // Make sure size is reasonable
-  assert(size <= 128 * 1024);
-
-  // Allocate array for the cart's RAM
-  myRAM = new uInt8[32 * 1024];
-
-  // Initialize RAM with random values
-  class Random random;
-  for(i = 0; i < 32 * 1024; ++i)
-  {
-    myRAM[i] = random.next();
-  }
-
-  // Allocate array for the ROM image
-  myImage = new uInt8[128 * 1024];
+  assert(size <= 131072);
 
   // Set the contents of the entire ROM to 0
-  for(i = 0; i < 128 * 1024; ++i)
-  {
-    myImage[i] = 0;
-  }
+  memset(myImage, 0, 131072);
 
   // Copy the ROM image to the end of the ROM buffer
-  for(i = 0; i < size; ++i)
-  {
-    myImage[128 * 1024 - size + i] = image[i];
-  }
+  memcpy(myImage + 131072 - size, image, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::~CartridgeMC()
 {
-  delete[] myRAM;
-  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::reset()
 {
+  // Initialize RAM with random values
+  class Random random;
+  for(uInt32 i = 0; i < 32768; ++i)
+    myRAM[i] = random.next();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

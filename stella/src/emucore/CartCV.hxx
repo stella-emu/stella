@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.hxx,v 1.11 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartCV.hxx,v 1.12 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGECV_HXX
@@ -32,7 +32,7 @@ class System;
   $F800-$FFFF ROM
 
   @author  Eckhard Stolberg
-  @version $Id: CartCV.hxx,v 1.11 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: CartCV.hxx,v 1.12 2008-08-01 12:15:58 stephena Exp $
 */
 class CartridgeCV : public Cartridge
 {
@@ -139,6 +139,12 @@ class CartridgeCV : public Cartridge
     virtual void poke(uInt16 address, uInt8 value);
 
   private:
+    // Pointer to the initial cart data
+    uInt8* myROM;
+
+    // Initial size of the cart data
+    uInt32 mySize;
+
     // The 2k ROM image for the cartridge
     uInt8 myImage[2048];
 

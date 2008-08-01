@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.15 2008-03-28 23:29:13 stephena Exp $
+// $Id: Cart3E.cxx,v 1.16 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -31,17 +31,7 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
   myImage = new uInt8[mySize];
 
   // Copy the ROM image into my buffer
-  for(uInt32 addr = 0; addr < mySize; ++addr)
-  {
-    myImage[addr] = image[addr];
-  }
-
-  // Initialize RAM with random values
-  class Random random;
-  for(uInt32 i = 0; i < 32768; ++i)
-  {
-    myRam[i] = random.next();
-  }
+  memcpy(myImage, image, mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,6 +43,11 @@ Cartridge3E::~Cartridge3E()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::reset()
 {
+  // Initialize RAM with random values
+  class Random random;
+  for(uInt32 i = 0; i < 32768; ++i)
+    myRam[i] = random.next();
+
   // We'll map bank 0 into the first segment upon reset
   bank(0);
 }

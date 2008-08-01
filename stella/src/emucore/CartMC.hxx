@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.hxx,v 1.10 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartMC.hxx,v 1.11 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEMC_HXX
@@ -133,7 +133,7 @@ class System;
 
 
   @author  Bradford W. Mott
-  @version $Id: CartMC.hxx,v 1.10 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: CartMC.hxx,v 1.11 2008-08-01 12:15:58 stephena Exp $
 */
 class CartridgeMC : public Cartridge
 {
@@ -243,17 +243,17 @@ class CartridgeMC : public Cartridge
     virtual void poke(uInt16 address, uInt8 value);
 
   private:
+    // The 128K ROM image for the cartridge
+    uInt8 myImage[131072];
+
+    // The 32K of RAM for the cartridge
+    uInt8 myRAM[32768];
+
     // Indicates which block is currently active for the four segments
     uInt8 myCurrentBlock[4];
 
     // Indicates if slot 3 is locked to block $FF or not
     bool mySlot3Locked;
-
-    // Pointer to the 32K bytes of RAM for the cartridge
-    uInt8* myRAM;
-
-    // Pointer to the 128K bytes of ROM for the cartridge
-    uInt8* myImage;
 };
 
 #endif

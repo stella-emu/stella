@@ -17617,7 +17617,6 @@
 
 "Cartridge.MD5" "fc9c1652fe3a2cade6188f4d3692481f"
 "Cartridge.Name" "Andrew Davies early notBoulderDash demo (NTSC)"
-"Display.Format" "NTSC"
 "Display.Phosphor" "YES"
 ""
 

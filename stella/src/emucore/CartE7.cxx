@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE7.cxx,v 1.19 2008-03-28 23:29:13 stephena Exp $
+// $Id: CartE7.cxx,v 1.20 2008-08-01 12:15:58 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -26,17 +26,7 @@
 CartridgeE7::CartridgeE7(const uInt8* image)
 {
   // Copy the ROM image into my buffer
-  for(uInt32 addr = 0; addr < 16384; ++addr)
-  {
-    myImage[addr] = image[addr];
-  }
-
-  // Initialize RAM with random values
-  class Random random;
-  for(uInt32 i = 0; i < 2048; ++i)
-  {
-    myRAM[i] = random.next();
-  }
+  memcpy(myImage, image, 16384);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -47,6 +37,11 @@ CartridgeE7::~CartridgeE7()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::reset()
 {
+  // Initialize RAM with random values
+  class Random random;
+  for(uInt32 i = 0; i < 2048; ++i)
+    myRAM[i] = random.next();
+
   // Install some default banks for the RAM and first segment
   bankRAM(0);
   bank(0);
