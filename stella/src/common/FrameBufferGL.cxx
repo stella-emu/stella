@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.104 2008-06-19 12:01:30 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.105 2008-08-04 11:56:11 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -385,7 +385,7 @@ void FrameBufferGL::drawMediaSource()
         uInt8 v = currentFrame[bufofs];
         uInt8 w = previousFrame[bufofs];
 
-        if(v != w || theRedrawTIAIndicator)
+        if(v != w || myRedrawEntireFrame)
         {
           // If we ever get to this point, we know the current and previous
           // buffers differ.  In that case, make sure the changes are
@@ -403,7 +403,7 @@ void FrameBufferGL::drawMediaSource()
   else
   {
     // Phosphor mode always implies a dirty update,
-    // so we don't care about theRedrawTIAIndicator
+    // so we don't care about myRedrawEntireFrame
     myDirtyFlag = true;
 
     uInt32 bufofsY    = 0;
@@ -462,7 +462,7 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
 
-  theRedrawTIAIndicator = true;
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -488,7 +488,7 @@ void FrameBufferGL::toggleFilter()
   p_glTexParameteri(myBuffer.target, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
 
   // The filtering has changed, so redraw the entire screen
-  theRedrawTIAIndicator = true;
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

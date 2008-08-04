@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.53 2008-08-01 12:15:57 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.54 2008-08-04 11:56:11 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -33,7 +33,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.53 2008-08-01 12:15:57 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.54 2008-08-04 11:56:11 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -128,6 +128,11 @@ class FrameBufferSoft : public FrameBuffer
     void drawMediaSource();
 
     /**
+      This method is called after any drawing is done (per-frame).
+    */
+    void postFrameUpdate();
+
+    /**
       This method is called to provide information about the FrameBuffer.
     */
     string about() const;
@@ -154,6 +159,12 @@ class FrameBufferSoft : public FrameBuffer
     };
     RenderType myRenderType;
 
+    // Indicates if the TIA image has been modified
+    bool myTiaDirty;
+	 	 
+    // Indicates if we're in a purely UI mode
+    bool myInUIMode;
+
     // Used in the dirty update of rectangles in non-TIA modes
     RectList* myRectList;
 };
@@ -162,7 +173,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.53 2008-08-01 12:15:57 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.54 2008-08-04 11:56:11 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {

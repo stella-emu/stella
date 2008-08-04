@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.81 2008-07-04 14:27:17 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.82 2008-08-04 11:56:11 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -35,6 +35,8 @@
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
     myRenderType(kSoftZoom_16),
+    myTiaDirty(false),
+    myInUIMode(false),
     myRectList(NULL)
 {
 }
@@ -131,8 +133,6 @@ void FrameBufferSoft::drawMediaSource()
   uInt32 width  = mediasrc.width();
   uInt32 height = mediasrc.height();
 
-  bool tiaChanged = false;
-
   switch(myRenderType)
   {
     case kSoftZoom_16:
@@ -155,14 +155,14 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
 
-            if(v != w || theRedrawTIAIndicator)
+            if(v != w || myRedrawEntireFrame)
             {
               while(xstride--)
               {
                 buffer[pos++] = (uInt16) myDefPalette[v];
                 buffer[pos++] = (uInt16) myDefPalette[v];
               }
-              tiaChanged = true;
+              myTiaDirty = true;
             }
             else
               pos += xstride + xstride;
@@ -195,7 +195,7 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
 
-            if(v != w || theRedrawTIAIndicator)
+            if(v != w || myRedrawEntireFrame)
             {
               uInt32 pixel = myDefPalette[v];
               uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
@@ -207,7 +207,7 @@ void FrameBufferSoft::drawMediaSource()
                 buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
                 buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
               }
-              tiaChanged = true;
+              myTiaDirty = true;
             }
             else  // try to eliminate multply whereever possible
               pos += xstride + xstride + xstride + xstride + xstride + xstride;
@@ -240,14 +240,14 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
 
-            if(v != w || theRedrawTIAIndicator)
+            if(v != w || myRedrawEntireFrame)
             {
               while(xstride--)
               {
                 buffer[pos++] = (uInt32) myDefPalette[v];
                 buffer[pos++] = (uInt32) myDefPalette[v];
               }
-              tiaChanged = true;
+              myTiaDirty = true;
             }
             else
               pos += xstride + xstride;
@@ -291,7 +291,7 @@ void FrameBufferSoft::drawMediaSource()
         bufofsY += width;
       }
       SDL_UnlockSurface(myScreen);
-      tiaChanged = true;
+      myTiaDirty = true;
       break;  // kPhosphor_16
     }
 
@@ -330,7 +330,7 @@ void FrameBufferSoft::drawMediaSource()
         bufofsY += width;
       }
       SDL_UnlockSurface(myScreen);
-      tiaChanged = true;
+      myTiaDirty = true;
       break;  // kPhosphor_24
     }
 
@@ -365,16 +365,25 @@ void FrameBufferSoft::drawMediaSource()
         bufofsY += width;
       }
       SDL_UnlockSurface(myScreen);
-      tiaChanged = true;
+      myTiaDirty = true;
       break;  // kPhosphor_32
     }
   }
+}
 
-  if(tiaChanged)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::postFrameUpdate()
+{
+  if(myTiaDirty && !myInUIMode)
   {
     SDL_Flip(myScreen);
-    tiaChanged = false;
+    myTiaDirty = false;
   }
+  else if(myRectList->numRects() > 0)
+  {
+    SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
+  }
+  myRectList->start();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -391,6 +400,9 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
 {
   if(!myScreen)
     return;
+
+  myInUIMode = (state == EventHandler::S_LAUNCHER ||
+                state == EventHandler::S_DEBUGGER);
 
   // Make sure drawMediaSource() knows which renderer to use
   switch(myBytesPerPixel)
@@ -683,6 +695,10 @@ void FBSurfaceSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   }
   else
   {
+    SDL_Rect temp;
+    temp.x = myXOrig;  temp.y = myYOrig;  temp.w = myWidth;  temp.h = myHeight;
+    myFB.myRectList->add(&temp);
+
     // Indicate that at least one dirty rect has been added
     // This is an optimization for the update() method
     mySurfaceIsDirty = true;
@@ -751,15 +767,7 @@ void FBSurfaceSoft::update()
 {
   // Since this method is called each frame, we only blit the surfaces when
   // absolutely necessary
-  if(myIsBaseSurface)
-  {
-    if(myFB.myRectList->numRects() > 0)
-    {
-      SDL_UpdateRects(mySurface, myFB.myRectList->numRects(), myFB.myRectList->rects());
-      myFB.myRectList->start();
-    }
-  }
-  else if(mySurfaceIsDirty /* && !myIsBaseSurface */)
+  if(mySurfaceIsDirty /* && !myIsBaseSurface */)
   {
     SDL_Rect srcrect;
     srcrect.x = 0;
@@ -772,17 +780,8 @@ void FBSurfaceSoft::update()
     dstrect.y = myYOrig;
     dstrect.w = myWidth;
     dstrect.h = myHeight;
-/*
-    cerr << "blit sub-surface:" << endl
-         << "  src x = " << dstrect.x << endl
-         << "  src y = " << dstrect.y << endl
-         << "  dst w = " << dstrect.w << endl
-         << "  dst h = " << dstrect.h << endl
-         << endl;
-*/
-    SDL_BlitSurface(mySurface, &srcrect, myFB.myScreen, &dstrect);
-    SDL_UpdateRect(myFB.myScreen, myXOrig, myYOrig, myWidth, myHeight);
 
+    SDL_BlitSurface(mySurface, &srcrect, myFB.myScreen, &dstrect);
     mySurfaceIsDirty = false;
   }
 }

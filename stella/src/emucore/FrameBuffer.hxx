@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.103 2008-08-01 12:16:00 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.104 2008-08-04 11:56:12 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -90,7 +90,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.103 2008-08-01 12:16:00 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.104 2008-08-04 11:56:12 stephena Exp $
 */
 class FrameBuffer
 {
@@ -354,6 +354,11 @@ class FrameBuffer
     */
     virtual void drawMediaSource() = 0;
 
+    /**	 
+      This method is called after any drawing is done (per-frame).	 
+    */	 
+    virtual void postFrameUpdate() = 0;	 
+
     /**
       This method is called to provide information about the FrameBuffer.
     */
@@ -369,8 +374,8 @@ class FrameBuffer
     // SDL initialization flags
     uInt32 mySDLFlags;
 
-    // Indicates if the TIA area should be redrawn
-    bool theRedrawTIAIndicator;
+    // Indicates if the entire frame need to redrawn
+    bool myRedrawEntireFrame;
 
     // Use phosphor effect (aka no flicker on 30Hz screens)
     bool myUsePhosphor;
@@ -511,7 +516,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.103 2008-08-01 12:16:00 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.104 2008-08-04 11:56:12 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

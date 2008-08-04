@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.138 2008-08-01 12:15:59 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.139 2008-08-04 11:56:12 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -42,7 +42,7 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
   : myOSystem(osystem),
     myScreen(0),
-    theRedrawTIAIndicator(true),
+    myRedrawEntireFrame(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myInitializedCount(0),
@@ -168,7 +168,7 @@ void FrameBuffer::update()
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
         myStatsMsg.surface->drawString(&myOSystem->consoleFont(), msg, 0, 0,
                                        myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);
+        myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 3, myImageRect.y() + 3);
         myStatsMsg.surface->update();
       }
@@ -178,7 +178,7 @@ void FrameBuffer::update()
     case EventHandler::S_PAUSE:
     {
       // Only update the screen if it's been invalidated
-      if(theRedrawTIAIndicator)
+      if(myRedrawEntireFrame)
         drawMediaSource();
 
       // Show a pause message every 5 seconds
@@ -193,7 +193,7 @@ void FrameBuffer::update()
     case EventHandler::S_MENU:
     {
       // Only update the screen if it's been invalidated
-      if(theRedrawTIAIndicator)
+      if(myRedrawEntireFrame)
         drawMediaSource();
 
       myOSystem->menu().draw();
@@ -203,7 +203,7 @@ void FrameBuffer::update()
     case EventHandler::S_CMDMENU:
     {
       // Only update the screen if it's been invalidated
-      if(theRedrawTIAIndicator)
+      if(myRedrawEntireFrame)
         drawMediaSource();
 
       myOSystem->commandMenu().draw();
@@ -233,8 +233,11 @@ void FrameBuffer::update()
   if(myMsg.counter > 0)
     drawMessage();
 
+  // Do any post-frame stuff	 
+  postFrameUpdate();
+
   // The frame doesn't need to be completely redrawn anymore
-  theRedrawTIAIndicator = false;
+  myRedrawEntireFrame = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -244,7 +247,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Erase old messages on the screen
   if(myMsg.counter > 0)
   {
-    theRedrawTIAIndicator = true;
+    myRedrawEntireFrame = true;
     myOSystem->eventHandler().refreshDisplay();
   }
 
@@ -359,7 +362,7 @@ inline void FrameBuffer::drawMessage()
     myOSystem->eventHandler().refreshDisplay(true);
   else
   {
-    myMsg.surface->addDirtyRect(0, 0, 0, 0);
+    myMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
     myMsg.surface->update();
   }
 }
@@ -367,7 +370,7 @@ inline void FrameBuffer::drawMessage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refresh()
 {
-  theRedrawTIAIndicator = true;
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -405,7 +408,7 @@ void FrameBuffer::setTIAPalette(const uInt32* palette)
     }
   }
 
-  theRedrawTIAIndicator = true;
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
