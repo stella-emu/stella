@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.hxx,v 1.9 2008-02-06 13:45:24 stephena Exp $
+// $Id: YaccParser.hxx,v 1.10 2008-08-04 20:12:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@ namespace YaccParser {
 	int parse(const char *);
 	Expression *getResult();
 	const string& errorMessage();
-};
+}
 
 //#ifdef __cplusplus
 //}

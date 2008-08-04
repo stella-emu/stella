@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.5 2008-07-25 12:41:41 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.6 2008-08-04 20:12:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -194,7 +194,7 @@ void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
     if(x >= _x && x <= _x+_w && y >= _y && y <= _y+_h)
       sendSelection();
     else
-      parent().removeDialog();
+      close();
   }
 }
 
@@ -268,7 +268,7 @@ void ContextMenu::handleEvent(Event::Type e)
       drawCurrentSelection(_entries.size()-1);
       break;
     case Event::UICancel:
-      parent().removeDialog();
+      close();
       break;
     default:
       break;
@@ -304,7 +304,7 @@ void ContextMenu::drawCurrentSelection(int item)
   {
     // Change selection
     _currentItem = item;
-    setDirty(); draw();
+    setDirty();
   }
 }
 
@@ -315,7 +315,7 @@ void ContextMenu::sendSelection()
   // Make sure the dialog is removed before sending any commands,
   // since one consequence of sending a command may be to add another
   // dialog/menu
-  parent().removeDialog();
+  close();
 
   // Send any command associated with the selection
   _selectedItem = _currentItem;

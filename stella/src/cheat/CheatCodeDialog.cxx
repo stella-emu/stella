@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.19 2008-06-19 19:15:44 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.20 2008-08-04 20:12:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -217,8 +217,8 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       const string& code = myCheatInput->getResult(1);
       if(instance().cheat().isValidCode(code))
       {
+        myCheatInput->close();
         instance().cheat().add(name, code);
-        parent().removeDialog();
         loadConfig();  // show changes onscreen
       }
       else
@@ -234,8 +234,8 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       int idx = myCheatList->getSelected();
       if(instance().cheat().isValidCode(code))
       {
+        myCheatInput->close();
         instance().cheat().add(name, code, enable, idx);
-        parent().removeDialog();
         loadConfig();  // show changes onscreen
       }
       else
@@ -257,8 +257,8 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       const string& code = myCheatInput->getResult(1);
       if(instance().cheat().isValidCode(code))
       {
+        myCheatInput->close();
         instance().cheat().addOneShot(name, code);
-        parent().removeDialog();
       }
       else
         myCheatInput->setTitle("Invalid code");
