@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.55 2008-08-01 12:15:57 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.56 2008-08-05 12:54:47 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -27,6 +27,7 @@
 
 class OSystem;
 class GUI::Font;
+class FBSurfaceGL;
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
@@ -35,7 +36,7 @@ class GUI::Font;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.55 2008-08-01 12:15:57 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.56 2008-08-05 12:54:47 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -76,8 +77,7 @@ class FrameBufferGL : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
-      { return SDL_MapRGB(myTexture->format, r, g, b); }
+    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const;
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -151,20 +151,11 @@ class FrameBufferGL : public FrameBuffer
   private:
     bool loadFuncs();
 
-    bool createTextures();
-
-    static uInt32 power_of_two(uInt32 input)
-    {
-      uInt32 value = 1;
-      while( value < input )
-        value <<= 1;
-      return value;
-    }
-
   private:
-    // Points to the current texture data
-    SDL_Surface* myTexture;
+    // The TIA surface (wraps an SDL surface)
+    FBSurfaceGL* myTiaSurface;
 
+/*
     // Holds all items specifically needed by GL commands
     struct glBufferType
     {
@@ -183,6 +174,7 @@ class FrameBufferGL : public FrameBuffer
       int     pitch;
     };
     glBufferType myBuffer;
+*/
 
     // Optional GL extensions that may increase performance
     bool myHaveTexRectEXT;
@@ -207,16 +199,19 @@ class FrameBufferGL : public FrameBuffer
 };
 
 /**
-  A surface suitable for software rendering mode.
+  A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.55 2008-08-01 12:15:57 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.56 2008-08-05 12:54:47 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
+  friend class FrameBufferGL;
+
   public:
-    FBSurfaceGL(const FrameBufferGL& buffer, SDL_Surface* surface,
-                  uInt32 w, uInt32 h, bool isBase);
+    FBSurfaceGL(FrameBufferGL& buffer,
+                uInt32 baseWidth, uInt32 baseHeight,
+                uInt32 scaleWidth, uInt32 scaleHeight);
     virtual ~FBSurfaceGL();
 
     void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
@@ -235,16 +230,38 @@ class FBSurfaceGL : public FBSurface
     void update();
 
   private:
+    inline void* pixels() const { return myTexture->pixels; }
+    inline uInt32 pitch() const { return myPitch;           }
+    inline uInt32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
+           { return SDL_MapRGB(myTexture->format, r, g, b); }
     void recalc();
 
+    static uInt32 power_of_two(uInt32 input)
+    {
+      uInt32 value = 1;
+      while( value < input )
+        value <<= 1;
+      return value;
+    }
+
   private:
-    const FrameBufferGL& myFB;
+    FrameBufferGL& myFB;
     SDL_Surface* myTexture;
+
+    GLuint  myTexID;
+    GLsizei myTexWidth;
+    GLsizei myTexHeight;
+    GLfloat myTexCoord[4];
+
+    GLenum  myTexTarget;
+    GLenum  myTexFormat;
+    GLenum  myTexType;
+    GLint   myTexFilter;
+
     uInt32 myWidth, myHeight;
-    bool myIsBaseSurface;
     bool mySurfaceIsDirty;
-    int myBaseOffset;
-    int myPitch;
+//    int myBaseOffset;
+    uInt32 myPitch;
 
     uInt32 myXOrig, myYOrig;
     uInt32 myXOffset, myYOffset;
