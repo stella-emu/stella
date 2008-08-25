@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartCV.cxx,v 1.17 2008-08-01 12:15:58 stephena Exp $
+// $Id: CartCV.cxx,v 1.18 2008-08-25 23:22:22 stephena Exp $
 //============================================================================
 
 #include <cassert>
+#include <cstring>
 
 #include "Random.hxx"
 #include "System.hxx"
