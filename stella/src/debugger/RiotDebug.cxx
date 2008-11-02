@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.6 2008-05-15 18:59:56 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.7 2008-11-02 16:46:05 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -265,7 +265,7 @@ string RiotDebug::dirP0String()
       << (reg & 0x40 ? "" : "left ")
       << (reg & 0x20 ? "" : "left ")
       << (reg & 0x10 ? "" : "left ")
-      << (reg & 0xf0 == 0xf0 ? "(no directions) " : "");
+      << ((reg & 0xf0) == 0xf0 ? "(no directions) " : "");
   return buf.str();
 }
 
@@ -278,7 +278,7 @@ string RiotDebug::dirP1String()
       << (reg & 0x04 ? "" : "left ")
       << (reg & 0x02 ? "" : "left ")
       << (reg & 0x01 ? "" : "left ")
-      << (reg & 0x0f == 0x0f ? "(no directions) " : "");
+      << ((reg & 0x0f) == 0x0f ? "(no directions) " : "");
   return buf.str();
 }
 

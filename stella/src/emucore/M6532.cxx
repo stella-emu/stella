@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.28 2008-08-01 12:16:00 stephena Exp $
+// $Id: M6532.cxx,v 1.29 2008-11-02 16:46:05 stephena Exp $
 //============================================================================
 
 #include <assert.h>
@@ -191,7 +191,7 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x05:    // Interrupt Flag
     case 0x07:
     {
-      if((timerClocks() >= 0) || myInterruptEnabled && myInterruptTriggered)
+      if((timerClocks() >= 0) || (myInterruptEnabled && myInterruptTriggered))
         return 0x00;
       else
         return 0x80;

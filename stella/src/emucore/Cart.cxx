@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.42 2008-05-16 23:56:21 stephena Exp $
+// $Id: Cart.cxx,v 1.43 2008-11-02 16:46:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
+#include <cstring>
 #include <sstream>
 
 #include "bspf.hxx"

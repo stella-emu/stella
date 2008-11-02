@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.54 2008-08-04 11:56:11 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.55 2008-11-02 16:46:05 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -22,7 +22,6 @@
 #include <SDL.h>
 
 class OSystem;
-class GUI::Font;
 class RectList;
 
 #include "bspf.hxx"
@@ -33,7 +32,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.54 2008-08-04 11:56:11 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.55 2008-11-02 16:46:05 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -173,7 +172,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.54 2008-08-04 11:56:11 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.55 2008-11-02 16:46:05 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {

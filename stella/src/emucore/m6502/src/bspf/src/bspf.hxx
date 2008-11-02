@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.19 2008-07-22 14:54:39 stephena Exp $
+// $Id: bspf.hxx,v 1.20 2008-11-02 16:46:05 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.19 2008-07-22 14:54:39 stephena Exp $
+  @version $Id: bspf.hxx,v 1.20 2008-11-02 16:46:05 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -51,7 +51,9 @@ typedef unsigned int uInt32;
   #include <string>
   using namespace std;
 #endif
-	
+
+#include <algorithm>
+
 #ifdef HAVE_INTTYPES
   #include <inttypes.h>
 #endif
