@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.106 2008-08-05 12:54:47 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.107 2008-11-24 18:02:19 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -333,6 +333,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_glLoadIdentity();
   p_glOrtho(0.0, mode.image_w, mode.image_h, 0.0, 0.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
+  p_glPushMatrix();
   p_glLoadIdentity();
 
   // Allocate GL textures
@@ -432,6 +433,7 @@ void FrameBufferGL::postFrameUpdate()
 {
   if(myDirtyFlag)
   {
+cerr << "  SWAP buffers\n";
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
     myDirtyFlag = false;
@@ -513,6 +515,8 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
                          uInt32 baseWidth, uInt32 baseHeight,
                          uInt32 scaleWidth, uInt32 scaleHeight)
   : myFB(buffer),
+    myXOrig(0),
+    myYOrig(0),
     myWidth(scaleWidth),
     myHeight(scaleHeight)
 {
@@ -706,15 +710,15 @@ void FBSurfaceGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::getPos(uInt32& x, uInt32& y) const
 {
-#if 0
   x = myXOrig;
   y = myYOrig;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 {
+  myXOrig = x;
+  myYOrig = y;
 #if 0
   // Only non-base surfaces can be arbitrarily 'moved'
   if(!myIsBaseSurface)
@@ -742,6 +746,10 @@ void FBSurfaceGL::setHeight(uInt32 h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::translateCoords(Int32& x, Int32& y) const
 {
+// TODO - this doesn't work if aspect ratio is used
+  x -= myXOrig;
+  y -= myYOrig;
+
 /*
   // Wow, what a mess :)
   x = (Int32) ((x - myImageDim.x) / myWidthScaleFactor);
@@ -754,15 +762,23 @@ void FBSurfaceGL::update()
 {
   if(mySurfaceIsDirty)
   {
+cerr << "  FBSurfaceGL::update(): x = " << myXOrig << ", y = " << myYOrig << ", w = " << myWidth << ", h = " << myHeight << endl;
     // Texturemap complete texture to surface so we have free scaling
     // and antialiasing 
     p_glTexSubImage2D(myTexTarget, 0, 0, 0, myTexWidth, myTexHeight,
                       myTexFormat, myTexType, myTexture->pixels);
     p_glBegin(GL_QUADS);
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]); p_glVertex2i(0, 0);
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]); p_glVertex2i(myWidth, 0);
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]); p_glVertex2i(myWidth, myHeight);
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]); p_glVertex2i(0, myHeight);
+      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]);
+      p_glVertex2i(myXOrig, myYOrig);
+
+      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]);
+      p_glVertex2i(myXOrig + myWidth, myYOrig);
+
+      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]);
+      p_glVertex2i(myXOrig + myWidth, myYOrig + myHeight);
+
+      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]);
+      p_glVertex2i(myXOrig, myYOrig + myHeight);
     p_glEnd();
 
     mySurfaceIsDirty = false;

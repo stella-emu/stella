@@ -13,26 +13,24 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.cxx,v 1.18 2008-03-28 23:29:13 stephena Exp $
+// $Id: CartF8.cxx,v 1.19 2008-11-24 18:02:19 stephena Exp $
 //============================================================================
 
 #include <cassert>
+#include <cstring>
 
 #include "System.hxx"
 #include "CartF8.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8::CartridgeF8(const uInt8* image, bool swapbanks)
+CartridgeF8::CartridgeF8(const uInt8* image, bool startlow)
 {
   // Copy the ROM image into my buffer
-  for(uInt32 addr = 0; addr < 8192; ++addr)
-  {
-    myImage[addr] = image[addr];
-  }
+  memcpy(myImage, image, 8192);
 
   // Normally bank 1 is the reset bank, unless we're dealing with ROMs
   // that have been incorrectly created with banks in the opposite order
-  myResetBank = swapbanks ? 0 : 1;
+  myResetBank = startlow ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

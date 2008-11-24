@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.hxx,v 1.12 2008-02-06 13:45:21 stephena Exp $
+// $Id: CartF8.hxx,v 1.13 2008-11-24 18:02:19 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF8_HXX
@@ -29,7 +29,7 @@ class System;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF8.hxx,v 1.12 2008-02-06 13:45:21 stephena Exp $
+  @version $Id: CartF8.hxx,v 1.13 2008-11-24 18:02:19 stephena Exp $
 */
 class CartridgeF8 : public Cartridge
 {
@@ -38,9 +38,9 @@ class CartridgeF8 : public Cartridge
       Create a new cartridge using the specified image
 
       @param image     Pointer to the ROM image
-      @param swapbanks Whether to swap the startup bank
+      @param startlow  Whether to use the lower or upper bank for startup
     */
-    CartridgeF8(const uInt8* image, bool swapbanks);
+    CartridgeF8(const uInt8* image, bool startlow = false);
  
     /**
       Destructor
