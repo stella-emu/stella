@@ -4820,9 +4820,8 @@
 
 "Cartridge.MD5" "4311a4115fb7bc68477c96cf44cebacf"
 "Cartridge.Name" "Challenge (Unknown) (PAL)"
-"Display.Format" "PAL"
 "Display.YStart" "14"
-"Display.Height" "250"
+"Display.Height" "240"
 ""
 
 "Cartridge.MD5" "42e8d67213227dee01e72c788712c002"
