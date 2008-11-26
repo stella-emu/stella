@@ -9,18 +9,91 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - January 2007
+                         To Do List - November 2008
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-  * Find people to handle new ports, and try to more actively recruit people
-    into the Stella project
+  * New UI subsystem where drawing is done into separate buffers, not
+    directly into the TIA window
+
+  * Make UI 'font-sensitive' and remove all hardcoded dimensions for
+    widget/font sizes
+
+  * Add option to automatically save snapshots in 1X mode (useful for
+    RomInfoWidget)
+
+  * Add infrastructure to show all info gathered from a ROM (similar to what
+    is currently displayed on the commandline).  Add a UI part for this, so
+    users aren't forced to use the commandline to see it.
+
+  * Research starting bank for 8K/F8 ROMs.  Probably default should be 0
+    instead of 1.
+
+  * Add commandline argument to randomly generate startup bank for all ROMs
+    bigger than 4K.  Shouldn't make a difference for all 'well-designed' ROMS,
+    but will pick up on errors when a ROM doesn't start from every bank.
+
+  * A way to override (possibly temporarily) all properties for a ROM, and
+    use global ones instead.  Tied to the current developer commandline
+    options, but presented in a GUI.
+
+  * More work to the ROM launcher, including at least the following:
+     (1) Only show files with certain extensions (including a UI part to
+         edit this).
+
+     (2) Shortcut key where selecting the first few letters jumps to a
+         directory named that way.  Basically the same as is currently
+         done for ROMs.
+
+     (3) Have time between keypresses be configurable when jumping to files.
+
+     (4) Reload current listing (possibly tied to a RMB context menu).
+
+     (5) Add commandline argument to toggle launcher use.
+
+  * Research lockups in Stay Frosty ROM.  Test out sample state file in
+    AtariAge email.
+
+  * More support for copy and paste.
+
+  * Fix PropSet to properly delete entries when 'Default' is pressed in
+    the GameInfoDialog; perhaps move to C++ maps instead of the current
+    home-made BST code.
+
+  * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
+    thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.
+
+  * Extra controllers (KidVid, Lightgun)
+
+  * Fix "Tron Man Picture Cart" (32K Tigervision bankswitching) issue
+
+  * Add new TIA infrastructure with improved HMOVE emulation
+
+  * Possible 'trace mode' in debugger (generate a file containing all
+    internal state)
+
+  * Automatic statesave at beginning of each frame (including state of
+    controllers and console switches), with the ability to 'roll back' to
+    a previous state/frame
+
+  * RewindManager to set up how often to save a state, and for how long
+    (debugger would be once per frame, normal probably once per second)
 
   * Improve debugger support for cartridges with dedicated RAM, and add
     source-level debugging
+
+  * Step-debug through disassembled zero-page code (get clarification on this)
+
+  * Extra SECAM 'quirks' (see Stella 2.4.1 release thread on AtariAge)
+
+  * Improve speed of Pitfall2 emulation
+
+  * Improve sound output of Pitfall2
+
+  * Add auto-detection for all remaining bankswitch types
 
   * Add support for uncommon controllers (KidVid, Lightgun, etc)
 
@@ -30,9 +103,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
   * Add a Sprite/Animation Editor 
 
-  * Record and Playback games - not as real movie, but by logging
-    Input/RAM/processor states in given intervals.
-
   * AVI/MPEG export
 
   * Add a PF Editor
@@ -40,3 +110,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Client/Server networked play for up to 4 Computers via LAN/Internet
 
   * Tracking Hiscores
+
+  * Find people to handle new ports, and try to more actively recruit people
+    into the Stella project
