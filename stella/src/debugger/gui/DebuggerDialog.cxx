@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerDialog.cxx,v 1.25 2008-06-13 13:14:50 stephena Exp $
+// $Id: DebuggerDialog.cxx,v 1.26 2008-11-30 17:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -88,7 +88,7 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   bool handled = instance().eventHandler().kbdAlt(modifiers);
   if(handled)
   {
-    switch(ascii)
+    switch(keycode)
     {
       case 's':
         doStep();

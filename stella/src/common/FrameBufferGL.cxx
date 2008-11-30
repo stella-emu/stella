@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.107 2008-11-24 18:02:19 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.108 2008-11-30 17:28:03 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -431,12 +431,14 @@ void FrameBufferGL::drawMediaSource()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
+static int FCOUNT = 0;
   if(myDirtyFlag)
   {
 cerr << "  SWAP buffers\n";
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
     myDirtyFlag = false;
+	cerr << FCOUNT++ << " : SWAP buffers" << endl;
   }
 }
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.88 2008-06-13 13:14:51 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.89 2008-11-30 17:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -216,7 +216,7 @@ void LauncherDialog::enableButtons(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateListing(bool fullReload)
+void LauncherDialog::updateListing()
 {
   // Start with empty list
   myGameList->clear();
@@ -324,6 +324,17 @@ void LauncherDialog::loadRomInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleKeyDown(int ascii, int keycode, int modifiers)
+{
+  // Grab the key before passing it to the actual dialog and check for
+  // Control-R (reload ROM listing)
+  if(instance().eventHandler().kbdControl(modifiers) && keycode == 'r')
+    updateListing();
+
+  Dialog::handleKeyDown(ascii, keycode, modifiers);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
@@ -370,7 +381,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPrevDirCmd:
       myCurrentNode = myCurrentNode.getParent();
-      updateListing(false);
+      updateListing();
       break;
 
     case kListSelectionChangedCmd:
@@ -392,7 +403,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kReloadRomDirCmd:
-      updateListing(true);
+      updateListing();
       break;
 
     case kResizeCmd:

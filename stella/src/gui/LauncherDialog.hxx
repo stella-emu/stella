@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.34 2008-03-14 19:34:56 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.35 2008-11-30 17:28:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,10 +62,11 @@ class LauncherDialog : public Dialog
     string selectedRomMD5();
 
   protected:
+    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-    void updateListing(bool fullReload = false);
     void loadConfig();
+    void updateListing();
 
   protected:
     ButtonWidget* myStartButton;
