@@ -50,7 +50,7 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
      (3) Have time between keypresses be configurable when jumping to files.
 
-     (4) Reload current listing (possibly tied to a RMB context menu).
+X    (4) Reload current listing (possibly tied to a RMB context menu).
 
      (5) Add commandline argument to toggle launcher use.
 

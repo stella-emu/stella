@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.108 2008-11-30 17:28:03 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.109 2008-12-04 16:53:26 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -434,11 +434,11 @@ void FrameBufferGL::postFrameUpdate()
 static int FCOUNT = 0;
   if(myDirtyFlag)
   {
-cerr << "  SWAP buffers\n";
+//cerr << "  SWAP buffers\n";
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
     myDirtyFlag = false;
-	cerr << FCOUNT++ << " : SWAP buffers" << endl;
+//	cerr << FCOUNT++ << " : SWAP buffers" << endl;
   }
 }
 
@@ -543,18 +543,12 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myTexCoord[3] = (GLfloat) baseHeight / myTexHeight;
   }
 
-  // Create a texture that best suits the current display depth and system
-  // This code needs to be Apple-specific, otherwise performance is
-  // terrible on a Mac Mini
-#if defined(MAC_OSX)
+  // Based on experimentation, the following is the fastest 16-bit
+  // format for OpenGL (on all platforms)
+  // TODO - make sure this is endian-clean
   myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
                 myTexWidth, myTexHeight, 16,
                 0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-#else
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                myTexWidth, myTexHeight, 16,
-                0x0000f800, 0x000007e0, 0x0000001f, 0x00000000);
-#endif
 
   switch(myTexture->format->BytesPerPixel)
   {
@@ -597,15 +591,10 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
 
   // Finally, create the texture in the most optimal format
   GLenum tex_intformat;
-#if defined (MAC_OSX)
-  tex_intformat   = GL_RGB5;
-  myTexFormat = GL_BGRA;
-  myTexType   = GL_UNSIGNED_SHORT_1_5_5_5_REV;
-#else
-  tex_intformat   = GL_RGB;
-  myTexFormat = GL_RGB;
-  myTexType   = GL_UNSIGNED_SHORT_5_6_5;
-#endif
+  tex_intformat = GL_RGB5;
+  myTexFormat   = GL_BGRA;
+  myTexType     = GL_UNSIGNED_SHORT_1_5_5_5_REV;
+
   p_glTexImage2D(myTexTarget, 0, tex_intformat,
                  myTexWidth, myTexHeight, 0,
                  myTexFormat, myTexType, myTexture->pixels);
@@ -738,11 +727,37 @@ void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::setWidth(uInt32 w)
 {
+//cerr << "  BEFORE: w = " << myWidth <<", texcoord[2] = " << myTexCoord[2] << endl;
+
+  // This method can't be used with 'scaled' surface (aka TIA surfaces)
+  // That shouldn't really matter, though, as all the UI stuff isn't scaled,
+  // and it's the only thing that uses it
+  myWidth = w;
+
+  if(1)// FIXME myHaveTexRectEXT)
+    myTexCoord[2] = (GLfloat) myWidth;
+  else
+    myTexCoord[2] = (GLfloat) myWidth / myTexWidth;
+
+//cerr << "  AFTER:  w = " << myWidth <<", texcoord[2] = " << myTexCoord[2] << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::setHeight(uInt32 h)
 {
+//cerr << "  BEFORE: h = " << myHeight <<", texcoord[3] = " << myTexCoord[3] << endl;
+
+  // This method can't be used with 'scaled' surface (aka TIA surfaces)
+  // That shouldn't really matter, though, as all the UI stuff isn't scaled,
+  // and it's the only thing that uses it
+  myHeight = h;
+
+  if(1)// FIXME myHaveTexRectEXT)
+    myTexCoord[3] = (GLfloat) myHeight;
+  else
+    myTexCoord[3] = (GLfloat) myHeight / myTexHeight;
+
+//cerr << "  AFTER:  h = " << myHeight <<", texcoord[3] = " << myTexCoord[3] << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -764,7 +779,7 @@ void FBSurfaceGL::update()
 {
   if(mySurfaceIsDirty)
   {
-cerr << "  FBSurfaceGL::update(): x = " << myXOrig << ", y = " << myYOrig << ", w = " << myWidth << ", h = " << myHeight << endl;
+//cerr << "  FBSurfaceGL::update(): x = " << myXOrig << ", y = " << myYOrig << ", w = " << myWidth << ", h = " << myHeight << endl;
     // Texturemap complete texture to surface so we have free scaling
     // and antialiasing 
     p_glTexSubImage2D(myTexTarget, 0, 0, 0, myTexWidth, myTexHeight,

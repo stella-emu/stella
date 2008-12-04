@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.140 2008-11-24 18:02:19 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.141 2008-12-04 16:53:26 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -128,8 +128,8 @@ cerr << " <== FrameBuffer::initialize: w = " << width << ", h = " << height << e
   myStatsMsg.h = myOSystem->consoleFont().getFontHeight();
   if(!myStatsMsg.surface)
     myStatsMsg.surface = createSurface(myStatsMsg.w, myStatsMsg.h);
-  if(!myMsg.surface)
-    myMsg.surface = createSurface(320, 15);  // TODO - size depends on font used
+  if(!myMsg.surface)    // TODO - change this to the font we'll really use
+    myMsg.surface = createSurface(320, myOSystem->consoleFont().getFontHeight()+10);
 
   // Finally, show some information about the framebuffer,
   // but only on the first initialization
@@ -234,7 +234,7 @@ void FrameBuffer::update()
   if(myMsg.counter > 0)
     drawMessage();
 
-  // Do any post-frame stuff	 
+  // Do any post-frame stuff
   postFrameUpdate();
 
   // The frame doesn't need to be completely redrawn anymore
