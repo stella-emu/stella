@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.81 2008-05-30 19:07:55 stephena Exp $
+// $Id: mainSDL.cxx,v 1.82 2008-12-08 18:56:53 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -182,13 +182,13 @@ int main(int argc, char* argv[])
       theOSystem->eventHandler().handleEvent(Event::JoystickZeroFire1, 1);
 
 #ifdef DEBUGGER_SUPPORT
-    Debugger& dbg = theOSystem->debugger();
 
     // Set up any breakpoint that was on the command line
     // (and remove the key from the settings, so they won't get set again)
     const string& initBreak = theOSystem->settings().getString("break");
     if(initBreak != "")
     {
+      Debugger& dbg = theOSystem->debugger();
       int bp = dbg.stringToValue(initBreak);
       dbg.setBreakPoint(bp, true);
       theOSystem->settings().setString("break", "");

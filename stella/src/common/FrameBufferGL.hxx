@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.58 2008-11-24 18:02:19 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.59 2008-12-08 18:56:53 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.58 2008-11-24 18:02:19 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.59 2008-12-08 18:56:53 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -175,9 +175,6 @@ class FrameBufferGL : public FrameBuffer
     glBufferType myBuffer;
 */
 
-    // Optional GL extensions that may increase performance
-    bool myHaveTexRectEXT;
-
     // The depth of the texture buffer
     uInt32 myDepth;
 
@@ -190,6 +187,9 @@ class FrameBufferGL : public FrameBuffer
     // The amount by which to scale the image in each dimension in fullscreen mode
     float myWidthScaleFactor, myHeightScaleFactor;
 
+    // Optional GL extensions that may increase performance
+    bool myHaveTexRectEXT;
+
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
 
@@ -201,7 +201,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.58 2008-11-24 18:02:19 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.59 2008-12-08 18:56:53 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -221,7 +221,7 @@ class FBSurfaceGL : public FBSurface
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
     void getPos(uInt32& x, uInt32& y) const;
     void setPos(uInt32 x, uInt32 y);
-    uInt32 getWidth() const  { return myWidth;  }
+    uInt32 getWidth()  const { return myWidth;  }
     uInt32 getHeight() const { return myHeight; }
     void setWidth(uInt32 w);
     void setHeight(uInt32 h);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.109 2008-12-04 16:53:26 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.110 2008-12-08 18:56:53 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -73,10 +73,10 @@ static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myTiaSurface(NULL),
-    myHaveTexRectEXT(false),
     myFilterParamName("GL_NEAREST"),
     myWidthScaleFactor(1.0),
     myHeightScaleFactor(1.0),
+    myHaveTexRectEXT(false),
     myDirtyFlag(true)
 {
 }
@@ -424,21 +424,24 @@ void FrameBufferGL::drawMediaSource()
   }
 
   // And blit the surface
-  myTiaSurface->addDirtyRect(0, 0, 0, 0);
-  myTiaSurface->update();
+  if(myDirtyFlag)
+  {
+    myTiaSurface->addDirtyRect(0, 0, 0, 0);
+    myTiaSurface->update();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
-static int FCOUNT = 0;
+//static int FCOUNT = 0;
   if(myDirtyFlag)
   {
-//cerr << "  SWAP buffers\n";
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
     myDirtyFlag = false;
-//	cerr << FCOUNT++ << " : SWAP buffers" << endl;
+//cerr << FCOUNT++ % 2 << " : SWAP buffers" << endl;
+//cerr << "--------------------------------------------------------------------" << endl;
   }
 }
 
@@ -546,9 +549,13 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
   // Based on experimentation, the following is the fastest 16-bit
   // format for OpenGL (on all platforms)
   // TODO - make sure this is endian-clean
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                myTexWidth, myTexHeight, 16,
-                0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+  GLenum tex_intformat;
+  tex_intformat = GL_RGB5;
+  myTexFormat   = GL_BGRA;
+  myTexType     = GL_UNSIGNED_SHORT_1_5_5_5_REV;
+  myTexture     = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                    myTexWidth, myTexHeight, 16,
+                    0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
 
   switch(myTexture->format->BytesPerPixel)
   {
@@ -590,11 +597,6 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
   p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
   // Finally, create the texture in the most optimal format
-  GLenum tex_intformat;
-  tex_intformat = GL_RGB5;
-  myTexFormat   = GL_BGRA;
-  myTexType     = GL_UNSIGNED_SHORT_1_5_5_5_REV;
-
   p_glTexImage2D(myTexTarget, 0, tex_intformat,
                  myTexWidth, myTexHeight, 0,
                  myTexFormat, myTexType, myTexture->pixels);
@@ -779,9 +781,9 @@ void FBSurfaceGL::update()
 {
   if(mySurfaceIsDirty)
   {
-//cerr << "  FBSurfaceGL::update(): x = " << myXOrig << ", y = " << myYOrig << ", w = " << myWidth << ", h = " << myHeight << endl;
     // Texturemap complete texture to surface so we have free scaling
     // and antialiasing 
+    p_glBindTexture(myTexTarget, myTexID);
     p_glTexSubImage2D(myTexTarget, 0, 0, 0, myTexWidth, myTexHeight,
                       myTexFormat, myTexType, myTexture->pixels);
     p_glBegin(GL_QUADS);
@@ -797,7 +799,6 @@ void FBSurfaceGL::update()
       p_glTexCoord2f(myTexCoord[0], myTexCoord[3]);
       p_glVertex2i(myXOrig, myYOrig + myHeight);
     p_glEnd();
-
     mySurfaceIsDirty = false;
 
     // Let postFrameUpdate() know that a change has been made

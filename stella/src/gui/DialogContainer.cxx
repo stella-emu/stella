@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.47 2008-12-04 16:53:26 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.48 2008-12-08 18:56:54 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -92,7 +92,6 @@ void DialogContainer::draw()
   // Draw all the dialogs on the stack when we want a full refresh
   if(myRefreshFlag)
   {
-cerr << "FULL refresh" << endl;
     for(int i = 0; i < myDialogStack.size(); i++)
     {
       myDialogStack[i]->setDirty();

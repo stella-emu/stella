@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.141 2008-12-04 16:53:26 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.142 2008-12-08 18:56:54 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -194,8 +194,7 @@ void FrameBuffer::update()
     {
       // Only update the screen if it's been invalidated
       if(myRedrawEntireFrame)
-{cerr << " ==> redraw TIA before menu\n";
-        drawMediaSource();}
+        drawMediaSource();
 
       myOSystem->menu().draw();
       break;  // S_MENU
