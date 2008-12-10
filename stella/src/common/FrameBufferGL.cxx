@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.110 2008-12-08 18:56:53 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.111 2008-12-10 17:11:34 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -178,6 +178,8 @@ bool FrameBufferGL::loadFuncs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::initSubsystem(VideoMode& mode)
 {
+cerr << "FrameBufferGL::initSubsystem\n";
+
   mySDLFlags |= SDL_OPENGL;
 
   // Set up the OpenGL attributes
@@ -232,6 +234,8 @@ string FrameBufferGL::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::setVidMode(VideoMode& mode)
 {
+cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl;
+
   bool inUIMode =
     myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
@@ -340,6 +344,10 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
 cerr << "dimensions: " << endl
 	<< "  basew  = " << baseWidth << endl
 	<< "  baseh  = " << baseHeight << endl
+	<< "  scrw   = " << mode.screen_w << endl
+	<< "  scrh   = " << mode.screen_h << endl
+	<< "  imagex = " << mode.image_x << endl
+	<< "  imagey = " << mode.image_y << endl
 	<< "  imagew = " << mode.image_w << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
@@ -525,11 +533,13 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myWidth(scaleWidth),
     myHeight(scaleHeight)
 {
+cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeight << endl;
+
   // Fill buffer struct with valid data
   // This changes depending on the texturing used
   myTexCoord[0] = 0.0f;
   myTexCoord[1] = 0.0f;
-  if(1)// FIXME myHaveTexRectEXT)
+  if(myFB.myHaveTexRectEXT)
   {
     myTexWidth    = baseWidth;
     myTexHeight   = baseHeight;
@@ -736,7 +746,7 @@ void FBSurfaceGL::setWidth(uInt32 w)
   // and it's the only thing that uses it
   myWidth = w;
 
-  if(1)// FIXME myHaveTexRectEXT)
+  if(myFB.myHaveTexRectEXT)
     myTexCoord[2] = (GLfloat) myWidth;
   else
     myTexCoord[2] = (GLfloat) myWidth / myTexWidth;
@@ -754,7 +764,7 @@ void FBSurfaceGL::setHeight(uInt32 h)
   // and it's the only thing that uses it
   myHeight = h;
 
-  if(1)// FIXME myHaveTexRectEXT)
+  if(myFB.myHaveTexRectEXT)
     myTexCoord[3] = (GLfloat) myHeight;
   else
     myTexCoord[3] = (GLfloat) myHeight / myTexHeight;
