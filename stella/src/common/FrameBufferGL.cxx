@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.111 2008-12-10 17:11:34 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.112 2008-12-10 18:11:21 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -72,7 +72,7 @@ static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
-    myTiaSurface(NULL),
+    myBaseSurface(NULL),
     myFilterParamName("GL_NEAREST"),
     myWidthScaleFactor(1.0),
     myHeightScaleFactor(1.0),
@@ -352,9 +352,9 @@ cerr << "dimensions: " << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
 
-  delete myTiaSurface;
-  myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
-                                 mode.image_w, mode.image_h);
+  delete myBaseSurface;
+  myBaseSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
+                                   mode.image_w, mode.image_h);
 
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);
@@ -374,8 +374,8 @@ void FrameBufferGL::drawMediaSource()
   uInt8* previousFrame = mediasrc.previousFrameBuffer();
   uInt32 width         = mediasrc.width();
   uInt32 height        = mediasrc.height();
-  uInt32 pitch         = myTiaSurface->pitch();
-  uInt16* buffer       = (uInt16*) myTiaSurface->pixels();
+  uInt32 pitch         = myBaseSurface->pitch();
+  uInt16* buffer       = (uInt16*) myBaseSurface->pixels();
 
   // TODO - is this fast enough?
   if(!myUsePhosphor)
@@ -434,8 +434,8 @@ void FrameBufferGL::drawMediaSource()
   // And blit the surface
   if(myDirtyFlag)
   {
-    myTiaSurface->addDirtyRect(0, 0, 0, 0);
-    myTiaSurface->update();
+    myBaseSurface->addDirtyRect(0, 0, 0, 0);
+    myBaseSurface->update();
   }
 }
 
@@ -465,7 +465,7 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Uint32 FrameBufferGL::mapRGB(Uint8 r, Uint8 g, Uint8 b) const
 {
-  return myTiaSurface->mapRGB(r, g, b);
+  return myBaseSurface->mapRGB(r, g, b);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

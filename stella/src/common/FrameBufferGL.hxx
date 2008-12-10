@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.59 2008-12-08 18:56:53 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.60 2008-12-10 18:11:21 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.59 2008-12-08 18:56:53 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.60 2008-12-10 18:11:21 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -151,8 +151,8 @@ class FrameBufferGL : public FrameBuffer
     bool loadFuncs();
 
   private:
-    // The TIA surface (wraps an SDL surface)
-    FBSurfaceGL* myTiaSurface;
+    // The lower-most base surface (could be TIA or dialog-based)
+    FBSurfaceGL* myBaseSurface;
 
 /*
     // Holds all items specifically needed by GL commands
@@ -201,7 +201,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.59 2008-12-08 18:56:53 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.60 2008-12-10 18:11:21 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
