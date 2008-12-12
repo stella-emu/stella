@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.112 2008-12-10 18:11:21 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.113 2008-12-12 15:51:06 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -356,6 +356,10 @@ cerr << "dimensions: " << endl
   myBaseSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
                                    mode.image_w, mode.image_h);
 
+  // Old textures currently in use by various UI items need to be
+  // refreshed as well (only seems to be required for OSX)
+  reloadSurfaces();
+
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);
   SDL_GL_SwapBuffers();
@@ -528,6 +532,8 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
                          uInt32 baseWidth, uInt32 baseHeight,
                          uInt32 scaleWidth, uInt32 scaleHeight)
   : myFB(buffer),
+    myTexture(NULL),
+    myTexID(0),
     myXOrig(0),
     myYOrig(0),
     myWidth(scaleWidth),
@@ -558,9 +564,6 @@ cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeigh
 
   // Based on experimentation, the following is the fastest 16-bit
   // format for OpenGL (on all platforms)
-  // TODO - make sure this is endian-clean
-  GLenum tex_intformat;
-  tex_intformat = GL_RGB5;
   myTexFormat   = GL_BGRA;
   myTexType     = GL_UNSIGNED_SHORT_1_5_5_5_REV;
   myTexture     = SDL_CreateRGBSurface(SDL_SWSURFACE,
@@ -582,41 +585,15 @@ cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeigh
       break;
   }
 
-/*
-  // Create an OpenGL texture from the SDL texture
-  const string& filter = myOSystem->settings().getString("gl_filter");
-  if(filter == "linear")
-  {
-    myBuffer.filter   = GL_LINEAR;
-    myFilterParamName = "GL_LINEAR";
-  }
-  else if(filter == "nearest")
-  {
-    myBuffer.filter   = GL_NEAREST;
-    myFilterParamName = "GL_NEAREST";
-  }
-*/
-
-  p_glGenTextures(1, &myTexID);
-  p_glBindTexture(myTexTarget, myTexID);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
-//  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, myBuffer.filter);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-  // Finally, create the texture in the most optimal format
-  p_glTexImage2D(myTexTarget, 0, tex_intformat,
-                 myTexWidth, myTexHeight, 0,
-                 myTexFormat, myTexType, myTexture->pixels);
-
-  p_glEnable(myTexTarget);
+  // Associate the SDL surface with a GL texture object
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceGL::~FBSurfaceGL()
 {
+cerr << "  FBSurfaceGL::~FBSurfaceGL(): " << this << endl;
+
   if(myTexture)
     SDL_FreeSurface(myTexture);
 
@@ -814,6 +791,53 @@ void FBSurfaceGL::update()
     // Let postFrameUpdate() know that a change has been made
     myFB.myDirtyFlag = true;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::reload()
+{
+  // This does a 'soft' reset of the surface
+  // It seems that on some system (notably, OSX), creating a new SDL window
+  // destroys the GL context, requiring a reload of all textures
+  // However, destroying the entire FBSurfaceGL object is wasteful, since
+  // it will also regenerate SDL software surfaces (which are not required
+  // to be regenerated)
+  // Basically, all that needs to be done is to re-call glTexImage2D with a
+  // new texture ID, so that's what we do here
+
+/*
+  // Create an OpenGL texture from the SDL texture
+  const string& filter = myOSystem->settings().getString("gl_filter");
+  if(filter == "linear")
+  {
+    myBuffer.filter   = GL_LINEAR;
+    myFilterParamName = "GL_LINEAR";
+  }
+  else if(filter == "nearest")
+  {
+    myBuffer.filter   = GL_NEAREST;
+    myFilterParamName = "GL_NEAREST";
+  }
+*/
+
+  p_glDeleteTextures(1, &myTexID);
+  p_glGenTextures(1, &myTexID);
+  p_glBindTexture(myTexTarget, myTexID);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
+//  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, myBuffer.filter);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+  // Finally, create the texture in the most optimal format
+  p_glTexImage2D(myTexTarget, 0, GL_RGB5,
+                 myTexWidth, myTexHeight, 0,
+                 myTexFormat, myTexType, myTexture->pixels);
+
+  p_glEnable(myTexTarget);
+
+cerr << "  ==> FBSurfaceGL::reload(): myTexID = " << myTexID << endl;
 }
 
 #if 0

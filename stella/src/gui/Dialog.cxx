@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.64 2008-08-01 12:16:00 stephena Exp $
+// $Id: Dialog.cxx,v 1.65 2008-12-12 15:51:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,8 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _isBase(isBase),
     _ourTab(NULL),
     _surface(NULL),
-    _focusID(0)
+    _focusID(0),
+    _surfaceID(-1)
 {
 }
 
@@ -62,7 +63,8 @@ Dialog::~Dialog()
 
   _ourButtonGroup.clear();
 
-  delete _surface;
+  _surfaceID = instance().frameBuffer().freeSurface(_surfaceID);
+  _surface   = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,6 +79,28 @@ void Dialog::open()
   // Base surfaces are typically large, and will probably cause slow
   // performance if we update the whole area each frame
   // Instead, dirty rectangle updates should be performed
+  // However, this policy is left entirely to the framebuffer
+  // We suggest the hint here, but specific framebuffers are free to
+  // ignore it
+  if(_surfaceID < 0 || _surface == NULL)
+  {
+    _surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
+    _surface   = instance().frameBuffer().surface(_surfaceID);
+  }
+  else if((uInt32)_w > _surface->getWidth() || (uInt32)_h > _surface->getHeight())
+  {
+    _surfaceID = instance().frameBuffer().freeSurface(_surfaceID);
+    _surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
+    _surface   = instance().frameBuffer().surface(_surfaceID);
+  }
+  else
+  {
+    _surface->setWidth(_w);
+    _surface->setHeight(_h);
+  }
+
+
+/*
   if(_surface == NULL)
     _surface = instance().frameBuffer().createSurface(_w, _h, _isBase);
   else if((uInt32)_w > _surface->getWidth() || (uInt32)_h > _surface->getHeight())
@@ -89,6 +113,8 @@ void Dialog::open()
     _surface->setWidth(_w);
     _surface->setHeight(_h);
   }
+*/
+
 
   center();
 

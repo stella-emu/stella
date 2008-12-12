@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.142 2008-12-08 18:56:54 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.143 2008-12-12 15:51:07 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -46,17 +46,19 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myInitializedCount(0),
-    myPausedCount(0)
+    myPausedCount(0),
+    mySurfaceCount(0)
 {
-  myMsg.surface = myStatsMsg.surface = 0;
-  myMsg.enabled = myStatsMsg.enabled = false;
+  myMsg.surface   = myStatsMsg.surface = 0;
+  myMsg.surfaceID = myStatsMsg.surfaceID = -1;
+  myMsg.enabled   = myStatsMsg.enabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer(void)
 {
-  delete myMsg.surface;
-  delete myStatsMsg.surface;
+  freeSurface(myMsg.surfaceID);
+  freeSurface(myStatsMsg.surfaceID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -126,10 +128,16 @@ cerr << " <== FrameBuffer::initialize: w = " << width << ", h = " << height << e
   myStatsMsg.color = kBtnTextColor;
   myStatsMsg.w = myOSystem->consoleFont().getStringWidth("000 LINES  %00.00 FPS");
   myStatsMsg.h = myOSystem->consoleFont().getFontHeight();
-  if(!myStatsMsg.surface)
-    myStatsMsg.surface = createSurface(myStatsMsg.w, myStatsMsg.h);
+  if(myStatsMsg.surfaceID < 0)
+  {
+    myStatsMsg.surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface   = surface(myStatsMsg.surfaceID);
+  }
   if(!myMsg.surface)    // TODO - change this to the font we'll really use
-    myMsg.surface = createSurface(320, myOSystem->consoleFont().getFontHeight()+10);
+  {
+    myMsg.surfaceID = allocateSurface(320, myOSystem->consoleFont().getFontHeight()+10);
+    myMsg.surface   = surface(myMsg.surfaceID);
+  }
 
   // Finally, show some information about the framebuffer,
   // but only on the first initialization
@@ -371,6 +379,51 @@ inline void FrameBuffer::drawMessage()
 void FrameBuffer::refresh()
 {
   myRedrawEntireFrame = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int FrameBuffer::allocateSurface(int w, int h, bool useBase)
+{
+  // Create a new surface
+  FBSurface* surface = createSurface(w, h, useBase);
+
+  // Add it to the list
+  mySurfaceList.insert(make_pair(mySurfaceCount, surface));
+  mySurfaceCount++;
+
+  // Return a reference to it
+  return mySurfaceCount - 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int FrameBuffer::freeSurface(int id)
+{
+  // Really delete the surface this time
+  // That means actually deleting the FBSurface object, and removing it
+  // from the list
+  map<int,FBSurface*>::iterator iter = mySurfaceList.find(id);
+  if(iter != mySurfaceList.end())
+  {
+cerr << "  delete id = " << iter->first << ", " << iter->second << endl;
+    delete iter->second;
+    mySurfaceList.erase(iter);
+  }
+  return -1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FBSurface* FrameBuffer::surface(int id) const
+{
+  map<int,FBSurface*>::const_iterator iter = mySurfaceList.find(id);
+  return iter != mySurfaceList.end() ? iter->second : NULL;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::reloadSurfaces()
+{
+  map<int,FBSurface*>::iterator iter;
+  for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
+    iter->second->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.60 2008-12-10 18:11:21 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.61 2008-12-12 15:51:06 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.60 2008-12-10 18:11:21 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.61 2008-12-12 15:51:06 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -84,16 +84,6 @@ class FrameBufferGL : public FrameBuffer
     BufferType type() const { return kGLBuffer; }
 
     /**
-      This method is called to create a surface compatible with the one
-      currently in use, but having the given dimensions.
-
-      @param w       The requested width of the new surface.
-      @param h       The requested height of the new surface.
-      @param useBase Use the base surface instead of creating a new one
-    */
-    FBSurface* createSurface(int w, int h, bool useBase = false) const;
-
-    /**
       This method is called to get the specified scanline data.
 
       @param row  The row we are looking for
@@ -124,6 +114,16 @@ class FrameBufferGL : public FrameBuffer
       @return  False on any errors (in which case 'mode' is invalid), else true
     */
     bool setVidMode(VideoMode& mode);
+
+    /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
+    */
+    FBSurface* createSurface(int w, int h, bool useBase = false) const;
 
     /**
       Switches between the two filtering options in OpenGL.
@@ -201,7 +201,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.60 2008-12-10 18:11:21 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.61 2008-12-12 15:51:06 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -227,6 +227,7 @@ class FBSurfaceGL : public FBSurface
     void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;
     void update();
+    void reload();
 
   private:
     inline void* pixels() const { return myTexture->pixels; }

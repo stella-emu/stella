@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.55 2008-11-02 16:46:05 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.56 2008-12-12 15:51:06 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -32,7 +32,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.55 2008-11-02 16:46:05 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.56 2008-12-12 15:51:06 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -73,16 +73,6 @@ class FrameBufferSoft : public FrameBuffer
     BufferType type() const { return kSoftBuffer; }
 
     /**
-      This method is called to create a surface compatible with the one
-      currently in use, but having the given dimensions.
-
-      @param w       The requested width of the new surface.
-      @param h       The requested height of the new surface.
-      @param useBase Use the base surface instead of creating a new one
-    */
-    FBSurface* createSurface(int w, int h, bool useBase = false) const;
-
-    /**
       This method is called to get the specified scanline data.
 
       @param row  The row we are looking for
@@ -113,6 +103,16 @@ class FrameBufferSoft : public FrameBuffer
       @return  False on any errors (in which case 'mode' is invalid), else true
     */
     bool setVidMode(VideoMode& mode);
+
+    /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
+    */
+    FBSurface* createSurface(int w, int h, bool useBase = false) const;
 
     /**
       Switches between the filtering options in software mode.
@@ -172,7 +172,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.55 2008-11-02 16:46:05 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.56 2008-12-12 15:51:06 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {
@@ -195,6 +195,7 @@ class FBSurfaceSoft : public FBSurface
     void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;
     void update();
+    void reload() { }   // Not required for software mode
 
   private:
     void recalc();

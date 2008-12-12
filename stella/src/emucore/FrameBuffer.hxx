@@ -13,12 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.104 2008-08-04 11:56:12 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.105 2008-12-12 15:51:07 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
 #define FRAMEBUFFER_HXX
 
+#include <map>
 #include <SDL.h>
 
 class FBSurface;
@@ -90,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.104 2008-08-04 11:56:12 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.105 2008-12-12 15:51:07 stephena Exp $
 */
 class FrameBuffer
 {
@@ -149,6 +150,35 @@ class FrameBuffer
       from the message queue; they're just not redrawn into the framebuffer.
     */
     void enableMessages(bool enable);
+
+    /**
+      Allocate a new surface with a unique ID.
+
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
+
+      @return  A unique ID used to identify this surface
+    */
+    int allocateSurface(int w, int h, bool useBase = false);
+
+    /**
+      De-allocate a previously allocated surface.  Other classes should
+      call this method when a surface is no longer needed; it shouldn't
+      try to manually delete the surface object.
+
+      @param id  The ID for the surface to de-allocate.
+      @return    The ID indicating a non-existent surface (-1).
+    */
+    int freeSurface(int id);
+
+    /**
+      Retrieve the surface associated with the given ID.
+
+      @param id  The ID for the surface to retrieve.
+      @return    A pointer to a valid surface object, or NULL.
+    */
+    FBSurface* surface(int id) const;
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -269,16 +299,6 @@ class FrameBuffer
     virtual BufferType type() const = 0;
 
     /**
-      This method is called to create a surface compatible with the one
-      currently in use, but having the given dimensions.
-
-      @param w       The requested width of the new surface.
-      @param h       The requested height of the new surface.
-      @param useBase Use the base surface instead of creating a new one
-    */
-    virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
-
-    /**
       This method is called to get the specified scanline data.
 
       @param row  The row we are looking for
@@ -344,6 +364,16 @@ class FrameBuffer
     virtual bool setVidMode(VideoMode& mode) = 0;
 
     /**
+      This method is called to create a surface compatible with the one
+      currently in use, but having the given dimensions.
+
+      @param w       The requested width of the new surface.
+      @param h       The requested height of the new surface.
+      @param useBase Use the base surface instead of creating a new one
+    */
+    virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
+
+    /**
       Switches between the filtering options in the video subsystem.
     */
     virtual void toggleFilter() = 0;
@@ -363,6 +393,12 @@ class FrameBuffer
       This method is called to provide information about the FrameBuffer.
     */
     virtual string about() const = 0;
+
+    /**
+      Issues the 'reload' instruction to all surfaces that the
+      framebuffer knows about.
+    */
+    void reloadSurfaces();
 
   protected:
     // The parent system for the framebuffer
@@ -492,6 +528,7 @@ class FrameBuffer
       int x, y, w, h;
       uInt32 color;
       FBSurface* surface;
+      int surfaceID;
       bool enabled;
     };
     Message myMsg;
@@ -501,6 +538,10 @@ class FrameBuffer
     VideoModeList myWindowedModeList;
     VideoModeList myFullscreenModeList;
     VideoModeList* myCurrentModeList;
+
+    // Holds a reference to all the surfaces that have been created
+    map<int,FBSurface*> mySurfaceList;
+    int mySurfaceCount;
 
     // Holds static strings for the remap menu (emulation and menu events)
     static GraphicsMode ourGraphicsModes[GFX_NumModes];
@@ -516,7 +557,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.104 2008-08-04 11:56:12 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.105 2008-12-12 15:51:07 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -649,6 +690,11 @@ class FBSurface
       This method should be called to draw the surface to the screen.
     */
     virtual void update() = 0;
+
+    /**
+      This method should be called to reload the surface data/state.
+    */
+    virtual void reload() = 0;
 
     /**
       This method should be called to draw a rectangular box with sides
