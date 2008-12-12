@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.143 2008-12-12 15:51:07 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.144 2008-12-12 18:32:53 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -57,8 +57,13 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::~FrameBuffer(void)
 {
-  freeSurface(myMsg.surfaceID);
-  freeSurface(myStatsMsg.surfaceID);
+  // Free all allocated surfaces
+  while(!mySurfaceList.empty())
+  {
+cerr << "  delete id = " << (*mySurfaceList.begin()).first << ", " << (*mySurfaceList.begin()).second << endl;
+    delete (*mySurfaceList.begin()).second;
+    mySurfaceList.erase(mySurfaceList.begin());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -393,22 +398,6 @@ int FrameBuffer::allocateSurface(int w, int h, bool useBase)
 
   // Return a reference to it
   return mySurfaceCount - 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBuffer::freeSurface(int id)
-{
-  // Really delete the surface this time
-  // That means actually deleting the FBSurface object, and removing it
-  // from the list
-  map<int,FBSurface*>::iterator iter = mySurfaceList.find(id);
-  if(iter != mySurfaceList.end())
-  {
-cerr << "  delete id = " << iter->first << ", " << iter->second << endl;
-    delete iter->second;
-    mySurfaceList.erase(iter);
-  }
-  return -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

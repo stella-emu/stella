@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.113 2008-12-12 15:51:06 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.114 2008-12-12 18:32:53 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -352,9 +352,14 @@ cerr << "dimensions: " << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
 
-  delete myBaseSurface;
-  myBaseSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
-                                   mode.image_w, mode.image_h);
+  if(1)//!inUIMode)
+  {
+    delete myBaseSurface;
+    myBaseSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
+                                     mode.image_w, mode.image_h);
+
+  }
+//    myOSystem->setUIPalette();
 
   // Old textures currently in use by various UI items need to be
   // refreshed as well (only seems to be required for OSX)
@@ -539,7 +544,7 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myWidth(scaleWidth),
     myHeight(scaleHeight)
 {
-cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeight << endl;
+cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeight << " : " << this << endl;
 
   // Fill buffer struct with valid data
   // This changes depending on the texturing used

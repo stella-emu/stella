@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.105 2008-12-12 15:51:07 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.106 2008-12-12 18:32:53 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.105 2008-12-12 15:51:07 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.106 2008-12-12 18:32:53 stephena Exp $
 */
 class FrameBuffer
 {
@@ -152,7 +152,9 @@ class FrameBuffer
     void enableMessages(bool enable);
 
     /**
-      Allocate a new surface with a unique ID.
+      Allocate a new surface with a unique ID.  The FrameBuffer class takes
+      all responsibility for freeing this surface (ie, other classes must not
+      delete it directly).
 
       @param w       The requested width of the new surface.
       @param h       The requested height of the new surface.
@@ -161,16 +163,6 @@ class FrameBuffer
       @return  A unique ID used to identify this surface
     */
     int allocateSurface(int w, int h, bool useBase = false);
-
-    /**
-      De-allocate a previously allocated surface.  Other classes should
-      call this method when a surface is no longer needed; it shouldn't
-      try to manually delete the surface object.
-
-      @param id  The ID for the surface to de-allocate.
-      @return    The ID indicating a non-existent surface (-1).
-    */
-    int freeSurface(int id);
 
     /**
       Retrieve the surface associated with the given ID.
@@ -557,7 +549,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.105 2008-12-12 15:51:07 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.106 2008-12-12 18:32:53 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

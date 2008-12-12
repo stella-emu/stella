@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.65 2008-12-12 15:51:07 stephena Exp $
+// $Id: Dialog.cxx,v 1.66 2008-12-12 18:32:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -62,9 +62,6 @@ Dialog::~Dialog()
   _firstWidget = NULL;
 
   _ourButtonGroup.clear();
-
-  _surfaceID = instance().frameBuffer().freeSurface(_surfaceID);
-  _surface   = NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,25 +86,14 @@ void Dialog::open()
   }
   else if((uInt32)_w > _surface->getWidth() || (uInt32)_h > _surface->getHeight())
   {
+cerr << "!!!!  surface is too small  !!!!" << endl;
+/*
     _surfaceID = instance().frameBuffer().freeSurface(_surfaceID);
     _surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
     _surface   = instance().frameBuffer().surface(_surfaceID);
+*/
   }
-  else
-  {
-    _surface->setWidth(_w);
-    _surface->setHeight(_h);
-  }
-
-
 /*
-  if(_surface == NULL)
-    _surface = instance().frameBuffer().createSurface(_w, _h, _isBase);
-  else if((uInt32)_w > _surface->getWidth() || (uInt32)_h > _surface->getHeight())
-  {
-    delete _surface;
-    _surface = instance().frameBuffer().createSurface(_w, _h, _isBase);
-  }
   else
   {
     _surface->setWidth(_w);
@@ -115,6 +101,7 @@ void Dialog::open()
   }
 */
 
+instance().setUIPalette();
 
   center();
 
