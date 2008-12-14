@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.114 2008-12-12 18:32:53 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.115 2008-12-14 21:44:06 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -72,13 +72,21 @@ static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
-    myBaseSurface(NULL),
+    myTiaSurface(NULL),
     myFilterParamName("GL_NEAREST"),
     myWidthScaleFactor(1.0),
     myHeightScaleFactor(1.0),
     myHaveTexRectEXT(false),
     myDirtyFlag(true)
 {
+  // We need a pixel format for palette value calculations
+  // It's done this way (vs directly accessing a FBSurfaceGL object)
+  // since the structure may be needed before any FBSurface's have
+  // be created
+  SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 16,
+                     0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+  myPixelFormat = *(s->format);
+  SDL_FreeSurface(s);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -340,7 +348,6 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
   p_glPushMatrix();
   p_glLoadIdentity();
 
-  // Allocate GL textures
 cerr << "dimensions: " << endl
 	<< "  basew  = " << baseWidth << endl
 	<< "  baseh  = " << baseHeight << endl
@@ -352,17 +359,18 @@ cerr << "dimensions: " << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
 
-  if(1)//!inUIMode)
+  // The framebuffer only takes responsibility for TIA surfaces
+  // Other surfaces (such as the ones used for dialogs) are allocated
+  // in the Dialog class
+  if(!inUIMode)
   {
-    delete myBaseSurface;
-    myBaseSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
+    delete myTiaSurface;
+    myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
                                      mode.image_w, mode.image_h);
-
   }
-//    myOSystem->setUIPalette();
 
-  // Old textures currently in use by various UI items need to be
-  // refreshed as well (only seems to be required for OSX)
+  // Any previously allocated textures currently in use by various UI items
+  // need to be refreshed as well (only seems to be required for OSX)
   reloadSurfaces();
 
   // Make sure any old parts of the screen are erased
@@ -383,8 +391,8 @@ void FrameBufferGL::drawMediaSource()
   uInt8* previousFrame = mediasrc.previousFrameBuffer();
   uInt32 width         = mediasrc.width();
   uInt32 height        = mediasrc.height();
-  uInt32 pitch         = myBaseSurface->pitch();
-  uInt16* buffer       = (uInt16*) myBaseSurface->pixels();
+  uInt32 pitch         = myTiaSurface->pitch();
+  uInt16* buffer       = (uInt16*) myTiaSurface->pixels();
 
   // TODO - is this fast enough?
   if(!myUsePhosphor)
@@ -443,8 +451,8 @@ void FrameBufferGL::drawMediaSource()
   // And blit the surface
   if(myDirtyFlag)
   {
-    myBaseSurface->addDirtyRect(0, 0, 0, 0);
-    myBaseSurface->update();
+    myTiaSurface->addDirtyRect(0, 0, 0, 0);
+    myTiaSurface->update();
   }
 }
 
@@ -469,12 +477,6 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
   myPhosphorBlend = blend;
 
   myRedrawEntireFrame = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Uint32 FrameBufferGL::mapRGB(Uint8 r, Uint8 g, Uint8 b) const
-{
-  return myBaseSurface->mapRGB(r, g, b);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -704,18 +706,6 @@ void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 {
   myXOrig = x;
   myYOrig = y;
-#if 0
-  // Only non-base surfaces can be arbitrarily 'moved'
-  if(!myIsBaseSurface)
-  {
-    // Make sure pitch is valid
-    recalc();
-
-    myXOrig = x;
-    myYOrig = y;
-    myXOffset = myYOffset = myBaseOffset = 0;
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

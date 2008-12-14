@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.61 2008-12-12 15:51:06 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.62 2008-12-14 21:44:06 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.61 2008-12-12 15:51:06 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.62 2008-12-14 21:44:06 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -76,7 +76,8 @@ class FrameBufferGL : public FrameBuffer
       @param g  The green component of the color.
       @param b  The blue component of the color.
     */
-    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const;
+    Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
+      { return SDL_MapRGB(&myPixelFormat, r, g, b); }
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -151,8 +152,12 @@ class FrameBufferGL : public FrameBuffer
     bool loadFuncs();
 
   private:
-    // The lower-most base surface (could be TIA or dialog-based)
-    FBSurfaceGL* myBaseSurface;
+    // The lower-most base surface (will always be a TIA surface, 
+    // since Dialog surfaces are allocated by the Dialog class directly).
+    FBSurfaceGL* myTiaSurface;
+
+    // Used for mapRGB (when palettes are created)
+    SDL_PixelFormat myPixelFormat;
 
 /*
     // Holds all items specifically needed by GL commands
@@ -201,7 +206,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.61 2008-12-12 15:51:06 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.62 2008-12-14 21:44:06 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -232,8 +237,6 @@ class FBSurfaceGL : public FBSurface
   private:
     inline void* pixels() const { return myTexture->pixels; }
     inline uInt32 pitch() const { return myPitch;           }
-    inline uInt32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
-           { return SDL_MapRGB(myTexture->format, r, g, b); }
     void recalc();
 
     static uInt32 power_of_two(uInt32 input)

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.132 2008-12-12 18:32:53 stephena Exp $
+// $Id: OSystem.cxx,v 1.133 2008-12-14 21:44:06 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -346,6 +346,9 @@ bool OSystem::createFrameBuffer(bool showmessage)
 
   // Let the system know that we've possibly resized the display
   if(changeBuffer) myEventHandler->handleResizeEvent();
+
+  // Update the UI palette
+  setUIPalette();
 
   if(showmessage)
   {

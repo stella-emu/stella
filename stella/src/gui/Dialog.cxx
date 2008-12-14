@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.66 2008-12-12 18:32:53 stephena Exp $
+// $Id: Dialog.cxx,v 1.67 2008-12-14 21:44:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -100,8 +100,6 @@ cerr << "!!!!  surface is too small  !!!!" << endl;
     _surface->setHeight(_h);
   }
 */
-
-instance().setUIPalette();
 
   center();
 
