@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.115 2008-12-14 21:44:06 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.116 2008-12-14 21:51:11 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -92,6 +92,8 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::~FrameBufferGL()
 {
+  // We're taking responsibility for this surface
+  delete myTiaSurface;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
