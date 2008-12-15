@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.117 2008-12-15 00:20:11 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.118 2008-12-15 17:53:01 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -451,11 +451,8 @@ void FrameBufferGL::drawMediaSource()
   }
 
   // And blit the surface
-  if(myDirtyFlag)
-  {
-    myTiaSurface->addDirtyRect(0, 0, 0, 0);
-    myTiaSurface->update();
-  }
+  myTiaSurface->addDirtyRect(0, 0, 0, 0);
+  myTiaSurface->update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
