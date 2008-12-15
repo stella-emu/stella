@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.116 2008-12-14 21:51:11 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.117 2008-12-15 00:20:11 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -361,6 +361,10 @@ cerr << "dimensions: " << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
 
+  // Any previously allocated textures currently in use by various UI items
+  // need to be refreshed as well (only seems to be required for OSX)
+  reloadSurfaces();
+
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated
   // in the Dialog class
@@ -370,10 +374,6 @@ cerr << "dimensions: " << endl
     myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
                                      mode.image_w, mode.image_h);
   }
-
-  // Any previously allocated textures currently in use by various UI items
-  // need to be refreshed as well (only seems to be required for OSX)
-  reloadSurfaces();
 
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);
