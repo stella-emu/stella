@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.118 2008-12-15 17:53:01 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.119 2008-12-18 23:36:32 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -361,10 +361,6 @@ cerr << "dimensions: " << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
 
-  // Any previously allocated textures currently in use by various UI items
-  // need to be refreshed as well (only seems to be required for OSX)
-  reloadSurfaces();
-
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated
   // in the Dialog class
@@ -374,6 +370,10 @@ cerr << "dimensions: " << endl
     myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
                                      mode.image_w, mode.image_h);
   }
+
+  // Any previously allocated textures currently in use by various UI items
+  // need to be refreshed as well (only seems to be required for OSX)
+  reloadSurfaces();
 
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);
@@ -598,7 +598,7 @@ cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeigh
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceGL::~FBSurfaceGL()
 {
-cerr << "  FBSurfaceGL::~FBSurfaceGL(): " << this << endl;
+cerr << "  FBSurfaceGL::~FBSurfaceGL(): myTexID = " << myTexID << " @ " << this << endl;
 
   if(myTexture)
     SDL_FreeSurface(myTexture);
@@ -814,7 +814,7 @@ void FBSurfaceGL::reload()
   }
 */
 
-  p_glDeleteTextures(1, &myTexID);
+//  p_glDeleteTextures(1, &myTexID);
   p_glGenTextures(1, &myTexID);
   p_glBindTexture(myTexTarget, myTexID);
   p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -831,7 +831,7 @@ void FBSurfaceGL::reload()
 
   p_glEnable(myTexTarget);
 
-cerr << "  ==> FBSurfaceGL::reload(): myTexID = " << myTexID << endl;
+cerr << "  ==> FBSurfaceGL::reload(): myTexID = " << myTexID << " @ " << this << endl;
 }
 
 #if 0
