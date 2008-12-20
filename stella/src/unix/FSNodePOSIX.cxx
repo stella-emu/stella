@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.14 2008-03-14 23:52:17 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.15 2008-12-20 23:42:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,9 +98,8 @@ AbstractFilesystemNode* FilesystemNode::getNodeForPath(const string& path)
 POSIXFilesystemNode::POSIXFilesystemNode()
 {
   char buf[MAXPATHLEN];
-  getcwd(buf, MAXPATHLEN);
+  _path = getcwd(buf, MAXPATHLEN) == buf ? buf : "";
 
-  _path = buf;
   _displayName = lastPathComponent(_path);
   _path += '/';
   _isValid = true;
