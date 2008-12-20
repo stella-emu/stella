@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.144 2008-12-12 18:32:53 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.145 2008-12-20 23:32:46 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -408,9 +408,17 @@ FBSurface* FrameBuffer::surface(int id) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::reloadSurfaces()
+void FrameBuffer::resetSurfaces()
 {
+  // Free all resources for each surface, then reload them
+  // Due to possible timing and/or synchronization issues, all free()'s
+  // are done first, then all reload()'s
+  // Any derived FrameBuffer classes that call this method should be
+  // aware of these restrictions, and act accordingly
+
   map<int,FBSurface*>::iterator iter;
+  for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
+    iter->second->free();
   for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
     iter->second->reload();
 }

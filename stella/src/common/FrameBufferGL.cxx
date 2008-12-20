@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.119 2008-12-18 23:36:32 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.120 2008-12-20 23:32:45 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -361,19 +361,28 @@ cerr << "dimensions: " << endl
 	<< "  imageh = " << mode.image_h << endl
 	<< endl;
 
+  ////////////////////////////////////////////////////////////////////
+  // Note that the following must be done in the order given
+  // Basically, all surfaces must first be free'd before being
+  // recreated
+  // So, we delete the TIA surface first, then reset all other surfaces
+  // (which frees all surfaces and then reloads all surfaces), then
+  // re-create the TIA surface (if necessary)
+  // In this way, all free()'s come before all reload()'s
+  ////////////////////////////////////////////////////////////////////
+
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated
   // in the Dialog class
-  if(!inUIMode)
-  {
-    delete myTiaSurface;
-    myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
-                                     mode.image_w, mode.image_h);
-  }
+  delete myTiaSurface;  myTiaSurface = NULL;
 
   // Any previously allocated textures currently in use by various UI items
   // need to be refreshed as well (only seems to be required for OSX)
-  reloadSurfaces();
+  resetSurfaces();
+
+  if(!inUIMode)
+    myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
+                                     mode.image_w, mode.image_h);
 
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);
@@ -603,7 +612,7 @@ cerr << "  FBSurfaceGL::~FBSurfaceGL(): myTexID = " << myTexID << " @ " << this 
   if(myTexture)
     SDL_FreeSurface(myTexture);
 
-  p_glDeleteTextures(1, &myTexID);
+  free();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -788,6 +797,14 @@ void FBSurfaceGL::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::free()
+{
+  p_glDeleteTextures(1, &myTexID);
+
+cerr << "  ==> FBSurfaceGL::free(): myTexID = " << myTexID << " @ " << this << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::reload()
 {
   // This does a 'soft' reset of the surface
@@ -813,8 +830,6 @@ void FBSurfaceGL::reload()
     myFilterParamName = "GL_NEAREST";
   }
 */
-
-//  p_glDeleteTextures(1, &myTexID);
   p_glGenTextures(1, &myTexID);
   p_glBindTexture(myTexTarget, myTexID);
   p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.62 2008-12-14 21:44:06 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.63 2008-12-20 23:32:46 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.62 2008-12-14 21:44:06 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.63 2008-12-20 23:32:46 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -206,7 +206,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.62 2008-12-14 21:44:06 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.63 2008-12-20 23:32:46 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -232,6 +232,7 @@ class FBSurfaceGL : public FBSurface
     void setHeight(uInt32 h);
     void translateCoords(Int32& x, Int32& y) const;
     void update();
+    void free();
     void reload();
 
   private:

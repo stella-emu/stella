@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.106 2008-12-12 18:32:53 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.107 2008-12-20 23:32:46 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.106 2008-12-12 18:32:53 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.107 2008-12-20 23:32:46 stephena Exp $
 */
 class FrameBuffer
 {
@@ -387,10 +387,10 @@ class FrameBuffer
     virtual string about() const = 0;
 
     /**
-      Issues the 'reload' instruction to all surfaces that the
+      Issues a 'free' and 'reload' instruction to all surfaces that the
       framebuffer knows about.
     */
-    void reloadSurfaces();
+    void resetSurfaces();
 
   protected:
     // The parent system for the framebuffer
@@ -549,7 +549,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.106 2008-12-12 18:32:53 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.107 2008-12-20 23:32:46 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -684,7 +684,14 @@ class FBSurface
     virtual void update() = 0;
 
     /**
+      This method should be called to free any resources being used by
+      the surface.
+    */
+    virtual void free() = 0;
+
+    /**
       This method should be called to reload the surface data/state.
+      It will normally be called after free().
     */
     virtual void reload() = 0;
 

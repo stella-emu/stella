@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.18 2008-07-25 12:41:41 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.19 2008-12-20 23:32:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -143,6 +143,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
+return;
   // FIXME - check if we're in 'greyed out mode' and act accordingly
   instance().frameBuffer().refresh();
   instance().frameBuffer().drawMediaSource();
