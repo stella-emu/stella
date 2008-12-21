@@ -4,7 +4,7 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.m,v 1.5 2005-08-24 05:30:00 markgrebe Exp $ */
+/* $Id: SDLMain.m,v 1.6 2008-12-21 00:12:15 stephena Exp $ */
 
 #import "SDL.h"
 #import "SDLMain.h"
@@ -230,7 +230,7 @@ int main (int argc, char **argv)
     setupParentDirectory();
 
     [SDLApplication poseAsClass:[NSApplication class]];
-    NSApplicationMain (argc, argv);
+    NSApplicationMain (argc, (const char **)argv);
     return 0;
 }
 
