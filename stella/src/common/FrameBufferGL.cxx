@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.120 2008-12-20 23:32:45 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.121 2008-12-21 19:51:34 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -335,7 +335,7 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
     myHaveTexRectEXT = false;
 
   // Initialize GL display
-  p_glViewport(mode.image_x, mode.image_y, mode.image_w, mode.image_h);
+  p_glViewport(0, 0, mode.screen_w, mode.screen_h);
   p_glShadeModel(GL_FLAT);
   p_glDisable(GL_CULL_FACE);
   p_glDisable(GL_DEPTH_TEST);
@@ -345,7 +345,7 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
 
   p_glMatrixMode(GL_PROJECTION);
   p_glLoadIdentity();
-  p_glOrtho(0.0, mode.image_w, mode.image_h, 0.0, 0.0, 1.0);
+  p_glOrtho(0.0, mode.screen_w, mode.screen_h, 0.0, -1.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
   p_glPushMatrix();
   p_glLoadIdentity();
@@ -381,8 +381,11 @@ cerr << "dimensions: " << endl
   resetSurfaces();
 
   if(!inUIMode)
+  {
     myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
                                      mode.image_w, mode.image_h);
+    myTiaSurface->setPos(mode.image_x, mode.image_y);
+  }
 
   // Make sure any old parts of the screen are erased
   p_glClear(GL_COLOR_BUFFER_BIT);
@@ -579,11 +582,9 @@ cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeigh
 
   // Based on experimentation, the following is the fastest 16-bit
   // format for OpenGL (on all platforms)
-  myTexFormat   = GL_BGRA;
-  myTexType     = GL_UNSIGNED_SHORT_1_5_5_5_REV;
-  myTexture     = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                    myTexWidth, myTexHeight, 16,
-                    0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                  myTexWidth, myTexHeight, 16,
+                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
 
   switch(myTexture->format->BytesPerPixel)
   {
@@ -607,7 +608,7 @@ cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeigh
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceGL::~FBSurfaceGL()
 {
-cerr << "  FBSurfaceGL::~FBSurfaceGL(): myTexID = " << myTexID << " @ " << this << endl;
+//cerr << "  FBSurfaceGL::~FBSurfaceGL(): myTexID = " << myTexID << " @ " << this << endl;
 
   if(myTexture)
     SDL_FreeSurface(myTexture);
@@ -775,7 +776,7 @@ void FBSurfaceGL::update()
     // and antialiasing 
     p_glBindTexture(myTexTarget, myTexID);
     p_glTexSubImage2D(myTexTarget, 0, 0, 0, myTexWidth, myTexHeight,
-                      myTexFormat, myTexType, myTexture->pixels);
+                      GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, myTexture->pixels);
     p_glBegin(GL_QUADS);
       p_glTexCoord2f(myTexCoord[0], myTexCoord[1]);
       p_glVertex2i(myXOrig, myYOrig);
@@ -801,7 +802,7 @@ void FBSurfaceGL::free()
 {
   p_glDeleteTextures(1, &myTexID);
 
-cerr << "  ==> FBSurfaceGL::free(): myTexID = " << myTexID << " @ " << this << endl;
+//cerr << "  ==> FBSurfaceGL::free(): myTexID = " << myTexID << " @ " << this << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -842,11 +843,11 @@ void FBSurfaceGL::reload()
   // Finally, create the texture in the most optimal format
   p_glTexImage2D(myTexTarget, 0, GL_RGB5,
                  myTexWidth, myTexHeight, 0,
-                 myTexFormat, myTexType, myTexture->pixels);
+                 GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, myTexture->pixels);
 
   p_glEnable(myTexTarget);
 
-cerr << "  ==> FBSurfaceGL::reload(): myTexID = " << myTexID << " @ " << this << endl;
+//cerr << "  ==> FBSurfaceGL::reload(): myTexID = " << myTexID << " @ " << this << endl;
 }
 
 #if 0

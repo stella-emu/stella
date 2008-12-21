@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.48 2008-12-08 18:56:54 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.49 2008-12-21 19:51:35 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -94,6 +94,7 @@ void DialogContainer::draw()
   {
     for(int i = 0; i < myDialogStack.size(); i++)
     {
+      myDialogStack[i]->center();
       myDialogStack[i]->setDirty();
       myDialogStack[i]->drawDialog();
     }

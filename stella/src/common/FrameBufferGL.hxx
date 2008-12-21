@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.63 2008-12-20 23:32:46 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.64 2008-12-21 19:51:35 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.63 2008-12-20 23:32:46 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.64 2008-12-21 19:51:35 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -156,29 +156,8 @@ class FrameBufferGL : public FrameBuffer
     // since Dialog surfaces are allocated by the Dialog class directly).
     FBSurfaceGL* myTiaSurface;
 
-    // Used for mapRGB (when palettes are created)
+    // Used by mapRGB (when palettes are created)
     SDL_PixelFormat myPixelFormat;
-
-/*
-    // Holds all items specifically needed by GL commands
-    struct glBufferType
-    {
-      GLuint  texture;
-      GLsizei texture_width;
-      GLsizei texture_height;
-      GLfloat tex_coord[4];
-
-      GLenum  target;
-      GLenum  format;
-      GLenum  type;
-      GLint   filter;
-
-      void*   pixels;
-      int     width, height;
-      int     pitch;
-    };
-    glBufferType myBuffer;
-*/
 
     // The depth of the texture buffer
     uInt32 myDepth;
@@ -206,7 +185,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.63 2008-12-20 23:32:46 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.64 2008-12-21 19:51:35 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -238,7 +217,6 @@ class FBSurfaceGL : public FBSurface
   private:
     inline void* pixels() const { return myTexture->pixels; }
     inline uInt32 pitch() const { return myPitch;           }
-    void recalc();
 
     static uInt32 power_of_two(uInt32 input)
     {
@@ -258,17 +236,12 @@ class FBSurfaceGL : public FBSurface
     GLfloat myTexCoord[4];
 
     GLenum  myTexTarget;
-    GLenum  myTexFormat;
-    GLenum  myTexType;
     GLint   myTexFilter;
 
     uInt32 myXOrig, myYOrig;
     uInt32 myWidth, myHeight;
     bool mySurfaceIsDirty;
-//    int myBaseOffset;
     uInt32 myPitch;
-
-    uInt32 myXOffset, myYOffset;
 };
 
 #endif  // DISPLAY_OPENGL
