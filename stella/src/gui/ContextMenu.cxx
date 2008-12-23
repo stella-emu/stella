@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.6 2008-08-04 20:12:23 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.7 2008-12-23 18:54:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -98,28 +98,23 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::center()
 {
-cerr << " ==> ContextMenu::center()" << endl;
+/*
+  const GUI::Rect& screen = instance().frameBuffer().screenRect();
+  uInt32 x = (screen.width() - getWidth()) >> 1;
+  uInt32 y = (screen.height() - getHeight()) >> 1;
+*/
 
   // Make sure the menu is exactly where it should be, in case the image
   // offset has changed
-  uInt32 x = _xorig, y = _yorig;
   const GUI::Rect& image = instance().frameBuffer().imageRect();
+  uInt32 x = image.x() + _xorig;
+  uInt32 y = image.y() + _yorig;
   uInt32 tx = image.x() + image.width();
   uInt32 ty = image.y() + image.height();
   if(x + _w > tx) x -= (x + _w - tx);
   if(y + _h > ty) y -= (y + _h - ty);
 
   surface().setPos(x, y);
-
-
-/*
-  uInt32 tx, ty;
-  const GUI::Rect& image = instance().frameBuffer().imageRect();
-  dialog().surface().getPos(tx, ty);
-  tx += image.x();
-  ty += image.y();
-  surface().setPos(tx, ty);
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

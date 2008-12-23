@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.18 2008-07-25 12:41:41 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.19 2008-12-23 18:54:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -139,11 +139,7 @@ void TiaZoomWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if(button == 2)
   {
     // Add menu at current x,y mouse location
-    uInt32 tx, ty;
-    dialog().surface().getPos(tx, ty);
-    x += getAbsX() + tx;
-    y += getAbsY() + ty;
-    myMenu->show(x, y);
+    myMenu->show(x + getAbsX(), y + getAbsY());
   }
 }
 

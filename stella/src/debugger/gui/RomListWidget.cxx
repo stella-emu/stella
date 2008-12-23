@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.cxx,v 1.15 2008-07-25 12:41:41 stephena Exp $
+// $Id: RomListWidget.cxx,v 1.16 2008-12-23 18:54:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -69,11 +69,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if(button == 2)
   {
     // Add menu at current x,y mouse location
-    uInt32 tx, ty;
-    dialog().surface().getPos(tx, ty);
-    x += getAbsX() + tx;
-    y += getAbsY() + ty;
-    myMenu->show(x, y);
+    myMenu->show(x + getAbsX(), y + getAbsY());
   }
   else
     ListWidget::handleMouseDown(x, y, button, clickCount);

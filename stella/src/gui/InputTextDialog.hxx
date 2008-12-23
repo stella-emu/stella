@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.11 2008-06-19 19:15:44 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.12 2008-12-23 18:54:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,7 @@ class InputTextDialog : public Dialog, public CommandSender
     void setFocus(int idx = 0);
 
     /** This dialog uses its own positioning, so we override Dialog::center() */
-    void center() { }
+    void center();
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
@@ -61,6 +61,8 @@ class InputTextDialog : public Dialog, public CommandSender
 
     bool myErrorFlag;
     int	 myCmd;
+
+    uInt32 myXOrig, myYOrig;
 };
 
 #endif

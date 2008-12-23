@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.22 2008-06-19 19:15:44 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.23 2008-12-23 18:54:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,9 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  const StringList& labels)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
-    myErrorFlag(false)
+    myErrorFlag(false),
+    myXOrig(0),
+    myYOrig(0)
 {
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
@@ -101,13 +103,23 @@ void InputTextDialog::show(uInt32 x, uInt32 y)
   // Make sure position is set *after* the dialog is added, since the surface
   // may not exist before then
   parent().addDialog(this);
+  myXOrig = x;
+  myYOrig = y;
+  center();
+}
 
-  // Are we in the current screen bounds?
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::center()
+{
+  // Make sure the menu is exactly where it should be, in case the image
+  // offset has changed
   const GUI::Rect& image = instance().frameBuffer().imageRect();
-  uInt32 dx = image.x() + image.width();
-  uInt32 dy = image.y() + image.height();
-  if(x + _w > dx) x -= (x + _w - dx);
-  if(y + _h > dy) y -= (y + _h - dy);
+  uInt32 x = image.x() + myXOrig;
+  uInt32 y = image.y() + myYOrig;
+  uInt32 tx = image.x() + image.width();
+  uInt32 ty = image.y() + image.height();
+  if(x + _w > tx) x -= (x + _w - tx);
+  if(y + _h > ty) y -= (y + _h - ty);
 
   surface().setPos(x, y);
 }

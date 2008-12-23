@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RamWidget.cxx,v 1.19 2008-06-19 19:15:44 stephena Exp $
+// $Id: RamWidget.cxx,v 1.20 2008-12-23 18:54:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -269,11 +269,9 @@ void RamWidget::fillGrid(bool updateOld)
 void RamWidget::showInputBox(int cmd)
 {
   // Add inputbox in the middle of the RAM widget
-  uInt32 tx, ty;
-  dialog().surface().getPos(tx, ty);
-  tx += getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
-  ty += getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
-  myInputBox->show(tx, ty);
+  uInt32 x = getAbsX() + ((getWidth() - myInputBox->getWidth()) >> 1);
+  uInt32 y = getAbsY() + ((getHeight() - myInputBox->getHeight()) >> 1);
+  myInputBox->show(x, y);
   myInputBox->setEditString("");
   myInputBox->setTitle("");
   myInputBox->setFocus(0);

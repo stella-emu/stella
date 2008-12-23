@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.121 2008-12-21 19:51:34 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.122 2008-12-23 18:54:05 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -295,9 +295,9 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
   // Now re-calculate the dimensions
   mode.image_w = (Uint16) (stretchFactor * mode.image_w);
   mode.image_h = (Uint16) (stretchFactor * mode.image_h);
-  if(!fullScreen()) mode.screen_w = mode.image_w;
-  mode.image_x = (mode.screen_w - mode.image_w) / 2;
-  mode.image_y = (mode.screen_h - mode.image_h) / 2;
+//  if(!fullScreen()) mode.screen_w = mode.image_w;
+  mode.image_x = (mode.screen_w - mode.image_w) >> 1;
+  mode.image_y = (mode.screen_h - mode.image_h) >> 1;
 
   SDL_GL_SetAttribute( SDL_GL_RED_SIZE,   myRGB[0] );
   SDL_GL_SetAttribute( SDL_GL_GREEN_SIZE, myRGB[1] );
@@ -382,7 +382,10 @@ cerr << "dimensions: " << endl
 
   if(!inUIMode)
   {
-    myTiaSurface = new FBSurfaceGL(*this, baseWidth, baseHeight,
+    // The actual TIA image is only half of that specified by baseWidth
+    // The stretching can be done in hardware now that the TIA surface
+    // and other UI surfaces are no longer tied together
+    myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
                                      mode.image_w, mode.image_h);
     myTiaSurface->setPos(mode.image_x, mode.image_y);
   }
@@ -429,9 +432,9 @@ void FrameBufferGL::drawMediaSource()
           // are drawn in postFrameUpdate()
           myDirtyFlag = true;
 
-          buffer[pos] = buffer[pos+1] = (uInt16) myDefPalette[v];
+          buffer[pos] = (uInt16) myDefPalette[v];
         }
-        pos += 2;
+        pos++;
       }
       bufofsY    += width;
       screenofsY += pitch;
@@ -454,7 +457,6 @@ void FrameBufferGL::drawMediaSource()
         uInt8 v = currentFrame[bufofs];
         uInt8 w = previousFrame[bufofs];
 
-        buffer[pos++] = (uInt16) myAvgPalette[v][w];
         buffer[pos++] = (uInt16) myAvgPalette[v][w];
       }
       bufofsY    += width;
