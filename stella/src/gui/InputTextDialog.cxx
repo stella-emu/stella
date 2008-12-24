@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.23 2008-12-23 18:54:05 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.24 2008-12-24 01:20:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,6 +35,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
                                  const StringList& labels)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
+    myEnableCenter(false),
     myErrorFlag(false),
     myXOrig(0),
     myYOrig(0)
@@ -98,10 +99,21 @@ InputTextDialog::~InputTextDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputTextDialog::show()
+{
+  // Make sure position is set *after* the dialog is added, since the surface
+  // may not exist before then
+  myEnableCenter = true;
+  parent().addDialog(this);
+  center();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::show(uInt32 x, uInt32 y)
 {
   // Make sure position is set *after* the dialog is added, since the surface
   // may not exist before then
+  myEnableCenter = false;
   parent().addDialog(this);
   myXOrig = x;
   myYOrig = y;
@@ -111,17 +123,22 @@ void InputTextDialog::show(uInt32 x, uInt32 y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::center()
 {
-  // Make sure the menu is exactly where it should be, in case the image
-  // offset has changed
-  const GUI::Rect& image = instance().frameBuffer().imageRect();
-  uInt32 x = image.x() + myXOrig;
-  uInt32 y = image.y() + myYOrig;
-  uInt32 tx = image.x() + image.width();
-  uInt32 ty = image.y() + image.height();
-  if(x + _w > tx) x -= (x + _w - tx);
-  if(y + _h > ty) y -= (y + _h - ty);
+  if(!myEnableCenter)
+  {
+    // Make sure the menu is exactly where it should be, in case the image
+    // offset has changed
+    const GUI::Rect& image = instance().frameBuffer().imageRect();
+    uInt32 x = image.x() + myXOrig;
+    uInt32 y = image.y() + myYOrig;
+    uInt32 tx = image.x() + image.width();
+    uInt32 ty = image.y() + image.height();
+    if(x + _w > tx) x -= (x + _w - tx);
+    if(y + _h > ty) y -= (y + _h - ty);
 
-  surface().setPos(x, y);
+    surface().setPos(x, y);
+  }
+  else
+    Dialog::center();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.20 2008-08-04 20:12:23 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.21 2008-12-24 01:20:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -124,12 +124,7 @@ void CheatCodeDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::addCheat()
 {
-  // Center input dialog over entire screen
-  const GUI::Rect& screen = instance().frameBuffer().screenRect();
-  uInt32 x = (screen.width() - myCheatInput->getWidth()) >> 1;
-  uInt32 y = (screen.height() - myCheatInput->getHeight()) >> 1;
-  myCheatInput->show(x, y);
-
+  myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setEditString("", 0);
   myCheatInput->setEditString("", 1);
   myCheatInput->setTitle("");
@@ -148,12 +143,7 @@ void CheatCodeDialog::editCheat()
   const string& name = list[idx]->name();
   const string& code = list[idx]->code();
 
-  // Center input dialog over entire screen
-  const GUI::Rect& screen = instance().frameBuffer().screenRect();
-  uInt32 x = (screen.width() - myCheatInput->getWidth()) >> 1;
-  uInt32 y = (screen.height() - myCheatInput->getHeight()) >> 1;
-  myCheatInput->show(x, y);
-
+  myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setEditString(name, 0);
   myCheatInput->setEditString(code, 1);
   myCheatInput->setTitle("");
@@ -171,12 +161,7 @@ void CheatCodeDialog::removeCheat()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CheatCodeDialog::addOneShotCheat()
 {
-  // Center input dialog over entire screen
-  const GUI::Rect& screen = instance().frameBuffer().screenRect();
-  uInt32 x = (screen.width() - myCheatInput->getWidth()) >> 1;
-  uInt32 y = (screen.height() - myCheatInput->getHeight()) >> 1;
-  myCheatInput->show(x, y);
-
+  myCheatInput->show();    // Center input dialog over entire screen
   myCheatInput->setEditString("One-shot cheat", 0);
   myCheatInput->setEditString("", 1);
   myCheatInput->setTitle("");

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.hxx,v 1.12 2008-12-23 18:54:05 stephena Exp $
+// $Id: InputTextDialog.hxx,v 1.13 2008-12-24 01:20:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,6 +38,9 @@ class InputTextDialog : public Dialog, public CommandSender
                     const StringList& labels);
     virtual ~InputTextDialog();
 
+    /** Place the input dialog onscreen and center it */
+    void show();
+
     /** Show input dialog onscreen at the specified coordinates */
     void show(uInt32 x, uInt32 y);
 
@@ -59,6 +62,7 @@ class InputTextDialog : public Dialog, public CommandSender
     InputWidget       myInput;
     StaticTextWidget* myTitle;
 
+    bool myEnableCenter;
     bool myErrorFlag;
     int	 myCmd;
 

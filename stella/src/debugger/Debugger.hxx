@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.hxx,v 1.96 2008-11-30 17:28:03 stephena Exp $
+// $Id: Debugger.hxx,v 1.97 2008-12-24 01:20:06 stephena Exp $
 //============================================================================
 
 #ifndef DEBUGGER_HXX
@@ -70,7 +70,7 @@ typedef uInt16 (Debugger::*DEBUGGER_WORD_METHOD)();
   for all debugging operations in Stella (parser, 6502 debugger, etc).
 
   @author  Stephen Anthony
-  @version $Id: Debugger.hxx,v 1.96 2008-11-30 17:28:03 stephena Exp $
+  @version $Id: Debugger.hxx,v 1.97 2008-12-24 01:20:06 stephena Exp $
 */
 class Debugger : public DialogContainer
 {
@@ -198,7 +198,7 @@ class Debugger : public DialogContainer
     */
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
-    const string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
+    string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
 
     /** Convenience methods to convert to/from base values */
     static char* to_hex_4(int i)

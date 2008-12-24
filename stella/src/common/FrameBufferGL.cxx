@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.122 2008-12-23 18:54:05 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.123 2008-12-24 01:20:06 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -246,6 +246,9 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
 {
 cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl;
 
+//mode.screen_w = 1600;
+//mode.screen_h = 1000;
+
   bool inUIMode =
     myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
@@ -295,7 +298,7 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
   // Now re-calculate the dimensions
   mode.image_w = (Uint16) (stretchFactor * mode.image_w);
   mode.image_h = (Uint16) (stretchFactor * mode.image_h);
-//  if(!fullScreen()) mode.screen_w = mode.image_w;
+  if(!fullScreen()) mode.screen_w = mode.image_w;
   mode.image_x = (mode.screen_w - mode.image_w) >> 1;
   mode.image_y = (mode.screen_h - mode.image_h) >> 1;
 
@@ -758,15 +761,15 @@ void FBSurfaceGL::setHeight(uInt32 h)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::translateCoords(Int32& x, Int32& y) const
 {
-// TODO - this doesn't work if aspect ratio is used
-  x -= myXOrig;
-  y -= myYOrig;
-
-/*
+#if 1
+  x = x - myXOrig;
+  y = y - myYOrig;
+#else
   // Wow, what a mess :)
-  x = (Int32) ((x - myImageDim.x) / myWidthScaleFactor);
-  y = (Int32) ((y - myImageDim.y) / myHeightScaleFactor);
-*/
+  const GUI::Rect& image = myFB.imageRect();
+  x = (Int32) ((x - myXOrig - image.x()) / myWidthScaleFactor);
+  y = (Int32) ((y - myXOrig - image.y()) / myHeightScaleFactor);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

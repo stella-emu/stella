@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.7 2008-11-02 16:46:05 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.8 2008-12-24 01:20:06 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -53,13 +53,13 @@ const DebuggerState& RiotDebug::getState()
   myState.TIMCLKS  = timClocks();
 
   // Controller port pins
-  Controller& port0 = myConsole.controller(Controller::Left);
+  const Controller& port0 = myConsole.controller(Controller::Left);
   myState.P0_PIN1 = port0.myDigitalPinState[Controller::One];
   myState.P0_PIN2 = port0.myDigitalPinState[Controller::Two];
   myState.P0_PIN3 = port0.myDigitalPinState[Controller::Three];
   myState.P0_PIN4 = port0.myDigitalPinState[Controller::Four];
   myState.P0_PIN6 = port0.myDigitalPinState[Controller::Six];
-  Controller& port1 = myConsole.controller(Controller::Right);
+  const Controller& port1 = myConsole.controller(Controller::Right);
   myState.P1_PIN1 = port1.myDigitalPinState[Controller::One];
   myState.P1_PIN2 = port1.myDigitalPinState[Controller::Two];
   myState.P1_PIN3 = port1.myDigitalPinState[Controller::Three];
@@ -92,13 +92,13 @@ void RiotDebug::saveOldState()
   myOldState.TIMCLKS  = timClocks();
 
   // Controller port pins
-  Controller& port0 = myConsole.controller(Controller::Left);
+  const Controller& port0 = myConsole.controller(Controller::Left);
   myOldState.P0_PIN1 = port0.myDigitalPinState[Controller::One];
   myOldState.P0_PIN2 = port0.myDigitalPinState[Controller::Two];
   myOldState.P0_PIN3 = port0.myDigitalPinState[Controller::Three];
   myOldState.P0_PIN4 = port0.myDigitalPinState[Controller::Four];
   myOldState.P0_PIN6 = port0.myDigitalPinState[Controller::Six];
-  Controller& port1 = myConsole.controller(Controller::Right);
+  const Controller& port1 = myConsole.controller(Controller::Right);
   myOldState.P1_PIN1 = port1.myDigitalPinState[Controller::One];
   myOldState.P1_PIN2 = port1.myDigitalPinState[Controller::Two];
   myOldState.P1_PIN3 = port1.myDigitalPinState[Controller::Three];
@@ -314,7 +314,7 @@ string RiotDebug::toString()
 {
   // TODO: keyboard controllers?
 
-  const RiotState& state = (RiotState&) getState();
+  const RiotState& state    = (RiotState&) getState();
   const RiotState& oldstate = (RiotState&) getOldState();
   string ret;
 

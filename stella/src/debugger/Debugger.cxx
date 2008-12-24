@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.128 2008-05-30 19:07:55 stephena Exp $
+// $Id: Debugger.cxx,v 1.129 2008-12-24 01:20:06 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -363,9 +363,9 @@ const string Debugger::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::valueToString(int value, BaseFormat outputBase)
+string Debugger::valueToString(int value, BaseFormat outputBase)
 {
-  char rendered[32];
+  char buf[32];
 
   if(outputBase == kBASE_DEFAULT)
     outputBase = myParser->base();
@@ -374,32 +374,34 @@ const string Debugger::valueToString(int value, BaseFormat outputBase)
   {
     case kBASE_2:
       if(value < 0x100)
-        sprintf(rendered, Debugger::to_bin_8(value));
+        Debugger::to_bin(value, 8, buf);
       else
-        sprintf(rendered, Debugger::to_bin_16(value));
+        Debugger::to_bin(value, 16, buf);
       break;
 
     case kBASE_10:
       if(value < 0x100)
-        sprintf(rendered, "%3d", value);
+        sprintf(buf, "%3d", value);
       else
-        sprintf(rendered, "%5d", value);
+        sprintf(buf, "%5d", value);
       break;
 
     case kBASE_16_4:
-      sprintf(rendered, Debugger::to_hex_4(value));
+      strcpy(buf, Debugger::to_hex_4(value));
       break;
 
     case kBASE_16:
     default:
       if(value < 0x100)
-        sprintf(rendered, Debugger::to_hex_8(value));
+        sprintf(buf, "%02x", value);
+      else if(value < 0x10000)
+        sprintf(buf, "%04x", value);
       else
-        sprintf(rendered, Debugger::to_hex_16(value));
+        sprintf(buf, "%08x", value);
       break;
   }
 
-  return string(rendered);
+  return string(buf);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
