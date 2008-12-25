@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.25 2008-03-23 16:22:46 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.26 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,34 +30,54 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
                        const GUI::Font& font, int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h),
-      myPage(1),
-      myNumPages(4)
+  : Dialog(osystem, parent, x, y, w, h),
+    myPage(1),
+    myNumPages(4)
 {
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
+  int xpos, ypos;
   WidgetArray wid;
 
   // Add Previous, Next and Close buttons
-  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd);
+  xpos = 10;  ypos = _h - buttonHeight - 10;
+  myPrevButton =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Previous", kPrevCmd);
   myPrevButton->clearFlags(WIDGET_ENABLED);
   wid.push_back(myPrevButton);
 
-  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
-                           "Next", kNextCmd);
+  xpos += buttonWidth + 7;
+  myNextButton =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Next", kNextCmd);
   wid.push_back(myNextButton);
 
-  ButtonWidget* b = addButton(font, w - (kButtonWidth + 10), h - 24,
-                              "Close", kCloseCmd);
+  xpos = _w - buttonWidth - 10;
+  ButtonWidget* b =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Close", kCloseCmd);
   wid.push_back(b);
   addOKWidget(b);  addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
+  xpos = 5;  ypos = 5;
+  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
                                  "", kTextAlignCenter);
+
+  int lwidth = 15 * fontWidth;
+  xpos += 5;  ypos += lineHeight + 4;
   for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
   {
-    myKey[i]  = new StaticTextWidget(this, font, 10, 18 + (10 * i), 80,
-                                     font.getFontHeight(), "", kTextAlignLeft);
-    myDesc[i] = new StaticTextWidget(this, font, 90, 18 + (10 * i), 160,
-                                     font.getFontHeight(), "", kTextAlignLeft);
+    myKey[i] =
+      new StaticTextWidget(this, font, xpos, ypos, lwidth,
+                           fontHeight, "", kTextAlignLeft);
+    myDesc[i] =
+      new StaticTextWidget(this, font, xpos+lwidth, ypos, _w - xpos - lwidth - 5,
+                           fontHeight, "", kTextAlignLeft);
+    ypos += fontHeight;
   }
 
   addToFocusList(wid);
@@ -87,8 +107,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("\\",        "Toggle command menu");
       ADD_BIND("Alt =",     "Increase window size");
       ADD_BIND("Alt -",     "Decrease window size");
-      ADD_BIND("Alt Enter", "Toggle fullscreen/windowed mode");
-      ADD_LINE;
+      ADD_BIND("Alt Enter", "Toggle fullscreen /");
+      ADD_BIND("",          "  windowed mode");
       ADD_BIND("Alt ]",     "Increase volume by 2%");
       ADD_BIND("Alt [",     "Decrease volume by 2%");
       break;
@@ -97,7 +117,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       title = "Special commands:";
       ADD_BIND("Ctrl g", "Grab mouse (keep in window)");
       ADD_BIND("Ctrl f", "Switch between NTSC/PAL/SECAM");
-      ADD_BIND("Ctrl s", "Save game properties to new file");
+      ADD_BIND("Ctrl s", "Save game properties");
+      ADD_BIND("",       "  to a new file");
       ADD_LINE;
       ADD_BIND("Ctrl 0", "Mouse emulates paddle 0");
       ADD_BIND("Ctrl 1", "Mouse emulates paddle 1");
@@ -107,10 +128,10 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
 
     case 3:
       title = "Developer commands:";
-      ADD_BIND("Alt PageUp",    "Increase Display.YStart");
-      ADD_BIND("Alt PageDown",  "Decrease Display.YStart");
-      ADD_BIND("Ctrl PageUp",   "Increase Display.Height");
-      ADD_BIND("Ctrl PageDown", "Decrease Display.Height");
+      ADD_BIND("Alt PgUp",  "Increase Display.YStart");
+      ADD_BIND("Alt PgDn",  "Decrease Display.YStart");
+      ADD_BIND("Ctrl PgUp", "Increase Display.Height");
+      ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
       break;
 #else
     case 1:
@@ -121,8 +142,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       ADD_BIND("\\",           "Toggle command menu");
       ADD_BIND("Cmd =",        "Increase window size");
       ADD_BIND("Cmd -",        "Decrease window size");
-      ADD_BIND("Cmd Enter",    "Toggle fullscreen/windowed mode");
-      ADD_LINE;
+      ADD_BIND("Cmd Enter",    "Toggle fullscreen /");
+      ADD_BIND("",             "  windowed mode");
       ADD_BIND("Shift-Cmd ]",  "Increase volume by 2%");
       ADD_BIND("Shift-Cmd [",  "Decrease volume by 2%");
       break;
@@ -131,7 +152,8 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
       title = "Special commands:";
       ADD_BIND("Cmd g",       "Grab mouse (keep in window)");
       ADD_BIND("Cmd f",       "Switch between NTSC/PAL/SECAM");
-      ADD_BIND("Cmd s",       "Save game properties to new file");
+      ADD_BIND("Cmd s",       "Save game properties");
+      ADD_BIND("",            "  to a new file");
       ADD_LINE;
       ADD_BIND("Cmd 0",       "Mouse emulates paddle 0");
       ADD_BIND("Cmd 1",       "Mouse emulates paddle 1");
@@ -141,10 +163,10 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
 
     case 3:
       title = "Developer commands:";
-      ADD_BIND("Shift-Cmd PageUp",    "Increase Display.YStart");
-      ADD_BIND("Shift-Cmd PageDown",  "Decrease Display.YStart");
-      ADD_BIND("Cmd PageUp",          "Increase Display.Height");
-      ADD_BIND("Cmd PageDown",        "Decrease Display.Height");
+      ADD_BIND("Shift-Cmd PgUp", "Increase Display.YStart");
+      ADD_BIND("Shift-Cmd PgDn", "Decrease Display.YStart");
+      ADD_BIND("Cmd PgUp",       "Increase Display.Height");
+      ADD_BIND("Cmd PgDn",       "Decrease Display.Height");
       break;
 #endif
     case 4:

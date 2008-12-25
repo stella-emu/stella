@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.21 2008-12-24 01:20:05 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.22 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,26 +40,43 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
                                  const GUI::Font& font, int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h)
 {
+  const int lineHeight   = font.getLineHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
 
   // List of cheats, with checkboxes to enable/disable
   xpos = 10;  ypos = 10;
-  myCheatList = new CheckListWidget(this, font, xpos, ypos,
-                                    _w - 25 - kButtonWidth, _h - 50);
+  myCheatList =
+    new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - 25,
+                        _h - 3*lineHeight);
   myCheatList->setStyle(kXFill);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
   xpos += myCheatList->getWidth() + 15;  ypos = 15;
-  b = addButton(font, xpos, ypos, "Add", kAddCheatCmd);
+
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "Add", kAddCheatCmd);
   wid.push_back(b);
-  myEditButton = addButton(font, xpos, ypos+=20, "Edit", kEditCheatCmd);
+  ypos += lineHeight + 10;
+
+  myEditButton =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Edit", kEditCheatCmd);
   wid.push_back(myEditButton);
-  myRemoveButton = addButton(font, xpos, ypos+=20, "Remove", kRemCheatCmd);
+  ypos += lineHeight + 10;
+
+  myRemoveButton =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Remove", kRemCheatCmd);
   wid.push_back(myRemoveButton);
-  b = addButton(font, xpos, ypos+=30, "One shot", kAddOneShotCmd);
+  ypos += lineHeight + 10;
+
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "One shot", kAddOneShotCmd);
   wid.push_back(b);
 
   // Inputbox which will pop up when adding/editing a cheat

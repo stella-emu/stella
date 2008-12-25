@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.54 2008-07-25 12:41:41 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.55 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -117,6 +117,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myGLStretchPopup);
   ypos += lineHeight + 4;
 
+
   // GL aspect ratio
   myAspectRatioSlider =
     new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
@@ -127,22 +128,22 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
     new StaticTextWidget(this, font, xpos + myAspectRatioSlider->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
+  // Framerate
+  myFrameRateSlider =
+    new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                     "Framerate: ", lwidth, kFrameRateChanged);
+  myFrameRateSlider->setMinValue(0); myFrameRateSlider->setMaxValue(300);
+  wid.push_back(myFrameRateSlider);
+  myFrameRateLabel =
+    new StaticTextWidget(this, font, xpos + myFrameRateSlider->getWidth() + 4,
+                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
+  myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Move over to the next column
   xpos += myAspectRatioSlider->getWidth() + myAspectRatioLabel->getWidth();
   ypos = 10;
-
-  // Framerate
-  myFrameRateSlider = new SliderWidget(this, font, xpos, ypos, 30, lineHeight,
-                                       "Framerate: ", lwidth, kFrameRateChanged);
-  myFrameRateSlider->setMinValue(0); myFrameRateSlider->setMaxValue(300);
-  wid.push_back(myFrameRateSlider);
-  myFrameRateLabel = new StaticTextWidget(this, font,
-                                          xpos + myFrameRateSlider->getWidth() + 4,
-                                          ypos + 1,
-                                          15, fontHeight, "", kTextAlignLeft);
-  myFrameRateLabel->setFlags(WIDGET_CLEARBG);
-  ypos += lineHeight + 4;
 
   // Fullscreen
   myFullscreenCheckbox = new CheckboxWidget(this, font, xpos, ypos,

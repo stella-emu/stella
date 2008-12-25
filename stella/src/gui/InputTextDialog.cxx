@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.24 2008-12-24 01:20:06 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.25 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ InputTextDialog::InputTextDialog(GuiObject* boss, const GUI::Font& font,
   WidgetArray wid;
 
   // Calculate real dimensions
-  _w = fontWidth * 25;
+  _w = fontWidth * 30;
   _h = lineHeight * 4 + labels.size() * (lineHeight + 5);
 
   // Determine longest label

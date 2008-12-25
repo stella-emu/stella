@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.40 2008-12-12 15:51:07 stephena Exp $
+// $Id: Dialog.hxx,v 1.41 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,7 +47,7 @@ class TabWidget;
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.40 2008-12-12 15:51:07 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.41 2008-12-25 23:05:16 stephena Exp $
 */
 class Dialog : public GuiObject
 {
@@ -105,9 +105,6 @@ class Dialog : public GuiObject
     virtual void handleScreenChanged() {}
 
     Widget* findWidget(int x, int y); // Find the widget at pos x,y if any
-
-    ButtonWidget* addButton(const GUI::Font& font, int x, int y,
-                            const string& label = "", int cmd = 0);
 
     void addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font);
 

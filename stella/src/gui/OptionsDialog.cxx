@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.71 2008-08-01 12:16:00 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.72 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -119,44 +119,45 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   int x = 0, y = 0, w, h;
 
   // Now create all the dialogs attached to each menu button
-  w = 240; h = 185;
+  w = 410; h = 280;
   myVideoDialog = new VideoDialog(osystem, parent, font, x, y, w, h);
 
-  w = 200; h = 140;
+  w = 285; h = 200;
   myAudioDialog = new AudioDialog(osystem, parent, font, x, y, w, h);
 
 #ifdef _WIN32_WCE
+  // FIXME - adjust size for WINCE using a smaller font
   // we scale the input dialog down a bit in low res devices.
   // looks only a little ugly, but the functionality is very welcome
   if(instance().desktopWidth() < 320) { w = 220; h = 176; }
   else                                { w = 230; h = 185; }
 #else
-  w = 230; h = 185;
+  w = 380; h = 310;
 #endif
   myInputDialog = new InputDialog(osystem, parent, font, x, y, w, h);
 
-  w = 200; h = 155;
+  w = 380; h = 220;
   myUIDialog = new UIDialog(osystem, parent, font, x, y, w, h);
 
-  w = 280; h = 180;
+  w = 480; h = 250;
   myFileSnapDialog = new FileSnapDialog(osystem, parent, font,
                                         boss, x, y, w, h);
 
-  w = 240; h = 115;
+  w = 440; h = 160;
   myRomAuditDialog = new RomAuditDialog(osystem, parent, font, x, y, w, h);
 
-  w = 255; h = 190;
+  w = 470; h = 300;
   myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this, x, y, w, h);
 
 #ifdef CHEATCODE_SUPPORT
-  w = 230; h = 150;
+  w = 380; h = 240;
   myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font, x, y, w, h);
 #endif
 
-  w = 255; h = 150;
+  w = 420; h = 270;
   myHelpDialog = new HelpDialog(osystem, parent, font, x, y, w, h);
 
-  w = 255; h = 150;
+  w = 480; h = 270;
   myAboutDialog = new AboutDialog(osystem, parent, font, x, y, w, h);
 
   addToFocusList(wid);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.68 2008-12-18 23:36:32 stephena Exp $
+// $Id: Dialog.cxx,v 1.69 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -591,21 +591,5 @@ void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font)
                        buttonWidth, buttonHeight, "OK", kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ButtonWidget* Dialog::addButton(const GUI::Font& font, int x, int y,
-                                const string& label, int cmd)
-{
-  // FIXME - this is deprecated, and the UI code should be refactored
-  //         to remove all references to it
-#if 0
-  const int w = 6 * font.getMaxCharWidth(),
-            h = font.getFontHeight() + 6;
-
-  return new ButtonWidget(this, font, x, y, w, h, label, cmd);
-#else
-  return new ButtonWidget(this, font, x, y, kButtonWidth, 16, label, cmd);
 #endif
 }

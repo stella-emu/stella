@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.59 2008-08-01 12:16:00 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.60 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,6 +43,7 @@ GameInfoDialog::GameInfoDialog(
     myDefaultsSelected(false)
 {
   const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
@@ -53,7 +54,8 @@ GameInfoDialog::GameInfoDialog(
 
   // The tab widget
   xpos = 2; ypos = vBorder;
-  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - 24 - 2*ypos - 15);
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos,
+                        _h - buttonHeight - 2*fontHeight - 20);
   addTabWidget(myTab);
   addFocusWidget(myTab);
 
@@ -283,14 +285,14 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "YStart:", kTextAlignLeft);
   myYStart = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                25, fontHeight, "");
+                                4*fontWidth, fontHeight, "");
   wid.push_back(myYStart);
 
   ypos += lineHeight + 5;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Height:", kTextAlignLeft);
   myHeight = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                25, fontHeight, "");
+                                4*fontWidth, fontHeight, "");
   wid.push_back(myHeight);
 
   ypos += lineHeight + 5;
@@ -305,7 +307,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myPhosphor);
 
   myPPBlend = new SliderWidget(myTab, font, xpos + lwidth + myPhosphor->getWidth() + 10,
-                               ypos, 30, lineHeight, "Blend: ",
+                               ypos, 8*fontWidth, lineHeight, "Blend: ",
                                font.getStringWidth("Blend: "),
                                kPPBlendChanged);
   myPPBlend->setMinValue(1); myPPBlend->setMaxValue(100);
@@ -314,7 +316,7 @@ GameInfoDialog::GameInfoDialog(
   myPPBlendLabel = new StaticTextWidget(myTab, font,
                                         xpos + lwidth + myPhosphor->getWidth() + 10 + \
                                         myPPBlend->getWidth() + 4, ypos+1,
-                                        15, fontHeight, "", kTextAlignLeft);
+                                        3*fontWidth, fontHeight, "", kTextAlignLeft);
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   ypos += lineHeight + 5;
@@ -336,7 +338,8 @@ GameInfoDialog::GameInfoDialog(
 
   // Add message concerning usage
   lwidth = font.getStringWidth("(*) Changes to properties require a ROM reload");
-  new StaticTextWidget(this, font, 10, _h - 38, lwidth, fontHeight,
+  new StaticTextWidget(this, font, 10, _h - buttonHeight - fontHeight - 20,
+                       lwidth, fontHeight,
                        "(*) Changes to properties require a ROM reload",
                        kTextAlignLeft);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.5 2008-08-01 12:16:00 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.6 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,6 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
             lwidth = font.getStringWidth("ROMs with properties (renamed): ");
   int xpos = vBorder, ypos = vBorder;
   WidgetArray wid;
-  ButtonWidget* b;
 
   // Audit path
   ButtonWidget* romButton = 
@@ -79,27 +78,13 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
                        "(*) Warning: this operation cannot be undone",
                        kTextAlignLeft);
 
-  // Add OK & Cancel buttons
-#ifndef MAC_OSX
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Audit", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Close", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-#else
-  b = addButton(font, _w - 2 * (kButtonWidth + 7), _h - 24, "Close", kCloseCmd);
-  wid.push_back(b);
-  addCancelWidget(b);
-  b = addButton(font, _w - (kButtonWidth + 10), _h - 24, "Audit", kOKCmd);
-  wid.push_back(b);
-  addOKWidget(b);
-#endif
-
-  addToFocusList(wid);
+  // Add OK and Cancel buttons
+  wid.clear();
+  addOKCancelBGroup(wid, font);
+  addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, 0, 0, 200, 200);
+  myBrowser = new BrowserDialog(this, font, 0, 0, 400, 320);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

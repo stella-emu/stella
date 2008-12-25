@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.82 2008-08-04 11:56:11 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.83 2008-12-25 23:05:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -557,6 +557,7 @@ void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
                              uInt32 tx, uInt32 ty, int color)
 {
+#if 0
   const FontDesc& desc = font->desc();
 
   // If this character is not included in the font, use the default char.
@@ -655,6 +656,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
       break;
   }
   SDL_UnlockSurface(mySurface);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

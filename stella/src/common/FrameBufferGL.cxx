@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.123 2008-12-24 01:20:06 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.124 2008-12-25 23:05:16 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -664,23 +664,39 @@ void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
     if (chr == ' ') return;
     chr = desc.defaultchar;
   }
-
-  const Int32 w = font->getCharWidth(chr);
-  const Int32 h = font->getFontHeight();
   chr -= desc.firstchar;
-  const uInt32* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
-
-  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myPitch + tx;
-  for(int y = 0; y < h; ++y)
+ 
+  // Get the bounding box of the character
+  int bbw, bbh, bbx, bby;
+  if(!desc.bbx)
   {
-    const uInt32 ptr = *tmp++;
-    if(ptr)
-    {
-      uInt32 mask = 0x80000000;
-      for(int x = 0; x < w; ++x, mask >>= 1)
-        if(ptr & mask)
-          buffer[x] = (uInt16) myFB.myDefPalette[color];
-    }
+    bbw = desc.fbbw;
+    bbh = desc.fbbh;
+    bbx = desc.fbbx;
+    bby = desc.fbby;
+  }
+  else
+  {
+    bbw = desc.bbx[chr].w;
+    bbh = desc.bbx[chr].h;
+    bbx = desc.bbx[chr].x;
+    bby = desc.bbx[chr].y;
+  }
+
+  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
+  uInt16* buffer = (uInt16*) myTexture->pixels + 
+                   (ty + desc.ascent - bby - bbh) * myPitch +
+                   tx + bbx;
+
+  for(int y = 0; y < bbh; y++)
+  {
+    const uInt16 ptr = *tmp++;
+    uInt16 mask = 0x8000;
+ 
+    for(int x = 0; x < bbw; x++, mask >>= 1)
+      if(ptr & mask)
+        buffer[x] = (uInt16) myFB.myDefPalette[color];
+
     buffer += myPitch;
   }
 }

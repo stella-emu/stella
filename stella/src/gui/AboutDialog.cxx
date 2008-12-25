@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.25 2008-06-13 13:14:51 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.26 2008-12-25 23:05:16 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,34 +32,49 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
                          const GUI::Font& font, int x, int y, int w, int h)
-    : Dialog(osystem, parent, x, y, w, h),
-      myPage(1),
-      myNumPages(6)
+  : Dialog(osystem, parent, x, y, w, h),
+    myPage(1),
+    myNumPages(6)
 {
+  const int lineHeight   = font.getLineHeight(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
+            buttonHeight = font.getLineHeight() + 4;
+  int xpos, ypos;
   WidgetArray wid;
 
   // Add Previous, Next and Close buttons
-  myPrevButton = addButton(font, 10, h - 24, "Previous", kPrevCmd);
+  xpos = 10;  ypos = _h - buttonHeight - 10;
+  myPrevButton =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Previous", kPrevCmd);
   myPrevButton->clearFlags(WIDGET_ENABLED);
   wid.push_back(myPrevButton);
 
-  myNextButton = addButton(font, (kButtonWidth + 15), h - 24,
-                           "Next", kNextCmd);
+  xpos += buttonWidth + 7;
+  myNextButton =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Next", kNextCmd);
   wid.push_back(myNextButton);
 
-  ButtonWidget* b = addButton(font, w - (kButtonWidth + 10), h - 24,
-                              "Close", kCloseCmd);
+  xpos = _w - buttonWidth - 10;
+  ButtonWidget* b =
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Close", kCloseCmd);
   wid.push_back(b);
   addOKWidget(b);  addCancelWidget(b);
 
-  myTitle = new StaticTextWidget(this, font, 5, 5, w - 10, font.getFontHeight(),
+  xpos = 5;  ypos = 5;
+  myTitle = new StaticTextWidget(this, font, xpos, ypos, _w - 10, fontHeight,
                                  "", kTextAlignCenter);
   myTitle->setTextColor(kTextColorEm);
 
+  xpos = 10;  ypos += lineHeight + 4;
   for(int i = 0; i < LINES_PER_PAGE; i++)
   {
-    myDesc[i] = new StaticTextWidget(this, font, 10, 18 + (10 * i), w - 20,
-                                     font.getFontHeight(), "", kTextAlignLeft);
+    myDesc[i] = new StaticTextWidget(this, font, xpos, ypos, _w - 20,
+                                     fontHeight, "", kTextAlignLeft);
+    ypos += fontHeight;
   }
 
   addToFocusList(wid);
