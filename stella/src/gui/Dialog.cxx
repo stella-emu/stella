@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.69 2008-12-25 23:05:16 stephena Exp $
+// $Id: Dialog.cxx,v 1.70 2008-12-26 20:05:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -87,7 +87,6 @@ void Dialog::open()
   }
 
   center();
-
   loadConfig();
 
   // (Re)-build the focus list to use for the widgets which are currently

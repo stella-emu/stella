@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.72 2008-12-25 23:05:16 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.73 2008-12-26 20:05:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,7 +42,7 @@
 
 #include "bspf.hxx"
 
-#define addBigButton(label, cmd) \
+#define addODButton(label, cmd) \
   new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); yoffset += rowHeight
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,46 +72,46 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
   ButtonWidget* b = NULL;
 
-  myVideoSettingsButton = addBigButton("Video Settings", kVidCmd);
+  myVideoSettingsButton = addODButton("Video Settings", kVidCmd);
   wid.push_back(myVideoSettingsButton);
 
-  myAudioSettingsButton = addBigButton("Audio Settings", kAudCmd);
+  myAudioSettingsButton = addODButton("Audio Settings", kAudCmd);
 #ifndef SOUND_SUPPORT
   myAudioSettingsButton->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(myAudioSettingsButton);
 
-  b = addBigButton("Input Settings", kInptCmd);
+  b = addODButton("Input Settings", kInptCmd);
   wid.push_back(b);
 
-  myUIButton = addBigButton("UI Settings", kUsrIfaceCmd);
+  myUIButton = addODButton("UI Settings", kUsrIfaceCmd);
   wid.push_back(myUIButton);
 
-  myFileSnapButton = addBigButton("Config Files", kFileSnapCmd);
+  myFileSnapButton = addODButton("Config Files", kFileSnapCmd);
   wid.push_back(myFileSnapButton);
 
-  myRomAuditButton = addBigButton("Audit ROMs", kAuditCmd);
+  myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
   wid.push_back(myRomAuditButton);
 
   // Move to second column
   xoffset += buttonWidth + 10;  yoffset = 10;
 
-  myGameInfoButton = addBigButton("Game Properties", kInfoCmd);
+  myGameInfoButton = addODButton("Game Properties", kInfoCmd);
   wid.push_back(myGameInfoButton);
 
-  myCheatCodeButton = addBigButton("Cheat Code", kCheatCmd);
+  myCheatCodeButton = addODButton("Cheat Code", kCheatCmd);
 #ifndef CHEATCODE_SUPPORT
   myCheatCodeButton->clearFlags(WIDGET_ENABLED);
 #endif
   wid.push_back(myCheatCodeButton);
 
-  myHelpButton = addBigButton("Help", kHelpCmd);
+  myHelpButton = addODButton("Help", kHelpCmd);
   wid.push_back(myHelpButton);
 
-  myAboutButton = addBigButton("About", kAboutCmd);
+  myAboutButton = addODButton("About", kAboutCmd);
   wid.push_back(myAboutButton);
 
-  b = addBigButton("Exit Menu", kExitCmd);
+  b = addODButton("Exit Menu", kExitCmd);
   wid.push_back(b);
   addCancelWidget(b);
 

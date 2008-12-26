@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.83 2008-12-25 23:05:16 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.84 2008-12-26 20:05:16 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -557,7 +557,7 @@ void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
 void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
                              uInt32 tx, uInt32 ty, int color)
 {
-#if 0
+  // TODO - test this in 16-bit, and re-write 24-bit
   const FontDesc& desc = font->desc();
 
   // If this character is not included in the font, use the default char.
@@ -566,11 +566,26 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     if (chr == ' ') return;
     chr = desc.defaultchar;
   }
-
-  const Int32 w = font->getCharWidth(chr);
-  const Int32 h = font->getFontHeight();
   chr -= desc.firstchar;
-  const uInt32* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * h));
+ 
+  // Get the bounding box of the character
+  int bbw, bbh, bbx, bby;
+  if(!desc.bbx)
+  {
+    bbw = desc.fbbw;
+    bbh = desc.fbbh;
+    bbx = desc.fbbx;
+    bby = desc.fbby;
+  }
+  else
+  {
+    bbw = desc.bbx[chr].w;
+    bbh = desc.bbx[chr].h;
+    bbx = desc.bbx[chr].x;
+    bby = desc.bbx[chr].y;
+  }
+
+  const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
 
   SDL_LockSurface(mySurface);
 
@@ -579,18 +594,20 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     case 2:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt16* buffer = (uInt16*) mySurface->pixels + myBaseOffset + ty * myPitch + tx;
-      for(int y = 0; y < h; ++y)
+      uInt16* buffer = (uInt16*) mySurface->pixels + 
+                       (ty + desc.ascent - bby - bbh) * myPitch +
+                       tx + bbx;
+
+      for(int y = 0; y < bbh; y++)
       {
-        const uInt32 ptr = *tmp++;
-        if(ptr)
-        {
-          uInt32 mask = 0x80000000;
-          for(int x = 0; x < w; ++x, mask >>= 1)
-            if(ptr & mask)
-              buffer[x] = (uInt16) myFB.myDefPalette[color];
-        }
-        buffer += myFB.myPitch;
+        const uInt16 ptr = *tmp++;
+        uInt16 mask = 0x8000;
+ 
+        for(int x = 0; x < bbw; x++, mask >>= 1)
+          if(ptr & mask)
+            buffer[x] = (uInt16) myFB.myDefPalette[color];
+
+        buffer += myPitch;
       }
       break;
     }
@@ -637,17 +654,19 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     case 4:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt32* buffer = (uInt32*) mySurface->pixels + myBaseOffset + ty * myPitch + tx;
-      for(int y = 0; y < h; ++y)
+      uInt32* buffer = (uInt32*) mySurface->pixels + 
+                       (ty + desc.ascent - bby - bbh) * myPitch +
+                       tx + bbx;
+
+      for(int y = 0; y < bbh; y++)
       {
         const uInt32 ptr = *tmp++;
-        if(ptr)
-        {
-          uInt32 mask = 0x80000000;
-          for(int x = 0; x < w; ++x, mask >>= 1)
-            if(ptr & mask)
-              buffer[x] = (uInt32) myFB.myDefPalette[color];
-        }
+        uInt32 mask = 0x8000;
+ 
+        for(int x = 0; x < bbw; x++, mask >>= 1)
+          if(ptr & mask)
+            buffer[x] = (uInt32) myFB.myDefPalette[color];
+
         buffer += myPitch;
       }
       break;
@@ -656,7 +675,6 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
       break;
   }
   SDL_UnlockSurface(mySurface);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

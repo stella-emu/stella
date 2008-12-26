@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.133 2008-12-14 21:44:06 stephena Exp $
+// $Id: OSystem.cxx,v 1.134 2008-12-26 20:05:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -294,25 +294,19 @@ void OSystem::setFramerate(float framerate)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createFrameBuffer(bool showmessage)
+bool OSystem::createFrameBuffer()
 {
-  // Check if we can re-use the current framebuffer
-  bool changeBuffer = (myFrameBuffer == NULL);
-  if(!changeBuffer)
-  {
-    if((mySettings->getString("video") == "soft" &&
-        myFrameBuffer->type() != kSoftBuffer) ||
-       (mySettings->getString("video") == "gl" &&
-        myFrameBuffer->type() != kGLBuffer))
-      changeBuffer = true;
-  }
+  // There is only ever one FrameBuffer created per run of Stella
+  // Due to the multi-surface nature of the FrameBuffer, repeatedly
+  // creating and destroying framebuffer objects causes crashes which
+  // are far too invasive to fix right now
+  // Besides, how often does one really switch between software and
+  // OpenGL rendering modes, and even when they do, does it really
+  // need to be dynamic?
 
-  // Now we only create when absolutely necessary
-  if(changeBuffer)
-  {
-    delete myFrameBuffer;
+  bool firstTime = (myFrameBuffer == NULL);
+  if(firstTime)
     myFrameBuffer = MediaFactory::createVideo(this);
-  }
 
   // Re-initialize the framebuffer to current settings
   switch(myEventHandler->state())
@@ -341,53 +335,21 @@ bool OSystem::createFrameBuffer(bool showmessage)
       break;
   }
 
-  // Setup the SDL joysticks (must be done after FrameBuffer is created)
-  if(changeBuffer) myEventHandler->setupJoysticks();
-
-  // Let the system know that we've possibly resized the display
-  if(changeBuffer) myEventHandler->handleResizeEvent();
-
-  // Update the UI palette
-  setUIPalette();
-
-  if(showmessage)
+  // The following only need to be done once
+  if(firstTime)
   {
-    switch(myFrameBuffer->type())
-    {
-      case kSoftBuffer:
-        myFrameBuffer->showMessage("Software mode");
-        break;
-      case kGLBuffer:
-        myFrameBuffer->showMessage("OpenGL mode");
-        break;
-    }
+    // Setup the SDL joysticks (must be done after FrameBuffer is created)
+    myEventHandler->setupJoysticks();
+
+    // FIXME - this next line can probably be removed
+    // Let the system know that we've possibly resized the display
+    myEventHandler->handleResizeEvent();
+
+    // Update the UI palette
+    setUIPalette();
   }
 
   return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::toggleFrameBuffer()
-{
-#ifdef DISPLAY_OPENGL
-  // First figure out which mode to switch to
-  string video = mySettings->getString("video");
-  if(video == "soft")
-    video = "gl";
-  else if(video == "gl")
-    video = "soft";
-  else   // a driver that doesn't exist was requested, so use software mode
-    video = "soft";
-
-  // Update the settings and create the framebuffer
-  mySettings->setString("video", video);
-  createFrameBuffer(true);  // show onscreen message, re-initialize framebuffer
-
-  // The palette and phosphor info for the framebuffer will be lost
-  // when a new framebuffer is created; we must restore it
-  if(myConsole)
-    myConsole->initializeVideo(false);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -438,7 +400,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       myCheatManager->loadCheats(md5);
     #endif
       myEventHandler->reset(EventHandler::S_EMULATE);
-      if(!createFrameBuffer(false))  // Takes care of initializeVideo()
+      if(!createFrameBuffer())  // Takes care of initializeVideo()
       {
         cerr << "ERROR: Couldn't create framebuffer for console" << endl;
         return false;
@@ -508,7 +470,7 @@ void OSystem::deleteConsole()
 bool OSystem::createLauncher()
 {
   myEventHandler->reset(EventHandler::S_LAUNCHER);
-  if(!createFrameBuffer(false))
+  if(!createFrameBuffer())
   {
     cerr << "ERROR: Couldn't create launcher" << endl;
     return false;

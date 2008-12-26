@@ -57,6 +57,8 @@ X    (4) Reload current listing (possibly tied to a RMB context menu).
   * Research lockups in Stay Frosty ROM.  Test out sample state file in
     AtariAge email.
 
+  * Fix issue with paddle support in Activision Bridge ROM.
+
   * More support for copy and paste.
 
   * Fix PropSet to properly delete entries when 'Default' is pressed in

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.55 2008-12-25 23:05:16 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.56 2008-12-26 20:05:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,10 +50,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
       pwidth = font.getStringWidth("1920x1200");
   WidgetArray wid;
   StringMap items;
-
-  // Set real dimensions
-//  _w = 46 * fontWidth + 10;
-//  _h = 11 * (lineHeight + 4) + 10;
 
   xpos = 5;  ypos = 10;
 
@@ -305,7 +301,7 @@ void VideoDialog::saveConfig()
   instance().settings().setBool("center", myCenterCheckbox->getState());
 
   // Finally, issue a complete framebuffer re-initialization
-  instance().createFrameBuffer(false);
+  instance().createFrameBuffer();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

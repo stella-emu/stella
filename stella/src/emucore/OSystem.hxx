@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.67 2008-05-30 19:07:55 stephena Exp $
+// $Id: OSystem.hxx,v 1.68 2008-12-26 20:05:17 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.67 2008-05-30 19:07:55 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.68 2008-12-26 20:05:17 stephena Exp $
 */
 class OSystem
 {
@@ -293,11 +293,6 @@ class OSystem
       @return String representing the full path of the ROM file.
     */
     const string& romFile() const { return myRomFile; }
-
-    /**
-      Switches between software and OpenGL framebuffer modes.
-    */
-    void toggleFrameBuffer();
 
     /**
       Creates a new game console from the specified romfile.
@@ -542,11 +537,12 @@ class OSystem
   private:
     /**
       Creates the various framebuffers/renderers available in this system
-      (for now, that means either 'software' or 'opengl').
+      (for now, that means either 'software' or 'opengl').  Note that
+      it will only create one type per run of Stella.
 
       @return Success or failure of the framebuffer creation
     */
-    bool createFrameBuffer(bool showmessage = false);
+    bool createFrameBuffer();
 
     /**
       Creates the various sound devices available in this system

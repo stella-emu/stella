@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.20 2008-06-13 13:14:51 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.21 2008-12-26 20:05:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,93 +28,79 @@
 #include "Widget.hxx"
 #include "CommandDialog.hxx"
 
+#define addCDButton(label, cmd) \
+  new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight, label, cmd); xoffset += buttonWidth + 6
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
   : Dialog(osystem, parent, 0, 0, 16, 16),
     mySelectedItem(0)
 {
-  const GUI::Font& font = osystem->font();
-  int buttonWidth  = 65,
-      buttonHeight = 18,
-      xoffset = 5,
-      yoffset = 5,
-      lwidth  = buttonWidth + 5;
+  const GUI::Font& font = instance().font();
+  const int buttonWidth = font.getStringWidth("Right Diff B") + 20,
+            buttonHeight = font.getLineHeight() + 6,
+            rowHeight = font.getLineHeight() + 10;
 
   // Set real dimensions
-  _w = 4 * (lwidth) + 5;
-  _h = 4 * (buttonHeight+3) + 7;
+  _w = 4 * (buttonWidth + 5) + 20;
+  _h = 4 * rowHeight + 15;
 
+  int xoffset = 10, yoffset = 10;
   WidgetArray wid;
-  ButtonWidget* b;
+  ButtonWidget* b = NULL;
 
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Select", kSelectCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Reset", kResetCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Color TV", kColorCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "B/W TV", kBWCmd);
+  b = addCDButton("Select", kSelectCmd);
   wid.push_back(b);
 
-  xoffset = 5;  yoffset += buttonHeight + 3;
-
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Left Diff A", kLeftDiffACmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Left Diff B", kLeftDiffBCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Right Diff A", kRightDiffACmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Right Diff B", kRightDiffBCmd);
+  b = addCDButton("Reset", kResetCmd);
   wid.push_back(b);
 
-  xoffset = 5;  yoffset += buttonHeight + 3;
-
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Save State", kSaveStateCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "State Slot", kStateSlotCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Load State", kLoadStateCmd);
-  wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Snapshot", kSnapshotCmd);
+  b = addCDButton("Color TV", kColorCmd);
   wid.push_back(b);
 
-  xoffset = 5;  yoffset += buttonHeight + 3;
+  b = addCDButton("B/W TV", kBWCmd);
+  wid.push_back(b);
 
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "NTSC/PAL", kFormatCmd);
+  xoffset = 10;  yoffset += buttonHeight + 3;
+
+  b = addCDButton("Left Diff A", kLeftDiffACmd);
   wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Palette", kPaletteCmd);
+
+  b = addCDButton("Left Diff B", kLeftDiffBCmd);
   wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Reload ROM", kReloadRomCmd);
+
+  b = addCDButton("Right Diff A", kRightDiffACmd);
   wid.push_back(b);
-  xoffset += lwidth;
-  b = new ButtonWidget(this, font, xoffset, yoffset, buttonWidth, buttonHeight,
-                       "Exit Game", kExitCmd);
+
+  b = addCDButton("Right Diff B", kRightDiffBCmd);
+  wid.push_back(b);
+
+  xoffset = 10;  yoffset += buttonHeight + 3;
+
+  b = addCDButton("Save State", kSaveStateCmd);
+  wid.push_back(b);
+
+  b = addCDButton("State Slot", kStateSlotCmd);
+  wid.push_back(b);
+
+  b = addCDButton("Load State", kLoadStateCmd);
+  wid.push_back(b);
+
+  b = addCDButton("Snapshot", kSnapshotCmd);
+  wid.push_back(b);
+
+  xoffset = 10;  yoffset += buttonHeight + 3;
+
+  b = addCDButton("NTSC/PAL", kFormatCmd);
+  wid.push_back(b);
+
+  b = addCDButton("Palette", kPaletteCmd);
+  wid.push_back(b);
+
+  b = addCDButton("Reload ROM", kReloadRomCmd);
+  wid.push_back(b);
+
+  b = addCDButton("Exit Game", kExitCmd);
   wid.push_back(b);
 
   addToFocusList(wid);
