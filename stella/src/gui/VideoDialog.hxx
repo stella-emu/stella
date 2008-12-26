@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.24 2008-07-25 12:41:41 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.25 2008-12-26 21:39:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,6 +24,7 @@
 
 class CommandSender;
 class DialogContainer;
+class EditTextWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
@@ -45,11 +46,11 @@ class VideoDialog : public Dialog
     void saveConfig();
     void setDefaults();
 
-    void handleRendererChange(const string& mode);
     void handleFullscreenChange(bool enable);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    EditTextWidget*   myRenderer;
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myTIAFilterPopup;
     PopUpWidget*      myTIAPalettePopup;
@@ -67,7 +68,6 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myCenterCheckbox;
 
     enum {
-      kRendererChanged    = 'VDrd',
       kAspectRatioChanged = 'VDar',
       kFrameRateChanged   = 'VDfr',
       kFullScrChanged     = 'VDfs'

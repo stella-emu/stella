@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.56 2008-12-26 20:05:17 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.57 2008-12-26 21:39:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,7 @@
 #include "Dialog.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
+#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Console.hxx"
 #include "Settings.hxx"
@@ -47,21 +48,27 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   int lwidth = font.getStringWidth("Dirty Rects: "),
-      pwidth = font.getStringWidth("1920x1200");
+      pwidth = font.getStringWidth("1920x1200"),
+      fwidth = font.getStringWidth("Renderer: ");
   WidgetArray wid;
   StringMap items;
 
   xpos = 5;  ypos = 10;
 
   // Video renderer
+  new StaticTextWidget(this, font, xpos + (lwidth-fwidth), ypos, fwidth,
+                       fontHeight, "Renderer:", kTextAlignLeft);
+  myRenderer = new EditTextWidget(this, font, xpos+lwidth, ypos,
+                                  pwidth, fontHeight, "");
+  ypos += lineHeight + 4;
+
   items.clear();
   items.push_back("Software", "soft");
 #ifdef DISPLAY_OPENGL
   items.push_back("OpenGL", "gl");
 #endif
   myRendererPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                    items, "Renderer: ", lwidth,
-                                    kRendererChanged);
+                                    items, "(*) ", lwidth);
   wid.push_back(myRendererPopup);
   ypos += lineHeight + 4;
 
@@ -202,12 +209,25 @@ VideoDialog::~VideoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::loadConfig()
 {
-  // Renderer setting
+  bool gl = (instance().frameBuffer().type() == kGLBuffer);
+
+  // Renderer settings
+  myRenderer->setEditString(gl ? "OpenGL" : "Software");
   myRendererPopup->setSelected(
     instance().settings().getString("video"), "soft");
 
   // TIA Filter
-  //  taken care of in ::handleRendererChange()
+  // These are dynamically loaded, since they depend on the size of
+  // the desktop and which renderer we're using
+  const StringMap& items =
+    instance().frameBuffer().supportedTIAFilters(gl ? "gl" : "soft");
+  myTIAFilterPopup->addItems(items);
+  myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
+#ifdef SMALL_SCREEN
+    "zoom1x");
+#else
+    "zoom2x");
+#endif
 
   // TIA Palette
   myTIAPalettePopup->setSelected(
@@ -220,14 +240,18 @@ void VideoDialog::loadConfig()
   // GL Filter setting
   myGLFilterPopup->setSelected(
     instance().settings().getString("gl_filter"), "linear");
+  myGLFilterPopup->setEnabled(gl);
 
   // GL stretch setting
   myGLStretchPopup->setSelected(
     instance().settings().getString("gl_fsmax"), "never");
+  myGLStretchPopup->setEnabled(gl);
 
   // GL aspect ratio setting
   myAspectRatioSlider->setValue(instance().settings().getInt("gl_aspect"));
+  myAspectRatioSlider->setEnabled(gl);
   myAspectRatioLabel->setLabel(instance().settings().getString("gl_aspect"));
+  myAspectRatioLabel->setEnabled(gl);
 
   // Framerate (0 or -1 means disabled)
   int rate = instance().settings().getInt("framerate");
@@ -245,13 +269,10 @@ void VideoDialog::loadConfig()
 
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
+  myUseVSyncCheckbox->setEnabled(gl);
 
   // Center window
   myCenterCheckbox->setState(instance().settings().getBool("center"));
-
-  // Make sure that mutually-exclusive items are not enabled at the same time
-  // Also, this sets the TIA filters, so it cannot be removed from here
-  handleRendererChange(myRendererPopup->getSelectedTag());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,36 +350,7 @@ void VideoDialog::setDefaults()
   myCenterCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  handleRendererChange("soft");
   handleFullscreenChange(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleRendererChange(const string& mode)
-{
-  // TIA filters are dynamically loaded, since they depend on the size of
-  // the desktop and which renderer we're using
-  const StringMap& items = instance().frameBuffer().supportedTIAFilters(mode);
-  myTIAFilterPopup->addItems(items);
-  myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
-#ifdef SMALL_SCREEN
-    "zoom1x");
-#else
-    "zoom2x");
-#endif
-
-#ifdef DISPLAY_OPENGL
-  // When we're in software mode, certain OpenGL-related options are disabled
-  bool gl = (mode == "gl");
-
-  myGLFilterPopup->setEnabled(gl);
-  myGLStretchPopup->setEnabled(gl);
-  myAspectRatioSlider->setEnabled(gl);
-  myAspectRatioLabel->setEnabled(gl);
-  myUseVSyncCheckbox->setEnabled(gl);
-#endif
-
-  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -384,10 +376,6 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDefaultsCmd:
       setDefaults();
-      break;
-
-    case kRendererChanged:
-      handleRendererChange(myRendererPopup->getSelectedTag());
       break;
 
     case kAspectRatioChanged:
