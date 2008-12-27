@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.228 2008-07-22 14:54:38 stephena Exp $
+// $Id: EventHandler.cxx,v 1.229 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -155,36 +155,6 @@ void EventHandler::reset(State state)
   setEventState(state);
   myEvent->clear();
   myOSystem->state().reset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::refreshDisplay(bool forceUpdate)
-{
-  switch(myState)
-  {
-    case S_EMULATE:
-    case S_PAUSE:
-      if(&myOSystem->frameBuffer())
-        myOSystem->frameBuffer().refresh();
-      break;
-
-    case S_MENU:     // fall through to next case
-    case S_CMDMENU:
-      if(&myOSystem->frameBuffer())
-        myOSystem->frameBuffer().refresh();
-    case S_LAUNCHER:
-    case S_DEBUGGER:
-      if(myOverlay)
-        myOverlay->refresh();
-      break;
-
-    default:
-      return;
-      break;
-  }
-
-  if(forceUpdate && &myOSystem->frameBuffer())
-    myOSystem->frameBuffer().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -622,7 +592,7 @@ void EventHandler::poll(uInt32 time)
         break;  // SDL_QUIT
 
       case SDL_VIDEOEXPOSE:
-        refreshDisplay();
+        myOSystem->frameBuffer().refresh();
         break;  // SDL_VIDEOEXPOSE
 
 #ifdef JOYSTICK_SUPPORT
@@ -1968,8 +1938,6 @@ void EventHandler::setEventState(State state)
   myOSystem->stateChanged(myState);
   if(&myOSystem->frameBuffer())
     myOSystem->frameBuffer().stateChanged(myState);
-
-  refreshDisplay();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

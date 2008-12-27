@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.107 2008-12-20 23:32:46 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.108 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.107 2008-12-20 23:32:46 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.108 2008-12-27 23:27:32 stephena Exp $
 */
 class FrameBuffer
 {
@@ -187,8 +187,8 @@ class FrameBuffer
     inline const GUI::Rect& screenRect() const { return myScreenRect; }
 
     /**
-      Indicates that the TIA area is dirty, and certain areas need
-      to be redrawn.
+      Refresh display according to the current state, taking single vs.
+      double-buffered modes into account, and redrawing accordingly.
     */
     void refresh();
 
@@ -372,14 +372,14 @@ class FrameBuffer
 
     /**
       This method should be called anytime the MediaSource needs to be redrawn
-      to the screen.
+      to the screen (full indicating that a full redraw is required).
     */
-    virtual void drawMediaSource() = 0;
+    virtual void drawMediaSource(bool full) = 0;
 
     /**	 
       This method is called after any drawing is done (per-frame).	 
     */	 
-    virtual void postFrameUpdate() = 0;	 
+    virtual void postFrameUpdate() = 0;
 
     /**
       This method is called to provide information about the FrameBuffer.
@@ -549,7 +549,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.107 2008-12-20 23:32:46 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.108 2008-12-27 23:27:32 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.111 2008-05-30 19:07:55 stephena Exp $
+// $Id: EventHandler.hxx,v 1.112 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.111 2008-05-30 19:07:55 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.112 2008-12-27 23:27:32 stephena Exp $
 */
 class EventHandler
 {
@@ -170,14 +170,6 @@ class EventHandler
       @param state  The current state to set
     */
     void reset(State state);
-
-    /**
-      Refresh display according to the current state
-
-      @param forceUpdate  Do a framebuffer update right away, instead
-                          of waiting for the next frame
-    */
-    void refreshDisplay(bool forceUpdate = false);
 
     /**
       This method indicates that the system should terminate.

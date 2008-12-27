@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.125 2008-12-27 15:56:35 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.126 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -401,7 +401,7 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawMediaSource()
+void FrameBufferGL::drawMediaSource(bool fullRedraw)
 {
   MediaSource& mediasrc = myOSystem->console().mediaSource();
 
@@ -427,7 +427,7 @@ void FrameBufferGL::drawMediaSource()
         uInt8 v = currentFrame[bufofs];
         uInt8 w = previousFrame[bufofs];
 
-        if(v != w || myRedrawEntireFrame)
+        if(v != w || fullRedraw)
         {
           // If we ever get to this point, we know the current and previous
           // buffers differ.  In that case, make sure the changes are
@@ -445,7 +445,7 @@ void FrameBufferGL::drawMediaSource()
   else
   {
     // Phosphor mode always implies a dirty update,
-    // so we don't care about myRedrawEntireFrame
+    // so we don't care about fullRedraw
     myDirtyFlag = true;
 
     uInt32 bufofsY    = 0;
@@ -792,6 +792,8 @@ void FBSurfaceGL::update()
 {
   if(mySurfaceIsDirty)
   {
+//cerr << "  --> FBSurfaceGL::update(): w = " << myWidth << ", h = " << myHeight << endl;
+
     // Texturemap complete texture to surface so we have free scaling
     // and antialiasing 
     p_glBindTexture(myTexTarget, myTexID);

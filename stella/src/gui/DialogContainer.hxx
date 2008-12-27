@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.24 2008-02-06 13:45:23 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.25 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -36,7 +36,7 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.24 2008-02-06 13:45:23 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.25 2008-12-27 23:27:32 stephena Exp $
 */
 class DialogContainer
 {
@@ -124,9 +124,9 @@ class DialogContainer
     void handleResizeEvent();
 
     /**
-      Draw the stack of menus.
+      Draw the stack of menus (full indicates to redraw all items).
     */
-    void draw();
+    void draw(bool full = false);
 
     /**
       Add a dialog box to the stack.

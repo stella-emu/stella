@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.49 2008-12-21 19:51:35 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.50 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -87,10 +87,10 @@ void DialogContainer::updateTime(uInt32 time)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::draw()
+void DialogContainer::draw(bool full)
 {
   // Draw all the dialogs on the stack when we want a full refresh
-  if(myRefreshFlag)
+  if(full)
   {
     for(int i = 0; i < myDialogStack.size(); i++)
     {
@@ -109,10 +109,11 @@ void DialogContainer::draw()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
 {
+cerr << "DialogContainer::addDialog : w = " << d->getWidth() << ", h = " << d->getHeight() << endl;
   myDialogStack.push(d);
-
   d->open();
-  d->setDirty();  // Next update() will take care of drawing
+
+  myOSystem->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -124,7 +125,7 @@ void DialogContainer::removeDialog()
 
     // We need to redraw the entire screen contents, since we don't know
     // what was obscured
-    myOSystem->eventHandler().refreshDisplay();
+    myOSystem->frameBuffer().refresh();
   }
 }
 

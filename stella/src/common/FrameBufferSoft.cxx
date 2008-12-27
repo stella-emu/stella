@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.84 2008-12-26 20:05:16 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.85 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -123,7 +123,7 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawMediaSource()
+void FrameBufferSoft::drawMediaSource(bool fullRedraw)
 {
   MediaSource& mediasrc = myOSystem->console().mediaSource();
 
@@ -155,7 +155,7 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
 
-            if(v != w || myRedrawEntireFrame)
+            if(v != w || fullRedraw)
             {
               while(xstride--)
               {
@@ -195,7 +195,7 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
 
-            if(v != w || myRedrawEntireFrame)
+            if(v != w || fullRedraw)
             {
               uInt32 pixel = myDefPalette[v];
               uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
@@ -240,7 +240,7 @@ void FrameBufferSoft::drawMediaSource()
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
 
-            if(v != w || myRedrawEntireFrame)
+            if(v != w || fullRedraw)
             {
               while(xstride--)
               {
@@ -422,7 +422,7 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
   }
 
   // Have the changes take effect
-  myOSystem->eventHandler().refreshDisplay();
+  refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

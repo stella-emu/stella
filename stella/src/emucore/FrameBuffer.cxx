@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.147 2008-12-27 15:56:35 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.148 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -119,9 +119,6 @@ cerr << " <== FrameBuffer::initialize: w = " << width << ", h = " << height << e
   else
     return false;
 
-  // And refresh the display
-  myOSystem->eventHandler().refreshDisplay();
-
   // Enable unicode so we can see translated key events
   // (lowercase vs. uppercase characters)
   SDL_EnableUNICODE(1);
@@ -134,7 +131,7 @@ cerr << " <== FrameBuffer::initialize: w = " << width << ", h = " << height << e
   myStatsMsg.w = myOSystem->consoleFont().getStringWidth("000 LINES  %00.00 FPS");
   myStatsMsg.h = myOSystem->consoleFont().getFontHeight();
 
-  if(myStatsMsg.surface == NULL)
+ if(myStatsMsg.surface == NULL)
   {
     myStatsMsg.surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
     myStatsMsg.surface   = surface(myStatsMsg.surfaceID);
@@ -169,7 +166,7 @@ void FrameBuffer::update()
         myOSystem->console().fry();
 
       // And update the screen
-      drawMediaSource();
+      drawMediaSource(myRedrawEntireFrame);
 
       // Show frame statistics
       if(myStatsMsg.enabled)
@@ -193,7 +190,7 @@ void FrameBuffer::update()
     {
       // Only update the screen if it's been invalidated
       if(myRedrawEntireFrame)
-        drawMediaSource();
+        drawMediaSource(true);
 
       // Show a pause message every 5 seconds
       if(myPausedCount++ >= 7*myOSystem->frameRate())
@@ -206,20 +203,12 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      // Only update the screen if it's been invalidated
-      if(myRedrawEntireFrame)
-        drawMediaSource();
-
       myOSystem->menu().draw();
       break;  // S_MENU
     }
 
     case EventHandler::S_CMDMENU:
     {
-      // Only update the screen if it's been invalidated
-      if(myRedrawEntireFrame)
-        drawMediaSource();
-
       myOSystem->commandMenu().draw();
       break;  // S_CMDMENU
     }
@@ -262,7 +251,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   if(myMsg.counter > 0)
   {
     myRedrawEntireFrame = true;
-    myOSystem->eventHandler().refreshDisplay();
+    refresh();
   }
 
   // Precompute the message coordinates
@@ -335,7 +324,7 @@ void FrameBuffer::showFrameStats(bool enable)
 {
   myOSystem->settings().setBool("stats", enable);
   myStatsMsg.enabled = enable;
-  myOSystem->eventHandler().refreshDisplay();
+  refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -354,8 +343,7 @@ void FrameBuffer::enableMessages(bool enable)
     // Erase old messages on the screen
     myMsg.counter = 0;
 
-    myOSystem->eventHandler().refreshDisplay(true);  // Do this twice for
-//    myOSystem->eventHandler().refreshDisplay(true);  // double-buffered modes
+    refresh();
   }
 }
 
@@ -373,7 +361,7 @@ inline void FrameBuffer::drawMessage()
   // Either erase the entire message (when time is reached),
   // or show again this frame
   if(myMsg.counter == 0)  // Force an immediate update
-    myOSystem->eventHandler().refreshDisplay(true);
+    refresh();
   else
   {
     myMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
@@ -384,7 +372,72 @@ inline void FrameBuffer::drawMessage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refresh()
 {
-  myRedrawEntireFrame = true;
+cerr << "FrameBuffer::refresh() : " << myOSystem->eventHandler().state() << endl;
+
+  // This method partly duplicates the behaviour in ::update()
+  // Here, however, make sure to redraw *all* surfaces applicable to the
+  // current EventHandler state
+  // We also check for double-buffered modes, and when present
+  // update both buffers accordingly
+  //
+  // This method is in essence a FULL refresh, putting all rendering
+  // buffers in a known, fully redrawn state
+
+  bool doubleBuffered = (type() == kGLBuffer);
+  switch(myOSystem->eventHandler().state())
+  {
+    case EventHandler::S_EMULATE:
+    case EventHandler::S_PAUSE:
+      drawMediaSource(true);
+      if(doubleBuffered)
+        drawMediaSource(true);
+      break;
+
+    case EventHandler::S_MENU:
+      drawMediaSource(true);
+      myOSystem->menu().draw(true);
+      if(doubleBuffered)
+      {
+        postFrameUpdate();
+        drawMediaSource(true);
+        myOSystem->menu().draw(true);
+      }
+      break;
+
+    case EventHandler::S_CMDMENU:
+      drawMediaSource(true);
+      myOSystem->commandMenu().draw(true);
+      if(doubleBuffered)
+      {
+        postFrameUpdate();
+        drawMediaSource(true);
+        myOSystem->commandMenu().draw(true);
+      }
+      break;
+
+    case EventHandler::S_LAUNCHER:
+      myOSystem->launcher().draw(true);
+      if(doubleBuffered)
+      {
+        postFrameUpdate();
+        myOSystem->launcher().draw(true);
+      }
+      break;
+
+  #ifdef DEBUGGER_SUPPORT
+    case EventHandler::S_DEBUGGER:
+      myOSystem->debugger().draw(true);
+      if(doubleBuffered)
+      {
+        postFrameUpdate();
+        myOSystem->debugger().draw(true);
+      }
+      break;
+  #endif
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -533,13 +586,14 @@ bool FrameBuffer::changeVidMode(int direction)
 
     if(!inUIMode)
     {
-      myOSystem->eventHandler().handleResizeEvent();
-      myOSystem->eventHandler().refreshDisplay(true);
       setCursorState();
       showMessage(vidmode.gfxmode.description);
     }
     if(saveModeChange)
       myOSystem->settings().setString("tia_filter", vidmode.gfxmode.name);
+
+    myOSystem->eventHandler().handleResizeEvent();
+    refresh(); // _FIXME myOSystem->eventHandler().refreshDisplay(true);
   }
   else
     return false;

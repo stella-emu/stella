@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.21 2008-12-26 20:05:17 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.22 2008-12-27 23:27:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -177,7 +177,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSnapshotCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().eventHandler().refreshDisplay(true);
+      instance().frameBuffer().refresh();
       instance().eventHandler().handleEvent(Event::TakeSnapshot, 1);
       break;
 
@@ -211,6 +211,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
     instance().console().switches().update();
     instance().console().mediaSource().update();
     instance().eventHandler().handleEvent(event, 0);
+    instance().frameBuffer().refresh();
   }
   else if(stateCmd)
   {

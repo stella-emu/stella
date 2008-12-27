@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.134 2008-12-26 20:05:17 stephena Exp $
+// $Id: OSystem.cxx,v 1.135 2008-12-27 23:27:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -275,7 +275,7 @@ void OSystem::setUIPalette()
   int palette = mySettings->getInt("uipalette") - 1;
   if(palette < 0 || palette >= kNumUIPalettes) palette = 0;
   myFrameBuffer->setUIPalette(&ourGUIColors[palette][0]);
-  myEventHandler->refreshDisplay();
+  myFrameBuffer->refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -477,7 +477,7 @@ bool OSystem::createLauncher()
   }
   myLauncher->reStack();
   myFrameBuffer->setCursorState();
-  myEventHandler->refreshDisplay();
+  myFrameBuffer->refresh();
 
   setFramerate(60);
   resetLoopTiming();
