@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.146 2008-12-25 23:05:16 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.147 2008-12-27 15:56:35 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -60,7 +60,7 @@ FrameBuffer::~FrameBuffer(void)
   // Free all allocated surfaces
   while(!mySurfaceList.empty())
   {
-cerr << "  delete id = " << (*mySurfaceList.begin()).first << ", " << (*mySurfaceList.begin()).second << endl;
+//cerr << "  delete id = " << (*mySurfaceList.begin()).first << ", " << (*mySurfaceList.begin()).second << endl;
     delete (*mySurfaceList.begin()).second;
     mySurfaceList.erase(mySurfaceList.begin());
   }
@@ -885,8 +885,8 @@ const FrameBuffer::VideoMode FrameBuffer::
     int w, h;
     settings.getSize("fullres", w, h);
 
-    if(w != -1 && h != -1 && (uInt32)w > myModeList[myIdx].screen_w &&
-      (uInt32)h > myModeList[myIdx].screen_h)
+    if(w != -1 && h != -1 && (uInt32)w >= myModeList[myIdx].screen_w &&
+      (uInt32)h >= myModeList[myIdx].screen_h)
     {
       VideoMode mode = myModeList[myIdx];
       mode.screen_w = w;

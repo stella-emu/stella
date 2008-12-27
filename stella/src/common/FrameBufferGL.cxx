@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.124 2008-12-25 23:05:16 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.125 2008-12-27 15:56:35 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -246,9 +246,6 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
 {
 cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl;
 
-//mode.screen_w = 1600;
-//mode.screen_h = 1000;
-
   bool inUIMode =
     myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
@@ -353,15 +350,15 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
   p_glPushMatrix();
   p_glLoadIdentity();
 
-cerr << "dimensions: " << endl
-	<< "  basew  = " << baseWidth << endl
-	<< "  baseh  = " << baseHeight << endl
-	<< "  scrw   = " << mode.screen_w << endl
-	<< "  scrh   = " << mode.screen_h << endl
-	<< "  imagex = " << mode.image_x << endl
-	<< "  imagey = " << mode.image_y << endl
-	<< "  imagew = " << mode.image_w << endl
-	<< "  imageh = " << mode.image_h << endl
+cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
+	<< "  screen w = " << mode.screen_w << endl
+	<< "  screen h = " << mode.screen_h << endl
+	<< "  image x  = " << mode.image_x << endl
+	<< "  image y  = " << mode.image_y << endl
+	<< "  image w  = " << mode.image_w << endl
+	<< "  image h  = " << mode.image_h << endl
+	<< "  base w   = " << baseWidth << endl
+	<< "  base h   = " << baseHeight << endl
 	<< endl;
 
   ////////////////////////////////////////////////////////////////////
@@ -388,6 +385,8 @@ cerr << "dimensions: " << endl
     // The actual TIA image is only half of that specified by baseWidth
     // The stretching can be done in hardware now that the TIA surface
     // and other UI surfaces are no longer tied together
+    // Note that this may change in the future, when we add more
+    // complex filters/scalers, but for now it's fine
     myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
                                      mode.image_w, mode.image_h);
     myTiaSurface->setPos(mode.image_x, mode.image_y);
@@ -562,7 +561,7 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myWidth(scaleWidth),
     myHeight(scaleHeight)
 {
-cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeight << " : " << this << endl;
+//cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeight << " : " << this << endl;
 
   // Fill buffer struct with valid data
   // This changes depending on the texturing used
