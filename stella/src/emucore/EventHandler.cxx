@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.230 2008-12-28 22:30:40 stephena Exp $
+// $Id: EventHandler.cxx,v 1.231 2008-12-28 22:31:13 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -452,7 +452,6 @@ void EventHandler::poll(uInt32 time)
           else if(key == SDLK_RETURN)
           {
             myOSystem->frameBuffer().toggleFullscreen();
-cerr << " toggle fullscreen\n";
           }
           else if(key == SDLK_EQUALS)
           {
