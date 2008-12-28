@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.86 2008-12-28 21:01:55 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.87 2008-12-28 22:54:04 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -431,6 +431,18 @@ void FrameBufferSoft::stateChanged(EventHandler::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurface* FrameBufferSoft::createSurface(int w, int h, bool isBase) const
 {
+  // For some unknown reason, OSX in software fullscreen mode doesn't like
+  // to use the underlying surface directly
+  // I suspect it's an SDL compatibility thing, since I get errors
+  // referencing Quartz vs. QuickDraw, and then a program crash
+  // For now, we'll just always use entire surfaces for OSX
+  // I don't think this will have much effect, since OpenGL mode is the
+  // preferred method in OSX (basically, all OSX installations have OpenGL
+  // support)
+#ifdef MAC_OSX
+  isBase = false;
+#endif
+
   SDL_Surface* surface = isBase ? myScreen :
       SDL_CreateRGBSurface(SDL_SWSURFACE, w, h, myFormat->BitsPerPixel,
                            myFormat->Rmask, myFormat->Gmask, myFormat->Bmask,
@@ -589,9 +601,6 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
   }
 
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
-
-  SDL_LockSurface(mySurface);
-
   switch(myFB.myBytesPerPixel)
   {
     case 2:
@@ -677,7 +686,6 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     default:
       break;
   }
-  SDL_UnlockSurface(mySurface);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
