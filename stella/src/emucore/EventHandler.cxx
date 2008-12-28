@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.229 2008-12-27 23:27:32 stephena Exp $
+// $Id: EventHandler.cxx,v 1.230 2008-12-28 22:30:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -434,38 +434,37 @@ void EventHandler::poll(uInt32 time)
         else if(kbdControl(mod) && state)
         {
           // These keys work in all states
-          switch(int(key))
+          if(key == SDLK_q)
           {
-            case SDLK_q:
-              handleEvent(Event::Quit, 1);
-              break;
-
-            case SDLK_g:
-              // don't change grabmouse in fullscreen mode
-              if(!myOSystem->frameBuffer().fullScreen())
-              {
-                myGrabMouseFlag = !myGrabMouseFlag;
-                myOSystem->settings().setBool("grabmouse", myGrabMouseFlag);
-                myOSystem->frameBuffer().grabMouse(myGrabMouseFlag);
-              }
-              break;
-        #ifdef MAC_OSX
-            case SDLK_RETURN:
-              myOSystem->frameBuffer().toggleFullscreen();
-              break;
-
-            case SDLK_EQUALS:
-              myOSystem->frameBuffer().changeVidMode(+1);
-              break;
-
-            case SDLK_MINUS:
-              myOSystem->frameBuffer().changeVidMode(-1);
-              break;
-        #endif
+            handleEvent(Event::Quit, 1);
           }
-
+          else if(key == SDLK_g)
+          {
+            // don't change grabmouse in fullscreen mode
+            if(!myOSystem->frameBuffer().fullScreen())
+            {
+              myGrabMouseFlag = !myGrabMouseFlag;
+              myOSystem->settings().setBool("grabmouse", myGrabMouseFlag);
+              myOSystem->frameBuffer().grabMouse(myGrabMouseFlag);
+            }
+          }
+        #ifdef MAC_OSX
+          else if(key == SDLK_RETURN)
+          {
+            myOSystem->frameBuffer().toggleFullscreen();
+cerr << " toggle fullscreen\n";
+          }
+          else if(key == SDLK_EQUALS)
+          {
+            myOSystem->frameBuffer().changeVidMode(+1);
+          }
+          else if(key == SDLK_MINUS)
+          {
+            myOSystem->frameBuffer().changeVidMode(-1);
+          }
+        #endif
           // These only work when in emulation mode
-          if(myState == S_EMULATE)
+          else if(myState == S_EMULATE)
           {
             switch(int(key))
             {
