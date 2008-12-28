@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RectList.hxx,v 1.4 2008-02-06 13:45:19 stephena Exp $
+// $Id: RectList.hxx,v 1.5 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #ifndef RECTLIST_HXX
@@ -24,7 +24,7 @@
 class RectList
 {
   public:
-    RectList(Uint32 size = 512);
+    RectList(Uint32 size = 256);
     ~RectList();
 
     void add(SDL_Rect* rect);
@@ -32,6 +32,7 @@ class RectList
     SDL_Rect* rects();
     Uint32 numRects();
     void start();
+    void print(int boundWidth, int boundHeight);
 
   private:
     Uint32 currentSize, currentRect;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.57 2008-12-26 21:39:17 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.58 2008-12-28 21:01:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -109,18 +109,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myGLFilterPopup);
   ypos += lineHeight + 4;
 
-  // GL FS stretch
-  items.clear();
-  items.push_back("Never", "never");
-  items.push_back("UI mode", "ui");
-  items.push_back("TIA mode", "tia");
-  items.push_back("Always", "always");
-  myGLStretchPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                                     items, "GL Stretch: ", lwidth);
-  wid.push_back(myGLStretchPopup);
-  ypos += lineHeight + 4;
-
-
   // GL aspect ratio
   myAspectRatioSlider =
     new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
@@ -160,6 +148,12 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myColorLossCheckbox);
   ypos += lineHeight + 4;
 
+  // GL FS stretch
+  myGLStretchCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+                                           "GL FS Stretch");
+  wid.push_back(myGLStretchCheckbox);
+  ypos += lineHeight + 4;
+
   // Use sync to vblank in OpenGL
   myUseVSyncCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                           "GL VSync");
@@ -190,9 +184,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Disable certain functions when we know they aren't present
 #ifndef DISPLAY_GL
   myGLFilterPopup->clearFlags(WIDGET_ENABLED);
-  myGLStretchPopup->clearFlags(WIDGET_ENABLED);
   myAspectRatioSlider->clearFlags(WIDGET_ENABLED);
   myAspectRatioLabel->clearFlags(WIDGET_ENABLED);
+  myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
@@ -242,11 +236,6 @@ void VideoDialog::loadConfig()
     instance().settings().getString("gl_filter"), "linear");
   myGLFilterPopup->setEnabled(gl);
 
-  // GL stretch setting
-  myGLStretchPopup->setSelected(
-    instance().settings().getString("gl_fsmax"), "never");
-  myGLStretchPopup->setEnabled(gl);
-
   // GL aspect ratio setting
   myAspectRatioSlider->setValue(instance().settings().getInt("gl_aspect"));
   myAspectRatioSlider->setEnabled(gl);
@@ -266,6 +255,9 @@ void VideoDialog::loadConfig()
 
   // PAL color-loss effect
   myColorLossCheckbox->setState(instance().settings().getBool("colorloss"));
+
+  // GL stretch setting (item is enabled/disabled in ::handleFullscreenChange)
+  myGLStretchCheckbox->setState(instance().settings().getBool("gl_fsmax"));
 
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
@@ -293,9 +285,6 @@ void VideoDialog::saveConfig()
   // GL Filter setting
   instance().settings().setString("gl_filter", myGLFilterPopup->getSelectedTag());
 
-  // GL stretch setting
-  instance().settings().setString("gl_fsmax", myGLStretchPopup->getSelectedTag());
-
   // GL aspect ratio setting
   instance().settings().setString("gl_aspect", myAspectRatioLabel->getLabel());
 
@@ -314,6 +303,9 @@ void VideoDialog::saveConfig()
 
   // PAL color-loss effect
   instance().settings().setBool("colorloss", myColorLossCheckbox->getState());
+
+  // GL stretch setting
+  instance().settings().setBool("gl_fsmax", myGLStretchCheckbox->getState());
 
   // Use sync to vertical blank (GL mode only)
   instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
@@ -338,7 +330,6 @@ void VideoDialog::setDefaults()
   myTIAPalettePopup->setSelected("standard", "");
   myFSResPopup->setSelected("auto", "");
   myGLFilterPopup->setSelected("linear", "");
-  myGLStretchPopup->setSelected("never", "");
   myAspectRatioSlider->setValue(100);
   myAspectRatioLabel->setLabel("100");
   myFrameRateSlider->setValue(0);
@@ -346,6 +337,7 @@ void VideoDialog::setDefaults()
 
   myFullscreenCheckbox->setState(false);
   myColorLossCheckbox->setState(false);
+  myGLStretchCheckbox->setState(false);
   myUseVSyncCheckbox->setState(true);
   myCenterCheckbox->setState(true);
 
@@ -358,6 +350,10 @@ void VideoDialog::handleFullscreenChange(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
   myFSResPopup->setEnabled(enable);
+
+  // GL stretch is only enabled in OpenGL mode
+  myGLStretchCheckbox->setEnabled(
+    enable && instance().frameBuffer().type() == kGLBuffer);
 
   _dirty = true;
 #endif

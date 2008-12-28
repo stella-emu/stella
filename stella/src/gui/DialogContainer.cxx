@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.50 2008-12-27 23:27:32 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.51 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"
@@ -28,8 +28,7 @@
 DialogContainer::DialogContainer(OSystem* osystem)
   : myOSystem(osystem),
     myBaseDialog(NULL),
-    myTime(0),
-    myRefreshFlag(false)
+    myTime(0)
 {
   reset();
 }
@@ -98,7 +97,6 @@ void DialogContainer::draw(bool full)
       myDialogStack[i]->setDirty();
       myDialogStack[i]->drawDialog();
     }
-    myRefreshFlag = false;
   }
   else if(!myDialogStack.empty())
   {
@@ -109,7 +107,6 @@ void DialogContainer::draw(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
 {
-cerr << "DialogContainer::addDialog : w = " << d->getWidth() << ", h = " << d->getHeight() << endl;
   myDialogStack.push(d);
   d->open();
 

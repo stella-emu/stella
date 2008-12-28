@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.149 2008-07-22 14:54:39 stephena Exp $
+// $Id: Settings.cxx,v 1.150 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -41,7 +41,7 @@ Settings::Settings(OSystem* osystem)
   // OpenGL specific options
   setInternal("gl_filter", "nearest");
   setInternal("gl_aspect", "100");
-  setInternal("gl_fsmax", "never");
+  setInternal("gl_fsmax", "false");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
   setInternal("gl_texrect", "false");
@@ -226,10 +226,6 @@ void Settings::validate()
   i = getInt("gl_aspect");
   if(i < 50 || i > 100)
     setInternal("gl_aspect", "100");
-
-  s = getString("gl_fsmax");
-  if(s != "never" && s != "ui" && s != "tia" && s != "always")
-    setInternal("gl_fsmax", "never");
 #endif
 
 #ifdef SOUND_SUPPORT
@@ -287,8 +283,7 @@ void Settings::usage()
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspect    <number>       Scale the width by the given percentage\n"
-    << "  -gl_fsmax     <never|always| Stretch GL image in fullscreen mode\n"
-    << "                 ui|tia\n"
+    << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
     << endl

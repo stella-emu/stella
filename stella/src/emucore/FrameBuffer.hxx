@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.108 2008-12-27 23:27:32 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.109 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.108 2008-12-27 23:27:32 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.109 2008-12-28 21:01:55 stephena Exp $
 */
 class FrameBuffer
 {
@@ -366,11 +366,6 @@ class FrameBuffer
     virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
 
     /**
-      Switches between the filtering options in the video subsystem.
-    */
-    virtual void toggleFilter() = 0;
-
-    /**
       This method should be called anytime the MediaSource needs to be redrawn
       to the screen (full indicating that a full redraw is required).
     */
@@ -549,7 +544,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.108 2008-12-27 23:27:32 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.109 2008-12-28 21:01:55 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

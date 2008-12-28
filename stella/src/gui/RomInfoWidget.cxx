@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.9 2008-06-19 12:01:31 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.10 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -68,6 +68,7 @@ void RomInfoWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::setProperties(const Properties& props)
 {
+return;
   myHaveProperties = true;
   myProperties = props;
 
@@ -82,6 +83,7 @@ void RomInfoWidget::setProperties(const Properties& props)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomInfoWidget::clearProperties()
 {
+return;
   myHaveProperties = myDrawSurface = false;
 
   // Decide whether the information should be shown immediately

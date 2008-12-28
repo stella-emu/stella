@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.72 2008-12-27 23:27:32 stephena Exp $
+// $Id: Dialog.cxx,v 1.73 2008-12-28 21:01:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -249,7 +249,7 @@ void Dialog::drawDialog()
 
   if(_dirty)
   {
-    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
+//    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
 
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kDlgColor);
     s.box(_x, _y, _w, _h, kColor, kShadowColor);

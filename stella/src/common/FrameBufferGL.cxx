@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.126 2008-12-27 23:27:32 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.127 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -74,8 +74,6 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myTiaSurface(NULL),
     myFilterParamName("GL_NEAREST"),
-    myWidthScaleFactor(1.0),
-    myHeightScaleFactor(1.0),
     myHaveTexRectEXT(false),
     myDirtyFlag(true)
 {
@@ -188,8 +186,6 @@ bool FrameBufferGL::loadFuncs()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::initSubsystem(VideoMode& mode)
 {
-cerr << "FrameBufferGL::initSubsystem\n";
-
   mySDLFlags |= SDL_OPENGL;
 
   // Set up the OpenGL attributes
@@ -244,8 +240,6 @@ string FrameBufferGL::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::setVidMode(VideoMode& mode)
 {
-cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl;
-
   bool inUIMode =
     myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
     myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
@@ -254,32 +248,19 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
   uInt32 baseWidth = mode.image_w / mode.gfxmode.zoom;
   uInt32 baseHeight = mode.image_h / mode.gfxmode.zoom;
 
-  // FIXME - look at actual videomode type
-  // Normally, we just scale to the given zoom level
-  myWidthScaleFactor  = (float) mode.gfxmode.zoom;
-  myHeightScaleFactor = (float) mode.gfxmode.zoom;
-
-  // Activate aspect ratio correction in TIA mode
-  int iaspect = myOSystem->settings().getInt("gl_aspect");
-  if(!inUIMode && iaspect < 100)
+  // Aspect ratio and fullscreen stretching only applies to the TIA
+  if(!inUIMode)
   {
-    float aspectFactor = float(iaspect) / 100.0;
-    myWidthScaleFactor *= aspectFactor;
-    mode.image_w = (uInt16)(float(mode.image_w) * aspectFactor);
-  }
+    // Aspect ratio
+    int aspect = myOSystem->settings().getInt("gl_aspect");
+    if(aspect < 100)
+      mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
 
-  // Activate stretching if its been requested in fullscreen mode
-  float stretchFactor = 1.0;
-  if(fullScreen() && (mode.image_w < mode.screen_w) &&
-     (mode.image_h < mode.screen_h))
-  {
-    const string& gl_fsmax = myOSystem->settings().getString("gl_fsmax");
-
-    // Only stretch in certain modes
-    if((gl_fsmax == "always") || 
-       (inUIMode && gl_fsmax == "ui") ||
-       (!inUIMode && gl_fsmax == "tia"))
+    // Fullscreen mode stretching
+    if(fullScreen() && myOSystem->settings().getBool("gl_fsmax") &&
+       (mode.image_w < mode.screen_w) && (mode.image_h < mode.screen_h))
     {
+      float stretchFactor = 1.0;
       float scaleX = float(mode.image_w) / mode.screen_w;
       float scaleY = float(mode.image_h) / mode.screen_h;
 
@@ -287,14 +268,13 @@ cerr << "setVidMode: w = " << mode.screen_w << ", h = " << mode.screen_h << endl
         stretchFactor = float(mode.screen_w) / mode.image_w;
       else
         stretchFactor = float(mode.screen_h) / mode.image_h;
+
+      mode.image_w = (Uint16) (stretchFactor * mode.image_w);
+      mode.image_h = (Uint16) (stretchFactor * mode.image_h);
     }
   }
-  myWidthScaleFactor  *= stretchFactor;
-  myHeightScaleFactor *= stretchFactor;
 
   // Now re-calculate the dimensions
-  mode.image_w = (Uint16) (stretchFactor * mode.image_w);
-  mode.image_h = (Uint16) (stretchFactor * mode.image_h);
   if(!fullScreen()) mode.screen_w = mode.image_w;
   mode.image_x = (mode.screen_w - mode.image_w) >> 1;
   mode.image_y = (mode.screen_h - mode.image_h) >> 1;
@@ -390,6 +370,7 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
                                      mode.image_w, mode.image_h);
     myTiaSurface->setPos(mode.image_x, mode.image_y);
+    myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
   }
 
   // Make sure any old parts of the screen are erased
@@ -474,14 +455,11 @@ void FrameBufferGL::drawMediaSource(bool fullRedraw)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::postFrameUpdate()
 {
-//static int FCOUNT = 0;
   if(myDirtyFlag)
   {
     // Now show all changes made to the texture
     SDL_GL_SwapBuffers();
     myDirtyFlag = false;
-//cerr << FCOUNT++ % 2 << " : SWAP buffers" << endl;
-//cerr << "--------------------------------------------------------------------" << endl;
   }
 }
 
@@ -492,34 +470,6 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
   myPhosphorBlend = blend;
 
   myRedrawEntireFrame = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::toggleFilter()
-{
-/*
-  if(myBuffer.filter == GL_NEAREST)
-  {
-    myBuffer.filter = GL_LINEAR;
-    myOSystem->settings().setString("gl_filter", "linear");
-    showMessage("Filtering: GL_LINEAR");
-  }
-  else
-  {
-    myBuffer.filter = GL_NEAREST;
-    myOSystem->settings().setString("gl_filter", "nearest");
-    showMessage("Filtering: GL_NEAREST");
-  }
-
-  p_glBindTexture(myBuffer.target, myBuffer.texture);
-  p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myBuffer.target, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myBuffer.target, GL_TEXTURE_MAG_FILTER, myBuffer.filter);
-  p_glTexParameteri(myBuffer.target, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
-
-  // The filtering has changed, so redraw the entire screen
-  myRedrawEntireFrame = true;
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -561,8 +511,6 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myWidth(scaleWidth),
     myHeight(scaleHeight)
 {
-//cerr << "  FBSurfaceGL::FBSurfaceGL: w = " << baseWidth << ", h = " << baseHeight << " : " << this << endl;
-
   // Fill buffer struct with valid data
   // This changes depending on the texturing used
   myTexCoord[0] = 0.0f;
@@ -612,8 +560,6 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FBSurfaceGL::~FBSurfaceGL()
 {
-//cerr << "  FBSurfaceGL::~FBSurfaceGL(): myTexID = " << myTexID << " @ " << this << endl;
-
   if(myTexture)
     SDL_FreeSurface(myTexture);
 
@@ -720,6 +666,8 @@ void FBSurfaceGL::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
+  // OpenGL mode doesn't make use of dirty rectangles
+  // It's faster to just update the entire surface
   mySurfaceIsDirty = true;
 }
 
@@ -740,8 +688,6 @@ void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::setWidth(uInt32 w)
 {
-//cerr << "  BEFORE: w = " << myWidth <<", texcoord[2] = " << myTexCoord[2] << endl;
-
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
   // and it's the only thing that uses it
@@ -751,15 +697,11 @@ void FBSurfaceGL::setWidth(uInt32 w)
     myTexCoord[2] = (GLfloat) myWidth;
   else
     myTexCoord[2] = (GLfloat) myWidth / myTexWidth;
-
-//cerr << "  AFTER:  w = " << myWidth <<", texcoord[2] = " << myTexCoord[2] << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::setHeight(uInt32 h)
 {
-//cerr << "  BEFORE: h = " << myHeight <<", texcoord[3] = " << myTexCoord[3] << endl;
-
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
   // and it's the only thing that uses it
@@ -769,22 +711,13 @@ void FBSurfaceGL::setHeight(uInt32 h)
     myTexCoord[3] = (GLfloat) myHeight;
   else
     myTexCoord[3] = (GLfloat) myHeight / myTexHeight;
-
-//cerr << "  AFTER:  h = " << myHeight <<", texcoord[3] = " << myTexCoord[3] << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::translateCoords(Int32& x, Int32& y) const
 {
-#if 1
-  x = x - myXOrig;
-  y = y - myYOrig;
-#else
-  // Wow, what a mess :)
-  const GUI::Rect& image = myFB.imageRect();
-  x = (Int32) ((x - myXOrig - image.x()) / myWidthScaleFactor);
-  y = (Int32) ((y - myXOrig - image.y()) / myHeightScaleFactor);
-#endif
+  x -= myXOrig;
+  y -= myYOrig;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -792,8 +725,6 @@ void FBSurfaceGL::update()
 {
   if(mySurfaceIsDirty)
   {
-//cerr << "  --> FBSurfaceGL::update(): w = " << myWidth << ", h = " << myHeight << endl;
-
     // Texturemap complete texture to surface so we have free scaling
     // and antialiasing 
     p_glBindTexture(myTexTarget, myTexID);
@@ -823,8 +754,6 @@ void FBSurfaceGL::update()
 void FBSurfaceGL::free()
 {
   p_glDeleteTextures(1, &myTexID);
-
-//cerr << "  ==> FBSurfaceGL::free(): myTexID = " << myTexID << " @ " << this << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -839,26 +768,10 @@ void FBSurfaceGL::reload()
   // Basically, all that needs to be done is to re-call glTexImage2D with a
   // new texture ID, so that's what we do here
 
-/*
-  // Create an OpenGL texture from the SDL texture
-  const string& filter = myOSystem->settings().getString("gl_filter");
-  if(filter == "linear")
-  {
-    myBuffer.filter   = GL_LINEAR;
-    myFilterParamName = "GL_LINEAR";
-  }
-  else if(filter == "nearest")
-  {
-    myBuffer.filter   = GL_NEAREST;
-    myFilterParamName = "GL_NEAREST";
-  }
-*/
   p_glGenTextures(1, &myTexID);
   p_glBindTexture(myTexTarget, myTexID);
   p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, myBuffer.filter);
-//  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, myBuffer.filter);
   p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
   p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
@@ -868,9 +781,34 @@ void FBSurfaceGL::reload()
                  GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, myTexture->pixels);
 
   p_glEnable(myTexTarget);
-
-//cerr << "  ==> FBSurfaceGL::reload(): myTexID = " << myTexID << " @ " << this << endl;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::setFilter(const string& name)
+{
+  // We only do GL_NEAREST or GL_LINEAR for now
+  GLint filter = GL_NEAREST;
+  if(name == "linear")
+    filter = GL_LINEAR;
+
+  p_glBindTexture(myTexTarget, myTexID);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, filter);
+  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, filter);
+
+  // The filtering has changed, so redraw the entire screen
+  mySurfaceIsDirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::myLibraryLoaded = false;
+
+#endif  // DISPLAY_OPENGL
+
+
+
+
 
 #if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -883,7 +821,6 @@ GUI::Surface* FrameBufferGL::createSurface(int width, int height) const
 
   return data ? new GUI::Surface(width, height, data) : NULL;
 }
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
@@ -912,8 +849,3 @@ void FrameBufferGL::bytesToSurface(GUI::Surface* surface, int row,
     *pixels++ = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
 }
 #endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myLibraryLoaded = false;
-
-#endif  // DISPLAY_OPENGL

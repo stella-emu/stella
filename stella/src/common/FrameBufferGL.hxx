@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.65 2008-12-27 23:27:32 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.66 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.65 2008-12-27 23:27:32 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.66 2008-12-28 21:01:55 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -127,12 +127,6 @@ class FrameBufferGL : public FrameBuffer
     FBSurface* createSurface(int w, int h, bool useBase = false) const;
 
     /**
-      Switches between the two filtering options in OpenGL.
-      Currently, these are GL_NEAREST and GL_LINEAR.
-    */
-    void toggleFilter();
-
-    /**
       This method should be called anytime the MediaSource needs to be redrawn
       to the screen (full indicating that a full redraw is required).
     */
@@ -168,9 +162,6 @@ class FrameBufferGL : public FrameBuffer
     // The name of the texture filtering to use
     string myFilterParamName;
 
-    // The amount by which to scale the image in each dimension in fullscreen mode
-    float myWidthScaleFactor, myHeightScaleFactor;
-
     // Optional GL extensions that may increase performance
     bool myHaveTexRectEXT;
 
@@ -185,7 +176,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.65 2008-12-27 23:27:32 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.66 2008-12-28 21:01:55 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -215,6 +206,8 @@ class FBSurfaceGL : public FBSurface
     void reload();
 
   private:
+    void setFilter(const string& name);
+
     inline void* pixels() const { return myTexture->pixels; }
     inline uInt32 pitch() const { return myPitch;           }
 
@@ -231,15 +224,12 @@ class FBSurfaceGL : public FBSurface
     SDL_Surface* myTexture;
 
     GLuint  myTexID;
+    GLenum  myTexTarget;
     GLsizei myTexWidth;
     GLsizei myTexHeight;
     GLfloat myTexCoord[4];
 
-    GLenum  myTexTarget;
-    GLint   myTexFilter;
-
-    uInt32 myXOrig, myYOrig;
-    uInt32 myWidth, myHeight;
+    uInt32 myXOrig, myYOrig, myWidth, myHeight;
     bool mySurfaceIsDirty;
     uInt32 myPitch;
 };

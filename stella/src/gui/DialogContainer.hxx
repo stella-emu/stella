@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.25 2008-12-27 23:27:32 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.26 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -36,7 +36,7 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.25 2008-12-27 23:27:32 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.26 2008-12-28 21:01:55 stephena Exp $
 */
 class DialogContainer
 {
@@ -144,11 +144,6 @@ class DialogContainer
     void reStack();
 
     /**
-      Redraw all dialogs on the stack.
-    */
-    void refresh() { myRefreshFlag = true; }
-
-    /**
       Return the bottom-most dialog of this container.
     */
     const Dialog* baseDialog() const { return myBaseDialog; }
@@ -170,9 +165,6 @@ class DialogContainer
 
     // Indicates the most current time (in milliseconds) as set by updateTime()
     int myTime;
-
-    // Indicates a full refresh of all dialogs is required
-    bool myRefreshFlag;
 
     // For continuous 'key down' events
     struct {

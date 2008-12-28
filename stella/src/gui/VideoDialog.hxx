@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.25 2008-12-26 21:39:17 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.26 2008-12-28 21:01:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,7 +56,6 @@ class VideoDialog : public Dialog
     PopUpWidget*      myTIAPalettePopup;
     PopUpWidget*      myFSResPopup;
     PopUpWidget*      myGLFilterPopup;
-    PopUpWidget*      myGLStretchPopup;
     SliderWidget*     myAspectRatioSlider;
     StaticTextWidget* myAspectRatioLabel;
 
@@ -64,6 +63,7 @@ class VideoDialog : public Dialog
     StaticTextWidget* myFrameRateLabel;
     CheckboxWidget*   myFullscreenCheckbox;
     CheckboxWidget*   myColorLossCheckbox;
+    CheckboxWidget*   myGLStretchCheckbox;
     CheckboxWidget*   myUseVSyncCheckbox;
     CheckboxWidget*   myCenterCheckbox;
 

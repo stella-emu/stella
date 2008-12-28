@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.148 2008-12-27 23:27:32 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.149 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -60,7 +60,6 @@ FrameBuffer::~FrameBuffer(void)
   // Free all allocated surfaces
   while(!mySurfaceList.empty())
   {
-//cerr << "  delete id = " << (*mySurfaceList.begin()).first << ", " << (*mySurfaceList.begin()).second << endl;
     delete (*mySurfaceList.begin()).second;
     mySurfaceList.erase(mySurfaceList.begin());
   }
@@ -87,8 +86,6 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 #else
   mySDLFlags = 0;
 #endif
-
-cerr << " <== FrameBuffer::initialize: w = " << width << ", h = " << height << endl;
 
   // Set the available video modes for this framebuffer
   setAvailableVidModes(width, height);
@@ -372,8 +369,6 @@ inline void FrameBuffer::drawMessage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::refresh()
 {
-cerr << "FrameBuffer::refresh() : " << myOSystem->eventHandler().state() << endl;
-
   // This method partly duplicates the behaviour in ::update()
   // Here, however, make sure to redraw *all* surfaces applicable to the
   // current EventHandler state
@@ -592,8 +587,8 @@ bool FrameBuffer::changeVidMode(int direction)
     if(saveModeChange)
       myOSystem->settings().setString("tia_filter", vidmode.gfxmode.name);
 
-    myOSystem->eventHandler().handleResizeEvent();
-    refresh(); // _FIXME myOSystem->eventHandler().refreshDisplay(true);
+    myOSystem->eventHandler().handleResizeEvent();  // FIXME - this may no longer be required
+    refresh();
   }
   else
     return false;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.85 2008-12-27 23:27:32 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.86 2008-12-28 21:01:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -102,18 +102,31 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   myFormat = myScreen->format;
   myBytesPerPixel = myFormat->BytesPerPixel;
 
+  // Make sure drawMediaSource() knows which renderer to use
+  switch(myBytesPerPixel)
+  {
+    case 2:  // 16-bit
+      myPitch = myScreen->pitch >> 1;
+      myRenderType = myUsePhosphor ? kPhosphor_16 : kSoftZoom_16;
+      break;
+    case 3:  // 24-bit
+      myPitch = myScreen->pitch;
+      myRenderType = myUsePhosphor ? kPhosphor_24 : kSoftZoom_24;
+      break;
+    case 4:  // 32-bit
+      myPitch = myScreen->pitch >> 2;
+      myRenderType = myUsePhosphor ? kPhosphor_32 : kSoftZoom_32;
+      break;
+  }
+  myBaseOffset = mode.image_y * myPitch + mode.image_x;
+
   // If software mode can open the given screen, it will always be in the
   // requested format, or not at all; we only update mode when the screen
   // is successfully created
   mode.screen_w = myScreen->w;
   mode.screen_h = myScreen->h;
   myZoomLevel = mode.gfxmode.zoom;
-
 // FIXME - look at gfxmode directly
-
-  // Make sure drawMediaSource() knows which renderer to use
-  stateChanged(myOSystem->eventHandler().state());
-  myBaseOffset = mode.image_y * myPitch + mode.image_x;
 
   // Erase old rects, since they've probably been scaled for
   // a different sized screen
@@ -376,11 +389,12 @@ void FrameBufferSoft::postFrameUpdate()
 {
   if(myTiaDirty && !myInUIMode)
   {
-    SDL_Flip(myScreen);
+    SDL_UpdateRect(myScreen, 0, 0, 0, 0);
     myTiaDirty = false;
   }
   else if(myRectList->numRects() > 0)
   {
+//myRectList->print(myScreen->w, myScreen->h);
     SDL_UpdateRects(myScreen, myRectList->numRects(), myRectList->rects());
   }
   myRectList->start();
@@ -392,37 +406,26 @@ void FrameBufferSoft::enablePhosphor(bool enable, int blend)
   myUsePhosphor   = enable;
   myPhosphorBlend = blend;
 
-  stateChanged(myOSystem->eventHandler().state());
+  // Make sure drawMediaSource() knows which renderer to use
+  switch(myBytesPerPixel)
+  {
+    case 2:  // 16-bit
+      myRenderType = myUsePhosphor ? kPhosphor_16 : kSoftZoom_16;
+      break;
+    case 3:  // 24-bit
+      myRenderType = myUsePhosphor ? kPhosphor_24 : kSoftZoom_24;
+      break;
+    case 4:  // 32-bit
+      myRenderType = myUsePhosphor ? kPhosphor_32 : kSoftZoom_32;
+      break;
+  }
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::stateChanged(EventHandler::State state)
 {
-  if(!myScreen)
-    return;
-
-  myInUIMode = (state == EventHandler::S_LAUNCHER ||
-                state == EventHandler::S_DEBUGGER);
-
-  // Make sure drawMediaSource() knows which renderer to use
-  switch(myBytesPerPixel)
-  {
-    case 2:  // 16-bit
-      myPitch = myScreen->pitch >> 1;
-      myRenderType = myUsePhosphor ? kPhosphor_16 : kSoftZoom_16;
-      break;
-    case 3:  // 24-bit
-      myPitch = myScreen->pitch;
-      myRenderType = myUsePhosphor ? kPhosphor_24 : kSoftZoom_24;
-      break;
-    case 4:  // 32-bit
-      myPitch = myScreen->pitch >> 2;
-      myRenderType = myUsePhosphor ? kPhosphor_32 : kSoftZoom_32;
-      break;
-  }
-
-  // Have the changes take effect
-  refresh();
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -594,7 +597,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     case 2:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt16* buffer = (uInt16*) mySurface->pixels + 
+      uInt16* buffer = (uInt16*) mySurface->pixels + myBaseOffset +
                        (ty + desc.ascent - bby - bbh) * myPitch +
                        tx + bbx;
 
@@ -654,7 +657,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     case 4:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt32* buffer = (uInt32*) mySurface->pixels + 
+      uInt32* buffer = (uInt32*) mySurface->pixels + myBaseOffset +
                        (ty + desc.ascent - bby - bbh) * myPitch +
                        tx + bbx;
 
@@ -702,6 +705,8 @@ void FBSurfaceSoft::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
 {
+//cerr << " -> addDirtyRect: x = " << x << ", y = " << y << ", w = " << w << ", h = " << h << endl;
+
   // Base surfaces use dirty-rectangle updates, since they can be quite
   // large, and updating the entire surface each frame would be too slow
   // Non-base surfaces are usually smaller, and can be updated entirely
@@ -822,6 +827,9 @@ void FBSurfaceSoft::recalc()
       break;
   }
 }
+
+
+
 
 
 #if 0
