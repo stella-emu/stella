@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ContextMenu.cxx,v 1.8 2008-12-24 01:20:06 stephena Exp $
+// $Id: ContextMenu.cxx,v 1.9 2008-12-28 00:23:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -86,12 +86,9 @@ void ContextMenu::addItems(const StringMap& items)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::show(uInt32 x, uInt32 y, int item)
 {
-  // Make sure position is set *after* the dialog is added, since the surface
-  // may not exist before then
-  parent().addDialog(this);
   _xorig = x;
   _yorig = y;
-  center();
+  parent().addDialog(this);
   setSelected(item);
 }
 

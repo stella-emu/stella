@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.43 2008-12-24 01:20:06 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.44 2008-12-28 00:23:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -104,6 +104,14 @@ bool PopUpWidget::handleEvent(Event::Type e)
     default:
       return false;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
+{
+  // Make sure the new entry is shown if it's changed
+  if(cmd == kCMenuItemSelectedCmd)
+    dialog().setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputTextDialog.cxx,v 1.25 2008-12-25 23:05:16 stephena Exp $
+// $Id: InputTextDialog.cxx,v 1.26 2008-12-28 00:23:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -101,23 +101,17 @@ InputTextDialog::~InputTextDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::show()
 {
-  // Make sure position is set *after* the dialog is added, since the surface
-  // may not exist before then
   myEnableCenter = true;
   parent().addDialog(this);
-  center();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputTextDialog::show(uInt32 x, uInt32 y)
 {
-  // Make sure position is set *after* the dialog is added, since the surface
-  // may not exist before then
-  myEnableCenter = false;
-  parent().addDialog(this);
   myXOrig = x;
   myYOrig = y;
-  center();
+  myEnableCenter = false;
+  parent().addDialog(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

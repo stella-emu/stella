@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.hxx,v 1.22 2008-07-25 12:41:41 stephena Exp $
+// $Id: PopUpWidget.hxx,v 1.23 2008-12-28 00:23:21 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,6 +68,7 @@ class PopUpWidget : public Widget, public CommandSender
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
     bool handleEvent(Event::Type e);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void drawWidget(bool hilite);
 
   private:
