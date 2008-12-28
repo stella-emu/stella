@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.127 2008-12-28 21:01:55 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.128 2008-12-28 23:47:09 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -330,6 +330,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_glPushMatrix();
   p_glLoadIdentity();
 
+/*
 cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
 	<< "  screen w = " << mode.screen_w << endl
 	<< "  screen h = " << mode.screen_h << endl
@@ -340,6 +341,7 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
 	<< "  base w   = " << baseWidth << endl
 	<< "  base h   = " << baseHeight << endl
 	<< endl;
+*/
 
   ////////////////////////////////////////////////////////////////////
   // Note that the following must be done in the order given

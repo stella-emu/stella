@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.231 2008-12-28 22:31:13 stephena Exp $
+// $Id: EventHandler.cxx,v 1.232 2008-12-28 23:47:09 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -321,27 +321,25 @@ void EventHandler::poll(uInt32 time)
         // Control/Cmd or Alt/Shift-Cmd keys.  So we quickly check for those.
         if(kbdAlt(mod) && state)
         {
-      #ifndef MAC_OSX
           // These keys work in all states
           if(key == SDLK_RETURN)
           {
             myOSystem->frameBuffer().toggleFullscreen();
           }
-          else if(key == SDLK_EQUALS)
-          {
-            myOSystem->frameBuffer().changeVidMode(+1);
-          }
-          else if(key == SDLK_MINUS)
-          {
-            myOSystem->frameBuffer().changeVidMode(-1);
-          }
-          else
-      #endif
           // These only work when in emulation mode
-          if(myState == S_EMULATE)
+          else if(myState == S_EMULATE)
           {
             switch(int(key))
             {
+          #ifndef MAC_OSX
+              case SDLK_EQUALS:
+                myOSystem->frameBuffer().changeVidMode(+1);
+                break;
+
+              case SDLK_MINUS:
+                myOSystem->frameBuffer().changeVidMode(-1);
+                break;
+          #endif
               case SDLK_LEFTBRACKET:
                 myOSystem->sound().adjustVolume(-1);
                 break;
@@ -453,27 +451,27 @@ void EventHandler::poll(uInt32 time)
           {
             myOSystem->frameBuffer().toggleFullscreen();
           }
-          else if(key == SDLK_EQUALS)
-          {
-            myOSystem->frameBuffer().changeVidMode(+1);
-          }
-          else if(key == SDLK_MINUS)
-          {
-            myOSystem->frameBuffer().changeVidMode(-1);
-          }
         #endif
           // These only work when in emulation mode
           else if(myState == S_EMULATE)
           {
             switch(int(key))
             {
-            #ifdef MAC_OSX
+          #ifdef MAC_OSX
+              case SDLK_EQUALS:
+                myOSystem->frameBuffer().changeVidMode(+1);
+                break;
+
+              case SDLK_MINUS:
+                myOSystem->frameBuffer().changeVidMode(-1);
+                break;
+
               case SDLK_h:
               case SDLK_m:
               case SDLK_SLASH:
                 handleMacOSXKeypress(int(key));
                 break;
-            #endif
+          #endif
               case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
                 setPaddleMode(0, true);
                 break;

@@ -16,10 +16,10 @@ If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-  * New UI subsystem where drawing is done into separate buffers, not
+X * New UI subsystem where drawing is done into separate buffers, not
     directly into the TIA window
 
-  * Make UI 'font-sensitive' and remove all hardcoded dimensions for
+X * Make UI 'font-sensitive' and remove all hardcoded dimensions for
     widget/font sizes
 
   * Add option to automatically save snapshots in 1X mode (useful for
