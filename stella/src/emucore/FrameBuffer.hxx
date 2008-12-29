@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.109 2008-12-28 21:01:55 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.110 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.109 2008-12-28 21:01:55 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.110 2008-12-29 20:42:15 stephena Exp $
 */
 class FrameBuffer
 {
@@ -544,7 +544,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.109 2008-12-28 21:01:55 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.110 2008-12-29 20:42:15 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -624,8 +624,28 @@ class FBSurface
       @param color  The color of the character
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color,
-                            Int32 h = 8) = 0;
+    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, int color,
+                            uInt32 h = 8) = 0;
+
+    /**
+      This method should be called to convert and copy a given row of RGB
+      data into a FrameBuffer surface.
+
+      @param data     The data in uInt8 R/G/B format
+      @param row      The row of the surface the data should be placed in
+      @param rowbytes The number of bytes in row of 'data'
+    */
+    virtual void drawBytes(uInt8* data, uInt32 x, uInt32 y, uInt32 rowbytes) = 0;
+
+    /**
+      This method should be called copy the contents of the given
+      surface into the FrameBuffer surface.
+
+      @param surface The data to draw
+      @param x       The x coordinate
+      @param y       The y coordinate
+    */
+    virtual void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y) = 0;
 
     /**
       This method should be called to add a dirty rectangle
@@ -737,29 +757,3 @@ class FBSurface
 };
 
 #endif
-
-
-
-#if 0
-    /**
-      This method should be called to draw an SDL surface.
-
-      @param surface The data to draw
-      @param x       The x coordinate
-      @param y       The y coordinate
-    */
-    virtual void drawSurface(const GUI::Surface* surface, Int32 x, Int32 y) = 0;
-
-    /**
-      This method should be called to convert and copy a given row of RGB
-      data into an SDL surface.
-
-      @param surface  The data to draw
-      @param row      The row of the surface the data should be placed in
-      @param data     The data in uInt8 R/G/B format
-      @param rowbytes The number of bytes in row of 'data'
-    */
-    virtual void bytesToSurface(GUI::Surface* surface, int row,
-                                uInt8* data, int rowbytes) const = 0;
-#endif
-

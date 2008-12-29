@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.59 2008-12-28 21:01:55 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.60 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -32,7 +32,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.59 2008-12-28 21:01:55 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.60 2008-12-29 20:42:15 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -166,7 +166,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.59 2008-12-28 21:01:55 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.60 2008-12-29 20:42:15 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {
@@ -179,7 +179,9 @@ class FBSurfaceSoft : public FBSurface
     void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
     void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
-    void drawBitmap(uInt32* bitmap, Int32 x, Int32 y, int color, Int32 h = 8);
+    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, int color, uInt32 h = 8);
+    void drawBytes(uInt8* data, uInt32 x, uInt32 y, uInt32 rowbytes);
+    void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
     void getPos(uInt32& x, uInt32& y) const;
     void setPos(uInt32 x, uInt32 y);

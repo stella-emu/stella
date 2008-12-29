@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.26 2008-12-28 21:01:55 stephena Exp $
+// $Id: DialogContainer.hxx,v 1.27 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -36,7 +36,7 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.26 2008-12-28 21:01:55 stephena Exp $
+  @version $Id: DialogContainer.hxx,v 1.27 2008-12-29 20:42:15 stephena Exp $
 */
 class DialogContainer
 {
@@ -117,11 +117,6 @@ class DialogContainer
       @param value  Value associated with given hat
     */
     void handleJoyHatEvent(int stick, int hat, int value);
-
-    /**
-      Handle a resize event.
-    */
-    void handleResizeEvent();
 
     /**
       Draw the stack of menus (full indicates to redraw all items).

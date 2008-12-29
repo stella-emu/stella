@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.135 2008-12-27 23:27:32 stephena Exp $
+// $Id: OSystem.cxx,v 1.136 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -340,10 +340,6 @@ bool OSystem::createFrameBuffer()
   {
     // Setup the SDL joysticks (must be done after FrameBuffer is created)
     myEventHandler->setupJoysticks();
-
-    // FIXME - this next line can probably be removed
-    // Let the system know that we've possibly resized the display
-    myEventHandler->handleResizeEvent();
 
     // Update the UI palette
     setUIPalette();

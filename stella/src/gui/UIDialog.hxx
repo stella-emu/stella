@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.8 2008-03-23 16:22:46 stephena Exp $
+// $Id: UIDialog.hxx,v 1.9 2008-12-29 20:42:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -50,7 +50,7 @@ class UIDialog : public Dialog
     SliderWidget*     myLauncherHeightSlider;
     StaticTextWidget* myLauncherHeightLabel;
     PopUpWidget*      myLauncherFontPopup;
-    CheckboxWidget* myRomViewerCheckbox;
+    PopUpWidget*      myRomViewerPopup;
 
     // Debugger options
     SliderWidget*     myDebuggerWidthSlider;

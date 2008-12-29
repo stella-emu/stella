@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.87 2008-12-28 22:54:04 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.88 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -689,25 +689,58 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::drawBitmap(uInt32* bitmap, Int32 tx, Int32 ty,
-                               int color, Int32 h)
+void FBSurfaceSoft::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
+                               int color, uInt32 h)
 {
   SDL_Rect rect;
-  for(int y = 0; y < h; y++)
+  rect.y = ty + myYOffset;
+  rect.w = rect.h = 1;
+  for(uInt32 y = 0; y < h; y++)
   {
+    rect.x = tx + myXOffset;
     uInt32 mask = 0xF0000000;
-
-    for(int x = 0; x < 8; x++, mask >>= 4)
+    for(uInt32 x = 0; x < 8; x++, mask >>= 4)
     {
       if(bitmap[y] & mask)
-      {
-        rect.x = x + tx + myXOffset;
-        rect.y = y + ty + myYOffset;
-        rect.w = rect.h = 1;
         SDL_FillRect(mySurface, &rect, myFB.myDefPalette[color]);
-      }
+
+      rect.x++;
     }
+    rect.y++;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::drawBytes(uInt8* data, uInt32 tx, uInt32 ty, uInt32 rowbytes)
+{
+  SDL_Rect rect;
+  rect.x = tx + myXOffset;
+  rect.y = ty + myYOffset;
+  rect.w = rect.h = 1;
+  for(uInt32 x = 0; x < rowbytes; x += 3)
+  {
+    SDL_FillRect(mySurface, &rect,
+      SDL_MapRGB(myFB.myFormat, data[x], data[x+1], data[x+2]));
+
+    rect.x++;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceSoft::drawSurface(const FBSurface* surface, uInt32 tx, uInt32 ty)
+{
+  const FBSurfaceSoft* s = (const FBSurfaceSoft*) surface;
+
+  SDL_Rect dstrect;
+  dstrect.x = tx + myXOffset;
+  dstrect.y = ty + myYOffset;
+  SDL_Rect srcrect;
+  srcrect.x = 0;
+  srcrect.y = 0;
+  srcrect.w = s->myWidth;
+  srcrect.h = s->myHeight;
+
+  SDL_BlitSurface(s->mySurface, &srcrect, mySurface, &dstrect);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -835,42 +868,3 @@ void FBSurfaceSoft::recalc()
       break;
   }
 }
-
-
-
-
-
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawSurface(const GUI::Surface* surface, Int32 x, Int32 y)
-{
-  SDL_Rect dstrect;
-  dstrect.x = x * myZoomLevel + myImageDim.x;
-  dstrect.y = y * myZoomLevel + myImageDim.y;
-  SDL_Rect srcrect;
-  srcrect.x = 0;
-  srcrect.y = 0;
-  srcrect.w = surface->myClipWidth * myZoomLevel;
-  srcrect.h = surface->myClipHeight * myZoomLevel;
-
-  SDL_BlitSurface(surface->myData, &srcrect, myScreen, &dstrect);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::bytesToSurface(GUI::Surface* surface, int row,
-                                     uInt8* data, int rowbytes) const
-{
-  // Calculate a scanline of zoomed surface data
-  SDL_Surface* s = surface->myData;
-  SDL_Rect rect;
-  rect.x = 0;
-  rect.y = row * myZoomLevel;
-  for(int c = 0; c < rowbytes; c += 3)
-  {
-    uInt32 pixel = SDL_MapRGB(s->format, data[c], data[c+1], data[c+2]);
-    rect.x += myZoomLevel;
-    rect.w = rect.h = myZoomLevel;
-    SDL_FillRect(surface->myData, &rect, pixel);
-  }
-}
-#endif

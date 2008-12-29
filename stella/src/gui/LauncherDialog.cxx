@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.89 2008-11-30 17:28:03 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.90 2008-12-29 20:42:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,8 +53,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myGameList(NULL),
     myProgressBar(NULL),
     myRomInfoWidget(NULL),
-    mySelectedItem(0),
-    myRomInfoFlag(false)
+    mySelectedItem(0)
 {
   const GUI::Font& font = instance().launcherFont();
 
@@ -63,15 +62,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   const int bheight = font.getLineHeight() + 4;
   int xpos = 0, ypos = 0, lwidth = 0;
   WidgetArray wid;
-
-  // Check if we want the ROM info viewer
-  // Make sure it will fit within the current bounds
-  myRomInfoFlag = instance().settings().getBool("romviewer");
-  if((w < 640 || h < 480) && myRomInfoFlag)
-  {
-    cerr << "ERROR: ROM launcher too small, deactivating ROM info viewer" << endl;
-    myRomInfoFlag = false;
-  }
 
   // Show game name
   lwidth = font.getStringWidth("Select an item from the list ...");
@@ -87,7 +77,16 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add list with game titles
   xpos = 10;  ypos += fontHeight + 5;
-  int listWidth = myRomInfoFlag ? _w - 350 : _w - 20;
+
+  // Before we add the list, we need to know the size of the RomInfoWidget
+  int romWidth = 0;
+  int romSize = instance().settings().getInt("romviewer");
+  if(romSize > 1 && w >= 1000 && h >= 800)
+    romWidth = 375*2;
+  else if(romSize > 0 && w >= 640 && h >= 480)
+    romWidth = 375;
+
+  int listWidth = _w - (romWidth > 0 ? romWidth+25 : 20);
   myList = new StringListWidget(this, font, xpos, ypos,
                                 listWidth, _h - 28 - bheight - 2*fontHeight);
   myList->setNumberingMode(kListNumberingOff);
@@ -95,12 +94,11 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myList);
 
   // Add ROM info area (if enabled)
-  if(myRomInfoFlag)
+  if(romWidth > 0)
   {
     xpos += myList->getWidth() + 15;
-    myRomInfoWidget = new RomInfoWidget(this, instance().font(), xpos, ypos,
-                                        326, myList->getHeight());
-    wid.push_back(myRomInfoWidget);
+    myRomInfoWidget = new RomInfoWidget(this, instance().consoleFont(), xpos, ypos,
+                                        romWidth, myList->getHeight());
   }
 
   // Add note textwidget to show any notes for the currently selected ROM
@@ -202,7 +200,7 @@ void LauncherDialog::loadConfig()
   }
   Dialog::setFocus(getFocusList()[mySelectedItem]);
 
-  if(myRomInfoFlag)
+  if(myRomInfoWidget)
     myRomInfoWidget->loadConfig();
 }
 
@@ -300,7 +298,7 @@ void LauncherDialog::loadDirListing()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadRomInfo()
 {
-  if(!(myRomInfoFlag && myRomInfoWidget)) return;
+  if(!myRomInfoWidget) return;
   int item = myList->getSelected();
   if(item < 0) return;
 
@@ -314,8 +312,7 @@ void LauncherDialog::loadRomInfo()
 
     // Get the properties for this entry
     Properties props;
-    const string& md5 = myGameList->md5(item);
-    instance().propSet().getMD5(md5, props);
+    instance().propSet().getMD5(myGameList->md5(item), props);
 
     myRomInfoWidget->setProperties(props);
   }
@@ -404,16 +401,6 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kReloadRomDirCmd:
       updateListing();
-      break;
-
-    case kResizeCmd:
-      // Instead of figuring out how to resize the snapshot image,
-      // we just reload it
-      if(myRomInfoFlag)
-      {
-        myRomInfoWidget->initialize();
-        loadRomInfo();
-      }
       break;
 
     default:

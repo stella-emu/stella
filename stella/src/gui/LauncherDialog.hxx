@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.35 2008-11-30 17:28:03 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.36 2008-12-29 20:42:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -92,7 +92,7 @@ class LauncherDialog : public Dialog
 
   private:
     int mySelectedItem;
-    bool myRomInfoFlag;
+    int myRomInfoSize;
     FilesystemNode myCurrentNode;
 
     enum {

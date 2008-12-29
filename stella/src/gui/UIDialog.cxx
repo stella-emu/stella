@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.15 2008-07-25 12:41:41 stephena Exp $
+// $Id: UIDialog.cxx,v 1.16 2008-12-29 20:42:15 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -65,7 +65,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.clear();
   tabID = myTab->addTab(" Launcher ");
   lwidth = font.getStringWidth("Launcher Height: ");
-      
+
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                            lineHeight, "Launcher Width: ",
@@ -96,6 +96,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Launcher font
+  pwidth = font.getStringWidth("2x (1000x800)");
   items.clear();
   items.push_back("Small", "small");
   items.push_back("Large", "large");
@@ -106,10 +107,14 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // ROM launcher info/snapshot viewer
-  xpos += ((_w - 40 - font.getStringWidth("ROM Info viewer")) >> 1);
-  myRomViewerCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                           "ROM Info viewer", 0);
-  wid.push_back(myRomViewerCheckbox);
+  items.clear();
+  items.push_back("Off", "0");
+  items.push_back("1x (640x480) ", "1");
+  items.push_back("2x (1000x800)", "2");
+  myRomViewerPopup =
+    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
+                    "ROM Info viewer: ", lwidth);
+  wid.push_back(myRomViewerPopup);
 
   // Add message concerning usage
   xpos = vBorder; ypos += 2*(lineHeight + 4);
@@ -126,6 +131,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.clear();
   tabID = myTab->addTab(" Debugger ");
   lwidth = font.getStringWidth("Debugger Height: ");
+  pwidth = font.getStringWidth("Standard");
   xpos = ypos = vBorder;
 
   // Debugger width and height
@@ -248,11 +254,12 @@ void UIDialog::loadConfig()
   myLauncherHeightLabel->setValue(h);
 
   // Launcher font
-  const string& s = instance().settings().getString("launcherfont");
-  myLauncherFontPopup->setSelected(s, "small");
+  const string& font = instance().settings().getString("launcherfont");
+     myLauncherFontPopup->setSelected(font, "small");
 
   // ROM launcher info viewer
-  myRomViewerCheckbox->setState(instance().settings().getBool("romviewer"));
+  const string& viewer = instance().settings().getString("romviewer");
+  myRomViewerPopup->setSelected(viewer, "0");
 
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
@@ -291,7 +298,8 @@ void UIDialog::saveConfig()
     myLauncherFontPopup->getSelectedTag());
 
   // ROM launcher info viewer
-  instance().settings().setBool("romviewer", myRomViewerCheckbox->getState());
+  instance().settings().setString("romviewer",
+    myRomViewerPopup->getSelectedTag());
 
   // Debugger size
   instance().settings().setSize("debuggerres", 
@@ -320,7 +328,8 @@ void UIDialog::setDefaults()
       myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherHeightLabel->setValue(h);
-      myRomViewerCheckbox->setState(false);
+      myLauncherFontPopup->setSelected("small", "");
+      myRomViewerPopup->setSelected("0", "");
       break;
     }
 

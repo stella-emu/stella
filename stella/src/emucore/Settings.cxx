@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.150 2008-12-28 21:01:55 stephena Exp $
+// $Id: Settings.cxx,v 1.151 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -88,7 +88,7 @@ Settings::Settings(OSystem* osystem)
   // ROM browser options
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "small");
-  setInternal("romviewer", "false");
+  setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
   // UI-related options
@@ -259,6 +259,12 @@ void Settings::validate()
   s = getString("launcherfont");
   if(s != "small" && s != "large")
     setInternal("launcherfont", "small");
+
+  i = getInt("romviewer");
+  if(i < 0)
+    setInternal("romviewer", "0");
+  else if(i > 2)
+    setInternal("romviewer", "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,7 +321,7 @@ void Settings::usage()
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-    << "  -romviewer    <1|0>          Show ROM info viewer in ROM launcher\n"
+    << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"

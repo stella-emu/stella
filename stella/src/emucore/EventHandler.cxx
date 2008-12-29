@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.232 2008-12-28 23:47:09 stephena Exp $
+// $Id: EventHandler.cxx,v 1.233 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -867,16 +867,6 @@ void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
   else if(myOverlay != NULL)
     myOverlay->handleJoyHatEvent(stick, hat, value);
 #endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleResizeEvent()
-{
-  // For now, only the overlay cares about resize events
-  // We don't know which one wants it, so we send it to all of them
-  // These events need to be sent even if the overlay isn't active
-  if(&myOSystem->launcher())
-    myOSystem->launcher().handleResizeEvent();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

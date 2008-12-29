@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.112 2008-12-27 23:27:32 stephena Exp $
+// $Id: EventHandler.hxx,v 1.113 2008-12-29 20:42:15 stephena Exp $
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.112 2008-12-27 23:27:32 stephena Exp $
+  @version $Id: EventHandler.hxx,v 1.113 2008-12-29 20:42:15 stephena Exp $
 */
 class EventHandler
 {
@@ -212,11 +212,6 @@ class EventHandler
     bool enterDebugMode();
     void leaveDebugMode();
     void takeSnapshot();
-
-    /**
-      Send a resize event to the handler.
-    */
-    void handleResizeEvent();
 
     /**
       Send an event directly to the event handler.
