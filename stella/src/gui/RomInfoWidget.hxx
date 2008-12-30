@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.hxx,v 1.6 2008-12-29 20:42:15 stephena Exp $
+// $Id: RomInfoWidget.hxx,v 1.7 2008-12-30 02:34:49 stephena Exp $
 //============================================================================
 
 #ifndef ROM_INFO_WIDGET_HXX
@@ -44,17 +44,20 @@ class RomInfoWidget : public Widget
 
   private:
     void parseProperties();
-    static bool isValidPNGHeader(uInt8* header);
-    static void readPNGChunk(ifstream& in, string& type, uInt8** data, int& size);
-    static bool parseIHDR(int& width, int& height, uInt8* data, int size);
-    static bool parseIDATChunk(FBSurface* surface, int width, int height,
-                               uInt8* data, int size);
-    static string parseTextChunk(uInt8* data, int size);
+    bool isValidPNGHeader(uInt8* header);
+    void readPNGChunk(ifstream& in, string& type, uInt8** data, int& size);
+    bool parseIHDR(int& width, int& height, uInt8* data, int size);
+    bool parseIDATChunk(FBSurface* surface, int width, int height,
+                        uInt8* data, int size);
+    string parseTextChunk(uInt8* data, int size);
 
   private:
     // Surface id and pointer holding the scaled PNG image
     FBSurface* mySurface;
     int mySurfaceID;
+
+    // How much to zoom the PNG image
+    int myZoomLevel;
 
     // Whether the surface should be redrawn by drawWidget()
     bool mySurfaceIsValid;

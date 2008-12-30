@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.90 2008-12-29 20:42:15 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.91 2008-12-30 02:34:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -82,9 +82,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   int romWidth = 0;
   int romSize = instance().settings().getInt("romviewer");
   if(romSize > 1 && w >= 1000 && h >= 800)
-    romWidth = 375*2;
+    romWidth = 660;
   else if(romSize > 0 && w >= 640 && h >= 480)
-    romWidth = 375;
+    romWidth = 365;
 
   int listWidth = _w - (romWidth > 0 ? romWidth+25 : 20);
   myList = new StringListWidget(this, font, xpos, ypos,
