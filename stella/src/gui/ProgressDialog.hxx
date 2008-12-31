@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.hxx,v 1.5 2008-02-06 13:45:24 stephena Exp $
+// $Id: ProgressDialog.hxx,v 1.6 2008-12-31 01:33:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,7 +38,6 @@ class ProgressDialog : public Dialog
     void setMessage(const string& message);
     void setRange(int begin, int end, int step);
     void setProgress(int progress);
-    void done();
 
   protected:
     StaticTextWidget* myMessage;

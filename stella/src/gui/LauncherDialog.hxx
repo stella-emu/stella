@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.36 2008-12-29 20:42:15 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.37 2008-12-31 01:33:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -30,7 +30,6 @@ class DialogContainer;
 class GameList;
 class OptionsDialog;
 class OSystem;
-class ProgressDialog;
 class Properties;
 class RomInfoWidget;
 class StaticTextWidget;
@@ -81,8 +80,6 @@ class LauncherDialog : public Dialog
     GameList*         myGameList;
 
     OptionsDialog*    myOptions;
-    ProgressDialog*   myProgressBar;
-
     RomInfoWidget*    myRomInfoWidget;
 
   private:

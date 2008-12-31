@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ProgressDialog.cxx,v 1.13 2008-06-13 13:14:51 stephena Exp $
+// $Id: ProgressDialog.cxx,v 1.14 2008-12-31 01:33:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,8 +46,6 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   lwidth = font.getStringWidth(message);
   _w = lwidth + 2 * fontWidth;
   _h = lineHeight * 5;
-  _x = (boss->getWidth() - _w) / 2;
-  _y = (boss->getHeight() - _h) / 2;
 
   xpos = fontWidth; ypos = lineHeight;
   myMessage = new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
@@ -60,18 +58,11 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   mySlider->setMaxValue(100);
 
   parent().addDialog(this);
-  instance().frameBuffer().update();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ProgressDialog::~ProgressDialog()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ProgressDialog::done()
-{
-  parent().removeDialog();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +89,12 @@ void ProgressDialog::setProgress(int progress)
   if(progress - mySlider->getValue() > myStep)
   {
     mySlider->setValue(progress);
+
+    // Since this dialog is usually called in a tight loop that doesn't
+    // yield, we need to manually tell the framebuffer that a redraw is
+    // necessary
+    // This isn't really an ideal solution, since all redrawing and
+    // event handling is suspended until the dialog is closed
     instance().frameBuffer().update();
   }
 }

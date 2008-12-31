@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.6 2008-12-25 23:05:16 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.7 2008-12-31 01:33:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -113,7 +113,7 @@ void RomAuditDialog::auditRoms()
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
-  ProgressDialog progress(this, instance().launcherFont(),
+  ProgressDialog progress(this, instance().font(),
                           "Auditing ROM files ...");
   progress.setRange(0, files.size() - 1, 5);
 
@@ -135,10 +135,15 @@ void RomAuditDialog::auditRoms()
       // Only rename the file if we found a valid properties entry
       if(name != "" && name != files[idx].displayName())
       {
-        const string& newfile =
-          auditPath + BSPF_PATH_SEPARATOR + name + "." + extension;
-        if(FilesystemNode::renameFile(files[idx].path(), newfile))
-          renamed++;
+        // Check for terminating separator
+        string newfile = auditPath;
+        if(newfile.find_last_of(BSPF_PATH_SEPARATOR) != newfile.length()-1)
+          newfile += BSPF_PATH_SEPARATOR;
+        newfile += name + "." + extension;
+
+        if(files[idx].path() != newfile)
+          if(FilesystemNode::renameFile(files[idx].path(), newfile))
+            renamed++;
       }
       else
         notfound++;
@@ -147,7 +152,7 @@ void RomAuditDialog::auditRoms()
     // Update the progress bar, indicating one more ROM has been processed
     progress.setProgress(idx);
   }
-  progress.done();
+  progress.close();
 
   myResults1->setValue(renamed);
   myResults2->setValue(notfound);

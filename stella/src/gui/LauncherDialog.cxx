@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.91 2008-12-30 02:34:49 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.92 2008-12-31 01:33:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,7 +51,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myQuitButton(NULL),
     myList(NULL),
     myGameList(NULL),
-    myProgressBar(NULL),
     myRomInfoWidget(NULL),
     mySelectedItem(0)
 {
