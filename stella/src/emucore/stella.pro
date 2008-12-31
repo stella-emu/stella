@@ -508,7 +508,7 @@
 "Cartridge.MD5" "071f84d10b343c7c05ce3e32af631687"
 "Cartridge.Manufacturer" "Videospielkassette - Ariola"
 "Cartridge.ModelNo" "PGP233"
-"Cartridge.Name" "Krieg der Sterne (Videospielkassette) (PAL)"
+"Cartridge.Name" "Krieg der Sterne (Ariola) (PAL)"
 "Cartridge.Note" "AKA Atlantis"
 ""
 
@@ -891,7 +891,7 @@
 "Cartridge.MD5" "0b577e63b0c64f9779f315dca8967587"
 "Cartridge.Manufacturer" "Videospielkassette - Ariola"
 "Cartridge.ModelNo" "PGP236"
-"Cartridge.Name" "Raketen-Angriff (Videospielkassette) (PAL)"
+"Cartridge.Name" "Raketen-Angriff (Ariola) (PAL)"
 "Cartridge.Note" "AKA Missile Control"
 ""
 
@@ -4741,7 +4741,7 @@
 "Cartridge.MD5" "413c925c5fdcea62842a63a4c671a5f2"
 "Cartridge.Manufacturer" "Activision, Larry Kaplan"
 "Cartridge.ModelNo" "AX-006"
-"Cartridge.Name" "Bridge (1980) (Activision) [fixed]""
+"Cartridge.Name" "Bridge (1980) (Activision) [fixed]"
 ""
 
 "Cartridge.MD5" "4181087389a79c7f59611fb51c263137"
@@ -7093,7 +7093,7 @@
 "Cartridge.MD5" "6672de8f82c4f7b8f7f1ef8b6b4f614d"
 "Cartridge.Manufacturer" "Videospielkassette - Ariola"
 "Cartridge.ModelNo" "PGP237"
-"Cartridge.Name" "Angeln I (Videospielkassette) (PAL)"
+"Cartridge.Name" "Angeln I (Ariola) (PAL)"
 "Cartridge.Note" "AKA Fishing Derby"
 ""
 
@@ -8938,7 +8938,7 @@
 "Cartridge.MD5" "7f07cd2e89dda5a3a90d3ab064bfd1f6"
 "Cartridge.Manufacturer" "Videospielkassette - Ariola"
 "Cartridge.ModelNo" "PGP234"
-"Cartridge.Name" "Boxen (Videospielkassette) (PAL)"
+"Cartridge.Name" "Boxen (Ariola) (PAL)"
 "Cartridge.Note" "AKA Boxing"
 ""
 
