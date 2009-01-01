@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.13 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBufferGP2X.hxx,v 1.14 2009-01-01 18:13:38 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.13 2008-03-13 22:58:06 stephena Exp $
+  @version $Id: FrameBufferGP2X.hxx,v 1.14 2009-01-01 18:13:38 stephena Exp $
 */
 class FrameBufferGP2X : public FrameBuffer
 {

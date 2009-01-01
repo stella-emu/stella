@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Keyboard.hxx,v 1.9 2008-04-13 23:43:14 stephena Exp $
+// $Id: Keyboard.hxx,v 1.10 2009-01-01 18:13:35 stephena Exp $
 //============================================================================
 
 #ifndef KEYBOARD_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 keyboard controller
 
   @author  Bradford W. Mott
-  @version $Id: Keyboard.hxx,v 1.9 2008-04-13 23:43:14 stephena Exp $
+  @version $Id: Keyboard.hxx,v 1.10 2009-01-01 18:13:35 stephena Exp $
 */
 class Keyboard : public Controller
 {

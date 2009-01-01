@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.cxx,v 1.52 2008-12-29 20:42:15 stephena Exp $
+// $Id: DialogContainer.cxx,v 1.53 2009-01-01 18:13:38 stephena Exp $
 //============================================================================
 
 #include "OSystem.hxx"

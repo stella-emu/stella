@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.cxx,v 1.26 2008-03-13 22:58:06 stephena Exp $
+// $Id: FrameBufferGP2X.cxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
 //============================================================================
 
 #include <SDL.h>

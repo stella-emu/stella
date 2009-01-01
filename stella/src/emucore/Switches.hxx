@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.hxx,v 1.7 2008-05-15 18:59:56 stephena Exp $
+// $Id: Switches.hxx,v 1.8 2009-01-01 18:13:37 stephena Exp $
 //============================================================================
 
 #ifndef SWITCHES_HXX
@@ -29,7 +29,7 @@ class Properties;
   This class represents the console switches of the game console.
 
   @author  Bradford W. Mott
-  @version $Id: Switches.hxx,v 1.7 2008-05-15 18:59:56 stephena Exp $
+  @version $Id: Switches.hxx,v 1.8 2009-01-01 18:13:37 stephena Exp $
 */
 class Switches : public Serializable
 {

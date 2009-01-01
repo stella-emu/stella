@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.hxx,v 1.6 2008-05-19 02:53:57 stephena Exp $
+// $Id: MT24LC256.hxx,v 1.7 2009-01-01 18:13:36 stephena Exp $
 //============================================================================
 
 #ifndef MT24LC256_HXX
@@ -30,7 +30,7 @@ class System;
   (aka Supercat) for the bulk of this code.
 
   @author  Stephen Anthony & J. Payson
-  @version $Id: MT24LC256.hxx,v 1.6 2008-05-19 02:53:57 stephena Exp $
+  @version $Id: MT24LC256.hxx,v 1.7 2009-01-01 18:13:36 stephena Exp $
 */
 class MT24LC256
 {

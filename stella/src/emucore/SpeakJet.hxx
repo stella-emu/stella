@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
+// $Id: SpeakJet.hxx,v 1.11 2009-01-01 18:13:37 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -77,7 +77,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.10 2008-03-31 00:59:30 stephena Exp $
+  @version $Id: SpeakJet.hxx,v 1.11 2009-01-01 18:13:37 stephena Exp $
 */
 
 #include "bspf.hxx"

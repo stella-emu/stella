@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaSrc.hxx,v 1.19 2008-05-21 14:01:30 stephena Exp $
+// $Id: MediaSrc.hxx,v 1.20 2009-01-01 18:13:36 stephena Exp $
 //============================================================================
 
 #ifndef MEDIASOURCE_HXX
@@ -30,7 +30,7 @@ class Sound;
   This class provides an interface for accessing graphics and audio data.
 
   @author  Bradford W. Mott
-  @version $Id: MediaSrc.hxx,v 1.19 2008-05-21 14:01:30 stephena Exp $
+  @version $Id: MediaSrc.hxx,v 1.20 2009-01-01 18:13:36 stephena Exp $
 */
 class MediaSource
 {

@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // This file is derived from the RSA Data Security, Inc. MD5 Message-Digest 
 // Algorithm.  See the header below for copyright information.
@@ -16,7 +16,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MD5.cxx,v 1.8 2008-02-06 13:45:22 stephena Exp $
+// $Id: MD5.cxx,v 1.9 2009-01-01 18:13:36 stephena Exp $
 //============================================================================
 
 #include "MD5.hxx"

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.8 2008-12-24 01:20:06 stephena Exp $
+// $Id: RiotDebug.cxx,v 1.9 2009-01-01 18:13:35 stephena Exp $
 //============================================================================
 
 #include <sstream>

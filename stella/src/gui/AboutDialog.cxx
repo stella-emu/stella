@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.26 2008-12-25 23:05:16 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -107,7 +107,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title, string* &dsc
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
       ADD_ATEXT(string("\\C\\c2") + instance().features());
       ADD_ALINE;
-      ADD_ATEXT("\\CCopyright (C) 1995-2008 The Stella team");
+      ADD_ATEXT("\\CCopyright (C) 1995-2009 The Stella team");
       ADD_ATEXT("\\Chttp://stella.sourceforge.net");
       ADD_ALINE;
       ADD_ATEXT("Stella is free software released under the GNU GPL");

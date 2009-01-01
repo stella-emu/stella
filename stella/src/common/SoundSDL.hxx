@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.hxx,v 1.20 2008-05-19 21:16:58 stephena Exp $
+// $Id: SoundSDL.hxx,v 1.21 2009-01-01 18:13:35 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_SDL_HXX
@@ -34,7 +34,7 @@ class OSystem;
   This class implements the sound API for SDL.
 
   @author Stephen Anthony and Bradford W. Mott
-  @version $Id: SoundSDL.hxx,v 1.20 2008-05-19 21:16:58 stephena Exp $
+  @version $Id: SoundSDL.hxx,v 1.21 2009-01-01 18:13:35 stephena Exp $
 */
 class SoundSDL : public Sound
 {

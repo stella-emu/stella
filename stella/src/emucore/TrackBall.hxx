@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall.hxx,v 1.2 2008-05-19 03:15:12 stephena Exp $
+// $Id: TrackBall.hxx,v 1.3 2009-01-01 18:13:38 stephena Exp $
 //============================================================================
 
 #ifndef TRACKBALL_HXX
@@ -35,7 +35,7 @@
     AmigaMouse:  Amiga Mouse
 
   @author  Stephen Anthony & z26 team
-  @version $Id: TrackBall.hxx,v 1.2 2008-05-19 03:15:12 stephena Exp $
+  @version $Id: TrackBall.hxx,v 1.3 2009-01-01 18:13:38 stephena Exp $
 */
 class TrackBall : public Controller
 {

@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.25 2008-05-19 21:16:58 stephena Exp $
+// $Id: Sound.hxx,v 1.26 2009-01-01 18:13:37 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -30,7 +30,7 @@ class Deserializer;
   It has no functionality whatsoever.
 
   @author Stephen Anthony
-  @version $Id: Sound.hxx,v 1.25 2008-05-19 21:16:58 stephena Exp $
+  @version $Id: Sound.hxx,v 1.26 2009-01-01 18:13:37 stephena Exp $
 */
 class Sound
 {

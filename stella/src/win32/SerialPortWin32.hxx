@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.hxx,v 1.3 2008-04-12 23:20:05 stephena Exp $
+// $Id: SerialPortWin32.hxx,v 1.4 2009-01-01 18:13:39 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_WIN32_HXX
@@ -27,7 +27,7 @@
   Implement reading and writing from a serial port under Windows systems.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortWin32.hxx,v 1.3 2008-04-12 23:20:05 stephena Exp $
+  @version $Id: SerialPortWin32.hxx,v 1.4 2009-01-01 18:13:39 stephena Exp $
 */
 class SerialPortWin32 : public SerialPort
 {

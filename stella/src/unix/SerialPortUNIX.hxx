@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortUNIX.hxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
+// $Id: SerialPortUNIX.hxx,v 1.5 2009-01-01 18:13:39 stephena Exp $
 //============================================================================
 
 #ifndef SERIALPORT_UNIX_HXX
@@ -26,7 +26,7 @@
   it seems to be Linux-only, and reading isn't actually supported at all.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortUNIX.hxx,v 1.4 2008-04-11 17:56:34 stephena Exp $
+  @version $Id: SerialPortUNIX.hxx,v 1.5 2009-01-01 18:13:39 stephena Exp $
 */
 class SerialPortUNIX : public SerialPort
 {

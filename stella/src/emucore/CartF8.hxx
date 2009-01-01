@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF8.hxx,v 1.13 2008-11-24 18:02:19 stephena Exp $
+// $Id: CartF8.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
 //============================================================================
 
 #ifndef CARTRIDGEF8_HXX
@@ -29,7 +29,7 @@ class System;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF8.hxx,v 1.13 2008-11-24 18:02:19 stephena Exp $
+  @version $Id: CartF8.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
 */
 class CartridgeF8 : public Cartridge
 {

@@ -8,12 +8,12 @@
 // MM     MM 66  66 55  55 00  00 22
 // MM     MM  6666   5555   0000  222222
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: System.cxx,v 1.26 2008-03-28 23:29:14 stephena Exp $
+// $Id: System.cxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
 //============================================================================
 
 #include <assert.h>

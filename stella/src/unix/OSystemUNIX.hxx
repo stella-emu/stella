@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.hxx,v 1.18 2008-05-16 23:56:31 stephena Exp $
+// $Id: OSystemUNIX.hxx,v 1.19 2009-01-01 18:13:39 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_UNIX_HXX
@@ -25,7 +25,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemUNIX.hxx,v 1.18 2008-05-16 23:56:31 stephena Exp $
+  @version $Id: OSystemUNIX.hxx,v 1.19 2009-01-01 18:13:39 stephena Exp $
 */
 class OSystemUNIX : public OSystem
 {

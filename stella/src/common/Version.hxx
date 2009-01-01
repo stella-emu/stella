@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Version.hxx,v 1.41 2008-05-23 13:03:51 stephena Exp $
+// $Id: Version.hxx,v 1.42 2009-01-01 18:13:35 stephena Exp $
 //============================================================================
 
 #ifndef VERSION_HXX

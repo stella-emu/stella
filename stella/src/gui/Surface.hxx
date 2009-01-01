@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Surface.hxx,v 1.3 2008-03-13 22:58:07 stephena Exp $
+// $Id: Surface.hxx,v 1.4 2009-01-01 18:13:39 stephena Exp $
 //============================================================================
 
 #ifndef GUI_SURFACE_HXX
@@ -31,7 +31,7 @@ namespace GUI {
   advertised interface, or from FrameBuffer-derived classes.
 
   @author  Stephen Anthony
-  @version $Id: Surface.hxx,v 1.3 2008-03-13 22:58:07 stephena Exp $
+  @version $Id: Surface.hxx,v 1.4 2009-01-01 18:13:39 stephena Exp $
 */
 class Surface
 {

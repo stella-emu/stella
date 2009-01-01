@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall.cxx,v 1.3 2008-05-30 12:06:17 stephena Exp $
+// $Id: TrackBall.cxx,v 1.4 2009-01-01 18:13:37 stephena Exp $
 //============================================================================
 
 #include <cstdlib>

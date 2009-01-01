@@ -8,12 +8,12 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2008 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.hxx,v 1.16 2008-05-30 19:07:55 stephena Exp $
+// $Id: Launcher.hxx,v 1.17 2009-01-01 18:13:38 stephena Exp $
 //============================================================================
 
 #ifndef LAUNCHER_HXX
@@ -28,7 +28,7 @@ class OSystem;
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Launcher.hxx,v 1.16 2008-05-30 19:07:55 stephena Exp $
+  @version $Id: Launcher.hxx,v 1.17 2009-01-01 18:13:38 stephena Exp $
 */
 class Launcher : public DialogContainer
 {
