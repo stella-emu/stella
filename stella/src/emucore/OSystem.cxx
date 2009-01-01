@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.136 2008-12-29 20:42:15 stephena Exp $
+// $Id: OSystem.cxx,v 1.137 2009-01-01 00:08:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -412,7 +412,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       if(mySettings->getBool("showinfo"))
         cout << "Game console created:" << endl
              << "  ROM file: " << myRomFile << endl << endl
-             << myConsole->about() << endl;
+             << " FIXME : myConsole->about()" << endl;
 
       // Update the timing info for a new console run
       resetLoopTiming();
@@ -613,6 +613,21 @@ string OSystem::MD5FromFile(const string& filename)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::getROMInfo(const string& romfile)
 {
+// FIXME - convert this into a string
+//         also, combine this method with ::createConsole(), as there's
+//         quite a bit of redundant code
+/*
+  about << "  Cart Name:       " << myProperties.get(Cartridge_Name) << endl
+        << "  Cart MD5:        " << myProperties.get(Cartridge_MD5) << endl
+        << "  Controller 0:    " << myControllers[0]->about() << endl
+        << "  Controller 1:    " << myControllers[1]->about() << endl
+        << vidinfo.str() << endl
+        << cart->about();
+
+  myAboutString = about.str();
+*/
+
+
   ostringstream buf;
 
   // Open the cartridge image and read it in
@@ -628,7 +643,7 @@ string OSystem::getROMInfo(const string& romfile)
     {
       Console* console = new Console(this, cart, props);
       if(console)
-        buf << console->about();
+        buf << "FIXME : console->about()\n";
       else
         buf << "ERROR: Couldn't get ROM info for " << romfile << " ..." << endl;
 

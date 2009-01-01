@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.69 2008-05-30 19:07:55 stephena Exp $
+// $Id: Console.hxx,v 1.70 2009-01-01 00:08:59 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -36,10 +36,23 @@ class System;
 #include "Serializable.hxx"
 
 /**
+  Contains detailed info about a console.
+*/
+struct ConsoleInfo
+{
+  string BankSwitch;
+  string CartName;
+  string CartMD5;
+  string Control0;
+  string Control1;
+  string DisplayFormat;
+};
+
+/**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.69 2008-05-30 19:07:55 stephena Exp $
+  @version $Id: Console.hxx,v 1.70 2009-01-01 00:08:59 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -150,9 +163,9 @@ class Console : public Serializable
     void setProperties(const Properties& props);
 
     /**
-      Query some information about this console.
+      Query detailed information about this console.
     */
-    const string& about() const { return myAboutString; }
+    inline const ConsoleInfo& about() const { return myConsoleInfo; }
 
   public:
     /**
@@ -320,8 +333,8 @@ class Console : public Serializable
     // successfully loaded
     bool myUserPaletteDefined;
 
-    // Contains info about this console in string format
-    string myAboutString;
+    // Contains detailed info about this console
+    ConsoleInfo myConsoleInfo;
 
     // Table of RGB values for NTSC, PAL and SECAM
     static uInt32 ourNTSCPalette[256];

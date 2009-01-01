@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.150 2008-12-29 20:42:15 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.151 2009-01-01 00:08:59 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -125,8 +125,8 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kBtnTextColor;
-  myStatsMsg.w = myOSystem->consoleFont().getStringWidth("000 LINES  %00.00 FPS");
-  myStatsMsg.h = myOSystem->consoleFont().getFontHeight();
+  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 21;
+  myStatsMsg.h = (myOSystem->consoleFont().getFontHeight() + 2) * 3;
 
  if(myStatsMsg.surface == NULL)
   {
@@ -169,13 +169,18 @@ void FrameBuffer::update()
       if(myStatsMsg.enabled)
       {
         // FIXME - sizes hardcoded for now; fix during UI refactoring
+        const ConsoleInfo& info = myOSystem->console().about();
         char msg[30];
         sprintf(msg, "%u LINES  %2.2f FPS",
                 myOSystem->console().mediaSource().scanlines(),
                 myOSystem->console().getFramerate());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(&myOSystem->consoleFont(), msg, 1, 1,
-                                       myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+        myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
+          msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+        myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
+          info.DisplayFormat, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+        myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
+          info.BankSwitch, 1, 30, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 3, myImageRect.y() + 3);
         myStatsMsg.surface->update();

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.149 2008-06-20 12:19:42 stephena Exp $
+// $Id: Console.cxx,v 1.150 2009-01-01 00:08:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -126,7 +126,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Auto-detect NTSC/PAL mode if it's requested
   myDisplayFormat = myProperties.get(Display_Format);
-  vidinfo << "  Display Format:  " << myDisplayFormat;
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
   {
@@ -145,8 +144,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     }
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
-      vidinfo << " ==> " << myDisplayFormat;
+      myConsoleInfo.DisplayFormat = "AUTO => ";
   }
+  myConsoleInfo.DisplayFormat += myDisplayFormat;
 
   // Set up the correct properties used when toggling format
   // Note that this can be overridden if a format is forced
@@ -178,18 +178,14 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myOSystem->eventHandler().allowAllDirections(allow);
 
   // Reset the system to its power-on state
-  // TODO - a reset still isn't completely working with Boulderdash
   mySystem->reset();
 
-  // Finally, show some info about the console
-  about << "  Cart Name:       " << myProperties.get(Cartridge_Name) << endl
-        << "  Cart MD5:        " << myProperties.get(Cartridge_MD5) << endl
-        << "  Controller 0:    " << myControllers[0]->about() << endl
-        << "  Controller 1:    " << myControllers[1]->about() << endl
-        << vidinfo.str() << endl
-        << cart->about();
-
-  myAboutString = about.str();
+  // Finally, add remaining info about the console
+  myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
+  myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
+  myConsoleInfo.Control0   = myControllers[0]->about();
+  myConsoleInfo.Control1   = myControllers[1]->about();
+  myConsoleInfo.BankSwitch = cart->about();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
