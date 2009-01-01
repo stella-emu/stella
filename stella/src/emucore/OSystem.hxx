@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.69 2009-01-01 18:13:36 stephena Exp $
+// $Id: OSystem.hxx,v 1.70 2009-01-01 22:44:14 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.69 2009-01-01 18:13:36 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.70 2009-01-01 22:44:14 stephena Exp $
 */
 class OSystem
 {
@@ -295,7 +295,8 @@ class OSystem
     const string& romFile() const { return myRomFile; }
 
     /**
-      Creates a new game console from the specified romfile.
+      Creates a new game console from the specified romfile, and correctly
+      initializes the system state to start emulation of the Console.
 
       @param romfile  The full pathname of the ROM to use
       @param md5      The MD5sum of the ROM
@@ -334,25 +335,12 @@ class OSystem
     const string& features() const { return myFeatures; }
 
     /**
-      Open the given ROM and return an array containing its contents.
-
-      @param rom    The absolute pathname of the ROM file
-      @param md5    The md5 calculated from the ROM file
-      @param image  A pointer to store the ROM data
-                      Note, the calling method is responsible for deleting this
-      @param size   The amount of data read into the image array
-
-      @return  False on any errors, else true
-    */
-    bool openROM(const string& rom, string& md5, uInt8** image, int* size);
-
-    /**
       Is this a valid ROM filename (does it have a valid extension?).
 
       @param filename  Filename of potential ROM file
       @param extension The extension extracted from the given file
      */
-    bool isValidRomName(const string& filename, string& extension);
+    bool isValidRomName(const string& filename, string& extension) const;
 
     /**
       Calculate the MD5sum of the given file.
@@ -509,6 +497,7 @@ class OSystem
     string myPropertiesFile;
 
     string myRomFile;
+    string myRomMD5;
 
     string myFeatures;
 
@@ -551,12 +540,38 @@ class OSystem
     void createSound();
 
     /**
-      Query valid info for creating a valid console.
+      Creates an actual Console object based on the given info.
 
-      @return Success or failure for a valid console
+      @param romfile  The full pathname of the ROM to use
+      @param md5      The MD5sum of the ROM
+
+      @return  The actual Console object, otherwise NULL
+               (calling method is responsible for deleting it)
     */
-    bool queryConsoleInfo(const uInt8* image, uInt32 size, const string& md5,
-                          Cartridge** cart, Properties& props);
+    Console* openConsole(const string& romfile, string& md5);
+
+    /**
+      Open the given ROM and return an array containing its contents.
+      Also, the properties database is updated with a valid ROM name
+      for this ROM (if necessary).
+
+      @param rom    The absolute pathname of the ROM file
+      @param md5    The md5 calculated from the ROM file
+                    (will be recalculated if necessary)
+      @param size   The amount of data read into the image array
+
+      @return  Pointer to the array, with size >=0 indicating valid data
+               (calling method is responsible for deleting it)
+    */
+    uInt8* openROM(const string& rom, string& md5, uInt32& size);
+
+    /**
+      Gets all possible info about the given console.
+
+      @param console  The console to use
+      @return  Some information about this console
+    */
+    string getROMInfo(const Console* console);
 
     /**
       Initializes the timing so that the mainloop is reset to its

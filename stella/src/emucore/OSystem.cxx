@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.138 2009-01-01 18:13:36 stephena Exp $
+// $Id: OSystem.cxx,v 1.139 2009-01-01 22:44:14 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -81,6 +81,7 @@ OSystem::OSystem()
     myStateManager(NULL),
     myQuitLoop(false),
     myRomFile(""),
+    myRomMD5(""),
     myFeatures(""),
     myFont(NULL),
     myConsoleFont(NULL)
@@ -377,64 +378,48 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     }
   }
   else
-    myRomFile = romfile;
-
-  // Open the cartridge image and read it in
-  uInt8* image;
-  int size = -1;
-  string md5 = md5sum;
-  if(openROM(myRomFile, md5, &image, &size))
   {
-    // Get all required info for creating a valid console
-    Cartridge* cart = (Cartridge*) NULL;
-    Properties props;
-    if(queryConsoleInfo(image, size, md5, &cart, props))
+    myRomFile = romfile;
+    myRomMD5  = md5sum;
+  }
+
+  // Create an instance of the 2600 game console
+  myConsole = openConsole(myRomFile, myRomMD5);
+  if(myConsole)
+  {
+  #ifdef CHEATCODE_SUPPORT
+    myCheatManager->loadCheats(myRomMD5);
+  #endif
+    myEventHandler->reset(EventHandler::S_EMULATE);
+    if(!createFrameBuffer())  // Takes care of initializeVideo()
     {
-      // Create an instance of the 2600 game console
-      myConsole = new Console(this, cart, props);
-    #ifdef CHEATCODE_SUPPORT
-      myCheatManager->loadCheats(md5);
-    #endif
-      myEventHandler->reset(EventHandler::S_EMULATE);
-      if(!createFrameBuffer())  // Takes care of initializeVideo()
-      {
-        cerr << "ERROR: Couldn't create framebuffer for console" << endl;
-        return false;
-      }
-      myConsole->initializeAudio();
-    #ifdef DEBUGGER_SUPPORT
-      myDebugger->setConsole(myConsole);
-      myDebugger->initialize();
-    #endif
-
-      if(showmessage)
-        myFrameBuffer->showMessage("New console created");
-      if(mySettings->getBool("showinfo"))
-        cout << "Game console created:" << endl
-             << "  ROM file: " << myRomFile << endl << endl
-             << " FIXME : myConsole->about()" << endl;
-
-      // Update the timing info for a new console run
-      resetLoopTiming();
-
-      myFrameBuffer->setCursorState();
-      retval = true;
+      cerr << "ERROR: Couldn't create framebuffer for console" << endl;
+      return false;
     }
-    else
-    {
-      cerr << "ERROR: Couldn't create console for " << myRomFile << endl;
-      retval = false;
-    }
+    myConsole->initializeAudio();
+  #ifdef DEBUGGER_SUPPORT
+    myDebugger->setConsole(myConsole);
+    myDebugger->initialize();
+  #endif
+
+    if(showmessage)
+      myFrameBuffer->showMessage("New console created");
+    if(mySettings->getBool("showinfo"))
+      cout << "Game console created:" << endl
+           << "  ROM file: " << myRomFile << endl << endl
+           << getROMInfo(myConsole) << endl;
+
+    // Update the timing info for a new console run
+    resetLoopTiming();
+
+    myFrameBuffer->setCursorState();
+    retval = true;
   }
   else
   {
-    cerr << "ERROR: Couldn't open " << myRomFile << endl;
+    cerr << "ERROR: Couldn't create console for " << myRomFile << endl;
     retval = false;
   }
-
-  // Free the image since we don't need it any longer
-  if(size != -1)
-    delete[] image;
 
   return retval;
 }
@@ -482,12 +467,117 @@ bool OSystem::createLauncher()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
+string OSystem::getROMInfo(const string& romfile)
 {
+  string md5, result = "";
+  Console* console = openConsole(romfile, md5);
+  if(console)
+  {
+    result = getROMInfo(console);
+    delete console;
+  }
+  else
+    result = "ERROR: Couldn't get ROM info for " + romfile + " ...";
+
+  return result;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::isValidRomName(const string& filename, string& extension) const
+{
+  string::size_type idx = filename.find_last_of('.');
+  if(idx != string::npos)
+  {
+    extension = filename.substr(idx+1);
+    return BSPF_strncasecmp(extension.c_str(), "bin", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "a26", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "zip", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "rom", 3) == 0 ||
+           BSPF_strncasecmp(extension.c_str(), "gz", 2)  == 0 ;
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystem::MD5FromFile(const string& filename)
+{
+  string md5 = "";
+
+  uInt8* image = 0;
+  uInt32 size  = 0;
+  if((image = openROM(filename, md5, size)) != 0)
+    if(image != 0 && size > 0)
+      delete[] image;
+
+  return md5;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Console* OSystem::openConsole(const string& romfile, string& md5)
+{
+#define CMDLINE_PROPS_UPDATE(cl_name, prop_name) \
+  s = mySettings->getString(cl_name);            \
+  if(s != "") props.set(prop_name, s);
+
+  Console* console = (Console*) NULL;
+
+  // Open the cartridge image and read it in
+  uInt8* image = 0;
+  uInt32 size  = 0;
+  if((image = openROM(romfile, md5, size)) != 0)
+  {
+    // Get a valid set of properties, including any entered on the commandline
+    Properties props;
+    myPropSet->getMD5(md5, props);
+
+    string s = "";
+    CMDLINE_PROPS_UPDATE("bs", Cartridge_Type);
+    CMDLINE_PROPS_UPDATE("type", Cartridge_Type);
+    CMDLINE_PROPS_UPDATE("channels", Cartridge_Sound);
+    CMDLINE_PROPS_UPDATE("ld", Console_LeftDifficulty);
+    CMDLINE_PROPS_UPDATE("rd", Console_RightDifficulty);
+    CMDLINE_PROPS_UPDATE("tv", Console_TelevisionType);
+    CMDLINE_PROPS_UPDATE("sp", Console_SwapPorts);
+    CMDLINE_PROPS_UPDATE("lc", Controller_Left);
+    CMDLINE_PROPS_UPDATE("rc", Controller_Right);
+    s = mySettings->getString("bc");
+    if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
+    CMDLINE_PROPS_UPDATE("cp", Controller_SwapPaddles);
+    CMDLINE_PROPS_UPDATE("format", Display_Format);
+    CMDLINE_PROPS_UPDATE("ystart", Display_YStart);
+    CMDLINE_PROPS_UPDATE("height", Display_Height);
+    CMDLINE_PROPS_UPDATE("pp", Display_Phosphor);
+    CMDLINE_PROPS_UPDATE("ppblend", Display_PPBlend);
+    CMDLINE_PROPS_UPDATE("hmove", Emulation_HmoveBlanks);
+
+    Cartridge* cart = Cartridge::create(image, size, props, *mySettings);
+    if(cart)
+      console = new Console(this, cart, props);
+  }
+  else
+    cerr << "ERROR: Couldn't open " << romfile << endl;
+
+  // Free the image since we don't need it any longer
+  if(image != 0 && size > 0)
+    delete[] image;
+
+  return console;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8* OSystem::openROM(const string& file, string& md5, uInt32& size)
+{
+  // This method has a documented side-effect:
+  // It not only loads a ROM and creates an array with its contents,
+  // but also adds a properties entry if the one for the ROM doesn't
+  // contain a valid name
+
+  uInt8* image = 0;
+
   // Try to open the file as a zipped archive
   // If that fails, we assume it's just a gzipped or normal data file
   unzFile tz;
-  if((tz = unzOpen(rom.c_str())) != NULL)
+  if((tz = unzOpen(file.c_str())) != NULL)
   {
     if(unzGoToFirstFile(tz) == UNZ_OK)
     {
@@ -520,34 +610,34 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
       if(ufo.uncompressed_size <= 0)
       {
         unzClose(tz);
-        return false;
+        return image;
       }
-      *size  = ufo.uncompressed_size;
-      *image = new uInt8[*size];
+      size  = ufo.uncompressed_size;
+      image = new uInt8[size];
 
       // We don't have to check for any return errors from these functions,
       // since if there are, 'image' will not contain a valid ROM and the
       // calling method can take of it
       unzOpenCurrentFile(tz);
-      unzReadCurrentFile(tz, *image, *size);
+      unzReadCurrentFile(tz, image, size);
       unzCloseCurrentFile(tz);
       unzClose(tz);
     }
     else
     {
       unzClose(tz);
-      return false;
+      return image;
     }
   }
   else
   {
     // Assume the file is either gzip'ed or not compressed at all
-    gzFile f = gzopen(rom.c_str(), "rb");
+    gzFile f = gzopen(file.c_str(), "rb");
     if(!f)
-      return false;
+      return image;
 
-    *image = new uInt8[MAX_ROM_SIZE];
-    *size = gzread(f, *image, MAX_ROM_SIZE);
+    image = new uInt8[MAX_ROM_SIZE];
+    size = gzread(f, image, MAX_ROM_SIZE);
     gzclose(f);
   }
 
@@ -555,7 +645,7 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   // Now we make sure that the file has a valid properties entry
   // To save time, only generate an MD5 if we really need one
   if(md5 == "")
-    md5 = MD5(*image, *size);
+    md5 = MD5(image, size);
 
   // Some games may not have a name, since there may not
   // be an entry in stella.pro.  In that case, we use the rom name
@@ -567,147 +657,33 @@ bool OSystem::openROM(const string& rom, string& md5, uInt8** image, int* size)
   if(name == "Untitled")
   {
     // Get the filename from the rom pathname
-    string::size_type pos = rom.find_last_of(BSPF_PATH_SEPARATOR);
+    string::size_type pos = file.find_last_of(BSPF_PATH_SEPARATOR);
     if(pos+1 != string::npos)
     {
-      name = rom.substr(pos+1);
+      name = file.substr(pos+1);
       props.set(Cartridge_MD5, md5);
       props.set(Cartridge_Name, name);
       myPropSet->insert(props, false);
     }
   }
 
-  return true;
+  return image;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::isValidRomName(const string& filename, string& extension)
+string OSystem::getROMInfo(const Console* console)
 {
-  string::size_type idx = filename.find_last_of('.');
-  if(idx != string::npos)
-  {
-    extension = filename.substr(idx+1);
-    return BSPF_strncasecmp(extension.c_str(), "bin", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "a26", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "zip", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "rom", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "gz", 2)  == 0 ;
-  }
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::MD5FromFile(const string& filename)
-{
-  uInt8* image;
-  int size = -1;
-  string md5 = "";
-
-  if(openROM(filename, md5, &image, &size))
-    if(size != -1)
-      delete[] image;
-
-  return md5;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getROMInfo(const string& romfile)
-{
-// FIXME - convert this into a string
-//         also, combine this method with ::createConsole(), as there's
-//         quite a bit of redundant code
-/*
-  about << "  Cart Name:       " << myProperties.get(Cartridge_Name) << endl
-        << "  Cart MD5:        " << myProperties.get(Cartridge_MD5) << endl
-        << "  Controller 0:    " << myControllers[0]->about() << endl
-        << "  Controller 1:    " << myControllers[1]->about() << endl
-        << vidinfo.str() << endl
-        << cart->about();
-
-  myAboutString = about.str();
-*/
-
-
+  const ConsoleInfo& info = console->about();
   ostringstream buf;
 
-  // Open the cartridge image and read it in
-  uInt8* image;
-  int size = -1;
-  string md5;
-  if(openROM(romfile, md5, &image, &size))
-  {
-    // Get all required info for creating a temporary console
-    Cartridge* cart = (Cartridge*) NULL;
-    Properties props;
-    if(queryConsoleInfo(image, size, md5, &cart, props))
-    {
-      Console* console = new Console(this, cart, props);
-      if(console)
-        buf << "FIXME : console->about()\n";
-      else
-        buf << "ERROR: Couldn't get ROM info for " << romfile << " ..." << endl;
-
-      delete console;
-    }
-    else
-      buf << "ERROR: Couldn't open " << romfile << " ..." << endl;
-  }
-  // Free the image and console since we don't need it any longer
-  if(size != -1)
-    delete[] image;
+  buf << "  Cart Name:       " << info.CartName << endl
+      << "  Cart MD5:        " << info.CartMD5 << endl
+      << "  Controller 0:    " << info.Control0 << endl
+      << "  Controller 1:    " << info.Control1 << endl
+      << "  Display Format:  " << info.DisplayFormat << endl
+      << "  Bankswitch Type: " << info.BankSwitch << endl;
 
   return buf.str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::queryConsoleInfo(const uInt8* image, uInt32 size,
-                               const string& md5,
-                               Cartridge** cart, Properties& props)
-{
-  // Get a valid set of properties, including any entered on the commandline
-  string s;
-  myPropSet->getMD5(md5, props);
-
-  s = mySettings->getString("bs");
-  if(s != "") props.set(Cartridge_Type, s);
-  s = mySettings->getString("type");
-  if(s != "") props.set(Cartridge_Type, s);
-  s = mySettings->getString("channels");
-  if(s != "") props.set(Cartridge_Sound, s);
-  s = mySettings->getString("ld");
-  if(s != "") props.set(Console_LeftDifficulty, s);
-  s = mySettings->getString("rd");
-  if(s != "") props.set(Console_RightDifficulty, s);
-  s = mySettings->getString("tv");
-  if(s != "") props.set(Console_TelevisionType, s);
-  s = mySettings->getString("sp");
-  if(s != "") props.set(Console_SwapPorts, s);
-  s = mySettings->getString("lc");
-  if(s != "") props.set(Controller_Left, s);
-  s = mySettings->getString("rc");
-  if(s != "") props.set(Controller_Right, s);
-  s = mySettings->getString("bc");
-  if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
-  s = mySettings->getString("cp");
-  if(s != "") props.set(Controller_SwapPaddles, s);
-  s = mySettings->getString("format");
-  if(s != "") props.set(Display_Format, s);
-  s = mySettings->getString("ystart");
-  if(s != "") props.set(Display_YStart, s);
-  s = mySettings->getString("height");
-  if(s != "") props.set(Display_Height, s);
-  s = mySettings->getString("pp");
-  if(s != "") props.set(Display_Phosphor, s);
-  s = mySettings->getString("ppblend");
-  if(s != "") props.set(Display_PPBlend, s);
-  s = mySettings->getString("hmove");
-  if(s != "") props.set(Emulation_HmoveBlanks, s);
-
-  *cart = Cartridge::create(image, size, props, *mySettings);
-  if(!*cart)
-    return false;
-
-  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
