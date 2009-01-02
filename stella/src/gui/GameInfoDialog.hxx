@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.35 2009-01-01 18:13:38 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.36 2009-01-02 01:50:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,6 +34,7 @@ class SliderWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "Props.hxx"
+#include "StringList.hxx"
 
 class GameInfoDialog : public Dialog, public CommandSender
 {
@@ -94,13 +95,13 @@ class GameInfoDialog : public Dialog, public CommandSender
       kPPBlendChanged  = 'PBch'
     };
 
-    /** Game properties for currently loaded ROM */
+    // Game properties for currently loaded ROM
     Properties myGameProperties;
 
-    /** Indicates that we've got a valid properties entry */
+    // Indicates that we've got a valid properties entry
     bool myPropertiesLoaded;
 
-    /** Indicates that the default properties have been loaded */
+    // Indicates that the default properties have been loaded
     bool myDefaultsSelected;
 };
 

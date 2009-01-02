@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.38 2009-01-01 18:13:38 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.39 2009-01-02 01:50:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -26,9 +26,11 @@
 
 class ButtonWidget;
 class CommandSender;
+class ContextMenu;
 class DialogContainer;
 class GameList;
 class OptionsDialog;
+class GlobalPropsDialog;
 class OSystem;
 class Properties;
 class RomInfoWidget;
@@ -62,12 +64,19 @@ class LauncherDialog : public Dialog
 
   protected:
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();
     void updateListing();
 
-  protected:
+  private:
+    void enableButtons(bool enable);
+    void loadDirListing();
+    void loadRomInfo();
+    void handleContextMenu();
+
+  private:
     ButtonWidget* myStartButton;
     ButtonWidget* myPrevDirButton;
     ButtonWidget* myOptionsButton;
@@ -82,12 +91,9 @@ class LauncherDialog : public Dialog
     OptionsDialog*    myOptions;
     RomInfoWidget*    myRomInfoWidget;
 
-  private:
-    void enableButtons(bool enable);
-    void loadDirListing();
-    void loadRomInfo();
+    ContextMenu*       myMenu;
+    GlobalPropsDialog* myGlobalProps;
 
-  private:
     int mySelectedItem;
     int myRomInfoSize;
     FilesystemNode myCurrentNode;

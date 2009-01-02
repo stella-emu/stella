@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.33 2009-01-01 18:13:38 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.34 2009-01-02 01:50:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,6 @@
  * - to select the data dir for a game
  * - to select the place where save games are stored
  * - others???
- * TODO - make this dialog font sensitive
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

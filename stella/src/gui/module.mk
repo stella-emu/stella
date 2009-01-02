@@ -16,6 +16,7 @@ MODULE_OBJS := \
 	src/gui/Font.o \
 	src/gui/GameInfoDialog.o \
 	src/gui/GameList.o \
+	src/gui/GlobalPropsDialog.o \
 	src/gui/HelpDialog.o \
 	src/gui/InputDialog.o \
 	src/gui/InputTextDialog.o \

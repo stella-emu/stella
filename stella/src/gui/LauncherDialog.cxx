@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.93 2009-01-01 18:13:38 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.94 2009-01-02 01:50:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -24,12 +24,14 @@
 #include "bspf.hxx"
 
 #include "BrowserDialog.hxx"
+#include "ContextMenu.hxx"
 #include "DialogContainer.hxx"
 #include "Dialog.hxx"
 #include "FSNode.hxx"
 #include "GameList.hxx"
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
+#include "GlobalPropsDialog.hxx"
 #include "OSystem.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -52,6 +54,8 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myList(NULL),
     myGameList(NULL),
     myRomInfoWidget(NULL),
+    myMenu(NULL),
+    myGlobalProps(NULL),
     mySelectedItem(0)
 {
   const GUI::Font& font = instance().launcherFont();
@@ -158,6 +162,19 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myGameList = new GameList();
 
   addToFocusList(wid);
+
+  // Create context menu for ROM list options
+  StringMap l;
+  l.push_back("Override properties", "override");
+  l.push_back("Filter listing", "filter");
+  l.push_back("Reload listing", "reload");
+  myMenu = new ContextMenu(this, font, l);
+
+  // Create global props dialog, which is uses to to temporarily overrride
+  // ROM properties
+  myGlobalProps =
+    new GlobalPropsDialog(this, osystem->font(), osystem->settings(),
+                          0, 0, 440, 270);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,6 +182,7 @@ LauncherDialog::~LauncherDialog()
 {
   delete myOptions;
   delete myGameList;
+  delete myMenu;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,6 +338,25 @@ void LauncherDialog::loadRomInfo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleContextMenu()
+{
+  const string& cmd = myMenu->getSelectedTag();
+
+  if(cmd == "override")
+  {
+    parent().addDialog(myGlobalProps);
+  }
+  else if(cmd == "filter")
+  {
+    cerr << "TODO: add dialog for this\n";
+  }
+  else if(cmd == "reload")
+  {
+    updateListing();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Grab the key before passing it to the actual dialog and check for
@@ -328,6 +365,19 @@ void LauncherDialog::handleKeyDown(int ascii, int keycode, int modifiers)
     updateListing();
 
   Dialog::handleKeyDown(ascii, keycode, modifiers);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::handleMouseDown(int x, int y, int button, int clickCount)
+{
+  // Grab right mouse button for context menu, send left to base class
+  if(button == 2)
+  {
+    // Add menu at current x,y mouse location
+    myMenu->show(x + getAbsX(), y + getAbsY());
+  }
+  else
+    Dialog::handleMouseDown(x, y, button, clickCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -400,6 +450,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kReloadRomDirCmd:
       updateListing();
+      break;
+
+    case kCMenuItemSelectedCmd:
+      handleContextMenu();
       break;
 
     default:

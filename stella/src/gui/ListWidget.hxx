@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.22 2009-01-01 18:13:38 stephena Exp $
+// $Id: ListWidget.hxx,v 1.23 2009-01-02 01:50:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,6 +36,7 @@ enum {
   kListItemDoubleClickedCmd = 'LIdb',  // double click on item - 'data' will be item index
   kListItemActivatedCmd     = 'LIac',  // item activated by return/enter - 'data' will be item index
   kListItemDataChangedCmd   = 'LIch',  // item data changed - 'data' will be item index
+  kListItemRClickedCmd      = 'LIrc',  // right click on item - 'data' will be item index
   kListSelectionChangedCmd  = 'Lsch',  // selection changed - 'data' will be item index
   kListScrolledCmd          = 'Lscl'   // list scrolled - 'data' will be current position
 };

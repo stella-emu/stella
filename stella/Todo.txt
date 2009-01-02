@@ -25,11 +25,11 @@ X * Make UI 'font-sensitive' and remove all hardcoded dimensions for
   * Add option to automatically save snapshots in 1X mode (useful for
     RomInfoWidget)
 
-  * A way to override (possibly temporarily) all properties for a ROM, and
+X * A way to override (possibly temporarily) all properties for a ROM, and
     use global ones instead.  Tied to the current developer commandline
     options, but presented in a GUI (started from ROM launcher).
 
-  * Add infrastructure to show all info gathered from a ROM (similar to what
+X * Add infrastructure to show all info gathered from a ROM (similar to what
     is currently displayed on the commandline).  Add a UI part for this, so
     users aren't forced to use the commandline to see it.
 
@@ -52,12 +52,10 @@ X * Make UI 'font-sensitive' and remove all hardcoded dimensions for
 
 X    (4) Reload current listing (possibly tied to a RMB context menu).
 
-     (5) Add commandline argument to toggle launcher use.
-
   * Research lockups in Stay Frosty ROM.  Test out sample state file in
     AtariAge email.
 
-  * Fix issue with paddle support in Activision Bridge ROM.
+  * Fix issue with paddle support in Activision Casino ROM.
 
   * More support for copy and paste.
 

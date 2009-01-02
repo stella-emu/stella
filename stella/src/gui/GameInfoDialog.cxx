@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.61 2009-01-01 18:13:38 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.62 2009-01-02 01:50:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -51,6 +51,12 @@ GameInfoDialog::GameInfoDialog(
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   WidgetArray wid;
   StringMap items, ports, ctrls;
+
+  ////////////////////////////////////////////////////////////////////
+  // Some of the following items are also present in GlobalPropsDialog
+  // If any changes are ever made here, GlobalPropsDialog should also
+  // be updated accordingly
+  ////////////////////////////////////////////////////////////////////
 
   // The tab widget
   xpos = 2; ypos = vBorder;
