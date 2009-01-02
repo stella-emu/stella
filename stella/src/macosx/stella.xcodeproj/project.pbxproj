@@ -270,6 +270,8 @@
 		DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */; };
 		DC0984850D3985160073C852 /* CartSB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0984830D3985160073C852 /* CartSB.cxx */; };
 		DC0984860D3985160073C852 /* CartSB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0984840D3985160073C852 /* CartSB.hxx */; };
+		DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */; };
+		DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */; };
 		DC11F78D0DB36933003B505E /* MT24LC256.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC11F78B0DB36933003B505E /* MT24LC256.cxx */; };
 		DC11F78E0DB36933003B505E /* MT24LC256.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC11F78C0DB36933003B505E /* MT24LC256.hxx */; };
 		DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */; };
@@ -633,6 +635,8 @@
 		DC07A3C70CAD738A009B4BC9 /* StateManager.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StateManager.hxx; path = ../emucore/StateManager.hxx; sourceTree = SOURCE_ROOT; };
 		DC0984830D3985160073C852 /* CartSB.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartSB.cxx; path = ../emucore/CartSB.cxx; sourceTree = SOURCE_ROOT; };
 		DC0984840D3985160073C852 /* CartSB.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartSB.hxx; path = ../emucore/CartSB.hxx; sourceTree = SOURCE_ROOT; };
+		DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GlobalPropsDialog.cxx; path = ../gui/GlobalPropsDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GlobalPropsDialog.hxx; path = ../gui/GlobalPropsDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC11F78B0DB36933003B505E /* MT24LC256.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MT24LC256.cxx; path = ../emucore/MT24LC256.cxx; sourceTree = SOURCE_ROOT; };
 		DC11F78C0DB36933003B505E /* MT24LC256.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MT24LC256.hxx; path = ../emucore/MT24LC256.hxx; sourceTree = SOURCE_ROOT; };
 		DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ContextMenu.cxx; path = ../gui/ContextMenu.cxx; sourceTree = SOURCE_ROOT; };
@@ -1018,6 +1022,8 @@
 		2D6050FA0898786C00C6DE89 /* gui */ = {
 			isa = PBXGroup;
 			children = (
+				DC0DF8670F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx */,
+				DC0DF8680F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx */,
 				DC173F740E2CAC1E00320F94 /* ContextMenu.cxx */,
 				DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */,
 				DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */,
@@ -1315,6 +1321,7 @@
 				DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */,
 				DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */,
 				DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */,
+				DC0DF86A0F0DAAF500B0F1F3 /* GlobalPropsDialog.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1353,6 +1360,7 @@
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
+			compatibilityVersion = "Xcode 2.4";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */;
 			projectDirPath = "";
@@ -1559,6 +1567,7 @@
 				DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */,
 				DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */,
 				DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */,
+				DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

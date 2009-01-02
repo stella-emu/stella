@@ -1,4 +1,4 @@
-SDKROOT_ppc = /Developer/SDKs/MacOSX10.2.8.sdk
+SDKROOT_ppc = /Developer/SDKs/MacOSX10.3.9.sdk
 SDKROOT_i386 = /Developer/SDKs/MacOSX10.4u.sdk
 GCC_VERSION_ppc = 3.3
 GCC_VERSION_i386 = 4.0
