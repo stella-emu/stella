@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.cxx,v 1.11 2009-01-03 15:44:13 stephena Exp $
+// $Id: ColorWidget.cxx,v 1.12 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -73,5 +73,5 @@ void ColorWidget::drawWidget(bool hilite)
   s.vLine(_x + _w - 1, _y, _y +_h - 1, kShadowColor);
 
   // Show the currently selected color
-  s.fillTIARect(_x+1, _y+1, _w-2, _h-1, _color);
+  s.fillRect(_x+1, _y+1, _w-2, _h-1, _color);
 }

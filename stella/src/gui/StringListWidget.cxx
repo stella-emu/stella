@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StringListWidget.cxx,v 1.13 2009-01-03 15:44:13 stephena Exp $
+// $Id: StringListWidget.cxx,v 1.14 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -61,8 +61,8 @@ void StringListWidget::drawWidget(bool hilite)
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
-    const UIColor textColor = (_selectedItem == pos && _editMode)
-                               ? kColor : kTextColor;
+    const uInt32 textColor = (_selectedItem == pos && _editMode)
+                              ? kColor : kTextColor;
     const int y = _y + 2 + _fontHeight * i;
 
     // Draw the selected item inverted, on a highlighted background.

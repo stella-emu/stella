@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: mainSDL.cxx,v 1.83 2009-01-01 18:13:35 stephena Exp $
+// $Id: mainSDL.cxx,v 1.84 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <SDL.h>
@@ -166,7 +166,6 @@ int main(int argc, char* argv[])
     if(theOSystem->settings().getBool("takesnapshot"))
     {
       for(int i = 0; i < 60; ++i)  theOSystem->frameBuffer().update();
-      theOSystem->console().system().reset();
       theOSystem->eventHandler().takeSnapshot();
       Cleanup();
       return 0;

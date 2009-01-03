@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.cxx,v 1.34 2009-01-03 15:44:13 stephena Exp $
+// $Id: TabWidget.cxx,v 1.35 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -252,7 +252,7 @@ void TabWidget::loadConfig()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TabWidget::box(int x, int y, int width, int height,
-                    UIColor colorA, UIColor colorB, bool omitBottom)
+                    uInt32 colorA, uInt32 colorB, bool omitBottom)
 {
 //cerr << "TabWidget::box\n";
   FBSurface& s = _boss->dialog().surface();
@@ -294,8 +294,8 @@ void TabWidget::drawWidget(bool hilite)
   int i, x = _x + kTabLeftOffset;
   for (i = 0; i < (int)_tabs.size(); ++i)
   {
-    UIColor fontcolor = _tabs[i].enabled ? kTextColor : kColor;
-    UIColor boxcolor = (i == _activeTab) ? kColor : kShadowColor;
+    uInt32 fontcolor = _tabs[i].enabled ? kTextColor : kColor;
+    uInt32 boxcolor = (i == _activeTab) ? kColor : kShadowColor;
     int yOffset = (i == _activeTab) ? 0 : 2;
     box(x, _y + yOffset, _tabWidth, _tabHeight - yOffset, boxcolor, boxcolor, (i == _activeTab));
     s.drawString(_font, _tabs[i].title, x + kTabPadding,

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.24 2009-01-01 18:13:35 stephena Exp $
+// $Id: Snapshot.cxx,v 1.25 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -23,32 +23,81 @@
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
+#include "MediaSrc.hxx"
 #include "Props.hxx"
 #include "Version.hxx"
 #include "Snapshot.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
-                       const string& filename)
+string Snapshot::savePNG(const FrameBuffer& framebuffer, const Properties& props,
+                         const string& filename)
 {
-  uInt8* buffer  = (uInt8*) NULL;
+  ofstream out(filename.c_str(), ios_base::binary);
+  if(!out.is_open())
+    return "ERROR: Couldn't create snapshot file";
+
+  // Get actual image dimensions. which are not always the same
+  // as the framebuffer dimensions
+  const GUI::Rect& image = framebuffer.imageRect();
+  uInt32 width = image.width(), height = image.height(),
+         pitch = width * 3;
+  uInt8* buffer = new uInt8[(pitch + 1) * height];
+
+  // Fill the buffer with scanline data
+  uInt8* buf_ptr = buffer;
+  for(uInt32 row = 0; row < height; row++)
+  {
+    *buf_ptr++ = 0;                      // first byte of row is filter type
+    framebuffer.scanline(row, buf_ptr);  // get another scanline
+    buf_ptr += pitch;                    // add pitch
+  }
+
+  return saveBufferToPNG(out, buffer, width, height, props);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Snapshot::savePNG(const FrameBuffer& framebuffer,
+                         const MediaSource& mediasrc, const Properties& props,
+                         const string& filename)
+{
+  ofstream out(filename.c_str(), ios_base::binary);
+  if(!out.is_open())
+    return "ERROR: Couldn't create snapshot file";
+
+  uInt32 width = mediasrc.width(), height = mediasrc.height();
+  uInt8* buffer = new uInt8[(width*3*2 + 1) * height];
+
+  // Fill the buffer with pixels from the mediasrc
+  uInt8 r, g, b;
+  uInt8* buf_ptr = buffer;
+  for(uInt32 y = 0; y < height; ++y)
+  {
+    *buf_ptr++ = 0;   // first byte of row is filter type
+    for(uInt32 x = 0; x < width; ++x)
+    {
+      uInt32 pixel = framebuffer.tiaPixel(y*width+x);
+      framebuffer.getRGB(pixel, &r, &g, &b);
+      *buf_ptr++ = r;
+      *buf_ptr++ = g;
+      *buf_ptr++ = b;
+      *buf_ptr++ = r;
+      *buf_ptr++ = g;
+      *buf_ptr++ = b;
+    }
+  }
+
+  return saveBufferToPNG(out, buffer, width<<1, height, props);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Snapshot::saveBufferToPNG(ofstream& out, uInt8* buffer,
+                                 uInt32 width, uInt32 height,
+                                 const Properties& props)
+{
   uInt8* compmem = (uInt8*) NULL;
-  ofstream out;
 
   try
   {
-    // Make sure we have a 'clean' image, with no onscreen messages
-    framebuffer.enableMessages(false);
-
-    // Get actual image dimensions. which are not always the same
-    // as the framebuffer dimensions
-    const GUI::Rect& image = framebuffer.imageRect();
-    int width = image.width(), height = image.height();
-
-    out.open(filename.c_str(), ios_base::binary);
-    if(!out.is_open())
-      throw "ERROR: Couldn't create snapshot file";
-
     // PNG file header
     uInt8 header[8] = { 137, 80, 78, 71, 13, 10, 26, 10 };
     out.write((const char*)header, 8);
@@ -69,17 +118,6 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
     ihdr[11] = 0;  // PNG_FILTER_TYPE_DEFAULT
     ihdr[12] = 0;  // PNG_INTERLACE_NONE
     writePNGChunk(out, "IHDR", ihdr, 13);
-
-    // Fill the buffer with scanline data
-    int rowbytes = width * 3;
-    buffer = new uInt8[(rowbytes + 1) * height];
-    uInt8* buf_ptr = buffer;
-    for(int row = 0; row < height; row++)
-    {
-      *buf_ptr++ = 0;                      // first byte of row is filter type
-      framebuffer.scanline(row, buf_ptr);  // get another scanline
-      buf_ptr += rowbytes;                 // add pitch
-    }
 
     // Compress the data with zlib
     uLongf compmemsize = (uLongf)((height * (width + 1) * 3 * 1.001 + 1) + 12);
@@ -105,16 +143,14 @@ void Snapshot::savePNG(FrameBuffer& framebuffer, const Properties& props,
     if(compmem) delete[] compmem;
     out.close();
 
-    // Re-enable old messages
-    framebuffer.enableMessages(true);
-    framebuffer.showMessage("Snapshot saved");
+    return "Snapshot saved";
   }
   catch(const char *msg)
   {
     if(buffer)  delete[] buffer;
     if(compmem) delete[] compmem;
     out.close();
-    framebuffer.showMessage(msg);
+    return msg;
   }
 }
 
@@ -156,12 +192,10 @@ void Snapshot::writePNGChunk(ofstream& out, const char* type,
 void Snapshot::writePNGText(ofstream& out, const string& key, const string& text)
 {
   int length = key.length() + 1 + text.length() + 1;
-  uInt8* data = new uInt8[length];
+  uInt8 data[length];
 
   strcpy((char*)data, key.c_str());
   strcpy((char*)data + key.length() + 1, text.c_str());
 
   writePNGChunk(out, "tEXt", data, length-1);
-
-  delete[] data;
 }

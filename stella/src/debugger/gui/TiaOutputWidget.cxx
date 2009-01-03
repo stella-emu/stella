@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.23 2009-01-03 15:44:13 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.24 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -139,7 +139,22 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
+//cerr << "TiaOutputWidget::drawWidget\n";
   // FIXME - maybe 'greyed out mode' should be done here, not in the TIA class
-  const FBSurface* tia = instance().frameBuffer().smallTIASurface();
-  dialog().surface().drawSurface(tia, 0, 0);
+  FBSurface& s = dialog().surface();
+
+  const uInt32 width = instance().console().mediaSource().width(),
+               height = instance().console().mediaSource().height();
+  uInt32 line[width << 1];
+  for(uInt32 y = 0; y < height; ++y)
+  {
+    uInt32* line_ptr = line;
+    for(uInt32 x = 0; x < width; ++x)
+    {
+      uInt32 pixel = instance().frameBuffer().tiaPixel(y*width+x);
+      *line_ptr++ = pixel;
+      *line_ptr++ = pixel;
+    }
+    s.drawPixels(line, _x, _y+y, width << 1);
+  }
 }

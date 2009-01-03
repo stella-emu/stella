@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.69 2009-01-03 15:44:12 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.70 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.69 2009-01-03 15:44:12 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.70 2009-01-03 22:57:12 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -70,7 +70,18 @@ class FrameBufferGL : public FrameBuffer
     void enablePhosphor(bool enable, int blend);
 
     /**
-      This method is called to map a given r,g,b triple to the screen palette.
+      This method is called to retrieve the R/G/B data from the given pixel.
+
+      @param pixel  The pixel containing R/G/B data
+      @param r      The red component of the color
+      @param g      The green component of the color
+      @param b      The blue component of the color
+    */
+    void getRGB(Uint32 pixel, Uint8* r, Uint8* g, Uint8* b) const
+      { SDL_GetRGB(pixel, (SDL_PixelFormat*)&myPixelFormat, r, g, b); }
+
+    /**
+      This method is called to map a given R/G/B triple to the screen palette.
 
       @param r  The red component of the color.
       @param g  The green component of the color.
@@ -176,7 +187,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.69 2009-01-03 15:44:12 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.70 2009-01-03 22:57:12 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -188,13 +199,12 @@ class FBSurfaceGL : public FBSurface
                 uInt32 scaleWidth, uInt32 scaleHeight);
     virtual ~FBSurfaceGL();
 
-    void hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color);
-    void vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color);
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor color);
-    void fillTIARect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int c1, int c2);
-    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, UIColor color);
-    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, UIColor color, uInt32 h = 8);
-    void drawBytes(uInt8* data, uInt32 x, uInt32 y, uInt32 rowbytes);
+    void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
+    void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
+    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, uInt32 color);
+    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color, uInt32 h = 8);
+    void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
     void getPos(uInt32& x, uInt32& y) const;

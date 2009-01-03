@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.21 2009-01-03 15:44:13 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.22 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -230,8 +230,8 @@ void TiaZoomWidget::drawWidget(bool hilite)
   {
     for(x = myXoff, col = 0; x < myNumCols+myXoff; ++x, col += width)
     {
-      s.fillTIARect(_x + col + 2, _y + row + 2, width, height,
-                    currentFrame[y*pitch + x]);
+      s.fillRect(_x + col + 2, _y + row + 2, width, height,
+                 currentFrame[y*pitch + x]);
     }
   }
 }

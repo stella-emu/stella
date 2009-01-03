@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.60 2009-01-03 15:44:13 stephena Exp $
+// $Id: Widget.cxx,v 1.61 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -516,8 +516,8 @@ void CheckboxWidget::drawWidget(bool hilite)
   {
     if(_state)
     {
-      unsigned int* img = _fillRect ? checked_img_o : checked_img_x;
-	  UIColor color = _fillRect ? kWidFrameColor : kCheckColor;
+      uInt32* img  = _fillRect ? checked_img_o : checked_img_x;
+	  uInt32 color = _fillRect ? kWidFrameColor : kCheckColor;
 	  s.drawBitmap(img, _x + 3, _y + _boxY + 3, color);
     }
   }

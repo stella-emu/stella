@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.152 2009-01-01 18:13:37 stephena Exp $
+// $Id: Settings.cxx,v 1.153 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -77,6 +77,7 @@ Settings::Settings(OSystem* osystem)
   // Snapshot options
   setInternal("ssdir", "");
   setInternal("sssingle", "false");
+  setInternal("ss1x", "false");
 
   // Config files and paths
   setInternal("romdir", "");
@@ -325,7 +326,8 @@ void Settings::usage()
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
-    << "  -stats        <1|0>          Show scanline and framerate info during emulation\n"
+    << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling)\n"
+    << "  -stats        <1|0>          Overlay console info during emulation\n"
     << endl
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"

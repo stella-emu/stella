@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.90 2009-01-03 15:44:12 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.91 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -533,7 +533,7 @@ FBSurfaceSoft::~FBSurfaceSoft()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color)
+void FBSurfaceSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 {
   // Horizontal line
   SDL_Rect tmp;
@@ -541,11 +541,11 @@ void FBSurfaceSoft::hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color)
   tmp.y = y + myYOffset;
   tmp.w = x2 - x + 1;
   tmp.h = 1;
-  SDL_FillRect(mySurface, &tmp, myFB.myUIPalette[color]);
+  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color)
+void FBSurfaceSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
 {
   // Vertical line
   SDL_Rect tmp;
@@ -553,11 +553,11 @@ void FBSurfaceSoft::vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color)
   tmp.y = y + myYOffset;
   tmp.w = 1;
   tmp.h = y2 - y + 1;
-  SDL_FillRect(mySurface, &tmp, myFB.myUIPalette[color]);
+  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor color)
+void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 {
   // Fill the rectangle
   SDL_Rect tmp;
@@ -565,26 +565,12 @@ void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor col
   tmp.y = y + myYOffset;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(mySurface, &tmp, myFB.myUIPalette[color]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::fillTIARect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                                int c1, int c2)
-{
-  // Fill the rectangle
-  SDL_Rect tmp;
-  tmp.x = x + myXOffset;
-  tmp.y = y + myYOffset;
-  tmp.w = w;
-  tmp.h = h;
-  SDL_FillRect(mySurface, &tmp,
-      (c2 == -1 ? myFB.myDefPalette[c1] : myFB.myAvgPalette[c1][c2]));
+  SDL_FillRect(mySurface, &tmp, myFB.myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
-                             uInt32 tx, uInt32 ty, UIColor color)
+                             uInt32 tx, uInt32 ty, uInt32 color)
 {
   // TODO - test this in 16-bit, and re-write 24-bit
   const FontDesc& desc = font->desc();
@@ -631,7 +617,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
  
         for(int x = 0; x < bbw; x++, mask >>= 1)
           if(ptr & mask)
-            buffer[x] = (uInt16) myFB.myUIPalette[color];
+            buffer[x] = (uInt16) myFB.myDefPalette[color];
 
         buffer += myPitch;
       }
@@ -691,7 +677,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
  
         for(int x = 0; x < bbw; x++, mask >>= 1)
           if(ptr & mask)
-            buffer[x] = (uInt32) myFB.myUIPalette[color];
+            buffer[x] = (uInt32) myFB.myDefPalette[color];
 
         buffer += myPitch;
       }
@@ -704,7 +690,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSoft::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
-                               UIColor color, uInt32 h)
+                               uInt32 color, uInt32 h)
 {
   SDL_Rect rect;
   rect.y = ty + myYOffset;
@@ -716,7 +702,7 @@ void FBSurfaceSoft::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
     for(uInt32 x = 0; x < 8; x++, mask >>= 4)
     {
       if(bitmap[y] & mask)
-        SDL_FillRect(mySurface, &rect, myFB.myUIPalette[color]);
+        SDL_FillRect(mySurface, &rect, myFB.myDefPalette[color]);
 
       rect.x++;
     }
@@ -725,17 +711,16 @@ void FBSurfaceSoft::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::drawBytes(uInt8* data, uInt32 tx, uInt32 ty, uInt32 rowbytes)
+void FBSurfaceSoft::drawPixels(uInt32* data, uInt32 tx, uInt32 ty,
+                               uInt32 numpixels)
 {
   SDL_Rect rect;
   rect.x = tx + myXOffset;
   rect.y = ty + myYOffset;
   rect.w = rect.h = 1;
-  for(uInt32 x = 0; x < rowbytes; x += 3)
+  for(uInt32 x = 0; x < numpixels; ++x)
   {
-    SDL_FillRect(mySurface, &rect,
-      SDL_MapRGB(myFB.myFormat, data[x], data[x+1], data[x+2]));
-
+    SDL_FillRect(mySurface, &rect, data[x]);
     rect.x++;
   }
 }

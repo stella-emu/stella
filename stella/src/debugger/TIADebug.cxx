@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.28 2009-01-01 18:13:35 stephena Exp $
+// $Id: TIADebug.cxx,v 1.29 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -157,25 +157,25 @@ void TIADebug::saveOldState()
 }
 
 /* the set methods now use mySystem.poke(). This will save us the
-	trouble of masking the values here, since TIA::poke() will do it
-	for us.
+   trouble of masking the values here, since TIA::poke() will do it
+   for us.
 
-	This means that the GUI should *never* just display the value the
-	user entered: it should always read the return value of the set
-	method and display that.
+   This means that the GUI should *never* just display the value the
+   user entered: it should always read the return value of the set
+   method and display that.
 
-	An Example:
+   An Example:
 
-	User enters "ff" in the AUDV0 field. GUI calls value = tiaDebug->audV0(0xff).
-	The AUDV0 register is only 4 bits wide, so "value" is 0x0f. That's what
-	should be displayed.
+   User enters "ff" in the AUDV0 field. GUI calls value = tiaDebug->audV0(0xff).
+   The AUDV0 register is only 4 bits wide, so "value" is 0x0f. That's what
+   should be displayed.
 
-	In a perfect world, the GUI would only allow one hex digit to be entered...
-	but we allow decimal or binary input in the GUI (with # or \ prefix). The
-	only way to make that work would be to validate the data entry after every
-	keystroke... which would be a pain for both us and the user. Using poke()
-	here is a compromise that allows the TIA to do the range-checking for us,
-	so the GUI and/or TIADebug don't have to duplicate logic from TIA::poke().
+   In a perfect world, the GUI would only allow one hex digit to be entered...
+   but we allow decimal or binary input in the GUI (with # or \ prefix). The
+   only way to make that work would be to validate the data entry after every
+   keystroke... which would be a pain for both us and the user. Using poke()
+   here is a compromise that allows the TIA to do the range-checking for us,
+   so the GUI and/or TIADebug don't have to duplicate logic from TIA::poke().
 */
 
 //	 bool vdelP0(int newVal = -1);

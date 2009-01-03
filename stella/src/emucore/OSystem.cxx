@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.140 2009-01-03 15:44:13 stephena Exp $
+// $Id: OSystem.cxx,v 1.141 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -871,7 +871,7 @@ void OSystem::queryVideoHardware()
     kDbgChangedTextColor  Text color for changed cells
     kDbgColorHi           Highlighted color in debugger data cells
 */
-uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumUIColors] = {
+uInt32 OSystem::ourGUIColors[kNumUIPalettes][kNumColors-256] = {
   // Standard
   { 0x686868, 0x000000, 0x404040, 0x000000, 0x62a108, 0x9f0000,
     0xc9af7c, 0xf0f0cf, 0xc80000,

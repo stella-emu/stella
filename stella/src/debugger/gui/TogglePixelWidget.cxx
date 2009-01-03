@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TogglePixelWidget.cxx,v 1.10 2009-01-03 15:44:13 stephena Exp $
+// $Id: TogglePixelWidget.cxx,v 1.11 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -140,10 +140,8 @@ void TogglePixelWidget::drawWidget(bool hilite)
         s.fillRect(x - 4, y - 2, _colWidth+1, _rowHeight+1, kTextColorHi);
 
       // Either draw the pixel in given color, or erase (show background)
-      if(_stateList[pos])
-        s.fillTIARect(x - 3, y - 1, _colWidth-1, _rowHeight-1, _pixelColor);
-      else
-        s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kBGColor);
+      s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1,
+                 _stateList[pos] ? _pixelColor : kBGColor);
     }
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.234 2009-01-01 18:13:35 stephena Exp $
+// $Id: EventHandler.cxx,v 1.235 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1789,8 +1789,25 @@ void EventHandler::takeSnapshot()
     filename = sspath + ".png";
 
   // Now create a PNG snapshot
-  Snapshot::savePNG(myOSystem->frameBuffer(),
-                    myOSystem->console().properties(), filename);
+  if(myOSystem->settings().getBool("ss1x"))
+  {
+    string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
+                   myOSystem->console().mediaSource(),
+                   myOSystem->console().properties(), filename);
+    myOSystem->frameBuffer().showMessage(msg);
+  }
+  else
+  {
+    // Make sure we have a 'clean' image, with no onscreen messages
+    myOSystem->frameBuffer().enableMessages(false);
+
+    string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
+                   myOSystem->console().properties(), filename);
+
+    // Re-enable old messages
+    myOSystem->frameBuffer().enableMessages(true);
+    myOSystem->frameBuffer().showMessage(msg);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

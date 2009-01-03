@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PromptWidget.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+// $Id: PromptWidget.hxx,v 1.15 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -111,6 +111,8 @@ class PromptWidget : public Widget, public CommandSender
     bool _makeDirty;
     bool _firstTime;
     bool _exitedEarly;
+
+    int _textcolorInt;
 
     int compareHistory(const char *histLine);
 };

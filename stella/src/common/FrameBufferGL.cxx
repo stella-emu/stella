@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.131 2009-01-03 15:44:12 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.132 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -569,26 +569,26 @@ FBSurfaceGL::~FBSurfaceGL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color)
+void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myPitch + x;
   while(x++ <= x2)
-    *buffer++ = (uInt16) myFB.myUIPalette[color];
+    *buffer++ = (uInt16) myFB.myDefPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color)
+void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myPitch + x;
   while(y++ <= y2)
   {
-    *buffer = (uInt16) myFB.myUIPalette[color];
+    *buffer = (uInt16) myFB.myDefPalette[color];
     buffer += myPitch;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor color)
+void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 {
   // Fill the rectangle
   SDL_Rect tmp;
@@ -596,26 +596,12 @@ void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor color
   tmp.y = y;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(myTexture, &tmp, myFB.myUIPalette[color]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::fillTIARect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                              int c1, int c2)
-{
-  // Fill the rectangle
-  SDL_Rect tmp;
-  tmp.x = x;
-  tmp.y = y;
-  tmp.w = w;
-  tmp.h = h;
-  SDL_FillRect(myTexture, &tmp,
-      (c2 == -1 ? myFB.myDefPalette[c1] : myFB.myAvgPalette[c1][c2]));
+  SDL_FillRect(myTexture, &tmp, myFB.myDefPalette[color]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
-                           uInt32 tx, uInt32 ty, UIColor color)
+                           uInt32 tx, uInt32 ty, uInt32 color)
 {
   const FontDesc& desc = font->desc();
 
@@ -656,7 +642,7 @@ void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
  
     for(int x = 0; x < bbw; x++, mask >>= 1)
       if(ptr & mask)
-        buffer[x] = (uInt16) myFB.myUIPalette[color];
+        buffer[x] = (uInt16) myFB.myDefPalette[color];
 
     buffer += myPitch;
   }
@@ -664,7 +650,7 @@ void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
-                             UIColor color, uInt32 h)
+                             uInt32 color, uInt32 h)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + ty * myPitch + tx;
 
@@ -673,19 +659,19 @@ void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
     uInt32 mask = 0xF0000000;
     for(uInt32 x = 0; x < 8; ++x, mask >>= 4)
       if(bitmap[y] & mask)
-        buffer[x] = (uInt16) myFB.myUIPalette[color];
+        buffer[x] = (uInt16) myFB.myDefPalette[color];
 
     buffer += myPitch;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::drawBytes(uInt8* data, uInt32 tx, uInt32 ty, uInt32 rowbytes)
+void FBSurfaceGL::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + ty * myPitch + tx;
 
-  for(uInt32 c = 0; c < rowbytes; c += 3)
-    *buffer++ = SDL_MapRGB(&myFB.myPixelFormat, data[c], data[c+1], data[c+2]);
+  for(uInt32 i = 0; i < numpixels; ++i)
+    *buffer++ = (uInt16) data[i];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

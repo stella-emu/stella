@@ -767,12 +767,19 @@
 
 		<tr>
 			<td><pre>-sssingle &lt;0|1&gt;</pre></td>
-			<td>Generate single snapshot instead of many.</td>
+			<td>Generate single snapshot instead of many, overwriting
+				any previous snapshots.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-ss1x &lt;0|1&gt;</pre></td>
+			<td>Ignore any scaling applied to the TIA image, and save
+				snapshot in unscaled mode.</td>
 		</tr>
 
 		<tr>
 			<td><pre>-stats &lt;0|1&gt;</pre></td>
-			<td>Show scanline and framerate info during emulation.</td>
+			<td>Overlay console info on the TIA image during emulation.</td>
 		</tr>
 
 		<tr>

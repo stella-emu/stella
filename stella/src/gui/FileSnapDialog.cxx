@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.23 2009-01-01 22:44:14 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.24 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -116,9 +116,15 @@ FileSnapDialog::FileSnapDialog(
 
   // Snapshot single or multiple saves
   xpos = 30;  ypos += b->getHeight() + 5;
-  mySnapSingleCheckbox = new CheckboxWidget(this, font, xpos, ypos,
-                                            "Multiple snapshots");
-  wid.push_back(mySnapSingleCheckbox);
+  mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
+                                    "Multiple snapshots");
+  wid.push_back(mySnapSingle);
+
+  // Snapshot in 1x mode (ignore scaling)
+  xpos += mySnapSingle->getWidth() + 20;
+  mySnap1x = new CheckboxWidget(this, font, xpos, ypos,
+                                "Snapshot in 1x mode");
+  wid.push_back(mySnap1x);
 
   // Add Defaults, OK and Cancel buttons
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
@@ -155,7 +161,8 @@ void FileSnapDialog::loadConfig()
   myPaletteFile->setEditString(instance().paletteFile());
   myPropsFile->setEditString(instance().propertiesFile());
   mySnapPath->setEditString(instance().settings().getString("ssdir"));
-  mySnapSingleCheckbox->setState(!instance().settings().getBool("sssingle"));
+  mySnapSingle->setState(!instance().settings().getBool("sssingle"));
+  mySnap1x->setState(instance().settings().getBool("ss1x"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,7 +174,8 @@ void FileSnapDialog::saveConfig()
   instance().settings().setString("palettefile", myPaletteFile->getEditString());
   instance().settings().setString("propsfile", myPropsFile->getEditString());
   instance().settings().setString("ssdir", mySnapPath->getEditString());
-  instance().settings().setBool("sssingle", !mySnapSingleCheckbox->getState());
+  instance().settings().setBool("sssingle", !mySnapSingle->getState());
+  instance().settings().setBool("ss1x", mySnap1x->getState());
 
   // Flush changes to disk and inform the OSystem
   instance().settings().saveConfig();
@@ -192,7 +200,8 @@ void FileSnapDialog::setDefaults()
   myPropsFile->setEditString(propsfile);
 
   mySnapPath->setEditString(ssdir);
-  mySnapSingleCheckbox->setState(true);
+  mySnapSingle->setState(true);
+  mySnap1x->setState(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

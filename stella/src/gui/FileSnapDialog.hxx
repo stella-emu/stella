@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.11 2009-01-01 18:13:38 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.12 2009-01-03 22:57:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -75,7 +75,8 @@ class FileSnapDialog : public Dialog, public CommandSender
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;
     EditTextWidget* mySnapPath;
-    CheckboxWidget* mySnapSingleCheckbox;
+    CheckboxWidget* mySnapSingle;
+    CheckboxWidget* mySnap1x;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

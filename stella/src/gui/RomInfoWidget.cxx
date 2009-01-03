@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.13 2009-01-01 18:13:39 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.14 2009-01-03 22:57:12 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -289,7 +289,7 @@ bool RomInfoWidget::parseIDATChunk(FBSurface* surface, int width, int height,
          spitch = sw * 3;         // bytes per line of the surface/line
   uLongf bufsize = ipitch * height;
   uInt8* buffer = new uInt8[bufsize];
-  uInt8* line = new uInt8[spitch + myZoomLevel*3];  // few extra bytes for rounding issues
+  uInt32* line  = new uInt32[spitch + 3];  // few extra bytes for rounding issues
 
   if(uncompress(buffer, &bufsize, data, size) == Z_OK)
   {
@@ -297,6 +297,42 @@ bool RomInfoWidget::parseIDATChunk(FBSurface* surface, int width, int height,
     uInt32 buf_offset = ipitch * izoom;
     uInt32 i_offset = 3 * izoom;
     uInt32 srow = 0;
+
+    // Grab each non-duplicate row of data from the image
+    for(int irow = 0; irow < height; irow += izoom, buf_ptr += buf_offset)
+    {
+      // Scale the image data into the temporary line buffer
+      uInt8*  i_ptr = buf_ptr;
+      uInt32* l_ptr = line;
+      for(int icol = 0; icol < width; icol += izoom, i_ptr += i_offset)
+      {
+        uInt32 pixel =
+          instance().frameBuffer().mapRGB(*i_ptr, *(i_ptr+1), *(i_ptr+2));
+        uInt32 xstride = myZoomLevel;
+        while(xstride--)
+          *l_ptr++ = pixel;
+      }
+
+      // Then fill the surface with those bytes
+      uInt32 ystride = myZoomLevel;
+      while(ystride--)
+        surface->drawPixels(line, 0, srow++, spitch);
+    }
+    delete[] buffer;
+    delete[] line;
+    return true;
+  }
+  delete[] buffer;
+  delete[] line;
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string RomInfoWidget::parseTextChunk(uInt8* data, int size)
+{
+  return "";
+}
+
 /*
 cerr << "surface:" << endl
 	<< "  w = " << sw << endl
@@ -315,39 +351,3 @@ cerr << "image:" << endl
 	<< "  i_offset = " << i_offset << endl
 	<< endl;
 */
-    // Grab each non-duplicate row of data from the image
-    for(int irow = 0; irow < height; irow += izoom, buf_ptr += buf_offset)
-    {
-      // Scale the image data into the temporary line buffer
-      uInt8* i_ptr = buf_ptr;
-      uInt8* l_ptr = line;
-      for(int icol = 0; icol < width; icol += izoom, i_ptr += i_offset)
-      {
-        uInt32 xstride = myZoomLevel;
-        while(xstride--)
-        {
-          *l_ptr++ = *i_ptr;
-          *l_ptr++ = *(i_ptr+1);
-          *l_ptr++ = *(i_ptr+2);
-        }
-      }
-
-      // Then fill the surface with those bytes
-      uInt32 ystride = myZoomLevel;
-      while(ystride--)
-        surface->drawBytes(line, 0, srow++, spitch);
-    }
-    delete[] buffer;
-    delete[] line;
-    return true;
-  }
-  delete[] buffer;
-  delete[] line;
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string RomInfoWidget::parseTextChunk(uInt8* data, int size)
-{
-  return "";
-}
