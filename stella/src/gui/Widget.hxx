@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.64 2009-01-01 18:13:39 stephena Exp $
+// $Id: Widget.hxx,v 1.65 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,7 +83,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.64 2009-01-01 18:13:39 stephena Exp $
+  @version $Id: Widget.hxx,v 1.65 2009-01-03 15:44:13 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -135,10 +135,10 @@ class Widget : public GuiObject
 
     virtual const GUI::Font* font() { return _font; }
 
-    void setTextColor(int color)   { _textcolor = color;   }
-    void setTextColorHi(int color) { _textcolorhi = color; }
-    void setBGColor(int color)     { _bgcolor = color;     }
-    void setBGColorHi(int color)   { _bgcolorhi = color;   }
+    void setTextColor(UIColor color)   { _textcolor = color;   }
+    void setTextColorHi(UIColor color) { _textcolorhi = color; }
+    void setBGColor(UIColor color)     { _bgcolor = color;     }
+    void setBGColorHi(UIColor color)   { _bgcolorhi = color;   }
 
     virtual void loadConfig() {}
 
@@ -166,10 +166,10 @@ class Widget : public GuiObject
     bool       _hasFocus;
     int        _fontWidth;
     int        _fontHeight;
-    int        _bgcolor;
-    int        _bgcolorhi;
-    int        _textcolor;
-    int        _textcolorhi;
+    UIColor    _bgcolor;
+    UIColor    _bgcolorhi;
+    UIColor    _textcolor;
+    UIColor    _textcolorhi;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);
@@ -266,7 +266,7 @@ class CheckboxWidget : public ButtonWidget
     bool _fillRect;
     bool _drawBox;
 
-    int _fillColor;
+    UIColor _fillColor;
 
   private:
     int _boxY;

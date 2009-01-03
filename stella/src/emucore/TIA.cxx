@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.95 2009-01-01 18:13:37 stephena Exp $
+// $Id: TIA.cxx,v 1.96 2009-01-03 15:44:13 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -527,13 +527,15 @@ void TIA::update()
   uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
   myCurrentScanline = totalClocks / 228;
 
-  if(myPartialFrameFlag) {
-    // grey out old frame contents
-    if(!myFrameGreyed) greyOutFrame();
+  if(myPartialFrameFlag)
+  {
+    // Grey out old frame contents
+    if(!myFrameGreyed)
+      greyOutFrame();
     myFrameGreyed = true;
-  } else {
-    endFrame();
   }
+  else
+    endFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

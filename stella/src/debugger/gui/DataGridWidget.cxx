@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DataGridWidget.cxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+// $Id: DataGridWidget.cxx,v 1.16 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -521,7 +521,7 @@ void DataGridWidget::drawWidget(bool hilite)
         buffer = _valueStringList[pos];
         deltax = 0;
 
-        int color = kTextColor;
+        UIColor color = kTextColor;
         if(_changedList[pos])
         {
           s.fillRect(x - 3, y - 1, _colWidth-1, _rowHeight-1, kDbgChangedColor);

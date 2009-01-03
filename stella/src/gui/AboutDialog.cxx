@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.28 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -195,7 +195,7 @@ void AboutDialog::displayInfo()
   {
     const char *str = dscStr[i].c_str();
     TextAlignment align = kTextAlignCenter;
-    int color  = kTextColor;
+    UIColor color  = kTextColor;
 
     while (str[0] == '\\')
     {

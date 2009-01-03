@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TabWidget.hxx,v 1.21 2009-01-01 18:13:39 stephena Exp $
+// $Id: TabWidget.hxx,v 1.22 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -91,7 +91,7 @@ class TabWidget : public Widget, public CommandSender
 
   private:
     void box(int x, int y, int width, int height,
-             int colorA, int colorB, bool omitBottom);
+             UIColor colorA, UIColor colorB, bool omitBottom);
 
     void updateActiveTab();
 };

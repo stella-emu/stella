@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.70 2009-01-01 22:44:14 stephena Exp $
+// $Id: OSystem.hxx,v 1.71 2009-01-03 15:44:13 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.70 2009-01-01 22:44:14 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.71 2009-01-03 15:44:13 stephena Exp $
 */
 class OSystem
 {
@@ -521,7 +521,7 @@ class OSystem
     TimingInfo myTimingInfo;
 
     // Table of RGB values for GUI elements
-    static uInt32 ourGUIColors[kNumUIPalettes][kNumColors-256];
+    static uInt32 ourGUIColors[kNumUIPalettes][kNumUIColors];
 
   private:
     /**

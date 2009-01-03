@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.17 2009-01-01 18:13:39 stephena Exp $
+// $Id: UIDialog.cxx,v 1.18 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -96,7 +96,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Launcher font
-  pwidth = font.getStringWidth("2x (1000x800)");
+  pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
   items.push_back("Small", "small");
   items.push_back("Large", "large");
@@ -110,7 +110,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   items.clear();
   items.push_back("Off", "0");
   items.push_back("1x (640x480) ", "1");
-  items.push_back("2x (1000x800)", "2");
+  items.push_back("2x (1000x760)", "2");
   myRomViewerPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "ROM Info viewer: ", lwidth);

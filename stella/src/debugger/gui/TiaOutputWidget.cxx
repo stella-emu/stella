@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.22 2009-01-01 18:13:35 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.23 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -139,9 +139,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::drawWidget(bool hilite)
 {
-/*
-  // FIXME - check if we're in 'greyed out mode' and act accordingly
-  instance().frameBuffer().refresh();
-  instance().frameBuffer().drawMediaSource();
-*/
+  // FIXME - maybe 'greyed out mode' should be done here, not in the TIA class
+  const FBSurface* tia = instance().frameBuffer().smallTIASurface();
+  dialog().surface().drawSurface(tia, 0, 0);
 }

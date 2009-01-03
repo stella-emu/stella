@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.111 2009-01-01 18:13:35 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.112 2009-01-03 15:44:13 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -56,8 +56,8 @@ enum MessagePosition {
 };
 
 // Colors indices to use for the various GUI elements
-enum {
-  kColor = 256,
+enum UIColor {
+  kColor,
   kBGColor,
   kShadowColor,
   kTextColor,
@@ -78,7 +78,7 @@ enum {
   kDbgChangedColor,
   kDbgChangedTextColor,
   kDbgColorHi,
-  kNumColors
+  kNumUIColors
 };
 
 
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.111 2009-01-01 18:13:35 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.112 2009-01-03 15:44:13 stephena Exp $
 */
 class FrameBuffer
 {
@@ -133,7 +133,7 @@ class FrameBuffer
     */
     void showMessage(const string& message,
                      MessagePosition position = kBottomCenter,
-                     int color = kTextColorHi);
+                     UIColor color = kTextColorHi);
 
     /**
       Toggles showing or hiding framerate statistics.
@@ -171,6 +171,19 @@ class FrameBuffer
       @return    A pointer to a valid surface object, or NULL.
     */
     FBSurface* surface(int id) const;
+
+     /**
+      Returns a surface representing the TIA image in 1x mode without
+      any postprocessing (aka, no filtering, scanlines, etc) sized at
+      maximum 320 x 260 pixels.  The phosphor effect *is* applied when
+      necessary, though.  This is useful for those parts of the codebase
+      that need an unfiltered TIA image (snapshots in 1x mode, debugger,
+      etc).  Note that if a console hasn't been created when this
+      method is called, a blank surface is returned.
+
+      @return  A pointer to a valid TIA surface.
+    */
+    const FBSurface* smallTIASurface();
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -291,7 +304,10 @@ class FrameBuffer
     virtual BufferType type() const = 0;
 
     /**
-      This method is called to get the specified scanline data.
+      This method is called to get the specified scanline data from the
+      viewable FrameBuffer area.  Note that this isn't the same as any
+      internal surfaces that may be in use; it should return the actual
+      data as it is currently seen onscreen.
 
       @param row  The row we are looking for
       @param data The actual pixel data (in bytes)
@@ -406,8 +422,11 @@ class FrameBuffer
     // Amount to blend when using phosphor effect
     int myPhosphorBlend;
 
+    // UI palette
+    Uint32 myUIPalette[kNumUIColors];
+
     // TIA palettes for normal and phosphor modes
-    Uint32 myDefPalette[256+kNumColors];
+    Uint32 myDefPalette[256];
     Uint32 myAvgPalette[256][256];
 
     // Names of the TIA filters that can be used for this framebuffer
@@ -513,7 +532,7 @@ class FrameBuffer
       string text;
       int counter;
       int x, y, w, h;
-      uInt32 color;
+      UIColor color;
       FBSurface* surface;
       int surfaceID;
       bool enabled;
@@ -530,6 +549,11 @@ class FrameBuffer
     map<int,FBSurface*> mySurfaceList;
     int mySurfaceCount;
 
+    // A surface representing TIA emulation in 1x mode
+    // The parent FrameBuffer class (ie, this class) is responsible for
+    // initializing and deleting this surface
+    FBSurface* mySmallTiaSurface;
+
     // Holds static strings for the remap menu (emulation and menu events)
     static GraphicsMode ourGraphicsModes[GFX_NumModes];
 };
@@ -544,7 +568,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.111 2009-01-01 18:13:35 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.112 2009-01-03 15:44:13 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {
@@ -579,7 +603,7 @@ class FBSurface
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, int color) = 0;
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color) = 0;
 
     /**
       This method should be called to draw a vertical line.
@@ -589,19 +613,34 @@ class FBSurface
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, int color) = 0;
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color) = 0;
 
     /**
-      This method should be called to draw a filled rectangle.
+      This method should be called to draw a filled rectangle using the
+      UI palette.
 
       @param x      The x coordinate
       @param y      The y coordinate
       @param w      The width of the area
       @param h      The height of the area
-      @param color  The color of the area
+      @param color  
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          int color) = 0;
+                          UIColor color) = 0;
+
+    /**
+      This method should be called to draw a filled rectangle using the
+      TIA palette(s).
+
+      @param x   The x coordinate
+      @param y   The y coordinate
+      @param w   The width of the area
+      @param h   The height of the area
+      @param c1  Indices into the relevant TIA palettes
+      @param c2  Indices into the relevant TIA palettes
+    */
+    virtual void fillTIARect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                             int c1, int c2 = -1) = 0;
 
     /**
       This method should be called to draw the specified character.
@@ -613,7 +652,7 @@ class FBSurface
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          int color) = 0;
+                          UIColor color) = 0;
 
     /**
       This method should be called to draw the bitmap image.
@@ -624,7 +663,7 @@ class FBSurface
       @param color  The color of the character
       @param h      The height of the data image
     */
-    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, int color,
+    virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, UIColor color,
                             uInt32 h = 8) = 0;
 
     /**
@@ -722,7 +761,7 @@ class FBSurface
       @param colorB Darker color for inside line.
     */
     void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-             int colorA, int colorB);
+             UIColor colorA, UIColor colorB);
 
     /**
       This method should be called to draw a framed rectangle.
@@ -735,7 +774,7 @@ class FBSurface
       @param color  The color of the surrounding frame
     */
     void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                   int color, FrameStyle style = kSolidLine);
+                   UIColor color, FrameStyle style = kSolidLine);
 
     /**
       This method should be called to draw the specified string.
@@ -752,7 +791,7 @@ class FBSurface
       @param useEllipsis  Whether to use '...' when the string is too long
     */
     void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
-                    int color, TextAlignment align = kTextAlignLeft,
+                    UIColor color, TextAlignment align = kTextAlignLeft,
                     int deltax = 0, bool useEllipsis = true);
 };
 

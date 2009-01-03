@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.130 2009-01-01 18:13:35 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.131 2009-01-03 15:44:12 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -569,26 +569,26 @@ FBSurfaceGL::~FBSurfaceGL()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, int color)
+void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myPitch + x;
   while(x++ <= x2)
-    *buffer++ = (uInt16) myFB.myDefPalette[color];
+    *buffer++ = (uInt16) myFB.myUIPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, int color)
+void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + y * myPitch + x;
   while(y++ <= y2)
   {
-    *buffer = (uInt16) myFB.myDefPalette[color];
+    *buffer = (uInt16) myFB.myUIPalette[color];
     buffer += myPitch;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
+void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor color)
 {
   // Fill the rectangle
   SDL_Rect tmp;
@@ -596,12 +596,26 @@ void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color)
   tmp.y = y;
   tmp.w = w;
   tmp.h = h;
-  SDL_FillRect(myTexture, &tmp, myFB.myDefPalette[color]);
+  SDL_FillRect(myTexture, &tmp, myFB.myUIPalette[color]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::fillTIARect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                              int c1, int c2)
+{
+  // Fill the rectangle
+  SDL_Rect tmp;
+  tmp.x = x;
+  tmp.y = y;
+  tmp.w = w;
+  tmp.h = h;
+  SDL_FillRect(myTexture, &tmp,
+      (c2 == -1 ? myFB.myDefPalette[c1] : myFB.myAvgPalette[c1][c2]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
-                           uInt32 tx, uInt32 ty, int color)
+                           uInt32 tx, uInt32 ty, UIColor color)
 {
   const FontDesc& desc = font->desc();
 
@@ -642,7 +656,7 @@ void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
  
     for(int x = 0; x < bbw; x++, mask >>= 1)
       if(ptr & mask)
-        buffer[x] = (uInt16) myFB.myDefPalette[color];
+        buffer[x] = (uInt16) myFB.myUIPalette[color];
 
     buffer += myPitch;
   }
@@ -650,7 +664,7 @@ void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
-                             int color, uInt32 h)
+                             UIColor color, uInt32 h)
 {
   uInt16* buffer = (uInt16*) myTexture->pixels + ty * myPitch + tx;
 
@@ -659,7 +673,7 @@ void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
     uInt32 mask = 0xF0000000;
     for(uInt32 x = 0; x < 8; ++x, mask >>= 4)
       if(bitmap[y] & mask)
-        buffer[x] = (uInt16) myFB.myDefPalette[color];
+        buffer[x] = (uInt16) myFB.myUIPalette[color];
 
     buffer += myPitch;
   }

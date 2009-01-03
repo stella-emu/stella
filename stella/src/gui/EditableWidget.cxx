@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.cxx,v 1.29 2009-01-01 18:13:38 stephena Exp $
+// $Id: EditableWidget.cxx,v 1.30 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -187,9 +187,7 @@ void EditableWidget::drawCaret()
   if (!_editable || !isVisible() || !_boss->isVisible() || !_hasFocus)
     return;
 
-  GUI::Rect editRect = getEditRect();
-
-  int color = kTextColorHi;
+  const GUI::Rect& editRect = getEditRect();
   int x = editRect.left;
   int y = editRect.top;
 
@@ -199,7 +197,7 @@ void EditableWidget::drawCaret()
   y += _y;
 
   FBSurface& s = _boss->dialog().surface();
-  s.vLine(x, y+2, y + editRect.height() - 3, color);
+  s.vLine(x, y+2, y + editRect.height() - 3, kTextColorHi);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

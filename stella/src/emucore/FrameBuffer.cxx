@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.152 2009-01-01 18:13:35 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.153 2009-01-03 15:44:13 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -47,7 +47,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myPhosphorBlend(77),
     myInitializedCount(0),
     myPausedCount(0),
-    mySurfaceCount(0)
+    mySurfaceCount(0),
+    mySmallTiaSurface(NULL)
 {
   myMsg.surface   = myStatsMsg.surface = NULL;
   myMsg.surfaceID = myStatsMsg.surfaceID = -1;
@@ -138,6 +139,10 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     myMsg.surfaceID = allocateSurface(320, myOSystem->font().getFontHeight()+10);
     myMsg.surface   = surface(myMsg.surfaceID);
   }
+
+  // Create surface for 1x TIA mode
+  if(mySmallTiaSurface == NULL)
+    mySmallTiaSurface = surface(allocateSurface(320, 260));
 
   // Finally, show some information about the framebuffer,
   // but only on the first initialization
@@ -247,7 +252,7 @@ void FrameBuffer::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message, MessagePosition position,
-                              int color)
+                              UIColor color)
 {
   // Erase old messages on the screen
   if(myMsg.counter > 0)
@@ -478,6 +483,35 @@ void FrameBuffer::resetSurfaces()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FBSurface* FrameBuffer::smallTIASurface()
+{
+  // This method isn't terribly fast, as it does a complete draw each time
+  // it's called and doesn't use direct pixel access
+  // Do not use it in time-sensitive situations
+  if(&myOSystem->console())
+  {
+    const MediaSource& src = myOSystem->console().mediaSource();
+
+    mySmallTiaSurface->setWidth(src.width() << 1);  // should always be 320
+    mySmallTiaSurface->setHeight(src.height());     // can be up to 260
+
+    uInt8* currentFrame = src.currentFrameBuffer();
+    uInt8* previousFrame = src.previousFrameBuffer();
+
+    for(uInt32 y = 0; y < src.height(); ++y)
+    {
+      for(uInt32 x = 0; x < src.width(); ++x)
+      {
+        mySmallTiaSurface->fillTIARect(x + x, y, 2, 1,
+          currentFrame[y*160+x],
+          myUsePhosphor ? previousFrame[y*160+x] : -1);
+      }
+    }
+  }
+  return mySmallTiaSurface;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setTIAPalette(const uInt32* palette)
 {
   int i, j;
@@ -519,12 +553,12 @@ void FrameBuffer::setTIAPalette(const uInt32* palette)
 void FrameBuffer::setUIPalette(const uInt32* palette)
 {
   // Set palette for GUI
-  for(int i = 0; i < kNumColors-256; ++i)
+  for(int i = 0; i < kNumUIColors; ++i)
   {
     Uint8 r = (palette[i] >> 16) & 0xff;
     Uint8 g = (palette[i] >> 8) & 0xff;
     Uint8 b = palette[i] & 0xff;
-    myDefPalette[i+256] = mapRGB(r, g, b);
+    myUIPalette[i] = mapRGB(r, g, b);
   }
 }
 
@@ -1059,7 +1093,7 @@ void FrameBuffer::VideoModeList::print()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                    int colorA, int colorB)
+                    UIColor colorA, UIColor colorB)
 {
   hLine(x + 1, y,     x + w - 2, colorA);
   hLine(x,     y + 1, x + w - 1, colorA);
@@ -1074,7 +1108,7 @@ void FBSurface::box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          int color, FrameStyle style)
+                          UIColor color, FrameStyle style)
 {
   switch(style)
   {
@@ -1111,7 +1145,7 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurface::drawString(const GUI::Font* font, const string& s,
                            int x, int y, int w,
-                           int color, TextAlignment align,
+                           UIColor color, TextAlignment align,
                            int deltax, bool useEllipsis)
 {
   const int leftX = x, rightX = x + w;

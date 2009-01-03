@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.94 2009-01-02 01:50:03 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.95 2009-01-03 15:44:13 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -84,7 +84,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   // Before we add the list, we need to know the size of the RomInfoWidget
   int romWidth = 0;
   int romSize = instance().settings().getInt("romviewer");
-  if(romSize > 1 && w >= 1000 && h >= 800)
+  if(romSize > 1 && w >= 1000 && h >= 760)
     romWidth = 660;
   else if(romSize > 0 && w >= 640 && h >= 480)
     romWidth = 365;

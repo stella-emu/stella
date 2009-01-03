@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.68 2009-01-01 18:13:35 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.69 2009-01-03 15:44:12 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.68 2009-01-01 18:13:35 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.69 2009-01-03 15:44:12 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -176,7 +176,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.68 2009-01-01 18:13:35 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.69 2009-01-03 15:44:12 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
@@ -188,11 +188,12 @@ class FBSurfaceGL : public FBSurface
                 uInt32 scaleWidth, uInt32 scaleHeight);
     virtual ~FBSurfaceGL();
 
-    void hLine(uInt32 x, uInt32 y, uInt32 x2, int color);
-    void vLine(uInt32 x, uInt32 y, uInt32 y2, int color);
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int color);
-    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, int color);
-    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, int color, uInt32 h = 8);
+    void hLine(uInt32 x, uInt32 y, uInt32 x2, UIColor color);
+    void vLine(uInt32 x, uInt32 y, uInt32 y2, UIColor color);
+    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, UIColor color);
+    void fillTIARect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, int c1, int c2);
+    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, UIColor color);
+    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, UIColor color, uInt32 h = 8);
     void drawBytes(uInt8* data, uInt32 x, uInt32 y, uInt32 rowbytes);
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
     void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
