@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.12 2009-01-03 22:57:12 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.13 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,8 +38,7 @@ class FileSnapDialog : public Dialog, public CommandSender
 {
   public:
     FileSnapDialog(OSystem* osystem, DialogContainer* parent,
-                   const GUI::Font& font, GuiObject* boss,
-                   int x, int y, int w, int h);
+                   const GUI::Font& font, GuiObject* boss);
     ~FileSnapDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
@@ -48,9 +47,6 @@ class FileSnapDialog : public Dialog, public CommandSender
     void loadConfig();
     void saveConfig();
     void setDefaults();
-
-    void openBrowser(const string& title, const string& startpath,
-                     FilesystemNode::ListMode mode, int cmd);
 
   private:
     enum {

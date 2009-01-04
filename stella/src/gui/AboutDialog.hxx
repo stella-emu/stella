@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+// $Id: AboutDialog.hxx,v 1.10 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class AboutDialog : public Dialog
 {
   public:
     AboutDialog(OSystem* osystem, DialogContainer* parent,
-                const GUI::Font& font, int x, int y, int w, int h);
+                const GUI::Font& font);
     ~AboutDialog();
 
   protected:

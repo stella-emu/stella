@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AudioDialog.cxx,v 1.30 2009-01-01 18:13:38 stephena Exp $
+// $Id: AudioDialog.cxx,v 1.31 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,8 +38,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
-                         const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                         const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -53,8 +53,8 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   StringMap items;
 
   // Set real dimensions
-//  _w = 35 * fontWidth + 10;
-//  _h = 8 * (lineHeight + 4) + 10;
+  _w = 35 * fontWidth + 10;
+  _h = 8 * (lineHeight + 4) + 10;
 
   // Volume
   xpos = 3 * fontWidth;  ypos = 10;

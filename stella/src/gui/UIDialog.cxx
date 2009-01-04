@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.18 2009-01-03 15:44:13 stephena Exp $
+// $Id: UIDialog.cxx,v 1.19 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,8 +36,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
-                   const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                   const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -51,8 +51,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   StringMap items;
 
   // Set real dimensions
-//  _w = 36 * fontWidth + 10;
-//  _h = 10 * (lineHeight + 4) + 10;
+  _w = 42 * fontWidth + 10;
+  _h = 9 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = ypos = vBorder;
@@ -98,8 +98,9 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   // Launcher font
   pwidth = font.getStringWidth("2x (1000x760)");
   items.clear();
-  items.push_back("Small", "small");
-  items.push_back("Large", "large");
+  items.push_back("Small",  "small");
+  items.push_back("Medium", "medium");
+  items.push_back("Large",  "large");
   myLauncherFontPopup =
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "Launcher Font: ", lwidth);
@@ -255,7 +256,7 @@ void UIDialog::loadConfig()
 
   // Launcher font
   const string& font = instance().settings().getString("launcherfont");
-     myLauncherFontPopup->setSelected(font, "small");
+     myLauncherFontPopup->setSelected(font, "medium");
 
   // ROM launcher info viewer
   const string& viewer = instance().settings().getString("romviewer");
@@ -328,7 +329,7 @@ void UIDialog::setDefaults()
       myLauncherWidthLabel->setValue(w);
       myLauncherHeightSlider->setValue(h);
       myLauncherHeightLabel->setValue(h);
-      myLauncherFontPopup->setSelected("small", "");
+      myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("0", "");
       break;
     }

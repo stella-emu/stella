@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.141 2009-01-03 22:57:12 stephena Exp $
+// $Id: OSystem.cxx,v 1.142 2009-01-04 22:27:43 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -53,6 +53,7 @@
 #include "Launcher.hxx"
 #include "Font.hxx"
 #include "StellaFont.hxx"
+#include "StellaMediumFont.hxx"
 #include "StellaLargeFont.hxx"
 #include "ConsoleFont.hxx"
 #include "Widget.hxx"
@@ -179,17 +180,44 @@ bool OSystem::create()
   // it may be needed to initialize the size of graphical objects
   queryVideoHardware();
 
+  ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
-  // TODO - this should be configurable, and also depend on the minimum
-  //        size of the launcher and maximum size of the TIA window
-  //        The logic must be taken care of here, so the GUI classes
-  //        can just create the interface and not worry about checking
-  myFont         = new GUI::Font(GUI::stellaDesc);
+  // NOTE: the logic determining appropriate font sizes is done here,
+  //       so that the UI classes can just use the font they expect,
+  //       and not worry about it
+  //       This logic should also take into account the size of the
+  //       framebuffer, and try to be intelligent about font sizes
+  //       We can probably add ifdefs to take care of corner cases,
+  //       but the means we've failed to abstract it enough ...
+  ////////////////////////////////////////////////////////////////////
+  bool smallScreen = myDesktopWidth <= 320 || myDesktopHeight <= 240;
+
+  // This font is used in a variety of situations when a really small
+  // font is needed; we let the specific widget/dialog decide when to
+  // use it
+  mySmallFont = new GUI::Font(GUI::stellaDesc);
+
+  // The console font is always the same size (for now at least)
   myConsoleFont  = new GUI::Font(GUI::consoleDesc);
-  if(mySettings->getString("launcherfont") == "small")
-    myLauncherFont = new GUI::Font(GUI::stellaDesc);
+
+  // The general font used in all UI elements
+  // This is determined by the size of the framebuffer
+  myFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
+
+  // The font used by the ROM launcher
+  // Normally, this is configurable by the user, except in the case of
+  // very small screens
+  if(!smallScreen)
+  {    
+    if(mySettings->getString("launcherfont") == "small")
+      myLauncherFont = new GUI::Font(GUI::consoleDesc);
+    else if(mySettings->getString("launcherfont") == "medium")
+      myLauncherFont = new GUI::Font(GUI::stellaMediumDesc);
+    else
+      myLauncherFont = new GUI::Font(GUI::stellaLargeDesc);
+  }
   else
-    myLauncherFont = new GUI::Font(GUI::stellaLargeDesc);
+    myLauncherFont = new GUI::Font(GUI::stellaDesc);
 
   // Create the event handler for the system
   myEventHandler = new EventHandler(this);

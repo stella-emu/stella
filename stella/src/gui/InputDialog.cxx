@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.35 2009-01-01 18:13:38 stephena Exp $
+// $Id: InputDialog.cxx,v 1.36 2009-01-04 22:27:44 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -35,17 +35,19 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
-                         const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                         const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0)
 {
-  const int buttonHeight = font.getLineHeight() + 4;
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, tabID;
   WidgetArray wid;
 
   // Set real dimensions
-//  _w = 42 * fontWidth + 10;
-//  _h = 12 * (lineHeight + 4) + 10;
+  _w = 42 * fontWidth + 10;
+  _h = 12 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -123,7 +125,7 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   wid.push_back(myRightPort);
 
   lwidth = font.getStringWidth("Paddle threshold: ");
-  pwidth = font.getMaxCharWidth() * 5;
+  pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
   ypos += 2*lineHeight;

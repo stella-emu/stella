@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.8 2009-01-01 18:13:39 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.9 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -34,38 +34,44 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
-                               const GUI::Font& font,
-                               int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+                               const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0),
     myBrowser(NULL)
 {
   const int vBorder = 8;
-  const int bwidth  = font.getStringWidth("Audit path:") + 20,
-            bheight = font.getLineHeight() + 4,
-            fontHeight = font.getLineHeight(),
+
+  const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
+            fontHeight   = font.getFontHeight(),
+            buttonWidth  = font.getStringWidth("Audit path:") + 20,
+            buttonHeight = font.getLineHeight() + 4,
             lwidth = font.getStringWidth("ROMs with properties (renamed): ");
   int xpos = vBorder, ypos = vBorder;
   WidgetArray wid;
 
+  // Set real dimensions
+  _w = 44 * fontWidth + 10;
+  _h = 7 * (lineHeight + 4) + 10;
+
   // Audit path
   ButtonWidget* romButton = 
-    new ButtonWidget(this, font, xpos, ypos, bwidth, bheight, "Audit path:",
-                     kChooseAuditDirCmd);
+    new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                     "Audit path:", kChooseAuditDirCmd);
   wid.push_back(romButton);
-  xpos += bwidth + 10;
+  xpos += buttonWidth + 10;
   myRomPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                 _w - xpos - 10, font.getLineHeight(), "");
+                                 _w - xpos - 10, lineHeight, "");
   wid.push_back(myRomPath);
 
   // Show results of ROM audit
-  xpos = vBorder + 10;  ypos += bheight + 10;
+  xpos = vBorder + 10;  ypos += buttonHeight + 10;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "ROMs with properties (renamed): ", kTextAlignLeft);
   myResults1 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
                                     _w - lwidth - 20, fontHeight, "",
                                     kTextAlignLeft);
   myResults1->setFlags(WIDGET_CLEARBG);
-  ypos += bheight;
+  ypos += buttonHeight;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
                        "ROMs without properties: ", kTextAlignLeft);
   myResults2 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
@@ -73,9 +79,9 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
                                     kTextAlignLeft);
   myResults2->setFlags(WIDGET_CLEARBG);
 
-  ypos += bheight + 8;
+  ypos += buttonHeight + 8;
   new StaticTextWidget(this, font, xpos, ypos, _w - 20, fontHeight,
-                       "(*) Warning: this operation cannot be undone",
+                       "(*) WARNING: operation cannot be undone",
                        kTextAlignLeft);
 
   // Add OK and Cancel buttons
@@ -84,7 +90,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, 0, 0, 400, 320);
+  myBrowser = new BrowserDialog(this, font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,17 +165,6 @@ void RomAuditDialog::auditRoms()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomAuditDialog::openBrowser(const string& title, const string& startpath,
-                                 FilesystemNode::ListMode mode, int cmd)
-{
-  parent().addDialog(myBrowser);
-
-  myBrowser->setTitle(title);
-  myBrowser->setEmitSignal(cmd);
-  myBrowser->setStartPath(startpath, mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
@@ -180,8 +175,8 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseAuditDirCmd:
-      openBrowser("Select ROM directory to audit:", myRomPath->getEditString(),
-                  FilesystemNode::kListDirectoriesOnly, kAuditDirChosenCmd);
+      myBrowser->show("Select ROM directory to audit:", myRomPath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kAuditDirChosenCmd);
       break;
 
     case kAuditDirChosenCmd:

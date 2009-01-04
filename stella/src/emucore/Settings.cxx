@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.153 2009-01-03 22:57:12 stephena Exp $
+// $Id: Settings.cxx,v 1.154 2009-01-04 22:27:43 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -88,7 +88,7 @@ Settings::Settings(OSystem* osystem)
 
   // ROM browser options
   setInternal("launcherres", "640x480");
-  setInternal("launcherfont", "small");
+  setInternal("launcherfont", "medium");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
@@ -258,8 +258,8 @@ void Settings::validate()
     setInternal("palette", "standard");
 
   s = getString("launcherfont");
-  if(s != "small" && s != "large")
-    setInternal("launcherfont", "small");
+  if(s != "small" && s != "medium" && s != "large")
+    setInternal("launcherfont", "medium");
 
   i = getInt("romviewer");
   if(i < 0)
@@ -332,7 +332,8 @@ void Settings::usage()
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
-    << "  -launcherfont <small|large>  Use small or large font in the ROM launcher\n"
+    << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
+    << "                 large>\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
     << "  -statedir     <dir>          Directory in which to save state files\n"

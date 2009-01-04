@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.34 2009-01-02 01:50:03 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.35 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,6 +22,7 @@
 #include "bspf.hxx"
 
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "FSNode.hxx"
 #include "GameList.hxx"
 #include "GuiObject.hxx"
@@ -38,9 +39,8 @@
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
-                             int x, int y, int w, int h)
-  : Dialog(&boss->instance(), &boss->parent(), x, y, w, h),
+BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
     CommandSender(boss),
     _fileList(NULL),
     _currentPath(NULL),
@@ -55,8 +55,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
   // Set real dimensions
   // This is one dialog that can take as much space as is available
-//  _w = _DLG_MIN_SWIDTH - 30;
-//  _h = _DLG_MIN_SHEIGHT - 30;
+  _w = BSPF_min(instance().desktopWidth(), 480u);
+  _h = BSPF_min(instance().desktopHeight(), 380u);
 
   xpos = 10;  ypos = 4;
   _title = new StaticTextWidget(this, font, xpos, ypos,
@@ -114,9 +114,23 @@ BrowserDialog::~BrowserDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::setStartPath(const string& startpath,
-                                 FilesystemNode::ListMode mode)
+void BrowserDialog::show(const string& title, const string& startpath,
+                         FilesystemNode::ListMode mode, int cmd)
 {
+  // TODO - dialog has to be added before any settings are changed,
+  //        since (for example) changing the title triggers a redraw,
+  //        and the dialog must be added (so it exists) for that to happen
+  // Fixing this requires changes to the underlying widget classes
+  // (ie, changing a widgets contents should signal its dialog that a
+  // redraw is necessary; it shouldn't be responsible for redraw itself)
+  //
+  // Doing it this way has the unfortunate side effect that a previous
+  // title is temporarily visible when re-using the browser for different
+  // purposes
+  parent().addDialog(this);
+
+  _title->setLabel(title);
+  _cmd = cmd;
   _mode = mode;
 
   // If no node has been set, or the last used one is now invalid,

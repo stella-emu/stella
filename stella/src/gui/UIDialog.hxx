@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.hxx,v 1.10 2009-01-01 18:13:39 stephena Exp $
+// $Id: UIDialog.hxx,v 1.11 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,8 +37,7 @@ class TabWidget;
 class UIDialog : public Dialog
 {
   public:
-    UIDialog(OSystem* osystem, DialogContainer* parent,
-             const GUI::Font& font, int x, int y, int w, int h);
+    UIDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font);
     ~UIDialog();
 
   protected:

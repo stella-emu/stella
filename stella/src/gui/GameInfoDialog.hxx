@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.hxx,v 1.36 2009-01-02 01:50:03 stephena Exp $
+// $Id: GameInfoDialog.hxx,v 1.37 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,8 +40,7 @@ class GameInfoDialog : public Dialog, public CommandSender
 {
   public:
     GameInfoDialog(OSystem* osystem, DialogContainer* parent,
-                   const GUI::Font& font, GuiObject* boss,
-                   int x, int y, int w, int h);
+                   const GUI::Font& font, GuiObject* boss);
     virtual ~GameInfoDialog();
 
   protected:

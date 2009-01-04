@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.29 2009-01-03 22:57:12 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.30 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,17 +31,22 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
-                         const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+                         const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0),
     myPage(1),
     myNumPages(6)
 {
   const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   WidgetArray wid;
+
+  // Set real dimensions
+  _w = 52 * fontWidth + 10;
+  _h = 12 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons
   xpos = 10;  ypos = _h - buttonHeight - 10;

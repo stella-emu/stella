@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.14 2009-01-03 22:57:12 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.15 2009-01-04 22:27:44 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -204,9 +204,10 @@ void RomInfoWidget::drawWidget(bool hilite)
   }
   else if(mySurfaceErrorMsg != "")
   {
-    uInt32 x = _x + ((_w - _font->getStringWidth(mySurfaceErrorMsg)) >> 1);
-    uInt32 y = _y + ((yoff - _font->getLineHeight()) >> 1);
-    s.drawString(_font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
+    const GUI::Font* font = &instance().font();
+    uInt32 x = _x + ((_w - font->getStringWidth(mySurfaceErrorMsg)) >> 1);
+    uInt32 y = _y + ((yoff - font->getLineHeight()) >> 1);
+    s.drawString(font, mySurfaceErrorMsg, x, y, _w - 10, _textcolor);
   }
   int xpos = _x + 5, ypos = _y + yoff + 10;
   for(unsigned int i = 0; i < myRomInfo.size(); ++i)

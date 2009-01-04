@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.hxx,v 1.2 2009-01-01 18:13:39 stephena Exp $
+// $Id: RomAuditDialog.hxx,v 1.3 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,7 +37,7 @@ class RomAuditDialog : public Dialog
 {
   public:
     RomAuditDialog(OSystem* osystem, DialogContainer* parent,
-                   const GUI::Font& font, int x, int y, int w, int h);
+                   const GUI::Font& font);
     ~RomAuditDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);

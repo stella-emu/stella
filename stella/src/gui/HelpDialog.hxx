@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.hxx,v 1.11 2009-01-01 18:13:38 stephena Exp $
+// $Id: HelpDialog.hxx,v 1.12 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -40,8 +40,7 @@ class StaticTextWidget;
 class HelpDialog : public Dialog
 {
   public:
-    HelpDialog(OSystem* osystem, DialogContainer* parent,
-               const GUI::Font& font, int x, int y, int w, int h);
+    HelpDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font);
     ~HelpDialog();
 
   protected:

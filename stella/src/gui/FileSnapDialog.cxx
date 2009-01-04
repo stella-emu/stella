@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.24 2009-01-03 22:57:12 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.25 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -22,7 +22,6 @@
 #include "bspf.hxx"
 
 #include "BrowserDialog.hxx"
-#include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
 #include "LauncherDialog.hxx"
@@ -33,14 +32,14 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FileSnapDialog::FileSnapDialog(
       OSystem* osystem, DialogContainer* parent,
-      const GUI::Font& font, GuiObject* boss,
-      int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+      const GUI::Font& font, GuiObject* boss)
+  : Dialog(osystem, parent, 0, 0, 0, 0),
     CommandSender(boss),
     myBrowser(NULL),
     myIsGlobal(boss != 0)
 {
   const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
             buttonWidth  = font.getStringWidth("Properties file:") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
@@ -49,8 +48,8 @@ FileSnapDialog::FileSnapDialog(
   ButtonWidget* b;
 
   // Set real dimensions
-//  _w = 50 * fontWidth + 10;
-//  _h = 11 * (lineHeight + 4) + 10;
+  _w = 52 * fontWidth + 10;
+  _h = 10 * (lineHeight + 4) + 10;
 
   xpos = vBorder;  ypos = vBorder;
 
@@ -143,7 +142,7 @@ FileSnapDialog::FileSnapDialog(
   }
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, 0, 0, 400, 320);
+  myBrowser = new BrowserDialog(this, font);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -205,17 +204,6 @@ void FileSnapDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FileSnapDialog::openBrowser(const string& title, const string& startpath,
-                                 FilesystemNode::ListMode mode, int cmd)
-{
-  parent().addDialog(myBrowser);
-
-  myBrowser->setTitle(title);
-  myBrowser->setEmitSignal(cmd);
-  myBrowser->setStartPath(startpath, mode);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
                                    int data, int id)
 {
@@ -233,33 +221,33 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kChooseRomDirCmd:
-      openBrowser("Select ROM directory:", myRomPath->getEditString(),
-                  FilesystemNode::kListDirectoriesOnly, kRomDirChosenCmd);
+      myBrowser->show("Select ROM directory:", myRomPath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kRomDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
-      openBrowser("Select state directory:", myStatePath->getEditString(),
-                  FilesystemNode::kListDirectoriesOnly, kStateDirChosenCmd);
+      myBrowser->show("Select state directory:", myStatePath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kStateDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
-      openBrowser("Select cheat file:", myCheatFile->getEditString(),
-                  FilesystemNode::kListAll, kCheatFileChosenCmd);
+      myBrowser->show("Select cheat file:", myCheatFile->getEditString(),
+                      FilesystemNode::kListAll, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
-      openBrowser("Select palette file:", myPaletteFile->getEditString(),
-                  FilesystemNode::kListAll, kPaletteFileChosenCmd);
+      myBrowser->show("Select palette file:", myPaletteFile->getEditString(),
+                      FilesystemNode::kListAll, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
-      openBrowser("Select properties file:", myPropsFile->getEditString(),
-                  FilesystemNode::kListAll, kPropsFileChosenCmd);
+      myBrowser->show("Select properties file:", myPropsFile->getEditString(),
+                      FilesystemNode::kListAll, kPropsFileChosenCmd);
       break;
 
     case kChooseSnapDirCmd:
-      openBrowser("Select snapshot directory:", mySnapPath->getEditString(),
-                  FilesystemNode::kListDirectoriesOnly, kSnapDirChosenCmd);
+      myBrowser->show("Select snapshot directory:", mySnapPath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kSnapDirChosenCmd);
       break;
 
     case kRomDirChosenCmd:

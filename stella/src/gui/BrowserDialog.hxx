@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.hxx,v 1.14 2009-01-01 18:13:38 stephena Exp $
+// $Id: BrowserDialog.hxx,v 1.15 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,16 +36,14 @@ class GameList;
 class BrowserDialog : public Dialog, public CommandSender
 {
   public:
-    BrowserDialog(GuiObject* boss, const GUI::Font& font,
-                  int x, int y, int w, int h);
-
+    BrowserDialog(GuiObject* boss, const GUI::Font& font);
     virtual ~BrowserDialog();
 
     const FilesystemNode& getResult() { return _node; }
 
-    void setTitle(const string& title) { _title->setLabel(title); }
-    void setEmitSignal(int cmd) { _cmd = cmd; }
-    void setStartPath(const string& startpath, FilesystemNode::ListMode mode);
+    /** Place the browser window onscreen, using the given attributes */
+    void show(const string& title, const string& startpath,
+              FilesystemNode::ListMode mode, int cmd);
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

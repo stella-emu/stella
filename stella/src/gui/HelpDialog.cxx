@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: HelpDialog.cxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
+// $Id: HelpDialog.cxx,v 1.28 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,8 +29,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
-                       const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+                       const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0),
     myPage(1),
     myNumPages(4)
 {
@@ -41,6 +41,10 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   WidgetArray wid;
+
+  // Set real dimensions
+  _w = 46 * fontWidth + 10;
+  _h = 12 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons
   xpos = 10;  ypos = _h - buttonHeight - 10;

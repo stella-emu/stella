@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.24 2009-01-04 02:28:12 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.25 2009-01-04 22:27:43 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,21 +37,26 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
-                                 const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                                 const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   WidgetArray wid;
   ButtonWidget* b;
 
+  // Set real dimensions
+  _w = 46 * fontWidth + 10;
+  _h = 11 * (lineHeight + 4) + 10;
+
   // List of cheats, with checkboxes to enable/disable
   xpos = 10;  ypos = 10;
   myCheatList =
     new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - 25,
-                        _h - 3*lineHeight);
+                        _h - 2*buttonHeight - 10);
   myCheatList->setStyle(kXFill);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.96 2009-01-04 02:28:12 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.97 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -100,8 +100,9 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   if(romWidth > 0)
   {
     xpos += myList->getWidth() + 5;
-    myRomInfoWidget = new RomInfoWidget(this, instance().consoleFont(), xpos, ypos,
-                                        romWidth, myList->getHeight());
+    myRomInfoWidget =
+      new RomInfoWidget(this, romWidth < 660 ? instance().smallFont() : instance().consoleFont(),
+                        xpos, ypos, romWidth, myList->getHeight());
   }
 
   // Add note textwidget to show any notes for the currently selected ROM
@@ -168,13 +169,12 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   l.push_back("Override properties", "override");
   l.push_back("Filter listing", "filter");
   l.push_back("Reload listing", "reload");
-  myMenu = new ContextMenu(this, font, l);
+  myMenu = new ContextMenu(this, osystem->font(), l);
 
   // Create global props dialog, which is uses to to temporarily overrride
   // ROM properties
   myGlobalProps =
-    new GlobalPropsDialog(this, osystem->font(), osystem->settings(),
-                          0, 0, 440, 270);
+    new GlobalPropsDialog(this, osystem->font(), osystem->settings());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

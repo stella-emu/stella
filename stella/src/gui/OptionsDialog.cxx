@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OptionsDialog.cxx,v 1.76 2009-01-01 18:13:38 stephena Exp $
+// $Id: OptionsDialog.cxx,v 1.77 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -115,16 +115,11 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(b);
   addCancelWidget(b);
 
-  // Set some sane values for the dialog boxes
-  int x = 0, y = 0, w, h;
-
   // Now create all the dialogs attached to each menu button
-  w = 410; h = 275;
-  myVideoDialog = new VideoDialog(osystem, parent, font, x, y, w, h);
+  myVideoDialog = new VideoDialog(osystem, parent, font);
+  myAudioDialog = new AudioDialog(osystem, parent, font);
 
-  w = 285; h = 200;
-  myAudioDialog = new AudioDialog(osystem, parent, font, x, y, w, h);
-
+/*  FIXME - may not be needed with small-font functionality
 #ifdef _WIN32_WCE
   // FIXME - adjust size for WINCE using a smaller font
   // we scale the input dialog down a bit in low res devices.
@@ -134,31 +129,17 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #else
   w = 380; h = 310;
 #endif
-  myInputDialog = new InputDialog(osystem, parent, font, x, y, w, h);
-
-  w = 380; h = 220;
-  myUIDialog = new UIDialog(osystem, parent, font, x, y, w, h);
-
-  w = 480; h = 250;
-  myFileSnapDialog = new FileSnapDialog(osystem, parent, font,
-                                        boss, x, y, w, h);
-
-  w = 440; h = 160;
-  myRomAuditDialog = new RomAuditDialog(osystem, parent, font, x, y, w, h);
-
-  w = 470; h = 300;
-  myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this, x, y, w, h);
-
+*/
+  myInputDialog = new InputDialog(osystem, parent, font);
+  myUIDialog = new UIDialog(osystem, parent, font);
+  myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss);
+  myRomAuditDialog = new RomAuditDialog(osystem, parent, font);
+  myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
-  w = 380; h = 240;
-  myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font, x, y, w, h);
+  myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font);
 #endif
-
-  w = 420; h = 270;
-  myHelpDialog = new HelpDialog(osystem, parent, font, x, y, w, h);
-
-  w = 480; h = 270;
-  myAboutDialog = new AboutDialog(osystem, parent, font, x, y, w, h);
+  myHelpDialog = new HelpDialog(osystem, parent, font);
+  myAboutDialog = new AboutDialog(osystem, parent, font);
 
   addToFocusList(wid);
 
@@ -174,6 +155,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef _WIN32_WCE
   myAudioSettingsButton->clearFlags(WIDGET_ENABLED);  // not honored in wince port
 #endif
+//FIXME - this may no longer be true (with the new small font functionality)
   if(instance().desktopWidth() < 320)
   {
     // These cannot be displayed in low res devices

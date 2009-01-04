@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.59 2009-01-01 18:13:39 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.60 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -38,8 +38,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
-                         const GUI::Font& font, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h)
+                         const GUI::Font& font)
+  : Dialog(osystem, parent, 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -52,6 +52,10 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
       fwidth = font.getStringWidth("Renderer: ");
   WidgetArray wid;
   StringMap items;
+
+  // Set real dimensions
+  _w = 46 * fontWidth + 10;
+  _h = 11 * (lineHeight + 4) + 10;
 
   xpos = 5;  ypos = 10;
 

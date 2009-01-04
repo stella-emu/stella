@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.72 2009-01-03 22:57:12 stephena Exp $
+// $Id: OSystem.hxx,v 1.73 2009-01-04 22:27:43 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.72 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.73 2009-01-04 22:27:43 stephena Exp $
 */
 class OSystem
 {
@@ -181,6 +181,13 @@ class OSystem
     */
     inline CheatManager& cheat() const { return *myCheatManager; }
 #endif
+
+    /**
+      Get the small font object of the system
+
+      @return The font reference
+    */
+    inline const GUI::Font& smallFont() const { return *mySmallFont; }
 
     /**
       Get the font object of the system
@@ -500,6 +507,9 @@ class OSystem
     string myRomMD5;
 
     string myFeatures;
+
+    // The font object to use when space is very limited
+    GUI::Font* mySmallFont;
 
     // The font object to use for the normal in-game GUI
     GUI::Font* myFont;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.19 2009-01-01 18:13:38 stephena Exp $
+// $Id: InputDialog.hxx,v 1.20 2009-01-04 22:27:44 stephena Exp $
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX
@@ -36,7 +36,7 @@ class InputDialog : public Dialog
 {
   public:
     InputDialog(OSystem* osystem, DialogContainer* parent,
-                const GUI::Font& font, int x, int y, int w, int h);
+                const GUI::Font& font);
     ~InputDialog();
 
   protected:

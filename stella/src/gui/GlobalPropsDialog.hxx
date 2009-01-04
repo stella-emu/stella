@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalPropsDialog.hxx,v 1.1 2009-01-02 01:50:03 stephena Exp $
+// $Id: GlobalPropsDialog.hxx,v 1.2 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,9 +35,8 @@ class PopUpWidget;
 class GlobalPropsDialog : public Dialog
 {
   public:
-    GlobalPropsDialog(GuiObject* boss, const GUI::Font& font, Settings& settings,
-                      int x, int y, int w, int h);
-    ~GlobalPropsDialog();
+    GlobalPropsDialog(GuiObject* boss, const GUI::Font& font, Settings& settings);
+    virtual ~GlobalPropsDialog();
 
   private:
     void loadConfig();

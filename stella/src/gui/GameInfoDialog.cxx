@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.62 2009-01-02 01:50:03 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.63 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -36,8 +36,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GameInfoDialog::GameInfoDialog(
       OSystem* osystem, DialogContainer* parent, const GUI::Font& font,
-      GuiObject* boss, int x, int y, int w, int h)
-  : Dialog(osystem, parent, x, y, w, h),
+      GuiObject* boss)
+  : Dialog(osystem, parent, 0, 0, 0, 0),
     CommandSender(boss),
     myPropertiesLoaded(false),
     myDefaultsSelected(false)
@@ -51,6 +51,10 @@ GameInfoDialog::GameInfoDialog(
   int xpos, ypos, lwidth, fwidth, pwidth, tabID;
   WidgetArray wid;
   StringMap items, ports, ctrls;
+
+  // Set real dimensions
+  _w = 54 * fontWidth + 10;
+  _h = 12 * (lineHeight + 4) + 10;
 
   ////////////////////////////////////////////////////////////////////
   // Some of the following items are also present in GlobalPropsDialog

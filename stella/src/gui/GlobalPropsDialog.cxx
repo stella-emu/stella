@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalPropsDialog.cxx,v 1.1 2009-01-02 01:50:03 stephena Exp $
+// $Id: GlobalPropsDialog.cxx,v 1.2 2009-01-04 22:27:44 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,12 +33,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GlobalPropsDialog::
-  GlobalPropsDialog(GuiObject* boss, const GUI::Font& font, Settings& settings,
-                    int x, int y, int w, int h)
-  : Dialog(&boss->instance(), &boss->parent(), x, y, w, h),
+  GlobalPropsDialog(GuiObject* boss, const GUI::Font& font, Settings& settings)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
     mySettings(settings)
 {
   const int lineHeight   = font.getLineHeight(),
+            fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
@@ -47,6 +47,10 @@ GlobalPropsDialog::
       pwidth = font.getStringWidth("SB (128-256k SUPERbanking)");
   WidgetArray wid;
   StringMap items;
+
+  // Set real dimensions
+  _w = lwidth + pwidth + fontWidth*3 + 15;
+  _h = 10 * (lineHeight + 4) + buttonHeight + 10;
 
   xpos = 10;  ypos = 10;
 
