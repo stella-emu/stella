@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.52 2009-01-01 18:13:38 stephena Exp $
+// $Id: ListWidget.cxx,v 1.53 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -394,17 +394,6 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect ListWidget::getRect() const
-{
-  // Account for attached scrollbar when calculating width
-  int x = getAbsX() - 1,  y = getAbsY() - 1,
-      w = getWidth() + kScrollBarWidth + 2, h = getHeight() + 2;
-
-  GUI::Rect r(x, y, x+w, y+h);
-  return r;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

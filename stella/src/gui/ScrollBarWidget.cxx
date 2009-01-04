@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.cxx,v 1.24 2009-01-01 18:13:39 stephena Exp $
+// $Id: ScrollBarWidget.cxx,v 1.25 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,30 +32,30 @@
  *   and we thus should not highlight the arrows/slider.
  */
 
-#define UP_DOWN_BOX_HEIGHT	10
+#define UP_DOWN_BOX_HEIGHT	12
 
 // Up arrow
 static unsigned int up_arrow[8] = {
+  0x00011000,
+  0x00111100,
+  0x01111110,
+  0x11111111,
   0x00000000,
   0x00000000,
-  0x00001000,
-  0x00001000,
-  0x00011100,
-  0x00011100,
-  0x00110110,
-  0x00100010,
+  0x00000000,
+  0x00000000
 };
 
 // Down arrow
 static unsigned int down_arrow[8] = {
+  0x11111111,
+  0x01111110,
+  0x00111100,
+  0x00011000,
   0x00000000,
   0x00000000,
-  0x00100010,
-  0x00110110,
-  0x00011100,
-  0x00011100,
-  0x00001000,
-  0x00001000,
+  0x00000000,
+  0x00000000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -258,12 +258,12 @@ void ScrollBarWidget::drawWidget(bool hilite)
 
   // Up arrow
   s.frameRect(_x, _y, _w, UP_DOWN_BOX_HEIGHT, kColor);
-  s.drawBitmap(up_arrow, _x, _y, isSinglePage ? kColor :
-               (hilite && _part == kUpArrowPart) ? kScrollColorHi : kScrollColor);
+  s.drawBitmap(up_arrow, _x+2, _y+4, isSinglePage ? kColor :
+               (hilite && _part == kUpArrowPart) ? kScrollColorHi : kScrollColor, 4);
 
   // Down arrow
   s.frameRect(_x, bottomY - UP_DOWN_BOX_HEIGHT, _w, UP_DOWN_BOX_HEIGHT, kColor);
-  s.drawBitmap(down_arrow, _x, bottomY - UP_DOWN_BOX_HEIGHT, isSinglePage ? kColor :
+  s.drawBitmap(down_arrow, _x+2, bottomY - UP_DOWN_BOX_HEIGHT + 4, isSinglePage ? kColor :
                (hilite && _part == kDownArrowPart) ? kScrollColorHi : kScrollColor);
 
   // Slider

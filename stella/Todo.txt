@@ -22,7 +22,7 @@ X * New UI subsystem where drawing is done into separate buffers, not
 X * Make UI 'font-sensitive' and remove all hardcoded dimensions for
     widget/font sizes
 
-  * Add option to automatically save snapshots in 1X mode (useful for
+X * Add option to automatically save snapshots in 1X mode (useful for
     RomInfoWidget)
 
 X * A way to override (possibly temporarily) all properties for a ROM, and

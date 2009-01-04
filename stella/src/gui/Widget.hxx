@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.hxx,v 1.66 2009-01-03 22:57:12 stephena Exp $
+// $Id: Widget.hxx,v 1.67 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -83,7 +83,7 @@ enum {
   This is the base class for all widgets.
   
   @author  Stephen Anthony
-  @version $Id: Widget.hxx,v 1.66 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: Widget.hxx,v 1.67 2009-01-04 02:28:12 stephena Exp $
 */
 class Widget : public GuiObject
 {
@@ -114,8 +114,6 @@ class Widget : public GuiObject
     void receivedFocus();
     void lostFocus();
     void addFocusWidget(Widget* w) { _focusList.push_back(w); }
-
-    virtual GUI::Rect getRect() const;
 
     /** Set/clear WIDGET_ENABLED flag and immediately redraw */
     void setEnabled(bool e);
@@ -166,10 +164,10 @@ class Widget : public GuiObject
     bool       _hasFocus;
     int        _fontWidth;
     int        _fontHeight;
-    uInt32    _bgcolor;
-    uInt32    _bgcolorhi;
-    uInt32    _textcolor;
-    uInt32    _textcolorhi;
+    uInt32     _bgcolor;
+    uInt32     _bgcolorhi;
+    uInt32     _textcolor;
+    uInt32     _textcolorhi;
 
   public:
     static Widget* findWidgetInChain(Widget* start, int x, int y);

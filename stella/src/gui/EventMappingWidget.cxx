@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventMappingWidget.cxx,v 1.25 2009-01-01 18:13:38 stephena Exp $
+// $Id: EventMappingWidget.cxx,v 1.26 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -57,7 +57,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(myActionsList);
 
   // Add remap, erase, cancel and default buttons
-  xpos += myActionsList->getWidth() + 15;  ypos += 5;
+  xpos += myActionsList->getWidth() + 5;  ypos += 5;
   myMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                  buttonWidth, buttonHeight,
                                  "Map", kStartMapCmd);

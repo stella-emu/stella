@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ScrollBarWidget.hxx,v 1.11 2009-01-01 18:13:39 stephena Exp $
+// $Id: ScrollBarWidget.hxx,v 1.12 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -27,6 +27,9 @@
 #include "Command.hxx"
 #include "bspf.hxx"
 
+enum {
+  kScrollBarWidth = 12
+};
 
 class ScrollBarWidget : public Widget, public CommandSender
 {

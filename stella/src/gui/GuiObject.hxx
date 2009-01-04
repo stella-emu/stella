@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GuiObject.hxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
+// $Id: GuiObject.hxx,v 1.28 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,15 +46,11 @@ enum {
   kRefreshAllCmd   = 'REFA'
 };
 
-enum {
-  kScrollBarWidth = 9
-};
-
 /**
   This is the base class for all GUI objects/widgets.
   
   @author  Stephen Anthony
-  @version $Id: GuiObject.hxx,v 1.27 2009-01-01 18:13:38 stephena Exp $
+  @version $Id: GuiObject.hxx,v 1.28 2009-01-04 02:28:12 stephena Exp $
 */
 class GuiObject : public CommandReceiver
 {
@@ -87,8 +83,8 @@ class GuiObject : public CommandReceiver
     virtual int getWidth() const    { return _w; }
     virtual int getHeight() const   { return _h; }
 
-    virtual void setWidth(int w)      { _w = w; }
-    virtual void setHeight(int h)     { _h = h; }
+    virtual void setWidth(int w)    { _w = w; }
+    virtual void setHeight(int h)   { _h = h; }
 
     virtual void setDirty() { _dirty = true; }
 

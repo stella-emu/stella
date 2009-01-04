@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.23 2009-01-02 01:50:03 stephena Exp $
+// $Id: ListWidget.hxx,v 1.24 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -71,7 +71,8 @@ class ListWidget : public EditableWidget
     virtual bool handleEvent(Event::Type e);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
-    virtual GUI::Rect getRect() const;
+    // Account for the extra width of embedded scrollbar
+    virtual int getWidth() const { return _w + kScrollBarWidth; }
 
     void startEditMode();
     void endEditMode();

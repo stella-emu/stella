@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.95 2009-01-03 15:44:13 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.96 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -89,7 +89,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   else if(romSize > 0 && w >= 640 && h >= 480)
     romWidth = 365;
 
-  int listWidth = _w - (romWidth > 0 ? romWidth+25 : 20);
+  int listWidth = _w - (romWidth > 0 ? romWidth+5 : 0) - 20;
   myList = new StringListWidget(this, font, xpos, ypos,
                                 listWidth, _h - 28 - bheight - 2*fontHeight);
   myList->setNumberingMode(kListNumberingOff);
@@ -99,7 +99,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   // Add ROM info area (if enabled)
   if(romWidth > 0)
   {
-    xpos += myList->getWidth() + 15;
+    xpos += myList->getWidth() + 5;
     myRomInfoWidget = new RomInfoWidget(this, instance().consoleFont(), xpos, ypos,
                                         romWidth, myList->getHeight());
   }

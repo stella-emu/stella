@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Widget.cxx,v 1.61 2009-01-03 22:57:12 stephena Exp $
+// $Id: Widget.cxx,v 1.62 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -151,16 +151,6 @@ void Widget::lostFocus()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GUI::Rect Widget::getRect() const
-{
-  int x = getAbsX() - 1,  y = getAbsY() - 1,
-      w = getWidth() + 2, h = getHeight() + 2;
-
-  GUI::Rect r(x, y, x+w, y+h);
-  return r;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::setEnabled(bool e)
 {
   if(e)
@@ -239,9 +229,12 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
     if(wid == tmp)
       pos = i;
 
-    GUI::Rect rect = tmp->getRect();
-    int x = rect.left,    y = rect.top,
-        w = rect.width(), h = rect.height();
+    // Get area around widget
+    // Note: we must use getXXX() methods and not access the variables
+    // directly, since in some cases (notably those widgets with embedded
+    // ScrollBars) the two quantities may be different
+    int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
+        w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
 
     // First clear area surrounding all widgets
     if(tmp->_hasFocus)
@@ -281,9 +274,13 @@ Widget* Widget::setFocusForChain(GuiObject* boss, WidgetArray& arr,
 
   // Now highlight the active widget
   tmp = arr[pos];
-  GUI::Rect rect = tmp->getRect();
-  int x = rect.left,    y = rect.top,
-      w = rect.width(), h = rect.height();
+
+  // Get area around widget
+  // Note: we must use getXXX() methods and not access the variables
+  // directly, since in some cases (notably those widgets with embedded
+  // ScrollBars) the two quantities may be different
+  int x = tmp->getAbsX() - 1,  y = tmp->getAbsY() - 1,
+      w = tmp->getWidth() + 2, h = tmp->getHeight() + 2;
 
   tmp->receivedFocus();
   s.frameRect(x, y, w, h, kWidFrameColor, kDashLine);

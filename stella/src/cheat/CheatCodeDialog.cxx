@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatCodeDialog.cxx,v 1.23 2009-01-01 18:13:34 stephena Exp $
+// $Id: CheatCodeDialog.cxx,v 1.24 2009-01-04 02:28:12 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,7 +56,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
-  xpos += myCheatList->getWidth() + 15;  ypos = 15;
+  xpos += myCheatList->getWidth() + 5;  ypos = 15;
 
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
                        "Add", kAddCheatCmd);
