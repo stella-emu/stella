@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.73 2009-01-04 22:27:43 stephena Exp $
+// $Id: OSystem.hxx,v 1.74 2009-01-05 19:44:29 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.73 2009-01-04 22:27:43 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.74 2009-01-05 19:44:29 stephena Exp $
 */
 class OSystem
 {
@@ -340,14 +340,6 @@ class OSystem
       @return  The supported features
     */
     const string& features() const { return myFeatures; }
-
-    /**
-      Is this a valid ROM filename (does it have a valid extension?).
-
-      @param filename  Filename of potential ROM file
-      @param extension The extension extracted from the given file
-     */
-    bool isValidRomName(const string& filename, string& extension) const;
 
     /**
       Calculate the MD5sum of the given file.

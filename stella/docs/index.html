@@ -800,8 +800,16 @@
 		</tr>
 
 		<tr>
-			<td><pre>-launcherfont &lt;small|large&gt;</pre></td>
+			<td><pre>-launcherfont &lt;small|medium|large&gt;</pre></td>
 			<td>Set the size of the font in the ROM launcher.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-launcherexts &lt;allfiles|allroms|LIST&gt;</pre></td>
+			<td>Specifies which files to show in the ROM launcher
+				('allfiles' is self-explanatory, 'allroms' is all files
+				with valid rom extensions (currently: a26, bin, rom,
+				gz, zip), 'LIST' is a ':' separated list of valid extensions.</td>
 		</tr>
 
 		<tr>
@@ -1696,7 +1704,13 @@
 		</tr>
 
 		<tr>
-			<td>Reload current ROM</td>
+			<td>Reload current ROM (TIA mode)</td>
+			<td>Control + r</td>
+			<td>Cmd + r</td>
+		</tr>
+
+		<tr>
+			<td>Reload ROM listing (ROM launcher mode)</td>
 			<td>Control + r</td>
 			<td>Cmd + r</td>
 		</tr>
@@ -1726,7 +1740,7 @@
 		</tr>
 
 		<tr>
-			<td>Toggle frame stats (scanline count and fps)</td>
+			<td>Toggle frame stats (scanline count/fps/bs type/etc)</td>
 			<td>Alt + l</td>
 			<td>Shift-Cmd + l</td>
 		</tr>

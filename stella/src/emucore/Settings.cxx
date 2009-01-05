@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.154 2009-01-04 22:27:43 stephena Exp $
+// $Id: Settings.cxx,v 1.155 2009-01-05 19:44:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -89,6 +89,7 @@ Settings::Settings(OSystem* osystem)
   // ROM browser options
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "medium");
+  setInternal("launcherexts", "allfiles");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
@@ -334,6 +335,9 @@ void Settings::usage()
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"
+    << "  -launcherexts <allfiles|     Show files with the given extensions in ROM launcher\n"
+    << "                 allroms|        (exts is a ':' separated list of extensions\n"
+    << "                 exts\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
     << "  -statedir     <dir>          Directory in which to save state files\n"

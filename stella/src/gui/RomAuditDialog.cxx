@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.9 2009-01-04 22:27:44 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.10 2009-01-05 19:44:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,6 +21,7 @@
 
 #include "bspf.hxx"
 
+#include "LauncherFilterDialog.hxx"
 #include "BrowserDialog.hxx"
 #include "DialogContainer.hxx"
 #include "EditTextWidget.hxx"
@@ -29,7 +30,6 @@
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
-
 #include "RomAuditDialog.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -130,7 +130,7 @@ void RomAuditDialog::auditRoms()
   {
     string extension;
     if(!files[idx].isDirectory() &&
-       instance().isValidRomName(files[idx].path(), extension))
+       LauncherFilterDialog::isValidRomName(files[idx].path(), extension))
     {
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)

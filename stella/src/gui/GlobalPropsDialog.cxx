@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalPropsDialog.cxx,v 1.2 2009-01-04 22:27:44 stephena Exp $
+// $Id: GlobalPropsDialog.cxx,v 1.3 2009-01-05 19:44:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,9 +33,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GlobalPropsDialog::
-  GlobalPropsDialog(GuiObject* boss, const GUI::Font& font, Settings& settings)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
-    mySettings(settings)
+  GlobalPropsDialog(GuiObject* boss, const GUI::Font& font)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -171,40 +170,43 @@ GlobalPropsDialog::~GlobalPropsDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalPropsDialog::loadConfig()
 {
-  myBSType->setSelected(mySettings.getString("bs"), "DEFAULT");
-  myLeftDiff->setSelected(mySettings.getString("ld"), "DEFAULT");
-  myRightDiff->setSelected(mySettings.getString("rd"), "DEFAULT");
-  myTVType->setSelected(mySettings.getString("tv"), "DEFAULT");
+  Settings& settings = instance().settings();
 
-  myHoldSelect->setState(mySettings.getBool("holdselect"));
-  myHoldReset->setState(mySettings.getBool("holdreset"));
-  myHoldButton0->setState(mySettings.getBool("holdbutton0"));
+  myBSType->setSelected(settings.getString("bs"), "DEFAULT");
+  myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");
+  myRightDiff->setSelected(settings.getString("rd"), "DEFAULT");
+  myTVType->setSelected(settings.getString("tv"), "DEFAULT");
+
+  myHoldSelect->setState(settings.getBool("holdselect"));
+  myHoldReset->setState(settings.getBool("holdreset"));
+  myHoldButton0->setState(settings.getBool("holdbutton0"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalPropsDialog::saveConfig()
 {
+  Settings& settings = instance().settings();
   string s;
 
   s = myBSType->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  mySettings.setString("bs", s);
+  settings.setString("bs", s);
 
   s = myLeftDiff->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  mySettings.setString("ld", s);
+  settings.setString("ld", s);
 
   s = myRightDiff->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  mySettings.setString("rd", s);
+  settings.setString("rd", s);
 
   s = myTVType->getSelectedTag();
   if(s == "DEFAULT") s = "";
-  mySettings.setString("tv", s);
+  settings.setString("tv", s);
 
-  mySettings.setBool("holdselect", myHoldSelect->getState());
-  mySettings.setBool("holdreset", myHoldReset->getState());
-  mySettings.setBool("holdbutton0", myHoldButton0->getState());
+  settings.setBool("holdselect", myHoldSelect->getState());
+  settings.setBool("holdreset", myHoldReset->getState());
+  settings.setBool("holdbutton0", myHoldButton0->getState());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

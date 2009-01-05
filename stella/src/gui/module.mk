@@ -22,6 +22,7 @@ MODULE_OBJS := \
 	src/gui/InputTextDialog.o \
 	src/gui/Launcher.o \
 	src/gui/LauncherDialog.o \
+	src/gui/LauncherFilterDialog.o \
 	src/gui/ListWidget.o \
 	src/gui/Menu.o \
 	src/gui/OptionsDialog.o \

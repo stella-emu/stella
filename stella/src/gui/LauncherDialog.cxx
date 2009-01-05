@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.97 2009-01-04 22:27:44 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.98 2009-01-05 19:44:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,11 +32,13 @@
 #include "MD5.hxx"
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
+#include "LauncherFilterDialog.hxx"
 #include "OSystem.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "RomInfoWidget.hxx"
 #include "Settings.hxx"
+#include "StringList.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 
@@ -56,6 +58,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myRomInfoWidget(NULL),
     myMenu(NULL),
     myGlobalProps(NULL),
+    myFilters(NULL),
     mySelectedItem(0)
 {
   const GUI::Font& font = instance().launcherFont();
@@ -171,10 +174,16 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   l.push_back("Reload listing", "reload");
   myMenu = new ContextMenu(this, osystem->font(), l);
 
-  // Create global props dialog, which is uses to to temporarily overrride
+  // Create global props dialog, which is used to temporarily overrride
   // ROM properties
-  myGlobalProps =
-    new GlobalPropsDialog(this, osystem->font(), osystem->settings());
+  myGlobalProps = new GlobalPropsDialog(this, osystem->font());
+
+  // Create dialog whereby the files shown in the ROM listing can be
+  // customized
+  myFilters = new LauncherFilterDialog(this, osystem->font());
+
+  // Figure out which filters are needed for the ROM listing
+  setListFilters();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,6 +192,8 @@ LauncherDialog::~LauncherDialog()
   delete myOptions;
   delete myGameList;
   delete myMenu;
+  delete myGlobalProps;
+  delete myFilters;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -191,7 +202,7 @@ string LauncherDialog::selectedRomMD5()
   string extension;
   int item = myList->getSelected();
   if(item < 0 || myGameList->isDir(item) ||
-     !instance().isValidRomName(myGameList->name(item), extension))
+     !LauncherFilterDialog::isValidRomName(myGameList->name(item), extension))
     return "";
 
   // Make sure we have a valid md5 for this ROM
@@ -302,8 +313,19 @@ void LauncherDialog::loadDirListing()
   {
     string name = files[idx].displayName();
     bool isDir = files[idx].isDirectory();
+
+    // Honour the filtering settings
+    // Showing only certain ROM extensions is determined by the extension
+    // that we want - if there are no extensions, it implies show all files
+    // In this way, showing all files is on the 'fast code path'
     if(isDir)
       name = " [" + name + "]";
+    else if(myRomExts.size() > 0)
+    {
+      // Skip over those names we've filtered out
+      if(!LauncherFilterDialog::isValidRomName(name, myRomExts))
+        continue;
+    }
 
     myGameList->appendGame(name, files[idx].path(), "", isDir);
   }
@@ -321,7 +343,7 @@ void LauncherDialog::loadRomInfo()
 
   string extension;
   if(!myGameList->isDir(item) &&
-     instance().isValidRomName(myGameList->name(item), extension))
+     LauncherFilterDialog::isValidRomName(myGameList->name(item), extension))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
@@ -348,12 +370,20 @@ void LauncherDialog::handleContextMenu()
   }
   else if(cmd == "filter")
   {
-    cerr << "TODO: add dialog for this\n";
+    parent().addDialog(myFilters);
   }
   else if(cmd == "reload")
   {
     updateListing();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void LauncherDialog::setListFilters()
+{
+  const string& exts = instance().settings().getString("launcherexts");
+  myRomExts.clear();
+  LauncherFilterDialog::parseExts(myRomExts, exts);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -406,7 +436,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             myCurrentNode = rom;
           updateListing();
         }
-        else if(!instance().isValidRomName(rom, extension) ||
+        else if(!LauncherFilterDialog::isValidRomName(rom, extension) ||
                 !instance().createConsole(rom, md5))
         {
           instance().frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
@@ -449,6 +479,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kReloadRomDirCmd:
+      updateListing();
+      break;
+
+    case kReloadFiltersCmd:
+      setListFilters();
       updateListing();
       break;
 

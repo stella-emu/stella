@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PopUpWidget.cxx,v 1.45 2009-01-01 18:13:38 stephena Exp $
+// $Id: PopUpWidget.cxx,v 1.46 2009-01-05 19:44:30 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -109,9 +109,12 @@ bool PopUpWidget::handleEvent(Event::Type e)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-  // Make sure the new entry is shown if it's changed
-  if(cmd == kCMenuItemSelectedCmd)
-    dialog().setDirty();
+  // Intercept all events sent through the PromptWidget
+  // They're likely from our ContextMenu, indicating a redraw is required
+  dialog().setDirty();
+
+  // Pass the cmd on to our parent
+  sendCommand(cmd, data, id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

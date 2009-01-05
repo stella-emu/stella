@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.hxx,v 1.39 2009-01-02 01:50:03 stephena Exp $
+// $Id: LauncherDialog.hxx,v 1.40 2009-01-05 19:44:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -31,6 +31,7 @@ class DialogContainer;
 class GameList;
 class OptionsDialog;
 class GlobalPropsDialog;
+class LauncherFilterDialog;
 class OSystem;
 class Properties;
 class RomInfoWidget;
@@ -39,13 +40,14 @@ class StringListWidget;
 
 #include "Dialog.hxx"
 #include "FSNode.hxx"
+#include "StringList.hxx"
 
-
-// These must be accessible from LauncherOptionsDialog
+// These must be accessible from dialogs created by this class
 enum {
   kRomDirChosenCmd  = 'romc',  // rom chosen
   kSnapDirChosenCmd = 'snpc',  // snap chosen
-  kReloadRomDirCmd  = 'rdrl'   // reload the current listing
+  kReloadRomDirCmd  = 'rdrl',  // reload the current listing
+  kReloadFiltersCmd = 'rlfl'   // reload filtering options and current listing
 };
 
 class LauncherDialog : public Dialog
@@ -75,6 +77,7 @@ class LauncherDialog : public Dialog
     void loadDirListing();
     void loadRomInfo();
     void handleContextMenu();
+    void setListFilters();
 
   private:
     ButtonWidget* myStartButton;
@@ -91,12 +94,16 @@ class LauncherDialog : public Dialog
     OptionsDialog*    myOptions;
     RomInfoWidget*    myRomInfoWidget;
 
-    ContextMenu*       myMenu;
-    GlobalPropsDialog* myGlobalProps;
+    ContextMenu*          myMenu;
+    GlobalPropsDialog*    myGlobalProps;
+    LauncherFilterDialog* myFilters;
 
     int mySelectedItem;
     int myRomInfoSize;
     FilesystemNode myCurrentNode;
+
+    bool myShowDirs;
+    StringList myRomExts;
 
     enum {
       kStartCmd   = 'STRT',

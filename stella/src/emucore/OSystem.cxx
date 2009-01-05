@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.142 2009-01-04 22:27:43 stephena Exp $
+// $Id: OSystem.cxx,v 1.143 2009-01-05 19:44:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -508,22 +508,6 @@ string OSystem::getROMInfo(const string& romfile)
     result = "ERROR: Couldn't get ROM info for " + romfile + " ...";
 
   return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::isValidRomName(const string& filename, string& extension) const
-{
-  string::size_type idx = filename.find_last_of('.');
-  if(idx != string::npos)
-  {
-    extension = filename.substr(idx+1);
-    return BSPF_strncasecmp(extension.c_str(), "bin", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "a26", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "zip", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "rom", 3) == 0 ||
-           BSPF_strncasecmp(extension.c_str(), "gz", 2)  == 0 ;
-  }
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

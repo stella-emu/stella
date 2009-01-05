@@ -41,7 +41,7 @@ X * Add infrastructure to show all info gathered from a ROM (similar to what
     but will pick up on errors when a ROM doesn't start from every bank.
 
   * More work to the ROM launcher, including at least the following:
-     (1) Only show files with certain extensions (including a UI part to
+X    (1) Only show files with certain extensions (including a UI part to
          edit this).
 
      (2) Shortcut key where selecting the first few letters jumps to a
