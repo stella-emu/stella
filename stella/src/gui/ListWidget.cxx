@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.53 2009-01-04 02:28:12 stephena Exp $
+// $Id: ListWidget.cxx,v 1.54 2009-01-05 22:05:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -241,7 +241,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       _quickSelectStr = (char)ascii;
     else
       _quickSelectStr += (char)ascii;
-    _quickSelectTime = time + 300; 
+    _quickSelectTime = time + _QUICK_SELECT_DELAY;
 
     // FIXME: This is bad slow code (it scans the list linearly each time a
     // key is pressed); it could be much faster. Only of importance if we have
@@ -463,3 +463,6 @@ void ListWidget::abortEditMode()
   // Reset to normal data entry
   EditableWidget::abortEditMode();
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int ListWidget::_QUICK_SELECT_DELAY = 300;

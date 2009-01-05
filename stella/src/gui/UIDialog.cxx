@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.19 2009-01-04 22:27:44 stephena Exp $
+// $Id: UIDialog.cxx,v 1.20 2009-01-05 22:05:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -25,6 +25,7 @@
 
 #include "Dialog.hxx"
 #include "OSystem.hxx"
+#include "ListWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
@@ -190,6 +191,21 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPalettePopup);
   ypos += lineHeight + 4;
 
+  // Delay between quick-selecting characters in ListWidget
+  myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                       lineHeight, "List quick delay: ",
+                                       lwidth, kLQDelayChanged);
+  myListDelaySlider->setMinValue(300);
+  myListDelaySlider->setMaxValue(1000);
+  myListDelaySlider->setStepValue(100);
+  wid.push_back(myListDelaySlider);
+  myListDelayLabel =
+      new StaticTextWidget(myTab, font,
+                           xpos + myListDelaySlider->getWidth() + 4,
+                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
+  myListDelayLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
   // Number of lines a mouse wheel will scroll
   myWheelLinesSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                         lineHeight, "Mouse wheel scroll: ",
@@ -278,6 +294,12 @@ void UIDialog::loadConfig()
   const string& pal = instance().settings().getString("uipalette");
   myPalettePopup->setSelected(pal, "1");
 
+  // Listwidget quick delay
+  int delay = instance().settings().getInt("listdelay");
+  if(delay < 300 || delay > 1000) delay = 300;
+  myListDelaySlider->setValue(delay);
+  myListDelayLabel->setValue(delay);
+
   // Mouse wheel lines
   int mw = instance().settings().getInt("mwheel");
   if(mw < 1 || mw > 10) mw = 1;
@@ -309,6 +331,11 @@ void UIDialog::saveConfig()
   // UI palette
   instance().settings().setString("uipalette",
     myPalettePopup->getSelectedTag());
+
+  // Listwidget quick delay
+  int delay = myListDelaySlider->getValue();
+  instance().settings().setInt("listdelay", delay);
+  ListWidget::setQuickSelectDelay(delay);
 
   // Mouse wheel lines
   int mw = myWheelLinesSlider->getValue();
@@ -343,6 +370,8 @@ void UIDialog::setDefaults()
 
     case 2:  // Misc. options
       myPalettePopup->setSelected("1", "1");
+      myListDelaySlider->setValue(300);
+      myListDelayLabel->setValue(300);
       myWheelLinesSlider->setValue(4);
       myWheelLinesLabel->setValue(4);
       break;
@@ -373,6 +402,10 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDHeightChanged:
       myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
+      break;
+
+    case kLQDelayChanged:
+      myListDelayLabel->setValue(myListDelaySlider->getValue());
       break;
 
     case kWLinesChanged:

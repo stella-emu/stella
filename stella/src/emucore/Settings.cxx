@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.155 2009-01-05 19:44:29 stephena Exp $
+// $Id: Settings.cxx,v 1.156 2009-01-05 22:05:35 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -96,6 +96,7 @@ Settings::Settings(OSystem* osystem)
   // UI-related options
   setInternal("debuggerres", "1030x690");
   setInternal("uipalette", "0");
+  setInternal("listdelay", "300");
   setInternal("mwheel", "4");
 
   // Misc options
@@ -339,6 +340,7 @@ void Settings::usage()
     << "                 allroms|        (exts is a ':' separated list of extensions\n"
     << "                 exts\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
+    << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
     << "  -statedir     <dir>          Directory in which to save state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"

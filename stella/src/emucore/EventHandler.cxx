@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.235 2009-01-03 22:57:12 stephena Exp $
+// $Id: EventHandler.cxx,v 1.236 2009-01-05 22:05:35 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -33,6 +33,7 @@
 #include "Joystick.hxx"
 #include "Paddles.hxx"
 #include "PropsSet.hxx"
+#include "ListWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
 #include "Snapshot.hxx"
@@ -144,6 +145,9 @@ void EventHandler::initialize()
 
   Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
   Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
+
+  // Set quick select delay when typing characters in listwidgets
+  ListWidget::setQuickSelectDelay(myOSystem->settings().getInt("listdelay"));
 
   // Set number of lines a mousewheel will scroll
   ScrollBarWidget::setWheelLines(myOSystem->settings().getInt("mwheel"));

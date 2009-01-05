@@ -48,7 +48,7 @@ X    (1) Only show files with certain extensions (including a UI part to
          directory named that way.  Basically the same as is currently
          done for ROMs.
 
-     (3) Have time between keypresses be configurable when jumping to files.
+X    (3) Have time between keypresses be configurable when jumping to files.
 
 X    (4) Reload current listing (possibly tied to a RMB context menu).
 

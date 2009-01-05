@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.24 2009-01-04 02:28:12 stephena Exp $
+// $Id: ListWidget.hxx,v 1.25 2009-01-05 22:05:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -77,6 +77,8 @@ class ListWidget : public EditableWidget
     void startEditMode();
     void endEditMode();
 
+    static void setQuickSelectDelay(int time) { _QUICK_SELECT_DELAY = time; }
+
   protected:
     virtual void drawWidget(bool hilite)  = 0;
     virtual GUI::Rect getEditRect() const = 0;
@@ -111,6 +113,9 @@ class ListWidget : public EditableWidget
     string     _backupString;
     string     _quickSelectStr;
     int        _quickSelectTime;
+
+  private:
+    static int _QUICK_SELECT_DELAY;
 };
 
 #endif
