@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.98 2009-01-05 19:44:29 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.99 2009-01-05 20:33:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -393,8 +393,8 @@ void LauncherDialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Control-R (reload ROM listing)
   if(instance().eventHandler().kbdControl(modifiers) && keycode == 'r')
     updateListing();
-
-  Dialog::handleKeyDown(ascii, keycode, modifiers);
+  else
+    Dialog::handleKeyDown(ascii, keycode, modifiers);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
