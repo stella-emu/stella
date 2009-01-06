@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.cxx,v 1.74 2009-01-01 18:13:38 stephena Exp $
+// $Id: Dialog.cxx,v 1.75 2009-01-06 23:02:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -567,27 +567,32 @@ Widget* Dialog::findWidget(int x, int y)
 }
 
  // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font)
+void Dialog::addOKCancelBGroup(WidgetArray& wid, const GUI::Font& font,
+                               const string& okText, const string& cancelText)
 {
   int buttonWidth  = font.getStringWidth("Cancel") + 15;
   int buttonHeight = font.getLineHeight() + 4;
   ButtonWidget* b;
 #ifndef MAC_OSX
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "OK", kOKCmd);
+                       buttonWidth, buttonHeight,
+                       okText == "" ? "OK" : okText, kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
   b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Cancel", kCloseCmd);
+                       buttonWidth, buttonHeight,
+                       cancelText == "" ? "Cancel" : cancelText, kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
 #else
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "Cancel", kCloseCmd);
+                       buttonWidth, buttonHeight,
+                       cancelText == "" ? "Cancel" : cancelText, kCloseCmd);
   wid.push_back(b);
   addCancelWidget(b);
   b = new ButtonWidget(this, font, _w - (buttonWidth + 10), _h - buttonHeight - 10,
-                       buttonWidth, buttonHeight, "OK", kOKCmd);
+                       buttonWidth, buttonHeight,
+                       okText == "" ? "OK" : okText, kOKCmd);
   wid.push_back(b);
   addOKWidget(b);
 #endif

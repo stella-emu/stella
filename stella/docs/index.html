@@ -218,12 +218,15 @@
 	software.  Stella is written in C++, which allows it to be ported to other
 	operating systems and architectures.  Since its original release Stella has
 	been ported to AcornOS, AmigaOS, DOS, FreeBSD, Linux, MacOS, OpenStep, OS/2,
-    Sega Dreamcast, Unix, and Windows.
+    Unix, and Windows, as well as consoles such as Sega Dreamcast, GP2X, Nintendo
+	DS and Playstation Portable (among others).
 	</p>
 
-	<h2><b>New in Release 2.6.1</b></h2>
+	<h2><b>New in Release 2.7</b></h2>
 
 	<ul>
+<li>FIXME - add info</li>
+<!--
 <li>Introduced more accurate timing for NTSC vs. PAL modes, where the
     framerate is based on the number of scanlines per frame.  This should
     eliminate 'clicking' sounds when emulating ROMs that don't follow
@@ -265,6 +268,7 @@
 
 <li>Fixed bug in CommandMenu where console buttons (Select, Reset, etc)
     weren't doing anything.</li>
+-->
 	</ul>
 
 	<p>
@@ -288,8 +292,8 @@
 		<li>Support for real Atari 2600 controllers using the
 			<a href="http://www.pixelspast.com/products">Stelladaptor</a></li>
 		<li>Support for the speech portion of a real  
-			<a href="http://www.atariage.com/store/product_info.php?products_id=295">
-			AtariVox</a> device using a USB adaptor</li>
+			<a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
+			AtariVox</a> device connected to your PC using a USB adaptor</li>
 		<li>Supports EEPROM emulation for AtariVox and SaveKey controllers</li>
 		<li>Supports almost all known bankswitching schemes (let us know if there's one we missed)</li>
 		<li>Supports cartridge autodetection for almost all bankswitching schemes</li>
@@ -336,11 +340,11 @@
 	the following:</p>
 	<ul>
 		<li>Linux Kernel 2.4.x, Linux Kernel 2.6.x is highly recommended</li>
-		<li>GNU C++ compiler version 2.95 and the make utility are required for compiling
-			the Stella source code; GNU C++ compiler version 3.2.x/4.x or later is highly
-			recommended</li>
-		<li>i386, x86_64 or PowerPC class machine, in either 32 or 64-bit mode</li>
-		<li>Other architectures (MIPS, PPC64, etc) have been confirmed to work as well</li>
+		<li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
+		<li>Other architectures (MIPS, PPC, PPC64, etc) have been confirmed to work,
+			but aren't as well tested as i386/x86_64</li>
+		<li>GNU C++ compiler version 3.2.x or 4.x and the make utility are required for compiling
+			the Stella source code</li>
 	</ul>
 
 	<p>
@@ -349,11 +353,12 @@
 	<p>The Mac version of Stella is designed to work on a Power Macintosh with
 	the following:</p>
 	<ul>
-		<li>Mac OSX 10.2 or Above</li>
+		<li>Mac OSX 10.3 or Above</li>
 		<li>500 MHz G4 PPC/Intel processor or above (Stella <b>may</b> work with a G3
 			processor, but this is still a work-in-progress)</li>
 		<li>OpenGL capable video card.  Software rendering mode is still available,
 			but as of OSX 10.4 is substandard compared to OpenGL.</li>
+		<li>Xcode 3.0 is required to compile the Stella source code</li>
 	</ul>
 
 	<p>
@@ -363,20 +368,22 @@
 	with the following:</p>
 
 	<ul>
-		<li>Visual C++ 7/8 or MinGW compiler is required to compile the Stella
-			source code</li>
 		<li>Pentium class machine required; OpenGL accelerated video card highly
 			recommended</li>
+		<li>Experimental 64-bit port has been tested on Vista64 only; it may work on
+			WinXP64 as well, but isn't a priority</li>
+		<li>Visual C++ 2008 or MinGW compiler is required to compile the Stella
+			source code</li>
 	</ul>
 
 	<p>
 	<h2><b>Other</b></h2>
 
 	<p>Stella is extremely portable, and in its lifetime has been ported to almost every
-	platform known.  It is 32/64 bit clean in Linux/Unix and Windows (Win32/Win64), and
-	is expected to be compatible with 64-bit OSX as well.  The Stella team is interested
-	in hearing about any problems you may encounter with diverse operating systems and
-	CPU types.</p>
+	platform where the SDL library exists.  It is 32/64 bit clean in Linux/Unix and Windows
+	(Win32/Win64), and is expected to be compatible with 64-bit OSX as well.  The Stella
+	team is interested in hearing about any problems you may encounter with diverse
+	operating systems and CPU types.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -384,9 +391,11 @@
 	<p><h1>
 	<a name="Installation">3. Installation</a></h1>
 	<hr>
-	<p>Stella is distributed in both source and binary form.  Once you have a Stella
-	distribution you should follow the instructions for	your operating system given
-	below.</p>
+	<p>Stella is distributed in both source and binary form.  In general, you should always
+	download and install the appropriate binary version.  Compiling from source is only
+	recommended for developers, or if the binary version doesn't work for some reason.
+	Once you have a Stella distribution you should follow the instructions for your
+	operating system given below.</p>
 
 	<p>If you have a supported joystick and driver installed and SDL can access the device,
 	you can play games using joysticks.</p>
@@ -397,66 +406,84 @@
 	<p>
 	<h2><b>Linux/UNIX</b></h2>
 	<ul>
-		<li><b>Compressed tarball</b> (stella-<i>release</i>-src.tar.gz)</li>
-		<ol>
-			<li>Extract files from the distribution:
-				<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-			<li>Change directories to the stella-<i>release</i> directory</li>
-
-			<li>Configure the build with the following command:
-				<pre>   ./configure (--help for list of options)</pre></li>
-			<li>Build the executable with the following command:
-				<pre>   make</pre></li>
-			<li>Install the executable with the following command:
-				<pre>   make install</pre></li>
-		</ol>
-		<li><b>Binary DEB</b> (stella-<i>release</i>-1_arch.deb)</li>
-		<ol>
-			<li>Install the binary DEB with the following command:
-				<pre>   dpkg -i stella-<i>release</i>-1_arch.deb</pre></li>
-		</ol>
-		<li><b>Binary RPM</b> (stella-<i>release</i>-1.ix86.rpm)</li>
-		<ol>
-			<li>Install the binary RPM with the following command:
-				<pre>   rpm -Uvh stella-<i>release</i>-1.ix86.rpm</pre></li>
-		</ol>
+		<li><b>Binary DEB</b> (stella-<i>release</i>-1_arch.deb)
+			<ol>
+				<li>Install the binary DEB with the following command:
+					<pre>   dpkg -i stella-<i>release</i>-1_arch.deb</pre></li>
+			</ol>
+		</li>
+		<li><b>Binary RPM</b> (stella-<i>release</i>-1.arch.rpm)
+			<ol>
+				<li>Install the binary RPM with the following command:
+					<pre>   rpm -Uvh stella-<i>release</i>-1.arch.rpm</pre></li>
+			</ol>
+		</li>
+		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
+			<ol>
+				<li>Extract files from the distribution:
+					<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
+				<li>Change directories to the stella-<i>release</i> directory</li>
+				<li>Configure the build with the following command:
+					<pre>   ./configure (--help for list of options)</pre></li>
+				<li>Build the executable with the following command:
+					<pre>   make</pre></li>
+				<li>Install the executable with the following command:
+					<pre>   make install</pre></li>
+			</ol>
+		</li>
 	</ul>
 
 	<p>
 	<h2><b>Macintosh</b></h2>
-
-	<p>To install the Mac binary, simply download the DMG disk
-	image.  Mount the disk image, then copy the StellaOSX<i>release</i> folder to
-	your hard drive.<br>
-	</p>
+	<ul>
+		<li><b>Binary DMG file</b> (StellaOSX<i>release</i>.dmg)
+			<ol>
+				<li>Mount the disk image, then copy the StellaOSX<i>release</i> folder to
+				your hard drive.</li>
+			</ol>
+		</li>
+		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
+			<ol>
+				<li>Extract files from the distribution using an archiving program that supports
+					gzipped tar files</li>
+				<li>Open the <b>stella-<i>release</i>/src/macosx/stella.xcodeproj</b>
+					file using Xcode 3.0</li>
+				<li>Build the 'Stella' project</li>
+				<li>Copy the <b>StellaOSX.app</b> package somewhere on your system</li>
+			</ol>
+		</li>
+	</ul>
 
 	<p>
 	<h2><b>Windows</b></h2>
 	<ul>
-		<li><b>Compressed tarball</b> (stella-<i>release</i>-src.tar.gz)</li>
-		<ol>
-			<li>Extract files from the distribution using <b>Winzip</b>,
-				<b>Total Commander</b>, or some other archiving program that supports
-				gzipped tar files</li>
-			<li>If compiling the Stella executable using MinGW, use the same commands
-				as specified under <i>Linux/UNIX - Compressed tarball</i></li>
-			<li>If compiling using Visual C++ 7:</li>
-			<ul>
-				<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
-					file using Visual C++ 7</li>
-				<li>Build the 'Stella' solution</li>
-				<li>Copy the <b>Stella.exe</b> file	to some directory</li>
-			</ul>
-		</ol>
-		<li><b>Binary ZIP file</b> (stella-<i>release</i>-win32.zip)</li>
-		<ol>
-			<li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b>
-				and copy that directory somewhere</li>
-		</ol>
-		<li><b>Binary EXE installer</b> (stella-<i>release</i>-win32.exe)</li>
-		<ol>
-			<li>Double-click on the installer and follow the onscreen instructions</li>
-		</ol>
+		<li><b>Binary EXE installer</b> (stella-<i>release</i>-win32.exe)
+			<ol>
+				<li>Double-click on the installer and follow the onscreen instructions</li>
+			</ol>
+		</li>
+		<li><b>Binary ZIP file</b> (stella-<i>release</i>-win32.zip)
+			<ol>
+				<li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b>
+					and copy that directory somewhere</li>
+			</ol>
+		</li>
+		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
+			<ol>
+				<li>Extract files from the distribution using <b>Winzip</b>,
+					<b>Total Commander</b>, or some other archiving program that supports
+					gzipped tar files</li>
+				<li>If compiling the Stella executable using MinGW, use the same commands
+					as specified under <i>Linux/UNIX - Compressed tarball</i></li>
+				<li>If compiling using Visual C++ 7:</li>
+				<ul>
+					<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
+						file using Visual C++ 7</li>
+					<li>Build the 'Stella' solution</li>
+					<li>Copy the <b>Stella.exe</b> file	somewhere on your system</li>
+				</ul>
+			</ol>
+		</li>
 	</ul>
 
 
@@ -539,30 +566,49 @@
 	<p>
 	<h2><b>Integrated GUI</b></h2>
 
-	<p>As of Stella version 2.0, there is an integrated GUI for all ports.  This means
-	that using the commandline is no longer required (but commandline support is still
-	included for those who want to use it).</p>
+	<p>Stella contains an integrated GUI for all ports.  Commandline support is also
+	available for those who want to use it.</p>
 
 	<p>If you start Stella and do not specify a ROM image, it will start in
 	'ROM Launcher' mode:<br><br>
 	<img src="graphics/launcher.png"></p>
 
-	<p>The ROM browser, snapshot, and external file settings may be changed by
-	clicking the 'Options / Config Files' button:<br><br>
-	<img src="graphics/launcher_options_files.png"></p>
+	<p>If this is your first time starting Stella, you'll probably want to set the locations
+	for ROM files, snapshots, and other external paths.  These items are accessible by clicking
+	the <b>Options =&gt; Config Files</b> buttons.  Many other options can be set here,
+	but for now we'll concentrate on <i>Config Files</i> only:</p>
+	<table>
+		<tr>
+			<td><p><b>Config Files</b> dialog:</p><p><img src="graphics/launcher_options_files.png"></p></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td valign="top">
+				<table border="1" cellpadding="4">
+					<tr><th>Item</th><th>Description</th><th>Commandline</th></tr>
+					<tr><td>Rom path</td><td>specifies location of ROM files</td><td>-romdir</td></tr>
+					<tr><td>State path</td><td>specifies location of state files</td><td>-statedir</td></tr>
+					<tr><td>Cheat file</td><td>specifies location of cheatfile database</td><td>-cheatfile</td></tr>
+					<tr><td>Palette file</td><td>specifies location of user palette</td><td>-palettefile</td></tr>
+					<tr><td>Properties file </td><td>specifies location of external stella.pro database</td><td>-propsfile</td></tr>
+					<tr><td>Snapshot path</td><td>specifies where to load/save snapshots</td><td>-ssdir</td></tr>
+					<tr><td>Multiple snapshots</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
+					<tr><td>Snapshot in 1x mode</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 
-	<p>Selecting a new path for an item is done by clicking the appropriate button(s):<br><br>
-	<img src="graphics/rom_browser.png"></p>
+	<p>Selecting a new path for an item is done by clicking the appropriate button(s)
+	(in this case, 'Rom path' was selected):</p>
+	<p><img src="graphics/rom_browser.png"></p>
 
-	<p>You can start emulation by selecting a ROM and pressing 'Enter' or
-	clicking 'Select', or double-clicking a ROM.</p>
+	<p>Once you've changed your settings, you can start emulation by selecting a ROM
+	and pressing 'Enter' or clicking 'Select', or double-clicking a ROM.</p>
 
 	<p>
 	<h2><b>Command Line</b></h2>
 
 	<p>Stella can also be used from the commandline (assuming your operating system
-	has a commandline).  When using this mode and specifying a ROM, the ROM launcher
-	is disabled.</p>
+	has a commandline).</p>
 
 	<p>To run Stella from the commandline, use the following format:</p>
 
@@ -1005,15 +1051,14 @@
 	<a name="Options">6. Changing Options</a></h1>
 	<hr>
 
-	<p>As of version 2.0, all settings can be changed within the integrated Options
-	GUI while Stella is running.  The options are documented elsewhere in this manual
-	and are generally self-explanatory.  The Options menu can be accessed from
-	the ROM launcher by clicking the 'Options' button, or in-game by pressing the
-	'Tab' key.</p>
+	<p>All settings can be changed within the integrated Options UI while Stella is
+	running (unless otherwise noted - some settings require an application restart).
+	The Options menu can be accessed from the ROM launcher by clicking the
+	<b>Options</b> button, or in-game by pressing the 'Tab' key.</p>
 
 	<p><b>Options Menu</b> dialog:<br><br>
 	<img src="graphics/options.png">
-	<br><br><br>
+	<br><br>
 
 	<p><b>Video Settings</b> dialog:<br><br>
 	<img src="graphics/options_video.png">
@@ -2103,11 +2148,9 @@
 				the format was auto-detected as 'NTSC'.</li>
 			<li>Cartridge information.  If the characters 'AUTO =&gt;' are present,
 				it means the bankswitch format was auto-detected as shown.  The item
-				in round brackets indicates ROM size.  The item in square brackets
-				indicates the starting bank(s) used by the cart.
-				For the given example, the bankswitch type was auto-detected as 4K,
-				the file size was 4K (4096 bytes), and the start bank was 0
-				(since a 4K ROM has only one bank). FIXME - image must be updated</li>
+				in round brackets indicates ROM size.  For the given example,
+				the bankswitch type was auto-detected as 4K, and the file size was
+				4K (4096 bytes).</li>
 			</li>
 		</ol></p></li>
 	</ul></p>

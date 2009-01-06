@@ -33,12 +33,7 @@ X * Add infrastructure to show all info gathered from a ROM (similar to what
     is currently displayed on the commandline).  Add a UI part for this, so
     users aren't forced to use the commandline to see it.
 
-  * Research starting bank for 8K/F8 ROMs.  Probably default should be 0
-    instead of 1.
-
-  * Add commandline argument to randomly generate startup bank for all ROMs
-    bigger than 4K.  Shouldn't make a difference for all 'well-designed' ROMS,
-    but will pick up on errors when a ROM doesn't start from every bank.
+  * Fix issue with paddle support in Activision Casino ROM.
 
   * More work to the ROM launcher, including at least the following:
 X    (1) Only show files with certain extensions (including a UI part to
@@ -52,10 +47,20 @@ X    (3) Have time between keypresses be configurable when jumping to files.
 
 X    (4) Reload current listing (possibly tied to a RMB context menu).
 
+  * Add new TIA infrastructure with improved HMOVE emulation
+
+  * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
+    thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.
+
   * Research lockups in Stay Frosty ROM.  Test out sample state file in
     AtariAge email.
 
-  * Fix issue with paddle support in Activision Casino ROM.
+  * Research starting bank for 8K/F8 ROMs.  Probably default should be 0
+    instead of 1.
+
+  * Add commandline argument to randomly generate startup bank for all ROMs
+    bigger than 4K.  Shouldn't make a difference for all 'well-designed' ROMS,
+    but will pick up on errors when a ROM doesn't start from every bank.
 
   * More support for copy and paste.
 
@@ -66,14 +71,9 @@ X    (4) Reload current listing (possibly tied to a RMB context menu).
   * Fix Props.cxx (or GameInfoDialog) to properly deal with quotes and
     backslashes in strings meant to be saved to the properties file.
 
-  * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
-    thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.
-
   * Extra controllers (KidVid, Lightgun)
 
   * Fix "Tron Man Picture Cart" (32K Tigervision bankswitching) issue
-
-  * Add new TIA infrastructure with improved HMOVE emulation
 
   * Possible 'trace mode' in debugger (generate a file containing all
     internal state)

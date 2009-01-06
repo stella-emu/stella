@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.60 2009-01-04 22:27:44 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.61 2009-01-06 23:02:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -55,7 +55,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 46 * fontWidth + 10;
-  _h = 11 * (lineHeight + 4) + 10;
+  _h = 12 * (lineHeight + 4) + 10;
 
   xpos = 5;  ypos = 10;
 
@@ -102,6 +102,15 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
                                  lineHeight, items, "FS Res: ", lwidth);
   wid.push_back(myFSResPopup);
+  ypos += lineHeight + 4;
+
+  // Timing to use between frames
+  items.clear();
+  items.push_back("Sleep", "sleep");
+  items.push_back("Busy-wait", "busy");
+  myFrameTimingPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                                       items, "Timing (*): ", lwidth);
+  wid.push_back(myFrameTimingPopup);
   ypos += lineHeight + 4;
 
   // GL Video filter
@@ -235,9 +244,13 @@ void VideoDialog::loadConfig()
   myFSResPopup->setSelected(
     instance().settings().getString("fullres"), "auto");
 
+  // Wait between frames
+  myFrameTimingPopup->setSelected(
+    instance().settings().getString("timing"), "sleep");
+
   // GL Filter setting
   myGLFilterPopup->setSelected(
-    instance().settings().getString("gl_filter"), "linear");
+    instance().settings().getString("gl_filter"), "nearest");
   myGLFilterPopup->setEnabled(gl);
 
   // GL aspect ratio setting
@@ -286,6 +299,9 @@ void VideoDialog::saveConfig()
   // Fullscreen resolution
   instance().settings().setString("fullres", myFSResPopup->getSelectedTag());
 
+  // Wait between frames
+  instance().settings().setString("timing", myFrameTimingPopup->getSelectedTag());
+
   // GL Filter setting
   instance().settings().setString("gl_filter", myGLFilterPopup->getSelectedTag());
 
@@ -333,7 +349,8 @@ void VideoDialog::setDefaults()
 #endif
   myTIAPalettePopup->setSelected("standard", "");
   myFSResPopup->setSelected("auto", "");
-  myGLFilterPopup->setSelected("linear", "");
+  myFrameTimingPopup->setSelected("sleep", "");
+  myGLFilterPopup->setSelected("nearest", "");
   myAspectRatioSlider->setValue(100);
   myAspectRatioLabel->setLabel("100");
   myFrameRateSlider->setValue(0);

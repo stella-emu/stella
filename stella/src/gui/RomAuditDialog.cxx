@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.10 2009-01-05 19:44:30 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.11 2009-01-06 23:02:18 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -86,7 +86,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add OK and Cancel buttons
   wid.clear();
-  addOKCancelBGroup(wid, font);
+  addOKCancelBGroup(wid, font, "Audit", "Done");
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
