@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.154 2009-01-03 22:57:12 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.155 2009-01-06 23:14:34 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -597,7 +597,8 @@ bool FrameBuffer::changeVidMode(int direction)
     if(!inUIMode)
     {
       setCursorState();
-      showMessage(vidmode.gfxmode.description);
+      if(direction != 0)  // only show message when mode actually changes
+        showMessage(vidmode.gfxmode.description);
     }
     if(saveModeChange)
       myOSystem->settings().setString("tia_filter", vidmode.gfxmode.name);
