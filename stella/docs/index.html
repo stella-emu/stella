@@ -29,7 +29,7 @@
 		<li><a href="#ROMAudit">ROM Audit Mode</a></li>
 		<li><a href="#Adaptor">Stelladaptor Support</a></li>
 		<li><a href="#AtariVox">AtariVox/SaveKey Support</a></li>
-		<li><a href="#Debugger">Integrated Debugger</a></li>
+		<li><a href="#Debugger">Developer Options/Integrated Debugger</a></li>
 		<li><a href="#Settings">Settings File</a></li>
 		<li><a href="#Cheats">Cheatcode Manager</a></li>
 		<li><a href="#Properties">Game Properties</a></li>
@@ -778,11 +778,6 @@
 		</tr>
 
 		<tr>
-			<td><pre>-stats &lt;0|1&gt;</pre></td>
-			<td>Overlay console info on the TIA image during emulation.</td>
-		</tr>
-
-		<tr>
 			<td><pre>-listrominfo</pre></td>
 			<td>Prints relevant contents of the Stella ROM database, one ROM per line,
 				and then exit Stella.  This can be used for external frontends.</td>
@@ -850,11 +845,6 @@
 		</tr>
 
 		<tr>
-			<td><pre>-tiafloat &lt;1|0&gt;</pre></td>
-			<td>Set unused TIA pins to be floating on a read/peek.</td>
-		</tr>
-
-		<tr>
 			<td><pre>-avoxport &lt;name&gt;</pre></td>
 			<td>Set the name of the serial port where an AtariVox is connected.</td>
 		</tr>
@@ -905,7 +895,17 @@
 			<td><pre>-holdbutton0</pre></td>
 			<td>Start the emulator with the left joystick button held down.</td>
 		</tr>
-	
+
+		<tr>
+			<td><pre>-stats &lt;1|0&gt;</pre></td>
+			<td>Overlay console info on the TIA image during emulation.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-tiafloat &lt;1|0&gt;</pre></td>
+			<td>Set unused TIA pins to be floating on a read/peek.</td>
+		</tr>
+
 		<tr>
 			<td><pre>-bs &lt;type&gt;</pre></td>
 			<td>Set "Cartridge.Type" property.  See the <i>Game Properties</i> section
@@ -1619,6 +1619,60 @@
 			<td>Control + PageDown</td>
 			<td>Cmd + PageDown</td>
 		</tr>
+
+		<tr>
+			<td>Toggle frame stats (scanline count/fps/bs type/etc)</td>
+			<td>Alt + l</td>
+			<td>Shift-Cmd + l</td>
+		</tr>
+
+		<tr>
+			<td>Toggle TIA Player0 object</td>
+			<td>Alt + z</td>
+			<td>Shift-Cmd + z</td>
+		</tr>
+
+		<tr>
+			<td>Toggle TIA Player1 object</td>
+			<td>Alt + x</td>
+			<td>Shift-Cmd + x</td>
+		</tr>
+
+		<tr>
+			<td>Toggle TIA Missile0 object</td>
+			<td>Alt + c</td>
+			<td>Shift-Cmd + c</td>
+		</tr>
+
+		<tr>
+			<td>Toggle TIA Missile1 object</td>
+			<td>Alt + v</td>
+			<td>Shift-Cmd + v</td>
+		</tr>
+
+		<tr>
+			<td>Toggle TIA Ball object</td>
+			<td>Alt + b</td>
+			<td>Shift-Cmd + b</td>
+		</tr>
+
+		<tr>
+			<td>Toggle TIA Playfield object</td>
+			<td>Alt + n</td>
+			<td>Shift-Cmd + n</td>
+		</tr>
+
+		<tr>
+			<td>Turn all TIA objects off</td>
+			<td>Alt + .</td>
+			<td>Shift-Cmd + .</td>
+		</tr>
+
+		<tr>
+			<td>Turn all TIA objects on</td>
+			<td>Alt + /</td>
+			<td>Shift-Cmd + /</td>
+		</tr>
 	</table>
 
 	<p><b>Other Keys (cannot be remapped, except those marked with '*')</b></p>
@@ -1648,13 +1702,6 @@
 			<td>Cmd + Enter</td>
 		</tr>
 
-<!--
-		<tr>
-			<td>Toggle OpenGL filtering modes</td>
-			<td>Alt + f</td>
-			<td>Shift-Cmd + f</td>
-		</tr>
--->
 		<tr>
 			<td>Decrease volume (*)</td>
 			<td>Alt + [</td>
@@ -1743,12 +1790,6 @@
 			<td>Toggle PAL color-loss effect</td>
 			<td>Control + l</td>
 			<td>Cmd + l</td>
-		</tr>
-
-		<tr>
-			<td>Toggle frame stats (scanline count/fps/bs type/etc)</td>
-			<td>Alt + l</td>
-			<td>Shift-Cmd + l</td>
 		</tr>
 	</table>
 
@@ -2029,14 +2070,51 @@
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
-	<br>
+	<br><br>
 	<p><h1>
-	<a name="Debugger">13. Integrated Debugger</a></h1>
+	<a name="Debugger">13. Developer Options/Integrated Debugger</a></h1>
 	<hr>
 
-	<p>Have a look at <a href="debugger.html">this page</a> for integrated debugger
-	documentation.
+	<p>Many options are available for ROM developers, which are described in
+	different sections of this manual, as follows:</p>
 
+	<p><ul>
+		<li>Developer key-combo shortcuts, used to change TIA state dynamically
+		(ie, while the emulation is still running).  See <b>Section 7 - 
+		<a href="#Keyboard">Keyboard Layout</a></b> for more information.</li>
+
+		<li>Commandline options influencing emulation state.  See the <b>Command
+		Line</b> options under <b>Section 5 - <a href="#Starting">Starting a Game</a></b>)
+		for more information.</li>
+
+		<li>Viewing TIA/console information overlaid on the TIA image.  This option
+		can be enabled from the commandline or using the Alt/ShiftCmd-l key combo,
+		and is extremely useful for viewing the current scanline count and associated
+		frames per second, bankswitch and display formats, etc.  The following shows
+		an example of this information:
+		<p><img src="graphics/developer_stats.png"></p>
+		<p>The three lines of output describe the following:
+		<ol>
+			<li>Number of scanlines in current frame, and associated framerate.  Note
+				that the framerate shown is the <i>internal</i> framerate (it's
+				calculated from the number of scanlines).</li>
+			<li>Display format.  If the characters 'AUTO =&gt;' are present, it means
+				the display format was auto-detected as shown.  For the given example,
+				the format was auto-detected as 'NTSC'.</li>
+			<li>Cartridge information.  If the characters 'AUTO =&gt;' are present,
+				it means the bankswitch format was auto-detected as shown.  The item
+				in round brackets indicates ROM size.  The item in square brackets
+				indicates the starting bank(s) used by the cart.
+				For the given example, the bankswitch type was auto-detected as 4K,
+				the file size was 4K (4096 bytes), and the start bank was 0
+				(since a 4K ROM has only one bank). FIXME - image must be updated</li>
+			</li>
+		</ol></p></li>
+	</ul></p>
+
+	<p>Finally, Stella contains an extensive, built-in debugger.  Have a look at
+	<a href="debugger.html">this page</a> for integrated debugger documentation.</p>
+	
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
