@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.156 2009-01-10 18:42:49 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.157 2009-01-10 18:52:55 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -550,6 +550,16 @@ void FrameBuffer::setUIPalette(const uInt32* palette)
     Uint8 b = palette[i] & 0xff;
     myDefPalette[i+256] = mapRGB(r, g, b);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::stateChanged(EventHandler::State state)
+{
+  // Make sure any onscreen messages are removed
+  myMsg.enabled = false;
+  myMsg.counter = 0;
+
+  myRedrawEntireFrame = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

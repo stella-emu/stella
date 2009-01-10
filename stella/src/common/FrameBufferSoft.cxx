@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.91 2009-01-03 22:57:12 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.92 2009-01-10 18:52:55 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -419,12 +419,6 @@ void FrameBufferSoft::enablePhosphor(bool enable, int blend)
       myRenderType = myUsePhosphor ? kPhosphor_32 : kSoftZoom_32;
       break;
   }
-  myRedrawEntireFrame = true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::stateChanged(EventHandler::State state)
-{
   myRedrawEntireFrame = true;
 }
 

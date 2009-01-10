@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.63 2009-01-03 22:57:12 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.64 2009-01-10 18:52:55 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -32,7 +32,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.63 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.64 2009-01-10 18:52:55 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -141,11 +141,6 @@ class FrameBufferSoft : public FrameBuffer
     */
     string about() const;
 
-    /**
-      Informs the Framebuffer of a change in EventHandler state.
-    */
-    void stateChanged(EventHandler::State state);
-
   private:
     int myZoomLevel;
     int myBytesPerPixel;
@@ -177,7 +172,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.63 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.64 2009-01-10 18:52:55 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {
