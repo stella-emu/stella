@@ -1,4 +1,4 @@
-
+//============================================================================
 //
 //   SSSS    tt          lll  lll       
 //  SS  SS   tt           ll   ll        
@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.155 2009-01-06 23:14:34 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.156 2009-01-10 18:42:49 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -205,26 +205,34 @@ void FrameBuffer::update()
 
     case EventHandler::S_MENU:
     {
-      myOSystem->menu().draw();
+      // When onscreen messages are enabled in double-buffer mode,
+      // a full redraw is required
+      myOSystem->menu().draw(myMsg.enabled && type() == kGLBuffer);
       break;  // S_MENU
     }
 
     case EventHandler::S_CMDMENU:
     {
-      myOSystem->commandMenu().draw();
+      // When onscreen messages are enabled in double-buffer mode,
+      // a full redraw is required
+      myOSystem->commandMenu().draw(myMsg.enabled && type() == kGLBuffer);
       break;  // S_CMDMENU
     }
 
     case EventHandler::S_LAUNCHER:
     {
-      myOSystem->launcher().draw();
+      // When onscreen messages are enabled in double-buffer mode,
+      // a full redraw is required
+      myOSystem->launcher().draw(myMsg.enabled && type() == kGLBuffer);
       break;  // S_LAUNCHER
     }
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
     {
-      myOSystem->debugger().draw();
+      // When onscreen messages are enabled in double-buffer mode,
+      // a full redraw is required
+      myOSystem->debugger().draw(myMsg.enabled && type() == kGLBuffer);
       break;  // S_DEBUGGER
     }
 #endif
@@ -235,7 +243,7 @@ void FrameBuffer::update()
   }
 
   // Draw any pending messages
-  if(myMsg.counter > 0)
+  if(myMsg.enabled)
     drawMessage();
 
   // Do any post-frame stuff
@@ -265,8 +273,50 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   myMsg.h = myOSystem->font().getFontHeight() + 8;
   myMsg.surface->setWidth(myMsg.w);
   myMsg.surface->setHeight(myMsg.h);
+  myMsg.position = position;
+  myMsg.enabled = true;
+}
 
-  switch(position)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleFrameStats()
+{
+  showFrameStats(!myOSystem->settings().getBool("stats"));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::showFrameStats(bool enable)
+{
+  myOSystem->settings().setBool("stats", enable);
+  myStatsMsg.enabled = enable;
+  refresh();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::enableMessages(bool enable)
+{
+  if(enable)
+  {
+    // Only re-anable frame stats if they were already enabled before
+    myStatsMsg.enabled = myOSystem->settings().getBool("stats");
+  }
+  else
+  {
+    // Temporarily disable frame stats
+    myStatsMsg.enabled = false;
+
+    // Erase old messages on the screen
+    myMsg.enabled = false;
+    myMsg.counter = 0;
+
+    refresh();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void FrameBuffer::drawMessage()
+{
+  // Draw the bounded box and text
+  switch(myMsg.position)
   {
     case kTopLeft:
       myMsg.x = 5;
@@ -313,46 +363,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
       myMsg.y = myImageRect.height() - myMsg.h - 5;
       break;
   }
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::toggleFrameStats()
-{
-  showFrameStats(!myOSystem->settings().getBool("stats"));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::showFrameStats(bool enable)
-{
-  myOSystem->settings().setBool("stats", enable);
-  myStatsMsg.enabled = enable;
-  refresh();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::enableMessages(bool enable)
-{
-  if(enable)
-  {
-    // Only re-anable frame stats if they were already enabled before
-    myStatsMsg.enabled = myOSystem->settings().getBool("stats");
-  }
-  else
-  {
-    // Temporarily disable frame stats
-    myStatsMsg.enabled = false;
-
-    // Erase old messages on the screen
-    myMsg.counter = 0;
-
-    refresh();
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void FrameBuffer::drawMessage()
-{
-  // Draw the bounded box and text
   myMsg.surface->setPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(0, 0, myMsg.w-2, myMsg.h-4, kBGColor);
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h-2, kColor, kShadowColor);
@@ -363,10 +374,13 @@ inline void FrameBuffer::drawMessage()
   // Either erase the entire message (when time is reached),
   // or show again this frame
   if(myMsg.counter == 0)  // Force an immediate update
+  {
+    myMsg.enabled = false;
     refresh();
+  }
   else
   {
-    myMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
+    myMsg.surface->addDirtyRect(0, 0, 0, 0);
     myMsg.surface->update();
   }
 }

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.113 2009-01-03 22:57:12 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.114 2009-01-10 18:42:49 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.113 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.114 2009-01-10 18:42:49 stephena Exp $
 */
 class FrameBuffer
 {
@@ -531,6 +531,7 @@ class FrameBuffer
       string text;
       int counter;
       int x, y, w, h;
+      MessagePosition position;
       uInt32 color;
       FBSurface* surface;
       int surfaceID;
@@ -562,7 +563,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.113 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.114 2009-01-10 18:42:49 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

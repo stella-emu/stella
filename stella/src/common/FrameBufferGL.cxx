@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.132 2009-01-03 22:57:12 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.133 2009-01-10 18:42:49 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -33,40 +33,34 @@
 
 #include "FrameBufferGL.hxx"
 
-// Maybe this code could be cleaner ...
-static void (APIENTRY* p_glClear)( GLbitfield );
-static void (APIENTRY* p_glEnable)( GLenum );
-static void (APIENTRY* p_glDisable)( GLenum );
-static void (APIENTRY* p_glPushAttrib)( GLbitfield );
-static const GLubyte* (APIENTRY* p_glGetString)( GLenum );
-static void (APIENTRY* p_glHint)( GLenum, GLenum );
-static void (APIENTRY* p_glShadeModel)( GLenum );
+// OpenGL functions we'll be using in Stella
+#define OGL_DECLARE(RET,FUNC,PARAMS) static RET (APIENTRY* p_ ## FUNC) PARAMS
 
-// Matrix
-static void (APIENTRY* p_glMatrixMode)( GLenum );
-static void (APIENTRY* p_glOrtho)( GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble );
-static void (APIENTRY* p_glViewport)( GLint, GLint, GLsizei, GLsizei );
-static void (APIENTRY* p_glPushMatrix)( void );
-static void (APIENTRY* p_glLoadIdentity)( void );
-
-// Drawing
-static void (APIENTRY* p_glBegin)( GLenum );
-static void (APIENTRY* p_glEnd)( void );
-static void (APIENTRY* p_glVertex2i)( GLint, GLint );
-static void (APIENTRY* p_glTexCoord2f)( GLfloat, GLfloat );
-
-// Raster funcs
-static void (APIENTRY* p_glReadPixels)( GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid* );
-static void (APIENTRY* p_glPixelStorei)( GLenum, GLint );
-
-// Texture mapping
-static void (APIENTRY* p_glTexEnvf)( GLenum, GLenum, GLfloat );
-static void (APIENTRY* p_glGenTextures)( GLsizei, GLuint* ); // 1.1
-static void (APIENTRY* p_glDeleteTextures)( GLsizei, const GLuint* ); // 1.1
-static void (APIENTRY* p_glBindTexture)( GLenum, GLuint );   // 1.1
-static void (APIENTRY* p_glTexImage2D)( GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid* );
-static void (APIENTRY* p_glTexSubImage2D)( GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid* ); // 1.1
-static void (APIENTRY* p_glTexParameteri)( GLenum, GLenum, GLint );
+OGL_DECLARE(void,glClear,(GLbitfield));
+OGL_DECLARE(void,glEnable,(GLenum));
+OGL_DECLARE(void,glDisable,(GLenum));
+OGL_DECLARE(void,glPushAttrib,(GLbitfield));
+OGL_DECLARE(const GLubyte*,glGetString,(GLenum));
+OGL_DECLARE(void,glHint,(GLenum, GLenum));
+OGL_DECLARE(void,glShadeModel,(GLenum));
+OGL_DECLARE(void,glMatrixMode,(GLenum));
+OGL_DECLARE(void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
+OGL_DECLARE(void,glViewport,(GLint, GLint, GLsizei, GLsizei));
+OGL_DECLARE(void,glPushMatrix,(void));
+OGL_DECLARE(void,glLoadIdentity,(void));
+OGL_DECLARE(void,glBegin,(GLenum));
+OGL_DECLARE(void,glEnd,(void));
+OGL_DECLARE(void,glVertex2i,(GLint, GLint));
+OGL_DECLARE(void,glTexCoord2f,(GLfloat, GLfloat));
+OGL_DECLARE(void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
+OGL_DECLARE(void,glPixelStorei,(GLenum, GLint));
+OGL_DECLARE(void,glTexEnvf,(GLenum, GLenum, GLfloat));
+OGL_DECLARE(void,glGenTextures,(GLsizei, GLuint*));
+OGL_DECLARE(void,glDeleteTextures,(GLsizei, const GLuint*));
+OGL_DECLARE(void,glBindTexture,(GLenum, GLuint));
+OGL_DECLARE(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
+OGL_DECLARE(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
+OGL_DECLARE(void,glTexParameteri,(GLenum, GLenum, GLint));
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,66 +110,42 @@ bool FrameBufferGL::loadLibrary(const string& library)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::loadFuncs()
 {
+#define OGL_INIT(RET,FUNC,PARAMS) \
+  p_ ## FUNC = (RET(APIENTRY*)PARAMS) SDL_GL_GetProcAddress(#FUNC); if(!p_ ## FUNC) return false
+
   if(myLibraryLoaded)
   {
     // Fill the function pointers for GL functions
     // If anything fails, we'll know it immediately, and return false
-    // Yes, this syntax is ugly, but I can type it out faster than the time
-    // it takes to figure our macro magic to do it neatly
-    p_glClear = (void(APIENTRY*)(GLbitfield))
-      SDL_GL_GetProcAddress("glClear"); if(!p_glClear) return false;
-    p_glEnable = (void(APIENTRY*)(GLenum))
-      SDL_GL_GetProcAddress("glEnable"); if(!p_glEnable) return false;
-    p_glDisable = (void(APIENTRY*)(GLenum))
-      SDL_GL_GetProcAddress("glDisable"); if(!p_glDisable) return false;
-    p_glPushAttrib = (void(APIENTRY*)(GLbitfield))
-      SDL_GL_GetProcAddress("glPushAttrib"); if(!p_glPushAttrib) return false;
-    p_glGetString = (const GLubyte*(APIENTRY*)(GLenum))
-      SDL_GL_GetProcAddress("glGetString"); if(!p_glGetString) return false;
-    p_glHint = (void(APIENTRY*)(GLenum, GLenum))
-      SDL_GL_GetProcAddress("glHint"); if(!p_glHint) return false;
-    p_glShadeModel = (void(APIENTRY*)(GLenum))
-      SDL_GL_GetProcAddress("glShadeModel"); if(!p_glShadeModel) return false;
+    OGL_INIT(void,glClear,(GLbitfield));
+    OGL_INIT(void,glEnable,(GLenum));
+    OGL_INIT(void,glDisable,(GLenum));
+    OGL_INIT(void,glPushAttrib,(GLbitfield));
+    OGL_INIT(const GLubyte*,glGetString,(GLenum));
+    OGL_INIT(void,glHint,(GLenum, GLenum));
+    OGL_INIT(void,glShadeModel,(GLenum));
 
-    p_glMatrixMode = (void(APIENTRY*)(GLenum))
-      SDL_GL_GetProcAddress("glMatrixMode"); if(!p_glMatrixMode) return false;
-    p_glOrtho = (void(APIENTRY*)(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble))
-      SDL_GL_GetProcAddress("glOrtho"); if(!p_glOrtho) return false;
-    p_glViewport = (void(APIENTRY*)(GLint, GLint, GLsizei, GLsizei))
-      SDL_GL_GetProcAddress("glViewport"); if(!p_glViewport) return false;
-    p_glPushMatrix = (void(APIENTRY*)(void))
-      SDL_GL_GetProcAddress("glPushMatrix"); if(!p_glPushMatrix) return false;
-    p_glLoadIdentity = (void(APIENTRY*)(void))
-      SDL_GL_GetProcAddress("glLoadIdentity"); if(!p_glLoadIdentity) return false;
+    OGL_INIT(void,glMatrixMode,(GLenum));
+    OGL_INIT(void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
+    OGL_INIT(void,glViewport,(GLint, GLint, GLsizei, GLsizei));
+    OGL_INIT(void,glPushMatrix,(void));
+    OGL_INIT(void,glLoadIdentity,(void));
 
-    p_glBegin = (void(APIENTRY*)(GLenum))
-      SDL_GL_GetProcAddress("glBegin"); if(!p_glBegin) return false;
-    p_glEnd = (void(APIENTRY*)(void))
-      SDL_GL_GetProcAddress("glEnd"); if(!p_glEnd) return false;
-    p_glVertex2i = (void(APIENTRY*)(GLint, GLint))
-      SDL_GL_GetProcAddress("glVertex2i"); if(!p_glVertex2i) return false;
-    p_glTexCoord2f = (void(APIENTRY*)(GLfloat, GLfloat))
-      SDL_GL_GetProcAddress("glTexCoord2f"); if(!p_glTexCoord2f) return false;
+    OGL_INIT(void,glBegin,(GLenum));
+    OGL_INIT(void,glEnd,(void));
+    OGL_INIT(void,glVertex2i,(GLint, GLint));
+    OGL_INIT(void,glTexCoord2f,(GLfloat, GLfloat));
 
-    p_glReadPixels = (void(APIENTRY*)(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*))
-      SDL_GL_GetProcAddress("glReadPixels"); if(!p_glReadPixels) return false;
-    p_glPixelStorei = (void(APIENTRY*)(GLenum, GLint))
-      SDL_GL_GetProcAddress("glPixelStorei"); if(!p_glPixelStorei) return false;
+    OGL_INIT(void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
+    OGL_INIT(void,glPixelStorei,(GLenum, GLint));
 
-    p_glTexEnvf = (void(APIENTRY*)(GLenum, GLenum, GLfloat))
-      SDL_GL_GetProcAddress("glTexEnvf"); if(!p_glTexEnvf) return false;
-    p_glGenTextures = (void(APIENTRY*)(GLsizei, GLuint*))
-      SDL_GL_GetProcAddress("glGenTextures"); if(!p_glGenTextures) return false;
-    p_glDeleteTextures = (void(APIENTRY*)(GLsizei, const GLuint*))
-      SDL_GL_GetProcAddress("glDeleteTextures"); if(!p_glDeleteTextures) return false;
-    p_glBindTexture = (void(APIENTRY*)(GLenum, GLuint))
-      SDL_GL_GetProcAddress("glBindTexture"); if(!p_glBindTexture) return false;
-    p_glTexImage2D = (void(APIENTRY*)(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*))
-      SDL_GL_GetProcAddress("glTexImage2D"); if(!p_glTexImage2D) return false;
-    p_glTexSubImage2D = (void(APIENTRY*)(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*))
-      SDL_GL_GetProcAddress("glTexSubImage2D"); if(!p_glTexSubImage2D) return false;
-    p_glTexParameteri = (void(APIENTRY*)(GLenum, GLenum, GLint))
-      SDL_GL_GetProcAddress("glTexParameteri"); if(!p_glTexParameteri) return false;
+    OGL_INIT(void,glTexEnvf,(GLenum, GLenum, GLfloat));
+    OGL_INIT(void,glGenTextures,(GLsizei, GLuint*));
+    OGL_INIT(void,glDeleteTextures,(GLsizei, const GLuint*));
+    OGL_INIT(void,glBindTexture,(GLenum, GLuint));
+    OGL_INIT(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
+    OGL_INIT(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
+    OGL_INIT(void,glTexParameteri,(GLenum, GLenum, GLint));
   }
   else
     return false;
