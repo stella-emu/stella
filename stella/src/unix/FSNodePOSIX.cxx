@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.18 2009-01-11 21:55:03 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.19 2009-01-11 22:05:37 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -252,7 +252,7 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
 {
   char buf[MAXPATHLEN];
 
-  string path = getcwd(buf, MAXPATHLEN) == buf ? buf : "";
+  const string& path = getcwd(buf, MAXPATHLEN) == buf ? buf : "";
   return new POSIXFilesystemNode(path, true);
 }
 
