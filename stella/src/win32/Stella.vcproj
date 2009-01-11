@@ -981,6 +981,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\SharedPtr.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\Snapshot.hxx"
 				>
 			</File>

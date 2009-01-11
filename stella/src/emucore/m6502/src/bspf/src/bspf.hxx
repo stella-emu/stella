@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.21 2009-01-11 19:10:40 stephena Exp $
+// $Id: bspf.hxx,v 1.22 2009-01-11 21:31:21 stephena Exp $
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.21 2009-01-11 19:10:40 stephena Exp $
+  @version $Id: bspf.hxx,v 1.22 2009-01-11 21:31:21 stephena Exp $
 */
 
 // Types for 8-bit signed and unsigned integers
@@ -48,7 +48,7 @@ typedef unsigned int uInt32;
 #else
   #include <iostream>
   #include <iomanip>
-  #include <cstring>
+  #include <string>
   using namespace std;
 #endif
 
@@ -70,13 +70,14 @@ typedef unsigned int uInt32;
 #endif
 
 // I wish Windows had a complete POSIX layer
-#ifdef BSPF_WIN32
+#if defined BSPF_WIN32 && !defined __GNUG__
   #define BSPF_strcasecmp stricmp
   #define BSPF_strncasecmp strnicmp
   #define BSPF_isblank(c) ((c == ' ') || (c == '\t'))
   #define BSPF_snprintf _snprintf
   #define BSPF_vsnprintf _vsnprintf
 #else
+  #include <strings.h>
   #define BSPF_strcasecmp strcasecmp
   #define BSPF_strncasecmp strncasecmp
   #define BSPF_isblank(c) isblank(c)

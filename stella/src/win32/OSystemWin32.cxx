@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.26 2009-01-01 18:13:39 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.27 2009-01-11 21:31:21 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -42,7 +42,8 @@ OSystemWin32::OSystemWin32()
 {
   string basedir = ".";
 
-  if(!FilesystemNode::fileExists("disable_profiles.txt"))
+  FilesystemNode node("disable_profiles.txt");
+  if(!node.exists())
   {
     /*
        Use 'My Documents' folder for the Stella folder, which can be in many
