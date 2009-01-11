@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.24 2009-01-03 22:57:12 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.25 2009-01-11 02:23:45 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -143,18 +143,17 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // FIXME - maybe 'greyed out mode' should be done here, not in the TIA class
   FBSurface& s = dialog().surface();
 
-  const uInt32 width = instance().console().mediaSource().width(),
+  const uInt32 width = 160,  // width is always 160
                height = instance().console().mediaSource().height();
-  uInt32 line[width << 1];
   for(uInt32 y = 0; y < height; ++y)
   {
-    uInt32* line_ptr = line;
+    uInt32* line_ptr = myLineBuffer;
     for(uInt32 x = 0; x < width; ++x)
     {
       uInt32 pixel = instance().frameBuffer().tiaPixel(y*width+x);
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }
-    s.drawPixels(line, _x, _y+y, width << 1);
+    s.drawPixels(myLineBuffer, _x, _y+y, width << 1);
   }
 }

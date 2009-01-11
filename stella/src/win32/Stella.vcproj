@@ -862,6 +862,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\GlobalPropsDialog.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\HelpDialog.cxx"
 					>
 				</File>
@@ -879,6 +883,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\LauncherDialog.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\LauncherFilterDialog.cxx"
 					>
 				</File>
 				<File
@@ -1492,6 +1500,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\GlobalPropsDialog.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\GuiObject.hxx"
 					>
 				</File>
@@ -1513,6 +1525,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\LauncherDialog.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\LauncherFilterDialog.hxx"
 					>
 				</File>
 				<File

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.25 2009-01-03 22:57:12 stephena Exp $
+// $Id: Snapshot.cxx,v 1.26 2009-01-11 02:23:45 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -192,10 +192,11 @@ void Snapshot::writePNGChunk(ofstream& out, const char* type,
 void Snapshot::writePNGText(ofstream& out, const string& key, const string& text)
 {
   int length = key.length() + 1 + text.length() + 1;
-  uInt8 data[length];
+  uInt8* data = new uInt8[length];
 
   strcpy((char*)data, key.c_str());
   strcpy((char*)data + key.length() + 1, text.c_str());
 
   writePNGChunk(out, "tEXt", data, length-1);
+  delete[] data;
 }
