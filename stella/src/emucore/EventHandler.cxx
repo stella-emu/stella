@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.236 2009-01-05 22:05:35 stephena Exp $
+// $Id: EventHandler.cxx,v 1.237 2009-01-11 19:10:40 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -114,6 +114,14 @@ EventHandler::EventHandler(OSystem* osystem)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::~EventHandler()
 {
+  // Free strings created with strdup
+  for(uInt32 i = 0; i < kEmulActionListSize; ++i)
+    if(ourEmulActionList[i].key)
+      free(ourEmulActionList[i].key);
+  for(uInt32 i = 0; i < kMenuActionListSize; ++i)
+    if(ourMenuActionList[i].key)
+      free(ourMenuActionList[i].key);
+
   delete myEvent;
 
 #ifdef JOYSTICK_SUPPORT
@@ -1063,8 +1071,7 @@ void EventHandler::setActionMappings(EventMode mode)
   for(int i = 0; i < listsize; ++i)
   {
     Event::Type event = list[i].event;
-    if(list[i].key)
-      free(list[i].key);
+    free(list[i].key);  list[i].key = NULL;
     list[i].key = strdup("None");
     string key = "";
     for(int j = 0; j < SDLK_LAST; ++j)   // key mapping
@@ -1170,8 +1177,7 @@ void EventHandler::setActionMappings(EventMode mode)
 
     if(key != "")
     {
-      if(list[i].key)
-        free(list[i].key);
+      free(list[i].key);  list[i].key = NULL;
       list[i].key = strdup(key.c_str());
     }
   }
@@ -1776,14 +1782,16 @@ void EventHandler::takeSnapshot()
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
     filename = sspath + ".png";
-    if(FilesystemNode::fileExists(filename))
+    FilesystemNode node(filename);
+    if(node.exists())
     {
       ostringstream buf;
       for(uInt32 i = 1; ;++i)
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        if(!FilesystemNode::fileExists(buf.str()))
+        FilesystemNode node(buf.str());
+        if(!node.exists())
           break;
       }
       filename = buf.str();

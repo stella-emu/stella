@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.144 2009-01-11 15:01:36 stephena Exp $
+// $Id: OSystem.cxx,v 1.145 2009-01-11 19:10:40 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -270,18 +270,22 @@ bool OSystem::create()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setConfigPaths()
 {
+  FilesystemNode node;
+
   myStateDir = mySettings->getString("statedir");
   if(myStateDir == "")
     myStateDir = myBaseDir + BSPF_PATH_SEPARATOR + "state";
-  if(!FilesystemNode::dirExists(myStateDir))
-    FilesystemNode::makeDir(myStateDir);
+  node = FilesystemNode(myStateDir);
+  if(!node.isDirectory())
+    AbstractFilesystemNode::makeDir(myStateDir);
   mySettings->setString("statedir", myStateDir);
 
   mySnapshotDir = mySettings->getString("ssdir");
   if(mySnapshotDir == "")
     mySnapshotDir = myBaseDir + BSPF_PATH_SEPARATOR + "snapshots";
-  if(!FilesystemNode::dirExists(mySnapshotDir))
-    FilesystemNode::makeDir(mySnapshotDir);
+  node = FilesystemNode(mySnapshotDir);
+  if(!node.isDirectory())
+    AbstractFilesystemNode::makeDir(mySnapshotDir);
   mySettings->setString("ssdir", mySnapshotDir);
 
   myCheatFile = mySettings->getString("cheatfile");
@@ -313,8 +317,9 @@ void OSystem::setUIPalette()
 void OSystem::setBaseDir(const string& basedir)
 {
   myBaseDir = basedir;
-  if(!FilesystemNode::dirExists(myBaseDir))
-    FilesystemNode::makeDir(myBaseDir);
+  FilesystemNode node(myBaseDir);
+  if(!node.isDirectory())
+    ;//FIXME SAFilesystemNode::makeDir(myBaseDir);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

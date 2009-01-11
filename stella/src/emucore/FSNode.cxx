@@ -13,107 +13,143 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.13 2009-01-01 18:13:35 stephena Exp $
+// $Id: FSNode.cxx,v 1.14 2009-01-11 19:10:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
 #include "bspf.hxx"
+#include "SharedPtr.hxx"
 #include "FSNode.hxx"
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FSList::sort()
-{
-  // Simple selection sort
-  for (Int32 i = 0; i < _size-1; i++)
-  {
-    Int32 min = i;
-    for (Int32 j = i+1; j < _size; j++)
-    {
-      if (_data[j] < _data[min])
-        min = j;
-    }
-    if (min != i)
-      BSPF_swap(_data[min], _data[i]);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode AbstractFilesystemNode::wrap(AbstractFilesystemNode *node)
-{
-  FilesystemNode wrapper;
-  wrapper._realNode = node;
-
-  return wrapper;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode()
 {
-  _realNode = getRoot();
-  _refCount = new int(1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(const FilesystemNode &node)
-    : AbstractFilesystemNode()
+FilesystemNode::FilesystemNode(AbstractFilesystemNode *realNode) 
+  : _realNode(realNode)
 {
-  _realNode = node._realNode;
-  _refCount = node._refCount;
-  ++(*_refCount);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const string& p)
 {
-  _realNode = getNodeForPath(p);
-  _refCount = new int(1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::~FilesystemNode()
-{
-  decRefCount();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FilesystemNode::decRefCount()
-{
-  --(*_refCount);
-  if (*_refCount <= 0)
-  {
-    delete _refCount;
-    delete _realNode;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode &FilesystemNode::operator  =(const FilesystemNode &node)
-{
-  ++(*node._refCount);
-
-  decRefCount();
-
-  _realNode = node._realNode;
-  _refCount = node._refCount;
-
-  return *this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode FilesystemNode::getParent() const
-{
-  AbstractFilesystemNode *node = _realNode->parent();
-
-  if(node == 0)
-    return *this;
+  AbstractFilesystemNode *tmp = 0;
+  if (p.empty() || p == ".")
+    tmp = AbstractFilesystemNode::makeCurrentDirectoryFileNode();
   else
-    return AbstractFilesystemNode::wrap(node);
+    tmp = AbstractFilesystemNode::makeFileNodePath(p);
+
+  _realNode = Common::SharedPtr<AbstractFilesystemNode>(tmp);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::operator<(const FilesystemNode& node) const
+{
+  if (isDirectory() != node.isDirectory())
+    return isDirectory();
+
+  return BSPF_strcasecmp(getDisplayName().c_str(), node.getDisplayName().c_str()) < 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::exists() const
+{
+  if (_realNode == 0)
+    return false;
+
+  return _realNode->exists();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) const
+{
+  if (!_realNode || !_realNode->isDirectory())
+    return false;
+
+  AbstractFSList tmp;
+
+  if (!_realNode->getChildren(tmp, mode, hidden))
+    return false;
+
+  fslist.clear();
+  for (AbstractFSList::iterator i = tmp.begin(); i != tmp.end(); ++i)
+  {
+    fslist.push_back(FilesystemNode(*i));
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getDisplayName() const
+{
+  assert(_realNode);
+  return _realNode->getDisplayName();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getName() const
+{
+  assert(_realNode);
+  return _realNode->getName();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::hasParent() const
 {
-  return _realNode->parent() != 0;
+  if (_realNode == 0)
+    return false;
+  
+  return _realNode->getParent() != 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNode FilesystemNode::getParent() const
+{
+  if (_realNode == 0)
+    return *this;
+
+  AbstractFilesystemNode* node = _realNode->getParent();
+  if (node == 0)
+    return *this;
+  else
+    return FilesystemNode(node);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getPath() const
+{
+  assert(_realNode);
+  return _realNode->getPath();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::isDirectory() const
+{
+  if (_realNode == 0)
+    return false;
+
+  return _realNode->isDirectory();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::isReadable() const
+{
+  if (_realNode == 0)
+    return false;
+
+  return _realNode->isReadable();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::isWritable() const
+{
+  if (_realNode == 0)
+    return false;
+
+  return _realNode->isWritable();
 }

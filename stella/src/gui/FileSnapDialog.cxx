@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.25 2009-01-04 22:27:43 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.26 2009-01-11 19:10:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -253,42 +253,42 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
     case kRomDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.path());
+      myRomPath->setEditString(dir.getPath());
       break;
     }
 
     case kStateDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myStatePath->setEditString(dir.path());
+      myStatePath->setEditString(dir.getPath());
       break;
     }
 
     case kCheatFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myCheatFile->setEditString(dir.path());
+      myCheatFile->setEditString(dir.getPath());
       break;
     }
 
     case kPaletteFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPaletteFile->setEditString(dir.path());
+      myPaletteFile->setEditString(dir.getPath());
       break;
     }
 
     case kPropsFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPropsFile->setEditString(dir.path());
+      myPropsFile->setEditString(dir.getPath());
       break;
     }
 
     case kSnapDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      mySnapPath->setEditString(dir.path());
+      mySnapPath->setEditString(dir.getPath());
       break;
     }
 

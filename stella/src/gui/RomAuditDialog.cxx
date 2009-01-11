@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomAuditDialog.cxx,v 1.11 2009-01-06 23:02:18 stephena Exp $
+// $Id: RomAuditDialog.cxx,v 1.12 2009-01-11 19:10:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -115,7 +115,8 @@ void RomAuditDialog::auditRoms()
   myResults2->setLabel("");
 
   FilesystemNode node(auditPath);
-  FSList files = node.listDir(FilesystemNode::kListFilesOnly);
+  FSList files;
+  node.getChildren(files, FilesystemNode::kListFilesOnly);
 
   // Create a progress dialog box to show the progress of processing
   // the ROMs, since this is usually a time-consuming operation
@@ -130,16 +131,16 @@ void RomAuditDialog::auditRoms()
   {
     string extension;
     if(!files[idx].isDirectory() &&
-       LauncherFilterDialog::isValidRomName(files[idx].path(), extension))
+       LauncherFilterDialog::isValidRomName(files[idx].getPath(), extension))
     {
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = instance().MD5FromFile(files[idx].path());
+      const string& md5 = instance().MD5FromFile(files[idx].getPath());
       instance().propSet().getMD5(md5, props);
       const string& name = props.get(Cartridge_Name);
 
       // Only rename the file if we found a valid properties entry
-      if(name != "" && name != files[idx].displayName())
+      if(name != "" && name != files[idx].getDisplayName())
       {
         // Check for terminating separator
         string newfile = auditPath;
@@ -147,8 +148,8 @@ void RomAuditDialog::auditRoms()
           newfile += BSPF_PATH_SEPARATOR;
         newfile += name + "." + extension;
 
-        if(files[idx].path() != newfile)
-          if(FilesystemNode::renameFile(files[idx].path(), newfile))
+        if(files[idx].getPath() != newfile)
+          if(AbstractFilesystemNode::renameFile(files[idx].getPath(), newfile))
             renamed++;
       }
       else
@@ -182,7 +183,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
     case kAuditDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.path());
+      myRomPath->setEditString(dir.getPath());
       myResults1->setLabel("");
       myResults2->setLabel("");
       break;

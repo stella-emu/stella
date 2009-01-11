@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.35 2009-01-04 22:27:43 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.36 2009-01-11 19:10:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font)
     _fileList(NULL),
     _currentPath(NULL),
     _nodeList(NULL),
-    _mode(AbstractFilesystemNode::kListDirectoriesOnly)
+    _mode(FilesystemNode::kListDirectoriesOnly)
 {
   const int lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
@@ -137,7 +137,7 @@ void BrowserDialog::show(const string& title, const string& startpath,
   // go back to the root/default dir.
   _node = FilesystemNode(startpath);
 
-  if(!_node.isValid())
+  if(!_node.exists())
     _node = FilesystemNode();
 
   // Generally, we always want a directory listing 
@@ -158,27 +158,25 @@ void BrowserDialog::updateListing()
   _nodeList->clear();
 
   // Update the path display
-  _currentPath->setLabel(_node.path());
+  _currentPath->setLabel(_node.getPath());
 
   // Read in the data from the file system
-  FSList content = _node.listDir(_mode);
+  FSList content;
+  _node.getChildren(content, _mode);
 
   // Add '[..]' to indicate previous folder
   if(_node.hasParent())
-  {
-    const string& parent = _node.getParent().path();
-    _nodeList->appendGame(" [..]", parent, "", true);
-  }
+    _nodeList->appendGame(" [..]", _node.getParent().getPath(), "", true);
 
   // Now add the directory entries
   for(unsigned int idx = 0; idx < content.size(); idx++)
   {
-    string name = content[idx].displayName();
+    string name = content[idx].getDisplayName();
     bool isDir = content[idx].isDirectory();
     if(isDir)
       name = " [" + name + "]";
 
-    _nodeList->appendGame(name, content[idx].path(), "", isDir);
+    _nodeList->appendGame(name, content[idx].getPath(), "", isDir);
   }
   _nodeList->sortByName();
 
@@ -219,7 +217,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       int item = _fileList->getSelected();
       if(item >= 0)
       {
-        _node = _nodeList->path(item);
+        _node =  FilesystemNode(_nodeList->path(item));
         updateListing();
       }
       break;

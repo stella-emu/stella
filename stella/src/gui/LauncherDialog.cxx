@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.99 2009-01-05 20:33:03 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.100 2009-01-11 19:10:40 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -222,7 +222,7 @@ void LauncherDialog::loadConfig()
   if(myList->getList().isEmpty())
   {
     myPrevDirButton->setEnabled(false);
-    myCurrentNode = instance().settings().getString("romdir");
+    myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
 
     updateListing();
   }
@@ -255,7 +255,7 @@ void LauncherDialog::updateListing()
   myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
-  myDir->setLabel(myCurrentNode.path());
+  myDir->setLabel(myCurrentNode.getPath());
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
@@ -302,7 +302,8 @@ void LauncherDialog::loadDirListing()
   if(!myCurrentNode.isDirectory())
     return;
 
-  FSList files = myCurrentNode.listDir(FilesystemNode::kListAll);
+  FSList files;
+  myCurrentNode.getChildren(files, FilesystemNode::kListAll);
 
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
@@ -311,7 +312,7 @@ void LauncherDialog::loadDirListing()
   // Now add the directory entries
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
-    string name = files[idx].displayName();
+    string name = files[idx].getDisplayName();
     bool isDir = files[idx].isDirectory();
 
     // Honour the filtering settings
@@ -327,7 +328,7 @@ void LauncherDialog::loadDirListing()
         continue;
     }
 
-    myGameList->appendGame(name, files[idx].path(), "", isDir);
+    myGameList->appendGame(name, files[idx].getPath(), "", isDir);
   }
 
   // Sort the list by rom name (since that's what we see in the listview)
@@ -433,7 +434,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           if(myGameList->name(item) == " [..]")
             myCurrentNode = myCurrentNode.getParent();
 		  else
-            myCurrentNode = rom;
+            myCurrentNode = FilesystemNode(rom);
           updateListing();
         }
         else if(!LauncherFilterDialog::isValidRomName(rom, extension) ||
@@ -470,7 +471,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kRomDirChosenCmd:
-      myCurrentNode = instance().settings().getString("romdir");
+      myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
       updateListing();
       break;
 
