@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.143 2009-01-05 19:44:29 stephena Exp $
+// $Id: OSystem.cxx,v 1.144 2009-01-11 15:01:36 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -142,7 +142,9 @@ OSystem::~OSystem()
   delete myCommandMenu;
   delete myLauncher;
   delete myFont;
+  delete mySmallFont;
   delete myConsoleFont;
+  delete myLauncherFont;
 
   // Remove any game console that is currently attached
   deleteConsole();

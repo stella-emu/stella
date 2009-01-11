@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.96 2009-01-03 15:44:13 stephena Exp $
+// $Id: TIA.cxx,v 1.97 2009-01-11 15:01:36 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -43,6 +43,7 @@ TIA::TIA(Console& console, Settings& settings)
       mySettings(settings),
       mySound(NULL),
       myColorLossEnabled(false),
+      myPartialFrameFlag(false),
       myMaximumNumberOfScanlines(262),
       myCOLUBK(myColor[0]),
       myCOLUPF(myColor[1]),
