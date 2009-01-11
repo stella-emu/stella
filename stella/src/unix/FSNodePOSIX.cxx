@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.17 2009-01-11 19:10:40 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.18 2009-01-11 21:55:03 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -29,7 +29,8 @@
 #include <sys/stat.h>
 #include <dirent.h>
 
-#include <stdio.h>
+#include <cstdio>
+#include <cstring>
 #include <unistd.h>
 
 #include <sstream>
@@ -250,8 +251,9 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
 {
   char buf[MAXPATHLEN];
-  getcwd(buf, MAXPATHLEN);
-  return new POSIXFilesystemNode(buf, true);
+
+  string path = getcwd(buf, MAXPATHLEN) == buf ? buf : "";
+  return new POSIXFilesystemNode(path, true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
