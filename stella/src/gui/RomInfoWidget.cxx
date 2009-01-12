@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.15 2009-01-04 22:27:44 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.16 2009-01-12 01:07:29 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -96,8 +96,10 @@ void RomInfoWidget::parseProperties()
   mySurface = instance().frameBuffer().surface(mySurfaceID);
   if(mySurface == NULL)
   {
+    // For some reason, we need to allocate a buffer slightly higher than
+    // the maximum that Stella can generate
     mySurfaceID = instance().frameBuffer().allocateSurface(
-                    320*myZoomLevel, 260*myZoomLevel, false);
+                    320*myZoomLevel, 257*myZoomLevel, false);
     mySurface   = instance().frameBuffer().surface(mySurfaceID);
   }
 
@@ -277,11 +279,13 @@ bool RomInfoWidget::parseIDATChunk(FBSurface* surface, int width, int height,
   // The following calculation will work up to approx. 16x zoom level,
   // but since Stella only generates snapshots at up to 10x, we should
   // be fine for a while ...
-  uInt32 izoom = int(ceil(width/320.0));
+  uInt32 izoom = uInt32(ceil(width/320.0));
 
   // Set the surface size 
   uInt32 sw = width / izoom * myZoomLevel,
          sh = height / izoom * myZoomLevel;
+  sw = BSPF_min(sw, myZoomLevel * 320u);
+  sh = BSPF_min(sh, myZoomLevel * 256u);
   mySurface->setWidth(sw);
   mySurface->setHeight(sh);
 
@@ -290,7 +294,7 @@ bool RomInfoWidget::parseIDATChunk(FBSurface* surface, int width, int height,
          spitch = sw * 3;         // bytes per line of the surface/line
   uLongf bufsize = ipitch * height;
   uInt8* buffer = new uInt8[bufsize];
-  uInt32* line  = new uInt32[spitch + 3];  // few extra bytes for rounding issues
+  uInt32* line  = new uInt32[ipitch];
 
   if(uncompress(buffer, &bufsize, data, size) == Z_OK)
   {
@@ -298,6 +302,9 @@ bool RomInfoWidget::parseIDATChunk(FBSurface* surface, int width, int height,
     uInt32 buf_offset = ipitch * izoom;
     uInt32 i_offset = 3 * izoom;
     uInt32 srow = 0;
+
+    // We can only scan at most izoom*256 lines
+    height = BSPF_min(uInt32(height), izoom*256u);
 
     // Grab each non-duplicate row of data from the image
     for(int irow = 0; irow < height; irow += izoom, buf_ptr += buf_offset)

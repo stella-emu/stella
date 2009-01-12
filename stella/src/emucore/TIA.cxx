@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.97 2009-01-11 15:01:36 stephena Exp $
+// $Id: TIA.cxx,v 1.98 2009-01-12 01:07:29 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -225,12 +225,19 @@ void TIA::frameReset()
   // Reset pixel pointer and drawing flag
   myFramePointer = myCurrentFrameBuffer;
 
-  myYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
-  myHeight = atoi(myConsole.properties().get(Display_Height).c_str());
+  // Make sure all these are within bounds
+  myFrameXStart = 0;    // Hardcoded in preparation for new TIA class
+  myFrameWidth  = 160;  // Hardcoded in preparation for new TIA class
+  myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
+  if(myFrameYStart < 0)  myFrameYStart = 0;
+  if(myFrameYStart > 64) myFrameYStart = 64;
+  myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
+  if(myFrameHeight < 210) myFrameHeight = 210;
+  if(myFrameHeight > 256) myFrameHeight = 256;
 
   // Calculate color clock offsets for starting and stoping frame drawing
-  myStartDisplayOffset = 228 * myYStart;
-  myStopDisplayOffset = myStartDisplayOffset + 228 * myHeight;
+  myStartDisplayOffset = 228 * myFrameYStart;
+  myStopDisplayOffset = myStartDisplayOffset + 228 * myFrameHeight;
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
@@ -241,19 +248,6 @@ void TIA::frameReset()
   myVSYNCFinishClock = 0x7FFFFFFF;
   myScanlineCountForLastFrame = 0;
   myCurrentScanline = 0;
-
-  myFrameXStart = 0;    // Hardcoded in preparation for new TIA class
-  myFrameWidth  = 160;  // Hardcoded in preparation for new TIA class
-  myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
-  myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
-
-  // Make sure the height value is reasonable, because we need a certain
-  // minimum amount of space for the onscreen GUI
-  if(myFrameHeight < 210)
-  {
-    // Values are illegal so reset to default values
-    myFrameHeight = 210;
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1962,16 +1956,18 @@ inline void TIA::waitHorizontalSync()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::greyOutFrame()
 {
-  unsigned int c = scanlines();
-  if(c < myYStart) c = myYStart;
+  uInt32 c = scanlines();
+  if(c < myFrameYStart) c = myFrameYStart;
 
-  for(unsigned int s = c; s < (myHeight + myYStart); s++)
-	  for(unsigned int i = 0; i < 160; i++) {
-		  uInt8 tmp = myCurrentFrameBuffer[ (s - myYStart) * 160 + i] & 0x0f;
-		  tmp >>= 1;
-		  myCurrentFrameBuffer[ (s - myYStart) * 160 + i] = tmp;
-	  }
-
+  for(uInt32 s = c; s < (myFrameHeight + myFrameYStart); ++s)
+  {
+    for(uInt32 i = 0; i < 160; ++i)
+    {
+      uInt8 tmp = myCurrentFrameBuffer[ (s - myFrameYStart) * 160 + i] & 0x0f;
+      tmp >>= 1;
+      myCurrentFrameBuffer[ (s - myFrameYStart) * 160 + i] = tmp;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

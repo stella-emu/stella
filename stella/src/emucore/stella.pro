@@ -1557,7 +1557,9 @@
 ""
 
 "Cartridge.MD5" "155fa7f479dcba3b10b1494e236d6010"
-"Cartridge.Name" "Tomcat - The F-14 Flight Simulator (2002) (Skyworks)"
+"Cartridge.Manufacturer" "Skyworks"
+"Cartridge.Name" "Tomcat (2002) (Skyworks) (PAL)"
+"Cartridge.Note" "AKA The F-14 Flight Simulator"
 ""
 
 "Cartridge.MD5" "171cd6b55267573e6a9c2921fb720794"
@@ -2146,6 +2148,7 @@
 
 "Cartridge.MD5" "1e89f722494608d6ea15a00d99f81337"
 "Cartridge.Name" "River Raid (Unknown) (PAL)"
+"Display.Format" "NTSC50"
 ""
 
 "Cartridge.MD5" "1e85f8bccb4b866d4daa9fcf89306474"
@@ -9085,7 +9088,8 @@
 "Cartridge.Manufacturer" "Atari, Larry Kaplan"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL)"
-"Display.Height" "260"
+"Display.YStart" "40"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "89a68746eff7f266bbf08de2483abe55"
@@ -14427,6 +14431,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "d28afe0517a046265c418181fa9dd9a1"
