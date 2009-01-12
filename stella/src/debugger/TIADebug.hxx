@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.24 2009-01-01 18:13:35 stephena Exp $
+// $Id: TIADebug.hxx,v 1.25 2009-01-12 15:11:54 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
@@ -205,6 +205,8 @@ class TIADebug : public DebuggerSystem
     int clocksThisLine();
     bool vsync();
     bool vblank();
+    int vsyncAsInt()  { return int(vsync());  } // so we can use _vsync pseudo-register
+    int vblankAsInt() { return int(vblank()); } // so we can use _vblank pseudo-register
 
   private:
     /** Display a color patch for color at given index in the palette */

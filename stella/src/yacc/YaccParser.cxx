@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: YaccParser.cxx,v 1.25 2009-01-01 18:13:40 stephena Exp $
+// $Id: YaccParser.cxx,v 1.26 2009-01-12 15:11:55 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -213,6 +213,18 @@ CPUDEBUG_INT_METHOD getCpuSpecial(char *c) {
 TIADEBUG_INT_METHOD getTiaSpecial(char *c) {
 	if(strcmp(c, "_scan") == 0)
 		return &TIADebug::scanlines;
+
+	if(strcmp(c, "_fcount") == 0)
+		return &TIADebug::frameCount;
+
+	if(strcmp(c, "_cclocks") == 0)
+		return &TIADebug::clocksThisLine;
+
+	if(strcmp(c, "_vsync") == 0)
+		return &TIADebug::vsyncAsInt;
+
+	if(strcmp(c, "_vblank") == 0)
+		return &TIADebug::vblankAsInt;
 
 	return 0;
 }

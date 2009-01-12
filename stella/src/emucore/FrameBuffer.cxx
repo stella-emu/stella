@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.157 2009-01-10 18:52:55 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.158 2009-01-12 15:11:55 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -158,7 +158,12 @@ void FrameBuffer::update()
     case EventHandler::S_EMULATE:
     {
       // Run the console for one frame
+      // Note that the debugger can cause a breakpoint to occur, which changes
+      // the EventHandler state 'behind our back' - we need to check for that
       myOSystem->console().mediaSource().update();
+  #ifdef DEBUGGER_SUPPORT
+      if(myOSystem->eventHandler().state() != EventHandler::S_EMULATE) break;
+  #endif
       if(myOSystem->eventHandler().frying())
         myOSystem->console().fry();
 
