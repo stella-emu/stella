@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - November 2008
+                         To Do List - January 2009
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
@@ -71,7 +71,7 @@ X    (4) Reload current listing (possibly tied to a RMB context menu).
   * Fix Props.cxx (or GameInfoDialog) to properly deal with quotes and
     backslashes in strings meant to be saved to the properties file.
 
-  * Extra controllers (KidVid, Lightgun)
+  * Add support for uncommon controllers (KidVid, Lightgun, etc)
 
   * Fix "Tron Man Picture Cart" (32K Tigervision bankswitching) issue
 
@@ -97,8 +97,6 @@ X    (4) Reload current listing (possibly tied to a RMB context menu).
   * Improve sound output of Pitfall2
 
   * Add auto-detection for all remaining bankswitch types
-
-  * Add support for uncommon controllers (KidVid, Lightgun, etc)
 
   * Either Support DASM as frontend or integrate a 6507 Assembler
 

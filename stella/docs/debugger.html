@@ -114,7 +114,7 @@ present in the debugger):</p>
 keyboard to select which tab you want to view.  Pressing Shift with the left
 or right arrow keys cycles between tabs from right-to-left and left-to-right,
 respectively.  Pressing Tab cycles between widgets in the current tab (except
-for in the Prompt area, where 'tab' used for something else).</p>
+for in the Prompt area, where 'tab' is used for something else).</p>
 
 <p>You can also enter the debugger at emulator startup by giving a breakpoint on the command line:
 <pre>
@@ -156,20 +156,31 @@ may change in a future version of Stella.</p>
 <p>This is a command-line interface, similar to the DOS DEBUG command
 or Supermon for the C=64.</p>
 
-<p>Editing keys work about like you'd expect them to: Home, End, Delete,
-arrows, etc. To scroll with the keyboard, use Shift-PageUp and
-Shift-PageDown or Shift-Up and Shift-Down arrow keys. You can also
-scroll with the mouse. Copy and paste is not (yet?) supported.</p>
+<p>Editing keys work about like you'd expect them to in Windows, but many
+Bash-style commands are also supported:</p>
 
-<p>To see the available commands, enter "help" or "?". Most commands can
-be abbreviated: instead of "clearbreaks", you can type "clear" or
-even just "cl". However, "c" by itself is the Toggle Carry command.</p>
+<table border="1" cellpadding="3">
+	<tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
+	<tr><td>End</td><td>Move cursor to end of line</td></tr>
+	<tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
+	<tr><td>Backspace</td><td>Remove character to left of cursor</td></tr>
+	<tr><td>Control-a</td><td>Same function as 'Home'</td></tr>
+	<tr><td>Control-e</td><td>Same function as 'End'</td></tr>
+	<tr><td>Control-d</td><td>Same function as 'Delete'</td></tr>
+	<tr><td>Control-k</td><td>Remove all characters from cursor to end of line</td></tr>
+	<tr><td>Control-u</td><td>Remove all characters from cursor to beginning of line</td></tr>
+	<tr><td>Control-w</td><td>Remove entire word to left of cursor</td></tr>
+	<tr><td>Shift-PgUp</td><td>Scroll up through previous commands one screen/page</td></tr>
+	<tr><td>Shift-PgDown</td><td>Scroll down through previous commands one screen/page</td></tr>
+	<tr><td>Shift-Up</td><td>Scroll up through previous commands one line</td></tr>
+	<tr><td>Shift-Down</td><td>Scroll down through previous commands one line</td></tr>
+	<tr><td>Shift-Home</td><td>Scroll to beginning of commands</td></tr>
+	<tr><td>Shift-End</td><td>Scroll to end of commands</td></tr>
+</table>
+<p>You can also scroll with the mouse.  Copy and paste is not yet supported.</p>
 
-<p>Bash-style tab completion is supported for commands and labels (see below).
-Other Bash-style commands are also supported, as follows:</p>
-<ul>
-	<li>
-</ul>
+<p>To see the available commands, enter "help".  Bash-style tab completion is
+supported for commands and labels (see below).</p>
 
 <p>For now, there are some functions that only exist in the prompt. We
 intend to add GUI equivalents for all (or almost all?) of the prompt
@@ -435,7 +446,7 @@ conditions without having to define the conditions yourself.</p>
 your game's source with underscores, if you plan to use them with the
 Stella debugger.</p>
 
-<table border="1">
+<table border="1" cellpadding="3">
 <tr><th>Function</th><th>Definition</th><th>Description</th></tr>
 <tr><td> _joy0left</td><td> !(*SWCHA &amp; $40)</td><td> Left joystick moved left</td></tr>
 <tr><td> _joy0right</td><td> !(*SWCHA &amp; $80)</td><td> Left joystick moved right</td></tr>
@@ -462,8 +473,20 @@ will show you a list of them.</p>
 
 <h4>Pseudo-Registers</h4>
 
-<p>Two "registers" are provided for you to use in your conditional breaks.
-These are <b>_scan</b> and <b>_bank</b>.</p>
+<p>These "registers" are provided for you to use in your conditional breaks.
+They're not registers in the conventional sense, since they don't exist in
+a real system.  For example, while the debugger keeps track of the number
+of scanlines in a frame, a real system would not (there is no register
+that holds 'number of scanlines' on an actual console).</p>
+<table border="1" cellpadding="3">
+<tr><th>Function</th><th>Description</th></tr>
+<tr><td> _scan</td><td> current scanline count</td></tr>
+<tr><td> _bank</td><td> currently selected bank</td></tr>
+<tr><td> _fcount</td><td> number of frames since emulation started</td></tr>
+<tr><td> _cclocks</td><td> color clocks on a scanline</td></tr>
+<tr><td> _vsync</td><td> whether vertical sync is enabled (1 or 0)</td></tr>
+<tr><td> _vblank</td><td> whether vertical blank is enabled (1 or 0)</td></tr>
+</table>
 
 <p><b>_scan</b> always contains the current scanline count. You can use
 this to break your program in the middle of your kernel. Example:</p>
@@ -676,8 +699,8 @@ is, no flicker will be shown for 30Hz display, even though a real
 system would alternate between drawing frames (and hence produce
 flicker).</p>
 
-<p>You can use the "Scan+1" button or the prompt "scan" command to watch
-the TIA draw the frame one scanline at a time.</p>
+<p>You can use the "Scan+1" button, the prompt "scan" command, or the
+Alt-L key-combo to watch the TIA draw the frame one scanline at a time.</p>
 
 <p>You can also right-click anywhere in this window to show a context menu,
 as illustrated:</p>

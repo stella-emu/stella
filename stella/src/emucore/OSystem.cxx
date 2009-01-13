@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.145 2009-01-11 19:10:40 stephena Exp $
+// $Id: OSystem.cxx,v 1.146 2009-01-13 20:26:02 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -319,7 +319,7 @@ void OSystem::setBaseDir(const string& basedir)
   myBaseDir = basedir;
   FilesystemNode node(myBaseDir);
   if(!node.isDirectory())
-    ;//FIXME SAFilesystemNode::makeDir(myBaseDir);
+    AbstractFilesystemNode::makeDir(myBaseDir);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

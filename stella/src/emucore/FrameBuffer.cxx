@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.158 2009-01-12 15:11:55 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.159 2009-01-13 20:26:02 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -173,7 +173,6 @@ void FrameBuffer::update()
       // Show frame statistics
       if(myStatsMsg.enabled)
       {
-        // FIXME - sizes hardcoded for now; fix during UI refactoring
         const ConsoleInfo& info = myOSystem->console().about();
         char msg[30];
         sprintf(msg, "%u LINES  %2.2f FPS",

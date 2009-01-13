@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.63 2009-01-04 22:27:44 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.64 2009-01-13 20:26:02 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -371,7 +371,6 @@ GameInfoDialog::~GameInfoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GameInfoDialog::loadConfig()
 {
-// FIXME - check comparisons
   myPropertiesLoaded = false;
   myDefaultsSelected = false;
 

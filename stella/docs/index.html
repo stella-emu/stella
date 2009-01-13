@@ -603,7 +603,13 @@
 	<p><img src="graphics/rom_browser.png"></p>
 
 	<p>Once you've changed your settings, you can start emulation by selecting a ROM
-	and pressing 'Enter' or clicking 'Select', or double-clicking a ROM.</p>
+	and pressing 'Enter' or clicking 'Select', or double-clicking a ROM.  Note that
+	some games require you to 'Reset' the console before you start playing.  In this
+	case, you need to hit the virtual reset switch, which by default is the F2 key.
+	Also, some games may require that you press the joystick fire button to begin,
+	which by default is the Left Control/Cmd or Space key(s).  If a game uses a
+	more complex controller, see <b>Section 7 -	<a href="#Keyboard">Keyboard Layout</a></b>
+	for more information.</p>
 
 	<p>
 	<h2><b>Command Line</b></h2>
@@ -1050,6 +1056,21 @@
 		</tr>
 	</table>
 
+	<p>
+	<h2><b>Command Menu</b></h2>
+
+	<p>Normally, one would use the keyboard shortcuts for controlling the 
+	'virtual' switches in Stella (ie, the commands associated with the
+	function keys as described in <b>Section 7 - <a href="#Keyboard">Keyboard Layout</a></b>.
+	However, another alternative is available.  Pressing the '\' key toggles
+	a command menu dialog as follows:</p>
+	<p><img src="graphics/commandmenu.png"></p>
+
+	<p>This dialog contains a set of buttons that represent the same functionality
+	as the function keys.  You may find this useful if you cannot remember all
+	the function key events, or you wish to use Stella without a keyboard (ie,
+	in a standalone gaming system).</p>
+
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br>
@@ -1125,7 +1146,7 @@
 		<tr>
 			<td><img src="graphics/options_ui.png"></td>
 			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-			<td valign="top"><br>This dialog is described in further detail in
+			<td valign="top"><br>This tab is described in further detail in
 				<b>Section 9 - <a href="#ROMInfo">ROM Launcher</a></b>.</td>
 		</tr>
 	</table>
@@ -1912,6 +1933,27 @@
 		</tr>
 	</table>
 
+	<p><b>UI keys in Text Editing areas (cannot be remapped)</b></p>
+
+	<table BORDER=2 cellpadding=5>
+		<tr><th>Key</th><th>Editor Function</th></tr>
+		<tr><td>Home</td><td>Move cursor to beginning of line</td></tr>
+		<tr><td>End</td><td>Move cursor to end of line</td></tr>
+		<tr><td>Delete</td><td>Remove character to right of cursor</td></tr>
+		<tr><td>Backspace</td><td>Remove character to left of cursor</td></tr>
+		<tr><td>Control-a</td><td>Same function as 'Home'</td></tr>
+		<tr><td>Control-e</td><td>Same function as 'End'</td></tr>
+		<tr><td>Control-d</td><td>Same function as 'Delete'</td></tr>
+		<tr><td>Control-k</td><td>Remove all characters from cursor to end of line</td></tr>
+		<tr><td>Control-u</td><td>Remove all characters from cursor to beginning of line</td></tr>
+		<tr><td>Control-w</td><td>Remove entire word to left of cursor</td></tr>
+		<tr><td>Control-Left</td><td>Move cursor to beginning of word to the left</td></tr>
+		<tr><td>Control-Right</td><td>Move cursor to beginning of word to the right</td></tr>
+		<tr><td>Control-c</td><td>Copy entire line to clipboard (not complete)</td></tr>
+		<tr><td>Control-v</td><td>Paste clipboard contents (not complete)</td></tr>
+	</table>
+
+
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 	<br><br><br>
 	<p><h1>
@@ -2153,11 +2195,11 @@
 
 	<p>Stella supports a real AtariVox device for the speech/SpeakJet portion
 	of the controller.  You will need a real AtariVox device, located
-	<a href="	">here</a>,
+	<a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">here</a>,
 	as well as some means of connecting it to your computer (some sort of
 	serial port/USB adaptor).  There should be drivers for your serial convertor,
-	which allow your particular operating system to 'see' the device.  Configuring
-	this is outside the scope of this document.  Once your operating system
+	which allow your particular operating system to 'see' the device (configuring
+	this is outside the scope of this document).  Once your operating system
 	properly detects the AtariVox, you will need to tell Stella which serial
 	port it is connected to.  This is done by using the '-avoxport' commandline
 	argument, or by setting it in the UI under the 'Virtual Devs' tab in
@@ -2165,12 +2207,12 @@
 
 	<p>Note that you must use the entire name of the port as specified by
 	your operating system.  For example, in Windows this would be COM1,
-	COM2, etc; Linux and OSX tend to use '/dev/xxxxxx'.  For now, only
-	Linux/UNIX, OSX, and Win32 are supported.</p>
+	COM2, etc; Linux and OSX tend to use names similar to '/dev/xxxxxx'.
+	For now, only Linux/UNIX, OSX, and Win32 are supported.</p>
 
 	<p>Support for the EEPROM portion of the AtariVox and SaveKey is currently
 	emulated.  That is, a file will be created on your computer simulating the
-	EEPROM; the actual EEPROM hardware itself will not be used or modified.
+	EEPROM; the actual EEPROM hardware itself will not be accessed or modified.
 	This is very useful in the testing stages of creating a new game, since
 	writing to a real EEPROM many times will eventually wear it out.</p>
 
@@ -2226,7 +2268,7 @@
 		for more information.</li>
 
 		<li>Viewing TIA/console information overlaid on the TIA image.  This option
-		can be enabled from the commandline or using the Alt/ShiftCmd-l key combo,
+		can be enabled from the commandline or using the Alt/ShiftCmd-L key combo,
 		and is extremely useful for viewing the current scanline count and associated
 		frames per second, bankswitch and display formats, etc.  The following shows
 		an example of this information:
@@ -2234,8 +2276,8 @@
 		<p>The three lines of output describe the following:
 		<ol>
 			<li>Number of scanlines in current frame, and associated framerate.  Note
-				that the framerate shown is the <i>internal</i> framerate (it's
-				calculated from the number of scanlines).</li>
+				that the framerate shown is the <i>internal</i>, virtual  framerate
+				(it's calculated from the number of scanlines).</li>
 			<li>Display format.  If the characters 'AUTO =&gt;' are present, it means
 				the display format was auto-detected as shown.  For the given example,
 				the format was auto-detected as 'NTSC'.</li>
@@ -2487,7 +2529,9 @@ Ms Pac-Man (Stella extended codes):
 
 		<tr>
 			<td VALIGN="TOP"><i>Cartridge.Name:</i></td>
-			<td>Indicates the actual name of the game.</td>
+			<td>Indicates the actual name of the game.  When you save snapshots,
+				load/save state files, or use the 'ROM Audit' functionality,
+				this is the name that will be used for the respective file(s).</td>
 		</tr>
 
 		<tr>
@@ -2727,9 +2771,9 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 	</table>
 	<p>Note that to actually use the external palette, the palette file must
-	exist and be valid, <b>and</b> the palette option should be set to <i>user</i>.
-	The current ROM will have to be reloaded for changes to this file to take
-	effect.</p>
+	exist and be valid, <b>and</b> the palette option should be set to <i>user</i>
+	(in <b>Video Settings</b> dialog).  The current ROM will have to be reloaded
+	for changes to this file to take effect.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
