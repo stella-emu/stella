@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.156 2009-01-05 22:05:35 stephena Exp $
+// $Id: Settings.cxx,v 1.157 2009-01-13 14:45:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -227,7 +227,7 @@ void Settings::validate()
     setInternal("gl_filter", "nearest");
 
   i = getInt("gl_aspect");
-  if(i < 50 || i > 100)
+  if(i < 80 || i > 100)
     setInternal("gl_aspect", "100");
 #endif
 
@@ -279,6 +279,7 @@ void Settings::usage()
     << endl
     << "Usage: stella [options ...] romfile" << endl
     << "       Run without any options or romfile to use the ROM launcher" << endl
+    << "       Consult the manual for more in-depth information" << endl
     << endl
     << "Valid options are:" << endl
     << endl
@@ -319,26 +320,25 @@ void Settings::usage()
     << endl
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
-    << "  -showinfo     <1|0>          Shows some game info\n"
+    << "  -showinfo     <1|0>          Shows some game info on commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
-    << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling)\n"
-    << "  -stats        <1|0>          Overlay console info during emulation\n"
     << endl
-    << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
+    << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"
     << "  -launcherexts <allfiles|     Show files with the given extensions in ROM launcher\n"
     << "                 allroms|        (exts is a ':' separated list of extensions\n"
     << "                 exts\n"
+    << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
@@ -346,7 +346,6 @@ void Settings::usage()
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
-    << "  -tiafloat     <1|0>          Set unused TIA pins floating on a read/peek\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
@@ -360,6 +359,8 @@ void Settings::usage()
     << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
+    << "   -stats        <1|0>         Overlay console info during emulation\n"
+    << "   -tiafloat     <1|0>         Set unused TIA pins floating on a read/peek\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"

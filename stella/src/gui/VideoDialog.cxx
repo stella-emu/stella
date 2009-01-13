@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.61 2009-01-06 23:02:18 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.62 2009-01-13 14:45:34 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -126,7 +126,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myAspectRatioSlider =
     new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
                      "GL Aspect: ", lwidth, kAspectRatioChanged);
-  myAspectRatioSlider->setMinValue(50); myAspectRatioSlider->setMaxValue(100);
+  myAspectRatioSlider->setMinValue(80); myAspectRatioSlider->setMaxValue(100);
   wid.push_back(myAspectRatioSlider);
   myAspectRatioLabel =
     new StaticTextWidget(this, font, xpos + myAspectRatioSlider->getWidth() + 4,

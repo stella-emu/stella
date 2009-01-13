@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Low.cxx,v 1.16 2009-01-01 18:13:38 stephena Exp $
+// $Id: M6502Low.cxx,v 1.17 2009-01-13 14:45:34 stephena Exp $
 //============================================================================
 
 #include "M6502Low.hxx"
@@ -47,7 +47,7 @@ inline uInt8 M6502Low::peek(uInt16 address)
   if(myReadTraps != NULL && myReadTraps->isSet(address))
   {
     myJustHitTrapFlag = true;
-    myHitTrapInfo.message = "Read trap: ";
+    myHitTrapInfo.message = "RTrap: ";
     myHitTrapInfo.address = address;
   }
 #endif
@@ -64,7 +64,7 @@ inline void M6502Low::poke(uInt16 address, uInt8 value)
   if(myWriteTraps != NULL && myWriteTraps->isSet(address))
   {
     myJustHitTrapFlag = true;
-    myHitTrapInfo.message = "Write trap: ";
+    myHitTrapInfo.message = "WTrap: ";
     myHitTrapInfo.address = address;
   }
 #endif
@@ -101,7 +101,7 @@ bool M6502Low::execute(uInt32 number)
       {
         if(myBreakPoints->isSet(PC))
         {
-          if(myDebugger->start("Breakpoint hit: ", PC))
+          if(myDebugger->start("BP: ", PC))
             return true;
         }
       }
