@@ -33,7 +33,7 @@ X * Add infrastructure to show all info gathered from a ROM (similar to what
     is currently displayed on the commandline).  Add a UI part for this, so
     users aren't forced to use the commandline to see it.
 
-  * Fix issue with paddle support in Activision Casino ROM.
+X * Fix issue with paddle support in Activision Casino ROM.
 
   * More work to the ROM launcher, including at least the following:
 X    (1) Only show files with certain extensions (including a UI part to

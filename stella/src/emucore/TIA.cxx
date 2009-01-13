@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.98 2009-01-12 01:07:29 stephena Exp $
+// $Id: TIA.cxx,v 1.99 2009-01-13 01:18:24 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
+//#define NO_HMOVE_FIXES
 
 #include <cassert>
 #include <cstdlib>
@@ -198,8 +199,9 @@ void TIA::reset()
   myFloatTIAOutputPins = mySettings.getBool("tiafloat");
 
   myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
+  myFramerate = myConsole.getFramerate();
 
-  if(myConsole.getFramerate() > 55.0)  // NTSC
+  if(myFramerate > 55.0)  // NTSC
   {
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
@@ -596,10 +598,9 @@ inline void TIA::endFrame()
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
   if(myFrameCounter % 32 == 0 && myAutoFrameEnabled)
   {
-    float framerate =
-      (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /
-       myScanlineCountForLastFrame;
-    myConsole.setFramerate(framerate);
+    myFramerate = (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /
+                   myScanlineCountForLastFrame;
+    myConsole.setFramerate(myFramerate);
   }
 
   myFrameGreyed = false;
@@ -1973,176 +1974,125 @@ void TIA::greyOutFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearBuffers()
 {
-  for(uInt32 i = 0; i < 160 * 300; ++i)
+  memset(myCurrentFrameBuffer, 0, 160 * 300);
+  memset(myPreviousFrameBuffer, 0, 160 * 300);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline uInt8 TIA::dumpedInputPort(int resistance)
+{
+  if(resistance == Controller::minimumResistance)
   {
-    myCurrentFrameBuffer[i] = myPreviousFrameBuffer[i] = 0;
+    return 0x80;
   }
+  else if((resistance == Controller::maximumResistance) || myDumpEnabled)
+  {
+    return 0x00;
+  }
+  else
+  {
+    uInt32 needed = (uInt32) (1.6 * resistance * 0.01e-6 *
+                       myScanlineCountForLastFrame * 228 * myFramerate / 3);
+    if((mySystem->cycles() - myDumpDisabledCycle) > needed)
+    {
+      return 0x80;
+    }
+    else
+    {
+      return 0x00;
+    }
+  }
+  return 0x00;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::peek(uInt16 addr)
 {
+  // TODO - convert all constants to enums (TIA.cs/530)
+
   // Update frame to current color clock before we look at anything!
   updateFrame(mySystem->cycles() * 3);
 
-  uInt8 noise = mySystem->getDataBusState() & 0x3F;
-  
-  // On certain CMOS EPROM chips the unused TIA pins on a read are not
-  // floating but pulled high. Programmers might want to check their
-  // games for compatibility, so we make this optional. 
-  if(!myFloatTIAOutputPins) noise = 0x3F;
+  uInt8 retval = 0x00;
 
   switch(addr & 0x000f)
   {
-    case 0x00:    // CXM0P
-      return ((myCollision & 0x0001) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0002) ? 0x40 : 0x00) | noise;
+    case CXM0P:
+      retval = ((myCollision & 0x0001) ? 0x80 : 0x00) |
+               ((myCollision & 0x0002) ? 0x40 : 0x00);
+      break;
 
-    case 0x01:    // CXM1P
-      return ((myCollision & 0x0004) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0008) ? 0x40 : 0x00) | noise;
+    case CXM1P:
+      retval = ((myCollision & 0x0004) ? 0x80 : 0x00) |
+               ((myCollision & 0x0008) ? 0x40 : 0x00);
+      break;
 
-    case 0x02:    // CXP0FB
-      return ((myCollision & 0x0010) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0020) ? 0x40 : 0x00) | noise;
+    case CXP0FB:
+      retval = ((myCollision & 0x0010) ? 0x80 : 0x00) |
+               ((myCollision & 0x0020) ? 0x40 : 0x00);
+      break;
 
-    case 0x03:    // CXP1FB
-      return ((myCollision & 0x0040) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0080) ? 0x40 : 0x00) | noise;
+    case CXP1FB:
+      retval = ((myCollision & 0x0040) ? 0x80 : 0x00) |
+               ((myCollision & 0x0080) ? 0x40 : 0x00);
+      break;
 
-    case 0x04:    // CXM0FB
-      return ((myCollision & 0x0100) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0200) ? 0x40 : 0x00) | noise;
+    case CXM0FB:
+      retval = ((myCollision & 0x0100) ? 0x80 : 0x00) |
+               ((myCollision & 0x0200) ? 0x40 : 0x00);
+      break;
 
-    case 0x05:    // CXM1FB
-      return ((myCollision & 0x0400) ? 0x80 : 0x00) | 
-          ((myCollision & 0x0800) ? 0x40 : 0x00) | noise;
+    case CXM1FB:
+      retval = ((myCollision & 0x0400) ? 0x80 : 0x00) |
+               ((myCollision & 0x0800) ? 0x40 : 0x00);
+      break;
 
-    case 0x06:    // CXBLPF
-      return ((myCollision & 0x1000) ? 0x80 : 0x00) | noise;
+    case CXBLPF:
+      retval = (myCollision & 0x1000) ? 0x80 : 0x00;
+      break;
 
-    case 0x07:    // CXPPMM
-      return ((myCollision & 0x2000) ? 0x80 : 0x00) | 
-          ((myCollision & 0x4000) ? 0x40 : 0x00) | noise;
+    case CXPPMM:
+      retval = ((myCollision & 0x2000) ? 0x80 : 0x00) |
+               ((myCollision & 0x4000) ? 0x40 : 0x00);
+      break;
 
-    case 0x08:    // INPT0
-    {
-      Int32 r = myConsole.controller(Controller::Left).read(Controller::Nine);
-      if(r == Controller::minimumResistance)
-      {
-        return 0x80 | noise;
-      }
-      else if((r == Controller::maximumResistance) || myDumpEnabled)
-      {
-        return noise;
-      }
-      else
-      {
-        double t = (1.5327 * r * 0.01E-6);
-        uInt32 needed = (uInt32)(t * 1.19E6);
-        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
-        {
-          return 0x80 | noise;
-        }
-        else
-        {
-          return noise;
-        }
-      }
-    }
+    case INPT0:
+      retval = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Nine));
+      break;
 
-    case 0x09:    // INPT1
-    {
-      Int32 r = myConsole.controller(Controller::Left).read(Controller::Five);
-      if(r == Controller::minimumResistance)
-      {
-        return 0x80 | noise;
-      }
-      else if((r == Controller::maximumResistance) || myDumpEnabled)
-      {
-        return noise;
-      }
-      else
-      {
-        double t = (1.5327 * r * 0.01E-6);
-        uInt32 needed = (uInt32)(t * 1.19E6);
-        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
-        {
-          return 0x80 | noise;
-        }
-        else
-        {
-          return noise;
-        }
-      }
-    }
+    case INPT1:
+      retval = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Five));
+      break;
 
-    case 0x0A:    // INPT2
-    {
-      Int32 r = myConsole.controller(Controller::Right).read(Controller::Nine);
-      if(r == Controller::minimumResistance)
-      {
-        return 0x80 | noise;
-      }
-      else if((r == Controller::maximumResistance) || myDumpEnabled)
-      {
-        return noise;
-      }
-      else
-      {
-        double t = (1.5327 * r * 0.01E-6);
-        uInt32 needed = (uInt32)(t * 1.19E6);
-        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
-        {
-          return 0x80 | noise;
-        }
-        else
-        {
-          return noise;
-        }
-      }
-    }
+    case INPT2:
+      retval = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Nine));
+      break;
 
-    case 0x0B:    // INPT3
-    {
-      Int32 r = myConsole.controller(Controller::Right).read(Controller::Five);
-      if(r == Controller::minimumResistance)
-      {
-        return 0x80 | noise;
-      }
-      else if((r == Controller::maximumResistance) || myDumpEnabled)
-      {
-        return noise;
-      }
-      else
-      {
-        double t = (1.5327 * r * 0.01E-6);
-        uInt32 needed = (uInt32)(t * 1.19E6);
-        if((mySystem->cycles() - myDumpDisabledCycle) > needed)
-        {
-          return 0x80 | noise;
-        }
-        else
-        {
-          return noise;
-        }
-      }
-    }
+    case INPT3:
+      retval = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Five));
+      break;
 
-    case 0x0C:    // INPT4
-      return myConsole.controller(Controller::Left).read(Controller::Six) ?
-          (0x80 | noise) : noise;
+    case INPT4:
+      retval = myConsole.controller(Controller::Left).read(Controller::Six) ?
+               0x80 : 0x00;
+      break;
 
-    case 0x0D:    // INPT5
-      return myConsole.controller(Controller::Right).read(Controller::Six) ?
-          (0x80 | noise) : noise;
+    case INPT5:
+      retval = myConsole.controller(Controller::Right).read(Controller::Six) ?
+               0x80 : 0x00;
+      break;
 
-    case 0x0e:
-      return noise;
-
+    case 0x0e:  // TODO - document this address
     default:
-      return noise;
+      break;
   }
+
+  // On certain CMOS EPROM chips the unused TIA pins on a read are not
+  // floating but pulled high. Programmers might want to check their
+  // games for compatibility, so we make this optional. 
+  retval |= myFloatTIAOutputPins ? (mySystem->getDataBusState() & 0x3F) : 0x3F;
+
+  return retval;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2173,7 +2123,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
   switch(addr)
   {
-    case 0x00:    // Vertical sync set-clear
+    case VSYNC:    // Vertical sync set-clear
     {
       myVSYNC = value;
 
@@ -2196,7 +2146,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x01:    // Vertical blank set-clear
+    case VBLANK:  // Vertical blank set-clear
     {
       // Is the dump to ground path being set for I0, I1, I2, and I3?
       if(!(myVBLANK & 0x80) && (value & 0x80))
@@ -2215,7 +2165,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x02:    // Wait for leading edge of HBLANK
+    case WSYNC:   // Wait for leading edge of HBLANK
     {
       // It appears that the 6507 only halts during a read cycle so
       // we test here for follow-on writes which should be ignored as
@@ -2232,13 +2182,13 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x03:    // Reset horizontal sync counter
+    case RSYNC:   // Reset horizontal sync counter
     {
 //      cerr << "TIA Poke: " << hex << addr << endl;
       break;
     }
 
-    case 0x04:    // Number-size of player-missle 0
+    case NUSIZ0:  // Number-size of player-missle 0
     {
       myNUSIZ0 = value;
 
@@ -2254,7 +2204,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x05:    // Number-size of player-missle 1
+    case NUSIZ1:  // Number-size of player-missle 1
     {
       myNUSIZ1 = value;
 
@@ -2270,7 +2220,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x06:    // Color-Luminance Player 0
+    case COLUP0:  // Color-Luminance Player 0
     {
       uInt32 color = (uInt32)(value & 0xfe);
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
@@ -2281,7 +2231,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x07:    // Color-Luminance Player 1
+    case COLUP1:  // Color-Luminance Player 1
     {
       uInt32 color = (uInt32)(value & 0xfe);
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
@@ -2292,7 +2242,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x08:    // Color-Luminance Playfield
+    case COLUPF:  // Color-Luminance Playfield
     {
       uInt32 color = (uInt32)(value & 0xfe);
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
@@ -2303,7 +2253,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x09:    // Color-Luminance Background
+    case COLUBK:  // Color-Luminance Background
     {
       uInt32 color = (uInt32)(value & 0xfe);
       if(myColorLossEnabled && (myScanlineCountForLastFrame & 0x01))
@@ -2314,7 +2264,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x0A:    // Control Playfield, Ball size, Collisions
+    case CTRLPF:  // Control Playfield, Ball size, Collisions
     {
       myCTRLPF = value;
 
@@ -2336,7 +2286,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x0B:    // Reflect Player 0
+    case REFP0:   // Reflect Player 0
     {
       // See if the reflection state of the player is being changed
       if(((value & 0x08) && !myREFP0) || (!(value & 0x08) && myREFP0))
@@ -2347,7 +2297,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x0C:    // Reflect Player 1
+    case REFP1:   // Reflect Player 1
     {
       // See if the reflection state of the player is being changed
       if(((value & 0x08) && !myREFP1) || (!(value & 0x08) && myREFP1))
@@ -2358,7 +2308,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x0D:    // Playfield register byte 0
+    case PF0:     // Playfield register byte 0
     {
       myPF = (myPF & 0x000FFFF0) | ((value >> 4) & 0x0F);
 
@@ -2370,7 +2320,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x0E:    // Playfield register byte 1
+    case PF1:     // Playfield register byte 1
     {
       myPF = (myPF & 0x000FF00F) | ((uInt32)value << 4);
 
@@ -2382,7 +2332,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x0F:    // Playfield register byte 2
+    case PF2:     // Playfield register byte 2
     {
       myPF = (myPF & 0x00000FFF) | ((uInt32)value << 12);
 
@@ -2394,7 +2344,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x10:    // Reset Player 0
+    case RESP0:   // Reset Player 0
     {
       Int32 hpos = (clock - myClockWhenFrameStarted) % 228;
       Int32 newx = hpos < HBLANK ? 3 : (((hpos - HBLANK) + 5) % 160);
@@ -2445,7 +2395,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x11:    // Reset Player 1
+    case RESP1:   // Reset Player 1
     {
       Int32 hpos = (clock - myClockWhenFrameStarted) % 228;
       Int32 newx = hpos < HBLANK ? 3 : (((hpos - HBLANK) + 5) % 160);
@@ -2496,7 +2446,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x12:    // Reset Missle 0
+    case RESM0:   // Reset Missle 0
     {
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM0 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
@@ -2508,6 +2458,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
              << "  hpos: " << hpos << ", myPOSM0 = " << myPOSM0 << endl;
 #endif
 
+#ifndef NO_HMOVE_FIXES
       // TODO: Remove the following special hack for Dolphin by
       // figuring out what really happens when Reset Missle 
       // occurs 20 cycles after an HMOVE (04/13/02).
@@ -2522,13 +2473,13 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         myPOSM0 = 8;
       }
- 
+#endif
       myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
       break;
     }
 
-    case 0x13:    // Reset Missle 1
+    case RESM1:   // Reset Missle 1
     {
       int hpos = (clock - myClockWhenFrameStarted) % 228;
       myPOSM1 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
@@ -2540,6 +2491,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
              << "  hpos: " << hpos << ", myPOSM1 = " << myPOSM1 << endl;
 #endif
 
+#ifndef NO_HMOVE_FIXES
       // TODO: Remove the following special hack for Pitfall II by
       // figuring out what really happens when Reset Missle 
       // occurs 3 cycles after an HMOVE (04/13/02).
@@ -2547,13 +2499,13 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         myPOSM1 = 3;
       }
- 
+#endif
       myCurrentM1Mask = &ourMissleMaskTable[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
       break;
     }
 
-    case 0x14:    // Reset Ball
+    case RESBL:   // Reset Ball
     {
       int hpos = (clock - myClockWhenFrameStarted) % 228 ;
       myPOSBL = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
@@ -2565,6 +2517,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
              << "  hpos: " << hpos << ", myPOSBL = " << myPOSBL << endl;
 #endif
 
+#ifndef NO_HMOVE_FIXES
       // TODO: Remove the following special hack by figuring out what
       // really happens when Reset Ball occurs 18 cycles after an HMOVE.
       if((clock - myLastHMOVEClock) == (18 * 3))
@@ -2618,55 +2571,55 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         myPOSBL = 8;
       }
- 
+#endif
       myCurrentBLMask = &ourBallMaskTable[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
       break;
     }
 
-    case 0x15:    // Audio control 0
+    case AUDC0:   // Audio control 0
     {
       myAUDC0 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
-    case 0x16:    // Audio control 1
+    case AUDC1:   // Audio control 1
     {
       myAUDC1 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
-    case 0x17:    // Audio frequency 0
+    case AUDF0:   // Audio frequency 0
     {
       myAUDF0 = value & 0x1f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
-    case 0x18:    // Audio frequency 1
+    case AUDF1:   // Audio frequency 1
     {
       myAUDF1 = value & 0x1f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
-    case 0x19:    // Audio volume 0
+    case AUDV0:   // Audio volume 0
     {
       myAUDV0 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
   
-    case 0x1A:    // Audio volume 1
+    case AUDV1:   // Audio volume 1
     {
       myAUDV1 = value & 0x0f;
       mySound->set(addr, value, mySystem->cycles());
       break;
     }
 
-    case 0x1B:    // Graphics Player 0
+    case GRP0:    // Graphics Player 0
     {
       // Set player 0 graphics
       myGRP0 = (myBitEnabled[TIA::P0] ? value : 0);
@@ -2696,7 +2649,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x1C:    // Graphics Player 1
+    case GRP1:    // Graphics Player 1
     {
       // Set player 1 graphics
       myGRP1 = (myBitEnabled[TIA::P1] ? value : 0);
@@ -2734,7 +2687,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x1D:    // Enable Missile 0 graphics
+    case ENAM0:   // Enable Missile 0 graphics
     {
       myENAM0 = (myBitEnabled[TIA::M0] ? value & 0x02 : 0);
 
@@ -2745,7 +2698,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x1E:    // Enable Missile 1 graphics
+    case ENAM1:   // Enable Missile 1 graphics
     {
       myENAM1 = (myBitEnabled[TIA::M1] ? value & 0x02 : 0);
 
@@ -2756,7 +2709,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x1F:    // Enable Ball graphics
+    case ENABL:   // Enable Ball graphics
     {
       myENABL = (myBitEnabled[TIA::BL] ? value & 0x02 : 0);
 
@@ -2768,19 +2721,19 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x20:    // Horizontal Motion Player 0
+    case HMP0:    // Horizontal Motion Player 0
     {
       myHMP0 = value >> 4;
       break;
     }
 
-    case 0x21:    // Horizontal Motion Player 1
+    case HMP1:    // Horizontal Motion Player 1
     {
       myHMP1 = value >> 4;
       break;
     }
 
-    case 0x22:    // Horizontal Motion Missle 0
+    case HMM0:    // Horizontal Motion Missle 0
     {
       Int8 tmp = value >> 4;
 
@@ -2795,19 +2748,19 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x23:    // Horizontal Motion Missle 1
+    case HMM1:    // Horizontal Motion Missle 1
     {
       myHMM1 = value >> 4;
       break;
     }
 
-    case 0x24:    // Horizontal Motion Ball
+    case HMBL:    // Horizontal Motion Ball
     {
       myHMBL = value >> 4;
       break;
     }
 
-    case 0x25:    // Vertial Delay Player 0
+    case VDELP0:  // Vertial Delay Player 0
     {
       myVDELP0 = value & 0x01;
 
@@ -2821,7 +2774,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x26:    // Vertial Delay Player 1
+    case VDELP1:  // Vertial Delay Player 1
     {
       myVDELP1 = value & 0x01;
 
@@ -2835,7 +2788,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x27:    // Vertial Delay Ball
+    case VDELBL:  // Vertial Delay Ball
     {
       myVDELBL = value & 0x01;
 
@@ -2846,7 +2799,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x28:    // Reset missle 0 to player 0
+    case RESMP0:  // Reset missle 0 to player 0
     {
       if(myRESMP0 && !(value & 0x02))
       {
@@ -2874,7 +2827,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x29:    // Reset missle 1 to player 1
+    case RESMP1:  // Reset missle 1 to player 1
     {
       if(myRESMP1 && !(value & 0x02))
       {
@@ -2901,7 +2854,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x2A:    // Apply horizontal motion
+    case HMOVE:   // Apply horizontal motion
     {
       // Figure out what cycle we're at
       Int32 x = ((clock - myClockWhenFrameStarted) % 228) / 3;
@@ -2965,7 +2918,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x2b:    // Clear horizontal motion registers
+    case HMCLR:   // Clear horizontal motion registers
     {
       myHMP0 = 0;
       myHMP1 = 0;
@@ -2975,7 +2928,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case 0x2c:    // Clear collision latches
+    case CXCLR:   // Clear collision latches
     {
       myCollision = 0;
       break;

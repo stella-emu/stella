@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.49 2009-01-12 01:07:29 stephena Exp $
+// $Id: TIA.hxx,v 1.50 2009-01-13 01:18:25 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -40,7 +40,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.49 2009-01-12 01:07:29 stephena Exp $
+  @version $Id: TIA.hxx,v 1.50 2009-01-13 01:18:25 stephena Exp $
 */
 class TIA : public Device , public MediaSource
 {
@@ -294,6 +294,9 @@ class TIA : public Device , public MediaSource
     // Update bookkeeping at end of frame
     void endFrame();
 
+    // Convert resistance from ports to dumped value
+    uInt8 dumpedInputPort(int resistance);
+
   private:
     // Console the TIA is associated with
     Console& myConsole;
@@ -372,25 +375,8 @@ class TIA : public Device , public MediaSource
     // Indicates the maximum number of scanlines to be generated for a frame
     Int32 myMaximumNumberOfScanlines;
 
-  private:
     // Color clock when VSYNC ending causes a new frame to be started
     Int32 myVSYNCFinishClock; 
-
-  private:
-    enum
-    {
-      myP0Bit = 0x01,         // Bit for Player 0
-      myM0Bit = 0x02,         // Bit for Missle 0
-      myP1Bit = 0x04,         // Bit for Player 1
-      myM1Bit = 0x08,         // Bit for Missle 1
-      myBLBit = 0x10,         // Bit for Ball
-      myPFBit = 0x20,         // Bit for Playfield
-      ScoreBit = 0x40,        // Bit for Playfield score mode
-      PriorityBit = 0x080     // Bit for Playfield priority
-    };
-
-    // Bitmap of the objects that should be considered while drawing
-    uInt8 myEnabledObjects;
 
   private:
     uInt8 myVSYNC;        // Holds the VSYNC register value
@@ -515,6 +501,9 @@ class TIA : public Device , public MediaSource
     // Counter used for TIA M0 "bug" 
     uInt32 myM0CosmicArkCounter;
 
+    // Bitmap of the objects that should be considered while drawing
+    uInt8 myEnabledObjects;
+
     // Answers whether specified bits (from TIABit) are enabled or disabled
     bool myBitEnabled[6];
 
@@ -524,7 +513,85 @@ class TIA : public Device , public MediaSource
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;
 
+    // The framerate currently in use by the Console
+    float myFramerate;
+
   private:
+    enum {  // TODO - convert these to match TIA.cs
+      myP0Bit     = 0x01,    // Bit for Player 0
+      myM0Bit     = 0x02,    // Bit for Missle 0
+      myP1Bit     = 0x04,    // Bit for Player 1
+      myM1Bit     = 0x08,    // Bit for Missle 1
+      myBLBit     = 0x10,    // Bit for Ball
+      myPFBit     = 0x20,    // Bit for Playfield
+      ScoreBit    = 0x40,    // Bit for Playfield score mode
+      PriorityBit = 0x80     // Bit for Playfield priority
+    };
+
+    // TIA Write/Read register names
+    enum {
+      VSYNC   = 0x00,  // Write: vertical sync set-clear (D1)
+      VBLANK  = 0x01,  // Write: vertical blank set-clear (D7-6,D1)
+      WSYNC   = 0x02,  // Write: wait for leading edge of hrz. blank (strobe)
+      RSYNC   = 0x03,  // Write: reset hrz. sync counter (strobe)
+      NUSIZ0  = 0x04,  // Write: number-size player-missle 0 (D5-0)
+      NUSIZ1  = 0x05,  // Write: number-size player-missle 1 (D5-0)
+      COLUP0  = 0x06,  // Write: color-lum player 0 (D7-1)
+      COLUP1  = 0x07,  // Write: color-lum player 1 (D7-1)
+      COLUPF  = 0x08,  // Write: color-lum playfield (D7-1)
+      COLUBK  = 0x09,  // Write: color-lum background (D7-1)
+      CTRLPF  = 0x0a,  // Write: cntrl playfield ballsize & coll. (D5-4,D2-0)
+      REFP0   = 0x0b,  // Write: reflect player 0 (D3)
+      REFP1   = 0x0c,  // Write: reflect player 1 (D3)
+      PF0     = 0x0d,  // Write: playfield register byte 0 (D7-4)
+      PF1     = 0x0e,  // Write: playfield register byte 1 (D7-0)
+      PF2     = 0x0f,  // Write: playfield register byte 2 (D7-0)
+      RESP0   = 0x10,  // Write: reset player 0 (strobe)
+      RESP1   = 0x11,  // Write: reset player 1 (strobe)
+      RESM0   = 0x12,  // Write: reset missle 0 (strobe)
+      RESM1   = 0x13,  // Write: reset missle 1 (strobe)
+      RESBL   = 0x14,  // Write: reset ball (strobe)
+      AUDC0   = 0x15,  // Write: audio control 0 (D3-0)
+      AUDC1   = 0x16,  // Write: audio control 1 (D4-0)
+      AUDF0   = 0x17,  // Write: audio frequency 0 (D4-0)
+      AUDF1   = 0x18,  // Write: audio frequency 1 (D3-0)
+      AUDV0   = 0x19,  // Write: audio volume 0 (D3-0)
+      AUDV1   = 0x1a,  // Write: audio volume 1 (D3-0)
+      GRP0    = 0x1b,  // Write: graphics player 0 (D7-0)
+      GRP1    = 0x1c,  // Write: graphics player 1 (D7-0)
+      ENAM0   = 0x1d,  // Write: graphics (enable) missle 0 (D1)
+      ENAM1   = 0x1e,  // Write: graphics (enable) missle 1 (D1)
+      ENABL   = 0x1f,  // Write: graphics (enable) ball (D1)
+      HMP0    = 0x20,  // Write: horizontal motion player 0 (D7-4)
+      HMP1    = 0x21,  // Write: horizontal motion player 1 (D7-4)
+      HMM0    = 0x22,  // Write: horizontal motion missle 0 (D7-4)
+      HMM1    = 0x23,  // Write: horizontal motion missle 1 (D7-4)
+      HMBL    = 0x24,  // Write: horizontal motion ball (D7-4)
+      VDELP0  = 0x25,  // Write: vertical delay player 0 (D0)
+      VDELP1  = 0x26,  // Write: vertical delay player 1 (D0)
+      VDELBL  = 0x27,  // Write: vertical delay ball (D0)
+      RESMP0  = 0x28,  // Write: reset missle 0 to player 0 (D1)
+      RESMP1  = 0x29,  // Write: reset missle 1 to player 1 (D1)
+      HMOVE   = 0x2a,  // Write: apply horizontal motion (strobe)
+      HMCLR   = 0x2b,  // Write: clear horizontal motion registers (strobe)
+      CXCLR   = 0x2c,  // Write: clear collision latches (strobe)
+
+      CXM0P   = 0x00,  // Read collision: D7=(M0,P1); D6=(M0,P0)
+      CXM1P   = 0x01,  // Read collision: D7=(M1,P0); D6=(M1,P1)
+      CXP0FB  = 0x02,  // Read collision: D7=(P0,PF); D6=(P0,BL)
+      CXP1FB  = 0x03,  // Read collision: D7=(P1,PF); D6=(P1,BL)
+      CXM0FB  = 0x04,  // Read collision: D7=(M0,PF); D6=(M0,BL)
+      CXM1FB  = 0x05,  // Read collision: D7=(M1,PF); D6=(M1,BL)
+      CXBLPF  = 0x06,  // Read collision: D7=(BL,PF); D6=(unused)
+      CXPPMM  = 0x07,  // Read collision: D7=(P0,P1); D6=(M0,M1)
+      INPT0   = 0x08,  // Read pot port: D7
+      INPT1   = 0x09,  // Read pot port: D7
+      INPT2   = 0x0a,  // Read pot port: D7
+      INPT3   = 0x0b,  // Read pot port: D7
+      INPT4   = 0x0c,  // Read P1 joystick trigger: D7
+      INPT5   = 0x0d   // Read P2 joystick trigger: D7
+    };
+
     // Ball mask table (entries are true or false)
     static uInt8 ourBallMaskTable[4][4][320];
 
