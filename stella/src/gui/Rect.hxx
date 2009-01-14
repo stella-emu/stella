@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Rect.hxx,v 1.8 2009-01-01 18:13:39 stephena Exp $
+// $Id: Rect.hxx,v 1.9 2009-01-14 20:31:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -21,6 +21,8 @@
 
 #ifndef RECT_HXX
 #define RECT_HXX
+
+#include <cassert>
 
 #include "bspf.hxx"
 

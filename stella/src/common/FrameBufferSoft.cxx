@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.92 2009-01-10 18:52:55 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.93 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -566,7 +566,6 @@ void FBSurfaceSoft::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 colo
 void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
                              uInt32 tx, uInt32 ty, uInt32 color)
 {
-  // TODO - test this in 16-bit, and re-write 24-bit
   const FontDesc& desc = font->desc();
 
   // If this character is not included in the font, use the default char.
@@ -617,44 +616,35 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
       }
       break;
     }
-    case 3:
+    case 3: // TODO - check if this actually works; I don't have access to a 24-bit video card
     {
-#if 0
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt8* buffer = (uInt8*) surface->pixels + myBaseOffset + yorig * myPitch + xorig;
-      uInt32 pixel = myDefPalette[color];
-      uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
-      uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
-      uInt8 b = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+      uInt8* buffer = (uInt8*) mySurface->pixels + myBaseOffset +
+                      (ty + desc.ascent - bby - bbh) * myPitch +
+                      tx + bbx;
 
-      for(int y = h; y; --y)
+      uInt32 pixel =  myFB.myDefPalette[color];
+      uInt8 r = (pixel & myFB.myFormat->Rmask) >> myFB.myFormat->Rshift;
+      uInt8 g = (pixel & myFB.myFormat->Gmask) >> myFB.myFormat->Gshift;
+      uInt8 b = (pixel & myFB.myFormat->Bmask) >> myFB.myFormat->Bshift;
+
+      for(int y = 0; y < bbh; y++)
       {
-        const uInt32 fontbuf = *tmp++;
-        int ystride = myZoomLevel;
-        while(ystride--)
+        const uInt32 ptr = *tmp++;
+        uInt32 mask = 0x8000;
+
+        uInt8* buf_ptr = buffer;
+        for(int x = 0; x < bbw; x++, mask >>= 1)
         {
-          if(fontbuf)
+          if(ptr & mask)
           {
-            uInt32 mask = 0x80000000;
-            int pos = screenofsY;
-            for(int x = 0; x < w; x++, mask >>= 1)
-            {
-              int xstride = myZoomLevel;
-              if((fontbuf & mask) != 0)
-              {
-                while(xstride--)
-                {
-                  buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
-                }
-              }
-              else
-                pos += xstride + xstride + xstride;
-            }
+             *buf_ptr++ = r;  *buf_ptr++ = g;  *buf_ptr++ = b;
           }
-          screenofsY += myPitch;
+          else
+            buf_ptr += 3;
         }
+        buffer += myPitch;
       }
-#endif
       break;
     }
     case 4:

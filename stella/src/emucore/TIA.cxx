@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.99 2009-01-13 01:18:24 stephena Exp $
+// $Id: TIA.cxx,v 1.100 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -2013,73 +2013,71 @@ uInt8 TIA::peek(uInt16 addr)
   // Update frame to current color clock before we look at anything!
   updateFrame(mySystem->cycles() * 3);
 
-  uInt8 retval = 0x00;
+  uInt8 data = 0x00;
 
   switch(addr & 0x000f)
   {
     case CXM0P:
-      retval = ((myCollision & 0x0001) ? 0x80 : 0x00) |
-               ((myCollision & 0x0002) ? 0x40 : 0x00);
+      data = ((myCollision & 0x0001) ? 0x80 : 0x00) |
+             ((myCollision & 0x0002) ? 0x40 : 0x00);
       break;
 
     case CXM1P:
-      retval = ((myCollision & 0x0004) ? 0x80 : 0x00) |
-               ((myCollision & 0x0008) ? 0x40 : 0x00);
+      data = ((myCollision & 0x0004) ? 0x80 : 0x00) |
+             ((myCollision & 0x0008) ? 0x40 : 0x00);
       break;
 
     case CXP0FB:
-      retval = ((myCollision & 0x0010) ? 0x80 : 0x00) |
-               ((myCollision & 0x0020) ? 0x40 : 0x00);
+      data = ((myCollision & 0x0010) ? 0x80 : 0x00) |
+             ((myCollision & 0x0020) ? 0x40 : 0x00);
       break;
 
     case CXP1FB:
-      retval = ((myCollision & 0x0040) ? 0x80 : 0x00) |
-               ((myCollision & 0x0080) ? 0x40 : 0x00);
+      data = ((myCollision & 0x0040) ? 0x80 : 0x00) |
+             ((myCollision & 0x0080) ? 0x40 : 0x00);
       break;
 
     case CXM0FB:
-      retval = ((myCollision & 0x0100) ? 0x80 : 0x00) |
-               ((myCollision & 0x0200) ? 0x40 : 0x00);
+      data = ((myCollision & 0x0100) ? 0x80 : 0x00) |
+             ((myCollision & 0x0200) ? 0x40 : 0x00);
       break;
 
     case CXM1FB:
-      retval = ((myCollision & 0x0400) ? 0x80 : 0x00) |
-               ((myCollision & 0x0800) ? 0x40 : 0x00);
+      data = ((myCollision & 0x0400) ? 0x80 : 0x00) |
+             ((myCollision & 0x0800) ? 0x40 : 0x00);
       break;
 
     case CXBLPF:
-      retval = (myCollision & 0x1000) ? 0x80 : 0x00;
+      data = (myCollision & 0x1000) ? 0x80 : 0x00;
       break;
 
     case CXPPMM:
-      retval = ((myCollision & 0x2000) ? 0x80 : 0x00) |
-               ((myCollision & 0x4000) ? 0x40 : 0x00);
+      data = ((myCollision & 0x2000) ? 0x80 : 0x00) |
+             ((myCollision & 0x4000) ? 0x40 : 0x00);
       break;
 
     case INPT0:
-      retval = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Nine));
+      data = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Nine));
       break;
 
     case INPT1:
-      retval = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Five));
+      data = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Five));
       break;
 
     case INPT2:
-      retval = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Nine));
+      data = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Nine));
       break;
 
     case INPT3:
-      retval = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Five));
+      data = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Five));
       break;
 
     case INPT4:
-      retval = myConsole.controller(Controller::Left).read(Controller::Six) ?
-               0x80 : 0x00;
+      data = myConsole.controller(Controller::Left).read(Controller::Six) ? 0x80 : 0x00;
       break;
 
     case INPT5:
-      retval = myConsole.controller(Controller::Right).read(Controller::Six) ?
-               0x80 : 0x00;
+      data = myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00;
       break;
 
     case 0x0e:  // TODO - document this address
@@ -2090,9 +2088,9 @@ uInt8 TIA::peek(uInt16 addr)
   // On certain CMOS EPROM chips the unused TIA pins on a read are not
   // floating but pulled high. Programmers might want to check their
   // games for compatibility, so we make this optional. 
-  retval |= myFloatTIAOutputPins ? (mySystem->getDataBusState() & 0x3F) : 0x3F;
+  data |= myFloatTIAOutputPins ? (mySystem->getDataBusState() & 0x3F) : 0x3F;
 
-  return retval;
+  return data;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

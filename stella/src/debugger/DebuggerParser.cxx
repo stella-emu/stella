@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerParser.cxx,v 1.109 2009-01-01 18:13:35 stephena Exp $
+// $Id: DebuggerParser.cxx,v 1.110 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 #include <fstream>
@@ -931,6 +931,13 @@ void DebuggerParser::executeHelp()
   }
   commandResult += "\nBuilt-in functions:\n";
   commandResult += debugger->builtinHelp();
+  commandResult += "\nPseudo-registers:\n";
+  commandResult += "_scan     Current scanline count\n";
+  commandResult += "_bank     Currently selected bank\n";
+  commandResult += "_fcount   Number of frames since emulation started\n";
+  commandResult += "_cclocks  Color clocks on current scanline\n";
+  commandResult += "_vsync    Whether vertical sync is enabled (1 or 0)\n";
+  commandResult += "_vblank   Whether vertical blank is enabled (1 or 0)\n";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.62 2009-01-13 14:45:34 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.63 2009-01-14 20:31:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -230,11 +230,7 @@ void VideoDialog::loadConfig()
     instance().frameBuffer().supportedTIAFilters(gl ? "gl" : "soft");
   myTIAFilterPopup->addItems(items);
   myTIAFilterPopup->setSelected(instance().settings().getString("tia_filter"),
-#ifdef SMALL_SCREEN
-    "zoom1x");
-#else
-    "zoom2x");
-#endif
+    instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x");
 
   // TIA Palette
   myTIAPalettePopup->setSelected(
@@ -342,11 +338,7 @@ void VideoDialog::setDefaults()
 {
   myRendererPopup->setSelected("soft", "");
   myTIAFilterPopup->setSelected(
-#ifdef SMALL_SCREEN
-    "zoom1x", "");
-#else
-    "zoom2x", "");
-#endif
+    instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x", "");
   myTIAPalettePopup->setSelected("standard", "");
   myFSResPopup->setSelected("auto", "");
   myFrameTimingPopup->setSelected("sleep", "");

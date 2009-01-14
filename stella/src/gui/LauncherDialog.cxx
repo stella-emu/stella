@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.100 2009-01-11 19:10:40 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.101 2009-01-14 20:31:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -437,16 +437,21 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             myCurrentNode = FilesystemNode(rom);
           updateListing();
         }
-        else if(!LauncherFilterDialog::isValidRomName(rom, extension) ||
-                !instance().createConsole(rom, md5))
-        {
-          instance().frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
-        }
         else
         {
-        #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
-          instance().settings().setString("lastrom", myList->getSelectedString());
-        #endif
+          if(LauncherFilterDialog::isValidRomName(rom, extension))
+          {
+            if(instance().createConsole(rom, md5))
+            {
+            #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
+              instance().settings().setString("lastrom", myList->getSelectedString());
+            #endif
+            }
+            else
+              instance().frameBuffer().showMessage("Error creating console (screen too small)", kMiddleCenter);
+          }
+          else
+            instance().frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
         }
       }
       break;

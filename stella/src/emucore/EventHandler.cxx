@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.237 2009-01-11 19:10:40 stephena Exp $
+// $Id: EventHandler.cxx,v 1.238 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1877,7 +1877,7 @@ bool EventHandler::enterDebugMode()
   {
     myOSystem->debugger().setQuitState();
     setEventState(S_EMULATE);
-    myOSystem->frameBuffer().showMessage("Error creating debugger window, check dimensions");
+    myOSystem->frameBuffer().showMessage("Debugger window too large");
     return false;
   }
   myOverlay->reStack();

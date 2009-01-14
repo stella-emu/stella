@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.159 2009-01-13 20:26:02 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.160 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -28,6 +28,7 @@
 #include "Font.hxx"
 #include "Launcher.hxx"
 #include "MediaSrc.hxx"
+#include "MediaFactory.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
@@ -80,12 +81,9 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   }
   myInitializedCount++;
 
-  // Set fullscreen flag
-#ifdef WINDOWED_SUPPORT
-  mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-#else
-  mySDLFlags = 0;
-#endif
+  // Make sure this mode is even possible
+  if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
+    return false;
 
   // Set the available video modes for this framebuffer
   setAvailableVidModes(width, height);
@@ -97,6 +95,13 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     // Set window title and icon
     setWindowTitle(title);
     if(myInitializedCount == 1) setWindowIcon();
+
+    // Set fullscreen flag
+  #ifdef WINDOWED_SUPPORT
+    mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
+  #else
+    mySDLFlags = 0;
+  #endif
 
     if(!initSubsystem(mode))
     {
@@ -777,11 +782,10 @@ const StringMap& FrameBuffer::supportedTIAFilters(const string& type)
                     myOSystem->desktopWidth(), myOSystem->desktopHeight());
   uInt8 mask = (type == "soft" ? 0x1 : 0x2);
 
-#ifdef SMALL_SCREEN
-  uInt32 firstmode = 0;
-#else
   uInt32 firstmode = 1;
-#endif
+  if(myOSystem->desktopWidth() < 640 || myOSystem->desktopHeight() < 480)
+    firstmode = 0;
+
   myTIAFilters.clear();
   for(uInt32 i = firstmode; i < GFX_NumModes; ++i)
   {
@@ -843,11 +847,12 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
     // for the given dimensions
     uInt32 max_zoom = maxWindowSizeForScreen(baseWidth, baseHeight,
                       myOSystem->desktopWidth(), myOSystem->desktopHeight());
-  #ifdef SMALL_SCREEN
-    uInt32 firstmode = 0;
-  #else
+
+    // Figure our the smallest zoom level we can use
     uInt32 firstmode = 1;
-  #endif
+    if(myOSystem->desktopWidth() < 640 || myOSystem->desktopHeight() < 480)
+      firstmode = 0;
+
     for(uInt32 i = firstmode; i < GFX_NumModes; ++i)
     {
       uInt32 zoom = ourGraphicsModes[i].zoom;

@@ -13,12 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.26 2009-01-01 18:13:38 stephena Exp $
+// $Id: Launcher.cxx,v 1.27 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
-
-#include <sstream>
-
-class Properties;
 
 #include "LauncherDialog.hxx"
 #include "Version.hxx"
@@ -26,32 +22,22 @@ class Properties;
 #include "Settings.hxx"
 #include "FrameBuffer.hxx"
 #include "bspf.hxx"
-#include "Launcher.hxx"
 
-#ifdef SMALL_SCREEN
-  #define MIN_WIDTH  320
-  #define MIN_HEIGHT 240
-#else
-  #define MIN_WIDTH  640
-  #define MIN_HEIGHT 480
-#endif
+#include "Launcher.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Launcher::Launcher(OSystem* osystem)
-  : DialogContainer(osystem),
-    myWidth(MIN_WIDTH),
-    myHeight(MIN_HEIGHT)
+  : DialogContainer(osystem)
 {
-  int w, h;
-  myOSystem->settings().getSize("launcherres", w, h);
-  myWidth = BSPF_max(w, 0);
-  myHeight = BSPF_max(h, 0);
+  myOSystem->settings().getSize("launcherres", (int&)myWidth, (int&)myHeight);
 
-  // Error check the resolution
-  myWidth = BSPF_max(myWidth, (uInt32)MIN_WIDTH);
-  myWidth = BSPF_min(myWidth, osystem->desktopWidth());
-  myHeight = BSPF_max(myHeight, (uInt32)MIN_HEIGHT);
+  // The launcher dialog is resizable, within certain bounds
+  // We check those bounds now
+  myWidth  = BSPF_max(myWidth, osystem->desktopWidth() >= 640 ? 640u : 320u);
+  myHeight = BSPF_max(myHeight, osystem->desktopHeight() >= 480 ? 480u : 240u);
+  myWidth  = BSPF_min(myWidth, osystem->desktopWidth());
   myHeight = BSPF_min(myHeight, osystem->desktopHeight());
+
   myOSystem->settings().setSize("launcherres", myWidth, myHeight);
 
   myBaseDialog = new LauncherDialog(myOSystem, this, 0, 0, myWidth, myHeight);

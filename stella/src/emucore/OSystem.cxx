@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.146 2009-01-13 20:26:02 stephena Exp $
+// $Id: OSystem.cxx,v 1.147 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -192,7 +192,7 @@ bool OSystem::create()
   //       We can probably add ifdefs to take care of corner cases,
   //       but the means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
-  bool smallScreen = myDesktopWidth <= 320 || myDesktopHeight <= 240;
+  bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
 
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
@@ -429,6 +429,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     if(!createFrameBuffer())  // Takes care of initializeVideo()
     {
       cerr << "ERROR: Couldn't create framebuffer for console" << endl;
+      myEventHandler->reset(EventHandler::S_LAUNCHER);
       return false;
     }
     myConsole->initializeAudio();
@@ -827,6 +828,9 @@ void OSystem::queryVideoHardware()
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
   myDesktopWidth  = info->current_w;
   myDesktopHeight = info->current_h;
+
+  // Various parts of the codebase assume a minimum screen size of 320x240
+  assert(myDesktopWidth >= 320 && myDesktopHeight >= 240);
 
   // Then get the valid fullscreen modes
   // If there are any errors, just use the desktop resolution

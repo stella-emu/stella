@@ -462,10 +462,10 @@ Stella debugger.</p>
 <tr><td> _reset</td><td> !(*SWCHB &amp; $02)</td><td> Game Reset pressed</td></tr>
 <tr><td> _color</td><td> *SWCHB &amp; $08</td><td> Color/BW set to Color</td></tr>
 <tr><td> _bw</td><td> !(*SWCHB &amp; $08)</td><td> Color/BW set to BW</td></tr>
-<tr><td> _diff0a</td><td> !(*SWCHB &amp; $40)</td><td> Right difficulty set to A (easy)</td></tr>
-<tr><td> _diff0b</td><td> *SWCHB &amp; $40</td><td> Right difficulty set to B (hard)</td></tr>
-<tr><td> _diff1a</td><td> !(*SWCHB &amp; $80)</td><td> Right difficulty set to A (easy)</td></tr>
-<tr><td> _diff1b</td><td> *SWCHB &amp; $80</td><td> Right difficulty set to B (hard)</td></tr>
+<tr><td> _diff0b</td><td> !(*SWCHB &amp; $40)</td><td> Right difficulty set to B (easy)</td></tr>
+<tr><td> _diff0a</td><td> *SWCHB &amp; $40</td><td> Right difficulty set to A (hard)</td></tr>
+<tr><td> _diff1b</td><td> !(*SWCHB &amp; $80)</td><td> Right difficulty set to B (easy)</td></tr>
+<tr><td> _diff1a</td><td> *SWCHB &amp; $80</td><td> Right difficulty set to A (hard)</td></tr>
 </table>
 
 <p>Don't worry about memorizing them all: the Prompt "help" command
@@ -480,12 +480,12 @@ of scanlines in a frame, a real system would not (there is no register
 that holds 'number of scanlines' on an actual console).</p>
 <table border="1" cellpadding="3">
 <tr><th>Function</th><th>Description</th></tr>
-<tr><td> _scan</td><td> current scanline count</td></tr>
-<tr><td> _bank</td><td> currently selected bank</td></tr>
-<tr><td> _fcount</td><td> number of frames since emulation started</td></tr>
-<tr><td> _cclocks</td><td> color clocks on a scanline</td></tr>
-<tr><td> _vsync</td><td> whether vertical sync is enabled (1 or 0)</td></tr>
-<tr><td> _vblank</td><td> whether vertical blank is enabled (1 or 0)</td></tr>
+<tr><td> _scan</td><td> Current scanline count</td></tr>
+<tr><td> _bank</td><td> Currently selected bank</td></tr>
+<tr><td> _fcount</td><td> Number of frames since emulation started</td></tr>
+<tr><td> _cclocks</td><td> Color clocks on a scanline</td></tr>
+<tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
+<tr><td> _vblank</td><td> Whether vertical blank is enabled (1 or 0)</td></tr>
 </table>
 
 <p><b>_scan</b> always contains the current scanline count. You can use
@@ -655,8 +655,7 @@ of the strobe registers at any time.</p>
 <p>The collision registers are displayed in decoded format, in a table.
 You can see exactly which objects have hit what. These are read-only
 displays; you can't toggle the bits in the current release of Stella. Of
-course, you can clear all the collisions from the TIA tab with the CXCLR
-Strobe button.</p>
+course, you can clear all the collisions with the CXCLR Strobe button.</p>
 
 <p>To the right of each color register, you'll see a small rectangle
 drawn in the current color. Changing a color register will change the
@@ -673,7 +672,15 @@ in another part of the debugger).</p>
 <p><img src="graphics/debugger_iotab.png"></p>
 
 <p>As with the TIA tab, most of the values here will be self-explanatory to a 2600
-programmer, and almost all can be modified.<p>
+programmer, and almost all can be modified.  However, the SWCHx registers need
+further explanation:<p>
+<p>SWCHA(W) can be directly modified; here, the (W) stands for write.  Similarly,
+SWACNT can be directly modified.  However, the results of reading back from
+the SWCHA register are influenced by SWACNT, and SWCHA(R) is a read-only display
+reflecting this result.</p>
+<p>SWCHB cannot be directly modified; it will be indirectly modified by setting
+the various difficulty switches, color/BW button, select/reset, etc.  SWBCNT
+is hardwired as read-only, and is not shown.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->

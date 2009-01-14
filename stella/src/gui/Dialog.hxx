@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Dialog.hxx,v 1.43 2009-01-06 23:02:18 stephena Exp $
+// $Id: Dialog.hxx,v 1.44 2009-01-14 20:31:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -33,21 +33,11 @@ class TabWidget;
 
 #include "bspf.hxx"
 
-/*
-#ifdef SMALL_SCREEN
-  #define _DLG_MIN_SWIDTH  320
-  #define _DLG_MIN_SHEIGHT 210
-#else
-  #define _DLG_MIN_SWIDTH  640
-  #define _DLG_MIN_SHEIGHT 420
-#endif
-*/
-
 /**
   This is the base class for all dialog boxes.
   
   @author  Stephen Anthony
-  @version $Id: Dialog.hxx,v 1.43 2009-01-06 23:02:18 stephena Exp $
+  @version $Id: Dialog.hxx,v 1.44 2009-01-14 20:31:07 stephena Exp $
 */
 class Dialog : public GuiObject
 {

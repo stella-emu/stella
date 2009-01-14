@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.130 2009-01-01 18:13:35 stephena Exp $
+// $Id: Debugger.cxx,v 1.131 2009-01-14 20:31:07 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -78,10 +78,10 @@ static const string builtin_functions[][3] = {
 	{ "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
 	{ "_color", "*SWCHB & $08", "Color/BW set to Color" },
 	{ "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
-	{ "_diff0a", "!(*SWCHB & $40)", "Right difficulty set to A (easy)" },
-	{ "_diff0b", "*SWCHB & $40", "Right difficulty set to B (hard)" },
-	{ "_diff1a", "!(*SWCHB & $80)", "Right difficulty set to A (easy)" },
-	{ "_diff1b", "*SWCHB & $80", "Right difficulty set to B (hard)" },
+	{ "_diff0b", "!(*SWCHB & $40)", "Right difficulty set to B (easy)" },
+	{ "_diff0a", "*SWCHB & $40", "Right difficulty set to A (hard)" },
+	{ "_diff1b", "!(*SWCHB & $80)", "Right difficulty set to B (easy)" },
+	{ "_diff1a", "*SWCHB & $80", "Right difficulty set to A (hard)" },
 
 	// empty string marks end of list, do not remove
 	{ "", "", "" }
