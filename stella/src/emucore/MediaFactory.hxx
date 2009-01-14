@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.hxx,v 1.7 2009-01-14 20:31:07 stephena Exp $
+// $Id: MediaFactory.hxx,v 1.8 2009-01-14 20:31:41 stephena Exp $
 //============================================================================
 
 #ifndef MEDIA_FACTORY_HXX
@@ -23,15 +23,13 @@ class FrameBuffer;
 class Sound;
 class OSystem;
 
-#include "Rect.hxx"
-
 /**
   This class deals with the different framebuffer/sound implementations
   for the various ports of Stella, and always returns a valid media object
   based on the specific port and restrictions on that port.
 
   @author  Stephen Anthony
-  @version $Id: MediaFactory.hxx,v 1.7 2009-01-14 20:31:07 stephena Exp $
+  @version $Id: MediaFactory.hxx,v 1.8 2009-01-14 20:31:41 stephena Exp $
 */
 class MediaFactory
 {
