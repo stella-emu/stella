@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AboutDialog.cxx,v 1.30 2009-01-04 22:27:43 stephena Exp $
+// $Id: AboutDialog.cxx,v 1.31 2009-01-15 18:45:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -45,7 +45,7 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 52 * fontWidth + 10;
+  _w = 52 * fontWidth + 8;
   _h = 12 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.23 2009-01-01 18:13:38 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.24 2009-01-15 18:45:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -42,66 +42,48 @@ CommandDialog::CommandDialog(OSystem* osystem, DialogContainer* parent)
             rowHeight = font.getLineHeight() + 10;
 
   // Set real dimensions
-  _w = 4 * (buttonWidth + 5) + 20;
-  _h = 4 * rowHeight + 15;
+  _w = 3 * (buttonWidth + 5) + 20;
+  _h = 6 * rowHeight + 15;
 
-  int xoffset = 10, yoffset = 10;
   WidgetArray wid;
-  ButtonWidget* b = NULL;
+  ButtonWidget* b[16];
 
-  b = addCDButton("Select", kSelectCmd);
-  wid.push_back(b);
+  // Row 1
+  int xoffset = 10, yoffset = 10;
+  b[0] = addCDButton("Select", kSelectCmd);
+  b[4] = addCDButton("Left Diff A", kLeftDiffACmd);
+  b[8] = addCDButton("Save State", kSaveStateCmd);
 
-  b = addCDButton("Reset", kResetCmd);
-  wid.push_back(b);
-
-  b = addCDButton("Color TV", kColorCmd);
-  wid.push_back(b);
-
-  b = addCDButton("B/W TV", kBWCmd);
-  wid.push_back(b);
-
+  // Row 2
   xoffset = 10;  yoffset += buttonHeight + 3;
+  b[1] = addCDButton("Reset", kResetCmd);
+  b[5] = addCDButton("Left Diff B", kLeftDiffBCmd);
+  b[9] = addCDButton("State Slot", kStateSlotCmd);
 
-  b = addCDButton("Left Diff A", kLeftDiffACmd);
-  wid.push_back(b);
-
-  b = addCDButton("Left Diff B", kLeftDiffBCmd);
-  wid.push_back(b);
-
-  b = addCDButton("Right Diff A", kRightDiffACmd);
-  wid.push_back(b);
-
-  b = addCDButton("Right Diff B", kRightDiffBCmd);
-  wid.push_back(b);
-
+  // Row 3
   xoffset = 10;  yoffset += buttonHeight + 3;
+  b[2]  = addCDButton("Color TV", kColorCmd);
+  b[6]  = addCDButton("Right Diff A", kRightDiffACmd);
+  b[10] = addCDButton("Load State", kLoadStateCmd);
 
-  b = addCDButton("Save State", kSaveStateCmd);
-  wid.push_back(b);
-
-  b = addCDButton("State Slot", kStateSlotCmd);
-  wid.push_back(b);
-
-  b = addCDButton("Load State", kLoadStateCmd);
-  wid.push_back(b);
-
-  b = addCDButton("Snapshot", kSnapshotCmd);
-  wid.push_back(b);
-
+  // Row 4
   xoffset = 10;  yoffset += buttonHeight + 3;
+  b[3]  = addCDButton("B/W TV", kBWCmd);
+  b[7]  = addCDButton("Right Diff B", kRightDiffBCmd);
+  b[11] = addCDButton("Snapshot", kSnapshotCmd);
 
-  b = addCDButton("NTSC/PAL", kFormatCmd);
-  wid.push_back(b);
+  // Row 5
+  xoffset = 10;  yoffset += buttonHeight + 3;
+  b[12] = addCDButton("NTSC/PAL", kFormatCmd);
+  b[13] = addCDButton("Palette", kPaletteCmd);
+  b[14] = addCDButton("Reload ROM", kReloadRomCmd);
 
-  b = addCDButton("Palette", kPaletteCmd);
-  wid.push_back(b);
+  // Row 6
+  xoffset = 10 + buttonWidth + 6;  yoffset += buttonHeight + 3;
+  b[15] = addCDButton("Exit Game", kExitCmd);
 
-  b = addCDButton("Reload ROM", kReloadRomCmd);
-  wid.push_back(b);
-
-  b = addCDButton("Exit Game", kExitCmd);
-  wid.push_back(b);
+  for(uInt8 i = 0; i < 16; ++i)
+    wid.push_back(b[i]);
 
   addToFocusList(wid);
 }
@@ -115,6 +97,7 @@ CommandDialog::~CommandDialog()
 void CommandDialog::handleCommand(CommandSender* sender, int cmd,
                                   int data, int id)
 {
+  // TODO - fix the logic here; it doesn't seem it needs to be this complex
   bool consoleCmd = false, stateCmd = false;
   Event::Type event = Event::NoType;
 
@@ -162,7 +145,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kSaveStateCmd:
       event = Event::SaveState;
-      stateCmd = true;
+      consoleCmd = true;
       break;
 
     case kStateSlotCmd:
@@ -172,7 +155,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kLoadStateCmd:
       event = Event::LoadState;
-      stateCmd = true;
+      consoleCmd = true;
       break;
 
     case kSnapshotCmd:

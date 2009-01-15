@@ -16,37 +16,6 @@ If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-X * New UI subsystem where drawing is done into separate buffers, not
-    directly into the TIA window
-
-X * Make UI 'font-sensitive' and remove all hardcoded dimensions for
-    widget/font sizes
-
-X * Add option to automatically save snapshots in 1X mode (useful for
-    RomInfoWidget)
-
-X * A way to override (possibly temporarily) all properties for a ROM, and
-    use global ones instead.  Tied to the current developer commandline
-    options, but presented in a GUI (started from ROM launcher).
-
-X * Add infrastructure to show all info gathered from a ROM (similar to what
-    is currently displayed on the commandline).  Add a UI part for this, so
-    users aren't forced to use the commandline to see it.
-
-X * Fix issue with paddle support in Activision Casino ROM.
-
-  * More work to the ROM launcher, including at least the following:
-X    (1) Only show files with certain extensions (including a UI part to
-         edit this).
-
-     (2) Shortcut key where selecting the first few letters jumps to a
-         directory named that way.  Basically the same as is currently
-         done for ROMs.
-
-X    (3) Have time between keypresses be configurable when jumping to files.
-
-X    (4) Reload current listing (possibly tied to a RMB context menu).
-
   * Add new TIA infrastructure with improved HMOVE emulation
 
   * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
@@ -61,6 +30,11 @@ X    (4) Reload current listing (possibly tied to a RMB context menu).
   * Add commandline argument to randomly generate startup bank for all ROMs
     bigger than 4K.  Shouldn't make a difference for all 'well-designed' ROMS,
     but will pick up on errors when a ROM doesn't start from every bank.
+
+  * More work to the ROM launcher, including at least the following:
+     (1) Shortcut key where selecting the first few letters jumps to a
+         directory named that way.  Basically the same as is currently
+         done for ROMs.
 
   * More support for copy and paste.
 

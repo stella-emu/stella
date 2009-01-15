@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.64 2009-01-13 20:26:02 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.65 2009-01-15 18:45:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -53,7 +53,7 @@ GameInfoDialog::GameInfoDialog(
   StringMap items, ports, ctrls;
 
   // Set real dimensions
-  _w = 54 * fontWidth + 10;
+  _w = 52 * fontWidth + 8;
   _h = 12 * (lineHeight + 4) + 10;
 
   ////////////////////////////////////////////////////////////////////
@@ -131,10 +131,10 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
-  pwidth = font.getStringWidth("SB (128-256k SUPERbanking)");
+  pwidth = font.getStringWidth("MC (C. Wilkson Megacart)");
   items.clear();
   items.push_back("Auto-detect",          "AUTO-DETECT");
-  items.push_back("0840 (8K ECONObanking)",     "0840" );
+  items.push_back("0840 (8K ECONObank)",        "0840" );
   items.push_back("2K (2K Atari)",              "2K"   );
   items.push_back("3E (32K Tigervision)",       "3E"   );
   items.push_back("3F (512K Tigervision)",      "3F"   );
@@ -155,7 +155,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("FE (8K Decathlon)",          "FE"   );
   items.push_back("MB (Dynacom Megaboy)",       "MB"   );
   items.push_back("MC (C. Wilkson Megacart)",   "MC"   );
-  items.push_back("SB (128-256k SUPERbanking)", "SB"   );
+  items.push_back("SB (128-256k SUPERbank)",    "SB"   );
   items.push_back("UA (8K UA Ltd.)",            "UA"   );
   items.push_back("X07 (64K AtariAge)",         "X07"  );
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -232,6 +232,7 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
                        fontHeight, "in ", kTextAlignLeft);
   xpos += font.getStringWidth("in ");
+  pwidth = font.getStringWidth("right port");
   ports.clear();
   ports.push_back("left port", "L");
   ports.push_back("right port", "R");
@@ -240,6 +241,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myLeftPort);
 
   xpos = 10;  ypos += lineHeight + 5;
+  pwidth = font.getStringWidth("CX-22 Trakball");
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P1 Controller:", kTextAlignLeft);
   myP1Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
@@ -247,6 +249,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myP1Controller);
 
   xpos += lwidth+myP1Controller->getWidth() + 4;
+  pwidth = font.getStringWidth("right port");
   new StaticTextWidget(myTab, font, xpos, ypos+1, font.getStringWidth("in "),
                        fontHeight, "in ", kTextAlignLeft);
   xpos += font.getStringWidth("in ");

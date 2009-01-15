@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomListWidget.hxx,v 1.9 2009-01-01 18:13:35 stephena Exp $
+// $Id: RomListWidget.hxx,v 1.10 2009-01-15 18:45:23 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -48,6 +48,8 @@ class RomListWidget : public CheckListWidget
     void drawWidget(bool hilite);
     GUI::Rect getLineRect() const;
     GUI::Rect getEditRect() const;
+
+    bool tryInsertChar(char c, int pos);
 
   private:
     ContextMenu* myMenu;
