@@ -12,6 +12,107 @@
                                Release History
 ===============================================================================
 
+2.6.1 to 2.7: (Jan. 17, 2009)
+
+  * Totally reworked the built-in UI to be font-sensitive and use higher-
+    resolution fonts.  Stella now requires a minimum screen size of 640x480.
+    If used in a resolution smaller than that, the fonts will be reduced
+    accordingly.  Related to this, switching between software and OpenGL
+    rendering now requires an application restart.
+
+  * Added three different sized fonts (small, medium, large) which can be
+    used in the ROM launcher.
+
+  * Added ability to temporarily override ROM properties from the UI.  This
+    is tied to a right mouse button context menu in the ROM launcher, and
+    is very useful when you want to use a set of properties for all
+    subsequent ROMs without having to manually change each one.
+
+  * Added ability to filter the files shown in the ROM launcher.  Currently,
+    the choices are 'all files', 'all roms', or 'roms ending with a certain
+    extension'.  This functionality is tied to a right mouse button context
+    menu in the ROM launcher.  Extensions can also be set with the
+    '-launcherexts' commandline argument.
+
+  * Added ability to reload the listing in the ROM launcher, either from
+    a right mouse button context menu or pressing the Control/Cmd-R key.
+
+  * Made the ROM info viewer in the ROM launcher configurable to show
+    snapshots in 1x or 2x mode.
+
+  * Made the delay between consecutive keys being recognized as one word
+    configurable in the ROM launcher.  This is useful if you find that you
+    have to press keys too quickly to jump to a specific ROM.  This can be
+    set in the UI or using the '-listdelay' commandline argument.
+
+  * Updated internal ROM properties database to ROM-Hunter version 4
+    (thanks go to RomHunter for his tireless research in this area).
+
+  * Expanded the statistics overlay for the TIA image to also show
+    Display Format and Bankswitch type information.
+
+  * Added '-ss1x' commandline argument and associated UI item, used to
+    generate snapshots in 1x mode, independent of the filtering/scaling
+    currently in use.
+
+  * Various path textboxes in the UI now recognize './' (or '.\') to mean
+    the current directory.  In Linux/UNIX, '~/' is also recognized to
+    mean your home directory.
+
+  * Large speedup in loading directories with many files in the ROM launcher.
+
+  * Fixed reset issue in 3E, 4A50, AR, CV, E7, F4SC, F6SC, F8SC, FASC and MC
+    ROMs; the internal RAM wasn't being randomized after the initial reset.
+
+  * M6532/RIOT RAM is now randomized at every reset, not just when the
+    emulation starts.
+
+  * Fixed bug in _diff pseudo-registers in the debugger; they were actually
+    defined backwards.
+
+  * Added fix for 'Challenge/Surfers Delight' ROM; the startup bank was
+    incorrect.  Combined with the new 'Override Properties' functionality,
+    you can now play both games directly from the UI (no need to use the
+    commandline).
+
+  * Fixed paddle issue with Activision Casino ROM; the last card in game 4
+    can now be reached.
+
+  * Added new pseudo-registers to the debugger, useful for conditional
+    breakpoints (_fcount, _cclocks, _vsync, _vblank).
+
+  * Added 'timing' commandline argument functionality to the UI, so you no
+    longer need to use the commandline to set it.
+
+  * Size restrictions on the TIA image are now strictly enforced.  The
+    maximum height of a 1x TIA image is now 256 lines.
+
+  * Added a new setting to the 'fullres' option named 'auto'.  Using
+    'auto' will let Stella decide the best videomode to use in fullscreen.
+
+  * Changed 'gl_fsmax' option to mean 'scale TIA image in fullscreen'.  It
+    will have no effect on UI modes.
+
+  * Changed 'gl_aspect' option to range 80-100 (previously, it was 50-100).
+
+  * Removed 'ui_zoom' and 'tia_zoom' options, replacing them with
+    'tia_filter' (which can be zoom1x, zoom2x, etc).  There is no equivalent
+    for ui_zoom, since the UI can no longer be scaled.
+
+  * Added experimental 64-bit version for Vista64 (may also work on WinXP64).
+    This hasn't been extensively tested, and is probably quite a bit slower
+    than the 32-bit version.
+
+  * OSX port now requires at least 10.3 and XCode 3.0 to compile.  Sorry,
+    but I no longer have access to older systems to compile for 10.2.
+
+  * Huge updates to the documentation, particularly concerning the debugger.
+    Many features that have been in Stella for a while are now documented for
+    the first time.
+
+-Have fun!
+
+
 2.6 to 2.6.1: (May 22, 2008)
 
   * Introduced more accurate timing for NTSC vs. PAL modes, where the
@@ -55,8 +156,6 @@
 
   * Fixed bug in CommandMenu where console buttons (Select, Reset, etc)
     weren't doing anything.
-
--Have fun!
 
 
 2.5.1 to 2.6: (May 16, 2008)

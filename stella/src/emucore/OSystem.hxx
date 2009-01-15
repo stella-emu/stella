@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.74 2009-01-05 19:44:29 stephena Exp $
+// $Id: OSystem.hxx,v 1.75 2009-01-15 01:31:26 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.74 2009-01-05 19:44:29 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.75 2009-01-15 01:31:26 stephena Exp $
 */
 class OSystem
 {
@@ -238,8 +238,8 @@ class OSystem
     /**
       Get the maximum dimensions of a window for the video hardware.
     */
-    const uInt32 desktopWidth() const  { return myDesktopWidth; }
-    const uInt32 desktopHeight() const { return myDesktopHeight; }
+    inline uInt32 desktopWidth() const  { return myDesktopWidth; }
+    inline uInt32 desktopHeight() const { return myDesktopHeight; }
 
     /**
       Get the supported fullscreen resolutions for the video hardware.

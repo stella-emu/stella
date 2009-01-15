@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.160 2009-01-14 20:31:07 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.161 2009-01-15 01:31:26 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -28,7 +28,6 @@
 #include "Font.hxx"
 #include "Launcher.hxx"
 #include "MediaSrc.hxx"
-#include "MediaFactory.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
