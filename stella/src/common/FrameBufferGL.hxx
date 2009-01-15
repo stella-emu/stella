@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.70 2009-01-03 22:57:12 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.71 2009-01-15 23:07:29 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.70 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.71 2009-01-15 23:07:29 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -88,7 +88,7 @@ class FrameBufferGL : public FrameBuffer
       @param b  The blue component of the color.
     */
     Uint32 mapRGB(Uint8 r, Uint8 g, Uint8 b) const
-      { return SDL_MapRGB(&myPixelFormat, r, g, b); }
+      { return SDL_MapRGB((SDL_PixelFormat*)&myPixelFormat, r, g, b); }
 
     /**
       This method is called to query the type of the FrameBuffer.
@@ -187,7 +187,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.70 2009-01-03 22:57:12 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.71 2009-01-15 23:07:29 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {
