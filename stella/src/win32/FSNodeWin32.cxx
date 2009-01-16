@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.21 2009-01-16 19:37:29 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.22 2009-01-16 20:00:35 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -287,15 +287,9 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
   if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
     _path = myDocsFinder.getPath();
-	if (_path != "")
-    {
-      // Skip over the tilda.  We know that p contains at least
-      // two chars, so this is safe:
-      _path += p.c_str() + 1;
-      expanded = true;
-    }
-    else
-      currentDir = true;
+    // Skip over the tilda.  We know that p contains at least
+    // two chars, so this is safe:
+    _path += p.c_str() + 1;
   }
   // Expand ".\\" to the current directory
   else if ( p.length() >= 2 && p[0] == '.' && p[1] == '\\')
