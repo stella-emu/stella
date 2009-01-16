@@ -12,7 +12,7 @@
                                Release History
 ===============================================================================
 
-2.6.1 to 2.7: (Jan. 17, 2009)
+2.6.1 to 2.7: (Jan. 19, 2009)
 
   * Totally reworked the built-in UI to be font-sensitive and use higher-
     resolution fonts.  Stella now requires a minimum screen size of 640x480.
@@ -56,9 +56,8 @@
     currently in use.
 
   * Various path textboxes in the UI now recognize './' (or '.\') to mean
-    the current directory and '~/' (or '~\') is also recognized to
-    mean your home directory (for Windows, home directory will be your
-    'My Documents' folder).
+    the current directory and '~/' (or '~\') to mean your home directory
+    (for Windows, home directory will be your 'My Documents' folder).
 
   * Large speedup in loading directories with many files in the ROM launcher.
 

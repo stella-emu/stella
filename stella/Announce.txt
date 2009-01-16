@@ -35,9 +35,9 @@ The distributions currently available are:
 
   * Binary installer (exe) for Windows (stella-2.7-win32.exe)
 
-  * Binary zip for 64-bit Windows (stella-2.7-win64.zip)
-
   * Binary zip for Windows (stella-2.7-win32.zip)
+
+  * Binary zip for 64-bit Windows (stella-2.7-win64.zip)
 
   * Source code distribution for all platforms (stella-2.7-src.tar.gz)
 

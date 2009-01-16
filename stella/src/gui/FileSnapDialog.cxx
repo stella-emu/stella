@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.28 2009-01-16 16:38:06 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.29 2009-01-16 21:46:31 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -185,8 +185,8 @@ void FileSnapDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::setDefaults()
 {
-  const string& basedir = instance().baseDir();
-  const string& romdir = "roms";
+  const string& basedir = instance().baseDir(false);  // get relative basedir
+  const string& romdir = "~";
   const string& statedir = basedir + BSPF_PATH_SEPARATOR + "state";
   const string& cheatfile = basedir + BSPF_PATH_SEPARATOR + "stella.cht";
   const string& palettefile = basedir + BSPF_PATH_SEPARATOR + "stella.pal";

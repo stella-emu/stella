@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.76 2009-01-16 16:38:06 stephena Exp $
+// $Id: OSystem.hxx,v 1.77 2009-01-16 21:46:30 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.76 2009-01-16 16:38:06 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.77 2009-01-16 21:46:30 stephena Exp $
 */
 class OSystem
 {
@@ -251,7 +251,8 @@ class OSystem
     /**
       Return the default full/complete directory name for storing data.
     */
-    const string& baseDir() const { return myBaseDirExpanded; }
+    const string& baseDir(bool expanded = true) const
+    { return expanded ? myBaseDirExpanded : myBaseDir; }
 
     /**
       Return the full/complete directory name for storing state files.

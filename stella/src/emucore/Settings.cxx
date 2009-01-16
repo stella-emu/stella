@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.157 2009-01-13 14:45:34 stephena Exp $
+// $Id: Settings.cxx,v 1.158 2009-01-16 21:46:30 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -80,7 +80,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("ss1x", "false");
 
   // Config files and paths
-  setInternal("romdir", "");
+  setInternal("romdir", "~");
   setInternal("statedir", "");
   setInternal("cheatfile", "");
   setInternal("palettefile", "");
