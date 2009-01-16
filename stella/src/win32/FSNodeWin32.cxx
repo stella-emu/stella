@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.17 2009-01-16 14:57:53 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.18 2009-01-16 15:13:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -77,7 +77,7 @@
 class MyDocumentsFinder
 {
   public:
-    GetFolderPathWin32::GetFolderPathWin32()
+    MyDocumentsFinder::MyDocumentsFinder()
       : myFolderModule(0), myFolderPathFunc(0)
     {
       myFolderModule = LoadLibrary("shfolder.dll");
@@ -88,7 +88,7 @@ class MyDocumentsFinder
       }
     }
 
-    ~GetFolderPathWin32() { if(myFolderModule) FreeLibrary(myFolderModule); }
+    ~MyDocumentsFinder() { if(myFolderModule) FreeLibrary(myFolderModule); }
 
     /** Wrapper for SHGetFolderPathA, returning the 'My Documents' folder
         (or an empty string if the folder couldn't be determined. */
@@ -136,7 +136,7 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
      * @param path String with the path the new node should point to.
      * @param currentDir if true, the path parameter will be ignored and the resulting node will point to the current directory.
      */
-    WindowsFilesystemNode(const string& path, const bool currentDir);
+    WindowsFilesystemNode(const string& path, bool currentDir);
 
     virtual bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
     virtual string getDisplayName() const { return _displayName; }
@@ -285,14 +285,21 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-WindowsFilesystemNode::WindowsFilesystemNode(const string& p, const bool currentDir)
+WindowsFilesystemNode::WindowsFilesystemNode(const string& p, bool currentDir)
 {
-  // If '~' is requested, use the 'My Documents' directory, otherwise default
-  // to the current directory
-  if (p == "~")
+  // Expand "~\\" to the 'My Documents' directory
+  // If there is any error, default to using the current directory
+  if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
     _path = myDocsFinder.getPath();
-    if(_path == "") currentDir = true;
+    if (_path != "")
+    {
+      // Skip over the tilda.  We know that p contains at least
+      // two chars, so this is safe:
+      _path += p.c_str() + 1;
+    }
+    else
+      currentDir = true;
   }
 
   if (currentDir)
@@ -426,7 +433,7 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
 {
-  return new WindowsFilesystemNode("~", false);
+  return new WindowsFilesystemNode("~\\", false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
