@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.20 2009-01-16 18:25:51 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.21 2009-01-16 19:37:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -133,9 +133,8 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
      *   path=NULL, currentDir=true -> current directory
      *
      * @param path String with the path the new node should point to.
-     * @param currentDir if true, the path parameter will be ignored and the resulting node will point to the current directory.
      */
-    WindowsFilesystemNode(const string& path, bool currentDir);
+    WindowsFilesystemNode(const string& path);
 
     virtual bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
     virtual string getDisplayName() const { return _displayName; }
@@ -282,11 +281,9 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-WindowsFilesystemNode::WindowsFilesystemNode(const string& p, bool currentDir)
+WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 {
   // Expand "~\\" to the 'My Documents' directory
-  // If there is any error, default to using the current directory
-  bool expanded = false;
   if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
     _path = myDocsFinder.getPath();
@@ -300,14 +297,17 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p, bool currentDir)
     else
       currentDir = true;
   }
-
-  if (currentDir)
+  // Expand ".\\" to the current directory
+  else if ( p.length() >= 2 && p[0] == '.' && p[1] == '\\')
   {
     char path[MAX_PATH];
     GetCurrentDirectory(MAX_PATH, path);
     _path = path;
+    // Skip over the tilda.  We know that p contains at least
+    // two chars, so this is safe:
+    _path += p.c_str() + 1;
   }
-  else if (!expanded)
+  else
   {
     assert(p.size() > 0);
     _path = p;
@@ -406,7 +406,6 @@ AbstractFilesystemNode* WindowsFilesystemNode::getParent() const
     const char *start = _path.c_str();
     const char *end = lastPathComponent(_path);
 
-//FIXME - this seems like a memory leak    p = new WindowsFilesystemNode();
     p->_path = string(start, end - start);
     p->_isValid = true;
     p->_isDirectory = true;
@@ -426,19 +425,19 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
 {
-  return new WindowsFilesystemNode("", true);
+  return new WindowsFilesystemNode(".\\");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
 {
-  return new WindowsFilesystemNode("~\\", false);
+  return new WindowsFilesystemNode("~\\");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeFileNodePath(const string& path)
 {
-  return new WindowsFilesystemNode(path, false);
+  return new WindowsFilesystemNode(path);
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

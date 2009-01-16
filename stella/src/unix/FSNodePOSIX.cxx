@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodePOSIX.cxx,v 1.20 2009-01-16 14:57:53 stephena Exp $
+// $Id: FSNodePOSIX.cxx,v 1.21 2009-01-16 19:37:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -140,6 +140,19 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
       _path += p.c_str() + 1;
     }
   }
+  // Expand "./" to the current directory
+  else if ( p.length() >= 2 && p[0] == '.' && p[1] == '/')
+  {
+    char buf[MAXPATHLEN];
+    char* ret = getcwd(buf, MAXPATHLEN);
+    if (ret == buf)
+    {
+      _path = buf;
+      // Skip over the tilda.  We know that p contains at least
+      // two chars, so this is safe:
+      _path += p.c_str() + 1;
+    }
+  }
   else
     _path = p;
 
@@ -251,10 +264,7 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
 {
-  char buf[MAXPATHLEN];
-
-  const string& path = getcwd(buf, MAXPATHLEN) == buf ? buf : "";
-  return new POSIXFilesystemNode(path, true);
+  return new POSIXFilesystemNode("./", true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
