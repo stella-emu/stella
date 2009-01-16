@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.28 2009-01-16 14:57:53 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.29 2009-01-16 16:38:06 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -41,7 +41,8 @@ OSystemWin32::OSystemWin32()
   if(!node.exists())
   {
     FilesystemNode home("~");
-    basedir = home.getPath() + "\\Stella";
+    if(node.isDirectory())
+      basedir = "~\\Stella";
   }
 
   setBaseDir(basedir);

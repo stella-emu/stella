@@ -56,8 +56,9 @@
     currently in use.
 
   * Various path textboxes in the UI now recognize './' (or '.\') to mean
-    the current directory.  In Linux/UNIX, '~/' is also recognized to
-    mean your home directory.
+    the current directory and '~/' (or '~\') is also recognized to
+    mean your home directory (for Windows, home directory will be your
+    'My Documents' folder).
 
   * Large speedup in loading directories with many files in the ROM launcher.
 

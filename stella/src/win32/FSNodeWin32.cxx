@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.18 2009-01-16 15:13:46 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.19 2009-01-16 16:38:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -82,10 +82,8 @@ class MyDocumentsFinder
     {
       myFolderModule = LoadLibrary("shfolder.dll");
       if(myFolderModule)
-      {
         myFolderPathFunc = reinterpret_cast<function_pointer>
            (::GetProcAddress(myFolderModule, "SHGetFolderPathA"));
-      }
     }
 
     ~MyDocumentsFinder() { if(myFolderModule) FreeLibrary(myFolderModule); }
@@ -407,7 +405,7 @@ AbstractFilesystemNode* WindowsFilesystemNode::getParent() const
     const char *start = _path.c_str();
     const char *end = lastPathComponent(_path);
 
-    p = new WindowsFilesystemNode();
+//FIXME - this seems like a memory leak    p = new WindowsFilesystemNode();
     p->_path = string(start, end - start);
     p->_isValid = true;
     p->_isDirectory = true;

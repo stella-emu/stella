@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.75 2009-01-15 01:31:26 stephena Exp $
+// $Id: OSystem.hxx,v 1.76 2009-01-16 16:38:06 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.75 2009-01-15 01:31:26 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.76 2009-01-16 16:38:06 stephena Exp $
 */
 class OSystem
 {
@@ -249,17 +249,17 @@ class OSystem
     const ResolutionList& supportedResolutions() const { return myResolutions; }
 
     /**
-      Return the default directory for storing data.
+      Return the default full/complete directory name for storing data.
     */
-    const string& baseDir() const { return myBaseDir; }
+    const string& baseDir() const { return myBaseDirExpanded; }
 
     /**
-      Return the directory for storing state files.
+      Return the full/complete directory name for storing state files.
     */
     const string& stateDir() const { return myStateDir; }
 
     /**
-      Return the directory for storing PNG snapshots.
+      Return the full/complete directory name for storing PNG snapshots.
     */
     const string& snapshotDir() const { return mySnapshotDir; }
 
@@ -427,7 +427,7 @@ class OSystem
     /**
       Set the locations of config file
     */
-    void setConfigFile(const string& file) { myConfigFile = file; }
+    void setConfigFile(const string& file);
 
   protected:
     // Pointer to the EventHandler object
@@ -486,7 +486,7 @@ class OSystem
 
   private:
     enum { kNumUIPalettes = 2 };
-    string myBaseDir;
+    string myBaseDir, myBaseDirExpanded;
     string myStateDir;
     string mySnapshotDir;
 

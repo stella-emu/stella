@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.27 2009-01-15 18:45:23 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.28 2009-01-16 16:38:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -154,14 +154,15 @@ FileSnapDialog::~FileSnapDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::loadConfig()
 {
-  myRomPath->setEditString(instance().settings().getString("romdir"));
-  myStatePath->setEditString(instance().stateDir());
-  myCheatFile->setEditString(instance().cheatFile());
-  myPaletteFile->setEditString(instance().paletteFile());
-  myPropsFile->setEditString(instance().propertiesFile());
-  mySnapPath->setEditString(instance().settings().getString("ssdir"));
-  mySnapSingle->setState(!instance().settings().getBool("sssingle"));
-  mySnap1x->setState(instance().settings().getBool("ss1x"));
+  const Settings& settings = instance().settings();
+  myRomPath->setEditString(settings.getString("romdir"));
+  myStatePath->setEditString(settings.getString("statedir"));
+  myCheatFile->setEditString(settings.getString("cheatfile"));
+  myPaletteFile->setEditString(settings.getString("palettefile"));
+  myPropsFile->setEditString(settings.getString("propsfile"));
+  mySnapPath->setEditString(settings.getString("ssdir"));
+  mySnapSingle->setState(!settings.getBool("sssingle"));
+  mySnap1x->setState(settings.getBool("ss1x"));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

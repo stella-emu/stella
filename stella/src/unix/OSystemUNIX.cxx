@@ -13,14 +13,13 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.31 2009-01-16 14:57:53 stephena Exp $
+// $Id: OSystemUNIX.cxx,v 1.32 2009-01-16 16:38:06 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
 #include <unistd.h>
 
 #include "bspf.hxx"
-#include "FSNode.hxx"
 #include "OSystem.hxx"
 #include "OSystemUNIX.hxx"
 
@@ -43,10 +42,8 @@
 OSystemUNIX::OSystemUNIX()
   : OSystem()
 {
-  FilesystemNode home("~");
-  const string& basedir = home.getPath() + "/.stella";
-  setBaseDir(basedir);
-  setConfigFile(basedir + "/stellarc");
+  setBaseDir("~/.stella");
+  setConfigFile("~/.stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

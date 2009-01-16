@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.16 2009-01-12 01:07:29 stephena Exp $
+// $Id: RomInfoWidget.cxx,v 1.17 2009-01-16 16:38:06 stephena Exp $
 //============================================================================
 
 #include <cstring>
@@ -120,8 +120,7 @@ void RomInfoWidget::parseProperties()
   StringList textChucks;
 
   // Get a valid filename representing a snapshot file for this rom
-  const string& filename =
-    instance().settings().getString("ssdir") + BSPF_PATH_SEPARATOR +
+  const string& filename = instance().snapshotDir() + BSPF_PATH_SEPARATOR +
     myProperties.get(Cartridge_Name) + ".png";
 
   // Open the PNG and check for a valid signature

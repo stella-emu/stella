@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.238 2009-01-14 20:31:07 stephena Exp $
+// $Id: EventHandler.cxx,v 1.239 2009-01-16 16:38:06 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1769,7 +1769,7 @@ void EventHandler::takeSnapshot()
 {
   // Figure out the correct snapshot name
   string filename;
-  string sspath = myOSystem->settings().getString("ssdir");
+  string sspath = myOSystem->snapshotDir();
 
   if(sspath.length() > 0)
     if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
@@ -1790,8 +1790,8 @@ void EventHandler::takeSnapshot()
       {
         buf.str("");
         buf << sspath << "_" << i << ".png";
-        FilesystemNode node(buf.str());
-        if(!node.exists())
+        FilesystemNode next(buf.str());
+        if(!next.exists())
           break;
       }
       filename = buf.str();
