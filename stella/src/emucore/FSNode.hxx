@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.hxx,v 1.17 2009-01-11 19:10:40 stephena Exp $
+// $Id: FSNode.hxx,v 1.18 2009-01-16 14:57:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -353,6 +353,15 @@ class AbstractFilesystemNode
      * e.g. the same value as getRoot() returns.
      */
     static AbstractFilesystemNode* makeCurrentDirectoryFileNode();
+
+    /**
+     * Returns a node representing the "home directory".
+     *
+     * On Unix, this will be the value of $HOME.
+     * On Windows, it will be the 'My Documents' folder.
+     * Otherwise, it should just return the same value as getRoot().
+     */
+    static AbstractFilesystemNode* makeHomeDirectoryFileNode();
 
     /**
      * Construct a node based on a path; the path is in the same format as it

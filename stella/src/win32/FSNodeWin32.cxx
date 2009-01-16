@@ -13,11 +13,14 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.16 2009-01-11 21:31:21 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.17 2009-01-16 14:57:53 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
+
+#include <cassert>
+#include <shlobj.h>
 
 #ifdef ARRAYSIZE
   #undef ARRAYSIZE
@@ -55,6 +58,56 @@
 #endif
 
 #include "FSNode.hxx"
+
+/*
+ * Used to determine the location of the 'My Documents' folder.
+ *
+ * Win98 and earlier don't have SHGetFolderPath in shell32.dll.
+ * Microsoft recommend that we load shfolder.dll at run time and
+ * access the function through that.
+ *
+ * shfolder.dll is loaded dynamically in the constructor, and unloaded in
+ * the destructor
+ *
+ * The class makes SHGetFolderPath available through its function operator.
+ * It will work on all versions of Windows >= Win95.
+ *
+ * This code was borrowed from the Lyx project.
+ */
+class MyDocumentsFinder
+{
+  public:
+    GetFolderPathWin32::GetFolderPathWin32()
+      : myFolderModule(0), myFolderPathFunc(0)
+    {
+      myFolderModule = LoadLibrary("shfolder.dll");
+      if(myFolderModule)
+      {
+        myFolderPathFunc = reinterpret_cast<function_pointer>
+           (::GetProcAddress(myFolderModule, "SHGetFolderPathA"));
+      }
+    }
+
+    ~GetFolderPathWin32() { if(myFolderModule) FreeLibrary(myFolderModule); }
+
+    /** Wrapper for SHGetFolderPathA, returning the 'My Documents' folder
+        (or an empty string if the folder couldn't be determined. */
+    string getPath() const
+    {
+      if(!myFolderPathFunc) return "";
+      char folder_path[MAX_PATH];
+      HRESULT const result = (myFolderPathFunc)
+          (NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
+
+      return (result == 0) ? folder_path : "";
+    }
+
+    private:
+      typedef HRESULT (__stdcall * function_pointer)(HWND, int, HANDLE, DWORD, LPCSTR);
+
+      HMODULE myFolderModule;
+      function_pointer myFolderPathFunc;
+};
 
 /*
  * Implementation of the Stella file system API based on Windows API.
@@ -102,6 +155,8 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     bool _isDirectory;
     bool _isPseudoRoot;
     bool _isValid;
+
+    static MyDocumentsFinder myDocsFinder;
 
   private:
     /**
@@ -232,6 +287,14 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& p, const bool currentDir)
 {
+  // If '~' is requested, use the 'My Documents' directory, otherwise default
+  // to the current directory
+  if (p == "~")
+  {
+    _path = myDocsFinder.getPath();
+    if(_path == "") currentDir = true;
+  }
+
   if (currentDir)
   {
     char path[MAX_PATH];
@@ -358,6 +421,12 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
 {
   return new WindowsFilesystemNode("", true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
+{
+  return new WindowsFilesystemNode("~", false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

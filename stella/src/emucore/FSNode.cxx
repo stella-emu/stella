@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNode.cxx,v 1.14 2009-01-11 19:10:40 stephena Exp $
+// $Id: FSNode.cxx,v 1.15 2009-01-16 14:57:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -37,9 +37,11 @@ FilesystemNode::FilesystemNode(AbstractFilesystemNode *realNode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const string& p)
 {
-  AbstractFilesystemNode *tmp = 0;
+  AbstractFilesystemNode* tmp = 0;
   if (p.empty() || p == ".")
     tmp = AbstractFilesystemNode::makeCurrentDirectoryFileNode();
+  else if (p == "~")
+    tmp = AbstractFilesystemNode::makeHomeDirectoryFileNode();
   else
     tmp = AbstractFilesystemNode::makeFileNodePath(p);
 

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherDialog.cxx,v 1.101 2009-01-14 20:31:07 stephena Exp $
+// $Id: LauncherDialog.cxx,v 1.102 2009-01-16 14:57:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -223,6 +223,8 @@ void LauncherDialog::loadConfig()
   {
     myPrevDirButton->setEnabled(false);
     myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
+    if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
+      myCurrentNode = FilesystemNode("~");
 
     updateListing();
   }
@@ -448,7 +450,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             #endif
             }
             else
-              instance().frameBuffer().showMessage("Error creating console (screen too small)", kMiddleCenter);
+              instance().frameBuffer().showMessage(
+                  "Error creating console (screen too small)", kMiddleCenter);
           }
           else
             instance().frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
@@ -477,6 +480,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kRomDirChosenCmd:
       myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
+      if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
+        myCurrentNode = FilesystemNode("~");
       updateListing();
       break;
 

@@ -13,13 +13,8 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.27 2009-01-11 21:31:21 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.28 2009-01-16 14:57:53 stephena Exp $
 //============================================================================
-
-#include <sstream>
-#include <fstream>
-#include <windows.h>
-#include <shlobj.h>
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
@@ -45,27 +40,8 @@ OSystemWin32::OSystemWin32()
   FilesystemNode node("disable_profiles.txt");
   if(!node.exists())
   {
-    /*
-       Use 'My Documents' folder for the Stella folder, which can be in many
-       different places depending on the version of Windows, as follows:
-
-        98: C:\My Documents
-        XP: C:\Document and Settings\USERNAME\My Documents\
-        Vista: C:\Users\USERNAME\Documents\
-
-       This function is guaranteed to return a valid 'My Documents'
-       folder (as much as Windows *can* make that guarantee) 
-    */
-    try
-    {
-      GetFolderPathWin32 win32FolderPath;
-      string path = win32FolderPath(GetFolderPathWin32::PERSONAL) + "\\Stella";
-      basedir = path;
-    }
-    catch(char* msg)
-    {
-      cerr << msg << endl;
-    }
+    FilesystemNode home("~");
+    basedir = home.getPath() + "\\Stella";
   }
 
   setBaseDir(basedir);
@@ -81,51 +57,4 @@ OSystemWin32::~OSystemWin32()
 uInt32 OSystemWin32::getTicks() const
 {
   return (uInt32) SDL_GetTicks() * 1000;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GetFolderPathWin32::GetFolderPathWin32()
-  : myFolderModule(0),
-    myFolderPathFunc(0)
-{
-  myFolderModule = LoadLibrary("shfolder.dll");
-  if(!myFolderModule)
-    throw "ERROR: GetFolderPathWin32() failed; cannot determine \'My Documents\' folder";
-
-  myFolderPathFunc = reinterpret_cast<function_pointer>
-    (::GetProcAddress(myFolderModule, "SHGetFolderPathA"));
-  if(myFolderPathFunc == 0)
-    throw "ERROR: GetFolderPathWin32() failed; cannot determine \'My Documents\' folder";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-GetFolderPathWin32::~GetFolderPathWin32()
-{
-  if(myFolderModule)
-    FreeLibrary(myFolderModule);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// Given a folder ID, returns the folder name.
-string const GetFolderPathWin32::operator()(kFolderId _id) const
-{
-  char folder_path[MAX_PATH];
-  int id = 0;
-
-  switch(_id)
-  {
-    case PERSONAL:
-      id = CSIDL_PERSONAL;
-      break;
-    case APPDATA:
-      id = CSIDL_APPDATA;
-      break;
-    default:
-      return "";
-  }
-
-  HRESULT const result =
-    (myFolderPathFunc)(NULL, id | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
-
-  return (result == 0) ? folder_path : "";
 }

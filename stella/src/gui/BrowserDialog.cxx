@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: BrowserDialog.cxx,v 1.36 2009-01-11 19:10:40 stephena Exp $
+// $Id: BrowserDialog.cxx,v 1.37 2009-01-16 14:57:52 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -134,11 +134,10 @@ void BrowserDialog::show(const string& title, const string& startpath,
   _mode = mode;
 
   // If no node has been set, or the last used one is now invalid,
-  // go back to the root/default dir.
+  // go back to the users home dir.
   _node = FilesystemNode(startpath);
-
   if(!_node.exists())
-    _node = FilesystemNode();
+    _node = FilesystemNode("~");
 
   // Generally, we always want a directory listing 
   if(!_node.isDirectory() && _node.hasParent())
@@ -217,7 +216,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       int item = _fileList->getSelected();
       if(item >= 0)
       {
-        _node =  FilesystemNode(_nodeList->path(item));
+        _node = FilesystemNode(_nodeList->path(item));
         updateListing();
       }
       break;
