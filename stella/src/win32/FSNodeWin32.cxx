@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.19 2009-01-16 16:38:06 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.20 2009-01-16 18:25:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -106,6 +106,7 @@ class MyDocumentsFinder
       HMODULE myFolderModule;
       function_pointer myFolderPathFunc;
 };
+static MyDocumentsFinder myDocsFinder;
 
 /*
  * Implementation of the Stella file system API based on Windows API.
@@ -153,8 +154,6 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     bool _isDirectory;
     bool _isPseudoRoot;
     bool _isValid;
-
-    static MyDocumentsFinder myDocsFinder;
 
   private:
     /**
@@ -287,14 +286,16 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p, bool currentDir)
 {
   // Expand "~\\" to the 'My Documents' directory
   // If there is any error, default to using the current directory
+  bool expanded = false;
   if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
     _path = myDocsFinder.getPath();
-    if (_path != "")
+	if (_path != "")
     {
       // Skip over the tilda.  We know that p contains at least
       // two chars, so this is safe:
       _path += p.c_str() + 1;
+      expanded = true;
     }
     else
       currentDir = true;
@@ -306,7 +307,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p, bool currentDir)
     GetCurrentDirectory(MAX_PATH, path);
     _path = path;
   }
-  else
+  else if (!expanded)
   {
     assert(p.size() > 0);
     _path = p;
@@ -326,9 +327,9 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p, bool currentDir)
   {
     _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
     _isValid = true;
-    // Add a trailing slash, if necessary.
 
-    if (_path.length() > 0 && _path[_path.length()-1] != '\\')
+    // Add a trailing slash, if necessary.
+    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '\\')
       _path += '\\';
   }
   _isPseudoRoot = false;

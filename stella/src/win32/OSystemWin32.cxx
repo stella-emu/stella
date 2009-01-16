@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.29 2009-01-16 16:38:06 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.30 2009-01-16 18:25:51 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -40,8 +40,8 @@ OSystemWin32::OSystemWin32()
   FilesystemNode node("disable_profiles.txt");
   if(!node.exists())
   {
-    FilesystemNode home("~");
-    if(node.isDirectory())
+    FilesystemNode home("~\\");
+	if(home.isDirectory())
       basedir = "~\\Stella";
   }
 
