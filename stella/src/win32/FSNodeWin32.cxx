@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.22 2009-01-16 20:00:35 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.23 2009-01-17 15:14:46 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -77,8 +77,7 @@
 class MyDocumentsFinder
 {
   public:
-    MyDocumentsFinder::MyDocumentsFinder()
-      : myFolderModule(0), myFolderPathFunc(0)
+    MyDocumentsFinder() : myFolderModule(0), myFolderPathFunc(0)
     {
       myFolderModule = LoadLibrary("shfolder.dll");
       if(myFolderModule)
