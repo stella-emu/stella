@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.148 2009-01-16 16:38:06 stephena Exp $
+// $Id: OSystem.cxx,v 1.149 2009-01-19 21:19:59 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -440,6 +440,16 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
+    //////////////////////////////////////////////////////////////////////////
+    // For some reason, ATI video drivers for OpenGL in Win32 cause problems
+    // if the sound isn't initialized before the video
+    // According to the SDL documentation, it shouldn't matter what order the
+    // systems are initialized, but apparently it *does* matter
+    // For now, I'll just reverse the ordering, as suggested by 'zagon' at
+    // http://www.atariage.com/forums/index.php?showtopic=126090&view=findpost&p=1648693
+    // Hopefully it won't break anything else
+    //////////////////////////////////////////////////////////////////////////
+    myConsole->initializeAudio();
     myEventHandler->reset(EventHandler::S_EMULATE);
     if(!createFrameBuffer())  // Takes care of initializeVideo()
     {
@@ -447,7 +457,6 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       myEventHandler->reset(EventHandler::S_LAUNCHER);
       return false;
     }
-    myConsole->initializeAudio();
   #ifdef DEBUGGER_SUPPORT
     myDebugger->setConsole(myConsole);
     myDebugger->initialize();

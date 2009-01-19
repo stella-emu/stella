@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.45 2009-01-01 18:13:35 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.46 2009-01-19 21:19:59 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -283,7 +283,7 @@ void SoundSDL::setChannels(uInt32 channels)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::setFrameRate(float framerate)
 {
-  // FIXME, we should clear out the queue or adjust the values in it
+  // FIXME - should we clear out the queue or adjust the values in it?
   myDisplayFrameRate = framerate;
 }
 
