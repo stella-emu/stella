@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.101 2009-01-19 16:52:32 stephena Exp $
+// $Id: TIA.cxx,v 1.102 2009-01-19 16:57:54 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -2313,17 +2313,17 @@ void TIA::poke(uInt16 addr, uInt8 value)
       Int32 x = ((clock - myClockWhenFrameStarted) % 228) / 3;
 
       // See if we need to enable the HMOVE blank bug
-      if(myAllowHMOVEBlanks && ourHMOVEBlankEnableCycles[x])
+      if(TIATables::HMOVEBlankEnableCycles[x])
       {
         // TODO: Allow this to be turned off using properties...
         myHMOVEBlankEnabled = true;
       }
 
-      myPOSP0 += ourCompleteMotionTable[x][myHMP0];
-      myPOSP1 += ourCompleteMotionTable[x][myHMP1];
-      myPOSM0 += ourCompleteMotionTable[x][myHMM0];
-      myPOSM1 += ourCompleteMotionTable[x][myHMM1];
-      myPOSBL += ourCompleteMotionTable[x][myHMBL];
+      myPOSP0 += TIATables::CompleteMotionTable[x][myHMP0];
+      myPOSP1 += TIATables::CompleteMotionTable[x][myHMP1];
+      myPOSM0 += TIATables::CompleteMotionTable[x][myHMM0];
+      myPOSM1 += TIATables::CompleteMotionTable[x][myHMM1];
+      myPOSBL += TIATables::CompleteMotionTable[x][myHMBL];
 
       if(myPOSP0 >= 160)
         myPOSP0 -= 160;
@@ -2350,17 +2350,17 @@ void TIA::poke(uInt16 addr, uInt8 value)
       else if(myPOSBL < 0)
         myPOSBL += 160;
 
-      myCurrentBLMask = &ourBallMaskTable[myPOSBL & 0x03]
+      myCurrentBLMask = &TIATables::BallMaskTable[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
 
-      myCurrentP0Mask = &ourPlayerMaskTable[myPOSP0 & 0x03]
+      myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
           [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-      myCurrentP1Mask = &ourPlayerMaskTable[myPOSP1 & 0x03]
+      myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
           [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
 
-      myCurrentM0Mask = &ourMissleMaskTable[myPOSM0 & 0x03]
+      myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-      myCurrentM1Mask = &ourMissleMaskTable[myPOSM1 & 0x03]
+      myCurrentM1Mask = &TIATables::MissleMaskTable[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
 
       // Remember what clock HMOVE occured at
