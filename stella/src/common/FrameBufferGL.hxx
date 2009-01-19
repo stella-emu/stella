@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.hxx,v 1.71 2009-01-15 23:07:29 stephena Exp $
+// $Id: FrameBufferGL.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_GL_HXX
@@ -35,7 +35,7 @@ class FBSurfaceGL;
   This class implements an SDL OpenGL framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.71 2009-01-15 23:07:29 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
 */
 class FrameBufferGL : public FrameBuffer
 {
@@ -138,10 +138,10 @@ class FrameBufferGL : public FrameBuffer
     FBSurface* createSurface(int w, int h, bool useBase = false) const;
 
     /**
-      This method should be called anytime the MediaSource needs to be redrawn
+      This method should be called anytime the TIA needs to be redrawn
       to the screen (full indicating that a full redraw is required).
     */
-    void drawMediaSource(bool full);
+    void drawTIA(bool full);
 
     /**
       This method is called to provide information about the FrameBuffer.
@@ -187,7 +187,7 @@ class FrameBufferGL : public FrameBuffer
   A surface suitable for OpenGL rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGL.hxx,v 1.71 2009-01-15 23:07:29 stephena Exp $
+  @version $Id: FrameBufferGL.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
 */
 class FBSurfaceGL : public FBSurface
 {

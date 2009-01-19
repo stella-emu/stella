@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.133 2009-01-10 18:42:49 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.134 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -26,10 +26,10 @@
 
 #include "Console.hxx"
 #include "Font.hxx"
-#include "MediaSrc.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Surface.hxx"
+#include "TIA.hxx"
 
 #include "FrameBufferGL.hxx"
 
@@ -354,15 +354,15 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferGL::drawMediaSource(bool fullRedraw)
+void FrameBufferGL::drawTIA(bool fullRedraw)
 {
-  MediaSource& mediasrc = myOSystem->console().mediaSource();
+  const TIA& tia = myOSystem->console().tia();
 
   // Copy the mediasource framebuffer to the RGB texture
-  uInt8* currentFrame  = mediasrc.currentFrameBuffer();
-  uInt8* previousFrame = mediasrc.previousFrameBuffer();
-  uInt32 width         = mediasrc.width();
-  uInt32 height        = mediasrc.height();
+  uInt8* currentFrame  = tia.currentFrameBuffer();
+  uInt8* previousFrame = tia.previousFrameBuffer();
+  uInt32 width         = tia.width();
+  uInt32 height        = tia.height();
   uInt32 pitch         = myTiaSurface->pitch();
   uInt16* buffer       = (uInt16*) myTiaSurface->pixels();
 

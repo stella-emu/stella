@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.cxx,v 1.29 2009-01-03 22:57:12 stephena Exp $
+// $Id: TIADebug.cxx,v 1.30 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include "System.hxx"
@@ -24,7 +24,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIADebug::TIADebug(Debugger& dbg, Console& console)
   : DebuggerSystem(dbg, console),
-    myTIA((TIA&)console.mediaSource())
+    myTIA(console.tia())
 {
   nusizStrings[0] = "size=8 copy=1";
   nusizStrings[1] = "size=8 copy=2 spac=8";

@@ -13,18 +13,18 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIADebug.hxx,v 1.25 2009-01-12 15:11:54 stephena Exp $
+// $Id: TIADebug.hxx,v 1.26 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #ifndef TIA_DEBUG_HXX
 #define TIA_DEBUG_HXX
 
-class TIA;
 class Debugger;
 class TiaDebug;
 
 #include "Array.hxx"
 #include "DebuggerSystem.hxx"
+#include "TIA.hxx"
 
 // pointer types for TIADebug instance methods
 // (used by TiaMethodExpression)

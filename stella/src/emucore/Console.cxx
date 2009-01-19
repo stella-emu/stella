@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.151 2009-01-01 18:13:35 stephena Exp $
+// $Id: Console.cxx,v 1.152 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -34,7 +34,6 @@
 #include "M6502Hi.hxx"
 #include "M6502Low.hxx"
 #include "M6532.hxx"
-#include "MediaSrc.hxx"
 #include "Paddles.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -71,7 +70,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 {
   myControllers[0] = 0;
   myControllers[1] = 0;
-  myMediaSource = 0;
+  myTIA = 0;
   mySwitches = 0;
   mySystem = 0;
   myEvent = 0;
@@ -107,19 +106,15 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   m6502->attach(myOSystem->debugger());
 #endif
 
-  M6532* m6532 = new M6532(*this);
-  TIA *tia = new TIA(*this, myOSystem->settings());
-  tia->setSound(myOSystem->sound());
+  myCart = cart;
+  myRiot = new M6532(*this);
+  myTIA  = new TIA(*this, myOSystem->settings());
+  myTIA->setSound(myOSystem->sound());
 
   mySystem->attach(m6502);
-  mySystem->attach(m6532);
-  mySystem->attach(tia);
-  mySystem->attach(cart);
-
-  // Remember what my media source is
-  myMediaSource = tia;
-  myCart = cart;
-  myRiot = m6532;
+  mySystem->attach(myRiot);
+  mySystem->attach(myTIA);
+  mySystem->attach(myCart);
 
   // Query some info about this console
   ostringstream about, vidinfo;
@@ -138,8 +133,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     int palCount = 0;
     for(int i = 0; i < 60; ++i)
     {
-      myMediaSource->update();
-      if(i >= 30 && myMediaSource->scanlines() > 285)
+      myTIA->update();
+      if(i >= 30 && myTIA->scanlines() > 285)
         ++palCount;
     }
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
@@ -429,7 +424,7 @@ bool Console::initializeVideo(bool full)
     string title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
     if(!myOSystem->frameBuffer().initialize(title,
-          myMediaSource->width() << 1, myMediaSource->height()))
+          myTIA->width() << 1, myTIA->height()))
       return false;
 
     myOSystem->frameBuffer().showFrameStats(
@@ -451,7 +446,7 @@ bool Console::initializeVideo(bool full)
   myOSystem->setFramerate(myFramerate);
 
   // Make sure auto-frame calculation is only enabled when necessary
-  myMediaSource->enableAutoFrame(framerate <= 0);
+  myTIA->enableAutoFrame(framerate <= 0);
 
   return true;
 }
@@ -473,7 +468,7 @@ void Console::initializeAudio()
   myOSystem->sound().initialize();
 
   // Make sure auto-frame calculation is only enabled when necessary
-  myMediaSource->enableAutoFrame(framerate <= 0);
+  myTIA->enableAutoFrame(framerate <= 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -532,7 +527,7 @@ void Console::changeYStart(int direction)
 
   strval << ystart;
   myProperties.set(Display_YStart, strval.str());
-  ((TIA*)myMediaSource)->frameReset();
+  myTIA->frameReset();
   myOSystem->frameBuffer().refresh();
 
   message = "YStart ";
@@ -570,7 +565,7 @@ void Console::changeHeight(int direction)
 
   strval << height;
   myProperties.set(Display_Height, strval.str());
-  ((TIA*)myMediaSource)->frameReset();
+  myTIA->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
   message = "Height ";
@@ -696,7 +691,7 @@ void Console::setControllers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show) const
 {
-  bool result = ((TIA*)myMediaSource)->toggleBit(bit);
+  bool result = myTIA->toggleBit(bit);
   string message = bitname + (result ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }
@@ -704,7 +699,7 @@ void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show) co
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::enableBits(bool enable) const
 {
-  ((TIA*)myMediaSource)->enableBits(enable);
+  myTIA->enableBits(enable);
   string message = string("TIA bits") + (enable ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }

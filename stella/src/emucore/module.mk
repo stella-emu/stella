@@ -41,7 +41,6 @@ MODULE_OBJS := \
 	src/emucore/M6532.o \
 	src/emucore/MT24LC256.o \
 	src/emucore/MD5.o \
-	src/emucore/MediaSrc.o \
 	src/emucore/OSystem.o \
 	src/emucore/Paddles.o \
 	src/emucore/Props.o \
@@ -55,6 +54,7 @@ MODULE_OBJS := \
 	src/emucore/StateManager.o \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
+	src/emucore/TIATables.o \
 	src/emucore/TrackBall.o \
 	src/emucore/unzip.o \
 	src/emucore/MediaFactory.o

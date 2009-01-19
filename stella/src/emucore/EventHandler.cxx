@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.cxx,v 1.239 2009-01-16 16:38:06 stephena Exp $
+// $Id: EventHandler.cxx,v 1.240 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -1804,7 +1804,7 @@ void EventHandler::takeSnapshot()
   if(myOSystem->settings().getBool("ss1x"))
   {
     string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
-                   myOSystem->console().mediaSource(),
+                   myOSystem->console().tia(),
                    myOSystem->console().properties(), filename);
     myOSystem->frameBuffer().showMessage(msg);
   }

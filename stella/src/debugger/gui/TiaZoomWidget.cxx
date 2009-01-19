@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaZoomWidget.cxx,v 1.22 2009-01-03 22:57:12 stephena Exp $
+// $Id: TiaZoomWidget.cxx,v 1.23 2009-01-19 16:52:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -104,8 +104,8 @@ void TiaZoomWidget::zoom(int level)
 void TiaZoomWidget::recalc()
 {
   // Don't go past end of framebuffer
-  const int width  = instance().console().mediaSource().width(),
-            height = instance().console().mediaSource().height();
+  const int width  = instance().console().tia().width(),
+            height = instance().console().tia().height();
 
   // Figure out the bounding rectangle for the current center coords
   const int xoff = myNumCols >> 1,
@@ -220,8 +220,8 @@ void TiaZoomWidget::drawWidget(bool hilite)
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area
   // and I don't have time to make it faster :)
-  uInt8* currentFrame  = instance().console().mediaSource().currentFrameBuffer();
-  const int pitch  = instance().console().mediaSource().width(),
+  uInt8* currentFrame  = instance().console().tia().currentFrameBuffer();
+  const int pitch  = instance().console().tia().width(),
             width  = myZoomLevel << 1,
             height = myZoomLevel;
 

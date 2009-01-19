@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.64 2009-01-10 18:52:55 stephena Exp $
+// $Id: FrameBufferSoft.hxx,v 1.65 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -32,7 +32,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.64 2009-01-10 18:52:55 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.65 2009-01-19 16:52:32 stephena Exp $
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -126,10 +126,10 @@ class FrameBufferSoft : public FrameBuffer
     FBSurface* createSurface(int w, int h, bool useBase = false) const;
 
     /**
-      This method should be called anytime the MediaSource needs to be redrawn
+      This method should be called anytime the TIA needs to be redrawn
       to the screen (full indicating that a full redraw is required).
     */
-    void drawMediaSource(bool full);
+    void drawTIA(bool full);
 
     /**
       This method is called after any drawing is done (per-frame).
@@ -172,7 +172,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.64 2009-01-10 18:52:55 stephena Exp $
+  @version $Id: FrameBufferSoft.hxx,v 1.65 2009-01-19 16:52:32 stephena Exp $
 */
 class FBSurfaceSoft : public FBSurface
 {

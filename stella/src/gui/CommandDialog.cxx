@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandDialog.cxx,v 1.24 2009-01-15 18:45:23 stephena Exp $
+// $Id: CommandDialog.cxx,v 1.25 2009-01-19 16:52:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -192,7 +192,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
     instance().eventHandler().leaveMenuMode();
     instance().eventHandler().handleEvent(event, 1);
     instance().console().switches().update();
-    instance().console().mediaSource().update();
+    instance().console().tia().update();
     instance().eventHandler().handleEvent(event, 0);
     instance().frameBuffer().refresh();
   }

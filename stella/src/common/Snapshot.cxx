@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.cxx,v 1.26 2009-01-11 02:23:45 stephena Exp $
+// $Id: Snapshot.cxx,v 1.27 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include <zlib.h>
@@ -23,8 +23,8 @@
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
-#include "MediaSrc.hxx"
 #include "Props.hxx"
+#include "TIA.hxx"
 #include "Version.hxx"
 #include "Snapshot.hxx"
 
@@ -56,15 +56,14 @@ string Snapshot::savePNG(const FrameBuffer& framebuffer, const Properties& props
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Snapshot::savePNG(const FrameBuffer& framebuffer,
-                         const MediaSource& mediasrc, const Properties& props,
-                         const string& filename)
+string Snapshot::savePNG(const FrameBuffer& framebuffer, const TIA& tia,
+                         const Properties& props, const string& filename)
 {
   ofstream out(filename.c_str(), ios_base::binary);
   if(!out.is_open())
     return "ERROR: Couldn't create snapshot file";
 
-  uInt32 width = mediasrc.width(), height = mediasrc.height();
+  uInt32 width = tia.width(), height = tia.height();
   uInt8* buffer = new uInt8[(width*3*2 + 1) * height];
 
   // Fill the buffer with pixels from the mediasrc

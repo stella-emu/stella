@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.71 2009-01-01 18:13:35 stephena Exp $
+// $Id: Console.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -22,9 +22,9 @@
 class Console;
 class Controller;
 class Event;
-class MediaSource;
 class Switches;
 class System;
+class TIA;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -52,7 +52,7 @@ struct ConsoleInfo
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.71 2009-01-01 18:13:35 stephena Exp $
+  @version $Id: Console.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -91,11 +91,11 @@ class Console : public Serializable
     }
 
     /**
-      Get the MediaSource for this console
+      Get the TIA for this console
 
-      @return The mediasource
+      @return The TIA
     */
-    MediaSource& mediaSource() const { return *myMediaSource; }
+    TIA& tia() const { return *myTIA; }
 
     /**
       Get the properties being used by the game
@@ -302,8 +302,8 @@ class Console : public Serializable
     // Pointer to the event object to use
     Event* myEvent;
 
-    // Pointer to the media source object 
-    MediaSource* myMediaSource;
+    // Pointer to the TIA object 
+    TIA* myTIA;
 
     // Properties for the game
     Properties myProperties;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaOutputWidget.cxx,v 1.25 2009-01-11 02:23:45 stephena Exp $
+// $Id: TiaOutputWidget.cxx,v 1.26 2009-01-19 16:52:32 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ void TiaOutputWidget::advanceScanline(int lines)
 {
   while(lines)
   {
-    instance().console().mediaSource().updateScanline();
+    instance().console().tia().updateScanline();
     --lines;
   }
 }
@@ -78,7 +78,7 @@ void TiaOutputWidget::advance(int frames)
 {
   while(frames)
   {
-    instance().console().mediaSource().update();
+    instance().console().tia().update();
     --frames;
   }
 }
@@ -144,7 +144,7 @@ void TiaOutputWidget::drawWidget(bool hilite)
   FBSurface& s = dialog().surface();
 
   const uInt32 width = 160,  // width is always 160
-               height = instance().console().mediaSource().height();
+               height = instance().console().tia().height();
   for(uInt32 y = 0; y < height; ++y)
   {
     uInt32* line_ptr = myLineBuffer;

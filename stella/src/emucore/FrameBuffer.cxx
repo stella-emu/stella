@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.161 2009-01-15 01:31:26 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.162 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -27,10 +27,10 @@
 #include "Event.hxx"
 #include "Font.hxx"
 #include "Launcher.hxx"
-#include "MediaSrc.hxx"
 #include "Menu.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "TIA.hxx"
 
 #include "FrameBuffer.hxx"
 
@@ -164,7 +164,7 @@ void FrameBuffer::update()
       // Run the console for one frame
       // Note that the debugger can cause a breakpoint to occur, which changes
       // the EventHandler state 'behind our back' - we need to check for that
-      myOSystem->console().mediaSource().update();
+      myOSystem->console().tia().update();
   #ifdef DEBUGGER_SUPPORT
       if(myOSystem->eventHandler().state() != EventHandler::S_EMULATE) break;
   #endif
@@ -172,7 +172,7 @@ void FrameBuffer::update()
         myOSystem->console().fry();
 
       // And update the screen
-      drawMediaSource(myRedrawEntireFrame);
+      drawTIA(myRedrawEntireFrame);
 
       // Show frame statistics
       if(myStatsMsg.enabled)
@@ -180,7 +180,7 @@ void FrameBuffer::update()
         const ConsoleInfo& info = myOSystem->console().about();
         char msg[30];
         sprintf(msg, "%u LINES  %2.2f FPS",
-                myOSystem->console().mediaSource().scanlines(),
+                myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
         myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
@@ -200,7 +200,7 @@ void FrameBuffer::update()
     {
       // Only update the screen if it's been invalidated
       if(myRedrawEntireFrame)
-        drawMediaSource(true);
+        drawTIA(true);
 
       // Show a pause message every 5 seconds
       if(myPausedCount++ >= 7*myOSystem->frameRate())
@@ -410,29 +410,29 @@ void FrameBuffer::refresh()
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_PAUSE:
-      drawMediaSource(true);
+      drawTIA(true);
       if(doubleBuffered)
-        drawMediaSource(true);
+        drawTIA(true);
       break;
 
     case EventHandler::S_MENU:
-      drawMediaSource(true);
+      drawTIA(true);
       myOSystem->menu().draw(true);
       if(doubleBuffered)
       {
         postFrameUpdate();
-        drawMediaSource(true);
+        drawTIA(true);
         myOSystem->menu().draw(true);
       }
       break;
 
     case EventHandler::S_CMDMENU:
-      drawMediaSource(true);
+      drawTIA(true);
       myOSystem->commandMenu().draw(true);
       if(doubleBuffered)
       {
         postFrameUpdate();
-        drawMediaSource(true);
+        drawTIA(true);
         myOSystem->commandMenu().draw(true);
       }
       break;
@@ -502,8 +502,8 @@ void FrameBuffer::resetSurfaces()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBuffer::tiaPixel(uInt32 idx) const
 {
-  uInt8 c = *(myOSystem->console().mediaSource().currentFrameBuffer() + idx);
-  uInt8 p = *(myOSystem->console().mediaSource().previousFrameBuffer() + idx);
+  uInt8 c = *(myOSystem->console().tia().currentFrameBuffer() + idx);
+  uInt8 p = *(myOSystem->console().tia().previousFrameBuffer() + idx);
 
   return (!myUsePhosphor ? myDefPalette[c] : myAvgPalette[c][p]);
 }

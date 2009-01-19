@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.115 2009-01-10 18:52:55 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.116 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -83,15 +83,15 @@ enum {
 
 
 /**
-  This class encapsulates the MediaSource and is the basis for the video
+  This class encapsulates all video buffers and is the basis for the video
   display in Stella.  All graphics ports should derive from this class for
   platform-specific video stuff.
 
-  All GUI elements (ala ScummVM) are drawn into FBSurfaces, which are in
-  turn drawn here as well.
+  The TIA is drawn here, and all GUI elements (ala ScummVM, which are drawn
+  into FBSurfaces), are in turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.115 2009-01-10 18:52:55 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.116 2009-01-19 16:52:32 stephena Exp $
 */
 class FrameBuffer
 {
@@ -118,7 +118,7 @@ class FrameBuffer
 
     /**
       Updates the display, which depending on the current mode could mean
-      drawing the mediasource, any pending menus, etc.
+      drawing the TIA, any pending menus, etc.
     */
     void update();
 
@@ -247,7 +247,7 @@ class FrameBuffer
     const StringMap& supportedTIAFilters(const string& type);
 
     /**
-      Get the TIA pixel associated with the given MediaSrc index.
+      Get the TIA pixel associated with the given TIA buffer index.
     */
     uInt32 tiaPixel(uInt32 idx) const;
 
@@ -383,10 +383,10 @@ class FrameBuffer
     virtual FBSurface* createSurface(int w, int h, bool useBase = false) const = 0;
 
     /**
-      This method should be called anytime the MediaSource needs to be redrawn
+      This method should be called anytime the TIA needs to be redrawn
       to the screen (full indicating that a full redraw is required).
     */
-    virtual void drawMediaSource(bool full) = 0;
+    virtual void drawTIA(bool full) = 0;
 
     /**	 
       This method is called after any drawing is done (per-frame).	 
@@ -563,7 +563,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.115 2009-01-10 18:52:55 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.116 2009-01-19 16:52:32 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

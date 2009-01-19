@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.132 2009-01-15 21:04:47 stephena Exp $
+// $Id: Debugger.cxx,v 1.133 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -466,7 +466,7 @@ int Debugger::step()
   int cyc = mySystem->cycles();
 
   unlockState();
-  myOSystem->console().mediaSource().updateScanlineByStep();
+  myOSystem->console().tia().updateScanlineByStep();
   lockState();
 
   return mySystem->cycles() - cyc;
@@ -494,7 +494,7 @@ int Debugger::trace()
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     unlockState();
-    myOSystem->console().mediaSource().updateScanlineByTrace(targetPC);
+    myOSystem->console().tia().updateScanlineByTrace(targetPC);
     lockState();
 
     return mySystem->cycles() - cyc;

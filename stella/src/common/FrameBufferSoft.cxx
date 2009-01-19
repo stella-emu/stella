@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.93 2009-01-14 20:31:07 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.94 2009-01-19 16:52:32 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -23,11 +23,11 @@
 
 #include "Console.hxx"
 #include "Font.hxx"
-#include "MediaSrc.hxx"
 #include "OSystem.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
 #include "Surface.hxx"
+#include "TIA.hxx"
 
 #include "FrameBufferSoft.hxx"
 
@@ -102,7 +102,7 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   myFormat = myScreen->format;
   myBytesPerPixel = myFormat->BytesPerPixel;
 
-  // Make sure drawMediaSource() knows which renderer to use
+  // Make sure drawTIA() knows which renderer to use
   switch(myBytesPerPixel)
   {
     case 2:  // 16-bit
@@ -136,15 +136,15 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBufferSoft::drawMediaSource(bool fullRedraw)
+void FrameBufferSoft::drawTIA(bool fullRedraw)
 {
-  MediaSource& mediasrc = myOSystem->console().mediaSource();
+  const TIA& tia = myOSystem->console().tia();
 
-  uInt8* currentFrame   = mediasrc.currentFrameBuffer();
-  uInt8* previousFrame  = mediasrc.previousFrameBuffer();
+  uInt8* currentFrame   = tia.currentFrameBuffer();
+  uInt8* previousFrame  = tia.previousFrameBuffer();
 
-  uInt32 width  = mediasrc.width();
-  uInt32 height = mediasrc.height();
+  uInt32 width  = tia.width();
+  uInt32 height = tia.height();
 
   switch(myRenderType)
   {
