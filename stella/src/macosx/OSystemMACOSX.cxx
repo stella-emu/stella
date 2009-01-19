@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.20 2009-01-01 18:13:39 stephena Exp $
+// $Id: OSystemMACOSX.cxx,v 1.21 2009-01-19 13:57:00 stephena Exp $
 //============================================================================
 
 #include <cstdlib>
@@ -92,9 +92,8 @@ void macOSXSendMenuEvent(int event)
 OSystemMACOSX::OSystemMACOSX()
   : OSystem()
 {
-  const string& basedir = string(getenv("HOME")) + "/.stella";
-  setBaseDir(basedir);
-  setConfigFile(basedir + "/stellarc");
+  setBaseDir("~/.stella");
+  setConfigFile("~/.stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
