@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.65 2009-01-15 18:45:23 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.66 2009-01-20 16:21:28 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -332,16 +332,6 @@ GameInfoDialog::GameInfoDialog(
                                         3*fontWidth, fontHeight, "", kTextAlignLeft);
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
-  ypos += lineHeight + 5;
-  new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
-                       "Use HMBlanks:", kTextAlignLeft);
-  items.clear();
-  items.push_back("Yes", "YES");
-  items.push_back("No", "NO");
-  myHmoveBlanks = new PopUpWidget(myTab, font, xpos+lwidth, ypos, pwidth,
-                                  lineHeight, items, "", 0, 0);
-  wid.push_back(myHmoveBlanks);
-
   // Add items for tab 3
   addToFocusList(wid, tabID);
 
@@ -439,8 +429,6 @@ void GameInfoDialog::loadView()
   myPPBlend->setValue(atoi(blend.c_str()));
   myPPBlendLabel->setLabel(blend);
 
-  myHmoveBlanks->setSelected(myGameProperties.get(Emulation_HmoveBlanks), "YES");
-
   myTab->loadConfig();
 }
 
@@ -477,7 +465,6 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Display_Height, myHeight->getEditString());
   myGameProperties.set(Display_Phosphor, myPhosphor->getSelectedTag());
   myGameProperties.set(Display_PPBlend, myPPBlendLabel->getLabel());
-  myGameProperties.set(Emulation_HmoveBlanks, myHmoveBlanks->getSelectedTag());
 
   // Determine whether to add or remove an entry from the properties set
   if(myDefaultsSelected)

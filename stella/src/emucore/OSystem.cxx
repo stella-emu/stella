@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.149 2009-01-19 21:19:59 stephena Exp $
+// $Id: OSystem.cxx,v 1.150 2009-01-20 16:21:28 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -592,7 +592,6 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("height", Display_Height);
     CMDLINE_PROPS_UPDATE("pp", Display_Phosphor);
     CMDLINE_PROPS_UPDATE("ppblend", Display_PPBlend);
-    CMDLINE_PROPS_UPDATE("hmove", Emulation_HmoveBlanks);
 
     Cartridge* cart = Cartridge::create(image, size, props, *mySettings);
     if(cart)

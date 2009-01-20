@@ -3562,7 +3562,6 @@
 "Cartridge.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
 "Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "31f4692ee2ca07a7ce1f7a6a1dab4ac9"
@@ -9409,7 +9408,6 @@
 "Cartridge.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
 "Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "877a5397f3f205bf6750398c98f33de1"
@@ -10678,7 +10676,6 @@
 "Cartridge.Note" "For Philly Classic 4"
 "Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "9cbb07f1993a027bc2f87d5205457ec9"
@@ -14596,7 +14593,6 @@
 "Cartridge.Name" "Climber 5 (30-10-2002) (Dennis Debro) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "28"
-"Emulation.HmoveBlanks" "NO"
 ""
 
 "Cartridge.MD5" "d7f5bf138cfc7feab7b8ef1534c8b477"

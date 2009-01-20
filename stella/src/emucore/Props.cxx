@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.23 2009-01-01 18:13:36 stephena Exp $
+// $Id: Props.cxx,v 1.24 2009-01-20 16:21:28 stephena Exp $
 //============================================================================
 
 #include <cctype>
@@ -69,7 +69,6 @@ void Properties::set(PropertyType key, const string& value)
       case Controller_SwapPaddles:
       case Display_Format:
       case Display_Phosphor:
-      case Emulation_HmoveBlanks:
       {
         transform(myProperties[key].begin(), myProperties[key].end(),
                   myProperties[key].begin(), (int(*)(int)) toupper);
@@ -298,8 +297,7 @@ const char* Properties::ourDefaultProperties[LastPropType] = {
   "34",          // Display.YStart
   "210",         // Display.Height
   "NO",          // Display.Phosphor
-  "77",          // Display.PPBlend
-  "YES"          // Emulation.HmoveBlanks
+  "77"           // Display.PPBlend
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -323,6 +321,5 @@ const char* Properties::ourPropertyNames[LastPropType] = {
   "Display.YStart",
   "Display.Height",
   "Display.Phosphor",
-  "Display.PPBlend",
-  "Emulation.HmoveBlanks"
+  "Display.PPBlend"
 };
