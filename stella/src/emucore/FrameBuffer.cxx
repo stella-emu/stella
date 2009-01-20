@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.162 2009-01-19 16:52:32 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.163 2009-01-20 21:01:28 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -81,8 +81,12 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   myInitializedCount++;
 
   // Make sure this mode is even possible
+  // We only really need to worry about it in non-windowed environments,
+  // where requesting a window that's too large will probably cause a crash
+#ifndef WINDOWED_SUPPORT
   if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
     return false;
+#endif
 
   // Set the available video modes for this framebuffer
   setAvailableVidModes(width, height);
@@ -830,6 +834,8 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
   myFullscreenModeList.clear();
 
   // In UI/windowed mode, there's only one valid video mode we can use
+  // We don't use maxWindowSizeForScreen here, since UI mode has to open its
+  // window at the requested size
   if(inUIMode)
   {
     VideoMode m;
