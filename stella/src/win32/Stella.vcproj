@@ -582,10 +582,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\MediaSrc.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\MT24LC256.cxx"
 					>
 				</File>
@@ -643,6 +639,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\TIASnd.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\TIATables.cxx"
 					>
 				</File>
 				<File
@@ -1192,10 +1192,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\MediaSrc.hxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\MT24LC256.hxx"
 					>
 				</File>
@@ -1261,6 +1257,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\TIASnd.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\TIATables.hxx"
 					>
 				</File>
 				<File
