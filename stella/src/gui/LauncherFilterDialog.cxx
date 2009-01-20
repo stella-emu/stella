@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherFilterDialog.cxx,v 1.1 2009-01-05 19:44:29 stephena Exp $
+// $Id: LauncherFilterDialog.cxx,v 1.2 2009-01-20 18:01:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -58,7 +58,7 @@ LauncherFilterDialog::LauncherFilterDialog(GuiObject* boss, const GUI::Font& fon
   items.clear();
   items.push_back("All files", "allfiles");
   items.push_back("All roms", "allroms");
-  items.push_back("ROMs ending with", "EXTENSIONS");
+  items.push_back("ROMs ending with", "__EXTS");
   myFileType =
     new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight, items,
                     "Show: ", lwidth, kFileTypeChanged);
@@ -132,10 +132,10 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
-    string ext = name.substr(idx+1);
+    const char* ext = name.c_str() + idx + 1;
 
     for(uInt32 i = 0; i < exts.size(); ++i)
-      if(ext == exts[i])
+      if(BSPF_strcasecmp(ext, exts[i].c_str()) == 0)
         return true;
   }
 
@@ -148,10 +148,10 @@ bool LauncherFilterDialog::isValidRomName(const string& name, string& ext)
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
-    ext = name.substr(idx+1);
+    const char* ext = name.c_str() + idx + 1;
 
     for(uInt32 i = 0; i < 5; ++i)
-      if(ext == ourRomTypes[1][i])
+      if(BSPF_strcasecmp(ext, ourRomTypes[1][i]) == 0)
         return true;
   }
   return false;
@@ -204,7 +204,7 @@ void LauncherFilterDialog::handleFileTypeChange(const string& type)
 
   if(enable)
   {
-    myFileType->setSelected("EXTENSIONS", "");
+    myFileType->setSelected("__EXTS", "");
 
     // Since istringstream swallows whitespace, we have to make the
     // delimiters be spaces
@@ -258,4 +258,3 @@ const char* LauncherFilterDialog::ourRomTypes[2][5] = {
   { ".a26", ".bin", ".rom", ".zip", ".gz" },
   { "a26", "bin", "rom", "zip", "gz" }
 };
-
