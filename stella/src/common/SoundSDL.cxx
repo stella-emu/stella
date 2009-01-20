@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.46 2009-01-19 21:19:59 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.47 2009-01-20 16:41:15 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -83,7 +83,7 @@ void SoundSDL::initialize()
   myRegWriteQueue.clear();
   myTIASound.reset();
 
-  if(!((SDL_WasInit(SDL_INIT_AUDIO) & SDL_INIT_AUDIO) > 0))
+  if(SDL_WasInit(SDL_INIT_AUDIO) == 0)
   {
     myIsInitializedFlag = false;
     myIsMuted = false;
