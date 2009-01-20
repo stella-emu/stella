@@ -12,6 +12,23 @@
                                Release History
 ===============================================================================
 
+2.7 to 2.7.1: (Jan. 26, 2009)
+
+  * Fixed issue with sound not working in OpenGL video mode in Windows with
+    ATI video hardware.
+
+  * Fixed bug where volume wasn't being saved in 'Audio Settings' when
+    started from the ROM launcher.
+
+  * Made the ROM launcher filename filtering be case-insensitive.
+
+  * Removed 'Emulation_HmoveBlanks' ROM property and associated UI item.
+    You can no longer optionally turn off HMOVE blanking; it is always
+    enabled when necessary.
+
+-Have fun!
+
+
 2.6.1 to 2.7: (Jan. 19, 2009)
 
   * Totally reworked the built-in UI to be font-sensitive and use higher-
@@ -109,8 +126,6 @@
   * Huge updates to the documentation, particularly concerning the debugger.
     Many features that have been in Stella for a while are now documented for
     the first time.
-
--Have fun!
 
 
 2.6 to 2.6.1: (May 22, 2008)
