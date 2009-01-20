@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.158 2009-01-16 21:46:30 stephena Exp $
+// $Id: Settings.cxx,v 1.159 2009-01-20 16:33:06 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -378,7 +378,6 @@ void Settings::usage()
     << "   -height      <arg>          Sets the 'Display.Height' property\n"
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
-    << "   -hmove       <arg>          Sets the 'Emulation.HmoveBlanks' property\n"
   #endif
     << endl;
 #endif
