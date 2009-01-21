@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.cxx,v 1.29 2009-01-16 21:46:31 stephena Exp $
+// $Id: FileSnapDialog.cxx,v 1.30 2009-01-21 12:03:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -49,7 +49,7 @@ FileSnapDialog::FileSnapDialog(
 
   // Set real dimensions
   _w = 52 * fontWidth + 8;
-  _h = 10 * (lineHeight + 4) + 10;
+  _h = 11 * (lineHeight + 4) + 10;
 
   xpos = vBorder;  ypos = vBorder;
 
@@ -113,6 +113,16 @@ FileSnapDialog::FileSnapDialog(
                                   _w - xpos - 10, lineHeight, "");
   wid.push_back(mySnapPath);
 
+  // EEPROM directory
+  xpos = vBorder;  ypos += b->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "EEPROM path:", kChooseEEPROMDirCmd);
+  wid.push_back(b);
+  xpos += buttonWidth + 10;
+  myEEPROMPath = new EditTextWidget(this, font, xpos, ypos + 2,
+                                    _w - xpos - 10, lineHeight, "");
+  wid.push_back(myEEPROMPath);
+
   // Snapshot single or multiple saves
   xpos = 30;  ypos += b->getHeight() + 5;
   mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
@@ -161,6 +171,7 @@ void FileSnapDialog::loadConfig()
   myPaletteFile->setEditString(settings.getString("palettefile"));
   myPropsFile->setEditString(settings.getString("propsfile"));
   mySnapPath->setEditString(settings.getString("ssdir"));
+  myEEPROMPath->setEditString(settings.getString("eepromdir"));
   mySnapSingle->setState(!settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
 }
@@ -174,6 +185,7 @@ void FileSnapDialog::saveConfig()
   instance().settings().setString("palettefile", myPaletteFile->getEditString());
   instance().settings().setString("propsfile", myPropsFile->getEditString());
   instance().settings().setString("ssdir", mySnapPath->getEditString());
+  instance().settings().setString("eepromdir", myEEPROMPath->getEditString());
   instance().settings().setBool("sssingle", !mySnapSingle->getState());
   instance().settings().setBool("ss1x", mySnap1x->getState());
 
@@ -192,12 +204,14 @@ void FileSnapDialog::setDefaults()
   const string& palettefile = basedir + BSPF_PATH_SEPARATOR + "stella.pal";
   const string& propsfile = basedir + BSPF_PATH_SEPARATOR + "stella.pro";
   const string& ssdir = basedir + BSPF_PATH_SEPARATOR + "snapshots";
+  const string& eepromdir = basedir;
 
   myRomPath->setEditString(romdir);
   myStatePath->setEditString(statedir);
   myCheatFile->setEditString(cheatfile);
   myPaletteFile->setEditString(palettefile);
   myPropsFile->setEditString(propsfile);
+  myEEPROMPath->setEditString(eepromdir);
 
   mySnapPath->setEditString(ssdir);
   mySnapSingle->setState(true);
@@ -251,6 +265,11 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
                       FilesystemNode::kListDirectoriesOnly, kSnapDirChosenCmd);
       break;
 
+    case kChooseEEPROMDirCmd:
+      myBrowser->show("Select EEPROM directory:", myEEPROMPath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kEEPROMDirChosenCmd);
+      break;
+
     case kRomDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
@@ -290,6 +309,13 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
     {
       FilesystemNode dir(myBrowser->getResult());
       mySnapPath->setEditString(dir.getPath());
+      break;
+    }
+
+    case kEEPROMDirChosenCmd:
+    {
+      FilesystemNode dir(myBrowser->getResult());
+      myEEPROMPath->setEditString(dir.getPath());
       break;
     }
 

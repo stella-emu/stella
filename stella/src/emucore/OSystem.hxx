@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.77 2009-01-16 21:46:30 stephena Exp $
+// $Id: OSystem.hxx,v 1.78 2009-01-21 12:03:17 stephena Exp $
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.77 2009-01-16 21:46:30 stephena Exp $
+  @version $Id: OSystem.hxx,v 1.78 2009-01-21 12:03:17 stephena Exp $
 */
 class OSystem
 {
@@ -263,6 +263,11 @@ class OSystem
       Return the full/complete directory name for storing PNG snapshots.
     */
     const string& snapshotDir() const { return mySnapshotDir; }
+
+    /**
+      Return the full/complete directory name for storing EEPROM files.
+    */
+    const string& eepromDir() const { return myEEPROMDir; }
 
     /**
       This method should be called to get the full path of the cheat file.
@@ -490,6 +495,7 @@ class OSystem
     string myBaseDir, myBaseDirExpanded;
     string myStateDir;
     string mySnapshotDir;
+    string myEEPROMDir;
 
     string myCheatFile;
     string myConfigFile;

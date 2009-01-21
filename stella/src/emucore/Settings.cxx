@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.159 2009-01-20 16:33:06 stephena Exp $
+// $Id: Settings.cxx,v 1.160 2009-01-21 12:03:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -85,6 +85,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("cheatfile", "");
   setInternal("palettefile", "");
   setInternal("propsfile", "");
+  setInternal("eepromdir", "");
 
   // ROM browser options
   setInternal("launcherres", "640x480");
@@ -346,6 +347,7 @@ void Settings::usage()
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
+    << "  -eepromdir    <dir>          Directory in which to save EEPROM files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT

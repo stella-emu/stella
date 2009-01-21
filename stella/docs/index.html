@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.7</b></h4></center>
+	<center><h4><b>Release 2.7.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -221,106 +221,6 @@
     Unix, and Windows, as well as consoles such as Sega Dreamcast, GP2X, Nintendo
 	DS and Playstation Portable (among others).
 	</p>
-
-	<h2><b>New in Release 2.7</b></h2>
-
-	<ul>
-<li>Totally reworked the built-in UI to be font-sensitive and use higher-resolution
-    fonts.  Stella now requires a minimum screen size of 640x480.
-    If used in a resolution smaller than that, the fonts will be reduced
-    accordingly.  Related to this, switching between software and OpenGL
-    rendering now requires an application restart.</li>
-
-<li>Added three different sized fonts (small, medium, large) which can be
-    used in the ROM launcher.</li>
-
-<li>Added ability to temporarily override ROM properties from the UI.  This
-    is tied to a right mouse button context menu in the ROM launcher, and
-    is very useful when you want to use a set of properties for all
-    subsequent ROMs without having to manually change each one.</li>
-
-<li>Added ability to filter the files shown in the ROM launcher.  Currently,
-    the choices are 'all files', 'all roms', or 'roms ending with a certain
-    extension'.  This functionality is tied to a right mouse button context
-    menu in the ROM launcher.  Extensions can also be set with the
-    '-launcherexts' commandline argument.</li>
-
-<li>Added ability to reload the listing in the ROM launcher, either from
-    a right mouse button context menu or pressing the Control/Cmd-R key.</li>
-
-<li>Made the ROM info viewer in the ROM launcher configurable to show
-    snapshots in 1x or 2x mode.</li>
-
-<li>Made the delay between consecutive keys being recognized as one word
-    configurable in the ROM launcher.  This is useful if you find that you
-    have to press keys too quickly to jump to a specific ROM.  This can be
-    set in the UI or using the '-listdelay' commandline argument.</li>
-
-<li>Updated internal ROM properties database to ROM-Hunter version 4
-    (thanks go to RomHunter for his tireless research in this area).</li>
-
-<li>Expanded the statistics overlay for the TIA image to also show
-    Display Format and Bankswitch type information.</li>
-
-<li>Added '-ss1x' commandline argument and associated UI item, used to
-    generate snapshots in 1x mode, independent of the filtering/scaling
-    currently in use.</li>
-
-<li>Various path textboxes in the UI now recognize './' (or '.\') to mean
-    the current directory and '~/' (or '~\') to mean your home directory
-    (for Windows, home directory will be your 'My Documents' folder).</li>
-
-<li>Large speedup in loading directories with many files in the ROM launcher.</li>
-
-<li>Fixed reset issue in 3E, 4A50, AR, CV, E7, F4SC, F6SC, F8SC, FASC and MC
-    ROMs; the internal RAM wasn't being randomized after the initial reset.</li>
-
-<li>M6532/RIOT RAM is now randomized at every reset, not just when the
-    emulation starts.</li>
-
-<li>Fixed bug in _diff pseudo-registers in the debugger; they were actually
-    defined backwards.</li>
-
-<li>Added fix for 'Challenge/Surfers Delight' ROM; the startup bank was
-    incorrect.  Combined with the new 'Override Properties' functionality,
-    you can now play both games directly from the UI (no need to use the
-    commandline).</li>
-
-<li>Fixed paddle issue with Activision Casino ROM; the last card in game 4
-    can now be reached.</li>
-
-<li>Added new pseudo-registers to the debugger, useful for conditional
-    breakpoints (_fcount, _cclocks, _vsync, _vblank).</li>
-
-<li>Added 'timing' commandline argument functionality to the UI, so you no
-    longer need to use the commandline to set it.</li>
-
-<li>Size restrictions on the TIA image are now strictly enforced.  The
-    maximum height of a 1x TIA image is now 256 lines.</li>
-
-<li>Added a new setting to the 'fullres' option named 'auto'.  Using
-    'auto' will let Stella decide the best videomode to use in fullscreen.</li>
-
-<li>Changed 'gl_fsmax' option to mean 'scale TIA image in fullscreen'.  It
-    will have no effect on UI modes.</li>
-
-<li>Changed 'gl_aspect' option to range 80-100 (previously, it was 50-100).</li>
-
-<li>Removed 'ui_zoom' and 'tia_zoom' options, replacing them with
-    'tia_filter' (which can be zoom1x, zoom2x, etc).  There is no equivalent
-    for ui_zoom, since the UI can no longer be scaled.</li>
-
-<li>Added experimental 64-bit version for Vista64 (may also work on WinXP64).
-    This hasn't been extensively tested, and is probably quite a bit slower
-    than the 32-bit version.</li>
-
-<li>OSX port now requires at least 10.3 and XCode 3.0 to compile.  Sorry,
-    but I no longer have access to older systems to compile for 10.2.</li>
-
-<li>Huge updates to the documentation, particularly concerning the debugger.
-    Many features that have been in Stella for a while are now documented for
-    the first time.</li>
-	</ul>
 
 	<p>
 	<h2><b>Features</b></h2>
@@ -2267,8 +2167,11 @@
 	This is very useful in the testing stages of creating a new game, since
 	writing to a real EEPROM many times will eventually wear it out.</p>
 
-	<p>The EEPROM files have a special name/location depending on which
-	version of Stella you use, which are currently not configurable:</p>
+	<p>The location of the EEPROM files are configurable through the
+	'<i>-eepromdir</i>' commandline argument and within the application itself
+	(see <b>Section 5 - <a href="#Starting">Starting a Game</a></b>).  If the
+	path for these files hasn't been set, the default location will depend on the
+	version of Stella, as follows:</p>
 
 	<p><table cellpadding="5" border="1">
 		<tr>

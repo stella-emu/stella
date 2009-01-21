@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.150 2009-01-20 16:21:28 stephena Exp $
+// $Id: OSystem.cxx,v 1.151 2009-01-21 12:03:17 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -291,6 +291,14 @@ void OSystem::setConfigPaths()
   mySnapshotDir = node.getPath();
   if(!node.isDirectory())
     AbstractFilesystemNode::makeDir(mySnapshotDir);
+
+  s = mySettings->getString("eepromdir");
+  if(s == "") s = myBaseDir;
+  mySettings->setString("eepromdir", s);
+  node = FilesystemNode(s);
+  myEEPROMDir = node.getPath();
+  if(!node.isDirectory())
+    AbstractFilesystemNode::makeDir(myEEPROMDir);
 
   s = mySettings->getString("cheatfile");
   if(s == "") s = myBaseDir + BSPF_PATH_SEPARATOR + "stella.cht";

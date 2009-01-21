@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FSNodeWin32.cxx,v 1.23 2009-01-17 15:14:46 stephena Exp $
+// $Id: FSNodeWin32.cxx,v 1.24 2009-01-21 12:03:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -388,9 +388,9 @@ bool WindowsFilesystemNode::
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* WindowsFilesystemNode::getParent() const
 {
-  assert(_isValid || _isPseudoRoot);
+//  assert(_isValid || _isPseudoRoot);
 
-  if (_isPseudoRoot)
+  if (!_isValid || _isPseudoRoot)
     return 0;
 
   WindowsFilesystemNode* p = new WindowsFilesystemNode();

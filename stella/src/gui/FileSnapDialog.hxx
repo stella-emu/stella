@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FileSnapDialog.hxx,v 1.13 2009-01-04 22:27:43 stephena Exp $
+// $Id: FileSnapDialog.hxx,v 1.14 2009-01-21 12:03:17 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,10 +56,12 @@ class FileSnapDialog : public Dialog, public CommandSender
       kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
       kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
       kChooseSnapDirCmd     = 'LOsn', // snapshot dir
+      kChooseEEPROMDirCmd   = 'LOee', // eeprom dir
       kStateDirChosenCmd    = 'LOsc', // state dir changed
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
       kPaletteFileChosenCmd = 'LOpc', // palette file changed
-      kPropsFileChosenCmd   = 'LOrc'  // properties file changed
+      kPropsFileChosenCmd   = 'LOrc', // properties file changed
+      kEEPROMDirChosenCmd   = 'LOec'  // eeprom dir changed
     };
 
     BrowserDialog* myBrowser;
@@ -67,6 +69,7 @@ class FileSnapDialog : public Dialog, public CommandSender
     // Config paths
     EditTextWidget* myRomPath;
     EditTextWidget* myStatePath;
+    EditTextWidget* myEEPROMPath;
     EditTextWidget* myCheatFile;
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;

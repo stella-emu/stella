@@ -20,7 +20,19 @@
   * Fixed bug where volume wasn't being saved in 'Audio Settings' when
     started from the ROM launcher.
 
-  * Made the ROM launcher filename filtering be case-insensitive.
+  * Fixed crash which sometimes occurred when viewing snapshots in the
+    ROM Info viewer.
+
+  * Allow setting window sizes for the ROM launcher and debugger to be larger
+    than your desktop resolution.  Be careful with this feature, as switching
+    to fullscreen mode may cause problems in such cases.
+
+  * Made the ROM launcher filename filtering be case-insensitive.  This fixes
+    a bug whereby ROMs with uppercase extensions were marked as invalid.
+
+  * The location of EEPROM files used for AtariVox/Savekey emulation can
+    now be changed with the '-eepromdir' commandline argument as well as
+    in the UI.
 
   * Removed 'Emulation_HmoveBlanks' ROM property and associated UI item.
     You can no longer optionally turn off HMOVE blanking; it is always

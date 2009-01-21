@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.152 2009-01-19 16:52:32 stephena Exp $
+// $Id: Console.cxx,v 1.153 2009-01-21 12:03:16 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -669,15 +669,15 @@ void Console::setControllers()
   }
   else if(right == "ATARIVOX")
   {
-    string eepromfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                        "atarivox_eeprom.dat";
+    const string& eepromfile = myOSystem->eepromDir() + BSPF_PATH_SEPARATOR +
+                               "atarivox_eeprom.dat";
     myControllers[rightPort] = myAVox =
       new AtariVox(Controller::Right, *myEvent, *mySystem, myOSystem->serialPort(),
                    myOSystem->settings().getString("avoxport"), eepromfile);
   }
   else if(right == "SAVEKEY")
   {
-    string eepromfile = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+    const string& eepromfile = myOSystem->eepromDir() + BSPF_PATH_SEPARATOR +
                         "savekey_eeprom.dat";
     myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
                                            eepromfile);
