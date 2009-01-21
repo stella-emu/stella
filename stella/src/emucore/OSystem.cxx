@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.151 2009-01-21 12:03:17 stephena Exp $
+// $Id: OSystem.cxx,v 1.152 2009-01-21 15:32:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -448,6 +448,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
+    bool audiofirst = mySettings->getBool("audiofirst");
     //////////////////////////////////////////////////////////////////////////
     // For some reason, ATI video drivers for OpenGL in Win32 cause problems
     // if the sound isn't initialized before the video
@@ -457,7 +458,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     // http://www.atariage.com/forums/index.php?showtopic=126090&view=findpost&p=1648693
     // Hopefully it won't break anything else
     //////////////////////////////////////////////////////////////////////////
-    myConsole->initializeAudio();
+    if(audiofirst)  myConsole->initializeAudio();
     myEventHandler->reset(EventHandler::S_EMULATE);
     if(!createFrameBuffer())  // Takes care of initializeVideo()
     {
@@ -465,6 +466,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       myEventHandler->reset(EventHandler::S_LAUNCHER);
       return false;
     }
+    if(!audiofirst)  myConsole->initializeAudio();
   #ifdef DEBUGGER_SUPPORT
     myDebugger->setConsole(myConsole);
     myDebugger->initialize();

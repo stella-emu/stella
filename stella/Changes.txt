@@ -15,7 +15,9 @@
 2.7 to 2.7.1: (Jan. 26, 2009)
 
   * Fixed issue with sound not working in OpenGL video mode in Windows with
-    ATI video hardware.
+    ATI video hardware.  Related to this, added '-audiofirst' commandline
+    argument, which initializes audio before video when emulating a ROM
+    (this is what was causing the sound to not work).
 
   * Fixed bug where volume wasn't being saved in 'Audio Settings' when
     started from the ROM launcher.

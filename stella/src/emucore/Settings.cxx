@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.160 2009-01-21 12:03:17 stephena Exp $
+// $Id: Settings.cxx,v 1.161 2009-01-21 15:32:15 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -106,6 +106,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("tiafloat", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
+  setInternal("audiofirst", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -327,6 +328,7 @@ void Settings::usage()
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
+    << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling)\n"
