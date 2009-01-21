@@ -38,7 +38,6 @@
 		2D9173E609BA90380026E9FF /* Keyboard.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF450627AE07006BEC99 /* Keyboard.hxx */; };
 		2D9173E709BA90380026E9FF /* M6532.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF7D0627AE33006BEC99 /* M6532.hxx */; };
 		2D9173E809BA90380026E9FF /* MD5.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF7F0627AE34006BEC99 /* MD5.hxx */; };
-		2D9173E909BA90380026E9FF /* MediaSrc.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF810627AE34006BEC99 /* MediaSrc.hxx */; };
 		2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF830627AE34006BEC99 /* Paddles.hxx */; };
 		2D9173EB09BA90380026E9FF /* Props.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF850627AE34006BEC99 /* Props.hxx */; };
 		2D9173EC09BA90380026E9FF /* PropsSet.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF870627AE34006BEC99 /* PropsSet.hxx */; };
@@ -169,7 +168,6 @@
 		2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF440627AE07006BEC99 /* Keyboard.cxx */; };
 		2D91749009BA90380026E9FF /* M6532.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF7C0627AE33006BEC99 /* M6532.cxx */; };
 		2D91749109BA90380026E9FF /* MD5.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF7E0627AE33006BEC99 /* MD5.cxx */; };
-		2D91749209BA90380026E9FF /* MediaSrc.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF800627AE34006BEC99 /* MediaSrc.cxx */; };
 		2D91749309BA90380026E9FF /* Paddles.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF820627AE34006BEC99 /* Paddles.cxx */; };
 		2D91749409BA90380026E9FF /* Props.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF840627AE34006BEC99 /* Props.cxx */; };
 		2D91749509BA90380026E9FF /* PropsSet.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF860627AE34006BEC99 /* PropsSet.cxx */; };
@@ -309,6 +307,11 @@
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
+		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
+		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
+		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
+		DC932D470F278A5200FEFEFC /* TIATables.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC932D420F278A5200FEFEFC /* TIATables.cxx */; };
+		DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D430F278A5200FEFEFC /* TIATables.hxx */; };
 		DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */; };
 		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
@@ -598,8 +601,6 @@
 		2DE2DF7D0627AE33006BEC99 /* M6532.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = M6532.hxx; path = ../emucore/M6532.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF7E0627AE33006BEC99 /* MD5.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MD5.cxx; path = ../emucore/MD5.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF7F0627AE34006BEC99 /* MD5.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MD5.hxx; path = ../emucore/MD5.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF800627AE34006BEC99 /* MediaSrc.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MediaSrc.cxx; path = ../emucore/MediaSrc.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF810627AE34006BEC99 /* MediaSrc.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MediaSrc.hxx; path = ../emucore/MediaSrc.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF820627AE34006BEC99 /* Paddles.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Paddles.cxx; path = ../emucore/Paddles.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF830627AE34006BEC99 /* Paddles.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Paddles.hxx; path = ../emucore/Paddles.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF840627AE34006BEC99 /* Props.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Props.cxx; path = ../emucore/Props.cxx; sourceTree = SOURCE_ROOT; };
@@ -680,6 +681,11 @@
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefProps.hxx; path = ../emucore/DefProps.hxx; sourceTree = SOURCE_ROOT; };
+		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Serializable.hxx; path = ../emucore/Serializable.hxx; sourceTree = SOURCE_ROOT; };
+		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
+		DC932D420F278A5200FEFEFC /* TIATables.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TIATables.cxx; path = ../emucore/TIATables.cxx; sourceTree = SOURCE_ROOT; };
+		DC932D430F278A5200FEFEFC /* TIATables.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TIATables.hxx; path = ../emucore/TIATables.hxx; sourceTree = SOURCE_ROOT; };
 		DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotDebug.cxx; path = ../debugger/RiotDebug.cxx; sourceTree = SOURCE_ROOT; };
 		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotDebug.hxx; path = ../debugger/RiotDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
@@ -894,6 +900,11 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
+				DC932D400F278A5200FEFEFC /* Serializable.hxx */,
+				DC932D410F278A5200FEFEFC /* SerialPort.hxx */,
+				DC932D420F278A5200FEFEFC /* TIATables.cxx */,
+				DC932D430F278A5200FEFEFC /* TIATables.hxx */,
 				DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */,
 				DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */,
 				DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */,
@@ -982,8 +993,6 @@
 				2DE2DF7F0627AE34006BEC99 /* MD5.hxx */,
 				2D05FF5A096E261E00A518FE /* MediaFactory.cxx */,
 				2D05FF5B096E261E00A518FE /* MediaFactory.hxx */,
-				2DE2DF800627AE34006BEC99 /* MediaSrc.cxx */,
-				2DE2DF810627AE34006BEC99 /* MediaSrc.hxx */,
 				2DDBEB7408457B7D00812C11 /* OSystem.cxx */,
 				2DDBEB7508457B7D00812C11 /* OSystem.hxx */,
 				2DE2DF820627AE34006BEC99 /* Paddles.cxx */,
@@ -1216,7 +1225,6 @@
 				2D9173E609BA90380026E9FF /* Keyboard.hxx in Headers */,
 				2D9173E709BA90380026E9FF /* M6532.hxx in Headers */,
 				2D9173E809BA90380026E9FF /* MD5.hxx in Headers */,
-				2D9173E909BA90380026E9FF /* MediaSrc.hxx in Headers */,
 				2D9173EA09BA90380026E9FF /* Paddles.hxx in Headers */,
 				2D9173EB09BA90380026E9FF /* Props.hxx in Headers */,
 				2D9173EC09BA90380026E9FF /* PropsSet.hxx in Headers */,
@@ -1345,6 +1353,10 @@
 				DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */,
 				DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */,
 				DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */,
+				DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */,
+				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
+				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
+				DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1476,7 +1488,6 @@
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
 				2D91749109BA90380026E9FF /* MD5.cxx in Sources */,
-				2D91749209BA90380026E9FF /* MediaSrc.cxx in Sources */,
 				2D91749309BA90380026E9FF /* Paddles.cxx in Sources */,
 				2D91749409BA90380026E9FF /* Props.cxx in Sources */,
 				2D91749509BA90380026E9FF /* PropsSet.cxx in Sources */,
@@ -1592,6 +1603,7 @@
 				DC173F760E2CAC1E00320F94 /* ContextMenu.cxx in Sources */,
 				DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */,
 				DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */,
+				DC932D470F278A5200FEFEFC /* TIATables.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
