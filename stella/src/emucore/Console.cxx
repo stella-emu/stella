@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.153 2009-01-21 12:03:16 stephena Exp $
+// $Id: Console.cxx,v 1.154 2009-01-22 00:49:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -465,7 +465,7 @@ void Console::initializeAudio()
   myOSystem->sound().close();
   myOSystem->sound().setChannels(channels);
   myOSystem->sound().setFrameRate(myFramerate);
-  myOSystem->sound().initialize();
+  myOSystem->sound().open();
 
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.47 2009-01-20 16:41:15 stephena Exp $
+// $Id: SoundSDL.cxx,v 1.48 2009-01-22 00:49:32 stephena Exp $
 //============================================================================
 
 #ifdef SOUND_SUPPORT
@@ -68,7 +68,7 @@ void SoundSDL::setEnabled(bool state)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void SoundSDL::initialize()
+void SoundSDL::open()
 {
   // Check whether to start the sound subsystem
   if(!myIsEnabled)

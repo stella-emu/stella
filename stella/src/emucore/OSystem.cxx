@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.152 2009-01-21 15:32:15 stephena Exp $
+// $Id: OSystem.cxx,v 1.153 2009-01-22 00:49:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -854,8 +854,10 @@ void OSystem::mainLoop()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::queryVideoHardware()
 {
-  if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-    return;
+  // Go ahead and open the video hardware; we're going to need it eventually
+  if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
+    if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
+      return;
 
   // First get the maximum windowed desktop resolution
   const SDL_VideoInfo* info = SDL_GetVideoInfo();

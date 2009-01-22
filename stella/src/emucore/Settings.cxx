@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.161 2009-01-21 15:32:15 stephena Exp $
+// $Id: Settings.cxx,v 1.162 2009-01-22 00:49:32 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -229,7 +229,7 @@ void Settings::validate()
     setInternal("gl_filter", "nearest");
 
   i = getInt("gl_aspect");
-  if(i < 80 || i > 100)
+  if(i < 80 || i > 120)
     setInternal("gl_aspect", "100");
 #endif
 

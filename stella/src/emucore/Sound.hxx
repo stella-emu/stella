@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Sound.hxx,v 1.26 2009-01-01 18:13:37 stephena Exp $
+// $Id: Sound.hxx,v 1.27 2009-01-22 00:49:32 stephena Exp $
 //============================================================================
 
 #ifndef SOUND_HXX
@@ -30,7 +30,7 @@ class Deserializer;
   It has no functionality whatsoever.
 
   @author Stephen Anthony
-  @version $Id: Sound.hxx,v 1.26 2009-01-01 18:13:37 stephena Exp $
+  @version $Id: Sound.hxx,v 1.27 2009-01-22 00:49:32 stephena Exp $
 */
 class Sound
 {
@@ -78,14 +78,14 @@ class Sound
     virtual void setFrameRate(float framerate) = 0;
 
     /**
-      Initializes the sound device.  This must be called before any
-      calls are made to derived methods.
+      Start the sound system, initializing it if necessary.  This must be
+      called before any calls are made to derived methods.
     */
-    virtual void initialize() = 0;
+    virtual void open() = 0;
 
     /**
-      Should be called to close the sound device.  Once called the sound
-      device can be started again using the initialize method.
+      Should be called to stop the sound system.  Once called the sound
+      device can be started again using the ::open() method.
     */
     virtual void close() = 0;
 
@@ -134,7 +134,7 @@ class Sound
     */
     virtual void adjustVolume(Int8 direction) = 0;
 
-public:
+  public:
     /**
       Loads the current state of this device from the given Deserializer.
 
