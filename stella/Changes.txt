@@ -35,6 +35,10 @@
   * Made the ROM launcher filename filtering be case-insensitive.  This fixes
     a bug whereby ROMs with uppercase extensions were marked as invalid.
 
+  * Added a pattern matching textbox to the ROM launcher, used to
+    further filter the files shown in the listing.  For now, this filters
+    files only (directories are not filtered, and are always shown).
+
   * The location of EEPROM files used for AtariVox/Savekey emulation can
     now be changed with the '-eepromdir' commandline argument as well as
     in the UI.

@@ -36,7 +36,8 @@ Stephen Anthony at stephena@users.sourceforge.net.
          directory named that way.  Basically the same as is currently
          done for ROMs.
 
-     (2) Add popup text widget to dynamically select the entries shown.
+     (2) Fix aliases not being followed correctly in the OSX port
+         (although I suspect this isn't just an OSX issue).
 
   * More support for copy and paste.
 

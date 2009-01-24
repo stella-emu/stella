@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EditableWidget.hxx,v 1.16 2009-01-01 18:13:38 stephena Exp $
+// $Id: EditableWidget.hxx,v 1.17 2009-01-24 21:44:49 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -68,7 +68,7 @@ class EditableWidget : public Widget, public CommandSender
 
   private:
     // Line editing
-    bool specialKeys(int keycode);
+    bool specialKeys(int ascii, int keycode);
     bool killChar(int direction);
     bool killLine(int direction);
     bool killLastWord();
