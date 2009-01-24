@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.154 2009-01-22 00:49:32 stephena Exp $
+// $Id: Console.cxx,v 1.155 2009-01-24 18:11:47 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -152,12 +152,14 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
      myDisplayFormat == "SECAM60")
   {
     // Assume we've got ~262 scanlines (NTSC-like format)
-      myFramerate = 60.0;
+    myFramerate = 60.0;
+    myConsoleInfo.InitialFrameRate = "60";
   }
   else
   {
     // Assume we've got ~312 scanlines (PAL-like format)
     myFramerate = 50.0;
+    myConsoleInfo.InitialFrameRate = "50";
 
     if(myProperties.get(Display_Height) == "210")
       myProperties.set(Display_Height, "250");

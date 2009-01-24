@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
+// $Id: Console.hxx,v 1.73 2009-01-24 18:11:47 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -46,13 +46,14 @@ struct ConsoleInfo
   string Control0;
   string Control1;
   string DisplayFormat;
+  string InitialFrameRate;
 };
 
 /**
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.72 2009-01-19 16:52:32 stephena Exp $
+  @version $Id: Console.hxx,v 1.73 2009-01-24 18:11:47 stephena Exp $
 */
 class Console : public Serializable
 {

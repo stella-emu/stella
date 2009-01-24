@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.136 2009-01-24 17:32:29 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.137 2009-01-24 18:11:47 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -222,10 +222,10 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   if(!inUIMode)
   {
     // Aspect ratio (depends on whether NTSC or PAL is detected)
-    int aspect = myOSystem->settings().getInt(
-      myOSystem->console().getFramerate() > 55.0 ? "gl_aspectn" : "gl_aspectp");
-    if(aspect != 100)
-      mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
+    const string& frate = myOSystem->console().about().InitialFrameRate;
+    int aspect =
+      myOSystem->settings().getInt(frate == "60" ? "gl_aspectn" : "gl_aspectp");
+    mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
 
     // Fullscreen mode stretching
     if(fullScreen() && myOSystem->settings().getBool("gl_fsmax") &&
