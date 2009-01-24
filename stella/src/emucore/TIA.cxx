@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.102 2009-01-19 16:57:54 stephena Exp $
+// $Id: TIA.cxx,v 1.103 2009-01-24 18:17:34 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -40,10 +40,10 @@
 #define HBLANK 68
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIA::TIA(Console& console, Settings& settings)
+TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
+    mySound(sound),
     mySettings(settings),
-    mySound(NULL),
     myMaximumNumberOfScanlines(262),
     myCOLUBK(myColor[0]),
     myCOLUPF(myColor[1]),
@@ -117,7 +117,7 @@ TIA::~TIA()
 void TIA::reset()
 {
   // Reset the sound device
-  mySound->reset();
+  mySound.reset();
 
   // Currently no objects are enabled
   myEnabledObjects = 0;
@@ -228,7 +228,7 @@ void TIA::systemCyclesReset()
   uInt32 cycles = mySystem->cycles();
 
   // Adjust the sound cycle indicator
-  mySound->adjustCycleCounter(-1 * cycles);
+  mySound.adjustCycleCounter(-1 * cycles);
 
   // Adjust the dump cycle
   myDumpDisabledCycle -= cycles;
@@ -357,7 +357,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myDumpDisabledCycle);
 
     // Save the sound sample stuff ...
-    mySound->save(out);
+    mySound.save(out);
   }
   catch(char *msg)
   {
@@ -454,7 +454,7 @@ bool TIA::load(Deserializer& in)
     myDumpDisabledCycle = (Int32) in.getInt();
 
     // Load the sound sample stuff ...
-    mySound->load(in);
+    mySound.load(in);
 
     // Reset TIA bits to be on
     enableBits(true);
@@ -669,12 +669,6 @@ void TIA::updateScanlineByTrace(int target)
     endFrame();
 }
 #endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::setSound(Sound& sound)
-{
-  mySound = &sound;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
@@ -2032,42 +2026,42 @@ void TIA::poke(uInt16 addr, uInt8 value)
     case AUDC0:   // Audio control 0
     {
       myAUDC0 = value & 0x0f;
-      mySound->set(addr, value, mySystem->cycles());
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case AUDC1:   // Audio control 1
     {
       myAUDC1 = value & 0x0f;
-      mySound->set(addr, value, mySystem->cycles());
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case AUDF0:   // Audio frequency 0
     {
       myAUDF0 = value & 0x1f;
-      mySound->set(addr, value, mySystem->cycles());
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case AUDF1:   // Audio frequency 1
     {
       myAUDF1 = value & 0x1f;
-      mySound->set(addr, value, mySystem->cycles());
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case AUDV0:   // Audio volume 0
     {
       myAUDV0 = value & 0x0f;
-      mySound->set(addr, value, mySystem->cycles());
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
   
     case AUDV1:   // Audio volume 1
     {
       myAUDV1 = value & 0x0f;
-      mySound->set(addr, value, mySystem->cycles());
+      mySound.set(addr, value, mySystem->cycles());
       break;
     }
 
@@ -2400,8 +2394,8 @@ void TIA::poke(uInt16 addr, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(const TIA& c)
   : myConsole(c.myConsole),
-    mySettings(c.mySettings),
     mySound(c.mySound),
+    mySettings(c.mySettings),
     myCOLUBK(myColor[0]),
     myCOLUPF(myColor[1]),
     myCOLUP0(myColor[2]),

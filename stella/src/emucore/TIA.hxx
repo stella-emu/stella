@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.51 2009-01-19 16:52:32 stephena Exp $
+// $Id: TIA.hxx,v 1.52 2009-01-24 18:17:34 stephena Exp $
 //============================================================================
 
 #ifndef TIA_HXX
@@ -39,7 +39,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.51 2009-01-19 16:52:32 stephena Exp $
+  @version $Id: TIA.hxx,v 1.52 2009-01-24 18:17:34 stephena Exp $
 */
 class TIA : public Device
 {
@@ -50,9 +50,10 @@ class TIA : public Device
       Create a new TIA for the specified console
 
       @param console  The console the TIA is associated with
+      @param sound    The sound object the TIA is associated with
       @param settings The settings object for this TIA device
     */
-    TIA(Console& console, Settings& settings);
+    TIA(Console& console, Sound& sound, Settings& settings);
  
     /**
       Destructor
@@ -187,11 +188,6 @@ class TIA : public Device
     inline uInt32 scanlines() const
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
-    /**
-      Sets the sound device for the TIA.
-    */
-    void setSound(Sound& sound);
-
     enum TIABit {
       P0,   // Descriptor for Player 0 Bit
       P1,   // Descriptor for Player 1 Bit
@@ -272,11 +268,11 @@ class TIA : public Device
     // Console the TIA is associated with
     Console& myConsole;
 
+    // Sound object the TIA is associated with
+    Sound& mySound;
+
     // Settings object the TIA is associated with
     Settings& mySettings;
-
-    // Sound object the TIA is associated with
-    Sound* mySound;
 
     // Pointer to the current frame buffer
     uInt8* myCurrentFrameBuffer;

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.155 2009-01-24 18:11:47 stephena Exp $
+// $Id: Console.cxx,v 1.156 2009-01-24 18:17:34 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -108,8 +108,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   myCart = cart;
   myRiot = new M6532(*this);
-  myTIA  = new TIA(*this, myOSystem->settings());
-  myTIA->setSound(myOSystem->sound());
+  myTIA  = new TIA(*this, myOSystem->sound(), myOSystem->settings());
 
   mySystem->attach(m6502);
   mySystem->attach(myRiot);
