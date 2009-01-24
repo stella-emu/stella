@@ -46,6 +46,7 @@
   * Added '-gl_aspectn' and '-gl_aspectp' commandline arguments (and
     associated UI items), which replace the previous '-gl_aspect' setting.
     The aspect modes can now be set separately for NTSC and PAL mode.
+    Related to this, the range of values is now 80 - 120.
 
   * Fixed bug with hold-select/reset/button0 when overriding ROM properties;
     the checkboxes in the UI weren't actually doing anything.
