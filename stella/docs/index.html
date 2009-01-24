@@ -607,11 +607,12 @@
 		</tr>
 
 		<tr>
-			<td><pre>-gl_aspect &lt;number&gt;</pre></td>
+			<td><pre>-gl_aspectn &lt;number&gt;<br>-gl_aspectp &lt;number&gt;</pre></td>
 			<td>OpenGL mode only. Specify the amount (as a percentage) to scale the
-				image width. Since many video modes do not use square pixels, you can
-				reduce width until the pixels appear square.  Allowable values are
-				80 - 120; I find 85 - 90 gives the most authentic look.</td>
+				TIA image width in NTSC and PAL mode. Since many video modes do not
+				use square pixels, you can reduce width until the pixels appear square.
+				Allowable values are 80 - 120; I find 85 - 90 gives the most authentic
+				look for NTSC, and 105 - 110 for PAL.</td>
 		</tr>
 
 		<tr>
@@ -1065,12 +1066,14 @@
 					<tr><td>FS Res</td><td>resolution for fullscreen mode</td><td>-fullres</td></tr>
 					<tr><td>Timing (*)</td><td>how to wait between frames (requires restart)</td><td>-timing</td></tr>
 					<tr><td>GL Filter</td><td>OpenGL filter mode</td><td>-gl_filter</td></tr>
-					<tr><td>GL Aspect</td><td>OpenGL width of window</td><td>-gl_aspect</td></tr>
+					<tr><td>GL Aspect (N)</td><td>OpenGL width of TIA image in NTSC mode</td><td>-gl_aspectn</td></tr>
+					<tr><td>GL Aspect (P)</td><td>OpenGL width of TIA image in PAL mode</td><td>-gl_aspectp</td></tr>
 					<tr><td>Framerate</td><td>frames per second in emulation mode</td><td>-framerate</td></tr>
 					<tr><td>Fullscreen mode</td><td>self-explanatory</td><td>-fullscreen</td></tr>
 					<tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
 					<tr><td>GL FS Stretch</td><td>stretch fullscreen OpenGL in emulation mode</td><td>-gl_fsmax</td></tr>
 					<tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
+					<tr><td>Grab mouse</td><td>keep mouse in SDL window</td><td>-grabmouse</td></tr>
 					<tr><td>Center window (*)</td><td>attempt to center SDL window (requires restart)</td><td>-center</td></tr>
 				</table>
 			</td>

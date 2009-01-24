@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.hxx,v 1.29 2009-01-06 23:02:18 stephena Exp $
+// $Id: VideoDialog.hxx,v 1.30 2009-01-24 17:32:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -56,8 +56,10 @@ class VideoDialog : public Dialog
     PopUpWidget*      myFSResPopup;
     PopUpWidget*      myFrameTimingPopup;
     PopUpWidget*      myGLFilterPopup;
-    SliderWidget*     myAspectRatioSlider;
-    StaticTextWidget* myAspectRatioLabel;
+    SliderWidget*     myNAspectRatioSlider;
+    StaticTextWidget* myNAspectRatioLabel;
+    SliderWidget*     myPAspectRatioSlider;
+    StaticTextWidget* myPAspectRatioLabel;
 
     SliderWidget*     myFrameRateSlider;
     StaticTextWidget* myFrameRateLabel;
@@ -66,11 +68,13 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myGLStretchCheckbox;
     CheckboxWidget*   myUseVSyncCheckbox;
     CheckboxWidget*   myCenterCheckbox;
+    CheckboxWidget*   myGrabmouseCheckbox;
 
     enum {
-      kAspectRatioChanged = 'VDar',
-      kFrameRateChanged   = 'VDfr',
-      kFullScrChanged     = 'VDfs'
+      kNAspectRatioChanged = 'VDan',
+      kPAspectRatioChanged = 'VDap',
+      kFrameRateChanged    = 'VDfr',
+      kFullScrChanged      = 'VDfs'
     };
 };
 

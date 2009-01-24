@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: VideoDialog.cxx,v 1.65 2009-01-22 00:49:32 stephena Exp $
+// $Id: VideoDialog.cxx,v 1.66 2009-01-24 17:32:29 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -47,15 +47,15 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Dirty Rects: "),
+  int lwidth = font.getStringWidth("GL Aspect (P): "),
       pwidth = font.getStringWidth("1920x1200"),
       fwidth = font.getStringWidth("Renderer: ");
   WidgetArray wid;
   StringMap items;
 
   // Set real dimensions
-  _w = 46 * fontWidth + 10;
-  _h = 12 * (lineHeight + 4) + 10;
+  _w = 48 * fontWidth + 10;
+  _h = 13 * (lineHeight + 4) + 10;
 
   xpos = 5;  ypos = 10;
 
@@ -122,16 +122,28 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myGLFilterPopup);
   ypos += lineHeight + 4;
 
-  // GL aspect ratio
-  myAspectRatioSlider =
+  // GL aspect ratio (NTSC mode)
+  myNAspectRatioSlider =
     new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
-                     "GL Aspect: ", lwidth, kAspectRatioChanged);
-  myAspectRatioSlider->setMinValue(80); myAspectRatioSlider->setMaxValue(120);
-  wid.push_back(myAspectRatioSlider);
-  myAspectRatioLabel =
-    new StaticTextWidget(this, font, xpos + myAspectRatioSlider->getWidth() + 4,
+                     "GL Aspect (N): ", lwidth, kNAspectRatioChanged);
+  myNAspectRatioSlider->setMinValue(80); myNAspectRatioSlider->setMaxValue(120);
+  wid.push_back(myNAspectRatioSlider);
+  myNAspectRatioLabel =
+    new StaticTextWidget(this, font, xpos + myNAspectRatioSlider->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
-  myAspectRatioLabel->setFlags(WIDGET_CLEARBG);
+  myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
+  // GL aspect ratio (PAL mode)
+  myPAspectRatioSlider =
+    new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+                     "GL Aspect (P): ", lwidth, kPAspectRatioChanged);
+  myPAspectRatioSlider->setMinValue(80); myPAspectRatioSlider->setMaxValue(120);
+  wid.push_back(myPAspectRatioSlider);
+  myPAspectRatioLabel =
+    new StaticTextWidget(this, font, xpos + myPAspectRatioSlider->getWidth() + 4,
+                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
+  myPAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // Framerate
@@ -146,7 +158,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Move over to the next column
-  xpos += myAspectRatioSlider->getWidth() + myAspectRatioLabel->getWidth();
+  xpos += myNAspectRatioSlider->getWidth() + myNAspectRatioLabel->getWidth();
   ypos = 10;
 
   // Fullscreen
@@ -173,6 +185,12 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myUseVSyncCheckbox);
   ypos += lineHeight + 4;
 
+  // Grab mouse (in windowed mode)
+  myGrabmouseCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+                                           "Grab mouse");
+  wid.push_back(myGrabmouseCheckbox);
+  ypos += lineHeight + 4;
+
   // Center window (in windowed mode)
   myCenterCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                         "Center window (*)");
@@ -197,13 +215,16 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Disable certain functions when we know they aren't present
 #ifndef DISPLAY_GL
   myGLFilterPopup->clearFlags(WIDGET_ENABLED);
-  myAspectRatioSlider->clearFlags(WIDGET_ENABLED);
-  myAspectRatioLabel->clearFlags(WIDGET_ENABLED);
+  myNAspectRatioSlider->clearFlags(WIDGET_ENABLED);
+  myNAspectRatioLabel->clearFlags(WIDGET_ENABLED);
+  myPAspectRatioSlider->clearFlags(WIDGET_ENABLED);
+  myPAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
+  myGrabmouseCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 }
@@ -249,11 +270,15 @@ void VideoDialog::loadConfig()
     instance().settings().getString("gl_filter"), "nearest");
   myGLFilterPopup->setEnabled(gl);
 
-  // GL aspect ratio setting
-  myAspectRatioSlider->setValue(instance().settings().getInt("gl_aspect"));
-  myAspectRatioSlider->setEnabled(gl);
-  myAspectRatioLabel->setLabel(instance().settings().getString("gl_aspect"));
-  myAspectRatioLabel->setEnabled(gl);
+  // GL aspect ratio setting (NTSC and PAL)
+  myNAspectRatioSlider->setValue(instance().settings().getInt("gl_aspectn"));
+  myNAspectRatioSlider->setEnabled(gl);
+  myNAspectRatioLabel->setLabel(instance().settings().getString("gl_aspectn"));
+  myNAspectRatioLabel->setEnabled(gl);
+  myPAspectRatioSlider->setValue(instance().settings().getInt("gl_aspectp"));
+  myPAspectRatioSlider->setEnabled(gl);
+  myPAspectRatioLabel->setLabel(instance().settings().getString("gl_aspectp"));
+  myPAspectRatioLabel->setEnabled(gl);
 
   // Framerate (0 or -1 means disabled)
   int rate = instance().settings().getInt("framerate");
@@ -275,6 +300,9 @@ void VideoDialog::loadConfig()
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
   myUseVSyncCheckbox->setEnabled(gl);
+
+  // Grab mouse
+  myGrabmouseCheckbox->setState(instance().settings().getBool("grabmouse"));
 
   // Center window
   myCenterCheckbox->setState(instance().settings().getBool("center"));
@@ -301,8 +329,9 @@ void VideoDialog::saveConfig()
   // GL Filter setting
   instance().settings().setString("gl_filter", myGLFilterPopup->getSelectedTag());
 
-  // GL aspect ratio setting
-  instance().settings().setString("gl_aspect", myAspectRatioLabel->getLabel());
+  // GL aspect ratio setting (NTSC and PAL)
+  instance().settings().setString("gl_aspectn", myNAspectRatioLabel->getLabel());
+  instance().settings().setString("gl_aspectp", myPAspectRatioLabel->getLabel());
 
   // Framerate
   int i = myFrameRateSlider->getValue();
@@ -326,6 +355,10 @@ void VideoDialog::saveConfig()
   // Use sync to vertical blank (GL mode only)
   instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
 
+  // Grab mouse
+  instance().settings().setBool("grabmouse", myGrabmouseCheckbox->getState());
+  instance().frameBuffer().setCursorState();
+
   // Center window
   instance().settings().setBool("center", myCenterCheckbox->getState());
 
@@ -343,8 +376,10 @@ void VideoDialog::setDefaults()
   myFSResPopup->setSelected("auto", "");
   myFrameTimingPopup->setSelected("sleep", "");
   myGLFilterPopup->setSelected("nearest", "");
-  myAspectRatioSlider->setValue(100);
-  myAspectRatioLabel->setLabel("100");
+  myNAspectRatioSlider->setValue(100);
+  myNAspectRatioLabel->setLabel("100");
+  myPAspectRatioSlider->setValue(100);
+  myPAspectRatioLabel->setLabel("100");
   myFrameRateSlider->setValue(0);
   myFrameRateLabel->setLabel("0");
 
@@ -352,6 +387,7 @@ void VideoDialog::setDefaults()
   myColorLossCheckbox->setState(false);
   myGLStretchCheckbox->setState(false);
   myUseVSyncCheckbox->setState(true);
+  myGrabmouseCheckbox->setState(false);
   myCenterCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
@@ -387,8 +423,12 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kAspectRatioChanged:
-      myAspectRatioLabel->setValue(myAspectRatioSlider->getValue());
+    case kNAspectRatioChanged:
+      myNAspectRatioLabel->setValue(myNAspectRatioSlider->getValue());
+      break;
+
+    case kPAspectRatioChanged:
+      myPAspectRatioLabel->setValue(myPAspectRatioSlider->getValue());
       break;
 
     case kFrameRateChanged:

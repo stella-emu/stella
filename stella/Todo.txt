@@ -36,6 +36,8 @@ Stephen Anthony at stephena@users.sourceforge.net.
          directory named that way.  Basically the same as is currently
          done for ROMs.
 
+     (2) Add popup text widget to dynamically select the entries shown.
+
   * More support for copy and paste.
 
   * Fix PropSet to properly delete entries when 'Default' is pressed in

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.135 2009-01-22 00:49:32 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.136 2009-01-24 17:32:29 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -221,8 +221,9 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   // Aspect ratio and fullscreen stretching only applies to the TIA
   if(!inUIMode)
   {
-    // Aspect ratio
-    int aspect = myOSystem->settings().getInt("gl_aspect");
+    // Aspect ratio (depends on whether NTSC or PAL is detected)
+    int aspect = myOSystem->settings().getInt(
+      myOSystem->console().getFramerate() > 55.0 ? "gl_aspectn" : "gl_aspectp");
     if(aspect != 100)
       mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
 

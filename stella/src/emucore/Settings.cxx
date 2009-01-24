@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.162 2009-01-22 00:49:32 stephena Exp $
+// $Id: Settings.cxx,v 1.163 2009-01-24 17:32:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -40,7 +40,8 @@ Settings::Settings(OSystem* osystem)
 
   // OpenGL specific options
   setInternal("gl_filter", "nearest");
-  setInternal("gl_aspect", "100");
+  setInternal("gl_aspectn", "100");
+  setInternal("gl_aspectp", "100");
   setInternal("gl_fsmax", "false");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
@@ -228,9 +229,13 @@ void Settings::validate()
   if(s != "linear" && s != "nearest")
     setInternal("gl_filter", "nearest");
 
-  i = getInt("gl_aspect");
+  i = getInt("gl_aspectn");
   if(i < 80 || i > 120)
-    setInternal("gl_aspect", "100");
+    setInternal("gl_aspectn", "100");
+
+  i = getInt("gl_aspectp");
+  if(i < 80 || i > 120)
+    setInternal("gl_aspectp", "100");
 #endif
 
 #ifdef SOUND_SUPPORT
@@ -294,7 +299,8 @@ void Settings::usage()
     << "  -gl_filter    <type>         Type is one of the following:\n"
     << "                 nearest         Normal scaling (GL_NEAREST)\n"
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
-    << "  -gl_aspect    <number>       Scale the width by the given percentage\n"
+    << "  -gl_aspectn   <number>       Scale the TIA width by the given percentage in NTSC mode\n"
+    << "  -gl_aspectp   <number>       Scale the TIA width by the given percentage in PAL mode\n"
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.153 2009-01-22 00:49:32 stephena Exp $
+// $Id: OSystem.cxx,v 1.154 2009-01-24 17:32:29 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -180,7 +180,8 @@ bool OSystem::create()
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
   // it may be needed to initialize the size of graphical objects
-  queryVideoHardware();
+  if(!queryVideoHardware())
+    return false;
 
   ////////////////////////////////////////////////////////////////////
   // Create fonts to draw text
@@ -490,6 +491,15 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     cerr << "ERROR: Couldn't create console for " << myRomFile << endl;
     retval = false;
   }
+
+  // Also check if certain virtual buttons should be held down
+  // These must be checked each time a new console is being created
+  if(mySettings->getBool("holdreset"))
+    myEventHandler->handleEvent(Event::ConsoleReset, 1);
+  if(mySettings->getBool("holdselect"))
+    myEventHandler->handleEvent(Event::ConsoleSelect, 1);
+  if(mySettings->getBool("holdbutton0"))
+    myEventHandler->handleEvent(Event::JoystickZeroFire1, 1);
 
   return retval;
 }
@@ -852,12 +862,12 @@ void OSystem::mainLoop()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::queryVideoHardware()
+bool OSystem::queryVideoHardware()
 {
   // Go ahead and open the video hardware; we're going to need it eventually
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
-      return;
+      return false;
 
   // First get the maximum windowed desktop resolution
   const SDL_VideoInfo* info = SDL_GetVideoInfo();
@@ -893,6 +903,8 @@ void OSystem::queryVideoHardware()
       myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
     }
   }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
