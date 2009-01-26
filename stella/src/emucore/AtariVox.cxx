@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.21 2009-01-01 18:13:35 stephena Exp $
+// $Id: AtariVox.cxx,v 1.22 2009-01-26 21:08:05 stephena Exp $
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -30,14 +30,14 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
                    const SerialPort& port, const string& portname,
                    const string& eepromfile)
   : Controller(jack, event, system, Controller::AtariVox),
-    mySerialPort((SerialPort*)&port),
+    mySerialPort((SerialPort&)port),
     myEEPROM(NULL),
     myShiftCount(0),
     myShiftRegister(0),
     myLastDataWriteCycle(0)
 {
 #ifndef SPEAKJET_EMULATION
-  if(mySerialPort->openPort(portname))
+  if(mySerialPort.openPort(portname))
     myAboutString = " (using serial port \'" + portname + "\')";
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
@@ -58,7 +58,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 AtariVox::~AtariVox()
 {
 #ifndef SPEAKJET_EMULATION
-  mySerialPort->closePort();
+  mySerialPort.closePort();
 #else
   delete mySpeakJet;
 #endif
@@ -159,7 +159,7 @@ void AtariVox::clockDataIn(bool value)
       {
         uInt8 data = ((myShiftRegister >> 1) & 0xff);
     #ifndef SPEAKJET_EMULATION
-        mySerialPort->writeByte(&data);
+        mySerialPort.writeByte(&data);
     #else
         mySpeakJet->write(data);
     #endif

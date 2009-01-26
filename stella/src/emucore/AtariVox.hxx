@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+// $Id: AtariVox.hxx,v 1.16 2009-01-26 21:08:05 stephena Exp $
 //============================================================================
 
 #ifndef ATARIVOX_HXX
@@ -33,7 +33,7 @@ class MT24LC256;
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+  @version $Id: AtariVox.hxx,v 1.16 2009-01-26 21:08:05 stephena Exp $
 */
 class AtariVox : public Controller
 {
@@ -100,15 +100,10 @@ class AtariVox : public Controller
    void shiftIn(bool value);
 
   private:
-    // How far off (in CPU cycles) can each write occur from when it's
-    // supposed to happen? Eventually, this will become a user-settable
-    // property... or it may turn out to be unnecessary.
-    enum { TIMING_SLOP = 0 };
-
     // Instance of an real serial port on the system
     // Assuming there's a real AtariVox attached, we can send SpeakJet
     // bytes directly to it
-    SerialPort* mySerialPort;
+    SerialPort& mySerialPort;
 
     // The EEPROM used in the AtariVox
     MT24LC256* myEEPROM;
