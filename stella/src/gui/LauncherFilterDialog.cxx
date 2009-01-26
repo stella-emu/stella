@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: LauncherFilterDialog.cxx,v 1.2 2009-01-20 18:01:56 stephena Exp $
+// $Id: LauncherFilterDialog.cxx,v 1.3 2009-01-26 21:16:06 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -148,11 +148,16 @@ bool LauncherFilterDialog::isValidRomName(const string& name, string& ext)
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {
-    const char* ext = name.c_str() + idx + 1;
+    const char* e = name.c_str() + idx + 1;
 
     for(uInt32 i = 0; i < 5; ++i)
-      if(BSPF_strcasecmp(ext, ourRomTypes[1][i]) == 0)
+    {
+      if(BSPF_strcasecmp(e, ourRomTypes[1][i]) == 0)
+      {
+        ext = e;
         return true;
+      }
+    }
   }
   return false;
 }

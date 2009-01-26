@@ -12,6 +12,14 @@
                                Release History
 ===============================================================================
 
+2.7.1 to 2.7.2: (Jan. 27, 2009)
+
+  * Fixed major bug in ROM Audit functionality; renaming ROMs would create
+    files without an extension.
+
+-Have fun!
+
+
 2.7 to 2.7.1: (Jan. 26, 2009)
 
   * Partial workaround for sound not working in OpenGL video mode in
@@ -57,8 +65,6 @@
   * Removed 'Emulation_HmoveBlanks' ROM property and associated UI item.
     You can no longer optionally turn off HMOVE blanking; it is always
     enabled when necessary.
-
--Have fun!
 
 
 2.6.1 to 2.7: (Jan. 19, 2009)
