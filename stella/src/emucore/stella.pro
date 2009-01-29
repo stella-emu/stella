@@ -1955,6 +1955,8 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Cosmic Swarm (Jone Yuan) (4K)"
 "Cartridge.Note" "2600 Screen Search Console"
+"Display.YStart" "30"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "1b8d35d93697450ea26ebf7ff17bd4d1"
@@ -6664,7 +6666,8 @@
 "Cartridge.Manufacturer" "Atari, Larry Kaplan"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Air-Sea Battle (32 in 1) (1988) (Atari) (PAL) (4K)"
-"Display.YStart" "41"
+"Display.YStart" "40"
+"Display.Height" "256"
 ""
 
 "Cartridge.MD5" "606c2c1753051e03c1f1ac096c9d2832"
@@ -7246,6 +7249,7 @@
 "Cartridge.MD5" "681206a6bde73e71c19743607e96c4bb"
 "Cartridge.Name" "Casino (Unknown) (PAL)"
 "Controller.Left" "PADDLES"
+"Display.YStart" "49"
 ""
 
 "Cartridge.MD5" "68449e4aaba677abcd7cde4264e02168"
@@ -7910,6 +7914,7 @@
 "Cartridge.Note" "Uses Keypad Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
+"Display.YStart" "57"
 ""
 
 "Cartridge.MD5" "72bda70c75dfa2365b3f8894bace9e6a"
@@ -9297,6 +9302,7 @@
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX2618, CX2618P"
 "Cartridge.Name" "3-D Tic-Tac-Toe (1980) (Atari) (PAL) (4K)"
+"Display.YStart" "44"
 ""
 
 "Cartridge.MD5" "85502d69fe46b7f54ef2598225678b47"
@@ -10738,6 +10744,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
 "Cartridge.Name" "Dragster (1980) (Activision) (8K)"
+"Display.YStart" "27"
 ""
 
 "Cartridge.MD5" "9d37a1be4a6e898026414b8fee2fc826"
@@ -14087,6 +14094,7 @@
 "Cartridge.Manufacturer" "UA Limited"
 "Cartridge.Name" "Cat Trax (1983) (UA Limited) (Prototype) [a]"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "30"
 "Display.Phosphor" "YES"
 ""
 
@@ -14554,6 +14562,7 @@
 "Cartridge.Name" "Blackjack (32 in 1) (1988) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Display.YStart" "63"
 ""
 
 "Cartridge.MD5" "d73ad614f1c2357997c88f37e75b18fe"
@@ -15463,6 +15472,7 @@
 
 "Cartridge.MD5" "e5fcc62e1d73706be7b895e887e90f84"
 "Cartridge.Name" "Air-Sea Battle (Unknown) (PAL) (4K)"
+"Display.YStart" "40"
 "Display.Height" "260"
 ""
 
