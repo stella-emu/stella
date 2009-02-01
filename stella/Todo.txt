@@ -31,6 +31,9 @@ Stephen Anthony at stephena@users.sourceforge.net.
     bigger than 4K.  Shouldn't make a difference for all 'well-designed' ROMS,
     but will pick up on errors when a ROM doesn't start from every bank.
 
+  * Make font size be selectable for the stats info area (in TIA) and
+    in-game UI.
+
   * More work to the ROM launcher, including at least the following:
      (1) Shortcut key where selecting the first few letters jumps to a
          directory named that way.  Basically the same as is currently
@@ -38,6 +41,9 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
      (2) Fix aliases not being followed correctly in the OSX port
          (although I suspect this isn't just an OSX issue).
+
+     (3) Add 'simpleUI/kiosk' mode to RMB context menu, which disables
+         all but the most basic functionality.
 
   * More support for copy and paste.
 
