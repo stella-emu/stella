@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.163 2009-01-20 21:01:28 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.164 2009-02-01 22:17:09 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -133,8 +133,8 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kBtnTextColor;
-  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 21;
-  myStatsMsg.h = (myOSystem->consoleFont().getFontHeight() + 2) * 3;
+  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 23 + 2;
+  myStatsMsg.h = (myOSystem->consoleFont().getFontHeight() + 2) * 2;
 
  if(myStatsMsg.surface == NULL)
   {
@@ -183,18 +183,16 @@ void FrameBuffer::update()
       {
         const ConsoleInfo& info = myOSystem->console().about();
         char msg[30];
-        sprintf(msg, "%u LINES  %2.2f FPS",
+        sprintf(msg, "%u @ %2.2ffps => %s",
                 myOSystem->console().tia().scanlines(),
-                myOSystem->console().getFramerate());
+                myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
         myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
           msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
-          info.DisplayFormat, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
-          info.BankSwitch, 1, 30, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
+          info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
-        myStatsMsg.surface->setPos(myImageRect.x() + 3, myImageRect.y() + 3);
+        myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
         myStatsMsg.surface->update();
       }
       break;  // S_EMULATE

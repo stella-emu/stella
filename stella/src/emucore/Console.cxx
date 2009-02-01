@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.156 2009-01-24 18:17:34 stephena Exp $
+// $Id: Console.cxx,v 1.157 2009-02-01 22:17:09 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -115,10 +115,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   mySystem->attach(myTIA);
   mySystem->attach(myCart);
 
-  // Query some info about this console
-  ostringstream about, vidinfo;
-
   // Auto-detect NTSC/PAL mode if it's requested
+  string autodetected = "";
   myDisplayFormat = myProperties.get(Display_Format);
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
@@ -138,9 +136,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     }
     myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
-      myConsoleInfo.DisplayFormat = "AUTO => ";
+      autodetected = "*";
   }
-  myConsoleInfo.DisplayFormat += myDisplayFormat;
+  myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 
   // Set up the correct properties used when toggling format
   // Note that this can be overridden if a format is forced
