@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.94 2009-01-19 16:52:32 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.95 2009-02-05 23:22:54 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -210,15 +210,25 @@ void FrameBufferSoft::drawTIA(bool fullRedraw)
 
             if(v != w || fullRedraw)
             {
+              uInt8 a, b, c;
               uInt32 pixel = myDefPalette[v];
-              uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
-              uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
-              uInt8 b = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+              if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
+              {
+                a = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+                b = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+                c = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+              }
+              else
+              {
+                a = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+                b = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+                c = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+              }
 
               while(xstride--)
               {
-                buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
-                buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+                buffer[pos++] = a;  buffer[pos++] = b;  buffer[pos++] = c;
+                buffer[pos++] = a;  buffer[pos++] = b;  buffer[pos++] = c;
               }
               myTiaDirty = true;
             }
@@ -327,15 +337,25 @@ void FrameBufferSoft::drawTIA(bool fullRedraw)
 
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
-            uInt32 pixel = myAvgPalette[v][w];
-            uInt8 r = (pixel & myFormat->Rmask) >> myFormat->Rshift;
-            uInt8 g = (pixel & myFormat->Gmask) >> myFormat->Gshift;
-            uInt8 b = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+            uInt8 a, b, c;
+			uInt32 pixel = myAvgPalette[v][w];
+            if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
+            {
+              a = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+              b = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+              c = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+            }
+            else
+            {
+              a = (pixel & myFormat->Rmask) >> myFormat->Rshift;
+              b = (pixel & myFormat->Gmask) >> myFormat->Gshift;
+              c = (pixel & myFormat->Bmask) >> myFormat->Bshift;
+            }
 
             while(xstride--)
             {
-              buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
-              buffer[pos++] = r;  buffer[pos++] = g;  buffer[pos++] = b;
+              buffer[pos++] = a;  buffer[pos++] = b;  buffer[pos++] = c;
+              buffer[pos++] = a;  buffer[pos++] = b;  buffer[pos++] = c;
             }
           }
           screenofsY += myPitch;
@@ -509,7 +529,6 @@ FBSurfaceSoft::FBSurfaceSoft(const FrameBufferSoft& buffer, SDL_Surface* surface
     myHeight(h),
     myIsBaseSurface(isBase),
     mySurfaceIsDirty(false),
-    myBaseOffset(0),
     myPitch(0),
     myXOrig(0),
     myYOrig(0),
@@ -599,9 +618,7 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     case 2:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt16* buffer = (uInt16*) mySurface->pixels + myBaseOffset +
-                       (ty + desc.ascent - bby - bbh) * myPitch +
-                       tx + bbx;
+      uInt16* buffer = (uInt16*)getBasePtr(tx + bbx, ty + desc.ascent - bby - bbh);
 
       for(int y = 0; y < bbh; y++)
       {
@@ -616,54 +633,57 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
       }
       break;
     }
-    case 3: // TODO - check if this actually works; I don't have access to a 24-bit video card
+    case 3:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt8* buffer = (uInt8*) mySurface->pixels + myBaseOffset +
-                      (ty + desc.ascent - bby - bbh) * myPitch +
-                      tx + bbx;
+      uInt8* buffer = (uInt8*)getBasePtr(tx + bbx, ty + desc.ascent - bby - bbh);
 
+      uInt8 a, b, c;
       uInt32 pixel =  myFB.myDefPalette[color];
-      uInt8 r = (pixel & myFB.myFormat->Rmask) >> myFB.myFormat->Rshift;
-      uInt8 g = (pixel & myFB.myFormat->Gmask) >> myFB.myFormat->Gshift;
-      uInt8 b = (pixel & myFB.myFormat->Bmask) >> myFB.myFormat->Bshift;
-
-      for(int y = 0; y < bbh; y++)
+      if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
       {
-        const uInt32 ptr = *tmp++;
-        uInt32 mask = 0x8000;
+        a = (pixel & myFB.myFormat->Bmask) >> myFB.myFormat->Bshift;
+        b = (pixel & myFB.myFormat->Gmask) >> myFB.myFormat->Gshift;
+        c = (pixel & myFB.myFormat->Rmask) >> myFB.myFormat->Rshift;
+      }
+      else
+      {
+        a = (pixel & myFB.myFormat->Rmask) >> myFB.myFormat->Rshift;
+        b = (pixel & myFB.myFormat->Gmask) >> myFB.myFormat->Gshift;
+        c = (pixel & myFB.myFormat->Bmask) >> myFB.myFormat->Bshift;
+      }
+
+      for(int y = 0; y < bbh; y++, buffer += myPitch)
+      {
+        const uInt16 ptr = *tmp++;
+        uInt16 mask = 0x8000;
 
         uInt8* buf_ptr = buffer;
         for(int x = 0; x < bbw; x++, mask >>= 1)
-        {
+		{
           if(ptr & mask)
-          {
-             *buf_ptr++ = r;  *buf_ptr++ = g;  *buf_ptr++ = b;
+		  {
+             *buf_ptr++ = a;  *buf_ptr++ = b;  *buf_ptr++ = c;
           }
           else
             buf_ptr += 3;
-        }
-        buffer += myPitch;
+		}
       }
       break;
     }
     case 4:
     {
       // Get buffer position where upper-left pixel of the character will be drawn
-      uInt32* buffer = (uInt32*) mySurface->pixels + myBaseOffset +
-                       (ty + desc.ascent - bby - bbh) * myPitch +
-                       tx + bbx;
+      uInt32* buffer = (uInt32*)getBasePtr(tx + bbx, ty + desc.ascent - bby - bbh);
 
-      for(int y = 0; y < bbh; y++)
+      for(int y = 0; y < bbh; y++, buffer += myPitch)
       {
-        const uInt32 ptr = *tmp++;
-        uInt32 mask = 0x8000;
+        const uInt16 ptr = *tmp++;
+        uInt16 mask = 0x8000;
  
         for(int x = 0; x < bbw; x++, mask >>= 1)
           if(ptr & mask)
             buffer[x] = (uInt32) myFB.myDefPalette[color];
-
-        buffer += myPitch;
       }
       break;
     }
@@ -773,22 +793,17 @@ void FBSurfaceSoft::getPos(uInt32& x, uInt32& y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSoft::setPos(uInt32 x, uInt32 y)
 {
-  // Make sure pitch is valid
-  recalc();
-
   myXOrig = x;
   myYOrig = y;
 
   if(myIsBaseSurface)
   {
-    const GUI::Rect& image = myFB.imageRect();
-    myXOffset = image.x();
-    myYOffset = image.y();
-    myBaseOffset = myYOffset * myPitch + myXOffset;
+    myXOffset = myFB.imageRect().x();
+    myYOffset = myFB.imageRect().y();
   }
   else
   {
-    myXOffset = myYOffset = myBaseOffset = 0;
+    myXOffset = myYOffset = 0;
   }
 }
 
@@ -841,13 +856,13 @@ void FBSurfaceSoft::recalc()
   switch(mySurface->format->BytesPerPixel)
   {
     case 2:  // 16-bit
-      myPitch = mySurface->pitch/2;
+      myPitch = mySurface->pitch >> 1;
       break;
     case 3:  // 24-bit
       myPitch = mySurface->pitch;
       break;
     case 4:  // 32-bit
-      myPitch = mySurface->pitch/4;
+      myPitch = mySurface->pitch >> 2;
       break;
   }
 }
