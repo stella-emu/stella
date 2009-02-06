@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.164 2009-02-01 22:17:09 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.165 2009-02-06 23:53:34 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -510,7 +510,6 @@ uInt32 FrameBuffer::tiaPixel(uInt32 idx) const
   return (!myUsePhosphor ? myDefPalette[c] : myAvgPalette[c][p]);
 }
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setTIAPalette(const uInt32* palette)
 {
@@ -524,6 +523,18 @@ void FrameBuffer::setTIAPalette(const uInt32* palette)
     Uint8 b = palette[i] & 0xff;
 
     myDefPalette[i] = mapRGB(r, g, b);
+    if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
+    {
+      myDefPalette24[i][0] = b;
+      myDefPalette24[i][1] = g;
+      myDefPalette24[i][2] = r;
+    }
+    else
+    {
+      myDefPalette24[i][0] = r;
+      myDefPalette24[i][1] = g;
+      myDefPalette24[i][2] = b;
+    }
   }
 
   // Set palette for phosphor effect
@@ -553,12 +564,25 @@ void FrameBuffer::setTIAPalette(const uInt32* palette)
 void FrameBuffer::setUIPalette(const uInt32* palette)
 {
   // Set palette for GUI
-  for(int i = 0; i < kNumColors-256; ++i)
+  for(int i = 0, j = 256; i < kNumColors-256; ++i, ++j)
   {
     Uint8 r = (palette[i] >> 16) & 0xff;
     Uint8 g = (palette[i] >> 8) & 0xff;
     Uint8 b = palette[i] & 0xff;
-    myDefPalette[i+256] = mapRGB(r, g, b);
+
+    myDefPalette[j] = mapRGB(r, g, b);
+    if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
+    {
+      myDefPalette24[j][0] = b;
+      myDefPalette24[j][1] = g;
+      myDefPalette24[j][2] = r;
+    }
+    else
+    {
+      myDefPalette24[j][0] = r;
+      myDefPalette24[j][1] = g;
+      myDefPalette24[j][2] = b;
+    }
   }
 }
 
@@ -1078,7 +1102,7 @@ void FrameBuffer::VideoModeList::set(const GraphicsMode& gfxmode)
     }
   }
 
-  // Finally, just pick the lowes video mode
+  // Finally, just pick the lowest video mode
   myIdx = 0;
 }
 

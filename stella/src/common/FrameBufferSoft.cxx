@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.cxx,v 1.95 2009-02-05 23:22:54 stephena Exp $
+// $Id: FrameBufferSoft.cxx,v 1.96 2009-02-06 23:53:34 stephena Exp $
 //============================================================================
 
 #include <sstream>
@@ -210,20 +210,9 @@ void FrameBufferSoft::drawTIA(bool fullRedraw)
 
             if(v != w || fullRedraw)
             {
-              uInt8 a, b, c;
-              uInt32 pixel = myDefPalette[v];
-              if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
-              {
-                a = (pixel & myFormat->Bmask) >> myFormat->Bshift;
-                b = (pixel & myFormat->Gmask) >> myFormat->Gshift;
-                c = (pixel & myFormat->Rmask) >> myFormat->Rshift;
-              }
-              else
-              {
-                a = (pixel & myFormat->Rmask) >> myFormat->Rshift;
-                b = (pixel & myFormat->Gmask) >> myFormat->Gshift;
-                c = (pixel & myFormat->Bmask) >> myFormat->Bshift;
-              }
+              uInt8 a = myDefPalette24[v][0],
+                    b = myDefPalette24[v][1],
+                    c = myDefPalette24[v][2];
 
               while(xstride--)
               {
@@ -638,20 +627,9 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
       // Get buffer position where upper-left pixel of the character will be drawn
       uInt8* buffer = (uInt8*)getBasePtr(tx + bbx, ty + desc.ascent - bby - bbh);
 
-      uInt8 a, b, c;
-      uInt32 pixel =  myFB.myDefPalette[color];
-      if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
-      {
-        a = (pixel & myFB.myFormat->Bmask) >> myFB.myFormat->Bshift;
-        b = (pixel & myFB.myFormat->Gmask) >> myFB.myFormat->Gshift;
-        c = (pixel & myFB.myFormat->Rmask) >> myFB.myFormat->Rshift;
-      }
-      else
-      {
-        a = (pixel & myFB.myFormat->Rmask) >> myFB.myFormat->Rshift;
-        b = (pixel & myFB.myFormat->Gmask) >> myFB.myFormat->Gshift;
-        c = (pixel & myFB.myFormat->Bmask) >> myFB.myFormat->Bshift;
-      }
+      uInt8 a = myFB.myDefPalette24[color][0],
+            b = myFB.myDefPalette24[color][1],
+            c = myFB.myDefPalette24[color][2];
 
       for(int y = 0; y < bbh; y++, buffer += myPitch)
       {
