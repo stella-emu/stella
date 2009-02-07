@@ -12,12 +12,27 @@
                                Release History
 ===============================================================================
 
+2.7.2 to 2.7.3: (Feb. 9, 2009)
+
+  * Fixed rendering issues in software mode when using 24-bit colour depth.
+    This isn't as fast as 16 or 32-bit modes, so you're recommended to use
+    one of those whenever possible.
+
+  * For the Win32 port: re-added ability to change the default location
+    for storing Stella config files.  To use this, simply create a file
+    named 'basedir.txt' in the application directory containing the full
+    path where all Stella-related items should be stored.
+
+  * Tweaked the TIA info statistics overlay to be smaller while still
+    including all relevant information.
+
+-Have fun!
+
+
 2.7.1 to 2.7.2: (Jan. 27, 2009)
 
   * Fixed major bug in ROM Audit functionality; renaming ROMs would create
     files without an extension.
-
--Have fun!
 
 
 2.7 to 2.7.1: (Jan. 26, 2009)

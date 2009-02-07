@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.47 2009-01-06 23:02:18 stephena Exp $
+// $Id: Cart.cxx,v 1.48 2009-02-07 21:50:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -76,16 +76,17 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 
   // See if we should try to auto-detect the cartridge type
   // If we ask for extended info, always do an autodetect
+  string autodetect = "";
   if(type == "AUTO-DETECT" || settings.getBool("rominfo"))
   {
     string detected = autodetectType(image, size);
-    buf << "AUTO => ";
+    autodetect = "*";
     if(type != "AUTO-DETECT" && type != detected)
       cerr << "Auto-detection not consistent: " << type << ", " << detected << endl;
 
     type = detected;
   }
-  buf << type << " (" << (size/1024) << "K) ";
+  buf << type << autodetect << " (" << (size/1024) << "K) ";
   myAboutString = buf.str();
 
   // We should know the cart's type by now so let's create it

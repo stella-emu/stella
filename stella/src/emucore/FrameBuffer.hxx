@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.hxx,v 1.118 2009-02-06 23:53:34 stephena Exp $
+// $Id: FrameBuffer.hxx,v 1.119 2009-02-07 21:50:05 stephena Exp $
 //============================================================================
 
 #ifndef FRAMEBUFFER_HXX
@@ -91,7 +91,7 @@ enum {
   into FBSurfaces), are in turn drawn here as well.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.118 2009-02-06 23:53:34 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.119 2009-02-07 21:50:05 stephena Exp $
 */
 class FrameBuffer
 {
@@ -426,8 +426,9 @@ class FrameBuffer
     // TIA palettes for normal and phosphor modes
     // 'myDefPalette' also contains the UI palette
     // The '24' version of myDefPalette is used in 24-bit colour mode,
-    // eliminates having to deal with endian and shift issues
-    // Phosphor mode doesn't have a corresponding
+    // eliminating having to deal with endian and shift issues
+    // Phosphor mode doesn't have a corresponding '24' mode, since it
+    // would require a 192KB lookup table
     Uint32 myDefPalette[256+kNumColors];
     Uint32 myAvgPalette[256][256];
     Uint8 myDefPalette24[256+kNumColors][3];
@@ -567,7 +568,7 @@ class FrameBuffer
   FrameBuffer type.
 
   @author  Stephen Anthony
-  @version $Id: FrameBuffer.hxx,v 1.118 2009-02-06 23:53:34 stephena Exp $
+  @version $Id: FrameBuffer.hxx,v 1.119 2009-02-07 21:50:05 stephena Exp $
 */
 // Text alignment modes for drawString()
 enum TextAlignment {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIATables.cxx,v 1.1 2009-01-19 16:52:32 stephena Exp $
+// $Id: TIATables.cxx,v 1.2 2009-02-07 21:50:05 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -449,7 +449,7 @@ void TIATables::computePlayerPositionResetWhenTable()
         }
       }
 
-      // Let's do a sanity check on  table entries
+      // Let's do a sanity check on table entries
       uInt32 s1 = 0, s2 = 0;
       for(newx = 0; newx < 160; ++newx)
       {

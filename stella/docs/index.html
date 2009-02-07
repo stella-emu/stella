@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.7.2</b></h4></center>
+	<center><h4><b>Release 2.7.3</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -40,7 +40,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - January 2009</b></center>
+	<center><b>February 1999 - February 2009</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -2255,15 +2255,15 @@
 		frames per second, bankswitch and display formats, etc.  The following shows
 		an example of this information:
 		<p><img src="graphics/developer_stats.png"></p>
-		<p>The three lines of output describe the following:
+		<p>The two lines of output describe the following:
 		<ol>
-			<li>Number of scanlines in current frame, and associated framerate.  Note
-				that the framerate shown is the <i>internal</i>, virtual  framerate
-				(it's calculated from the number of scanlines).</li>
-			<li>Display format.  If the characters 'AUTO =&gt;' are present, it means
+			<li>Number of scanlines in current frame, associated framerate, and
+				resulting display format.  Note that the framerate shown is the
+				<i>internal</i>, virtual framerate (it's calculated from the
+				number of scanlines).  If the '*' character is present, it means
 				the display format was auto-detected as shown.  For the given example,
 				the format was auto-detected as 'NTSC'.</li>
-			<li>Cartridge information.  If the characters 'AUTO =&gt;' are present,
+			<li>Cartridge information.  If the '*' character is present,
 				it means the bankswitch format was auto-detected as shown.  The item
 				in round brackets indicates ROM size.  For the given example,
 				the bankswitch type was auto-detected as 4K, and the file size was
