@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.103 2009-01-24 18:17:34 stephena Exp $
+// $Id: TIA.cxx,v 1.104 2009-02-08 21:07:06 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -143,12 +143,12 @@ void TIA::reset()
   // Some default values for the "current" variables
   myCurrentGRP0 = 0;
   myCurrentGRP1 = 0;
-  myCurrentBLMask = TIATables::BallMaskTable[0][0];
-  myCurrentM0Mask = TIATables::MissleMaskTable[0][0][0];
-  myCurrentM1Mask = TIATables::MissleMaskTable[0][0][0];
-  myCurrentP0Mask = TIATables::PlayerMaskTable[0][0][0];
-  myCurrentP1Mask = TIATables::PlayerMaskTable[0][0][0];
-  myCurrentPFMask = TIATables::PlayfieldTable[0];
+  myCurrentBLMask = TIATables::BLMask[0][0];
+  myCurrentM0Mask = TIATables::MxMask[0][0][0];
+  myCurrentM1Mask = TIATables::MxMask[0][0][0];
+  myCurrentP0Mask = TIATables::PxMask[0][0][0];
+  myCurrentP1Mask = TIATables::PxMask[0][0][0];
+  myCurrentPFMask = TIATables::PFMask[0];
 
   myMotionClockP0 = 0;
   myMotionClockP1 = 0;
@@ -341,12 +341,12 @@ bool TIA::save(Serializer& out) const
     out.putByte((char)myCurrentGRP1);
 
 // pointers
-//  myCurrentBLMask = TIATables::BallMaskTable[0][0];
-//  myCurrentM0Mask = TIATables::MissleMaskTable[0][0][0];
-//  myCurrentM1Mask = TIATables::MissleMaskTable[0][0][0];
-//  myCurrentP0Mask = TIATables::PlayerMaskTable[0][0][0];
-//  myCurrentP1Mask = TIATables::PlayerMaskTable[0][0][0];
-//  myCurrentPFMask = TIATables::PlayfieldTable[0];
+//  myCurrentBLMask = TIATables::BLMask[0][0];
+//  myCurrentM0Mask = TIATables::MxMask[0][0][0];
+//  myCurrentM1Mask = TIATables::MxMask[0][0][0];
+//  myCurrentP0Mask = TIATables::PxMask[0][0][0];
+//  myCurrentP1Mask = TIATables::PxMask[0][0][0];
+//  myCurrentPFMask = TIATables::PFMask[0];
 
     out.putInt(myLastHMOVEClock);
     out.putBool(myHMOVEBlankEnabled);
@@ -438,12 +438,12 @@ bool TIA::load(Deserializer& in)
     myCurrentGRP1 = (uInt8) in.getByte();
 
 // pointers
-//  myCurrentBLMask = TIATables::BallMaskTable[0][0];
-//  myCurrentM0Mask = TIATables::MissleMaskTable[0][0][0];
-//  myCurrentM1Mask = TIATables::MissleMaskTable[0][0][0];
-//  myCurrentP0Mask = TIATables::PlayerMaskTable[0][0][0];
-//  myCurrentP1Mask = TIATables::PlayerMaskTable[0][0][0];
-//  myCurrentPFMask = TIATables::PlayfieldTable[0];
+//  myCurrentBLMask = TIATables::BLMask[0][0];
+//  myCurrentM0Mask = TIATables::MxMask[0][0][0];
+//  myCurrentM1Mask = TIATables::MxMask[0][0][0];
+//  myCurrentP0Mask = TIATables::PxMask[0][0][0];
+//  myCurrentP1Mask = TIATables::PxMask[0][0][0];
+//  myCurrentPFMask = TIATables::PFMask[0];
 
     myLastHMOVEClock = (Int32) in.getInt();
     myHMOVEBlankEnabled = in.getBool();
@@ -812,7 +812,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                 myCOLUP0 : ((myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK);
 
             if((myCurrentGRP0 & *mP0) && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionTable[P0Bit | P1Bit];
+              myCollision |= TIATables::CollisionMask[P0Bit | P1Bit];
 
             ++mP0; ++mP1; ++myFramePointer;
           }
@@ -913,7 +913,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             *myFramePointer = *mM0 ? myCOLUP0 : (*mM1 ? myCOLUP1 : myCOLUBK);
 
             if(*mM0 && *mM1)
-              myCollision |= TIATables::CollisionTable[M0Bit | M1Bit];
+              myCollision |= TIATables::CollisionMask[M0Bit | M1Bit];
 
             ++mM0; ++mM1; ++myFramePointer;
           }
@@ -940,7 +940,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             *myFramePointer = (*mM0 ? myCOLUP0 : (*mBL ? myCOLUPF : myCOLUBK));
 
             if(*mBL && *mM0)
-              myCollision |= TIATables::CollisionTable[BLBit | M0Bit];
+              myCollision |= TIATables::CollisionMask[BLBit | M0Bit];
 
             ++mBL; ++mM0; ++myFramePointer;
           }
@@ -967,7 +967,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             *myFramePointer = (*mBL ? myCOLUPF : (*mM0 ? myCOLUP0 : myCOLUBK));
 
             if(*mBL && *mM0)
-              myCollision |= TIATables::CollisionTable[BLBit | M0Bit];
+              myCollision |= TIATables::CollisionMask[BLBit | M0Bit];
 
             ++mBL; ++mM0; ++myFramePointer;
           }
@@ -995,7 +995,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             *myFramePointer = (*mM1 ? myCOLUP1 : (*mBL ? myCOLUPF : myCOLUBK));
 
             if(*mBL && *mM1)
-              myCollision |= TIATables::CollisionTable[BLBit | M1Bit];
+              myCollision |= TIATables::CollisionMask[BLBit | M1Bit];
 
             ++mBL; ++mM1; ++myFramePointer;
           }
@@ -1023,7 +1023,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             *myFramePointer = (*mBL ? myCOLUPF : (*mM1 ? myCOLUP1 : myCOLUBK));
 
             if(*mBL && *mM1)
-              myCollision |= TIATables::CollisionTable[BLBit | M1Bit];
+              myCollision |= TIATables::CollisionMask[BLBit | M1Bit];
 
             ++mBL; ++mM1; ++myFramePointer;
           }
@@ -1051,7 +1051,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                 (*mBL ? myCOLUPF : myCOLUBK);
 
             if(*mBL && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionTable[BLBit | P1Bit];
+              myCollision |= TIATables::CollisionMask[BLBit | P1Bit];
 
             ++mBL; ++mP1; ++myFramePointer;
           }
@@ -1079,7 +1079,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                 ((myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK);
 
             if(*mBL && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionTable[BLBit | P1Bit];
+              myCollision |= TIATables::CollisionMask[BLBit | P1Bit];
 
             ++mBL; ++mP1; ++myFramePointer;
           }
@@ -1106,7 +1106,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                   myCOLUP0 : ((myPF & *mPF) ? myCOLUPF : myCOLUBK);
 
             if((myPF & *mPF) && (myCurrentGRP0 & *mP0))
-              myCollision |= TIATables::CollisionTable[PFBit | P0Bit];
+              myCollision |= TIATables::CollisionMask[PFBit | P0Bit];
 
             ++mPF; ++mP0; ++myFramePointer;
           }
@@ -1134,7 +1134,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                 ((myCurrentGRP0 & *mP0) ? myCOLUP0 : myCOLUBK);
 
             if((myPF & *mPF) && (myCurrentGRP0 & *mP0))
-              myCollision |= TIATables::CollisionTable[PFBit | P0Bit];
+              myCollision |= TIATables::CollisionMask[PFBit | P0Bit];
 
             ++mPF; ++mP0; ++myFramePointer;
           }
@@ -1162,7 +1162,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                   myCOLUP1 : ((myPF & *mPF) ? myCOLUPF : myCOLUBK);
 
             if((myPF & *mPF) && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionTable[PFBit | P1Bit];
+              myCollision |= TIATables::CollisionMask[PFBit | P1Bit];
 
             ++mPF; ++mP1; ++myFramePointer;
           }
@@ -1190,7 +1190,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
                 ((myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK);
 
             if((myPF & *mPF) && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionTable[PFBit | P1Bit];
+              myCollision |= TIATables::CollisionMask[PFBit | P1Bit];
 
             ++mPF; ++mP1; ++myFramePointer;
           }
@@ -1218,7 +1218,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             *myFramePointer = ((myPF & *mPF) || *mBL) ? myCOLUPF : myCOLUBK;
 
             if((myPF & *mPF) && *mBL)
-              myCollision |= TIATables::CollisionTable[PFBit | BLBit];
+              myCollision |= TIATables::CollisionMask[PFBit | BLBit];
 
             ++mPF; ++mBL; ++myFramePointer;
           }
@@ -1248,7 +1248,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
           if((myEnabledObjects & M0Bit) && myCurrentM0Mask[hpos])
             enabled |= M0Bit;
 
-          myCollision |= TIATables::CollisionTable[enabled];
+          myCollision |= TIATables::CollisionMask[enabled];
           *myFramePointer = myColor[myPriorityEncoder[hpos < 80 ? 0 : 1]
               [enabled | myPlayfieldPriorityAndScore]];
         }
@@ -1344,14 +1344,14 @@ void TIA::updateFrame(Int32 clock)
     if(myClocksToEndOfScanLine == 228)
     {
       // Yes, so set PF mask based on current CTRLPF reflection state 
-      myCurrentPFMask = TIATables::PlayfieldTable[myCTRLPF & 0x01];
+      myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
 
       // TODO: These should be reset right after the first copy of the player
       // has passed.  However, for now we'll just reset at the end of the 
       // scanline since the other way would be to slow (01/21/99).
-      myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
+      myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
           [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-      myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
+      myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
           [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
 
 #ifndef NO_HMOVE_FIXES
@@ -1372,18 +1372,18 @@ void TIA::updateFrame(Int32 clock)
         if(myM0CosmicArkCounter == 1)
         {
           // Stretch this missle so it's at least 2 pixels wide
-          myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
+          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
               [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
               [160 - (myPOSM0 & 0xFC)];
         }
         else if(myM0CosmicArkCounter == 2)
         {
           // Missle is disabled on this line 
-          myCurrentM0Mask = &TIATables::DisabledMaskTable[0];
+          myCurrentM0Mask = &TIATables::DisabledMask[0];
         }
         else
         {
-          myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
+          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
               [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
         }
       }
@@ -1547,7 +1547,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
   addr = addr & 0x003f;
 
   Int32 clock = mySystem->cycles() * 3;
-  Int16 delay = TIATables::PokeDelayTable[addr];
+  Int16 delay = TIATables::PokeDelay[addr];
 
   // See if this is a poke to a PF register
   if(delay == -1)
@@ -1641,10 +1641,10 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // TODO: Technically the "enable" part, [0], should depend on the current
       // enabled or disabled state.  This mean we probably need a data member
       // to maintain that state (01/21/99).
-      myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
+      myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
           [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
 
-      myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
+      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
 
       break;
@@ -1657,10 +1657,10 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // TODO: Technically the "enable" part, [0], should depend on the current
       // enabled or disabled state.  This mean we probably need a data member
       // to maintain that state (01/21/99).
-      myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
+      myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
           [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
 
-      myCurrentM1Mask = &TIATables::MissleMaskTable[myPOSM1 & 0x03]
+      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
 
       break;
@@ -1723,10 +1723,10 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // we're still on the left hand side of the playfield
       if(((clock - myClockWhenFrameStarted) % 228) < (68 + 79))
       {
-        myCurrentPFMask = TIATables::PlayfieldTable[myCTRLPF & 0x01];
+        myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
       }
 
-      myCurrentBLMask = &TIATables::BallMaskTable[myPOSBL & 0x03]
+      myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
 
       break;
@@ -1738,7 +1738,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       if(((value & 0x08) && !myREFP0) || (!(value & 0x08) && myREFP0))
       {
         myREFP0 = (value & 0x08);
-        myCurrentGRP0 = TIATables::PlayerReflectTable[myCurrentGRP0];
+        myCurrentGRP0 = TIATables::GRPReflect[myCurrentGRP0];
       }
       break;
     }
@@ -1749,7 +1749,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       if(((value & 0x08) && !myREFP1) || (!(value & 0x08) && myREFP1))
       {
         myREFP1 = (value & 0x08);
-        myCurrentGRP1 = TIATables::PlayerReflectTable[myCurrentGRP1];
+        myCurrentGRP1 = TIATables::GRPReflect[myCurrentGRP1];
       }
       break;
     }
@@ -1796,7 +1796,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       Int32 newx = hpos < HBLANK ? 3 : (((hpos - HBLANK) + 5) % 160);
 
       // Find out under what condition the player is being reset
-      Int8 when = TIATables::PlayerPositionResetWhenTable[myNUSIZ0 & 7][myPOSP0][newx];
+      Int8 when = TIATables::PxPosResetWhen[myNUSIZ0 & 7][myPOSP0][newx];
 
 #ifdef DEBUG_HMOVE
       if((clock - myLastHMOVEClock) < (24 * 3))
@@ -1817,7 +1817,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSP0 = newx;
 
         // Setup the mask to skip the first copy of the player
-        myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
+        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
             [1][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
       }
       // Player is being reset in neither the delay nor display section
@@ -1826,7 +1826,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSP0 = newx;
 
         // So we setup the mask to skip the first copy of the player
-        myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
+        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
             [1][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
       }
       // Player is being reset during the delay section of one of its copies
@@ -1835,7 +1835,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSP0 = newx;
 
         // So we setup the mask to display all copies of the player
-        myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
+        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
             [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
       }
       break;
@@ -1847,7 +1847,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       Int32 newx = hpos < HBLANK ? 3 : (((hpos - HBLANK) + 5) % 160);
 
       // Find out under what condition the player is being reset
-      Int8 when = TIATables::PlayerPositionResetWhenTable[myNUSIZ1 & 7][myPOSP1][newx];
+      Int8 when = TIATables::PxPosResetWhen[myNUSIZ1 & 7][myPOSP1][newx];
 
 #ifdef DEBUG_HMOVE
       if((clock - myLastHMOVEClock) < (24 * 3))
@@ -1868,7 +1868,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSP1 = newx;
 
         // Setup the mask to skip the first copy of the player
-        myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
+        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
             [1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
       }
       // Player is being reset in neither the delay nor display section
@@ -1877,7 +1877,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSP1 = newx;
 
         // So we setup the mask to skip the first copy of the player
-        myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
+        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
             [1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
       }
       // Player is being reset during the delay section of one of its copies
@@ -1886,7 +1886,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSP1 = newx;
 
         // So we setup the mask to display all copies of the player
-        myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
+        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
             [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
       }
       break;
@@ -1920,7 +1920,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSM0 = 8;
       }
 #endif
-      myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
+      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
       break;
     }
@@ -1946,7 +1946,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSM1 = 3;
       }
 #endif
-      myCurrentM1Mask = &TIATables::MissleMaskTable[myPOSM1 & 0x03]
+      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
       break;
     }
@@ -2018,7 +2018,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myPOSBL = 8;
       }
 #endif
-      myCurrentBLMask = &TIATables::BallMaskTable[myPOSBL & 0x03]
+      myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
       break;
     }
@@ -2075,11 +2075,11 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
       // Get the "current" data for GRP0 base on delay register and reflect
       uInt8 grp0 = myVDELP0 ? myDGRP0 : myGRP0;
-      myCurrentGRP0 = myREFP0 ? TIATables::PlayerReflectTable[grp0] : grp0; 
+      myCurrentGRP0 = myREFP0 ? TIATables::GRPReflect[grp0] : grp0; 
 
       // Get the "current" data for GRP1 base on delay register and reflect
       uInt8 grp1 = myVDELP1 ? myDGRP1 : myGRP1;
-      myCurrentGRP1 = myREFP1 ? TIATables::PlayerReflectTable[grp1] : grp1; 
+      myCurrentGRP1 = myREFP1 ? TIATables::GRPReflect[grp1] : grp1; 
 
       // Set enabled object bits
       if(myCurrentGRP0 != 0)
@@ -2108,11 +2108,11 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
       // Get the "current" data for GRP0 base on delay register
       uInt8 grp0 = myVDELP0 ? myDGRP0 : myGRP0;
-      myCurrentGRP0 = myREFP0 ? TIATables::PlayerReflectTable[grp0] : grp0; 
+      myCurrentGRP0 = myREFP0 ? TIATables::GRPReflect[grp0] : grp0; 
 
       // Get the "current" data for GRP1 base on delay register
       uInt8 grp1 = myVDELP1 ? myDGRP1 : myGRP1;
-      myCurrentGRP1 = myREFP1 ? TIATables::PlayerReflectTable[grp1] : grp1; 
+      myCurrentGRP1 = myREFP1 ? TIATables::GRPReflect[grp1] : grp1; 
 
       // Set enabled object bits
       if(myCurrentGRP0 != 0)
@@ -2212,7 +2212,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       myVDELP0 = value & 0x01;
 
       uInt8 grp0 = myVDELP0 ? myDGRP0 : myGRP0;
-      myCurrentGRP0 = myREFP0 ? TIATables::PlayerReflectTable[grp0] : grp0; 
+      myCurrentGRP0 = myREFP0 ? TIATables::GRPReflect[grp0] : grp0; 
 
       if(myCurrentGRP0 != 0)
         myEnabledObjects |= P0Bit;
@@ -2226,7 +2226,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       myVDELP1 = value & 0x01;
 
       uInt8 grp1 = myVDELP1 ? myDGRP1 : myGRP1;
-      myCurrentGRP1 = myREFP1 ? TIATables::PlayerReflectTable[grp1] : grp1; 
+      myCurrentGRP1 = myREFP1 ? TIATables::GRPReflect[grp1] : grp1; 
 
       if(myCurrentGRP1 != 0)
         myEnabledObjects |= P1Bit;
@@ -2260,7 +2260,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
           middle = 4;
 
         myPOSM0 = (myPOSP0 + middle) % 160;
-        myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
+        myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
             [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
       }
 
@@ -2288,7 +2288,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
           middle = 4;
 
         myPOSM1 = (myPOSP1 + middle) % 160;
-        myCurrentM1Mask = &TIATables::MissleMaskTable[myPOSM1 & 0x03]
+        myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
             [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
       }
 
@@ -2313,11 +2313,11 @@ void TIA::poke(uInt16 addr, uInt8 value)
         myHMOVEBlankEnabled = true;
       }
 
-      myPOSP0 += TIATables::CompleteMotionTable[x][myHMP0];
-      myPOSP1 += TIATables::CompleteMotionTable[x][myHMP1];
-      myPOSM0 += TIATables::CompleteMotionTable[x][myHMM0];
-      myPOSM1 += TIATables::CompleteMotionTable[x][myHMM1];
-      myPOSBL += TIATables::CompleteMotionTable[x][myHMBL];
+      myPOSP0 += TIATables::CompleteMotion[x][myHMP0];
+      myPOSP1 += TIATables::CompleteMotion[x][myHMP1];
+      myPOSM0 += TIATables::CompleteMotion[x][myHMM0];
+      myPOSM1 += TIATables::CompleteMotion[x][myHMM1];
+      myPOSBL += TIATables::CompleteMotion[x][myHMBL];
 
       if(myPOSP0 >= 160)
         myPOSP0 -= 160;
@@ -2344,17 +2344,17 @@ void TIA::poke(uInt16 addr, uInt8 value)
       else if(myPOSBL < 0)
         myPOSBL += 160;
 
-      myCurrentBLMask = &TIATables::BallMaskTable[myPOSBL & 0x03]
+      myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
 
-      myCurrentP0Mask = &TIATables::PlayerMaskTable[myPOSP0 & 0x03]
+      myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
           [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-      myCurrentP1Mask = &TIATables::PlayerMaskTable[myPOSP1 & 0x03]
+      myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
           [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
 
-      myCurrentM0Mask = &TIATables::MissleMaskTable[myPOSM0 & 0x03]
+      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-      myCurrentM1Mask = &TIATables::MissleMaskTable[myPOSM1 & 0x03]
+      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
           [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
 
       // Remember what clock HMOVE occured at

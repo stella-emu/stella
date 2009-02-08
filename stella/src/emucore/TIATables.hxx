@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIATables.hxx,v 1.1 2009-01-19 16:52:32 stephena Exp $
+// $Id: TIATables.hxx,v 1.2 2009-02-08 21:07:06 stephena Exp $
 //============================================================================
 
 #ifndef TIA_TABLES_HXX
@@ -102,7 +102,7 @@ enum {
   here.
 
   @author  Stephen Anthony
-  @version $Id: TIATables.hxx,v 1.1 2009-01-19 16:52:32 stephena Exp $
+  @version $Id: TIATables.hxx,v 1.2 2009-02-08 21:07:06 stephena Exp $
 */
 class TIATables
 {
@@ -112,61 +112,61 @@ class TIATables
     */
     static void computeAllTables();
 
-    // Ball mask table (entries are true or false)
-    static uInt8 BallMaskTable[4][4][320];
-
     // Used to set the collision register to the correct value
-    static uInt16 CollisionTable[64];
+    static uInt16 CollisionMask[64];
 
     // A mask table which can be used when an object is disabled
-    static uInt8 DisabledMaskTable[640];
+    static uInt8 DisabledMask[640];
 
     // Indicates the update delay associated with poking at a TIA address
-    static const Int16 PokeDelayTable[64];
-
-    // Missle mask table (entries are true or false)
-    static uInt8 MissleMaskTable[4][8][4][320];
+    static const Int16 PokeDelay[64];
 
     // Used to convert value written in a motion register into 
     // its internal representation
-    static const Int32 CompleteMotionTable[76][16];
+    static const Int32 CompleteMotion[76][16];
 
     // Indicates if HMOVE blanks should occur for the corresponding cycle
     static const bool HMOVEBlankEnableCycles[76];
 
     // Player mask table
-    static uInt8 PlayerMaskTable[4][2][8][320];
+    static uInt8 PxMask[4][2][8][320];
 
-    // Indicates if player is being reset during delay, display or other times
-    static Int8 PlayerPositionResetWhenTable[8][160][160];
+    // Missle mask table (entries are true or false)
+    static uInt8 MxMask[4][8][4][320];
 
-    // Used to reflect a players graphics
-    static uInt8 PlayerReflectTable[256];
+    // Ball mask table (entries are true or false)
+    static uInt8 BLMask[4][4][320];
 
     // Playfield mask table for reflected and non-reflected playfields
-    static uInt32 PlayfieldTable[2][160];
+    static uInt32 PFMask[2][160];
+
+    // Used to reflect a players graphics
+    static uInt8 GRPReflect[256];
+
+    // Indicates if player is being reset during delay, display or other times
+    static Int8 PxPosResetWhen[8][160][160];
 
   private:
-    // Compute the ball mask table
-    static void computeBallMaskTable();
-
     // Compute the collision decode table
-    static void computeCollisionTable();
-
-    // Compute the missle mask table
-    static void computeMissleMaskTable();
+    static void buildCollisionMaskTable();
 
     // Compute the player mask table
-    static void computePlayerMaskTable();
+    static void buildPxMaskTable();
 
-    // Compute the player position reset when table
-    static void computePlayerPositionResetWhenTable();
+    // Compute the missle mask table
+    static void buildMxMaskTable();
 
-    // Compute the player reflect table
-    static void computePlayerReflectTable();
+    // Compute the ball mask table
+    static void buildBLMaskTable();
 
     // Compute playfield mask table
-    static void computePlayfieldMaskTable();
+    static void buildPFMaskTable();
+
+    // Compute the player reflect table
+    static void buildGRPReflectTable();
+
+    // Compute the player position reset when table
+    static void buildPxPosResetWhenTable();
 };
 
 #endif
