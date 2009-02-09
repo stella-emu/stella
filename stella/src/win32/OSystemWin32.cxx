@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.32 2009-01-30 23:31:41 stephena Exp $
+// $Id: OSystemWin32.cxx,v 1.33 2009-02-09 15:50:59 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -47,8 +47,15 @@ OSystemWin32::OSystemWin32()
     ifstream in(basedirfile.getPath().c_str());
     if(in && in.is_open())
     {
-      in >> basedir;
+      getline(in, basedir);
       in.close();
+
+      // trim leading and trailing spaces
+      size_t spos = basedir.find_first_not_of(" \t");
+      size_t epos = basedir.find_last_not_of(" \t");
+      if(spos != string::npos && epos != string::npos)
+        basedir = basedir.substr(spos, epos-spos+1);
+
       if(basedir != "")  overrideBasedir = true;
     }
   }
