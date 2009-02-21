@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.cxx,v 1.104 2009-02-08 21:07:06 stephena Exp $
+// $Id: TIA.cxx,v 1.105 2009-02-21 20:56:08 stephena Exp $
 //============================================================================
 
 //#define DEBUG_HMOVE
@@ -696,9 +696,10 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         break;
       }
 
-      // Playfield is enabled and the score bit is not set
+      // Playfield is enabled and the priority bit is set (score bit is overridden)
       case PFBit: 
       case PFBit | PriorityBit:
+      case PFBit | PriorityBit | ScoreBit:
       {
         uInt32* mask = &myCurrentPFMask[hpos];
 
@@ -717,9 +718,8 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         break;
       }
 
-      // Playfield is enabled and the score bit is set
+      // Playfield is enabled and the score bit is set (without priority bit)
       case PFBit | ScoreBit:
-      case PFBit | ScoreBit | PriorityBit:
       {
         uInt32* mask = &myCurrentPFMask[hpos];
 
