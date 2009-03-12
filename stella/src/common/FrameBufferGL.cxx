@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.138 2009-01-26 15:05:25 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.139 2009-03-12 15:37:07 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -74,7 +74,7 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   // We need a pixel format for palette value calculations
   // It's done this way (vs directly accessing a FBSurfaceGL object)
   // since the structure may be needed before any FBSurface's have
-  // be created
+  // been created
   SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 16,
                      0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
   myPixelFormat = *(s->format);
@@ -507,21 +507,7 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
   myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
                   myTexWidth, myTexHeight, 16,
                   0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-
-  switch(myTexture->format->BytesPerPixel)
-  {
-    case 2:  // 16-bit
-      myPitch = myTexture->pitch/2;
-      break;
-    case 3:  // 24-bit
-      myPitch = myTexture->pitch;
-      break;
-    case 4:  // 32-bit
-      myPitch = myTexture->pitch/4;
-      break;
-    default:
-      break;
-  }
+  myPitch = myTexture->pitch >> 1;
 
   // Associate the SDL surface with a GL texture object
   reload();
