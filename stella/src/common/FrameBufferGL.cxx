@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGL.cxx,v 1.140 2009-03-12 15:57:41 stephena Exp $
+// $Id: FrameBufferGL.cxx,v 1.141 2009-03-12 16:04:08 stephena Exp $
 //============================================================================
 
 #ifdef DISPLAY_OPENGL
@@ -252,8 +252,8 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
   SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-  if(myOSystem->settings().getBool("gl_accel"))
-    SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
+//  if(myOSystem->settings().getBool("gl_accel"))
+//    SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
 
   // There's no guarantee this is supported on all hardware
   // We leave it to the user to test and decide
