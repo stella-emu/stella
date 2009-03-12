@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.163 2009-01-24 17:32:29 stephena Exp $
+// $Id: Settings.cxx,v 1.164 2009-03-12 15:57:41 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -46,6 +46,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
   setInternal("gl_texrect", "false");
+  setInternal("gl_accel", "true");
 
   // Framebuffer-related options
   setInternal("tia_filter", "zoom2x");
@@ -304,6 +305,7 @@ void Settings::usage()
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
+    << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
