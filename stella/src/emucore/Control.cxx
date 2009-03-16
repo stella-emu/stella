@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+// $Id: Control.cxx,v 1.15 2009-03-16 00:23:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -69,6 +69,9 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
       break;
     case SaveKey:
       myName = "SaveKey";
+      break;
+    case KidVid:
+      myName = "KidVid";
       break;
   }
 }

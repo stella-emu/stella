@@ -38,6 +38,7 @@ MODULE_OBJS := \
 	src/emucore/FSNode.o \
 	src/emucore/Joystick.o \
 	src/emucore/Keyboard.o \
+	src/emucore/KidVid.o \
 	src/emucore/M6532.o \
 	src/emucore/MT24LC256.o \
 	src/emucore/MD5.o \

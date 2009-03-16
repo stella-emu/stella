@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.hxx,v 1.73 2009-01-24 18:11:47 stephena Exp $
+// $Id: Console.hxx,v 1.74 2009-03-16 00:23:42 stephena Exp $
 //============================================================================
 
 #ifndef CONSOLE_HXX
@@ -53,7 +53,7 @@ struct ConsoleInfo
   This class represents the entire game console.
 
   @author  Bradford W. Mott
-  @version $Id: Console.hxx,v 1.73 2009-01-24 18:11:47 stephena Exp $
+  @version $Id: Console.hxx,v 1.74 2009-03-16 00:23:42 stephena Exp $
 */
 class Console : public Serializable
 {
@@ -271,7 +271,7 @@ class Console : public Serializable
     /**
       Adds the left and right controllers to the console
     */
-    void setControllers();
+    void setControllers(const string& rommd5);
 
     void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true) const;
 

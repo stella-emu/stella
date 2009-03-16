@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Console.cxx,v 1.157 2009-02-01 22:17:09 stephena Exp $
+// $Id: Console.cxx,v 1.158 2009-03-16 00:23:42 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -31,6 +31,7 @@
 #include "EventHandler.hxx"
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
+#include "KidVid.hxx"
 #include "M6502Hi.hxx"
 #include "M6502Low.hxx"
 #include "M6532.hxx"
@@ -162,11 +163,12 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
       myProperties.set(Display_Height, "250");
   }
 
+  const string& md5 = myProperties.get(Cartridge_MD5);
+
   // Add the real controllers for this system
-  setControllers();
+  setControllers(md5);
 
   // Bumper Bash requires all 4 directions
-  const string& md5 = myProperties.get(Cartridge_MD5);
   bool allow = (md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
                 md5 == "1bf503c724001b09be79c515ecfcbd03");
   myOSystem->eventHandler().allowAllDirections(allow);
@@ -573,7 +575,7 @@ void Console::changeHeight(int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setControllers()
+void Console::setControllers(const string& rommd5)
 {
   delete myControllers[0];
   delete myControllers[1];
@@ -680,6 +682,10 @@ void Console::setControllers()
                         "savekey_eeprom.dat";
     myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
                                            eepromfile);
+  }
+  else if(right == "KIDVID")
+  {
+    myControllers[rightPort] = new KidVid(Controller::Right, *myEvent, *mySystem, rommd5);
   }
   else
   {
