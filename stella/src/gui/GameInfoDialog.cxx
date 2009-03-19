@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.67 2009-03-16 00:23:42 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.68 2009-03-19 15:03:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -224,7 +224,7 @@ GameInfoDialog::GameInfoDialog(
   ctrls.push_back("AmigaMouse",     "AMIGAMOUSE"  );
   ctrls.push_back("AtariVox",       "ATARIVOX"    );
   ctrls.push_back("SaveKey",        "SAVEKEY"     );
-  ctrls.push_back("KidVid",         "KIDVID"      );
+//FIXME  ctrls.push_back("KidVid",         "KIDVID"      );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, ctrls, "", 0, 0);
   wid.push_back(myP0Controller);

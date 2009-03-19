@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.cxx,v 1.55 2009-01-24 17:32:29 stephena Exp $
+// $Id: ListWidget.cxx,v 1.56 2009-03-19 15:03:50 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,7 +32,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h)
+                       int x, int y, int w, int h, bool quickSelect)
   : EditableWidget(boss, font, x, y, 16, 16),
     _rows(0),
     _cols(0),
@@ -42,6 +42,7 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _currentKeyDown(0),
     _editMode(false),
     _caretInverse(true),
+    _quickSelect(quickSelect),
     _quickSelectTime(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
@@ -218,7 +219,8 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool handled = true;
   int oldSelectedItem = _selectedItem;
 
-  if (!_editMode && isalnum((char)ascii))
+  if (!_editMode && _quickSelect &&
+      ((isalnum((char)ascii)) || isspace((char)ascii)))
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).

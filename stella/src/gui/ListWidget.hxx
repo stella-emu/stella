@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ListWidget.hxx,v 1.25 2009-01-05 22:05:35 stephena Exp $
+// $Id: ListWidget.hxx,v 1.26 2009-03-19 15:03:51 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -46,7 +46,7 @@ class ListWidget : public EditableWidget
 {
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
-               int x, int y, int w, int h);
+               int x, int y, int w, int h, bool quickSelect = true);
     virtual ~ListWidget();
 
     int rows() const        { return _rows; }
@@ -111,6 +111,7 @@ class ListWidget : public EditableWidget
 
     StringList _list;
     string     _backupString;
+    bool       _quickSelect;
     string     _quickSelectStr;
     int        _quickSelectTime;
 
