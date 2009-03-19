@@ -312,6 +312,8 @@
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
 		DC932D470F278A5200FEFEFC /* TIATables.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC932D420F278A5200FEFEFC /* TIATables.cxx */; };
 		DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D430F278A5200FEFEFC /* TIATables.hxx */; };
+		DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9EA8850F729A36000452B5 /* KidVid.cxx */; };
+		DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC9EA8860F729A36000452B5 /* KidVid.hxx */; };
 		DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */; };
 		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
@@ -686,6 +688,8 @@
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D420F278A5200FEFEFC /* TIATables.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TIATables.cxx; path = ../emucore/TIATables.cxx; sourceTree = SOURCE_ROOT; };
 		DC932D430F278A5200FEFEFC /* TIATables.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TIATables.hxx; path = ../emucore/TIATables.hxx; sourceTree = SOURCE_ROOT; };
+		DC9EA8850F729A36000452B5 /* KidVid.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KidVid.cxx; path = ../emucore/KidVid.cxx; sourceTree = SOURCE_ROOT; };
+		DC9EA8860F729A36000452B5 /* KidVid.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = KidVid.hxx; path = ../emucore/KidVid.hxx; sourceTree = SOURCE_ROOT; };
 		DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotDebug.cxx; path = ../debugger/RiotDebug.cxx; sourceTree = SOURCE_ROOT; };
 		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotDebug.hxx; path = ../debugger/RiotDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
@@ -900,6 +904,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC9EA8850F729A36000452B5 /* KidVid.cxx */,
+				DC9EA8860F729A36000452B5 /* KidVid.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
 				DC932D400F278A5200FEFEFC /* Serializable.hxx */,
 				DC932D410F278A5200FEFEFC /* SerialPort.hxx */,
@@ -1357,6 +1363,7 @@
 				DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */,
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
 				DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */,
+				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1604,6 +1611,7 @@
 				DC0DF8690F0DAAF500B0F1F3 /* GlobalPropsDialog.cxx in Sources */,
 				DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */,
 				DC932D470F278A5200FEFEFC /* TIATables.cxx in Sources */,
+				DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
