@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.134 2009-01-20 21:01:28 stephena Exp $
+// $Id: Debugger.cxx,v 1.135 2009-03-26 19:46:05 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -107,7 +107,7 @@ Debugger::Debugger(OSystem* osystem)
     myReadTraps(NULL),
     myWriteTraps(NULL),
     myWidth(1030),
-    myHeight(690)
+    myHeight(620)
 {
   // Get the dialog size
   int w, h;
@@ -115,7 +115,7 @@ Debugger::Debugger(OSystem* osystem)
   myWidth = BSPF_max(w, 0);
   myHeight = BSPF_max(h, 0);
   myWidth = BSPF_max(myWidth, 1030u);
-  myHeight = BSPF_max(myHeight, 690u);
+  myHeight = BSPF_max(myHeight, 620u);
   myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
 
   // Init parser

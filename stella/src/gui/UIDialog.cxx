@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: UIDialog.cxx,v 1.20 2009-01-05 22:05:35 stephena Exp $
+// $Id: UIDialog.cxx,v 1.21 2009-03-26 19:46:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -154,7 +154,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
-  myDebuggerHeightSlider->setMinValue(690);
+  myDebuggerHeightSlider->setMinValue(620);
   myDebuggerHeightSlider->setMaxValue(1200);
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
@@ -281,7 +281,7 @@ void UIDialog::loadConfig()
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
   w = BSPF_max(w, 1030);
-  h = BSPF_max(h, 690);
+  h = BSPF_max(h, 620);
   w = BSPF_min(w, 1920);
   h = BSPF_min(h, 1200);
 

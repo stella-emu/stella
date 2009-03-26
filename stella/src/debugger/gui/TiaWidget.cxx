@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TiaWidget.cxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+// $Id: TiaWidget.cxx,v 1.16 2009-03-26 19:46:05 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -43,56 +43,64 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
-  int xpos = 10, ypos = 25, lwidth = 4 * font.getMaxCharWidth();
+  int xpos = 10, ypos = 10, lwidth = 4 * font.getMaxCharWidth();
   StaticTextWidget* t;
 
   // Create a 16x1 grid holding byte values with labels
-  myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
-                                 16, 1, 2, 8, kBASE_16);
-  myRamGrid->setEditable(false);
-  myRamGrid->setTarget(this);
-  myRamGrid->setID(kRamID);
-  addFocusWidget(myRamGrid);
-
-  t = new StaticTextWidget(boss, font, xpos, ypos + 2,
-                           lwidth-2, fontHeight,
-                           "00:", kTextAlignLeft);
-  for(int col = 0; col < 16; ++col)
+  // Only do so if we have the vertical height
+  // TODO - at some point, viewing RAM may be removed, as I don't know
+  //        how useful it really is
+  if(h >= 400)
   {
-    t = new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 7,
-                             ypos - lineHeight,
-                             fontWidth, fontHeight,
-                             Debugger::to_hex_4(col),
-                             kTextAlignLeft);
-  }
+    ypos += lineHeight;
+    myRamGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos,
+                                   16, 1, 2, 8, kBASE_16);
+    myRamGrid->setEditable(false);
+    myRamGrid->setTarget(this);
+    myRamGrid->setID(kRamID);
+    addFocusWidget(myRamGrid);
+
+    t = new StaticTextWidget(boss, font, xpos, ypos + 2,
+                             lwidth-2, fontHeight,
+                             "00:", kTextAlignLeft);
+    for(int col = 0; col < 16; ++col)
+    {
+      t = new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 7,
+                               ypos - lineHeight,
+                               fontWidth, fontHeight,
+                               Debugger::to_hex_4(col),
+                               kTextAlignLeft);
+    }
   
-  xpos = 20;  ypos += 2 * lineHeight;
-  t = new StaticTextWidget(boss, font, xpos, ypos, 6*fontWidth, fontHeight,
-                           "Label:", kTextAlignLeft);
-  xpos += 6*fontWidth + 5;
-  myLabel = new EditTextWidget(boss, font, xpos, ypos-2, 15*fontWidth,
-                               lineHeight, "");
-  myLabel->setEditable(false);
+    xpos = 20;  ypos += 2 * lineHeight;
+    t = new StaticTextWidget(boss, font, xpos, ypos, 6*fontWidth, fontHeight,
+                             "Label:", kTextAlignLeft);
+    xpos += 6*fontWidth + 5;
+    myLabel = new EditTextWidget(boss, font, xpos, ypos-2, 15*fontWidth,
+                                 lineHeight, "");
+    myLabel->setEditable(false);
 
-  xpos += 15*fontWidth + 20;
-  t = new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
-                           "Dec:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
-  myDecValue = new EditTextWidget(boss, font, xpos, ypos-2, 4*fontWidth,
-                                  lineHeight, "");
-  myDecValue->setEditable(false);
+    xpos += 15*fontWidth + 20;
+    t = new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                             "Dec:", kTextAlignLeft);
+    xpos += 4*fontWidth + 5;
+    myDecValue = new EditTextWidget(boss, font, xpos, ypos-2, 4*fontWidth,
+                                    lineHeight, "");
+    myDecValue->setEditable(false);
 
-  xpos += 4*fontWidth + 20;
-  t = new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
-                           "Bin:", kTextAlignLeft);
-  xpos += 4*fontWidth + 5;
-  myBinValue = new EditTextWidget(boss, font, xpos, ypos-2, 9*fontWidth,
-                                  lineHeight, "");
-  myBinValue->setEditable(false);
+    xpos += 4*fontWidth + 20;
+    t = new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                             "Bin:", kTextAlignLeft);
+    xpos += 4*fontWidth + 5;
+    myBinValue = new EditTextWidget(boss, font, xpos, ypos-2, 9*fontWidth,
+                                    lineHeight, "");
+    myBinValue->setEditable(false);
+    ypos += lineHeight + 10;
+  }
 
   // Color registers
   const char* regNames[] = { "COLUP0:", "COLUP1:", "COLUPF:", "COLUBK:" };
-  xpos = 10;  ypos += 3*lineHeight;
+  xpos = 10;  ypos += lineHeight + 5;
   for(int row = 0; row < 4; ++row)
   {
     t = new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
@@ -228,7 +236,7 @@ TiaWidget::TiaWidget(GuiObject* boss, const GUI::Font& font,
   // P0 register info
   ////////////////////////////
   // grP0
-  xpos = 10;  ypos = 13*lineHeight;
+  xpos = 10;  ypos = buttonY + 2*lineHeight;
   t = new StaticTextWidget(boss, font, xpos, ypos+2,
                            7*fontWidth, fontHeight,
                            "P0: GR:", kTextAlignLeft);
@@ -878,14 +886,17 @@ void TiaWidget::fillGrid()
   TiaState& oldstate = (TiaState&) tia.getOldState();
 
   // TIA RAM
-  alist.clear();  vlist.clear();  changed.clear();
-  for(unsigned int i = 0; i < 16; i++)
+  if(myRamGrid)
   {
-    alist.push_back(i);
-    vlist.push_back(state.ram[i]);
-    changed.push_back(state.ram[i] != oldstate.ram[i]);
+    alist.clear();  vlist.clear();  changed.clear();
+    for(unsigned int i = 0; i < 16; i++)
+    {
+      alist.push_back(i);
+      vlist.push_back(state.ram[i]);
+      changed.push_back(state.ram[i] != oldstate.ram[i]);
+    }
+    myRamGrid->setList(alist, vlist, changed);
   }
-  myRamGrid->setList(alist, vlist, changed);
 
   // Color registers
   alist.clear();  vlist.clear();  changed.clear();
