@@ -12,6 +12,32 @@
                                Release History
 ===============================================================================
 
+2.7.3 to 2.7.5: (Mar. 27, 2009)
+
+  * After about 2 years, finally fixed the infamous 'red screen' issue when
+    using ATI video cards in OpenGL mode in Windows.  In the end, it was
+    determined to be a bug in the ATI drivers.  Special thanks go to
+    Phillip Pi for bugtesting and constant feedback wrt this bug.
+
+  * Fixed bug in TIA SCORE mode emulation when the Priority bit is also
+    set.  This fixes a very noticable graphical glitch in 'Swordquest
+    Waterworld', as well as minor glitches in several other ROMs such
+    as 'Space Shuttle'.
+
+  * Treat spaces as normal characters in the ROM launcher.  This means
+    that ROMs with spaces can be located with quick selection (ie,
+    typing characters will automatically jump to a ROM with that name,
+    and typing 'space' won't cause the launcher to jump back to the top
+    of the list).
+
+  * The debugger window can now have a minimum height of 620 lines
+    (previously the minimum was 690), but you lose access to the TIA 'RAM'
+    bytes when using this resolution.  This should allow it to work
+    better on devices with small displays.
+
+-Have fun!
+
+
 2.7.2 to 2.7.3: (Feb. 9, 2009)
 
   * Fixed rendering issues in software mode when using 24-bit colour depth.
@@ -25,8 +51,6 @@
 
   * Tweaked the TIA info statistics overlay to be smaller while still
     including all relevant information.
-
--Have fun!
 
 
 2.7.1 to 2.7.2: (Jan. 27, 2009)
