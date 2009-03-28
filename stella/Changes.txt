@@ -17,7 +17,7 @@
   * After about 2 years, finally fixed the infamous 'red screen' issue when
     using ATI video cards in OpenGL mode in Windows.  In the end, it was
     determined to be a bug in the ATI drivers.  Special thanks go to
-    Phillip Pi for bugtesting and constant feedback wrt this bug.
+    Ant (http://aqfl.net) for bugtesting and constant feedback wrt this bug.
 
   * Fixed bug in TIA SCORE mode emulation when the Priority bit is also
     set.  This fixes a very noticable graphical glitch in 'Swordquest
