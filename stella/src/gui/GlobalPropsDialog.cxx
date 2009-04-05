@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GlobalPropsDialog.cxx,v 1.4 2009-01-15 18:45:23 stephena Exp $
+// $Id: GlobalPropsDialog.cxx,v 1.5 2009-04-05 18:59:56 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -76,6 +76,7 @@ GlobalPropsDialog::
   items.push_back("DPC (Pitfall II)",           "DPC"  );
   items.push_back("E0 (8K Parker Bros)",        "E0"   );
   items.push_back("E7 (16K M-network)",         "E7"   );
+  items.push_back("EF (64K Homestar Runner)",   "EF"   );
   items.push_back("F4 (32K Atari)",             "F4"   );
   items.push_back("F4SC (32K Atari + ram)",     "F4SC" );
   items.push_back("F6 (16K Atari)",             "F6"   );

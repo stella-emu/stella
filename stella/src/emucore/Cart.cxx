@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.48 2009-02-07 21:50:05 stephena Exp $
+// $Id: Cart.cxx,v 1.49 2009-04-05 18:59:56 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -32,6 +32,7 @@
 #include "CartDPC.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
+#include "CartEF.hxx"
 #include "CartF4.hxx"
 #include "CartF4SC.hxx"
 #include "CartF6.hxx"
@@ -108,6 +109,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeE0(image);
   else if(type == "E7")
     cartridge = new CartridgeE7(image);
+  else if(type == "EF")
+    cartridge = new CartridgeEF(image);
   else if(type == "F4")
     cartridge = new CartridgeF4(image);
   else if(type == "F4SC")
@@ -265,6 +268,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else if(isProbably4A50(image, size))
       type = "4A50";
+    else if(isProbablyEF(image, size))
+      type = "EF";
     else
       type = "MB";
   }
@@ -409,12 +414,34 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
+{
+  // EF cart bankswitching switches banks by accessing addresses 0xFE0
+  // to 0xFEF, usually with either a NOP or LDA
+  // It's likely that the code will switch to bank 0, so that's what is tested
+  uInt8 signature[2][3] = {
+    { 0x0C, 0xE0, 0xFF },  // NOP $FFE0
+    { 0xAD, 0xE0, 0xFF }   // LDA $FFE0
+  };
+  if(searchForBytes(image, size, signature[0], 3, 1))
+    return true;
+  else
+    return searchForBytes(image, size, signature[1], 3, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
 {
   // UA cart bankswitching switches to bank 1 by accessing address 0x240
-  // using 'STA $240'
-  uInt8 signature[] = { 0x8D, 0x40, 0x02 };  // STA $240
-  return searchForBytes(image, size, signature, 3, 1);
+  // using 'STA $240' or 'LDA $240'
+  uInt8 signature[2][3] = {
+    { 0x8D, 0x40, 0x02 },  // STA $240
+    { 0xAD, 0x40, 0x02 }   // LDA $240
+  };
+  if(searchForBytes(image, size, signature[0], 3, 1))
+    return true;
+  else
+    return searchForBytes(image, size, signature[1], 3, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

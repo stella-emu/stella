@@ -12,6 +12,16 @@
                                Release History
 ===============================================================================
 
+2.7.5 to XXXXX: (2009)
+
+  * Added support for 'EF' bankswitching (Paul Slocum Homestar Runner),
+    as well as auto-detection of this format.
+
+  * Improved autodetection for 'UA' bankswitching format.
+
+-Have fun!
+
+
 2.7.3 to 2.7.5: (Mar. 27, 2009)
 
   * After about 2 years, finally fixed the infamous 'red screen' issue when
@@ -34,8 +44,6 @@
     (previously the minimum was 690), but you lose access to the TIA 'RAM'
     bytes when using this resolution.  This should allow it to work
     better on devices with small displays.
-
--Have fun!
 
 
 2.7.2 to 2.7.3: (Feb. 9, 2009)
