@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.49 2009-04-05 18:59:56 stephena Exp $
+// $Id: Cart.cxx,v 1.50 2009-04-05 20:18:41 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -33,6 +33,7 @@
 #include "CartE0.hxx"
 #include "CartE7.hxx"
 #include "CartEF.hxx"
+#include "CartEFSC.hxx"
 #include "CartF4.hxx"
 #include "CartF4SC.hxx"
 #include "CartF6.hxx"
@@ -111,6 +112,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     cartridge = new CartridgeE7(image);
   else if(type == "EF")
     cartridge = new CartridgeEF(image);
+  else if(type == "EFSC")
+    cartridge = new CartridgeEFSC(image);
   else if(type == "F4")
     cartridge = new CartridgeF4(image);
   else if(type == "F4SC")
@@ -269,7 +272,11 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else if(isProbably4A50(image, size))
       type = "4A50";
     else if(isProbablyEF(image, size))
+    {
       type = "EF";
+      if(isProbablySC(image, size))
+        type = "EFSC";
+    }
     else
       type = "MB";
   }

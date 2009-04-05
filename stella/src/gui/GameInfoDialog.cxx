@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: GameInfoDialog.cxx,v 1.69 2009-04-05 18:59:56 stephena Exp $
+// $Id: GameInfoDialog.cxx,v 1.70 2009-04-05 20:18:41 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -131,7 +131,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
-  pwidth = font.getStringWidth("MC (C. Wilkson Megacart)");
+  pwidth = font.getStringWidth("EFSC (64K H. Runner + ram)");
   items.clear();
   items.push_back("Auto-detect",          "AUTO-DETECT");
   items.push_back("0840 (8K ECONObank)",        "0840" );
@@ -145,7 +145,8 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("DPC (Pitfall II)",           "DPC"  );
   items.push_back("E0 (8K Parker Bros)",        "E0"   );
   items.push_back("E7 (16K M-network)",         "E7"   );
-  items.push_back("EF (64K Homestar Runner)",   "EF"   );
+  items.push_back("EF (64K H. Runner)",         "EF"   );
+  items.push_back("EFSC (64K H. Runner + ram)", "EFSC" );
   items.push_back("F4 (32K Atari)",             "F4"   );
   items.push_back("F4SC (32K Atari + ram)",     "F4SC" );
   items.push_back("F6 (16K Atari)",             "F6"   );

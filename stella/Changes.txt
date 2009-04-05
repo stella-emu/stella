@@ -17,6 +17,10 @@
   * Added support for 'EF' bankswitching (Paul Slocum Homestar Runner),
     as well as auto-detection of this format.
 
+  * Added support for 'EFSC' bankswitching, as well as auto-detection of
+    this format.  This is similar to the 'EF' scheme, but also includes
+    128 bytes SuperChip RAM.
+
   * Improved autodetection for 'UA' bankswitching format.
 
 -Have fun!
