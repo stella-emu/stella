@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.50 2009-04-05 20:18:41 stephena Exp $
+// $Id: Cart.cxx,v 1.51 2009-04-10 15:04:31 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -408,11 +408,14 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
   // search for only certain known signatures
   // Thanks to "stella@casperkitty.com" for this advice
   // These signatures are attributed to the MESS project
-  uInt8 signature[2][3] = {
+  uInt8 signature[5][3] = {
+   { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
+   { 0xAD, 0xE5, 0x1F },  // LDA $1FE5
+   { 0x0C, 0xE7, 0x1F },  // NOP $1FE7
    { 0x8D, 0xE7, 0xFF },  // STA $FFE7
-   { 0xAD, 0xE5, 0xFF }   // LDA $FFE5
+   { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
-  for(uInt32 i = 0; i < 2; ++i)
+  for(uInt32 i = 0; i < 5; ++i)
   {
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
