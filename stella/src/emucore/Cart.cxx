@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.52 2009-04-11 19:48:25 stephena Exp $
+// $Id: Cart.cxx,v 1.53 2009-04-11 20:09:31 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -490,8 +490,16 @@ bool Cartridge::isProbablySB(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
 {
-  // TODO - add autodetection for this type
-  return false;
+  // 0840 cart bankswitching is triggered by accessing addresses 0x0800
+  // or 0x0840
+  uInt8 signature[2][3] = {
+    { 0xAD, 0x00, 0x08 },  // LDA $0800
+    { 0xAD, 0x40, 0x08 }   // LDA $0840
+  };
+  if(searchForBytes(image, size, signature[0], 3, 1))
+    return true;
+  else
+    return searchForBytes(image, size, signature[1], 3, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
