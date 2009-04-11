@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartEF.cxx,v 1.2 2009-04-05 19:02:56 stephena Exp $
+// $Id: CartEF.cxx,v 1.3 2009-04-11 19:48:25 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -38,7 +38,7 @@ CartridgeEF::~CartridgeEF()
 void CartridgeEF::reset()
 {
   // Upon reset we switch to bank 1
-  myCurrentBank = 1;
+  bank(1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

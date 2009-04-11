@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.cxx,v 1.51 2009-04-10 15:04:31 stephena Exp $
+// $Id: Cart.cxx,v 1.52 2009-04-11 19:48:25 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -280,7 +280,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "MB";
   }
-  else if(size == 131072)  // 128K
+  else if(size == 128*1024)  // 128K
   {
     if(isProbably3E(image, size))
       type = "3E";
@@ -292,6 +292,15 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "SB";
     else
       type = "MC";
+  }
+  else if(size == 256*1024)  // 256K
+  {
+    if(isProbably3E(image, size))
+      type = "3E";
+    else if(isProbably3F(image, size))
+      type = "3F";
+    else /*if(isProbablySB(image, size))*/
+      type = "SB";
   }
   else  // what else can we do?
   {
@@ -467,8 +476,15 @@ bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbablySB(const uInt8* image, uInt32 size)
 {
-  // TODO - add autodetection for this type
-  return false;
+  // SB cart bankswitching switches banks by accessing address 0x0800
+  uInt8 signature[2][3] = {
+    { 0xBD, 0x00, 0x08 },  // LDA $0800,x
+    { 0xAD, 0x00, 0x08 }   // LDA $0800
+  };
+  if(searchForBytes(image, size, signature[0], 3, 1))
+    return true;
+  else
+    return searchForBytes(image, size, signature[1], 3, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

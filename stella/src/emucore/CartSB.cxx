@@ -164,7 +164,6 @@ bool CartridgeSB::patch(uInt16 address, uInt8 value)
   return true;
 } 
 
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeSB::getImage(int& size)
 {
