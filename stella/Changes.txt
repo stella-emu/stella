@@ -21,6 +21,8 @@
     this format.  This is similar to the 'EF' scheme, but also includes
     128 bytes SuperChip RAM.
 
+  * Added autodetection for '0840' and 'SB" bankswitching formats.
+
   * Improved autodetection for 'UA' bankswitching format.
 
 -Have fun!
