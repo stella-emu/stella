@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBuffer.cxx,v 1.165 2009-02-06 23:53:34 stephena Exp $
+// $Id: FrameBuffer.cxx,v 1.166 2009-04-12 17:04:29 stephena Exp $
 //============================================================================
 
 #include <algorithm>
@@ -1092,13 +1092,22 @@ void FrameBuffer::VideoModeList::set(const GraphicsMode& gfxmode)
   }
 
   // If we get here, then the gfx type couldn't be found, so we search
-  // for the first mode with the same zoomlevel
-  for(unsigned int i = 0; i < myModeList.size(); ++i)
+  // for the first mode with the same zoomlevel (making sure that the
+  // requested mode can fit inside the current screen)
+  if(gfxmode.zoom > myModeList[myModeList.size()-1].gfxmode.zoom)
   {
-    if(myModeList[i].gfxmode.zoom == gfxmode.zoom)
+    myIdx = myModeList.size()-1;
+    return;
+  }
+  else
+  {
+    for(unsigned int i = 0; i < myModeList.size(); ++i)
     {
-      myIdx = i;
-      return;
+      if(myModeList[i].gfxmode.zoom == gfxmode.zoom)
+      {
+        myIdx = i;
+        return;
+      }
     }
   }
 
