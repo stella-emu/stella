@@ -25,6 +25,10 @@
 
   * Improved autodetection for 'UA' bankswitching format.
 
+  * Fixed bug in selecting video modes larger than the current screen;
+    the resulting video mode will now be the largest one available
+    (previously it selected the smallest one available).
+
 -Have fun!
 
 
