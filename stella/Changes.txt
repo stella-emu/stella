@@ -29,6 +29,9 @@
     the resulting video mode will now be the largest one available
     (previously it selected the smallest one available).
 
+  * The currently selected CPU register now displays its value in
+    decimal and binary (in addition to hex) in the debugger.
+
 -Have fun!
 
 
