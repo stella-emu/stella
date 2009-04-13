@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CpuWidget.cxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+// $Id: CpuWidget.cxx,v 1.16 2009-04-13 15:17:07 stephena Exp $
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -32,31 +32,6 @@
 
 #include "CpuWidget.hxx"
 
-// ID's for the various widgets
-// We need ID's, since there are more than one of several types of widgets
-enum {
-  kPCRegID,
-  kCpuRegID
-};
-
-enum {
-  kPCRegAddr,
-  kSPRegAddr,
-  kARegAddr,
-  kXRegAddr,
-  kYRegAddr
-};
-
-enum {
-  kPSRegN = 0,
-  kPSRegV = 1,
-  kPSRegB = 3,
-  kPSRegD = 4,
-  kPSRegI = 5,
-  kPSRegZ = 6,
-  kPSRegC = 7
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, font, x, y, 16, 16),
@@ -73,20 +48,37 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   xpos = x;  ypos = y;  lwidth = 4 * fontWidth;
   new StaticTextWidget(boss, font, xpos, ypos+2, lwidth-2, fontHeight,
                        "PC:", kTextAlignLeft);
-  myPCGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 16, 16);
+  myPCGrid =
+    new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 1, 4, 16, kBASE_16);
   myPCGrid->setTarget(this);
   myPCGrid->setID(kPCRegID);
   addFocusWidget(myPCGrid);
 
   // Create a read-only textbox containing the current PC label
   xpos += lwidth + myPCGrid->getWidth() + 10;
-  myPCLabel = new EditTextWidget(boss, font, xpos, ypos, fontWidth*15,
+  myPCLabel = new EditTextWidget(boss, font, xpos, ypos, fontWidth*25,
                                  lineHeight, "");
   myPCLabel->setEditable(false);
 
+  // Create read-only textboxes for decimal and binary of currently selected item
+  ypos += myPCLabel->getHeight() + 5 + 5;
+  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Dec:", kTextAlignLeft);
+  myDecValue = new EditTextWidget(boss, font, xpos+4*fontWidth + 5, ypos-2,
+                                  4*fontWidth, lineHeight, "");
+  myDecValue->setEditable(false);
+
+  ypos += myPCLabel->getHeight() + 5;
+  new StaticTextWidget(boss, font, xpos, ypos, 4*fontWidth, fontHeight,
+                       "Bin:", kTextAlignLeft);
+  myBinValue = new EditTextWidget(boss, font, xpos+4*fontWidth + 5, ypos-2,
+                                  9*fontWidth, lineHeight, "");
+  myBinValue->setEditable(false);
+
   // Create a 1x4 grid with labels for the other CPU registers
-  xpos = x;  ypos += myPCGrid->getHeight() + 1;
-  myCpuGrid = new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 4, 8, 8);
+  xpos = x;  ypos += myPCGrid->getHeight() + 1 - 2*(myPCLabel->getHeight() + 5) - 5;
+  myCpuGrid =
+    new DataGridWidget(boss, font, xpos + lwidth, ypos, 1, 4, 2, 8, kBASE_16);
   myCpuGrid->setTarget(this);
   myCpuGrid->setID(kCpuRegID);
   addFocusWidget(myCpuGrid);
@@ -148,6 +140,8 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kCpuRegID:
           addr  = myCpuGrid->getSelectedAddr();
           value = myCpuGrid->getSelectedValue();
+          myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
+          myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
           break;
       }
 
@@ -178,6 +172,15 @@ void CpuWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         case kYRegAddr:
           dbg.setY(value);
           break;
+      }
+      break;
+
+    case kDGSelectionChangedCmd:
+      if(id == kCpuRegID)
+      {
+          value = myCpuGrid->getSelectedValue();
+          myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
+          myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
       }
       break;
 

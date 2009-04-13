@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Debugger.cxx,v 1.135 2009-03-26 19:46:05 stephena Exp $
+// $Id: Debugger.cxx,v 1.136 2009-04-13 15:17:06 stephena Exp $
 //============================================================================
 
 #include "bspf.hxx"
@@ -57,34 +57,34 @@ Debugger* Debugger::myStaticDebugger;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const string builtin_functions[][3] = {
-	// { "name", "definition", "help text" }
+  // { "name", "definition", "help text" }
 
-	// left joystick:
-	{ "_joy0left", "!(*SWCHA & $40)", "Left joystick moved left" },
-	{ "_joy0right", "!(*SWCHA & $80)", "Left joystick moved right" },
-	{ "_joy0up", "!(*SWCHA & $10)", "Left joystick moved up" },
-	{ "_joy0down", "!(*SWCHA & $20)", "Left joystick moved down" },
-	{ "_joy0button", "!(*INPT4 & $80)", "Left joystick button pressed" },
+  // left joystick:
+  { "_joy0left", "!(*SWCHA & $40)", "Left joystick moved left" },
+  { "_joy0right", "!(*SWCHA & $80)", "Left joystick moved right" },
+  { "_joy0up", "!(*SWCHA & $10)", "Left joystick moved up" },
+  { "_joy0down", "!(*SWCHA & $20)", "Left joystick moved down" },
+  { "_joy0button", "!(*INPT4 & $80)", "Left joystick button pressed" },
 
-	// right joystick:
-	{ "_joy1left", "!(*SWCHA & $04)", "Right joystick moved left" },
-	{ "_joy1right", "!(*SWCHA & $08)", "Right joystick moved right" },
-	{ "_joy1up", "!(*SWCHA & $01)", "Right joystick moved up" },
-	{ "_joy1down", "!(*SWCHA & $02)", "Right joystick moved down" },
-	{ "_joy1button", "!(*INPT5 & $80)", "Right joystick button pressed" },
+  // right joystick:
+  { "_joy1left", "!(*SWCHA & $04)", "Right joystick moved left" },
+  { "_joy1right", "!(*SWCHA & $08)", "Right joystick moved right" },
+  { "_joy1up", "!(*SWCHA & $01)", "Right joystick moved up" },
+  { "_joy1down", "!(*SWCHA & $02)", "Right joystick moved down" },
+  { "_joy1button", "!(*INPT5 & $80)", "Right joystick button pressed" },
 
-	// console switches:
-	{ "_select", "!(*SWCHB & $02)", "Game Select pressed" },
-	{ "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
-	{ "_color", "*SWCHB & $08", "Color/BW set to Color" },
-	{ "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
-	{ "_diff0b", "!(*SWCHB & $40)", "Left difficulty set to B (easy)" },
-	{ "_diff0a", "*SWCHB & $40", "Left difficulty set to A (hard)" },
-	{ "_diff1b", "!(*SWCHB & $80)", "Right difficulty set to B (easy)" },
-	{ "_diff1a", "*SWCHB & $80", "Right difficulty set to A (hard)" },
+  // console switches:
+  { "_select", "!(*SWCHB & $02)", "Game Select pressed" },
+  { "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
+  { "_color", "*SWCHB & $08", "Color/BW set to Color" },
+  { "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
+  { "_diff0b", "!(*SWCHB & $40)", "Left difficulty set to B (easy)" },
+  { "_diff0a", "*SWCHB & $40", "Left difficulty set to A (hard)" },
+  { "_diff1b", "!(*SWCHB & $80)", "Right difficulty set to B (easy)" },
+  { "_diff1a", "*SWCHB & $80", "Right difficulty set to A (hard)" },
 
-	// empty string marks end of list, do not remove
-	{ "", "", "" }
+  // empty string marks end of list, do not remove
+  { "", "", "" }
 };
 
 
@@ -325,35 +325,34 @@ string Debugger::getSourceLines(int addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::autoExec() {
-	// autoexec.stella is always run
-	myPrompt->print("autoExec():\n" +
-			myParser->exec(
-				myOSystem->baseDir() +
-				BSPF_PATH_SEPARATOR +
-				"autoexec.stella") +
-			"\n");
+void Debugger::autoExec()
+{
+  // autoexec.stella is always run
+  const string& autoexec = myOSystem->baseDir(false) + BSPF_PATH_SEPARATOR +
+                           "autoexec.stella";
+  myPrompt->print("autoExec():\n" + myParser->exec(autoexec) + "\n");
 
-	// also, "romname.stella" if present
-	string file = myOSystem->romFile();
+  // Also, "romname.stella" if present
+  string file = myOSystem->romFile();
 
-	string::size_type pos;
-	if( (pos = file.find_last_of('.')) != string::npos ) {
-		file.replace(pos, file.size(), ".stella");
-	} else {
-		file += ".stella";
-	}
-	myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
-	myPrompt->printPrompt();
+  string::size_type pos;
+  if( (pos = file.find_last_of('.')) != string::npos )
+    file.replace(pos, file.size(), ".stella");
+  else
+    file += ".stella";
 
-	// init builtins
-	for(int i=0; builtin_functions[i][0] != ""; i++) {
-		string f = builtin_functions[i][1];
-		int res = YaccParser::parse(f.c_str());
-		if(res != 0) cerr << "ERROR in builtin function!" << endl;
-		Expression *exp = YaccParser::getResult();
-		addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
-	}
+  myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
+  myPrompt->printPrompt();
+
+  // Init builtins
+  for(int i = 0; builtin_functions[i][0] != ""; i++)
+  {
+    // TODO - check this for memory leaks
+    int res = YaccParser::parse(builtin_functions[i][1].c_str());
+    if(res != 0) cerr << "ERROR in builtin function!" << endl;
+    Expression* exp = YaccParser::getResult();
+    addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
