@@ -295,7 +295,6 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
-		DC54CDA00C79CD7200DD0ACD /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC54CD9F0C79CD7200DD0ACD /* Version.hxx */; };
 		DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4E0F117CFD004D1660 /* Rect.hxx */; };
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
 		DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */; };
@@ -330,6 +329,15 @@
 		DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
+		DCF467B50F93993B00B25D7A /* Array.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B10F93993B00B25D7A /* Array.hxx */; };
+		DCF467B60F93993B00B25D7A /* SharedPtr.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B20F93993B00B25D7A /* SharedPtr.hxx */; };
+		DCF467B70F93993B00B25D7A /* SoundNull.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF467B30F93993B00B25D7A /* SoundNull.cxx */; };
+		DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B40F93993B00B25D7A /* SoundNull.hxx */; };
+		DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467BC0F9399F500B25D7A /* Version.hxx */; };
+		DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF467BE0F939A1400B25D7A /* CartEF.cxx */; };
+		DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467BF0F939A1400B25D7A /* CartEF.hxx */; };
+		DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF467C00F939A1400B25D7A /* CartEFSC.cxx */; };
+		DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467C10F939A1400B25D7A /* CartEFSC.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -671,7 +679,6 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RiotWidget.hxx; path = ../debugger/gui/RiotWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKey.cxx; path = ../emucore/SaveKey.cxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SaveKey.hxx; path = ../emucore/SaveKey.hxx; sourceTree = SOURCE_ROOT; };
-		DC54CD9F0C79CD7200DD0ACD /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Version.hxx; path = ../common/Version.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4E0F117CFD004D1660 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Rect.hxx; path = ../gui/Rect.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaFont.hxx; path = ../gui/StellaFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaLargeFont.hxx; path = ../gui/StellaLargeFont.hxx; sourceTree = SOURCE_ROOT; };
@@ -706,6 +713,15 @@
 		DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TrackBall.hxx; path = ../emucore/TrackBall.hxx; sourceTree = SOURCE_ROOT; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
+		DCF467B10F93993B00B25D7A /* Array.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Array.hxx; path = ../common/Array.hxx; sourceTree = SOURCE_ROOT; };
+		DCF467B20F93993B00B25D7A /* SharedPtr.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SharedPtr.hxx; path = ../common/SharedPtr.hxx; sourceTree = SOURCE_ROOT; };
+		DCF467B30F93993B00B25D7A /* SoundNull.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SoundNull.cxx; path = ../common/SoundNull.cxx; sourceTree = SOURCE_ROOT; };
+		DCF467B40F93993B00B25D7A /* SoundNull.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SoundNull.hxx; path = ../common/SoundNull.hxx; sourceTree = SOURCE_ROOT; };
+		DCF467BC0F9399F500B25D7A /* Version.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Version.hxx; path = ../common/Version.hxx; sourceTree = SOURCE_ROOT; };
+		DCF467BE0F939A1400B25D7A /* CartEF.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartEF.cxx; path = ../emucore/CartEF.cxx; sourceTree = SOURCE_ROOT; };
+		DCF467BF0F939A1400B25D7A /* CartEF.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartEF.hxx; path = ../emucore/CartEF.hxx; sourceTree = SOURCE_ROOT; };
+		DCF467C00F939A1400B25D7A /* CartEFSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartEFSC.cxx; path = ../emucore/CartEFSC.cxx; sourceTree = SOURCE_ROOT; };
+		DCF467C10F939A1400B25D7A /* CartEFSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartEFSC.hxx; path = ../emucore/CartEFSC.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -864,6 +880,11 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DCF467BC0F9399F500B25D7A /* Version.hxx */,
+				DCF467B10F93993B00B25D7A /* Array.hxx */,
+				DCF467B20F93993B00B25D7A /* SharedPtr.hxx */,
+				DCF467B30F93993B00B25D7A /* SoundNull.cxx */,
+				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
 				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */,
@@ -904,6 +925,10 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCF467BE0F939A1400B25D7A /* CartEF.cxx */,
+				DCF467BF0F939A1400B25D7A /* CartEF.hxx */,
+				DCF467C00F939A1400B25D7A /* CartEFSC.cxx */,
+				DCF467C10F939A1400B25D7A /* CartEFSC.hxx */,
 				DC9EA8850F729A36000452B5 /* KidVid.cxx */,
 				DC9EA8860F729A36000452B5 /* KidVid.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
@@ -1071,7 +1096,6 @@
 				DC8078E70B4BD697005E9305 /* UIDialog.hxx */,
 				2DDBEAA3084578BF00812C11 /* AboutDialog.cxx */,
 				2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */,
-				DC54CD9F0C79CD7200DD0ACD /* Version.hxx */,
 				2DDBEAA6084578BF00812C11 /* AudioDialog.cxx */,
 				2DDBEAA7084578BF00812C11 /* AudioDialog.hxx */,
 				2DDBEAA8084578BF00812C11 /* BrowserDialog.cxx */,
@@ -1338,7 +1362,6 @@
 				DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */,
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
-				DC54CDA00C79CD7200DD0ACD /* Version.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
 				DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */,
 				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
@@ -1364,6 +1387,12 @@
 				DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */,
 				DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */,
 				DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */,
+				DCF467B50F93993B00B25D7A /* Array.hxx in Headers */,
+				DCF467B60F93993B00B25D7A /* SharedPtr.hxx in Headers */,
+				DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */,
+				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
+				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
+				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1612,6 +1641,9 @@
 				DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */,
 				DC932D470F278A5200FEFEFC /* TIATables.cxx in Sources */,
 				DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */,
+				DCF467B70F93993B00B25D7A /* SoundNull.cxx in Sources */,
+				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
+				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
