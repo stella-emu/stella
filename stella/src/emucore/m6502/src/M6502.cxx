@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.24 2009-01-01 18:13:38 stephena Exp $
+// $Id: M6502.cxx,v 1.25 2009-04-20 15:03:13 stephena Exp $
 //============================================================================
 
 #include "M6502.hxx"
@@ -37,16 +37,8 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
   myWriteTraps  = NULL;
 #endif
 
-  // Compute the BCD lookup table
-  uInt16 t;
-  for(t = 0; t < 256; ++t)
-  {
-    ourBCDTable[0][t] = ((t >> 4) * 10) + (t & 0x0f);
-    ourBCDTable[1][t] = (((t % 100) / 10) << 4) | (t % 10);
-  }
-
   // Compute the System Cycle table
-  for(t = 0; t < 256; ++t)
+  for(uInt32 t = 0; t < 256; ++t)
   {
     myInstructionSystemCycleTable[t] = ourInstructionProcessorCycleTable[t] *
         mySystemCyclesPerProcessorCycle;
@@ -189,9 +181,6 @@ ostream& operator<<(ostream& out, const M6502::AddressingMode& mode)
   }
   return out;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 M6502::ourBCDTable[2][256];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6502::AddressingMode M6502::ourAddressingModeTable[256] = {
@@ -461,8 +450,9 @@ void M6502::delCondBreak(unsigned int brk)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::clearCondBreaks()
 {
-  for(unsigned int i=0; i<myBreakConds.size(); i++)
+  for(uInt32 i = 0; i < myBreakConds.size(); i++)
     delete myBreakConds[i];
+
   myBreakConds.clear();
   myBreakCondNames.clear();
 }
@@ -476,7 +466,7 @@ const StringList& M6502::getCondBreakNames() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int M6502::evalCondBreaks()
 {
-  for(unsigned int i=0; i<myBreakConds.size(); i++)
+  for(uInt32 i = 0; i < myBreakConds.size(); i++)
     if(myBreakConds[i]->evaluate())
       return i;
 
@@ -495,4 +485,5 @@ void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
   myReadTraps = read;
   myWriteTraps = write;
 }
+
 #endif

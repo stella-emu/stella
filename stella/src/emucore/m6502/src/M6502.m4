@@ -13,14 +13,17 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4,v 1.7 2008-04-27 11:53:22 stephena Exp $
+// $Id: M6502.m4,v 1.8 2009-04-20 15:03:13 stephena Exp $
 //============================================================================
 
 /** 
   Code and cases to emulate each of the 6502 instruction 
 
+  Recompile with the following:
+    'm4 M6502[Hi|Low].m4 M6502.m4 > M6502[Hi|Low].ins'
+
   @author  Bradford W. Mott
-  @version $Id: M6502.m4,v 1.7 2008-04-27 11:53:22 stephena Exp $
+  @version $Id: M6502.m4,v 1.8 2009-04-20 15:03:13 stephena Exp $
 */
 
 #ifndef NOTSAMEPAGE
@@ -28,28 +31,33 @@
 #endif
 
 define(M6502_ADC, `{
-  uInt8 oldA = A;
-  Int16 nonBCDSum = (Int16)A + (Int16)operand + (C ? 1 : 0);
-
   if(!D)
   {
-    Int16 sum = (Int16)((Int8)A) + (Int16)((Int8)operand) + (C ? 1 : 0);
-    V = ((sum > 127) || (sum < -128));
+    Int32 sum = A + operand + (C ? 1 : 0);
+    N = sum & 0x80;
+    V = ~(A ^ operand) & (A ^ sum) & 0x80;
+    notZ = sum & 0xff;
+    C = sum & 0xff00;
 
-    A = nonBCDSum;
-    C = (nonBCDSum > 0xff);
-    notZ = A;
-    N = A & 0x80;
+    A = (uInt8) sum;
   }
   else
   {
-    Int16 sum = ourBCDTable[0][A] + ourBCDTable[0][operand] + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 hi = (A & 0xf0) + (operand & 0xf0);
+    notZ = (lo+hi) & 0xff;
+    if(lo > 0x09)
+    {
+      hi += 0x10;
+      lo += 0x06;
+    }
+    N = hi & 0x80;
+    V = ~(A ^ operand) & (A ^ hi) & 0x80;
+    if(hi > 0x90)
+      hi += 0x60;
+    C = hi & 0xff00;
 
-    notZ = nonBCDSum & 0xff;  // Z flag calculation ignores D flag
-    C = (sum > 99);
-    A = ourBCDTable[1][sum & 0xff];
-    N = A & 0x80;
-    V = ((oldA ^ A) & 0x80) && ((A ^ operand) & 0x80);
+    A = (lo & 0x0f) + (hi & 0xf0);
   }
 }')
 
@@ -273,35 +281,31 @@ define(M6502_ISB, `{
   operand = operand + 1;
   poke(operandAddress, operand);
 
-  uInt8 oldA = A;
+  // N, V, Z, C flags are the same in either mode (C calculated at the end)
+  Int32 sum = A - operand - (C ? 0 : 1);
+  N = sum & 0x80;
+  V = (A ^ operand) & (A ^ sum) & 0x80;
+  notZ = sum & 0xff;
 
   if(!D)
   {
-    operand = ~operand;
-    Int16 difference = (Int16)((Int8)A) + (Int16)((Int8)operand) + (C ? 1 : 0);
-    V = ((difference > 127) || (difference < -128));
-
-    difference = ((Int16)A) + ((Int16)operand) + (C ? 1 : 0);
-    A = difference;
-    C = (difference > 0xff);
-    notZ = A;
-    N = A & 0x80;
+    A = (uInt8) sum;
   }
   else
   {
-    Int16 difference = ourBCDTable[0][A] - ourBCDTable[0][operand] 
-        - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 hi = (A & 0xf0) - (operand & 0xf0);
+    if(lo & 0x10)
+    {
+      lo -= 6;
+      hi--;
+    }
+    if(hi & 0x0100)
+      hi -= 0x60;
 
-    if(difference < 0)
-      difference += 100;
-
-    A = ourBCDTable[1][difference];
-    notZ = A;
-    N = A & 0x80;
-
-    C = (oldA >= (operand + (C ? 0 : 1)));
-    V = ((oldA ^ A) & 0x80) && ((A ^ operand) & 0x80);
+    A = (lo & 0x0f) | (hi & 0xf0);
   }
+  C = (sum & 0xff00) == 0;
 }')
 
 define(M6502_JMP, `{
@@ -472,7 +476,6 @@ define(M6502_RORA, `{
 }')
 
 define(M6502_RRA, `{
-  uInt8 oldA = A;
   bool oldC = C;
 
   // Set carry flag according to the right-most bit
@@ -483,24 +486,31 @@ define(M6502_RRA, `{
 
   if(!D)
   {
-    Int16 sum = (Int16)((Int8)A) + (Int16)((Int8)operand) + (C ? 1 : 0);
-    V = ((sum > 127) || (sum < -128));
+    Int32 sum = A + operand + (C ? 1 : 0);
+    N = sum & 0x80;
+    V = ~(A ^ operand) & (A ^ sum) & 0x80;
+    notZ = sum & 0xff;
+    C = sum & 0xff00;
 
-    sum = (Int16)A + (Int16)operand + (C ? 1 : 0);
-    A = sum;
-    C = (sum > 0xff);
-    notZ = A;
-    N = A & 0x80;
+    A = (uInt8) sum;
   }
   else
   {
-    Int16 sum = ourBCDTable[0][A] + ourBCDTable[0][operand] + (C ? 1 : 0);
+    Int32 lo = (A & 0x0f) + (operand & 0x0f) + (C ? 1 : 0);
+    Int32 hi = (A & 0xf0) + (operand & 0xf0);
+    notZ = (lo+hi) & 0xff;
+    if(lo > 0x09)
+    {
+      hi += 0x10;
+      lo += 0x06;
+    }
+    N = hi & 0x80;
+    V = ~(A ^ operand) & (A ^ hi) & 0x80;
+    if(hi > 0x90)
+      hi += 0x60;
+    C = hi & 0xff00;
 
-    C = (sum > 99);
-    A = ourBCDTable[1][sum & 0xff];
-    notZ = A;
-    N = A & 0x80;
-    V = ((oldA ^ A) & 0x80) && ((A ^ operand) & 0x80);
+    A = (lo & 0x0f) + (hi & 0xf0);
   }
 }')
 
@@ -523,36 +533,31 @@ define(M6502_SAX, `{
 }')
 
 define(M6502_SBC, `{
-  uInt8 oldA = A;
+  // N, V, Z, C flags are the same in either mode (C calculated at the end)
+  Int32 sum = A - operand - (C ? 0 : 1);
+  N = sum & 0x80;
+  V = (A ^ operand) & (A ^ sum) & 0x80;
+  notZ = sum & 0xff;
 
   if(!D)
   {
-    operand = ~operand;
-    Int16 difference = (Int16)((Int8)A) + (Int16)((Int8)operand) + (C ? 1 : 0);
-    V = ((difference > 127) || (difference < -128));
-
-    difference = ((Int16)A) + ((Int16)operand) + (C ? 1 : 0);
-    A = difference;
-    C = (difference > 0xff);
-    notZ = A;
-    N = A & 0x80;
+    A = (uInt8) sum;
   }
   else
   {
-    Int16 difference = ourBCDTable[0][A] - ourBCDTable[0][operand] 
-        - (C ? 0 : 1);
+    Int32 lo = (A & 0x0f) - (operand & 0x0f) - (C ? 0 : 1);
+    Int32 hi = (A & 0xf0) - (operand & 0xf0);
+    if(lo & 0x10)
+    {
+      lo -= 6;
+      hi--;
+    }
+    if(hi & 0x0100)
+      hi -= 0x60;
 
-    if(difference < 0)
-      difference += 100;
-
-    // Z flag calculation ignores D flag
-    notZ = (((Int16)A) + ((Int16)~operand) + (C ? 1 : 0)) & 0xff;
-    A = ourBCDTable[1][difference];
-    N = A & 0x80;
-
-    C = (oldA >= (operand + (C ? 0 : 1)));
-    V = ((oldA ^ A) & 0x80) && ((A ^ operand) & 0x80);
+    A = (lo & 0x0f) | (hi & 0xf0);
   }
+  C = (sum & 0xff00) == 0;
 }')
 
 define(M6502_SBX, `{

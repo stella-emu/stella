@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.23 2009-01-01 18:13:38 stephena Exp $
+// $Id: M6502.hxx,v 1.24 2009-04-20 15:03:13 stephena Exp $
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef Common::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.23 2009-01-01 18:13:38 stephena Exp $ 
+  @version $Id: M6502.hxx,v 1.24 2009-04-20 15:03:13 stephena Exp $ 
 */
 class M6502
 {
@@ -324,9 +324,6 @@ class M6502
     /// Access mode for each of the 256 opcodes
     /// This specifies how the opcode will access its argument
     static AccessMode ourAccessModeTable[256];
-
-    /// Lookup table used for binary-code-decimal math
-    static uInt8 ourBCDTable[2][256];
 
     /**
       Table of instruction processor cycle times.  In some cases additional 
