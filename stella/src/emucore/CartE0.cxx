@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.cxx,v 1.17 2009-01-01 18:13:35 stephena Exp $
+// $Id: CartE0.cxx,v 1.18 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -85,7 +85,7 @@ void CartridgeE0::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeE0::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FE7))
@@ -107,7 +107,7 @@ uInt8 CartridgeE0::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::poke(uInt16 address, uInt8)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FE7))

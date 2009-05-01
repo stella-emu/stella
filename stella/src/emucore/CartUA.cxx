@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+// $Id: CartUA.cxx,v 1.15 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -72,7 +72,7 @@ void CartridgeUA::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeUA::peek(uInt16 address)
 {
-  address = address & 0x1FFF;
+  address &= 0x1FFF;
 
   // Switch banks if necessary
   switch(address)
@@ -104,7 +104,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeUA::poke(uInt16 address, uInt8 value)
 {
-  address = address & 0x1FFF;
+  address &= 0x1FFF;
 
   // Switch banks if necessary
   switch(address)

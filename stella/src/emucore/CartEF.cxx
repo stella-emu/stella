@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartEF.cxx,v 1.3 2009-04-11 19:48:25 stephena Exp $
+// $Id: CartEF.cxx,v 1.4 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -68,7 +68,7 @@ void CartridgeEF::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeEF::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FEF))
@@ -80,7 +80,7 @@ uInt8 CartridgeEF::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEF::poke(uInt16 address, uInt8)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FEF))

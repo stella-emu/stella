@@ -81,7 +81,7 @@ void Cartridge0840::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge0840::peek(uInt16 address)
 {
-  address = address & 0x1840;
+  address &= 0x1840;
 
   // Switch banks if necessary
   switch(address)
@@ -114,7 +114,7 @@ uInt8 Cartridge0840::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840::poke(uInt16 address, uInt8 value)
 {
-  address = address & 0x1840;
+  address &= 0x1840;
 
   // Switch banks if necessary
   switch(address)

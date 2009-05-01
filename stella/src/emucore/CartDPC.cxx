@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartDPC.cxx,v 1.22 2009-01-01 18:13:35 stephena Exp $
+// $Id: CartDPC.cxx,v 1.23 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -146,7 +146,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
   mySystemCycles = mySystem->cycles();
 
   // Calculate the number of DPC OSC clocks since the last update
-  double clocks = ((15750.0 * cycles) / 1193191.66666667) + myFractionalClocks;
+  double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
   Int32 wholeClocks = (Int32)clocks;
   myFractionalClocks = clocks - (double)wholeClocks;
 
@@ -195,7 +195,7 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeDPC::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Clock the random number generator.  This should be done for every
   // cartridge access, however, we're only doing it for the DPC and 
@@ -318,7 +318,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::poke(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Clock the random number generator.  This should be done for every
   // cartridge access, however, we're only doing it for the DPC and 

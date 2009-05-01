@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.19 2009-01-01 18:13:35 stephena Exp $
+// $Id: CartFASC.cxx,v 1.20 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -92,7 +92,7 @@ void CartridgeFASC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFASC::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   switch(address)
@@ -131,7 +131,7 @@ uInt8 CartridgeFASC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFASC::poke(uInt16 address, uInt8)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   switch(address)

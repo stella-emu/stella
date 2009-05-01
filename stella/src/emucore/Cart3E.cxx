@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3E.cxx,v 1.18 2009-01-01 18:13:35 stephena Exp $
+// $Id: Cart3E.cxx,v 1.19 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -91,7 +91,7 @@ void Cartridge3E::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge3E::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   if(address < 0x0800)
   {
@@ -109,7 +109,7 @@ uInt8 Cartridge3E::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::poke(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary. Armin (Kroko) says there are no mirrored
   // hotspots.

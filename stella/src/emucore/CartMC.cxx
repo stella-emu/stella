@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.cxx,v 1.17 2009-01-01 18:13:35 stephena Exp $
+// $Id: CartMC.cxx,v 1.18 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -91,7 +91,7 @@ void CartridgeMC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeMC::peek(uInt16 address)
 {
-  address = address & 0x1FFF;
+  address &= 0x1FFF;
 
   // Accessing the RESET vector so lets handle the powerup special case
   if((address == 0x1FFC) || (address == 0x1FFD))
@@ -151,7 +151,7 @@ uInt8 CartridgeMC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::poke(uInt16 address, uInt8 value)
 {
-  address = address & 0x1FFF;
+  address &= 0x1FFF;
 
   // Accessing the RESET vector so lets handle the powerup special case
   if((address == 0x1FFC) || (address == 0x1FFD))

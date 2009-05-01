@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF4SC.cxx,v 1.20 2009-01-01 18:13:35 stephena Exp $
+// $Id: CartF4SC.cxx,v 1.21 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -92,7 +92,7 @@ void CartridgeF4SC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeF4SC::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FF4) && (address <= 0x0FFB))
@@ -109,6 +109,8 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4SC::poke(uInt16 address, uInt8)
 {
+  address &= 0x0FFF;
+
   // Switch banks if necessary
   if((address >= 0x0FF4) && (address <= 0x0FFB))
   {

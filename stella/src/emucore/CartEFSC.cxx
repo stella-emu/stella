@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartEFSC.cxx,v 1.1 2009-04-05 20:18:41 stephena Exp $
+// $Id: CartEFSC.cxx,v 1.2 2009-05-01 11:25:07 stephena Exp $
 //============================================================================
 
 #include <cassert>
@@ -92,7 +92,7 @@ void CartridgeEFSC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeEFSC::peek(uInt16 address)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FEF))
@@ -107,7 +107,7 @@ uInt8 CartridgeEFSC::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEFSC::poke(uInt16 address, uInt8)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FEF))

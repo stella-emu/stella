@@ -12,6 +12,21 @@
                                Release History
 ===============================================================================
 
+2.7.6 to 2.7.7: (May 1, 2009)
+
+  * Corrected emulation of CPU opcodes involving 'decimal' mode (ADC/RRA
+    and SBC/ISB).  Special thanks to SeaGtGruff and others on the Stella
+    mailing list for in-depth discussion and creation of test ROMs.
+
+  * Fixed bug in F4SC bankswitching mode; writes to bankswitch addresses
+    weren't triggering a bank switch.
+
+  * Changed internal sound frequency of Pitfall 2 from 15.75KHz to 20KHz,
+    as this sounds much more authentic when compared to a real cartridge.
+
+-Have fun!
+
+
 2.7.5 to 2.7.6: (April 14, 2009)
 
   * Added support for 'EF' bankswitching (Paul Slocum Homestar Runner),
@@ -31,8 +46,6 @@
 
   * The currently selected CPU register now displays its value in
     decimal and binary (in addition to hex) in the debugger.
-
--Have fun!
 
 
 2.7.3 to 2.7.5: (Mar. 27, 2009)
