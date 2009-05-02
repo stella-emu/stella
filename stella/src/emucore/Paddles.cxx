@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.16 2009-01-01 18:13:36 stephena Exp $
+// $Id: Paddles.cxx,v 1.17 2009-05-02 21:27:32 stephena Exp $
 //============================================================================
 
 #define TRIGMAX 240
@@ -299,8 +299,8 @@ void Paddles::update()
     }
   }
  
-  myAnalogPinValue[Five] = (Int32)(1000000 * (myCharge[1] / 255.0));
-  myAnalogPinValue[Nine] = (Int32)(1000000 * (myCharge[0] / 255.0));
+  myAnalogPinValue[Five] = (Int32)(1100000 * (myCharge[1] / 255.0));
+  myAnalogPinValue[Nine] = (Int32)(1100000 * (myCharge[0] / 255.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
