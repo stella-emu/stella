@@ -13,10 +13,11 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.15 2009-05-01 11:25:07 stephena Exp $
+// $Id: CartUA.cxx,v 1.16 2009-05-10 20:57:18 stephena Exp $
 //============================================================================
 
 #include <cassert>
+#include <cstring>
 
 #include "System.hxx"
 #include "CartUA.hxx"
@@ -25,10 +26,7 @@
 CartridgeUA::CartridgeUA(const uInt8* image)
 {
   // Copy the ROM image into my buffer
-  for(uInt32 addr = 0; addr < 8192; ++addr)
-  {
-    myImage[addr] = image[addr];
-  }
+  memcpy(myImage, image, 8192);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -72,8 +70,6 @@ void CartridgeUA::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeUA::peek(uInt16 address)
 {
-  address &= 0x1FFF;
-
   // Switch banks if necessary
   switch(address)
   {
@@ -170,7 +166,6 @@ bool CartridgeUA::patch(uInt16 address, uInt8 value)
 {
   address &= 0x0fff;
   myImage[myCurrentBank * 4096] = value;
-  bank(myCurrentBank); // TODO: see if this is really necessary
   return true;
 } 
 

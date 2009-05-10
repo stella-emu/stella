@@ -13,8 +13,10 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.cxx,v 1.24 2009-01-13 14:45:34 stephena Exp $
+// $Id: M6502Hi.cxx,v 1.25 2009-05-10 20:57:18 stephena Exp $
 //============================================================================
+
+//#define DEBUG_OUTPUT
 
 #include "M6502Hi.hxx"
 #include "Serializer.hxx"
@@ -36,6 +38,12 @@ M6502High::M6502High(uInt32 systemCyclesPerProcessorCycle)
 #ifdef DEBUGGER_SUPPORT
   myJustHitTrapFlag = false;
 #endif
+
+
+
+debugStream << "( Fm  Ln Cyc Clk) ( P0  P1  M0  M1  BL)  "
+            << "flags   A  X  Y SP  Code           Disasm" << endl
+            << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,16 +140,24 @@ bool M6502High::execute(uInt32 number)
       }
 #endif
 
-#ifdef DEBUG
-      debugStream << "PC=" << hex << setw(4) << PC << " ";
-#endif
-
       // Fetch instruction at the program counter
       IR = peek(PC++);
 
-#ifdef DEBUG
-      debugStream << "IR=" << hex << setw(2) << (int)IR << " ";
-      debugStream << "<" << ourAddressingModeTable[IR] << " ";
+#ifdef DEBUG_OUTPUT
+      debugStream << ::hex << setw(2) << (int)A << " "
+                  << ::hex << setw(2) << (int)X << " "
+                  << ::hex << setw(2) << (int)Y << " "
+                  << ::hex << setw(2) << (int)SP << "  "
+                  << setw(4) << (PC-1) << ": "
+                  << setw(2) << (int)IR << "       "
+//      << "<" << ourAddressingModeTable[IR] << " ";
+//      debugStream << hex << setw(4) << operandAddress << " ";
+                  << setw(3) << ourInstructionMnemonicTable[IR]
+
+//      debugStream << "PS=" << ::hex << setw(2) << (int)PS() << " ";
+
+//      debugStream << "Cyc=" << dec << mySystem->cycles();
+                  << endl;
 #endif
 
       // Call code to execute the instruction
@@ -156,19 +172,6 @@ bool M6502High::execute(uInt32 number)
       }
 
       myTotalInstructionCount++;
-
-#ifdef DEBUG
-      debugStream << hex << setw(4) << operandAddress << " ";
-      debugStream << setw(4) << ourInstructionMnemonicTable[IR];
-      debugStream << "> ";
-      debugStream << "A=" << ::hex << setw(2) << (int)A << " ";
-      debugStream << "X=" << ::hex << setw(2) << (int)X << " ";
-      debugStream << "Y=" << ::hex << setw(2) << (int)Y << " ";
-      debugStream << "PS=" << ::hex << setw(2) << (int)PS() << " ";
-      debugStream << "SP=" << ::hex << setw(2) << (int)SP << " ";
-      debugStream << "Cyc=" << dec << mySystem->cycles();
-      debugStream << endl;
-#endif
     }
 
     // See if we need to handle an interrupt
