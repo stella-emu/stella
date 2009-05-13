@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart.hxx,v 1.26 2009-04-05 18:59:56 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE_HXX
@@ -34,7 +34,7 @@ class Settings;
   game and handles any bankswitching performed by the cartridge.
  
   @author  Bradford W. Mott
-  @version $Id: Cart.hxx,v 1.26 2009-04-05 18:59:56 stephena Exp $
+  @version $Id$
 */
 class Cartridge : public Device
 {

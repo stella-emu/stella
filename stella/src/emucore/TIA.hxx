@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIA.hxx,v 1.52 2009-01-24 18:17:34 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef TIA_HXX
@@ -39,7 +39,7 @@ class Settings;
   be displayed on screen.
 
   @author  Bradford W. Mott
-  @version $Id: TIA.hxx,v 1.52 2009-01-24 18:17:34 stephena Exp $
+  @version $Id$
 */
 class TIA : public Device
 {

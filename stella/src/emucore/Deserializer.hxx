@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Deserializer.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef DESERIALIZER_HXX
@@ -31,7 +31,7 @@
   method return.
 
   @author  Stephen Anthony
-  @version $Id: Deserializer.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class Deserializer
 {

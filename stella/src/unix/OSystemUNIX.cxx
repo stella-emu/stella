@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemUNIX.cxx,v 1.32 2009-01-16 16:38:06 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cstdlib>

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundSDL.cxx,v 1.48 2009-01-22 00:49:32 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifdef SOUND_SUPPORT

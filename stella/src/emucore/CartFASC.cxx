@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.cxx,v 1.20 2009-05-01 11:25:07 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

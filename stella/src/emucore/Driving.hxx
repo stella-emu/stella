@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Driving.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef DRIVING_HXX
@@ -27,7 +27,7 @@
   The standard Atari 2600 Indy 500 driving controller.
 
   @author  Bradford W. Mott
-  @version $Id: Driving.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class Driving : public Controller
 {

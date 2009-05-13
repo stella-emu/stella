@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.hxx,v 1.20 2009-01-04 22:27:44 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef INPUT_DIALOG_HXX

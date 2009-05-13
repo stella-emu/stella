@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: EventHandler.hxx,v 1.114 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef EVENTHANDLER_HXX
@@ -61,7 +61,7 @@ enum EventMode {
   mapping can take place.
 
   @author  Stephen Anthony
-  @version $Id: EventHandler.hxx,v 1.114 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class EventHandler
 {

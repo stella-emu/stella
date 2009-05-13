@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Low.cxx,v 1.17 2009-01-13 14:45:34 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "M6502Low.hxx"

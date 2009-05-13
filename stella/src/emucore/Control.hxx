@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.hxx,v 1.19 2009-03-16 00:23:42 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CONTROLLER_HXX
@@ -57,7 +57,7 @@ class System;
   of the controller from the perspective of the controller's jack.
 
   @author  Bradford W. Mott
-  @version $Id: Control.hxx,v 1.19 2009-03-16 00:23:42 stephena Exp $
+  @version $Id$
 */
 class Controller : public Serializable
 {

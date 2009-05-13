@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: PropsSet.hxx,v 1.20 2009-01-01 18:13:36 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef PROPERTIES_SET_HXX

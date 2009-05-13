@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: InputDialog.cxx,v 1.36 2009-01-04 22:27:44 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "bspf.hxx"

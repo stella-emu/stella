@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.hxx,v 1.16 2009-01-16 14:57:53 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef OSYSTEM_WIN32_HXX
@@ -26,7 +26,7 @@
   This class defines Windows system specific settings.
 
   @author  Stephen Anthony
-  @version $Id: OSystemWin32.hxx,v 1.16 2009-01-16 14:57:53 stephena Exp $
+  @version $Id$
 */
 class OSystemWin32 : public OSystem
 {

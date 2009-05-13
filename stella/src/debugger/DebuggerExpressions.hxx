@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DebuggerExpressions.hxx,v 1.5 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef DEBUGGER_EXPRESSIONS_HXX

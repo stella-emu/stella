@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheetahCheat.hxx,v 1.5 2009-01-01 18:13:34 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CHEETAH_CHEAT_HXX

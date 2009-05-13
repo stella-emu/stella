@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MT24LC256.hxx,v 1.8 2009-01-26 21:08:05 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef MT24LC256_HXX
@@ -30,7 +30,7 @@ class System;
   (aka Supercat) for the bulk of this code.
 
   @author  Stephen Anthony & J. Payson
-  @version $Id: MT24LC256.hxx,v 1.8 2009-01-26 21:08:05 stephena Exp $
+  @version $Id$
 */
 class MT24LC256
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferGP2X.hxx,v 1.14 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef FRAMEBUFFER_GP2X_HXX
@@ -32,7 +32,7 @@ class GUI::Font;
   This class implements an SDL hardware framebuffer for the GP2X device.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferGP2X.hxx,v 1.14 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class FrameBufferGP2X : public FrameBuffer
 {

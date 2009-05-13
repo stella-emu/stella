@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TrackBall.cxx,v 1.4 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cstdlib>

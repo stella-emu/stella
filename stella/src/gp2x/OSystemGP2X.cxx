@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemGP2X.cxx,v 1.31 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 // Modified on 2006/01/06 by Alex Zaballa for use on GP2X
 //============================================================================
 

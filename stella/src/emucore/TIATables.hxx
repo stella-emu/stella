@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIATables.hxx,v 1.2 2009-02-08 21:07:06 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef TIA_TABLES_HXX
@@ -102,7 +102,7 @@ enum {
   here.
 
   @author  Stephen Anthony
-  @version $Id: TIATables.hxx,v 1.2 2009-02-08 21:07:06 stephena Exp $
+  @version $Id$
 */
 class TIATables
 {

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPort.hxx,v 1.5 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SERIALPORT_HXX
@@ -27,7 +27,7 @@
   and as such it always uses 19200, 8n1, no flow control.
 
   @author  Stephen Anthony
-  @version $Id: SerialPort.hxx,v 1.5 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class SerialPort
 {

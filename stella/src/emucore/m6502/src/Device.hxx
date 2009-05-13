@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Device.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef DEVICE_HXX
@@ -29,7 +29,7 @@ class System;
   based system.
 
   @author  Bradford W. Mott
-  @version $Id: Device.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class Device : public Serializable
 {

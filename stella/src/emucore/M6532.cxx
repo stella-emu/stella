@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6532.cxx,v 1.31 2009-01-26 21:08:05 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

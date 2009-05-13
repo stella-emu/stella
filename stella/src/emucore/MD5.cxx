@@ -16,7 +16,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MD5.cxx,v 1.9 2009-01-01 18:13:36 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "MD5.hxx"

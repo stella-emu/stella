@@ -2,7 +2,7 @@
   Simple program that produces a hex list of a binary object file
 
   @author  Bradford W. Mott
-  @version $Id: romtohex.cxx,v 1.2 2002-04-05 02:18:23 bwmott Exp $
+  @version $Id$
 */
 
 #include <iomanip.h>

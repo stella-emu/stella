@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.hxx,v 1.35 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SETTINGS_HXX
@@ -28,7 +28,7 @@ class OSystem;
   This class provides an interface for accessing frontend specific settings.
 
   @author  Stephen Anthony
-  @version $Id: Settings.hxx,v 1.35 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class Settings
 {

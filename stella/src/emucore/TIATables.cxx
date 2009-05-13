@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIATables.cxx,v 1.3 2009-02-08 21:07:06 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

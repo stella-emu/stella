@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.cxx,v 1.16 2009-05-10 20:57:18 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4,v 1.8 2009-04-20 15:03:13 stephena Exp $
+// $Id$
 //============================================================================
 
 /** 
@@ -23,7 +23,7 @@
     'm4 M6502[Hi|Low].m4 M6502.m4 > M6502[Hi|Low].ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4,v 1.8 2009-04-20 15:03:13 stephena Exp $
+  @version $Id$
 */
 
 #ifndef NOTSAMEPAGE

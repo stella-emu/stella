@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CommandMenu.hxx,v 1.6 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef COMMAND_MENU_HXX
@@ -28,7 +28,7 @@ class OSystem;
   The base dialog for common commands in Stella.
 
   @author  Stephen Anthony
-  @version $Id: CommandMenu.hxx,v 1.6 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class CommandMenu : public DialogContainer
 {

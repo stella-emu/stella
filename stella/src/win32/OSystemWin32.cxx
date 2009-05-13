@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemWin32.cxx,v 1.33 2009-02-09 15:50:59 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "bspf.hxx"

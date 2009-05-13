@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartMC.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEMC_HXX
@@ -133,7 +133,7 @@ class System;
 
 
   @author  Bradford W. Mott
-  @version $Id: CartMC.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class CartridgeMC : public Cartridge
 {

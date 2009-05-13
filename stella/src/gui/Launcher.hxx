@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.hxx,v 1.17 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef LAUNCHER_HXX
@@ -28,7 +28,7 @@ class OSystem;
   The base dialog for the ROM launcher in Stella.
 
   @author  Stephen Anthony
-  @version $Id: Launcher.hxx,v 1.17 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class Launcher : public DialogContainer
 {

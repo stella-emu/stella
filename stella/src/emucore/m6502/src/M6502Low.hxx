@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Low.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef M6502LOW_HXX
@@ -41,7 +41,7 @@ class Deserializer;
   better compatibility is neccessary use one of the other 6502 classes.
   
   @author  Bradford W. Mott
-  @version $Id: M6502Low.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class M6502Low : public M6502
 {

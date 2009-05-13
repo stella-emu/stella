@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartF6.hxx,v 1.13 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEF6_HXX
@@ -29,7 +29,7 @@ class System;
   are four 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartF6.hxx,v 1.13 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class CartridgeF6 : public Cartridge
 {

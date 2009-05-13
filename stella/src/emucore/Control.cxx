@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Control.cxx,v 1.15 2009-03-16 00:23:42 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

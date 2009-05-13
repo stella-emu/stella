@@ -4,7 +4,7 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.h,v 1.1.1.1 2004-06-16 02:30:30 markgrebe Exp $ */
+/* $Id$ */
 
 #import <Cocoa/Cocoa.h>
 

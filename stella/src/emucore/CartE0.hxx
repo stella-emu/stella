@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartE0.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEE0_HXX
@@ -34,7 +34,7 @@ class System;
   always points to the last 1K of the ROM image.
   
   @author  Bradford W. Mott
-  @version $Id: CartE0.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class CartridgeE0 : public Cartridge
 {

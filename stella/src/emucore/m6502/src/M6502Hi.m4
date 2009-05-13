@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.m4,v 1.2 2005-06-16 01:11:29 stephena Exp $
+// $Id$
 //============================================================================
 
 /**
@@ -21,7 +21,7 @@
   high compatibility emulation
 
   @author  Bradford W. Mott
-  @version $Id: M6502Hi.m4,v 1.2 2005-06-16 01:11:29 stephena Exp $
+  @version $Id$
 */
 
 #ifndef NOTSAMEPAGE

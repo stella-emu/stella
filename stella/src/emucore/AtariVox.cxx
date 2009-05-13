@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.cxx,v 1.22 2009-01-26 21:08:05 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION

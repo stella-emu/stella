@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Settings.cxx,v 1.165 2009-03-12 16:04:08 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

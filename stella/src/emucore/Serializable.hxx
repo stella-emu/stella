@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializable.hxx,v 1.3 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SERIALIZABLE_HXX
@@ -28,7 +28,7 @@
   method signatures as defined below.
 
   @author  Stephen Anthony
-  @version $Id: Serializable.hxx,v 1.3 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class Serializable
 {

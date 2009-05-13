@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.hxx,v 1.79 2009-01-24 17:32:29 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef OSYSTEM_HXX
@@ -56,7 +56,7 @@ typedef Common::Array<Resolution> ResolutionList;
   other objects belong.
 
   @author  Stephen Anthony
-  @version $Id: OSystem.hxx,v 1.79 2009-01-24 17:32:29 stephena Exp $
+  @version $Id$
 */
 class OSystem
 {

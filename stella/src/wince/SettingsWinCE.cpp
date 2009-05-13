@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: SettingsWinCE.cpp,v 1.8 2007-01-27 10:51:04 knakos Exp $
+// $Id$
 //============================================================================
 
 #include <sstream>

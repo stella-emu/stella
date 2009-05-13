@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystem.cxx,v 1.154 2009-01-24 17:32:29 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

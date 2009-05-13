@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: AtariVox.hxx,v 1.16 2009-01-26 21:08:05 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef ATARIVOX_HXX
@@ -33,7 +33,7 @@ class MT24LC256;
   driver code.
 
   @author  B. Watson
-  @version $Id: AtariVox.hxx,v 1.16 2009-01-26 21:08:05 stephena Exp $
+  @version $Id$
 */
 class AtariVox : public Controller
 {

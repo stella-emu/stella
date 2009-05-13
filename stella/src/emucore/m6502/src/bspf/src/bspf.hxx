@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: bspf.hxx,v 1.22 2009-01-11 21:31:21 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef BSPF_HXX
@@ -24,7 +24,7 @@
   that need to be defined for different operating systems.
 
   @author Bradford W. Mott
-  @version $Id: bspf.hxx,v 1.22 2009-01-11 21:31:21 stephena Exp $
+  @version $Id$
 */
 
 // Types for 8-bit signed and unsigned integers

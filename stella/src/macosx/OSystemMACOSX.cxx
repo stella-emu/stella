@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.cxx,v 1.21 2009-01-19 13:57:00 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cstdlib>

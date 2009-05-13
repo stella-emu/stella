@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsMACOSX.hxx,v 1.8 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SETTINGS_MAC_OSX_HXX
@@ -25,7 +25,7 @@ class OSystem;
   This class defines Macintosh OSX system specific settings.
 
   @author  Mark Grebe
-  @version $Id: SettingsMACOSX.hxx,v 1.8 2009-01-01 18:13:39 stephena Exp $
+  @version $Id$
 */
 class SettingsMACOSX : public Settings
 {

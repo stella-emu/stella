@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502Hi.hxx,v 1.7 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef M6502HIGH_HXX
@@ -35,7 +35,7 @@ class Deserializer;
   effects and for games which are very time sensitive.
 
   @author  Bradford W. Mott
-  @version $Id: M6502Hi.hxx,v 1.7 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class M6502High : public M6502
 {

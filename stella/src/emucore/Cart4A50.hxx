@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.hxx,v 1.13 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE4A50_HXX
@@ -37,7 +37,7 @@ class System;
   bytes of ROM.
 
   @author  Stephen Anthony & Eckhard Stolberg
-  @version $Id: Cart4A50.hxx,v 1.13 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class Cartridge4A50 : public Cartridge
 {

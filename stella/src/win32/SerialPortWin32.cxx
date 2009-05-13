@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.cxx,v 1.6 2009-01-26 21:08:07 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <windows.h>

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SoundNull.hxx,v 1.10 2009-01-26 15:05:25 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SOUND_NULL_HXX
@@ -31,7 +31,7 @@ class Deserializer;
   is completely disabled.
 
   @author Stephen Anthony
-  @version $Id: SoundNull.hxx,v 1.10 2009-01-26 15:05:25 stephena Exp $
+  @version $Id$
 */
 class SoundNull : public Sound
 {

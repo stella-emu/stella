@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: NullDev.hxx,v 1.8 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef NULLDEVICE_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   holes in the address space (i.e. no real device attached). 
  
   @author  Bradford W. Mott
-  @version $Id: NullDev.hxx,v 1.8 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class NullDevice : public Device
 {

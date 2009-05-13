@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.cxx,v 1.25 2009-04-20 15:03:13 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "M6502.hxx"

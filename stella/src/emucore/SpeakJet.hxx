@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SpeakJet.hxx,v 1.11 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifdef SPEAKJET_EMULATION
@@ -77,7 +77,7 @@
   anyway).
 
   @author  B. Watson
-  @version $Id: SpeakJet.hxx,v 1.11 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 
 #include "bspf.hxx"

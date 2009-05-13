@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsGP2X.hxx,v 1.5 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 // Modified by Alex Zaballa on 2006/01/04 for use on GP2X
 //============================================================================
 

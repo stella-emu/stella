@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart2K.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE2K_HXX
@@ -32,7 +32,7 @@ class Deserializer;
   2600's 4K cartridge addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: Cart2K.hxx,v 1.12 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class Cartridge2K : public Cartridge
 {

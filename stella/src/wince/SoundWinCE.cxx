@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: SoundWinCE.cxx,v 1.8 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifdef SOUND_SUPPORT

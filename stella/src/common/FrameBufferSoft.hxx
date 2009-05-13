@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: FrameBufferSoft.hxx,v 1.66 2009-02-05 23:22:54 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef FRAMEBUFFER_SOFT_HXX
@@ -32,7 +32,7 @@ class RectList;
   This class implements an SDL software framebuffer.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.66 2009-02-05 23:22:54 stephena Exp $
+  @version $Id$
 */
 class FrameBufferSoft : public FrameBuffer
 {
@@ -172,7 +172,7 @@ class FrameBufferSoft : public FrameBuffer
   A surface suitable for software rendering mode.
 
   @author  Stephen Anthony
-  @version $Id: FrameBufferSoft.hxx,v 1.66 2009-02-05 23:22:54 stephena Exp $
+  @version $Id$
 */
 class FBSurfaceSoft : public FBSurface
 {

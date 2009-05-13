@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart3F.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGE3F_HXX
@@ -35,7 +35,7 @@ class System;
   only used 8K this bankswitching scheme supports up to 512K.
    
   @author  Bradford W. Mott
-  @version $Id: Cart3F.hxx,v 1.14 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class Cartridge3F : public Cartridge
 {

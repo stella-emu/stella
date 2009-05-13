@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.cxx,v 1.24 2009-01-20 16:21:28 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cctype>

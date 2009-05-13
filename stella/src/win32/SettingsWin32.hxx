@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.hxx,v 1.11 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SETTINGS_WIN32_HXX

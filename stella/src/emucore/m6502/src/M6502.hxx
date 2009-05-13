@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.hxx,v 1.24 2009-04-20 15:03:13 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef M6502_HXX
@@ -41,7 +41,7 @@ typedef Common::Array<Expression*> ExpressionList;
   has a 64K addressing space.
 
   @author  Bradford W. Mott
-  @version $Id: M6502.hxx,v 1.24 2009-04-20 15:03:13 stephena Exp $ 
+  @version $Id$ 
 */
 class M6502
 {

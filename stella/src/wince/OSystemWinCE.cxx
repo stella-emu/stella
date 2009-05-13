@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: OSystemWinCE.cxx,v 1.15 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <sstream>

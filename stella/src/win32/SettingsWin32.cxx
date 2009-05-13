@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SettingsWin32.cxx,v 1.31 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "bspf.hxx"

@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Props.hxx,v 1.18 2009-01-20 16:21:28 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef PROPERTIES_HXX
@@ -54,7 +54,7 @@ enum PropertyType {
   if the property key is not found in the original property list.
 
   @author  Bradford W. Mott
-  @version $Id: Props.hxx,v 1.18 2009-01-20 16:21:28 stephena Exp $
+  @version $Id$
 */
 class Properties
 {

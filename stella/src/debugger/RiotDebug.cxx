@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RiotDebug.cxx,v 1.9 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <sstream>

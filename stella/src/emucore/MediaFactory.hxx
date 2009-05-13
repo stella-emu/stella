@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: MediaFactory.hxx,v 1.8 2009-01-14 20:31:41 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef MEDIA_FACTORY_HXX
@@ -29,7 +29,7 @@ class OSystem;
   based on the specific port and restrictions on that port.
 
   @author  Stephen Anthony
-  @version $Id: MediaFactory.hxx,v 1.8 2009-01-14 20:31:41 stephena Exp $
+  @version $Id$
 */
 class MediaFactory
 {

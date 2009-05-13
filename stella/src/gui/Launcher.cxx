@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Launcher.cxx,v 1.27 2009-01-14 20:31:07 stephena Exp $
+// $Id$
 //============================================================================
 
 #include "LauncherDialog.hxx"

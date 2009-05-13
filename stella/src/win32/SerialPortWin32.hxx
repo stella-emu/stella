@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SerialPortWin32.hxx,v 1.4 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SERIALPORT_WIN32_HXX
@@ -27,7 +27,7 @@
   Implement reading and writing from a serial port under Windows systems.
 
   @author  Stephen Anthony
-  @version $Id: SerialPortWin32.hxx,v 1.4 2009-01-01 18:13:39 stephena Exp $
+  @version $Id$
 */
 class SerialPortWin32 : public SerialPort
 {

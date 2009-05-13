@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: DialogContainer.hxx,v 1.28 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef DIALOG_CONTAINER_HXX
@@ -36,7 +36,7 @@ class OSystem;
   a stack, and handles their events.
 
   @author  Stephen Anthony
-  @version $Id: DialogContainer.hxx,v 1.28 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class DialogContainer
 {

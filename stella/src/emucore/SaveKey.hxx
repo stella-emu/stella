@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: SaveKey.hxx,v 1.4 2009-01-26 21:08:05 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SAVEKEY_HXX
@@ -31,7 +31,7 @@ class MT24LC256;
   driver code.
 
   @author  Stephen Anthony
-  @version $Id: SaveKey.hxx,v 1.4 2009-01-26 21:08:05 stephena Exp $
+  @version $Id$
 */
 class SaveKey : public Controller
 {

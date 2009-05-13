@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: OSystemMACOSX.hxx,v 1.13 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef OSYSTEM_MACOSX_HXX
@@ -26,7 +26,7 @@
   This class defines UNIX-like OS's (Linux) system specific settings.
 
   @author  Mark Grebe
-  @version $Id: OSystemMACOSX.hxx,v 1.13 2009-01-01 18:13:39 stephena Exp $
+  @version $Id$
 */
 class OSystemMACOSX : public OSystem
 {

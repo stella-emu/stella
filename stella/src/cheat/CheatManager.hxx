@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CheatManager.hxx,v 1.11 2009-01-01 18:13:34 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CHEAT_MANAGER_HXX
@@ -36,7 +36,7 @@ typedef map<string,string> CheatCodeMap;
   the list of all cheats currently in use.
 
   @author  Stephen Anthony
-  @version $Id: CheatManager.hxx,v 1.11 2009-01-01 18:13:34 stephena Exp $
+  @version $Id$
 */
 class CheatManager
 {

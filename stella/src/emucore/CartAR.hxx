@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartAR.hxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEAR_HXX
@@ -35,7 +35,7 @@ class System;
   and one bank of ROM.  All 6K of the RAM can be read and written.
 
   @author  Bradford W. Mott
-  @version $Id: CartAR.hxx,v 1.15 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class CartridgeAR : public Cartridge
 {

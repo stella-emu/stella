@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartFASC.hxx,v 1.11 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEFASC_HXX
@@ -29,7 +29,7 @@ class System;
   three 4K banks and 256 bytes of RAM.
 
   @author  Bradford W. Mott
-  @version $Id: CartFASC.hxx,v 1.11 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class CartridgeFASC : public Cartridge
 {

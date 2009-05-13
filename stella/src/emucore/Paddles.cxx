@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Paddles.cxx,v 1.17 2009-05-02 21:27:32 stephena Exp $
+// $Id$
 //============================================================================
 
 #define TRIGMAX 240

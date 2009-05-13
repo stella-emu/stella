@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Serializer.hxx,v 1.15 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SERIALIZER_HXX
@@ -32,7 +32,7 @@
   string, boolean values are written using a special character pattern.
 
   @author  Stephen Anthony
-  @version $Id: Serializer.hxx,v 1.15 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class Serializer
 {

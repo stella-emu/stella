@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Command.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+// $Id$
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -28,7 +28,7 @@
   Allows base GUI objects to send and receive commands.
   
   @author  Stephen Anthony
-  @version $Id: Command.hxx,v 1.9 2009-01-01 18:13:38 stephena Exp $
+  @version $Id$
 */
 class CommandReceiver;
 class CommandSender;

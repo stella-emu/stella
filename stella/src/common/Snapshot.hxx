@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Snapshot.hxx,v 1.16 2009-01-19 16:52:32 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SNAPSHOT_HXX

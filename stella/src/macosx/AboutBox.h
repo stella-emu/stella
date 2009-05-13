@@ -4,7 +4,7 @@
    Mark Grebe <atarimac@cox.net>
    
 */
-/* $Id: AboutBox.h,v 1.2 2005-06-04 02:04:06 markgrebe Exp $ */
+/* $Id$ */
 
 
 #import <Cocoa/Cocoa.h>

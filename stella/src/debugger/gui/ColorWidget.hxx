@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: ColorWidget.hxx,v 1.6 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //
 //   Based on code from ScummVM - Scumm Interpreter
 //   Copyright (C) 2002-2004 The ScummVM project
@@ -35,7 +35,7 @@ class GuiObject;
   be expanded with a TIA palette table, to set the color visually.
   
   @author  Stephen Anthony
-  @version $Id: ColorWidget.hxx,v 1.6 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class ColorWidget : public Widget, public CommandSender
 {

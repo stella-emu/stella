@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: FrameBufferWinCE.hxx,v 1.17 2009-01-01 18:13:39 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef FRAMEBUFFER_WINCE_HXX

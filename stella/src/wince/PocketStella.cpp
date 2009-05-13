@@ -14,7 +14,7 @@
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // Windows CE Port by Kostas Nakos
-// $Id: PocketStella.cpp,v 1.10 2007-01-27 10:50:14 knakos Exp $
+// $Id$
 //============================================================================
 
 #include <queue>

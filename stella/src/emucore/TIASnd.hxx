@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: TIASnd.hxx,v 1.8 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef TIASOUND_HXX
@@ -26,7 +26,7 @@
   hardware.
 
   @author  Bradford W. Mott
-  @version $Id: TIASnd.hxx,v 1.8 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class TIASound
 {

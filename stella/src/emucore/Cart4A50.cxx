@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Cart4A50.cxx,v 1.16 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cassert>

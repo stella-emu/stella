@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Switches.hxx,v 1.8 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef SWITCHES_HXX
@@ -29,7 +29,7 @@ class Properties;
   This class represents the console switches of the game console.
 
   @author  Bradford W. Mott
-  @version $Id: Switches.hxx,v 1.8 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class Switches : public Serializable
 {

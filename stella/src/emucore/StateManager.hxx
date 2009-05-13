@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: StateManager.hxx,v 1.5 2009-01-01 18:13:37 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef STATE_MANAGER_HXX
@@ -30,7 +30,7 @@ class OSystem;
   played back.
 
   @author  Stephen Anthony
-  @version $Id: StateManager.hxx,v 1.5 2009-01-01 18:13:37 stephena Exp $
+  @version $Id$
 */
 class StateManager
 {

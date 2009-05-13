@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: RomInfoWidget.cxx,v 1.18 2009-01-20 21:58:50 stephena Exp $
+// $Id$
 //============================================================================
 
 #include <cstring>

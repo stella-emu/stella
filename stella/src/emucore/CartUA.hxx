@@ -13,7 +13,7 @@
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: CartUA.hxx,v 1.10 2009-01-01 18:13:35 stephena Exp $
+// $Id$
 //============================================================================
 
 #ifndef CARTRIDGEUA_HXX
@@ -30,7 +30,7 @@ class System;
   are two 4K banks.
 
   @author  Bradford W. Mott
-  @version $Id: CartUA.hxx,v 1.10 2009-01-01 18:13:35 stephena Exp $
+  @version $Id$
 */
 class CartridgeUA : public Cartridge
 {
