@@ -1,12 +1,24 @@
-<HTML>
-<HEAD>
-   <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-1">
-   <META NAME="GENERATOR" CONTENT="Mozilla/4.05 [en] (X11; U; SunOS 5.5.1 sun4u) [Netscape]">
-   <BASE TARGET="_top">
-</HEAD>
-<BODY TEXT="#000000" BGCOLOR="#FFFFFF" LINK="#0000FF" VLINK="#990066" ALINK="#FF0000">
-<IMG SRC="title.gif" NOSAVE HEIGHT=145 WIDTH=495>
-<CENTER><IMG SRC="stellanews.gif" HEIGHT=29 WIDTH=135></CENTER>
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Stella: &quot;A Multi-Platform Atari 2600 VCS Emulator&quot;</title>
+		<link href="cssscreen.css" rel="stylesheet" media="screen">
+		<link href="cssprint.css" rel="stylesheet" media="print">
+	</head>
+	<body id="news">
+		<div class="rightcolumn">
+			<div class="header"><?php include("header.php"); ?></div>
+			<div class="content">
+
+<!---------------------------------------------------------------->
+<H4>May 16, 2009</H4>
+Major website update using newer technologies (PHP and CSS).  Updated
+many dead links, and added a new 'Homebrew Developers' section.
+Special thanks go to Andrew Kator
+(<a href="http://www.katorlegaz.com">http://www.katorlegaz.com</a>)
+for providing the PHP/CSS code.
+
 
 <H4>May 12, 2009</H4>
 The Stella repository has now been fully converted to Subversion.  All
@@ -1857,15 +1869,11 @@ This is a partial list of features since Version 0.5 is still in development.
 There is no firm estimated-time-of-arrival but it'll probably be sometime
 near the end of October or beginning of November.
 <CENTER></CENTER>
+<!---------------------------------------------------------------->
 
-<CENTER>
-<HR ALIGN=LEFT NOSHADE WIDTH="100%"><IMG SRC="b-logo.gif" HEIGHT=72 WIDTH=72 ALIGN=CENTER>
-	<font size=-1>Copyright &copy; 1996-2009 by <a href="http://www.bradfordmott.com/">Bradford
-	W. Mott</a> and the Stella team</font>
-</CENTER>
-
-<CENTER>
-<HR ALIGN=LEFT NOSHADE WIDTH="100%"></CENTER>
-
-</BODY>
-</HTML>
+			</div>
+			<div class="footer"><?php include("footer.php"); ?></div>
+		</div>
+		<div class="leftcolumn"><?php include("menu.html"); ?></div>
+	</body>
+</html>

@@ -1,14 +1,17 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
-<head>
-   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-   <meta name="GENERATOR" content="Mozilla/4.5 [en] (X11; I; Linux 2.0.36 i586) [Netscape]">
-   <base target="_top">
-</head>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+		<title>Stella: &quot;A Multi-Platform Atari 2600 VCS Emulator&quot;</title>
+		<link href="cssscreen.css" rel="stylesheet" media="screen">
+		<link href="cssprint.css" rel="stylesheet" media="print">
+	</head>
+	<body id="screenshots">
+		<div class="rightcolumn">
+			<div class="header"><?php include("header.php"); ?></div>
+			<div class="content">
 
-<body text="#000000" bgcolor="#FFFFFF" link="#0000FF" vlink="#990066" alink="#FF0000">
-	<img SRC="title.gif" height=145 width=495>
-
+<!---------------------------------------------------------------->
 	<center><p><b><font size=+2>Emulation Snapshots (Software Mode)</font></b></center>
 	<center>
 		<table border="0" cellpadding="5">
@@ -49,12 +52,11 @@
 	<center>
 		<a href="game-images/debugger.png"><img src="game-images/t_debugger.jpg"></img></a>
 	</center>
+<!---------------------------------------------------------------->
 
-	<center>
-	<hr ALIGN=LEFT NOSHADE WIDTH="100%"><img SRC="b-logo.gif" height=72 width=72 align=CENTER>
-	<font size=-1>Copyright &copy; 1996-2009 by <a href="http://www.bradfordmott.com/">Bradford
-	W. Mott</a> and the Stella team</font>
-	<br>
-	<hr ALIGN=LEFT NOSHADE WIDTH="100%"></center>
-</body>
+			</div>
+			<div class="footer"><?php include("footer.php"); ?></div>
+		</div>
+		<div class="leftcolumn"><?php include("menu.html"); ?></div>
+	</body>
 </html>

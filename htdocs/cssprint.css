@@ -1,0 +1,23 @@
+body       { color: black; font-size: 12pt; font-family: Arial, Helvetica, Geneva, Swiss, SunSans-Regular, sans-serif; background: white 0px 0px; margin: 20px }
+p {}
+td { font-size: 12pt; }
+img { border: none }
+a:link { color: blue }
+a:active { color: blue }
+a:visited { color: blue }
+a:hover  { color: red }
+.rightcolumn   { }
+.header { }
+.content { margin-top: 20px }
+.footer { font-size: 10pt; margin-top: 40px }
+.footer img { float: left; padding-right: 20px }
+.leftcolumn     { display: none }
+.leftcolumn img { }
+.menuheader     { }
+.leftcolumn ul  { }
+.leftcolumn ul li       { }
+.leftcolumn ul li a      { }
+.leftcolumn ul li a:link    { }
+.leftcolumn ul li a:active   { }
+.leftcolumn ul li a:visited   { }
+.leftcolumn ul li a:hover  { }
