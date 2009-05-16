@@ -32,6 +32,16 @@
 </tr>
 
 <tr>
+	<td BGCOLOR="#CCCCCC"><a href="http://www.atariage.com/forums/index.php?showforum=31">2600&nbsp;Programming For&nbsp;Newbies</a></td>
+	<td BGCOLOR="#FFCC99">An AtariAge forum with many tips for the beginning programmer</td>
+</tr>
+
+<tr>
+	<td BGCOLOR="#CCCCCC"><a href="http://www.atariage.com/forums/index.php?showtopic=33233">Andrew&nbsp;Davie AtariAge&nbsp;tutorials</a></td>
+	<td BGCOLOR="#FFCC99">Andrew Davie's collected AtariAge forum threads on Atari 2600 programming</td>
+</tr>
+
+<tr>
 	<td BGCOLOR="#CCCCCC"><a href="http://www.randomterrain.com/atari-2600-memories.html">Atari&nbsp;2600&nbsp;Memories</a></td>
 	<td BGCOLOR="#FFCC99">A collection of programming tips and general Atari 2600 trivia from Random Terrain</td>
 </tr>
