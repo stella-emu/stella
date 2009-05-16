@@ -15,7 +15,7 @@
 <table BORDER=0 CELLPADDING=6 WIDTH="100%" >
 
 <tr>
-	<td><b>Current Members</b></td>
+	<td><b>Current&nbsp;Members</b></td>
 	<td>&nbsp;</td>
 </tr>
 
@@ -55,7 +55,7 @@
 	<td>&nbsp;</td>
 </tr>
 <tr>
-	<td><b>Retired Members</b></td>
+	<td><b>Retired&nbsp;Members</b></td>
 	<td>&nbsp;</td>
 </tr>
 
