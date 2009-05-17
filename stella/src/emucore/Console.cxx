@@ -32,8 +32,7 @@
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
 #include "KidVid.hxx"
-#include "M6502Hi.hxx"
-#include "M6502Low.hxx"
+#include "M6502.hxx"
 #include "M6532.hxx"
 #include "Paddles.hxx"
 #include "Props.hxx"
@@ -98,11 +97,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myControllers[0] = new Joystick(Controller::Left, *myEvent, *mySystem);
   myControllers[1] = new Joystick(Controller::Right, *myEvent, *mySystem);
 
-  M6502* m6502;
-  if(myOSystem->settings().getString("cpu") == "low")
-    m6502 = new M6502Low(1);
-  else
-    m6502 = new M6502High(1);
+  M6502* m6502 = new M6502(1);
 #ifdef DEBUGGER_SUPPORT
   m6502->attach(myOSystem->debugger());
 #endif

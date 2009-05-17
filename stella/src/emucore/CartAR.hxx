@@ -19,7 +19,7 @@
 #ifndef CARTRIDGEAR_HXX
 #define CARTRIDGEAR_HXX
 
-class M6502High;
+class M6502;
 class System;
 
 #include "bspf.hxx"
@@ -165,7 +165,7 @@ class CartridgeAR : public Cartridge
 
   private:
     // Pointer to the 6502 processor in the system
-    M6502High* my6502;
+    M6502* my6502;
 
     // Indicates the offest within the image for the corresponding bank
     uInt32 myImageOffset[2];

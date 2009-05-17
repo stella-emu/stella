@@ -19,7 +19,7 @@
 #include <cassert>
 #include <cstring>
 
-#include "M6502Hi.hxx"
+#include "M6502.hxx"
 #include "Random.hxx"
 #include "System.hxx"
 #include "CartAR.hxx"
@@ -80,7 +80,7 @@ void CartridgeAR::install(System& system)
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
-  my6502 = &(M6502High&)mySystem->m6502();
+  my6502 = &(mySystem->m6502());
 
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);

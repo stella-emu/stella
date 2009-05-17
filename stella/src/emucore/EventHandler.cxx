@@ -931,6 +931,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
       break;
     ////////////////////////////////////////////////////////////////////////
 
+#if 0
     case Event::ConsoleReset:
       if(state)
       {
@@ -938,7 +939,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem->frameBuffer().refresh();
       }
       break;
-
+#endif
     case Event::Fry:
       myFryingFlag = bool(state);
       return;
