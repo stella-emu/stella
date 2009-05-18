@@ -9,14 +9,22 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - March 2009
+                         To Do List - May 2009
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-  * Add new TIA infrastructure with improved HMOVE emulation
+  * Add new TIA infrastructure with improved HMOVE emulation, including
+    fixes for (possibly) incorrect VSYNC handling in Q-Bert.
+
+  * Either Support Distella as frontend or integrate a 6507 Disassembler
+
+  * Step-debug through disassembled zero-page code (get clarification on this)
+
+  * Improve debugger support for cartridges with dedicated RAM, and add
+    source-level debugging
 
   * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
     thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.
@@ -45,6 +53,8 @@ Stephen Anthony at stephena@users.sourceforge.net.
      (3) Add 'simpleUI/kiosk' mode to RMB context menu, which disables
          all but the most basic functionality.
 
+     (4) Add tabs to snapshot view; add cartridge snapshots as well.
+
   * More support for copy and paste.
 
   * Fix PropSet to properly delete entries when 'Default' is pressed in
@@ -68,22 +78,13 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * RewindManager to set up how often to save a state, and for how long
     (debugger would be once per frame, normal probably once per second)
 
-  * Improve debugger support for cartridges with dedicated RAM, and add
-    source-level debugging
-
-  * Step-debug through disassembled zero-page code (get clarification on this)
-
   * Extra SECAM 'quirks' (see Stella 2.4.1 release thread on AtariAge)
 
   * Improve speed of Pitfall2 emulation
 
-  * Improve sound output of Pitfall2
-
   * Add auto-detection for all remaining bankswitch types
 
   * Either Support DASM as frontend or integrate a 6507 Assembler
-
-  * Either Support Distella as frontend or integrate a 6507 Disassembler
 
   * Add a Sprite/Animation Editor 
 
