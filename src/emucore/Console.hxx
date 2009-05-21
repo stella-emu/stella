@@ -264,9 +264,6 @@ class Console : public Serializable
     void togglePFBit() const { toggleTIABit(TIA::PF, "PF"); }
     void enableBits(bool enable) const;
 
-    // TODO - make the core code work without needing to access this
-    AtariVox* atariVox() { return myAVox; }
-
   private:
     /**
       Adds the left and right controllers to the console
@@ -321,8 +318,6 @@ class Console : public Serializable
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)
     M6532 *myRiot;
-
-    AtariVox* myAVox;
 
     // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;

@@ -63,7 +63,6 @@
 Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
     myProperties(props),
-    myAVox(0),
     myDisplayFormat("NTSC"),
     myFramerate(60.0),
     myUserPaletteDefined(false)
@@ -667,8 +666,8 @@ void Console::setControllers(const string& rommd5)
   {
     const string& eepromfile = myOSystem->eepromDir() + BSPF_PATH_SEPARATOR +
                                "atarivox_eeprom.dat";
-    myControllers[rightPort] = myAVox =
-      new AtariVox(Controller::Right, *myEvent, *mySystem, myOSystem->serialPort(),
+    myControllers[rightPort] = new AtariVox(Controller::Right, *myEvent,
+                   *mySystem, myOSystem->serialPort(),
                    myOSystem->settings().getString("avoxport"), eepromfile);
   }
   else if(right == "SAVEKEY")

@@ -19,7 +19,6 @@
 #ifndef ATARIVOX_HXX
 #define ATARIVOX_HXX
 
-class SpeakJet;
 class SerialPort;
 class MT24LC256;
 
@@ -91,10 +90,6 @@ class AtariVox : public Controller
 
     virtual string about() const;
 
-#ifdef SPEAKJET_EMULATION
-    SpeakJet* getSpeakJet() { return mySpeakJet; }
-#endif
-
   private:
    void clockDataIn(bool value);
    void shiftIn(bool value);
@@ -107,11 +102,6 @@ class AtariVox : public Controller
 
     // The EEPROM used in the AtariVox
     MT24LC256* myEEPROM;
-
-#ifdef SPEAKJET_EMULATION
-    // Instance of SpeakJet which will actually do the talking for us.
-    SpeakJet *mySpeakJet;
-#endif
 
     // How many bits have been shifted into the shift register?
     uInt8 myShiftCount;

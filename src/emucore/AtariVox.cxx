@@ -16,10 +16,6 @@
 // $Id$
 //============================================================================
 
-#ifdef SPEAKJET_EMULATION
-  #include "SpeakJet.hxx"
-#endif
-
 #include "MT24LC256.hxx"
 #include "SerialPort.hxx"
 #include "System.hxx"
@@ -36,15 +32,10 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
     myShiftRegister(0),
     myLastDataWriteCycle(0)
 {
-#ifndef SPEAKJET_EMULATION
   if(mySerialPort.openPort(portname))
     myAboutString = " (using serial port \'" + portname + "\')";
   else
     myAboutString = " (invalid serial port \'" + portname + "\')";
-#else
-  mySpeakJet = new SpeakJet();
-  myAboutString = " (emulating SpeakJet device)";
-#endif
 
   myEEPROM = new MT24LC256(eepromfile, system);
 
@@ -57,11 +48,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AtariVox::~AtariVox()
 {
-#ifndef SPEAKJET_EMULATION
   mySerialPort.closePort();
-#else
-  delete mySpeakJet;
-#endif
   delete myEEPROM;
 }
 
@@ -158,11 +145,7 @@ void AtariVox::clockDataIn(bool value)
       else
       {
         uInt8 data = ((myShiftRegister >> 1) & 0xff);
-    #ifndef SPEAKJET_EMULATION
         mySerialPort.writeByte(&data);
-    #else
-        mySpeakJet->write(data);
-    #endif
       }
       myShiftRegister = 0;
     }
