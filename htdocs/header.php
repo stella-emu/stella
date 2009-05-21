@@ -1,1 +1,0 @@
-<img src="http://stella.sourceforge.net/title.gif" height="145" width="495">
