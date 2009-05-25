@@ -74,7 +74,7 @@ uInt8 CartridgeEF::peek(uInt16 address)
   if((address >= 0x0FE0) && (address <= 0x0FEF))
     bank(address - 0x0FE0);
 
-  return myImage[myCurrentBank * 4096 + address];
+  return myImage[(myCurrentBank << 12) + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -94,7 +94,7 @@ void CartridgeEF::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
+  uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
@@ -127,8 +127,7 @@ int CartridgeEF::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEF::patch(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
-  myImage[myCurrentBank * 4096 + address] = value;
+  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 

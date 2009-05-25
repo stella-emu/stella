@@ -211,7 +211,7 @@ int CartridgeE0::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE0::patch(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
+  address &= 0x0FFF;
   myImage[(myCurrentSlice[address >> 10] << 10) + (address & 0x03FF)] = value;
   return true;
 } 

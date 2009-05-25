@@ -270,6 +270,11 @@ class FrameBuffer
     */
     void stateChanged(EventHandler::State state);
 
+    /**
+      Get the zoom level.
+    */
+    uInt32 getZoomLevel() { return myZoomLevel; }
+
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and must be implemented
   // in derived classes.
@@ -435,6 +440,9 @@ class FrameBuffer
 
     // Names of the TIA filters that can be used for this framebuffer
     StringMap myTIAFilters;
+
+    // Holds the zoom level being used
+    uInt32 myZoomLevel;
 
   private:
     /**

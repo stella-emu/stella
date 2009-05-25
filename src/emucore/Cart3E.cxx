@@ -97,9 +97,9 @@ uInt8 Cartridge3E::peek(uInt16 address)
   if(address < 0x0800)
   {
     if(myCurrentBank < 256)
-      return myImage[(address & 0x07FF) + myCurrentBank * 2048];
+      return myImage[(address & 0x07FF) + (myCurrentBank << 11)];
     else
-      return myRam[(address & 0x03FF) + (myCurrentBank - 256) * 1024];
+      return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)];
   }
   else
   {
@@ -138,7 +138,7 @@ void Cartridge3E::bank(uInt16 bank)
   if(bank < 256)
   {
     // Make sure the bank they're asking for is reasonable
-    if((uInt32)bank * 2048 < mySize)
+    if(((uInt32)bank << 11) < uInt32(mySize))
     {
       myCurrentBank = bank;
     }
@@ -146,10 +146,10 @@ void Cartridge3E::bank(uInt16 bank)
     {
       // Oops, the bank they're asking for isn't valid so let's wrap it
       // around to a valid bank number
-      myCurrentBank = bank % (mySize / 2048);
+      myCurrentBank = bank % (mySize >> 11);
     }
   
-    uInt32 offset = myCurrentBank * 2048;
+    uInt32 offset = myCurrentBank << 11;
     uInt16 shift = mySystem->pageShift();
   
     // Setup the page access methods for the current bank
@@ -170,7 +170,7 @@ void Cartridge3E::bank(uInt16 bank)
     bank %= 32;
     myCurrentBank = bank + 256;
 
-    uInt32 offset = bank * 1024;
+    uInt32 offset = bank << 10;
     uInt16 shift = mySystem->pageShift();
     uInt32 address;
   
@@ -217,9 +217,9 @@ bool Cartridge3E::patch(uInt16 address, uInt8 value)
   if(address < 0x0800)
   {
     if(myCurrentBank < 256)
-      myImage[(address & 0x07FF) + myCurrentBank * 2048] = value;
+      myImage[(address & 0x07FF) + (myCurrentBank << 11)] = value;
     else
-      myRam[(address & 0x03FF) + (myCurrentBank - 256) * 1024] = value;
+      myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
   }
   else
     myImage[(address & 0x07FF) + mySize - 2048] = value;

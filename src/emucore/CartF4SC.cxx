@@ -96,14 +96,24 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
 
   // Switch banks if necessary
   if((address >= 0x0FF4) && (address <= 0x0FFB))
-  {
     bank(address - 0x0FF4);
-  }
+
+  // Reading from the write port triggers an unwanted write
+  // The value written to RAM is somewhat undefined, so we use 0
+  // Thanks to Kroko of AtariAge for this advice and code idea
+  if(address < 0x0080)  // Write port is at 0xF000 - 0xF080 (128 bytes)
+  {
+    if(myBankLocked) return 0;
+    else return myRAM[address] = 0;
+  }  
+  else
+    return myImage[(myCurrentBank << 12) + address];
+
 
   // NOTE: This does not handle accessing RAM, however, this function 
   // should never be called for RAM because of the way page accessing 
   // has been setup
-  return myImage[myCurrentBank * 4096 + address];
+  return myImage[(myCurrentBank << 12) + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -113,9 +123,7 @@ void CartridgeF4SC::poke(uInt16 address, uInt8)
 
   // Switch banks if necessary
   if((address >= 0x0FF4) && (address <= 0x0FFB))
-  {
     bank(address - 0x0FF4);
-  }
 
   // NOTE: This does not handle accessing RAM, however, this function 
   // should never be called for RAM because of the way page accessing 
@@ -129,7 +137,7 @@ void CartridgeF4SC::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
+  uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
@@ -162,8 +170,7 @@ int CartridgeF4SC::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::patch(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
-  myImage[myCurrentBank * 4096 + address] = value;
+  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 

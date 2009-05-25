@@ -117,14 +117,16 @@ uInt8 CartridgeFASC::peek(uInt16 address)
   }
 
   // Reading from the write port triggers an unwanted write
+  // The value written to RAM is somewhat undefined, so we use 0
   // Thanks to Kroko of AtariAge for this advice and code idea
   if(address < 0x0100)  // Write port is at 0xF000 - 0xF100 (256 bytes)
   {
-    return myRAM[address & 0x00FF] = 0;
+    if(myBankLocked) return 0;
+    else return myRAM[address] = 0;
   }  
   else
   {
-    return myImage[myCurrentBank * 4096 + address];
+    return myImage[(myCurrentBank << 12) + address];
   }  
 }
 
@@ -167,7 +169,7 @@ void CartridgeFASC::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
+  uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
@@ -200,8 +202,7 @@ int CartridgeFASC::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFASC::patch(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
-  myImage[myCurrentBank * 4096 + address] = value;
+  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 

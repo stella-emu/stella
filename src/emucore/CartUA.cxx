@@ -70,6 +70,8 @@ void CartridgeUA::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeUA::peek(uInt16 address)
 {
+//  address &= 0x1FFF;  TODO - is this needed here?
+
   // Switch banks if necessary
   switch(address)
   {
@@ -132,9 +134,8 @@ void CartridgeUA::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
+  uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
-//  uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
@@ -164,8 +165,7 @@ int CartridgeUA::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeUA::patch(uInt16 address, uInt8 value)
 {
-  address &= 0x0fff;
-  myImage[myCurrentBank * 4096] = value;
+  myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 

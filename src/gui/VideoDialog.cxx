@@ -33,6 +33,7 @@
 #include "Settings.hxx"
 #include "StringList.hxx"
 #include "Widget.hxx"
+#include "TabWidget.hxx"
 
 #include "VideoDialog.hxx"
 
@@ -46,7 +47,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
-  int xpos, ypos;
+  int xpos, ypos, tabID;
   int lwidth = font.getStringWidth("GL Aspect (P): "),
       pwidth = font.getStringWidth("1920x1200"),
       fwidth = font.getStringWidth("Renderer: ");
@@ -54,15 +55,24 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   StringMap items;
 
   // Set real dimensions
-  _w = 48 * fontWidth + 10;
-  _h = 13 * (lineHeight + 4) + 10;
+  _w = 49 * fontWidth + 10;
+  _h = 15 * (lineHeight + 4) + 10;
 
-  xpos = 5;  ypos = 10;
+  // The tab widget
+  xpos = ypos = 5;
+  myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
+  addTabWidget(myTab);
+  addFocusWidget(myTab);
+
+  //////////////////////////////////////////////////////////
+  // 1) General options
+  wid.clear();
+  tabID = myTab->addTab(" General ");
 
   // Video renderer
-  new StaticTextWidget(this, font, xpos + (lwidth-fwidth), ypos, fwidth,
+  new StaticTextWidget(myTab, font, xpos + (lwidth-fwidth), ypos, fwidth,
                        fontHeight, "Renderer:", kTextAlignLeft);
-  myRenderer = new EditTextWidget(this, font, xpos+lwidth, ypos,
+  myRenderer = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                   pwidth, fontHeight, "");
   ypos += lineHeight + 4;
 
@@ -71,14 +81,14 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef DISPLAY_OPENGL
   items.push_back("OpenGL", "gl");
 #endif
-  myRendererPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+  myRendererPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                     items, "(*) ", lwidth);
   wid.push_back(myRendererPopup);
   ypos += lineHeight + 4;
 
   // TIA filters (will be dynamically filled later)
   items.clear();
-  myTIAFilterPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+  myTIAFilterPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                      lineHeight, items, "TIA Filter: ", lwidth);
   wid.push_back(myTIAFilterPopup);
   ypos += lineHeight + 4;
@@ -88,7 +98,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   items.push_back("Standard", "standard");
   items.push_back("Z26", "z26");
   items.push_back("User", "user");
-  myTIAPalettePopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+  myTIAPalettePopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                       lineHeight, items, "TIA Palette: ", lwidth);
   wid.push_back(myTIAPalettePopup);
   ypos += lineHeight + 4;
@@ -99,7 +109,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   for(uInt32 i = 0; i < instance().supportedResolutions().size(); ++i)
     items.push_back(instance().supportedResolutions()[i].name,
                     instance().supportedResolutions()[i].name);
-  myFSResPopup = new PopUpWidget(this, font, xpos, ypos, pwidth,
+  myFSResPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
                                  lineHeight, items, "FS Res: ", lwidth);
   wid.push_back(myFSResPopup);
   ypos += lineHeight + 4;
@@ -108,7 +118,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   items.clear();
   items.push_back("Sleep", "sleep");
   items.push_back("Busy-wait", "busy");
-  myFrameTimingPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+  myFrameTimingPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                        items, "Timing (*): ", lwidth);
   wid.push_back(myFrameTimingPopup);
   ypos += lineHeight + 4;
@@ -117,100 +127,160 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   items.clear();
   items.push_back("Linear", "linear");
   items.push_back("Nearest", "nearest");
-  myGLFilterPopup = new PopUpWidget(this, font, xpos, ypos, pwidth, lineHeight,
+  myGLFilterPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                   items, "GL Filter: ", lwidth);
   wid.push_back(myGLFilterPopup);
   ypos += lineHeight + 4;
 
   // GL aspect ratio (NTSC mode)
   myNAspectRatioSlider =
-    new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                      "GL Aspect (N): ", lwidth, kNAspectRatioChanged);
   myNAspectRatioSlider->setMinValue(80); myNAspectRatioSlider->setMaxValue(120);
   wid.push_back(myNAspectRatioSlider);
   myNAspectRatioLabel =
-    new StaticTextWidget(this, font, xpos + myNAspectRatioSlider->getWidth() + 4,
+    new StaticTextWidget(myTab, font, xpos + myNAspectRatioSlider->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myNAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // GL aspect ratio (PAL mode)
   myPAspectRatioSlider =
-    new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                      "GL Aspect (P): ", lwidth, kPAspectRatioChanged);
   myPAspectRatioSlider->setMinValue(80); myPAspectRatioSlider->setMaxValue(120);
   wid.push_back(myPAspectRatioSlider);
   myPAspectRatioLabel =
-    new StaticTextWidget(this, font, xpos + myPAspectRatioSlider->getWidth() + 4,
+    new StaticTextWidget(myTab, font, xpos + myPAspectRatioSlider->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myPAspectRatioLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
   // Framerate
   myFrameRateSlider =
-    new SliderWidget(this, font, xpos, ypos, pwidth, lineHeight,
+    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                      "Framerate: ", lwidth, kFrameRateChanged);
   myFrameRateSlider->setMinValue(0); myFrameRateSlider->setMaxValue(300);
   wid.push_back(myFrameRateSlider);
   myFrameRateLabel =
-    new StaticTextWidget(this, font, xpos + myFrameRateSlider->getWidth() + 4,
+    new StaticTextWidget(myTab, font, xpos + myFrameRateSlider->getWidth() + 4,
                          ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
+  // Add message concerning usage
+  ypos += (lineHeight + 4) * 2;
+  lwidth = font.getStringWidth("(*) Requires application restart");
+  new StaticTextWidget(myTab, font, 10, ypos, lwidth, fontHeight,
+                       "(*) Requires application restart",
+                       kTextAlignLeft);
+
   // Move over to the next column
-  xpos += myNAspectRatioSlider->getWidth() + myNAspectRatioLabel->getWidth();
+  xpos += myNAspectRatioSlider->getWidth() + myNAspectRatioLabel->getWidth() + 10;
   ypos = 10;
 
   // Fullscreen
-  myFullscreenCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+  myFullscreenCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Fullscreen mode", kFullScrChanged);
   wid.push_back(myFullscreenCheckbox);
   ypos += lineHeight + 4;
 
   // PAL color-loss effect
-  myColorLossCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+  myColorLossCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                            "PAL color-loss");
   wid.push_back(myColorLossCheckbox);
   ypos += lineHeight + 4;
 
   // GL FS stretch
-  myGLStretchCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+  myGLStretchCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                            "GL FS Stretch");
   wid.push_back(myGLStretchCheckbox);
   ypos += lineHeight + 4;
 
   // Use sync to vblank in OpenGL
-  myUseVSyncCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+  myUseVSyncCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                           "GL VSync");
   wid.push_back(myUseVSyncCheckbox);
   ypos += lineHeight + 4;
 
   // Grab mouse (in windowed mode)
-  myGrabmouseCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+  myGrabmouseCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                            "Grab mouse");
   wid.push_back(myGrabmouseCheckbox);
   ypos += lineHeight + 4;
 
   // Center window (in windowed mode)
-  myCenterCheckbox = new CheckboxWidget(this, font, xpos, ypos,
+  myCenterCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                         "Center window (*)");
   wid.push_back(myCenterCheckbox);
   ypos += lineHeight + 4;
 
-  // Add message concerning usage
-  lwidth = font.getStringWidth("(*) Requires application restart");
-  new StaticTextWidget(this, font, 10, _h - 2*buttonHeight - 10, lwidth, fontHeight,
-                       "(*) Requires application restart",
-                       kTextAlignLeft);
+  // Add items for tab 0
+  addToFocusList(wid, tabID);
+
+  //////////////////////////////////////////////////////////
+  // 2) TV effects options
+  wid.clear();
+  tabID = myTab->addTab(" TV Effects ");
+  xpos = ypos = 8;
+  lwidth = font.getStringWidth("TV Color Texture: ");
+  pwidth = font.getStringWidth("Staggered");
+
+  // Use TV color texture effect
+  items.clear();
+  items.push_back("Off", "off");
+  items.push_back("Normal", "normal");
+  items.push_back("Staggered", "stag");
+  myTexturePopup =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                    "TV Color Texture: ", lwidth);
+  wid.push_back(myTexturePopup);
+  ypos += lineHeight + 4;
+
+  // Use color bleed effect
+  items.clear();
+  items.push_back("Off", "off");
+  items.push_back("Low", "low");
+  items.push_back("Medium", "medium");
+  items.push_back("High", "high");
+  myBleedPopup =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                    "TV Color Bleed: ", lwidth);
+  wid.push_back(myBleedPopup);
+  ypos += lineHeight + 4;
+
+  // Use image noise effect
+  items.clear();
+  items.push_back("Off", "off");
+  items.push_back("Low", "low");
+  items.push_back("Medium", "medium");
+  items.push_back("High", "high");
+  myNoisePopup =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                    "TV Image Noise: ", lwidth);
+  wid.push_back(myNoisePopup);
+  ypos += lineHeight + 4;
+
+  // Use phosphor burn-off effect
+  ypos += 4;
+  myPhosphorCheckbox =
+    new CheckboxWidget(myTab, font, xpos, ypos, "TV Phosphor Burn-off");
+  wid.push_back(myPhosphorCheckbox);
+  ypos += lineHeight + 4;
+
+  // Add items for tab 2
+  addToFocusList(wid, tabID);
+
+  // Activate the first tab
+  myTab->setActiveTab(0);
 
   // Add Defaults, OK and Cancel buttons
+  wid.clear();
   ButtonWidget* b;
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
-
-  addToFocusList(wid);
+  addBGroupToFocusList(wid);
 
   // Disable certain functions when we know they aren't present
 #ifndef DISPLAY_GL
@@ -221,6 +291,11 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
+
+  myTexturePopup->clearFlags(WIDGET_ENABLED);
+  myBleedPopup->clearFlags(WIDGET_ENABLED);
+  myNoisePopup->clearFlags(WIDGET_ENABLED);
+  myPhosphorCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
@@ -306,6 +381,24 @@ void VideoDialog::loadConfig()
 
   // Center window
   myCenterCheckbox->setState(instance().settings().getBool("center"));
+
+  // TV color texture effect
+  myTexturePopup->setSelected(instance().settings().getString("tv_tex"), "off");
+  myTexturePopup->setEnabled(gl);
+
+  // TV color bleed effect
+  myBleedPopup->setSelected(instance().settings().getString("tv_bleed"), "off");
+  myBleedPopup->setEnabled(gl);
+
+  // TV random noise effect
+  myNoisePopup->setSelected(instance().settings().getString("tv_noise"), "off");
+  myNoisePopup->setEnabled(gl);
+
+  // TV phosphor burn-off effect
+  myPhosphorCheckbox->setState(instance().settings().getBool("tv_phos"));
+  myPhosphorCheckbox->setEnabled(gl);
+
+  myTab->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -362,6 +455,18 @@ void VideoDialog::saveConfig()
   // Center window
   instance().settings().setBool("center", myCenterCheckbox->getState());
 
+  // TV color texture effect
+  instance().settings().setString("tv_tex", myTexturePopup->getSelectedTag());
+
+  // TV color bleed effect
+  instance().settings().setString("tv_bleed", myBleedPopup->getSelectedTag());
+
+  // TV image noise effect
+  instance().settings().setString("tv_noise", myNoisePopup->getSelectedTag());
+
+  // TV phosphor burn-off effect
+  instance().settings().setBool("tv_phos", myPhosphorCheckbox->getState());
+
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
 }
@@ -389,6 +494,11 @@ void VideoDialog::setDefaults()
   myUseVSyncCheckbox->setState(true);
   myGrabmouseCheckbox->setState(false);
   myCenterCheckbox->setState(true);
+
+  myTexturePopup->setSelected("off", "");
+  myBleedPopup->setSelected("off", "");
+  myNoisePopup->setSelected("off", "");
+  myPhosphorCheckbox->setState(false);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleFullscreenChange(false);

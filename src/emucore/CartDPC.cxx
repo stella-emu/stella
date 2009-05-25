@@ -17,6 +17,7 @@
 //============================================================================
 
 #include <cassert>
+#include <cstring>
 #include <iostream>
 
 #include "System.hxx"
@@ -25,30 +26,19 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 {
-  uInt32 addr;
-
   // Make a copy of the entire image as-is, for use by getImage()
   // (this wastes 12K of RAM, should be controlled by a #ifdef)
-  for(addr = 0; addr < size; ++addr)
-    myImageCopy[addr] = image[addr];
+  memcpy(myImageCopy, image, size);
 
   // Copy the program ROM image into my buffer
-  for(addr = 0; addr < 8192; ++addr)
-  {
-    myProgramImage[addr] = image[addr];
-  }
+  memcpy(myProgramImage, image, 8192);
 
   // Copy the display ROM image into my buffer
-  for(addr = 0; addr < 2048; ++addr)
-  {
-    myDisplayImage[addr] = image[8192 + addr];
-  }
+  memcpy(myDisplayImage, image + 8192, 2048);
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
-  {
     myTops[i] = myBottoms[i] = myCounters[i] = myFlags[i] = 0;
-  }
 
   // None of the data fetchers are in music mode
   myMusicMode[0] = myMusicMode[1] = myMusicMode[2] = false;
@@ -460,8 +450,7 @@ int CartridgeDPC::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 {
-  address = address & 0x0FFF;
-  myProgramImage[myCurrentBank * 4096 + address] = value;
+  myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 

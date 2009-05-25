@@ -55,10 +55,11 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
         mySystemCyclesPerProcessorCycle;
   }
 
-
+#ifdef DEBUG_OUTPUT
 debugStream << "( Fm  Ln Cyc Clk) ( P0  P1  M0  M1  BL)  "
             << "flags   A  X  Y SP  Code           Disasm" << endl
             << endl;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

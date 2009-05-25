@@ -23,12 +23,13 @@
 #define VIDEO_DIALOG_HXX
 
 class CommandSender;
+class CheckboxWidget;
 class DialogContainer;
 class EditTextWidget;
 class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
-class CheckboxWidget;
+class TabWidget;
 
 #include "OSystem.hxx"
 #include "Dialog.hxx"
@@ -49,6 +50,9 @@ class VideoDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    TabWidget* myTab;
+
+    // General options
     EditTextWidget*   myRenderer;
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myTIAFilterPopup;
@@ -69,6 +73,12 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myUseVSyncCheckbox;
     CheckboxWidget*   myCenterCheckbox;
     CheckboxWidget*   myGrabmouseCheckbox;
+
+    // TV effects options
+    PopUpWidget*	  myTexturePopup;
+    PopUpWidget*      myBleedPopup;
+    PopUpWidget*      myNoisePopup;
+    CheckboxWidget*   myPhosphorCheckbox;
 
     enum {
       kNAspectRatioChanged = 'VDan',

@@ -440,7 +440,7 @@ int CartridgeAR::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::patch(uInt16 address, uInt8 value)
 {
-  // myImage[address & 0x0FFF] = value;
+  // TODO - add support for debugger
   return false;
 } 
 

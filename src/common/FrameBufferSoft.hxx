@@ -142,7 +142,6 @@ class FrameBufferSoft : public FrameBuffer
     string about() const;
 
   private:
-    int myZoomLevel;
     int myBytesPerPixel;
     int myBaseOffset;
     int myPitch;

@@ -222,7 +222,6 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
 {
   address = address & 0x0FFF;
   myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
-  bank(myCurrentSlice[0]);
   return true;
 } 
 

@@ -58,6 +58,13 @@ Settings::Settings(OSystem* osystem)
   setInternal("colorloss", "false");
   setInternal("timing", "sleep");
 
+  // TV filter options
+  setInternal("tv_tex", "off");
+  setInternal("tv_bleed", "off");
+  setInternal("tv_noise", "off");
+//  setInternal("tv_curve", "false");  // not yet implemented
+  setInternal("tv_phos", "false");
+
   // Sound options
   setInternal("sound", "true");
   setInternal("fragsize", "512");
@@ -218,50 +225,37 @@ void Settings::validate()
   int i;
 
   s = getString("video");
-  if(s != "soft" && s != "gl")
-    setInternal("video", "soft");
+  if(s != "soft" && s != "gl")  setInternal("video", "soft");
 
   s = getString("timing");
-  if(s != "sleep" && s != "busy")
-    setInternal("timing", "sleep");
+  if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
 
 #ifdef DISPLAY_OPENGL
   s = getString("gl_filter");
-  if(s != "linear" && s != "nearest")
-    setInternal("gl_filter", "nearest");
+  if(s != "linear" && s != "nearest")  setInternal("gl_filter", "nearest");
 
   i = getInt("gl_aspectn");
-  if(i < 80 || i > 120)
-    setInternal("gl_aspectn", "100");
-
+  if(i < 80 || i > 120)  setInternal("gl_aspectn", "100");
   i = getInt("gl_aspectp");
-  if(i < 80 || i > 120)
-    setInternal("gl_aspectp", "100");
+  if(i < 80 || i > 120)  setInternal("gl_aspectp", "100");
 #endif
 
 #ifdef SOUND_SUPPORT
   i = getInt("volume");
-  if(i < 0 || i > 100)
-    setInternal("volume", "100");
+  if(i < 0 || i > 100)    setInternal("volume", "100");
   i = getInt("freq");
-  if(i < 0 || i > 48000)
-    setInternal("freq", "31400");
+  if(i < 0 || i > 48000)  setInternal("freq", "31400");
   i = getInt("tiafreq");
-  if(i < 0 || i > 48000)
-    setInternal("tiafreq", "31400");
+  if(i < 0 || i > 48000)  setInternal("tiafreq", "31400");
 #endif
 
   i = getInt("joydeadzone");
-  if(i < 0)
-    setInternal("joydeadzone", "0");
-  else if(i > 29)
-    setInternal("joydeadzone", "29");
+  if(i < 0)        setInternal("joydeadzone", "0");
+  else if(i > 29)  setInternal("joydeadzone", "29");
 
   i = getInt("pspeed");
-  if(i < 1)
-    setInternal("pspeed", "1");
-  else if(i > 15)
-    setInternal("pspeed", "15");
+  if(i < 1)        setInternal("pspeed", "1");
+  else if(i > 15)  setInternal("pspeed", "15");
 
   s = getString("palette");
   if(s != "standard" && s != "z26" && s != "user")
@@ -272,10 +266,20 @@ void Settings::validate()
     setInternal("launcherfont", "medium");
 
   i = getInt("romviewer");
-  if(i < 0)
-    setInternal("romviewer", "0");
-  else if(i > 2)
-    setInternal("romviewer", "2");
+  if(i < 0)       setInternal("romviewer", "0");
+  else if(i > 2)  setInternal("romviewer", "2");
+
+  s = getString("tv_tex");
+  if(s != "normal" && s != "stag")
+    setInternal("tv_tex", "off");
+
+  s = getString("tv_bleed");
+  if(s != "low" && s != "medium" && s != "high")
+    setInternal("tv_bleed", "off");
+
+  s = getString("tv_noise");
+  if(s != "low" && s != "medium" && s != "high")
+    setInternal("tv_noise", "off");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -306,6 +310,18 @@ void Settings::usage()
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
 //    << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
+    << "  -tv_tex       <off|type>     TV texturing, type is one of the following:\n"
+    << "                 normal         TODO - document\n"
+    << "                 stag           TODO - document\n"
+    << "  -tv_bleed     <off|type>     TV color bleed, type is one of the following:\n"
+    << "                 low            TODO - document\n"
+    << "                 medium         TODO - document\n"
+    << "                 high           TODO - document\n"
+    << "  -tv_noise     <off|type>     TV noise, type is one of the following:\n"
+    << "                 low            TODO - document\n"
+    << "                 medium         TODO - document\n"
+    << "                 high           TODO - document\n"
+    << "  -tv_phos      <1|0>          TV phosphor burn-off\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
@@ -339,7 +355,7 @@ void Settings::usage()
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
-    << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling)\n"
+    << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
@@ -347,7 +363,7 @@ void Settings::usage()
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"
     << "  -launcherexts <allfiles|     Show files with the given extensions in ROM launcher\n"
-    << "                 allroms|        (exts is a ':' separated list of extensions\n"
+    << "                 allroms|        (exts is a ':' separated list of extensions)\n"
     << "                 exts\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
