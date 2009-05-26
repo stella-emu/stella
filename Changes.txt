@@ -16,7 +16,8 @@
 
   * Added CRT simulation effects as described in the AtariAge posting
     'CRT emulation for Stella'.  For now, this requires OpenGL 2.0 or
-    greater with support for GLSL (GL Shading Language).
+    greater with support for GLSL (GL Shading Language).  This code
+    will be expanded on and optimized in future releases.
 
   * All bankswitching schemes which include SC extended RAM will now have
     memory erased if you attempt to read from the write port.  Related to
@@ -25,6 +26,12 @@
 
   * Patching of ROM for bankswitch types '0840', 'SB', 'UA' and 'X07' is
     now implemented, but hasn't been extensively tested.
+
+  * Tweaked paddle control so that all positions are reachable in game
+    4 of Activision Casino.
+
+  * Auto-detection for '3F' bankswitching improved; several ROMs
+    previously detected as 'F8' now work correctly.
 
 -Have fun!
 

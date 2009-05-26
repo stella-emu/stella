@@ -267,6 +267,13 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPhosphorCheckbox);
   ypos += lineHeight + 4;
 
+  // Add message concerning GLSL requirement
+  ypos += lineHeight + 4;
+  lwidth = font.getStringWidth("(*) TV effects require OpenGL 2.0+ & GLSL");
+  new StaticTextWidget(myTab, font, 10, ypos, lwidth, fontHeight,
+                       "(*) TV effects require OpenGL 2.0+ & GLSL",
+                       kTextAlignLeft);
+
   // Add items for tab 2
   addToFocusList(wid, tabID);
 
