@@ -48,7 +48,6 @@
 		2D9173F109BA90380026E9FF /* TIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF910627AE34006BEC99 /* TIA.hxx */; };
 		2D9173F209BA90380026E9FF /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFBF0627B1DF006BEC99 /* Device.hxx */; };
 		2D9173F309BA90380026E9FF /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC10627B1DF006BEC99 /* M6502.hxx */; };
-		2D9173F409BA90380026E9FF /* M6502Hi.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC30627B1DF006BEC99 /* M6502Hi.hxx */; };
 		2D9173F509BA90380026E9FF /* NullDev.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC70627B1DF006BEC99 /* NullDev.hxx */; };
 		2D9173F609BA90380026E9FF /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC90627B1DF006BEC99 /* System.hxx */; };
 		2D9173F709BA90380026E9FF /* FrameBufferGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */; };
@@ -131,7 +130,6 @@
 		2D91746809BA90380026E9FF /* MediaFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5B096E261E00A518FE /* MediaFactory.hxx */; };
 		2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */; };
 		2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D05FF61096E269100A518FE /* InputDialog.hxx */; };
-		2D91746B09BA90380026E9FF /* M6502Low.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D10A7DC09B16F7A001F913C /* M6502Low.hxx */; };
 		2D91746D09BA90380026E9FF /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		2D91746E09BA90380026E9FF /* SDLMain.nib in Resources */ = {isa = PBXBuildFile; fileRef = B2F367C504C7ADC700A80002 /* SDLMain.nib */; };
 		2D91746F09BA90380026E9FF /* Stella.icns in Resources */ = {isa = PBXBuildFile; fileRef = 2D16A8E106324136005DF364 /* Stella.icns */; };
@@ -177,7 +175,6 @@
 		2D91749909BA90380026E9FF /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF900627AE34006BEC99 /* TIA.cxx */; };
 		2D91749A09BA90380026E9FF /* Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFBE0627B1DF006BEC99 /* Device.cxx */; };
 		2D91749B09BA90380026E9FF /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC00627B1DF006BEC99 /* M6502.cxx */; };
-		2D91749C09BA90380026E9FF /* M6502Hi.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC20627B1DF006BEC99 /* M6502Hi.cxx */; };
 		2D91749D09BA90380026E9FF /* NullDev.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC60627B1DF006BEC99 /* NullDev.cxx */; };
 		2D91749E09BA90380026E9FF /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC80627B1DF006BEC99 /* System.cxx */; };
 		2D91749F09BA90380026E9FF /* FrameBufferGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */; };
@@ -256,7 +253,6 @@
 		2D91750A09BA90380026E9FF /* MediaFactory.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5A096E261E00A518FE /* MediaFactory.cxx */; };
 		2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */; };
 		2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF60096E269100A518FE /* InputDialog.cxx */; };
-		2D91750D09BA90380026E9FF /* M6502Low.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D10A7DB09B16F7A001F913C /* M6502Low.cxx */; };
 		2D91750F09BA90380026E9FF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 		2D91751009BA90380026E9FF /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */; };
 		2D91751109BA90380026E9FF /* SDL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D4764C806683C5F00F63D87 /* SDL.framework */; };
@@ -317,6 +313,7 @@
 		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
+		DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
@@ -402,8 +399,6 @@
 		2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EventMappingWidget.hxx; path = ../gui/EventMappingWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2D05FF60096E269100A518FE /* InputDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = InputDialog.cxx; path = ../gui/InputDialog.cxx; sourceTree = SOURCE_ROOT; };
 		2D05FF61096E269100A518FE /* InputDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = InputDialog.hxx; path = ../gui/InputDialog.hxx; sourceTree = SOURCE_ROOT; };
-		2D10A7DB09B16F7A001F913C /* M6502Low.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = M6502Low.cxx; path = ../emucore/m6502/src/M6502Low.cxx; sourceTree = SOURCE_ROOT; };
-		2D10A7DC09B16F7A001F913C /* M6502Low.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = M6502Low.hxx; path = ../emucore/m6502/src/M6502Low.hxx; sourceTree = SOURCE_ROOT; };
 		2D113E090672BF2100317017 /* ../../docs */ = {isa = PBXFileReference; explicitFileType = folder; path = ../../docs; sourceTree = "<group>"; };
 		2D11C9A90667003F00724063 /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
 		2D11C9AA0667003F00724063 /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
@@ -630,8 +625,6 @@
 		2DE2DFBF0627B1DF006BEC99 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/m6502/src/Device.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DFC00627B1DF006BEC99 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/m6502/src/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DFC10627B1DF006BEC99 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/m6502/src/M6502.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC20627B1DF006BEC99 /* M6502Hi.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = M6502Hi.cxx; path = ../emucore/m6502/src/M6502Hi.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC30627B1DF006BEC99 /* M6502Hi.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = M6502Hi.hxx; path = ../emucore/m6502/src/M6502Hi.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DFC60627B1DF006BEC99 /* NullDev.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDev.cxx; path = ../emucore/m6502/src/NullDev.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DFC70627B1DF006BEC99 /* NullDev.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = NullDev.hxx; path = ../emucore/m6502/src/NullDev.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DFC80627B1DF006BEC99 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = System.cxx; path = ../emucore/m6502/src/System.cxx; sourceTree = SOURCE_ROOT; };
@@ -701,6 +694,7 @@
 		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotDebug.hxx; path = ../debugger/RiotDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartX07.hxx; path = ../emucore/CartX07.hxx; sourceTree = SOURCE_ROOT; };
+		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
@@ -880,6 +874,7 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
 				DCF467B20F93993B00B25D7A /* SharedPtr.hxx */,
@@ -1059,10 +1054,6 @@
 				2DE2DFBF0627B1DF006BEC99 /* Device.hxx */,
 				2DE2DFC00627B1DF006BEC99 /* M6502.cxx */,
 				2DE2DFC10627B1DF006BEC99 /* M6502.hxx */,
-				2D10A7DB09B16F7A001F913C /* M6502Low.cxx */,
-				2D10A7DC09B16F7A001F913C /* M6502Low.hxx */,
-				2DE2DFC20627B1DF006BEC99 /* M6502Hi.cxx */,
-				2DE2DFC30627B1DF006BEC99 /* M6502Hi.hxx */,
 				2DE2DFC60627B1DF006BEC99 /* NullDev.cxx */,
 				2DE2DFC70627B1DF006BEC99 /* NullDev.hxx */,
 				2DE2DFC80627B1DF006BEC99 /* System.cxx */,
@@ -1265,7 +1256,6 @@
 				2D9173F109BA90380026E9FF /* TIA.hxx in Headers */,
 				2D9173F209BA90380026E9FF /* Device.hxx in Headers */,
 				2D9173F309BA90380026E9FF /* M6502.hxx in Headers */,
-				2D9173F409BA90380026E9FF /* M6502Hi.hxx in Headers */,
 				2D9173F509BA90380026E9FF /* NullDev.hxx in Headers */,
 				2D9173F609BA90380026E9FF /* System.hxx in Headers */,
 				2D9173F709BA90380026E9FF /* FrameBufferGL.hxx in Headers */,
@@ -1348,7 +1338,6 @@
 				2D91746809BA90380026E9FF /* MediaFactory.hxx in Headers */,
 				2D91746909BA90380026E9FF /* EventMappingWidget.hxx in Headers */,
 				2D91746A09BA90380026E9FF /* InputDialog.hxx in Headers */,
-				2D91746B09BA90380026E9FF /* M6502Low.hxx in Headers */,
 				DC47455609C34BFA00EDDA3A /* BankRomCheat.hxx in Headers */,
 				DC47455709C34BFA00EDDA3A /* Cheat.hxx in Headers */,
 				DC47455909C34BFA00EDDA3A /* CheatCodeDialog.hxx in Headers */,
@@ -1393,6 +1382,7 @@
 				DCF467BD0F9399F500B25D7A /* Version.hxx in Headers */,
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
+				DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1472,7 +1462,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "m4 ../emucore/m6502/src/M6502Low.m4 ../emucore/m6502/src/M6502.m4 > M6502Low.ins\nm4 ../emucore/m6502/src/M6502Hi.m4 ../emucore/m6502/src/M6502.m4 > M6502Hi.ins\n";
+			shellScript = "m4 ../emucore/m6502/src/M6502.m4 > M6502.ins\n";
 		};
 		2D91751509BA90380026E9FF /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -1533,7 +1523,6 @@
 				2D91749909BA90380026E9FF /* TIA.cxx in Sources */,
 				2D91749A09BA90380026E9FF /* Device.cxx in Sources */,
 				2D91749B09BA90380026E9FF /* M6502.cxx in Sources */,
-				2D91749C09BA90380026E9FF /* M6502Hi.cxx in Sources */,
 				2D91749D09BA90380026E9FF /* NullDev.cxx in Sources */,
 				2D91749E09BA90380026E9FF /* System.cxx in Sources */,
 				2D91749F09BA90380026E9FF /* FrameBufferGL.cxx in Sources */,
@@ -1612,7 +1601,6 @@
 				2D91750A09BA90380026E9FF /* MediaFactory.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
 				2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */,
-				2D91750D09BA90380026E9FF /* M6502Low.cxx in Sources */,
 				DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */,
 				DC47455809C34BFA00EDDA3A /* CheatCodeDialog.cxx in Sources */,
 				DC47455A09C34BFA00EDDA3A /* CheatManager.cxx in Sources */,
