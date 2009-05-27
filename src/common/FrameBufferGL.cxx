@@ -21,6 +21,7 @@
 #include <SDL.h>
 #include <SDL_syswm.h>
 #include <sstream>
+#include <time.h>
 
 #include "bspf.hxx"
 

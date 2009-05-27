@@ -969,6 +969,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\GLShaderProgs.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\win32\OSystemWin32.hxx"
 				>
 			</File>
