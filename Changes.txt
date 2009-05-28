@@ -33,6 +33,9 @@
   * Auto-detection for '3F' bankswitching improved; several ROMs
     previously detected as 'F8' now work correctly.
 
+  * Updated internal ROM properties database to ROM-Hunter version 5
+    (thanks go to RomHunter for his tireless research in this area).
+
 -Have fun!
 
 
