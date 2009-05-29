@@ -579,6 +579,9 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myTexTarget   = GL_TEXTURE_RECTANGLE_ARB;
     myTexCoord[2] = (GLfloat) myTexWidth;
     myTexCoord[3] = (GLfloat) myTexHeight;
+
+    // This is a quick fix, a better one will come later
+    myTvFiltersEnabled = false;
   }
   else
   {

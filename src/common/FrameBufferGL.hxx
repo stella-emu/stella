@@ -61,6 +61,12 @@ class FrameBufferGL : public FrameBuffer
     */
     static bool loadLibrary(const string& library);
 
+    /**
+      Return version of the OpenGL library found by the OSystem
+      (0 indicates that the libary was not loaded successfully).
+    */
+    static float glVersion() { return myGLVersion; }
+
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////

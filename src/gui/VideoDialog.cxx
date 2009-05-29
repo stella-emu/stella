@@ -34,6 +34,7 @@
 #include "StringList.hxx"
 #include "Widget.hxx"
 #include "TabWidget.hxx"
+#include "FrameBufferGL.hxx"
 
 #include "VideoDialog.hxx"
 
@@ -273,6 +274,10 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   new StaticTextWidget(myTab, font, 10, ypos, lwidth, fontHeight,
                        "(*) TV effects require OpenGL 2.0+ & GLSL",
                        kTextAlignLeft);
+  ypos += lineHeight + 4;
+  new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
+                       lwidth, fontHeight, "\'gl_texrect\' must be disabled",
+                       kTextAlignLeft);
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
@@ -290,7 +295,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   addBGroupToFocusList(wid);
 
   // Disable certain functions when we know they aren't present
-#ifndef DISPLAY_GL
+#ifndef DISPLAY_OPENGL
   myGLFilterPopup->clearFlags(WIDGET_ENABLED);
   myNAspectRatioSlider->clearFlags(WIDGET_ENABLED);
   myNAspectRatioLabel->clearFlags(WIDGET_ENABLED);
@@ -389,21 +394,30 @@ void VideoDialog::loadConfig()
   // Center window
   myCenterCheckbox->setState(instance().settings().getBool("center"));
 
+#ifdef DISPLAY_OPENGL
+  //////////////////////////////////////////////////////////////////////
+  // TV effects are only enabled in OpenGL mode, and only if OpenGL 2.0+
+  // is available; for now, 'gl_texrect' must also be disabled
+  bool tv = gl && FrameBufferGL::glVersion() >= 2.0 &&
+            !instance().settings().getBool("gl_texrect");
+  //////////////////////////////////////////////////////////////////////
+
   // TV color texture effect
   myTexturePopup->setSelected(instance().settings().getString("tv_tex"), "off");
-  myTexturePopup->setEnabled(gl);
+  myTexturePopup->setEnabled(tv);
 
   // TV color bleed effect
   myBleedPopup->setSelected(instance().settings().getString("tv_bleed"), "off");
-  myBleedPopup->setEnabled(gl);
+  myBleedPopup->setEnabled(tv);
 
   // TV random noise effect
   myNoisePopup->setSelected(instance().settings().getString("tv_noise"), "off");
-  myNoisePopup->setEnabled(gl);
+  myNoisePopup->setEnabled(tv);
 
   // TV phosphor burn-off effect
   myPhosphorCheckbox->setState(instance().settings().getBool("tv_phos"));
-  myPhosphorCheckbox->setEnabled(gl);
+  myPhosphorCheckbox->setEnabled(tv);
+#endif
 
   myTab->loadConfig();
 }
