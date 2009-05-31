@@ -299,8 +299,8 @@ void Paddles::update()
     }
   }
  
-  myAnalogPinValue[Five] = (Int32)(1100000 * (myCharge[1] / 255.0));
-  myAnalogPinValue[Nine] = (Int32)(1100000 * (myCharge[0] / 255.0));
+  myAnalogPinValue[Five] = (Int32)(1400000 * (myCharge[1] / 255.0));
+  myAnalogPinValue[Nine] = (Int32)(1400000 * (myCharge[0] / 255.0));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
