@@ -19,6 +19,9 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Add new TIA infrastructure with improved HMOVE emulation, including
     fixes for (possibly) incorrect VSYNC handling in Q-Bert.
 
+  * Add better support for 'floating' TIA reads as described here:
+    http://www.atariage.com/forums/index.php?s=&showtopic=143363&view=findpost&p=1762433
+
   * Finalize CRT simulation OpenGL code for the next release, and look
     into adding Blargg NTSC filtering (perhaps as a GLSL program).
 

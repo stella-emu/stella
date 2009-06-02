@@ -243,3 +243,15 @@ bool CartridgeF4SC::load(Deserializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF4SC::getRamArea(uInt16& start, uInt16& size,
+                               uInt16& roffset, uInt16& woffset)
+{
+  start   = 0x1000;
+  size    = 128;
+  roffset = 0x80;
+  woffset = 0x0;
+
+  return true;
+}

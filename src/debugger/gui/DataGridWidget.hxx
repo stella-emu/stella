@@ -31,6 +31,7 @@
 #include "Array.hxx"
 #include "Rect.hxx"
 #include "DataGridOpsWidget.hxx"
+#include "ScrollBarWidget.hxx"
 
 // Some special commands
 enum {
@@ -46,13 +47,15 @@ class DataGridWidget : public EditableWidget
   public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int cols, int rows,
-                   int colchars, int bits, BaseFormat format = kBASE_DEFAULT);
+                   int colchars, int bits, BaseFormat format = kBASE_DEFAULT,
+                   bool useScrollbar = false);
     virtual ~DataGridWidget();
 
     void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);
     void setList(const int a, const int v, const bool changed);
-    void setHiliteList(const IntArray& hilitelist);
+    void setHiliteList(const BoolArray& hilitelist);
+    void setNumRows(int rows);
 
     void setSelectedValue(int value);
 
@@ -63,11 +66,15 @@ class DataGridWidget : public EditableWidget
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseWheel(int x, int y, int direction);
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     virtual bool wantsFocus() { return true; }
+
+    // Account for the extra width of embedded scrollbar
+    virtual int getWidth() const { return _w + (_scrollBar ? kScrollBarWidth : 0); }
 
     void startEditMode();
     void endEditMode();
@@ -116,6 +123,7 @@ class DataGridWidget : public EditableWidget
     string  _backupString;
 
     DataGridOpsWidget* _opsWidget;
+    ScrollBarWidget* _scrollBar;
 
   private:
     /** Common operations on the currently selected cell */

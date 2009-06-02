@@ -275,3 +275,15 @@ bool CartridgeFASC::load(Deserializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFASC::getRamArea(uInt16& start, uInt16& size,
+                               uInt16& roffset, uInt16& woffset)
+{
+  start   = 0x1000;
+  size    = 256;
+  roffset = 0x100;
+  woffset = 0x0;
+
+  return true;
+}

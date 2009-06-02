@@ -61,23 +61,21 @@ static unsigned int down_arrow[8] = {
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
                                  int x, int y, int w, int h)
-    : Widget(boss, font, x, y, w, h), CommandSender(boss)
+  : Widget(boss, font, x, y, w, h), CommandSender(boss),
+    _numEntries(0),
+    _entriesPerPage(0),
+    _currentPos(0),
+    _wheel_lines(0),
+    _part(kNoPart),
+    _draggingPart(kNoPart),
+    _sliderHeight(0),
+    _sliderPos(0),
+    _sliderDeltaMouseDownPos(0)
 {
   _flags = WIDGET_ENABLED | WIDGET_TRACK_MOUSE | WIDGET_CLEARBG;
   _type = kScrollBarWidget;
   _bgcolor = kWidColor;
   _bgcolorhi = kWidColor;
-
-  _part = kNoPart;
-  _sliderHeight = 0;
-  _sliderPos = 0;
-
-  _draggingPart = kNoPart;
-  _sliderDeltaMouseDownPos = 0;
-
-  _numEntries = 0;
-  _entriesPerPage = 0;
-  _currentPos = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,9 +134,9 @@ void ScrollBarWidget::handleMouseWheel(int x, int y, int direction)
     return;
 
   if(direction < 0)
-    _currentPos -= _WHEEL_LINES;
+    _currentPos -= _wheel_lines ? _wheel_lines : _WHEEL_LINES;
   else
-    _currentPos += _WHEEL_LINES;
+    _currentPos += _wheel_lines ? _wheel_lines : _WHEEL_LINES;
 
   // Make sure that _currentPos is still inside the bounds
   checkBounds(old_pos);

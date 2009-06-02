@@ -52,6 +52,7 @@ class RamWidget : public Widget, public CommandSender
     string doSearch(const string& str);
     string doCompare(const string& str);
     void doRestart();
+    void showSearchResults();
 
   private:
     enum {
@@ -66,8 +67,12 @@ class RamWidget : public Widget, public CommandSender
 
     int myUndoAddress;
     int myUndoValue;
+    int myCurrentRamBank;
 
-    DataGridWidget* myRamGrid;
+    StaticTextWidget* myRamStart;
+    StaticTextWidget* myRamLabels[8];
+    DataGridWidget*   myRamGrid;
+
     EditTextWidget* myBinValue;
     EditTextWidget* myDecValue;
     EditTextWidget* myLabel;
@@ -83,6 +88,7 @@ class RamWidget : public Widget, public CommandSender
     IntArray myOldValueList;
     IntArray mySearchAddr;
     IntArray mySearchValue;
+    BoolArray mySearchState;
 };
 
 #endif

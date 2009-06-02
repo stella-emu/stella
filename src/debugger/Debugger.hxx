@@ -48,12 +48,6 @@ class Expression;
 typedef map<string,Expression*> FunctionMap;
 typedef map<string,string> FunctionDefMap;
 
-// Constants for RAM area
-enum {
-  kRamStart = 0x80,
-  kRamSize = 128
-};
-
 /*
 // These will probably turn out to be unneeded, left for reference for now
 // pointer types for Debugger instance methods

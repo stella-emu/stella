@@ -80,6 +80,23 @@ class Cartridge : public Device
     void lockBank()   { myBankLocked = true;  }
     void unlockBank() { myBankLocked = false; }
 
+    /**
+      This informs the caller of the addressable range of any extended RAM
+      present on the cart.  If no RAM is present, the method should return
+      false.  Cart classes should override this method if they contain
+      any extended RAM.
+
+      @param start    The beginning of the RAM area (0x0000 - 0x2000)
+      @param size     Total number of bytes of area
+      @param roffset  Offset to use when reading from RAM (read port)
+      @param woffset  Offset to use when writing to RAM (write port)
+
+      @return  True if RAM exists and parameters are modified, else false
+    */
+    virtual bool getRamArea(uInt16& start, uInt16& size,
+                            uInt16& roffset, uInt16& woffset)
+    { return false; }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are cart-specific and must be implemented

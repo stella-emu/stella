@@ -16,6 +16,7 @@
 // $Id$
 //============================================================================
 
+#include "bspf.hxx"
 #include "Array.hxx"
 #include "System.hxx"
 #include "RamDebug.hxx"
@@ -24,14 +25,37 @@
 RamDebug::RamDebug(Debugger& dbg, Console& console)
   : DebuggerSystem(dbg, console)
 {
+  // Zero-page RAM is always present
+  addRamArea(0x80, 128, 0, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamDebug::addRamArea(uInt16 start, uInt16 size,
+                          uInt16 roffset, uInt16 woffset)
+{
+  // First make sure this area isn't already present
+  for(uInt32 i = 0; i < myState.rport.size(); ++i)
+    if(myState.rport[i] == start + roffset ||
+       myState.wport[i] == start + woffset)
+      return;
+
+  // Otherwise, add a new area
+  for(uInt32 i = 0; i < size; ++i)
+  {
+    myState.rport.push_back(i + start + roffset);
+    myState.wport.push_back(i + start + woffset);
+
+    myOldState.rport.push_back(i + start + roffset);
+    myOldState.wport.push_back(i + start + woffset);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DebuggerState& RamDebug::getState()
 {
   myState.ram.clear();
-  for(int i=0; i<0x80; i++)
-    myState.ram.push_back(read(i));
+  for(uInt32 i = 0; i < myState.rport.size(); ++i)
+    myState.ram.push_back(read(myState.rport[i]));
 
   return myState;
 }
@@ -40,22 +64,20 @@ const DebuggerState& RamDebug::getState()
 void RamDebug::saveOldState()
 {
   myOldState.ram.clear();
-  for(int i=0; i<0x80; i++)
-    myOldState.ram.push_back(read(i));
+  for(uInt32 i = 0; i < myOldState.rport.size(); ++i)
+    myOldState.ram.push_back(read(myOldState.rport[i]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int RamDebug::read(int offset)
+uInt8 RamDebug::read(uInt16 addr)
 {
-  offset &= 0x7f; // there are only 128 bytes
-  return mySystem.peek(offset + 0x80);
+  return mySystem.peek(addr);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamDebug::write(int offset, int value)
+void RamDebug::write(uInt16 addr, uInt8 value)
 {
-  offset &= 0x7f; // there are only 128 bytes
-  mySystem.poke(offset + 0x80, value);
+  mySystem.poke(addr, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -63,8 +85,7 @@ string RamDebug::toString()
 {
   string result;
   char buf[128];
-  int bytesPerLine;
-  int start = kRamStart, len = kRamSize;
+  uInt32 bytesPerLine;
 
   switch(myDebugger.parser().base())
   {
@@ -84,12 +105,24 @@ string RamDebug::toString()
 
   const RamState& state    = (RamState&) getState();
   const RamState& oldstate = (RamState&) getOldState();
-  for (uInt8 i = 0x00; i < len; i += bytesPerLine)
+
+  uInt32 curraddr = 0;
+  for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine)
   {
-    sprintf(buf, "%.2x: ", start+i);
+    // We detect different 'pages' of RAM when the addresses jump by
+    // more than the number of bytes on the previous line
+    if(state.rport[i] - curraddr > bytesPerLine)
+    {
+      sprintf(buf, "%04x: (rport = %04x, wport = %04x)\n",
+              state.rport[i], state.rport[i], state.wport[i]);
+      buf[2] = buf[3] = 'x';
+      result += buf;
+    }
+    curraddr = state.rport[i];
+    sprintf(buf, "%.2x: ", curraddr & 0x00ff);
     result += buf;
 
-    for (uInt8 j = 0; j < bytesPerLine; j++)
+    for(uInt8 j = 0; j < bytesPerLine; ++j)
     {
       result += myDebugger.invIfChanged(state.ram[i+j], oldstate.ram[i+j]);
       result += " ";

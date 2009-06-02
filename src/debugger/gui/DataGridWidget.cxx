@@ -30,7 +30,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int cols, int rows,
-                               int colchars, int bits, BaseFormat base)
+                               int colchars, int bits, BaseFormat base,
+                               bool useScrollbar)
   : EditableWidget(boss, font, x, y,
                    cols*(colchars * font.getMaxCharWidth() + 8) + 1,
                    font.getLineHeight()*rows + 1),
@@ -43,7 +44,8 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _bits(bits),
     _base(base),
     _selectedItem(0),
-    _opsWidget(NULL)
+    _opsWidget(NULL),
+    _scrollBar(NULL)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS |
            WIDGET_WANTS_RAWDATA;
@@ -59,11 +61,22 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   // Make sure hilite list contains all false values
   _hiliteList.clear();
   int size = _rows * _cols;
-  while((int)_hiliteList.size() < size)
+  while(size--)
     _hiliteList.push_back(false);
 
   // Set lower and upper bounds to sane values
   setRange(0, 1 << bits);
+
+  // Add a scrollbar if necessary
+  if(useScrollbar)
+  {
+    _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
+    _scrollBar->setTarget(this);
+    _scrollBar->_numEntries = 1;
+    _scrollBar->_currentPos = 0;
+    _scrollBar->_entriesPerPage = 1;
+    _scrollBar->_wheel_lines = 1;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -90,9 +103,9 @@ cerr << "alist.size() = "     << alist.size()
   _valueStringList.clear();
   _changedList.clear();
 
-  _addrList     = alist;
-  _valueList    = vlist;
-  _changedList  = changed;
+  _addrList    = alist;
+  _valueList   = vlist;
+  _changedList = changed;
 
   // An efficiency thing
   string temp;
@@ -132,24 +145,20 @@ void DataGridWidget::setList(const int a, const int v, const bool c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setHiliteList(const IntArray& hilitelist)
+void DataGridWidget::setHiliteList(const BoolArray& hilitelist)
 {
-  // We can't assume this given list contains the exact number of
-  // items in this DataGrid, so we make sure
+  assert(hilitelist.size() == uInt32(_rows * _cols));
   _hiliteList.clear();
-  int size = _rows * _cols;
-  while((int)_hiliteList.size() < size)
-    _hiliteList.push_back(false);
-
-  // Now fill it with the addresses/positions given in 'hilitelist'
-  for(unsigned int i = 0; i < hilitelist.size(); ++i)
-  {
-    int pos = hilitelist[i];
-    if(pos >= 0 && pos <= size)
-      _hiliteList[pos] = true;
-  }
+  _hiliteList = hilitelist;
 
   setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setNumRows(int rows)
+{
+  if(_scrollBar)
+    _scrollBar->_numEntries = rows;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -213,6 +222,12 @@ void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
     if(_editable && !_editMode)
       startEditMode();
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::handleMouseWheel(int x, int y, int direction)
+{
+  _scrollBar->handleMouseWheel(x, y, direction);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -443,8 +458,8 @@ void DataGridWidget::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kSetPositionCmd:
-      if (_selectedItem != (int)data)
-        _selectedItem = data;
+      // Chain access; pass to parent
+      sendCommand(kSetPositionCmd, data, _id);
       break;
 
     case kDGZeroCmd:
@@ -542,6 +557,10 @@ void DataGridWidget::drawWidget(bool hilite)
   // Only draw the caret while editing, and if it's in the current viewport
   if(_editMode)
     drawCaret();
+
+  // Draw the scrollbar
+  if(_scrollBar)
+    _scrollBar->recalc();  // takes care of the draw
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

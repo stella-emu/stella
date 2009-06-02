@@ -106,7 +106,7 @@ Debugger::Debugger(OSystem* osystem)
     myBreakPoints(NULL),
     myReadTraps(NULL),
     myWriteTraps(NULL),
-    myWidth(1030),
+    myWidth(1050),
     myHeight(620)
 {
   // Get the dialog size
@@ -114,7 +114,7 @@ Debugger::Debugger(OSystem* osystem)
   myOSystem->settings().getSize("debuggerres", w, h);
   myWidth = BSPF_max(w, 0);
   myHeight = BSPF_max(h, 0);
-  myWidth = BSPF_max(myWidth, 1030u);
+  myWidth = BSPF_max(myWidth, 1050u);
   myHeight = BSPF_max(myHeight, 620u);
   myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
 
@@ -190,6 +190,12 @@ void Debugger::setConsole(Console* console)
   delete myRamDebug;
   myRamDebug = new RamDebug(*this, *myConsole);
 
+  // Register any RAM areas in the Cartridge
+  // Zero-page RAM is automatically recognized by RamDebug
+  uInt16 start, size, roffset, woffset;
+  if(myConsole->cartridge().getRamArea(start, size, roffset, woffset))
+    myRamDebug->addRamArea(start, size, roffset, woffset);
+
   delete myRiotDebug;
   myRiotDebug = new RiotDebug(*this, *myConsole);
 
@@ -205,6 +211,8 @@ void Debugger::setConsole(Console* console)
   autoLoadSymbols(myOSystem->romFile());
   loadListFile();
 
+  // Make sure cart RAM is added before this is called,
+  // otherwise the debugger state won't know about it
   saveOldState();
 }
 

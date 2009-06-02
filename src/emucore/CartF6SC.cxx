@@ -285,3 +285,15 @@ bool CartridgeF6SC::load(Deserializer& in)
 
   return true;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeF6SC::getRamArea(uInt16& start, uInt16& size,
+                               uInt16& roffset, uInt16& woffset)
+{
+  start   = 0x1000;
+  size    = 128;
+  roffset = 0x80;
+  woffset = 0x0;
+
+  return true;
+}

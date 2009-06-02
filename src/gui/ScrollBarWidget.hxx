@@ -61,6 +61,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     int _numEntries;
     int _entriesPerPage;
     int _currentPos;
+    int _wheel_lines;
 
   private:
     typedef enum {

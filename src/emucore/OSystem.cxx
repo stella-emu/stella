@@ -191,7 +191,7 @@ bool OSystem::create()
   //       This logic should also take into account the size of the
   //       framebuffer, and try to be intelligent about font sizes
   //       We can probably add ifdefs to take care of corner cases,
-  //       but the means we've failed to abstract it enough ...
+  //       but that means we've failed to abstract it enough ...
   ////////////////////////////////////////////////////////////////////
   bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
 
@@ -972,6 +972,5 @@ OSystem::OSystem(const OSystem& osystem)
 OSystem& OSystem::operator = (const OSystem&)
 {
   assert(false);
-
   return *this;
 }
