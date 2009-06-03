@@ -41,7 +41,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Symbolic names in disassembly</li>
 	<li>Symbolic names accepted as input</li>
 	<li>Tab completion for commands and symbol names</li>
-	<li>Graphical editor for RIOT RAM. Acts a lot like a spreadsheet.
+	<li>Graphical editor for RIOT and extended RAM. Acts a lot like a spreadsheet.
 		Input in hex, with displays for label/decimal/binary for
 		currently-selected location.</li>
 	<li>GUI CPU state window</li>
@@ -73,7 +73,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Save patched ROM ("saverom filename.bin").</li>
 </ul>
 
-<h2>Future planned features (post 2.0):</h2>
+<h2>Future planned features:</h2>
 
 <ul>
 	<li>GUI for cheat codes (Cheetah and normal codes).</li>
@@ -88,7 +88,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 		available in a very crude form ("loadlist" and "list" commands).</li>
 	<li>More "special variables" for the expression parser.</li>
 	<li>Possibly a mini-assembler</li>
-	<li>Support for extra RAM in Supercharger and other cart types.</li>
+	<li>Support for extra RAM in all remaining cart types.</li>
 	<li>Possibly support for recording and playing back input files, like
 		MAME. This isn't a debugger feature per se, but it'll make it easier
 		to reliably trigger a bug so you can debug it.</li>
@@ -793,9 +793,11 @@ See the "Breakpoints" section for details.</p>
 <p>This displays the current CPU state, as shown:</p>
 <p><img src="graphics/debugger_cpuregs.png"></p>
 <p>All the registers and flags are displayed, and can be changed by
-double-clicking on them. Flags are toggled on double-click.  Selected registers
-here can also be changed by using the "Data Operations" buttons, further
-described in (J).</p>
+double-clicking on them (to the left). Flags are toggled on double-click.
+Selected registers here can also be changed by using the "Data Operations" buttons,
+further described in (J).  All items are shown in hex.  Any label defined for the
+current PC value is shown to the right.  Decimal and binary equivalents
+are shown for SP/A/X/Y to the right (first decimal, then binary).</p>
 <p>There's not much else to say about the CPU widget: if you know 6502
 assembly, it's pretty self-explanatory. If you don't, well, you should
 learn :)</p>
@@ -826,16 +828,28 @@ respond to these same keyboard shortcuts.  If in doubt, give them a try.</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h2><u>(K)</u> M6532/RIOT RAM</h2>
+<h2><u>(K)</u> M6532/RIOT and extended RAM</h2>
 <p>This is a spreadsheet-like GUI for inspecting and changing the contents
-of the 2600's RAM. All 128 bytes of RAM are visible on the screen at
-once. You can navigate with either the mouse or the keyboard arrow keys.
+of the 2600's RAM. You can view 128 bytes of RAM at a time, starting with
+the RAM built in to the console (zero-page RAM).  If a cartridge contains
+extended RAM, a scrollbar will be activated, allowing to scroll in
+sequence through each 128 byte 'bank' of RAM.  The address in the upper left
+corner indicates the offset (in terms of the read port) for the bank
+currently being displayed.</p>
+<p>You can navigate with either the mouse or the keyboard arrow keys.
 To change a RAM location, either double-click on it or press Enter while
 it's highlighted. Enter the new value (hex only for now, sorry), then
 press Enter to make the change. If you change your mind, press Escape
 and the original value will be restored.  The currently selected RAM cell
 can also be changed by using the Data operations buttons/associated
 shortcut keys (J).</p>
+<p><b>Note:</b> Many extended RAM schemes involve different addresses for
+reading versus writing RAM (read port vs. write port).  The UI takes care
+of this for you; although the addresses shown are for the read port,
+modifying a cell will use the write port.  Also, some bankswitching
+schemes can swap RAM and ROM dynamically during program execution.  In
+these cases, the values shown may not always be for RAM, and may point
+to ROM instead.  In the latter case, the data cannot be modified.</p>
 <p><img src="graphics/debugger_ram.png"></p>
 <p>The 'Undo' button in the upper right should be self-explanatory; it will
 undo the most previous operation to one cell only.  The 'Rev' button is
@@ -849,8 +863,8 @@ The remaining buttons to the right are further explained in section (L).</p>
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
-<h2><u>(L)</u> M6532/RIOT RAM (search/compare mode)</h2>
-<p>The RIOT RAM widget also lets you search memory for values such as lives or remaining
+<h2><u>(L)</u> M6532/RIOT and extended RAM (search/compare mode)</h2>
+<p>The RAM widget also lets you search memory for values such as lives or remaining
 energy, but it's also very useful when debugging to determine which
 memory location holds which quantity.</p>
 <p><img src="graphics/debugger_ramsearch.png"></p>
@@ -867,7 +881,7 @@ addresses and allows another search.</p>
 <p>The following is an example of inspecting all addresses that have
 decreased by 1:</p>
 <ul>
-	<li>Click 'Srch' with empty input.  All 128 address/values are highlighted</li>
+	<li>Click 'Srch' with empty input.  All address/values are highlighted</li>
 	<li>Exit debugger mode and lose a life, let your energy decrease, or
 		do whatever it is you're trying to debug</li>
 	<li>Enter debugger mode again, click 'Cmp' and and enter a '-1' for input.

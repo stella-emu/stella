@@ -22,15 +22,17 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Add better support for 'floating' TIA reads as described here:
     http://www.atariage.com/forums/index.php?s=&showtopic=143363&view=findpost&p=1762433
 
-  * Finalize CRT simulation OpenGL code for the next release, and look
-    into adding Blargg NTSC filtering (perhaps as a GLSL program).
+  * Look into adding Blargg NTSC filtering (perhaps as a GLSL program).
 
   * Either Support Distella as frontend or integrate a 6507 Disassembler
 
   * Step-debug through disassembled zero-page code (get clarification on this)
 
-  * Improve debugger support for cartridges with dedicated RAM, and add
-    source-level debugging
+  * Improve debugger support for remaining cartridges with dedicated RAM,
+    and add source-level debugging
+
+  * Fix bank going over 255 (when accessing RAM) for 3E in the debugger
+    RomWidget view.
 
   * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
     thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.

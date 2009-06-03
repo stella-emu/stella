@@ -27,6 +27,7 @@ class Properties;
 class Settings;
 
 #include "bspf.hxx"
+#include "Array.hxx"
 #include "Device.hxx"
 
 /**
@@ -80,22 +81,20 @@ class Cartridge : public Device
     void lockBank()   { myBankLocked = true;  }
     void unlockBank() { myBankLocked = false; }
 
+  public:
     /**
-      This informs the caller of the addressable range of any extended RAM
-      present on the cart.  If no RAM is present, the method should return
-      false.  Cart classes should override this method if they contain
-      any extended RAM.
+      The following list contains addressable areas of ROM that are mapped
+      to RAM (usually Superchip, but there are other types).  Since such
+      RAM is normally mapped in at different addresses for read and write
+      ports, read and write offsets must be considered.
 
-      @param start    The beginning of the RAM area (0x0000 - 0x2000)
-      @param size     Total number of bytes of area
-      @param roffset  Offset to use when reading from RAM (read port)
-      @param woffset  Offset to use when writing to RAM (write port)
-
-      @return  True if RAM exists and parameters are modified, else false
+      @return  List of addressable RAM areas (can be empty)
     */
-    virtual bool getRamArea(uInt16& start, uInt16& size,
-                            uInt16& roffset, uInt16& woffset)
-    { return false; }
+    struct RamArea {
+      uInt16 start;  uInt16 size;  uInt16 roffset;  uInt16 woffset;
+    };
+    typedef Common::Array<RamArea> RamAreaList;
+    const RamAreaList& ramAreas() { return myRamAreaList; }
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -160,9 +159,15 @@ class Cartridge : public Device
     virtual string name() const = 0;
 
   protected:
-    // If myBankLocked is true, ignore attempts at bankswitching. This is used
-    // by the debugger, when disassembling/dumping ROM.
-    bool myBankLocked;
+    /**
+      Add the given area to the RamArea list for this cart.
+
+      @param start    The beginning of the RAM area (0x0000 - 0x2000)
+      @param size     Total number of bytes of area
+      @param roffset  Offset to use when reading from RAM (read port)
+      @param woffset  Offset to use when writing to RAM (write port)
+    */
+    void registerRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
 
   private:
     /**
@@ -249,7 +254,15 @@ class Cartridge : public Device
     */
     static bool isProbablyFE(const uInt8* image, uInt32 size);
 
+  protected:
+    // If myBankLocked is true, ignore attempts at bankswitching. This is used
+    // by the debugger, when disassembling/dumping ROM.
+    bool myBankLocked;
+
   private:
+    // Contains RamArea entries for those carts with accessible RAM.
+    RamAreaList myRamAreaList;
+
     // Contains info about this cartridge in string format
     static string myAboutString;
 

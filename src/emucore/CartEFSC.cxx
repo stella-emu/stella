@@ -28,6 +28,9 @@ CartridgeEFSC::CartridgeEFSC(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
+
+  // This cart contains 128 bytes extended RAM @ 0x1000
+  registerRamArea(0x1000, 128, 0x80, 0x00);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -53,11 +53,16 @@ class DataGridWidget : public EditableWidget
 
     void setList(const IntArray& alist, const IntArray& vlist,
                  const BoolArray& changed);
-    void setList(const int a, const int v, const bool changed);
+    /** Convenience method for when the datagrid contains only one value */
+    void setList(int a, int v, bool changed);
+
     void setHiliteList(const BoolArray& hilitelist);
     void setNumRows(int rows);
 
+    /** Set value at current selection point */
     void setSelectedValue(int value);
+    /** Set value at given position */
+    void setValue(int position, int value);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }

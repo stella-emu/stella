@@ -28,6 +28,9 @@ CartridgeFASC::CartridgeFASC(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 12288);
+
+  // This cart contains 256 bytes extended RAM @ 0x1000
+  registerRamArea(0x1000, 256, 0x100, 0x00);
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -272,18 +275,6 @@ bool CartridgeFASC::load(Deserializer& in)
 
   // Remember what bank we were in
   bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFASC::getRamArea(uInt16& start, uInt16& size,
-                               uInt16& roffset, uInt16& woffset)
-{
-  start   = 0x1000;
-  size    = 256;
-  roffset = 0x100;
-  woffset = 0x0;
 
   return true;
 }

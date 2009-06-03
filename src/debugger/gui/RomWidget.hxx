@@ -59,6 +59,10 @@ class RomWidget : public Widget, public CommandSender
     void saveROM(const string& rom);
 
   private:
+    enum {
+      kRomNameEntered = 'RWrn'
+    };
+
     RomListWidget* myRomList;
 
     /** List of addresses indexed by line number */

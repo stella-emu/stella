@@ -106,17 +106,19 @@ string RamDebug::toString()
   const RamState& state    = (RamState&) getState();
   const RamState& oldstate = (RamState&) getOldState();
 
-  uInt32 curraddr = 0;
-  for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine)
+  uInt32 curraddr = 0, bytesSoFar = 0;
+  for(uInt32 i = 0; i < state.ram.size(); i += bytesPerLine, bytesSoFar += bytesPerLine)
   {
     // We detect different 'pages' of RAM when the addresses jump by
-    // more than the number of bytes on the previous line
-    if(state.rport[i] - curraddr > bytesPerLine)
+    // more than the number of bytes on the previous line, or when 256
+    // bytes have been previously output
+    if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
       sprintf(buf, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       buf[2] = buf[3] = 'x';
-      result += buf;
+      result += DebuggerParser::red(buf);
+      bytesSoFar = 0;
     }
     curraddr = state.rport[i];
     sprintf(buf, "%.2x: ", curraddr & 0x00ff);

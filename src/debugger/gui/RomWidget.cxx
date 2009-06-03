@@ -33,10 +33,6 @@
 #include "RomListWidget.hxx"
 #include "RomWidget.hxx"
 
-enum {
-  kRomNameEntered = 'RWrn'
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, font, x, y, 16, 16),
@@ -59,7 +55,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   xpos += t->getWidth() + 10;
   myBank = new DataGridWidget(boss, font, xpos, ypos-2,
-                              1, 1, 3, 8, kBASE_10);
+                              1, 1, 4, 8, kBASE_10);
   myBank->setTarget(this);
   myBank->setRange(0, instance().debugger().bankCount());
   if(instance().debugger().bankCount() <= 1)
@@ -75,7 +71,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   xpos += t->getWidth() + 10;
   myBankCount = new EditTextWidget(boss, font, xpos, ypos-2,
-                                   30, font.getLineHeight(), "");
+                                   font.getStringWidth("XXXX"),
+                                   font.getLineHeight(), "");
   myBankCount->setEditable(false);
 
   // Create rom listing

@@ -182,6 +182,18 @@ bool Cartridge::save(ofstream& out)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::registerRamArea(uInt16 start, uInt16 size,
+                                uInt16 roffset, uInt16 woffset)
+{
+  RamArea area;
+  area.start   = start;
+  area.size    = size;
+  area.roffset = roffset;
+  area.woffset = woffset;
+  myRamAreaList.push_back(area);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Cartridge::autodetectType(const uInt8* image, uInt32 size)
 {
   // Guess type based on size

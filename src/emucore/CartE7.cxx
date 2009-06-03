@@ -28,6 +28,13 @@ CartridgeE7::CartridgeE7(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 16384);
+
+  // This cart can address a 1024 byte bank of RAM @ 0x1000
+  // and 256 bytes @ 0x1800
+  // However, it may not be addressable all the time (it may be swapped out)
+  // so probably most of the time, the area will point to ROM instead
+  registerRamArea(0x1000, 1024, 0x400, 0x00);  // 1024 bytes RAM @ 0x1000
+  registerRamArea(0x1800, 256, 0x100, 0x00);   // 256 bytes RAM @ 0x1800
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

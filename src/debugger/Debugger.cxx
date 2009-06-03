@@ -34,6 +34,7 @@
 #include "Console.hxx"
 #include "System.hxx"
 #include "M6502.hxx"
+#include "Cart.hxx"
 
 #include "EquateList.hxx"
 #include "CpuDebug.hxx"
@@ -192,9 +193,9 @@ void Debugger::setConsole(Console* console)
 
   // Register any RAM areas in the Cartridge
   // Zero-page RAM is automatically recognized by RamDebug
-  uInt16 start, size, roffset, woffset;
-  if(myConsole->cartridge().getRamArea(start, size, roffset, woffset))
-    myRamDebug->addRamArea(start, size, roffset, woffset);
+  const Cartridge::RamAreaList& areas = myConsole->cartridge().ramAreas();
+  for(Cartridge::RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
+    myRamDebug->addRamArea(i->start, i->size, i->roffset, i->woffset);
 
   delete myRiotDebug;
   myRiotDebug = new RiotDebug(*this, *myConsole);

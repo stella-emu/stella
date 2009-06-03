@@ -19,16 +19,26 @@
     greater with support for GLSL (GL Shading Language).  This code
     will be expanded on and optimized in future releases.
 
-  * All bankswitching schemes which include SC extended RAM will now have
-    memory erased if you attempt to read from the write port.  Related to
-    this, entering/exiting the debugger will no longer erase the extended
-    RAM.
+  * Adding editing of extended RAM in the debugger RAM UI.  The RAM
+    'spreadsheet' now shows the entire address space of RAM in the
+    system, in 128 byte increments.  The first bank shown is zero-page,
+    with the others following in consecutive order.  The UI takes care
+    of read vs. write port differences, so you don't have to worry
+    about the offsets.  For now, all SuperChip based ROMs (EFSC, F4SC,
+    F6SC, F8SC, FASC) as well as 3E, CV and E7 are supported.
 
-  * Patching of ROM for bankswitch types '0840', 'SB', 'UA' and 'X07' is
-    now implemented, but hasn't been extensively tested.
+  * All ROMs which include SC extended RAM will now have memory erased if
+    you attempt to read from the write port.  Related to this,
+    entering/exiting the debugger will no longer erase the extended RAM.
+
+  * Patching of ROM for bankswitch types 0840, SB, UA and X07 is now
+    implemented, but hasn't been extensively tested.
+
+  * Visual improvements to the CPU register UI in the debugger; the
+    SP/A/X/Y registers now have separate decimal and binary views.
 
   * Tweaked paddle control so that all positions are reachable in game
-    4 of Activision Casino.
+    4 of Activision Casino in both NTSC and PAL versions.
 
   * Auto-detection for '3F' bankswitching improved; several ROMs
     previously detected as 'F8' now work correctly.

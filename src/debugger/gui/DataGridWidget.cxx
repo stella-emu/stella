@@ -131,9 +131,8 @@ cerr << "_addrList.size() = "     << _addrList.size()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DataGridWidget::setList(const int a, const int v, const bool c)
+void DataGridWidget::setList(int a, int v, bool c)
 {
-  // Convenience method for when the datagrid contains only one value
   IntArray alist, vlist;
   BoolArray changed;
 
@@ -164,16 +163,25 @@ void DataGridWidget::setNumRows(int rows)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setSelectedValue(int value)
 {
-  // Correctly format the data for viewing
-  _editString = instance().debugger().valueToString(value, _base);
+  setValue(_selectedItem, value);
+}
 
-  _valueStringList[_selectedItem] = _editString;
-  _changedList[_selectedItem] = (_valueList[_selectedItem] != value);
-  _valueList[_selectedItem] = value;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setValue(int position, int value)
+{
+  if(position >= 0 && uInt32(position) < _valueList.size())
+  {
+    // Correctly format the data for viewing
+    _editString = instance().debugger().valueToString(value, _base);
 
-  sendCommand(kDGItemDataChangedCmd, _selectedItem, _id);
+    _valueStringList[position] = _editString;
+    _changedList[position] = (_valueList[position] != value);
+    _valueList[position] = value;
 
-  setDirty(); draw();
+    sendCommand(kDGItemDataChangedCmd, position, _id);
+
+    setDirty(); draw();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

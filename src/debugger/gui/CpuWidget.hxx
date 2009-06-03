@@ -75,10 +75,10 @@ class CpuWidget : public Widget, public CommandSender
 
     DataGridWidget*  myPCGrid;
     DataGridWidget*  myCpuGrid;
+    DataGridWidget*  myCpuGridDecValue;
+    DataGridWidget*  myCpuGridBinValue;
     ToggleBitWidget* myPSRegister;
     EditTextWidget*  myPCLabel;
-    EditTextWidget*  myBinValue;
-    EditTextWidget*  myDecValue;
 };
 
 #endif

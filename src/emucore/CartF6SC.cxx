@@ -28,6 +28,9 @@ CartridgeF6SC::CartridgeF6SC(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 16384);
+
+  // This cart contains 128 bytes extended RAM @ 0x1000
+  registerRamArea(0x1000, 128, 0x80, 0x00);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,18 +285,6 @@ bool CartridgeF6SC::load(Deserializer& in)
 
   // Remember what bank we were in
   bank(myCurrentBank);
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6SC::getRamArea(uInt16& start, uInt16& size,
-                               uInt16& roffset, uInt16& woffset)
-{
-  start   = 0x1000;
-  size    = 128;
-  roffset = 0x80;
-  woffset = 0x0;
 
   return true;
 }
