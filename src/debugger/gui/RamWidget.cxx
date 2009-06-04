@@ -164,18 +164,29 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
+    {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      myUndoAddress = addr;
-      myUndoValue = dbg.read(state.rport[addr]);
-
+      // Attempt the write, and revert if it didn't succeed
+      uInt8 oldval = dbg.read(state.rport[addr]);
       dbg.write(state.wport[addr], value);
+      uInt8 newval = dbg.read(state.rport[addr]);
+      if(value != newval)
+      {
+        myRamGrid->setValue(addr - myCurrentRamBank*128, newval, false);
+        break;
+      }
+
+      myUndoAddress = addr;
+      myUndoValue = oldval;
+
       myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
       myRevertButton->setEnabled(true);
       myUndoButton->setEnabled(true);
       break;
+    }
 
     case kDGSelectionChangedCmd:
     {

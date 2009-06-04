@@ -63,6 +63,8 @@ class DataGridWidget : public EditableWidget
     void setSelectedValue(int value);
     /** Set value at given position */
     void setValue(int position, int value);
+    /** Set value at given position, manually specifying if the value changed */
+    void setValue(int position, int value, bool changed);
 
     int getSelectedAddr() const   { return _addrList[_selectedItem]; }
     int getSelectedValue() const  { return _valueList[_selectedItem]; }

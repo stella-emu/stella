@@ -163,11 +163,17 @@ void DataGridWidget::setNumRows(int rows)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setSelectedValue(int value)
 {
-  setValue(_selectedItem, value);
+  setValue(_selectedItem, value, _valueList[_selectedItem] != value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setValue(int position, int value)
+{
+  setValue(position, value, _valueList[position] != value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setValue(int position, int value, bool changed)
 {
   if(position >= 0 && uInt32(position) < _valueList.size())
   {
@@ -175,7 +181,7 @@ void DataGridWidget::setValue(int position, int value)
     _editString = instance().debugger().valueToString(value, _base);
 
     _valueStringList[position] = _editString;
-    _changedList[position] = (_valueList[position] != value);
+    _changedList[position] = changed;
     _valueList[position] = value;
 
     sendCommand(kDGItemDataChangedCmd, position, _id);
