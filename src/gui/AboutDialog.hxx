@@ -22,8 +22,6 @@
 #ifndef ABOUT_DIALOG_HXX
 #define ABOUT_DIALOG_HXX
 
-#define LINES_PER_PAGE 10
-
 class OSystem;
 class DialogContainer;
 class CommandSender;
@@ -39,18 +37,20 @@ class AboutDialog : public Dialog
     ~AboutDialog();
 
   protected:
+    enum { kLINES_PER_PAGE = 8 };
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    StaticTextWidget* myDesc[LINES_PER_PAGE];
+    StaticTextWidget* myDesc[kLINES_PER_PAGE];
+    string myDescStr[kLINES_PER_PAGE];
 
     int myPage;
     int myNumPages;
 
   private:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual void updateStrings(int page, int lines, string& title, string* &dsc);
+    virtual void updateStrings(int page, int lines, string& title);
     void displayInfo();
 
     void loadConfig() { displayInfo(); }

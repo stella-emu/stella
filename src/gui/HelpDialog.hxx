@@ -27,12 +27,6 @@ class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
 
-#define ADD_BIND(k,d) do { key[i] = k; dsc[i] = d; i++; } while(0)
-#define ADD_TEXT(d) ADD_BIND("",d)
-#define ADD_LINE ADD_BIND("","")
-
-#define LINES_PER_PAGE 10
-
 #include "OSystem.hxx"
 #include "Props.hxx"
 #include "bspf.hxx"
@@ -44,20 +38,22 @@ class HelpDialog : public Dialog
     ~HelpDialog();
 
   protected:
+    enum { kLINES_PER_PAGE = 10 };
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    StaticTextWidget* myKey[LINES_PER_PAGE];
-    StaticTextWidget* myDesc[LINES_PER_PAGE];
+    StaticTextWidget* myKey[kLINES_PER_PAGE];
+    StaticTextWidget* myDesc[kLINES_PER_PAGE];
+    string myKeyStr[kLINES_PER_PAGE];
+    string myDescStr[kLINES_PER_PAGE];
 
     uInt8 myPage;
     uInt8 myNumPages;
 
   private:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual void updateStrings(uInt8 page, uInt8 lines,
-                               string& title, string*& key, string* &dsc);
+    virtual void updateStrings(uInt8 page, uInt8 lines, string& title);
     void displayInfo();
     void loadConfig() { displayInfo(); }
 };

@@ -73,7 +73,7 @@ HelpDialog::HelpDialog(OSystem* osystem, DialogContainer* parent,
 
   int lwidth = 15 * fontWidth;
   xpos += 5;  ypos += lineHeight + 4;
-  for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
+  for(uInt8 i = 0; i < kLINES_PER_PAGE; i++)
   {
     myKey[i] =
       new StaticTextWidget(this, font, xpos, ypos, lwidth,
@@ -93,11 +93,11 @@ HelpDialog::~HelpDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
-                               string& title, string*& key, string* &dsc)
+void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 {
-  key = new string[lines];
-  dsc = new string[lines];
+#define ADD_BIND(k,d) do { myKeyStr[i] = k; myDescStr[i] = d; i++; } while(0)
+#define ADD_TEXT(d) ADD_BIND("",d)
+#define ADD_LINE ADD_BIND("","")
 
   uInt8 i = 0;
   switch(page)
@@ -191,19 +191,15 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void HelpDialog::displayInfo()
 {
-  string titleStr, *keyStr, *dscStr;
-
-  updateStrings(myPage, LINES_PER_PAGE, titleStr, keyStr, dscStr);
+  string titleStr;
+  updateStrings(myPage, kLINES_PER_PAGE, titleStr);
 
   myTitle->setLabel(titleStr);
-  for(uInt8 i = 0; i < LINES_PER_PAGE; i++)
+  for(uInt8 i = 0; i < kLINES_PER_PAGE; i++)
   {
-    myKey[i]->setLabel(keyStr[i]);
-    myDesc[i]->setLabel(dscStr[i]);
+    myKey[i]->setLabel(myKeyStr[i]);
+    myDesc[i]->setLabel(myDescStr[i]);
   }
-
-  delete[] keyStr;
-  delete[] dscStr;
 
   _dirty = true;
 }

@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 2.7.7</b></h4></center>
+	<center><h4><b>Release 2.8</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -40,7 +40,7 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - May 2009</b></center>
+	<center><b>February 1999 - June 2009</b></center>
 	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -256,6 +256,9 @@
 			some games</li>
 		<li>TIA emulation supports full collision checking</li>
 		<li>Built-in extensive debugger</li>
+		<li>Emulation of CRT TV systems with OpenGL shaders, including texturing,
+			colour bleed, RF noise, and phosphor burn-off</li>
+		<li>Built-in ROM database with information compiled by RomHunter</li>
 	</ul>
 
 
@@ -280,6 +283,7 @@
 		<li>15 bit color minimum; 16 bit color graphics card highly recommended</li>
 		<li>SDL version 1.2.10 or greater, latest version highly recommended</li>
 		<li>Latest version of the zlib library</li>
+		<li>CRT emulation effects require OpenGL 2.0 with GLSL (GL shading language) support</li>
 		<li>Joysticks or gamepads are highly recommended</li>
 		<li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
 		<li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
@@ -639,6 +643,36 @@
 				video cards, in which case it should be set to false.</td>
 		</tr>
 -->
+		<tr>
+			<td><pre>-tv_tex &lt;off|normal|stag&gt;</pre></td>
+			<td>OpenGL 2.0 mode only. Enable TV texturing.  The GL_TEXTURE_RECTANGLE
+				extension must be disabled for this to work correctly.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-tv_bleed &lt;off|low|medium|high&gt;</pre></td>
+			<td>OpenGL 2.0 mode only. Enable TV colour bleed emulation.  A fast
+				video card with at least 128MB RAM is required to use 'high'.
+				The GL_TEXTURE_RECTANGLE extension must be disabled for this to
+				work correctly.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-tv_noise &lt;off|low|medium|high&gt;</pre></td>
+			<td>OpenGL 2.0 mode only. Enable TV radio frequency noise emulation.
+				A fast video card with at least 128MB RAM is required to use 'high'.
+				The GL_TEXTURE_RECTANGLE extension must be disabled for this to
+				work correctly.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-tv_phos &lt;1|0&gt;</pre></td>
+			<td>OpenGL 2.0 mode only. Enable phosphor effect of TV image.  This
+				is in addition to the currently emulated software phosphor
+				effect.  The GL_TEXTURE_RECTANGLE extension must be disabled
+				for this to work correctly.</td>
+		</tr>
+
 		<tr>
 			<td><pre>-tia_filter &lt;filter&gt;</pre></td>
 			<td>Use the specified filter while in TIA/emulation mode.  Currently,
@@ -1082,6 +1116,23 @@
 					<tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
 					<tr><td>Grab mouse</td><td>keep mouse in SDL window</td><td>-grabmouse</td></tr>
 					<tr><td>Center window (*)</td><td>attempt to center SDL window (requires restart)</td><td>-center</td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+	<br>
+	<p><b>Video Settings</b> dialog (TV Effects):</p>
+	<table border="5" cellpadding="2" frame="box" rules="none">
+		<tr>
+			<td><img src="graphics/options_video_tv.png"></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td valign="top">
+				<table border="1" cellpadding="4">
+					<tr><th>Item</th><th>Brief description</th><th>For more information,<br>see Commandline</th></tr>
+					<tr><td>TV Color Texture</td><td>emulate TV pixel texturing</td><td>-tv_tex</td></tr>
+					<tr><td>TV Color Bleed</td><td>emulate TV color bleed</td><td>-tv_bleed</td></tr>
+					<tr><td>TV Image Noise</td><td>emulate TV RF image noise</td><td>-tv_noise</td></tr>
+					<tr><td>TV Phosphor Burn-off</td><td>emulate TV phosphor mixing</td><td>-tv_phos</td></tr>
 				</table>
 			</td>
 		</tr>
@@ -2788,17 +2839,27 @@ Ms Pac-Man (Stella extended codes):
 	then a number of people from around the world have contributed to the project.
 	Some people have provided technical help while others have offered suggestions
 	and praise.  The Stella Team is grateful for all the help and support it has
-        received over the years.  The following is an incomplete list of the people who have
-	played a part in bringing Stella to you:</p>
+	received over the years.  The following is an incomplete list of the people who have
+	played a part in bringing Stella to you.  If I've missed someone, please let
+	me know.</p>
 
 	<table CELLSPACING="15">
 		<tr>
-			<td VALIGN="TOP">Stephen&nbsp;Anthony</td>
+			<td VALIGN="TOP">Ant<br>
+			(<a href="http://aqfl.net">http://aqfl.net</a>)</td>
+			<td>Provided much feedback and testing which eventually led to a fix
+			for the infamouse ATI OpenGL 'red screen' issue</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Stephen&nbsp;Anthony<br>
+			(<a href="http://minbar.org">http://minbar.org</a>)</td>
 			<td>Ported Stella 1.1 to SDL.  Added extra command line options to X11/SDL
 			versions.  Added INI file support, faster startup, snapshot support,
 			and pause functionality to core.  Converted Stella 1.1 manual to HTML.
 			Ported codebase to SDL for Windows/MacOSX.  Added OpenGL support and
-			Stelladaptor support. Current maintainer for the Linux and Windows versions.</td>
+			Stelladaptor support. Current maintainer for the Linux, OSX and Windows
+			versions.</td>
 		</tr>
 
 		<tr>
@@ -2814,6 +2875,14 @@ Ms Pac-Man (Stella extended codes):
 		<tr>
 			<td VALIGN="TOP">Alexander&nbsp;Bilstein</td>
 			<td>Provided "A Brief History of the Atari 2600" for this manual</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Ian&nbsp;Bogost and the Georgia&nbsp;Tech&nbsp;Atari&nbsp;Team<br>
+			(<a href="http://www.bogost.com/games/a_television_simulator.shtml">CRT Simulation Project</a>)</td>
+			<td>Contributed code for the 'CRT simulation' OpenGL filters.  The Winter 2009
+			team members are Edward Booth, Michael Cook, Justin Dobbs, William Rowland
+			and Prince Yang.</td>
 		</tr>
 
 		<tr>
@@ -2852,9 +2921,10 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
-			<td VALIGN="TOP">Mark&nbsp;Grebe</td>
+			<td VALIGN="TOP">Mark&nbsp;Grebe<br>
+			(<a href="http://www.atarimac.com">http://www.atarimac.com</a>)</td>
 			<td>Author of the Macintosh OSX version of Stella starting with the
-			1.4 release.  Helped with Stelladaptor support.</td>
+			1.4 release until release 2.4.  Helped with Stelladaptor support.</td>
 		</tr>
 
 		<tr>
@@ -2881,6 +2951,11 @@ Ms Pac-Man (Stella extended codes):
 		<tr>
 			<td VALIGN="TOP">Thomas&nbsp;Jentzsch</td>
 			<td>Provided updated NTSC palette and many ideas</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Andrew&nbsp;Kator<br>(<a href="http://www.katorlegaz.com">http://www.katorlegaz.com</a>)</td>
+			<td>Provided PHP and CSS code for a major update to the Stella website</td>
 		</tr>
 
 		<tr>
@@ -2940,6 +3015,11 @@ Ms Pac-Man (Stella extended codes):
 		</tr>
 
 		<tr>
+			<td VALIGN="TOP">RomHunter<br>(<a href="http://www.atarimania.com/roms-MENU-2.html">RomHunter ROMs</a>)</td>
+			<td>Provides an updated database of ROM information on a regular basis</td>
+		</tr>
+
+		<tr>
 			<td VALIGN="TOP">John&nbsp;Saeger</td>
 			<td>Participated in a helpful discussion on understanding the TIA's
 			RESPx multi-sprite trick</td>
@@ -2959,6 +3039,12 @@ Ms Pac-Man (Stella extended codes):
 			<td VALIGN="TOP">Jason&nbsp;Scott</td>
 			<td>Organizer of the property file archive for early versions of
 			Stella; now he's helping with the web site</td>
+		</tr>
+
+		<tr>
+			<td VALIGN="TOP">Seagtgruff</td>
+			<td>Provided test ROMs which finally fixed all remaining issues with
+			ADC/SBC opcode decimal mode emulation</td>
 		</tr>
 
 		<tr>
