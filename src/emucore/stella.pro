@@ -7973,7 +7973,7 @@
 ""
 
 "Cartridge.MD5" "6847ce70819b74febcfd03e99610243b"
-"Cartridge.Name" "ruby_4A50.bin"
+"Cartridge.Name" "Ruby Runner 4A50"
 "Cartridge.Type" "4A50"
 ""
 

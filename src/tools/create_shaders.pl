@@ -11,6 +11,24 @@ $outfile = $ARGV[$numfiles-1];
 # Walk the ARGV list and convert each item
 open(OUTFILE, ">$outfile");
 
+print OUTFILE "//============================================================================\n";
+print OUTFILE "//\n";
+print OUTFILE "//   SSSS    tt          lll  lll\n";
+print OUTFILE "//  SS  SS   tt           ll   ll\n";
+print OUTFILE "//  SS     tttttt  eeee   ll   ll   aaaa\n";
+print OUTFILE "//   SSSS    tt   ee  ee  ll   ll      aa\n";
+print OUTFILE "//      SS   tt   eeeeee  ll   ll   aaaaa  --  \"An Atari 2600 VCS Emulator\"\n";
+print OUTFILE "//  SS  SS   tt   ee      ll   ll  aa  aa\n";
+print OUTFILE "//   SSSS     ttt  eeeee llll llll  aaaaa\n";
+print OUTFILE "//\n";
+print OUTFILE "// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team\n";
+print OUTFILE "//\n";
+print OUTFILE "// See the file \"license\" for information on usage and redistribution of\n";
+print OUTFILE "// this file, and for a DISCLAIMER OF ALL WARRANTIES.\n";
+print OUTFILE "//\n";
+print OUTFILE "// \$Id\$\n";
+print OUTFILE "//============================================================================\n";
+print OUTFILE "\n";
 print OUTFILE "#ifndef GL_SHADER_PROGS_HXX\n";
 print OUTFILE "#define GL_SHADER_PROGS_HXX\n";
 print OUTFILE "\n";

@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - May 2009
+                         To Do List - June 2009
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something
@@ -33,6 +33,9 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
   * Fix bank going over 255 (when accessing RAM) for 3E in the debugger
     RomWidget view.
+
+  * Fix patching of ROM in disassembler so that if patching fails, the view
+    is properly updated.
 
   * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
     thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.

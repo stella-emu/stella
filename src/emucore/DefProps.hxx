@@ -1,3 +1,21 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
+//
+// See the file "license" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id$
+//============================================================================
+
 #ifndef DEF_PROPS_HXX
 #define DEF_PROPS_HXX
 
@@ -1320,7 +1338,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "683bb0d0f0c5df58557fba9dffc32c40", "Arcadia Corporation, Scott Nelson", "AR-4300", "Fireball (1982) (Arcadia) [a]", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "PADDLES", "", "", "", "", "", "", "" }, 
   { "683dc64ef7316c13ba04ee4398e2b93a", "Ed Federmeyer", "", "Edtris (1995) (Ed Federmeyer)", "", "Extremely Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "68449e4aaba677abcd7cde4264e02168", "", "", "Horizonal Color Bars Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "6847ce70819b74febcfd03e99610243b", "", "", "ruby_4A50.bin", "", "", "", "4A50", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "6847ce70819b74febcfd03e99610243b", "", "", "Ruby Runner 4A50", "", "", "", "4A50", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "68489e60268a5e6e052bad9c62681635", "Bit Corporation", "PG201", "Sea Monster (1982) (BitCorp) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "36", "256", "", "" }, 
   { "68597264c8e57ada93be3a5be4565096", "Data Age", "DA1005", "Bugs (1982) (Data Age)", "Uses the Paddle Controllers", "Uncommon", "", "", "", "", "", "", "PADDLES", "", "", "", "", "", "", "" }, 
   { "685e9668dc270b6deeb9cfbfd4d633c3", "CommaVid, Irwin Gaines - Ariola", "CM-004 - 712 004-720", "Room of Doom (1982) (CommaVid) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
