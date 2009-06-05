@@ -100,6 +100,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "medium");
   setInternal("launcherexts", "allfiles");
+  setInternal("exitlauncher", "false");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
@@ -365,6 +366,7 @@ void Settings::usage()
     << "  -launcherexts <allfiles|     Show files with the given extensions in ROM launcher\n"
     << "                 allroms|        (exts is a ':' separated list of extensions)\n"
     << "                 exts\n"
+    << "  -exitlauncher <1|0>          Don't go back to ROM launcher after playing a game\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"

@@ -337,6 +337,8 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
     cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
     return false;
   }
+  // Make sure the flags represent the current screen state
+  mySDLFlags = myScreen->flags;
 
   // Reload OpenGL function pointers.  This only seems to be needed for Windows
   // Vista, but it shouldn't hurt on other systems.

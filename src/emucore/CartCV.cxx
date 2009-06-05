@@ -80,13 +80,13 @@ void CartridgeCV::install(System& system)
   assert((0x1800 & mask) == 0);
 
   System::PageAccess access;
-  access.directPokeBase = 0;
-  access.device = this;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1800; address < 0x2000; address += (1 << shift))
   {
+    access.device = this;
     access.directPeekBase = &myImage[address & 0x07FF];
+    access.directPokeBase = 0;
     mySystem->setPageAccess(address >> mySystem->pageShift(), access);
   }
 
@@ -112,7 +112,18 @@ void CartridgeCV::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCV::peek(uInt16 address)
 {
-  return myImage[address & 0x07FF];
+  // Reading from the write port triggers an unwanted write
+  // The value written to RAM is somewhat undefined, so we use 0
+  // Thanks to Kroko of AtariAge for this advice and code idea
+  if(address & 0x0FFF < 0x0800)  // Write port is at 0xF400 - 0xF800 (1024 bytes)
+  {                              // Read port is handled in ::install()
+    if(myBankLocked) return 0;
+    else return myRAM[address & 0x03FF] = 0;
+  }  
+  else
+  {
+    return myImage[address & 0x07FF];
+  }  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

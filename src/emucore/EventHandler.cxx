@@ -972,8 +972,15 @@ void EventHandler::handleEvent(Event::Type event, int state)
       if((myState == S_EMULATE || myState == S_CMDMENU) && state)
       {
         myOSystem->settings().saveConfig();
-        myOSystem->deleteConsole();
-        myOSystem->createLauncher();
+
+        // Go back to the launcher, or immediately quit
+        if(!myOSystem->settings().getBool("exitlauncher"))
+        {
+          myOSystem->deleteConsole();
+          myOSystem->createLauncher();
+        }
+        else
+          myOSystem->quit();
       }
       return;
 

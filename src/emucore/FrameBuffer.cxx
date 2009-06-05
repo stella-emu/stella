@@ -88,6 +88,13 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     return false;
 #endif
 
+  // Initialize SDL flags and set fullscreen flag
+  // This must be done before any modes are initialized
+  mySDLFlags = 0;
+#ifdef WINDOWED_SUPPORT
+  if(myOSystem->settings().getBool("fullscreen")) mySDLFlags = SDL_FULLSCREEN;
+#endif
+
   // Set the available video modes for this framebuffer
   setAvailableVidModes(width, height);
 
@@ -98,13 +105,6 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     // Set window title and icon
     setWindowTitle(title);
     if(myInitializedCount == 1) setWindowIcon();
-
-    // Set fullscreen flag
-  #ifdef WINDOWED_SUPPORT
-    mySDLFlags = myOSystem->settings().getBool("fullscreen") ? SDL_FULLSCREEN : 0;
-  #else
-    mySDLFlags = 0;
-  #endif
 
     if(!initSubsystem(mode))
     {
@@ -119,6 +119,9 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
       myScreenRect.setWidth(mode.screen_w);
       myScreenRect.setHeight(mode.screen_h);
+
+      // Did we get the requested fullscreen state?
+      myOSystem->settings().setBool("fullscreen", fullScreen());
     }
   }
   else
@@ -599,15 +602,13 @@ void FrameBuffer::stateChanged(EventHandler::State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::toggleFullscreen()
 {
-  setFullscreen(!myOSystem->settings().getBool("fullscreen"));
+  setFullscreen(!fullScreen());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setFullscreen(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
-  // Update the settings
-  myOSystem->settings().setBool("fullscreen", enable);
   if(enable)
     mySDLFlags |= SDL_FULLSCREEN;
   else
@@ -642,7 +643,7 @@ bool FrameBuffer::changeVidMode(int direction)
   else if(direction == -1)
     myCurrentModeList->previous();
 
-  VideoMode vidmode = myCurrentModeList->current(myOSystem->settings());
+  VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
   if(setVidMode(vidmode))
   {
     myImageRect.setWidth(vidmode.image_w);
@@ -651,6 +652,9 @@ bool FrameBuffer::changeVidMode(int direction)
 
     myScreenRect.setWidth(vidmode.screen_w);
     myScreenRect.setHeight(vidmode.screen_h);
+
+    // Did we get the requested fullscreen state?
+    myOSystem->settings().setBool("fullscreen", fullScreen());
 
     if(!inUIMode)
     {
@@ -684,9 +688,7 @@ cerr << "New mode:" << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
-  bool isFullscreen = myOSystem->settings().getBool("fullscreen");
-
-  if(isFullscreen)
+  if(fullScreen())
     grabMouse(true);
   else
     grabMouse(myOSystem->settings().getBool("grabmouse"));
@@ -718,9 +720,9 @@ void FrameBuffer::grabMouse(bool grab)
 bool FrameBuffer::fullScreen() const
 {
 #ifdef WINDOWED_SUPPORT
-    return myOSystem->settings().getBool("fullscreen");
+  return mySDLFlags & SDL_FULLSCREEN;
 #else
-    return true;
+  return true;
 #endif
 }
 
@@ -930,7 +932,7 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
 {
   EventHandler::State state = myOSystem->eventHandler().state();
 
-  if(myOSystem->settings().getBool("fullscreen"))
+  if(fullScreen())
     myCurrentModeList = &myFullscreenModeList;
   else
     myCurrentModeList = &myWindowedModeList;
@@ -948,13 +950,13 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
     myCurrentModeList->setByGfxMode(name);
   }
 
-  return myCurrentModeList->current(myOSystem->settings());
+  return myCurrentModeList->current(myOSystem->settings(), fullScreen());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBuffer::VideoModeList::VideoModeList()
+  : myIdx(-1)
 {
-  myIdx = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -996,14 +998,13 @@ void FrameBuffer::VideoModeList::previous()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const FrameBuffer::VideoMode FrameBuffer::
-  VideoModeList::current(const Settings& settings) const
+  VideoModeList::current(const Settings& settings, bool isFullscreen) const
 {
   // Fullscreen modes are related to the 'fullres' setting
   //   If it's 'auto', we just use the mode as already previously defined
   //   If it's not 'auto', attempt to fit the mode into the resolution
   //   specified by 'fullres' (if possible)
-  if(settings.getBool("fullscreen") &&
-     BSPF_tolower(settings.getString("fullres")) != "auto")
+  if(isFullscreen && BSPF_tolower(settings.getString("fullres")) != "auto")
   {
     // Only use 'fullres' if it's *bigger* than the requested mode
     int w, h;

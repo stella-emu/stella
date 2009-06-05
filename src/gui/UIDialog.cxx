@@ -53,7 +53,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 42 * fontWidth + 10;
-  _h = 9 * (lineHeight + 4) + 10;
+  _h = 10 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = ypos = vBorder;
@@ -117,6 +117,12 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "ROM Info viewer: ", lwidth);
   wid.push_back(myRomViewerPopup);
+  ypos += lineHeight + 4;
+
+  // Should exiting a game go back to launcher
+  myExitLauncherBox = new CheckboxWidget(myTab, font, xpos+20, ypos+10,
+                                         "Enter launcher after exiting ROM");
+  wid.push_back(myExitLauncherBox);
 
   // Add message concerning usage
   xpos = vBorder; ypos += 2*(lineHeight + 4);
@@ -278,6 +284,9 @@ void UIDialog::loadConfig()
   const string& viewer = instance().settings().getString("romviewer");
   myRomViewerPopup->setSelected(viewer, "0");
 
+  // Exit launcher after a game
+  myExitLauncherBox->setState(!instance().settings().getBool("exitlauncher"));
+
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
   w = BSPF_max(w, 1050);
@@ -324,6 +333,9 @@ void UIDialog::saveConfig()
   instance().settings().setString("romviewer",
     myRomViewerPopup->getSelectedTag());
 
+  // Exit launcher after a game
+  instance().settings().setBool("exitlauncher", !myExitLauncherBox->getState());
+
   // Debugger size
   instance().settings().setSize("debuggerres", 
     myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
@@ -358,6 +370,7 @@ void UIDialog::setDefaults()
       myLauncherHeightLabel->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("0", "");
+      myExitLauncherBox->setState(true);
       break;
     }
 

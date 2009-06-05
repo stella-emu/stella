@@ -417,6 +417,9 @@ class FrameBuffer
     SDL_Surface* myScreen;
 
     // SDL initialization flags
+    // This is set by the base FrameBuffer class, and read by the derived classes
+    // If a FrameBuffer is successfully created, the derived classes must modify
+    // it to point to the actual flags used by the SDL_Surface
     uInt32 mySDLFlags;
 
     // Indicates if the entire frame need to redrawn
@@ -509,7 +512,8 @@ class FrameBuffer
         uInt32 size() const;
 
         void previous();
-        const FrameBuffer::VideoMode current(const Settings& settings) const;
+        const FrameBuffer::VideoMode current(const Settings& settings,
+                                             bool isFullscreen) const;
         void next();
 
         void setByGfxMode(GfxID id);

@@ -102,6 +102,9 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   myFormat = myScreen->format;
   myBytesPerPixel = myFormat->BytesPerPixel;
 
+  // Make sure the flags represent the current screen state
+  mySDLFlags = myScreen->flags;
+
   // Make sure drawTIA() knows which renderer to use
   switch(myBytesPerPixel)
   {

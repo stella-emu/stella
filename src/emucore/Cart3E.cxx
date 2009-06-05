@@ -97,6 +97,7 @@ void Cartridge3E::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge3E::peek(uInt16 address)
 {
+  // TODO - determine what really happens when you read from the write port
   address &= 0x0FFF;
 
   if(address < 0x0800)
