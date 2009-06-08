@@ -12,7 +12,7 @@
                                Release History
 ===============================================================================
 
-2.7.7 to 2.8: (June xx, 2009)
+2.7.7 to 2.8: (June 9, 2009)
 
   * Added CRT simulation effects as described in the AtariAge posting
     'CRT emulation for Stella'.  For now, this requires OpenGL 2.0 or
@@ -25,7 +25,7 @@
     with the others following in consecutive order.  The UI takes care
     of read vs. write port differences, so you don't have to worry
     about the offsets.  For now, all SuperChip based ROMs (EFSC, F4SC,
-    F6SC, F8SC, FASC) as well as 3E, CV and E7 are supported.
+    F6SC, F8SC) as well as 3E, CV, E7 and FASC are supported.
 
   * All ROMs which include SC extended RAM will now have memory erased if
     you attempt to read from the write port.  Related to this,
@@ -45,6 +45,12 @@
 
   * Updated internal ROM properties database to ROM-Hunter version 5
     (thanks go to RomHunter for his tireless research in this area).
+
+  * Added '-exitlauncher' commandline argument and associated UI item,
+    to specify what happens when you exit a ROM.  Normally, exiting a
+    ROM brings up the ROM launcher, but this can be disabled for those
+    using an external frontend (in which case exiting a ROM also exits
+    from Stella).
 
 -Have fun!
 
