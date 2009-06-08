@@ -52,6 +52,9 @@
     using an external frontend (in which case exiting a ROM also exits
     from Stella).
 
+  * The '-listrominfo' commandline argument now shows all ROM
+    information built in to the internal database.
+
 -Have fun!
 
 
