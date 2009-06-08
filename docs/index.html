@@ -772,7 +772,7 @@
 		</tr>
 
 		<tr>
-			<td><pre>-showinfo &lt;0|1&gt;</pre></td>
+			<td><pre>-showinfo &lt;1|0&gt;</pre></td>
 			<td>Shows some game info on the commandline while Stella is running.</td>
 		</tr>
 
@@ -819,13 +819,13 @@
 		</tr>
 
 		<tr>
-			<td><pre>-sssingle &lt;0|1&gt;</pre></td>
+			<td><pre>-sssingle &lt;1|0&gt;</pre></td>
 			<td>Generate single snapshot instead of many, overwriting
 				any previous snapshots.</td>
 		</tr>
 
 		<tr>
-			<td><pre>-ss1x &lt;0|1&gt;</pre></td>
+			<td><pre>-ss1x &lt;1|0&gt;</pre></td>
 			<td>Ignore any scaling applied to the TIA image, and save
 				snapshot in unscaled (1x) mode.</td>
 		</tr>
@@ -858,6 +858,12 @@
 				('allfiles' is self-explanatory, 'allroms' is all files
 				with valid rom extensions (currently: a26, bin, rom,
 				gz, zip), 'LIST' is a ':' separated list of valid rom extensions.</td>
+		</tr>
+
+		<tr>
+			<td><pre>-exitlauncher &lt;1|0&gt;</pre></td>
+			<td>After exiting a ROM, either exit back to the launcher (1) or
+				completely exit the emulator (0).</td>
 		</tr>
 
 		<tr>

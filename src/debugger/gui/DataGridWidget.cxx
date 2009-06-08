@@ -346,7 +346,9 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         break;
 
       case 256+24:  // pageup
-        if (_currentRow > 0)
+        if(instance().eventHandler().kbdShift(modifiers) && _scrollBar)
+          handleMouseWheel(0, 0, -1);
+        else if (_currentRow > 0)
         {
           _currentRow = 0;
           dirty = true;
@@ -354,7 +356,9 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         break;
 
       case 256+25:	// pagedown
-        if (_currentRow < (int) _rows - 1)
+        if(instance().eventHandler().kbdShift(modifiers) && _scrollBar)
+          handleMouseWheel(0, 0, +1);
+        else if (_currentRow < (int) _rows - 1)
         {
           _currentRow = _rows - 1;
           dirty = true;
