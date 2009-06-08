@@ -17,6 +17,7 @@
 //============================================================================
 
 #include <sstream>
+#include <map>
 
 #include "bspf.hxx"
 
@@ -30,20 +31,59 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::PropertiesSet(OSystem* osystem)
   : myOSystem(osystem),
-    myRoot(NULL),
     mySize(0)
 {
   const string& props = myOSystem->propertiesFile();
-  load(props, true);    // do save these properties
-
-  if(myOSystem->settings().getBool("showinfo"))
-    cout << "User game properties: \'" << props << "\'\n";
+  load(props);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PropertiesSet::~PropertiesSet()
 {
-  deleteNode(myRoot);
+  myExternalProps.clear();
+  myTempProps.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::load(const string& filename)
+{
+  if(myOSystem->settings().getBool("showinfo"))
+    cout << "User game properties: \'" << filename << "\'\n";
+
+  ifstream in(filename.c_str(), ios::in);
+
+  // Loop reading properties
+  for(;;)
+  {
+    // Make sure the stream is still good or we're done 
+    if(!in)
+      break;
+
+    // Get the property list associated with this profile
+    Properties prop;
+    prop.load(in);
+
+    // If the stream is still good then insert the properties
+    if(in)
+      insert(prop);
+  }
+  if(in)
+    in.close();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool PropertiesSet::save(const string& filename) const
+{
+  ofstream out(filename.c_str(), ios::out);
+  if(!out)
+    return false;
+
+  // Only save those entries in the external list
+  for(PropsList::const_iterator i = myExternalProps.begin();
+      i != myExternalProps.end(); ++i)
+    i->second.save(out);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -53,29 +93,33 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
   properties.setDefaults();
   bool found = false;
 
-  // First check our dynamic BST for the object
-  if(!useDefaults && myRoot != 0)
-  {
-    TreeNode* current = myRoot;
-    while(current)
-    {
-      const string& currentMd5 = current->props->get(Cartridge_MD5);
-      if(currentMd5 == md5)
-      {
-        // We only report a node as found if it's been marked as valid.
-        // Invalid nodes are those that should be removed, and are
-        // essentially treated as if they're not present.
-        found = current->valid;
-        break;
-      }
-      else if(md5 < currentMd5)
-        current = current->left;
-      else 
-        current = current->right;
-    }
+  // There are three lists to search when looking for a properties entry,
+  // which must be done in the following order
+  // If 'useDefaults' is specified, only use the built-in list
+  //
+  //  'save': entries previously inserted that are saved on program exit
+  //  'temp': entries previously inserted that are discarded
+  //  'builtin': the defaults compiled into the program
 
-    if(found)
-      properties = *(current->props);
+  // First check properties from external file
+  if(!useDefaults)
+  {
+    // Check external list
+    PropsList::const_iterator iter = myExternalProps.find(md5);
+    if(iter != myExternalProps.end())
+    {
+      properties = iter->second;
+      found = true;
+    }
+    else  // Search temp list
+    {
+      iter = myTempProps.find(md5);
+      if(iter != myTempProps.end())
+      {
+        properties = iter->second;
+        found = true;
+      }
+    }
   }
 
   // Otherwise, search the internal database using binary search
@@ -107,151 +151,71 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
+  // Note that the following code is optimized for insertion when an item
+  // doesn't already exist, and when the external properties file is
+  // relatively small (which is the case with current versions of Stella,
+  // as the properties are built-in)
+  // If an item does exist, it will be removed and insertion done again
+  // This shouldn't be a speed issue, as insertions will only fail with
+  // duplicates when you're changing the current ROM properties, which
+  // most people tend not to do
+
   // Since the PropSet is keyed by md5, we can't insert without a valid one
-  if(properties.get(Cartridge_MD5) == "")
+  const string& md5 = properties.get(Cartridge_MD5);
+  if(md5 == "")
     return;
 
-  insertNode(myRoot, properties, save);
+  // The status of 'save' determines which list to save to
+  PropsList& list = save ? myExternalProps : myTempProps;
+
+  pair<PropsList::iterator,bool> ret;
+  ret = list.insert(make_pair(md5, properties));
+  if(ret.second == false)
+  {
+    // Remove old item and insert again
+    list.erase(ret.first);
+    list.insert(make_pair(md5, properties));
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::removeMD5(const string& md5)
 {
-  // We only remove from the dynamic BST
-  if(myRoot != 0)
-  {
-    TreeNode* current = myRoot;
-    while(current)
-    {
-      const string& currentMd5 = current->props->get(Cartridge_MD5);
-      if(currentMd5 == md5)
-      {
-        current->valid = false;  // Essentially, this node doesn't exist
-        break;
-      }
-      else if(md5 < currentMd5)
-        current = current->left;
-      else 
-        current = current->right;
-    }
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::insertNode(TreeNode* &t, const Properties& properties,
-                               bool save)
-{
-  if(t)
-  {
-    string md5 = properties.get(Cartridge_MD5);
-    string currentMd5 = t->props->get(Cartridge_MD5);
-
-    if(md5 < currentMd5)
-      insertNode(t->left, properties, save);
-    else if(md5 > currentMd5)
-      insertNode(t->right, properties, save);
-    else
-    {
-      delete t->props;
-      t->props = new Properties(properties);
-      t->save = save;
-      t->valid = true;
-    }
-  }
-  else
-  {
-    t = new TreeNode;
-    t->props = new Properties(properties);
-    t->left = 0;
-    t->right = 0;
-    t->save = save;
-    t->valid = true;
-
-    ++mySize;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::deleteNode(TreeNode *node)
-{
-  if(node)
-  {
-    deleteNode(node->left);
-    deleteNode(node->right);
-    delete node->props;
-    delete node;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::load(const string& filename, bool save)
-{
-  ifstream in(filename.c_str(), ios::in);
-
-  // Loop reading properties
-  for(;;)
-  {
-    // Make sure the stream is still good or we're done 
-    if(!in)
-      break;
-
-    // Get the property list associated with this profile
-    Properties prop;
-    prop.load(in);
-
-    // If the stream is still good then insert the properties
-    if(in)
-      insert(prop, save);
-  }
-  if(in)
-    in.close();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PropertiesSet::save(const string& filename) const
-{
-  ofstream out(filename.c_str(), ios::out);
-  if(!out)
-    return false;
-
-  saveNode(out, myRoot);
-  out.close();
-  return true;
+  // We only remove from the external list
+  myExternalProps.erase(md5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::print() const
 {
-  cout << size() << endl;
-  printNode(myRoot);  // FIXME - print out internal properties as well
-}
+  // We only look at the external properties and the built-in ones;
+  // the temp properties are ignored
+  // Also, any properties entries in the external file override the built-in
+  // ones
+  // The easiest way to merge the lists is to create another temporary one
+  // This isn't fast, but I suspect this method isn't used too often (or at all)
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::saveNode(ostream& out, TreeNode *node) const
-{
-  if(node)
+  PropsList list;
+
+  // First insert all external props
+  list = myExternalProps;
+
+  // Now insert all the built-in ones
+  // Note that if we try to insert a duplicate, the insertion will fail
+  // This is fine, since a duplicate in the built-in list means it should
+  // be overrided anyway (and insertion shouldn't be done)
+  Properties properties;
+  for(int i = 0; i < DEF_PROPS_SIZE; ++i)
   {
-    if(node->valid && node->save)
-      node->props->save(out);
-    saveNode(out, node->left);
-    saveNode(out, node->right);
-  }
-}
+    properties.setDefaults();
+    for(int p = 0; p < LastPropType; ++p)
+      if(DefProps[i][p][0] != 0)
+        properties.set((PropertyType)p, DefProps[i][p]);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::printNode(TreeNode *node) const
-{
-  if(node)
-  {
-    if(node->valid && node->save)
-      node->props->print();
-    printNode(node->left);
-    printNode(node->right);
+    list.insert(make_pair(DefProps[i][Cartridge_MD5], properties));
   }
-}
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 PropertiesSet::size() const
-{
-  return mySize;
+  // Now, print the resulting list
+  for(PropsList::const_iterator i = list.begin(); i != list.end(); ++i)
+    i->second.print();
 }

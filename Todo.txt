@@ -68,10 +68,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
   * More support for copy and paste.
 
-  * Fix PropSet to properly delete entries when 'Default' is pressed in
-    the GameInfoDialog; perhaps move to C++ maps instead of the current
-    home-made BST code.
-
   * Fix Props.cxx (or GameInfoDialog) to properly deal with quotes and
     backslashes in strings meant to be saved to the properties file.
 

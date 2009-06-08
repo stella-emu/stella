@@ -473,7 +473,7 @@ void GameInfoDialog::saveConfig()
   if(myDefaultsSelected)
     instance().propSet().removeMD5(myGameProperties.get(Cartridge_MD5));
   else
-    instance().propSet().insert(myGameProperties, true);
+    instance().propSet().insert(myGameProperties);
 
   // In any event, inform the Console and save the properties
   if(&instance().console())
