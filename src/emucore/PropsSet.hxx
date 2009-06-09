@@ -22,9 +22,9 @@
 #include <map>
 
 #include "bspf.hxx"
+#include "Props.hxx"
 
 class OSystem;
-class Properties;
 
 /**
   This class maintains an ordered collection of properties, maintained
