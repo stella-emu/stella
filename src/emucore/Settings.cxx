@@ -117,6 +117,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("audiofirst", "true");
+  setInternal("fastscbios", "false");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -354,6 +355,7 @@ void Settings::usage()
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
+    << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"

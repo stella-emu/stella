@@ -215,6 +215,13 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myCenterCheckbox);
   ypos += lineHeight + 4;
 
+  // Skip progress load bars for SuperCharger ROMs
+  // Doesn't really belong here, but I couldn't find a better place for it
+  myFastSCBiosCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                            "Fast SC/AR BIOS");
+  wid.push_back(myFastSCBiosCheckbox);
+  ypos += lineHeight + 4;
+
   // Add items for tab 0
   addToFocusList(wid, tabID);
 
@@ -394,6 +401,9 @@ void VideoDialog::loadConfig()
   // Center window
   myCenterCheckbox->setState(instance().settings().getBool("center"));
 
+  // Fast loading of Supercharger BIOS
+  myFastSCBiosCheckbox->setState(instance().settings().getBool("fastscbios"));
+
 #ifdef DISPLAY_OPENGL
   //////////////////////////////////////////////////////////////////////
   // TV effects are only enabled in OpenGL mode, and only if OpenGL 2.0+
@@ -476,6 +486,9 @@ void VideoDialog::saveConfig()
   // Center window
   instance().settings().setBool("center", myCenterCheckbox->getState());
 
+  // Fast loading of Supercharger BIOS
+  instance().settings().setBool("fastscbios", myFastSCBiosCheckbox->getState());
+
   // TV color texture effect
   instance().settings().setString("tv_tex", myTexturePopup->getSelectedTag());
 
@@ -515,6 +528,7 @@ void VideoDialog::setDefaults()
   myUseVSyncCheckbox->setState(true);
   myGrabmouseCheckbox->setState(false);
   myCenterCheckbox->setState(true);
+  myFastSCBiosCheckbox->setState(false);
 
   myTexturePopup->setSelected("off", "");
   myBleedPopup->setSelected("off", "");

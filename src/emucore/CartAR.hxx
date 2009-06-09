@@ -24,6 +24,7 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#include "Settings.hxx"
 
 /**
   This is the cartridge class for Arcadia (aka Starpath) Supercharger 
@@ -45,9 +46,9 @@ class CartridgeAR : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
-      @param fastbios  Whether or not to quickly execute the BIOS code
+      @param settings  Used to query 'fastscbios' option
     */
-    CartridgeAR(const uInt8* image, uInt32 size, bool fastbios);
+    CartridgeAR(const uInt8* image, uInt32 size, const Settings& settings);
 
     /**
       Destructor
@@ -161,11 +162,14 @@ class CartridgeAR : public Cartridge
     void loadIntoRAM(uInt8 load);
 
     // Sets up a "dummy" BIOS ROM in the ROM bank of the cartridge
-    void initializeROM(bool fastbios);
+    void initializeROM();
 
   private:
     // Pointer to the 6502 processor in the system
     M6502* my6502;
+
+    // Reference to the settings object (needed for 'fastscbios'
+    const Settings& mySettings;
 
     // Indicates the offest within the image for the corresponding bank
     uInt32 myImageOffset[2];

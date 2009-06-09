@@ -117,21 +117,25 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
      myOSystem->settings().getBool("rominfo"))
   {
     // Run the system for 60 frames, looking for PAL scanline patterns
-    // We assume the first 30 frames are garbage, and only consider
-    // the second 30 (useful to get past SuperCharger BIOS)
-    // Unfortunately, this means we have to always enable 'fastscbios',
-    // since otherwise the BIOS loading will take over 250 frames!
+    // We turn off the SuperCharger progress bars, otherwise the SC BIOS
+    // will take over 250 frames!
+    // The 'fastscbios' option must be changed before the system is reset
+    bool fastscbios = myOSystem->settings().getBool("fastscbios");
+    myOSystem->settings().setBool("fastscbios", true);
     mySystem->reset();
     int palCount = 0;
     for(int i = 0; i < 60; ++i)
     {
       myTIA->update();
-      if(i >= 30 && myTIA->scanlines() > 285)
+      if(myTIA->scanlines() > 285)
         ++palCount;
     }
-    myDisplayFormat = (palCount >= 15) ? "PAL" : "NTSC";
+    myDisplayFormat = (palCount >= 30) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       autodetected = "*";
+
+    // Don't forget to reset the SC progress bars again
+    myOSystem->settings().setBool("fastscbios", fastscbios);
   }
   myConsoleInfo.DisplayFormat = myDisplayFormat + autodetected;
 

@@ -8,7 +8,7 @@
 ;;  SS  SS   tt   ee      ll   ll  aa  aa
 ;;   SSSS     ttt  eeeee llll llll  aaaaa
 ;;
-;; Copyright (c) 1995-2005 by Bradford W. Mott and the Stella team
+;; Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
 ;;
 ;; See the file "license" for information on usage and redistribution of
 ;; this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -124,6 +124,17 @@ mlclr2  STY $81,X
 ;;
 ;; Display the "emulated" Supercharger loading progress bar
 ;;
+;; Check if we should skip the loading progress bar
+;;  Note that the following code seems to never do a jump
+;;  However, the comparison value can be patched outside this code
+;;
+        LDA #$FF
+        CMP #$00         ; patch this value to $FF outside ROM to do a jump
+        BNE startbars
+        JMP skipbars
+
+;; Otherwise we display them
+startbars:
         LDA #$00
         STA GRP0
         STA GRP1
@@ -214,6 +225,7 @@ clear:
         STY $81,x
         DEX
         BPL clear
+skipbars:
 
 ;;
 ;; Setup value to be stored in the bank switching control register
@@ -224,9 +236,7 @@ clear:
 ;;
 ;; Initialize A, X, Y, and SP registers
 ;;
-        LDA $80
-        EOR $FE
-        EOR $FF
+        LDA #$9a  ;; This is patched outside the ROM to a random value
         LDX #$FF
         LDY #$00
         TXS

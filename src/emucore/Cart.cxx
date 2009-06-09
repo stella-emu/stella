@@ -103,7 +103,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else if(type == "4K")
     cartridge = new Cartridge4K(image);
   else if(type == "AR")
-    cartridge = new CartridgeAR(image, size, true); //settings.getBool("fastscbios")
+    cartridge = new CartridgeAR(image, size, settings);
   else if(type == "DPC")
     cartridge = new CartridgeDPC(image, size);
   else if(type == "E0")
