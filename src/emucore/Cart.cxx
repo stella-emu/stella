@@ -72,13 +72,13 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     // from the opposite bank compared to normal ones
     type = "F8 swapped";
   }
-  else if(md5 == "291bcdb05f2b37cdf9452d2bf08e0321")
+  else if(md5 == "291bcdb05f2b37cdf9452d2bf08e0321" ||
+          md5 == "291dd47588b9158beebe4accc3a093a6")
   {
-    // The 32-in-1 ROM consists of 32 games of 2K each
-    // The current game is automatically automatically incremented on each
-    // power cycle; we emulate this by using saving the current game id
-    // on each run, and creating a 2K Cart of the appropriate part of
-    // the image
+    // The 32-in-1 ROM consists of 32 games of 2K each, where the current
+    // game is automatically incremented on each power cycle
+    // We emulate this by incrementing the current game id on each run,
+    // and creating a 2K Cart of the appropriate part of the image
     if(size == 32*2048)
     {
       type = "32in1";
@@ -120,7 +120,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     const uInt8* piece = image + i*2048;
     // Move to the next game the next time this ROM is loaded
     settings.setInt("romloadcount", (i+1)%32);
-    cartridge = new Cartridge2K(piece, 2048);
+    cartridge = new Cartridge2K(piece, size);
   }
   else if(type == "3E")
     cartridge = new Cartridge3E(image, size);

@@ -1945,6 +1945,7 @@
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "32 in 1 Game Cartridge (1988) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "1d1d2603ec139867c1d1f5ddf83093f1"
@@ -3185,6 +3186,7 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "32 in 1 Console ROM (02-10-1989) (Atari) (Prototype) (PAL)"
 "Cartridge.Rarity" "Prototype"
+"Display.YStart" "42"
 ""
 
 "Cartridge.MD5" "29396db58406084e416032c372734a3e"
@@ -8631,7 +8633,6 @@
 
 "Cartridge.MD5" "713fde2af865b6ec464dfd72e2ebb83e"
 "Cartridge.Name" "Challenge (208 in 1) (Unknown) (PAL)"
-"Display.Height" "250"
 "Display.Phosphor" "YES"
 ""
 
@@ -15196,7 +15197,6 @@
 "Cartridge.Name" "Bobby Is Going Home (1983) (BitCorp) (PAL) [demo cart]"
 "Cartridge.Note" "AKA Bobby geht Heim"
 "Display.YStart" "40"
-"Display.Height" "250"
 ""
 
 "Cartridge.MD5" "ccb807eb79b0ed0f5fdc460445ef703a"
@@ -15440,7 +15440,6 @@
 "Cartridge.ModelNo" "PG207"
 "Cartridge.Name" "Mission 3,000 A.D. (1983) (BitCorp) (PAL) [demo cart]"
 "Cartridge.Note" "demonstration cartridge"
-"Display.Height" "250"
 "Display.Phosphor" "YES"
 ""
 
