@@ -118,6 +118,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("stats", "false");
   setInternal("audiofirst", "true");
   setInternal("fastscbios", "false");
+  setExternal("romloadcount", "0");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

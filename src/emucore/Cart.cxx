@@ -54,7 +54,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
-    const Properties& properties, const Settings& settings)
+    const Properties& properties, Settings& settings)
 {
   Cartridge* cartridge = 0;
 
@@ -72,6 +72,19 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     // from the opposite bank compared to normal ones
     type = "F8 swapped";
   }
+  else if(md5 == "291bcdb05f2b37cdf9452d2bf08e0321")
+  {
+    // The 32-in-1 ROM consists of 32 games of 2K each
+    // The current game is automatically automatically incremented on each
+    // power cycle; we emulate this by using saving the current game id
+    // on each run, and creating a 2K Cart of the appropriate part of
+    // the image
+    if(size == 32*2048)
+    {
+      type = "32in1";
+      size = 2048;
+    }
+  }
 
   // Collect some info about the ROM
   ostringstream buf;
@@ -88,16 +101,27 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 
     type = detected;
   }
-  buf << type << autodetect << " (";
+  buf << type << autodetect;
+  if(type == "32in1")
+    buf << " [G" << settings.getInt("romloadcount") << "]";
   if(size < 1024)
-    buf << size << "B) ";
+    buf << " (" << size << "B) ";
   else
-    buf << (size/1024) << "K) ";
+    buf << " (" << (size/1024) << "K) ";
   myAboutString = buf.str();
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
     cartridge = new Cartridge2K(image, size);
+  else if(type == "32in1")
+  {
+    // Get a 2K piece of the 64K image and create a normal 2K image
+    uInt32 i = settings.getInt("romloadcount");
+    const uInt8* piece = image + i*2048;
+    // Move to the next game the next time this ROM is loaded
+    settings.setInt("romloadcount", (i+1)%32);
+    cartridge = new Cartridge2K(piece, 2048);
+  }
   else if(type == "3E")
     cartridge = new Cartridge3E(image, size);
   else if(type == "3F")

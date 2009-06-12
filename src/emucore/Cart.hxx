@@ -51,7 +51,7 @@ class Cartridge : public Device
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static Cartridge* create(const uInt8* image, uInt32 size, 
-        const Properties& props, const Settings& settings);
+        const Properties& props, Settings& settings);
 
     /**
       Create a new cartridge

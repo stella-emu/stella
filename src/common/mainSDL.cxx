@@ -157,7 +157,7 @@ int main(int argc, char* argv[])
   //   the ROM actually exists, use it to create a new console.
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
-  if(argc == 1 || romfile == "" || !romnode.exists())
+  if(argc == 1 || romfile == "" || !romnode.exists() || romnode.isDirectory())
   {
     if(!theOSystem->createLauncher())
     {
