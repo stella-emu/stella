@@ -254,6 +254,11 @@ class Cartridge : public Device
     */
     static bool isProbablyFE(const uInt8* image, uInt32 size);
 
+    /**
+      Returns true if the image is probably an X07 bankswitching cartridge
+    */
+    static bool isProbablyX07(const uInt8* image, uInt32 size);
+
   protected:
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.

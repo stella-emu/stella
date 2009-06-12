@@ -275,6 +275,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myPhosphorCheckbox);
   ypos += lineHeight + 4;
 
+  // OpenGL information
   // Add message concerning GLSL requirement
   ypos += lineHeight + 4;
   lwidth = font.getStringWidth("(*) TV effects require OpenGL 2.0+ & GLSL");
@@ -285,6 +286,15 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
                        lwidth, fontHeight, "\'gl_texrect\' must be disabled",
                        kTextAlignLeft);
+  ypos += lineHeight + 10;
+
+  myGLVersionInfo =
+    new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
+                         lwidth, fontHeight, "", kTextAlignLeft);
+  ypos += lineHeight + 4;
+  myGLTexRectInfo =
+    new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
+                         lwidth, fontHeight, "", kTextAlignLeft);
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
@@ -427,6 +437,16 @@ void VideoDialog::loadConfig()
   // TV phosphor burn-off effect
   myPhosphorCheckbox->setState(instance().settings().getBool("tv_phos"));
   myPhosphorCheckbox->setEnabled(tv);
+
+  char buf[30];
+  if(gl) sprintf(buf, "OpenGL version detected: %3.1f", FrameBufferGL::glVersion());
+  else   sprintf(buf, "OpenGL version detected: None");
+  myGLVersionInfo->setLabel(buf);
+  sprintf(buf, "OpenGL texrect enabled: %s",
+          instance().settings().getBool("gl_texrect") ? "Yes" : "No");
+  myGLTexRectInfo->setLabel(buf);
+#else
+  myGLVersionInfo->setLabel("OpenGL mode not supported");
 #endif
 
   myTab->loadConfig();

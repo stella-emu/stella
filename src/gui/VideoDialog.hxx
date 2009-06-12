@@ -81,6 +81,9 @@ class VideoDialog : public Dialog
     PopUpWidget*      myNoisePopup;
     CheckboxWidget*   myPhosphorCheckbox;
 
+    StaticTextWidget* myGLVersionInfo;
+    StaticTextWidget* myGLTexRectInfo;
+
     enum {
       kNAspectRatioChanged = 'VDan',
       kPAspectRatioChanged = 'VDap',
