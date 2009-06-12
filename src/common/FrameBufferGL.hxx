@@ -64,6 +64,8 @@ class FrameBufferGL : public FrameBuffer
     /**
       Return version of the OpenGL library found by the OSystem
       (0 indicates that the libary was not loaded successfully).
+      This will not return a valid version number until setVidMode()
+      has been called at least once.
     */
     static float glVersion() { return myGLVersion; }
 

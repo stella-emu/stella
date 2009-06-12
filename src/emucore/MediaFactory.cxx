@@ -60,8 +60,6 @@ FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
     const string& gl_lib = osystem->settings().getString("gl_lib");
     if(FrameBufferGL::loadLibrary(gl_lib))
       fb = new FrameBufferGL(osystem);
-    else
-      cerr << "ERROR: Couldn't dynamically load OpenGL library ...\n";
   }
 #endif
 
@@ -80,16 +78,6 @@ FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
 
   // This should never happen
   assert(fb != NULL);
-  switch(fb->type())
-  {
-    case kSoftBuffer:
-      osystem->settings().setString("video", "soft");
-      break;
-
-    case kGLBuffer:
-      osystem->settings().setString("video", "gl");
-      break;
-  }
 
   return fb;
 }

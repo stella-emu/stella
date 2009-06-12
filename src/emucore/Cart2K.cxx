@@ -23,10 +23,25 @@
 #include "Cart2K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2K::Cartridge2K(const uInt8* image)
+Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size)
 {
-  // Copy the ROM image into my buffer
-  memcpy(myImage, image, 2048);
+  // Size can be a maximum of 2K
+  if(size > 2048) size = 2048;
+
+  // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
+  memset(myImage, 0x02, 2048);
+
+  // Mirror each power-of-two slice in the 2K address space
+  uInt32 slice = 1, numslices = 2048;
+  while(slice < size)
+  {
+    slice <<= 1;
+    numslices >>= 1;
+  }
+
+  // Copy the ROM image slices into my buffer
+  for(uInt32 i = 0; i < numslices; ++i)
+    memcpy(myImage + i*slice, image, slice);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

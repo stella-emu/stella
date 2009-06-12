@@ -188,10 +188,6 @@ bool FrameBufferGL::loadFuncs()
   else
     return false;
 
-  // Grab OpenGL version number
-  string version((const char *)p_glGetString(GL_VERSION));
-  myGLVersion = atof(version.substr(0, 3).c_str());
-
   return true;
 }
 
@@ -344,6 +340,10 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   // Vista, but it shouldn't hurt on other systems.
   if(!loadFuncs())
     return false;
+
+  // Grab OpenGL version number
+  string version((const char *)p_glGetString(GL_VERSION));
+  myGLVersion = atof(version.substr(0, 3).c_str());
 
   // Check for some extensions that can potentially speed up operation
   // Don't use it if we've been instructed not to

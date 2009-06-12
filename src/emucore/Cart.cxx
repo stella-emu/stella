@@ -88,12 +88,16 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
 
     type = detected;
   }
-  buf << type << autodetect << " (" << (size/1024) << "K) ";
+  buf << type << autodetect << " (";
+  if(size < 1024)
+    buf << size << "B) ";
+  else
+    buf << (size/1024) << "K) ";
   myAboutString = buf.str();
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
-    cartridge = new Cartridge2K(image);
+    cartridge = new Cartridge2K(image, size);
   else if(type == "3E")
     cartridge = new Cartridge3E(image, size);
   else if(type == "3F")
@@ -202,6 +206,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   if((size % 8448) == 0)
   {
     type = "AR";
+  }
+  else if(size < 2048)  // Sub2K images
+  {
+    type = "2K";
   }
   else if((size == 2048) ||
           (size == 4096 && memcmp(image, image + 2048, 2048) == 0))

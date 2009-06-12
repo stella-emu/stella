@@ -376,22 +376,23 @@ bool OSystem::createFrameBuffer()
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
       if(!myConsole->initializeVideo())
-        return false;
+        goto fallback;
       break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
       if(!myLauncher->initializeVideo())
-        return false;
+        goto fallback;
       break;  // S_LAUNCHER
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
       if(!myDebugger->initializeVideo())
-        return false;
+        goto fallback;
       break;  // S_DEBUGGER
 #endif
 
-    default:
+    default:  // Should never happen
+      cerr << "ERROR: Unknown emulation state in createFrameBuffer()" << endl;
       break;
   }
 
@@ -406,6 +407,26 @@ bool OSystem::createFrameBuffer()
   }
 
   return true;
+
+  // GOTO are normally considered evil, unless well documented :)
+  // If initialization of video system fails while in OpenGL mode,
+  // attempt to fallback to software mode
+fallback:
+  if(myFrameBuffer && myFrameBuffer->type() == kGLBuffer)
+  {
+    cerr << "ERROR: OpenGL mode failed, fallback to software" << endl;
+    delete myFrameBuffer; myFrameBuffer = NULL;
+    mySettings->setString("video", "soft");
+    bool ret = createFrameBuffer();
+    if(ret)
+    {
+      setFramerate(60);
+      myFrameBuffer->showMessage("OpenGL mode failed, fallback to software", kMiddleCenter);
+    }
+    return ret;
+  }
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
