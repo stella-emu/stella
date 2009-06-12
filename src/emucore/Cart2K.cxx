@@ -28,25 +28,27 @@ Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size)
   // Size can be a maximum of 2K
   if(size > 2048) size = 2048;
 
+  // Set image size to closest power-of-two for the given size
+  mySize = 1;
+  while(mySize < size)
+    mySize <<= 1;
+
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
-  memset(myImage, 0x02, 2048);
+  myImage = new uInt8[mySize];
+  memset(myImage, 0x02, mySize);
 
-  // Mirror each power-of-two slice in the 2K address space
-  uInt32 slice = 1, numslices = 2048;
-  while(slice < size)
-  {
-    slice <<= 1;
-    numslices >>= 1;
-  }
+  // Copy the ROM image into my buffer
+  memcpy(myImage, image, size);
 
-  // Copy the ROM image slices into my buffer
-  for(uInt32 i = 0; i < numslices; ++i)
-    memcpy(myImage + i*slice, image, slice);
+  // Set mask for accessing the image buffer
+  // This is guaranteed to work, as mySize is a power of two
+  myMask = mySize - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge2K::~Cartridge2K()
 {
+  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -64,14 +66,13 @@ void Cartridge2K::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  System::PageAccess access;
-  access.directPokeBase = 0;
-  access.device = this;
-
   // Map ROM image into the system
+  System::PageAccess access;
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
   {
-    access.directPeekBase = &myImage[address & 0x07FF];
+    access.device = this;
+    access.directPeekBase = &myImage[address & myMask];
+    access.directPokeBase = 0;
     mySystem->setPageAccess(address >> shift, access);
   }
 }
@@ -79,7 +80,7 @@ void Cartridge2K::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge2K::peek(uInt16 address)
 {
-  return myImage[address & 0x07FF];
+  return myImage[address & myMask];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -110,14 +111,14 @@ int Cartridge2K::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge2K::patch(uInt16 address, uInt8 value)
 {
-  myImage[address & 0x07FF] = value;
+  myImage[address & myMask] = value;
   return true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* Cartridge2K::getImage(int& size)
 {
-  size = 2048;
+  size = mySize;
   return &myImage[0];
 }
 

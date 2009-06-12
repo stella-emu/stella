@@ -140,8 +140,14 @@ class Cartridge2K : public Cartridge
     virtual void poke(uInt16 address, uInt8 value);
 
   private:
-    // The 2k ROM image for the cartridge
-    uInt8 myImage[2048];
+    // Pointer to a dynamically allocated ROM image of the cartridge
+    uInt8* myImage;
+
+    // Size of the ROM image
+    uInt32 mySize;
+
+    // Mask to use for mirroring
+    uInt32 myMask;
 };
 
 #endif
