@@ -445,7 +445,7 @@
 "Cartridge.MD5" "05ebd183ea854c0a1b56c218246fbbae"
 "Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2656"
-"Cartridge.Name" "Swordquest - EarthWorld (1982) (Atari) [a]"
+"Cartridge.Name" "SwordQuest - EarthWorld (1982) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "06742cf522f23797157f215a1dc8a1a9"
@@ -4404,7 +4404,7 @@
 "Cartridge.MD5" "3882224adbd0ca7c748b2a1c9b87263e"
 "Cartridge.Manufacturer" "Atari, Tod Frye"
 "Cartridge.ModelNo" "CX2657"
-"Cartridge.Name" "Swordquest - FireWorld (1982) (Atari) (PAL) [a]"
+"Cartridge.Name" "SwordQuest - FireWorld (1982) (Atari) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "38bd172da8b2a3a176e517c213fcd5a6"
