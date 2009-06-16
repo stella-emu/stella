@@ -619,10 +619,31 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
     // Get a valid set of properties, including any entered on the commandline
     Properties props;
     myPropSet->getMD5(md5, props);
-
     string s = "";
     CMDLINE_PROPS_UPDATE("bs", Cartridge_Type);
     CMDLINE_PROPS_UPDATE("type", Cartridge_Type);
+
+    // Now create the cartridge
+    string id, cartmd5 = md5, type = props.get(Cartridge_Type);
+    Cartridge* cart =
+      Cartridge::create(image, size, cartmd5, id, type, *mySettings);
+
+    // It's possible that the cart created was from a piece of the image,
+    // and that the md5 (and hence the cart) has changed
+    if(props.get(Cartridge_MD5) != cartmd5)
+    {
+      string name = props.get(Cartridge_Name);
+      myPropSet->getMD5(cartmd5, props);
+
+      // Add appropriate name if none exists
+      if(props.get(Cartridge_Name) == "Untitled")
+      {
+        props.set(Cartridge_MD5, cartmd5);
+        props.set(Cartridge_Name, name+id);
+        myPropSet->insert(props, false);
+      }
+    }
+
     CMDLINE_PROPS_UPDATE("channels", Cartridge_Sound);
     CMDLINE_PROPS_UPDATE("ld", Console_LeftDifficulty);
     CMDLINE_PROPS_UPDATE("rd", Console_RightDifficulty);
@@ -639,7 +660,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("pp", Display_Phosphor);
     CMDLINE_PROPS_UPDATE("ppblend", Display_PPBlend);
 
-    Cartridge* cart = Cartridge::create(image, size, props, *mySettings);
+    // Finally, create the cart with the correct properties
     if(cart)
       console = new Console(this, cart, props);
   }

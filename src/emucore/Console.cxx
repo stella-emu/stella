@@ -130,7 +130,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
       if(myTIA->scanlines() > 285)
         ++palCount;
     }
-    myDisplayFormat = (palCount >= 30) ? "PAL" : "NTSC";
+    myDisplayFormat = (palCount >= 20) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       autodetected = "*";
 

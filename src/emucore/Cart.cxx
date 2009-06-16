@@ -53,14 +53,10 @@
 #include "Settings.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
-    const Properties& properties, Settings& settings)
+Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
+    string& id, string type, Settings& settings)
 {
   Cartridge* cartridge = 0;
-
-  // Get the type of the cartridge we're creating
-  const string& md5 = properties.get(Cartridge_MD5);
-  string type = properties.get(Cartridge_Type);
 
   // First consider the ROMs that are special and don't have a properties entry
   // Hopefully this list will be very small
@@ -71,19 +67,6 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     // These two ROMs are normal 8K images, except they must be initialized
     // from the opposite bank compared to normal ones
     type = "F8 swapped";
-  }
-  else if(md5 == "291bcdb05f2b37cdf9452d2bf08e0321" ||
-          md5 == "291dd47588b9158beebe4accc3a093a6")
-  {
-    // The 32-in-1 ROM consists of 32 games of 2K each, where the current
-    // game is automatically incremented on each power cycle
-    // We emulate this by incrementing the current game id on each run,
-    // and creating a 2K Cart of the appropriate part of the image
-    if(size == 32*2048)
-    {
-      type = "32in1";
-      size = 2048;
-    }
   }
 
   // Collect some info about the ROM
@@ -102,26 +85,39 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
     type = detected;
   }
   buf << type << autodetect;
-  if(type == "32in1")
-    buf << " [G" << settings.getInt("romloadcount") << "]";
-  if(size < 1024)
-    buf << " (" << size << "B) ";
-  else
-    buf << " (" << (size/1024) << "K) ";
-  myAboutString = buf.str();
+
+  // Check for multicart first; if found, get the correct part of the image
+  if(type == "4IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 4*2048 || size == 4*4096 || size == 4*8192)
+    {
+      type = createFromMultiCart(image, size, 4, md5, id, settings);
+      buf << id;
+    }
+  }
+  else if(type == "8IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 8*2048 || size == 8*4096 || size == 8*8192)
+    {
+      type = createFromMultiCart(image, size, 8, md5, id, settings);
+      buf << id;
+    }
+  }
+  else if(type == "32IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 32*2048 || size == 32*4096)
+    {
+      type = createFromMultiCart(image, size, 32, md5, id, settings);
+      buf << id;
+    }
+  }
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
     cartridge = new Cartridge2K(image, size);
-  else if(type == "32in1")
-  {
-    // Get a 2K piece of the 64K image and create a normal 2K image
-    uInt32 i = settings.getInt("romloadcount");
-    const uInt8* piece = image + i*2048;
-    // Move to the next game the next time this ROM is loaded
-    settings.setInt("romloadcount", (i+1)%32);
-    cartridge = new Cartridge2K(piece, size);
-  }
   else if(type == "3E")
     cartridge = new Cartridge3E(image, size);
   else if(type == "3F")
@@ -177,7 +173,37 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size,
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 
+  if(size < 1024)
+    buf << " (" << size << "B) ";
+  else
+    buf << " (" << (size/1024) << "K) ";
+  myAboutString = buf.str();
+
   return cartridge;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
+    uInt32 numroms, string& md5, string& id, Settings& settings)
+{
+  // Get a piece of the larger image
+  uInt32 i = settings.getInt("romloadcount");
+  size /= numroms;
+  image += i*size;
+
+  // We need a new md5 and name
+  md5  = MD5(image, size);
+  ostringstream buf;
+  buf << " [G" << (i+1) << "]";
+  id = buf.str();
+
+  // Move to the next game the next time this ROM is loaded
+  settings.setInt("romloadcount", (i+1)%numroms);
+
+  if(size <= 2048)       return "2K";
+  else if(size == 4096)  return "4K";
+  else if(size == 8192)  return "F8";
+  else  /* default */    return "4K";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

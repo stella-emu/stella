@@ -135,6 +135,9 @@ GameInfoDialog::GameInfoDialog(
   items.clear();
   items.push_back("Auto-detect",          "AUTO-DETECT");
   items.push_back("0840 (8K ECONObank)",        "0840" );
+  items.push_back("4IN1 Multicart (8-32K)",     "4IN1" );
+  items.push_back("8IN1 Multicart (16-64K)",    "8IN1" );
+  items.push_back("32IN1 Multicart (64-128K)",  "32IN1");
   items.push_back("2K (2K Atari)",              "2K"   );
   items.push_back("3E (32K Tigervision)",       "3E"   );
   items.push_back("3F (512K Tigervision)",      "3F"   );
@@ -157,7 +160,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("FE (8K Decathlon)",          "FE"   );
   items.push_back("MB (Dynacom Megaboy)",       "MB"   );
   items.push_back("MC (C. Wilkson Megacart)",   "MC"   );
-  items.push_back("SB (128-256k SUPERbank)",    "SB"   );
+  items.push_back("SB (128-256K SUPERbank)",    "SB"   );
   items.push_back("UA (8K UA Ltd.)",            "UA"   );
   items.push_back("X07 (64K AtariAge)",         "X07"  );
   myType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
