@@ -50,7 +50,7 @@ class UIDialog : public Dialog
     StaticTextWidget* myLauncherHeightLabel;
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
-    CheckboxWidget*   myExitLauncherBox;
+    CheckboxWidget*   myUseLauncherBox;
 
     // Debugger options
     SliderWidget*     myDebuggerWidthSlider;

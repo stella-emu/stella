@@ -76,18 +76,22 @@ void CartridgeFE::poke(uInt16, uInt8)
 void CartridgeFE::bank(uInt16 b)
 {
   // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeFE::bank()
 {
   // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeFE::bankCount()
 {
+  // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
   return 1;
 }
 

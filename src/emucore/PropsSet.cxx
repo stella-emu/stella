@@ -87,7 +87,7 @@ bool PropertiesSet::save(const string& filename) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void PropertiesSet::getMD5(const string& md5, Properties& properties,
+bool PropertiesSet::getMD5(const string& md5, Properties& properties,
                            bool useDefaults) const
 {
   properties.setDefaults();
@@ -146,6 +146,8 @@ void PropertiesSet::getMD5(const string& md5, Properties& properties,
         low = i + 1;  // look at upper range
     }
   }
+
+  return found;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

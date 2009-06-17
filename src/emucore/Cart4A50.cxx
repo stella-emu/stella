@@ -283,12 +283,14 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 void Cartridge4A50::bank(uInt16)
 {
   // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Cartridge4A50::bank()
 {
   // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
   return 0;
 }
 
@@ -296,13 +298,16 @@ int Cartridge4A50::bank()
 int Cartridge4A50::bankCount()
 {
   // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
   return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 {
-  return false;  // TODO
+  // Doesn't support bankswitching in the normal sense
+  // TODO - add support for debugger
+  return false;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

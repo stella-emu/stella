@@ -974,7 +974,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem->settings().saveConfig();
 
         // Go back to the launcher, or immediately quit
-        if(!myOSystem->settings().getBool("exitlauncher"))
+        if(myOSystem->settings().getBool("uselauncher"))
         {
           myOSystem->deleteConsole();
           myOSystem->createLauncher();

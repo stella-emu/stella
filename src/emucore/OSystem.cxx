@@ -617,6 +617,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
   if((image = openROM(romfile, md5, size)) != 0)
   {
     // Get a valid set of properties, including any entered on the commandline
+    // For initial creation of the Cart, we're only concerned with the BS type
     Properties props;
     myPropSet->getMD5(md5, props);
     string s = "";
@@ -633,11 +634,9 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
     if(props.get(Cartridge_MD5) != cartmd5)
     {
       string name = props.get(Cartridge_Name);
-      myPropSet->getMD5(cartmd5, props);
-
-      // Add appropriate name if none exists
-      if(props.get(Cartridge_Name) == "Untitled")
+      if(!myPropSet->getMD5(cartmd5, props))
       {
+        // Cart md5 wasn't found, so we create a new props for it
         props.set(Cartridge_MD5, cartmd5);
         props.set(Cartridge_Name, name+id);
         myPropSet->insert(props, false);
@@ -675,7 +674,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* OSystem::openROM(const string& file, string& md5, uInt32& size)
+uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
@@ -707,8 +706,12 @@ uInt8* OSystem::openROM(const string& file, string& md5, uInt32& size)
           // Grab 3-character extension
           char* ext = filename + strlen(filename) - 4;
 
-          if(!BSPF_strcasecmp(ext, ".bin") || !BSPF_strcasecmp(ext, ".a26"))
+          if(!BSPF_strcasecmp(ext, ".a26") || !BSPF_strcasecmp(ext, ".bin") ||
+             !BSPF_strcasecmp(ext, ".rom"))
+          {
+            file = filename;
             break;
+          }
         }
 
         // Scan the next file in the zip
@@ -761,18 +764,14 @@ uInt8* OSystem::openROM(const string& file, string& md5, uInt32& size)
   // be an entry in stella.pro.  In that case, we use the rom name
   // and reinsert the properties object
   Properties props;
-  myPropSet->getMD5(md5, props);
-
-  string name = props.get(Cartridge_Name);
-  if(name == "Untitled")
+  if(!myPropSet->getMD5(md5, props))
   {
     // Get the filename from the rom pathname
     string::size_type pos = file.find_last_of(BSPF_PATH_SEPARATOR);
     if(pos+1 != string::npos)
     {
-      name = file.substr(pos+1);
       props.set(Cartridge_MD5, md5);
-      props.set(Cartridge_Name, name);
+      props.set(Cartridge_Name, file.substr(pos+1));
       myPropSet->insert(props, false);
     }
   }

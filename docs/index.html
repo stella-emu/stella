@@ -848,6 +848,13 @@
 		</tr>
 
 		<tr>
+			<td><pre>-uselauncher &lt;1|0&gt;</pre></td>
+			<td>Use the built-in ROM launcher.  If disabled, launching Stella will
+				simply print a help message, and exiting a ROM will completely
+				exit the program.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-launcherres &lt;WxH&gt;</pre></td>
 			<td>Set the size of the ROM launcher.</td>
 		</tr>
@@ -863,12 +870,6 @@
 				('allfiles' is self-explanatory, 'allroms' is all files
 				with valid rom extensions (currently: a26, bin, rom,
 				gz, zip), 'LIST' is a ':' separated list of valid rom extensions.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-exitlauncher &lt;1|0&gt;</pre></td>
-			<td>After exiting a ROM, either exit back to the launcher (1) or
-				completely exit the emulator (0).</td>
 		</tr>
 
 		<tr>
@@ -1935,7 +1936,8 @@
 		</tr>
 
 		<tr>
-			<td>Reload current ROM (TIA mode)</td>
+			<td>Reload current ROM (singlecart ROM, TIA mode)<br>
+				Load next game in ROM (multicart ROM, TIA mode)</td>
 			<td>Control + r</td>
 			<td>Cmd + r</td>
 		</tr>
@@ -2618,19 +2620,22 @@ Ms Pac-Man (Stella extended codes):
 			The value of this property must be either <b>Auto-detect</b> or one of the following
 			(for more information about bank-switching see Kevin Horton's 2600 bankswitching
 			document or the documentation in each cartridges source code file).  Types marked
-			as (*) do not currently have reliable auto-detection, or may not be fully
-			supported in the debugger:
+			as (&#185;) do not currently have reliable auto-detection, those marked as (&#178;)
+			are not fully supported in the debugger:
 			<table cellpadding="2" border="1">
 				<tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
 				<tr><td>0840 </td><td>8K ECONObanking </td></tr>
+				<tr><td>4IN1 &#185;</td><td>8-32K Multicart (4 games) </td></tr>
+				<tr><td>8IN1 &#185;</td><td>16-64K Multicart (8 games) </td></tr>
+				<tr><td>32IN1 &#185;</td><td>64-128K Multicart (32 games) </td></tr>
 				<tr><td>2K </td><td>2K Atari </td></tr>
 				<tr><td>3E </td><td>32K Tigervision </td></tr>
 				<tr><td>3F </td><td>512K Tigervision </td></tr>
-				<tr><td>4A50 (*)</td><td>64K 4A50 + ram </td></tr>
+				<tr><td>4A50 &#185;&#178;</td><td>64K 4A50 + ram </td></tr>
 				<tr><td>4K </td><td>4K Atari </td></tr>
-				<tr><td>AR </td><td>Supercharger </td></tr>
+				<tr><td>AR &#178;</td><td>Supercharger </td></tr>
 				<tr><td>CV </td><td>Commavid extra ram </td></tr>
-				<tr><td>DPC </td><td>Pitfall II </td></tr>
+				<tr><td>DPC &#178;</td><td>Pitfall II </td></tr>
 				<tr><td>E0 </td><td>8K Parker Bros </td></tr>
 				<tr><td>E7 </td><td>16K M-network </td></tr>
 				<tr><td>EF </td><td>64K Homestar Runner </td></tr>
@@ -2644,10 +2649,10 @@ Ms Pac-Man (Stella extended codes):
 				<tr><td>FASC </td><td>CBS RAM Plus </td></tr>
 				<tr><td>FE </td><td>8K Decathlon </td></tr>
 				<tr><td>MB </td><td>Dynacom Megaboy </td></tr>
-				<tr><td>MC </td><td>C. Wilkson Megacart </td></tr>
+				<tr><td>MC &#185;&#178;</td><td>C. Wilkson Megacart </td></tr>
 				<tr><td>SB </td><td>128-256k SUPERbanking </td></tr>
 				<tr><td>UA </td><td>8K UA Ltd. </td></tr>
-				<tr><td>X07 (*)</td><td>64K AtariAge </td></tr>
+				<tr><td>X07 &#185;&#178;</td><td>64K AtariAge </td></tr>
 			</table></td>
 		</tr>
 

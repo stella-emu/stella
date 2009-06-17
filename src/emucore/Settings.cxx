@@ -97,10 +97,10 @@ Settings::Settings(OSystem* osystem)
   setInternal("eepromdir", "");
 
   // ROM browser options
+  setInternal("uselauncher", "true");
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "medium");
   setInternal("launcherexts", "allfiles");
-  setInternal("exitlauncher", "false");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 
@@ -363,13 +363,13 @@ void Settings::usage()
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
+    << "  -uselauncher  <1|0>          Use the built-in ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"
     << "  -launcherexts <allfiles|     Show files with the given extensions in ROM launcher\n"
     << "                 allroms|        (exts is a ':' separated list of extensions)\n"
     << "                 exts\n"
-    << "  -exitlauncher <1|0>          Don't go back to ROM launcher after playing a game\n"
     << "  -romviewer    <0|1|2>        Show ROM info viewer at given zoom level in ROM launcher (0 for off)\n"
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"

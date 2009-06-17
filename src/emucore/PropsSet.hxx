@@ -77,8 +77,10 @@ class PropertiesSet
                          properties if not found
       @param defaults    Use the built-in defaults, ignoring any properties
                          from an external file
+
+      @return  True if the set with the specified md5 was found, else false
     */
-    void getMD5(const string& md5, Properties& properties,
+    bool getMD5(const string& md5, Properties& properties,
                 bool useDefaults = false) const;
 
     /**

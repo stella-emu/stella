@@ -196,27 +196,27 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::bank(uInt16 b)
 {
-  // TODO: add support for debugger
+  // TODO - add support for debugger
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeMC::bank()
 {
-  // TODO: add support for debugger
+  // TODO - add support for debugger
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeMC::bankCount()
 {
-  // TODO: add support for debugger
+  // TODO - add support for debugger
   return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::patch(uInt16 address, uInt8 value)
 {
-  // TODO: implement
+  // TODO - add support for debugger
   return false;
 } 
 

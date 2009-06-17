@@ -12,6 +12,38 @@
                                Release History
 ===============================================================================
 
+2.8 to 2.8.1: (June 19, 2009)
+
+  * Fixed OpenGL issue for some Windows users whereby the OpenGL TV
+    effects weren't available, even if the available version of OpenGL
+    was sufficient.  Related to this, the OpenGL version found by
+    Stella is now reported in the TV effects dialog.
+
+  * Added fallback to software rendering when OpenGL rendering has been
+    requested, but for whatever reason fails to initialize.
+
+  * Added native support for 4in1, 8in1 and 32in1 multicart bankswitching
+    schemes.  When using these schemes, the 'Reload ROM' action
+    (by default, Control-r) will switch between each game in the ROM.
+
+  * Added bankswitch support for ROMs smaller than 2K in size.  These
+    will be treated as 2K ROMs natively, without having to manually
+    'pad' them to 2048 bytes.
+
+  * Added preliminary suppport for autodetection of X07 bankswitching.
+
+  * Tweaked PAL autodetection; it was marking some PAL ROMs as NTSC.
+
+  * Changed '-exitlauncher' commandline argument to '-uselauncher'.
+    This works as before except the launcher is never used at all if
+    the option is set to false.
+
+  * Fixed crash when launching Stella from the commandline and giving
+    a directory name instead of a rom filename.
+
+-Have fun!
+
+
 2.7.7 to 2.8: (June 9, 2009)
 
   * Added CRT simulation effects as described in the AtariAge posting
@@ -63,8 +95,6 @@
   * The '-listrominfo' commandline argument now shows all ROM
     information built in to the internal database, taking into account
     any information in 'personal' stella.pro files.
-
--Have fun!
 
 
 2.7.6 to 2.7.7: (May 1, 2009)
