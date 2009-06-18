@@ -18,6 +18,7 @@
 
 #include "bspf.hxx"
 #include "FSNode.hxx"
+#include "HomeFinder.hxx"
 #include "OSystem.hxx"
 #include "OSystemWin32.hxx"
 
@@ -63,9 +64,15 @@ OSystemWin32::OSystemWin32()
   // If basedir hasn't been specified, use the 'home' directory
   if(!overrideBasedir)
   {
-    FilesystemNode home("~\\");
-    if(home.isDirectory())
-      basedir = "~\\Stella";
+    HomeFinder homefinder;
+    FilesystemNode appdata(homefinder.getAppDataPath());
+    if(appdata.isDirectory())
+    {
+      basedir = appdata.getRelativePath();
+      if(basedir.length() > 1 && basedir[basedir.length()-1] != '\\')
+        basedir += '\\';
+      basedir += "Stella";
+    }
     else
       basedir = ".";  // otherwise, default to current directory
   }

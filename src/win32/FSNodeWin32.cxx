@@ -58,54 +58,9 @@
 #endif
 
 #include "FSNode.hxx"
+#include "HomeFinder.hxx"
 
-/*
- * Used to determine the location of the 'My Documents' folder.
- *
- * Win98 and earlier don't have SHGetFolderPath in shell32.dll.
- * Microsoft recommend that we load shfolder.dll at run time and
- * access the function through that.
- *
- * shfolder.dll is loaded dynamically in the constructor, and unloaded in
- * the destructor
- *
- * The class makes SHGetFolderPath available through its function operator.
- * It will work on all versions of Windows >= Win95.
- *
- * This code was borrowed from the Lyx project.
- */
-class MyDocumentsFinder
-{
-  public:
-    MyDocumentsFinder() : myFolderModule(0), myFolderPathFunc(0)
-    {
-      myFolderModule = LoadLibrary("shfolder.dll");
-      if(myFolderModule)
-        myFolderPathFunc = reinterpret_cast<function_pointer>
-           (::GetProcAddress(myFolderModule, "SHGetFolderPathA"));
-    }
-
-    ~MyDocumentsFinder() { if(myFolderModule) FreeLibrary(myFolderModule); }
-
-    /** Wrapper for SHGetFolderPathA, returning the 'My Documents' folder
-        (or an empty string if the folder couldn't be determined. */
-    string getPath() const
-    {
-      if(!myFolderPathFunc) return "";
-      char folder_path[MAX_PATH];
-      HRESULT const result = (myFolderPathFunc)
-          (NULL, CSIDL_PERSONAL | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
-
-      return (result == 0) ? folder_path : "";
-    }
-
-    private:
-      typedef HRESULT (__stdcall * function_pointer)(HWND, int, HANDLE, DWORD, LPCSTR);
-
-      HMODULE myFolderModule;
-      function_pointer myFolderPathFunc;
-};
-static MyDocumentsFinder myDocsFinder;
+static HomeFinder myHomeFinder;
 
 /*
  * Implementation of the Stella file system API based on Windows API.
@@ -283,15 +238,15 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 {
-  // Expand "~\\" to the 'My Documents' directory
+  // Expand "~\" to the 'My Documents' directory
   if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
-    _path = myDocsFinder.getPath();
+    _path = myHomeFinder.getHomePath();
     // Skip over the tilda.  We know that p contains at least
     // two chars, so this is safe:
     _path += p.c_str() + 1;
   }
-  // Expand ".\\" to the current directory
+  // Expand ".\" to the current directory
   else if ( p.length() >= 2 && p[0] == '.' && p[1] == '\\')
   {
     char path[MAX_PATH];
@@ -333,12 +288,12 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 string WindowsFilesystemNode::getRelativePath() const
 {
   // If the path starts with the home directory, replace it with '~'
-  const string& home = myDocsFinder.getPath();
+  const string& home = myHomeFinder.getHomePath();
   if(home != "")
   {
     // Windows file system not case sensitive
     int len = home.length();
-    if(BSPF_strncasecmp(home.c_str(), _path.substr(0, len).c_str()) == 0)
+    if(BSPF_strncasecmp(home.c_str(), _path.substr(0, len).c_str(), len) == 0)
     {
       string path = "~";
       const char* offset = _path.c_str() + len;

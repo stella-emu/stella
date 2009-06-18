@@ -197,23 +197,40 @@ void FileSnapDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FileSnapDialog::setDefaults()
 {
-  const string& basedir = instance().baseDir(false);  // get relative basedir
-  const string& romdir = "~";
-  const string& statedir = basedir + BSPF_PATH_SEPARATOR + "state";
-  const string& cheatfile = basedir + BSPF_PATH_SEPARATOR + "stella.cht";
-  const string& palettefile = basedir + BSPF_PATH_SEPARATOR + "stella.pal";
-  const string& propsfile = basedir + BSPF_PATH_SEPARATOR + "stella.pro";
-  const string& ssdir = basedir + BSPF_PATH_SEPARATOR + "snapshots";
+  FilesystemNode node;
+  string basedir = instance().baseDir();
+  
+  const char* end = basedir.c_str() + basedir.length();
+  if(basedir.compare(basedir.length()-1, 1, BSPF_PATH_SEPARATOR, 0, 1) != 0)
+    basedir.append(BSPF_PATH_SEPARATOR);
+
+  node = FilesystemNode("~");
+  myRomPath->setEditString(node.getRelativePath());
+
+  const string& statedir = basedir + "state";
+  node = FilesystemNode(statedir);
+  myStatePath->setEditString(node.getRelativePath());
+
+  const string& cheatfile = basedir + "stella.cht";
+  node = FilesystemNode(cheatfile);
+  myCheatFile->setEditString(node.getRelativePath());
+
+  const string& palettefile = basedir + "stella.pal";
+  node = FilesystemNode(palettefile);
+  myPaletteFile->setEditString(node.getRelativePath());
+
+  const string& propsfile = basedir + "stella.pro";
+  node = FilesystemNode(propsfile);
+  myPropsFile->setEditString(node.getRelativePath());
+
   const string& eepromdir = basedir;
+  node = FilesystemNode(eepromdir);
+  myEEPROMPath->setEditString(node.getRelativePath());
 
-  myRomPath->setEditString(romdir);
-  myStatePath->setEditString(statedir);
-  myCheatFile->setEditString(cheatfile);
-  myPaletteFile->setEditString(palettefile);
-  myPropsFile->setEditString(propsfile);
-  myEEPROMPath->setEditString(eepromdir);
+  const string& ssdir = basedir + "snapshots";
+  node = FilesystemNode(ssdir);
+  mySnapPath->setEditString(node.getRelativePath());
 
-  mySnapPath->setEditString(ssdir);
   mySnapSingle->setState(true);
   mySnap1x->setState(false);
 }

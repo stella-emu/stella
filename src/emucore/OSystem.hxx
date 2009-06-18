@@ -251,8 +251,7 @@ class OSystem
     /**
       Return the default full/complete directory name for storing data.
     */
-    const string& baseDir(bool expanded = true) const
-    { return expanded ? myBaseDirExpanded : myBaseDir; }
+    const string& baseDir() const { return myBaseDir; }
 
     /**
       Return the full/complete directory name for storing state files.

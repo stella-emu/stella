@@ -973,6 +973,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\HomeFinder.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\win32\OSystemWin32.hxx"
 				>
 			</File>

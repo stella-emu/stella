@@ -337,7 +337,7 @@ string Debugger::getSourceLines(int addr) const
 void Debugger::autoExec()
 {
   // autoexec.stella is always run
-  const string& autoexec = myOSystem->baseDir(false) + BSPF_PATH_SEPARATOR +
+  const string& autoexec = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
                            "autoexec.stella";
   myPrompt->print("autoExec():\n" + myParser->exec(autoexec) + "\n");
 

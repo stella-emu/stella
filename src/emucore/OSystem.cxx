@@ -272,52 +272,52 @@ bool OSystem::create()
 void OSystem::setConfigPaths()
 {
   // Paths are saved with special characters preserved ('~' or '.')
-  // Internally, we expand them so the rest of the codebase doesn't
+  // We do some error checking here, so the rest of the codebase doesn't
   // have to worry about it
   FilesystemNode node;
   string s;
 
   s = mySettings->getString("statedir");
   if(s == "") s = myBaseDir + BSPF_PATH_SEPARATOR + "state";
-  mySettings->setString("statedir", s);
   node = FilesystemNode(s);
   myStateDir = node.getPath();
+  mySettings->setString("statedir", node.getRelativePath());
   if(!node.isDirectory())
     AbstractFilesystemNode::makeDir(myStateDir);
 
   s = mySettings->getString("ssdir");
   if(s == "") s = myBaseDir + BSPF_PATH_SEPARATOR + "snapshots";
-  mySettings->setString("ssdir", s);
   node = FilesystemNode(s);
   mySnapshotDir = node.getPath();
+  mySettings->setString("ssdir", node.getRelativePath());
   if(!node.isDirectory())
     AbstractFilesystemNode::makeDir(mySnapshotDir);
 
   s = mySettings->getString("eepromdir");
   if(s == "") s = myBaseDir;
-  mySettings->setString("eepromdir", s);
   node = FilesystemNode(s);
   myEEPROMDir = node.getPath();
+  mySettings->setString("eepromdir", node.getRelativePath());
   if(!node.isDirectory())
     AbstractFilesystemNode::makeDir(myEEPROMDir);
 
   s = mySettings->getString("cheatfile");
   if(s == "") s = myBaseDir + BSPF_PATH_SEPARATOR + "stella.cht";
-  mySettings->setString("cheatfile", s);
   node = FilesystemNode(s);
   myCheatFile = node.getPath();
+  mySettings->setString("cheatfile", node.getRelativePath());
 
   s = mySettings->getString("palettefile");
   if(s == "") s = myBaseDir + BSPF_PATH_SEPARATOR + "stella.pal";
-  mySettings->setString("palettefile", s);
   node = FilesystemNode(s);
   myPaletteFile = node.getPath();
+  mySettings->setString("palettefile", node.getRelativePath());
 
   s = mySettings->getString("propsfile");
   if(s == "") s = myBaseDir + BSPF_PATH_SEPARATOR + "stella.pro";
-  mySettings->setString("propsfile", s);
   node = FilesystemNode(s);
   myPropertiesFile = node.getPath();
+  mySettings->setString("propsfile", node.getRelativePath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -332,11 +332,10 @@ void OSystem::setUIPalette()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setBaseDir(const string& basedir)
 {
-  myBaseDir = basedir;
-  FilesystemNode node(myBaseDir);
-  myBaseDirExpanded = node.getPath();
+  FilesystemNode node(basedir);
+  myBaseDir = node.getPath();
   if(!node.isDirectory())
-    AbstractFilesystemNode::makeDir(myBaseDirExpanded);
+    AbstractFilesystemNode::makeDir(myBaseDir);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -767,13 +766,12 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
   if(!myPropSet->getMD5(md5, props))
   {
     // Get the filename from the rom pathname
-    string::size_type pos = file.find_last_of(BSPF_PATH_SEPARATOR);
-    if(pos+1 != string::npos)
-    {
-      props.set(Cartridge_MD5, md5);
-      props.set(Cartridge_Name, file.substr(pos+1));
-      myPropSet->insert(props, false);
-    }
+    string::size_type pos = file.find_last_of("/\\");
+    if(pos != string::npos)  file = file.substr(pos+1);
+
+    props.set(Cartridge_MD5, md5);
+    props.set(Cartridge_Name, file);
+    myPropSet->insert(props, false);
   }
 
   return image;

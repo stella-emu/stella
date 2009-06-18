@@ -216,7 +216,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kBaseDirCmd:
-      _node = FilesystemNode(instance().baseDir(false));
+      _node = FilesystemNode(instance().baseDir());
       updateListing();
       break;
 
