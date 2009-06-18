@@ -70,9 +70,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
   * More support for copy and paste.
 
-  * Fix Props.cxx (or GameInfoDialog) to properly deal with quotes and
-    backslashes in strings meant to be saved to the properties file.
-
   * Add support for uncommon controllers (KidVid, Lightgun, etc)
 
   * Fix "Tron Man Picture Cart" (32K Tigervision bankswitching) issue

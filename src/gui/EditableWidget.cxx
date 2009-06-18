@@ -77,7 +77,7 @@ void EditableWidget::setEditable(bool editable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EditableWidget::tryInsertChar(char c, int pos)
 {
-  if (isprint(c))
+  if (isprint(c) && c != '\"' && c != '\\')
   {
     _editString.insert(pos, 1, c);
     return true;
