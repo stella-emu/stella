@@ -139,6 +139,7 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     virtual string getDisplayName() const { return _displayName; }
     virtual string getName() const   { return _displayName; }
     virtual string getPath() const   { return _path; }
+    virtual string getRelativePath() const;
     virtual bool isDirectory() const { return _isDirectory; }
     virtual bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
     virtual bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
@@ -326,6 +327,27 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
       _path += '\\';
   }
   _isPseudoRoot = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string WindowsFilesystemNode::getRelativePath() const
+{
+  // If the path starts with the home directory, replace it with '~'
+  const string& home = myDocsFinder.getPath();
+  if(home != "")
+  {
+    // Windows file system not case sensitive
+    int len = home.length();
+    if(BSPF_strncasecmp(home.c_str(), _path.substr(0, len).c_str()) == 0)
+    {
+      string path = "~";
+      const char* offset = _path.c_str() + len;
+      if(*offset != '\\') path += '\\';
+      path += offset;
+      return path;
+    }
+  }
+  return _path;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

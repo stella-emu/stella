@@ -266,7 +266,7 @@ void LauncherDialog::updateListing()
   myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
-  myDir->setLabel(myCurrentNode.getPath());
+  myDir->setLabel(myCurrentNode.getRelativePath());
 
   // Now fill the list widget with the contents of the GameList
   StringList l;

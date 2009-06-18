@@ -61,6 +61,7 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     virtual string getDisplayName() const { return _displayName; }
     virtual string getName() const   { return _displayName; }
     virtual string getPath() const   { return _path; }
+    virtual string getRelativePath() const;
     virtual bool isDirectory() const { return _isDirectory; }
     virtual bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
     virtual bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
@@ -135,7 +136,7 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
     if (home != NULL && strlen(home) < MAXPATHLEN)
     {
       _path = home;
-      // Skip over the tilda.  We know that p contains at least
+      // Skip over the tilde.  We know that p contains at least
       // two chars, so this is safe:
       _path += p.c_str() + 1;
     }
@@ -160,6 +161,26 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
 
   if (verify)
     setFlags();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string POSIXFilesystemNode::getRelativePath() const
+{
+  // If the path starts with the home directory, replace it with '~'
+  const char* home = getenv("HOME");
+  if(home != NULL)
+  {
+    int len = strlen(home);
+    if(strncmp(_path.c_str(), home, len) == 0)
+    {
+      string path = "~";
+      const char* offset = _path.c_str() + len;
+      if(*offset != '/') path += "/";
+      path += offset;
+      return path;
+    }
+  }
+  return _path;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

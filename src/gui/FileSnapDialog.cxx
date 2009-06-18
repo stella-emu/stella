@@ -273,49 +273,49 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
     case kRomDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.getPath());
+      myRomPath->setEditString(dir.getRelativePath());
       break;
     }
 
     case kStateDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myStatePath->setEditString(dir.getPath());
+      myStatePath->setEditString(dir.getRelativePath());
       break;
     }
 
     case kCheatFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myCheatFile->setEditString(dir.getPath());
+      myCheatFile->setEditString(dir.getRelativePath());
       break;
     }
 
     case kPaletteFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPaletteFile->setEditString(dir.getPath());
+      myPaletteFile->setEditString(dir.getRelativePath());
       break;
     }
 
     case kPropsFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPropsFile->setEditString(dir.getPath());
+      myPropsFile->setEditString(dir.getRelativePath());
       break;
     }
 
     case kSnapDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      mySnapPath->setEditString(dir.getPath());
+      mySnapPath->setEditString(dir.getRelativePath());
       break;
     }
 
     case kEEPROMDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myEEPROMPath->setEditString(dir.getPath());
+      myEEPROMPath->setEditString(dir.getRelativePath());
       break;
     }
 

@@ -81,6 +81,11 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font)
                                  buttonWidth, buttonHeight, "Go up", kGoUpCmd);
   addFocusWidget(_goUpButton);
 
+  _basedirButton =
+    new ButtonWidget(this, font, 15 + buttonWidth, _h - buttonHeight - 10,
+                     buttonWidth, buttonHeight, "Base Dir", kBaseDirCmd);
+  addFocusWidget(_basedirButton);
+
 #ifndef MAC_OSX
   b = new ButtonWidget(this, font, _w - 2 * (buttonWidth + 7), _h - buttonHeight - 10,
                        buttonWidth, buttonHeight, "Choose", kChooseCmd);
@@ -157,7 +162,7 @@ void BrowserDialog::updateListing()
   _nodeList->clear();
 
   // Update the path display
-  _currentPath->setLabel(_node.getPath());
+  _currentPath->setLabel(_node.getRelativePath());
 
   // Read in the data from the file system
   FSList content;
@@ -207,6 +212,11 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kGoUpCmd:
       _node = _node.getParent();
+      updateListing();
+      break;
+
+    case kBaseDirCmd:
+      _node = FilesystemNode(instance().baseDir(false));
       updateListing();
       break;
 

@@ -51,8 +51,9 @@ class BrowserDialog : public Dialog, public CommandSender
 
   private:
     enum {
-      kChooseCmd = 'CHOS',
-      kGoUpCmd   = 'GOUP'
+      kChooseCmd  = 'CHOS',
+      kGoUpCmd    = 'GOUP',
+      kBaseDirCmd = 'BADR'
     };
 
     int	_cmd;
@@ -61,6 +62,7 @@ class BrowserDialog : public Dialog, public CommandSender
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
     ButtonWidget*     _goUpButton;
+    ButtonWidget*     _basedirButton;
 
     FilesystemNode _node;
     GameList*      _nodeList;
