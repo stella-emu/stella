@@ -14,6 +14,10 @@
 
 2.8 to 2.8.1: (June 19, 2009)
 
+  * NOTE: Windows users will have to reset their options or manually move
+    their config folder in this release, since the location of the config
+    files has changed.
+
   * Fixed OpenGL issue for some Windows users whereby the OpenGL TV
     effects weren't available, even if the available version of OpenGL
     was sufficient.  Related to this, the OpenGL version found by
@@ -33,6 +37,13 @@
   * Added preliminary suppport for autodetection of X07 bankswitching.
 
   * Tweaked PAL autodetection; it was marking some PAL ROMs as NTSC.
+
+  * Changed default location for Stella config files in Windows to
+    the users' APPDATA folder (for XP and Vista, this is
+    '~/Application Data/Stella').  The '~' symbol now represents the
+    users PROFILE/home directory, matching its usage in Linux and OSX.
+    The ability to override this with 'basedir.txt' is still
+    available, but not advised.
 
   * Changed '-exitlauncher' commandline argument to '-uselauncher'.
     This works as before except the launcher is never used at all if

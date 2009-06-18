@@ -16,6 +16,9 @@
 // $Id$
 //============================================================================
 
+#ifndef __HOME_FINDER_
+#define __HOME_FINDER_
+
 #include <shlobj.h>
 
 /*
@@ -76,3 +79,5 @@ class HomeFinder
       HMODULE myFolderModule;
       function_pointer myFolderPathFunc;
 };
+
+#endif

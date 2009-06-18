@@ -491,7 +491,7 @@ class OSystem
 
   private:
     enum { kNumUIPalettes = 2 };
-    string myBaseDir, myBaseDirExpanded;
+    string myBaseDir;
     string myStateDir;
     string mySnapshotDir;
     string myEEPROMDir;

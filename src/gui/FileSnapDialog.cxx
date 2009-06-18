@@ -199,8 +199,6 @@ void FileSnapDialog::setDefaults()
 {
   FilesystemNode node;
   string basedir = instance().baseDir();
-  
-  const char* end = basedir.c_str() + basedir.length();
   if(basedir.compare(basedir.length()-1, 1, BSPF_PATH_SEPARATOR, 0, 1) != 0)
     basedir.append(BSPF_PATH_SEPARATOR);
 
