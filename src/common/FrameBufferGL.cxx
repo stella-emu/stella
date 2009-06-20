@@ -359,7 +359,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
     myGLVersion = atof(version.substr(0, 3).c_str());
 
     // TV effects depend on the GLSL functions being available
-    myGLSLAvailable = loadFuncs(kGL_SHADER);
+    myGLSLAvailable = myGLVersion >= 2.0 && loadFuncs(kGL_SHADER);
   }
   else
     return false;
