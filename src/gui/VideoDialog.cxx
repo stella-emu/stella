@@ -416,9 +416,9 @@ void VideoDialog::loadConfig()
 
 #ifdef DISPLAY_OPENGL
   //////////////////////////////////////////////////////////////////////
-  // TV effects are only enabled in OpenGL mode, and only if OpenGL 2.0+
-  // is available; for now, 'gl_texrect' must also be disabled
-  bool tv = gl && FrameBufferGL::glVersion() >= 2.0 &&
+  // TV effects are only enabled in OpenGL mode, and only if GLSL is
+  // available; for now, 'gl_texrect' must also be disabled
+  bool tv = gl && FrameBufferGL::isGLSLAvailable() &&
             !instance().settings().getBool("gl_texrect");
   //////////////////////////////////////////////////////////////////////
 

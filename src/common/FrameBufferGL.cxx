@@ -126,7 +126,7 @@ bool FrameBufferGL::loadLibrary(const string& library)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::loadFuncs()
+bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
 {
 #define OGL_INIT(RET,FUNC,PARAMS) \
   p_ ## FUNC = (RET(APIENTRY*)PARAMS) SDL_GL_GetProcAddress(#FUNC); if(!p_ ## FUNC) return false
@@ -135,55 +135,67 @@ bool FrameBufferGL::loadFuncs()
   {
     // Fill the function pointers for GL functions
     // If anything fails, we'll know it immediately, and return false
-    OGL_INIT(void,glClear,(GLbitfield));
-    OGL_INIT(void,glEnable,(GLenum));
-    OGL_INIT(void,glDisable,(GLenum));
-    OGL_INIT(void,glPushAttrib,(GLbitfield));
-    OGL_INIT(const GLubyte*,glGetString,(GLenum));
-    OGL_INIT(void,glHint,(GLenum, GLenum));
-    OGL_INIT(void,glShadeModel,(GLenum));
+    switch(functionality)
+    {
+      case kGL_BASIC:
+        OGL_INIT(void,glClear,(GLbitfield));
+        OGL_INIT(void,glEnable,(GLenum));
+        OGL_INIT(void,glDisable,(GLenum));
+        OGL_INIT(void,glPushAttrib,(GLbitfield));
+        OGL_INIT(const GLubyte*,glGetString,(GLenum));
+        OGL_INIT(void,glHint,(GLenum, GLenum));
+        OGL_INIT(void,glShadeModel,(GLenum));
 
-    OGL_INIT(void,glMatrixMode,(GLenum));
-    OGL_INIT(void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
-    OGL_INIT(void,glViewport,(GLint, GLint, GLsizei, GLsizei));
-    OGL_INIT(void,glPushMatrix,(void));
-    OGL_INIT(void,glLoadIdentity,(void));
+        OGL_INIT(void,glMatrixMode,(GLenum));
+        OGL_INIT(void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
+        OGL_INIT(void,glViewport,(GLint, GLint, GLsizei, GLsizei));
+        OGL_INIT(void,glPushMatrix,(void));
+        OGL_INIT(void,glLoadIdentity,(void));
 
-    OGL_INIT(void,glBegin,(GLenum));
-    OGL_INIT(void,glEnd,(void));
-    OGL_INIT(void,glVertex2i,(GLint, GLint));
-    OGL_INIT(void,glTexCoord2f,(GLfloat, GLfloat));
+        OGL_INIT(void,glBegin,(GLenum));
+        OGL_INIT(void,glEnd,(void));
+        OGL_INIT(void,glVertex2i,(GLint, GLint));
+        OGL_INIT(void,glTexCoord2f,(GLfloat, GLfloat));
 
-    OGL_INIT(void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
-    OGL_INIT(void,glPixelStorei,(GLenum, GLint));
+        OGL_INIT(void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
+        OGL_INIT(void,glPixelStorei,(GLenum, GLint));
 
-    OGL_INIT(void,glTexEnvf,(GLenum, GLenum, GLfloat));
-    OGL_INIT(void,glGenTextures,(GLsizei, GLuint*));
-    OGL_INIT(void,glDeleteTextures,(GLsizei, const GLuint*));
-    OGL_INIT(void,glBindTexture,(GLenum, GLuint));
-    OGL_INIT(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
-    OGL_INIT(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
-    OGL_INIT(void,glTexParameteri,(GLenum, GLenum, GLint));
+        OGL_INIT(void,glTexEnvf,(GLenum, GLenum, GLfloat));
+        OGL_INIT(void,glGenTextures,(GLsizei, GLuint*));
+        OGL_INIT(void,glDeleteTextures,(GLsizei, const GLuint*));
+        OGL_INIT(void,glBindTexture,(GLenum, GLuint));
+        OGL_INIT(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
+        OGL_INIT(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
+        OGL_INIT(void,glTexParameteri,(GLenum, GLenum, GLint));
+        break; // kGLBasic
 
-    OGL_INIT(GLuint,glCreateShader,(GLenum));
-    OGL_INIT(void,glDeleteShader,(GLuint));
-    OGL_INIT(void,glShaderSource,(GLuint, int, const char**, int));
-    OGL_INIT(void,glCompileShader,(GLuint));
-    OGL_INIT(GLuint,glCreateProgram,(void));
-    OGL_INIT(void,glDeleteProgram,(GLuint));
-    OGL_INIT(void,glAttachShader,(GLuint, GLuint));
-    OGL_INIT(void,glLinkProgram,(GLuint));
-    OGL_INIT(void,glUseProgram,(GLuint));
-    OGL_INIT(GLint,glGetUniformLocation,(GLuint, const char*));
-    OGL_INIT(void,glUniform1i,(GLint, GLint));
-    OGL_INIT(void,glUniform1f,(GLint, GLfloat));
-    OGL_INIT(void,glCopyTexImage2D,(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint));
-    OGL_INIT(void,glCopyTexSubImage2D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei));
-    OGL_INIT(void,glActiveTexture,(GLenum));
-    OGL_INIT(void,glGetIntegerv,(GLenum, GLint*));
-    OGL_INIT(void,glTexEnvi,(GLenum, GLenum, GLint));
-    OGL_INIT(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
-    OGL_INIT(GLenum,glGetError,(void));
+      case kGL_SHADER:
+        OGL_INIT(GLuint,glCreateShader,(GLenum));
+        OGL_INIT(void,glDeleteShader,(GLuint));
+        OGL_INIT(void,glShaderSource,(GLuint, int, const char**, int));
+        OGL_INIT(void,glCompileShader,(GLuint));
+        OGL_INIT(GLuint,glCreateProgram,(void));
+        OGL_INIT(void,glDeleteProgram,(GLuint));
+        OGL_INIT(void,glAttachShader,(GLuint, GLuint));
+        OGL_INIT(void,glLinkProgram,(GLuint));
+        OGL_INIT(void,glUseProgram,(GLuint));
+        OGL_INIT(GLint,glGetUniformLocation,(GLuint, const char*));
+        OGL_INIT(void,glUniform1i,(GLint, GLint));
+        OGL_INIT(void,glUniform1f,(GLint, GLfloat));
+        OGL_INIT(void,glCopyTexImage2D,(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint));
+        OGL_INIT(void,glCopyTexSubImage2D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei));
+        OGL_INIT(void,glActiveTexture,(GLenum));
+        OGL_INIT(void,glGetIntegerv,(GLenum, GLint*));
+        OGL_INIT(void,glTexEnvi,(GLenum, GLenum, GLint));
+        OGL_INIT(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
+        OGL_INIT(GLenum,glGetError,(void));
+        break;  // kGLShader
+
+      case kGL_FBO:
+        // TODO - add support for frame buffer objects / render-to-texture
+        return false;
+        break;  // kGL_FBO
+    }
   }
   else
     return false;
@@ -336,14 +348,21 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   // Make sure the flags represent the current screen state
   mySDLFlags = myScreen->flags;
 
-  // Reload OpenGL function pointers.  This only seems to be needed for Windows
-  // Vista, but it shouldn't hurt on other systems.
-  if(!loadFuncs())
-    return false;
+  // Load OpenGL function pointers
+  // Basic functionaity is an absolute requirement
+  // TV effects require GLSL, but not having them still allows basic GL support
+  myGLSLAvailable = myFBOAvailable = false;
+  if(loadFuncs(kGL_BASIC))
+  {
+    // Grab OpenGL version number
+    string version((const char *)p_glGetString(GL_VERSION));
+    myGLVersion = atof(version.substr(0, 3).c_str());
 
-  // Grab OpenGL version number
-  string version((const char *)p_glGetString(GL_VERSION));
-  myGLVersion = atof(version.substr(0, 3).c_str());
+    // TV effects depend on the GLSL functions being available
+    myGLSLAvailable = loadFuncs(kGL_SHADER);
+  }
+  else
+    return false;
 
   // Check for some extensions that can potentially speed up operation
   // Don't use it if we've been instructed not to
@@ -413,7 +432,7 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     // Also note that TV filtering is only available with OpenGL 2.0+
     myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
                                      mode.image_w, mode.image_h,
-                                     myGLVersion >= 2.0);
+                                     myGLSLAvailable);
     myTiaSurface->setPos(mode.image_x, mode.image_y);
     myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
   }
@@ -1642,9 +1661,15 @@ GLuint FBSurfaceGL::genShader(ShaderType type)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::myLibraryLoaded = false;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 float FrameBufferGL::myGLVersion = 0.0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myLibraryLoaded = false;
+bool FrameBufferGL::myGLSLAvailable = false;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FrameBufferGL::myFBOAvailable = false;
 
 #endif  // DISPLAY_OPENGL

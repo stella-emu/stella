@@ -69,6 +69,16 @@ class FrameBufferGL : public FrameBuffer
     */
     static float glVersion() { return myGLVersion; }
 
+    /**
+      Indicates whether GL shading language was detected and enabled.
+    */
+    static bool isGLSLAvailable() { return myGLSLAvailable; }
+
+    /**
+      Indicates whether GL FBO functionality was detected and enabled.
+    */
+    static bool isFBOAvailable() { return myFBOAvailable; }
+
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
@@ -162,7 +172,10 @@ class FrameBufferGL : public FrameBuffer
     void postFrameUpdate();
 
   private:
-    bool loadFuncs();
+    enum GLFunctionality {
+      kGL_BASIC, kGL_SHADER, kGL_FBO
+    };
+    bool loadFuncs(GLFunctionality functionality);
 
     /**
       Enable/disable texture effect.
@@ -213,11 +226,17 @@ class FrameBufferGL : public FrameBuffer
     // Indicates whether or not the phosphor filter is enabled
     bool myUseGLPhosphor;
 
+    // Indicates if the OpenGL library has been properly loaded
+    static bool myLibraryLoaded;
+
     // Indicates the OpenGL version found (0 indicates none)
     static float myGLVersion;
 
-    // Indicates if the OpenGL library has been properly loaded
-    static bool myLibraryLoaded;
+    // Indicates whether GLSL functions were properly loaded
+    static bool myGLSLAvailable;
+
+    // Indicates whether Frame Buffer Object functions were properly loaded
+    static bool myFBOAvailable;
 };
 
 /**
