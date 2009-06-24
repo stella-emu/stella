@@ -59,6 +59,7 @@ OGL_DECLARE(void,glPixelStorei,(GLenum, GLint));
 OGL_DECLARE(void,glTexEnvf,(GLenum, GLenum, GLfloat));
 OGL_DECLARE(void,glGenTextures,(GLsizei, GLuint*));
 OGL_DECLARE(void,glDeleteTextures,(GLsizei, const GLuint*));
+OGL_DECLARE(void,glActiveTexture,(GLenum));
 OGL_DECLARE(void,glBindTexture,(GLenum, GLuint));
 OGL_DECLARE(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
 OGL_DECLARE(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
@@ -77,7 +78,6 @@ OGL_DECLARE(void,glUniform1i,(GLint, GLint));
 OGL_DECLARE(void,glUniform1f,(GLint, GLfloat));
 OGL_DECLARE(void,glCopyTexImage2D,(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint));
 OGL_DECLARE(void,glCopyTexSubImage2D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei));
-OGL_DECLARE(void,glActiveTexture,(GLenum));
 OGL_DECLARE(void,glGetIntegerv,(GLenum, GLint*));
 OGL_DECLARE(void,glTexEnvi,(GLenum, GLenum, GLint));
 OGL_DECLARE(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
@@ -163,6 +163,7 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(void,glTexEnvf,(GLenum, GLenum, GLfloat));
         OGL_INIT(void,glGenTextures,(GLsizei, GLuint*));
         OGL_INIT(void,glDeleteTextures,(GLsizei, const GLuint*));
+        OGL_INIT(void,glActiveTexture,(GLenum));
         OGL_INIT(void,glBindTexture,(GLenum, GLuint));
         OGL_INIT(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
         OGL_INIT(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
@@ -184,7 +185,6 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(void,glUniform1f,(GLint, GLfloat));
         OGL_INIT(void,glCopyTexImage2D,(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint));
         OGL_INIT(void,glCopyTexSubImage2D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei));
-        OGL_INIT(void,glActiveTexture,(GLenum));
         OGL_INIT(void,glGetIntegerv,(GLenum, GLint*));
         OGL_INIT(void,glTexEnvi,(GLenum, GLenum, GLint));
         OGL_INIT(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
@@ -359,7 +359,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
     myGLVersion = atof(version.substr(0, 3).c_str());
 
     // TV effects depend on the GLSL functions being available
-    myGLSLAvailable = myGLVersion >= 2.0 && loadFuncs(kGL_SHADER);
+    myGLSLAvailable = loadFuncs(kGL_SHADER);
   }
   else
     return false;
@@ -429,7 +429,12 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     // and other UI surfaces are no longer tied together
     // Note that this may change in the future, when we add more
     // complex filters/scalers, but for now it's fine
+    //
     // Also note that TV filtering is only available with OpenGL 2.0+
+    // The hint we provide here is only that GLSL is available and
+    // TV effects *can* be applied to this surface
+    // The specific TV effect settings still determine whether any
+    // filtering *will* be applied in such a case
     myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
                                      mode.image_w, mode.image_h,
                                      myGLSLAvailable);
@@ -587,7 +592,7 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myPhosphorProgram(0),
     myTextureNoiseProgram(0),
     myNoiseNum(0),
-    myTvFiltersEnabled(allowFiltering)
+    myTvFiltersEnabled(false)
 {
   // Fill buffer struct with valid data
   // This changes depending on the texturing used
@@ -620,6 +625,19 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
                   0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
   myPitch = myTexture->pitch >> 1;
 
+  // The 'allowFiltering' boolean is only a hint that filtering is allowed
+  // on this surface
+  // We still need to check if the functionality exists to do it
+  if(allowFiltering)
+  {
+    // It's only enabled if we use one of the filters *AND* GLSL is available
+    myTvFiltersEnabled = myFB.myGLSLAvailable &&
+       (myFB.myUseTexture || myFB.myUseNoise ||
+        myFB.myUseBleed || myFB.myUseGLPhosphor);
+  }
+  else
+    myTvFiltersEnabled = false;
+
   // Only do this if TV filters enabled, otherwise it won't be used anyway
   if(myTvFiltersEnabled)
   {
@@ -643,174 +661,181 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
       myFilterTexCoord[2] = (GLfloat) scaleWidth / myFilterTexWidth;
       myFilterTexCoord[1] = (GLfloat) scaleHeight / myFilterTexHeight;
     }
-  }
 
-  // Only do this if TV and color bleed filters are enabled
-  // This filer applies a color averaging of surrounding pixels for each pixel
-  if(myTvFiltersEnabled && myFB.myUseBleed)
-  {
-    // Load shader programs. If it fails, don't use this filter.
-    myBleedProgram = genShader(SHADER_BLEED);
-    if(myBleedProgram == 0)
+    // Only do this if TV and color bleed filters are enabled
+    // This filer applies a color averaging of surrounding pixels for each pixel
+    if(myFB.myUseBleed)
     {
-      myFB.myUseBleed = false;
-      cout << "ERROR: Failed to make bleed programs" << endl;
-    }
-  }
-
-  // If the texture and noise filters are enabled together, we can use a single shader
-  // Make sure we can use three textures at once first
-  GLint texUnits;
-  p_glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texUnits);
-  if(myTvFiltersEnabled && texUnits >= 3 && myFB.myUseTexture && myFB.myUseNoise)
-  {
-    // Load shader program. If it fails, don't use this shader.
-    myTextureNoiseProgram = genShader(SHADER_TEXNOISE);
-    if(myTextureNoiseProgram == 0)
-    {
-      cout << "ERROR: Failed to make texture/noise program" << endl;
-
-      // Load shader program. If it fails, don't use this filter.
-      myTextureProgram = genShader(SHADER_TEX);
-      if(myTextureProgram == 0)
+      // Load shader programs. If it fails, don't use this filter.
+      myBleedProgram = genShader(SHADER_BLEED);
+      if(myBleedProgram == 0)
       {
-        myFB.myUseTexture = false;
-        cout << "ERROR: Failed to make texture program" << endl;
-      }
-
-      // Load shader program. If it fails, don't use this filter.
-      myNoiseProgram = genShader(SHADER_NOISE);
-      if(myNoiseProgram == 0)
-      {
-        myFB.myUseNoise = false;
-        cout << "ERROR: Failed to make noise program" << endl;
+        myFB.myUseBleed = false;
+        cout << "ERROR: Failed to make bleed programs" << endl;
       }
     }
-  }
-  // Else, detect individual settings
-  else if(myTvFiltersEnabled)
-  {
+
+    // If the texture and noise filters are enabled together, we can use a single shader
+    // Make sure we can use three textures at once first
+    GLint texUnits;
+    p_glGetIntegerv(GL_MAX_TEXTURE_UNITS, &texUnits);
+    if(texUnits >= 3 && myFB.myUseTexture && myFB.myUseNoise)
+    {
+      // Load shader program. If it fails, don't use this shader.
+      myTextureNoiseProgram = genShader(SHADER_TEXNOISE);
+      if(myTextureNoiseProgram == 0)
+      {
+        cout << "ERROR: Failed to make texture/noise program" << endl;
+
+        // Load shader program. If it fails, don't use this filter.
+        myTextureProgram = genShader(SHADER_TEX);
+        if(myTextureProgram == 0)
+        {
+          myFB.myUseTexture = false;
+          cout << "ERROR: Failed to make texture program" << endl;
+        }
+
+        // Load shader program. If it fails, don't use this filter.
+        myNoiseProgram = genShader(SHADER_NOISE);
+        if(myNoiseProgram == 0)
+        {
+          myFB.myUseNoise = false;
+          cout << "ERROR: Failed to make noise program" << endl;
+        }
+      }
+    }
+    // Else, detect individual settings
+    else
+    {
+      if(myFB.myUseTexture)
+      {
+        // Load shader program. If it fails, don't use this filter.
+        myTextureProgram = genShader(SHADER_TEX);
+        if(myTextureProgram == 0)
+        {
+          myFB.myUseTexture = false;
+          cout << "ERROR: Failed to make texture program" << endl;
+        }
+      }
+
+      if(myFB.myUseNoise)
+      {
+        // Load shader program. If it fails, don't use this filter.
+        myNoiseProgram = genShader(SHADER_NOISE);
+        if(myNoiseProgram == 0)
+        {
+          myFB.myUseNoise = false;
+          cout << "ERROR: Failed to make noise program" << endl;
+        }
+      }
+    }
+
+    // Only do this if TV and color texture filters are enabled
+    // This filter applies an RGB color pixel mask as well as a blackspace mask
     if(myFB.myUseTexture)
     {
-      // Load shader program. If it fails, don't use this filter.
-      myTextureProgram = genShader(SHADER_TEX);
-      if(myTextureProgram == 0)
-      {
-        myFB.myUseTexture = false;
-        cout << "ERROR: Failed to make texture program" << endl;
-      }
-    }
+      // Prepare subpixel texture
+      mySubpixelTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                    myFilterTexWidth, myFilterTexHeight, 16,
+                    0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
 
-    if(myFB.myUseNoise)
-    {
-      // Load shader program. If it fails, don't use this filter.
-      myNoiseProgram = genShader(SHADER_NOISE);
-      if(myNoiseProgram == 0)
-      {
-        myFB.myUseNoise = false;
-        cout << "ERROR: Failed to make noise program" << endl;
-      }
-    }
-  }
-
-  // Only do this if TV and color texture filters are enabled
-  // This filer applies an RGB color pixel mask as well as a blackspace mask
-  if(myTvFiltersEnabled && myFB.myUseTexture)
-  {
-    // Prepare subpixel texture
-    mySubpixelTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myFilterTexWidth, myFilterTexHeight, 16,
-                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-
-    uInt32 pCounter = 0;
-    for (uInt32 y = 0; y < (uInt32)myFilterTexHeight; y++)
-    {
-      for (uInt32 x = 0; x < (uInt32)myFilterTexWidth; x++)
-      {
-        // Cause vertical offset for every other black row if enabled
-        uInt32 offsetY;
-        if (!myFB.myTextureStag || x % 6 < 3)
-          offsetY = y;
-        else
-          offsetY = y + 2;
-
-        // Make a row of black for the mask every so often
-        if (offsetY % 4 == 0)
-        {
-          ((uInt16*)mySubpixelTexture->pixels)[pCounter] = 0x0000;
-        }
-        // Apply the coorect color mask
-        else
-        {
-          ((uInt16*)mySubpixelTexture->pixels)[pCounter] = 0x7c00 >> ((x % 3) * 5);
-        }
-        pCounter++;
-      }
-    }
-  }
-
-  // Only do this if TV and noise filters are enabled
-  // This filter applies a texture filled with gray pixel of random intensities
-  if(myTvFiltersEnabled && myFB.myUseNoise)
-  {
-    // Get the current number of nose textures to use
-    myNoiseNum = myFB.myNoiseQuality;
-
-    // Allocate space for noise textures
-    myNoiseTexture = new SDL_Surface*[myNoiseNum];
-    myNoiseMaskTexID = new GLuint[myNoiseNum];
-
-    // Prepare noise textures
-    for(int i = 0; i < myNoiseNum; i++)
-    {
-      myNoiseTexture[i] = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myFilterTexWidth, myFilterTexHeight, 16,
-                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-    }
-
-    uInt32 pCounter = 0;
-    for(int i = 0; i < myNoiseNum; i++)
-    {
-      pCounter = 0;
-
-      // Attempt to make the numbers as random as possible
-      int temp = (unsigned)time(0) + rand()/4;
-      srand(temp);
-
+      uInt32 pCounter = 0;
       for (uInt32 y = 0; y < (uInt32)myFilterTexHeight; y++)
       {
         for (uInt32 x = 0; x < (uInt32)myFilterTexWidth; x++)
         {
-          // choose random 0 - 2
-          // 0 = 0x0000
-          // 1 = 0x0421
-          // 2 = 0x0842
-          int num = rand() % 3;
-          if (num == 0)
-            ((uInt16*)myNoiseTexture[i]->pixels)[pCounter] = 0x0000;
-          else if (num == 1)
-            ((uInt16*)myNoiseTexture[i]->pixels)[pCounter] = 0x0421;
-          else if (num == 2)
-            ((uInt16*)myNoiseTexture[i]->pixels)[pCounter] = 0x0842;
+          // Cause vertical offset for every other black row if enabled
+          uInt32 offsetY;
+          if (!myFB.myTextureStag || x % 6 < 3)
+            offsetY = y;
+          else
+            offsetY = y + 2;
 
+          // Make a row of black for the mask every so often
+          if (offsetY % 4 == 0)
+          {
+            ((uInt16*)mySubpixelTexture->pixels)[pCounter] = 0x0000;
+          }
+          // Apply the coorect color mask
+          else
+          {
+            ((uInt16*)mySubpixelTexture->pixels)[pCounter] = 0x7c00 >> ((x % 3) * 5);
+          }
           pCounter++;
         }
       }
     }
-  }
 
-  // Only do this if TV and phosphor filters are enabled
-  // This filter merges the past screen with the current one, to give a phosphor burn-off effect
-  if(myTvFiltersEnabled && myFB.myUseGLPhosphor)
-  {
-    // Load shader program. If it fails, don't use this filter.
-    myPhosphorProgram = genShader(SHADER_PHOS);
-    if(myPhosphorProgram == 0)
+    // Only do this if TV and noise filters are enabled
+    // This filter applies a texture filled with gray pixel of random intensities
+    if(myFB.myUseNoise)
     {
-      myFB.myUseGLPhosphor = false;
-      cout << "ERROR: Failed to make phosphor program" << endl;
+      // Get the current number of nose textures to use
+      myNoiseNum = myFB.myNoiseQuality;
+
+      // Allocate space for noise textures
+      myNoiseTexture = new SDL_Surface*[myNoiseNum];
+      myNoiseMaskTexID = new GLuint[myNoiseNum];
+
+      // Prepare noise textures
+      for(int i = 0; i < myNoiseNum; i++)
+      {
+        myNoiseTexture[i] = SDL_CreateRGBSurface(SDL_SWSURFACE,
+                    myFilterTexWidth, myFilterTexHeight, 16,
+                    0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+      }
+
+      uInt32 pCounter = 0;
+      for(int i = 0; i < myNoiseNum; i++)
+      {
+        pCounter = 0;
+
+        // Attempt to make the numbers as random as possible
+        int temp = (unsigned)time(0) + rand()/4;
+        srand(temp);
+
+        for (uInt32 y = 0; y < (uInt32)myFilterTexHeight; y++)
+        {
+          for (uInt32 x = 0; x < (uInt32)myFilterTexWidth; x++)
+          {
+            // choose random 0 - 2
+            // 0 = 0x0000
+            // 1 = 0x0421
+            // 2 = 0x0842
+            int num = rand() % 3;
+            if (num == 0)
+              ((uInt16*)myNoiseTexture[i]->pixels)[pCounter] = 0x0000;
+            else if (num == 1)
+              ((uInt16*)myNoiseTexture[i]->pixels)[pCounter] = 0x0421;
+            else if (num == 2)
+              ((uInt16*)myNoiseTexture[i]->pixels)[pCounter] = 0x0842;
+
+            pCounter++;
+          }
+        }
+      }
+    }
+
+    // Only do this if TV and phosphor filters are enabled
+    // This filter merges the past screen with the current one, to give a phosphor burn-off effect
+    if(myFB.myUseGLPhosphor)
+    {
+      // Load shader program. If it fails, don't use this filter.
+      myPhosphorProgram = genShader(SHADER_PHOS);
+      if(myPhosphorProgram == 0)
+      {
+        myFB.myUseGLPhosphor = false;
+        cout << "ERROR: Failed to make phosphor program" << endl;
+      }
     }
   }
+
+  // Check to see if filters should still be used
+  // Filtering must have been previously enabled, and GLSL must still be
+  // available
+  myTvFiltersEnabled = myTvFiltersEnabled && myFB.myGLSLAvailable &&
+     (myFB.myUseTexture || myFB.myUseNoise ||
+      myFB.myUseBleed || myFB.myUseGLPhosphor);
 
   // Associate the SDL surface with a GL texture object
   reload();
@@ -1025,11 +1050,8 @@ void FBSurfaceGL::update()
     bool firstRender = true;
 
     // Render as usual if no filters are used
-    if(!myTvFiltersEnabled ||
-       (!myFB.myUseTexture && !myFB.myUseNoise && !myFB.myUseBleed && !myFB.myUseGLPhosphor))
+    if(!myTvFiltersEnabled)
     {
-      p_glUseProgram(0);
-
       // Texturemap complete texture to surface so we have free scaling
       // and antialiasing
       p_glActiveTexture(GL_TEXTURE0);
@@ -1054,6 +1076,7 @@ void FBSurfaceGL::update()
     }
 
     // If TV filters are enabled
+    // TODO - check if this IF is necessary, or can it be chained by else to above
     if(myTvFiltersEnabled)
     {
       // If combined texture/noise program exists,
@@ -1205,6 +1228,11 @@ void FBSurfaceGL::update()
         // We have rendered, set firstRender to false
         firstRender = false;
       }
+
+      // Disable all shader programs for the next rendering pass
+      // This is placed here since it's a GLSL 2.0-specific function, and
+      // doesn't exist (and isn't required) for base OpenGL functionality
+      p_glUseProgram(0);
     }
 
     mySurfaceIsDirty = false;
