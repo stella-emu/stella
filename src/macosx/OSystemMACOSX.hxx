@@ -43,13 +43,6 @@ class OSystemMACOSX : public OSystem
 
   public:
     /**
-      This method returns number of ticks in microseconds.
-
-      @return Current time in microseconds.
-    */
-    virtual uInt64 getTicks() const;
-	
-    /**
       This method queries the dimensions of the screen for this hardware.
     */
     virtual void getScreenDimensions(int& width, int& height);

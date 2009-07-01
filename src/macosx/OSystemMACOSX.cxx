@@ -31,11 +31,6 @@
 #include "OSystemMACOSX.hxx"
 #include "MenusEvents.h"
 
-#ifdef HAVE_GETTIMEOFDAY
-  #include <time.h>
-  #include <sys/time.h>
-#endif
-
 extern "C" {
   void macOpenConsole(char *romname);
   uInt16 macOSXDisplayWidth(void);
@@ -93,25 +88,14 @@ OSystemMACOSX::OSystemMACOSX()
   : OSystem()
 {
   setBaseDir("~/.stella");
+
+  // This will be overridden, as OSX uses plist files for settings
   setConfigFile("~/.stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemMACOSX::~OSystemMACOSX()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 OSystemMACOSX::getTicks() const
-{
-#ifdef HAVE_GETTIMEOFDAY
-  timeval now;
-  gettimeofday(&now, 0);
-
-  return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
-#else
-  return uInt64(SDL_GetTicks()) * 1000;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -21,6 +21,11 @@
 #include <fstream>
 #include <zlib.h>
 
+#ifdef HAVE_GETTIMEOFDAY
+  #include <time.h>
+  #include <sys/time.h>
+#endif
+
 #include "bspf.hxx"
 
 #include "MediaFactory.hxx"
@@ -860,6 +865,19 @@ bool OSystem::joyButtonHandled(int button)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::stateChanged(EventHandler::State state)
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt64 OSystem::getTicks() const
+{
+#ifdef HAVE_GETTIMEOFDAY
+  timeval now;
+  gettimeofday(&now, 0);
+
+  return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
+#else
+  return uInt64(SDL_GetTicks()) * 1000;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

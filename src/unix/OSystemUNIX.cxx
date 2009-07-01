@@ -16,17 +16,9 @@
 // $Id$
 //============================================================================
 
-#include <cstdlib>
-#include <unistd.h>
-
 #include "bspf.hxx"
 #include "OSystem.hxx"
 #include "OSystemUNIX.hxx"
-
-#ifdef HAVE_GETTIMEOFDAY
-  #include <time.h>
-  #include <sys/time.h>
-#endif
 
 /**
   Each derived class is responsible for calling the following methods
@@ -49,17 +41,4 @@ OSystemUNIX::OSystemUNIX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemUNIX::~OSystemUNIX()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 OSystemUNIX::getTicks() const
-{
-#ifdef HAVE_GETTIMEOFDAY
-  timeval now;
-  gettimeofday(&now, 0);
-
-  return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
-#else
-  return uInt64(SDL_GetTicks()) * 1000;
-#endif
 }

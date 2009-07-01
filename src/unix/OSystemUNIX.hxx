@@ -39,13 +39,6 @@ class OSystemUNIX : public OSystem
       Destructor
     */
     virtual ~OSystemUNIX();
-
-    /**
-      This method returns number of ticks in microseconds.
-
-      @return Current time in microseconds.
-    */
-    uInt64 getTicks() const;
 };
 
 #endif

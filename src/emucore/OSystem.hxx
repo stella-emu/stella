@@ -368,7 +368,7 @@ class OSystem
 
       @return Current time in microseconds.
     */
-    virtual uInt64 getTicks() const = 0;
+    virtual uInt64 getTicks() const;
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
