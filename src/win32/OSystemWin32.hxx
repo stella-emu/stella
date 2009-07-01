@@ -47,7 +47,7 @@ class OSystemWin32 : public OSystem
 
       @return Current time in microseconds.
     */
-    virtual uInt32 getTicks() const;
+    virtual uInt64 getTicks() const;
 };
 
 #endif

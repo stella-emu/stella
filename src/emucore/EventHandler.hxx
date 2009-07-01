@@ -118,9 +118,9 @@ class EventHandler
       Collects and dispatches any pending events.  This method should be
       called regularly (at X times per second, where X is the game framerate).
 
-      @param time  The current time in milliseconds.
+      @param time  The current time in microseconds.
     */
-    void poll(uInt32 time);
+    void poll(uInt64 time);
 
     /**
       Set the default action for a joystick button to the given event

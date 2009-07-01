@@ -27,17 +27,25 @@
   @version $Id$
 */
 
+#ifdef HAVE_INTTYPES
+  #include <inttypes.h>
+#endif
+
 // Types for 8-bit signed and unsigned integers
-typedef signed char Int8;
-typedef unsigned char uInt8;
+typedef int8_t Int8;
+typedef uint8_t uInt8;
 
 // Types for 16-bit signed and unsigned integers
-typedef signed short Int16;
-typedef unsigned short uInt16;
+typedef int16_t Int16;
+typedef uint16_t uInt16;
 
 // Types for 32-bit signed and unsigned integers
-typedef signed int Int32;
-typedef unsigned int uInt32;
+typedef int32_t Int32;
+typedef uint32_t uInt32;
+
+// Types for 64-bit signed and unsigned integers
+typedef int64_t Int64;
+typedef uint64_t uInt64;
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
@@ -53,10 +61,6 @@ typedef unsigned int uInt32;
 #endif
 
 #include <algorithm>
-
-#ifdef HAVE_INTTYPES
-  #include <inttypes.h>
-#endif
 
 // Defines to help with path handling
 #if defined BSPF_UNIX

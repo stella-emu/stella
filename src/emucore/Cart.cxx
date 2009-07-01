@@ -527,14 +527,17 @@ bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
 {
   // UA cart bankswitching switches to bank 1 by accessing address 0x240
   // using 'STA $240' or 'LDA $240'
-  uInt8 signature[2][3] = {
+  uInt8 signature[3][3] = {
     { 0x8D, 0x40, 0x02 },  // STA $240
-    { 0xAD, 0x40, 0x02 }   // LDA $240
+    { 0xAD, 0x40, 0x02 },  // LDA $240
+    { 0xBD, 0x1F, 0x02 }   // LDA $21F,X
   };
-  if(searchForBytes(image, size, signature[0], 3, 1))
-    return true;
-  else
-    return searchForBytes(image, size, signature[1], 3, 1);
+  for(uInt32 i = 0; i < 3; ++i)
+  {
+    if(searchForBytes(image, size, signature[i], 3, 1))
+      return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

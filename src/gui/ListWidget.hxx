@@ -77,7 +77,7 @@ class ListWidget : public EditableWidget
     void startEditMode();
     void endEditMode();
 
-    static void setQuickSelectDelay(int time) { _QUICK_SELECT_DELAY = time; }
+    static void setQuickSelectDelay(uInt64 time) { _QUICK_SELECT_DELAY = time; }
 
   protected:
     virtual void drawWidget(bool hilite)  = 0;
@@ -113,10 +113,10 @@ class ListWidget : public EditableWidget
     string     _backupString;
     bool       _quickSelect;
     string     _quickSelectStr;
-    int        _quickSelectTime;
+    uInt64     _quickSelectTime;
 
   private:
-    static int _QUICK_SELECT_DELAY;
+    static uInt64 _QUICK_SELECT_DELAY;
 };
 
 #endif

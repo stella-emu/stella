@@ -307,7 +307,7 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::poll(uInt32 time)
+void EventHandler::poll(uInt64 time)
 {
   // Synthesize events for platform-specific hardware
   myOSystem->pollEvent();

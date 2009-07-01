@@ -60,7 +60,7 @@ class DialogContainer
 
       @param time  The current time in microseconds
     */
-    void updateTime(uInt32 time);
+    void updateTime(uInt64 time);
 
     /**
       Handle a keyboard event.
@@ -159,7 +159,7 @@ class DialogContainer
     };
 
     // Indicates the most current time (in milliseconds) as set by updateTime()
-    int myTime;
+    uInt64 myTime;
 
     // For continuous 'key down' events
     struct {
@@ -167,7 +167,7 @@ class DialogContainer
       int keycode;
       int flags;
     } myCurrentKeyDown;
-    int myKeyRepeatTime;
+    uInt64 myKeyRepeatTime;
 
     // For continuous 'mouse down' events
     struct {
@@ -175,14 +175,14 @@ class DialogContainer
       int y;
       int button;
     } myCurrentMouseDown;
-    int myClickRepeatTime;
+    uInt64 myClickRepeatTime;
 	
     // For continuous 'joy button down' events
     struct {
       int stick;
       int button;
     } myCurrentButtonDown;
-    int myButtonRepeatTime;
+    uInt64 myButtonRepeatTime;
 
     // For continuous 'joy axis down' events
     struct {
@@ -190,7 +190,7 @@ class DialogContainer
       int axis;
       int value;
     } myCurrentAxisDown;
-    int myAxisRepeatTime;
+    uInt64 myAxisRepeatTime;
 
     // For continuous 'joy hat' events
     struct {
@@ -198,13 +198,13 @@ class DialogContainer
       int hat;
       int value;
     } myCurrentHatDown;
-    int myHatRepeatTime;
+    uInt64 myHatRepeatTime;
 
     // Position and time of last mouse click (used to detect double clicks)
     struct {
-      int x, y;   // Position of mouse when the click occured
-      int time;   // Time
-      int count;  // How often was it already pressed?
+      int x, y;    // Position of mouse when the click occurred
+      int count;   // How often was it already pressed?
+      uInt64 time; // Time
     } myLastClick;
 };
 

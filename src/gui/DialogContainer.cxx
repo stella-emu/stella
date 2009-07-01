@@ -41,7 +41,7 @@ DialogContainer::~DialogContainer()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::updateTime(uInt32 time)
+void DialogContainer::updateTime(uInt64 time)
 {
   // We only need millisecond precision
   myTime = time / 1000;

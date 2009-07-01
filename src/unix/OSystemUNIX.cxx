@@ -52,14 +52,14 @@ OSystemUNIX::~OSystemUNIX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemUNIX::getTicks() const
+uInt64 OSystemUNIX::getTicks() const
 {
 #ifdef HAVE_GETTIMEOFDAY
   timeval now;
   gettimeofday(&now, 0);
 
-  return (uInt32) (now.tv_sec * 1000000 + now.tv_usec);
+  return uInt64(now.tv_sec) * 1000000 + now.tv_usec;
 #else
-  return (uInt32) SDL_GetTicks() * 1000;
+  return uInt64(SDL_GetTicks()) * 1000;
 #endif
 }

@@ -797,8 +797,7 @@ string OSystem::getROMInfo(const Console* console)
 void OSystem::resetLoopTiming()
 {
   memset(&myTimingInfo, 0, sizeof(TimingInfo));
-  myTimingInfo.start = getTicks();
-  myTimingInfo.virt = getTicks();
+  myTimingInfo.start = myTimingInfo.virt = getTicks();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

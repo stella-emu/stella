@@ -45,7 +45,7 @@ class OSystemUNIX : public OSystem
 
       @return Current time in microseconds.
     */
-    uInt32 getTicks() const;
+    uInt64 getTicks() const;
 };
 
 #endif

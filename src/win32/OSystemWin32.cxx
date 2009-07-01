@@ -87,7 +87,7 @@ OSystemWin32::~OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 OSystemWin32::getTicks() const
+uInt64 OSystemWin32::getTicks() const
 {
-  return (uInt32) SDL_GetTicks() * 1000;
+  return uInt64(SDL_GetTicks()) * 1000;
 }

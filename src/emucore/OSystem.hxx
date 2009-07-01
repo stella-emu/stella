@@ -368,7 +368,7 @@ class OSystem
 
       @return Current time in microseconds.
     */
-    virtual uInt32 getTicks() const = 0;
+    virtual uInt64 getTicks() const = 0;
 
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
@@ -520,11 +520,11 @@ class OSystem
 
     // Indicates whether the main processing loop should proceed
     struct TimingInfo {
-      uInt32 start;
-      uInt32 current;
-      uInt32 virt;
-      uInt32 totalTime;
-      uInt32 totalFrames;
+      uInt64 start;
+      uInt64 current;
+      uInt64 virt;
+      uInt64 totalTime;
+      uInt64 totalFrames;
     };
     TimingInfo myTimingInfo;
 

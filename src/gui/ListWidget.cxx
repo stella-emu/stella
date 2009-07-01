@@ -227,7 +227,7 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // Only works in a useful fashion if the list entries are sorted.
     // TODO: Maybe this should be off by default, and instead we add a
     // method "enableQuickSelect()" or so ?
-    int time = instance().getTicks() / 1000;
+    uInt64 time = instance().getTicks() / 1000;
     if (_quickSelectTime < time)
       _quickSelectStr = (char)ascii;
     else
@@ -456,4 +456,4 @@ void ListWidget::abortEditMode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int ListWidget::_QUICK_SELECT_DELAY = 300;
+uInt64 ListWidget::_QUICK_SELECT_DELAY = 300;
