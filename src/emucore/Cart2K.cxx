@@ -33,6 +33,12 @@ Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size)
   while(mySize < size)
     mySize <<= 1;
 
+  // The smallest addressable area by Stella is 64 bytes
+  // This should really be read from the System, but for now I'm going
+  // to cheat a little and hard-code it to 64 (aka 2^6)
+  if(mySize < 64)
+    mySize = 64;
+
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   myImage = new uInt8[mySize];
   memset(myImage, 0x02, mySize);
