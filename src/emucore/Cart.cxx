@@ -475,10 +475,9 @@ bool Cartridge::isProbablyE0(const uInt8* image, uInt32 size)
    { 0xAD, 0xF3, 0xBF }   // LDA $BFF3
   };
   for(uInt32 i = 0; i < 8; ++i)
-  {
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
-  }
+
   return false;
 }
 
@@ -499,10 +498,9 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
    { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
   for(uInt32 i = 0; i < 5; ++i)
-  {
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
-  }
+
   return false;
 }
 
@@ -533,10 +531,9 @@ bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
     { 0xBD, 0x1F, 0x02 }   // LDA $21F,X
   };
   for(uInt32 i = 0; i < 3; ++i)
-  {
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
-  }
+
   return false;
 }
 
@@ -569,14 +566,23 @@ bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
 {
   // 0840 cart bankswitching is triggered by accessing addresses 0x0800
   // or 0x0840
-  uInt8 signature[2][3] = {
+  uInt8 signature1[2][3] = {
     { 0xAD, 0x00, 0x08 },  // LDA $0800
     { 0xAD, 0x40, 0x08 }   // LDA $0840
   };
-  if(searchForBytes(image, size, signature[0], 3, 1))
-    return true;
-  else
-    return searchForBytes(image, size, signature[1], 3, 1);
+  for(uInt32 i = 0; i < 2; ++i)
+    if(searchForBytes(image, size, signature1[i], 3, 1))
+      return true;
+
+  uInt8 signature2[2][4] = {
+    { 0x0C, 0x00, 0x08, 0x4C },  // NOP $0800; JMP ...
+    { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
+  };
+  for(uInt32 i = 0; i < 2; ++i)
+    if(searchForBytes(image, size, signature2[i], 4, 1))
+      return true;
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -607,10 +613,9 @@ bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
     { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; STY $D6
   };
   for(uInt32 i = 0; i < 4; ++i)
-  {
     if(searchForBytes(image, size, signature[i], 5, 1))
       return true;
-  }
+
   return false;
 }
 
@@ -624,10 +629,9 @@ bool Cartridge::isProbablyX07(const uInt8* image, uInt32 size)
     { 0xAD, 0x2D, 0x08 }   // LDA $082D
   };
   for(uInt32 i = 0; i < 3; ++i)
-  {
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
-  }
+
   return false;
 }
 
