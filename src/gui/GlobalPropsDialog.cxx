@@ -69,7 +69,7 @@ GlobalPropsDialog::
   items.push_back("4IN1 Multicart (8-32K)",     "4IN1" );
   items.push_back("8IN1 Multicart (16-64K)",    "8IN1" );
   items.push_back("32IN1 Multicart (64-128K)",  "32IN1");
-  items.push_back("2K (2K Atari)",              "2K"   );
+  items.push_back("2K (64-2048 bytes Atari)",   "2K"   );
   items.push_back("3E (32K Tigervision)",       "3E"   );
   items.push_back("3F (512K Tigervision)",      "3F"   );
   items.push_back("4A50 (64K 4A50 + ram)",      "4A50" );

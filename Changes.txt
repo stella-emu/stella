@@ -12,12 +12,24 @@
                                Release History
 ===============================================================================
 
+2.8.3 to 2.8.4: (July 4, 2009)
+
+  * Fixed bug where Stella could lock up after running for ~71 minutes.
+    Special thanks to Robert Tuccitto for bugtesting and feedback on this
+    issue.
+
+  * Updated UA bankswitch autodetection for Gingerbread Man ROM.
+
+  * The smallest ROM that Stella can support is 64 bytes; this lower
+    limit is now tested when loading Sub2K ROMs.
+
+-Have fun!
+
+
 2.8.2 to 2.8.3: (June 25, 2009)
 
   * Fixed OpenGL bug which caused an immediate program crash if the
     available OpenGL version was less than 2.0.
-
--Have fun!
 
 
 2.8.1 to 2.8.2: (June 23, 2009)
