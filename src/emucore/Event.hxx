@@ -73,7 +73,7 @@ class Event
       Fry, VolumeDecrease, VolumeIncrease,
 
       UIUp, UIDown, UILeft, UIRight, UIHome, UIEnd, UIPgUp, UIPgDown,
-      UISelect, UINavPrev, UINavNext, UIOK, UICancel,
+      UISelect, UINavPrev, UINavNext, UIOK, UICancel, UIPrevDir,
 
       LastType
     };

@@ -1544,6 +1544,8 @@ void EventHandler::setDefaultKeymap(EventMode mode)
 
       myKeyTable[ SDLK_RETURN ][mode]    = Event::UISelect;
       myKeyTable[ SDLK_ESCAPE ][mode]    = Event::UICancel;
+
+      myKeyTable[ SDLK_BACKSPACE ][mode] = Event::UIPrevDir;
       break;
 
     default:
@@ -2311,7 +2313,9 @@ EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = 
   { Event::UISelect,    "Select item",          0 },
 
   { Event::UINavPrev,   "Previous object",      0 },
-  { Event::UINavNext,   "Next object",          0 }
+  { Event::UINavNext,   "Next object",          0 },
+
+  { Event::UIPrevDir,   "Parent directory",     0 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -402,7 +402,7 @@ class EventHandler
   private:
     enum {
       kEmulActionListSize = 75,
-      kMenuActionListSize = 13
+      kMenuActionListSize = 14
     };
 
     // Structure used for action menu items

@@ -38,7 +38,8 @@ enum {
   kListItemDataChangedCmd   = 'LIch',  // item data changed - 'data' will be item index
   kListItemRClickedCmd      = 'LIrc',  // right click on item - 'data' will be item index
   kListSelectionChangedCmd  = 'Lsch',  // selection changed - 'data' will be item index
-  kListScrolledCmd          = 'Lscl'   // list scrolled - 'data' will be current position
+  kListScrolledCmd          = 'Lscl',  // list scrolled - 'data' will be current position
+  kListPrevDirCmd           = 'Lpdr'   // request to go to parent list, if applicable
 };
 
 /** ListWidget */

@@ -345,6 +345,10 @@ bool ListWidget::handleEvent(Event::Type e)
       _selectedItem = _list.size() - 1;
       break;
 
+    case Event::UIPrevDir:
+      sendCommand(kListPrevDirCmd, _selectedItem, _id);
+      break;
+
     default:
       handled = false;
   }

@@ -211,6 +211,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kGoUpCmd:
+    case kListPrevDirCmd:
       _node = _node.getParent();
       updateListing();
       break;

@@ -522,6 +522,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPrevDirCmd:
+    case kListPrevDirCmd:
       myCurrentNode = myCurrentNode.getParent();
       updateListing();
       break;
