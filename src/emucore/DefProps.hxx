@@ -26,7 +26,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3219
+#define DEF_PROPS_SIZE 3220
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3066,6 +3066,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "f2e4fb2d3600c0f76d05864e658cc57b", "", "", "Marble Craze (Kernel) (17-02-2002) (Paul Slocum)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f2f2cb35fdef063c966c1f5481050ea2", "", "", "Ram It (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f2f59629d7341c97644405daeac08845", "Jone Yuan Telephonic Enterprise Co", "", "Bobby Is Going Home (Jone Yuan)", "2600 Screen Search Console", "", "", "", "", "", "", "", "", "", "", "", "31", "", "", "" }, 
+  { "f303630a2d7316787aecd67fff6b2e33", "AtariAge - Fred Quimby", "", "Gingerbread Man (Fred Quimby)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f3213a8a702b0646d2eaf9ee0722b51c", "Atari, Carol Shaw - Sears", "CX2618 - 49-75123", "3-D Tic-Tac-Toe (1980) (Atari) (4K)", "", "Uncommon", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f33f1d0f7819c74148dacb48cbf1c597", "Retroactive", "", "Qb (2.00) (Retroactive) (Stella)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "f344ac1279152157d63e64aa39479599", "Tigervision", "7-012", "Espial (1984) (Tigervision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

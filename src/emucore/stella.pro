@@ -19443,3 +19443,8 @@
 "Display.YStart" "28"
 ""
 
+"Cartridge.MD5" "f303630a2d7316787aecd67fff6b2e33"
+"Cartridge.Manufacturer" "AtariAge - Fred Quimby"
+"Cartridge.Name" "Gingerbread Man (Fred Quimby)"
+"Cartridge.Rarity" "New Release"
+""
