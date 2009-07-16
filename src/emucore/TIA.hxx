@@ -147,14 +147,16 @@ class TIA : public Device
 
       @return Pointer to the current frame buffer
     */
-    uInt8* currentFrameBuffer() const { return myCurrentFrameBuffer; }
+    uInt8* currentFrameBuffer() const
+      { return myCurrentFrameBuffer + myFramePointerOffset; }
 
     /**
       Answers the previous frame buffer
 
       @return Pointer to the previous frame buffer
     */
-    uInt8* previousFrameBuffer() const { return myPreviousFrameBuffer; }
+    uInt8* previousFrameBuffer() const
+      { return myPreviousFrameBuffer + myFramePointerOffset; }
 
     /**
       Answers the width and height of the frame buffer
@@ -282,6 +284,10 @@ class TIA : public Device
 
     // Pointer to the next pixel that will be drawn in the current frame buffer
     uInt8* myFramePointer;
+
+    // Indicates offset used by the exported frame buffer
+    // (the exported frame buffer is a vertical 'sliding window' of the actual buffer)
+    uInt32 myFramePointerOffset;
 
     // Indicates the width of the visible scanline
     uInt32 myFrameWidth;

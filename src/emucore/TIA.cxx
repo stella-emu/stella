@@ -56,8 +56,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myFrameCounter(0)
 {
   // Allocate buffers for two frame buffers
-  myCurrentFrameBuffer = new uInt8[160 * 300];
-  myPreviousFrameBuffer = new uInt8[160 * 300];
+  myCurrentFrameBuffer = new uInt8[160 * 320];
+  myPreviousFrameBuffer = new uInt8[160 * 320];
 
   // Make sure all TIA bits are enabled
   enableBits(true);
@@ -206,9 +206,13 @@ void TIA::frameReset()
   if(myFrameHeight < 210) myFrameHeight = 210;
   if(myFrameHeight > 256) myFrameHeight = 256;
 
-  // Calculate color clock offsets for starting and stoping frame drawing
-  myStartDisplayOffset = 228 * myFrameYStart;
-  myStopDisplayOffset = myStartDisplayOffset + 228 * myFrameHeight;
+  myFramePointerOffset = 160 * myFrameYStart;
+
+  // Calculate color clock offsets for starting and stopping frame drawing
+  // Note that although we always start drawing at scanline zero, the
+  // framebuffer that is exposed outside the class actually starts at 'ystart'
+  myStartDisplayOffset = 0;
+  myStopDisplayOffset = 228 * (myFrameYStart + myFrameHeight);
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
@@ -217,8 +221,6 @@ void TIA::frameReset()
   myClockAtLastUpdate = myClockWhenFrameStarted;
   myClocksToEndOfScanLine = 228;
   myVSYNCFinishClock = 0x7FFFFFFF;
-  myScanlineCountForLastFrame = 0;
-  myCurrentScanline = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1424,8 +1426,8 @@ void TIA::greyOutFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearBuffers()
 {
-  memset(myCurrentFrameBuffer, 0, 160 * 300);
-  memset(myPreviousFrameBuffer, 0, 160 * 300);
+  memset(myCurrentFrameBuffer, 0, 160 * 320);
+  memset(myPreviousFrameBuffer, 0, 160 * 320);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
