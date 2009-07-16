@@ -161,6 +161,8 @@ void TIA::reset()
   myM0CosmicArkMotionEnabled = false; // FIXME - remove this
   myM0CosmicArkCounter = 0;           // FIXME - remove this
 
+  myScanlineCountForLastFrame = myCurrentScanline = 0;
+
   enableBits(true);
 
   myDumpEnabled = false;
@@ -206,13 +208,12 @@ void TIA::frameReset()
   if(myFrameHeight < 210) myFrameHeight = 210;
   if(myFrameHeight > 256) myFrameHeight = 256;
 
-  myFramePointerOffset = 160 * myFrameYStart;
-
   // Calculate color clock offsets for starting and stopping frame drawing
   // Note that although we always start drawing at scanline zero, the
   // framebuffer that is exposed outside the class actually starts at 'ystart'
   myStartDisplayOffset = 0;
-  myStopDisplayOffset = 228 * (myFrameYStart + myFrameHeight);
+  myStopDisplayOffset  = 228 * (myFrameYStart + myFrameHeight);
+  myFramePointerOffset = 160 * myFrameYStart;
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
