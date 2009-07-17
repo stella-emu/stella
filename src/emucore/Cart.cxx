@@ -87,7 +87,17 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   buf << type << autodetect;
 
   // Check for multicart first; if found, get the correct part of the image
-  if(type == "4IN1")
+  if(type == "2IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 2*2048 || size == 2*4096 || size == 2*8192 || size == 2*16384)
+    {
+      type = createFromMultiCart(image, size, 2, md5, id, settings);
+      buf << id;
+    }
+
+  }
+  else if(type == "4IN1")
   {
     // Make sure we have a valid sized image
     if(size == 4*2048 || size == 4*4096 || size == 4*8192)

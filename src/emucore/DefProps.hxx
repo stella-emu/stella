@@ -26,7 +26,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3220
+#define DEF_PROPS_SIZE 3221
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1976,6 +1976,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "9bd4e0d5f28ba6da417c26649171f8e4", "", "", "Hangman Pac-Man Original Words (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "9be58a14e055b0e7581fc4d6c2f6b31d", "", "", "Adventure (Color Scrolling) (Hack)", "Hack of Adventure", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "9c27ef3bd01c611cdb80182a59463a82", "Starpath Corporation, Kevin Norman", "AR-4103", "Killer Satellites (1983) (Starpath) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "9c40bf810f761ffc9c1b69c4647a8b84", "", "", "2 in 1 - Frostbite, River Raid (Unknown)", "", "", "", "2IN1", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "9c6d65bd3b477aace0376f705b354d68", "", "", "RPG Kernal (18-04-2003) (Paul Slocum) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "9c6faa4ff7f2ae549bbcb14f582b70e4", "U.S. Games Corporation, Garry Kitchen - Vidtec", "VC1002", "Sneak 'n Peek (1982) (U.S. Games)", "", "", "", "", "", "", "", "", "", "", "", "", "30", "218", "", "" }, 
   { "9c6fd6ed3599978ab7b6f900484b9be6", "Andrew Wallace", "", "Laseresal 2002 (PAL60) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "", "" }, 
