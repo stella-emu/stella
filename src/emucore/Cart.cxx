@@ -162,13 +162,13 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeF8(image, true);
   else if(type == "F8SC")
     cartridge = new CartridgeF8SC(image);
-  else if(type == "FASC")
+  else if(type == "FA" || type == "FASC")
     cartridge = new CartridgeFASC(image);
   else if(type == "FE")
     cartridge = new CartridgeFE(image);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size);
-  else if(type == "MB")
+  else if(type == "F0" || type == "MB")
     cartridge = new CartridgeMB(image);
   else if(type == "CV")
     cartridge = new CartridgeCV(image, size);
@@ -317,7 +317,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     // 512 bytes of ROM and finds if either the lower 256 bytes or
     // higher 256 bytes are all the same.  For now, we assume that
     // all carts of 12K are CBS RAM Plus/FASC.
-    type = "FASC";
+    type = "FA";
   }
   else if(size == 16384)  // 16K
   {
@@ -360,7 +360,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else if(isProbablyX07(image, size))
       type = "X07";
     else
-      type = "MB";
+      type = "F0";
   }
   else if(size == 128*1024)  // 128K
   {

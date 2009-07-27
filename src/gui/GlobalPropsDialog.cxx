@@ -82,15 +82,15 @@ GlobalPropsDialog::
   items.push_back("E7 (16K M-network)",         "E7"   );
   items.push_back("EF (64K H. Runner)",         "EF"   );
   items.push_back("EFSC (64K H. Runner + ram)", "EFSC" );
+  items.push_back("F0 (Dynacom Megaboy)",       "F0"   );
   items.push_back("F4 (32K Atari)",             "F4"   );
   items.push_back("F4SC (32K Atari + ram)",     "F4SC" );
   items.push_back("F6 (16K Atari)",             "F6"   );
   items.push_back("F6SC (16K Atari + ram)",     "F6SC" );
   items.push_back("F8 (8K Atari)",              "F8"   );
   items.push_back("F8SC (8K Atari + ram)",      "F8SC" );
-  items.push_back("FASC (CBS RAM Plus)",        "FASC" );
+  items.push_back("FA (CBS RAM Plus)",          "FA"   );
   items.push_back("FE (8K Decathlon)",          "FE"   );
-  items.push_back("MB (Dynacom Megaboy)",       "MB"   );
   items.push_back("MC (C. Wilkson Megacart)",   "MC"   );
   items.push_back("SB (128-256K SUPERbank)",    "SB"   );
   items.push_back("UA (8K UA Ltd.)",            "UA"   );

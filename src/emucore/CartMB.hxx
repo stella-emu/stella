@@ -29,6 +29,11 @@ class System;
   There are 16 4K banks.
   Accessing $1FF0 switches to next bank.
 
+  Note that while the bankswitch type for this class has historically
+  been 'MB', one must now use 'F0' to activate it.
+  This brings the bankswitch names in line with those used in z26 and
+  the various cart programming apps for KrokCart and Harmony/Melody.
+
   @author  Eckhard Stolberg
   @version $Id$
 */
@@ -118,7 +123,7 @@ class CartridgeMB : public Cartridge
 
       @return The name of the object
     */
-    virtual string name() const { return "CartridgeMB"; }
+    virtual string name() const { return "CartridgeF0"; }
 
   public:
     /**

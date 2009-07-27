@@ -28,6 +28,11 @@ class System;
   Cartridge class used for CBS' RAM Plus cartridges.  There are
   three 4K banks and 256 bytes of RAM.
 
+  Note that while the bankswitch type for this class has historically
+  been 'FASC', one must now use 'FA' to activate it.
+  This brings the bankswitch names in line with those used in z26 and
+  the various cart programming apps for KrokCart and Harmony/Melody.
+
   @author  Bradford W. Mott
   @version $Id$
 */
@@ -117,7 +122,7 @@ class CartridgeFASC : public Cartridge
 
       @return The name of the object
     */
-    virtual string name() const { return "CartridgeFASC"; }
+    virtual string name() const { return "CartridgeFA"; }
 
   public:
     /**
