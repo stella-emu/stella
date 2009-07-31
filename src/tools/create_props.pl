@@ -70,6 +70,10 @@ foreach $line (<INFILE>) {
 	if ($line =~ /^""/) {
 		my $key = $props[$proptype{'Cartridge.MD5'}];
 #		print "Inserting properties for key = $key\n";
+
+		if(defined($propset{$key})) {
+			print "Duplicate: $key\n";
+		}
 		$propset{$key} = [ @props ];
 
 		undef @props;
