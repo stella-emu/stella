@@ -1468,42 +1468,42 @@ uInt8 TIA::peek(uInt16 addr)
   switch(addr & 0x000f)
   {
     case CXM0P:
-      value = ((myCollision & 0x0001) ? 0x80 : 0x00) |
-              ((myCollision & 0x0002) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_M0P1) ? 0x80 : 0x00) |
+              ((myCollision & Cx_M0P0) ? 0x40 : 0x00);
       break;
 
     case CXM1P:
-      value = ((myCollision & 0x0004) ? 0x80 : 0x00) |
-              ((myCollision & 0x0008) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_M1P0) ? 0x80 : 0x00) |
+              ((myCollision & Cx_M1P1) ? 0x40 : 0x00);
       break;
 
     case CXP0FB:
-      value = ((myCollision & 0x0010) ? 0x80 : 0x00) |
-              ((myCollision & 0x0020) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_P0PF) ? 0x80 : 0x00) |
+              ((myCollision & Cx_P0BL) ? 0x40 : 0x00);
       break;
 
     case CXP1FB:
-      value = ((myCollision & 0x0040) ? 0x80 : 0x00) |
-              ((myCollision & 0x0080) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_P1PF) ? 0x80 : 0x00) |
+              ((myCollision & Cx_P1BL) ? 0x40 : 0x00);
       break;
 
     case CXM0FB:
-      value = ((myCollision & 0x0100) ? 0x80 : 0x00) |
-              ((myCollision & 0x0200) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_M0PF) ? 0x80 : 0x00) |
+              ((myCollision & Cx_M0BL) ? 0x40 : 0x00);
       break;
 
     case CXM1FB:
-      value = ((myCollision & 0x0400) ? 0x80 : 0x00) |
-              ((myCollision & 0x0800) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_M1PF) ? 0x80 : 0x00) |
+              ((myCollision & Cx_M1BL) ? 0x40 : 0x00);
       break;
 
     case CXBLPF:
-      value = (myCollision & 0x1000) ? 0x80 : 0x00;
+      value = (myCollision & Cx_BLPF) ? 0x80 : 0x00;
       break;
 
     case CXPPMM:
-      value = ((myCollision & 0x2000) ? 0x80 : 0x00) |
-              ((myCollision & 0x4000) ? 0x40 : 0x00);
+      value = ((myCollision & Cx_P0P1) ? 0x80 : 0x00) |
+              ((myCollision & Cx_M0M1) ? 0x40 : 0x00);
       break;
 
     case INPT0:

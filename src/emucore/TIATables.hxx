@@ -32,6 +32,25 @@ enum {
   PriorityBit = 0x80   // Bit for Playfield priority
 };
 
+enum
+{
+  Cx_M0P1 = 1 << 0,   // Missle0 - Player1   collision
+  Cx_M0P0 = 1 << 1,   // Missle0 - Player0   collision
+  Cx_M1P0 = 1 << 2,   // Missle1 - Player0   collision
+  Cx_M1P1 = 1 << 3,   // Missle1 - Player1   collision
+  Cx_P0PF = 1 << 4,   // Player0 - Playfield collision
+  Cx_P0BL = 1 << 5,   // Player0 - Ball      collision
+  Cx_P1PF = 1 << 6,   // Player1 - Playfield collision
+  Cx_P1BL = 1 << 7,   // Player1 - Ball      collision
+  Cx_M0PF = 1 << 8,   // Missle0 - Playfield collision
+  Cx_M0BL = 1 << 9,   // Missle0 - Ball      collision
+  Cx_M1PF = 1 << 10,  // Missle1 - Playfield collision
+  Cx_M1BL = 1 << 11,  // Missle1 - Ball      collision
+  Cx_BLPF = 1 << 12,  // Ball - Playfield    collision
+  Cx_P0P1 = 1 << 13,  // Player0 - Player1   collision
+  Cx_M0M1 = 1 << 14   // Missle0 - Missle1   collision
+};
+
 // TIA Write/Read register names
 enum {
   VSYNC   = 0x00,  // Write: vertical sync set-clear (D1)
@@ -129,21 +148,26 @@ class TIATables
     static const bool HMOVEBlankEnableCycles[76];
 
     // Player mask table
+    // [alignment][suppress mode][nusiz][pixel]
     static uInt8 PxMask[4][2][8][320];
 
     // Missle mask table (entries are true or false)
+    // [alignment][number][size][pixel]
     static uInt8 MxMask[4][8][4][320];
 
     // Ball mask table (entries are true or false)
+    // [alignment][size][pixel]
     static uInt8 BLMask[4][4][320];
 
     // Playfield mask table for reflected and non-reflected playfields
+    // [reflect, pixel]
     static uInt32 PFMask[2][160];
 
     // Used to reflect a players graphics
     static uInt8 GRPReflect[256];
 
     // Indicates if player is being reset during delay, display or other times
+    // [nusiz][old pixel][new pixel]
     static Int8 PxPosResetWhen[8][160][160];
 
   private:

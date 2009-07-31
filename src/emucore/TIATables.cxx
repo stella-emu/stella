@@ -44,153 +44,163 @@ void TIATables::buildCollisionMaskTable()
     CollisionMask[i] = 0;
 
     if((i & M0Bit) && (i & P1Bit))    // M0-P1
-      CollisionMask[i] |= 0x0001;
+      CollisionMask[i] |= Cx_M0P1;
 
     if((i & M0Bit) && (i & P0Bit))    // M0-P0
-      CollisionMask[i] |= 0x0002;
+      CollisionMask[i] |= Cx_M0P0;
 
     if((i & M1Bit) && (i & P0Bit))    // M1-P0
-      CollisionMask[i] |= 0x0004;
+      CollisionMask[i] |= Cx_M1P0;
 
     if((i & M1Bit) && (i & P1Bit))    // M1-P1
-      CollisionMask[i] |= 0x0008;
+      CollisionMask[i] |= Cx_M1P1;
 
     if((i & P0Bit) && (i & PFBit))    // P0-PF
-      CollisionMask[i] |= 0x0010;
+      CollisionMask[i] |= Cx_P0PF;
 
     if((i & P0Bit) && (i & BLBit))    // P0-BL
-      CollisionMask[i] |= 0x0020;
+      CollisionMask[i] |= Cx_P0BL;
 
     if((i & P1Bit) && (i & PFBit))    // P1-PF
-      CollisionMask[i] |= 0x0040;
+      CollisionMask[i] |= Cx_P1PF;
 
     if((i & P1Bit) && (i & BLBit))    // P1-BL
-      CollisionMask[i] |= 0x0080;
+      CollisionMask[i] |= Cx_P1BL;
 
     if((i & M0Bit) && (i & PFBit))    // M0-PF
-      CollisionMask[i] |= 0x0100;
+      CollisionMask[i] |= Cx_M0PF;
 
     if((i & M0Bit) && (i & BLBit))    // M0-BL
-      CollisionMask[i] |= 0x0200;
+      CollisionMask[i] |= Cx_M0BL;
 
     if((i & M1Bit) && (i & PFBit))    // M1-PF
-      CollisionMask[i] |= 0x0400;
+      CollisionMask[i] |= Cx_M1PF;
 
     if((i & M1Bit) && (i & BLBit))    // M1-BL
-      CollisionMask[i] |= 0x0800;
+      CollisionMask[i] |= Cx_M1BL;
 
     if((i & BLBit) && (i & PFBit))    // BL-PF
-      CollisionMask[i] |= 0x1000;
+      CollisionMask[i] |= Cx_BLPF;
 
     if((i & P0Bit) && (i & P1Bit))    // P0-P1
-      CollisionMask[i] |= 0x2000;
+      CollisionMask[i] |= Cx_P0P1;
 
     if((i & M0Bit) && (i & M1Bit))    // M0-M1
-      CollisionMask[i] |= 0x4000;
+      CollisionMask[i] |= Cx_M0M1;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIATables::buildPxMaskTable()  // [4][2][8][320]
+// [4][2][8][320]
+// [alignment][suppress mode][nusiz][pixel]
+// suppress=1: suppress on
+// suppress=0: suppress off
+void TIATables::buildPxMaskTable()
 {
   // First, calculate masks for alignment 0
-  Int32 x, enable, mode;
+  Int32 x, suppress, nusiz;
 
   // Set the player mask table to all zeros
-  for(enable = 0; enable < 2; ++enable)
-    for(mode = 0; mode < 8; ++mode)
+  for(suppress = 0; suppress < 2; ++suppress)
+    for(nusiz = 0; nusiz < 8; ++nusiz)
       for(x = 0; x < 160; ++x)
-        PxMask[0][enable][mode][x] = 0x00;
+        PxMask[0][suppress][nusiz][x] = 0x00;
 
   // Now, compute the player mask table
-  for(enable = 0; enable < 2; ++enable)
+  for(suppress = 0; suppress < 2; ++suppress)
   {
-    for(mode = 0; mode < 8; ++mode)
+    for(nusiz = 0; nusiz < 8; ++nusiz)
     {
       for(x = 0; x < 160 + 72; ++x)
       {
-        switch(mode)
+        // nusiz:
+        // 0: one copy
+        // 1: two copies-close
+        // 2: two copies-med
+        // 3: three copies-close
+        // 4: two copies-wide
+        // 5: double size player
+        // 6: 3 copies medium
+        // 7: quad sized player
+        switch(nusiz)
         {
           case 0x00:
-            if((enable == 0) && (x >= 0) && (x < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> x;
+            if((suppress == 0) && (x >= 0) && (x < 8))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> x;
             break;
 
           case 0x01:
-            if((enable == 0) && (x >= 0) && (x < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> x;
+            if((suppress == 0) && (x >= 0) && (x < 8))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> x;
             else if(((x - 16) >= 0) && ((x - 16) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 16);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 16);
             break;
 
           case 0x02:
-            if((enable == 0) && (x >= 0) && (x < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> x;
+            if((suppress == 0) && (x >= 0) && (x < 8))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> x;
             else if(((x - 32) >= 0) && ((x - 32) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 32);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 32);
             break;
 
           case 0x03:
-            if((enable == 0) && (x >= 0) && (x < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> x;
+            if((suppress == 0) && (x >= 0) && (x < 8))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> x;
             else if(((x - 16) >= 0) && ((x - 16) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 16);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 16);
             else if(((x - 32) >= 0) && ((x - 32) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 32);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 32);
             break;
 
           case 0x04:
-            if((enable == 0) && (x >= 0) && (x < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> x;
+            if((suppress == 0) && (x >= 0) && (x < 8))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> x;
             else if(((x - 64) >= 0) && ((x - 64) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 64);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 64);
             break;
 
           case 0x05:
-            // For some reason in double size mode the player's output
+            // For some reason in double size nusiz the player's output
             // is delayed by one pixel thus we use > instead of >=
-            if((enable == 0) && (x > 0) && (x <= 16))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> ((x - 1)/2);
+            if((suppress == 0) && (x > 0) && (x <= 16))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> ((x - 1)/2);
             break;
 
           case 0x06:
-            if((enable == 0) && (x >= 0) && (x < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> x;
+            if((suppress == 0) && (x >= 0) && (x < 8))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> x;
             else if(((x - 32) >= 0) && ((x - 32) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 32);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 32);
             else if(((x - 64) >= 0) && ((x - 64) < 8))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> (x - 64);
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> (x - 64);
             break;
 
           case 0x07:
-            // For some reason in quad size mode the player's output
+            // For some reason in quad size nusiz the player's output
             // is delayed by one pixel thus we use > instead of >=
-            if((enable == 0) && (x > 0) && (x <= 32))
-              PxMask[0][enable][mode][x % 160] = 0x80 >> ((x - 1)/4);
+            if((suppress == 0) && (x > 0) && (x <= 32))
+              PxMask[0][suppress][nusiz][x % 160] = 0x80 >> ((x - 1)/4);
             break;
         }
       }
   
       // Copy data into wrap-around area
       for(x = 0; x < 160; ++x)
-      {
-        PxMask[0][enable][mode][x + 160] = 
-            PxMask[0][enable][mode][x];
-      }
+        PxMask[0][suppress][nusiz][x + 160] = PxMask[0][suppress][nusiz][x];
     }
   }
 
   // Now, copy data for alignments of 1, 2 and 3
   for(uInt32 align = 1; align < 4; ++align)
   {
-    for(enable = 0; enable < 2; ++enable)
+    for(suppress = 0; suppress < 2; ++suppress)
     {
-      for(mode = 0; mode < 8; ++mode)
+      for(nusiz = 0; nusiz < 8; ++nusiz)
       {
         for(x = 0; x < 320; ++x)
         {
-          PxMask[align][enable][mode][x] =
-              PxMask[0][enable][mode][(x + 320 - align) % 320];
+          PxMask[align][suppress][nusiz][x] =
+              PxMask[0][suppress][nusiz][(x + 320 - align) % 320];
         }
       }
     }
@@ -198,7 +208,9 @@ void TIATables::buildPxMaskTable()  // [4][2][8][320]
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIATables::buildMxMaskTable()  // [4][8][4][320]
+// [4][8][4][320]
+// [alignment][number][size][pixel]
+void TIATables::buildMxMaskTable()
 {
   // First, calculate masks for alignment 0
   Int32 x, size, number;
@@ -215,55 +227,59 @@ void TIATables::buildMxMaskTable()  // [4][8][4][320]
     {
       for(x = 0; x < 160 + 72; ++x)
       {
-        // Only one copy of the missle
-        if((number == 0x00) || (number == 0x05) || (number == 0x07))
+        switch(number)
         {
-          if((x >= 0) && (x < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-        }
-        // Two copies - close
-        else if(number == 0x01)
-        {
-          if((x >= 0) && (x < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-        }
-        // Two copies - medium
-        else if(number == 0x02)
-        {
-          if((x >= 0) && (x < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-        }
-        // Three copies - close
-        else if(number == 0x03)
-        {
-          if((x >= 0) && (x < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-        }
-        // Two copies - wide
-        else if(number == 0x04)
-        {
-          if((x >= 0) && (x < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-        }
-        // Three copies - medium
-        else if(number == 0x06)
-        {
-          if((x >= 0) && (x < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
-          else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
-            MxMask[0][number][size][x % 160] = true;
+          // Only one copy of the missle
+          case 0x00:
+          case 0x05:
+          case 0x07:
+            if((x >= 0) && (x < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+          break;
+
+          // Two copies - close
+          case 0x01:
+            if((x >= 0) && (x < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            break;
+
+          // Two copies - medium
+          case 0x02:
+            if((x >= 0) && (x < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            break;
+
+          // Three copies - close
+          case 0x03:
+            if((x >= 0) && (x < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            break;
+
+          // Two copies - wide
+          case 0x04:
+            if((x >= 0) && (x < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            break;
+
+          // Three copies - medium
+          case 0x06:
+            if((x >= 0) && (x < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
+              MxMask[0][number][size][x % 160] = true;
+            break;
         }
       }
 
@@ -292,7 +308,9 @@ void TIATables::buildMxMaskTable()  // [4][8][4][320]
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIATables::buildBLMaskTable()  // [4][4][320]
+// [4][4][320]
+// [alignment][size][pixel]
+void TIATables::buildBLMaskTable()
 {
   // First, calculate masks for alignment 0
   for(Int32 size = 0; size < 4; ++size)
@@ -301,41 +319,31 @@ void TIATables::buildBLMaskTable()  // [4][4][320]
 
     // Set all of the masks to false to start with
     for(x = 0; x < 160; ++x)
-    {
       BLMask[0][size][x] = false;
-    }
 
     // Set the necessary fields true
     for(x = 0; x < 160 + 8; ++x)
-    {
       if((x >= 0) && (x < (1 << size)))
-      {
         BLMask[0][size][x % 160] = true;
-      }
-    }
 
     // Copy fields into the wrap-around area of the mask
     for(x = 0; x < 160; ++x)
-    {
       BLMask[0][size][x + 160] = BLMask[0][size][x];
-    }
   }
 
   // Now, copy data for alignments of 1, 2 and 3
   for(uInt32 align = 1; align < 4; ++align)
-  {
     for(uInt32 size = 0; size < 4; ++size)
-    {
       for(uInt32 x = 0; x < 320; ++x)
-      {
         BLMask[align][size][x] = BLMask[0][size][(x + 320 - align) % 320];
-      }
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIATables::buildPFMaskTable()  // [2][160]
+// [2][160]
+// [reflect, pixel]
+// reflect=1: reflection on
+// reflect=0: reflection off
+void TIATables::buildPFMaskTable()
 {
   Int32 x;
 
@@ -343,34 +351,34 @@ void TIATables::buildPFMaskTable()  // [2][160]
   for(x = 0; x < 160; ++x)
   {
     if(x < 16)
-      PFMask[0][x] = 0x00001 << (x / 4);
+      PFMask[0][x] = 0x00001 << (x >> 2);
     else if(x < 48)
-      PFMask[0][x] = 0x00800 >> ((x - 16) / 4);
+      PFMask[0][x] = 0x00800 >> ((x - 16) >> 2);
     else if(x < 80) 
-      PFMask[0][x] = 0x01000 << ((x - 48) / 4);
+      PFMask[0][x] = 0x01000 << ((x - 48) >> 2);
     else if(x < 96) 
-      PFMask[0][x] = 0x00001 << ((x - 80) / 4);
+      PFMask[0][x] = 0x00001 << ((x - 80) >> 2);
     else if(x < 128)
-      PFMask[0][x] = 0x00800 >> ((x - 96) / 4);
+      PFMask[0][x] = 0x00800 >> ((x - 96) >> 2);
     else if(x < 160) 
-      PFMask[0][x] = 0x01000 << ((x - 128) / 4);
+      PFMask[0][x] = 0x01000 << ((x - 128) >> 2);
   }
 
   // Compute playfield mask table for reflected mode
   for(x = 0; x < 160; ++x)
   {
     if(x < 16)
-      PFMask[1][x] = 0x00001 << (x / 4);
+      PFMask[1][x] = 0x00001 << (x >> 2);
     else if(x < 48)
-      PFMask[1][x] = 0x00800 >> ((x - 16) / 4);
+      PFMask[1][x] = 0x00800 >> ((x - 16) >> 2);
     else if(x < 80) 
-      PFMask[1][x] = 0x01000 << ((x - 48) / 4);
+      PFMask[1][x] = 0x01000 << ((x - 48) >> 2);
     else if(x < 112) 
-      PFMask[1][x] = 0x80000 >> ((x - 80) / 4);
+      PFMask[1][x] = 0x80000 >> ((x - 80) >> 2);
     else if(x < 144) 
-      PFMask[1][x] = 0x00010 << ((x - 112) / 4);
+      PFMask[1][x] = 0x00010 << ((x - 112) >> 2);
     else if(x < 160) 
-      PFMask[1][x] = 0x00008 >> ((x - 144) / 4);
+      PFMask[1][x] = 0x00008 >> ((x - 144) >> 2);
   }
 }
 
@@ -381,129 +389,138 @@ void TIATables::buildGRPReflectTable()
   {
     uInt8 r = 0;
 
-    for(uInt16 t = 1; t <= 128; t *= 2)
-    {
+    for(uInt16 t = 1; t <= 128; t <<= 1)
       r = (r << 1) | ((i & t) ? 0x01 : 0x00);
-    }
 
     GRPReflect[i] = r;
   } 
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// [8][160][160]
+// [nusiz][old pixel][new pixel]
 void TIATables::buildPxPosResetWhenTable()
 {
-  uInt32 mode, oldx, newx;
+  uInt32 nusiz, oldx, newx;
 
-  // Loop through all player modes, all old player positions, and all new
+  // Loop through all player nusizs, all old player positions, and all new
   // player positions and determine where the new position is located:
   // 1 means the new position is within the display of an old copy of the
   // player, -1 means the new position is within the delay portion of an
   // old copy of the player, and 0 means it's neither of these two
-  for(mode = 0; mode < 8; ++mode)
+  for(nusiz = 0; nusiz < 8; ++nusiz)
   {
     for(oldx = 0; oldx < 160; ++oldx)
     {
       // Set everything to 0 for non-delay/non-display section
       for(newx = 0; newx < 160; ++newx)
-      {
-        PxPosResetWhen[mode][oldx][newx] = 0;
-      }
+        PxPosResetWhen[nusiz][oldx][newx] = 0;
 
       // Now, we'll set the entries for non-delay/non-display section
       for(newx = 0; newx < 160 + 72 + 5; ++newx)
       {
-        if(mode == 0x00)
+        // nusiz:
+        // 0: one copy
+        // 1: two copies-close
+        // 2: two copies-med
+        // 3: three copies-close
+        // 4: two copies-wide
+        // 5: double size player
+        // 6: 3 copies medium
+        // 7: quad sized player
+        switch(nusiz)
         {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+          case 0x00:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x01)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 16)) && (newx < (oldx + 16 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 16 + 4) && (newx < (oldx + 16 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x02)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+          case 0x01:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 16)) && (newx < (oldx + 16 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x03)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 16)) && (newx < (oldx + 16 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 16 + 4) && (newx < (oldx + 16 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 16 + 4) && (newx < (oldx + 16 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x04)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 64)) && (newx < (oldx + 64 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+          case 0x02:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 64 + 4) && (newx < (oldx + 64 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x05)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 16)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x06)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
-          else if((newx >= (oldx + 64)) && (newx < (oldx + 64 + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+          case 0x03:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 16)) && (newx < (oldx + 16 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-          else if((newx >= oldx + 64 + 4) && (newx < (oldx + 64 + 4 + 8)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
-        }
-        else if(mode == 0x07)
-        {
-          if((newx >= oldx) && (newx < (oldx + 4)))
-            PxPosResetWhen[mode][oldx][newx % 160] = -1;
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 16 + 4) && (newx < (oldx + 16 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
 
-          if((newx >= oldx + 4) && (newx < (oldx + 4 + 32)))
-            PxPosResetWhen[mode][oldx][newx % 160] = 1;
+          case 0x04:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 64)) && (newx < (oldx + 64 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 64 + 4) && (newx < (oldx + 64 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
+
+          case 0x05:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 16)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
+
+          case 0x06:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+            else if((newx >= (oldx + 64)) && (newx < (oldx + 64 + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            else if((newx >= oldx + 64 + 4) && (newx < (oldx + 64 + 4 + 8)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
+
+          case 0x07:
+            if((newx >= oldx) && (newx < (oldx + 4)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
+
+            if((newx >= oldx + 4) && (newx < (oldx + 4 + 32)))
+              PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
+            break;
         }
       }
 
@@ -511,9 +528,9 @@ void TIATables::buildPxPosResetWhenTable()
       uInt32 s1 = 0, s2 = 0;
       for(newx = 0; newx < 160; ++newx)
       {
-        if(PxPosResetWhen[mode][oldx][newx] == -1)
+        if(PxPosResetWhen[nusiz][oldx][newx] == -1)
           ++s1;
-        if(PxPosResetWhen[mode][oldx][newx] == 1)
+        if(PxPosResetWhen[nusiz][oldx][newx] == 1)
           ++s2;
       }
       assert((s1 % 4 == 0) && (s2 % 8 == 0));
@@ -532,7 +549,7 @@ uInt8 TIATables::DisabledMask[640];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIATables::PokeDelay[64] = {
-   0,  1,  0,  0,  8,  8,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
+   0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
    0,  0,  8,  8,  0,  0,  0,  0,  0,  0,  0,  1,  1,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
