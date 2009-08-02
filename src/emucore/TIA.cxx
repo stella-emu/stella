@@ -1314,7 +1314,7 @@ void TIA::updateFrame(Int32 clock)
   for(uInt32 line = startLine; line <= endLine; ++line)
   {
     // Only check for inter-line changes after the current scanline
-	// The ideas for much of the following code was inspired by MESS
+    // The ideas for much of the following code was inspired by MESS
     // (used with permission from Wilbert Pol)
     if(line != startLine)
     {

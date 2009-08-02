@@ -19,14 +19,14 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * Add new TIA infrastructure with improved HMOVE emulation, including
     fixes for (possibly) incorrect VSYNC handling in Q-Bert.
 
-  * Add better support for 'floating' TIA reads as described here:
-    http://www.atariage.com/forums/index.php?s=&showtopic=143363&view=findpost&p=1762433
-
   * Look into adding Blargg NTSC filtering (perhaps as a GLSL program).
+
+  * Step-debug through disassembled zero-page code (get clarification on this)
 
   * Either Support Distella as frontend or integrate a 6507 Disassembler
 
-  * Step-debug through disassembled zero-page code (get clarification on this)
+  * Add better support for 'floating' TIA reads as described here:
+    http://www.atariage.com/forums/index.php?s=&showtopic=143363&view=findpost&p=1762433
 
   * Improve debugger support for remaining cartridges with dedicated RAM,
     and add source-level debugging
@@ -41,9 +41,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
   * 'Fixed Debug Colours' option as explained in the 'Stella 2.6.1 released'
     thread, post #40 on AtariAge.  Basically emulates no$2k6 behaviour.
-
-  * Research lockups in Stay Frosty ROM.  Test out sample state file in
-    AtariAge email.
 
   * Research starting bank for 8K/F8 ROMs.  Probably default should be 0
     instead of 1.
