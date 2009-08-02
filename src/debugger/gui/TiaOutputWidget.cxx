@@ -64,26 +64,6 @@ void TiaOutputWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::advanceScanline(int lines)
-{
-  while(lines)
-  {
-    instance().console().tia().updateScanline();
-    --lines;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TiaOutputWidget::advance(int frames)
-{
-  while(frames)
-  {
-    instance().console().tia().update();
-    --frames;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TiaOutputWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
   // Grab right mouse button for command context menu

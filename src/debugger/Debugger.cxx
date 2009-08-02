@@ -473,9 +473,9 @@ int Debugger::step()
 
   int cyc = mySystem->cycles();
 
-  unlockState();
+  unlockBankswitchState();
   myOSystem->console().tia().updateScanlineByStep();
-  lockState();
+  lockBankswitchState();
 
   return mySystem->cycles() - cyc;
 }
@@ -501,9 +501,9 @@ int Debugger::trace()
     int cyc = mySystem->cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
-    unlockState();
+    unlockBankswitchState();
     myOSystem->console().tia().updateScanlineByTrace(targetPC);
-    lockState();
+    lockBankswitchState();
 
     return mySystem->cycles() - cyc;
   }
@@ -633,9 +633,13 @@ void Debugger::nextScanline(int lines)
 {
   saveOldState();
 
-  unlockState();
-  myTiaOutput->advanceScanline(lines);
-  lockState();
+  unlockBankswitchState();
+  while(lines)
+  {
+    myOSystem->console().tia().updateScanline();
+    --lines;
+  }
+  lockBankswitchState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -643,9 +647,13 @@ void Debugger::nextFrame(int frames)
 {
   saveOldState();
 
-  unlockState();
-  myTiaOutput->advance(frames);
-  lockState();
+  unlockBankswitchState();
+  while(frames)
+  {
+    myOSystem->console().tia().update();
+    --frames;
+  }
+  lockBankswitchState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -746,14 +754,14 @@ void Debugger::saveOldState()
 void Debugger::setStartState()
 {
   // Lock the bus each time the debugger is entered, so we don't disturb anything
-  lockState();
+  lockBankswitchState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setQuitState()
 {
   // Bus must be unlocked for normal operation when leaving debugger mode
-  unlockState();
+  unlockBankswitchState();
 
   // execute one instruction on quit. If we're
   // sitting at a breakpoint/trap, this will get us past it.
@@ -911,14 +919,14 @@ bool Debugger::saveROM(const string& filename) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::lockState()
+void Debugger::lockBankswitchState()
 {
   mySystem->lockDataBus();
   myConsole->cartridge().lockBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::unlockState()
+void Debugger::unlockBankswitchState()
 {
   mySystem->unlockDataBus();
   myConsole->cartridge().unlockBank();

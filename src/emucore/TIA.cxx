@@ -16,9 +16,6 @@
 // $Id$
 //============================================================================
 
-//#define DEBUG_HMOVE
-//#define NO_HMOVE_FIXES
-
 #include <cassert>
 #include <cstdlib>
 #include <cstring>
@@ -38,6 +35,9 @@
 #include "TIA.hxx"
 
 #define HBLANK 68
+#define USE_MMR_LATCHES
+static int P0suppress = 0;
+static int P1suppress = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
@@ -156,12 +156,10 @@ void TIA::reset()
   myMotionClockM1 = 0;
   myMotionClockBL = 0;
 
-  myLastHMOVEClock = 0;
-  myHMOVEBlankEnabled = false;
-  myM0CosmicArkMotionEnabled = false; // FIXME - remove this
-  myM0CosmicArkCounter = 0;           // FIXME - remove this
+  myHMP0mmr = myHMP1mmr = myHMM0mmr = myHMM1mmr = myHMBLmmr = false;
 
-  myScanlineCountForLastFrame = myCurrentScanline = 0;
+  myCurrentHMOVEPos = myPreviousHMOVEPos = 0x7FFFFFFF;
+  myHMOVEBlankEnabled = false;
 
   enableBits(true);
 
@@ -170,6 +168,8 @@ void TIA::reset()
 
   myFloatTIAOutputPins = mySettings.getBool("tiafloat");
 
+  myFrameCounter = 0;
+  myScanlineCountForLastFrame = 0;
   myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
   myFramerate = myConsole.getFramerate();
 
@@ -183,8 +183,6 @@ void TIA::reset()
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
   }
-
-  myFrameCounter = 0;
 
   // Recalculate the size of the display
   frameReset();
@@ -202,18 +200,27 @@ void TIA::frameReset()
   // Make sure all these are within bounds
   myFrameWidth  = 160;
   myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
-  if(myFrameYStart < 0)  myFrameYStart = 0;
-  if(myFrameYStart > 64) myFrameYStart = 64;
+  if(myFrameYStart < 0)       myFrameYStart = 0;
+  else if(myFrameYStart > 64) myFrameYStart = 64;
   myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
-  if(myFrameHeight < 210) myFrameHeight = 210;
-  if(myFrameHeight > 256) myFrameHeight = 256;
+  if(myFrameHeight < 210)      myFrameHeight = 210;
+  else if(myFrameHeight > 256) myFrameHeight = 256;
 
   // Calculate color clock offsets for starting and stopping frame drawing
   // Note that although we always start drawing at scanline zero, the
   // framebuffer that is exposed outside the class actually starts at 'ystart'
+  myFramePointerOffset = myFrameWidth * myFrameYStart;
   myStartDisplayOffset = 0;
-  myStopDisplayOffset  = 228 * (myFrameYStart + myFrameHeight);
-  myFramePointerOffset = 160 * myFrameYStart;
+
+  // NTSC screens will process at least 262 scanlines,
+  // while PAL will have at least 312
+  // In any event, at most 320 lines can be processed
+  uInt32 scanlines = myFrameYStart + myFrameHeight;
+  if(myMaximumNumberOfScanlines == 290)
+    scanlines = BSPF_max(scanlines, 262u);  // NTSC
+  else
+    scanlines = BSPF_max(scanlines, 312u);  // PAL
+  myStopDisplayOffset = 228 * BSPF_min(scanlines, 320u);
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
@@ -245,7 +252,6 @@ void TIA::systemCyclesReset()
   myClockStopDisplay -= clocks;
   myClockAtLastUpdate -= clocks;
   myVSYNCFinishClock -= clocks;
-  myLastHMOVEClock -= clocks;
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,7 +300,6 @@ bool TIA::save(Serializer& out) const
     out.putInt(myClockAtLastUpdate);
     out.putInt(myClocksToEndOfScanLine);
     out.putInt(myScanlineCountForLastFrame);
-    out.putInt(myCurrentScanline);
     out.putInt(myVSYNCFinishClock);
 
     out.putByte((char)myEnabledObjects);
@@ -350,13 +355,28 @@ bool TIA::save(Serializer& out) const
 //  myCurrentP1Mask = TIATables::PxMask[0][0][0];
 //  myCurrentPFMask = TIATables::PFMask[0];
 
-    out.putInt(myLastHMOVEClock);
-    out.putBool(myHMOVEBlankEnabled);
-    out.putBool(myM0CosmicArkMotionEnabled); // FIXME - remove this
-    out.putInt(myM0CosmicArkCounter);        // FIXME - remove this
-
     out.putBool(myDumpEnabled);
     out.putInt(myDumpDisabledCycle);
+
+    out.putInt(myFrameCounter);
+    out.putBool(myPartialFrameFlag);
+    out.putBool(myFrameGreyed);
+
+    out.putInt(myMotionClockP0);
+    out.putInt(myMotionClockP1);
+    out.putInt(myMotionClockM0);
+    out.putInt(myMotionClockM1);
+    out.putInt(myMotionClockBL);
+
+    out.putBool(myHMP0mmr);
+    out.putBool(myHMP1mmr);
+    out.putBool(myHMM0mmr);
+    out.putBool(myHMM1mmr);
+    out.putBool(myHMBLmmr);
+
+    out.putInt(myCurrentHMOVEPos);
+    out.putInt(myPreviousHMOVEPos);
+    out.putBool(myHMOVEBlankEnabled);
 
     // Save the sound sample stuff ...
     mySound.save(out);
@@ -390,8 +410,7 @@ bool TIA::load(Deserializer& in)
     myClockStopDisplay = (Int32) in.getInt();
     myClockAtLastUpdate = (Int32) in.getInt();
     myClocksToEndOfScanLine = (Int32) in.getInt();
-    myScanlineCountForLastFrame = (Int32) in.getInt();
-    myCurrentScanline = (Int32) in.getInt();
+    myScanlineCountForLastFrame = (uInt32) in.getInt();
     myVSYNCFinishClock = (Int32) in.getInt();
 
     myEnabledObjects = (uInt8) in.getByte();
@@ -419,11 +438,11 @@ bool TIA::load(Deserializer& in)
     myENAM1 = in.getBool();
     myENABL = in.getBool();
     myDENABL = in.getBool();
-    myHMP0 = (Int8) in.getByte();
-    myHMP1 = (Int8) in.getByte();
-    myHMM0 = (Int8) in.getByte();
-    myHMM1 = (Int8) in.getByte();
-    myHMBL = (Int8) in.getByte();
+    myHMP0 = (uInt8) in.getByte();
+    myHMP1 = (uInt8) in.getByte();
+    myHMM0 = (uInt8) in.getByte();
+    myHMM1 = (uInt8) in.getByte();
+    myHMBL = (uInt8) in.getByte();
     myVDELP0 = in.getBool();
     myVDELP1 = in.getBool();
     myVDELBL = in.getBool();
@@ -447,13 +466,28 @@ bool TIA::load(Deserializer& in)
 //  myCurrentP1Mask = TIATables::PxMask[0][0][0];
 //  myCurrentPFMask = TIATables::PFMask[0];
 
-    myLastHMOVEClock = (Int32) in.getInt();
-    myHMOVEBlankEnabled = in.getBool();
-    myM0CosmicArkMotionEnabled = in.getBool();   // FIXME - remove this
-    myM0CosmicArkCounter = (uInt32) in.getInt(); // FIXME - remove this
-
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getInt();
+
+    myFrameCounter = (Int32) in.getInt();
+    myPartialFrameFlag = in.getBool();
+    myFrameGreyed = in.getBool();
+
+    myMotionClockP0 = (Int32) in.getInt();
+    myMotionClockP1 = (Int32) in.getInt();
+    myMotionClockM0 = (Int32) in.getInt();
+    myMotionClockM1 = (Int32) in.getInt();
+    myMotionClockBL = (Int32) in.getInt();
+
+    myHMP0mmr = in.getBool();
+    myHMP1mmr = in.getBool();
+    myHMM0mmr = in.getBool();
+    myHMM1mmr = in.getBool();
+    myHMBLmmr = in.getBool();
+
+    myCurrentHMOVEPos = (Int32) in.getInt();
+    myPreviousHMOVEPos = (Int32) in.getInt();
+    myHMOVEBlankEnabled = in.getBool();
 
     // Load the sound sample stuff ...
     mySound.load(in);
@@ -491,9 +525,6 @@ void TIA::update()
   mySystem->m6502().execute(25000);
 
   // TODO: have code here that handles errors....
-
-  uInt32 totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myCurrentScanline = totalClocks / 228;
 
   if(myPartialFrameFlag)
   {
@@ -561,7 +592,7 @@ inline void TIA::endFrame()
 {
   // This stuff should only happen at the end of a frame
   // Compute the number of scanlines in the frame
-  myScanlineCountForLastFrame = myCurrentScanline;
+  myScanlineCountForLastFrame = scanlines();
 
   // Stats counters
   myFrameCounter++;
@@ -572,6 +603,13 @@ inline void TIA::endFrame()
     myFramerate = (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /
                    myScanlineCountForLastFrame;
     myConsole.setFramerate(myFramerate);
+
+    // Adjust end-of-frame pointer
+    // We always accommodate the highest # of scanlines, up to the maximum
+    // size of the buffer (currently, 320 lines)
+    uInt32 offset = 228 * myScanlineCountForLastFrame;
+    if(offset > myStopDisplayOffset && offset <= 228 * 320)
+      myStopDisplayOffset = offset;
   }
 
   myFrameGreyed = false;
@@ -582,12 +620,12 @@ inline void TIA::endFrame()
 void TIA::updateScanline()
 {
   // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag) {
+  if(!myPartialFrameFlag)
     startFrame();
-  }
 
   // grey out old frame contents
-  if(!myFrameGreyed) greyOutFrame();
+  if(!myFrameGreyed)
+    greyOutFrame();
   myFrameGreyed = true;
 
   // true either way:
@@ -603,9 +641,6 @@ void TIA::updateScanline()
 	  updateFrame(clock);
   } while(clock < endClock);
 
-  totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myCurrentScanline = totalClocks / 228;
-
   // if we finished the frame, get ready for the next one
   if(!myPartialFrameFlag)
     endFrame();
@@ -615,9 +650,8 @@ void TIA::updateScanline()
 void TIA::updateScanlineByStep()
 {
   // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag) {
+  if(!myPartialFrameFlag)
     startFrame();
-  }
 
   // grey out old frame contents
   if(!myFrameGreyed) greyOutFrame();
@@ -626,14 +660,9 @@ void TIA::updateScanlineByStep()
   // true either way:
   myPartialFrameFlag = true;
 
-  int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-
   // Update frame by one CPU instruction/color clock
   mySystem->m6502().execute(1);
   updateFrame(mySystem->cycles() * 3);
-
-  totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myCurrentScanline = totalClocks / 228;
 
   // if we finished the frame, get ready for the next one
   if(!myPartialFrameFlag)
@@ -644,9 +673,8 @@ void TIA::updateScanlineByStep()
 void TIA::updateScanlineByTrace(int target)
 {
   // Start a new frame if the old one was finished
-  if(!myPartialFrameFlag) {
+  if(!myPartialFrameFlag)
     startFrame();
-  }
 
   // grey out old frame contents
   if(!myFrameGreyed) greyOutFrame();
@@ -655,16 +683,11 @@ void TIA::updateScanlineByTrace(int target)
   // true either way:
   myPartialFrameFlag = true;
 
-  int totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-
   while(mySystem->m6502().getPC() != target)
   {
     mySystem->m6502().execute(1);
     updateFrame(mySystem->cycles() * 3);
   }
-
-  totalClocks = (mySystem->cycles() * 3) - myClockWhenFrameStarted;
-  myCurrentScanline = totalClocks / 228;
 
   // if we finished the frame, get ready for the next one
   if(!myPartialFrameFlag)
@@ -686,6 +709,18 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
   // Handle all other possible combinations
   else
   {
+    // Update masks
+    myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
+        [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
+    myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
+        [P0suppress][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+    myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
+        [P1suppress][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+    myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+        [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+    myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+        [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+
     switch(myEnabledObjects | myPlayfieldPriorityAndScore)
     {
       // Background 
@@ -1113,7 +1148,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             ++mPF; ++mP0; ++myFramePointer;
           }
         }
-
         break;
       }
 
@@ -1141,7 +1175,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             ++mPF; ++mP0; ++myFramePointer;
           }
         }
-
         break;
       }
 
@@ -1169,7 +1202,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             ++mPF; ++mP1; ++myFramePointer;
           }
         }
-
         break;
       }
 
@@ -1197,7 +1229,6 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             ++mPF; ++mP1; ++myFramePointer;
           }
         }
-
         break;
       }
 
@@ -1264,24 +1295,68 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateFrame(Int32 clock)
 {
-  // See if we're in the nondisplayable portion of the screen or if
-  // we've already updated this portion of the screen
-  if((clock < myClockStartDisplay) || 
-      (myClockAtLastUpdate >= myClockStopDisplay) ||  
-      (myClockAtLastUpdate >= clock))
-  {
+  // See if we've already updated this portion of the screen
+  if((clock < myClockStartDisplay) ||
+     (myClockAtLastUpdate >= myClockStopDisplay) ||
+     (myClockAtLastUpdate >= clock))
     return;
-  }
 
   // Truncate the number of cycles to update to the stop display point
   if(clock > myClockStopDisplay)
-  {
     clock = myClockStopDisplay;
-  }
+
+  // Determine how many scanlines to process
+  // It's easier to think about this in scanlines rather than color clocks
+  uInt32 startLine = (myClockAtLastUpdate - myClockWhenFrameStarted) / 228;
+  uInt32 endLine = (clock - myClockWhenFrameStarted) / 228;
 
   // Update frame one scanline at a time
-  do
+  for(uInt32 line = startLine; line <= endLine; ++line)
   {
+    // Only check for inter-line changes after the current scanline
+	// The ideas for much of the following code was inspired by MESS
+    // (used with permission from Wilbert Pol)
+    if(line != startLine)
+    {
+      // We're no longer concerned with previously issued HMOVE's
+      myPreviousHMOVEPos = 0x7FFFFFFF;
+      bool posChanged = false;
+
+      // Apply pending motion clocks from a HMOVE initiated during the scanline
+      if(myCurrentHMOVEPos != 0x7FFFFFFF)
+      {
+        if(myCurrentHMOVEPos >= 97 && myCurrentHMOVEPos < 157)
+        {
+          myPOSP0 -= myMotionClockP0;
+          myPOSP1 -= myMotionClockP1;
+          myPOSM0 -= myMotionClockM0;
+          myPOSM1 -= myMotionClockM1;
+          myPOSBL -= myMotionClockBL;
+          myPreviousHMOVEPos = myCurrentHMOVEPos;
+          posChanged = true;
+        }
+        // Indicate that the HMOVE has been completed
+        myCurrentHMOVEPos = 0x7FFFFFFF;
+      }
+#ifdef USE_MMR_LATCHES
+      // Apply extra clocks for 'more motion required/mmr'
+      if(myHMP0mmr) { myPOSP0 -= 17; posChanged = true; }
+      if(myHMP1mmr) { myPOSP1 -= 17; posChanged = true; }
+      if(myHMM0mmr) { myPOSM0 -= 17; posChanged = true; }
+      if(myHMM1mmr) { myPOSM1 -= 17; posChanged = true; }
+      if(myHMBLmmr) { myPOSBL -= 17; posChanged = true; }
+#endif
+      // Make sure positions are in range
+      if(posChanged)
+      {
+        if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
+        if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
+        if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+        if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+        if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
+      }
+    }
+
     // Compute the number of clocks we're going to update
     Int32 clocksToUpdate = 0;
 
@@ -1325,9 +1400,7 @@ void TIA::updateFrame(Int32 clock)
 
     // Update as much of the scanline as we can
     if(clocksToUpdate != 0)
-    {
       updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
-    }
 
     // Handle HMOVE blanks if they are enabled
     if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
@@ -1337,9 +1410,7 @@ void TIA::updateFrame(Int32 clock)
       memset(oldFramePointer, 0, blanks);
 
       if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
-      {
         myHMOVEBlankEnabled = false;
-      }
     }
 
     // See if we're at the end of a scanline
@@ -1351,48 +1422,10 @@ void TIA::updateFrame(Int32 clock)
       // TODO: These should be reset right after the first copy of the player
       // has passed.  However, for now we'll just reset at the end of the 
       // scanline since the other way would be to slow (01/21/99).
-      myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-          [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-      myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-          [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-
-#ifndef NO_HMOVE_FIXES
-      // Handle the "Cosmic Ark" TIA bug if it's enabled
-      if(myM0CosmicArkMotionEnabled)
-      {
-        // Movement table associated with the bug
-        static uInt32 m[4] = {18, 33, 0, 17};
-
-        myM0CosmicArkCounter = (myM0CosmicArkCounter + 1) & 3;
-        myPOSM0 -= m[myM0CosmicArkCounter];
-
-        if(myPOSM0 >= 160)
-          myPOSM0 -= 160;
-        else if(myPOSM0 < 0)
-          myPOSM0 += 160;
-
-        if(myM0CosmicArkCounter == 1)
-        {
-          // Stretch this missle so it's at least 2 pixels wide
-          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
-              [160 - (myPOSM0 & 0xFC)];
-        }
-        else if(myM0CosmicArkCounter == 2)
-        {
-          // Missle is disabled on this line 
-          myCurrentM0Mask = &TIATables::DisabledMask[0];
-        }
-        else
-        {
-          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-        }
-      }
-#endif
+P0suppress = 0;
+P1suppress = 0;
     }
-  } 
-  while(myClockAtLastUpdate < clock);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1402,9 +1435,7 @@ inline void TIA::waitHorizontalSync()
       (myClockWhenFrameStarted / 3)) % 76);
 
   if(cyclesToEndOfLine < 76)
-  {
     mySystem->incrementCycles(cyclesToEndOfLine);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1413,13 +1444,13 @@ void TIA::greyOutFrame()
   uInt32 c = scanlines();
   if(c < myFrameYStart) c = myFrameYStart;
 
+  uInt8* buffer = myCurrentFrameBuffer + myFramePointerOffset;
   for(uInt32 s = c; s < (myFrameHeight + myFrameYStart); ++s)
   {
     for(uInt32 i = 0; i < 160; ++i)
     {
-      uInt8 tmp = myCurrentFrameBuffer[ (s - myFrameYStart) * 160 + i] & 0x0f;
-      tmp >>= 1;
-      myCurrentFrameBuffer[ (s - myFrameYStart) * 160 + i] = tmp;
+      uInt32 idx = (s - myFrameYStart) * 160 + i;
+      buffer[idx] = ((buffer[idx] & 0x0f) >> 1);
     }
   }
 }
@@ -1458,8 +1489,6 @@ inline uInt8 TIA::dumpedInputPort(int resistance)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIA::peek(uInt16 addr)
 {
-  // TODO - convert all constants to enums (TIA.cs/530)
-
   // Update frame to current color clock before we look at anything!
   updateFrame(mySystem->cycles() * 3);
 
@@ -1530,7 +1559,6 @@ uInt8 TIA::peek(uInt16 addr)
       value = myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00;
       break;
 
-    case 0x0e:  // TODO - document this address
     default:
       break;
   }
@@ -1563,7 +1591,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
   updateFrame(clock + delay);
 
   // If a VSYNC hasn't been generated in time go ahead and end the frame
-  if(((clock - myClockWhenFrameStarted) / 228) > myMaximumNumberOfScanlines)
+  if(((clock - myClockWhenFrameStarted) / 228) > (Int32)myMaximumNumberOfScanlines)
   {
     mySystem->m6502().stop();
     myPartialFrameFlag = false;
@@ -1638,33 +1666,17 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case NUSIZ0:  // Number-size of player-missle 0
     {
+//cerr << "NUSIZ0 set: " << (int)myNUSIZ0 << " => " << (int)value << " @ " << (clock + delay) << ", p0 pos = " << myPOSP0 << endl;
       myNUSIZ0 = value;
-
-      // TODO: Technically the "enable" part, [0], should depend on the current
-      // enabled or disabled state.  This mean we probably need a data member
-      // to maintain that state (01/21/99).
-      myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-          [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-
-      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-          [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-
+P0suppress = 0;
       break;
     }
 
     case NUSIZ1:  // Number-size of player-missle 1
     {
+//cerr << "NUSIZ1 set: " << (int)myNUSIZ1 << " => " << (int)value << " @ " << (clock + delay) << endl;
       myNUSIZ1 = value;
-
-      // TODO: Technically the "enable" part, [0], should depend on the current
-      // enabled or disabled state.  This mean we probably need a data member
-      // to maintain that state (01/21/99).
-      myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-          [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-
-      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-          [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
-
+P1suppress = 0;
       break;
     }
 
@@ -1724,9 +1736,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // Update the playfield mask based on reflection state if 
       // we're still on the left hand side of the playfield
       if(((clock - myClockWhenFrameStarted) % 228) < (68 + 79))
-      {
         myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
-      }
 
       myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
           [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
@@ -1794,18 +1804,29 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case RESP0:   // Reset Player 0
     {
-      Int32 hpos = (clock - myClockWhenFrameStarted) % 228;
-      Int32 newx = hpos < HBLANK ? 3 : (((hpos - HBLANK) + 5) % 160);
+      Int32 hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+      Int16 newx;
+
+      // Check if HMOVE is currently active
+      if(myCurrentHMOVEPos != 0x7FFFFFFF)
+      {
+        newx = hpos < 7 ? 3 : ((hpos + 5) % 160);
+        // If HMOVE is active, adjust for any remaining horizontal move clocks
+        applyActiveHMOVEMotion(hpos, newx, myMotionClockP0);
+      }
+      else
+      {
+        newx = hpos < -2 ? 3 : ((hpos + 5) % 160);
+        applyPreviousHMOVEMotion(hpos, newx, myHMP0);
+      }
+      if(newx != myPOSP0)
+      {
+//        myPOSP0 = newx;
+//        myStartP0 = 0;
+      }
 
       // Find out under what condition the player is being reset
       Int8 when = TIATables::PxPosResetWhen[myNUSIZ0 & 7][myPOSP0][newx];
-
-#ifdef DEBUG_HMOVE
-      if((clock - myLastHMOVEClock) < (24 * 3))
-        cerr << "Reset Player 0 within 24 cycles of HMOVE: "
-             << ((clock - myLastHMOVEClock)/3)
-             << "  hpos: " << hpos << ", newx = " << newx << endl;
-#endif
 
       // Player is being reset during the display of one of its copies
       if(when == 1)
@@ -1814,49 +1835,51 @@ void TIA::poke(uInt16 addr, uInt8 value)
         // TODO: The 11 should depend on how much of the player has already
         // been displayed.  Probably change table to return the amount to
         // delay by instead of just 1 (01/21/99).
-        updateFrame(clock + 11);
+//        updateFrame(clock + 11);
 
         myPOSP0 = newx;
-
-        // Setup the mask to skip the first copy of the player
-        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-            [1][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+P0suppress = 1;
       }
       // Player is being reset in neither the delay nor display section
       else if(when == 0)
       {
         myPOSP0 = newx;
-
-        // So we setup the mask to skip the first copy of the player
-        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-            [1][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+P0suppress = 1;
       }
       // Player is being reset during the delay section of one of its copies
       else if(when == -1)
       {
         myPOSP0 = newx;
-
-        // So we setup the mask to display all copies of the player
-        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-            [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+P0suppress = 0;
       }
       break;
     }
 
     case RESP1:   // Reset Player 1
     {
-      Int32 hpos = (clock - myClockWhenFrameStarted) % 228;
-      Int32 newx = hpos < HBLANK ? 3 : (((hpos - HBLANK) + 5) % 160);
+      Int32 hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+      Int16 newx;
+
+      // Check if HMOVE is currently active
+      if(myCurrentHMOVEPos != 0x7FFFFFFF)
+      {
+        newx = hpos < 7 ? 3 : ((hpos + 5) % 160);
+        // If HMOVE is active, adjust for any remaining horizontal move clocks
+        applyActiveHMOVEMotion(hpos, newx, myMotionClockP1);
+      }
+      else
+      {
+        newx = hpos < -2 ? 3 : ((hpos + 5) % 160);
+        applyPreviousHMOVEMotion(hpos, newx, myHMP1);
+      }
+      if(newx != myPOSP1)
+      {
+//        myPOSP1 = newx;
+//        myStartP1 = 0;
+      }
 
       // Find out under what condition the player is being reset
       Int8 when = TIATables::PxPosResetWhen[myNUSIZ1 & 7][myPOSP1][newx];
-
-#ifdef DEBUG_HMOVE
-      if((clock - myLastHMOVEClock) < (24 * 3))
-        cerr << "Reset Player 1 within 24 cycles of HMOVE: "
-             << ((clock - myLastHMOVEClock)/3)
-             << "  hpos: " << hpos << ", newx = " << newx << endl;
-#endif
 
       // Player is being reset during the display of one of its copies
       if(when == 1)
@@ -1865,163 +1888,92 @@ void TIA::poke(uInt16 addr, uInt8 value)
         // TODO: The 11 should depend on how much of the player has already
         // been displayed.  Probably change table to return the amount to
         // delay by instead of just 1 (01/21/99).
-        updateFrame(clock + 11);
+//        updateFrame(clock + 11);
 
         myPOSP1 = newx;
-
-        // Setup the mask to skip the first copy of the player
-        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-            [1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+P1suppress = 1;
       }
       // Player is being reset in neither the delay nor display section
       else if(when == 0)
       {
         myPOSP1 = newx;
-
-        // So we setup the mask to skip the first copy of the player
-        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-            [1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+P1suppress = 1;
       }
       // Player is being reset during the delay section of one of its copies
       else if(when == -1)
       {
         myPOSP1 = newx;
-
-        // So we setup the mask to display all copies of the player
-        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-            [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+P1suppress = 0;
       }
       break;
     }
 
     case RESM0:   // Reset Missle 0
     {
-      int hpos = (clock - myClockWhenFrameStarted) % 228;
-      myPOSM0 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
+      Int32 hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+      Int16 newx;
 
-#ifdef DEBUG_HMOVE
-      if((clock - myLastHMOVEClock) < (24 * 3))
-        cerr << "Reset Missle 0 within 24 cycles of HMOVE: "
-             << ((clock - myLastHMOVEClock)/3)
-             << "  hpos: " << hpos << ", myPOSM0 = " << myPOSM0 << endl;
-#endif
-
-#ifndef NO_HMOVE_FIXES
-      // TODO: Remove the following special hack for Dolphin by
-      // figuring out what really happens when Reset Missle 
-      // occurs 20 cycles after an HMOVE (04/13/02).
-      if(((clock - myLastHMOVEClock) == (20 * 3)) && (hpos == 69))
+      // Check if HMOVE is currently active
+      if(myCurrentHMOVEPos != 0x7FFFFFFF)
       {
-        myPOSM0 = 8;
+        newx = hpos < 7 ? 2 : ((hpos + 4) % 160);
+        // If HMOVE is active, adjust for any remaining horizontal move clocks
+        applyActiveHMOVEMotion(hpos, newx, myMotionClockM0);
       }
-      // TODO: Remove the following special hack for Solaris by
-      // figuring out what really happens when Reset Missle 
-      // occurs 9 cycles after an HMOVE (04/11/08).
-      else if(((clock - myLastHMOVEClock) == (9 * 3)) && (hpos == 36))
+      else
       {
-        myPOSM0 = 8;
+        newx = hpos < -1 ? 2 : ((hpos + 4) % 160);
+        applyPreviousHMOVEMotion(hpos, newx, myHMM0);
       }
-#endif
-      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-          [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+      if(newx != myPOSM0)
+      {
+        // myStartM0 = skipM0delay ? 1 : 0;
+        myPOSM0 = newx;
+      }
       break;
     }
 
     case RESM1:   // Reset Missle 1
     {
-      int hpos = (clock - myClockWhenFrameStarted) % 228;
-      myPOSM1 = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
+      Int32 hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+      Int16 newx;
 
-#ifdef DEBUG_HMOVE
-      if((clock - myLastHMOVEClock) < (24 * 3))
-        cerr << "Reset Missle 1 within 24 cycles of HMOVE: "
-             << ((clock - myLastHMOVEClock)/3)
-             << "  hpos: " << hpos << ", myPOSM1 = " << myPOSM1 << endl;
-#endif
-
-#ifndef NO_HMOVE_FIXES
-      // TODO: Remove the following special hack for Pitfall II by
-      // figuring out what really happens when Reset Missle 
-      // occurs 3 cycles after an HMOVE (04/13/02).
-      if(((clock - myLastHMOVEClock) == (3 * 3)) && (hpos == 18))
+      // Check if HMOVE is currently active
+      if(myCurrentHMOVEPos != 0x7FFFFFFF)
       {
-        myPOSM1 = 3;
+        newx = hpos < 7 ? 2 : ((hpos + 4) % 160);
+        // If HMOVE is active, adjust for any remaining horizontal move clocks
+        applyActiveHMOVEMotion(hpos, newx, myMotionClockM1);
       }
-#endif
-      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-          [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+      else
+      {
+        newx = hpos < -1 ? 2 : ((hpos + 4) % 160);
+        applyPreviousHMOVEMotion(hpos, newx, myHMM1);
+      }
+      if(newx != myPOSM1)
+      {
+        // myStartM1 = skipM1delay ? 1 : 0;
+        myPOSM1 = newx;
+      }
       break;
     }
 
     case RESBL:   // Reset Ball
     {
-      int hpos = (clock - myClockWhenFrameStarted) % 228 ;
-      myPOSBL = hpos < HBLANK ? 2 : (((hpos - HBLANK) + 4) % 160);
+      Int32 hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
 
-#ifdef DEBUG_HMOVE
-      if((clock - myLastHMOVEClock) < (24 * 3))
-        cerr << "Reset Ball within 24 cycles of HMOVE: "
-             << ((clock - myLastHMOVEClock)/3)
-             << "  hpos: " << hpos << ", myPOSBL = " << myPOSBL << endl;
-#endif
-
-#ifndef NO_HMOVE_FIXES
-      // TODO: Remove the following special hack by figuring out what
-      // really happens when Reset Ball occurs 18 cycles after an HMOVE.
-      if((clock - myLastHMOVEClock) == (18 * 3))
+      // Check if HMOVE is currently active
+      if(myCurrentHMOVEPos != 0x7FFFFFFF)
       {
-        // Escape from the Mindmaster (01/09/99)
-        if((hpos == 60) || (hpos == 69))
-          myPOSBL = 10;
-        // Mission Survive (04/11/08)
-        else if(hpos == 63)
-          myPOSBL = 7;
+        myPOSBL = hpos < 7 ? 2 : ((hpos + 4) % 160);
+        // If HMOVE is active, adjust for any remaining horizontal move clocks
+        applyActiveHMOVEMotion(hpos, myPOSBL, myMotionClockBL);
       }
-      // TODO: Remove the following special hack for Escape from the
-      // Mindmaster by figuring out what really happens when Reset Ball 
-      // occurs 15 cycles after an HMOVE (04/11/08).
-      else if(((clock - myLastHMOVEClock) == (15 * 3)) && (hpos == 60))
+      else
       {
-        myPOSBL = 10;
-      } 
-      // TODO: Remove the following special hack for Decathlon by
-      // figuring out what really happens when Reset Ball 
-      // occurs 3 cycles after an HMOVE (04/13/02).
-      else if(((clock - myLastHMOVEClock) == (3 * 3)) && (hpos == 18))
-      {
-        myPOSBL = 3;
-      } 
-      // TODO: Remove the following special hack for Robot Tank by
-      // figuring out what really happens when Reset Ball 
-      // occurs 7 cycles after an HMOVE (04/13/02).
-      else if(((clock - myLastHMOVEClock) == (7 * 3)) && (hpos == 30))
-      {
-        myPOSBL = 6;
-      } 
-      // TODO: Remove the following special hack for Hole Hunter by
-      // figuring out what really happens when Reset Ball 
-      // occurs 6 cycles after an HMOVE (04/13/02).
-      else if(((clock - myLastHMOVEClock) == (6 * 3)) && (hpos == 27))
-      {
-        myPOSBL = 5;
+        myPOSBL = hpos < 0 ? 2 : ((hpos + 4) % 160);
+        applyPreviousHMOVEMotion(hpos, myPOSBL, myHMBL);
       }
-      // TODO: Remove the following special hack for Swoops! by
-      // figuring out what really happens when Reset Ball 
-      // occurs 9 cycles after an HMOVE (04/11/08).
-      else if(((clock - myLastHMOVEClock) == (9 * 3)) && (hpos == 36))
-      {
-        myPOSBL = 7;
-      }
-      // TODO: Remove the following special hack for Solaris by
-      // figuring out what really happens when Reset Ball 
-      // occurs 12 cycles after an HMOVE (04/11/08).
-      else if(((clock - myLastHMOVEClock) == (12 * 3)) && (hpos == 45))
-      {
-        myPOSBL = 8;
-      }
-#endif
-      myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
-          [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
       break;
     }
 
@@ -2171,45 +2123,35 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case HMP0:    // Horizontal Motion Player 0
     {
-      myHMP0 = value >> 4;
+      pokeHMP0(value, clock);
       break;
     }
 
     case HMP1:    // Horizontal Motion Player 1
     {
-      myHMP1 = value >> 4;
+      pokeHMP1(value, clock);
       break;
     }
 
     case HMM0:    // Horizontal Motion Missle 0
     {
-      Int8 tmp = value >> 4;
-
-#ifndef NO_HMOVE_FIXES
-      // Should we enabled TIA M0 "bug" used for stars in Cosmic Ark?
-      if((clock == (myLastHMOVEClock + 21 * 3)) && (myHMM0 == 7) && (tmp == 6))
-      {
-        myM0CosmicArkMotionEnabled = true;
-        myM0CosmicArkCounter = 0;
-      }
-#endif
-      myHMM0 = tmp;
+      pokeHMM0(value, clock);
       break;
     }
 
     case HMM1:    // Horizontal Motion Missle 1
     {
-      myHMM1 = value >> 4;
+      pokeHMM1(value, clock);
       break;
     }
 
     case HMBL:    // Horizontal Motion Ball
     {
-      myHMBL = value >> 4;
+      pokeHMBL(value, clock);
       break;
     }
 
-    case VDELP0:  // Vertial Delay Player 0
+    case VDELP0:  // Vertical Delay Player 0
     {
       myVDELP0 = value & 0x01;
 
@@ -2223,7 +2165,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case VDELP1:  // Vertial Delay Player 1
+    case VDELP1:  // Vertical Delay Player 1
     {
       myVDELP1 = value & 0x01;
 
@@ -2237,7 +2179,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
 
-    case VDELBL:  // Vertial Delay Ball
+    case VDELBL:  // Vertical Delay Ball
     {
       myVDELBL = value & 0x01;
 
@@ -2252,20 +2194,21 @@ void TIA::poke(uInt16 addr, uInt8 value)
     {
       if(myRESMP0 && !(value & 0x02))
       {
-        uInt16 middle;
-
-        if((myNUSIZ0 & 0x07) == 0x05)
-          middle = 8;
-        else if((myNUSIZ0 & 0x07) == 0x07)
-          middle = 16;
-        else
-          middle = 4;
-
-        myPOSM0 = (myPOSP0 + middle) % 160;
-        myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-            [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+        uInt16 middle = 4;
+        switch(myNUSIZ0 & 0x07)
+        {
+          case 0x05: middle = 8;  break;  // double size
+          case 0x07: middle = 16; break;  // quad size
+        }
+        myPOSM0 = myPOSP0 + middle;
+        if(myCurrentHMOVEPos != 0x7FFFFFFF)
+        {
+          myPOSM0 -= (8 - myMotionClockP0);
+          myPOSM0 += (8 - myMotionClockM0);
+          if(myPOSM0 < 0)  myPOSM0 += 160;
+        }
+        myPOSM0 %= 160;
       }
-
       myRESMP0 = value & 0x02;
 
       if(myENAM0 && !myRESMP0)
@@ -2280,20 +2223,21 @@ void TIA::poke(uInt16 addr, uInt8 value)
     {
       if(myRESMP1 && !(value & 0x02))
       {
-        uInt16 middle;
-
-        if((myNUSIZ1 & 0x07) == 0x05)
-          middle = 8;
-        else if((myNUSIZ1 & 0x07) == 0x07)
-          middle = 16;
-        else
-          middle = 4;
-
-        myPOSM1 = (myPOSP1 + middle) % 160;
-        myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-            [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+        uInt16 middle = 4;
+        switch(myNUSIZ1 & 0x07)
+        {
+          case 0x05: middle = 8;  break;  // double size
+          case 0x07: middle = 16; break;  // quad size
+        }
+        myPOSM1 = myPOSP1 + middle;
+        if(myCurrentHMOVEPos != 0x7FFFFFFF)
+        {
+          myPOSM1 -= (8 - myMotionClockP1);
+          myPOSM1 += (8 - myMotionClockM1);
+          if(myPOSM1 < 0)  myPOSM1 += 160;
+        }
+        myPOSM1 %= 160;
       }
-
       myRESMP1 = value & 0x02;
 
       if(myENAM1 && !myRESMP1)
@@ -2305,75 +2249,103 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case HMOVE:   // Apply horizontal motion
     {
+      int hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+      myCurrentHMOVEPos = hpos;
+
       // Figure out what cycle we're at
       Int32 x = ((clock - myClockWhenFrameStarted) % 228) / 3;
 
       // See if we need to enable the HMOVE blank bug
-      if(TIATables::HMOVEBlankEnableCycles[x])
+      myHMOVEBlankEnabled = TIATables::HMOVEBlankEnableCycles[x];
+
+#ifdef USE_MMR_LATCHES
+      // Do we have to undo some of the already applied cycles from an
+      // active graphics latch?
+      if(hpos + HBLANK < 17 * 4)
       {
-        // TODO: Allow this to be turned off using properties...
-        myHMOVEBlankEnabled = true;
+        Int16 cycle_fix = 17 - ((hpos + VBLANK + 7) / 4);
+        if(myHMP0mmr)  myPOSP0 = (myPOSP0 + cycle_fix) % 160;
+        if(myHMP1mmr)  myPOSP1 = (myPOSP1 + cycle_fix) % 160;
+        if(myHMM0mmr)  myPOSM0 = (myPOSM0 + cycle_fix) % 160;
+        if(myHMM1mmr)  myPOSM1 = (myPOSM1 + cycle_fix) % 160;
+        if(myHMBLmmr)  myPOSBL = (myPOSBL + cycle_fix) % 160;
+      }
+      myHMP0mmr = myHMP1mmr = myHMM0mmr = myHMM1mmr = myHMBLmmr = false;
+#endif
+      // Can HMOVE activities be ignored?
+      if(hpos >= -5 && hpos < 97 )
+      {
+        myMotionClockP0 = 0;
+        myMotionClockP1 = 0;
+        myMotionClockM0 = 0;
+        myMotionClockM1 = 0;
+        myMotionClockBL = 0;
+        myHMOVEBlankEnabled = false;
+        myCurrentHMOVEPos = 0x7FFFFFFF;
+        break;
       }
 
-      myPOSP0 += TIATables::CompleteMotion[x][myHMP0];
-      myPOSP1 += TIATables::CompleteMotion[x][myHMP1];
-      myPOSM0 += TIATables::CompleteMotion[x][myHMM0];
-      myPOSM1 += TIATables::CompleteMotion[x][myHMM1];
-      myPOSBL += TIATables::CompleteMotion[x][myHMBL];
+      myMotionClockP0 = (myHMP0 ^ 0x80) >> 4;
+      myMotionClockP1 = (myHMP1 ^ 0x80) >> 4;
+      myMotionClockM0 = (myHMM0 ^ 0x80) >> 4;
+      myMotionClockM1 = (myHMM1 ^ 0x80) >> 4;
+      myMotionClockBL = (myHMBL ^ 0x80) >> 4;
 
-      if(myPOSP0 >= 160)
-        myPOSP0 -= 160;
-      else if(myPOSP0 < 0)
-        myPOSP0 += 160;
+      // Adjust number of graphics motion clocks for active display
+      if(hpos >= 97 && hpos < 151)
+      {
+        Int16 skip_motclks = (160 - myCurrentHMOVEPos - 6) >> 2;
+        myMotionClockP0 -= skip_motclks;
+        myMotionClockP1 -= skip_motclks;
+        myMotionClockM0 -= skip_motclks;
+        myMotionClockM1 -= skip_motclks;
+        myMotionClockBL -= skip_motclks;
+        if(myMotionClockP0 < 0)  myMotionClockP0 = 0;
+        if(myMotionClockP1 < 0)  myMotionClockP1 = 0;
+        if(myMotionClockM0 < 0)  myMotionClockM0 = 0;
+        if(myMotionClockM1 < 0)  myMotionClockM1 = 0;
+        if(myMotionClockBL < 0)  myMotionClockBL = 0;
+      }
 
-      if(myPOSP1 >= 160)
-        myPOSP1 -= 160;
-      else if(myPOSP1 < 0)
-        myPOSP1 += 160;
+      if(hpos >= -56 && hpos < -5)
+      {
+        Int16 max_motclks = (7 - (myCurrentHMOVEPos + 5)) >> 2;
+        if(myMotionClockP0 > max_motclks)  myMotionClockP0 = max_motclks;
+        if(myMotionClockP1 > max_motclks)  myMotionClockP1 = max_motclks;
+        if(myMotionClockM0 > max_motclks)  myMotionClockM0 = max_motclks;
+        if(myMotionClockM1 > max_motclks)  myMotionClockM1 = max_motclks;
+        if(myMotionClockBL > max_motclks)  myMotionClockBL = max_motclks;
+      }
 
-      if(myPOSM0 >= 160)
-        myPOSM0 -= 160;
-      else if(myPOSM0 < 0)
-        myPOSM0 += 160;
+      // Apply horizontal motion
+      if(hpos < -5 || hpos >= 157)
+      {
+        myPOSP0 += 8 - myMotionClockP0;
+        myPOSP1 += 8 - myMotionClockP1;
+        myPOSM0 += 8 - myMotionClockM0;
+        myPOSM1 += 8 - myMotionClockM1;
+        myPOSBL += 8 - myMotionClockBL;
+      }
 
-      if(myPOSM1 >= 160)
-        myPOSM1 -= 160;
-      else if(myPOSM1 < 0)
-        myPOSM1 += 160;
+      // Make sure positions are in range
+      if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
+      if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
+      if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+      if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+      if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
 
-      if(myPOSBL >= 160)
-        myPOSBL -= 160;
-      else if(myPOSBL < 0)
-        myPOSBL += 160;
-
-      myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
-          [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
-
-      myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-          [0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-      myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-          [0][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-
-      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-          [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-          [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
-
-      // Remember what clock HMOVE occured at
-      myLastHMOVEClock = clock;
-
-      // Disable TIA M0 "bug" used for stars in Cosmic ark
-      myM0CosmicArkMotionEnabled = false;
+P0suppress = 0;
+P1suppress = 0;
       break;
     }
 
     case HMCLR:   // Clear horizontal motion registers
     {
-      myHMP0 = 0;
-      myHMP1 = 0;
-      myHMM0 = 0;
-      myHMM1 = 0;
-      myHMBL = 0;
+      pokeHMP0(0, clock);
+      pokeHMP1(0, clock);
+      pokeHMM0(0, clock);
+      pokeHMM1(0, clock);
+      pokeHMBL(0, clock);
       break;
     }
 
@@ -2389,6 +2361,240 @@ void TIA::poke(uInt16 addr, uInt8 value)
       cerr << "BAD TIA Poke: " << hex << addr << endl;
 #endif
       break;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Note that the following methods to change the horizontal motion registers
+// are not completely accurate.  We should be taking care of the following
+// explanation from A. Towers Hardware Notes:
+//
+//   Much more interesting is this: if the counter has not yet
+//   reached the value in HMxx (or has reached it but not yet
+//   commited the comparison) and a value with at least one bit
+//   in common with all remaining internal counter states is
+//   written (zeros or ones), the stopping condition will never be
+//   reached and the object will be moved a full 15 pixels left.
+//   In addition to this, the HMOVE will complete without clearing
+//   the "more movement required" latch, and so will continue to send
+//   an additional clock signal every 4 CLK (during visible and
+//   non-visible parts of the scanline) until another HMOVE operation
+//   clears the latch. The HMCLR command does not reset these latches.
+//
+// This condition is what causes the 'starfield effect' in Cosmic Ark,
+// and the 'snow' in Stay Frosty.  Ideally, we'd trace the counter and
+// do a compare every colour clock, updating the horizontal positions
+// when applicable.  We can save time by cheating, and noting that the
+// effect only occurs for 'magic numbers' 0x70 and 0x80.
+//
+// Most of the ideas in these methods come from MESS.
+// (used with permission from Wilbert Pol)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::pokeHMP0(uInt8 value, Int32 clock)
+{
+  value &= 0xF0;
+  if(myHMP0 == value)
+    return;
+
+  int hpos  = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+
+  // Check if HMOVE is currently active
+  if(myCurrentHMOVEPos != 0x7FFFFFFF &&
+     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockP0 * 4, 7))
+  {
+    Int32 newMotion = (value ^ 0x80) >> 4;
+    // Check if new horizontal move can still be applied normally
+    if(newMotion > myMotionClockP0 ||
+       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+    {
+      myPOSP0 -= (newMotion - myMotionClockP0);
+      myMotionClockP0 = newMotion;
+    }
+    else
+    {
+      myPOSP0 -= (15 - myMotionClockP0);
+      myMotionClockP0 = 15;
+      if(value != 0x70 && value != 0x80)
+        myHMP0mmr = true;
+    }
+    if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
+  }
+  myHMP0 = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::pokeHMP1(uInt8 value, Int32 clock)
+{
+  value &= 0xF0;
+  if(myHMP1 == value)
+    return;
+
+  int hpos  = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+
+  // Check if HMOVE is currently active
+  if(myCurrentHMOVEPos != 0x7FFFFFFF &&
+     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockP1 * 4, 7))
+  {
+    Int32 newMotion = (value ^ 0x80) >> 4;
+    // Check if new horizontal move can still be applied normally
+    if(newMotion > myMotionClockP1 ||
+       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+    {
+      myPOSP1 -= (newMotion - myMotionClockP1);
+      myMotionClockP1 = newMotion;
+    }
+    else
+    {
+      myPOSP1 -= (15 - myMotionClockP1);
+      myMotionClockP1 = 15;
+      if(value != 0x70 && value != 0x80)
+        myHMP1mmr = true;
+    }
+    if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
+  }
+  myHMP1 = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::pokeHMM0(uInt8 value, Int32 clock)
+{
+  value &= 0xF0;
+  if(myHMM0 == value)
+    return;
+
+  int hpos  = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+
+  // Check if HMOVE is currently active
+  if(myCurrentHMOVEPos != 0x7FFFFFFF &&
+     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockM0 * 4, 7))
+  {
+    Int32 newMotion = (value ^ 0x80) >> 4;
+    // Check if new horizontal move can still be applied normally
+    if(newMotion > myMotionClockM0 ||
+       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+    {
+      myPOSM0 -= (newMotion - myMotionClockM0);
+      myMotionClockM0 = newMotion;
+    }
+    else
+    {
+      myPOSM0 -= (15 - myMotionClockM0);
+      myMotionClockM0 = 15;
+      if(value != 0x70 && value != 0x80)
+        myHMM0mmr = true;
+    }
+    if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+  }
+  myHMM0 = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::pokeHMM1(uInt8 value, Int32 clock)
+{
+  value &= 0xF0;
+  if(myHMM1 == value)
+    return;
+
+  int hpos  = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+
+  // Check if HMOVE is currently active
+  if(myCurrentHMOVEPos != 0x7FFFFFFF &&
+     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockM1 * 4, 7))
+  {
+    Int32 newMotion = (value ^ 0x80) >> 4;
+    // Check if new horizontal move can still be applied normally
+    if(newMotion > myMotionClockM1 ||
+       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+    {
+      myPOSM1 -= (newMotion - myMotionClockM1);
+      myMotionClockM1 = newMotion;
+    }
+    else
+    {
+      myPOSM1 -= (15 - myMotionClockM1);
+      myMotionClockM1 = 15;
+      if(value != 0x70 && value != 0x80)
+        myHMM1mmr = true;
+    }
+    if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+  }
+  myHMM1 = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::pokeHMBL(uInt8 value, Int32 clock)
+{
+  value &= 0xF0;
+  if(myHMBL == value)
+    return;
+
+  int hpos  = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
+
+  // Check if HMOVE is currently active
+  if(myCurrentHMOVEPos != 0x7FFFFFFF &&
+     hpos < BSPF_min(myCurrentHMOVEPos + 6 + myMotionClockBL * 4, 7))
+  {
+    Int32 newMotion = (value ^ 0x80) >> 4;
+    // Check if new horizontal move can still be applied normally
+    if(newMotion > myMotionClockBL ||
+       hpos <= BSPF_min(myCurrentHMOVEPos + 6 + newMotion * 4, 7))
+    {
+      myPOSBL -= (newMotion - myMotionClockBL);
+      myMotionClockBL = newMotion;
+    }
+    else
+    {
+      myPOSBL -= (15 - myMotionClockBL);
+      myMotionClockBL = 15;
+      if(value != 0x70 && value != 0x80)
+        myHMBLmmr = true;
+    }
+    if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
+  }
+  myHMBL = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// The following two methods apply extra clocks when a horizontal motion
+// register (HMxx) is modified during an HMOVE, before waiting for the
+// documented time of at least 24 CPU cycles.  The applicable explanation
+// from A. Towers Hardware Notes is as follows:
+//
+//   In theory then the side effects of modifying the HMxx registers
+//   during HMOVE should be quite straight-forward. If the internal
+//   counter has not yet reached the value in HMxx, a new value greater
+//   than this (in 0-15 terms) will work normally. Conversely, if
+//   the counter has already reached the value in HMxx, new values
+//   will have no effect because the latch will have been cleared.
+//
+// Most of the ideas in these methods come from MESS.
+// (used with permission from Wilbert Pol)
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void TIA::applyActiveHMOVEMotion(int hpos, Int16& pos, Int32 motionClock)
+{
+  if(hpos < BSPF_min(myCurrentHMOVEPos + 6 + 16 * 4, 7))
+  {
+    Int32 decrements_passed = (hpos - (myCurrentHMOVEPos + 4)) >> 2;
+    pos += 8;
+    if((motionClock - decrements_passed) > 0)
+    {
+      pos -= (motionClock - decrements_passed);
+      if(pos < 0)  pos += 160;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void TIA::applyPreviousHMOVEMotion(int hpos, Int16& pos, uInt8 motion)
+{
+  if(myPreviousHMOVEPos != 0x7FFFFFFF)
+  {
+    uInt8 motclk = (motion ^ 0x80) >> 4;
+    if(hpos <= myPreviousHMOVEPos - 228 + 5 + motclk * 4)
+    {
+      uInt8 motclk_passed = (hpos - (myPreviousHMOVEPos - 228 + 6)) >> 2;
+      pos -= (motclk - motclk_passed);
     }
   }
 }

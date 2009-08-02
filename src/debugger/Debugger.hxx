@@ -306,8 +306,16 @@ class Debugger : public DialogContainer
     bool setBank(int bank);
     bool patchROM(int addr, int value);
 
-    void lockState();
-    void unlockState();
+    /**
+      Normally, accessing RAM or ROM during emulation can possibly trigger
+      bankswitching.  However, when we're in the debugger, we'd like to
+      inspect values without actually triggering bankswitches.  The
+      read/write state must therefore be locked before accessing values,
+      and unlocked for normal emulation to occur.
+      (takes mediasource into account)
+    */
+    void lockBankswitchState();
+    void unlockBankswitchState();
 
   private:
     /**

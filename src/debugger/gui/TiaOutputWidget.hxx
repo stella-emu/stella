@@ -49,8 +49,6 @@ class TiaOutputWidget : public Widget, public CommandSender
     virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
     virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
 */
-    void advanceScanline(int lines);
-    void advance(int frames);
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
