@@ -24,16 +24,16 @@ int main(int ac, char* av[])
     in.read((char*)data, len);
     in.close();
 
-    cout << "    ";
+    cout << "SIZE = " << (len - 2) << endl << "  ";
 
     // Skip first two bytes; they shouldn't be used
     for(int t = 2; t < len; ++t)
     {
-      cout << "0x" << hex << (int)data[t];
+      cout << "0x" << setw(2) << setfill('0') << hex << (int)data[t];
       if(t < len - 1)
         cout << ", ";
       if(((t-2) % 8) == 7)
-        cout << endl << "    ";
+        cout << endl << "  ";
     }
     cout << endl;
     delete[] data;

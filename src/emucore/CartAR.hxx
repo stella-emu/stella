@@ -205,6 +205,13 @@ class CartridgeAR : public Cartridge
     bool myWritePending;
 
     uInt16 myCurrentBank;
+
+    // Fake SC-BIOS code to simulate the Supercharger load bars
+    static uInt8 ourDummyROMCode[294];
+
+    // Default 256-byte header to use if one isn't included in the ROM
+    // This data comes from z26
+    static uInt8 ourDefaultHeader[256];
 };
 
 #endif

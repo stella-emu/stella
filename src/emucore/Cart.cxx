@@ -263,7 +263,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   // Guess type based on size
   const char* type = 0;
 
-  if((size % 8448) == 0)
+  if((size % 8448) == 0 || size == 6144)
   {
     type = "AR";
   }
