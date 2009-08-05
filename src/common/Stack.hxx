@@ -22,10 +22,10 @@
 #ifndef STACK_HXX
 #define STACK_HXX
 
-#include <assert.h>
+#include <cassert>
 
 /**
- * Extremly simple fixed size stack class.
+ * Simple fixed size stack class.
  */
 template <class T, int MAX_SIZE = 10>
 class FixedStack
@@ -34,6 +34,7 @@ class FixedStack
     FixedStack<T, MAX_SIZE>() : _size(0) {}
 	
     bool empty() const { return _size <= 0; }
+    bool full() const {return _size >= MAX_SIZE; }
     void clear() { _size = 0; }
     void push(const T& x)
     {

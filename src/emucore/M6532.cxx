@@ -23,8 +23,6 @@
 #include "Random.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 
 #include "M6532.hxx"
 
@@ -298,7 +296,7 @@ void M6532::setPinState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6532::save(Serializer& out) const
 {
-  string device = name();
+  const string& device = name();
 
   try
   {
@@ -338,9 +336,9 @@ bool M6532::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6532::load(Deserializer& in)
+bool M6532::load(Serializer& in)
 {
-  string device = name();
+  const string& device = name();
 
   try
   {

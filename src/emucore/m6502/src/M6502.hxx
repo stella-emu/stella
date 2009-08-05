@@ -21,8 +21,6 @@
 
 class D6502;
 class M6502;
-class Serializer;
-class Deserializer;
 class Debugger;
 class CpuDebug;
 class Expression;
@@ -32,6 +30,7 @@ class PackedBitArray;
 #include "System.hxx"
 #include "Array.hxx"
 #include "StringList.hxx"
+#include "Serializable.hxx"
 
 typedef Common::Array<Expression*> ExpressionList;
 
@@ -48,7 +47,7 @@ typedef Common::Array<Expression*> ExpressionList;
   @author  Bradford W. Mott
   @version $Id$
 */
-class M6502
+class M6502 : public Serializable
 {
   public:
     /**
@@ -183,22 +182,22 @@ class M6502
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out);
+    bool save(Serializer& out) const;
 
     /**
-      Loads the current state of this device from the given Deserializer.
+      Loads the current state of this device from the given Serializer.
 
-      @param in The deserializer device to load from.
+      @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Deserializer& in);
+    bool load(Serializer& in);
 
     /**
       Get a null terminated string which is the processor's name (i.e. "M6532")
 
       @return The name of the device
     */
-    const char* name() const { return "M6502High"; }
+    string name() const { return "M6502"; }
 
   public:
     /**

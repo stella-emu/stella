@@ -16,9 +16,6 @@
 // $Id$
 //============================================================================
 
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
-
 #include "bspf.hxx"
 
 #include "OSystem.hxx"
@@ -40,9 +37,9 @@ SoundNull::~SoundNull()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundNull::load(Deserializer& in)
+bool SoundNull::load(Serializer& in)
 {
-  string soundDevice = "TIASound";
+  const string& soundDevice = "TIASound";
   if(in.getString() != soundDevice)
     return false;
 

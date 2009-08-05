@@ -1118,6 +1118,16 @@ void DebuggerParser::executeReset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "rewind"
+void DebuggerParser::executeRewind()
+{
+  if(debugger->rewindState())
+    commandResult = "rewind by one level";
+  else
+    commandResult = "no states left to rewind";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "riot"
 void DebuggerParser::executeRiot()
 {
@@ -1669,6 +1679,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_END_ARGS },
     &DebuggerParser::executeReset
+  },
+
+  {
+    "rewind",
+    "Rewind state to last step/trace/scanline/frame advance",
+    false,
+    true,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeRewind
   },
 
   {

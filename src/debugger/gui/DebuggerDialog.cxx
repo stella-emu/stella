@@ -41,11 +41,12 @@
 #include "DebuggerDialog.hxx"
 
 enum {
-  kDDStepCmd  = 'DDst',
-  kDDTraceCmd = 'DDtr',
-  kDDAdvCmd   = 'DDav',
-  kDDSAdvCmd  = 'DDsv',
-  kDDExitCmd  = 'DDex'
+  kDDStepCmd   = 'DDst',
+  kDDTraceCmd  = 'DDtr',
+  kDDAdvCmd    = 'DDav',
+  kDDSAdvCmd   = 'DDsv',
+  kDDRewindCmd = 'DDrw',
+  kDDExitCmd   = 'DDex'
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -102,6 +103,9 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
       case 'l':
         doScanlineAdvance();
         break;
+      case 'r':
+        doRewind();
+        break;
       default:
         handled = false;
         break;
@@ -133,6 +137,10 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kDDSAdvCmd:
       doScanlineAdvance();
+      break;
+
+    case kDDRewindCmd:
+      doRewind();
       break;
 
     case kDDExitCmd:
@@ -243,6 +251,8 @@ void DebuggerDialog::addRomArea()
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, instance().consoleFont(),
                                                  xpos, 20);
 
+ops->setFlags(WIDGET_BORDER);
+
   const int bwidth  = instance().consoleFont().getStringWidth("Frame +1 "),
             bheight = instance().consoleFont().getLineHeight() + 2;
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
@@ -295,6 +305,12 @@ void DebuggerDialog::doAdvance()
 void DebuggerDialog::doScanlineAdvance()
 {
   instance().debugger().parser().run("scanline #1");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doRewind()
+{
+  instance().debugger().parser().run("rewind");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

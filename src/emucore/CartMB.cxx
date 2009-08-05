@@ -153,7 +153,7 @@ uInt8* CartridgeMB::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMB::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -176,9 +176,9 @@ bool CartridgeMB::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::load(Deserializer& in)
+bool CartridgeMB::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

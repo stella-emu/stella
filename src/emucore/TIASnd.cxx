@@ -107,7 +107,7 @@ void TIASound::set(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIASound::get(uInt16 address)
+uInt8 TIASound::get(uInt16 address) const
 {
   switch(address)
   {

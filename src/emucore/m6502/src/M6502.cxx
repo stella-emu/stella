@@ -19,9 +19,6 @@
 //#define DEBUG_OUTPUT
 #define debugStream cout
 
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
-
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "Expression.hxx"
@@ -334,9 +331,9 @@ void M6502::interruptHandler()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::save(Serializer& out)
+bool M6502::save(Serializer& out) const
 {
-  string CPU = name();
+  const string& CPU = name();
 
   try
   {
@@ -380,9 +377,9 @@ bool M6502::save(Serializer& out)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool M6502::load(Deserializer& in)
+bool M6502::load(Serializer& in)
 {
-  string CPU = name();
+  const string& CPU = name();
 
   try
   {

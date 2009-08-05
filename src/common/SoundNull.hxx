@@ -20,8 +20,6 @@
 #define SOUND_NULL_HXX
 
 class OSystem;
-class Serializer;
-class Deserializer;
 
 #include "bspf.hxx"
 #include "Sound.hxx"
@@ -138,12 +136,12 @@ class SoundNull : public Sound
 
 public:
     /**
-      Loads the current state of this device from the given Deserializer.
+      Loads the current state of this device from the given Serializer.
 
-      @param in The deserializer device to load from.
+      @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Deserializer& in);
+    bool load(Serializer& in);
 
     /**
       Saves the current state of this device to the given Serializer.

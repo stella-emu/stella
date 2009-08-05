@@ -20,8 +20,6 @@
 #include <cstring>
 
 #include "System.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "CartF6.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,7 +187,7 @@ uInt8* CartridgeF6::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF6::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -212,9 +210,9 @@ bool CartridgeF6::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF6::load(Deserializer& in)
+bool CartridgeF6::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

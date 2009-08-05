@@ -143,7 +143,7 @@ bool Controller::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Controller::load(Deserializer& in)
+bool Controller::load(Serializer& in)
 {
   try
   {

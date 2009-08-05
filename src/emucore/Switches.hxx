@@ -74,12 +74,12 @@ class Switches : public Serializable
     bool save(Serializer& out) const;
 
     /**
-      Load the current state of the switches from the given Deserializer.
+      Load the current state of the switches from the given Serializer.
 
-      @param in  The Deserializer object to use
+      @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    bool load(Deserializer& in);
+    bool load(Serializer& in);
 
     /**
       Get a descriptor for the device name (used in error checking).

@@ -98,7 +98,7 @@ bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   bool handled = true;
   bool dirty = false;
 
-  switch (keycode)
+  switch (ascii)
   {
     case '\n':  // enter/return
     case '\r':

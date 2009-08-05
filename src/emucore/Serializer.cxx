@@ -16,39 +16,125 @@
 // $Id$
 //============================================================================
 
+#include <fstream>
+#include <sstream>
+
 #include "Serializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::Serializer(void)
+Serializer::Serializer(const string& filename)
+  : myStream(NULL),
+    myUseFilestream(true)
 {
+  // When using fstreams, we need to manually create the file first
+  // if we want to use it in read/write mode, since it won't be created
+  // if it doesn't already exist
+  // However, if it *does* exist, we don't want to overwrite it
+  // So we open in write and append mode - the write creates the file
+  // when necessary, and the append doesn't delete any data if it
+  // already exists
+  fstream temp(filename.c_str(), ios::out | ios::app);
+  temp.close();
+
+  fstream* str = new fstream(filename.c_str(), ios::in | ios::out | ios::binary);
+  if(str && str->is_open())
+  {
+    myStream = str;
+    reset();
+  }
+  else
+    delete str;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Serializer::Serializer(void)
+  : myStream(NULL),
+    myUseFilestream(false)
+{
+  myStream = new stringstream(ios::in | ios::out | ios::binary);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Serializer::~Serializer(void)
 {
-  close();
+  if(myStream != NULL)
+  {
+    if(myUseFilestream)
+      ((fstream*)myStream)->close();
+
+    delete myStream;
+    myStream = NULL;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::open(const string& fileName)
+bool Serializer::isValid(void)
 {
-  close();
-  myStream.open(fileName.c_str(), ios::out | ios::binary);
-
-  return isOpen();
+  return myStream != NULL;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Serializer::close(void)
+void Serializer::reset(void)
 {
-  myStream.close();
-  myStream.clear();
+  myStream->seekg(ios_base::beg);
+  myStream->seekp(ios_base::beg);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Serializer::isOpen(void)
+char Serializer::getByte(void)
 {
-  return myStream.is_open();
+  if(myStream->eof())
+    throw "Serializer::getByte() end of file";
+
+  char buf;
+  myStream->read(&buf, 1);
+
+  return buf;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int Serializer::getInt(void)
+{
+  if(myStream->eof())
+    throw "Serializer::getInt() end of file";
+
+  int val = 0;
+  unsigned char buf[4];
+  myStream->read((char*)buf, 4);
+  for(int i = 0; i < 4; ++i)
+    val += (int)(buf[i]) << (i<<3);
+
+  return val;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string Serializer::getString(void)
+{
+  int len = getInt();
+  string str;
+  str.resize((string::size_type)len);
+  myStream->read(&str[0], (streamsize)len);
+
+  if(myStream->bad())
+    throw "Serializer::getString() file read failed";
+
+  return str;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Serializer::getBool(void)
+{
+  bool result = false;
+
+  char b = getByte();
+  if(b == (char)TruePattern)
+    result = true;
+  else if(b == (char)FalsePattern)
+    result = false;
+  else
+    throw "Serializer::getBool() data corruption";
+
+  return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -56,9 +142,9 @@ void Serializer::putByte(char value)
 {
   char buf[1];
   buf[0] = value;
-  myStream.write(buf, 1);
-  if(myStream.bad())
-    throw "Serializer: file write failed";
+  myStream->write(buf, 1);
+  if(myStream->bad())
+    throw "Serializer::putByte() file write failed";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -68,9 +154,9 @@ void Serializer::putInt(int value)
   for(int i = 0; i < 4; ++i)
     buf[i] = (value >> (i<<3)) & 0xff;
 
-  myStream.write((char*)buf, 4);
-  if(myStream.bad())
-    throw "Serializer: file write failed";
+  myStream->write((char*)buf, 4);
+  if(myStream->bad())
+    throw "Serializer::putInt() file write failed";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -78,10 +164,10 @@ void Serializer::putString(const string& str)
 {
   int len = str.length();
   putInt(len);
-  myStream.write(str.data(), (streamsize)len);
+  myStream->write(str.data(), (streamsize)len);
 
-  if(myStream.bad())
-    throw "Serializer: file write failed";
+  if(myStream->bad())
+    throw "Serializer::putString() file write failed";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

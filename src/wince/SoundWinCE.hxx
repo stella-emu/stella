@@ -53,7 +53,7 @@ class SoundWinCE : public Sound
     void set(uInt16 addr, uInt8 value, Int32 cycle);
     void setVolume(Int32 percent);
     void adjustVolume(Int8 direction);
-    bool load(Deserializer& in);
+    bool load(Serializer& in);
     bool save(Serializer& out);
 	void update(void);
 

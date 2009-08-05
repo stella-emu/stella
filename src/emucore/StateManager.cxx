@@ -19,13 +19,12 @@
 #include <sstream>
 
 #include "OSystem.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
 #include "Control.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
+#include "Serializable.hxx"
 
 #include "StateManager.hxx"
 
@@ -56,6 +55,7 @@ bool StateManager::isActive()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::toggleRecordMode()
 {
+#if 0
   if(myActiveMode != kMovieRecordMode)  // Turn on movie record mode
   {
     myActiveMode = kOffMode;
@@ -92,13 +92,15 @@ bool StateManager::toggleRecordMode()
   }
 
   return myActiveMode == kMovieRecordMode;
+#endif
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::toggleRewindMode()
 {
   // FIXME - For now, I'm going to use this to activate movie playback
-
+#if 0
   // Close the writer, since we're about to re-open in read mode
   myMovieWriter.close();
 
@@ -139,11 +141,14 @@ bool StateManager::toggleRewindMode()
   }
 
   return myActiveMode == kMoviePlaybackMode;
+#endif
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::update()
 {
+#if 0
   switch(myActiveMode)
   {
     case kMovieRecordMode:
@@ -161,6 +166,7 @@ void StateManager::update()
     default:
       break;
   }
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,8 +184,8 @@ void StateManager::loadState(int slot)
         << name << ".st" << slot;
 
     // Make sure the file can be opened for reading
-    Deserializer in;
-    if(!in.open(buf.str()))
+    Serializer in(buf.str());
+    if(!in.isValid())
     {
       buf.str("");
       buf << "Error loading state " << slot;
@@ -198,7 +204,6 @@ void StateManager::loadState(int slot)
     else
       buf << "Invalid data in state " << slot << " file";
 
-    in.close();
     myOSystem->frameBuffer().showMessage(buf.str());
   }
 }
@@ -218,8 +223,8 @@ void StateManager::saveState(int slot)
         << name << ".st" << slot;
 
     // Make sure the file can be opened for writing
-    Serializer out;
-    if(!out.open(buf.str()))
+    Serializer out(buf.str());
+    if(!out.isValid())
     {
       myOSystem->frameBuffer().showMessage("Error saving state file");
       return;
@@ -246,7 +251,6 @@ void StateManager::saveState(int slot)
     else
       buf << "Error saving state " << slot;
 
-    out.close();
     myOSystem->frameBuffer().showMessage(buf.str());
   }
 }
@@ -263,8 +267,51 @@ void StateManager::changeState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::loadState(Serializer& in)
+{
+  if(&myOSystem->console())
+  {
+    // Make sure the file can be opened for reading
+    if(in.isValid())
+    {
+      // First test if we have a valid header
+      // If so, do a complete state load using the Console
+      const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
+      if(in.getString() == STATE_HEADER && in.getString() == md5 &&
+         myOSystem->console().load(in))
+        return true;
+    }
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool StateManager::saveState(Serializer& out)
+{
+  if(&myOSystem->console())
+  {
+    // Make sure the file can be opened for writing
+    if(out.isValid())
+    {
+      // Add header so that if the state format changes in the future,
+      // we'll know right away, without having to parse the rest of the file
+      out.putString(STATE_HEADER);
+
+      // Prepend the ROM md5 so this state file only works with that ROM
+      out.putString(myOSystem->console().properties().get(Cartridge_MD5));
+
+      // Do a complete state save using the Console
+      if(myOSystem->console().save(out))
+        return true;
+    }
+  }
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void StateManager::reset()
 {
+#if 0
   myCurrentSlot = 0;
 
   switch(myActiveMode)
@@ -281,6 +328,7 @@ void StateManager::reset()
       break;
   }
   myActiveMode = kOffMode;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

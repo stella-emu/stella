@@ -320,7 +320,7 @@ uInt8* Cartridge4A50::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -360,9 +360,9 @@ bool Cartridge4A50::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4A50::load(Deserializer& in)
+bool Cartridge4A50::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

@@ -32,7 +32,6 @@ MODULE_OBJS := \
 	src/emucore/CartX07.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
-	src/emucore/Deserializer.o \
 	src/emucore/Driving.o \
 	src/emucore/Event.o \
 	src/emucore/EventHandler.o \

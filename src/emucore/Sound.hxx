@@ -20,9 +20,8 @@
 #define SOUND_HXX
 
 class OSystem;
-class Serializer;
-class Deserializer;
 
+#include "Serializable.hxx"
 #include "bspf.hxx"
 
 /**
@@ -32,7 +31,7 @@ class Deserializer;
   @author Stephen Anthony
   @version $Id$
 */
-class Sound
+class Sound : public Serializable
 {
   public:
     /**
@@ -133,23 +132,6 @@ class Sound
                         amount based on the direction (1 = increase, -1 =decrease)
     */
     virtual void adjustVolume(Int8 direction) = 0;
-
-  public:
-    /**
-      Loads the current state of this device from the given Deserializer.
-
-      @param in The deserializer device to load from.
-      @return The result of the load.  True on success, false on failure.
-    */
-    virtual bool load(Deserializer& in) = 0;
-
-    /**
-      Saves the current state of this device to the given Serializer.
-
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
-    */
-    virtual bool save(Serializer& out) = 0;
 
   protected:
     // The OSystem for this sound object

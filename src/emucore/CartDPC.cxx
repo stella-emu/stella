@@ -474,7 +474,7 @@ uInt8* CartridgeDPC::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -531,9 +531,9 @@ bool CartridgeDPC::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::load(Deserializer& in)
+bool CartridgeDPC::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

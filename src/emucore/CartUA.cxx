@@ -179,7 +179,7 @@ uInt8* CartridgeUA::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeUA::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -202,9 +202,9 @@ bool CartridgeUA::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeUA::load(Deserializer& in)
+bool CartridgeUA::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

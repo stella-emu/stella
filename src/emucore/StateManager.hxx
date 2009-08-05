@@ -21,7 +21,6 @@
 
 class OSystem;
 
-#include "Deserializer.hxx"
 #include "Serializer.hxx"
 
 /**
@@ -79,6 +78,26 @@ class StateManager
     void changeState();
 
     /**
+      Load a state into the current system from the given Serializer.
+      No messages are printed to the screen.
+
+      @param in  The Serializer object to use
+
+      @return  False on any load errors, else true
+    */
+    bool loadState(Serializer& in);
+
+    /**
+      Save the current state from the system into the given Serializer.
+      No messages are printed to the screen.
+
+      @param out  The Serializer object to use
+
+      @return  False on any save errors, else true
+    */
+    bool saveState(Serializer& out);
+
+    /**
       Resets manager to defaults
     */
     void reset();
@@ -119,8 +138,8 @@ class StateManager
     string myMD5;
 
     // Serializer classes used to save/load the eventstream
-    Serializer   myMovieWriter;
-    Deserializer myMovieReader;
+    Serializer myMovieWriter;
+    Serializer myMovieReader;
 };
 
 #endif

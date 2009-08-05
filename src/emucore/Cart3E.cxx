@@ -243,7 +243,7 @@ uInt8* Cartridge3E::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -270,9 +270,9 @@ bool Cartridge3E::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3E::load(Deserializer& in)
+bool Cartridge3E::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

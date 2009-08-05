@@ -16,10 +16,10 @@
 // $Id$
 //============================================================================
 
+#ifdef SOUND_SUPPORT
+
 #ifndef SOUND_SDL_HXX
 #define SOUND_SDL_HXX
-
-#ifdef SOUND_SUPPORT
 
 class OSystem;
 
@@ -139,20 +139,27 @@ class SoundSDL : public Sound
 
   public:
     /**
-      Loads the current state of this device from the given Deserializer.
-
-      @param in The deserializer device to load from.
-      @return The result of the load.  True on success, false on failure.
-    */
-    bool load(Deserializer& in);
-
-    /**
       Saves the current state of this device to the given Serializer.
 
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out);
+    bool save(Serializer& out) const;
+
+    /**
+      Loads the current state of this device from the given Serializer.
+
+      @param in The Serializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Serializer& in);
+
+    /**
+      Get a descriptor for this console class (used in error checking).
+
+      @return The name of the object
+    */
+    string name() const { return "TIASound"; }
 
   protected:
     /**
@@ -277,5 +284,6 @@ class SoundSDL : public Sound
     static void callback(void* udata, uInt8* stream, int len);
 };
 
-#endif  // SOUND_SUPPORT
 #endif
+
+#endif  // SOUND_SUPPORT

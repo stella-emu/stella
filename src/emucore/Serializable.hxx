@@ -20,7 +20,6 @@
 #define SERIALIZABLE_HXX
 
 #include "Serializer.hxx"
-#include "Deserializer.hxx"
 
 /**
   This class provides an interface for (de)serializing objects.
@@ -45,12 +44,12 @@ class Serializable
     virtual bool save(Serializer& out) const = 0;
 
     /**
-      Load the current state of the object from the given Deserializer.
+      Load the current state of the object from the given Serializer.
 
-      @param in  The Deserializer object to use
+      @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool load(Deserializer& in) = 0;
+    virtual bool load(Serializer& in) = 0;
 
     /**
       Get a descriptor for the object name (used in error checking).

@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===============================================================================
-                         To Do List - June 2009
+                         To Do List - August 2009
 ===============================================================================
 
 If you would like to contribute to Stella's development then find something

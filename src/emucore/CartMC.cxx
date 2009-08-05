@@ -231,7 +231,7 @@ uInt8* CartridgeMC::getImage(int& size)
 bool CartridgeMC::save(Serializer& out) const
 {
   uInt32 i;
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -262,10 +262,10 @@ bool CartridgeMC::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMC::load(Deserializer& in)
+bool CartridgeMC::load(Serializer& in)
 {
   uInt32 i;
-  string cart = name();
+  const string& cart = name();
 
   try
   {

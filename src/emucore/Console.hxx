@@ -142,12 +142,12 @@ class Console : public Serializable
     bool save(Serializer& out) const;
 
     /**
-      Loads the current state of this console class from the given Deserializer.
+      Loads the current state of this console class from the given Serializer.
 
-      @param in The deserializer device to load from.
+      @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Deserializer& in);
+    bool load(Serializer& in);
 
     /**
       Get a descriptor for this console class (used in error checking).

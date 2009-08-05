@@ -123,7 +123,7 @@ bool Switches::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - 
-bool Switches::load(Deserializer& in)
+bool Switches::load(Serializer& in)
 {
   try
   {

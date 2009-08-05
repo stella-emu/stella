@@ -187,7 +187,7 @@ uInt8* CartridgeF4SC::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -215,9 +215,9 @@ bool CartridgeF4SC::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeF4SC::load(Deserializer& in)
+bool CartridgeF4SC::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

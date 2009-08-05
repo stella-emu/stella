@@ -24,9 +24,8 @@
 
 #include "Console.hxx"
 #include "Control.hxx"
-#include "Deserializer.hxx"
+#include "Device.hxx"
 #include "M6502.hxx"
-#include "Serializer.hxx"
 #include "Settings.hxx"
 #include "Sound.hxx"
 #include "System.hxx"
@@ -288,7 +287,7 @@ void TIA::install(System& system, Device& device)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::save(Serializer& out) const
 {
-  string device = name();
+  const string& device = name();
 
   try
   {
@@ -338,12 +337,6 @@ bool TIA::save(Serializer& out) const
     out.putBool(myRESMP0);
     out.putBool(myRESMP1);
     out.putInt(myCollision);
-    out.putInt(myPOSP0);
-    out.putInt(myPOSP1);
-    out.putInt(myPOSM0);
-    out.putInt(myPOSM1);
-    out.putInt(myPOSBL);
-
     out.putByte((char)myCurrentGRP0);
     out.putByte((char)myCurrentGRP1);
 
@@ -358,9 +351,11 @@ bool TIA::save(Serializer& out) const
     out.putBool(myDumpEnabled);
     out.putInt(myDumpDisabledCycle);
 
-    out.putInt(myFrameCounter);
-    out.putBool(myPartialFrameFlag);
-    out.putBool(myFrameGreyed);
+    out.putInt(myPOSP0);
+    out.putInt(myPOSP1);
+    out.putInt(myPOSM0);
+    out.putInt(myPOSM1);
+    out.putInt(myPOSBL);
 
     out.putInt(myMotionClockP0);
     out.putInt(myMotionClockP1);
@@ -377,6 +372,8 @@ bool TIA::save(Serializer& out) const
     out.putInt(myCurrentHMOVEPos);
     out.putInt(myPreviousHMOVEPos);
     out.putBool(myHMOVEBlankEnabled);
+
+    out.putInt(myFrameCounter);
 
     // Save the sound sample stuff ...
     mySound.save(out);
@@ -396,9 +393,9 @@ bool TIA::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::load(Deserializer& in)
+bool TIA::load(Serializer& in)
 {
-  string device = name();
+  const string& device = name();
 
   try
   {
@@ -449,12 +446,6 @@ bool TIA::load(Deserializer& in)
     myRESMP0 = in.getBool();
     myRESMP1 = in.getBool();
     myCollision = (uInt16) in.getInt();
-    myPOSP0 = (Int16) in.getInt();
-    myPOSP1 = (Int16) in.getInt();
-    myPOSM0 = (Int16) in.getInt();
-    myPOSM1 = (Int16) in.getInt();
-    myPOSBL = (Int16) in.getInt();
-
     myCurrentGRP0 = (uInt8) in.getByte();
     myCurrentGRP1 = (uInt8) in.getByte();
 
@@ -469,9 +460,11 @@ bool TIA::load(Deserializer& in)
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getInt();
 
-    myFrameCounter = (Int32) in.getInt();
-    myPartialFrameFlag = in.getBool();
-    myFrameGreyed = in.getBool();
+    myPOSP0 = (Int16) in.getInt();
+    myPOSP1 = (Int16) in.getInt();
+    myPOSM0 = (Int16) in.getInt();
+    myPOSM1 = (Int16) in.getInt();
+    myPOSBL = (Int16) in.getInt();
 
     myMotionClockP0 = (Int32) in.getInt();
     myMotionClockP1 = (Int32) in.getInt();
@@ -489,6 +482,8 @@ bool TIA::load(Deserializer& in)
     myPreviousHMOVEPos = (Int32) in.getInt();
     myHMOVEBlankEnabled = in.getBool();
 
+    myFrameCounter = (Int32) in.getInt();
+
     // Load the sound sample stuff ...
     mySound.load(in);
 
@@ -503,6 +498,67 @@ bool TIA::load(Deserializer& in)
   catch(...)
   {
     cerr << "Unknown error in load state for " << device << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::saveDisplay(Serializer& out) const
+{
+  try
+  {
+    out.putBool(myPartialFrameFlag);
+    out.putInt(myFramePointerClocks);
+
+    for(int i = 0; i < 160*320; ++i)
+      out.putByte(myCurrentFrameBuffer[i]);
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in save state for TIA display" << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::loadDisplay(Serializer& in)
+{
+  try
+  {
+    myPartialFrameFlag = in.getBool();
+    myFramePointerClocks = (uInt32) in.getInt();
+
+    // Reset frame buffer pointer and data
+    clearBuffers();
+    myFramePointer = myCurrentFrameBuffer;
+    for(int i = 0; i < 160*320; ++i)
+      myCurrentFrameBuffer[i] = (uInt8) in.getByte();
+
+    // If we're in partial frame mode, make sure to re-create the screen
+    // as it existed when the state was saved
+    if(myPartialFrameFlag)
+    {
+      myFramePointer += myFramePointerClocks;
+      myFrameGreyed = true;
+    }
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for TIA display" << endl;
     return false;
   }
 
@@ -563,6 +619,7 @@ inline void TIA::startFrame()
 
   // Reset frame buffer pointer
   myFramePointer = myCurrentFrameBuffer;
+  myFramePointerClocks = 0;
 
   // If color loss is enabled then update the color registers based on
   // the number of scanlines in the last frame that was generated
@@ -700,6 +757,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
 {
   // Calculate the ending frame pointer value
   uInt8* ending = myFramePointer + clocksToUpdate;
+  myFramePointerClocks += clocksToUpdate;
 
   // See if we're in the vertical blank region
   if(myVBLANK & 0x02)
@@ -1441,8 +1499,13 @@ inline void TIA::waitHorizontalSync()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::greyOutFrame()
 {
+cerr << "greyOutFrame(): scanlines = " << scanlines() << endl;
   uInt32 c = scanlines();
   if(c < myFrameYStart) c = myFrameYStart;
+  if(c > (myFrameHeight + myFrameYStart))
+    return;
+
+cerr << "greying frame from scanline " << c << endl;
 
   uInt8* buffer = myCurrentFrameBuffer + myFramePointerOffset;
   for(uInt32 s = c; s < (myFrameHeight + myFrameYStart); ++s)

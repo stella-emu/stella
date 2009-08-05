@@ -219,7 +219,7 @@ uInt8* CartridgeFASC::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFASC::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -247,9 +247,9 @@ bool CartridgeFASC::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFASC::load(Deserializer& in)
+bool CartridgeFASC::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

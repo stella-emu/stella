@@ -165,7 +165,7 @@ uInt8* CartridgeX07::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeX07::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -187,9 +187,9 @@ bool CartridgeX07::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeX07::load(Deserializer& in)
+bool CartridgeX07::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

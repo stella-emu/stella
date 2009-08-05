@@ -32,6 +32,7 @@ class TiaZoomWidget;
 class EditTextWidget;
 class RomWidget;
 class Expression;
+class Serializer;
 
 #include <map>
 
@@ -43,6 +44,7 @@ class Expression;
 #include "PackedBitArray.hxx"
 #include "PromptWidget.hxx"
 #include "Rect.hxx"
+#include "Stack.hxx"
 #include "bspf.hxx"
 
 typedef map<string,Expression*> FunctionMap;
@@ -337,6 +339,7 @@ class Debugger : public DialogContainer
     int trace();
     void nextScanline(int lines);
     void nextFrame(int frames);
+    bool rewindState();
 
     void toggleBreakPoint(int bp);
 
@@ -399,6 +402,29 @@ class Debugger : public DialogContainer
     // Dimensions of the entire debugger window
     uInt32 myWidth;
     uInt32 myHeight;
+
+    // Class holding all rewind state functionality in the debugger
+    // Essentially, it's a modified circular array-based stack
+    // that cleverly deals with allocation/deallocation of memory
+    class RewindManager
+    {
+      public:
+        RewindManager(OSystem& system);
+        virtual ~RewindManager();
+
+      public:
+        bool addState();
+        bool rewindState();
+        bool isEmpty();
+        void clear();
+
+      private:
+        enum { MAX_SIZE = 100 };
+        OSystem& myOSystem;
+        Serializer* myStateList[MAX_SIZE];
+        uInt32 mySize, myTop;
+    };
+    RewindManager* myRewindManager;
 };
 
 #endif

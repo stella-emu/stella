@@ -81,7 +81,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 57,
+      kNumCommands   = 58,
       kMAX_ARG_TYPES = 10 // TODO: put in separate header file Command.hxx
     };
 
@@ -169,6 +169,7 @@ class DebuggerParser
     void executePrint();
     void executeRam();  // also implements 'poke' command
     void executeReset();
+    void executeRewind();
     void executeRiot();
     void executeRom();
     void executeRun();

@@ -19,17 +19,20 @@
 #ifndef SERIALIZER_HXX
 #define SERIALIZER_HXX
 
-#include <fstream>
+#include <iostream>
 #include "bspf.hxx"
 
 /**
-  This class implements a Serializer device, whereby data is
-  serialized and sent to an output binary file in a system-
-  independent way.
+  This class implements a Serializer device, whereby data is serialized and
+  read from/written to a binary stream in a system-independent way.  The
+  stream can be either an actual file, or an in-memory structure.
 
   Bytes are written as characters, integers are written as 4 characters
   (32-bit), strings are written as characters prepended by the length of the
   string, boolean values are written using a special character pattern.
+
+  All bytes and ints should be cast to their appropriate data type upon
+  method return.
 
   @author  Stephen Anthony
   @version $Id$
@@ -38,11 +41,15 @@ class Serializer
 {
   public:
     /**
-      Creates a new Serializer device.
+      Creates a new Serializer device for streaming binary data.
 
-      Open must be called with a valid file before this Serializer can
-      be used.
+      If a filename is provided, the stream will be to the given
+      filename.  Otherwise, the stream will be in memory.
+
+      The isValid() method must immediately be called to verify the stream
+      was correctly initialized.
     */
+    Serializer(const string& filename);
     Serializer(void);
 
     /**
@@ -52,23 +59,43 @@ class Serializer
 
   public:
     /**
-      Opens the given file for output.  Multiple calls to this method
-      will close previously opened files.
-
-      @param fileName The filename to send the serialized data to.
-      @return Result of opening the file.  True on success, false on failure
+      Answers whether the serializer is currently initialized for reading
+      and writing.
     */
-    bool open(const string& fileName);
+    bool isValid(void);
 
     /**
-      Closes the current output stream.
+      Resets the read/write location to the beginning of the stream.
     */
-    void close(void);
+    void reset(void);
 
     /**
-      Answers whether the serializer is currently opened
+      Reads a byte value (8-bit) from the current input stream.
+
+      @result The char value which has been read from the stream.
     */
-    bool isOpen(void);
+    char getByte(void);
+
+    /**
+      Reads an int value (32-bit) from the current input stream.
+
+      @result The int value which has been read from the stream.
+    */
+    int getInt(void);
+
+    /**
+      Reads a string from the current input stream.
+
+      @result The string which has been read from the stream.
+    */
+    string getString(void);
+
+    /**
+      Reads a boolean value from the current input stream.
+
+      @result The boolean value which has been read from the stream.
+    */
+    bool getBool(void);
 
     /**
       Writes an byte value (8-bit) to the current output stream.
@@ -100,7 +127,8 @@ class Serializer
 
   private:
     // The stream to send the serialized data to.
-    fstream myStream;
+    iostream* myStream;
+    bool myUseFilestream;
 
     enum {
       TruePattern  = 0xfe,

@@ -108,7 +108,8 @@ Debugger::Debugger(OSystem* osystem)
     myReadTraps(NULL),
     myWriteTraps(NULL),
     myWidth(1050),
-    myHeight(620)
+    myHeight(620),
+    myRewindManager(NULL)
 {
   // Get the dialog size
   int w, h;
@@ -124,6 +125,8 @@ Debugger::Debugger(OSystem* osystem)
   myBreakPoints = new PackedBitArray(0x10000);
   myReadTraps = new PackedBitArray(0x10000);
   myWriteTraps = new PackedBitArray(0x10000);
+
+  myRewindManager = new RewindManager(*osystem);
 
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
@@ -146,6 +149,8 @@ Debugger::~Debugger()
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
+
+  delete myRewindManager;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,6 +220,9 @@ void Debugger::setConsole(Console* console)
   // Make sure cart RAM is added before this is called,
   // otherwise the debugger state won't know about it
   saveOldState();
+
+  // Empty the rewind list
+  myRewindManager->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -657,6 +665,12 @@ void Debugger::nextFrame(int frames)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::rewindState()
+{
+  return myRewindManager->rewindState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::clearAllBreakPoints()
 {
   delete myBreakPoints;
@@ -748,6 +762,9 @@ void Debugger::saveOldState()
   myRamDebug->saveOldState();
   myRiotDebug->saveOldState();
   myTiaDebug->saveOldState();
+
+  // Add another rewind level to the Undo list
+  myRewindManager->addState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -755,6 +772,9 @@ void Debugger::setStartState()
 {
   // Lock the bus each time the debugger is entered, so we don't disturb anything
   lockBankswitchState();
+
+  // Start a new rewind list
+  myRewindManager->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -930,4 +950,76 @@ void Debugger::unlockBankswitchState()
 {
   mySystem->unlockDataBus();
   myConsole->cartridge().unlockBank();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Debugger::RewindManager::RewindManager(OSystem& system)
+  : myOSystem(system),
+    mySize(0),
+    myTop(0)
+{
+  for(int i = 0; i < MAX_SIZE; ++i)
+    myStateList[i] = (Serializer*) NULL;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Debugger::RewindManager::~RewindManager()
+{
+  for(int i = 0; i < MAX_SIZE; ++i)
+    delete myStateList[i];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::RewindManager::addState()
+{
+  // Are we still within the allowable size, or are we overwriting an item?
+  mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
+
+  // Create a new Serializer object if we need one
+  if(myStateList[myTop] == NULL)
+    myStateList[myTop] = new Serializer();
+  Serializer& s = *(myStateList[myTop]);
+
+  if(s.isValid())
+  {
+    s.reset();
+    myOSystem.state().saveState(s);
+    myOSystem.console().tia().saveDisplay(s);
+    myTop = (myTop + 1) % MAX_SIZE;
+    return true;
+  }
+  else
+    return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::RewindManager::rewindState()
+{
+  if(mySize > 0)
+  {
+    mySize--;
+    myTop = myTop == 0 ? MAX_SIZE - 1 : myTop - 1;
+    Serializer& s = *(myStateList[myTop]);
+
+    s.reset();
+    myOSystem.state().loadState(s);
+    myOSystem.console().tia().loadDisplay(s);
+    return true;
+  }
+  else
+    return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::RewindManager::isEmpty()
+{
+  return mySize == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::RewindManager::clear()
+{
+  for(int i = 0; i < MAX_SIZE; ++i)
+    if(myStateList[i] != NULL)
+      myStateList[i]->reset();
 }

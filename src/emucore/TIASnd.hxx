@@ -82,7 +82,7 @@ class TIASound
 
       @param address Register address
     */
-    uInt8 get(uInt16 address);
+    uInt8 get(uInt16 address) const;
 
     /**
       Create sound samples based on the current sound register settings

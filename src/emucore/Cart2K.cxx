@@ -131,7 +131,7 @@ uInt8* Cartridge2K::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge2K::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -152,9 +152,9 @@ bool Cartridge2K::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge2K::load(Deserializer& in)
+bool Cartridge2K::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

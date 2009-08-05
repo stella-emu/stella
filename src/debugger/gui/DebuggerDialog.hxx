@@ -77,6 +77,7 @@ class DebuggerDialog : public Dialog
     void doTrace();
     void doScanlineAdvance();
     void doAdvance();
+    void doRewind();
     void doExit();
 };
 

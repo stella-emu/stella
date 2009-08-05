@@ -168,7 +168,7 @@ uInt8* CartridgeCV::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -194,9 +194,9 @@ bool CartridgeCV::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeCV::load(Deserializer& in)
+bool CartridgeCV::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

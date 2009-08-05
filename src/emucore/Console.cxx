@@ -219,7 +219,7 @@ bool Console::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Console::load(Deserializer& in)
+bool Console::load(Serializer& in)
 {
   try
   {

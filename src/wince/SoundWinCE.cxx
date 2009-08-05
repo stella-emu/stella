@@ -21,8 +21,6 @@
 
 #include "TIASnd.hxx"
 #include "FrameBuffer.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
 #include "OSystem.hxx"
@@ -318,7 +316,7 @@ void SoundWinCE::update(void)
 		}
 }
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundWinCE::load(Deserializer& in)
+bool SoundWinCE::load(Serializer& in)
 {
   return true;
 }

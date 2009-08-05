@@ -184,7 +184,7 @@ uInt8* Cartridge3F::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3F::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -206,9 +206,9 @@ bool Cartridge3F::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge3F::load(Deserializer& in)
+bool Cartridge3F::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

@@ -274,7 +274,7 @@ bool System::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::load(Deserializer& in)
+bool System::load(Serializer& in)
 {
   const string& device = name();
   try

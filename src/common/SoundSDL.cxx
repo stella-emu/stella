@@ -25,8 +25,6 @@
 
 #include "TIASnd.hxx"
 #include "FrameBuffer.hxx"
-#include "Serializer.hxx"
-#include "Deserializer.hxx"
 #include "Settings.hxx"
 #include "System.hxx"
 #include "OSystem.hxx"
@@ -198,12 +196,6 @@ void SoundSDL::mute(bool state)
 {
   if(myIsInitializedFlag)
   {
-    // Ignore multiple calls to do the same thing
-    if(myIsMuted == state)
-    {
-      return;
-    }
-
     myIsMuted = state;
 
     SDL_PauseAudio(myIsMuted ? 1 : 0);
@@ -435,58 +427,9 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL::load(Deserializer& in)
+bool SoundSDL::save(Serializer& out) const
 {
-  string device = "TIASound";
-
-  try
-  {
-    if(in.getString() != device)
-      return false;
-
-    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
-    reg1 = (uInt8) in.getByte();
-    reg2 = (uInt8) in.getByte();
-    reg3 = (uInt8) in.getByte();
-    reg4 = (uInt8) in.getByte();
-    reg5 = (uInt8) in.getByte();
-    reg6 = (uInt8) in.getByte();
-
-    myLastRegisterSetCycle = (Int32) in.getInt();
-
-    // Only update the TIA sound registers if sound is enabled
-    // Make sure to empty the queue of previous sound fragments
-    if(myIsInitializedFlag)
-    {
-      SDL_PauseAudio(1);
-      myRegWriteQueue.clear();
-      myTIASound.set(0x15, reg1);
-      myTIASound.set(0x16, reg2);
-      myTIASound.set(0x17, reg3);
-      myTIASound.set(0x18, reg4);
-      myTIASound.set(0x19, reg5);
-      myTIASound.set(0x1a, reg6);
-      SDL_PauseAudio(0);
-    }
-  }
-  catch(char *msg)
-  {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << device << endl;
-    return false;
-  }
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundSDL::save(Serializer& out)
-{
-  string device = "TIASound";
+  const string& device = name();
 
   try
   {
@@ -522,6 +465,55 @@ bool SoundSDL::save(Serializer& out)
   catch(...)
   {
     cerr << "Unknown error in save state for " << device << endl;
+    return false;
+  }
+
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool SoundSDL::load(Serializer& in)
+{
+  const string& device = name();
+
+  try
+  {
+    if(in.getString() != device)
+      return false;
+
+    uInt8 reg1 = 0, reg2 = 0, reg3 = 0, reg4 = 0, reg5 = 0, reg6 = 0;
+    reg1 = (uInt8) in.getByte();
+    reg2 = (uInt8) in.getByte();
+    reg3 = (uInt8) in.getByte();
+    reg4 = (uInt8) in.getByte();
+    reg5 = (uInt8) in.getByte();
+    reg6 = (uInt8) in.getByte();
+
+    myLastRegisterSetCycle = (Int32) in.getInt();
+
+    // Only update the TIA sound registers if sound is enabled
+    // Make sure to empty the queue of previous sound fragments
+    if(myIsInitializedFlag)
+    {
+      SDL_PauseAudio(1);
+      myRegWriteQueue.clear();
+      myTIASound.set(0x15, reg1);
+      myTIASound.set(0x16, reg2);
+      myTIASound.set(0x17, reg3);
+      myTIASound.set(0x18, reg4);
+      myTIASound.set(0x19, reg5);
+      myTIASound.set(0x1a, reg6);
+      if(!myIsMuted) SDL_PauseAudio(0);
+    }
+  }
+  catch(char *msg)
+  {
+    cerr << msg << endl;
+    return false;
+  }
+  catch(...)
+  {
+    cerr << "Unknown error in load state for " << device << endl;
     return false;
   }
 

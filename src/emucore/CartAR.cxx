@@ -425,7 +425,7 @@ uInt8* CartridgeAR::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -490,9 +490,9 @@ bool CartridgeAR::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeAR::load(Deserializer& in)
+bool CartridgeAR::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

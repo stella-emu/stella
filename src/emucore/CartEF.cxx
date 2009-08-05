@@ -141,7 +141,7 @@ uInt8* CartridgeEF::getImage(int& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeEF::save(Serializer& out) const
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {
@@ -164,9 +164,9 @@ bool CartridgeEF::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeEF::load(Deserializer& in)
+bool CartridgeEF::load(Serializer& in)
 {
-  string cart = name();
+  const string& cart = name();
 
   try
   {

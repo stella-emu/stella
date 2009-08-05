@@ -16,9 +16,8 @@
 // $Id$
 //============================================================================
 
-#include "NullDev.hxx"
 #include "Serializer.hxx"
-#include "Deserializer.hxx"
+#include "NullDev.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NullDevice::NullDevice()
@@ -61,7 +60,7 @@ bool NullDevice::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool NullDevice::load(Deserializer& in)
+bool NullDevice::load(Serializer& in)
 {
   return true;
 }
