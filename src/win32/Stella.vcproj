@@ -530,10 +530,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\Deserializer.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\m6502\src\Device.cxx"
 					>
 				</File>
@@ -1009,6 +1005,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\Stack.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\Version.hxx"
 				>
 			</File>
@@ -1149,10 +1149,6 @@
 				</File>
 				<File
 					RelativePath="..\emucore\DefProps.hxx"
-					>
-				</File>
-				<File
-					RelativePath="..\emucore\Deserializer.hxx"
 					>
 				</File>
 				<File

@@ -16,6 +16,8 @@
 // $Id$
 //============================================================================
 
+#include <fstream>
+
 #include "bspf.hxx"
 #include "FSNode.hxx"
 #include "HomeFinder.hxx"
