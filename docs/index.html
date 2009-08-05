@@ -789,6 +789,13 @@
 		</tr>
 
 		<tr>
+			<td><pre>-joyallow4 &lt;1|0&gt;</pre></td>
+			<td>Allow all 4 directions on a joystick to be pressed
+				simultaneously.  Bumper Bash ignores this setting,
+				and always allows all 4 directions.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-pspeed &lt;number&gt;</pre></td>
 			<td>Speed for digital emulation of paddles (1-15).</td>
 		</tr>
@@ -2042,33 +2049,26 @@
 	<img src="graphics/eventmapping.png">
 	<img src="graphics/eventmapping_remap.png">
 
-	<p>Virtual devices can be configured under the 'Virtual Devs' tab, shown below:<br><br>
-	<img src="graphics/eventmapping_virtualdevs.png"></p>
 
-	<p>Stelladaptor devices can be configured to either the left or right virtual
-	ports.  See <b>Section 11 - <a href="#Adaptor">Stelladaptor Support</a></b>
-	for further information.</p>
 
-	<p>Joystick deadzone area for analog joysticks can be set here.  The deadzone
-	can be adjusted in an interval from 0 - 29, which internally is converted to
-	the range 3200 - 32200 using the formula '3200 + DEADZONE * 1000'.</p>
-
-	<p>Paddle settings are also configured here.  The mouse can emulate either paddle
-	0, 1, 2, or 3.  Note that some paddle games don't default to paddle 0.  In those
-	cases, the ROM properties will automatically set the mouse to emulate the paddle
-	used by Player 0.  So, for example, a ROM that defaults to paddle 1 (Demons to Diamonds)
-	will set 'Mouse is paddle' to 1, and a ROM that defaults to paddle 3 (Tac-Scan) will
-	set 'Mouse is paddle' to 3.</p>
-
-	<p>Paddle speed is used when emulating a paddle using a digital device
-	(keyboard, digital joystick, etc).  Because of the on/off nature of digital
-	devices, there are no smooth analog values as would be present on a real
-	paddle.  When using digital devices, the paddle is moved a certain amount
-	each frame.  This speed setting specifies how much movement will occur.</p>
-
-	<p>The serial port to which a real AtariVox is connected can be set here.
-	See <b>Section 12 - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> for
-	further information.</p>
+	<p>Virtual devices can be configured under the 'Virtual Devs' tab, shown below:</p>
+	<table border="5" cellpadding="2" frame="box" rules="none">
+		<tr>
+			<td><img src="graphics/eventmapping_virtualdevs.png"></td>
+			<td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+			<td valign="top">
+				<table border="1" cellpadding="4">
+					<tr><th>Item</th><th>Brief description</th><th>For more information,<br>see Commandline</th></tr>
+					<tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor uses (See <b>Section 11 - <a href="#Adaptor">Stelladaptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
+					<tr><td>Joy deadzone</td><td>Joystick deadzone area for analog joysticks</td><td>-joydeadzone</td></tr>
+					<tr><td>Mouse is paddle</td><td>The mouse can emulate either paddle	0, 1, 2, or 3.</td><td>&nbsp;</td></tr>
+					<tr><td>Paddle speed</td><td>Speed used when emulating a paddle using a digital device</td><td>-pspeed</td></tr>
+					<tr><td>AVox serial port</td><td>Described in further detail in <b>Section 12 - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
+					<tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
+				</table>
+			</td>
+		</tr>
+	</table>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -2651,6 +2651,7 @@ Ms Pac-Man (Stella extended codes):
 				<tr><td>E7 </td><td>16K M-network </td></tr>
 				<tr><td>EF </td><td>64K Homestar Runner </td></tr>
 				<tr><td>EFSC </td><td>64K Homestar Runner + ram</td></tr>
+				<tr><td>F0 </td><td>Dynacom Megaboy </td></tr>
 				<tr><td>F4 </td><td>32K Atari </td></tr>
 				<tr><td>F4SC </td><td>32K Atari + ram </td></tr>
 				<tr><td>F6 </td><td>16K Atari </td></tr>
@@ -2659,7 +2660,6 @@ Ms Pac-Man (Stella extended codes):
 				<tr><td>F8SC </td><td>8K Atari + ram </td></tr>
 				<tr><td>FA </td><td>CBS RAM Plus </td></tr>
 				<tr><td>FE </td><td>8K Decathlon </td></tr>
-				<tr><td>F0 </td><td>Dynacom Megaboy </td></tr>
 				<tr><td>MC &#185;&#178;</td><td>C. Wilkson Megacart </td></tr>
 				<tr><td>SB </td><td>128-256k SUPERbanking </td></tr>
 				<tr><td>UA </td><td>8K UA Ltd. </td></tr>
@@ -3129,7 +3129,7 @@ Ms Pac-Man (Stella extended codes):
 			<td VALIGN="TOP">Robert&nbsp;Tuccitto</td>
 			<td>Provided valuable bugtesting and feedback which finally helped in fixing
 			a long-standing lockup which occurred after Stella has been running for
-			71 muinutes.</td>
+			71 minutes.</td>
 		</tr>
 
 		<tr>

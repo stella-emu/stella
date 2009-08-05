@@ -23,7 +23,7 @@ class OSystem;
 class GuiObject;
 class TabWidget;
 class EventMappingWidget;
-class CheckBoxWidget;
+class CheckboxWidget;
 class EditTextWidget;
 class PopUpWidget;
 class SliderWidget;
@@ -76,6 +76,7 @@ class InputDialog : public Dialog
     SliderWidget*     myPaddleSpeed;
     StaticTextWidget* myPaddleLabel;
     EditTextWidget*   myAVoxPort;
+    CheckboxWidget*   myAllowAll4;
 };
 
 #endif

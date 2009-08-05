@@ -1022,4 +1022,6 @@ void Debugger::RewindManager::clear()
   for(int i = 0; i < MAX_SIZE; ++i)
     if(myStateList[i] != NULL)
       myStateList[i]->reset();
+
+  myTop = mySize = 0;
 }

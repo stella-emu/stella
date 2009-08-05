@@ -166,10 +166,12 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Add the real controllers for this system
   setControllers(md5);
 
-  // Bumper Bash requires all 4 directions
-  bool allow = (md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
-                md5 == "1bf503c724001b09be79c515ecfcbd03");
-  myOSystem->eventHandler().allowAllDirections(allow);
+  // Bumper Bash always requires all 4 directions
+  // Other ROMs can use it if the setting is enabled
+  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
+                   md5 == "1bf503c724001b09be79c515ecfcbd03" ||
+                   myOSystem->settings().getBool("joyallow4");
+  myOSystem->eventHandler().allowAllDirections(joyallow4);
 
   // Reset the system to its power-on state
   mySystem->reset();

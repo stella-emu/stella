@@ -170,6 +170,12 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
                                   fwidth, fontHeight, "");
   wid.push_back(myAVoxPort);
 
+  // Add 'allow all 4 directions' for joystick
+  xpos = 10;  ypos += 2*lineHeight;
+  myAllowAll4 = new CheckboxWidget(myTab, font, xpos, ypos,
+                  "Allow all 4 directions on joystick");
+  wid.push_back(myAllowAll4);
+
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
 }
@@ -200,6 +206,9 @@ void InputDialog::loadConfig()
   // AtariVox serial port
   myAVoxPort->setEditString(instance().settings().getString("avoxport"));
 
+  // Allow all 4 joystick directions
+  myAllowAll4->setState(instance().settings().getBool("joyallow4"));
+
   myTab->loadConfig();
 }
 
@@ -226,6 +235,11 @@ void InputDialog::saveConfig()
 
   // AtariVox serial port
   instance().settings().setString("avoxport", myAVoxPort->getEditString());
+
+  // Allow all 4 joystick directions
+  bool allowall4 = myAllowAll4->getState();
+  instance().settings().setBool("joyallow4", allowall4);
+  instance().eventHandler().allowAllDirections(allowall4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
