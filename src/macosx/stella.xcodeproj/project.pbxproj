@@ -31,7 +31,6 @@
 		2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF370627AE07006BEC99 /* CartMC.hxx */; };
 		2D9173E009BA90380026E9FF /* Console.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF390627AE07006BEC99 /* Console.hxx */; };
 		2D9173E109BA90380026E9FF /* Control.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF3B0627AE07006BEC99 /* Control.hxx */; };
-		2D9173E209BA90380026E9FF /* Deserializer.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF3D0627AE07006BEC99 /* Deserializer.hxx */; };
 		2D9173E309BA90380026E9FF /* Driving.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF3F0627AE07006BEC99 /* Driving.hxx */; };
 		2D9173E409BA90380026E9FF /* Event.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF410627AE07006BEC99 /* Event.hxx */; };
 		2D9173E509BA90380026E9FF /* Joystick.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF430627AE07006BEC99 /* Joystick.hxx */; };
@@ -77,7 +76,6 @@
 		2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC7084578BF00812C11 /* PopUpWidget.hxx */; };
 		2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */; };
 		2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */; };
-		2D91741409BA90380026E9FF /* Stack.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACC084578BF00812C11 /* Stack.hxx */; };
 		2D91741509BA90380026E9FF /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACF084578BF00812C11 /* StringList.hxx */; };
 		2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD1084578BF00812C11 /* TabWidget.hxx */; };
 		2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD3084578BF00812C11 /* VideoDialog.hxx */; };
@@ -159,7 +157,6 @@
 		2D91748809BA90380026E9FF /* CartMC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF360627AE07006BEC99 /* CartMC.cxx */; };
 		2D91748909BA90380026E9FF /* Console.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF380627AE07006BEC99 /* Console.cxx */; };
 		2D91748A09BA90380026E9FF /* Control.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3A0627AE07006BEC99 /* Control.cxx */; };
-		2D91748B09BA90380026E9FF /* Deserializer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3C0627AE07006BEC99 /* Deserializer.cxx */; };
 		2D91748C09BA90380026E9FF /* Driving.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3E0627AE07006BEC99 /* Driving.cxx */; };
 		2D91748D09BA90380026E9FF /* Event.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF400627AE07006BEC99 /* Event.cxx */; };
 		2D91748E09BA90380026E9FF /* Joystick.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF420627AE07006BEC99 /* Joystick.cxx */; };
@@ -291,6 +288,7 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
+		DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */; };
 		DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4E0F117CFD004D1660 /* Rect.hxx */; };
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
 		DC5D2C540F117CFD004D1660 /* StellaLargeFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */; };
@@ -530,7 +528,6 @@
 		2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ProgressDialog.hxx; path = ../gui/ProgressDialog.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ScrollBarWidget.cxx; path = ../gui/ScrollBarWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ScrollBarWidget.hxx; path = ../gui/ScrollBarWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2DDBEACC084578BF00812C11 /* Stack.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Stack.hxx; path = ../gui/Stack.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACF084578BF00812C11 /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../gui/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD0084578BF00812C11 /* TabWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TabWidget.cxx; path = ../gui/TabWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD1084578BF00812C11 /* TabWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TabWidget.hxx; path = ../gui/TabWidget.hxx; sourceTree = SOURCE_ROOT; };
@@ -592,8 +589,6 @@
 		2DE2DF390627AE07006BEC99 /* Console.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Console.hxx; path = ../emucore/Console.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF3A0627AE07006BEC99 /* Control.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Control.cxx; path = ../emucore/Control.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF3B0627AE07006BEC99 /* Control.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Control.hxx; path = ../emucore/Control.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF3C0627AE07006BEC99 /* Deserializer.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Deserializer.cxx; path = ../emucore/Deserializer.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF3D0627AE07006BEC99 /* Deserializer.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Deserializer.hxx; path = ../emucore/Deserializer.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF3E0627AE07006BEC99 /* Driving.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Driving.cxx; path = ../emucore/Driving.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF3F0627AE07006BEC99 /* Driving.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Driving.hxx; path = ../emucore/Driving.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF400627AE07006BEC99 /* Event.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Event.cxx; path = ../emucore/Event.cxx; sourceTree = SOURCE_ROOT; };
@@ -672,6 +667,7 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RiotWidget.hxx; path = ../debugger/gui/RiotWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKey.cxx; path = ../emucore/SaveKey.cxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SaveKey.hxx; path = ../emucore/SaveKey.hxx; sourceTree = SOURCE_ROOT; };
+		DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Stack.hxx; path = ../common/Stack.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4E0F117CFD004D1660 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Rect.hxx; path = ../gui/Rect.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaFont.hxx; path = ../gui/StellaFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaLargeFont.hxx; path = ../gui/StellaLargeFont.hxx; sourceTree = SOURCE_ROOT; };
@@ -874,6 +870,7 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
 				DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
@@ -997,8 +994,6 @@
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
-				2DE2DF3C0627AE07006BEC99 /* Deserializer.cxx */,
-				2DE2DF3D0627AE07006BEC99 /* Deserializer.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
 				2DE2DF400627AE07006BEC99 /* Event.cxx */,
@@ -1138,7 +1133,6 @@
 				2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */,
 				2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */,
 				2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */,
-				2DDBEACC084578BF00812C11 /* Stack.hxx */,
 				2DDBEACF084578BF00812C11 /* StringList.hxx */,
 				2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */,
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
@@ -1239,7 +1233,6 @@
 				2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */,
 				2D9173E009BA90380026E9FF /* Console.hxx in Headers */,
 				2D9173E109BA90380026E9FF /* Control.hxx in Headers */,
-				2D9173E209BA90380026E9FF /* Deserializer.hxx in Headers */,
 				2D9173E309BA90380026E9FF /* Driving.hxx in Headers */,
 				2D9173E409BA90380026E9FF /* Event.hxx in Headers */,
 				2D9173E509BA90380026E9FF /* Joystick.hxx in Headers */,
@@ -1285,7 +1278,6 @@
 				2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */,
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
-				2D91741409BA90380026E9FF /* Stack.hxx in Headers */,
 				2D91741509BA90380026E9FF /* StringList.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
 				2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */,
@@ -1383,6 +1375,7 @@
 				DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */,
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
 				DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */,
+				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1507,7 +1500,6 @@
 				2D91748809BA90380026E9FF /* CartMC.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
-				2D91748B09BA90380026E9FF /* Deserializer.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
 				2D91748D09BA90380026E9FF /* Event.cxx in Sources */,
 				2D91748E09BA90380026E9FF /* Joystick.cxx in Sources */,
