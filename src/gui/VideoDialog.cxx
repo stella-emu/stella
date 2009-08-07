@@ -56,7 +56,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   StringMap items;
 
   // Set real dimensions
-  _w = 49 * fontWidth + 10;
+  _w = 52 * fontWidth + 10;
   _h = 15 * (lineHeight + 4) + 10;
 
   // The tab widget
@@ -170,19 +170,24 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add message concerning usage
   ypos += (lineHeight + 4) * 2;
-  lwidth = font.getStringWidth("(*) Requires application restart");
-  new StaticTextWidget(myTab, font, 10, ypos, lwidth, fontHeight,
-                       "(*) Requires application restart",
-                       kTextAlignLeft);
+  new StaticTextWidget(myTab, font, 10, ypos,
+        font.getStringWidth("(*) Requires application restart"), fontHeight,
+        "(*) Requires application restart", kTextAlignLeft);
 
   // Move over to the next column
   xpos += myNAspectRatioSlider->getWidth() + myNAspectRatioLabel->getWidth() + 10;
   ypos = 10;
 
   // Fullscreen
-  myFullscreenCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                            "Fullscreen mode", kFullScrChanged);
-  wid.push_back(myFullscreenCheckbox);
+  items.clear();
+  items.push_back("On", "1");
+  items.push_back("Off", "0");
+  items.push_back("Disabled", "-1");
+  lwidth = font.getStringWidth("Fullscreen: ");
+  myFullscreenPopup =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                    items, "Fullscreen: ", lwidth, kFullScrChanged);
+  wid.push_back(myFullscreenPopup);
   ypos += lineHeight + 4;
 
   // PAL color-loss effect
@@ -391,9 +396,9 @@ void VideoDialog::loadConfig()
     instance().settings().getString("framerate"));
 
   // Fullscreen
-  bool b = instance().settings().getBool("fullscreen");
-  myFullscreenCheckbox->setState(b);
-  handleFullscreenChange(b);
+  const string& fullscreen = instance().settings().getString("fullscreen");
+  myFullscreenPopup->setSelected(fullscreen, "0");
+  handleFullscreenChange(fullscreen == "1");
 
   // PAL color-loss effect
   myColorLossCheckbox->setState(instance().settings().getBool("colorloss"));
@@ -488,7 +493,7 @@ void VideoDialog::saveConfig()
   }
 
   // Fullscreen
-  instance().settings().setBool("fullscreen", myFullscreenCheckbox->getState());
+  instance().settings().setString("fullscreen", myFullscreenPopup->getSelectedTag());
 
   // PAL color-loss effect
   instance().settings().setBool("colorloss", myColorLossCheckbox->getState());
@@ -542,7 +547,7 @@ void VideoDialog::setDefaults()
   myFrameRateSlider->setValue(0);
   myFrameRateLabel->setLabel("0");
 
-  myFullscreenCheckbox->setState(false);
+  myFullscreenPopup->setSelected("0", "");
   myColorLossCheckbox->setState(false);
   myGLStretchCheckbox->setState(false);
   myUseVSyncCheckbox->setState(true);
@@ -601,7 +606,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFullScrChanged:
-      handleFullscreenChange(myFullscreenCheckbox->getState());
+      handleFullscreenChange(myFullscreenPopup->getSelectedTag() == "1");
       break;
 
     default:

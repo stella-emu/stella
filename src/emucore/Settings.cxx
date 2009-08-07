@@ -50,7 +50,7 @@ Settings::Settings(OSystem* osystem)
 
   // Framebuffer-related options
   setInternal("tia_filter", "zoom2x");
-  setInternal("fullscreen", "false");
+  setInternal("fullscreen", "0");
   setInternal("fullres", "auto");
   setInternal("center", "true");
   setInternal("grabmouse", "false");
@@ -329,7 +329,7 @@ void Settings::usage()
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
-    << "  -fullscreen   <1|0>          Play the game in fullscreen mode\n"
+    << "  -fullscreen   <1|0|-1>       Use fullscreen mode (1 or 0), or disable switching to fullscreen entirely\n"
     << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
     << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"

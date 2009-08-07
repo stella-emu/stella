@@ -92,7 +92,7 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   // This must be done before any modes are initialized
   mySDLFlags = 0;
 #ifdef WINDOWED_SUPPORT
-  if(myOSystem->settings().getBool("fullscreen")) mySDLFlags = SDL_FULLSCREEN;
+  if(myOSystem->settings().getString("fullscreen") == "1") mySDLFlags = SDL_FULLSCREEN;
 #endif
 
   // Set the available video modes for this framebuffer
@@ -121,7 +121,10 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
       myScreenRect.setHeight(mode.screen_h);
 
       // Did we get the requested fullscreen state?
-      myOSystem->settings().setBool("fullscreen", fullScreen());
+      const string& fullscreen = myOSystem->settings().getString("fullscreen");
+      if(fullscreen != "-1")
+        myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
+      setCursorState();
     }
   }
   else
@@ -609,7 +612,8 @@ void FrameBuffer::toggleFullscreen()
 void FrameBuffer::setFullscreen(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
-  if(enable)
+  // '-1' means fullscreen mode is completely disabled
+  if(enable && myOSystem->settings().getString("fullscreen") != "-1" )
     mySDLFlags |= SDL_FULLSCREEN;
   else
     mySDLFlags &= ~SDL_FULLSCREEN;
@@ -654,11 +658,13 @@ bool FrameBuffer::changeVidMode(int direction)
     myScreenRect.setHeight(vidmode.screen_h);
 
     // Did we get the requested fullscreen state?
-    myOSystem->settings().setBool("fullscreen", fullScreen());
+    const string& fullscreen = myOSystem->settings().getString("fullscreen");
+    if(fullscreen != "-1")
+      myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
+    setCursorState();
 
     if(!inUIMode)
     {
-      setCursorState();
       if(direction != 0)  // only show message when mode actually changes
         showMessage(vidmode.gfxmode.description);
     }
@@ -701,6 +707,7 @@ void FrameBuffer::setCursorState()
       break;
     default:
       showCursor(true);
+      break;
   }
 }
 
