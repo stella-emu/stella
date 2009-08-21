@@ -26,7 +26,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3245
+#define DEF_PROPS_SIZE 3246
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -925,6 +925,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "45a095645696a217e416e4bd2baea723", "Digivision", "", "Snoopy (Digivision)", "AKA Snoopy and the Red Baron", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "45a4f55bb9a5083d470ad479afd8bca2", "CommaVid, Joseph Biel", "", "Frog Demo (1983) (CommaVid)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "45beef9da1a7e45f37f3f445f769a0b3", "Atari, Suki Lee", "CX2658", "Math Gran Prix (1982) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "45c4413dd703b9cfea49a13709d560eb", "Jone Yuan Telephonic Enterprise Co", "", "Challenge of.... Nexar, The (Jone Yuan) (Hack)", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "45cb0f41774b78def53331e4c3bf3362", "Carrere Video, Roger Booth, Sylvia Day, Todd Marshall, Wes Trager, Henry Will - Teldec", "USC1007", "Octopus (1983) (Carrere Video) (PAL)", "AKA Name This Game", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4605a00f5b44a9cbd5803a7a55de150e", "Coleco, Ed Temple", "", "Cabbage Patch Kids (07-03-1984) (Coleco) (Prototype)", "Adventures in the Park", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "461029ab23800833e9645be3e472d470", "", "", "Combat TC (v0.1)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

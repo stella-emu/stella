@@ -256,12 +256,12 @@ class Console : public Serializable
     /**
       Toggles the TIA bit specified in the method name.
     */
-    void toggleP0Bit() const { toggleTIABit(TIA::P0, "P0"); }
-    void toggleP1Bit() const { toggleTIABit(TIA::P1, "P1"); }
-    void toggleM0Bit() const { toggleTIABit(TIA::M0, "M0"); }
-    void toggleM1Bit() const { toggleTIABit(TIA::M1, "M1"); }
-    void toggleBLBit() const { toggleTIABit(TIA::BL, "BL"); }
-    void togglePFBit() const { toggleTIABit(TIA::PF, "PF"); }
+    void toggleP0Bit() const { toggleTIABit(P0Bit, "P0"); }
+    void toggleP1Bit() const { toggleTIABit(P1Bit, "P1"); }
+    void toggleM0Bit() const { toggleTIABit(M0Bit, "M0"); }
+    void toggleM1Bit() const { toggleTIABit(M1Bit, "M1"); }
+    void toggleBLBit() const { toggleTIABit(BLBit, "BL"); }
+    void togglePFBit() const { toggleTIABit(PFBit, "PF"); }
     void enableBits(bool enable) const;
 
   private:
@@ -270,7 +270,7 @@ class Console : public Serializable
     */
     void setControllers(const string& rommd5);
 
-    void toggleTIABit(TIA::TIABit bit, const string& bitname, bool show = true) const;
+    void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the

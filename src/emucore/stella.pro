@@ -19637,3 +19637,9 @@
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
 ""
+
+"Cartridge.MD5" "45c4413dd703b9cfea49a13709d560eb"
+"Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
+"Cartridge.Name" "Challenge of.... Nexar, The (Jone Yuan) (Hack)"
+"Cartridge.Note" "Hack"
+""

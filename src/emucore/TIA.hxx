@@ -26,6 +26,7 @@ class Settings;
 #include "Sound.hxx"
 #include "Device.hxx"
 #include "System.hxx"
+#include "TIATables.hxx"
 
 /**
   This class is a device that emulates the Television Interface Adapator 
@@ -212,37 +213,28 @@ class TIA : public Device
     inline uInt32 scanlines() const
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
-    enum TIABit {
-      P0,   // Descriptor for Player 0 Bit
-      P1,   // Descriptor for Player 1 Bit
-      M0,   // Descriptor for Missle 0 Bit
-      M1,   // Descriptor for Missle 1 Bit
-      BL,   // Descriptor for Ball Bit
-      PF    // Descriptor for Playfield Bit
-    };
-
     /**
-      Enables/disables the specified TIA bit.
+      Enables/disables the specified TIA bit.  If flip is true, ignore the
+      given mode and instead toggle/flip the specified TIA bit.
 
       @return  Whether the bit was enabled or disabled
     */
-    void enableBit(TIABit b, bool mode) { myBitEnabled[b] = mode ? 0xff : 0x00; }
+    bool enableBit(TIABit b, bool mode, bool flip = false);
 
     /**
-      Toggles the specified TIA bit.
+      Toggles the specified TIA bit.  This is a convenience wrapper
+      around enableBit when flipping a bit.
 
       @return  Whether the bit was enabled or disabled
     */
-    bool toggleBit(TIABit b)
-      { myBitEnabled[b] = myBitEnabled[b] == 0xff ? 0x00 : 0xff; return myBitEnabled[b]; }
+    bool toggleBit(TIABit b) { return enableBit(b, true, true); }
 
     /**
       Enables/disables all TIABit bits.
 
       @param mode  Whether to enable or disable all bits
     */
-    void enableBits(bool mode)
-      { for(uInt8 i = 0; i < 6; ++i) myBitEnabled[i] = mode ? 0xff : 0x00; }
+    void enableBits(bool mode);
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -442,6 +434,11 @@ class TIA : public Device
     Int32 myStartM0;
     Int32 myStartM1;
 
+    // Index into the player mask arrays indicating whether display
+    // of the first copy should be suppressed
+    uInt8 mySuppressP0;
+    uInt8 mySuppressP1;
+
     // Latches for 'more motion required' as described in A. Towers TIA
     // Hardware Notes
     bool myHMP0mmr;
@@ -502,9 +499,9 @@ class TIA : public Device
     uInt8 myEnabledObjects;
 
     // Determines whether specified bits (from TIABit) are enabled or disabled
-    // Each value is and'ed with the appropriate register, so the valid values
-    // are 0x00 or 0xff;
-    uInt8 myBitEnabled[6];
+    // This is and'ed with the enabled objects each scanline to mask out any
+    // objects we don't want to be processed
+    uInt8 myDisabledObjects;
 
     // Indicates if color loss should be enabled or disabled.  Color loss
     // occurs on PAL (and maybe SECAM) systems when the previous frame

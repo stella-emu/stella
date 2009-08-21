@@ -21,7 +21,7 @@
 
 #include "bspf.hxx"
 
-enum {
+enum TIABit {
   P0Bit       = 0x01,  // Bit for Player 0
   M0Bit       = 0x02,  // Bit for Missle 0
   P1Bit       = 0x04,  // Bit for Player 1
@@ -32,7 +32,7 @@ enum {
   PriorityBit = 0x80   // Bit for Playfield priority
 };
 
-enum
+enum CollisionBit
 {
   Cx_M0P1 = 1 << 0,   // Missle0 - Player1   collision
   Cx_M0P0 = 1 << 1,   // Missle0 - Player0   collision
@@ -52,7 +52,7 @@ enum
 };
 
 // TIA Write/Read register names
-enum {
+enum TIARegister {
   VSYNC   = 0x00,  // Write: vertical sync set-clear (D1)
   VBLANK  = 0x01,  // Write: vertical blank set-clear (D7-6,D1)
   WSYNC   = 0x02,  // Write: wait for leading edge of hrz. blank (strobe)
@@ -140,9 +140,11 @@ class TIATables
     // Indicates the update delay associated with poking at a TIA address
     static const Int16 PokeDelay[64];
 
+#if 0
     // Used to convert value written in a motion register into 
     // its internal representation
     static const Int32 CompleteMotion[76][16];
+#endif
 
     // Indicates if HMOVE blanks should occur for the corresponding cycle
     static const bool HMOVEBlankEnableCycles[76];

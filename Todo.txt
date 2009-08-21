@@ -16,8 +16,15 @@ If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-  * Add new TIA infrastructure with improved HMOVE emulation, including
-    fixes for (possibly) incorrect VSYNC handling in Q-Bert.
+  * TIA infrastructure: further improve 'illegal' HMOVE emulation to fix
+    problems in several homebrew ROMs.
+
+  * TIA infrastructure: improve emulation of writes to NUSIZx while graphics
+    are currently being drawn.
+
+  * TIA infrastructure: fix incorrect VSYNC handling in Q-Bert.
+
+  * TIA infrastructure: add emulation of RSYNC instruction.
 
   * Look into adding Blargg NTSC filtering (perhaps as a GLSL program).
 

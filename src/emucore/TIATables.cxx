@@ -434,7 +434,7 @@ void TIATables::buildPxPosResetWhenTable()
             if((newx >= oldx) && (newx < (oldx + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             break;
 
@@ -444,7 +444,7 @@ void TIATables::buildPxPosResetWhenTable()
             else if((newx >= (oldx + 16)) && (newx < (oldx + 16 + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             else if((newx >= oldx + 16 + 4) && (newx < (oldx + 16 + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
@@ -456,7 +456,7 @@ void TIATables::buildPxPosResetWhenTable()
             else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
@@ -470,7 +470,7 @@ void TIATables::buildPxPosResetWhenTable()
             else if((newx >= (oldx + 32)) && (newx < (oldx + 32 + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             else if((newx >= oldx + 16 + 4) && (newx < (oldx + 16 + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
@@ -484,7 +484,7 @@ void TIATables::buildPxPosResetWhenTable()
             else if((newx >= (oldx + 64)) && (newx < (oldx + 64 + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             else if((newx >= oldx + 64 + 4) && (newx < (oldx + 64 + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
@@ -494,7 +494,7 @@ void TIATables::buildPxPosResetWhenTable()
             if((newx >= oldx) && (newx < (oldx + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 16)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 16)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             break;
 
@@ -506,7 +506,7 @@ void TIATables::buildPxPosResetWhenTable()
             else if((newx >= (oldx + 64)) && (newx < (oldx + 64 + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             else if((newx >= oldx + 32 + 4) && (newx < (oldx + 32 + 4 + 8)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
@@ -518,7 +518,7 @@ void TIATables::buildPxPosResetWhenTable()
             if((newx >= oldx) && (newx < (oldx + 4)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = -1;
 
-            if((newx >= oldx + 4) && (newx < (oldx + 4 + 32)))
+            else if((newx >= oldx + 4) && (newx < (oldx + 4 + 32)))
               PxPosResetWhen[nusiz][oldx][newx % 160] = 1;
             break;
         }
@@ -549,8 +549,8 @@ uInt8 TIATables::DisabledMask[640];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIATables::PokeDelay[64] = {
-   0,  1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
-   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,
+   0,  1,  0,  0,  8,  8,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
+   0,  0,  8,  8,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  0,  0,  0,  0,  0,
    0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
 };
@@ -570,6 +570,7 @@ const bool TIATables::HMOVEBlankEnableCycles[76] = {
   false, false, false, false, false, true                                // 70
 };
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int32 TIATables::CompleteMotion[76][16] = {
   { 0, -1, -2, -3, -4, -5, -6, -7,  8,  7,  6,  5,  4,  3,  2,  1}, // HBLANK
@@ -649,6 +650,7 @@ const Int32 TIATables::CompleteMotion[76][16] = {
   {-8, -9,-10,-11,-12,-13,-14,-15,  0, -1, -2, -3, -4, -5, -6, -7},
   { 0, -1, -2, -3, -4, -5, -6, -7,  8,  7,  6,  5,  4,  3,  2,  1}  // HBLANK
 };
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIATables::PxMask[4][2][8][320];

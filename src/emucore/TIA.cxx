@@ -35,8 +35,6 @@
 
 #define HBLANK 68
 #define USE_MMR_LATCHES
-static int P0suppress = 0;
-static int P1suppress = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
@@ -118,8 +116,9 @@ void TIA::reset()
   // Reset the sound device
   mySound.reset();
 
-  // Currently no objects are enabled
+  // Currently no objects are enabled or selectively disabled
   myEnabledObjects = 0;
+  myDisabledObjects = 0;
 
   // Some default values for the registers
   myVSYNC = myVBLANK = 0;
@@ -154,6 +153,8 @@ void TIA::reset()
   myMotionClockM0 = 0;
   myMotionClockM1 = 0;
   myMotionClockBL = 0;
+
+  mySuppressP0 = mySuppressP1 = 0;
 
   myHMP0mmr = myHMP1mmr = myHMM0mmr = myHMM1mmr = myHMBLmmr = false;
 
@@ -302,6 +303,7 @@ bool TIA::save(Serializer& out) const
     out.putInt(myVSYNCFinishClock);
 
     out.putByte((char)myEnabledObjects);
+    out.putByte((char)myDisabledObjects);
 
     out.putByte((char)myVSYNC);
     out.putByte((char)myVBLANK);
@@ -340,14 +342,6 @@ bool TIA::save(Serializer& out) const
     out.putByte((char)myCurrentGRP0);
     out.putByte((char)myCurrentGRP1);
 
-// pointers
-//  myCurrentBLMask = TIATables::BLMask[0][0];
-//  myCurrentM0Mask = TIATables::MxMask[0][0][0];
-//  myCurrentM1Mask = TIATables::MxMask[0][0][0];
-//  myCurrentP0Mask = TIATables::PxMask[0][0][0];
-//  myCurrentP1Mask = TIATables::PxMask[0][0][0];
-//  myCurrentPFMask = TIATables::PFMask[0];
-
     out.putBool(myDumpEnabled);
     out.putInt(myDumpDisabledCycle);
 
@@ -362,6 +356,14 @@ bool TIA::save(Serializer& out) const
     out.putInt(myMotionClockM0);
     out.putInt(myMotionClockM1);
     out.putInt(myMotionClockBL);
+
+    out.putInt(myStartP0);
+    out.putInt(myStartP1);
+    out.putInt(myStartM0);
+    out.putInt(myStartM1);
+
+    out.putByte(mySuppressP0);
+    out.putByte(mySuppressP1);
 
     out.putBool(myHMP0mmr);
     out.putBool(myHMP1mmr);
@@ -411,6 +413,7 @@ bool TIA::load(Serializer& in)
     myVSYNCFinishClock = (Int32) in.getInt();
 
     myEnabledObjects = (uInt8) in.getByte();
+    myDisabledObjects = (uInt8) in.getByte();
 
     myVSYNC = (uInt8) in.getByte();
     myVBLANK = (uInt8) in.getByte();
@@ -449,14 +452,6 @@ bool TIA::load(Serializer& in)
     myCurrentGRP0 = (uInt8) in.getByte();
     myCurrentGRP1 = (uInt8) in.getByte();
 
-// pointers
-//  myCurrentBLMask = TIATables::BLMask[0][0];
-//  myCurrentM0Mask = TIATables::MxMask[0][0][0];
-//  myCurrentM1Mask = TIATables::MxMask[0][0][0];
-//  myCurrentP0Mask = TIATables::PxMask[0][0][0];
-//  myCurrentP1Mask = TIATables::PxMask[0][0][0];
-//  myCurrentPFMask = TIATables::PFMask[0];
-
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getInt();
 
@@ -471,6 +466,14 @@ bool TIA::load(Serializer& in)
     myMotionClockM0 = (Int32) in.getInt();
     myMotionClockM1 = (Int32) in.getInt();
     myMotionClockBL = (Int32) in.getInt();
+
+    myStartP0 = (Int32) in.getInt();
+    myStartP1 = (Int32) in.getInt();
+    myStartM0 = (Int32) in.getInt();
+    myStartM1 = (Int32) in.getInt();
+
+    mySuppressP0 = (uInt8) in.getByte();
+    mySuppressP1 = (uInt8) in.getByte();
 
     myHMP0mmr = in.getBool();
     myHMP1mmr = in.getBool();
@@ -488,7 +491,8 @@ bool TIA::load(Serializer& in)
     mySound.load(in);
 
     // Reset TIA bits to be on
-    enableBits(true);
+// TODO - should we enable this, or leave it to the user?
+//    enableBits(true);
   }
   catch(char *msg)
   {
@@ -672,6 +676,29 @@ inline void TIA::endFrame()
   myFrameGreyed = false;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::enableBit(TIABit b, bool mode, bool flip)
+{
+  // If flip is enabled, we ignore mode and calculate our own
+  if(flip)  mode = !(myDisabledObjects & b);
+
+  if(mode)  myDisabledObjects |= b;
+  else      myDisabledObjects &= ~b;
+
+  return mode;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::enableBits(bool mode)
+{
+  enableBit(P0Bit, mode);
+  enableBit(P1Bit, mode);
+  enableBit(M0Bit, mode);
+  enableBit(M1Bit, mode);
+  enableBit(BLBit, mode);
+  enableBit(PFBit, mode);
+}
+
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateScanline()
@@ -771,9 +798,9 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
     myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
         [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
     myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-        [P0suppress][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+        [mySuppressP0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
     myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-        [P1suppress][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+        [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
     myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
         [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
     myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
@@ -1322,18 +1349,19 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
       {
         for(; myFramePointer < ending; ++myFramePointer, ++hpos)
         {
-          uInt8 enabled = (myPF & myCurrentPFMask[hpos]) ? PFBit : 0;
+          uInt8 enabled = ((myEnabledObjects & PFBit) &&
+                           (myPF & myCurrentPFMask[hpos])) ? PFBit : 0;
 
           if((myEnabledObjects & BLBit) && myCurrentBLMask[hpos])
             enabled |= BLBit;
 
-          if(myCurrentGRP1 & myCurrentP1Mask[hpos])
+          if((myEnabledObjects & P1Bit) && (myCurrentGRP1 & myCurrentP1Mask[hpos]))
             enabled |= P1Bit;
 
           if((myEnabledObjects & M1Bit) && myCurrentM1Mask[hpos])
             enabled |= M1Bit;
 
-          if(myCurrentGRP0 & myCurrentP0Mask[hpos])
+          if((myEnabledObjects & P0Bit) && (myCurrentGRP0 & myCurrentP0Mask[hpos]))
             enabled |= P0Bit;
 
           if((myEnabledObjects & M0Bit) && myCurrentM0Mask[hpos])
@@ -1362,6 +1390,8 @@ void TIA::updateFrame(Int32 clock)
   // Truncate the number of cycles to update to the stop display point
   if(clock > myClockStopDisplay)
     clock = myClockStopDisplay;
+
+//cerr << "updateFrame: " << clock << endl;
 
   // Determine how many scanlines to process
   // It's easier to think about this in scanlines rather than color clocks
@@ -1458,7 +1488,15 @@ void TIA::updateFrame(Int32 clock)
 
     // Update as much of the scanline as we can
     if(clocksToUpdate != 0)
+    {
+      // Selectively disable all bits we don't wish to draw
+      uInt8 oldEnabled = myEnabledObjects;
+      myEnabledObjects &= myDisabledObjects;
+
       updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
+
+      myEnabledObjects = oldEnabled;
+    }
 
     // Handle HMOVE blanks if they are enabled
     if(myHMOVEBlankEnabled && (startOfScanLine < HBLANK + 8) &&
@@ -1480,8 +1518,7 @@ void TIA::updateFrame(Int32 clock)
       // TODO: These should be reset right after the first copy of the player
       // has passed.  However, for now we'll just reset at the end of the 
       // scanline since the other way would be to slow (01/21/99).
-P0suppress = 0;
-P1suppress = 0;
+      mySuppressP0 = mySuppressP1 = 0;
     }
   }
 }
@@ -1499,7 +1536,6 @@ inline void TIA::waitHorizontalSync()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::greyOutFrame()
 {
-cerr << "greyOutFrame(): scanlines = " << scanlines() << endl;
   uInt32 c = scanlines();
   if(c < myFrameYStart) c = myFrameYStart;
   if(c > (myFrameHeight + myFrameYStart))
@@ -1729,17 +1765,19 @@ void TIA::poke(uInt16 addr, uInt8 value)
 
     case NUSIZ0:  // Number-size of player-missle 0
     {
-//cerr << "NUSIZ0 set: " << (int)myNUSIZ0 << " => " << (int)value << " @ " << (clock + delay) << ", p0 pos = " << myPOSP0 << endl;
+      // TODO - 08-11-2009: determine correct delay instead of always
+      // using '8'.
       myNUSIZ0 = value;
-P0suppress = 0;
+      mySuppressP0 = 0;
       break;
     }
 
     case NUSIZ1:  // Number-size of player-missle 1
     {
-//cerr << "NUSIZ1 set: " << (int)myNUSIZ1 << " => " << (int)value << " @ " << (clock + delay) << endl;
+      // TODO - 08-11-2009: determine correct delay instead of always
+      // using '8'.
       myNUSIZ1 = value;
-P1suppress = 0;
+      mySuppressP1 = 0;
       break;
     }
 
@@ -1833,7 +1871,7 @@ P1suppress = 0;
     {
       myPF = (myPF & 0x000FFFF0) | ((value >> 4) & 0x0F);
 
-      if(myBitEnabled[TIA::PF] == 0x00 || myPF == 0)
+      if(myPF == 0)
         myEnabledObjects &= ~PFBit;
       else
         myEnabledObjects |= PFBit;
@@ -1845,7 +1883,7 @@ P1suppress = 0;
     {
       myPF = (myPF & 0x000FF00F) | ((uInt32)value << 4);
 
-      if(myBitEnabled[TIA::PF] == 0x00 || myPF == 0)
+      if(myPF == 0)
         myEnabledObjects &= ~PFBit;
       else
         myEnabledObjects |= PFBit;
@@ -1857,7 +1895,7 @@ P1suppress = 0;
     {
       myPF = (myPF & 0x00000FFF) | ((uInt32)value << 12);
 
-      if(myBitEnabled[TIA::PF] == 0x00 || myPF == 0)
+      if(myPF == 0)
         myEnabledObjects &= ~PFBit;
       else
         myEnabledObjects |= PFBit;
@@ -1882,38 +1920,33 @@ P1suppress = 0;
         newx = hpos < -2 ? 3 : ((hpos + 5) % 160);
         applyPreviousHMOVEMotion(hpos, newx, myHMP0);
       }
-      if(newx != myPOSP0)
+      if(myPOSP0 != newx)
       {
-//        myPOSP0 = newx;
-//        myStartP0 = 0;
-      }
+        // Find out under what condition the player is being reset
+        delay = TIATables::PxPosResetWhen[myNUSIZ0 & 7][myPOSP0][newx];
 
-      // Find out under what condition the player is being reset
-      Int8 when = TIATables::PxPosResetWhen[myNUSIZ0 & 7][myPOSP0][newx];
+        switch(delay)
+        {
+          // Player is being reset during the display of one of its copies
+          case 1:
+            // TODO - 08-20-2009: determine whether we really need to update
+            // the frame here, and also come up with a way to eliminate the
+            // 200KB PxPosResetWhen table.
+            updateFrame(clock + 11);
+            mySuppressP0 = 1;
+            break;
 
-      // Player is being reset during the display of one of its copies
-      if(when == 1)
-      {
-        // So we go ahead and update the display before moving the player
-        // TODO: The 11 should depend on how much of the player has already
-        // been displayed.  Probably change table to return the amount to
-        // delay by instead of just 1 (01/21/99).
-//        updateFrame(clock + 11);
+          // Player is being reset in neither the delay nor display section
+          case 0:
+            mySuppressP0 = 1;
+            break;
 
+          // Player is being reset during the delay section of one of its copies
+          case -1:
+            mySuppressP0 = 0;
+            break;
+        }
         myPOSP0 = newx;
-P0suppress = 1;
-      }
-      // Player is being reset in neither the delay nor display section
-      else if(when == 0)
-      {
-        myPOSP0 = newx;
-P0suppress = 1;
-      }
-      // Player is being reset during the delay section of one of its copies
-      else if(when == -1)
-      {
-        myPOSP0 = newx;
-P0suppress = 0;
       }
       break;
     }
@@ -1935,38 +1968,33 @@ P0suppress = 0;
         newx = hpos < -2 ? 3 : ((hpos + 5) % 160);
         applyPreviousHMOVEMotion(hpos, newx, myHMP1);
       }
-      if(newx != myPOSP1)
+      if(myPOSP1 != newx)
       {
-//        myPOSP1 = newx;
-//        myStartP1 = 0;
-      }
+        // Find out under what condition the player is being reset
+        delay = TIATables::PxPosResetWhen[myNUSIZ1 & 7][myPOSP1][newx];
 
-      // Find out under what condition the player is being reset
-      Int8 when = TIATables::PxPosResetWhen[myNUSIZ1 & 7][myPOSP1][newx];
+        switch(delay)
+        {
+          // Player is being reset during the display of one of its copies
+          case 1:
+            // TODO - 08-20-2009: determine whether we really need to update
+            // the frame here, and also come up with a way to eliminate the
+            // 200KB PxPosResetWhen table.
+            updateFrame(clock + 11);
+            mySuppressP1 = 1;
+            break;
 
-      // Player is being reset during the display of one of its copies
-      if(when == 1)
-      {
-        // So we go ahead and update the display before moving the player
-        // TODO: The 11 should depend on how much of the player has already
-        // been displayed.  Probably change table to return the amount to
-        // delay by instead of just 1 (01/21/99).
-//        updateFrame(clock + 11);
+          // Player is being reset in neither the delay nor display section
+          case 0:
+            mySuppressP1 = 1;
+            break;
 
+          // Player is being reset during the delay section of one of its copies
+          case -1:
+            mySuppressP1 = 0;
+            break;
+        }
         myPOSP1 = newx;
-P1suppress = 1;
-      }
-      // Player is being reset in neither the delay nor display section
-      else if(when == 0)
-      {
-        myPOSP1 = newx;
-P1suppress = 1;
-      }
-      // Player is being reset during the delay section of one of its copies
-      else if(when == -1)
-      {
-        myPOSP1 = newx;
-P1suppress = 0;
       }
       break;
     }
@@ -1990,7 +2018,6 @@ P1suppress = 0;
       }
       if(newx != myPOSM0)
       {
-        // myStartM0 = skipM0delay ? 1 : 0;
         myPOSM0 = newx;
       }
       break;
@@ -2015,7 +2042,6 @@ P1suppress = 0;
       }
       if(newx != myPOSM1)
       {
-        // myStartM1 = skipM1delay ? 1 : 0;
         myPOSM1 = newx;
       }
       break;
@@ -2085,7 +2111,7 @@ P1suppress = 0;
     case GRP0:    // Graphics Player 0
     {
       // Set player 0 graphics
-      myGRP0 = value & myBitEnabled[TIA::P0];
+      myGRP0 = value;
 
       // Copy player 1 graphics into its delayed register
       myDGRP1 = myGRP1;
@@ -2115,7 +2141,7 @@ P1suppress = 0;
     case GRP1:    // Graphics Player 1
     {
       // Set player 1 graphics
-      myGRP1 = value & myBitEnabled[TIA::P1];
+      myGRP1 = value;
 
       // Copy player 0 graphics into its delayed register
       myDGRP0 = myGRP0;
@@ -2152,7 +2178,7 @@ P1suppress = 0;
 
     case ENAM0:   // Enable Missile 0 graphics
     {
-      myENAM0 = (value & 0x02) & myBitEnabled[TIA::M0];
+      myENAM0 = value & 0x02;
 
       if(myENAM0 && !myRESMP0)
         myEnabledObjects |= M0Bit;
@@ -2163,7 +2189,7 @@ P1suppress = 0;
 
     case ENAM1:   // Enable Missile 1 graphics
     {
-      myENAM1 = (value & 0x02) & myBitEnabled[TIA::M1];
+      myENAM1 = value & 0x02;
 
       if(myENAM1 && !myRESMP1)
         myEnabledObjects |= M1Bit;
@@ -2174,7 +2200,7 @@ P1suppress = 0;
 
     case ENABL:   // Enable Ball graphics
     {
-      myENABL = (value & 0x02) & myBitEnabled[TIA::BL];
+      myENABL = value & 0x02;
 
       if(myVDELBL ? myDENABL : myENABL)
         myEnabledObjects |= BLBit;
@@ -2397,8 +2423,7 @@ P1suppress = 0;
       if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
       if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
 
-P0suppress = 0;
-P1suppress = 0;
+      mySuppressP0 = mySuppressP1 = 0;
       break;
     }
 

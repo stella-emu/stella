@@ -694,7 +694,7 @@ void Console::setControllers(const string& rommd5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIABit(TIA::TIABit bit, const string& bitname, bool show) const
+void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
 {
   bool result = myTIA->toggleBit(bit);
   string message = bitname + (result ? " enabled" : " disabled");

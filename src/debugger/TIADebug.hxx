@@ -33,54 +33,6 @@ typedef int (TIADebug::*TIADEBUG_INT_METHOD)();
 // call the pointed-to method on the (global) debugger object.
 #define CALL_TIADEBUG_METHOD(method) ( ( Debugger::debugger().tiaDebug().*method)() )
 
-enum TIALabel {
-	VSYNC = 0,
-	VBLANK,
-	WSYNC,
-	RSYNC,
-	NUSIZ0,
-	NUSIZ1,
-	COLUP0,
-	COLUP1,
-	COLUPF, // $08
-	COLUBK,
-	CTRLPF,
-	REFP0,
-	REFP1,
-	PF0,
-	PF1,
-	PF2,
-	RESP0,  // $10
-	RESP1,
-	RESM0,
-	RESM1,
-	RESBL,
-	AUDC0,
-	AUDC1,
-	AUDF0,
-	AUDF1,  // $18
-	AUDV0,
-	AUDV1,
-	GRP0,
-	GRP1,
-	ENAM0,
-	ENAM1,
-	ENABL,
-	HMP0,   // $20
-	HMP1,
-	HMM0,
-	HMM1,
-	HMBL,
-	VDELP0,
-	VDELP1,
-	VDELBL,
-	RESMP0, // $28
-	RESMP1,
-	HMOVE,
-	HMCLR,
-	CXCLR   // $2C
-};
-
 // Indices for various IntArray in TiaState
 enum {
   P0, P1, M0, M1, BL
