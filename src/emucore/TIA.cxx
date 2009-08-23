@@ -42,10 +42,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     mySound(sound),
     mySettings(settings),
     myMaximumNumberOfScanlines(262),
-    myCOLUBK(myColor[0]),
-    myCOLUPF(myColor[1]),
-    myCOLUP0(myColor[2]),
-    myCOLUP1(myColor[3]),
     myColorLossEnabled(false),
     myPartialFrameFlag(false),
     myFrameGreyed(false),
@@ -121,13 +117,14 @@ void TIA::reset()
   myDisabledObjects = 0;
 
   // Some default values for the registers
+  myColorPtr = myColor;
   myVSYNC = myVBLANK = 0;
   myNUSIZ0 = myNUSIZ1 = 0;
-  myCOLUP0 = 0;
-  myCOLUP1 = 0;
-  myCOLUPF = 0;
+  myColor[_P0] = myColor[_P1] = myColor[_PF] = myColor[_BK] = 0;
+  // TODO - add support for drawing M0/M1/BL in separate colors
+  myColor[_M0] = myColor[_M1] = myColor[_BL] = myColor[_HBLANK] = 0;
+
   myPlayfieldPriorityAndScore = 0;
-  myCOLUBK = 0;
   myCTRLPF = 0;
   myREFP0 = myREFP1 = false;
   myPF = 0;
@@ -141,12 +138,6 @@ void TIA::reset()
   // Some default values for the "current" variables
   myCurrentGRP0 = 0;
   myCurrentGRP1 = 0;
-  myCurrentBLMask = TIATables::BLMask[0][0];
-  myCurrentM0Mask = TIATables::MxMask[0][0][0];
-  myCurrentM1Mask = TIATables::MxMask[0][0][0];
-  myCurrentP0Mask = TIATables::PxMask[0][0][0];
-  myCurrentP1Mask = TIATables::PxMask[0][0][0];
-  myCurrentPFMask = TIATables::PFMask[0];
 
   myMotionClockP0 = 0;
   myMotionClockP1 = 0;
@@ -175,11 +166,21 @@ void TIA::reset()
 
   if(myFramerate > 55.0)  // NTSC
   {
+    myFixedColor[_P0] = 0x30303030;
+    myFixedColor[_P1] = 0x16161616;
+    myFixedColor[_PF] = 0x76767676;
+    myFixedColor[_BK] = 0x0a0a0a0a;
+    myFixedColor[_HBLANK] = 0x0e0e0e0e;
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
   }
   else
   {
+    myFixedColor[_P0] = 0x30303030;  // TODO - fix these for PAL
+    myFixedColor[_P1] = 0x16161616;
+    myFixedColor[_PF] = 0x76767676;
+    myFixedColor[_BK] = 0x0a0a0a0a;
+    myFixedColor[_HBLANK] = 0x0e0e0e0e;
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
   }
@@ -310,10 +311,10 @@ bool TIA::save(Serializer& out) const
     out.putByte((char)myNUSIZ0);
     out.putByte((char)myNUSIZ1);
 
-    out.putInt(myCOLUP0);
-    out.putInt(myCOLUP1);
-    out.putInt(myCOLUPF);
-    out.putInt(myCOLUBK);
+    out.putInt(myColor[_P0]);
+    out.putInt(myColor[_P1]);
+    out.putInt(myColor[_PF]);
+    out.putInt(myColor[_BK]);
 
     out.putByte((char)myCTRLPF);
     out.putByte((char)myPlayfieldPriorityAndScore);
@@ -420,10 +421,10 @@ bool TIA::load(Serializer& in)
     myNUSIZ0 = (uInt8) in.getByte();
     myNUSIZ1 = (uInt8) in.getByte();
 
-    myCOLUP0 = (uInt32) in.getInt();
-    myCOLUP1 = (uInt32) in.getInt();
-    myCOLUPF = (uInt32) in.getInt();
-    myCOLUBK = (uInt32) in.getInt();
+    myColor[_P0] = (uInt32) in.getInt();
+    myColor[_P1] = (uInt32) in.getInt();
+    myColor[_PF] = (uInt32) in.getInt();
+    myColor[_BK] = (uInt32) in.getInt();
 
     myCTRLPF = (uInt8) in.getByte();
     myPlayfieldPriorityAndScore = (uInt8) in.getByte();
@@ -493,6 +494,7 @@ bool TIA::load(Serializer& in)
     // Reset TIA bits to be on
 // TODO - should we enable this, or leave it to the user?
 //    enableBits(true);
+    myColorPtr = myColor;
   }
   catch(char *msg)
   {
@@ -631,17 +633,17 @@ inline void TIA::startFrame()
   {
     if(myScanlineCountForLastFrame & 0x01)
     {
-      myCOLUP0 |= 0x01010101;
-      myCOLUP1 |= 0x01010101;
-      myCOLUPF |= 0x01010101;
-      myCOLUBK |= 0x01010101;
+      myColor[_P0] |= 0x01010101;
+      myColor[_P1] |= 0x01010101;
+      myColor[_PF] |= 0x01010101;
+      myColor[_BK] |= 0x01010101;
     }
     else
     {
-      myCOLUP0 &= 0xfefefefe;
-      myCOLUP1 &= 0xfefefefe;
-      myCOLUPF &= 0xfefefefe;
-      myCOLUBK &= 0xfefefefe;
+      myColor[_P0] &= 0xfefefefe;
+      myColor[_P1] &= 0xfefefefe;
+      myColor[_PF] &= 0xfefefefe;
+      myColor[_BK] &= 0xfefefefe;
     }
   }   
 
@@ -677,26 +679,39 @@ inline void TIA::endFrame()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool TIA::enableBit(TIABit b, bool mode, bool flip)
+void TIA::enableBits(bool mode)
 {
-  // If flip is enabled, we ignore mode and calculate our own
-  if(flip)  mode = !(myDisabledObjects & b);
-
-  if(mode)  myDisabledObjects |= b;
-  else      myDisabledObjects &= ~b;
-
-  return mode;
+  toggleBit(P0Bit, mode ? 1 : 0);
+  toggleBit(P1Bit, mode ? 1 : 0);
+  toggleBit(M0Bit, mode ? 1 : 0);
+  toggleBit(M1Bit, mode ? 1 : 0);
+  toggleBit(BLBit, mode ? 1 : 0);
+  toggleBit(PFBit, mode ? 1 : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::enableBits(bool mode)
+bool TIA::toggleBit(TIABit b, uInt8 mode)
 {
-  enableBit(P0Bit, mode);
-  enableBit(P1Bit, mode);
-  enableBit(M0Bit, mode);
-  enableBit(M1Bit, mode);
-  enableBit(BLBit, mode);
-  enableBit(PFBit, mode);
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, flip the state
+  bool state = (mode == 0 || mode == 1) ? bool(mode) : !(myDisabledObjects & b);
+  if(state)  myDisabledObjects |= b;
+  else       myDisabledObjects &= ~b;
+
+  return state;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::toggleFixedColors(uInt8 mode)
+{
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, flip the state
+  bool state = (mode == 0 || mode == 1) ? bool(mode) :
+               (myColorPtr == myColor ? true : false);
+  if(state)  myColorPtr = myFixedColor;
+  else       myColorPtr = myColor;
+
+  return state;
 }
 
 #ifdef DEBUGGER_SUPPORT
@@ -814,7 +829,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
       case 0x00 | PriorityBit:
       case 0x00 | PriorityBit | ScoreBit:
       {
-        memset(myFramePointer, myCOLUBK, clocksToUpdate);
+        memset(myFramePointer, myColorPtr[_BK], clocksToUpdate);
         break;
       }
 
@@ -829,13 +844,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         for(; ((uintptr_t)myFramePointer & 0x03) && (myFramePointer < ending);
             ++myFramePointer, ++mask)
         {
-          *myFramePointer = (myPF & *mask) ? myCOLUPF : myCOLUBK;
+          *myFramePointer = (myPF & *mask) ? myColorPtr[_PF] : myColorPtr[_BK];
         }
 
         // Now, update a uInt32 at a time
         for(; myFramePointer < ending; myFramePointer += 4, mask += 4)
         {
-          *((uInt32*)myFramePointer) = (myPF & *mask) ? myCOLUPF : myCOLUBK;
+          *((uInt32*)myFramePointer) = (myPF & *mask) ? myColorPtr[_PF] : myColorPtr[_BK];
         }
         break;
       }
@@ -850,7 +865,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             ++myFramePointer, ++mask, ++hpos)
         {
           *myFramePointer = (myPF & *mask) ? 
-              (hpos < 80 ? myCOLUP0 : myCOLUP1) : myCOLUBK;
+              (hpos < 80 ? myColorPtr[_P0] : myColorPtr[_P1]) : myColorPtr[_BK];
         }
 
         // Now, update a uInt32 at a time
@@ -858,7 +873,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             myFramePointer += 4, mask += 4, hpos += 4)
         {
           *((uInt32*)myFramePointer) = (myPF & *mask) ?
-              (hpos < 80 ? myCOLUP0 : myCOLUP1) : myCOLUBK;
+              (hpos < 80 ? myColorPtr[_P0] : myColorPtr[_P1]) : myColorPtr[_BK];
         }
         break;
       }
@@ -875,12 +890,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mP0 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (myCurrentGRP0 & *mP0) ? myCOLUP0 : myCOLUBK;
+            *myFramePointer = (myCurrentGRP0 & *mP0) ? myColorPtr[_P0] : myColorPtr[_BK];
             ++mP0; ++myFramePointer;
           }
         }
@@ -899,12 +914,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mP1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK;
+            *myFramePointer = (myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK];
             ++mP1; ++myFramePointer;
           }
         }
@@ -925,13 +940,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0 &&
               !*(uInt32*)mP1)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mP0 += 4; mP1 += 4; myFramePointer += 4;
           }
           else
           {
             *myFramePointer = (myCurrentGRP0 & *mP0) ? 
-                myCOLUP0 : ((myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK);
+                myColorPtr[_P0] : ((myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK]);
 
             if((myCurrentGRP0 & *mP0) && (myCurrentGRP1 & *mP1))
               myCollision |= TIATables::CollisionMask[P0Bit | P1Bit];
@@ -954,12 +969,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM0)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mM0 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = *mM0 ? myCOLUP0 : myCOLUBK;
+            *myFramePointer = *mM0 ? myColorPtr[_P0] : myColorPtr[_BK];
             ++mM0; ++myFramePointer;
           }
         }
@@ -978,12 +993,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM1)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mM1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = *mM1 ? myCOLUP1 : myCOLUBK;
+            *myFramePointer = *mM1 ? myColorPtr[_P1] : myColorPtr[_BK];
             ++mM1; ++myFramePointer;
           }
         }
@@ -1002,12 +1017,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = *mBL ? myCOLUPF : myCOLUBK;
+            *myFramePointer = *mBL ? myColorPtr[_PF] : myColorPtr[_BK];
             ++mBL; ++myFramePointer;
           }
         }
@@ -1027,12 +1042,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM0 && !*(uInt32*)mM1)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mM0 += 4; mM1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = *mM0 ? myCOLUP0 : (*mM1 ? myCOLUP1 : myCOLUBK);
+            *myFramePointer = *mM0 ? myColorPtr[_P0] : (*mM1 ? myColorPtr[_P1] : myColorPtr[_BK]);
 
             if(*mM0 && *mM1)
               myCollision |= TIATables::CollisionMask[M0Bit | M1Bit];
@@ -1054,12 +1069,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; mM0 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (*mM0 ? myCOLUP0 : (*mBL ? myCOLUPF : myCOLUBK));
+            *myFramePointer = (*mM0 ? myColorPtr[_P0] : (*mBL ? myColorPtr[_PF] : myColorPtr[_BK]));
 
             if(*mBL && *mM0)
               myCollision |= TIATables::CollisionMask[BLBit | M0Bit];
@@ -1081,12 +1096,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; mM0 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (*mBL ? myCOLUPF : (*mM0 ? myCOLUP0 : myCOLUBK));
+            *myFramePointer = (*mBL ? myColorPtr[_PF] : (*mM0 ? myColorPtr[_P0] : myColorPtr[_BK]));
 
             if(*mBL && *mM0)
               myCollision |= TIATables::CollisionMask[BLBit | M0Bit];
@@ -1109,12 +1124,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && 
               !*(uInt32*)mM1)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; mM1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (*mM1 ? myCOLUP1 : (*mBL ? myCOLUPF : myCOLUBK));
+            *myFramePointer = (*mM1 ? myColorPtr[_P1] : (*mBL ? myColorPtr[_PF] : myColorPtr[_BK]));
 
             if(*mBL && *mM1)
               myCollision |= TIATables::CollisionMask[BLBit | M1Bit];
@@ -1137,12 +1152,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && 
               !*(uInt32*)mM1)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; mM1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (*mBL ? myCOLUPF : (*mM1 ? myCOLUP1 : myCOLUBK));
+            *myFramePointer = (*mBL ? myColorPtr[_PF] : (*mM1 ? myColorPtr[_P1] : myColorPtr[_BK]));
 
             if(*mBL && *mM1)
               myCollision |= TIATables::CollisionMask[BLBit | M1Bit];
@@ -1164,13 +1179,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; mP1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (myCurrentGRP1 & *mP1) ? myCOLUP1 : 
-                (*mBL ? myCOLUPF : myCOLUBK);
+            *myFramePointer = (myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : 
+                (*mBL ? myColorPtr[_PF] : myColorPtr[_BK]);
 
             if(*mBL && (myCurrentGRP1 & *mP1))
               myCollision |= TIATables::CollisionMask[BLBit | P1Bit];
@@ -1192,13 +1207,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
           {
-            *(uInt32*)myFramePointer = myCOLUBK;
+            *(uInt32*)myFramePointer = myColorPtr[_BK];
             mBL += 4; mP1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = *mBL ? myCOLUPF : 
-                ((myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK);
+            *myFramePointer = *mBL ? myColorPtr[_PF] : 
+                ((myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK]);
 
             if(*mBL && (myCurrentGRP1 & *mP1))
               myCollision |= TIATables::CollisionMask[BLBit | P1Bit];
@@ -1219,13 +1234,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
           {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
+            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
             mPF += 4; mP0 += 4; myFramePointer += 4;
           }
           else
           {
             *myFramePointer = (myCurrentGRP0 & *mP0) ? 
-                  myCOLUP0 : ((myPF & *mPF) ? myCOLUPF : myCOLUBK);
+                  myColorPtr[_P0] : ((myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK]);
 
             if((myPF & *mPF) && (myCurrentGRP0 & *mP0))
               myCollision |= TIATables::CollisionMask[PFBit | P0Bit];
@@ -1246,13 +1261,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
           {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
+            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
             mPF += 4; mP0 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (myPF & *mPF) ? myCOLUPF : 
-                ((myCurrentGRP0 & *mP0) ? myCOLUP0 : myCOLUBK);
+            *myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : 
+                ((myCurrentGRP0 & *mP0) ? myColorPtr[_P0] : myColorPtr[_BK]);
 
             if((myPF & *mPF) && (myCurrentGRP0 & *mP0))
               myCollision |= TIATables::CollisionMask[PFBit | P0Bit];
@@ -1273,13 +1288,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
           {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
+            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
             mPF += 4; mP1 += 4; myFramePointer += 4;
           }
           else
           {
             *myFramePointer = (myCurrentGRP1 & *mP1) ? 
-                  myCOLUP1 : ((myPF & *mPF) ? myCOLUPF : myCOLUBK);
+                  myColorPtr[_P1] : ((myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK]);
 
             if((myPF & *mPF) && (myCurrentGRP1 & *mP1))
               myCollision |= TIATables::CollisionMask[PFBit | P1Bit];
@@ -1300,13 +1315,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
           {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
+            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
             mPF += 4; mP1 += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = (myPF & *mPF) ? myCOLUPF : 
-                ((myCurrentGRP1 & *mP1) ? myCOLUP1 : myCOLUBK);
+            *myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : 
+                ((myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK]);
 
             if((myPF & *mPF) && (myCurrentGRP1 & *mP1))
               myCollision |= TIATables::CollisionMask[PFBit | P1Bit];
@@ -1328,12 +1343,12 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
         {
           if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL)
           {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myCOLUPF : myCOLUBK;
+            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
             mPF += 4; mBL += 4; myFramePointer += 4;
           }
           else
           {
-            *myFramePointer = ((myPF & *mPF) || *mBL) ? myCOLUPF : myCOLUBK;
+            *myFramePointer = ((myPF & *mPF) || *mBL) ? myColorPtr[_PF] : myColorPtr[_BK];
 
             if((myPF & *mPF) && *mBL)
               myCollision |= TIATables::CollisionMask[PFBit | BLBit];
@@ -1368,7 +1383,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
             enabled |= M0Bit;
 
           myCollision |= TIATables::CollisionMask[enabled];
-          *myFramePointer = myColor[myPriorityEncoder[hpos < 80 ? 0 : 1]
+          *myFramePointer = myColorPtr[myPriorityEncoder[hpos < 80 ? 0 : 1]
               [enabled | myPlayfieldPriorityAndScore]];
         }
         break;  
@@ -1503,7 +1518,7 @@ void TIA::updateFrame(Int32 clock)
         (clocksFromStartOfScanLine < (HBLANK + 8)))
     {
       Int32 blanks = (HBLANK + 8) - clocksFromStartOfScanLine;
-      memset(oldFramePointer, 0, blanks);
+      memset(oldFramePointer, myColorPtr[_HBLANK], blanks);
 
       if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
         myHMOVEBlankEnabled = false;
@@ -1788,7 +1803,8 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myCOLUP0 = (((((color << 8) | color) << 8) | color) << 8) | color;
+      myColor[_P0] = myColor[_M0] =
+          (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
@@ -1799,7 +1815,8 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myCOLUP1 = (((((color << 8) | color) << 8) | color) << 8) | color;
+      myColor[_P1] = myColor[_M1] =
+          (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
@@ -1810,7 +1827,8 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myCOLUPF = (((((color << 8) | color) << 8) | color) << 8) | color;
+      myColor[_PF] = myColor[_BL] =
+          (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
@@ -1821,7 +1839,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myCOLUBK = (((((color << 8) | color) << 8) | color) << 8) | color;
+      myColor[_BK] = (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
@@ -2691,11 +2709,7 @@ inline void TIA::applyPreviousHMOVEMotion(int hpos, Int16& pos, uInt8 motion)
 TIA::TIA(const TIA& c)
   : myConsole(c.myConsole),
     mySound(c.mySound),
-    mySettings(c.mySettings),
-    myCOLUBK(myColor[0]),
-    myCOLUPF(myColor[1]),
-    myCOLUP0(myColor[2]),
-    myCOLUP1(myColor[3])
+    mySettings(c.mySettings)
 {
   assert(false);
 }

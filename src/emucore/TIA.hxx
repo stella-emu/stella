@@ -214,27 +214,31 @@ class TIA : public Device
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
     /**
-      Enables/disables the specified TIA bit.  If flip is true, ignore the
-      given mode and instead toggle/flip the specified TIA bit.
-
-      @return  Whether the bit was enabled or disabled
-    */
-    bool enableBit(TIABit b, bool mode, bool flip = false);
-
-    /**
-      Toggles the specified TIA bit.  This is a convenience wrapper
-      around enableBit when flipping a bit.
-
-      @return  Whether the bit was enabled or disabled
-    */
-    bool toggleBit(TIABit b) { return enableBit(b, true, true); }
-
-    /**
       Enables/disables all TIABit bits.
 
       @param mode  Whether to enable or disable all bits
     */
     void enableBits(bool mode);
+
+    /**
+      Enables/disable/toggle the specified TIA bit.
+
+      @param mode  1/0 indicates on/off, and values greater than 1 mean
+                   flip the bit from its current state
+
+      @return  Whether the bit was enabled or disabled
+    */
+    bool toggleBit(TIABit b, uInt8 mode = 2);
+
+    /**
+      Enables/disable/toggle 'fixed debug colors' mode.
+
+      @param mode  1/0 indicates on/off, otherwise flip from
+                   its current state
+
+      @return  Whether the mode was enabled or disabled
+    */
+    bool toggleFixedColors(uInt8 mode = 2);
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -369,13 +373,11 @@ class TIA : public Device
     uInt8 myNUSIZ1;       // Number and size of player 1 and missle 1
 
     uInt8 myPlayfieldPriorityAndScore;
-    uInt32 myColor[4];
     uInt8 myPriorityEncoder[2][256];
-
-    uInt32& myCOLUBK;     // Background color register (replicated 4 times)
-    uInt32& myCOLUPF;     // Playfield color register (replicated 4 times)
-    uInt32& myCOLUP0;     // Player 0 color register (replicated 4 times)
-    uInt32& myCOLUP1;     // Player 1 color register (replicated 4 times)
+    uInt32 myColor[8];
+    uInt32 myFixedColor[8];
+    uInt32* myColorPtr;
+    enum { _BK, _PF, _P0, _P1, _M0, _M1, _BL, _HBLANK };
 
     uInt8 myCTRLPF;       // Playfield control register
 

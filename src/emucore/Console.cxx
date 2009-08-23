@@ -694,22 +694,6 @@ void Console::setControllers(const string& rommd5)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
-{
-  bool result = myTIA->toggleBit(bit);
-  string message = bitname + (result ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::enableBits(bool enable) const
-{
-  myTIA->enableBits(enable);
-  string message = string("TIA bits") + (enable ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::loadUserPalette()
 {
   const string& palette = myOSystem->paletteFile();
@@ -815,6 +799,31 @@ void Console::setFramerate(float framerate)
   myFramerate = framerate;
   myOSystem->setFramerate(framerate);
   myOSystem->sound().setFrameRate(framerate);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
+{
+  bool result = myTIA->toggleBit(bit);
+  string message = bitname + (result ? " enabled" : " disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::enableBits(bool enable) const
+{
+  myTIA->enableBits(enable);
+  string message = string("TIA bits") + (enable ? " enabled" : " disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleFixedColors() const
+{
+  if(myTIA->toggleFixedColors())
+    myOSystem->frameBuffer().showMessage("Fixed debug colors enabled");
+  else
+    myOSystem->frameBuffer().showMessage("Fixed debug colors disabled");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

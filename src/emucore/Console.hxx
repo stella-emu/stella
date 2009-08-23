@@ -264,13 +264,16 @@ class Console : public Serializable
     void togglePFBit() const { toggleTIABit(PFBit, "PF"); }
     void enableBits(bool enable) const;
 
+    /**
+      Toggles the TIA 'fixed debug colors' mode.
+    */
+    void toggleFixedColors() const;
+
   private:
     /**
       Adds the left and right controllers to the console
     */
     void setControllers(const string& rommd5);
-
-    void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
 
     /**
       Loads a user-defined palette file (from OSystem::paletteFile), filling the
@@ -289,6 +292,8 @@ class Console : public Serializable
       by the ROM properties.
     */
     const uInt32* getPalette(int direction) const;
+
+    void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
 
   private:
     // Pointer to the osystem object
