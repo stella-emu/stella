@@ -974,6 +974,7 @@
 "Cartridge.Manufacturer" "Atari, Bob Whitehead - Sears"
 "Cartridge.ModelNo" "CX2623 - 6-99819, 49-75108, 49-75125"
 "Cartridge.Name" "Home Run (1978) (Atari)"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "0c54811cf3b1f1573c9164d5f19eca65"
@@ -2814,6 +2815,7 @@
 
 "Cartridge.MD5" "24b5f4bbdb853eca38ea0cae2dfe73a1"
 "Cartridge.Name" "Home Run (Unknown) (PAL) (4K)"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "24aff972d58990f9b88a6d787c796f1e"
@@ -3955,6 +3957,7 @@
 
 "Cartridge.MD5" "328949872e454181223a80389d03c122"
 "Cartridge.Name" "Home Run (Unknown) (PAL)"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "3276c777cbe97cdd2b4a63ffc16b7151"
@@ -12028,6 +12031,7 @@
 "Cartridge.Manufacturer" "Atari, Bob Whitehead - Sears"
 "Cartridge.ModelNo" "CX2623 - 6-99819, 49-75108, 49-75125"
 "Cartridge.Name" "Home Run (1978) (Atari) (4K)"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "9f8fad4badcd7be61bbd2bcaeef3c58f"
@@ -14992,6 +14996,7 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Homerun (32 in 1) (1988) (Atari) (PAL)"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "ca53fc8fd8b3c4a7df89ac86b222eba0"
