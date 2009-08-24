@@ -288,22 +288,29 @@ bool StateManager::loadState(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool StateManager::saveState(Serializer& out)
 {
-  if(&myOSystem->console())
+  try
   {
-    // Make sure the file can be opened for writing
-    if(out.isValid())
+    if(&myOSystem->console())
     {
-      // Add header so that if the state format changes in the future,
-      // we'll know right away, without having to parse the rest of the file
-      out.putString(STATE_HEADER);
+      // Make sure the file can be opened for writing
+      if(out.isValid())
+      {
+        // Add header so that if the state format changes in the future,
+        // we'll know right away, without having to parse the rest of the file
+        out.putString(STATE_HEADER);
 
-      // Prepend the ROM md5 so this state file only works with that ROM
-      out.putString(myOSystem->console().properties().get(Cartridge_MD5));
+        // Prepend the ROM md5 so this state file only works with that ROM
+        out.putString(myOSystem->console().properties().get(Cartridge_MD5));
 
-      // Do a complete state save using the Console
-      if(myOSystem->console().save(out))
-        return true;
+        // Do a complete state save using the Console
+        if(myOSystem->console().save(out))
+          return true;
+      }
     }
+  }
+  catch(const char* msg)
+  {
+    cerr << "ERROR: StateManager::saveState(Serializer&)" << endl << msg << endl;
   }
   return false;
 }

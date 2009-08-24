@@ -972,9 +972,6 @@ Debugger::RewindManager::~RewindManager()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::RewindManager::addState()
 {
-  // Are we still within the allowable size, or are we overwriting an item?
-  mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
-
   // Create a new Serializer object if we need one
   if(myStateList[myTop] == NULL)
     myStateList[myTop] = new Serializer();
@@ -983,13 +980,16 @@ bool Debugger::RewindManager::addState()
   if(s.isValid())
   {
     s.reset();
-    myOSystem.state().saveState(s);
-    myOSystem.console().tia().saveDisplay(s);
-    myTop = (myTop + 1) % MAX_SIZE;
-    return true;
+    if(myOSystem.state().saveState(s) && myOSystem.console().tia().saveDisplay(s))
+    {
+      // Are we still within the allowable size, or are we overwriting an item?
+      mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
+
+      myTop = (myTop + 1) % MAX_SIZE;
+      return true;
+    }
   }
-  else
-    return false;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

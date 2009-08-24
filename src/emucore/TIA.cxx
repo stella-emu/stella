@@ -496,7 +496,7 @@ bool TIA::load(Serializer& in)
 //    enableBits(true);
     myColorPtr = myColor;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;
@@ -521,7 +521,7 @@ bool TIA::saveDisplay(Serializer& out) const
     for(int i = 0; i < 160*320; ++i)
       out.putByte(myCurrentFrameBuffer[i]);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
     cerr << msg << endl;
     return false;

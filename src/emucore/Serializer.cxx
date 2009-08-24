@@ -52,6 +52,14 @@ Serializer::Serializer(void)
     myUseFilestream(false)
 {
   myStream = new stringstream(ios::in | ios::out | ios::binary);
+  
+  // For some reason, Windows and possibly OSX needs to store something in
+  // the stream before it is used for the first time
+  if(myStream)
+  {
+    putBool(true);
+    reset();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
