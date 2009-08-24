@@ -214,6 +214,13 @@ class TIA : public Device
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
     /**
+      Answers the first scanline at which drawing occured in the last frame.
+
+      @return The starting scanline
+    */
+    inline uInt32 startScanline() const { return myStartScanline; }
+
+    /**
       Enables/disables all TIABit bits.
 
       @param mode  Whether to enable or disable all bits
@@ -362,6 +369,9 @@ class TIA : public Device
 
     // Indicates the maximum number of scanlines to be generated for a frame
     uInt32 myMaximumNumberOfScanlines;
+
+    // Indicates potentially the first scanline at which drawing occurs
+    uInt32 myStartScanline;
 
     // Color clock when VSYNC ending causes a new frame to be started
     Int32 myVSYNCFinishClock; 

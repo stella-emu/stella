@@ -646,6 +646,7 @@ inline void TIA::startFrame()
       myColor[_BK] &= 0xfefefefe;
     }
   }   
+  myStartScanline = 0x7FFFFFFF;
 
   myFrameGreyed = false;
 }
@@ -661,7 +662,8 @@ inline void TIA::endFrame()
   myFrameCounter++;
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
-  if(myFrameCounter % 8 == 0 && myAutoFrameEnabled)
+  if(myFrameCounter % 8 == 0 && myAutoFrameEnabled &&
+     myScanlineCountForLastFrame < myMaximumNumberOfScanlines)
   {
     myFramerate = (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /
                    myScanlineCountForLastFrame;
@@ -671,8 +673,24 @@ inline void TIA::endFrame()
     // We always accommodate the highest # of scanlines, up to the maximum
     // size of the buffer (currently, 320 lines)
     uInt32 offset = 228 * myScanlineCountForLastFrame;
-    if(offset > myStopDisplayOffset && offset <= 228 * 320)
+    if(offset > myStopDisplayOffset && offset < 228 * 320)
       myStopDisplayOffset = offset;
+  }
+
+  // This is a bit of a hack for those ROMs which generate too many
+  // scanlines each frame, usually caused by VBLANK taking too long
+  // When this happens, the frame pointers sometimes get 'confused',
+  // and the framebuffer class doesn't properly overwrite data from
+  // the previous frame, causing graphical garbage
+  //
+  // We basically erase the entire contents of both buffers, making
+  // sure that they're also different from one another
+  // This will force the framebuffer class to completely re-render
+  // the screen
+  if(myScanlineCountForLastFrame > myMaximumNumberOfScanlines)
+  {
+    memset(myCurrentFrameBuffer, 0, 160 * 320);
+    memset(myPreviousFrameBuffer, 1, 160 * 320);
   }
 
   myFrameGreyed = false;
@@ -1743,13 +1761,19 @@ void TIA::poke(uInt16 addr, uInt8 value)
       {
         myDumpEnabled = true;
       }
-
       // Is the dump to ground path being removed from I0, I1, I2, and I3?
-      if((myVBLANK & 0x80) && !(value & 0x80))
+      else if((myVBLANK & 0x80) && !(value & 0x80))
       {
         myDumpEnabled = false;
         myDumpDisabledCycle = mySystem->cycles();
       }
+
+#if 0 // TODO - this isn't yet complete
+      // Check for the first scanline at which VBLANK is disabled.
+      // Usually, this will be the first scanline to start drawing.
+      if(myStartScanline == 0x7FFFFFFF && !(value & 0x10))
+        myStartScanline = scanlines();
+#endif
 
       myVBLANK = value;
       break;
