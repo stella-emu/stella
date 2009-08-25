@@ -25,6 +25,7 @@
 class Debugger;
 class OSystem;
 class DialogContainer;
+class ButtonWidget;
 class CpuWidget;
 class RamWidget;
 class RomWidget;
@@ -44,12 +45,13 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    PromptWidget* prompt()       { return myPrompt;     }
-    TiaInfoWidget* tiaInfo()     { return myTiaInfo;    }
-    TiaOutputWidget* tiaOutput() { return myTiaOutput;  }
-    TiaZoomWidget* tiaZoom()     { return myTiaZoom;    }
-    RomWidget* rom()             { return myRom;        }
-    EditTextWidget* message()    { return myMessageBox; }
+    PromptWidget* prompt()       { return myPrompt;       }
+    TiaInfoWidget* tiaInfo()     { return myTiaInfo;      }
+    TiaOutputWidget* tiaOutput() { return myTiaOutput;    }
+    TiaZoomWidget* tiaZoom()     { return myTiaZoom;      }
+    RomWidget* rom()             { return myRom;          }
+    EditTextWidget* message()    { return myMessageBox;   }
+    ButtonWidget* rewindButton() { return myRewindButton; }
 
     virtual void loadConfig();
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
@@ -66,6 +68,7 @@ class DebuggerDialog : public Dialog
     RamWidget*       myRam;
     RomWidget*       myRom;
     EditTextWidget*  myMessageBox;
+    ButtonWidget*    myRewindButton;
 
   private:
     void addTiaArea();

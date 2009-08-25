@@ -569,7 +569,7 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
         break - Set/clear breakpoint at address (default: current pc)
       breakif - Set breakpoint on condition
             c - Carry Flag: set (to 0 or 1), or toggle (no arg)
-      cheetah - Use Cheetah cheat code (see http://members.cox.net/rcolbert/)
+        cheat - Use a cheat code (see Stella manual for cheat types)
   clearbreaks - Clear all breakpoints
    cleartraps - Clear all traps
  clearwatches - Clear all watches
@@ -583,22 +583,21 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
          exec - Execute script file
         frame - Advance emulation by xx frames (default=1)
      function - Define expression as a function for later use
-       height - Change height of debugger window
          help - This cruft
 +        list - List source (if loaded with loadlist)
    listbreaks - List breakpoints
     listtraps - List traps
   listwatches - List watches
-    loadstate - Load emulator state (0-9)
 +    loadlist - Load DASM listing file
+    loadstate - Load emulator state (0-9)
       loadsym - Load symbol file
             n - Negative Flag: set (to 0 or 1), or toggle (no arg)
            pc - Set Program Counter to address
          poke - Set address to value. Can give multiple values (for address+1, etc)
         print - Evaluate and print expression in hex/dec/binary
           ram - Show RAM contents (no args), or set address xx to value yy
-       reload - Reload ROM and symbol file
         reset - Reset 6507 to init vector (does not reset TIA, RIOT)
+       rewind - Rewind state to last step/trace/scanline/frame advance
          riot - Show RIOT timer/input status
           rom - Change ROM contents
           run - Exit debugger, return to emulator
@@ -1003,15 +1002,17 @@ if the PC hits $D010, even though it shouldn't)</li>
 
 <p>There are also buttons on the right that always show up no matter which
 tab you're looking at. These are always active. They are: Step, Trace,
-Scan+1, Frame+1 and Exit.</p>
+Scan+1, Frame+1 and Exit.  The larger button to the left (labeled '&lt;')
+performs the rewind operation, which will undo the previous Step/Trace/Scan/Frame
+advance.  The rewind buffer is currently 100 levels deep.</p>
 <p><img src="graphics/debugger_globalbuttons.png"></p>
 
 <p>When you use these buttons, the prompt doesn't change. This means the
 status lines with the registers and disassembly will be "stale". You
 can update them just by pressing Enter in the prompt.</p>
 
-<p>You can also use the Step, Trace, Scan+1 and Frame+1 buttons from anywhere in
-the GUI via the keyboard, with Alt-S, Alt-T, Alt-L and Alt-F.</p>
+<p>You can also use the Step, Trace, Scan+1, Frame+1 and Rewind buttons from
+anywhere in the GUI via the keyboard, with Alt-S, Alt-T, Alt-L, Alt-F and Alt-R.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->

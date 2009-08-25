@@ -251,12 +251,9 @@ void DebuggerDialog::addRomArea()
   DataGridOpsWidget* ops = new DataGridOpsWidget(this, instance().consoleFont(),
                                                  xpos, 20);
 
-ops->setFlags(WIDGET_BORDER);
-
-  const int bwidth  = instance().consoleFont().getStringWidth("Frame +1 "),
-            bheight = instance().consoleFont().getLineHeight() + 2;
+  int bwidth  = instance().consoleFont().getStringWidth("Frame +1 "),
+      bheight = instance().consoleFont().getLineHeight() + 2;
   int buttonX = r.right - bwidth - 5, buttonY = r.top + 5;
-
   new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
                    bwidth, bheight, "Step", kDDStepCmd);
   buttonY += bheight + 4;
@@ -271,7 +268,15 @@ ops->setFlags(WIDGET_BORDER);
   buttonY += bheight + 4;
   new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
                    bwidth, bheight, "Exit", kDDExitCmd);
-  buttonY += bheight + 4;
+
+  bwidth = instance().consoleFont().getStringWidth("< ") + 4;
+  bheight = bheight * 5 + 4*4;
+  buttonX -= (bwidth + 5);
+  buttonY = r.top + 5;
+  myRewindButton =
+    new ButtonWidget(this, instance().consoleFont(), buttonX, buttonY,
+                     bwidth, bheight, "<", kDDRewindCmd);
+  myRewindButton->clearFlags(WIDGET_ENABLED);
 
   xpos = r.left + 10;  ypos += myRam->getHeight() + 5;
   myRom = new RomWidget(this, instance().consoleFont(), xpos, ypos);

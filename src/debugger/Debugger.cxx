@@ -126,8 +126,6 @@ Debugger::Debugger(OSystem* osystem)
   myReadTraps = new PackedBitArray(0x10000);
   myWriteTraps = new PackedBitArray(0x10000);
 
-  myRewindManager = new RewindManager(*osystem);
-
   // Allow access to this object from any class
   // Technically this violates pure OO programming, but since I know
   // there will only be ever one instance of debugger in Stella,
@@ -169,6 +167,8 @@ void Debugger::initialize()
   myTiaZoom   = dd->tiaZoom();
   myRom       = dd->rom();
   myMessage   = dd->message();
+
+  myRewindManager = new RewindManager(*myOSystem, *dd->rewindButton());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -220,9 +220,6 @@ void Debugger::setConsole(Console* console)
   // Make sure cart RAM is added before this is called,
   // otherwise the debugger state won't know about it
   saveOldState();
-
-  // Empty the rewind list
-  myRewindManager->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -764,7 +761,7 @@ void Debugger::saveOldState()
   myTiaDebug->saveOldState();
 
   // Add another rewind level to the Undo list
-  myRewindManager->addState();
+  if(myRewindManager) myRewindManager->addState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -953,8 +950,9 @@ void Debugger::unlockBankswitchState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::RewindManager::RewindManager(OSystem& system)
+Debugger::RewindManager::RewindManager(OSystem& system, ButtonWidget& button)
   : myOSystem(system),
+    myRewindButton(button),
     mySize(0),
     myTop(0)
 {
@@ -986,6 +984,7 @@ bool Debugger::RewindManager::addState()
       mySize++; if(mySize > MAX_SIZE) mySize = MAX_SIZE;
 
       myTop = (myTop + 1) % MAX_SIZE;
+      myRewindButton.setEnabled(true);
       return true;
     }
   }
@@ -1004,6 +1003,10 @@ bool Debugger::RewindManager::rewindState()
     s.reset();
     myOSystem.state().loadState(s);
     myOSystem.console().tia().loadDisplay(s);
+
+    if(mySize == 0)
+      myRewindButton.setEnabled(false);
+
     return true;
   }
   else
@@ -1024,4 +1027,11 @@ void Debugger::RewindManager::clear()
       myStateList[i]->reset();
 
   myTop = mySize = 0;
+
+  // We use Widget::clearFlags here instead of Widget::setEnabled(),
+  // since the latter implies an immediate draw/update, but this method
+  // might be called before any UI exists
+  // TODO - fix this deficiency in the UI core; we shouldn't have to worry
+  //        about such things at this level
+  myRewindButton.clearFlags(WIDGET_ENABLED);
 }

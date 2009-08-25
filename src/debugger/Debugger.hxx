@@ -409,7 +409,7 @@ class Debugger : public DialogContainer
     class RewindManager
     {
       public:
-        RewindManager(OSystem& system);
+        RewindManager(OSystem& system, ButtonWidget& button);
         virtual ~RewindManager();
 
       public:
@@ -421,6 +421,7 @@ class Debugger : public DialogContainer
       private:
         enum { MAX_SIZE = 100 };
         OSystem& myOSystem;
+        ButtonWidget& myRewindButton;
         Serializer* myStateList[MAX_SIZE];
         uInt32 mySize, myTop;
     };

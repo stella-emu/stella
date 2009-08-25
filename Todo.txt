@@ -22,8 +22,6 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * TIA infrastructure: improve emulation of writes to NUSIZx while graphics
     are currently being drawn.
 
-  * TIA infrastructure: fix incorrect VSYNC handling in Q-Bert.
-
   * TIA infrastructure: add emulation of RSYNC instruction.
 
   * Look into adding Blargg NTSC filtering (perhaps as a GLSL program).
@@ -64,10 +62,7 @@ Stephen Anthony at stephena@users.sourceforge.net.
      (2) Fix aliases not being followed correctly in the OSX port
          (although I suspect this isn't just an OSX issue).
 
-     (3) Add 'simpleUI/kiosk' mode to RMB context menu, which disables
-         all but the most basic functionality.
-
-     (4) Add tabs to snapshot view; add cartridge snapshots as well.
+     (3) Add tabs to snapshot view; add cartridge snapshots as well.
 
   * More support for copy and paste.
 

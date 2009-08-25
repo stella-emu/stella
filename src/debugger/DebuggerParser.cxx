@@ -1566,7 +1566,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "list",
-    "List source (if loaded with loadlst)",
+    "List source (if loaded with loadlist)",
     true,
     false,
     { kARG_WORD, kARG_END_ARGS },
