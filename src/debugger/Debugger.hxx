@@ -321,9 +321,9 @@ class Debugger : public DialogContainer
 
   private:
     /**
-      Save state of each debugger subsystem
+      Save state of each debugger subsystem.
     */
-    void saveOldState();
+    void saveOldState(bool addrewind = true);
 
     /**
       Set initial state before entering the debugger.

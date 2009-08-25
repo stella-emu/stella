@@ -219,7 +219,7 @@ void Debugger::setConsole(Console* console)
 
   // Make sure cart RAM is added before this is called,
   // otherwise the debugger state won't know about it
-  saveOldState();
+  saveOldState(false);  // don't add the state to the rewind list
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -753,7 +753,7 @@ bool Debugger::patchROM(int addr, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::saveOldState()
+void Debugger::saveOldState(bool addrewind)
 {
   myCpuDebug->saveOldState();
   myRamDebug->saveOldState();
@@ -761,7 +761,7 @@ void Debugger::saveOldState()
   myTiaDebug->saveOldState();
 
   // Add another rewind level to the Undo list
-  if(myRewindManager) myRewindManager->addState();
+  if(addrewind)  myRewindManager->addState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
