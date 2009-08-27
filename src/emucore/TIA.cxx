@@ -821,6 +821,33 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
     myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
         [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
 
+    // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
+    // Stay Frosty.  The movement itself is well understood, but there
+    // also seems to be some widening and blanking occurring as well.
+    // This doesn't properly emulate the effect, but it does give a
+    // fair approximation.  More testing is required to figure out
+    // what's really going on here.
+    if(myHMM0mmr && myPOSM0 % 4 == 3)
+    {
+      // Stretch this missle so it's at least 2 pixels wide
+      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+          [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
+          [160 - (myPOSM0 & 0xFC)];
+    }
+    else
+      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+          [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+    if(myHMM1mmr && myPOSM1 % 4 == 3)
+    {
+      // Stretch this missle so it's at least 2 pixels wide
+      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+          [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4) | 0x01]
+          [160 - (myPOSM1 & 0xFC)];
+    }
+    else
+      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+          [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+
     switch(myEnabledObjects | myPlayfieldPriorityAndScore)
     {
       // Background 
@@ -1445,54 +1472,9 @@ void TIA::updateFrame(Int32 clock)
       // Apply extra clocks for 'more motion required/mmr'
       if(myHMP0mmr) { myPOSP0 -= 17; posChanged = true; }
       if(myHMP1mmr) { myPOSP1 -= 17; posChanged = true; }
+      if(myHMM0mmr) { myPOSM0 -= 17; posChanged = true; }
+      if(myHMM1mmr) { myPOSM1 -= 17; posChanged = true; }
       if(myHMBLmmr) { myPOSBL -= 17; posChanged = true; }
-
-      // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
-      // Stay Frosty.  The movement itself is well understood, but there
-      // also seems to be some widening and blanking occurring as well.
-      // This doesn't properly emulate the effect, but it does give a
-      // fair approximation.  More testing is required to figure out
-      // what's really going on here.
-      if(myHMM0mmr)
-      {
-        myPOSM0 -= 17;  if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
-        if(myPOSM0 % 4 == 3)
-        {
-          // Stretch this missle so it's at least 2 pixels wide
-          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
-              [160 - (myPOSM0 & 0xFC)];
-        }
-        else
-          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-      }
-      else
-      {
-        if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
-        myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-            [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-      }
-      if(myHMM1mmr)
-      {
-        myPOSM1 -= 17;  if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
-        if(myPOSM1 % 4 == 3)
-        {
-          // Stretch this missle so it's at least 2 pixels wide
-          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-              [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4) | 0x01]
-              [160 - (myPOSM1 & 0xFC)];
-        }
-        else
-          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-              [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
-      }
-      else
-      {
-        if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
-        myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-            [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
-      }
 #endif
       // Make sure positions are in range
       if(posChanged)

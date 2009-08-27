@@ -26,7 +26,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3246
+#define DEF_PROPS_SIZE 3247
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2478,6 +2478,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "c5930d0e8cdae3e037349bfa08e871be", "Atari, Howard Scott Warshaw - Sears", "CX2655 - 49-75167", "Yars' Revenge (1982) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "c59633dbebd926c150fb6d30b0576405", "Telegames", "5861 A030", "Bogey Blaster (1989) (Telegames)", "AKA Air Raiders", "Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "c5a76bafc4676edb76e0126fb9f0fb2d", "Charles Morgan", "", "Zero Patrol (Charles Morgan) (Hack)", "Hack of Moon Patrol", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "c5bab953ac13dbb2cba03cd0684fb125", "SpiceWare - Darrell Spice Jr.", "", "Stay Frosty (SpiceWare)", "Part of Stella's Stocking 2007 Xmas compilation", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "c5c7cc66febf2d4e743b4459de7ed868", "Atari, Jerome Domurat, Steve Woita", "CX2696", "Asterix (1983) (Atari) (PAL) [a]", "AKA Taz", "Extremely Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "c5d2834bf98e90245e545573eb7e6bbc", "CCE", "", "Snoopy and the Red Baron (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "c5dd8399257d8862f3952be75c23e0eb", "Atari - GCC", "CX2680", "RealSports Tennis (1982) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

@@ -19648,3 +19648,11 @@
 "Cartridge.Name" "Challenge of.... Nexar, The (Jone Yuan) (Hack)"
 "Cartridge.Note" "Hack"
 ""
+
+"Cartridge.MD5" "c5bab953ac13dbb2cba03cd0684fb125"
+"Cartridge.Manufacturer" "SpiceWare - Darrell Spice Jr."
+"Cartridge.Name" "Stay Frosty (SpiceWare)"
+"Cartridge.Note" "Part of Stella's Stocking 2007 Xmas compilation"
+"Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
+""
