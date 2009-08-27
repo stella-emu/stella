@@ -259,14 +259,9 @@ bool System::save(Serializer& out) const
       if(!myDevices[i]->save(out))
         return false;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << device << endl;
+    cerr << "ERROR: System::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -293,14 +288,9 @@ bool System::load(Serializer& in)
       if(!myDevices[i]->load(in))
         return false;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << device << endl;
+    cerr << "ERROR: System::load" << endl << "  " << msg << endl;
     return false;
   }
 

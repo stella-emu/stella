@@ -144,7 +144,7 @@ string Snapshot::saveBufferToPNG(ofstream& out, uInt8* buffer,
 
     return "Snapshot saved";
   }
-  catch(const char *msg)
+  catch(const char* msg)
   {
     if(buffer)  delete[] buffer;
     if(compmem) delete[] compmem;

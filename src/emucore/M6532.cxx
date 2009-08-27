@@ -321,14 +321,9 @@ bool M6532::save(Serializer& out) const
     out.putByte((char)myOutTimer[2]);
     out.putByte((char)myOutTimer[3]);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << device << endl;
+    cerr << "ERROR: M6532::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -364,14 +359,9 @@ bool M6532::load(Serializer& in)
     myOutTimer[2] = (uInt8) in.getByte();
     myOutTimer[3] = (uInt8) in.getByte();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << device << endl;
+    cerr << "ERROR: M6532::load" << endl << "  " << msg << endl;
     return false;
   }
 

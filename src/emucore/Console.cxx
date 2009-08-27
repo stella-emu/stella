@@ -206,14 +206,9 @@ bool Console::save(Serializer& out) const
     if(!mySwitches->save(out))
       return false;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for \'Console\'" << endl;
+    cerr << "ERROR: Console::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -233,14 +228,9 @@ bool Console::load(Serializer& in)
     if(!mySwitches->load(in))
       return false;
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for \'Console\'" << endl;
+    cerr << "ERROR: Console::load" << endl << "  " << msg << endl;
     return false;
   }
 

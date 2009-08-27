@@ -362,14 +362,9 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastAddress);
 
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << CPU << endl;
+    cerr << "ERROR: M6502::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -408,14 +403,9 @@ bool M6502::load(Serializer& in)
     // Indicates the last address which was accessed
     myLastAddress = (uInt16) in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << CPU << endl;
+    cerr << "ERROR: M6502::laod" << endl << "  " << msg << endl;
     return false;
   }
 

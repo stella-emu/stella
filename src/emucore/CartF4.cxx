@@ -155,12 +155,7 @@ bool CartridgeF4::save(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
+    cerr << "ERROR: CartridgeF4::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -183,12 +178,7 @@ bool CartridgeF4::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
+    cerr << "ERROR: CartridgeF4::load" << endl << "  " << msg << endl;
     return false;
   }
 

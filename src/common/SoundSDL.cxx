@@ -457,14 +457,9 @@ bool SoundSDL::save(Serializer& out) const
 
     out.putInt(myLastRegisterSetCycle);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << device << endl;
+    cerr << "ERROR: SoundSDL::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -506,14 +501,9 @@ bool SoundSDL::load(Serializer& in)
       if(!myIsMuted) SDL_PauseAudio(0);
     }
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << device << endl;
+    cerr << "ERROR: SoundSDL::load" << endl << "  " << msg << endl;
     return false;
   }
 

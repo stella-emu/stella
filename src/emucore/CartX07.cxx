@@ -172,14 +172,9 @@ bool CartridgeX07::save(Serializer& out) const
     out.putString(cart);
     out.putInt(myCurrentBank);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
+    cerr << "ERROR: CartridgeX07::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -198,14 +193,9 @@ bool CartridgeX07::load(Serializer& in)
 
     myCurrentBank = (uInt16)in.getInt();
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
+    cerr << "ERROR: CartridgeX07::load" << endl << "  " << msg << endl;
     return false;
   }
 

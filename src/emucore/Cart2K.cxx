@@ -139,12 +139,7 @@ bool Cartridge2K::save(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << cart << endl;
+    cerr << "ERROR: Cartridge2K::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -163,12 +158,7 @@ bool Cartridge2K::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << cart << endl;
+    cerr << "ERROR: Cartridge2K::load" << endl << "  " << msg << endl;
     return false;
   }
 

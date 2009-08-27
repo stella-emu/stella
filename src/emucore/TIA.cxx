@@ -315,6 +315,9 @@ bool TIA::save(Serializer& out) const
     out.putInt(myColor[_P1]);
     out.putInt(myColor[_PF]);
     out.putInt(myColor[_BK]);
+    out.putInt(myColor[_M0]);
+    out.putInt(myColor[_M1]);
+    out.putInt(myColor[_BL]);
 
     out.putByte((char)myCTRLPF);
     out.putByte((char)myPlayfieldPriorityAndScore);
@@ -381,14 +384,9 @@ bool TIA::save(Serializer& out) const
     // Save the sound sample stuff ...
     mySound.save(out);
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for " << device << endl;
+    cerr << "ERROR: TIA::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -425,6 +423,9 @@ bool TIA::load(Serializer& in)
     myColor[_P1] = (uInt32) in.getInt();
     myColor[_PF] = (uInt32) in.getInt();
     myColor[_BK] = (uInt32) in.getInt();
+    myColor[_M0] = (uInt32) in.getInt();
+    myColor[_M1] = (uInt32) in.getInt();
+    myColor[_BL] = (uInt32) in.getInt();
 
     myCTRLPF = (uInt8) in.getByte();
     myPlayfieldPriorityAndScore = (uInt8) in.getByte();
@@ -498,12 +499,7 @@ bool TIA::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for " << device << endl;
+    cerr << "ERROR: TIA::load" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -523,12 +519,7 @@ bool TIA::saveDisplay(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in save state for TIA display" << endl;
+    cerr << "ERROR: TIA::saveDisplay" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -557,14 +548,9 @@ bool TIA::loadDisplay(Serializer& in)
       myFrameGreyed = true;
     }
   }
-  catch(char *msg)
+  catch(const char* msg)
   {
-    cerr << msg << endl;
-    return false;
-  }
-  catch(...)
-  {
-    cerr << "Unknown error in load state for TIA display" << endl;
+    cerr << "ERROR: TIA::loadDisplay" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -827,17 +813,13 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
   // Handle all other possible combinations
   else
   {
-    // Update masks
+    // Update masks (M0 and M1 are done in updateFrame)
     myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
         [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
     myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
         [mySuppressP0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
     myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
         [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-    myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-        [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-    myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-        [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
 
     switch(myEnabledObjects | myPlayfieldPriorityAndScore)
     {
@@ -1463,9 +1445,54 @@ void TIA::updateFrame(Int32 clock)
       // Apply extra clocks for 'more motion required/mmr'
       if(myHMP0mmr) { myPOSP0 -= 17; posChanged = true; }
       if(myHMP1mmr) { myPOSP1 -= 17; posChanged = true; }
-      if(myHMM0mmr) { myPOSM0 -= 17; posChanged = true; }
-      if(myHMM1mmr) { myPOSM1 -= 17; posChanged = true; }
       if(myHMBLmmr) { myPOSBL -= 17; posChanged = true; }
+
+      // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
+      // Stay Frosty.  The movement itself is well understood, but there
+      // also seems to be some widening and blanking occurring as well.
+      // This doesn't properly emulate the effect, but it does give a
+      // fair approximation.  More testing is required to figure out
+      // what's really going on here.
+      if(myHMM0mmr)
+      {
+        myPOSM0 -= 17;  if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+        if(myPOSM0 % 4 == 3)
+        {
+          // Stretch this missle so it's at least 2 pixels wide
+          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+              [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
+              [160 - (myPOSM0 & 0xFC)];
+        }
+        else
+          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+      }
+      else
+      {
+        if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+        myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+            [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+      }
+      if(myHMM1mmr)
+      {
+        myPOSM1 -= 17;  if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+        if(myPOSM1 % 4 == 3)
+        {
+          // Stretch this missle so it's at least 2 pixels wide
+          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+              [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4) | 0x01]
+              [160 - (myPOSM1 & 0xFC)];
+        }
+        else
+          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+              [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+      }
+      else
+      {
+        if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+        myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+            [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+      }
 #endif
       // Make sure positions are in range
       if(posChanged)
@@ -1548,9 +1575,9 @@ void TIA::updateFrame(Int32 clock)
       // Yes, so set PF mask based on current CTRLPF reflection state 
       myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
 
-      // TODO: These should be reset right after the first copy of the player
-      // has passed.  However, for now we'll just reset at the end of the 
-      // scanline since the other way would be to slow (01/21/99).
+      // TODO - 01-21-99: These should be reset right after the first copy
+      // of the player has passed.  However, for now we'll just reset at the
+      // end of the scanline since the other way would be to slow.
       mySuppressP0 = mySuppressP1 = 0;
     }
   }
