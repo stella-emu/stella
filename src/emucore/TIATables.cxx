@@ -208,7 +208,7 @@ void TIATables::buildPxMaskTable()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// [4][8][4][320]
+// [4][8][5][320]
 // [alignment][number][size][pixel]
 void TIATables::buildMxMaskTable()
 {
@@ -217,68 +217,134 @@ void TIATables::buildMxMaskTable()
 
   // Clear the missle table to start with
   for(number = 0; number < 8; ++number)
-    for(size = 0; size < 4; ++size)
+    for(size = 0; size < 5; ++size)
       for(x = 0; x < 160; ++x)
         MxMask[0][number][size][x] = false;
 
   for(number = 0; number < 8; ++number)
   {
-    for(size = 0; size < 4; ++size)
+    for(size = 0; size < 5; ++size)
     {
       for(x = 0; x < 160 + 72; ++x)
       {
+        // For the following, size index = 4 is almost exactly the same as
+        // index = 2; that is, 1 << 2, or 4 colour clocks wide
+        // To simulate the weirdness in the Cosmic Ark starfield effect,
+        // each group of 4 pixels has its 3rd pixel blanked
         switch(number)
         {
           // Only one copy of the missle
           case 0x00:
           case 0x05:
           case 0x07:
-            if((x >= 0) && (x < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
+            if(size != 4)
+            {
+              if((x >= 0) && (x < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+            }
+            else
+            {
+              if((x >= 0) && (x < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+            }
           break;
 
           // Two copies - close
           case 0x01:
-            if((x >= 0) && (x < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
+            if(size != 4)
+            {
+              if((x >= 0) && (x < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+            }
+            else
+            {
+              if((x >= 0) && (x < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 16) >= 0) && ((x - 16) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+            }
             break;
 
           // Two copies - medium
           case 0x02:
-            if((x >= 0) && (x < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
+            if(size != 4)
+            {
+              if((x >= 0) && (x < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+            }
+            else
+            {
+              if((x >= 0) && (x < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 32) >= 0) && ((x - 32) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+            }
             break;
 
           // Three copies - close
           case 0x03:
-            if((x >= 0) && (x < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
+            if(size != 4)
+            {
+              if((x >= 0) && (x < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 16) >= 0) && ((x - 16) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+            }
+            else
+            {
+              if((x >= 0) && (x < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 16) >= 0) && ((x - 16) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 32) >= 0) && ((x - 32) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+            }
             break;
 
           // Two copies - wide
           case 0x04:
-            if((x >= 0) && (x < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
+            if(size != 4)
+            {
+              if((x >= 0) && (x < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+            }
+            else
+            {
+              if((x >= 0) && (x < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 64) >= 0) && ((x - 64) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+            }
             break;
 
           // Three copies - medium
           case 0x06:
-            if((x >= 0) && (x < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
-            else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
-              MxMask[0][number][size][x % 160] = true;
+            if(size != 4)
+            {
+              if((x >= 0) && (x < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 32) >= 0) && ((x - 32) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+              else if(((x - 64) >= 0) && ((x - 64) < (1 << size)))
+                MxMask[0][number][size][x % 160] = true;
+            }
+            else
+            {
+              if((x >= 0) && (x < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 32) >= 0) && ((x - 32) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+              else if(((x - 64) >= 0) && ((x - 64) < (1 << 2)))
+                MxMask[0][number][4][x % 160] = ((x - 2) % 4 == 0 ? false : true);
+            }
             break;
         }
       }
@@ -295,7 +361,7 @@ void TIATables::buildMxMaskTable()
   {
     for(number = 0; number < 8; ++number)
     {
-      for(size = 0; size < 4; ++size)
+      for(size = 0; size < 5; ++size)
       {
         for(x = 0; x < 320; ++x)
         {
@@ -556,7 +622,7 @@ const Int16 TIATables::PokeDelay[64] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 TIATables::MxMask[4][8][4][320];
+uInt8 TIATables::MxMask[4][8][5][320];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const bool TIATables::HMOVEBlankEnableCycles[76] = {

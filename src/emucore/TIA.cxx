@@ -813,7 +813,7 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
   // Handle all other possible combinations
   else
   {
-    // Update masks (M0 and M1 are done in updateFrame)
+    // Update masks
     myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
         [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
     myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
@@ -829,20 +829,20 @@ inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
     // what's really going on here.
     if(myHMM0mmr && myPOSM0 % 4 == 3)
     {
-      // Stretch this missle so it's at least 2 pixels wide
+      // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
+      // blanked out; this is indicated by using a size of '4'
       myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-          [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4) | 0x01]
-          [160 - (myPOSM0 & 0xFC)];
+          [myNUSIZ0 & 0x07][4][160 - (myPOSM0 & 0xFC)];
     }
     else
       myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
           [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
     if(myHMM1mmr && myPOSM1 % 4 == 3)
     {
-      // Stretch this missle so it's at least 2 pixels wide
+      // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
+      // blanked out; this is indicated by using a size of '4'
       myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-          [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4) | 0x01]
-          [160 - (myPOSM1 & 0xFC)];
+          [myNUSIZ1 & 0x07][4][160 - (myPOSM1 & 0xFC)];
     }
     else
       myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]

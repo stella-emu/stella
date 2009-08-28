@@ -155,7 +155,10 @@ class TIATables
 
     // Missle mask table (entries are true or false)
     // [alignment][number][size][pixel]
-    static uInt8 MxMask[4][8][4][320];
+    // There are actually only 4 possible size combinations on a real system
+    // The fifth size is used for simulating the starfield effect in
+    // Cosmic Ark and Stay Frosty
+    static uInt8 MxMask[4][8][5][320];
 
     // Ball mask table (entries are true or false)
     // [alignment][size][pixel]
