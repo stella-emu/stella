@@ -26,7 +26,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3247
+#define DEF_PROPS_SIZE 3248
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3156,6 +3156,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "f7856e324bc56f45b9c8e6ff062ec033", "Atari, Jerome Domurat, Michael Sierchio", "CX2667", "RealSports Soccer (1983) (Atari) [no opening tune]", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "f78c125b5da483c41e51522947d6c4ce", "", "", "Sound Paddle V1 (Dennis Caswell & Jim Nitchals) (PD)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "PADDLES", "PADDLES", "", "", "", "", "", "" }, 
   { "f7a138eed69665b5cd1bfa796a550b01", "Tigervision - Teldec", "7-012 - 3.60016 VC", "Espial (1984) (Tigervision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "f7a651972d78f9ba485b14690452d4be", "Paul Slocum", "", "Homestar Runner Demo #2 (2004-03-29)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "f7af41a87533524d9a478575b0d873d0", "Quelle", "495.663 7", "Spiderman (1983) (Quelle) (PAL)", "AKA Spider-Man", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f7d6592dcb773c81c278140ed4d01669", "Activision, David Crane, Dan Kitchen", "EAG-108-04, EAZ-108-04B", "Ghostbusters (1985) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f7e07080ed8396b68f2e5788a5c245e2", "Video Game Cartridge - Ariola", "TP-617", "Farmyard Fun (Ariola)", "AKA Play Farm", "", "", "", "", "", "", "", "", "", "", "", "33", "217", "", "" }, 
