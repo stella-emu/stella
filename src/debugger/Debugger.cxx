@@ -608,8 +608,11 @@ const string& Debugger::disassemble(int start, int lines)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
                            StringList& bytes, StringList& data,
-                           int start, int lines)
+                           int start, int end)
 {
+  if(start < 0x80 || end > 0xffff)
+    return;
+
   string cpubuf, tmp;
   char buf[255];
 
@@ -630,7 +633,7 @@ void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
 
     data.push_back(cpubuf);
   }
-  while(--lines > 0 && start <= 0xffff);
+  while(start <= end);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

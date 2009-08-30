@@ -53,7 +53,6 @@ class RomListWidget : public CheckListWidget
 
   private:
     ContextMenu* myMenu;
-    int myHighlightedItem;
     int myLabelWidth;
     int myBytesWidth;
 

@@ -27,8 +27,7 @@
 RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
                              int x, int y, int w, int h)
   : CheckListWidget(boss, font, x, y, w, h),
-    myMenu(NULL),
-    myHighlightedItem(-1)
+    myMenu(NULL)
 {
   _type = kRomListWidget;
 

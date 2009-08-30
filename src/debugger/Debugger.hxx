@@ -177,12 +177,12 @@ class Debugger : public DialogContainer
     const string& disassemble(int start, int lines);
 
     /**
-      Disassemble from the starting address the specified number of lines
+      Disassemble from the starting address to the ending address
       and place addresses, bytes and data in given arrays.
     */
     void disassemble(IntArray& addr, StringList& addrLabel,
                      StringList& bytes, StringList& data,
-                     int start, int lines);
+                     int start, int end);
 
     void autoExec();
 

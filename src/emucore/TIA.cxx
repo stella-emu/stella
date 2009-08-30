@@ -176,10 +176,10 @@ void TIA::reset()
   }
   else
   {
-    myFixedColor[_P0] = 0x30303030;  // TODO - fix these for PAL
-    myFixedColor[_P1] = 0x16161616;
-    myFixedColor[_PF] = 0x76767676;
-    myFixedColor[_BK] = 0x0a0a0a0a;
+    myFixedColor[_P0] = 0x62626262;
+    myFixedColor[_P1] = 0x26262626;
+    myFixedColor[_PF] = 0xd8d8d8d8;
+    myFixedColor[_BK] = 0x1c1c1c1c;
     myFixedColor[_HBLANK] = 0x0e0e0e0e;
     myColorLossEnabled = true;
     myMaximumNumberOfScanlines = 342;
@@ -1583,7 +1583,7 @@ void TIA::greyOutFrame()
   if(c > (myFrameHeight + myFrameYStart))
     return;
 
-cerr << "greying frame from scanline " << c << endl;
+//cerr << "greying frame from scanline " << c << endl;
 
   uInt8* buffer = myCurrentFrameBuffer + myFramePointerOffset;
   for(uInt32 s = c; s < (myFrameHeight + myFrameYStart); ++s)

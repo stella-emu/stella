@@ -179,8 +179,9 @@ void RomWidget::loadConfig()
   myCurrentBank = dbg.getBank();
 
   // Update romlist to point to current PC
-  // Take mirroring of PC into account
-  int pc = dbg.cpuDebug().pc() | 0xe000;
+  // Take mirroring of PC into account, as well as zero-page RAM
+  int pc = dbg.cpuDebug().pc();
+  if(pc & 0x1000) pc |= 0xe000;
   AddrToLine::iterator iter = myLineList.find(pc);
 
   // if current PC not found, do an update (we're executing what
@@ -232,8 +233,9 @@ void RomWidget::initialUpdate()
     StringList label, data, disasm;
     BoolArray state;
 
-    // Disassemble entire bank (up to 4096 lines) and reset breakpoints
-    dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 4096);
+    // Disassemble zero-page RAM and entire bank and reset breakpoints
+    dbg.disassemble(myAddrList, label, data, disasm, 0x80, 0xff);
+    dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 0xffff);
     for(unsigned int i = 0; i < data.size(); ++i)
     {
       if(bp.isSet(myAddrList[i]))
