@@ -282,10 +282,11 @@ class Console : public Serializable
     void loadUserPalette();
 
     /**
-      Loads all defined palettes with PAL color-loss data depending
-      on 'state'.
+      Loads all defined palettes with PAL color-loss data, even those that
+      normally can't have it enabled (NTSC), since it's also used for
+      'greying out' the frame in the debugger.
     */
-    void setColorLossPalette(bool state);
+    void setColorLossPalette();
 
     /**
       Returns a pointer to the palette data for the palette currently defined

@@ -546,6 +546,7 @@ uInt8 TIADebug::posP0(int newVal)
 {
   if(newVal > -1)
     myTIA.myPOSP0 = newVal;
+
   return myTIA.myPOSP0;
 }
 
@@ -554,36 +555,34 @@ uInt8 TIADebug::posP1(int newVal)
 {
   if(newVal > -1)
     myTIA.myPOSP1 = newVal;
+
   return myTIA.myPOSP1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posM0(int newVal)
 {
-/* FIXME
   if(newVal > -1)
-    mySystem.poke(???, newVal);
-*/
+    myTIA.myPOSM0 = newVal;
+
   return myTIA.myPOSM0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posM1(int newVal)
 {
-/* FIXME
   if(newVal > -1)
-    mySystem.poke(???, newVal);
-*/
+    myTIA.myPOSM1 = newVal;
+
   return myTIA.myPOSM1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 TIADebug::posBL(int newVal)
 {
-/* FIXME
   if(newVal > -1)
-    mySystem.poke(???, newVal);
-*/
+    myTIA.myPOSBL = newVal;
+
   return myTIA.myPOSBL;
 }
 

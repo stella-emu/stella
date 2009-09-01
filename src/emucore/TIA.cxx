@@ -44,7 +44,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myMaximumNumberOfScanlines(262),
     myColorLossEnabled(false),
     myPartialFrameFlag(false),
-    myFrameGreyed(false),
     myAutoFrameEnabled(false),
     myFrameCounter(0)
 {
@@ -181,7 +180,7 @@ void TIA::reset()
     myFixedColor[_PF] = 0xd8d8d8d8;
     myFixedColor[_BK] = 0x1c1c1c1c;
     myFixedColor[_HBLANK] = 0x0e0e0e0e;
-    myColorLossEnabled = true;
+    myColorLossEnabled = mySettings.getBool("colorloss");
     myMaximumNumberOfScanlines = 342;
   }
 
@@ -543,10 +542,7 @@ bool TIA::loadDisplay(Serializer& in)
     // If we're in partial frame mode, make sure to re-create the screen
     // as it existed when the state was saved
     if(myPartialFrameFlag)
-    {
       myFramePointer += myFramePointerClocks;
-      myFrameGreyed = true;
-    }
   }
   catch(const char* msg)
   {
@@ -574,15 +570,7 @@ void TIA::update()
 
   // TODO: have code here that handles errors....
 
-  if(myPartialFrameFlag)
-  {
-    // Grey out old frame contents
-    if(!myFrameGreyed)
-      greyOutFrame();
-    myFrameGreyed = true;
-  }
-  else
-    endFrame();
+  endFrame();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -633,8 +621,6 @@ inline void TIA::startFrame()
     }
   }   
   myStartScanline = 0x7FFFFFFF;
-
-  myFrameGreyed = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -678,8 +664,33 @@ inline void TIA::endFrame()
     memset(myCurrentFrameBuffer, 0, 160 * 320);
     memset(myPreviousFrameBuffer, 1, 160 * 320);
   }
+}
 
-  myFrameGreyed = false;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::scanlinePos(uInt16& x, uInt16& y) const
+{
+  if(myPartialFrameFlag)
+  {
+    // We only care about the scanline position when it's in the viewable area
+    if(myFramePointerClocks >= myFramePointerOffset)
+    {
+      x = (myFramePointerClocks - myFramePointerOffset) % 160;
+      y = (myFramePointerClocks - myFramePointerOffset) / 160;
+      return true;
+    }
+    else
+    {
+      x = 0;
+      y = 0;
+      return false;
+    }
+  }
+  else
+  {
+    x = width();
+    y = height();
+    return false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -726,11 +737,6 @@ void TIA::updateScanline()
   if(!myPartialFrameFlag)
     startFrame();
 
-  // grey out old frame contents
-  if(!myFrameGreyed)
-    greyOutFrame();
-  myFrameGreyed = true;
-
   // true either way:
   myPartialFrameFlag = true;
 
@@ -756,10 +762,6 @@ void TIA::updateScanlineByStep()
   if(!myPartialFrameFlag)
     startFrame();
 
-  // grey out old frame contents
-  if(!myFrameGreyed) greyOutFrame();
-  myFrameGreyed = true;
-
   // true either way:
   myPartialFrameFlag = true;
 
@@ -778,10 +780,6 @@ void TIA::updateScanlineByTrace(int target)
   // Start a new frame if the old one was finished
   if(!myPartialFrameFlag)
     startFrame();
-
-  // grey out old frame contents
-  if(!myFrameGreyed) greyOutFrame();
-  myFrameGreyed = true;
 
   // true either way:
   myPartialFrameFlag = true;
@@ -1573,27 +1571,6 @@ inline void TIA::waitHorizontalSync()
 
   if(cyclesToEndOfLine < 76)
     mySystem->incrementCycles(cyclesToEndOfLine);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::greyOutFrame()
-{
-  uInt32 c = scanlines();
-  if(c < myFrameYStart) c = myFrameYStart;
-  if(c > (myFrameHeight + myFrameYStart))
-    return;
-
-//cerr << "greying frame from scanline " << c << endl;
-
-  uInt8* buffer = myCurrentFrameBuffer + myFramePointerOffset;
-  for(uInt32 s = c; s < (myFrameHeight + myFrameYStart); ++s)
-  {
-    for(uInt32 i = 0; i < 160; ++i)
-    {
-      uInt32 idx = (s - myFrameYStart) * 160 + i;
-      buffer[idx] = ((buffer[idx] & 0x0f) >> 1);
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

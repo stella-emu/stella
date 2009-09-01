@@ -220,18 +220,25 @@ void TiaZoomWidget::drawWidget(bool hilite)
   // Draw the zoomed image
   // This probably isn't as efficient as it can be, but it's a small area
   // and I don't have time to make it faster :)
-  uInt8* currentFrame  = instance().console().tia().currentFrameBuffer();
-  const int pitch  = instance().console().tia().width(),
-            width  = myZoomLevel << 1,
-            height = myZoomLevel;
+  const uInt8* currentFrame  = instance().console().tia().currentFrameBuffer();
+  const int width = instance().console().tia().width(),
+            wzoom = myZoomLevel << 1,
+            hzoom = myZoomLevel;
+
+  // Get current scanline position
+  // This determines where the frame greying should start
+  uInt16 scanx, scany, scanoffset;
+  instance().console().tia().scanlinePos(scanx, scany);
+  scanoffset = width * scany + scanx;
 
   int x, y, col, row;
-  for(y = myYoff, row = 0; y < myNumRows+myYoff; ++y, row += height)
+  for(y = myYoff, row = 0; y < myNumRows+myYoff; ++y, row += hzoom)
   {
-    for(x = myXoff, col = 0; x < myNumCols+myXoff; ++x, col += width)
+    for(x = myXoff, col = 0; x < myNumCols+myXoff; ++x, col += wzoom)
     {
-      s.fillRect(_x + col + 2, _y + row + 2, width, height,
-                 currentFrame[y*pitch + x]);
+      uInt32 idx = y*width + x;
+      uInt32 color = currentFrame[idx] | (idx > scanoffset ? 1 : 0);
+      s.fillRect(_x + col + 2, _y + row + 2, wzoom, hzoom, color);
     }
   }
 }

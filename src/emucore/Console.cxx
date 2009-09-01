@@ -293,8 +293,7 @@ void Console::toggleColorLoss()
 {
   bool colorloss = !myOSystem->settings().getBool("colorloss");
   myOSystem->settings().setBool("colorloss", colorloss);
-  setColorLossPalette(colorloss);
-  setPalette(myOSystem->settings().getString("palette"));
+  myTIA->enableColorLoss(colorloss);
 
   string message = string("PAL color-loss ") +
                    (colorloss ? "enabled" : "disabled");
@@ -420,12 +419,13 @@ bool Console::initializeVideo(bool full)
 
     myOSystem->frameBuffer().showFrameStats(
       myOSystem->settings().getBool("stats"));
+
+    setColorLossPalette();
   }
 
   bool enable = myProperties.get(Display_Phosphor) == "YES";
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
   myOSystem->frameBuffer().enablePhosphor(enable, blend);
-  setColorLossPalette(myOSystem->settings().getBool("colorloss"));
   setPalette(myOSystem->settings().getString("palette"));
 
   // Set the correct framerate based on the format of the ROM
@@ -741,7 +741,7 @@ void Console::loadUserPalette()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::setColorLossPalette(bool loss)
+void Console::setColorLossPalette()
 {
   // Look at all the palettes, since we don't know which one is
   // currently active
@@ -762,23 +762,18 @@ void Console::setColorLossPalette(bool loss)
     if(palette[i] == 0)
       continue;
 
-    // If color-loss is enabled, fill the odd numbered palette entries
-    // with gray values (calculated using the standard RGB -> grayscale
-    // conversion formula)
+    // Fill the odd numbered palette entries with gray values (calculated
+    // using the standard RGB -> grayscale conversion formula)
     for(int j = 0; j < 128; ++j)
     {
       uInt32 pixel = palette[i][(j<<1)];
-      if(loss)
-      {
-        uInt8 r = (pixel >> 16) & 0xff;
-        uInt8 g = (pixel >> 8)  & 0xff;
-        uInt8 b = (pixel >> 0)  & 0xff;
-        uInt8 sum = (uInt8) (((float)r * 0.2989) +
-                             ((float)g * 0.5870) +
-                             ((float)b * 0.1140));
-        pixel = (sum << 16) + (sum << 8) + sum;
-      }
-      palette[i][(j<<1)+1] = pixel;
+      uInt8 r = (pixel >> 16) & 0xff;
+      uInt8 g = (pixel >> 8)  & 0xff;
+      uInt8 b = (pixel >> 0)  & 0xff;
+      uInt8 sum = (uInt8) (((float)r * 0.2989) +
+                           ((float)g * 0.5870) +
+                           ((float)b * 0.1140));
+      palette[i][(j<<1)+1] = (sum << 16) + (sum << 8) + sum;
     }
   }
 }

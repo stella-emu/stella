@@ -91,8 +91,9 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       if(rmb == "scanline")
       {
         ostringstream command;
-        int lines = myClickY + ystart -
-            instance().debugger().tiaDebug().scanlines();
+        int lines = myClickY + ystart;
+        if(instance().console().tia().partialFrame())
+          lines -= instance().console().tia().scanlines();
         if(lines > 0)
         {
           command << "scanline #" << lines;
@@ -120,20 +121,34 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 void TiaOutputWidget::drawWidget(bool hilite)
 {
 //cerr << "TiaOutputWidget::drawWidget\n";
-  // FIXME - maybe 'greyed out mode' should be done here, not in the TIA class
   FBSurface& s = dialog().surface();
 
-  const uInt32 width = 160,  // width is always 160
+  const uInt32 width  = instance().console().tia().width(),
                height = instance().console().tia().height();
-  for(uInt32 y = 0; y < height; ++y)
+
+  // Get current scanline position
+  // This determines where the frame greying should start, and where a
+  // scanline 'pointer' should be drawn
+  uInt16 scanx, scany, scanoffset;
+  bool visible = instance().console().tia().scanlinePos(scanx, scany);
+  scanoffset = width * scany + scanx;
+
+  for(uInt32 y = 0, i = 0; y < height; ++y)
   {
     uInt32* line_ptr = myLineBuffer;
-    for(uInt32 x = 0; x < width; ++x)
+    for(uInt32 x = 0; x < width; ++x, ++i)
     {
-      uInt32 pixel = instance().frameBuffer().tiaPixel(y*width+x);
+      uInt8 shift = i > scanoffset ? 1 : 0;
+      uInt32 pixel = instance().frameBuffer().tiaPixel(i, shift);
       *line_ptr++ = pixel;
       *line_ptr++ = pixel;
     }
     s.drawPixels(myLineBuffer, _x, _y+y, width << 1);
+  }
+
+  // Show electron beam position
+  if(visible && scanx < width && scany+2u < height)
+  {
+    s.fillRect(_x+scanx<<1, _y+scany, 3, 3, kBtnTextColor);
   }
 }

@@ -508,10 +508,10 @@ void FrameBuffer::resetSurfaces()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 FrameBuffer::tiaPixel(uInt32 idx) const
+uInt32 FrameBuffer::tiaPixel(uInt32 idx, uInt8 shift) const
 {
-  uInt8 c = *(myOSystem->console().tia().currentFrameBuffer() + idx);
-  uInt8 p = *(myOSystem->console().tia().previousFrameBuffer() + idx);
+  uInt8 c = *(myOSystem->console().tia().currentFrameBuffer() + idx) | shift;
+  uInt8 p = *(myOSystem->console().tia().previousFrameBuffer() + idx) | shift;
 
   return (!myUsePhosphor ? myDefPalette[c] : myAvgPalette[c][p]);
 }

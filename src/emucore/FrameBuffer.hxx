@@ -247,9 +247,10 @@ class FrameBuffer
     const StringMap& supportedTIAFilters(const string& type);
 
     /**
-      Get the TIA pixel associated with the given TIA buffer index.
+      Get the TIA pixel associated with the given TIA buffer index,
+      shifting by the given offset (for greyscale values).
     */
-    uInt32 tiaPixel(uInt32 idx) const;
+    uInt32 tiaPixel(uInt32 idx, uInt8 shift = 0) const;
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.

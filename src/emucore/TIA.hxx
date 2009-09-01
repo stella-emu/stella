@@ -196,6 +196,14 @@ class TIA : public Device
     void enableAutoFrame(bool mode) { myAutoFrameEnabled = mode; }
 
     /**
+      Enables/disables color-loss for PAL modes only.
+
+      @param mode  Whether to enable or disable PAL color-loss mode
+    */
+    void enableColorLoss(bool mode)
+      { myColorLossEnabled = myFramerate <= 55 ? mode : false; }
+
+    /**
       Answers the current color clock we've gotten to on this scanline.
 
       @return The current color clock
@@ -214,11 +222,31 @@ class TIA : public Device
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
     /**
+      Answers whether the TIA is currently in 'partial frame' mode
+      (we're in between a call of startFrame and endFrame).
+
+      @return If we're in partial frame mode
+    */
+    inline bool partialFrame() const { return myPartialFrameFlag; }
+
+    /**
       Answers the first scanline at which drawing occured in the last frame.
 
       @return The starting scanline
     */
     inline uInt32 startScanline() const { return myStartScanline; }
+
+    /**
+      Answers the current position of the virtual 'electron beam' used to
+      draw the TIA image.  If not in partial frame mode, the position is
+      defined to be in the lower right corner (@ width/height of the screen).
+      Note that the coordinates are with respect to currentFrameBuffer(),
+      taking any YStart values into account.
+
+      @return The x/y coordinates of the scanline electron beam, and whether
+              it is in the visible/viewable area of the screen
+    */
+    bool scanlinePos(uInt16& x, uInt16& y) const;
 
     /**
       Enables/disables all TIABit bits.
@@ -275,9 +303,6 @@ class TIA : public Device
 
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
-
-    // Grey out current framebuffer from current scanline to bottom
-    void greyOutFrame();
 
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
@@ -523,9 +548,6 @@ class TIA : public Device
     // Indicates whether we're done with the current frame. poke() clears this
     // when VSYNC is strobed or the max scanlines/frame limit is hit.
     bool myPartialFrameFlag;
-
-    // Has current frame been "greyed out" (has updateScanline() been run?)
-    bool myFrameGreyed;
 
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;
