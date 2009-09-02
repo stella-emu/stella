@@ -149,6 +149,6 @@ void TiaOutputWidget::drawWidget(bool hilite)
   // Show electron beam position
   if(visible && scanx < width && scany+2u < height)
   {
-    s.fillRect(_x+scanx<<1, _y+scany, 3, 3, kBtnTextColor);
+    s.fillRect(_x+(scanx<<1), _y+scany, 3, 3, kBtnTextColor);
   }
 }
