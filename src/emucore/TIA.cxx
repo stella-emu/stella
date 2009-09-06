@@ -628,6 +628,7 @@ inline void TIA::endFrame()
 {
   // This stuff should only happen at the end of a frame
   // Compute the number of scanlines in the frame
+  uInt32 previousCount = myScanlineCountForLastFrame;
   myScanlineCountForLastFrame = scanlines();
 
   // Stats counters
@@ -659,7 +660,8 @@ inline void TIA::endFrame()
   // sure that they're also different from one another
   // This will force the framebuffer class to completely re-render
   // the screen
-  if(myScanlineCountForLastFrame > myMaximumNumberOfScanlines)
+  if(previousCount > myMaximumNumberOfScanlines &&
+     myScanlineCountForLastFrame <= myMaximumNumberOfScanlines)
   {
     memset(myCurrentFrameBuffer, 0, 160 * 320);
     memset(myPreviousFrameBuffer, 1, 160 * 320);

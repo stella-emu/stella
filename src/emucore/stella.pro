@@ -6835,7 +6835,7 @@
 "Cartridge.Manufacturer" "Atari, Robert C. Polaro"
 "Cartridge.ModelNo" "CX26155"
 "Cartridge.Name" "Sprint Master (1988) (Atari)"
-"Display.YStart" "26"
+"Display.YStart" "24"
 ""
 
 "Cartridge.MD5" "5a80b857eb8b908ab477ec4ef902edc8"
@@ -17470,6 +17470,7 @@
 "Cartridge.ModelNo" "147.443 6"
 "Cartridge.Name" "Gefecht im All (1983) (Quelle) (PAL)"
 "Cartridge.Note" "AKA Space Jockey"
+"Display.YStart" "64"
 ""
 
 "Cartridge.MD5" "e74022cfe31ec8908844718dfbdedf7a"
