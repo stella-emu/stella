@@ -60,31 +60,43 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     {
       if(enabled & PriorityBit)
       {
-        uInt8 color = 0;
+        // Priority from highest to lowest:
+        //   PF/BL => P0/M0 => P1/M1 => BK
+        uInt8 color = _BK;
 
-        if((enabled & (P1Bit | M1Bit)) != 0)
-          color = 3;
-        if((enabled & (P0Bit | M0Bit)) != 0)
-          color = 2;
+        if((enabled & M1Bit) != 0)
+          color = _M1;
+        if((enabled & P1Bit) != 0)
+          color = _P1;
+        if((enabled & M0Bit) != 0)
+          color = _M0;
+        if((enabled & P0Bit) != 0)
+          color = _P0;
         if((enabled & BLBit) != 0)
-          color = 1;
+          color = _BL;
         if((enabled & PFBit) != 0)
-          color = 1;  // NOTE: Playfield has priority so ScoreBit isn't used
+          color = _PF;  // NOTE: Playfield has priority so ScoreBit isn't used
 
         myPriorityEncoder[x][enabled] = color;
       }
       else
       {
-        uInt8 color = 0;
+        // Priority from highest to lowest:
+        //   P0/M0 => P1/M1 => PF/BL => BK
+        uInt8 color = _BK;
 
         if((enabled & BLBit) != 0)
-          color = 1;
+          color = _BL;
         if((enabled & PFBit) != 0)
-          color = (enabled & ScoreBit) ? ((x == 0) ? 2 : 3) : 1;
-        if((enabled & (P1Bit | M1Bit)) != 0)
-          color = (color != 2) ? 3 : 2;
-        if((enabled & (P0Bit | M0Bit)) != 0)
-          color = 2;
+          color = (enabled & ScoreBit) ? ((x == 0) ? _P0 : _P1) : _PF;
+        if((enabled & M1Bit) != 0)
+          color = _M1;
+        if((enabled & P1Bit) != 0)
+          color = _P1;
+        if((enabled & M0Bit) != 0)
+          color = _M0;
+        if((enabled & P0Bit) != 0)
+          color = _P0;
 
         myPriorityEncoder[x][enabled] = color;
       }
@@ -120,7 +132,6 @@ void TIA::reset()
   myVSYNC = myVBLANK = 0;
   myNUSIZ0 = myNUSIZ1 = 0;
   myColor[_P0] = myColor[_P1] = myColor[_PF] = myColor[_BK] = 0;
-  // TODO - add support for drawing M0/M1/BL in separate colors
   myColor[_M0] = myColor[_M1] = myColor[_BL] = myColor[_HBLANK] = 0;
 
   myPlayfieldPriorityAndScore = 0;
@@ -167,6 +178,9 @@ void TIA::reset()
   {
     myFixedColor[_P0] = 0x30303030;
     myFixedColor[_P1] = 0x16161616;
+    myFixedColor[_M0] = 0x38383838;
+    myFixedColor[_M1] = 0x12121212;
+    myFixedColor[_BL] = 0x7e7e7e7e;
     myFixedColor[_PF] = 0x76767676;
     myFixedColor[_BK] = 0x0a0a0a0a;
     myFixedColor[_HBLANK] = 0x0e0e0e0e;
@@ -177,6 +191,9 @@ void TIA::reset()
   {
     myFixedColor[_P0] = 0x62626262;
     myFixedColor[_P1] = 0x26262626;
+    myFixedColor[_M0] = 0x68686868;
+    myFixedColor[_M1] = 0x2e2e2e2e;
+    myFixedColor[_BL] = 0xdededede;
     myFixedColor[_PF] = 0xd8d8d8d8;
     myFixedColor[_BK] = 0x1c1c1c1c;
     myFixedColor[_HBLANK] = 0x0e0e0e0e;
@@ -611,6 +628,9 @@ inline void TIA::startFrame()
       myColor[_P1] |= 0x01010101;
       myColor[_PF] |= 0x01010101;
       myColor[_BK] |= 0x01010101;
+      myColor[_M0] |= 0x01010101;
+      myColor[_M1] |= 0x01010101;
+      myColor[_BL] |= 0x01010101;
     }
     else
     {
@@ -618,6 +638,9 @@ inline void TIA::startFrame()
       myColor[_P1] &= 0xfefefefe;
       myColor[_PF] &= 0xfefefefe;
       myColor[_BK] &= 0xfefefefe;
+      myColor[_M0] &= 0xfefefefe;
+      myColor[_M1] &= 0xfefefefe;
+      myColor[_BL] &= 0xfefefefe;
     }
   }   
   myStartScanline = 0x7FFFFFFF;
@@ -711,11 +734,11 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 {
   // If mode is 0 or 1, use it as a boolean (off or on)
   // Otherwise, flip the state
-  bool state = (mode == 0 || mode == 1) ? bool(mode) : !(myDisabledObjects & b);
-  if(state)  myDisabledObjects |= b;
-  else       myDisabledObjects &= ~b;
+  bool on = (mode == 0 || mode == 1) ? bool(mode) : !(myDisabledObjects & b);
+  if(on)  myDisabledObjects |= b;
+  else    myDisabledObjects &= ~b;
 
-  return state;
+  return on;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -723,12 +746,12 @@ bool TIA::toggleFixedColors(uInt8 mode)
 {
   // If mode is 0 or 1, use it as a boolean (off or on)
   // Otherwise, flip the state
-  bool state = (mode == 0 || mode == 1) ? bool(mode) :
-               (myColorPtr == myColor ? true : false);
-  if(state)  myColorPtr = myFixedColor;
-  else       myColorPtr = myColor;
+  bool on = (mode == 0 || mode == 1) ? bool(mode) :
+            (myColorPtr == myColor ? true : false);
+  if(on)  myColorPtr = myFixedColor;
+  else    myColorPtr = myColor;
 
-  return state;
+  return on;
 }
 
 #ifdef DEBUGGER_SUPPORT
@@ -799,628 +822,6 @@ void TIA::updateScanlineByTrace(int target)
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void TIA::updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos)
-{
-  // Calculate the ending frame pointer value
-  uInt8* ending = myFramePointer + clocksToUpdate;
-  myFramePointerClocks += clocksToUpdate;
-
-  // See if we're in the vertical blank region
-  if(myVBLANK & 0x02)
-  {
-    memset(myFramePointer, 0, clocksToUpdate);
-  }
-  // Handle all other possible combinations
-  else
-  {
-    // Update masks
-    myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
-        [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
-    myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
-        [mySuppressP0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-    myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
-        [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
-
-    // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
-    // Stay Frosty.  The movement itself is well understood, but there
-    // also seems to be some widening and blanking occurring as well.
-    // This doesn't properly emulate the effect, but it does give a
-    // fair approximation.  More testing is required to figure out
-    // what's really going on here.
-    if(myHMM0mmr && myPOSM0 % 4 == 3)
-    {
-      // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
-      // blanked out; this is indicated by using a size of '4'
-      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-          [myNUSIZ0 & 0x07][4][160 - (myPOSM0 & 0xFC)];
-    }
-    else
-      myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-          [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-    if(myHMM1mmr && myPOSM1 % 4 == 3)
-    {
-      // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
-      // blanked out; this is indicated by using a size of '4'
-      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-          [myNUSIZ1 & 0x07][4][160 - (myPOSM1 & 0xFC)];
-    }
-    else
-      myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-          [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
-
-    switch(myEnabledObjects | myPlayfieldPriorityAndScore)
-    {
-      // Background 
-      case 0x00:
-      case 0x00 | ScoreBit:
-      case 0x00 | PriorityBit:
-      case 0x00 | PriorityBit | ScoreBit:
-      {
-        memset(myFramePointer, myColorPtr[_BK], clocksToUpdate);
-        break;
-      }
-
-      // Playfield is enabled and the priority bit is set (score bit is overridden)
-      case PFBit: 
-      case PFBit | PriorityBit:
-      case PFBit | PriorityBit | ScoreBit:
-      {
-        uInt32* mask = &myCurrentPFMask[hpos];
-
-        // Update a uInt8 at a time until reaching a uInt32 boundary
-        for(; ((uintptr_t)myFramePointer & 0x03) && (myFramePointer < ending);
-            ++myFramePointer, ++mask)
-        {
-          *myFramePointer = (myPF & *mask) ? myColorPtr[_PF] : myColorPtr[_BK];
-        }
-
-        // Now, update a uInt32 at a time
-        for(; myFramePointer < ending; myFramePointer += 4, mask += 4)
-        {
-          *((uInt32*)myFramePointer) = (myPF & *mask) ? myColorPtr[_PF] : myColorPtr[_BK];
-        }
-        break;
-      }
-
-      // Playfield is enabled and the score bit is set (without priority bit)
-      case PFBit | ScoreBit:
-      {
-        uInt32* mask = &myCurrentPFMask[hpos];
-
-        // Update a uInt8 at a time until reaching a uInt32 boundary
-        for(; ((uintptr_t)myFramePointer & 0x03) && (myFramePointer < ending); 
-            ++myFramePointer, ++mask, ++hpos)
-        {
-          *myFramePointer = (myPF & *mask) ? 
-              (hpos < 80 ? myColorPtr[_P0] : myColorPtr[_P1]) : myColorPtr[_BK];
-        }
-
-        // Now, update a uInt32 at a time
-        for(; myFramePointer < ending; 
-            myFramePointer += 4, mask += 4, hpos += 4)
-        {
-          *((uInt32*)myFramePointer) = (myPF & *mask) ?
-              (hpos < 80 ? myColorPtr[_P0] : myColorPtr[_P1]) : myColorPtr[_BK];
-        }
-        break;
-      }
-
-      // Player 0 is enabled
-      case P0Bit:
-      case P0Bit | ScoreBit:
-      case P0Bit | PriorityBit:
-      case P0Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mP0 = &myCurrentP0Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mP0 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myCurrentGRP0 & *mP0) ? myColorPtr[_P0] : myColorPtr[_BK];
-            ++mP0; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Player 1 is enabled
-      case P1Bit:
-      case P1Bit | ScoreBit:
-      case P1Bit | PriorityBit:
-      case P1Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mP1 = &myCurrentP1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mP1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK];
-            ++mP1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Player 0 and 1 are enabled
-      case P0Bit | P1Bit:
-      case P0Bit | P1Bit | ScoreBit:
-      case P0Bit | P1Bit | PriorityBit:
-      case P0Bit | P1Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mP0 = &myCurrentP0Mask[hpos];
-        uInt8* mP1 = &myCurrentP1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0 &&
-              !*(uInt32*)mP1)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mP0 += 4; mP1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myCurrentGRP0 & *mP0) ? 
-                myColorPtr[_P0] : ((myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK]);
-
-            if((myCurrentGRP0 & *mP0) && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionMask[P0Bit | P1Bit];
-
-            ++mP0; ++mP1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Missle 0 is enabled
-      case M0Bit:
-      case M0Bit | ScoreBit:
-      case M0Bit | PriorityBit:
-      case M0Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mM0 = &myCurrentM0Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM0)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mM0 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = *mM0 ? myColorPtr[_P0] : myColorPtr[_BK];
-            ++mM0; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Missle 1 is enabled
-      case M1Bit:
-      case M1Bit | ScoreBit:
-      case M1Bit | PriorityBit:
-      case M1Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mM1 = &myCurrentM1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM1)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mM1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = *mM1 ? myColorPtr[_P1] : myColorPtr[_BK];
-            ++mM1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball is enabled
-      case BLBit:
-      case BLBit | ScoreBit:
-      case BLBit | PriorityBit:
-      case BLBit | ScoreBit | PriorityBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = *mBL ? myColorPtr[_PF] : myColorPtr[_BK];
-            ++mBL; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Missle 0 and 1 are enabled
-      case M0Bit | M1Bit:
-      case M0Bit | M1Bit | ScoreBit:
-      case M0Bit | M1Bit | PriorityBit:
-      case M0Bit | M1Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mM0 = &myCurrentM0Mask[hpos];
-        uInt8* mM1 = &myCurrentM1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mM0 && !*(uInt32*)mM1)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mM0 += 4; mM1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = *mM0 ? myColorPtr[_P0] : (*mM1 ? myColorPtr[_P1] : myColorPtr[_BK]);
-
-            if(*mM0 && *mM1)
-              myCollision |= TIATables::CollisionMask[M0Bit | M1Bit];
-
-            ++mM0; ++mM1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball and Missle 0 are enabled and playfield priority is not set
-      case BLBit | M0Bit:
-      case BLBit | M0Bit | ScoreBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-        uInt8* mM0 = &myCurrentM0Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; mM0 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (*mM0 ? myColorPtr[_P0] : (*mBL ? myColorPtr[_PF] : myColorPtr[_BK]));
-
-            if(*mBL && *mM0)
-              myCollision |= TIATables::CollisionMask[BLBit | M0Bit];
-
-            ++mBL; ++mM0; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball and Missle 0 are enabled and playfield priority is set
-      case BLBit | M0Bit | PriorityBit:
-      case BLBit | M0Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-        uInt8* mM0 = &myCurrentM0Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && !*(uInt32*)mM0)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; mM0 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (*mBL ? myColorPtr[_PF] : (*mM0 ? myColorPtr[_P0] : myColorPtr[_BK]));
-
-            if(*mBL && *mM0)
-              myCollision |= TIATables::CollisionMask[BLBit | M0Bit];
-
-            ++mBL; ++mM0; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball and Missle 1 are enabled and playfield priority is not set
-      case BLBit | M1Bit:
-      case BLBit | M1Bit | ScoreBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-        uInt8* mM1 = &myCurrentM1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && 
-              !*(uInt32*)mM1)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; mM1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (*mM1 ? myColorPtr[_P1] : (*mBL ? myColorPtr[_PF] : myColorPtr[_BK]));
-
-            if(*mBL && *mM1)
-              myCollision |= TIATables::CollisionMask[BLBit | M1Bit];
-
-            ++mBL; ++mM1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball and Missle 1 are enabled and playfield priority is set
-      case BLBit | M1Bit | PriorityBit:
-      case BLBit | M1Bit | ScoreBit | PriorityBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-        uInt8* mM1 = &myCurrentM1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL && 
-              !*(uInt32*)mM1)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; mM1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (*mBL ? myColorPtr[_PF] : (*mM1 ? myColorPtr[_P1] : myColorPtr[_BK]));
-
-            if(*mBL && *mM1)
-              myCollision |= TIATables::CollisionMask[BLBit | M1Bit];
-
-            ++mBL; ++mM1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball and Player 1 are enabled and playfield priority is not set
-      case BLBit | P1Bit:
-      case BLBit | P1Bit | ScoreBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-        uInt8* mP1 = &myCurrentP1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; mP1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : 
-                (*mBL ? myColorPtr[_PF] : myColorPtr[_BK]);
-
-            if(*mBL && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionMask[BLBit | P1Bit];
-
-            ++mBL; ++mP1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Ball and Player 1 are enabled and playfield priority is set
-      case BLBit | P1Bit | PriorityBit:
-      case BLBit | P1Bit | PriorityBit | ScoreBit:
-      {
-        uInt8* mBL = &myCurrentBLMask[hpos];
-        uInt8* mP1 = &myCurrentP1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1 && !*(uInt32*)mBL)
-          {
-            *(uInt32*)myFramePointer = myColorPtr[_BK];
-            mBL += 4; mP1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = *mBL ? myColorPtr[_PF] : 
-                ((myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK]);
-
-            if(*mBL && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionMask[BLBit | P1Bit];
-
-            ++mBL; ++mP1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Playfield and Player 0 are enabled and playfield priority is not set
-      case PFBit | P0Bit:
-      {
-        uInt32* mPF = &myCurrentPFMask[hpos];
-        uInt8* mP0 = &myCurrentP0Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
-          {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
-            mPF += 4; mP0 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myCurrentGRP0 & *mP0) ? 
-                  myColorPtr[_P0] : ((myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK]);
-
-            if((myPF & *mPF) && (myCurrentGRP0 & *mP0))
-              myCollision |= TIATables::CollisionMask[PFBit | P0Bit];
-
-            ++mPF; ++mP0; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Playfield and Player 0 are enabled and playfield priority is set
-      case PFBit | P0Bit | PriorityBit:
-      {
-        uInt32* mPF = &myCurrentPFMask[hpos];
-        uInt8* mP0 = &myCurrentP0Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP0)
-          {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
-            mPF += 4; mP0 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : 
-                ((myCurrentGRP0 & *mP0) ? myColorPtr[_P0] : myColorPtr[_BK]);
-
-            if((myPF & *mPF) && (myCurrentGRP0 & *mP0))
-              myCollision |= TIATables::CollisionMask[PFBit | P0Bit];
-
-            ++mPF; ++mP0; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Playfield and Player 1 are enabled and playfield priority is not set
-      case PFBit | P1Bit:
-      {
-        uInt32* mPF = &myCurrentPFMask[hpos];
-        uInt8* mP1 = &myCurrentP1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
-          {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
-            mPF += 4; mP1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myCurrentGRP1 & *mP1) ? 
-                  myColorPtr[_P1] : ((myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK]);
-
-            if((myPF & *mPF) && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionMask[PFBit | P1Bit];
-
-            ++mPF; ++mP1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Playfield and Player 1 are enabled and playfield priority is set
-      case PFBit | P1Bit | PriorityBit:
-      {
-        uInt32* mPF = &myCurrentPFMask[hpos];
-        uInt8* mP1 = &myCurrentP1Mask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mP1)
-          {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
-            mPF += 4; mP1 += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : 
-                ((myCurrentGRP1 & *mP1) ? myColorPtr[_P1] : myColorPtr[_BK]);
-
-            if((myPF & *mPF) && (myCurrentGRP1 & *mP1))
-              myCollision |= TIATables::CollisionMask[PFBit | P1Bit];
-
-            ++mPF; ++mP1; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Playfield and Ball are enabled
-      case PFBit | BLBit:
-      case PFBit | BLBit | PriorityBit:
-      {
-        uInt32* mPF = &myCurrentPFMask[hpos];
-        uInt8* mBL = &myCurrentBLMask[hpos];
-
-        while(myFramePointer < ending)
-        {
-          if(!((uintptr_t)myFramePointer & 0x03) && !*(uInt32*)mBL)
-          {
-            *(uInt32*)myFramePointer = (myPF & *mPF) ? myColorPtr[_PF] : myColorPtr[_BK];
-            mPF += 4; mBL += 4; myFramePointer += 4;
-          }
-          else
-          {
-            *myFramePointer = ((myPF & *mPF) || *mBL) ? myColorPtr[_PF] : myColorPtr[_BK];
-
-            if((myPF & *mPF) && *mBL)
-              myCollision |= TIATables::CollisionMask[PFBit | BLBit];
-
-            ++mPF; ++mBL; ++myFramePointer;
-          }
-        }
-        break;
-      }
-
-      // Handle all of the other cases
-      default:
-      {
-        for(; myFramePointer < ending; ++myFramePointer, ++hpos)
-        {
-          uInt8 enabled = ((myEnabledObjects & PFBit) &&
-                           (myPF & myCurrentPFMask[hpos])) ? PFBit : 0;
-
-          if((myEnabledObjects & BLBit) && myCurrentBLMask[hpos])
-            enabled |= BLBit;
-
-          if((myEnabledObjects & P1Bit) && (myCurrentGRP1 & myCurrentP1Mask[hpos]))
-            enabled |= P1Bit;
-
-          if((myEnabledObjects & M1Bit) && myCurrentM1Mask[hpos])
-            enabled |= M1Bit;
-
-          if((myEnabledObjects & P0Bit) && (myCurrentGRP0 & myCurrentP0Mask[hpos]))
-            enabled |= P0Bit;
-
-          if((myEnabledObjects & M0Bit) && myCurrentM0Mask[hpos])
-            enabled |= M0Bit;
-
-          myCollision |= TIATables::CollisionMask[enabled];
-          *myFramePointer = myColorPtr[myPriorityEncoder[hpos < 80 ? 0 : 1]
-              [enabled | myPlayfieldPriorityAndScore]];
-        }
-        break;  
-      }
-    }
-  }
-  myFramePointer = ending;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::updateFrame(Int32 clock)
 {
   // See if we've already updated this portion of the screen
@@ -1432,8 +833,6 @@ void TIA::updateFrame(Int32 clock)
   // Truncate the number of cycles to update to the stop display point
   if(clock > myClockStopDisplay)
     clock = myClockStopDisplay;
-
-//cerr << "updateFrame: " << clock << endl;
 
   // Determine how many scanlines to process
   // It's easier to think about this in scanlines rather than color clocks
@@ -1531,13 +930,81 @@ void TIA::updateFrame(Int32 clock)
     // Update as much of the scanline as we can
     if(clocksToUpdate != 0)
     {
-      // Selectively disable all bits we don't wish to draw
-      uInt8 oldEnabled = myEnabledObjects;
-      myEnabledObjects &= myDisabledObjects;
+      // Calculate the ending frame pointer value
+      uInt8* ending = myFramePointer + clocksToUpdate;
+      myFramePointerClocks += clocksToUpdate;
 
-      updateFrameScanline(clocksToUpdate, clocksFromStartOfScanLine - HBLANK);
+      // See if we're in the vertical blank region
+      if(myVBLANK & 0x02)
+      {
+        memset(myFramePointer, 0, clocksToUpdate);
+      }
+      // Handle all other possible combinations
+      else
+      {
+        // Update masks
+        myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
+            [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
+        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
+            [mySuppressP0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
+        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
+            [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
 
-      myEnabledObjects = oldEnabled;
+        // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
+        // Stay Frosty.  The movement itself is well understood, but there
+        // also seems to be some widening and blanking occurring as well.
+        // This doesn't properly emulate the effect, but it does give a
+        // fair approximation.  More testing is required to figure out
+        // what's really going on here.
+        if(myHMM0mmr && myPOSM0 % 4 == 3)
+        {
+          // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
+          // blanked out; this is indicated by using a size of '4'
+          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+              [myNUSIZ0 & 0x07][4][160 - (myPOSM0 & 0xFC)];
+        }
+        else
+          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+              [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+        if(myHMM1mmr && myPOSM1 % 4 == 3)
+        {
+          // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
+          // blanked out; this is indicated by using a size of '4'
+          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+              [myNUSIZ1 & 0x07][4][160 - (myPOSM1 & 0xFC)];
+        }
+        else
+          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+              [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+
+        uInt8 enabledObjects = myEnabledObjects & myDisabledObjects;
+        uInt32 hpos = clocksFromStartOfScanLine - HBLANK;
+        for(; myFramePointer < ending; ++myFramePointer, ++hpos)
+        {
+          uInt8 enabled = ((enabledObjects & PFBit) &&
+                           (myPF & myCurrentPFMask[hpos])) ? PFBit : 0;
+
+          if((enabledObjects & BLBit) && myCurrentBLMask[hpos])
+            enabled |= BLBit;
+
+          if((enabledObjects & P1Bit) && (myCurrentGRP1 & myCurrentP1Mask[hpos]))
+            enabled |= P1Bit;
+
+          if((enabledObjects & M1Bit) && myCurrentM1Mask[hpos])
+            enabled |= M1Bit;
+
+          if((enabledObjects & P0Bit) && (myCurrentGRP0 & myCurrentP0Mask[hpos]))
+            enabled |= P0Bit;
+
+          if((enabledObjects & M0Bit) && myCurrentM0Mask[hpos])
+            enabled |= M0Bit;
+
+          myCollision |= TIATables::CollisionMask[enabled];
+          *myFramePointer = myColorPtr[myPriorityEncoder[hpos < 80 ? 0 : 1]
+              [enabled | myPlayfieldPriorityAndScore]];
+        }
+      }
+      myFramePointer = ending;
     }
 
     // Handle HMOVE blanks if they are enabled

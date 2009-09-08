@@ -295,9 +295,6 @@ class TIA : public Device
 #endif
 
   private:
-    // Update the current frame buffer up to one scanline
-    void updateFrameScanline(uInt32 clocksToUpdate, uInt32 hpos);
-
     // Update the current frame buffer to the specified color clock
     void updateFrame(Int32 clock);
 
