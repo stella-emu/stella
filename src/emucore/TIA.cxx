@@ -555,7 +555,7 @@ bool TIA::loadDisplay(Serializer& in)
     clearBuffers();
     myFramePointer = myCurrentFrameBuffer;
     for(int i = 0; i < 160*320; ++i)
-      myCurrentFrameBuffer[i] = (uInt8) in.getByte();
+      myCurrentFrameBuffer[i] = myPreviousFrameBuffer[i] = (uInt8) in.getByte();
 
     // If we're in partial frame mode, make sure to re-create the screen
     // as it existed when the state was saved

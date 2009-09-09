@@ -16,9 +16,9 @@ If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-  * Step-debug through disassembled zero-page and SC code
+  * Step-debug through disassembled zero-page and SC code.
 
-  * Either Support Distella as frontend or integrate a 6507 Disassembler
+  * Either Support Distella as frontend or integrate a 6507 Disassembler.
 
   * TIA infrastructure: further improve 'illegal' HMOVE emulation to fix
     problems in several homebrew ROMs.
@@ -26,9 +26,9 @@ Stephen Anthony at stephena@users.sourceforge.net.
   * TIA infrastructure: improve emulation of writes to NUSIZx while graphics
     are currently being drawn.
 
-  * TIA infrastructure: add emulation of RSYNC instruction.
-
   * Look into adding Blargg NTSC filtering (perhaps as a GLSL program).
+
+  * TIA infrastructure: add emulation of RSYNC instruction.
 
   * Add better support for 'floating' TIA reads as described here:
     http://www.atariage.com/forums/index.php?s=&showtopic=143363&view=findpost&p=1762433
