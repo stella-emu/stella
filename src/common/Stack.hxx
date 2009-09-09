@@ -52,8 +52,7 @@ class FixedStack
     {
       T tmp;
       assert(_size > 0);
-      tmp = _stack[_size - 1];
-      _stack[--_size] = 0;
+      tmp = _stack[--_size];
       return tmp;
     }
     int size() const { return _size; }

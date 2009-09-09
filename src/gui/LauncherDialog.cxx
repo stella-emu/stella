@@ -253,7 +253,7 @@ void LauncherDialog::enableButtons(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void LauncherDialog::updateListing()
+void LauncherDialog::updateListing(const string& nameToSelect)
 {
   // Start with empty list
   myGameList->clear();
@@ -284,8 +284,10 @@ void LauncherDialog::updateListing()
   int selected = -1;
   if(!myList->getList().isEmpty())
   {
-    string lastrom = instance().settings().getString("lastrom");
-    if(lastrom == "")
+    const string& find =
+      nameToSelect == "" ? instance().settings().getString("lastrom") : nameToSelect;
+
+    if(find == "")
       selected = 0;
     else
     {
@@ -294,7 +296,7 @@ void LauncherDialog::updateListing()
       for(iter = myList->getList().begin(); iter != myList->getList().end();
           ++iter, ++itemToSelect)	 
       {
-        if(lastrom == *iter)
+        if(find == *iter)
         {
           selected = itemToSelect;
           break;
@@ -490,11 +492,19 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         // Directory's should be selected (ie, enter them and redisplay)
         if(myGameList->isDir(item))
         {
+          string dirname = "";
           if(myGameList->name(item) == " [..]")
+          {
             myCurrentNode = myCurrentNode.getParent();
+            if(!myNodeNames.empty())
+              dirname = myNodeNames.pop();
+          }
 		  else
+          {
             myCurrentNode = FilesystemNode(rom);
-          updateListing();
+            myNodeNames.push(myGameList->name(item));
+          }
+          updateListing(dirname);
         }
         else
         {
@@ -524,7 +534,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kPrevDirCmd:
     case kListPrevDirCmd:
       myCurrentNode = myCurrentNode.getParent();
-      updateListing();
+      updateListing(myNodeNames.empty() ? "" : myNodeNames.pop());
       break;
 
     case kListSelectionChangedCmd:

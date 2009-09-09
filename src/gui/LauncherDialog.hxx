@@ -42,6 +42,7 @@ class StringListWidget;
 #include "Dialog.hxx"
 #include "FSNode.hxx"
 #include "StringList.hxx"
+#include "Stack.hxx"
 
 // These must be accessible from dialogs created by this class
 enum {
@@ -71,7 +72,7 @@ class LauncherDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();
-    void updateListing();
+    void updateListing(const string& nameToSelect = "");
 
   private:
     void enableButtons(bool enable);
@@ -104,6 +105,7 @@ class LauncherDialog : public Dialog
     int mySelectedItem;
     int myRomInfoSize;
     FilesystemNode myCurrentNode;
+    FixedStack<string> myNodeNames;
 
     bool myShowDirs;
     StringList myRomExts;

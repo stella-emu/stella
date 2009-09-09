@@ -55,7 +55,7 @@ const Cheat* CheatManager::add(const string& name, const string& code,
   // Delete duplicate entries
   for(unsigned int i = 0; i < myCheatList.size(); i++)
   {
-    if(myCheatList[i]->code() == code)
+    if(myCheatList[i]->name() == name || myCheatList[i]->code() == code)
     {
       myCheatList.remove_at(i);
       break;

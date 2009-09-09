@@ -234,7 +234,7 @@ void RomWidget::initialUpdate()
     BoolArray state;
 
     // Disassemble zero-page RAM and entire bank and reset breakpoints
-    dbg.disassemble(myAddrList, label, data, disasm, 0x80, 0xff);
+//    dbg.disassemble(myAddrList, label, data, disasm, 0x80, 0xff);
     dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 0xffff);
     for(unsigned int i = 0; i < data.size(); ++i)
     {
