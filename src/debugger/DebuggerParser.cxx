@@ -133,7 +133,7 @@ string DebuggerParser::exec(const string& file, bool verbose)
   FilesystemNode node(file);
   ifstream in(node.getPath().c_str());
   if(!in.is_open())
-    return red("file \'" + file + "\' not found.");
+    return red("file \'" + node.getRelativePath() + "\' not found.");
 
   while( !in.eof() ) {
     if(!in.getline(buffer, 255))

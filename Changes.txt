@@ -12,6 +12,75 @@
                                Release History
 ===============================================================================
 
+2.8.4 to 3.0: (September 11, 2009)
+
+  * Huge updates to the TIA emulation system.  Illegal HMOVEs are now
+    handled correctly, resulting in improvements to many ROMs (thanks
+    to Wilbert Pol for many ideas and code for these improvements).  All
+    HMOVE emulation 'cheats' were removed; the emulation is now cycle-exact
+    in this area.
+
+  * Improved emulation of the Cosmic Ark 'starfield effect', also used in
+    Stay Frosty; the emulation now looks very accurate.
+
+  * Many improvements to the normal TIA rendering code, fixing problems
+    when disabling certain graphical objects (certain objects were
+    being misdrawn when others were enabled/disabled).
+
+  * Improved TIA collision handling in the non-displayable area of the
+    screen; this fixes problems in RAMRacer ROM.
+
+  * Improved TIA redraw problems/graphical garbage when ROMs generate
+    many more scanlines than a real TV would allow; this fixes problems
+    in Q-Bert and the recent Playaround demo.
+
+  * Added 'Fixed Debug Colors' option similar to the no$26k emulator.
+    This allows each graphical object to be drawn in a fixed color,
+    more clearly showing how the objects interact.  HMOVE blanks are
+    also shown in a different color.  The TIA now emulates a 7-color
+    register model, allowing even shared objects to show different
+    colors.  This is toggled with the 'Alt Comma' key.
+
+  * Related to 'Fixed Debug Colors', HMOVE blanks can now toggled during
+    TIA display with the 'Alt-m' key.
+
+  * Added rewind functionality to the debugger, where states are saved
+    after each step/trace/scanline/frame advance.  Pressing 'Alt-r' or
+    clicking the new rewind button will undo up to 100 previous
+    operations.
+
+  * Added 'electron beam indicator' to the debugger TIA output.  Basically,
+    this is a visual pointer indicating the position of the electron gun
+    when scanning the display.
+
+  * Added ability to completely disable fullscreen mode, which fixes
+    problems for some people where fullscreen mode was being entered
+    even if it wasn't enabled.
+
+  * Added '-joyallow4' commandline argument and associated UI item to
+    allow all 4 directions to be pressed simultaneously on a joystick.
+
+  * Improvements made to the ROM launcher: the backspace key now goes
+    to the parent directory (this key can be remapped), and previously
+    selected directories are now automatically selected.
+
+  * Added support for 2IN1 bankswitching scheme, where two ROMs are
+    present in one binary.  Currently supported are 2, 4, 8, and 16K
+    ROMs.
+
+  * Added bankswitch support for the 6K version of Starpath/Supercharger
+    ROMS.  This allows the 6K version of Cubis to run.
+
+  * Updated bankswitching schemes FASC and MB; they are now known as
+    FA and F0, respectively.  This naming brings Stella in line with
+    other emulators and programming utilities.
+
+  * Fixed editing of cheats in the Cheat Dialog; the old cheat wasn't
+    being removed.
+
+-Have fun!
+
+
 2.8.3 to 2.8.4: (July 4, 2009)
 
   * Fixed bug where Stella could lock up after running for ~71 minutes.
@@ -22,8 +91,6 @@
 
   * The smallest ROM that Stella can support is 64 bytes; this lower
     limit is now tested when loading Sub2K ROMs.
-
--Have fun!
 
 
 2.8.2 to 2.8.3: (June 25, 2009)
