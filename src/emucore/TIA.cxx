@@ -126,6 +126,7 @@ void TIA::reset()
   // Currently no objects are enabled or selectively disabled
   myEnabledObjects = 0;
   myDisabledObjects = 0;
+  myAllowHMOVEBlanks = true;
 
   // Some default values for the registers
   myColorPtr = myColor;
@@ -509,8 +510,8 @@ bool TIA::load(Serializer& in)
     mySound.load(in);
 
     // Reset TIA bits to be on
-// TODO - should we enable this, or leave it to the user?
-//    enableBits(true);
+    enableBits(true);
+    myAllowHMOVEBlanks = true;
     myColorPtr = myColor;
   }
   catch(const char* msg)
@@ -742,6 +743,13 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::toggleHMOVEBlank()
+{
+  myAllowHMOVEBlanks = myAllowHMOVEBlanks ? false : true;
+  return myAllowHMOVEBlanks;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::toggleFixedColors(uInt8 mode)
 {
   // If mode is 0 or 1, use it as a boolean (off or on)
@@ -953,9 +961,10 @@ void TIA::updateFrame(Int32 clock)
         // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
         // Stay Frosty.  The movement itself is well understood, but there
         // also seems to be some widening and blanking occurring as well.
-        // This doesn't properly emulate the effect, but it does give a
-        // fair approximation.  More testing is required to figure out
-        // what's really going on here.
+        // This doesn't properly emulate the effect at a low level; it only
+        // simulates the behaviour as visually seen in the aforementioned
+        // ROMs.  Other ROMs may break this simulation; more testing is
+        // required to figure out what's really going on here.
         if(myHMM0mmr && myPOSM0 % 4 == 3)
         {
           // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
@@ -1026,7 +1035,7 @@ void TIA::updateFrame(Int32 clock)
 
       // TODO - 01-21-99: These should be reset right after the first copy
       // of the player has passed.  However, for now we'll just reset at the
-      // end of the scanline since the other way would be to slow.
+      // end of the scanline since the other way would be too slow.
       mySuppressP0 = mySuppressP1 = 0;
     }
   }
@@ -1838,11 +1847,9 @@ void TIA::poke(uInt16 addr, uInt8 value)
       int hpos = (clock - myClockWhenFrameStarted) % 228 - HBLANK;
       myCurrentHMOVEPos = hpos;
 
-      // Figure out what cycle we're at
-      Int32 x = ((clock - myClockWhenFrameStarted) % 228) / 3;
-
       // See if we need to enable the HMOVE blank bug
-      myHMOVEBlankEnabled = TIATables::HMOVEBlankEnableCycles[x];
+      myHMOVEBlankEnabled = myAllowHMOVEBlanks ? 
+        TIATables::HMOVEBlankEnableCycles[((clock - myClockWhenFrameStarted) % 228) / 3] : false;
 
 #ifdef USE_MMR_LATCHES
       // Do we have to undo some of the already applied cycles from an

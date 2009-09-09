@@ -795,6 +795,15 @@ void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleHMOVE() const
+{
+  if(myTIA->toggleHMOVEBlank())
+    myOSystem->frameBuffer().showMessage("HMOVE blanking enabled");
+  else
+    myOSystem->frameBuffer().showMessage("HMOVE blanking disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::enableBits(bool enable) const
 {
   myTIA->enableBits(enable);

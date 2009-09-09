@@ -266,6 +266,13 @@ class TIA : public Device
     bool toggleBit(TIABit b, uInt8 mode = 2);
 
     /**
+      Toggle the display of HMOVE blanks.
+
+      @return  Whether the HMOVE blanking was enabled or disabled
+    */
+    bool toggleHMOVEBlank();
+
+    /**
       Enables/disable/toggle 'fixed debug colors' mode.
 
       @param mode  1/0 indicates on/off, otherwise flip from
@@ -525,6 +532,7 @@ class TIA : public Device
     Int32 myCurrentHMOVEPos;
     Int32 myPreviousHMOVEPos;
     bool myHMOVEBlankEnabled;
+    bool myAllowHMOVEBlanks;
 
     // Indicates if unused TIA pins are floating on a peek
     bool myFloatTIAOutputPins;

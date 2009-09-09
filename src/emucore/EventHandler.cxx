@@ -392,6 +392,10 @@ void EventHandler::poll(uInt64 time)
                 myOSystem->console().togglePFBit();
                 break;
 
+              case SDLK_m:
+                myOSystem->console().toggleHMOVE();
+                break;
+
               case SDLK_COMMA:
                 myOSystem->console().toggleFixedColors();
                 break;
