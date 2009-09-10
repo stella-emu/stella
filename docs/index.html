@@ -282,7 +282,7 @@
 		<li>Enough RAM for the OS + 16MB RAM for the emulation; 32MB highly recommended</li>
 		<li>15 bit color minimum; 16 bit color graphics card highly recommended</li>
 		<li>SDL version 1.2.10 or greater, latest version highly recommended</li>
-		<li>Latest version of the zlib library</li>
+		<li>Zlib version 1.2.3 or greater</li>
 		<li>CRT emulation effects require OpenGL 2.0 with GLSL (GL shading language) support</li>
 		<li>Joysticks or gamepads are highly recommended</li>
 		<li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
@@ -319,7 +319,7 @@
 	<p>
 	<h2><b>Windows</b></h2>
 
-	<p>The Windows version of Stella is designed to work on Windows 98/ME/2000/XP/Vista
+	<p>The Windows version of Stella is designed to work on Windows 2000/XP/Vista/7
 	with the following:</p>
 
 	<ul>
@@ -335,7 +335,7 @@
 
 	<p>Stella is extremely portable, and in its lifetime has been ported to almost every
 	platform where the SDL library exists.  It is 32/64 bit clean in Linux/Unix and Windows
-	(Win32/x64), and is expected to be compatible with 64-bit OSX as well.  The Stella
+	(win32/x64), and is expected to be compatible with 64-bit OSX as well.  The Stella
 	team is interested in hearing about any problems you may encounter with diverse
 	operating systems and CPU types.</p>
 
@@ -373,6 +373,28 @@
 			</ol>
 		</li>
 		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
+		<ul>
+			<li>Debian-based distributions:
+			<ol>
+				<li>Extract files from the distribution:
+					<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
+				<li>Change directories to the stella-<i>release</i> directory</li>
+				<li>Build the executable with the following command:
+					<pre>   dpkg-buildpackage</pre></li>
+				<li>Install the executable as indicated in the previous section</li>
+			</ol>
+			</li>
+			<li>RPM-based distributions:
+			<ol>
+				<li>Extract files from the distribution:
+					<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
+				<li>Change directories to the stella-<i>release</i>/src/unix directory</li>
+				<li>Build the executable with the following command:
+					<pre>   rpmbuild -ba stella.spec</pre></li>
+				<li>Install the executable as indicated in the previous section</li>
+			</ol>
+			</li>
+			<li>Generic build:
 			<ol>
 				<li>Extract files from the distribution:
 					<pre>   tar zxvf stella-release-src.tar.gz</pre></li>
@@ -384,6 +406,8 @@
 				<li>Install the executable with the following command:
 					<pre>   make install</pre></li>
 			</ol>
+			</li>
+		</ul>
 		</li>
 	</ul>
 
@@ -402,6 +426,7 @@
 					gzipped tar files</li>
 				<li>Open the <b>stella-<i>release</i>/src/macosx/stella.xcodeproj</b>
 					file using Xcode 3.0</li>
+				<li>Make sure you have the SDL framework installed where Xcode can find it</li>
 				<li>Build the 'Stella' project</li>
 				<li>Copy the <b>StellaOSX.app</b> package somewhere on your system</li>
 			</ol>
@@ -411,15 +436,15 @@
 	<p>
 	<h2><b>Windows</b></h2>
 	<ul>
-		<li><b>Binary EXE installer</b> (stella-<i>release</i>-win32.exe)
+		<li><b>Binary EXE installer</b> (stella-<i>release</i>-<i>arch</i>.exe)
 			<ol>
 				<li>Double-click on the installer and follow the onscreen instructions</li>
 			</ol>
 		</li>
-		<li><b>Binary ZIP file</b> (stella-<i>release</i>-win32.zip)
+		<li><b>Binary ZIP file</b> (stella-<i>release</i>-windows.zip)
 			<ol>
-				<li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b>
-					and copy that directory somewhere</li>
+				<li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b></li>
+				<li>Copy the contents of either 32-bit or 64-bit directory somewhere on your system</li>
 			</ol>
 		</li>
 		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
@@ -429,10 +454,23 @@
 					gzipped tar files</li>
 				<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
 					file using Visual C++ 2008</li>
+				<li>Make sure you have library and header files installed for SDL and zlib for
+					the correct architecture (32-bit, 64-bit or both), and that Visual Studio
+					is properly configured to find them</li>
 				<li>Build the 'Stella' solution, making sure to correctly select either 'Win32'
 					or 'x64' mode (depending on the version of Windows you have installed)</li>
-				<li>Copy the <b>Stella.exe</b>, <b>SDL.dll</b> and <b>zlibwapi.dll</b>
-					files somewhere on your system</li>
+				<li>For installation:
+				<ul>
+					<li>Double-click on <b>Create_builds.bat</b> to generate ZIP and EXE files;
+					you must have the 'flip' and 'zip' applications installed on your system.
+					This will generate the EXE and ZIP files, which can be installed as explained
+					above</li>
+					<b>OR</b>
+					<li>Manually copy the <b>Stella.exe</b>, <b>SDL.dll</b> and <b>zlibwapi.dll</b>
+						files somewhere on your system (they may be located in the 'Release' or
+						'x64\Release' directories)</li>
+				</ul>
+				</li>
 			</ol>
 		</li>
 	</ul>
@@ -2885,7 +2923,7 @@ Ms Pac-Man (Stella extended codes):
 			<td VALIGN="TOP">Ant<br>
 			(<a href="http://aqfl.net">http://aqfl.net</a>)</td>
 			<td>Provided much feedback and testing which eventually led to a fix
-			for the infamouse ATI OpenGL 'red screen' issue</td>
+			for the infamous ATI OpenGL 'red screen' issue</td>
 		</tr>
 
 		<tr>
