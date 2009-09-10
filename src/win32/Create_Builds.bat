@@ -3,11 +3,16 @@
 echo Stella build script for creating win32 and x64 builds.
 echo This will create installers (based on InnoSetup) for both 32 and 64-bit,
 echo as well as a ZIP archive containing both versions.
-echo The 'flip' and 'zip' utilities must be installed in your path.
+echo.
+echo  ! The 'zip' utility must be installed in your path.
+echo  ! InnoSetup should be linked to this directory as 'iscc.lnk'
 echo.
 echo  !!! Make sure the code has already been compiled in Visual Studio
 echo  !!! before launching this command.
 echo.
+
+set RELEASE_32=Release
+set RELEASE_64=x64\Release
 
 set /p STELLA_VER=Enter Stella version: 
 echo.
@@ -27,11 +32,6 @@ if %TO_BUILD% == a (
 	set BUILD_32=1
 	set BUILD_64=1
 )
-
-
-set RELEASE_32="Release"
-set RELEASE_64="x64\Release"
-
 
 if %BUILD_32% == 1 (
 	if not exist %RELEASE_32% (
@@ -73,7 +73,6 @@ if %BUILD_64% == 1 (
 	copy %RELEASE_64%\zlibwapi.dll %STELLA_DIR%\64-bit
 )
 
-
 echo Copying DOC files ...
 xcopy ..\..\docs\* %STELLA_DIR%\docs /s /q
 copy ..\..\Announce.txt   %STELLA_DIR%\docs
@@ -83,13 +82,31 @@ copy ..\..\License.txt    %STELLA_DIR%\docs
 copy ..\..\Readme.txt     %STELLA_DIR%\docs
 copy ..\..\README-SDL.txt %STELLA_DIR%\docs
 copy ..\..\Todo.txt       %STELLA_DIR%\docs
-for %%a in (%STELLA_DIR%\docs\*.txt) do (
-	flip -d "%%a"
+::for %%a in (%STELLA_DIR%\docs\*.txt) do (
+::	flip -d "%%a"
+::)
+
+:: Actually create the ZIP file
+echo Creating ZIP file ...
+zip -q -r Output\%STELLA_DIR%-windows.zip %STELLA_DIR%
+
+:: Now create the Inno EXE files
+if not exist "iscc.lnk" (
+	echo InnoSetup 'iscc.lnk' not found - EXE files not created
+	goto done
+)
+if %BUILD_32% == 1 (
+	echo Creating 32-bit EXE ...
+	iscc.lnk %CD%\stella.iss /q "/dSTELLA_VER=%STELLA_VER%" "/dSTELLA_ARCH=win32" "/dSTELLA_PATH=%STELLA_DIR%\32-bit" "/dSTELLA_DOCPATH=%STELLA_DIR%\docs"
+)
+if %BUILD_64% == 1 (
+	echo Creating 64-bit EXE ...
+	iscc.lnk %CD%\stella.iss /q "/dSTELLA_VER=%STELLA_VER%" "/dSTELLA_ARCH=x64" "/dSTELLA_PATH=%STELLA_DIR%\64-bit" "/dSTELLA_DOCPATH=%STELLA_DIR%\docs"
 )
 
-
-
-
+:: Cleanup time
+echo Removing %STELLA_DIR% ...
+rmdir %STELLA_DIR% /s /q
 
 :done
 echo.
