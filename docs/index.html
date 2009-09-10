@@ -298,7 +298,7 @@
 		<li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
 		<li>Other architectures (MIPS, PPC, PPC64, etc) have been confirmed to work,
 			but aren't as well tested as i386/x86_64</li>
-		<li>GNU C++ compiler version 3.2.x or 4.x and the make utility are required for compiling
+		<li>GNU C++ compiler version 4.x and the make utility are required for compiling
 			the Stella source code</li>
 	</ul>
 
@@ -310,7 +310,7 @@
 	<ul>
 		<li>Mac OSX 10.3 or Above</li>
 		<li>500 MHz G4 PPC/Intel processor or above (Stella <b>may</b> work with a G3
-			processor, but this is still a work-in-progress)</li>
+			processor, but no hardware is available for testing)</li>
 		<li>OpenGL capable video card.  Software rendering mode is still available,
 			but as of OSX 10.4 is substandard compared to OpenGL.</li>
 		<li>Xcode 3.0 is required to compile the Stella source code</li>
@@ -325,10 +325,9 @@
 	<ul>
 		<li>Pentium class machine required; OpenGL accelerated video card highly
 			recommended</li>
-		<li>Experimental 64-bit port has been tested on Vista64 only; it may work on
+		<li>64-bit port has been tested on Windows Vista/7 only; it may work on
 			WinXP64 as well, but isn't a priority</li>
-		<li>Visual C++ 2008 or MinGW compiler is required to compile the Stella
-			source code</li>
+		<li>Visual C++ 2008 is required to compile the Stella source code</li>
 	</ul>
 
 	<p>
@@ -336,7 +335,7 @@
 
 	<p>Stella is extremely portable, and in its lifetime has been ported to almost every
 	platform where the SDL library exists.  It is 32/64 bit clean in Linux/Unix and Windows
-	(Win32/Win64), and is expected to be compatible with 64-bit OSX as well.  The Stella
+	(Win32/x64), and is expected to be compatible with 64-bit OSX as well.  The Stella
 	team is interested in hearing about any problems you may encounter with diverse
 	operating systems and CPU types.</p>
 
@@ -428,15 +427,12 @@
 				<li>Extract files from the distribution using <b>Winzip</b>,
 					<b>Total Commander</b>, or some other archiving program that supports
 					gzipped tar files</li>
-				<li>If compiling the Stella executable using MinGW, use the same commands
-					as specified under <i>Linux/UNIX - Compressed tarball</i></li>
-				<li>If compiling using Visual C++ 2008:</li>
-				<ul>
-					<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
-						file using Visual C++ 2008</li>
-					<li>Build the 'Stella' solution</li>
-					<li>Copy the <b>Stella.exe</b> file	somewhere on your system</li>
-				</ul>
+				<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
+					file using Visual C++ 2008</li>
+				<li>Build the 'Stella' solution, making sure to correctly select either 'Win32'
+					or 'x64' mode (depending on the version of Windows you have installed)</li>
+				<li>Copy the <b>Stella.exe</b>, <b>SDL.dll</b> and <b>zlibwapi.dll</b>
+					files somewhere on your system</li>
 			</ol>
 		</li>
 	</ul>
