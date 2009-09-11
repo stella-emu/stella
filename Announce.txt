@@ -1,4 +1,4 @@
-===============================================================================
+===========================================================================
 
      SSSS    tt          lll  lll
     SS  SS   tt           ll   ll
@@ -8,18 +8,17 @@
     SS  SS   tt   ee      ll   ll  aa  aa
      SSSS     ttt  eeeee llll llll  aaaaa
 
-===============================================================================
+===========================================================================
                  Release 3.0 for Linux, Mac OSX and Windows
-===============================================================================
+===========================================================================
 
-The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most 
-popular home video game system of the early 1980's.  Now you can enjoy all of 
-your favorite Atari 2600 games on your PC thanks to Stella! 
+The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most popular home video game system of the early 1980's.  Now you can enjoy
+all of your favorite Atari 2600 games on your PC thanks to Stella! 
 
-Stella is a multi-platform Atari 2600 VCS emulator.  It allows you to play all
-of your favorite Atari 2600 games again!  Stella was originally developed for
-Linux by Bradford W. Mott, however, it has been ported to a number of other
-platforms.
+Stella is a multi-platform Atari 2600 VCS emulator.  It allows you to play
+all of your favorite Atari 2600 games again!  Stella was originally
+developed for Linux by Bradford W. Mott, however, it has been ported to a
+number of other platforms.
 
 This is the 3.0 release of Stella for Linux, Mac OSX and Windows.
 Distributions for other operating systems will appear as they become available.
