@@ -266,6 +266,17 @@ class Console : public Serializable
     void enableBits(bool enable) const;
 
     /**
+      Toggles the TIA collisions specified in the method name.
+    */
+    void toggleP0Collision() const { toggleTIACollision(P0Bit, "P0"); }
+    void toggleP1Collision() const { toggleTIACollision(P1Bit, "P1"); }
+    void toggleM0Collision() const { toggleTIACollision(M0Bit, "M0"); }
+    void toggleM1Collision() const { toggleTIACollision(M1Bit, "M1"); }
+    void toggleBLCollision() const { toggleTIACollision(BLBit, "BL"); }
+    void togglePFCollision() const { toggleTIACollision(PFBit, "PF"); }
+    void enableCollisions(bool enable) const;
+
+    /**
       Toggles the TIA 'fixed debug colors' mode.
     */
     void toggleFixedColors() const;
@@ -296,6 +307,7 @@ class Console : public Serializable
     const uInt32* getPalette(int direction) const;
 
     void toggleTIABit(TIABit bit, const string& bitname, bool show = true) const;
+    void toggleTIACollision(TIABit bit, const string& bitname, bool show = true) const;
 
   private:
     // Pointer to the osystem object

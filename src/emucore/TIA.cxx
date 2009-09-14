@@ -125,7 +125,7 @@ void TIA::reset()
 
   // Currently no objects are enabled or selectively disabled
   myEnabledObjects = 0;
-  myDisabledObjects = 0;
+  myDisabledObjects = 0xFF;
   myAllowHMOVEBlanks = true;
 
   // Some default values for the registers
@@ -144,6 +144,7 @@ void TIA::reset()
   myHMP0 = myHMP1 = myHMM0 = myHMM1 = myHMBL = 0;
   myVDELP0 = myVDELP1 = myVDELBL = myRESMP0 = myRESMP1 = false;
   myCollision = 0;
+  myCollisionEnabledMask = 0xFFFFFFFF;
   myPOSP0 = myPOSP1 = myPOSM0 = myPOSM1 = myPOSBL = 0;
 
   // Some default values for the "current" variables
@@ -360,6 +361,7 @@ bool TIA::save(Serializer& out) const
     out.putBool(myRESMP0);
     out.putBool(myRESMP1);
     out.putInt(myCollision);
+    out.putInt(myCollisionEnabledMask);
     out.putByte((char)myCurrentGRP0);
     out.putByte((char)myCurrentGRP1);
 
@@ -468,6 +470,7 @@ bool TIA::load(Serializer& in)
     myRESMP0 = in.getBool();
     myRESMP1 = in.getBool();
     myCollision = (uInt16) in.getInt();
+    myCollisionEnabledMask = in.getInt();
     myCurrentGRP0 = (uInt8) in.getByte();
     myCurrentGRP1 = (uInt8) in.getByte();
 
@@ -743,6 +746,49 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::enableCollisions(bool mode)
+{
+  toggleCollision(P0Bit, mode ? 1 : 0);
+  toggleCollision(P1Bit, mode ? 1 : 0);
+  toggleCollision(M0Bit, mode ? 1 : 0);
+  toggleCollision(M1Bit, mode ? 1 : 0);
+  toggleCollision(BLBit, mode ? 1 : 0);
+  toggleCollision(PFBit, mode ? 1 : 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::toggleCollision(TIABit b, uInt8 mode)
+{
+  uInt16 enabled = myCollisionEnabledMask >> 16;
+
+  // If mode is 0 or 1, use it as a boolean (off or on)
+  // Otherwise, flip the state
+  bool on = (mode == 0 || mode == 1) ? bool(mode) : !(enabled & b);
+  if(on)  enabled |= b;
+  else    enabled &= ~b;
+
+  // Assume all collisions are on, then selectively turn the desired ones off
+  uInt16 mask = 0xffff;
+  if(!(enabled & P0Bit))
+    mask &= ~(Cx_M0P0 | Cx_M1P0 | Cx_P0PF | Cx_P0BL | Cx_P0P1);
+  if(!(enabled & P1Bit))
+    mask &= ~(Cx_M0P1 | Cx_M1P1 | Cx_P1PF | Cx_P1BL | Cx_P0P1);
+  if(!(enabled & M0Bit))
+    mask &= ~(Cx_M0P0 | Cx_M0P1 | Cx_M0PF | Cx_M0BL | Cx_M0M1);
+  if(!(enabled & M1Bit))
+    mask &= ~(Cx_M1P0 | Cx_M1P1 | Cx_M1PF | Cx_M1BL | Cx_M0M1);
+  if(!(enabled & BLBit))
+    mask &= ~(Cx_P0BL | Cx_P1BL | Cx_M0BL | Cx_M1BL | Cx_BLPF);
+  if(!(enabled & PFBit))
+    mask &= ~(Cx_P0PF | Cx_P1PF | Cx_M0PF | Cx_M1PF | Cx_BLPF);
+
+  // Now combine the masks
+  myCollisionEnabledMask = (enabled << 16) | mask;
+
+  return on;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool TIA::toggleHMOVEBlank()
 {
   myAllowHMOVEBlanks = myAllowHMOVEBlanks ? false : true;
@@ -965,22 +1011,48 @@ void TIA::updateFrame(Int32 clock)
         // simulates the behaviour as visually seen in the aforementioned
         // ROMs.  Other ROMs may break this simulation; more testing is
         // required to figure out what's really going on here.
-        if(myHMM0mmr && myPOSM0 % 4 == 3)
+        if(myHMM0mmr)
         {
-          // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
-          // blanked out; this is indicated by using a size of '4'
-          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-              [myNUSIZ0 & 0x07][4][160 - (myPOSM0 & 0xFC)];
+          switch(myPOSM0 % 4)
+          {
+            case 3:
+              // Stretch this missle so it's 2 pixels wide and shifted one
+              // pixel to the left
+              myCurrentM0Mask = &TIATables::MxMask[(myPOSM0-1) & 0x03]
+                  [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4)|1][160 - ((myPOSM0-1) & 0xFC)];
+              break;
+            case 2:
+              // Missle is disabled on this line
+              myCurrentM0Mask = &TIATables::DisabledMask[0];
+              break;
+            default:
+              myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+                  [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+              break;
+          }
         }
         else
           myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
               [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
-        if(myHMM1mmr && myPOSM1 % 4 == 3)
+        if(myHMM1mmr)
         {
-          // Stretch this missle so it's 4 pixels wide, with the 3rd pixel
-          // blanked out; this is indicated by using a size of '4'
-          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-              [myNUSIZ1 & 0x07][4][160 - (myPOSM1 & 0xFC)];
+          switch(myPOSM1 % 4)
+          {
+            case 3:
+              // Stretch this missle so it's 2 pixels wide and shifted one
+              // pixel to the left
+              myCurrentM1Mask = &TIATables::MxMask[(myPOSM1-1) & 0x03]
+                  [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4)|1][160 - ((myPOSM1-1) & 0xFC)];
+              break;
+            case 2:
+              // Missle is disabled on this line
+              myCurrentM1Mask = &TIATables::DisabledMask[0];
+              break;
+            default:
+              myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+                  [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+              break;
+          }
         }
         else
           myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
@@ -1089,46 +1161,47 @@ uInt8 TIA::peek(uInt16 addr)
   updateFrame(mySystem->cycles() * 3);
 
   uInt8 value = 0x00;
+  uInt16 collision = myCollision & (uInt16)myCollisionEnabledMask;
 
   switch(addr & 0x000f)
   {
     case CXM0P:
-      value = ((myCollision & Cx_M0P1) ? 0x80 : 0x00) |
-              ((myCollision & Cx_M0P0) ? 0x40 : 0x00);
+      value = ((collision & Cx_M0P1) ? 0x80 : 0x00) |
+              ((collision & Cx_M0P0) ? 0x40 : 0x00);
       break;
 
     case CXM1P:
-      value = ((myCollision & Cx_M1P0) ? 0x80 : 0x00) |
-              ((myCollision & Cx_M1P1) ? 0x40 : 0x00);
+      value = ((collision & Cx_M1P0) ? 0x80 : 0x00) |
+              ((collision & Cx_M1P1) ? 0x40 : 0x00);
       break;
 
     case CXP0FB:
-      value = ((myCollision & Cx_P0PF) ? 0x80 : 0x00) |
-              ((myCollision & Cx_P0BL) ? 0x40 : 0x00);
+      value = ((collision & Cx_P0PF) ? 0x80 : 0x00) |
+              ((collision & Cx_P0BL) ? 0x40 : 0x00);
       break;
 
     case CXP1FB:
-      value = ((myCollision & Cx_P1PF) ? 0x80 : 0x00) |
-              ((myCollision & Cx_P1BL) ? 0x40 : 0x00);
+      value = ((collision & Cx_P1PF) ? 0x80 : 0x00) |
+              ((collision & Cx_P1BL) ? 0x40 : 0x00);
       break;
 
     case CXM0FB:
-      value = ((myCollision & Cx_M0PF) ? 0x80 : 0x00) |
-              ((myCollision & Cx_M0BL) ? 0x40 : 0x00);
+      value = ((collision & Cx_M0PF) ? 0x80 : 0x00) |
+              ((collision & Cx_M0BL) ? 0x40 : 0x00);
       break;
 
     case CXM1FB:
-      value = ((myCollision & Cx_M1PF) ? 0x80 : 0x00) |
-              ((myCollision & Cx_M1BL) ? 0x40 : 0x00);
+      value = ((collision & Cx_M1PF) ? 0x80 : 0x00) |
+              ((collision & Cx_M1BL) ? 0x40 : 0x00);
       break;
 
     case CXBLPF:
-      value = (myCollision & Cx_BLPF) ? 0x80 : 0x00;
+      value = (collision & Cx_BLPF) ? 0x80 : 0x00;
       break;
 
     case CXPPMM:
-      value = ((myCollision & Cx_P0P1) ? 0x80 : 0x00) |
-              ((myCollision & Cx_M0M1) ? 0x40 : 0x00);
+      value = ((collision & Cx_P0P1) ? 0x80 : 0x00) |
+              ((collision & Cx_M0M1) ? 0x40 : 0x00);
       break;
 
     case INPT0:
@@ -1344,9 +1417,6 @@ void TIA::poke(uInt16 addr, uInt8 value)
       // we're still on the left hand side of the playfield
       if(((clock - myClockWhenFrameStarted) % 228) < (68 + 79))
         myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
-
-      myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
-          [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
 
       break;
     }

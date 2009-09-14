@@ -249,14 +249,16 @@ class TIA : public Device
     bool scanlinePos(uInt16& x, uInt16& y) const;
 
     /**
-      Enables/disables all TIABit bits.
+      Enables/disables all TIABit bits.  Note that disabling a graphical
+      object also disables its collisions.
 
       @param mode  Whether to enable or disable all bits
     */
     void enableBits(bool mode);
 
     /**
-      Enables/disable/toggle the specified TIA bit.
+      Enables/disable/toggle the specified TIA bit.  Note that disabling a
+      graphical object also disables its collisions.
 
       @param mode  1/0 indicates on/off, and values greater than 1 mean
                    flip the bit from its current state
@@ -264,6 +266,23 @@ class TIA : public Device
       @return  Whether the bit was enabled or disabled
     */
     bool toggleBit(TIABit b, uInt8 mode = 2);
+
+    /**
+      Enables/disables all TIABit collisions.
+
+      @param mode  Whether to enable or disable all collisions
+    */
+    void enableCollisions(bool mode);
+
+    /**
+      Enables/disable/toggle the specified TIA bit collision.
+
+      @param mode  1/0 indicates on/off, and values greater than 1 mean
+                   flip the collision from its current state
+
+      @return  Whether the collision was enabled or disabled
+    */
+    bool toggleCollision(TIABit b, uInt8 mode = 2);
 
     /**
       Toggle the display of HMOVE blanks.
@@ -451,6 +470,15 @@ class TIA : public Device
     bool myRESMP1;        // Indicates if missle 1 is reset to player 1
 
     uInt16 myCollision;     // Collision register
+
+    // Determines whether specified collisions are enabled or disabled
+    // The lower 16 bits are and'ed with the collision register to mask out
+    // any collisions we don't want to be processed
+    // The upper 16 bits are used to store which objects is currently
+    // enabled or disabled
+    // This is necessary since there are 15 collision combinations which
+    // are controlled by 6 objects
+    uInt32 myCollisionEnabledMask;
 
     // Note that these position registers contain the color clock 
     // on which the object's serial output should begin (0 to 159)

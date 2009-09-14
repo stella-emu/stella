@@ -795,6 +795,14 @@ void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show) const
+{
+  bool result = myTIA->toggleCollision(bit);
+  string message = bitname + (result ? " collision enabled" : " collsion disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleHMOVE() const
 {
   if(myTIA->toggleHMOVEBlank())
@@ -808,6 +816,14 @@ void Console::enableBits(bool enable) const
 {
   myTIA->enableBits(enable);
   string message = string("TIA bits") + (enable ? " enabled" : " disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::enableCollisions(bool enable) const
+{
+  myTIA->enableCollisions(enable);
+  string message = string("TIA collisions") + (enable ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }
 

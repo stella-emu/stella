@@ -369,27 +369,45 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case SDLK_z:
-                myOSystem->console().toggleP0Bit();
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().toggleP0Collision();
+                else
+                  myOSystem->console().toggleP0Bit();
                 break;
 
               case SDLK_x:
-                myOSystem->console().toggleP1Bit();
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().toggleP1Collision();
+                else
+                  myOSystem->console().toggleP1Bit();
                 break;
 
               case SDLK_c:
-                myOSystem->console().toggleM0Bit();
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().toggleM0Collision();
+                else
+                  myOSystem->console().toggleM0Bit();
                 break;
 
               case SDLK_v:
-                myOSystem->console().toggleM1Bit();
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().toggleM1Collision();
+                else
+                  myOSystem->console().toggleM1Bit();
                 break;
 
               case SDLK_b:
-                myOSystem->console().toggleBLBit();
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().toggleBLCollision();
+                else
+                  myOSystem->console().toggleBLBit();
                 break;
 
               case SDLK_n:
-                myOSystem->console().togglePFBit();
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().togglePFCollision();
+                else
+                  myOSystem->console().togglePFBit();
                 break;
 
               case SDLK_m:
@@ -401,11 +419,17 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case SDLK_PERIOD:
-                myOSystem->console().enableBits(false);
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().enableCollisions(false);
+                else
+                  myOSystem->console().enableBits(false);
                 break;
 
               case SDLK_SLASH:
-                myOSystem->console().enableBits(true);
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().enableCollisions(true);
+                else
+                  myOSystem->console().enableBits(true);
                 break;
 
               case SDLK_p:  // Alt-p toggles phosphor effect
