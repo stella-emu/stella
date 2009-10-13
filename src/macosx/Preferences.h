@@ -15,8 +15,8 @@
 }
 
 + (Preferences *)sharedInstance;
-- (void)setString:(char *)key:(char *)value;
-- (void)getString:(char *)key:(char *)value;
+- (void)setString:(const char *)key:(const char *)value;
+- (void)getString:(const char *)key:(char *)value:(int)size;
 - (void)save;
 
 @end

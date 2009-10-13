@@ -34,12 +34,12 @@ void releaseCmdKeys(NSString *character, int keyCode)
     NSPoint point;
     
     event1 = [NSEvent keyEventWithType:NSKeyUp location:point modifierFlags:0
-                    timestamp:nil windowNumber:0 context:nil characters:character
+                    timestamp:0.0 windowNumber:0 context:nil characters:character
                     charactersIgnoringModifiers:character isARepeat:NO keyCode:keyCode];
     [NSApp postEvent:event1 atStart:NO];
     
     event2 = [NSEvent keyEventWithType:NSFlagsChanged location:point modifierFlags:0
-                    timestamp:nil windowNumber:0 context:nil characters:nil
+                    timestamp:0.0 windowNumber:0 context:nil characters:nil
                     charactersIgnoringModifiers:nil isARepeat:NO keyCode:0];
     [NSApp postEvent:event2 atStart:NO];
 }

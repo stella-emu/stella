@@ -83,11 +83,10 @@ static SDLMain *sharedInstance = nil;
         if ([menuItem hasSubmenu])
             [self fixMenu:[menuItem submenu] withAppName:appName];
     }
-    [ aMenu sizeToFit ];
+/* SA    [ aMenu sizeToFit ]; */
 }
 
 char *appName = "StellaOSX";
-char fileName[FILENAME_MAX];
 
 /* Called when the internal event loop has just started running */
 - (void) applicationDidFinishLaunching: (NSNotification *) note
@@ -121,22 +120,20 @@ char fileName[FILENAME_MAX];
 *-----------------------------------------------------------------------------*/
 - (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
 {
-	char *cFilename;
-
-    if (started) {
-		cFilename = malloc(FILENAME_MAX);
-		if (cFilename)
-		  {
-		  [filename getCString:cFilename];
+  if (started)
+  {
+    char cFilename[FILENAME_MAX];
+    strncpy(cFilename, [filename cStringUsingEncoding: NSASCIIStringEncoding], FILENAME_MAX-1);
+    if (strlen(cFilename) > 0)
 		  macOpenConsole(cFilename);
-		  }
-	  }
-    else {
-        fileToLoad = TRUE;
-        [filename getCString:startupFile];
-      }
+  }
+  else
+  {
+    fileToLoad = TRUE;
+    strncpy(startupFile, [filename cStringUsingEncoding: NSASCIIStringEncoding], FILENAME_MAX-1);
+  }
 
-    return(FALSE);
+  return(FALSE);
 }
 
 @end

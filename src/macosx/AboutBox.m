@@ -5,7 +5,7 @@
 */
 /* $Id: AboutBox.m,v 1.2 2005-06-04 02:04:06 markgrebe Exp $ */
 
-#import "AboutBox.h";
+#import "AboutBox.h"
 
 
 @implementation AboutBox

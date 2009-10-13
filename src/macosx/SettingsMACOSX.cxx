@@ -33,8 +33,8 @@
 #include "SettingsMACOSX.hxx"
 
 extern "C" {
-  void prefsSetString(char *key, char *value);
-  void prefsGetString(char *key, char *value);
+  void prefsSetString(const char* key, const char* value);
+  void prefsGetString(const char* key, char* value, int size);
   void prefsSave(void);
 }
 
@@ -62,7 +62,7 @@ void SettingsMACOSX::loadConfig()
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
   {
-    prefsGetString((char *) settings[i].key.c_str(), cvalue);
+    prefsGetString(settings[i].key.c_str(), cvalue, 2047);
     if(cvalue[0] != 0)
       setInternal(settings[i].key, cvalue, i, true);
   }
@@ -74,9 +74,7 @@ void SettingsMACOSX::saveConfig()
   // Write out each of the key and value pairs
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
-  {
-    prefsSetString((char *) settings[i].key.c_str(),
-                   (char *) settings[i].value.c_str());
-  }
+    prefsSetString(settings[i].key.c_str(), settings[i].value.c_str());
+
   prefsSave();
 }

@@ -13,14 +13,14 @@
 #import "Preferences.h"
 #import "SDL.h"
 
-void prefsSetString(char *key, char *value)
+void prefsSetString(const char* key, const char* value)
 {
 	[[Preferences sharedInstance] setString:key:value];
 }
 
-void prefsGetString(char *key, char *value)
+void prefsGetString(const char* key, char* value, int size)
 {   
-	[[Preferences sharedInstance] getString:key:value];
+	[[Preferences sharedInstance] getString:key:value:size];
 }
 
 void prefsSave(void)
@@ -43,31 +43,27 @@ static Preferences *sharedInstance = nil;
 	return(self);
 }
 
-- (void)setString:(char *)key:(char *)value
+- (void)setString:(const char *)key:(const char *)value
 {
-	NSNumber *theValue;
-	NSString *theKey;
-	
-	theKey = [NSString stringWithCString:key];
-	theValue = [NSString stringWithCString:value];
-	[defaults setObject:theValue forKey:theKey];
-	[theKey release];
-	[theValue release];
+  NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
+	NSString* theValue = [NSString stringWithCString:value encoding:NSASCIIStringEncoding];
+
+  [defaults setObject:theValue forKey:theKey];
+  [theKey release];
+  [theValue release];
 }
 
-- (void)getString:(char *)key:(char *)value
+- (void)getString:(const char *)key:(char *)value:(int)size
 {
-	NSString *theKey;
-	NSString *theValue;
-	
-	theKey = [NSString stringWithCString:key];
-	theValue = [defaults objectForKey:theKey];
-	if (theValue == nil)
-		value[0] = 0;
-	else {
-		[theValue getCString:value];
-		[theKey release];
-		}
+  NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
+	NSString* theValue = [defaults objectForKey:theKey];
+	if (theValue != nil)
+    strncpy(value, [theValue cStringUsingEncoding: NSASCIIStringEncoding], size);
+	else
+    value[0] = 0;
+
+  [theKey release];
+  [theValue release];
 }
 
 - (void)save
