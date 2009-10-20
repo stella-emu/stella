@@ -268,7 +268,6 @@
 		DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
-		DC419D82108E10A3006E8687 /* Info-StellaOSX.plist in Resources */ = {isa = PBXBuildFile; fileRef = DC419D81108E10A3006E8687 /* Info-StellaOSX.plist */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -776,12 +775,12 @@
 		29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */ = {
 			isa = PBXGroup;
 			children = (
+				DC419D81108E10A3006E8687 /* Info-StellaOSX.plist */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				DC419D81108E10A3006E8687 /* Info-StellaOSX.plist */,
 			);
 			name = "«PROJECTNAMEASXML»";
 			sourceTree = "<group>";
@@ -1435,7 +1434,6 @@
 				2D91747109BA90380026E9FF /* ../../docs in Resources */,
 				2D91747209BA90380026E9FF /* AboutBox.nib in Resources */,
 				2DEFB40C09C3386F00754289 /* Cart.icns in Resources */,
-				DC419D82108E10A3006E8687 /* Info-StellaOSX.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1677,7 +1675,7 @@
 					../gui,
 					.,
 				);
-				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
+				INFOPLIST_FILE = "Info-StellaOSX.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
@@ -1734,7 +1732,7 @@
 					../gui,
 					.,
 				);
-				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
+				INFOPLIST_FILE = "Info-StellaOSX.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
@@ -1790,7 +1788,7 @@
 					../gui,
 					.,
 				);
-				INFOPLIST_FILE = "Info-StellaOSX__Upgraded_.plist";
+				INFOPLIST_FILE = "Info-StellaOSX.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = .;
 				OTHER_CFLAGS = "";

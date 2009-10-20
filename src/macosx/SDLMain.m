@@ -48,8 +48,6 @@ static int    gArgc;
 static char  **gArgv;
 static BOOL   gFinderLaunch;
 static BOOL   gCalledAppMainline = FALSE;
-//static BOOL   started=NO;
-//static char   startupFile[FILENAME_MAX];
 
 int fileToLoad = FALSE;
 char parentdir[MAXPATHLEN];
@@ -71,20 +69,6 @@ static NSString *getApplicationName(void)
     return appName;
 }
 
-
-#if 0
-// --------------------------------------------------------------------------------
-/* Routine to center the application window */
-void centerAppWindow(void)
-{
-	[[[SDLApplication sharedApplication] keyWindow] center];
-}
-
-
-/////// FIXME //////////////////////////////
-
-char *appName = "StellaOSX";
-#endif
 
 #if SDL_USE_NIB_FILE
 // --------------------------------------------------------------------------------
@@ -328,25 +312,7 @@ static void CustomApplicationMain (int argc, char **argv)
     gArgv[gArgc] = NULL;
     return TRUE;
 }
-/* OLD VERSION
-- (BOOL)application:(NSApplication *)theApplication openFile:(NSString *)filename
-{
-	if (started)
-	{
-		char cFilename[FILENAME_MAX];
-		strncpy(cFilename, [filename cStringUsingEncoding: NSASCIIStringEncoding], FILENAME_MAX-1);
-		if (strlen(cFilename) > 0)
-			macOpenConsole(cFilename);
-	}
-	else
-	{
-		fileToLoad = TRUE;
-		strncpy(startupFile, [filename cStringUsingEncoding: NSASCIIStringEncoding], FILENAME_MAX-1);
-	}
-	
-	return(FALSE);
-}
-*/
+
 
 // --------------------------------------------------------------------------------
 /* Called when the internal event loop has just started running */
@@ -369,33 +335,7 @@ static void CustomApplicationMain (int argc, char **argv)
     /* We're done, thank you for playing */
     exit(status);
 }
-/* OLD VERSION
-- (void) applicationDidFinishLaunching: (NSNotification *) note
-{
-    int status;
-	char *args[2];
-    
-	started = YES;
-    
-    // Set the main menu to contain the real app name instead of "SDL App"
-    [self fixMenu:[NSApp mainMenu] withAppName:[[NSProcessInfo processInfo] processName]];
 
-    // Hand off to main application code
-	args[0] = appName;
-	if (fileToLoad)
-		{
-	    args[1] = startupFile;
-		status = stellaMain(2,args);
-		}
-	else
-		{
-		status = stellaMain(1,args);
-		}
-
-    // We're done, thank you for playing
-    exit(status);
-}
-*/
 @end
 
 
@@ -438,6 +378,13 @@ static void CustomApplicationMain (int argc, char **argv)
 
 @end
 
+
+// --------------------------------------------------------------------------------
+/* Routine to center the application window */
+void centerAppWindow(void)
+{
+	[[[NSApplication sharedApplication] keyWindow] center];
+}
 
 
 #ifdef main
