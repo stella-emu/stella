@@ -43,11 +43,6 @@ class OSystemMACOSX : public OSystem
 
   public:
     /**
-      This method queries the dimensions of the screen for this hardware.
-    */
-    virtual void getScreenDimensions(int& width, int& height);
-    
-    /**
       Informs the OSystem of a change in EventHandler state.
     */
     virtual void stateChanged(EventHandler::State state);

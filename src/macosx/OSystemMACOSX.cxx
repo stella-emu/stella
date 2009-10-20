@@ -33,8 +33,6 @@
 
 extern "C" {
   void macOpenConsole(char *romname);
-  uInt16 macOSXDisplayWidth(void);
-  uInt16 macOSXDisplayHeight(void);
   void setEmulationMenus(void);
   void setLauncherMenus(void);
   void setOptionsMenus(void);
@@ -96,13 +94,6 @@ OSystemMACOSX::OSystemMACOSX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemMACOSX::~OSystemMACOSX()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystemMACOSX::getScreenDimensions(int& width, int& height)
-{
-  width  = (int)macOSXDisplayWidth();
-  height = (int)macOSXDisplayHeight();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
