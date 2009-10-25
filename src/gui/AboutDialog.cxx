@@ -43,7 +43,7 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 52 * fontWidth + 8;
-  _h = 10 * lineHeight + 20;
+  _h = 11 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons
   xpos = 10;  ypos = _h - buttonHeight - 10;
@@ -109,8 +109,9 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       title = string("Stella ") + STELLA_VERSION;
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
       ADD_ATEXT(string("\\C\\c2") + instance().features());
+      ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE;
-      ADD_ATEXT("\\CCopyright (C) 1995-2009 The Stella team");
+      ADD_ATEXT("\\CCopyright (C) 1995-2009 The Stella Team");
       ADD_ATEXT("\\Chttp://stella.sourceforge.net");
       ADD_ALINE;
       ADD_ATEXT("Stella is free software released under the GNU GPL");

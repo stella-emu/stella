@@ -37,7 +37,7 @@ class AboutDialog : public Dialog
     ~AboutDialog();
 
   protected:
-    enum { kLINES_PER_PAGE = 8 };
+    enum { kLINES_PER_PAGE = 9 };
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
 

@@ -347,6 +347,13 @@ class OSystem
     const string& features() const { return myFeatures; }
 
     /**
+      The build information for Stella (SDL version, architecture, etc).
+
+      @return  The build info
+    */
+    const string& buildInfo() const { return myBuildInfo; }
+
+    /**
       Calculate the MD5sum of the given file.
 
       @param filename  Filename of potential ROM file
@@ -505,6 +512,7 @@ class OSystem
     string myRomMD5;
 
     string myFeatures;
+    string myBuildInfo;
 
     // The font object to use when space is very limited
     GUI::Font* mySmallFont;

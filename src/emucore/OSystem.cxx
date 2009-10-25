@@ -89,24 +89,35 @@ OSystem::OSystem()
     myRomFile(""),
     myRomMD5(""),
     myFeatures(""),
+    myBuildInfo(""),
     myFont(NULL),
     myConsoleFont(NULL)
 {
-#ifdef DISPLAY_OPENGL
-  myFeatures += "OpenGL ";
-#endif
-#ifdef SOUND_SUPPORT
-  myFeatures += "Sound ";
-#endif
-#ifdef JOYSTICK_SUPPORT
-  myFeatures += "Joystick ";
-#endif
-#ifdef DEBUGGER_SUPPORT
-  myFeatures += "Debugger ";
-#endif
-#ifdef CHEATCODE_SUPPORT
-  myFeatures += "Cheats";
-#endif
+  // Get built-in features
+  #ifdef DISPLAY_OPENGL
+    myFeatures += "OpenGL ";
+  #endif
+  #ifdef SOUND_SUPPORT
+    myFeatures += "Sound ";
+  #endif
+  #ifdef JOYSTICK_SUPPORT
+    myFeatures += "Joystick ";
+  #endif
+  #ifdef DEBUGGER_SUPPORT
+    myFeatures += "Debugger ";
+  #endif
+  #ifdef CHEATCODE_SUPPORT
+    myFeatures += "Cheats";
+  #endif
+
+  // Get build info
+  ostringstream info;
+  const SDL_version* ver = SDL_Linked_Version();
+
+  info << "Build " << "TODO" << ", using ";
+  info << "SDL " << (int)ver->major << "." << (int)ver->minor << "." << (int)ver->patch << " ";
+  info << "[" << " " << "]";
+  myBuildInfo = info.str();
 
 #if 0
   // Debugging info for the GUI widgets
