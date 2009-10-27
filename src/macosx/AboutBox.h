@@ -11,14 +11,14 @@
 
 @interface AboutBox : NSObject
 {
-    IBOutlet id appNameField;
-    IBOutlet id creditsField;
-    IBOutlet id versionField;
-    NSTimer *scrollTimer;
-    float currentPosition;
-    float maxScrollHeight;
-    NSTimeInterval startTime;
-    BOOL restartAtTop;
+  IBOutlet id appNameField;
+  IBOutlet id creditsField;
+  IBOutlet id versionField;
+  NSTimer *scrollTimer;
+  float currentPosition;
+  float maxScrollHeight;
+  NSTimeInterval startTime;
+  BOOL restartAtTop;
 }
 
 + (AboutBox *)sharedInstance;
