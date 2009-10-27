@@ -10,8 +10,9 @@
 /* $Id$ */
 #import <Cocoa/Cocoa.h>
 
-@interface Preferences : NSObject {
-    NSUserDefaults *defaults;    /* Defaults pointer */
+@interface Preferences : NSObject
+{
+  NSUserDefaults *defaults;    /* Defaults pointer */
 }
 
 + (Preferences *)sharedInstance;

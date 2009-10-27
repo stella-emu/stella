@@ -15,38 +15,39 @@
 
 void prefsSetString(const char* key, const char* value)
 {
-	[[Preferences sharedInstance] setString:key:value];
+  [[Preferences sharedInstance] setString:key:value];
 }
 
 void prefsGetString(const char* key, char* value, int size)
 {   
-	[[Preferences sharedInstance] getString:key:value:size];
+  [[Preferences sharedInstance] getString:key:value:size];
 }
 
 void prefsSave(void)
 {
-	[[Preferences sharedInstance] save];
+  [[Preferences sharedInstance] save];
 }
 
 @implementation Preferences
 
 static Preferences *sharedInstance = nil;
 
-+ (Preferences *)sharedInstance {
-    return sharedInstance ? sharedInstance : [[self alloc] init];
++ (Preferences *)sharedInstance
+{
+  return sharedInstance ? sharedInstance : [[self alloc] init];
 }
 
 - (id)init
 {
-    defaults = [NSUserDefaults standardUserDefaults];
-	sharedInstance = self;
-	return(self);
+  defaults = [NSUserDefaults standardUserDefaults];
+  sharedInstance = self;
+  return(self);
 }
 
 - (void)setString:(const char *)key:(const char *)value
 {
   NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
-	NSString* theValue = [NSString stringWithCString:value encoding:NSASCIIStringEncoding];
+  NSString* theValue = [NSString stringWithCString:value encoding:NSASCIIStringEncoding];
 
   [defaults setObject:theValue forKey:theKey];
   [theKey release];
@@ -56,10 +57,10 @@ static Preferences *sharedInstance = nil;
 - (void)getString:(const char *)key:(char *)value:(int)size
 {
   NSString* theKey   = [NSString stringWithCString:key encoding:NSASCIIStringEncoding];
-	NSString* theValue = [defaults objectForKey:theKey];
-	if (theValue != nil)
+  NSString* theValue = [defaults objectForKey:theKey];
+  if (theValue != nil)
     strncpy(value, [theValue cStringUsingEncoding: NSASCIIStringEncoding], size);
-	else
+  else
     value[0] = 0;
 
   [theKey release];
@@ -68,9 +69,7 @@ static Preferences *sharedInstance = nil;
 
 - (void)save
 {
-	[defaults synchronize];
+  [defaults synchronize];
 }
-
-
 
 @end
