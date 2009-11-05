@@ -20,8 +20,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Device::Device()
-    : mySystem(0)
+  : mySystem(0)
 {
+  myRandGenerator.initSeed();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -35,3 +36,5 @@ void Device::systemCyclesReset()
   // By default I do nothing when my system resets its cycle counter
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Random Device::myRandGenerator;

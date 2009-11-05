@@ -21,6 +21,7 @@
 
 class System;
 
+#include "Random.hxx"
 #include "Serializable.hxx"
 #include "bspf.hxx"
 
@@ -107,6 +108,10 @@ class Device : public Serializable
   protected:
     /// Pointer to the system the device is installed in or the null pointer
     System* mySystem;
+
+    /// Many devices need a source of random numbers, usually for emulating
+    /// unknown/undefined behaviour
+    static class Random myRandGenerator;
 };
 
 #endif

@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "CartCV.hxx"
 
@@ -52,9 +51,8 @@ void CartridgeCV::reset()
     memcpy(myImage, myROM, 2048);
 
     // Initialize RAM with random values
-    class Random random;
     for(uInt32 i = 0; i < 1024; ++i)
-      myRAM[i] = random.next();
+      myRAM[i] = myRandGenerator.next();
   }
   else if(mySize == 4096)
   {

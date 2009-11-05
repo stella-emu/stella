@@ -20,7 +20,6 @@
 #include <iostream>
 
 #include "Console.hxx"
-#include "Random.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
 
@@ -41,15 +40,13 @@ M6532::~M6532()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
-  class Random random;
-
   // Randomize the 128 bytes of memory
   for(uInt32 t = 0; t < 128; ++t)
-    myRAM[t] = random.next();
+    myRAM[t] = myRandGenerator.next();
 
   // The timer absolutely cannot be initialized to zero; some games will
   // loop or hang (notably Solaris and H.E.R.O.)
-  myTimer = (0xff - (random.next() % 0xfe)) << 10;
+  myTimer = (0xff - (myRandGenerator.next() % 0xfe)) << 10;
   myIntervalShift = 10;
   myCyclesWhenTimerSet = 0;
   myInterruptEnabled = false;

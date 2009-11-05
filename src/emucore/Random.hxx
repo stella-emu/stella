@@ -41,6 +41,12 @@ class Random
     
   public:
     /**
+      Re-initialize the random number generator with a new seed,
+      to generate a different set of random numbers.
+    */
+    void initSeed();
+
+    /**
       Answer the next random number from the random number generator
 
       @return A random number

@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "CartF8SC.hxx"
 
@@ -42,9 +41,8 @@ CartridgeF8SC::~CartridgeF8SC()
 void CartridgeF8SC::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 128; ++i)
-    myRAM[i] = random.next();
+    myRAM[i] = myRandGenerator.next();
 
   // Upon reset we switch to bank 1
   bank(1);

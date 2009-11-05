@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "M6532.hxx"
 #include "TIA.hxx"
@@ -46,9 +45,8 @@ Cartridge4A50::~Cartridge4A50()
 void Cartridge4A50::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 32768; ++i)
-    myRAM[i] = random.next();
+    myRAM[i] = myRandGenerator.next();
 
   mySliceLow = mySliceMiddle = mySliceHigh = 0;
   myIsRomLow = myIsRomMiddle = myIsRomHigh = true;

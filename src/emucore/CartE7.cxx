@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "CartE7.hxx"
 
@@ -46,9 +45,8 @@ CartridgeE7::~CartridgeE7()
 void CartridgeE7::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 2048; ++i)
-    myRAM[i] = random.next();
+    myRAM[i] = myRandGenerator.next();
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
@@ -109,8 +107,10 @@ uInt8 CartridgeE7::peek(uInt16 address)
   // NOTE: The following does not handle reading from RAM, however,
   // this function should never be called for RAM because of the
   // way page accessing has been setup
-  // TODO - determine what really happens when you read from the write port
-  return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)];
+  if((bank() == 7) && (address < 0x400))
+    return myRandGenerator.next(); // Read from write port gives undefined values
+  else
+    return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,6 +136,8 @@ void CartridgeE7::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bankRAM(uInt16 bank)
 { 
+  if(myBankLocked) return;
+
   // Remember what bank we're in
   myCurrentRAM = bank;
   uInt16 offset = bank << 8;

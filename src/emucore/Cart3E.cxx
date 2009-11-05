@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "TIA.hxx"
 #include "Cart3E.hxx"
@@ -50,9 +49,8 @@ Cartridge3E::~Cartridge3E()
 void Cartridge3E::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 32768; ++i)
-    myRam[i] = random.next();
+    myRam[i] = myRandGenerator.next();
 
   // We'll map bank 0 into the first segment upon reset
   bank(0);
@@ -97,13 +95,14 @@ void Cartridge3E::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge3E::peek(uInt16 address)
 {
-  // TODO - determine what really happens when you read from the write port
   address &= 0x0FFF;
 
   if(address < 0x0800)
   {
     if(myCurrentBank < 256)
       return myImage[(address & 0x07FF) + (myCurrentBank << 11)];
+    else if(address < 0x400)  // Read from write port gives undefined values
+      return myRandGenerator.next();
     else
       return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)];
   }

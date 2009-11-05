@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "CartMC.hxx"
 
@@ -46,9 +45,8 @@ CartridgeMC::~CartridgeMC()
 void CartridgeMC::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 32768; ++i)
-    myRAM[i] = random.next();
+    myRAM[i] = myRandGenerator.next();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

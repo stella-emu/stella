@@ -19,7 +19,6 @@
 #include <cassert>
 #include <cstring>
 
-#include "Random.hxx"
 #include "System.hxx"
 #include "CartFASC.hxx"
 
@@ -42,9 +41,8 @@ CartridgeFASC::~CartridgeFASC()
 void CartridgeFASC::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 256; ++i)
-    myRAM[i] = random.next();
+    myRAM[i] = myRandGenerator.next();
 
   // Upon reset we switch to bank 2
   bank(2);
@@ -124,8 +122,12 @@ uInt8 CartridgeFASC::peek(uInt16 address)
   // Thanks to Kroko of AtariAge for this advice and code idea
   if(address < 0x0100)  // Write port is at 0xF000 - 0xF100 (256 bytes)
   {
-    if(myBankLocked) return 0;
-    else return myRAM[address] = 0;
+    if(!myBankLocked)
+    {
+      return myRAM[address] = 0;
+    }
+    else
+      return 0;
   }  
   else
   {

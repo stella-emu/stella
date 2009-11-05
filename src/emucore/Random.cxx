@@ -17,18 +17,25 @@
 //============================================================================
 
 #include <time.h>
+
 #include "OSystem.hxx"
 #include "Random.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Random::Random()
 {
+  initSeed();
+}
+ 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Random::initSeed()
+{
   if(ourSystem)
     myValue = ourSystem->getTicks();
   else
     myValue = (uInt32)time(0);
 }
- 
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Random::next()
 {

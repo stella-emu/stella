@@ -20,7 +20,6 @@
 #include <cstring>
 
 #include "M6502.hxx"
-#include "Random.hxx"
 #include "System.hxx"
 #include "CartAR.hxx"
 
@@ -53,9 +52,8 @@ CartridgeAR::~CartridgeAR()
 void CartridgeAR::reset()
 {
   // Initialize RAM with random values
-  class Random random;
   for(uInt32 i = 0; i < 6 * 1024; ++i)
-    myImage[i] = random.next();
+    myImage[i] = myRandGenerator.next();
 
   // Initialize SC BIOS ROM
   initializeROM();
@@ -302,8 +300,7 @@ void CartridgeAR::initializeROM()
 
   // The accumulator should contain a random value after exiting the
   // SC BIOS code - a value placed in offset 281 will be stored in A
-  class Random random;
-  ourDummyROMCode[281] = random.next();
+  ourDummyROMCode[281] = myRandGenerator.next();
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   for(uInt32 i = 0; i < 2048; ++i)
