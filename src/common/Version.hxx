@@ -19,6 +19,8 @@
 #ifndef VERSION_HXX
 #define VERSION_HXX
 
+#include <cstdlib>
+
 #define STELLA_BASE_VERSION "3.1_svn"
 
 #ifdef NIGHTLY_BUILD
@@ -27,6 +29,6 @@
   #define STELLA_VERSION STELLA_BASE_VERSION
 #endif
 
-#define STELLA_BUILD $Rev$
+#define STELLA_BUILD atoi("$Rev$"+6)
 
 #endif
