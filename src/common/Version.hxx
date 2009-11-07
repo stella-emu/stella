@@ -27,4 +27,6 @@
   #define STELLA_VERSION STELLA_BASE_VERSION
 #endif
 
+#define STELLA_BUILD $Rev$
+
 #endif
