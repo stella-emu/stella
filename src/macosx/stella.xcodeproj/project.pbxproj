@@ -25,9 +25,7 @@
 		2D9173D909BA90380026E9FF /* CartF6SC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF2B0627AE07006BEC99 /* CartF6SC.hxx */; };
 		2D9173DA09BA90380026E9FF /* CartF8.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF2D0627AE07006BEC99 /* CartF8.hxx */; };
 		2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF2F0627AE07006BEC99 /* CartF8SC.hxx */; };
-		2D9173DC09BA90380026E9FF /* CartFASC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF310627AE07006BEC99 /* CartFASC.hxx */; };
 		2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF330627AE07006BEC99 /* CartFE.hxx */; };
-		2D9173DE09BA90380026E9FF /* CartMB.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF350627AE07006BEC99 /* CartMB.hxx */; };
 		2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF370627AE07006BEC99 /* CartMC.hxx */; };
 		2D9173E009BA90380026E9FF /* Console.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF390627AE07006BEC99 /* Console.hxx */; };
 		2D9173E109BA90380026E9FF /* Control.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF3B0627AE07006BEC99 /* Control.hxx */; };
@@ -151,9 +149,7 @@
 		2D91748209BA90380026E9FF /* CartF6SC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF2A0627AE07006BEC99 /* CartF6SC.cxx */; };
 		2D91748309BA90380026E9FF /* CartF8.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF2C0627AE07006BEC99 /* CartF8.cxx */; };
 		2D91748409BA90380026E9FF /* CartF8SC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF2E0627AE07006BEC99 /* CartF8SC.cxx */; };
-		2D91748509BA90380026E9FF /* CartFASC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF300627AE07006BEC99 /* CartFASC.cxx */; };
 		2D91748609BA90380026E9FF /* CartFE.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF320627AE07006BEC99 /* CartFE.cxx */; };
-		2D91748709BA90380026E9FF /* CartMB.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF340627AE07006BEC99 /* CartMB.cxx */; };
 		2D91748809BA90380026E9FF /* CartMC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF360627AE07006BEC99 /* CartMC.cxx */; };
 		2D91748909BA90380026E9FF /* Console.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF380627AE07006BEC99 /* Console.cxx */; };
 		2D91748A09BA90380026E9FF /* Control.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3A0627AE07006BEC99 /* Control.cxx */; };
@@ -332,6 +328,10 @@
 		DCF467C30F939A1400B25D7A /* CartEF.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467BF0F939A1400B25D7A /* CartEF.hxx */; };
 		DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF467C00F939A1400B25D7A /* CartEFSC.cxx */; };
 		DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467C10F939A1400B25D7A /* CartEFSC.hxx */; };
+		DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0D910A762FC007A2870 /* CartF0.cxx */; };
+		DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DA10A762FC007A2870 /* CartF0.hxx */; };
+		DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0DB10A762FC007A2870 /* CartFA.cxx */; };
+		DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DC10A762FC007A2870 /* CartFA.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -574,12 +574,8 @@
 		2DE2DF2D0627AE07006BEC99 /* CartF8.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartF8.hxx; path = ../emucore/CartF8.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF2E0627AE07006BEC99 /* CartF8SC.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartF8SC.cxx; path = ../emucore/CartF8SC.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF2F0627AE07006BEC99 /* CartF8SC.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartF8SC.hxx; path = ../emucore/CartF8SC.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF300627AE07006BEC99 /* CartFASC.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartFASC.cxx; path = ../emucore/CartFASC.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF310627AE07006BEC99 /* CartFASC.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartFASC.hxx; path = ../emucore/CartFASC.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF320627AE07006BEC99 /* CartFE.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartFE.cxx; path = ../emucore/CartFE.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF330627AE07006BEC99 /* CartFE.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartFE.hxx; path = ../emucore/CartFE.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF340627AE07006BEC99 /* CartMB.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartMB.cxx; path = ../emucore/CartMB.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF350627AE07006BEC99 /* CartMB.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartMB.hxx; path = ../emucore/CartMB.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF360627AE07006BEC99 /* CartMC.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartMC.cxx; path = ../emucore/CartMC.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF370627AE07006BEC99 /* CartMC.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartMC.hxx; path = ../emucore/CartMC.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF380627AE07006BEC99 /* Console.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Console.cxx; path = ../emucore/Console.cxx; sourceTree = SOURCE_ROOT; };
@@ -710,6 +706,10 @@
 		DCF467BF0F939A1400B25D7A /* CartEF.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartEF.hxx; path = ../emucore/CartEF.hxx; sourceTree = SOURCE_ROOT; };
 		DCF467C00F939A1400B25D7A /* CartEFSC.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartEFSC.cxx; path = ../emucore/CartEFSC.cxx; sourceTree = SOURCE_ROOT; };
 		DCF467C10F939A1400B25D7A /* CartEFSC.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartEFSC.hxx; path = ../emucore/CartEFSC.hxx; sourceTree = SOURCE_ROOT; };
+		DCF7B0D910A762FC007A2870 /* CartF0.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF0.cxx; path = ../emucore/CartF0.cxx; sourceTree = SOURCE_ROOT; };
+		DCF7B0DA10A762FC007A2870 /* CartF0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF0.hxx; path = ../emucore/CartF0.hxx; sourceTree = SOURCE_ROOT; };
+		DCF7B0DB10A762FC007A2870 /* CartFA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA.cxx; path = ../emucore/CartFA.cxx; sourceTree = SOURCE_ROOT; };
+		DCF7B0DC10A762FC007A2870 /* CartFA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA.hxx; path = ../emucore/CartFA.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -914,6 +914,10 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCF7B0D910A762FC007A2870 /* CartF0.cxx */,
+				DCF7B0DA10A762FC007A2870 /* CartF0.hxx */,
+				DCF7B0DB10A762FC007A2870 /* CartFA.cxx */,
+				DCF7B0DC10A762FC007A2870 /* CartFA.hxx */,
 				DCF467BE0F939A1400B25D7A /* CartEF.cxx */,
 				DCF467BF0F939A1400B25D7A /* CartEF.hxx */,
 				DCF467C00F939A1400B25D7A /* CartEFSC.cxx */,
@@ -977,12 +981,8 @@
 				2DE2DF2D0627AE07006BEC99 /* CartF8.hxx */,
 				2DE2DF2E0627AE07006BEC99 /* CartF8SC.cxx */,
 				2DE2DF2F0627AE07006BEC99 /* CartF8SC.hxx */,
-				2DE2DF300627AE07006BEC99 /* CartFASC.cxx */,
-				2DE2DF310627AE07006BEC99 /* CartFASC.hxx */,
 				2DE2DF320627AE07006BEC99 /* CartFE.cxx */,
 				2DE2DF330627AE07006BEC99 /* CartFE.hxx */,
-				2DE2DF340627AE07006BEC99 /* CartMB.cxx */,
-				2DE2DF350627AE07006BEC99 /* CartMB.hxx */,
 				2DE2DF360627AE07006BEC99 /* CartMC.cxx */,
 				2DE2DF370627AE07006BEC99 /* CartMC.hxx */,
 				2DDBEB7008457B7D00812C11 /* CartUA.cxx */,
@@ -1224,9 +1224,7 @@
 				2D9173D909BA90380026E9FF /* CartF6SC.hxx in Headers */,
 				2D9173DA09BA90380026E9FF /* CartF8.hxx in Headers */,
 				2D9173DB09BA90380026E9FF /* CartF8SC.hxx in Headers */,
-				2D9173DC09BA90380026E9FF /* CartFASC.hxx in Headers */,
 				2D9173DD09BA90380026E9FF /* CartFE.hxx in Headers */,
-				2D9173DE09BA90380026E9FF /* CartMB.hxx in Headers */,
 				2D9173DF09BA90380026E9FF /* CartMC.hxx in Headers */,
 				2D9173E009BA90380026E9FF /* Console.hxx in Headers */,
 				2D9173E109BA90380026E9FF /* Control.hxx in Headers */,
@@ -1373,6 +1371,8 @@
 				DCF467C50F939A1400B25D7A /* CartEFSC.hxx in Headers */,
 				DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */,
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
+				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
+				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1490,9 +1490,7 @@
 				2D91748209BA90380026E9FF /* CartF6SC.cxx in Sources */,
 				2D91748309BA90380026E9FF /* CartF8.cxx in Sources */,
 				2D91748409BA90380026E9FF /* CartF8SC.cxx in Sources */,
-				2D91748509BA90380026E9FF /* CartFASC.cxx in Sources */,
 				2D91748609BA90380026E9FF /* CartFE.cxx in Sources */,
-				2D91748709BA90380026E9FF /* CartMB.cxx in Sources */,
 				2D91748809BA90380026E9FF /* CartMC.cxx in Sources */,
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
@@ -1620,6 +1618,8 @@
 				DCF467B70F93993B00B25D7A /* SoundNull.cxx in Sources */,
 				DCF467C20F939A1400B25D7A /* CartEF.cxx in Sources */,
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
+				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
+				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1822,7 +1822,7 @@
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
