@@ -25,6 +25,12 @@ class System;
 #include "Array.hxx"
 #include "DebuggerSystem.hxx"
 
+// pointer types for RamDebug instance methods
+typedef int (RamDebug::*RAMDEBUG_INT_METHOD)();
+
+// call the pointed-to method on the (global) CPU debugger object.
+#define CALL_RAMDEBUG_METHOD(method) ( ( Debugger::debugger().ramDebug().*method)() )
+
 class RamState : public DebuggerState
 {
   public:
@@ -60,9 +66,22 @@ class RamDebug : public DebuggerSystem
     uInt8 read(uInt16 addr);
     void write(uInt16 addr, uInt8 value);
 
+    // These methods are used by the debugger when we wish to know
+    // if an illegal read from a write port has been performed.
+    // It's up to each Cartridge to report the error, and a
+    // conditional breakpoint must be set in the debugger to check
+    // for occurrences of this.
+    //
+    // Note that each time readFromWritePort() returns a hit, the status
+    // is reset.
+    int readFromWritePort();
+    void setReadFromWritePort(uInt16 address);
+
   private:
     RamState myState;
     RamState myOldState;
+
+    uInt16 myReadFromWritePortAddress;
 };
 
 #endif

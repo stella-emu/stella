@@ -16,8 +16,8 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGEMB_HXX
-#define CARTRIDGEMB_HXX
+#ifndef CARTRIDGEF0_HXX
+#define CARTRIDGEF0_HXX
 
 class System;
 
@@ -29,15 +29,10 @@ class System;
   There are 16 4K banks.
   Accessing $1FF0 switches to next bank.
 
-  Note that while the bankswitch type for this class has historically
-  been 'MB', one must now use 'F0' to activate it.
-  This brings the bankswitch names in line with those used in z26 and
-  the various cart programming apps for KrokCart and Harmony/Melody.
-
   @author  Eckhard Stolberg
   @version $Id$
 */
-class CartridgeMB : public Cartridge
+class CartridgeF0 : public Cartridge
 {
   public:
     /**
@@ -45,12 +40,12 @@ class CartridgeMB : public Cartridge
 
       @param image Pointer to the ROM image
     */
-    CartridgeMB(const uInt8* image);
+    CartridgeF0(const uInt8* image);
 
     /**
       Destructor
     */
-    virtual ~CartridgeMB();
+    virtual ~CartridgeF0();
 
   public:
     /**

@@ -30,6 +30,7 @@ void yyerror(const char *e) {
 	int val;
 	char *equate;
 	CPUDEBUG_INT_METHOD cpuMethod;
+	RAMDEBUG_INT_METHOD ramMethod;
 	TIADEBUG_INT_METHOD tiaMethod;
 	Expression *exp;
 	char *function;
@@ -40,6 +41,7 @@ void yyerror(const char *e) {
 %token <val> ERR
 %token <equate> EQUATE
 %token <cpuMethod> CPU_METHOD
+%token <ramMethod> RAM_METHOD
 %token <tiaMethod> TIA_METHOD
 %token <function> FUNCTION
 
@@ -95,6 +97,7 @@ expression:	expression '+' expression { if(DEBUG_EXP) fprintf(stderr, " +"); $$ 
 	|	NUMBER { if(DEBUG_EXP) fprintf(stderr, " %d", $1); $$ = new ConstExpression($1); lastExp = $$; }
 	|	EQUATE { if(DEBUG_EXP) fprintf(stderr, " %s", $1); $$ = new EquateExpression($1); lastExp = $$; }
 	|	CPU_METHOD { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); $$ = new CpuMethodExpression($1); lastExp = $$; }
+	|	RAM_METHOD { if(DEBUG_EXP) fprintf(stderr, " (RamMethod)"); $$ = new RamMethodExpression($1); lastExp = $$; }
 	|	TIA_METHOD { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); $$ = new TiaMethodExpression($1); lastExp = $$; }
 	|	FUNCTION { if(DEBUG_EXP) fprintf(stderr, " (function)"); $$ = new FunctionExpression($1); lastExp = $$; }
 	|  ERR { if(DEBUG_EXP) fprintf(stderr, " ERR"); yyerror((char*)"Invalid label or constant"); return 1; }

@@ -27,6 +27,7 @@
 
 #include "Expression.hxx"
 #include "CpuDebug.hxx"
+#include "RamDebug.hxx"
 #include "TIADebug.hxx"
 
 #include "DebuggerExpressions.hxx"
@@ -76,7 +77,6 @@ int parse(const char *in) {
 }
 
 /* hand-rolled lexer. Hopefully faster than flex... */
-
 inline bool is_base_prefix(char x) { return ( (x=='\\' || x=='$' || x=='#') ); }
 
 inline bool is_identifier(char x) {
@@ -164,8 +164,8 @@ int const_to_int(char *c) {
 	}
 }
 
-// special methods that get e.g. CPU registers
 // TODO: store in a map or something
+// special methods that get e.g. CPU registers
 CPUDEBUG_INT_METHOD getCpuSpecial(char *c) {
 	if(strcmp(c, "a") == 0)
 		return &CpuDebug::a;
@@ -205,6 +205,14 @@ CPUDEBUG_INT_METHOD getCpuSpecial(char *c) {
 
 	if(strcmp(c, "_bank") == 0)
 		return &CpuDebug::getBank;
+
+	return 0;
+}
+
+// special methods that get RAM internal state
+RAMDEBUG_INT_METHOD getRamSpecial(char *c) {
+	if(strcmp(c, "_rwport") == 0)
+		return &RamDebug::readFromWritePort;
 
 	return 0;
 }
@@ -253,6 +261,7 @@ int yylex() {
 			case ST_IDENTIFIER:
 				{
 					CPUDEBUG_INT_METHOD cpuMeth;
+					RAMDEBUG_INT_METHOD ramMeth;
 					TIADEBUG_INT_METHOD tiaMeth;
 
 					char *bufp = idbuf;
@@ -279,6 +288,9 @@ int yylex() {
 					} else if( (cpuMeth = getCpuSpecial(idbuf)) ) {
 						yylval.cpuMethod = cpuMeth;
 						return CPU_METHOD;
+					} else if( (ramMeth = getRamSpecial(idbuf)) ) {
+						yylval.ramMethod = ramMeth;
+						return RAM_METHOD;
 					} else if( (tiaMeth = getTiaSpecial(idbuf)) ) {
 						yylval.tiaMethod = tiaMeth;
 						return TIA_METHOD;

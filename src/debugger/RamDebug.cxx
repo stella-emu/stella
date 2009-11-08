@@ -23,7 +23,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamDebug::RamDebug(Debugger& dbg, Console& console)
-  : DebuggerSystem(dbg, console)
+  : DebuggerSystem(dbg, console),
+    myReadFromWritePortAddress(0)
 {
   // Zero-page RAM is always present
   addRamArea(0x80, 128, 0, 0);
@@ -78,6 +79,22 @@ uInt8 RamDebug::read(uInt16 addr)
 void RamDebug::write(uInt16 addr, uInt8 value)
 {
   mySystem.poke(addr, value);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int RamDebug::readFromWritePort()
+{
+  int retval = myReadFromWritePortAddress;
+  if(retval > 0)
+    myReadFromWritePortAddress = 0;
+
+  return retval;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamDebug::setReadFromWritePort(uInt16 address)
+{
+  myReadFromWritePortAddress = address;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

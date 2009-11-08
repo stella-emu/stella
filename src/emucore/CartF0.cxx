@@ -20,22 +20,22 @@
 #include <cstring>
 
 #include "System.hxx"
-#include "CartMB.hxx"
+#include "CartF0.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMB::CartridgeMB(const uInt8* image)
+CartridgeF0::CartridgeF0(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMB::~CartridgeMB()
+CartridgeF0::~CartridgeF0()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::reset()
+void CartridgeF0::reset()
 {
   // Upon reset we switch to bank 1
   myCurrentBank = 0;
@@ -43,7 +43,7 @@ void CartridgeMB::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::install(System& system)
+void CartridgeF0::install(System& system)
 {
   mySystem = &system;
   uInt16 shift = mySystem->pageShift();
@@ -68,7 +68,7 @@ void CartridgeMB::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeMB::peek(uInt16 address)
+uInt8 CartridgeF0::peek(uInt16 address)
 {
   address &= 0x0FFF;
 
@@ -80,7 +80,7 @@ uInt8 CartridgeMB::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::poke(uInt16 address, uInt8)
+void CartridgeF0::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -90,7 +90,7 @@ void CartridgeMB::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::incbank()
+void CartridgeF0::incbank()
 {
   if(myBankLocked) return;
 
@@ -116,7 +116,7 @@ void CartridgeMB::incbank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMB::bank(uInt16 bank)
+void CartridgeF0::bank(uInt16 bank)
 {
   if(myBankLocked) return;
 
@@ -125,33 +125,33 @@ void CartridgeMB::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMB::bank()
+int CartridgeF0::bank()
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMB::bankCount()
+int CartridgeF0::bankCount()
 {
   return 16;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::patch(uInt16 address, uInt8 value)
+bool CartridgeF0::patch(uInt16 address, uInt8 value)
 {
   myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeMB::getImage(int& size)
+uInt8* CartridgeF0::getImage(int& size)
 {
   size = 65536;
   return &myImage[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::save(Serializer& out) const
+bool CartridgeF0::save(Serializer& out) const
 {
   const string& cart = name();
 
@@ -163,7 +163,7 @@ bool CartridgeMB::save(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: CartridgeMB::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF0::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -171,7 +171,7 @@ bool CartridgeMB::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeMB::load(Serializer& in)
+bool CartridgeF0::load(Serializer& in)
 {
   const string& cart = name();
 
@@ -184,7 +184,7 @@ bool CartridgeMB::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: CartridgeMB::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF0::load" << endl << "  " << msg << endl;
     return false;
   }
 

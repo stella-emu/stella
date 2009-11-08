@@ -16,8 +16,8 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGEFASC_HXX
-#define CARTRIDGEFASC_HXX
+#ifndef CARTRIDGEFA_HXX
+#define CARTRIDGEFA_HXX
 
 class System;
 
@@ -28,15 +28,10 @@ class System;
   Cartridge class used for CBS' RAM Plus cartridges.  There are
   three 4K banks and 256 bytes of RAM.
 
-  Note that while the bankswitch type for this class has historically
-  been 'FASC', one must now use 'FA' to activate it.
-  This brings the bankswitch names in line with those used in z26 and
-  the various cart programming apps for KrokCart and Harmony/Melody.
-
   @author  Bradford W. Mott
   @version $Id$
 */
-class CartridgeFASC : public Cartridge
+class CartridgeFA : public Cartridge
 {
   public:
     /**
@@ -44,12 +39,12 @@ class CartridgeFASC : public Cartridge
 
       @param image Pointer to the ROM image
     */
-    CartridgeFASC(const uInt8* image);
+    CartridgeFA(const uInt8* image);
  
     /**
       Destructor
     */
-    virtual ~CartridgeFASC();
+    virtual ~CartridgeFA();
 
   public:
     /**

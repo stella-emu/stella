@@ -23,7 +23,6 @@
 #include <sstream>
 
 class Cartridge;
-class System;
 class Properties;
 class Settings;
 
@@ -79,7 +78,9 @@ class Cartridge : public Device
     bool save(ofstream& out);
 
     /**
-      Lock/unlock bankswitching capability.
+      Lock/unlock bankswitching capability.  The debugger will lock
+      the banks before querying the cart state, otherwise reading values
+      could inadvertantly cause a bankswitch to occur.
     */
     void lockBank()   { myBankLocked = true;  }
     void unlockBank() { myBankLocked = false; }
@@ -171,6 +172,14 @@ class Cartridge : public Device
       @param woffset  Offset to use when writing to RAM (write port)
     */
     void registerRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
+
+    /**
+      Indicate that an illegal read from the write port has occurred.
+      This message is sent to the debugger (if support exists).
+
+      @param address  The write port address where the read occurred
+    */
+    void triggerReadFromWritePort(uInt16 address);
 
   private:
     /**

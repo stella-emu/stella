@@ -16,15 +16,15 @@ MODULE_OBJS := \
 	src/emucore/CartE7.o \
 	src/emucore/CartEF.o \
 	src/emucore/CartEFSC.o \
+	src/emucore/CartF0.o \
 	src/emucore/CartF4.o \
 	src/emucore/CartF4SC.o \
 	src/emucore/CartF6.o \
 	src/emucore/CartF6SC.o \
 	src/emucore/CartF8.o \
 	src/emucore/CartF8SC.o \
-	src/emucore/CartFASC.o \
+	src/emucore/CartFA.o \
 	src/emucore/CartFE.o \
-	src/emucore/CartMB.o \
 	src/emucore/CartMC.o \
 	src/emucore/CartSB.o \
 	src/emucore/CartUA.o \

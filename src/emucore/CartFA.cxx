@@ -20,10 +20,10 @@
 #include <cstring>
 
 #include "System.hxx"
-#include "CartFASC.hxx"
+#include "CartFA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFASC::CartridgeFASC(const uInt8* image)
+CartridgeFA::CartridgeFA(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 12288);
@@ -33,12 +33,12 @@ CartridgeFASC::CartridgeFASC(const uInt8* image)
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFASC::~CartridgeFASC()
+CartridgeFA::~CartridgeFA()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFASC::reset()
+void CartridgeFA::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 256; ++i)
@@ -49,7 +49,7 @@ void CartridgeFASC::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFASC::install(System& system)
+void CartridgeFA::install(System& system)
 {
   mySystem = &system;
   uInt16 shift = mySystem->pageShift();
@@ -91,7 +91,7 @@ void CartridgeFASC::install(System& system)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeFASC::peek(uInt16 address)
+uInt8 CartridgeFA::peek(uInt16 address)
 {
   address &= 0x0FFF;
 
@@ -122,15 +122,20 @@ uInt8 CartridgeFASC::peek(uInt16 address)
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked) return value;
-    else return myRAM[address] = value;
+    if(myBankLocked)
+      return value;
+    else
+    {
+      triggerReadFromWritePort(address);
+      return myRAM[address] = value;
+    }
   }  
   else
     return myImage[(myCurrentBank << 12) + address];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFASC::poke(uInt16 address, uInt8)
+void CartridgeFA::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -162,7 +167,7 @@ void CartridgeFASC::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFASC::bank(uInt16 bank)
+void CartridgeFA::bank(uInt16 bank)
 {
   if(myBankLocked) return;
 
@@ -187,33 +192,33 @@ void CartridgeFASC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeFASC::bank()
+int CartridgeFA::bank()
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeFASC::bankCount()
+int CartridgeFA::bankCount()
 {
   return 3;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFASC::patch(uInt16 address, uInt8 value)
+bool CartridgeFA::patch(uInt16 address, uInt8 value)
 {
   myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeFASC::getImage(int& size)
+uInt8* CartridgeFA::getImage(int& size)
 {
   size = 12288;
   return &myImage[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFASC::save(Serializer& out) const
+bool CartridgeFA::save(Serializer& out) const
 {
   const string& cart = name();
 
@@ -230,7 +235,7 @@ bool CartridgeFASC::save(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: CartridgeFASC::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFA::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -238,7 +243,7 @@ bool CartridgeFASC::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeFASC::load(Serializer& in)
+bool CartridgeFA::load(Serializer& in)
 {
   const string& cart = name();
 
@@ -255,7 +260,7 @@ bool CartridgeFASC::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: CartridgeFASC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFA::load" << endl << "  " << msg << endl;
     return false;
   }
 

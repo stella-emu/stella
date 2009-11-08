@@ -21,8 +21,9 @@
 
 #include "bspf.hxx"
 #include "CpuDebug.hxx"
-#include "Debugger.hxx"
+#include "RamDebug.hxx"
 #include "TIADebug.hxx"
+#include "Debugger.hxx"
 #include "Expression.hxx"
 
 /**
@@ -256,6 +257,17 @@ class PlusExpression : public Expression
   public:
     PlusExpression(Expression* left, Expression* right) : Expression(left, right) {}
     uInt16 evaluate() { return myLHS->evaluate() + myRHS->evaluate(); }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+class RamMethodExpression : public Expression
+{
+  public:
+    RamMethodExpression(RAMDEBUG_INT_METHOD method) : Expression(0, 0), myMethod(method) {}
+    uInt16 evaluate() { return CALL_RAMDEBUG_METHOD(myMethod); }
+
+  private:
+    RAMDEBUG_INT_METHOD myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

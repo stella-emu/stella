@@ -931,8 +931,9 @@ void DebuggerParser::executeHelp()
   commandResult += "\nBuilt-in functions:\n";
   commandResult += debugger->builtinHelp();
   commandResult += "\nPseudo-registers:\n";
-  commandResult += "_scan     Current scanline count\n";
   commandResult += "_bank     Currently selected bank\n";
+  commandResult += "_rwport   Read from a write port was triggered\n";
+  commandResult += "_scan     Current scanline count\n";
   commandResult += "_fcount   Number of frames since emulation started\n";
   commandResult += "_cclocks  Color clocks on current scanline\n";
   commandResult += "_vsync    Whether vertical sync is enabled (1 or 0)\n";

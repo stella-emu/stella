@@ -22,7 +22,9 @@
 #include "System.hxx"
 #include "CartMC.hxx"
 
-// TODO - properly handle read from write port functionality
+// TODO - much more testing of this scheme is required
+//        No test ROMs exist as of 2009-11-08, so we can't be sure how
+//        accurate the emulation is
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
@@ -141,8 +143,16 @@ uInt8 CartridgeMC::peek(uInt16 address)
       else
       {
         // Oops, reading from the write port of the RAM block!
-        myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = 0;
-        return 0;
+        // Reading from the write port triggers an unwanted write
+        uInt8 value = mySystem->getDataBusState(0xFF);
+
+        if(myBankLocked)
+          return value;
+        else
+        {
+          triggerReadFromWritePort(address);
+          return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
+        }
       }
     }
   }  

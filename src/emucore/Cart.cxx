@@ -34,16 +34,16 @@
 #include "CartE7.hxx"
 #include "CartEF.hxx"
 #include "CartEFSC.hxx"
+#include "CartF0.hxx"
 #include "CartF4.hxx"
 #include "CartF4SC.hxx"
 #include "CartF6.hxx"
 #include "CartF6SC.hxx"
 #include "CartF8.hxx"
 #include "CartF8SC.hxx"
-#include "CartFASC.hxx"
+#include "CartFA.hxx"
 #include "CartFE.hxx"
 #include "CartMC.hxx"
-#include "CartMB.hxx"
 #include "CartCV.hxx"
 #include "CartUA.hxx"
 #include "CartSB.hxx"
@@ -51,6 +51,8 @@
 #include "MD5.hxx"
 #include "Props.hxx"
 #include "Settings.hxx"
+#include "Debugger.hxx"
+#include "RamDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
@@ -163,13 +165,13 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "F8SC")
     cartridge = new CartridgeF8SC(image);
   else if(type == "FA" || type == "FASC")
-    cartridge = new CartridgeFASC(image);
+    cartridge = new CartridgeFA(image);
   else if(type == "FE")
     cartridge = new CartridgeFE(image);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size);
   else if(type == "F0" || type == "MB")
-    cartridge = new CartridgeMB(image);
+    cartridge = new CartridgeF0(image);
   else if(type == "CV")
     cartridge = new CartridgeCV(image, size);
   else if(type == "UA")
@@ -255,6 +257,15 @@ void Cartridge::registerRamArea(uInt16 start, uInt16 size,
   area.roffset = roffset;
   area.woffset = woffset;
   myRamAreaList.push_back(area);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::triggerReadFromWritePort(uInt16 address)
+{
+#ifdef DEBUGGER_SUPPORT
+  if(&Debugger::debugger().ramDebug())
+    Debugger::debugger().ramDebug().setReadFromWritePort(address);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -24,6 +24,9 @@
 #include "TIA.hxx"
 #include "Cart4A50.hxx"
 
+// TODO - properly handle read from write port functionality
+//        Note: do r/w port restrictions even exist for this scheme??
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size)
 {
