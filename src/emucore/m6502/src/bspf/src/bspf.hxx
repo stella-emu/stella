@@ -104,9 +104,9 @@
 
 // CPU architecture type
 // This isn't complete yet, but takes care of all the major platforms
-#if defined(__i386__)
+#if defined(__i386__) || defined(_M_IX86)
   #define BSPF_ARCH "i386"
-#elif defined(__x86_64__)
+#elif defined(__x86_64__) || defined(_WIN64)
   #define BSPF_ARCH "x86_64"
 #elif defined(__powerpc__) || defined(__ppc__)
   #define BSPF_ARCH "ppc"
