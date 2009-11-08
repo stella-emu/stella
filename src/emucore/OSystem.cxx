@@ -65,6 +65,7 @@
 #include "Console.hxx"
 #include "Random.hxx"
 #include "StateManager.hxx"
+#include "Version.hxx"
 
 #include "OSystem.hxx"
 
@@ -114,7 +115,7 @@ OSystem::OSystem()
   ostringstream info;
   const SDL_version* ver = SDL_Linked_Version();
 
-  info << "Build " << "TODO" << ", using ";
+  info << "Build " << STELLA_BUILD << ", using ";
   info << "SDL " << (int)ver->major << "." << (int)ver->minor << "." << (int)ver->patch << " ";
   info << "[" << " " << "]";
   myBuildInfo = info.str();

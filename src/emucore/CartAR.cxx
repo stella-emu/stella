@@ -53,7 +53,7 @@ void CartridgeAR::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 6 * 1024; ++i)
-    myImage[i] = myRandGenerator.next();
+    myImage[i] = mySystem->randGenerator().next();
 
   // Initialize SC BIOS ROM
   initializeROM();
@@ -300,7 +300,7 @@ void CartridgeAR::initializeROM()
 
   // The accumulator should contain a random value after exiting the
   // SC BIOS code - a value placed in offset 281 will be stored in A
-  ourDummyROMCode[281] = myRandGenerator.next();
+  ourDummyROMCode[281] = mySystem->randGenerator().next();
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
   for(uInt32 i = 0; i < 2048; ++i)

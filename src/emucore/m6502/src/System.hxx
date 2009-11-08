@@ -28,6 +28,7 @@ class NullDevice;
 #include "bspf.hxx"
 #include "Device.hxx"
 #include "NullDev.hxx"
+#include "Random.hxx"
 #include "Serializable.hxx"
 
 /**
@@ -139,6 +140,16 @@ class System : public Serializable
     }
 
     /**
+      Answer the random generator attached to the system.
+
+      @return The random generator
+    */
+    Random& randGenerator()
+    {
+      return *myRandom;
+    }
+
+    /**
       Get the null device associated with the system.  Every system 
       has a null device associated with it that's used by pages which 
       aren't mapped to "real" devices.
@@ -215,11 +226,33 @@ class System : public Serializable
       Get the current state of the data bus in the system.  The current
       state is the last data that was accessed by the system.
 
-      @return the data bus state
+      @return  The data bus state
     */  
     inline uInt8 getDataBusState() const
     {
       return myDataBusState;
+    }
+
+    /**
+      Get the current state of the data bus in the system, taking into
+      account that certain bits are in Z-state (undriven).  In those
+      cases, the bits are floating, but will usually be the same as the
+      last data bus value (the 'usually' is emulated by randomly driving
+      certain bits high).
+
+      However, some CMOS EPROM chips always drive Z-state bits high.
+      This is emulated by hmask, which specifies to push a specific
+      Z-state bit high.
+
+      @param zmask  The bits which are in Z-state
+      @param hmask  The bits which should always be driven high
+      @return  The data bus state
+    */  
+    inline uInt8 getDataBusState(uInt8 zmask, uInt8 hmask = 0x00)
+    {
+      // For the pins that are floating, randomly decide which are high or low
+      // Otherwise, they're specifically driven high
+      return (myDataBusState | (myRandom->next() | hmask)) & zmask;
     }
 
     /**
@@ -351,6 +384,10 @@ class System : public Serializable
 
     // TIA device attached to the system or the null pointer
     TIA* myTIA;
+
+    // Many devices need a source of random numbers, usually for emulating
+    // unknown/undefined behaviour
+    Random* myRandom;
 
     // Number of system cycles executed since the last reset
     uInt32 myCycles;

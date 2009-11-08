@@ -563,7 +563,8 @@ class TIA : public Device
     bool myAllowHMOVEBlanks;
 
     // Indicates if unused TIA pins are floating on a peek
-    bool myFloatTIAOutputPins;
+    // Otherwise, they're forced high
+    uInt8 myOutputPinsMask;
 
     // Bitmap of the objects that should be considered while drawing
     uInt8 myEnabledObjects;

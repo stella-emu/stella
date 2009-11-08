@@ -50,7 +50,7 @@ void Cartridge3E::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 32768; ++i)
-    myRam[i] = myRandGenerator.next();
+    myRam[i] = mySystem->randGenerator().next();
 
   // We'll map bank 0 into the first segment upon reset
   bank(0);
@@ -101,10 +101,19 @@ uInt8 Cartridge3E::peek(uInt16 address)
   {
     if(myCurrentBank < 256)
       return myImage[(address & 0x07FF) + (myCurrentBank << 11)];
-    else if(address < 0x400)  // Read from write port gives undefined values
-      return myRandGenerator.next();
     else
-      return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)];
+    {
+      if(address < 0x0400)
+        return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)];
+      else
+      {
+        // Reading from the write port triggers an unwanted write
+        uInt8 value = mySystem->getDataBusState(0xFF);
+
+        if(myBankLocked) return value;
+        else return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
+      }
+    }
   }
   else
   {

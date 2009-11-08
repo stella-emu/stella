@@ -30,8 +30,6 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
   myROM = new uInt8[mySize];
   memcpy(myROM, image, mySize);
 
-  reset();
-
   // This cart contains 1024 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 1024, 0x00, 0x400);
 }
@@ -52,7 +50,7 @@ void CartridgeCV::reset()
 
     // Initialize RAM with random values
     for(uInt32 i = 0; i < 1024; ++i)
-      myRAM[i] = myRandGenerator.next();
+      myRAM[i] = mySystem->randGenerator().next();
   }
   else if(mySize == 4096)
   {
@@ -110,13 +108,13 @@ void CartridgeCV::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeCV::peek(uInt16 address)
 {
-  // Reading from the write port triggers an unwanted write
-  // The value written to RAM is somewhat undefined, so we use 0
-  // Thanks to Kroko of AtariAge for this advice and code idea
   if((address & 0x0FFF) < 0x0800)  // Write port is at 0xF400 - 0xF800 (1024 bytes)
   {                                // Read port is handled in ::install()
-    if(myBankLocked) return 0;
-    else return myRAM[address & 0x03FF] = 0;
+    // Reading from the write port triggers an unwanted write
+    uInt8 value = mySystem->getDataBusState(0xFF);
+
+    if(myBankLocked) return value;
+    else return myRAM[address & 0x03FF] = value;
   }  
   else
   {

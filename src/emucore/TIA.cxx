@@ -169,7 +169,9 @@ void TIA::reset()
   myDumpEnabled = false;
   myDumpDisabledCycle = 0;
 
-  myFloatTIAOutputPins = mySettings.getBool("tiafloat");
+  // The mask indicates which pins should be driven high
+  // If a pin is floating (the default), then its mask value is 0
+  myOutputPinsMask = mySettings.getBool("tiafloat") ? 0x00 : 0x3F;
 
   myFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
@@ -1233,9 +1235,9 @@ uInt8 TIA::peek(uInt16 addr)
   }
 
   // On certain CMOS EPROM chips the unused TIA pins on a read are not
-  // floating but pulled high. Programmers might want to check their
-  // games for compatibility, so we make this optional. 
-  value |= myFloatTIAOutputPins ? (mySystem->getDataBusState() & 0x3F) : 0x3F;
+  // floating but pulled high.  Programmers might want to check their
+  // games for compatibility, so we make this optional.
+  value |= ((mySystem->getDataBusState() | myOutputPinsMask) & 0x3F);
 
   return value;
 }

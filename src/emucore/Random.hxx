@@ -66,7 +66,6 @@ class Random
     // Indicates the next random number
     uInt32 myValue;
 
-  private:
     // Set the OSystem we're using
     static const OSystem* ourSystem;
 };

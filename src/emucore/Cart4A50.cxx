@@ -46,7 +46,7 @@ void Cartridge4A50::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 32768; ++i)
-    myRAM[i] = myRandGenerator.next();
+    myRAM[i] = mySystem->randGenerator().next();
 
   mySliceLow = mySliceMiddle = mySliceHigh = 0;
   myIsRomLow = myIsRomMiddle = myIsRomHigh = true;

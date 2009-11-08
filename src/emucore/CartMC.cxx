@@ -22,6 +22,8 @@
 #include "System.hxx"
 #include "CartMC.hxx"
 
+// TODO - properly handle read from write port functionality
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
   : mySlot3Locked(false)
@@ -46,7 +48,7 @@ void CartridgeMC::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 32768; ++i)
-    myRAM[i] = myRandGenerator.next();
+    myRAM[i] = mySystem->randGenerator().next();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

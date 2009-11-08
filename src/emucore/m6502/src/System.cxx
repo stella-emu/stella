@@ -41,6 +41,9 @@ System::System(uInt16 n, uInt16 m)
   // Make sure the arguments are reasonable
   assert((1 <= m) && (m <= n) && (n <= 16));
 
+  // Create a new random number generator
+  myRandom = new Random();
+
   // Allocate page table
   myPageAccessTable = new PageAccess[myNumberOfPages];
 
@@ -72,6 +75,9 @@ System::~System()
 
   // Free my page access table
   delete[] myPageAccessTable;
+
+  // Free the random number generator
+  delete myRandom;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -46,7 +46,7 @@ void CartridgeE7::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 2048; ++i)
-    myRAM[i] = myRandGenerator.next();
+    myRAM[i] = mySystem->randGenerator().next();
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
@@ -104,11 +104,14 @@ uInt8 CartridgeE7::peek(uInt16 address)
     bankRAM(address & 0x0003);
   }
 
-  // NOTE: The following does not handle reading from RAM, however,
-  // this function should never be called for RAM because of the
-  // way page accessing has been setup
-  if((bank() == 7) && (address < 0x400))
-    return myRandGenerator.next(); // Read from write port gives undefined values
+  if((address < 0x0400) && (bank() == 7))
+  {
+    // Reading from the write port triggers an unwanted write
+    uInt8 value = mySystem->getDataBusState(0xFF);
+
+    if(myBankLocked) return value;
+    else return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
+  }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)];
 }

@@ -42,7 +42,7 @@ void CartridgeEFSC::reset()
 {
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 128; ++i)
-    myRAM[i] = myRandGenerator.next();
+    myRAM[i] = mySystem->randGenerator().next();
 
   // Upon reset we switch to bank 1
   bank(1);
@@ -99,13 +99,13 @@ uInt8 CartridgeEFSC::peek(uInt16 address)
   if((address >= 0x0FE0) && (address <= 0x0FEF))
     bank(address - 0x0FE0);
 
-  // Reading from the write port triggers an unwanted write
-  // The value written to RAM is somewhat undefined, so we use 0
-  // Thanks to Kroko of AtariAge for this advice and code idea
   if(address < 0x0080)  // Write port is at 0xF000 - 0xF080 (128 bytes)
   {
-    if(myBankLocked) return 0;
-    else return myRAM[address] = 0;
+    // Reading from the write port triggers an unwanted write
+    uInt8 value = mySystem->getDataBusState(0xFF);
+
+    if(myBankLocked) return value;
+    else return myRAM[address] = value;
   }  
   else
     return myImage[(myCurrentBank << 12) + address];
