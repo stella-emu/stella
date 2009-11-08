@@ -102,6 +102,18 @@
   #define BSPF_vsnprintf vsnprintf
 #endif
 
+// CPU architecture type
+// This isn't complete yet, but takes care of all the major platforms
+#if defined(__i386__)
+  #define BSPF_ARCH "i386"
+#elif defined(__x86_64__)
+  #define BSPF_ARCH "x86_64"
+#elif defined(__powerpc__) || defined(__ppc__)
+  #define BSPF_ARCH "ppc"
+#else
+  #define BSPF_ARCH "NOARCH"
+#endif
+
 // Some convenience functions
 template<typename T> inline void BSPF_swap(T &a, T &b) { T tmp = a; a = b; b = tmp; }
 template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }

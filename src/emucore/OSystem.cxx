@@ -117,7 +117,7 @@ OSystem::OSystem()
 
   info << "Build " << STELLA_BUILD << ", using ";
   info << "SDL " << (int)ver->major << "." << (int)ver->minor << "." << (int)ver->patch << " ";
-  info << "[" << " " << "]";
+  info << "[" << BSPF_ARCH << "]";
   myBuildInfo = info.str();
 
 #if 0
