@@ -518,10 +518,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             }
             else
               instance().frameBuffer().showMessage(
-                  "Error creating console (screen too small)", kMiddleCenter);
+                  "Error creating console (screen too small)", kMiddleCenter, true);
           }
           else
-            instance().frameBuffer().showMessage("Not a valid ROM file", kMiddleCenter);
+            instance().frameBuffer().showMessage("Not a valid ROM file",
+                                                 kMiddleCenter, true);
         }
       }
       break;

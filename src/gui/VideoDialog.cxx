@@ -214,6 +214,12 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myGrabmouseCheckbox);
   ypos += lineHeight + 4;
 
+  // Show UI messages onscreen
+  myUIMessagesCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                            "Show UI messages");
+  wid.push_back(myUIMessagesCheckbox);
+  ypos += lineHeight + 4;
+
   // Center window (in windowed mode)
   myCenterCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                         "Center window (*)");
@@ -413,6 +419,9 @@ void VideoDialog::loadConfig()
   // Grab mouse
   myGrabmouseCheckbox->setState(instance().settings().getBool("grabmouse"));
 
+  // Show UI messages
+  myUIMessagesCheckbox->setState(instance().settings().getBool("uimessages"));
+
   // Center window
   myCenterCheckbox->setState(instance().settings().getBool("center"));
 
@@ -508,6 +517,9 @@ void VideoDialog::saveConfig()
   instance().settings().setBool("grabmouse", myGrabmouseCheckbox->getState());
   instance().frameBuffer().setCursorState();
 
+  // Show UI messages
+  instance().settings().setBool("uimessages", myUIMessagesCheckbox->getState());
+
   // Center window
   instance().settings().setBool("center", myCenterCheckbox->getState());
 
@@ -552,6 +564,7 @@ void VideoDialog::setDefaults()
   myGLStretchCheckbox->setState(false);
   myUseVSyncCheckbox->setState(true);
   myGrabmouseCheckbox->setState(false);
+  myUIMessagesCheckbox->setState(true);
   myCenterCheckbox->setState(true);
   myFastSCBiosCheckbox->setState(false);
 

@@ -57,6 +57,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
   setInternal("timing", "sleep");
+  setInternal("uimessages", "true");
 
   // TV filter options
   setInternal("tv_tex", "off");
@@ -114,7 +115,7 @@ Settings::Settings(OSystem* osystem)
   // Misc options
   setInternal("autoslot", "false");
   setInternal("showinfo", "false");
-  setInternal("tiafloat", "true");
+  setInternal("tiadriven", "false");
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("audiofirst", "true");
@@ -289,7 +290,6 @@ void Settings::validate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::usage()
 {
-#ifndef MAC_OSX
   cout << endl
     << "Stella version " << STELLA_VERSION << endl
     << endl
@@ -339,6 +339,7 @@ void Settings::usage()
     << "  -colorloss    <1|0>          Enable PAL color-loss effect\n"
     << "  -framerate    <number>       Display the given number of frames per second (0 to auto-calculate)\n"
     << "  -timing       <sleep|busy>   Use the given type of wait between frames\n"
+    << "  -uimessages   <1|0>          Show onscreen UI messages for different events\n"
     << endl
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
@@ -395,7 +396,7 @@ void Settings::usage()
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
     << "   -stats        <1|0>         Overlay console info during emulation\n"
-    << "   -tiafloat     <1|0>         Set unused TIA pins floating on a read/peek\n"
+    << "   -tiadriven    <1|0>         Drive unused TIA pins randomly value on a read/peek\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"
@@ -415,7 +416,6 @@ void Settings::usage()
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
   #endif
     << endl;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

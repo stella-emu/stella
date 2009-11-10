@@ -71,6 +71,7 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myColorLossCheckbox;
     CheckboxWidget*   myGLStretchCheckbox;
     CheckboxWidget*   myUseVSyncCheckbox;
+    CheckboxWidget*   myUIMessagesCheckbox;
     CheckboxWidget*   myCenterCheckbox;
     CheckboxWidget*   myGrabmouseCheckbox;
     CheckboxWidget*   myFastSCBiosCheckbox;

@@ -437,7 +437,8 @@ fallback:
     if(ret)
     {
       setFramerate(60);
-      myFrameBuffer->showMessage("OpenGL mode failed, fallback to software", kMiddleCenter);
+      myFrameBuffer->showMessage("OpenGL mode failed, fallback to software",
+                                 kMiddleCenter, true);
     }
     return ret;
   }

@@ -1927,7 +1927,8 @@ bool EventHandler::enterDebugMode()
   {
     myOSystem->debugger().setQuitState();
     setEventState(S_EMULATE);
-    myOSystem->frameBuffer().showMessage("Debugger window too large");
+    myOSystem->frameBuffer().showMessage("Debugger window too large",
+                                         kBottomCenter, true);
     return false;
   }
   myOverlay->reStack();
@@ -1935,7 +1936,8 @@ bool EventHandler::enterDebugMode()
   myOSystem->sound().mute(true);
   myEvent->clear();
 #else
-  myOSystem->frameBuffer().showMessage("Debugger unsupported");
+  myOSystem->frameBuffer().showMessage("Debugger unsupported",
+                                       kBottomCenter, true);
 #endif
 
   return true;

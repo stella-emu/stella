@@ -271,8 +271,12 @@ void FrameBuffer::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message, MessagePosition position,
-                              uInt32 color)
+                              bool force, uInt32 color)
 {
+  // Only show messages if they've been enabled
+  if(!(force || myOSystem->settings().getBool("uimessages")))
+    return;
+
   // Erase old messages on the screen
   if(myMsg.counter > 0)
   {

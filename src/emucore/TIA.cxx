@@ -169,9 +169,8 @@ void TIA::reset()
   myDumpEnabled = false;
   myDumpDisabledCycle = 0;
 
-  // The mask indicates which pins should be driven high
-  // If a pin is floating (the default), then its mask value is 0
-  myOutputPinsMask = mySettings.getBool("tiafloat") ? 0x00 : 0x3F;
+  // Should undriven pins be randomly driven high or low?
+  myTIAPinsDriven = mySettings.getBool("tiadriven");
 
   myFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
@@ -1162,83 +1161,93 @@ uInt8 TIA::peek(uInt16 addr)
   // Update frame to current color clock before we look at anything!
   updateFrame(mySystem->cycles() * 3);
 
-  uInt8 value = 0x00;
+  // If pins are undriven, we start with the last databus value
+  // Otherwise, there is some randomness injected into the mix
+  uInt8 value = myTIAPinsDriven ? mySystem->getDataBusState(0xFF) :
+                                  mySystem->getDataBusState();
   uInt16 collision = myCollision & (uInt16)myCollisionEnabledMask;
 
   switch(addr & 0x000f)
   {
     case CXM0P:
-      value = ((collision & Cx_M0P1) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_M0P1) ? 0x80 : 0x00) |
               ((collision & Cx_M0P0) ? 0x40 : 0x00);
       break;
 
     case CXM1P:
-      value = ((collision & Cx_M1P0) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_M1P0) ? 0x80 : 0x00) |
               ((collision & Cx_M1P1) ? 0x40 : 0x00);
       break;
 
     case CXP0FB:
-      value = ((collision & Cx_P0PF) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_P0PF) ? 0x80 : 0x00) |
               ((collision & Cx_P0BL) ? 0x40 : 0x00);
       break;
 
     case CXP1FB:
-      value = ((collision & Cx_P1PF) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_P1PF) ? 0x80 : 0x00) |
               ((collision & Cx_P1BL) ? 0x40 : 0x00);
       break;
 
     case CXM0FB:
-      value = ((collision & Cx_M0PF) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_M0PF) ? 0x80 : 0x00) |
               ((collision & Cx_M0BL) ? 0x40 : 0x00);
       break;
 
     case CXM1FB:
-      value = ((collision & Cx_M1PF) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_M1PF) ? 0x80 : 0x00) |
               ((collision & Cx_M1BL) ? 0x40 : 0x00);
       break;
 
     case CXBLPF:
-      value = (collision & Cx_BLPF) ? 0x80 : 0x00;
+      value = (value & 0x7F) | ((collision & Cx_BLPF) ? 0x80 : 0x00);
       break;
 
     case CXPPMM:
-      value = ((collision & Cx_P0P1) ? 0x80 : 0x00) |
+      value = (value & 0x3F) |
+              ((collision & Cx_P0P1) ? 0x80 : 0x00) |
               ((collision & Cx_M0M1) ? 0x40 : 0x00);
       break;
 
     case INPT0:
-      value = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Nine));
+      value = (value & 0x7F) |
+        dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Nine));
       break;
 
     case INPT1:
-      value = dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Five));
+      value = (value & 0x7F) |
+        dumpedInputPort(myConsole.controller(Controller::Left).read(Controller::Five));
       break;
 
     case INPT2:
-      value = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Nine));
+      value = (value & 0x7F) |
+        dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Nine));
       break;
 
     case INPT3:
-      value = dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Five));
+      value = (value & 0x7F) |
+        dumpedInputPort(myConsole.controller(Controller::Right).read(Controller::Five));
       break;
 
     case INPT4:
-      value = myConsole.controller(Controller::Left).read(Controller::Six) ? 0x80 : 0x00;
+      value = (value & 0x7F) |
+        (myConsole.controller(Controller::Left).read(Controller::Six) ? 0x80 : 0x00);
       break;
 
     case INPT5:
-      value = myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00;
+      value = (value & 0x7F) |
+        (myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00);
       break;
 
     default:
       break;
   }
-
-  // On certain CMOS EPROM chips the unused TIA pins on a read are not
-  // floating but pulled high.  Programmers might want to check their
-  // games for compatibility, so we make this optional.
-  value |= ((mySystem->getDataBusState() | myOutputPinsMask) & 0x3F);
-
   return value;
 }
 
