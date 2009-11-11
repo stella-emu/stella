@@ -19,7 +19,6 @@
 #ifndef CONSOLE_HXX
 #define CONSOLE_HXX
 
-class Console;
 class Controller;
 class Event;
 class Switches;

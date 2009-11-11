@@ -198,9 +198,7 @@ void Debugger::setConsole(Console* console)
 
   // Register any RAM areas in the Cartridge
   // Zero-page RAM is automatically recognized by RamDebug
-  const Cartridge::RamAreaList& areas = myConsole->cartridge().ramAreas();
-  for(Cartridge::RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
-    myRamDebug->addRamArea(i->start, i->size, i->roffset, i->woffset);
+  myRamDebug->addRamArea(myConsole->cartridge().ramAreas());
 
   delete myRiotDebug;
   myRiotDebug = new RiotDebug(*this, *myConsole);

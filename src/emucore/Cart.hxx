@@ -30,6 +30,13 @@ class Settings;
 #include "Array.hxx"
 #include "Device.hxx"
 
+#ifdef DEBUGGER_SUPPORT
+struct RamArea {
+  uInt16 start;  uInt16 size;  uInt16 roffset;  uInt16 woffset;
+};
+typedef Common::Array<RamArea> RamAreaList;
+#endif
+
 /**
   A cartridge is a device which contains the machine code for a 
   game and handles any bankswitching performed by the cartridge.
@@ -85,20 +92,9 @@ class Cartridge : public Device
     void lockBank()   { myBankLocked = true;  }
     void unlockBank() { myBankLocked = false; }
 
-  public:
-    /**
-      The following list contains addressable areas of ROM that are mapped
-      to RAM (usually Superchip, but there are other types).  Since such
-      RAM is normally mapped in at different addresses for read and write
-      ports, read and write offsets must be considered.
-
-      @return  List of addressable RAM areas (can be empty)
-    */
-    struct RamArea {
-      uInt16 start;  uInt16 size;  uInt16 roffset;  uInt16 woffset;
-    };
-    typedef Common::Array<RamArea> RamAreaList;
+#ifdef DEBUGGER_SUPPORT
     const RamAreaList& ramAreas() { return myRamAreaList; }
+#endif
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -172,14 +168,6 @@ class Cartridge : public Device
       @param woffset  Offset to use when writing to RAM (write port)
     */
     void registerRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
-
-    /**
-      Indicate that an illegal read from the write port has occurred.
-      This message is sent to the debugger (if support exists).
-
-      @param address  The write port address where the read occurred
-    */
-    void triggerReadFromWritePort(uInt16 address);
 
   private:
     /**
@@ -292,9 +280,10 @@ class Cartridge : public Device
     bool myBankLocked;
 
   private:
+#ifdef DEBUGGER_SUPPORT
     // Contains RamArea entries for those carts with accessible RAM.
     RamAreaList myRamAreaList;
-
+#endif
     // Contains info about this cartridge in string format
     static string myAboutString;
 

@@ -111,13 +111,8 @@ uInt8 CartridgeE7::peek(uInt16 address)
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked)
-      return value;
-    else
-    {
-      triggerReadFromWritePort(address);
-      return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
-    }
+    if(myBankLocked) return value;
+    else return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
   }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)];

@@ -28,7 +28,7 @@
 
 namespace GUI {
 
-/*! 	@brief simple class for handling both 2D position and size
+/*! @brief simple class for handling both 2D position and size
 
 	This small class is an helper for position and size values.
 */

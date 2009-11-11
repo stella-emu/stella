@@ -23,6 +23,7 @@ class System;
 
 #include "bspf.hxx"
 #include "Array.hxx"
+#include "Cart.hxx"
 #include "DebuggerSystem.hxx"
 
 // pointer types for RamDebug instance methods
@@ -53,6 +54,7 @@ class RamDebug : public DebuggerSystem
       @param woffset  Offset to use when writing to RAM (write port)
     */
     void addRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
+    void addRamArea(const RamAreaList& areas);
 
     const DebuggerState& getState();
     const DebuggerState& getOldState() { return myOldState; }
@@ -66,22 +68,15 @@ class RamDebug : public DebuggerSystem
     uInt8 read(uInt16 addr);
     void write(uInt16 addr, uInt8 value);
 
-    // These methods are used by the debugger when we wish to know
-    // if an illegal read from a write port has been performed.
-    // It's up to each Cartridge to report the error, and a
-    // conditional breakpoint must be set in the debugger to check
-    // for occurrences of this.
-    //
-    // Note that each time readFromWritePort() returns a hit, the status
-    // is reset.
+    // Return the address at which an invalid read was performed in a
+    // write port area.
     int readFromWritePort();
-    void setReadFromWritePort(uInt16 address);
 
   private:
     RamState myState;
     RamState myOldState;
 
-    uInt16 myReadFromWritePortAddress;
+    RamAreaList myRamAreas;
 };
 
 #endif

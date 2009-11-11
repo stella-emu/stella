@@ -155,6 +155,20 @@ class M6502 : public Serializable
     bool lastAccessWasRead() const { return myLastAccessWasRead; }
 
     /**
+      Return the last address that was part of a read/peek.  Note that
+      reads which are part of a write are not considered here, unless
+      they're not the same as the last write address.  This eliminates
+      accesses that are part of a normal read/write cycle.
+
+      @return The address of the last read
+    */
+    uInt16 lastReadAddress() const {
+      return myLastPokeAddress ?
+        (myLastPokeAddress != myLastPeekAddress ? myLastPeekAddress : 0) :
+        myLastPeekAddress;
+    }
+
+    /**
       Get the total number of instructions executed so far.
 
       @return The number of executed instructions
@@ -324,6 +338,10 @@ class M6502 : public Serializable
 
     /// Indicates the last address which was accessed
     uInt16 myLastAddress;
+
+    /// Indicates the last address which was accessed specifically
+    /// by a peek or poke command
+    uInt16 myLastPeekAddress, myLastPokeAddress;
 
 #ifdef DEBUGGER_SUPPORT
     /// Pointer to the debugger for this processor or the null pointer

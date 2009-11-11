@@ -251,20 +251,13 @@ bool Cartridge::save(ofstream& out)
 void Cartridge::registerRamArea(uInt16 start, uInt16 size,
                                 uInt16 roffset, uInt16 woffset)
 {
+#ifdef DEBUGGER_SUPPORT
   RamArea area;
   area.start   = start;
   area.size    = size;
   area.roffset = roffset;
   area.woffset = woffset;
   myRamAreaList.push_back(area);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge::triggerReadFromWritePort(uInt16 address)
-{
-#ifdef DEBUGGER_SUPPORT
-  if(&Debugger::debugger().ramDebug())
-    Debugger::debugger().ramDebug().setReadFromWritePort(address);
 #endif
 }
 

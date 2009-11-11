@@ -146,13 +146,8 @@ uInt8 CartridgeMC::peek(uInt16 address)
         // Reading from the write port triggers an unwanted write
         uInt8 value = mySystem->getDataBusState(0xFF);
 
-        if(myBankLocked)
-          return value;
-        else
-        {
-          triggerReadFromWritePort(address);
-          return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
-        }
+        if(myBankLocked) return value;
+        else return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
       }
     }
   }  

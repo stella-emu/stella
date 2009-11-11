@@ -34,7 +34,9 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     myLastAccessWasRead(true),
     myTotalInstructionCount(0),
     myNumberOfDistinctAccesses(0),
-    myLastAddress(0)
+    myLastAddress(0),
+    myLastPeekAddress(0),
+    myLastPokeAddress(0)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger    = NULL;
@@ -169,6 +171,7 @@ inline uInt8 M6502::peek(uInt16 address)
 
   uInt8 result = mySystem->peek(address);
   myLastAccessWasRead = true;
+  myLastPeekAddress = address;
   return result;
 }
 
@@ -193,6 +196,7 @@ inline void M6502::poke(uInt16 address, uInt8 value)
 
   mySystem->poke(address, value);
   myLastAccessWasRead = false;
+  myLastPokeAddress = address;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,9 +210,6 @@ bool M6502::execute(uInt32 number)
   {
     for(; !myExecutionStatus && (number != 0); --number)
     {
-      uInt16 operandAddress = 0;
-      uInt8 operand = 0;
-
 #ifdef DEBUGGER_SUPPORT
       if(myJustHitTrapFlag)
       {
@@ -236,6 +237,11 @@ bool M6502::execute(uInt32 number)
           return true;
       }
 #endif
+      uInt16 operandAddress = 0;
+      uInt8 operand = 0;
+
+      // Reset the peek/poke address pointers
+      myLastPeekAddress = myLastPokeAddress = 0;
 
       // Fetch instruction at the program counter
       IR = peek(PC++);

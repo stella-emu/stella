@@ -23,8 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RamDebug::RamDebug(Debugger& dbg, Console& console)
-  : DebuggerSystem(dbg, console),
-    myReadFromWritePortAddress(0)
+  : DebuggerSystem(dbg, console)
 {
   // Zero-page RAM is always present
   addRamArea(0x80, 128, 0, 0);
@@ -49,6 +48,14 @@ void RamDebug::addRamArea(uInt16 start, uInt16 size,
     myOldState.rport.push_back(i + start + roffset);
     myOldState.wport.push_back(i + start + woffset);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamDebug::addRamArea(const RamAreaList& areas)
+{
+  myRamAreas = areas;
+  for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
+    addRamArea(i->start, i->size, i->roffset, i->woffset);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,17 +91,19 @@ void RamDebug::write(uInt16 addr, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int RamDebug::readFromWritePort()
 {
-  int retval = myReadFromWritePortAddress;
-  if(retval > 0)
-    myReadFromWritePortAddress = 0;
-
-  return retval;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RamDebug::setReadFromWritePort(uInt16 address)
-{
-  myReadFromWritePortAddress = address;
+  uInt16 addr = mySystem.m6502().lastReadAddress();
+  if(addr & 0x1000)
+  {
+    addr &= 0x0FFF;
+    for(RamAreaList::const_iterator i = myRamAreas.begin(); i != myRamAreas.end(); ++i)
+    {
+      uInt16 start = (i->start + i->woffset) & 0x0FFF;
+      uInt16 end = (i->start + i->woffset + i->size) & 0x0FFF;
+      if(addr >= start && addr < end)
+        return addr;
+    }
+  }
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
