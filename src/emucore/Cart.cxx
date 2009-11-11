@@ -51,8 +51,10 @@
 #include "MD5.hxx"
 #include "Props.hxx"
 #include "Settings.hxx"
-#include "Debugger.hxx"
-#include "RamDebug.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "Debugger.hxx"
+  #include "RamDebug.hxx"
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
