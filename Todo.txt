@@ -9,89 +9,13 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===========================================================================
-                        To Do List - September 2009
+                                To Do List
 ===========================================================================
 
 If you would like to contribute to Stella's development then find something
 on the list below and send email to Bradford Mott at bwmott@acm.org or
 Stephen Anthony at stephena@users.sourceforge.net.
 
-  * Step-debug through disassembled zero-page and SC code.
+All Todo items are now available in the Stella tracker on AtariAge:
 
-  * Either Support Distella as frontend or integrate a 6507 Disassembler.
-
-  * TIA infrastructure: further improve 'illegal' HMOVE emulation to fix
-    problems in several homebrew ROMs.
-
-  * TIA infrastructure: improve emulation of writes to NUSIZx while
-    graphics are currently being drawn.
-
-  * Look into adding Blargg NTSC filtering (perhaps as a GLSL program).
-
-  * TIA infrastructure: add emulation of RSYNC instruction.
-
-  * Add better support for 'floating' TIA reads as described here:
-    http://www.atariage.com/forums/index.php?s=&showtopic=143363&view=findpost&p=1762433
-
-  * Improve debugger support for remaining cartridges with dedicated RAM,
-    and add source-level debugging
-
-  * Make the prompt tab in the debugger accept case-insensitive commands.
-
-  * Fix bank going over 255 (when accessing RAM) for 3E in the debugger
-    RomWidget view.
-
-  * Fix patching of ROM in disassembler so that if patching fails, the view
-    is properly updated.
-
-  * Research starting bank for 8K/F8 ROMs.  Probably default should be 0
-    instead of 1.
-
-  * Add commandline argument to randomly generate startup bank for all ROMs
-    bigger than 4K.  Shouldn't make a difference for all 'well-designed'
-    ROMS, but will pick up on errors when a ROM doesn't start from every
-    bank.
-
-  * Make font size be selectable for the stats info area (in TIA) and
-    in-game UI.
-
-  * More work to the ROM launcher, including at least the following:
-     (1) Shortcut key where selecting the first few letters jumps to a
-         directory named that way.  Basically the same as is currently
-         done for ROMs.
-
-     (2) Fix aliases not being followed correctly in the OSX port
-         (although I suspect this isn't just an OSX issue).
-
-     (3) Add tabs to snapshot view; add cartridge snapshots as well.
-
-  * More support for copy and paste.
-
-  * Add support for uncommon controllers (KidVid, Lightgun, etc).
-
-  * Fix "Tron Man Picture Cart" (32K Tigervision bankswitching) issue.
-
-  * Possible 'trace mode' in debugger (generate a file containing all
-    internal state).
-
-  * Automatic statesave at beginning of each frame (including state of
-    controllers and console switches), with the ability to 'roll back' to
-    a previous state/frame.
-
-  * RewindManager to set up how often to save a state, and for how long
-    (debugger would be once per frame, normal probably once per second).
-
-  * Extra SECAM 'quirks' (see Stella 2.4.1 release thread on AtariAge).
-
-  * Improve speed of Pitfall2 emulation.
-
-  * Add auto-detection for all remaining bankswitch types.
-
-  * Either Support DASM as frontend or integrate a 6507 Assembler.
-
-  * AVI/MPEG export.
-
-  * Client/Server networked play for up to 4 Computers via LAN/Internet.
-
-  * Find people to handle new ports, and try to more actively recruit
-    people into the Stella project.
+  http://www.atariage.com/forums/index.php?app=tracker&showproject=16
