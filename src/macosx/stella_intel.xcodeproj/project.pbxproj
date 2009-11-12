@@ -1409,7 +1409,7 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
-			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */;
+			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella_intel" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
 			mainGroup = 29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */;
@@ -1797,37 +1797,40 @@
 		2D91752209BA903B0026E9FF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Development;
 		};
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
 				);
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
-				GCC_VERSION = 4.2;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				MACOSX_DEPLOYMENT_TARGET = "";
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Deployment;
 		};
 		2D91752409BA903B0026E9FF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
-				GCC_VERSION = 4.2;
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
+				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Default;
 		};
@@ -1844,7 +1847,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Default;
 		};
-		2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella" */ = {
+		2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella_intel" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D91752209BA903B0026E9FF /* Development */,

@@ -56,13 +56,13 @@ SettingsMACOSX::~SettingsMACOSX()
 void SettingsMACOSX::loadConfig()
 {
   string key, value;
-  char cvalue[2048];
+  char cvalue[4096];
   
   // Read key/value pairs from the plist file
   const SettingsArray& settings = getInternalSettings();
   for(unsigned int i = 0; i < settings.size(); ++i)
   {
-    prefsGetString(settings[i].key.c_str(), cvalue, 2047);
+    prefsGetString(settings[i].key.c_str(), cvalue, 4090);
     if(cvalue[0] != 0)
       setInternal(settings[i].key, cvalue, i, true);
   }
