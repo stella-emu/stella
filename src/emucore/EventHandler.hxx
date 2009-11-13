@@ -189,17 +189,13 @@ class EventHandler
   #ifndef MAC_OSX
       return (mod & KMOD_ALT);
   #else
-      return ((mod & KMOD_META) && (mod & KMOD_SHIFT));
+      return (mod & KMOD_META);
   #endif
     }
 
     inline bool kbdControl(int mod)
     {
-  #ifndef MAC_OSX
       return (mod & KMOD_CTRL) > 0;
-  #else
-      return ((mod & KMOD_META) && !(mod & KMOD_SHIFT));
-  #endif
     }
 
     inline bool kbdShift(int mod)

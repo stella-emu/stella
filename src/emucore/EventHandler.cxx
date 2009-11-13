@@ -330,10 +330,17 @@ void EventHandler::poll(uInt64 time)
 
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
-        // Control/Cmd or Alt/Shift-Cmd keys.  So we quickly check for those.
+        // Control or Alt/Cmd keys.  So we quickly check for those.
         if(kbdAlt(mod) && state)
         {
+      #ifdef MAC_OSX
           // These keys work in all states
+          if(key == SDLK_q)
+          {
+            handleEvent(Event::Quit, 1);
+          }
+          else
+      #endif
           if(key == SDLK_RETURN)
           {
             myOSystem->frameBuffer().toggleFullscreen();
@@ -343,7 +350,6 @@ void EventHandler::poll(uInt64 time)
           {
             switch(int(key))
             {
-          #ifndef MAC_OSX
               case SDLK_EQUALS:
                 myOSystem->frameBuffer().changeVidMode(+1);
                 break;
@@ -351,7 +357,7 @@ void EventHandler::poll(uInt64 time)
               case SDLK_MINUS:
                 myOSystem->frameBuffer().changeVidMode(-1);
                 break;
-          #endif
+
               case SDLK_LEFTBRACKET:
                 myOSystem->sound().adjustVolume(-1);
                 break;
@@ -490,26 +496,12 @@ void EventHandler::poll(uInt64 time)
               myOSystem->frameBuffer().grabMouse(myGrabMouseFlag);
             }
           }
-        #ifdef MAC_OSX
-          else if(key == SDLK_RETURN)
-          {
-            myOSystem->frameBuffer().toggleFullscreen();
-          }
-        #endif
           // These only work when in emulation mode
           else if(myState == S_EMULATE)
           {
             switch(int(key))
             {
           #ifdef MAC_OSX
-              case SDLK_EQUALS:
-                myOSystem->frameBuffer().changeVidMode(+1);
-                break;
-
-              case SDLK_MINUS:
-                myOSystem->frameBuffer().changeVidMode(-1);
-                break;
-
               case SDLK_h:
               case SDLK_m:
               case SDLK_SLASH:

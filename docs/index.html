@@ -305,15 +305,16 @@
 	<p>
 	<h2><b>Macintosh</b></h2>
 
-	<p>The Mac version of Stella is designed to work on a Power Macintosh with
+	<p>The Mac version of Stella is designed to work on an Apple Macintosh with
 	the following:</p>
 	<ul>
-		<li>Mac OSX 10.3 or Above</li>
-		<li>500 MHz G4 PPC/Intel processor or above (Stella <b>may</b> work with a G3
-			processor, but no hardware is available for testing)</li>
-		<li>OpenGL capable video card.  Software rendering mode is still available,
-			but as of OSX 10.4 is substandard compared to OpenGL.</li>
-		<li>Xcode 3.0 is required to compile the Stella source code</li>
+		<li>Mac OSX 10.4 (Tiger) or above</li>
+		<li>PPC G4 or Intel processor, 500MHz or above</li>
+		<li>OpenGL capable video card; software rendering mode is still available,
+			but as of OSX 10.4 is substandard compared to OpenGL</li>
+		<li>Xcode 3.2 is required to compile the Stella source code (SDL 1.2.14 also
+			required to compile the 64-bit version)</li>
+		<li>The 64-bit version requires at minimum Snow Leopard (10.6) and Intel CPU</li>
 	</ul>
 
 	<p>
@@ -334,10 +335,9 @@
 	<h2><b>Other</b></h2>
 
 	<p>Stella is extremely portable, and in its lifetime has been ported to almost every
-	platform where the SDL library exists.  It is 32/64 bit clean in Linux/Unix and Windows
-	(win32/x64), and is expected to be compatible with 64-bit OSX as well.  The Stella
-	team is interested in hearing about any problems you may encounter with diverse
-	operating systems and CPU types.</p>
+	platform where the SDL library exists.  It is 32/64 bit clean in Linux/Unix, Mac OSX
+	and Windows.  The Stella team is interested in hearing about any problems you may
+	encounter with diverse operating systems and CPU types.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -417,7 +417,7 @@
 		<li><b>Binary DMG file</b> (StellaOSX<i>release</i>.dmg)
 			<ol>
 				<li>Mount the disk image, then copy the StellaOSX<i>release</i> folder to
-				your hard drive.</li>
+				your hard drive</li>
 			</ol>
 		</li>
 		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
@@ -425,10 +425,18 @@
 				<li>Extract files from the distribution using an archiving program that supports
 					gzipped tar files</li>
 				<li>Open the <b>stella-<i>release</i>/src/macosx/stella.xcodeproj</b>
-					file using Xcode 3.0</li>
+					file using Xcode 3.2</li>
 				<li>Make sure you have the SDL framework installed where Xcode can find it</li>
 				<li>Build the 'Stella' project</li>
-				<li>Copy the <b>StellaOSX.app</b> package somewhere on your system</li>
+				<li>For installation:
+				<ul>
+					<li>Run the script <b>Create_build.sh</b>, located in the src/macosx directory.
+						This will create a DMG file on your desktop.</li>
+						<b>OR</b>
+					<li>Copy the <b>StellaOSX.app</b> package somewhere on your system</li>
+				</ul>
+				<li>For compiling the Intel version only, open the <b>stella-<i>release</i>/src/macosx/stella_intel.xcodeproj</b> file instead, and continue from
+					step 2 above.</li>
 			</ol>
 		</li>
 	</ul>
@@ -751,6 +759,14 @@
 		</tr>
 
 		<tr>
+			<td><pre>-framerate &lt;number&gt;</pre></td>
+			<td>Display the given number of frames per second.  Normally, Stella
+				will determine framerate based on number of scanlines.
+				Setting this to 0 automatically enables auto-frame
+				calculation (ie, framerate based on scanlines).</td>
+		</tr>
+
+		<tr>
 			<td><pre>-timing &lt;sleep|busy&gt;</pre></td>
 			<td>Determines type of wait to perform between processing frames.
 				Sleep will release the CPU as much as possible, and is the
@@ -761,11 +777,10 @@
 		</tr>
 
 		<tr>
-			<td><pre>-framerate &lt;number&gt;</pre></td>
-			<td>Display the given number of frames per second.  Normally, Stella
-				will determine framerate based on number of scanlines.
-				Setting this to 0 automatically enables auto-frame
-				calculation (ie, framerate based on scanlines).</td>
+			<td><pre>-uimessages &lt;1|0&gt;</pre></td>
+			<td>Enable or disable display of message in the UI.  Note that messages
+				indicating serious errors override this setting, and are always
+				shown.</td>
 		</tr>
 
 		<tr>
@@ -1030,8 +1045,8 @@
 		</tr>
 
 		<tr>
-			<td><pre>-tiafloat &lt;1|0&gt;</pre></td>
-			<td>Set unused TIA pins to be floating on a read/peek.</td>
+			<td><pre>-tiadriven &lt;1|0&gt;</pre></td>
+			<td>Set unused TIA pins to be randomly driven high or low on a read/peek.</td>
 		</tr>
 
 		<tr>
@@ -1411,7 +1426,7 @@
 		<tr>
 			<td>Pause/resume emulation</td>
 			<td>Pause</td>
-			<td>Pause</td>
+			<td>&nbsp;</td>
 		</tr>
 	</table>
 
@@ -1824,139 +1839,139 @@
 		<tr>
 			<td>Set "Display.YStart" to next <i>larger</i> value</td>
 			<td>Alt + PageUp</td>
-			<td>Shift-Cmd + PageUp</td>
+			<td>Cmd + PageUp</td>
 		</tr>
 
 		<tr>
 			<td>Set "Display.YStart" to next <i>smaller</i> value</td>
 			<td>Alt + PageDown</td>
-			<td>Shift-Cmd + PageDown</td>
+			<td>Cmd + PageDown</td>
 		</tr>
 
 		<tr>
 			<td>Set "Display.Height" to next <i>larger</i> value</td>
 			<td>Control + PageUp</td>
-			<td>Cmd + PageUp</td>
+			<td>Control + PageUp</td>
 		</tr>
 
 		<tr>
 			<td>Set "Display.Height" to next <i>smaller</i> value</td>
 			<td>Control + PageDown</td>
-			<td>Cmd + PageDown</td>
+			<td>Control + PageDown</td>
 		</tr>
 
 		<tr>
 			<td>Toggle frame stats (scanline count/fps/bs type/etc)</td>
 			<td>Alt + l</td>
-			<td>Shift-Cmd + l</td>
+			<td>Cmd + l</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Player0 object</td>
 			<td>Alt + z</td>
-			<td>Shift-Cmd + z</td>
+			<td>Cmd + z</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Player1 object</td>
 			<td>Alt + x</td>
-			<td>Shift-Cmd + x</td>
+			<td>Cmd + x</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Missile0 object</td>
 			<td>Alt + c</td>
-			<td>Shift-Cmd + c</td>
+			<td>Cmd + c</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Missile1 object</td>
 			<td>Alt + v</td>
-			<td>Shift-Cmd + v</td>
+			<td>Cmd + v</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Ball object</td>
 			<td>Alt + b</td>
-			<td>Shift-Cmd + b</td>
+			<td>Cmd + b</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Playfield object</td>
 			<td>Alt + n</td>
-			<td>Shift-Cmd + n</td>
+			<td>Cmd + n</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Player0 collisions</td>
 			<td>Shift-Alt + z</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + z</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Player1 collisions</td>
 			<td>Shift-Alt + x</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + x</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Missile0 collisions</td>
 			<td>Shift-Alt + c</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + c</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Missile1 collisions</td>
 			<td>Shift-Alt + v</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + v</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Ball collisions</td>
 			<td>Shift-Alt + b</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + b</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA Playfield collisions</td>
 			<td>Shift-Alt + n</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + n</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA HMOVE blanks</td>
 			<td>Alt + m</td>
-			<td>Shift-Cmd + m</td>
+			<td>Cmd + m</td>
 		</tr>
 
 		<tr>
 			<td>Toggle TIA 'Fixed Debug Colors' mode</td>
 			<td>Alt + Comma</td>
-			<td>Shift-Cmd + Comma</td>
+			<td>Cmd + Comma</td>
 		</tr>
 
 		<tr>
 			<td>Turn all TIA objects off</td>
 			<td>Alt + .</td>
-			<td>Shift-Cmd + .</td>
+			<td>Cmd + .</td>
 		</tr>
 
 		<tr>
 			<td>Turn all TIA objects on</td>
 			<td>Alt + /</td>
-			<td>Shift-Cmd + /</td>
+			<td>Cmd + /</td>
 		</tr>
 
 		<tr>
 			<td>Turn all TIA collisions off</td>
 			<td>Shift-Alt + .</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + .</td>
 		</tr>
 
 		<tr>
 			<td>Turn all TIA collisions on</td>
 			<td>Shift-Alt + /</td>
-			<td>TODO</td>
+			<td>Shift-Cmd + /</td>
 		</tr>
 	</table>
 
@@ -1990,68 +2005,68 @@
 		<tr>
 			<td>Decrease volume (*)</td>
 			<td>Alt + [</td>
-			<td>Shift-Cmd + [</td>
+			<td>Cmd + [</td>
 		</tr>
 
 		<tr>
 			<td>Increase volume (*)</td>
 			<td>Alt + ]</td>
-			<td>Shift-Cmd + ]</td>
+			<td>Cmd + ]</td>
 		</tr>
 
 		<tr>
 			<td>Grab mouse (keep mouse in game window)</td>
 			<td>Control + g</td>
-			<td>Cmd + g</td>
+			<td>Control + g</td>
 		</tr>
 
 		<tr>
 			<td>Toggle display palette (<i>NTSC/PAL/SECAM</i>)</td>
 			<td>Control + f</td>
-			<td>Cmd + f</td>
+			<td>Control + f</td>
 		</tr>
 
 		<tr>
 			<td>Save current properties to a new properties file</td>
 			<td>Control + s</td>
-			<td>Cmd + s</td>
+			<td>Control + s</td>
 		</tr>
 
 		<tr>
 			<td>Set mouse to emulate paddle 0</td>
 			<td>Control + 0</td>
-			<td>Cmd + 0</td>
+			<td>Control + 0</td>
 		</tr>
 
 		<tr>
 			<td>Set mouse to emulate paddle 1</td>
 			<td>Control + 1</td>
-			<td>Cmd + 1</td>
+			<td>Control + 1</td>
 		</tr>
 
 		<tr>
 			<td>Set mouse to emulate paddle 2</td>
 			<td>Control + 2</td>
-			<td>Cmd + 2</td>
+			<td>Control + 2</td>
 		</tr>
 
 		<tr>
 			<td>Set mouse to emulate paddle 3</td>
 			<td>Control + 3</td>
-			<td>Cmd + 3</td>
+			<td>Control + 3</td>
 		</tr>
 
 		<tr>
 			<td>Reload current ROM (singlecart ROM, TIA mode)<br>
 				Load next game in ROM (multicart ROM, TIA mode)</td>
 			<td>Control + r</td>
-			<td>Cmd + r</td>
+			<td>Control + r</td>
 		</tr>
 
 		<tr>
 			<td>Reload ROM listing (ROM launcher mode)</td>
 			<td>Control + r</td>
-			<td>Cmd + r</td>
+			<td>Control + r</td>
 		</tr>
 
 		<tr>
@@ -2069,19 +2084,19 @@
 		<tr>
 			<td>Toggle 'phosphor' effect</td>
 			<td>Alt + p</td>
-			<td>Shift-Cmd + p</td>
+			<td>Cmd + p</td>
 		</tr>
 
 		<tr>
 			<td>Toggle palette</td>
 			<td>Control + p</td>
-			<td>Cmd + p</td>
+			<td>Control + p</td>
 		</tr>
 
 		<tr>
 			<td>Toggle PAL color-loss effect</td>
 			<td>Control + l</td>
-			<td>Cmd + l</td>
+			<td>Control + l</td>
 		</tr>
 	</table>
 
