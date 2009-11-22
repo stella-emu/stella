@@ -43,10 +43,6 @@
 		2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF8D0627AE34006BEC99 /* Sound.hxx */; };
 		2D9173F009BA90380026E9FF /* Switches.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF8F0627AE34006BEC99 /* Switches.hxx */; };
 		2D9173F109BA90380026E9FF /* TIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DF910627AE34006BEC99 /* TIA.hxx */; };
-		2D9173F209BA90380026E9FF /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFBF0627B1DF006BEC99 /* Device.hxx */; };
-		2D9173F309BA90380026E9FF /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC10627B1DF006BEC99 /* M6502.hxx */; };
-		2D9173F509BA90380026E9FF /* NullDev.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC70627B1DF006BEC99 /* NullDev.hxx */; };
-		2D9173F609BA90380026E9FF /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DE2DFC90627B1DF006BEC99 /* System.hxx */; };
 		2D9173F709BA90380026E9FF /* FrameBufferGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */; };
 		2D9173F809BA90380026E9FF /* FrameBufferSoft.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D62062893E7006265D9 /* FrameBufferSoft.hxx */; };
 		2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D6F062895B2006265D9 /* EventHandler.hxx */; };
@@ -54,7 +50,6 @@
 		2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D733D77062895F1006265D9 /* Settings.hxx */; };
 		2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */; };
 		2D9173FD09BA90380026E9FF /* SoundSDL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDA34030665817D00CDD299 /* SoundSDL.hxx */; };
-		2D9173FE09BA90380026E9FF /* Snapshot.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D11C9AA0667003F00724063 /* Snapshot.hxx */; };
 		2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */; };
 		2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA4084578BF00812C11 /* AboutDialog.hxx */; };
 		2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAA7084578BF00812C11 /* AudioDialog.hxx */; };
@@ -166,10 +161,6 @@
 		2D91749709BA90380026E9FF /* Serializer.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF8A0627AE34006BEC99 /* Serializer.cxx */; };
 		2D91749809BA90380026E9FF /* Switches.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF8E0627AE34006BEC99 /* Switches.cxx */; };
 		2D91749909BA90380026E9FF /* TIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF900627AE34006BEC99 /* TIA.cxx */; };
-		2D91749A09BA90380026E9FF /* Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFBE0627B1DF006BEC99 /* Device.cxx */; };
-		2D91749B09BA90380026E9FF /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC00627B1DF006BEC99 /* M6502.cxx */; };
-		2D91749D09BA90380026E9FF /* NullDev.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC60627B1DF006BEC99 /* NullDev.cxx */; };
-		2D91749E09BA90380026E9FF /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DFC80627B1DF006BEC99 /* System.cxx */; };
 		2D91749F09BA90380026E9FF /* FrameBufferGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */; };
 		2D9174A009BA90380026E9FF /* FrameBufferSoft.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */; };
 		2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D733D6E062895B2006265D9 /* EventHandler.cxx */; };
@@ -177,7 +168,6 @@
 		2D9174A309BA90380026E9FF /* Settings.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944848062904E800DD9879 /* Settings.cxx */; };
 		2D9174A409BA90380026E9FF /* SettingsMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */; };
 		2D9174A509BA90380026E9FF /* SoundSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDA34020665817D00CDD299 /* SoundSDL.cxx */; };
-		2D9174A609BA90380026E9FF /* Snapshot.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D11C9A90667003F00724063 /* Snapshot.cxx */; };
 		2D9174A709BA90380026E9FF /* mainSDL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0A0845700300812C11 /* mainSDL.cxx */; };
 		2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */; };
 		2D9174A909BA90380026E9FF /* OSystemMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEA0E0845709700812C11 /* OSystemMACOSX.cxx */; };
@@ -307,6 +297,17 @@
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
 		DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */; };
+		DCC527D010B9DA19005E1287 /* Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527C810B9DA19005E1287 /* Device.cxx */; };
+		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
+		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
+		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
+		DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CC10B9DA19005E1287 /* NullDev.cxx */; };
+		DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CD10B9DA19005E1287 /* NullDev.hxx */; };
+		DCC527D610B9DA19005E1287 /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CE10B9DA19005E1287 /* System.cxx */; };
+		DCC527D710B9DA19005E1287 /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CF10B9DA19005E1287 /* System.hxx */; };
+		DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527D810B9DA6A005E1287 /* bspf.hxx */; };
+		DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527D910B9DA6A005E1287 /* Snapshot.cxx */; };
+		DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
@@ -397,8 +398,6 @@
 		2D05FF60096E269100A518FE /* InputDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = InputDialog.cxx; path = ../gui/InputDialog.cxx; sourceTree = SOURCE_ROOT; };
 		2D05FF61096E269100A518FE /* InputDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = InputDialog.hxx; path = ../gui/InputDialog.hxx; sourceTree = SOURCE_ROOT; };
 		2D113E090672BF2100317017 /* ../../docs */ = {isa = PBXFileReference; explicitFileType = folder; path = ../../docs; sourceTree = "<group>"; };
-		2D11C9A90667003F00724063 /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
-		2D11C9AA0667003F00724063 /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
 		2D16A8E106324136005DF364 /* Stella.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Stella.icns; sourceTree = SOURCE_ROOT; };
 		2D17D98E08BC398400E47F69 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		2D1A6CD4085135F9007CDBA8 /* AboutBox.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = AboutBox.h; sourceTree = SOURCE_ROOT; };
@@ -609,14 +608,6 @@
 		2DE2DF8F0627AE34006BEC99 /* Switches.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Switches.hxx; path = ../emucore/Switches.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF900627AE34006BEC99 /* TIA.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TIA.cxx; path = ../emucore/TIA.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF910627AE34006BEC99 /* TIA.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TIA.hxx; path = ../emucore/TIA.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFBE0627B1DF006BEC99 /* Device.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Device.cxx; path = ../emucore/m6502/src/Device.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFBF0627B1DF006BEC99 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/m6502/src/Device.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC00627B1DF006BEC99 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/m6502/src/M6502.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC10627B1DF006BEC99 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/m6502/src/M6502.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC60627B1DF006BEC99 /* NullDev.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = NullDev.cxx; path = ../emucore/m6502/src/NullDev.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC70627B1DF006BEC99 /* NullDev.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = NullDev.hxx; path = ../emucore/m6502/src/NullDev.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC80627B1DF006BEC99 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = System.cxx; path = ../emucore/m6502/src/System.cxx; sourceTree = SOURCE_ROOT; };
-		2DE2DFC90627B1DF006BEC99 /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = System.hxx; path = ../emucore/m6502/src/System.hxx; sourceTree = SOURCE_ROOT; };
 		2DE7242D08CE910900C889A8 /* TIASnd.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TIASnd.cxx; path = ../emucore/TIASnd.cxx; sourceTree = SOURCE_ROOT; };
 		2DE7242E08CE910900C889A8 /* TIASnd.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TIASnd.hxx; path = ../emucore/TIASnd.hxx; sourceTree = SOURCE_ROOT; };
 		2DEB3D4C0629BD24007EBBD3 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = /System/Library/Frameworks/OpenGL.framework; sourceTree = "<absolute>"; };
@@ -685,6 +676,17 @@
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartX07.hxx; path = ../emucore/CartX07.hxx; sourceTree = SOURCE_ROOT; };
 		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
+		DCC527C810B9DA19005E1287 /* Device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Device.cxx; path = ../emucore/Device.cxx; sourceTree = SOURCE_ROOT; };
+		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
+		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
+		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
+		DCC527CC10B9DA19005E1287 /* NullDev.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NullDev.cxx; path = ../emucore/NullDev.cxx; sourceTree = SOURCE_ROOT; };
+		DCC527CD10B9DA19005E1287 /* NullDev.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NullDev.hxx; path = ../emucore/NullDev.hxx; sourceTree = SOURCE_ROOT; };
+		DCC527CE10B9DA19005E1287 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = System.cxx; path = ../emucore/System.cxx; sourceTree = SOURCE_ROOT; };
+		DCC527CF10B9DA19005E1287 /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = System.hxx; path = ../emucore/System.hxx; sourceTree = SOURCE_ROOT; };
+		DCC527D810B9DA6A005E1287 /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bspf.hxx; path = ../common/bspf.hxx; sourceTree = SOURCE_ROOT; };
+		DCC527D910B9DA6A005E1287 /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
+		DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
@@ -867,6 +869,9 @@
 		2D6050C5089876F300C6DE89 /* common */ = {
 			isa = PBXGroup;
 			children = (
+				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
+				DCC527D910B9DA6A005E1287 /* Snapshot.cxx */,
+				DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
 				DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
@@ -896,8 +901,6 @@
 				2DDBEA0F0845709700812C11 /* OSystemMACOSX.hxx */,
 				2D944866062911CD00DD9879 /* SettingsMACOSX.cxx */,
 				2D94486C0629124700DD9879 /* SettingsMACOSX.hxx */,
-				2D11C9A90667003F00724063 /* Snapshot.cxx */,
-				2D11C9AA0667003F00724063 /* Snapshot.hxx */,
 				2D28DDE409DC2D9F00A17585 /* MenusEvents.h */,
 			);
 			name = macosx;
@@ -914,6 +917,14 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCC527C810B9DA19005E1287 /* Device.cxx */,
+				DCC527C910B9DA19005E1287 /* Device.hxx */,
+				DCC527CA10B9DA19005E1287 /* M6502.cxx */,
+				DCC527CB10B9DA19005E1287 /* M6502.hxx */,
+				DCC527CC10B9DA19005E1287 /* NullDev.cxx */,
+				DCC527CD10B9DA19005E1287 /* NullDev.hxx */,
+				DCC527CE10B9DA19005E1287 /* System.cxx */,
+				DCC527CF10B9DA19005E1287 /* System.hxx */,
 				DCF7B0D910A762FC007A2870 /* CartF0.cxx */,
 				DCF7B0DA10A762FC007A2870 /* CartF0.hxx */,
 				DCF7B0DB10A762FC007A2870 /* CartFA.cxx */,
@@ -1034,24 +1045,8 @@
 				2DE7242E08CE910900C889A8 /* TIASnd.hxx */,
 				2DDBEB7608457B7D00812C11 /* unzip.c */,
 				2DDBEB7708457B7D00812C11 /* unzip.h */,
-				2D6050EB0898781500C6DE89 /* m6502 */,
 			);
 			name = emucore;
-			sourceTree = "<group>";
-		};
-		2D6050EB0898781500C6DE89 /* m6502 */ = {
-			isa = PBXGroup;
-			children = (
-				2DE2DFBE0627B1DF006BEC99 /* Device.cxx */,
-				2DE2DFBF0627B1DF006BEC99 /* Device.hxx */,
-				2DE2DFC00627B1DF006BEC99 /* M6502.cxx */,
-				2DE2DFC10627B1DF006BEC99 /* M6502.hxx */,
-				2DE2DFC60627B1DF006BEC99 /* NullDev.cxx */,
-				2DE2DFC70627B1DF006BEC99 /* NullDev.hxx */,
-				2DE2DFC80627B1DF006BEC99 /* System.cxx */,
-				2DE2DFC90627B1DF006BEC99 /* System.hxx */,
-			);
-			name = m6502;
 			sourceTree = "<group>";
 		};
 		2D6050FA0898786C00C6DE89 /* gui */ = {
@@ -1242,10 +1237,6 @@
 				2D9173EF09BA90380026E9FF /* Sound.hxx in Headers */,
 				2D9173F009BA90380026E9FF /* Switches.hxx in Headers */,
 				2D9173F109BA90380026E9FF /* TIA.hxx in Headers */,
-				2D9173F209BA90380026E9FF /* Device.hxx in Headers */,
-				2D9173F309BA90380026E9FF /* M6502.hxx in Headers */,
-				2D9173F509BA90380026E9FF /* NullDev.hxx in Headers */,
-				2D9173F609BA90380026E9FF /* System.hxx in Headers */,
 				2D9173F709BA90380026E9FF /* FrameBufferGL.hxx in Headers */,
 				2D9173F809BA90380026E9FF /* FrameBufferSoft.hxx in Headers */,
 				2D9173F909BA90380026E9FF /* EventHandler.hxx in Headers */,
@@ -1253,7 +1244,6 @@
 				2D9173FB09BA90380026E9FF /* Settings.hxx in Headers */,
 				2D9173FC09BA90380026E9FF /* SettingsMACOSX.hxx in Headers */,
 				2D9173FD09BA90380026E9FF /* SoundSDL.hxx in Headers */,
-				2D9173FE09BA90380026E9FF /* Snapshot.hxx in Headers */,
 				2D9173FF09BA90380026E9FF /* OSystemMACOSX.hxx in Headers */,
 				2D91740009BA90380026E9FF /* AboutDialog.hxx in Headers */,
 				2D91740109BA90380026E9FF /* AudioDialog.hxx in Headers */,
@@ -1373,6 +1363,12 @@
 				DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */,
 				DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */,
 				DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */,
+				DCC527D110B9DA19005E1287 /* Device.hxx in Headers */,
+				DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */,
+				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
+				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
+				DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */,
+				DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1450,7 +1446,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "m4 ../emucore/m6502/src/M6502.m4 > M6502.ins\n";
+			shellScript = "m4 ../emucore/M6502.m4 > M6502.ins\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1493,10 +1489,6 @@
 				2D91749709BA90380026E9FF /* Serializer.cxx in Sources */,
 				2D91749809BA90380026E9FF /* Switches.cxx in Sources */,
 				2D91749909BA90380026E9FF /* TIA.cxx in Sources */,
-				2D91749A09BA90380026E9FF /* Device.cxx in Sources */,
-				2D91749B09BA90380026E9FF /* M6502.cxx in Sources */,
-				2D91749D09BA90380026E9FF /* NullDev.cxx in Sources */,
-				2D91749E09BA90380026E9FF /* System.cxx in Sources */,
 				2D91749F09BA90380026E9FF /* FrameBufferGL.cxx in Sources */,
 				2D9174A009BA90380026E9FF /* FrameBufferSoft.cxx in Sources */,
 				2D9174A109BA90380026E9FF /* EventHandler.cxx in Sources */,
@@ -1504,7 +1496,6 @@
 				2D9174A309BA90380026E9FF /* Settings.cxx in Sources */,
 				2D9174A409BA90380026E9FF /* SettingsMACOSX.cxx in Sources */,
 				2D9174A509BA90380026E9FF /* SoundSDL.cxx in Sources */,
-				2D9174A609BA90380026E9FF /* Snapshot.cxx in Sources */,
 				2D9174A709BA90380026E9FF /* mainSDL.cxx in Sources */,
 				2D9174A809BA90380026E9FF /* FSNodePOSIX.cxx in Sources */,
 				2D9174A909BA90380026E9FF /* OSystemMACOSX.cxx in Sources */,
@@ -1606,6 +1597,11 @@
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
+				DCC527D010B9DA19005E1287 /* Device.cxx in Sources */,
+				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
+				DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */,
+				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
+				DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
