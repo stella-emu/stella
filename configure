@@ -639,7 +639,7 @@ DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
 
-INCLUDES="-I$CORE -I$CORE/m6502/src -I$CORE/m6502/src/bspf/src -I$COMMON -I$GUI"
+INCLUDES="-I$CORE -I$CORE/m6502 -I$COMMON -I$GUI"
 
 INCLUDES="$INCLUDES `$_sdlconfig --cflags`"
 if test "$_build_static" = yes ; then

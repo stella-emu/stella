@@ -8,7 +8,7 @@
 //  BB  BB  SS  SS  PP      FF
 //  BBBBB    SSSS   PP      FF
 //
-// Copyright (c) 1997-1998 by Bradford W. Mott
+// Copyright (c) 1997-2009 by Bradford W. Mott
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
