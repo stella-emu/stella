@@ -62,16 +62,10 @@
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
-#ifdef BSPF_OLD_STYLE_CXX_HEADERS
-  #include <iostream.h>
-  #include <iomanip.h>
-  #include <string>
-#else
-  #include <iostream>
-  #include <iomanip>
-  #include <string>
-  using namespace std;
-#endif
+#include <iostream>
+#include <iomanip>
+#include <string>
+using namespace std;
 
 #include <algorithm>
 
