@@ -32,6 +32,7 @@ MODULE_OBJS := \
 	src/emucore/CartX07.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
+	src/emucore/Device.o \
 	src/emucore/Driving.o \
 	src/emucore/Event.o \
 	src/emucore/EventHandler.o \
@@ -40,8 +41,10 @@ MODULE_OBJS := \
 	src/emucore/Joystick.o \
 	src/emucore/Keyboard.o \
 	src/emucore/KidVid.o \
+	src/emucore/M6502.o \
 	src/emucore/M6532.o \
 	src/emucore/MT24LC256.o \
+	src/emucore/NullDev.o \
 	src/emucore/MD5.o \
 	src/emucore/OSystem.o \
 	src/emucore/Paddles.o \
@@ -54,6 +57,7 @@ MODULE_OBJS := \
 	src/emucore/SpeakJet.o \
 	src/emucore/Switches.o \
 	src/emucore/StateManager.o \
+	src/emucore/System.o \
 	src/emucore/TIA.o \
 	src/emucore/TIASnd.o \
 	src/emucore/TIATables.o \

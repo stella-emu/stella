@@ -88,7 +88,6 @@ MODULES := $(MODULES)
 # After the game specific modules follow the shared modules
 MODULES += \
 	src/emucore \
-	src/emucore/m6502 \
 	src/gui \
 	src/common
 
