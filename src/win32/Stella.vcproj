@@ -46,7 +46,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
+				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -127,7 +127,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
+				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -209,7 +209,7 @@
 				AdditionalOptions="/MP"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
+				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
@@ -292,7 +292,7 @@
 				Optimization="4"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\yacc;..\emucore\m6502\src\bspf\src;..\emucore\m6502\src;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
+				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
@@ -530,7 +530,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\Device.cxx"
+					RelativePath="..\emucore\Device.cxx"
 					>
 				</File>
 				<File
@@ -566,7 +566,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502.cxx"
+					RelativePath="..\emucore\M6502.cxx"
 					>
 				</File>
 				<File
@@ -586,7 +586,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\NullDev.cxx"
+					RelativePath="..\emucore\NullDev.cxx"
 					>
 				</File>
 				<File
@@ -630,7 +630,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\System.cxx"
+					RelativePath="..\emucore\System.cxx"
 					>
 				</File>
 				<File
@@ -957,6 +957,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\bspf.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\FrameBufferGL.hxx"
 				>
 			</File>
@@ -1025,10 +1029,6 @@
 				</File>
 				<File
 					RelativePath="..\emucore\Booster.hxx"
-					>
-				</File>
-				<File
-					RelativePath="..\emucore\m6502\src\bspf\src\bspf.hxx"
 					>
 				</File>
 				<File
@@ -1152,7 +1152,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\Device.hxx"
+					RelativePath="..\emucore\Device.hxx"
 					>
 				</File>
 				<File
@@ -1188,7 +1188,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\M6502.hxx"
+					RelativePath="..\emucore\M6502.hxx"
 					>
 				</File>
 				<File
@@ -1208,7 +1208,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\NullDev.hxx"
+					RelativePath="..\emucore\NullDev.hxx"
 					>
 				</File>
 				<File
@@ -1260,7 +1260,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\m6502\src\System.hxx"
+					RelativePath="..\emucore\System.hxx"
 					>
 				</File>
 				<File
