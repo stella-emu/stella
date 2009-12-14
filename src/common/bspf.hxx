@@ -1,6 +1,6 @@
 //============================================================================
 //
-//  BBBBB    SSSS   PPPPP   FFFFFF 
+//  BBBBB    SSSS   PPPPP   FFFFFF
 //  BB  BB  SS  SS  PP  PP  FF
 //  BB  BB  SS      PP  PP  FF
 //  BBBBB    SSSS   PPPPP   FFFF    --  "Brad's Simple Portability Framework"
@@ -8,7 +8,7 @@
 //  BB  BB  SS  SS  PP      FF
 //  BBBBB    SSSS   PP      FF
 //
-// Copyright (c) 1997-2009 by Bradford W. Mott
+// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella Team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.

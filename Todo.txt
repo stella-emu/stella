@@ -18,4 +18,4 @@ Stephen Anthony at stephena@users.sourceforge.net.
 
 All Todo items are now available in the Stella tracker on AtariAge:
 
-  http://www.atariage.com/forums/index.php?app=tracker&showproject=16
+  http://www.atariage.com/forums/tracker/project-16-stella-emulator
