@@ -49,30 +49,8 @@ typedef Common::Array<Expression*> ExpressionList;
 */
 class M6502 : public Serializable
 {
-  public:
-    /**
-      The 6502 debugger class is a friend who needs special access
-    */
+    // The 6502 debugger class is a friend who needs special access
     friend class CpuDebug;
-
-  public:
-    /**
-      Enumeration of the 6502 addressing modes
-    */
-    enum AddressingMode
-    {
-      Absolute, AbsoluteX, AbsoluteY, Immediate, Implied,
-      Indirect, IndirectX, IndirectY, Invalid, Relative,
-      Zero, ZeroX, ZeroY
-    };
-
-    /**
-      Enumeration of the 6502 access modes
-    */
-    enum AccessMode
-    {
-      Read, Write, None
-    };
 
   public:
     /**
@@ -183,14 +161,6 @@ class M6502 : public Serializable
     uInt32 distinctAccesses() const { return myNumberOfDistinctAccesses; }
 
     /**
-      Overload the ostream output operator for addressing modes.
-
-      @param out The stream to output the addressing mode to
-      @param mode The addressing mode to output
-    */
-    friend ostream& operator<<(ostream& out, const AddressingMode& mode);
-
-    /**
       Saves the current state of this device to the given Serializer.
 
       @param out The serializer device to save to.
@@ -212,25 +182,6 @@ class M6502 : public Serializable
       @return The name of the device
     */
     string name() const { return "M6502"; }
-
-  public:
-    /**
-      Get the addressing mode of the specified instruction
-
-      @param opcode The opcode of the instruction
-      @return The addressing mode of the instruction
-    */
-    AddressingMode addressingMode(uInt8 opcode) const
-      { return ourAddressingModeTable[opcode]; }
-
-    /**
-      Get the access mode of the specified instruction
-
-      @param opcode The opcode of the instruction
-      @return The access mode of the instruction
-    */
-    AccessMode accessMode(uInt8 opcode) const
-      { return ourAccessModeTable[opcode]; }
 
 #ifdef DEBUGGER_SUPPORT
   public:
@@ -364,22 +315,40 @@ class M6502 : public Serializable
 #endif
 
   private:
+    /**
+      Enumeration of the 6502 addressing modes
+    */
+    enum AddressingMode
+    {
+      Absolute, AbsoluteX, AbsoluteY, Immediate, Implied,
+      Indirect, IndirectX, IndirectY, Invalid, Relative,
+      Zero, ZeroX, ZeroY
+    };
+
+    /**
+      Enumeration of the 6502 access modes
+    */
+    enum AccessMode
+    {
+      Read, Write, None
+    };
+
     /// Addressing mode for each of the 256 opcodes
     /// This specifies how the opcode argument is addressed
-    static AddressingMode ourAddressingModeTable[256];
+    static AddressingMode AddressModeTable[256];
 
     /// Access mode for each of the 256 opcodes
     /// This specifies how the opcode will access its argument
-    static AccessMode ourAccessModeTable[256];
+    static AccessMode AccessModeTable[256];
 
     /**
       Table of instruction processor cycle times.  In some cases additional 
       cycles will be added during the execution of an instruction.
     */
-    static uInt32 ourInstructionProcessorCycleTable[256];
+    static uInt32 InstructionCycleTable[256];
 
     /// Table of instruction mnemonics
-    static const char* ourInstructionMnemonicTable[256];
+    static const char* InstructionMnemonicTable[256];
 };
 
 #endif

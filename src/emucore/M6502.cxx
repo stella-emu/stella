@@ -50,7 +50,7 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
   // Compute the System Cycle table
   for(uInt32 t = 0; t < 256; ++t)
   {
-    myInstructionSystemCycleTable[t] = ourInstructionProcessorCycleTable[t] *
+    myInstructionSystemCycleTable[t] = InstructionCycleTable[t] *
         mySystemCyclesPerProcessorCycle;
   }
 
@@ -418,6 +418,7 @@ bool M6502::load(Serializer& in)
   return true;
 }
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ostream& operator<<(ostream& out, const M6502::AddressingMode& mode)
 {
@@ -465,9 +466,78 @@ ostream& operator<<(ostream& out, const M6502::AddressingMode& mode)
   }
   return out;
 }
+#endif
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::attach(Debugger& debugger)
+{
+  // Remember the debugger for this microprocessor
+  myDebugger = &debugger;
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6502::AddressingMode M6502::ourAddressingModeTable[256] = {
+unsigned int M6502::addCondBreak(Expression *e, const string& name)
+{
+  myBreakConds.push_back(e);
+  myBreakCondNames.push_back(name);
+  return myBreakConds.size() - 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::delCondBreak(unsigned int brk)
+{
+  if(brk < myBreakConds.size())
+  {
+    delete myBreakConds[brk];
+    myBreakConds.remove_at(brk);
+    myBreakCondNames.remove_at(brk);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::clearCondBreaks()
+{
+  for(uInt32 i = 0; i < myBreakConds.size(); i++)
+    delete myBreakConds[i];
+
+  myBreakConds.clear();
+  myBreakCondNames.clear();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const StringList& M6502::getCondBreakNames() const
+{
+  return myBreakCondNames;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int M6502::evalCondBreaks()
+{
+  for(uInt32 i = 0; i < myBreakConds.size(); i++)
+    if(myBreakConds[i]->evaluate())
+      return i;
+
+  return -1; // no break hit
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::setBreakPoints(PackedBitArray *bp)
+{
+  myBreakPoints = bp;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
+{
+  myReadTraps = read;
+  myWriteTraps = write;
+}
+
+#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+M6502::AddressingMode M6502::AddressModeTable[256] = {
   Implied,    IndirectX, Invalid,   IndirectX,    // 0x0?
   Zero,       Zero,      Zero,      Zero,
   Implied,    Immediate, Implied,   Immediate,
@@ -550,7 +620,7 @@ M6502::AddressingMode M6502::ourAddressingModeTable[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6502::AccessMode M6502::ourAccessModeTable[256] = {
+M6502::AccessMode M6502::AccessModeTable[256] = {
   None,   Read,   None,   Write,    // 0x0?
   None,   Read,   Write,  Write,
   None,   Read,   Write,  Read,
@@ -633,7 +703,7 @@ M6502::AccessMode M6502::ourAccessModeTable[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 M6502::ourInstructionProcessorCycleTable[256] = {
+uInt32 M6502::InstructionCycleTable[256] = {
 //  0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
     7, 6, 2, 8, 3, 3, 5, 5, 3, 2, 2, 2, 4, 4, 6, 6,  // 0
     2, 5, 2, 8, 4, 4, 6, 6, 2, 4, 2, 7, 4, 4, 7, 7,  // 1
@@ -654,7 +724,7 @@ uInt32 M6502::ourInstructionProcessorCycleTable[256] = {
   };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* M6502::ourInstructionMnemonicTable[256] = {
+const char* M6502::InstructionMnemonicTable[256] = {
   "BRK",  "ORA",  "n/a",  "slo",  "nop",  "ORA",  "ASL",  "slo",    // 0x0?
   "PHP",  "ORA",  "ASLA", "anc",  "nop",  "ORA",  "ASL",  "slo",
 
@@ -703,71 +773,3 @@ const char* M6502::ourInstructionMnemonicTable[256] = {
   "BEQ",  "SBC",  "n/a",  "isb",  "nop",  "SBC",  "INC",  "isb",    // 0xF?
   "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
 };
-
-#ifdef DEBUGGER_SUPPORT
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::attach(Debugger& debugger)
-{
-  // Remember the debugger for this microprocessor
-  myDebugger = &debugger;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unsigned int M6502::addCondBreak(Expression *e, const string& name)
-{
-  myBreakConds.push_back(e);
-  myBreakCondNames.push_back(name);
-  return myBreakConds.size() - 1;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondBreak(unsigned int brk)
-{
-  if(brk < myBreakConds.size())
-  {
-    delete myBreakConds[brk];
-    myBreakConds.remove_at(brk);
-    myBreakCondNames.remove_at(brk);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::clearCondBreaks()
-{
-  for(uInt32 i = 0; i < myBreakConds.size(); i++)
-    delete myBreakConds[i];
-
-  myBreakConds.clear();
-  myBreakCondNames.clear();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const StringList& M6502::getCondBreakNames() const
-{
-  return myBreakCondNames;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int M6502::evalCondBreaks()
-{
-  for(uInt32 i = 0; i < myBreakConds.size(); i++)
-    if(myBreakConds[i]->evaluate())
-      return i;
-
-  return -1; // no break hit
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::setBreakPoints(PackedBitArray *bp)
-{
-  myBreakPoints = bp;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
-{
-  myReadTraps = read;
-  myWriteTraps = write;
-}
-
-#endif

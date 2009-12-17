@@ -126,96 +126,96 @@ int CpuDebug::disassemble(int address, string& result, EquateList& list)
 
   // Are we looking at a read or write operation?
   // It will determine what type of label to use
-  bool isRead = (M6502::ourAccessModeTable[opcode] == M6502::Read);
+  bool isRead = (M6502::AccessModeTable[opcode] == M6502::Read);
 
-  switch(M6502::ourAddressingModeTable[opcode])
+  switch(M6502::AddressModeTable[opcode])
   {
     case M6502::Absolute:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(dpeek(mySystem, address + 1), isRead, 4) << " ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 3;
       break;
 
     case M6502::AbsoluteX:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(dpeek(mySystem, address + 1), isRead, 4) << ",x ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 3;
       break;
 
     case M6502::AbsoluteY:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(dpeek(mySystem, address + 1), isRead, 4) << ",y ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 3;
       break;
 
     case M6502::Immediate:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " #$"
+      buf << M6502::InstructionMnemonicTable[opcode] << " #$"
           << hex << setw(2) << setfill('0') << (int) mySystem.peek(address + 1) << " ; "
-          << dec << M6502::ourInstructionProcessorCycleTable[opcode];
+          << dec << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::Implied:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+      buf << M6502::InstructionMnemonicTable[opcode] << " ; "
+          << M6502::InstructionCycleTable[opcode];
       count = 1;
       break;
 
     case M6502::Indirect:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
+      buf << M6502::InstructionMnemonicTable[opcode] << " ("
           << list.getLabel(dpeek(mySystem, address + 1), isRead, 4) << ") ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 3;
       break;
 
     case M6502::IndirectX:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
+      buf << M6502::InstructionMnemonicTable[opcode] << " ("
           << list.getLabel(mySystem.peek(address + 1), isRead, 2) << ",x) ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::IndirectY:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " ("
+      buf << M6502::InstructionMnemonicTable[opcode] << " ("
           << list.getLabel(mySystem.peek(address + 1), isRead, 2) << "),y ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::Relative:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(address + 2 + ((Int16)(Int8)mySystem.peek(address + 1)), isRead, 4)
-          << " ; " << M6502::ourInstructionProcessorCycleTable[opcode];
+          << " ; " << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::Zero:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(mySystem.peek(address + 1), isRead, 2) << " ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::ZeroX:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(mySystem.peek(address + 1), isRead, 2) << ",x ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     case M6502::ZeroY:
-      buf << M6502::ourInstructionMnemonicTable[opcode] << " "
+      buf << M6502::InstructionMnemonicTable[opcode] << " "
           << list.getLabel(mySystem.peek(address + 1), isRead, 2) << ",y ; "
-          << M6502::ourInstructionProcessorCycleTable[opcode];
+          << M6502::InstructionCycleTable[opcode];
       count = 2;
       break;
 
     default:
       buf << "dc  $" << hex << setw(2) << setfill('0') << (int) opcode << " ; "
-          << dec << M6502::ourInstructionProcessorCycleTable[opcode];
+          << dec << M6502::InstructionCycleTable[opcode];
       count = 1;
       break;
   }
