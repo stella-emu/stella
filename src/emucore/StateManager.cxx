@@ -199,10 +199,19 @@ void StateManager::loadState(int slot)
     // If so, do a complete state load using the Console
     if(in.getString() != STATE_HEADER)
       buf << "Incompatible state " << slot << " file";
-    else if(in.getString() == md5 && myOSystem->console().load(in))
-      buf << "State " << slot << " loaded";
     else
-      buf << "Invalid data in state " << slot << " file";
+    {
+      const string& s = in.getString();
+      if(myOSystem->settings().getBool("md5instate") ? s == md5 : true)
+      {
+        if(myOSystem->console().load(in))
+          buf << "State " << slot << " loaded";
+        else
+          buf << "Invalid data in state " << slot << " file";
+      }
+      else
+        buf << "State " << slot << " file doesn't match current ROM";
+    }
 
     myOSystem->frameBuffer().showMessage(buf.str());
   }

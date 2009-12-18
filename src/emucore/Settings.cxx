@@ -114,6 +114,7 @@ Settings::Settings(OSystem* osystem)
 
   // Misc options
   setInternal("autoslot", "false");
+  setInternal("md5instate", "true");
   setInternal("showinfo", "false");
   setInternal("tiadriven", "false");
   setInternal("avoxport", "");
@@ -358,6 +359,7 @@ void Settings::usage()
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
+    << "  -md5instate   <1|0>          ROM MD5 information is saved in a state file, tying the state file to the ROM\n"
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
