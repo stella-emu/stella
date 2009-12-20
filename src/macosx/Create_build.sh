@@ -25,7 +25,7 @@ echo "Copying documentation ..."
 ditto ../../Announce.txt ../../Changes.txt ../../Copyright.txt ../../License.txt ../../Readme.txt ../../Todo.txt ${DISK}
 
 echo "Copying application ..."
-cp -r build/Deployment/StellaOSX.app ${DISK}
+cp -r build/Deployment/Stella.app ${DISK}
 
 echo "Ejecting ${DMG} ..."
 hdiutil eject ${DISK}

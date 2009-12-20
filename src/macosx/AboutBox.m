@@ -61,7 +61,7 @@ static AboutBox *sharedInstance = nil;
     localInfoDict = (NSDictionary *) CFBundleGetLocalInfoDictionary( localInfoBundle );
 
     // Setup the app name field
-    appName = @"StellaOSX";
+    appName = @"Stella";
     [appNameField setStringValue:appName];
 
     // Set the about box window title

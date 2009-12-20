@@ -471,7 +471,6 @@
 		2D73959508C3EB4E0060BB99 /* CommandMenu.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CommandMenu.cxx; path = ../gui/CommandMenu.cxx; sourceTree = SOURCE_ROOT; };
 		2D73959608C3EB4E0060BB99 /* CommandMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CommandMenu.hxx; path = ../gui/CommandMenu.hxx; sourceTree = SOURCE_ROOT; };
 		2D7B4F6C063B513200579B93 /* Credits.html */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text.html; path = Credits.html; sourceTree = SOURCE_ROOT; };
-		2D91751E09BA90390026E9FF /* StellaOSX.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StellaOSX.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D9217FA0857CC88001D664B /* ConsoleFont.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ConsoleFont.hxx; path = ../gui/ConsoleFont.hxx; sourceTree = SOURCE_ROOT; };
 		2D9217FB0857CC88001D664B /* Font.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Font.cxx; path = ../gui/Font.cxx; sourceTree = SOURCE_ROOT; };
 		2D9217FC0857CC88001D664B /* Font.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Font.hxx; path = ../gui/Font.hxx; sourceTree = SOURCE_ROOT; };
@@ -632,7 +631,6 @@
 		DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ContextMenu.hxx; path = ../gui/ContextMenu.hxx; sourceTree = SOURCE_ROOT; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
-		DC419D81108E10A3006E8687 /* Info-StellaOSX.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-StellaOSX.plist"; sourceTree = "<group>"; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomAuditDialog.hxx; path = ../gui/RomAuditDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
@@ -675,7 +673,9 @@
 		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotDebug.hxx; path = ../debugger/RiotDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartX07.hxx; path = ../emucore/CartX07.hxx; sourceTree = SOURCE_ROOT; };
+		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
 		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
+		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC527C810B9DA19005E1287 /* Device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Device.cxx; path = ../emucore/Device.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
@@ -769,7 +769,7 @@
 		19C28FACFE9D520D11CA2CBB /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				2D91751E09BA90390026E9FF /* StellaOSX.app */,
+				DCBA710010DED62E0077193B /* Stella.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -777,7 +777,7 @@
 		29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */ = {
 			isa = PBXGroup;
 			children = (
-				DC419D81108E10A3006E8687 /* Info-StellaOSX.plist */,
+				DCA43BFF10DED5890070CEFD /* Info-Stella.plist */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
@@ -1375,9 +1375,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		2D9173C809BA90380026E9FF /* StellaOSX */ = {
+		2D9173C809BA90380026E9FF /* Stella */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 2D91751609BA90380026E9FF /* Build configuration list for PBXNativeTarget "StellaOSX" */;
+			buildConfigurationList = 2D91751609BA90380026E9FF /* Build configuration list for PBXNativeTarget "Stella" */;
 			buildPhases = (
 				2D9173C909BA90380026E9FF /* ShellScript */,
 				2D9173CA09BA90380026E9FF /* Headers */,
@@ -1394,10 +1394,10 @@
 			);
 			dependencies = (
 			);
-			name = StellaOSX;
+			name = Stella;
 			productInstallPath = "$(HOME)/Applications";
 			productName = "«PROJECTNAME»";
-			productReference = 2D91751E09BA90390026E9FF /* StellaOSX.app */;
+			productReference = DCBA710010DED62E0077193B /* Stella.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -1405,6 +1405,9 @@
 /* Begin PBXProject section */
 		29B97313FDCFA39411CA2CEA /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = net.sourceforge.stella;
+			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella_intel" */;
 			compatibilityVersion = "Xcode 3.2";
 			hasScannedForEncodings = 1;
@@ -1412,7 +1415,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				2D9173C809BA90380026E9FF /* StellaOSX */,
+				2D9173C809BA90380026E9FF /* Stella */,
 			);
 		};
 /* End PBXProject section */
@@ -1657,7 +1660,7 @@
 					../gui,
 					.,
 				);
-				INFOPLIST_FILE = "Info-StellaOSX.plist";
+				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
@@ -1666,7 +1669,7 @@
 					SDL,
 					"-lz",
 				);
-				PRODUCT_NAME = StellaOSX;
+				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -1714,7 +1717,7 @@
 					../gui,
 					.,
 				);
-				INFOPLIST_FILE = "Info-StellaOSX.plist";
+				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
@@ -1723,7 +1726,7 @@
 					SDL,
 					"-lz",
 				);
-				PRODUCT_NAME = StellaOSX;
+				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -1770,7 +1773,7 @@
 					../gui,
 					.,
 				);
-				INFOPLIST_FILE = "Info-StellaOSX.plist";
+				INFOPLIST_FILE = "Info-Stella.plist";
 				INSTALL_PATH = "$(HOME)/Applications";
 				LIBRARY_SEARCH_PATHS = .;
 				OTHER_CFLAGS = "";
@@ -1779,7 +1782,7 @@
 					SDL,
 					"-lz",
 				);
-				PRODUCT_NAME = StellaOSX;
+				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
 				WARNING_CFLAGS = (
 					"-Wmost",
@@ -1833,7 +1836,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		2D91751609BA90380026E9FF /* Build configuration list for PBXNativeTarget "StellaOSX" */ = {
+		2D91751609BA90380026E9FF /* Build configuration list for PBXNativeTarget "Stella" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2D91751709BA90380026E9FF /* Development */,

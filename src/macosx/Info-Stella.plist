@@ -31,9 +31,11 @@
 		</dict>
 	</array>
 	<key>CFBundleExecutable</key>
-	<string>StellaOSX</string>
+	<string>Stella</string>
+	<key>CFBundleDisplayName</key>
+	<string></string>
 	<key>CFBundleGetInfoString</key>
-	<string>StellaOSX</string>
+	<string>Stella</string>
 	<key>CFBundleHelpBookFolder</key>
 	<string>docs</string>
 	<key>CFBundleHelpBookName</key>
@@ -41,11 +43,11 @@
 	<key>CFBundleIconFile</key>
 	<string>Stella</string>
 	<key>CFBundleIdentifier</key>
-	<string>StellaOSX</string>
+	<string>Stella</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>StellaOSX</string>
+	<string>Stella</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleSignature</key>
