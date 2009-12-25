@@ -4,13 +4,13 @@
 [Setup]
 AppName=Stella
 AppVerName=Stella {#STELLA_VER}
-AppPublisher=The Stella team
+AppPublisher=The Stella Team
 AppPublisherURL=http://stella.sourceforge.net
 AppSupportURL=http://stella.sourceforge.net
 AppUpdatesURL=http://stella.sourceforge.net
 DefaultDirName={pf}\Stella
 DefaultGroupName=Stella
-OutputBaseFilename="stella-{#STELLA_VER}-{#STELLA_ARCH}"
+OutputBaseFilename="Stella-{#STELLA_VER}-{#STELLA_ARCH}"
 Compression=lzma
 SolidCompression=yes
 #if STELLA_ARCH == "x64"
