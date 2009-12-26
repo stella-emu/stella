@@ -43,7 +43,7 @@
 	<key>CFBundleIconFile</key>
 	<string>Stella</string>
 	<key>CFBundleIdentifier</key>
-	<string>Stella</string>
+	<string>net.sourceforge.Stella</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
