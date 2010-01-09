@@ -48,7 +48,7 @@ class System;
     read port.  The second 1K of RAM appears at 1800-19FF.  
     1800-18FF is the write port while 1900-19FF is the 
     read port.  You select which 256 byte block appears 
-    here by accessing 1FF8 to 1FFB.
+    here by accessing 1FE8 to 1FEB.
 
   @author  Bradford W. Mott
   @version $Id$

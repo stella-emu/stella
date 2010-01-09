@@ -22,8 +22,6 @@
 #include "System.hxx"
 #include "CartE7.hxx"
 
-// TODO - check for unwanted read from write port in the upper 256B RAM area
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7::CartridgeE7(const uInt8* image)
 {
@@ -106,13 +104,21 @@ uInt8 CartridgeE7::peek(uInt16 address)
     bankRAM(address & 0x0003);
   }
 
-  if((address < 0x0400) && (bank() == 7))
+  if((myCurrentSlice[0] == 7) && (address < 0x0400))
   {
-    // Reading from the write port triggers an unwanted write
+    // Reading from the 1K write port @ $1000 triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
     if(myBankLocked) return value;
-    else return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
+    else return myRAM[address & 0x03FF] = value;
+  }
+  else if((address >= 0x0800) && (address <= 0x08FF))
+  {
+    // Reading from the 256B write port @ $1800 triggers an unwanted write
+    uInt8 value = mySystem->getDataBusState(0xFF);
+
+    if(myBankLocked) return value;
+    else return myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
   }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)];
