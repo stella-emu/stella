@@ -8,9 +8,9 @@
 ;;  SS  SS   tt   ee      ll   ll  aa  aa
 ;;   SSSS     ttt  eeeee llll llll  aaaaa
 ;;
-;; Copyright (c) 1995-2010 by Bradford W. Mott and the Stella team
+;; Copyright (c) 1995-2010 by Bradford W. Mott and the Stella Team
 ;;
-;; See the file "license" for information on usage and redistribution of
+;; See the file "License.txt" for information on usage and redistribution of
 ;; this file, and for a DISCLAIMER OF ALL WARRANTIES.
 ;;
 ;; $Id: scrom.asm,v 1.3 2005-06-16 01:11:29 stephena Exp $

@@ -8,9 +8,9 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella Team
 //
-// See the file "license" for information on usage and redistribution of
+// See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
@@ -119,7 +119,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       break;
 
     case 2:
-      title = "The Stella team";
+      title = "The Stella Team";
       ADD_ATEXT("\\L\\c0""  Bradford W. Mott");
       ADD_ATEXT("\\L\\c2""    Original author, lead developer");
       ADD_ATEXT("\\L\\c0""  Stephen Anthony");
@@ -131,7 +131,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       break;
 
     case 3:
-      title = "The Stella team";
+      title = "The Stella Team";
       ADD_ATEXT("\\L\\c0""  Eckhard Stolberg");
       ADD_ATEXT("\\L\\c2""    Emulation core development");
       ADD_ATEXT("\\L\\c0""  Kostas Nakos");
