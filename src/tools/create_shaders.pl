@@ -21,7 +21,7 @@ print OUTFILE "//      SS   tt   eeeeee  ll   ll   aaaaa  --  \"An Atari 2600 VC
 print OUTFILE "//  SS  SS   tt   ee      ll   ll  aa  aa\n";
 print OUTFILE "//   SSSS     ttt  eeeee llll llll  aaaaa\n";
 print OUTFILE "//\n";
-print OUTFILE "// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team\n";
+print OUTFILE "// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella team\n";
 print OUTFILE "//\n";
 print OUTFILE "// See the file \"license\" for information on usage and redistribution of\n";
 print OUTFILE "// this file, and for a DISCLAIMER OF ALL WARRANTIES.\n";

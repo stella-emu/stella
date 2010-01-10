@@ -8,7 +8,7 @@
 //  BB  BB  SS  SS  PP      FF
 //  BBBBB    SSSS   PP      FF
 //
-// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella Team
+// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella Team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.

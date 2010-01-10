@@ -57,7 +57,7 @@ BEGIN
             VALUE "FileDescription", "Stella"
             VALUE "FileVersion", "3.0"
             VALUE "InternalName", "Stella"
-            VALUE "LegalCopyright", "Copyright (C) 1995-2009 B. Mott & the Stella Team"
+            VALUE "LegalCopyright", "Copyright (C) 1995-2010 B. Mott & the Stella Team"
             VALUE "OriginalFilename", "Stella.exe"
             VALUE "ProductName", "Stella"
             VALUE "ProductVersion", "3.0"

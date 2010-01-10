@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -111,7 +111,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT(string("\\C\\c2") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE;
-      ADD_ATEXT("\\CCopyright (C) 1995-2009 The Stella Team");
+      ADD_ATEXT("\\CCopyright (C) 1995-2010 The Stella Team");
       ADD_ATEXT("\\Chttp://stella.sourceforge.net");
       ADD_ALINE;
       ADD_ATEXT("Stella is free software released under the GNU GPL");
