@@ -86,13 +86,11 @@
 		2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */; };
 		2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BA1086116D1001E31A1 /* EditableWidget.hxx */; };
 		2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */; };
-		2D91742709BA90380026E9FF /* EquateList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BCA08611898001E31A1 /* EquateList.hxx */; };
 		2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */; };
 		2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D30F8760868A4DB00938B9D /* TIADebug.hxx */; };
 		2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D313F0B0879C4C0005BD3E5 /* YaccParser.hxx */; };
 		2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555DA0880E78000466554 /* Cart3E.hxx */; };
 		2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555DE0880E79600466554 /* CpuDebug.hxx */; };
-		2D91742D09BA90380026E9FF /* RamDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9555E00880E79600466554 /* RamDebug.hxx */; };
 		2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */; };
 		2D91743A09BA90380026E9FF /* Expression.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DF971DF0892CEA400F64D23 /* Expression.hxx */; };
 		2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D02208008A301F200B9C76B /* InputTextDialog.hxx */; };
@@ -202,13 +200,11 @@
 		2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */; };
 		2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BA0086116D1001E31A1 /* EditableWidget.cxx */; };
 		2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BA4086116D1001E31A1 /* EditTextWidget.cxx */; };
-		2D9174CA09BA90380026E9FF /* EquateList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BC908611898001E31A1 /* EquateList.cxx */; };
 		2D9174CB09BA90380026E9FF /* PackedBitArray.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */; };
 		2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D30F8750868A4DB00938B9D /* TIADebug.cxx */; };
 		2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D313F0A0879C4C0005BD3E5 /* YaccParser.cxx */; };
 		2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555D90880E78000466554 /* Cart3E.cxx */; };
 		2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555DD0880E79600466554 /* CpuDebug.cxx */; };
-		2D9174D009BA90380026E9FF /* RamDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9555DF0880E79600466554 /* RamDebug.cxx */; };
 		2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DF971DE0892CEA400F64D23 /* Expression.cxx */; };
 		2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D02207F08A301F200B9C76B /* InputTextDialog.cxx */; };
 		2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */; };
@@ -280,6 +276,10 @@
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
 		DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */; };
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
+		DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA011037FF200F199A7 /* CartDebug.cxx */; };
+		DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA111037FF200F199A7 /* CartDebug.hxx */; };
+		DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA211037FF200F199A7 /* DiStella.cxx */; };
+		DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA311037FF200F199A7 /* DiStella.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
@@ -444,8 +444,6 @@
 		2D403BA1086116D1001E31A1 /* EditableWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EditableWidget.hxx; path = ../gui/EditableWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2D403BA4086116D1001E31A1 /* EditTextWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EditTextWidget.cxx; path = ../gui/EditTextWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BA5086116D1001E31A1 /* EditTextWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EditTextWidget.hxx; path = ../gui/EditTextWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2D403BC908611898001E31A1 /* EquateList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EquateList.cxx; path = ../debugger/EquateList.cxx; sourceTree = SOURCE_ROOT; };
-		2D403BCA08611898001E31A1 /* EquateList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EquateList.hxx; path = ../debugger/EquateList.hxx; sourceTree = SOURCE_ROOT; };
 		2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PackedBitArray.cxx; path = ../debugger/PackedBitArray.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PackedBitArray.hxx; path = ../debugger/PackedBitArray.hxx; sourceTree = SOURCE_ROOT; };
 		2D4764C806683C5F00F63D87 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL.framework; sourceTree = SOURCE_ROOT; };
@@ -481,8 +479,6 @@
 		2D9555DA0880E78000466554 /* Cart3E.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart3E.hxx; path = ../emucore/Cart3E.hxx; sourceTree = SOURCE_ROOT; };
 		2D9555DD0880E79600466554 /* CpuDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CpuDebug.cxx; path = ../debugger/CpuDebug.cxx; sourceTree = SOURCE_ROOT; };
 		2D9555DE0880E79600466554 /* CpuDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CpuDebug.hxx; path = ../debugger/CpuDebug.hxx; sourceTree = SOURCE_ROOT; };
-		2D9555DF0880E79600466554 /* RamDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RamDebug.cxx; path = ../debugger/RamDebug.cxx; sourceTree = SOURCE_ROOT; };
-		2D9555E00880E79600466554 /* RamDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamDebug.hxx; path = ../debugger/RamDebug.hxx; sourceTree = SOURCE_ROOT; };
 		2DDA34020665817D00CDD299 /* SoundSDL.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SoundSDL.cxx; path = ../common/SoundSDL.cxx; sourceTree = SOURCE_ROOT; };
 		2DDA34030665817D00CDD299 /* SoundSDL.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SoundSDL.hxx; path = ../common/SoundSDL.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEA0A0845700300812C11 /* mainSDL.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = mainSDL.cxx; path = ../common/mainSDL.cxx; sourceTree = SOURCE_ROOT; };
@@ -657,6 +653,10 @@
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaMediumFont.hxx; path = ../gui/StellaMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherFilterDialog.cxx; path = ../gui/LauncherFilterDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC6B2BA011037FF200F199A7 /* CartDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDebug.cxx; path = ../debugger/CartDebug.cxx; sourceTree = SOURCE_ROOT; };
+		DC6B2BA111037FF200F199A7 /* CartDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebug.hxx; path = ../debugger/CartDebug.hxx; sourceTree = SOURCE_ROOT; };
+		DC6B2BA211037FF200F199A7 /* DiStella.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiStella.cxx; path = ../debugger/DiStella.cxx; sourceTree = SOURCE_ROOT; };
+		DC6B2BA311037FF200F199A7 /* DiStella.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DiStella.hxx; path = ../debugger/DiStella.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
@@ -1141,6 +1141,10 @@
 		2D605130089879BA00C6DE89 /* debugger */ = {
 			isa = PBXGroup;
 			children = (
+				DC6B2BA011037FF200F199A7 /* CartDebug.cxx */,
+				DC6B2BA111037FF200F199A7 /* CartDebug.hxx */,
+				DC6B2BA211037FF200F199A7 /* DiStella.cxx */,
+				DC6B2BA311037FF200F199A7 /* DiStella.hxx */,
 				DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */,
 				DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */,
 				DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */,
@@ -1152,14 +1156,10 @@
 				2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */,
 				2D659E32085D3DD6005D96C8 /* DebuggerParser.hxx */,
 				2DF971D70892CEA400F64D23 /* DebuggerSystem.hxx */,
-				2D403BCA08611898001E31A1 /* EquateList.hxx */,
-				2D403BC908611898001E31A1 /* EquateList.cxx */,
 				2DF971DE0892CEA400F64D23 /* Expression.cxx */,
 				2DF971DF0892CEA400F64D23 /* Expression.hxx */,
 				2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */,
 				2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */,
-				2D9555DF0880E79600466554 /* RamDebug.cxx */,
-				2D9555E00880E79600466554 /* RamDebug.hxx */,
 				2D30F8750868A4DB00938B9D /* TIADebug.cxx */,
 				2D30F8760868A4DB00938B9D /* TIADebug.hxx */,
 				2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */,
@@ -1280,13 +1280,11 @@
 				2D91742309BA90380026E9FF /* DebuggerParser.hxx in Headers */,
 				2D91742409BA90380026E9FF /* EditableWidget.hxx in Headers */,
 				2D91742509BA90380026E9FF /* EditTextWidget.hxx in Headers */,
-				2D91742709BA90380026E9FF /* EquateList.hxx in Headers */,
 				2D91742809BA90380026E9FF /* PackedBitArray.hxx in Headers */,
 				2D91742909BA90380026E9FF /* TIADebug.hxx in Headers */,
 				2D91742A09BA90380026E9FF /* YaccParser.hxx in Headers */,
 				2D91742B09BA90380026E9FF /* Cart3E.hxx in Headers */,
 				2D91742C09BA90380026E9FF /* CpuDebug.hxx in Headers */,
-				2D91742D09BA90380026E9FF /* RamDebug.hxx in Headers */,
 				2D91743609BA90380026E9FF /* DebuggerSystem.hxx in Headers */,
 				2D91743A09BA90380026E9FF /* Expression.hxx in Headers */,
 				2D91744F09BA90380026E9FF /* InputTextDialog.hxx in Headers */,
@@ -1369,6 +1367,8 @@
 				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
 				DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */,
 				DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */,
+				DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */,
+				DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1533,13 +1533,11 @@
 				2D9174C709BA90380026E9FF /* DebuggerParser.cxx in Sources */,
 				2D9174C809BA90380026E9FF /* EditableWidget.cxx in Sources */,
 				2D9174C909BA90380026E9FF /* EditTextWidget.cxx in Sources */,
-				2D9174CA09BA90380026E9FF /* EquateList.cxx in Sources */,
 				2D9174CB09BA90380026E9FF /* PackedBitArray.cxx in Sources */,
 				2D9174CC09BA90380026E9FF /* TIADebug.cxx in Sources */,
 				2D9174CD09BA90380026E9FF /* YaccParser.cxx in Sources */,
 				2D9174CE09BA90380026E9FF /* Cart3E.cxx in Sources */,
 				2D9174CF09BA90380026E9FF /* CpuDebug.cxx in Sources */,
-				2D9174D009BA90380026E9FF /* RamDebug.cxx in Sources */,
 				2D9174DC09BA90380026E9FF /* Expression.cxx in Sources */,
 				2D9174F109BA90380026E9FF /* InputTextDialog.cxx in Sources */,
 				2D9174F209BA90380026E9FF /* CheckListWidget.cxx in Sources */,
@@ -1605,6 +1603,8 @@
 				DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
 				DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */,
+				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
+				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1809,7 +1809,7 @@
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
