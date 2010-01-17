@@ -21,7 +21,7 @@
 
 #include <cstdlib>
 
-#define STELLA_BASE_VERSION "3.1_test3"
+#define STELLA_BASE_VERSION "3.1_test4"
 
 #ifdef NIGHTLY_BUILD
   #define STELLA_VERSION STELLA_BASE_VERSION "pre-" NIGHTLY_BUILD
