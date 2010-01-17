@@ -686,6 +686,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\CartDebug.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\gui\ColorWidget.cxx"
 					>
 				</File>
@@ -718,7 +722,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\debugger\EquateList.cxx"
+					RelativePath="..\debugger\DiStella.cxx"
 					>
 				</File>
 				<File
@@ -731,10 +735,6 @@
 				</File>
 				<File
 					RelativePath="..\debugger\gui\PromptWidget.cxx"
-					>
-				</File>
-				<File
-					RelativePath="..\debugger\CartDebug.cxx"
 					>
 				</File>
 				<File
@@ -1292,6 +1292,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\CartDebug.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\gui\ColorWidget.hxx"
 					>
 				</File>
@@ -1332,11 +1336,11 @@
 					>
 				</File>
 				<File
-					RelativePath="..\debugger\Equate.hxx"
+					RelativePath="..\debugger\DiStella.hxx"
 					>
 				</File>
 				<File
-					RelativePath="..\debugger\EquateList.hxx"
+					RelativePath="..\debugger\Equate.hxx"
 					>
 				</File>
 				<File
@@ -1349,10 +1353,6 @@
 				</File>
 				<File
 					RelativePath="..\debugger\gui\PromptWidget.hxx"
-					>
-				</File>
-				<File
-					RelativePath="..\debugger\CartDebug.hxx"
 					>
 				</File>
 				<File
