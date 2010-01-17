@@ -50,9 +50,6 @@ class RomWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
-    void initialUpdate();
-    void incrementalUpdate(int line, int rows);
-
     void setBreak(int data);
     void setPC(int data);
     void patchROM(int data, const string& bytes);
@@ -76,7 +73,6 @@ class RomWidget : public Widget, public CommandSender
     InputTextDialog* mySaveRom;
 
     bool myListIsDirty;
-    bool mySourceAvailable;
     int  myCurrentBank;
 };
 

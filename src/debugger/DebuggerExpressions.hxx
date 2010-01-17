@@ -20,8 +20,8 @@
 #define DEBUGGER_EXPRESSIONS_HXX
 
 #include "bspf.hxx"
+#include "CartDebug.hxx"
 #include "CpuDebug.hxx"
-#include "RamDebug.hxx"
 #include "TIADebug.hxx"
 #include "Debugger.hxx"
 #include "Expression.hxx"
@@ -124,7 +124,7 @@ class EquateExpression : public Expression
 {
   public:
     EquateExpression(const string& label) : Expression(0, 0), myLabel(label) {}
-    uInt16 evaluate() { return Debugger::debugger().equates().getAddress(myLabel); }
+    uInt16 evaluate() { return Debugger::debugger().cartDebug().getAddress(myLabel); }
 
   private:
     string myLabel;
@@ -260,14 +260,14 @@ class PlusExpression : public Expression
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-class RamMethodExpression : public Expression
+class CartMethodExpression : public Expression
 {
   public:
-    RamMethodExpression(RAMDEBUG_INT_METHOD method) : Expression(0, 0), myMethod(method) {}
-    uInt16 evaluate() { return CALL_RAMDEBUG_METHOD(myMethod); }
+    CartMethodExpression(CARTDEBUG_INT_METHOD method) : Expression(0, 0), myMethod(method) {}
+    uInt16 evaluate() { return CALL_CARTDEBUG_METHOD(myMethod); }
 
   private:
-    RAMDEBUG_INT_METHOD myMethod;
+    CARTDEBUG_INT_METHOD myMethod;
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -77,7 +77,7 @@ Expression* lastExp = 0;
 #define YYERROR_VERBOSE 1
 
 /* dump Expression stack during parsing? */
-#define DEBUG_EXP 0
+#define DEBUG_EXP 1
 /* #define DEBUG_EXP 1 */
 
 int yylex();
@@ -128,8 +128,8 @@ void yyerror(const char *e) {
      NUMBER = 258,
      ERR = 259,
      EQUATE = 260,
-     CPU_METHOD = 261,
-     RAM_METHOD = 262,
+     CART_METHOD = 261,
+     CPU_METHOD = 262,
      TIA_METHOD = 263,
      FUNCTION = 264,
      LOG_OR = 265,
@@ -149,8 +149,8 @@ void yyerror(const char *e) {
 #define NUMBER 258
 #define ERR 259
 #define EQUATE 260
-#define CPU_METHOD 261
-#define RAM_METHOD 262
+#define CART_METHOD 261
+#define CPU_METHOD 262
 #define TIA_METHOD 263
 #define FUNCTION 264
 #define LOG_OR 265
@@ -177,9 +177,9 @@ typedef union YYSTYPE
 
 	int val;
 	char *equate;
-	CPUDEBUG_INT_METHOD cpuMethod;
-	RAMDEBUG_INT_METHOD ramMethod;
-	TIADEBUG_INT_METHOD tiaMethod;
+	CARTDEBUG_INT_METHOD cartMethod;
+	CPUDEBUG_INT_METHOD  cpuMethod;
+	TIADEBUG_INT_METHOD  tiaMethod;
 	Expression *exp;
 	char *function;
 
@@ -489,7 +489,7 @@ static const yytype_int8 yyrhs[] =
       32,    40,    -1,    33,    40,    -1,    12,    40,    -1,    34,
       40,    -1,    23,    40,    -1,    24,    40,    -1,    35,    40,
       36,    -1,    40,    31,    40,    37,    -1,     3,    -1,     5,
-      -1,     6,    -1,     7,    -1,     8,    -1,     9,    -1,     4,
+      -1,     7,    -1,     6,    -1,     8,    -1,     9,    -1,     4,
       -1
 };
 
@@ -508,8 +508,8 @@ static const yytype_uint8 yyrline[] =
    First, the terminals, then, starting at YYNTOKENS, nonterminals.  */
 static const char *const yytname[] =
 {
-  "$end", "error", "$undefined", "NUMBER", "ERR", "EQUATE", "CPU_METHOD",
-  "RAM_METHOD", "TIA_METHOD", "FUNCTION", "'-'", "'+'", "'*'", "'/'",
+  "$end", "error", "$undefined", "NUMBER", "ERR", "EQUATE", "CART_METHOD",
+  "CPU_METHOD", "TIA_METHOD", "FUNCTION", "'-'", "'+'", "'*'", "'/'",
   "'%'", "LOG_OR", "LOG_AND", "LOG_NOT", "'|'", "'^'", "'&'", "SHL", "SHR",
   "'<'", "'>'", "EQ", "NE", "LTE", "GTE", "DEREF", "UMINUS", "'['", "'~'",
   "'!'", "'@'", "'('", "')'", "']'", "$accept", "statement", "expression", 0
@@ -551,7 +551,7 @@ static const yytype_uint8 yyr2[] =
    means the default is an error.  */
 static const yytype_uint8 yydefact[] =
 {
-       0,    30,    36,    31,    32,    33,    34,    35,     0,     0,
+       0,    30,    36,    31,    33,    32,    34,    35,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     2,    21,    24,
       26,    27,    22,    23,    25,     0,     1,     0,     0,     0,
        0,     0,     0,     0,     0,     0,     0,     0,     0,     0,
@@ -1687,7 +1687,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 100 "stella.y"
-    { if(DEBUG_EXP) fprintf(stderr, " (RamMethod)"); (yyval.exp) = new RamMethodExpression((yyvsp[(1) - (1)].ramMethod)); lastExp = (yyval.exp); }
+    { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); (yyval.exp) = new CartMethodExpression((yyvsp[(1) - (1)].cartMethod)); lastExp = (yyval.exp); }
     break;
 
   case 34:
@@ -1708,7 +1708,7 @@ yyreduce:
 
 /* Line 1455 of yacc.c  */
 #line 103 "stella.y"
-    { if(DEBUG_EXP) fprintf(stderr, " ERR"); yyerror((char*)"Invalid label or constant"); return 1; }
+    { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((char*)"Invalid label or constant"); return 1; }
     break;
 
 

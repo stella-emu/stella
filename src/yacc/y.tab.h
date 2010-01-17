@@ -42,8 +42,8 @@
      NUMBER = 258,
      ERR = 259,
      EQUATE = 260,
-     CPU_METHOD = 261,
-     RAM_METHOD = 262,
+     CART_METHOD = 261,
+     CPU_METHOD = 262,
      TIA_METHOD = 263,
      FUNCTION = 264,
      LOG_OR = 265,
@@ -63,8 +63,8 @@
 #define NUMBER 258
 #define ERR 259
 #define EQUATE 260
-#define CPU_METHOD 261
-#define RAM_METHOD 262
+#define CART_METHOD 261
+#define CPU_METHOD 262
 #define TIA_METHOD 263
 #define FUNCTION 264
 #define LOG_OR 265
@@ -91,9 +91,9 @@ typedef union YYSTYPE
 
 	int val;
 	char *equate;
-	CPUDEBUG_INT_METHOD cpuMethod;
-	RAMDEBUG_INT_METHOD ramMethod;
-	TIADEBUG_INT_METHOD tiaMethod;
+	CARTDEBUG_INT_METHOD cartMethod;
+	CPUDEBUG_INT_METHOD  cpuMethod;
+	TIADEBUG_INT_METHOD  tiaMethod;
 	Expression *exp;
 	char *function;
 

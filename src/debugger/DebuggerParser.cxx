@@ -22,8 +22,8 @@
 
 #include "Dialog.hxx"
 #include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "CpuDebug.hxx"
-#include "RamDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 #include "DebuggerParser.hxx"
@@ -266,8 +266,8 @@ int DebuggerParser::decipher_arg(const string &str)
   else if(arg == "s") result = state.SP;
   else if(arg == "pc" || arg == ".") result = state.PC;
   else { // Not a special, must be a regular arg: check for label first
-    const char *a = arg.c_str();
-    result = debugger->equates().getAddress(arg);
+    const char* a = arg.c_str();
+    result = debugger->cartDebug().getAddress(arg);
 
     if(result < 0) { // if not label, must be a number
       if(bin) { // treat as binary
@@ -562,7 +562,7 @@ string DebuggerParser::eval()
   string ret;
   for(int i=0; i<argCount; i++) {
     // TODO - technically, we should determine if the label is read or write
-    string label = debugger->equates().getLabel(args[i], true);
+    const string& label = debugger->cartDebug().getLabel(args[i], true);
     if(label != "") {
       ret += label;
       ret += ": ";
@@ -602,7 +602,7 @@ string DebuggerParser::trapStatus(int addr)
     result += "   none   ";
 
   // TODO - technically, we should determine if the label is read or write
-  const string& l = debugger->equates().getLabel(addr, true);
+  const string& l = debugger->cartDebug().getLabel(addr, true);
   if(l != "") {
     result += "  (";
     result += l;
@@ -668,14 +668,14 @@ void DebuggerParser::executeA()
 // "bank"
 void DebuggerParser::executeBank()
 {
-  int banks = debugger->bankCount();
+  int banks = debugger->cartDebug().bankCount();
   if(argCount == 0) {
-    commandResult += debugger->getCartType();
+    commandResult += debugger->cartDebug().getCartType();
     commandResult += ": ";
     if(banks < 2)
       commandResult += red("bankswitching not supported by this cartridge");
     else {
-      commandResult += debugger->valueToString(debugger->getBank());
+      commandResult += debugger->valueToString(debugger->cartDebug().getBank());
       commandResult += "/";
       commandResult += debugger->valueToString(banks);
     }
@@ -844,7 +844,7 @@ void DebuggerParser::executeD()
 void DebuggerParser::executeDefine()
 {
   // TODO: check if label already defined?
-  debugger->addLabel(argStrings[0], args[1]);
+  debugger->cartDebug().addLabel(argStrings[0], args[1]);
   debugger->myRom->invalidate();
   commandResult = "label " + argStrings[0] + " defined as " + debugger->valueToString(args[1]);
 }
@@ -888,7 +888,7 @@ void DebuggerParser::executeDisasm()
     return;
   }
 
-  commandResult = debugger->disassemble(start, lines);
+  commandResult = debugger->cartDebug().disassemble(start, lines);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -972,17 +972,6 @@ void DebuggerParser::executeFunction()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "list"
-void DebuggerParser::executeList()
-{
-  if(!debugger->haveListFile())
-    commandResult = "no list file loaded (try \"loadlist file.lst\")";
-
-  for(int i=args[0] - 2; i<args[0] + 3; i++)
-    commandResult += debugger->getSourceLines(i);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
@@ -993,7 +982,7 @@ void DebuggerParser::executeListbreaks()
   {
     if(debugger->breakpoints().isSet(i))
     {
-      buf << debugger->equates().getLabel(i, true, 4) << " ";
+      buf << debugger->cartDebug().getLabel(i, true, 4) << " ";
       if(! (++count % 8) ) buf << "\n";
     }
   }
@@ -1062,17 +1051,10 @@ void DebuggerParser::executeLoadstate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "loadlist"
-void DebuggerParser::executeLoadlist()
-{
-  commandResult = debugger->loadListFile(argStrings[0]);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "loadsym"
 void DebuggerParser::executeLoadsym()
 {
-  commandResult = debugger->equates().loadFile(argStrings[0]);
+  commandResult = debugger->cartDebug().loadSymbolFile(argStrings[0]);
   debugger->myRom->invalidate();
 }
 
@@ -1105,7 +1087,7 @@ void DebuggerParser::executePrint()
 void DebuggerParser::executeRam()
 {
   if(argCount == 0)
-    commandResult = debugger->ramDebug().toString();
+    commandResult = debugger->cartDebug().toString();
   else
     commandResult = debugger->setRAM(args);
 }
@@ -1178,7 +1160,7 @@ void DebuggerParser::executeRunTo()
 
   do {
     cycles += debugger->step();
-    string next = debugger->disassemble(debugger->cpuDebug().pc(), 1);
+    string next = debugger->cartDebug().disassemble(debugger->cpuDebug().pc(), 1);
     done = (next.find(argStrings[0]) != string::npos);
     ++count;
   } while(!done && count < 10000);
@@ -1246,7 +1228,7 @@ void DebuggerParser::executeSavestate()
 // "savesym"
 void DebuggerParser::executeSavesym()
 {
-  if(debugger->equates().saveFile(argStrings[0]))
+  if(debugger->cartDebug().saveSymbolFile(argStrings[0]))
     commandResult = "saved symbols to file " + argStrings[0];
   else
     commandResult = red("I/O error");
@@ -1321,7 +1303,7 @@ void DebuggerParser::executeTrapwrite()
 // "undef"
 void DebuggerParser::executeUndef()
 {
-  if(debugger->equates().removeEquate(argStrings[0]))
+  if(debugger->cartDebug().removeLabel(argStrings[0]))
   {
     debugger->myRom->invalidate();
     commandResult = argStrings[0] + " now undefined";
@@ -1566,15 +1548,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
-    "list",
-    "List source (if loaded with loadlist)",
-    true,
-    false,
-    { kARG_WORD, kARG_END_ARGS },
-    &DebuggerParser::executeList
-  },
-
-  {
     "listbreaks",
     "List breakpoints",
     false,
@@ -1599,15 +1572,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_END_ARGS },
     &DebuggerParser::executeListwatches
-  },
-
-  {
-    "loadlist",
-    "Load DASM listing file",
-    true,
-    true,
-    { kARG_FILE, kARG_END_ARGS },
-    &DebuggerParser::executeLoadlist
   },
 
   {

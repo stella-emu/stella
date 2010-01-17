@@ -25,6 +25,7 @@
 #include "FrameBuffer.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "CartDebug.hxx"
 #include "TIADebug.hxx"
 #include "ToggleBitWidget.hxx"
 #include "TogglePixelWidget.hxx"
@@ -598,6 +599,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   string buf;
 
   Debugger& dbg = instance().debugger();
+  CartDebug& cart = dbg.cartDebug();
   TIADebug& tia = dbg.tiaDebug();
 
   switch(cmd)
@@ -751,7 +753,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
           // We're using the read-addresses here
           // Should we also add write-addresses, or remove this entirely?
-          myLabel->setEditString(dbg.equates().getLabel(addr, true));
+          myLabel->setEditString(cart.getLabel(addr, true));
 
           myDecValue->setEditString(dbg.valueToString(value, kBASE_10));
           myBinValue->setEditString(dbg.valueToString(value, kBASE_2));

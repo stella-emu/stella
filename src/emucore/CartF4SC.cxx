@@ -93,6 +93,7 @@ void CartridgeF4SC::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeF4SC::peek(uInt16 address)
 {
+  uInt16 peekAddress = address;
   address &= 0x0FFF;
 
   // Switch banks if necessary
@@ -104,12 +105,14 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked) return value;
-    else return myRAM[address] = value;
+    if(myBankLocked)
+      return value;
+    else
+    {
+      triggerReadFromWritePort(peekAddress);
+      return myRAM[address] = value;
+    }
   }  
-  else
-    return myImage[(myCurrentBank << 12) + address];
-
 
   // NOTE: This does not handle accessing RAM, however, this function 
   // should never be called for RAM because of the way page accessing 

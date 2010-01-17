@@ -24,6 +24,7 @@
 #include "OSystem.hxx"
 #include "GuiObject.hxx"
 #include "Debugger.hxx"
+#include "CartDebug.hxx"
 #include "CpuDebug.hxx"
 #include "Widget.hxx"
 #include "DataGridWidget.hxx"
@@ -280,5 +281,5 @@ void CpuWidget::fillGrid()
     changed.push_back(state.PSbits[i] != oldstate.PSbits[i]);
 
   myPSRegister->setState(state.PSbits, changed);
-  myPCLabel->setEditString(dbg.equates().getLabel(state.PC, true));
+  myPCLabel->setEditString(dbg.cartDebug().getLabel(state.PC, true));
 }

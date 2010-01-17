@@ -734,7 +734,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\debugger\RamDebug.cxx"
+					RelativePath="..\debugger\CartDebug.cxx"
 					>
 				</File>
 				<File
@@ -1352,7 +1352,7 @@
 					>
 				</File>
 				<File
-					RelativePath="..\debugger\RamDebug.hxx"
+					RelativePath="..\debugger\CartDebug.hxx"
 					>
 				</File>
 				<File

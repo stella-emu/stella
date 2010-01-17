@@ -19,7 +19,6 @@
 #ifndef M6502_HXX
 #define M6502_HXX
 
-class D6502;
 class M6502;
 class Debugger;
 class CpuDebug;
@@ -49,8 +48,9 @@ typedef Common::Array<Expression*> ExpressionList;
 */
 class M6502 : public Serializable
 {
-    // The 6502 debugger class is a friend who needs special access
-    friend class CpuDebug;
+  // The 6502 and Cart debugger classes are friends who need special access
+  friend class CartDebug;
+  friend class CpuDebug;
 
   public:
     /**
@@ -132,7 +132,7 @@ class M6502 : public Serializable
     */ 
     bool lastAccessWasRead() const { return myLastAccessWasRead; }
 
-    /**
+    /**                                                                    
       Return the last address that was part of a read/peek.  Note that
       reads which are part of a write are not considered here, unless
       they're not the same as the last write address.  This eliminates
@@ -316,39 +316,10 @@ class M6502 : public Serializable
 
   private:
     /**
-      Enumeration of the 6502 addressing modes
-    */
-    enum AddressingMode
-    {
-      Absolute, AbsoluteX, AbsoluteY, Immediate, Implied,
-      Indirect, IndirectX, IndirectY, Invalid, Relative,
-      Zero, ZeroX, ZeroY
-    };
-
-    /**
-      Enumeration of the 6502 access modes
-    */
-    enum AccessMode
-    {
-      Read, Write, None
-    };
-
-    /// Addressing mode for each of the 256 opcodes
-    /// This specifies how the opcode argument is addressed
-    static AddressingMode AddressModeTable[256];
-
-    /// Access mode for each of the 256 opcodes
-    /// This specifies how the opcode will access its argument
-    static AccessMode AccessModeTable[256];
-
-    /**
       Table of instruction processor cycle times.  In some cases additional 
       cycles will be added during the execution of an instruction.
     */
-    static uInt32 InstructionCycleTable[256];
-
-    /// Table of instruction mnemonics
-    static const char* InstructionMnemonicTable[256];
+    static uInt32 ourInstructionCycleTable[256];
 };
 
 #endif

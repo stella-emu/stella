@@ -36,9 +36,8 @@
 #include "M6502.hxx"
 #include "Cart.hxx"
 
-#include "EquateList.hxx"
+#include "CartDebug.hxx"
 #include "CpuDebug.hxx"
-#include "RamDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
 
@@ -95,15 +94,14 @@ Debugger::Debugger(OSystem* osystem)
     myConsole(NULL),
     mySystem(NULL),
     myParser(NULL),
+    myCartDebug(NULL),
     myCpuDebug(NULL),
-    myRamDebug(NULL),
     myRiotDebug(NULL),
     myTiaDebug(NULL),
     myTiaInfo(NULL),
     myTiaOutput(NULL),
     myTiaZoom(NULL),
     myRom(NULL),
-    myEquateList(NULL),
     myBreakPoints(NULL),
     myReadTraps(NULL),
     myWriteTraps(NULL),
@@ -138,12 +136,11 @@ Debugger::~Debugger()
 {
   delete myParser;
 
+  delete myCartDebug;
   delete myCpuDebug;
-  delete myRamDebug;
   delete myRiotDebug;
   delete myTiaDebug;
 
-  delete myEquateList;
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
@@ -193,12 +190,11 @@ void Debugger::setConsole(Console* console)
   delete myCpuDebug;
   myCpuDebug = new CpuDebug(*this, *myConsole);
 
-  delete myRamDebug;
-  myRamDebug = new RamDebug(*this, *myConsole);
-
+  delete myCartDebug;
   // Register any RAM areas in the Cartridge
-  // Zero-page RAM is automatically recognized by RamDebug
-  myRamDebug->addRamArea(myConsole->cartridge().ramAreas());
+  // Zero-page RAM is automatically recognized by CartDebug
+  myCartDebug = new CartDebug(*this, *myConsole, myConsole->cartridge().ramAreas());
+  myCartDebug->loadSymbolFile(myOSystem->romFile());
 
   delete myRiotDebug;
   myRiotDebug = new RiotDebug(*this, *myConsole);
@@ -206,14 +202,12 @@ void Debugger::setConsole(Console* console)
   delete myTiaDebug;
   myTiaDebug = new TIADebug(*this, *myConsole);
 
-  // Initialize equates and breakpoints to known state
-  delete myEquateList;
-  myEquateList = new EquateList();
+  // Initialize breakpoints to known state
   clearAllBreakPoints();
   clearAllTraps();
 
-  autoLoadSymbols(myOSystem->romFile());
-  loadListFile();
+// FIXME - these will probably be removed
+//  loadListFile();
 
   // Make sure cart RAM is added before this is called,
   // otherwise the debugger state won't know about it
@@ -243,21 +237,7 @@ void Debugger::quit()
   myOSystem->eventHandler().leaveDebugMode();
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::autoLoadSymbols(string fileName)
-{
-  string file = fileName;
-
-  string::size_type pos;
-  if( (pos = file.find_last_of('.')) != string::npos )
-    file.replace(pos, file.size(), ".sym");
-  else
-    file += ".sym";
-
-  string ret = myEquateList->loadFile(file);
-  //  cerr << "loading syms from file " << file << ": " << ret << endl;
-}
-
+#if 0  // FIXME - remove this
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::loadListFile(string f)
 {
@@ -335,6 +315,7 @@ string Debugger::getSourceLines(int addr) const
   else
     return "";
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::autoExec()
@@ -431,8 +412,7 @@ const string Debugger::invIfChanged(int reg, int oldReg)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::reset()
 {
-  int pc = myCpuDebug->dPeek(0xfffc);
-  myCpuDebug->setPC(pc);
+  myCpuDebug->setPC(dpeek(0xfffc));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -580,61 +560,6 @@ int Debugger::cycles()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& Debugger::disassemble(int start, int lines)
-{
-  static string result;
-  ostringstream buffer;
-  string cpubuf;
-
-  do {
-    buffer << myEquateList->getLabel(start, true, 4) << ": ";
-
-    int count = myCpuDebug->disassemble(start, cpubuf, *myEquateList);
-    for(int i = 0; i < count; i++)
-      buffer << hex << setw(2) << setfill('0') << peek(start++) << dec;
-
-    if(count < 3) buffer << "   ";
-    if(count < 2) buffer << "   ";
-
-    buffer << " " << cpubuf << "\n";
-  } while(--lines > 0 && start <= 0xffff);
-
-  result = buffer.str();
-  return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::disassemble(IntArray& addr, StringList& addrLabel,
-                           StringList& bytes, StringList& data,
-                           int start, int end)
-{
-  if(start < 0x80 || end > 0xffff)
-    return;
-
-  string cpubuf, tmp;
-  char buf[255];
-
-  do
-  {
-    addrLabel.push_back(myEquateList->getLabel(start, true, 4) + ":");
-    addr.push_back(start);
-
-    cpubuf = "";
-    int count = myCpuDebug->disassemble(start, cpubuf, *myEquateList);
-
-    tmp = "";
-    for(int i=0; i<count; i++) {
-      sprintf(buf, "%02x ", peek(start++));
-      tmp += buf;
-    }
-    bytes.push_back(tmp);
-
-    data.push_back(cpubuf);
-  }
-  while(start <= end);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)
 {
   saveOldState();
@@ -687,27 +612,9 @@ void Debugger::clearAllTraps()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::peek(int addr)
-{
-  return mySystem->peek(addr);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::dpeek(int addr)
-{
-  return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Debugger::showWatches()
 {
   return myParser->showWatches();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addLabel(string label, int address)
-{
-  myEquateList->addEquate(label, address);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -730,24 +637,6 @@ bool Debugger::setBank(int bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::getBank()
-{
-  return myConsole->cartridge().bank();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Debugger::bankCount()
-{
-  return myConsole->cartridge().bankCount();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::getCartType()
-{
-  return myConsole->cartridge().name();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(int addr, int value)
 {
   return myConsole->cartridge().patch(addr, value);
@@ -756,8 +645,8 @@ bool Debugger::patchROM(int addr, int value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveOldState(bool addrewind)
 {
+  myCartDebug->saveOldState();
   myCpuDebug->saveOldState();
-  myRamDebug->saveOldState();
   myRiotDebug->saveOldState();
   myTiaDebug->saveOldState();
 

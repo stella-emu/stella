@@ -31,7 +31,7 @@
 #include "DebuggerParser.hxx"
 
 #include "PromptWidget.hxx"
-#include "EquateList.hxx"
+#include "CartDebug.hxx"
 
 #define PROMPT  "> "
 
@@ -253,8 +253,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       else
       {
         // we got a delimiter, so this must be a label:
-        EquateList& equates = instance().debugger().equates();
-        possibilities = equates.countCompletions(str + lastDelimPos + 1);
+        CartDebug& cart = instance().debugger().cartDebug();
+        possibilities = cart.countCompletions(str + lastDelimPos + 1);
 
         if(possibilities < 1) {
           delete[] str;
@@ -262,8 +262,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
 
         // TODO - perhaps use strings instead of char pointers
-        completionList = equates.getCompletions().c_str();
-        prefix = equates.getCompletionPrefix().c_str();
+        completionList = cart.getCompletions().c_str();
+        prefix = cart.getCompletionPrefix().c_str();
       }
 
       if(possibilities == 1)

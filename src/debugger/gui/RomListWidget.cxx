@@ -41,7 +41,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth = font.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  myLabelWidth = BSPF_max(20, int(0.35 * (numchars - 12))) * fontWidth;
+  myLabelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth;
   myBytesWidth = 12 * fontWidth;
 }
 
@@ -85,7 +85,7 @@ void RomListWidget::drawWidget(bool hilite)
 {
 //cerr << "RomListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  int i, pos, len = _list.size();
+  int i, pos, xpos, ypos, len = _list.size();
   string buffer;
   int deltax;
 
@@ -97,17 +97,15 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
+  GUI::Rect r = getEditRect();
+  GUI::Rect l = getLineRect();
+  xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
+  for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
     // Draw checkboxes for correct lines (takes scrolling into account)
     _checkList[i]->setState(_stateList[pos]);
     _checkList[i]->setDirty();
     _checkList[i]->draw();
-
-    const int y = _y + 2 + _fontHeight * i;
-
-    GUI::Rect l = getLineRect();
-    GUI::Rect r = getEditRect();
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
@@ -127,12 +125,13 @@ void RomListWidget::drawWidget(bool hilite)
                     r.width(), _fontHeight, kTextColorHi);
     }
 
-    // Draw labels and actual disassembly
-    s.drawString(_font, myLabel[pos], _x + r.left - myLabelWidth, y,
+    // Draw labels
+    s.drawString(_font, myLabel[pos], xpos, ypos,
                  myLabelWidth, kTextColor);
 
-    s.drawString(_font, myDisasm[pos], _x + r.right, y,
-                 _w - r.right, kTextColor);
+    // Draw disassembly
+    s.drawString(_font, myDisasm[pos], xpos + myLabelWidth, ypos,
+                 r.left, kTextColor);
 
     // Draw editable bytes
     if (_selectedItem == pos && _editMode)
@@ -141,14 +140,14 @@ void RomListWidget::drawWidget(bool hilite)
       adjustOffset();
       deltax = -_editScrollOffset;
 
-      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor,
+      s.drawString(_font, buffer, _x + r.left, ypos, r.width(), kTextColor,
                    kTextAlignLeft, deltax, false);
     }
     else
     {
       buffer = _list[pos];
       deltax = 0;
-      s.drawString(_font, buffer, _x + r.left, y, r.width(), kTextColor);
+      s.drawString(_font, buffer, _x + r.left, ypos, r.width(), kTextColor);
     }
   }
 
@@ -176,12 +175,11 @@ GUI::Rect RomListWidget::getLineRect() const
 GUI::Rect RomListWidget::getEditRect() const
 {
   GUI::Rect r(2, 1, _w, _fontHeight);
-  const int yoffset = (_selectedItem - _currentPos) * _fontHeight,
-            xoffset = CheckboxWidget::boxSize() + 10;
+  const int yoffset = (_selectedItem - _currentPos) * _fontHeight;
   r.top    += yoffset;
   r.bottom += yoffset;
-  r.left   += xoffset + myLabelWidth;
-  r.right   = r.left + myBytesWidth;
+  r.left   += _w - myBytesWidth;
+  r.right   = _w;
 	
   return r;
 }

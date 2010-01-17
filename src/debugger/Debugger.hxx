@@ -22,8 +22,8 @@
 class OSystem;
 class Console;
 class System;
+class CartDebug;
 class CpuDebug;
-class RamDebug;
 class RiotDebug;
 class TIADebug;
 class TiaInfoWidget;
@@ -40,7 +40,6 @@ class Serializer;
 #include "DialogContainer.hxx"
 #include "M6502.hxx"
 #include "DebuggerParser.hxx"
-#include "EquateList.hxx"
 #include "PackedBitArray.hxx"
 #include "PromptWidget.hxx"
 #include "Rect.hxx"
@@ -136,9 +135,9 @@ class Debugger : public DialogContainer
     CpuDebug& cpuDebug() const { return *myCpuDebug; }
 
     /**
-      The debugger subsystem responsible for all RAM state
+      The debugger subsystem responsible for all Cart RAM/ROM state
     */
-    RamDebug& ramDebug() const { return *myRamDebug; }
+    CartDebug& cartDebug() const { return *myCartDebug; }
 
     /**
       The debugger subsystem responsible for all RIOT state
@@ -149,11 +148,6 @@ class Debugger : public DialogContainer
       The debugger subsystem responsible for all TIA state
     */
     TIADebug& tiaDebug() const { return *myTiaDebug; }
-
-    /**
-      List of English-like aliases for 6502 opcodes and operands.
-    */
-    EquateList& equates() const { return *myEquateList; }
 
     DebuggerParser& parser() const      { return *myParser;      }
     PackedBitArray& breakpoints() const { return *myBreakPoints; }
@@ -169,20 +163,6 @@ class Debugger : public DialogContainer
       The current cycle count of the System.
     */
     int cycles();
-
-    /**
-      Disassemble from the starting address the specified number of lines
-      and place result in a string.
-    */
-    const string& disassemble(int start, int lines);
-
-    /**
-      Disassemble from the starting address to the ending address
-      and place addresses, bytes and data in given arrays.
-    */
-    void disassemble(IntArray& addr, StringList& addrLabel,
-                     StringList& bytes, StringList& data,
-                     int start, int end);
 
     void autoExec();
 
@@ -292,16 +272,10 @@ class Debugger : public DialogContainer
     GUI::Rect getTabBounds() const;
 
     /* These are now exposed so Expressions can use them. */
-    int peek(int addr);
-    int dpeek(int addr);
-    int getBank();
-    int bankCount();
+    int peek(int addr) { return mySystem->peek(addr); }
+    int dpeek(int addr) { return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8); }
 
     void setBreakPoint(int bp, bool set);
-
-    string loadListFile(string f = "");
-    string getSourceLines(int addr) const;
-    bool haveListFile() const { return sourceLines.size() > 0; }
 
     bool saveROM(const string& filename) const;
 
@@ -357,26 +331,20 @@ class Debugger : public DialogContainer
     const string setRAM(IntArray& args);
 
     void reset();
-    void autoLoadSymbols(string file);
     void clearAllBreakPoints();
 
     PromptWidget *prompt() { return myPrompt; }
-    void addLabel(string label, int address);
 
-    string getCartType();
     void saveState(int state);
     void loadState(int state);
 
   private:
-    typedef multimap<string,string> ListFile;
-    typedef ListFile::const_iterator ListIter;
-
     Console* myConsole;
     System*  mySystem;
 
     DebuggerParser* myParser;
+    CartDebug*      myCartDebug;
     CpuDebug*       myCpuDebug;
-    RamDebug*       myRamDebug;
     RiotDebug*      myRiotDebug;
     TIADebug*       myTiaDebug;
 
@@ -386,13 +354,10 @@ class Debugger : public DialogContainer
     RomWidget*       myRom;
     EditTextWidget*  myMessage;
 
-    EquateList*     myEquateList;
     PackedBitArray* myBreakPoints;
     PackedBitArray* myReadTraps;
     PackedBitArray* myWriteTraps;
     PromptWidget*   myPrompt;
-
-    ListFile sourceLines;
 
     static Debugger* myStaticDebugger;
 

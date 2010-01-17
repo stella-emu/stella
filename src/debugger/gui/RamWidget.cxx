@@ -27,7 +27,7 @@
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
 #include "OSystem.hxx"
-#include "RamDebug.hxx"
+#include "CartDebug.hxx"
 #include "Widget.hxx"
 
 #include "RamWidget.hxx"
@@ -159,8 +159,8 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   // memory location
   int addr, value;
 
-  RamDebug& dbg = instance().debugger().ramDebug();
-  const RamState& state = (RamState&) dbg.getState();
+  CartDebug& dbg = instance().debugger().cartDebug();
+  const CartState& state = (CartState&) dbg.getState();
   switch(cmd)
   {
     case kDGItemDataChangedCmd:
@@ -193,8 +193,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
 
-      myLabel->setEditString(
-        instance().debugger().equates().getLabel(state.rport[addr], true));
+      myLabel->setEditString(dbg.getLabel(state.rport[addr], true));
       myDecValue->setEditString(instance().debugger().valueToString(value, kBASE_10));
       myBinValue->setEditString(instance().debugger().valueToString(value, kBASE_2));
       break;
@@ -267,10 +266,10 @@ void RamWidget::fillGrid(bool updateOld)
 
   if(updateOld) myOldValueList.clear();
 
-  RamDebug& dbg = instance().debugger().ramDebug();
+  CartDebug& dbg = instance().debugger().cartDebug();
 
-  const RamState& state    = (RamState&) dbg.getState();
-  const RamState& oldstate = (RamState&) dbg.getOldState();
+  const CartState& state    = (CartState&) dbg.getState();
+  const CartState& oldstate = (CartState&) dbg.getOldState();
 
   // Jump to the correct 128 byte 'window' in the RAM area
   // This assumes that the RAM areas are aligned on 128 byte boundaries
@@ -346,8 +345,8 @@ string RamWidget::doSearch(const string& str)
   // Now, search all memory locations for this value, and add it to the
   // search array
   bool hitfound = false;
-  RamDebug& dbg = instance().debugger().ramDebug();
-  const RamState& state = (RamState&) dbg.getState();
+  CartDebug& dbg = instance().debugger().cartDebug();
+  const CartState& state = (CartState&) dbg.getState();
   for(uInt32 addr = 0; addr < state.ram.size(); ++addr)
   {
     int value = state.ram[addr];
@@ -415,8 +414,8 @@ string RamWidget::doCompare(const string& str)
 
   // Now, search all memory locations previously 'found' for this value
   bool hitfound = false;
-  RamDebug& dbg = instance().debugger().ramDebug();
-  const RamState& state = (RamState&) dbg.getState();
+  CartDebug& dbg = instance().debugger().cartDebug();
+  const CartState& state = (CartState&) dbg.getState();
   IntArray tempAddrList, tempValueList;
   mySearchState.clear();
   for(uInt32 i = 0; i < state.rport.size(); ++i)

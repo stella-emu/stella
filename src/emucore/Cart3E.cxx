@@ -95,6 +95,7 @@ void Cartridge3E::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Cartridge3E::peek(uInt16 address)
 {
+  uInt16 peekAddress = address;
   address &= 0x0FFF;
 
   if(address < 0x0800)
@@ -110,8 +111,13 @@ uInt8 Cartridge3E::peek(uInt16 address)
         // Reading from the write port triggers an unwanted write
         uInt8 value = mySystem->getDataBusState(0xFF);
 
-        if(myBankLocked) return value;
-        else return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
+        if(myBankLocked)
+          return value;
+        else
+        {
+          triggerReadFromWritePort(peekAddress);
+          return myRam[(address & 0x03FF) + ((myCurrentBank - 256) << 10)] = value;
+        }
       }
     }
   }

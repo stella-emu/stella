@@ -23,6 +23,7 @@
 
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
+#include "CartDebug.hxx"
 #include "CpuDebug.hxx"
 #include "DataGridWidget.hxx"
 #include "PackedBitArray.hxx"
@@ -38,7 +39,6 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   : Widget(boss, font, x, y, 16, 16),
     CommandSender(boss),
     myListIsDirty(true),
-    mySourceAvailable(false),
     myCurrentBank(-1)
 {
   _type = kRomWidget;
@@ -57,8 +57,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   myBank = new DataGridWidget(boss, font, xpos, ypos-2,
                               1, 1, 4, 8, kBASE_10);
   myBank->setTarget(this);
-  myBank->setRange(0, instance().debugger().bankCount());
-  if(instance().debugger().bankCount() <= 1)
+  myBank->setRange(0, instance().debugger().cartDebug().bankCount());
+  if(instance().debugger().cartDebug().bankCount() <= 1)
     myBank->setEditable(false);
   addFocusWidget(myBank);
 
@@ -111,10 +111,6 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kListScrolledCmd:
-      incrementalUpdate(data, myRomList->rows());
-      break;
-
     case kListItemChecked:
       setBreak(data);
       break;
@@ -164,19 +160,45 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 void RomWidget::loadConfig()
 {
   Debugger& dbg = instance().debugger();
-  bool bankChanged = myCurrentBank != dbg.getBank();
+  CartDebug& cart = dbg.cartDebug();
+  bool bankChanged = myCurrentBank != cart.getBank();
+  myCurrentBank = cart.getBank();
 
+  // Fill romlist the current bank of source or disassembly
   // Only reload full bank when necessary
   if(myListIsDirty || bankChanged)
   {
-    initialUpdate();
+    // Clear old mappings
+    myAddrList.clear();
+    myLineList.clear();
+
+    StringList label, data, disasm;
+    BoolArray state;
+
+    // Disassemble zero-page RAM and entire bank and reset breakpoints
+    cart.disassemble(myAddrList, label, data, disasm, 0x80, 0xff);
+    cart.disassemble(myAddrList, label, data, disasm, 0xf000, 0xffff);
+
+    PackedBitArray& bp = dbg.breakpoints();
+    for(unsigned int i = 0; i < data.size(); ++i)
+    {
+      if(bp.isSet(myAddrList[i]))
+        state.push_back(true);
+      else
+        state.push_back(false);
+    }
+
+    // Create a mapping from addresses to line numbers
+    for(unsigned int i = 0; i < myAddrList.size(); ++i)
+      myLineList.insert(make_pair(myAddrList[i], i));
+
+    myRomList->setList(label, data, disasm, state);
+
+    // Restore the old bank, in case we inadvertently switched while reading.
+    dbg.setBank(myCurrentBank);
+
     myListIsDirty = false;
   }
-  else  // only reload what's in current view
-  {
-    incrementalUpdate(myRomList->currentPos(), myRomList->rows());
-  }
-  myCurrentBank = dbg.getBank();
 
   // Update romlist to point to current PC
   // Take mirroring of PC into account, as well as zero-page RAM
@@ -204,62 +226,12 @@ void RomWidget::loadConfig()
   BoolArray changed;
 
   alist.push_back(-1);
-  vlist.push_back(dbg.getBank());
+  vlist.push_back(cart.getBank());
   changed.push_back(bankChanged);
   myBank->setList(alist, vlist, changed);
 
   // Indicate total number of banks
-  myBankCount->setEditString(dbg.valueToString(dbg.bankCount(), kBASE_10));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::initialUpdate()
-{
-  Debugger& dbg = instance().debugger();
-  PackedBitArray& bp = dbg.breakpoints();
-
-  // Reading from ROM might trigger a bankswitch, so save the current bank
-  myCurrentBank = dbg.getBank();
-
-  // Fill romlist the current bank of source or disassembly
-  if(mySourceAvailable)
-    ; // TODO - actually implement this
-  else
-  {
-    // Clear old mappings
-    myAddrList.clear();
-    myLineList.clear();
-
-    StringList label, data, disasm;
-    BoolArray state;
-
-    // Disassemble zero-page RAM and entire bank and reset breakpoints
-//    dbg.disassemble(myAddrList, label, data, disasm, 0x80, 0xff);
-    dbg.disassemble(myAddrList, label, data, disasm, 0xf000, 0xffff);
-    for(unsigned int i = 0; i < data.size(); ++i)
-    {
-      if(bp.isSet(myAddrList[i]))
-        state.push_back(true);
-      else
-        state.push_back(false);
-    }
-
-    // Create a mapping from addresses to line numbers
-    myLineList.clear();
-    for(unsigned int i = 0; i < myAddrList.size(); ++i)
-      myLineList.insert(make_pair(myAddrList[i], i));
-
-    myRomList->setList(label, data, disasm, state);
-  }
-
-  // Restore the old bank, in case we inadvertently switched while reading.
-  dbg.setBank(myCurrentBank);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::incrementalUpdate(int line, int rows)
-{
-  // TODO - implement this
+  myBankCount->setEditString(dbg.valueToString(cart.bankCount(), kBASE_10));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

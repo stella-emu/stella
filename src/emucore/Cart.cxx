@@ -53,7 +53,7 @@
 #include "Settings.hxx"
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
-  #include "RamDebug.hxx"
+  #include "CartDebug.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -260,6 +260,15 @@ void Cartridge::registerRamArea(uInt16 start, uInt16 size,
   area.roffset = roffset;
   area.woffset = woffset;
   myRamAreaList.push_back(area);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::triggerReadFromWritePort(uInt16 address)
+{
+#ifdef DEBUGGER_SUPPORT
+  if(&Debugger::debugger().cartDebug())
+    Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
 #endif
 }
 

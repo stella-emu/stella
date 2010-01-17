@@ -92,6 +92,7 @@ void CartridgeE7::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeE7::peek(uInt16 address)
 {
+  uInt16 peekAddress = address;
   address &= 0x0FFF;
 
   // Switch banks if necessary
@@ -109,16 +110,26 @@ uInt8 CartridgeE7::peek(uInt16 address)
     // Reading from the 1K write port @ $1000 triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked) return value;
-    else return myRAM[address & 0x03FF] = value;
+    if(myBankLocked)
+      return value;
+    else
+    {
+      triggerReadFromWritePort(peekAddress);
+      return myRAM[address & 0x03FF] = value;
+    }
   }
   else if((address >= 0x0800) && (address <= 0x08FF))
   {
     // Reading from the 256B write port @ $1800 triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked) return value;
-    else return myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
+    if(myBankLocked)
+      return value;
+    else
+    {
+      triggerReadFromWritePort(peekAddress);
+      return myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
+    }
   }
   else
     return myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)];

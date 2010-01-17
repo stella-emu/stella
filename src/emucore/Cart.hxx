@@ -169,6 +169,13 @@ class Cartridge : public Device
     */
     void registerRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
 
+    /**
+      Indicate that an illegal read from a write port has occurred.
+
+      @param address  The address of the illegal read
+    */
+    void triggerReadFromWritePort(uInt16 address);
+
   private:
     /**
       Get an image pointer and size for a ROM that is part of a larger,

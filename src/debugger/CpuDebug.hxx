@@ -49,12 +49,8 @@ class CpuDebug : public DebuggerSystem
     void saveOldState();
     string toString();
 
-	 // I know, we ain't supposed to do this...
+    // I know, we ain't supposed to do this...
     M6502& m6502() { return mySystem.m6502(); }
-
-    int disassemble(int address, string& result, EquateList& list);
-    int dPeek(int address);
-    int getBank();
 
     int pc() { return mySystem.m6502().PC; }
     int sp() { return mySystem.m6502().SP; }
@@ -62,7 +58,7 @@ class CpuDebug : public DebuggerSystem
     int x()  { return mySystem.m6502().X;  }
     int y()  { return mySystem.m6502().Y;  }
 
-	 // these return int, not boolean!
+    // These return int, not boolean!
     int n() { return mySystem.m6502().N;     }
     int v() { return mySystem.m6502().V;     }
     int b() { return mySystem.m6502().B;     }
@@ -93,12 +89,6 @@ class CpuDebug : public DebuggerSystem
     void toggleI();
     void toggleZ();
     void toggleC();
-
-  private:
-    static int dpeek(System& system, int address)
-    {
-      return system.peek(address) | (system.peek(address + 1) << 8);
-    }
 
   private:
     CpuState myState;
