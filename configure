@@ -481,7 +481,6 @@ else
 			;;
 		os2*)
 			DEFINES="$DEFINES -DUNIX -DOS2"
-			LIBS="$LIBS -lz"
 			_host_os=unix
 			;;
 		# given this is a shell script assume some type of unix
@@ -514,8 +513,7 @@ fi
 if test "$_zlib" = yes ; then
 	echo "$_zlib"
 else
-	echo "none found!"
-	exit 1
+	echo "none found, using built-in version"
 fi
 
 #
@@ -638,6 +636,7 @@ DBG="$SRC/debugger"
 DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
+ZLIB="$SRC/zlib"
 
 INCLUDES="-I$CORE -I$COMMON -I$GUI"
 
@@ -649,7 +648,7 @@ else
 	_sdl_conf_libs="--libs"
 fi
 
-LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs` -lz"
+LIBS="$LIBS `$_sdlconfig $_sdl_conf_libs`"
 LD=$CXX 
 case $_host_os in
 		unix)
@@ -678,6 +677,13 @@ case $_host_os in
 			exit
 			;;
 esac
+
+if test "$_zlib" = yes ; then
+  LIBS="$LIBS -lz"
+else
+	MODULES="$MODULES $ZLIB"
+	INCLUDES="$INCLUDES -I$ZLIB"
+fi
 
 if test "$_build_gl" = yes ; then
 	DEFINES="$DEFINES -DDISPLAY_OPENGL"
