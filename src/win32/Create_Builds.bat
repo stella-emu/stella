@@ -88,14 +88,12 @@ if %BUILD_32% == 1 (
 	echo Copying 32-bit files ...
 	copy %RELEASE_32%\Stella.exe   %STELLA_DIR%\32-bit
 	copy %RELEASE_32%\SDL.dll      %STELLA_DIR%\32-bit
-	copy %RELEASE_32%\zlibwapi.dll %STELLA_DIR%\32-bit
 )
 
 if %BUILD_64% == 1 (
 	echo Copying 64-bit files ...
 	copy %RELEASE_64%\Stella.exe   %STELLA_DIR%\64-bit
 	copy %RELEASE_64%\SDL.dll      %STELLA_DIR%\64-bit
-	copy %RELEASE_64%\zlibwapi.dll %STELLA_DIR%\64-bit
 )
 
 echo Copying DOC files ...

@@ -46,8 +46,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat;..\zlib"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="0"
@@ -67,7 +67,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
-				AdditionalDependencies="sdl.lib sdlmain.lib zlibwapi.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -127,8 +127,8 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				AdditionalIncludeDirectories="..\yacc;..\debugger;..\gui;..\emucore;..\common;..\win32;..\debugger\gui;..\cheat;..\zlib"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="0"
@@ -149,7 +149,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
-				AdditionalDependencies="sdl.lib sdlmain.lib zlibwapi.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
@@ -209,8 +209,8 @@
 				AdditionalOptions="/MP"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
@@ -230,7 +230,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
-				AdditionalDependencies="sdl.lib sdlmain.lib zlibwapi.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				GenerateDebugInformation="true"
 				SubSystem="2"
@@ -292,8 +292,8 @@
 				Optimization="4"
 				InlineFunctionExpansion="0"
 				OmitFramePointers="true"
-				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat"
-				PreprocessorDefinitions="BSPF_WIN32;WIN32;ZLIB_WINAPI;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
+				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib"
+				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
 				UsePrecompiledHeader="0"
@@ -313,7 +313,7 @@
 			<Tool
 				Name="VCLinkerTool"
 				AdditionalOptions="SDL.lib&#x0D;&#x0A;SDLmain.lib&#x0D;&#x0A;"
-				AdditionalDependencies="sdl.lib sdlmain.lib zlibwapi.lib"
+				AdditionalDependencies="sdl.lib sdlmain.lib"
 				OutputFile="$(OutDir)/Stella.exe"
 				GenerateDebugInformation="false"
 				SubSystem="2"
@@ -943,6 +943,58 @@
 				</File>
 				<File
 					RelativePath="..\gui\Widget.cxx"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath="..\zlib\adler32.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\compress.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\crc32.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\deflate.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\gzio.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\infback.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inffast.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inflate.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inftrees.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\trees.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\uncompr.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\zutil.c"
 					>
 				</File>
 			</Filter>
@@ -1617,6 +1669,50 @@
 				</File>
 				<File
 					RelativePath="..\gui\Widget.hxx"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="zlib"
+				>
+				<File
+					RelativePath="..\zlib\crc32.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\deflate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inffast.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inffixed.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inflate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\inftrees.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\trees.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\zconf.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\zlib.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\zutil.h"
 					>
 				</File>
 			</Filter>
