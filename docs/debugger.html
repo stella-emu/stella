@@ -480,10 +480,11 @@ of scanlines in a frame, a real system would not (there is no register
 that holds 'number of scanlines' on an actual console).</p>
 <table border="1" cellpadding="3">
 <tr><th>Function</th><th>Description</th></tr>
-<tr><td> _scan</td><td> Current scanline count</td></tr>
 <tr><td> _bank</td><td> Currently selected bank</td></tr>
+<tr><td> _rwport</td><td> Last address to attempt a read from the cart write port</td></tr>
 <tr><td> _fcount</td><td> Number of frames since emulation started</td></tr>
 <tr><td> _cclocks</td><td> Color clocks on a scanline</td></tr>
+<tr><td> _scan</td><td> Current scanline count</td></tr>
 <tr><td> _vsync</td><td> Whether vertical sync is enabled (1 or 0)</td></tr>
 <tr><td> _vblank</td><td> Whether vertical blank is enabled (1 or 0)</td></tr>
 </table>

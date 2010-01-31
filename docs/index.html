@@ -250,11 +250,12 @@
 		<li>Supports cartridge autodetection for almost all bankswitching schemes</li>
 		<li>Supports Supercharger single-load and multi-load games</li>
 		<li>Supports property file for setting the properties associated with games</li>
-		<li>Supports the NTSC, PAL, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
+		<li>Supports the NTSC, PAL and SECAM television standards in 50Hz and 60Hz mode</li>
 		<li>Supports autodetection of display format for 50Hz vs. 60Hz modes</li>
 		<li>Supports several "undocumented features" of the TIA graphics chip used by
 			some games</li>
-		<li>TIA emulation supports full collision checking</li>
+		<li>TIA emulation supports full collision checking, with ability to disable
+      both TIA sprites and collisions for each object separately</li>
 		<li>Built-in extensive debugger</li>
 		<li>Emulation of CRT TV systems with OpenGL shaders, including texturing,
 			colour bleed, RF noise, and phosphor burn-off</li>
@@ -282,7 +283,7 @@
 		<li>Enough RAM for the OS + 16MB RAM for the emulation; 32MB highly recommended</li>
 		<li>15 bit color minimum; 16 bit color graphics card highly recommended</li>
 		<li>SDL version 1.2.10 or greater, latest version highly recommended</li>
-		<li>Zlib version 1.2.3 or greater</li>
+		<li>Zlib version 1.2.3 or greater (built-in ZLib functionality is also supported)</li>
 		<li>CRT emulation effects require OpenGL 2.0 with GLSL (GL shading language) support</li>
 		<li>Joysticks or gamepads are highly recommended</li>
 		<li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
@@ -426,13 +427,13 @@
 					gzipped tar files</li>
 				<li>Open the <b>stella-<i>release</i>/src/macosx/stella.xcodeproj</b>
 					file using Xcode 3.2</li>
-				<li>Make sure you have the SDL framework installed where Xcode can find it</li>
+				<li>Make sure you have the SDL framework installed in src/macosx</li>
 				<li>Build the 'Stella' project</li>
 				<li>For installation:
 				<ul>
 					<li>Run the script <b>Create_build.sh</b>, located in the src/macosx directory.
 						This will create a DMG file on your desktop.</li>
-						<b>OR</b>
+						&nbsp;&nbsp;&nbsp;<b>OR</b>
 					<li>Copy the <b>Stella.app</b> package somewhere on your system</li>
 				</ul>
 				<li>For compiling the Intel version only, open the <b>stella-<i>release</i>/src/macosx/stella_intel.xcodeproj</b> file instead, and continue from
@@ -457,26 +458,26 @@
 		</li>
 		<li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
 			<ol>
+				<li>Make sure you have library and header files installed for SDL for
+					the correct architecture (32-bit, 64-bit or both), and that Visual Studio
+					is properly configured to find them</li>
 				<li>Extract files from the distribution using <b>Winzip</b>,
 					<b>Total Commander</b>, or some other archiving program that supports
 					gzipped tar files</li>
 				<li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
 					file using Visual C++ 2008</li>
-				<li>Make sure you have library and header files installed for SDL and zlib for
-					the correct architecture (32-bit, 64-bit or both), and that Visual Studio
-					is properly configured to find them</li>
 				<li>Build the 'Stella' solution, making sure to correctly select either 'Win32'
 					or 'x64' mode (depending on the version of Windows you have installed)</li>
 				<li>For installation:
 				<ul>
 					<li>Double-click on <b>Create_builds.bat</b> to generate ZIP and EXE files;
-					you must have the 'flip' and 'zip' applications installed on your system.
-					This will generate the EXE and ZIP files, which can be installed as explained
-					above</li>
-					<b>OR</b>
-					<li>Manually copy the <b>Stella.exe</b>, <b>SDL.dll</b> and <b>zlibwapi.dll</b>
-						files somewhere on your system (they may be located in the 'Release' or
-						'x64\Release' directories)</li>
+					you must have the 'flip' and 'zip' applications installed on your system,
+          as well as the InnoSetup application.  This will generate the EXE and ZIP
+          files, which can be installed as explained above</li>
+					&nbsp;&nbsp;&nbsp;<b>OR</b>
+					<li>Manually copy the <b>Stella.exe</b> and <b>SDL.dll</b> files somewhere
+            on your system (they may be located in the 'Release' or 'x64\Release'
+            directories)</li>
 				</ul>
 				</li>
 			</ol>
@@ -2234,7 +2235,7 @@
 	<p>The text box in the upper right corner can be used to narrow down the
 	results in the ROM listing.  When this box is empty, all files are shown
 	(subject to the restrictions from the filtering option, explained below).
-	Typing characters here where show only those files that match that
+	Typing characters here will show only those files that match that
 	pattern.  For example, typing 'Activision' will show only files that
 	contain the word 'Activision' in their name.  This is very useful for
 	quickly finding a group of related ROMs.  Note that the search is not
@@ -2291,7 +2292,7 @@
 		</li>
 
 		<li><b>Reload listing</b>: Selecting this performs a reload of the
-		current listing.  It is an alternative to pressing the Ctrl/Cmd-R
+		current listing.  It is an alternative to pressing the Control-r
 		key combo.</li>
 	</ol></p>
 
@@ -2448,7 +2449,7 @@
 		for more information.</li>
 
 		<li>Viewing TIA/console information overlaid on the TIA image.  This option
-		can be enabled from the commandline or using the Alt/ShiftCmd-L key combo,
+		can be enabled from the commandline or using the Alt-L key combo,
 		and is extremely useful for viewing the current scanline count and associated
 		frames per second, bankswitch and display formats, etc.  The following shows
 		an example of this information:
