@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2009 by Bradford W. Mott and the Stella team
+// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella team
 //
 // See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -20,6 +20,7 @@
 #define DISTELLA_HXX
 
 #include <queue>
+#include <sstream>
 
 #include "Array.hxx"
 #include "bspf.hxx"
@@ -35,6 +36,15 @@
     typedef Common::Array<DisassemblyTag> DisassemblyList;
 //////////////////////////////////////////////////////////////
 
+/**
+  This class is a wrapper around the Distella code.  Much of the code remains
+  exactly the same.  All 7800-related stuff has been removed, as well as all
+  commandline options.  For now, the only configurable item is whether to
+  automatically determine code vs. data sections (which is on by default).
+  Over time, some of the configurability of Distella may be added again.
+
+  @author  Stephen Anthony
+*/
 class DiStella
 {
   public:
@@ -42,31 +52,7 @@ class DiStella
     ~DiStella();
 
   public:
-    int disassemble(DisassemblyList& list, const char* datafile);
-
-  private:
-    struct resource {
-      uInt16 start;
-      uInt16 load;
-      uInt32 length;
-      uInt16 end;
-      int disp_data;
-    } app_data;
-
-    /* Memory */
-    uInt8* mem;
-    uInt8* labels;
-
-    uInt8 reserved[64];
-    uInt8 ioresrvd[24];
-    uInt8 pokresvd[16];
-    char linebuff[256],nextline[256];
-    FILE* cfg;
-
-    uInt32 pc, pcbeg, pcend, offset, start_adr;
-    int cflag, dflag, lineno, charcnt;
-
-    queue<uInt16> myAddressQueue;
+    uInt32 disassemble(DisassemblyList& list, const char* datafile, bool autocode = true);
 
   private:
     // Marked bits
@@ -81,6 +67,37 @@ class DiStella
       GFX         = 1 << 3,
       REACHABLE   = 1 << 4   /* disassemble-able code segments */
     };
+
+    // Indicate that a new line of disassembly has been performed
+    // In the original Distella code, this indicated a new line to be printed.
+    // Here, we add a new entry to the DisassemblyList
+    void addEntry();
+
+    // These functions are part of the original Distella code
+    uInt32 filesize(FILE *stream);
+    uInt32 read_adr();
+    int file_load(const char* file);
+    void disasm(uInt32 distart, int pass);
+    int mark(uInt32 address, MarkType bit);
+    int check_bit(uInt8 bitflags, int i);
+    void showgfx(uInt8 c);
+
+  private:
+    ostringstream myBuf;
+    queue<uInt16> myAddressQueue;
+    uInt32 myOffset, myPC, myPCBeg, myPCEnd, myLineCount;
+
+    struct resource {
+      uInt16 start;
+      uInt16 load;
+      uInt32 length;
+      uInt16 end;
+      int disp_data;
+    } myAppData;
+
+    /* Memory */
+    uInt8* mem;
+    uInt8* labels;
 
     /**
       Enumeration of the 6502 addressing modes
@@ -116,16 +133,6 @@ class DiStella
       M_STH2,
       M_STH3
     };
-
-uInt32 filesize(FILE *stream);
-uInt32 read_adr();
-int file_load(const char* file);
-int load_config(const char* file);
-void check_range(uInt32 beg, uInt32 end);
-void disasm(uInt32 distart, int pass, DisassemblyList& list);
-int mark(uInt32 address, MarkType bit);
-int check_bit(uInt8 bitflags, int i);
-void showgfx(uInt8 c);
 
     struct Instruction_tag {
       const char*    mnemonic;
