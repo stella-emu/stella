@@ -37,7 +37,8 @@ DiStella::~DiStella()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 DiStella::disassemble(DisassemblyList& list, const char* datafile, bool autocode)
+uInt32 DiStella::disassemble(DisassemblyList& list, uInt16 PC,
+                             const char* datafile, bool autocode)
 {
   myLineCount = 0;
   while(!myAddressQueue.empty())
@@ -78,7 +79,7 @@ uInt32 DiStella::disassemble(DisassemblyList& list, const char* datafile, bool a
      Counter 3 bytes back from the final byte.
    -----------------------------------------------------*/
 
-  myPC = myAppData.end - 3;
+  myPC = PC;
   uInt32 start_adr = read_adr();
 
   if (myAppData.end == 0x7ff) /* 2K case */
@@ -134,8 +135,8 @@ uInt32 DiStella::disassemble(DisassemblyList& list, const char* datafile, bool a
       myPC = myAddressQueue.front();
       myPCBeg = myPC;
       myAddressQueue.pop();
-      disasm(myPC, 1);
-      for (int k = myPCBeg; k <= myPCEnd; k++)
+      disasm(list, myPC, 1);
+      for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
         mark(k, REACHABLE);
     }
     
@@ -147,10 +148,10 @@ uInt32 DiStella::disassemble(DisassemblyList& list, const char* datafile, bool a
   }
 
   // Second pass
-  disasm(myOffset, 2);
+  disasm(list, myOffset, 2);
 
   // Third pass
-  disasm(myOffset, 3);
+  disasm(list, myOffset, 3);
 
   free(labels);  /* Free dynamic memory before program ends */
   free(mem);     /* Free dynamic memory before program ends */
@@ -228,7 +229,7 @@ int DiStella::file_load(const char* file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::disasm(uInt32 distart, int pass)
+void DiStella::disasm(DisassemblyList& list, uInt32 distart, int pass)
 {
 #define HEX4 uppercase << hex << setw(4) << setfill('0')
 #define HEX2 uppercase << hex << setw(2) << setfill('0')
@@ -236,7 +237,7 @@ void DiStella::disasm(uInt32 distart, int pass)
   uInt8 op, d1, opsrc;
   uInt32 ad;
   short amode;
-  int i, bytes, labfound, addbranch;
+  int bytes=0, labfound=0, addbranch=0;
   char linebuff[256],nextline[256], nextlinebytes[256];
   strcpy(linebuff,"");
   strcpy(nextline,"");
@@ -245,7 +246,6 @@ void DiStella::disasm(uInt32 distart, int pass)
 
   /* pc=myAppData.start; */
   myPC = distart - myOffset;
-//cerr << " ==> pc = " << pc << "(" << pass << ")" << endl;
   while(myPC <= myAppData.end)
   {
     if(check_bit(labels[myPC], GFX))
@@ -263,7 +263,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         myBuf << ".byte $" << HEX2 << (int)mem[myPC] << " ; ";
         showgfx(mem[myPC]);
         myBuf << " $" << HEX4 << myPC+myOffset;
-        addEntry();
+        addEntry(list);
       }
       myPC++;
     }
@@ -287,7 +287,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           bytes++;
           if (bytes == 17)
           {
-            addEntry();
+            addEntry(list);
             myBuf << "    '     '.byte $" << HEX2 << (int)mem[myPC];
             bytes = 1;
           }
@@ -299,9 +299,9 @@ void DiStella::disasm(uInt32 distart, int pass)
 
       if (pass == 3)
       {
-        addEntry();
+        addEntry(list);
         myBuf << "    '     ' ";
-        addEntry();
+        addEntry(list);
       }
     }
     else
@@ -321,7 +321,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       amode = ourLookup[op].addr_mode;
       if (myAppData.disp_data)
       {
-        for (i = 0; i < ourCLength[amode]; i++)
+        for (int i = 0; i < ourCLength[amode]; i++)
           if (pass == 3)
             myBuf << HEX2 << (int)mem[myPC+i] << " ";
 
@@ -376,7 +376,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               /* Line information is already printed; append .byte since last instruction will
                  put recompilable object larger that original binary file */
               myBuf << ".byte $" << HEX2 << op;
-              addEntry();
+              addEntry(list);
 
               if (myPC == myAppData.end)
               {
@@ -387,7 +387,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
                 op = mem[myPC++];
                 myBuf << ".byte $" << HEX2 << (int)op;
-                addEntry();
+                addEntry(list);
               }
             }
             myPCEnd = myAppData.end + myOffset;
@@ -411,7 +411,7 @@ void DiStella::disasm(uInt32 distart, int pass)
                 strcat(nextline,linebuff);
 
                 myBuf << nextline;
-                addEntry();
+                addEntry(list);
                 strcpy(nextline,"");
                 strcpy(nextlinebytes,"");
               }
@@ -809,15 +809,15 @@ void DiStella::disasm(uInt32 distart, int pass)
         if (strlen(nextline) <= 15)
         {
           /* Print spaces to align cycle count data */
-          for (int charcnt=0;charcnt<15-strlen(nextline);charcnt++)
+          for (uInt32 charcnt=0;charcnt<15-strlen(nextline);charcnt++)
             myBuf << " ";
         }
         myBuf << ";" << dec << (int)ourLookup[op].cycles << "'" << nextlinebytes;
-        addEntry();
+        addEntry(list);
         if (op == 0x40 || op == 0x60)
         {
           myBuf << "    '     ' ";
-          addEntry();
+          addEntry(list);
         }
 
         strcpy(nextline,"");
@@ -916,23 +916,48 @@ void DiStella::showgfx(uInt8 c)
 {
   int i;
 
-  printf("|");
+  myBuf << "|";
   for(i = 0;i < 8; i++)
   {
     if (c > 127)
-      printf("X");
+      myBuf << "X";
     else
-      printf(" ");
+      myBuf << " ";
 
     c = c << 1;
   }
-  printf("|");
+  myBuf << "|";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::addEntry()
+void DiStella::addEntry(DisassemblyList& list)
 {
-  cout << myBuf.str() << endl;
+  const string& line = myBuf.str();
+  DisassemblyTag tag;
+
+  if(line[0] == ' ')
+    tag.address = 0;
+  else
+    myBuf >> setw(4) >> hex >> tag.address;
+
+  if(line[5] != ' ')
+    tag.label = line.substr(5, 5);
+
+  switch(line[11])
+  {
+    case ' ':
+      tag.disasm = " ";
+      break;
+    case '.':
+      tag.disasm = line.substr(11);
+      break;
+    default:
+      tag.disasm = line.substr(11, 17);
+      tag.bytes  = line.substr(29);
+      break;
+  }
+  list.push_back(tag);
+
   myBuf.str("");
   ++myLineCount;
 }
@@ -1296,26 +1321,12 @@ int main(int ac, char* av[])
   DiStella dis;
   DisassemblyList list;
 
-  int count = dis.disassemble(list, av[1]);
+  int count = dis.disassemble(list, 0xfff-3, av[1]);
 
-#if 0
-ostringstream buf;
-int x = 0x0abc;
-
-buf << uppercase << hex << setw(4) << setfill('0') << x << "'L" << setw(4) << setfill('0') << x << "'";
-cout << buf.str() << endl;
-buf.str("");
-
-/*
-          printf("%.4X'L%.4X'", myPC+myOffset, myPC+myOffset);
-        else
-          printf("%.4X'     '", myPC+myOffset);
-*/
-#endif
   for(uInt32 i = 0; i < list.size(); ++i)
   {
     const DisassemblyTag& tag = list[i];
-    printf("%.4X |   %s %s\n", tag.address, tag.disasm.c_str(), tag.bytes.c_str());
+    printf("%.4X|%5s|%s|%s|\n", tag.address, tag.label.c_str(), tag.disasm.c_str(), tag.bytes.c_str());
   }
 
   return 0;

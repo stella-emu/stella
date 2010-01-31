@@ -29,7 +29,8 @@
 
 //// The following will go in CartDebug
     struct DisassemblyTag {
-      int address;
+      uInt16 address;
+      string label;
       string disasm;
       string bytes;
     };
@@ -38,10 +39,13 @@
 
 /**
   This class is a wrapper around the Distella code.  Much of the code remains
-  exactly the same.  All 7800-related stuff has been removed, as well as all
-  commandline options.  For now, the only configurable item is whether to
-  automatically determine code vs. data sections (which is on by default).
-  Over time, some of the configurability of Distella may be added again.
+  exactly the same, except that generated data is now redirected to a
+  DisassemblyList structure rather than being printed.
+
+  All 7800-related stuff has been removed, as well as all commandline options.
+  For now, the only configurable item is whether to automatically determine
+  code vs. data sections (which is on by default).  Over time, some of the
+  configurability of Distella may be added again.
 
   @author  Stephen Anthony
 */
@@ -52,7 +56,7 @@ class DiStella
     ~DiStella();
 
   public:
-    uInt32 disassemble(DisassemblyList& list, const char* datafile, bool autocode = true);
+    uInt32 disassemble(DisassemblyList& list, uInt16 PC, const char* datafile, bool autocode = true);
 
   private:
     // Marked bits
@@ -68,22 +72,22 @@ class DiStella
       REACHABLE   = 1 << 4   /* disassemble-able code segments */
     };
 
-    // Indicate that a new line of disassembly has been performed
-    // In the original Distella code, this indicated a new line to be printed.
+    // Indicate that a new line of disassembly has been completed
+    // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
-    void addEntry();
+    void addEntry(DisassemblyList& list);
 
     // These functions are part of the original Distella code
     uInt32 filesize(FILE *stream);
     uInt32 read_adr();
     int file_load(const char* file);
-    void disasm(uInt32 distart, int pass);
+    void disasm(DisassemblyList& list, uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
     int check_bit(uInt8 bitflags, int i);
     void showgfx(uInt8 c);
 
   private:
-    ostringstream myBuf;
+    stringstream myBuf;
     queue<uInt16> myAddressQueue;
     uInt32 myOffset, myPC, myPCBeg, myPCEnd, myLineCount;
 
