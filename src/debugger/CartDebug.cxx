@@ -19,6 +19,7 @@
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "System.hxx"
+#include "DiStella.hxx"
 #include "CartDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -223,6 +224,14 @@ void CartDebug::disassemble(IntArray& addr, StringList& addrLabel,
     data.push_back(cpubuf);
   }
   while(start <= end);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::disassemble(DisassemblyList& list, uInt16 start, bool autocode)
+{
+  DiStella distella(mySystem);
+  distella.disassemble(list, start, autocode);
+
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

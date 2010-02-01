@@ -21,12 +21,12 @@
 #include <cstring>
 
 #include "bspf.hxx"
-//#include "CartDebug.hxx"
 #include "DiStella.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::DiStella()
-  : mem(NULL),   /* copied data from the file-- can be from 2K-48K bytes in size */
+DiStella::DiStella(System& system)
+  : mySystem(system),
+    mem(NULL),   /* copied data from the file-- can be from 2K-48K bytes in size */
     labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
 {
 }
@@ -37,8 +37,8 @@ DiStella::~DiStella()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 DiStella::disassemble(DisassemblyList& list, uInt16 PC,
-                             const char* datafile, bool autocode)
+uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
+                             bool autocode)
 {
   myLineCount = 0;
   while(!myAddressQueue.empty())
@@ -50,23 +50,16 @@ uInt32 DiStella::disassemble(DisassemblyList& list, uInt16 PC,
   myAppData.end       = 0x0FFF;
   myAppData.disp_data = 0;
 
-  if (!file_load(datafile))
-  {
-    fprintf(stderr,"Unable to load %s\n", datafile);
-    return -1;
-  }
-    
   /*====================================*/
   /* Allocate memory for "labels" variable */
   labels=(uInt8*) malloc(myAppData.length);
   if (labels == NULL)
   {
     fprintf (stderr, "Malloc failed for 'labels' variable\n");
-    return -1;
+    return 0;
   }
   memset(labels,0,myAppData.length);
   /*====================================*/
-
 
   /*-----------------------------------------------------
      The last 3 words of a program are as follows:
@@ -160,26 +153,14 @@ uInt32 DiStella::disassemble(DisassemblyList& list, uInt16 PC,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 DiStella::filesize(FILE *stream)
-{
-  uInt32 curpos, length;
-
-  curpos = ftell(stream);
-  fseek(stream, 0L, SEEK_END);
-  length = ftell(stream);
-  fseek(stream, curpos, SEEK_SET);
-  return length;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 DiStella::read_adr()
+uInt16 DiStella::read_adr()
 {
   uInt8 d1,d2;
 
-  d1 = mem[myPC++];
-  d2 = mem[myPC++];
+  d1 = mySystem.peek(myPC++);
+  d2 = mySystem.peek(myPC++);
 
-  return (uInt32) ((d2 << 8)+d1);
+  return (uInt16) ((d2 << 8)+d1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,7 +210,7 @@ int DiStella::file_load(const char* file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::disasm(DisassemblyList& list, uInt32 distart, int pass)
+void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass)
 {
 #define HEX4 uppercase << hex << setw(4) << setfill('0')
 #define HEX2 uppercase << hex << setw(2) << setfill('0')
@@ -930,10 +911,10 @@ void DiStella::showgfx(uInt8 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::addEntry(DisassemblyList& list)
+void DiStella::addEntry(CartDebug::DisassemblyList& list)
 {
   const string& line = myBuf.str();
-  DisassemblyTag tag;
+  CartDebug::DisassemblyTag tag;
 
   if(line[0] == ' ')
     tag.address = 0;

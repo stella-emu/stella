@@ -44,7 +44,8 @@ class CartDebug : public DebuggerSystem
 {
   public:
     struct DisassemblyTag {
-      int address;
+      uInt16 address;
+      string label;
       string disasm;
       string bytes;
     };
@@ -96,6 +97,12 @@ class CartDebug : public DebuggerSystem
     void disassemble(IntArray& addr, StringList& addrLabel,
                      StringList& bytes, StringList& data,
                      int start, int end);
+
+    /**
+      Disassemble from the starting address, placing results into a
+      DisassemblyList.
+    */
+    void disassemble(DisassemblyList& list, uInt16 start);
 
     int getBank();
     int bankCount();

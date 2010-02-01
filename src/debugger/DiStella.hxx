@@ -24,18 +24,9 @@
 
 #include "Array.hxx"
 #include "bspf.hxx"
+#include "System.hxx"
 
-//#include "CartDebug.hxx"
-
-//// The following will go in CartDebug
-    struct DisassemblyTag {
-      uInt16 address;
-      string label;
-      string disasm;
-      string bytes;
-    };
-    typedef Common::Array<DisassemblyTag> DisassemblyList;
-//////////////////////////////////////////////////////////////
+#include "CartDebug.hxx"
 
 /**
   This class is a wrapper around the Distella code.  Much of the code remains
@@ -52,11 +43,21 @@
 class DiStella
 {
   public:
-    DiStella();
+    DiStella(System& system);
     ~DiStella();
 
   public:
-    uInt32 disassemble(DisassemblyList& list, uInt16 PC, const char* datafile, bool autocode = true);
+    /**
+      Disassemble the current state of the System from the given start address.
+
+      @param list     The results of the disassembly are placed here
+      @param start    The start address for disassembly
+      @param autocode If enabled, try to determine code vs. data sections
+
+      @return   The number of lines that were disassembled
+    */
+    uInt32 disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
+                       bool autocode = true);
 
   private:
     // Marked bits
@@ -75,18 +76,18 @@ class DiStella
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
-    void addEntry(DisassemblyList& list);
+    void addEntry(CartDebug::DisassemblyList& list);
 
     // These functions are part of the original Distella code
-    uInt32 filesize(FILE *stream);
-    uInt32 read_adr();
+    uInt16 read_adr();
     int file_load(const char* file);
-    void disasm(DisassemblyList& list, uInt32 distart, int pass);
+    void disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
     int check_bit(uInt8 bitflags, int i);
     void showgfx(uInt8 c);
 
   private:
+    System& mySystem;
     stringstream myBuf;
     queue<uInt16> myAddressQueue;
     uInt32 myOffset, myPC, myPCBeg, myPCEnd, myLineCount;
