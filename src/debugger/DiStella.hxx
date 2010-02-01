@@ -78,9 +78,13 @@ class DiStella
     // Here, we add a new entry to the DisassemblyList
     void addEntry(CartDebug::DisassemblyList& list);
 
+    // Get a word and byte, respectively, from the System
+    // We use functions for this since Distella assumes that ROM starts
+    // at address 0, whereas the System class starts above $1000 instead
+    inline uInt16 dpeek();
+    inline uInt8 peek();
+
     // These functions are part of the original Distella code
-    uInt16 read_adr();
-    int file_load(const char* file);
     void disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
     int check_bit(uInt8 bitflags, int i);
@@ -90,18 +94,15 @@ class DiStella
     System& mySystem;
     stringstream myBuf;
     queue<uInt16> myAddressQueue;
-    uInt32 myOffset, myPC, myPCBeg, myPCEnd, myLineCount;
+    uInt32 myOffset, myPC, myPCBeg, myPCEnd;
 
     struct resource {
       uInt16 start;
-      uInt16 load;
       uInt32 length;
       uInt16 end;
-      int disp_data;
     } myAppData;
 
     /* Memory */
-    uInt8* mem;
     uInt8* labels;
 
     /**

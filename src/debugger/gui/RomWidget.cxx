@@ -168,6 +168,7 @@ void RomWidget::loadConfig()
   // Only reload full bank when necessary
   if(myListIsDirty || bankChanged)
   {
+/*
     // Clear old mappings
     myAddrList.clear();
     myLineList.clear();
@@ -196,6 +197,17 @@ void RomWidget::loadConfig()
 
     // Restore the old bank, in case we inadvertently switched while reading.
     dbg.setBank(myCurrentBank);
+
+*/
+    CartDebug::DisassemblyList list;
+    cart.disassemble(list, 0xfffc, true);
+
+  for(uInt32 i = 0; i < list.size(); ++i)
+  {
+    const CartDebug::DisassemblyTag& tag = list[i];
+    printf("%.4X|%5s|%s|%s|\n", tag.address, tag.label.c_str(), tag.disasm.c_str(), tag.bytes.c_str());
+  }
+
 
     myListIsDirty = false;
   }

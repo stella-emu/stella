@@ -100,9 +100,9 @@ class CartDebug : public DebuggerSystem
 
     /**
       Disassemble from the starting address, placing results into a
-      DisassemblyList.
+      DisassemblyList.  If enabled, try to determine code vs. data.
     */
-    void disassemble(DisassemblyList& list, uInt16 start);
+    void disassemble(DisassemblyList& list, uInt16 start, bool autocode);
 
     int getBank();
     int bankCount();

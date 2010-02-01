@@ -26,7 +26,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(System& system)
   : mySystem(system),
-    mem(NULL),   /* copied data from the file-- can be from 2K-48K bytes in size */
     labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
 {
 }
@@ -40,15 +39,12 @@ DiStella::~DiStella()
 uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
                              bool autocode)
 {
-  myLineCount = 0;
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
 
   myAppData.start     = 0x0;
-  myAppData.load      = 0x0000;
-  myAppData.length    = 0;
+  myAppData.length    = 4096;
   myAppData.end       = 0x0FFF;
-  myAppData.disp_data = 0;
 
   /*====================================*/
   /* Allocate memory for "labels" variable */
@@ -59,69 +55,43 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
     return 0;
   }
   memset(labels,0,myAppData.length);
-  /*====================================*/
 
   /*-----------------------------------------------------
-     The last 3 words of a program are as follows:
+    The last 3 words of a program are as follows:
 
     .word INTERRUPT   (isr_adr)
     .word START       (start_adr)
     .word BRKroutine  (brk_adr)
 
-     Since we always process START, move the Program
-     Counter 3 bytes back from the final byte.
-   -----------------------------------------------------*/
+    Since we always process START, move the Program
+    Counter 3 bytes back from the final byte.
+  -----------------------------------------------------*/
 
   myPC = PC;
-  uInt32 start_adr = read_adr();
+  uInt16 start_adr = dpeek();
 
-  if (myAppData.end == 0x7ff) /* 2K case */
-  {
-    /*============================================
-       What is the offset?  Well, it's an address
-       where the code segment starts.  For a 2K game,
-       it is usually 0xf800, which would then have the
-       code data end at 0xffff, but that is not
-       necessarily the case.  Because the Atari 2600
-       only has 13 address lines, it's possible that
-       the "code" can be considered to start in a lot
-       of different places.  So, we use the start
-       address as a reference to determine where the
-       offset is, logically-anded to produce an offset
-       that is a multiple of 2K.
+  /*============================================
+    The offset is the address where the code segment
+    starts.  For a 4K game, it is usually 0xf000,
+    which would then have the code data end at 0xffff,
+    but that is not necessarily the case.  Because the
+    Atari 2600 only has 13 address lines, it's possible
+    that the "code" can be considered to start in a lot
+    of different places.  So, we use the start
+    address as a reference to determine where the
+    offset is, logically-anded to produce an offset
+    that is a multiple of 4K.
 
-       Example:
-         Start address = $D973, so therefore
-         Offset to code = $D800
-         Code range = $D800-$DFFF
-     =============================================*/
-    myOffset = (start_adr & 0xf800);
-  }
-  else if (myAppData.end == 0xfff) /* 4K case */
-  {
-    /*============================================
-       The offset is the address where the code segment
-       starts.  For a 4K game, it is usually 0xf000,
-       which would then have the code data end at 0xffff,
-       but that is not necessarily the case.  Because the
-       Atari 2600 only has 13 address lines, it's possible
-       that the "code" can be considered to start in a lot
-       of different places.  So, we use the start
-       address as a reference to determine where the
-       offset is, logically-anded to produce an offset
-       that is a multiple of 4K.
-
-       Example:
-         Start address = $D973, so therefore
-         Offset to code = $D000
-         Code range = $D000-$DFFF
-     =============================================*/
-    myOffset = (start_adr - (start_adr % 0x1000));
-  }
+    Example:
+      Start address = $D973, so therefore
+      Offset to code = $D000
+      Code range = $D000-$DFFF
+  =============================================*/
+  myOffset = (start_adr - (start_adr % 0x1000));
 
   myAddressQueue.push(start_adr);
 
-  if (autocode)
+  if(autocode)
   {
     while(!myAddressQueue.empty())
     {
@@ -147,66 +117,23 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
   disasm(list, myOffset, 3);
 
   free(labels);  /* Free dynamic memory before program ends */
-  free(mem);     /* Free dynamic memory before program ends */
 
-  return myLineCount;
+  return list.size();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 DiStella::read_adr()
+inline uInt16 DiStella::dpeek()
 {
-  uInt8 d1,d2;
-
-  d1 = mySystem.peek(myPC++);
-  d2 = mySystem.peek(myPC++);
+  uInt8 d1 = mySystem.peek(myPC++ | 0x1000);
+  uInt8 d2 = mySystem.peek(myPC++ | 0x1000);
 
   return (uInt16) ((d2 << 8)+d1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::file_load(const char* file)
+inline uInt8 DiStella::peek()
 {
-  FILE *fn;
-
-  fn=fopen(file,"rb");
-  if (fn == NULL)
-    return 0;
-
-  if (myAppData.length == 0)
-    myAppData.length = filesize(fn);
-
-  if (myAppData.length == 2048)
-    myAppData.end = 0x7ff;
-  else if (myAppData.length == 4096)
-    myAppData.end = 0xfff;
-  else
-  {
-    printf("Error: .bin file must be 2048 or 4096 bytes\n");
-    exit(1);
-  }
-
-  /*====================================*/
-  /* Dynamically allocate memory for "mem" variable */
-  mem=(uInt8 *)malloc(myAppData.length);
-  if (mem == NULL)
-  {
-    printf ("Malloc failed for 'mem' variable\n");
-    exit(1);
-  }
-  memset(mem,0,myAppData.length);
-  /*====================================*/
-
-  rewind(fn); /* Point to beginning of file again */
-
-  /* if no header exists, just read in the file data */
-  fread(&mem[myAppData.load],1,myAppData.length,fn);
-
-  fclose(fn); /* Data is read in, so close the file */
-
-  if (myAppData.start == 0)
-    myAppData.start = myAppData.load;
-
-  return 1;
+  return mySystem.peek(myPC | 0x1000);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -241,8 +168,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
         else
           myBuf << HEX4 << myPC+myOffset << "'     '";
 
-        myBuf << ".byte $" << HEX2 << (int)mem[myPC] << " ; ";
-        showgfx(mem[myPC]);
+        myBuf << ".byte $" << HEX2 << (int)peek() << " ; ";
+        showgfx(peek());
         myBuf << " $" << HEX4 << myPC+myOffset;
         addEntry(list);
       }
@@ -256,7 +183,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
       {
         bytes = 1;
         myBuf << HEX4 << myPC+myOffset << "'L" << myPC+myOffset << "'.byte "
-              << "$" << HEX2 << (int)mem[myPC];
+              << "$" << HEX2 << (int)peek();
       }
       myPC++;
 
@@ -269,11 +196,11 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           if (bytes == 17)
           {
             addEntry(list);
-            myBuf << "    '     '.byte $" << HEX2 << (int)mem[myPC];
+            myBuf << "    '     '.byte $" << HEX2 << (int)peek();
             bytes = 1;
           }
           else
-            myBuf << ",$" << HEX2 << (int)mem[myPC];
+            myBuf << ",$" << HEX2 << (int)peek();
         }
         myPC++;
       }
@@ -287,7 +214,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
     }
     else
     {
-      op = mem[myPC];
+      op = peek();
       /* version 2.1 bug fix */
       if (pass == 2)
         mark(myPC+myOffset, VALID_ENTRY);
@@ -300,16 +227,6 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
       }
 
       amode = ourLookup[op].addr_mode;
-      if (myAppData.disp_data)
-      {
-        for (int i = 0; i < ourCLength[amode]; i++)
-          if (pass == 3)
-            myBuf << HEX2 << (int)mem[myPC+i] << " ";
-
-        if (pass == 3)
-          myBuf << "  ";
-      }
-
       myPC++;
 
       if (ourLookup[op].mnemonic[0] == '.')
@@ -366,7 +283,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
                 else
                   myBuf << HEX4 << myPC+myOffset << "'     '";
 
-                op = mem[myPC++];
+                op = peek();  myPC++;
                 myBuf << ".byte $" << HEX2 << (int)op;
                 addEntry(list);
               }
@@ -418,7 +335,6 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             {
               sprintf(linebuff,"\n");
               strcat(nextline,linebuff);
-              ++myLineCount;
             }
           break;
         }
@@ -434,7 +350,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE:
         {
-          ad = read_adr();
+          ad = dpeek();
           labfound = mark(ad, REFERENCED);
           if (pass == 1)
           {
@@ -493,7 +409,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           labfound = mark(d1, REFERENCED);
           if (pass == 3)
           {
@@ -515,7 +431,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case IMMEDIATE:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    #$%.2X ",d1);
@@ -528,7 +444,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE_X:
         {
-          ad = read_adr();
+          ad = dpeek();
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -578,7 +494,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE_Y:
         {
-          ad = read_adr();
+          ad = dpeek();
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -627,7 +543,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case INDIRECT_X:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    ($%.2X,X)",d1);
@@ -640,7 +556,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case INDIRECT_Y:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    ($%.2X),Y",d1);
@@ -653,7 +569,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE_X:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           labfound = mark(d1, REFERENCED);
           if (pass == 3)
           {
@@ -675,7 +591,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE_Y:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           labfound = mark(d1,REFERENCED);
           if (pass == 3)
           {
@@ -697,7 +613,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case RELATIVE:
         {
-          d1 = mem[myPC++];
+          d1 = peek();  myPC++;
           ad = d1;
           if (d1 >= 128)
             ad = d1 - 256;
@@ -733,7 +649,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABS_INDIRECT:
         {
-          ad = read_adr();
+          ad = dpeek();
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -940,7 +856,6 @@ void DiStella::addEntry(CartDebug::DisassemblyList& list)
   list.push_back(tag);
 
   myBuf.str("");
-  ++myLineCount;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1295,21 +1210,3 @@ const char* DiStella::ourIOMnemonic[24] = {
 const int DiStella::ourCLength[14] = {
   1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 0
 };
-
-#ifdef USE_MAIN
-int main(int ac, char* av[])
-{
-  DiStella dis;
-  DisassemblyList list;
-
-  int count = dis.disassemble(list, 0xfff-3, av[1]);
-
-  for(uInt32 i = 0; i < list.size(); ++i)
-  {
-    const DisassemblyTag& tag = list[i];
-    printf("%.4X|%5s|%s|%s|\n", tag.address, tag.label.c_str(), tag.disasm.c_str(), tag.bytes.c_str());
-  }
-
-  return 0;
-}
-#endif
