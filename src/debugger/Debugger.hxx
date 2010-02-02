@@ -259,7 +259,7 @@ class Debugger : public DialogContainer
       everywhere, but I feel it's better to place it here then in
       YaccParser (which technically isn't related to it at all).
     */
-    static Debugger& debugger() { return *myStaticDebugger; }
+    inline static Debugger& debugger() { return *myStaticDebugger; }
 
     /**
       Get the dimensions of the various debugger dialog areas

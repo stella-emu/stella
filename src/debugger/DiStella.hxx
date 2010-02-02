@@ -24,7 +24,6 @@
 
 #include "Array.hxx"
 #include "bspf.hxx"
-#include "System.hxx"
 
 #include "CartDebug.hxx"
 
@@ -43,7 +42,7 @@
 class DiStella
 {
   public:
-    DiStella(System& system);
+    DiStella();
     ~DiStella();
 
   public:
@@ -51,12 +50,12 @@ class DiStella
       Disassemble the current state of the System from the given start address.
 
       @param list     The results of the disassembly are placed here
-      @param start    The start address for disassembly
+      @param start    The address at which to start disassembly
       @param autocode If enabled, try to determine code vs. data sections
 
       @return   The number of lines that were disassembled
     */
-    uInt32 disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
+    uInt32 disassemble(CartDebug::DisassemblyList& list, uInt16 start,
                        bool autocode = true);
 
   private:
@@ -78,12 +77,6 @@ class DiStella
     // Here, we add a new entry to the DisassemblyList
     void addEntry(CartDebug::DisassemblyList& list);
 
-    // Get a word and byte, respectively, from the System
-    // We use functions for this since Distella assumes that ROM starts
-    // at address 0, whereas the System class starts above $1000 instead
-    inline uInt16 dpeek();
-    inline uInt8 peek();
-
     // These functions are part of the original Distella code
     void disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
@@ -91,7 +84,6 @@ class DiStella
     void showgfx(uInt8 c);
 
   private:
-    System& mySystem;
     stringstream myBuf;
     queue<uInt16> myAddressQueue;
     uInt32 myOffset, myPC, myPCBeg, myPCEnd;

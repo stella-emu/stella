@@ -200,7 +200,7 @@ void RomWidget::loadConfig()
 
 */
     CartDebug::DisassemblyList list;
-    cart.disassemble(list, 0xfffc, true);
+    cart.disassemble(list, dbg.dpeek(0xfffc), true);
 
   for(uInt32 i = 0; i < list.size(); ++i)
   {

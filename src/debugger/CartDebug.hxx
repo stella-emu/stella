@@ -99,8 +99,8 @@ class CartDebug : public DebuggerSystem
                      int start, int end);
 
     /**
-      Disassemble from the starting address, placing results into a
-      DisassemblyList.  If enabled, try to determine code vs. data.
+      Disassemble from the given address using the Distella disassembler
+      Address-to-label mappings (and vice-versa) are also determined here
     */
     void disassemble(DisassemblyList& list, uInt16 start, bool autocode);
 

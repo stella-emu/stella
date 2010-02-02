@@ -229,9 +229,10 @@ void CartDebug::disassemble(IntArray& addr, StringList& addrLabel,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::disassemble(DisassemblyList& list, uInt16 start, bool autocode)
 {
-  DiStella distella(mySystem);
+  DiStella distella;
   distella.disassemble(list, start, autocode);
 
+  // TODO - look at list, extract address to label mappings
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

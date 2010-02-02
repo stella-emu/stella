@@ -21,12 +21,12 @@
 #include <cstring>
 
 #include "bspf.hxx"
+#include "Debugger.hxx"
 #include "DiStella.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::DiStella(System& system)
-  : mySystem(system),
-    labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
+DiStella::DiStella()
+  : labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
 {
 }
 
@@ -36,7 +36,7 @@ DiStella::~DiStella()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
+uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 start,
                              bool autocode)
 {
   while(!myAddressQueue.empty())
@@ -56,20 +56,6 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
   }
   memset(labels,0,myAppData.length);
 
-  /*-----------------------------------------------------
-    The last 3 words of a program are as follows:
-
-    .word INTERRUPT   (isr_adr)
-    .word START       (start_adr)
-    .word BRKroutine  (brk_adr)
-
-    Since we always process START, move the Program
-    Counter 3 bytes back from the final byte.
-  -----------------------------------------------------*/
-
-  myPC = PC;
-  uInt16 start_adr = dpeek();
-
   /*============================================
     The offset is the address where the code segment
     starts.  For a 4K game, it is usually 0xf000,
@@ -87,9 +73,9 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
       Offset to code = $D000
       Code range = $D000-$DFFF
   =============================================*/
-  myOffset = (start_adr - (start_adr % 0x1000));
+  myOffset = (start - (start % 0x1000));
 
-  myAddressQueue.push(start_adr);
+  myAddressQueue.push(start);
 
   if(autocode)
   {
@@ -119,21 +105,6 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 PC,
   free(labels);  /* Free dynamic memory before program ends */
 
   return list.size();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt16 DiStella::dpeek()
-{
-  uInt8 d1 = mySystem.peek(myPC++ | 0x1000);
-  uInt8 d2 = mySystem.peek(myPC++ | 0x1000);
-
-  return (uInt16) ((d2 << 8)+d1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 DiStella::peek()
-{
-  return mySystem.peek(myPC | 0x1000);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -168,8 +139,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
         else
           myBuf << HEX4 << myPC+myOffset << "'     '";
 
-        myBuf << ".byte $" << HEX2 << (int)peek() << " ; ";
-        showgfx(peek());
+        myBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000) << " ; ";
+        showgfx(Debugger::debugger().peek(myPC|0x1000));
         myBuf << " $" << HEX4 << myPC+myOffset;
         addEntry(list);
       }
@@ -183,7 +154,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
       {
         bytes = 1;
         myBuf << HEX4 << myPC+myOffset << "'L" << myPC+myOffset << "'.byte "
-              << "$" << HEX2 << (int)peek();
+              << "$" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000);
       }
       myPC++;
 
@@ -196,11 +167,11 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           if (bytes == 17)
           {
             addEntry(list);
-            myBuf << "    '     '.byte $" << HEX2 << (int)peek();
+            myBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000);
             bytes = 1;
           }
           else
-            myBuf << ",$" << HEX2 << (int)peek();
+            myBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000);
         }
         myPC++;
       }
@@ -214,7 +185,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
     }
     else
     {
-      op = peek();
+      op = Debugger::debugger().peek(myPC|0x1000);
       /* version 2.1 bug fix */
       if (pass == 2)
         mark(myPC+myOffset, VALID_ENTRY);
@@ -283,7 +254,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
                 else
                   myBuf << HEX4 << myPC+myOffset << "'     '";
 
-                op = peek();  myPC++;
+                op = Debugger::debugger().peek(myPC|0x1000);  myPC++;
                 myBuf << ".byte $" << HEX2 << (int)op;
                 addEntry(list);
               }
@@ -350,7 +321,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE:
         {
-          ad = dpeek();
+          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 1)
           {
@@ -409,7 +380,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           labfound = mark(d1, REFERENCED);
           if (pass == 3)
           {
@@ -431,7 +402,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case IMMEDIATE:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    #$%.2X ",d1);
@@ -444,7 +415,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE_X:
         {
-          ad = dpeek();
+          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -494,7 +465,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE_Y:
         {
-          ad = dpeek();
+          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -543,7 +514,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case INDIRECT_X:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    ($%.2X,X)",d1);
@@ -556,7 +527,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case INDIRECT_Y:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    ($%.2X),Y",d1);
@@ -569,7 +540,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE_X:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           labfound = mark(d1, REFERENCED);
           if (pass == 3)
           {
@@ -591,7 +562,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE_Y:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           labfound = mark(d1,REFERENCED);
           if (pass == 3)
           {
@@ -613,7 +584,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case RELATIVE:
         {
-          d1 = peek();  myPC++;
+          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
           ad = d1;
           if (d1 >= 128)
             ad = d1 - 256;
@@ -649,7 +620,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABS_INDIRECT:
         {
-          ad = dpeek();
+          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
