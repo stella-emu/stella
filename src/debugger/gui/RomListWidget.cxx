@@ -52,12 +52,15 @@ RomListWidget::~RomListWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::setList(StringList& label, StringList& bytes, StringList& disasm,
-                            BoolArray& state)
+void RomListWidget::setList(const CartDebug::DisassemblyList& list,
+                            const BoolArray& state)
 {
-  myLabel  = label;
-  myDisasm = disasm;
+  myList = &list;
 
+  // TODO - maybe there's a better way than copying all the bytes again??
+  StringList bytes;
+  for(uInt32 i = 0; i < list.size(); ++i)
+    bytes.push_back(list[i].bytes);
   CheckListWidget::setList(bytes, state);
 }
 
@@ -85,7 +88,8 @@ void RomListWidget::drawWidget(bool hilite)
 {
 //cerr << "RomListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  int i, pos, xpos, ypos, len = _list.size();
+  const CartDebug::DisassemblyList& dlist = *myList;
+  int i, pos, xpos, ypos, len = dlist.size();
   string buffer;
   int deltax;
 
@@ -126,11 +130,11 @@ void RomListWidget::drawWidget(bool hilite)
     }
 
     // Draw labels
-    s.drawString(_font, myLabel[pos], xpos, ypos,
+    s.drawString(_font, dlist[pos].label, xpos, ypos,
                  myLabelWidth, kTextColor);
 
     // Draw disassembly
-    s.drawString(_font, myDisasm[pos], xpos + myLabelWidth, ypos,
+    s.drawString(_font, dlist[pos].disasm, xpos + myLabelWidth, ypos,
                  r.left, kTextColor);
 
     // Draw editable bytes

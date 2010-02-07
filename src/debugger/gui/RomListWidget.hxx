@@ -26,7 +26,7 @@ class CheckboxWidget;
 class ContextMenu;
 
 #include "CheckListWidget.hxx"
-
+#include "CartDebug.hxx"
 
 /** RomListWidget */
 class RomListWidget : public CheckListWidget
@@ -38,8 +38,7 @@ class RomListWidget : public CheckListWidget
                     int x, int y, int w, int h);
     virtual ~RomListWidget();
 
-    void setList(StringList& label, StringList& bytes, StringList& disasm,
-                 BoolArray& state);
+    void setList(const CartDebug::DisassemblyList& list, const BoolArray& state);
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
@@ -56,7 +55,7 @@ class RomListWidget : public CheckListWidget
     int myLabelWidth;
     int myBytesWidth;
 
-    StringList myLabel, myDisasm;
+    const CartDebug::DisassemblyList* myList;
 };
 
 #endif

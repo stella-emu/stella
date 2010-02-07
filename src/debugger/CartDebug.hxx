@@ -21,6 +21,8 @@
 
 class System;
 
+#include <map>
+
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Cart.hxx"
@@ -83,32 +85,44 @@ class CartDebug : public DebuggerSystem
     */
     void addRamArea(uInt16 start, uInt16 size, uInt16 roffset, uInt16 woffset);
 
-////////////////////////////////////////
-    /**
-      Disassemble from the starting address the specified number of lines
-      and place result in a string.
-    */
-    const string& disassemble(int start, int lines);
-
-    /**
-      Disassemble from the starting address to the ending address
-      and place addresses, bytes and data in given arrays.
-    */
-    void disassemble(IntArray& addr, StringList& addrLabel,
-                     StringList& bytes, StringList& data,
-                     int start, int end);
-
+    // The following two methods are meant to be used together
+    // First, a call is made to disassemble(), which updates the disassembly
+    // list; it will figure out when an actual complete disassembly is
+    // required, and when the previous results can be used
+    //
+    // Later, successive calls to disassemblyList() simply return the
+    // previous results; no disassembly is done in this case
     /**
       Disassemble from the given address using the Distella disassembler
       Address-to-label mappings (and vice-versa) are also determined here
+
+      @return  True if disassembly changed from previous call, else false
     */
-    void disassemble(DisassemblyList& list, uInt16 start, bool autocode);
+    bool disassemble(bool autocode);
+
+    /**
+      Get the results from the most recent call to disassemble()
+    */
+    const DisassemblyList& disassemblyList() const { return myDisassembly; }
+
+    /**
+      Determine the line in the disassembly that corresponds to the given
+      address.  A value of zero indicates that no such address exists.
+    */
+    int addressToLine(uInt16 address) const;
+
+    /**
+      Disassemble from the starting address the specified number of lines.
+      Note that automatic code determination is turned off for this method;
+      it will treat all address contents as instructions.
+    */
+    string disassemble(uInt16 start, uInt16 lines) const;
 
     int getBank();
     int bankCount();
     string getCartType();
-////////////////////////////////////////
 
+////////////////////////////////////////
     /**
       Add a label and associated address
     */
@@ -148,9 +162,7 @@ class CartDebug : public DebuggerSystem
     int countCompletions(const char *in);
     const string& getCompletions() const      { return myCompletions; }
     const string& getCompletionPrefix() const { return myCompPrefix;  }
-
-  private:
-    int disassemble(int address, string& result);
+////////////////////////////////////////
 
   private:
     enum equate_t {
@@ -186,6 +198,7 @@ class CartDebug : public DebuggerSystem
     CartState myOldState;
 
     DisassemblyList myDisassembly;
+    map<uInt16, int> myAddrToLineList;
 
     LabelToAddr mySystemAddresses;
     AddrToLabel mySystemReadLabels;   // labels used in a read context
@@ -200,40 +213,6 @@ class CartDebug : public DebuggerSystem
     string myCompPrefix;
 
     uInt16 myRWPortAddress;
-
-    enum { kSystemEquateSize = 158 };
-    static const Equate ourSystemEquates[kSystemEquateSize];
-
-//////////////////////////////////////////////
-    /**
-      Enumeration of the 6502 addressing modes
-    */
-    enum AddressingMode
-    {
-      Absolute, AbsoluteX, AbsoluteY, Immediate, Implied,
-      Indirect, IndirectX, IndirectY, Invalid, Relative,
-      Zero, ZeroX, ZeroY
-    };
-
-    /**
-      Enumeration of the 6502 access modes
-    */
-    enum AccessMode
-    {
-      Read, Write, None
-    };
-
-    /// Addressing mode for each of the 256 opcodes
-    /// This specifies how the opcode argument is addressed
-    static AddressingMode AddressModeTable[256];
-
-    /// Access mode for each of the 256 opcodes
-    /// This specifies how the opcode will access its argument
-    static AccessMode AccessModeTable[256];
-
-    /// Table of instruction mnemonics
-    static const char* InstructionMnemonicTable[256];
-//////////////////////////////////////////////
 };
 
 #endif

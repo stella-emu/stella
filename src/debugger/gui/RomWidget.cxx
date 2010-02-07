@@ -100,9 +100,6 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomWidget::~RomWidget()
 {
-  myAddrList.clear();
-  myLineList.clear();
-
   delete mySaveRom;
 }
 
@@ -166,71 +163,39 @@ void RomWidget::loadConfig()
 
   // Fill romlist the current bank of source or disassembly
   // Only reload full bank when necessary
-  if(myListIsDirty || bankChanged)
+  // TODO - bank changes aren't the only time that the disassembly needs to
+  //        be redone; ROMs which dynamically change cart address space and
+  //        have self-modifying code need to be taken into account
+  //        As well, we don't always start from the 0xfffc; this only
+  //        happens in the startup bank
+  myListIsDirty |= cart.disassemble(true);
+  if(myListIsDirty)
   {
-/*
-    // Clear old mappings
-    myAddrList.clear();
-    myLineList.clear();
-
-    StringList label, data, disasm;
+    const CartDebug::DisassemblyList& list = cart.disassemblyList();
     BoolArray state;
 
-    // Disassemble zero-page RAM and entire bank and reset breakpoints
-    cart.disassemble(myAddrList, label, data, disasm, 0x80, 0xff);
-    cart.disassemble(myAddrList, label, data, disasm, 0xf000, 0xffff);
-
     PackedBitArray& bp = dbg.breakpoints();
-    for(unsigned int i = 0; i < data.size(); ++i)
+    for(uInt32 i = 0; i < list.size(); ++i)
     {
-      if(bp.isSet(myAddrList[i]))
+      const CartDebug::DisassemblyTag& tag = list[i];
+      if(tag.address != 0 && bp.isSet(tag.address))
         state.push_back(true);
       else
         state.push_back(false);
     }
 
-    // Create a mapping from addresses to line numbers
-    for(unsigned int i = 0; i < myAddrList.size(); ++i)
-      myLineList.insert(make_pair(myAddrList[i], i));
-
-    myRomList->setList(label, data, disasm, state);
+    myRomList->setList(list, state);
 
     // Restore the old bank, in case we inadvertently switched while reading.
     dbg.setBank(myCurrentBank);
-
-*/
-    CartDebug::DisassemblyList list;
-    cart.disassemble(list, dbg.dpeek(0xfffc), true);
-
-  for(uInt32 i = 0; i < list.size(); ++i)
-  {
-    const CartDebug::DisassemblyTag& tag = list[i];
-    printf("%.4X|%5s|%s|%s|\n", tag.address, tag.label.c_str(), tag.disasm.c_str(), tag.bytes.c_str());
-  }
-
 
     myListIsDirty = false;
   }
 
   // Update romlist to point to current PC
-  // Take mirroring of PC into account, as well as zero-page RAM
-  int pc = dbg.cpuDebug().pc();
-  if(pc & 0x1000) pc |= 0xe000;
-  AddrToLine::iterator iter = myLineList.find(pc);
-
-  // if current PC not found, do an update (we're executing what
-  // we thought was an operand)
-
-  // This doesn't help, and seems to actually hurt.
-  /*
-  if(iter == myLineList.end()) {
-    incrementalUpdate(myRomList->currentPos(), myRomList->rows());
-    iter = myLineList.find(pc);
-  }
-  */
-
-  if(iter != myLineList.end())
-    myRomList->setHighlighted(iter->second);
+  int pcline = cart.addressToLine(dbg.cpuDebug().pc());
+  if(pcline > 0)
+    myRomList->setHighlighted(pcline);
 
   // Set current bank
   IntArray alist;
@@ -249,34 +214,53 @@ void RomWidget::loadConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::setBreak(int data)
 {
+  const CartDebug::DisassemblyList& list =
+      instance().debugger().cartDebug().disassemblyList();
+  if(data >= (int)list.size())  return;
+
   bool state = myRomList->getState(data);
-  instance().debugger().setBreakPoint(myAddrList[data], state);
+  if(list[data].address != 0)
+    instance().debugger().setBreakPoint(list[data].address, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::setPC(int data)
 {
-  ostringstream command;
-  command << "pc #" << myAddrList[data];
-  instance().debugger().run(command.str());
+  const CartDebug::DisassemblyList& list =
+      instance().debugger().cartDebug().disassemblyList();
+  if(data >= (int)list.size())  return;
+
+  if(list[data].address != 0)
+  {
+    ostringstream command;
+    command << "pc #" << list[data].address;
+    instance().debugger().run(command.str());
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::patchROM(int data, const string& bytes)
 {
-  ostringstream command;
+  const CartDebug::DisassemblyList& list =
+      instance().debugger().cartDebug().disassemblyList();
+  if(data >= (int)list.size())  return;
 
-  // Temporarily set to base 16, since that's the format the disassembled
-  // byte string is in.  This eliminates the need to prefix each byte with
-  // a '$' character
-  BaseFormat oldbase = instance().debugger().parser().base();
-  instance().debugger().parser().setBase(kBASE_16);
+  if(list[data].address != 0)
+  {
+    ostringstream command;
 
-  command << "rom #" << myAddrList[data] << " " << bytes;
-  instance().debugger().run(command.str());
+    // Temporarily set to base 16, since that's the format the disassembled
+    // byte string is in.  This eliminates the need to prefix each byte with
+    // a '$' character
+    BaseFormat oldbase = instance().debugger().parser().base();
+    instance().debugger().parser().setBase(kBASE_16);
 
-  // Restore previous base
-  instance().debugger().parser().setBase(oldbase);
+    command << "rom #" << list[data].address << " " << bytes;
+    instance().debugger().run(command.str());
+
+    // Restore previous base
+    instance().debugger().parser().setBase(oldbase);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

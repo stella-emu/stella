@@ -29,14 +29,10 @@ class InputTextDialog;
 class RomListWidget;
 class StringList;
 
-#include <map>
-
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-
-typedef map<int,int> AddrToLine;
-
+#include "CartDebug.hxx"
 
 class RomWidget : public Widget, public CommandSender
 {
@@ -60,14 +56,7 @@ class RomWidget : public Widget, public CommandSender
       kRomNameEntered = 'RWrn'
     };
 
-    RomListWidget* myRomList;
-
-    /** List of addresses indexed by line number */
-    IntArray myAddrList;
-
-    /** List of line numbers indexed by address */
-    AddrToLine myLineList;
-
+    RomListWidget*   myRomList;
     DataGridWidget*  myBank;
     EditTextWidget*  myBankCount;
     InputTextDialog* mySaveRom;

@@ -25,19 +25,9 @@
 #include "DiStella.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::DiStella()
+DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
+                   bool autocode)
   : labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::~DiStella()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 start,
-                             bool autocode)
 {
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
@@ -52,7 +42,7 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 start,
   if (labels == NULL)
   {
     fprintf (stderr, "Malloc failed for 'labels' variable\n");
-    return 0;
+    return;
   }
   memset(labels,0,myAppData.length);
 
@@ -103,8 +93,11 @@ uInt32 DiStella::disassemble(CartDebug::DisassemblyList& list, uInt16 start,
   disasm(list, myOffset, 3);
 
   free(labels);  /* Free dynamic memory before program ends */
+}
 
-  return list.size();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DiStella::~DiStella()
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,8 +132,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
         else
           myBuf << HEX4 << myPC+myOffset << "'     '";
 
-        myBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000) << " ; ";
-        showgfx(Debugger::debugger().peek(myPC|0x1000));
+        myBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << " ; ";
+        showgfx(Debugger::debugger().peek(myPC+myOffset));
         myBuf << " $" << HEX4 << myPC+myOffset;
         addEntry(list);
       }
@@ -154,7 +147,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
       {
         bytes = 1;
         myBuf << HEX4 << myPC+myOffset << "'L" << myPC+myOffset << "'.byte "
-              << "$" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000);
+              << "$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
       }
       myPC++;
 
@@ -167,11 +160,11 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           if (bytes == 17)
           {
             addEntry(list);
-            myBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000);
+            myBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             bytes = 1;
           }
           else
-            myBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC|0x1000);
+            myBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
         }
         myPC++;
       }
@@ -185,7 +178,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
     }
     else
     {
-      op = Debugger::debugger().peek(myPC|0x1000);
+      op = Debugger::debugger().peek(myPC+myOffset);
       /* version 2.1 bug fix */
       if (pass == 2)
         mark(myPC+myOffset, VALID_ENTRY);
@@ -254,7 +247,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
                 else
                   myBuf << HEX4 << myPC+myOffset << "'     '";
 
-                op = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+                op = Debugger::debugger().peek(myPC+myOffset);  myPC++;
                 myBuf << ".byte $" << HEX2 << (int)op;
                 addEntry(list);
               }
@@ -321,7 +314,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE:
         {
-          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
+          ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 1)
           {
@@ -380,7 +373,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           labfound = mark(d1, REFERENCED);
           if (pass == 3)
           {
@@ -402,7 +395,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case IMMEDIATE:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    #$%.2X ",d1);
@@ -415,7 +408,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE_X:
         {
-          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
+          ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -465,7 +458,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABSOLUTE_Y:
         {
-          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
+          ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {
@@ -514,7 +507,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case INDIRECT_X:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    ($%.2X,X)",d1);
@@ -527,7 +520,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case INDIRECT_Y:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
             sprintf(linebuff,"    ($%.2X),Y",d1);
@@ -540,7 +533,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE_X:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           labfound = mark(d1, REFERENCED);
           if (pass == 3)
           {
@@ -562,7 +555,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ZERO_PAGE_Y:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           labfound = mark(d1,REFERENCED);
           if (pass == 3)
           {
@@ -584,7 +577,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case RELATIVE:
         {
-          d1 = Debugger::debugger().peek(myPC|0x1000);  myPC++;
+          d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           ad = d1;
           if (d1 >= 128)
             ad = d1 - 256;
@@ -620,7 +613,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
         case ABS_INDIRECT:
         {
-          ad = Debugger::debugger().dpeek(myPC|0x1000);  myPC+=2;
+          ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
           labfound = mark(ad, REFERENCED);
           if (pass == 3)
           {

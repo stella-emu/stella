@@ -169,177 +169,74 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& CartDebug::disassemble(int start, int lines)
+bool CartDebug::disassemble(bool autocode)
 {
-  static string result= "";
-  ostringstream buffer;
-  string cpubuf;
+  bool changed = false;
 
-  if(start < 0x80 || start > 0xffff)
-    return result;
+  // Test current disassembly; don't re-disassemble if it hasn't changed
+  // ...
+  changed = true; // FIXME
 
-  do {
-    buffer << getLabel(start, true, 4) << ": ";
-
-    int count = disassemble(start, cpubuf);
-    for(int i = 0; i < count; i++)
-      buffer << hex << setw(2) << setfill('0') << myDebugger.peek(start++) << " " << dec;
-
-    if(count < 3) buffer << "   ";
-    if(count < 2) buffer << "   ";
-
-    buffer << " " << cpubuf << "\n";
-  } while(--lines > 0 && start <= 0xffff);
-
-  result = buffer.str();
-  return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disassemble(IntArray& addr, StringList& addrLabel,
-                            StringList& bytes, StringList& data,
-                            int start, int end)
-{
-  if(start < 0x80 || end > 0xffff)
-    return;
-
-  string cpubuf, tmp;
-  char buf[255];
-
-  do {
-    addr.push_back(start);
-    addrLabel.push_back(getLabel(start, true, 4) + ":");
-
-    cpubuf = "";
-    int count = disassemble(start, cpubuf);
-
-    tmp = "";
-    for(int i = 0; i < count; i++)
-    {
-      sprintf(buf, "%02x ", myDebugger.peek(start++));
-      tmp += buf;
-    }
-    bytes.push_back(tmp);
-
-    data.push_back(cpubuf);
-  }
-  while(start <= end);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::disassemble(DisassemblyList& list, uInt16 start, bool autocode)
-{
-  DiStella distella;
-  distella.disassemble(list, start, autocode);
-
-  // TODO - look at list, extract address to label mappings
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::disassemble(int address, string& result)
-{
-  ostringstream buf;
-  int count = 0;
-  int opcode = mySystem.peek(address);
-
-  // Are we looking at a read or write operation?
-  // It will determine what type of label to use
-  bool isRead = (CartDebug::AccessModeTable[opcode] == CartDebug::Read);
-
-  switch(CartDebug::AddressModeTable[opcode])
+  if(changed)
   {
-    case CartDebug::Absolute:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(myDebugger.dpeek(address + 1), isRead, 4) << " ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 3;
-      break;
+    myDisassembly.clear();
+    myAddrToLineList.clear();
 
-    case CartDebug::AbsoluteX:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(myDebugger.dpeek(address + 1), isRead, 4) << ",x ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 3;
-      break;
+    // TODO - add logic to determine correct start address to use
+    //        it will depend on the current bank and PC
+    uInt16 start = myDebugger.dpeek(0xfffc);
 
-    case CartDebug::AbsoluteY:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(myDebugger.dpeek(address + 1), isRead, 4) << ",y ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 3;
-      break;
+    DiStella distella(myDisassembly, start, autocode);
 
-    case CartDebug::Immediate:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " #$"
-          << hex << setw(2) << setfill('0') << (int) mySystem.peek(address + 1) << " ; "
-          << dec << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
+    // Parts of the disassembly will be accessed later in different ways
+    // We place those parts in separate maps, to speed up access
+    for(uInt32 i = 0; i < myDisassembly.size(); ++i)
+    {
+      const DisassemblyTag& tag = myDisassembly[i];
 
-    case CartDebug::Implied:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 1;
-      break;
+      // Create a mapping from addresses to line numbers
+      if(tag.address != 0)
+        myAddrToLineList.insert(make_pair(tag.address, i));
 
-    case CartDebug::Indirect:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " ("
-          << getLabel(myDebugger.dpeek(address + 1), isRead, 4) << ") ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 3;
-      break;
-
-    case CartDebug::IndirectX:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " ("
-          << getLabel(mySystem.peek(address + 1), isRead, 2) << ",x) ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
-
-    case CartDebug::IndirectY:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " ("
-          << getLabel(mySystem.peek(address + 1), isRead, 2) << "),y ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
-
-    case CartDebug::Relative:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(address + 2 + ((Int16)(Int8)mySystem.peek(address + 1)), isRead, 4)
-          << " ; " << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
-
-    case CartDebug::Zero:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(mySystem.peek(address + 1), isRead, 2) << " ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
-
-    case CartDebug::ZeroX:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(mySystem.peek(address + 1), isRead, 2) << ",x ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
-
-    case CartDebug::ZeroY:
-      buf << CartDebug::InstructionMnemonicTable[opcode] << " "
-          << getLabel(mySystem.peek(address + 1), isRead, 2) << ",y ; "
-          << M6502::ourInstructionCycleTable[opcode];
-      count = 2;
-      break;
-
-    default:
-      buf << "dc  $" << hex << setw(2) << setfill('0') << (int) opcode << " ; "
-          << dec << M6502::ourInstructionCycleTable[opcode];
-      count = 1;
-      break;
+      // TODO - look at list, extract address to label mappings
+      //        we need these for label support in the UI and promptwidget
+    }
   }
 
-  result = buf.str();
-  return count;
+  return changed;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int CartDebug::addressToLine(uInt16 address) const
+{
+  map<uInt16, int>::const_iterator iter = myAddrToLineList.find(address);
+  return iter != myAddrToLineList.end() ? iter->second : 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::disassemble(uInt16 start, uInt16 lines) const
+{
+  if(!(start & 0x1000))
+    return "Disassembly below 0x1000 not yet supported";
+
+  DisassemblyList list;
+  DiStella distella(list, start, false);
+
+  // Fill the string with disassembled data
+  start &= 0xFFF;
+  ostringstream buffer;
+  for(uInt32 i = 0; i < list.size() && lines > 0; ++i)
+  {
+    const CartDebug::DisassemblyTag& tag = list[i];
+    if((tag.address & 0xfff) >= start)
+    {
+      buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
+             << ":  " << tag.disasm << "  " << tag.bytes << endl;
+      --lines;
+    }
+  }
+
+  return buffer.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -677,396 +574,3 @@ int CartDebug::extractValue(char *c) const
   }
   return ret;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const CartDebug::Equate CartDebug::ourSystemEquates[kSystemEquateSize] = {
-// Standard $00-based TIA write locations:
-  { "VSYNC",  0x00, EQF_WRITE },
-  { "VBLANK", 0x01, EQF_WRITE },
-  { "WSYNC",  0x02, EQF_WRITE },
-  { "RSYNC",  0x03, EQF_WRITE },
-  { "NUSIZ0", 0x04, EQF_WRITE },
-  { "NUSIZ1", 0x05, EQF_WRITE },
-  { "COLUP0", 0x06, EQF_WRITE },
-  { "COLUP1", 0x07, EQF_WRITE },
-  { "COLUPF", 0x08, EQF_WRITE },
-  { "COLUBK", 0x09, EQF_WRITE },
-  { "CTRLPF", 0x0A, EQF_WRITE },
-  { "REFP0",  0x0B, EQF_WRITE },
-  { "REFP1",  0x0C, EQF_WRITE },
-  { "PF0",    0x0D, EQF_WRITE },
-  { "PF1",    0x0E, EQF_WRITE },
-  { "PF2",    0x0F, EQF_WRITE },
-  { "RESP0",  0x10, EQF_WRITE },
-  { "RESP1",  0x11, EQF_WRITE },
-  { "RESM0",  0x12, EQF_WRITE },
-  { "RESM1",  0x13, EQF_WRITE },
-  { "RESBL",  0x14, EQF_WRITE },
-  { "AUDC0",  0x15, EQF_WRITE },
-  { "AUDC1",  0x16, EQF_WRITE },
-  { "AUDF0",  0x17, EQF_WRITE },
-  { "AUDF1",  0x18, EQF_WRITE },
-  { "AUDV0",  0x19, EQF_WRITE },
-  { "AUDV1",  0x1A, EQF_WRITE },
-  { "GRP0",   0x1B, EQF_WRITE },
-  { "GRP1",   0x1C, EQF_WRITE },
-  { "ENAM0",  0x1D, EQF_WRITE },
-  { "ENAM1",  0x1E, EQF_WRITE },
-  { "ENABL",  0x1F, EQF_WRITE },
-  { "HMP0",   0x20, EQF_WRITE },
-  { "HMP1",   0x21, EQF_WRITE },
-  { "HMM0",   0x22, EQF_WRITE },
-  { "HMM1",   0x23, EQF_WRITE },
-  { "HMBL",   0x24, EQF_WRITE },
-  { "VDELP0", 0x25, EQF_WRITE },
-  { "VDEL01", 0x26, EQF_WRITE },
-  { "VDELP1", 0x26, EQF_WRITE },
-  { "VDELBL", 0x27, EQF_WRITE },
-  { "RESMP0", 0x28, EQF_WRITE },
-  { "RESMP1", 0x29, EQF_WRITE },
-  { "HMOVE",  0x2A, EQF_WRITE },
-  { "HMCLR",  0x2B, EQF_WRITE },
-  { "CXCLR",  0x2C, EQF_WRITE },
-
-// Mirrored $40-based TIA write locations:
-  { "VSYNC.40",  0x40, EQF_WRITE },
-  { "VBLANK.40", 0x41, EQF_WRITE },
-  { "WSYNC.40",  0x42, EQF_WRITE },
-  { "RSYNC.40",  0x43, EQF_WRITE },
-  { "NUSIZ0.40", 0x44, EQF_WRITE },
-  { "NUSIZ1.40", 0x45, EQF_WRITE },
-  { "COLUP0.40", 0x46, EQF_WRITE },
-  { "COLUP1.40", 0x47, EQF_WRITE },
-  { "COLUPF.40", 0x48, EQF_WRITE },
-  { "COLUBK.40", 0x49, EQF_WRITE },
-  { "CTRLPF.40", 0x4A, EQF_WRITE },
-  { "REFP0.40",  0x4B, EQF_WRITE },
-  { "REFP1.40",  0x4C, EQF_WRITE },
-  { "PF0.40",    0x4D, EQF_WRITE },
-  { "PF1.40",    0x4E, EQF_WRITE },
-  { "PF2.40",    0x4F, EQF_WRITE },
-  { "RESP0.40",  0x50, EQF_WRITE },
-  { "RESP1.40",  0x51, EQF_WRITE },
-  { "RESM0.40",  0x52, EQF_WRITE },
-  { "RESM1.40",  0x53, EQF_WRITE },
-  { "RESBL.40",  0x54, EQF_WRITE },
-  { "AUDC0.40",  0x55, EQF_WRITE },
-  { "AUDC1.40",  0x56, EQF_WRITE },
-  { "AUDF0.40",  0x57, EQF_WRITE },
-  { "AUDF1.40",  0x58, EQF_WRITE },
-  { "AUDV0.40",  0x59, EQF_WRITE },
-  { "AUDV1.40",  0x5A, EQF_WRITE },
-  { "GRP0.40",   0x5B, EQF_WRITE },
-  { "GRP1.40",   0x5C, EQF_WRITE },
-  { "ENAM0.40",  0x5D, EQF_WRITE },
-  { "ENAM1.40",  0x5E, EQF_WRITE },
-  { "ENABL.40",  0x5F, EQF_WRITE },
-  { "HMP0.40",   0x60, EQF_WRITE },
-  { "HMP1.40",   0x61, EQF_WRITE },
-  { "HMM0.40",   0x62, EQF_WRITE },
-  { "HMM1.40",   0x63, EQF_WRITE },
-  { "HMBL.40",   0x64, EQF_WRITE },
-  { "VDELP0.40", 0x65, EQF_WRITE },
-  { "VDEL01.40", 0x66, EQF_WRITE },
-  { "VDELP1.40", 0x66, EQF_WRITE },
-  { "VDELBL.40", 0x67, EQF_WRITE },
-  { "RESMP0.40", 0x68, EQF_WRITE },
-  { "RESMP1.40", 0x69, EQF_WRITE },
-  { "HMOVE.40",  0x6A, EQF_WRITE },
-  { "HMCLR.40",  0x6B, EQF_WRITE },
-  { "CXCLR.40",  0x6C, EQF_WRITE },
-
-// Standard $00-based TIA read locations:
-  { "CXM0P",  0x00, EQF_READ },
-  { "CXM1P",  0x01, EQF_READ },
-  { "CXP0FB", 0x02, EQF_READ },
-  { "CXP1FB", 0x03, EQF_READ },
-  { "CXM0FB", 0x04, EQF_READ },
-  { "CXM1FB", 0x05, EQF_READ },
-  { "CXBLPF", 0x06, EQF_READ },
-  { "CXPPMM", 0x07, EQF_READ },
-  { "INPT0",  0x08, EQF_READ },
-  { "INPT1",  0x09, EQF_READ },
-  { "INPT2",  0x0A, EQF_READ },
-  { "INPT3",  0x0B, EQF_READ },
-  { "INPT4",  0x0C, EQF_READ },
-  { "INPT5",  0x0D, EQF_READ },
-
-// Mirrored $10-based TIA read locations:
-  { "CXM0P.10",  0x10, EQF_READ },
-  { "CXM1P.10",  0x11, EQF_READ },
-  { "CXP0FB.10", 0x12, EQF_READ },
-  { "CXP1FB.10", 0x13, EQF_READ },
-  { "CXM0FB.10", 0x14, EQF_READ },
-  { "CXM1FB.10", 0x15, EQF_READ },
-  { "CXBLPF.10", 0x16, EQF_READ },
-  { "CXPPMM.10", 0x17, EQF_READ },
-  { "INPT0.10",  0x18, EQF_READ },
-  { "INPT1.10",  0x19, EQF_READ },
-  { "INPT2.10",  0x1A, EQF_READ },
-  { "INPT3.10",  0x1B, EQF_READ },
-  { "INPT4.10",  0x1C, EQF_READ },
-  { "INPT5.10",  0x1D, EQF_READ },
-
-// Mirrored $20-based TIA read locations:
-  { "CXM0P.20",  0x20, EQF_READ },
-  { "CXM1P.20",  0x21, EQF_READ },
-  { "CXP0FB.20", 0x22, EQF_READ },
-  { "CXP1FB.20", 0x23, EQF_READ },
-  { "CXM0FB.20", 0x24, EQF_READ },
-  { "CXM1FB.20", 0x25, EQF_READ },
-  { "CXBLPF.20", 0x26, EQF_READ },
-  { "CXPPMM.20", 0x27, EQF_READ },
-  { "INPT0.20",  0x28, EQF_READ },
-  { "INPT1.20",  0x29, EQF_READ },
-  { "INPT2.20",  0x2A, EQF_READ },
-  { "INPT3.20",  0x2B, EQF_READ },
-  { "INPT4.20",  0x2C, EQF_READ },
-  { "INPT5.20",  0x2D, EQF_READ },
-
-// Mirrored $30-based TIA read locations:
-  { "CXM0P.30",  0x30, EQF_READ },
-  { "CXM1P.30",  0x31, EQF_READ },
-  { "CXP0FB.30", 0x32, EQF_READ },
-  { "CXP1FB.30", 0x33, EQF_READ },
-  { "CXM0FB.30", 0x34, EQF_READ },
-  { "CXM1FB.30", 0x35, EQF_READ },
-  { "CXBLPF.30", 0x36, EQF_READ },
-  { "CXPPMM.30", 0x37, EQF_READ },
-  { "INPT0.30",  0x38, EQF_READ },
-  { "INPT1.30",  0x39, EQF_READ },
-  { "INPT2.30",  0x3A, EQF_READ },
-  { "INPT3.30",  0x3B, EQF_READ },
-  { "INPT4.30",  0x3C, EQF_READ },
-  { "INPT5.30",  0x3D, EQF_READ },
-
-// Standard RIOT locations (read, write, or both):
-  { "SWCHA",    0x280, EQF_RW    },
-  { "SWCHB",    0x282, EQF_RW    },
-  { "SWACNT",   0x281, EQF_WRITE },
-  { "SWBCNT",   0x283, EQF_WRITE },
-  { "INTIM",    0x284, EQF_READ  },
-  { "TIMINT",   0x285, EQF_READ  },
-  { "TIM1T",    0x294, EQF_WRITE },
-  { "TIM8T",    0x295, EQF_WRITE },
-  { "TIM64T",   0x296, EQF_WRITE },
-  { "T1024T",   0x297, EQF_WRITE }
-};
-
-///////////////////////////////////////////////////////////////////
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::AddressingMode CartDebug::AddressModeTable[256] = {
-  Implied,    IndirectX, Invalid,   IndirectX,    // 0x0?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0x1?
-  ZeroX,      ZeroX,     ZeroX,     ZeroX,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
-
-  Absolute,   IndirectX, Invalid,   IndirectX,    // 0x2?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0x3?
-  ZeroX,      ZeroX,     ZeroX,     ZeroX,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
-
-  Implied,    IndirectX, Invalid,   IndirectX,    // 0x4?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0x5?
-  ZeroX,      ZeroX,     ZeroX,     ZeroX,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
-
-  Implied,    IndirectX, Invalid,   IndirectX,    // 0x6?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Indirect,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0x7?
-  ZeroX,      ZeroX,     ZeroX,     ZeroX,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
-
-  Immediate,  IndirectX, Immediate, IndirectX,    // 0x8?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0x9?
-  ZeroX,      ZeroX,     ZeroY,     ZeroY,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteY, AbsoluteY,
-
-  Immediate,  IndirectX, Immediate, IndirectX,    // 0xA?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0xB?
-  ZeroX,      ZeroX,     ZeroY,     ZeroY,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteY, AbsoluteY,
-
-  Immediate,  IndirectX, Immediate, IndirectX,    // 0xC?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0xD?
-  ZeroX,      ZeroX,     ZeroX,     ZeroX,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX,
-
-  Immediate,  IndirectX, Immediate, IndirectX,    // 0xE?
-  Zero,       Zero,      Zero,      Zero,
-  Implied,    Immediate, Implied,   Immediate,
-  Absolute,   Absolute,  Absolute,  Absolute,
-
-  Relative,   IndirectY, Invalid,   IndirectY,    // 0xF?
-  ZeroX,      ZeroX,     ZeroX,     ZeroX,
-  Implied,    AbsoluteY, Implied,   AbsoluteY,
-  AbsoluteX,  AbsoluteX, AbsoluteX, AbsoluteX
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::AccessMode CartDebug::AccessModeTable[256] = {
-  None,   Read,   None,   Write,    // 0x0?
-  None,   Read,   Write,  Write,
-  None,   Read,   Write,  Read,
-  None,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0x1?
-  None,   Read,   Write,  Write,
-  None,   Read,   None,   Write,
-  None,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0x2?
-  Read,   Read,   Write,  Write,
-  None,   Read,   Write,  Read,
-  Read,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0x3?
-  None,   Read,   Write,  Write,
-  None,   Read,   None,   Write,
-  None,   Read,   Write,  Write,
-  
-  None,   Read,   None,   Write,    // 0x4?
-  None,   Read,   Write,  Write,
-  None,   Read,   Write,  Read,
-  Read,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0x5?
-  None,   Read,   Write,  Write,
-  None,   Read,   None,   Write,
-  None,   Read,   Write,  Write,
-
-  None,   Read,   None,   Write,    // 0x6?
-  None,   Read,   Write,  Write,
-  None,   Read,   Write,  Read,
-  Read,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0x7?
-  None,   Read,   Write,  Write,
-  None,   Read,   None,   Write,
-  None,   Read,   Write,  Write,
-
-  None,   Write,  None,   Write,    // 0x8?
-  Write,  Write,  Write,  Write,
-  None,   None,   None,   Read,
-  Write,  Write,  Write,  Write,
-
-  Read,   Write,  None,   Write,    // 0x9?
-  Write,  Write,  Write,  Write,
-  None,   Write,  None,   Write,
-  Write,  Write,  Write,  Write,
-
-  Read,   Read,   Read,   Read,     // 0xA?
-  Read,   Read,   Read,   Read,
-  None,   Read,   None,   Read,
-  Read,   Read,   Read,   Read,
-
-  Read,   Read,   None,   Read,     // 0xB?
-  Read,   Read,   Read,   Read,
-  None,   Read,   None,   Read,
-  Read,   Read,   Read,   Read,
-
-  Read,   Read,   None,   Write,    // 0xC?
-  Read,   Read,   Write,  Write,
-  None,   Read,   None,   Read,
-  Read,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0xD?
-  None,   Read,   Write,  Write,
-  None,   Read,   None,   Write,
-  None,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0xE?
-  Read,   Read,   Write,  Write,
-  None,   Read,   None,   Read,
-  Read,   Read,   Write,  Write,
-
-  Read,   Read,   None,   Write,    // 0xF?
-  None,   Read,   Write,  Write,
-  None,   Read,   None,   Write,
-  None,   Read,   Write,  Write
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::InstructionMnemonicTable[256] = {
-  "BRK",  "ORA",  "n/a",  "slo",  "nop",  "ORA",  "ASL",  "slo",    // 0x0?
-  "PHP",  "ORA",  "ASLA", "anc",  "nop",  "ORA",  "ASL",  "slo",
-
-  "BPL",  "ORA",  "n/a",  "slo",  "nop",  "ORA",  "ASL",  "slo",    // 0x1?
-  "CLC",  "ORA",  "nop",  "slo",  "nop",  "ORA",  "ASL",  "slo",
-
-  "JSR",  "AND",  "n/a",  "rla",  "BIT",  "AND",  "ROL",  "rla",    // 0x2?
-  "PLP",  "AND",  "ROLA", "anc",  "BIT",  "AND",  "ROL",  "rla",
-
-  "BMI",  "AND",  "n/a",  "rla",  "nop",  "AND",  "ROL",  "rla",    // 0x3?
-  "SEC",  "AND",  "nop",  "rla",  "nop",  "AND",  "ROL",  "rla",
-  
-  "RTI",  "EOR",  "n/a",  "sre",  "nop",  "EOR",  "LSR",  "sre",    // 0x4?
-  "PHA",  "EOR",  "LSRA", "asr",  "JMP",  "EOR",  "LSR",  "sre",
-
-  "BVC",  "EOR",  "n/a",  "sre",  "nop",  "EOR",  "LSR",  "sre",    // 0x5?
-  "CLI",  "EOR",  "nop",  "sre",  "nop",  "EOR",  "LSR",  "sre",
-
-  "RTS",  "ADC",  "n/a",  "rra",  "nop",  "ADC",  "ROR",  "rra",    // 0x6?
-  "PLA",  "ADC",  "RORA", "arr",  "JMP",  "ADC",  "ROR",  "rra",
-
-  "BVS",  "ADC",  "n/a",  "rra",  "nop",  "ADC",  "ROR",  "rra",    // 0x7?
-  "SEI",  "ADC",  "nop",  "rra",  "nop",  "ADC",  "ROR",  "rra",
-
-  "nop",  "STA",  "nop",  "sax",  "STY",  "STA",  "STX",  "sax",    // 0x8?
-  "DEY",  "nop",  "TXA",  "ane",  "STY",  "STA",  "STX",  "sax",
-
-  "BCC",  "STA",  "n/a",  "sha",  "STY",  "STA",  "STX",  "sax",    // 0x9?
-  "TYA",  "STA",  "TXS",  "shs",  "shy",  "STA",  "shx",  "sha",
-
-  "LDY",  "LDA",  "LDX",  "lax",  "LDY",  "LDA",  "LDX",  "lax",    // 0xA?
-  "TAY",  "LDA",  "TAX",  "lxa",  "LDY",  "LDA",  "LDX",  "lax",
-
-  "BCS",  "LDA",  "n/a",  "lax",  "LDY",  "LDA",  "LDX",  "lax",    // 0xB?
-  "CLV",  "LDA",  "TSX",  "las",  "LDY",  "LDA",  "LDX",  "lax",
-
-  "CPY",  "CMP",  "nop",  "dcp",  "CPY",  "CMP",  "DEC",  "dcp",    // 0xC?
-  "INY",  "CMP",  "DEX",  "sbx",  "CPY",  "CMP",  "DEC",  "dcp",
-
-  "BNE",  "CMP",  "n/a",  "dcp",  "nop",  "CMP",  "DEC",  "dcp",    // 0xD?
-  "CLD",  "CMP",  "nop",  "dcp",  "nop",  "CMP",  "DEC",  "dcp",
-
-  "CPX",  "SBC",  "nop",  "isb",  "CPX",  "SBC",  "INC",  "isb",    // 0xE?
-  "INX",  "SBC",  "NOP",  "sbc",  "CPX",  "SBC",  "INC",  "isb",
-
-  "BEQ",  "SBC",  "n/a",  "isb",  "nop",  "SBC",  "INC",  "isb",    // 0xF?
-  "SED",  "SBC",  "nop",  "isb",  "nop",  "SBC",  "INC",  "isb"
-};
