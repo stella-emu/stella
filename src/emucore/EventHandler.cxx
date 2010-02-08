@@ -153,6 +153,7 @@ void EventHandler::initialize()
 
   Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
   Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
+  setPaddleMode(myOSystem->settings().getBool("usemouse") ? 0 : -1, false);
 
   // Set quick select delay when typing characters in listwidgets
   ListWidget::setQuickSelectDelay(myOSystem->settings().getInt("listdelay"));
@@ -777,9 +778,12 @@ void EventHandler::handleMouseMotionEvent(SDL_Event& event)
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
   {
-    int x = event.motion.xrel, y = event.motion.yrel;
-    myEvent->set(Event::MouseAxisXValue, x);
-    myEvent->set(Event::MouseAxisYValue, y);
+    if(myMouseEnabled)
+    {
+      int x = event.motion.xrel, y = event.motion.yrel;
+      myEvent->set(Event::MouseAxisXValue, x);
+      myEvent->set(Event::MouseAxisYValue, y);
+    }
   }
   else if(myOverlay)
   {
@@ -793,7 +797,10 @@ void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
 {
   // Determine which mode we're in, then send the event to the appropriate place
   if(myState == S_EMULATE)
-    myEvent->set(Event::MouseButtonValue, state);
+  {
+    if(myMouseEnabled)
+      myEvent->set(Event::MouseButtonValue, state);
+  }
   else if(myOverlay)
   {
     // Take window zooming into account
@@ -955,15 +962,6 @@ void EventHandler::handleEvent(Event::Type event, int state)
       break;
     ////////////////////////////////////////////////////////////////////////
 
-#if 0
-    case Event::ConsoleReset:
-      if(state)
-      {
-        myOSystem->console().tia().frameReset();
-        myOSystem->frameBuffer().refresh();
-      }
-      break;
-#endif
     case Event::Fry:
       myFryingFlag = bool(state);
       return;
@@ -1869,6 +1867,7 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
 {
   if(num >= 0 && num <= 3)
   {
+    myMouseEnabled = true;
     Paddles::setMouseIsPaddle(num);
     if(showmessage)
     {
@@ -1877,6 +1876,8 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
       myOSystem->frameBuffer().showMessage(buf.str());
     }
   }
+  else
+    myMouseEnabled = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

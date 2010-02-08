@@ -81,6 +81,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("joyhatmap", "");
   setInternal("joydeadzone", "0");
   setInternal("joyallow4", "false");
+  setInternal("usemouse", "true");
   setInternal("pspeed", "6");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
@@ -355,6 +356,7 @@ void Settings::usage()
     << "  -showinfo     <1|0>          Shows some game info on commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
+    << "  -usemouse     <1|0>          Use mouse for various controllers (paddle, driving, etc)\n"
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"

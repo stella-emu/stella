@@ -149,6 +149,12 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myPaddleMode);
 
+  // Add mouse enable/disable
+  xpos += 8 + myPaddleModeLabel->getWidth();
+  myMouseEnabled = new CheckboxWidget(myTab, font, xpos, ypos,
+                                      "Use mouse", kPMouseChanged);
+  wid.push_back(myMouseEnabled);
+
   // Add paddle speed
   xpos = 5;  ypos += lineHeight + 3;
   myPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
@@ -199,6 +205,10 @@ void InputDialog::loadConfig()
   myPaddleMode->setValue(0);
   myPaddleModeLabel->setLabel("0");
 
+  // Mouse/paddle enabled
+  bool usemouse = instance().settings().getBool("usemouse");
+  myMouseEnabled->setState(usemouse);
+
   // Paddle speed
   myPaddleSpeed->setValue(instance().settings().getInt("pspeed"));
   myPaddleLabel->setLabel(instance().settings().getString("pspeed"));
@@ -210,6 +220,7 @@ void InputDialog::loadConfig()
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
 
   myTab->loadConfig();
+  handleMouseChanged(usemouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,6 +238,11 @@ void InputDialog::saveConfig()
 
   // Paddle mode
   Paddles::setMouseIsPaddle(myPaddleMode->getValue());
+
+  // Mouse/paddle enabled
+  bool usemouse = myMouseEnabled->getState();
+  instance().settings().setBool("usemouse", usemouse);
+  instance().eventHandler().setPaddleMode(usemouse ? 0 : -1);
 
   // Paddle speed
   int speed = myPaddleSpeed->getValue();
@@ -291,6 +307,13 @@ bool InputDialog::handleJoyHat(int stick, int hat, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::handleMouseChanged(bool state)
+{
+  myPaddleMode->setEnabled(state);
+  myPaddleModeLabel->setEnabled(state);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
@@ -326,6 +349,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kPSpeedChanged:
       myPaddleLabel->setValue(myPaddleSpeed->getValue());
+      break;
+
+    case kPMouseChanged:
+      handleMouseChanged(data == 1);
       break;
 
     default:

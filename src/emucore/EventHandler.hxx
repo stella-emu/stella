@@ -474,6 +474,9 @@ class EventHandler
     // Indicates whether the mouse cursor is grabbed
     bool myGrabMouseFlag;
 
+    // Indicates whether the mouse is enabled for game controller actions
+    bool myMouseEnabled;
+
     // Indicates whether the joystick emulates 'impossible' directions
     bool myAllowAllDirectionsFlag;
 

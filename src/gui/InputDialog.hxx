@@ -51,6 +51,7 @@ class InputDialog : public Dialog
 
   private:
     void addVDeviceTab(const GUI::Font& font);
+    void handleMouseChanged(bool state);
 
   private:
     enum {
@@ -58,7 +59,8 @@ class InputDialog : public Dialog
       kRightChanged    = 'RCch',
       kDeadzoneChanged = 'DZch',
       kPaddleChanged   = 'PDch',
-      kPSpeedChanged   = 'PSch'
+      kPSpeedChanged   = 'PSch',
+      kPMouseChanged   = 'PMch'
     };
 
     TabWidget* myTab;
@@ -75,6 +77,7 @@ class InputDialog : public Dialog
     StaticTextWidget* myPaddleModeLabel;
     SliderWidget*     myPaddleSpeed;
     StaticTextWidget* myPaddleLabel;
+    CheckboxWidget*   myMouseEnabled;
     EditTextWidget*   myAVoxPort;
     CheckboxWidget*   myAllowAll4;
 };
