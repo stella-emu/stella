@@ -85,10 +85,13 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add filter that can narrow the results shown in the listing
   // It has to fit between both labels
-  fwidth = BSPF_min(15 * fontWidth, xpos - 20 - lwidth);
-  xpos -= fwidth + 5;
-  myPattern = new EditTextWidget(this, font, xpos, ypos,
-                                 fwidth, fontHeight, "");
+  if(w >= 640)
+  {
+    fwidth = BSPF_min(15 * fontWidth, xpos - 20 - lwidth);
+    xpos -= fwidth + 5;
+    myPattern = new EditTextWidget(this, font, xpos, ypos,
+                                   fwidth, fontHeight, "");
+  }
 
   // Add list with game titles
   // Before we add the list, we need to know the size of the RomInfoWidget
@@ -106,7 +109,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   wid.push_back(myList);
-  wid.push_back(myPattern);  // Add after the list for tab order
+  if(myPattern)  wid.push_back(myPattern);  // Add after the list for tab order
 
   // Add ROM info area (if enabled)
   if(romWidth > 0)
@@ -323,6 +326,7 @@ void LauncherDialog::loadDirListing()
     myGameList->appendGame(" [..]", "", "", true);
 
   // Now add the directory entries
+  bool domatch = myPattern && myPattern->getEditString() != "";
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
     string name = files[idx].getDisplayName();
@@ -342,8 +346,7 @@ void LauncherDialog::loadDirListing()
     }
 
     // Skip over files that don't match the pattern in the 'pattern' textbox
-    if(!isDir && myPattern->getEditString() != "" &&
-       !matchPattern(name, myPattern->getEditString()))
+    if(domatch && !isDir && !matchPattern(name, myPattern->getEditString()))
       continue;
 
     myGameList->appendGame(name, files[idx].getPath(), "", isDir);
