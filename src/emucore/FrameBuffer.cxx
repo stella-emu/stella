@@ -417,6 +417,7 @@ void FrameBuffer::refresh()
   // This method is in essence a FULL refresh, putting all rendering
   // buffers in a known, fully redrawn state
 
+  invalidate();
   bool doubleBuffered = (type() == kGLBuffer);
   switch(myOSystem->eventHandler().state())
   {
@@ -913,8 +914,17 @@ void FrameBuffer::setAvailableVidModes(uInt32 baseWidth, uInt32 baseHeight)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::addVidMode(VideoMode& mode)
 {
+  // The are minimum size requirements on a screen, no matter is in fullscreen
+  // or windowed mode
+  // Various part of the UI system depend on having at least 320x240 pixels
+  // available, so we must enforce it here
+
   // Windowed modes can be sized exactly as required, since there's normally
-  // no restriction on window size (up the maximum size)
+  // no restriction on window size (between the minimum and maximum size)
+  mode.screen_w = BSPF_max(mode.screen_w, 320u);
+  mode.screen_h = BSPF_max(mode.screen_h, 240u);
+  mode.image_x = (mode.screen_w - mode.image_w) >> 1;
+  mode.image_y = (mode.screen_h - mode.image_h) >> 1;
   myWindowedModeList.add(mode);
 
   // There are often stricter requirements on fullscreen modes, and they're
@@ -928,8 +938,8 @@ void FrameBuffer::addVidMode(VideoMode& mode)
     {
       // Auto-calculate 'smart' centering; platform-specific framebuffers are
       // free to ignore or augment it
-      mode.screen_w = res[i].width;
-      mode.screen_h = res[i].height;
+      mode.screen_w = BSPF_max(res[i].width, 320u);
+      mode.screen_h = BSPF_max(res[i].height, 240u);
       mode.image_x = (mode.screen_w - mode.image_w) >> 1;
       mode.image_y = (mode.screen_h - mode.image_h) >> 1;
       break;

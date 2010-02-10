@@ -146,6 +146,13 @@ class FrameBufferGL : public FrameBuffer
     bool setVidMode(VideoMode& mode);
 
     /**
+      This method is called to invalidate the contents of the entire
+      framebuffer (ie, mark the current content as invalid, and erase it on
+      the next drawing pass).
+    */
+    void invalidate();
+
+    /**
       This method is called to create a surface compatible with the one
       currently in use, but having the given dimensions.
 

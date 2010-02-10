@@ -451,6 +451,12 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::invalidate()
+{
+// TODO - add code for this
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::drawTIA(bool fullRedraw)
 {
   const TIA& tia = myOSystem->console().tia();

@@ -139,6 +139,13 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferSoft::invalidate()
+{
+  if(myScreen)
+    SDL_FillRect(myScreen, NULL, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferSoft::drawTIA(bool fullRedraw)
 {
   const TIA& tia = myOSystem->console().tia();
@@ -330,7 +337,7 @@ void FrameBufferSoft::drawTIA(bool fullRedraw)
             uInt8 v = currentFrame[bufofs];
             uInt8 w = previousFrame[bufofs];
             uInt8 a, b, c;
-			uInt32 pixel = myAvgPalette[v][w];
+            uInt32 pixel = myAvgPalette[v][w];
             if(SDL_BYTEORDER == SDL_LIL_ENDIAN)
             {
               a = (pixel & myFormat->Bmask) >> myFormat->Bshift;
