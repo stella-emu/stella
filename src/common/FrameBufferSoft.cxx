@@ -135,6 +135,10 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   // a different sized screen
   myRectList->start();
 
+  // Any previously allocated surfaces have probably changed as well,
+  // so we should refresh them
+  resetSurfaces();
+
   return true;
 }
 
@@ -534,7 +538,7 @@ FBSurfaceSoft::FBSurfaceSoft(const FrameBufferSoft& buffer, SDL_Surface* surface
     myXOffset(0),
     myYOffset(0)
 {
-  recalc();
+  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -648,14 +652,14 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
 
         uInt8* buf_ptr = buffer;
         for(int x = 0; x < bbw; x++, mask >>= 1)
-		{
+        {
           if(ptr & mask)
-		  {
-             *buf_ptr++ = a;  *buf_ptr++ = b;  *buf_ptr++ = c;
+          {
+            *buf_ptr++ = a;  *buf_ptr++ = b;  *buf_ptr++ = c;
           }
           else
             buf_ptr += 3;
-		}
+        }
       }
       break;
     }
@@ -663,7 +667,6 @@ void FBSurfaceSoft::drawChar(const GUI::Font* font, uInt8 chr,
     {
       // Get buffer position where upper-left pixel of the character will be drawn
       uInt32* buffer = (uInt32*)getBasePtr(tx + bbx, ty + desc.ascent - bby - bbh);
-
       for(int y = 0; y < bbh; y++, buffer += myPitch)
       {
         const uInt16 ptr = *tmp++;
@@ -839,7 +842,7 @@ void FBSurfaceSoft::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceSoft::recalc()
+void FBSurfaceSoft::reload()
 {
   switch(mySurface->format->BytesPerPixel)
   {

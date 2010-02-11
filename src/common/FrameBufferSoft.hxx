@@ -204,10 +204,9 @@ class FBSurfaceSoft : public FBSurface
     void translateCoords(Int32& x, Int32& y) const;
     void update();
     void free()   { }   // Not required for software mode
-    void reload() { }   // Not required for software mode
+    void reload();
 
   private:
-    void recalc();
     inline void* getBasePtr(uInt32 x, uInt32 y) {
       return static_cast<void *>(static_cast<uInt8*>(mySurface->pixels) +
           (myYOffset + y) * mySurface->pitch + (myXOffset + x) *
