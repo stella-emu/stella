@@ -3,5 +3,6 @@ Changes.txt
 Copyright.txt
 README-SDL.txt
 Readme.txt
-docs/*
+docs/*.html
+doc/graphics/*.png
 Todo.txt
