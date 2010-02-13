@@ -34,7 +34,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
-                               const GUI::Font& font)
+                               const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myBrowser(NULL)
 {
@@ -90,7 +90,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font);
+  myBrowser = new BrowserDialog(this, font, max_w, max_h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

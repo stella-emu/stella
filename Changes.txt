@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+3.0 to 3.0.1: (February 13, 2010)
+
+  * Fixed a major bug with text drawing in software rendering mode.
+    Switching between windowed and fullscreen mode while text was being
+    shown could result in garbled text or even a program crash.
+
+-Have fun!
+
+
 2.8.4 to 3.0: (September 11, 2009)
 
   * Huge updates to the TIA emulation system.  Illegal HMOVEs are now
@@ -77,8 +86,6 @@
 
   * Fixed editing of cheats in the Cheat Dialog; the old cheat wasn't
     being removed.
-
--Have fun!
 
 
 2.8.3 to 2.8.4: (July 4, 2009)

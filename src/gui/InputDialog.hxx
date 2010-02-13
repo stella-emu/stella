@@ -51,16 +51,13 @@ class InputDialog : public Dialog
 
   private:
     void addVDeviceTab(const GUI::Font& font);
-    void handleMouseChanged(bool state);
 
   private:
     enum {
       kLeftChanged     = 'LCch',
       kRightChanged    = 'RCch',
       kDeadzoneChanged = 'DZch',
-      kPaddleChanged   = 'PDch',
-      kPSpeedChanged   = 'PSch',
-      kPMouseChanged   = 'PMch'
+      kPSpeedChanged   = 'PSch'
     };
 
     TabWidget* myTab;
@@ -71,15 +68,14 @@ class InputDialog : public Dialog
     PopUpWidget* myLeftPort;
     PopUpWidget* myRightPort;
 
+    EditTextWidget*   myAVoxPort;
+
     SliderWidget*     myDeadzone;
     StaticTextWidget* myDeadzoneLabel;
-    SliderWidget*     myPaddleMode;
-    StaticTextWidget* myPaddleModeLabel;
     SliderWidget*     myPaddleSpeed;
     StaticTextWidget* myPaddleLabel;
-    CheckboxWidget*   myMouseEnabled;
-    EditTextWidget*   myAVoxPort;
     CheckboxWidget*   myAllowAll4;
+    CheckboxWidget*   myMouseEnabled;
 };
 
 #endif

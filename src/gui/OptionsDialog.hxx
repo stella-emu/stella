@@ -44,13 +44,12 @@ class OptionsDialog : public Dialog
 {
   public:
     OptionsDialog(OSystem* osystem, DialogContainer* parent, GuiObject* boss,
-                  bool global);
+                  int max_w, int max_h, bool global);
     virtual ~OptionsDialog();
 
   private:
     void loadConfig();
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void checkBounds(int width, int height, int* x, int* y, int* w, int* h);
 
   private:
     VideoDialog*     myVideoDialog;

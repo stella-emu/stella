@@ -47,7 +47,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
-                             GuiObject* boss, bool global)
+                             GuiObject* boss, int max_w, int max_h, bool global)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myVideoDialog(NULL),
     myAudioDialog(NULL),
@@ -116,7 +116,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   addCancelWidget(b);
 
   // Now create all the dialogs attached to each menu button
-  myVideoDialog = new VideoDialog(osystem, parent, font);
+  myVideoDialog = new VideoDialog(osystem, parent, font, max_w, max_h);
   myAudioDialog = new AudioDialog(osystem, parent, font);
 
 /*  FIXME - may not be needed with small-font functionality
@@ -132,8 +132,8 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 */
   myInputDialog = new InputDialog(osystem, parent, font);
   myUIDialog = new UIDialog(osystem, parent, font);
-  myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss);
-  myRomAuditDialog = new RomAuditDialog(osystem, parent, font);
+  myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss, max_w, max_h);
+  myRomAuditDialog = new RomAuditDialog(osystem, parent, font, max_w, max_h);
   myGameInfoDialog = new GameInfoDialog(osystem, parent, font, this);
 #ifdef CHEATCODE_SUPPORT
   myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font);

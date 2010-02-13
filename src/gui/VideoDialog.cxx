@@ -40,7 +40,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
-                         const GUI::Font& font)
+                         const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
@@ -56,8 +56,8 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   StringMap items;
 
   // Set real dimensions
-  _w = 52 * fontWidth + 10;
-  _h = 15 * (lineHeight + 4) + 10;
+  _w = BSPF_min(52 * fontWidth + 10, max_w);
+  _h = BSPF_min(15 * (lineHeight + 4) + 10, max_h);
 
   // The tab widget
   xpos = ypos = 5;
@@ -169,7 +169,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
-  ypos += (lineHeight + 4) * 2;
+  ypos = myTab->getHeight() - 5 - 2*fontHeight - 10;
   new StaticTextWidget(myTab, font, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
         "(*) Requires application restart", kTextAlignLeft);
@@ -182,8 +182,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   items.clear();
   items.push_back("On", "1");
   items.push_back("Off", "0");
-  items.push_back("Disabled", "-1");
+  items.push_back("Never", "-1");
   lwidth = font.getStringWidth("Fullscreen: ");
+  pwidth = font.getStringWidth("Never"),
   myFullscreenPopup =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                     items, "Fullscreen: ", lwidth, kFullScrChanged);

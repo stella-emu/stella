@@ -36,7 +36,7 @@ class GameList;
 class BrowserDialog : public Dialog, public CommandSender
 {
   public:
-    BrowserDialog(GuiObject* boss, const GUI::Font& font);
+    BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
     virtual ~BrowserDialog();
 
     const FilesystemNode& getResult() { return _node; }

@@ -944,9 +944,22 @@ bool OSystem::queryVideoHardware()
       return false;
 
   // First get the maximum windowed desktop resolution
-  const SDL_VideoInfo* info = SDL_GetVideoInfo();
-  myDesktopWidth  = info->current_w;
-  myDesktopHeight = info->current_h;
+  // Check the 'maxres' setting, which is an undocumented developer feature
+  // that specifies the desktop size
+  // Normally, this wouldn't be set, and we ask SDL directly
+  int w, h;
+  mySettings->getSize("maxres", w, h);
+  if(w == 0 || h == 0)
+  {
+    const SDL_VideoInfo* info = SDL_GetVideoInfo();
+    myDesktopWidth  = info->current_w;
+    myDesktopHeight = info->current_h;
+  }
+  else
+  {
+    myDesktopWidth  = BSPF_max(w, 320);
+    myDesktopHeight = BSPF_max(h, 240);
+  }
 
   // Various parts of the codebase assume a minimum screen size of 320x240
   assert(myDesktopWidth >= 320 && myDesktopHeight >= 240);

@@ -124,49 +124,6 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
                                 "Stelladaptor 2 is: ", lwidth, kRightChanged);
   wid.push_back(myRightPort);
 
-  lwidth = font.getStringWidth("Paddle threshold: ");
-  pwidth = font.getMaxCharWidth() * 8;
-
-  // Add joystick deadzone setting
-  ypos += 2*lineHeight;
-  myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                "Joy deadzone: ", lwidth, kDeadzoneChanged);
-  myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
-  xpos += myDeadzone->getWidth() + 5;
-  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                         "", kTextAlignLeft);
-  myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myDeadzone);
-
-  // Add 'mouse to paddle' mapping
-  xpos = 5;  ypos += lineHeight + 3;
-  myPaddleMode = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                  "Mouse is paddle: ", lwidth, kPaddleChanged);
-  myPaddleMode->setMinValue(0); myPaddleMode->setMaxValue(3);
-  xpos += myPaddleMode->getWidth() + 5;
-  myPaddleModeLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                           "", kTextAlignLeft);
-  myPaddleModeLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleMode);
-
-  // Add mouse enable/disable
-  xpos += 8 + myPaddleModeLabel->getWidth();
-  myMouseEnabled = new CheckboxWidget(myTab, font, xpos, ypos,
-                                      "Use mouse", kPMouseChanged);
-  wid.push_back(myMouseEnabled);
-
-  // Add paddle speed
-  xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   "Paddle speed: ",
-                                   lwidth, kPSpeedChanged);
-  myPaddleSpeed->setMinValue(1); myPaddleSpeed->setMaxValue(15);
-  xpos += myPaddleSpeed->getWidth() + 5;
-  myPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                       "", kTextAlignLeft);
-  myPaddleLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSpeed);
-
   // Add AtariVox serial port
   xpos = 5;  ypos += 2*lineHeight;
   int fwidth = _w - xpos - lwidth - 20;
@@ -176,11 +133,43 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
                                   fwidth, fontHeight, "");
   wid.push_back(myAVoxPort);
 
+  lwidth = font.getStringWidth("Digital paddle speed: ");
+  pwidth = font.getMaxCharWidth() * 8;
+
+  // Add joystick deadzone setting
+  ypos += 2*lineHeight;
+  myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                "Joystick deadzone: ", lwidth, kDeadzoneChanged);
+  myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
+  xpos += myDeadzone->getWidth() + 5;
+  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                         "", kTextAlignLeft);
+  myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myDeadzone);
+
+  // Add paddle speed
+  xpos = 5;  ypos += lineHeight + 3;
+  myPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                   "Digital paddle speed: ",
+                                   lwidth, kPSpeedChanged);
+  myPaddleSpeed->setMinValue(1); myPaddleSpeed->setMaxValue(15);
+  xpos += myPaddleSpeed->getWidth() + 5;
+  myPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                       "", kTextAlignLeft);
+  myPaddleLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myPaddleSpeed);
+
   // Add 'allow all 4 directions' for joystick
   xpos = 10;  ypos += 2*lineHeight;
   myAllowAll4 = new CheckboxWidget(myTab, font, xpos, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
+
+  // Add mouse enable/disable
+  xpos = 10;  ypos += lineHeight + 4;
+  myMouseEnabled = new CheckboxWidget(myTab, font, xpos, ypos,
+                     "Use mouse as a controller");
+  wid.push_back(myMouseEnabled);
 
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
@@ -201,10 +190,6 @@ void InputDialog::loadConfig()
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
   myDeadzoneLabel->setLabel(instance().settings().getString("joydeadzone"));
 
-  // Paddle mode
-  myPaddleMode->setValue(0);
-  myPaddleModeLabel->setLabel("0");
-
   // Mouse/paddle enabled
   bool usemouse = instance().settings().getBool("usemouse");
   myMouseEnabled->setState(usemouse);
@@ -220,7 +205,6 @@ void InputDialog::loadConfig()
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
 
   myTab->loadConfig();
-  handleMouseChanged(usemouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,9 +219,6 @@ void InputDialog::saveConfig()
   int deadzone = myDeadzone->getValue();
   instance().settings().setInt("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
-
-  // Paddle mode
-  Paddles::setMouseIsPaddle(myPaddleMode->getValue());
 
   // Mouse/paddle enabled
   bool usemouse = myMouseEnabled->getState();
@@ -307,13 +288,6 @@ bool InputDialog::handleJoyHat(int stick, int hat, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleMouseChanged(bool state)
-{
-  myPaddleMode->setEnabled(state);
-  myPaddleModeLabel->setEnabled(state);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleCommand(CommandSender* sender, int cmd,
                                 int data, int id)
 {
@@ -343,16 +317,8 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       myDeadzoneLabel->setValue(myDeadzone->getValue());
       break;
 
-    case kPaddleChanged:
-      myPaddleModeLabel->setValue(myPaddleMode->getValue());
-      break;
-
     case kPSpeedChanged:
       myPaddleLabel->setValue(myPaddleSpeed->getValue());
-      break;
-
-    case kPMouseChanged:
-      handleMouseChanged(data == 1);
       break;
 
     default:

@@ -38,7 +38,8 @@ class FileSnapDialog : public Dialog, public CommandSender
 {
   public:
     FileSnapDialog(OSystem* osystem, DialogContainer* parent,
-                   const GUI::Font& font, GuiObject* boss);
+                   const GUI::Font& font, GuiObject* boss,
+                   int max_w, int max_h);
     ~FileSnapDialog();
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);

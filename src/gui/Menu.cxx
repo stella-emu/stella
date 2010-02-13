@@ -27,7 +27,20 @@ class Properties;
 Menu::Menu(OSystem* osystem)
   : DialogContainer(osystem)
 {
-  myBaseDialog = new OptionsDialog(myOSystem, this, 0, false);  // in game mode
+  // This dialog is overlaid on the main TIA screen; we make sure it will fit
+  // If the TIA can use 1x mode, it implies that the overlay can be no larger
+  // than 320x240
+  // Otherwise we can use 2x mode, in which 640x420 is the minimum TIA size
+  int dw = osystem->desktopWidth(), dh = osystem->desktopHeight();
+  if(dw < 640 || dh < 480)
+  {
+    dw = 320;  dh = 240;
+  }
+  else
+  {
+    dw = 640;  dh = 420;
+  }
+  myBaseDialog = new OptionsDialog(myOSystem, this, 0, dw, dh, false);  // in game mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

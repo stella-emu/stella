@@ -38,7 +38,8 @@ class TabWidget;
 class VideoDialog : public Dialog
 {
   public:
-    VideoDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font);
+    VideoDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font,
+                int max_w, int max_h);
     ~VideoDialog();
 
   private:

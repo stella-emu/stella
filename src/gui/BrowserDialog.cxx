@@ -39,7 +39,8 @@
  */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font)
+BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
+                             int max_w, int max_h)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
     CommandSender(boss),
     _fileList(NULL),
@@ -55,8 +56,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font)
 
   // Set real dimensions
   // This is one dialog that can take as much space as is available
-  _w = BSPF_min(instance().desktopWidth(), 480u);
-  _h = BSPF_min(instance().desktopHeight(), 380u);
+  _w = BSPF_min(max_w, 480);
+  _h = BSPF_min(max_h, 380);
 
   xpos = 10;  ypos = 4;
   _title = new StaticTextWidget(this, font, xpos, ypos,
