@@ -24,10 +24,8 @@ number of other platforms.
 This is the 3.0 release of Stella for Linux, Mac OSX and Windows.  The
 distributions currently available are:
 
-  * Binary installer (exe) for Windows 32-bit :
+  * Binary installer (exe) for Windows 32-bit & 64-bit :
       Stella-3.0-win32.exe
-
-  * Binary installer (exe) for Windows 64-bit :
       Stella-3.0-x64.exe
 
   * Binary zip for Windows, containing 32 and 64-bit versions :
@@ -36,14 +34,13 @@ distributions currently available are:
   * Binary distribution for Mac OSX :
       StellaOSX3.0.dmg
 
-  * Binary distribution in 32-bit Ubuntu DEB format :
+  * Binary distribution in 32-bit & 64-bit Ubuntu DEB format :
       stella_3.0-1_i386.deb
-
-  * Binary distribution in 64-bit Ubuntu DEB format :
       stella_3.0-1_amd64.deb
 
-  * Binary distribution in 32-bit Mandriva RPM format :
-      stella-3.0-1.i586.rpm
+  * Binary distribution in 32-bit & 64-bit RPM format :
+      stella-3.0-2.i386.rpm
+      stella-3.0-2.x86_64.rpm
 
   * Source code distribution for all platforms :
       stella-3.0-src.tar.gz
