@@ -33,7 +33,9 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _currentItem(-1),
     _selectedItem(-1),
     _rowHeight(font.getLineHeight()),
-    _twoColumns(false),
+    _firstEntry(0),
+    _numEntries(0),
+    _showScroll(false),
     _font(&font),
     _cmd(cmd),
     _xorig(0),
@@ -54,21 +56,6 @@ void ContextMenu::addItems(const StringMap& items)
   _entries.clear();
   _entries = items;
 
-  // Create two columns of entries if there are more than 10 items
-  if(_entries.size() > 10)
-  {
-    _twoColumns = true;
-    _entriesPerColumn = _entries.size() / 2;
-  
-    if(_entries.size() & 1)
-      _entriesPerColumn++;
-  }
-  else
-  {
-    _twoColumns = false;
-    _entriesPerColumn = _entries.size();
-  }
-
   // Resize to largest string
   int maxwidth = 0;
   for(unsigned int i = 0; i < _entries.size(); ++i)
@@ -79,8 +66,8 @@ void ContextMenu::addItems(const StringMap& items)
   }
 
   _x = _y = 0;
-  _w = maxwidth * (_twoColumns ? 2 : 1) + 10;
-  _h = _entriesPerColumn * _rowHeight + 4;
+  _w = maxwidth + 10;
+  _h = 1;  // recalculate this in ::recalc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,6 +75,8 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
 {
   _xorig = x;
   _yorig = y;
+
+  recalc(instance().frameBuffer().imageRect());
   parent().addDialog(this);
   setSelected(item);
 }
@@ -98,6 +87,7 @@ void ContextMenu::center()
   // Make sure the menu is exactly where it should be, in case the image
   // offset has changed
   const GUI::Rect& image = instance().frameBuffer().imageRect();
+  recalc(image);
   uInt32 x = image.x() + _xorig;
   uInt32 y = image.y() + _yorig;
   uInt32 tx = image.x() + image.width();
@@ -106,6 +96,27 @@ void ContextMenu::center()
   if(y + _h > ty) y -= (y + _h - ty);
 
   surface().setPos(x, y);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::recalc(const GUI::Rect& image)
+{
+  // Now is the time to adjust the height
+  // If it's higher than the screen, we need to scroll through
+  int maxentries = (image.height() - 4) / _rowHeight;
+  if((int)_entries.size() > maxentries)
+  {
+    // We show two less than the max, so we have room for two scroll buttons
+    _numEntries = maxentries - 2;
+    _h = maxentries * _rowHeight + 4;
+    _showScroll = true;
+  }
+  else
+  {
+    _numEntries = _entries.size();
+    _h = _entries.size() * _rowHeight + 4;
+    _showScroll = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,15 +196,6 @@ void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::handleMouseWheel(int x, int y, int direction)
-{
-  if(direction < 0)
-    moveUp();
-  else if(direction > 0)
-    moveDown();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleMouseMoved(int x, int y, int button)
 {
   // Compute over which item the mouse is...
@@ -265,21 +267,8 @@ void ContextMenu::handleEvent(Event::Type e)
 int ContextMenu::findItem(int x, int y) const
 {
   if(x >= 0 && x < _w && y >= 0 && y < _h)
-  {
-    if(_twoColumns)
-    {
-      unsigned int entry = (y - 4) / _rowHeight;
-      if(x > _w / 2)
-      {
-        entry += _entriesPerColumn;
-  
-        if(entry >= _entries.size())
-          return -1;
-      }
-      return entry;
-    }
     return (y - 4) / _rowHeight;
-  }
+
   return -1;
 }
 
@@ -297,6 +286,19 @@ void ContextMenu::drawCurrentSelection(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::sendSelection()
 {
+  // Select the correct item when scrolling; we have to take into account
+  // that the viewable items are no longer 1-to-1 with the entries
+  int item = _currentItem;
+  if(_showScroll)
+  {
+    if(item == 0)  // scroll up
+      return scrollUp();
+    else if(item == _numEntries+1) // scroll down
+      return scrollDown();
+    else
+      item = item + _firstEntry - 1;
+  }
+
   // We remove the dialog when the user has selected an item
   // Make sure the dialog is removed before sending any commands,
   // since one consequence of sending a command may be to add another
@@ -304,7 +306,7 @@ void ContextMenu::sendSelection()
   close();
 
   // Send any command associated with the selection
-  _selectedItem = _currentItem;
+  _selectedItem = item;
   sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
 }
 
@@ -312,6 +314,14 @@ void ContextMenu::sendSelection()
 void ContextMenu::moveUp()
 {
   int item = _currentItem;
+  if(_showScroll)
+  {
+    if(item > 0)  // scroll up
+    {
+      if(_firstEntry > item)
+        _firstEntry--;
+    }
+  }
   if(item > 0)
     drawCurrentSelection(--item);
 }
@@ -320,8 +330,37 @@ void ContextMenu::moveUp()
 void ContextMenu::moveDown()
 {
   int item = _currentItem;
+  if(_showScroll)
+  {
+    if(item == _numEntries+1) // scroll down
+    {
+      if(_firstEntry + _numEntries < (int)_entries.size())
+        _firstEntry++;
+    }
+setDirty();
+  }
   if(item < (int)_entries.size() - 1)
     drawCurrentSelection(++item);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::scrollUp()
+{
+  if(_firstEntry > _currentItem)
+  {
+    _firstEntry--;
+    setDirty();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::scrollDown()
+{
+  if(_firstEntry + _numEntries < (int)_entries.size())
+  {
+    _firstEntry++;
+    setDirty();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -338,42 +377,34 @@ void ContextMenu::drawDialog()
     s.fillRect(_x+1, _y+1, _w-2, _h-2, kWidColor);
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
-    // If necessary, draw dividing line
-    if(_twoColumns)
-      s.vLine(_x + _w / 2, _y, _y + _h - 2, kColor);
+    // Draw the entries, taking scroll buttons into account
+    int x = _x + 2, y = _y + 2, w = _w - 4;
+cerr << "_firstEntry = " << _firstEntry << ", _numEntries = " << _numEntries << endl;
 
-    // Draw the entries
-    int x, y, w;
-    int count = _entries.size();
-    for(int i = 0; i < count; i++)
+    // Show top scroll area
+    int offset = _firstEntry;
+    if(_showScroll)
     {
-      bool hilite = i == _currentItem;
-      if(_twoColumns)
-      {
-        int n = _entries.size() / 2;
-        if(_entries.size() & 1) n++;
-        if(i >= n)
-        {
-          x = _x + 1 + _w / 2;
-          y = _y + 2 + _rowHeight * (i - n);
-        }
-        else
-        {
-          x = _x + 2;
-          y = _y + 2 + _rowHeight * i;
-        }
-        w = _w / 2 - 3;
-      }
-      else
-      {
-        x = _x + 2;
-        y = _y + 2 + i * _rowHeight;
-        w = _w - 4;
-      }
-      if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
-      s.drawString(_font, _entries[i].first, x + 1, y + 2, w - 2,
-                   hilite ? kWidColor : kTextColor);
+      s.drawString(_font, "   ^^^^^", x + 1, y + 2, w, kTextColor);
+      y += _rowHeight;
+      offset--;
     }
+
+    for(int i = _firstEntry; i < _firstEntry + _numEntries; ++i)
+    {
+      bool hilite = (i-offset) == _currentItem;
+      if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
+      s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
+                   hilite ? kWidColor : kTextColor);
+      y += _rowHeight;
+    }
+
+    // Show bottom scroll area
+    if(_showScroll)
+    {
+      s.drawString(_font, "   vvvvv", x + 1, y + 2, w, kTextColor);
+    }
+
     s.addDirtyRect(_x, _y, _w, _h);
     _dirty = false;
   }

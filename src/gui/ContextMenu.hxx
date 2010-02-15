@@ -44,7 +44,7 @@ class ContextMenu : public Dialog, public CommandSender
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
                 const StringMap& items, int cmd = 0);
-	virtual ~ContextMenu();
+    virtual ~ContextMenu();
 
     /** Add the given items to the widget. */
     void addItems(const StringMap& items);
@@ -74,7 +74,6 @@ class ContextMenu : public Dialog, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
-    void handleMouseWheel(int x, int y, int direction);
     void handleMouseMoved(int x, int y, int button);
     void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc
     void handleJoyDown(int stick, int button);
@@ -85,6 +84,7 @@ class ContextMenu : public Dialog, public CommandSender
     void drawDialog();
 
   private:
+    void recalc(const GUI::Rect& image);
     void drawMenuEntry(int entry, bool hilite);
 	
     int findItem(int x, int y) const;
@@ -92,6 +92,8 @@ class ContextMenu : public Dialog, public CommandSender
 	
     void moveUp();
     void moveDown();
+    void scrollUp();
+    void scrollDown();
 
     void sendSelection();
 
@@ -101,9 +103,8 @@ class ContextMenu : public Dialog, public CommandSender
     int _currentItem;
     int _selectedItem;
     int _rowHeight;
-
-    bool _twoColumns;
-    int  _entriesPerColumn;
+    int _firstEntry, _numEntries;
+    bool _showScroll;
 
     const GUI::Font* _font;
     int _cmd;

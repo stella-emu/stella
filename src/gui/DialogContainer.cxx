@@ -107,6 +107,9 @@ void DialogContainer::draw(bool full)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::addDialog(Dialog* d)
 {
+  const GUI::Rect& image = myOSystem->frameBuffer().imageRect();
+  assert(d->getWidth() <= image.width() && d->getHeight() <= image.height());
+
   myDialogStack.push(d);
   d->open();
 

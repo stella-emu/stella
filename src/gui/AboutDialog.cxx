@@ -108,7 +108,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
     case 1:
       title = string("Stella ") + STELLA_VERSION;
       ADD_ATEXT("\\CA multi-platform Atari 2600 VCS emulator");
-      ADD_ATEXT(string("\\C\\c2") + instance().features());
+      ADD_ATEXT(string("\\C\\c2Features: ") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE;
       ADD_ATEXT("\\CCopyright (C) 1995-2010 The Stella Team");
