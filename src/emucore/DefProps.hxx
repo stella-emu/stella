@@ -10,7 +10,7 @@
 //
 // Copyright (c) 1995-2010 by Bradford W. Mott and the Stella Team
 //
-// See the file "License.txt" for information on usage and redistribution of
+// See the file "license" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
 // $Id$
@@ -585,7 +585,6 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "2bb9f4686f7e08c5fcc69ec1a1c66fe7", "Atari - GCC, Mike Feinstein, John Allred", "CX2688", "Jungle Hunt (1983) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2bc26619e31710a9884c110d8430c1da", "Atari, Bob Whitehead", "CX2652, CX2652P", "Casino (1979) (Atari) (PAL)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "PADDLES", "", "", "", "60", "", "", "" }, 
   { "2bc6c53b19e0097a242f22375a6a60ff", "", "", "Droid Demo 2 (David Conrad Schweinsberg) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "2bd00beefdb424fa39931a75e890695d", "Atari, Robert C. Polaro", "CX2663", "Road Runner (1989) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "20", "", "", "" }, 
   { "2bee7f226d506c217163bad4ab1768c0", "Xonox - K-Tel Software - Beck-Tech", "6210, 06002, 06004, 99002", "Ghost Manor (1983) (Xonox)", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "" }, 
   { "2bf34b6ad7d2317a2d0808b3fb93571b", "", "", "Easy Playfield Graphics (1997) (Chris Cracknell)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2c0dc885d5ede94aa664bf3081add34e", "", "", "Earth Dies Screaming, The (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2583,6 +2582,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "ce17325834bf8b0a0d0d8de08478d436", "", "", "Boring Freeway (Hack)", "Hack of Freeway", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "ce243747bf34a2de366f846b3f4ca772", "Goliath - Hot Shot", "83-116", "Felix Return (1983) (Goliath) (PAL)", "AKA Bobby Is Going Home", "", "", "", "", "", "", "", "", "", "", "", "39", "256", "", "" }, 
   { "ce4bbe11d682c15a490ae15a4a8716cf", "", "", "Okie Dokie (Older) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "ce5cc62608be2cd3ed8abd844efb8919", "Atari, Robert C. Polaro", "CX2663", "Road Runner (1989) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "20", "", "", "" }, 
   { "ce64812eb83c95723b04fb56d816910b", "Retroactive", "", "Qb (V2.04) (NTSC) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "ce6c4270f605ad3ce5e82678b0fc71f8", "", "", "Vertical Rainbow Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "ce89529d6e98a13ddf3d84827bbdfe68", "", "", "Kung Fu Sprite Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 

@@ -228,11 +228,26 @@ void Properties::copy(const Properties& properties)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Properties::print() const
 {
-  cout << get(Cartridge_MD5) << "|"
-       << get(Cartridge_Name) << "|"
-       << get(Cartridge_Rarity) << "|"
+  cout << get(Cartridge_MD5)          << "|"
        << get(Cartridge_Manufacturer) << "|"
-       << get(Cartridge_Note)
+       << get(Cartridge_ModelNo)      << "|"
+       << get(Cartridge_Name)         << "|"
+       << get(Cartridge_Note)         << "|"
+       << get(Cartridge_Rarity)       << "|"
+       << get(Cartridge_Sound)        << "|"
+       << get(Cartridge_Type)         << "|"
+       << get(Console_LeftDifficulty) << "|"
+       << get(Console_RightDifficulty)<< "|"
+       << get(Console_TelevisionType) << "|"
+       << get(Console_SwapPorts)      << "|"
+       << get(Controller_Left)        << "|"
+       << get(Controller_Right)       << "|"
+       << get(Controller_SwapPaddles) << "|"
+       << get(Display_Format)         << "|"
+       << get(Display_YStart)         << "|"
+       << get(Display_Height)         << "|"
+       << get(Display_Phosphor)       << "|"
+       << get(Display_PPBlend)
        << endl;
 }
 
