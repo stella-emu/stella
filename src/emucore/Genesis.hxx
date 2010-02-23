@@ -13,7 +13,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: Booster.hxx 1921 2010-01-10 03:23:32Z stephena $
+// $Id$
 //============================================================================
 
 #ifndef GENESIS_HXX
