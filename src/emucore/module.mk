@@ -38,6 +38,7 @@ MODULE_OBJS := \
 	src/emucore/EventHandler.o \
 	src/emucore/FrameBuffer.o \
 	src/emucore/FSNode.o \
+	src/emucore/Genesis.o \
 	src/emucore/Joystick.o \
 	src/emucore/Keyboard.o \
 	src/emucore/KidVid.o \

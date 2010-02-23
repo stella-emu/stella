@@ -230,6 +230,7 @@ GameInfoDialog::GameInfoDialog(
   ctrls.push_back("AmigaMouse",     "AMIGAMOUSE"  );
   ctrls.push_back("AtariVox",       "ATARIVOX"    );
   ctrls.push_back("SaveKey",        "SAVEKEY"     );
+  ctrls.push_back("Sega Genesis",   "GENESIS"     );
 //FIXME  ctrls.push_back("KidVid",         "KIDVID"      );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, ctrls, "", 0, 0);

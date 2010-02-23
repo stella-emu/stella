@@ -73,6 +73,9 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
     case KidVid:
       myName = "KidVid";
       break;
+    case Genesis:
+      myName = "Genesis";
+      break;
   }
 }
  

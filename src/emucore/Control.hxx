@@ -82,7 +82,7 @@ class Controller : public Serializable
     {
       BoosterGrip, Driving, Keyboard, Paddles, Joystick,
       TrackBall22, TrackBall80, AmigaMouse, AtariVox, SaveKey,
-      KidVid
+      KidVid, Genesis
     };
 
   public:

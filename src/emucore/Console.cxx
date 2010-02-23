@@ -32,6 +32,7 @@
 #include "Joystick.hxx"
 #include "Keyboard.hxx"
 #include "KidVid.hxx"
+#include "Genesis.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "Paddles.hxx"
@@ -621,6 +622,10 @@ void Console::setControllers(const string& rommd5)
     myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
                                             Controller::AmigaMouse);
   }
+  else if(left == "GENESIS")
+  {
+    myControllers[leftPort] = new Genesis(Controller::Left, *myEvent, *mySystem);
+  }
   else
   {
     myControllers[leftPort] = new Joystick(Controller::Left, *myEvent, *mySystem);
@@ -676,6 +681,10 @@ void Console::setControllers(const string& rommd5)
   else if(right == "KIDVID")
   {
     myControllers[rightPort] = new KidVid(Controller::Right, *myEvent, *mySystem, rommd5);
+  }
+  else if(right == "GENESIS")
+  {
+    myControllers[rightPort] = new Genesis(Controller::Right, *myEvent, *mySystem);
   }
   else
   {
