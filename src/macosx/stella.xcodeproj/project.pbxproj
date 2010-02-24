@@ -281,6 +281,8 @@
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
+		DC84E11C1135988E00CA7C9D /* Genesis.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC84E11A1135988E00CA7C9D /* Genesis.cxx */; };
+		DC84E11D1135988E00CA7C9D /* Genesis.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC84E11B1135988E00CA7C9D /* Genesis.hxx */; };
 		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
 		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
@@ -299,8 +301,6 @@
 		DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D3B0B247DB40092F9F8 /* RectList.hxx */; };
 		DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */; };
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
-		DCE3BBFB0C95CEDC00A671DF /* Surface.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF70C95CEDC00A671DF /* Surface.cxx */; };
-		DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF80C95CEDC00A671DF /* Surface.hxx */; };
 		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
 		DCE6EB230DD9ADA00047AC28 /* TrackBall.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */; };
 		DCE9CC2A1103812700C86671 /* CartDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9CC261103812700C86671 /* CartDebug.cxx */; };
@@ -660,6 +660,8 @@
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC84E11A1135988E00CA7C9D /* Genesis.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Genesis.cxx; path = ../emucore/Genesis.cxx; sourceTree = SOURCE_ROOT; };
+		DC84E11B1135988E00CA7C9D /* Genesis.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Genesis.hxx; path = ../emucore/Genesis.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefProps.hxx; path = ../emucore/DefProps.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Serializable.hxx; path = ../emucore/Serializable.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
@@ -678,8 +680,6 @@
 		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = ../common/RectList.hxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomInfoWidget.cxx; path = ../gui/RomInfoWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
-		DCE3BBF70C95CEDC00A671DF /* Surface.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Surface.cxx; path = ../gui/Surface.cxx; sourceTree = SOURCE_ROOT; };
-		DCE3BBF80C95CEDC00A671DF /* Surface.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Surface.hxx; path = "..//gui/Surface.hxx"; sourceTree = SOURCE_ROOT; };
 		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
 		DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TrackBall.hxx; path = ../emucore/TrackBall.hxx; sourceTree = SOURCE_ROOT; };
 		DCE9CC261103812700C86671 /* CartDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDebug.cxx; path = ../debugger/CartDebug.cxx; sourceTree = SOURCE_ROOT; };
@@ -917,6 +917,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC84E11A1135988E00CA7C9D /* Genesis.cxx */,
+				DC84E11B1135988E00CA7C9D /* Genesis.hxx */,
 				DCECDAF210B9DBDC00AF4E1B /* Device.cxx */,
 				DCECDAF310B9DBDC00AF4E1B /* Device.hxx */,
 				DCECDAF410B9DBDC00AF4E1B /* M6502.cxx */,
@@ -1066,8 +1068,6 @@
 				DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */,
 				DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */,
 				DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */,
-				DCE3BBF70C95CEDC00A671DF /* Surface.cxx */,
-				DCE3BBF80C95CEDC00A671DF /* Surface.hxx */,
 				DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */,
 				DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */,
 				DC8078E60B4BD697005E9305 /* UIDialog.cxx */,
@@ -1327,7 +1327,6 @@
 				DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */,
 				DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */,
 				DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */,
-				DCE3BBFC0C95CEDC00A671DF /* Surface.hxx in Headers */,
 				DC07A3C90CAD738A009B4BC9 /* StateManager.hxx in Headers */,
 				DC0984860D3985160073C852 /* CartSB.hxx in Headers */,
 				DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */,
@@ -1369,6 +1368,7 @@
 				DCECDB0710B9DC0400AF4E1B /* Snapshot.hxx in Headers */,
 				DCE9CC2B1103812700C86671 /* CartDebug.hxx in Headers */,
 				DCE9CC2D1103812700C86671 /* DiStella.hxx in Headers */,
+				DC84E11D1135988E00CA7C9D /* Genesis.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1573,7 +1573,6 @@
 				DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */,
 				DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */,
 				DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */,
-				DCE3BBFB0C95CEDC00A671DF /* Surface.cxx in Sources */,
 				DC07A3C80CAD738A009B4BC9 /* StateManager.cxx in Sources */,
 				DC0984850D3985160073C852 /* CartSB.cxx in Sources */,
 				DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */,
@@ -1602,6 +1601,7 @@
 				DCECDB0610B9DC0400AF4E1B /* Snapshot.cxx in Sources */,
 				DCE9CC2A1103812700C86671 /* CartDebug.cxx in Sources */,
 				DCE9CC2C1103812700C86671 /* DiStella.cxx in Sources */,
+				DC84E11C1135988E00CA7C9D /* Genesis.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
