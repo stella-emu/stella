@@ -554,6 +554,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\Genesis.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Joystick.cxx"
 					>
 				</File>
@@ -1221,6 +1225,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\FSNode.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\Genesis.hxx"
 					>
 				</File>
 				<File
