@@ -85,7 +85,6 @@ class ContextMenu : public Dialog, public CommandSender
 
   private:
     void recalc(const GUI::Rect& image);
-    void drawMenuEntry(int entry, bool hilite);
 	
     int findItem(int x, int y) const;
     void drawCurrentSelection(int item);
@@ -94,16 +93,14 @@ class ContextMenu : public Dialog, public CommandSender
     void moveDown();
     void scrollUp();
     void scrollDown();
-
     void sendSelection();
 
   private:
     StringMap _entries;
 
-    int _currentItem;
-    int _selectedItem;
     int _rowHeight;
     int _firstEntry, _numEntries;
+    int _selectedOffset, _selectedItem;
     bool _showScroll;
 
     const GUI::Font* _font;

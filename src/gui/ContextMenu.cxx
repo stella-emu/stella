@@ -30,11 +30,11 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
                          const StringMap& items, int cmd)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
-    _currentItem(-1),
-    _selectedItem(-1),
     _rowHeight(font.getLineHeight()),
     _firstEntry(0),
     _numEntries(0),
+    _selectedOffset(0),
+    _selectedItem(-1),
     _showScroll(false),
     _font(&font),
     _cmd(cmd),
@@ -123,9 +123,9 @@ void ContextMenu::recalc(const GUI::Rect& image)
 void ContextMenu::setSelected(int item)
 {
   if(item >= 0 && item < (int)_entries.size())
-    _selectedItem = _currentItem = item;
+    _selectedItem = item;
   else
-    _selectedItem = _currentItem = -1;
+    _selectedItem = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,7 +160,7 @@ void ContextMenu::setSelectedMax()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::clearSelection()
 {
-  _selectedItem = _currentItem = -1;
+  _selectedItem = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -249,12 +249,6 @@ void ContextMenu::handleEvent(Event::Type e)
     case Event::UIRight:
       moveDown();
       break;
-    case Event::UIHome:
-      drawCurrentSelection(0);
-      break;
-    case Event::UIEnd:
-      drawCurrentSelection(_entries.size()-1);
-      break;
     case Event::UICancel:
       close();
       break;
@@ -275,12 +269,9 @@ int ContextMenu::findItem(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::drawCurrentSelection(int item)
 {
-  if(item != _currentItem)
-  {
-    // Change selection
-    _currentItem = item;
-    setDirty();
-  }
+  // Change selection
+  _selectedOffset = item;
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -288,15 +279,16 @@ void ContextMenu::sendSelection()
 {
   // Select the correct item when scrolling; we have to take into account
   // that the viewable items are no longer 1-to-1 with the entries
-  int item = _currentItem;
+  int item = _firstEntry + _selectedOffset;
+
   if(_showScroll)
   {
-    if(item == 0)  // scroll up
+    if(_selectedOffset == 0)  // scroll up
       return scrollUp();
-    else if(item == _numEntries+1) // scroll down
+    else if(_selectedOffset == _numEntries+1) // scroll down
       return scrollDown();
     else
-      item = item + _firstEntry - 1;
+      item--;
   }
 
   // We remove the dialog when the user has selected an item
@@ -313,40 +305,47 @@ void ContextMenu::sendSelection()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveUp()
 {
-  int item = _currentItem;
   if(_showScroll)
   {
-    if(item > 0)  // scroll up
-    {
-      if(_firstEntry > item)
-        _firstEntry--;
-    }
+    // Reaching the top of the list means we have to scroll up, but keep the
+    // current item offset
+    // Otherwise, the offset should decrease by 1
+    if(_selectedOffset == 1)
+      scrollUp();
+    else if(_selectedOffset > 1)
+      drawCurrentSelection(_selectedOffset-1);
   }
-  if(item > 0)
-    drawCurrentSelection(--item);
+  else
+  {
+    if(_selectedOffset > 0)
+      drawCurrentSelection(_selectedOffset-1);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::moveDown()
 {
-  int item = _currentItem;
   if(_showScroll)
   {
-    if(item == _numEntries+1) // scroll down
-    {
-      if(_firstEntry + _numEntries < (int)_entries.size())
-        _firstEntry++;
-    }
-setDirty();
+    // Reaching the bottom of the list means we have to scroll down, but keep the
+    // current item offset
+    // Otherwise, the offset should increase by 1
+    if(_selectedOffset == _numEntries)
+      scrollDown();
+    else if(_selectedOffset < (int)_entries.size())
+      drawCurrentSelection(_selectedOffset+1);    
   }
-  if(item < (int)_entries.size() - 1)
-    drawCurrentSelection(++item);
+  else
+  {
+    if(_selectedOffset < (int)_entries.size() - 1)
+      drawCurrentSelection(_selectedOffset+1);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollUp()
 {
-  if(_firstEntry > _currentItem)
+  if(_firstEntry > 0)
   {
     _firstEntry--;
     setDirty();
@@ -379,10 +378,9 @@ void ContextMenu::drawDialog()
 
     // Draw the entries, taking scroll buttons into account
     int x = _x + 2, y = _y + 2, w = _w - 4;
-cerr << "_firstEntry = " << _firstEntry << ", _numEntries = " << _numEntries << endl;
 
     // Show top scroll area
-    int offset = _firstEntry;
+    int offset = _selectedOffset;
     if(_showScroll)
     {
       s.drawString(_font, "   ^^^^^", x + 1, y + 2, w, kTextColor);
@@ -390,12 +388,12 @@ cerr << "_firstEntry = " << _firstEntry << ", _numEntries = " << _numEntries << 
       offset--;
     }
 
-    for(int i = _firstEntry; i < _firstEntry + _numEntries; ++i)
+    for(int i = _firstEntry, current = 0; i < _firstEntry + _numEntries; ++i, ++current)
     {
-      bool hilite = (i-offset) == _currentItem;
+      bool hilite = offset == current;
       if(hilite) s.fillRect(x, y, w, _rowHeight, kTextColorHi);
       s.drawString(_font, _entries[i].first, x + 1, y + 2, w,
-                   hilite ? kWidColor : kTextColor);
+                   !hilite ? kTextColor : kWidColor);
       y += _rowHeight;
     }
 

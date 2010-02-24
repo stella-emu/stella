@@ -219,6 +219,7 @@ void PropertiesSet::print() const
   }
 
   // Now, print the resulting list
+  Properties::printHeader();
   for(PropsList::const_iterator i = list.begin(); i != list.end(); ++i)
     i->second.print();
 }

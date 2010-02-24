@@ -165,6 +165,13 @@ class Properties
     */ 
     static PropertyType getPropertyType(const string& name);
 
+    /**
+      When printing each collection of ROM properties, it is useful to
+      see which columns correspond to the output fields; this method
+      provides that output.
+    */ 
+    static void printHeader();
+
   private:
     // The array of properties
     string myProperties[LastPropType];

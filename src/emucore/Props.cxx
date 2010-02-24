@@ -270,6 +270,32 @@ PropertyType Properties::getPropertyType(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Properties::printHeader()
+{
+  cout << "Cartridge_MD5|"
+       << "Cartridge_Manufacturer|"
+       << "Cartridge_ModelNo|"
+       << "Cartridge_Name|"
+       << "Cartridge_Note|"
+       << "Cartridge_Rarity|"
+       << "Cartridge_Sound|"
+       << "Cartridge_Type|"
+       << "Console_LeftDifficulty|"
+       << "Console_RightDifficulty|"
+       << "Console_TelevisionType|"
+       << "Console_SwapPorts|"
+       << "Controller_Left|"
+       << "Controller_Right|"
+       << "Controller_SwapPaddles|"
+       << "Display_Format|"
+       << "Display_YStart|"
+       << "Display_Height|"
+       << "Display_Phosphor|"
+       << "Display_PPBlend"
+       << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* Properties::ourDefaultProperties[LastPropType] = {
   "",            // Cartridge.MD5
   "",            // Cartridge.Manufacturer
