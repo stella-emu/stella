@@ -26,7 +26,6 @@
 #include "OSystem.hxx"
 #include "RectList.hxx"
 #include "Settings.hxx"
-#include "Surface.hxx"
 #include "TIA.hxx"
 
 #include "FrameBufferSoft.hxx"

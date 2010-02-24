@@ -31,7 +31,6 @@ MODULE_OBJS := \
 	src/gui/RomAuditDialog.o \
 	src/gui/RomInfoWidget.o \
 	src/gui/ScrollBarWidget.o \
-	src/gui/Surface.o \
 	src/gui/CheckListWidget.o \
 	src/gui/StringListWidget.o \
 	src/gui/TabWidget.o \

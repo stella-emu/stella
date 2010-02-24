@@ -29,7 +29,6 @@
 #include "Font.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
-#include "Surface.hxx"
 #include "TIA.hxx"
 #include "GLShaderProgs.hxx"
 

@@ -23,7 +23,6 @@
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
-#include "Surface.hxx"
 #include "Widget.hxx"
 
 #include "RomInfoWidget.hxx"

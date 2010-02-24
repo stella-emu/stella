@@ -365,6 +365,27 @@ void ContextMenu::scrollDown()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::drawDialog()
 {
+  static uInt32 up_arrow[8] = {
+    0x00011000,
+    0x00011000,
+    0x00111100,
+    0x00111100,
+    0x01111110,
+    0x01111110,
+    0x11111111,
+    0x11111111
+  };
+  static uInt32 down_arrow[8] = {
+    0x11111111,
+    0x11111111,
+    0x01111110,
+    0x01111110,
+    0x00111100,
+    0x00111100,
+    0x00011000,
+    0x00011000
+  };
+
   // Normally we add widgets and let Dialog::draw() take care of this
   // logic.  But for some reason, this Dialog was written differently
   // by the ScummVM guys, so I'm not going to mess with it.
@@ -383,7 +404,8 @@ void ContextMenu::drawDialog()
     int offset = _selectedOffset;
     if(_showScroll)
     {
-      s.drawString(_font, "   ^^^^^", x + 1, y + 2, w, kTextColor);
+      s.hLine(x, y+_rowHeight-1, w+2, kShadowColor);
+      s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, kScrollColor, 8);
       y += _rowHeight;
       offset--;
     }
@@ -400,7 +422,8 @@ void ContextMenu::drawDialog()
     // Show bottom scroll area
     if(_showScroll)
     {
-      s.drawString(_font, "   vvvvv", x + 1, y + 2, w, kTextColor);
+      s.hLine(x, y, w+2, kShadowColor);
+      s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, kScrollColor, 8);
     }
 
     s.addDirtyRect(_x, _y, _w, _h);
