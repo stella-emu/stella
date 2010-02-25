@@ -30,7 +30,7 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myLeftEvent    = Event::JoystickZeroLeft;
     myRightEvent   = Event::JoystickZeroRight;
     myFire1Event   = Event::JoystickZeroFire1;
-    myFire2Event   = Event::JoystickZeroFire2;
+    myFire2Event   = Event::JoystickZeroFire3;
   }
   else
   {
@@ -39,11 +39,12 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myLeftEvent    = Event::JoystickOneLeft;
     myRightEvent   = Event::JoystickOneRight;
     myFire1Event   = Event::JoystickOneFire1;
-    myFire2Event   = Event::JoystickOneFire2;
+    myFire2Event   = Event::JoystickOneFire3;
   }
 
   // Analog pin 9 is not connected to this controller at all
-  // Analog pin 5 corresponds to button 'C' on the gamepad
+  // Analog pin 5 corresponds to button 'C' on the gamepad, and corresponds
+  // to the 'booster' button on a BoosterGrip controller
   myAnalogPinValue[Five] = myAnalogPinValue[Nine] = maximumResistance;
 }
 
