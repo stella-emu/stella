@@ -147,7 +147,8 @@ class DiStella
     static const Instruction_tag ourLookup[256];
 
     /// Table of instruction mnemonics
-    static const char* ourTIAMnemonic[62];
+    static const char* ourTIAMnemonicR[16];  // read mode
+    static const char* ourTIAMnemonicW[64];  // write mode
     static const char* ourIOMnemonic[24];
 
     static const int ourCLength[14];

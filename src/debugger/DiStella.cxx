@@ -306,9 +306,10 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
         case ACCUMULATOR:
         {
           if (pass == 3)
+          {
             sprintf(linebuff,"    A");
-
-          strcat(nextline,linebuff);
+            strcat(nextline,linebuff);
+          }
           break;
         }
 
@@ -379,8 +380,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           {
             if (labfound == 2)
             {
-              uInt8 d1_off = ourLookup[op].rw_mode == READ ? (d1+48) : d1;
-              sprintf(linebuff,"    %s", ourTIAMnemonic[d1_off]);
+              sprintf(linebuff,"    %s", ourLookup[op].rw_mode == READ ?
+                ourTIAMnemonicR[d1&0x0f] : ourTIAMnemonicW[d1&0x3f]);
               strcat(nextline,linebuff);
             }
             else
@@ -540,8 +541,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           {
             if (labfound == 2)
             {
-              uInt8 d1_off = ourLookup[op].rw_mode == READ ? (d1+48) : d1;
-              sprintf(linebuff,"    %s,X", ourTIAMnemonic[d1_off]);
+              sprintf(linebuff,"    %s,X", ourLookup[op].rw_mode == READ ?
+                ourTIAMnemonicR[d1&0x0f] : ourTIAMnemonicW[d1&0x3f]);
               strcat(nextline,linebuff);
             }
             else
@@ -563,8 +564,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           {
             if (labfound == 2)
             {
-              uInt8 d1_off = ourLookup[op].rw_mode == READ ? (d1+48) : d1;
-              sprintf(linebuff,"    %s,Y", ourTIAMnemonic[d1_off]);
+              sprintf(linebuff,"    %s,Y", ourLookup[op].rw_mode == READ ?
+                ourTIAMnemonicR[d1&0x0f] : ourTIAMnemonicW[d1&0x3f]);
               strcat(nextline,linebuff);
             }
             else
@@ -749,7 +750,7 @@ int DiStella::mark(uInt32 address, MarkType bit)
     labels[address-myOffset] = labels[address-myOffset] | bit;
     return 1;
   }
-  else if (address >= 0 && address <= 0x3d)
+  else if (address >= 0 && address <= 0x3f)
   {
 //    reserved[address] = 1;
     return 2;
@@ -1155,20 +1156,26 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* DiStella::ourTIAMnemonic[62] = {
+const char* DiStella::ourTIAMnemonicR[16] = {
+  "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
+  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$0E", "$0F"
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* DiStella::ourTIAMnemonicW[64] = {
   "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
-  "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2", "RESP0",
-  "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0", "AUDF1",
-  "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL", "HMP0", "HMP1",
-  "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL", "RESMP0", "RESMP1",
-  "HMOVE", "HMCLR", "CXCLR", "$2D", "$2E", "$2F", "CXM0P", "CXM1P", "CXP0FB",
-  "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM", "INPT0", "INPT1", "INPT2",
-  "INPT3", "INPT4", "INPT5"
+  "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
+  "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
+  "AUDF1", "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL",
+  "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
+  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2D", "$2E", "$2F",
+  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37",
+  "$38", "$39", "$3A", "$3B", "$3C", "$3D", "$3E", "$3F"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const char* DiStella::ourIOMnemonic[24] = {
-  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "$0285", "$0286", "$0287",
+  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", "$0286", "$0287",
   "$0288", "$0289", "$028A", "$028B", "$028C", "$028D", "$028E", "$028F",
   "$0290", "$0291", "$0292", "$0293", "TIM1T", "TIM8T", "TIM64T", "T1024T"
 };
