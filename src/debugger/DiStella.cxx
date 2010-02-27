@@ -379,7 +379,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           {
             if (labfound == 2)
             {
-              sprintf(linebuff,"    %s", ourTIAMnemonic[d1]);
+              uInt8 d1_off = ourLookup[op].rw_mode == READ ? (d1+48) : d1;
+              sprintf(linebuff,"    %s", ourTIAMnemonic[d1_off]);
               strcat(nextline,linebuff);
             }
             else
@@ -539,7 +540,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           {
             if (labfound == 2)
             {
-              sprintf(linebuff,"    %s,X", ourTIAMnemonic[d1]);
+              uInt8 d1_off = ourLookup[op].rw_mode == READ ? (d1+48) : d1;
+              sprintf(linebuff,"    %s,X", ourTIAMnemonic[d1_off]);
               strcat(nextline,linebuff);
             }
             else
@@ -561,7 +563,8 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           {
             if (labfound == 2)
             {
-              sprintf(linebuff,"    %s,Y", ourTIAMnemonic[d1]);
+              uInt8 d1_off = ourLookup[op].rw_mode == READ ? (d1+48) : d1;
+              sprintf(linebuff,"    %s,Y", ourTIAMnemonic[d1_off]);
               strcat(nextline,linebuff);
             }
             else
@@ -826,329 +829,329 @@ void DiStella::addEntry(CartDebug::DisassemblyList& list)
 const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 /****  Positive  ****/
 
-  /* 00 */ { "BRK",   IMPLIED,    M_NONE, M_PC,   7 }, /* Pseudo Absolute */
-  /* 01 */ { "ORA",   INDIRECT_X, M_INDX, M_AC,   6 }, /* (Indirect,X) */
-  /* 02 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 03 */ { ".SLO",  INDIRECT_X, M_INDX, M_INDX, 8 },
+  /* 00 */ { "BRK", IMPLIED,     M_NONE, NONE,  7 }, /* Pseudo Absolute */
+  /* 01 */ { "ORA", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
+  /* 02 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 03 */ { "slo", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* 04 */ { ".NOOP", ZERO_PAGE,  M_NONE, M_NONE, 3 },
-  /* 05 */ { "ORA",   ZERO_PAGE,  M_ZERO, M_AC,   3 }, /* Zeropage */
-  /* 06 */ { "ASL",   ZERO_PAGE,  M_ZERO, M_ZERO, 5 }, /* Zeropage */
-  /* 07 */ { ".SLO",  ZERO_PAGE,  M_ZERO, M_ZERO, 5 },
+  /* 04 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
+  /* 05 */ { "ORA", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* 06 */ { "ASL", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
+  /* 07 */ { "slo", ZERO_PAGE,   M_ZERO, WRITE, 5 },
 
-  /* 08 */ { "PHP",   IMPLIED,     M_SR,   M_NONE, 3 },
-  /* 09 */ { "ORA",   IMMEDIATE,   M_IMM,  M_AC,   2 }, /* Immediate */
-  /* 0a */ { "ASL",   ACCUMULATOR, M_AC,   M_AC,   2 }, /* Accumulator */
-  /* 0b */ { ".ANC",  IMMEDIATE,   M_ACIM, M_ACNC, 2 },
+  /* 08 */ { "PHP", IMPLIED,     M_SR,   NONE,  3 },
+  /* 09 */ { "ORA", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* 0a */ { "ASL", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
+  /* 0b */ { "anc", IMMEDIATE,   M_ACIM, READ,  2 },
 
-  /* 0c */ { ".NOOP", ABSOLUTE, M_NONE, M_NONE, 4 },
-  /* 0d */ { "ORA",   ABSOLUTE, M_ABS,  M_AC,   4 }, /* Absolute */
-  /* 0e */ { "ASL",   ABSOLUTE, M_ABS,  M_ABS,  6 }, /* Absolute */
-  /* 0f */ { ".SLO",  ABSOLUTE, M_ABS,  M_ABS,  6 },
+  /* 0c */ { "nop", ABSOLUTE,    M_NONE, NONE,  4 },
+  /* 0d */ { "ORA", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* 0e */ { "ASL", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
+  /* 0f */ { "slo", ABSOLUTE,    M_ABS,  WRITE, 6 },
 
-  /* 10 */ { "BPL",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* 11 */ { "ORA",   INDIRECT_Y, M_INDY, M_AC,   5 }, /* (Indirect),Y */
-  /* 12 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 13 */ { ".SLO",  INDIRECT_Y, M_INDY, M_INDY, 8 },
+  /* 10 */ { "BPL", RELATIVE,    M_REL,  READ,  2 },
+  /* 11 */ { "ORA", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
+  /* 12 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 13 */ { "slo", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 14 */ { ".NOOP", ZERO_PAGE_X, M_NONE, M_NONE, 4 },
-  /* 15 */ { "ORA",   ZERO_PAGE_X, M_ZERX, M_AC,   4 }, /* Zeropage,X */
-  /* 16 */ { "ASL",   ZERO_PAGE_X, M_ZERX, M_ZERX, 6 }, /* Zeropage,X */
-  /* 17 */ { ".SLO",  ZERO_PAGE_X, M_ZERX, M_ZERX, 6 },
+  /* 14 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 15 */ { "ORA", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* 16 */ { "ASL", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
+  /* 17 */ { "slo", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
-  /* 18 */ { "CLC",   IMPLIED,    M_NONE, M_FC,   2 },
-  /* 19 */ { "ORA",   ABSOLUTE_Y, M_ABSY, M_AC,   4 }, /* Absolute,Y */
-  /* 1a */ { ".NOOP", IMPLIED,    M_NONE, M_NONE, 2 },
-  /* 1b */ { ".SLO",  ABSOLUTE_Y, M_ABSY, M_ABSY, 7 },
+  /* 18 */ { "CLC", IMPLIED,     M_NONE, NONE,  2 },
+  /* 19 */ { "ORA", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* 1a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 1b */ { "slo", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 1c */ { ".NOOP", ABSOLUTE_X, M_NONE, M_NONE, 4 },
-  /* 1d */ { "ORA",   ABSOLUTE_X, M_ABSX, M_AC,   4 }, /* Absolute,X */
-  /* 1e */ { "ASL",   ABSOLUTE_X, M_ABSX, M_ABSX, 7 }, /* Absolute,X */
-  /* 1f */ { ".SLO",  ABSOLUTE_X, M_ABSX, M_ABSX, 7 },
+  /* 1c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 1d */ { "ORA", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* 1e */ { "ASL", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
+  /* 1f */ { "slo", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
-  /* 20 */ { "JSR",   ABSOLUTE,   M_ADDR, M_PC,   6 },
-  /* 21 */ { "AND",   INDIRECT_X, M_INDX, M_AC,   6 }, /* (Indirect ,X) */
-  /* 22 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 23 */ { ".RLA",  INDIRECT_X, M_INDX, M_INDX, 8 },
+  /* 20 */ { "JSR", ABSOLUTE,    M_ADDR, READ,  6 },
+  /* 21 */ { "AND", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect ,X) */
+  /* 22 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 23 */ { "rla", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* 24 */ { "BIT",   ZERO_PAGE, M_ZERO, M_NONE, 3 }, /* Zeropage */
-  /* 25 */ { "AND",   ZERO_PAGE, M_ZERO, M_AC,   3 }, /* Zeropage */
-  /* 26 */ { "ROL",   ZERO_PAGE, M_ZERO, M_ZERO, 5 }, /* Zeropage */
-  /* 27 */ { ".RLA",  ZERO_PAGE, M_ZERO, M_ZERO, 5 },
+  /* 24 */ { "BIT", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* 25 */ { "AND", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* 26 */ { "ROL", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
+  /* 27 */ { "rla", ZERO_PAGE,   M_ZERO, WRITE, 5 },
 
-  /* 28 */ { "PLP",   IMPLIED,     M_NONE, M_SR,   4 },
-  /* 29 */ { "AND",   IMMEDIATE,   M_IMM,  M_AC,   2 }, /* Immediate */
-  /* 2a */ { "ROL",   ACCUMULATOR, M_AC,   M_AC,   2 }, /* Accumulator */
-  /* 2b */ { ".ANC",  IMMEDIATE,   M_ACIM, M_ACNC, 2 },
+  /* 28 */ { "PLP", IMPLIED,     M_NONE, NONE,  4 },
+  /* 29 */ { "AND", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* 2a */ { "ROL", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
+  /* 2b */ { "anc", IMMEDIATE,   M_ACIM, READ,  2 },
 
-  /* 2c */ { "BIT",   ABSOLUTE, M_ABS, M_NONE, 4 }, /* Absolute */
-  /* 2d */ { "AND",   ABSOLUTE, M_ABS, M_AC,   4 }, /* Absolute */
-  /* 2e */ { "ROL",   ABSOLUTE, M_ABS, M_ABS,  6 }, /* Absolute */
-  /* 2f */ { ".RLA",  ABSOLUTE, M_ABS, M_ABS,  6 },
+  /* 2c */ { "BIT", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* 2d */ { "AND", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* 2e */ { "ROL", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
+  /* 2f */ { "rla", ABSOLUTE,    M_ABS,  WRITE, 6 },
 
-  /* 30 */ { "BMI",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* 31 */ { "AND",   INDIRECT_Y, M_INDY, M_AC,   5 }, /* (Indirect),Y */
-  /* 32 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 33 */ { ".RLA",  INDIRECT_Y, M_INDY, M_INDY, 8 },
+  /* 30 */ { "BMI", RELATIVE,    M_REL,  READ,  2 },
+  /* 31 */ { "AND", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
+  /* 32 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 33 */ { "rla", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 34 */ { ".NOOP", ZERO_PAGE_X, M_NONE, M_NONE, 4 },
-  /* 35 */ { "AND",   ZERO_PAGE_X, M_ZERX, M_AC,   4 }, /* Zeropage,X */
-  /* 36 */ { "ROL",   ZERO_PAGE_X, M_ZERX, M_ZERX, 6 }, /* Zeropage,X */
-  /* 37 */ { ".RLA",  ZERO_PAGE_X, M_ZERX, M_ZERX, 6 },
+  /* 34 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 35 */ { "AND", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* 36 */ { "ROL", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
+  /* 37 */ { "rla", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
-  /* 38 */ { "SEC",   IMPLIED,    M_NONE, M_FC,   2 },
-  /* 39 */ { "AND",   ABSOLUTE_Y, M_ABSY, M_AC,   4 }, /* Absolute,Y */
-  /* 3a */ { ".NOOP", IMPLIED,    M_NONE, M_NONE, 2 },
-  /* 3b */ { ".RLA",  ABSOLUTE_Y, M_ABSY, M_ABSY, 7 },
+  /* 38 */ { "SEC", IMPLIED,     M_NONE, NONE,  2 },
+  /* 39 */ { "AND", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* 3a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 3b */ { "rla", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 3c */ { ".NOOP", ABSOLUTE_X, M_NONE, M_NONE, 4 },
-  /* 3d */ { "AND",   ABSOLUTE_X, M_ABSX, M_AC,   4 }, /* Absolute,X */
-  /* 3e */ { "ROL",   ABSOLUTE_X, M_ABSX, M_ABSX, 7 }, /* Absolute,X */
-  /* 3f */ { ".RLA",  ABSOLUTE_X, M_ABSX, M_ABSX, 7 },
+  /* 3c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 3d */ { "AND", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* 3e */ { "ROL", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
+  /* 3f */ { "rla", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
-  /* 40 */ { "RTI" ,  IMPLIED,    M_NONE, M_PC,   6 },
-  /* 41 */ { "EOR",   INDIRECT_X, M_INDX, M_AC,   6 }, /* (Indirect,X) */
-  /* 42 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 43 */ { ".SRE",  INDIRECT_X, M_INDX, M_INDX, 8 },
+  /* 40 */ { "RTI", IMPLIED,     M_NONE, NONE,  6 },
+  /* 41 */ { "EOR", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
+  /* 42 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 43 */ { "sre", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* 44 */ { ".NOOP", ZERO_PAGE, M_NONE, M_NONE, 3 },
-  /* 45 */ { "EOR",   ZERO_PAGE, M_ZERO, M_AC,   3 }, /* Zeropage */
-  /* 46 */ { "LSR",   ZERO_PAGE, M_ZERO, M_ZERO, 5 }, /* Zeropage */
-  /* 47 */ { ".SRE",  ZERO_PAGE, M_ZERO, M_ZERO, 5 },
+  /* 44 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
+  /* 45 */ { "EOR", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* 46 */ { "LSR", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
+  /* 47 */ { "sre", ZERO_PAGE,   M_ZERO, WRITE, 5 },
 
-  /* 48 */ { "PHA",   IMPLIED,     M_AC,   M_NONE, 3 },
-  /* 49 */ { "EOR",   IMMEDIATE,   M_IMM,  M_AC,   2 }, /* Immediate */
-  /* 4a */ { "LSR",   ACCUMULATOR, M_AC,   M_AC,   2 }, /* Accumulator */
-  /* 4b */ { ".ASR",  IMMEDIATE,   M_ACIM, M_AC,   2 }, /* (AC & IMM) >>1 */
+  /* 48 */ { "PHA", IMPLIED,     M_AC,   NONE,  3 },
+  /* 49 */ { "EOR", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* 4a */ { "LSR", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
+  /* 4b */ { "asr", IMMEDIATE,   M_ACIM, READ,  2 }, /* (AC & IMM) >>1 */
 
-  /* 4c */ { "JMP",   ABSOLUTE, M_ADDR, M_PC,  3 }, /* Absolute */
-  /* 4d */ { "EOR",   ABSOLUTE, M_ABS,  M_AC,  4 }, /* Absolute */
-  /* 4e */ { "LSR",   ABSOLUTE, M_ABS,  M_ABS, 6 }, /* Absolute */
-  /* 4f */ { ".SRE",  ABSOLUTE, M_ABS,  M_ABS, 6 },
+  /* 4c */ { "JMP", ABSOLUTE,    M_ADDR, READ,  3 }, /* Absolute */
+  /* 4d */ { "EOR", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* 4e */ { "LSR", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
+  /* 4f */ { "sre", ABSOLUTE,    M_ABS,  WRITE, 6 },
 
-  /* 50 */ { "BVC",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* 51 */ { "EOR",   INDIRECT_Y, M_INDY, M_AC,   5 }, /* (Indirect),Y */
-  /* 52 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 53 */ { ".SRE",  INDIRECT_Y, M_INDY, M_INDY, 8 },
+  /* 50 */ { "BVC", RELATIVE,    M_REL,  READ,  2 },
+  /* 51 */ { "EOR", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
+  /* 52 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 53 */ { "sre", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 54 */ { ".NOOP", ZERO_PAGE_X, M_NONE, M_NONE, 4 },
-  /* 55 */ { "EOR",   ZERO_PAGE_X, M_ZERX, M_AC,   4 }, /* Zeropage,X */
-  /* 56 */ { "LSR",   ZERO_PAGE_X, M_ZERX, M_ZERX, 6 }, /* Zeropage,X */
-  /* 57 */ { ".SRE",  ZERO_PAGE_X, M_ZERX, M_ZERX, 6 },
+  /* 54 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 55 */ { "EOR", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* 56 */ { "LSR", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
+  /* 57 */ { "sre", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
-  /* 58 */ { "CLI",   IMPLIED,    M_NONE, M_FI,   2 },
-  /* 59 */ { "EOR",   ABSOLUTE_Y, M_ABSY, M_AC,   4 }, /* Absolute,Y */
-  /* 5a */ { ".NOOP", IMPLIED,    M_NONE, M_NONE, 2 },
-  /* 5b */ { ".SRE",  ABSOLUTE_Y, M_ABSY, M_ABSY, 7 },
+  /* 58 */ { "CLI", IMPLIED,     M_NONE, NONE,  2 },
+  /* 59 */ { "EOR", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* 5a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 5b */ { "sre", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 5c */ { ".NOOP", ABSOLUTE_X, M_NONE, M_NONE, 4 },
-  /* 5d */ { "EOR",   ABSOLUTE_X, M_ABSX, M_AC,   4 }, /* Absolute,X */
-  /* 5e */ { "LSR",   ABSOLUTE_X, M_ABSX, M_ABSX, 7 }, /* Absolute,X */
-  /* 5f */ { ".SRE",  ABSOLUTE_X, M_ABSX, M_ABSX, 7 },
+  /* 5c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 5d */ { "EOR", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* 5e */ { "LSR", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
+  /* 5f */ { "sre", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
-  /* 60 */ { "RTS",   IMPLIED,    M_NONE, M_PC,   6 },
-  /* 61 */ { "ADC",   INDIRECT_X, M_INDX, M_AC,   6 }, /* (Indirect,X) */
-  /* 62 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* 63 */ { ".RRA",  INDIRECT_X, M_INDX, M_INDX, 8 },
+  /* 60 */ { "RTS", IMPLIED,     M_NONE, NONE,  6 },
+  /* 61 */ { "ADC", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
+  /* 62 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 63 */ { "rra", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* 64 */ { ".NOOP", ZERO_PAGE, M_NONE, M_NONE, 3 },
-  /* 65 */ { "ADC",   ZERO_PAGE, M_ZERO, M_AC,   3 }, /* Zeropage */
-  /* 66 */ { "ROR",   ZERO_PAGE, M_ZERO, M_ZERO, 5 }, /* Zeropage */
-  /* 67 */ { ".RRA",  ZERO_PAGE, M_ZERO, M_ZERO, 5 },
+  /* 64 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
+  /* 65 */ { "ADC", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* 66 */ { "ROR", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
+  /* 67 */ { "rra", ZERO_PAGE,   M_ZERO, WRITE, 5 },
 
-  /* 68 */ { "PLA",   IMPLIED,     M_NONE, M_AC, 4 },
-  /* 69 */ { "ADC",   IMMEDIATE,   M_IMM,  M_AC, 2 }, /* Immediate */
-  /* 6a */ { "ROR",   ACCUMULATOR, M_AC,   M_AC, 2 }, /* Accumulator */
-  /* 6b */ { ".ARR",  IMMEDIATE,   M_ACIM, M_AC, 2 }, /* ARR isn't typo */
+  /* 68 */ { "PLA", IMPLIED,     M_NONE, NONE,  4 },
+  /* 69 */ { "ADC", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* 6a */ { "ROR", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
+  /* 6b */ { "arr", IMMEDIATE,   M_ACIM, READ,  2 }, /* ARR isn't typo */
 
-  /* 6c */ { "JMP",   ABS_INDIRECT, M_AIND, M_PC,  5 }, /* Indirect */
-  /* 6d */ { "ADC",   ABSOLUTE,     M_ABS,  M_AC,  4 }, /* Absolute */
-  /* 6e */ { "ROR",   ABSOLUTE,     M_ABS,  M_ABS, 6 }, /* Absolute */
-  /* 6f */ { ".RRA",  ABSOLUTE,     M_ABS,  M_ABS, 6 },
+  /* 6c */ { "JMP", ABS_INDIRECT,M_AIND, READ,  5 }, /* Indirect */
+  /* 6d */ { "ADC", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* 6e */ { "ROR", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
+  /* 6f */ { "rra", ABSOLUTE,    M_ABS,  WRITE, 6 },
 
-  /* 70 */ { "BVS",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* 71 */ { "ADC",   INDIRECT_Y, M_INDY, M_AC,   5 }, /* (Indirect),Y */
-  /* 72 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT relative? */
-  /* 73 */ { ".RRA",  INDIRECT_Y, M_INDY, M_INDY, 8 },
+  /* 70 */ { "BVS", RELATIVE,    M_REL,  READ,  2 },
+  /* 71 */ { "ADC", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
+  /* 72 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
+  /* 73 */ { "rra", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 74 */ { ".NOOP", ZERO_PAGE_X, M_NONE, M_NONE, 4 },
-  /* 75 */ { "ADC",   ZERO_PAGE_X, M_ZERX, M_AC,   4 }, /* Zeropage,X */
-  /* 76 */ { "ROR",   ZERO_PAGE_X, M_ZERX, M_ZERX, 6 }, /* Zeropage,X */
-  /* 77 */ { ".RRA",  ZERO_PAGE_X, M_ZERX, M_ZERX, 6 },
+  /* 74 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 75 */ { "ADC", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* 76 */ { "ROR", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
+  /* 77 */ { "rra", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
-  /* 78 */ { "SEI",   IMPLIED,    M_NONE, M_FI,   2 },
-  /* 79 */ { "ADC",   ABSOLUTE_Y, M_ABSY, M_AC,   4 }, /* Absolute,Y */
-  /* 7a */ { ".NOOP", IMPLIED,    M_NONE, M_NONE, 2 },
-  /* 7b */ { ".RRA",  ABSOLUTE_Y, M_ABSY, M_ABSY, 7 },
+  /* 78 */ { "SEI", IMPLIED,     M_NONE, NONE,  2 },
+  /* 79 */ { "ADC", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* 7a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 7b */ { "rra", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 7c */ { ".NOOP", ABSOLUTE_X, M_NONE, M_NONE, 4 },
-  /* 7d */ { "ADC",   ABSOLUTE_X, M_ABSX, M_AC,   4 },  /* Absolute,X */
-  /* 7e */ { "ROR",   ABSOLUTE_X, M_ABSX, M_ABSX, 7 },  /* Absolute,X */
-  /* 7f */ { ".RRA",  ABSOLUTE_X, M_ABSX, M_ABSX, 7 },
+  /* 7c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 7d */ { "ADC", ABSOLUTE_X,  M_ABSX, READ,  4 },  /* Absolute,X */
+  /* 7e */ { "ROR", ABSOLUTE_X,  M_ABSX, WRITE, 7 },  /* Absolute,X */
+  /* 7f */ { "rra", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
   /****  Negative  ****/
 
-  /* 80 */ { ".NOOP", IMMEDIATE,  M_NONE, M_NONE, 2 },
-  /* 81 */ { "STA",   INDIRECT_X, M_AC,   M_INDX, 6 }, /* (Indirect,X) */
-  /* 82 */ { ".NOOP", IMMEDIATE,  M_NONE, M_NONE, 2 },
-  /* 83 */ { ".SAX",  INDIRECT_X, M_ANXR, M_INDX, 6 },
+  /* 80 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* 81 */ { "STA", INDIRECT_X,  M_AC,   WRITE, 6 }, /* (Indirect,X) */
+  /* 82 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* 83 */ { "sax", INDIRECT_X,  M_ANXR, WRITE, 6 },
 
-  /* 84 */ { "STY",   ZERO_PAGE, M_YR,   M_ZERO, 3 }, /* Zeropage */
-  /* 85 */ { "STA",   ZERO_PAGE, M_AC,   M_ZERO, 3 }, /* Zeropage */
-  /* 86 */ { "STX",   ZERO_PAGE, M_XR,   M_ZERO, 3 }, /* Zeropage */
-  /* 87 */ { ".SAX",  ZERO_PAGE, M_ANXR, M_ZERO, 3 },
+  /* 84 */ { "STY", ZERO_PAGE,   M_YR,   WRITE, 3 }, /* Zeropage */
+  /* 85 */ { "STA", ZERO_PAGE,   M_AC,   WRITE, 3 }, /* Zeropage */
+  /* 86 */ { "STX", ZERO_PAGE,   M_XR,   WRITE, 3 }, /* Zeropage */
+  /* 87 */ { "sax", ZERO_PAGE,   M_ANXR, WRITE, 3 },
 
-  /* 88 */ { "DEY",   IMPLIED,   M_YR,   M_YR,   2 },
-  /* 89 */ { ".NOOP", IMMEDIATE, M_NONE, M_NONE, 2 },
-  /* 8a */ { "TXA",   IMPLIED,   M_XR,   M_AC,   2 },
-  /****  ver abnormal: usually AC = AC | #$EE & XR & #$oper  ****/
-  /* 8b */ { ".ANE",  IMMEDIATE, M_AXIM, M_AC,   2 },
+  /* 88 */ { "DEY", IMPLIED,     M_YR,   NONE,  2 },
+  /* 89 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* 8a */ { "TXA", IMPLIED,     M_XR,   NONE,  2 },
+  /****  very abnormal: usually AC = AC | #$EE & XR & #$oper  ****/
+  /* 8b */ { "ane", IMMEDIATE,   M_AXIM, READ,  2 },
 
-  /* 8c */ { "STY",   ABSOLUTE, M_YR,   M_ABS, 4 }, /* Absolute */
-  /* 8d */ { "STA",   ABSOLUTE, M_AC,   M_ABS, 4 }, /* Absolute */
-  /* 8e */ { "STX",   ABSOLUTE, M_XR,   M_ABS, 4 }, /* Absolute */
-  /* 8f */ { ".SAX",  ABSOLUTE, M_ANXR, M_ABS, 4 },
+  /* 8c */ { "STY", ABSOLUTE,    M_YR,   WRITE, 4 }, /* Absolute */
+  /* 8d */ { "STA", ABSOLUTE,    M_AC,   WRITE, 4 }, /* Absolute */
+  /* 8e */ { "STX", ABSOLUTE,    M_XR,   WRITE, 4 }, /* Absolute */
+  /* 8f */ { "sax", ABSOLUTE,    M_ANXR, WRITE, 4 },
 
-  /* 90 */ { "BCC",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* 91 */ { "STA",   INDIRECT_Y, M_AC,   M_INDY, 6 }, /* (Indirect),Y */
-  /* 92 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT relative? */
-  /* 93 */ { ".SHA",  INDIRECT_Y, M_ANXR, M_STH0, 6 },
+  /* 90 */ { "BCC", RELATIVE,    M_REL,  READ,  2 },
+  /* 91 */ { "STA", INDIRECT_Y,  M_AC,   WRITE, 6 }, /* (Indirect),Y */
+  /* 92 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
+  /* 93 */ { "sha", INDIRECT_Y,  M_ANXR, WRITE, 6 },
 
-  /* 94 */ { "STY",   ZERO_PAGE_X, M_YR,   M_ZERX, 4 }, /* Zeropage,X */
-  /* 95 */ { "STA",   ZERO_PAGE_X, M_AC,   M_ZERX, 4 }, /* Zeropage,X */
-  /* 96 */ { "STX",   ZERO_PAGE_Y, M_XR,   M_ZERY, 4 }, /* Zeropage,Y */
-  /* 97 */ { ".SAX",  ZERO_PAGE_Y, M_ANXR, M_ZERY, 4 },
+  /* 94 */ { "STY", ZERO_PAGE_X, M_YR,   WRITE, 4 }, /* Zeropage,X */
+  /* 95 */ { "STA", ZERO_PAGE_X, M_AC,   WRITE, 4 }, /* Zeropage,X */
+  /* 96 */ { "STX", ZERO_PAGE_Y, M_XR,   WRITE, 4 }, /* Zeropage,Y */
+  /* 97 */ { "sax", ZERO_PAGE_Y, M_ANXR, WRITE, 4 },
 
-  /* 98 */ { "TYA",   IMPLIED,    M_YR,   M_AC,   2 },
-  /* 99 */ { "STA",   ABSOLUTE_Y, M_AC,   M_ABSY, 5 }, /* Absolute,Y */
-  /* 9a */ { "TXS",   IMPLIED,    M_XR,   M_SP,   2 },
-  /*** This s very mysterious comm AND ... */
-  /* 9b */ { ".SHS",  ABSOLUTE_Y, M_ANXR, M_STH3, 5 },
+  /* 98 */ { "TYA", IMPLIED,     M_YR,   NONE,  2 },
+  /* 99 */ { "STA", ABSOLUTE_Y,  M_AC,   WRITE, 5 }, /* Absolute,Y */
+  /* 9a */ { "TXS", IMPLIED,     M_XR,   NONE,  2 },
+  /*** This is very mysterious comm AND ... */
+  /* 9b */ { "shs", ABSOLUTE_Y,  M_ANXR, WRITE, 5 },
 
-  /* 9c */ { ".SHY",  ABSOLUTE_X, M_YR,   M_STH2, 5 },
-  /* 9d */ { "STA",   ABSOLUTE_X, M_AC,   M_ABSX, 5 }, /* Absolute,X */
-  /* 9e */ { ".SHX",  ABSOLUTE_Y, M_XR  , M_STH1, 5 },
-  /* 9f */ { ".SHA",  ABSOLUTE_Y, M_ANXR, M_STH1, 5 },
+  /* 9c */ { "shy", ABSOLUTE_X,  M_YR,   WRITE, 5 },
+  /* 9d */ { "STA", ABSOLUTE_X,  M_AC,   WRITE, 5 }, /* Absolute,X */
+  /* 9e */ { "shx", ABSOLUTE_Y,  M_XR  , WRITE, 5 },
+  /* 9f */ { "sha", ABSOLUTE_Y,  M_ANXR, WRITE, 5 },
 
-  /* a0 */ { "LDY",   IMMEDIATE,  M_IMM,  M_YR,   2 }, /* Immediate */
-  /* a1 */ { "LDA",   INDIRECT_X, M_INDX, M_AC,   6 }, /* (indirect,X) */
-  /* a2 */ { "LDX",   IMMEDIATE,  M_IMM,  M_XR,   2 }, /* Immediate */
-  /* a3 */ { ".LAX",  INDIRECT_X, M_INDX, M_ACXR, 6 }, /* (indirect,X) */
+  /* a0 */ { "LDY", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* a1 */ { "LDA", INDIRECT_X,  M_INDX, READ,  6 }, /* (indirect,X) */
+  /* a2 */ { "LDX", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* a3 */ { "lax", INDIRECT_X,  M_INDX, READ,  6 }, /* (indirect,X) */
 
-  /* a4 */ { "LDY",   ZERO_PAGE, M_ZERO, M_YR,   3 }, /* Zeropage */
-  /* a5 */ { "LDA",   ZERO_PAGE, M_ZERO, M_AC,   3 }, /* Zeropage */
-  /* a6 */ { "LDX",   ZERO_PAGE, M_ZERO, M_XR,   3 }, /* Zeropage */
-  /* a7 */ { ".LAX",  ZERO_PAGE, M_ZERO, M_ACXR, 3 },
+  /* a4 */ { "LDY", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* a5 */ { "LDA", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* a6 */ { "LDX", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* a7 */ { "lax", ZERO_PAGE,   M_ZERO, READ,  3 },
 
-  /* a8 */ { "TAY",   IMPLIED,   M_AC,   M_YR,   2 },
-  /* a9 */ { "LDA",   IMMEDIATE, M_IMM,  M_AC,   2 }, /* Immediate */
-  /* aa */ { "TAX",   IMPLIED,   M_AC,   M_XR,   2 },
-  /* ab */ { ".LXA",  IMMEDIATE, M_ACIM, M_ACXR, 2 }, /* LXA isn't a typo */
+  /* a8 */ { "TAY", IMPLIED,     M_AC,   NONE,  2 },
+  /* a9 */ { "LDA", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* aa */ { "TAX", IMPLIED,     M_AC,   NONE,  2 },
+  /* ab */ { "lxa", IMMEDIATE,   M_ACIM, READ,  2 }, /* LXA isn't a typo */
 
-  /* ac */ { "LDY",   ABSOLUTE, M_ABS, M_YR,   4 }, /* Absolute */
-  /* ad */ { "LDA",   ABSOLUTE, M_ABS, M_AC,   4 }, /* Absolute */
-  /* ae */ { "LDX",   ABSOLUTE, M_ABS, M_XR,   4 }, /* Absolute */
-  /* af */ { ".LAX",  ABSOLUTE, M_ABS, M_ACXR, 4 },
+  /* ac */ { "LDY", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* ad */ { "LDA", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* ae */ { "LDX", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* af */ { "lax", ABSOLUTE,    M_ABS,  READ,  4 },
 
-  /* b0 */ { "BCS",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* b1 */ { "LDA",   INDIRECT_Y, M_INDY, M_AC,   5 }, /* (indirect),Y */
-  /* b2 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* b3 */ { ".LAX",  INDIRECT_Y, M_INDY, M_ACXR, 5 },
+  /* b0 */ { "BCS", RELATIVE,    M_REL,  READ,  2 },
+  /* b1 */ { "LDA", INDIRECT_Y,  M_INDY, READ,  5 }, /* (indirect),Y */
+  /* b2 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* b3 */ { "lax", INDIRECT_Y,  M_INDY, READ,  5 },
 
-  /* b4 */ { "LDY",   ZERO_PAGE_X, M_ZERX, M_YR,   4 }, /* Zeropage,X */
-  /* b5 */ { "LDA",   ZERO_PAGE_X, M_ZERX, M_AC,   4 }, /* Zeropage,X */
-  /* b6 */ { "LDX",   ZERO_PAGE_Y, M_ZERY, M_XR,   4 }, /* Zeropage,Y */
-  /* b7 */ { ".LAX",  ZERO_PAGE_Y, M_ZERY, M_ACXR, 4 },
+  /* b4 */ { "LDY", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* b5 */ { "LDA", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* b6 */ { "LDX", ZERO_PAGE_Y, M_ZERY, READ,  4 }, /* Zeropage,Y */
+  /* b7 */ { "lax", ZERO_PAGE_Y, M_ZERY, READ,  4 },
 
-  /* b8 */ { "CLV",   IMPLIED,    M_NONE, M_FV,   2 },
-  /* b9 */ { "LDA",   ABSOLUTE_Y, M_ABSY, M_AC,   4 }, /* Absolute,Y */
-  /* ba */ { "TSX",   IMPLIED,    M_SP,   M_XR,   2 },
-  /* bb */ { ".LAS",  ABSOLUTE_Y, M_SABY, M_ACXS, 4 },
+  /* b8 */ { "CLV", IMPLIED,     M_NONE, NONE,  2 },
+  /* b9 */ { "LDA", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* ba */ { "TSX", IMPLIED,     M_SP,   NONE,  2 },
+  /* bb */ { "las", ABSOLUTE_Y,  M_SABY, READ,  4 },
 
-  /* bc */ { "LDY",   ABSOLUTE_X, M_ABSX, M_YR,   4 }, /* Absolute,X */
-  /* bd */ { "LDA",   ABSOLUTE_X, M_ABSX, M_AC,   4 }, /* Absolute,X */
-  /* be */ { "LDX",   ABSOLUTE_Y, M_ABSY, M_XR,   4 }, /* Absolute,Y */
-  /* bf */ { ".LAX",  ABSOLUTE_Y, M_ABSY, M_ACXR, 4 },
+  /* bc */ { "LDY", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* bd */ { "LDA", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* be */ { "LDX", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* bf */ { "lax", ABSOLUTE_Y,  M_ABSY, READ,  4 },
 
-  /* c0 */ { "CPY",   IMMEDIATE,  M_IMM,  M_NONE, 2 }, /* Immediate */
-  /* c1 */ { "CMP",   INDIRECT_X, M_INDX, M_NONE, 6 }, /* (Indirect,X) */
-  /* c2 */ { ".NOOP", IMMEDIATE,  M_NONE, M_NONE, 2 }, /* occasional TILT */
-  /* c3 */ { ".DCP",  INDIRECT_X, M_INDX, M_INDX, 8 },
+  /* c0 */ { "CPY", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* c1 */ { "CMP", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
+  /* c2 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 }, /* occasional TILT */
+  /* c3 */ { "dcp", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* c4 */ { "CPY",   ZERO_PAGE, M_ZERO, M_NONE, 3 }, /* Zeropage */
-  /* c5 */ { "CMP",   ZERO_PAGE, M_ZERO, M_NONE, 3 }, /* Zeropage */
-  /* c6 */ { "DEC",   ZERO_PAGE, M_ZERO, M_ZERO, 5 }, /* Zeropage */
-  /* c7 */ { ".DCP",  ZERO_PAGE, M_ZERO, M_ZERO, 5 },
+  /* c4 */ { "CPY", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* c5 */ { "CMP", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* c6 */ { "DEC", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
+  /* c7 */ { "dcp", ZERO_PAGE,   M_ZERO, WRITE, 5 },
 
-  /* c8 */ { "INY",   IMPLIED,   M_YR,  M_YR,   2 },
-  /* c9 */ { "CMP",   IMMEDIATE, M_IMM, M_NONE, 2 }, /* Immediate */
-  /* ca */ { "DEX",   IMPLIED,   M_XR,  M_XR,   2 },
-  /* cb */ { ".SBX",  IMMEDIATE, M_IMM, M_XR,   2 },
+  /* c8 */ { "INY", IMPLIED,     M_YR,   NONE,  2 },
+  /* c9 */ { "CMP", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* ca */ { "DEX", IMPLIED,     M_XR,   NONE,  2 },
+  /* cb */ { "sbx", IMMEDIATE,   M_IMM,  READ,  2 },
 
-  /* cc */ { "CPY",   ABSOLUTE, M_ABS, M_NONE, 4 }, /* Absolute */
-  /* cd */ { "CMP",   ABSOLUTE, M_ABS, M_NONE, 4 }, /* Absolute */
-  /* ce */ { "DEC",   ABSOLUTE, M_ABS, M_ABS,  6 }, /* Absolute */
-  /* cf */ { ".DCP",  ABSOLUTE, M_ABS, M_ABS,  6 },
+  /* cc */ { "CPY", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* cd */ { "CMP", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* ce */ { "DEC", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
+  /* cf */ { "dcp", ABSOLUTE,    M_ABS,  WRITE, 6 },
 
-  /* d0 */ { "BNE",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* d1 */ { "CMP",   INDIRECT_Y, M_INDY, M_NONE, 5 }, /* (Indirect),Y */
-  /* d2 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* d3 */ { ".DCP",  INDIRECT_Y, M_INDY, M_INDY, 8 },
+  /* d0 */ { "BNE", RELATIVE,    M_REL,  READ,  2 },
+  /* d1 */ { "CMP", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
+  /* d2 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* d3 */ { "dcp", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* d4 */ { ".NOOP", ZERO_PAGE_X, M_NONE, M_NONE, 4 },
-  /* d5 */ { "CMP",   ZERO_PAGE_X, M_ZERX, M_NONE, 4 }, /* Zeropage,X */
-  /* d6 */ { "DEC",   ZERO_PAGE_X, M_ZERX, M_ZERX, 6 }, /* Zeropage,X */
-  /* d7 */ { ".DCP",  ZERO_PAGE_X, M_ZERX, M_ZERX, 6 },
+  /* d4 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* d5 */ { "CMP", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* d6 */ { "DEC", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
+  /* d7 */ { "dcp", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
-  /* d8 */ { "CLD",   IMPLIED,    M_NONE, M_FD,   2 },
-  /* d9 */ { "CMP",   ABSOLUTE_Y, M_ABSY, M_NONE, 4 }, /* Absolute,Y */
-  /* da */ { ".NOOP", IMPLIED,    M_NONE, M_NONE, 2 },
-  /* db */ { ".DCP",  ABSOLUTE_Y, M_ABSY, M_ABSY, 7 },
+  /* d8 */ { "CLD", IMPLIED,     M_NONE, NONE,  2 },
+  /* d9 */ { "CMP", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* da */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* db */ { "dcp", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* dc */ { ".NOOP", ABSOLUTE_X, M_NONE, M_NONE, 4 },
-  /* dd */ { "CMP",   ABSOLUTE_X, M_ABSX, M_NONE, 4 }, /* Absolute,X */
-  /* de */ { "DEC",   ABSOLUTE_X, M_ABSX, M_ABSX, 7 }, /* Absolute,X */
-  /* df */ { ".DCP",  ABSOLUTE_X, M_ABSX, M_ABSX, 7 },
+  /* dc */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* dd */ { "CMP", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* de */ { "DEC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
+  /* df */ { "dcp", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
-  /* e0 */ { "CPX",   IMMEDIATE,  M_IMM,  M_NONE, 2 }, /* Immediate */
-  /* e1 */ { "SBC",   INDIRECT_X, M_INDX, M_AC,   6 }, /* (Indirect,X) */
-  /* e2 */ { ".NOOP", IMMEDIATE,  M_NONE, M_NONE, 2 },
-  /* e3 */ { ".ISB",  INDIRECT_X, M_INDX, M_INDX, 8 },
+  /* e0 */ { "CPX", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* e1 */ { "SBC", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
+  /* e2 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* e3 */ { "isb", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* e4 */ { "CPX",   ZERO_PAGE, M_ZERO, M_NONE, 3 }, /* Zeropage */
-  /* e5 */ { "SBC",   ZERO_PAGE, M_ZERO, M_AC,   3 }, /* Zeropage */
-  /* e6 */ { "INC",   ZERO_PAGE, M_ZERO, M_ZERO, 5 }, /* Zeropage */
-  /* e7 */ { ".ISB",  ZERO_PAGE, M_ZERO, M_ZERO, 5 },
+  /* e4 */ { "CPX", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* e5 */ { "SBC", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
+  /* e6 */ { "INC", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
+  /* e7 */ { "isb", ZERO_PAGE,   M_ZERO, WRITE, 5 },
 
-  /* e8 */ { "INX",   IMPLIED,   M_XR,   M_XR,   2 },
-  /* e9 */ { "SBC",   IMMEDIATE, M_IMM,  M_AC,   2 }, /* Immediate */
-  /* ea */ { "NOP",   IMPLIED,   M_NONE, M_NONE, 2 },
-  /* eb */ { ".USBC", IMMEDIATE, M_IMM,  M_AC,   2 }, /* same as e9 */
+  /* e8 */ { "INX", IMPLIED,     M_XR,   NONE,  2 },
+  /* e9 */ { "SBC", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
+  /* ea */ { "NOP", IMPLIED,     M_NONE, NONE,  2 },
+  /* eb */ { "sbc", IMMEDIATE,   M_IMM,  READ,  2 }, /* same as e9 */
 
-  /* ec */ { "CPX",   ABSOLUTE, M_ABS, M_NONE, 4 }, /* Absolute */
-  /* ed */ { "SBC",   ABSOLUTE, M_ABS, M_AC,   4 }, /* Absolute */
-  /* ee */ { "INC",   ABSOLUTE, M_ABS, M_ABS,  6 }, /* Absolute */
-  /* ef */ { ".ISB",  ABSOLUTE, M_ABS, M_ABS,  6 },
+  /* ec */ { "CPX", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* ed */ { "SBC", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
+  /* ee */ { "INC", ABSOLUTE,    M_ABS,  WRITE, 6 }, /* Absolute */
+  /* ef */ { "isb", ABSOLUTE,    M_ABS,  WRITE, 6 },
 
-  /* f0 */ { "BEQ",   RELATIVE,   M_REL,  M_NONE, 2 },
-  /* f1 */ { "SBC",   INDIRECT_Y, M_INDY, M_AC,   5 }, /* (Indirect),Y */
-  /* f2 */ { ".JAM",  IMPLIED,    M_NONE, M_NONE, 0 }, /* TILT */
-  /* f3 */ { ".ISB",  INDIRECT_Y, M_INDY, M_INDY, 8 },
+  /* f0 */ { "BEQ", RELATIVE,    M_REL,  READ,  2 },
+  /* f1 */ { "SBC", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
+  /* f2 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* f3 */ { "isb", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* f4 */ { ".NOOP", ZERO_PAGE_X, M_NONE, M_NONE, 4 },
-  /* f5 */ { "SBC",   ZERO_PAGE_X, M_ZERX, M_AC,   4 }, /* Zeropage,X */
-  /* f6 */ { "INC",   ZERO_PAGE_X, M_ZERX, M_ZERX, 6 }, /* Zeropage,X */
-  /* f7 */ { ".ISB",  ZERO_PAGE_X, M_ZERX, M_ZERX, 6 },
+  /* f4 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* f5 */ { "SBC", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
+  /* f6 */ { "INC", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
+  /* f7 */ { "isb", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
-  /* f8 */ { "SED",   IMPLIED,    M_NONE, M_FD,   2 },
-  /* f9 */ { "SBC",   ABSOLUTE_Y, M_ABSY, M_AC,   4 }, /* Absolute,Y */
-  /* fa */ { ".NOOP", IMPLIED,    M_NONE, M_NONE, 2 },
-  /* fb */ { ".ISB",  ABSOLUTE_Y, M_ABSY, M_ABSY, 7 },
+  /* f8 */ { "SED", IMPLIED,     M_NONE, NONE,  2 },
+  /* f9 */ { "SBC", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
+  /* fa */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* fb */ { "isb", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* fc */ { ".NOOP", ABSOLUTE_X, M_NONE, M_NONE, 4 },
-  /* fd */ { "SBC",   ABSOLUTE_X, M_ABSX, M_AC,   4 }, /* Absolute,X */
-  /* fe */ { "INC",   ABSOLUTE_X, M_ABSX, M_ABSX, 7 }, /* Absolute,X */
-  /* ff */ { ".ISB",  ABSOLUTE_X, M_ABSX, M_ABSX, 7 }
+  /* fc */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* fd */ { "SBC", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
+  /* fe */ { "INC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
+  /* ff */ { "isb", ABSOLUTE_X,  M_ABSX, WRITE, 7 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

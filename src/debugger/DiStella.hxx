@@ -128,11 +128,20 @@ class DiStella
       M_STH3
     };
 
+    /**
+      Enumeration of the 6502 read/write mode
+      (if the opcode is reading or writing its operand)
+    */
+    enum ReadWriteMode
+    {
+      READ, WRITE, NONE
+    };
+
     struct Instruction_tag {
       const char*    mnemonic;
       AddressingMode addr_mode;
       AccessMode     source;
-      AccessMode     destination;
+      ReadWriteMode  rw_mode;
       uInt8          cycles;
     };
     static const Instruction_tag ourLookup[256];
