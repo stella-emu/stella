@@ -146,7 +146,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
       if (pass == 3)
       {
         bytes = 1;
-        myBuf << HEX4 << myPC+myOffset << "'L" << myPC+myOffset << "'.byte "
+        myBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'.byte "
               << "$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
       }
       myPC++;
