@@ -96,7 +96,7 @@ int CartDebug::readFromWritePort()
   // A read from the write port occurs when the read is actually in the write
   // port address space AND the last access was actually a read (the latter
   // differentiates between reads that are normally part of a write cycle vs.
-  // ones that are illegal
+  // ones that are illegal)
   if(mySystem.m6502().lastReadAddress() && peekAddress & 0x1000)
   {
     uInt16 addr = peekAddress & 0x0FFF;
@@ -217,7 +217,7 @@ int CartDebug::addressToLine(uInt16 address) const
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   if(!(start & 0x1000))
-    return "Disassembly below 0x1000 not yet supported";
+    return DebuggerParser::red("Disassembly below 0x1000 not yet supported");
 
   DisassemblyList list;
   DiStella distella(list, start, false);
@@ -260,57 +260,34 @@ string CartDebug::getCartType()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::addLabel(const string& label, uInt16 address)
 {
-  // First check if this already exists as a hard-coded equate
-  LabelToAddr::const_iterator iter = mySystemAddresses.find(label);
-  if(iter != mySystemAddresses.end() && iter->second.address == address)
-    return;
-
-  // Create a new user equate, and determine if its RAM or ROM
-  // For now, these are the only types we care about
-  // Technically, addresses above 0x1000 are ROM and are read-only
-  // However, somes ROMs have dedicated RAM mapped to those addresses
-  // as well, and we don't yet have an infrastructure to determine that,
-  // so the entire region is marked as read-write
-  equate_t flags = EQF_READ;
-#if 0
-  if(address >= 0x80 && address <= 0xff)
-    flags = EQF_RW;
-  else if((address & 0x1000) == 0x1000)
-    flags = EQF_RW;
-  else
-  { 
-    cerr << "label = " << label << ", address = " << hex << address << " discarded\n";
-    return;  // don't know what else to do for now
+  // Only user-defined labels can be added
+  switch(addressType(address))
+  {
+    case ADDR_TIA:
+    case ADDR_RIOT:
+      return;
+    default:
+cerr << "addLabel: label = " << label << ", address = " << hex << address << endl;
+      removeLabel(label);
+      myUserAddresses.insert(make_pair(label, address));
+      myUserLabels.insert(make_pair(address, label));
+      break;
   }
-#else
-  // The above section of code is deactivated until a better means of
-  // determining constants vs. addresses is found
-  flags = EQF_RW;
-#endif
-
-  removeLabel(label);
-
-  Equate e;
-  e.label = label;
-  e.address = address;
-  e.flags = flags;
-
-  myUserAddresses.insert(make_pair(label, e));
-  myUserLabels.insert(make_pair(address, e));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::removeLabel(const string& label)
 {
-  // Note that only user-defined equates can be removed
+  // Only user-defined labels can be removed
   LabelToAddr::iterator iter = myUserAddresses.find(label);
   if(iter != myUserAddresses.end())
   {
+cerr << "removeLabel: label = " << label << endl;
     // Erase the label
     myUserAddresses.erase(iter);
 
     // And also erase the address assigned to it
-    AddrToLabel::iterator iter2 = myUserLabels.find(iter->second.address);
+    AddrToLabel::iterator iter2 = myUserLabels.find(iter->second);
     if(iter2 != myUserLabels.end())
       myUserLabels.erase(iter2);
 
@@ -323,73 +300,25 @@ bool CartDebug::removeLabel(const string& label)
 const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
 {
   static string result;
-  AddrToLabel::const_iterator iter;
 
-  // Is this a read or write?
-  // For now, there aren't separate read & write lists for user labels
-  const AddrToLabel& systemLabels = isRead ?
-    (const AddrToLabel&) mySystemReadLabels :
-    (const AddrToLabel&) mySystemWriteLabels;
-
-  // Determine the type of address to access the correct list
-  // These addresses were based on (and checked against) Kroko's 2600 memory
-  // map, found at http://www.qotile.net/minidig/docs/2600_mem_map.txt
-  address_t type = ADDR_ROM;
-  if(addr % 0x2000 < 0x1000)
-  {
-    uInt16 z = addr & 0x00ff;
-    if(z < 0x80)
-      type = ADDR_TIA;
-    else
-    {
-      switch(addr & 0x0f00)
-      {
-        case 0x000:
-        case 0x100:
-        case 0x400:
-        case 0x500:
-        case 0x800:
-        case 0x900:
-        case 0xc00:
-        case 0xd00:
-          type = ADDR_RAM;
-          break;
-        case 0x200:
-        case 0x300:
-        case 0x600:
-        case 0x700:
-        case 0xa00:
-        case 0xb00:
-        case 0xe00:
-        case 0xf00:
-          type = ADDR_RIOT;
-          break;
-      }
-    }
-  }
-
-  switch(type)
+  switch(addressType(addr))
   {
     case ADDR_TIA:
-      if((iter = systemLabels.find(addr&0x7f)) != systemLabels.end())
-        return iter->second.label;
-      else if((iter = myUserLabels.find(addr)) != myUserLabels.end())
-        return iter->second.label;
-      break;
+      return result =
+        (isRead ? ourTIAMnemonicR[addr&0x0f] : ourTIAMnemonicW[addr&0x3f]);
 
-    case ADDR_RIOT:  // FIXME - add mirrors for RIOT
-      if((iter = systemLabels.find(addr)) != systemLabels.end())
-        return iter->second.label;
-      else if((iter = myUserLabels.find(addr)) != myUserLabels.end())
-        return iter->second.label;
-      break;
+    case ADDR_RIOT:
+      return result = ourIOMnemonic[(addr&0xf00)-280];
 
     case ADDR_RAM:
     case ADDR_ROM:
+    {
       // These addresses can never be in the system labels list
+      AddrToLabel::const_iterator iter;
       if((iter = myUserLabels.find(addr)) != myUserLabels.end())
-        return iter->second.label;
+        return iter->second;
       break;
+    }
   }
 
   if(places > -1)
@@ -405,6 +334,7 @@ const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::getAddress(const string& label) const
 {
+/* FIXME
   LabelToAddr::const_iterator iter;
 
   if((iter = mySystemAddresses.find(label)) != mySystemAddresses.end())
@@ -413,6 +343,8 @@ int CartDebug::getAddress(const string& label) const
     return iter->second.address;
   else
     return -1;
+*/
+return -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -424,6 +356,8 @@ string CartDebug::loadSymbolFile(const string& f)
     file.replace(spos, file.size(), ".sym");
   else
     file += ".sym";
+
+cerr << "loadSymbolFile: " << file << endl;
 
   int pos = 0, lines = 0, curVal;
   string curLabel;
@@ -468,36 +402,14 @@ string CartDebug::loadSymbolFile(const string& f)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::saveSymbolFile(const string& file)
-{
-  // Only user-defined equates are saved; system equates are always
-  // available, so there's no need to save them
-  char buf[256];
-
-  ofstream out(file.c_str());
-  if(!out.is_open())
-    return false;
-
-  out << "--- Symbol List (sorted by symbol)" << endl;
-
-  LabelToAddr::const_iterator iter;
-  for(iter = myUserAddresses.begin(); iter != myUserAddresses.end(); iter++)
-  {
-    sprintf(buf, "%-24s %04x                  \n", iter->second.label.c_str(), iter->second.address);
-    out << buf;
-  }
-
-  out << "--- End of Symbol List." << endl;
-
-  return true;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::countCompletions(const char *in)
 {
+/* FIXME
   myCompletions = myCompPrefix = "";
   return countCompletions(in, mySystemAddresses) +
          countCompletions(in, myUserAddresses);
+*/
+return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -532,6 +444,48 @@ int CartDebug::countCompletions(const char *in, LabelToAddr& addresses)
   }
 
   return count;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
+{
+  // Determine the type of address to access the correct list
+  // These addresses were based on (and checked against) Kroko's 2600 memory
+  // map, found at http://www.qotile.net/minidig/docs/2600_mem_map.txt
+  AddrType type = ADDR_ROM;
+  if(addr % 0x2000 < 0x1000)
+  {
+    uInt16 z = addr & 0x00ff;
+    if(z < 0x80)
+      type = ADDR_TIA;
+    else
+    {
+      switch(addr & 0x0f00)
+      {
+        case 0x000:
+        case 0x100:
+        case 0x400:
+        case 0x500:
+        case 0x800:
+        case 0x900:
+        case 0xc00:
+        case 0xd00:
+          type = ADDR_RAM;
+          break;
+        case 0x200:
+        case 0x300:
+        case 0x600:
+        case 0x700:
+        case 0xa00:
+        case 0xb00:
+        case 0xe00:
+        case 0xf00:
+          type = ADDR_RIOT;
+          break;
+      }
+    }
+  }
+  return type;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -574,3 +528,28 @@ int CartDebug::extractValue(char *c) const
   }
   return ret;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* CartDebug::ourTIAMnemonicR[16] = {
+  "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
+  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$0E", "$0F"
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* CartDebug::ourTIAMnemonicW[64] = {
+  "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
+  "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
+  "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
+  "AUDF1", "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL",
+  "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
+  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2D", "$2E", "$2F",
+  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37",
+  "$38", "$39", "$3A", "$3B", "$3C", "$3D", "$3E", "$3F"
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const char* CartDebug::ourIOMnemonic[24] = {
+  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", "$0286", "$0287",
+  "$0288", "$0289", "$028A", "$028B", "$028C", "$028D", "$028E", "$028F",
+  "$0290", "$0291", "$0292", "$0293", "TIM1T", "TIM8T", "TIM64T", "T1024T"
+};

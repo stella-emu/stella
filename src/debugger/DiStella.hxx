@@ -71,15 +71,16 @@ class DiStella
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
-    void addEntry(CartDebug::DisassemblyList& list);
+    void addEntry();
 
     // These functions are part of the original Distella code
-    void disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass);
+    void disasm(uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
-    int check_bit(uInt8 bitflags, int i);
     void showgfx(uInt8 c);
+    inline int check_bit(uInt8 bitflags, int i) { return (bitflags & i); }
 
   private:
+    CartDebug::DisassemblyList& myList;
     stringstream myBuf;
     queue<uInt16> myAddressQueue;
     uInt32 myOffset, myPC, myPCBeg, myPCEnd;
@@ -145,11 +146,6 @@ class DiStella
       uInt8          cycles;
     };
     static const Instruction_tag ourLookup[256];
-
-    /// Table of instruction mnemonics
-    static const char* ourTIAMnemonicR[16];  // read mode
-    static const char* ourTIAMnemonicW[64];  // write mode
-    static const char* ourIOMnemonic[24];
 
     static const int ourCLength[14];
 };

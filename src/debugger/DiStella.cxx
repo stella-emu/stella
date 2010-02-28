@@ -27,7 +27,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
                    bool autocode)
-  : labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
+  : myList(list),
+    labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
 {
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
@@ -74,7 +75,7 @@ DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
       myPC = myAddressQueue.front();
       myPCBeg = myPC;
       myAddressQueue.pop();
-      disasm(list, myPC, 1);
+      disasm(myPC, 1);
       for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
         mark(k, REACHABLE);
     }
@@ -87,10 +88,10 @@ DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
   }
 
   // Second pass
-  disasm(list, myOffset, 2);
+  disasm(myOffset, 2);
 
   // Third pass
-  disasm(list, myOffset, 3);
+  disasm(myOffset, 3);
 
   free(labels);  /* Free dynamic memory before program ends */
 }
@@ -101,7 +102,7 @@ DiStella::~DiStella()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass)
+void DiStella::disasm(uInt32 distart, int pass)
 {
 #define HEX4 uppercase << hex << setw(4) << setfill('0')
 #define HEX2 uppercase << hex << setw(2) << setfill('0')
@@ -135,7 +136,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
         myBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << " ; ";
         showgfx(Debugger::debugger().peek(myPC+myOffset));
         myBuf << " $" << HEX4 << myPC+myOffset;
-        addEntry(list);
+        addEntry();
       }
       myPC++;
     }
@@ -159,7 +160,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           bytes++;
           if (bytes == 17)
           {
-            addEntry(list);
+            addEntry();
             myBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             bytes = 1;
           }
@@ -171,9 +172,9 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
       if (pass == 3)
       {
-        addEntry(list);
+        addEntry();
         myBuf << "    '     ' ";
-        addEntry(list);
+        addEntry();
       }
     }
     else
@@ -238,7 +239,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
               /* Line information is already printed; append .byte since last instruction will
                  put recompilable object larger that original binary file */
               myBuf << ".byte $" << HEX2 << op;
-              addEntry(list);
+              addEntry();
 
               if (myPC == myAppData.end)
               {
@@ -249,7 +250,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
 
                 op = Debugger::debugger().peek(myPC+myOffset);  myPC++;
                 myBuf << ".byte $" << HEX2 << (int)op;
-                addEntry(list);
+                addEntry();
               }
             }
             myPCEnd = myAppData.end + myOffset;
@@ -273,7 +274,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
                 strcat(nextline,linebuff);
 
                 myBuf << nextline;
-                addEntry(list);
+                addEntry();
                 strcpy(nextline,"");
                 strcpy(nextlinebytes,"");
               }
@@ -348,7 +349,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             }
             else if (labfound == 3)
             {
-              sprintf(linebuff,"%s",ourIOMnemonic[ad-0x280]);
+              sprintf(linebuff,"%s",CartDebug::ourIOMnemonic[ad-0x280]);
               strcat(nextline,linebuff);
               sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
               strcat(nextlinebytes,linebuff);
@@ -381,7 +382,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             if (labfound == 2)
             {
               sprintf(linebuff,"    %s", ourLookup[op].rw_mode == READ ?
-                ourTIAMnemonicR[d1&0x0f] : ourTIAMnemonicW[d1&0x3f]);
+                CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
               strcat(nextline,linebuff);
             }
             else
@@ -434,7 +435,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             }
             else if (labfound == 3)
             {
-              sprintf(linebuff,"%s,X",ourIOMnemonic[ad-0x280]);
+              sprintf(linebuff,"%s,X",CartDebug::ourIOMnemonic[ad-0x280]);
               strcat(nextline,linebuff);
               sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
               strcat(nextlinebytes,linebuff);
@@ -483,7 +484,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             }
             else if (labfound == 3)
             {
-              sprintf(linebuff,"%s,Y",ourIOMnemonic[ad-0x280]);
+              sprintf(linebuff,"%s,Y",CartDebug::ourIOMnemonic[ad-0x280]);
               strcat(nextline,linebuff);
               sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
               strcat(nextlinebytes,linebuff);
@@ -542,7 +543,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             if (labfound == 2)
             {
               sprintf(linebuff,"    %s,X", ourLookup[op].rw_mode == READ ?
-                ourTIAMnemonicR[d1&0x0f] : ourTIAMnemonicW[d1&0x3f]);
+                CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
               strcat(nextline,linebuff);
             }
             else
@@ -565,7 +566,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             if (labfound == 2)
             {
               sprintf(linebuff,"    %s,Y", ourLookup[op].rw_mode == READ ?
-                ourTIAMnemonicR[d1&0x0f] : ourTIAMnemonicW[d1&0x3f]);
+                CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
               strcat(nextline,linebuff);
             }
             else
@@ -641,7 +642,7 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
           }
           else if (labfound == 3)
           {
-            sprintf(linebuff,"(%s)",ourIOMnemonic[ad-0x280]);
+            sprintf(linebuff,"(%s)",CartDebug::ourIOMnemonic[ad-0x280]);
             strcat(nextline,linebuff);
             sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
             strcat(nextlinebytes,linebuff);
@@ -678,11 +679,11 @@ void DiStella::disasm(CartDebug::DisassemblyList& list, uInt32 distart, int pass
             myBuf << " ";
         }
         myBuf << ";" << dec << (int)ourLookup[op].cycles << "'" << nextlinebytes;
-        addEntry(list);
+        addEntry();
         if (op == 0x40 || op == 0x60)
         {
           myBuf << "    '     ' ";
-          addEntry(list);
+          addEntry();
         }
 
         strcpy(nextline,"");
@@ -771,12 +772,6 @@ int DiStella::mark(uInt32 address, MarkType bit)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::check_bit(uInt8 bitflags, int i)
-{
-  return (int)(bitflags & i);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::showgfx(uInt8 c)
 {
   int i;
@@ -795,7 +790,7 @@ void DiStella::showgfx(uInt8 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::addEntry(CartDebug::DisassemblyList& list)
+void DiStella::addEntry()
 {
   const string& line = myBuf.str();
   CartDebug::DisassemblyTag tag;
@@ -821,7 +816,7 @@ void DiStella::addEntry(CartDebug::DisassemblyList& list)
       tag.bytes  = line.substr(29);
       break;
   }
-  list.push_back(tag);
+  myList.push_back(tag);
 
   myBuf.str("");
 }
@@ -1153,31 +1148,6 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /* fd */ { "SBC", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
   /* fe */ { "INC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
   /* ff */ { "isb", ABSOLUTE_X,  M_ABSX, WRITE, 7 }
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* DiStella::ourTIAMnemonicR[16] = {
-  "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
-  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$0E", "$0F"
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* DiStella::ourTIAMnemonicW[64] = {
-  "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
-  "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
-  "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
-  "AUDF1", "AUDV0", "AUDV1", "GRP0", "GRP1", "ENAM0", "ENAM1", "ENABL",
-  "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
-  "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2D", "$2E", "$2F",
-  "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37",
-  "$38", "$39", "$3A", "$3B", "$3C", "$3D", "$3E", "$3F"
-};
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* DiStella::ourIOMnemonic[24] = {
-  "SWCHA", "SWACNT", "SWCHB", "SWBCNT", "INTIM", "TIMINT", "$0286", "$0287",
-  "$0288", "$0289", "$028A", "$028B", "$028C", "$028D", "$028E", "$028F",
-  "$0290", "$0291", "$0292", "$0293", "TIM1T", "TIM8T", "TIM64T", "T1024T"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

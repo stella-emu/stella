@@ -81,7 +81,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 56,
+      kNumCommands   = 55,
       kMAX_ARG_TYPES = 10 // TODO: put in separate header file Command.hxx
     };
 
@@ -177,7 +177,6 @@ class DebuggerParser
     void executeSaverom();
     void executeSaveses();
     void executeSavestate();
-    void executeSavesym();
     void executeScanline();
     void executeStep();
     void executeTia();

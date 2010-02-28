@@ -1225,16 +1225,6 @@ void DebuggerParser::executeSavestate()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "savesym"
-void DebuggerParser::executeSavesym()
-{
-  if(debugger->cartDebug().saveSymbolFile(argStrings[0]))
-    commandResult = "saved symbols to file " + argStrings[0];
-  else
-    commandResult = red("I/O error");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "scanline"
 void DebuggerParser::executeScanline()
 {
@@ -1734,15 +1724,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeSavestate
-  },
-
-  {
-    "savesym",
-    "Save symbols to file",
-    true,
-    false,
-    { kARG_FILE, kARG_END_ARGS },
-    &DebuggerParser::executeSavesym
   },
 
   {
