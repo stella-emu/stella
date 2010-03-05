@@ -23,6 +23,10 @@
 #include "System.hxx"
 #include "CartAR.hxx"
 
+// TODO - properly handle read from write port functionality
+//        Note: do r/w port restrictions even exist for this scheme??
+//        Port to new CartDebug/disassembler scheme
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
@@ -402,6 +406,7 @@ int CartridgeAR::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeAR::bankCount()
 {
+  // TODO - this should depend on ROM size
   return 32;
 }
 

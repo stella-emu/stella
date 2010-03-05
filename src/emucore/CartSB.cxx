@@ -24,14 +24,16 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeSB::CartridgeSB(const uInt8* image, uInt32 size)
-  : mySize(size),
-    myLastBank((mySize >> 12) - 1)
+  : mySize(size)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
+
+  // Remember startup bank
+  myStartBank = (mySize >> 12) - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,8 +45,8 @@ CartridgeSB::~CartridgeSB()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeSB::reset()
 {
-  // Upon reset we switch to the last bank
-  bank(myLastBank);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -79,7 +81,7 @@ void CartridgeSB::install(System& system)
   }
 
   // Install pages for startup bank
-  bank(myLastBank);
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -89,7 +91,7 @@ uInt8 CartridgeSB::peek(uInt16 address)
 
   // Switch banks if necessary
   if ((address & 0x1800) == 0x0800)
-    bank(address & myLastBank);
+    bank(address & myStartBank);
 
   if(!(address & 0x1000))
   {
@@ -109,7 +111,7 @@ void CartridgeSB::poke(uInt16 address, uInt8 value)
 
   // Switch banks if necessary
   if((address & 0x1800) == 0x0800)
-    bank(address & myLastBank);
+    bank(address & myStartBank);
 
   if(!(address & 0x1000))
   {

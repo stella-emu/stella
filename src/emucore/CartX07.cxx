@@ -29,6 +29,9 @@ CartridgeX07::CartridgeX07(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -39,8 +42,8 @@ CartridgeX07::~CartridgeX07()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeX07::reset()
 {
-  // Upon reset we switch to bank 0
-  bank(0);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,8 +68,8 @@ void CartridgeX07::install(System& system)
     mySystem->setPageAccess(i >> shift, access);
   }
 
-  // Install pages for bank 0
-  bank(0);
+  // Install pages for the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -141,9 +141,6 @@ class CartridgeSB : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // Indicates the last bank
-    uInt16 myLastBank;
-
     // Previous Device's page access
     System::PageAccess myHotSpotPageAccess[8];
 };

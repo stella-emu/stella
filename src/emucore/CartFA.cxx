@@ -30,6 +30,9 @@ CartridgeFA::CartridgeFA(const uInt8* image)
 
   // This cart contains 256 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 256, 0x100, 0x00);
+
+  // Remember startup bank
+  myStartBank = 2;
 }
  
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,8 +47,8 @@ void CartridgeFA::reset()
   for(uInt32 i = 0; i < 256; ++i)
     myRAM[i] = mySystem->randGenerator().next();
 
-  // Upon reset we switch to bank 2
-  bank(2);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,8 +89,8 @@ void CartridgeFA::install(System& system)
     mySystem->setPageAccess(k >> shift, access);
   }
 
-  // Install pages for bank 2
-  bank(2);
+  // Install pages for the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

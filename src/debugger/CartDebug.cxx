@@ -20,6 +20,7 @@
 #include "Array.hxx"
 #include "System.hxx"
 #include "DiStella.hxx"
+#include "CpuDebug.hxx"
 #include "CartDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -34,6 +35,20 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   myRamAreas = areas;
   for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
+
+  // We need a start address for each potential bank
+  myStartAddresses = new uInt16[myConsole.cartridge().bankCount()];
+  for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
+    myStartAddresses[i] = 0;
+
+  // We know the address for the startup bank right now
+  myStartAddresses[myConsole.cartridge().startBank()] = myDebugger.dpeek(0xfffc);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartDebug::~CartDebug()
+{
+  delete[] myStartAddresses;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -172,7 +187,6 @@ string CartDebug::toString()
 bool CartDebug::disassemble(bool autocode)
 {
   bool changed = false;
-
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // ...
   changed = true; // FIXME
@@ -182,10 +196,26 @@ bool CartDebug::disassemble(bool autocode)
     myDisassembly.clear();
     myAddrToLineList.clear();
 
-    // TODO - add logic to determine correct start address to use
-    //        it will depend on the current bank and PC
-    uInt16 start = myDebugger.dpeek(0xfffc);
+    // We only use the reset vector when we're actually in the startup bank
+    // Otherwise, we look at previous accesses to this bank to begin
+    // If no previous address exists, use the current program counter
+    uInt16 start = myStartAddresses[getBank()];
 
+cerr << "start addresses: ";
+for(int i = 0; i < myConsole.cartridge().bankCount(); ++i) cerr << " " << setw(4) << hex << myStartAddresses[i];
+cerr << endl;
+cerr << "current bank = " << getBank() << ", start bank = " << myConsole.cartridge().startBank() << endl
+    << "reset = " << hex << 0xfffc << ", pc = " << hex << myDebugger.cpuDebug().pc() << endl
+    << "start = " << hex << start << endl;
+    if(start == 0)
+      start = myStartAddresses[getBank()] = myDebugger.cpuDebug().pc();
+cerr << "actual start = " << hex << start << endl << endl;
+
+    // For now, DiStella can't handle address space below 0x1000
+    if(!(start & 0x1000))
+      return true;
+
+autocode = false;
     DiStella distella(myDisassembly, start, autocode);
 
     // Parts of the disassembly will be accessed later in different ways

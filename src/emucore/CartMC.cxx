@@ -25,6 +25,7 @@
 // TODO - much more testing of this scheme is required
 //        No test ROMs exist as of 2009-11-08, so we can't be sure how
 //        accurate the emulation is
+//        Port to new CartDebug/disassembler scheme
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)

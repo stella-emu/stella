@@ -26,6 +26,7 @@
 
 // TODO - properly handle read from write port functionality
 //        Note: do r/w port restrictions even exist for this scheme??
+//        Port to new CartDebug/disassembler scheme
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size)

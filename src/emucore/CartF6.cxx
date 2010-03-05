@@ -27,6 +27,9 @@ CartridgeF6::CartridgeF6(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 16384);
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,8 +40,8 @@ CartridgeF6::~CartridgeF6()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF6::reset()
 {
-  // Upon reset we switch to bank 0
-  bank(0);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,8 +64,8 @@ void CartridgeF6::install(System& system)
     mySystem->setPageAccess(i >> shift, access);
   }
 
-  // Upon install we'll setup bank 0
-  bank(0);
+  // Upon install we'll setup the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

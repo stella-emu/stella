@@ -30,7 +30,7 @@ CartridgeF8::CartridgeF8(const uInt8* image, bool startlow)
 
   // Normally bank 1 is the reset bank, unless we're dealing with ROMs
   // that have been incorrectly created with banks in the opposite order
-  myResetBank = startlow ? 0 : 1;
+  myStartBank = startlow ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -42,7 +42,7 @@ CartridgeF8::~CartridgeF8()
 void CartridgeF8::reset()
 {
   // Upon reset we switch to the reset bank
-  bank(myResetBank);
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,8 +65,8 @@ void CartridgeF8::install(System& system)
     mySystem->setPageAccess(i >> shift, access);
   }
 
-  // Install pages for bank 1
-  bank(1);
+  // Install pages for the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

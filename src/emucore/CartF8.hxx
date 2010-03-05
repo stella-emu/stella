@@ -140,9 +140,6 @@ class CartridgeF8 : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // Indicates the bank to use when resetting
-    uInt16 myResetBank;
-
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
 };

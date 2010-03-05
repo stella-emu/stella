@@ -27,6 +27,9 @@ CartridgeF0::CartridgeF0(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
+
+  // Remember startup bank
+  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -95,7 +98,7 @@ void CartridgeF0::incbank()
   if(myBankLocked) return;
 
   // Remember what bank we're in
-  myCurrentBank ++;
+  myCurrentBank++;
   myCurrentBank &= 0x0F;
   uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();

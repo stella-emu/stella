@@ -81,7 +81,7 @@ class DiStella
 
   private:
     CartDebug::DisassemblyList& myList;
-    stringstream myBuf;
+    stringstream myDisasmBuf;
     queue<uInt16> myAddressQueue;
     uInt32 myOffset, myPC, myPCBeg, myPCEnd;
 

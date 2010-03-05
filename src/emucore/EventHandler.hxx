@@ -483,6 +483,12 @@ class EventHandler
     // Indicates whether or not we're in frying mode
     bool myFryingFlag;
 
+    // Indicates whether the key-combos tied to the Control key are
+    // being used or not (since Ctrl by default is the fire button,
+    // pressing it with a movement key could inadvertantly activate
+    // a Ctrl combo when it isn't wanted)
+    bool myUseCtrlKeyFlag;
+
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;
 

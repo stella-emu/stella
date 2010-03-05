@@ -16,10 +16,6 @@
 // $Id$
 //============================================================================
 
-#include <cstdio>
-#include <cstdlib>
-#include <cstring>
-
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "DiStella.hxx"
@@ -111,11 +107,8 @@ void DiStella::disasm(uInt32 distart, int pass)
   uInt32 ad;
   short amode;
   int bytes=0, labfound=0, addbranch=0;
-  char linebuff[256],nextline[256], nextlinebytes[256];
-  strcpy(linebuff,"");
-  strcpy(nextline,"");
-  strcpy(nextlinebytes,"");
-  myBuf.str("");
+  stringstream nextline, nextlinebytes;
+  myDisasmBuf.str("");
 
   /* pc=myAppData.start; */
   myPC = distart - myOffset;
@@ -129,13 +122,13 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         if (check_bit(labels[myPC],REFERENCED))
-          myBuf << HEX4 << myPC+myOffset << "'L'" << HEX4 << myPC+myOffset << "'";
+          myDisasmBuf << HEX4 << myPC+myOffset << "'L'" << HEX4 << myPC+myOffset << "'";
         else
-          myBuf << HEX4 << myPC+myOffset << "'     '";
+          myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
-        myBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << " ; ";
+        myDisasmBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << " ; ";
         showgfx(Debugger::debugger().peek(myPC+myOffset));
-        myBuf << " $" << HEX4 << myPC+myOffset;
+        myDisasmBuf << " $" << HEX4 << myPC+myOffset;
         addEntry();
       }
       myPC++;
@@ -147,7 +140,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       if (pass == 3)
       {
         bytes = 1;
-        myBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'.byte "
+        myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'.byte "
               << "$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
       }
       myPC++;
@@ -161,11 +154,11 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (bytes == 17)
           {
             addEntry();
-            myBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
+            myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             bytes = 1;
           }
           else
-            myBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
+            myDisasmBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
         }
         myPC++;
       }
@@ -173,7 +166,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       if (pass == 3)
       {
         addEntry();
-        myBuf << "    '     ' ";
+        myDisasmBuf << "    '     ' ";
         addEntry();
       }
     }
@@ -186,9 +179,9 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         if (check_bit(labels[myPC], REFERENCED))
-          myBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
+          myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
         else
-          myBuf << HEX4 << myPC+myOffset << "'     '";
+          myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
       }
 
       amode = ourLookup[op].addr_mode;
@@ -198,10 +191,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       {
         amode = IMPLIED;
         if (pass == 3)
-        {
-          sprintf(linebuff,".byte $%.2X ;",op);
-          strcat(nextline,linebuff);
-        }
+          nextline << ".byte $" << HEX2 << (int)op << " ;";
       }
 
       if (pass == 1)
@@ -217,10 +207,9 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
       else if (pass == 3)
       {
-        sprintf(linebuff,"%s",ourLookup[op].mnemonic);
-        strcat(nextline,linebuff);
-        sprintf(linebuff,"%02X ",op);
-        strcat(nextlinebytes,linebuff);
+        nextline << ourLookup[op].mnemonic;
+//        sprintf(linebuff,"%02X ",op);
+        nextlinebytes << HEX2 << (int)op << " ";
       }
 
       if (myPC >= myAppData.end)
@@ -238,18 +227,18 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               /* Line information is already printed; append .byte since last instruction will
                  put recompilable object larger that original binary file */
-              myBuf << ".byte $" << HEX2 << op;
+              myDisasmBuf << ".byte $" << HEX2 << (int)op;
               addEntry();
 
               if (myPC == myAppData.end)
               {
                 if (check_bit(labels[myPC],REFERENCED))
-                  myBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
+                  myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
                 else
-                  myBuf << HEX4 << myPC+myOffset << "'     '";
+                  myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
                 op = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-                myBuf << ".byte $" << HEX2 << (int)op;
+                myDisasmBuf << ".byte $" << HEX2 << (int)op;
                 addEntry();
               }
             }
@@ -269,14 +258,10 @@ void DiStella::disasm(uInt32 distart, int pass)
               {
                 /* Line information is already printed, but we can remove the
                    Instruction (i.e. BMI) by simply clearing the buffer to print */
-                strcpy(nextline,"");
-                sprintf(linebuff,".byte $%.2X",op);
-                strcat(nextline,linebuff);
-
-                myBuf << nextline;
+                myDisasmBuf << ".byte $" << HEX2 << (int)op;
                 addEntry();
-                strcpy(nextline,"");
-                strcpy(nextlinebytes,"");
+                nextline.str("");
+                nextlinebytes.str("");
               }
               myPC++;
               myPCEnd = myAppData.end + myOffset;
@@ -299,7 +284,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             if (pass == 3)
             {
               sprintf(linebuff,"\n");
-              strcat(nextline,linebuff);
+              strcat(_nextline,linebuff);
             }
           break;
         }
@@ -307,10 +292,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ACCUMULATOR:
         {
           if (pass == 3)
-          {
-            sprintf(linebuff,"    A");
-            strcat(nextline,linebuff);
-          }
+            nextline << "    A";
           break;
         }
 
@@ -331,43 +313,30 @@ void DiStella::disasm(uInt32 distart, int pass)
           else if (pass == 3)
           {
             if (ad < 0x100)
-            {
-              sprintf(linebuff,".w  ");
-              strcat(nextline,linebuff);
-            }
+              nextline << ".w  ";
             else
-            {
-              sprintf(linebuff,"    ");
-              strcat(nextline,linebuff);
-            }
+              nextline << "    ";
+
             if (labfound == 1)
             {
-              sprintf(linebuff,"L%.4X",ad);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "L" << HEX4 << ad;
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 3)
             {
-              sprintf(linebuff,"%s",CartDebug::ourIOMnemonic[ad-0x280]);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << CartDebug::ourIOMnemonic[ad-0x280];
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 4)
             {
               int tmp = (ad & myAppData.end)+myOffset;
-              sprintf(linebuff,"L%.4X",tmp);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(tmp&0xff),(tmp>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "L" << HEX4 << tmp;
+              nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
             }
             else
             {
-              sprintf(linebuff,"$%.4X",ad);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "$" << HEX4 << ad;
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
           }
           break;
@@ -380,18 +349,12 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (labfound == 2)
-            {
-              sprintf(linebuff,"    %s", ourLookup[op].rw_mode == READ ?
+              nextline << "    " << (ourLookup[op].rw_mode == READ ?
                 CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
-              strcat(nextline,linebuff);
-            }
             else
-            {
-              sprintf(linebuff,"    $%.2X ",d1);
-              strcat(nextline,linebuff);
-            }
-            sprintf(linebuff,"%02X", d1);
-            strcat(nextlinebytes,linebuff);
+              nextline << "    $" << HEX2 << (int)d1;
+
+            nextlinebytes << HEX2 << (int)d1;
           }
           break;
         }
@@ -401,10 +364,8 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
-            sprintf(linebuff,"    #$%.2X ",d1);
-            strcat(nextline,linebuff);
-            sprintf(linebuff,"%02X",d1);
-            strcat(nextlinebytes,linebuff);
+            nextline << "    #$" << HEX2 << (int)d1 << " ";
+            nextlinebytes << HEX2 << (int)d1;
           }
           break;
         }
@@ -416,44 +377,30 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (ad < 0x100)
-            {
-              sprintf(linebuff,".wx ");
-              strcat(nextline,linebuff);
-            }
+              nextline << ".wx ";
             else
-            {
-              sprintf(linebuff,"    ");
-              strcat(nextline,linebuff);
-            }
+              nextline << "    ";
 
             if (labfound == 1)
             {
-              sprintf(linebuff,"L%.4X,X",ad);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "L" << HEX4 << ad << ",X";
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 3)
             {
-              sprintf(linebuff,"%s,X",CartDebug::ourIOMnemonic[ad-0x280]);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",X";
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 4)
             {
               int tmp = (ad & myAppData.end)+myOffset;
-              sprintf(linebuff,"L%.4X,X",tmp);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(tmp&0xff),(tmp>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "L" << HEX4 << tmp << ",X";
+              nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
             }
             else
             {
-              sprintf(linebuff,"$%.4X,X",ad);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "$" << HEX4 << ad << ",X";
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
           }
           break;
@@ -466,43 +413,30 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (ad < 0x100)
-            {
-              sprintf(linebuff,".wy ");
-              strcat(nextline,linebuff);
-            }
+              nextline << ".wy ";
             else
-            {
-              sprintf(linebuff,"    ");
-              strcat(nextline,linebuff);
-            }
+              nextline << "    ";
+
             if (labfound == 1)
             {
-              sprintf(linebuff,"L%.4X,Y",ad);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "L" << HEX4 << ad << ",Y";
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 3)
             {
-              sprintf(linebuff,"%s,Y",CartDebug::ourIOMnemonic[ad-0x280]);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",Y";
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 4)
             {
               int tmp = (ad & myAppData.end)+myOffset;
-              sprintf(linebuff,"L%.4X,Y",tmp);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(tmp&0xff),(tmp>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "L" << HEX4 << tmp << ",Y";
+              nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
             }
             else
             {
-              sprintf(linebuff,"$%.4X,Y",ad);
-              strcat(nextline,linebuff);
-              sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-              strcat(nextlinebytes,linebuff);
+              nextline << "$" << HEX4 << ad << ",Y";
+              nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
           }
           break;
@@ -513,10 +447,8 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
-            sprintf(linebuff,"    ($%.2X,X)",d1);
-            strcat(nextline,linebuff);
-            sprintf(linebuff,"%02X",d1);
-            strcat(nextlinebytes,linebuff);
+            nextline << "    ($" << HEX2 << (int)d1 << ",X)";
+            nextlinebytes << HEX2 << (int)d1;
           }
           break;
         }
@@ -526,10 +458,8 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           if (pass == 3)
           {
-            sprintf(linebuff,"    ($%.2X),Y",d1);
-            strcat(nextline,linebuff);
-            sprintf(linebuff,"%02X",d1);
-            strcat(nextlinebytes,linebuff);
+            nextline << "    ($" << HEX2 << (int)d1 << "),Y";
+            nextlinebytes << HEX2 << (int)d1;
           }
           break;
         }
@@ -541,19 +471,13 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (labfound == 2)
-            {
-              sprintf(linebuff,"    %s,X", ourLookup[op].rw_mode == READ ?
-                CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
-              strcat(nextline,linebuff);
-            }
+              nextline << "    " << (ourLookup[op].rw_mode == READ ?
+                CartDebug::ourTIAMnemonicR[d1&0x0f] :
+                CartDebug::ourTIAMnemonicW[d1&0x3f])  << ",X";
             else
-            {
-              sprintf(linebuff,"    $%.2X,X",d1);
-              strcat(nextline,linebuff);
-            }
+              nextline << "    $" << HEX2 << (int)d1 << ",X";
           }
-          sprintf(linebuff,"%02X",d1);
-          strcat(nextlinebytes,linebuff);
+          nextlinebytes << HEX2 << (int)d1;
           break;
         }
 
@@ -564,19 +488,13 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (labfound == 2)
-            {
-              sprintf(linebuff,"    %s,Y", ourLookup[op].rw_mode == READ ?
-                CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
-              strcat(nextline,linebuff);
-            }
+              nextline << "    " << (ourLookup[op].rw_mode == READ ?
+                CartDebug::ourTIAMnemonicR[d1&0x0f] :
+                CartDebug::ourTIAMnemonicW[d1&0x3f])  << ",Y";
             else
-            {
-              sprintf(linebuff,"    $%.2X,Y",d1);
-              strcat(nextline,linebuff);
-            }
+              nextline << "    $" << HEX2 << (int)d1 << ",Y";
           }
-          sprintf(linebuff,"%02X",d1);
-          strcat(nextlinebytes,linebuff);
+          nextlinebytes << HEX2 << (int)d1;
           break;
         }
 
@@ -601,17 +519,11 @@ void DiStella::disasm(uInt32 distart, int pass)
           {
             int tmp = myPC+ad+myOffset;
             if (labfound == 1)
-            {
-              sprintf(linebuff,"    L%.4X",tmp);
-              strcat(nextline,linebuff);
-            }
+              nextline << "    L" << HEX4 << tmp;
             else
-            {
-              sprintf(linebuff,"    $%.4X",tmp);
-              strcat(nextline,linebuff);
-            }
-            sprintf(linebuff,"%02X %02X",(tmp&0xff),(tmp>>8));
-            strcat(nextlinebytes,linebuff);
+              nextline << "    $" << HEX4 << tmp;
+
+            nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
           }
           break;
         }
@@ -623,37 +535,18 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (ad < 0x100)
-            {
-              sprintf(linebuff,".ind ");
-              strcat(nextline,linebuff);
-            }
+              nextline << ".ind ";
             else
-            {
-              sprintf(linebuff,"    ");
-              strcat(nextline,linebuff);
-            }
+              nextline << "     ";
           }
           if (labfound == 1)
-          {
-            sprintf(linebuff,"(L%04X)",ad);
-            strcat(nextline,linebuff);
-            sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-            strcat(nextlinebytes,linebuff);
-          }
+            nextline << "(L" << HEX4 << ad << ")";
           else if (labfound == 3)
-          {
-            sprintf(linebuff,"(%s)",CartDebug::ourIOMnemonic[ad-0x280]);
-            strcat(nextline,linebuff);
-            sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-            strcat(nextlinebytes,linebuff);
-          }
+            nextline << "(" << CartDebug::ourIOMnemonic[ad-0x280] << ")";
           else
-          {
-            sprintf(linebuff,"($%04X)",ad);
-            strcat(nextline,linebuff);
-            sprintf(linebuff,"%02X %02X",(ad&0xff),(ad>>8));
-            strcat(nextlinebytes,linebuff);
-          }
+            nextline << "($" << HEX4 << ad << ")";
+
+          nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
           break;
         }
       } // end switch
@@ -671,23 +564,24 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
       else if (pass == 3)
       {
-        myBuf << nextline;
-        if (strlen(nextline) <= 15)
+        myDisasmBuf << nextline.str();;
+        uInt32 nextlinelen = nextline.str().length();
+        if (nextlinelen <= 15)
         {
           /* Print spaces to align cycle count data */
-          for (uInt32 charcnt=0;charcnt<15-strlen(nextline);charcnt++)
-            myBuf << " ";
+          for (uInt32 charcnt=0;charcnt<15-nextlinelen;charcnt++)
+            myDisasmBuf << " ";
         }
-        myBuf << ";" << dec << (int)ourLookup[op].cycles << "'" << nextlinebytes;
+        myDisasmBuf << ";" << dec << (int)ourLookup[op].cycles << "'" << nextlinebytes.str();
         addEntry();
         if (op == 0x40 || op == 0x60)
         {
-          myBuf << "    '     ' ";
+          myDisasmBuf << "    '     ' ";
           addEntry();
         }
 
-        strcpy(nextline,"");
-        strcpy(nextlinebytes,"");
+        nextline.str("");
+        nextlinebytes.str("");
       }
     }
   }  /* while loop */
@@ -776,29 +670,29 @@ void DiStella::showgfx(uInt8 c)
 {
   int i;
 
-  myBuf << "|";
+  myDisasmBuf << "|";
   for(i = 0;i < 8; i++)
   {
     if (c > 127)
-      myBuf << "X";
+      myDisasmBuf << "X";
     else
-      myBuf << " ";
+      myDisasmBuf << " ";
 
     c = c << 1;
   }
-  myBuf << "|";
+  myDisasmBuf << "|";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::addEntry()
 {
-  const string& line = myBuf.str();
+  const string& line = myDisasmBuf.str();
   CartDebug::DisassemblyTag tag;
 
   if(line[0] == ' ')
     tag.address = 0;
   else
-    myBuf >> setw(4) >> hex >> tag.address;
+    myDisasmBuf >> setw(4) >> hex >> tag.address;
 
   if(line[5] != ' ')
     tag.label = line.substr(5, 5);
@@ -818,7 +712,7 @@ void DiStella::addEntry()
   }
   myList.push_back(tag);
 
-  myBuf.str("");
+  myDisasmBuf.str("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -27,6 +27,9 @@ CartridgeEF::CartridgeEF(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
+
+  // Remember startup bank
+  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,8 +40,8 @@ CartridgeEF::~CartridgeEF()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeEF::reset()
 {
-  // Upon reset we switch to bank 1
-  bank(1);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,8 +64,8 @@ void CartridgeEF::install(System& system)
     mySystem->setPageAccess(i >> shift, access);
   }
 
-  // Install pages for bank 1
-  bank(1);
+  // Install pages for the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

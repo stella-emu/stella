@@ -37,6 +37,9 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
   // However, it may not be addressable all the time (it may be swapped out)
   // so probably most of the time, the area will point to ROM instead
   registerRamArea(0x1000, 1024, 0x00, 0x400);  // 1024 bytes RAM @ 0x1000
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,8 +55,8 @@ void Cartridge3E::reset()
   for(uInt32 i = 0; i < 32768; ++i)
     myRam[i] = mySystem->randGenerator().next();
 
-  // We'll map bank 0 into the first segment upon reset
-  bank(0);
+  // We'll map the startup bank into the first segment upon reset
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -88,8 +91,8 @@ void Cartridge3E::install(System& system)
     mySystem->setPageAccess(j >> shift, access);
   }
 
-  // Install pages for bank 0 into the first segment
-  bank(0);
+  // Install pages for the startup bank into the first segment
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -226,7 +229,7 @@ int Cartridge3E::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Cartridge3E::bankCount()
 {
-  return mySize / 2048;
+  return mySize >> 11;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

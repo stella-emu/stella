@@ -27,6 +27,9 @@ Cartridge0840::Cartridge0840(const uInt8* image)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,8 +40,8 @@ Cartridge0840::~Cartridge0840()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge0840::reset()
 {
-  // Upon reset we switch to bank 0
-  bank(0);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

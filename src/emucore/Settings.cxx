@@ -85,6 +85,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("pspeed", "6");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
+  setInternal("ctrlcombo", "true");
 
   // Snapshot options
   setInternal("ssdir", "");
@@ -361,6 +362,7 @@ void Settings::usage()
     << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
+    << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -md5instate   <1|0>          ROM MD5 information is saved in a state file, tying the state file to the ROM\n"
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"

@@ -150,6 +150,7 @@ void EventHandler::initialize()
   setActionMappings(kMenuMode);
 
   myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
+  myUseCtrlKeyFlag = myOSystem->settings().getBool("ctrlcombo");
 
   Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
   Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
@@ -480,7 +481,7 @@ void EventHandler::poll(uInt64 time)
           else
             handled = false;
         }
-        else if(kbdControl(mod) && state)
+        else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
         {
           // These keys work in all states
           if(key == SDLK_q)

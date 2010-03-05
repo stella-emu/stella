@@ -30,6 +30,9 @@ CartridgeF4SC::CartridgeF4SC(const uInt8* image)
 
   // This cart contains 128 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 128, 0x80, 0x00);
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -44,8 +47,8 @@ void CartridgeF4SC::reset()
   for(uInt32 i = 0; i < 128; ++i)
     myRAM[i] = mySystem->randGenerator().next();
 
-  // Upon reset we switch to bank 0
-  bank(0);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,8 +89,8 @@ void CartridgeF4SC::install(System& system)
     mySystem->setPageAccess(k >> shift, access);
   }
 
-  // Install pages for bank 0
-  bank(0);
+  // Install pages for the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

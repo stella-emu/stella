@@ -25,6 +25,7 @@
 
 // TODO - properly handle read from write port functionality
 //        Note: do r/w port restrictions even exist for this scheme??
+//        Port to new CartDebug/disassembler scheme
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
@@ -52,6 +53,9 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
   // Initialize the system cycles counter & fractional clock values
   mySystemCycles = 0;
   myFractionalClocks = 0.0;
+
+  // Remember startup bank
+  myStartBank = 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -66,8 +70,8 @@ void CartridgeDPC::reset()
   mySystemCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
 
-  // Upon reset we switch to bank 1
-  bank(1);
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

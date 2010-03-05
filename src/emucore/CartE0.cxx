@@ -22,6 +22,8 @@
 #include "System.hxx"
 #include "CartE0.hxx"
 
+// TODO - Port to new CartDebug/disassembler scheme
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::CartridgeE0(const uInt8* image)
 {

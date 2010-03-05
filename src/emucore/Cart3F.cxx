@@ -32,6 +32,9 @@ Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size)
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,7 +46,7 @@ Cartridge3F::~Cartridge3F()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::reset()
 {
-  // We'll map bank 0 into the first segment upon reset
+  // We'll map the startup bank into the first segment upon reset
   bank(0);
 }
 

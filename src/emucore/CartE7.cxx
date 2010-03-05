@@ -22,6 +22,9 @@
 #include "System.hxx"
 #include "CartE7.hxx"
 
+// TODO - Port to new CartDebug/disassembler scheme
+//        I'm not sure patch is working, since it doesn't consider RAM areas
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7::CartridgeE7(const uInt8* image)
 {
@@ -34,6 +37,9 @@ CartridgeE7::CartridgeE7(const uInt8* image)
   // so probably most of the time, the area will point to ROM instead
   registerRamArea(0x1000, 1024, 0x400, 0x00);  // 1024 bytes RAM @ 0x1000
   registerRamArea(0x1800, 256, 0x100, 0x00);   // 256 bytes RAM @ 0x1800
+
+  // Remember startup bank
+  myStartBank = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +56,7 @@ void CartridgeE7::reset()
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
-  bank(0);
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,7 +92,7 @@ void CartridgeE7::install(System& system)
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);
-  bank(0);
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

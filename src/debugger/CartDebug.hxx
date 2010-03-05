@@ -58,6 +58,7 @@ class CartDebug : public DebuggerSystem
 
   public:
     CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas);
+    virtual ~CartDebug();
 
     const DebuggerState& getState();
     const DebuggerState& getOldState() { return myOldState; }
@@ -187,7 +188,13 @@ class CartDebug : public DebuggerSystem
   private:
     CartState myState;
     CartState myOldState;
+
     RamAreaList myRamAreas;
+
+    // A pointer to an array of start addresses for each bank in a cart
+    // The startup bank will normally be 0xfffc, while the others are
+    // determined when the debugger is first opened
+    uInt16* myStartAddresses;
 
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display

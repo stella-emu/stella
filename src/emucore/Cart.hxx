@@ -40,6 +40,8 @@ typedef Common::Array<RamArea> RamAreaList;
 /**
   A cartridge is a device which contains the machine code for a 
   game and handles any bankswitching performed by the cartridge.
+  A 'bank' is defined as a 4K block that is visible in the
+  0x1000-0x2000 area (or its mirrors).
  
   @author  Bradford W. Mott
   @version $Id$
@@ -92,6 +94,15 @@ class Cartridge : public Device
     void lockBank()   { myBankLocked = true;  }
     void unlockBank() { myBankLocked = false; }
 
+    /**
+      Get the default startup bank for a cart.  This is the bank where
+      the system will look at address 0xFFFC to determine where to
+      start running code.
+
+      @return  The startup bank
+    */
+    uInt16 startBank();
+
 #ifdef DEBUGGER_SUPPORT
     const RamAreaList& ramAreas() { return myRamAreaList; }
 #endif
@@ -114,7 +125,12 @@ class Cartridge : public Device
     virtual int bank() = 0;
 
     /**
-      Query the number of banks supported by the cartridge.
+      Query the number of banks supported by the cartridge.  Note that
+      we're counting the number of 4K 'blocks' that can be swapped into
+      the 4K address space in the 2600.  As such, it's possible to have
+      a ROM that is larger than 4K *but* only consists of 1 bank.
+      Such cases occur when pages of ROM can be swapped in and out,
+      yet the 4K image is considered the same.
     */
     virtual int bankCount() = 0;
 
@@ -282,6 +298,9 @@ class Cartridge : public Device
     static bool isProbablyX07(const uInt8* image, uInt32 size);
 
   protected:
+    // The startup bank to use (where to look for the reset vector address)
+    uInt16 myStartBank;
+
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.
     bool myBankLocked;
