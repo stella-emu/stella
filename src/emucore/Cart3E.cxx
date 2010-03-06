@@ -114,7 +114,7 @@ uInt8 Cartridge3E::peek(uInt16 address)
         // Reading from the write port triggers an unwanted write
         uInt8 value = mySystem->getDataBusState(0xFF);
 
-        if(myBankLocked)
+        if(bankLocked())
           return value;
         else
         {
@@ -156,7 +156,7 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::bank(uInt16 bank)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   if(bank < 256)
   {
@@ -218,6 +218,7 @@ void Cartridge3E::bank(uInt16 bank)
       mySystem->setPageAccess(address >> shift, access);
     }
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -247,14 +248,14 @@ bool Cartridge3E::patch(uInt16 address, uInt8 value)
   else
     myImage[(address & 0x07FF) + mySize - 2048] = value;
 
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* Cartridge3E::getImage(int& size)
 {
   size = mySize;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -26,6 +26,7 @@
 // TODO - properly handle read from write port functionality
 //        Note: do r/w port restrictions even exist for this scheme??
 //        Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
@@ -392,7 +393,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::bank(uInt16 bank)
 {
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   bankConfiguration(bank);
 }

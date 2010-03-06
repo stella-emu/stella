@@ -26,6 +26,7 @@
 //        No test ROMs exist as of 2009-11-08, so we can't be sure how
 //        accurate the emulation is
 //        Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
@@ -147,7 +148,7 @@ uInt8 CartridgeMC::peek(uInt16 address)
         // Reading from the write port triggers an unwanted write
         uInt8 value = mySystem->getDataBusState(0xFF);
 
-        if(myBankLocked) return value;
+        if(bankLocked()) return value;
         else return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
       }
     }

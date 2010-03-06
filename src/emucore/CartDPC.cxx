@@ -26,6 +26,7 @@
 // TODO - properly handle read from write port functionality
 //        Note: do r/w port restrictions even exist for this scheme??
 //        Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
@@ -420,7 +421,7 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPC::bank(uInt16 bank)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember what bank we're in
   myCurrentBank = bank;

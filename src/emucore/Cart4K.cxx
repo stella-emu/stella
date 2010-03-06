@@ -37,6 +37,7 @@ Cartridge4K::~Cartridge4K()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4K::reset()
 {
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -96,14 +97,14 @@ int Cartridge4K::bankCount()
 bool Cartridge4K::patch(uInt16 address, uInt8 value)
 {
   myImage[address & 0x0FFF] = value;
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* Cartridge4K::getImage(int& size)
 {
   size = 4096;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

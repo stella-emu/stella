@@ -95,7 +95,7 @@ void CartridgeF0::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF0::incbank()
 {
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember what bank we're in
   myCurrentBank++;
@@ -116,12 +116,13 @@ void CartridgeF0::incbank()
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF0::bank(uInt16 bank)
 {
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   myCurrentBank = bank - 1;
   incbank();
@@ -143,14 +144,14 @@ int CartridgeF0::bankCount()
 bool CartridgeF0::patch(uInt16 address, uInt8 value)
 {
   myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeF0::getImage(int& size)
 {
   size = 65536;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -223,6 +223,7 @@ string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge::Cartridge()
   : myStartBank(0),
+    myBankChanged(true),
     myBankLocked(false)
 {
 }
@@ -254,6 +255,14 @@ bool Cartridge::save(ofstream& out)
 uInt16 Cartridge::startBank()
 {
   return myStartBank;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::bankChanged()
+{
+  bool changed = myBankChanged;
+  myBankChanged = false;
+  return changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

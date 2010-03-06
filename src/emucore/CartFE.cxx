@@ -23,6 +23,7 @@
 #include "CartFE.hxx"
 
 // TODO - Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFE::CartridgeFE(const uInt8* image)

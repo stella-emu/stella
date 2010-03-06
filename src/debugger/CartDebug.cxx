@@ -186,11 +186,9 @@ string CartDebug::toString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::disassemble(bool autocode)
 {
-  bool changed = false;
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // ...
-  changed = true; // FIXME
-
+  bool changed = myConsole.cartridge().bankChanged();
   if(changed)
   {
     myDisassembly.clear();
@@ -255,14 +253,13 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   // Fill the string with disassembled data
   start &= 0xFFF;
   ostringstream buffer;
-  for(uInt32 i = 0; i < list.size() && lines > 0; ++i)
+  for(uInt32 i = 0; i < list.size() && lines > 0; ++i, --lines)
   {
     const CartDebug::DisassemblyTag& tag = list[i];
     if((tag.address & 0xfff) >= start)
     {
       buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
              << ":  " << tag.disasm << "  " << tag.bytes << endl;
-      --lines;
     }
   }
 

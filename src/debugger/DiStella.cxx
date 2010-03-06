@@ -208,7 +208,6 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         nextline << ourLookup[op].mnemonic;
-//        sprintf(linebuff,"%02X ",op);
         nextlinebytes << HEX2 << (int)op << " ";
       }
 
@@ -282,10 +281,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         {
           if (op == 0x40 || op == 0x60)
             if (pass == 3)
-            {
-              sprintf(linebuff,"\n");
-              strcat(_nextline,linebuff);
-            }
+              nextline << "\n";
           break;
         }
     #endif

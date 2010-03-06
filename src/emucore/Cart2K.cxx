@@ -60,6 +60,7 @@ Cartridge2K::~Cartridge2K()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge2K::reset()
 {
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -118,14 +119,14 @@ int Cartridge2K::bankCount()
 bool Cartridge2K::patch(uInt16 address, uInt8 value)
 {
   myImage[address & myMask] = value;
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* Cartridge2K::getImage(int& size)
 {
   size = mySize;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

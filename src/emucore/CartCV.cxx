@@ -22,6 +22,9 @@
 #include "System.hxx"
 #include "CartCV.hxx"
 
+// TODO - Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
   : myROM(0),
@@ -113,7 +116,7 @@ uInt8 CartridgeCV::peek(uInt16 address)
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked)
+    if(bankLocked())
       return value;
     else
     {
@@ -163,7 +166,7 @@ bool CartridgeCV::patch(uInt16 address, uInt8 value)
 uInt8* CartridgeCV::getImage(int& size)
 {
   size = 2048;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

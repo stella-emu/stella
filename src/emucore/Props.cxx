@@ -229,9 +229,9 @@ void Properties::copy(const Properties& properties)
 void Properties::print() const
 {
   cout << get(Cartridge_MD5)          << "|"
+       << get(Cartridge_Name)         << "|"
        << get(Cartridge_Manufacturer) << "|"
        << get(Cartridge_ModelNo)      << "|"
-       << get(Cartridge_Name)         << "|"
        << get(Cartridge_Note)         << "|"
        << get(Cartridge_Rarity)       << "|"
        << get(Cartridge_Sound)        << "|"
@@ -273,9 +273,9 @@ PropertyType Properties::getPropertyType(const string& name)
 void Properties::printHeader()
 {
   cout << "Cartridge_MD5|"
+       << "Cartridge_Name|"
        << "Cartridge_Manufacturer|"
        << "Cartridge_ModelNo|"
-       << "Cartridge_Name|"
        << "Cartridge_Note|"
        << "Cartridge_Rarity|"
        << "Cartridge_Sound|"

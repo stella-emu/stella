@@ -108,7 +108,7 @@ uInt8 CartridgeF4SC::peek(uInt16 address)
     // Reading from the write port triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked)
+    if(bankLocked())
       return value;
     else
     {
@@ -140,7 +140,7 @@ void CartridgeF4SC::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF4SC::bank(uInt16 bank)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember what bank we're in
   myCurrentBank = bank;
@@ -160,6 +160,7 @@ void CartridgeF4SC::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,14 +179,14 @@ int CartridgeF4SC::bankCount()
 bool CartridgeF4SC::patch(uInt16 address, uInt8 value)
 {
   myImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeF4SC::getImage(int& size)
 {
   size = 32768;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

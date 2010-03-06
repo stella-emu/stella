@@ -24,6 +24,7 @@
 
 // TODO - Port to new CartDebug/disassembler scheme
 //        I'm not sure patch is working, since it doesn't consider RAM areas
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7::CartridgeE7(const uInt8* image)
@@ -116,7 +117,7 @@ uInt8 CartridgeE7::peek(uInt16 address)
     // Reading from the 1K write port @ $1000 triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked)
+    if(bankLocked())
       return value;
     else
     {
@@ -129,7 +130,7 @@ uInt8 CartridgeE7::peek(uInt16 address)
     // Reading from the 256B write port @ $1800 triggers an unwanted write
     uInt8 value = mySystem->getDataBusState(0xFF);
 
-    if(myBankLocked)
+    if(bankLocked())
       return value;
     else
     {
@@ -164,7 +165,7 @@ void CartridgeE7::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bankRAM(uInt16 bank)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember what bank we're in
   myCurrentRAM = bank;
@@ -197,7 +198,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bank(uInt16 slice)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember what bank we're in
   myCurrentSlice[0] = slice;

@@ -187,7 +187,7 @@ void RomWidget::loadConfig()
     myRomList->setList(list, state);
 
     // Restore the old bank, in case we inadvertently switched while reading.
-    dbg.setBank(myCurrentBank);
+//    dbg.setBank(myCurrentBank); // TODO - why is this here?
 
     myListIsDirty = false;
   }

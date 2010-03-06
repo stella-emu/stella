@@ -91,8 +91,9 @@ class Cartridge : public Device
       the banks before querying the cart state, otherwise reading values
       could inadvertantly cause a bankswitch to occur.
     */
-    void lockBank()   { myBankLocked = true;  }
-    void unlockBank() { myBankLocked = false; }
+    inline void lockBank()   { myBankLocked = true;  }
+    inline void unlockBank() { myBankLocked = false; }
+    inline bool bankLocked() { return myBankLocked;  }
 
     /**
       Get the default startup bank for a cart.  This is the bank where
@@ -102,6 +103,14 @@ class Cartridge : public Device
       @return  The startup bank
     */
     uInt16 startBank();
+
+    /**
+      Answer whether the bank has changed since the last time this
+      method was called.
+
+      @return  Whether the bank was changed
+    */
+    bool bankChanged();
 
 #ifdef DEBUGGER_SUPPORT
     const RamAreaList& ramAreas() { return myRamAreaList; }
@@ -301,15 +310,19 @@ class Cartridge : public Device
     // The startup bank to use (where to look for the reset vector address)
     uInt16 myStartBank;
 
-    // If myBankLocked is true, ignore attempts at bankswitching. This is used
-    // by the debugger, when disassembling/dumping ROM.
-    bool myBankLocked;
+    // Indicates if the bank has changed somehow (a bankswitch has occurred)
+    bool myBankChanged;
 
   private:
 #ifdef DEBUGGER_SUPPORT
     // Contains RamArea entries for those carts with accessible RAM.
     RamAreaList myRamAreaList;
 #endif
+
+    // If myBankLocked is true, ignore attempts at bankswitching. This is used
+    // by the debugger, when disassembling/dumping ROM.
+    bool myBankLocked;
+
     // Contains info about this cartridge in string format
     static string myAboutString;
 

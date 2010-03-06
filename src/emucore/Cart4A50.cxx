@@ -27,6 +27,7 @@
 // TODO - properly handle read from write port functionality
 //        Note: do r/w port restrictions even exist for this scheme??
 //        Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size)
@@ -122,7 +123,7 @@ uInt8 Cartridge4A50::peek(uInt16 address)
     else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
     {
       value = myImage[(address & 0xff) + 0x1ff00];
-      if(!myBankLocked && ((myLastData & 0xe0) == 0x60) &&
+      if(!bankLocked() && ((myLastData & 0xe0) == 0x60) &&
          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
         mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
                       ((address & 0x70) << 4);
@@ -168,7 +169,7 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
     }
     else if((address & 0x1f00) == 0x1f00)      // 256B region at 0x1f00 - 0x1fff
     {
-      if(!myBankLocked && ((myLastData & 0xe0) == 0x60) &&
+      if(!bankLocked() && ((myLastData & 0xe0) == 0x60) &&
          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
         mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
                       ((address & 0x70) << 4);
@@ -181,7 +182,7 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 {
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // This scheme contains so many hotspots that it's easier to just check
   // all of them
@@ -316,7 +317,7 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 uInt8* Cartridge4A50::getImage(int& size)
 {
   size = 131072;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

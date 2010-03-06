@@ -47,7 +47,7 @@ Cartridge3F::~Cartridge3F()
 void Cartridge3F::reset()
 {
   // We'll map the startup bank into the first segment upon reset
-  bank(0);
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,8 +82,8 @@ void Cartridge3F::install(System& system)
     mySystem->setPageAccess(j >> shift, access);
   }
 
-  // Install pages for bank 0 into the first segment
-  bank(0);
+  // Install pages for startup bank into the first segment
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -122,7 +122,7 @@ void Cartridge3F::poke(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3F::bank(uInt16 bank)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Make sure the bank they're asking for is reasonable
   if(((uInt32)bank << 11) < mySize)
@@ -150,6 +150,7 @@ void Cartridge3F::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x07FF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,14 +175,14 @@ bool Cartridge3F::patch(uInt16 address, uInt8 value)
   else
     myImage[(address & 0x07FF) + mySize - 2048] = value;
 
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* Cartridge3F::getImage(int& size)
 {
   size = mySize;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

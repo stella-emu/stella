@@ -23,6 +23,7 @@
 #include "CartE0.hxx"
 
 // TODO - Port to new CartDebug/disassembler scheme
+//        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::CartridgeE0(const uInt8* image)
@@ -127,7 +128,7 @@ void CartridgeE0::poke(uInt16 address, uInt8)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentZero(uInt16 slice)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember the new slice
   myCurrentSlice[0] = slice;
@@ -149,7 +150,7 @@ void CartridgeE0::segmentZero(uInt16 slice)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentOne(uInt16 slice)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember the new slice
   myCurrentSlice[1] = slice;
@@ -171,7 +172,7 @@ void CartridgeE0::segmentOne(uInt16 slice)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::segmentTwo(uInt16 slice)
 { 
-  if(myBankLocked) return;
+  if(bankLocked()) return;
 
   // Remember the new slice
   myCurrentSlice[2] = slice;
