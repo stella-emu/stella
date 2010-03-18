@@ -16,8 +16,8 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGE_DPC_HXX
-#define CARTRIDGE_DPC_HXX
+#ifndef CARTRIDGE_DPC_PLUS_HXX
+#define CARTRIDGE_DPC_PLUS_HXX
 
 class System;
 
@@ -25,14 +25,14 @@ class System;
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for Pitfall II.  There are two 4K program banks, a 
-  2K display bank, and the DPC chip.  For complete details on the DPC chip 
+  Cartridge class used for DPC+.  There are six 4K program banks, a 
+  4K display bank, and the DPC chip.  For complete details on the DPC chip 
   see David P. Crane's United States Patent Number 4,644,495.
 
-  @author  Bradford W. Mott
+  @author  Spiceware, Batari, Stephen Anthony
   @version $Id$
 */
-class CartridgeDPC : public Cartridge
+class CartridgeDPCPlus : public Cartridge
 {
   public:
     /**
@@ -40,12 +40,12 @@ class CartridgeDPC : public Cartridge
 
       @param image Pointer to the ROM image
     */
-    CartridgeDPC(const uInt8* image, uInt32 size);
+    CartridgeDPCPlus(const uInt8* image, uInt32 size);
  
     /**
       Destructor
     */
-    virtual ~CartridgeDPC();
+    virtual ~CartridgeDPCPlus();
 
   public:
     /**
@@ -125,7 +125,7 @@ class CartridgeDPC : public Cartridge
 
       @return The name of the object
     */
-    virtual string name() const { return "CartridgeDPC"; }
+    virtual string name() const { return "CartridgeDPCPlus"; }
 
   public:
     /**
@@ -160,13 +160,13 @@ class CartridgeDPC : public Cartridge
     uInt16 myCurrentBank;
 
     // The 8K program ROM image of the cartridge
-    uInt8 myProgramImage[8192];
+    uInt8 myProgramImage[4096 * 6];
 
     // The 2K display ROM image of the cartridge
-    uInt8 myDisplayImage[2048];
+    uInt8 myDisplayImage[4096];
 
     // Copy of the raw image, for use by getImage()
-    uInt8 myImageCopy[8192 + 2048 + 255];
+    uInt8 myImageCopy[4096 * 6 + 4096 + 255];
 
     // The top registers for the data fetchers
     uInt8 myTops[8];

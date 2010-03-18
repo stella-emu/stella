@@ -30,6 +30,7 @@
 #include "Cart4K.hxx"
 #include "CartAR.hxx"
 #include "CartDPC.hxx"
+#include "CartDPCPlus.hxx"
 #include "CartE0.hxx"
 #include "CartE7.hxx"
 #include "CartEF.hxx"
@@ -144,6 +145,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeAR(image, size, settings);
   else if(type == "DPC")
     cartridge = new CartridgeDPC(image, size);
+  else if(type == "DPC+")
+    cartridge = new CartridgeDPCPlus(image, size);
   else if(type == "E0")
     cartridge = new CartridgeE0(image);
   else if(type == "E7")
@@ -317,7 +320,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "4K";
   }
-  else if(size == 8192)  // 8K
+  else if(size == 8*1024)  // 8K
   {
     if(isProbablySC(image, size))
       type = "F8SC";
@@ -342,7 +345,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   {
     type = "DPC";
   }
-  else if(size == 12288)  // 12K
+  else if(size == 12*1024)  // 12K
   {
     // TODO - this should really be in a method that checks the first
     // 512 bytes of ROM and finds if either the lower 256 bytes or
@@ -350,7 +353,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     // all carts of 12K are CBS RAM Plus/FA.
     type = "FA";
   }
-  else if(size == 16384)  // 16K
+  else if(size == 16*1024)  // 16K
   {
     if(isProbablySC(image, size))
       type = "F6SC";
@@ -363,7 +366,11 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "F6";
   }
-  else if(size == 32768)  // 32K
+  else if(size == 28*1024)  // 28K
+  {
+    type = "DPC+";
+  }
+  else if(size == 32*1024)  // 32K
   {
     if(isProbablySC(image, size))
       type = "F4SC";
@@ -374,7 +381,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "F4";
   }
-  else if(size == 65536)  // 64K
+  else if(size == 64*1024)  // 64K
   {
     if(isProbably3E(image, size))
       type = "3E";

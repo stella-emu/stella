@@ -21,7 +21,7 @@
 #include <iostream>
 
 #include "System.hxx"
-#include "CartDPC.hxx"
+#include "CartDPCPlus.hxx"
 
 // TODO - properly handle read from write port functionality
 //        Note: do r/w port restrictions even exist for this scheme??
@@ -29,17 +29,17 @@
 //        Add bankchanged code
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
+CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
 {
   // Make a copy of the entire image as-is, for use by getImage()
-  // (this wastes 12K of RAM, should be controlled by a #ifdef)
-  memcpy(myImageCopy, image, BSPF_min(size, 8192u + 2048u + 255u));
+  // (this wastes 28K of RAM, should be controlled by a #ifdef)
+  memcpy(myImageCopy, image, size);
 
   // Copy the program ROM image into my buffer
-  memcpy(myProgramImage, image, 8192);
+  memcpy(myProgramImage, image, 4096 * 6);
 
   // Copy the display ROM image into my buffer
-  memcpy(myDisplayImage, image + 8192, 2048);
+  memcpy(myDisplayImage, image + 4096 * 6, 4096);
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
@@ -60,12 +60,12 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::~CartridgeDPC()
+CartridgeDPCPlus::~CartridgeDPCPlus()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::reset()
+void CartridgeDPCPlus::reset()
 {
   // Update cycles to the current system cycles
   mySystemCycles = mySystem->cycles();
@@ -76,7 +76,7 @@ void CartridgeDPC::reset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::systemCyclesReset()
+void CartridgeDPCPlus::systemCyclesReset()
 {
   // Get the current system cycle
   uInt32 cycles = mySystem->cycles();
@@ -86,7 +86,7 @@ void CartridgeDPC::systemCyclesReset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::install(System& system)
+void CartridgeDPCPlus::install(System& system)
 {
   mySystem = &system;
   uInt16 shift = mySystem->pageShift();
@@ -97,7 +97,7 @@ void CartridgeDPC::install(System& system)
 
   // Set the page accessing methods for the hot spots
   System::PageAccess access;
-  for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
+  for(uInt32 i = (0x1FF6 & ~mask); i < 0x2000; i += (1 << shift))
   {
     access.directPeekBase = 0;
     access.directPokeBase = 0;
@@ -114,12 +114,12 @@ void CartridgeDPC::install(System& system)
     mySystem->setPageAccess(j >> shift, access);
   }
 
-  // Install pages for bank 1
-  bank(1);
+  // Install pages for bank 5
+  bank(5);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPC::clockRandomNumberGenerator()
+inline void CartridgeDPCPlus::clockRandomNumberGenerator()
 {
   // Table for computing the input bit of the random number generator's
   // shift register (it's the NOT of the EOR of four bits)
@@ -137,7 +137,7 @@ inline void CartridgeDPC::clockRandomNumberGenerator()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPC::updateMusicModeDataFetchers()
+inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 {
   // Calculate the number of cycles since the last update
   Int32 cycles = mySystem->cycles() - mySystemCycles;
@@ -185,13 +185,13 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
         myFlags[x] = 0xff;
       }
 
-      myCounters[x] = (myCounters[x] & 0x0700) | (uInt16)newLow;
+      myCounters[x] = (myCounters[x] & 0x0F00) | (uInt16)newLow;
     }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartridgeDPC::peek(uInt16 address)
+uInt8 CartridgeDPCPlus::peek(uInt16 address)
 {
   address &= 0x0FFF;
 
@@ -259,14 +259,14 @@ uInt8 CartridgeDPC::peek(uInt16 address)
       // DFx display data read
       case 0x01:
       {
-        result = myDisplayImage[2047 - myCounters[index]];
+        result = myDisplayImage[ /* 4095 - */ myCounters[index]];
         break;
       }
 
       // DFx display data read AND'd w/flag
       case 0x02:
       {
-        result = myDisplayImage[2047 - myCounters[index]] & myFlags[index];
+        result = myDisplayImage[ /* 4095 - */ myCounters[index]] & myFlags[index];
         break;
       } 
 
@@ -286,7 +286,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
     // Clock the selected data fetcher's counter if needed
     if((index < 5) || ((index >= 5) && (!myMusicMode[index - 5])))
     {
-      myCounters[index] = (myCounters[index] - 1) & 0x07ff;
+      myCounters[index] = (myCounters[index] /*-*/ + 1) & 0x0fff;
     }
 
     return result;
@@ -296,17 +296,37 @@ uInt8 CartridgeDPC::peek(uInt16 address)
     // Switch banks if necessary
     switch(address)
     {
-      case 0x0FF8:
-        // Set the current bank to the lower 4k bank
-        bank(0);
-        break;
+    case 0x0FF6:
+      // Set the current bank to the first 4k bank
+      bank(0);
+      break;
+      
+    case 0x0FF7:
+      // Set the current bank to the second 4k bank
+      bank(1);
+      break;
+      
+    case 0x0FF8:
+      // Set the current bank to the third 4k bank
+      bank(2);
+      break;
 
-      case 0x0FF9:
-        // Set the current bank to the upper 4k bank
-        bank(1);
-        break;
+    case 0x0FF9:
+      // Set the current bank to the fourth 4k bank
+      bank(3);
+      break;
 
-      default:
+    case 0x0FFA:
+      // Set the current bank to the fifth 4k bank
+      bank(4);
+      break;
+      
+    case 0x0FFB:
+      // Set the current bank to the last 4k bank
+      bank(5);
+      break;
+      
+    default:
         break;
     }
     return myProgramImage[myCurrentBank * 4096 + address];
@@ -314,7 +334,7 @@ uInt8 CartridgeDPC::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::poke(uInt16 address, uInt8 value)
+void CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
 
@@ -353,7 +373,7 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
         {
           // Data fecther is in music mode so its low counter value
           // should be loaded from the top register not the poked value
-          myCounters[index] = (myCounters[index] & 0x0700) |
+          myCounters[index] = (myCounters[index] & 0x0F00) |
               (uInt16)myTops[index];
         }
         else
@@ -361,7 +381,7 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
           // Data fecther is either not a music mode data fecther or it
           // isn't in music mode so it's low counter value should be loaded
           // with the poked value
-          myCounters[index] = (myCounters[index] & 0x0700) | (uInt16)value;
+          myCounters[index] = (myCounters[index] & 0x0F00) | (uInt16)value;
         }
         break;
       }
@@ -369,7 +389,7 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
       // DFx counter high
       case 0x03:
       {
-        myCounters[index] = (((uInt16)value & 0x07) << 8) |
+        myCounters[index] = (((uInt16)value & 0x0F) << 8) |
             (myCounters[index] & 0x00ff);
 
         // Execute special code for music mode data fetchers
@@ -402,15 +422,35 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
     // Switch banks if necessary
     switch(address)
     {
-      case 0x0FF8:
-        // Set the current bank to the lower 4k bank
-        bank(0);
-        break;
-
-      case 0x0FF9:
-        // Set the current bank to the upper 4k bank
-        bank(1);
-        break;
+    case 0x0FF6:
+      // Set the current bank to the first 4k bank
+      bank(0);
+      break;
+      
+    case 0x0FF7:
+      // Set the current bank to the second 4k bank
+      bank(1);
+      break;
+      
+    case 0x0FF8:
+      // Set the current bank to the third 4k bank
+      bank(2);
+      break;
+      
+    case 0x0FF9:
+      // Set the current bank to the fourth 4k bank
+      bank(3);
+      break;
+      
+    case 0x0FFA:
+      // Set the current bank to the fifth 4k bank
+      bank(4);
+      break;
+      
+    case 0x0FFB:
+      // Set the current bank to the last 4k bank
+      bank(5);
+      break;
 
       default:
         break;
@@ -419,7 +459,7 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::bank(uInt16 bank)
+void CartridgeDPCPlus::bank(uInt16 bank)
 { 
   if(bankLocked()) return;
 
@@ -444,20 +484,20 @@ void CartridgeDPC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeDPC::bank()
+int CartridgeDPCPlus::bank()
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeDPC::bankCount()
+int CartridgeDPCPlus::bankCount()
 {
   // TODO - add support for debugger (support the display ROM somehow)
-  return 2;
+  return 6;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::patch(uInt16 address, uInt8 value)
+bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 {
   // TODO - check if this actually works
   myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
@@ -465,22 +505,22 @@ bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeDPC::getImage(int& size)
+uInt8* CartridgeDPCPlus::getImage(int& size)
 {
-  size = 8192 + 2048 + 255;
+  size = 4096 * 6 + 4096 + 255;
 
   int i;
-  for(i = 0; i < 8192; i++)
+  for(i = 0; i < 4096 * 6; i++)
     myImageCopy[i] = myProgramImage[i];
 
-  for(i = 0; i < 2048; i++)
-    myImageCopy[i + 8192] = myDisplayImage[i];
+  for(i = 0; i < 4096; i++)
+    myImageCopy[i + 4096 * 6] = myDisplayImage[i];
 
   return &myImageCopy[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::save(Serializer& out) const
+bool CartridgeDPCPlus::save(Serializer& out) const
 {
   const string& cart = name();
 
@@ -526,7 +566,7 @@ bool CartridgeDPC::save(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: CartridgeDPC::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeDPCPlus::save" << endl << "  " << msg << endl;
     return false;
   }
 
@@ -534,7 +574,7 @@ bool CartridgeDPC::save(Serializer& out) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartridgeDPC::load(Serializer& in)
+bool CartridgeDPCPlus::load(Serializer& in)
 {
   const string& cart = name();
 
@@ -582,7 +622,7 @@ bool CartridgeDPC::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: CartridgeDPC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeDPCPlus::load" << endl << "  " << msg << endl;
     return false;
   }
 

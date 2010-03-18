@@ -147,6 +147,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("AR (Supercharger)",          "AR"   );
   items.push_back("CV (Commavid extra ram)",    "CV"   );
   items.push_back("DPC (Pitfall II)",           "DPC"  );
+  items.push_back("DPC+ (Enhanced DPC)",        "DPC+" );
   items.push_back("E0 (8K Parker Bros)",        "E0"   );
   items.push_back("E7 (16K M-network)",         "E7"   );
   items.push_back("EF (64K H. Runner)",         "EF"   );
