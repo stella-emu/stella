@@ -19,50 +19,64 @@
 #include "bspf.hxx"
 #include "PackedBitArray.hxx"
 
-PackedBitArray::PackedBitArray(int length) {
-	size = length;
-	words = length / wordSize + 1;
-	bits = new unsigned int[ words ];
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PackedBitArray::PackedBitArray(uInt32 length)
+  : size(length),
+    words(length / wordSize + 1)
+{
+  bits = new uInt32[ words ];
 
-	for(int i=0; i<words; i++)
-		bits[i] = 0;
+  for(uInt32 i = 0; i < words; ++i)
+    bits[i] = 0;
 }
 
-PackedBitArray::~PackedBitArray() {
-	delete[] bits;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+PackedBitArray::~PackedBitArray()
+{
+  delete[] bits;
 }
 
-int PackedBitArray::isSet(unsigned int bit) {
-	unsigned int word = bit / wordSize;
-	bit %= wordSize;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 PackedBitArray::isSet(uInt32 bit) const
+{
+  uInt32 word = bit / wordSize;
+  bit %= wordSize;
 
-	return (bits[word] & (1 << bit));
+  return (bits[word] & (1 << bit));
 }
 
-int PackedBitArray::isClear(unsigned int bit) {
-	unsigned int word = bit / wordSize;
-	bit %= wordSize;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 PackedBitArray::isClear(uInt32 bit) const
+{
+  uInt32 word = bit / wordSize;
+  bit %= wordSize;
 
-	return !(bits[word] & (1 << bit));
+  return !(bits[word] & (1 << bit));
 }
 
-void PackedBitArray::toggle(unsigned int bit) {
-	unsigned int word = bit / wordSize;
-	bit %= wordSize;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PackedBitArray::toggle(uInt32 bit)
+{
+  uInt32 word = bit / wordSize;
+  bit %= wordSize;
 
-	bits[word] ^= (1 << bit);
+  bits[word] ^= (1 << bit);
 }
 
-void PackedBitArray::set(unsigned int bit) {
-	unsigned int word = bit / wordSize;
-	bit %= wordSize;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PackedBitArray::set(uInt32 bit)
+{
+  uInt32 word = bit / wordSize;
+  bit %= wordSize;
 
-	bits[word] |= (1 << bit);
+  bits[word] |= (1 << bit);
 }
 
-void PackedBitArray::clear(unsigned int bit) {
-	unsigned int word = bit / wordSize;
-	bit %= wordSize;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PackedBitArray::clear(uInt32 bit)
+{
+  uInt32 word = bit / wordSize;
+  bit %= wordSize;
 
-	bits[word] &= (~(1 << bit));
+  bits[word] &= (~(1 << bit));
 }

@@ -19,6 +19,8 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include <sstream>
+
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
 #include "Dialog.hxx"
@@ -28,20 +30,22 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& text)
-  : EditableWidget(boss, font, x, y - 1, w, h + 2)
+  : EditableWidget(boss, font, x, y - 1, w, h + 2),
+    _editable(true),
+    _changed(false)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kEditTextWidget;
 
-  _editable = true;
   startEditMode();  // We're always in edit mode
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditTextWidget::setEditString(const string& str)
+void EditTextWidget::setEditString(const string& str, bool changed)
 {
   EditableWidget::setEditString(str);
   _backupString = str;
+  _changed = changed;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,6 +78,10 @@ void EditTextWidget::drawWidget(bool hilite)
 //cerr << "EditTextWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
 
+  // Highlight changes
+  if(_changed)
+    s.fillRect(_x, _y, _w, _h, kDbgChangedColor);
+
   // Draw a thin frame around us.
   s.hLine(_x, _y, _x + _w - 1, kColor);
   s.hLine(_x, _y + _h - 1, _x +_w - 1, kShadowColor);
@@ -83,7 +91,8 @@ void EditTextWidget::drawWidget(bool hilite)
   // Draw the text
   adjustOffset();
   s.drawString(_font, _editString, _x + 2, _y + 2, getEditRect().width(),
-               _textcolor, kTextAlignLeft, -_editScrollOffset, false);
+               !_changed ? _textcolor : kDbgChangedTextColor,
+               kTextAlignLeft, -_editScrollOffset, false);
 
   // Draw the caret 
   drawCaret();

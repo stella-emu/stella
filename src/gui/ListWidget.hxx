@@ -104,9 +104,7 @@ class ListWidget : public EditableWidget
     int  _selectedItem;
     int  _highlightedItem;
     int  _currentKeyDown;
-
     bool _editMode;
-    bool _caretInverse;
 
     ScrollBarWidget* _scrollBar;
 

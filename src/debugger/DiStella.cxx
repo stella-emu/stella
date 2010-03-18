@@ -24,7 +24,7 @@
 DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
                    bool autocode)
   : myList(list),
-    labels(NULL) /* array of information about addresses-- can be from 2K-48K bytes in size */
+    labels(NULL) /* array of information about addresses */
 {
   while(!myAddressQueue.empty())
     myAddressQueue.pop();

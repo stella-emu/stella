@@ -54,9 +54,9 @@ class EditableWidget : public Widget, public CommandSender
     virtual bool wantsFocus() { return _editable; }
 
   protected:
-    virtual void startEditMode() { setFlags(WIDGET_WANTS_RAWDATA);   }
-    virtual void endEditMode()   { clearFlags(WIDGET_WANTS_RAWDATA); }
-    virtual void abortEditMode() { clearFlags(WIDGET_WANTS_RAWDATA); }
+    virtual void startEditMode() { setFlags(WIDGET_WANTS_RAWDATA);   _editString = ""; }
+    virtual void endEditMode()   { clearFlags(WIDGET_WANTS_RAWDATA); _editString = ""; }
+    virtual void abortEditMode() { clearFlags(WIDGET_WANTS_RAWDATA); _editString = ""; }
 
     virtual GUI::Rect getEditRect() const = 0;
     virtual int getCaretOffset() const;

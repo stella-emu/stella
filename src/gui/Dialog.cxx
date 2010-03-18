@@ -158,9 +158,9 @@ void Dialog::addToFocusList(WidgetArray& list, int id)
   // Make sure the array is large enough
   while((int)_ourFocusList.size() <= id)
   {
-	Focus f;
-	f.focusedWidget = NULL;
-	_ourFocusList.push_back(f);
+    Focus f;
+    f.focusedWidget = NULL;
+    _ourFocusList.push_back(f);
   }
 
   _ourFocusList[id].focusList.push_back(list);

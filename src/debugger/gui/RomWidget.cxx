@@ -25,11 +25,11 @@
 #include "DebuggerParser.hxx"
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
-#include "DataGridWidget.hxx"
-#include "PackedBitArray.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
 #include "EditTextWidget.hxx"
+#include "PopUpWidget.hxx"
+#include "StringList.hxx"
 #include "ContextMenu.hxx"
 #include "RomListWidget.hxx"
 #include "RomWidget.hxx"
@@ -45,45 +45,50 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   int xpos, ypos;
   StaticTextWidget* t;
+  WidgetArray wid;
 
-  // Create bank editable area
-  xpos = x + 40;  ypos = y + 7;
+  // Show current bank
+  xpos = x;  ypos = y + 7;
   t = new StaticTextWidget(boss, font, xpos, ypos,
-                           font.getStringWidth("Current bank: "),
+                           font.getStringWidth("Bank (current/total):"),
                            font.getFontHeight(),
-                           "Current bank:", kTextAlignLeft);
+                           "Bank (current/total):", kTextAlignLeft);
 
   xpos += t->getWidth() + 10;
-  myBank = new DataGridWidget(boss, font, xpos, ypos-2,
-                              1, 1, 4, 8, kBASE_10);
-  myBank->setTarget(this);
-  myBank->setRange(0, instance().debugger().cartDebug().bankCount());
-  if(instance().debugger().cartDebug().bankCount() <= 1)
-    myBank->setEditable(false);
-  addFocusWidget(myBank);
+  myBank = new EditTextWidget(boss, font, xpos, ypos-2,
+                              4 * font.getMaxCharWidth(),
+                              font.getLineHeight(), "");
+  myBank->setEditable(false);
 
   // Show number of banks
-  xpos += myBank->getWidth() + 45;
-  t = new StaticTextWidget(boss, font, xpos, ypos,
-                           font.getStringWidth("Total banks: "),
-                           font.getFontHeight(),
-                           "Total banks:", kTextAlignLeft);
-
-  xpos += t->getWidth() + 10;
-  myBankCount = new EditTextWidget(boss, font, xpos, ypos-2,
-                                   font.getStringWidth("XXXX"),
-                                   font.getLineHeight(), "");
+  xpos += myBank->getWidth() + 5;
+  myBankCount =
+    new EditTextWidget(boss, font, xpos, ypos-2, 4 * font.getMaxCharWidth(),
+                       font.getLineHeight(), "");
   myBankCount->setEditable(false);
+
+  // 'Autocode' setting for Distella
+  xpos += myBankCount->getWidth() + 20;
+  StringMap items;
+  items.push_back("Never", "0");
+  items.push_back("Always", "1");
+  items.push_back("Automatic", "2");
+  myAutocode =
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("Automatic"),
+                    font.getLineHeight(), items,
+                    "Determine code: ", font.getStringWidth("Determine code: "),
+                    kAutocodeChanged);
+  myAutocode->setTarget(this);
+  addFocusWidget(myAutocode);
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
-  GUI::Rect dialog = instance().debugger().getDialogBounds();
+  const GUI::Rect& dialog = instance().debugger().getDialogBounds();
   int w = dialog.width() - x - 5, h = dialog.height() - ypos - 3;
 
   myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
   myRomList->setTarget(this);
   myRomList->myMenu->setTarget(this);
-  myRomList->setStyle(kSolidFill);
   addFocusWidget(myRomList);
 
   // Calculate real dimensions
@@ -95,6 +100,9 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   label.push_back("Filename: ");
   mySaveRom = new InputTextDialog(boss, font, label);
   mySaveRom->setTarget(this);
+
+  // By default, we try to automatically determine code vs. data sections
+  myAutocode->setSelected(instance().settings().getString("autocode"), "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,16 +112,45 @@ RomWidget::~RomWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::loadConfig()
+{
+  Debugger& dbg = instance().debugger();
+  CartDebug& cart = dbg.cartDebug();
+  bool bankChanged = myCurrentBank != cart.getBank();
+  myCurrentBank = cart.getBank();
+
+  // Fill romlist the current bank of source or disassembly
+  myListIsDirty |= cart.disassemble(myAutocode->getSelectedTag(), myListIsDirty);
+  if(myListIsDirty)
+  {
+    myRomList->setList(cart.disassemblyList(), dbg.breakpoints());
+    myListIsDirty = false;
+  }
+
+  // Update romlist to point to current PC
+  int pcline = cart.addressToLine(dbg.cpuDebug().pc());
+  if(pcline > 0)
+    myRomList->setHighlighted(pcline);
+
+  // Set current bank and number of banks
+  myBank->setEditString(instance().debugger().valueToString(myCurrentBank, kBASE_10), bankChanged);
+  myBankCount->setEditString(instance().debugger().valueToString(cart.bankCount(), kBASE_10));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kListItemChecked:
-      setBreak(data);
+    case kRLBreakpointChangedCmd:
+      // 'id' is the line in the disassemblylist to be accessed
+      // 'data' is the state of the breakpoint at 'id'
+      setBreak(id, data);
       break;
 
-    case kListItemDataChangedCmd:
-      patchROM(data, myRomList->getSelectedString());
+    case kRLRomChangedCmd:
+      // 'data' is the line in the disassemblylist to be accessed
+      patchROM(data, myRomList->getEditString());
       break;
 
     case kCMenuItemSelectedCmd:
@@ -132,6 +169,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
+    case kAutocodeChanged:
+      instance().settings().setString("autocode", myAutocode->getSelectedTag());
+      invalidate();
+      loadConfig();
+      break;
+
     case kRomNameEntered:
     {
       const string& rom = mySaveRom->getResult();
@@ -144,108 +187,43 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
     }
-
-    case kDGItemDataChangedCmd:
-    {
-      int bank = myBank->getSelectedValue();
-      instance().debugger().setBank(bank);
-    }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::loadConfig()
-{
-  Debugger& dbg = instance().debugger();
-  CartDebug& cart = dbg.cartDebug();
-  bool bankChanged = myCurrentBank != cart.getBank();
-  myCurrentBank = cart.getBank();
-
-  // Fill romlist the current bank of source or disassembly
-  // Only reload full bank when necessary
-  // TODO - bank changes aren't the only time that the disassembly needs to
-  //        be redone; ROMs which dynamically change cart address space and
-  //        have self-modifying code need to be taken into account
-  //        As well, we don't always start from the 0xfffc; this only
-  //        happens in the startup bank
-  myListIsDirty |= cart.disassemble(true);
-  if(myListIsDirty)
-  {
-    const CartDebug::DisassemblyList& list = cart.disassemblyList();
-    BoolArray state;
-
-    PackedBitArray& bp = dbg.breakpoints();
-    for(uInt32 i = 0; i < list.size(); ++i)
-    {
-      const CartDebug::DisassemblyTag& tag = list[i];
-      if(tag.address != 0 && bp.isSet(tag.address))
-        state.push_back(true);
-      else
-        state.push_back(false);
-    }
-
-    myRomList->setList(list, state);
-
-    // Restore the old bank, in case we inadvertently switched while reading.
-//    dbg.setBank(myCurrentBank); // TODO - why is this here?
-
-    myListIsDirty = false;
-  }
-
-  // Update romlist to point to current PC
-  int pcline = cart.addressToLine(dbg.cpuDebug().pc());
-  if(pcline > 0)
-    myRomList->setHighlighted(pcline);
-
-  // Set current bank
-  IntArray alist;
-  IntArray vlist;
-  BoolArray changed;
-
-  alist.push_back(-1);
-  vlist.push_back(cart.getBank());
-  changed.push_back(bankChanged);
-  myBank->setList(alist, vlist, changed);
-
-  // Indicate total number of banks
-  myBankCount->setEditString(dbg.valueToString(cart.bankCount(), kBASE_10));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::setBreak(int data)
+void RomWidget::setBreak(int disasm_line, bool state)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassemblyList();
-  if(data >= (int)list.size())  return;
+  if(disasm_line >= (int)list.size())  return;
 
-  bool state = myRomList->getState(data);
-  if(list[data].address != 0)
-    instance().debugger().setBreakPoint(list[data].address, state);
+  if(list[disasm_line].address != 0)
+    instance().debugger().setBreakPoint(list[disasm_line].address, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::setPC(int data)
+void RomWidget::setPC(int disasm_line)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassemblyList();
-  if(data >= (int)list.size())  return;
+  if(disasm_line >= (int)list.size())  return;
 
-  if(list[data].address != 0)
+  if(list[disasm_line].address != 0)
   {
     ostringstream command;
-    command << "pc #" << list[data].address;
+    command << "pc #" << list[disasm_line].address;
     instance().debugger().run(command.str());
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomWidget::patchROM(int data, const string& bytes)
+void RomWidget::patchROM(int disasm_line, const string& bytes)
 {
   const CartDebug::DisassemblyList& list =
       instance().debugger().cartDebug().disassemblyList();
-  if(data >= (int)list.size())  return;
+  if(disasm_line >= (int)list.size())  return;
 
-  if(list[data].address != 0)
+  if(list[disasm_line].address != 0)
   {
     ostringstream command;
 
@@ -255,7 +233,7 @@ void RomWidget::patchROM(int data, const string& bytes)
     BaseFormat oldbase = instance().debugger().parser().base();
     instance().debugger().parser().setBase(kBASE_16);
 
-    command << "rom #" << list[data].address << " " << bytes;
+    command << "rom #" << list[disasm_line].address << " " << bytes;
     instance().debugger().run(command.str());
 
     // Restore previous base

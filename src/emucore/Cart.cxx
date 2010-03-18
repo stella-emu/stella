@@ -206,7 +206,7 @@ string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
   image += i*size;
 
   // We need a new md5 and name
-  md5  = MD5(image, size);
+  md5 = MD5(image, size);
   ostringstream buf;
   buf << " [G" << (i+1) << "]";
   id = buf.str();
@@ -347,7 +347,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     // TODO - this should really be in a method that checks the first
     // 512 bytes of ROM and finds if either the lower 256 bytes or
     // higher 256 bytes are all the same.  For now, we assume that
-    // all carts of 12K are CBS RAM Plus/FASC.
+    // all carts of 12K are CBS RAM Plus/FA.
     type = "FA";
   }
   else if(size == 16384)  // 16K

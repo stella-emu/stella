@@ -125,6 +125,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("fastscbios", "false");
   setExternal("romloadcount", "0");
   setExternal("maxres", "0x0");
+
+  // Debugger options
+  setInternal("autocode", "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -396,6 +399,7 @@ void Settings::usage()
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
     << endl
+    << "   -autocode     <0|1|2>       Set automatic code vs. data determination in the disassembler\n"
     << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"

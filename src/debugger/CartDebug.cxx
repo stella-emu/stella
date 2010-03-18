@@ -184,50 +184,45 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::disassemble(bool autocode)
+bool CartDebug::disassemble(const string& autocode, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
-  // ...
-  bool changed = myConsole.cartridge().bankChanged();
+  // Also check if the current PC is in the current list
+  uInt16 PC = myDebugger.cpuDebug().pc();
+  bool changed = force || myConsole.cartridge().bankChanged() ||
+                 (addressToLine(PC) == -1);
   if(changed)
   {
-    myDisassembly.clear();
-    myAddrToLineList.clear();
-
     // We only use the reset vector when we're actually in the startup bank
     // Otherwise, we look at previous accesses to this bank to begin
     // If no previous address exists, use the current program counter
     uInt16 start = myStartAddresses[getBank()];
+    if(start == 0)
+      start = myStartAddresses[getBank()] = PC;
 
+    // For now, DiStella can't handle address space below 0x1000
+    if(!(start & 0x1000))
+      return false;
+
+#if 0
 cerr << "start addresses: ";
 for(int i = 0; i < myConsole.cartridge().bankCount(); ++i) cerr << " " << setw(4) << hex << myStartAddresses[i];
 cerr << endl;
 cerr << "current bank = " << getBank() << ", start bank = " << myConsole.cartridge().startBank() << endl
-    << "reset = " << hex << 0xfffc << ", pc = " << hex << myDebugger.cpuDebug().pc() << endl
-    << "start = " << hex << start << endl;
-    if(start == 0)
-      start = myStartAddresses[getBank()] = myDebugger.cpuDebug().pc();
-cerr << "actual start = " << hex << start << endl << endl;
+    << "reset = " << hex << 0xfffc << ", pc = " << hex << PC << endl
+    << "start = " << hex << start << endl << endl;
+#endif
 
-    // For now, DiStella can't handle address space below 0x1000
-    if(!(start & 0x1000))
-      return true;
-
-autocode = false;
-    DiStella distella(myDisassembly, start, autocode);
-
-    // Parts of the disassembly will be accessed later in different ways
-    // We place those parts in separate maps, to speed up access
-    for(uInt32 i = 0; i < myDisassembly.size(); ++i)
+    // Check whether to use the 'autocode' functionality from Distella
+    if(autocode == "0")       // 'never'
+      fillDisassemblyList(start, false, PC);
+    else if(autocode == "1")  // always
+      fillDisassemblyList(start, true, PC);
+    else                      // automatic
     {
-      const DisassemblyTag& tag = myDisassembly[i];
-
-      // Create a mapping from addresses to line numbers
-      if(tag.address != 0)
-        myAddrToLineList.insert(make_pair(tag.address, i));
-
-      // TODO - look at list, extract address to label mappings
-      //        we need these for label support in the UI and promptwidget
+      // First try with autocode on, then turn off if PC isn't found
+      if(!fillDisassemblyList(start, true, PC))
+        fillDisassemblyList(start, false, PC);
     }
   }
 
@@ -235,10 +230,42 @@ autocode = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartDebug::fillDisassemblyList(uInt16 start, bool autocode, uInt16 search)
+{
+  bool found = false;
+
+  myDisassembly.clear();
+  DiStella distella(myDisassembly, start, autocode);
+
+  // Parts of the disassembly will be accessed later in different ways
+  // We place those parts in separate maps, to speed up access
+  myAddrToLineList.clear();
+  for(uInt32 i = 0; i < myDisassembly.size(); ++i)
+  {
+    const DisassemblyTag& tag = myDisassembly[i];
+
+    // Only non-zero addresses are valid
+    if(tag.address != 0)
+    {
+      // Create a mapping from addresses to line numbers
+      myAddrToLineList.insert(make_pair(tag.address, i));
+
+      // Did we find the search value?
+      if(tag.address == search)
+        found = true;
+    }
+
+    // TODO - look at list, extract address to label mappings
+    //        we need these for label support in the UI and promptwidget
+  }
+  return found;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::addressToLine(uInt16 address) const
 {
   map<uInt16, int>::const_iterator iter = myAddrToLineList.find(address);
-  return iter != myAddrToLineList.end() ? iter->second : 0;
+  return iter != myAddrToLineList.end() ? iter->second : -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -49,8 +49,7 @@ class DiStella
       @param start    The address at which to start disassembly
       @param autocode If enabled, try to determine code vs. data sections
     */
-    DiStella(CartDebug::DisassemblyList& list, uInt16 start,
-             bool autocode = true);
+    DiStella(CartDebug::DisassemblyList& list, uInt16 start, bool autocode = true);
 
     ~DiStella();
 

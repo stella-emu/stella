@@ -33,7 +33,7 @@ class EditTextWidget : public EditableWidget
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& text);
 
-    void setEditString(const string& str);
+    void setEditString(const string& str, bool changed = false);
 
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
 
@@ -50,6 +50,7 @@ class EditTextWidget : public EditableWidget
   protected:
     string _backupString;
     int    _editable;
+    bool   _changed;
 };
 
 #endif

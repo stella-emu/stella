@@ -23,27 +23,28 @@
 
 #define wordSize ( (sizeof(unsigned int)) * 8)
 
-class PackedBitArray {
-	public:
-		PackedBitArray(int length);
-		~PackedBitArray();
+class PackedBitArray
+{
+  public:
+    PackedBitArray(uInt32 length);
+    ~PackedBitArray();
 
-		int isSet(unsigned int bit);
-		int isClear(unsigned int bit);
+    uInt32 isSet(uInt32 bit) const;
+    uInt32 isClear(uInt32 bit) const;
 
-		void set(unsigned int bit);
-		void clear(unsigned int bit);
-		void toggle(unsigned int bit);
+    void set(uInt32 bit);
+    void clear(uInt32 bit);
+    void toggle(uInt32 bit);
 
-	private:
-		// number of bits in the array:
-		int size;
+  private:
+    // number of bits in the array:
+    uInt32 size;
 
-		// number of unsigned ints (size/wordSize):
-		int words;
+    // number of unsigned ints (size/wordSize):
+    uInt32 words;
 
-		// the array itself:
-		unsigned int *bits;
+    // the array itself:
+    uInt32* bits;
 };
 
 #endif

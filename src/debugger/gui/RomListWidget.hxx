@@ -22,14 +22,24 @@
 #ifndef ROM_LIST_WIDGET_HXX
 #define ROM_LIST_WIDGET_HXX
 
-class CheckboxWidget;
 class ContextMenu;
+class ScrollBarWidget;
+class PackedBitArray;
 
+#include "Array.hxx"
+#include "StringList.hxx"
 #include "CheckListWidget.hxx"
 #include "CartDebug.hxx"
+#include "EditableWidget.hxx"
+
+// Some special commands for this widget
+enum {
+  kRLBreakpointChangedCmd = 'RLbp',  // click on the checkbox for a breakpoint
+  kRLRomChangedCmd        = 'RLpr'   // ROM item data changed - 'data' will be item index
+};
 
 /** RomListWidget */
-class RomListWidget : public CheckListWidget
+class RomListWidget : public EditableWidget
 {
   friend class RomWidget;
 
@@ -38,24 +48,60 @@ class RomListWidget : public CheckListWidget
                     int x, int y, int w, int h);
     virtual ~RomListWidget();
 
-    void setList(const CartDebug::DisassemblyList& list, const BoolArray& state);
+    void setList(const CartDebug::DisassemblyList& list, const PackedBitArray& state);
+
+    int getSelected() const        { return _selectedItem; }
+    int getHighlighted() const     { return _highlightedItem; }
+    void setHighlighted(int item);
+
+    const string& getEditString() const;
+    void startEditMode();
+    void endEditMode();
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseUp(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);
+    bool handleKeyDown(int ascii, int keycode, int modifiers);
+    bool handleKeyUp(int ascii, int keycode, int modifiers);
     bool handleEvent(Event::Type e);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void drawWidget(bool hilite);
     GUI::Rect getLineRect() const;
     GUI::Rect getEditRect() const;
 
+    int findItem(int x, int y) const;
+    void recalc();
+
     bool tryInsertChar(char c, int pos);
 
+    void abortEditMode();
+    void lostFocusWidget();
+    void scrollToSelected()    { scrollToCurrent(_selectedItem);    }
+    void scrollToHighlighted() { scrollToCurrent(_highlightedItem); }
+
   private:
-    ContextMenu* myMenu;
+    void scrollToCurrent(int item);
+
+  private:
+    ContextMenu*     myMenu;
+    ScrollBarWidget* myScrollBar;
+
     int myLabelWidth;
     int myBytesWidth;
 
+    int  _rows;
+    int  _cols;
+    int  _currentPos;
+    int  _selectedItem;
+    int  _highlightedItem;
+    int  _currentKeyDown;
+    bool _editMode;
+
     const CartDebug::DisassemblyList* myList;
+    const PackedBitArray* myBPState;
+    Common::Array<CheckboxWidget*> myCheckList;
 };
 
 #endif

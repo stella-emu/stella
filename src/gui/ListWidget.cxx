@@ -41,7 +41,6 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _highlightedItem(-1),
     _currentKeyDown(0),
     _editMode(false),
-    _caretInverse(true),
     _quickSelect(quickSelect),
     _quickSelectTime(0)
 {
