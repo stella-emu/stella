@@ -296,6 +296,8 @@
 		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
+		DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */; };
+		DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */; };
 		DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */; };
 		DCC527D010B9DA19005E1287 /* Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527C810B9DA19005E1287 /* Device.cxx */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
@@ -674,6 +676,8 @@
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartX07.hxx; path = ../emucore/CartX07.hxx; sourceTree = SOURCE_ROOT; };
 		DCA43BFF10DED5890070CEFD /* Info-Stella.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "Info-Stella.plist"; sourceTree = "<group>"; };
+		DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDPCPlus.cxx; path = ../emucore/CartDPCPlus.cxx; sourceTree = SOURCE_ROOT; };
+		DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDPCPlus.hxx; path = ../emucore/CartDPCPlus.hxx; sourceTree = SOURCE_ROOT; };
 		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC527C810B9DA19005E1287 /* Device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Device.cxx; path = ../emucore/Device.cxx; sourceTree = SOURCE_ROOT; };
@@ -917,6 +921,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */,
+				DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */,
 				DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */,
 				DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */,
 				DCC527C810B9DA19005E1287 /* Device.cxx */,
@@ -1369,6 +1375,7 @@
 				DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */,
 				DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */,
 				DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */,
+				DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1605,6 +1612,7 @@
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
+				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1809,7 +1817,7 @@
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",

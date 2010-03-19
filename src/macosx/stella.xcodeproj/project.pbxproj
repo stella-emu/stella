@@ -276,6 +276,8 @@
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
 		DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */; };
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
+		DC64EB201152F9C000DC9140 /* CartDPCPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC64EB1E1152F9C000DC9140 /* CartDPCPlus.cxx */; };
+		DC64EB211152F9C000DC9140 /* CartDPCPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC64EB1F1152F9C000DC9140 /* CartDPCPlus.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
@@ -655,6 +657,8 @@
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaMediumFont.hxx; path = ../gui/StellaMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherFilterDialog.cxx; path = ../gui/LauncherFilterDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC64EB1E1152F9C000DC9140 /* CartDPCPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDPCPlus.cxx; path = ../emucore/CartDPCPlus.cxx; sourceTree = SOURCE_ROOT; };
+		DC64EB1F1152F9C000DC9140 /* CartDPCPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDPCPlus.hxx; path = ../emucore/CartDPCPlus.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
@@ -917,6 +921,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC64EB1E1152F9C000DC9140 /* CartDPCPlus.cxx */,
+				DC64EB1F1152F9C000DC9140 /* CartDPCPlus.hxx */,
 				DC84E11A1135988E00CA7C9D /* Genesis.cxx */,
 				DC84E11B1135988E00CA7C9D /* Genesis.hxx */,
 				DCECDAF210B9DBDC00AF4E1B /* Device.cxx */,
@@ -1369,6 +1375,7 @@
 				DCE9CC2B1103812700C86671 /* CartDebug.hxx in Headers */,
 				DCE9CC2D1103812700C86671 /* DiStella.hxx in Headers */,
 				DC84E11D1135988E00CA7C9D /* Genesis.hxx in Headers */,
+				DC64EB211152F9C000DC9140 /* CartDPCPlus.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1602,6 +1609,7 @@
 				DCE9CC2A1103812700C86671 /* CartDebug.cxx in Sources */,
 				DCE9CC2C1103812700C86671 /* DiStella.cxx in Sources */,
 				DC84E11C1135988E00CA7C9D /* Genesis.cxx in Sources */,
+				DC64EB201152F9C000DC9140 /* CartDPCPlus.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
