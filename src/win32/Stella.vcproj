@@ -454,6 +454,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\CartDPCPlus.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\CartE0.cxx"
 					>
 				</File>
@@ -1121,6 +1125,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartDPC.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartDPCPlus.hxx"
 					>
 				</File>
 				<File
