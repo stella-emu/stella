@@ -193,8 +193,7 @@ bool CartDebug::disassemble(const string& autocode, bool force)
                  (addressToLine(PC) == -1);
   if(changed)
   {
-    // We only use the reset vector when we're actually in the startup bank
-    // Otherwise, we look at previous accesses to this bank to begin
+    // Look at previous accesses to this bank to begin
     // If no previous address exists, use the current program counter
     uInt16 start = myStartAddresses[getBank()];
     if(start == 0)

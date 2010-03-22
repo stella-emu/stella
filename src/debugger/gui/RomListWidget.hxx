@@ -88,9 +88,8 @@ class RomListWidget : public EditableWidget
     ContextMenu*     myMenu;
     ScrollBarWidget* myScrollBar;
 
-    int myLabelWidth;
-    int myBytesWidth;
-
+    int  _labelWidth;
+    int  _bytesWidth;
     int  _rows;
     int  _cols;
     int  _currentPos;

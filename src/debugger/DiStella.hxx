@@ -145,8 +145,6 @@ class DiStella
       uInt8          cycles;
     };
     static const Instruction_tag ourLookup[256];
-
-    static const int ourCLength[14];
 };
 
 #endif

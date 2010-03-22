@@ -1039,8 +1039,3 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /* fe */ { "INC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
   /* ff */ { "isb", ABSOLUTE_X,  M_ABSX, WRITE, 7 }
 };
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const int DiStella::ourCLength[14] = {
-  1, 1, 2, 2, 2, 2, 3, 3, 3, 3, 2, 2, 2, 0
-};

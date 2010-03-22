@@ -68,8 +68,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth = font.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  myLabelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth;
-  myBytesWidth = 12 * fontWidth;
+  _labelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth;
+  _bytesWidth = 12 * fontWidth;
 
   //////////////////////////////////////////////////////
   // Add checkboxes
@@ -419,6 +419,8 @@ void RomListWidget::drawWidget(bool hilite)
   // Draw the list items
   const GUI::Rect& r = getEditRect();
   const GUI::Rect& l = getLineRect();
+  int large_disasmw = _w - l.x() - _labelWidth,
+      small_disasmw = large_disasmw - r.width();
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
@@ -430,49 +432,58 @@ void RomListWidget::drawWidget(bool hilite)
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
     {
-      s.frameRect(_x + l.left - 3, _y + 1 + _fontHeight * i,
-                  _w - l.left, _fontHeight, kDbgColorHi);
+      s.frameRect(_x + l.x() - 3, _y + 1 + _fontHeight * i,
+                  _w - l.x(), _fontHeight, kDbgColorHi);
     }
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos && _hasFocus)
     {
       if (!_editMode)
-        s.fillRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+        s.fillRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
                    r.width(), _fontHeight, kTextColorHi);
       else
-        s.frameRect(_x + r.left - 3, _y + 1 + _fontHeight * i,
+        s.frameRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
                     r.width(), _fontHeight, kTextColorHi);
     }
 
     // Draw labels
-    s.drawString(_font, dlist[pos].label, xpos, ypos,
-                 myLabelWidth, kTextColor);
+    s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth, kTextColor);
 
-    // Draw disassembly
-    s.drawString(_font, dlist[pos].disasm, xpos + myLabelWidth, ypos,
-                 r.left, kTextColor);
-
-    // Draw editable bytes
-    if (_selectedItem == pos && _editMode)
+    // Sometimes there aren't any bytes to display, in which case the disassembly
+    // should get all remaining space
+    if(dlist[pos].bytes != "")
     {
-      adjustOffset();
-      deltax = -_editScrollOffset;
+      // Draw disassembly
+      s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
+                   small_disasmw, kTextColor);
 
-      s.drawString(_font, _editString, _x + r.left, ypos, r.width(), kTextColor,
-                   kTextAlignLeft, deltax, false);
+      // Draw bytes
+      {
+        if (_selectedItem == pos && _editMode)
+        {
+          adjustOffset();
+          deltax = -_editScrollOffset;
+
+          s.drawString(_font, _editString, _x + r.x(), ypos, r.width(), kTextColor,
+                       kTextAlignLeft, deltax, false);
+
+          drawCaret();
+        }
+        else
+        {
+          deltax = 0;
+          s.drawString(_font, dlist[pos].bytes, _x + r.x(), ypos, r.width(), kTextColor);
+        }
+      }
     }
     else
     {
-      deltax = 0;
-      s.drawString(_font, dlist[pos].bytes, _x + r.left, ypos, r.width(), kTextColor);
+      // Draw disassembly, giving it all remaining horizontal space
+      s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
+                   large_disasmw, kTextColor);
     }
   }
-
-  // Only draw the caret while editing, and if it's in the current viewport
-  if(_editMode && (_selectedItem >= myScrollBar->_currentPos) &&
-    (_selectedItem < myScrollBar->_currentPos + _rows))
-    drawCaret();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -483,8 +494,8 @@ GUI::Rect RomListWidget::getLineRect() const
             xoffset = CheckboxWidget::boxSize() + 10;
   r.top    += yoffset;
   r.bottom += yoffset;
-  r.left  += xoffset;
-  r.right -= xoffset - 15;
+  r.left   += xoffset;
+  r.right  -= xoffset - 15;
 	
   return r;
 }
@@ -496,7 +507,7 @@ GUI::Rect RomListWidget::getEditRect() const
   const int yoffset = (_selectedItem - _currentPos) * _fontHeight;
   r.top    += yoffset;
   r.bottom += yoffset;
-  r.left   += _w - myBytesWidth;
+  r.left   += _w - _bytesWidth;
   r.right   = _w;
 	
   return r;

@@ -146,6 +146,10 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       // 'id' is the line in the disassemblylist to be accessed
       // 'data' is the state of the breakpoint at 'id'
       setBreak(id, data);
+      // Refresh the romlist, since the breakpoint may not have
+      // actually changed
+      myRomList->setDirty();
+      myRomList->draw();
       break;
 
     case kRLRomChangedCmd:
@@ -197,7 +201,7 @@ void RomWidget::setBreak(int disasm_line, bool state)
       instance().debugger().cartDebug().disassemblyList();
   if(disasm_line >= (int)list.size())  return;
 
-  if(list[disasm_line].address != 0)
+  if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
     instance().debugger().setBreakPoint(list[disasm_line].address, state);
 }
 

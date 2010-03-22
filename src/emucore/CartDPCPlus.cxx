@@ -296,37 +296,31 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     // Switch banks if necessary
     switch(address)
     {
-    case 0x0FF6:
-      // Set the current bank to the first 4k bank
-      bank(0);
-      break;
-      
-    case 0x0FF7:
-      // Set the current bank to the second 4k bank
-      bank(1);
-      break;
-      
-    case 0x0FF8:
-      // Set the current bank to the third 4k bank
-      bank(2);
-      break;
-
-    case 0x0FF9:
-      // Set the current bank to the fourth 4k bank
-      bank(3);
-      break;
-
-    case 0x0FFA:
-      // Set the current bank to the fifth 4k bank
-      bank(4);
-      break;
-      
-    case 0x0FFB:
-      // Set the current bank to the last 4k bank
-      bank(5);
-      break;
-      
-    default:
+      case 0x0FF6:
+        // Set the current bank to the first 4k bank
+        bank(0);
+        break;
+      case 0x0FF7:
+        // Set the current bank to the second 4k bank
+        bank(1);
+        break;
+      case 0x0FF8:
+        // Set the current bank to the third 4k bank
+        bank(2);
+        break;
+      case 0x0FF9:
+        // Set the current bank to the fourth 4k bank
+        bank(3);
+        break;
+      case 0x0FFA:
+        // Set the current bank to the fifth 4k bank
+        bank(4);
+        break;
+      case 0x0FFB:
+        // Set the current bank to the last 4k bank
+        bank(5);
+        break;
+      default:
         break;
     }
     return myProgramImage[myCurrentBank * 4096 + address];
@@ -422,36 +416,30 @@ void CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
     // Switch banks if necessary
     switch(address)
     {
-    case 0x0FF6:
-      // Set the current bank to the first 4k bank
-      bank(0);
-      break;
-      
-    case 0x0FF7:
-      // Set the current bank to the second 4k bank
-      bank(1);
-      break;
-      
-    case 0x0FF8:
-      // Set the current bank to the third 4k bank
-      bank(2);
-      break;
-      
-    case 0x0FF9:
-      // Set the current bank to the fourth 4k bank
-      bank(3);
-      break;
-      
-    case 0x0FFA:
-      // Set the current bank to the fifth 4k bank
-      bank(4);
-      break;
-      
-    case 0x0FFB:
-      // Set the current bank to the last 4k bank
-      bank(5);
-      break;
-
+      case 0x0FF6:
+        // Set the current bank to the first 4k bank
+        bank(0);
+        break;
+      case 0x0FF7:
+        // Set the current bank to the second 4k bank
+        bank(1);
+        break;
+      case 0x0FF8:
+        // Set the current bank to the third 4k bank
+        bank(2);
+        break;
+      case 0x0FF9:
+        // Set the current bank to the fourth 4k bank
+        bank(3);
+        break;
+      case 0x0FFA:
+        // Set the current bank to the fifth 4k bank
+        bank(4);
+        break;
+      case 0x0FFB:
+        // Set the current bank to the last 4k bank
+        bank(5);
+        break;
       default:
         break;
     }
@@ -516,7 +504,7 @@ uInt8* CartridgeDPCPlus::getImage(int& size)
   for(i = 0; i < 4096; i++)
     myImageCopy[i + 4096 * 6] = myDisplayImage[i];
 
-  return &myImageCopy[0];
+  return myImageCopy;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
