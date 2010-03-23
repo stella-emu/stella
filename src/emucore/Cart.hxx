@@ -106,11 +106,14 @@ class Cartridge : public Device
 
     /**
       Answer whether the bank has changed since the last time this
-      method was called.
+      method was called.  Each cart class is able to override this
+      method to deal with its specific functionality.  In those cases,
+      the derived class is still responsible for calling this base
+      function.
 
       @return  Whether the bank was changed
     */
-    bool bankChanged();
+    virtual bool bankChanged();
 
 #ifdef DEBUGGER_SUPPORT
     const RamAreaList& ramAreas() { return myRamAreaList; }

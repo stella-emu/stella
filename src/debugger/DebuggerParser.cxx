@@ -1097,6 +1097,7 @@ void DebuggerParser::executeRam()
 void DebuggerParser::executeReset()
 {
   debugger->reset();
+  debugger->myRom->invalidate();
   commandResult = "reset CPU";
 }
 
@@ -1105,7 +1106,10 @@ void DebuggerParser::executeReset()
 void DebuggerParser::executeRewind()
 {
   if(debugger->rewindState())
+  {
+    debugger->myRom->invalidate();
     commandResult = "rewind by one level";
+  }
   else
     commandResult = "no states left to rewind";
 }

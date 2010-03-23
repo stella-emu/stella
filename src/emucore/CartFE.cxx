@@ -22,11 +22,11 @@
 #include "System.hxx"
 #include "CartFE.hxx"
 
-// TODO - Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFE::CartridgeFE(const uInt8* image)
+  : myLastAddress1(0),
+    myLastAddress2(0),
+    myLastAddressChanged(false)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);
@@ -67,6 +67,12 @@ void CartridgeFE::install(System& system)
 uInt8 CartridgeFE::peek(uInt16 address)
 {
   // The bank is determined by A13 of the processor
+  // We keep track of the two most recent accesses to determine which bank
+  // we're in, and when the values actually changed
+  myLastAddress2 = myLastAddress1;
+  myLastAddress1 = address;
+  myLastAddressChanged = true;
+
   return myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)];
 }
 
@@ -79,37 +85,54 @@ void CartridgeFE::poke(uInt16, uInt8)
 void CartridgeFE::bank(uInt16 b)
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeFE::bank()
 {
-  // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
-  return 0;
+  // The current bank depends on the last address accessed
+  return ((myLastAddress1 & 0x2000) == 0) ? 1 : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeFE::bankCount()
 {
-  // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
-  return 1;
+  return 2;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeFE::bankChanged()
+{
+  if(myLastAddressChanged)
+  {
+    // A bankswitch occurs when the addresses transition from state to another
+    bool a1 = ((myLastAddress1 & 0x2000) == 0),
+         a2 = ((myLastAddress2 & 0x2000) == 0);
+    myBankChanged = (a1 && !a2) || (a2 && !a1);
+    myLastAddressChanged = false;
+  }
+  else
+  {
+    myBankChanged = false;
+  }
+
+  // In any event, let the base class know about it
+  return Cartridge::bankChanged();
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::patch(uInt16 address, uInt8 value)
 {
   myImage[(address & 0x0FFF) + (((address & 0x2000) == 0) ? 4096 : 0)] = value;
-  return true;
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeFE::getImage(int& size)
 {
   size = 8192;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,6 +143,8 @@ bool CartridgeFE::save(Serializer& out) const
   try
   {
     out.putString(cart);
+    out.putInt(myLastAddress1);
+    out.putInt(myLastAddress2);
   }
   catch(const char* msg)
   {
@@ -139,6 +164,9 @@ bool CartridgeFE::load(Serializer& in)
   {
     if(in.getString() != cart)
       return false;
+
+    myLastAddress1 = (uInt16)in.getInt();
+    myLastAddress2 = (uInt16)in.getInt();
   }
   catch(const char* msg)
   {

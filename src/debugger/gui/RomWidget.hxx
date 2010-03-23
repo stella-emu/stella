@@ -40,7 +40,7 @@ class RomWidget : public Widget, public CommandSender
     RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     virtual ~RomWidget();
 
-    void invalidate() { myListIsDirty = true; }
+    void invalidate() { myListIsDirty = true; loadConfig(); }
 
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();

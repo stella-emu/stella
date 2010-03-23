@@ -123,13 +123,15 @@ void RomWidget::loadConfig()
   myListIsDirty |= cart.disassemble(myAutocode->getSelectedTag(), myListIsDirty);
   if(myListIsDirty)
   {
+cerr << "list is dirty, re-disassembled\n";
     myRomList->setList(cart.disassemblyList(), dbg.breakpoints());
     myListIsDirty = false;
   }
 
   // Update romlist to point to current PC
   int pcline = cart.addressToLine(dbg.cpuDebug().pc());
-  if(pcline > 0)
+cerr << "PC = " << hex <<  dbg.cpuDebug().pc() << ", line = " << dec << pcline << endl;
+  if(pcline >= 0)
     myRomList->setHighlighted(pcline);
 
   // Set current bank and number of banks
