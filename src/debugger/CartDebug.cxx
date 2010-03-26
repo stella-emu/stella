@@ -189,14 +189,15 @@ bool CartDebug::disassemble(const string& autocode, bool force)
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
   uInt16 PC = myDebugger.cpuDebug().pc();
+  int pcline = addressToLine(PC);
   bool changed = force || myConsole.cartridge().bankChanged() ||
-                 (addressToLine(PC) == -1);
+                 (pcline == -1);
   if(changed)
   {
     // Look at previous accesses to this bank to begin
     // If no previous address exists, use the current program counter
     uInt16 start = myStartAddresses[getBank()];
-    if(start == 0)
+    if(start == 0 || pcline == -1)
       start = myStartAddresses[getBank()] = PC;
 
     // For now, DiStella can't handle address space below 0x1000
@@ -215,9 +216,9 @@ cerr << "current bank = " << getBank() << ", start bank = " << myConsole.cartrid
     // Check whether to use the 'autocode' functionality from Distella
     if(autocode == "0")       // 'never'
       fillDisassemblyList(start, false, PC);
-    else if(autocode == "1")  // always
+    else if(autocode == "1")  // 'always'
       fillDisassemblyList(start, true, PC);
-    else                      // automatic
+    else                      // 'automatic'
     {
       // First try with autocode on, then turn off if PC isn't found
       if(!fillDisassemblyList(start, true, PC))
