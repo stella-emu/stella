@@ -190,8 +190,8 @@ bool CartDebug::disassemble(const string& autocode, bool force)
   // Also check if the current PC is in the current list
   uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
-  bool changed = force || myConsole.cartridge().bankChanged() ||
-                 (pcline == -1);
+  bool changed = (force || myConsole.cartridge().bankChanged() ||
+                 (pcline == -1) || mySystem.isPageDirty(0x1000, 0x1FFF));
   if(changed)
   {
     // Look at previous accesses to this bank to begin

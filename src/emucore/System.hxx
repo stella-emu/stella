@@ -334,14 +334,14 @@ class System : public Serializable
       @param page The page to get accessing methods for
       @return The accessing methods used by the page
     */
-    const PageAccess& getPageAccess(uInt16 page);
+    const PageAccess& getPageAccess(uInt16 page) const;
  
     /**
       Mark the page containing this address as being dirty.
 
       @param addr  Determines the page that is dirty
     */
-    void setDirtyAddress(uInt16 addr);
+    void setDirtyPage(uInt16 addr);
 
     /**
       Answer whether any pages in given range of addresses have been
@@ -350,12 +350,12 @@ class System : public Serializable
       @param start_addr The start address; determines the start page
       @param end_addr   The end address; determines the end page
     */
-    bool isDirtyRange(uInt16 start_addr, uInt16 end_addr);
+    bool isPageDirty(uInt16 start_addr, uInt16 end_addr) const;
 
     /**
       Mark all pages as clean (ie, turn off the dirty flag).
     */
-    void clearDirtyAddresses();
+    void clearDirtyPages();
 
     /**
       Save the current state of this system to the given Serializer.

@@ -166,7 +166,7 @@ void System::setPageAccess(uInt16 page, const PageAccess& access)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const System::PageAccess& System::getPageAccess(uInt16 page)
+const System::PageAccess& System::getPageAccess(uInt16 page) const
 {
   // Make sure the page is within range
   assert(page <= myNumberOfPages);
@@ -175,13 +175,13 @@ const System::PageAccess& System::getPageAccess(uInt16 page)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setDirtyAddress(uInt16 addr)
+void System::setDirtyPage(uInt16 addr)
 {
   myPageIsDirtyTable[(addr & myAddressMask) >> myPageShift] = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::isDirtyRange(uInt16 start_addr, uInt16 end_addr)
+bool System::isPageDirty(uInt16 start_addr, uInt16 end_addr) const
 {
   uInt16 start_page = (start_addr & myAddressMask) >> myPageShift;
   uInt16 end_page = (end_addr & myAddressMask) >> myPageShift;
@@ -194,7 +194,7 @@ bool System::isDirtyRange(uInt16 start_addr, uInt16 end_addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::clearDirtyAddresses()
+void System::clearDirtyPages()
 {
   for(uInt32 i = 0; i < myNumberOfPages; ++i)
     myPageIsDirtyTable[i] = false;

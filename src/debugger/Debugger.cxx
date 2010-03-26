@@ -455,6 +455,7 @@ void Debugger::loadState(int state)
 int Debugger::step()
 {
   saveOldState();
+  mySystem->clearDirtyPages();
 
   int cyc = mySystem->cycles();
 
@@ -482,6 +483,7 @@ int Debugger::trace()
   if(mySystem->peek(myCpuDebug->pc()) == 32)
   {
     saveOldState();
+    mySystem->clearDirtyPages();
 
     int cyc = mySystem->cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
@@ -565,6 +567,7 @@ int Debugger::cycles()
 void Debugger::nextScanline(int lines)
 {
   saveOldState();
+  mySystem->clearDirtyPages();
 
   unlockBankswitchState();
   while(lines)
@@ -579,6 +582,7 @@ void Debugger::nextScanline(int lines)
 void Debugger::nextFrame(int frames)
 {
   saveOldState();
+  mySystem->clearDirtyPages();
 
   unlockBankswitchState();
   while(frames)
