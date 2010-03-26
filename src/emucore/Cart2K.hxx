@@ -71,8 +71,6 @@ class Cartridge2K : public Cartridge
 
     /**
       Get the current bank.
-
-      @return  The current bank, or -1 if bankswitching not supported
     */
     int bank();
 

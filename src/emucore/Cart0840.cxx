@@ -76,7 +76,7 @@ void Cartridge0840::install(System& system)
   }
 
   // Install pages for bank 0
-  bank(0);
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
