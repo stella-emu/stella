@@ -44,8 +44,9 @@ System::System(uInt16 n, uInt16 m)
   // Create a new random number generator
   myRandom = new Random();
 
-  // Allocate page table
+  // Allocate page table and dirty list
   myPageAccessTable = new PageAccess[myNumberOfPages];
+  myPageIsDirtyTable = new bool[myNumberOfPages];
 
   // Initialize page access table
   PageAccess access;
@@ -73,8 +74,9 @@ System::~System()
   // Free the M6502 that I own
   delete myM6502;
 
-  // Free my page access table
+  // Free my page access table and dirty list
   delete[] myPageAccessTable;
+  delete[] myPageIsDirtyTable;
 
   // Free the random number generator
   delete myRandom;
@@ -173,6 +175,32 @@ const System::PageAccess& System::getPageAccess(uInt16 page)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::setDirtyAddress(uInt16 addr)
+{
+  myPageIsDirtyTable[(addr & myAddressMask) >> myPageShift] = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool System::isDirtyRange(uInt16 start_addr, uInt16 end_addr)
+{
+  uInt16 start_page = (start_addr & myAddressMask) >> myPageShift;
+  uInt16 end_page = (end_addr & myAddressMask) >> myPageShift;
+
+  for(uInt16 page = start_page; page <= end_page; ++page)
+    if(myPageIsDirtyTable[page])
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::clearDirtyAddresses()
+{
+  for(uInt32 i = 0; i < myNumberOfPages; ++i)
+    myPageIsDirtyTable[i] = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 System::System(const System& s)
   : myAddressMask(s.myAddressMask),
     myPageShift(s.myPageShift),
@@ -218,15 +246,21 @@ uInt8 System::peek(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::poke(uInt16 addr, uInt8 value)
 {
-  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+  uInt16 page = (addr & myAddressMask) >> myPageShift;
+  PageAccess& access = myPageAccessTable[page];
   
   // See if this page uses direct accessing or not 
   if(access.directPokeBase != 0)
   {
+    // Since we have direct access to this poke, we can dirty its page
+    myPageIsDirtyTable[page] = true;
     *(access.directPokeBase + (addr & myPageMask)) = value;
   }
   else
   {
+    // The specific device is responsible for setting the dirty flag
+    // We can't automatically set it, since not all pokes actually
+    // succeed and modify a page
     access.device->poke(addr, value);
   }
 

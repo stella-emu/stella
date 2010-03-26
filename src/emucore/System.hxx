@@ -269,6 +269,11 @@ class System : public Serializable
       No masking of the address occurs before it's sent to the device
       mapped at the address.
 
+      This method sets the 'page dirty' flag for direct-access pokes.
+      If the device has taken responsibility for handling the poke,
+      it must also update the 'page dirty' flag with a call to
+      System::setDirtyAddress().
+
       @param address The address where the value should be stored
       @param value The value to be stored at the address
     */
@@ -332,6 +337,27 @@ class System : public Serializable
     const PageAccess& getPageAccess(uInt16 page);
  
     /**
+      Mark the page containing this address as being dirty.
+
+      @param addr  Determines the page that is dirty
+    */
+    void setDirtyAddress(uInt16 addr);
+
+    /**
+      Answer whether any pages in given range of addresses have been
+      marked as dirty.
+
+      @param start_addr The start address; determines the start page
+      @param end_addr   The end address; determines the end page
+    */
+    bool isDirtyRange(uInt16 start_addr, uInt16 end_addr);
+
+    /**
+      Mark all pages as clean (ie, turn off the dirty flag).
+    */
+    void clearDirtyAddresses();
+
+    /**
       Save the current state of this system to the given Serializer.
 
       @param out  The Serializer object to use
@@ -369,6 +395,9 @@ class System : public Serializable
 
     // Pointer to a dynamically allocated array of PageAccess structures
     PageAccess* myPageAccessTable;
+
+    // Pointer to a dynamically allocated array for dirty pages
+    bool* myPageIsDirtyTable;
 
     // Array of all the devices attached to the system
     Device* myDevices[100];
