@@ -103,6 +103,13 @@ void CartDebug::write(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::triggerReadFromWritePort(uInt16 addr)
+{
+  myRWPortAddress = addr;
+  mySystem.setDirtyPage(addr);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::readFromWritePort()
 {
   uInt16 peekAddress = myRWPortAddress;

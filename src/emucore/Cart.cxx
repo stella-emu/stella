@@ -288,8 +288,6 @@ void Cartridge::triggerReadFromWritePort(uInt16 address)
 #ifdef DEBUGGER_SUPPORT
   if(&Debugger::debugger().cartDebug())
     Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
-
-  mySystem->setDirtyPage(address);
 #endif
 }
 

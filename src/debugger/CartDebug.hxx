@@ -72,12 +72,13 @@ class CartDebug : public DebuggerSystem
     uInt8 read(uInt16 addr);
     void write(uInt16 addr, uInt8 value);
 
+    // Indicate that a read from write port has occurred at the specified
+    // address.
+    void triggerReadFromWritePort(uInt16 addr);
+
     // Return the address at which an invalid read was performed in a
     // write port area.
     int readFromWritePort();
-
-    // Indicate that a read from write port has occurred.
-    void triggerReadFromWritePort(uInt16 addr) { myRWPortAddress = addr; }
 
     /**
       Let the Cart debugger subsystem treat this area as addressable memory.
@@ -114,7 +115,7 @@ class CartDebug : public DebuggerSystem
 
     /**
       Determine the line in the disassembly that corresponds to the given
-      address.  A value of zero indicates that no such address exists.
+      address.  A value of -1 indicates that no such address exists.
     */
     int addressToLine(uInt16 address) const;
 
