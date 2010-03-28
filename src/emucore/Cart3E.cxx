@@ -232,7 +232,9 @@ int Cartridge3E::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Cartridge3E::bankCount()
 {
-  return mySize >> 11;
+  // In addition to the number of 2K banks in ROM, there are 32 more 1K
+  // banks for RAM (doubled to 2K because of a read and write port)
+  return (mySize >> 11) + 32;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

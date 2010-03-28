@@ -326,15 +326,40 @@ int Cartridge4A50::bank()
 int Cartridge4A50::bankCount()
 {
   // Doesn't support bankswitching in the normal sense
+  // There is one 'virtual' bank that can change in many different ways
   return 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 {
-  // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
-  return false;
+  if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
+  {
+    if(myIsRomLow)
+      myImage[(address & 0x7ff) + mySliceLow] = value;
+    else
+      myRAM[(address & 0x7ff) + mySliceLow] = value;
+  }
+  else if(((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
+          ((address & 0x1fff) <= 0x1dff))
+  {
+    if(myIsRomMiddle)
+      myImage[(address & 0x7ff) + mySliceMiddle + 0x10000] = value;
+    else
+      myRAM[(address & 0x7ff) + mySliceMiddle] = value;
+  }
+  else if((address & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
+  {
+    if(myIsRomHigh)
+      myImage[(address & 0xff) + mySliceHigh + 0x10000] = value;
+    else
+      myRAM[(address & 0xff) + mySliceHigh] = value;
+  }
+  else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
+  {
+    myImage[(address & 0xff) + 0x1ff00] = value;
+  }
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
