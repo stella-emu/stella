@@ -81,13 +81,15 @@ uInt8 CartridgeEF::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEF::poke(uInt16 address, uInt8)
+bool CartridgeEF::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
   // Switch banks if necessary
   if((address >= 0x0FE0) && (address <= 0x0FEF))
     bank(address - 0x0FE0);
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

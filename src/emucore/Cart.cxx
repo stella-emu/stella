@@ -288,6 +288,8 @@ void Cartridge::triggerReadFromWritePort(uInt16 address)
 #ifdef DEBUGGER_SUPPORT
   if(&Debugger::debugger().cartDebug())
     Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
+
+  mySystem->setDirtyPage(address);
 #endif
 }
 
@@ -366,7 +368,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "F6";
   }
-  else if(size == 28*1024)  // 28K
+  else if(size == 29*1024)  // 29K
   {
     type = "DPC+";
   }

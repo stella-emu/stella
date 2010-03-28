@@ -155,8 +155,10 @@ class TIA : public Device
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+
+      @return  True if the poke changed the device address space, else false
     */
-    void poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value);
 
     /**
       This method should be called at an interval corresponding to the 

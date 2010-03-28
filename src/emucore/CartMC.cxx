@@ -25,8 +25,8 @@
 // TODO - much more testing of this scheme is required
 //        No test ROMs exist as of 2009-11-08, so we can't be sure how
 //        accurate the emulation is
-//        Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
+//        Bankchange and RAM modification cannot be completed until
+//        adequate test ROMs are available
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
@@ -53,6 +53,8 @@ void CartridgeMC::reset()
   // Initialize RAM with random values
   for(uInt32 i = 0; i < 32768; ++i)
     myRAM[i] = mySystem->randGenerator().next();
+
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,27 +76,21 @@ void CartridgeMC::install(System& system)
   //       point Chris isn't sure if the hardware will allow it or not
   //
   System::PageAccess access;
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
   for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Map the cartridge into the system
   for(uInt32 j = 0x1000; j < 0x2000; j += (1 << shift))
-  {
-    access.device = this;
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
     mySystem->setPageAccess(j >> shift, access);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeMC::peek(uInt16 address)
 {
+  uInt16 peekAddress = address;
   address &= 0x1FFF;
 
   // Accessing the RESET vector so lets handle the powerup special case
@@ -148,15 +144,20 @@ uInt8 CartridgeMC::peek(uInt16 address)
         // Reading from the write port triggers an unwanted write
         uInt8 value = mySystem->getDataBusState(0xFF);
 
-        if(bankLocked()) return value;
-        else return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
+        if(bankLocked())
+          return value;
+        else
+        {
+          triggerReadFromWritePort(peekAddress);
+          return myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
+        }
       }
     }
   }  
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMC::poke(uInt16 address, uInt8 value)
+bool CartridgeMC::poke(uInt16 address, uInt8 value)
 {
   address &= 0x1FFF;
 
@@ -196,14 +197,16 @@ void CartridgeMC::poke(uInt16 address, uInt8 value)
     {
       // Handle the write to RAM
       myRAM[(uInt32)((block & 0x3F) << 9) + (address & 0x01FF)] = value;
+      return true;
     }
   }  
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::bank(uInt16 b)
 {
-  // TODO - add support for debugger
+  // Doesn't support bankswitching in the normal sense
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,7 +234,7 @@ bool CartridgeMC::patch(uInt16 address, uInt8 value)
 uInt8* CartridgeMC::getImage(int& size)
 {
   size = 128 * 1024; // FIXME: keep track of original size
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

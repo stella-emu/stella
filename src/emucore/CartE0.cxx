@@ -22,9 +22,6 @@
 #include "System.hxx"
 #include "CartE0.hxx"
 
-// TODO - Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE0::CartridgeE0(const uInt8* image)
 {
@@ -44,6 +41,8 @@ void CartridgeE0::reset()
   segmentZero(4);
   segmentOne(5);
   segmentTwo(6);
+
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,7 +105,7 @@ uInt8 CartridgeE0::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::poke(uInt16 address, uInt8)
+bool CartridgeE0::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -123,6 +122,7 @@ void CartridgeE0::poke(uInt16 address, uInt8)
   {
     segmentTwo(address & 0x0007);
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -145,6 +145,7 @@ void CartridgeE0::segmentZero(uInt16 slice)
     access.directPeekBase = &myImage[offset + (address & 0x03FF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -167,6 +168,7 @@ void CartridgeE0::segmentOne(uInt16 slice)
     access.directPeekBase = &myImage[offset + (address & 0x03FF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -189,20 +191,19 @@ void CartridgeE0::segmentTwo(uInt16 slice)
     access.directPeekBase = &myImage[offset + (address & 0x03FF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE0::bank(uInt16)
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeE0::bank()
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
   return 0;
 }
 
@@ -210,7 +211,6 @@ int CartridgeE0::bank()
 int CartridgeE0::bankCount()
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
   return 1;
 }
 
@@ -226,7 +226,7 @@ bool CartridgeE0::patch(uInt16 address, uInt8 value)
 uInt8* CartridgeE0::getImage(int& size)
 {
   size = 8192;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

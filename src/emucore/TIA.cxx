@@ -1252,7 +1252,7 @@ uInt8 TIA::peek(uInt16 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::poke(uInt16 addr, uInt8 value)
+bool TIA::poke(uInt16 addr, uInt8 value)
 {
   addr = addr & 0x003f;
 
@@ -2036,6 +2036,7 @@ void TIA::poke(uInt16 addr, uInt8 value)
       break;
     }
   }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

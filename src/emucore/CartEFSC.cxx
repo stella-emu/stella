@@ -121,7 +121,7 @@ uInt8 CartridgeEFSC::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeEFSC::poke(uInt16 address, uInt8)
+bool CartridgeEFSC::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -132,6 +132,7 @@ void CartridgeEFSC::poke(uInt16 address, uInt8)
   // NOTE: This does not handle accessing RAM, however, this function
   // should never be called for RAM because of the way page accessing
   // has been setup
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

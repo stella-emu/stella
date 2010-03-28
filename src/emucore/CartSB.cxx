@@ -105,7 +105,7 @@ uInt8 CartridgeSB::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeSB::poke(uInt16 address, uInt8 value)
+bool CartridgeSB::poke(uInt16 address, uInt8 value)
 {
   address = address & (0x17FF + (mySize >> 12));
 
@@ -120,6 +120,7 @@ void CartridgeSB::poke(uInt16 address, uInt8 value)
     int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

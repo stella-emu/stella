@@ -57,14 +57,14 @@ class M6532 : public Device
     /**
       Reset cartridge to its power-on state
     */
-    virtual void reset();
+    void reset();
 
     /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary
       to override this method for devices that remember cycle counts.
     */
-    virtual void systemCyclesReset();
+    void systemCyclesReset();
 
     /**
       Install 6532 in the specified system.  Invoked by the system
@@ -72,7 +72,7 @@ class M6532 : public Device
 
       @param system The system the device should install itself in
     */
-    virtual void install(System& system);
+    void install(System& system);
 
     /**
       Install 6532 in the specified system and device.  Invoked by
@@ -83,7 +83,7 @@ class M6532 : public Device
       @param system The system the device should install itself in
       @param device The device responsible for this address space
     */
-    virtual void install(System& system, Device& device);
+    void install(System& system, Device& device);
 
     /**
       Save the current state of this device to the given Serializer.
@@ -91,7 +91,7 @@ class M6532 : public Device
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out) const;
+    bool save(Serializer& out) const;
 
     /**
       Load the current state of this device from the given Serializer.
@@ -99,14 +99,14 @@ class M6532 : public Device
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool load(Serializer& in);
+    bool load(Serializer& in);
 
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    virtual string name() const { return "M6532"; }
+    string name() const { return "M6532"; }
 
    public:
     /**
@@ -114,15 +114,17 @@ class M6532 : public Device
 
       @return The byte at the specified address
     */
-    virtual uInt8 peek(uInt16 address);
+    uInt8 peek(uInt16 address);
 
     /**
       Change the byte at the specified address to the given value
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+
+      @return  True if the poke changed the device address space, else false
     */
-    virtual void poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value);
 
   private:
     inline Int32 timerClocks()

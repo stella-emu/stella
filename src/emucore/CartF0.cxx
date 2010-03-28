@@ -83,13 +83,15 @@ uInt8 CartridgeF0::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF0::poke(uInt16 address, uInt8)
+bool CartridgeF0::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
   // Switch to next bank
   if(address == 0x0FF0)
     incbank();
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

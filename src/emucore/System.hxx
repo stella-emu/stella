@@ -166,7 +166,7 @@ class System : public Serializable
 
       @return The total number of pages available
     */
-    uInt16 numberOfPages() const
+    inline uInt16 numberOfPages() const
     {
       return myNumberOfPages;
     }
@@ -176,7 +176,7 @@ class System : public Serializable
 
       @return The amount to right shift an address by to get its page
     */
-    uInt16 pageShift() const
+    inline uInt16 pageShift() const
     {
       return myPageShift;
     }
@@ -186,7 +186,7 @@ class System : public Serializable
 
       @return The mask to apply to an address to obtain its page offset
     */
-    uInt16 pageMask() const
+    inline uInt16 pageMask() const
     {
       return myPageMask;
     }
@@ -198,7 +198,7 @@ class System : public Serializable
 
       @return The number of system cycles which have passed
     */
-    uInt32 cycles() const 
+    inline uInt32 cycles() const 
     { 
       return myCycles; 
     }
@@ -269,10 +269,10 @@ class System : public Serializable
       No masking of the address occurs before it's sent to the device
       mapped at the address.
 
-      This method sets the 'page dirty' flag for direct-access pokes.
-      If the device has taken responsibility for handling the poke,
-      it must also update the 'page dirty' flag with a call to
-      System::setDirtyAddress().
+      This method sets the 'page dirty' if the write succeeds.  In the
+      case of direct-access pokes, the write always succeeds.  Otherwise,
+      if the device is handling the poke, we depend on its return value
+      for this information.
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address

@@ -23,11 +23,6 @@
 #include "System.hxx"
 #include "CartDPC.hxx"
 
-// TODO - properly handle read from write port functionality
-//        Note: do r/w port restrictions even exist for this scheme??
-//        Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 {
@@ -114,8 +109,8 @@ void CartridgeDPC::install(System& system)
     mySystem->setPageAccess(j >> shift, access);
   }
 
-  // Install pages for bank 1
-  bank(1);
+  // Install pages for the startup bank
+  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -309,12 +304,12 @@ uInt8 CartridgeDPC::peek(uInt16 address)
       default:
         break;
     }
-    return myProgramImage[myCurrentBank * 4096 + address];
+    return myProgramImage[(myCurrentBank << 12) + address];
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::poke(uInt16 address, uInt8 value)
+bool CartridgeDPC::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
 
@@ -416,6 +411,7 @@ void CartridgeDPC::poke(uInt16 address, uInt8 value)
         break;
     }
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -441,6 +437,7 @@ void CartridgeDPC::bank(uInt16 bank)
     access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -452,14 +449,12 @@ int CartridgeDPC::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeDPC::bankCount()
 {
-  // TODO - add support for debugger (support the display ROM somehow)
   return 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 {
-  // TODO - check if this actually works
   myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
   return true;
 } 
@@ -468,15 +463,7 @@ bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 uInt8* CartridgeDPC::getImage(int& size)
 {
   size = 8192 + 2048 + 255;
-
-  int i;
-  for(i = 0; i < 8192; i++)
-    myImageCopy[i] = myProgramImage[i];
-
-  for(i = 0; i < 2048; i++)
-    myImageCopy[i + 8192] = myDisplayImage[i];
-
-  return &myImageCopy[0];
+  return myImageCopy;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

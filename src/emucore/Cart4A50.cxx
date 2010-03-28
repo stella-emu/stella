@@ -24,11 +24,6 @@
 #include "TIA.hxx"
 #include "Cart4A50.hxx"
 
-// TODO - properly handle read from write port functionality
-//        Note: do r/w port restrictions even exist for this scheme??
-//        Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size)
 {
@@ -58,6 +53,8 @@ void Cartridge4A50::reset()
 
   myLastData    = 0xff;
   myLastAddress = 0xffff;
+
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -136,7 +133,7 @@ uInt8 Cartridge4A50::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::poke(uInt16 address, uInt8 value)
+bool Cartridge4A50::poke(uInt16 address, uInt8 value)
 {
   if(!(address & 0x1000))                      // Hotspots below 0x1000
   {
@@ -154,29 +151,43 @@ void Cartridge4A50::poke(uInt16 address, uInt8 value)
     if((address & 0x1800) == 0x1000)           // 2K region at 0x1000 - 0x17ff
     {
       if(!myIsRomLow)
+      {
         myRAM[(address & 0x7ff) + mySliceLow] = value;
+        myBankChanged = true;
+      }
     }
     else if(((address & 0x1fff) >= 0x1800) &&  // 1.5K region at 0x1800 - 0x1dff
             ((address & 0x1fff) <= 0x1dff))
     {
       if(!myIsRomMiddle)
+      {
         myRAM[(address & 0x7ff) + mySliceMiddle] = value;
+        myBankChanged = true;
+      }
     }
     else if((address & 0x1f00) == 0x1e00)      // 256B region at 0x1e00 - 0x1eff
     {
       if(!myIsRomHigh)
+      {
         myRAM[(address & 0xff) + mySliceHigh] = value;
+        myBankChanged = true;
+      }
     }
     else if((address & 0x1f00) == 0x1f00)      // 256B region at 0x1f00 - 0x1fff
     {
       if(!bankLocked() && ((myLastData & 0xe0) == 0x60) &&
          ((myLastAddress >= 0x1000) || (myLastAddress < 0x200)))
+      {
         mySliceHigh = (mySliceHigh & 0xf0ff) | ((address & 0x8) << 8) |
                       ((address & 0x70) << 4);
+        myBankChanged = true;
+      }
     }
   }
   myLastData = value;
   myLastAddress = address & 0x1fff;
+
+  return myBankChanged;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,49 +204,59 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
     {
       myIsRomHigh = true;
       mySliceHigh = (address & 0xff) << 8;
+      myBankChanged = true;
     }
     else if((address & 0x0f00) == 0x0d00)  // Enable 256B of RAM at 0x1e00 - 0x1eff
     {
       myIsRomHigh = false;
       mySliceHigh = (address & 0x7f) << 8;
+      myBankChanged = true;
     }
     else if((address & 0x0f40) == 0x0e00)  // Enable 2K of ROM at 0x1000 - 0x17ff
     {
       myIsRomLow = true;
       mySliceLow = (address & 0x1f) << 11;
+      myBankChanged = true;
     }
     else if((address & 0x0f40) == 0x0e40)  // Enable 2K of RAM at 0x1000 - 0x17ff
     {
       myIsRomLow = false;
       mySliceLow = (address & 0xf) << 11;
+      myBankChanged = true;
     }
     else if((address & 0x0f40) == 0x0f00)  // Enable 1.5K of ROM at 0x1800 - 0x1dff
     {
       myIsRomMiddle = true;
       mySliceMiddle = (address & 0x1f) << 11;
+      myBankChanged = true;
     }
     else if((address & 0x0f50) == 0x0f40)  // Enable 1.5K of RAM at 0x1800 - 0x1dff
     {
       myIsRomMiddle = false;
       mySliceMiddle = (address & 0xf) << 11;
+      myBankChanged = true;
     }
 
     // Stella helper functions
     else if((address & 0x0f00) == 0x0400)   // Toggle bit A11 of lower block address
     {
       mySliceLow = mySliceLow ^ 0x800;
+      myBankChanged = true;
     }
     else if((address & 0x0f00) == 0x0500)   // Toggle bit A12 of lower block address
     {
       mySliceLow = mySliceLow ^ 0x1000;
+      myBankChanged = true;
     }
     else if((address & 0x0f00) == 0x0800)   // Toggle bit A11 of middle block address
     {
       mySliceMiddle = mySliceMiddle ^ 0x800;
+      myBankChanged = true;
     }
     else if((address & 0x0f00) == 0x0900)   // Toggle bit A12 of middle block address
     {
       mySliceMiddle = mySliceMiddle ^ 0x1000;
+      myBankChanged = true;
     }
   }
 
@@ -247,11 +268,13 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
   {
     myIsRomHigh = true;
     mySliceHigh = value << 8;
+    myBankChanged = true;
   }
   else if((address & 0xf75) == 0x75)    // Enable 256B of RAM at 0x1e00 - 0x1eff
   {
     myIsRomHigh = false;
     mySliceHigh = (value & 0x7f) << 8;
+    myBankChanged = true;
   }
 
   // Zero-page hotspots for lower and middle blocks
@@ -263,21 +286,25 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
     {
       myIsRomLow = true;
       mySliceLow = (value & 0xf) << 11;
+      myBankChanged = true;
     }
     else if((value & 0xf0) == 0x40)   // Enable 2K of RAM at 0x1000 - 0x17ff
     {
       myIsRomLow = false;
       mySliceLow = (value & 0xf) << 11;
+      myBankChanged = true;
     }
     else if((value & 0xf0) == 0x90)   // Enable 1.5K of ROM at 0x1800 - 0x1dff
     {
       myIsRomMiddle = true;
       mySliceMiddle = ((value & 0xf) | 0x10) << 11;
+      myBankChanged = true;
     }
     else if((value & 0xf0) == 0xc0)   // Enable 1.5K of RAM at 0x1800 - 0x1dff
     {
       myIsRomMiddle = false;
       mySliceMiddle = (value & 0xf) << 11;
+      myBankChanged = true;
     }
   }
 }
@@ -286,14 +313,12 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 void Cartridge4A50::bank(uInt16)
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Cartridge4A50::bank()
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
   return 0;
 }
 
@@ -301,7 +326,6 @@ int Cartridge4A50::bank()
 int Cartridge4A50::bankCount()
 {
   // Doesn't support bankswitching in the normal sense
-  // TODO - add support for debugger
   return 1;
 }
 

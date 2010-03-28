@@ -113,7 +113,7 @@ uInt8 Cartridge0840::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840::poke(uInt16 address, uInt8 value)
+bool Cartridge0840::poke(uInt16 address, uInt8 value)
 {
   address &= 0x1840;
 
@@ -141,6 +141,7 @@ void Cartridge0840::poke(uInt16 address, uInt8 value)
     int hotspot = ((address & 0x0F00) >> 8) - 8;
     myHotSpotPageAccess[hotspot].device->poke(address, value);
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

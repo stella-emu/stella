@@ -103,7 +103,7 @@ uInt8 CartridgeUA::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeUA::poke(uInt16 address, uInt8 value)
+bool CartridgeUA::poke(uInt16 address, uInt8 value)
 {
   address &= 0x1FFF;
 
@@ -128,6 +128,7 @@ void CartridgeUA::poke(uInt16 address, uInt8 value)
   {
     myHotSpotPageAccess.device->poke(address, value);
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

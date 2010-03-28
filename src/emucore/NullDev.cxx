@@ -48,9 +48,10 @@ uInt8 NullDevice::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NullDevice::poke(uInt16 address, uInt8 value)
+bool NullDevice::poke(uInt16 address, uInt8 value)
 {
   cerr << hex << "NullDevice: poke(" << address << "," << value << ")" << endl;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

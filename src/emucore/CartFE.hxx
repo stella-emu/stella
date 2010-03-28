@@ -40,6 +40,9 @@ class System;
     There is *no* way to determine which bank you want to be in from
     monitoring the bus.
 
+  This cart reports having 2 banks, even though this cannot be
+  determined on a real system.
+
   @author  Bradford W. Mott
   @version $Id$
 */
@@ -81,8 +84,6 @@ class CartridgeFE : public Cartridge
 
     /**
       Get the current bank.
-
-      @return  The current bank, or -1 if bankswitching not supported
     */
     int bank();
 
@@ -152,8 +153,9 @@ class CartridgeFE : public Cartridge
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
     */
-    void poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value);
 
   private:
     // The 8K ROM image of the cartridge

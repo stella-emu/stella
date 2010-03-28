@@ -36,7 +36,13 @@ class System;
   RAM or ROM.  The last 256 byte segment always points to the last 256
   bytes of ROM.
 
-  @author  Stephen Anthony & Eckhard Stolberg
+  Because of the complexity of this scheme, the cart reports having
+  only one actual bank, in which pieces of it can be swapped out in
+  many different ways.  It contains so many hotspots and possibilities
+  for the ROM address space to change that we just consider the bank to
+  have changed on every poke operation (for any RAM) or an actual bankswitch.
+
+  @author  Eckhard Stolberg & Stephen Anthony
   @version $Id$
 */
 class Cartridge4A50 : public Cartridge
@@ -59,7 +65,7 @@ class Cartridge4A50 : public Cartridge
     /**
       Reset cartridge to its power-on state
     */
-    virtual void reset();
+    void reset();
 
     /**
       Install cartridge in the specified system.  Invoked by the system
@@ -67,26 +73,24 @@ class Cartridge4A50 : public Cartridge
 
       @param system The system the device should install itself in
     */
-    virtual void install(System& system);
+    void install(System& system);
 
     /**
       Install pages for the specified bank in the system.
 
       @param bank The bank that should be installed in the system
     */
-    virtual void bank(uInt16 bank);
+    void bank(uInt16 bank);
 
     /**
       Get the current bank.
-
-      @return  The current bank, or -1 if bankswitching not supported
     */
-    virtual int bank();
+    int bank();
 
     /**
       Query the number of banks supported by the cartridge.
     */
-    virtual int bankCount();
+    int bankCount();
 
     /**
       Patch the cartridge ROM.
@@ -95,7 +99,7 @@ class Cartridge4A50 : public Cartridge
       @param value    The value to place into the address
       @return    Success or failure of the patch operation
     */
-    virtual bool patch(uInt16 address, uInt8 value);
+    bool patch(uInt16 address, uInt8 value);
 
     /**
       Access the internal ROM image for this cartridge.
@@ -103,7 +107,7 @@ class Cartridge4A50 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    virtual uInt8* getImage(int& size);
+    uInt8* getImage(int& size);
 
     /**
       Save the current state of this cart to the given Serializer.
@@ -111,7 +115,7 @@ class Cartridge4A50 : public Cartridge
       @param out  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool save(Serializer& out) const;
+    bool save(Serializer& out) const;
 
     /**
       Load the current state of this cart from the given Serializer.
@@ -119,14 +123,14 @@ class Cartridge4A50 : public Cartridge
       @param in  The Serializer object to use
       @return  False on any errors, else true
     */
-    virtual bool load(Serializer& in);
+    bool load(Serializer& in);
 
     /**
       Get a descriptor for the device name (used in error checking).
 
       @return The name of the object
     */
-    virtual string name() const { return "Cartridge4A50"; }
+    string name() const { return "Cartridge4A50"; }
 
   public:
     /**
@@ -134,15 +138,16 @@ class Cartridge4A50 : public Cartridge
 
       @return The byte at the specified address
     */
-    virtual uInt8 peek(uInt16 address);
+    uInt8 peek(uInt16 address);
 
     /**
       Change the byte at the specified address to the given value
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
     */
-    virtual void poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value);
 
   private:
     /**

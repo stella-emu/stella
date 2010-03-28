@@ -22,10 +22,6 @@
 #include "System.hxx"
 #include "CartE7.hxx"
 
-// TODO - Port to new CartDebug/disassembler scheme
-//        I'm not sure patch is working, since it doesn't consider RAM areas
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeE7::CartridgeE7(const uInt8* image)
 {
@@ -58,6 +54,8 @@ void CartridgeE7::reset()
   // Install some default banks for the RAM and first segment
   bankRAM(0);
   bank(myStartBank);
+
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -143,7 +141,7 @@ uInt8 CartridgeE7::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE7::poke(uInt16 address, uInt8)
+bool CartridgeE7::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -160,6 +158,7 @@ void CartridgeE7::poke(uInt16 address, uInt8)
   // NOTE: This does not handle writing to RAM, however, this 
   // function should never be called for RAM because of the
   // way page accessing has been setup
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,6 +192,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
     access.directPokeBase = 0;
     mySystem->setPageAccess(k >> shift, access);
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -239,6 +239,7 @@ void CartridgeE7::bank(uInt16 slice)
       mySystem->setPageAccess(k >> shift, access);
     }
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -265,7 +266,7 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
 uInt8* CartridgeE7::getImage(int& size)
 {
   size = 16384;
-  return &myImage[0];
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

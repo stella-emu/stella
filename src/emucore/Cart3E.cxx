@@ -131,7 +131,7 @@ uInt8 Cartridge3E::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3E::poke(uInt16 address, uInt8 value)
+bool Cartridge3E::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
 
@@ -151,6 +151,8 @@ void Cartridge3E::poke(uInt16 address, uInt8 value)
   // 64-byte chunk of address space is "owned" by only one device. If we
   // don't chain the poke to the TIA, then the TIA can't see it...
   mySystem->tia().poke(address, value);
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

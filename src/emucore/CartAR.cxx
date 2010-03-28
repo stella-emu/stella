@@ -161,7 +161,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::poke(uInt16 addr, uInt8)
+bool CartridgeAR::poke(uInt16 addr, uInt8)
 {
   // Cancel any pending write if more than 5 distinct accesses have occurred
   // TODO: Modify to handle when the distinct counter wraps around...
@@ -195,6 +195,8 @@ void CartridgeAR::poke(uInt16 addr, uInt8)
       myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
     myWritePending = false;
   }
+
+  return false;  // FIXME
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

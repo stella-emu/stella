@@ -204,7 +204,7 @@ uInt8 M6532::peek(uInt16 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::poke(uInt16 addr, uInt8 value)
+bool M6532::poke(uInt16 addr, uInt8 value)
 {
   // Access RAM directly.  Originally, accesses to RAM could bypass
   // this method and its pages could be installed directly into the
@@ -213,7 +213,7 @@ void M6532::poke(uInt16 addr, uInt8 value)
   if((addr & 0x1080) == 0x0080 && (addr & 0x0200) == 0x0000)
   {
     myRAM[addr & 0x007f] = value;
-    return;
+    return true;
   }
 
   // A2 distinguishes I/O registers from the timer
@@ -244,9 +244,10 @@ void M6532::poke(uInt16 addr, uInt8 value)
       }
 
       default:    // Port B I/O & DDR Registers (Console switches)
-        break;    // hardwired as read-only
+        return false;  // hardwired as read-only
     }
   }
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

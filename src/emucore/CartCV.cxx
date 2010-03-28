@@ -27,11 +27,26 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
-  : myROM(0),
+  : myInitialRAM(0),
     mySize(size)
 {
-  myROM = new uInt8[mySize];
-  memcpy(myROM, image, mySize);
+  if(mySize == 2048)
+  {
+    // Copy the ROM data into my buffer
+    memcpy(myImage, image, 2048);
+  }
+  else if(mySize == 4096)
+  {
+    // The game has something saved in the RAM
+    // Useful for MagiCard program listings
+
+    // Copy the ROM data into my buffer
+    memcpy(myImage, image + 2048, 2048);
+
+    // Copy the RAM image into a buffer for use in reset()
+    myInitialRAM = new uInt8[1024];
+    memcpy(myInitialRAM, image, 1024);
+  }
 
   // This cart contains 1024 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 1024, 0x00, 0x400);
@@ -40,31 +55,22 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::~CartridgeCV()
 {
-  delete[] myROM;
+  delete[] myInitialRAM;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCV::reset()
 {
-  if(mySize == 2048)
+  if(myInitialRAM)
   {
-    // Copy the ROM data into my buffer
-    memcpy(myImage, myROM, 2048);
-
+    // Copy the RAM image into my buffer
+    memcpy(myRAM, myInitialRAM, 1024);
+  }
+  else
+  {
     // Initialize RAM with random values
     for(uInt32 i = 0; i < 1024; ++i)
       myRAM[i] = mySystem->randGenerator().next();
-  }
-  else if(mySize == 4096)
-  {
-    // The game has something saved in the RAM
-    // Useful for MagiCard program listings
-
-    // Copy the ROM data into my buffer
-    memcpy(myImage, myROM + 2048, 2048);
-
-    // Copy the RAM image into my buffer
-    memcpy(myRAM, myROM, 1024);
   }
 }
 
@@ -131,9 +137,10 @@ uInt8 CartridgeCV::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCV::poke(uInt16, uInt8)
+bool CartridgeCV::poke(uInt16, uInt8)
 {
   // This is ROM so poking has no effect :-)
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -158,6 +165,7 @@ int CartridgeCV::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::patch(uInt16 address, uInt8 value)
 {
+  // TODO - ROM vs RAM in patching
   myImage[address & 0x07FF] = value;
   return true;
 } 

@@ -54,13 +54,11 @@ void CartridgeFE::install(System& system)
 
   // Map all of the accesses to call peek and poke
   System::PageAccess access;
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -77,8 +75,9 @@ uInt8 CartridgeFE::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFE::poke(uInt16, uInt8)
+bool CartridgeFE::poke(uInt16, uInt8)
 {
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -105,8 +105,10 @@ class Device : public Serializable
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+
+      @return  True if the poke changed the device address space, else false
     */
-    virtual void poke(uInt16 address, uInt8 value) = 0;
+    virtual bool poke(uInt16 address, uInt8 value) = 0;
 
   protected:
     /// Pointer to the system the device is installed in or the null pointer

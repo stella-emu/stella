@@ -97,7 +97,7 @@ uInt8 CartridgeX07::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeX07::poke(uInt16 address, uInt8 value)
+bool CartridgeX07::poke(uInt16 address, uInt8 value)
 {
   // Check for RAM or TIA mirroring
   uInt16 lowAddress = address & 0x3ff;
@@ -114,6 +114,7 @@ void CartridgeX07::poke(uInt16 address, uInt8 value)
     if((myCurrentBank & 0xe) == 0xe)
       bank(((address & 0x40) >> 6) | (myCurrentBank & 0xe));
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -91,9 +91,10 @@ uInt8 Cartridge2K::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge2K::poke(uInt16, uInt8)
+bool Cartridge2K::poke(uInt16, uInt8)
 {
   // This is ROM so poking has no effect :-)
+  return false;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

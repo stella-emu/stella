@@ -258,10 +258,8 @@ void System::poke(uInt16 addr, uInt8 value)
   }
   else
   {
-    // The specific device is responsible for setting the dirty flag
-    // We can't automatically set it, since not all pokes actually
-    // succeed and modify a page
-    access.device->poke(addr, value);
+    // The specific device informs us if the poke succeeded
+    myPageIsDirtyTable[page] = access.device->poke(addr, value);
   }
 
 #ifdef DEBUGGER_SUPPORT

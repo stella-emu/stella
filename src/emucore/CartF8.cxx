@@ -95,7 +95,7 @@ uInt8 CartridgeF8::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF8::poke(uInt16 address, uInt8)
+bool CartridgeF8::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -115,6 +115,7 @@ void CartridgeF8::poke(uInt16 address, uInt8)
     default:
       break;
   }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

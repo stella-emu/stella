@@ -139,7 +139,7 @@ uInt8 CartridgeFA::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFA::poke(uInt16 address, uInt8)
+bool CartridgeFA::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -168,6 +168,7 @@ void CartridgeFA::poke(uInt16 address, uInt8)
   // NOTE: This does not handle accessing RAM, however, this function
   // should never be called for RAM because of the way page accessing
   // has been setup
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

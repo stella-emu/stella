@@ -131,8 +131,6 @@ class Cartridge : public Device
 
     /**
       Get the current bank.
-
-      @return  The current bank, or -1 if bankswitching not supported
     */
     virtual int bank() = 0;
 

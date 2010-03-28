@@ -128,8 +128,9 @@ class Cartridge0840 : public Cartridge
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
     */
-    void poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value);
 
   private:
     // The 8K ROM image of the cartridge

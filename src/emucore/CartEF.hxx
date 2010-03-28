@@ -73,8 +73,6 @@ class CartridgeEF : public Cartridge
 
     /**
       Get the current bank.
-
-      @return  The current bank, or -1 if bankswitching not supported
     */
     int bank();
 
@@ -136,8 +134,9 @@ class CartridgeEF : public Cartridge
 
       @param address The address where the value should be stored
       @param value The value to be stored at the address
+      @return  True if the poke changed the device address space, else false
     */
-    void poke(uInt16 address, uInt8 value);
+    bool poke(uInt16 address, uInt8 value);
 
   private:
     // Indicates which bank is currently active

@@ -84,7 +84,7 @@ uInt8 CartridgeF4::peek(uInt16 address)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF4::poke(uInt16 address, uInt8)
+bool CartridgeF4::poke(uInt16 address, uInt8)
 {
   address &= 0x0FFF;
 
@@ -93,6 +93,8 @@ void CartridgeF4::poke(uInt16 address, uInt8)
   {
     bank(address - 0x0FF4);
   }
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
