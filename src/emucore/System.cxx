@@ -56,6 +56,7 @@ System::System(uInt16 n, uInt16 m)
   for(int page = 0; page < myNumberOfPages; ++page)
   {
     setPageAccess(page, access);
+    myPageIsDirtyTable[page] = false;
   }
 
   // Bus starts out unlocked (in other words, peek() changes myDataBusState)
@@ -99,6 +100,9 @@ void System::reset()
   {
     myM6502->reset();
   }
+
+  // There are no dirty pages upon startup
+  clearDirtyPages();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -157,7 +161,7 @@ void System::resetCycles()
 void System::setPageAccess(uInt16 page, const PageAccess& access)
 {
   // Make sure the page is within range
-  assert(page <= myNumberOfPages);
+  assert(page < myNumberOfPages);
 
   // Make sure the access methods make sense
   assert(access.device != 0);
@@ -169,7 +173,7 @@ void System::setPageAccess(uInt16 page, const PageAccess& access)
 const System::PageAccess& System::getPageAccess(uInt16 page) const
 {
   // Make sure the page is within range
-  assert(page <= myNumberOfPages);
+  assert(page < myNumberOfPages);
 
   return myPageAccessTable[page];
 }
@@ -253,8 +257,8 @@ void System::poke(uInt16 addr, uInt8 value)
   if(access.directPokeBase != 0)
   {
     // Since we have direct access to this poke, we can dirty its page
-    myPageIsDirtyTable[page] = true;
     *(access.directPokeBase + (addr & myPageMask)) = value;
+    myPageIsDirtyTable[page] = true;
   }
   else
   {

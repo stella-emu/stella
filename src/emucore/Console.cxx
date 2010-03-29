@@ -111,6 +111,12 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   mySystem->attach(myTIA);
   mySystem->attach(myCart);
 
+#ifdef DEBUGGER_SUPPORT
+  // The debugger must be added before we run the console for the first time
+  myOSystem->debugger().setConsole(this);
+  myOSystem->debugger().initialize();
+#endif
+
   // Auto-detect NTSC/PAL mode if it's requested
   string autodetected = "";
   myDisplayFormat = myProperties.get(Display_Format);

@@ -41,12 +41,6 @@ class NullDevice;
   In general the addressing space will be 8192 (2^13) bytes for a 
   6507 based system and 65536 (2^16) bytes for a 6502 based system.
 
-  TODO: To allow for dynamic code generation we probably need to
-        add a tag to each page that indicates if it is read only
-        memory.  We also need to notify the processor anytime a
-        page access method is changed so that it can clear the
-        dynamic code for that page of memory.
-
   @author  Bradford W. Mott
   @version $Id$
 */
@@ -378,7 +372,7 @@ class System : public Serializable
 
       @return The name of the object
     */
-    virtual string name() const { return "System"; }
+    string name() const { return "System"; }
 
   private:
     // Mask to apply to an address before accessing memory

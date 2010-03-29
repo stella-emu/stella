@@ -511,10 +511,6 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       return false;
     }
     if(!audiofirst)  myConsole->initializeAudio();
-  #ifdef DEBUGGER_SUPPORT
-    myDebugger->setConsole(myConsole);
-    myDebugger->initialize();
-  #endif
 
     if(showmessage)
       myFrameBuffer->showMessage("New console created");

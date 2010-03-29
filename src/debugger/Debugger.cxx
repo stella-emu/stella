@@ -208,10 +208,6 @@ void Debugger::setConsole(Console* console)
 
 // FIXME - these will probably be removed
 //  loadListFile();
-
-  // Make sure cart RAM is added before this is called,
-  // otherwise the debugger state won't know about it
-  saveOldState(false);  // don't add the state to the rewind list
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -668,6 +664,9 @@ void Debugger::setStartState()
 
   // Start a new rewind list
   myRewindManager->clear();
+
+  // Save initial state, but don't add it to the rewind list
+  saveOldState(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
