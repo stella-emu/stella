@@ -258,8 +258,30 @@ int CartridgeE7::bankCount()
 bool CartridgeE7::patch(uInt16 address, uInt8 value)
 {
   address = address & 0x0FFF;
-  myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
-  return true;
+
+  if(address < 0x0800)
+  {
+    if(myCurrentSlice[0] == 7)
+    {
+      // Normally, a write to the read port won't do anything
+      // However, the patch command is special in that ignores such
+      // cart restrictions
+      myRAM[address & 0x03FF] = value;
+    }
+    else
+      myImage[(myCurrentSlice[0] << 11) + (address & 0x07FF)] = value;
+  }
+  else if(address < 0x0900)
+  {
+    // Normally, a write to the read port won't do anything
+    // However, the patch command is special in that ignores such
+    // cart restrictions
+    myRAM[1024 + (myCurrentRAM << 8) + (address & 0x00FF)] = value;
+  }
+  else
+    myImage[(myCurrentSlice[address >> 11] << 11) + (address & 0x07FF)] = value;
+
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

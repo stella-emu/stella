@@ -315,7 +315,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       default:
         break;
     }
-    return myProgramImage[myCurrentBank * 4096 + address];
+    return myProgramImage[(myCurrentBank << 12) + address];
   }
 }
 
@@ -501,7 +501,7 @@ void CartridgeDPCPlus::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
+  uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
@@ -535,8 +535,16 @@ int CartridgeDPCPlus::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 {
-  myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
-  return myBankChanged = true;
+  address &= 0x0FFF;
+
+  // For now, we ignore attempts to patch the DPC address space
+  if(address >= 0x0080)
+  {
+    myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+    return myBankChanged = true;
+  }
+  else
+    return false;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

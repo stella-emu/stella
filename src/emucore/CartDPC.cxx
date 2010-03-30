@@ -346,14 +346,14 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
       {
         if((index >= 5) && myMusicMode[index - 5])
         {
-          // Data fecther is in music mode so its low counter value
+          // Data fetcher is in music mode so its low counter value
           // should be loaded from the top register not the poked value
           myCounters[index] = (myCounters[index] & 0x0700) |
               (uInt16)myTops[index];
         }
         else
         {
-          // Data fecther is either not a music mode data fecther or it
+          // Data fetcher is either not a music mode data fetcher or it
           // isn't in music mode so it's low counter value should be loaded
           // with the poked value
           myCounters[index] = (myCounters[index] & 0x0700) | (uInt16)value;
@@ -421,7 +421,7 @@ void CartridgeDPC::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank * 4096;
+  uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
@@ -455,8 +455,16 @@ int CartridgeDPC::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 {
-  myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
-  return true;
+  address &= 0x0FFF;
+
+  // For now, we ignore attempts to patch the DPC address space
+  if(address >= 0x0080)
+  {
+    myProgramImage[(myCurrentBank << 12) + (address & 0x0FFF)] = value;
+    return myBankChanged = true;
+  }
+  else
+    return false;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

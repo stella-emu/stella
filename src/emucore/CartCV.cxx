@@ -72,6 +72,8 @@ void CartridgeCV::reset()
     for(uInt32 i = 0; i < 1024; ++i)
       myRAM[i] = mySystem->randGenerator().next();
   }
+
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -139,7 +141,9 @@ uInt8 CartridgeCV::peek(uInt16 address)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::poke(uInt16, uInt8)
 {
-  // This is ROM so poking has no effect :-)
+  // NOTE: This does not handle accessing RAM, however, this function 
+  // should never be called for RAM because of the way page accessing 
+  // has been setup
   return false;
 }
 
@@ -165,9 +169,20 @@ int CartridgeCV::bankCount()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::patch(uInt16 address, uInt8 value)
 {
-  // TODO - ROM vs RAM in patching
-  myImage[address & 0x07FF] = value;
-  return true;
+  address &= 0x0FFF;
+
+  if(address < 0x0800)
+  {
+    // Normally, a write to the read port won't do anything
+    // However, the patch command is special in that ignores such
+    // cart restrictions
+    // The following will work for both reads and writes
+    myRAM[address & 0x03FF] = value;
+  }
+  else
+    myImage[address & 0x07FF] = value;
+
+  return myBankChanged = true;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

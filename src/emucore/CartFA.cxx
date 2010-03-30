@@ -214,16 +214,12 @@ bool CartridgeFA::patch(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
 
-  if(address < 0x0100)
-  {
-    myRAM[address] = value;
-  }
-  else if(address < 0x0200)
+  if(address < 0x0200)
   {
     // Normally, a write to the read port won't do anything
     // However, the patch command is special in that ignores such
     // cart restrictions
-    myRAM[address - 0x100] = value;
+    myRAM[address & 0x00FF] = value;
   }
   else
     myImage[(myCurrentBank << 12) + address] = value;
