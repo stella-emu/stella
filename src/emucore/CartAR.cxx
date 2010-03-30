@@ -113,7 +113,7 @@ void CartridgeAR::install(System& system)
 uInt8 CartridgeAR::peek(uInt16 addr)
 {
   // Is the "dummy" SC BIOS hotspot for reading a load being accessed?
-  if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == (3 * 2048)))
+  if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == (3 << 11)))
   {
     // Get load that's being accessed (BIOS places load number at 0x80)
     uInt8 load = mySystem->peek(0x0080);
@@ -152,7 +152,7 @@ uInt8 CartridgeAR::peek(uInt16 addr)
   {
     if((addr & 0x0800) == 0)
       myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
-    else if(myImageOffset[1] != 3 * 2048)    // Can't poke to ROM :-)
+    else if(myImageOffset[1] != (3 << 11))    // Can't poke to ROM :-)
       myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
     myWritePending = false;
   }
@@ -191,7 +191,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   {
     if((addr & 0x0800) == 0)
       myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
-    else if(myImageOffset[1] != 3 * 2048)    // Can't poke to ROM :-)
+    else if(myImageOffset[1] != (3 << 11))    // Can't poke to ROM :-)
       myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
     myWritePending = false;
   }
@@ -220,7 +220,7 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
   //  p = ROM Power (0 = enabled, 1 = off.)  Only power the ROM if you're
   //    wanting to access the ROM for multiloads.  Otherwise set to 1.
 
-  myCurrentBank = configuration & 0x1f; // remember for the bank() method
+  myCurrentBank = configuration & 0x1F; // remember for the bank() method
 
   // Handle ROM power configuration
   myPower = !(configuration & 0x01);
@@ -236,60 +236,61 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
   {
     case 0:
     {
-      myImageOffset[0] = 2 * 2048;
-      myImageOffset[1] = 3 * 2048;
+      myImageOffset[0] = 2 << 11;
+      myImageOffset[1] = 3 << 11;
       break;
     }
 
     case 1:
     {
-      myImageOffset[0] = 0 * 2048;
-      myImageOffset[1] = 3 * 2048;
+      myImageOffset[0] = 0      ;
+      myImageOffset[1] = 3 << 11;
       break;
     }
 
     case 2:
     {
-      myImageOffset[0] = 2 * 2048;
-      myImageOffset[1] = 0 * 2048;
+      myImageOffset[0] = 2 << 11;
+      myImageOffset[1] = 0      ;
       break;
     }
 
     case 3:
     {
-      myImageOffset[0] = 0 * 2048;
-      myImageOffset[1] = 2 * 2048;
+      myImageOffset[0] = 0      ;
+      myImageOffset[1] = 2 << 11;
       break;
     }
 
     case 4:
     {
-      myImageOffset[0] = 2 * 2048;
-      myImageOffset[1] = 3 * 2048;
+      myImageOffset[0] = 2 << 11;
+      myImageOffset[1] = 3 << 11;
       break;
     }
 
     case 5:
     {
-      myImageOffset[0] = 1 * 2048;
-      myImageOffset[1] = 3 * 2048;
+      myImageOffset[0] = 1 << 11;
+      myImageOffset[1] = 3 << 11;
       break;
     }
 
     case 6:
     {
-      myImageOffset[0] = 2 * 2048;
-      myImageOffset[1] = 1 * 2048;
+      myImageOffset[0] = 2 << 11;
+      myImageOffset[1] = 1 << 11;
       break;
     }
 
     case 7:
     {
-      myImageOffset[0] = 1 * 2048;
-      myImageOffset[1] = 2 * 2048;
+      myImageOffset[0] = 1 << 11;
+      myImageOffset[1] = 2 << 11;
       break;
     }
   }
+  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -301,27 +302,25 @@ void CartridgeAR::initializeROM()
   // almost definitely change
 
   // The scrom.asm code checks a value at offset 109 as follows:
-  //   0xff -> do a complete jump over the SC BIOS progress bars code
-  //   0x0  -> show SC BIOS progress bars as normal
-  ourDummyROMCode[109] = mySettings.getBool("fastscbios") ? 0xff : 0x0;
+  //   0xFF -> do a complete jump over the SC BIOS progress bars code
+  //   0x00 -> show SC BIOS progress bars as normal
+  ourDummyROMCode[109] = mySettings.getBool("fastscbios") ? 0xFF : 0x00;
 
   // The accumulator should contain a random value after exiting the
   // SC BIOS code - a value placed in offset 281 will be stored in A
   ourDummyROMCode[281] = mySystem->randGenerator().next();
 
   // Initialize ROM with illegal 6502 opcode that causes a real 6502 to jam
-  for(uInt32 i = 0; i < 2048; ++i)
-    myImage[3 * 2048 + i] = 0x02;
+  memset(myImage + (3<<11), 0x02, 2048);
 
   // Copy the "dummy" Supercharger BIOS code into the ROM area
-  for(uInt32 j = 0; j < sizeof(ourDummyROMCode); ++j)
-    myImage[3 * 2048 + j] = ourDummyROMCode[j];
+  memcpy(myImage + (3<<11), ourDummyROMCode, sizeof(ourDummyROMCode));
 
   // Finally set 6502 vectors to point to initial load code at 0xF80A of BIOS
-  myImage[3 * 2048 + 2044] = 0x0A;
-  myImage[3 * 2048 + 2045] = 0xF8;
-  myImage[3 * 2048 + 2046] = 0x0A;
-  myImage[3 * 2048 + 2047] = 0xF8;
+  myImage[(3<<11) + 2044] = 0x0A;
+  myImage[(3<<11) + 2045] = 0xF8;
+  myImage[(3<<11) + 2046] = 0x0A;
+  myImage[(3<<11) + 2047] = 0xF8;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,8 +408,11 @@ int CartridgeAR::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeAR::bankCount()
 {
+/*
   // TODO - this should depend on ROM size
   return 32;
+*/
+  return myNumberOfLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -424,7 +426,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 uInt8* CartridgeAR::getImage(int& size)
 {
   size = myNumberOfLoadImages * 8448;
-  return &myLoadImages[0];
+  return myLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
