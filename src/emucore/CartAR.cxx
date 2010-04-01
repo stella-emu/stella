@@ -23,11 +23,6 @@
 #include "System.hxx"
 #include "CartAR.hxx"
 
-// TODO - properly handle read from write port functionality
-//        Note: do r/w port restrictions even exist for this scheme??
-//        Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
@@ -112,6 +107,11 @@ void CartridgeAR::install(System& system)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeAR::peek(uInt16 addr)
 {
+  // In debugger/bank-locked mode, we ignore all hotspots and in general
+  // anything that can change the internal state of the cart
+  if(bankLocked())
+    return myImage[(addr & 0x07FF) + myImageOffset[(addr & 0x0800) ? 1 : 0]];
+
   // Is the "dummy" SC BIOS hotspot for reading a load being accessed?
   if(((addr & 0x1FFF) == 0x1850) && (myImageOffset[1] == (3 << 11)))
   {
@@ -151,9 +151,15 @@ uInt8 CartridgeAR::peek(uInt16 addr)
       (my6502->distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     if((addr & 0x0800) == 0)
+    {
       myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
+      mySystem->setDirtyPage(addr);
+    }
     else if(myImageOffset[1] != (3 << 11))    // Can't poke to ROM :-)
+    {
       myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
+      mySystem->setDirtyPage(addr);
+    }
     myWritePending = false;
   }
 
@@ -163,6 +169,8 @@ uInt8 CartridgeAR::peek(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::poke(uInt16 addr, uInt8)
 {
+  bool modified = false;
+
   // Cancel any pending write if more than 5 distinct accesses have occurred
   // TODO: Modify to handle when the distinct counter wraps around...
   if(myWritePending && 
@@ -190,13 +198,19 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
       (my6502->distinctAccesses() == (myNumberOfDistinctAccesses + 5)))
   {
     if((addr & 0x0800) == 0)
+    {
       myImage[(addr & 0x07FF) + myImageOffset[0]] = myDataHoldRegister;
+      modified = true;
+    }
     else if(myImageOffset[1] != (3 << 11))    // Can't poke to ROM :-)
+    {
       myImage[(addr & 0x07FF) + myImageOffset[1]] = myDataHoldRegister;
+      modified = true;
+    }
     myWritePending = false;
   }
 
-  return false;  // FIXME
+  return modified;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -382,6 +396,7 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
       mySystem->poke(0xff, myHeader[1]);
       mySystem->poke(0x80, myHeader[2]);
 
+      myBankChanged = true;
       return;
     }
   }
@@ -394,9 +409,8 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::bank(uInt16 bank)
 {
-  if(bankLocked()) return;
-
-  bankConfiguration(bank);
+  if(!bankLocked())
+    bankConfiguration(bank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -408,11 +422,7 @@ int CartridgeAR::bank()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartridgeAR::bankCount()
 {
-/*
-  // TODO - this should depend on ROM size
   return 32;
-*/
-  return myNumberOfLoadImages;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -425,7 +435,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8* CartridgeAR::getImage(int& size)
 {
-  size = myNumberOfLoadImages * 8448;
+  size = sizeof(myLoadImages);
   return myLoadImages;
 }
 
