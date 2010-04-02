@@ -26,6 +26,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
+  : myFastFetch(false),
+    mySystemCycles(0),
+    myFractionalClocks(0.0)
 {
   // Make a copy of the entire image as-is, for use by getImage()
   // (this wastes 29K of RAM, should be controlled by a #ifdef)
@@ -49,10 +52,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
 
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 0x2B435044; // "DPC+"
-
-  // Initialize the system cycles counter & fractional clock values
-  mySystemCycles = 0;
-  myFractionalClocks = 0.0;
 
   // Remember startup bank
   myStartBank = 5;
@@ -90,29 +89,18 @@ void CartridgeDPCPlus::install(System& system)
   mySystem = &system;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
-
+  
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
-
-  // Set the page accessing methods for the hot spots
+  
+  // Map all of the accesses to call peek and poke
   System::PageAccess access;
-  for(uInt32 i = (0x1FF6 & ~mask); i < 0x2000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
-  }
-
-  // Set the page accessing method for the DPC reading & writing pages
-  for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
-    mySystem->setPageAccess(j >> shift, access);
-  }
-
+  
   // Install pages for the startup bank
   bank(myStartBank);
 }
@@ -121,15 +109,14 @@ void CartridgeDPCPlus::install(System& system)
 inline void CartridgeDPCPlus::clockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR)
-  myRandomNumber = ((myRandomNumber & 1) ? 0xa260012b: 0x00) ^
-                   ((myRandomNumber >> 1) & 0x7FFFFFFF);
+  myRandomNumber =  ((myRandomNumber & 1) ? 0xa260012b: 0x00) ^ ((myRandomNumber >> 1) & 0x7FFFFFFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR, reversed)
-  myRandomNumber =  ((myRandomNumber & (1<<31)) ? 0x44c00257: 0x00) ^ (myRandomNumber << 1);
+  myRandomNumber = ((myRandomNumber & (1<<31)) ? 0x44c00257: 0x00) ^ (myRandomNumber << 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -165,64 +152,76 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 {
   address &= 0x0FFF;
 
-  if(address < 0x0040)
+  uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+  
+  // In debugger/bank-locked mode, we ignore all hotspots and in general
+  // anything that can change the internal state of the cart
+  if(bankLocked())
+    return peekvalue;
+
+  if(myFastFetch && myLDAimmediate)
+  {
+    peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+    if(peekvalue < 0x0028)
+      address = peekvalue;
+  }
+  myLDAimmediate = false;
+  
+  if(address < 0x0028)
   {
     uInt8 result = 0;
-
+    
     // Get the index of the data fetcher that's being accessed
     uInt32 index = address & 0x07;
     uInt32 function = (address >> 3) & 0x07;
-
+    
     // Update flag register for selected data fetcher
-    if(((myCounters[index] & 0x00ff00) >> 8) == ((myTops[index]+1) & 0xff))   
+    if((myCounters[index] & 0x00ff) == ((myTops[index]+1) & 0xff))
     {
       myFlags[index] = 0xff;
     }
-    else if(((myCounters[index] & 0x00ff00) >> 8) == myBottoms[index])
+    else if((myCounters[index] & 0x00ff) == myBottoms[index])
     {
       myFlags[index] = 0x00;
     }
-
+    
     switch(function)
     {
       case 0x00:
       {
         switch(index)
         {
-          case 0x00:  //advance and return byte 0 of random
+          case 0x00:  // advance and return byte 0 of random
             clockRandomNumberGenerator();
             result = myRandomNumber & 0xFF;
             break;
-          
+            
           case 0x01:  // return to prior and return byte 0 of random
             priorClockRandomNumberGenerator();
             result = myRandomNumber & 0xFF;
             break;
-          
+            
           case 0x02:
             result = (myRandomNumber>>8) & 0xFF;
             break;
-          
+            
           case 0x03:
             result = (myRandomNumber>>16) & 0xFF;
             break;
-          
+            
           case 0x04:
             result = (myRandomNumber>>24) & 0xFF;
             break;
-          
-          case 0x05:
-          case 0x06:
-          case 0x07:
-          // No, it's a music read
+            
+          case 0x05: // No, it's a music read
           {
             static const uInt8 musicAmplitudes[8] = {
               0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
             };
-
+            
             // Update the music data fetchers (counter & flag)
             updateMusicModeDataFetchers();
-
+            
             uInt8 i = 0;
             if(myMusicMode[0] && (myMusicCounter[0]>>31))
             {
@@ -236,45 +235,69 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
             {
               i |= 0x04;
             }
-
+            
             result = musicAmplitudes[i];
+            break;          
           }
-          break;          
+
+          case 0x06:  // reserved
+          case 0x07:  // reserved
+            break;
         }
         break;
       }
-
+        
       // DFx display data read
       case 0x01:
       {
-        result = myDisplayImage[myCounters[index] >> 8];
-        myCounters[index] = (myCounters[index] + 0x100) & 0x0fffff;   
+        result = myDisplayImage[myCounters[index]];
+        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;   
         break;
       }
-
+        
       // DFx display data read AND'd w/flag
       case 0x02:
       {
-        result = myDisplayImage[myCounters[index] >> 8] & myFlags[index];
-        myCounters[index] = (myCounters[index] + 0x100) & 0x0fffff;   
+        result = myDisplayImage[myCounters[index]] & myFlags[index];
+        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;   
         break;
       } 
-      
-    // DFx display data read w/fractional increment
+        
+      // DFx display data read w/fractional increment
       case 0x03:
       {
-        result = myDisplayImage[myCounters[index] >> 8];
-        myCounters[index] = (myCounters[index] + myFractionalIncrements[index]) & 0x0fffff;   
+        result = myDisplayImage[myFractionalCounters[index] >> 8];
+        myFractionalCounters[index] = (myFractionalCounters[index] + myFractionalIncrements[index]) & 0x0fffff;   
         break;
       }     
 
+      case 0x04:
+      {
+        switch (index)
+        {
+          case 0x00:
+          case 0x01:
+          case 0x02:
+          case 0x03:
+          {
+            result = myFlags[index];
+            break;
+          }
+          case 0x04:  // reserved
+          case 0x05:  // reserved
+          case 0x06:  // reserved
+          case 0x07:  // reserved
+            break;
+        }
+        break;        
+      }
+        
       default:
       {
         result = 0;
-        break;
       }
     }
-
+    
     return result;
   }
   else
@@ -286,36 +309,41 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
         // Set the current bank to the first 4k bank
         bank(0);
         break;
-      
+        
       case 0x0FF7:
         // Set the current bank to the second 4k bank
         bank(1);
         break;
-      
+        
       case 0x0FF8:
         // Set the current bank to the third 4k bank
         bank(2);
         break;
-
+        
       case 0x0FF9:
         // Set the current bank to the fourth 4k bank
         bank(3);
         break;
-
+        
       case 0x0FFA:
         // Set the current bank to the fifth 4k bank
         bank(4);
         break;
-      
+        
       case 0x0FFB:
         // Set the current bank to the last 4k bank
         bank(5);
         break;
-      
+        
       default:
         break;
     }
-    return myProgramImage[(myCurrentBank << 12) + address];
+    
+    peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+    if(myFastFetch)
+      myLDAimmediate = (peekvalue == 0xA9);
+
+    return peekvalue;
   }
 }
 
@@ -323,78 +351,103 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
-
-  if((address >= 0x0038) && (address < 0x0080))  
+  
+  if((address >= 0x0028) && (address < 0x0080))  
   {
     // Get the index of the data fetcher that's being accessed
     uInt32 index = address & 0x07;    
-    uInt32 function = ((address - 0x38) >> 3) & 0x0f;
-
+    uInt32 function = ((address - 0x28) >> 3) & 0x0f;
+    
     switch(function)
     {
+      //DFxFrac counter low
       case 0x00:
       {
+        myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F0000) | ((uInt16)value << 8);
+        break;
+      }
+        
+      // DFxFrac counter high
+      case 0x01:
+      {
+        myFractionalCounters[index] = (((uInt16)value & 0x0F) << 16) | (myFractionalCounters[index] & 0x00ffff);
+        break;
+      }
+        
+      case 0x02:
+      {
         myFractionalIncrements[index] = value;
-        myCounters[index] = myCounters[index] & 0x0FFF00;
+        myFractionalCounters[index] = myFractionalCounters[index] & 0x0FFF00;
         break;
       }
 
       // DFx top count
-      case 0x01:
+      case 0x03:
       {
         myTops[index] = value;
         myFlags[index] = 0x00;
         break;
       }
-
+        
       // DFx bottom count
-      case 0x02:
+      case 0x04:
       {
         myBottoms[index] = value;
         break;
       }
-
+        
       // DFx counter low
-      case 0x03:
+      case 0x05:
       {
-        myCounters[index] = (myCounters[index] & 0x0F0000) | ((uInt16)value << 8);
+        myCounters[index] = (myCounters[index] & 0x0F00) | value ;
         break;
       }
-
-      // DFx counter high
-      case 0x04:
+        
+      // Control registers
+      case 0x06:
       {
-        myCounters[index] = (((uInt16)value & 0x0F) << 16) | (myCounters[index] & 0x00ffff);
-      
-        // Execute special code for music mode data fetchers
-        if(index >= 5)
+        switch (index)
         {
-          myMusicMode[index - 5] = (value & 0x10);
-
-          // NOTE: We are not handling the clock source input for
-          // the music mode data fetchers.  We're going to assume
-          // they always use the OSC input.
+            // FastFetch control
+          case 0x00:
+          {
+            myFastFetch = (value == 0);
+            break;
+          }
+          case 0x01:  // reserved
+          case 0x02:  // reserved
+          case 0x03:  // reserved
+          case 0x04:  // reserved
+            break;
+          case 0x05:
+          case 0x06:
+          case 0x07:
+          {
+            myMusicMode[index - 5] = (value & 0x10);
+            break;
+          }
+          break;
         }
         break;
       }
 
       // DF Push
-      case 0x05:
+      case 0x07:
       {
-        myCounters[index] = (myCounters[index] - 0x100) & 0x0fffff;
-        myDisplayImage[myCounters[index] >> 8] = value;
+        myCounters[index] = (myCounters[index] - 0x1) & 0x0fff;
+        myDisplayImage[myCounters[index]] = value;
         break;
       }
-      
+        
       // DFx counter hi, same as counter high, but w/out music mode
-      case 0x06:
+      case 0x08:
       {
-        myCounters[index] = (((uInt16)value & 0x0F) << 16) | (myCounters[index] & 0x00ffff);
+        myCounters[index] = (((uInt16)value & 0x0F) << 8) | (myCounters[index] & 0x00ff);
         break;
       }     
-
+        
       // Random Number Generator Reset
-      case 0x07:
+      case 0x09:
       {
         switch (index)
         {
@@ -428,10 +481,9 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
           case 0x07: 
           { 
             myMusicFrequency[index-5] = myFrequencyImage[(value<<2)] +
-              (myFrequencyImage[(value<<2)+1]<<8) +
-              (myFrequencyImage[(value<<2)+2]<<16) +
-              (myFrequencyImage[(value<<2)+3]<<24);
-
+            (myFrequencyImage[(value<<2)+1]<<8) +
+            (myFrequencyImage[(value<<2)+2]<<16) +
+            (myFrequencyImage[(value<<2)+3]<<24);
             break;
           }
           default:
@@ -439,17 +491,19 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
         }
         break;
       }
-
+        
       // DF Write
-      case 0x08:
+      case 0x0a:
       {
-        myDisplayImage[myCounters[index] >> 8] = value;
-        myCounters[index] = (myCounters[index] + 0x100) & 0x0fffff;
+        myDisplayImage[myCounters[index]] = value;
+        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
         break;
       }
-      
+        
       default:
+      {
         break;
+      }
     } 
   }
   else
@@ -461,32 +515,32 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
         // Set the current bank to the first 4k bank
         bank(0);
         break;
-      
+        
       case 0x0FF7:
         // Set the current bank to the second 4k bank
         bank(1);
         break;
-      
+        
       case 0x0FF8:
         // Set the current bank to the third 4k bank
         bank(2);
         break;
-      
+        
       case 0x0FF9:
         // Set the current bank to the fourth 4k bank
         bank(3);
         break;
-      
+        
       case 0x0FFA:
         // Set the current bank to the fifth 4k bank
         bank(4);
         break;
-      
+        
       case 0x0FFB:
         // Set the current bank to the last 4k bank
         bank(5);
         break;
-
+        
       default:
         break;
     }
@@ -501,22 +555,7 @@ void CartridgeDPCPlus::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
 
-  // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.device = this;
-  access.directPokeBase = 0;
-
-  // Map Program ROM image into the system
-  for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);
-      address += (1 << shift))
-  {
-    access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
-    mySystem->setPageAccess(address >> shift, access);
-  }
   myBankChanged = true;
 }
 
@@ -583,6 +622,11 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     for(i = 0; i < 8; ++i)
       out.putInt(myCounters[i]);
     
+    // The counter registers for the fractional data fetchers
+    out.putInt(8);
+    for(i = 0; i < 8; ++i)
+      out.putInt(myFractionalCounters[i]);
+
     // The fractional registers for the data fetchers
     out.putInt(8);
     for(i = 0; i < 8; ++i)
@@ -592,6 +636,10 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putInt(8);
     for(i = 0; i < 8; ++i)
       out.putByte((char)myFlags[i]);
+
+    // The Fast Fetcher Enabled flag
+    out.putBool(myFastFetch);
+    out.putBool(myLDAimmediate);
 
     // The music mode flags for the data fetchers
     out.putInt(3);
@@ -651,7 +699,12 @@ bool CartridgeDPCPlus::load(Serializer& in)
     // The counter registers for the data fetchers
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myCounters[i] = (uInt32) in.getInt();
+      myCounters[i] = (uInt16) in.getInt();
+
+    // The counter registers for the data fetchers
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myFractionalCounters[i] = (uInt32) in.getInt();
 
     // The fractional registers for the data fetchers
     limit = (uInt32) in.getInt();
@@ -662,6 +715,10 @@ bool CartridgeDPCPlus::load(Serializer& in)
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
       myFlags[i] = (uInt8) in.getByte();
+
+    // The Fast Fetcher Enabled flag
+    myFastFetch = in.getBool();
+    myLDAimmediate = in.getBool();
 
     // The music mode flags for the data fetchers
     limit = (uInt32) in.getInt();

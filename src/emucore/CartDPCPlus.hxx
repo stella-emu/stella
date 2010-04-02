@@ -182,13 +182,20 @@ class CartridgeDPCPlus : public Cartridge
     uInt8 myBottoms[8];
 
     // The counter registers for the data fetchers
-    uInt32 myCounters[8];
+    uInt16 myCounters[8];
   
+    // The counter registers for the fractional data fetchers
+    uInt32 myFractionalCounters[8];
+
     // The fractional increments for the data fetchers
     uInt8 myFractionalIncrements[8];
 
     // The flag registers for the data fetchers
     uInt8 myFlags[8];
+
+    // The Fast Fetcher Enabled flag
+    bool myFastFetch;
+    bool myLDAimmediate;
 
     // The music mode DF5, DF6, & DF7 enabled flags
     bool myMusicMode[3];

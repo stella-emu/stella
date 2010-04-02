@@ -18,13 +18,14 @@
 
 #include <cassert>
 #include <cstring>
-#include <iostream>
 
 #include "System.hxx"
 #include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
+  : mySystemCycles(0),
+    myFractionalClocks(0.0)
 {
   // Make a copy of the entire image as-is, for use by getImage()
   // (this wastes 12K of RAM, should be controlled by a #ifdef)
@@ -45,10 +46,6 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
 
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 1;
-
-  // Initialize the system cycles counter & fractional clock values
-  mySystemCycles = 0;
-  myFractionalClocks = 0.0;
 
   // Remember startup bank
   myStartBank = 1;
@@ -189,6 +186,11 @@ inline void CartridgeDPC::updateMusicModeDataFetchers()
 uInt8 CartridgeDPC::peek(uInt16 address)
 {
   address &= 0x0FFF;
+
+  // In debugger/bank-locked mode, we ignore all hotspots and in general
+  // anything that can change the internal state of the cart
+  if(bankLocked())
+    return myProgramImage[(myCurrentBank << 12) + address];
 
   // Clock the random number generator.  This should be done for every
   // cartridge access, however, we're only doing it for the DPC and 
