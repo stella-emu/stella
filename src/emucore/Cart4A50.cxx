@@ -314,14 +314,14 @@ void Cartridge4A50::bank(uInt16)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4A50::bank()
+uInt16 Cartridge4A50::bank() const
 {
   // Doesn't support bankswitching in the normal sense
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4A50::bankCount()
+uInt16 Cartridge4A50::bankCount() const
 {
   // Doesn't support bankswitching in the normal sense
   // There is one 'virtual' bank that can change in many different ways
@@ -361,7 +361,7 @@ bool Cartridge4A50::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge4A50::getImage(int& size)
+const uInt8* Cartridge4A50::getImage(int& size) const
 {
   size = 131072;
   return myImage;

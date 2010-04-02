@@ -82,14 +82,14 @@ void Cartridge4K::bank(uInt16)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4K::bank()
+uInt16 Cartridge4K::bank() const
 {
   // Doesn't support bankswitching
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge4K::bankCount()
+uInt16 Cartridge4K::bankCount() const
 {
   return 1;
 }
@@ -102,7 +102,7 @@ bool Cartridge4K::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge4K::getImage(int& size)
+const uInt8* Cartridge4K::getImage(int& size) const
 {
   size = 4096;
   return myImage;

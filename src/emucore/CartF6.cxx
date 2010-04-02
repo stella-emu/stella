@@ -164,13 +164,13 @@ void CartridgeF6::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6::bank()
+uInt16 CartridgeF6::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeF6::bankCount()
+uInt16 CartridgeF6::bankCount() const
 {
   return 4;
 }
@@ -183,7 +183,7 @@ bool CartridgeF6::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeF6::getImage(int& size)
+const uInt8* CartridgeF6::getImage(int& size) const
 {
   size = 16384;
   return myImage;

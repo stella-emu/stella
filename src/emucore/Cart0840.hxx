@@ -68,12 +68,12 @@ class Cartridge0840 : public Cartridge
     /**
       Get the current bank.
     */
-    int bank();
+    uInt16 bank() const;
 
     /**
       Query the number of banks supported by the cartridge.
     */
-    int bankCount();
+    uInt16 bankCount() const;
 
     /**
       Patch the cartridge ROM.
@@ -90,7 +90,7 @@ class Cartridge0840 : public Cartridge
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    uInt8* getImage(int& size);
+    const uInt8* getImage(int& size) const;
 
     /**
       Save the current state of this cart to the given Serializer.

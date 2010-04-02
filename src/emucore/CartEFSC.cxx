@@ -162,13 +162,13 @@ void CartridgeEFSC::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeEFSC::bank()
+uInt16 CartridgeEFSC::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeEFSC::bankCount()
+uInt16 CartridgeEFSC::bankCount() const
 {
   return 16;
 }
@@ -192,7 +192,7 @@ bool CartridgeEFSC::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeEFSC::getImage(int& size)
+const uInt8* CartridgeEFSC::getImage(int& size) const
 {
   size = 65536;
   return myImage;

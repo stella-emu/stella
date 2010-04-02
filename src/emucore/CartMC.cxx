@@ -210,14 +210,14 @@ void CartridgeMC::bank(uInt16 b)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMC::bank()
+uInt16 CartridgeMC::bank() const
 {
   // TODO - add support for debugger
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeMC::bankCount()
+uInt16 CartridgeMC::bankCount() const
 {
   // TODO - add support for debugger
   return 1;
@@ -231,7 +231,7 @@ bool CartridgeMC::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeMC::getImage(int& size)
+const uInt8* CartridgeMC::getImage(int& size) const
 {
   size = 128 * 1024; // FIXME: keep track of original size
   return myImage;

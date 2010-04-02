@@ -156,13 +156,13 @@ void Cartridge3F::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3F::bank()
+uInt16 Cartridge3F::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3F::bankCount()
+uInt16 Cartridge3F::bankCount() const
 {
   return mySize >> 11;
 }
@@ -181,7 +181,7 @@ bool Cartridge3F::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge3F::getImage(int& size)
+const uInt8* Cartridge3F::getImage(int& size) const
 {
   size = mySize;
   return myImage;

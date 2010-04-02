@@ -201,16 +201,17 @@ void CartridgeE0::bank(uInt16)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeE0::bank()
+uInt16 CartridgeE0::bank() const
 {
   // Doesn't support bankswitching in the normal sense
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeE0::bankCount()
+uInt16 CartridgeE0::bankCount() const
 {
   // Doesn't support bankswitching in the normal sense
+  // There is one 'virtual' bank that can change in many different ways
   return 1;
 }
 
@@ -223,7 +224,7 @@ bool CartridgeE0::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeE0::getImage(int& size)
+const uInt8* CartridgeE0::getImage(int& size) const
 {
   size = 8192;
   return myImage;

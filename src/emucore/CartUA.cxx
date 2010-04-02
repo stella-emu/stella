@@ -156,13 +156,13 @@ void CartridgeUA::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeUA::bank()
+uInt16 CartridgeUA::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeUA::bankCount()
+uInt16 CartridgeUA::bankCount() const
 {
   return 2;
 }
@@ -175,7 +175,7 @@ bool CartridgeUA::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeUA::getImage(int& size)
+const uInt8* CartridgeUA::getImage(int& size) const
 {
   size = 8192;
   return myImage;

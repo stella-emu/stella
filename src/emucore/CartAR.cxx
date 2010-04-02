@@ -413,13 +413,13 @@ void CartridgeAR::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bank()
+uInt16 CartridgeAR::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeAR::bankCount()
+uInt16 CartridgeAR::bankCount() const
 {
   return 32;
 }
@@ -432,9 +432,9 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeAR::getImage(int& size)
+const uInt8* CartridgeAR::getImage(int& size) const
 {
-  size = sizeof(myLoadImages);
+  size = myNumberOfLoadImages * 8448;
   return myLoadImages;
 }
 

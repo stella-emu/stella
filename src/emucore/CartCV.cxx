@@ -22,9 +22,6 @@
 #include "System.hxx"
 #include "CartCV.hxx"
 
-// TODO - Port to new CartDebug/disassembler scheme
-//        Add bankchanged code
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
   : myInitialRAM(0),
@@ -154,14 +151,14 @@ void CartridgeCV::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeCV::bank()
+uInt16 CartridgeCV::bank() const
 {
   // Doesn't support bankswitching
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeCV::bankCount()
+uInt16 CartridgeCV::bankCount() const
 {
   return 1;
 }
@@ -186,7 +183,7 @@ bool CartridgeCV::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeCV::getImage(int& size)
+const uInt8* CartridgeCV::getImage(int& size) const
 {
   size = 2048;
   return myImage;

@@ -104,14 +104,14 @@ void Cartridge2K::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge2K::bank()
+uInt16 Cartridge2K::bank() const
 {
   // Doesn't support bankswitching
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge2K::bankCount()
+uInt16 Cartridge2K::bankCount() const
 {
   return 1;
 }
@@ -124,7 +124,7 @@ bool Cartridge2K::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge2K::getImage(int& size)
+const uInt8* Cartridge2K::getImage(int& size) const
 {
   size = mySize;
   return myImage;

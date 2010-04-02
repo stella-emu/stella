@@ -132,7 +132,7 @@ class Cartridge : public Device
     /**
       Get the current bank.
     */
-    virtual int bank() = 0;
+    virtual uInt16 bank() const = 0;
 
     /**
       Query the number of banks supported by the cartridge.  Note that
@@ -142,7 +142,7 @@ class Cartridge : public Device
       Such cases occur when pages of ROM can be swapped in and out,
       yet the 4K image is considered the same.
     */
-    virtual int bankCount() = 0;
+    virtual uInt16 bankCount() const = 0;
 
     /**
       Patch the cartridge ROM.
@@ -159,7 +159,7 @@ class Cartridge : public Device
       @param size  Set to the size of the internal ROM image data
       @return  A pointer to the internal ROM image data
     */
-    virtual uInt8* getImage(int& size) = 0;
+    virtual const uInt8* getImage(int& size) const = 0;
 
     /**
       Save the current state of this device to the given Serializer.

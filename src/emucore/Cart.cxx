@@ -241,7 +241,7 @@ bool Cartridge::save(ofstream& out)
 {
   int size = -1;
 
-  uInt8* image = getImage(size);
+  const uInt8* image = getImage(size);
   if(image == 0 || size <= 0)
   {
     cerr << "save not supported" << endl;

@@ -87,14 +87,14 @@ void CartridgeFE::bank(uInt16 b)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeFE::bank()
+uInt16 CartridgeFE::bank() const
 {
   // The current bank depends on the last address accessed
   return ((myLastAddress1 & 0x2000) == 0) ? 1 : 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeFE::bankCount()
+uInt16 CartridgeFE::bankCount() const
 {
   return 2;
 }
@@ -128,7 +128,7 @@ bool CartridgeFE::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeFE::getImage(int& size)
+const uInt8* CartridgeFE::getImage(int& size) const
 {
   size = 8192;
   return myImage;

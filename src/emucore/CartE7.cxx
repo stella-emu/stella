@@ -243,13 +243,13 @@ void CartridgeE7::bank(uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeE7::bank()
+uInt16 CartridgeE7::bank() const
 {
   return myCurrentSlice[0];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeE7::bankCount()
+uInt16 CartridgeE7::bankCount() const
 {
   return 8;
 }
@@ -285,7 +285,7 @@ bool CartridgeE7::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeE7::getImage(int& size)
+const uInt8* CartridgeE7::getImage(int& size) const
 {
   size = 16384;
   return myImage;

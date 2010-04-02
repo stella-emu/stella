@@ -560,13 +560,13 @@ void CartridgeDPCPlus::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeDPCPlus::bank()
+uInt16 CartridgeDPCPlus::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartridgeDPCPlus::bankCount()
+uInt16 CartridgeDPCPlus::bankCount() const
 {
   return 6;
 }
@@ -587,7 +587,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* CartridgeDPCPlus::getImage(int& size)
+const uInt8* CartridgeDPCPlus::getImage(int& size) const
 {
   size = 4096 * 6 + 4096 + 255;
   return myImageCopy;

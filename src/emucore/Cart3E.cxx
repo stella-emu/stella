@@ -224,13 +224,13 @@ void Cartridge3E::bank(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3E::bank()
+uInt16 Cartridge3E::bank() const
 {
   return myCurrentBank;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Cartridge3E::bankCount()
+uInt16 Cartridge3E::bankCount() const
 {
   // Because the RAM banks always start at 256 and above, we require the
   // number of ROM banks to be 256
@@ -259,7 +259,7 @@ bool Cartridge3E::patch(uInt16 address, uInt8 value)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* Cartridge3E::getImage(int& size)
+const uInt8* Cartridge3E::getImage(int& size) const
 {
   size = mySize;
   return myImage;
