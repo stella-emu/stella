@@ -109,7 +109,7 @@ void CartridgeDPCPlus::install(System& system)
 inline void CartridgeDPCPlus::clockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR)
-  myRandomNumber =  ((myRandomNumber & 1) ? 0xa260012b: 0x00) ^ ((myRandomNumber >> 1) & 0x7FFFFFFF);
+  myRandomNumber = ((myRandomNumber & 1) ? 0xa260012b: 0x00) ^ ((myRandomNumber >> 1) & 0x7FFFFFFF);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -657,7 +657,7 @@ bool CartridgeDPCPlus::save(Serializer& out) const
       out.putInt(myMusicFrequency[i]);
     
     // The random number generator register
-    out.putByte((uInt32)myRandomNumber);
+    out.putInt(myRandomNumber);
 
     out.putInt(mySystemCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
@@ -701,7 +701,7 @@ bool CartridgeDPCPlus::load(Serializer& in)
     for(i = 0; i < limit; ++i)
       myCounters[i] = (uInt16) in.getInt();
 
-    // The counter registers for the data fetchers
+    // The counter registers for the fractional data fetchers
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
       myFractionalCounters[i] = (uInt32) in.getInt();
