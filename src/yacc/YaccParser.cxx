@@ -41,15 +41,16 @@ yystype result;
 string errMsg;
 #include "y.tab.c"
 
-const string& errorMessage() {
+const string& errorMessage() 
+{
   return errMsg;
 }
 
-Expression *getResult() {
-  return result.exp;
+Expression* getResult()
+{
   lastExp = 0;
+  return result.exp;
 }
-
 
 const char *input, *c;
 
@@ -64,15 +65,18 @@ int state = ST_DEFAULT;
 
 //extern int yylval; // bison provides this
 
-void setInput(const char *in) {
+void setInput(const char *in)
+{
   input = c = in;
   state = ST_DEFAULT;
 }
 
-int parse(const char *in) {
+int parse(const char *in)
+{
   lastExp = 0;
   errMsg = "(no error)";
   setInput(in);
+cerr << "PARSE: " << in << endl;
   return yyparse();
 }
 

@@ -87,7 +87,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 29 "stella.y"
+#line 28 "stella.y"
 
 	int val;
 	char *equate;

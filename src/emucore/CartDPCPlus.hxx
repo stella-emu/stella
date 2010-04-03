@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll       
-//  SS  SS   tt           ll   ll        
-//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt          lll  lll
+//  SS  SS   tt           ll   ll
+//  SS     tttttt  eeee   ll   ll   aaaa
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -195,16 +195,24 @@ class CartridgeDPCPlus : public Cartridge
 
     // The Fast Fetcher Enabled flag
     bool myFastFetch;
+  
+    // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
 
-    // The music mode DF5, DF6, & DF7 enabled flags
-    bool myMusicMode[3];
+    // Control Byte to update
+    uInt8 mySelectByte;
+
+    // The music volumes
+    uInt8 myMusicVolumes[3];
 
     // The music mode counters
-    uInt32 myMusicCounter[3];
+    uInt32 myMusicCounters[3];
 
     // The music frequency addends
-    uInt32 myMusicFrequency[3];
+    uInt32 myMusicFrequencies[3];
+  
+    // The music waveforms
+    uInt32 myMusicWaveforms[3];
 
     // The random number generator register
     uInt32 myRandomNumber;

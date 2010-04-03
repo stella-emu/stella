@@ -192,11 +192,10 @@ class M6502 : public Serializable
     */
     void attach(Debugger& debugger);
 
-    // TODO - document these methods
-    void setBreakPoints(PackedBitArray *bp);
-    void setTraps(PackedBitArray *read, PackedBitArray *write);
+    void setBreakPoints(PackedBitArray* bp);
+    void setTraps(PackedBitArray* read, PackedBitArray* write);
 
-    unsigned int addCondBreak(Expression *e, const string& name);
+    unsigned int addCondBreak(Expression* e, const string& name);
     void delCondBreak(unsigned int brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;

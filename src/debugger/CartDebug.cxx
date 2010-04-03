@@ -43,11 +43,23 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
 
   // We know the address for the startup bank right now
   myStartAddresses[myConsole.cartridge().startBank()] = myDebugger.dpeek(0xfffc);
+
+  // Add system equates
+  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+    mySystemAddresses.insert(make_pair(ourTIAMnemonicR[addr], addr));
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+    mySystemAddresses.insert(make_pair(ourTIAMnemonicW[addr], addr));
+  for(uInt16 addr = 0x280; addr <= 0x297; ++addr)
+    mySystemAddresses.insert(make_pair(ourIOMnemonic[addr-0x280], addr));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::~CartDebug()
 {
+  myUserLabels.clear();
+  myUserAddresses.clear();
+  mySystemAddresses.clear();
+
   delete[] myStartAddresses;
 }
 
@@ -211,15 +223,6 @@ bool CartDebug::disassemble(const string& autocode, bool force)
     if(!(start & 0x1000))
       return false;
 
-#if 0
-cerr << "start addresses: ";
-for(int i = 0; i < myConsole.cartridge().bankCount(); ++i) cerr << " " << setw(4) << hex << myStartAddresses[i];
-cerr << endl;
-cerr << "current bank = " << getBank() << ", start bank = " << myConsole.cartridge().startBank() << endl
-    << "reset = " << hex << 0xfffc << ", pc = " << hex << PC << endl
-    << "start = " << hex << start << endl << endl;
-#endif
-
     // Check whether to use the 'autocode' functionality from Distella
     if(autocode == "0")       // 'never'
       fillDisassemblyList(start, false, PC);
@@ -319,20 +322,20 @@ string CartDebug::getCartType()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::addLabel(const string& label, uInt16 address)
+bool CartDebug::addLabel(const string& label, uInt16 address)
 {
-  // Only user-defined labels can be added
+  // Only user-defined labels can be added or redefined
   switch(addressType(address))
   {
     case ADDR_TIA:
     case ADDR_RIOT:
-      return;
+      return false;
     default:
 cerr << "addLabel: label = " << label << ", address = " << hex << address << endl;
       removeLabel(label);
       myUserAddresses.insert(make_pair(label, address));
       myUserLabels.insert(make_pair(address, label));
-      break;
+      return true;
   }
 }
 
@@ -395,17 +398,14 @@ const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::getAddress(const string& label) const
 {
-/* FIXME
   LabelToAddr::const_iterator iter;
 
   if((iter = mySystemAddresses.find(label)) != mySystemAddresses.end())
-    return iter->second.address;
+    return iter->second;
   else if((iter = myUserAddresses.find(label)) != myUserAddresses.end())
-    return iter->second.address;
+    return iter->second;
   else
     return -1;
-*/
-return -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

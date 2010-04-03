@@ -7,7 +7,6 @@ Expression* lastExp = 0;
 
 /* dump Expression stack during parsing? */
 #define DEBUG_EXP 1
-/* #define DEBUG_EXP 1 */
 
 int yylex();
 char *yytext;

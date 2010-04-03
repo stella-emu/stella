@@ -1080,14 +1080,12 @@ uInt32 Console::ourUserSECAMPalette[256] = { 0 }; // filled from external file
 Console::Console(const Console& console)
   : myOSystem(console.myOSystem)
 {
-  // TODO: Write this method
   assert(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console& Console::operator = (const Console&)
 {
-  // TODO: Write this method
   assert(false);
 
   return *this;

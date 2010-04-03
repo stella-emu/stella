@@ -340,16 +340,12 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "F8";
   }
-  else if((size == 10495) || (size == 10496) || (size == 10240))  // 10K - Pitfall2
+  else if(size >= 10240 && size <= 10496)  // ~10K - Pitfall2
   {
     type = "DPC";
   }
   else if(size == 12*1024)  // 12K
   {
-    // TODO - this should really be in a method that checks the first
-    // 512 bytes of ROM and finds if either the lower 256 bytes or
-    // higher 256 bytes are all the same.  For now, we assume that
-    // all carts of 12K are CBS RAM Plus/FA.
     type = "FA";
   }
   else if(size == 16*1024)  // 16K

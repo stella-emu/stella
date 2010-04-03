@@ -69,12 +69,12 @@ class CartDebug : public DebuggerSystem
     // The following assume that the given addresses are using the
     // correct read/write port ranges; no checking will be done to
     // confirm this.
-    uInt8 read(uInt16 addr);
-    void write(uInt16 addr, uInt8 value);
+    uInt8 read(uInt16 address);
+    void write(uInt16 address, uInt8 value);
 
     // Indicate that a read from write port has occurred at the specified
     // address.
-    void triggerReadFromWritePort(uInt16 addr);
+    void triggerReadFromWritePort(uInt16 address);
 
     // Return the address at which an invalid read was performed in a
     // write port area.
@@ -114,20 +114,40 @@ class CartDebug : public DebuggerSystem
     const DisassemblyList& disassemblyList() const { return myDisassembly; }
 
     /**
-      Determine the line in the disassembly that corresponds to the given
-      address.  A value of -1 indicates that no such address exists.
+      Determine the line in the disassembly that corresponds to the given address.
+
+      @param address  The address to search for
+
+      @return Line number of the address, else -1 if no such address exists
     */
     int addressToLine(uInt16 address) const;
 
     /**
       Disassemble from the starting address the specified number of lines.
       Note that automatic code determination is turned off for this method;
-      it will treat all address contents as instructions.
+
+      @param start  The start address for disassembly
+      @param lines  The number of disassembled lines to generate
+
+      @return  The disassembly represented as a string
     */
     string disassemble(uInt16 start, uInt16 lines) const;
 
+    // The following are convenience methods that query the cartridge object
+    // for the desired information.
+    /**
+      Get the current bank in use by the cartridge.
+    */
     int getBank();
+
+    /**
+      Get the total number of banks supported by the cartridge.
+    */
     int bankCount();
+
+    /**
+      Get the name/type of the cartridge.
+    */
     string getCartType();
 
 ////////////////////////////////////////
@@ -135,7 +155,7 @@ class CartDebug : public DebuggerSystem
       Add a label and associated address.
       Labels that reference either TIA or RIOT spaces will not be processed.
     */
-    void addLabel(const string& label, uInt16 address);
+    bool addLabel(const string& label, uInt16 address);
 
     /**
       Remove the given label and its associated address.
@@ -214,6 +234,13 @@ class CartDebug : public DebuggerSystem
     // from the commandline in the debugger)
     AddrToLabel myUserLabels;
     LabelToAddr myUserAddresses;
+
+    // Mappings for labels to addresses for system-defined equates
+    // Because system equate addresses can have different names
+    // (depending on access in read vs. write mode), we can only create
+    // a mapping from labels to addresses; addresses to labels are
+    // handled differently
+    LabelToAddr mySystemAddresses;
 
     string myCompletions;
     string myCompPrefix;

@@ -333,17 +333,18 @@ void Debugger::autoExec()
   myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
   myPrompt->printPrompt();
 
-/* FIXME - get these working again
   // Init builtins
   for(int i = 0; builtin_functions[i][0] != ""; i++)
   {
     // TODO - check this for memory leaks
     int res = YaccParser::parse(builtin_functions[i][1].c_str());
-    if(res != 0) cerr << "ERROR in builtin function!" << endl;
-    Expression* exp = YaccParser::getResult();
-    addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
+    if(res != 0)
+    {
+      cerr << "ERROR in builtin function!" << endl;
+      Expression* exp = YaccParser::getResult();
+      addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
+    }
   }
-*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

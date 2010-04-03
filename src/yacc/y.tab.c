@@ -78,7 +78,6 @@ Expression* lastExp = 0;
 
 /* dump Expression stack during parsing? */
 #define DEBUG_EXP 1
-/* #define DEBUG_EXP 1 */
 
 int yylex();
 char *yytext;
@@ -98,7 +97,7 @@ void yyerror(const char *e) {
 
 
 /* Line 189 of yacc.c  */
-#line 102 "y.tab.c"
+#line 101 "y.tab.c"
 
 /* Enabling traces.  */
 #ifndef YYDEBUG
@@ -173,7 +172,7 @@ typedef union YYSTYPE
 {
 
 /* Line 214 of yacc.c  */
-#line 29 "stella.y"
+#line 28 "stella.y"
 
 	int val;
 	char *equate;
@@ -186,7 +185,7 @@ typedef union YYSTYPE
 
 
 /* Line 214 of yacc.c  */
-#line 190 "y.tab.c"
+#line 189 "y.tab.c"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -198,7 +197,7 @@ typedef union YYSTYPE
 
 
 /* Line 264 of yacc.c  */
-#line 202 "y.tab.c"
+#line 201 "y.tab.c"
 
 #ifdef short
 # undef short
@@ -496,10 +495,10 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    67,    67,    70,    71,    72,    73,    74,    75,    76,
-      77,    78,    79,    80,    81,    82,    83,    84,    85,    86,
-      87,    88,    89,    90,    91,    92,    93,    94,    95,    96,
-      97,    98,    99,   100,   101,   102,   103
+       0,    66,    66,    69,    70,    71,    72,    73,    74,    75,
+      76,    77,    78,    79,    80,    81,    82,    83,    84,    85,
+      86,    87,    88,    89,    90,    91,    92,    93,    94,    95,
+      96,    97,    98,    99,   100,   101,   102
 };
 #endif
 
@@ -1469,252 +1468,252 @@ yyreduce:
         case 2:
 
 /* Line 1455 of yacc.c  */
-#line 67 "stella.y"
+#line 66 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, "\ndone\n"); result.exp = (yyvsp[(1) - (1)].exp); }
     break;
 
   case 3:
 
 /* Line 1455 of yacc.c  */
-#line 70 "stella.y"
+#line 69 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " +"); (yyval.exp) = new PlusExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 4:
 
 /* Line 1455 of yacc.c  */
-#line 71 "stella.y"
+#line 70 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " -"); (yyval.exp) = new MinusExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 5:
 
 /* Line 1455 of yacc.c  */
-#line 72 "stella.y"
+#line 71 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " *"); (yyval.exp) = new MultExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 6:
 
 /* Line 1455 of yacc.c  */
-#line 73 "stella.y"
+#line 72 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " /"); (yyval.exp) = new DivExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 7:
 
 /* Line 1455 of yacc.c  */
-#line 74 "stella.y"
+#line 73 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " %%"); (yyval.exp) = new ModExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp));  lastExp = (yyval.exp); }
     break;
 
   case 8:
 
 /* Line 1455 of yacc.c  */
-#line 75 "stella.y"
+#line 74 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " &"); (yyval.exp) = new BinAndExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 9:
 
 /* Line 1455 of yacc.c  */
-#line 76 "stella.y"
+#line 75 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " |"); (yyval.exp) = new BinOrExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 10:
 
 /* Line 1455 of yacc.c  */
-#line 77 "stella.y"
+#line 76 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " ^"); (yyval.exp) = new BinXorExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 11:
 
 /* Line 1455 of yacc.c  */
-#line 78 "stella.y"
+#line 77 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " <"); (yyval.exp) = new LessExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 12:
 
 /* Line 1455 of yacc.c  */
-#line 79 "stella.y"
+#line 78 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " >"); (yyval.exp) = new GreaterExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 13:
 
 /* Line 1455 of yacc.c  */
-#line 80 "stella.y"
+#line 79 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " >="); (yyval.exp) = new GreaterEqualsExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 14:
 
 /* Line 1455 of yacc.c  */
-#line 81 "stella.y"
+#line 80 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " <="); (yyval.exp) = new LessEqualsExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 15:
 
 /* Line 1455 of yacc.c  */
-#line 82 "stella.y"
+#line 81 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " !="); (yyval.exp) = new NotEqualsExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 16:
 
 /* Line 1455 of yacc.c  */
-#line 83 "stella.y"
+#line 82 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " =="); (yyval.exp) = new EqualsExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 17:
 
 /* Line 1455 of yacc.c  */
-#line 84 "stella.y"
+#line 83 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " >>"); (yyval.exp) = new ShiftRightExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 18:
 
 /* Line 1455 of yacc.c  */
-#line 85 "stella.y"
+#line 84 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " <<"); (yyval.exp) = new ShiftLeftExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 19:
 
 /* Line 1455 of yacc.c  */
-#line 86 "stella.y"
+#line 85 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " ||"); (yyval.exp) = new LogOrExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 20:
 
 /* Line 1455 of yacc.c  */
-#line 87 "stella.y"
+#line 86 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " &&"); (yyval.exp) = new LogAndExpression((yyvsp[(1) - (3)].exp), (yyvsp[(3) - (3)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 21:
 
 /* Line 1455 of yacc.c  */
-#line 88 "stella.y"
+#line 87 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " U-"); (yyval.exp) = new UnaryMinusExpression((yyvsp[(2) - (2)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 22:
 
 /* Line 1455 of yacc.c  */
-#line 89 "stella.y"
+#line 88 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " ~"); (yyval.exp) = new BinNotExpression((yyvsp[(2) - (2)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 23:
 
 /* Line 1455 of yacc.c  */
-#line 90 "stella.y"
+#line 89 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " !"); (yyval.exp) = new LogNotExpression((yyvsp[(2) - (2)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 24:
 
 /* Line 1455 of yacc.c  */
-#line 91 "stella.y"
+#line 90 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " U*"); (yyval.exp) = new ByteDerefExpression((yyvsp[(2) - (2)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 25:
 
 /* Line 1455 of yacc.c  */
-#line 92 "stella.y"
+#line 91 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " U@"); (yyval.exp) = new WordDerefExpression((yyvsp[(2) - (2)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 26:
 
 /* Line 1455 of yacc.c  */
-#line 93 "stella.y"
+#line 92 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " U<");  (yyval.exp) = new LoByteExpression((yyvsp[(2) - (2)].exp));  lastExp = (yyval.exp); }
     break;
 
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 94 "stella.y"
+#line 93 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " U>");  (yyval.exp) = new HiByteExpression((yyvsp[(2) - (2)].exp));  lastExp = (yyval.exp); }
     break;
 
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 95 "stella.y"
+#line 94 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " ()"); (yyval.exp) = (yyvsp[(2) - (3)].exp); lastExp = (yyval.exp); }
     break;
 
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 96 "stella.y"
+#line 95 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " []"); (yyval.exp) = new ByteDerefOffsetExpression((yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].exp)); lastExp = (yyval.exp); }
     break;
 
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 97 "stella.y"
+#line 96 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " %d", (yyvsp[(1) - (1)].val)); (yyval.exp) = new ConstExpression((yyvsp[(1) - (1)].val)); lastExp = (yyval.exp); }
     break;
 
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 98 "stella.y"
+#line 97 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " %s", (yyvsp[(1) - (1)].equate)); (yyval.exp) = new EquateExpression((yyvsp[(1) - (1)].equate)); lastExp = (yyval.exp); }
     break;
 
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 99 "stella.y"
+#line 98 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " (CpuMethod)"); (yyval.exp) = new CpuMethodExpression((yyvsp[(1) - (1)].cpuMethod)); lastExp = (yyval.exp); }
     break;
 
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 100 "stella.y"
+#line 99 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " (CartMethod)"); (yyval.exp) = new CartMethodExpression((yyvsp[(1) - (1)].cartMethod)); lastExp = (yyval.exp); }
     break;
 
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 101 "stella.y"
+#line 100 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " (TiaMethod)"); (yyval.exp) = new TiaMethodExpression((yyvsp[(1) - (1)].tiaMethod)); lastExp = (yyval.exp); }
     break;
 
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 102 "stella.y"
+#line 101 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " (function)"); (yyval.exp) = new FunctionExpression((yyvsp[(1) - (1)].function)); lastExp = (yyval.exp); }
     break;
 
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 103 "stella.y"
+#line 102 "stella.y"
     { if(DEBUG_EXP) fprintf(stderr, " ERR: "); yyerror((char*)"Invalid label or constant"); return 1; }
     break;
 
 
 
 /* Line 1455 of yacc.c  */
-#line 1718 "y.tab.c"
+#line 1717 "y.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -1926,6 +1925,6 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 105 "stella.y"
+#line 104 "stella.y"
 
 

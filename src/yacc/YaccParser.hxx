@@ -30,7 +30,7 @@
 
 namespace YaccParser {
 	int parse(const char *);
-	Expression *getResult();
+	Expression* getResult();
 	const string& errorMessage();
 }
 
