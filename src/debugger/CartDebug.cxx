@@ -264,9 +264,6 @@ bool CartDebug::fillDisassemblyList(uInt16 start, bool autocode, uInt16 search)
       if(tag.address == search)
         found = true;
     }
-
-    // TODO - look at list, extract address to label mappings
-    //        we need these for label support in the UI and promptwidget
   }
   return found;
 }
@@ -417,8 +414,6 @@ string CartDebug::loadSymbolFile(const string& f)
     file.replace(spos, file.size(), ".sym");
   else
     file += ".sym";
-
-cerr << "loadSymbolFile: " << file << endl;
 
   int pos = 0, lines = 0, curVal;
   string curLabel;

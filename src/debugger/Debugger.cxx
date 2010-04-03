@@ -26,6 +26,7 @@
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "FrameBuffer.hxx"
+#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
@@ -319,7 +320,9 @@ void Debugger::autoExec()
   // autoexec.stella is always run
   const string& autoexec = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
                            "autoexec.stella";
-  myPrompt->print("autoExec():\n" + myParser->exec(autoexec) + "\n");
+  FilesystemNode autoexec_node(autoexec);
+  if(autoexec_node.exists())
+    myPrompt->print("autoExec():\n" + myParser->exec(autoexec) + "\n");
 
   // Also, "romname.stella" if present
   string file = myOSystem->romFile();
@@ -330,20 +333,18 @@ void Debugger::autoExec()
   else
     file += ".stella";
 
-  myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
-  myPrompt->printPrompt();
+  FilesystemNode romname_node(file);
+  if(romname_node.exists())
+    myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
 
   // Init builtins
   for(int i = 0; builtin_functions[i][0] != ""; i++)
   {
     // TODO - check this for memory leaks
     int res = YaccParser::parse(builtin_functions[i][1].c_str());
-    if(res != 0)
-    {
-      cerr << "ERROR in builtin function!" << endl;
-      Expression* exp = YaccParser::getResult();
-      addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
-    }
+    if(res != 0) cerr << "ERROR in builtin function!" << endl;
+    Expression* exp = YaccParser::getResult();
+    addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
   }
 }
 
@@ -806,29 +807,38 @@ const FunctionDefMap Debugger::getFunctionDefMap() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string Debugger::builtinHelp() const
 {
-  string result;
+  ostringstream buf;
+  uInt16 len, c_maxlen = 0, i_maxlen = 0;
 
-  for(int i=0; builtin_functions[i][0] != ""; i++)
+  // Get column widths for aligned output
+  for(int i = 0; builtin_functions[i][0] != ""; ++i)
   {
-    result += builtin_functions[i][0];
-    result += " {";
-    result += builtin_functions[i][1];
-    result += "}\n";
-    result += "     ";
-    result += builtin_functions[i][2];
-    result += "\n";
+    len = builtin_functions[i][0].length();
+    if(len > c_maxlen)  c_maxlen = len;
+    len = builtin_functions[i][1].length();
+    if(len > i_maxlen)  i_maxlen = len;
   }
-  return result;
+
+  for(int i = 0; builtin_functions[i][0] != ""; ++i)
+  {
+    buf << setw(c_maxlen) << left << builtin_functions[i][0]
+        << setw(2) << right << "{"
+        << setw(i_maxlen) << left << builtin_functions[i][1]
+        << setw(4) << "}"
+        << builtin_functions[i][2]
+        << endl;
+  }
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::saveROM(const string& filename) const
 {
-  // TODO: error checking
-  ofstream *out = new ofstream(filename.c_str(), ios::out | ios::binary);
-  bool res = myConsole->cartridge().save(*out);
-  delete out;
-  return res;
+  ofstream out(filename.c_str(), ios::out | ios::binary);
+  if(out.is_open())
+    return myConsole->cartridge().save(out);
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

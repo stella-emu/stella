@@ -919,25 +919,34 @@ void DebuggerParser::executeExec()
 // "help"
 void DebuggerParser::executeHelp()
 {
-  static char buf[256];
+  ostringstream buf;
+
+  // Find length of longest command
+  uInt16 clen = 0;
   for(int i = 0; i < kNumCommands; ++i)
   {
-    BSPF_snprintf(buf, 255, "%13s - %s\n",
-      commands[i].cmdString.c_str(),
-      commands[i].description.c_str());
-
-    commandResult += buf;
+    uInt16 len = commands[i].cmdString.length();
+    if(len > clen)  clen = len;
   }
-  commandResult += "\nBuilt-in functions:\n";
-  commandResult += debugger->builtinHelp();
-  commandResult += "\nPseudo-registers:\n";
-  commandResult += "_bank     Currently selected bank\n";
-  commandResult += "_rwport   Read from a write port was triggered\n";
-  commandResult += "_scan     Current scanline count\n";
-  commandResult += "_fcount   Number of frames since emulation started\n";
-  commandResult += "_cclocks  Color clocks on current scanline\n";
-  commandResult += "_vsync    Whether vertical sync is enabled (1 or 0)\n";
-  commandResult += "_vblank   Whether vertical blank is enabled (1 or 0)\n";
+
+  // TODO - add wraparound for text longer than the output area bounds
+  for(int i = 0; i < kNumCommands; ++i)
+    buf << setw(clen) << right << commands[i].cmdString << " - " << commands[i].description << endl;
+
+  buf << endl
+      << "\nPseudo-registers:" << endl
+      << "_bank     Currently selected bank" << endl
+      << "_rwport   Address at which a read from a write port occurred" << endl
+      << "_scan     Current scanline count" << endl
+      << "_fcount   Number of frames since emulation started" << endl
+      << "_cclocks  Color clocks on current scanline" << endl
+      << "_vsync    Whether vertical sync is enabled (1 or 0)" << endl
+      << "_vblank   Whether vertical blank is enabled (1 or 0)" << endl
+      << endl
+      << "Built-in functions:" << endl
+      << debugger->builtinHelp();
+
+  commandResult = buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

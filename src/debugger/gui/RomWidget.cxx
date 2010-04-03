@@ -123,14 +123,12 @@ void RomWidget::loadConfig()
   myListIsDirty |= cart.disassemble(myAutocode->getSelectedTag(), myListIsDirty);
   if(myListIsDirty)
   {
-cerr << "list is dirty, re-disassembled\n";
     myRomList->setList(cart.disassemblyList(), dbg.breakpoints());
     myListIsDirty = false;
   }
 
   // Update romlist to point to current PC
   int pcline = cart.addressToLine(dbg.cpuDebug().pc());
-cerr << "PC = " << hex <<  dbg.cpuDebug().pc() << ", line = " << dec << pcline << endl;
   if(pcline >= 0)
     myRomList->setHighlighted(pcline);
 
@@ -166,6 +164,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(rmb == "saverom")
       {
         mySaveRom->show(_x + 50, _y + 80);
+        mySaveRom->setEditString("");
         mySaveRom->setTitle("");
         mySaveRom->setEmitSignal(kRomNameEntered);
       }

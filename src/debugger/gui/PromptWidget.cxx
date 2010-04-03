@@ -507,7 +507,6 @@ void PromptWidget::loadConfig()
     // Display greetings & prompt
     string version = string("Stella ") + STELLA_VERSION + "\n";
     print(version.c_str());
-    print("Debugger is ready\n");
     print(PROMPT);
     _promptStartPos = _promptEndPos = _currentPos;
 

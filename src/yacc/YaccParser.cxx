@@ -76,7 +76,6 @@ int parse(const char *in)
   lastExp = 0;
   errMsg = "(no error)";
   setInput(in);
-cerr << "PARSE: " << in << endl;
   return yyparse();
 }
 

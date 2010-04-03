@@ -32,7 +32,7 @@ EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
 {
   _caretVisible = false;
   _caretTime = 0;
-  _caretPos = 0;	// FIXME
+  _caretPos = 0;
 
   _caretInverse = false;
 
@@ -60,6 +60,9 @@ void EditableWidget::setEditString(const string& str)
   _editScrollOffset = (_font->getStringWidth(_editString) - (getEditRect().width()));
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
+
+  if(_editable)
+    startEditMode();
 
   // Make sure the new string is seen onscreen
   setDirty(); draw();
