@@ -1,8 +1,8 @@
 //============================================================================
 //
-//   SSSS    tt          lll  lll
-//  SS  SS   tt           ll   ll
-//  SS     tttttt  eeee   ll   ll   aaaa
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
 //   SSSS    tt   ee  ee  ll   ll      aa
 //      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
 //  SS  SS   tt   ee      ll   ll  aa  aa
@@ -22,13 +22,12 @@
 #include "System.hxx"
 #include "CartDPCPlus.hxx"
 
-// TODO - INC AUDV0+$40 music support
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
   : myFastFetch(false),
     myLDAimmediate(false),
     mySelectByte(0),
+    myMusicVolume(0),
     mySystemCycles(0),
     myFractionalClocks(0.0)
 {
@@ -41,16 +40,13 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
 
   // Copy the display ROM image into my buffer
   memcpy(myDisplayImage, image + 4096 * 6, 4096);
-
+  
   // Copy the Frequency ROM image into my buffer
   memcpy(myFrequencyImage, image + 4096 * 6 + 4096, 1024);
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
     myTops[i] = myBottoms[i] = myCounters[i] = myFlags[i] = myFractionalIncrements[i] = 0;
-
-  // None of the data fetchers are in music mode
-  myMusicVolumes[0] = myMusicVolumes[1] = myMusicVolumes[2] = 0;
 
   // Set waveforms to square waves
   myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0xAAAAAAAA;
@@ -94,10 +90,10 @@ void CartridgeDPCPlus::install(System& system)
   mySystem = &system;
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
-
+  
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
-
+  
   // Map all of the accesses to call peek and poke
   System::PageAccess access;
   access.directPeekBase = 0;
@@ -105,7 +101,7 @@ void CartridgeDPCPlus::install(System& system)
   access.device = this;
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
-
+  
   // Install pages for the startup bank
   bank(myStartBank);
 }
@@ -130,25 +126,91 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
   // Calculate the number of cycles since the last update
   Int32 cycles = mySystem->cycles() - mySystemCycles;
   mySystemCycles = mySystem->cycles();
-
+  
   // Calculate the number of DPC OSC clocks since the last update
   double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
   Int32 wholeClocks = (Int32)clocks;
   myFractionalClocks = clocks - (double)wholeClocks;
-
+  
   if(wholeClocks <= 0)
   {
     return;
   }
-
+  
   // Let's update counters and flags of the music mode data fetchers
   for(int x = 5; x <= 7; ++x)
   {
-    // Update only if the data fetcher is in music mode
-    if(myMusicVolumes[x - 5])
+    myMusicCounters[x - 5] += myMusicFrequencies[x - 5];
+    if (myMusicFrequencies[x-5]>myMusicCounters[x-5])
+      myMusicWaveforms[x-5] = (myMusicWaveforms[x-5]>>1)|(myMusicWaveforms[x-5]<<31);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void CartridgeDPCPlus::writeByte(uInt8 value)
+{
+  switch (mySelectByte)
+  {
+    case 0x00:
     {
-      myMusicCounters[x - 5] += myMusicFrequencies[x - 5];
+      myMusicWaveforms[0] = (myMusicWaveforms[0] & 0xFFFFFF00) | value;
+      break;
     }
+    case 0x01:
+    {
+      myMusicWaveforms[0] = (myMusicWaveforms[0] & 0xFFFF00FF) | (value<<8);
+      break;
+    }
+    case 0x02:
+    {
+      myMusicWaveforms[0] = (myMusicWaveforms[0] & 0xFF00FFFF) | (value<<16);
+      break;
+    }
+    case 0x03:
+    {
+      myMusicWaveforms[0] = (myMusicWaveforms[0] & 0x00FFFFFF) | (value<<24);
+      break;
+    }
+    case 0x04:
+    {
+      myMusicWaveforms[1] = (myMusicWaveforms[1] & 0xFFFFFF00) | value;
+      break;
+    }
+    case 0x05:
+    {
+      myMusicWaveforms[1] = (myMusicWaveforms[1] & 0xFFFF00FF) | (value<<8);
+      break;
+    }
+    case 0x06:
+    {
+      myMusicWaveforms[1] = (myMusicWaveforms[1] & 0xFF00FFFF) | (value<<16);
+      break;
+    }
+    case 0x07:
+    {
+      myMusicWaveforms[1] = (myMusicWaveforms[1] & 0x00FFFFFF) | (value<<24);
+      break;
+    }
+    case 0x08:
+    {
+      myMusicWaveforms[2] = (myMusicWaveforms[2] & 0xFFFFFF00) | value;
+      break;
+    }
+    case 0x09:
+    {
+      myMusicWaveforms[2] = (myMusicWaveforms[2] & 0xFFFF00FF) | (value<<8);
+      break;
+    }
+    case 0x0A:
+    {
+      myMusicWaveforms[2] = (myMusicWaveforms[2] & 0xFF00FFFF) | (value<<16);
+      break;
+    }
+    case 0x0B:
+    {
+      myMusicWaveforms[2] = (myMusicWaveforms[2] & 0x00FFFFFF) | (value<<24);
+      break;
+    } 
   }
 }
 
@@ -158,7 +220,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
   address &= 0x0FFF;
 
   uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
-
+  
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
   if(bankLocked())
@@ -167,20 +229,20 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
   // Check if we're in Fast Fetch mode and the prior byte was an A9 (LDA #value)
   if(myFastFetch && myLDAimmediate)
   {
-    // if #value is a read-register then we want to use that as the address
     if(peekvalue < 0x0028)
+      // if #value is a read-register then we want to use that as the address 
       address = peekvalue;
   }
   myLDAimmediate = false;
-
+  
   if(address < 0x0028)
   {
     uInt8 result = 0;
-
+    
     // Get the index of the data fetcher that's being accessed
     uInt32 index = address & 0x07;
     uInt32 function = (address >> 3) & 0x07;
-
+    
     // Update flag register for selected data fetcher
     if((myCounters[index] & 0x00ff) == ((myTops[index]+1) & 0xff))
     {
@@ -190,60 +252,48 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     {
       myFlags[index] = 0x00;
     }
-
+    
     switch(function)
     {
       case 0x00:
       {
         switch(index)
         {
-          case 0x00:  // advance and return byte 0 of random
+          case 0x00:  // RANDOM0NEXT - advance and return byte 0 of random
             clockRandomNumberGenerator();
             result = myRandomNumber & 0xFF;
             break;
-
-          case 0x01:  // return to prior and return byte 0 of random
+            
+          case 0x01:  // RANDOM0PRIOR - return to prior and return byte 0 of random
             priorClockRandomNumberGenerator();
             result = myRandomNumber & 0xFF;
             break;
-
-          case 0x02:
+            
+          case 0x02:  // RANDOM1
             result = (myRandomNumber>>8) & 0xFF;
             break;
-
-          case 0x03:
+            
+          case 0x03:  // RANDOM2
             result = (myRandomNumber>>16) & 0xFF;
             break;
-
-          case 0x04:
+            
+          case 0x04:  // RANDOM3
             result = (myRandomNumber>>24) & 0xFF;
             break;
-
-          case 0x05: // No, it's a music read
+            
+          case 0x05: // AMPLITUDE
           {
-            static const uInt8 musicAmplitudes[8] = {
-              0x00, 0x04, 0x05, 0x09, 0x06, 0x0a, 0x0b, 0x0f
-            };
-
             // Update the music data fetchers (counter & flag)
             updateMusicModeDataFetchers();
-
-            uInt8 i = 0;
-            if(myMusicVolumes[0] && (myMusicCounters[0]>>31))
-            {
-              i |= 0x01;
-            }
-            if(myMusicVolumes[1] && (myMusicCounters[1]>>31))
-            {
-              i |= 0x02;
-            }
-            if(myMusicVolumes[2] && (myMusicCounters[2]>>31))
-            {
-              i |= 0x04;
-            }
-
-            result = musicAmplitudes[i];
-            break;
+            
+            uInt32 i = 0;
+            
+            i =  myMusicVolume + ((myMusicVolume >> 12) * (uInt8) (myMusicWaveforms[0] >> 31)) +
+                                ((myMusicVolume >> 16) * (uInt8) (myMusicWaveforms[1] >> 31)) +
+                                ((myMusicVolume >> 24) * (uInt8) (myMusicWaveforms[2] >> 31));
+          
+            result = (uInt8)i;
+            break;       
           }
 
           case 0x06:  // reserved
@@ -252,39 +302,39 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
         }
         break;
       }
-
-      // DFx display data read
+        
+      // DFxDATA - display data read
       case 0x01:
       {
         result = myDisplayImage[myCounters[index]];
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;   
         break;
       }
-
-      // DFx display data read AND'd w/flag
+        
+      // DFxDATAW - display data read AND'd w/flag ("windowed")
       case 0x02:
       {
         result = myDisplayImage[myCounters[index]] & myFlags[index];
-        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
+        myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;   
         break;
-      }
-
-      // DFx display data read w/fractional increment
+      } 
+        
+      // DFxFRACDATA - display data read w/fractional increment
       case 0x03:
       {
         result = myDisplayImage[myFractionalCounters[index] >> 8];
-        myFractionalCounters[index] = (myFractionalCounters[index] + myFractionalIncrements[index]) & 0x0fffff;
+        myFractionalCounters[index] = (myFractionalCounters[index] + myFractionalIncrements[index]) & 0x0fffff;   
         break;
-      }
+      }     
 
       case 0x04:
       {
         switch (index)
         {
-          case 0x00:
-          case 0x01:
-          case 0x02:
-          case 0x03:
+          case 0x00:  // DF0FLAG
+          case 0x01:  // DF1FLAG
+          case 0x02:  // DF2FLAG
+          case 0x03:  // DF3FLAG
           {
             result = myFlags[index];
             break;
@@ -295,15 +345,15 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
           case 0x07:  // reserved
             break;
         }
-        break;
+        break;        
       }
-
+        
       default:
       {
         result = 0;
       }
     }
-
+    
     return result;
   }
   else
@@ -315,36 +365,36 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
         // Set the current bank to the first 4k bank
         bank(0);
         break;
-
+        
       case 0x0FF7:
         // Set the current bank to the second 4k bank
         bank(1);
         break;
-
+        
       case 0x0FF8:
         // Set the current bank to the third 4k bank
         bank(2);
         break;
-
+        
       case 0x0FF9:
         // Set the current bank to the fourth 4k bank
         bank(3);
         break;
-
+        
       case 0x0FFA:
         // Set the current bank to the fifth 4k bank
         bank(4);
         break;
-
+        
       case 0x0FFB:
         // Set the current bank to the last 4k bank
         bank(5);
         break;
-
+        
       default:
         break;
     }
-
+    
     if(myFastFetch)
       myLDAimmediate = (peekvalue == 0xA9);
 
@@ -356,208 +406,130 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
 bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 {
   address &= 0x0FFF;
-
-  if((address >= 0x0028) && (address < 0x0080))
+  
+  if((address >= 0x0028) && (address < 0x0080))  
   {
     // Get the index of the data fetcher that's being accessed
-    uInt32 index = address & 0x07;
+    uInt32 index = address & 0x07;    
     uInt32 function = ((address - 0x28) >> 3) & 0x0f;
-
+    
     switch(function)
     {
-      //DFxFrac counter low
+      //DFxFRACLOW - fractional data pointer low byte
       case 0x00:
-      {
         myFractionalCounters[index] = (myFractionalCounters[index] & 0x0F0000) | ((uInt16)value << 8);
         break;
-      }
-
-      // DFxFrac counter high
+        
+      // DFxFRACHI - fractional data pointer high byte
       case 0x01:
-      {
         myFractionalCounters[index] = (((uInt16)value & 0x0F) << 16) | (myFractionalCounters[index] & 0x00ffff);
         break;
-      }
-
-      //DFx Fraction Increment amount
+        
+      //DFxFRACINC - Fractional Increment amount
       case 0x02:
-      {
         myFractionalIncrements[index] = value;
         myFractionalCounters[index] = myFractionalCounters[index] & 0x0FFF00;
         break;
-      }
 
-      // DFx top count
+      // DFxTOP - set top of window (for reads of DFxDATAW)
       case 0x03:
-      {
         myTops[index] = value;
         myFlags[index] = 0x00;
         break;
-      }
-
-      // DFx bottom count
+        
+      // DFxBOT - set bottom of window (for reads of DFxDATAW)
       case 0x04:
-      {
         myBottoms[index] = value;
         break;
-      }
-
-      // DFx counter low
+        
+      // DFxLOW - data pointer low byte
       case 0x05:
-      {
         myCounters[index] = (myCounters[index] & 0x0F00) | value ;
         break;
-      }
-
+        
       // Control registers
       case 0x06:
-      {
         switch (index)
         {
-          // FastFetch control
-          case 0x00:
-          {
+          case 0x00:  // FASTFETCH - turns on LDA #<DFxDATA mode of value is 0
             myFastFetch = (value == 0);
             break;
-          }
-          // SelectByte
-          case 0x01:
-          {
+
+          case 0x01:  // SELECTBYTE - set byte to update in writeByte()
             mySelectByte = value;
             break;
-          }
-          // Write Byte
-          case 0x02:
-          {
-            switch (mySelectByte)
-            {
-              case 0x00:
-              {
-                myMusicWaveforms[0] = (myMusicWaveforms[0] & 0xFFFFFF00) | value;
-                break;
-              }
-              case 0x01:
-              {
-                myMusicWaveforms[0] = (myMusicWaveforms[0] & 0xFFFF00FF) | (value<<8);
-                break;
-              }
-              case 0x02:
-              {
-                myMusicWaveforms[0] = (myMusicWaveforms[0] & 0xFF00FFFF) | (value<<16);
-                break;
-              }
-              case 0x03:
-              {
-                myMusicWaveforms[0] = (myMusicWaveforms[0] & 0x00FFFFFF) | (value<<24);
-                break;
-              }
-              case 0x04:
-              {
-                myMusicWaveforms[1] = (myMusicWaveforms[1] & 0xFFFFFF00) | value;
-                break;
-              }
-              case 0x05:
-              {
-                myMusicWaveforms[1] = (myMusicWaveforms[1] & 0xFFFF00FF) | (value<<8);
-                break;
-              }
-              case 0x06:
-              {
-                myMusicWaveforms[1] = (myMusicWaveforms[1] & 0xFF00FFFF) | (value<<16);
-                break;
-              }
-              case 0x07:
-              {
-                myMusicWaveforms[1] = (myMusicWaveforms[1] & 0x00FFFFFF) | (value<<24);
-                break;
-              }
-              case 0x08:
-              {
-                myMusicWaveforms[2] = (myMusicWaveforms[2] & 0xFFFFFF00) | value;
-                break;
-              }
-              case 0x09:
-              {
-                myMusicWaveforms[2] = (myMusicWaveforms[2] & 0xFFFF00FF) | (value<<8);
-                break;
-              }
-              case 0x0A:
-              {
-                myMusicWaveforms[2] = (myMusicWaveforms[2] & 0xFF00FFFF) | (value<<16);
-                break;
-              }
-              case 0x0B:
-              {
-                myMusicWaveforms[2] = (myMusicWaveforms[2] & 0x00FFFFFF) | (value<<24);
-                break;
-              }
-            }
+
+          case 0x02:  // WRITEBYTE
+            writeByte(value);
             break;
-          }
+
           case 0x03:  // reserved
           case 0x04:  // reserved
             break;
-          case 0x05:
-          case 0x06:
-          case 0x07:
-          {
-            myMusicVolumes[index - 5] = (value & 0x0F);
+
+          case 0x05:  // VOLUME0
+            myMusicVolume = (myMusicVolume & 0xFFFF00FF) | ((value & 0x0F)<<12);
             break;
-          }
-          break;
+
+          case 0x06:  // VOLUME1
+            myMusicVolume = (myMusicVolume & 0xFF00FFFF) | ((value & 0x0F)<<16);
+            break;
+
+          case 0x07:  // VOLUME2
+            myMusicVolume = (myMusicVolume & 0x00FFFFFF) | ((value & 0x0F)<<24);
+            break;
+
         }
         break;
-      }
 
-      // DF Push
+      // DFxPUSH - Push value into data bank
       case 0x07:
       {
         myCounters[index] = (myCounters[index] - 0x1) & 0x0fff;
         myDisplayImage[myCounters[index]] = value;
         break;
       }
-
-      // DFx counter hi, same as counter high, but w/out music mode
+        
+      // DFxHI - data pointer high byte
       case 0x08:
       {
         myCounters[index] = (((uInt16)value & 0x0F) << 8) | (myCounters[index] & 0x00ff);
         break;
-      }
-
-      // Random Number Generator Reset
+      }     
+        
       case 0x09:
       {
         switch (index)
         {
-          case 0x00:
+          case 0x00:  // RRESET - Random Number Generator Reset
           {
             myRandomNumber = 0x2B435044; // "DPC+"
             break;
           }
-          case 0x01:
+          case 0x01:  // RWRITE0 - update byte 0 of random number
           {
             myRandomNumber = (myRandomNumber & 0xFFFFFF00) | value;
             break;
           }
-          case 0x02:
+          case 0x02:  // RWRITE1 - update byte 1 of random number
           {
             myRandomNumber = (myRandomNumber & 0xFFFF00FF) | (value<<8);
             break;
           }
-          case 0x03:
+          case 0x03:  // RWRITE2 - update byte 2 of random number
           {
             myRandomNumber = (myRandomNumber & 0xFF00FFFF) | (value<<16);
             break;
           }
-          case 0x04:
+          case 0x04:  // RWRITE3 - update byte 3 of random number
           {
             myRandomNumber = (myRandomNumber & 0x00FFFFFF) | (value<<24);
             break;
           }
-          case 0x05:
-          case 0x06:
-          case 0x07:
-          {
+          case 0x05:  // NOTE0
+          case 0x06:  // NOTE1
+          case 0x07:  // NOTE2
+          { 
             myMusicFrequencies[index-5] = myFrequencyImage[(value<<2)] +
             (myFrequencyImage[(value<<2)+1]<<8) +
             (myFrequencyImage[(value<<2)+2]<<16) +
@@ -569,20 +541,20 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
         }
         break;
       }
-
-      // DF Write
+        
+      // DFxWRITE - write into data bank
       case 0x0a:
       {
         myDisplayImage[myCounters[index]] = value;
         myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
         break;
       }
-
+        
       default:
       {
         break;
       }
-    }
+    } 
   }
   else
   {
@@ -593,32 +565,32 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
         // Set the current bank to the first 4k bank
         bank(0);
         break;
-
+        
       case 0x0FF7:
         // Set the current bank to the second 4k bank
         bank(1);
         break;
-
+        
       case 0x0FF8:
         // Set the current bank to the third 4k bank
         bank(2);
         break;
-
+        
       case 0x0FF9:
         // Set the current bank to the fourth 4k bank
         bank(3);
         break;
-
+        
       case 0x0FFA:
         // Set the current bank to the fifth 4k bank
         bank(4);
         break;
-
+        
       case 0x0FFB:
         // Set the current bank to the last 4k bank
         bank(5);
         break;
-
+        
       default:
         break;
     }
@@ -628,7 +600,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCPlus::bank(uInt16 bank)
-{
+{ 
   if(bankLocked()) return;
 
   // Remember what bank we're in
@@ -662,7 +634,7 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
   }
   else
     return false;
-}
+} 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeDPCPlus::getImage(int& size) const
@@ -699,7 +671,7 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putInt(8);
     for(i = 0; i < 8; ++i)
       out.putInt(myCounters[i]);
-
+    
     // The counter registers for the fractional data fetchers
     out.putInt(8);
     for(i = 0; i < 8; ++i)
@@ -717,24 +689,20 @@ bool CartridgeDPCPlus::save(Serializer& out) const
 
     // The Fast Fetcher Enabled flag
     out.putBool(myFastFetch);
-
-    // Last immediate byte peeked
     out.putBool(myLDAimmediate);
 
-    // Control byte
-    out.putByte((char)mySelectByte);
+    // Control Byte to update
+    out.putByte((char) mySelectByte);
 
-    // The music volumes for the data fetchers
+    // The music volume
+    out.putInt(myMusicVolume);
+
+    // The music counters
     out.putInt(3);
     for(i = 0; i < 3; ++i)
-      out.putByte((char)myMusicVolumes[i]);
+      out.putInt(myMusicCounters[i]);    
 
-    // The music mode counters for the data fetchers
-    out.putInt(3);
-    for(i = 0; i < 3; ++i)
-      out.putInt(myMusicCounters[i]);
-
-    // The music mode frequency addends for the data fetchers
+    // The music frequencies
     out.putInt(3);
     for(i = 0; i < 3; ++i)
       out.putInt(myMusicFrequencies[i]);
@@ -806,32 +774,28 @@ bool CartridgeDPCPlus::load(Serializer& in)
 
     // The Fast Fetcher Enabled flag
     myFastFetch = in.getBool();
-
-    // Last immediate byte peeked
     myLDAimmediate = in.getBool();
 
-    // Control byte
+    // Control Byte to update
     mySelectByte = (uInt8) in.getByte();
 
-    // The music mode flags for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myMusicVolumes[i] = (uInt8) in.getByte();
+    // The music volume
+    myMusicVolume = (uInt32) in.getInt();
 
     // The music mode counters for the data fetchers
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myMusicCounters[i] = (uInt32) in.getInt();
+      myMusicCounters[i] = (uInt32) in.getInt();   
 
     // The music mode frequency addends for the data fetchers
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myMusicFrequencies[i] = (uInt32) in.getInt();
+      myMusicFrequencies[i] = (uInt32) in.getInt();     
 
     // The music waveforms
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
-      myMusicWaveforms[i] = (uInt32) in.getInt();
+      myMusicWaveforms[i] = (uInt32) in.getInt();  
 
     // The random number generator register
     myRandomNumber = (uInt32) in.getInt();

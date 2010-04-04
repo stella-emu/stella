@@ -1168,21 +1168,31 @@ void DebuggerParser::executeRun()
 void DebuggerParser::executeRunTo()
 {
   ostringstream buf;
-  bool done = false;
-  int cycles = 0, count = 0;
+  const CartDebug& cartdbg = debugger->cartDebug();
+  const CartDebug::DisassemblyList& list = cartdbg.disassemblyList();
 
+  uInt32 count = 0;
+  bool done = false;
   do {
-    cycles += debugger->step();
-    string next = debugger->cartDebug().disassemble(debugger->cpuDebug().pc(), 1);
-    done = (next.find(argStrings[0]) != string::npos);
+    debugger->step();
+
+    // Update romlist to point to current PC
+    int pcline = cartdbg.addressToLine(debugger->cpuDebug().pc());
+    if(pcline >= 0)
+    {
+      const string& next = list[pcline].disasm;
+      done = (next.find(argStrings[0]) != string::npos);
+    }
     ++count;
-  } while(!done && count < 10000);
+  } while(!done && count < list.size());
 
   if(done)
-    buf << "found " << argStrings[0] << " in " << debugger->valueToString(cycles)
-        << " cycles";
+    buf << "found " << argStrings[0] << " in "
+        << debugger->valueToString(count, kBASE_10)
+        << " disassembled instructions";
   else
-    buf << argStrings[0] << " not found in " << debugger->valueToString(count)
+    buf << argStrings[0] << " not found in "
+        << debugger->valueToString(count, kBASE_10)
         << " disassembled instructions";
 
   commandResult = buf.str();

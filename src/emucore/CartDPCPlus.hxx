@@ -159,6 +159,11 @@ class CartridgeDPCPlus : public Cartridge
     */
     inline void updateMusicModeDataFetchers();
 
+    /** 
+      Writes a control byte
+    */
+    inline void writeByte(uInt8 value);
+
   private:
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
@@ -202,13 +207,13 @@ class CartridgeDPCPlus : public Cartridge
     // Control Byte to update
     uInt8 mySelectByte;
 
-    // The music volumes
-    uInt8 myMusicVolumes[3];
+    // The music volume
+    uInt32 myMusicVolume;
 
     // The music mode counters
     uInt32 myMusicCounters[3];
 
-    // The music frequency addends
+    // The music frequency
     uInt32 myMusicFrequencies[3];
   
     // The music waveforms

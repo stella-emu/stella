@@ -47,7 +47,7 @@ class DebuggerParser
     string exec(const string& file, bool verbose = true);
 
     /** Given a substring, determine matching substrings from the list
-        of available commands.  Used in the debugger prompt for tab-completion */  
+        of available commands.  Used in the debugger prompt for tab-completion */
     int countCompletions(const char *in);
     const char *getCompletions();
     const char *getCompletionPrefix();
