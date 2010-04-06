@@ -93,7 +93,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 #define HEX2 uppercase << hex << setw(2) << setfill('0')
 
   uInt8 op, d1, opsrc;
-  uInt32 ad;
+  uInt16 ad;
   short amode;
   int bytes=0, labfound=0, addbranch=0;
   stringstream nextline, nextlinebytes;
@@ -485,21 +485,19 @@ void DiStella::disasm(uInt32 distart, int pass)
 
         case RELATIVE:
         {
+          // SA - 04-06-2010: there seemed to be a bug in distella,
+          // where wraparound occurred on a 32-bit int, and subsequent
+          // indexing into the labels array caused a crash
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-          ad = d1;
-          if (d1 >= 128)
-            ad = d1 - 256;
+          ad = (myPC + (Int8)d1) & 0xfff;
 
-//    uInt16 address = PC + (Int8)operand;
-
-
-          labfound = mark(myPC+ad+myOffset, REFERENCED);
+          labfound = mark(ad+myOffset, REFERENCED);
           if (pass == 1)
           {
-            if ((addbranch) && !check_bit(labels[myPC+ad], REACHABLE))
+            if ((addbranch) && !check_bit(labels[ad], REACHABLE))
             {
-              myAddressQueue.push(myPC+ad+myOffset);
-              mark(myPC+ad+myOffset, REACHABLE);
+              myAddressQueue.push(ad+myOffset);
+              mark(ad+myOffset, REACHABLE);
               /*       addressq=addq(addressq,myPC+myOffset); */
             }
           }

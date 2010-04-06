@@ -12,11 +12,107 @@
                                Release History
 ===========================================================================
 
-3.0 to 3.0.1: (February 13, 2010)
+3.0 to 3.1: (April xx, 2010)
 
   * Fixed a major bug with text drawing in software rendering mode.
     Switching between windowed and fullscreen mode while text was being
     shown could result in garbled text or even a program crash.
+
+  * Integrated Distella disassembler, completely replacing the previous
+    disassembler.  The entire infrastructure has not been completely
+    ported yet.  As a result, labels defined by the user or from a
+    DASM symbol file aren't actually used in the disassembly.  This will
+    be addressed in a future release.
+
+  * Completely reworked the debugger cartridge interface, so that
+    the disassembly is dynamic (ie, the debugger tracks when address
+    space has changed, and automatically performs a re-disassembly).
+
+  * All carts with extended RAM that differentiate between read and write
+    ports now behave correctly when a read from the write port occurs.
+
+  * Added more complete support for the more esoteric bankswitch
+    schemes in the debugger.  These schemes now support accurate
+    disassembly and ROM patch functionality.  Related to this, fixed a
+    bug in disassembler view when a failure to patch a ROM still showed
+    the (incorrect) patched results.
+
+  * Added debugger pseudo-register '_rwport', which traps on a read from
+    the write port.  This differentiates between reads that are normally
+    part of a write cycle (ie, it traps only on inadvertent reads).
+
+  * Added ability to disable TIA object collisions, independent of
+    enabling/disabling the objects.  Previously, one had to completely
+    disable an object to avoid collisions, but now an object can be
+    enabled (and seen) but still have its collisions disabled.  These
+    actions are tied to the same keys as the enable ones, except the
+    'Shift' key is also used.
+
+  * Added support for bankswitching scheme DPC+, thanks to Darrell Spice
+    Jr and Fred Quimby.
+
+  * Reverted some of the TIA improvements with respect to 'starfield
+    effect' as seen in "Cosmic Ark" and "Stay Frosty".  The emulation is
+    now more accurate as compared to the majority of consoles in use.
+
+  * Added 'autocode' commandline argument and associated UI item, used
+    to set the "automatic code determination" config option in Distella.
+
+  * Removed the 'loadlst' command and the ability to use a DASM .lst file.
+    With the recent disassembler improvements, this is no longer needed.
+
+  * Modified debugger 'disasm' command to accept a second argument
+    indicating the number of lines to disassemble.
+
+  * Added emulation of the "Sega Genesis" controller, with two buttons
+    that are directly supported on a real system.
+
+  * The ZLib library is now included in the core code, so Windows users
+    no longer have to track down the ZLIBWAPI archive.
+
+  * Many changes to the MacOS X port.  The application is now known as
+    'Stella' (instead of StellaOSX), and the keyboard handling is changed
+    to match other systems in terms of where the keys actually are on the
+    keyboard (ie, the OSX Command key corresponds to Alt, and the OSX
+    Control key corresponds to Control).  As a result, all your settings
+    will have to be entered again.
+
+  * Added 'ctrlcombo' commandline argument, which toggles the use of the
+    control key as a modifier key.  This is useful if you want to press
+    'Control' and 'R' in a two player game, and not have the combination
+    treated as 'Control-R' (which will issue a ROM reload).
+
+  * Added 'usemouse' commandline argument and associated UI item.  This
+    toggles the use of the mouse as a controller of any type.
+
+  * Added 'uimessages' commandline argument and associated UI item.
+    This toggles showing of UI messages overlaid on the screen.
+
+  * Many changes to the FrameBuffer and UI code for 'smaller' systems.
+    Stella will now scale correctly to small screens, down to 320x240
+    (which is the absolute lower limit supported).  Related to this,
+    added 'maxres' commandline argument, which is useful for developers
+    testing on such systems.
+
+  * The About dialog now shows the version of SDL in use, and the type
+    of CPU the application is running on (i386, x86_64, etc).
+
+  * Improved 'listrominfo' commandline argument to list all information
+    from Stella's internal ROM database, including a heading.  This
+    output can be imported into a spreadsheet or database program.
+
+  * Renamed 'tiafloat' commandline argument to 'tiadriven'.  The
+    emulation of the behaviour of floating TIA pins is also much more
+    accurate.
+
+  * Added 'md5instate' commandline argument, which toggles saving the
+    MD5sum of the ROM with a save state.  When disabled, a state file
+    is no longer tied to the exact instance of the ROM which created
+    it (useful during development when a small change in program code
+    would render a state file useless).
+
+  * Fixed bug in certain editable text fields, where pressing Return/Enter
+    would disable any further input.
 
 -Have fun!
 
