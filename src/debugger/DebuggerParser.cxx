@@ -1511,7 +1511,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "Disassemble from address (default=pc)",
     false,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeDisasm
   },
 

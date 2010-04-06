@@ -82,16 +82,16 @@ class DiStella
     CartDebug::DisassemblyList& myList;
     stringstream myDisasmBuf;
     queue<uInt16> myAddressQueue;
-    uInt32 myOffset, myPC, myPCBeg, myPCEnd;
+    uInt16 myOffset, myPC, myPCBeg, myPCEnd;
 
     struct resource {
       uInt16 start;
-      uInt32 length;
       uInt16 end;
+      uInt16 length;
     } myAppData;
 
-    /* Memory */
-    uInt8* labels;
+    /* Stores info on how each address is marked */
+    uInt8 labels[0x1000];
 
     /**
       Enumeration of the 6502 addressing modes

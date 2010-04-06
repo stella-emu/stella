@@ -23,25 +23,16 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
                    bool autocode)
-  : myList(list),
-    labels(NULL) /* array of information about addresses */
+  : myList(list)
 {
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
 
-  myAppData.start     = 0x0;
-  myAppData.length    = 4096;
-  myAppData.end       = 0x0FFF;
+  myAppData.start  = 0x0000;
+  myAppData.end    = 0x0FFF;
+  myAppData.length = 4096;
 
-  /*====================================*/
-  /* Allocate memory for "labels" variable */
-  labels=(uInt8*) malloc(myAppData.length);
-  if (labels == NULL)
-  {
-    fprintf (stderr, "Malloc failed for 'labels' variable\n");
-    return;
-  }
-  memset(labels,0,myAppData.length);
+  memset(labels, 0, 0x1000);
 
   /*============================================
     The offset is the address where the code segment
@@ -88,8 +79,6 @@ DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
 
   // Third pass
   disasm(myOffset, 3);
-
-  free(labels);  /* Free dynamic memory before program ends */
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -501,6 +490,9 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (d1 >= 128)
             ad = d1 - 256;
 
+//    uInt16 address = PC + (Int8)operand;
+
+
           labfound = mark(myPC+ad+myOffset, REFERENCED);
           if (pass == 1)
           {
@@ -600,8 +592,8 @@ int DiStella::mark(uInt32 address, MarkType bit)
     We sweep for hardware/system equates, which are valid addresses,
     outside the scope of the code/data range.  For these, we mark its
     corresponding hardware/system array element, and return "2" or "3"
-    (depending on which system/hardware element was accessed).  If this
-    was not the case...
+    (depending on which system/hardware element was accessed), or "5"
+    for zero-page RAM.  If this was not the case...
 
     Next we check if it is a code "mirror".  For the 2600, address ranges
     are limited with 13 bits, so other addresses can exist outside of the
@@ -614,6 +606,8 @@ int DiStella::mark(uInt32 address, MarkType bit)
     ===========================================================
       $00-$3d =     system equates (WSYNC, etc...); mark the array's element
                     with the appropriate bit; return 2.
+      $0080-$00FF = zero-page RAM; mark the array's element
+                    with the appropriate bit; return 5.
       $0280-$0297 = system equates (INPT0, etc...); mark the array's element
                     with the appropriate bit; return 3.
       $1000-$1FFF = CODE/DATA, mark the code/data array for the mirrored address
@@ -643,12 +637,16 @@ int DiStella::mark(uInt32 address, MarkType bit)
   }
   else if (address >= 0 && address <= 0x3f)
   {
-//    reserved[address] = 1;
     return 2;
   }
+/* This isn't supported by the core code yet, so why waste time checking
+  else if (address >= 0x80 && address <= 0xff)
+  {
+    return 5;
+  }
+*/
   else if (address >= 0x280 && address <= 0x297)
   {
-//    ioresrvd[address-0x280] = 1;
     return 3;
   }
   else if (address > 0x1000)

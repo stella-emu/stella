@@ -19,7 +19,7 @@ all of your favorite Atari 2600 games on your PC thanks to Stella!
 Stella is a multi-platform Atari 2600 VCS emulator.  It allows you to play
 all of your favorite Atari 2600 games again!  Stella was originally
 developed for Linux by Bradford W. Mott, however, it has been ported to a
-number of other platforms.
+number of other platforms and is currently maintained by Stephen Anthony.
 
 This is the 3.0 release of Stella for Linux, Mac OSX and Windows.  The
 distributions currently available are:

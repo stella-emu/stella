@@ -207,10 +207,14 @@ bool CartDebug::disassemble(const string& autocode, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
+  // Note that for now, we don't re-disassemble if the PC isn't in cart
+  // address space, since Distella doesn't yet support disassembling from
+  // zero-page RAM and ROM at the same time
   uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
   bool changed = (force || myConsole.cartridge().bankChanged() ||
-                 (pcline == -1) || mySystem.isPageDirty(0x1000, 0x1FFF));
+                 (pcline == -1 && (PC & 0x1000)) ||
+                 mySystem.isPageDirty(0x1000, 0x1FFF));
   if(changed)
   {
     // Look at previous accesses to this bank to begin
@@ -278,22 +282,23 @@ int CartDebug::addressToLine(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
-  if(!(start & 0x1000))
-    return DebuggerParser::red("Disassembly below 0x1000 not yet supported");
-
+//  if(!(start & 0x1000))
+//    return DebuggerParser::red("Disassembly below 0x1000 not yet supported");
+// FIXME
   DisassemblyList list;
   DiStella distella(list, start, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
   ostringstream buffer;
-  for(uInt32 i = 0; i < list.size() && lines > 0; ++i, --lines)
+  for(uInt32 i = 0; i < list.size() && lines > 0; ++i)
   {
     const CartDebug::DisassemblyTag& tag = list[i];
     if((tag.address & 0xfff) >= start)
     {
       buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
              << ":  " << tag.disasm << "  " << tag.bytes << endl;
+      --lines;
     }
   }
 
