@@ -16,19 +16,7 @@
 // $Id$
 //============================================================================
 
-#include <cassert>
-#include <sstream>
-#include <fstream>
-
-#include <unistd.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-
 #include "bspf.hxx"
-#include "Console.hxx"
-#include "EventHandler.hxx"
-#include "Version.hxx"
-
 #include "Settings.hxx"
 #include "SettingsMACOSX.hxx"
 

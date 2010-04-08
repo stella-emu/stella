@@ -10,7 +10,7 @@
 	<br><br>
 	<center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-	<center><h4><b>Release 3.0</b></h4></center>
+	<center><h4><b>Release 3.1</b></h4></center>
 	<br><br>
 
 	<center><h2><b>User's Guide</b></h2></center>
@@ -40,8 +40,8 @@
 
 	<br><br><br>
 
-	<center><b>February 1999 - September 2009</b></center>
-	<center><b>The Stella Team</b></center>
+	<center><b>February 1999 - April 2010</b></center>
+  	<center><b>The Stella Team</b></center>
 	<center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
 	<br><br><br>
@@ -238,6 +238,8 @@
 			or joysticks</li>
 		<li>Emulates the CBS BoosterGrip Controller using your computer's keyboard or
 			joysticks</li>
+		<li>Emulates the Sega Genesis Controller using your computer's keyboard or
+			joysticks</li>
 		<li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
 			computer's mouse</li>
 		<li>Support for real Atari 2600 controllers using the
@@ -256,7 +258,7 @@
 			some games</li>
 		<li>TIA emulation supports full collision checking, with ability to disable
       both TIA sprites and collisions for each object separately</li>
-		<li>Built-in extensive debugger</li>
+		<li>Built-in extensive debugger, including the Distella disassembler</li>
 		<li>Emulation of CRT TV systems with OpenGL shaders, including texturing,
 			colour bleed, RF noise, and phosphor burn-off</li>
 		<li>Built-in ROM database with information compiled by RomHunter</li>
@@ -888,6 +890,11 @@
 		</tr>
 
 		<tr>
+			<td><pre>-stats &lt;1|0&gt;</pre></td>
+			<td>Overlay console info on the TIA image during emulation.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-audiofirst &lt;1|0&gt;</pre></td>
 			<td>Initialize the audio subsystem before video when emulating a
 				ROM.  This seems to be required when using ATI video cards
@@ -1014,6 +1021,12 @@
 		</tr>
 
 		<tr>
+			<td><pre>-maxres &lt;WxH&gt;</pre></td>
+			<td>Useful for developers, this sets the maximum size of window that
+      can be created, allowing to simulate testing on 'smaller' systems.</td>
+		</tr>
+
+		<tr>
 			<td><pre>-help</pre></td>
 			<td>Prints a help message describing these options, and then
 				exit Stella.</td>
@@ -1064,11 +1077,6 @@
 		<tr>
 			<td><pre>-holdbutton0</pre></td>
 			<td>Start the emulator with the left joystick button held down.</td>
-		</tr>
-
-		<tr>
-			<td><pre>-stats &lt;1|0&gt;</pre></td>
-			<td>Overlay console info on the TIA image during emulation.</td>
 		</tr>
 
 		<tr>
@@ -1215,6 +1223,7 @@
 					<tr><td>GL FS Stretch</td><td>stretch fullscreen OpenGL in emulation mode</td><td>-gl_fsmax</td></tr>
 					<tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
 					<tr><td>Grab mouse</td><td>keep mouse in SDL window</td><td>-grabmouse</td></tr>
+					<tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
 					<tr><td>Center window (*)</td><td>attempt to center SDL window (requires restart)</td><td>-center</td></tr>
 					<tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
 				</table>
@@ -1699,6 +1708,95 @@
 					<tr>
 						<td>Fire Button</td>
 						<td>Same as 'Joy1 Fire'</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+	</table>
+
+	<p><b>Sega Genesis Controller (cannot be remapped, always associated with joystick and booster-grip controllers)</b></p>
+
+	<table BORDER=2>
+		<tr>
+			<th>Left Pad</th>
+			<th>Right Pad</th>
+		</tr>
+
+		<tr>
+			<td>
+				<table BORDER=1 cellpadding=5>
+					<tr>
+						<th>Function</th>
+						<th>Key</th>
+					</tr>
+
+					<tr>
+						<td>Pad Up</td>
+						<td>Same as 'Joy0 Up'</td>
+					</tr>
+
+					<tr>
+						<td>Pad Down</td>
+						<td>Same as 'Joy0 Down'</td>
+					</tr>
+
+					<tr>
+						<td>Pad Left</td>
+						<td>Same as 'Joy0 Left'</td>
+					</tr>
+
+					<tr>
+						<td>Pad Right</td>
+						<td>Same as 'Joy0 Right'</td>
+					</tr>
+
+					<tr>
+						<td>Button 'B'</td>
+						<td>Same as 'Joy0 Fire'</td>
+					</tr>
+
+					<tr>
+						<td>Button 'C'</td>
+						<td>Same as 'Joy0 Booster'</td>
+					</tr>
+				</table>
+			</td>
+
+			<td>
+				<table BORDER=1 cellpadding=5>
+					<tr>
+						<th>Function</th>
+						<th>Key</th>
+					</tr>
+
+					<tr>
+						<td>Pad Up</td>
+						<td>Same as 'Joy1 Up'</td>
+					</tr>
+
+					<tr>
+						<td>Pad Down</td>
+						<td>Same as 'Joy1 Down'</td>
+					</tr>
+
+					<tr>
+						<td>Pad Left</td>
+						<td>Same as 'Joy1 Left'</td>
+					</tr>
+
+					<tr>
+						<td>Pad Right</td>
+						<td>Same as 'Joy1 Right'</td>
+					</tr>
+
+					<tr>
+						<td>Button 'B'</td>
+						<td>Same as 'Joy1 Fire'</td>
+					</tr>
+
+					<tr>
+						<td>Button 'C'</td>
+						<td>Same as 'Joy1 Booster'</td>
 					</tr>
 				</table>
 			</td>
@@ -2197,11 +2295,11 @@
 				<table border="1" cellpadding="4">
 					<tr><th>Item</th><th>Brief description</th><th>For more information,<br>see Commandline</th></tr>
 					<tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor uses (See <b>Section 11 - <a href="#Adaptor">Stelladaptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
-					<tr><td>Joy deadzone</td><td>Joystick deadzone area for analog joysticks</td><td>-joydeadzone</td></tr>
-					<tr><td>Mouse is paddle</td><td>The mouse can emulate either paddle	0, 1, 2, or 3.</td><td>&nbsp;</td></tr>
-					<tr><td>Paddle speed</td><td>Speed used when emulating a paddle using a digital device</td><td>-pspeed</td></tr>
 					<tr><td>AVox serial port</td><td>Described in further detail in <b>Section 12 - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
+					<tr><td>Joy deadzone</td><td>Joystick deadzone area for analog joysticks</td><td>-joydeadzone</td></tr>
+					<tr><td>Paddle speed</td><td>Speed used when emulating a paddle using a digital device</td><td>-pspeed</td></tr>
 					<tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
+					<tr><td>Use mouse as ...</td><td>Use the mouse for various controllers (paddles, driving, etc)</td><td>-usemouse</td></tr>
 				</table>
 			</td>
 		</tr>
@@ -2837,7 +2935,7 @@ Ms Pac-Man (Stella extended codes):
 			<td>Indicates what type of controller the left player
 			uses.  The value must be <b>BoosterGrip</b>, <b>Driving</b>,
 			<b>Keyboard</b>, <b>Paddles</b>, <b>Trackball22</b>,
-			<b>Trackball80</b>, <b>AmigaMouse</b> or <b>Joystick</b>.</td>
+			<b>Trackball80</b>, <b>AmigaMouse</b>, <b>Genesis</b> or <b>Joystick</b>.</td>
 		</tr>
 
 		<tr>
@@ -2846,7 +2944,7 @@ Ms Pac-Man (Stella extended codes):
 			uses.  The value must be <b>BoosterGrip</b>, <b>Driving</b>,
 			<b>Keyboard</b>, <b>Paddles</b>, <b>Trackball22</b>,
 			<b>Trackball80</b>, <b>AmigaMouse</b>, <b>AtariVox</b>,
-			<b>SaveKey</b> or <b>Joystick</b>.</td>
+			<b>SaveKey</b>, <b>Genesis</b> or <b>Joystick</b>.</td>
 		</tr>
 
 		<tr>

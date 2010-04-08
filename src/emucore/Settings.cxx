@@ -368,6 +368,7 @@ void Settings::usage()
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -md5instate   <1|0>          ROM MD5 information is saved in a state file, tying the state file to the ROM\n"
+    << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
@@ -393,6 +394,7 @@ void Settings::usage()
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
     << "  -eepromdir    <dir>          Directory in which to save EEPROM files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
+    << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
@@ -406,7 +408,6 @@ void Settings::usage()
     << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
     << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
     << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
-    << "   -stats        <1|0>         Overlay console info during emulation\n"
     << "   -tiadriven    <1|0>         Drive unused TIA pins randomly value on a read/peek\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"

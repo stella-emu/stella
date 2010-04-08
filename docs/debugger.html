@@ -13,46 +13,59 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 
 <h2>Here's a list of what the debugger can do so far:</h2>
 <ul>
-	<li>Display registers and memory</li>
+	<li>Display registers and memory.</li>
+
 	<li>Dump state of TIA and RIOT, with things like joystick directions and
 		NUSIZx decoded into English (more-or-less).</li>
-	<li>Change registers/memory, including toggles for flags in P register</li>
-	<li>Single step/trace</li>
+
+	<li>Change registers/memory, including toggles for flags in P register.</li>
+
+	<li>Single step/trace.</li>
+
 	<li>Breakpoints - break running program and enter debugger when the
-		Program Counter hits a predefined address. You can set as many
+		Program Counter hits a predefined address; you can set as many
 		breakpoints as you want.</li>
+
 	<li>Conditional breakpoints - Break running program when some arbitrary
-		condition is true (e.g. "breakif {a == $7f &amp;&amp; c}" will break when the
-		Accumulator value is $7f and the Carry flag is true, no matter where
+		condition is true (e.g. "breakif {a == $7f &amp;&amp; c}" will break when the	Accumulator value is $7f and the Carry flag is true, no matter where
 		in the program this happens). Unlike the cond breaks in PCAE, Stella's
 		are *fast*: the emulation will run at full speed unless you use lots
 		of breakif's at the same time, or have a slow CPU.</li>
+
 	<li>Watches - View contents of a location/register before every
 		debugger prompt.</li>
+
 	<li>Traps - Like breakpoints, but break on read/write/any access to
 		*any* memory location.</li>
+
 	<li>Frame advance (automatic breakpoint at beginning of next frame)
 		You can advance multiple frames with one command.</li>
-	<li>Disassembly</li>
+
+	<li>Disassembly from Distella, with support for determining code vs.
+    data sections.</li>
+
 	<li>Support for DASM symbol files (created with DASM's -s option),
 		including automatically loading symbol files if they're named
 		romname.sym</li>
-	<li>Built-in VCS.H symbols, if no symbol file is loaded</li>
-	<li>Symbolic names in disassembly</li>
-	<li>Symbolic names accepted as input</li>
-	<li>Tab completion for commands and symbol names</li>
+
+	<li>Built-in VCS.H symbols, if no symbol file is loaded.</li>
+
+	<li><strike>Symbolic names in disassembly.</strike> <b>Note:</b> Disabled until a future release</li>
+
+	<li>Symbolic names accepted as input.</li>
+	<li>Tab completion for commands and symbol names.</li>
 	<li>Graphical editor for RIOT and extended RAM. Acts a lot like a spreadsheet.
 		Input in hex, with displays for label/decimal/binary for
 		currently-selected location.</li>
-	<li>GUI CPU state window</li>
+	<li>GUI CPU state window.</li>
 	<!--Cheat system (similar to MAME) (still needs a way to save/load cheats)-->
-	<li>Reset the 6502</li>
-	<li>Start emulator in debugger (via command-line option "-debug")</li>
+	<li>Reset the 6502.</li>
+	<li>Start emulator in debugger (via command-line option "-debug").</li>
 	<li>Save CLI session to a text file.</li>
 	<li>Supports hex, decimal, and binary input and output almost everywhere.
-		(disassembly is still hex)</li>
-	<li>Support for bank switching. You can see how many banks a cart has,
-		and switch banks. There's still more to be done here though.</li>
+		(disassembly is still hex).</li>
+	<li>Support for bank switching. You can see how many banks a cart has, and the
+    currently selected bank.</li>
 	<li>Registers/memory that get changed by the CPU during debugging are
 		highlighted when they're displayed.<li>
 	<li>Scanline advance (like frame advance, break at beginning
@@ -80,15 +93,8 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Perhaps 2 panes in the disassembly window (so you can see 2 parts of the
 		code at once).</li>
 	<li>Add bookmark support to disassembly window.</li>
-	<li>Bankswitch support in the debugger for the few remaining cart types
-		that aren't supported.</li>
-	<li>Patch ROM support for a few cart types doesn't work. Must fix.</li>
-	<li>Source-level debugging: if a DASM .lst file is available, we'll show
-		the listing in the ROM tab instead of a disassembly. This is already
-		available in a very crude form ("loadlist" and "list" commands).</li>
 	<li>More "special variables" for the expression parser.</li>
 	<li>Possibly a mini-assembler</li>
-	<li>Support for extra RAM in all remaining cart types.</li>
 	<li>Possibly support for recording and playing back input files, like
 		MAME. This isn't a debugger feature per se, but it'll make it easier
 		to reliably trigger a bug so you can debug it.</li>

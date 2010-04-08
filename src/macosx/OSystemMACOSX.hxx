@@ -23,7 +23,7 @@
 
 
 /**
-  This class defines UNIX-like OS's (Linux) system specific settings.
+  This class defines UNIX-like OS's (MacOS X) system specific settings.
 
   @author  Mark Grebe
   @version $Id$
@@ -32,7 +32,7 @@ class OSystemMACOSX : public OSystem
 {
   public:
     /**
-      Create a new UNIX-specific operating system object
+      Create a new MACOSX-specific operating system object
     */
     OSystemMACOSX();
 
@@ -45,7 +45,7 @@ class OSystemMACOSX : public OSystem
     /**
       Informs the OSystem of a change in EventHandler state.
     */
-    virtual void stateChanged(EventHandler::State state);
+    void stateChanged(EventHandler::State state);
 };
 
 #endif
