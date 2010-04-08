@@ -210,11 +210,12 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
       scrollToCurrent();
       int len = _promptEndPos - _promptStartPos;
+      if(len > 256) len = 256;
 
-      int lastDelimPos = -1;
+	  int lastDelimPos = -1;
       char delimiter = '\0';
 
-      char str[len + 1];
+      char str[256];
       for (i = 0; i < len; i++)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
