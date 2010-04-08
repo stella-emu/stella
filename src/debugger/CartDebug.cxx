@@ -463,48 +463,27 @@ string CartDebug::loadSymbolFile(const string& f)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::countCompletions(const char *in)
+void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
-/* FIXME
-  myCompletions = myCompPrefix = "";
-  return countCompletions(in, mySystemAddresses) +
-         countCompletions(in, myUserAddresses);
-*/
-return 0;
-}
+  // First scan system equates
+  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+    if(BSPF_strncasecmp(ourTIAMnemonicR[addr], in, strlen(in)) == 0)
+      completions.push_back(ourTIAMnemonicR[addr]);
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+    if(BSPF_strncasecmp(ourTIAMnemonicW[addr], in, strlen(in)) == 0)
+      completions.push_back(ourTIAMnemonicW[addr]);
+  for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
+    if(BSPF_strncasecmp(ourIOMnemonic[addr], in, strlen(in)) == 0)
+      completions.push_back(ourIOMnemonic[addr]);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::countCompletions(const char *in, LabelToAddr& addresses)
-{
-  int count = 0;
-
-  LabelToAddr::iterator iter;
-  for(iter = addresses.begin(); iter != addresses.end(); iter++)
+  // Now scan user-defined labels
+  LabelToAddr::const_iterator iter;
+  for(iter = myUserAddresses.begin(); iter != myUserAddresses.end(); ++iter)
   {
-    const char *l = iter->first.c_str();
-
+    const char* l = iter->first.c_str();
     if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
-    {
-      if(myCompPrefix == "")
-        myCompPrefix += l;
-      else
-      {
-        int nonMatch = 0;
-        const char *c = myCompPrefix.c_str();
-        while(*c != '\0' && tolower(*c) == tolower(l[nonMatch]))
-        {
-          c++;
-          nonMatch++;
-        }
-        myCompPrefix.erase(nonMatch, myCompPrefix.length());
-      }
-
-      if(count++) myCompletions += "  ";
-        myCompletions += l;
-    }
+      completions.push_back(l);
   }
-
-  return count;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

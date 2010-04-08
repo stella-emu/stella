@@ -29,6 +29,7 @@
 #include "Debugger.hxx"
 #include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
+#include "StringList.hxx"
 
 #include "PromptWidget.hxx"
 #include "CartDebug.hxx"
@@ -220,7 +221,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       int lastDelimPos = -1;
       char delimiter = '\0';
 
-      char *str = new char[len + 1];
+      char str[len + 1];
       for (i = 0; i < len; i++)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
@@ -232,46 +233,50 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       str[len] = '\0';
 
-      const char *completionList;
-      const char *prefix;
-      int possibilities;
+      StringList list;
+      string completionList;
+      string prefix;
 
       if(lastDelimPos < 0)
       {
         // no delimiters, do command completion:
-        DebuggerParser& parser = instance().debugger().parser();
-        possibilities = parser.countCompletions(str);
+        const DebuggerParser& parser = instance().debugger().parser();
+        parser.getCompletions(str, list);
 
-        if(possibilities < 1) {
-          delete[] str;
+        if(list.size() < 1)
           break;
-        }
 
-        completionList = parser.getCompletions();
-        prefix = parser.getCompletionPrefix();
+        // TODO: sort completions (add sort method to StringList)
+        completionList = list[0];
+        for(uInt32 i = 1; i < list.size(); ++i)
+          completionList += " " + list[i];
+        prefix = getCompletionPrefix(list, str);
       }
       else
       {
-        // we got a delimiter, so this must be a label:
-        CartDebug& cart = instance().debugger().cartDebug();
-        possibilities = cart.countCompletions(str + lastDelimPos + 1);
+        // we got a delimiter, so this must be a label or a function
+        const Debugger& dbg = instance().debugger();
 
-        if(possibilities < 1) {
-          delete[] str;
+        dbg.cartDebug().getCompletions(str + lastDelimPos + 1, list);
+        dbg.getCompletions(str + lastDelimPos + 1, list);
+
+        if(list.size() < 1)
           break;
-        }
 
-        // TODO - perhaps use strings instead of char pointers
-        completionList = cart.getCompletions().c_str();
-        prefix = cart.getCompletionPrefix().c_str();
+        // TODO: sort completions (add sort method to StringList)
+        completionList = list[0];
+        for(uInt32 i = 1; i < list.size(); ++i)
+          completionList += " " + list[i];
+        prefix = getCompletionPrefix(list, str + lastDelimPos + 1);
       }
 
-      if(possibilities == 1)
+      if(list.size() == 1)
       {
         // add to buffer as though user typed it (plus a space)
         _currentPos = _promptStartPos + lastDelimPos + 1;
-        while(*completionList != '\0')
-          putcharIntern(*completionList++);
+        const char* clptr = completionList.c_str();
+        while(*clptr != '\0')
+          putcharIntern(*clptr++);
 
         putcharIntern(' ');
         _promptEndPos = _currentPos;
@@ -298,7 +303,6 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         print(prefix);
         _promptEndPos = _currentPos;
       }
-      delete[] str;
       dirty = true;
       break;
     }
@@ -882,4 +886,31 @@ bool PromptWidget::saveBuffer(string& filename)
 
   out.close();
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string PromptWidget::getCompletionPrefix(const StringList& completions, string prefix)
+{
+  // Search for prefix in every string, progressively growing it
+  // Once a mismatch is found or length is past one of the strings, we're done
+  // We *could* use the longest common string algorithm, but for the lengths
+  // of the strings we're dealing with, it's probably not worth it
+  for(;;)
+  {
+    for(uInt32 i = 0; i < completions.size(); ++i)
+    {
+      const string& s = completions[i];
+      if(s.length() < prefix.length())
+        return prefix;  // current prefix is the best we're going to get
+      else if(s.compare(0, prefix.length(), prefix) != 0)
+      {
+        prefix.erase(prefix.length()-1);
+        return prefix;
+      }
+    }
+    if(completions[0].length() > prefix.length())
+      prefix = completions[0].substr(0, prefix.length() + 1);
+    else
+      return prefix;
+  }
 }

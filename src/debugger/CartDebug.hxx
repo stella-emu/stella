@@ -26,6 +26,7 @@ class System;
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Cart.hxx"
+#include "StringList.hxx"
 #include "DebuggerSystem.hxx"
 
 // pointer types for CartDebug instance methods
@@ -150,7 +151,6 @@ class CartDebug : public DebuggerSystem
     */
     string getCartType();
 
-////////////////////////////////////////
     /**
       Add a label and associated address.
       Labels that reference either TIA or RIOT spaces will not be processed.
@@ -183,11 +183,9 @@ class CartDebug : public DebuggerSystem
 
     /**
       Methods used by the command parser for tab-completion
+      In this case, return completions from the equate list(s)
     */
-    int countCompletions(const char *in);
-    const string& getCompletions() const      { return myCompletions; }
-    const string& getCompletionPrefix() const { return myCompPrefix;  }
-////////////////////////////////////////
+    void getCompletions(const char* in, StringList& list) const;
 
   private:
     typedef map<uInt16, string> AddrToLabel;
@@ -209,9 +207,6 @@ class CartDebug : public DebuggerSystem
     // Extract labels and values from the given character stream
     string extractLabel(char *c) const;
     int extractValue(char *c) const;
-
-    // Count completions for the given mapping
-    int countCompletions(const char *in, LabelToAddr& addresses);
 
   private:
     CartState myState;
@@ -242,9 +237,8 @@ class CartDebug : public DebuggerSystem
     // handled differently
     LabelToAddr mySystemAddresses;
 
-    string myCompletions;
-    string myCompPrefix;
-
+    // Holds address at which the most recent read from a write port
+    // occurred
     uInt16 myRWPortAddress;
 
     /// Table of instruction mnemonics

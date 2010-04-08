@@ -157,50 +157,17 @@ string DebuggerParser::exec(const string& file, bool verbose)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// completion-related stuff:
-int DebuggerParser::countCompletions(const char *in)
+// Completion-related stuff:
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerParser::getCompletions(const char* in, StringList& completions) const
 {
-  int count = 0;
-  completions = compPrefix = "";
-
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(int i = 0; i < kNumCommands; ++i)
   {
-    const char *l = commands[i].cmdString.c_str();
-
-    if(BSPF_strncasecmp(l, in, strlen(in)) == 0) {
-      if(compPrefix == "")
-        compPrefix += l;
-      else {
-        int nonMatch = 0;
-        const char *c = compPrefix.c_str();
-        while(*c != '\0' && tolower(*c) == tolower(l[nonMatch])) {
-          c++;
-          nonMatch++;
-        }
-        compPrefix.erase(nonMatch, compPrefix.length());
-        // cerr << "compPrefix==" << compPrefix << endl;
-      }
-
-      if(count++) completions += "  ";
-      completions += l;
-    }
+    const char* l = commands[i].cmdString.c_str();
+    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
+      completions.push_back(l);
   }
-
-  // cerr << "Found " << count << " label(s):" << endl << completions << endl;
-  return count;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char *DebuggerParser::getCompletions()
-{
-  return completions.c_str();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char *DebuggerParser::getCompletionPrefix()
-{
-  return compPrefix.c_str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

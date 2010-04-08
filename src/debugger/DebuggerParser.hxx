@@ -48,9 +48,7 @@ class DebuggerParser
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */
-    int countCompletions(const char *in);
-    const char *getCompletions();
-    const char *getCompletionPrefix();
+    void getCompletions(const char* in, StringList& list) const;
 
     /** Evaluate the given expression using operators, current base, etc */
     int decipher_arg(const string &str);
@@ -130,10 +128,6 @@ class DebuggerParser
 
     BaseFormat defaultBase;
     StringList watches;
-
-    // Used in 'tab-completion', holds list of commands related to a substring
-    string completions;
-    string compPrefix;
 
     // List of available command methods
     void executeA();

@@ -53,7 +53,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li><strike>Symbolic names in disassembly.</strike> <b>Note:</b> Disabled until a future release</li>
 
 	<li>Symbolic names accepted as input.</li>
-	<li>Tab completion for commands and symbol names.</li>
+	<li>Tab completion for commands, symbol names and functions.</li>
 	<li>Graphical editor for RIOT and extended RAM. Acts a lot like a spreadsheet.
 		Input in hex, with displays for label/decimal/binary for
 		currently-selected location.</li>
@@ -186,7 +186,7 @@ Bash-style commands are also supported:</p>
 <p>You can also scroll with the mouse.  Copy and paste is not yet supported.</p>
 
 <p>To see the available commands, enter "help".  Bash-style tab completion is
-supported for commands and labels (see below).</p>
+supported for commands, labels and functions (see below).</p>
 
 <p>For now, there are some functions that only exist in the prompt. We
 intend to add GUI equivalents for all (or almost all?) of the prompt
@@ -196,7 +196,7 @@ debugger without typing (or without typing much, anyway).</p>
 
 <h4>Tab completion</h4>
 
-<p>While entering a command or label, you can type a partial name and
+<p>While entering a command, label or function, you can type a partial name and
 press the Tab key to attempt to auto-complete it. If you've ever used
 "bash", this will be immediately familiar. If not, try it: load up
 a ROM, go to the debugger, type "print w" (but don't press Enter),
@@ -206,9 +206,9 @@ completions (try with "v" instead of "w"), you'll see a list of them,
 and your partial name will be completed as far as possible.</p>
 
 <p>Tab completion works on all labels: built-in, loaded from a symbol file,
-or set during debugging with the "define" command. However, it does not
-yet work on functions defined with the "function" command, nor does it
-work on filenames.</p>
+or set during debugging with the "define" command. It also works with
+built-in functions and those defined with the "function" command,
+but it doesn't (yet) work on filenames.</p>
 
 <h4>Expressions</h4>
 

@@ -234,86 +234,6 @@ void Debugger::quit()
   myOSystem->eventHandler().leaveDebugMode();
 }
 
-#if 0  // FIXME - remove this
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::loadListFile(string f)
-{
-  char buffer[255];
-
-  if(f == "")
-  {
-    f = myOSystem->romFile();
-
-    string::size_type pos;
-    if( (pos = f.find_last_of('.')) != string::npos )
-      f.replace(pos, f.size(), ".lst");
-    else
-      f += ".lst";
-  }
-
-  ifstream in(f.c_str());
-  if(!in.is_open())
-    return "Unable to read listing from " + f;
-
-  sourceLines.clear();
-  int count = 0;
-  while( !in.eof() )
-  {
-    if(!in.getline(buffer, 255))
-      break;
-
-    if(strlen(buffer) >= 14 &&
-       buffer[0] == ' '     &&
-       buffer[7] == ' '     &&
-       buffer[8] == ' '     &&
-       isxdigit(buffer[9])  &&
-       isxdigit(buffer[12]) &&
-       BSPF_isblank(buffer[13]))
-    {
-      count++;
-      char addr[5];
-      for(int i=0; i<4; i++)
-        addr[i] = buffer[9+i];
-
-      for(char *c = buffer; *c != '\0'; c++)
-        if(*c == '\t') *c = ' ';
-
-      addr[4] = '\0';
-      string a = addr;
-      string b = buffer;
-      sourceLines.insert(make_pair(a, b));
-    }
-  }
-  in.close();
-
-  return valueToString(count) + " lines loaded from " + f;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::getSourceLines(int addr) const
-{
-  if(sourceLines.size() == 0)
-    return "";
-
-  string ret;
-  string want = to_hex_16(addr);
-
-  bool found = false;
-  pair<ListIter, ListIter> lines = sourceLines.equal_range(want);
-  for(ListIter i = lines.first; i != lines.second; i++)
-  {
-    found = true;
-    ret += i->second;
-    ret += "\n";
-  }
-
-  if(found)
-    return ret;
-  else
-    return "";
-}
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::autoExec()
 {
@@ -829,6 +749,28 @@ const string Debugger::builtinHelp() const
         << endl;
   }
   return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Debugger::getCompletions(const char* in, StringList& list) const
+{
+  // First check built-in functions
+  FunctionMap::const_iterator iter1;
+  for(iter1 = functions.begin(); iter1 != functions.end(); ++iter1)
+  {
+    const char* l = iter1->first.c_str();
+    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
+      list.push_back(l);
+  }
+
+  // Now consider user-defined functions
+  FunctionDefMap::const_iterator iter2;
+  for(iter2 = functionDefs.begin(); iter2 != functionDefs.end(); ++iter2)
+  {
+    const char* l = iter2->first.c_str();
+    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
+      list.push_back(l);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

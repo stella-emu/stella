@@ -130,6 +130,12 @@ class Debugger : public DialogContainer
     const string builtinHelp() const;
 
     /**
+      Methods used by the command parser for tab-completion
+      In this case, return completions from the function list
+    */
+    void getCompletions(const char* in, StringList& list) const;
+
+    /**
       The debugger subsystem responsible for all CPU state
     */
     CpuDebug& cpuDebug() const { return *myCpuDebug; }

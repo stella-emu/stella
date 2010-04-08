@@ -80,6 +80,10 @@ class PromptWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
+    // Get the longest prefix (initially 's') that is in every string in the list
+    string getCompletionPrefix(const StringList& completions, string s);
+
+  private:
     enum {
       kBufferSize     = 32768,
       kLineBufferSize = 256,
