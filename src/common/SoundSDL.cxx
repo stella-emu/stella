@@ -31,9 +31,6 @@
 
 #include "Console.hxx"
 #include "AtariVox.hxx"
-#ifdef SPEAKJET_EMULATION
-  #include "SpeakJet.hxx"
-#endif
 
 #include "SoundSDL.hxx"
 
@@ -293,8 +290,6 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
   // the sound to "scale" correctly, we have to know the games real frame 
   // rate (e.g., 50 or 60) and the currently emulated frame rate. We use these
   // values to "scale" the time before the register change occurs.
-// FIXME - this always results in 1.0, so we don't really need it
-//  delta = delta * (myDisplayFrameRate / myOSystem->frameRate());
   RegWrite info;
   info.addr = addr;
   info.value = value;
@@ -403,27 +398,6 @@ void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
   sound->processFragment(stream, (Int32)len);
-
-#ifdef SPEAKJET_EMULATION
-//  cerr << "SoundSDL::callback(): len==" << len << endl;
-
-  // See if we need sound from the AtariVox
-  AtariVox *vox = sound->myOSystem->console().atariVox();
-  if(vox)
-  {
-    // If so, mix 'em together (this is a crappy way to mix audio streams...)
-    uInt8 *s = stream;
-    for(int i=0; i<len/OUTPUT_BUFFER_SIZE; i++)
-    {
-      int count;
-      uInt8 *voxSamples = vox->getSpeakJet()->getSamples(&count);
-      if(!count)
-        break;
-      SDL_MixAudio(s, voxSamples, OUTPUT_BUFFER_SIZE, SDL_MIX_MAXVOLUME);
-      s += OUTPUT_BUFFER_SIZE;
-    }
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

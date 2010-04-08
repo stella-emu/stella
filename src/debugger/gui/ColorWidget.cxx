@@ -53,15 +53,6 @@ void ColorWidget::setColor(int color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ColorWidget::handleMouseDown(int x, int y, int button, int clickCount)
-{
-// TODO - add ColorDialog, which will show all 256 colors in the
-//         TIA palette
-//  if(isEnabled())
-//    parent()->addDialog(myColorDialog);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ColorWidget::drawWidget(bool hilite)
 {
   FBSurface& s = dialog().surface();

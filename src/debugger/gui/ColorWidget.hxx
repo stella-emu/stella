@@ -51,7 +51,6 @@ class ColorWidget : public Widget, public CommandSender
 	
   protected:
     void drawWidget(bool hilite);
-    void handleMouseDown(int x, int y, int button, int clickCount);
 
   protected:
     int _color;

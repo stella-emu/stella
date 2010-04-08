@@ -56,7 +56,6 @@ MODULE_OBJS := \
 	src/emucore/SaveKey.o \
 	src/emucore/Serializer.o \
 	src/emucore/Settings.o \
-	src/emucore/SpeakJet.o \
 	src/emucore/Switches.o \
 	src/emucore/StateManager.o \
 	src/emucore/System.o \

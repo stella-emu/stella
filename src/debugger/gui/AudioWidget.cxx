@@ -101,29 +101,7 @@ AudioWidget::~AudioWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AudioWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
-/* FIXME - implement this
-  // We simply change the values in the DataGridWidget
-  // It will then send the 'kDGItemDataChangedCmd' signal to change the actual
-  // memory location
-  int addr, value;
-  string buf;
-
-  Debugger& dbg = instance().debugger();
-  TIADebug& tia = dbg.tiaDebug();
-
-  switch(cmd)
-  {
-    case kDGItemDataChangedCmd:
-      switch(id)
-      {
-        case kNusizP0ID:
-          tia.nusizP0(myNusizP0->getSelectedValue());
-          myNusizP0Text->setEditString(tia.nusizP0String());
-          break;
-      }
-      break;
-  }
-*/
+  // TODO - implement this
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

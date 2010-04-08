@@ -21,6 +21,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <algorithm>
 
 #include "ScrollBarWidget.hxx"
 #include "FrameBuffer.hxx"
@@ -35,14 +36,6 @@
 #include "CartDebug.hxx"
 
 #define PROMPT  "> "
-
-/* TODO:
- * - it is very inefficient to redraw the full thingy when just one char is added/removed.
- *   Instead, we could just copy the GFX of the blank console (i.e. after the transparent
- *   background is drawn, before any text is drawn). Then using that, it becomes trivial
- *   to erase a single character, do scrolling etc.
- * - a *lot* of others things, this code is in no way complete and heavily under progress
- */
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
@@ -246,7 +239,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         if(list.size() < 1)
           break;
 
-        // TODO: sort completions (add sort method to StringList)
+        sort(list.begin(), list.end());
         completionList = list[0];
         for(uInt32 i = 1; i < list.size(); ++i)
           completionList += " " + list[i];
@@ -263,7 +256,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         if(list.size() < 1)
           break;
 
-        // TODO: sort completions (add sort method to StringList)
+        sort(list.begin(), list.end());
         completionList = list[0];
         for(uInt32 i = 1; i < list.size(); ++i)
           completionList += " " + list[i];
@@ -852,7 +845,7 @@ void PromptWidget::scrollToCurrent()
 
   if (line + _linesPerPage <= _scrollLine)
   {
-    // TODO - this should only occur for loong edit lines, though
+    // TODO - this should only occur for long edit lines, though
   }
   else if (line > _scrollLine)
   {

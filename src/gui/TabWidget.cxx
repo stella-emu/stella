@@ -120,7 +120,7 @@ void TabWidget::disableTab(int tabID)
   assert(0 <= tabID && tabID < (int)_tabs.size());
 
   _tabs[tabID].enabled = false;
-  // TODO - alsa disable all widgets belonging to this tab
+  // TODO - also disable all widgets belonging to this tab
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

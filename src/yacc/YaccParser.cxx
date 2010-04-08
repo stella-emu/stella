@@ -167,7 +167,6 @@ int const_to_int(char *c) {
   }
 }
 
-// TODO: store in a map or something
 // special methods that get e.g. CPU registers
 CPUDEBUG_INT_METHOD getCpuSpecial(char *c)
 {

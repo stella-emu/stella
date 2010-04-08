@@ -206,9 +206,6 @@ void Debugger::setConsole(Console* console)
   // Initialize breakpoints to known state
   clearAllBreakPoints();
   clearAllTraps();
-
-// FIXME - these will probably be removed
-//  loadListFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

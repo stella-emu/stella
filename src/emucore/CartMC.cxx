@@ -233,7 +233,7 @@ bool CartridgeMC::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeMC::getImage(int& size) const
 {
-  size = 128 * 1024; // FIXME: keep track of original size
+  size = 128 * 1024;
   return myImage;
 }
 

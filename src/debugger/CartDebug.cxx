@@ -282,9 +282,6 @@ int CartDebug::addressToLine(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
-//  if(!(start & 0x1000))
-//    return DebuggerParser::red("Disassembly below 0x1000 not yet supported");
-// FIXME
   DisassemblyList list;
   DiStella distella(list, start, false);
 
