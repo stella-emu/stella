@@ -560,11 +560,13 @@ class OSystem
 
       @param romfile  The full pathname of the ROM to use
       @param md5      The MD5sum of the ROM
+      @param type     The bankswitch type of the ROM
+      @param id       The additional id (if any) used by the ROM
 
       @return  The actual Console object, otherwise NULL
                (calling method is responsible for deleting it)
     */
-    Console* openConsole(const string& romfile, string& md5);
+    Console* openConsole(const string& romfile, string& md5, string& type, string& id);
 
     /**
       Open the given ROM and return an array containing its contents.

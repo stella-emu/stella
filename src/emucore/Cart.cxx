@@ -59,9 +59,10 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
-    string& id, string type, Settings& settings)
+     string& dtype, string& id, Settings& settings)
 {
   Cartridge* cartridge = 0;
+  string type = dtype;
 
   // First consider the ROMs that are special and don't have a properties entry
   // Hopefully this list will be very small
@@ -72,6 +73,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     // These two ROMs are normal 8K images, except they must be initialized
     // from the opposite bank compared to normal ones
     type = "F8 swapped";
+    dtype = type;
   }
 
   // Collect some info about the ROM
@@ -97,6 +99,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     // Make sure we have a valid sized image
     if(size == 2*2048 || size == 2*4096 || size == 2*8192 || size == 2*16384)
     {
+      dtype = type;
       type = createFromMultiCart(image, size, 2, md5, id, settings);
       buf << id;
     }
@@ -107,6 +110,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     // Make sure we have a valid sized image
     if(size == 4*2048 || size == 4*4096 || size == 4*8192)
     {
+      dtype = type;
       type = createFromMultiCart(image, size, 4, md5, id, settings);
       buf << id;
     }
@@ -116,7 +120,18 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     // Make sure we have a valid sized image
     if(size == 8*2048 || size == 8*4096 || size == 8*8192)
     {
+      dtype = type;
       type = createFromMultiCart(image, size, 8, md5, id, settings);
+      buf << id;
+    }
+  }
+  else if(type == "16IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 16*2048 || size == 16*4096 || size == 16*8192)
+    {
+      dtype = type;
+      type = createFromMultiCart(image, size, 16, md5, id, settings);
       buf << id;
     }
   }
@@ -125,6 +140,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     // Make sure we have a valid sized image
     if(size == 32*2048 || size == 32*4096)
     {
+      dtype = type;
       type = createFromMultiCart(image, size, 32, md5, id, settings);
       buf << id;
     }

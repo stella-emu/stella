@@ -166,22 +166,6 @@ class Controller : public Serializable
     virtual void systemCyclesReset() { };
 
     /**
-      Saves the current state of this controller to the given Serializer.
-
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
-    */
-    virtual bool save(Serializer& out) const;
-
-    /**
-      Loads the current state of this controller from the given Serializer.
-
-      @param in The serializer device to load from.
-      @return The result of the load.  True on success, false on failure.
-    */
-    virtual bool load(Serializer& in);
-
-    /**
       Returns the name of this controller.
     */
     virtual string name() const;
@@ -190,6 +174,22 @@ class Controller : public Serializable
       Returns more detailed information about this controller.
     */
     virtual string about() const;
+
+    /**
+      Saves the current state of this controller to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const;
+
+    /**
+      Loads the current state of this controller from the given Serializer.
+
+      @param in The serializer device to load from.
+      @return The result of the load.  True on success, false on failure.
+    */
+    bool load(Serializer& in);
 
   public:
     /// Constant which represents maximum resistance for analog pins

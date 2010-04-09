@@ -62,6 +62,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
 //  l.push_back("Add bookmark");
   l.push_back("Save ROM", "saverom");
   l.push_back("Set PC", "setpc");
+  l.push_back("RunTo PC", "runtopc");
   myMenu = new ContextMenu(this, font, l);
 
   // Take advantage of a wide debugger window when possible
@@ -213,10 +214,12 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   if (!isEnabled())
     return;
 
-  // Grab right mouse button for context menu, send left to base class
+  // Grab right mouse button for context menu, left for selection/edit mode
   if(button == 2)
   {
-    // Add menu at current x,y mouse location
+    // Set selected and add menu at current x,y mouse location
+    _selectedItem = findItem(x, y);
+    scrollToSelected();
     myMenu->show(x + getAbsX(), y + getAbsY());
   }
   else

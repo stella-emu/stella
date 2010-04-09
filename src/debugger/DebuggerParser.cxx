@@ -1166,6 +1166,37 @@ void DebuggerParser::executeRunTo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "runtopc"
+void DebuggerParser::executeRunToPc()
+{
+  ostringstream buf;
+  const CartDebug& cartdbg = debugger->cartDebug();
+  const CartDebug::DisassemblyList& list = cartdbg.disassemblyList();
+
+  uInt32 count = 0;
+  bool done = false;
+  do {
+    debugger->step();
+
+    // Update romlist to point to current PC
+    int pcline = cartdbg.addressToLine(debugger->cpuDebug().pc());
+    done = (pcline >= 0) && (list[pcline].address == args[0]);
+    ++count;
+  } while(!done && count < list.size());
+
+  if(done)
+    buf << "set PC to " << hex << args[0] << " in "
+        << debugger->valueToString(count, kBASE_10)
+        << " disassembled instructions";
+  else
+    buf << "PC " << hex << args[0] << " not reached or found in "
+        << debugger->valueToString(count, kBASE_10)
+        << " disassembled instructions";
+
+  commandResult = buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "s"
 void DebuggerParser::executeS()
 {
@@ -1669,6 +1700,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_LABEL, kARG_END_ARGS },
     &DebuggerParser::executeRunTo
+  },
+
+  {
+    "runtopc",
+    "Run until PC is set to this value",
+    true,
+    true,
+    { kARG_WORD, kARG_END_ARGS },
+    &DebuggerParser::executeRunToPc
   },
 
   {

@@ -116,7 +116,6 @@ Settings::Settings(OSystem* osystem)
 
   // Misc options
   setInternal("autoslot", "false");
-  setInternal("md5instate", "true");
   setInternal("showinfo", "false");
   setInternal("tiadriven", "false");
   setInternal("avoxport", "");
@@ -367,7 +366,6 @@ void Settings::usage()
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
-    << "  -md5instate   <1|0>          ROM MD5 information is saved in a state file, tying the state file to the ROM\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"

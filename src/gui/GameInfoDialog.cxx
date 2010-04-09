@@ -138,6 +138,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("2IN1 Multicart (4-32K)",     "2IN1" );
   items.push_back("4IN1 Multicart (8-32K)",     "4IN1" );
   items.push_back("8IN1 Multicart (16-64K)",    "8IN1" );
+  items.push_back("16IN1 Multicart (32-64K)",   "16IN1");
   items.push_back("32IN1 Multicart (64-128K)",  "32IN1");
   items.push_back("2K (64-2048 bytes Atari)",   "2K"   );
   items.push_back("3E (32K Tigervision)",       "3E"   );

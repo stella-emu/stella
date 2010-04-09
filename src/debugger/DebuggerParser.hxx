@@ -79,8 +79,8 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 55,
-      kMAX_ARG_TYPES = 10 // TODO: put in separate header file Command.hxx
+      kNumCommands   = 56,
+      kMAX_ARG_TYPES = 10
     };
 
     // Constants for argument processing
@@ -166,6 +166,7 @@ class DebuggerParser
     void executeRom();
     void executeRun();
     void executeRunTo();
+    void executeRunToPc();
     void executeS();
     void executeSave();
     void executeSaverom();

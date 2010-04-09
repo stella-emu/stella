@@ -57,12 +57,14 @@ class Cartridge : public Device
       @param size     The size of the ROM image 
       @param md5      The md5sum for the given ROM image (can be updated)
       @param name     The name of the ROM (can be updated)
-      @param type     The bankswitch type of the ROM image
+      @param dtype    The detected bankswitch type of the ROM image
+      @param id       Any extra info about the ROM (currently which part
+                      of a multiload game is being accessed
       @param settings The settings associated with the system
       @return   Pointer to the new cartridge object allocated on the heap
     */
     static Cartridge* create(const uInt8* image, uInt32 size, string& md5,
-                             string& name, string type, Settings& settings);
+                             string& dtype, string& id, Settings& settings);
 
     /**
       Create a new cartridge

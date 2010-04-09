@@ -205,24 +205,6 @@ void System::clearDirtyPages()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::System(const System& s)
-  : myAddressMask(s.myAddressMask),
-    myPageShift(s.myPageShift),
-    myPageMask(s.myPageMask),
-    myNumberOfPages(s.myNumberOfPages)
-{
-  assert(false);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System& System::operator = (const System&)
-{
-  assert(false);
-
-  return *this;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 System::peek(uInt16 addr)
 {
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
@@ -287,10 +269,9 @@ void System::unlockDataBus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::save(Serializer& out) const
 {
-  const string& device = name();
   try
   {
-    out.putString(device);
+    out.putString(name());
     out.putInt(myCycles);
 
     if(!myM6502->save(out))
@@ -313,10 +294,9 @@ bool System::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool System::load(Serializer& in)
 {
-  const string& device = name();
   try
   {
-    if(in.getString() != device)
+    if(in.getString() != name())
       return false;
 
     myCycles = (uInt32) in.getInt();
@@ -337,4 +317,21 @@ bool System::load(Serializer& in)
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+System::System(const System& s)
+  : myAddressMask(s.myAddressMask),
+    myPageShift(s.myPageShift),
+    myPageMask(s.myPageMask),
+    myNumberOfPages(s.myNumberOfPages)
+{
+  assert(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+System& System::operator = (const System&)
+{
+  assert(false);
+  return *this;
 }

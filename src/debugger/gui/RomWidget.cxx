@@ -170,6 +170,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       else if(rmb == "setpc")
         setPC(myRomList->getSelected());
+      else if(rmb == "runtopc")
+        runtoPC(myRomList->getSelected());
 
       break;
     }
@@ -217,6 +219,21 @@ void RomWidget::setPC(int disasm_line)
   {
     ostringstream command;
     command << "pc #" << list[disasm_line].address;
+    instance().debugger().run(command.str());
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::runtoPC(int disasm_line)
+{
+  const CartDebug::DisassemblyList& list =
+      instance().debugger().cartDebug().disassemblyList();
+  if(disasm_line >= (int)list.size())  return;
+
+  if(list[disasm_line].address != 0)
+  {
+    ostringstream command;
+    command << "runtopc #" << list[disasm_line].address;
     instance().debugger().run(command.str());
   }
 }

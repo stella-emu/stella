@@ -486,7 +486,8 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   }
 
   // Create an instance of the 2600 game console
-  myConsole = openConsole(myRomFile, myRomMD5);
+  string type, id;
+  myConsole = openConsole(myRomFile, myRomMD5, type, id);
   if(myConsole)
   {
   #ifdef CHEATCODE_SUPPORT
@@ -513,7 +514,12 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     if(!audiofirst)  myConsole->initializeAudio();
 
     if(showmessage)
-      myFrameBuffer->showMessage("New console created");
+    {
+      if(id == "")
+        myFrameBuffer->showMessage("New console created");
+      else
+        myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
+    }
     if(mySettings->getBool("showinfo"))
       cout << "Game console created:" << endl
            << "  ROM file: " << myRomFile << endl << endl
@@ -588,8 +594,8 @@ bool OSystem::createLauncher()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string OSystem::getROMInfo(const string& romfile)
 {
-  string md5, result = "";
-  Console* console = openConsole(romfile, md5);
+  string md5, type, id, result = "";
+  Console* console = openConsole(romfile, md5, type, id);
   if(console)
   {
     result = getROMInfo(console);
@@ -616,7 +622,8 @@ string OSystem::MD5FromFile(const string& filename)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console* OSystem::openConsole(const string& romfile, string& md5)
+Console* OSystem::openConsole(const string& romfile, string& md5,
+                              string& type, string& id)
 {
 #define CMDLINE_PROPS_UPDATE(cl_name, prop_name) \
   s = mySettings->getString(cl_name);            \
@@ -638,9 +645,10 @@ Console* OSystem::openConsole(const string& romfile, string& md5)
     CMDLINE_PROPS_UPDATE("type", Cartridge_Type);
 
     // Now create the cartridge
-    string id, cartmd5 = md5, type = props.get(Cartridge_Type);
+    string cartmd5 = md5;
+    type = props.get(Cartridge_Type);
     Cartridge* cart =
-      Cartridge::create(image, size, cartmd5, id, type, *mySettings);
+      Cartridge::create(image, size, cartmd5, type, id, *mySettings);
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed

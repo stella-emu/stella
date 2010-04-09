@@ -48,6 +48,7 @@ class RomWidget : public Widget, public CommandSender
   private:
     void setBreak(int disasm_line, bool state);
     void setPC(int disasm_line);
+    void runtoPC(int disasm_line);
     void patchROM(int disasm_line, const string& bytes);
     void saveROM(const string& rom);
 

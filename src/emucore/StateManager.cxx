@@ -176,15 +176,13 @@ void StateManager::loadState(int slot)
   {
     if(slot < 0) slot = myCurrentSlot;
 
-    const string& name = myOSystem->console().properties().get(Cartridge_Name);
-    const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
-
     ostringstream buf;
     buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
-        << name << ".st" << slot;
+        << myOSystem->console().properties().get(Cartridge_Name)
+        << ".st" << slot;
 
-    // Make sure the file can be opened for reading
-    Serializer in(buf.str());
+    // Make sure the file can be opened in read-only mode
+    Serializer in(buf.str(), true);
     if(!in.isValid())
     {
       buf.str("");
@@ -193,16 +191,14 @@ void StateManager::loadState(int slot)
       return;
     }
 
-    buf.str("");
-
     // First test if we have a valid header
     // If so, do a complete state load using the Console
+    buf.str("");
     if(in.getString() != STATE_HEADER)
       buf << "Incompatible state " << slot << " file";
     else
     {
-      const string& s = in.getString();
-      if(myOSystem->settings().getBool("md5instate") ? s == md5 : true)
+      if(in.getString() == myOSystem->console().cartridge().name())
       {
         if(myOSystem->console().load(in))
           buf << "State " << slot << " loaded";
@@ -224,12 +220,10 @@ void StateManager::saveState(int slot)
   {
     if(slot < 0) slot = myCurrentSlot;
 
-    const string& name = myOSystem->console().properties().get(Cartridge_Name);
-    const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
-
     ostringstream buf;
     buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
-        << name << ".st" << slot;
+        << myOSystem->console().properties().get(Cartridge_Name)
+        << ".st" << slot;
 
     // Make sure the file can be opened for writing
     Serializer out(buf.str());
@@ -243,8 +237,8 @@ void StateManager::saveState(int slot)
     // we'll know right away, without having to parse the rest of the file
     out.putString(STATE_HEADER);
 
-    // Prepend the ROM md5 so this state file only works with that ROM
-    out.putString(md5);
+    // Sanity check; prepend the cart type/name
+    out.putString(myOSystem->console().cartridge().name());
 
     // Do a complete state save using the Console
     buf.str("");
@@ -283,12 +277,11 @@ bool StateManager::loadState(Serializer& in)
     // Make sure the file can be opened for reading
     if(in.isValid())
     {
-      // First test if we have a valid header
+      // First test if we have a valid header and cart type
       // If so, do a complete state load using the Console
-      const string& md5  = myOSystem->console().properties().get(Cartridge_MD5);
-      if(in.getString() == STATE_HEADER && in.getString() == md5 &&
-         myOSystem->console().load(in))
-        return true;
+      return in.getString() == STATE_HEADER &&
+             in.getString() == myOSystem->console().cartridge().name() &&
+             myOSystem->console().load(in);
     }
   }
   return false;
@@ -308,8 +301,8 @@ bool StateManager::saveState(Serializer& out)
         // we'll know right away, without having to parse the rest of the file
         out.putString(STATE_HEADER);
 
-        // Prepend the ROM md5 so this state file only works with that ROM
-        out.putString(myOSystem->console().properties().get(Cartridge_MD5));
+        // Sanity check; prepend the cart type/name
+        out.putString(myOSystem->console().cartridge().name());
 
         // Do a complete state save using the Console
         if(myOSystem->console().save(out))

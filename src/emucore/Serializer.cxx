@@ -19,31 +19,50 @@
 #include <fstream>
 #include <sstream>
 
+#include "FSNode.hxx"
 #include "Serializer.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Serializer::Serializer(const string& filename)
+Serializer::Serializer(const string& filename, bool readonly)
   : myStream(NULL),
     myUseFilestream(true)
 {
-  // When using fstreams, we need to manually create the file first
-  // if we want to use it in read/write mode, since it won't be created
-  // if it doesn't already exist
-  // However, if it *does* exist, we don't want to overwrite it
-  // So we open in write and append mode - the write creates the file
-  // when necessary, and the append doesn't delete any data if it
-  // already exists
-  fstream temp(filename.c_str(), ios::out | ios::app);
-  temp.close();
-
-  fstream* str = new fstream(filename.c_str(), ios::in | ios::out | ios::binary);
-  if(str && str->is_open())
+  if(readonly)
   {
-    myStream = str;
-    reset();
+    FilesystemNode node(filename);
+    if(!node.isDirectory() && node.isReadable())
+    {
+      fstream* str = new fstream(filename.c_str(), ios::in | ios::binary);
+      if(str && str->is_open())
+      {
+        myStream = str;
+        reset();
+      }
+      else
+        delete str;
+    }
   }
   else
-    delete str;
+  {
+    // When using fstreams, we need to manually create the file first
+    // if we want to use it in read/write mode, since it won't be created
+    // if it doesn't already exist
+    // However, if it *does* exist, we don't want to overwrite it
+    // So we open in write and append mode - the write creates the file
+    // when necessary, and the append doesn't delete any data if it
+    // already exists
+    fstream temp(filename.c_str(), ios::out | ios::app);
+    temp.close();
+
+    fstream* str = new fstream(filename.c_str(), ios::in | ios::out | ios::binary);
+    if(str && str->is_open())
+    {
+      myStream = str;
+      reset();
+    }
+    else
+      delete str;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -148,9 +167,7 @@ bool Serializer::getBool(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putByte(char value)
 {
-  char buf[1];
-  buf[0] = value;
-  myStream->write(buf, 1);
+  myStream->write(&value, 1);
   if(myStream->bad())
     throw "Serializer::putByte() file write failed";
 }

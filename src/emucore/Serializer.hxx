@@ -46,10 +46,12 @@ class Serializer
       If a filename is provided, the stream will be to the given
       filename.  Otherwise, the stream will be in memory.
 
+      If a file is opened readonly, we can never write to it.
+
       The isValid() method must immediately be called to verify the stream
       was correctly initialized.
     */
-    Serializer(const string& filename);
+    Serializer(const string& filename, bool readonly = false);
     Serializer(void);
 
     /**

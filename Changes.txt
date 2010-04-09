@@ -21,8 +21,9 @@
   * Integrated Distella disassembler, completely replacing the previous
     disassembler.  The entire infrastructure has not been completely
     ported yet.  As a result, labels defined by the user or from a
-    DASM symbol file aren't actually used in the disassembly.  This will
-    be addressed in a future release.
+    DASM symbol file aren't actually used in the disassembly, and almost
+    all distella config options are disabled.  These will be addressed in
+    a future release.
 
   * Completely reworked the debugger cartridge interface, so that
     the disassembly is dynamic (ie, the debugger tracks when cart address
@@ -37,10 +38,6 @@
     bug in disassembler view when a failure to patch a ROM still showed
     the (incorrect) patched results.
 
-  * Added debugger pseudo-register '_rwport', which traps on a read from
-    the write port.  This differentiates from reads that are normally
-    part of a write cycle (ie, it traps only on inadvertent reads).
-
   * Added ability to disable TIA object collisions, independent of
     enabling/disabling the objects.  Previously, one had to completely
     disable an object to avoid collisions, but now an object can be
@@ -48,18 +45,33 @@
     actions are tied to the same keys as the enable ones, except the
     'Shift' key is also used.
 
-  * Added support for bankswitching scheme DPC+, thanks to Darrell Spice
-    Jr and Fred Quimby.
+  * Added 'DPC+' bankswitching scheme, thanks to Darrell Spice Jr and
+    Fred Quimby.
+
+  * Added '16in1' bankswitching scheme, which works with various
+    ROMs labeled '128-in-1' (the database has been updated for these).
+    Related to this, switching between multicart ROMs for 2in1, 4in1,
+    8in1, 16in1 and 32in1 now shows a UI message indicating which
+    ROM is active.
 
   * Reverted some of the TIA improvements with respect to 'starfield
     effect' as seen in "Cosmic Ark" and "Stay Frosty".  The emulation is
     now more accurate as compared to the majority of consoles in use.
 
+  * Added debugger pseudo-register '_rwport', which traps on a read from
+    the write port.  This differentiates from reads that are normally
+    part of a write cycle (ie, it traps only on inadvertent reads).
+
   * Added 'autocode' commandline argument and associated UI item, used
     to set the "automatic code determination" config option in Distella.
 
-  * Removed the 'loadlst' command and the ability to use a DASM .lst file.
-    With the recent disassembler improvements, this no longer makes sense.
+  * Added 'runtopc' debugger command, used to step until encountering the
+    given program counter.  This is also available in the ROM disassembly
+    UI.
+
+  * Removed the 'loadlst' debugger command and the ability to use a
+    DASM .lst file.  With the recent disassembler improvements, this
+    support is no longer feasible.
 
   * Modified 'disasm' debugger command to accept a second argument
     indicating the number of lines to disassemble.
@@ -76,7 +88,7 @@
       The application is now known as 'Stella' (instead of StellaOSX).
 
       Two versions are available: the first is a 32-bit Universal Binary
-      for OSX 10.4 - 10.6, and the second is a 32/64-bit Intel-only for
+      for OSX 10.4 - 10.6, and the second is 32/64-bit Intel-only for
       OSX 10.5 - 10.6 (64-bit requires 10.6).  The Intel version is
       compiled with the very latest compiler (Clang), resulting in
       better performance.
@@ -126,11 +138,12 @@
     emulation of the behaviour of floating TIA pins is also much more
     accurate.
 
-  * Added 'md5instate' commandline argument, which toggles saving the
-    MD5sum of the ROM with a save state.  When disabled, a state file
-    is no longer tied to the exact instance of the ROM which created
-    it (useful during development when a small change in program code
-    would render a state file useless).
+  * Reworked state files so that they're associated with the cartridge
+    type used, not the MD5sum of the ROM.  This is useful for developers,
+    since the same state file can now be loaded from different ROMs,
+    as long as the cart type stays the same.  This also fixes a bug
+    where loading from a non-existent state file could cause Stella
+    to crash.
 
   * Fixed bug in certain editable text fields, where pressing Return/Enter
     would disable any further input.
