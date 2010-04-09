@@ -75,6 +75,12 @@
 
       The application is now known as 'Stella' (instead of StellaOSX).
 
+      Two versions are available: the first is a 32-bit Universal Binary
+      for OSX 10.4 - 10.6, and the second is a 32/64-bit Intel-only for
+      OSX 10.5 - 10.6 (64-bit requires 10.6).  The Intel version is
+      compiled with the very latest compiler (Clang), resulting in
+      better performance.
+
       The keyboard handling is changed to match other systems in terms of
       where the keys actually are on the keyboard (ie, the OSX Command key
       corresponds to Alt, and the OSX Control key corresponds to Control).
