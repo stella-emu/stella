@@ -46,9 +46,6 @@ class ScrollBarWidget : public Widget, public CommandSender
     virtual void handleMouseEntered(int button);
     virtual void handleMouseLeft(int button);
 
-    // FIXME - this should be private, but then we also have to add accessors
-    // for _numEntries, _entriesPerPage and _currentPos. This again leads to the question:
-    // should these accessors force a redraw?
     void recalc();
 
     static void setWheelLines(int lines) { _WHEEL_LINES = lines; }

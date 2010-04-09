@@ -137,7 +137,7 @@ bool Controller::save(Serializer& out) const
     out.putInt(myAnalogPinValue[Five]);
     out.putInt(myAnalogPinValue[Nine]);
   }
-  catch(...)  // FIXME
+  catch(...)
   {
     cerr << "ERROR: Controller::save() exception\n";
     return false;
@@ -161,7 +161,7 @@ bool Controller::load(Serializer& in)
     myAnalogPinValue[Five] = (Int32) in.getInt();
     myAnalogPinValue[Nine] = (Int32) in.getInt();
   }
-  catch(...)  // FIXME
+  catch(...)
   {
     cerr << "ERROR: Controller::load() exception\n";
     return false;

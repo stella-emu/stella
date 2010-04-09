@@ -114,7 +114,7 @@ bool Switches::save(Serializer& out) const
   {
     out.putByte((char)mySwitches);
   }
-  catch(...)  // FIXME
+  catch(...)
   {
     cerr << "ERROR: Switches::save() exception\n";
     return false;
@@ -129,7 +129,7 @@ bool Switches::load(Serializer& in)
   {
     mySwitches = (uInt8) in.getByte();
   }
-  catch(...)  // FIXME
+  catch(...)
   {
     cerr << "ERROR: Switches::load() exception\n";
     return false;

@@ -85,10 +85,10 @@ void macOSXSendMenuEvent(int event)
 OSystemMACOSX::OSystemMACOSX()
   : OSystem()
 {
-  setBaseDir("~/.stella");
+  setBaseDir("~/Library/Application Support/Stella");
 
   // This will be overridden, as OSX uses plist files for settings
-  setConfigFile("~/.stella/stellarc");
+  setConfigFile("~/Library/Application Support/Stella/stellarc");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

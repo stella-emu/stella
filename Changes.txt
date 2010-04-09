@@ -25,7 +25,7 @@
     be addressed in a future release.
 
   * Completely reworked the debugger cartridge interface, so that
-    the disassembly is dynamic (ie, the debugger tracks when address
+    the disassembly is dynamic (ie, the debugger tracks when cart address
     space has changed, and automatically performs a re-disassembly).
 
   * All carts with extended RAM that differentiate between read and write
@@ -38,7 +38,7 @@
     the (incorrect) patched results.
 
   * Added debugger pseudo-register '_rwport', which traps on a read from
-    the write port.  This differentiates between reads that are normally
+    the write port.  This differentiates from reads that are normally
     part of a write cycle (ie, it traps only on inadvertent reads).
 
   * Added ability to disable TIA object collisions, independent of
@@ -59,23 +59,37 @@
     to set the "automatic code determination" config option in Distella.
 
   * Removed the 'loadlst' command and the ability to use a DASM .lst file.
-    With the recent disassembler improvements, this is no longer needed.
+    With the recent disassembler improvements, this no longer makes sense.
 
-  * Modified debugger 'disasm' command to accept a second argument
+  * Modified 'disasm' debugger command to accept a second argument
     indicating the number of lines to disassemble.
 
   * Added emulation of the "Sega Genesis" controller, with two buttons
     that are directly supported on a real system.
 
-  * The ZLib library is now included in the core code, so Windows users
-    no longer have to track down the ZLIBWAPI archive.
+  * The ZLib library is now included in the core code, so Windows
+    developers no longer have to track down the ZLIBWAPI archive.
 
-  * Many changes to the MacOS X port.  The application is now known as
-    'Stella' (instead of StellaOSX), and the keyboard handling is changed
-    to match other systems in terms of where the keys actually are on the
-    keyboard (ie, the OSX Command key corresponds to Alt, and the OSX
-    Control key corresponds to Control).  As a result, all your settings
-    will have to be entered again.
+  * Many changes to the MacOS X port, bringing it more in line with
+    other systems:
+
+      The application is now known as 'Stella' (instead of StellaOSX).
+
+      The keyboard handling is changed to match other systems in terms of
+      where the keys actually are on the keyboard (ie, the OSX Command key
+      corresponds to Alt, and the OSX Control key corresponds to Control).
+
+      The application menu has been cleaned up and simplified, and it
+      now shows the correct shortcuts for menu items.
+
+      The settings file is now (according to Apple standards)
+      '~/Library/Preferences/net.sourceforge.Stella.plist'.
+
+      The base directory (where all other Stella stuff is located) is now
+      '~/Library/Application Support/Stella'.
+
+      Because of these changes, all your settings will have to be entered
+      again.
 
   * Added 'ctrlcombo' commandline argument, which toggles the use of the
     control key as a modifier key.  This is useful if you want to press
@@ -87,6 +101,7 @@
 
   * Added 'uimessages' commandline argument and associated UI item.
     This toggles showing of UI messages overlaid on the screen.
+    Critical messages are still shown, though.
 
   * Many changes to the FrameBuffer and UI code for 'smaller' systems.
     Stella will now scale correctly to small screens, down to 320x240
