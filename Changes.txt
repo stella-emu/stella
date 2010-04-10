@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.0 to 3.1: (April xx, 2010)
+3.0 to 3.1: (April 16, 2010)
 
   * Fixed a major bug with text drawing in software rendering mode.
     Switching between windowed and fullscreen mode while text was being
@@ -49,9 +49,9 @@
     Fred Quimby.
 
   * Added '16in1' bankswitching scheme, which works with various
-    ROMs labeled '128-in-1' (the database has been updated for these).
-    Related to this, switching between multicart ROMs for 2in1, 4in1,
-    8in1, 16in1 and 32in1 now shows a UI message indicating which
+    ROMs labeled '128-in-1 ...' (the database has been updated for
+    these).  Related to this, switching between multicart ROMs for 2in1,
+    4in1, 8in1, 16in1 and 32in1 now shows a UI message indicating which
     ROM is active.
 
   * Reverted some of the TIA improvements with respect to 'starfield
@@ -68,7 +68,7 @@
 
   * Added 'runtopc' debugger command, used to step until encountering the
     given program counter.  This is also available in the ROM disassembly
-    UI.
+    UI from the right-click context menu.
 
   * Added 'listfunctions' and 'delfunction' debugger commands to
     access/remove user-defined functions.  Related to this, fixed a bug
@@ -81,8 +81,8 @@
     were redundant.
 
   * Removed the 'loadlst' debugger command and the ability to use a
-    DASM .lst file.  With the recent disassembler improvements, this
-    support is no longer feasible.
+    DASM .lst file.  This code was incomplete, and with the recent
+    disassembler improvements this support is no longer feasible.
 
   * Modified 'disasm' debugger command to accept a second argument
     indicating the number of lines to disassemble.

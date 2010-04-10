@@ -28,8 +28,8 @@
 
 #include "StateManager.hxx"
 
-#define STATE_HEADER "03000100state"
-#define MOVIE_HEADER "03000100movie"
+#define STATE_HEADER "03010000state"
+#define MOVIE_HEADER "03010000movie"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StateManager::StateManager(OSystem* osystem)
@@ -186,7 +186,7 @@ void StateManager::loadState(int slot)
     if(!in.isValid())
     {
       buf.str("");
-      buf << "Error loading state " << slot;
+      buf << "Can't open/load from state file " << slot;
       myOSystem->frameBuffer().showMessage(buf.str());
       return;
     }
@@ -229,7 +229,9 @@ void StateManager::saveState(int slot)
     Serializer out(buf.str());
     if(!out.isValid())
     {
-      myOSystem->frameBuffer().showMessage("Error saving state file");
+      buf.str("");
+      buf << "Can't open/save to state file " << slot;
+      myOSystem->frameBuffer().showMessage(buf.str());
       return;
     }
 
