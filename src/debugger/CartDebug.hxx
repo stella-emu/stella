@@ -102,12 +102,12 @@ class CartDebug : public DebuggerSystem
       Disassemble from the given address using the Distella disassembler
       Address-to-label mappings (and vice-versa) are also determined here
 
-      @param autocode  Whether to determine code vs data sections
-      @param force     Force a re-disassembly, even if the state hasn't changed
+      @param resolvedata Whether to determine code vs data sections
+      @param force       Force a re-disassembly, even if the state hasn't changed
 
       @return  True if disassembly changed from previous call, else false
     */
-    bool disassemble(const string& autocode, bool force = false);
+    bool disassemble(const string& resolvedata, bool force = false);
 
     /**
       Get the results from the most recent call to disassemble()
@@ -202,7 +202,7 @@ class CartDebug : public DebuggerSystem
 
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
-    bool fillDisassemblyList(uInt16 start, bool autocode, uInt16 search);
+    bool fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 search);
 
     // Extract labels and values from the given character stream
     string extractLabel(char *c) const;

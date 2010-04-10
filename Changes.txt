@@ -62,8 +62,9 @@
     the write port.  This differentiates from reads that are normally
     part of a write cycle (ie, it traps only on inadvertent reads).
 
-  * Added 'autocode' commandline argument and associated UI item, used
-    to set the "automatic code determination" config option in Distella.
+  * Added 'resolvedata' commandline argument and associated UI item, used
+    to set the "resolve data sections" config option in Distella
+    (vs. treating all data as code).
 
   * Added 'runtopc' debugger command, used to step until encountering the
     given program counter.  This is also available in the ROM disassembly

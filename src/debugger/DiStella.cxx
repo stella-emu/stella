@@ -22,7 +22,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
-                   bool autocode)
+                   bool resolvedata)
   : myList(list)
 {
   while(!myAddressQueue.empty())
@@ -55,7 +55,7 @@ DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
 
   myAddressQueue.push(start);
 
-  if(autocode)
+  if(resolvedata)
   {
     while(!myAddressQueue.empty())
     {

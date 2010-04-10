@@ -45,11 +45,11 @@ class DiStella
     /**
       Disassemble the current state of the System from the given start address.
 
-      @param list     The results of the disassembly are placed here
-      @param start    The address at which to start disassembly
-      @param autocode If enabled, try to determine code vs. data sections
+      @param list        The results of the disassembly are placed here
+      @param start       The address at which to start disassembly
+      @param resolvedata If enabled, try to determine code vs. data sections
     */
-    DiStella(CartDebug::DisassemblyList& list, uInt16 start, bool autocode = true);
+    DiStella(CartDebug::DisassemblyList& list, uInt16 start, bool resolvedata = true);
 
     ~DiStella();
 

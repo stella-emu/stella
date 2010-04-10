@@ -203,7 +203,7 @@ string CartDebug::toString()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::disassemble(const string& autocode, bool force)
+bool CartDebug::disassemble(const string& resolvedata, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
@@ -227,14 +227,14 @@ bool CartDebug::disassemble(const string& autocode, bool force)
     if(!(start & 0x1000))
       return false;
 
-    // Check whether to use the 'autocode' functionality from Distella
-    if(autocode == "0")       // 'never'
+    // Check whether to use the 'resolvedata' functionality from Distella
+    if(resolvedata == "never")
       fillDisassemblyList(start, false, PC);
-    else if(autocode == "1")  // 'always'
+    else if(resolvedata == "always")
       fillDisassemblyList(start, true, PC);
-    else                      // 'automatic'
+    else  // 'auto'
     {
-      // First try with autocode on, then turn off if PC isn't found
+      // First try with resolvedata on, then turn off if PC isn't found
       if(!fillDisassemblyList(start, true, PC))
         fillDisassemblyList(start, false, PC);
     }
@@ -244,12 +244,12 @@ bool CartDebug::disassemble(const string& autocode, bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::fillDisassemblyList(uInt16 start, bool autocode, uInt16 search)
+bool CartDebug::fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 search)
 {
   bool found = false;
 
   myDisassembly.clear();
-  DiStella distella(myDisassembly, start, autocode);
+  DiStella distella(myDisassembly, start, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access

@@ -126,7 +126,7 @@ Settings::Settings(OSystem* osystem)
   setExternal("maxres", "0x0");
 
   // Debugger options
-  setInternal("autocode", "2");
+  setInternal("resolvedata", "auto");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -399,7 +399,8 @@ void Settings::usage()
     << " The following options are meant for developers\n"
     << " Arguments are more fully explained in the manual\n"
     << endl
-    << "   -autocode     <0|1|2>       Set automatic code vs. data determination in the disassembler\n"
+    << "   -resolvedata  <never|       Set automatic code vs. data determination in the disassembler\n"
+    << "                  always|auto>\n"
     << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"

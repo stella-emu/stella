@@ -11,7 +11,7 @@ adding new features requested by homebrew developers.  However, even in its
 current form it's still quite powerful, and is able to boast at least one
 feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.</p>
 
-<h2>Here's a list of what the debugger can do so far:</h2>
+<h2>Here's a (non-comprehensive) list of what the debugger can do so far:</h2>
 <ul>
 	<li>Display registers and memory.</li>
 
@@ -401,8 +401,8 @@ zero.  You can remove a cond-break with "delbreakif number", where
 the number comes from "listbreaks".</p>
 
 <p>Any time the debugger is entered due to a trap, breakpoint, or
-conditional break, the reason will be displayed in the status area above
-below the TIA Zoom display.</p>
+conditional break, the reason will be displayed in the status area
+near the TIA Zoom display (area <b>H</b>).</p>
 
 <h4>Functions</h4>
 
@@ -429,17 +429,44 @@ presses both Select and Reset:</p>
 	breakif { gameReset &amp;&amp; gameSelect }
 </pre>
 
+<p>User-defined functions appear in "listfunctions", which shows the label
+and expression for each function.  Functions can be removed with 
+"delfunction label", where the labels come from "listfunctions".</p>
+
 <p>If you've defined a lot of complex functions, you probably will
 want to re-use them in future runs of the debugger. You can save all
 your functions, breakpoints, conditional breaks, and watches with the
 "save" command. If you name your saved file the same as the ROM filename
 and place it in the ROM directory, it'll be auto-loaded next time you
 load the same ROM in Stella. The save file is just a plain text file
-called "filename.stella", so you can edit it and add new functions, etc.
-You can also create a file called "autoexec.stella" which will be loaded
-when the debugger starts, no matter what ROM you have loaded. This file
-should live in the "base directory" (which is the current directory on
-Windows or $HOME/.stella on UNIX), <b>not</b> the ROM directory.</p>
+called "rom_filename.stella", so you can edit it and add new functions, etc.</p>
+<p>You can also create a file called "autoexec.stella" which will be loaded
+when the debugger starts, no matter what ROM you have loaded. The location
+of this file will depend on the version of Stella, as follows:</p>
+
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>~/.stella/autoexec.stella</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td><i>~/Library/Application Support/Stella/autoexec.stella</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>%APPDATA%\Stella\autoexec.stella</i>&nbsp;&nbsp;&nbsp;
+				<b>OR</b><br>
+				<i>_BASEDIR_\autoexec.stella</i>
+					(if a file named 'basedir.txt' exists in the application
+					directory containing the full pathname for _BASEDIR_)
+			</td>
+		</tr>
+	</table>
+<p>Note that these '.stella' script files are only accessed if you enter
+the debugger at least one during a program run.  This means you can create
+these files, and not worry about slowing down emulation unless you're
+actively using the debugger.</p>
 
 <h4>Built-in Functions</h4>
 
@@ -627,9 +654,6 @@ listfunctions - List user-defined functions
             y - Set Y Register to value xx
             z - Zero Flag: set (0 or 1), or toggle (no arg)
 </pre>
-
-<!-- <p>Commands marked with a * are unimplemented.</p> -->
-<p>Commands marked with a + are partially implemented.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
@@ -901,38 +925,64 @@ decreased by 1:</p>
 <!-- /////////////////////////////////////////////////////////////////////////  -->
 <br>
 <h2><u>(M)</u> ROM Listing</h2>
-<p>The ROM Widget is a disassembly of the current bank of ROM. If a symbol
-file is loaded, the disassembly will have labels. Even without a symbol
-file, the standard TIA/RIOT labels will still be present.</p>
+<p>The ROM Widget is a disassembly of the current bank of ROM. <strike>If a symbol
+file is loaded, the disassembly will have labels.</strike>.  For now, labels
+from a symbol file are not shown in the disasembly; this feature will return
+in a future release. Even without a symbol file, the standard TIA/RIOT labels
+will still be present.</p>
 <p><img src="graphics/debugger_rom.png"></p>
+
+<p>The top area contains two items:
+<ul>
+<li><b>Bank (current/total)</b>: Shows the current bank in use, and the
+total number of banks.  Note that bank numbers start at 0 (as in most
+programming languages), so '0 / 1' actually means 'the first
+bank of 1 possible bank(s)'.  Due to the way the disassembler works,
+you cannot change banks; the display is for reference only.
+Note that certain ROMs are quite complex, and may only show has having one
+'virtual' bank when their address space can be swapped in and out in many
+different ways.</li>
+<li><b>Resolve data</b>: Informs Distella about the 'resolvedata'
+commandline argument, which says how code and data sections are disassembled.
+If set to 'Never', the entire address space is treated as code.  If set to
+'Always', an attempt is always made to resolve data sections.
+The 'Automatic' setting is a combination of the previous two.  First, an
+attempt is made to resolve data sections.  If this results in the current program
+counter not being present in the disassembly, then a second disassembly is
+done, without resolving data sections.</li>
+</ul>
 
 <p>Each line of disassembly has four fields:</p>
 <ul>
-<li>Breakpoint - This is the area at the far left, to the left of the
-address. Normally there will be nothing there: this indicates that there's
+<li><b>Breakpoint</b>: This is the area at the far left, to the left of the
+labels. Normally there will be nothing there: this indicates that there's
 no breakpoint set at that address. You can set and clear breakpoints by
 clicking in this area. When a breakpoint is set, there will be a
 red circle in this area. These are the same breakpoints as used
 by the "break" command, <b>not</b> the conditional "breakif" breakpoints
 (which makes sense: cond-breaks can break on any condition, the Program
 Counter isn't necessarily involved).</li>
-<li>Address (which may be a label or a hex address)</li>
-<li>Hex bytes. These are the raw machine code bytes for the instruction.</li>
-<li>Instruction. This is a standard 6502 mnemonic (possibly with operand).
+<li><b>Labels</b>: For now, only those generated by Distella, not ones from a
+DASM symbol file or any labels created by the user.</li>
+<li><b>Instruction</b>: This is a standard 6502 mnemonic (possibly with operand).
 This field also contains the cycle count for the instruction (separated by a
 semicolon).</li>
+<li><b>Hex bytes</b>: These are the raw machine code bytes for the instruction.
+Note that only instructions that have been fully disassembled will have
+bytes in this field.</li>
 </ul>
 
 <p>The 6502 mnemonic will be UPPERCASE for all standard instructions,
-or lowercase for "illegal" 6502 instructions (like "dcp"). Since there's
-no way to tell code from data, you'll likely see a lot of illegal opcodes
-if you scroll to a data table in ROM.</p>
+or lowercase for "illegal" 6502 instructions (like "dcp"). If resolving
+of data sections has been disabled for any reason, you'll likely see a lot
+of illegal opcodes if you scroll to a data table in ROM.</p>
 
+<!-- TODO - is this true any longer?
 <p>Beware: the cycle counts don't take into account any penalty cycles
 for crossing page boundaries. All branches are shown as 2 cycles, which
 is how long they take if the branch isn't taken. Branches that are
 taken will actually take 3 cycles (plus a penalty cycle if they cross
-page boundaries).</p>
+page boundaries).</p> -->
 
 <p>You can scroll through the disassembly with the mouse or keyboard. To
 center the display on the current PC, press the Space bar.</p>
@@ -944,40 +994,44 @@ scroll to the current PC location.</p>
 <p>Even though ROM is supposed to be Read Only Memory, this is an
 emulator: you can change ROM all you want within the debugger.  The hex
 bytes in the ROM Widget are editable. Double-click on them to edit
-them. When you're done, press Enter to accept the changes or Escape to
-cancel them.  Any time you edit ROM, there may be a short pause while
-the ROM Widget disassembles the current bank again.</p>
-
-<p>Speaking of banks: Above the disassembly there's an indicator for the
-current bank and total number of banks. If there's more than one bank,
-you can manually switch banks by double-clicking the bank number and enter
-a new number (or using the shortcuts keys for inputboxes as described
-in section (J). This won't work if the ROM only has one bank, of course.</p>
+them. When you're done, press Enter to accept the changes (in which case
+the cart will be re-disasembled) or Escape to cancel them.
+Note that only instructions that have been fully disassembled
+can be edited.  In particular, blank lines or lines with '.byte' directives
+cannot be edited.  If you wish to edit the latter, then the 'Determine code'
+item should be set to 'Never' first.  Also note that certain ROMs can have
+sections of address space swapped in and out dynamically.  As such, changing
+the contents of a certain address will change the area pointed to <b>at
+that time</b>.  In particular, modifying an address that points to internal
+RAM will change the RAM, not the underlying ROM.  A future release may 
+graphically differentiate between RAM and ROM areas.</p>
 
 <p>The ROM listing also contains a context menu, accessible by right-clicking
 anywhere in the listing:</p>
 <p><img src="graphics/debugger_romcmenu.png"></p>
-<p>Currently, there are two options:</p>
+<p>Currently, there are three options:</p>
 <ul>
-	<li><b>Save ROM</b>: A textbox will appear for you to enter filename,
+<li><b>Save ROM</b>: A textbox will appear for you to enter filename,
 and then the ROM will be saved. Note that the filename is considered
 relative to the <b>current</b> directory, not the ROM or base directory.
 You can enter a full path, though, in which case it doesn't matter.</li>
-	<li><b>Set PC</b>: Set the Program Counter to the address of the
+
+<li><b>Set PC</b>: Set the Program Counter to the address of the
 disassembly line where the mouse was clicked.</li>
+
+<li><b>RunTo PC</b>: Single-step through code until the Program Counter
+matches the address of the disassembly line where the mouse was clicked.</li>
 </ul>
 
 <h3>Limitations</h3>
 
 <ul>
 
-<li>The ROM Widget only works on ROM. If your game runs code from RAM,
-the ROM Widget will get "confused" while the PC is pointing to RAM. It
-will highlight instructions in ROM instead. If the PC points to (for
-example) $80, the ROM Widget will display the instruction at $F080
-instead. No permanent harm is done: once your RAM routine returns, the
-ROM Widget will work normally again. You can still disassemble RAM with
-the "disasm" command from the Prompt.</li>
+<li>The ROM Widget only works on ROM. If your game runs code from zero-page
+RAM, the code from RAM will not be shown, and the ROM Widget will not highlight
+any instructions.  Once your RAM routine returns, the ROM Widget will work
+normally again. You can still disassemble RAM with the "disasm" command from
+the Prompt.</li>
 
 <li>The standard VCS memory map has the cartridge port at locations
 $F000-$FFFF.  However, not all the address lines exist on a 6507, so
@@ -986,15 +1040,11 @@ space ($1000, $3000, up to $D000).  Some programmers find it easier
 to think of the different banks of ROM as being at different addresses
 (such as: Bank 0 at $D000 and bank 1 at $F000). When such a ROM runs,
 the Program Counter can point to one of the mirrors instead of the main
-area at $F000. This is perfectly OK, and everything works just fine,
-except that the ROM Widget will show the "real" address instead of the
-mirrored one. For instance, if the PC contains $D010, the ROM Widget
-will highlight the instruction at $F010. This is the same instruction,
-since $D010 reads the same ROM location as $F010. However, the breakpoint
-indicator may be wrong: breakpoints are set on actual addresses. If
-there were a breakpoint set at $F010, it wouldn't be triggered by the
-PC hitting $D010 (but the ROM Widget will show a breakpoint indicator
-if the PC hits $D010, even though it shouldn't)</li>
+area at $F000. This is perfectly OK, and everything works just fine.
+However, breakpoints are set on actual addresses. If there were a breakpoint
+set at $F010, and the bank later switched to mirror $D000, the breakpoint
+will not be shown, and will not break on $D010, even though it's technically
+the same address.</li>
 
 </ul>
 
@@ -1014,7 +1064,7 @@ advance.  The rewind buffer is currently 100 levels deep.</p>
 
 <p>When you use these buttons, the prompt doesn't change. This means the
 status lines with the registers and disassembly will be "stale". You
-can update them just by pressing Enter in the prompt.</p>
+can update them just by re-running the relevant commands in the prompt.</p>
 
 <p>You can also use the Step, Trace, Scan+1, Frame+1 and Rewind buttons from
 anywhere in the GUI via the keyboard, with Alt-S, Alt-T, Alt-L, Alt-F and Alt-R.</p>
@@ -1146,11 +1196,7 @@ but it helps to know at least a little about 6502 programming.</p>
 
 <p>Now, try the same techniques on some other ROM image (try Pac-Man). Some
 games store (lives+1) or (lives-1) instead of the actual number,
-so try searching for those if you can't seem to make it work. Also,
-some cartridge types include their own RAM. The debugger doesn't (yet)
-know how to access on-cartridge RAM, so you'll have to use the "bank" and
-"ram" commands to manually search the address space for the value you're
-looking for (future versions of the debugger will be smarter about this).</p>
+so try searching for those if you can't seem to make it work.</p>
 
 <p>If you successfully patch a ROM in the debugger, but the saved version
 won't work, or looks funny, you might need to add an entry to the

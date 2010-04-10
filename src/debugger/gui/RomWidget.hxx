@@ -54,14 +54,14 @@ class RomWidget : public Widget, public CommandSender
 
   private:
     enum {
-      kAutocodeChanged = 'ACch',
+      kResolveDataChanged = 'ACrd',
       kRomNameEntered  = 'RWrn'
     };
 
     RomListWidget*   myRomList;
     EditTextWidget*  myBank;
     EditTextWidget*  myBankCount;
-    PopUpWidget*     myAutocode;
+    PopUpWidget*     myResolveData;
     InputTextDialog* mySaveRom;
 
     bool myListIsDirty;

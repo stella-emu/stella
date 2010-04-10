@@ -67,19 +67,19 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
                        font.getLineHeight(), "");
   myBankCount->setEditable(false);
 
-  // 'Autocode' setting for Distella
+  // 'resolvedata' setting for Distella
   xpos += myBankCount->getWidth() + 20;
   StringMap items;
-  items.push_back("Never", "0");
-  items.push_back("Always", "1");
-  items.push_back("Automatic", "2");
-  myAutocode =
+  items.push_back("Never", "never");
+  items.push_back("Always", "always");
+  items.push_back("Automatic", "auto");
+  myResolveData =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("Automatic"),
                     font.getLineHeight(), items,
-                    "Determine code: ", font.getStringWidth("Determine code: "),
-                    kAutocodeChanged);
-  myAutocode->setTarget(this);
-  addFocusWidget(myAutocode);
+                    "Resolve data: ", font.getStringWidth("Resolve data: "),
+                    kResolveDataChanged);
+  myResolveData->setTarget(this);
+  addFocusWidget(myResolveData);
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
@@ -102,7 +102,7 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   mySaveRom->setTarget(this);
 
   // By default, we try to automatically determine code vs. data sections
-  myAutocode->setSelected(instance().settings().getString("autocode"), "2");
+  myResolveData->setSelected(instance().settings().getString("resolvedata"), "auto");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -120,7 +120,7 @@ void RomWidget::loadConfig()
   myCurrentBank = cart.getBank();
 
   // Fill romlist the current bank of source or disassembly
-  myListIsDirty |= cart.disassemble(myAutocode->getSelectedTag(), myListIsDirty);
+  myListIsDirty |= cart.disassemble(myResolveData->getSelectedTag(), myListIsDirty);
   if(myListIsDirty)
   {
     myRomList->setList(cart.disassemblyList(), dbg.breakpoints());
@@ -176,8 +176,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case kAutocodeChanged:
-      instance().settings().setString("autocode", myAutocode->getSelectedTag());
+    case kResolveDataChanged:
+      instance().settings().setString("resolvedata", myResolveData->getSelectedTag());
       invalidate();
       loadConfig();
       break;
