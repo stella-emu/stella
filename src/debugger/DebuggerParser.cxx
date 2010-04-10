@@ -8,7 +8,8 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2010 by Bradford W. Mott and the Stella Team
+// Copyright (c) 1995-2010 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
@@ -880,7 +881,6 @@ void DebuggerParser::executeHelp()
     if(len > clen)  clen = len;
   }
 
-  // TODO - add wraparound for text longer than the output area bounds
   for(int i = 0; i < kNumCommands; ++i)
     commandResult << setw(clen) << right << commands[i].cmdString
                   << " - " << commands[i].description << endl;
