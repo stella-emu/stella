@@ -46,6 +46,9 @@ class PromptWidget : public Widget, public CommandSender
     void printPrompt();
     bool saveBuffer(string& filename);
 
+    // Clear screen and erase all history
+    void clearScreen();
+
   protected:
     inline int &buffer(int idx) { return _buffer[idx % kBufferSize]; }
 

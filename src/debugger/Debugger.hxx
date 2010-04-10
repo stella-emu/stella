@@ -120,14 +120,14 @@ class Debugger : public DialogContainer
     */
     void quit();
 
-    void addFunction(const string& name, const string& def,
+    bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);
-    void delFunction(const string& name);
-    Expression* getFunction(const string& name);
+    bool delFunction(const string& name);
+    const Expression* getFunction(const string& name) const;
 
-    string getFunctionDef(const string& name);
+    const string& getFunctionDef(const string& name) const;
     const FunctionDefMap getFunctionDefMap() const;
-    const string builtinHelp() const;
+    string builtinHelp() const;
 
     /**
       Methods used by the command parser for tab-completion

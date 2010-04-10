@@ -19,6 +19,8 @@
 #ifndef DEBUGGER_PARSER_HXX
 #define DEBUGGER_PARSER_HXX
 
+#include <sstream>
+
 class Debugger;
 struct Command;
 
@@ -119,7 +121,7 @@ class DebuggerParser
     Debugger* debugger;
 
     // The results of the currently running command
-    string commandResult;
+    ostringstream commandResult;
 
     // Arguments in 'int' and 'string' format for the currently running command
     IntArray args;
@@ -131,7 +133,6 @@ class DebuggerParser
 
     // List of available command methods
     void executeA();
-    void executeBank();
     void executeBase();
     void executeBreak();
     void executeBreakif();
@@ -140,10 +141,12 @@ class DebuggerParser
     void executeClearbreaks();
     void executeCleartraps();
     void executeClearwatches();
+    void executeCls();
     void executeColortest();
     void executeD();
     void executeDefine();
     void executeDelbreakif();
+    void executeDelfunction();
     void executeDelwatch();
     void executeDisasm();
     void executeDump();
@@ -152,14 +155,14 @@ class DebuggerParser
     void executeFunction();
     void executeHelp();
     void executeListbreaks();
+    void executeListfunctions();
     void executeListtraps();
-    void executeListwatches();
     void executeLoadstate();
     void executeLoadsym();
     void executeN();
     void executePc();
     void executePrint();
-    void executeRam();  // also implements 'poke' command
+    void executeRam();
     void executeReset();
     void executeRewind();
     void executeRiot();

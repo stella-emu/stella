@@ -571,63 +571,61 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
 
 <pre>
             a - Set Accumulator to value xx
-         bank - Show # of banks (with no args), Switch to bank (with 1 arg)
          base - Set default base (hex, dec, or bin)
-        break - Set/clear breakpoint at address (default: current pc)
-      breakif - Set breakpoint on condition
-            c - Carry Flag: set (to 0 or 1), or toggle (no arg)
-        cheat - Use a cheat code (see Stella manual for cheat types)
+        break - Set/clear breakpoint at address xx (default=PC)
+      breakif - Set breakpoint on condition xx
+            c - Carry Flag: set (0 or 1), or toggle (no arg)
+        cheat - Use a cheat code (see manual for cheat types)
   clearbreaks - Clear all breakpoints
    cleartraps - Clear all traps
  clearwatches - Clear all watches
-    colortest - Color Test
-            d - Decimal Flag: set (to 0 or 1), or toggle (no arg)
-       define - Define label
-   delbreakif - Delete conditional break created with breakif
-     delwatch - Delete watch
-       disasm - Disassemble from address (default=pc)
-         dump - Dump 128 bytes of memory at address
-         exec - Execute script file
+          cls - Clear prompt area of text and erase history
+    colortest - Show value xx as TIA color
+            d - Decimal Flag: set (0 or 1), or toggle (no arg)
+       define - Define label xx for address yy
+   delbreakif - Delete conditional breakif xx
+  delfunction - Delete function with label xx
+     delwatch - Delete watch xx
+       disasm - Disassemble address xx [yy lines] (default=PC)
+         dump - Dump 128 bytes of memory at address xx
+         exec - Execute script file xx
         frame - Advance emulation by xx frames (default=1)
-     function - Define expression as a function for later use
+     function - Define function name xx for expression yy
          help - This cruft
-+        list - List source (if loaded with loadlist)
    listbreaks - List breakpoints
+listfunctions - List user-defined functions
     listtraps - List traps
-  listwatches - List watches
-+    loadlist - Load DASM listing file
-    loadstate - Load emulator state (0-9)
-      loadsym - Load symbol file
-            n - Negative Flag: set (to 0 or 1), or toggle (no arg)
-           pc - Set Program Counter to address
-         poke - Set address to value. Can give multiple values (for address+1, etc)
-        print - Evaluate and print expression in hex/dec/binary
-          ram - Show RAM contents (no args), or set address xx to value yy
-        reset - Reset 6507 to init vector (does not reset TIA, RIOT)
-       rewind - Rewind state to last step/trace/scanline/frame advance
+    loadstate - Load emulator state xx (0-9)
+      loadsym - Load symbol file named xx
+            n - Negative Flag: set (0 or 1), or toggle (no arg)
+           pc - Set Program Counter to address xx
+        print - Evaluate/print expression xx in hex/dec/binary
+          ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
+        reset - Reset 6507 to init vector (excluding TIA/RIOT)
+       rewind - Rewind state to last step/trace/scanline/frame
          riot - Show RIOT timer/input status
-          rom - Change ROM contents
+          rom - Set ROM address xx to yy1 [yy2 ...]
           run - Exit debugger, return to emulator
-+       runto - Run until first occurrence of string in disassembly
+        runto - Run until string xx in disassembly
+      runtopc - Run until PC is set to value xx
             s - Set Stack Pointer to value xx
-         save - Save breaks, watches, traps as a .stella script file
-      saverom - Save (possibly patched) ROM to file
-      saveses - Save console session to file
-    savestate - Save emulator state (valid args 0-9)
-      savesym - Save symbols to file
+         save - Save breaks, watches, traps to file xx
+      saverom - Save (possibly patched) ROM to file xx
+      saveses - Save console session to file xx
+    savestate - Save emulator state xx (valid args 0-9)
      scanline - Advance emulation by xx scanlines (default=1)
-         step - Single step CPU (optionally, with count)
-+         tia - Show TIA state (NOT FINISHED YET)
-        trace - Single step CPU (optionally, with count), subroutines count as one instruction
-         trap - Trap read and write accesses to address
-     trapread - Trap read accesses to address
-    trapwrite - Trap write accesses to address
-        undef - Undefine label (if defined)
-            v - Overflow Flag: set (to 0 or 1), or toggle (no arg)
-        watch - Print contents of address before every prompt
+         step - Single step CPU [with count xx]
+          tia - Show TIA state (NOT FINISHED YET)
+        trace - Single step CPU over subroutines [with count xx]
+         trap - Trap read and write accesses to address xx
+     trapread - Trap read accesses to address xx
+    trapwrite - Trap write accesses to address xx
+        undef - Undefine label xx (if defined)
+            v - Overflow Flag: set (0 or 1), or toggle (no arg)
+        watch - Print contents of address xx before every prompt
             x - Set X Register to value xx
             y - Set Y Register to value xx
-            z - Zero Flag: set (to 0 or 1), or toggle (no arg)
+            z - Zero Flag: set (0 or 1), or toggle (no arg)
 </pre>
 
 <!-- <p>Commands marked with a * are unimplemented.</p> -->

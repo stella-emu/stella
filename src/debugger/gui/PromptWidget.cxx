@@ -59,13 +59,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   // Calculate depending values
   _lineWidth = (_w - kScrollBarWidth - 2) / _kConsoleCharWidth;
   _linesPerPage = (_h - 2) / _kConsoleLineHeight;
-
-  memset(_buffer, 0, kBufferSize * sizeof(int));
   _linesInBuffer = kBufferSize / _lineWidth;
-
-  _currentPos = 0;
-  _scrollLine = _linesPerPage - 1;
-  _firstLineInBuffer = 0;
 
   // Add scrollbar
   _scrollBar = new ScrollBarWidget(boss, font, _x + _w, _y, kScrollBarWidth, _h);
@@ -74,14 +68,7 @@ PromptWidget::PromptWidget(GuiObject* boss, const GUI::Font& font,
   // Init colors
   _inverse = false;
 
-  // Init History
-  _historyIndex = 0;
-  _historyLine = 0;
-  _historySize = 0;
-  for (int i = 0; i < kHistorySize; i++)
-    _history[i][0] = '\0';
-
-  _promptStartPos = _promptEndPos = -1;
+  clearScreen();
 
   addFocusWidget(this);
 }
@@ -907,4 +894,24 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
     else
       return prefix;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PromptWidget::clearScreen()
+{
+  // Initialize start position and history
+  _currentPos = 0;
+  _scrollLine = _linesPerPage - 1;
+  _firstLineInBuffer = 0;
+  _promptStartPos = _promptEndPos = -1;
+  memset(_buffer, 0, kBufferSize * sizeof(int));
+
+  _historyIndex = 0;
+  _historyLine = 0;
+  _historySize = 0;
+  for (int i = 0; i < kHistorySize; i++)
+    _history[i][0] = '\0';
+
+  if(!_firstTime)
+    updateScrollBuffer();
 }

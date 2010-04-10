@@ -670,35 +670,38 @@ GUI::Rect Debugger::getTabBounds() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::addFunction(const string& name, const string& definition,
+bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
   functions.insert(make_pair(name, exp));
   if(!builtin)
     functionDefs.insert(make_pair(name, definition));
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::delFunction(const string& name)
+bool Debugger::delFunction(const string& name)
 {
   FunctionMap::iterator iter = functions.find(name);
   if(iter == functions.end())
-    return;
+    return false;
 
   functions.erase(name);
   delete iter->second;
 
   FunctionDefMap::iterator def_iter = functionDefs.find(name);
   if(def_iter == functionDefs.end())
-    return;
+    return false;
 
   functionDefs.erase(name);
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Expression* Debugger::getFunction(const string& name)
+const Expression* Debugger::getFunction(const string& name) const
 {
-  FunctionMap::iterator iter = functions.find(name);
+  FunctionMap::const_iterator iter = functions.find(name);
   if(iter == functions.end())
     return 0;
   else
@@ -706,11 +709,11 @@ Expression* Debugger::getFunction(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::getFunctionDef(const string& name)
+const string& Debugger::getFunctionDef(const string& name) const
 {
-  FunctionDefMap::iterator iter = functionDefs.find(name);
+  FunctionDefMap::const_iterator iter = functionDefs.find(name);
   if(iter == functionDefs.end())
-    return "";
+    return EmptyString;
   else
     return iter->second;
 }
@@ -722,7 +725,7 @@ const FunctionDefMap Debugger::getFunctionDefMap() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string Debugger::builtinHelp() const
+string Debugger::builtinHelp() const
 {
   ostringstream buf;
   uInt16 len, c_maxlen = 0, i_maxlen = 0;
@@ -751,20 +754,10 @@ const string Debugger::builtinHelp() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::getCompletions(const char* in, StringList& list) const
 {
-  // First check built-in functions
-  FunctionMap::const_iterator iter1;
-  for(iter1 = functions.begin(); iter1 != functions.end(); ++iter1)
+  FunctionMap::const_iterator iter;
+  for(iter = functions.begin(); iter != functions.end(); ++iter)
   {
-    const char* l = iter1->first.c_str();
-    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
-      list.push_back(l);
-  }
-
-  // Now consider user-defined functions
-  FunctionDefMap::const_iterator iter2;
-  for(iter2 = functionDefs.begin(); iter2 != functionDefs.end(); ++iter2)
-  {
-    const char* l = iter2->first.c_str();
+    const char* l = iter->first.c_str();
     if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
       list.push_back(l);
   }

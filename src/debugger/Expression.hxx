@@ -40,7 +40,7 @@ class Expression
     Expression(Expression* lhs, Expression* rhs);
     virtual ~Expression();
 
-    virtual uInt16 evaluate() = 0;
+    virtual uInt16 evaluate() const = 0;
 
   protected:
     Expression* myLHS;

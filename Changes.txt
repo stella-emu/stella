@@ -69,6 +69,16 @@
     given program counter.  This is also available in the ROM disassembly
     UI.
 
+  * Added 'listfunctions' and 'delfunction' debugger commands to
+    access/remove user-defined functions.  Related to this, fixed a bug
+    in 'function' command that could cause a program crash.
+
+  * Added 'cls' debugger command, used to erase the text and history
+    from the debugger prompt.
+
+  * Removed the 'listwatches' and 'poke' debugger commands, as they
+    were redundant.
+
   * Removed the 'loadlst' debugger command and the ability to use a
     DASM .lst file.  With the recent disassembler improvements, this
     support is no longer feasible.
