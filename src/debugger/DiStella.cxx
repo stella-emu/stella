@@ -490,27 +490,25 @@ void DiStella::disasm(uInt32 distart, int pass)
           // where wraparound occurred on a 32-bit int, and subsequent
           // indexing into the labels array caused a crash
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-          ad = (myPC + (Int8)d1) & 0xfff;
+          ad = ((myPC + (Int8)d1) & 0xfff) + myOffset;
 
           labfound = mark(ad+myOffset, REFERENCED);
           if (pass == 1)
           {
-            if ((addbranch) && !check_bit(labels[ad], REACHABLE))
+            if ((addbranch) && !check_bit(labels[ad-myOffset], REACHABLE))
             {
-              myAddressQueue.push(ad+myOffset);
-              mark(ad+myOffset, REACHABLE);
-              /*       addressq=addq(addressq,myPC+myOffset); */
+              myAddressQueue.push(ad);
+              mark(ad, REACHABLE);
             }
           }
           else if (pass == 3)
           {
-            int tmp = myPC+ad+myOffset;
             if (labfound == 1)
-              nextline << "    L" << HEX4 << tmp;
+              nextline << "    L" << HEX4 << ad;
             else
-              nextline << "    $" << HEX4 << tmp;
+              nextline << "    $" << HEX4 << ad;
 
-            nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
+            nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
           }
           break;
         }
