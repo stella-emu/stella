@@ -233,27 +233,26 @@ void Debugger::quit()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::autoExec()
+string Debugger::autoExec()
 {
+  ostringstream buf;
+
   // autoexec.stella is always run
-  const string& autoexec = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                           "autoexec.stella";
-  FilesystemNode autoexec_node(autoexec);
-  if(autoexec_node.exists())
-    myPrompt->print("autoExec():\n" + myParser->exec(autoexec) + "\n");
+  FilesystemNode autoexec(myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
+                          "autoexec.stella");
+  buf << "autoExec():" << endl
+      << myParser->exec(autoexec) << endl;
 
   // Also, "romname.stella" if present
   string file = myOSystem->romFile();
-
   string::size_type pos;
   if( (pos = file.find_last_of('.')) != string::npos )
     file.replace(pos, file.size(), ".stella");
   else
     file += ".stella";
 
-  FilesystemNode romname_node(file);
-  if(romname_node.exists())
-    myPrompt->print("autoExec():\n" + myParser->exec(file) + "\n");
+  FilesystemNode romname(file);
+  buf << myParser->exec(romname) << endl;
 
   // Init builtins
   for(int i = 0; builtin_functions[i][0] != ""; i++)
@@ -264,6 +263,7 @@ void Debugger::autoExec()
     Expression* exp = YaccParser::getResult();
     addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
   }
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -494,13 +494,14 @@ void PromptWidget::loadConfig()
     string version = string("Stella ") + STELLA_VERSION + "\n";
     print(version.c_str());
     print(PROMPT);
-    _promptStartPos = _promptEndPos = _currentPos;
-
-    _firstTime = false;
-    _exitedEarly = false;
 
     // Take care of one-time debugger stuff
-    instance().debugger().autoExec();
+    print(instance().debugger().autoExec().c_str());
+    print(PROMPT);
+
+    _promptStartPos = _promptEndPos = _currentPos;
+    _firstTime = false;
+    _exitedEarly = false;
   }
   else if(_exitedEarly)
   {

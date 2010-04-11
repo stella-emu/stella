@@ -123,36 +123,31 @@ string DebuggerParser::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string DebuggerParser::exec(const string& file, bool verbose)
+string DebuggerParser::exec(const FilesystemNode& file)
 {
-  string ret;
-  int count = 0;
-  char buffer[256]; // FIXME: static buffers suck
+  if(file.exists())
+  {
+    ifstream in(file.getPath().c_str());
+    if(!in.is_open())
+      return red("file \'" + file.getRelativePath() + "\' not found.");
 
-  FilesystemNode node(file);
-  ifstream in(node.getPath().c_str());
-  if(!in.is_open())
-    return red("file \'" + node.getRelativePath() + "\' not found.");
+    ostringstream buf;
+    int count = 0;
+    char buffer[256];
+    while( !in.eof() )
+    {
+      if(!in.getline(buffer, 255))
+        break;
 
-  while( !in.eof() ) {
-    if(!in.getline(buffer, 255))
-      break;
-
-    count++;
-    if(verbose) {
-      ret += "exec> ";
-      ret += buffer;
-      ret += "\n";
-      ret += run(buffer);
-      ret += "\n";
+      count++;
     }
+    buf << "Executed " << debugger->valueToString(count) << " commands from \""
+        << file.getRelativePath() << "\"";
+
+    return buf.str();
   }
-  ret += "Executed ";
-  ret += debugger->valueToString(count);
-  ret += " commands from \"";
-  ret += file;
-  ret += "\"\n";
-  return ret;
+  else
+    return red("file \'" + file.getRelativePath() + "\' not found.");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -866,7 +861,8 @@ void DebuggerParser::executeDump()
 // "exec"
 void DebuggerParser::executeExec()
 {
-  commandResult << exec(argStrings[0]);
+  FilesystemNode file(argStrings[0]);
+  commandResult << exec(file);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

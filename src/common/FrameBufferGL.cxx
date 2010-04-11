@@ -190,11 +190,6 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
         OGL_INIT(GLenum,glGetError,(void));
         break;  // kGLShader
-
-      case kGL_FBO:
-        // TODO - add support for frame buffer objects / render-to-texture
-        return false;
-        break;  // kGL_FBO
     }
   }
   else

@@ -171,7 +171,7 @@ class Debugger : public DialogContainer
     */
     int cycles();
 
-    void autoExec();
+    string autoExec();
 
     string showWatches();
 

@@ -28,6 +28,7 @@ struct Command;
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "FrameBuffer.hxx"
+#include "FSNode.hxx"
 
 typedef enum {
 	kBASE_16,
@@ -47,7 +48,7 @@ class DebuggerParser
     string run(const string& command);
 
     /** Execute parser commands given in 'file' */
-    string exec(const string& file, bool verbose = true);
+    string exec(const FilesystemNode& file);
 
     /** Given a substring, determine matching substrings from the list
         of available commands.  Used in the debugger prompt for tab-completion */

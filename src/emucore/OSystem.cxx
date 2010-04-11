@@ -1003,12 +1003,12 @@ bool OSystem::queryVideoHardware()
 /*
   Palette is defined as follows:
     // Base colors
-    kColor         TODO
-    kBGColor       TODO
+    kColor            Normal foreground color (non-text)
+    kBGColor          Normal background color (non-text)
     kShadowColor      Item is disabled
     kTextColor        Normal text color
     kTextColorHi      Highlighted text color
-    kTextColorEm   TODO
+    kTextColorEm      Emphasized text color
 
     // UI elements (dialog and widgets)
     kDlgColor         Dialog background

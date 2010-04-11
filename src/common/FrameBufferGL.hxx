@@ -181,7 +181,7 @@ class FrameBufferGL : public FrameBuffer
 
   private:
     enum GLFunctionality {
-      kGL_BASIC, kGL_SHADER, kGL_FBO
+      kGL_BASIC, kGL_SHADER
     };
     bool loadFuncs(GLFunctionality functionality);
 
