@@ -58,7 +58,7 @@
 Debugger* Debugger::myStaticDebugger;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-static const string builtin_functions[][3] = {
+static const char* builtin_functions[][3] = {
   // { "name", "definition", "help text" }
 
   // left joystick:
@@ -86,9 +86,25 @@ static const string builtin_functions[][3] = {
   { "_diff1a", "*SWCHB & $80", "Right difficulty set to A (hard)" },
 
   // empty string marks end of list, do not remove
-  { "", "", "" }
+  { 0, 0, 0 }
 };
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Names are defined here, but processed in YaccParser
+static const char* pseudo_registers[][2] = {
+  // { "name", "help text" }
+
+  { "_bank", "Currently selected bank" },
+  { "_rwport", "Address at which a read from a write port occurred" },
+  { "_scan", "Current scanline count" },
+  { "_fcount", "Number of frames since emulation started" },
+  { "_cclocks", "Color clocks on current scanline" },
+  { "_vsync", "Whether vertical sync is enabled (1 or 0)" },
+  { "_vblank", "Whether vertical blank is enabled (1 or 0)" },
+
+  // empty string marks end of list, do not remove
+  { 0, 0 }
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Debugger::Debugger(OSystem* osystem)
@@ -255,10 +271,10 @@ string Debugger::autoExec()
   buf << myParser->exec(romname) << endl;
 
   // Init builtins
-  for(int i = 0; builtin_functions[i][0] != ""; i++)
+  for(int i = 0; builtin_functions[i][0] != 0; i++)
   {
     // TODO - check this for memory leaks
-    int res = YaccParser::parse(builtin_functions[i][1].c_str());
+    int res = YaccParser::parse(builtin_functions[i][1]);
     if(res != 0) cerr << "ERROR in builtin function!" << endl;
     Expression* exp = YaccParser::getResult();
     addFunction(builtin_functions[i][0], builtin_functions[i][1], exp, true);
@@ -674,7 +690,6 @@ GUI::Rect Debugger::getTabBounds() const
 bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
-cerr << "adding function: " << name << endl;
   functions.insert(make_pair(name, exp));
   if(!builtin)
     functionDefs.insert(make_pair(name, definition));
@@ -732,16 +747,17 @@ string Debugger::builtinHelp() const
   ostringstream buf;
   uInt16 len, c_maxlen = 0, i_maxlen = 0;
 
-  // Get column widths for aligned output
-  for(int i = 0; builtin_functions[i][0] != ""; ++i)
+  // Get column widths for aligned output (functions)
+  for(int i = 0; builtin_functions[i][0] != 0; ++i)
   {
-    len = builtin_functions[i][0].length();
+    len = strlen(builtin_functions[i][0]);
     if(len > c_maxlen)  c_maxlen = len;
-    len = builtin_functions[i][1].length();
+    len = strlen(builtin_functions[i][1]);
     if(len > i_maxlen)  i_maxlen = len;
   }
 
-  for(int i = 0; builtin_functions[i][0] != ""; ++i)
+  buf << endl << "Built-in functions:" << endl;
+  for(int i = 0; builtin_functions[i][0] != 0; ++i)
   {
     buf << setw(c_maxlen) << left << builtin_functions[i][0]
         << setw(2) << right << "{"
@@ -750,6 +766,24 @@ string Debugger::builtinHelp() const
         << builtin_functions[i][2]
         << endl;
   }
+
+  // Get column widths for aligned output (pseudo-registers)
+  c_maxlen = 0;
+  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+  {
+    len = strlen(pseudo_registers[i][0]);
+    if(len > c_maxlen)  c_maxlen = len;
+  }
+
+  buf << endl << "Pseudo-registers:" << endl;
+  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+  {
+    buf << setw(c_maxlen) << left << pseudo_registers[i][0]
+        << setw(2) << " "
+        << setw(i_maxlen) << left << pseudo_registers[i][1]
+        << endl;
+  }
+
   return buf.str();
 }
 
@@ -764,9 +798,9 @@ void Debugger::getCompletions(const char* in, StringList& list) const
       list.push_back(l);
   }
 
-
-for(uInt32 i = 0; i < list.size(); ++i)
-cerr << list[i] << endl;
+  for(int i = 0; pseudo_registers[i][0] != 0; ++i)
+    if(BSPF_strncasecmp(pseudo_registers[i][0], in, strlen(in)) == 0)
+      list.push_back(pseudo_registers[i][0]);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

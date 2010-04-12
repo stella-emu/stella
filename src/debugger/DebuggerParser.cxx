@@ -881,18 +881,7 @@ void DebuggerParser::executeHelp()
     commandResult << setw(clen) << right << commands[i].cmdString
                   << " - " << commands[i].description << endl;
 
-  commandResult
-    << "\nPseudo-registers:" << endl
-    << "_bank     Currently selected bank" << endl
-    << "_rwport   Address at which a read from a write port occurred" << endl
-    << "_scan     Current scanline count" << endl
-    << "_fcount   Number of frames since emulation started" << endl
-    << "_cclocks  Color clocks on current scanline" << endl
-    << "_vsync    Whether vertical sync is enabled (1 or 0)" << endl
-    << "_vblank   Whether vertical blank is enabled (1 or 0)" << endl
-    << endl
-    << "Built-in functions:" << endl
-    << debugger->builtinHelp();
+  commandResult << debugger->builtinHelp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
