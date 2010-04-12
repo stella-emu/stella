@@ -88,24 +88,23 @@ void CartridgeDPC::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  // Set the page accessing methods for the hot spots
   System::PageAccess access;
+
+  // Set the page accessing methods for the hot spots
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Set the page accessing method for the DPC reading & writing pages
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READWRITE;
   for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(j >> shift, access);
-  }
 
   // Install pages for the startup bank
   bank(myStartBank);
@@ -430,8 +429,9 @@ void CartridgeDPC::bank(uInt16 bank)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   // Map Program ROM image into the system
   for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);

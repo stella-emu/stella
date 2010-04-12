@@ -287,6 +287,12 @@ class System : public Serializable
     void unlockDataBus();
 
   public:
+    enum PageType {
+      PAGE_READ      = 1 << 0,
+      PAGE_WRITE     = 1 << 1,
+      PAGE_READWRITE = PAGE_READ | PAGE_WRITE
+    };
+
     /**
       Structure used to specify access methods for a page
     */
@@ -310,9 +316,15 @@ class System : public Serializable
 
       /**
         Pointer to the device associated with this page or to the system's 
-        null device if the page hasn't been mapped to a device
+        null device if the page hasn't been mapped to a device.
       */
       Device* device;
+
+      /**
+        The manner in which the pages are accessed by the system
+        (READ, WRITE, READ|WRITE)
+      */
+      PageType type;
     };
 
     /**
@@ -331,6 +343,14 @@ class System : public Serializable
     */
     const PageAccess& getPageAccess(uInt16 page) const;
  
+    /**
+      Get the page type for the given address.
+
+      @param addr  The address contained in the page in questions
+      @return  The type of page that contains the given address
+    */
+    PageType getPageType(uInt16 addr) const;
+
     /**
       Mark the page containing this address as being dirty.
 

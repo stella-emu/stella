@@ -61,13 +61,12 @@ void CartridgeX07::install(System& system)
   // The hotspots use almost all addresses below 0x1000, so we simply grab them
   // all and forward the TIA/RIOT calls from the peek and poke methods.
   System::PageAccess access;
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READWRITE;
   for(uInt32 i = 0x00; i < 0x1000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Install pages for the startup bank
   bank(myStartBank);
@@ -130,8 +129,9 @@ void CartridgeX07::bank(uInt16 bank)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))

@@ -180,6 +180,12 @@ const System::PageAccess& System::getPageAccess(uInt16 page) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+System::PageType System::getPageType(uInt16 addr) const
+{
+  return myPageAccessTable[(addr & myAddressMask) >> myPageShift].type;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void System::setDirtyPage(uInt16 addr)
 {
   myPageIsDirtyTable[(addr & myAddressMask) >> myPageShift] = true;

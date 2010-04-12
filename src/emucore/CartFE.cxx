@@ -58,6 +58,7 @@ void CartridgeFE::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 }

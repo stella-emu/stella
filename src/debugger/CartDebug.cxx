@@ -33,7 +33,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   addRamArea(0x80, 128, 0, 0);
 
   // Add extended RAM
-  myRamAreas = areas;
   for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
@@ -125,25 +124,18 @@ void CartDebug::triggerReadFromWritePort(uInt16 addr)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int CartDebug::readFromWritePort()
 {
-  uInt16 peekAddress = myRWPortAddress;
+  uInt16 addr = myRWPortAddress;
   myRWPortAddress = 0;
 
   // A read from the write port occurs when the read is actually in the write
   // port address space AND the last access was actually a read (the latter
   // differentiates between reads that are normally part of a write cycle vs.
   // ones that are illegal)
-  if(mySystem.m6502().lastReadAddress() && peekAddress & 0x1000)
-  {
-    uInt16 addr = peekAddress & 0x0FFF;
-    for(RamAreaList::const_iterator i = myRamAreas.begin(); i != myRamAreas.end(); ++i)
-    {
-      uInt16 start = (i->start + i->woffset) & 0x0FFF;
-      uInt16 end = (i->start + i->woffset + i->size) & 0x0FFF;
-      if(addr >= start && addr < end)
-        return peekAddress;
-    }
-  }
-  return 0;
+  if(mySystem.m6502().lastReadAddress() &&
+      (mySystem.getPageType(addr) & System::PAGE_WRITE) == System::PAGE_WRITE)
+    return addr;
+  else
+    return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -91,18 +91,15 @@ void M6532::install(System& system, Device& device)
   
   // All accesses are to the given device
   System::PageAccess access;
+  access.directPeekBase = 0; 
+  access.directPokeBase = 0;
   access.device = &device;
+  access.type = System::PAGE_READWRITE;
 
   // We're installing in a 2600 system
   for(int address = 0; address < 8192; address += (1 << shift))
-  {
     if((address & 0x1080) == 0x0080)
-    {
-      access.directPeekBase = 0; 
-      access.directPokeBase = 0;
       mySystem->setPageAccess(address >> shift, access);
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

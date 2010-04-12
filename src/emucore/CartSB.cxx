@@ -71,15 +71,15 @@ void CartridgeSB::install(System& system)
   myHotSpotPageAccess[6] = mySystem->getPageAccess(0x0E00 >> shift);
   myHotSpotPageAccess[7] = mySystem->getPageAccess(0x0F00 >> shift);
 
-  // Set the page accessing methods for the hot spots
   System::PageAccess access;
+
+  // Set the page accessing methods for the hot spots
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = 0x0800; i < 0x0FFF; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Install pages for startup bank
   bank(myStartBank);
@@ -136,8 +136,9 @@ void CartridgeSB::bank(uInt16 bank)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))

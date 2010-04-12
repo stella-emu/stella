@@ -66,20 +66,20 @@ void Cartridge3F::install(System& system)
   // does this via mySystem->tiaPoke(...), at least until we come up with a
   // cleaner way to do it).
   System::PageAccess access;
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READWRITE;
   for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
-  {
-    access.device = this;
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Setup the second segment to always point to the last ROM slice
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 j = 0x1800; j < 0x2000; j += (1 << shift))
   {
-    access.device = this;
     access.directPeekBase = &myImage[(mySize - 2048) + (j & 0x07FF)];
-    access.directPokeBase = 0;
     mySystem->setPageAccess(j >> shift, access);
   }
 
@@ -144,8 +144,9 @@ void Cartridge3F::bank(uInt16 bank)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))

@@ -70,22 +70,23 @@ void CartridgeE7::install(System& system)
   assert(((0x1400 & mask) == 0) && ((0x1800 & mask) == 0) &&
       ((0x1900 & mask) == 0) && ((0x1A00 & mask) == 0));
 
-  // Set the page accessing methods for the hot spots
   System::PageAccess access;
+
+  // Set the page accessing methods for the hot spots
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = (0x1FE0 & ~mask); i < 0x2000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Setup the second segment to always point to the last ROM slice
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 j = 0x1A00; j < (0x1FE0U & ~mask); j += (1 << shift))
   {
-    access.device = this;
     access.directPeekBase = &myImage[7 * 2048 + (j & 0x07FF)];
-    access.directPokeBase = 0;
     mySystem->setPageAccess(j >> shift, access);
   }
   myCurrentSlice[1] = 7;
@@ -176,21 +177,22 @@ void CartridgeE7::bankRAM(uInt16 bank)
   System::PageAccess access;
 
   // Set the page accessing method for the 256 bytes of RAM writing pages
+  access.directPeekBase = 0;
+  access.device = this;
+  access.type = System::PAGE_WRITE;
   for(uInt32 j = 0x1800; j < 0x1900; j += (1 << shift))
   {
-    access.device = this;
-    access.directPeekBase = 0;
     access.directPokeBase = &myRAM[1024 + offset + (j & 0x00FF)];
     mySystem->setPageAccess(j >> shift, access);
   }
 
   // Set the page accessing method for the 256 bytes of RAM reading pages
-  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 k = 0x1900; k < 0x1A00; k += (1 << shift))
   {
-    access.device = this;
     access.directPeekBase = &myRAM[1024 + offset + (k & 0x00FF)];
-    access.directPokeBase = 0;
     mySystem->setPageAccess(k >> shift, access);
   }
   myBankChanged = true;
@@ -212,31 +214,34 @@ void CartridgeE7::bank(uInt16 slice)
   if(slice != 7)
   {
     // Map ROM image into first segment
+    access.directPokeBase = 0;
+    access.device = this;
+    access.type = System::PAGE_READ;
     for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
     {
-      access.device = this;
       access.directPeekBase = &myImage[offset + (address & 0x07FF)];
-      access.directPokeBase = 0;
       mySystem->setPageAccess(address >> shift, access);
     }
   }
   else
   {
     // Set the page accessing method for the 1K slice of RAM writing pages
+    access.directPeekBase = 0;
+    access.device = this;
+    access.type = System::PAGE_WRITE;
     for(uInt32 j = 0x1000; j < 0x1400; j += (1 << shift))
     {
-      access.device = this;
-      access.directPeekBase = 0;
       access.directPokeBase = &myRAM[j & 0x03FF];
       mySystem->setPageAccess(j >> shift, access);
     }
 
     // Set the page accessing method for the 1K slice of RAM reading pages
+    access.directPokeBase = 0;
+    access.device = this;
+    access.type = System::PAGE_READ;
     for(uInt32 k = 0x1400; k < 0x1800; k += (1 << shift))
     {
-      access.device = this;
       access.directPeekBase = &myRAM[k & 0x03FF];
-      access.directPokeBase = 0;
       mySystem->setPageAccess(k >> shift, access);
     }
   }

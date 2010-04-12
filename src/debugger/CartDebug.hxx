@@ -213,8 +213,6 @@ class CartDebug : public DebuggerSystem
     CartState myState;
     CartState myOldState;
 
-    RamAreaList myRamAreas;
-
     // A pointer to an array of start addresses for each bank in a cart
     // The startup bank will normally be 0xfffc, while the others are
     // determined when the debugger is first opened

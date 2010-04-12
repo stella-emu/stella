@@ -57,10 +57,12 @@ void CartridgeE0::install(System& system)
   assert(((0x1000 & mask) == 0) && ((0x1400 & mask) == 0) &&
       ((0x1800 & mask) == 0) && ((0x1C00 & mask) == 0));
 
-  // Set the page acessing methods for the first part of the last segment
   System::PageAccess access;
+
+  // Set the page acessing methods for the first part of the last segment
   access.directPokeBase = 0;
   access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = 0x1C00; i < (0x1FE0U & ~mask); i += (1 << shift))
   {
     access.directPeekBase = &myImage[7168 + (i & 0x03FF)];
@@ -72,10 +74,9 @@ void CartridgeE0::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 j = (0x1FE0 & ~mask); j < 0x2000; j += (1 << shift))
-  {
     mySystem->setPageAccess(j >> shift, access);
-  }
 
   // Install some default slices for the other segments
   segmentZero(4);
@@ -138,8 +139,9 @@ void CartridgeE0::segmentZero(uInt16 slice)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   for(uInt32 address = 0x1000; address < 0x1400; address += (1 << shift))
   {
@@ -161,8 +163,9 @@ void CartridgeE0::segmentOne(uInt16 slice)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   for(uInt32 address = 0x1400; address < 0x1800; address += (1 << shift))
   {
@@ -184,8 +187,9 @@ void CartridgeE0::segmentTwo(uInt16 slice)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   for(uInt32 address = 0x1800; address < 0x1C00; address += (1 << shift))
   {

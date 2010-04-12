@@ -56,15 +56,15 @@ void CartridgeF0::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  // Set the page accessing methods for the hot spots
   System::PageAccess access;
+
+  // Set the page accessing methods for the hot spots
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = (0x1FF0 & ~mask); i < 0x2000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Install pages for bank 1
   myCurrentBank = 0;
@@ -109,8 +109,9 @@ void CartridgeF0::incbank()
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < (0x1FF0U & ~mask);

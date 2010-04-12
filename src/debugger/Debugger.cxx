@@ -674,6 +674,7 @@ GUI::Rect Debugger::getTabBounds() const
 bool Debugger::addFunction(const string& name, const string& definition,
                            Expression* exp, bool builtin)
 {
+cerr << "adding function: " << name << endl;
   functions.insert(make_pair(name, exp));
   if(!builtin)
     functionDefs.insert(make_pair(name, definition));
@@ -762,6 +763,10 @@ void Debugger::getCompletions(const char* in, StringList& list) const
     if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
       list.push_back(l);
   }
+
+
+for(uInt32 i = 0; i < list.size(); ++i)
+cerr << list[i] << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

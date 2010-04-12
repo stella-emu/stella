@@ -62,31 +62,33 @@ void CartridgeFA::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1100 & mask) == 0) && ((0x1200 & mask) == 0));
 
-  // Set the page accessing methods for the hot spots
   System::PageAccess access;
+
+  // Set the page accessing methods for the hot spots
+  access.directPeekBase = 0;
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
-  {
-    access.directPeekBase = 0;
-    access.directPokeBase = 0;
-    access.device = this;
     mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Set the page accessing method for the RAM writing pages
+  access.directPeekBase = 0;
+  access.device = this;
+  access.type = System::PAGE_WRITE;
   for(uInt32 j = 0x1000; j < 0x1100; j += (1 << shift))
   {
-    access.device = this;
-    access.directPeekBase = 0;
     access.directPokeBase = &myRAM[j & 0x00FF];
     mySystem->setPageAccess(j >> shift, access);
   }
  
   // Set the page accessing method for the RAM reading pages
+  access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
   for(uInt32 k = 0x1100; k < 0x1200; k += (1 << shift))
   {
-    access.device = this;
     access.directPeekBase = &myRAM[k & 0x00FF];
-    access.directPokeBase = 0;
     mySystem->setPageAccess(k >> shift, access);
   }
 
@@ -185,8 +187,9 @@ void CartridgeFA::bank(uInt16 bank)
 
   // Setup the page access methods for the current bank
   System::PageAccess access;
-  access.device = this;
   access.directPokeBase = 0;
+  access.device = this;
+  access.type = System::PAGE_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1200; address < (0x1FF8U & ~mask);
