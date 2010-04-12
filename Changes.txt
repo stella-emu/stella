@@ -64,7 +64,7 @@
 
   * Added 'resolvedata' commandline argument and associated UI item, used
     to set the "resolve data sections" config option in Distella
-    (vs. treating all data as code).
+    (vs. treating all address space as code).
 
   * Added 'runtopc' debugger command, used to step until encountering the
     given program counter.  This is also available in the ROM disassembly
@@ -100,7 +100,7 @@
 
       Two versions are available: the first is a 32-bit Universal Binary
       for OSX 10.4 - 10.6, and the second is 32/64-bit Intel-only for
-      OSX 10.5 - 10.6 (64-bit requires 10.6).  The Intel version is
+      OSX 10.4 - 10.6 (64-bit requires 10.6).  The Intel version is
       compiled with the very latest compiler (Clang), resulting in
       better performance.
 

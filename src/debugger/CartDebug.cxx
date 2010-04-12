@@ -323,7 +323,6 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
     case ADDR_RIOT:
       return false;
     default:
-cerr << "addLabel: label = " << label << ", address = " << hex << address << endl;
       removeLabel(label);
       myUserAddresses.insert(make_pair(label, address));
       myUserLabels.insert(make_pair(address, label));
@@ -338,7 +337,6 @@ bool CartDebug::removeLabel(const string& label)
   LabelToAddr::iterator iter = myUserAddresses.find(label);
   if(iter != myUserAddresses.end())
   {
-cerr << "removeLabel: label = " << label << endl;
     // Erase the label
     myUserAddresses.erase(iter);
 
