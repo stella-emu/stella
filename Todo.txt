@@ -12,10 +12,9 @@
                                 To Do List
 ===========================================================================
 
-If you would like to contribute to Stella's development then find something
-on the list below and send email to Bradford Mott at bwmott@acm.org or
-Stephen Anthony at stephena@users.sourceforge.net.
-
 All Todo items are now available in the Stella tracker on AtariAge:
 
   http://www.atariage.com/forums/tracker/project-16-stella-emulator
+
+If you would like to contribute to Stella's development then find something
+on the list above and email Stephen Anthony (stephena@users.sf.net).

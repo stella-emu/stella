@@ -4,7 +4,7 @@
 
     Feel free to customize this file to suit your needs
 */
-/* $Id: SDLMain.m,v 1.6 2008-12-21 00:12:15 stephena Exp $ */
+/* $Id$ */
 
 #import "SDL.h"
 #import "SDLMain.h"

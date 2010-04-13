@@ -1,10 +1,10 @@
 #!/bin/sh
 #
-# Creates a StellaOSX disk image (dmg) from the command line.
+# Creates a Stella disk image (dmg) from the command line.
 # usage:
 #    Create_build.sh <version>
 #
-# The result will be a file called ~/Desktop/StellaOSX<ver>.dmg
+# The result will be a file called ~/Desktop/Stella-<ver>-macosx.dmg
 
 if [ $# != 1 ]; then
 	echo "usage: Create_build.sh version"
@@ -12,8 +12,8 @@ if [ $# != 1 ]; then
 fi
 
 VER="$1"
-DMG="StellaOSX${VER}.dmg"
-DISK="/Volumes/StellaOSX"
+DMG="Stella-${VER}-macosx.dmg"
+DISK="/Volumes/Stella"
 
 echo "Creating ${DMG} file ..."
 gunzip -c template.dmg.gz > ${DMG}
