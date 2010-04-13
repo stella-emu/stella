@@ -130,7 +130,7 @@ static Menus *sharedInstance = nil;
 	return(self);
 }
 
--(void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd
+-(void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd:(bool)control
 {
 	SDL_Event theEvent;
 
@@ -140,9 +140,11 @@ static Menus *sharedInstance = nil;
 	theEvent.key.keysym.sym = key;
 	theEvent.key.keysym.mod = 0;
 	if (cmd)
-		theEvent.key.keysym.mod = KMOD_LMETA;
+		theEvent.key.keysym.mod = KMOD_META;
+	else if (control)
+		theEvent.key.keysym.mod = KMOD_CTRL;
 	if (shift)
-		theEvent.key.keysym.mod |= KMOD_LSHIFT;
+		theEvent.key.keysym.mod |= KMOD_SHIFT;
 	theEvent.key.keysym.unicode = 0;
 	SDL_PushEvent(&theEvent);
 }
@@ -152,38 +154,38 @@ static Menus *sharedInstance = nil;
   switch([sender tag])
   {
     case 0:
-      [self pushKeyEvent:SDLK_0:NO:YES];
+      [self pushKeyEvent:SDLK_0:NO:NO:YES];
       break;
     case 1:
-      [self pushKeyEvent:SDLK_1:NO:YES];
+      [self pushKeyEvent:SDLK_1:NO:NO:YES];
       break;
     case 2:
-      [self pushKeyEvent:SDLK_2:NO:YES];
+      [self pushKeyEvent:SDLK_2:NO:NO:YES];
       break;
     case 3:
-      [self pushKeyEvent:SDLK_3:NO:YES];
+      [self pushKeyEvent:SDLK_3:NO:NO:YES];
       break;
   }
 }
 
 - (IBAction)biggerScreen:(id)sender
 {
-  [self pushKeyEvent:SDLK_EQUALS:NO:YES];
+  [self pushKeyEvent:SDLK_EQUALS:NO:YES:NO];
 }
 
 - (IBAction)smallerScreen:(id)sender
 {
-  [self pushKeyEvent:SDLK_MINUS:NO:YES];
+  [self pushKeyEvent:SDLK_MINUS:NO:YES:NO];
 }
 
 - (IBAction)fullScreen:(id)sender
 {
-  [self pushKeyEvent:SDLK_RETURN:NO:YES];
+  [self pushKeyEvent:SDLK_RETURN:NO:YES:NO];
 }
 
 - (IBAction)openCart:(id)sender
 {
-  [self pushKeyEvent:SDLK_ESCAPE:NO:NO];
+  [self pushKeyEvent:SDLK_ESCAPE:NO:NO:NO];
 //  Fixme - This should work like the other keys, but instead
 //   if you send the LauncherOpen event, it crashes SDL in
 //    the poll loop.    
@@ -192,17 +194,17 @@ static Menus *sharedInstance = nil;
 
 - (IBAction)restartGame:(id)sender
 {
-  [self pushKeyEvent:SDLK_r:NO:YES];
+  [self pushKeyEvent:SDLK_r:NO:NO:YES];
 }
 
 - (IBAction)grabMouse:(id)sender
 {
-  [self pushKeyEvent:SDLK_g:NO:YES];
+  [self pushKeyEvent:SDLK_g:NO:NO:YES];
 }
 
 - (IBAction)doPrefs:(id)sender
 {
-  [self pushKeyEvent:SDLK_TAB:NO:NO];
+  [self pushKeyEvent:SDLK_TAB:NO:NO:NO];
 }
 
 - (IBAction)volumePlus:(id)sender
@@ -237,8 +239,8 @@ static Menus *sharedInstance = nil;
   [preferencesMenuItem setTarget:nil];
   [openMenuItem setTarget:nil];
   [restartMenuItem setTarget:nil];
-  [screenBiggerMenuItem setTarget:self];
-  [screenSmallerMenuItem setTarget:self];
+  [screenBiggerMenuItem setTarget:nil];
+  [screenSmallerMenuItem setTarget:nil];
   [fullScreenMenuItem setTarget:self];
   [mousePaddle0MenuItem setTarget:nil];
   [mousePaddle1MenuItem setTarget:nil];

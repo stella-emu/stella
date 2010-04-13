@@ -43,7 +43,7 @@
 }
 
 + (Menus *)sharedInstance;
-- (void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd;
+- (void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd:(bool)control;
 - (IBAction)paddleChange:(id) sender;
 - (IBAction)biggerScreen:(id)sender;
 - (IBAction)smallerScreen:(id)sender;

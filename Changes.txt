@@ -81,8 +81,9 @@
     were redundant.
 
   * Removed the 'loadlst' debugger command and the ability to use a
-    DASM .lst file.  This code was incomplete, and with the recent
-    disassembler improvements this support is no longer feasible.
+    DASM .lst file.  This code was incomplete, and no longer fits with
+    the recent disassembler improvements.  Support for this may return
+    in a future release.
 
   * Modified 'disasm' debugger command to accept a second argument
     indicating the number of lines to disassemble.
@@ -154,7 +155,8 @@
     since the same state file can now be loaded from different ROMs,
     as long as the cart type stays the same.  This also fixes a bug
     where loading from a non-existent state file could cause Stella
-    to crash.
+    to crash.  Because of these changes, old state files will no longer
+    work.
 
   * Fixed bug in certain editable text fields, where pressing Return/Enter
     would disable any further input.
