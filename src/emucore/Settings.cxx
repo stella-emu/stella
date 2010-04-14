@@ -92,6 +92,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("ssdir", "");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
+  setInternal("ssdelay", "2");
 
   // Config files and paths
   setInternal("romdir", "~");
@@ -269,6 +270,10 @@ void Settings::validate()
   if(i < 1)        setInternal("pspeed", "1");
   else if(i > 15)  setInternal("pspeed", "15");
 
+  i = getInt("ssdelay");
+  if(i < 1)        setInternal("ssdelay", "2");
+  else if(i > 10)  setInternal("ssdelay", "10");
+
   s = getString("palette");
   if(s != "standard" && s != "z26" && s != "user")
     setInternal("palette", "standard");
@@ -373,6 +378,7 @@ void Settings::usage()
     << "  -ssdir        <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
+    << "  -ssdelay      <delay>        Number of seconds between snapshots in continuous snapshot mode\n"
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"

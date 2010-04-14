@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===========================================================================
-                 Release 3.1 for Linux, Mac OSX and Windows
+                 Release 3.1 for Linux, MacOSX and Windows
 ===========================================================================
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the
@@ -31,7 +31,7 @@ distributions currently available are:
   * Binary zip for Windows, containing 32 and 64-bit versions :
       Stella-3.1-windows.zip
 
-  * Binary distribution for Mac OSX 32-bit & 64-bit :
+  * Binary distribution for MacOSX 32-bit & 64-bit :
       Stella-3.1-macosx.dmg (32-bit Universal Binary)
       Stella-3.1_intel-macosx.dmg (32/64-bit Intel-only)
 

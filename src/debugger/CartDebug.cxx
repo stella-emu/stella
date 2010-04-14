@@ -206,30 +206,40 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
   uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
   bool changed = (force || myConsole.cartridge().bankChanged() ||
-                 (pcline == -1 && (PC & 0x1000)) ||
-                 mySystem.isPageDirty(0x1000, 0x1FFF));
+                 (pcline == -1) || mySystem.isPageDirty(0x1000, 0x1FFF));
+
   if(changed)
   {
     // Look at previous accesses to this bank to begin
     // If no previous address exists, use the current program counter
     uInt16 start = myStartAddresses[getBank()];
-    if(start == 0 || pcline == -1)
+    if(start == 0 || (pcline == -1 && (PC & 0x1000)))
       start = myStartAddresses[getBank()] = PC;
 
     // For now, DiStella can't handle address space below 0x1000
-    if(!(start & 0x1000))
-      return false;
+    // However, we want to disassemble at least once, otherwise carts
+    // that run entirely from ZP RAM will have an empty disassembly
+    // TODO - this will be removed once Distella properly supports
+    //        access below 0x1000
+    uInt16 search = PC;
+    if(!(PC & 0x1000))
+    {
+      if(myDisassembly.size() == 0)
+        search = start;
+      else
+        return false;
+    }
 
     // Check whether to use the 'resolvedata' functionality from Distella
     if(resolvedata == "never")
-      fillDisassemblyList(start, false, PC);
+      fillDisassemblyList(start, false, search);
     else if(resolvedata == "always")
-      fillDisassemblyList(start, true, PC);
+      fillDisassemblyList(start, true, search);
     else  // 'auto'
     {
       // First try with resolvedata on, then turn off if PC isn't found
-      if(!fillDisassemblyList(start, true, PC))
-        fillDisassemblyList(start, false, PC);
+      if(!fillDisassemblyList(start, true, search))
+        fillDisassemblyList(start, false, search);
     }
   }
 

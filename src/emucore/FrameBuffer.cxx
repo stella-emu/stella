@@ -47,8 +47,7 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myUsePhosphor(false),
     myPhosphorBlend(77),
     myInitializedCount(0),
-    myPausedCount(0),
-    mySurfaceCount(0)
+    myPausedCount(0)
 {
   myMsg.surface   = myStatsMsg.surface = NULL;
   myMsg.surfaceID = myStatsMsg.surfaceID = -1;
@@ -317,7 +316,7 @@ void FrameBuffer::enableMessages(bool enable)
 {
   if(enable)
   {
-    // Only re-anable frame stats if they were already enabled before
+    // Only re-enable frame stats if they were already enabled before
     myStatsMsg.enabled = myOSystem->settings().getBool("stats");
   }
   else
@@ -483,11 +482,10 @@ int FrameBuffer::allocateSurface(int w, int h, bool useBase)
   FBSurface* surface = createSurface(w, h, useBase);
 
   // Add it to the list
-  mySurfaceList.insert(make_pair(mySurfaceCount, surface));
-  mySurfaceCount++;
+  mySurfaceList.insert(make_pair(mySurfaceList.size(), surface));
 
   // Return a reference to it
-  return mySurfaceCount - 1;
+  return mySurfaceList.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

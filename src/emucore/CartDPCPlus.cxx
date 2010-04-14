@@ -151,7 +151,7 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void CartridgeDPCPlus::writeByte(uInt8 value)
 {
-  switch (mySelectByte)
+  switch (mySelectByte & 0x7F)
   {
     case 0x00:
     {
@@ -214,6 +214,9 @@ inline void CartridgeDPCPlus::writeByte(uInt8 value)
       break;
     } 
   }
+
+  if (mySelectByte & 0x80)
+    mySelectByte++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -288,11 +291,10 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
             // Update the music data fetchers (counter & flag)
             updateMusicModeDataFetchers();
             
-            uInt32 i = 0;
-            
-            i =  myMusicVolume + ((myMusicVolume >> 12) * (uInt8) (myMusicWaveforms[0] >> 31)) +
-                                ((myMusicVolume >> 16) * (uInt8) (myMusicWaveforms[1] >> 31)) +
-                                ((myMusicVolume >> 24) * (uInt8) (myMusicWaveforms[2] >> 31));
+            uInt32 i = myMusicVolume +
+                (((myMusicWaveforms[0] >> 31) & 1) ? (myMusicVolume >> 12): 0) +
+                (((myMusicWaveforms[1] >> 31) & 1) ? (myMusicVolume >> 16): 0) +
+                (((myMusicWaveforms[2] >> 31) & 1) ? (myMusicVolume >> 24): 0);
           
             result = (uInt8)i;
             break;       

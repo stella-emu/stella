@@ -575,7 +575,6 @@ class FrameBuffer
 
     // Holds a reference to all the surfaces that have been created
     map<int,FBSurface*> mySurfaceList;
-    int mySurfaceCount;
 
     // Holds static strings for the remap menu (emulation and menu events)
     static GraphicsMode ourGraphicsModes[GFX_NumModes];

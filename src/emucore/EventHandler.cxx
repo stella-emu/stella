@@ -170,6 +170,8 @@ void EventHandler::reset(State state)
   setEventState(state);
   myEvent->clear();
   myOSystem->state().reset();
+
+  setContinuousSnapshots(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -447,6 +449,26 @@ void EventHandler::poll(uInt64 time)
 
               case SDLK_l:
                 myOSystem->frameBuffer().toggleFrameStats();
+                break;
+
+              case SDLK_F12:  // TODO - make this remappable
+                if(myContSnapshotInterval == 0)
+                {
+                  ostringstream buf;
+                  uInt32 delay = myOSystem->settings().getInt("ssdelay");
+                  buf << "Enabling shotshots in " << delay << " second intervals";
+                  myOSystem->frameBuffer().showMessage(buf.str());
+                  setContinuousSnapshots(delay);
+                }
+                else
+                {
+                  ostringstream buf;
+                  buf << "Disabling snapshots, generated "
+                      << (myContSnapshotCounter / myContSnapshotInterval)
+                      << " files";
+                  myOSystem->frameBuffer().showMessage(buf.str());
+                  setContinuousSnapshots(0);
+                }
                 break;
 #if 0
 // FIXME - these will be removed when a UI is added for event recording
@@ -759,6 +781,11 @@ void EventHandler::poll(uInt64 time)
       for(unsigned int i = 0; i < cheats.size(); i++)
         cheats[i]->evaluate();
     #endif
+
+      // Handle continuous snapshots
+      if(myContSnapshotInterval > 0 &&
+        (++myContSnapshotCounter % myContSnapshotInterval == 0))
+        takeSnapshot(myContSnapshotCounter / myContSnapshotInterval);
     }
   }
   else if(myOverlay)
@@ -1680,7 +1707,7 @@ void EventHandler::saveJoyHatMapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
+bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length) const
 {
   string key;
   Event::Type event;
@@ -1701,7 +1728,7 @@ bool EventHandler::isValidList(string& list, IntArray& map, uInt32 length)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline bool EventHandler::eventIsAnalog(Event::Type event)
+inline bool EventHandler::eventIsAnalog(Event::Type event) const
 {
   switch((int)event)
   {
@@ -1716,7 +1743,7 @@ inline bool EventHandler::eventIsAnalog(Event::Type event)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getActionList(EventMode mode)
+StringList EventHandler::getActionList(EventMode mode) const
 {
   StringList l;
 
@@ -1738,7 +1765,7 @@ StringList EventHandler::getActionList(EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Event::Type EventHandler::eventAtIndex(int idx, EventMode mode)
+Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
   {
@@ -1761,7 +1788,7 @@ Event::Type EventHandler::eventAtIndex(int idx, EventMode mode)
 }  
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::actionAtIndex(int idx, EventMode mode)
+string EventHandler::actionAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
   {
@@ -1784,7 +1811,7 @@ string EventHandler::actionAtIndex(int idx, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string EventHandler::keyAtIndex(int idx, EventMode mode)
+string EventHandler::keyAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
   {
@@ -1807,11 +1834,12 @@ string EventHandler::keyAtIndex(int idx, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::takeSnapshot()
+void EventHandler::takeSnapshot(uInt32 number)
 {
   // Figure out the correct snapshot name
   string filename;
   string sspath = myOSystem->snapshotDir();
+  bool showmessage = number == 0;
 
   if(sspath.length() > 0)
     if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
@@ -1819,7 +1847,13 @@ void EventHandler::takeSnapshot()
   sspath += myOSystem->console().properties().get(Cartridge_Name);
 
   // Check whether we want multiple snapshots created
-  if(!myOSystem->settings().getBool("sssingle"))
+  if(number > 0)
+  {
+    ostringstream buf;
+    buf << sspath << "_" << number << ".png";
+    filename = buf.str();
+  }
+  else if(!myOSystem->settings().getBool("sssingle"))
   {
     // Determine if the file already exists, checking each successive filename
     // until one doesn't exist
@@ -1848,7 +1882,8 @@ void EventHandler::takeSnapshot()
     string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
                    myOSystem->console().tia(),
                    myOSystem->console().properties(), filename);
-    myOSystem->frameBuffer().showMessage(msg);
+    if(showmessage)
+      myOSystem->frameBuffer().showMessage(msg);
   }
   else
   {
@@ -1860,7 +1895,8 @@ void EventHandler::takeSnapshot()
 
     // Re-enable old messages
     myOSystem->frameBuffer().enableMessages(true);
-    myOSystem->frameBuffer().showMessage(msg);
+    if(showmessage)
+      myOSystem->frameBuffer().showMessage(msg);
   }
 }
 
@@ -1880,6 +1916,13 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
   }
   else
     myMouseEnabled = false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setContinuousSnapshots(uInt32 interval)
+{
+  myContSnapshotInterval = myOSystem->frameRate() * interval;
+  myContSnapshotCounter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

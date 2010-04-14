@@ -163,7 +163,7 @@ class EventHandler
 
       @return The State type
     */
-    inline State state() { return myState; }
+    inline State state() const { return myState; }
 
     /**
       Resets the state machine of the EventHandler to the defaults
@@ -185,7 +185,16 @@ class EventHandler
     */
     void setPaddleMode(int num, bool showmessage = false);
 
-    inline bool kbdAlt(int mod)
+    /**
+      Set the number of seconds between taking a snapshot in
+      continuous snapshot mode.  Setting an interval of 0 disables
+      continuous snapshots.
+
+      @param interval  Interval in seconds between snapshots
+    */
+    void setContinuousSnapshots(uInt32 interval);
+
+    inline bool kbdAlt(int mod) const
     {
   #ifndef MAC_OSX
       return (mod & KMOD_ALT);
@@ -194,12 +203,12 @@ class EventHandler
   #endif
     }
 
-    inline bool kbdControl(int mod)
+    inline bool kbdControl(int mod) const
     {
       return (mod & KMOD_CTRL) > 0;
     }
 
-    inline bool kbdShift(int mod)
+    inline bool kbdShift(int mod) const
     {
       return (mod & KMOD_SHIFT);
     }
@@ -208,7 +217,7 @@ class EventHandler
     void leaveMenuMode();
     bool enterDebugMode();
     void leaveDebugMode();
-    void takeSnapshot();
+    void takeSnapshot(uInt32 number = 0);
 
     /**
       Send an event directly to the event handler.
@@ -219,24 +228,24 @@ class EventHandler
     */
     void handleEvent(Event::Type type, Int32 value);
 
-    inline bool frying() { return myFryingFlag; }
+    inline bool frying() const { return myFryingFlag; }
 
-    inline SDL_Joystick* getJoystick(int i) { return ourJoysticks[i].stick; }
+    inline SDL_Joystick* getJoystick(int i) const { return ourJoysticks[i].stick; }
 
-    StringList getActionList(EventMode mode);
+    StringList getActionList(EventMode mode) const;
 
-    inline Event::Type eventForKey(int key, EventMode mode)
+    inline Event::Type eventForKey(int key, EventMode mode) const
       { return myKeyTable[key][mode]; }
-    inline Event::Type eventForJoyButton(int stick, int button, EventMode mode)
+    inline Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
       { return myJoyTable[stick][button][mode]; }
-    inline Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode)
+    inline Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
       { return myJoyAxisTable[stick][axis][(value > 0)][mode]; }
-    inline Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode)
+    inline Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const
       { return myJoyHatTable[stick][hat][value][mode]; }
 
-    Event::Type eventAtIndex(int idx, EventMode mode);
-    string actionAtIndex(int idx, EventMode mode);
-    string keyAtIndex(int idx, EventMode mode);
+    Event::Type eventAtIndex(int idx, EventMode mode) const;
+    string actionAtIndex(int idx, EventMode mode) const;
+    string keyAtIndex(int idx, EventMode mode) const;
 
     /**
       Bind a key to an event/action and regenerate the mapping array(s)
@@ -384,7 +393,7 @@ class EventHandler
 
       @return      True if valid list, else false
     */
-    bool isValidList(string& list, IntArray& map, uInt32 length);
+    bool isValidList(string& list, IntArray& map, uInt32 length) const;
 
     /**
       Tests if a given event should use continuous/analog values.
@@ -392,7 +401,7 @@ class EventHandler
       @param event  The event to test for analog processing
       @return       True if analog, else false
     */
-    inline bool eventIsAnalog(Event::Type event);
+    inline bool eventIsAnalog(Event::Type event) const;
 
     void setEventState(State state);
 
@@ -489,6 +498,10 @@ class EventHandler
     // pressing it with a movement key could inadvertantly activate
     // a Ctrl combo when it isn't wanted)
     bool myUseCtrlKeyFlag;
+
+    // Used for continuous snapshot mode
+    uInt32 myContSnapshotInterval;
+    uInt32 myContSnapshotCounter;
 
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;

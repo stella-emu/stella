@@ -133,6 +133,12 @@
     This toggles showing of UI messages overlaid on the screen.
     Critical messages are still shown, though.
 
+  * Added ability to take multiple snapshots in a given interval every
+    x seconds.  This is currently tied to the 'Shift-F12' key and is not
+    remappable (for now).  The interval can be set with the 'ssdelay'
+    commandline argument, and defaults to 2.  Currently, this can't be
+    changed from within the UI.
+
   * Many changes to the FrameBuffer and UI code for 'smaller' systems.
     Stella will now scale correctly to small screens, down to 320x240
     (which is the absolute lower limit supported).  Related to this,
