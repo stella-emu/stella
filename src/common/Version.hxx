@@ -22,13 +22,7 @@
 
 #include <cstdlib>
 
-#define STELLA_BASE_VERSION "3.1_test5"
-
-#ifdef NIGHTLY_BUILD
-  #define STELLA_VERSION STELLA_BASE_VERSION "pre-" NIGHTLY_BUILD
-#else
-  #define STELLA_VERSION STELLA_BASE_VERSION
-#endif
+#define STELLA_VERSION "3.1"
 
 #define STELLA_BUILD atoi("$Rev$"+6)
 

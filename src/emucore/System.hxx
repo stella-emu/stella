@@ -287,11 +287,14 @@ class System : public Serializable
     void unlockDataBus();
 
   public:
+    /**
+      Describes how a page can be accessed
+    */
     enum PageAccessType {
       PA_READ      = 1 << 0,
       PA_WRITE     = 1 << 1,
       PA_READWRITE = PA_READ | PA_WRITE
-	};
+    };
 
     /**
       Structure used to specify access methods for a page

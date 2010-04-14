@@ -88,6 +88,9 @@
   * Modified 'disasm' debugger command to accept a second argument
     indicating the number of lines to disassemble.
 
+  * Improved tab-completion in the debugger prompt; it now completes
+    on functions and pseudo-registers.
+
   * Added emulation of the "Sega Genesis" controller, with two buttons
     that are directly supported on a real system.
 
