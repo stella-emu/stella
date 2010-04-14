@@ -1921,7 +1921,7 @@ void EventHandler::setPaddleMode(int num, bool showmessage)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setContinuousSnapshots(uInt32 interval)
 {
-  myContSnapshotInterval = myOSystem->frameRate() * interval;
+  myContSnapshotInterval = (uInt32) myOSystem->frameRate() * interval;
   myContSnapshotCounter = 0;
 }
 

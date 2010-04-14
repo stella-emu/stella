@@ -94,7 +94,7 @@ void M6532::install(System& system, Device& device)
   access.directPeekBase = 0; 
   access.directPokeBase = 0;
   access.device = &device;
-  access.type = System::PAGE_READWRITE;
+  access.type = System::PA_READWRITE;
 
   // We're installing in a 2600 system
   for(int address = 0; address < 8192; address += (1 << shift))

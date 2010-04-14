@@ -89,7 +89,7 @@ void CartridgeCV::install(System& system)
   // Map ROM image into the system
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 address = 0x1800; address < 0x2000; address += (1 << shift))
   {
     access.directPeekBase = &myImage[address & 0x07FF];
@@ -99,7 +99,7 @@ void CartridgeCV::install(System& system)
   // Set the page accessing method for the RAM writing pages
   access.directPeekBase = 0;
   access.device = this;
-  access.type = System::PAGE_WRITE;
+  access.type = System::PA_WRITE;
   for(uInt32 j = 0x1400; j < 0x1800; j += (1 << shift))
   {
     access.directPokeBase = &myRAM[j & 0x03FF];
@@ -109,7 +109,7 @@ void CartridgeCV::install(System& system)
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 k = 0x1000; k < 0x1400; k += (1 << shift))
   {
     access.directPeekBase = &myRAM[k & 0x03FF];

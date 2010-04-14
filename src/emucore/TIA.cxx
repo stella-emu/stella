@@ -295,7 +295,7 @@ void TIA::install(System& system, Device& device)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = &device;
-  access.type = System::PAGE_READWRITE;
+  access.type = System::PA_READWRITE;
 
   // We're installing in a 2600 system
   for(uInt32 i = 0; i < 8192; i += (1 << shift))

@@ -173,7 +173,7 @@ void WindowsFilesystemNode::addFile(AbstractFSList& list, ListMode mode,
   bool isDirectory;
 
   // Skip local directory (.) and parent (..)
-  if (!strcmp(asciiName, ".") || !strcmp(asciiName, ".."))
+  if (!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))
     return;
 
   isDirectory = (find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? true : false);

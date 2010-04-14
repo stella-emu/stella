@@ -80,7 +80,7 @@ void CartridgeMC::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READWRITE;
+  access.type = System::PA_READWRITE;
   for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -88,7 +88,7 @@ void CartridgeMC::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;  // We don't yet indicate RAM areas
+  access.type = System::PA_READ;  // We don't yet indicate RAM areas
   for(uInt32 j = 0x1000; j < 0x2000; j += (1 << shift))
     mySystem->setPageAccess(j >> shift, access);
 }

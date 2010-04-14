@@ -94,7 +94,7 @@ void CartridgeDPC::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -102,7 +102,7 @@ void CartridgeDPC::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READWRITE;
+  access.type = System::PA_READWRITE;
   for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
     mySystem->setPageAccess(j >> shift, access);
 
@@ -431,7 +431,7 @@ void CartridgeDPC::bank(uInt16 bank)
   System::PageAccess access;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
 
   // Map Program ROM image into the system
   for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);

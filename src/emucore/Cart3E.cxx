@@ -79,14 +79,14 @@ void Cartridge3E::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READWRITE;
+  access.type = System::PA_READWRITE;
   for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
   // Setup the second segment to always point to the last ROM slice
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 j = 0x1800; j < 0x2000; j += (1 << shift))
   {
     access.directPeekBase = &myImage[(mySize - 2048) + (j & 0x07FF)];
@@ -183,7 +183,7 @@ void Cartridge3E::bank(uInt16 bank)
     System::PageAccess access;
     access.directPokeBase = 0;
     access.device = this;
-    access.type = System::PAGE_READ;
+    access.type = System::PA_READ;
 
     // Map ROM image into the system
     for(uInt32 address = 0x1000; address < 0x1800; address += (1 << shift))
@@ -206,7 +206,7 @@ void Cartridge3E::bank(uInt16 bank)
     System::PageAccess access;
     access.directPokeBase = 0;
     access.device = this;
-    access.type = System::PAGE_READ;
+    access.type = System::PA_READ;
 
     // Map read-port RAM image into the system
     for(address = 0x1000; address < 0x1400; address += (1 << shift))
@@ -216,7 +216,7 @@ void Cartridge3E::bank(uInt16 bank)
     }
 
     access.directPeekBase = 0;
-    access.type = System::PAGE_WRITE;
+    access.type = System::PA_WRITE;
 
     // Map write-port RAM image into the system
     for(address = 0x1400; address < 0x1800; address += (1 << shift))

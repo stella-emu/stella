@@ -77,7 +77,7 @@ void CartridgeSB::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 i = 0x0800; i < 0x0FFF; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -138,7 +138,7 @@ void CartridgeSB::bank(uInt16 bank)
   System::PageAccess access;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))

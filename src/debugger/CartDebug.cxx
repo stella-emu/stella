@@ -132,7 +132,7 @@ int CartDebug::readFromWritePort()
   // differentiates between reads that are normally part of a write cycle vs.
   // ones that are illegal)
   if(mySystem.m6502().lastReadAddress() &&
-      (mySystem.getPageType(addr) & System::PAGE_WRITE) == System::PAGE_WRITE)
+      (mySystem.getPageAccessType(addr) & System::PA_WRITE) == System::PA_WRITE)
     return addr;
   else
     return 0;

@@ -287,11 +287,11 @@ class System : public Serializable
     void unlockDataBus();
 
   public:
-    enum PageType {
-      PAGE_READ      = 1 << 0,
-      PAGE_WRITE     = 1 << 1,
-      PAGE_READWRITE = PAGE_READ | PAGE_WRITE
-    };
+    enum PageAccessType {
+      PA_READ      = 1 << 0,
+      PA_WRITE     = 1 << 1,
+      PA_READWRITE = PA_READ | PA_WRITE
+	};
 
     /**
       Structure used to specify access methods for a page
@@ -322,10 +322,10 @@ class System : public Serializable
 
       /**
         The manner in which the pages are accessed by the system
-        (READ, WRITE, READ|WRITE)
+        (READ, WRITE, READWRITE)
       */
-      PageType type;
-    };
+      PageAccessType type;
+	};
 
     /**
       Set the page accessing method for the specified page.
@@ -349,7 +349,7 @@ class System : public Serializable
       @param addr  The address contained in the page in questions
       @return  The type of page that contains the given address
     */
-    PageType getPageType(uInt16 addr) const;
+    System::PageAccessType getPageAccessType(uInt16 addr) const;
 
     /**
       Mark the page containing this address as being dirty.

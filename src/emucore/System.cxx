@@ -17,7 +17,7 @@
 // $Id$
 //============================================================================
 
-#include <assert.h>
+#include <cassert>
 #include <iostream>
 
 #include "Device.hxx"
@@ -180,7 +180,7 @@ const System::PageAccess& System::getPageAccess(uInt16 page) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-System::PageType System::getPageType(uInt16 addr) const
+System::PageAccessType System::getPageAccessType(uInt16 addr) const
 {
   return myPageAccessTable[(addr & myAddressMask) >> myPageShift].type;
 }

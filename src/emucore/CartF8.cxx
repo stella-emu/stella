@@ -62,7 +62,7 @@ void CartridgeF8::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -134,7 +134,7 @@ void CartridgeF8::bank(uInt16 bank)
   System::PageAccess access;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < (0x1FF8U & ~mask);

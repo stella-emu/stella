@@ -61,7 +61,7 @@ void CartridgeEF::install(System& system)
   access.directPeekBase = 0;
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
   for(uInt32 i = (0x1FE0 & ~mask); i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -109,7 +109,7 @@ void CartridgeEF::bank(uInt16 bank)
   // Setup the page access methods for the current bank
   access.directPokeBase = 0;
   access.device = this;
-  access.type = System::PAGE_READ;
+  access.type = System::PA_READ;
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < (0x1FE0U & ~mask);
