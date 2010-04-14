@@ -30,6 +30,8 @@ class BrowserDialog;
 class CheckboxWidget;
 class PopUpWidget;
 class EditTextWidget;
+class SliderWidget;
+class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -63,7 +65,8 @@ class FileSnapDialog : public Dialog, public CommandSender
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
       kPaletteFileChosenCmd = 'LOpc', // palette file changed
       kPropsFileChosenCmd   = 'LOrc', // properties file changed
-      kEEPROMDirChosenCmd   = 'LOec'  // eeprom dir changed
+      kEEPROMDirChosenCmd   = 'LOec', // eeprom dir changed
+      kSnapIntervalChanged  = 'LOsi'  // continuous snapshot interval
     };
 
     BrowserDialog* myBrowser;
@@ -76,8 +79,12 @@ class FileSnapDialog : public Dialog, public CommandSender
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;
     EditTextWidget* mySnapPath;
-    CheckboxWidget* mySnapSingle;
-    CheckboxWidget* mySnap1x;
+
+    // Other snapshot settings
+    CheckboxWidget*   mySnapSingle;
+    CheckboxWidget*   mySnap1x;
+    SliderWidget*     mySnapSlider;
+    StaticTextWidget* mySnapLabel;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

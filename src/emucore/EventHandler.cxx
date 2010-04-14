@@ -451,14 +451,14 @@ void EventHandler::poll(uInt64 time)
                 myOSystem->frameBuffer().toggleFrameStats();
                 break;
 
-              case SDLK_F12:  // TODO - make this remappable
+              case SDLK_s:  // TODO - make this remappable
                 if(myContSnapshotInterval == 0)
                 {
                   ostringstream buf;
-                  uInt32 delay = myOSystem->settings().getInt("ssdelay");
-                  buf << "Enabling shotshots in " << delay << " second intervals";
+                  uInt32 interval = myOSystem->settings().getInt("ssinterval");
+                  buf << "Enabling shotshots in " << interval << " second intervals";
                   myOSystem->frameBuffer().showMessage(buf.str());
-                  setContinuousSnapshots(delay);
+                  setContinuousSnapshots(interval);
                 }
                 else
                 {
