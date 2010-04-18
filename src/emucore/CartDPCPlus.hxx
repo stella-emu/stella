@@ -26,9 +26,9 @@ class System;
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for DPC+.  There are six 4K program banks, a 
-  4K display bank, and the DPC chip.  For complete details on the DPC chip 
-  see David P. Crane's United States Patent Number 4,644,495.
+  Cartridge class used for DPC+.  There are six 4K program banks, a 4K
+  display bank, 1K frequency table and the DPC chip.  For complete details on
+  the DPC chip see David P. Crane's United States Patent Number 4,644,495.
 
   @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony
   @version $Id$
@@ -208,9 +208,6 @@ class CartridgeDPCPlus : public Cartridge
     // Control Byte to update
     uInt8 mySelectByte;
 
-    // The music volume
-    uInt32 myMusicVolume;
-
     // The music mode counters
     uInt32 myMusicCounters[3];
 
@@ -218,8 +215,8 @@ class CartridgeDPCPlus : public Cartridge
     uInt32 myMusicFrequencies[3];
   
     // The music waveforms
-    uInt32 myMusicWaveforms[3];
-
+    uInt16 myMusicWaveforms[3];
+  
     // The random number generator register
     uInt32 myRandomNumber;
 
