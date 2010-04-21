@@ -23,7 +23,6 @@
 #include <cstdlib>
 
 #define STELLA_VERSION "3.1"
-
 #define STELLA_BUILD atoi("$Rev$"+6)
 
 #endif
