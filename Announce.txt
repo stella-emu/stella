@@ -33,7 +33,7 @@ distributions currently available are:
 
   * Binary distribution for MacOSX 32-bit & 64-bit :
       Stella-3.1-macosx.dmg (32-bit Universal Binary)
-      Stella-3.1_intel-macosx.dmg (32/64-bit Intel-only)
+      Stella-3.1_intel_10.6-macosx.dmg (32/64-bit Intel/Snow-Leopard only)
 
   * Binary distribution in 32-bit & 64-bit Ubuntu DEB format :
       stella_3.1-1_i386.deb

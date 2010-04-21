@@ -12,11 +12,15 @@
                                Release History
 ===========================================================================
 
-3.0 to 3.1: (April 16, 2010)
+3.0 to 3.1: (April 22, 2010)
 
   * Fixed a major bug with text drawing in software rendering mode.
     Switching between windowed and fullscreen mode while text was being
     shown could result in garbled text or even a program crash.
+
+  * Fixed issues when using 'sleep' timing, whereby a lockup could occur
+    when changing video modes, and/or Stella would consume more CPU time
+    than was necessary.
 
   * Integrated Distella disassembler, completely replacing the previous
     disassembler.  The entire infrastructure has not been completely
@@ -45,8 +49,8 @@
     actions are tied to the same keys as the enable ones, except the
     'Shift' key is also used.
 
-  * Added 'DPC+' bankswitching scheme, thanks to Darrell Spice Jr and
-    Fred Quimby.
+  * Added preliminary support for 'DPC+' bankswitching scheme, thanks to
+    Darrell Spice Jr and Fred Quimby.
 
   * Added '16in1' bankswitching scheme, which works with various
     ROMs labeled '128-in-1 ...' (the database has been updated for
@@ -104,9 +108,8 @@
 
       Two versions are available: the first is a 32-bit Universal Binary
       for OSX 10.4 - 10.6, and the second is 32/64-bit Intel-only for
-      OSX 10.4 - 10.6 (64-bit requires 10.6).  The Intel version is
-      compiled with the very latest compiler (Clang), resulting in
-      better performance.
+      OSX 10.6 (aka Snow Leopard).  The Intel version is compiled with the
+      very latest compiler (LLVM/Clang), resulting in better performance.
 
       The keyboard handling is changed to match other systems in terms of
       where the keys actually are on the keyboard (ie, the OSX Command key

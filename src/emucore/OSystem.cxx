@@ -366,8 +366,11 @@ void OSystem::setConfigFile(const string& file)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setFramerate(float framerate)
 {
-  myDisplayFrameRate = framerate;
-  myTimePerFrame = (uInt32)(1000000.0 / myDisplayFrameRate);
+  if(framerate > 0.0)
+  {
+    myDisplayFrameRate = framerate;
+    myTimePerFrame = (uInt32)(1000000.0 / myDisplayFrameRate);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -819,8 +822,10 @@ string OSystem::getROMInfo(const Console* console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::resetLoopTiming()
 {
-  memset(&myTimingInfo, 0, sizeof(TimingInfo));
   myTimingInfo.start = myTimingInfo.virt = getTicks();
+  myTimingInfo.current = 0;
+  myTimingInfo.totalTime = 0;
+  myTimingInfo.totalFrames = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -912,6 +917,15 @@ void OSystem::mainLoop()
       myFrameBuffer->update();
       myTimingInfo.current = getTicks();
       myTimingInfo.virt += myTimePerFrame;
+
+      // Timestamps may periodically go out of sync, particularly on systems
+      // that can have 'negative time' (ie, when the time seems to go backwards)
+      // This normally results in having a very large delay time, so we check
+      // for that and reset the timers when appropriate
+      if((myTimingInfo.virt - myTimingInfo.current) > (myTimePerFrame << 1))
+      {
+        myTimingInfo.start = myTimingInfo.current = myTimingInfo.virt = getTicks();
+      }
 
       if(myTimingInfo.current < myTimingInfo.virt)
         SDL_Delay((myTimingInfo.virt - myTimingInfo.current) / 1000);
