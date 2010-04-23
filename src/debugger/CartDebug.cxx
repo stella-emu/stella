@@ -372,7 +372,16 @@ const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
         (isRead ? ourTIAMnemonicR[addr&0x0f] : ourTIAMnemonicW[addr&0x3f]);
 
     case ADDR_RIOT:
-      return result = ourIOMnemonic[(addr&0xf00)-280];
+    {
+      uInt16 idx = (addr&0xff) - 0x80;
+      if(idx < 24)
+        return result = ourIOMnemonic[idx];
+      else
+      {
+        places = 3;  // fall through to calculate actual address
+        break;
+      }
+    }
 
     case ADDR_RAM:
     case ADDR_ROM:
