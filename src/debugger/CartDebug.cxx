@@ -376,11 +376,7 @@ const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
       uInt16 idx = (addr&0xff) - 0x80;
       if(idx < 24)
         return result = ourIOMnemonic[idx];
-      else
-      {
-        places = 3;  // fall through to calculate actual address
-        break;
-      }
+      break;
     }
 
     case ADDR_RAM:

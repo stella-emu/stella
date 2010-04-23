@@ -29,10 +29,7 @@
 #include "Settings.hxx"
 #include "System.hxx"
 #include "OSystem.hxx"
-
 #include "Console.hxx"
-#include "AtariVox.hxx"
-
 #include "SoundSDL.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -132,7 +129,7 @@ void SoundSDL::open()
       myIsMuted = false;
       myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
 
-		/*
+      /*
         cerr << "Freq: " << (int)myHardwareSpec.freq << endl;
         cerr << "Format: " << (int)myHardwareSpec.format << endl;
         cerr << "Channels: " << (int)myHardwareSpec.channels << endl;
