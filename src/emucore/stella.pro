@@ -9119,7 +9119,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-001"
 "Cartridge.Name" "Dragster (1980) (Activision)"
-"Display.YStart" "27"
+"Display.YStart" "22"
 ""
 
 "Cartridge.MD5" "777aece98d7373998ffb8bc0b5eff1a2"
@@ -14394,7 +14394,7 @@
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
 "Cartridge.Name" "Dragster (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
-"Display.YStart" "24"
+"Display.YStart" "22"
 ""
 
 "Cartridge.MD5" "c2778507b83d9540e9be5713758ff945"
