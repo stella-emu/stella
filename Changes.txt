@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.1 to 3.1.1: (April 26, 2010)
+
+  * Fixed program crash when using RIOT addresses and labels in the
+    debugger console prompt.
+
+-Have fun!
+
+
 3.0 to 3.1: (April 22, 2010)
 
   * Fixed a major bug with text drawing in software rendering mode.
@@ -171,8 +179,6 @@
 
   * Fixed bug in certain editable text fields, where pressing Return/Enter
     would disable any further input.
-
--Have fun!
 
 
 2.8.4 to 3.0: (September 11, 2009)

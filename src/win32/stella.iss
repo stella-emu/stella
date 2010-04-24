@@ -35,4 +35,3 @@ Name: "{group}\Stella"; Filename: "{app}\Stella.exe"; WorkingDir: "{app}"
 Name: "{userdesktop}\Stella"; Filename: "{app}\Stella.exe"; WorkingDir: "{app}"; Tasks: desktopicon
 Name: "{group}\Documentation"; Filename: "{app}\docs\index.html"
 Name: "{group}\Uninstall Stella"; Filename: "{uninstallexe}"
-

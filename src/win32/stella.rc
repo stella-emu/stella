@@ -36,8 +36,8 @@ IDI_ICON                ICON                    "stella.ico"
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 3,1,0,0
- PRODUCTVERSION 3,1,0,0
+ FILEVERSION 3,1,1,0
+ PRODUCTVERSION 3,1,1,0
  FILEFLAGSMASK 0x3fL
 #ifdef _DEBUG
  FILEFLAGS 0x1L
@@ -55,12 +55,12 @@ BEGIN
             VALUE "Comments", "The multi-platform Atari 2600 emulator.  Stella is released under the GPLv2."
             VALUE "CompanyName", "The Stella Team (http://stella.sourceforge.net)"
             VALUE "FileDescription", "Stella"
-            VALUE "FileVersion", "3.1"
+            VALUE "FileVersion", "3.1.1"
             VALUE "InternalName", "Stella"
             VALUE "LegalCopyright", "Copyright (C) 1995-2010 B. Mott & the Stella Team"
             VALUE "OriginalFilename", "Stella.exe"
             VALUE "ProductName", "Stella"
-            VALUE "ProductVersion", "3.1"
+            VALUE "ProductVersion", "3.1.1"
         END
     END
     BLOCK "VarFileInfo"
