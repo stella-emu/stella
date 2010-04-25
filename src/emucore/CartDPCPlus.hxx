@@ -161,9 +161,9 @@ class CartridgeDPCPlus : public Cartridge
     inline void updateMusicModeDataFetchers();
 
     /** 
-      Writes a control byte
+      Call Special Functions
     */
-    inline void writeByte(uInt8 value);
+    inline void callFunction(uInt8 value);
 
   private:
     // Indicates which bank is currently active
@@ -205,8 +205,8 @@ class CartridgeDPCPlus : public Cartridge
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
 
-    // Control Byte to update
-    uInt8 mySelectByte;
+    // Parameter for special functions
+    uInt8 myParameter;
 
     // The music mode counters
     uInt32 myMusicCounters[3];

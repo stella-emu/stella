@@ -27,7 +27,7 @@
 CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
   : myFastFetch(false),
     myLDAimmediate(false),
-    mySelectByte(0),
+    myParameter(0),
     mySystemCycles(0),
     myFractionalClocks(0.0)
 {
@@ -54,7 +54,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 0x2B435044; // "DPC+"
 
-  // Remember startup bank
+  // DPC+ always starts in bank 5
   myStartBank = 5;
 }
 
@@ -146,15 +146,20 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline void CartridgeDPCPlus::writeByte(uInt8 value)
+inline void CartridgeDPCPlus::callFunction(uInt8 value)
 {
-  switch (mySelectByte & 0x7F)
+  //  myParameter
+  switch (value)
   {
+    //case 0:     template for future special functions
+      // CallSpecialFunctionO(myParameter);
+      // break;
+    case 255: // Call user writen ARM code (most likely be C compiled for ARM).
+              // ARM code not supported by Stella at this time.
+      break;
     // reserved
   }
 
-  if (mySelectByte & 0x80)
-    mySelectByte++;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -398,12 +403,12 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
             myFastFetch = (value == 0);
             break;
 
-          case 0x01:  // SELECTBYTE - set byte to update in writeByte()
-            mySelectByte = value;
+          case 0x01:  // PARAMETER - set parameter used by CALLFUNCTION (not all functions use the parameter)
+            myParameter = value;
             break;
 
-          case 0x02:  // WRITEBYTE
-            writeByte(value);
+          case 0x02:  // CALLFUNCTION
+            callFunction(value);
             break;
 
           case 0x03:  // reserved
@@ -413,11 +418,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
           case 0x05:  // WAVEFORM0
           case 0x06:  // WAVEFORM1
           case 0x07:  // WAVEFORM2
-            // make sure index isn't beyond the 29K cartridge space
-            // not sure how the Harmony handles it (most likely uses the ARM code),
-            // but we want to make sure an invalid memory access doesn't crash Stella.
-            if (value >=159) value = 0;
-            myMusicWaveforms[index - 5] =  value;
+            myMusicWaveforms[index - 5] =  value & 0x7f;
             break;
         }
         break;
@@ -632,7 +633,7 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putBool(myLDAimmediate);
 
     // Control Byte to update
-    out.putByte((char) mySelectByte);
+    out.putByte((char) myParameter);
 
     // The music counters
     out.putInt(3);
@@ -714,7 +715,7 @@ bool CartridgeDPCPlus::load(Serializer& in)
     myLDAimmediate = in.getBool();
 
     // Control Byte to update
-    mySelectByte = (uInt8) in.getByte();
+    myParameter = (uInt8) in.getByte();
 
     // The music mode counters for the data fetchers
     limit = (uInt32) in.getInt();

@@ -17,6 +17,8 @@
   * Fixed program crash when using RIOT addresses and labels in the
     debugger console prompt.
 
+  * Updated DPC+ bankswitch scheme to latest specifications.
+
 -Have fun!
 
 
