@@ -56,7 +56,7 @@ bool FrameBufferSoft::initSubsystem(VideoMode& mode)
 
   if(!myRectList)
   {
-    cerr << "ERROR: Unable to get memory for SDL rects" << endl;
+    myOSystem->logMessage("ERROR: Unable to get memory for SDL rects\n", 0);
     return false;
   }
 
@@ -96,7 +96,9 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   myScreen = SDL_SetVideoMode(mode.screen_w, mode.screen_h, 0, mySDLFlags);
   if(myScreen == NULL)
   {
-    cerr << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    ostringstream buf;
+    buf << "ERROR: Unable to open SDL window: " << SDL_GetError() << endl;
+    myOSystem->logMessage(buf.str(), 0);
     return false;
   }
   myFormat = myScreen->format;

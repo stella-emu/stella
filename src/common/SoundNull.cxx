@@ -27,9 +27,7 @@
 SoundNull::SoundNull(OSystem* osystem)
   : Sound(osystem)
 {
-  // Show some info
-  if(myOSystem->settings().getBool("showinfo"))
-    cout << "Sound disabled." << endl << endl;
+  myOSystem->logMessage("Sound disabled.\n\n", 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

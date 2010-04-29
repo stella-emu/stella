@@ -68,13 +68,16 @@ FrameBuffer::~FrameBuffer(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 {
+  ostringstream buf;
+
   // Now (re)initialize the SDL video system
   // These things only have to be done one per FrameBuffer creation
   if(SDL_WasInit(SDL_INIT_VIDEO) == 0)
   {
     if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER) < 0)
     {
-      cerr << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
+      buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
+      myOSystem->logMessage(buf.str(), 0);
       return false;
     }
   }
@@ -108,7 +111,7 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
     if(!initSubsystem(mode))
     {
-      cerr << "ERROR: Couldn't initialize video subsystem" << endl;
+      myOSystem->logMessage("ERROR: Couldn't initialize video subsystem\n", 0);
       return false;
     }
     else
@@ -155,8 +158,8 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 
   // Finally, show some information about the framebuffer,
   // but only on the first initialization
-  if(myInitializedCount == 1 && myOSystem->settings().getBool("showinfo"))
-    cout << about() << endl;
+  if(myInitializedCount == 1)
+    myOSystem->logMessage(about() + "\n", 1);
 
   return true;
 }
@@ -757,7 +760,7 @@ void FrameBuffer::setWindowIcon()
   sscanf(stella_icon[0], "%u %u %u %u", &w, &h, &ncols, &nbytes);
   if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
   {
-    cerr << "ERROR: Couldn't load the icon.\n";
+    myOSystem->logMessage("ERROR: Couldn't load the application icon.\n", 0);
     return;
   }
 
@@ -779,7 +782,7 @@ void FrameBuffer::setWindowIcon()
     }
     else
     {
-      cerr << "ERROR: Couldn't load the icon.\n";
+      myOSystem->logMessage("ERROR: Couldn't load the application icon.\n", 0);
       return;
     }
     rgba[code] = col;

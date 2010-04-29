@@ -177,8 +177,6 @@ void EventHandler::reset(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setupJoysticks()
 {
-  bool showinfo = myOSystem->settings().getBool("showinfo");
-
 #ifdef JOYSTICK_SUPPORT
   // Keep track of how many Stelladaptors we've found
   int saCount = 0;
@@ -198,12 +196,10 @@ void EventHandler::setupJoysticks()
   }
 
   // (Re)-Initialize the joystick subsystem
-  if(showinfo)
-    cout << "Joystick devices found:" << endl;
+  myOSystem->logMessage("Joystick devices found:\n", 1);
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
-    if(showinfo)
-      cout << "No joysticks present." << endl;
+    myOSystem->logMessage("No joysticks present.\n\n", 1);
     return;
   }
 
@@ -224,6 +220,7 @@ void EventHandler::setupJoysticks()
     }
 
     // Figure out what type of joystick this is
+    ostringstream buf;
     if(name.find("Stelladaptor", 0) != string::npos)
     {
       saCount++;
@@ -234,33 +231,31 @@ void EventHandler::setupJoysticks()
       else if(saCount == 2)
         ourJoysticks[i].name = "Stelladaptor 2";
 
-      if(showinfo)
-        cout << "  " << i << ": " << ourJoysticks[i].name << endl;
+      buf << "  " << i << ": " << ourJoysticks[i].name << endl;
+      myOSystem->logMessage(buf.str(), 1);
     }
     else
     {
       ourJoysticks[i].type = JT_REGULAR;
       ourJoysticks[i].name = SDL_JoystickName(i);
 
-      if(showinfo)
-        cout << "  " << i << ": " << ourJoysticks[i].name << " with "
-             << SDL_JoystickNumAxes(ourJoysticks[i].stick) << " axes, "
-             << SDL_JoystickNumHats(ourJoysticks[i].stick) << " hats, "
-             << SDL_JoystickNumBalls(ourJoysticks[i].stick) << " balls, "
-             << SDL_JoystickNumButtons(ourJoysticks[i].stick) << " buttons"
-             << endl;
+      buf << "  " << i << ": " << ourJoysticks[i].name << " with "
+          << SDL_JoystickNumAxes(ourJoysticks[i].stick) << " axes, "
+          << SDL_JoystickNumHats(ourJoysticks[i].stick) << " hats, "
+          << SDL_JoystickNumBalls(ourJoysticks[i].stick) << " balls, "
+          << SDL_JoystickNumButtons(ourJoysticks[i].stick) << " buttons"
+          << endl;
+      myOSystem->logMessage(buf.str(), 1);
     }
   }
-  if(showinfo)
-    cout << endl;
+  myOSystem->logMessage("\n", 1);
 
   // Map the stelladaptors we've found according to the specified ports
   const string& sa1 = myOSystem->settings().getString("sa1");
   const string& sa2 = myOSystem->settings().getString("sa2");
   mapStelladaptors(sa1, sa2);
 #else
-  if(showinfo)
-    cout << "No joysticks present." << endl;
+  myOSystem->logMessage("No joysticks present.\n", 1);
 #endif
 }
 
@@ -268,8 +263,6 @@ void EventHandler::setupJoysticks()
 void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 {
 #ifdef JOYSTICK_SUPPORT
-  bool showinfo = myOSystem->settings().getBool("showinfo");
-
   for(int i = 0; i < kNumJoysticks; i++)
   {
     if(ourJoysticks[i].name == "Stelladaptor 1")
@@ -277,14 +270,12 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
       if(sa1 == "left")
       {
         ourJoysticks[i].type = JT_STELLADAPTOR_LEFT;
-        if(showinfo)
-          cout << "  Stelladaptor 1 emulates left joystick port\n";
+        myOSystem->logMessage("  Stelladaptor 1 emulates left joystick port\n", 1);
       }
       else if(sa1 == "right")
       {
         ourJoysticks[i].type = JT_STELLADAPTOR_RIGHT;
-        if(showinfo)
-          cout << "  Stelladaptor 1 emulates right joystick port\n";
+        myOSystem->logMessage("  Stelladaptor 1 emulates right joystick port\n", 1);
       }
     }
     else if(ourJoysticks[i].name == "Stelladaptor 2")
@@ -292,19 +283,16 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
       if(sa2 == "left")
       {
         ourJoysticks[i].type = JT_STELLADAPTOR_LEFT;
-        if(showinfo)
-          cout << "  Stelladaptor 2 emulates left joystick port\n";
+        myOSystem->logMessage("  Stelladaptor 2 emulates left joystick port\n", 1);
       }
       else if(sa2 == "right")
       {
         ourJoysticks[i].type = JT_STELLADAPTOR_RIGHT;
-        if(showinfo)
-          cout << "  Stelladaptor 2 emulates right joystick port\n";
+        myOSystem->logMessage("  Stelladaptor 2 emulates right joystick port\n", 1);
       }
     }
   }
-  if(showinfo)
-    cout << endl;
+  myOSystem->logMessage("\n", 1);
 
   myOSystem->settings().setString("sa1", sa1);
   myOSystem->settings().setString("sa2", sa2);

@@ -123,33 +123,35 @@ OSystem::OSystem()
 
 #if 0
   // Debugging info for the GUI widgets
-  cerr << "  kStaticTextWidget   = " << kStaticTextWidget   << endl;
-  cerr << "  kEditTextWidget     = " << kEditTextWidget     << endl;
-  cerr << "  kButtonWidget       = " << kButtonWidget       << endl;
-  cerr << "  kCheckboxWidget     = " << kCheckboxWidget     << endl;
-  cerr << "  kSliderWidget       = " << kSliderWidget       << endl;
-  cerr << "  kListWidget         = " << kListWidget         << endl;
-  cerr << "  kScrollBarWidget    = " << kScrollBarWidget    << endl;
-  cerr << "  kPopUpWidget        = " << kPopUpWidget        << endl;
-  cerr << "  kTabWidget          = " << kTabWidget	        << endl;
-  cerr << "  kEventMappingWidget = " << kEventMappingWidget << endl;
-  cerr << "  kEditableWidget     = " << kEditableWidget     << endl;
-  cerr << "  kAudioWidget        = " << kAudioWidget        << endl;
-  cerr << "  kColorWidget        = " << kColorWidget        << endl;
-  cerr << "  kCpuWidget          = " << kCpuWidget          << endl;
-  cerr << "  kDataGridOpsWidget  = " << kDataGridOpsWidget  << endl;
-  cerr << "  kDataGridWidget     = " << kDataGridWidget     << endl;
-  cerr << "  kPromptWidget       = " << kPromptWidget       << endl;
-  cerr << "  kRamWidget          = " << kRamWidget          << endl;
-  cerr << "  kRomListWidget      = " << kRomListWidget      << endl;
-  cerr << "  kRomWidget          = " << kRomWidget          << endl;
-  cerr << "  kTiaInfoWidget      = " << kTiaInfoWidget      << endl;
-  cerr << "  kTiaOutputWidget    = " << kTiaOutputWidget    << endl;
-  cerr << "  kTiaWidget          = " << kTiaWidget          << endl;
-  cerr << "  kTiaZoomWidget      = " << kTiaZoomWidget      << endl;
-  cerr << "  kToggleBitWidget    = " << kToggleBitWidget    << endl;
-  cerr << "  kTogglePixelWidget  = " << kTogglePixelWidget  << endl;
-  cerr << "  kToggleWidget       = " << kToggleWidget       << endl;
+  ostringstream buf;
+  buf << "  kStaticTextWidget   = " << kStaticTextWidget   << endl
+      << "  kEditTextWidget     = " << kEditTextWidget     << endl
+      << "  kButtonWidget       = " << kButtonWidget       << endl
+      << "  kCheckboxWidget     = " << kCheckboxWidget     << endl
+      << "  kSliderWidget       = " << kSliderWidget       << endl
+      << "  kListWidget         = " << kListWidget         << endl
+      << "  kScrollBarWidget    = " << kScrollBarWidget    << endl
+      << "  kPopUpWidget        = " << kPopUpWidget        << endl
+      << "  kTabWidget          = " << kTabWidget          << endl
+      << "  kEventMappingWidget = " << kEventMappingWidget << endl
+      << "  kEditableWidget     = " << kEditableWidget     << endl
+      << "  kAudioWidget        = " << kAudioWidget        << endl
+      << "  kColorWidget        = " << kColorWidget        << endl
+      << "  kCpuWidget          = " << kCpuWidget          << endl
+      << "  kDataGridOpsWidget  = " << kDataGridOpsWidget  << endl
+      << "  kDataGridWidget     = " << kDataGridWidget     << endl
+      << "  kPromptWidget       = " << kPromptWidget       << endl
+      << "  kRamWidget          = " << kRamWidget          << endl
+      << "  kRomListWidget      = " << kRomListWidget      << endl
+      << "  kRomWidget          = " << kRomWidget          << endl
+      << "  kTiaInfoWidget      = " << kTiaInfoWidget      << endl
+      << "  kTiaOutputWidget    = " << kTiaOutputWidget    << endl
+      << "  kTiaWidget          = " << kTiaWidget          << endl
+      << "  kTiaZoomWidget      = " << kTiaZoomWidget      << endl
+      << "  kToggleBitWidget    = " << kToggleBitWidget    << endl
+      << "  kTogglePixelWidget  = " << kTogglePixelWidget  << endl
+      << "  kToggleWidget       = " << kToggleWidget       << endl;
+  logMessage(buf.str(), 0);
 #endif
 }
 
@@ -194,6 +196,12 @@ bool OSystem::create()
 {
   // Get updated paths for all configuration files
   setConfigPaths();
+  ostringstream buf;
+  buf << "Base directory:       '" << myBaseDir << "'" << endl
+      << "Configuration file:   '" << myConfigFile << "'" << endl
+      << "User game properties: '" << myPropertiesFile << "'" << endl
+      << endl;
+  logMessage(buf.str(), 1);
 
   // Get relevant information about the video hardware
   // This must be done before any graphics context is created, since
@@ -412,7 +420,7 @@ bool OSystem::createFrameBuffer()
 #endif
 
     default:  // Should never happen
-      cerr << "ERROR: Unknown emulation state in createFrameBuffer()" << endl;
+      logMessage("ERROR: Unknown emulation state in createFrameBuffer()\n", 0);
       break;
   }
 
@@ -434,7 +442,7 @@ bool OSystem::createFrameBuffer()
 fallback:
   if(myFrameBuffer && myFrameBuffer->type() == kGLBuffer)
   {
-    cerr << "ERROR: OpenGL mode failed, fallback to software" << endl;
+    logMessage("ERROR: OpenGL mode failed, fallback to software\n", 0);
     delete myFrameBuffer; myFrameBuffer = NULL;
     mySettings->setString("video", "soft");
     bool ret = createFrameBuffer();
@@ -463,6 +471,8 @@ void OSystem::createSound()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createConsole(const string& romfile, const string& md5sum)
 {
+  ostringstream buf;
+
   // Do a little error checking; it shouldn't be necessary
   if(myConsole) deleteConsole();
 
@@ -474,7 +484,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     showmessage = true;  // we show a message if a ROM is being reloaded
     if(myRomFile == "")
     {
-      cerr << "ERROR: Rom file not specified ..." << endl;
+      logMessage("ERROR: Rom file not specified ...\n", 0);
       return false;
     }
   }
@@ -511,7 +521,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     myEventHandler->reset(EventHandler::S_EMULATE);
     if(!createFrameBuffer())  // Takes care of initializeVideo()
     {
-      cerr << "ERROR: Couldn't create framebuffer for console" << endl;
+      logMessage("ERROR: Couldn't create framebuffer for console\n", 0);
       myEventHandler->reset(EventHandler::S_LAUNCHER);
       return false;
     }
@@ -524,10 +534,10 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       else
         myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
     }
-    if(mySettings->getBool("showinfo"))
-      cout << "Game console created:" << endl
-           << "  ROM file: " << myRomFile << endl << endl
-           << getROMInfo(myConsole) << endl;
+    buf << "Game console created:" << endl
+        << "  ROM file: " << myRomFile << endl << endl
+        << getROMInfo(myConsole) << endl;
+    logMessage(buf.str(), 1);
 
     // Update the timing info for a new console run
     resetLoopTiming();
@@ -537,7 +547,8 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   }
   else
   {
-    cerr << "ERROR: Couldn't create console for " << myRomFile << endl;
+    buf << "ERROR: Couldn't create console for " << myRomFile << endl;
+    logMessage(buf.str(), 0);
     retval = false;
   }
 
@@ -562,16 +573,16 @@ void OSystem::deleteConsole()
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->saveCheats(myConsole->properties().get(Cartridge_MD5));
   #endif
-    if(mySettings->getBool("showinfo"))
-    {
-      double executionTime   = (double) myTimingInfo.totalTime / 1000000.0;
-      double framesPerSecond = (double) myTimingInfo.totalFrames / executionTime;
-      cout << "Game console stats:" << endl
-           << "  Total frames drawn: " << myTimingInfo.totalFrames << endl
-           << "  Total time (sec):   " << executionTime << endl
-           << "  Frames per second:  " << framesPerSecond << endl
-           << endl;
-    }
+    ostringstream buf;
+    double executionTime   = (double) myTimingInfo.totalTime / 1000000.0;
+    double framesPerSecond = (double) myTimingInfo.totalFrames / executionTime;
+    buf << "Game console stats:" << endl
+        << "  Total frames drawn: " << myTimingInfo.totalFrames << endl
+        << "  Total time (sec):   " << executionTime << endl
+        << "  Frames per second:  " << framesPerSecond << endl
+        << endl;
+    logMessage(buf.str(), 1);
+
     delete myConsole;  myConsole = NULL;
   }
 }
@@ -582,7 +593,7 @@ bool OSystem::createLauncher()
   myEventHandler->reset(EventHandler::S_LAUNCHER);
   if(!createFrameBuffer())
   {
-    cerr << "ERROR: Couldn't create launcher" << endl;
+    logMessage("ERROR: Couldn't create launcher\n", 0);
     return false;
   }
   myLauncher->reStack();
@@ -623,6 +634,15 @@ string OSystem::MD5FromFile(const string& filename)
       delete[] image;
 
   return md5;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::logMessage(const string& message, uInt8 level)
+{
+  if(level == 0)
+    cerr << message;
+  else if(level <= (uInt8)mySettings->getInt("showinfo"))
+    cout << message;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -689,7 +709,11 @@ Console* OSystem::openConsole(const string& romfile, string& md5,
       console = new Console(this, cart, props);
   }
   else
-    cerr << "ERROR: Couldn't open " << romfile << endl;
+  {
+    ostringstream buf;
+    buf << "ERROR: Couldn't open \'" << romfile << "\'" << endl;
+    logMessage(buf.str(), 0);
+  }
 
   // Free the image since we don't need it any longer
   if(image != 0 && size > 0)

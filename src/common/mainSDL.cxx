@@ -65,6 +65,8 @@ OSystem* theOSystem = (OSystem*) NULL;
 // Does general Cleanup in case any operation failed (or at end of program)
 int Cleanup()
 {
+  theOSystem->logMessage("Cleanup from mainSDL\n", 2);
+
   if(theOSystem)
     delete theOSystem;
 
@@ -99,21 +101,25 @@ int main(int argc, char* argv[])
   #error Unsupported platform!
 #endif
 
+  theOSystem->logMessage("Loading config options ...\n", 2);
   theOSystem->settings().loadConfig();
 
   // Take care of commandline arguments
+  theOSystem->logMessage("Loading commandline arguments ...\n", 2);
   string romfile = theOSystem->settings().loadCommandLine(argc, argv);
   FilesystemNode romnode(romfile);
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
+  theOSystem->logMessage("Validating config options ...\n", 2);
   theOSystem->settings().validate();
 
   // Create the full OSystem after the settings, since settings are
   // probably needed for defaults
+  theOSystem->logMessage("Creating the OSystem ...\n", 2);
   if(!theOSystem->create())
   {
-    cout << "ERROR: Couldn't create OSystem" << endl;
+    theOSystem->logMessage("ERROR: Couldn't create OSystem\n", 0);
     return Cleanup();
   }
 
@@ -122,20 +128,23 @@ int main(int argc, char* argv[])
   // If so, show the information and immediately exit
   if(theOSystem->settings().getBool("listrominfo"))
   {
+    theOSystem->logMessage("Showing output from 'listrominfo' ...\n", 2);
     theOSystem->propSet().print();
     return Cleanup();
   }
   else if(theOSystem->settings().getBool("rominfo"))
   {
+    theOSystem->logMessage("Showing output from 'rominfo' ...\n", 2);
     if(argc > 1 && romnode.exists())
-      cout << theOSystem->getROMInfo(romfile);
+      theOSystem->logMessage(theOSystem->getROMInfo(romfile), 0);
     else
-      cout << "ERROR: ROM doesn't exist" << endl;
+      theOSystem->logMessage("ERROR: ROM doesn't exist\n", 0);
 
     return Cleanup();
   }
   else if(theOSystem->settings().getBool("help"))
   {
+    theOSystem->logMessage("Displaying usage\n", 2);
     theOSystem->settings().usage();
     return Cleanup();
   }
@@ -160,6 +169,7 @@ int main(int argc, char* argv[])
   //   mode and let the main event loop take care of opening a new console/ROM.
   if(argc == 1 || romfile == "" || !romnode.exists() || romnode.isDirectory())
   {
+    theOSystem->logMessage("Attempting to use ROM launcher ...\n", 2);
     if(theOSystem->settings().getBool("uselauncher"))
     {
       if(!theOSystem->createLauncher())
@@ -167,6 +177,7 @@ int main(int argc, char* argv[])
     }
     else
     {
+      theOSystem->logMessage("Launcher could not be started, showing usage\n", 2);
       theOSystem->settings().usage();
       return Cleanup();
     }
@@ -175,6 +186,7 @@ int main(int argc, char* argv[])
   {
     if(theOSystem->settings().getBool("takesnapshot"))
     {
+      theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...\n", 2);
       for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
       theOSystem->eventHandler().takeSnapshot();
       return Cleanup();
@@ -205,7 +217,9 @@ int main(int argc, char* argv[])
   while(SDL_PollEvent(&event)) /* swallow event */ ;
 
   // Start the main loop, and don't exit until the user issues a QUIT command
+  theOSystem->logMessage("Starting main loop ...\n", 2);
   theOSystem->mainLoop();
+  theOSystem->logMessage("Finished main loop ...\n", 2);
 
   // Cleanup time ...
   return Cleanup();

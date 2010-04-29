@@ -358,13 +358,22 @@ class OSystem
       Calculate the MD5sum of the given file.
 
       @param filename  Filename of potential ROM file
-     */
+    */
     string MD5FromFile(const string& filename);
 
     /**
       Issue a quit event to the OSystem.
     */
     void quit() { myQuitLoop = true; }
+
+    /**
+      Output a message to the a log (normally stdout).
+
+      @param message  The message to be output
+      @param level    If 0, always output the message, only output when
+                      level is less than or equal to that in 'showinfo'
+    */
+    void logMessage(const string& message, uInt8 level);
 
   public:
     //////////////////////////////////////////////////////////////////////

@@ -67,8 +67,7 @@ void SoundSDL::open()
   if(!myIsEnabled)
   {
     close();
-    if(myOSystem->settings().getBool("showinfo"))
-      cout << "Sound disabled." << endl << endl;
+    myOSystem->logMessage("Sound disabled.\n\n", 1);
     return;
   }
 
@@ -82,10 +81,12 @@ void SoundSDL::open()
     myIsMuted = false;
     myLastRegisterSetCycle = 0;
 
+    ostringstream buf;
     if(SDL_InitSubSystem(SDL_INIT_AUDIO) < 0)
     {
-      cerr << "WARNING: Couldn't initialize SDL audio system! " << endl;
-      cerr << "         " << SDL_GetError() << endl;
+      buf << "WARNING: Couldn't initialize SDL audio system! " << endl
+          << "         " << SDL_GetError() << endl;
+      myOSystem->logMessage(buf.str(), 0);
       return;
     }
     else
@@ -108,8 +109,9 @@ void SoundSDL::open()
 
       if(SDL_OpenAudio(&desired, &myHardwareSpec) < 0)
       {
-        cerr << "WARNING: Couldn't open SDL audio system! " << endl;
-        cerr << "         " << SDL_GetError() << endl;
+        buf << "WARNING: Couldn't open SDL audio system! " << endl
+            << "         " << SDL_GetError() << endl;
+        myOSystem->logMessage(buf.str(), 0);
         return;
       }
 
@@ -117,9 +119,10 @@ void SoundSDL::open()
       // will not work so we'll need to disable the audio support)
       if(((float)myHardwareSpec.samples / (float)myHardwareSpec.freq) >= 0.25)
       {
-        cerr << "WARNING: Sound device doesn't support realtime audio! Make ";
-        cerr << "sure a sound" << endl;
-        cerr << "         server isn't running.  Audio is disabled." << endl;
+        buf << "WARNING: Sound device doesn't support realtime audio! Make "
+            << "sure a sound" << endl
+            << "         server isn't running.  Audio is disabled." << endl;
+        myOSystem->logMessage(buf.str(), 0);
 
         SDL_CloseAudio();
         return;
@@ -128,15 +131,6 @@ void SoundSDL::open()
       myIsInitializedFlag = true;
       myIsMuted = false;
       myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
-
-      /*
-        cerr << "Freq: " << (int)myHardwareSpec.freq << endl;
-        cerr << "Format: " << (int)myHardwareSpec.format << endl;
-        cerr << "Channels: " << (int)myHardwareSpec.channels << endl;
-        cerr << "Silence: " << (int)myHardwareSpec.silence << endl;
-        cerr << "Samples: " << (int)myHardwareSpec.samples << endl;
-        cerr << "Size: " << (int)myHardwareSpec.size << endl;
-		  */
 
       // Now initialize the TIASound object which will actually generate sound
       myTIASound.outputFrequency(myHardwareSpec.freq);
@@ -151,15 +145,16 @@ void SoundSDL::open()
       setVolume(myVolume);
 
       // Show some info
-      if(myOSystem->settings().getBool("showinfo"))
-        cout << "Sound enabled:"  << endl
-             << "  Volume     : " << myVolume << endl
-             << "  Frag size  : " << fragsize << endl
-             << "  Frequency  : " << myHardwareSpec.freq << endl
-             << "  Format     : " << myHardwareSpec.format << endl
-             << "  TIA Freq.  : " << tiafreq << endl
-             << "  Channels   : " << myNumChannels << endl
-             << "  Clip volume: " << (int)clipvol << endl << endl;
+      buf << "Sound enabled:"  << endl
+          << "  Volume:      " << myVolume << endl
+          << "  Frag size:   " << fragsize << endl
+          << "  Frequency:   " << myHardwareSpec.freq << endl
+          << "  Format:      " << myHardwareSpec.format << endl
+          << "  TIA Freq:    " << tiafreq << endl
+          << "  Channels:    " << myNumChannels << endl
+          << "  Clip volume: " << (int)clipvol << endl
+          << endl;
+      myOSystem->logMessage(buf.str(), 1);
     }
   }
 
@@ -321,7 +316,6 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
       myTIASound.set(info.addr, info.value);
       myRegWriteQueue.dequeue();
     }
-//    cout << "Removed Items from RegWriteQueue!" << endl;
   }
 
   double position = 0.0;
@@ -431,7 +425,9 @@ bool SoundSDL::save(Serializer& out) const
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: SoundSDL::save" << endl << "  " << msg << endl;
+    ostringstream buf;
+    buf << "ERROR: SoundSDL::save" << endl << "  " << msg << endl;
+    myOSystem->logMessage(buf.str(), 0);
     return false;
   }
 
@@ -475,7 +471,9 @@ bool SoundSDL::load(Serializer& in)
   }
   catch(const char* msg)
   {
-    cerr << "ERROR: SoundSDL::load" << endl << "  " << msg << endl;
+    ostringstream buf;
+    buf << "ERROR: SoundSDL::load" << endl << "  " << msg << endl;
+    myOSystem->logMessage(buf.str(), 0);
     return false;
   }
 

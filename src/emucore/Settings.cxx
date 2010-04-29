@@ -118,7 +118,7 @@ Settings::Settings(OSystem* osystem)
 
   // Misc options
   setInternal("autoslot", "false");
-  setInternal("showinfo", "false");
+  setInternal("showinfo", "1");
   setInternal("tiadriven", "false");
   setInternal("avoxport", "");
   setInternal("stats", "false");
@@ -147,7 +147,7 @@ void Settings::loadConfig()
   ifstream in(myOSystem->configFile().c_str());
   if(!in || !in.is_open())
   {
-    cout << "ERROR: Couldn't load settings file\n";
+    myOSystem->logMessage("ERROR: Couldn't load settings file\n", 0);
     return;
   }
 
@@ -212,7 +212,9 @@ string Settings::loadCommandLine(int argc, char** argv)
 
       if(++i >= argc)
       {
-        cerr << "Missing argument for '" << key << "'" << endl;
+        ostringstream buf;
+        buf << "Missing argument for '" << key << "'" << endl;
+        myOSystem->logMessage(buf.str(), 0);
         return "";
       }
       string value = argv[i];
@@ -297,6 +299,10 @@ void Settings::validate()
   s = getString("tv_noise");
   if(s != "low" && s != "medium" && s != "high")
     setInternal("tv_noise", "off");
+
+  i = getInt("showinfo");
+  if(i < 0 || i > 2)
+    setInternal("showinfo", "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -363,7 +369,7 @@ void Settings::usage()
     << endl
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
-    << "  -showinfo     <1|0>          Shows some game info on commandline\n"
+    << "  -showinfo     <0|1|2>        Shows some application/game info on commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
     << "  -usemouse     <1|0>          Use mouse for various controllers (paddle, driving, etc)\n"
@@ -457,7 +463,7 @@ void Settings::saveConfig()
   ofstream out(myOSystem->configFile().c_str());
   if(!out || !out.is_open())
   {
-    cout << "ERROR: Couldn't save settings file\n";
+    myOSystem->logMessage("ERROR: Couldn't save settings file\n", 0);
     return;
   }
 

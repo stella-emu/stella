@@ -49,9 +49,6 @@ PropertiesSet::~PropertiesSet()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::load(const string& filename)
 {
-  if(myOSystem->settings().getBool("showinfo"))
-    cout << "User game properties: \'" << filename << "\'\n";
-
   ifstream in(filename.c_str(), ios::in);
 
   // Loop reading properties
