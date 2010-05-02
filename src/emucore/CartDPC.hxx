@@ -156,17 +156,17 @@ class CartridgeDPC : public Cartridge
     void updateMusicModeDataFetchers();
 
   private:
+    // The ROM image
+    uInt8 myImage[8192 + 2048 + 255];
+
+    // Pointer to the 8K program ROM image of the cartridge
+    uInt8* myProgramImage;
+
+    // Pointer to the 2K display ROM image of the cartridge
+    uInt8* myDisplayImage;
+
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
-
-    // The 8K program ROM image of the cartridge
-    uInt8 myProgramImage[8192];
-
-    // The 2K display ROM image of the cartridge
-    uInt8 myDisplayImage[2048];
-
-    // Copy of the raw image, for use by getImage()
-    uInt8 myImageCopy[8192 + 2048 + 255];
 
     // The top registers for the data fetchers
     uInt8 myTops[8];

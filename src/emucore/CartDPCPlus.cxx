@@ -31,18 +31,30 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
     mySystemCycles(0),
     myFractionalClocks(0.0)
 {
-  // Make a copy of the entire image as-is, for use by getImage()
-  // (this wastes 29K of RAM, should be controlled by a #ifdef)
-  memcpy(myImageCopy, image, size);
+  // Store image, making sure it's at least 29KB
+  uInt32 minsize = 4096 * 6 + 4096 + 1024 + 255;
+  mySize = BSPF_max(minsize, size);
+  myImage = new uInt8[mySize];
+  memcpy(myImage, image, size);
 
-  // Copy the program ROM image into my buffer
-  memcpy(myProgramImage, image, 4096 * 6);
+  // Pointer to the program ROM (24K @ 0 byte offset)
+  myProgramImage = myImage;
 
-  // Copy the display ROM image into my buffer
-  memcpy(myDisplayImage, image + 4096 * 6, 4096);
+  // Pointer to the display ROM (4K @ 24K offset)
+  myDisplayImage = myProgramImage + 4096 * 6;
 
-  // Copy the Frequency ROM image into my buffer
-  memcpy(myFrequencyImage, image + 4096 * 6 + 4096, 1024);
+  // Pointer to the Frequency ROM (1K @ 28K offset)
+  myFrequencyImage = myDisplayImage + 4096;
+
+  // If the image is larger than 29K, we assume any excess at the
+  // beginning is ARM code, and skip over it
+  if(size > 29 * 1024)
+  {
+    int offset = size - 29 * 1024;
+    myProgramImage   += offset;
+    myDisplayImage   += offset;
+    myFrequencyImage += offset;
+  }
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
@@ -61,6 +73,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeDPCPlus::~CartridgeDPCPlus()
 {
+  delete[] myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -159,7 +172,6 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       break;
     // reserved
   }
-
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -234,11 +246,11 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
             // Update the music data fetchers (counter & flag)
             updateMusicModeDataFetchers();
 
-            // using myImageCopy[] instead of myDisplayImage[] because waveforms
+            // using myProgramImage[] instead of myDisplayImage[] because waveforms
             // could also be in the 1K Frequency table.
-            uInt32 i = myImageCopy[6*4096 + (myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
-                       myImageCopy[6*4096 + (myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
-                       myImageCopy[6*4096 + (myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
+            uInt32 i = myProgramImage[6*4096 + (myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
+                       myProgramImage[6*4096 + (myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
+                       myProgramImage[6*4096 + (myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
 
             result = (uInt8)i;
             break;
@@ -580,8 +592,8 @@ bool CartridgeDPCPlus::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeDPCPlus::getImage(int& size) const
 {
-  size = 4096 * 6 + 4096 + 1024 + 255;
-  return myImageCopy;
+  size = mySize;
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

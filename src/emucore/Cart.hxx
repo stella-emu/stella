@@ -259,6 +259,11 @@ class Cartridge : public Device
       Returns true if the image is probably a 3E bankswitching cartridge
     */
     static bool isProbably3E(const uInt8* image, uInt32 size);
+	
+    /**
+      Returns true if the image is probably a DPC+ bankswitching cartridge
+    */
+    static bool isProbablyDPCplus(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably a E0 bankswitching cartridge

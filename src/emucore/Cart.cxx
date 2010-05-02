@@ -390,6 +390,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3E";
     else if(isProbably3F(image, size))
       type = "3F";
+    else if(isProbablyDPCplus(image, size))
+      type = "DPC+";
     else
       type = "F4";
   }
@@ -513,6 +515,14 @@ bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
   // immediate mode LDA
   uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
   return searchForBytes(image, size, signature, 4, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyDPCplus(const uInt8* image, uInt32 size)
+{
+  // DPC+ ARM code has 2 occurrences of the string DPC+
+  uInt8 signature[] = { 0x44, 0x50, 0x43, 0x2B };  // DPC+
+  return searchForBytes(image, size, signature, 4, 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

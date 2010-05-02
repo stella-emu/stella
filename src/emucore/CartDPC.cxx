@@ -28,15 +28,14 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
   : mySystemCycles(0),
     myFractionalClocks(0.0)
 {
-  // Make a copy of the entire image as-is, for use by getImage()
-  // (this wastes 12K of RAM, should be controlled by a #ifdef)
-  memcpy(myImageCopy, image, BSPF_min(size, 8192u + 2048u + 255u));
+  // Make a copy of the entire image
+  memcpy(myImage, image, BSPF_min(size, 8192u + 2048u + 255u));
 
-  // Copy the program ROM image into my buffer
-  memcpy(myProgramImage, image, 8192);
+  // Pointer to the program ROM (8K @ 0 byte offset)
+  myProgramImage = myImage;
 
-  // Copy the display ROM image into my buffer
-  memcpy(myDisplayImage, image + 8192, 2048);
+  // Pointer to the display ROM (2K @ 8K offset)
+  myDisplayImage = myProgramImage + 8192;
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
@@ -474,7 +473,7 @@ bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 const uInt8* CartridgeDPC::getImage(int& size) const
 {
   size = 8192 + 2048 + 255;
-  return myImageCopy;
+  return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

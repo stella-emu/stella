@@ -166,21 +166,22 @@ class CartridgeDPCPlus : public Cartridge
     inline void callFunction(uInt8 value);
 
   private:
+    // The ROM image and size
+    uInt8* myImage;
+    uInt32 mySize;
+
+    // Pointer to the 24K program ROM image of the cartridge
+    uInt8* myProgramImage;
+
+    // Pointer to the 4K display ROM image of the cartridge
+    uInt8* myDisplayImage;
+
+    // Pointer to the 1K frequency table
+    uInt8* myFrequencyImage;
+
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
-
-    // The 24K program ROM image of the cartridge
-    uInt8 myProgramImage[4096 * 6];
-
-    // The 4K display ROM image of the cartridge
-    uInt8 myDisplayImage[4096];
-
-    // The 1K frequency table
-    uInt8 myFrequencyImage[1024];
   
-    // Copy of the raw image, for use by getImage()
-    uInt8 myImageCopy[4096 * 6 + 4096 + 1024 + 255];
-
     // The top registers for the data fetchers
     uInt8 myTops[8];
 
