@@ -101,8 +101,8 @@ int main(int argc, char* argv[])
   #error Unsupported platform!
 #endif
 
-  theOSystem->logMessage("Loading config options ...\n", 2);
   theOSystem->settings().loadConfig();
+  theOSystem->logMessage("Loading config options ...\n", 2);
 
   // Take care of commandline arguments
   theOSystem->logMessage("Loading commandline arguments ...\n", 2);

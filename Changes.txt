@@ -12,14 +12,33 @@
                                Release History
 ===========================================================================
 
+3.1.1 to 3.1.2: (May 3, 2010)
+
+  * Modified 'showinfo' command to accept levels of output, where
+    increasingly larger numbers provide more debug output.  Related to
+    this, added UI item to modify 'showinfo'.
+
+  * Updated DPC+ bankswitch scheme to latest specifications, including
+    support for 32K ROMs with ARM code (the ARM code is ignored for now).
+
+  * Fixed bug in saving patched ROMs using DPC and DPC+ bankswitch
+    schemes; the saved image didn't actually include any changes made by
+    the user.
+
+  * Removed 'uselauncher' from the UI, since disabling it will remove
+    the ROM launcher on all future runs, and not allow one to enable it
+    again.  It's still available from the commandline, for those that
+    have a need for it.
+
+-Have fun!
+
+
 3.1 to 3.1.1: (April 26, 2010)
 
   * Fixed program crash when using RIOT addresses and labels in the
     debugger console prompt.
 
   * Updated DPC+ bankswitch scheme to latest specifications.
-
--Have fun!
 
 
 3.0 to 3.1: (April 22, 2010)

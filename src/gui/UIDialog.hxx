@@ -51,7 +51,6 @@ class UIDialog : public Dialog
     StaticTextWidget* myLauncherHeightLabel;
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
-    CheckboxWidget*   myUseLauncherBox;
 
     // Debugger options
     SliderWidget*     myDebuggerWidthSlider;
@@ -65,6 +64,8 @@ class UIDialog : public Dialog
     StaticTextWidget* myListDelayLabel;
     SliderWidget*     myWheelLinesSlider;
     StaticTextWidget* myWheelLinesLabel;
+    SliderWidget*     myShowInfoSlider;
+    StaticTextWidget* myShowInfoLabel;
     
   private:
     void loadConfig();
@@ -79,7 +80,8 @@ class UIDialog : public Dialog
       kDWidthChanged  = 'UIdw',
       kDHeightChanged = 'UIdh',
       kLQDelayChanged = 'UIqd',
-      kWLinesChanged  = 'UIsl'
+      kWLinesChanged  = 'UIsl',
+      kSInfoChanged   = 'UIsi'
     };
 };
 

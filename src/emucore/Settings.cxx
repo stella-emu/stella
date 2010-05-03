@@ -210,21 +210,32 @@ string Settings::loadCommandLine(int argc, char** argv)
         continue;
       }
 
+      ostringstream buf;
       if(++i >= argc)
       {
-        ostringstream buf;
         buf << "Missing argument for '" << key << "'" << endl;
         myOSystem->logMessage(buf.str(), 0);
         return "";
       }
       string value = argv[i];
 
+      buf.str("");
+      buf << "  key = '" << key << "', value = '" << value << "'";
+
       // Settings read from the commandline must not be saved to 
       // the rc-file, unless they were previously set
       if(int idx = getInternalPos(key) != -1)
+      {
         setInternal(key, value, idx);   // don't set initialValue here
+        buf << "(I)\n";
+      }
       else
+      {
         setExternal(key, value);
+        buf << "(E)\n";
+      }
+
+      myOSystem->logMessage(buf.str(), 2);
     }
     else
       return key;

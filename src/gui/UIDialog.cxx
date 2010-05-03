@@ -54,7 +54,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 42 * fontWidth + 10;
-  _h = 10 * (lineHeight + 4) + 10;
+  _h = 9 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = ypos = vBorder;
@@ -120,13 +120,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myRomViewerPopup);
   ypos += lineHeight + 4;
 
-  // Should we use the built-in ROM launcher
-  myUseLauncherBox = new CheckboxWidget(myTab, font, xpos+20, ypos+10,
-                                        "Use ROM launcher");
-  wid.push_back(myUseLauncherBox);
-
   // Add message concerning usage
-  xpos = vBorder; ypos += 2*(lineHeight + 4);
+  xpos = vBorder; ypos += 1*(lineHeight + 4);
   lwidth = font.getStringWidth("(*) Changes require application restart");
   new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
                        "(*) Changes require application restart",
@@ -228,6 +223,21 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myWheelLinesLabel->setFlags(WIDGET_CLEARBG);
   ypos += lineHeight + 4;
 
+  // Amount of output to show with 'showinfo'
+  myShowInfoSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
+                                      lineHeight, "Show Info level: ",
+                                      lwidth, kSInfoChanged);
+  myShowInfoSlider->setMinValue(0);
+  myShowInfoSlider->setMaxValue(2);
+  myShowInfoSlider->setStepValue(1);
+  wid.push_back(myShowInfoSlider);
+  myShowInfoLabel =
+      new StaticTextWidget(myTab, font,
+                           xpos + myShowInfoSlider->getWidth() + 4,
+                           ypos + 1, 2*fontWidth, fontHeight, "", kTextAlignLeft);
+  myShowInfoLabel->setFlags(WIDGET_CLEARBG);
+  ypos += lineHeight + 4;
+
   // Add items for tab 2
   addToFocusList(wid, tabID);
 
@@ -285,9 +295,6 @@ void UIDialog::loadConfig()
   const string& viewer = instance().settings().getString("romviewer");
   myRomViewerPopup->setSelected(viewer, "0");
 
-  // Use ROM launcher
-  myUseLauncherBox->setState(instance().settings().getBool("uselauncher"));
-
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
   w = BSPF_max(w, 1050);
@@ -316,6 +323,11 @@ void UIDialog::loadConfig()
   myWheelLinesSlider->setValue(mw);
   myWheelLinesLabel->setValue(mw);
 
+  // Showinfo
+  int si = instance().settings().getInt("showinfo");
+  myShowInfoSlider->setValue(si);
+  myShowInfoLabel->setValue(si);
+
   myTab->loadConfig();
 }
 
@@ -334,9 +346,6 @@ void UIDialog::saveConfig()
   instance().settings().setString("romviewer",
     myRomViewerPopup->getSelectedTag());
 
-  // Use ROM launcher
-  instance().settings().setBool("uselauncher", myUseLauncherBox->getState());
-
   // Debugger size
   instance().settings().setSize("debuggerres", 
     myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
@@ -354,6 +363,9 @@ void UIDialog::saveConfig()
   int mw = myWheelLinesSlider->getValue();
   instance().settings().setInt("mwheel", mw);
   ScrollBarWidget::setWheelLines(mw);
+
+  // Show info
+  instance().settings().setInt("showinfo", myShowInfoSlider->getValue());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -371,7 +383,6 @@ void UIDialog::setDefaults()
       myLauncherHeightLabel->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("0", "");
-      myUseLauncherBox->setState(true);
       break;
     }
 
@@ -388,6 +399,8 @@ void UIDialog::setDefaults()
       myListDelayLabel->setValue(300);
       myWheelLinesSlider->setValue(4);
       myWheelLinesLabel->setValue(4);
+      myShowInfoSlider->setValue(1);
+      myShowInfoLabel->setValue(1);
       break;
 
     default:
@@ -424,6 +437,10 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kWLinesChanged:
       myWheelLinesLabel->setValue(myWheelLinesSlider->getValue());
+      break;
+
+    case kSInfoChanged:
+      myShowInfoLabel->setValue(myShowInfoSlider->getValue());
       break;
 
     case kOKCmd:
