@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3248
+#define DEF_PROPS_SIZE 3249
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -429,6 +429,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "1f773a94d919b2a3c647172bbb97f6b4", "Atari, Jerome Domurat, Peter C. Niday", "CX26115", "Dumbo's Flying Circus (07-11-1983) (Atari) (Prototype) (PAL)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1fa58679d4a39052bd9db059e8cda4ad", "Imagic, Dan Oliver", "720118-1A, 03208", "Laser Gates (1983) (Imagic)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "1fa7a42c2c7d6b7a0c6a05d38c7508f4", "Coleco, Ed Temple", "", "Cabbage Patch Kids (09-04-1984) (Coleco) (Prototype)", "Adventures in the Park", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "1fa86282403fa35d103ab88a9d603c31", "SpiceWare - Darrell Spice Jr.", "", "Stay Frosty (SpiceWare) (PAL60)", "Part of Stella's Stocking 2007 Xmas compilation", "Homebrew", "", "", "", "", "", "", "", "", "", "PAL60", "", "", "YES", "" }, 
   { "1fab68fd67fe5a86b2c0a9227a59bb95", "20th Century Fox Video Games - Videa, Lee Actor", "", "Lasercade (1983) (20th Century Fox) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "29", "", "", "" }, 
   { "200309c8fba0f248c13751ed4fc69bab", "Jeffry Johnston", "", "Radial Pong - Version 1 (Jeffry Johnston) (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "2008c76deba5953201ef75a09b2ff7dc", "", "", "Fortress (21-04-2003) (CT)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

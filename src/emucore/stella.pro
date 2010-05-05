@@ -19658,6 +19658,15 @@
 "Display.Phosphor" "YES"
 ""
 
+"Cartridge.MD5" "1fa86282403fa35d103ab88a9d603c31"
+"Cartridge.Manufacturer" "SpiceWare - Darrell Spice Jr."
+"Cartridge.Name" "Stay Frosty (SpiceWare) (PAL60)"
+"Cartridge.Note" "Part of Stella's Stocking 2007 Xmas compilation"
+"Cartridge.Rarity" "Homebrew"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "f7a651972d78f9ba485b14690452d4be"
 "Cartridge.Manufacturer" "Paul Slocum"
 "Cartridge.Name" "Homestar Runner Demo #2 (2004-03-29)"
