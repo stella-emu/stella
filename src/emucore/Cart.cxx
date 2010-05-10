@@ -497,6 +497,40 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
+{
+  // 0840 cart bankswitching is triggered by accessing addresses 0x0800
+  // or 0x0840
+  uInt8 signature1[2][3] = {
+    { 0xAD, 0x00, 0x08 },  // LDA $0800
+    { 0xAD, 0x40, 0x08 }   // LDA $0840
+  };
+  for(uInt32 i = 0; i < 2; ++i)
+    if(searchForBytes(image, size, signature1[i], 3, 1))
+      return true;
+
+  uInt8 signature2[2][4] = {
+    { 0x0C, 0x00, 0x08, 0x4C },  // NOP $0800; JMP ...
+    { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
+  };
+  for(uInt32 i = 0; i < 2; ++i)
+    if(searchForBytes(image, size, signature2[i], 4, 1))
+      return true;
+
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
+{
+  // 3E cart bankswitching is triggered by storing the bank number
+  // in address 3E using 'STA $3E', commonly followed by an
+  // immediate mode LDA
+  uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
+  return searchForBytes(image, size, signature, 4, 1);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
 {
   // 3F cart bankswitching is triggered by storing the bank number
@@ -508,13 +542,28 @@ bool Cartridge::isProbably3F(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbably3E(const uInt8* image, uInt32 size)
+bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
 {
-  // 3E cart bankswitching is triggered by storing the bank number
-  // in address 3E using 'STA $3E', commonly followed by an
-  // immediate mode LDA
-  uInt8 signature[] = { 0x85, 0x3E, 0xA9, 0x00 };  // STA $3E; LDA #$00
-  return searchForBytes(image, size, signature, 4, 1);
+  // 4A50 carts store address $4A50 at the NMI vector, which
+  // in this scheme is always in the last page of ROM at
+  // $1FFA - $1FFB (at least this is true in rev 1 of the format)
+  int idx = size - 6;  // $1FFA
+  return (image[idx] == 0x50 && image[idx+1] == 0x4A);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
+{
+  // CV RAM access occurs at addresses $f3ff and $f400
+  // These signatures are attributed to the MESS project
+  uInt8 signature[2][3] = {
+    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF
+    { 0x99, 0x00, 0xF4 }   // STA $F400
+  };
+  if(searchForBytes(image, size, signature[0], 3, 1))
+    return true;
+  else
+    return searchForBytes(image, size, signature[1], 3, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -560,14 +609,16 @@ bool Cartridge::isProbablyE7(const uInt8* image, uInt32 size)
   // search for only certain known signatures
   // Thanks to "stella@casperkitty.com" for this advice
   // These signatures are attributed to the MESS project
-  uInt8 signature[5][3] = {
+  uInt8 signature[7][3] = {
+   { 0xAD, 0xE2, 0xFF },  // LDA $FFE2
    { 0xAD, 0xE5, 0xFF },  // LDA $FFE5
    { 0xAD, 0xE5, 0x1F },  // LDA $1FE5
+   { 0xAD, 0xE7, 0x1F },  // LDA $1FE7
    { 0x0C, 0xE7, 0x1F },  // NOP $1FE7
    { 0x8D, 0xE7, 0xFF },  // STA $FFE7
    { 0x8D, 0xE7, 0x1F }   // STA $1FE7
   };
-  for(uInt32 i = 0; i < 5; ++i)
+  for(uInt32 i = 0; i < 7; ++i)
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
 
@@ -591,30 +642,22 @@ bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
+bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
 {
-  // UA cart bankswitching switches to bank 1 by accessing address 0x240
-  // using 'STA $240' or 'LDA $240'
-  uInt8 signature[3][3] = {
-    { 0x8D, 0x40, 0x02 },  // STA $240
-    { 0xAD, 0x40, 0x02 },  // LDA $240
-    { 0xBD, 0x1F, 0x02 }   // LDA $21F,X
+  // FE bankswitching is very weird, but always seems to include a
+  // 'JSR $xxxx'
+  // These signatures are attributed to the MESS project
+  uInt8 signature[4][5] = {
+    { 0x20, 0x00, 0xD0, 0xC6, 0xC5 },  // JSR $D000; DEC $C5
+    { 0x20, 0xC3, 0xF8, 0xA5, 0x82 },  // JSR $F8C3; LDA $82
+    { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73
+    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; STY $D6
   };
-  for(uInt32 i = 0; i < 3; ++i)
-    if(searchForBytes(image, size, signature[i], 3, 1))
+  for(uInt32 i = 0; i < 4; ++i)
+    if(searchForBytes(image, size, signature[i], 5, 1))
       return true;
 
   return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
-{
-  // 4A50 carts store address $4A50 at the NMI vector, which
-  // in this scheme is always in the last page of ROM at
-  // $1FFA - $1FFB (at least this is true in rev 1 of the format)
-  int idx = size - 6;  // $1FFA
-  return (image[idx] == 0x50 && image[idx+1] == 0x4A);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -632,58 +675,17 @@ bool Cartridge::isProbablySB(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
+bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
 {
-  // 0840 cart bankswitching is triggered by accessing addresses 0x0800
-  // or 0x0840
-  uInt8 signature1[2][3] = {
-    { 0xAD, 0x00, 0x08 },  // LDA $0800
-    { 0xAD, 0x40, 0x08 }   // LDA $0840
+  // UA cart bankswitching switches to bank 1 by accessing address 0x240
+  // using 'STA $240' or 'LDA $240'
+  uInt8 signature[3][3] = {
+    { 0x8D, 0x40, 0x02 },  // STA $240
+    { 0xAD, 0x40, 0x02 },  // LDA $240
+    { 0xBD, 0x1F, 0x02 }   // LDA $21F,X
   };
-  for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature1[i], 3, 1))
-      return true;
-
-  uInt8 signature2[2][4] = {
-    { 0x0C, 0x00, 0x08, 0x4C },  // NOP $0800; JMP ...
-    { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
-  };
-  for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature2[i], 4, 1))
-      return true;
-
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
-{
-  // CV RAM access occurs at addresses $f3ff and $f400
-  // These signatures are attributed to the MESS project
-  uInt8 signature[2][3] = {
-    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF
-    { 0x99, 0x00, 0xF4 }   // STA $F400
-  };
-  if(searchForBytes(image, size, signature[0], 3, 1))
-    return true;
-  else
-    return searchForBytes(image, size, signature[1], 3, 1);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge::isProbablyFE(const uInt8* image, uInt32 size)
-{
-  // FE bankswitching is very weird, but always seems to include a
-  // 'JSR $xxxx'
-  // These signatures are attributed to the MESS project
-  uInt8 signature[4][5] = {
-    { 0x20, 0x00, 0xD0, 0xC6, 0xC5 },  // JSR $D000; DEC $C5
-    { 0x20, 0xC3, 0xF8, 0xA5, 0x82 },  // JSR $F8C3; LDA $82
-    { 0xD0, 0xFB, 0x20, 0x73, 0xFE },  // BNE $FB; JSR $FE73
-    { 0x20, 0x00, 0xF0, 0x84, 0xD6 }   // JSR $F000; STY $D6
-  };
-  for(uInt32 i = 0; i < 4; ++i)
-    if(searchForBytes(image, size, signature[i], 5, 1))
+  for(uInt32 i = 0; i < 3; ++i)
+    if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
 
   return false;

@@ -300,13 +300,11 @@ const uInt8* CartridgeE7::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
     uInt32 i;
 
-    out.putString(cart);
+    out.putString(name());
 
     out.putInt(2);
     for(i = 0; i < 2; ++i)
@@ -331,11 +329,9 @@ bool CartridgeE7::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeE7::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     uInt32 i, limit;

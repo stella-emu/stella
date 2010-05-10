@@ -196,11 +196,9 @@ const uInt8* CartridgeCV::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
+    out.putString(name());
 
     // Output RAM
     out.putInt(1024);
@@ -219,11 +217,9 @@ bool CartridgeCV::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeCV::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     // Input RAM

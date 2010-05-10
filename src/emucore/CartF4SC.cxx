@@ -208,12 +208,9 @@ const uInt8* CartridgeF4SC::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
-
+    out.putString(name());
     out.putInt(myCurrentBank);
 
     // The 128 bytes of RAM
@@ -233,11 +230,9 @@ bool CartridgeF4SC::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeF4SC::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     myCurrentBank = (uInt16) in.getInt();

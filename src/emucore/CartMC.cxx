@@ -246,12 +246,10 @@ const uInt8* CartridgeMC::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::save(Serializer& out) const
 {
-  uInt32 i;
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
+    uInt32 i;
+    out.putString(name());
 
     // The currentBlock array
     out.putInt(4);
@@ -275,14 +273,11 @@ bool CartridgeMC::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeMC::load(Serializer& in)
 {
-  uInt32 i;
-  const string& cart = name();
-
   try
   {
-    uInt32 limit;
+    uInt32 i, limit;
 
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     // The currentBlock array

@@ -373,11 +373,9 @@ const uInt8* Cartridge4A50::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
+    out.putString(name());
 
     // The 32K bytes of RAM
     out.putInt(32768);
@@ -410,11 +408,9 @@ bool Cartridge4A50::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge4A50::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     uInt32 limit = (uInt32) in.getInt();

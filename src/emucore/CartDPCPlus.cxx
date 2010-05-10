@@ -599,13 +599,11 @@ const uInt8* CartridgeDPCPlus::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
     uInt32 i;
 
-    out.putString(cart);
+    out.putString(name());
 
     // Indicates which bank is currently active
     out.putInt(myCurrentBank);
@@ -680,11 +678,9 @@ bool CartridgeDPCPlus::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeDPCPlus::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     uInt32 i, limit;

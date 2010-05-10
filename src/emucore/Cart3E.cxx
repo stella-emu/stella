@@ -273,11 +273,9 @@ const uInt8* Cartridge3E::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
+    out.putString(name());
     out.putInt(myCurrentBank);
 
     // Output RAM
@@ -297,11 +295,9 @@ bool Cartridge3E::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge3E::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     myCurrentBank = (uInt16) in.getInt();

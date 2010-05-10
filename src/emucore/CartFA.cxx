@@ -241,12 +241,9 @@ const uInt8* CartridgeFA::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFA::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
-
+    out.putString(name());
     out.putInt(myCurrentBank);
 
     // The 256 bytes of RAM
@@ -266,11 +263,9 @@ bool CartridgeFA::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFA::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     myCurrentBank = (uInt16) in.getInt();

@@ -444,13 +444,11 @@ const uInt8* CartridgeAR::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
     uInt32 i;
 
-    out.putString(cart);
+    out.putString(name());
 
     // Indicates the offest within the image for the corresponding bank
     out.putInt(2);
@@ -506,11 +504,9 @@ bool CartridgeAR::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeAR::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     uInt32 i, limit;

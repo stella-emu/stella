@@ -139,11 +139,9 @@ const uInt8* CartridgeFE::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
+    out.putString(name());
     out.putInt(myLastAddress1);
     out.putInt(myLastAddress2);
   }
@@ -159,11 +157,9 @@ bool CartridgeFE::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartridgeFE::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     myLastAddress1 = (uInt16)in.getInt();

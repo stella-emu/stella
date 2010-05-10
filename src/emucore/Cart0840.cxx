@@ -199,11 +199,9 @@ const uInt8* Cartridge0840::getImage(int& size) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge0840::save(Serializer& out) const
 {
-  const string& cart = name();
-
   try
   {
-    out.putString(cart);
+    out.putString(name());
     out.putInt(myCurrentBank);
   }
   catch(const char* msg)
@@ -218,11 +216,9 @@ bool Cartridge0840::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Cartridge0840::load(Serializer& in)
 {
-  const string& cart = name();
-
   try
   {
-    if(in.getString() != cart)
+    if(in.getString() != name())
       return false;
 
     myCurrentBank = (uInt16)in.getInt();
