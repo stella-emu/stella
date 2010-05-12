@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
-                   bool resolvedata)
+                   bool resolvedata, uInt16 labellength)
   : myList(list)
 {
   while(!myAddressQueue.empty())
@@ -112,7 +112,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       else if (pass == 3)
       {
         if (check_bit(labels[myPC],REFERENCED))
-          myDisasmBuf << HEX4 << myPC+myOffset << "'L'" << HEX4 << myPC+myOffset << "'";
+          myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 

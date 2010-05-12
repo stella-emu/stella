@@ -49,8 +49,10 @@ class DiStella
       @param list        The results of the disassembly are placed here
       @param start       The address at which to start disassembly
       @param resolvedata If enabled, try to determine code vs. data sections
+      @param labellength The maximum length of a label
     */
-    DiStella(CartDebug::DisassemblyList& list, uInt16 start, bool resolvedata = true);
+    DiStella(CartDebug::DisassemblyList& list, uInt16 start, bool resolvedata = true,
+             uInt16 labellength = 6);
 
     ~DiStella();
 

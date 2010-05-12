@@ -27,7 +27,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   : DebuggerSystem(dbg, console),
-    myRWPortAddress(0)
+    myRWPortAddress(0),
+    myLabelLength(6)   // longest pre-defined label
 {
   // Zero-page RAM is always present
   addRamArea(0x80, 128, 0, 0);
@@ -252,7 +253,7 @@ bool CartDebug::fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 searc
   bool found = false;
 
   myDisassembly.clear();
-  DiStella distella(myDisassembly, start, resolvedata);
+  DiStella distella(myDisassembly, start, resolvedata, myLabelLength);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -336,6 +337,8 @@ bool CartDebug::addLabel(const string& label, uInt16 address)
       removeLabel(label);
       myUserAddresses.insert(make_pair(label, address));
       myUserLabels.insert(make_pair(address, label));
+      myLabelLength = BSPF_max(myLabelLength, (uInt16)label.size());
+      mySystem.setDirtyPage(address);
       return true;
   }
 }

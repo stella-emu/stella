@@ -240,6 +240,9 @@ class CartDebug : public DebuggerSystem
     // occurred
     uInt16 myRWPortAddress;
 
+    // The maximum length of all labels currently defined
+    uInt16 myLabelLength;
+
     /// Table of instruction mnemonics
     static const char* ourTIAMnemonicR[16];  // read mode
     static const char* ourTIAMnemonicW[64];  // write mode
