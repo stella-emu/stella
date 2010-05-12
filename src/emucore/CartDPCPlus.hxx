@@ -197,9 +197,6 @@ class CartridgeDPCPlus : public Cartridge
     // The fractional increments for the data fetchers
     uInt8 myFractionalIncrements[8];
 
-    // The flag registers for the data fetchers
-    uInt8 myFlags[8];
-
     // The Fast Fetcher Enabled flag
     bool myFastFetch;
   

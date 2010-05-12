@@ -58,7 +58,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFlags[i] = myFractionalIncrements[i] = 0;
+    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 0;
 
   // Set waveforms to first waveform entry
   myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;
@@ -180,6 +180,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
   address &= 0x0FFF;
 
   uInt8 peekvalue = myProgramImage[(myCurrentBank << 12) + address];
+  uInt8 flag;
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
@@ -203,16 +204,9 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
     uInt32 index = address & 0x07;
     uInt32 function = (address >> 3) & 0x07;
 
-    // Update flag register for selected data fetcher
-    if((myCounters[index] & 0x00ff) == ((myTops[index]+1) & 0xff))
-    {
-      myFlags[index] = 0xff;
-    }
-    else if((myCounters[index] & 0x00ff) == myBottoms[index])
-    {
-      myFlags[index] = 0x00;
-    }
-
+    // Update flag for selected data fetcher  
+    flag = (((myTops[index]-(myCounters[index] & 0x00ff)) & 0xFF) > ((myTops[index]-myBottoms[index]) & 0xFF)) ? 0xFF : 0;
+    
     switch(function)
     {
       case 0x00:
@@ -274,7 +268,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
       // DFxDATAW - display data read AND'd w/flag ("windowed")
       case 0x02:
       {
-        result = myDisplayImage[myCounters[index]] & myFlags[index];
+        result = myDisplayImage[myCounters[index]] & flag;
         myCounters[index] = (myCounters[index] + 0x1) & 0x0fff;
         break;
       }
@@ -296,7 +290,7 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
           case 0x02:  // DF2FLAG
           case 0x03:  // DF3FLAG
           {
-            result = myFlags[index];
+            result = flag;
             break;
           }
           case 0x04:  // reserved
@@ -394,7 +388,6 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
       // DFxTOP - set top of window (for reads of DFxDATAW)
       case 0x03:
         myTops[index] = value;
-        myFlags[index] = 0x00;
         break;
 
       // DFxBOT - set bottom of window (for reads of DFxDATAW)
@@ -633,11 +626,6 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     for(i = 0; i < 8; ++i)
       out.putByte((char)myFractionalIncrements[i]);
 
-    // The flag registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putByte((char)myFlags[i]);
-
     // The Fast Fetcher Enabled flag
     out.putBool(myFastFetch);
     out.putBool(myLDAimmediate);
@@ -712,11 +700,6 @@ bool CartridgeDPCPlus::load(Serializer& in)
     limit = (uInt32) in.getInt();
     for(i = 0; i < limit; ++i)
       myFractionalIncrements[i] = (uInt8) in.getByte();
-
-    // The flag registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myFlags[i] = (uInt8) in.getByte();
 
     // The Fast Fetcher Enabled flag
     myFastFetch = in.getBool();
