@@ -93,6 +93,10 @@ void DiStella::disasm(uInt32 distart, int pass)
 {
 #define HEX4 uppercase << hex << setw(4) << setfill('0')
 #define HEX2 uppercase << hex << setw(2) << setfill('0')
+#define USER_OR_AUTO_LABEL(pre, address, post)        \
+  const string& l = myDbg.getLabel(address, true);    \
+  if(l != EmptyString)  nextline << pre << l << post; \
+  else                  nextline << pre << "L" << HEX4 << address << post;
 
   uInt8 op, d1, opsrc;
   uInt16 ad;
@@ -306,7 +310,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
             if (labfound == 1)
             {
-              nextline << "L" << HEX4 << ad;
+              USER_OR_AUTO_LABEL("", ad, "");
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 3)
@@ -317,7 +321,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             else if (labfound == 4)
             {
               int tmp = (ad & myAppData.end)+myOffset;
-              nextline << "L" << HEX4 << tmp;
+              USER_OR_AUTO_LABEL("", tmp, "");
               nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
             }
             else
@@ -370,7 +374,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
             if (labfound == 1)
             {
-              nextline << "L" << HEX4 << ad << ",X";
+              USER_OR_AUTO_LABEL("", ad, ",X");
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 3)
@@ -381,7 +385,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             else if (labfound == 4)
             {
               int tmp = (ad & myAppData.end)+myOffset;
-              nextline << "L" << HEX4 << tmp << ",X";
+              USER_OR_AUTO_LABEL("", tmp, ",X");
               nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
             }
             else
@@ -406,7 +410,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
             if (labfound == 1)
             {
-              nextline << "L" << HEX4 << ad << ",Y";
+              USER_OR_AUTO_LABEL("", ad, ",Y");
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
             else if (labfound == 3)
@@ -417,7 +421,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             else if (labfound == 4)
             {
               int tmp = (ad & myAppData.end)+myOffset;
-              nextline << "L" << HEX4 << tmp << ",Y";
+              USER_OR_AUTO_LABEL("", tmp, ",Y");
               nextlinebytes << HEX2 << (int)(tmp&0xff) << " " << HEX2 << (int)(tmp>>8);
             }
             else
@@ -493,7 +497,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           ad = ((myPC + (Int8)d1) & 0xfff) + myOffset;
 
-          labfound = mark(ad+myOffset, REFERENCED);
+          labfound = mark(ad, REFERENCED);
           if (pass == 1)
           {
             if ((addbranch) && !check_bit(labels[ad-myOffset], REACHABLE))
@@ -505,7 +509,9 @@ void DiStella::disasm(uInt32 distart, int pass)
           else if (pass == 3)
           {
             if (labfound == 1)
-              nextline << "    L" << HEX4 << ad;
+            {
+              USER_OR_AUTO_LABEL("    ", ad, "");
+            }
             else
               nextline << "    $" << HEX4 << ad;
 
@@ -526,7 +532,9 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << "     ";
           }
           if (labfound == 1)
-            nextline << "(L" << HEX4 << ad << ")";
+          {
+            USER_OR_AUTO_LABEL("(", ad, ")");
+          }
           else if (labfound == 3)
             nextline << "(" << CartDebug::ourIOMnemonic[ad-0x280] << ")";
           else
