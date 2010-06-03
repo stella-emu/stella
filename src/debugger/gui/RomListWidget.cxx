@@ -70,7 +70,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   const int fontWidth = font.getMaxCharWidth(),
             numchars = w / fontWidth;
 
-  _labelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth;
+  _labelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth - 1;
   _bytesWidth = 12 * fontWidth;
 
   //////////////////////////////////////////////////////
@@ -413,16 +413,16 @@ void RomListWidget::drawWidget(bool hilite)
   int i, pos, xpos, ypos, len = dlist.size();
   int deltax;
 
+  const GUI::Rect& r = getEditRect();
+  const GUI::Rect& l = getLineRect();
+
   // Draw a thin frame around the list and to separate columns
   s.hLine(_x, _y, _x + _w - 1, kColor);
   s.hLine(_x, _y + _h - 1, _x + _w - 1, kShadowColor);
   s.vLine(_x, _y, _y + _h - 1, kColor);
-
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  const GUI::Rect& r = getEditRect();
-  const GUI::Rect& l = getLineRect();
   int large_disasmw = _w - l.x() - _labelWidth,
       small_disasmw = large_disasmw - r.width();
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
@@ -461,6 +461,9 @@ void RomListWidget::drawWidget(bool hilite)
       // Draw disassembly
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
                    small_disasmw, kTextColor);
+
+      // Draw separator
+      s.vLine(_x + r.x() - 7, ypos, ypos + _fontHeight - 1, kColor);
 
       // Draw bytes
       {

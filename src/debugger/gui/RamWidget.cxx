@@ -170,9 +170,9 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       value = myRamGrid->getSelectedValue();
 
       // Attempt the write, and revert if it didn't succeed
-      uInt8 oldval = dbg.read(state.rport[addr]);
-      dbg.write(state.wport[addr], value);
-      uInt8 newval = dbg.read(state.rport[addr]);
+      uInt8 oldval = dbg.peek(state.rport[addr]);
+      dbg.poke(state.wport[addr], value);
+      uInt8 newval = dbg.peek(state.rport[addr]);
       if(value != newval)
       {
         myRamGrid->setValue(addr - myCurrentRamBank*128, newval, false);
@@ -202,12 +202,12 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kRevertCmd:
       for(uInt32 i = 0; i < myOldValueList.size(); ++i)
-        dbg.write(state.wport[i], myOldValueList[i]);
+        dbg.poke(state.wport[i], myOldValueList[i]);
       fillGrid(true);
       break;
 
     case kUndoCmd:
-      dbg.write(state.wport[myUndoAddress], myUndoValue);
+      dbg.poke(state.wport[myUndoAddress], myUndoValue);
       myUndoButton->setEnabled(false);
       fillGrid(false);
       break;
@@ -432,7 +432,7 @@ string RamWidget::doCompare(const string& str)
     }
 
     int addr = mySearchAddr[i];
-    if(dbg.read(state.rport[addr]) == searchVal)
+    if(dbg.peek(state.rport[addr]) == searchVal)
     {
       tempAddrList.push_back(addr);
       tempValueList.push_back(searchVal);

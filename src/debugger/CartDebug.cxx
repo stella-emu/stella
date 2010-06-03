@@ -28,7 +28,7 @@
 CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   : DebuggerSystem(dbg, console),
     myRWPortAddress(0),
-    myLabelLength(6)   // longest pre-defined label
+    myLabelLength(5)   // longest pre-defined label
 {
   // Zero-page RAM is always present
   addRamArea(0x80, 128, 0, 0);
@@ -90,7 +90,7 @@ const DebuggerState& CartDebug::getState()
 {
   myState.ram.clear();
   for(uInt32 i = 0; i < myState.rport.size(); ++i)
-    myState.ram.push_back(read(myState.rport[i]));
+    myState.ram.push_back(peek(myState.rport[i]));
 
   return myState;
 }
@@ -100,19 +100,7 @@ void CartDebug::saveOldState()
 {
   myOldState.ram.clear();
   for(uInt32 i = 0; i < myOldState.rport.size(); ++i)
-    myOldState.ram.push_back(read(myOldState.rport[i]));
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 CartDebug::read(uInt16 addr)
-{
-  return mySystem.peek(addr);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::write(uInt16 addr, uInt8 value)
-{
-  mySystem.poke(addr, value);
+    myOldState.ram.push_back(peek(myOldState.rport[i]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -253,7 +241,7 @@ bool CartDebug::fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 searc
   bool found = false;
 
   myDisassembly.clear();
-  DiStella distella(myDisassembly, start, resolvedata, myLabelLength);
+  DiStella distella(*this, myDisassembly, start, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -287,7 +275,7 @@ int CartDebug::addressToLine(uInt16 address) const
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   DisassemblyList list;
-  DiStella distella(list, start, false);
+  DiStella distella(*this, list, start, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;

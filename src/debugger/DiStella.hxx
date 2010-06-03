@@ -46,13 +46,13 @@ class DiStella
     /**
       Disassemble the current state of the System from the given start address.
 
+      @param dbg         The CartDebug instance containing all label information
       @param list        The results of the disassembly are placed here
       @param start       The address at which to start disassembly
       @param resolvedata If enabled, try to determine code vs. data sections
-      @param labellength The maximum length of a label
     */
-    DiStella(CartDebug::DisassemblyList& list, uInt16 start, bool resolvedata = true,
-             uInt16 labellength = 6);
+    DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
+             uInt16 start, bool resolvedata = true);
 
     ~DiStella();
 
@@ -79,9 +79,10 @@ class DiStella
     void disasm(uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
     void showgfx(uInt8 c);
-    inline int check_bit(uInt8 bitflags, int i) { return (bitflags & i); }
+    inline int check_bit(uInt8 bitflags, int i) const { return (bitflags & i); }
 
   private:
+    const CartDebug& myDbg;
     CartDebug::DisassemblyList& myList;
     stringstream myDisasmBuf;
     queue<uInt16> myAddressQueue;

@@ -54,6 +54,7 @@ class CartDebug : public DebuggerSystem
       uInt16 address;
       string label;
       string disasm;
+      string ccount;
       string bytes;
     };
     typedef Common::Array<DisassemblyTag> DisassemblyList;
@@ -71,8 +72,9 @@ class CartDebug : public DebuggerSystem
     // The following assume that the given addresses are using the
     // correct read/write port ranges; no checking will be done to
     // confirm this.
-    uInt8 read(uInt16 address);
-    void write(uInt16 address, uInt8 value);
+    inline uInt8 peek(uInt16 addr)   { return mySystem.peek(addr); }
+    inline uInt16 dpeek(uInt16 addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
+    inline void poke(uInt16 addr, uInt8 value) { mySystem.poke(addr, value); }
 
     // Indicate that a read from write port has occurred at the specified
     // address.

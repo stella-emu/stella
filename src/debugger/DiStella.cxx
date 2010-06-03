@@ -22,9 +22,10 @@
 #include "DiStella.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-DiStella::DiStella(CartDebug::DisassemblyList& list, uInt16 start,
-                   bool resolvedata, uInt16 labellength)
-  : myList(list)
+DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
+                   uInt16 start, bool resolvedata)
+  : myDbg(dbg),
+    myList(list)
 {
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
