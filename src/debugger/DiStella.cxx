@@ -558,15 +558,10 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
       else if (pass == 3)
       {
-        myDisasmBuf << nextline.str();;
-        uInt32 nextlinelen = nextline.str().length();
-        if (nextlinelen <= 15)
-        {
-          /* Print spaces to align cycle count data */
-          for (uInt32 charcnt=0;charcnt<15-nextlinelen;charcnt++)
-            myDisasmBuf << " ";
-        }
-        myDisasmBuf << ";" << dec << (int)ourLookup[op].cycles << "'" << nextlinebytes.str();
+        // A complete line of disassembly (text, cycle count, and bytes)
+        myDisasmBuf << nextline.str() << "'"
+                    << ";" << dec << (int)ourLookup[op].cycles << "'"
+                    << nextlinebytes.str();
         addEntry();
         if (op == 0x40 || op == 0x60)
         {
@@ -668,6 +663,7 @@ int DiStella::mark(uInt32 address, MarkType bit)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::showgfx(uInt8 c)
 {
+#if 0
   int i;
 
   myDisasmBuf << "|";
@@ -681,37 +677,51 @@ void DiStella::showgfx(uInt8 c)
     c = c << 1;
   }
   myDisasmBuf << "|";
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::addEntry()
 {
-  const string& line = myDisasmBuf.str();
   CartDebug::DisassemblyTag tag;
 
-  if(line[0] == ' ')
+  // Address
+  myDisasmBuf.seekg(0, ios::beg);
+  if(myDisasmBuf.peek() == ' ')
     tag.address = 0;
   else
     myDisasmBuf >> setw(4) >> hex >> tag.address;
 
-  if(line[5] != ' ')
-    tag.label = line.substr(5, 5);
+  // Label (a user-defined label always overrides any auto-generated one)
+  myDisasmBuf.seekg(5, ios::beg);
+  if(tag.address)
+  {
+    tag.label = myDbg.getLabel(tag.address, true);
+    if(tag.label == EmptyString && myDisasmBuf.peek() != ' ')
+      getline(myDisasmBuf, tag.label, '\'');
+  }
 
-  switch(line[11])
+  // Disassembly
+  // Up to this point the field sizes are fixed, until we get to
+  // variable length labels, cycle counts, etc
+  myDisasmBuf.seekg(11, ios::beg);
+  switch(myDisasmBuf.peek())
   {
     case ' ':
       tag.disasm = " ";
       break;
     case '.':
-      tag.disasm = line.substr(11);
+      getline(myDisasmBuf, tag.disasm);
       break;
     default:
-      tag.disasm = line.substr(11, 17);
-      tag.bytes  = line.substr(29);
+      getline(myDisasmBuf, tag.disasm, '\'');
+      getline(myDisasmBuf, tag.ccount, '\'');
+      getline(myDisasmBuf, tag.bytes);
       break;
   }
   myList.push_back(tag);
 
+  myDisasmBuf.clear();
   myDisasmBuf.str("");
 }
 

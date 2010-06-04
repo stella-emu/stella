@@ -286,7 +286,9 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     if((tag.address & 0xfff) >= start)
     {
       buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
-             << ":  " << tag.disasm << "  " << tag.bytes << endl;
+             << ":  " << tag.disasm << setw(myLabelLength - tag.disasm.length() + 10)
+             << setfill(' ') << " "
+             << tag.ccount << "   " << tag.bytes << endl;
       --lines;
     }
   }

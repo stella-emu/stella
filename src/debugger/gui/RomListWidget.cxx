@@ -71,7 +71,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
             numchars = w / fontWidth;
 
   _labelWidth = BSPF_max(16, int(0.35 * (numchars - 12))) * fontWidth - 1;
-  _bytesWidth = 12 * fontWidth;
+  _bytesWidth = 10 * fontWidth;
 
   //////////////////////////////////////////////////////
   // Add checkboxes
@@ -424,7 +424,7 @@ void RomListWidget::drawWidget(bool hilite)
 
   // Draw the list items
   int large_disasmw = _w - l.x() - _labelWidth,
-      small_disasmw = large_disasmw - r.width();
+      small_disasmw = large_disasmw - r.width() - 4 * _fontWidth;
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
@@ -458,9 +458,12 @@ void RomListWidget::drawWidget(bool hilite)
     // should get all remaining space
     if(dlist[pos].bytes != "")
     {
-      // Draw disassembly
+      // Draw disassembly and cycle count
+      // TODO - cycle count should be aligned as close as possible to the disassembly
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
                    small_disasmw, kTextColor);
+      s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + small_disasmw, ypos,
+                   2*_fontWidth, kTextColor);
 
       // Draw separator
       s.vLine(_x + r.x() - 7, ypos, ypos + _fontHeight - 1, kColor);
