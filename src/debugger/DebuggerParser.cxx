@@ -1113,7 +1113,7 @@ void DebuggerParser::executeRun()
 void DebuggerParser::executeRunTo()
 {
   const CartDebug& cartdbg = debugger->cartDebug();
-  const CartDebug::DisassemblyList& list = cartdbg.disassemblyList();
+  const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
   uInt32 count = 0;
   bool done = false;
@@ -1147,7 +1147,7 @@ void DebuggerParser::executeRunTo()
 void DebuggerParser::executeRunToPc()
 {
   const CartDebug& cartdbg = debugger->cartDebug();
-  const CartDebug::DisassemblyList& list = cartdbg.disassemblyList();
+  const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
   uInt32 count = 0;
   bool done = false;

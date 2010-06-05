@@ -213,7 +213,7 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
     uInt16 search = PC;
     if(!(PC & 0x1000))
     {
-      if(myDisassembly.size() == 0)
+      if(myDisassembly.list.size() == 0)
         search = start;
       else
         return false;
@@ -240,15 +240,16 @@ bool CartDebug::fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 searc
 {
   bool found = false;
 
-  myDisassembly.clear();
-  DiStella distella(*this, myDisassembly, start, resolvedata);
+  myDisassembly.list.clear();
+  myDisassembly.fieldwidth = 10 + myLabelLength;
+  DiStella distella(*this, myDisassembly.list, start, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
   myAddrToLineList.clear();
-  for(uInt32 i = 0; i < myDisassembly.size(); ++i)
+  for(uInt32 i = 0; i < myDisassembly.list.size(); ++i)
   {
-    const DisassemblyTag& tag = myDisassembly[i];
+    const DisassemblyTag& tag = myDisassembly.list[i];
 
     // Only non-zero addresses are valid
     if(tag.address != 0)
@@ -274,23 +275,35 @@ int CartDebug::addressToLine(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
-  DisassemblyList list;
-  DiStella distella(*this, list, start, false);
+  Disassembly disasm;
+  DiStella distella(*this, disasm.list, start, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
   ostringstream buffer;
-  for(uInt32 i = 0; i < list.size() && lines > 0; ++i)
+
+  // First find the lines in the range, and determine the longest string
+  uInt32 begin = 0, end = 0, length = 0;
+  for(end = 0; end < disasm.list.size() && lines > 0; ++end)
   {
-    const CartDebug::DisassemblyTag& tag = list[i];
+    const CartDebug::DisassemblyTag& tag = disasm.list[end];
     if((tag.address & 0xfff) >= start)
     {
-      buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
-             << ":  " << tag.disasm << setw(myLabelLength - tag.disasm.length() + 10)
-             << setfill(' ') << " "
-             << tag.ccount << "   " << tag.bytes << endl;
+      if(begin == 0) begin = end;
+      length = BSPF_max(length, (uInt32)tag.label.length());
+
       --lines;
     }
+  }
+
+  // Now output the disassembly, using as little space as possible
+  for(uInt32 i = begin; i < end; ++i)
+  {
+    const CartDebug::DisassemblyTag& tag = disasm.list[i];
+    buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
+           << ":  " << tag.disasm << setw(length - tag.disasm.length() + 10)
+           << setfill(' ') << " "
+           << tag.ccount << "  " << tag.bytes << endl;
   }
 
   return buffer.str();

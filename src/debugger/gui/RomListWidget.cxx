@@ -105,10 +105,10 @@ RomListWidget::~RomListWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RomListWidget::setList(const CartDebug::DisassemblyList& list,
+void RomListWidget::setList(const CartDebug::Disassembly& disasm,
                             const PackedBitArray& state)
 {
-  myList = &list;
+  myDisasm = &disasm;
   myBPState = &state;
 
   // Enable all checkboxes
@@ -116,8 +116,8 @@ void RomListWidget::setList(const CartDebug::DisassemblyList& list,
     myCheckList[i]->setFlags(WIDGET_ENABLED);
 
   // Then turn off any extras
-  if((int)myList->size() < _rows)
-    for(int i = myList->size(); i < _rows; ++i)
+  if((int)myDisasm->list.size() < _rows)
+    for(int i = myDisasm->list.size(); i < _rows; ++i)
       myCheckList[i]->clearFlags(WIDGET_ENABLED);
 
   recalc();
@@ -126,7 +126,7 @@ void RomListWidget::setList(const CartDebug::DisassemblyList& list,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::setHighlighted(int item)
 {
-  if(item < -1 || item >= (int)myList->size())
+  if(item < -1 || item >= (int)myDisasm->list.size())
     return;
 
   if(isEnabled())
@@ -149,7 +149,7 @@ void RomListWidget::setHighlighted(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& RomListWidget::getEditString() const
 {
-  if(_selectedItem < -1 || _selectedItem >= (int)myList->size())
+  if(_selectedItem < -1 || _selectedItem >= (int)myDisasm->list.size())
     return EmptyString;
   else
     return _editString;
@@ -164,7 +164,7 @@ int RomListWidget::findItem(int x, int y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomListWidget::recalc()
 {
-  int size = myList->size();
+  int size = myDisasm->list.size();
 
   if (_currentPos >= size)
     _currentPos = size - 1;
@@ -176,7 +176,7 @@ void RomListWidget::recalc()
 
   _editMode = false;
 
-  myScrollBar->_numEntries     = myList->size();
+  myScrollBar->_numEntries     = myDisasm->list.size();
   myScrollBar->_entriesPerPage = _rows;
 
   // Reset to normal data entry
@@ -198,10 +198,10 @@ void RomListWidget::scrollToCurrent(int item)
     _currentPos = item - _rows + 1;
   }
 
-  if (_currentPos < 0 || _rows > (int)myList->size())
+  if (_currentPos < 0 || _rows > (int)myDisasm->list.size())
     _currentPos = 0;
-  else if (_currentPos + _rows > (int)myList->size())
-    _currentPos = myList->size() - _rows;
+  else if (_currentPos + _rows > (int)myDisasm->list.size())
+    _currentPos = myDisasm->list.size() - _rows;
 
   myScrollBar->_currentPos = _currentPos;
   myScrollBar->recalc();
@@ -228,7 +228,7 @@ void RomListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     // First check whether the selection changed
     int newSelectedItem;
     newSelectedItem = findItem(x, y);
-    if (newSelectedItem > (int)myList->size() - 1)
+    if (newSelectedItem > (int)myDisasm->list.size() - 1)
       newSelectedItem = -1;
 
     if (_selectedItem != newSelectedItem)
@@ -337,7 +337,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIDown:
-      if (_selectedItem < (int)myList->size() - 1)
+      if (_selectedItem < (int)myDisasm->list.size() - 1)
         _selectedItem++;
       break;
 
@@ -349,8 +349,8 @@ bool RomListWidget::handleEvent(Event::Type e)
 
     case Event::UIPgDown:
       _selectedItem += _rows - 1;
-      if (_selectedItem >= (int)myList->size() )
-        _selectedItem = myList->size() - 1;
+      if (_selectedItem >= (int)myDisasm->list.size())
+        _selectedItem = myDisasm->list.size() - 1;
       break;
 
     case Event::UIHome:
@@ -358,7 +358,7 @@ bool RomListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIEnd:
-      _selectedItem = myList->size() - 1;
+      _selectedItem = myDisasm->list.size() - 1;
       break;
 
     default:
@@ -409,7 +409,7 @@ void RomListWidget::drawWidget(bool hilite)
 {
 //cerr << "RomListWidget::drawWidget\n";
   FBSurface& s = _boss->dialog().surface();
-  const CartDebug::DisassemblyList& dlist = *myList;
+  const CartDebug::DisassemblyList& dlist = myDisasm->list;
   int i, pos, xpos, ypos, len = dlist.size();
   int deltax;
 
@@ -423,8 +423,13 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  int large_disasmw = _w - l.x() - _labelWidth,
-      small_disasmw = large_disasmw - r.width() - 4 * _fontWidth;
+  int ccountw = _fontWidth << 1,
+      large_disasmw = _w - l.x() - _labelWidth,
+      small_disasmw = large_disasmw - r.width() - (ccountw << 1),
+      actualwidth = myDisasm->fieldwidth * _fontWidth;
+  if(actualwidth < small_disasmw)
+    small_disasmw = actualwidth;
+
   xpos = _x + CheckboxWidget::boxSize() + 10;  ypos = _y + 2;
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++, ypos += _fontHeight)
   {
@@ -435,20 +440,15 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
-    {
-      s.frameRect(_x + l.x() - 3, _y + 1 + _fontHeight * i,
-                  _w - l.x(), _fontHeight, kDbgColorHi);
-    }
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kDbgColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos && _hasFocus)
     {
       if (!_editMode)
-        s.fillRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
-                   r.width(), _fontHeight, kTextColorHi);
+        s.fillRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
       else
-        s.frameRect(_x + r.x() - 3, _y + 1 + _fontHeight * i,
-                    r.width(), _fontHeight, kTextColorHi);
+        s.frameRect(_x + r.x() - 3, ypos - 1, r.width(), _fontHeight, kTextColorHi);
     }
 
     // Draw labels
@@ -463,7 +463,7 @@ void RomListWidget::drawWidget(bool hilite)
       s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
                    small_disasmw, kTextColor);
       s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + small_disasmw, ypos,
-                   2*_fontWidth, kTextColor);
+                   ccountw, kTextColor);
 
       // Draw separator
       s.vLine(_x + r.x() - 7, ypos, ypos + _fontHeight - 1, kColor);
@@ -544,14 +544,14 @@ void RomListWidget::startEditMode()
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     // Does this line represent an editable area?
-    if((*myList)[_selectedItem].bytes == "")
+    if(myDisasm->list[_selectedItem].bytes == "")
       return;
 
     _editMode = true;
 
     // Widget gets raw data while editing
     EditableWidget::startEditMode();
-    setEditString((*myList)[_selectedItem].bytes);
+    setEditString(myDisasm->list[_selectedItem].bytes);
   }
 }
 

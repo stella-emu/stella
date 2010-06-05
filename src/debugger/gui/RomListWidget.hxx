@@ -49,7 +49,7 @@ class RomListWidget : public EditableWidget
                     int x, int y, int w, int h);
     virtual ~RomListWidget();
 
-    void setList(const CartDebug::DisassemblyList& list, const PackedBitArray& state);
+    void setList(const CartDebug::Disassembly& disasm, const PackedBitArray& state);
 
     int getSelected() const        { return _selectedItem; }
     int getHighlighted() const     { return _highlightedItem; }
@@ -99,7 +99,7 @@ class RomListWidget : public EditableWidget
     int  _currentKeyDown;
     bool _editMode;
 
-    const CartDebug::DisassemblyList* myList;
+    const CartDebug::Disassembly* myDisasm;
     const PackedBitArray* myBPState;
     Common::Array<CheckboxWidget*> myCheckList;
 };

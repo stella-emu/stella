@@ -124,7 +124,7 @@ void RomWidget::loadConfig()
   myListIsDirty |= cart.disassemble(myResolveData->getSelectedTag(), myListIsDirty);
   if(myListIsDirty)
   {
-    myRomList->setList(cart.disassemblyList(), dbg.breakpoints());
+    myRomList->setList(cart.disassembly(), dbg.breakpoints());
     myListIsDirty = false;
   }
 
@@ -202,7 +202,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 void RomWidget::setBreak(int disasm_line, bool state)
 {
   const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassemblyList();
+      instance().debugger().cartDebug().disassembly().list;
   if(disasm_line >= (int)list.size())  return;
 
   if(list[disasm_line].address != 0 && list[disasm_line].bytes != "")
@@ -213,7 +213,7 @@ void RomWidget::setBreak(int disasm_line, bool state)
 void RomWidget::setPC(int disasm_line)
 {
   const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassemblyList();
+      instance().debugger().cartDebug().disassembly().list;
   if(disasm_line >= (int)list.size())  return;
 
   if(list[disasm_line].address != 0)
@@ -228,7 +228,7 @@ void RomWidget::setPC(int disasm_line)
 void RomWidget::runtoPC(int disasm_line)
 {
   const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassemblyList();
+      instance().debugger().cartDebug().disassembly().list;
   if(disasm_line >= (int)list.size())  return;
 
   if(list[disasm_line].address != 0)
@@ -243,7 +243,7 @@ void RomWidget::runtoPC(int disasm_line)
 void RomWidget::patchROM(int disasm_line, const string& bytes)
 {
   const CartDebug::DisassemblyList& list =
-      instance().debugger().cartDebug().disassemblyList();
+      instance().debugger().cartDebug().disassembly().list;
   if(disasm_line >= (int)list.size())  return;
 
   if(list[disasm_line].address != 0)

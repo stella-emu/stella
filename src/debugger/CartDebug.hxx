@@ -58,6 +58,10 @@ class CartDebug : public DebuggerSystem
       string bytes;
     };
     typedef Common::Array<DisassemblyTag> DisassemblyList;
+    typedef struct {
+      DisassemblyList list;
+      int fieldwidth;
+    } Disassembly;
 
   public:
     CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas);
@@ -115,7 +119,7 @@ class CartDebug : public DebuggerSystem
     /**
       Get the results from the most recent call to disassemble()
     */
-    const DisassemblyList& disassemblyList() const { return myDisassembly; }
+    const Disassembly& disassembly() const { return myDisassembly; }
 
     /**
       Determine the line in the disassembly that corresponds to the given address.
@@ -222,7 +226,7 @@ class CartDebug : public DebuggerSystem
 
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display
-    DisassemblyList myDisassembly;
+    Disassembly myDisassembly;
     map<uInt16, int> myAddrToLineList;
 
     // Mappings from label to address (and vice versa) for items
