@@ -290,7 +290,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     if((tag.address & 0xfff) >= start)
     {
       if(begin == 0) begin = end;
-      length = BSPF_max(length, (uInt32)tag.label.length());
+      length = BSPF_max(length, (uInt32)tag.disasm.length());
 
       --lines;
     }
@@ -301,7 +301,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   {
     const CartDebug::DisassemblyTag& tag = disasm.list[i];
     buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
-           << ":  " << tag.disasm << setw(length - tag.disasm.length() + 10)
+           << ":  " << tag.disasm << setw(length - tag.disasm.length() + 1)
            << setfill(' ') << " "
            << tag.ccount << "  " << tag.bytes << endl;
   }
