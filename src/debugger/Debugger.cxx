@@ -127,15 +127,6 @@ Debugger::Debugger(OSystem* osystem)
     myHeight(620),
     myRewindManager(NULL)
 {
-  // Get the dialog size
-  int w, h;
-  myOSystem->settings().getSize("debuggerres", w, h);
-  myWidth = BSPF_max(w, 0);
-  myHeight = BSPF_max(h, 0);
-  myWidth = BSPF_max(myWidth, 1050u);
-  myHeight = BSPF_max(myHeight, 620u);
-  myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
-
   // Init parser
   myParser = new DebuggerParser(this);
   myBreakPoints = new PackedBitArray(0x10000);
@@ -169,6 +160,15 @@ Debugger::~Debugger()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::initialize()
 {
+  // Get the dialog size
+  int w, h;
+  myOSystem->settings().getSize("debuggerres", w, h);
+  myWidth = BSPF_max(w, 0);
+  myHeight = BSPF_max(h, 0);
+  myWidth = BSPF_max(myWidth, 1050u);
+  myHeight = BSPF_max(myHeight, 620u);
+  myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
+
   const GUI::Rect& r = getDialogBounds();
 
   delete myBaseDialog;

@@ -15,6 +15,7 @@ CXXFLAGS="$CXXFLAGS $CPPFLAGS"
 
 # default lib behaviour yes/no/auto
 _opengl=auto
+_libpng=auto
 _zlib=auto
 
 # default option behaviour yes/no
@@ -199,6 +200,7 @@ Optional Features:
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
+  --with-libpng-prefix=DIR Prefix where libpng is installed (optional)
   --with-zlib-prefix=DIR   Prefix where zlib is installed (optional)
   --x-libraries            Path to X11 libraries [${X_LIBS}]
 
@@ -237,6 +239,11 @@ for ac_option in $@; do
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _sdlpath="$arg:$arg/bin"
+        ;;
+      --with-libpng-prefix=*)
+        _prefix=`echo $ac_option | cut -d '=' -f 2`
+        LIBPNG_CFLAGS="-I$_prefix/include"
+        LIBPNG_LIBS="-L$_prefix/lib"
         ;;
       --with-zlib-prefix=*)
         _prefix=`echo $ac_option | cut -d '=' -f 2`
@@ -498,6 +505,25 @@ if test -n "$_host_prefix"; then
 fi
 
 #
+# Check for libpng
+#
+echocheck "libpng"
+if test "$_libpng" = auto ; then
+	_libpng=no
+	cat > $TMPC << EOF
+#include <stdio.h>
+#include <png.h>
+int main(void) { return printf("%s\n", PNG_HEADER_VERSION_STRING); }
+EOF
+	cc_check $LDFLAGS $CXXFLAGS $LIBPNG_CFLAGS $LIBPNG_LIBS -lpng && _libpng=yes
+fi
+if test "$_libpng" = yes ; then
+	echo "$_libpng"
+else
+	echo "none found, using built-in version"
+fi
+
+#
 # Check for ZLib
 #
 echocheck "zlib"
@@ -636,6 +662,7 @@ DBG="$SRC/debugger"
 DBGGUI="$SRC/debugger/gui"
 YACC="$SRC/yacc"
 CHEAT="$SRC/cheat"
+LIBPNG="$SRC/libpng"
 ZLIB="$SRC/zlib"
 
 INCLUDES="-I$CORE -I$COMMON -I$GUI"
@@ -677,6 +704,13 @@ case $_host_os in
 			exit
 			;;
 esac
+
+if test "$_libpng" = yes ; then
+  LIBS="$LIBS -lpng"
+else
+	MODULES="$MODULES $LIBPNG"
+	INCLUDES="$INCLUDES -I$LIBPNG"
+fi
 
 if test "$_zlib" = yes ; then
   LIBS="$LIBS -lz"

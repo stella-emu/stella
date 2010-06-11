@@ -168,10 +168,9 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add message concerning usage
   xpos = vBorder; ypos += 2*(lineHeight + 4);
-  lwidth = font.getStringWidth("(*) Changes require application restart");
+  lwidth = font.getStringWidth("(*) Changes require ROM reload");
   new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
-                       "(*) Changes require application restart",
-                       kTextAlignLeft);
+                       "(*) Changes require ROM reload", kTextAlignLeft);
 
   // Add items for tab 1
   addToFocusList(wid, tabID);
