@@ -316,6 +316,26 @@
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
 		DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D3B0B247DB40092F9F8 /* RectList.hxx */; };
+		DCD6FC7011C281ED005DA767 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC5D11C281ED005DA767 /* png.c */; };
+		DCD6FC7111C281ED005DA767 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC5E11C281ED005DA767 /* png.h */; };
+		DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC5F11C281ED005DA767 /* pngconf.h */; };
+		DCD6FC7311C281ED005DA767 /* pngerror.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6011C281ED005DA767 /* pngerror.c */; };
+		DCD6FC7411C281ED005DA767 /* pngget.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6111C281ED005DA767 /* pngget.c */; };
+		DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6211C281ED005DA767 /* pngmem.c */; };
+		DCD6FC7611C281ED005DA767 /* pngpread.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6311C281ED005DA767 /* pngpread.c */; };
+		DCD6FC7711C281ED005DA767 /* pngpriv.h in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC6411C281ED005DA767 /* pngpriv.h */; };
+		DCD6FC7811C281ED005DA767 /* pngread.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6511C281ED005DA767 /* pngread.c */; };
+		DCD6FC7911C281ED005DA767 /* pngrio.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6611C281ED005DA767 /* pngrio.c */; };
+		DCD6FC7A11C281ED005DA767 /* pngrtran.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6711C281ED005DA767 /* pngrtran.c */; };
+		DCD6FC7B11C281ED005DA767 /* pngrutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6811C281ED005DA767 /* pngrutil.c */; };
+		DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6911C281ED005DA767 /* pngset.c */; };
+		DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6B11C281ED005DA767 /* pngtrans.c */; };
+		DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6C11C281ED005DA767 /* pngwio.c */; };
+		DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6D11C281ED005DA767 /* pngwrite.c */; };
+		DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6E11C281ED005DA767 /* pngwtran.c */; };
+		DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6F11C281ED005DA767 /* pngwutil.c */; };
+		DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */; };
+		DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */; };
 		DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */; };
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
@@ -697,6 +717,26 @@
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = ../common/RectList.hxx; sourceTree = SOURCE_ROOT; };
+		DCD6FC5D11C281ED005DA767 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = ../libpng/png.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC5E11C281ED005DA767 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../libpng/png.h; sourceTree = SOURCE_ROOT; };
+		DCD6FC5F11C281ED005DA767 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../libpng/pngconf.h; sourceTree = SOURCE_ROOT; };
+		DCD6FC6011C281ED005DA767 /* pngerror.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngerror.c; path = ../libpng/pngerror.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6111C281ED005DA767 /* pngget.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngget.c; path = ../libpng/pngget.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6211C281ED005DA767 /* pngmem.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngmem.c; path = ../libpng/pngmem.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6311C281ED005DA767 /* pngpread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngpread.c; path = ../libpng/pngpread.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6411C281ED005DA767 /* pngpriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngpriv.h; path = ../libpng/pngpriv.h; sourceTree = SOURCE_ROOT; };
+		DCD6FC6511C281ED005DA767 /* pngread.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngread.c; path = ../libpng/pngread.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6611C281ED005DA767 /* pngrio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngrio.c; path = ../libpng/pngrio.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6711C281ED005DA767 /* pngrtran.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngrtran.c; path = ../libpng/pngrtran.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6811C281ED005DA767 /* pngrutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngrutil.c; path = ../libpng/pngrutil.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6911C281ED005DA767 /* pngset.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngset.c; path = ../libpng/pngset.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6B11C281ED005DA767 /* pngtrans.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngtrans.c; path = ../libpng/pngtrans.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6C11C281ED005DA767 /* pngwio.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwio.c; path = ../libpng/pngwio.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6D11C281ED005DA767 /* pngwrite.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwrite.c; path = ../libpng/pngwrite.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6E11C281ED005DA767 /* pngwtran.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwtran.c; path = ../libpng/pngwtran.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC6F11C281ED005DA767 /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwutil.c; path = ../libpng/pngwutil.c; sourceTree = SOURCE_ROOT; };
+		DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PNGLibrary.cxx; path = ../common/PNGLibrary.cxx; sourceTree = SOURCE_ROOT; };
+		DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PNGLibrary.hxx; path = ../common/PNGLibrary.hxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomInfoWidget.cxx; path = ../gui/RomInfoWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
@@ -799,6 +839,7 @@
 				2D605130089879BA00C6DE89 /* debugger */,
 				2D6050CC0898776500C6DE89 /* emucore */,
 				2D6050FA0898786C00C6DE89 /* gui */,
+				DCD6FC5A11C281A1005DA767 /* libpng */,
 				2D6050C60898771C00C6DE89 /* macosx */,
 				2D6050C90898774B00C6DE89 /* unix */,
 				2D60513708987A5400C6DE89 /* yacc */,
@@ -881,6 +922,8 @@
 				2D733D62062893E7006265D9 /* FrameBufferSoft.hxx */,
 				DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */,
 				2DDBEA0A0845700300812C11 /* mainSDL.cxx */,
+				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
+				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
 				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				DCF467B20F93993B00B25D7A /* SharedPtr.hxx */,
@@ -1201,6 +1244,31 @@
 			name = cheat;
 			sourceTree = "<group>";
 		};
+		DCD6FC5A11C281A1005DA767 /* libpng */ = {
+			isa = PBXGroup;
+			children = (
+				DCD6FC5D11C281ED005DA767 /* png.c */,
+				DCD6FC5E11C281ED005DA767 /* png.h */,
+				DCD6FC5F11C281ED005DA767 /* pngconf.h */,
+				DCD6FC6011C281ED005DA767 /* pngerror.c */,
+				DCD6FC6111C281ED005DA767 /* pngget.c */,
+				DCD6FC6211C281ED005DA767 /* pngmem.c */,
+				DCD6FC6311C281ED005DA767 /* pngpread.c */,
+				DCD6FC6411C281ED005DA767 /* pngpriv.h */,
+				DCD6FC6511C281ED005DA767 /* pngread.c */,
+				DCD6FC6611C281ED005DA767 /* pngrio.c */,
+				DCD6FC6711C281ED005DA767 /* pngrtran.c */,
+				DCD6FC6811C281ED005DA767 /* pngrutil.c */,
+				DCD6FC6911C281ED005DA767 /* pngset.c */,
+				DCD6FC6B11C281ED005DA767 /* pngtrans.c */,
+				DCD6FC6C11C281ED005DA767 /* pngwio.c */,
+				DCD6FC6D11C281ED005DA767 /* pngwrite.c */,
+				DCD6FC6E11C281ED005DA767 /* pngwtran.c */,
+				DCD6FC6F11C281ED005DA767 /* pngwutil.c */,
+			);
+			name = libpng;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -1376,6 +1444,10 @@
 				DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */,
 				DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */,
 				DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */,
+				DCD6FC7111C281ED005DA767 /* png.h in Headers */,
+				DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */,
+				DCD6FC7711C281ED005DA767 /* pngpriv.h in Headers */,
+				DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1613,6 +1685,22 @@
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,
 				DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */,
+				DCD6FC7011C281ED005DA767 /* png.c in Sources */,
+				DCD6FC7311C281ED005DA767 /* pngerror.c in Sources */,
+				DCD6FC7411C281ED005DA767 /* pngget.c in Sources */,
+				DCD6FC7511C281ED005DA767 /* pngmem.c in Sources */,
+				DCD6FC7611C281ED005DA767 /* pngpread.c in Sources */,
+				DCD6FC7811C281ED005DA767 /* pngread.c in Sources */,
+				DCD6FC7911C281ED005DA767 /* pngrio.c in Sources */,
+				DCD6FC7A11C281ED005DA767 /* pngrtran.c in Sources */,
+				DCD6FC7B11C281ED005DA767 /* pngrutil.c in Sources */,
+				DCD6FC7C11C281ED005DA767 /* pngset.c in Sources */,
+				DCD6FC7E11C281ED005DA767 /* pngtrans.c in Sources */,
+				DCD6FC7F11C281ED005DA767 /* pngwio.c in Sources */,
+				DCD6FC8011C281ED005DA767 /* pngwrite.c in Sources */,
+				DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */,
+				DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */,
+				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
