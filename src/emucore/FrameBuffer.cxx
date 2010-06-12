@@ -1027,7 +1027,7 @@ const FrameBuffer::VideoMode FrameBuffer::
   //   If it's 'auto', we just use the mode as already previously defined
   //   If it's not 'auto', attempt to fit the mode into the resolution
   //   specified by 'fullres' (if possible)
-  if(isFullscreen && BSPF_tolower(settings.getString("fullres")) != "auto")
+  if(isFullscreen && !BSPF_equalsIgnoreCase(settings.getString("fullres"), "auto"))
   {
     // Only use 'fullres' if it's *bigger* than the requested mode
     int w, h;
@@ -1085,8 +1085,8 @@ void FrameBuffer::VideoModeList::setByGfxMode(const string& name)
   GraphicsMode gfxmode;
   for(uInt32 i = 0; i < GFX_NumModes; ++i)
   {
-    if(ourGraphicsModes[i].name == BSPF_tolower(name) ||
-       ourGraphicsModes[i].description == BSPF_tolower(name))
+    if(BSPF_equalsIgnoreCase(ourGraphicsModes[i].name, name) ||
+       BSPF_equalsIgnoreCase(ourGraphicsModes[i].description, name))
     {
       gfxmode = ourGraphicsModes[i];
       found = true;

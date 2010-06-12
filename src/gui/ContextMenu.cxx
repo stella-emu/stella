@@ -134,7 +134,7 @@ void ContextMenu::setSelected(const string& tag, const string& defaultTag)
 {
   for(unsigned int item = 0; item < _entries.size(); ++item)
   {
-    if(BSPF_strcasecmp(_entries[item].second.c_str(), tag.c_str()) == 0)
+    if(BSPF_equalsIgnoreCase(_entries[item].second, tag) == 0)
     {
       setSelected(item);
       return;
@@ -144,7 +144,7 @@ void ContextMenu::setSelected(const string& tag, const string& defaultTag)
   // If we get this far, the value wasn't found; use the default value
   for(unsigned int item = 0; item < _entries.size(); ++item)
   {
-    if(BSPF_strcasecmp(_entries[item].second.c_str(), defaultTag.c_str()) == 0)
+    if(BSPF_equalsIgnoreCase(_entries[item].second, defaultTag) == 0)
     {
       setSelected(item);
       return;

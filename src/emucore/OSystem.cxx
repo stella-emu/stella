@@ -755,8 +755,8 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
           // Grab 3-character extension
           char* ext = filename + strlen(filename) - 4;
 
-          if(!BSPF_strcasecmp(ext, ".a26") || !BSPF_strcasecmp(ext, ".bin") ||
-             !BSPF_strcasecmp(ext, ".rom"))
+          if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
+             BSPF_equalsIgnoreCase(ext, ".rom"))
           {
             file = filename;
             break;

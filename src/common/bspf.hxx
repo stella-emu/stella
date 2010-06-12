@@ -66,9 +66,8 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <cctype>
 using namespace std;
-
-#include <algorithm>
 
 // Defines to help with path handling
 #if defined BSPF_UNIX
@@ -78,7 +77,7 @@ using namespace std;
 #elif defined BSPF_MAC_OSX
   #define BSPF_PATH_SEPARATOR  "/"
 #elif defined BSPF_GP2X
-    #define BSPF_PATH_SEPARATOR  "/"
+  #define BSPF_PATH_SEPARATOR  "/"
 #endif
 
 // I wish Windows had a complete POSIX layer
@@ -110,15 +109,17 @@ using namespace std;
 #endif
 
 // Some convenience functions
-template<typename T> inline void BSPF_swap(T &a, T &b) { T tmp = a; a = b; b = tmp; }
+template<typename T> inline void BSPF_swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }
 template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
 template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }
 template<typename T> inline T BSPF_max (T a, T b) { return (a>b) ? a : b; }
-inline string BSPF_tolower(const string& s)
+inline bool BSPF_equalsIgnoreCase(const string& s1, const string& s2)
 {
-  string t = s;
-  transform(t.begin(), t.end(), t.begin(), (int(*)(int)) tolower);
-  return t;
+  return BSPF_strcasecmp(s1.c_str(), s2.c_str()) == 0;
+}
+inline bool BSPF_equalsIgnoreCase(const char* s1, const char* s2)
+{
+  return BSPF_strcasecmp(s1, s2) == 0;
 }
 
 static const string EmptyString("");

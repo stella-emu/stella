@@ -136,7 +136,7 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
     const char* ext = name.c_str() + idx + 1;
 
     for(uInt32 i = 0; i < exts.size(); ++i)
-      if(BSPF_strcasecmp(ext, exts[i].c_str()) == 0)
+      if(BSPF_equalsIgnoreCase(ext, exts[i]))
         return true;
   }
 
@@ -153,7 +153,7 @@ bool LauncherFilterDialog::isValidRomName(const string& name, string& ext)
 
     for(uInt32 i = 0; i < 5; ++i)
     {
-      if(BSPF_strcasecmp(e, ourRomTypes[1][i]) == 0)
+      if(BSPF_equalsIgnoreCase(e, ourRomTypes[1][i]))
       {
         ext = e;
         return true;
