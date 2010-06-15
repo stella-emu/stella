@@ -45,7 +45,7 @@ bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
   png_uint_32 iwidth, iheight, ipitch;
   uInt8* buffer = NULL;
   int bit_depth, color_type, interlace_type;
-  string err_message;
+  const char* err_message;
 
   ifstream* in = new ifstream(myFilename.c_str(), ios_base::binary);
   if(!in || !in->is_open())
@@ -118,7 +118,7 @@ error:
     in->close();
   delete[] buffer;
 
-  throw err_message.c_str();
+  throw err_message;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -134,7 +134,7 @@ void PNGLibrary::scaleImagetoSurface(uInt32 iwidth, uInt32 iheight, uInt8* buffe
   // but since Stella only generates snapshots at up to 10x, we should
   // be fine for a while ...
   uInt32 izoom = uInt32(ceil(iwidth/320.0)),
-         szoom = surface.getWidth()/320.0;
+         szoom = surface.getWidth()/320;
 
   // Set the surface size 
   uInt32 sw = iwidth / izoom * szoom,
