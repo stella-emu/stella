@@ -254,7 +254,7 @@ png_inflate(png_structp png_ptr, const png_byte *data, png_size_t size,
        * buffer if available.
        */
       {
-         char *msg;
+         const char *msg;
          if (png_ptr->zstream.msg != 0)
             msg = png_ptr->zstream.msg;
          else
@@ -344,7 +344,7 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
       {
          /* Success (maybe) - really uncompress the chunk. */
          png_size_t new_size = 0;
-         png_charp text = png_malloc_warn(png_ptr,
+         png_charp text = (png_charp) png_malloc_warn(png_ptr,
                         prefix_size + expanded_size + 1);
 
          if (text != NULL)
@@ -392,7 +392,7 @@ png_decompress_chunk(png_structp png_ptr, int comp_type,
     * amount of compressed data.
     */
    {
-      png_charp text = png_malloc_warn(png_ptr, prefix_size + 1);
+      png_charp text = (png_charp) png_malloc_warn(png_ptr, prefix_size + 1);
       if (text != NULL)
       {
          if (prefix_size > 0)

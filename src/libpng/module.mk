@@ -11,7 +11,6 @@ MODULE_OBJS := \
 	src/libpng/pngrtran.o \
 	src/libpng/pngrutil.o \
 	src/libpng/pngset.o \
-	src/libpng/pngtest.o \
 	src/libpng/pngtrans.o \
 	src/libpng/pngwio.o \
 	src/libpng/pngwrite.o \
