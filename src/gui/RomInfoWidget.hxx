@@ -45,12 +45,6 @@ class RomInfoWidget : public Widget
 
   private:
     void parseProperties();
-    bool isValidPNGHeader(uInt8* header);
-    void readPNGChunk(ifstream& in, string& type, uInt8** data, int& size);
-    bool parseIHDR(int& width, int& height, uInt8* data, int size);
-    bool parseIDATChunk(FBSurface* surface, int width, int height,
-                        uInt8* data, int size);
-    string parseTextChunk(uInt8* data, int size);
 
   private:
     // Surface id and pointer holding the scaled PNG image
