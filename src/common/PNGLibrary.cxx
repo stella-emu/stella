@@ -37,7 +37,7 @@ PNGLibrary::~PNGLibrary()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
 {
-  #define readImageERROR(s) { err_message = s; goto error; }
+  #define readImageERROR(s) { err_message = s; goto done; }
 
   png_structp png_ptr = NULL;
   png_infop info_ptr = NULL;
@@ -45,22 +45,22 @@ bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
   png_uint_32 iwidth, iheight, ipitch;
   uInt8* buffer = NULL;
   int bit_depth, color_type, interlace_type;
-  const char* err_message;
+  const char* err_message = NULL;
 
   ifstream* in = new ifstream(myFilename.c_str(), ios_base::binary);
   if(!in || !in->is_open())
-    readImageERROR("No image found")
+    readImageERROR("No image found");
 
   // Create the PNG loading context structure
   png_ptr = png_create_read_struct(PNG_LIBPNG_VER_STRING, NULL,
                  png_user_error, png_user_warn);
   if(png_ptr == NULL)
-    readImageERROR("Couldn't allocate memory for PNG file")
+    readImageERROR("Couldn't allocate memory for PNG file");
 
   // Allocate/initialize the memory for image information.  REQUIRED.
 	info_ptr = png_create_info_struct(png_ptr);
   if(info_ptr == NULL)
-    readImageERROR("Couldn't create image information for PNG file")
+    readImageERROR("Couldn't create image information for PNG file");
 
   // Set up the input control
   png_set_read_fn(png_ptr, in, png_read_data);
@@ -79,13 +79,13 @@ bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
 
   // Greyscale mode not supported
   if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
-    readImageERROR("Greyscale PNG images not supported")
+    readImageERROR("Greyscale PNG images not supported");
 
   // Create space for the entire image (3 bytes per pixel in RGB format)
   ipitch = iwidth * 3;
   buffer = new uInt8[ipitch * iheight];
   if(buffer == NULL)
-    readImageERROR("Not enough memory to read PNG file")
+    readImageERROR("Not enough memory to read PNG file");
 
   // The PNG read function expects an array of rows, not a single 1-D array
   row_pointers = new png_bytep[iheight];
@@ -103,22 +103,17 @@ bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
   scaleImagetoSurface(iwidth, iheight, buffer, fb, surface);
 
   // Cleanup
+done:
   if(png_ptr)
     png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : (png_infopp)0, (png_infopp)0);
   if(in)
     in->close();
   delete[] buffer;
 
-  return true;
-
-error:
-  if(png_ptr)
-    png_destroy_read_struct(&png_ptr, info_ptr ? &info_ptr : (png_infopp)0, (png_infopp)0);
-  if(in)
-    in->close();
-  delete[] buffer;
-
-  throw err_message;
+  if(err_message)
+    throw err_message;
+  else
+    return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

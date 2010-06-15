@@ -20,7 +20,7 @@ License:        GPL
 URL:            http://stella.sourceforge.net
 Source:         %{name}-%{version}.tar.bz2
 BuildRoot:      %_tmppath/%name-%version-%release-root
-BuildRequires:  SDL-devel MesaGLU-devel zlib-devel
+BuildRequires:  SDL-devel MesaGLU-devel
 
 %description
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the most
@@ -65,6 +65,7 @@ export CXXFLAGS=$RPM_OPT_FLAGS
 %else
   --enable-shared \
 %endif
+  --force-builtin-libpng --force-builtin-zlib \
   --docdir=%{_docdir}/stella \
   --x-libraries=%{_prefix}/X11R6/%{_lib}
 

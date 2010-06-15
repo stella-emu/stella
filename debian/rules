@@ -20,7 +20,7 @@ endif
 
 config.status: configure
 	dh_testdir
-	CXXFLAGS="$(CXXFLAGS)" ./configure --prefix=/usr
+	CXXFLAGS="$(CXXFLAGS)" ./configure --prefix=/usr --force-builtin-libpng --force-builtin-zlib
 
 build: build-stamp
 
