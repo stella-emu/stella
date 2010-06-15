@@ -197,6 +197,8 @@ Optional Features:
   --disable-static
   --enable-profile       build binary with profiling info [disabled]
   --disable-profile
+  --force-builtin-libpng force use of built-in libpng library [auto]
+  --force-builtin-zlib   force use of built-in zlib library [auto]
 
 Optional Libraries:
   --with-sdl-prefix=DIR    Prefix where the sdl-config script is installed (optional)
@@ -236,6 +238,8 @@ for ac_option in $@; do
       --disable-static)         _build_static=no     ;;
       --enable-profile)         _build_profile=yes   ;;
       --disable-profile)        _build_profile=no    ;;
+      --force-builtin-libpng)   _libpng=no           ;;
+      --force-builtin-zlib)     _zlib=no             ;;
       --with-sdl-prefix=*)
         arg=`echo $ac_option | cut -d '=' -f 2`
         _sdlpath="$arg:$arg/bin"
