@@ -377,20 +377,21 @@ class OSystem
 
   public:
     //////////////////////////////////////////////////////////////////////
-    // The following methods are system-specific and must be implemented
-    // in derived classes.
+    // The following methods are system-specific and can be overrided in
+    // derived classes.  Otherwise, the base methods will be used.
     //////////////////////////////////////////////////////////////////////
     /**
-      This method returns number of ticks in microseconds.
+      This method returns number of ticks in microseconds since some
+      pre-defined time in the past.  *NOTE*: it is necessary that this
+      pre-defined time exists between runs of the application, and must
+      be (relatively) unique.  For example, the time since the system
+      started running is not a good choice, since it can be duplicated.
+      The current implementation uses time since the UNIX epoch.
 
       @return Current time in microseconds.
     */
     virtual uInt64 getTicks() const;
 
-    //////////////////////////////////////////////////////////////////////
-    // The following methods are system-specific and can be overrided in
-    // derived classes.  Otherwise, the base methods will be used.
-    //////////////////////////////////////////////////////////////////////
     /**
       This method runs the main loop.  Since different platforms
       may use different timing methods and/or algorithms, this method can
@@ -502,6 +503,9 @@ class OSystem
 
     // Time per frame for a video update, based on the current framerate
     uInt32 myTimePerFrame;
+
+    // The time (in milliseconds) from the UNIX epoch when the application starts
+    uInt32 myMillisAtStart;
 
     // Indicates whether to stop the main loop
     bool myQuitLoop;
