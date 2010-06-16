@@ -766,14 +766,14 @@ void EventHandler::poll(uInt64 time)
     {
     #ifdef CHEATCODE_SUPPORT
       const CheatList& cheats = myOSystem->cheat().perFrame();
-      for(unsigned int i = 0; i < cheats.size(); i++)
+      for(uInt32 i = 0; i < cheats.size(); i++)
         cheats[i]->evaluate();
     #endif
 
       // Handle continuous snapshots
       if(myContSnapshotInterval > 0 &&
         (++myContSnapshotCounter % myContSnapshotInterval == 0))
-        takeSnapshot(myContSnapshotCounter / myContSnapshotInterval);
+        takeSnapshot(time >> 10);  // not quite milliseconds, but close enough
     }
   }
   else if(myOverlay)
@@ -1838,7 +1838,7 @@ void EventHandler::takeSnapshot(uInt32 number)
   if(number > 0)
   {
     ostringstream buf;
-    buf << sspath << "_" << number << ".png";
+    buf << sspath << "_" << hex << setw(8) << setfill('0') << number << ".png";
     filename = buf.str();
   }
   else if(!myOSystem->settings().getBool("sssingle"))
