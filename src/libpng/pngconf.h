@@ -51,6 +51,15 @@
 #endif
 
 /*
+ * Added by stephena - 2010/06/17
+ *
+ * Disable parts of the library that we know Stella will never use.
+ */
+#define PNG_NO_MNG_FEATURES
+#define PNG_NO_PROGRESSIVE_READ
+#define PNG_PROGRESSIVE_READ_NOT_SUPPORTED
+
+/*
  * If you create a private DLL you need to define in "pngusr.h" the followings:
  * #define PNG_USER_PRIVATEBUILD <Describes by whom and why this version of
  *        the DLL was built>
