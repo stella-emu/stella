@@ -60,14 +60,13 @@ class Joystick : public Controller
       but it seemed like the best place to put it.
     */
     static void setDeadZone(int deadzone);
-    inline static int deadzone() { return _DEAD_ZONE;  }
+    inline static int deadzone() { return _DEAD_ZONE; }
 
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
                 myXAxisValue, myYAxisValue, myFireEvent;
-
 
     static int _DEAD_ZONE;
 };

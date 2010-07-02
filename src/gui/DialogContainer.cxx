@@ -84,6 +84,14 @@ void DialogContainer::updateTime(uInt64 time)
                                 myCurrentAxisDown.value);
     myAxisRepeatTime = myTime + kRepeatSustainDelay;
   }
+
+  // Joystick hat still pressed
+  if(myCurrentHatDown.stick != -1 && myHatRepeatTime < myTime)
+  {
+    activeDialog->handleJoyHat(myCurrentHatDown.stick, myCurrentHatDown.hat,
+                                myCurrentHatDown.value);
+    myHatRepeatTime = myTime + kRepeatSustainDelay;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,21 +290,8 @@ void DialogContainer::handleJoyEvent(int stick, int button, uInt8 state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
 {
-// FIXME - analog axis events cause autofire to inadvertently come on and not go off
-
   if(myDialogStack.empty())
     return;
-
-  // Send the event to the dialog box on the top of the stack
-  Dialog* activeDialog = myDialogStack.top();
-
-  int deadzone = Joystick::deadzone();
-  if(value > deadzone)
-    value -= deadzone;
-  else if(value < -deadzone )
-    value += deadzone;
-  else
-    value = 0;
 
   // Only stop firing events if it's the current stick
   if(myCurrentAxisDown.stick == stick && value == 0)
@@ -311,7 +306,7 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
     myCurrentAxisDown.value = value;
     myAxisRepeatTime = myTime + kRepeatInitialDelay;
   }
-  activeDialog->handleJoyAxis(stick, axis, value);
+  myDialogStack.top()->handleJoyAxis(stick, axis, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -320,11 +315,20 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
   if(myDialogStack.empty())
     return;
 
-  // Send the event to the dialog box on the top of the stack
-  Dialog* activeDialog = myDialogStack.top();
-
-  // FIXME - add repeat processing, similar to axis/button events
-  activeDialog->handleJoyHat(stick, hat, value);
+  // Only stop firing events if it's the current stick
+  if(myCurrentHatDown.stick == stick && value == 0)
+  {
+    myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
+  }
+  else
+  {
+    // Now account for repeated hat events (press and hold)
+    myCurrentHatDown.stick = stick;
+    myCurrentHatDown.hat  = hat;
+    myCurrentHatDown.value = value;
+    myHatRepeatTime = myTime + kRepeatInitialDelay;
+  }
+  myDialogStack.top()->handleJoyHat(stick, hat, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

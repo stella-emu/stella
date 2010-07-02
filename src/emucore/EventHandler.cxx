@@ -85,11 +85,14 @@ EventHandler::EventHandler(OSystem* osystem)
       for(int j = 0; j < kNumJoyButtons; ++j)
         myJoyTable[i][j][m] = Event::NoType;
 
-  // Erase the joystick axis mapping array
-  for(int m = 0; m < kNumModes; ++m)
-    for(int i = 0; i < kNumJoysticks; ++i)
-      for(int j = 0; j < kNumJoyAxis; ++j)
+  // Erase the joystick axis mapping array and last axis value
+  for(int i = 0; i < kNumJoysticks; ++i)
+    for(int j = 0; j < kNumJoyAxis; ++j)
+    {
+      myAxisLastValue[i][j] = 0;
+      for(int m = 0; m < kNumModes; ++m)
         myJoyAxisTable[i][j][0][m] = myJoyAxisTable[i][j][1][m] = Event::NoType;
+    }
 
   // Erase the joystick hat mapping array
   for(int m = 0; m < kNumModes; ++m)
@@ -696,7 +699,25 @@ void EventHandler::poll(uInt64 time)
             if(myState == S_EMULATE)
               handleJoyAxisEvent(stick, axis, value);
             else if(myOverlay != NULL)
-              myOverlay->handleJoyAxisEvent(stick, axis, value);
+            {
+              // First, clamp the values to simulate digital input
+              // (the only thing that the underlying code understands)
+              if(value > Joystick::deadzone())
+                value = 32000;
+              else if(value < -Joystick::deadzone())
+                value = -32000;
+              else
+                value = 0;
+
+              // Now filter out consecutive, similar values
+              // (only pass on the event if the state has changed)
+              if(value != myAxisLastValue[stick][axis])
+              {
+//                cerr << value << " @ " << COUNTER++ << "(" << stick << "/" << axis << ")" << endl;
+                myOverlay->handleJoyAxisEvent(stick, axis, value);
+                myAxisLastValue[stick][axis] = value;
+              }
+            }
             break;  // Regular joystick axis
 
           case JT_STELLADAPTOR_LEFT:

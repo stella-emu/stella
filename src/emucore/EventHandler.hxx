@@ -506,6 +506,10 @@ class EventHandler
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;
 
+    // Keeps track of last axis values (used to emulate digital state
+    // for analog sticks)
+    int myAxisLastValue[kNumJoysticks][kNumJoyAxis];
+
     // Holds static strings for the remap menu (emulation and menu events)
     static ActionList ourEmulActionList[kEmulActionListSize];
     static ActionList ourMenuActionList[kMenuActionListSize];

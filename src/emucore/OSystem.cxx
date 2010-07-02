@@ -896,7 +896,14 @@ void OSystem::setDefaultJoyAxisMap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoyHatMap()
 {
-// FIXME - add emul and UI events
+  // FIXME - add emulation events
+  EventMode mode;
+
+  mode = kMenuMode;  // Default menu/UI events
+  myEventHandler->setDefaultJoyHatMapping(Event::UILeft, mode, 0, 0, 2);
+  myEventHandler->setDefaultJoyHatMapping(Event::UIRight, mode, 0, 0, 3);
+  myEventHandler->setDefaultJoyHatMapping(Event::UIUp, mode, 0, 0, 0);
+  myEventHandler->setDefaultJoyHatMapping(Event::UIDown, mode, 0, 0, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
