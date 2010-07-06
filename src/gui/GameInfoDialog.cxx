@@ -204,7 +204,7 @@ GameInfoDialog::GameInfoDialog(
                        "TV Type:", kTextAlignLeft);
   items.clear();
   items.push_back("Color", "COLOR");
-  items.push_back("B & W", "BLACKANDWHITE");
+  items.push_back("B & W", "BW");
   myTVType = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                              pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(myTVType);

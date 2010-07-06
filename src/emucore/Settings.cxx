@@ -95,7 +95,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("ssinterval", "2");
 
   // Config files and paths
-  setInternal("romdir", "~");
+  setInternal("romdir", "");
   setInternal("statedir", "");
   setInternal("cheatfile", "");
   setInternal("palettefile", "");

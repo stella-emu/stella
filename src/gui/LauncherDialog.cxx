@@ -61,6 +61,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myMenu(NULL),
     myGlobalProps(NULL),
     myFilters(NULL),
+    myRomDir(NULL),
     mySelectedItem(0)
 {
   const GUI::Font& font = instance().launcherFont();
@@ -191,8 +192,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   // ROM properties
   myGlobalProps = new GlobalPropsDialog(this, osystem->font());
 
-  // Create dialog whereby the files shown in the ROM listing can be
-  // customized
+  // Create dialog whereby the files shown in the ROM listing can be customized
   myFilters = new LauncherFilterDialog(this, osystem->font());
 
   // Figure out which filters are needed for the ROM listing
@@ -207,6 +207,7 @@ LauncherDialog::~LauncherDialog()
   delete myMenu;
   delete myGlobalProps;
   delete myFilters;
+  delete myRomDir;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -230,8 +231,21 @@ string LauncherDialog::selectedRomMD5()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadConfig()
 {
+  const string& romdir = instance().settings().getString("romdir");
+
+  // When romdir hasn't been set, it probably indicates that this is the first
+  // time running Stella; in this case, we should prompt the user
+  if(romdir == "")
+  {
+    if(!myRomDir)
+      myRomDir = new BrowserDialog(this, instance().font(), _w, _h);
+
+    myRomDir->show("First startup -> Select ROM directory:", romdir,
+                   FilesystemNode::kListDirectoriesOnly, kStartupRomDirChosenCmd);
+  }
+
   // Assume that if the list is empty, this is the first time that loadConfig()
-  // has been called (and we should reload the list).
+  // has been called (and we should reload the list)
   if(myList->getList().isEmpty())
   {
     myPrevDirButton->setEnabled(false);
@@ -503,7 +517,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
             if(!myNodeNames.empty())
               dirname = myNodeNames.pop();
           }
-		  else
+          else
           {
             myCurrentNode = FilesystemNode(rom);
             myNodeNames.push(myGameList->name(item));
@@ -551,6 +565,12 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       instance().eventHandler().quit();
       break;
 
+    case kStartupRomDirChosenCmd:
+    {
+      FilesystemNode dir(myRomDir->getResult());
+      instance().settings().setString("romdir", dir.getRelativePath());
+      // fall through to the next case
+    }
     case kRomDirChosenCmd:
       myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
       if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))

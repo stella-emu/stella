@@ -30,6 +30,7 @@ class CommandSender;
 class ContextMenu;
 class DialogContainer;
 class GameList;
+class BrowserDialog;
 class OptionsDialog;
 class GlobalPropsDialog;
 class LauncherFilterDialog;
@@ -102,6 +103,7 @@ class LauncherDialog : public Dialog
     ContextMenu*          myMenu;
     GlobalPropsDialog*    myGlobalProps;
     LauncherFilterDialog* myFilters;
+    BrowserDialog*        myRomDir;
 
     int mySelectedItem;
     int myRomInfoSize;
@@ -115,7 +117,9 @@ class LauncherDialog : public Dialog
       kStartCmd   = 'STRT',
       kPrevDirCmd = 'PRVD',
       kOptionsCmd = 'OPTI',
-      kQuitCmd    = 'QUIT'
+      kQuitCmd    = 'QUIT',
+
+      kStartupRomDirChosenCmd = 'rmsc'
     };
 };
 

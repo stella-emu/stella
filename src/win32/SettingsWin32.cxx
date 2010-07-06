@@ -26,10 +26,7 @@ SettingsWin32::SettingsWin32(OSystem* osystem)
   : Settings(osystem)
 {
   setInternal("gl_lib", "opengl32.dll");
-  // Anything less than this usually causes sound skipping
-  setInternal("fragsize", "2048");
-  // Most Windows systems work better without this
-  setInternal("romdir", "c:\\");
+  setInternal("fragsize", "512");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
