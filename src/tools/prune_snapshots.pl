@@ -28,7 +28,7 @@ close(INFILE);
 
 # Get all snapshot files from the actual directory (second commandline arg)
 # We use a hashmap to get constant lookup time
-my @files = <$ARGV[1]/*>;
+my @files = <"$ARGV[1]/*">;
 foreach $file (@files)
 {
 	($base,$path,$type) = fileparse($file);

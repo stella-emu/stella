@@ -756,7 +756,7 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
         if(strlen(filename) >= 4)
         {
           // Grab 3-character extension
-          char* ext = filename + strlen(filename) - 4;
+          const char* ext = filename + strlen(filename) - 4;
 
           if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
              BSPF_equalsIgnoreCase(ext, ".rom"))
@@ -782,7 +782,7 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
 
       // We don't have to check for any return errors from these functions,
       // since if there are, 'image' will not contain a valid ROM and the
-      // calling method can take of it
+      // calling method can take care of it
       unzOpenCurrentFile(tz);
       unzReadCurrentFile(tz, image, size);
       unzCloseCurrentFile(tz);
@@ -865,6 +865,12 @@ void OSystem::setDefaultJoymap()
   myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire1, mode, 0, 0);
   // Right joystick (assume joystick one, button zero)
   myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire1, mode, 1, 0);
+
+  mode = kMenuMode;  // Default menu/UI events
+  // Left joystick (assume joystick zero, button zero)
+  myEventHandler->setDefaultJoyMapping(Event::UISelect, mode, 0, 0);
+  // Right joystick (assume joystick one, button zero)
+  myEventHandler->setDefaultJoyMapping(Event::UISelect, mode, 1, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -896,14 +902,21 @@ void OSystem::setDefaultJoyAxisMap()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoyHatMap()
 {
-  // FIXME - add emulation events
   EventMode mode;
 
+  mode = kEmulationMode;  // Default emulation events
+  // Left joystick left/right directions (assume joystick zero and hat 0)
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT);
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroRight, mode, 0, 0, EVENT_HATRIGHT);
+  // Left joystick up/down directions (assume joystick zero and hat 0)
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP);
+  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN);
+
   mode = kMenuMode;  // Default menu/UI events
-  myEventHandler->setDefaultJoyHatMapping(Event::UILeft, mode, 0, 0, 2);
-  myEventHandler->setDefaultJoyHatMapping(Event::UIRight, mode, 0, 0, 3);
-  myEventHandler->setDefaultJoyHatMapping(Event::UIUp, mode, 0, 0, 0);
-  myEventHandler->setDefaultJoyHatMapping(Event::UIDown, mode, 0, 0, 1);
+  myEventHandler->setDefaultJoyHatMapping(Event::UILeft, mode, 0, 0, EVENT_HATLEFT);
+  myEventHandler->setDefaultJoyHatMapping(Event::UIRight, mode, 0, 0, EVENT_HATRIGHT);
+  myEventHandler->setDefaultJoyHatMapping(Event::UIUp, mode, 0, 0, EVENT_HATUP);
+  myEventHandler->setDefaultJoyHatMapping(Event::UIDown, mode, 0, 0, EVENT_HATDOWN);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

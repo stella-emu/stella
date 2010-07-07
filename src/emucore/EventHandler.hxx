@@ -43,6 +43,14 @@ enum MouseButton {
   EVENT_WHEELUP
 };
 
+enum JoyHat {
+  EVENT_HATUP     = 0,  // make sure these are set correctly,
+  EVENT_HATDOWN   = 1,  // since they'll be used as array indices
+  EVENT_HATLEFT   = 2,
+  EVENT_HATRIGHT  = 3,
+  EVENT_HATCENTER = 4
+};
+
 enum EventMode {
   kEmulationMode = 0,  // make sure these are set correctly,
   kMenuMode      = 1,  // since they'll be used as array indices
@@ -353,10 +361,10 @@ class EventHandler
       Send a joystick hat event to the handler
 
       @param stick  The joystick number
-      @param axis   The joystick hat
+      @param hat    The joystick hat
       @param value  The value on the given hat
     */
-    void handleJoyHatEvent(int stick, int hat, int value);
+    void handleJoyHatEvent(int stick, int hat, JoyHat value);
 	
     /**
       Detects and changes the eventhandler state
@@ -436,13 +444,6 @@ class EventHandler
       JoyType       type;
       string        name;
     };
-    enum JoyHat {
-      kJHatUp,
-      kJHatDown,
-      kJHatLeft,
-      kJHatRight,
-      kJHatCentered
-    };
     struct JoyMouse {   // Used for joystick to mouse emulation
       bool active;
       int x, y, x_amt, y_amt, amt, val, old_val;
@@ -467,6 +468,8 @@ class EventHandler
     Event::Type myJoyAxisTable[kNumJoysticks][kNumJoyAxis][2][kNumModes];
 
     // Array of joystick hat events (we don't record diagonals)
+    // Note that the array contains 4 directions, as defined in the JoyHat enum
+    // (the center isn't considered a direction)
     Event::Type myJoyHatTable[kNumJoysticks][kNumJoyHats][4][kNumModes];
 
     // Array of messages for each Event

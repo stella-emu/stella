@@ -713,7 +713,6 @@ void EventHandler::poll(uInt64 time)
               // (only pass on the event if the state has changed)
               if(value != myAxisLastValue[stick][axis])
               {
-//                cerr << value << " @ " << COUNTER++ << "(" << stick << "/" << axis << ")" << endl;
                 myOverlay->handleJoyAxisEvent(stick, axis, value);
                 myAxisLastValue[stick][axis] = value;
               }
@@ -750,17 +749,17 @@ void EventHandler::poll(uInt64 time)
         // Generate two equivalent hat events representing combined direction
         // when we get a diagonal hat event
         if(value == SDL_HAT_CENTERED)
-          handleJoyHatEvent(stick, hat, kJHatCentered);
+          handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
         else
         {
           if(value & SDL_HAT_UP)
-            handleJoyHatEvent(stick, hat, kJHatUp);
+            handleJoyHatEvent(stick, hat, EVENT_HATUP);
           if(value & SDL_HAT_RIGHT)
-            handleJoyHatEvent(stick, hat, kJHatRight); 
+            handleJoyHatEvent(stick, hat, EVENT_HATRIGHT); 
           if(value & SDL_HAT_DOWN)
-            handleJoyHatEvent(stick, hat, kJHatDown);
+            handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
           if(value & SDL_HAT_LEFT)
-            handleJoyHatEvent(stick, hat, kJHatLeft);
+            handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
         }
         break;  // SDL_JOYHATMOTION
       }
@@ -928,19 +927,19 @@ void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyHatEvent(int stick, int hat, int value)
+void EventHandler::handleJoyHatEvent(int stick, int hat, JoyHat value)
 {
 #ifdef JOYSTICK_SUPPORT
   if(myState == S_EMULATE)
   {
-    if(value == kJHatCentered)
+    if(value == EVENT_HATCENTER)
     {
       // Turn off all associated events, since we don't know exactly
       // which one was previously activated.
-      handleEvent(myJoyHatTable[stick][hat][0][kEmulationMode], 0);
-      handleEvent(myJoyHatTable[stick][hat][1][kEmulationMode], 0);
-      handleEvent(myJoyHatTable[stick][hat][2][kEmulationMode], 0);
-      handleEvent(myJoyHatTable[stick][hat][3][kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][EVENT_HATUP]   [kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][EVENT_HATDOWN] [kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][EVENT_HATLEFT] [kEmulationMode], 0);
+      handleEvent(myJoyHatTable[stick][hat][EVENT_HATRIGHT][kEmulationMode], 0);
     }
     else
       handleEvent(myJoyHatTable[stick][hat][value][kEmulationMode], 1);
@@ -1221,10 +1220,10 @@ void EventHandler::setActionMappings(EventMode mode)
             buf << "J" << stick << " hat " << hat;
             switch(dir)
             {
-              case kJHatUp:    buf << " up"; break;
-              case kJHatDown:  buf << " down"; break;
-              case kJHatLeft:  buf << " left"; break;
-              case kJHatRight: buf << " right"; break;
+              case EVENT_HATUP:    buf << " up";    break;
+              case EVENT_HATDOWN:  buf << " down";  break;
+              case EVENT_HATLEFT:  buf << " left";  break;
+              case EVENT_HATRIGHT: buf << " right"; break;
             }
             if(key == "")
               key = key + buf.str();
@@ -1440,17 +1439,10 @@ void EventHandler::setDefaultJoyHatMapping(Event::Type event, EventMode mode,
 {
   if(stick >= 0 && stick < kNumJoysticks &&
      hat >= 0 && hat < kNumJoyHats &&
-     event >= 0 && event < Event::LastType)
+     event >= 0 && event < Event::LastType &&
+     value != EVENT_HATCENTER)
   {
-    switch(value)
-    {
-      case kJHatUp:
-      case kJHatDown:
-      case kJHatLeft:
-      case kJHatRight:
-        myJoyHatTable[stick][hat][value][mode] = event;
-        break;
-    }
+    myJoyHatTable[stick][hat][value][mode] = event;
   }
 }
 

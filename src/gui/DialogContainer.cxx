@@ -310,13 +310,13 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleJoyHatEvent(int stick, int hat, int value)
+void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
 {
   if(myDialogStack.empty())
     return;
 
   // Only stop firing events if it's the current stick
-  if(myCurrentHatDown.stick == stick && value == 0)
+  if(myCurrentHatDown.stick == stick && value == EVENT_HATCENTER)
   {
     myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
   }

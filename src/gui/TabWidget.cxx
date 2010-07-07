@@ -221,13 +221,11 @@ bool TabWidget::handleEvent(Event::Type event)
 
   switch (event)
   {
-    case Event::UIDown:
     case Event::UIRight:
     case Event::UIPgDown:
       cycleTab(1);
       handled = true;
       break;
-    case Event::UIUp:
     case Event::UILeft:
     case Event::UIPgUp:
       cycleTab(-1);
