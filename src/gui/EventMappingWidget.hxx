@@ -91,6 +91,13 @@ class EventMappingWidget : public Widget, public CommandSender
     // In this mode, the next event received is remapped to some action
     bool myRemapStatus;
 
+    // Joystick axes and hats can be more problematic that ordinary buttons
+    // or keys, in that there can be 'drift' in the values
+    // Therefore, we map these events when they've been 'released', rather
+    // than on their first occurrence (aka, when they're 'pressed')
+    // As a result, we need to keep track of their old values
+    int myLastStick, myLastAxis, myLastHat, myLastValue;
+
     bool myFirstTime;
 };
 

@@ -124,6 +124,9 @@ void EventMappingWidget::startRemapping()
   // Set the flags for the next event that arrives
   myRemapStatus = true;
 
+  // Reset all previous events for determining correct axis/hat values
+  myLastStick = myLastAxis = myLastHat = myLastValue = -1;
+
   // Disable all other widgets while in remap mode, except enable 'Cancel'
   myActionsList->setEnabled(false);
   myMapButton->setEnabled(false);
@@ -162,6 +165,9 @@ void EventMappingWidget::stopRemapping()
 {
   // Turn off remap mode
   myRemapStatus = false;
+
+  // Reset all previous events for determining correct axis/hat values
+  myLastStick = myLastAxis = myLastHat = myLastValue = -1;
 
   // And re-enable all the widgets
   myActionsList->setEnabled(true);
@@ -226,35 +232,69 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
 void EventMappingWidget::handleJoyAxis(int stick, int axis, int value)
 {
   // Remap joystick axes in remap mode
+  // There are two phases to detection:
+  //   First, detect an axis 'on' event
+  //   Then, detect the same axis 'off' event
   if(myRemapStatus && myActionSelected >= 0)
   {
-    Event::Type event =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance().eventHandler().addJoyAxisMapping(event, myEventMode,
-                                                    stick, axis, value))
-      stopRemapping();
+    // Detect the first axis event that represents 'on'
+    if(myLastStick == -1 && myLastAxis == -1 && value != 0)
+    {
+      myLastStick = stick;
+      myLastAxis = axis;
+      myLastValue = value;
+    }
+    // Detect the first axis event that matches a previously set
+    // stick and axis, but turns the axis 'off'
+    else if(myLastStick == stick && axis == myLastAxis && value == 0)
+    {
+      value = myLastValue;
+
+      Event::Type event =
+        instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+      if(instance().eventHandler().addJoyAxisMapping(event, myEventMode,
+                                                     stick, axis, value))
+        stopRemapping();
+    }
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool EventMappingWidget::handleJoyHat(int stick, int hat, int value)
 {
-  bool result = false;
-
   // Remap joystick hats in remap mode
+  // There are two phases to detection:
+  //   First, detect a hat direction event
+  //   Then, detect the same hat 'center' event
   if(myRemapStatus && myActionSelected >= 0)
   {
-    Event::Type event =
-      instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance().eventHandler().addJoyHatMapping(event, myEventMode,
-                                                   stick, hat, value))
+    // Detect the first hat event that represents a valid direction
+    if(myLastStick == -1 && myLastHat == -1 && value != EVENT_HATCENTER)
     {
-      stopRemapping();
-      result = true;
+      myLastStick = stick;
+      myLastHat = hat;
+      myLastValue = value;
+
+      return true;
+    }
+    // Detect the first hat event that matches a previously set
+    // stick and hat, but centers the hat
+    else if(myLastStick == stick && hat == myLastHat && value == EVENT_HATCENTER)
+    {
+      value = myLastValue;
+
+      Event::Type event =
+        instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+      if(instance().eventHandler().addJoyHatMapping(event, myEventMode,
+                                                    stick, hat, value))
+      {
+        stopRemapping();
+        return true;
+      }
     }
   }
 
-  return result;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

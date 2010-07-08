@@ -298,7 +298,7 @@ void DialogContainer::handleJoyAxisEvent(int stick, int axis, int value)
   {
     myCurrentAxisDown.stick = myCurrentAxisDown.axis = -1;
   }
-  else
+  else if(value != 0)  // never repeat the 'off' event
   {
     // Now account for repeated axis events (press and hold)
     myCurrentAxisDown.stick = stick;
@@ -320,7 +320,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
   {
     myCurrentHatDown.stick = myCurrentHatDown.hat = -1;
   }
-  else
+  else if(value != EVENT_HATCENTER)  // never repeat the 'center' direction
   {
     // Now account for repeated hat events (press and hold)
     myCurrentHatDown.stick = stick;
