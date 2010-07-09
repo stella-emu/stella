@@ -171,7 +171,6 @@ void EventHandler::initialize()
 void EventHandler::reset(State state)
 {
   setEventState(state);
-  myEvent->clear();
   myOSystem->state().reset();
 
   setContinuousSnapshots(0);
@@ -1074,15 +1073,9 @@ bool EventHandler::eventStateChange(Event::Type type)
   {
     case Event::PauseMode:
       if(myState == S_EMULATE)
-      {
-        myState = S_PAUSE;
-        myOSystem->sound().mute(true);
-      }
+        setEventState(S_PAUSE);
       else if(myState == S_PAUSE)
-      {
-        myState = S_EMULATE;
-        myOSystem->sound().mute(false);
-      }
+        setEventState(S_EMULATE);
       else
         handled = false;
       break;
@@ -1935,7 +1928,6 @@ void EventHandler::enterMenuMode(State state)
   myOSystem->frameBuffer().setCursorState();
 
   myOSystem->sound().mute(true);
-  myEvent->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1946,7 +1938,6 @@ void EventHandler::leaveMenuMode()
   myOSystem->frameBuffer().setCursorState();
 
   myOSystem->sound().mute(false);
-  myEvent->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1973,7 +1964,6 @@ bool EventHandler::enterDebugMode()
   myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);
-  myEvent->clear();
 #else
   myOSystem->frameBuffer().showMessage("Debugger unsupported",
                                        kBottomCenter, true);
@@ -1997,7 +1987,6 @@ void EventHandler::leaveDebugMode()
   myOSystem->createFrameBuffer();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(false);
-  myEvent->clear();
 #endif
 }
 
@@ -2044,6 +2033,9 @@ void EventHandler::setEventState(State state)
   myOSystem->stateChanged(myState);
   if(&myOSystem->frameBuffer())
     myOSystem->frameBuffer().stateChanged(myState);
+
+  // Always clear any pending events when changing states
+  myEvent->clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
