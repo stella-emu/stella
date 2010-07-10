@@ -1,12 +1,12 @@
 /* example.c -- usage example of the zlib compression library
- * Copyright (C) 1995-2004 Jean-loup Gailly.
+ * Copyright (C) 1995-2006 Jean-loup Gailly.
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
 /* @(#) $Id$ */
 
-#include <stdio.h>
 #include "zlib.h"
+#include <stdio.h>
 
 #ifdef STDC
 #  include <string.h>
@@ -56,7 +56,8 @@ int  main               OF((int argc, char *argv[]));
 /* ===========================================================================
  * Test compress() and uncompress()
  */
-void test_compress(Byte *compr, uLong comprLen, Byte *uncompr, uLong uncomprLen)
+void test_compress(Byte *compr, uLong comprLen,
+                   Byte *uncompr, uLong uncomprLen)
 {
     int err;
     uLong len = (uLong)strlen(hello)+1;
@@ -236,7 +237,8 @@ void test_inflate(Byte *compr, uLong comprLen, Byte *uncompr, uLong uncomprLen)
 /* ===========================================================================
  * Test deflate() with large buffers and dynamic change of compression level
  */
-void test_large_deflate(Byte *compr, uLong comprLen, Byte *uncompr, uLong uncomprLen)
+void test_large_deflate(Byte *compr, uLong comprLen,
+                        Byte *uncompr, uLong uncomprLen)
 {
     z_stream c_stream; /* compression stream */
     int err;
@@ -289,7 +291,8 @@ void test_large_deflate(Byte *compr, uLong comprLen, Byte *uncompr, uLong uncomp
 /* ===========================================================================
  * Test inflate() with large buffers
  */
-void test_large_inflate(Byte *compr, uLong comprLen, Byte *uncompr, uLong uncomprLen)
+void test_large_inflate(Byte *compr, uLong comprLen,
+                        Byte *uncompr, uLong uncomprLen)
 {
     int err;
     z_stream d_stream; /* decompression stream */
@@ -441,7 +444,8 @@ void test_dict_deflate(Byte *compr, uLong comprLen)
 /* ===========================================================================
  * Test inflate() with a preset dictionary
  */
-void test_dict_inflate(Byte *compr, uLong comprLen, Byte *uncompr, uLong uncomprLen)
+void test_dict_inflate(Byte *compr, uLong comprLen,
+                       Byte *uncompr, uLong uncomprLen)
 {
     int err;
     z_stream d_stream; /* decompression stream */

@@ -1,5 +1,5 @@
 /* infback.c -- inflate using a call-back interface
- * Copyright (C) 1995-2005 Mark Adler
+ * Copyright (C) 1995-2009 Mark Adler
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
@@ -25,8 +25,10 @@ local void fixedtables OF((struct inflate_state FAR *state));
    windowBits is in the range 8..15, and window is a user-supplied
    window and output buffer that is 2**windowBits bytes.
  */
-int ZEXPORT inflateBackInit_(z_streamp strm, int windowBits, unsigned char FAR *window,
-                             const char *version, int stream_size)
+int ZEXPORT inflateBackInit_(z_streamp strm, int windowBits,
+                             unsigned char FAR *window,
+                             const char *version,
+                             int stream_size)
 {
     struct inflate_state FAR *state;
 
@@ -51,7 +53,7 @@ int ZEXPORT inflateBackInit_(z_streamp strm, int windowBits, unsigned char FAR *
     state->wbits = windowBits;
     state->wsize = 1U << windowBits;
     state->window = window;
-    state->write = 0;
+    state->wnext = 0;
     state->whave = 0;
     return Z_OK;
 }
@@ -244,7 +246,7 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
     unsigned bits;              /* bits in bit buffer */
     unsigned copy;              /* number of stored or match bytes to copy */
     unsigned char FAR *from;    /* where to copy match bytes from */
-    code This;                  /* current decoding table entry */
+    code here;                  /* current decoding table entry */
     code last;                  /* parent table entry */
     unsigned len;               /* length to copy for repeats, bits to drop */
     int ret;                    /* return code */
@@ -380,19 +382,19 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
             state->have = 0;
             while (state->have < state->nlen + state->ndist) {
                 for (;;) {
-                    This = state->lencode[BITS(state->lenbits)];
-                    if ((unsigned)(This.bits) <= bits) break;
+                    here = state->lencode[BITS(state->lenbits)];
+                    if ((unsigned)(here.bits) <= bits) break;
                     PULLBYTE();
                 }
-                if (This.val < 16) {
-                    NEEDBITS(This.bits);
-                    DROPBITS(This.bits);
-                    state->lens[state->have++] = This.val;
+                if (here.val < 16) {
+                    NEEDBITS(here.bits);
+                    DROPBITS(here.bits);
+                    state->lens[state->have++] = here.val;
                 }
                 else {
-                    if (This.val == 16) {
-                        NEEDBITS(This.bits + 2);
-                        DROPBITS(This.bits);
+                    if (here.val == 16) {
+                        NEEDBITS(here.bits + 2);
+                        DROPBITS(here.bits);
                         if (state->have == 0) {
                             strm->msg = (char *)"invalid bit length repeat";
                             state->mode = BAD;
@@ -402,16 +404,16 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
                         copy = 3 + BITS(2);
                         DROPBITS(2);
                     }
-                    else if (This.val == 17) {
-                        NEEDBITS(This.bits + 3);
-                        DROPBITS(This.bits);
+                    else if (here.val == 17) {
+                        NEEDBITS(here.bits + 3);
+                        DROPBITS(here.bits);
                         len = 0;
                         copy = 3 + BITS(3);
                         DROPBITS(3);
                     }
                     else {
-                        NEEDBITS(This.bits + 7);
-                        DROPBITS(This.bits);
+                        NEEDBITS(here.bits + 7);
+                        DROPBITS(here.bits);
                         len = 0;
                         copy = 11 + BITS(7);
                         DROPBITS(7);
@@ -429,7 +431,16 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
             /* handle error breaks in while */
             if (state->mode == BAD) break;
 
-            /* build code tables */
+            /* check for end-of-block code (better have one) */
+            if (state->lens[256] == 0) {
+                strm->msg = (char *)"invalid code -- missing end-of-block";
+                state->mode = BAD;
+                break;
+            }
+
+            /* build code tables -- note: do not change the lenbits or distbits
+               values here (9 and 6) without reading the comments in inftrees.h
+               concerning the ENOUGH constants, which depend on those values */
             state->next = state->codes;
             state->lencode = (code const FAR *)(state->next);
             state->lenbits = 9;
@@ -465,28 +476,28 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
 
             /* get a literal, length, or end-of-block code */
             for (;;) {
-                This = state->lencode[BITS(state->lenbits)];
-                if ((unsigned)(This.bits) <= bits) break;
+                here = state->lencode[BITS(state->lenbits)];
+                if ((unsigned)(here.bits) <= bits) break;
                 PULLBYTE();
             }
-            if (This.op && (This.op & 0xf0) == 0) {
-                last = This;
+            if (here.op && (here.op & 0xf0) == 0) {
+                last = here;
                 for (;;) {
-                    This = state->lencode[last.val +
+                    here = state->lencode[last.val +
                             (BITS(last.bits + last.op) >> last.bits)];
-                    if ((unsigned)(last.bits + This.bits) <= bits) break;
+                    if ((unsigned)(last.bits + here.bits) <= bits) break;
                     PULLBYTE();
                 }
                 DROPBITS(last.bits);
             }
-            DROPBITS(This.bits);
-            state->length = (unsigned)This.val;
+            DROPBITS(here.bits);
+            state->length = (unsigned)here.val;
 
             /* process literal */
-            if (This.op == 0) {
-                Tracevv((stderr, This.val >= 0x20 && This.val < 0x7f ?
+            if (here.op == 0) {
+                Tracevv((stderr, here.val >= 0x20 && here.val < 0x7f ?
                         "inflate:         literal '%c'\n" :
-                        "inflate:         literal 0x%02x\n", This.val));
+                        "inflate:         literal 0x%02x\n", here.val));
                 ROOM();
                 *put++ = (unsigned char)(state->length);
                 left--;
@@ -495,21 +506,21 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
             }
 
             /* process end of block */
-            if (This.op & 32) {
+            if (here.op & 32) {
                 Tracevv((stderr, "inflate:         end of block\n"));
                 state->mode = TYPE;
                 break;
             }
 
             /* invalid code */
-            if (This.op & 64) {
+            if (here.op & 64) {
                 strm->msg = (char *)"invalid literal/length code";
                 state->mode = BAD;
                 break;
             }
 
             /* length code -- get extra bits, if any */
-            state->extra = (unsigned)(This.op) & 15;
+            state->extra = (unsigned)(here.op) & 15;
             if (state->extra != 0) {
                 NEEDBITS(state->extra);
                 state->length += BITS(state->extra);
@@ -519,30 +530,30 @@ int ZEXPORT inflateBack(z_streamp strm, in_func in, void FAR *in_desc,
 
             /* get distance code */
             for (;;) {
-                This = state->distcode[BITS(state->distbits)];
-                if ((unsigned)(This.bits) <= bits) break;
+                here = state->distcode[BITS(state->distbits)];
+                if ((unsigned)(here.bits) <= bits) break;
                 PULLBYTE();
             }
-            if ((This.op & 0xf0) == 0) {
-                last = This;
+            if ((here.op & 0xf0) == 0) {
+                last = here;
                 for (;;) {
-                    This = state->distcode[last.val +
+                    here = state->distcode[last.val +
                             (BITS(last.bits + last.op) >> last.bits)];
-                    if ((unsigned)(last.bits + This.bits) <= bits) break;
+                    if ((unsigned)(last.bits + here.bits) <= bits) break;
                     PULLBYTE();
                 }
                 DROPBITS(last.bits);
             }
-            DROPBITS(This.bits);
-            if (This.op & 64) {
+            DROPBITS(here.bits);
+            if (here.op & 64) {
                 strm->msg = (char *)"invalid distance code";
                 state->mode = BAD;
                 break;
             }
-            state->offset = (unsigned)This.val;
+            state->offset = (unsigned)here.val;
 
             /* get distance extra bits, if any */
-            state->extra = (unsigned)(This.op) & 15;
+            state->extra = (unsigned)(here.op) & 15;
             if (state->extra != 0) {
                 NEEDBITS(state->extra);
                 state->offset += BITS(state->extra);
