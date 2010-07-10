@@ -205,6 +205,13 @@ void TIA::reset()
     myMaximumNumberOfScanlines = 342;
   }
 
+  myCurrentP0Mask = &TIATables::PxMask[0][0][0][0];
+  myCurrentP1Mask = &TIATables::PxMask[0][0][0][0];
+  myCurrentM0Mask = &TIATables::MxMask[0][0][0][0];
+  myCurrentM1Mask = &TIATables::MxMask[0][0][0][0];
+  myCurrentBLMask = &TIATables::BLMask[0][0][0];
+  myCurrentPFMask = TIATables::PFMask[0];
+
   // Recalculate the size of the display
   frameReset();
 }

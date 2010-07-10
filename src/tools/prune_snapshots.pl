@@ -28,7 +28,9 @@ close(INFILE);
 
 # Get all snapshot files from the actual directory (second commandline arg)
 # We use a hashmap to get constant lookup time
-my @files = <"$ARGV[1]/*">;
+opendir(SNAPDIR, $ARGV[1]) or die "Directory '$ARGV[1]' not found\n";
+my @files = grep !/^\.\.?$/, readdir SNAPDIR;
+close(SNAPDIR);
 foreach $file (@files)
 {
 	($base,$path,$type) = fileparse($file);

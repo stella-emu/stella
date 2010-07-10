@@ -24,14 +24,19 @@
 #include "CartF8.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8::CartridgeF8(const uInt8* image, bool startlow)
+CartridgeF8::CartridgeF8(const uInt8* image, const string& md5)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);
 
   // Normally bank 1 is the reset bank, unless we're dealing with ROMs
   // that have been incorrectly created with banks in the opposite order
-  myStartBank = startlow ? 0 : 1;
+  myStartBank =
+    (md5 == "bc24440b59092559a1ec26055fd1270e" ||  // Private Eye [a]
+     md5 == "75ea60884c05ba496473c23a58edf12f" ||  // 8-in-1 Yars Revenge
+     md5 == "75ee371ccfc4f43e7d9b8f24e1266b55" ||  // Snow White
+     md5 == "9905f9f4706223dadee84f6867ede8e3")    // Challenge
+    ? 0 : 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

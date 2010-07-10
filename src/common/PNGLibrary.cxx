@@ -77,9 +77,23 @@ bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
   // byte into separate bytes (useful for paletted and grayscale images).
   png_set_packing(png_ptr);
 
-  // Greyscale mode not supported
-  if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+  // Only normal RBG(A) images are supported (without the alpha channel)
+  if(color_type == PNG_COLOR_TYPE_RGBA)
+  {
+    png_set_strip_alpha(png_ptr);
+  }
+  else if(color_type == PNG_COLOR_TYPE_GRAY || color_type == PNG_COLOR_TYPE_GRAY_ALPHA)
+  {
     readImageERROR("Greyscale PNG images not supported");
+  }
+  else if(color_type == PNG_COLOR_TYPE_PALETTE)
+  {
+    readImageERROR("Paletted PNG images not supported");
+  }
+  else if(color_type != PNG_COLOR_TYPE_RGB)
+  {
+    readImageERROR("Unknown format in PNG image");
+  }
 
   // Create space for the entire image (3 bytes per pixel in RGB format)
   ipitch = iwidth * 3;

@@ -38,10 +38,10 @@ class CartridgeF8 : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image     Pointer to the ROM image
-      @param startlow  Whether to use the lower or upper bank for startup
+      @param image  Pointer to the ROM image
+      @param md5    MD5sum of the ROM image
     */
-    CartridgeF8(const uInt8* image, bool startlow = false);
+    CartridgeF8(const uInt8* image, const string& md5);
  
     /**
       Destructor

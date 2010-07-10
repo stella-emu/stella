@@ -1,7 +1,7 @@
 
 /* pngconf.h - machine configurable file for libpng
  *
- * libpng version 1.4.2 - May 6, 2010
+ * libpng version 1.4.3 - June 26, 2010
  * For conditions of distribution and use, see copyright notice in png.h
  * Copyright (c) 1998-2010 Glenn Randers-Pehrson
  * (Version 0.96 Copyright (c) 1996, 1997 Andreas Dilger)
@@ -51,15 +51,6 @@
 #endif
 
 /*
- * Added by stephena - 2010/06/17
- *
- * Disable parts of the library that we know Stella will never use.
- */
-#define PNG_NO_MNG_FEATURES
-#define PNG_NO_PROGRESSIVE_READ
-#define PNG_PROGRESSIVE_READ_NOT_SUPPORTED
-
-/*
  * If you create a private DLL you need to define in "pngusr.h" the followings:
  * #define PNG_USER_PRIVATEBUILD <Describes by whom and why this version of
  *        the DLL was built>
@@ -77,6 +68,15 @@
  * - PNG_USER_VERSIONINFO_COMPANYNAME
  * - PNG_USER_VERSIONINFO_LEGALTRADEMARKS
  */
+
+/*
+ * Added by stephena - 2010/06/17
+ *
+ * Disable parts of the library that we know Stella will never use.
+ */
+#define PNG_NO_MNG_FEATURES
+#define PNG_NO_PROGRESSIVE_READ
+#define PNG_PROGRESSIVE_READ_NOT_SUPPORTED
 
 #ifdef __STDC__
 #  ifdef SPECIALBUILD

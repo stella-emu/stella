@@ -65,18 +65,6 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   Cartridge* cartridge = 0;
   string type = dtype;
 
-  // First consider the ROMs that are special and don't have a properties entry
-  // Hopefully this list will be very small
-  if(md5 == "bc24440b59092559a1ec26055fd1270e" ||
-     md5 == "75ee371ccfc4f43e7d9b8f24e1266b55" ||
-     md5 == "9905f9f4706223dadee84f6867ede8e3")
-  {
-    // These two ROMs are normal 8K images, except they must be initialized
-    // from the opposite bank compared to normal ones
-    type = "F8 swapped";
-    dtype = type;
-  }
-
   // Collect some info about the ROM
   ostringstream buf;
 
@@ -181,9 +169,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "F6SC")
     cartridge = new CartridgeF6SC(image);
   else if(type == "F8")
-    cartridge = new CartridgeF8(image);
-  else if(type == "F8 swapped")
-    cartridge = new CartridgeF8(image, true);
+    cartridge = new CartridgeF8(image, md5);
   else if(type == "F8SC")
     cartridge = new CartridgeF8SC(image);
   else if(type == "FA" || type == "FASC")
