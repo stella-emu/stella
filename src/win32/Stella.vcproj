@@ -974,7 +974,19 @@
 					>
 				</File>
 				<File
-					RelativePath="..\zlib\gzio.c"
+					RelativePath="..\zlib\gzclose.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\gzlib.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\gzread.c"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\gzwrite.c"
 					>
 				</File>
 				<File
@@ -1761,6 +1773,10 @@
 				</File>
 				<File
 					RelativePath="..\zlib\deflate.h"
+					>
+				</File>
+				<File
+					RelativePath="..\zlib\gzguts.h"
 					>
 				</File>
 				<File
