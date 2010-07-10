@@ -65,9 +65,8 @@
       output space.
  */
 void ZLIB_INTERNAL inflate_fast(
-  z_streamp strm,
-  unsigned start    /* inflate()'s starting value for strm->avail_out */
-)
+    z_streamp strm,
+    unsigned start)
 {
     struct inflate_state FAR *state;
     unsigned char FAR *in;      /* local strm->next_in */
