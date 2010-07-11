@@ -473,12 +473,14 @@
 "Cartridge.MD5" "1862fca4f98e66f363308b859b5863af"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 1 of 4) (1991) (Atari) (PAL)"
+"Cartridge.Note" "Actually contains only 16 games, not 32"
 "Cartridge.Type" "16IN1"
 ""
 
 "Cartridge.MD5" "0d6b974fe58a1bdd453600401c407856"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 3 or 4) (1991) (Atari) (PAL)"
+"Cartridge.Note" "Actually contains only 16 games, not 32"
 "Cartridge.Type" "16IN1"
 ""
 
@@ -1933,6 +1935,7 @@
 "Cartridge.MD5" "715dd9e0240638d441a3add49316c018"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 2 of 4) (1991) (Atari) (PAL)"
+"Cartridge.Note" "Actually contains only 16 games, not 32"
 "Cartridge.Type" "16IN1"
 ""
 
@@ -8929,6 +8932,7 @@
 "Cartridge.ModelNo" "CX26193"
 "Cartridge.Name" "8 in 1 (01-16-92) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Cartridge.Note" "Game 2 is Centipede, but doesn't work"
 "Cartridge.Type" "8IN1"
 ""
 
@@ -9242,6 +9246,7 @@
 "Cartridge.MD5" "7f525b07bc98080cc8950f7284e52ede"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.Name" "128-in-1 Junior Console (Chip 4 of 4) (1991) (Atari) (PAL)"
+"Cartridge.Note" "Actually contains only 16 games, not 32"
 "Cartridge.Type" "16IN1"
 ""
 
