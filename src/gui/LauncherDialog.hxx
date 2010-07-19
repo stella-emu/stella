@@ -34,6 +34,7 @@ class BrowserDialog;
 class OptionsDialog;
 class GlobalPropsDialog;
 class LauncherFilterDialog;
+class MessageBox;
 class OSystem;
 class Properties;
 class EditTextWidget;
@@ -97,13 +98,15 @@ class LauncherDialog : public Dialog
     EditTextWidget*   myPattern;
     GameList*         myGameList;
 
-    OptionsDialog*    myOptions;
-    RomInfoWidget*    myRomInfoWidget;
+    OptionsDialog* myOptions;
+    RomInfoWidget* myRomInfoWidget;
 
     ContextMenu*          myMenu;
     GlobalPropsDialog*    myGlobalProps;
     LauncherFilterDialog* myFilters;
-    BrowserDialog*        myRomDir;
+
+    MessageBox*    myFirstRunMsg;
+    BrowserDialog* myRomDir;
 
     int mySelectedItem;
     int myRomInfoSize;
@@ -119,6 +122,7 @@ class LauncherDialog : public Dialog
       kOptionsCmd = 'OPTI',
       kQuitCmd    = 'QUIT',
 
+      kFirstRunMsgChosenCmd   = 'frmc',
       kStartupRomDirChosenCmd = 'rmsc'
     };
 };

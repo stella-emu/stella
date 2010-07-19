@@ -35,6 +35,7 @@
 #include "OptionsDialog.hxx"
 #include "GlobalPropsDialog.hxx"
 #include "LauncherFilterDialog.hxx"
+#include "MessageBox.hxx"
 #include "OSystem.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
@@ -61,6 +62,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
     myMenu(NULL),
     myGlobalProps(NULL),
     myFilters(NULL),
+    myFirstRunMsg(NULL),
     myRomDir(NULL),
     mySelectedItem(0)
 {
@@ -237,11 +239,19 @@ void LauncherDialog::loadConfig()
   // time running Stella; in this case, we should prompt the user
   if(romdir == "")
   {
-    if(!myRomDir)
-      myRomDir = new BrowserDialog(this, instance().font(), _w, _h);
-
-    myRomDir->show("First startup -> Select ROM directory:", romdir,
-                   FilesystemNode::kListDirectoriesOnly, kStartupRomDirChosenCmd);
+    if(!myFirstRunMsg)
+    {
+      StringList msg;
+      msg.push_back("This seems to be your first time running Stella.");
+      msg.push_back("Before you can start a game, you need to");
+      msg.push_back("specify where your ROMs are located.");
+      msg.push_back("");
+      msg.push_back("Click 'OK' to select a default ROM directory,");
+      msg.push_back("or 'Cancel' to browse the filesystem manually.");
+      myFirstRunMsg = new MessageBox(this, instance().font(), msg,
+                                     kFirstRunMsgChosenCmd);
+    }
+    myFirstRunMsg->show();
   }
 
   // Assume that if the list is empty, this is the first time that loadConfig()
@@ -563,6 +573,15 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kQuitCmd:
       close();
       instance().eventHandler().quit();
+      break;
+
+    case kFirstRunMsgChosenCmd:
+      // Show a file browser, starting from the users' home directory
+      if(!myRomDir)
+        myRomDir = new BrowserDialog(this, instance().font(), _w, _h);
+
+      myRomDir->show("Select ROM directory:", "~",
+                     FilesystemNode::kListDirectoriesOnly, kStartupRomDirChosenCmd);
       break;
 
     case kStartupRomDirChosenCmd:

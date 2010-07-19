@@ -618,14 +618,61 @@ void EventHandler::poll(uInt64 time)
       }
 
       case SDL_MOUSEMOTION:
-        handleMouseMotionEvent(event);
+        // Determine which mode we're in, then send the event to the appropriate place
+        if(myState == S_EMULATE)
+        {
+          if(myMouseEnabled)
+          {
+            int x = event.motion.xrel, y = event.motion.yrel;
+            myEvent->set(Event::MouseAxisXValue, x);
+            myEvent->set(Event::MouseAxisYValue, y);
+          }
+        }
+        else if(myOverlay)
+        {
+          int x = event.motion.x, y = event.motion.y;
+          myOverlay->handleMouseMotionEvent(x, y, 0);
+        }
         break;  // SDL_MOUSEMOTION
 
       case SDL_MOUSEBUTTONUP:
       case SDL_MOUSEBUTTONDOWN:
       {
         uInt8 state = event.button.type == SDL_MOUSEBUTTONDOWN ? 1 : 0;
-        handleMouseButtonEvent(event, state);
+
+        // Determine which mode we're in, then send the event to the appropriate place
+        if(myState == S_EMULATE)
+        {
+          if(myMouseEnabled)
+            myEvent->set(Event::MouseButtonValue, state);
+        }
+        else if(myOverlay)
+        {
+          // Take window zooming into account
+          Int32 x = event.button.x, y = event.button.y;
+
+          switch(event.button.button)
+          {
+            case SDL_BUTTON_LEFT:
+              myOverlay->handleMouseButtonEvent(
+                  state ? EVENT_LBUTTONDOWN : EVENT_LBUTTONUP, x, y, state);
+              break;
+            case SDL_BUTTON_RIGHT:
+              myOverlay->handleMouseButtonEvent(
+                  state ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP, x, y, state);
+              break;
+            case SDL_BUTTON_WHEELDOWN:
+              if(state)
+                myOverlay->handleMouseButtonEvent(EVENT_WHEELDOWN, x, y, 1);
+              break;
+            case SDL_BUTTON_WHEELUP:
+              if(state)
+                myOverlay->handleMouseButtonEvent(EVENT_WHEELUP, x, y, 1);
+              break;
+            default:
+              break;
+          }
+        }
         break;  // SDL_MOUSEBUTTONUP, SDL_MOUSEBUTTONDOWN
       }
 
@@ -663,8 +710,17 @@ void EventHandler::poll(uInt64 time)
 
             // Filter out buttons handled by OSystem
             if(!myOSystem->joyButtonHandled(button))
-              handleJoyEvent(stick, button, state);
+            {
+              // Handle buttons which switch eventhandler state
+              if(state && eventStateChange(myJoyTable[stick][button][kEmulationMode]))
+                return;
 
+              // Determine which mode we're in, then send the event to the appropriate place
+              if(myState == S_EMULATE)
+                handleEvent(myJoyTable[stick][button][kEmulationMode], state);
+              else if(myOverlay != NULL)
+                myOverlay->handleJoyEvent(stick, button, state);
+            }
             break;  // Regular button
 
           case JT_STELLADAPTOR_LEFT:
@@ -696,7 +752,46 @@ void EventHandler::poll(uInt64 time)
         {
           case JT_REGULAR:
             if(myState == S_EMULATE)
-              handleJoyAxisEvent(stick, axis, value);
+            {
+              // Every axis event has two associated values, negative and positive
+              Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0][kEmulationMode];
+              Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1][kEmulationMode];
+
+              // Check for analog events, which are handled differently
+              // We'll pass them off as Stelladaptor events, and let the controllers
+              // handle it
+              switch((int)eventAxisNeg)
+              {
+                case Event::PaddleZeroAnalog:
+                  myEvent->set(Event::SALeftAxis0Value, value);
+                  break;
+                case Event::PaddleOneAnalog:
+                  myEvent->set(Event::SALeftAxis1Value, value);
+                  break;
+                case Event::PaddleTwoAnalog:
+                  myEvent->set(Event::SARightAxis0Value, value);
+                  break;
+                case Event::PaddleThreeAnalog:
+                  myEvent->set(Event::SARightAxis1Value, value);
+                  break;
+                default:
+                {
+                  // Otherwise, we know the event is digital
+                  if(value > Joystick::deadzone())
+                    handleEvent(eventAxisPos, 1);
+                  else if(value < -Joystick::deadzone())
+                    handleEvent(eventAxisNeg, 1);
+                  else
+                  {
+                    // Turn off both events, since we don't know exactly which one
+                    // was previously activated.
+                    handleEvent(eventAxisNeg, 0);
+                    handleEvent(eventAxisPos, 0);
+                  }
+                  break;
+                }
+              }
+            }
             else if(myOverlay != NULL)
             {
               // First, clamp the values to simulate digital input
@@ -745,7 +840,7 @@ void EventHandler::poll(uInt64 time)
           break;
 
         // Preprocess all hat events, converting to Stella JoyHat type
-        // Generate two equivalent hat events representing combined direction
+        // Generate multiple equivalent hat events representing combined direction
         // when we get a diagonal hat event
         if(value == SDL_HAT_CENTERED)
           handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
@@ -806,123 +901,6 @@ void EventHandler::poll(uInt64 time)
   // in the previous ::update() methods, they're now invalid
   myEvent->set(Event::MouseAxisXValue, 0);
   myEvent->set(Event::MouseAxisYValue, 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseMotionEvent(SDL_Event& event)
-{
-  // Determine which mode we're in, then send the event to the appropriate place
-  if(myState == S_EMULATE)
-  {
-    if(myMouseEnabled)
-    {
-      int x = event.motion.xrel, y = event.motion.yrel;
-      myEvent->set(Event::MouseAxisXValue, x);
-      myEvent->set(Event::MouseAxisYValue, y);
-    }
-  }
-  else if(myOverlay)
-  {
-    int x = event.motion.x, y = event.motion.y;
-    myOverlay->handleMouseMotionEvent(x, y, 0);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleMouseButtonEvent(SDL_Event& event, int state)
-{
-  // Determine which mode we're in, then send the event to the appropriate place
-  if(myState == S_EMULATE)
-  {
-    if(myMouseEnabled)
-      myEvent->set(Event::MouseButtonValue, state);
-  }
-  else if(myOverlay)
-  {
-    // Take window zooming into account
-    Int32 x = event.button.x, y = event.button.y;
-    MouseButton button;
-
-    switch(event.button.button)
-    {
-      case SDL_BUTTON_LEFT:
-        button = state ? EVENT_LBUTTONDOWN : EVENT_LBUTTONUP;
-        break;
-      case SDL_BUTTON_RIGHT:
-        button = state ? EVENT_RBUTTONDOWN : EVENT_RBUTTONUP;
-        break;
-      case SDL_BUTTON_WHEELDOWN:
-        if(state) button = EVENT_WHEELDOWN;
-        else return;
-        break;
-      case SDL_BUTTON_WHEELUP:
-        if(state) button = EVENT_WHEELUP;
-        else return;
-        break;
-      default:
-        return;
-    }
-    myOverlay->handleMouseButtonEvent(button, x, y, state);
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyEvent(int stick, int button, int state)
-{
-#ifdef JOYSTICK_SUPPORT
-  if(state && eventStateChange(myJoyTable[stick][button][kEmulationMode]))
-    return;
-
-  // Determine which mode we're in, then send the event to the appropriate place
-  if(myState == S_EMULATE)
-    handleEvent(myJoyTable[stick][button][kEmulationMode], state);
-  else if(myOverlay != NULL)
-    myOverlay->handleJoyEvent(stick, button, state);
-#endif
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyAxisEvent(int stick, int axis, int value)
-{
-#ifdef JOYSTICK_SUPPORT
-  // Every axis event has two associated values, negative and positive
-  Event::Type eventAxisNeg = myJoyAxisTable[stick][axis][0][kEmulationMode];
-  Event::Type eventAxisPos = myJoyAxisTable[stick][axis][1][kEmulationMode];
-
-  // Check for analog events, which are handled differently
-  // We'll pass them off as Stelladaptor events, and let the controllers
-  // handle it
-  switch((int)eventAxisNeg)
-  {
-    case Event::PaddleZeroAnalog:
-      myEvent->set(Event::SALeftAxis0Value, value);
-      break;
-    case Event::PaddleOneAnalog:
-      myEvent->set(Event::SALeftAxis1Value, value);
-      break;
-    case Event::PaddleTwoAnalog:
-      myEvent->set(Event::SARightAxis0Value, value);
-      break;
-    case Event::PaddleThreeAnalog:
-      myEvent->set(Event::SARightAxis1Value, value);
-      break;
-    default:
-    {
-      // Otherwise, we know the event is digital
-      int deadzone = Joystick::deadzone();
-      if(value > -deadzone && value < deadzone)
-      {
-        // Turn off both events, since we don't know exactly which one
-        // was previously activated.
-        handleEvent(eventAxisNeg, 0);
-        handleEvent(eventAxisPos, 0);
-      }
-      else
-        handleEvent(value < 0 ? eventAxisNeg : eventAxisPos, 1);
-      break;
-    }
-  }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1163,7 +1141,7 @@ void EventHandler::setActionMappings(EventMode mode)
         if(myJoyTable[stick][button][mode] == event)
         {
           buf.str("");
-          buf << "J" << stick << " B" << button;
+          buf << "J" << stick << "/B" << button;
           if(key == "")
             key = key + buf.str();
           else
@@ -1181,16 +1159,16 @@ void EventHandler::setActionMappings(EventMode mode)
           if(myJoyAxisTable[stick][axis][dir][mode] == event)
           {
             buf.str("");
-            buf << "J" << stick << " axis " << axis;
+            buf << "J" << stick << "/A" << axis;
             if(eventIsAnalog(event))
             {
               dir = 2;  // Immediately exit the inner loop after this iteration
-              buf << " abs";
+              buf << "/+|-";
             }
             else if(dir == 0)
-              buf << " neg";
+              buf << "/-";
             else
-              buf << " pos";
+              buf << "/+";
 
             if(key == "")
               key = key + buf.str();
@@ -1210,13 +1188,13 @@ void EventHandler::setActionMappings(EventMode mode)
           if(myJoyHatTable[stick][hat][dir][mode] == event)
           {
             buf.str("");
-            buf << "J" << stick << " hat " << hat;
+            buf << "J" << stick << "/H" << hat;
             switch(dir)
             {
-              case EVENT_HATUP:    buf << " up";    break;
-              case EVENT_HATDOWN:  buf << " down";  break;
-              case EVENT_HATLEFT:  buf << " left";  break;
-              case EVENT_HATRIGHT: buf << " right"; break;
+              case EVENT_HATUP:    buf << "/up";    break;
+              case EVENT_HATDOWN:  buf << "/down";  break;
+              case EVENT_HATLEFT:  buf << "/left";  break;
+              case EVENT_HATRIGHT: buf << "/right"; break;
             }
             if(key == "")
               key = key + buf.str();

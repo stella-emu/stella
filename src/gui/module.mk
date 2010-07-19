@@ -25,6 +25,7 @@ MODULE_OBJS := \
 	src/gui/LauncherFilterDialog.o \
 	src/gui/ListWidget.o \
 	src/gui/Menu.o \
+	src/gui/MessageBox.o \
 	src/gui/OptionsDialog.o \
 	src/gui/PopUpWidget.o \
 	src/gui/ProgressDialog.o \

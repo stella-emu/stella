@@ -30,8 +30,6 @@ class EditTextWidget;
 #include "Dialog.hxx"
 #include "Command.hxx"
 
-typedef Common::Array<EditTextWidget*> InputWidget;
-
 class InputTextDialog : public Dialog, public CommandSender
 {
   public:
@@ -60,6 +58,8 @@ class InputTextDialog : public Dialog, public CommandSender
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    typedef Common::Array<EditTextWidget*> InputWidget;
+
     InputWidget       myInput;
     StaticTextWidget* myTitle;
 
