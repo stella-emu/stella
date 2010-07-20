@@ -316,6 +316,8 @@
 		DCA00FF80DBABCAD00C3823D /* RiotDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */; };
 		DCA23AE90D75B22500F77B33 /* CartX07.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA23AE70D75B22500F77B33 /* CartX07.cxx */; };
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
+		DCB5CEE711F5B78C00C68D09 /* MessageBox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */; };
+		DCB5CEE811F5B78C00C68D09 /* MessageBox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */; };
 		DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
@@ -717,6 +719,8 @@
 		DCA00FF60DBABCAD00C3823D /* RiotDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = RiotDebug.hxx; path = ../debugger/RiotDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE70D75B22500F77B33 /* CartX07.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07.cxx; path = ../emucore/CartX07.cxx; sourceTree = SOURCE_ROOT; };
 		DCA23AE80D75B22500F77B33 /* CartX07.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = CartX07.hxx; path = ../emucore/CartX07.hxx; sourceTree = SOURCE_ROOT; };
+		DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MessageBox.cxx; path = ../gui/MessageBox.cxx; sourceTree = SOURCE_ROOT; };
+		DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MessageBox.hxx; path = ../gui/MessageBox.hxx; sourceTree = SOURCE_ROOT; };
 		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
@@ -1156,6 +1160,8 @@
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				2DDBEAC2084578BF00812C11 /* Menu.cxx */,
 				2DDBEAC3084578BF00812C11 /* Menu.hxx */,
+				DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */,
+				DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */,
 				2DDBEAC4084578BF00812C11 /* OptionsDialog.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
 				2DDBEAC6084578BF00812C11 /* PopUpWidget.cxx */,
@@ -1448,6 +1454,7 @@
 				DC3FE47E11C7D35600C91C72 /* pngconf.h in Headers */,
 				DC3FE48311C7D35600C91C72 /* pngpriv.h in Headers */,
 				DC3FE4A011C7D3FE00C91C72 /* PNGLibrary.hxx in Headers */,
+				DCB5CEE811F5B78C00C68D09 /* MessageBox.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1698,6 +1705,7 @@
 				DC3FE48C11C7D35600C91C72 /* pngwtran.c in Sources */,
 				DC3FE48D11C7D35600C91C72 /* pngwutil.c in Sources */,
 				DC3FE49F11C7D3FE00C91C72 /* PNGLibrary.cxx in Sources */,
+				DCB5CEE711F5B78C00C68D09 /* MessageBox.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

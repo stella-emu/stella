@@ -259,7 +259,7 @@ void LauncherDialog::loadConfig()
   if(myList->getList().isEmpty())
   {
     myPrevDirButton->setEnabled(false);
-    myCurrentNode = FilesystemNode(instance().settings().getString("romdir"));
+    myCurrentNode = FilesystemNode(romdir == "" ? "~" : romdir);
     if(!(myCurrentNode.exists() && myCurrentNode.isDirectory()))
       myCurrentNode = FilesystemNode("~");
 
@@ -287,7 +287,6 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   myGameList->clear();
   myDir->setLabel("");
 
-  string romdir = instance().settings().getString("romdir");
   loadDirListing();
 
   // Only hilite the 'up' button if there's a parent directory

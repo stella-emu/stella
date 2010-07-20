@@ -290,6 +290,8 @@
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
 		DC932D470F278A5200FEFEFC /* TIATables.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC932D420F278A5200FEFEFC /* TIATables.cxx */; };
 		DC932D480F278A5200FEFEFC /* TIATables.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D430F278A5200FEFEFC /* TIATables.hxx */; };
+		DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC98F35411F5B56200AA520F /* MessageBox.cxx */; };
+		DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC98F35511F5B56200AA520F /* MessageBox.hxx */; };
 		DC9EA8870F729A36000452B5 /* KidVid.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC9EA8850F729A36000452B5 /* KidVid.cxx */; };
 		DC9EA8880F729A36000452B5 /* KidVid.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC9EA8860F729A36000452B5 /* KidVid.hxx */; };
 		DCA00FF70DBABCAD00C3823D /* RiotDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */; };
@@ -689,6 +691,8 @@
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D420F278A5200FEFEFC /* TIATables.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = TIATables.cxx; path = ../emucore/TIATables.cxx; sourceTree = SOURCE_ROOT; };
 		DC932D430F278A5200FEFEFC /* TIATables.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = TIATables.hxx; path = ../emucore/TIATables.hxx; sourceTree = SOURCE_ROOT; };
+		DC98F35411F5B56200AA520F /* MessageBox.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MessageBox.cxx; path = ../gui/MessageBox.cxx; sourceTree = SOURCE_ROOT; };
+		DC98F35511F5B56200AA520F /* MessageBox.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MessageBox.hxx; path = ../gui/MessageBox.hxx; sourceTree = SOURCE_ROOT; };
 		DC9EA8850F729A36000452B5 /* KidVid.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KidVid.cxx; path = ../emucore/KidVid.cxx; sourceTree = SOURCE_ROOT; };
 		DC9EA8860F729A36000452B5 /* KidVid.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = KidVid.hxx; path = ../emucore/KidVid.hxx; sourceTree = SOURCE_ROOT; };
 		DCA00FF50DBABCAD00C3823D /* RiotDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = RiotDebug.cxx; path = ../debugger/RiotDebug.cxx; sourceTree = SOURCE_ROOT; };
@@ -1156,6 +1160,8 @@
 				2DDBEAC1084578BF00812C11 /* ListWidget.hxx */,
 				2DDBEAC2084578BF00812C11 /* Menu.cxx */,
 				2DDBEAC3084578BF00812C11 /* Menu.hxx */,
+				DC98F35411F5B56200AA520F /* MessageBox.cxx */,
+				DC98F35511F5B56200AA520F /* MessageBox.hxx */,
 				2DDBEAC4084578BF00812C11 /* OptionsDialog.cxx */,
 				2DDBEAC5084578BF00812C11 /* OptionsDialog.hxx */,
 				2DDBEAC6084578BF00812C11 /* PopUpWidget.cxx */,
@@ -1448,6 +1454,7 @@
 				DCD6FC7211C281ED005DA767 /* pngconf.h in Headers */,
 				DCD6FC7711C281ED005DA767 /* pngpriv.h in Headers */,
 				DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */,
+				DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1701,6 +1708,7 @@
 				DCD6FC8111C281ED005DA767 /* pngwtran.c in Sources */,
 				DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */,
 				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
+				DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
