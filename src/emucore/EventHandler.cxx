@@ -102,6 +102,11 @@ EventHandler::EventHandler(OSystem* osystem)
           myJoyHatTable[i][j][k][m] = Event::NoType;
 #endif
 
+  // Erase the 'combo' array
+  for(int i = 0; i < kComboSize; ++i)
+    for(int j = 0; j < kEventsPerCombo; ++j)
+      myComboTable[i][j] = Event::NoType;
+
   // Erase the Message array
   for(int i = 0; i < Event::LastType; ++i)
     ourMessageTable[i] = "";
@@ -150,6 +155,7 @@ void EventHandler::initialize()
   setJoymap();
   setJoyAxisMap();
   setJoyHatMap();
+  setComboMap();
   setActionMappings(kEmulationMode);
   setActionMappings(kMenuMode);
 
@@ -869,6 +875,7 @@ void EventHandler::poll(uInt64 time)
     myOSystem->console().controller(Controller::Right).update();
     myOSystem->console().switches().update();
 
+#if 0
     // Now check if the StateManager should be saving or loading state
     // Per-frame cheats are disabled if the StateManager is active, since
     // it would interfere with proper playback
@@ -877,6 +884,7 @@ void EventHandler::poll(uInt64 time)
       myOSystem->state().update();
     }
     else
+#endif
     {
     #ifdef CHEATCODE_SUPPORT
       const CheatList& cheats = myOSystem->cheat().perFrame();
@@ -1027,6 +1035,31 @@ void EventHandler::handleEvent(Event::Type event, int state)
         myOSystem->quit();
       }
       return;
+
+    ////////////////////////////////////////////////////////////////////////
+    // A combo event is simply multiple calls to handleEvent, once for
+    // each event it contains
+    case Event::Combo1:
+    case Event::Combo2:
+    case Event::Combo3:
+    case Event::Combo4:
+    case Event::Combo5:
+    case Event::Combo6:
+    case Event::Combo7:
+    case Event::Combo8:
+    case Event::Combo9:
+    case Event::Combo10:
+    case Event::Combo11:
+    case Event::Combo12:
+    case Event::Combo13:
+    case Event::Combo14:
+    case Event::Combo15:
+    case Event::Combo16:
+      for(int i = 0, combo = event - Event::Combo1; i < kEventsPerCombo; ++i)
+        if(myComboTable[combo][i] != Event::NoType)
+          handleEvent(myComboTable[combo][i], state);
+      return;
+    ////////////////////////////////////////////////////////////////////////
 
     case Event::NoType:  // Ignore unmapped events
       return;
@@ -1322,6 +1355,49 @@ void EventHandler::setJoyHatMap()
     setDefaultJoyHatMap(kMenuMode);
   }
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setComboMap()
+{
+  // Since istringstream swallows whitespace, we have to make the
+  // delimiters be spaces
+  string list = myOSystem->settings().getString("combomap");
+  replace(list.begin(), list.end(), ':', ' ');
+  istringstream buf(list);
+
+  // Get combo count, which should be the first int in the list
+  // If it isn't, then we treat the entire list as invalid
+  string key;
+  buf >> key;
+  if(atoi(key.c_str()) == kComboSize)
+  {
+    // Fill the combomap table with events for as long as they exist
+    int combocount = 0;
+    while(buf >> key && combocount < kComboSize)
+    {
+      // Each event in a comboevent is separated by a comma
+      replace(key.begin(), key.end(), ',', ' ');
+      istringstream buf2(key);
+
+      int eventcount = 0;
+      while(buf2 >> key && eventcount < kEventsPerCombo)
+      {
+        myComboTable[combocount][eventcount] = (Event::Type) atoi(key.c_str());
+        ++eventcount;
+      }
+      ++combocount;
+    }
+  }
+  else
+  {
+    // Erase the 'combo' array
+    for(int i = 0; i < kComboSize; ++i)
+      for(int j = 0; j < kEventsPerCombo; ++j)
+        myComboTable[i][j] = Event::NoType;
+  }
+
+  saveComboMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1623,10 +1699,10 @@ void EventHandler::saveKeyMapping()
   // Iterate through the keymap table and create a colon-separated list
   // Prepend the event count, so we can check it on next load
   ostringstream keybuf;
-  keybuf << Event::LastType << ":";
+  keybuf << Event::LastType;
   for(int mode = 0; mode < kNumModes; ++mode)
     for(int i = 0; i < SDLK_LAST; ++i)
-      keybuf << myKeyTable[i][mode] << ":";
+      keybuf << ":" << myKeyTable[i][mode];
 
   myOSystem->settings().setString("keymap", keybuf.str());
 }
@@ -1637,11 +1713,11 @@ void EventHandler::saveJoyMapping()
   // Iterate through the joymap table and create a colon-separated list
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
-  buf << Event::LastType << ":";
+  buf << Event::LastType;
   for(int mode = 0; mode < kNumModes; ++mode)
     for(int i = 0; i < kNumJoysticks; ++i)
       for(int j = 0; j < kNumJoyButtons; ++j)
-        buf << myJoyTable[i][j][mode] << ":";
+        buf << ":" << myJoyTable[i][j][mode];
 
   myOSystem->settings().setString("joymap", buf.str());
 }
@@ -1652,12 +1728,12 @@ void EventHandler::saveJoyAxisMapping()
   // Iterate through the joyaxismap table and create a colon-separated list
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
-  buf << Event::LastType << ":";
+  buf << Event::LastType;
   for(int mode = 0; mode < kNumModes; ++mode)
     for(int i = 0; i < kNumJoysticks; ++i)
       for(int j = 0; j < kNumJoyAxis; ++j)
         for(int k = 0; k < 2; ++k)
-          buf << myJoyAxisTable[i][j][k][mode] << ":";
+          buf << ":" << myJoyAxisTable[i][j][k][mode];
 
   myOSystem->settings().setString("joyaxismap", buf.str());
 }
@@ -1668,14 +1744,31 @@ void EventHandler::saveJoyHatMapping()
   // Iterate through the joyhatmap table and create a colon-separated list
   // Prepend the event count, so we can check it on next load
   ostringstream buf;
-  buf << Event::LastType << ":";
+  buf << Event::LastType;
   for(int mode = 0; mode < kNumModes; ++mode)
     for(int i = 0; i < kNumJoysticks; ++i)
       for(int j = 0; j < kNumJoyHats; ++j)
         for(int k = 0; k < 4; ++k)
-          buf << myJoyHatTable[i][j][k][mode] << ":";
+          buf << ":" << myJoyHatTable[i][j][k][mode];
 
   myOSystem->settings().setString("joyhatmap", buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::saveComboMapping()
+{
+  // Iterate through the combomap table and create a colon-separated list
+  // For each combo event, create a comma-separated list of its events
+  // Prepend the event count, so we can check it on next load
+  ostringstream buf;
+  buf << kComboSize;
+  for(int i = 0; i < kComboSize; ++i)
+  {
+    buf << ":" << myComboTable[i][0];
+    for(int j = 1; j < kEventsPerCombo; ++j)
+      buf << "," << myComboTable[i][j];
+  }
+  myOSystem->settings().setString("combomap", buf.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2336,7 +2429,24 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::KeyboardOne9,                "P1 Keyboard 9",               0 },
   { Event::KeyboardOneStar,             "P1 Keyboard *",               0 },
   { Event::KeyboardOne0,                "P1 Keyboard 0",               0 },
-  { Event::KeyboardOnePound,            "P1 Keyboard #",               0 }
+  { Event::KeyboardOnePound,            "P1 Keyboard #",               0 },
+
+  { Event::Combo1,                      "Combo 1",                     0 },
+  { Event::Combo2,                      "Combo 2",                     0 },
+  { Event::Combo3,                      "Combo 3",                     0 },
+  { Event::Combo4,                      "Combo 4",                     0 },
+  { Event::Combo5,                      "Combo 5",                     0 },
+  { Event::Combo6,                      "Combo 6",                     0 },
+  { Event::Combo7,                      "Combo 7",                     0 },
+  { Event::Combo8,                      "Combo 8",                     0 },
+  { Event::Combo9,                      "Combo 9",                     0 },
+  { Event::Combo10,                     "Combo 10",                    0 },
+  { Event::Combo11,                     "Combo 11",                    0 },
+  { Event::Combo12,                     "Combo 12",                    0 },
+  { Event::Combo13,                     "Combo 13",                    0 },
+  { Event::Combo14,                     "Combo 14",                    0 },
+  { Event::Combo15,                     "Combo 15",                    0 },
+  { Event::Combo16,                     "Combo 16",                    0 }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

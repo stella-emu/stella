@@ -51,5 +51,5 @@ void Event::set(Type type, Int32 value)
 void Event::clear()
 {
   for(int i = 0; i < myNumberOfTypes; ++i)
-    myValues[i] = 0;
+    myValues[i] = Event::NoType;
 }

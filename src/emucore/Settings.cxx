@@ -80,6 +80,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("joymap", "");
   setInternal("joyaxismap", "");
   setInternal("joyhatmap", "");
+  setInternal("combomap", "");
   setInternal("joydeadzone", "0");
   setInternal("joyallow4", "false");
   setInternal("usemouse", "true");

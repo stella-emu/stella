@@ -317,6 +317,11 @@ class EventHandler
     void setDefaultMapping(EventMode mode);
 
     /**
+      Sets the combo event mappings to those in the 'combomap' setting
+    */
+    void setComboMap();
+
+    /**
       Joystick emulates 'impossible' directions (ie, left & right
       at the same time)
 
@@ -359,6 +364,7 @@ class EventHandler
     void saveJoyMapping();
     void saveJoyAxisMapping();
     void saveJoyHatMapping();
+    void saveComboMapping();
 
     /**
       Tests if a mapping list is valid, both by length and by event count.
@@ -383,7 +389,9 @@ class EventHandler
 
   private:
     enum {
-      kEmulActionListSize = 75,
+      kComboSize          = 16,
+      kEventsPerCombo     = 8,
+      kEmulActionListSize = 75 + kComboSize,
       kMenuActionListSize = 14
     };
 
@@ -439,6 +447,9 @@ class EventHandler
     // Note that the array contains 4 directions, as defined in the JoyHat enum
     // (the center isn't considered a direction)
     Event::Type myJoyHatTable[kNumJoysticks][kNumJoyHats][4][kNumModes];
+
+    // The event(s) assigned to each combination event
+    Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
