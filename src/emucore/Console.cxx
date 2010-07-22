@@ -415,19 +415,20 @@ void Console::setProperties(const Properties& props)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Console::initializeVideo(bool full)
+FBInitStatus Console::initializeVideo(bool full)
 {
+  FBInitStatus fbstatus = kSuccess;
+
   if(full)
   {
     string title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
-    if(!myOSystem->frameBuffer().initialize(title,
-          myTIA->width() << 1, myTIA->height()))
-      return false;
+    fbstatus = myOSystem->frameBuffer().initialize(title,
+                 myTIA->width() << 1, myTIA->height());
+    if(fbstatus != kSuccess)
+      return fbstatus;
 
-    myOSystem->frameBuffer().showFrameStats(
-      myOSystem->settings().getBool("stats"));
-
+    myOSystem->frameBuffer().showFrameStats(myOSystem->settings().getBool("stats"));
     setColorLossPalette();
   }
 
@@ -447,7 +448,7 @@ bool Console::initializeVideo(bool full)
   // Make sure auto-frame calculation is only enabled when necessary
   myTIA->enableAutoFrame(framerate <= 0);
 
-  return true;
+  return fbstatus;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

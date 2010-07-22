@@ -119,18 +119,6 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   // Now create all the dialogs attached to each menu button
   myVideoDialog = new VideoDialog(osystem, parent, font, max_w, max_h);
   myAudioDialog = new AudioDialog(osystem, parent, font);
-
-/*  FIXME - may not be needed with small-font functionality
-#ifdef _WIN32_WCE
-  // FIXME - adjust size for WINCE using a smaller font
-  // we scale the input dialog down a bit in low res devices.
-  // looks only a little ugly, but the functionality is very welcome
-  if(instance().desktopWidth() < 320) { w = 220; h = 176; }
-  else                                { w = 230; h = 185; }
-#else
-  w = 380; h = 310;
-#endif
-*/
   myInputDialog = new InputDialog(osystem, parent, font);
   myUIDialog = new UIDialog(osystem, parent, font);
   myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss, max_w, max_h);
@@ -156,16 +144,6 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef _WIN32_WCE
   myAudioSettingsButton->clearFlags(WIDGET_ENABLED);  // not honored in wince port
 #endif
-//FIXME - this may no longer be true (with the new small font functionality)
-  if(instance().desktopWidth() < 320)
-  {
-    // These cannot be displayed in low res devices
-    myVideoSettingsButton->clearFlags(WIDGET_ENABLED);
-    myFileSnapButton->clearFlags(WIDGET_ENABLED);
-    myGameInfoButton->clearFlags(WIDGET_ENABLED);
-    myHelpButton->clearFlags(WIDGET_ENABLED);
-    myAboutButton->clearFlags(WIDGET_ENABLED);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

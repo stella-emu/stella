@@ -437,18 +437,13 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
   }
 
-  // Make sure any old parts of the screen are erased
-  p_glClear(GL_COLOR_BUFFER_BIT);
-  SDL_GL_SwapBuffers();
-  p_glClear(GL_COLOR_BUFFER_BIT);
-
   return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::invalidate()
 {
-// TODO - add code for this
+  p_glClear(GL_COLOR_BUFFER_BIT);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

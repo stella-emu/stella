@@ -43,6 +43,14 @@ enum BufferType {
   kGLBuffer
 };
 
+// Return values for initialization of framebuffer window
+enum FBInitStatus {
+  kSuccess,
+  kFailComplete,
+  kFailTooLarge,
+  kFailNotSupported,
+};
+
 // Positions for onscreen/overlaid messages
 enum MessagePosition {
   kTopLeft,
@@ -114,8 +122,10 @@ class FrameBuffer
       @param title   The title of the window
       @param width   The width of the framebuffer
       @param height  The height of the framebuffer
+
+      @return  Status of initialization (see FBInitStatus 'enum')
     */
-    bool initialize(const string& title, uInt32 width, uInt32 height);
+    FBInitStatus initialize(const string& title, uInt32 width, uInt32 height);
 
     /**
       Updates the display, which depending on the current mode could mean

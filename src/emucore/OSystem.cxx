@@ -385,7 +385,7 @@ void OSystem::setFramerate(float framerate)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createFrameBuffer()
+FBInitStatus OSystem::createFrameBuffer()
 {
   // There is only ever one FrameBuffer created per run of Stella
   // Due to the multi-surface nature of the FrameBuffer, repeatedly
@@ -400,24 +400,28 @@ bool OSystem::createFrameBuffer()
     myFrameBuffer = MediaFactory::createVideo(this);
 
   // Re-initialize the framebuffer to current settings
+  FBInitStatus fbstatus = kFailComplete;
   switch(myEventHandler->state())
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_PAUSE:
     case EventHandler::S_MENU:
     case EventHandler::S_CMDMENU:
-      if(!myConsole->initializeVideo())
+      fbstatus = myConsole->initializeVideo();
+      if(fbstatus != kSuccess)
         goto fallback;
       break;  // S_EMULATE, S_PAUSE, S_MENU, S_CMDMENU
 
     case EventHandler::S_LAUNCHER:
-      if(!myLauncher->initializeVideo())
+      fbstatus = myLauncher->initializeVideo();
+      if(fbstatus != kSuccess)
         goto fallback;
       break;  // S_LAUNCHER
 
 #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
-      if(!myDebugger->initializeVideo())
+      fbstatus = myDebugger->initializeVideo();
+      if(fbstatus != kSuccess)
         goto fallback;
       break;  // S_DEBUGGER
 #endif
@@ -437,28 +441,30 @@ bool OSystem::createFrameBuffer()
     setUIPalette();
   }
 
-  return true;
+  return fbstatus;
 
   // GOTO are normally considered evil, unless well documented :)
-  // If initialization of video system fails while in OpenGL mode,
-  // attempt to fallback to software mode
+  // If initialization of video system fails while in OpenGL mode
+  // because OpenGL is unavailable, attempt to fallback to software mode
+  // Otherwise, pass the error to the parent
 fallback:
-  if(myFrameBuffer && myFrameBuffer->type() == kGLBuffer)
+  if(fbstatus == kFailNotSupported && myFrameBuffer &&
+     myFrameBuffer->type() == kGLBuffer)
   {
     logMessage("ERROR: OpenGL mode failed, fallback to software\n", 0);
     delete myFrameBuffer; myFrameBuffer = NULL;
     mySettings->setString("video", "soft");
-    bool ret = createFrameBuffer();
-    if(ret)
+    FBInitStatus newstatus = createFrameBuffer();
+    if(newstatus == kSuccess)
     {
       setFramerate(60);
       myFrameBuffer->showMessage("OpenGL mode failed, fallback to software",
                                  kMiddleCenter, true);
     }
-    return ret;
+    return newstatus;
   }
   else
-    return false;
+    return fbstatus;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -522,7 +528,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     //////////////////////////////////////////////////////////////////////////
     if(audiofirst)  myConsole->initializeAudio();
     myEventHandler->reset(EventHandler::S_EMULATE);
-    if(!createFrameBuffer())  // Takes care of initializeVideo()
+    if(createFrameBuffer() != kSuccess)  // Takes care of initializeVideo()
     {
       logMessage("ERROR: Couldn't create framebuffer for console\n", 0);
       myEventHandler->reset(EventHandler::S_LAUNCHER);
@@ -594,7 +600,7 @@ void OSystem::deleteConsole()
 bool OSystem::createLauncher()
 {
   myEventHandler->reset(EventHandler::S_LAUNCHER);
-  if(!createFrameBuffer())
+  if(createFrameBuffer() != kSuccess)
   {
     logMessage("ERROR: Couldn't create launcher\n", 0);
     return false;
@@ -1020,7 +1026,7 @@ bool OSystem::queryVideoHardware()
   // Normally, this wouldn't be set, and we ask SDL directly
   int w, h;
   mySettings->getSize("maxres", w, h);
-  if(w == 0 || h == 0)
+  if(w <= 0 || h <= 0)
   {
     const SDL_VideoInfo* info = SDL_GetVideoInfo();
     myDesktopWidth  = info->current_w;

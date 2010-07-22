@@ -66,7 +66,7 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
+FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
 {
   ostringstream buf;
 
@@ -78,24 +78,42 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     {
       buf << "ERROR: Couldn't initialize SDL: " << SDL_GetError() << endl;
       myOSystem->logMessage(buf.str(), 0);
-      return false;
+      return kFailComplete;
     }
   }
   myInitializedCount++;
 
-  // Make sure this mode is even possible
-  // We only really need to worry about it in non-windowed environments,
-  // where requesting a window that's too large will probably cause a crash
-#ifndef WINDOWED_SUPPORT
-  if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
-    return false;
-#endif
+  // A 'windowed' system is defined as one where the window size can be
+  // larger than the screen size, as there's some sort of window manager
+  // that takes care of it (all current desktop systems fall in this category)
+  // However, some systems have no concept of windowing, and have hard limits
+  // on how large a window can be (ie, the size of the 'desktop' is the
+  // absolute upper limit on window size)
+  //
+  // If the WINDOWED_SUPPORT macro is defined, we treat the system as the
+  // former type; if not, as the latter type
 
   // Initialize SDL flags and set fullscreen flag
   // This must be done before any modes are initialized
   mySDLFlags = 0;
+
 #ifdef WINDOWED_SUPPORT
-  if(myOSystem->settings().getString("fullscreen") == "1") mySDLFlags = SDL_FULLSCREEN;
+  if(myOSystem->settings().getString("fullscreen") == "1")
+    mySDLFlags = SDL_FULLSCREEN;
+
+  // We assume that a desktop size of at least 640x480 means that we're
+  // running on a 'large' system, and the window size requirements can
+  // be relaxed
+  // Otherwise, we treat the system as if WINDOWED_SUPPORT is not defined
+  if(myOSystem->desktopWidth() < 640 && myOSystem->desktopHeight() < 480 &&
+      (myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height))
+    return kFailTooLarge;
+#else
+  // Make sure this mode is even possible
+  // We only really need to worry about it in non-windowed environments,
+  // where requesting a window that's too large will probably cause a crash
+  if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
+    return kFailTooLarge;
 #endif
 
   // Set the available video modes for this framebuffer
@@ -112,7 +130,7 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     if(!initSubsystem(mode))
     {
       myOSystem->logMessage("ERROR: Couldn't initialize video subsystem\n", 0);
-      return false;
+      return kFailNotSupported;
     }
     else
     {
@@ -131,7 +149,7 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
     }
   }
   else
-    return false;
+    return kFailTooLarge;
 
   // Enable unicode so we can see translated key events
   // (lowercase vs. uppercase characters)
@@ -161,7 +179,7 @@ bool FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
   if(myInitializedCount == 1)
     myOSystem->logMessage(about() + "\n", 1);
 
-  return true;
+  return kSuccess;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -420,54 +438,65 @@ void FrameBuffer::refresh()
   // This method is in essence a FULL refresh, putting all rendering
   // buffers in a known, fully redrawn state
 
-  invalidate();
   bool doubleBuffered = (type() == kGLBuffer);
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
     case EventHandler::S_PAUSE:
+      invalidate();
       drawTIA(true);
       if(doubleBuffered)
+      {
+        invalidate();
         drawTIA(true);
+      }
       break;
 
     case EventHandler::S_MENU:
+      invalidate();
       drawTIA(true);
       myOSystem->menu().draw(true);
       if(doubleBuffered)
       {
         postFrameUpdate();
+        invalidate();
         drawTIA(true);
         myOSystem->menu().draw(true);
       }
       break;
 
     case EventHandler::S_CMDMENU:
+      invalidate();
       drawTIA(true);
       myOSystem->commandMenu().draw(true);
       if(doubleBuffered)
       {
         postFrameUpdate();
+        invalidate();
         drawTIA(true);
         myOSystem->commandMenu().draw(true);
       }
       break;
 
     case EventHandler::S_LAUNCHER:
+      invalidate();
       myOSystem->launcher().draw(true);
       if(doubleBuffered)
       {
         postFrameUpdate();
+        invalidate();
         myOSystem->launcher().draw(true);
       }
       break;
 
   #ifdef DEBUGGER_SUPPORT
     case EventHandler::S_DEBUGGER:
+      invalidate();
       myOSystem->debugger().draw(true);
       if(doubleBuffered)
       {
         postFrameUpdate();
+        invalidate();
         myOSystem->debugger().draw(true);
       }
       break;

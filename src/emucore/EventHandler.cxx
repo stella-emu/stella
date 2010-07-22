@@ -2024,19 +2024,22 @@ bool EventHandler::enterDebugMode()
   // probably be modified below
   myOSystem->debugger().setStartState();
   setEventState(S_DEBUGGER);
-  if(!myOSystem->createFrameBuffer())
+
+  FBInitStatus fbstatus = myOSystem->createFrameBuffer();
+  if(fbstatus != kSuccess)
   {
     myOSystem->debugger().setQuitState();
     setEventState(S_EMULATE);
-    myOSystem->frameBuffer().showMessage("Debugger window too large",
-                                         kBottomCenter, true);
+    if(fbstatus == kFailTooLarge)
+      myOSystem->frameBuffer().showMessage("Debugger window too large for screen",
+                                           kBottomCenter, true);
     return false;
   }
   myOverlay->reStack();
   myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);
 #else
-  myOSystem->frameBuffer().showMessage("Debugger unsupported",
+  myOSystem->frameBuffer().showMessage("Debugger support not included",
                                        kBottomCenter, true);
 #endif
 

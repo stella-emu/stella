@@ -31,6 +31,7 @@ class TIA;
 #include "Props.hxx"
 #include "TIA.hxx"
 #include "Cart.hxx"
+#include "FrameBuffer.hxx"
 #include "M6532.hxx"
 #include "AtariVox.hxx"
 #include "Serializable.hxx"
@@ -212,9 +213,9 @@ class Console : public Serializable
       @param full  Whether we want a full initialization,
                    or only reset certain attributes.
 
-      @return  False on any errors, else true
+      @return  The results from FrameBuffer::initialize()
     */
-    bool initializeVideo(bool full = true);
+    FBInitStatus initializeVideo(bool full = true);
 
     /**
       Initialize the audio subsystem wrt this class.

@@ -50,7 +50,7 @@ Launcher::~Launcher()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Launcher::initializeVideo()
+FBInitStatus Launcher::initializeVideo()
 {
   string title = string("Stella ") + STELLA_VERSION;
   return myOSystem->frameBuffer().initialize(title, myWidth, myHeight);

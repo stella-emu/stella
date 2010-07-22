@@ -126,7 +126,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("audiofirst", "true");
   setInternal("fastscbios", "false");
   setExternal("romloadcount", "0");
-  setExternal("maxres", "0x0");
+  setExternal("maxres", "");
 
   // Debugger options
   setInternal("resolvedata", "auto");

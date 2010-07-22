@@ -99,7 +99,7 @@ class Debugger : public DialogContainer
     /**
       Initialize the video subsystem wrt this class.
     */
-    bool initializeVideo();
+    FBInitStatus initializeVideo();
 
     /**
       Inform this object of a console change.

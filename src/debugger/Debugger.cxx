@@ -187,7 +187,7 @@ void Debugger::initialize()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::initializeVideo()
+FBInitStatus Debugger::initializeVideo()
 {
   const GUI::Rect& r = getDialogBounds();
 

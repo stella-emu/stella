@@ -24,6 +24,7 @@ class Properties;
 class OSystem;
 
 #include "DialogContainer.hxx"
+#include "FrameBuffer.hxx"
 
 /**
   The base dialog for the ROM launcher in Stella.
@@ -47,7 +48,7 @@ class Launcher : public DialogContainer
     /**
       Initialize the video subsystem wrt this class.
     */
-    bool initializeVideo();
+    FBInitStatus initializeVideo();
 
     /**
       Wrapper for LauncherDialog::selectedRomMD5() method.
