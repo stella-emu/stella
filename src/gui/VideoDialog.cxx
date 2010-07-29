@@ -74,8 +74,8 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Video renderer
   new StaticTextWidget(myTab, font, xpos + (lwidth-fwidth), ypos, fwidth,
                        fontHeight, "Renderer:", kTextAlignLeft);
-  myRenderer = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
-                                  pwidth, fontHeight, "");
+  myRenderer = new StaticTextWidget(myTab, font, xpos+lwidth, ypos,
+                                  fwidth, fontHeight, "", kTextAlignLeft);
   ypos += lineHeight + 4;
 
   items.clear();
@@ -163,10 +163,11 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
     new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                      "Framerate: ", lwidth, kFrameRateChanged);
   myFrameRateSlider->setMinValue(0); myFrameRateSlider->setMaxValue(300);
+  myFrameRateSlider->setStepValue(10);
   wid.push_back(myFrameRateSlider);
   myFrameRateLabel =
     new StaticTextWidget(myTab, font, xpos + myFrameRateSlider->getWidth() + 4,
-                         ypos + 1, fontWidth * 3, fontHeight, "", kTextAlignLeft);
+                         ypos + 1, fontWidth * 4, fontHeight, "", kTextAlignLeft);
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
@@ -176,7 +177,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
         "(*) Requires application restart", kTextAlignLeft);
 
   // Move over to the next column
-  xpos += myNAspectRatioSlider->getWidth() + myNAspectRatioLabel->getWidth() + 10;
+  xpos += myNAspectRatioSlider->getWidth() + myNAspectRatioLabel->getWidth() + 14;
   ypos = 10;
 
   // Fullscreen
@@ -357,7 +358,7 @@ void VideoDialog::loadConfig()
   bool gl = (instance().frameBuffer().type() == kGLBuffer);
 
   // Renderer settings
-  myRenderer->setEditString(gl ? "OpenGL" : "Software");
+  myRenderer->setLabel(gl ? "OpenGL" : "Software");
   myRendererPopup->setSelected(
     instance().settings().getString("video"), "soft");
 
@@ -397,22 +398,23 @@ void VideoDialog::loadConfig()
   myPAspectRatioLabel->setLabel(instance().settings().getString("gl_aspectp"));
   myPAspectRatioLabel->setEnabled(gl);
 
-  // Framerate (0 or -1 means disabled)
+  // Framerate (0 or -1 means automatic framerate calculation)
   int rate = instance().settings().getInt("framerate");
   myFrameRateSlider->setValue(rate < 0 ? 0 : rate);
-  myFrameRateLabel->setLabel(rate < 0 ? "0" :
+  myFrameRateLabel->setLabel(rate <= 0 ? "Auto" :
     instance().settings().getString("framerate"));
 
   // Fullscreen
   const string& fullscreen = instance().settings().getString("fullscreen");
   myFullscreenPopup->setSelected(fullscreen, "0");
-  handleFullscreenChange(fullscreen == "1");
+  handleFullscreenChange(fullscreen == "0" || fullscreen == "1");
 
   // PAL color-loss effect
   myColorLossCheckbox->setState(instance().settings().getBool("colorloss"));
 
-  // GL stretch setting (item is enabled/disabled in ::handleFullscreenChange)
+  // GL stretch setting (GL mode only)
   myGLStretchCheckbox->setState(instance().settings().getBool("gl_fsmax"));
+  myGLStretchCheckbox->setEnabled(gl);
 
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
@@ -559,7 +561,7 @@ void VideoDialog::setDefaults()
   myPAspectRatioSlider->setValue(100);
   myPAspectRatioLabel->setLabel("100");
   myFrameRateSlider->setValue(0);
-  myFrameRateLabel->setLabel("0");
+  myFrameRateLabel->setLabel("Auto");
 
   myFullscreenPopup->setSelected("0", "");
   myColorLossCheckbox->setState(false);
@@ -576,7 +578,7 @@ void VideoDialog::setDefaults()
   myPhosphorCheckbox->setState(false);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
-  handleFullscreenChange(false);
+  handleFullscreenChange(true);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,11 +586,6 @@ void VideoDialog::handleFullscreenChange(bool enable)
 {
 #ifdef WINDOWED_SUPPORT
   myFSResPopup->setEnabled(enable);
-
-  // GL stretch is only enabled in OpenGL mode
-  myGLStretchCheckbox->setEnabled(
-    enable && instance().frameBuffer().type() == kGLBuffer);
-
   _dirty = true;
 #endif
 }
@@ -617,11 +614,14 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kFrameRateChanged:
-      myFrameRateLabel->setValue(myFrameRateSlider->getValue());
+      if(myFrameRateSlider->getValue() == 0)
+        myFrameRateLabel->setLabel("Auto");
+      else
+        myFrameRateLabel->setValue(myFrameRateSlider->getValue());
       break;
 
     case kFullScrChanged:
-      handleFullscreenChange(myFullscreenPopup->getSelectedTag() == "1");
+      handleFullscreenChange(myFullscreenPopup->getSelectedTag() != "-1");
       break;
 
     default:

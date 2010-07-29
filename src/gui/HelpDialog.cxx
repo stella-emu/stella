@@ -103,19 +103,31 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
   uInt8 i = 0;
   switch(page)
   {
-#ifndef MAC_OSX
     case 1:
       title = "Common commands:";
+#ifndef MAC_OSX
       ADD_BIND("Ctrl Q",    "Quit emulation");
+#else
+      ADD_BIND("Cmd Q",     "Quit emulation");
+#endif
       ADD_BIND("Escape",    "Exit current game");
       ADD_BIND("Tab",       "Enter options menu");
       ADD_BIND("\\",        "Toggle command menu");
+#ifndef MAC_OSX
       ADD_BIND("Alt =",     "Increase window size");
       ADD_BIND("Alt -",     "Decrease window size");
       ADD_BIND("Alt Enter", "Toggle fullscreen /");
       ADD_BIND("",          "  windowed mode");
       ADD_BIND("Alt ]",     "Increase volume by 2%");
       ADD_BIND("Alt [",     "Decrease volume by 2%");
+#else
+      ADD_BIND("Cmd =",     "Increase window size");
+      ADD_BIND("Cmd -",     "Decrease window size");
+      ADD_BIND("Cmd Enter", "Toggle fullscreen /");
+      ADD_BIND("",          "  windowed mode");
+      ADD_BIND("Cmd ]",     "Increase volume by 2%");
+      ADD_BIND("Cmd [",     "Decrease volume by 2%");
+#endif
       break;
 
     case 2:
@@ -133,47 +145,17 @@ void HelpDialog::updateStrings(uInt8 page, uInt8 lines, string& title)
 
     case 3:
       title = "Developer commands:";
+#ifndef MAC_OSX
       ADD_BIND("Alt PgUp",  "Increase Display.YStart");
       ADD_BIND("Alt PgDn",  "Decrease Display.YStart");
+#else
+      ADD_BIND("Cmd PgUp",  "Increase Display.YStart");
+      ADD_BIND("Cmd PgDn",  "Decrease Display.YStart");
+#endif
       ADD_BIND("Ctrl PgUp", "Increase Display.Height");
       ADD_BIND("Ctrl PgDn", "Decrease Display.Height");
       break;
-#else
-    case 1:
-      title = "Common commands:";
-      ADD_BIND("Cmd Q",        "Quit emulation");
-      ADD_BIND("Escape",       "Exit current game");
-      ADD_BIND("Tab",          "Enter options menu");
-      ADD_BIND("\\",           "Toggle command menu");
-      ADD_BIND("Cmd =",        "Increase window size");
-      ADD_BIND("Cmd -",        "Decrease window size");
-      ADD_BIND("Cmd Enter",    "Toggle fullscreen /");
-      ADD_BIND("",             "  windowed mode");
-      ADD_BIND("Shift-Cmd ]",  "Increase volume by 2%");
-      ADD_BIND("Shift-Cmd [",  "Decrease volume by 2%");
-      break;
 
-    case 2:
-      title = "Special commands:";
-      ADD_BIND("Cmd g",       "Grab mouse (keep in window)");
-      ADD_BIND("Cmd f",       "Switch between NTSC/PAL/SECAM");
-      ADD_BIND("Cmd s",       "Save game properties");
-      ADD_BIND("",            "  to a new file");
-      ADD_LINE;
-      ADD_BIND("Cmd 0",       "Mouse emulates paddle 0");
-      ADD_BIND("Cmd 1",       "Mouse emulates paddle 1");
-      ADD_BIND("Cmd 2",       "Mouse emulates paddle 2");
-      ADD_BIND("Cmd 3",       "Mouse emulates paddle 3");
-      break;
-
-    case 3:
-      title = "Developer commands:";
-      ADD_BIND("Shift-Cmd PgUp", "Increase Display.YStart");
-      ADD_BIND("Shift-Cmd PgDn", "Decrease Display.YStart");
-      ADD_BIND("Cmd PgUp",       "Increase Display.Height");
-      ADD_BIND("Cmd PgDn",       "Decrease Display.Height");
-      break;
-#endif
     case 4:
       title = "All other commands:";
       ADD_LINE;

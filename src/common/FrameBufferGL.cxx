@@ -292,10 +292,14 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   if(!inUIMode)
   {
     // Aspect ratio (depends on whether NTSC or PAL is detected)
-    const string& frate = myOSystem->console().about().InitialFrameRate;
-    int aspect =
-      myOSystem->settings().getInt(frate == "60" ? "gl_aspectn" : "gl_aspectp");
-    mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
+    // Not available in 'small' resolutions
+    if(myOSystem->desktopWidth() >= 640)
+    {
+      const string& frate = myOSystem->console().about().InitialFrameRate;
+      int aspect =
+        myOSystem->settings().getInt(frate == "60" ? "gl_aspectn" : "gl_aspectp");
+      mode.image_w = (uInt16)(float(mode.image_w * aspect) / 100.0);
+    }
 
     // Fullscreen mode stretching
     if(fullScreen() && myOSystem->settings().getBool("gl_fsmax") &&

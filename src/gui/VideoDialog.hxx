@@ -55,7 +55,7 @@ class VideoDialog : public Dialog
     TabWidget* myTab;
 
     // General options
-    EditTextWidget*   myRenderer;
+    StaticTextWidget* myRenderer;
     PopUpWidget*      myRendererPopup;
     PopUpWidget*      myTIAFilterPopup;
     PopUpWidget*      myTIAPalettePopup;

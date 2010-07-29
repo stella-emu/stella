@@ -670,8 +670,9 @@ int SliderWidget::valueToPos(int value)
 {
   if(value < _valueMin)      value = _valueMin;
   else if(value > _valueMax) value = _valueMax;
-
-  return ((_w - _labelWidth - 4) * (value - _valueMin) / (_valueMax - _valueMin));
+  int range = BSPF_max(_valueMax - _valueMin, 1);  // don't divide by zero
+  
+  return ((_w - _labelWidth - 4) * (value - _valueMin) / range);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

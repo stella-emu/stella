@@ -99,6 +99,7 @@ InputDialog::~InputDialog()
 void InputDialog::addVDeviceTab(const GUI::Font& font)
 {
   const int lineHeight = font.getLineHeight(),
+            fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight();
   int xpos, ypos, lwidth, pwidth, tabID;
   WidgetArray wid;
@@ -143,8 +144,8 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
                                 "Joystick deadzone: ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   xpos += myDeadzone->getWidth() + 5;
-  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                         "", kTextAlignLeft);
+  myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
+                                         lineHeight, "", kTextAlignLeft);
   myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDeadzone);
 
@@ -189,7 +190,7 @@ void InputDialog::loadConfig()
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
-  myDeadzoneLabel->setLabel(instance().settings().getString("joydeadzone"));
+  myDeadzoneLabel->setValue(Joystick::deadzone());
 
   // Mouse/paddle enabled
   bool usemouse = instance().settings().getBool("usemouse");
@@ -315,7 +316,7 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDeadzoneChanged:
-      myDeadzoneLabel->setValue(myDeadzone->getValue());
+      myDeadzoneLabel->setValue(3200 + 1000*myDeadzone->getValue());
       break;
 
     case kPSpeedChanged:

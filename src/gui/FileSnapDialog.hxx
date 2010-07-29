@@ -65,8 +65,7 @@ class FileSnapDialog : public Dialog, public CommandSender
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
       kPaletteFileChosenCmd = 'LOpc', // palette file changed
       kPropsFileChosenCmd   = 'LOrc', // properties file changed
-      kEEPROMDirChosenCmd   = 'LOec', // eeprom dir changed
-      kSnapIntervalChanged  = 'LOsi'  // continuous snapshot interval
+      kEEPROMDirChosenCmd   = 'LOec'  // eeprom dir changed
     };
 
     BrowserDialog* myBrowser;
@@ -81,10 +80,9 @@ class FileSnapDialog : public Dialog, public CommandSender
     EditTextWidget* mySnapPath;
 
     // Other snapshot settings
-    CheckboxWidget*   mySnapSingle;
-    CheckboxWidget*   mySnap1x;
-    SliderWidget*     mySnapSlider;
-    StaticTextWidget* mySnapLabel;
+    CheckboxWidget* mySnapSingle;
+    CheckboxWidget* mySnap1x;
+    PopUpWidget*    mySnapInterval;
 
     // Indicates if this dialog is used for global (vs. in-game) settings
     bool myIsGlobal;

@@ -28,6 +28,7 @@
 #include "EditTextWidget.hxx"
 #include "ProgressDialog.hxx"
 #include "FSNode.hxx"
+#include "MessageBox.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
@@ -37,7 +38,10 @@
 RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
                                const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, 0, 0, 0, 0),
-    myBrowser(NULL)
+    myBrowser(NULL),
+    myConfirmMsg(NULL),
+    myMaxWidth(max_w),
+    myMaxHeight(max_h)
 {
   const int vBorder = 8;
 
@@ -46,7 +50,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
             fontHeight   = font.getFontHeight(),
             buttonWidth  = font.getStringWidth("Audit path:") + 20,
             buttonHeight = font.getLineHeight() + 4,
-            lwidth = font.getStringWidth("ROMs with properties (renamed): ");
+            lwidth = font.getStringWidth("ROMs without properties (skipped): ");
   int xpos = vBorder, ypos = vBorder;
   WidgetArray wid;
 
@@ -74,7 +78,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   myResults1->setFlags(WIDGET_CLEARBG);
   ypos += buttonHeight;
   new StaticTextWidget(this, font, xpos, ypos, lwidth, fontHeight,
-                       "ROMs without properties: ", kTextAlignLeft);
+                       "ROMs without properties (skipped): ", kTextAlignLeft);
   myResults2 = new StaticTextWidget(this, font, xpos + lwidth, ypos,
                                     _w - lwidth - 20, fontHeight, "",
                                     kTextAlignLeft);
@@ -91,7 +95,7 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
   addBGroupToFocusList(wid);
 
   // Create file browser dialog
-  myBrowser = new BrowserDialog(this, font, max_w, max_h);
+  myBrowser = new BrowserDialog(this, font, myMaxWidth, myMaxHeight);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -173,6 +177,24 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kOKCmd:
+      if(!myConfirmMsg)
+      {
+        StringList msg;
+        msg.push_back("This operation cannot be undone.  Your ROMs");
+        msg.push_back("will be modified, and as such there is a chance");
+        msg.push_back("that files may be lost.  You are recommended");
+        msg.push_back("to back up your files before proceeding.");
+        msg.push_back("");
+        msg.push_back("If you're sure you want to proceed with the");
+        msg.push_back("audit, click 'OK', otherwise click 'Cancel'.");
+        myConfirmMsg =
+          new MessageBox(this, instance().font(), msg, myMaxWidth, myMaxHeight,
+                         kConfirmAuditCmd);
+      }
+      myConfirmMsg->show();
+      break;
+
+    case kConfirmAuditCmd:
       auditRoms();
       break;
 

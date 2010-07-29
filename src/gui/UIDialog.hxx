@@ -60,12 +60,9 @@ class UIDialog : public Dialog
 
     // Misc options
     PopUpWidget*      myPalettePopup;
-    SliderWidget*     myListDelaySlider;
-    StaticTextWidget* myListDelayLabel;
-    SliderWidget*     myWheelLinesSlider;
-    StaticTextWidget* myWheelLinesLabel;
-    SliderWidget*     myShowInfoSlider;
-    StaticTextWidget* myShowInfoLabel;
+    PopUpWidget*      myListDelayPopup;
+    PopUpWidget*      myWheelLinesPopup;
+    PopUpWidget*      myShowInfoPopup;
     
   private:
     void loadConfig();
@@ -78,10 +75,7 @@ class UIDialog : public Dialog
       kLWidthChanged  = 'UIlw',
       kLHeightChanged = 'UIlh',
       kDWidthChanged  = 'UIdw',
-      kDHeightChanged = 'UIdh',
-      kLQDelayChanged = 'UIqd',
-      kWLinesChanged  = 'UIsl',
-      kSInfoChanged   = 'UIsi'
+      kDHeightChanged = 'UIdh'
     };
 };
 

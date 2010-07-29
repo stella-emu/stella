@@ -1058,13 +1058,27 @@ bool OSystem::queryVideoHardware()
   {
     for(uInt32 i = 0; modes[i]; ++i)
     {
+      if(modes[i]->w >= 320 && modes[i]->w <= myDesktopWidth &&
+         modes[i]->h >= 240 && modes[i]->h <= myDesktopHeight)
+      {
+        Resolution r;
+        r.width  = modes[i]->w;
+        r.height = modes[i]->h;
+        buf.str("");
+        buf << r.width << "x" << r.height;
+        r.name = buf.str();
+        myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
+      }
+    }
+    // If no modes were valid, use the desktop dimensions
+    if(myResolutions.size() == 0)
+    {
       Resolution r;
-      r.width  = modes[i]->w;
-      r.height = modes[i]->h;
-      buf.str("");
+      r.width  = myDesktopWidth;
+      r.height = myDesktopHeight;
       buf << r.width << "x" << r.height;
       r.name = buf.str();
-      myResolutions.insert_at(0, r);  // insert in opposite (of descending) order
+      myResolutions.push_back(r);
     }
   }
 

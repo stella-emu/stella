@@ -1776,7 +1776,9 @@
 
 		<tr>
 			<td><pre>-joydeadzone &lt;number&gt;</pre></td>
-			<td>Sets the joystick deadzone area for analog joysticks.
+			<td>Sets the joystick axis deadzone area for joysticks/gamepads.
+        All values within the deadzone are treated as zero-axis values,
+        while only those values outside are registered as valid input.
 				Accepts a number from 0 - 29, and uses the formula
 				3200 + number * 1000.  So the possible deadzone values
 				range from 3200 to 32200.</td>
@@ -2329,7 +2331,7 @@
 					<tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
 					<tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
 					<tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
-					<tr><td>Joy deadzone</td><td>Joystick deadzone area for analog joysticks</td><td>-joydeadzone</td></tr>
+					<tr><td>Joy deadzone</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
 					<tr><td>Paddle speed</td><td>Speed used when emulating a paddle using a digital device</td><td>-pspeed</td></tr>
 					<tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
 					<tr><td>Use mouse as ...</td><td>Use the mouse for various controllers (paddles, driving, etc)</td><td>-usemouse</td></tr>

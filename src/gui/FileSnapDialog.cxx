@@ -26,6 +26,7 @@
 #include "EditTextWidget.hxx"
 #include "FSNode.hxx"
 #include "LauncherDialog.hxx"
+#include "PopUpWidget.hxx"
 #include "Settings.hxx"
 
 #include "FileSnapDialog.hxx"
@@ -128,7 +129,7 @@ FileSnapDialog::FileSnapDialog(
   // Snapshot single or multiple saves
   xpos = 30;  ypos += b->getHeight() + 5;
   mySnapSingle = new CheckboxWidget(this, font, xpos, ypos,
-                                    "Multiple snapshots");
+                                    "Overwrite snapshots");
   wid.push_back(mySnapSingle);
 
   // Snapshot in 1x mode (ignore scaling)
@@ -138,18 +139,23 @@ FileSnapDialog::FileSnapDialog(
   wid.push_back(mySnap1x);
 
   // Snapshot interval (continuous mode)
+  StringMap items;
+  items.clear();
+  items.push_back("1 second", "1");
+  items.push_back("2 seconds", "2");
+  items.push_back("3 seconds", "3");
+  items.push_back("4 seconds", "4");
+  items.push_back("5 seconds", "5");
+  items.push_back("6 seconds", "6");
+  items.push_back("7 seconds", "7");
+  items.push_back("8 seconds", "8");
+  items.push_back("9 seconds", "9");
+  items.push_back("10 seconds", "10");
   xpos = 30;  ypos += b->getHeight();
-  mySnapSlider =
-    new SliderWidget(this, font, xpos, ypos, 6*fontWidth, lineHeight,
-                     "Snapshot interval: ", font.getStringWidth("Snapshot interval: "),
-                     kSnapIntervalChanged);
-  mySnapSlider->setMinValue(1); mySnapSlider->setMaxValue(10);
-  wid.push_back(mySnapSlider);
-  mySnapLabel =
-    new StaticTextWidget(this, font, xpos + mySnapSlider->getWidth() + 4,
-                         ypos + 1, 3*fontWidth, font.getFontHeight(), "",
-                         kTextAlignLeft);
-  mySnapLabel->setFlags(WIDGET_CLEARBG);
+  mySnapInterval = new PopUpWidget(this, font, xpos, ypos,
+                                   font.getStringWidth("10 seconds"), lineHeight,
+                                   items, "Continuous snapshot interval: ");
+  wid.push_back(mySnapInterval);
 
   // Add Defaults, OK and Cancel buttons
   b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
@@ -188,10 +194,9 @@ void FileSnapDialog::loadConfig()
   myPropsFile->setEditString(settings.getString("propsfile"));
   mySnapPath->setEditString(settings.getString("ssdir"));
   myEEPROMPath->setEditString(settings.getString("eepromdir"));
-  mySnapSingle->setState(!settings.getBool("sssingle"));
+  mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
-  mySnapSlider->setValue(instance().settings().getInt("ssinterval"));
-  mySnapLabel->setLabel(instance().settings().getString("ssinterval"));
+  mySnapInterval->setSelected(instance().settings().getString("ssinterval"), "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -204,9 +209,9 @@ void FileSnapDialog::saveConfig()
   instance().settings().setString("propsfile", myPropsFile->getEditString());
   instance().settings().setString("ssdir", mySnapPath->getEditString());
   instance().settings().setString("eepromdir", myEEPROMPath->getEditString());
-  instance().settings().setBool("sssingle", !mySnapSingle->getState());
+  instance().settings().setBool("sssingle", mySnapSingle->getState());
   instance().settings().setBool("ss1x", mySnap1x->getState());
-  instance().settings().setInt("ssinterval", mySnapSlider->getValue());
+  instance().settings().setString("ssinterval", mySnapInterval->getSelectedTag());
 
   // Flush changes to disk and inform the OSystem
   instance().settings().saveConfig();
@@ -248,10 +253,9 @@ void FileSnapDialog::setDefaults()
   node = FilesystemNode(ssdir);
   mySnapPath->setEditString(node.getRelativePath());
 
-  mySnapSingle->setState(true);
+  mySnapSingle->setState(false);
   mySnap1x->setState(false);
-  mySnapSlider->setValue(2);
-  mySnapLabel->setLabel("2");
+  mySnapInterval->setSelected("2", "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -357,10 +361,6 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kReloadRomDirCmd:
       sendCommand(kReloadRomDirCmd, 0, 0);	 
-      break;
-
-    case kSnapIntervalChanged:
-      mySnapLabel->setValue(mySnapSlider->getValue());
       break;
 
     default:

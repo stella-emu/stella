@@ -36,7 +36,7 @@ class MessageBox : public Dialog, public CommandSender
 {
   public:
     MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
-               int cmd = 0);
+               int max_w, int max_h, int cmd = 0);
     virtual ~MessageBox();
 
     /** Place the input dialog onscreen and center it */

@@ -72,8 +72,16 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                            lineHeight, "Launcher Width: ",
                                            lwidth, kLWidthChanged);
-  myLauncherWidthSlider->setMinValue(320);
-  myLauncherWidthSlider->setMaxValue(1920);
+  if(instance().desktopWidth() < 640)
+  {
+    myLauncherWidthSlider->setMinValue(320);
+    myLauncherWidthSlider->setMaxValue(instance().desktopWidth());
+  }
+  else
+  {
+    myLauncherWidthSlider->setMinValue(640);
+    myLauncherWidthSlider->setMaxValue(1920);
+  }
   myLauncherWidthSlider->setStepValue(10);
   wid.push_back(myLauncherWidthSlider);
   myLauncherWidthLabel =
@@ -86,8 +94,16 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myLauncherHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Launcher Height: ",
                                             lwidth, kLHeightChanged);
-  myLauncherHeightSlider->setMinValue(240);
-  myLauncherHeightSlider->setMaxValue(1200);
+  if(instance().desktopHeight() < 480)
+  {
+    myLauncherHeightSlider->setMinValue(240);
+    myLauncherHeightSlider->setMaxValue(instance().desktopHeight());
+  }
+  else
+  {
+    myLauncherHeightSlider->setMinValue(480);
+    myLauncherHeightSlider->setMaxValue(1200);
+  }
   myLauncherHeightSlider->setStepValue(10);
   wid.push_back(myLauncherHeightSlider);
   myLauncherHeightLabel =
@@ -166,6 +182,22 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                            ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
   myDebuggerHeightLabel->setFlags(WIDGET_CLEARBG);
 
+  // Debugger is only realistically available in windowed modes 800x600 or greater
+  // (and when it's actually been compiled into the app)
+  bool debuggerAvailable = 
+#if defined(DEBUGGER_SUPPORT) && defined(WINDOWED_SUPPORT)
+    (instance().desktopWidth() >= 800 && instance().desktopHeight() >= 600);
+#else
+  false;
+#endif
+  if(!debuggerAvailable)
+  {
+    myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
+    myDebuggerWidthLabel->clearFlags(WIDGET_ENABLED);
+    myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
+    myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
+  }
+
   // Add message concerning usage
   xpos = vBorder; ypos += 2*(lineHeight + 4);
   lwidth = font.getStringWidth("(*) Changes require ROM reload");
@@ -193,48 +225,45 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Delay between quick-selecting characters in ListWidget
-  myListDelaySlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                       lineHeight, "List quick delay: ",
-                                       lwidth, kLQDelayChanged);
-  myListDelaySlider->setMinValue(300);
-  myListDelaySlider->setMaxValue(1000);
-  myListDelaySlider->setStepValue(100);
-  wid.push_back(myListDelaySlider);
-  myListDelayLabel =
-      new StaticTextWidget(myTab, font,
-                           xpos + myListDelaySlider->getWidth() + 4,
-                           ypos + 1, 4*fontWidth, fontHeight, "", kTextAlignLeft);
-  myListDelayLabel->setFlags(WIDGET_CLEARBG);
+  items.clear();
+  items.push_back("300 ms", "300");
+  items.push_back("400 ms", "400");
+  items.push_back("500 ms", "500");
+  items.push_back("600 ms", "600");
+  items.push_back("700 ms", "700");
+  items.push_back("800 ms", "800");
+  items.push_back("900 ms", "900");
+  items.push_back("1 sec", "1000");
+  myListDelayPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                     items, "List quick delay: ", lwidth);
+  wid.push_back(myListDelayPopup);
   ypos += lineHeight + 4;
 
   // Number of lines a mouse wheel will scroll
-  myWheelLinesSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                        lineHeight, "Mouse wheel scroll: ",
-                                        lwidth, kWLinesChanged);
-  myWheelLinesSlider->setMinValue(1);
-  myWheelLinesSlider->setMaxValue(10);
-  myWheelLinesSlider->setStepValue(1);
-  wid.push_back(myWheelLinesSlider);
-  myWheelLinesLabel =
-      new StaticTextWidget(myTab, font,
-                           xpos + myWheelLinesSlider->getWidth() + 4,
-                           ypos + 1, 2*fontWidth, fontHeight, "", kTextAlignLeft);
-  myWheelLinesLabel->setFlags(WIDGET_CLEARBG);
+  items.clear();
+  items.push_back("1 line", "1");
+  items.push_back("2 lines", "2");
+  items.push_back("3 lines", "3");
+  items.push_back("4 lines", "4");
+  items.push_back("5 lines", "5");
+  items.push_back("6 lines", "6");
+  items.push_back("7 lines", "7");
+  items.push_back("8 lines", "8");
+  items.push_back("9 lines", "9");
+  items.push_back("10 lines", "10");
+  myWheelLinesPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                      items, "Mouse wheel scroll: ", lwidth);
+  wid.push_back(myWheelLinesPopup);
   ypos += lineHeight + 4;
 
   // Amount of output to show with 'showinfo'
-  myShowInfoSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
-                                      lineHeight, "Show Info level: ",
-                                      lwidth, kSInfoChanged);
-  myShowInfoSlider->setMinValue(0);
-  myShowInfoSlider->setMaxValue(2);
-  myShowInfoSlider->setStepValue(1);
-  wid.push_back(myShowInfoSlider);
-  myShowInfoLabel =
-      new StaticTextWidget(myTab, font,
-                           xpos + myShowInfoSlider->getWidth() + 4,
-                           ypos + 1, 2*fontWidth, fontHeight, "", kTextAlignLeft);
-  myShowInfoLabel->setFlags(WIDGET_CLEARBG);
+  items.clear();
+  items.push_back("None", "0");
+  items.push_back("Basic", "1");
+  items.push_back("Verbose", "2");
+  myShowInfoPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                    items, "Show Info level: ", lwidth);
+  wid.push_back(myShowInfoPopup);
   ypos += lineHeight + 4;
 
   // Add items for tab 2
@@ -251,17 +280,6 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(b);
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
-
-#ifndef DEBUGGER_SUPPORT
-  myDebuggerWidthSlider->clearFlags(WIDGET_ENABLED);
-  myDebuggerWidthLabel->clearFlags(WIDGET_ENABLED);
-  myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
-  myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
-#endif
-
-#ifdef _WIN32_WCE
-  myLauncherPopup->clearFlags(WIDGET_ENABLED);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,6 +312,7 @@ void UIDialog::loadConfig()
   const string& viewer = instance().settings().getString("romviewer");
   myRomViewerPopup->setSelected(viewer, "0");
 
+#ifdef DEBUGGER_SUPPORT
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
   w = BSPF_max(w, 1050);
@@ -305,27 +324,23 @@ void UIDialog::loadConfig()
   myDebuggerWidthLabel->setValue(w);
   myDebuggerHeightSlider->setValue(h);
   myDebuggerHeightLabel->setValue(h);
+#endif
 
   // UI palette
   const string& pal = instance().settings().getString("uipalette");
   myPalettePopup->setSelected(pal, "1");
 
   // Listwidget quick delay
-  int delay = instance().settings().getInt("listdelay");
-  if(delay < 300 || delay > 1000) delay = 300;
-  myListDelaySlider->setValue(delay);
-  myListDelayLabel->setValue(delay);
+  const string& delay = instance().settings().getString("listdelay");
+  myListDelayPopup->setSelected(delay, "300");
 
   // Mouse wheel lines
-  int mw = instance().settings().getInt("mwheel");
-  if(mw < 1 || mw > 10) mw = 1;
-  myWheelLinesSlider->setValue(mw);
-  myWheelLinesLabel->setValue(mw);
+  const string& mw = instance().settings().getString("mwheel");
+  myWheelLinesPopup->setSelected(mw, "1");
 
   // Showinfo
-  int si = instance().settings().getInt("showinfo");
-  myShowInfoSlider->setValue(si);
-  myShowInfoLabel->setValue(si);
+  const string& si = instance().settings().getString("showinfo");
+  myShowInfoPopup->setSelected(si, "1");
 
   myTab->loadConfig();
 }
@@ -354,17 +369,18 @@ void UIDialog::saveConfig()
     myPalettePopup->getSelectedTag());
 
   // Listwidget quick delay
-  int delay = myListDelaySlider->getValue();
-  instance().settings().setInt("listdelay", delay);
-  ListWidget::setQuickSelectDelay(delay);
+  instance().settings().setString("listdelay",
+    myListDelayPopup->getSelectedTag());
+  ListWidget::setQuickSelectDelay(atoi(myListDelayPopup->getSelectedTag().c_str()));
 
   // Mouse wheel lines
-  int mw = myWheelLinesSlider->getValue();
-  instance().settings().setInt("mwheel", mw);
-  ScrollBarWidget::setWheelLines(mw);
+  instance().settings().setString("mwheel",
+    myWheelLinesPopup->getSelectedTag());
+  ScrollBarWidget::setWheelLines(atoi(myWheelLinesPopup->getSelectedTag().c_str()));
 
   // Show info
-  instance().settings().setInt("showinfo", myShowInfoSlider->getValue());
+  instance().settings().setString("showinfo",
+    myShowInfoPopup->getSelectedTag());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -394,12 +410,9 @@ void UIDialog::setDefaults()
 
     case 2:  // Misc. options
       myPalettePopup->setSelected("1", "1");
-      myListDelaySlider->setValue(300);
-      myListDelayLabel->setValue(300);
-      myWheelLinesSlider->setValue(4);
-      myWheelLinesLabel->setValue(4);
-      myShowInfoSlider->setValue(1);
-      myShowInfoLabel->setValue(1);
+      myListDelayPopup->setSelected("300", "300");
+      myWheelLinesPopup->setSelected("4", "4");
+      myShowInfoPopup->setSelected("1", "1");
       break;
 
     default:
@@ -428,18 +441,6 @@ void UIDialog::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
     case kDHeightChanged:
       myDebuggerHeightLabel->setValue(myDebuggerHeightSlider->getValue());
-      break;
-
-    case kLQDelayChanged:
-      myListDelayLabel->setValue(myListDelaySlider->getValue());
-      break;
-
-    case kWLinesChanged:
-      myWheelLinesLabel->setValue(myWheelLinesSlider->getValue());
-      break;
-
-    case kSInfoChanged:
-      myShowInfoLabel->setValue(myShowInfoSlider->getValue());
       break;
 
     case kOKCmd:

@@ -29,6 +29,7 @@ class DialogContainer;
 class BrowserDialog;
 class EditTextWidget;
 class StaticTextWidget;
+class MessageBox;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -52,7 +53,8 @@ class RomAuditDialog : public Dialog
   private:
     enum {
       kChooseAuditDirCmd = 'RAsl', // audit dir select
-      kAuditDirChosenCmd = 'RAch'  // audit dir changed
+      kAuditDirChosenCmd = 'RAch', // audit dir changed
+      kConfirmAuditCmd   = 'RAcf'  // confirm rom audit
     };
 
     // ROM audit path
@@ -64,6 +66,12 @@ class RomAuditDialog : public Dialog
 
     // Select a new ROM audit path
     BrowserDialog* myBrowser;
+
+    // Show a message about the dangers of using this function
+    MessageBox* myConfirmMsg;
+
+    // Maximum width and height for this dialog
+    int myMaxWidth, myMaxHeight;
 };
 
 #endif

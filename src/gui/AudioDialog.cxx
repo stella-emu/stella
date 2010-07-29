@@ -49,7 +49,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   int lwidth = font.getStringWidth("Fragment Size: "),
-      pwidth = font.getStringWidth("4096");
+      pwidth = font.getStringWidth("512 bytes");
   WidgetArray wid;
   StringMap items;
 
@@ -74,12 +74,12 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Fragment size
   items.clear();
-  items.push_back("128", "128");
-  items.push_back("256", "256");
-  items.push_back("512", "512");
-  items.push_back("1024", "1024");
-  items.push_back("2048", "2048");
-  items.push_back("4096", "4096");
+  items.push_back("128 bytes", "128");
+  items.push_back("256 bytes", "256");
+  items.push_back("512 bytes", "512");
+  items.push_back("1 KB", "1024");
+  items.push_back("2 KB", "2048");
+  items.push_back("4 KB", "4096");
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                     items, "Fragment size: ", lwidth);
@@ -88,11 +88,11 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Output frequency
   items.clear();
-  items.push_back("11025", "11025");
-  items.push_back("22050", "22050");
-  items.push_back("31400", "31400");
-  items.push_back("44100", "44100");
-  items.push_back("48000", "48000");
+  items.push_back("11025 Hz", "11025");
+  items.push_back("22050 Hz", "22050");
+  items.push_back("31400 Hz", "31400");
+  items.push_back("44100 Hz", "44100");
+  items.push_back("48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
                                 items, "Output freq: ", lwidth);
@@ -108,13 +108,13 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Clip volume
-  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
+  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+50, ypos,
                                             "Clip volume", 0);
   wid.push_back(myClipVolumeCheckbox);
   ypos += lineHeight + 4;
 
   // Enable sound
-  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos+28, ypos,
+  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos+50, ypos,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);
   ypos += lineHeight + 12;

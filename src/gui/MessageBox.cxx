@@ -26,7 +26,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const StringList& text, int cmd)
+                       const StringList& text, int max_w, int max_h, int cmd)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
     CommandSender(boss),
     myCmd(cmd)
@@ -38,8 +38,11 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 50 * fontWidth + 8;
-  _h = (text.size() + 2) * lineHeight + 20;
+  int str_w = 0;
+  for(uInt32 i = 0; i < text.size(); ++i)
+    str_w = BSPF_max((int)text[i].length(), str_w);
+  _w = BSPF_min(str_w * fontWidth + 20, max_w);
+  _h = BSPF_min(((text.size() + 2) * lineHeight + 20), (uInt32)max_h);
 
   xpos = 10;  ypos = 10;
   for(uInt32 i = 0; i < text.size(); ++i)
