@@ -12,6 +12,73 @@
                                Release History
 ===========================================================================
 
+3.1.2 to 3.2: (August 16, 2010)
+
+  * NOTE: because of the many event-related changes in this release, all
+    event mapping should be reset to defaults after starting Stella for
+    the first time.
+
+FIXME
+  * Many improvements to joystick handling code, particularly for analog
+    axes.  Navigating the UI should be much smoother now.
+
+  * Added ability to assign and remap 'combo' events in emulation mode.
+    Combo events are basically a sequence of normal events (up to 8)
+    that are generated from a single event (ie, one button on a joystick
+    could generate up to 8 events).  Updated Input Settings UI to
+    access and modify these events.
+
+  * Default mappings are now available in UI and emulation mode for the
+    first 'hat' detected on a joystick/gamepad.  Related to this, a hat
+    now works exactly like an axis in UI mode (holding down a direction
+    continues that direction until the hat is released/centered).
+
+  * Several improvements to the debugger.  User labels are now supported
+    again, the debugger window can be resized between ROM loads
+    (previously, the app had to be restarted), and a vertical line
+    separates the diassembly from the raw bytes.
+
+  * Added 'finishing touches' to some of the UI descriptions, giving a
+    better explanation of the functions.  Related to this, certain
+    options now show a message box explaining the option in further
+    detail (particularly the ROM Audit mode).
+
+  * Fixed bugs in the ROM launcher when viewing certain PNG images not
+    created by Stella.  Related to this, the official PNG library is now
+    included in the Stella codebase (version 1.4.3).
+
+  * Fixed bug in Distella disassembler output, where it sometimes
+    generated addresses above $FFFF.
+
+  * Added several fixes for crashes on 'small' systems (those systems
+    where the maximum resolution is less than 640x480).
+
+  * Tweaked bankswitch autodetection for 0840, DPC+, E7 and UA schemes.
+
+  * Improved F8 bankswitch autodetection for Yars Revenge in 8in1 ROM.
+
+  * Updated DPC+ bankswitch scheme to latest specifications.
+
+  * Snapshots taken in continuous snapshot mode are now timestamped, so
+    files are never overwritten.
+
+  * Fixed a TIA segfault that could occur with certain ROMs.
+
+  * Reworked the manual, dividing it into 'Getting Started' and
+    'Advanced Configuration' sections.  It still contains the same info
+    as before, but hopefully in a better organized way.
+
+  * Updated Help dialog; it was showing incorrect info for some OSX
+    shortcuts.
+
+  * Updated OSX build script to not crash when a previous build is
+    detected, and to properly handle filenames with spaces.
+
+  * Updated included ZLib to latest release version (1.2.5).
+
+-Have fun!
+
+
 3.1.1 to 3.1.2: (May 3, 2010)
 
   * Modified 'showinfo' command to accept levels of output, where
@@ -29,8 +96,6 @@
     the ROM launcher on all future runs, and not allow one to enable it
     again.  It's still available from the commandline, for those that
     have a need for it.
-
--Have fun!
 
 
 3.1 to 3.1.1: (April 26, 2010)
