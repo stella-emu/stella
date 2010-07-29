@@ -1056,10 +1056,16 @@ bool OSystem::queryVideoHardware()
   }
   else
   {
+    // All modes must fit between the lower and upper limits of the desktop
+    // For 'small' desktop, this means larger than 320x240
+    // For 'large'/normal desktop, exclude all those less than 640x480
+    bool largeDesktop = myDesktopWidth >= 640 && myDesktopHeight >= 480;
+    uInt32 lowerWidth  = largeDesktop ? 640 : 320,
+           lowerHeight = largeDesktop ? 480 : 240;
     for(uInt32 i = 0; modes[i]; ++i)
     {
-      if(modes[i]->w >= 320 && modes[i]->w <= myDesktopWidth &&
-         modes[i]->h >= 240 && modes[i]->h <= myDesktopHeight)
+      if(modes[i]->w >= lowerWidth && modes[i]->w <= myDesktopWidth &&
+         modes[i]->h >= lowerHeight && modes[i]->h <= myDesktopHeight)
       {
         Resolution r;
         r.width  = modes[i]->w;
