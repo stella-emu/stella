@@ -44,7 +44,7 @@ Dialog::Dialog(OSystem* instance, DialogContainer* parent,
     _dragWidget(0),
     _okWidget(0),
     _cancelWidget(0),
-    _visible(true),
+    _visible(false),
     _isBase(isBase),
     _ourTab(NULL),
     _surface(NULL),
@@ -106,6 +106,8 @@ void Dialog::close()
 
   releaseFocus();
   parent().removeDialog();
+
+  _visible = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -280,56 +282,6 @@ void Dialog::drawDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
-{
-  Widget* w;
-  w = findWidget(x, y);
-
-  _dragWidget = w;
-
-  setFocus(w);
-
-  if(w)
-    w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
-{
-  Widget* w;
-
-  if(_focusedWidget)
-  {
-    // Lose focus on mouseup unless the widget requested to retain the focus
-    if(! (_focusedWidget->getFlags() & WIDGET_RETAIN_FOCUS ))
-      releaseFocus();
-  }
-
-  w = _dragWidget;
-
-  if(w)
-    w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
-
-  _dragWidget = 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleMouseWheel(int x, int y, int direction)
-{
-  Widget* w;
-
-  // This may look a bit backwards, but I think it makes more sense for
-  // the mouse wheel to primarily affect the widget the mouse is at than
-  // the widget that happens to be focused.
-
-  w = findWidget(x, y);
-  if(!w)
-    w = _focusedWidget;
-  if (w)
-    w->handleMouseWheel(x, y, direction);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Test for TAB character
@@ -384,6 +336,56 @@ void Dialog::handleKeyUp(int ascii, int keycode, int modifiers)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::handleMouseDown(int x, int y, int button, int clickCount)
+{
+  Widget* w;
+  w = findWidget(x, y);
+
+  _dragWidget = w;
+
+  setFocus(w);
+
+  if(w)
+    w->handleMouseDown(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::handleMouseUp(int x, int y, int button, int clickCount)
+{
+  Widget* w;
+
+  if(_focusedWidget)
+  {
+    // Lose focus on mouseup unless the widget requested to retain the focus
+    if(! (_focusedWidget->getFlags() & WIDGET_RETAIN_FOCUS ))
+      releaseFocus();
+  }
+
+  w = _dragWidget;
+
+  if(w)
+    w->handleMouseUp(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button, clickCount);
+
+  _dragWidget = 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::handleMouseWheel(int x, int y, int direction)
+{
+  Widget* w;
+
+  // This may look a bit backwards, but I think it makes more sense for
+  // the mouse wheel to primarily affect the widget the mouse is at than
+  // the widget that happens to be focused.
+
+  w = findWidget(x, y);
+  if(!w)
+    w = _focusedWidget;
+  if (w)
+    w->handleMouseWheel(x, y, direction);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::handleMouseMoved(int x, int y, int button)
 {
   Widget* w;
@@ -431,6 +433,17 @@ void Dialog::handleMouseMoved(int x, int y, int button)
 
   if (w && (w->getFlags() & WIDGET_TRACK_MOUSE))
     w->handleMouseMoved(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Dialog::handleMouseClicks(int x, int y, int button)
+{
+  Widget* w = findWidget(x, y);
+
+  if(w)
+    return w->handleMouseClicks(x - (w->getAbsX() - _x), y - (w->getAbsY() - _y), button);
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

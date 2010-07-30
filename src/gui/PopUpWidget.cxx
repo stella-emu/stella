@@ -79,7 +79,7 @@ PopUpWidget::~PopUpWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 {
-  if(isEnabled())
+  if(isEnabled() && !myMenu->isVisible())
   {
     // Add menu just underneath parent widget
     const GUI::Rect& image = instance().frameBuffer().imageRect();

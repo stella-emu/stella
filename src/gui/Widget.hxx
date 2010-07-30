@@ -97,14 +97,15 @@ class Widget : public GuiObject
     virtual int getAbsX() const  { return _x + _boss->getChildX(); }
     virtual int getAbsY() const  { return _y + _boss->getChildY(); }
 
+    virtual bool handleKeyDown(int ascii, int keycode, int modifiers) { return false; }
+    virtual bool handleKeyUp(int ascii, int keycode, int modifiers)   { return false; }
     virtual void handleMouseDown(int x, int y, int button, int clickCount) {}
     virtual void handleMouseUp(int x, int y, int button, int clickCount) {}
     virtual void handleMouseEntered(int button) {}
     virtual void handleMouseLeft(int button) {}
     virtual void handleMouseMoved(int x, int y, int button) {}
     virtual void handleMouseWheel(int x, int y, int direction) {}
-    virtual bool handleKeyDown(int ascii, int keycode, int modifiers) { return false; }
-    virtual bool handleKeyUp(int ascii, int keycode, int modifiers)   { return false; }
+    virtual bool handleMouseClicks(int x, int y, int button) { return false; }
     virtual void handleJoyDown(int stick, int button) {}
     virtual void handleJoyUp(int stick, int button) {}
     virtual void handleJoyAxis(int stick, int axis, int value) {}
@@ -123,11 +124,11 @@ class Widget : public GuiObject
     void clearFlags(int flags)  { _flags &= ~flags; }
     int  getFlags() const       { return _flags;    }
 
-    bool isEnabled() const   { return _flags & WIDGET_ENABLED;       }
-    bool isVisible() const   { return !(_flags & WIDGET_INVISIBLE);  }
-    bool wantsFocus() const  { return _flags & WIDGET_RETAIN_FOCUS;  }
-    bool wantsTab() const    { return _flags & WIDGET_WANTS_TAB;     }
-    bool wantsRaw() const    { return _flags & WIDGET_WANTS_RAWDATA; }
+    bool isEnabled() const   { return _flags & WIDGET_ENABLED;         }
+    bool isVisible() const   { return !(_flags & WIDGET_INVISIBLE);    }
+    bool wantsFocus() const  { return _flags & WIDGET_RETAIN_FOCUS;    }
+    bool wantsTab() const    { return _flags & WIDGET_WANTS_TAB;       }
+    bool wantsRaw() const    { return _flags & WIDGET_WANTS_RAWDATA;   }
 
     void setID(int id)  { _id = id;   }
     int  getID()        { return _id; }

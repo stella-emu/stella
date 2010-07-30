@@ -33,30 +33,30 @@
  *   and we thus should not highlight the arrows/slider.
  */
 
-#define UP_DOWN_BOX_HEIGHT	12
+#define UP_DOWN_BOX_HEIGHT	18
 
 // Up arrow
 static unsigned int up_arrow[8] = {
   0x00011000,
+  0x00011000,
+  0x00111100,
   0x00111100,
   0x01111110,
+  0x01111110,
   0x11111111,
-  0x00000000,
-  0x00000000,
-  0x00000000,
-  0x00000000
+  0x11111111
 };
 
 // Down arrow
 static unsigned int down_arrow[8] = {
-  0x11111111,
-  0x01111110,
-  0x00111100,
-  0x00011000,
-  0x00000000,
-  0x00000000,
-  0x00000000,
-  0x00000000
+    0x11111111,
+    0x11111111,
+    0x01111110,
+    0x01111110,
+    0x00111100,
+    0x00111100,
+    0x00011000,
+    0x00011000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -83,6 +83,10 @@ ScrollBarWidget::ScrollBarWidget(GuiObject* boss, const GUI::Font& font,
 void ScrollBarWidget::handleMouseDown(int x, int y, int button,
                                       int clickCount)
 {
+  // Ignore subsequent mouse clicks when the slider is being moved
+  if(_draggingPart == kSliderPart)
+    return;
+
   int old_pos = _currentPos;
 
   // Do nothing if there are less items than fit on one page
@@ -188,6 +192,13 @@ void ScrollBarWidget::handleMouseMoved(int x, int y, int button)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ScrollBarWidget::handleMouseClicks(int x, int y, int button)
+{
+  // Let continuous mouse clicks come through, as the scroll buttons need them
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ScrollBarWidget::checkBounds(int old_pos)
 {
   if(_numEntries <= _entriesPerPage || _currentPos < 0)
@@ -257,13 +268,13 @@ void ScrollBarWidget::drawWidget(bool hilite)
 
   // Up arrow
   s.frameRect(_x, _y, _w, UP_DOWN_BOX_HEIGHT, kColor);
-  s.drawBitmap(up_arrow, _x+2, _y+4, isSinglePage ? kColor :
-               (hilite && _part == kUpArrowPart) ? kScrollColorHi : kScrollColor, 4);
+  s.drawBitmap(up_arrow, _x+3, _y+5, isSinglePage ? kColor :
+               (hilite && _part == kUpArrowPart) ? kScrollColorHi : kScrollColor, 8);
 
   // Down arrow
   s.frameRect(_x, bottomY - UP_DOWN_BOX_HEIGHT, _w, UP_DOWN_BOX_HEIGHT, kColor);
-  s.drawBitmap(down_arrow, _x+2, bottomY - UP_DOWN_BOX_HEIGHT + 4, isSinglePage ? kColor :
-               (hilite && _part == kDownArrowPart) ? kScrollColorHi : kScrollColor);
+  s.drawBitmap(down_arrow, _x+3, bottomY - UP_DOWN_BOX_HEIGHT + 5, isSinglePage ? kColor :
+               (hilite && _part == kDownArrowPart) ? kScrollColorHi : kScrollColor, 8);
 
   // Slider
   if(!isSinglePage)

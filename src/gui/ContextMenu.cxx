@@ -37,6 +37,9 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _selectedOffset(0),
     _selectedItem(-1),
     _showScroll(false),
+    _isScrolling(false),
+    _scrollUpColor(kColor),
+    _scrollDnColor(kColor),
     _font(&font),
     _cmd(cmd),
     _xorig(0),
@@ -69,6 +72,10 @@ void ContextMenu::addItems(const StringMap& items)
   _x = _y = 0;
   _w = maxwidth + 10;
   _h = 1;  // recalculate this in ::recalc()
+
+  _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
+  _scrollDnColor = (_firstEntry + _numEntries < (int)_entries.size()) ?
+      kScrollColor : kColor;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -104,7 +111,7 @@ void ContextMenu::recalc(const GUI::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  int maxentries = (image.height() - 4) / _rowHeight;
+  int maxentries = BSPF_min(16, (image.height() - 4) / _rowHeight);
   if((int)_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
@@ -118,6 +125,7 @@ void ContextMenu::recalc(const GUI::Rect& image)
     _h = _entries.size() * _rowHeight + 4;
     _showScroll = false;
   }
+  _isScrolling = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -185,12 +193,17 @@ const string& ContextMenu::getSelectedTag() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
 {
+  // Compute over which item the mouse is...
+  int item = findItem(x, y);
+
   // Only do a selection when the left button is in the dialog
   if(button == 1)
   {
-    x += getAbsX(); y += getAbsY();
-    if(x >= _x && x <= _x+_w && y >= _y && y <= _y+_h)
+    if(item != -1)
+    {
+      _isScrolling = _showScroll && ((item == 0) || (item == _numEntries+1));
       sendSelection();
+    }
     else
       close();
   }
@@ -206,6 +219,13 @@ void ContextMenu::handleMouseMoved(int x, int y, int button)
 
   // ...and update the selection accordingly
   drawCurrentSelection(item);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::handleMouseClicks(int x, int y, int button)
+{
+  // Let continuous mouse clicks come through, as the scroll buttons need them
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -288,6 +308,8 @@ void ContextMenu::sendSelection()
       return scrollUp();
     else if(_selectedOffset == _numEntries+1) // scroll down
       return scrollDown();
+    else if(_isScrolling)
+      return;
     else
       item--;
   }
@@ -349,6 +371,8 @@ void ContextMenu::scrollUp()
   if(_firstEntry > 0)
   {
     _firstEntry--;
+    _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
+    _scrollDnColor = kScrollColor;
     setDirty();
   }
 }
@@ -359,6 +383,9 @@ void ContextMenu::scrollDown()
   if(_firstEntry + _numEntries < (int)_entries.size())
   {
     _firstEntry++;
+    _scrollUpColor = kScrollColor;
+    _scrollDnColor = (_firstEntry + _numEntries < (int)_entries.size()) ?
+        kScrollColor : kColor;
     setDirty();
   }
 }
@@ -406,7 +433,7 @@ void ContextMenu::drawDialog()
     if(_showScroll)
     {
       s.hLine(x, y+_rowHeight-1, w+2, kShadowColor);
-      s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, kScrollColor, 8);
+      s.drawBitmap(up_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollUpColor, 8);
       y += _rowHeight;
       offset--;
     }
@@ -424,7 +451,7 @@ void ContextMenu::drawDialog()
     if(_showScroll)
     {
       s.hLine(x, y, w+2, kShadowColor);
-      s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, kScrollColor, 8);
+      s.drawBitmap(down_arrow, ((_w-_x)>>1)-4, (_rowHeight>>1)+y-4, _scrollDnColor, 8);
     }
 
     s.addDirtyRect(_x, _y, _w, _h);

@@ -189,9 +189,6 @@ void DialogContainer::handleMouseMotionEvent(int x, int y, int button)
   activeDialog->handleMouseMoved(x - activeDialog->_x,
                                  y - activeDialog->_y,
                                  button);
-
-  // Turn off continuous click events as soon as the mouse moves
-  myCurrentMouseDown.button = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -231,11 +228,18 @@ void DialogContainer::handleMouseButtonEvent(MouseButton b, int x, int y, uInt8 
       }
       myLastClick.time = myTime;
 
-      // Now account for repeated mouse events (click and hold)
-      myCurrentMouseDown.x = x;
-      myCurrentMouseDown.y = y;
-      myCurrentMouseDown.button = button;
-      myClickRepeatTime = myTime + kRepeatInitialDelay;
+      // Now account for repeated mouse events (click and hold), but only
+      // if the dialog wants them
+      if(activeDialog->handleMouseClicks(x - activeDialog->_x, y - activeDialog->_y,
+                                         button))
+      {
+        myCurrentMouseDown.x = x;
+        myCurrentMouseDown.y = y;
+        myCurrentMouseDown.button = button;
+        myClickRepeatTime = myTime + kRepeatInitialDelay;
+      }
+      else
+        myCurrentMouseDown.button = -1;
 
       activeDialog->handleMouseDown(x - activeDialog->_x, y - activeDialog->_y,
                                     button, myLastClick.count);

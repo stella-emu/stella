@@ -88,12 +88,12 @@ class Dialog : public GuiObject
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual void handleMouseMoved(int x, int y, int button);
+    virtual bool handleMouseClicks(int x, int y, int button);
     virtual void handleJoyDown(int stick, int button);
     virtual void handleJoyUp(int stick, int button);
     virtual void handleJoyAxis(int stick, int axis, int value);
     virtual bool handleJoyHat(int stick, int hat, int value);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    virtual void handleScreenChanged() {}
 
     Widget* findWidget(int x, int y); // Find the widget at pos x,y if any
 

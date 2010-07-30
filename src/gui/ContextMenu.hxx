@@ -76,6 +76,7 @@ class ContextMenu : public Dialog, public CommandSender
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseMoved(int x, int y, int button);
+    bool handleMouseClicks(int x, int y, int button);
     void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc
     void handleJoyDown(int stick, int button);
     void handleJoyAxis(int stick, int axis, int value);
@@ -103,6 +104,8 @@ class ContextMenu : public Dialog, public CommandSender
     int _firstEntry, _numEntries;
     int _selectedOffset, _selectedItem;
     bool _showScroll;
+    bool _isScrolling;
+    uInt32 _scrollUpColor, _scrollDnColor;
 
     const GUI::Font* _font;
     int _cmd;

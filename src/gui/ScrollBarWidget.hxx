@@ -29,7 +29,7 @@
 #include "bspf.hxx"
 
 enum {
-  kScrollBarWidth = 12
+  kScrollBarWidth = 14
 };
 
 class ScrollBarWidget : public Widget, public CommandSender
@@ -44,6 +44,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
     virtual void handleMouseMoved(int x, int y, int button);
+    virtual bool handleMouseClicks(int x, int y, int button);
     virtual void handleMouseEntered(int button);
     virtual void handleMouseLeft(int button);
 
