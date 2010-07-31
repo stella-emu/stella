@@ -57,7 +57,7 @@ bool SoundNull::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool SoundNull::save(Serializer& out)
+bool SoundNull::save(Serializer& out) const
 {
   out.putString("TIASound");
 

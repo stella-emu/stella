@@ -137,6 +137,14 @@ class SoundNull : public Sound
 
 public:
     /**
+      Saves the current state of this device to the given Serializer.
+
+      @param out The serializer device to save to.
+      @return The result of the save.  True on success, false on failure.
+    */
+    bool save(Serializer& out) const;
+
+    /**
       Loads the current state of this device from the given Serializer.
 
       @param in The Serializer device to load from.
@@ -145,12 +153,11 @@ public:
     bool load(Serializer& in);
 
     /**
-      Saves the current state of this device to the given Serializer.
+      Get a descriptor for this console class (used in error checking).
 
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
+      @return The name of the object
     */
-    bool save(Serializer& out);
+    string name() const { return "TIASound"; }
 };
 
 #endif
