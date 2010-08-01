@@ -910,6 +910,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\MessageBox.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\OptionsDialog.cxx"
 					>
 				</File>
@@ -1701,6 +1705,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\Menu.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\MessageBox.hxx"
 					>
 				</File>
 				<File
