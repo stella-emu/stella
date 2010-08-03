@@ -1247,6 +1247,10 @@ void EventHandler::setActionMappings(EventMode mode)
 #else
       prepend = "Cmd Q";
 #endif
+    else if(event == Event::UINavNext)
+      prepend = "TAB";
+    else if(event == Event::UINavPrev)
+      prepend = "Shift-TAB";
     // else if ...
 
     if(key == "")
@@ -1278,8 +1282,8 @@ void EventHandler::setKeymap()
   }
   else
   {
-    setDefaultKeymap(kEmulationMode);
-    setDefaultKeymap(kMenuMode);
+    setDefaultKeymap(Event::NoType, kEmulationMode);
+    setDefaultKeymap(Event::NoType, kMenuMode);
   }
 }
 
@@ -1301,8 +1305,8 @@ void EventHandler::setJoymap()
   }
   else
   {
-    setDefaultJoymap(kEmulationMode);
-    setDefaultJoymap(kMenuMode);
+    setDefaultJoymap(Event::NoType, kEmulationMode);
+    setDefaultJoymap(Event::NoType, kMenuMode);
   }
 #endif
 }
@@ -1326,8 +1330,8 @@ void EventHandler::setJoyAxisMap()
   }
   else
   {
-    setDefaultJoyAxisMap(kEmulationMode);
-    setDefaultJoyAxisMap(kMenuMode);
+    setDefaultJoyAxisMap(Event::NoType, kEmulationMode);
+    setDefaultJoyAxisMap(Event::NoType, kMenuMode);
   }
 #endif
 }
@@ -1351,8 +1355,8 @@ void EventHandler::setJoyHatMap()
   }
   else
   {
-    setDefaultJoyHatMap(kEmulationMode);
-    setDefaultJoyHatMap(kMenuMode);
+    setDefaultJoyHatMap(Event::NoType, kEmulationMode);
+    setDefaultJoyHatMap(Event::NoType, kMenuMode);
   }
 #endif
 }
@@ -1547,104 +1551,115 @@ void EventHandler::eraseMapping(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultMapping(EventMode mode)
+void EventHandler::setDefaultMapping(Event::Type event, EventMode mode)
 {
-  setDefaultKeymap(mode);
-  setDefaultJoymap(mode);
-  setDefaultJoyAxisMap(mode);
-  setDefaultJoyHatMap(mode);
+  setDefaultKeymap(event, mode);
+  setDefaultJoymap(event, mode);
+  setDefaultJoyAxisMap(event, mode);
+  setDefaultJoyHatMap(event, mode);
 
   setActionMappings(mode);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultKeymap(EventMode mode)
+void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
 {
-  // Erase all mappings
-  for(int i = 0; i < SDLK_LAST; ++i)
-    myKeyTable[i][mode] = Event::NoType;
+#define SET_DEFAULT_KEY(sdk_key, sdk_mode, sdk_event, sdk_cmp_event) \
+  if(eraseAll || sdk_cmp_event == sdk_event)  \
+    myKeyTable[sdk_key][sdk_mode] = sdk_event;
+
+  // If event is 'NoType', erase and reset all mappings
+  // Otherwise, only reset the given event
+  bool eraseAll = (event == Event::NoType);
+  if(eraseAll)
+  {
+    // Erase all mappings
+    for(int i = 0; i < SDLK_LAST; ++i)
+      myKeyTable[i][mode] = Event::NoType;
+  }
 
   switch(mode)
   {
     case kEmulationMode:
-      myKeyTable[ SDLK_1 ][mode]         = Event::KeyboardZero1;
-      myKeyTable[ SDLK_2 ][mode]         = Event::KeyboardZero2;
-      myKeyTable[ SDLK_3 ][mode]         = Event::KeyboardZero3;
-      myKeyTable[ SDLK_q ][mode]         = Event::KeyboardZero4;
-      myKeyTable[ SDLK_w ][mode]         = Event::KeyboardZero5;
-      myKeyTable[ SDLK_e ][mode]         = Event::KeyboardZero6;
-      myKeyTable[ SDLK_a ][mode]         = Event::KeyboardZero7;
-      myKeyTable[ SDLK_s ][mode]         = Event::KeyboardZero8;
-      myKeyTable[ SDLK_d ][mode]         = Event::KeyboardZero9;
-      myKeyTable[ SDLK_z ][mode]         = Event::KeyboardZeroStar;
-      myKeyTable[ SDLK_x ][mode]         = Event::KeyboardZero0;
-      myKeyTable[ SDLK_c ][mode]         = Event::KeyboardZeroPound;
+      SET_DEFAULT_KEY(SDLK_1,         mode, Event::KeyboardZero1,     event);
+      SET_DEFAULT_KEY(SDLK_2,         mode, Event::KeyboardZero2,     event);
+      SET_DEFAULT_KEY(SDLK_3,         mode, Event::KeyboardZero3,     event);
+      SET_DEFAULT_KEY(SDLK_q,         mode, Event::KeyboardZero4,     event);
+      SET_DEFAULT_KEY(SDLK_w,         mode, Event::KeyboardZero5,     event);
+      SET_DEFAULT_KEY(SDLK_e,         mode, Event::KeyboardZero6,     event);
+      SET_DEFAULT_KEY(SDLK_a,         mode, Event::KeyboardZero7,     event);
+      SET_DEFAULT_KEY(SDLK_s,         mode, Event::KeyboardZero8,     event);
+      SET_DEFAULT_KEY(SDLK_d,         mode, Event::KeyboardZero9,     event);
+      SET_DEFAULT_KEY(SDLK_z,         mode, Event::KeyboardZeroStar,  event);
+      SET_DEFAULT_KEY(SDLK_x,         mode, Event::KeyboardZero0,     event);
+      SET_DEFAULT_KEY(SDLK_c,         mode, Event::KeyboardZeroPound, event);
 
-      myKeyTable[ SDLK_8 ][mode]         = Event::KeyboardOne1;
-      myKeyTable[ SDLK_9 ][mode]         = Event::KeyboardOne2;
-      myKeyTable[ SDLK_0 ][mode]         = Event::KeyboardOne3;
-      myKeyTable[ SDLK_i ][mode]         = Event::KeyboardOne4;
-      myKeyTable[ SDLK_o ][mode]         = Event::KeyboardOne5;
-      myKeyTable[ SDLK_p ][mode]         = Event::KeyboardOne6;
-      myKeyTable[ SDLK_k ][mode]         = Event::KeyboardOne7;
-      myKeyTable[ SDLK_l ][mode]         = Event::KeyboardOne8;
-      myKeyTable[ SDLK_SEMICOLON ][mode] = Event::KeyboardOne9;
-      myKeyTable[ SDLK_COMMA ][mode]     = Event::KeyboardOneStar;
-      myKeyTable[ SDLK_PERIOD ][mode]    = Event::KeyboardOne0;
-      myKeyTable[ SDLK_SLASH ][mode]     = Event::KeyboardOnePound;
+      SET_DEFAULT_KEY(SDLK_8,         mode, Event::KeyboardOne1,      event);
+      SET_DEFAULT_KEY(SDLK_9,         mode, Event::KeyboardOne2,      event);
+      SET_DEFAULT_KEY(SDLK_0,         mode, Event::KeyboardOne3,      event);
+      SET_DEFAULT_KEY(SDLK_i,         mode, Event::KeyboardOne4,      event);
+      SET_DEFAULT_KEY(SDLK_o,         mode, Event::KeyboardOne5,      event);
+      SET_DEFAULT_KEY(SDLK_p,         mode, Event::KeyboardOne6,      event);
+      SET_DEFAULT_KEY(SDLK_k,         mode, Event::KeyboardOne7,      event);
+      SET_DEFAULT_KEY(SDLK_l,         mode, Event::KeyboardOne8,      event);
+      SET_DEFAULT_KEY(SDLK_SEMICOLON, mode, Event::KeyboardOne9,      event);
+      SET_DEFAULT_KEY(SDLK_COMMA,     mode, Event::KeyboardOneStar,   event);
+      SET_DEFAULT_KEY(SDLK_PERIOD,    mode, Event::KeyboardOne0,      event);
+      SET_DEFAULT_KEY(SDLK_SLASH,     mode, Event::KeyboardOnePound,  event);
 
-      myKeyTable[ SDLK_UP ][mode]        = Event::JoystickZeroUp;
-      myKeyTable[ SDLK_DOWN ][mode]      = Event::JoystickZeroDown;
-      myKeyTable[ SDLK_LEFT ][mode]      = Event::JoystickZeroLeft;
-      myKeyTable[ SDLK_RIGHT ][mode]     = Event::JoystickZeroRight;
-      myKeyTable[ SDLK_SPACE ][mode]     = Event::JoystickZeroFire1;
-      myKeyTable[ SDLK_LCTRL ][mode]     = Event::JoystickZeroFire1;
-      myKeyTable[ SDLK_4 ][mode]         = Event::JoystickZeroFire2;
-      myKeyTable[ SDLK_5 ][mode]         = Event::JoystickZeroFire3;
+      SET_DEFAULT_KEY(SDLK_UP,        mode, Event::JoystickZeroUp,    event);
+      SET_DEFAULT_KEY(SDLK_DOWN,      mode, Event::JoystickZeroDown,  event);
+      SET_DEFAULT_KEY(SDLK_LEFT,      mode, Event::JoystickZeroLeft,  event);
+      SET_DEFAULT_KEY(SDLK_RIGHT,     mode, Event::JoystickZeroRight, event);
+      SET_DEFAULT_KEY(SDLK_SPACE,     mode, Event::JoystickZeroFire1, event);
+      SET_DEFAULT_KEY(SDLK_LCTRL,     mode, Event::JoystickZeroFire1, event);
+      SET_DEFAULT_KEY(SDLK_4,         mode, Event::JoystickZeroFire2, event);
+      SET_DEFAULT_KEY(SDLK_5,         mode, Event::JoystickZeroFire3, event);
 
-      myKeyTable[ SDLK_y ][mode]         = Event::JoystickOneUp;
-      myKeyTable[ SDLK_h ][mode]         = Event::JoystickOneDown;
-      myKeyTable[ SDLK_g ][mode]         = Event::JoystickOneLeft;
-      myKeyTable[ SDLK_j ][mode]         = Event::JoystickOneRight;
-      myKeyTable[ SDLK_f ][mode]         = Event::JoystickOneFire1;
-      myKeyTable[ SDLK_6 ][mode]         = Event::JoystickOneFire2;
-      myKeyTable[ SDLK_7 ][mode]         = Event::JoystickOneFire3;
+      SET_DEFAULT_KEY(SDLK_y,         mode, Event::JoystickOneUp,     event);
+      SET_DEFAULT_KEY(SDLK_h,         mode, Event::JoystickOneDown,   event);
+      SET_DEFAULT_KEY(SDLK_g,         mode, Event::JoystickOneLeft,   event);
+      SET_DEFAULT_KEY(SDLK_j,         mode, Event::JoystickOneRight,  event);
+      SET_DEFAULT_KEY(SDLK_f,         mode, Event::JoystickOneFire1,  event);
+      SET_DEFAULT_KEY(SDLK_6,         mode, Event::JoystickOneFire2,  event);
+      SET_DEFAULT_KEY(SDLK_7,         mode, Event::JoystickOneFire3,  event);
 
-      myKeyTable[ SDLK_F1 ][mode]        = Event::ConsoleSelect;
-      myKeyTable[ SDLK_F2 ][mode]        = Event::ConsoleReset;
-      myKeyTable[ SDLK_F3 ][mode]        = Event::ConsoleColor;
-      myKeyTable[ SDLK_F4 ][mode]        = Event::ConsoleBlackWhite;
-      myKeyTable[ SDLK_F5 ][mode]        = Event::ConsoleLeftDifficultyA;
-      myKeyTable[ SDLK_F6 ][mode]        = Event::ConsoleLeftDifficultyB;
-      myKeyTable[ SDLK_F7 ][mode]        = Event::ConsoleRightDifficultyA;
-      myKeyTable[ SDLK_F8 ][mode]        = Event::ConsoleRightDifficultyB;
-      myKeyTable[ SDLK_F9 ][mode]        = Event::SaveState;
-      myKeyTable[ SDLK_F10 ][mode]       = Event::ChangeState;
-      myKeyTable[ SDLK_F11 ][mode]       = Event::LoadState;
-      myKeyTable[ SDLK_F12 ][mode]       = Event::TakeSnapshot;
-      myKeyTable[ SDLK_BACKSPACE ][mode] = Event::Fry;
-      myKeyTable[ SDLK_PAUSE ][mode]     = Event::PauseMode;
-      myKeyTable[ SDLK_TAB ][mode]       = Event::MenuMode;
-      myKeyTable[ SDLK_BACKSLASH ][mode] = Event::CmdMenuMode;
-      myKeyTable[ SDLK_BACKQUOTE ][mode] = Event::DebuggerMode;
-      myKeyTable[ SDLK_ESCAPE ][mode]    = Event::LauncherMode;
+
+      SET_DEFAULT_KEY(SDLK_F1,        mode, Event::ConsoleSelect,     event);
+      SET_DEFAULT_KEY(SDLK_F2,        mode, Event::ConsoleReset,      event);
+      SET_DEFAULT_KEY(SDLK_F3,        mode, Event::ConsoleColor,      event);
+      SET_DEFAULT_KEY(SDLK_F4,        mode, Event::ConsoleBlackWhite, event);
+      SET_DEFAULT_KEY(SDLK_F5,        mode, Event::ConsoleLeftDifficultyA,  event);
+      SET_DEFAULT_KEY(SDLK_F6,        mode, Event::ConsoleLeftDifficultyB,  event);
+      SET_DEFAULT_KEY(SDLK_F7,        mode, Event::ConsoleRightDifficultyA, event);
+      SET_DEFAULT_KEY(SDLK_F8,        mode, Event::ConsoleRightDifficultyB, event);
+      SET_DEFAULT_KEY(SDLK_F9,        mode, Event::SaveState,         event);
+      SET_DEFAULT_KEY(SDLK_F10,       mode, Event::ChangeState,       event);
+      SET_DEFAULT_KEY(SDLK_F11,       mode, Event::LoadState,         event);
+      SET_DEFAULT_KEY(SDLK_F12,       mode, Event::TakeSnapshot,      event);
+      SET_DEFAULT_KEY(SDLK_BACKSPACE, mode, Event::Fry,               event);
+      SET_DEFAULT_KEY(SDLK_PAUSE,     mode, Event::PauseMode,         event);
+      SET_DEFAULT_KEY(SDLK_TAB,       mode, Event::MenuMode,          event);
+      SET_DEFAULT_KEY(SDLK_BACKSLASH, mode, Event::CmdMenuMode,       event);
+      SET_DEFAULT_KEY(SDLK_BACKQUOTE, mode, Event::DebuggerMode,      event);
+      SET_DEFAULT_KEY(SDLK_ESCAPE,    mode, Event::LauncherMode,      event);
       break;
 
     case kMenuMode:
-      myKeyTable[ SDLK_UP ][mode]        = Event::UIUp;
-      myKeyTable[ SDLK_DOWN ][mode]      = Event::UIDown;
-      myKeyTable[ SDLK_LEFT ][mode]      = Event::UILeft;
-      myKeyTable[ SDLK_RIGHT ][mode]     = Event::UIRight;
+      SET_DEFAULT_KEY(SDLK_UP,        mode, Event::UIUp,      event);
+      SET_DEFAULT_KEY(SDLK_DOWN,      mode, Event::UIDown,    event);
+      SET_DEFAULT_KEY(SDLK_LEFT,      mode, Event::UILeft,    event);
+      SET_DEFAULT_KEY(SDLK_RIGHT,     mode, Event::UIRight,   event);
 
-      myKeyTable[ SDLK_HOME ][mode]      = Event::UIHome;
-      myKeyTable[ SDLK_END ][mode]       = Event::UIEnd;
-      myKeyTable[ SDLK_PAGEUP ][mode]    = Event::UIPgUp;
-      myKeyTable[ SDLK_PAGEDOWN ][mode]  = Event::UIPgDown;
+      SET_DEFAULT_KEY(SDLK_HOME,      mode, Event::UIHome,    event);
+      SET_DEFAULT_KEY(SDLK_END,       mode, Event::UIEnd,     event);
+      SET_DEFAULT_KEY(SDLK_PAGEUP,    mode, Event::UIPgUp,    event);
+      SET_DEFAULT_KEY(SDLK_PAGEDOWN,  mode, Event::UIPgDown,  event);
 
-      myKeyTable[ SDLK_RETURN ][mode]    = Event::UISelect;
-      myKeyTable[ SDLK_ESCAPE ][mode]    = Event::UICancel;
+      SET_DEFAULT_KEY(SDLK_RETURN,    mode, Event::UISelect,  event);
+      SET_DEFAULT_KEY(SDLK_ESCAPE,    mode, Event::UICancel,  event);
 
-      myKeyTable[ SDLK_BACKSPACE ][mode] = Event::UIPrevDir;
+      SET_DEFAULT_KEY(SDLK_BACKSPACE, mode, Event::UIPrevDir, event);
       break;
 
     default:
@@ -1656,40 +1671,55 @@ void EventHandler::setDefaultKeymap(EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoymap(EventMode mode)
+void EventHandler::setDefaultJoymap(Event::Type event, EventMode mode)
 {
-  // Erase all mappings
-  for(int i = 0; i < kNumJoysticks; ++i)
-    for(int j = 0; j < kNumJoyButtons; ++j)
-      myJoyTable[i][j][mode] = Event::NoType;
+  // If event is 'NoType', erase and reset all mappings
+  // Otherwise, only reset the given event
+  if(event == Event::NoType)
+  {
+    // Erase all mappings
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyButtons; ++j)
+        myJoyTable[i][j][mode] = Event::NoType;
+  }
 
-  myOSystem->setDefaultJoymap();
+  myOSystem->setDefaultJoymap(event, mode);
   saveJoyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyAxisMap(EventMode mode)
+void EventHandler::setDefaultJoyAxisMap(Event::Type event, EventMode mode)
 {
-  // Erase all mappings
-  for(int i = 0; i < kNumJoysticks; ++i)
-    for(int j = 0; j < kNumJoyAxis; ++j)
-      for(int k = 0; k < 2; ++k)
-        myJoyAxisTable[i][j][k][mode] = Event::NoType;
+  // If event is 'NoType', erase and reset all mappings
+  // Otherwise, only reset the given event
+  if(event == Event::NoType)
+  {
+    // Erase all mappings
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyAxis; ++j)
+        for(int k = 0; k < 2; ++k)
+          myJoyAxisTable[i][j][k][mode] = Event::NoType;
+  }
 
-  myOSystem->setDefaultJoyAxisMap();
+  myOSystem->setDefaultJoyAxisMap(event, mode);
   saveJoyAxisMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setDefaultJoyHatMap(EventMode mode)
+void EventHandler::setDefaultJoyHatMap(Event::Type event, EventMode mode)
 {
-  // Erase all mappings
-  for(int i = 0; i < kNumJoysticks; ++i)
-    for(int j = 0; j < kNumJoyHats; ++j)
-      for(int k = 0; k < 4; ++k)
-        myJoyHatTable[i][j][k][mode] = Event::NoType;
+  // If event is 'NoType', erase and reset all mappings
+  // Otherwise, only reset the given event
+  if(event == Event::NoType)
+  {
+    // Erase all mappings
+    for(int i = 0; i < kNumJoysticks; ++i)
+      for(int j = 0; j < kNumJoyHats; ++j)
+        for(int k = 0; k < 4; ++k)
+          myJoyHatTable[i][j][k][mode] = Event::NoType;
+  }
 
-  myOSystem->setDefaultJoyHatMap();
+  myOSystem->setDefaultJoyHatMap(event, mode);
   saveJoyHatMapping();
 }
 

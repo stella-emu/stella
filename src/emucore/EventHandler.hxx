@@ -304,7 +304,7 @@ class EventHandler
     /**
       Erase the specified mapping
 
-      @event  The event for which we erase all mappings
+      @param event  The event for which we erase all mappings
       @param mode   The mode where this event is active
     */
     void eraseMapping(Event::Type event, EventMode mode);
@@ -312,9 +312,10 @@ class EventHandler
     /**
       Resets the event mappings to default values
 
+      @param event  The event which to (re)set (Event::NoType resets all)
       @param mode   The mode for which the defaults are set
     */
-    void setDefaultMapping(EventMode mode);
+    void setDefaultMapping(Event::Type event, EventMode mode);
 
     /**
       Sets the combo event mappings to those in the 'combomap' setting
@@ -356,10 +357,10 @@ class EventHandler
     void setJoymap();
     void setJoyAxisMap();
     void setJoyHatMap();
-    void setDefaultKeymap(EventMode mode);
-    void setDefaultJoymap(EventMode mode);
-    void setDefaultJoyAxisMap(EventMode mode);
-    void setDefaultJoyHatMap(EventMode mode);
+    void setDefaultKeymap(Event::Type, EventMode mode);
+    void setDefaultJoymap(Event::Type, EventMode mode);
+    void setDefaultJoyAxisMap(Event::Type, EventMode mode);
+    void setDefaultJoyHatMap(Event::Type, EventMode mode);
     void saveKeyMapping();
     void saveJoyMapping();
     void saveJoyAxisMapping();

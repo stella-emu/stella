@@ -37,7 +37,7 @@ class InputDialog : public Dialog
 {
   public:
     InputDialog(OSystem* osystem, DialogContainer* parent,
-                const GUI::Font& font);
+                const GUI::Font& font, int max_w, int max_h);
     ~InputDialog();
 
   protected:
@@ -49,6 +49,7 @@ class InputDialog : public Dialog
 
     void loadConfig();
     void saveConfig();
+    void setDefaults();
 
   private:
     void addVDeviceTab(const GUI::Font& font);

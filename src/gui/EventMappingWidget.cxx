@@ -27,6 +27,7 @@
 #include "EventHandler.hxx"
 #include "Event.hxx"
 #include "OSystem.hxx"
+#include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 
@@ -64,12 +65,7 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                  "Map", kStartMapCmd);
   myMapButton->setTarget(this);
   addFocusWidget(myMapButton);
-  ypos += lineHeight + 10;
-  myEraseButton = new ButtonWidget(boss, font, xpos, ypos,
-                                   buttonWidth, buttonHeight,
-                                   "Erase", kEraseCmd);
-  myEraseButton->setTarget(this);
-  addFocusWidget(myEraseButton);
+
   ypos += lineHeight + 10;
   myCancelMapButton = new ButtonWidget(boss, font, xpos, ypos,
                                        buttonWidth, buttonHeight,
@@ -77,18 +73,42 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myCancelMapButton->setTarget(this);
   myCancelMapButton->clearFlags(WIDGET_ENABLED);
   addFocusWidget(myCancelMapButton);
-  ypos += lineHeight + 30;
-  myDefaultsButton = new ButtonWidget(boss, font, xpos, ypos,
-                                      buttonWidth, buttonHeight,
-                                      "Defaults", kDefaultsCmd);
-  myDefaultsButton->setTarget(this);
-  addFocusWidget(myDefaultsButton);
+
+  ypos += lineHeight + 20;
+  myEraseButton = new ButtonWidget(boss, font, xpos, ypos,
+                                   buttonWidth, buttonHeight,
+                                   "Erase", kEraseCmd);
+  myEraseButton->setTarget(this);
+  addFocusWidget(myEraseButton);
+
+  ypos += lineHeight + 10;
+  myResetButton = new ButtonWidget(boss, font, xpos, ypos,
+                                   buttonWidth, buttonHeight,
+                                   "Reset", kResetCmd);
+  myResetButton->setTarget(this);
+  addFocusWidget(myResetButton);
+
+  if(mode == kEmulationMode)
+  {
+    ypos += lineHeight + 20;
+    myComboButton = new ButtonWidget(boss, font, xpos, ypos,
+                                     buttonWidth, buttonHeight,
+                                     "Combo", kComboCmd);
+    myComboButton->setTarget(this);
+    addFocusWidget(myComboButton);
+  }
 
   // Show message for currently selected event
-  xpos = 10;  ypos = 5 + myActionsList->getHeight() + 3;
-  myKeyMapping  = new StaticTextWidget(boss, font, xpos, ypos, _w - 20, fontHeight,
-                                       "Action: ", kTextAlignLeft);
-  myKeyMapping->setFlags(WIDGET_CLEARBG);
+  xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;
+  StaticTextWidget* t;
+  t = new StaticTextWidget(boss, font, xpos, ypos, font.getStringWidth("Action:"),
+                           fontHeight, "Action:", kTextAlignLeft);
+  t->setFlags(WIDGET_CLEARBG);
+
+  myKeyMapping = new EditTextWidget(boss, font, xpos + t->getWidth() + 5, ypos,
+                                    _w - xpos - t->getWidth() - 15, lineHeight, "");
+  myKeyMapping->setEditable(false);
+  myKeyMapping->clearFlags(WIDGET_RETAIN_FOCUS);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -107,12 +127,20 @@ void EventMappingWidget::loadConfig()
 
   // Make sure remapping is turned off, just in case the user didn't properly
   // exit last time
-  stopRemapping();
+  if(myRemapStatus)
+    stopRemapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::saveConfig()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::setDefaults()
+{
+  instance().eventHandler().setDefaultMapping(Event::NoType, myEventMode);
+  drawKeyMapping();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,16 +159,16 @@ void EventMappingWidget::startRemapping()
   myActionsList->setEnabled(false);
   myMapButton->setEnabled(false);
   myEraseButton->setEnabled(false);
-  myDefaultsButton->setEnabled(false);
   myCancelMapButton->setEnabled(true);
+  myResetButton->setEnabled(false);
 
   // And show a message indicating which key is being remapped
   ostringstream buf;
   buf << "Select action for '"
       << instance().eventHandler().actionAtIndex(myActionSelected, myEventMode)
-      << "' event";	 	
+      << "' event";
   myKeyMapping->setTextColor(kTextColorEm);
-  myKeyMapping->setLabel(buf.str());
+  myKeyMapping->setEditString(buf.str());
 
   // Make sure that this widget receives all raw data, before any
   // pre-processing occurs
@@ -161,6 +189,19 @@ void EventMappingWidget::eraseRemapping()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventMappingWidget::resetRemapping()
+{
+  if(myActionSelected < 0)
+    return;
+
+  Event::Type event =
+    instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
+  instance().eventHandler().setDefaultMapping(event, myEventMode);
+
+  drawKeyMapping();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventMappingWidget::stopRemapping()
 {
   // Turn off remap mode
@@ -173,8 +214,8 @@ void EventMappingWidget::stopRemapping()
   myActionsList->setEnabled(true);
   myMapButton->setEnabled(false);
   myEraseButton->setEnabled(false);
-  myDefaultsButton->setEnabled(true);
   myCancelMapButton->setEnabled(false);
+  myResetButton->setEnabled(true);
 
   // Make sure the list widget is in a known state
   if(myActionSelected >= 0)
@@ -194,10 +235,9 @@ void EventMappingWidget::drawKeyMapping()
   if(myActionSelected >= 0)
   {
     ostringstream buf;
-    buf << "Action: "
-        << instance().eventHandler().keyAtIndex(myActionSelected, myEventMode);
+    buf << instance().eventHandler().keyAtIndex(myActionSelected, myEventMode);
     myKeyMapping->setTextColor(kTextColor);
-    myKeyMapping->setLabel(buf.str());
+    myKeyMapping->setEditString(buf.str());
   }
 }
 
@@ -311,6 +351,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
         myMapButton->setEnabled(true);
         myEraseButton->setEnabled(true);
         myCancelMapButton->setEnabled(false);
+        myResetButton->setEnabled(true);
       }
       break;
 
@@ -328,17 +369,20 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       startRemapping();
       break;
 
-    case kEraseCmd:
-      eraseRemapping();
-      break;
-
     case kStopMapCmd:
       stopRemapping();
       break;
 
-    case kDefaultsCmd:
-      instance().eventHandler().setDefaultMapping(myEventMode);
-      drawKeyMapping();
+    case kEraseCmd:
+      eraseRemapping();
+      break;
+
+    case kResetCmd:
+      resetRemapping();
+      break;
+
+    case kComboCmd:
+cerr << "combo\n";
       break;
   }
 }

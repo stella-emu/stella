@@ -862,67 +862,100 @@ void OSystem::resetLoopTiming()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setDefaultJoymap()
+void OSystem::setDefaultJoymap(Event::Type event, EventMode mode)
 {
-  EventMode mode;
+#define SET_DEFAULT_BTN(sdb_event, sdb_mode, sdb_stick, sdb_button, sdb_cmp_event) \
+  if(eraseAll || sdb_cmp_event == sdb_event) \
+    myEventHandler->setDefaultJoyMapping(sdb_event, sdb_mode, sdb_stick, sdb_button);
 
-  mode = kEmulationMode;  // Default emulation events
-  // Left joystick (assume joystick zero, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::JoystickZeroFire1, mode, 0, 0);
-  // Right joystick (assume joystick one, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::JoystickOneFire1, mode, 1, 0);
+  bool eraseAll = (event == Event::NoType);
+  switch(mode)
+  {
+    case kEmulationMode:  // Default emulation events
+      // Left joystick (assume joystick zero, button zero)
+      SET_DEFAULT_BTN(Event::JoystickZeroFire1, mode, 0, 0, event);
+      // Right joystick (assume joystick one, button zero)
+      SET_DEFAULT_BTN(Event::JoystickOneFire1, mode, 1, 0, event);
+      break;
 
-  mode = kMenuMode;  // Default menu/UI events
-  // Left joystick (assume joystick zero, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::UISelect, mode, 0, 0);
-  // Right joystick (assume joystick one, button zero)
-  myEventHandler->setDefaultJoyMapping(Event::UISelect, mode, 1, 0);
+    case kMenuMode:  // Default menu/UI events
+      // Left joystick (assume joystick zero, button zero)
+      SET_DEFAULT_BTN(Event::UISelect, mode, 0, 0, event);
+      // Right joystick (assume joystick one, button zero)
+      SET_DEFAULT_BTN(Event::UISelect, mode, 1, 0, event);
+      break;
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setDefaultJoyAxisMap()
+void OSystem::setDefaultJoyAxisMap(Event::Type event, EventMode mode)
 {
-  EventMode mode;
+#define SET_DEFAULT_AXIS(sda_event, sda_mode, sda_stick, sda_axis, sda_val, sda_cmp_event) \
+  if(eraseAll || sda_cmp_event == sda_event) \
+    myEventHandler->setDefaultJoyAxisMapping(sda_event, sda_mode, sda_stick, sda_axis, sda_val);
 
-  mode = kEmulationMode;  // Default emulation events
-  // Left joystick left/right directions (assume joystick zero)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroLeft, mode, 0, 0, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroRight, mode, 0, 0, 1);
-  // Left joystick up/down directions (assume joystick zero)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroUp, mode, 0, 1, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickZeroDown, mode, 0, 1, 1);
-  // Right joystick left/right directions (assume joystick one)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneLeft, mode, 1, 0, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneRight, mode, 1, 0, 1);
-  // Right joystick left/right directions (assume joystick one)
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneUp, mode, 1, 1, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::JoystickOneDown, mode, 1, 1, 1);
+  bool eraseAll = (event == Event::NoType);
+  switch(mode)
+  {
+    case kEmulationMode:  // Default emulation events
+      // Left joystick left/right directions (assume joystick zero)
+      SET_DEFAULT_AXIS(Event::JoystickZeroLeft, mode, 0, 0, 0, event);
+      SET_DEFAULT_AXIS(Event::JoystickZeroRight, mode, 0, 0, 1, event);
+      // Left joystick up/down directions (assume joystick zero)
+      SET_DEFAULT_AXIS(Event::JoystickZeroUp, mode, 0, 1, 0, event);
+      SET_DEFAULT_AXIS(Event::JoystickZeroDown, mode, 0, 1, 1, event);
+      // Right joystick left/right directions (assume joystick one)
+      SET_DEFAULT_AXIS(Event::JoystickOneLeft, mode, 1, 0, 0, event);
+      SET_DEFAULT_AXIS(Event::JoystickOneRight, mode, 1, 0, 1, event);
+      // Right joystick left/right directions (assume joystick one)
+      SET_DEFAULT_AXIS(Event::JoystickOneUp, mode, 1, 1, 0, event);
+      SET_DEFAULT_AXIS(Event::JoystickOneDown, mode, 1, 1, 1, event);
+      break;
 
-  mode = kMenuMode;  // Default menu/UI events
-  myEventHandler->setDefaultJoyAxisMapping(Event::UILeft, mode, 0, 0, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::UIRight, mode, 0, 0, 1);
-  myEventHandler->setDefaultJoyAxisMapping(Event::UIUp, mode, 0, 1, 0);
-  myEventHandler->setDefaultJoyAxisMapping(Event::UIDown, mode, 0, 1, 1);
+    case kMenuMode:  // Default menu/UI events
+      SET_DEFAULT_AXIS(Event::UILeft, mode, 0, 0, 0, event);
+      SET_DEFAULT_AXIS(Event::UIRight, mode, 0, 0, 1, event);
+      SET_DEFAULT_AXIS(Event::UIUp, mode, 0, 1, 0, event);
+      SET_DEFAULT_AXIS(Event::UIDown, mode, 0, 1, 1, event);
+      break;
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setDefaultJoyHatMap()
+void OSystem::setDefaultJoyHatMap(Event::Type event, EventMode mode)
 {
-  EventMode mode;
+#define SET_DEFAULT_HAT(sdh_event, sdh_mode, sdh_stick, sdh_hat, sdh_dir, sdh_cmp_event) \
+  if(eraseAll || sdh_cmp_event == sdh_event) \
+    myEventHandler->setDefaultJoyHatMapping(sdh_event, sdh_mode, sdh_stick, sdh_hat, sdh_dir);
 
-  mode = kEmulationMode;  // Default emulation events
-  // Left joystick left/right directions (assume joystick zero and hat 0)
-  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT);
-  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroRight, mode, 0, 0, EVENT_HATRIGHT);
-  // Left joystick up/down directions (assume joystick zero and hat 0)
-  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP);
-  myEventHandler->setDefaultJoyHatMapping(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN);
+  bool eraseAll = (event == Event::NoType);
+  switch(mode)
+  {
+    case kEmulationMode:  // Default emulation events
+      // Left joystick left/right directions (assume joystick zero and hat 0)
+      SET_DEFAULT_HAT(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT, event);
+      SET_DEFAULT_HAT(Event::JoystickZeroRight, mode, 0, 0, EVENT_HATRIGHT, event);
+      // Left joystick up/down directions (assume joystick zero and hat 0)
+      SET_DEFAULT_HAT(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP, event);
+      SET_DEFAULT_HAT(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN, event);
+      break;
 
-  mode = kMenuMode;  // Default menu/UI events
-  myEventHandler->setDefaultJoyHatMapping(Event::UILeft, mode, 0, 0, EVENT_HATLEFT);
-  myEventHandler->setDefaultJoyHatMapping(Event::UIRight, mode, 0, 0, EVENT_HATRIGHT);
-  myEventHandler->setDefaultJoyHatMapping(Event::UIUp, mode, 0, 0, EVENT_HATUP);
-  myEventHandler->setDefaultJoyHatMapping(Event::UIDown, mode, 0, 0, EVENT_HATDOWN);
+    case kMenuMode:  // Default menu/UI events
+      SET_DEFAULT_HAT(Event::UILeft, mode, 0, 0, EVENT_HATLEFT, event);
+      SET_DEFAULT_HAT(Event::UIRight, mode, 0, 0, EVENT_HATRIGHT, event);
+      SET_DEFAULT_HAT(Event::UIUp, mode, 0, 0, EVENT_HATUP, event);
+      SET_DEFAULT_HAT(Event::UIDown, mode, 0, 0, EVENT_HATDOWN, event);
+      break;
+
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

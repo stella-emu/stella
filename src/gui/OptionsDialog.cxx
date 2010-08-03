@@ -119,7 +119,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   // Now create all the dialogs attached to each menu button
   myVideoDialog = new VideoDialog(osystem, parent, font, max_w, max_h);
   myAudioDialog = new AudioDialog(osystem, parent, font);
-  myInputDialog = new InputDialog(osystem, parent, font);
+  myInputDialog = new InputDialog(osystem, parent, font, max_w, max_h);
   myUIDialog = new UIDialog(osystem, parent, font);
   myFileSnapDialog = new FileSnapDialog(osystem, parent, font, boss, max_w, max_h);
   myRomAuditDialog = new RomAuditDialog(osystem, parent, font, max_w, max_h);

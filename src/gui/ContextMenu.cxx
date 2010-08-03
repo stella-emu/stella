@@ -111,7 +111,7 @@ void ContextMenu::recalc(const GUI::Rect& image)
 {
   // Now is the time to adjust the height
   // If it's higher than the screen, we need to scroll through
-  int maxentries = BSPF_min(16, (image.height() - 4) / _rowHeight);
+  int maxentries = BSPF_min(18, (image.height() - 4) / _rowHeight);
   if((int)_entries.size() > maxentries)
   {
     // We show two less than the max, so we have room for two scroll buttons
@@ -226,6 +226,19 @@ bool ContextMenu::handleMouseClicks(int x, int y, int button)
 {
   // Let continuous mouse clicks come through, as the scroll buttons need them
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::handleMouseWheel(int x, int y, int direction)
+{
+  // Wheel events are only relevant in scroll mode
+  if(_showScroll)
+  {
+    if(direction < 0)
+      return scrollUp();
+    else if(direction > 0)
+      return scrollDown();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

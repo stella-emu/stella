@@ -26,6 +26,7 @@
 class DialogContainer;
 class CommandSender;
 class ButtonWidget;
+class EditTextWidget;
 class StaticTextWidget;
 class StringListWidget;
 class PopUpWidget;
@@ -54,25 +55,22 @@ class EventMappingWidget : public Widget, public CommandSender
  
     bool remapMode() { return myRemapStatus; }
 
-  protected:
-    ButtonWidget*     myMapButton;
-    ButtonWidget*     myCancelMapButton;
-    ButtonWidget*     myEraseButton;
-    ButtonWidget*     myDefaultsButton;
-    StringListWidget* myActionsList;
-    StaticTextWidget* myKeyMapping;
+    void setDefaults();
 
   private:
     enum {
       kStartMapCmd = 'map ',
+      kStopMapCmd  = 'smap',
       kEraseCmd    = 'eras',
-      kStopMapCmd  = 'smap'
+      kResetCmd    = 'rest',
+      kComboCmd    = 'cmbo'
     };
 
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void startRemapping();
     void eraseRemapping();
+    void resetRemapping();
     void stopRemapping();
     void loadConfig();
     void saveConfig();
@@ -80,6 +78,14 @@ class EventMappingWidget : public Widget, public CommandSender
     void drawKeyMapping();
 
   private:
+    ButtonWidget*     myMapButton;
+    ButtonWidget*     myCancelMapButton;
+    ButtonWidget*     myEraseButton;
+    ButtonWidget*     myResetButton;
+    ButtonWidget*     myComboButton;
+    StringListWidget* myActionsList;
+    EditTextWidget*   myKeyMapping;
+
     // Since this widget can be used for different collections of events,
     // we need to specify exactly which group of events we are remapping
     EventMode myEventMode;
@@ -91,7 +97,7 @@ class EventMappingWidget : public Widget, public CommandSender
     // In this mode, the next event received is remapped to some action
     bool myRemapStatus;
 
-    // Joystick axes and hats can be more problematic that ordinary buttons
+    // Joystick axes and hats can be more problematic than ordinary buttons
     // or keys, in that there can be 'drift' in the values
     // Therefore, we map these events when they've been 'released', rather
     // than on their first occurrence (aka, when they're 'pressed')

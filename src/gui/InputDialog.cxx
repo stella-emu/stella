@@ -36,19 +36,20 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
-                         const GUI::Font& font)
+                         const GUI::Font& font, int max_w, int max_h)
   : Dialog(osystem, parent, 0, 0, 0, 0)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
+            buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 4;
   int xpos, ypos, tabID;
   WidgetArray wid;
 
   // Set real dimensions
-  _w = 42 * fontWidth + 10;
-  _h = 12 * (lineHeight + 4) + 10;
+  _w = BSPF_min(48 * fontWidth + 10, max_w);
+  _h = BSPF_min(12 * (lineHeight + 4) + 10, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -84,8 +85,12 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab->activateTabs();
   myTab->setActiveTab(0);
 
-  // Add OK and Cancel buttons
+  // Add Defaults, OK and Cancel buttons
   wid.clear();
+  ButtonWidget* b;
+  b = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
+                       buttonWidth, buttonHeight, "Defaults", kDefaultsCmd);
+  wid.push_back(b);
   addOKCancelBGroup(wid, font);
   addBGroupToFocusList(wid);
 }
@@ -242,6 +247,51 @@ void InputDialog::saveConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void InputDialog::setDefaults()
+{
+  switch(myTab->getActiveTab())
+  {
+    case 0:  // Emulation events
+      myEmulEventMapper->setDefaults();
+      break;
+
+    case 1:  // UI events
+      myMenuEventMapper->setDefaults();
+      break;
+
+    case 2:  // Virtual devices
+    {
+      // Left & right ports
+      myLeftPort->setSelected("left", "left");
+      myRightPort->setSelected("right", "right");
+
+      // Joystick deadzone
+      myDeadzone->setValue(0);
+      myDeadzoneLabel->setValue(3200);
+
+      // Mouse/paddle enabled
+      myMouseEnabled->setState(true);
+
+      // Paddle speed
+      myPaddleSpeed->setValue(6);
+      myPaddleLabel->setLabel("6");
+
+      // AtariVox serial port
+      myAVoxPort->setEditString("");
+
+      // Allow all 4 joystick directions
+      myAllowAll4->setState(false);
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void InputDialog::handleKeyDown(int ascii, int keycode, int modifiers)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
@@ -303,6 +353,10 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kCloseCmd:
       // Revert changes made to event mapping
       close();
+      break;
+
+    case kDefaultsCmd:
+      setDefaults();
       break;
 
     case kLeftChanged:

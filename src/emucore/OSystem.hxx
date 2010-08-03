@@ -403,20 +403,29 @@ class OSystem
     /**
       This method determines the default mapping of joystick buttons to
       Stella events for a specific system/platform.
+
+      @param event  The event which to (re)set (Event::NoType resets all)
+      @param mode   The mode for which the defaults are set
     */
-    virtual void setDefaultJoymap();
+    virtual void setDefaultJoymap(Event::Type event, EventMode mode);
 
     /**
       This method determines the default mapping of joystick axis to
       Stella events for a specific system/platform.
+
+      @param event  The event which to (re)set (Event::NoType resets all)
+      @param mode   The mode for which the defaults are set
     */
-    virtual void setDefaultJoyAxisMap();
+    virtual void setDefaultJoyAxisMap(Event::Type event, EventMode mode);
 
     /**
       This method determines the default mapping of joystick hats to
       Stella events for a specific system/platform.
+
+      @param event  The event which to (re)set (Event::NoType resets all)
+      @param mode   The mode for which the defaults are set
     */
-    virtual void setDefaultJoyHatMap();
+    virtual void setDefaultJoyHatMap(Event::Type event, EventMode mode);
 
     /**
       This method creates events from platform-specific hardware.
