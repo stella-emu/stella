@@ -116,7 +116,7 @@ uInt8 M6532::peek(uInt16 addr)
 
   switch(addr & 0x07)
   {
-    case 0x00:    // Port A I/O Register (Joystick)
+    case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
       uInt8 value = 0x00;
 
@@ -139,21 +139,17 @@ uInt8 M6532::peek(uInt16 addr)
       return (myOutA | ~myDDRA) & value;
     }
 
-    case 0x01:    // Port A Data Direction Register 
+    case 0x01:    // SWACNT - Port A Data Direction Register 
     {
       return myDDRA;
     }
 
-    case 0x02:    // Port B I/O Register (Console switches)
+    case 0x02:    // SWCHB - Port B I/O Register (Console switches)
     {
-      // The logic here is similar to Port A I/O Register (ORA),
-      // except that only pins 2/4/5 can be configured in software
-      // The remaining pins are hardwired as input/read-only
-      // This is enforced in the ::poke method below
-      return (myOutB | ~myDDRB) & myConsole.switches().read();
+      return (myOutB | ~myDDRB) & (myConsole.switches().read() | myDDRB);
     }
 
-    case 0x03:    // Port B Data Direction Register
+    case 0x03:    // SWBCNT - Port B Data Direction Register
     {
       return myDDRB;
     }
@@ -231,33 +227,29 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   {
     switch(addr & 0x03)
     {
-      case 0:     // Port A I/O Register (Joystick)
+      case 0:     // SWCHA - Port A I/O Register (Joystick)
       {
         myOutA = value;
         setPinState();
         break;
       }
 
-      case 1:     // Port A Data Direction Register 
+      case 1:     // SWACNT - Port A Data Direction Register 
       {
         myDDRA = value;
         setPinState();
         break;
       }
 
-      case 2:     // Port B I/O Register (Console switches)
+      case 2:     // SWCHB - Port B I/O Register (Console switches)
       {
-        // Pins 2/4/5 can be set as input or output
-        // The remaining pins are hardwired as input/read-only
-        myOutB = value & 0x34;  // %0011 0100
+        myOutB = value;
         break;
       }
 
-      case 3:     // Port B Data Direction Register 
+      case 3:     // SWBCNT - Port B Data Direction Register 
       {
-        // Pins 2/4/5 can be set as input or output
-        // The remaining pins are hardwired as input/read-only
-        myDDRB = value & 0x34;  // %0011 0100
+        myDDRB = value;
         break;
       }
     }
@@ -308,11 +300,9 @@ void M6532::setPinState()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6532::save(Serializer& out) const
 {
-  const string& device = name();
-
   try
   {
-    out.putString(device);
+    out.putString(name());
 
     // Output the RAM
     out.putInt(128);
@@ -346,11 +336,9 @@ bool M6532::save(Serializer& out) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6532::load(Serializer& in)
 {
-  const string& device = name();
-
   try
   {
-    if(in.getString() != device)
+    if(in.getString() != name())
       return false;
 
     // Input the RAM
