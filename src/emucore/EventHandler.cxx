@@ -1860,6 +1860,30 @@ StringList EventHandler::getActionList(EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringMap EventHandler::getComboList(EventMode mode) const
+{
+  StringMap l;
+  ostringstream buf;
+
+  switch(mode)
+  {
+    case kEmulationMode:
+      for(int i = 0; i < kEmulActionListSize; ++i)
+        if(EventHandler::ourEmulActionList[i].allow_combo)
+        {
+          buf << i;
+          l.push_back(EventHandler::ourEmulActionList[i].action, buf.str());
+          buf.str("");
+        }
+      break;
+    default:
+      break;
+  }
+
+  return l;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Event::Type EventHandler::eventAtIndex(int idx, EventMode mode) const
 {
   switch(mode)
@@ -2380,128 +2404,128 @@ void EventHandler::setSDLMappings()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
-  { Event::ConsoleSelect,               "Select",                      0 },
-  { Event::ConsoleReset,                "Reset",                       0 },
-  { Event::ConsoleColor,                "Color TV",                    0 },
-  { Event::ConsoleBlackWhite,           "Black & White TV",            0 },
-  { Event::ConsoleLeftDifficultyA,      "P0 Difficulty A",             0 },
-  { Event::ConsoleLeftDifficultyB,      "P0 Difficulty B",             0 },
-  { Event::ConsoleRightDifficultyA,     "P1 Difficulty A",             0 },
-  { Event::ConsoleRightDifficultyB,     "P1 Difficulty B",             0 },
-  { Event::SaveState,                   "Save State",                  0 },
-  { Event::ChangeState,                 "Change State",                0 },
-  { Event::LoadState,                   "Load State",                  0 },
-  { Event::TakeSnapshot,                "Snapshot",                    0 },
-  { Event::Fry,                         "Fry cartridge",               0 },
-  { Event::VolumeDecrease,              "Decrease volume",             0 },
-  { Event::VolumeIncrease,              "Increase volume",             0 },
-  { Event::PauseMode,                   "Pause",                       0 },
-  { Event::MenuMode,                    "Enter options menu mode",     0 },
-  { Event::CmdMenuMode,                 "Toggle command menu mode",    0 },
-  { Event::DebuggerMode,                "Toggle debugger mode",        0 },
-  { Event::LauncherMode,                "Enter ROM launcher",          0 },
-  { Event::Quit,                        "Quit",                        0 },
+  { Event::ConsoleSelect,               "Select",                      0, true  },
+  { Event::ConsoleReset,                "Reset",                       0, true  },
+  { Event::ConsoleColor,                "Color TV",                    0, true  },
+  { Event::ConsoleBlackWhite,           "Black & White TV",            0, true  },
+  { Event::ConsoleLeftDifficultyA,      "P0 Difficulty A",             0, true  },
+  { Event::ConsoleLeftDifficultyB,      "P0 Difficulty B",             0, true  },
+  { Event::ConsoleRightDifficultyA,     "P1 Difficulty A",             0, true  },
+  { Event::ConsoleRightDifficultyB,     "P1 Difficulty B",             0, true  },
+  { Event::SaveState,                   "Save State",                  0, false },
+  { Event::ChangeState,                 "Change State",                0, false },
+  { Event::LoadState,                   "Load State",                  0, false },
+  { Event::TakeSnapshot,                "Snapshot",                    0, false },
+  { Event::Fry,                         "Fry cartridge",               0, false },
+  { Event::VolumeDecrease,              "Decrease volume",             0, false },
+  { Event::VolumeIncrease,              "Increase volume",             0, false },
+  { Event::PauseMode,                   "Pause",                       0, false },
+  { Event::MenuMode,                    "Enter options menu mode",     0, false },
+  { Event::CmdMenuMode,                 "Toggle command menu mode",    0, false },
+  { Event::DebuggerMode,                "Toggle debugger mode",        0, false },
+  { Event::LauncherMode,                "Enter ROM launcher",          0, false },
+  { Event::Quit,                        "Quit",                        0, false },
 
-  { Event::JoystickZeroUp,              "P0 Joystick Up",              0 },
-  { Event::JoystickZeroDown,            "P0 Joystick Down",            0 },
-  { Event::JoystickZeroLeft,            "P0 Joystick Left",            0 },
-  { Event::JoystickZeroRight,           "P0 Joystick Right",           0 },
-  { Event::JoystickZeroFire1,           "P0 Joystick Fire",            0 },
-  { Event::JoystickZeroFire2,           "P0 BoosterGrip Trigger",      0 },
-  { Event::JoystickZeroFire3,           "P0 BoosterGrip Booster",      0 },
+  { Event::JoystickZeroUp,              "P0 Joystick Up",              0, true  },
+  { Event::JoystickZeroDown,            "P0 Joystick Down",            0, true  },
+  { Event::JoystickZeroLeft,            "P0 Joystick Left",            0, true  },
+  { Event::JoystickZeroRight,           "P0 Joystick Right",           0, true  },
+  { Event::JoystickZeroFire1,           "P0 Joystick Fire",            0, true  },
+  { Event::JoystickZeroFire2,           "P0 BoosterGrip Trigger",      0, true  },
+  { Event::JoystickZeroFire3,           "P0 BoosterGrip Booster",      0, true  },
 
-  { Event::JoystickOneUp,               "P1 Joystick Up",              0 },
-  { Event::JoystickOneDown,             "P1 Joystick Down",            0 },
-  { Event::JoystickOneLeft,             "P1 Joystick Left",            0 },
-  { Event::JoystickOneRight,            "P1 Joystick Right",           0 },
-  { Event::JoystickOneFire1,            "P1 Joystick Fire",            0 },
-  { Event::JoystickOneFire2,            "P1 BoosterGrip Trigger",      0 },
-  { Event::JoystickOneFire3,            "P1 BoosterGrip Booster",      0 },
+  { Event::JoystickOneUp,               "P1 Joystick Up",              0, true  },
+  { Event::JoystickOneDown,             "P1 Joystick Down",            0, true  },
+  { Event::JoystickOneLeft,             "P1 Joystick Left",            0, true  },
+  { Event::JoystickOneRight,            "P1 Joystick Right",           0, true  },
+  { Event::JoystickOneFire1,            "P1 Joystick Fire",            0, true  },
+  { Event::JoystickOneFire2,            "P1 BoosterGrip Trigger",      0, true  },
+  { Event::JoystickOneFire3,            "P1 BoosterGrip Booster",      0, true  },
 
-  { Event::PaddleZeroAnalog,            "Paddle 0 Analog",             0 },
-  { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",           0 },
-  { Event::PaddleZeroIncrease,          "Paddle 0 Increase",           0 },
-  { Event::PaddleZeroFire,              "Paddle 0 Fire",               0 },
+  { Event::PaddleZeroAnalog,            "Paddle 0 Analog",             0, true  },
+  { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",           0, true  },
+  { Event::PaddleZeroIncrease,          "Paddle 0 Increase",           0, true  },
+  { Event::PaddleZeroFire,              "Paddle 0 Fire",               0, true  },
 
-  { Event::PaddleOneAnalog,             "Paddle 1 Analog",             0 },
-  { Event::PaddleOneDecrease,           "Paddle 1 Decrease",           0 },
-  { Event::PaddleOneIncrease,           "Paddle 1 Increase",           0 },
-  { Event::PaddleOneFire,               "Paddle 1 Fire",               0 },
+  { Event::PaddleOneAnalog,             "Paddle 1 Analog",             0, true  },
+  { Event::PaddleOneDecrease,           "Paddle 1 Decrease",           0, true  },
+  { Event::PaddleOneIncrease,           "Paddle 1 Increase",           0, true  },
+  { Event::PaddleOneFire,               "Paddle 1 Fire",               0, true  },
 
-  { Event::PaddleTwoAnalog,             "Paddle 2 Analog",             0 },
-  { Event::PaddleTwoDecrease,           "Paddle 2 Decrease",           0 },
-  { Event::PaddleTwoIncrease,           "Paddle 2 Increase",           0 },
-  { Event::PaddleTwoFire,               "Paddle 2 Fire",               0 },
+  { Event::PaddleTwoAnalog,             "Paddle 2 Analog",             0, true  },
+  { Event::PaddleTwoDecrease,           "Paddle 2 Decrease",           0, true  },
+  { Event::PaddleTwoIncrease,           "Paddle 2 Increase",           0, true  },
+  { Event::PaddleTwoFire,               "Paddle 2 Fire",               0, true  },
 
-  { Event::PaddleThreeAnalog,           "Paddle 3 Analog",             0 },
-  { Event::PaddleThreeDecrease,         "Paddle 3 Decrease",           0 },
-  { Event::PaddleThreeIncrease,         "Paddle 3 Increase",           0 },
-  { Event::PaddleThreeFire,             "Paddle 3 Fire",               0 },
+  { Event::PaddleThreeAnalog,           "Paddle 3 Analog",             0, true  },
+  { Event::PaddleThreeDecrease,         "Paddle 3 Decrease",           0, true  },
+  { Event::PaddleThreeIncrease,         "Paddle 3 Increase",           0, true  },
+  { Event::PaddleThreeFire,             "Paddle 3 Fire",               0, true  },
 
-  { Event::KeyboardZero1,               "P0 Keyboard 1",               0 },
-  { Event::KeyboardZero2,               "P0 Keyboard 2",               0 },
-  { Event::KeyboardZero3,               "P0 Keyboard 3",               0 },
-  { Event::KeyboardZero4,               "P0 Keyboard 4",               0 },
-  { Event::KeyboardZero5,               "P0 Keyboard 5",               0 },
-  { Event::KeyboardZero6,               "P0 Keyboard 6",               0 },
-  { Event::KeyboardZero7,               "P0 Keyboard 7",               0 },
-  { Event::KeyboardZero8,               "P0 Keyboard 8",               0 },
-  { Event::KeyboardZero9,               "P0 Keyboard 9",               0 },
-  { Event::KeyboardZeroStar,            "P0 Keyboard *",               0 },
-  { Event::KeyboardZero0,               "P0 Keyboard 0",               0 },
-  { Event::KeyboardZeroPound,           "P0 Keyboard #",               0 },
+  { Event::KeyboardZero1,               "P0 Keyboard 1",               0, true  },
+  { Event::KeyboardZero2,               "P0 Keyboard 2",               0, true  },
+  { Event::KeyboardZero3,               "P0 Keyboard 3",               0, true  },
+  { Event::KeyboardZero4,               "P0 Keyboard 4",               0, true  },
+  { Event::KeyboardZero5,               "P0 Keyboard 5",               0, true  },
+  { Event::KeyboardZero6,               "P0 Keyboard 6",               0, true  },
+  { Event::KeyboardZero7,               "P0 Keyboard 7",               0, true  },
+  { Event::KeyboardZero8,               "P0 Keyboard 8",               0, true  },
+  { Event::KeyboardZero9,               "P0 Keyboard 9",               0, true  },
+  { Event::KeyboardZeroStar,            "P0 Keyboard *",               0, true  },
+  { Event::KeyboardZero0,               "P0 Keyboard 0",               0, true  },
+  { Event::KeyboardZeroPound,           "P0 Keyboard #",               0, true  },
 
-  { Event::KeyboardOne1,                "P1 Keyboard 1",               0 },
-  { Event::KeyboardOne2,                "P1 Keyboard 2",               0 },
-  { Event::KeyboardOne3,                "P1 Keyboard 3",               0 },
-  { Event::KeyboardOne4,                "P1 Keyboard 4",               0 },
-  { Event::KeyboardOne5,                "P1 Keyboard 5",               0 },
-  { Event::KeyboardOne6,                "P1 Keyboard 6",               0 },
-  { Event::KeyboardOne7,                "P1 Keyboard 7",               0 },
-  { Event::KeyboardOne8,                "P1 Keyboard 8",               0 },
-  { Event::KeyboardOne9,                "P1 Keyboard 9",               0 },
-  { Event::KeyboardOneStar,             "P1 Keyboard *",               0 },
-  { Event::KeyboardOne0,                "P1 Keyboard 0",               0 },
-  { Event::KeyboardOnePound,            "P1 Keyboard #",               0 },
+  { Event::KeyboardOne1,                "P1 Keyboard 1",               0, true  },
+  { Event::KeyboardOne2,                "P1 Keyboard 2",               0, true  },
+  { Event::KeyboardOne3,                "P1 Keyboard 3",               0, true  },
+  { Event::KeyboardOne4,                "P1 Keyboard 4",               0, true  },
+  { Event::KeyboardOne5,                "P1 Keyboard 5",               0, true  },
+  { Event::KeyboardOne6,                "P1 Keyboard 6",               0, true  },
+  { Event::KeyboardOne7,                "P1 Keyboard 7",               0, true  },
+  { Event::KeyboardOne8,                "P1 Keyboard 8",               0, true  },
+  { Event::KeyboardOne9,                "P1 Keyboard 9",               0, true  },
+  { Event::KeyboardOneStar,             "P1 Keyboard *",               0, true  },
+  { Event::KeyboardOne0,                "P1 Keyboard 0",               0, true  },
+  { Event::KeyboardOnePound,            "P1 Keyboard #",               0, true  },
 
-  { Event::Combo1,                      "Combo 1",                     0 },
-  { Event::Combo2,                      "Combo 2",                     0 },
-  { Event::Combo3,                      "Combo 3",                     0 },
-  { Event::Combo4,                      "Combo 4",                     0 },
-  { Event::Combo5,                      "Combo 5",                     0 },
-  { Event::Combo6,                      "Combo 6",                     0 },
-  { Event::Combo7,                      "Combo 7",                     0 },
-  { Event::Combo8,                      "Combo 8",                     0 },
-  { Event::Combo9,                      "Combo 9",                     0 },
-  { Event::Combo10,                     "Combo 10",                    0 },
-  { Event::Combo11,                     "Combo 11",                    0 },
-  { Event::Combo12,                     "Combo 12",                    0 },
-  { Event::Combo13,                     "Combo 13",                    0 },
-  { Event::Combo14,                     "Combo 14",                    0 },
-  { Event::Combo15,                     "Combo 15",                    0 },
-  { Event::Combo16,                     "Combo 16",                    0 }
+  { Event::Combo1,                      "Combo 1",                     0, false },
+  { Event::Combo2,                      "Combo 2",                     0, false },
+  { Event::Combo3,                      "Combo 3",                     0, false },
+  { Event::Combo4,                      "Combo 4",                     0, false },
+  { Event::Combo5,                      "Combo 5",                     0, false },
+  { Event::Combo6,                      "Combo 6",                     0, false },
+  { Event::Combo7,                      "Combo 7",                     0, false },
+  { Event::Combo8,                      "Combo 8",                     0, false },
+  { Event::Combo9,                      "Combo 9",                     0, false },
+  { Event::Combo10,                     "Combo 10",                    0, false },
+  { Event::Combo11,                     "Combo 11",                    0, false },
+  { Event::Combo12,                     "Combo 12",                    0, false },
+  { Event::Combo13,                     "Combo 13",                    0, false },
+  { Event::Combo14,                     "Combo 14",                    0, false },
+  { Event::Combo15,                     "Combo 15",                    0, false },
+  { Event::Combo16,                     "Combo 16",                    0, false }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourMenuActionList[kMenuActionListSize] = {
-  { Event::UIUp,        "Move Up",              0 },
-  { Event::UIDown,      "Move Down",            0 },
-  { Event::UILeft,      "Move Left",            0 },
-  { Event::UIRight,     "Move Right",           0 },
+  { Event::UIUp,        "Move Up",              0, false },
+  { Event::UIDown,      "Move Down",            0, false },
+  { Event::UILeft,      "Move Left",            0, false },
+  { Event::UIRight,     "Move Right",           0, false },
 
-  { Event::UIHome,      "Home",                 0 },
-  { Event::UIEnd,       "End",                  0 },
-  { Event::UIPgUp,      "Page Up",              0 },
-  { Event::UIPgDown,    "Page Down",            0 },
+  { Event::UIHome,      "Home",                 0, false },
+  { Event::UIEnd,       "End",                  0, false },
+  { Event::UIPgUp,      "Page Up",              0, false },
+  { Event::UIPgDown,    "Page Down",            0, false },
 
-  { Event::UIOK,        "OK",                   0 },
-  { Event::UICancel,    "Cancel",               0 },
-  { Event::UISelect,    "Select item",          0 },
+  { Event::UIOK,        "OK",                   0, false },
+  { Event::UICancel,    "Cancel",               0, false },
+  { Event::UISelect,    "Select item",          0, false },
 
-  { Event::UINavPrev,   "Previous object",      0 },
-  { Event::UINavNext,   "Next object",          0 },
+  { Event::UINavPrev,   "Previous object",      0, false },
+  { Event::UINavNext,   "Next object",          0, false },
 
-  { Event::UIPrevDir,   "Parent directory",     0 }
+  { Event::UIPrevDir,   "Parent directory",     0, false }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -241,6 +241,7 @@ class EventHandler
     inline SDL_Joystick* getJoystick(int i) const { return ourJoysticks[i].stick; }
 
     StringList getActionList(EventMode mode) const;
+    StringMap getComboList(EventMode mode) const;
 
     inline Event::Type eventForKey(int key, EventMode mode) const
       { return myKeyTable[key][mode]; }
@@ -401,6 +402,7 @@ class EventHandler
       Event::Type event;
       const char* action;
       char* key;
+      bool allow_combo;
     };
 
     // Joystick related items

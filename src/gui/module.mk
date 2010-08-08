@@ -4,6 +4,7 @@ MODULE_OBJS := \
 	src/gui/AboutDialog.o \
 	src/gui/AudioDialog.o \
 	src/gui/BrowserDialog.o \
+	src/gui/ComboDialog.o \
 	src/gui/CommandDialog.o \
 	src/gui/CommandMenu.o \
 	src/gui/ContextMenu.o \

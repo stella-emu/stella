@@ -30,6 +30,7 @@
 #include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
+#include "ComboDialog.hxx"
 
 #include "EventMappingWidget.hxx"
 
@@ -96,7 +97,12 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
                                      "Combo", kComboCmd);
     myComboButton->setTarget(this);
     addFocusWidget(myComboButton);
+
+    myComboDialog = new ComboDialog(boss, font,
+      instance().eventHandler().getComboList(mode));
   }
+  else
+    myComboButton = NULL;
 
   // Show message for currently selected event
   xpos = 10;  ypos = 5 + myActionsList->getHeight() + 5;
@@ -156,11 +162,12 @@ void EventMappingWidget::startRemapping()
   myLastStick = myLastAxis = myLastHat = myLastValue = -1;
 
   // Disable all other widgets while in remap mode, except enable 'Cancel'
-  myActionsList->setEnabled(false);
-  myMapButton->setEnabled(false);
-  myEraseButton->setEnabled(false);
-  myCancelMapButton->setEnabled(true);
-  myResetButton->setEnabled(false);
+  myActionsList->setEnabled(!myRemapStatus);
+  myMapButton->setEnabled(!myRemapStatus);
+  myCancelMapButton->setEnabled(myRemapStatus);
+  myEraseButton->setEnabled(!myRemapStatus);
+  myResetButton->setEnabled(!myRemapStatus);
+  if(myComboButton)  myComboButton->setEnabled(!myRemapStatus);
 
   // And show a message indicating which key is being remapped
   ostringstream buf;
@@ -211,19 +218,15 @@ void EventMappingWidget::stopRemapping()
   myLastStick = myLastAxis = myLastHat = myLastValue = -1;
 
   // And re-enable all the widgets
-  myActionsList->setEnabled(true);
-  myMapButton->setEnabled(false);
-  myEraseButton->setEnabled(false);
-  myCancelMapButton->setEnabled(false);
-  myResetButton->setEnabled(true);
+  myActionsList->setEnabled(!myRemapStatus);
+  myMapButton->setEnabled(!myRemapStatus);
+  myCancelMapButton->setEnabled(myRemapStatus);
+  myEraseButton->setEnabled(!myRemapStatus);
+  myResetButton->setEnabled(!myRemapStatus);
+  if(myComboButton)  myComboButton->setEnabled(!myRemapStatus);
 
   // Make sure the list widget is in a known state
-  if(myActionSelected >= 0)
-  {
-    drawKeyMapping();
-    myMapButton->setEnabled(true);
-    myEraseButton->setEnabled(true);
-  }
+  drawKeyMapping();
 
   // Widget is now free to process events normally
   myActionsList->clearFlags(WIDGET_WANTS_RAWDATA);
@@ -234,10 +237,8 @@ void EventMappingWidget::drawKeyMapping()
 {
   if(myActionSelected >= 0)
   {
-    ostringstream buf;
-    buf << instance().eventHandler().keyAtIndex(myActionSelected, myEventMode);
     myKeyMapping->setTextColor(kTextColor);
-    myKeyMapping->setEditString(buf.str());
+    myKeyMapping->setEditString(instance().eventHandler().keyAtIndex(myActionSelected, myEventMode));
   }
 }
 
@@ -382,7 +383,8 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kComboCmd:
-cerr << "combo\n";
+      if(myComboDialog)
+        myComboDialog->show();
       break;
   }
 }

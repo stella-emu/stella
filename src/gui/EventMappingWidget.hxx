@@ -31,6 +31,7 @@ class StaticTextWidget;
 class StringListWidget;
 class PopUpWidget;
 class GuiObject;
+class ComboDialog;
 class InputDialog;
 
 #include "Widget.hxx"
@@ -85,6 +86,8 @@ class EventMappingWidget : public Widget, public CommandSender
     ButtonWidget*     myComboButton;
     StringListWidget* myActionsList;
     EditTextWidget*   myKeyMapping;
+
+    ComboDialog* myComboDialog;
 
     // Since this widget can be used for different collections of events,
     // we need to specify exactly which group of events we are remapping
