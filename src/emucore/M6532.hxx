@@ -165,6 +165,9 @@ class M6532 : public Device
     // Last value written to Port A
     uInt8 myOutA;
 
+    // Last value written to Port B
+    uInt8 myOutB;
+
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
 

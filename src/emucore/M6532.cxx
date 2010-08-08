@@ -53,7 +53,7 @@ void M6532::reset()
   myInterruptTriggered = false;
 
   // Zero the I/O registers
-  myDDRA = myDDRB = myOutA = 0x00;
+  myDDRA = myDDRB = myOutA = myOutB = 0x00;
 
   // Zero the timer registers
   myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x00;
@@ -146,7 +146,11 @@ uInt8 M6532::peek(uInt16 addr)
 
     case 0x02:    // Port B I/O Register (Console switches)
     {
-      return myConsole.switches().read();
+      // The logic here is similar to Port A I/O Register (ORA),
+      // except that only pins 2/4/5 can be configured in software
+      // The remaining pins are hardwired as input/read-only
+      // This is enforced in the ::poke method below
+      return (myOutB | ~myDDRB) & myConsole.switches().read();
     }
 
     case 0x03:    // Port B Data Direction Register
@@ -241,8 +245,21 @@ bool M6532::poke(uInt16 addr, uInt8 value)
         break;
       }
 
-      default:    // Port B I/O & DDR Registers (Console switches)
-        return false;  // hardwired as read-only
+      case 2:     // Port B I/O Register (Console switches)
+      {
+        // Pins 2/4/5 can be set as input or output
+        // The remaining pins are hardwired as input/read-only
+        myOutB = value & 0x34;  // %0011 0100
+        break;
+      }
+
+      case 3:     // Port B Data Direction Register 
+      {
+        // Pins 2/4/5 can be set as input or output
+        // The remaining pins are hardwired as input/read-only
+        myDDRB = value & 0x34;  // %0011 0100
+        break;
+      }
     }
   }
   return true;
@@ -311,6 +328,7 @@ bool M6532::save(Serializer& out) const
     out.putByte((char)myDDRA);
     out.putByte((char)myDDRB);
     out.putByte((char)myOutA);
+    out.putByte((char)myOutB);
     out.putByte((char)myOutTimer[0]);
     out.putByte((char)myOutTimer[1]);
     out.putByte((char)myOutTimer[2]);
@@ -349,6 +367,7 @@ bool M6532::load(Serializer& in)
     myDDRA = (uInt8) in.getByte();
     myDDRB = (uInt8) in.getByte();
     myOutA = (uInt8) in.getByte();
+    myOutB = (uInt8) in.getByte();
     myOutTimer[0] = (uInt8) in.getByte();
     myOutTimer[1] = (uInt8) in.getByte();
     myOutTimer[2] = (uInt8) in.getByte();
