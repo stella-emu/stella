@@ -16,7 +16,8 @@
 
   * NOTE: because of the many event-related changes in this release, all
     event mapping should be reset to defaults after starting Stella for
-    the first time.
+    the first time.  As well, because of other internal changes, older
+    save-state files are no longer valid.
 
 FIXME
   * Many improvements to joystick handling code, particularly for analog
@@ -36,7 +37,10 @@ FIXME
   * Several improvements to the debugger.  User labels are now supported
     again, the debugger window can be resized between ROM loads
     (previously, the app had to be restarted), and a vertical line
-    separates the diassembly from the raw bytes.
+    separates the disassembly from the raw bytes.
+
+  * Fixed behaviour of SWCHB and SWBCNT; the three unused bits can now be
+    configured as input or output.  Some ROMs use this for extra storage.
 
   * Added 'finishing touches' to some of the UI descriptions, giving a
     better explanation of the functions.  Related to this, certain
@@ -45,7 +49,9 @@ FIXME
 
   * Fixed bugs in the ROM launcher when viewing certain PNG images not
     created by Stella.  Related to this, the official PNG library is now
-    included in the Stella codebase (version 1.4.3).
+    included in the Stella codebase (version 1.4.3).  Related to this,
+    added composite snapshots for those ROMs which consist of several
+    games.  Thanks go to Buzbard of AtariAge for these images.
 
   * Fixed bug in Distella disassembler output, where it sometimes
     generated addresses above $FFFF.
