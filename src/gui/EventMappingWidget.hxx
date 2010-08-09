@@ -77,6 +77,7 @@ class EventMappingWidget : public Widget, public CommandSender
     void saveConfig();
 
     void drawKeyMapping();
+    void enableButtons(bool state);
 
   private:
     ButtonWidget*     myMapButton;

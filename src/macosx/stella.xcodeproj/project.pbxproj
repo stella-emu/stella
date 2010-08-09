@@ -319,6 +319,8 @@
 		DCB5CEE711F5B78C00C68D09 /* MessageBox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */; };
 		DCB5CEE811F5B78C00C68D09 /* MessageBox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */; };
 		DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */; };
+		DCBD96891210314C0087CEFD /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCBD96871210314C0087CEFD /* ComboDialog.cxx */; };
+		DCBD968A1210314C0087CEFD /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCBD96881210314C0087CEFD /* ComboDialog.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
@@ -722,6 +724,8 @@
 		DCB5CEE511F5B78C00C68D09 /* MessageBox.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MessageBox.cxx; path = ../gui/MessageBox.cxx; sourceTree = SOURCE_ROOT; };
 		DCB5CEE611F5B78C00C68D09 /* MessageBox.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MessageBox.hxx; path = ../gui/MessageBox.hxx; sourceTree = SOURCE_ROOT; };
 		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
+		DCBD96871210314C0087CEFD /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ComboDialog.cxx; path = ../gui/ComboDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DCBD96881210314C0087CEFD /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ComboDialog.hxx; path = ../gui/ComboDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
@@ -1115,6 +1119,8 @@
 				2DDBEAA9084578BF00812C11 /* BrowserDialog.hxx */,
 				2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */,
 				2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */,
+				DCBD96871210314C0087CEFD /* ComboDialog.cxx */,
+				DCBD96881210314C0087CEFD /* ComboDialog.hxx */,
 				2DDBEAAA084578BF00812C11 /* Command.hxx */,
 				2D73959308C3EB4E0060BB99 /* CommandDialog.cxx */,
 				2D73959408C3EB4E0060BB99 /* CommandDialog.hxx */,
@@ -1455,6 +1461,7 @@
 				DC3FE48311C7D35600C91C72 /* pngpriv.h in Headers */,
 				DC3FE4A011C7D3FE00C91C72 /* PNGLibrary.hxx in Headers */,
 				DCB5CEE811F5B78C00C68D09 /* MessageBox.hxx in Headers */,
+				DCBD968A1210314C0087CEFD /* ComboDialog.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1706,6 +1713,7 @@
 				DC3FE48D11C7D35600C91C72 /* pngwutil.c in Sources */,
 				DC3FE49F11C7D3FE00C91C72 /* PNGLibrary.cxx in Sources */,
 				DCB5CEE711F5B78C00C68D09 /* MessageBox.cxx in Sources */,
+				DCBD96891210314C0087CEFD /* ComboDialog.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

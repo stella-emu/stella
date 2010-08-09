@@ -36,7 +36,7 @@ class ComboDialog : public Dialog
     ~ComboDialog();
 
     /** Place the dialog onscreen and center it */
-    void show() { parent().addDialog(this); }
+    void show(Event::Type event, const string& name);
 
   private:
     void loadConfig();
@@ -46,8 +46,9 @@ class ComboDialog : public Dialog
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    Event::Type myComboEvent;
+
     StaticTextWidget* myComboName;
-    EditTextWidget*   myComboMapping;
     PopUpWidget*      myEvents[8];
 };
 

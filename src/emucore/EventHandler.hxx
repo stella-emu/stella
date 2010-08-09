@@ -243,6 +243,10 @@ class EventHandler
     StringList getActionList(EventMode mode) const;
     StringMap getComboList(EventMode mode) const;
 
+    /** Used to access the list of events assigned to a specific combo event. */
+    StringList getComboListForEvent(Event::Type event) const;
+    void setComboListForEvent(Event::Type event, const StringList& events);
+
     inline Event::Type eventForKey(int key, EventMode mode) const
       { return myKeyTable[key][mode]; }
     inline Event::Type eventForJoyButton(int stick, int button, EventMode mode) const

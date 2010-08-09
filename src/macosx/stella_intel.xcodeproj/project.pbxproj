@@ -357,6 +357,8 @@
 		DCF7B0DE10A762FC007A2870 /* CartF0.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DA10A762FC007A2870 /* CartF0.hxx */; };
 		DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF7B0DB10A762FC007A2870 /* CartFA.cxx */; };
 		DCF7B0E010A762FC007A2870 /* CartFA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF7B0DC10A762FC007A2870 /* CartFA.hxx */; };
+		DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */; };
+		DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXBuildRule section */
@@ -760,6 +762,8 @@
 		DCF7B0DA10A762FC007A2870 /* CartF0.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF0.hxx; path = ../emucore/CartF0.hxx; sourceTree = SOURCE_ROOT; };
 		DCF7B0DB10A762FC007A2870 /* CartFA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA.cxx; path = ../emucore/CartFA.cxx; sourceTree = SOURCE_ROOT; };
 		DCF7B0DC10A762FC007A2870 /* CartFA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA.hxx; path = ../emucore/CartFA.hxx; sourceTree = SOURCE_ROOT; };
+		DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ComboDialog.cxx; path = ../gui/ComboDialog.cxx; sourceTree = SOURCE_ROOT; };
+		DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ComboDialog.hxx; path = ../gui/ComboDialog.hxx; sourceTree = SOURCE_ROOT; };
 		F5A47A9D01A0482F01D3D55B /* SDLMain.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = SDLMain.h; sourceTree = SOURCE_ROOT; };
 		F5A47A9E01A0483001D3D55B /* SDLMain.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = SDLMain.m; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
@@ -1115,6 +1119,8 @@
 				2DDBEAA9084578BF00812C11 /* BrowserDialog.hxx */,
 				2DEF21F808BC033500B246B4 /* CheckListWidget.cxx */,
 				2DEF21F908BC033500B246B4 /* CheckListWidget.hxx */,
+				DCFFE59B12100E1400DFA000 /* ComboDialog.cxx */,
+				DCFFE59C12100E1400DFA000 /* ComboDialog.hxx */,
 				2DDBEAAA084578BF00812C11 /* Command.hxx */,
 				2D73959308C3EB4E0060BB99 /* CommandDialog.cxx */,
 				2D73959408C3EB4E0060BB99 /* CommandDialog.hxx */,
@@ -1455,6 +1461,7 @@
 				DCD6FC7711C281ED005DA767 /* pngpriv.h in Headers */,
 				DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */,
 				DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */,
+				DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1709,6 +1716,7 @@
 				DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */,
 				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
 				DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */,
+				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

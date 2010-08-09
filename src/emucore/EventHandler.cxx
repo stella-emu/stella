@@ -1845,11 +1845,11 @@ StringList EventHandler::getActionList(EventMode mode) const
   switch(mode)
   {
     case kEmulationMode:
-      for(int i = 0; i < kEmulActionListSize; ++i)
+      for(uInt32 i = 0; i < kEmulActionListSize; ++i)
         l.push_back(EventHandler::ourEmulActionList[i].action);
       break;
     case kMenuMode:
-      for(int i = 0; i < kMenuActionListSize; ++i)
+      for(uInt32 i = 0; i < kMenuActionListSize; ++i)
         l.push_back(EventHandler::ourMenuActionList[i].action);
       break;
     default:
@@ -1860,27 +1860,57 @@ StringList EventHandler::getActionList(EventMode mode) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringMap EventHandler::getComboList(EventMode mode) const
+StringMap EventHandler::getComboList(EventMode) const
 {
+  // For now, this only works in emulation mode
+
   StringMap l;
   ostringstream buf;
 
-  switch(mode)
-  {
-    case kEmulationMode:
-      for(int i = 0; i < kEmulActionListSize; ++i)
-        if(EventHandler::ourEmulActionList[i].allow_combo)
-        {
-          buf << i;
-          l.push_back(EventHandler::ourEmulActionList[i].action, buf.str());
-          buf.str("");
-        }
-      break;
-    default:
-      break;
-  }
+  l.push_back("None", "0");
+  for(uInt32 i = 0; i < kEmulActionListSize; ++i)
+    if(EventHandler::ourEmulActionList[i].allow_combo)
+    {
+      buf << i;
+      l.push_back(EventHandler::ourEmulActionList[i].action, buf.str());
+      buf.str("");
+    }
 
   return l;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+StringList EventHandler::getComboListForEvent(Event::Type event) const
+{
+  StringList l;
+  ostringstream buf;
+  if(event >= Event::Combo1 && event <= Event::Combo16)
+  {
+    int combo = event - Event::Combo1;
+    for(uInt32 i = 0; i < kEventsPerCombo; ++i)
+    {
+      Event::Type e = myComboTable[combo][i];
+      for(uInt32 j = 0; j < kEmulActionListSize; ++j)
+      {
+        if(EventHandler::ourEmulActionList[j].event == e &&
+           EventHandler::ourEmulActionList[j].allow_combo)
+        {
+          buf << j;
+          l.push_back(buf.str());
+          buf.str("");
+        }
+      }
+      // Make sure entries are 1-to-1, using Event::NoType when necessary
+      if(i == l.size())
+        l.push_back("0");
+    }
+  }
+  return l;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setComboListForEvent(Event::Type event, const StringList& events)
+{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

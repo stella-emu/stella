@@ -94,8 +94,8 @@ class ContextMenu : public Dialog, public CommandSender
 	
     void moveUp();
     void moveDown();
-    void scrollUp();
-    void scrollDown();
+    void scrollUp(int distance = 1);
+    void scrollDown(int distance = 1);
     void sendSelection();
 
   private:

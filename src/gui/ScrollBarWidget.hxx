@@ -51,6 +51,7 @@ class ScrollBarWidget : public Widget, public CommandSender
     void recalc();
 
     static void setWheelLines(int lines) { _WHEEL_LINES = lines; }
+    static int  getWheelLines()          { return _WHEEL_LINES;  }
 
   private:
     void drawWidget(bool hilite);

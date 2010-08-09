@@ -24,6 +24,7 @@
 #include "FrameBuffer.hxx"
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
+#include "ScrollBarWidget.hxx"
 #include "ContextMenu.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -140,12 +141,15 @@ void ContextMenu::setSelected(int item)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::setSelected(const string& tag, const string& defaultTag)
 {
-  for(unsigned int item = 0; item < _entries.size(); ++item)
+  if(tag != "")  // indicates that the defaultTag should be used instead
   {
-    if(BSPF_equalsIgnoreCase(_entries[item].second, tag))
-    {
-      setSelected(item);
-      return;
+    for(unsigned int item = 0; item < _entries.size(); ++item)
+    { 
+      if(BSPF_equalsIgnoreCase(_entries[item].second, tag))
+      {
+        setSelected(item);
+        return;
+      }
     }
   }
 
@@ -235,9 +239,9 @@ void ContextMenu::handleMouseWheel(int x, int y, int direction)
   if(_showScroll)
   {
     if(direction < 0)
-      return scrollUp();
+      scrollUp(ScrollBarWidget::getWheelLines());
     else if(direction > 0)
-      return scrollDown();
+      scrollDown(ScrollBarWidget::getWheelLines());
   }
 }
 
@@ -379,28 +383,30 @@ void ContextMenu::moveDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::scrollUp()
+void ContextMenu::scrollUp(int distance)
 {
-  if(_firstEntry > 0)
-  {
-    _firstEntry--;
-    _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
-    _scrollDnColor = kScrollColor;
-    setDirty();
-  }
+  if(_firstEntry == 0)
+    return;
+
+  _firstEntry = BSPF_max(_firstEntry - distance, 0);
+  _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
+  _scrollDnColor = kScrollColor;
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void ContextMenu::scrollDown()
+void ContextMenu::scrollDown(int distance)
 {
-  if(_firstEntry + _numEntries < (int)_entries.size())
-  {
-    _firstEntry++;
-    _scrollUpColor = kScrollColor;
-    _scrollDnColor = (_firstEntry + _numEntries < (int)_entries.size()) ?
-        kScrollColor : kColor;
-    setDirty();
-  }
+  int max_offset = _entries.size() - _numEntries;
+  if(_firstEntry == max_offset)
+    return;
+
+  _firstEntry = BSPF_min(_firstEntry + distance, max_offset);
+  _scrollUpColor = kScrollColor;
+  _scrollDnColor = (_firstEntry < max_offset) ? kScrollColor : kColor;
+
+  setDirty();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
