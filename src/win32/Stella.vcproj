@@ -826,6 +826,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\ComboDialog.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\CommandDialog.cxx"
 					>
 				</File>
@@ -1609,6 +1613,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\CheckListWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\ComboDialog.hxx"
 					>
 				</File>
 				<File

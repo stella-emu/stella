@@ -17,6 +17,7 @@
 // $Id$
 //============================================================================
 
+#include <SDL_syswm.h>
 #include <fstream>
 
 #include "bspf.hxx"
@@ -90,7 +91,24 @@ OSystemWin32::~OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt64 OSystemWin32::getTicks() const
+void OSystemWin32::setAppWindowPos(int x, int y, int w, int h)
 {
-  return uInt64(SDL_GetTicks()) * 1000;
+  SDL_SysWMinfo sdl_info;
+  memset(&sdl_info, 0, sizeof(sdl_info));
+  SDL_VERSION (&sdl_info.version);
+  if(SDL_GetWMInfo(&sdl_info) <= 0)
+    return;
+
+  // The following mostly comes from SDL_dx5video.c
+  HWND window = sdl_info.window;
+  RECT bounds;
+
+  bounds.left   = x;
+  bounds.top    = y;
+  bounds.right  = x + w;
+  bounds.bottom = y + h;
+  AdjustWindowRectEx(&bounds, GetWindowLong(window, GWL_STYLE), (GetMenu(window) != NULL), 0);
+
+  SetWindowPos(window, HWND_NOTOPMOST, x, y, bounds.right-bounds.left,
+    bounds.bottom-bounds.top, SWP_NOCOPYBITS | SWP_SHOWWINDOW);
 }

@@ -44,11 +44,11 @@ class OSystemWin32 : public OSystem
 
   public:
     /**
-      This method returns number of ticks in microseconds.
-
-      @return Current time in microseconds.
+      Move window to given position.  The width and height are also
+      required for the underlying function, but the window size itself
+      absolutely must not be changed.
     */
-    virtual uInt64 getTicks() const;
+    void setAppWindowPos(int x, int y, int w, int h);
 };
 
 #endif
