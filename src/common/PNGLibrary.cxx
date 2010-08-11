@@ -145,7 +145,6 @@ void PNGLibrary::scaleImagetoSurface(uInt32 iwidth, uInt32 iheight, uInt8* buffe
   uInt32 izoom = uInt32(ceil(iwidth/320.0)),
          szoom = surface.getWidth()/320;
 
-  // Set the surface size 
   uInt32 sw = iwidth / izoom * szoom,
          sh = iheight / izoom * szoom;
   sw = BSPF_min(sw, surface.getWidth());
@@ -159,9 +158,10 @@ void PNGLibrary::scaleImagetoSurface(uInt32 iwidth, uInt32 iheight, uInt8* buffe
 
   uInt32 buf_offset = ipitch * izoom;
   uInt32 i_offset = 3 * izoom;
-  
-  // We can only scan at most the height of the surface
-  iheight = BSPF_min(iheight, surface.getHeight());
+
+  // We can only scan at most the height of the image to the constraints of
+  // the surface height (some multiple of 256)
+  iheight = BSPF_min(iheight, izoom * 256);
 
   // Grab each non-duplicate row of data from the image
   for(uInt32 irow = 0, srow = 0; irow < iheight; irow += izoom, buffer += buf_offset)

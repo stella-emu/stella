@@ -39,8 +39,9 @@ FIXME
     (previously, the app had to be restarted), and a vertical line
     separates the disassembly from the raw bytes.
 
-  * Fixed behaviour of SWCHB and SWBCNT; the three unused bits can now be
-    configured as input or output.  Some ROMs use this for extra storage.
+  * Fixed behaviour of SWCHB and SWBCNT; pins set to output now remember
+    the values previously written.  Some ROMs use this functionality for
+    extra storage.
 
   * Added 'finishing touches' to some of the UI descriptions, giving a
     better explanation of the functions.  Related to this, certain

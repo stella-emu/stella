@@ -127,13 +127,17 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
     setWindowTitle(title);
     if(myInitializedCount == 1) setWindowIcon();
 
-    if(!initSubsystem(mode))
+    if(initSubsystem(mode))
     {
-      myOSystem->logMessage("ERROR: Couldn't initialize video subsystem\n", 0);
-      return kFailNotSupported;
-    }
-    else
-    {
+      // Attempt to center the application window in non-fullscreen mode
+      if(!fullScreen() && myOSystem->settings().getBool("center"))
+      {
+        myOSystem->setAppWindowPos(
+          (myOSystem->desktopWidth() - mode.screen_w) / 2,
+          (myOSystem->desktopHeight() - mode.screen_h) / 2,
+          mode.screen_w, mode.screen_h);
+      }
+
       myImageRect.setWidth(mode.image_w);
       myImageRect.setHeight(mode.image_h);
       myImageRect.moveTo(mode.image_x, mode.image_y);
@@ -146,6 +150,11 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
       if(fullscreen != "-1")
         myOSystem->settings().setString("fullscreen", fullScreen() ? "1" : "0");
       setCursorState();
+    }
+    else
+    {
+      myOSystem->logMessage("ERROR: Couldn't initialize video subsystem\n", 0);
+      return kFailNotSupported;
     }
   }
   else

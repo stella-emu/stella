@@ -444,6 +444,12 @@ class OSystem
     */
     virtual void stateChanged(EventHandler::State state);
 
+    /**
+      Set the position of the application window, generally using
+      platform-specific code.
+    */
+    virtual void setAppWindowPos(int x, int y, int w, int h) { };
+
   protected:
     /**
       Query the OSystem video hardware for resolution information.

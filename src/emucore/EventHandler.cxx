@@ -1867,7 +1867,7 @@ StringMap EventHandler::getComboList(EventMode) const
   StringMap l;
   ostringstream buf;
 
-  l.push_back("None", "0");
+  l.push_back("None", "-1");
   for(uInt32 i = 0; i < kEmulActionListSize; ++i)
     if(EventHandler::ourEmulActionList[i].allow_combo)
     {
@@ -1900,9 +1900,9 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
           buf.str("");
         }
       }
-      // Make sure entries are 1-to-1, using Event::NoType when necessary
+      // Make sure entries are 1-to-1, using '-1' to indicate Event::NoType
       if(i == l.size())
-        l.push_back("0");
+        l.push_back("-1");
     }
   }
   return l;
@@ -1911,6 +1911,20 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setComboListForEvent(Event::Type event, const StringList& events)
 {
+  if(event >= Event::Combo1 && event <= Event::Combo16)
+  {
+    assert(events.size() == 8);
+    int combo = event - Event::Combo1;
+    for(int i = 0; i < 8; ++i)
+    {
+      int idx = atoi(events[i].c_str());
+      if(idx >=0 && idx < kEmulActionListSize)
+        myComboTable[combo][i] = EventHandler::ourEmulActionList[idx].event;
+      else
+        myComboTable[combo][i] = Event::NoType;
+    }
+    saveComboMapping();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

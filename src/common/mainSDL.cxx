@@ -149,10 +149,6 @@ int main(int argc, char* argv[])
     return Cleanup();
   }
 
-  // Request that the SDL window be centered, if possible
-  if(theOSystem->settings().getBool("center"))
-    putenv((char*)"SDL_VIDEO_CENTERED=1");
-
 #ifdef BSPF_UNIX
   // Nvidia cards under UNIX don't currently support SDL_GL_SWAP_CONTROL
   // So we need to do it with an Nvidia-specific environment variable

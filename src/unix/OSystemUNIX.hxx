@@ -40,6 +40,9 @@ class OSystemUNIX : public OSystem
       Destructor
     */
     virtual ~OSystemUNIX();
+
+    /** Move X11 window to given position. */
+    void setAppWindowPos(int x, int y, /* not used*/ int, int);
 };
 
 #endif

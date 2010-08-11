@@ -686,6 +686,20 @@ case $_host_os in
 			DEFINES="$DEFINES -DBSPF_UNIX -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"
 			MODULES="$MODULES $SRC/unix"
 			INCLUDES="$INCLUDES -I$SRC/unix"
+
+			#
+			# Check for X11
+			#
+			_x11=no
+			cat > $TMPC << EOF
+			#include <X11/Xutil.h>
+			int main(void) { return 0; }
+EOF
+			cc_check $LDFLAGS $CXXFLAGS -lX11 && _x11=yes
+			if test "$_x11" = yes ; then
+				DEFINES="$DEFINES -DHAVE_X11"
+				LIBS="$LIBS -lX11"
+			fi
 			;;
 		win32)
 			DEFINES="$DEFINES -DBSPF_WIN32 -DHAVE_GETTIMEOFDAY -DHAVE_INTTYPES"

@@ -120,20 +120,24 @@ void ComboDialog::loadConfig()
   // Fill any remaining items to 'None'
   if(size < 8)
     for(int i = size; i < 8; ++i)
-      myEvents[i]->setSelected("None", "0");
+      myEvents[i]->setSelected("None", "-1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ComboDialog::saveConfig()
 {
-  Settings& settings = instance().settings();
+  StringList events;
+  for(int i = 0; i < 8; ++i)
+    events.push_back(myEvents[i]->getSelectedTag());
+
+  instance().eventHandler().setComboListForEvent(myComboEvent, events);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ComboDialog::setDefaults()
 {
   for(int i = 0; i < 8; ++i)
-    myEvents[i]->setSelected("None", "0");
+    myEvents[i]->setSelected("None", "-1");
 
   _dirty = true;
 }
