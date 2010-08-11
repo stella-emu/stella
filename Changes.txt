@@ -19,9 +19,9 @@
     the first time.  As well, because of other internal changes, older
     save-state files are no longer valid.
 
-FIXME
   * Many improvements to joystick handling code, particularly for analog
-    axes.  Navigating the UI should be much smoother now.
+    axes.  Navigating the UI should be much smoother now, and remapping
+    events to analog axes should be less 'twitchy'.
 
   * Added ability to assign and remap 'combo' events in emulation mode.
     Combo events are basically a sequence of normal events (up to 8)
@@ -41,7 +41,8 @@ FIXME
 
   * Fixed behaviour of SWCHB and SWBCNT; pins set to output now remember
     the values previously written.  Some ROMs use this functionality for
-    extra storage.
+    extra storage.  Special thanks to Omegamatrix of AtariAge for advice
+    and test ROMs in this area.
 
   * Added 'finishing touches' to some of the UI descriptions, giving a
     better explanation of the functions.  Related to this, certain
@@ -50,9 +51,9 @@ FIXME
 
   * Fixed bugs in the ROM launcher when viewing certain PNG images not
     created by Stella.  Related to this, the official PNG library is now
-    included in the Stella codebase (version 1.4.3).  Related to this,
-    added composite snapshots for those ROMs which consist of several
-    games.  Thanks go to Buzbard of AtariAge for these images.
+    included in the Stella codebase (version 1.4.3).  Also added composite
+    snapshots for those ROMs which consist of several games.  Thanks go
+    to Buzbard of AtariAge for these images.
 
   * Fixed bug in Distella disassembler output, where it sometimes
     generated addresses above $FFFF.
@@ -70,6 +71,11 @@ FIXME
     files are never overwritten.
 
   * Fixed a TIA segfault that could occur with certain ROMs.
+
+  * The 'center' application window functionality can now be changed
+    without having to restart the application.  Related to this, mouse
+    positioning bugs when using the Linux version in OpenGL mode with
+    SDL 1.2.14 have been fixed.
 
   * Reworked the manual, dividing it into 'Getting Started' and
     'Advanced Configuration' sections.  It still contains the same info
