@@ -446,7 +446,9 @@ class OSystem
 
     /**
       Set the position of the application window, generally using
-      platform-specific code.
+      platform-specific code.  Note that this method is only ever
+      called for windowed mode, so no provisions need be made
+      for fullscreen mode.
     */
     virtual void setAppWindowPos(int x, int y, int w, int h) { };
 

@@ -41,7 +41,11 @@ class OSystemUNIX : public OSystem
     */
     virtual ~OSystemUNIX();
 
-    /** Move X11 window to given position. */
+  public:
+    /**
+      Move X11 window to given position.  Width and height are not
+      used (or modified).
+    */
     void setAppWindowPos(int x, int y, /* not used*/ int, int);
 };
 
