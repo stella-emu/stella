@@ -32,6 +32,7 @@
 #include "Expression.hxx"
 #include "FSNode.hxx"
 #include "RomWidget.hxx"
+#include "ProgressDialog.hxx"
 
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
@@ -1115,7 +1116,16 @@ void DebuggerParser::executeRunTo()
   const CartDebug& cartdbg = debugger->cartDebug();
   const CartDebug::DisassemblyList& list = cartdbg.disassembly().list;
 
-  uInt32 count = 0;
+  uInt32 count = 0, max_iterations = list.size();
+
+  // Create a progress dialog box to show the progress searching through the
+  // disassembly, since this may be a time-consuming operation
+  ostringstream buf;
+  buf << "RunTo searching through " << max_iterations << " disassembled instructions";
+  ProgressDialog progress(debugger->myBaseDialog,
+      debugger->getOSystem()->consoleFont(), buf.str());
+  progress.setRange(0, max_iterations, 5);
+
   bool done = false;
   do {
     debugger->step();
@@ -1125,10 +1135,13 @@ void DebuggerParser::executeRunTo()
     if(pcline >= 0)
     {
       const string& next = list[pcline].disasm;
-      done = (next.find(argStrings[0]) != string::npos);
+      done = (BSPF_findIgnoreCase(next, argStrings[0]) != string::npos);
     }
-    ++count;
-  } while(!done && count < list.size());
+    // Update the progress bar
+    progress.setProgress(count);
+  } while(!done && ++count < max_iterations);
+
+  progress.close();
 
   if(done)
     commandResult

@@ -63,6 +63,7 @@
 
 // The following code should provide access to the standard C++ objects and
 // types: cout, cerr, string, ostream, istream, etc.
+#include <algorithm>
 #include <iostream>
 #include <iomanip>
 #include <string>
@@ -120,6 +121,17 @@ inline bool BSPF_equalsIgnoreCase(const string& s1, const string& s2)
 inline bool BSPF_equalsIgnoreCase(const char* s1, const char* s2)
 {
   return BSPF_strcasecmp(s1, s2) == 0;
+}
+
+static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
+{
+  return toupper((unsigned char)ch1) == toupper((unsigned char)ch2);
+}
+inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2)
+{
+  string::const_iterator pos = std::search(s1.begin(), s1.end(),
+    s2.begin(), s2.end(), BSPF_equalsIgnoreCaseChar);
+  return pos == s1.end() ? string::npos : pos - s1.begin();
 }
 
 static const string EmptyString("");

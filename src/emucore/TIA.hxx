@@ -558,6 +558,9 @@ class TIA : public Device
     // Indicates if the dump is current enabled for the paddles
     bool myDumpEnabled;
 
+    // Latches for INPT4 and INPT5
+    uInt8 myINPT4, myINPT5;
+
     // Indicates if HMOVE blanks are currently or previously enabled,
     // and at which horizontal position the HMOVE was initiated
     Int32 myCurrentHMOVEPos;

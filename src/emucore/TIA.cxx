@@ -169,6 +169,7 @@ void TIA::reset()
 
   myDumpEnabled = false;
   myDumpDisabledCycle = 0;
+  myINPT4 = myINPT5 = 0x80;
 
   // Should undriven pins be randomly driven high or low?
   myTIAPinsDriven = mySettings.getBool("tiadriven");
@@ -1241,14 +1242,22 @@ uInt8 TIA::peek(uInt16 addr)
       break;
 
     case INPT4:
-      value = (value & 0x7F) |
-        (myConsole.controller(Controller::Left).read(Controller::Six) ? 0x80 : 0x00);
+    {
+      uInt8 button = (myConsole.controller(Controller::Left).read(Controller::Six) ? 0x80 : 0x00);
+      myINPT4 = (myVBLANK & 0x40) ? (myINPT4 & button) : button;
+
+      value = (value & 0x7F) | myINPT4;
       break;
+    }
 
     case INPT5:
-      value = (value & 0x7F) |
-        (myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00);
+    {
+      uInt8 button = (myConsole.controller(Controller::Right).read(Controller::Six) ? 0x80 : 0x00);
+      myINPT5 = (myVBLANK & 0x40) ? (myINPT5 & button) : button;
+
+      value = (value & 0x7F) | myINPT5;
       break;
+    }
 
     default:
       break;
@@ -1320,6 +1329,10 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         myDumpEnabled = false;
         myDumpDisabledCycle = mySystem->cycles();
       }
+
+      // Are the latches for I4 and I5 being set?
+      if (!(myVBLANK & 0x40))
+        myINPT4 = myINPT5 = 0x80;
 
 #if 0 // TODO - this isn't yet complete
       // Check for the first scanline at which VBLANK is disabled.
