@@ -58,7 +58,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = BSPF_min(52 * fontWidth + 10, max_w);
-  _h = BSPF_min(15 * (lineHeight + 4) + 10, max_h);
+  _h = BSPF_min(14 * (lineHeight + 4) + 10, max_h);
 
   // The tab widget
   xpos = ypos = 5;
@@ -171,8 +171,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myFrameRateLabel->setFlags(WIDGET_CLEARBG);
 
   // Add message concerning usage
-  ypos = myTab->getHeight() - 5 - 2*fontHeight - 10;
-  new StaticTextWidget(myTab, font, 10, ypos,
+  const GUI::Font& infofont = instance().infoFont();
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight()- 10;
+  new StaticTextWidget(myTab, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
         "(*) Requires application restart", kTextAlignLeft);
 

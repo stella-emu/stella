@@ -41,6 +41,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                    const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0)
 {
+  const GUI::Font& ifont = instance().infoFont();
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -53,7 +54,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   StringMap items;
 
   // Set real dimensions
-  _w = 42 * fontWidth + 10;
+  _w = 37 * fontWidth + 10;
   _h = 9 * (lineHeight + 4) + 10;
 
   // The tab widget
@@ -138,8 +139,8 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add message concerning usage
   xpos = vBorder; ypos += 1*(lineHeight + 4);
-  lwidth = font.getStringWidth("(*) Changes require application restart");
-  new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
+  lwidth = ifont.getStringWidth("(*) Changes require application restart");
+  new StaticTextWidget(myTab, ifont, xpos, ypos, BSPF_min(lwidth, _w-20), fontHeight,
                        "(*) Changes require application restart",
                        kTextAlignLeft);
 
@@ -197,12 +198,6 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
     myDebuggerHeightSlider->clearFlags(WIDGET_ENABLED);
     myDebuggerHeightLabel->clearFlags(WIDGET_ENABLED);
   }
-
-  // Add message concerning usage
-  xpos = vBorder; ypos += 2*(lineHeight + 4);
-  lwidth = font.getStringWidth("(*) Changes require ROM reload");
-  new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
-                       "(*) Changes require ROM reload", kTextAlignLeft);
 
   // Add items for tab 1
   addToFocusList(wid, tabID);

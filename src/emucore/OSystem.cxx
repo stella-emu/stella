@@ -165,6 +165,7 @@ OSystem::~OSystem()
   delete myCommandMenu;
   delete myLauncher;
   delete myFont;
+  delete myInfoFont;
   delete mySmallFont;
   delete myConsoleFont;
   delete myLauncherFont;
@@ -224,17 +225,21 @@ bool OSystem::create()
   ////////////////////////////////////////////////////////////////////
   bool smallScreen = myDesktopWidth < 640 || myDesktopHeight < 480;
 
+  // The console font is always the same size (for now at least)
+  myConsoleFont  = new GUI::Font(GUI::consoleDesc);
+
   // This font is used in a variety of situations when a really small
   // font is needed; we let the specific widget/dialog decide when to
   // use it
   mySmallFont = new GUI::Font(GUI::stellaDesc);
 
-  // The console font is always the same size (for now at least)
-  myConsoleFont  = new GUI::Font(GUI::consoleDesc);
-
   // The general font used in all UI elements
   // This is determined by the size of the framebuffer
   myFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::stellaMediumDesc);
+
+  // The info font used in all UI elements
+  // This is determined by the size of the framebuffer
+  myInfoFont = new GUI::Font(smallScreen ? GUI::stellaDesc : GUI::consoleDesc);
 
   // The font used by the ROM launcher
   // Normally, this is configurable by the user, except in the case of

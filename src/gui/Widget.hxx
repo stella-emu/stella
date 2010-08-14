@@ -295,6 +295,7 @@ class SliderWidget : public ButtonWidget
     virtual void handleMouseMoved(int x, int y, int button);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
+    virtual void handleMouseWheel(int x, int y, int direction);
     virtual bool handleEvent(Event::Type event);
 
   protected:

@@ -43,6 +43,7 @@ GameInfoDialog::GameInfoDialog(
     myPropertiesLoaded(false),
     myDefaultsSelected(false)
 {
+  const GUI::Font& ifont = instance().infoFont();
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
             fontHeight   = font.getFontHeight(),
@@ -66,7 +67,7 @@ GameInfoDialog::GameInfoDialog(
   // The tab widget
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos,
-                        _h - buttonHeight - 2*fontHeight - 20);
+                        _h - buttonHeight - fontHeight - ifont.getLineHeight() - 20);
   addTabWidget(myTab);
   addFocusWidget(myTab);
 
@@ -351,8 +352,8 @@ GameInfoDialog::GameInfoDialog(
   myTab->setActiveTab(0);
 
   // Add message concerning usage
-  lwidth = font.getStringWidth("(*) Changes to properties require a ROM reload");
-  new StaticTextWidget(this, font, 10, _h - buttonHeight - fontHeight - 20,
+  lwidth = ifont.getStringWidth("(*) Changes to properties require a ROM reload");
+  new StaticTextWidget(this, ifont, 10, _h - buttonHeight - fontHeight - 20,
                        lwidth, fontHeight,
                        "(*) Changes to properties require a ROM reload",
                        kTextAlignLeft);

@@ -611,6 +611,18 @@ void SliderWidget::handleMouseUp(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void SliderWidget::handleMouseWheel(int x, int y, int direction)
+{
+  if(isEnabled())
+  {
+    if(direction < 0)
+      handleEvent(Event::UIUp);
+    else if(direction > 0)
+      handleEvent(Event::UIDown);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SliderWidget::handleEvent(Event::Type e)
 {
   if(!isEnabled())

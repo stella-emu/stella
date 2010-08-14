@@ -184,18 +184,25 @@ class OSystem
 #endif
 
     /**
-      Get the small font object of the system
-
-      @return The font reference
-    */
-    inline const GUI::Font& smallFont() const { return *mySmallFont; }
-
-    /**
       Get the font object of the system
 
       @return The font reference
     */
     inline const GUI::Font& font() const { return *myFont; }
+
+    /**
+      Get the info font object of the system
+
+      @return The font reference
+    */
+    inline const GUI::Font& infoFont() const { return *myInfoFont; }
+
+    /**
+      Get the small font object of the system
+
+      @return The font reference
+    */
+    inline const GUI::Font& smallFont() const { return *mySmallFont; }
 
     /**
       Get the launcher font object of the system
@@ -545,11 +552,14 @@ class OSystem
     string myFeatures;
     string myBuildInfo;
 
-    // The font object to use when space is very limited
-    GUI::Font* mySmallFont;
-
     // The font object to use for the normal in-game GUI
     GUI::Font* myFont;
+
+    // The info font object to use for the normal in-game GUI
+    GUI::Font* myInfoFont;
+
+    // The font object to use when space is very limited
+    GUI::Font* mySmallFont;
 
     // The font object to use for the ROM launcher
     GUI::Font* myLauncherFont;
