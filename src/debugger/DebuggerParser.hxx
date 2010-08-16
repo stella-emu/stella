@@ -83,7 +83,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 56,
+      kNumCommands   = 57,
       kMAX_ARG_TYPES = 10
     };
 
@@ -135,6 +135,7 @@ class DebuggerParser
 
     // List of available command methods
     void executeA();
+    void executeBank();
     void executeBase();
     void executeBreak();
     void executeBreakif();

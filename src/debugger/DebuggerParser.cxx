@@ -627,6 +627,36 @@ void DebuggerParser::executeA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "bank"	 
+void DebuggerParser::executeBank()
+{
+  int banks = debugger->cartDebug().bankCount();
+  if(argCount == 0)
+  {
+    commandResult << debugger->cartDebug().getCartType() << ": ";
+    if(banks < 2)
+      commandResult << red("bankswitching not supported by this cartridge");
+    else
+    {
+      commandResult << "current = " << debugger->valueToString(debugger->cartDebug().getBank())
+                    << " out of " << debugger->valueToString(banks) << " banks";
+    }
+  }
+  else
+  {
+    if(banks == 1)
+      commandResult << red("bankswitching not supported by this cartridge");
+    else if(args[0] >= banks)
+      commandResult << red("invalid bank number (must be 0 to ")
+                    << debugger->valueToString(banks - 1) << ")";
+    else if(debugger->setBank(args[0]))
+      commandResult << "switched bank OK";
+    else
+      commandResult << red("error switching banks (bankswitching may not be supported)");
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "base"
 void DebuggerParser::executeBase()
 {
@@ -1360,6 +1390,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeA
+  },
+
+  {
+    "bank",
+    "Show # of banks, or switch to bank xx",
+    false,
+    true,
+    { kARG_WORD, kARG_END_ARGS },
+    &DebuggerParser::executeBank
   },
 
   {

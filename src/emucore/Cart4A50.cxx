@@ -311,9 +311,10 @@ void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4A50::bank(uInt16)
+bool Cartridge4A50::bank(uInt16)
 {
   // Doesn't support bankswitching in the normal sense
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

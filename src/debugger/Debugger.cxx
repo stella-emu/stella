@@ -80,10 +80,10 @@ static const char* builtin_functions[][3] = {
   { "_reset", "!(*SWCHB & $01)", "Game Reset pressed" },
   { "_color", "*SWCHB & $08", "Color/BW set to Color" },
   { "_bw", "!(*SWCHB & $08)", "Color/BW set to BW" },
-  { "_diff0b", "!(*SWCHB & $40)", "Left difficulty set to B (easy)" },
-  { "_diff0a", "*SWCHB & $40", "Left difficulty set to A (hard)" },
-  { "_diff1b", "!(*SWCHB & $80)", "Right difficulty set to B (easy)" },
-  { "_diff1a", "*SWCHB & $80", "Right difficulty set to A (hard)" },
+  { "_diff0b", "!(*SWCHB & $40)", "Left diff. set to B (easy)" },
+  { "_diff0a", "*SWCHB & $40", "Left diff. set to A (hard)" },
+  { "_diff1b", "!(*SWCHB & $80)", "Right diff. set to B (easy)" },
+  { "_diff1a", "*SWCHB & $80", "Right diff. set to A (hard)" },
 
   // empty string marks end of list, do not remove
   { 0, 0, 0 }
@@ -567,9 +567,9 @@ bool Debugger::setBank(int bank)
   if(myConsole->cartridge().bankCount() > 1)
   {
     myConsole->cartridge().unlockBank();
-    myConsole->cartridge().bank(bank);
+    bool status = myConsole->cartridge().bank(bank);
     myConsole->cartridge().lockBank();
-    return true;
+    return status;
   }
   return false;
 }

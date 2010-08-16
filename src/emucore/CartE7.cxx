@@ -199,9 +199,9 @@ void CartridgeE7::bankRAM(uInt16 bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE7::bank(uInt16 slice)
+bool CartridgeE7::bank(uInt16 slice)
 { 
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   // Remember what bank we're in
   myCurrentSlice[0] = slice;
@@ -245,7 +245,7 @@ void CartridgeE7::bank(uInt16 slice)
       mySystem->setPageAccess(k >> shift, access);
     }
   }
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

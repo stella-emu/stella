@@ -24,6 +24,7 @@
 #define ROM_WIDGET_HXX
 
 class GuiObject;
+class DataGridWidget;
 class EditTextWidget;
 class InputTextDialog;
 class PopUpWidget;
@@ -47,6 +48,7 @@ class RomWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
+    void setBank(uInt16 bank);
     void setBreak(int disasm_line, bool state);
     void setPC(int disasm_line);
     void runtoPC(int disasm_line);
@@ -60,8 +62,7 @@ class RomWidget : public Widget, public CommandSender
     };
 
     RomListWidget*   myRomList;
-    EditTextWidget*  myBank;
-    EditTextWidget*  myBankCount;
+    DataGridWidget*  myBank;
     PopUpWidget*     myResolveData;
     InputTextDialog* mySaveRom;
 

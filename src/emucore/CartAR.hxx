@@ -82,7 +82,7 @@ class CartridgeAR : public Cartridge
 
       @param bank The bank that should be installed in the system
     */
-    void bank(uInt16 bank);
+    bool bank(uInt16 bank);
 
     /**
       Get the current bank.
@@ -153,7 +153,7 @@ class CartridgeAR : public Cartridge
 
   private:
     // Handle a change to the bank configuration
-    void bankConfiguration(uInt8 configuration);
+    bool bankConfiguration(uInt8 configuration);
 
     // Compute the sum of the array of bytes
     uInt8 checksum(uInt8* s, uInt16 length);

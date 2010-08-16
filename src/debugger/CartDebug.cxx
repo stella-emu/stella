@@ -37,13 +37,15 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
-  // We need a start address for each potential bank
-  myStartAddresses = new uInt16[myConsole.cartridge().bankCount()];
+  // Create an addresslist for each potential bank
   for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
-    myStartAddresses[i] = 0;
+  {
+    AddressList l;
+    myEntryAddresses.push_back(l);
+  }
 
   // We know the address for the startup bank right now
-  myStartAddresses[myConsole.cartridge().startBank()] = myDebugger.dpeek(0xfffc);
+  myEntryAddresses[myConsole.cartridge().startBank()].push_back(myDebugger.dpeek(0xfffc));
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -61,7 +63,9 @@ CartDebug::~CartDebug()
   myUserAddresses.clear();
   mySystemAddresses.clear();
 
-  delete[] myStartAddresses;
+  for(uInt32 i = 0; i < myEntryAddresses.size(); ++i)
+    myEntryAddresses[i].clear();
+  myEntryAddresses.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -199,11 +203,20 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 
   if(changed)
   {
-    // Look at previous accesses to this bank to begin
-    // If no previous address exists, use the current program counter
-    uInt16 start = myStartAddresses[getBank()];
-    if(start == 0 || (pcline == -1 && (PC & 0x1000)))
-      start = myStartAddresses[getBank()] = PC;
+    AddressList& addresses = myEntryAddresses[getBank()];
+
+    // If the bank has changed, all old addresses must be 'converted'
+    // For example, if the list contains any $fxxx and the address space is now
+    // $bxxx, it must be changed
+    uInt16 offset = (PC - (PC % 0x1000));
+    for(uInt32 i = 0; i < addresses.size(); ++i)
+      addresses[i] = (addresses[i] & 0xFFF) + offset;
+
+    addresses.push_back_unique(PC);
+
+    uInt16 start = addresses[0];
+    if(pcline == -1 && (PC & 0x1000))
+      start = PC;
 
     // For now, DiStella can't handle address space below 0x1000
     // However, we want to disassemble at least once, otherwise carts
@@ -221,14 +234,14 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 
     // Check whether to use the 'resolvedata' functionality from Distella
     if(resolvedata == "never")
-      fillDisassemblyList(start, false, search);
+      fillDisassemblyList(addresses, false, search);
     else if(resolvedata == "always")
-      fillDisassemblyList(start, true, search);
+      fillDisassemblyList(addresses, true, search);
     else  // 'auto'
     {
       // First try with resolvedata on, then turn off if PC isn't found
-      if(!fillDisassemblyList(start, true, search))
-        fillDisassemblyList(start, false, search);
+      if(!fillDisassemblyList(addresses, true, search))
+        fillDisassemblyList(addresses, false, search);
     }
   }
 
@@ -236,13 +249,15 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 search)
+bool CartDebug::fillDisassemblyList(const AddressList& addresses,
+                                    bool resolvedata, uInt16 search)
 {
   bool found = false;
 
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 10 + myLabelLength;
-  DiStella distella(*this, myDisassembly.list, start, resolvedata);
+cerr << "start (" << getBank() << "): ";
+  DiStella distella(*this, myDisassembly.list, addresses, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -276,20 +291,23 @@ int CartDebug::addressToLine(uInt16 address) const
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   Disassembly disasm;
-  DiStella distella(*this, disasm.list, start, false);
+  AddressList addresses;
+  addresses.push_back(start);
+  DiStella distella(*this, disasm.list, addresses, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
   ostringstream buffer;
 
   // First find the lines in the range, and determine the longest string
-  uInt32 begin = 0, end = 0, length = 0;
-  for(end = 0; end < disasm.list.size() && lines > 0; ++end)
+  uInt32 list_size = disasm.list.size();
+  uInt32 begin = list_size, end = 0, length = 0;
+  for(end = 0; end < list_size && lines > 0; ++end)
   {
     const CartDebug::DisassemblyTag& tag = disasm.list[end];
     if((tag.address & 0xfff) >= start)
     {
-      if(begin == 0) begin = end;
+      if(begin == list_size) begin = end;
       length = BSPF_max(length, (uInt32)tag.disasm.length());
 
       --lines;
@@ -303,7 +321,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
            << ":  " << tag.disasm << setw(length - tag.disasm.length() + 1)
            << setfill(' ') << " "
-           << tag.ccount << "  " << tag.bytes << endl;
+           << tag.ccount << "   " << tag.bytes << endl;
   }
 
   return buffer.str();

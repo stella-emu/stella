@@ -416,9 +416,9 @@ bool CartridgeDPC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPC::bank(uInt16 bank)
+bool CartridgeDPC::bank(uInt16 bank)
 { 
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   // Remember what bank we're in
   myCurrentBank = bank;
@@ -439,7 +439,7 @@ void CartridgeDPC::bank(uInt16 bank)
     access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

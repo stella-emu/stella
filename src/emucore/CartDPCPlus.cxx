@@ -545,14 +545,14 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeDPCPlus::bank(uInt16 bank)
+bool CartridgeDPCPlus::bank(uInt16 bank)
 {
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   // Remember what bank we're in
   myCurrentBank = bank;
 
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

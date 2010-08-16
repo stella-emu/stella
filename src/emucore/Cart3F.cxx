@@ -123,9 +123,9 @@ bool Cartridge3F::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3F::bank(uInt16 bank)
+bool Cartridge3F::bank(uInt16 bank)
 { 
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   // Make sure the bank they're asking for is reasonable
   if(((uInt32)bank << 11) < mySize)
@@ -154,7 +154,7 @@ void Cartridge3F::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x07FF)];
     mySystem->setPageAccess(address >> shift, access);
   }
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

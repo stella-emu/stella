@@ -36,11 +36,11 @@
 
   * Several improvements to the debugger:
       - user labels are now supported again
+      - 'runto' debugger command is now case-insensitive, and shows a
+        progressbar while searching through the disassembly
       - the debugger window can be resized between ROM loads (previously,
         the app had to be restarted)
       - a vertical line separates the disassembly from the raw bytes
-      - 'runto' debugger command is now case-insensitive, and shows a
-        progressbar while searching through the disassembly
 
   * Fixed behaviour of SWCHB and SWBCNT; pins set to output now remember
     the values previously written.  Some ROMs use this functionality for
@@ -74,7 +74,7 @@
   * Updated DPC+ bankswitch scheme to latest specifications.
 
   * Snapshots taken in continuous snapshot mode are now timestamped, so
-    files are never overwritten.
+    older files are never overwritten.
 
   * Fixed a TIA segfault that could occur with certain ROMs.
 

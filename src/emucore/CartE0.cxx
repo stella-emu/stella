@@ -200,9 +200,10 @@ void CartridgeE0::segmentTwo(uInt16 slice)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeE0::bank(uInt16)
+bool CartridgeE0::bank(uInt16)
 {
   // Doesn't support bankswitching in the normal sense
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

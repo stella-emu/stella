@@ -130,7 +130,7 @@ class Cartridge : public Device
     /**
       Set the specified bank.
     */
-    virtual void bank(uInt16 bank) = 0;
+    virtual bool bank(uInt16 bank) = 0;
 
     /**
       Get the current bank.

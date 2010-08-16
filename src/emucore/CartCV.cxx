@@ -149,9 +149,10 @@ bool CartridgeCV::poke(uInt16, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeCV::bank(uInt16 bank)
+bool CartridgeCV::bank(uInt16 bank)
 {
   // Doesn't support bankswitching
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

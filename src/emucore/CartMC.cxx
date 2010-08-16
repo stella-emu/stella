@@ -210,9 +210,10 @@ bool CartridgeMC::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeMC::bank(uInt16 b)
+bool CartridgeMC::bank(uInt16 b)
 {
   // Doesn't support bankswitching in the normal sense
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

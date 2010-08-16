@@ -216,7 +216,7 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::bankConfiguration(uInt8 configuration)
+bool CartridgeAR::bankConfiguration(uInt8 configuration)
 {
   // D7-D5 of this byte: Write Pulse Delay (n/a for emulator)
   //
@@ -306,7 +306,7 @@ void CartridgeAR::bankConfiguration(uInt8 configuration)
       break;
     }
   }
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -409,10 +409,12 @@ void CartridgeAR::loadIntoRAM(uInt8 load)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeAR::bank(uInt16 bank)
+bool CartridgeAR::bank(uInt16 bank)
 {
   if(!bankLocked())
-    bankConfiguration(bank);
+    return bankConfiguration(bank);
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

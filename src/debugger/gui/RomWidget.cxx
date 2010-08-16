@@ -28,6 +28,7 @@
 #include "CpuDebug.hxx"
 #include "GuiObject.hxx"
 #include "InputTextDialog.hxx"
+#include "DataGridWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "StringList.hxx"
@@ -50,26 +51,25 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Show current bank
   xpos = x;  ypos = y + 7;
+  ostringstream buf;
+  buf << "Current bank (" << dec
+      << instance().debugger().cartDebug().bankCount() << " total):";
   t = new StaticTextWidget(boss, font, xpos, ypos,
-                           font.getStringWidth("Bank (current/total):"),
+                           font.getStringWidth(buf.str()),
                            font.getFontHeight(),
-                           "Bank (current/total):", kTextAlignLeft);
+                           buf.str(), kTextAlignLeft);
 
-  xpos += t->getWidth() + 10;
-  myBank = new EditTextWidget(boss, font, xpos, ypos-2,
-                              4 * font.getMaxCharWidth(),
-                              font.getLineHeight(), "");
-  myBank->setEditable(false);
-
-  // Show number of banks
-  xpos += myBank->getWidth() + 5;
-  myBankCount =
-    new EditTextWidget(boss, font, xpos, ypos-2, 4 * font.getMaxCharWidth(),
-                       font.getLineHeight(), "");
-  myBankCount->setEditable(false);
+  xpos += t->getWidth() + 5;
+  myBank = new DataGridWidget(boss, font, xpos, ypos-2,
+                              1, 1, 4, 8, kBASE_10);
+  myBank->setTarget(this);
+  myBank->setRange(0, instance().debugger().cartDebug().bankCount());
+  if(instance().debugger().cartDebug().bankCount() <= 1)
+    myBank->setEditable(false);
+  addFocusWidget(myBank);
 
   // 'resolvedata' setting for Distella
-  xpos += myBankCount->getWidth() + 20;
+  xpos += myBank->getWidth() + 20;
   StringMap items;
   items.push_back("Never", "never");
   items.push_back("Always", "always");
@@ -134,8 +134,7 @@ void RomWidget::loadConfig()
     myRomList->setHighlighted(pcline);
 
   // Set current bank and number of banks
-  myBank->setEditString(instance().debugger().valueToString(myCurrentBank, kBASE_10), bankChanged);
-  myBankCount->setEditString(instance().debugger().valueToString(cart.bankCount(), kBASE_10));
+  myBank->setList(-1, myCurrentBank, bankChanged);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,6 +176,10 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
+    case kDGItemDataChangedCmd:
+      setBank(myBank->getSelectedValue());
+      break;
+
     case kResolveDataChanged:
       instance().settings().setString("resolvedata", myResolveData->getSelectedTag());
       invalidate();
@@ -196,6 +199,14 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomWidget::setBank(uInt16 bank)
+{
+  ostringstream command;
+  command << "bank #" << bank;
+  instance().debugger().run(command.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

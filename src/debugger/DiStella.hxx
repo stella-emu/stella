@@ -48,11 +48,11 @@ class DiStella
 
       @param dbg         The CartDebug instance containing all label information
       @param list        The results of the disassembly are placed here
-      @param start       The address at which to start disassembly
+      @param addresses   The address(es) at which to start disassembly
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             uInt16 start, bool resolvedata = true);
+             const AddressList& addresses, bool resolvedata = true);
 
     ~DiStella();
 

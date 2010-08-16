@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   uInt16 start, bool resolvedata)
+                   const AddressList& addresses, bool resolvedata)
   : myDbg(dbg),
     myList(list)
 {
@@ -53,9 +53,17 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       Offset to code = $D000
       Code range = $D000-$DFFF
   =============================================*/
+  if(addresses.size() == 0)
+    return;
+
+  uInt16 start = addresses[0];
   myOffset = (start - (start % 0x1000));
 
-  myAddressQueue.push(start);
+  // Fill queue with start addresses (entry points into the ROM space)
+  for(uInt32 i = 0; i < addresses.size(); ++i)
+{ cerr << hex << addresses[i] << " ";
+    myAddressQueue.push(addresses[i]);
+} cerr << endl;
 
   if(resolvedata)
   {

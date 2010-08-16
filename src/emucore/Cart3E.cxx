@@ -158,9 +158,9 @@ bool Cartridge3E::poke(uInt16 address, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge3E::bank(uInt16 bank)
+bool Cartridge3E::bank(uInt16 bank)
 { 
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   if(bank < 256)
   {
@@ -225,7 +225,7 @@ void Cartridge3E::bank(uInt16 bank)
       mySystem->setPageAccess(address >> shift, access);
     }
   }
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

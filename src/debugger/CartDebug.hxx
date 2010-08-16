@@ -30,6 +30,9 @@ class System;
 #include "StringList.hxx"
 #include "DebuggerSystem.hxx"
 
+// Array of addresses
+typedef Common::Array<uInt16> AddressList;
+
 // pointer types for CartDebug instance methods
 typedef int (CartDebug::*CARTDEBUG_INT_METHOD)();
 
@@ -209,7 +212,8 @@ class CartDebug : public DebuggerSystem
 
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
-    bool fillDisassemblyList(uInt16 start, bool resolvedata, uInt16 search);
+    bool fillDisassemblyList(const AddressList& addresses,
+                             bool resolvedata, uInt16 search);
 
     // Extract labels and values from the given character stream
     string extractLabel(char *c) const;
@@ -219,10 +223,12 @@ class CartDebug : public DebuggerSystem
     CartState myState;
     CartState myOldState;
 
-    // A pointer to an array of start addresses for each bank in a cart
+    // A list of 'entry' addresses for each bank in a cart
+    // An entry address is the one at which time the debugger 'enters' the
+    // disassembler
     // The startup bank will normally be 0xfffc, while the others are
     // determined when the debugger is first opened
-    uInt16* myStartAddresses;
+    Common::Array<AddressList> myEntryAddresses;
 
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display

@@ -81,7 +81,7 @@ class CartridgeFE : public Cartridge
 
       @param bank The bank that should be installed in the system
     */
-    void bank(uInt16 bank);
+    bool bank(uInt16 bank);
 
     /**
       Get the current bank.

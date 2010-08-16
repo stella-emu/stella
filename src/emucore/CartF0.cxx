@@ -124,12 +124,14 @@ void CartridgeF0::incbank()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF0::bank(uInt16 bank)
+bool CartridgeF0::bank(uInt16 bank)
 {
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   myCurrentBank = bank - 1;
   incbank();
+
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

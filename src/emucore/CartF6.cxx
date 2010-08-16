@@ -139,9 +139,9 @@ bool CartridgeF6::poke(uInt16 address, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6::bank(uInt16 bank)
+bool CartridgeF6::bank(uInt16 bank)
 { 
-  if(bankLocked()) return;
+  if(bankLocked()) return false;
 
   // Remember what bank we're in
   myCurrentBank = bank;
@@ -162,7 +162,7 @@ void CartridgeF6::bank(uInt16 bank)
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
-  myBankChanged = true;
+  return myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

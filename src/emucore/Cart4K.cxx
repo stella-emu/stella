@@ -78,9 +78,10 @@ bool Cartridge4K::poke(uInt16, uInt8)
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::bank(uInt16)
+bool Cartridge4K::bank(uInt16)
 {
   // Doesn't support bankswitching
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -83,9 +83,10 @@ bool CartridgeFE::poke(uInt16, uInt8)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeFE::bank(uInt16 b)
+bool CartridgeFE::bank(uInt16)
 {
   // Doesn't support bankswitching in the normal sense
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
