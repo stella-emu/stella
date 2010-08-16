@@ -1169,46 +1169,42 @@ uInt8 TIA::peek(uInt16 addr)
 
   // If pins are undriven, we start with the last databus value
   // Otherwise, there is some randomness injected into the mix
-  uInt8 value = myTIAPinsDriven ? mySystem->getDataBusState(0xFF) :
-                                  mySystem->getDataBusState();
+  // In either case, we start out with D7 and D6 disabled (the only
+  // valid bits in a TIA read), and selectively enable them
+  uInt8 value = 0x3F & (!myTIAPinsDriven ? mySystem->getDataBusState() :
+                        mySystem->getDataBusState(0xFF));
   uInt16 collision = myCollision & (uInt16)myCollisionEnabledMask;
 
   switch(addr & 0x000f)
   {
     case CXM0P:
-      value = (value & 0x3F) |
-              ((collision & Cx_M0P1) ? 0x80 : 0x00) |
-              ((collision & Cx_M0P0) ? 0x40 : 0x00);
+      value |= ((collision & Cx_M0P1) ? 0x80 : 0x00) |
+               ((collision & Cx_M0P0) ? 0x40 : 0x00);
       break;
 
     case CXM1P:
-      value = (value & 0x3F) |
-              ((collision & Cx_M1P0) ? 0x80 : 0x00) |
-              ((collision & Cx_M1P1) ? 0x40 : 0x00);
+      value |= ((collision & Cx_M1P0) ? 0x80 : 0x00) |
+               ((collision & Cx_M1P1) ? 0x40 : 0x00);
       break;
 
     case CXP0FB:
-      value = (value & 0x3F) |
-              ((collision & Cx_P0PF) ? 0x80 : 0x00) |
-              ((collision & Cx_P0BL) ? 0x40 : 0x00);
+      value |= ((collision & Cx_P0PF) ? 0x80 : 0x00) |
+               ((collision & Cx_P0BL) ? 0x40 : 0x00);
       break;
 
     case CXP1FB:
-      value = (value & 0x3F) |
-              ((collision & Cx_P1PF) ? 0x80 : 0x00) |
-              ((collision & Cx_P1BL) ? 0x40 : 0x00);
+      value |= ((collision & Cx_P1PF) ? 0x80 : 0x00) |
+               ((collision & Cx_P1BL) ? 0x40 : 0x00);
       break;
 
     case CXM0FB:
-      value = (value & 0x3F) |
-              ((collision & Cx_M0PF) ? 0x80 : 0x00) |
-              ((collision & Cx_M0BL) ? 0x40 : 0x00);
+      value |= ((collision & Cx_M0PF) ? 0x80 : 0x00) |
+               ((collision & Cx_M0BL) ? 0x40 : 0x00);
       break;
 
     case CXM1FB:
-      value = (value & 0x3F) |
-              ((collision & Cx_M1PF) ? 0x80 : 0x00) |
-              ((collision & Cx_M1BL) ? 0x40 : 0x00);
+      value |= ((collision & Cx_M1PF) ? 0x80 : 0x00) |
+               ((collision & Cx_M1BL) ? 0x40 : 0x00);
       break;
 
     case CXBLPF:
@@ -1216,9 +1212,8 @@ uInt8 TIA::peek(uInt16 addr)
       break;
 
     case CXPPMM:
-      value = (value & 0x3F) |
-              ((collision & Cx_P0P1) ? 0x80 : 0x00) |
-              ((collision & Cx_M0M1) ? 0x40 : 0x00);
+      value |= ((collision & Cx_P0P1) ? 0x80 : 0x00) |
+               ((collision & Cx_M0M1) ? 0x40 : 0x00);
       break;
 
     case INPT0:
@@ -1260,6 +1255,8 @@ uInt8 TIA::peek(uInt16 addr)
     }
 
     default:
+      // This shouldn't happen, but if it does, we essentially just
+      // return the last databus value with bits D6 and D7 zeroed out
       break;
   }
   return value;

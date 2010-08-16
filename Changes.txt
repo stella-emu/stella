@@ -47,6 +47,9 @@
     extra storage.  Special thanks to Omegamatrix of AtariAge for advice
     and test ROMs in this area.
 
+  * Fixed bug when reading from illegal TIA addresses; a Space Invaders
+    hack was showing pink enemies instead of white ones.
+
   * Fixed bug in handling INPT4/INPT5 latches from VBLANK; a least one
     ROM was working in Stella when it didn't on real hardware.
 
