@@ -52,7 +52,7 @@ class DiStella
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             const AddressList& addresses, bool resolvedata = true);
+             AddressList& addresses, bool resolvedata = true);
 
     ~DiStella();
 

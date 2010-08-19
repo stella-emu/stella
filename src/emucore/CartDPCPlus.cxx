@@ -24,8 +24,10 @@
 #include "CartDPCPlus.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size)
-  : myFastFetch(false),
+CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
+                                   const Settings& settings)
+  : Cartridge(settings),
+    myFastFetch(false),
     myLDAimmediate(false),
     myParameter(0),
     mySystemCycles(0),

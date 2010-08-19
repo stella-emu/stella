@@ -104,7 +104,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 #endif
 
   myCart = cart;
-  myRiot = new M6532(*this);
+  myRiot = new M6532(*this, myOSystem->settings());
   myTIA  = new TIA(*this, myOSystem->sound(), myOSystem->settings());
 
   mySystem->attach(m6502);

@@ -25,8 +25,10 @@
 #include "Cart3F.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size)
-  : mySize(size)
+Cartridge3F::Cartridge3F(const uInt8* image, uInt32 size,
+                         const Settings& settings)
+  : Cartridge(settings),
+    mySize(size)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];

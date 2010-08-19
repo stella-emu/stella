@@ -26,7 +26,9 @@
 #include "Cart4A50.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size)
+Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
+                             const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   // Supported file sizes are 32/64/128K, which are duplicated if necessary
@@ -45,9 +47,12 @@ Cartridge4A50::~Cartridge4A50()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::reset()
 {
-  // Initialize RAM with random values
-  for(uInt32 i = 0; i < 32768; ++i)
-    myRAM[i] = mySystem->randGenerator().next();
+  // Initialize RAM
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < 32768; ++i)
+      myRAM[i] = mySystem->randGenerator().next();
+  else
+    memset(myRAM, 0, 32768);
 
   mySliceLow = mySliceMiddle = mySliceHigh = 0;
   myIsRomLow = myIsRomMiddle = myIsRomHigh = true;

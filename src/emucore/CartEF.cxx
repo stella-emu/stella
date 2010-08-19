@@ -24,7 +24,8 @@
 #include "CartEF.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEF::CartridgeEF(const uInt8* image)
+CartridgeEF::CartridgeEF(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);

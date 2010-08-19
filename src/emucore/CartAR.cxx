@@ -27,8 +27,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
-  : my6502(0),
-    mySettings(settings)
+  : Cartridge(settings),
+    my6502(0)
 {
   // Minimum size supported internally is 8448 bytes
   uInt32 minsize = BSPF_max(size, 8448u);
@@ -52,9 +52,12 @@ CartridgeAR::~CartridgeAR()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeAR::reset()
 {
-  // Initialize RAM with random values
-  for(uInt32 i = 0; i < 6 * 1024; ++i)
-    myImage[i] = mySystem->randGenerator().next();
+  // Initialize RAM
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < 6 * 1024; ++i)
+      myImage[i] = mySystem->randGenerator().next();
+  else
+    memset(myImage, 0, 6 * 1024);
 
   // Initialize SC BIOS ROM
   initializeROM();

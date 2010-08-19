@@ -24,7 +24,8 @@
 #include "Cart4K.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::Cartridge4K(const uInt8* image)
+Cartridge4K::Cartridge4K(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 4096);

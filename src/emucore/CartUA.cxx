@@ -24,7 +24,8 @@
 #include "CartUA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeUA::CartridgeUA(const uInt8* image)
+CartridgeUA::CartridgeUA(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);

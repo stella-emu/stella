@@ -24,7 +24,8 @@
 #include "Cart0840.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840::Cartridge0840(const uInt8* image)
+Cartridge0840::Cartridge0840(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);

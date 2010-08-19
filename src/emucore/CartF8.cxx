@@ -24,7 +24,9 @@
 #include "CartF8.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF8::CartridgeF8(const uInt8* image, const string& md5)
+CartridgeF8::CartridgeF8(const uInt8* image, const string& md5,
+                         const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);

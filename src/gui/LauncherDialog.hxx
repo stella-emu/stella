@@ -111,7 +111,7 @@ class LauncherDialog : public Dialog
     int mySelectedItem;
     int myRomInfoSize;
     FilesystemNode myCurrentNode;
-    FixedStack<string> myNodeNames;
+    Common::FixedStack<string> myNodeNames;
 
     bool myShowDirs;
     StringList myRomExts;

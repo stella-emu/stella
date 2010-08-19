@@ -21,14 +21,16 @@
 #include <iostream>
 
 #include "Console.hxx"
+#include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
 
 #include "M6532.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-M6532::M6532(const Console& console)
-  : myConsole(console)
+M6532::M6532(const Console& console, const Settings& settings)
+  : myConsole(console),
+    mySettings(settings)
 {
 }
  
@@ -40,9 +42,12 @@ M6532::~M6532()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6532::reset()
 {
-  // Randomize the 128 bytes of memory
-  for(uInt32 t = 0; t < 128; ++t)
-    myRAM[t] = mySystem->randGenerator().next();
+  // Initialize the 128 bytes of memory
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 t = 0; t < 128; ++t)
+      myRAM[t] = mySystem->randGenerator().next();
+  else
+    memset(myRAM, 0, 128);
 
   // The timer absolutely cannot be initialized to zero; some games will
   // loop or hang (notably Solaris and H.E.R.O.)
@@ -372,7 +377,8 @@ bool M6532::load(Serializer& in)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const M6532& c)
-  : myConsole(c.myConsole)
+  : myConsole(c.myConsole),
+    mySettings(c.mySettings)
 {
   assert(false);
 }

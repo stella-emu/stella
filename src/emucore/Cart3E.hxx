@@ -67,10 +67,11 @@ class Cartridge3E : public Cartridge
     /**
       Create a new cartridge using the specified image and size
 
-      @param image Pointer to the ROM image
-      @param size The size of the ROM image
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param settings  A reference to the various settings (read-only)
     */
-    Cartridge3E(const uInt8* image, uInt32 size);
+    Cartridge3E(const uInt8* image, uInt32 size, const Settings& settings);
  
     /**
       Destructor

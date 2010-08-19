@@ -26,7 +26,8 @@
 #include "CartX07.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeX07::CartridgeX07(const uInt8* image)
+CartridgeX07::CartridgeX07(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);

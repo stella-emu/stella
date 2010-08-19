@@ -25,11 +25,11 @@
 
 class Cartridge;
 class Properties;
-class Settings;
 
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Device.hxx"
+#include "Settings.hxx"
 
 #ifdef DEBUGGER_SUPPORT
 struct RamArea {
@@ -69,8 +69,10 @@ class Cartridge : public Device
 
     /**
       Create a new cartridge
+
+      @param settings  A reference to the various settings (read-only)
     */
-    Cartridge();
+    Cartridge(const Settings& settings);
  
     /**
       Destructor
@@ -321,6 +323,9 @@ class Cartridge : public Device
     static bool isProbablyX07(const uInt8* image, uInt32 size);
 
   protected:
+    // Settings class for the application
+    const Settings& mySettings;
+
     // The startup bank to use (where to look for the reset vector address)
     uInt16 myStartBank;
 

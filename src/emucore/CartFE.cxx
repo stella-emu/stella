@@ -24,8 +24,9 @@
 #include "CartFE.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFE::CartridgeFE(const uInt8* image)
-  : myLastAddress1(0),
+CartridgeFE::CartridgeFE(const uInt8* image, const Settings& settings)
+  : Cartridge(settings),
+    myLastAddress1(0),
     myLastAddress2(0),
     myLastAddressChanged(false)
 {

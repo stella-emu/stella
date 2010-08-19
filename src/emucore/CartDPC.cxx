@@ -24,8 +24,10 @@
 #include "CartDPC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size)
-  : mySystemCycles(0),
+CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
+                           const Settings& settings)
+  : Cartridge(settings),
+    mySystemCycles(0),
     myFractionalClocks(0.0)
 {
   // Make a copy of the entire image

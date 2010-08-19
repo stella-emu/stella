@@ -39,10 +39,11 @@ class Cartridge2K : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image Pointer to the ROM image
-      @param size  The size of the ROM image (<= 2048 bytes)
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image (<= 2048 bytes)
+      @param settings  A reference to the various settings (read-only)
     */
-    Cartridge2K(const uInt8* image, uInt32 size);
+    Cartridge2K(const uInt8* image, uInt32 size, const Settings& settings);
  
     /**
       Destructor

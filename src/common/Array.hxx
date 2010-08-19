@@ -200,7 +200,7 @@ class Array
     }
 };
 
-}  // Namespace GUI
+}  // Namespace Common
 
 typedef Common::Array<int>   IntArray;
 typedef Common::Array<bool>  BoolArray;

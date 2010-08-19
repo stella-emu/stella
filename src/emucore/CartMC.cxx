@@ -30,8 +30,10 @@
 //        adequate test ROMs are available
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size)
-  : mySlot3Locked(false)
+CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size,
+                         const Settings& settings)
+  : Cartridge(settings),
+    mySlot3Locked(false)
 {
   // Make sure size is reasonable
   assert(size <= 131072);
@@ -51,9 +53,12 @@ CartridgeMC::~CartridgeMC()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeMC::reset()
 {
-  // Initialize RAM with random values
-  for(uInt32 i = 0; i < 32768; ++i)
-    myRAM[i] = mySystem->randGenerator().next();
+  // Initialize RAM
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < 32768; ++i)
+      myRAM[i] = mySystem->randGenerator().next();
+  else
+    memset(myRAM, 0, 32768);
 
   myBankChanged = true;
 }

@@ -24,8 +24,10 @@
 #include "CartCV.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size)
-  : myInitialRAM(0),
+CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
+                         const Settings& settings)
+  : Cartridge(settings),
+    myInitialRAM(0),
     mySize(size)
 {
   if(mySize == 2048)
@@ -66,9 +68,12 @@ void CartridgeCV::reset()
   }
   else
   {
-    // Initialize RAM with random values
-    for(uInt32 i = 0; i < 1024; ++i)
-      myRAM[i] = mySystem->randGenerator().next();
+    // Initialize RAM
+    if(mySettings.getBool("ramrandom"))
+      for(uInt32 i = 0; i < 1024; ++i)
+        myRAM[i] = mySystem->randGenerator().next();
+    else
+      memset(myRAM, 0, 1024);
   }
 
   myBankChanged = true;

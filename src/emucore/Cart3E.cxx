@@ -25,8 +25,10 @@
 #include "Cart3E.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size)
-  : mySize(size)
+Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,
+                         const Settings& settings)
+  : Cartridge(settings),
+    mySize(size)
 {
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
@@ -52,9 +54,12 @@ Cartridge3E::~Cartridge3E()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge3E::reset()
 {
-  // Initialize RAM with random values
-  for(uInt32 i = 0; i < 32768; ++i)
-    myRam[i] = mySystem->randGenerator().next();
+  // Initialize RAM
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < 32768; ++i)
+      myRam[i] = mySystem->randGenerator().next();
+  else
+    memset(myRam, 0, 32768);
 
   // We'll map the startup bank into the first segment upon reset
   bank(myStartBank);

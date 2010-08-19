@@ -28,6 +28,8 @@
 /**
  * Simple fixed size stack class.
  */
+namespace Common {
+
 template <class T, int MAX_SIZE = 10>
 class FixedStack
 {
@@ -67,5 +69,7 @@ class FixedStack
     T   _stack[MAX_SIZE];
     int _size;
 };
+
+}  // Namespace Common
 
 #endif

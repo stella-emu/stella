@@ -150,7 +150,7 @@ class DialogContainer
   protected:
     OSystem* myOSystem;
     Dialog*  myBaseDialog;
-    FixedStack<Dialog *> myDialogStack;
+    Common::FixedStack<Dialog *> myDialogStack;
 
   private:
     enum {

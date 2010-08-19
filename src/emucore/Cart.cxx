@@ -137,59 +137,59 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
 
   // We should know the cart's type by now so let's create it
   if(type == "2K")
-    cartridge = new Cartridge2K(image, size);
+    cartridge = new Cartridge2K(image, size, settings);
   else if(type == "3E")
-    cartridge = new Cartridge3E(image, size);
+    cartridge = new Cartridge3E(image, size, settings);
   else if(type == "3F")
-    cartridge = new Cartridge3F(image, size);
+    cartridge = new Cartridge3F(image, size, settings);
   else if(type == "4A50")
-    cartridge = new Cartridge4A50(image, size);
+    cartridge = new Cartridge4A50(image, size, settings);
   else if(type == "4K")
-    cartridge = new Cartridge4K(image);
+    cartridge = new Cartridge4K(image, settings);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size, settings);
   else if(type == "DPC")
-    cartridge = new CartridgeDPC(image, size);
+    cartridge = new CartridgeDPC(image, size, settings);
   else if(type == "DPC+")
-    cartridge = new CartridgeDPCPlus(image, size);
+    cartridge = new CartridgeDPCPlus(image, size, settings);
   else if(type == "E0")
-    cartridge = new CartridgeE0(image);
+    cartridge = new CartridgeE0(image, settings);
   else if(type == "E7")
-    cartridge = new CartridgeE7(image);
+    cartridge = new CartridgeE7(image, settings);
   else if(type == "EF")
-    cartridge = new CartridgeEF(image);
+    cartridge = new CartridgeEF(image, settings);
   else if(type == "EFSC")
-    cartridge = new CartridgeEFSC(image);
+    cartridge = new CartridgeEFSC(image, settings);
   else if(type == "F4")
-    cartridge = new CartridgeF4(image);
+    cartridge = new CartridgeF4(image, settings);
   else if(type == "F4SC")
-    cartridge = new CartridgeF4SC(image);
+    cartridge = new CartridgeF4SC(image, settings);
   else if(type == "F6")
-    cartridge = new CartridgeF6(image);
+    cartridge = new CartridgeF6(image, settings);
   else if(type == "F6SC")
-    cartridge = new CartridgeF6SC(image);
+    cartridge = new CartridgeF6SC(image, settings);
   else if(type == "F8")
-    cartridge = new CartridgeF8(image, md5);
+    cartridge = new CartridgeF8(image, md5, settings);
   else if(type == "F8SC")
-    cartridge = new CartridgeF8SC(image);
+    cartridge = new CartridgeF8SC(image, settings);
   else if(type == "FA" || type == "FASC")
-    cartridge = new CartridgeFA(image);
+    cartridge = new CartridgeFA(image, settings);
   else if(type == "FE")
-    cartridge = new CartridgeFE(image);
+    cartridge = new CartridgeFE(image, settings);
   else if(type == "MC")
-    cartridge = new CartridgeMC(image, size);
+    cartridge = new CartridgeMC(image, size, settings);
   else if(type == "F0" || type == "MB")
-    cartridge = new CartridgeF0(image);
+    cartridge = new CartridgeF0(image, settings);
   else if(type == "CV")
-    cartridge = new CartridgeCV(image, size);
+    cartridge = new CartridgeCV(image, size, settings);
   else if(type == "UA")
-    cartridge = new CartridgeUA(image);
+    cartridge = new CartridgeUA(image, settings);
   else if(type == "0840")
-    cartridge = new Cartridge0840(image);
+    cartridge = new Cartridge0840(image, settings);
   else if(type == "SB")
-    cartridge = new CartridgeSB(image, size);
+    cartridge = new CartridgeSB(image, size, settings);
   else if(type == "X07")
-    cartridge = new CartridgeX07(image);
+    cartridge = new CartridgeX07(image, settings);
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 
@@ -227,8 +227,9 @@ string Cartridge::createFromMultiCart(const uInt8*& image, uInt32& size,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::Cartridge()
-  : myStartBank(0),
+Cartridge::Cartridge(const Settings& settings)
+  : mySettings(settings),
+    myStartBank(0),
     myBankChanged(true),
     myBankLocked(false)
 {
@@ -694,7 +695,8 @@ bool Cartridge::isProbablyX07(const uInt8* image, uInt32 size)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge::Cartridge(const Cartridge&)
+Cartridge::Cartridge(const Cartridge& cart)
+  : mySettings(cart.mySettings)
 {
   assert(false);
 }

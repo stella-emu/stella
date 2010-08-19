@@ -53,9 +53,10 @@ class CartridgeFE : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image Pointer to the ROM image
+      @param image     Pointer to the ROM image
+      @param settings  A reference to the various settings (read-only)
     */
-    CartridgeFE(const uInt8* image);
+    CartridgeFE(const uInt8* image, const Settings& settings);
  
     /**
       Destructor

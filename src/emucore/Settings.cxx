@@ -121,6 +121,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("autoslot", "false");
   setInternal("showinfo", "1");
   setInternal("tiadriven", "false");
+  setInternal("ramrandom", "false");
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("audiofirst", "true");
@@ -418,6 +419,11 @@ void Settings::usage()
     << "  -eepromdir    <dir>          Directory in which to save EEPROM files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
     << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
+    << "  -holdreset                   Start the emulator with the Game Reset switch held down\n"
+    << "  -holdselect                  Start the emulator with the Game Select switch held down\n"
+    << "  -holdbutton0                 Start the emulator with the left joystick button held down\n"
+    << "  -tiadriven    <1|0>          Drive unused TIA pins randomly on a read/peek\n"
+    << "  -ramrandom    <1|0>          Randomize the contents of RAM on reset\n"
     << "  -help                        Show the text you're now reading\n"
   #ifdef DEBUGGER_SUPPORT
     << endl
@@ -429,10 +435,6 @@ void Settings::usage()
     << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"
-    << "   -holdreset                  Start the emulator with the Game Reset switch held down\n"
-    << "   -holdselect                 Start the emulator with the Game Select switch held down\n"
-    << "   -holdbutton0                Start the emulator with the left joystick button held down\n"
-    << "   -tiadriven    <1|0>         Drive unused TIA pins randomly value on a read/peek\n"
     << endl
     << "   -bs          <arg>          Sets the 'Cartridge.Type' (bankswitch) property\n"
     << "   -type        <arg>          Same as using -bs\n"

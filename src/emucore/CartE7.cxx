@@ -24,7 +24,8 @@
 #include "CartE7.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE7::CartridgeE7(const uInt8* image)
+CartridgeE7::CartridgeE7(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 16384);
@@ -48,9 +49,12 @@ CartridgeE7::~CartridgeE7()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::reset()
 {
-  // Initialize RAM with random values
-  for(uInt32 i = 0; i < 2048; ++i)
-    myRAM[i] = mySystem->randGenerator().next();
+  // Initialize RAM
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < 2048; ++i)
+      myRAM[i] = mySystem->randGenerator().next();
+  else
+    memset(myRAM, 0, 2048);
 
   // Install some default banks for the RAM and first segment
   bankRAM(0);

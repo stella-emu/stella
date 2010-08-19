@@ -23,18 +23,15 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   const AddressList& addresses, bool resolvedata)
+                   AddressList& addresses, bool resolvedata)
   : myDbg(dbg),
     myList(list)
 {
+  if(addresses.size() == 0)
+    return;
+
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
-
-  myAppData.start  = 0x0000;
-  myAppData.end    = 0x0FFF;
-  myAppData.length = 4096;
-
-  memset(labels, 0, 0x1000);
 
   /*============================================
     The offset is the address where the code segment
@@ -53,17 +50,26 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       Offset to code = $D000
       Code range = $D000-$DFFF
   =============================================*/
-  if(addresses.size() == 0)
-    return;
 
-  uInt16 start = addresses[0];
+  AddressList::iterator it = addresses.begin();
+  uInt16 start = *it++;
+
+  if(start & 0x1000)  // ROM space
+  {
+    myAppData.start  = 0x0000;
+    myAppData.end    = 0x0FFF;
+    myAppData.length = 4096;
+  }
+  else                // ZP RAM
+  {
+    myAppData.start  = 0x0080;
+    myAppData.end    = 0x00FF;
+    myAppData.length = 128;
+  }
+  memset(labels, 0, 0x1000);
+
   myOffset = (start - (start % 0x1000));
-
-  // Fill queue with start addresses (entry points into the ROM space)
-  for(uInt32 i = 0; i < addresses.size(); ++i)
-{ cerr << hex << addresses[i] << " ";
-    myAddressQueue.push(addresses[i]);
-} cerr << endl;
+  myAddressQueue.push(start);
 
   if(resolvedata)
   {
@@ -75,8 +81,36 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       disasm(myPC, 1);
       for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
         mark(k, REACHABLE);
+
+      // When we get to this point, all addresses have been processed
+      // starting from the initial one in the address list
+      // If so, process the next one in the list that hasn't already
+      // been marked as REACHABLE
+      // If it *has* been marked, it can be removed from consideration
+      // in all subsequent passes
+      //
+      // Note that we can't simply add all addresses right away, since
+      // the processing of a single address from the address list can
+      // cause others to be added in the ::disasm method
+      // All of these have to be exhausted before consulting the address
+      // list again
+      if(myAddressQueue.empty())
+      {
+        while(it != addresses.end())
+        {
+          uInt16 addr = *it;
+          if(!check_bit(labels[addr-myOffset], REACHABLE))
+          {
+            myAddressQueue.push(addr);
+            ++it;
+            break;
+          }
+          else   // remove this address, it is redundant
+            it = addresses.erase(it);
+        }
+      }
     }
-    
+
     for (int k = 0; k <= myAppData.end; k++)
     {
       if (!check_bit(labels[k], REACHABLE))
@@ -615,8 +649,6 @@ int DiStella::mark(uInt32 address, MarkType bit)
     ===========================================================
       $00-$3d =     system equates (WSYNC, etc...); mark the array's element
                     with the appropriate bit; return 2.
-      $0080-$00FF = zero-page RAM; mark the array's element
-                    with the appropriate bit; return 5.
       $0280-$0297 = system equates (INPT0, etc...); mark the array's element
                     with the appropriate bit; return 3.
       $1000-$1FFF = CODE/DATA, mark the code/data array for the mirrored address
@@ -648,12 +680,6 @@ int DiStella::mark(uInt32 address, MarkType bit)
   {
     return 2;
   }
-/* This isn't supported by the core code yet, so why waste time checking
-  else if (address >= 0x80 && address <= 0xff)
-  {
-    return 5;
-  }
-*/
   else if (address >= 0x280 && address <= 0x297)
   {
     return 3;
@@ -700,13 +726,29 @@ void DiStella::addEntry()
   else
     myDisasmBuf >> setw(4) >> hex >> tag.address;
 
+  // Only include addresses within the requested range
+  if(tag.address < myAppData.start)
+    goto DONE_WITH_ADD;
+
   // Label (a user-defined label always overrides any auto-generated one)
   myDisasmBuf.seekg(5, ios::beg);
   if(tag.address)
   {
     tag.label = myDbg.getLabel(tag.address, true);
-    if(tag.label == EmptyString && myDisasmBuf.peek() != ' ')
-      getline(myDisasmBuf, tag.label, '\'');
+    if(tag.label == EmptyString)
+    {
+      if(myDisasmBuf.peek() != ' ')
+        getline(myDisasmBuf, tag.label, '\'');
+      else
+      {
+#if 0
+        // FIXME - optimize this, and add as an option
+        stringstream str;
+        str << setw(4) << hex << tag.address;
+        str >> tag.label;
+#endif
+      }
+    }
   }
 
   // Disassembly
@@ -729,6 +771,7 @@ void DiStella::addEntry()
   }
   myList.push_back(tag);
 
+DONE_WITH_ADD:
   myDisasmBuf.clear();
   myDisasmBuf.str("");
 }

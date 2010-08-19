@@ -23,6 +23,8 @@
 class System;
 
 #include <map>
+#include <set>
+#include <list>
 
 #include "bspf.hxx"
 #include "Array.hxx"
@@ -31,7 +33,7 @@ class System;
 #include "DebuggerSystem.hxx"
 
 // Array of addresses
-typedef Common::Array<uInt16> AddressList;
+typedef list<uInt16> AddressList;
 
 // pointer types for CartDebug instance methods
 typedef int (CartDebug::*CARTDEBUG_INT_METHOD)();
@@ -212,12 +214,12 @@ class CartDebug : public DebuggerSystem
 
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
-    bool fillDisassemblyList(const AddressList& addresses,
+    bool fillDisassemblyList(AddressList& addresses,
                              bool resolvedata, uInt16 search);
 
     // Extract labels and values from the given character stream
-    string extractLabel(char *c) const;
-    int extractValue(char *c) const;
+    string extractLabel(const char* c) const;
+    int extractValue(const char* c) const;
 
   private:
     CartState myState;

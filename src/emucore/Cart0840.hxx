@@ -36,9 +36,10 @@ class Cartridge0840 : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image Pointer to the ROM image
+      @param image     Pointer to the ROM image
+      @param settings  A reference to the various settings (read-only)
     */
-    Cartridge0840(const uInt8* image);
+    Cartridge0840(const uInt8* image, const Settings& settings);
  
     /**
       Destructor

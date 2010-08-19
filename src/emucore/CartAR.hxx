@@ -47,7 +47,7 @@ class CartridgeAR : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
-      @param settings  Used to query 'fastscbios' option
+      @param settings  A reference to the various settings (read-only)
     */
     CartridgeAR(const uInt8* image, uInt32 size, const Settings& settings);
 
@@ -167,9 +167,6 @@ class CartridgeAR : public Cartridge
   private:
     // Pointer to the 6502 processor in the system
     M6502* my6502;
-
-    // Reference to the settings object (needed for 'fastscbios'
-    const Settings& mySettings;
 
     // Indicates the offest within the image for the corresponding bank
     uInt32 myImageOffset[2];

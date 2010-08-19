@@ -38,9 +38,10 @@ class CartridgeF4SC : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image Pointer to the ROM image
+      @param image     Pointer to the ROM image
+      @param settings  A reference to the various settings (read-only)
     */
-    CartridgeF4SC(const uInt8* image);
+    CartridgeF4SC(const uInt8* image, const Settings& settings);
  
     /**
       Destructor

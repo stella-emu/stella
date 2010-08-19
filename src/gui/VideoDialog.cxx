@@ -346,6 +346,9 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myGrabmouseCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
+#if !(defined(BSPF_WIN32) || (defined(BSPF_UNIX) && defined(HAVE_X11)))
+  myCenterCheckbox->clearFlags(WIDGET_ENABLED);
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

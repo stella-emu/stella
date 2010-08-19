@@ -38,10 +38,11 @@ class CartridgeF8 : public Cartridge
     /**
       Create a new cartridge using the specified image
 
-      @param image  Pointer to the ROM image
-      @param md5    MD5sum of the ROM image
+      @param image     Pointer to the ROM image
+      @param md5       MD5sum of the ROM image
+      @param settings  A reference to the various settings (read-only)
     */
-    CartridgeF8(const uInt8* image, const string& md5);
+    CartridgeF8(const uInt8* image, const string& md5, const Settings& settings);
  
     /**
       Destructor

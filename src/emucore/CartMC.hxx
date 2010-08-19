@@ -144,10 +144,11 @@ class CartridgeMC : public Cartridge
       size of the image is less than 128K then the cartridge will pad the
       beginning of the 128K ROM with zeros.
 
-      @param image Pointer to the ROM image
-      @param size The size of the ROM image
+      @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
+      @param settings  A reference to the various settings (read-only)
     */
-    CartridgeMC(const uInt8* image, uInt32 size);
+    CartridgeMC(const uInt8* image, uInt32 size, const Settings& settings);
  
     /**
       Destructor

@@ -22,6 +22,7 @@
 
 class Console;
 class RiotDebug;
+class Settings;
 
 #include "bspf.hxx"
 #include "Device.hxx"
@@ -45,9 +46,10 @@ class M6532 : public Device
     /**
       Create a new 6532 for the specified console
 
-      @param console The console the 6532 is associated with
+      @param console  The console the 6532 is associated with
+      @param randRam  Randomize or zero RAM on reset
     */
-    M6532(const Console& console);
+    M6532(const Console& console, const Settings& settings);
  
     /**
       Destructor
@@ -137,6 +139,9 @@ class M6532 : public Device
   private:
     // Reference to the console
     const Console& myConsole;
+
+    // Reference to the settings
+    const Settings& mySettings;
 
     // An amazing 128 bytes of RAM
     uInt8 myRAM[128];

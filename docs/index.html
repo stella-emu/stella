@@ -2027,7 +2027,13 @@
 
     <tr>
       <td><pre>-tiadriven &lt;1|0&gt;</pre></td>
-      <td>Set unused TIA pins to be randomly driven high or low on a read/peek.</td>
+      <td>Set unused TIA pins to be randomly driven high or low on a read/peek.
+          If disabled, use the last databus value for those pins instead.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ramrandom &lt;1|0&gt;</pre></td>
+      <td>On reset, either randomize all RAM content, or zero it out instead.</td>
     </tr>
 
     <tr>
@@ -2152,7 +2158,7 @@
           <tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
           <tr><td>Grab mouse</td><td>keep mouse in SDL window</td><td>-grabmouse</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
-          <tr><td>Center window (*)</td><td>attempt to center SDL window (requires restart)</td><td>-center</td></tr>
+          <tr><td>Center window</td><td>attempt to center application window</td><td>-center</td></tr>
           <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
         </table>
       </td>
@@ -2315,14 +2321,25 @@
       to the selected event.  If nothing seems to happen, either Stella
       can't see the input device, or the selected event doesn't support being
       remapped to the input device.</li>
-    <li>Erase a mapping by clicking 'Erase', or cancel a remap in progress
-      by clicking 'Cancel'.</li>
-    <li>Reset default mappings by clicking 'Defaults'.</li>
+    <li>Cancel a remap in progress by clicking 'Cancel', erase a mapping by
+      clicking 'Erase', or reset to default mapping by clicking 'Reset'</li>
+    <li>Reset to default <b>all</b> mappings by clicking 'Defaults'.</li>
   </ol>
 
   <p>The following screenshots illustrate the event remapping process:<br><br>
   <img src="graphics/eventmapping.png">
   <img src="graphics/eventmapping_remap.png">
+
+  <p>There is also a 'Combo' button in the 'Emulation Events' tab, accessible
+  when a Combo event has been selected from the list of events on the left.
+  Clicking 'Combo' will show a dialog similar to the following:</p>
+  <img src="graphics/eventmapping_combo.png">
+  <p>In this dialog, you can assign various events to the selected combo event.
+  Note that this simply assigns multiple events to the combo; you still need
+  to map the combo event itself to some action, as described in the 'remap an
+  event' section above.</p>
+
+  </p>
 
   <p>Virtual devices can be configured under the 'Virtual Devs' tab, shown below:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
@@ -3199,8 +3216,8 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP">Mark&nbsp;Grebe<br>
       (<a href="http://www.atarimac.com">http://www.atarimac.com</a>)</td>
-      <td>Author of the Macintosh OSX version of Stella starting with the
-      1.4 release until release 2.4.  Helped with Stelladaptor support.</td>
+      <td>Author of the Macintosh OSX version of Stella from releases
+      1.4 to 2.4.  Helped with Stelladaptor support.</td>
     </tr>
 
     <tr>
@@ -3242,8 +3259,8 @@ Ms Pac-Man (Stella extended codes):
 
     <tr>
       <td VALIGN="TOP">Kostas&nbsp;Nakos</td>
-      <td>Author/maintainer of the WinCE version of Stella starting with the
-        2.0 release</td>
+      <td>Author/maintainer of the WinCE version of Stella from releases 2.0
+      to  2.3.5</td>
     </tr>
 
     <tr>
@@ -3282,13 +3299,26 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
+      <td VALIGN="TOP">Omegamatrix</td>
+      <td>Provided test ROMs which led to more accurate emulation for SWCHx/SWxCNT
+      and RIOT behaviour, and for 'illegal' TIA reads</td>
+    </tr>
+
+    <tr>
       <td VALIGN="TOP">John&nbsp;Payson</td>
       <td>Provided EEPROM emulation code for AtariVox and SaveKey support</td>
     </tr>
 
     <tr>
+      <td VALIGN="TOP">Wilbert&nbsp;Pol</td>
+      <td>Provided many ideas and some sample algorithms for greatly improving
+      'illegal HMOVE' emulation</td>
+    </tr>
+
+    <tr>
       <td VALIGN="TOP">Manuel&nbsp;Polik</td>
-      <td>Author of the Windows version of Stella starting with the 1.2 release</td>
+      <td>Author of the Windows version of Stella (Cyberstella) starting with the 1.2
+      release until its retirement</td>
     </tr>
 
     <tr>
@@ -3320,7 +3350,7 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP">Jason&nbsp;Scott</td>
       <td>Organizer of the property file archive for early versions of
-      Stella; now he's helping with the web site</td>
+      Stella</td>
     </tr>
 
     <tr>
@@ -3394,7 +3424,8 @@ Ms Pac-Man (Stella extended codes):
 
     <tr>
       <td VALIGN="TOP">David&nbsp;Voswinkel</td>
-      <td>Maintainer of the PSP version of Stella starting with the 2.0 release</td>
+      <td>Maintainer of the PSP version of Stella starting with the 2.0 release
+      until release 2.2</td>
     </tr>
 
     <tr>
@@ -3424,7 +3455,7 @@ Ms Pac-Man (Stella extended codes):
 
     <tr>
       <td VALIGN="TOP">Alex&nbsp;Zaballa</td>
-      <td>Maintainer of the GP2X version of Stella starting with the 2.1 release</td>
+      <td>Maintainer of the GP2X version of Stella from releases 2.1 to 2.3.5</td>
     </tr>
 
   </table>

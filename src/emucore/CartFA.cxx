@@ -24,7 +24,8 @@
 #include "CartFA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA::CartridgeFA(const uInt8* image)
+CartridgeFA::CartridgeFA(const uInt8* image, const Settings& settings)
+  : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 12288);
@@ -44,9 +45,12 @@ CartridgeFA::~CartridgeFA()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA::reset()
 {
-  // Initialize RAM with random values
-  for(uInt32 i = 0; i < 256; ++i)
-    myRAM[i] = mySystem->randGenerator().next();
+  // Initialize RAM
+  if(mySettings.getBool("ramrandom"))
+    for(uInt32 i = 0; i < 256; ++i)
+      myRAM[i] = mySystem->randGenerator().next();
+  else
+    memset(myRAM, 0, 256);
 
   // Upon reset we switch to the startup bank
   bank(myStartBank);

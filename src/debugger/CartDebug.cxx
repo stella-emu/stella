@@ -37,8 +37,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
-  // Create an addresslist for each potential bank
-  for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
+  // Create an addresslist for each potential bank, and an extra one for ZP RAM
+  for(int i = 0; i < myConsole.cartridge().bankCount()+1; ++i)
   {
     AddressList l;
     myEntryAddresses.push_back(l);
@@ -46,6 +46,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
 
   // We know the address for the startup bank right now
   myEntryAddresses[myConsole.cartridge().startBank()].push_back(myDebugger.dpeek(0xfffc));
+  addLabel("START", myDebugger.dpeek(0xfffc));
 
   // Add system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
@@ -193,55 +194,59 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 {
   // Test current disassembly; don't re-disassemble if it hasn't changed
   // Also check if the current PC is in the current list
-  // Note that for now, we don't re-disassemble if the PC isn't in cart
-  // address space, since Distella doesn't yet support disassembling from
-  // zero-page RAM and ROM at the same time
+  bool bankChanged = myConsole.cartridge().bankChanged();
   uInt16 PC = myDebugger.cpuDebug().pc();
   int pcline = addressToLine(PC);
-  bool changed = (force || myConsole.cartridge().bankChanged() ||
-                 (pcline == -1) || mySystem.isPageDirty(0x1000, 0x1FFF));
+  bool pcfound = (pcline != -1) && ((uInt32)pcline < myDisassembly.list.size()) &&
+                  (myDisassembly.list[pcline].disasm[0] != '.');
+  bool pagedirty = (PC & 0x1000) ? mySystem.isPageDirty(0x1000, 0x1FFF) :
+                                   mySystem.isPageDirty(0x80, 0xFF);
 
+  bool changed = (force || bankChanged || !pcfound || pagedirty);
   if(changed)
   {
-    AddressList& addresses = myEntryAddresses[getBank()];
+    // Are we disassembling from ROM or ZP RAM?
+    AddressList& addresses = (PC & 0x1000) ? myEntryAddresses[getBank()] :
+        myEntryAddresses[myEntryAddresses.size()-1];
 
-    // If the bank has changed, all old addresses must be 'converted'
+    // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
     uInt16 offset = (PC - (PC % 0x1000));
-    for(uInt32 i = 0; i < addresses.size(); ++i)
-      addresses[i] = (addresses[i] & 0xFFF) + offset;
+    for(AddressList::iterator i = addresses.begin(); i != addresses.end(); ++i)
+      *i = (*i & 0xFFF) + offset;
 
-    addresses.push_back_unique(PC);
-
-    uInt16 start = addresses[0];
-    if(pcline == -1 && (PC & 0x1000))
-      start = PC;
-
-    // For now, DiStella can't handle address space below 0x1000
-    // However, we want to disassemble at least once, otherwise carts
-    // that run entirely from ZP RAM will have an empty disassembly
-    // TODO - this will be removed once Distella properly supports
-    //        access below 0x1000
-    uInt16 search = PC;
-    if(!(PC & 0x1000))
+    // Only add addresses when absolutely necessary, to cut down on the
+    // work that Distella has to do
+    // Distella expects the addresses to be unique and in sorted order
+    if(bankChanged || !pcfound)
     {
-      if(myDisassembly.list.size() == 0)
-        search = start;
-      else
-        return false;
+      AddressList::iterator i;
+      for(i = addresses.begin(); i != addresses.end(); ++i)
+      {
+        if(PC < *i)
+        {
+          addresses.insert(i, PC);
+          break;
+        }
+        else if(PC == *i)  // already present
+          break;
+      }
+      // Otherwise, add the item at the end
+      if(i == addresses.end())
+        addresses.push_back(PC);
     }
 
     // Check whether to use the 'resolvedata' functionality from Distella
     if(resolvedata == "never")
-      fillDisassemblyList(addresses, false, search);
+      fillDisassemblyList(addresses, false, PC);
     else if(resolvedata == "always")
-      fillDisassemblyList(addresses, true, search);
+      fillDisassemblyList(addresses, true, PC);
     else  // 'auto'
     {
       // First try with resolvedata on, then turn off if PC isn't found
-      if(!fillDisassemblyList(addresses, true, search))
-        fillDisassemblyList(addresses, false, search);
+      if(!fillDisassemblyList(addresses, true, PC))
+        fillDisassemblyList(addresses, false, PC);
     }
   }
 
@@ -249,14 +254,13 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::fillDisassemblyList(const AddressList& addresses,
+bool CartDebug::fillDisassemblyList(AddressList& addresses,
                                     bool resolvedata, uInt16 search)
 {
   bool found = false;
 
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 10 + myLabelLength;
-cerr << "start (" << getBank() << "): ";
   DiStella distella(*this, myDisassembly.list, addresses, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
@@ -556,7 +560,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::extractLabel(char *c) const
+string CartDebug::extractLabel(const char *c) const
 {
   string l = "";
   while(*c != ' ')
@@ -566,7 +570,7 @@ string CartDebug::extractLabel(char *c) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::extractValue(char *c) const
+int CartDebug::extractValue(const char *c) const
 {
   while(*c != ' ')
   {
