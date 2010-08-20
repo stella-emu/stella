@@ -121,7 +121,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("autoslot", "false");
   setInternal("showinfo", "1");
   setInternal("tiadriven", "false");
-  setInternal("ramrandom", "false");
+  setInternal("ramrandom", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
   setInternal("audiofirst", "true");
