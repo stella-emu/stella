@@ -1,5 +1,5 @@
 %define name    stella
-%define version 3.2
+%define version 3.2.1
 %define rel     1
 
 %define enable_gl 1
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Wed Aug 25 2010 Stephen Anthony <stephena@users.sf.net> 3.2.1-1
+- Version 3.2.1 release
+
 * Fri Aug 20 2010 Stephen Anthony <stephena@users.sf.net> 3.2-1
 - Version 3.2 release
 

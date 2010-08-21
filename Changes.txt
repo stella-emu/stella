@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.2 to 3.2.1: (August x, 2010)
+3.2 to 3.2.1: (August 25, 2010)
 
   * Improved behaviour of joystick 'hat' movement.  This should fix bugs
     most visible in Yars' Revenge.
