@@ -848,18 +848,32 @@ void EventHandler::poll(uInt64 time)
         // Preprocess all hat events, converting to Stella JoyHat type
         // Generate multiple equivalent hat events representing combined direction
         // when we get a diagonal hat event
-        if(value == SDL_HAT_CENTERED)
-          handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
-        else
+        if(myState == S_EMULATE)
         {
-          if(value & SDL_HAT_UP)
-            handleJoyHatEvent(stick, hat, EVENT_HATUP);
-          if(value & SDL_HAT_RIGHT)
-            handleJoyHatEvent(stick, hat, EVENT_HATRIGHT); 
-          if(value & SDL_HAT_DOWN)
-            handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
-          if(value & SDL_HAT_LEFT)
-            handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
+          handleEvent(myJoyHatTable[stick][hat][EVENT_HATUP][kEmulationMode],
+                      value & SDL_HAT_UP);
+          handleEvent(myJoyHatTable[stick][hat][EVENT_HATRIGHT][kEmulationMode],
+                      value & SDL_HAT_RIGHT);
+          handleEvent(myJoyHatTable[stick][hat][EVENT_HATDOWN][kEmulationMode],
+                      value & SDL_HAT_DOWN);
+          handleEvent(myJoyHatTable[stick][hat][EVENT_HATLEFT][kEmulationMode],
+                      value & SDL_HAT_LEFT);
+        }
+        else if(myOverlay != NULL)
+        {
+          if(value == SDL_HAT_CENTERED)
+            myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATCENTER);
+          else
+          {
+            if(value & SDL_HAT_UP)
+              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATUP);
+            if(value & SDL_HAT_RIGHT)
+              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATRIGHT); 
+            if(value & SDL_HAT_DOWN)
+              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATDOWN);
+            if(value & SDL_HAT_LEFT)
+              myOverlay->handleJoyHatEvent(stick, hat, EVENT_HATLEFT);
+          }
         }
         break;  // SDL_JOYHATMOTION
       }
@@ -909,29 +923,6 @@ void EventHandler::poll(uInt64 time)
   // in the previous ::update() methods, they're now invalid
   myEvent->set(Event::MouseAxisXValue, 0);
   myEvent->set(Event::MouseAxisYValue, 0);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::handleJoyHatEvent(int stick, int hat, JoyHat value)
-{
-#ifdef JOYSTICK_SUPPORT
-  if(myState == S_EMULATE)
-  {
-    if(value == EVENT_HATCENTER)
-    {
-      // Turn off all associated events, since we don't know exactly
-      // which one was previously activated.
-      handleEvent(myJoyHatTable[stick][hat][EVENT_HATUP]   [kEmulationMode], 0);
-      handleEvent(myJoyHatTable[stick][hat][EVENT_HATDOWN] [kEmulationMode], 0);
-      handleEvent(myJoyHatTable[stick][hat][EVENT_HATLEFT] [kEmulationMode], 0);
-      handleEvent(myJoyHatTable[stick][hat][EVENT_HATRIGHT][kEmulationMode], 0);
-    }
-    else
-      handleEvent(myJoyHatTable[stick][hat][value][kEmulationMode], 1);
-  }
-  else if(myOverlay != NULL)
-    myOverlay->handleJoyHatEvent(stick, hat, value);
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -52,7 +52,7 @@ class InputDialog : public Dialog
     void setDefaults();
 
   private:
-    void addVDeviceTab(const GUI::Font& font);
+    void addDevicePortTab(const GUI::Font& font);
 
   private:
     enum {

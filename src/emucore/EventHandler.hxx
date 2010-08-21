@@ -337,15 +337,6 @@ class EventHandler
 
   private:
     /**
-      Send a joystick hat event to the handler
-
-      @param stick  The joystick number
-      @param hat    The joystick hat
-      @param value  The value on the given hat
-    */
-    void handleJoyHatEvent(int stick, int hat, JoyHat value);
-	
-    /**
       Detects and changes the eventhandler state
 
       @param type  The event

@@ -19607,3 +19607,9 @@
 "Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
 ""
+
+"Cartridge.MD5" "4afa7f377eae1cafb4265c68f73f2718"
+"Cartridge.Manufacturer" "Ed Fries"
+"Cartridge.Name" "Halo 2600 (2010) (Ed Fries)"
+"Cartridge.Rarity" "Homebrew"
+""

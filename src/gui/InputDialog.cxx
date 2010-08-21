@@ -48,7 +48,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   WidgetArray wid;
 
   // Set real dimensions
-  _w = BSPF_min(48 * fontWidth + 10, max_w);
+  _w = BSPF_min(49 * fontWidth + 10, max_w);
   _h = BSPF_min(12 * (lineHeight + 4) + 10, max_h);
 
   // The tab widget
@@ -78,8 +78,8 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   myTab->setParentWidget(tabID, myMenuEventMapper);
   addToFocusList(myMenuEventMapper->getFocusList(), tabID);
 
-  // 3) Virtual device support
-  addVDeviceTab(font);
+  // 3) Devices & ports
+  addDevicePortTab(font);
 
   // Finalize the tabs, and activate the first tab
   myTab->activateTabs();
@@ -101,7 +101,7 @@ InputDialog::~InputDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::addVDeviceTab(const GUI::Font& font)
+void InputDialog::addDevicePortTab(const GUI::Font& font)
 {
   const int lineHeight = font.getLineHeight(),
             fontWidth  = font.getMaxCharWidth(),
@@ -110,8 +110,8 @@ void InputDialog::addVDeviceTab(const GUI::Font& font)
   WidgetArray wid;
   StringMap items;
 
-  // Virtual device/ports
-  tabID = myTab->addTab("Virtual Devs");
+  // Devices/ports
+  tabID = myTab->addTab("Devices & Ports");
 
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;

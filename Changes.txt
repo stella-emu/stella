@@ -12,6 +12,20 @@
                                Release History
 ===========================================================================
 
+3.2 to 3.2.1: (August x, 2010)
+
+  * Improved behaviour of joystick 'hat' movement.  This should fix bugs
+    most visible in Yars' Revenge.
+
+  * Fixed bug in debugger rewind states; bankswitching wasn't being
+    performed during the rewind.  Related to this, fixed a similar issue
+    with the debugger 'loadstate' and 'savestate' commands.
+
+  * Added game properties info for the newly released 'Halo 2600' ROM.
+
+-Have fun!
+
+
 3.1.2 to 3.2: (August 20, 2010)
 
   * NOTE: because of the many event-related changes in this release, all
@@ -110,8 +124,6 @@
     detected, and to properly handle filenames with spaces.
 
   * Updated included ZLib to latest release version (1.2.5).
-
--Have fun!
 
 
 3.1.1 to 3.1.2: (May 3, 2010)

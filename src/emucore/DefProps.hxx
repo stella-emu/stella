@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3240
+#define DEF_PROPS_SIZE 3241
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -983,6 +983,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "4ac9f40ddfcf194bd8732a75b3f2f214", "Atari, Stephen Keith, Preston Stuart", "CX26106", "Grover's Music Maker (12-29-1982) (Atari) (Prototype)", "Uses Kids/Keypad Controllers", "Prototype", "", "", "", "", "", "", "KEYBOARD", "KEYBOARD", "", "", "", "", "", "" }, 
   { "4ae8c76cd6f24a2e181ae874d4d2aa3d", "", "", "Flash Gordon (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4af4103759d603c82b1c9c5acd2d8faf", "Imagic, Bob Smith", "720114-2A, 13207, EIZ-001-04I", "Moonsweeper (1983) (Imagic) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
+  { "4afa7f377eae1cafb4265c68f73f2718", "Ed Fries", "", "Halo 2600 (2010) (Ed Fries)", "", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4afe528a082f0d008e7319ebd481248d", "", "", "Multi-Color Demo 1 (Bob Colbert) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4b143d7dcf6c96796c37090cba045f4f", "Atari, Jim Huether - Sears", "CX2644 - 6-99824", "Flag Capture (1978) (Atari) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "4b205ef73a5779acc5759bde3f6d33ed", "", "", "Berzerk (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
