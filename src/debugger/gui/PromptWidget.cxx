@@ -179,7 +179,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
           _exitedEarly = true;
           return true;
         }
-        else
+        else if(result != "")
           print(result + "\n");
       }
 

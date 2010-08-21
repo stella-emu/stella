@@ -1026,10 +1026,7 @@ void DebuggerParser::executeListtraps()
 void DebuggerParser::executeLoadstate()
 {
   if(args[0] >= 0 && args[0] <= 9)
-  {
     debugger->loadState(args[0]);
-    commandResult << "state loaded";
-  }
   else
     commandResult << red("invalid slot (must be 0-9)");
 }
@@ -1257,10 +1254,7 @@ void DebuggerParser::executeSaveses()
 void DebuggerParser::executeSavestate()
 {
   if(args[0] >= 0 && args[0] <= 9)
-  {
     debugger->saveState(args[0]);
-    commandResult << "state saved";
-  }
   else
     commandResult << red("invalid slot (must be 0-9)");
 }
