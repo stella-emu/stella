@@ -49,10 +49,11 @@ class DiStella
       @param dbg         The CartDebug instance containing all label information
       @param list        The results of the disassembly are placed here
       @param addresses   The address(es) at which to start disassembly
+      @param banksize    Size of the bank in KB (possible values are 4 or 2)
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             AddressList& addresses, bool resolvedata = true);
+             AddressList& addresses, uInt16 banksize = 4, bool resolvedata = true);
 
     ~DiStella();
 

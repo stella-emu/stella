@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   AddressList& addresses, bool resolvedata)
+                   AddressList& addresses, uInt16 banksize, bool resolvedata)
   : myDbg(dbg),
     myList(list)
 {
@@ -33,42 +33,53 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
 
-  /*============================================
-    The offset is the address where the code segment
-    starts.  For a 4K game, it is usually 0xf000,
-    which would then have the code data end at 0xffff,
-    but that is not necessarily the case.  Because the
-    Atari 2600 only has 13 address lines, it's possible
-    that the "code" can be considered to start in a lot
-    of different places.  So, we use the start
-    address as a reference to determine where the
-    offset is, logically-anded to produce an offset
-    that is a multiple of 4K.
-
-    Example:
-      Start address = $D973, so therefore
-      Offset to code = $D000
-      Code range = $D000-$DFFF
-  =============================================*/
-
   AddressList::iterator it = addresses.begin();
   uInt16 start = *it++;
 
-  if(start & 0x1000)  // ROM space
+  if(start & 0x1000)
   {
-    myAppData.start  = 0x0000;
-    myAppData.end    = 0x0FFF;
-    myAppData.length = 4096;
+    if(banksize == 4)  // 4K ROM space
+    {
+      /*============================================
+        The offset is the address where the code segment
+        starts.  For a 4K game, it is usually 0xf000.
+
+        Example:
+          Start address = $D973, so therefore
+          Offset to code = $D000
+          Code range = $D000-$DFFF
+      =============================================*/
+      myAppData.start  = 0x0000;
+      myAppData.end    = 0x0FFF;
+      myAppData.length = 4096;
+
+      myOffset = (start - (start % 0x1000));
+    }
+    else  // 2K ROM space
+    {
+      /*============================================
+        The offset is the address where the code segment
+        starts.  For a 2K game, it is usually 0xf800,
+        but can also be 0xf000.
+      =============================================*/
+      myAppData.start  = 0x0000;
+      myAppData.end    = 0x07FF;
+      myAppData.length = 2048;
+
+      myOffset = (start & 0xF800);
+    }
   }
-  else                // ZP RAM
+  else  // ZP RAM
   {
+    // For now, we assume all accesses below $1000 are zero-page 
     myAppData.start  = 0x0080;
     myAppData.end    = 0x00FF;
     myAppData.length = 128;
-  }
-  memset(labels, 0, 0x1000);
 
-  myOffset = (start - (start % 0x1000));
+    myOffset = 0;
+  }
+
+  memset(labels, 0, 0x1000);
   myAddressQueue.push(start);
 
   if(resolvedata)

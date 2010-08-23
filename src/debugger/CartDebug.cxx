@@ -261,7 +261,9 @@ bool CartDebug::fillDisassemblyList(AddressList& addresses,
 
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 10 + myLabelLength;
-  DiStella distella(*this, myDisassembly.list, addresses, resolvedata);
+  uInt16 banksize =
+    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
+  DiStella distella(*this, myDisassembly.list, addresses, banksize, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -297,7 +299,9 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   Disassembly disasm;
   AddressList addresses;
   addresses.push_back(start);
-  DiStella distella(*this, disasm.list, addresses, false);
+  uInt16 banksize =
+    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
+  DiStella distella(*this, disasm.list, addresses, banksize, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
