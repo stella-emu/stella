@@ -27,7 +27,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 		breakpoints as you want.</li>
 
 	<li>Conditional breakpoints - Break running program when some arbitrary
-		condition is true (e.g. "breakif {a == $7f &amp;&amp; c}" will break when the	Accumulator value is $7f and the Carry flag is true, no matter where
+		condition is true (e.g. "breakif &apos;a == $7f &amp;&amp; c&apos;" will break when the	Accumulator value is $7f and the Carry flag is true, no matter where
 		in the program this happens). Unlike the cond breaks in PCAE, Stella's
 		are *fast*: the emulation will run at full speed unless you use lots
 		of breakif's at the same time, or have a slow CPU.</li>
@@ -387,9 +387,9 @@ we want to apply the ! to the result of the &amp;, not just the first term
 <p>"breakif !(*SWCHB&amp;1)" will do the job for us. However, it's an ugly mess
 of letters, numbers, and punctuation. We can do a little better:</p>
 
-<p>"breakif { !(*SWCHB &amp; 1 ) }" is a lot more readable, isn't it? If
+<p>"breakif &apos; !(*SWCHB &amp; 1 ) &apos;" is a lot more readable, isn't it? If
 you're going to use readable expressions with spaces in them,
-enclose the entire expression in curly braces {}.</p>
+enclose the entire expression in single quotes.</p>
 
 <p>Remember that Stella only checks for input once per frame, so a break
 condition that depends on input (like SWCHB) will always happen at the
@@ -415,7 +415,7 @@ if we wanted to use it again.</p>
 "breakif function_name":</p>
 
 <pre>
-	function gameReset { !(*SWCHB &amp; 1 ) }
+	function gameReset &apos; !(*SWCHB &amp; 1 ) &apos;
 	breakif gameReset
 </pre>
 
@@ -426,7 +426,7 @@ if the Game Select switch is pressed. We want to break when the user
 presses both Select and Reset:</p>
 
 <pre>
-	breakif { gameReset &amp;&amp; gameSelect }
+	breakif &apos; gameReset &amp;&amp; gameSelect &apos;
 </pre>
 
 <p>User-defined functions appear in "listfunctions", which shows the label
@@ -464,7 +464,7 @@ of this file will depend on the version of Stella, as follows:</p>
 		</tr>
 	</table>
 <p>Note that these '.stella' script files are only accessed if you enter
-the debugger at least one during a program run.  This means you can create
+the debugger at least once during a program run.  This means you can create
 these files, and not worry about slowing down emulation unless you're
 actively using the debugger.</p>
 
@@ -491,8 +491,8 @@ Stella debugger.</p>
 <tr><td> _joy1up</td><td> !(*SWCHA &amp; $01)</td><td> Right joystick moved up</td></tr>
 <tr><td> _joy1down</td><td> !(*SWCHA &amp; $02)</td><td> Right joystick moved down</td></tr>
 <tr><td> _joy1button</td><td> !(*INPT5 &amp; $80)</td><td> Right joystick button pressed</td></tr>
-<tr><td> _select</td><td> !(*SWCHB &amp; $01)</td><td> Game Select pressed</td></tr>
-<tr><td> _reset</td><td> !(*SWCHB &amp; $02)</td><td> Game Reset pressed</td></tr>
+<tr><td> _select</td><td> !(*SWCHB &amp; $02)</td><td> Game Select pressed</td></tr>
+<tr><td> _reset</td><td> !(*SWCHB &amp; $01)</td><td> Game Reset pressed</td></tr>
 <tr><td> _color</td><td> *SWCHB &amp; $08</td><td> Color/BW set to Color</td></tr>
 <tr><td> _bw</td><td> !(*SWCHB &amp; $08)</td><td> Color/BW set to BW</td></tr>
 <tr><td> _diff0b</td><td> !(*SWCHB &amp; $40)</td><td> Left difficulty set to B (easy)</td></tr>
@@ -534,7 +534,7 @@ beginning of the 64th scanline.</p>
 (non-bankswitched) ROMs, it will always contain 0. One useful use is:</p>
 
 <pre>
-    breakif { pc==myLabel &amp;&amp; _bank==1 }
+    breakif &apos; pc==myLabel &amp;&amp; _bank==1 &apos;
 </pre>
 
 <p>This is similar to setting a regular breakpoint, but it will only trigger

@@ -200,14 +200,14 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       int len = _promptEndPos - _promptStartPos;
       if(len > 256) len = 256;
 
-	  int lastDelimPos = -1;
+      int lastDelimPos = -1;
       char delimiter = '\0';
 
       char str[256];
       for (i = 0; i < len; i++)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
-        if(strchr("*@<> ", str[i]) != NULL )
+        if(strchr("\'*@<> ", str[i]) != NULL )
         {
           lastDelimPos = i;
           delimiter = str[i];
@@ -885,7 +885,7 @@ string PromptWidget::getCompletionPrefix(const StringList& completions, string p
       const string& s = completions[i];
       if(s.length() < prefix.length())
         return prefix;  // current prefix is the best we're going to get
-      else if(s.compare(0, prefix.length(), prefix) != 0)
+      else if(!BSPF_startsWithIgnoreCase(s, prefix))
       {
         prefix.erase(prefix.length()-1);
         return prefix;

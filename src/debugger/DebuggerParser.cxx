@@ -108,7 +108,7 @@ string DebuggerParser::run(const string& command)
 
   for(int i = 0; i < kNumCommands; ++i)
   {
-    if(verb == commands[i].cmdString)
+    if(BSPF_equalsIgnoreCase(verb, commands[i].cmdString))
     {
       if(validateArgs(i))
         CALL_METHOD(commands[i].executor);
@@ -159,9 +159,8 @@ void DebuggerParser::getCompletions(const char* in, StringList& completions) con
   // cerr << "Attempting to complete \"" << in << "\"" << endl;
   for(int i = 0; i < kNumCommands; ++i)
   {
-    const char* l = commands[i].cmdString.c_str();
-    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
-      completions.push_back(l);
+    if(BSPF_startsWithIgnoreCase(commands[i].cmdString.c_str(), in))
+      completions.push_back(commands[i].cmdString);
   }
 }
 
@@ -341,7 +340,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
           verb += c;
         break;
       case kIN_SPACE:
-        if(c == '{')
+        if(c == '\'')
           state = kIN_BRACE;
         else if(c != ' ') {
           state = kIN_ARG;
@@ -349,7 +348,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
         }
         break;
       case kIN_BRACE:
-        if(c == '}') {
+        if(c == '\'') {
           state = kIN_SPACE;
           argStrings.push_back(curArg);
           //  cerr << "{" << curArg << "}" << endl;
