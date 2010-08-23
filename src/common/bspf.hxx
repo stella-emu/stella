@@ -67,6 +67,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <cstring>
 #include <cctype>
 using namespace std;
 
