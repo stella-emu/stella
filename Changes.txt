@@ -21,7 +21,8 @@
     performed during the rewind.  Related to this, fixed a similar issue
     with the debugger 'loadstate' and 'savestate' commands.
 
-  * Added game properties info for the newly released 'Halo 2600' ROM.
+  * Added game properties info and snapshot for the newly released
+    'Halo 2600' ROM.
 
 -Have fun!
 
