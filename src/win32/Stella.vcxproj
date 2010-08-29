@@ -1,0 +1,585 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{D7FCEC7F-33E1-49DD-A4B0-D5FC222250AD}</ProjectGuid>
+    <RootNamespace>Stella</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Debug\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Release\</IntDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</OutDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='Release|x64'">$(Platform)\$(Configuration)\</IntDir>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>SDL.lib
+SDLmain.lib
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Stella.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>false</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>SDL.lib
+SDLmain.lib
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Stella.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <ProgramDatabaseFile>$(OutDir)Stella.pdb</ProgramDatabaseFile>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <OmitFramePointers>true</OmitFramePointers>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>SDL.lib
+SDLmain.lib
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Stella.exe</OutputFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX86</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
+      <Optimization>Disabled</Optimization>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <OmitFramePointers>true</OmitFramePointers>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <RuntimeTypeInfo>false</RuntimeTypeInfo>
+      <PrecompiledHeader>
+      </PrecompiledHeader>
+      <WarningLevel>Level2</WarningLevel>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <AdditionalOptions>SDL.lib
+SDLmain.lib
+ %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>sdl.lib;sdlmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)Stella.exe</OutputFile>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <DataExecutionPrevention>
+      </DataExecutionPrevention>
+      <TargetMachine>MachineX64</TargetMachine>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\common\FrameBufferGL.cxx" />
+    <ClCompile Include="..\common\FrameBufferSoft.cxx" />
+    <ClCompile Include="FSNodeWin32.cxx" />
+    <ClCompile Include="..\common\mainSDL.cxx" />
+    <ClCompile Include="OSystemWin32.cxx" />
+    <ClCompile Include="..\common\PNGLibrary.cxx" />
+    <ClCompile Include="..\common\RectList.cxx" />
+    <ClCompile Include="SDL_win32_main.c" />
+    <ClCompile Include="SerialPortWin32.cxx" />
+    <ClCompile Include="SettingsWin32.cxx" />
+    <ClCompile Include="..\common\Snapshot.cxx" />
+    <ClCompile Include="..\common\SoundNull.cxx" />
+    <ClCompile Include="..\common\SoundSDL.cxx" />
+    <ClCompile Include="..\emucore\AtariVox.cxx" />
+    <ClCompile Include="..\emucore\Booster.cxx" />
+    <ClCompile Include="..\emucore\Cart.cxx" />
+    <ClCompile Include="..\emucore\Cart0840.cxx" />
+    <ClCompile Include="..\emucore\Cart2K.cxx" />
+    <ClCompile Include="..\emucore\Cart3E.cxx" />
+    <ClCompile Include="..\emucore\Cart3F.cxx" />
+    <ClCompile Include="..\emucore\Cart4A50.cxx" />
+    <ClCompile Include="..\emucore\Cart4K.cxx" />
+    <ClCompile Include="..\emucore\CartAR.cxx" />
+    <ClCompile Include="..\emucore\CartCV.cxx" />
+    <ClCompile Include="..\emucore\CartDPC.cxx" />
+    <ClCompile Include="..\emucore\CartDPCPlus.cxx" />
+    <ClCompile Include="..\emucore\CartE0.cxx" />
+    <ClCompile Include="..\emucore\CartE7.cxx" />
+    <ClCompile Include="..\emucore\CartEF.cxx" />
+    <ClCompile Include="..\emucore\CartEFSC.cxx" />
+    <ClCompile Include="..\emucore\CartF0.cxx" />
+    <ClCompile Include="..\emucore\CartF4.cxx" />
+    <ClCompile Include="..\emucore\CartF4SC.cxx" />
+    <ClCompile Include="..\emucore\CartF6.cxx" />
+    <ClCompile Include="..\emucore\CartF6SC.cxx" />
+    <ClCompile Include="..\emucore\CartF8.cxx" />
+    <ClCompile Include="..\emucore\CartF8SC.cxx" />
+    <ClCompile Include="..\emucore\CartFA.cxx" />
+    <ClCompile Include="..\emucore\CartFE.cxx" />
+    <ClCompile Include="..\emucore\CartMC.cxx" />
+    <ClCompile Include="..\emucore\CartSB.cxx" />
+    <ClCompile Include="..\emucore\CartUA.cxx" />
+    <ClCompile Include="..\emucore\CartX07.cxx" />
+    <ClCompile Include="..\emucore\Console.cxx" />
+    <ClCompile Include="..\emucore\Control.cxx" />
+    <ClCompile Include="..\emucore\Device.cxx" />
+    <ClCompile Include="..\emucore\Driving.cxx" />
+    <ClCompile Include="..\emucore\Event.cxx" />
+    <ClCompile Include="..\emucore\EventHandler.cxx" />
+    <ClCompile Include="..\emucore\FrameBuffer.cxx" />
+    <ClCompile Include="..\emucore\FSNode.cxx" />
+    <ClCompile Include="..\emucore\Genesis.cxx" />
+    <ClCompile Include="..\emucore\Joystick.cxx" />
+    <ClCompile Include="..\emucore\Keyboard.cxx" />
+    <ClCompile Include="..\emucore\KidVid.cxx" />
+    <ClCompile Include="..\emucore\M6502.cxx" />
+    <ClCompile Include="..\emucore\M6532.cxx" />
+    <ClCompile Include="..\emucore\MD5.cxx" />
+    <ClCompile Include="..\emucore\MediaFactory.cxx" />
+    <ClCompile Include="..\emucore\MT24LC256.cxx" />
+    <ClCompile Include="..\emucore\NullDev.cxx" />
+    <ClCompile Include="..\emucore\OSystem.cxx" />
+    <ClCompile Include="..\emucore\Paddles.cxx" />
+    <ClCompile Include="..\emucore\Props.cxx" />
+    <ClCompile Include="..\emucore\PropsSet.cxx" />
+    <ClCompile Include="..\emucore\Random.cxx" />
+    <ClCompile Include="..\emucore\SaveKey.cxx" />
+    <ClCompile Include="..\emucore\Serializer.cxx" />
+    <ClCompile Include="..\emucore\Settings.cxx" />
+    <ClCompile Include="..\emucore\StateManager.cxx" />
+    <ClCompile Include="..\emucore\Switches.cxx" />
+    <ClCompile Include="..\emucore\System.cxx" />
+    <ClCompile Include="..\emucore\TIA.cxx" />
+    <ClCompile Include="..\emucore\TIASnd.cxx" />
+    <ClCompile Include="..\emucore\TIATables.cxx" />
+    <ClCompile Include="..\emucore\TrackBall.cxx" />
+    <ClCompile Include="..\emucore\unzip.c" />
+    <ClCompile Include="..\cheat\BankRomCheat.cxx" />
+    <ClCompile Include="..\cheat\CheatCodeDialog.cxx" />
+    <ClCompile Include="..\cheat\CheatManager.cxx" />
+    <ClCompile Include="..\cheat\CheetahCheat.cxx" />
+    <ClCompile Include="..\cheat\RamCheat.cxx" />
+    <ClCompile Include="..\debugger\gui\AudioWidget.cxx" />
+    <ClCompile Include="..\debugger\CartDebug.cxx" />
+    <ClCompile Include="..\debugger\gui\ColorWidget.cxx" />
+    <ClCompile Include="..\debugger\CpuDebug.cxx" />
+    <ClCompile Include="..\debugger\gui\CpuWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\DataGridOpsWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\DataGridWidget.cxx" />
+    <ClCompile Include="..\debugger\Debugger.cxx" />
+    <ClCompile Include="..\debugger\gui\DebuggerDialog.cxx" />
+    <ClCompile Include="..\debugger\DebuggerParser.cxx" />
+    <ClCompile Include="..\debugger\DiStella.cxx" />
+    <ClCompile Include="..\debugger\Expression.cxx" />
+    <ClCompile Include="..\debugger\PackedBitArray.cxx" />
+    <ClCompile Include="..\debugger\gui\PromptWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\RamWidget.cxx" />
+    <ClCompile Include="..\debugger\RiotDebug.cxx" />
+    <ClCompile Include="..\debugger\gui\RiotWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\RomListWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\RomWidget.cxx" />
+    <ClCompile Include="..\debugger\TIADebug.cxx" />
+    <ClCompile Include="..\debugger\gui\TiaInfoWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\TiaOutputWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\TiaWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\TiaZoomWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\ToggleBitWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\TogglePixelWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\ToggleWidget.cxx" />
+    <ClCompile Include="..\yacc\YaccParser.cxx" />
+    <ClCompile Include="..\gui\AboutDialog.cxx" />
+    <ClCompile Include="..\gui\AudioDialog.cxx" />
+    <ClCompile Include="..\gui\BrowserDialog.cxx" />
+    <ClCompile Include="..\gui\CheckListWidget.cxx" />
+    <ClCompile Include="..\gui\ComboDialog.cxx" />
+    <ClCompile Include="..\gui\CommandDialog.cxx" />
+    <ClCompile Include="..\gui\CommandMenu.cxx" />
+    <ClCompile Include="..\gui\ContextMenu.cxx" />
+    <ClCompile Include="..\gui\Dialog.cxx" />
+    <ClCompile Include="..\gui\DialogContainer.cxx" />
+    <ClCompile Include="..\gui\EditableWidget.cxx" />
+    <ClCompile Include="..\gui\EditTextWidget.cxx" />
+    <ClCompile Include="..\gui\EventMappingWidget.cxx" />
+    <ClCompile Include="..\gui\FileSnapDialog.cxx" />
+    <ClCompile Include="..\gui\Font.cxx" />
+    <ClCompile Include="..\gui\GameInfoDialog.cxx" />
+    <ClCompile Include="..\gui\GameList.cxx" />
+    <ClCompile Include="..\gui\GlobalPropsDialog.cxx" />
+    <ClCompile Include="..\gui\HelpDialog.cxx" />
+    <ClCompile Include="..\gui\InputDialog.cxx" />
+    <ClCompile Include="..\gui\InputTextDialog.cxx" />
+    <ClCompile Include="..\gui\Launcher.cxx" />
+    <ClCompile Include="..\gui\LauncherDialog.cxx" />
+    <ClCompile Include="..\gui\LauncherFilterDialog.cxx" />
+    <ClCompile Include="..\gui\ListWidget.cxx" />
+    <ClCompile Include="..\gui\Menu.cxx" />
+    <ClCompile Include="..\gui\MessageBox.cxx" />
+    <ClCompile Include="..\gui\OptionsDialog.cxx" />
+    <ClCompile Include="..\gui\PopUpWidget.cxx" />
+    <ClCompile Include="..\gui\ProgressDialog.cxx" />
+    <ClCompile Include="..\gui\RomAuditDialog.cxx" />
+    <ClCompile Include="..\gui\RomInfoWidget.cxx" />
+    <ClCompile Include="..\gui\ScrollBarWidget.cxx" />
+    <ClCompile Include="..\gui\StringListWidget.cxx" />
+    <ClCompile Include="..\gui\TabWidget.cxx" />
+    <ClCompile Include="..\gui\UIDialog.cxx" />
+    <ClCompile Include="..\gui\VideoDialog.cxx" />
+    <ClCompile Include="..\gui\Widget.cxx" />
+    <ClCompile Include="..\zlib\adler32.c" />
+    <ClCompile Include="..\zlib\compress.c" />
+    <ClCompile Include="..\zlib\crc32.c" />
+    <ClCompile Include="..\zlib\deflate.c" />
+    <ClCompile Include="..\zlib\gzclose.c" />
+    <ClCompile Include="..\zlib\gzlib.c" />
+    <ClCompile Include="..\zlib\gzread.c" />
+    <ClCompile Include="..\zlib\gzwrite.c" />
+    <ClCompile Include="..\zlib\infback.c" />
+    <ClCompile Include="..\zlib\inffast.c" />
+    <ClCompile Include="..\zlib\inflate.c" />
+    <ClCompile Include="..\zlib\inftrees.c" />
+    <ClCompile Include="..\zlib\trees.c" />
+    <ClCompile Include="..\zlib\uncompr.c" />
+    <ClCompile Include="..\zlib\zutil.c" />
+    <ClCompile Include="..\libpng\png.c" />
+    <ClCompile Include="..\libpng\pngerror.c" />
+    <ClCompile Include="..\libpng\pngget.c" />
+    <ClCompile Include="..\libpng\pngmem.c" />
+    <ClCompile Include="..\libpng\pngpread.c" />
+    <ClCompile Include="..\libpng\pngread.c" />
+    <ClCompile Include="..\libpng\pngrio.c" />
+    <ClCompile Include="..\libpng\pngrtran.c" />
+    <ClCompile Include="..\libpng\pngrutil.c" />
+    <ClCompile Include="..\libpng\pngset.c" />
+    <ClCompile Include="..\libpng\pngtrans.c" />
+    <ClCompile Include="..\libpng\pngwio.c" />
+    <ClCompile Include="..\libpng\pngwrite.c" />
+    <ClCompile Include="..\libpng\pngwtran.c" />
+    <ClCompile Include="..\libpng\pngwutil.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\common\Array.hxx" />
+    <ClInclude Include="..\common\bspf.hxx" />
+    <ClInclude Include="..\common\FrameBufferGL.hxx" />
+    <ClInclude Include="..\common\FrameBufferSoft.hxx" />
+    <ClInclude Include="..\common\GLShaderProgs.hxx" />
+    <ClInclude Include="HomeFinder.hxx" />
+    <ClInclude Include="OSystemWin32.hxx" />
+    <ClInclude Include="..\common\PNGLibrary.hxx" />
+    <ClInclude Include="..\common\RectList.hxx" />
+    <ClInclude Include="SerialPortWin32.hxx" />
+    <ClInclude Include="SettingsWin32.hxx" />
+    <ClInclude Include="..\common\SharedPtr.hxx" />
+    <ClInclude Include="..\common\Snapshot.hxx" />
+    <ClInclude Include="..\common\SoundNull.hxx" />
+    <ClInclude Include="..\common\SoundSDL.hxx" />
+    <ClInclude Include="..\common\Stack.hxx" />
+    <ClInclude Include="..\common\Version.hxx" />
+    <ClInclude Include="..\common\VideoModeList.hxx" />
+    <ClInclude Include="..\emucore\AtariVox.hxx" />
+    <ClInclude Include="..\emucore\Booster.hxx" />
+    <ClInclude Include="..\emucore\Cart.hxx" />
+    <ClInclude Include="..\emucore\Cart0840.hxx" />
+    <ClInclude Include="..\emucore\Cart2K.hxx" />
+    <ClInclude Include="..\emucore\Cart3E.hxx" />
+    <ClInclude Include="..\emucore\Cart3F.hxx" />
+    <ClInclude Include="..\emucore\Cart4A50.hxx" />
+    <ClInclude Include="..\emucore\Cart4K.hxx" />
+    <ClInclude Include="..\emucore\CartAR.hxx" />
+    <ClInclude Include="..\emucore\CartCV.hxx" />
+    <ClInclude Include="..\emucore\CartDPC.hxx" />
+    <ClInclude Include="..\emucore\CartDPCPlus.hxx" />
+    <ClInclude Include="..\emucore\CartE0.hxx" />
+    <ClInclude Include="..\emucore\CartE7.hxx" />
+    <ClInclude Include="..\emucore\CartEF.hxx" />
+    <ClInclude Include="..\emucore\CartEFSC.hxx" />
+    <ClInclude Include="..\emucore\CartF0.hxx" />
+    <ClInclude Include="..\emucore\CartF4.hxx" />
+    <ClInclude Include="..\emucore\CartF4SC.hxx" />
+    <ClInclude Include="..\emucore\CartF6.hxx" />
+    <ClInclude Include="..\emucore\CartF6SC.hxx" />
+    <ClInclude Include="..\emucore\CartF8.hxx" />
+    <ClInclude Include="..\emucore\CartF8SC.hxx" />
+    <ClInclude Include="..\emucore\CartFA.hxx" />
+    <ClInclude Include="..\emucore\CartFE.hxx" />
+    <ClInclude Include="..\emucore\CartMC.hxx" />
+    <ClInclude Include="..\emucore\CartSB.hxx" />
+    <ClInclude Include="..\emucore\CartUA.hxx" />
+    <ClInclude Include="..\emucore\CartX07.hxx" />
+    <ClInclude Include="..\emucore\Console.hxx" />
+    <ClInclude Include="..\emucore\Control.hxx" />
+    <ClInclude Include="..\emucore\DefProps.hxx" />
+    <ClInclude Include="..\emucore\Device.hxx" />
+    <ClInclude Include="..\emucore\Driving.hxx" />
+    <ClInclude Include="..\emucore\Event.hxx" />
+    <ClInclude Include="..\emucore\EventHandler.hxx" />
+    <ClInclude Include="..\emucore\FrameBuffer.hxx" />
+    <ClInclude Include="..\emucore\FSNode.hxx" />
+    <ClInclude Include="..\emucore\Genesis.hxx" />
+    <ClInclude Include="..\emucore\Joystick.hxx" />
+    <ClInclude Include="..\emucore\Keyboard.hxx" />
+    <ClInclude Include="..\emucore\KidVid.hxx" />
+    <ClInclude Include="..\emucore\M6502.hxx" />
+    <ClInclude Include="..\emucore\M6532.hxx" />
+    <ClInclude Include="..\emucore\MD5.hxx" />
+    <ClInclude Include="..\emucore\MediaFactory.hxx" />
+    <ClInclude Include="..\emucore\MT24LC256.hxx" />
+    <ClInclude Include="..\emucore\NullDev.hxx" />
+    <ClInclude Include="..\emucore\OSystem.hxx" />
+    <ClInclude Include="..\emucore\Paddles.hxx" />
+    <ClInclude Include="..\emucore\Props.hxx" />
+    <ClInclude Include="..\emucore\PropsSet.hxx" />
+    <ClInclude Include="..\emucore\Random.hxx" />
+    <ClInclude Include="..\emucore\SaveKey.hxx" />
+    <ClInclude Include="..\emucore\Serializable.hxx" />
+    <ClInclude Include="..\emucore\Serializer.hxx" />
+    <ClInclude Include="..\emucore\Settings.hxx" />
+    <ClInclude Include="..\emucore\Sound.hxx" />
+    <ClInclude Include="..\emucore\StateManager.hxx" />
+    <ClInclude Include="..\emucore\Switches.hxx" />
+    <ClInclude Include="..\emucore\System.hxx" />
+    <ClInclude Include="..\emucore\TIA.hxx" />
+    <ClInclude Include="..\emucore\TIASnd.hxx" />
+    <ClInclude Include="..\emucore\TIATables.hxx" />
+    <ClInclude Include="..\emucore\TrackBall.hxx" />
+    <ClInclude Include="..\emucore\unzip.h" />
+    <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
+    <ClInclude Include="..\debugger\CartDebug.hxx" />
+    <ClInclude Include="..\debugger\gui\ColorWidget.hxx" />
+    <ClInclude Include="..\debugger\CpuDebug.hxx" />
+    <ClInclude Include="..\debugger\gui\CpuWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\DataGridOpsWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\DataGridWidget.hxx" />
+    <ClInclude Include="..\debugger\Debugger.hxx" />
+    <ClInclude Include="..\debugger\gui\DebuggerDialog.hxx" />
+    <ClInclude Include="..\debugger\DebuggerExpressions.hxx" />
+    <ClInclude Include="..\debugger\DebuggerParser.hxx" />
+    <ClInclude Include="..\debugger\DebuggerSystem.hxx" />
+    <ClInclude Include="..\debugger\DiStella.hxx" />
+    <ClInclude Include="..\debugger\Equate.hxx" />
+    <ClInclude Include="..\debugger\Expression.hxx" />
+    <ClInclude Include="..\debugger\PackedBitArray.hxx" />
+    <ClInclude Include="..\debugger\gui\PromptWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\RamWidget.hxx" />
+    <ClInclude Include="..\debugger\RiotDebug.hxx" />
+    <ClInclude Include="..\debugger\gui\RiotWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\RomListWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\RomWidget.hxx" />
+    <ClInclude Include="..\debugger\TIADebug.hxx" />
+    <ClInclude Include="..\debugger\gui\TiaInfoWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\TiaOutputWidget.hxx" />
+    <ClInclude Include="..\debugger\TiaWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\TiaZoomWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\ToggleBitWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\TogglePixelWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\ToggleWidget.hxx" />
+    <ClInclude Include="..\yacc\YaccParser.hxx" />
+    <ClInclude Include="..\cheat\BankRomCheat.hxx" />
+    <ClInclude Include="..\cheat\Cheat.hxx" />
+    <ClInclude Include="..\cheat\CheatCodeDialog.hxx" />
+    <ClInclude Include="..\cheat\CheatManager.hxx" />
+    <ClInclude Include="..\cheat\CheetahCheat.hxx" />
+    <ClInclude Include="..\cheat\RamCheat.hxx" />
+    <ClInclude Include="..\gui\AboutDialog.hxx" />
+    <ClInclude Include="..\gui\AudioDialog.hxx" />
+    <ClInclude Include="..\gui\BrowserDialog.hxx" />
+    <ClInclude Include="..\gui\CheckListWidget.hxx" />
+    <ClInclude Include="..\gui\ComboDialog.hxx" />
+    <ClInclude Include="..\gui\Command.hxx" />
+    <ClInclude Include="..\gui\CommandDialog.hxx" />
+    <ClInclude Include="..\gui\CommandMenu.hxx" />
+    <ClInclude Include="..\gui\ConsoleFont.hxx" />
+    <ClInclude Include="..\gui\ContextMenu.hxx" />
+    <ClInclude Include="..\gui\Dialog.hxx" />
+    <ClInclude Include="..\gui\DialogContainer.hxx" />
+    <ClInclude Include="..\gui\EditableWidget.hxx" />
+    <ClInclude Include="..\gui\EditTextWidget.hxx" />
+    <ClInclude Include="..\gui\EventMappingWidget.hxx" />
+    <ClInclude Include="..\gui\FileSnapDialog.hxx" />
+    <ClInclude Include="..\gui\Font.hxx" />
+    <ClInclude Include="..\gui\GameInfoDialog.hxx" />
+    <ClInclude Include="..\gui\GameList.hxx" />
+    <ClInclude Include="..\gui\GlobalPropsDialog.hxx" />
+    <ClInclude Include="..\gui\GuiObject.hxx" />
+    <ClInclude Include="..\gui\HelpDialog.hxx" />
+    <ClInclude Include="..\gui\InputDialog.hxx" />
+    <ClInclude Include="..\gui\InputTextDialog.hxx" />
+    <ClInclude Include="..\gui\Launcher.hxx" />
+    <ClInclude Include="..\gui\LauncherDialog.hxx" />
+    <ClInclude Include="..\gui\LauncherFilterDialog.hxx" />
+    <ClInclude Include="..\gui\ListWidget.hxx" />
+    <ClInclude Include="..\gui\Menu.hxx" />
+    <ClInclude Include="..\gui\MessageBox.hxx" />
+    <ClInclude Include="..\gui\OptionsDialog.hxx" />
+    <ClInclude Include="..\gui\PopUpWidget.hxx" />
+    <ClInclude Include="..\gui\ProgressDialog.hxx" />
+    <ClInclude Include="..\gui\Rect.hxx" />
+    <ClInclude Include="..\gui\RomAuditDialog.hxx" />
+    <ClInclude Include="..\gui\RomInfoWidget.hxx" />
+    <ClInclude Include="..\gui\ScrollBarWidget.hxx" />
+    <ClInclude Include="..\gui\Stack.hxx" />
+    <ClInclude Include="..\gui\StellaFont.hxx" />
+    <ClInclude Include="..\gui\StringList.hxx" />
+    <ClInclude Include="..\gui\StringListWidget.hxx" />
+    <ClInclude Include="..\gui\TabWidget.hxx" />
+    <ClInclude Include="..\gui\UIDialog.hxx" />
+    <ClInclude Include="..\gui\VideoDialog.hxx" />
+    <ClInclude Include="..\gui\Widget.hxx" />
+    <ClInclude Include="..\zlib\crc32.h" />
+    <ClInclude Include="..\zlib\deflate.h" />
+    <ClInclude Include="..\zlib\gzguts.h" />
+    <ClInclude Include="..\zlib\inffast.h" />
+    <ClInclude Include="..\zlib\inffixed.h" />
+    <ClInclude Include="..\zlib\inflate.h" />
+    <ClInclude Include="..\zlib\inftrees.h" />
+    <ClInclude Include="..\zlib\trees.h" />
+    <ClInclude Include="..\zlib\zconf.h" />
+    <ClInclude Include="..\zlib\zlib.h" />
+    <ClInclude Include="..\zlib\zutil.h" />
+    <ClInclude Include="..\libpng\png.h" />
+    <ClInclude Include="..\libpng\pngconf.h" />
+    <ClInclude Include="..\libpng\pngpriv.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="stella.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="stella.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
