@@ -23,17 +23,18 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   AddressList& addresses, uInt16 banksize, bool resolvedata)
+                   CartDebug::BankInfo& info, uInt16 banksize, bool resolvedata)
   : myDbg(dbg),
     myList(list)
 {
+  CartDebug::AddressList addresses = info.addressList;
   if(addresses.size() == 0)
     return;
 
   while(!myAddressQueue.empty())
     myAddressQueue.pop();
 
-  AddressList::iterator it = addresses.begin();
+  CartDebug::AddressList::iterator it = addresses.begin();
   uInt16 start = *it++;
 
   if(start & 0x1000)
@@ -78,6 +79,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
     myOffset = 0;
   }
+
+  info.start  = myAppData.start;
+  info.end    = myAppData.end;
+  info.offset = myOffset;
 
   memset(labels, 0, 0x1000);
   myAddressQueue.push(start);
@@ -129,6 +134,9 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     }
   }
 
+  // Process any directives later, as they override automatic code determination
+  processDirectives(info.directiveList);
+
   // Second pass
   disasm(myOffset, 2);
 
@@ -174,10 +182,10 @@ void DiStella::disasm(uInt32 distart, int pass)
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
-        myDisasmBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << " ; ";
+        myDisasmBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << "  ";
         showgfx(Debugger::debugger().peek(myPC+myOffset));
-        myDisasmBuf << " $" << HEX4 << myPC+myOffset;
-        addEntry();
+        myDisasmBuf << "  $" << HEX4 << myPC+myOffset << "'" << HEX2 << Debugger::debugger().peek(myPC+myOffset);
+        addEntry(CartDebug::GFX);
       }
       myPC++;
     }
@@ -201,7 +209,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           bytes++;
           if (bytes == 17)
           {
-            addEntry();
+            addEntry(CartDebug::DATA);
             myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             bytes = 1;
           }
@@ -213,9 +221,9 @@ void DiStella::disasm(uInt32 distart, int pass)
 
       if (pass == 3)
       {
-        addEntry();
+        addEntry(CartDebug::DATA);
         myDisasmBuf << "    '     ' ";
-        addEntry();
+        addEntry(CartDebug::NONE);
       }
     }
     else
@@ -275,7 +283,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               /* Line information is already printed; append .byte since last instruction will
                  put recompilable object larger that original binary file */
               myDisasmBuf << ".byte $" << HEX2 << (int)op;
-              addEntry();
+              addEntry(CartDebug::DATA);
 
               if (myPC == myAppData.end)
               {
@@ -286,7 +294,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
                 op = Debugger::debugger().peek(myPC+myOffset);  myPC++;
                 myDisasmBuf << ".byte $" << HEX2 << (int)op;
-                addEntry();
+                addEntry(CartDebug::DATA);
               }
             }
             myPCEnd = myAppData.end + myOffset;
@@ -306,7 +314,7 @@ void DiStella::disasm(uInt32 distart, int pass)
                 /* Line information is already printed, but we can remove the
                    Instruction (i.e. BMI) by simply clearing the buffer to print */
                 myDisasmBuf << ".byte $" << HEX2 << (int)op;
-                addEntry();
+                addEntry(CartDebug::DATA);
                 nextline.str("");
                 nextlinebytes.str("");
               }
@@ -615,11 +623,11 @@ void DiStella::disasm(uInt32 distart, int pass)
         myDisasmBuf << nextline.str() << "'"
                     << ";" << dec << (int)ourLookup[op].cycles << "'"
                     << nextlinebytes.str();
-        addEntry();
+        addEntry(CartDebug::CODE);
         if (op == 0x40 || op == 0x60)
         {
           myDisasmBuf << "    '     ' ";
-          addEntry();
+          addEntry(CartDebug::NONE);
         }
 
         nextline.str("");
@@ -646,8 +654,8 @@ int DiStella::mark(uInt32 address, MarkType bit)
     We sweep for hardware/system equates, which are valid addresses,
     outside the scope of the code/data range.  For these, we mark its
     corresponding hardware/system array element, and return "2" or "3"
-    (depending on which system/hardware element was accessed), or "5"
-    for zero-page RAM.  If this was not the case...
+    (depending on which system/hardware element was accessed).
+    If this was not the case...
 
     Next we check if it is a code "mirror".  For the 2600, address ranges
     are limited with 13 bits, so other addresses can exist outside of the
@@ -708,27 +716,43 @@ int DiStella::mark(uInt32 address, MarkType bit)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::showgfx(uInt8 c)
 {
-#if 0
-  int i;
-
   myDisasmBuf << "|";
-  for(i = 0;i < 8; i++)
-  {
-    if (c > 127)
-      myDisasmBuf << "X";
-    else
-      myDisasmBuf << " ";
-
-    c = c << 1;
-  }
+  for(int i = 0; i < 8; ++i, c <<= 1)
+    myDisasmBuf << ((c > 127) ? "X" : " ");
   myDisasmBuf << "|";
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::addEntry()
+bool DiStella::check_range(uInt32 beg, uInt32 end)
+{
+  if(beg > end)
+  {
+    cerr << "Beginning of range greater than end: start = " << hex << beg
+         << ", end = " << hex << endl;
+    return false;
+  }
+  else if(beg > myAppData.end + myOffset)
+  {
+    cerr << "Beginning of range out of range: start = " << hex << beg
+         << ", range = " << hex << (myAppData.end + myOffset) << endl;
+    return false;
+  }
+  else if(beg < myOffset)
+  {
+    cerr << "Beginning of range out of range: start = " << hex << beg
+         << ", offset = " << hex << myOffset << endl;
+    return false;
+  }
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DiStella::addEntry(CartDebug::DisasmType type)
 {
   CartDebug::DisassemblyTag tag;
+
+  // Type
+  tag.type = type;
 
   // Address
   myDisasmBuf.seekg(0, ios::beg);
@@ -766,6 +790,25 @@ void DiStella::addEntry()
   // Up to this point the field sizes are fixed, until we get to
   // variable length labels, cycle counts, etc
   myDisasmBuf.seekg(11, ios::beg);
+  switch(tag.type)
+  {
+    case CartDebug::CODE:
+      getline(myDisasmBuf, tag.disasm, '\'');
+      getline(myDisasmBuf, tag.ccount, '\'');
+      getline(myDisasmBuf, tag.bytes);
+      break;
+    case CartDebug::DATA:
+      getline(myDisasmBuf, tag.disasm);
+      break;
+    case CartDebug::GFX:
+      getline(myDisasmBuf, tag.disasm, '\'');
+      getline(myDisasmBuf, tag.bytes);
+      break;
+    case CartDebug::NONE:
+      tag.disasm = " ";
+      break;
+  }
+/*
   switch(myDisasmBuf.peek())
   {
     case ' ':
@@ -780,11 +823,51 @@ void DiStella::addEntry()
       getline(myDisasmBuf, tag.bytes);
       break;
   }
+*/
   myList.push_back(tag);
 
 DONE_WITH_ADD:
   myDisasmBuf.clear();
   myDisasmBuf.str("");
+
+#if 0
+  // debugging output
+  cerr << (tag.type == CartDebug::CODE ? "CODE" : (tag.type == CartDebug::DATA ? "DATA" :
+          (tag.type == CartDebug::GFX ? "GFX " : "NONE"))) << "|"
+       << hex << setw(4) << setfill('0') << tag.address << "|"
+       << tag.label << "|" << tag.disasm << "|" << tag.ccount << "|" << "|"
+       << tag.bytes << endl;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
+{
+  for(CartDebug::DirectiveList::const_iterator i = directives.begin();
+      i != directives.end(); ++i)
+  {
+    const CartDebug::DirectiveTag tag = *i;
+    if(check_range(tag.start, tag.end))
+    {
+      MarkType type;
+      switch(tag.type)
+      {
+        case CartDebug::DATA :
+          type = DATA;
+          break;
+        case CartDebug::GFX  :
+          type = GFX;
+          break;
+        case CartDebug::CODE :
+          type = REACHABLE;
+          break;
+        default:
+          continue;  // skip this tag
+      }
+      for(uInt32 k = tag.start; k <= tag.end; ++k)
+        mark(k, type);
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

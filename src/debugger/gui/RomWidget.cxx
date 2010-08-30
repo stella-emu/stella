@@ -172,6 +172,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         setPC(myRomList->getSelected());
       else if(rmb == "runtopc")
         runtoPC(myRomList->getSelected());
+      else if(rmb == "disasm")
+        invalidate();
 
       break;
     }

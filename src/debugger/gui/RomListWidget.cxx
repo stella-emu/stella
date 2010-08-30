@@ -64,6 +64,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   l.push_back("Save ROM", "saverom");
   l.push_back("Set PC", "setpc");
   l.push_back("RunTo PC", "runtopc");
+  l.push_back("Re-disassemble", "disasm");
   myMenu = new ContextMenu(this, font, l);
 
   // Take advantage of a wide debugger window when possible
@@ -121,6 +122,8 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm,
       myCheckList[i]->clearFlags(WIDGET_ENABLED);
 
   recalc();
+
+  setDirty(); draw();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -425,7 +428,8 @@ void RomListWidget::drawWidget(bool hilite)
   // Draw the list items
   int ccountw = _fontWidth << 1,
       large_disasmw = _w - l.x() - _labelWidth,
-      small_disasmw = large_disasmw - r.width() - (ccountw << 1),
+      medium_disasmw = large_disasmw - r.width(),
+      small_disasmw = medium_disasmw - (ccountw << 1),
       actualwidth = myDisasm->fieldwidth * _fontWidth;
   if(actualwidth < small_disasmw)
     small_disasmw = actualwidth;
@@ -454,16 +458,24 @@ void RomListWidget::drawWidget(bool hilite)
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth, kTextColor);
 
-    // Sometimes there aren't any bytes to display, in which case the disassembly
-    // should get all remaining space
-    if(dlist[pos].bytes != "")
+    // Bytes are only editable if they represent code or graphics
+    // Otherwise, the disassembly should get all remaining space
+    if(dlist[pos].type & (CartDebug::CODE | CartDebug::GFX))
     {
-      // Draw disassembly and cycle count
-      // TODO - cycle count should be aligned as close as possible to the disassembly
-      s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
-                   small_disasmw, kTextColor);
-      s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + small_disasmw, ypos,
-                   ccountw, kTextColor);
+      if(dlist[pos].type == CartDebug::CODE)
+      {
+        // Draw disassembly and cycle count
+        s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
+                     small_disasmw, kTextColor);
+        s.drawString(_font, dlist[pos].ccount, xpos + _labelWidth + small_disasmw, ypos,
+                     ccountw, kTextColor);
+      }
+      else
+      {
+        // Draw disassembly only
+        s.drawString(_font, dlist[pos].disasm, xpos + _labelWidth, ypos,
+                     medium_disasmw, kTextColor);
+      }
 
       // Draw separator
       s.vLine(_x + r.x() - 7, ypos, ypos + _fontHeight - 1, kColor);

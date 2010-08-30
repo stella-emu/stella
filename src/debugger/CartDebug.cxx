@@ -37,15 +37,15 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
-  // Create an addresslist for each potential bank, and an extra one for ZP RAM
+  // Create bank information for each potential bank, and an extra one for ZP RAM
   for(int i = 0; i < myConsole.cartridge().bankCount()+1; ++i)
   {
-    AddressList l;
-    myEntryAddresses.push_back(l);
+    BankInfo info;
+    myBankInfo.push_back(info);
   }
 
   // We know the address for the startup bank right now
-  myEntryAddresses[myConsole.cartridge().startBank()].push_back(myDebugger.dpeek(0xfffc));
+  myBankInfo[myConsole.cartridge().startBank()].addressList.push_back(myDebugger.dpeek(0xfffc));
   addLabel("START", myDebugger.dpeek(0xfffc));
 
   // Add system equates
@@ -64,9 +64,12 @@ CartDebug::~CartDebug()
   myUserAddresses.clear();
   mySystemAddresses.clear();
 
-  for(uInt32 i = 0; i < myEntryAddresses.size(); ++i)
-    myEntryAddresses[i].clear();
-  myEntryAddresses.clear();
+  for(uInt32 i = 0; i < myBankInfo.size(); ++i)
+  {
+    myBankInfo[i].addressList.clear();
+    myBankInfo[i].directiveList.clear();
+  }
+  myBankInfo.clear();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -206,14 +209,15 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
   if(changed)
   {
     // Are we disassembling from ROM or ZP RAM?
-    AddressList& addresses = (PC & 0x1000) ? myEntryAddresses[getBank()] :
-        myEntryAddresses[myEntryAddresses.size()-1];
+    BankInfo& info = (PC & 0x1000) ? myBankInfo[getBank()] :
+        myBankInfo[myBankInfo.size()-1];
 
     // If the offset has changed, all old addresses must be 'converted'
     // For example, if the list contains any $fxxx and the address space is now
     // $bxxx, it must be changed
     uInt16 offset = (PC - (PC % 0x1000));
-    for(AddressList::iterator i = addresses.begin(); i != addresses.end(); ++i)
+    AddressList& addresses = info.addressList;
+    for(list<uInt16>::iterator i = addresses.begin(); i != addresses.end(); ++i)
       *i = (*i & 0xFFF) + offset;
 
     // Only add addresses when absolutely necessary, to cut down on the
@@ -239,14 +243,14 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 
     // Check whether to use the 'resolvedata' functionality from Distella
     if(resolvedata == "never")
-      fillDisassemblyList(addresses, false, PC);
+      fillDisassemblyList(info, false, PC);
     else if(resolvedata == "always")
-      fillDisassemblyList(addresses, true, PC);
+      fillDisassemblyList(info, true, PC);
     else  // 'auto'
     {
       // First try with resolvedata on, then turn off if PC isn't found
-      if(!fillDisassemblyList(addresses, true, PC))
-        fillDisassemblyList(addresses, false, PC);
+      if(!fillDisassemblyList(info, true, PC))
+        fillDisassemblyList(info, false, PC);
     }
   }
 
@@ -254,8 +258,7 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::fillDisassemblyList(AddressList& addresses,
-                                    bool resolvedata, uInt16 search)
+bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 search)
 {
   bool found = false;
 
@@ -263,7 +266,7 @@ bool CartDebug::fillDisassemblyList(AddressList& addresses,
   myDisassembly.fieldwidth = 10 + myLabelLength;
   uInt16 banksize =
     !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
-  DiStella distella(*this, myDisassembly.list, addresses, banksize, resolvedata);
+  DiStella distella(*this, myDisassembly.list, info, banksize, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -272,8 +275,8 @@ bool CartDebug::fillDisassemblyList(AddressList& addresses,
   {
     const DisassemblyTag& tag = myDisassembly.list[i];
 
-    // Only non-zero addresses are valid
-    if(tag.address != 0)
+    // Only addresses marked as 'CODE' can possibly be in the program counter
+    if(tag.type == CODE)
     {
       // Create a mapping from addresses to line numbers
       myAddrToLineList.insert(make_pair(tag.address, i));
@@ -297,11 +300,11 @@ int CartDebug::addressToLine(uInt16 address) const
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   Disassembly disasm;
-  AddressList addresses;
-  addresses.push_back(start);
+  BankInfo info;
+  info.addressList.push_back(start);
   uInt16 banksize =
     !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
-  DiStella distella(*this, disasm.list, addresses, banksize, false);
+  DiStella distella(*this, disasm.list, info, banksize, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -333,6 +336,21 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   }
 
   return buffer.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end)
+{
+  BankInfo& info = (myDebugger.cpuDebug().pc() & 0x1000) ?
+      myBankInfo[getBank()] : myBankInfo[myBankInfo.size()-1];
+
+  DirectiveTag tag;
+  tag.type = type;
+  tag.start = start;
+  tag.end = end;
+  info.directiveList.push_back(tag);
+
+// FIXME - process the request somehow; don't just automatically add it to the list
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

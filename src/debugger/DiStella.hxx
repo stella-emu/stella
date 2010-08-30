@@ -53,7 +53,7 @@ class DiStella
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             AddressList& addresses, uInt16 banksize = 4, bool resolvedata = true);
+             CartDebug::BankInfo& info, uInt16 banksize = 4, bool resolvedata = true);
 
     ~DiStella();
 
@@ -74,12 +74,17 @@ class DiStella
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
-    void addEntry();
+    void addEntry(CartDebug::DisasmType type);
+
+    // Process directives given in the list
+    // Directives are basically the contents of a distella configuration file
+    void processDirectives(const CartDebug::DirectiveList& directives);
 
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
     void showgfx(uInt8 c);
+    bool check_range(uInt32 start, uInt32 end);
     inline int check_bit(uInt8 bitflags, int i) const { return (bitflags & i); }
 
   private:

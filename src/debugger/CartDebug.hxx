@@ -32,9 +32,6 @@ class System;
 #include "StringList.hxx"
 #include "DebuggerSystem.hxx"
 
-// Array of addresses
-typedef list<uInt16> AddressList;
-
 // pointer types for CartDebug instance methods
 typedef int (CartDebug::*CARTDEBUG_INT_METHOD)();
 
@@ -55,7 +52,14 @@ class CartDebug : public DebuggerSystem
   friend class DiStella;
 
   public:
+    enum DisasmType {
+      GFX  = 1 << 0,
+      DATA = 1 << 1,
+      CODE = 1 << 2,
+      NONE = 1 << 3
+    };
     struct DisassemblyTag {
+      DisasmType type;
       uInt16 address;
       string label;
       string disasm;
@@ -146,6 +150,20 @@ class CartDebug : public DebuggerSystem
     */
     string disassemble(uInt16 start, uInt16 lines) const;
 
+    /**
+      Add a directive to the disassembler.  Directives are basically overrides
+      for the automatic code determination algorithm in Distella, since some
+      things can't be automatically determined.  For now, these directives
+      have exactly the same syntax as in a distella configuration file.
+
+      @param type   Currently, CODE/DATA/GFX are supported
+      @param start  The start address (inclusive) to mark with the given type
+      @param end    The end address (inclusive) to mark with the given type
+
+      @return  The disassembly represented as a string
+    */
+    void addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end);
+
     // The following are convenience methods that query the cartridge object
     // for the desired information.
     /**
@@ -212,10 +230,25 @@ class CartDebug : public DebuggerSystem
     };
     AddrType addressType(uInt16 addr) const;
 
+    typedef struct {
+      DisasmType type;
+      uInt16 start;
+      uInt16 end;
+    } DirectiveTag;
+    typedef list<uInt16> AddressList;
+    typedef list<DirectiveTag> DirectiveList;
+
+    typedef struct {
+      uInt16 start;                // start of address space
+      uInt16 end;                  // end of address space
+      uInt16 offset;               // ORG value
+      AddressList addressList;     // addresses which PC has hit
+      DirectiveList directiveList; // overrides for automatic code determination
+    } BankInfo;
+
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
-    bool fillDisassemblyList(AddressList& addresses,
-                             bool resolvedata, uInt16 search);
+    bool fillDisassemblyList(BankInfo& bankinfo, bool resolvedata, uInt16 search);
 
     // Extract labels and values from the given character stream
     string extractLabel(const char* c) const;
@@ -225,12 +258,8 @@ class CartDebug : public DebuggerSystem
     CartState myState;
     CartState myOldState;
 
-    // A list of 'entry' addresses for each bank in a cart
-    // An entry address is the one at which time the debugger 'enters' the
-    // disassembler
-    // The startup bank will normally be 0xfffc, while the others are
-    // determined when the debugger is first opened
-    Common::Array<AddressList> myEntryAddresses;
+    // A complete record of relevant diassembly information for each bank
+    Common::Array<BankInfo> myBankInfo;
 
     // Used for the disassembly display, and mapping from addresses
     // to corresponding lines of text in that display

@@ -791,6 +791,27 @@ void DebuggerParser::executeCls()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "code"
+void DebuggerParser::executeCode()
+{
+  if(argCount != 2)
+  {
+    commandResult << red("Specify start and end of range only");
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  debugger->cartDebug().addDirective(CartDebug::CODE, args[0], args[1]);
+  commandResult << "added CODE directive on range $" << hex << args[0]
+                << " $" << hex << args[1];
+  debugger->myRom->invalidate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "colortest"
 void DebuggerParser::executeColortest()
 {
@@ -807,6 +828,27 @@ void DebuggerParser::executeD()
     debugger->cpuDebug().toggleD();
   else if(argCount == 1)
     debugger->cpuDebug().setD(args[0]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "data"
+void DebuggerParser::executeData()
+{
+  if(argCount != 2)
+  {
+    commandResult << red("Specify start and end of range only");
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  debugger->cartDebug().addDirective(CartDebug::DATA, args[0], args[1]);
+  commandResult << "added DATA directive on range $" << hex << args[0]
+                << " $" << hex << args[1];
+  debugger->myRom->invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -896,25 +938,6 @@ void DebuggerParser::executeExec()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "help"
-void DebuggerParser::executeHelp()
-{
-  // Find length of longest command
-  uInt16 clen = 0;
-  for(int i = 0; i < kNumCommands; ++i)
-  {
-    uInt16 len = commands[i].cmdString.length();
-    if(len > clen)  clen = len;
-  }
-
-  for(int i = 0; i < kNumCommands; ++i)
-    commandResult << setw(clen) << right << commands[i].cmdString
-                  << " - " << commands[i].description << endl;
-
-  commandResult << debugger->builtinHelp();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "frame"
 void DebuggerParser::executeFrame()
 {
@@ -943,6 +966,46 @@ void DebuggerParser::executeFunction()
   }
   else
     commandResult << red("invalid expression");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "gfx"
+void DebuggerParser::executeGfx()
+{
+  if(argCount != 2)
+  {
+    commandResult << red("Specify start and end of range only");
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  debugger->cartDebug().addDirective(CartDebug::GFX, args[0], args[1]);
+  commandResult << "added GFX directive on range $" << hex << args[0]
+                << " $" << hex << args[1];
+  debugger->myRom->invalidate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "help"
+void DebuggerParser::executeHelp()
+{
+  // Find length of longest command
+  uInt16 clen = 0;
+  for(int i = 0; i < kNumCommands; ++i)
+  {
+    uInt16 len = commands[i].cmdString.length();
+    if(len > clen)  clen = len;
+  }
+
+  for(int i = 0; i < kNumCommands; ++i)
+    commandResult << setw(clen) << right << commands[i].cmdString
+                  << " - " << commands[i].description << endl;
+
+  commandResult << debugger->builtinHelp();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1476,6 +1539,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "code",
+    "Mark 'CODE' range in disassembly",
+    true,
+    true,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeCode
+  },
+
+  {
     "colortest",
     "Show value xx as TIA color",
     true,
@@ -1491,6 +1563,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_BOOL, kARG_END_ARGS },
     &DebuggerParser::executeD
+  },
+
+  {
+    "data",
+    "Mark 'DATA' range in disassembly",
+    true,
+    true,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeData
   },
 
   {
@@ -1572,6 +1653,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_LABEL, kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeFunction
+  },
+
+  {
+    "gfx",
+    "Mark 'CFX' range in disassembly",
+    true,
+    true,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeGfx
   },
 
   {
