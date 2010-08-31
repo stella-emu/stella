@@ -87,6 +87,9 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   memset(labels, 0, 0x1000);
   myAddressQueue.push(start);
 
+  // Process any directives first, as they override automatic code determination
+  processDirectives(info.directiveList);
+
   if(resolvedata)
   {
     while(!myAddressQueue.empty())
@@ -133,9 +136,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         mark(k+myOffset, DATA);
     }
   }
-
-  // Process any directives later, as they override automatic code determination
-  processDirectives(info.directiveList);
 
   // Second pass
   disasm(myOffset, 2);

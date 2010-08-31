@@ -805,8 +805,9 @@ void DebuggerParser::executeCode()
     return;
   }
 
-  debugger->cartDebug().addDirective(CartDebug::CODE, args[0], args[1]);
-  commandResult << "added CODE directive on range $" << hex << args[0]
+  bool result = debugger->cartDebug().addDirective(
+                  CartDebug::CODE, args[0], args[1]);
+  commandResult << (result ? "added" : "removed") << " CODE directive on range $" << hex << args[0]
                 << " $" << hex << args[1];
   debugger->myRom->invalidate();
 }
@@ -845,8 +846,9 @@ void DebuggerParser::executeData()
     return;
   }
 
-  debugger->cartDebug().addDirective(CartDebug::DATA, args[0], args[1]);
-  commandResult << "added DATA directive on range $" << hex << args[0]
+  bool result = debugger->cartDebug().addDirective(
+                  CartDebug::DATA, args[0], args[1]);
+  commandResult << (result ? "added" : "removed") << " DATA directive on range $" << hex << args[0]
                 << " $" << hex << args[1];
   debugger->myRom->invalidate();
 }
@@ -983,8 +985,9 @@ void DebuggerParser::executeGfx()
     return;
   }
 
-  debugger->cartDebug().addDirective(CartDebug::GFX, args[0], args[1]);
-  commandResult << "added GFX directive on range $" << hex << args[0]
+  bool result = debugger->cartDebug().addDirective(
+                  CartDebug::GFX, args[0], args[1]);
+  commandResult << (result ? "added" : "removed") << " GFX directive on range $" << hex << args[0]
                 << " $" << hex << args[1];
   debugger->myRom->invalidate();
 }
@@ -1049,6 +1052,16 @@ void DebuggerParser::executeListbreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "listconfig"
+void DebuggerParser::executeListconfig()
+{
+  if(argCount == 1)
+    commandResult << debugger->cartDebug().listConfig(args[0]);
+  else
+    commandResult << debugger->cartDebug().listConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listfunctions"
 void DebuggerParser::executeListfunctions()
 {
@@ -1081,6 +1094,18 @@ void DebuggerParser::executeListtraps()
 
   if(!count)
     commandResult << "no traps set";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "loadconfig"
+void DebuggerParser::executeLoadconfig()
+{
+  if(argCount == 1)
+    commandResult << debugger->cartDebug().loadConfigFile(argStrings[0]);
+  else
+    commandResult << debugger->cartDebug().loadConfigFile();
+
+  debugger->myRom->invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1289,6 +1314,16 @@ void DebuggerParser::executeSave()
     commandResult << "saved script to file " << argStrings[0];
   else
     commandResult << red("I/O error");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "saveconfig"
+void DebuggerParser::executeSaveconfig()
+{
+  if(argCount == 1)
+    commandResult << debugger->cartDebug().saveConfigFile(argStrings[0]);
+  else
+    commandResult << debugger->cartDebug().saveConfigFile();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1683,6 +1718,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "listconfig",
+    "List Distella config directives [bank xx]",
+    false,
+    false,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeListconfig
+  },
+
+  {
     "listfunctions",
     "List user-defined functions",
     false,
@@ -1698,6 +1742,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_END_ARGS },
     &DebuggerParser::executeListtraps
+  },
+
+  {
+    "loadconfig",
+    "Load Distella config file [from file xx]",
+    false,
+    true,
+    { kARG_FILE, kARG_MULTI_BYTE },
+    &DebuggerParser::executeLoadconfig
   },
 
   {
@@ -1833,6 +1886,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_FILE, kARG_END_ARGS },
     &DebuggerParser::executeSave
+  },
+
+  {
+    "saveconfig",
+    "Save Distella config file [to file xx]",
+    false,
+    false,
+    { kARG_FILE, kARG_MULTI_BYTE },
+    &DebuggerParser::executeSaveconfig
   },
 
   {

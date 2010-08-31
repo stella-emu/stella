@@ -24,6 +24,8 @@
 #include "CpuDebug.hxx"
 #include "CartDebug.hxx"
 
+#define HEX4 setw(4) << setfill('0') << hex
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
   : DebuggerSystem(dbg, console),
@@ -339,18 +341,85 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end)
+bool CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end)
 {
   BankInfo& info = (myDebugger.cpuDebug().pc() & 0x1000) ?
       myBankInfo[getBank()] : myBankInfo[myBankInfo.size()-1];
 
+  DirectiveList& list = info.directiveList;
   DirectiveTag tag;
   tag.type = type;
   tag.start = start;
   tag.end = end;
-  info.directiveList.push_back(tag);
 
-// FIXME - process the request somehow; don't just automatically add it to the list
+  DirectiveList::iterator i;
+
+  // If the same directive and range is added, consider it a removal instead
+  for(i = list.begin(); i != list.end(); ++i)
+  {
+    if(i->type == tag.type && i->start == tag.start && i->end == tag.end)
+    {
+      list.erase(i);
+      return false;
+    }
+  }
+
+  // Otherwise, scan the list and make space for a 'smart' merge
+  // Note that there are 4 possibilities:
+  //  1: a range is completely inside the new range
+  //  2: a range is completely outside the new range
+  //  3: a range overlaps at the beginning of the new range
+  //  4: a range overlaps at the end of the new range
+  for(i = list.begin(); i != list.end(); ++i)
+  {
+    // Case 1: remove range that is completely inside new range
+    if(i->start >= tag.start && i->end <= tag.end)
+    {
+      i = list.erase(i);
+    }
+    // Case 2: split the old range
+    else if(i->start <= tag.start && i->end >= tag.end)
+    {
+      // Create new endpoint
+      DirectiveTag tag2;
+      tag2.type = i->type;
+      tag2.start = tag.end + 1;
+      tag2.end = i->end;
+
+      // Modify startpoint
+      i->end = tag.start - 1;
+
+      // Insert new endpoint
+      i++;
+      i = list.insert(i, tag2);
+      break;  // no need to go further; this is the insertion point
+    }
+    // Case 3: truncate end of old range
+    else if(i->end >= tag.start)
+    {
+      i->end = tag.start - 1;
+    }
+    // Case 4: truncate start of old range
+    else if(i->start <= tag.end)
+    {
+      i->start = tag.end + 1;
+    }
+  }
+
+  // We now know that the new range can be inserted without overlap
+  for(i = list.begin(); i != list.end(); ++i)
+  {
+    if(tag.end < i->start)
+    {
+      i = list.insert(i, tag);
+      break;
+    }
+  }
+  // Otherwise, add the tag at the end
+  if(i == list.end())
+    list.push_back(tag);
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -516,17 +585,60 @@ string CartDebug::loadSymbolFile(const string& f)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::loadConfigFile(const string& f)
+{
+return "NOT YET IMPLEMENTED";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::saveConfigFile(const string& f)
+{
+return "NOT YET IMPLEMENTED";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::listConfig(int bank)
+{
+  uInt32 startbank = 0, endbank = bankCount();
+  if(bank >= 0 && bank < bankCount())
+  {
+    startbank = bank;
+    endbank = startbank + 1;
+  }
+
+  ostringstream buf;
+  buf << "(items marked '*' are user-defined)" << endl;
+  for(uInt32 b = startbank; b < endbank; ++b)
+  {
+    BankInfo& info = myBankInfo[b];
+    buf << "[" << b << "]" << endl;
+    for(DirectiveList::const_iterator i = info.directiveList.begin();
+        i != info.directiveList.end(); ++i)
+    {
+      buf << "(*) "
+          << (i->type == CartDebug::CODE ? "CODE" :
+              i->type == CartDebug::DATA ? "DATA" :
+              "GFX")
+          << " " << hex << i->start << " " << hex << i->end << endl;
+    }
+    getBankDirectives(buf, info);
+  }
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
-    if(BSPF_strncasecmp(ourTIAMnemonicR[addr], in, strlen(in)) == 0)
+    if(BSPF_startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.push_back(ourTIAMnemonicR[addr]);
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
-    if(BSPF_strncasecmp(ourTIAMnemonicW[addr], in, strlen(in)) == 0)
+    if(BSPF_startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
-    if(BSPF_strncasecmp(ourIOMnemonic[addr], in, strlen(in)) == 0)
+    if(BSPF_startsWithIgnoreCase(ourIOMnemonic[addr], in))
       completions.push_back(ourIOMnemonic[addr]);
 
   // Now scan user-defined labels
@@ -534,7 +646,7 @@ void CartDebug::getCompletions(const char* in, StringList& completions) const
   for(iter = myUserAddresses.begin(); iter != myUserAddresses.end(); ++iter)
   {
     const char* l = iter->first.c_str();
-    if(BSPF_strncasecmp(l, in, strlen(in)) == 0)
+    if(BSPF_startsWithIgnoreCase(l, in))
       completions.push_back(l);
   }
 }
@@ -579,6 +691,55 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
     }
   }
   return type;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
+{
+  // Start with the offset for this bank
+  buf << "ORG " << HEX4 << info.offset << endl;
+
+  // Disassemble the bank, then scan it for an up-to-date description
+  DisassemblyList list;
+  uInt16 banksize =
+    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
+  DiStella distella(*this, list, info, banksize, true);
+
+  if(list.size() == 0)
+    return;
+
+  DisasmType type = list[0].type;
+  uInt16 start = list[0].address, last = list[1].address;
+  if(start == 0) start = info.offset;
+  for(uInt32 i = 1; i < list.size(); ++i)
+  {
+    const DisassemblyTag& tag = list[i];
+
+    if(tag.type == CartDebug::NONE)
+      continue;
+    else if(tag.type != type)  // new range has started
+    {
+      // If switching from a data range, make sure the endpoint is valid
+      // This is necessary because DATA sections don't always generate
+      // consecutive numbers/addresses for the range
+      if(type == CartDebug::DATA)
+        last = tag.address - 1;
+
+      buf << (type == CartDebug::CODE ? "CODE" :
+              type == CartDebug::DATA ? "DATA" :
+              "GFX")
+          << " " << HEX4 << start << " " << HEX4 << last << endl;
+      type = tag.type;
+      start = last = tag.address;
+    }
+    else
+      last = tag.address;
+  }
+  // Grab the last directive, making sure it accounts for all remaining space
+  buf << (type == CartDebug::CODE ? "CODE" :
+          type == CartDebug::DATA ? "DATA" :
+          "GFX")
+      << " " << HEX4 << start << " " << HEX4 << (info.offset+info.end) << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
