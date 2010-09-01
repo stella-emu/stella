@@ -1577,7 +1577,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "code",
     "Mark 'CODE' range in disassembly",
     true,
-    true,
+    false,
     { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeCode
   },
@@ -1604,7 +1604,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "data",
     "Mark 'DATA' range in disassembly",
     true,
-    true,
+    false,
     { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeData
   },
@@ -1694,7 +1694,7 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     "gfx",
     "Mark 'CFX' range in disassembly",
     true,
-    true,
+    false,
     { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeGfx
   },

@@ -728,7 +728,7 @@ bool DiStella::check_range(uInt32 beg, uInt32 end)
   if(beg > end)
   {
     cerr << "Beginning of range greater than end: start = " << hex << beg
-         << ", end = " << hex << endl;
+         << ", end = " << hex << end << endl;
     return false;
   }
   else if(beg > myAppData.end + myOffset)
@@ -843,6 +843,7 @@ DONE_WITH_ADD:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 {
+
   for(CartDebug::DirectiveList::const_iterator i = directives.begin();
       i != directives.end(); ++i)
   {

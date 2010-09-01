@@ -24,7 +24,7 @@
 #include "CpuDebug.hxx"
 #include "CartDebug.hxx"
 
-#define HEX4 setw(4) << setfill('0') << hex
+#define HEX4 uppercase << hex << setw(4) << setfill('0')
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
@@ -343,6 +343,18 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end)
 {
+#define PRINT_TAG(d) \
+  cerr << (d.type == CartDebug::CODE ? "CODE" : \
+           d.type == CartDebug::DATA ? "DATA" : \
+           "GFX") \
+       << " " << hex << d.start << " - " << hex << d.end << endl;
+
+#define PRINT_LIST(header) \
+  cerr << header << endl; \
+  for(DirectiveList::const_iterator d = list.begin(); d != list.end(); ++d) \
+    PRINT_TAG((*d)); \
+  cerr << endl;
+
   BankInfo& info = (myDebugger.cpuDebug().pc() & 0x1000) ?
       myBankInfo[getBank()] : myBankInfo[myBankInfo.size()-1];
 
@@ -373,13 +385,17 @@ bool CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 en
   for(i = list.begin(); i != list.end(); ++i)
   {
     // Case 1: remove range that is completely inside new range
-    if(i->start >= tag.start && i->end <= tag.end)
+    if(tag.start <= i->start && tag.end >= i->end)
     {
-      i = list.erase(i);
+      list.erase(i);
     }
     // Case 2: split the old range
-    else if(i->start <= tag.start && i->end >= tag.end)
+    else if(tag.start >= i->start && tag.end <= i->end)
     {
+      // Only split when necessary
+      if(tag.type == i->type)
+        return true;  // node is fine as-is
+
       // Create new endpoint
       DirectiveTag tag2;
       tag2.type = i->type;
@@ -391,27 +407,63 @@ bool CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 en
 
       // Insert new endpoint
       i++;
-      i = list.insert(i, tag2);
+      list.insert(i, tag2);
       break;  // no need to go further; this is the insertion point
     }
     // Case 3: truncate end of old range
-    else if(i->end >= tag.start)
+    else if(tag.start >= i->start && tag.start <= i->end)
     {
       i->end = tag.start - 1;
     }
     // Case 4: truncate start of old range
-    else if(i->start <= tag.end)
+    else if(tag.end >= i->start && tag.end <= i->end)
     {
       i->start = tag.end + 1;
     }
   }
 
   // We now know that the new range can be inserted without overlap
+  // Where possible, consecutive ranges should be merged rather than
+  // new nodes created
   for(i = list.begin(); i != list.end(); ++i)
   {
-    if(tag.end < i->start)
+    if(tag.end < i->start)  // node should be inserted *before* this one
     {
-      i = list.insert(i, tag);
+      bool createNode = true;
+
+      // Is the new range ending consecutive with the old range beginning?
+      // If so, a merge will suffice
+      if(i->type == tag.type && tag.end + 1 == i->start)
+      {
+        i->start = tag.start;
+        createNode = false;  // a merge was done, so a new node isn't needed
+      }
+
+      // Can we also merge with the previous range (if any)?
+      if(i != list.begin())
+      {
+        DirectiveList::iterator p = i;
+        --p;
+        if(p->type == tag.type && p->end + 1 == tag.start)
+        {
+          if(createNode)  // a merge with right-hand range didn't previously occur
+          {
+            p->end = tag.end;
+            createNode = false;  // a merge was done, so a new node isn't needed
+          }
+          else  // merge all three ranges
+          {
+            i->start = p->start;
+            i = list.erase(p);
+            createNode = false;  // a merge was done, so a new node isn't needed
+          }
+        }
+      }
+
+      // Create the node only when necessary
+      if(createNode)
+        i = list.insert(i, tag);
+
       break;
     }
   }
@@ -696,9 +748,6 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
 {
-  // Start with the offset for this bank
-  buf << "ORG " << HEX4 << info.offset << endl;
-
   // Disassemble the bank, then scan it for an up-to-date description
   DisassemblyList list;
   uInt16 banksize =
@@ -707,6 +756,9 @@ void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
 
   if(list.size() == 0)
     return;
+
+  // Start with the offset for this bank
+  buf << "ORG " << HEX4 << info.offset << endl;
 
   DisasmType type = list[0].type;
   uInt16 start = list[0].address, last = list[1].address;
