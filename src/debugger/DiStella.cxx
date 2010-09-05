@@ -23,7 +23,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   CartDebug::BankInfo& info, uInt16 banksize, bool resolvedata)
+                   CartDebug::BankInfo& info, bool resolvedata)
   : myDbg(dbg),
     myList(list)
 {
@@ -39,7 +39,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   if(start & 0x1000)
   {
-    if(banksize == 4)  // 4K ROM space
+    if(info.banksize == 4096)  // 4K ROM space
     {
       /*============================================
         The offset is the address where the code segment
@@ -52,7 +52,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       =============================================*/
       myAppData.start  = 0x0000;
       myAppData.end    = 0x0FFF;
-      myAppData.length = 4096;
 
       myOffset = (start - (start % 0x1000));
     }
@@ -65,7 +64,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       =============================================*/
       myAppData.start  = 0x0000;
       myAppData.end    = 0x07FF;
-      myAppData.length = 2048;
 
       myOffset = (start & 0xF800);
     }
@@ -75,10 +73,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
     // For now, we assume all accesses below $1000 are zero-page 
     myAppData.start  = 0x0080;
     myAppData.end    = 0x00FF;
-    myAppData.length = 128;
 
     myOffset = 0;
   }
+  myAppData.length = info.banksize;
 
   info.start  = myAppData.start;
   info.end    = myAppData.end;
@@ -152,8 +150,6 @@ DiStella::~DiStella()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::disasm(uInt32 distart, int pass)
 {
-#define HEX4 uppercase << hex << setw(4) << setfill('0')
-#define HEX2 uppercase << hex << setw(2) << setfill('0')
 #define USER_OR_AUTO_LABEL(pre, address, post)        \
   const string& l = myDbg.getLabel(address, true);    \
   if(l != EmptyString)  nextline << pre << l << post; \
@@ -182,9 +178,15 @@ void DiStella::disasm(uInt32 distart, int pass)
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
-        myDisasmBuf << ".byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset) << "  ";
-        showgfx(Debugger::debugger().peek(myPC+myOffset));
-        myDisasmBuf << "  $" << HEX4 << myPC+myOffset << "'" << HEX2 << Debugger::debugger().peek(myPC+myOffset);
+        uInt8 byte = Debugger::debugger().peek(myPC+myOffset);
+        myDisasmBuf << ".byte $" << HEX2 << (int)byte << "  |";
+        for(uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
+          myDisasmBuf << ((c > 127) ? "X" : " ");
+        myDisasmBuf << "|  $" << HEX4 << myPC+myOffset << "'";
+        if(settings.gfx_format == kBASE_2)
+          myDisasmBuf << Debugger::to_bin_8(byte);
+        else
+          myDisasmBuf << HEX2 << (int)byte;
         addEntry(CartDebug::GFX);
       }
       myPC++;
@@ -714,15 +716,6 @@ int DiStella::mark(uInt32 address, MarkType bit)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DiStella::showgfx(uInt8 c)
-{
-  myDisasmBuf << "|";
-  for(int i = 0; i < 8; ++i, c <<= 1)
-    myDisasmBuf << ((c > 127) ? "X" : " ");
-  myDisasmBuf << "|";
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DiStella::check_range(uInt32 beg, uInt32 end)
 {
   if(beg > end)
@@ -870,6 +863,11 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
     }
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+DiStella::Settings DiStella::settings = {
+  kBASE_2
+};
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const DiStella::Instruction_tag DiStella::ourLookup[256] = {

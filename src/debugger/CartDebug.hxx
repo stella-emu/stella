@@ -20,6 +20,7 @@
 #ifndef CART_DEBUG_HXX
 #define CART_DEBUG_HXX
 
+class Settings;
 class System;
 
 #include <map>
@@ -73,7 +74,8 @@ class CartDebug : public DebuggerSystem
     } Disassembly;
 
   public:
-    CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas);
+    CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas,
+              const Settings& settings);
     virtual ~CartDebug();
 
     const DebuggerState& getState();
@@ -254,6 +256,7 @@ class CartDebug : public DebuggerSystem
       uInt16 start;                // start of address space
       uInt16 end;                  // end of address space
       uInt16 offset;               // ORG value
+      uInt16 banksize;             // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
     } BankInfo;

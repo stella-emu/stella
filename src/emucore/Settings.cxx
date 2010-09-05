@@ -131,6 +131,7 @@ Settings::Settings(OSystem* osystem)
 
   // Debugger options
   setInternal("resolvedata", "auto");
+  setInternal("gfxformat", "2");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

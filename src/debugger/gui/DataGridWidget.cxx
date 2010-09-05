@@ -637,7 +637,7 @@ bool DataGridWidget::tryInsertChar(char c, int pos)
   // Not sure how efficient this is, or should we even care?
   c = tolower(c);
   if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
-     c == '%' || c == '#' || c == '$')
+     c == '\\' || c == '#' || c == '$')
   {
     _editString.insert(pos, 1, c);
     return true;

@@ -1012,6 +1012,28 @@ void DebuggerParser::executeHelp()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "jump"
+void DebuggerParser::executeJump()
+{
+  int line = -1;
+  int address = args[0];
+
+  // The specific address we want may not exist (it may be part of a data section)
+  // If so, scroll backward a little until we find it
+  while(((line = debugger->cartDebug().addressToLine(address)) == -1) &&
+        ((address & 0xFFF) >= 0))
+    address--;
+
+  if(line >= 0)
+  {
+    debugger->myRom->scrollTo(line);
+    commandResult << "disassembly scrolled to address $" << HEX4 << address;
+  }
+  else
+    commandResult << "address $" << HEX4 << args[0] << " doesn't exist";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
@@ -1706,6 +1728,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_END_ARGS },
     &DebuggerParser::executeHelp
+  },
+
+  {
+    "jump",
+    "Scroll disassembly to address xx",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    &DebuggerParser::executeJump
   },
 
   {

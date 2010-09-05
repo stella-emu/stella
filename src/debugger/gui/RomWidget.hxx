@@ -28,13 +28,13 @@ class DataGridWidget;
 class EditTextWidget;
 class InputTextDialog;
 class PopUpWidget;
-class RomListWidget;
 class StringList;
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "CartDebug.hxx"
+#include "RomListWidget.hxx"
 
 class RomWidget : public Widget, public CommandSender
 {
@@ -44,6 +44,7 @@ class RomWidget : public Widget, public CommandSender
 
     void invalidate() { myListIsDirty = true; loadConfig(); }
 
+    void scrollTo(int line) { myRomList->setSelected(line); }
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void loadConfig();
 

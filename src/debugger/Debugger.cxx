@@ -211,7 +211,9 @@ void Debugger::setConsole(Console* console)
   delete myCartDebug;
   // Register any RAM areas in the Cartridge
   // Zero-page RAM is automatically recognized by CartDebug
-  myCartDebug = new CartDebug(*this, *myConsole, myConsole->cartridge().ramAreas());
+  myCartDebug = new CartDebug(*this, *myConsole, myConsole->cartridge().ramAreas(),
+                              myOSystem->settings());
+cerr << myOSystem->romFile() << endl;
   myCartDebug->loadSymbolFile(myOSystem->romFile());
 
   delete myRiotDebug;

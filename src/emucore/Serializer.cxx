@@ -152,17 +152,15 @@ string Serializer::getString(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Serializer::getBool(void)
 {
-  bool result = false;
-
   char b = getByte();
   if(b == (char)TruePattern)
-    result = true;
+    return true;
   else if(b == (char)FalsePattern)
-    result = false;
+    return false;
   else
     throw "Serializer::getBool() data corruption";
 
-  return result;
+  return false;  // to stop compiler from complaining
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

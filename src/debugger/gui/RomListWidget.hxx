@@ -53,6 +53,7 @@ class RomListWidget : public EditableWidget
 
     int getSelected() const        { return _selectedItem; }
     int getHighlighted() const     { return _highlightedItem; }
+    void setSelected(int item);
     void setHighlighted(int item);
 
     const string& getEditString() const;

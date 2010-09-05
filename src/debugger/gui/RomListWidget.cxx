@@ -65,6 +65,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   l.push_back("Set PC", "setpc");
   l.push_back("RunTo PC", "runtopc");
   l.push_back("Re-disassemble", "disasm");
+  l.push_back("Show GFX as binary", "gfxbin");
+  l.push_back("Show GFX as hex", "gfxhex");
   myMenu = new ContextMenu(this, font, l);
 
   // Take advantage of a wide debugger window when possible
@@ -124,6 +126,22 @@ void RomListWidget::setList(const CartDebug::Disassembly& disasm,
   recalc();
 
   setDirty(); draw();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RomListWidget::setSelected(int item)
+{
+  if(item < -1 || item >= (int)myDisasm->list.size())
+    return;
+
+  if(isEnabled())
+  {
+    if(_editMode)
+      abortEditMode();
+
+    _currentPos = _selectedItem = item;
+    scrollToSelected();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -541,7 +559,7 @@ bool RomListWidget::tryInsertChar(char c, int pos)
   // Not sure how efficient this is, or should we even care?
   c = tolower(c);
   if((c >= '0' && c <= '9') || (c >= 'a' && c <= 'f') ||
-     c == '%' || c == '#' || c == '$' || c == ' ')
+     c == '\\' || c == '#' || c == '$' || c == ' ')
   {
     _editString.insert(pos, 1, c);
     return true;

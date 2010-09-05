@@ -22,12 +22,12 @@
 #include "System.hxx"
 #include "DiStella.hxx"
 #include "CpuDebug.hxx"
+#include "Settings.hxx"
 #include "CartDebug.hxx"
 
-#define HEX4 uppercase << hex << setw(4) << setfill('0')
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
+CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas,
+                     const Settings& settings)
   : DebuggerSystem(dbg, console),
     myRWPortAddress(0),
     myLabelLength(5)   // longest pre-defined label
@@ -40,11 +40,16 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
-  for(int i = 0; i < myConsole.cartridge().bankCount()+1; ++i)
+  uInt16 banksize =
+    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4096 : 2048;
+  BankInfo info;
+  for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
   {
-    BankInfo info;
+    info.banksize = banksize;   // TODO - get this from Cart class
     myBankInfo.push_back(info);
   }
+  info.banksize = 128;  // ZP RAM
+  myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_back(myDebugger.dpeek(0xfffc));
@@ -57,6 +62,10 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas)
     mySystemAddresses.insert(make_pair(ourTIAMnemonicW[addr], addr));
   for(uInt16 addr = 0x280; addr <= 0x297; ++addr)
     mySystemAddresses.insert(make_pair(ourIOMnemonic[addr-0x280], addr));
+
+  // Add settings for Distella
+  DiStella::settings.gfx_format =
+    settings.getInt("gfxformat") == 16 ? kBASE_16 : kBASE_2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -266,9 +275,7 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 sea
 
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 10 + myLabelLength;
-  uInt16 banksize =
-    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
-  DiStella distella(*this, myDisassembly.list, info, banksize, resolvedata);
+  DiStella distella(*this, myDisassembly.list, info, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -304,9 +311,7 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   Disassembly disasm;
   BankInfo info;
   info.addressList.push_back(start);
-  uInt16 banksize =
-    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
-  DiStella distella(*this, disasm.list, info, banksize, false);
+  DiStella distella(*this, disasm.list, info, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -750,9 +755,7 @@ void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
 {
   // Disassemble the bank, then scan it for an up-to-date description
   DisassemblyList list;
-  uInt16 banksize =
-    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4 : 2;
-  DiStella distella(*this, list, info, banksize, true);
+  DiStella distella(*this, list, info, true);
 
   if(list.size() == 0)
     return;

@@ -49,13 +49,21 @@ class DiStella
       @param dbg         The CartDebug instance containing all label information
       @param list        The results of the disassembly are placed here
       @param addresses   The address(es) at which to start disassembly
-      @param banksize    Size of the bank in KB (possible values are 4 or 2)
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             CartDebug::BankInfo& info, uInt16 banksize = 4, bool resolvedata = true);
+             CartDebug::BankInfo& info, bool resolvedata);
 
     ~DiStella();
+
+  public:
+    // A list of options that can be applied to the disassembly
+    // This will eventually grow to include all options supported by
+    // standalone Distella
+    typedef struct {
+      BaseFormat gfx_format;
+    } Settings;
+    static Settings settings;
 
   private:
     // Marked bits
@@ -83,7 +91,6 @@ class DiStella
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
     int mark(uInt32 address, MarkType bit);
-    void showgfx(uInt8 c);
     bool check_range(uInt32 start, uInt32 end);
     inline int check_bit(uInt8 bitflags, int i) const { return (bitflags & i); }
 

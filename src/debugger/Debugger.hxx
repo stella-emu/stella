@@ -47,6 +47,9 @@ class Serializer;
 #include "Stack.hxx"
 #include "bspf.hxx"
 
+#define HEX4 uppercase << hex << setw(4) << setfill('0')
+#define HEX2 uppercase << hex << setw(2) << setfill('0')
+
 typedef map<string,Expression*> FunctionMap;
 typedef map<string,string> FunctionDefMap;
 
