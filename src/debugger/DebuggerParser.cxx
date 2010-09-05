@@ -1024,7 +1024,8 @@ void DebuggerParser::executeJump()
         ((address & 0xFFF) >= 0))
     address--;
 
-  if(line >= 0)
+cerr << "address " << dec << address << " on line " << dec << line << endl;
+  if(line >= 0 && address >= 0)
   {
     debugger->myRom->scrollTo(line);
     commandResult << "disassembly scrolled to address $" << HEX4 << address;
