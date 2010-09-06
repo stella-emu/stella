@@ -74,8 +74,7 @@ class CartDebug : public DebuggerSystem
     } Disassembly;
 
   public:
-    CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas,
-              const Settings& settings);
+    CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
     virtual ~CartDebug();
 
     const DebuggerState& getState();
@@ -161,10 +160,12 @@ class CartDebug : public DebuggerSystem
       @param type   Currently, CODE/DATA/GFX are supported
       @param start  The start address (inclusive) to mark with the given type
       @param end    The end address (inclusive) to mark with the given type
+      @param bank   Bank to which these directive apply (0 indicated current bank)
 
       @return  True if directive was added, else false if it was removed
     */
-    bool addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end);
+    bool addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end,
+                      int bank = -1);
 
     // The following are convenience methods that query the cartridge object
     // for the desired information.
@@ -216,8 +217,8 @@ class CartDebug : public DebuggerSystem
     /**
       Load/save Distella config file (Distella directives)
     */
-    string loadConfigFile(const string& file = "");
-    string saveConfigFile(const string& file = "");
+    string loadConfigFile(string file = "");
+    string saveConfigFile(string file = "");
 
     /**
       Show Distella directives (both set by the user and determined by Distella)
@@ -274,6 +275,8 @@ class CartDebug : public DebuggerSystem
     int extractValue(const char* c) const;
 
   private:
+    const OSystem& myOSystem;
+
     CartState myState;
     CartState myOldState;
 

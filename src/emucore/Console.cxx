@@ -673,16 +673,14 @@ void Console::setControllers(const string& rommd5)
   }
   else if(right == "ATARIVOX")
   {
-    const string& eepromfile = myOSystem->eepromDir() + BSPF_PATH_SEPARATOR +
-                               "atarivox_eeprom.dat";
+    const string& eepromfile = myOSystem->eepromDir() + "atarivox_eeprom.dat";
     myControllers[rightPort] = new AtariVox(Controller::Right, *myEvent,
                    *mySystem, myOSystem->serialPort(),
                    myOSystem->settings().getString("avoxport"), eepromfile);
   }
   else if(right == "SAVEKEY")
   {
-    const string& eepromfile = myOSystem->eepromDir() + BSPF_PATH_SEPARATOR +
-                        "savekey_eeprom.dat";
+    const string& eepromfile = myOSystem->eepromDir() + "savekey_eeprom.dat";
     myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
                                            eepromfile);
   }

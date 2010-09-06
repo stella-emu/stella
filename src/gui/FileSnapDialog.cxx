@@ -222,9 +222,7 @@ void FileSnapDialog::saveConfig()
 void FileSnapDialog::setDefaults()
 {
   FilesystemNode node;
-  string basedir = instance().baseDir();
-  if(basedir.compare(basedir.length()-1, 1, BSPF_PATH_SEPARATOR, 0, 1) != 0)
-    basedir.append(BSPF_PATH_SEPARATOR);
+  const string& basedir = instance().baseDir();
 
   node = FilesystemNode("~");
   myRomPath->setEditString(node.getRelativePath());

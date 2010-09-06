@@ -277,6 +277,11 @@ class OSystem
     const string& eepromDir() const { return myEEPROMDir; }
 
     /**
+      Return the full/complete directory name for storing Distella cfg files.
+    */
+    const string& cfgDir() const { return myCfgDir; }
+
+    /**
       This method should be called to get the full path of the cheat file.
 
       @return String representing the full path of the cheat filename.
@@ -540,6 +545,7 @@ class OSystem
     string myStateDir;
     string mySnapshotDir;
     string myEEPROMDir;
+    string myCfgDir;
 
     string myCheatFile;
     string myConfigFile;
@@ -640,6 +646,14 @@ class OSystem
       initial values.
     */
     void resetLoopTiming();
+
+    /**
+      Validate the directory name, and create it if necessary.
+      Also, update the settings with the new name.  For now, validation
+      means that the path must always end with the appropriate separator.
+    */
+    void validatePath(const string& setting, const string& partialpath,
+                      string& fullpath);
 
     // Copy constructor isn't supported by this class so make it private
     OSystem(const OSystem&);

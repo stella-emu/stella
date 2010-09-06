@@ -161,7 +161,13 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
   _displayName = lastPathComponent(_path);
 
   if (verify)
+  {
     setFlags();
+
+    // Add a trailing slash, if necessary
+    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
+      _path += '/';
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

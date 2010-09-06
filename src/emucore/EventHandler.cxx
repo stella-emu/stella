@@ -572,8 +572,8 @@ void EventHandler::poll(uInt64 time)
 
               case SDLK_s:         // Ctrl-s saves properties to a file
               {
-                string filename = myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                  myOSystem->console().properties().get(Cartridge_Name) + ".pro";
+                string filename = myOSystem->baseDir() +
+                    myOSystem->console().properties().get(Cartridge_Name) + ".pro";
                 ofstream out(filename.c_str(), ios::out);
                 if(out)
                 {
@@ -1992,13 +1992,9 @@ void EventHandler::takeSnapshot(uInt32 number)
 {
   // Figure out the correct snapshot name
   string filename;
-  string sspath = myOSystem->snapshotDir();
   bool showmessage = number == 0;
-
-  if(sspath.length() > 0)
-    if(sspath.substr(sspath.length()-1) != BSPF_PATH_SEPARATOR)
-      sspath += BSPF_PATH_SEPARATOR;
-  sspath += myOSystem->console().properties().get(Cartridge_Name);
+  string sspath = myOSystem->snapshotDir() +
+      myOSystem->console().properties().get(Cartridge_Name);
 
   // Check whether we want multiple snapshots created
   if(number > 0)

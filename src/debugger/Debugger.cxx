@@ -211,10 +211,9 @@ void Debugger::setConsole(Console* console)
   delete myCartDebug;
   // Register any RAM areas in the Cartridge
   // Zero-page RAM is automatically recognized by CartDebug
-  myCartDebug = new CartDebug(*this, *myConsole, myConsole->cartridge().ramAreas(),
-                              myOSystem->settings());
-cerr << myOSystem->romFile() << endl;
+  myCartDebug = new CartDebug(*this, *myConsole, *myOSystem);
   myCartDebug->loadSymbolFile(myOSystem->romFile());
+  myCartDebug->loadConfigFile();
 
   delete myRiotDebug;
   myRiotDebug = new RiotDebug(*this, *myConsole);
@@ -256,8 +255,7 @@ string Debugger::autoExec()
   ostringstream buf;
 
   // autoexec.stella is always run
-  FilesystemNode autoexec(myOSystem->baseDir() + BSPF_PATH_SEPARATOR +
-                          "autoexec.stella");
+  FilesystemNode autoexec(myOSystem->baseDir() + "autoexec.stella");
   buf << "autoExec():" << endl
       << myParser->exec(autoexec) << endl;
 

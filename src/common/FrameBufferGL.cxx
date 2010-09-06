@@ -1648,7 +1648,7 @@ GLuint FBSurfaceGL::genShader(ShaderType type)
   // These shader files are stored in 'BASEDIR/shaders/'
   char* buffer = NULL;
   const string& filename =
-    myFB.myOSystem->baseDir() + BSPF_PATH_SEPARATOR + "shaders" +
+    myFB.myOSystem->baseDir() + "shaders" +
     BSPF_PATH_SEPARATOR + fFile;
   ifstream in(filename.c_str());
   if(in && in.is_open())

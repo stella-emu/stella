@@ -61,7 +61,7 @@ bool StateManager::toggleRecordMode()
   {
     myActiveMode = kOffMode;
 
-    string moviefile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
+    string moviefile = /*myOSystem->baseDir() +*/ "test.inp";
     if(myMovieWriter.isOpen())
       myMovieWriter.close();
     if(!myMovieWriter.open(moviefile))
@@ -109,7 +109,7 @@ bool StateManager::toggleRewindMode()
   {
     myActiveMode = kOffMode;
 
-    string moviefile = /*myOSystem->baseDir() + BSPF_PATH_SEPARATOR +*/ "test.inp";
+    string moviefile = /*myOSystem->baseDir() + */ "test.inp";
     if(myMovieReader.isOpen())
       myMovieReader.close();
     if(!myMovieReader.open(moviefile))
@@ -178,7 +178,7 @@ void StateManager::loadState(int slot)
     if(slot < 0) slot = myCurrentSlot;
 
     ostringstream buf;
-    buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
+    buf << myOSystem->stateDir()
         << myOSystem->console().properties().get(Cartridge_Name)
         << ".st" << slot;
 
@@ -222,7 +222,7 @@ void StateManager::saveState(int slot)
     if(slot < 0) slot = myCurrentSlot;
 
     ostringstream buf;
-    buf << myOSystem->stateDir() << BSPF_PATH_SEPARATOR
+    buf << myOSystem->stateDir()
         << myOSystem->console().properties().get(Cartridge_Name)
         << ".st" << slot;
 

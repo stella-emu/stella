@@ -299,7 +299,7 @@ class AbstractFilesystemNode
      *
      * @note This method is very architecture dependent, please check the concrete implementation for more information.
      */
-	virtual string getName() const = 0;
+    virtual string getName() const = 0;
 
     /**
      * Returns the 'path' of the current node, usable in fopen().

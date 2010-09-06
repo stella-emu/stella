@@ -26,9 +26,9 @@
 #include "CartDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas,
-                     const Settings& settings)
+CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
+    myOSystem(osystem),
     myRWPortAddress(0),
     myLabelLength(5)   // longest pre-defined label
 {
@@ -36,6 +36,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas,
   addRamArea(0x80, 128, 0, 0);
 
   // Add extended RAM
+  const RamAreaList& areas = console.cartridge().ramAreas();
   for(RamAreaList::const_iterator i = areas.begin(); i != areas.end(); ++i)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
@@ -65,7 +66,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const RamAreaList& areas,
 
   // Add settings for Distella
   DiStella::settings.gfx_format =
-    settings.getInt("gfxformat") == 16 ? kBASE_16 : kBASE_2;
+    myOSystem.settings().getInt("gfxformat") == 16 ? kBASE_16 : kBASE_2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -346,7 +347,8 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 end)
+bool CartDebug::addDirective(CartDebug::DisasmType type,
+                             uInt16 start, uInt16 end, int bank)
 {
 #define PRINT_TAG(d) \
   cerr << (d.type == CartDebug::CODE ? "CODE" : \
@@ -360,10 +362,13 @@ bool CartDebug::addDirective(CartDebug::DisasmType type, uInt16 start, uInt16 en
     PRINT_TAG((*d)); \
   cerr << endl;
 
-  BankInfo& info = (myDebugger.cpuDebug().pc() & 0x1000) ?
-      myBankInfo[getBank()] : myBankInfo[myBankInfo.size()-1];
+  if(bank < 0)  // Do we want the current bank or ZP RAM?
+    bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : myBankInfo.size()-1;
 
+  bank = BSPF_min(bank, bankCount() - 1);
+  BankInfo& info = myBankInfo[bank];
   DirectiveList& list = info.directiveList;
+
   DirectiveTag tag;
   tag.type = type;
   tag.start = start;
@@ -642,13 +647,118 @@ string CartDebug::loadSymbolFile(const string& f)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::loadConfigFile(const string& f)
+string CartDebug::loadConfigFile(string file)
 {
-return "NOT YET IMPLEMENTED";
+  FilesystemNode node(file);
+
+  if(file == "")  // Use config file based on ROM name
+  {
+    file = myOSystem.romFile();
+    string::size_type spos;
+    if((spos = file.find_last_of('.')) != string::npos )
+      file.replace(spos, file.size(), ".cfg");
+    else
+      file += ".cfg";
+    FilesystemNode usercfg(file);
+    if(usercfg.exists())
+    {
+      node = usercfg;
+    }
+    else  // Use global config file based on properties cart name
+    {
+      const string& globalfile = myOSystem.cfgDir() +
+        myConsole.properties().get(Cartridge_Name) + ".cfg";
+      FilesystemNode globalcfg(globalfile);
+      if(globalcfg.exists())
+        node = globalcfg;
+    }
+  }
+
+  if(node.exists() && !node.isDirectory())
+  {
+    ifstream in(node.getPath().c_str());
+    if(!in.is_open())
+      return "Unable to read directives from " + node.getPath();
+
+    int currentbank = 0;
+    while(!in.eof())
+    {
+      // Skip leading space
+      int c = in.peek();
+      while(c == ' ' && c == '\t')
+      {
+        in.get();
+        c = in.peek();
+      }
+
+      string line;
+      c = in.peek();
+      if(c == '/')  // Comment, swallow line and continue
+      {
+        getline(in, line);
+        continue;
+      }
+      else if(c == '[')
+      {
+        in.get();
+        getline(in, line, ']');
+        stringstream buf(line);
+        buf >> currentbank;
+      }
+      else  // Should be commands from this point on
+      {
+        getline(in, line);
+        stringstream buf;
+        buf << line;
+
+        string directive;
+        uInt16 start = 0, end = 0;
+        buf >> directive;
+        if(BSPF_startsWithIgnoreCase(directive, "ORG"))
+        {
+          buf >> hex >> start;
+// TODO - figure out what to do with this
+          cerr << "ignoring directive: "
+               << directive << " " << HEX4 << start << endl;
+        }
+        else if(BSPF_startsWithIgnoreCase(directive, "BLOCK"))
+        {
+          buf >> hex >> start;
+          buf >> hex >> end;
+// TODO - add directive for this
+          cerr << "ignoring directive: " << directive << " "
+               << HEX4 << start << " " << HEX4 << end << endl;
+        }
+        else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
+        {
+          buf >> hex >> start;
+          buf >> hex >> end;
+          addDirective(CartDebug::CODE, start, end, currentbank);
+        }
+        else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
+        {
+          buf >> hex >> start;
+          buf >> hex >> end;
+          addDirective(CartDebug::DATA, start, end, currentbank);
+        }
+        else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
+        {
+          buf >> hex >> start;
+          buf >> hex >> end;
+          addDirective(CartDebug::GFX, start, end, currentbank);
+        }
+      }
+    }
+    in.close();
+
+    return "loaded " + node.getRelativePath() + " OK";
+  }
+  else
+    return DebuggerParser::red("config file not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::saveConfigFile(const string& f)
+string CartDebug::saveConfigFile(string file)
 {
 return "NOT YET IMPLEMENTED";
 }
@@ -676,7 +786,7 @@ string CartDebug::listConfig(int bank)
           << (i->type == CartDebug::CODE ? "CODE" :
               i->type == CartDebug::DATA ? "DATA" :
               "GFX")
-          << " " << hex << i->start << " " << hex << i->end << endl;
+          << " " << HEX4 << i->start << " " << HEX4 << i->end << endl;
     }
     getBankDirectives(buf, info);
   }

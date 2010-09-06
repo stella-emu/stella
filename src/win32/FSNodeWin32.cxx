@@ -278,7 +278,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
     _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
     _isValid = true;
 
-    // Add a trailing slash, if necessary.
+    // Add a trailing backslash, if necessary
     if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '\\')
       _path += '\\';
   }
