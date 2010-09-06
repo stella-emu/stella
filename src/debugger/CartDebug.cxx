@@ -46,10 +46,10 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   BankInfo info;
   for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
   {
-    info.banksize = banksize;   // TODO - get this from Cart class
+    info.size = banksize;   // TODO - get this from Cart class
     myBankInfo.push_back(info);
   }
-  info.banksize = 128;  // ZP RAM
+  info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
@@ -362,10 +362,13 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     PRINT_TAG((*d)); \
   cerr << endl;
 
+  if(end < start || start == 0 || end == 0)
+    return false;
+
   if(bank < 0)  // Do we want the current bank or ZP RAM?
     bank = (myDebugger.cpuDebug().pc() & 0x1000) ? getBank() : myBankInfo.size()-1;
 
-  bank = BSPF_min(bank, bankCount() - 1);
+  bank = BSPF_min(bank, bankCount());
   BankInfo& info = myBankInfo[bank];
   DirectiveList& list = info.directiveList;
 
@@ -595,14 +598,19 @@ int CartDebug::getAddress(const string& label) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::loadSymbolFile(const string& f)
+string CartDebug::loadSymbolFile(string file)
 {
-  string file = f;
+  // TODO - use similar load logic as loadconfig command
+  if(file == "")
+    file = myOSystem.romFile();
+
   string::size_type spos;
   if( (spos = file.find_last_of('.')) != string::npos )
     file.replace(spos, file.size(), ".sym");
   else
     file += ".sym";
+
+  // TODO - rewrite this to use C++ streams
 
   int pos = 0, lines = 0, curVal;
   string curLabel;
@@ -651,26 +659,43 @@ string CartDebug::loadConfigFile(string file)
 {
   FilesystemNode node(file);
 
-  if(file == "")  // Use config file based on ROM name
+  if(file == "")
   {
-    file = myOSystem.romFile();
-    string::size_type spos;
-    if((spos = file.find_last_of('.')) != string::npos )
-      file.replace(spos, file.size(), ".cfg");
-    else
-      file += ".cfg";
-    FilesystemNode usercfg(file);
-    if(usercfg.exists())
+    // There are three possible locations for loading config files
+    //   (in order of decreasing relevance):
+    // 1) ROM dir based on properties entry name
+    // 2) ROM dir based on actual ROM name
+    // 3) CFG dir based on properties entry name
+
+    const string& propsname =
+      myConsole.properties().get(Cartridge_Name) + ".cfg";
+
+    // Case 1
+    FilesystemNode case1(FilesystemNode(myOSystem.romFile()).getParent().getPath() +
+                         propsname);
+    if(case1.exists())
     {
-      node = usercfg;
+      node = case1;
     }
-    else  // Use global config file based on properties cart name
+    else
     {
-      const string& globalfile = myOSystem.cfgDir() +
-        myConsole.properties().get(Cartridge_Name) + ".cfg";
-      FilesystemNode globalcfg(globalfile);
-      if(globalcfg.exists())
-        node = globalcfg;
+      file = myOSystem.romFile();
+      string::size_type spos;
+      if((spos = file.find_last_of('.')) != string::npos )
+        file.replace(spos, file.size(), ".cfg");
+      else
+        file += ".cfg";
+      FilesystemNode case2(file);
+      if(case2.exists())
+      {
+        node = case2;
+      }
+      else  // Use global config file based on properties cart name
+      {
+        FilesystemNode case3(myOSystem.cfgDir() + propsname);
+        if(case3.exists())
+          node = case3;
+      }
     }
   }
 
@@ -678,7 +703,14 @@ string CartDebug::loadConfigFile(string file)
   {
     ifstream in(node.getPath().c_str());
     if(!in.is_open())
-      return "Unable to read directives from " + node.getPath();
+      return "Unable to load directives from " + node.getPath();
+
+    // Erase all previous directives
+    for(Common::Array<BankInfo>::iterator bi = myBankInfo.begin();
+        bi != myBankInfo.end(); ++bi)
+    {
+      bi->directiveList.clear();
+    }
 
     int currentbank = 0;
     while(!in.eof())
@@ -718,33 +750,26 @@ string CartDebug::loadConfigFile(string file)
         {
           buf >> hex >> start;
 // TODO - figure out what to do with this
-          cerr << "ignoring directive: "
-               << directive << " " << HEX4 << start << endl;
         }
         else if(BSPF_startsWithIgnoreCase(directive, "BLOCK"))
         {
           buf >> hex >> start;
           buf >> hex >> end;
-// TODO - add directive for this
-          cerr << "ignoring directive: " << directive << " "
-               << HEX4 << start << " " << HEX4 << end << endl;
+//          addDirective(CartDebug::BLOCK, start, end, currentbank);
         }
         else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
         {
-          buf >> hex >> start;
-          buf >> hex >> end;
+          buf >> hex >> start >> hex >> end;
           addDirective(CartDebug::CODE, start, end, currentbank);
         }
         else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
         {
-          buf >> hex >> start;
-          buf >> hex >> end;
+          buf >> hex >> start >> hex >> end;
           addDirective(CartDebug::DATA, start, end, currentbank);
         }
         else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
         {
-          buf >> hex >> start;
-          buf >> hex >> end;
+          buf >> hex >> start >> hex >> end;
           addDirective(CartDebug::GFX, start, end, currentbank);
         }
       }
@@ -760,7 +785,44 @@ string CartDebug::loadConfigFile(string file)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::saveConfigFile(string file)
 {
-return "NOT YET IMPLEMENTED";
+  FilesystemNode node(file);
+
+  const string& name = myConsole.properties().get(Cartridge_Name);
+  const string& md5 = myConsole.properties().get(Cartridge_MD5);
+
+  if(file == "")
+  {
+    // There are two possible locations for saving config files
+    //   (in order of decreasing relevance):
+    // 1) ROM dir based on properties entry name
+    // 2) ROM dir based on actual ROM name
+    //
+    // In either case, we're using the properties entry, since even ROMs that
+    // don't have a proper entry have a temporary one inserted by OSystem
+    node = FilesystemNode(name + ".cfg");
+  }
+
+  if(!node.isDirectory())
+  {
+    ofstream out(node.getPath().c_str());
+    if(!out.is_open())
+      return "Unable to save directives to " + node.getPath();
+
+    // Store all bank information
+    out << "//Stella.pro: \"" << name << "\"" << endl
+        << "//MD5: " << md5 << endl
+        << endl;
+    for(uInt32 b = 0; b < myConsole.cartridge().bankCount(); ++b)
+    {
+      out << "[" << b << "]" << endl;
+      getBankDirectives(out, myBankInfo[b]);
+    }
+    out.close();
+
+    return "saved " + node.getRelativePath() + " OK";
+  }
+  else
+    return DebuggerParser::red("config file not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -782,11 +844,12 @@ string CartDebug::listConfig(int bank)
     for(DirectiveList::const_iterator i = info.directiveList.begin();
         i != info.directiveList.end(); ++i)
     {
-      buf << "(*) "
-          << (i->type == CartDebug::CODE ? "CODE" :
-              i->type == CartDebug::DATA ? "DATA" :
-              "GFX")
-          << " " << HEX4 << i->start << " " << HEX4 << i->end << endl;
+      if(i->type != CartDebug::NONE)
+      {
+        buf << "(*) ";
+        disasmTypeAsString(buf, i->type);
+        buf << " " << HEX4 << i->start << " " << HEX4 << i->end << endl;
+      }
     }
     getBankDirectives(buf, info);
   }
@@ -861,7 +924,7 @@ CartDebug::AddrType CartDebug::addressType(uInt16 addr) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
+void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 {
   // Disassemble the bank, then scan it for an up-to-date description
   DisassemblyList list;
@@ -890,10 +953,9 @@ void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
       if(type == CartDebug::DATA)
         last = tag.address - 1;
 
-      buf << (type == CartDebug::CODE ? "CODE" :
-              type == CartDebug::DATA ? "DATA" :
-              "GFX")
-          << " " << HEX4 << start << " " << HEX4 << last << endl;
+      disasmTypeAsString(buf, type);
+      buf << " " << HEX4 << start << " " << HEX4 << last << endl;
+
       type = tag.type;
       start = last = tag.address;
     }
@@ -901,10 +963,30 @@ void CartDebug::getBankDirectives(ostringstream& buf, BankInfo& info) const
       last = tag.address;
   }
   // Grab the last directive, making sure it accounts for all remaining space
-  buf << (type == CartDebug::CODE ? "CODE" :
-          type == CartDebug::DATA ? "DATA" :
-          "GFX")
-      << " " << HEX4 << start << " " << HEX4 << (info.offset+info.end) << endl;
+  disasmTypeAsString(buf, type);
+  buf << " " << HEX4 << start << " " << HEX4 << (info.offset+info.end) << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
+{
+  switch(type)
+  {
+    case CartDebug::BLOCK:
+      buf << "BLOCK";
+      break;
+    case CartDebug::CODE:
+      buf << "CODE";
+      break;
+    case CartDebug::DATA:
+      buf << "DATA";
+      break;
+    case CartDebug::GFX:
+      buf << "GFX";
+      break;
+    default:
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -39,7 +39,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   if(start & 0x1000)
   {
-    if(info.banksize == 4096)  // 4K ROM space
+    if(info.size == 4096)  // 4K ROM space
     {
       /*============================================
         The offset is the address where the code segment
@@ -76,7 +76,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
     myOffset = 0;
   }
-  myAppData.length = info.banksize;
+  myAppData.length = info.size;
 
   info.start  = myAppData.start;
   info.end    = myAppData.end;
@@ -785,6 +785,9 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   myDisasmBuf.seekg(11, ios::beg);
   switch(tag.type)
   {
+    case CartDebug::BLOCK:
+      // TODO - handle this
+      break;
     case CartDebug::CODE:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.ccount, '\'');

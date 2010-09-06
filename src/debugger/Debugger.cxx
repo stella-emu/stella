@@ -209,11 +209,7 @@ void Debugger::setConsole(Console* console)
   myCpuDebug = new CpuDebug(*this, *myConsole);
 
   delete myCartDebug;
-  // Register any RAM areas in the Cartridge
-  // Zero-page RAM is automatically recognized by CartDebug
   myCartDebug = new CartDebug(*this, *myConsole, *myOSystem);
-  myCartDebug->loadSymbolFile(myOSystem->romFile());
-  myCartDebug->loadConfigFile();
 
   delete myRiotDebug;
   myRiotDebug = new RiotDebug(*this, *myConsole);
@@ -770,7 +766,7 @@ string Debugger::builtinHelp() const
     if(len > i_maxlen)  i_maxlen = len;
   }
 
-  buf << endl << "Built-in functions:" << endl;
+  buf << setfill(' ') << endl << "Built-in functions:" << endl;
   for(int i = 0; builtin_functions[i][0] != 0; ++i)
   {
     buf << setw(c_maxlen) << left << builtin_functions[i][0]
