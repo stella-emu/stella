@@ -804,22 +804,6 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       tag.disasm = " ";
       break;
   }
-/*
-  switch(myDisasmBuf.peek())
-  {
-    case ' ':
-      tag.disasm = " ";
-      break;
-    case '.':
-      getline(myDisasmBuf, tag.disasm);
-      break;
-    default:
-      getline(myDisasmBuf, tag.disasm, '\'');
-      getline(myDisasmBuf, tag.ccount, '\'');
-      getline(myDisasmBuf, tag.bytes);
-      break;
-  }
-*/
   myList.push_back(tag);
 
 DONE_WITH_ADD:

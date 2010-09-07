@@ -83,7 +83,7 @@ class DebuggerParser
 
   private:
     enum {
-      kNumCommands   = 64,
+      kNumCommands   = 65,
       kMAX_ARG_TYPES = 10
     };
 
@@ -142,6 +142,7 @@ class DebuggerParser
     void executeC();
     void executeCheat();
     void executeClearbreaks();
+    void executeClearconfig();
     void executeCleartraps();
     void executeClearwatches();
     void executeCls();

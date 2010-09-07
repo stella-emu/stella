@@ -858,6 +858,32 @@ string CartDebug::listConfig(int bank)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::clearConfig(int bank)
+{
+  uInt32 startbank = 0, endbank = bankCount();
+  if(bank >= 0 && bank < bankCount())
+  {
+    startbank = bank;
+    endbank = startbank + 1;
+  }
+
+  uInt32 count = 0;
+  for(uInt32 b = startbank; b < endbank; ++b)
+  {
+    count += myBankInfo[b].directiveList.size();
+    myBankInfo[b].directiveList.clear();
+  }
+
+  ostringstream buf;
+  if(count > 0)
+    buf << "removed " << dec << count << " directives from "
+        << dec << (endbank - startbank) << " banks";
+  else
+    buf << "no directives present";
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates

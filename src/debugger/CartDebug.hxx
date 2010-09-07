@@ -223,9 +223,15 @@ class CartDebug : public DebuggerSystem
 
     /**
       Show Distella directives (both set by the user and determined by Distella)
-      for the given bank (or all banks, if no bank is specified.
+      for the given bank (or all banks, if no bank is specified).
     */
     string listConfig(int bank = -1);
+
+    /**
+      Clear Distella directives (set by the user) for the given bank
+      (or all banks, if no bank is specified.)
+    */
+    string clearConfig(int bank = -1);
 
     /**
       Methods used by the command parser for tab-completion

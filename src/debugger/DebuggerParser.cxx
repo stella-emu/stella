@@ -767,6 +767,16 @@ void DebuggerParser::executeClearbreaks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "clearconfig"
+void DebuggerParser::executeClearconfig()
+{
+  if(argCount == 1)
+    commandResult << debugger->cartDebug().clearConfig(args[0]);
+  else
+    commandResult << debugger->cartDebug().clearConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "cleartraps"
 void DebuggerParser::executeCleartraps()
 {
@@ -1566,6 +1576,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_END_ARGS },
     &DebuggerParser::executeClearbreaks
+  },
+
+  {
+    "clearconfig",
+    "Clear Distella config directives [bank xx]",
+    false,
+    false,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeClearconfig
   },
 
   {
