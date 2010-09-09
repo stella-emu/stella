@@ -573,7 +573,7 @@ void VideoDialog::setDefaults()
   myUseVSyncCheckbox->setState(true);
   myGrabmouseCheckbox->setState(false);
   myUIMessagesCheckbox->setState(true);
-  myCenterCheckbox->setState(true);
+  myCenterCheckbox->setState(false);
   myFastSCBiosCheckbox->setState(false);
 
   myTexturePopup->setSelected("off", "");

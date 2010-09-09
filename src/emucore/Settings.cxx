@@ -53,7 +53,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("tia_filter", "zoom2x");
   setInternal("fullscreen", "0");
   setInternal("fullres", "auto");
-  setInternal("center", "true");
+  setInternal("center", "false");
   setInternal("grabmouse", "false");
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
