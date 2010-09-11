@@ -799,7 +799,8 @@ string CartDebug::saveConfigFile(string file)
     //
     // In either case, we're using the properties entry, since even ROMs that
     // don't have a proper entry have a temporary one inserted by OSystem
-    node = FilesystemNode(name + ".cfg");
+    node = FilesystemNode(FilesystemNode(
+        myOSystem.romFile()).getParent().getPath() + name + ".cfg");
   }
 
   if(!node.isDirectory())
@@ -973,11 +974,10 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
       continue;
     else if(tag.type != type)  // new range has started
     {
-      // If switching from a data range, make sure the endpoint is valid
+      // If switching data ranges, make sure the endpoint is valid
       // This is necessary because DATA sections don't always generate
       // consecutive numbers/addresses for the range
-      if(type == CartDebug::DATA)
-        last = tag.address - 1;
+      last = tag.address - 1;
 
       disasmTypeAsString(buf, type);
       buf << " " << HEX4 << start << " " << HEX4 << last << endl;
