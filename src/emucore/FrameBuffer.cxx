@@ -132,10 +132,11 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
       // Attempt to center the application window in non-fullscreen mode
       if(!fullScreen() && myOSystem->settings().getBool("center"))
       {
-        myOSystem->setAppWindowPos(
-          (myOSystem->desktopWidth() - mode.screen_w) / 2,
-          (myOSystem->desktopHeight() - mode.screen_h) / 2,
-          mode.screen_w, mode.screen_h);
+        int x = mode.screen_w >= myOSystem->desktopWidth() ? 0 : 
+          ((myOSystem->desktopWidth() - mode.screen_w) >> 1);
+        int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 : 
+          ((myOSystem->desktopHeight() - mode.screen_h) >> 1);
+        myOSystem->setAppWindowPos(x, y, mode.screen_w, mode.screen_h);
       }
 
       myImageRect.setWidth(mode.image_w);

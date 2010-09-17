@@ -9,7 +9,7 @@
      SSSS     ttt  eeeee llll llll  aaaaa
 
 ===========================================================================
-                Release 3.2.1 for Linux, MacOSX and Windows
+                Release 3.2.2 for Linux, MacOSX and Windows
 ===========================================================================
 
 The Atari 2600 Video Computer System (VCS), introduced in 1977, was the
@@ -21,30 +21,30 @@ all of your favourite Atari 2600 games again!  Stella was originally
 developed for Linux by Bradford W. Mott, however, it has been ported to a
 number of other platforms and is currently maintained by Stephen Anthony.
 
-This is the 3.2.1 release of Stella for Linux, Mac OSX and Windows.  The
+This is the 3.2.2 release of Stella for Linux, Mac OSX and Windows.  The
 distributions currently available are:
 
   * Binary installer (exe) for Windows 32-bit & 64-bit :
-      Stella-3.2.1-win32.exe
-      Stella-3.2.1-x64.exe
+      Stella-3.2.2-win32.exe
+      Stella-3.2.2-x64.exe
 
   * Binary zip for Windows, containing 32 and 64-bit versions :
-      Stella-3.2.1-windows.zip
+      Stella-3.2.2-windows.zip
 
   * Binary distribution for MacOSX 32-bit & 64-bit :
-      Stella-3.2.1-macosx.dmg (32-bit Universal Binary)
-      Stella-3.2.1_intel_10.6-macosx.dmg (32/64-bit Intel/Snow-Leopard only)
+      Stella-3.2.2-macosx.dmg (32-bit Universal Binary)
+      Stella-3.2.2_intel_10.6-macosx.dmg (32/64-bit Intel/Snow-Leopard only)
 
   * Binary distribution in 32-bit & 64-bit Ubuntu DEB format :
-      stella_3.2.1-1_i386.deb
-      stella_3.2.1-1_amd64.deb
+      stella_3.2.2-1_i386.deb
+      stella_3.2.2-1_amd64.deb
 
   * Binary distribution in 32-bit & 64-bit RPM format :
-      stella-3.2.1-2.i386.rpm
-      stella-3.2.1-2.x86_64.rpm
+      stella-3.2.2-2.i386.rpm
+      stella-3.2.2-2.x86_64.rpm
 
   * Source code distribution for all platforms :
-      stella-3.2.1-src.tar.gz
+      stella-3.2.2-src.tar.gz
 
 PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
 REQUESTS WILL BE IGNORED!
