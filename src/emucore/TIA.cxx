@@ -42,6 +42,9 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
     mySound(sound),
     mySettings(settings),
+    myFrameWidth(160),
+    myFrameYStart(34),
+    myFrameHeight(210),
     myMaximumNumberOfScanlines(262),
     myColorLossEnabled(false),
     myPartialFrameFlag(false),
@@ -225,15 +228,6 @@ void TIA::frameReset()
 
   // Reset pixel pointer and drawing flag
   myFramePointer = myCurrentFrameBuffer;
-
-  // Make sure all these are within bounds
-  myFrameWidth  = 160;
-  myFrameYStart = atoi(myConsole.properties().get(Display_YStart).c_str());
-  if(myFrameYStart < 0)       myFrameYStart = 0;
-  else if(myFrameYStart > 64) myFrameYStart = 64;
-  myFrameHeight = atoi(myConsole.properties().get(Display_Height).c_str());
-  if(myFrameHeight < 210)      myFrameHeight = 210;
-  else if(myFrameHeight > 256) myFrameHeight = 256;
 
   // Calculate color clock offsets for starting and stopping frame drawing
   // Note that although we always start drawing at scanline zero, the

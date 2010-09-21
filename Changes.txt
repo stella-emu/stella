@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.2.1 to 3.2.2: (September 17, 2010)
+
+  * Fixed bug with window centering; if enabled and the the window was
+    larger than the desktop, the window would be moved offscreen.
+
+-Have fun!
+
+
 3.2 to 3.2.1: (August 25, 2010)
 
   * Improved behaviour of joystick 'hat' movement.  This should fix bugs
@@ -23,8 +31,6 @@
 
   * Added game properties info and snapshot for the newly released
     'Halo 2600' ROM.
-
--Have fun!
 
 
 3.1.2 to 3.2: (August 20, 2010)

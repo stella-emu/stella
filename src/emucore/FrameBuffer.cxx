@@ -129,15 +129,7 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
 
     if(initSubsystem(mode))
     {
-      // Attempt to center the application window in non-fullscreen mode
-      if(!fullScreen() && myOSystem->settings().getBool("center"))
-      {
-        int x = mode.screen_w >= myOSystem->desktopWidth() ? 0 : 
-          ((myOSystem->desktopWidth() - mode.screen_w) >> 1);
-        int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 : 
-          ((myOSystem->desktopHeight() - mode.screen_h) >> 1);
-        myOSystem->setAppWindowPos(x, y, mode.screen_w, mode.screen_h);
-      }
+      centerAppWindow(mode);
 
       myImageRect.setWidth(mode.image_w);
       myImageRect.setHeight(mode.image_h);
@@ -696,6 +688,8 @@ bool FrameBuffer::changeVidMode(int direction)
   VideoMode vidmode = myCurrentModeList->current(myOSystem->settings(), fullScreen());
   if(setVidMode(vidmode))
   {
+    centerAppWindow(vidmode);
+
     myImageRect.setWidth(vidmode.image_w);
     myImageRect.setHeight(vidmode.image_h);
     myImageRect.moveTo(vidmode.image_x, vidmode.image_y);
@@ -1013,6 +1007,20 @@ FrameBuffer::VideoMode FrameBuffer::getSavedVidMode()
   }
 
   return myCurrentModeList->current(myOSystem->settings(), fullScreen());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::centerAppWindow(const VideoMode& mode)
+{
+  // Attempt to center the application window in non-fullscreen mode
+  if(!fullScreen() && myOSystem->settings().getBool("center"))
+  {
+    int x = mode.screen_w >= myOSystem->desktopWidth() ? 0 : 
+      ((myOSystem->desktopWidth() - mode.screen_w) >> 1);
+    int y = mode.screen_h >= myOSystem->desktopHeight() ? 0 : 
+      ((myOSystem->desktopHeight() - mode.screen_h) >> 1);
+    myOSystem->setAppWindowPos(x, y, mode.screen_w, mode.screen_h);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

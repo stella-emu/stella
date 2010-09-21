@@ -152,6 +152,15 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
   //   properties (60Hz, 262 scanlines, etc) and cycle between NTSC-like modes
   // The TIA will self-adjust the framerate if necessary
+
+  // TODO - query these values directly from the TIA if value is 'AUTO'
+  uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
+  if(ystart < 0)       ystart = 0;
+  else if(ystart > 64) ystart = 64;
+  uInt32 height = atoi(myProperties.get(Display_Height).c_str());
+  if(height < 210)      height = 210;
+  else if(height > 256) height = 256;
+
   if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
      myDisplayFormat == "SECAM60")
   {
@@ -165,8 +174,24 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     myFramerate = 50.0;
     myConsoleInfo.InitialFrameRate = "50";
 
-    if(myProperties.get(Display_Height) == "210")
-      myProperties.set(Display_Height, "250");
+    // PAL ROMs normally need at least 250 lines
+    height = BSPF_max(height, 250u);
+  }
+
+  // Make sure these values fit within the bounds of the desktop
+  // If not, attempt to center vertically
+  if(height <= myOSystem->desktopHeight())
+  {
+    myTIA->setYStart(ystart);
+    myTIA->setHeight(height);
+  }
+  else
+  {
+    ystart += height - myOSystem->desktopHeight();
+    ystart = BSPF_min(ystart, 64u);
+    height = myOSystem->desktopHeight();
+    myTIA->setYStart(ystart);
+    myTIA->setHeight(height);
   }
 
   const string& md5 = myProperties.get(Cartridge_MD5);
@@ -421,7 +446,7 @@ FBInitStatus Console::initializeVideo(bool full)
 
   if(full)
   {
-    string title = string("Stella ") + STELLA_VERSION +
+    const string& title = string("Stella ") + STELLA_VERSION +
                    ": \"" + myProperties.get(Cartridge_Name) + "\"";
     fbstatus = myOSystem->frameBuffer().initialize(title,
                  myTIA->width() << 1, myTIA->height());
@@ -500,11 +525,9 @@ void Console::fry() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeYStart(int direction)
 {
-  Int32 ystart = atoi(myProperties.get(Display_YStart).c_str());
-  ostringstream strval;
-  string message;
+  uInt32 ystart = myTIA->ystart();
 
-  if(direction == +1)    // increase YStart
+  if(direction == +1)       // increase YStart
   {
     ystart++;
     if(ystart > 64)
@@ -525,27 +548,25 @@ void Console::changeYStart(int direction)
   else
     return;
 
-  strval << ystart;
-  myProperties.set(Display_YStart, strval.str());
+  myTIA->setYStart(ystart);
   myTIA->frameReset();
   myOSystem->frameBuffer().refresh();
 
-  message = "YStart ";
-  message += strval.str();
-  myOSystem->frameBuffer().showMessage(message);
+  ostringstream val;
+  val << ystart;
+  myOSystem->frameBuffer().showMessage("YStart " + val.str());
+  myProperties.set(Display_YStart, val.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::changeHeight(int direction)
 {
-  Int32 height = atoi(myProperties.get(Display_Height).c_str());
-  ostringstream strval;
-  string message;
+  uInt32 height = myTIA->height();
 
-  if(direction == +1)    // increase Height
+  if(direction == +1)       // increase Height
   {
     height++;
-    if(height > 256)
+    if(height > 256 || height > myOSystem->desktopHeight())
     {
       myOSystem->frameBuffer().showMessage("Height at maximum");
       return;
@@ -554,7 +575,7 @@ void Console::changeHeight(int direction)
   else if(direction == -1)  // decrease Height
   {
     height--;
-    if(height < 200)
+    if(height < 210)
     {
       myOSystem->frameBuffer().showMessage("Height at minimum");
       return;
@@ -563,14 +584,14 @@ void Console::changeHeight(int direction)
   else
     return;
 
-  strval << height;
-  myProperties.set(Display_Height, strval.str());
+  myTIA->setHeight(height);
   myTIA->frameReset();
   initializeVideo();  // takes care of refreshing the screen
 
-  message = "Height ";
-  message += strval.str();
-  myOSystem->frameBuffer().showMessage(message);
+  ostringstream val;
+  val << height;
+  myOSystem->frameBuffer().showMessage("Height " + val.str());
+  myProperties.set(Display_Height, val.str());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

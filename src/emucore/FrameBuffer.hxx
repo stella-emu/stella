@@ -516,6 +516,11 @@ class FrameBuffer
     */
     VideoMode getSavedVidMode();
 
+    /**
+      Attempt to center the application window in windowed mode.
+    */
+    void centerAppWindow(const VideoMode& mode);
+
   private:
     /**
       This class implements an iterator around an array of VideoMode objects.

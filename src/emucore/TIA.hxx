@@ -69,7 +69,7 @@ class TIA : public Device
     void reset();
 
     /**
-      Reset frame to change XStart/YStart/Width/Height properties
+      Reset frame to current YStart/Height properties
     */
     void frameReset();
 
@@ -189,6 +189,15 @@ class TIA : public Device
     */
     inline uInt32 width() const  { return myFrameWidth;  }
     inline uInt32 height() const { return myFrameHeight; }
+    inline uInt32 ystart() const { return myFrameYStart; }
+
+    /**
+      Changes the current Height/YStart properties.
+      Note that calls to these method(s) must be eventually followed by
+      ::frameReset() for the changes to take effect.
+    */
+    void setHeight(uInt32 height) { myFrameHeight = height; }
+    void setYStart(uInt32 ystart) { myFrameYStart = ystart; }
 
     /**
       Enables/disables auto-frame calculation.  If enabled, the TIA
