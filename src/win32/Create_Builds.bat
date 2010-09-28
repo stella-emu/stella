@@ -111,6 +111,13 @@ if %HAVE_FLIP% == 1 (
 	)
 )
 
+:: Create output directory for release files
+if not exist Output (
+	echo Creating output directory ...
+	mkdir Output
+)
+
+
 :: Actually create the ZIP file
 if %HAVE_ZIP% == 1 (
 	echo Creating ZIP file ...
@@ -121,18 +128,17 @@ if %HAVE_ZIP% == 1 (
 if %HAVE_ISCC% == 1 (
 	if %BUILD_32% == 1 (
 		echo Creating 32-bit EXE ...
-		iscc.lnk %CD%\stella.iss /q "/dSTELLA_VER=%STELLA_VER%" "/dSTELLA_ARCH=win32" "/dSTELLA_PATH=%STELLA_DIR%\32-bit" "/dSTELLA_DOCPATH=%STELLA_DIR%\docs"
+		iscc.lnk "%CD%\stella.iss" /q "/dSTELLA_VER=%STELLA_VER%" "/dSTELLA_ARCH=win32" "/dSTELLA_PATH=%STELLA_DIR%\32-bit" "/dSTELLA_DOCPATH=%STELLA_DIR%\docs"
 	)
 	if %BUILD_64% == 1 (
 		echo Creating 64-bit EXE ...
-		iscc.lnk %CD%\stella.iss /q "/dSTELLA_VER=%STELLA_VER%" "/dSTELLA_ARCH=x64" "/dSTELLA_PATH=%STELLA_DIR%\64-bit" "/dSTELLA_DOCPATH=%STELLA_DIR%\docs"
+		iscc.lnk "%CD%\stella.iss" /q "/dSTELLA_VER=%STELLA_VER%" "/dSTELLA_ARCH=x64" "/dSTELLA_PATH=%STELLA_DIR%\64-bit" "/dSTELLA_DOCPATH=%STELLA_DIR%\docs"
 	)
 )
 
 :: Cleanup time
-echo Removing %STELLA_DIR% ...
+echo Cleaning up files, ...
+pause 5
 rmdir %STELLA_DIR% /s /q
 
 :done
-echo.
-pause
