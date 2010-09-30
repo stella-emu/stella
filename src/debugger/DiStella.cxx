@@ -27,7 +27,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   : myDbg(dbg),
     myList(list)
 {
-  CartDebug::AddressList addresses = info.addressList;
+  CartDebug::AddressList& addresses = info.addressList;
   if(addresses.size() == 0)
     return;
 
