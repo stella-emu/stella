@@ -1503,7 +1503,14 @@
 			};
 			buildConfigurationList = 2D91752109BA903B0026E9FF /* Build configuration list for PBXProject "stella_intel" */;
 			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
 			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
 			mainGroup = 29B97314FDCFA39411CA2CEA /* «PROJECTNAMEASXML» */;
 			projectDirPath = "";
 			projectRoot = "";

@@ -47,6 +47,7 @@ Cartridge2K::Cartridge2K(const uInt8* image, uInt32 size, const Settings& settin
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, size);
+  createCodeAccessBase(mySize);
 
   // Set mask for accessing the image buffer
   // This is guaranteed to work, as mySize is a power of two
@@ -76,14 +77,12 @@ void Cartridge2K::install(System& system)
   assert((0x1000 & mask) == 0);
 
   // Map ROM image into the system
-  System::PageAccess access;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
   {
     access.directPeekBase = &myImage[address & myMask];
+    access.codeAccessBase = &myCodeAccessBase[address & myMask];
     mySystem->setPageAccess(address >> shift, access);
   }
 }

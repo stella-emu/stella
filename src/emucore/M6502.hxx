@@ -206,17 +206,23 @@ class M6502 : public Serializable
   private:
     /**
       Get the byte at the specified address and update the cycle count.
+      Addresses marked as code are hints to the debugger/disassembler to
+      conclusively determine code sections, even if the disassembler cannot
+      find them itself.
+
+      @param address  The address from which the value should be loaded
+      @param isCode   Indicates that this address is part of an instruction
 
       @return The byte at the specified address
     */
-    inline uInt8 peek(uInt16 address);
+    inline uInt8 peek(uInt16 address, bool isCode);
 
     /**
       Change the byte at the specified address to the given value and
       update the cycle count.
 
-      @param address The address where the value should be stored
-      @param value The value to be stored at the address
+      @param address  The address where the value should be stored
+      @param value    The value to be stored at the address
     */
     inline void poke(uInt16 address, uInt8 value);
 

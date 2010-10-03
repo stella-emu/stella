@@ -152,7 +152,7 @@ void M6502::PS(uInt8 ps)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 M6502::peek(uInt16 address)
+inline uInt8 M6502::peek(uInt16 address, bool isCode)
 {
   if(address != myLastAddress)
   {
@@ -170,7 +170,7 @@ inline uInt8 M6502::peek(uInt16 address)
   }
 #endif
 
-  uInt8 result = mySystem->peek(address);
+  uInt8 result = mySystem->peek(address, isCode);
   myLastAccessWasRead = true;
   myLastPeekAddress = address;
   return result;
@@ -245,7 +245,7 @@ bool M6502::execute(uInt32 number)
       myLastPeekAddress = myLastPokeAddress = 0;
 
       // Fetch instruction at the program counter
-      IR = peek(PC++);
+      IR = peek(PC++, true);  // This address represents a code section
 
 #ifdef DEBUG_OUTPUT
       debugStream << ::hex << setw(2) << (int)A << " "
@@ -256,7 +256,7 @@ bool M6502::execute(uInt32 number)
                   << setw(2) << (int)IR << "       "
 //      << "<" << ourAddressingModeTable[IR] << " ";
 //      debugStream << hex << setw(4) << operandAddress << " ";
-                  << setw(3) << ourInstructionMnemonicTable[IR]
+//                  << setw(3) << ourInstructionMnemonicTable[IR]
 
 //      debugStream << "PS=" << ::hex << setw(2) << (int)PS() << " ";
 
@@ -274,7 +274,6 @@ bool M6502::execute(uInt32 number)
           // Oops, illegal instruction executed so set fatal error flag
           myExecutionStatus |= FatalErrorBit;
       }
-
       myTotalInstructionCount++;
     }
 

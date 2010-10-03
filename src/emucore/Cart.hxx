@@ -207,6 +207,15 @@ class Cartridge : public Device
     */
     void triggerReadFromWritePort(uInt16 address);
 
+    /**
+      Create an array that holds code-access information for every byte
+      of the ROM (indicated by 'size').  Note that this is only used by
+      the debugger, and is unavailable otherwise.
+
+      @param size  The size of the code-access array to create
+    */
+    void createCodeAccessBase(uInt32 size);
+
   private:
     /**
       Get an image pointer and size for a ROM that is part of a larger,
@@ -331,6 +340,10 @@ class Cartridge : public Device
 
     // Indicates if the bank has changed somehow (a bankswitch has occurred)
     bool myBankChanged;
+
+    // The array containing information about every byte of ROM indicating
+    // whether it is used as code.
+    uInt8* myCodeAccessBase;
 
   private:
 #ifdef DEBUGGER_SUPPORT

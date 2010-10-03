@@ -255,9 +255,12 @@ class System : public Serializable
       address occurs before it's sent to the device mapped at
       the address.
 
+      @param address  The address from which the value should be loaded
+      @param isCode   Indicates that this address is part of an instruction
+
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address);
+    uInt8 peek(uInt16 address, bool isCode = false);
 
     /**
       Change the byte at the specified address to the given value.
@@ -269,8 +272,8 @@ class System : public Serializable
       if the device is handling the poke, we depend on its return value
       for this information.
 
-      @param address The address where the value should be stored
-      @param value The value to be stored at the address
+      @param address  The address where the value should be stored
+      @param value    The value to be stored at the address
     */
     void poke(uInt16 address, uInt8 value);
 
@@ -285,6 +288,13 @@ class System : public Serializable
     */
     void lockDataBus();
     void unlockDataBus();
+
+    /**
+      Answer whether or not the given address has ever been used as
+      code.  That is, it has ever been stored in either the IR or the PC,
+      or otherwise been executed.
+    */
+    bool isCode(uInt16 address);
 
   public:
     /**
@@ -318,6 +328,15 @@ class System : public Serializable
       uInt8* directPokeBase;
 
       /**
+        Pointer to a lookup table for marking an address as CODE.  A CODE
+        section is defined as any address that appears in the program
+        counter.  Currently, this is used by the debugger/disassembler to
+        conclusively determine if a section of address space is CODE, even
+        if the disassembler failed to mark it as such.
+      */
+      uInt8* codeAccessBase;
+
+      /**
         Pointer to the device associated with this page or to the system's 
         null device if the page hasn't been mapped to a device.
       */
@@ -328,7 +347,23 @@ class System : public Serializable
         (READ, WRITE, READWRITE)
       */
       PageAccessType type;
-	};
+
+      // Constructors
+      PageAccess()
+        : directPeekBase(0),
+          directPokeBase(0),
+          codeAccessBase(0),
+          device(0),
+          type(System::PA_READ) { }
+
+      PageAccess(uInt8* peek, uInt8* poke, uInt8* code, Device* dev,
+                 PageAccessType access)
+        : directPeekBase(peek),
+          directPokeBase(poke),
+          codeAccessBase(code),
+          device(dev),
+          type(access) { }
+    };
 
     /**
       Set the page accessing method for the specified page.

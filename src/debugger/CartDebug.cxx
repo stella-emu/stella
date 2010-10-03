@@ -53,6 +53,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
+cerr << "start @ " << HEX4 << myDebugger.dpeek(0xfffc) << endl;
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_back(myDebugger.dpeek(0xfffc));
   addLabel("START", myDebugger.dpeek(0xfffc));
 

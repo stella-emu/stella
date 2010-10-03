@@ -29,6 +29,7 @@ Cartridge4K::Cartridge4K(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 4096);
+  createCodeAccessBase(4096);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,15 +53,13 @@ void Cartridge4K::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  System::PageAccess access;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
   {
     access.directPeekBase = &myImage[address & 0x0FFF];
+    access.codeAccessBase = &myCodeAccessBase[address & 0x0FFF];
     mySystem->setPageAccess(address >> mySystem->pageShift(), access);
   }
 }

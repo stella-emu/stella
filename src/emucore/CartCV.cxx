@@ -47,6 +47,7 @@ CartridgeCV::CartridgeCV(const uInt8* image, uInt32 size,
     myInitialRAM = new uInt8[1024];
     memcpy(myInitialRAM, image, 1024);
   }
+  createCodeAccessBase(2048+1024);
 
   // This cart contains 1024 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 1024, 0x00, 0x400);
@@ -89,21 +90,19 @@ void CartridgeCV::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1800 & mask) == 0);
 
-  System::PageAccess access;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
   for(uInt32 address = 0x1800; address < 0x2000; address += (1 << shift))
   {
     access.directPeekBase = &myImage[address & 0x07FF];
+    access.codeAccessBase = &myCodeAccessBase[address & 0x07FF];
     mySystem->setPageAccess(address >> mySystem->pageShift(), access);
   }
 
   // Set the page accessing method for the RAM writing pages
   access.directPeekBase = 0;
-  access.device = this;
+  access.codeAccessBase = 0;
   access.type = System::PA_WRITE;
   for(uInt32 j = 0x1400; j < 0x1800; j += (1 << shift))
   {
@@ -113,11 +112,11 @@ void CartridgeCV::install(System& system)
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
-  access.device = this;
   access.type = System::PA_READ;
   for(uInt32 k = 0x1000; k < 0x1400; k += (1 << shift))
   {
     access.directPeekBase = &myRAM[k & 0x03FF];
+    access.codeAccessBase = &myCodeAccessBase[2048 + (k & 0x03FF)];
     mySystem->setPageAccess(k >> shift, access);
   }
 }

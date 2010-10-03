@@ -212,14 +212,14 @@ void System::clearDirtyPages()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::peek(uInt16 addr)
+uInt8 System::peek(uInt16 addr, bool isCode)
 {
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
 
   uInt8 result;
  
   // See if this page uses direct accessing or not 
-  if(access.directPeekBase != 0)
+  if(access.directPeekBase)
   {
     result = *(access.directPeekBase + (addr & myPageMask));
   }
@@ -230,8 +230,15 @@ uInt8 System::peek(uInt16 addr)
 
 #ifdef DEBUGGER_SUPPORT
   if(!myDataBusLocked)
-#endif
+  {
+    if(access.codeAccessBase)
+      *(access.codeAccessBase + (addr & myPageMask)) = isCode;
+
     myDataBusState = result;
+  }
+#else
+  myDataBusState = result;
+#endif
 
   return result;
 }
@@ -259,6 +266,21 @@ void System::poke(uInt16 addr, uInt8 value)
   if(!myDataBusLocked)
 #endif
     myDataBusState = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool System::isCode(uInt16 addr)
+{
+#ifdef DEBUGGER_SUPPORT
+  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+
+  if(access.codeAccessBase)
+    return *(access.codeAccessBase + (addr & myPageMask)) ? true : false;
+  else
+    return false;
+#else
+  return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -54,12 +54,9 @@ void CartridgeFE::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
+  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+
   // Map all of the accesses to call peek and poke
-  System::PageAccess access;
-  access.directPeekBase = 0;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 }

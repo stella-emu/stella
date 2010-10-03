@@ -90,6 +90,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
 
   if(resolvedata)
   {
+    // After we've disassembled from the start address, use all access points
+    // determined by Stella during emulation
+    int codeAccessPoint = 0;
+
     while(!myAddressQueue.empty())
     {
       myPC = myAddressQueue.front();
@@ -99,31 +103,29 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
         mark(k, REACHABLE);
 
-      // When we get to this point, all addresses have been processed
-      // starting from the initial one in the address list
-      // If so, process the next one in the list that hasn't already
-      // been marked as REACHABLE
-      // If it *has* been marked, it can be removed from consideration
-      // in all subsequent passes
+      // When we get to this point, the 'start' address has been processed
+      // Next we process all addresses determined during emulation to represent
+      // code, which *haven't* already been considered
       //
       // Note that we can't simply add all addresses right away, since
-      // the processing of a single address from the address list can
-      // cause others to be added in the ::disasm method
-      // All of these have to be exhausted before consulting the address
-      // list again
+      // the processing of a single address can cause others to be added in
+      // the ::disasm method
+      // All of these have to be exhausted before considering a new address
       if(myAddressQueue.empty())
       {
-        while(it != addresses.end())
+        // Stella itself can provide hints on whether an address has ever
+        // been referenced as CODE
+        while(codeAccessPoint <= myAppData.end)
         {
-          uInt16 addr = *it;
-          if(!check_bit(labels[addr-myOffset], REACHABLE))
+          if(Debugger::debugger().isCode(codeAccessPoint+myOffset) &&
+             !check_bit(labels[codeAccessPoint], REACHABLE))
           {
-            myAddressQueue.push(addr);
-            ++it;
+cerr << "marking " << hex << (codeAccessPoint+myOffset) << " as CODE\n";
+            myAddressQueue.push(codeAccessPoint+myOffset);
+            ++codeAccessPoint;
             break;
           }
-          else   // remove this address, it is redundant
-            it = addresses.erase(it);
+          ++codeAccessPoint;
         }
       }
     }

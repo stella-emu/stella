@@ -29,6 +29,7 @@ CartridgeF4SC::CartridgeF4SC(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 32768);
+  createCodeAccessBase(32768);
 
   // This cart contains 128 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 128, 0x80, 0x00);
@@ -66,19 +67,13 @@ void CartridgeF4SC::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  System::PageAccess access;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
-  access.directPeekBase = 0;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
   for(uInt32 i = (0x1FF4 & ~mask); i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
   // Set the page accessing method for the RAM writing pages
-  access.directPeekBase = 0;
-  access.device = this;
   access.type = System::PA_WRITE;
   for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
   {
@@ -88,11 +83,11 @@ void CartridgeF4SC::install(System& system)
 
   // Set the page accessing method for the RAM reading pages
   access.directPokeBase = 0;
-  access.device = this;
   access.type = System::PA_READ;
   for(uInt32 k = 0x1080; k < 0x1100; k += (1 << shift))
   {
     access.directPeekBase = &myRAM[k & 0x007F];
+    access.codeAccessBase = &myCodeAccessBase[0x80 + (k & 0x007F)];
     mySystem->setPageAccess(k >> shift, access);
   }
 
@@ -157,16 +152,14 @@ bool CartridgeF4SC::bank(uInt16 bank)
   uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1100; address < (0x1FF4U & ~mask);
       address += (1 << shift))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;

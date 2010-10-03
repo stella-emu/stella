@@ -284,6 +284,7 @@ class Debugger : public DialogContainer
     /* These are now exposed so Expressions can use them. */
     int peek(int addr) { return mySystem->peek(addr); }
     int dpeek(int addr) { return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8); }
+    int isCode(int addr) { return mySystem->isCode(addr); }
 
     void setBreakPoint(int bp, bool set);
 

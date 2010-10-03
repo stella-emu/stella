@@ -30,6 +30,7 @@ CartridgeF8::CartridgeF8(const uInt8* image, const string& md5,
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);
+  createCodeAccessBase(8192);
 
   // Normally bank 1 is the reset bank, unless we're dealing with ROMs
   // that have been incorrectly created with banks in the opposite order
@@ -63,13 +64,9 @@ void CartridgeF8::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  System::PageAccess access;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
-  access.directPeekBase = 0;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
   for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
@@ -138,16 +135,14 @@ bool CartridgeF8::bank(uInt16 bank)
   uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access;
-  access.directPokeBase = 0;
-  access.device = this;
-  access.type = System::PA_READ;
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < (0x1FF8U & ~mask);
       address += (1 << shift))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;

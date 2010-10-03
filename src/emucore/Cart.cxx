@@ -231,6 +231,7 @@ Cartridge::Cartridge(const Settings& settings)
   : mySettings(settings),
     myStartBank(0),
     myBankChanged(true),
+    myCodeAccessBase(NULL),
     myBankLocked(false)
 {
 }
@@ -238,6 +239,8 @@ Cartridge::Cartridge(const Settings& settings)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge::~Cartridge()
 {
+  if(myCodeAccessBase)
+    delete[] myCodeAccessBase;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -291,6 +294,17 @@ void Cartridge::triggerReadFromWritePort(uInt16 address)
 {
 #ifdef DEBUGGER_SUPPORT
   Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge::createCodeAccessBase(uInt32 size)
+{
+#ifdef DEBUGGER_SUPPORT
+  myCodeAccessBase = new uInt8[size];
+  memset(myCodeAccessBase, 0, size);
+#else
+  myCodeAccessBase = NULL;
 #endif
 }
 

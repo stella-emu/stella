@@ -293,11 +293,7 @@ void TIA::install(System& system, Device& device)
   mySystem->resetCycles();
 
   // All accesses are to the given device
-  System::PageAccess access;
-  access.directPeekBase = 0;
-  access.directPokeBase = 0;
-  access.device = &device;
-  access.type = System::PA_READWRITE;
+  System::PageAccess access(0, 0, 0, &device, System::PA_READWRITE);
 
   // We're installing in a 2600 system
   for(uInt32 i = 0; i < 8192; i += (1 << shift))
