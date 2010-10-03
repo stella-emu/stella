@@ -1426,25 +1426,46 @@ void DebuggerParser::executeTrace()
 // "trap"
 void DebuggerParser::executeTrap()
 {
-  debugger->toggleReadTrap(args[0]);
-  debugger->toggleWriteTrap(args[0]);
-  commandResult << trapStatus(args[0]);
+  uInt32 beg = args[0];
+  uInt32 end = argCount >= 2 ? args[1] : beg;
+  if(beg > end)  BSPF_swap(beg, end);
+
+  for(uInt32 i = beg; i <= end; ++i)
+  {
+    debugger->toggleReadTrap(i);
+    debugger->toggleWriteTrap(i);
+    commandResult << trapStatus(i) << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapread"
 void DebuggerParser::executeTrapread()
 {
-  debugger->toggleReadTrap(args[0]);
-  commandResult << trapStatus(args[0]);
+  uInt32 beg = args[0];
+  uInt32 end = argCount >= 2 ? args[1] : beg;
+  if(beg > end)  BSPF_swap(beg, end);
+
+  for(uInt32 i = beg; i <= end; ++i)
+  {
+    debugger->toggleReadTrap(i);
+    commandResult << trapStatus(i) << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "trapwrite"
 void DebuggerParser::executeTrapwrite()
 {
-  debugger->toggleWriteTrap(args[0]);
-  commandResult << trapStatus(args[0]);
+  uInt32 beg = args[0];
+  uInt32 end = argCount >= 2 ? args[1] : beg;
+  if(beg > end)  BSPF_swap(beg, end);
+
+  for(uInt32 i = beg; i <= end; ++i)
+  {
+    debugger->toggleWriteTrap(i);
+    commandResult << trapStatus(i) << endl;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2012,28 +2033,28 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "trap",
-    "Trap read and write accesses to address xx",
+    "Trap read/write access to address(es) xx [to yy]",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeTrap
   },
 
   {
     "trapread",
-    "Trap read accesses to address xx",
+    "Trap read access to address(es) xx [to yy]",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeTrapread
   },
 
   {
     "trapwrite",
-    "Trap write accesses to address xx",
+    "Trap write access to address(es) xx [to yy]",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeTrapwrite
   },
 
