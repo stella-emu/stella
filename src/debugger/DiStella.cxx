@@ -601,7 +601,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             else
               nextline << "    $" << HEX4 << ad;
 
-            nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+            nextlinebytes << HEX2 << (int)d1;
           }
           break;
         }
