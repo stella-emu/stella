@@ -25,6 +25,8 @@
 #include "TIA.hxx"
 #include "Cart4A50.hxx"
 
+// TODO (2010-10-03) - support CodeAccessBase functionality somehow
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
                              const Settings& settings)

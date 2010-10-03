@@ -32,6 +32,7 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
 {
   // Make a copy of the entire image
   memcpy(myImage, image, BSPF_min(size, 8192u + 2048u + 255u));
+  createCodeAccessBase(8192);
 
   // Pointer to the program ROM (8K @ 0 byte offset)
   myProgramImage = myImage;
@@ -89,7 +90,7 @@ void CartridgeDPC::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
@@ -422,13 +423,14 @@ bool CartridgeDPC::bank(uInt16 bank)
   uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map Program ROM image into the system
   for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);
       address += (1 << shift))
   {
     access.directPeekBase = &myProgramImage[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;

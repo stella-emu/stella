@@ -53,7 +53,6 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   myBankInfo.push_back(info);
 
   // We know the address for the startup bank right now
-cerr << "start @ " << HEX4 << myDebugger.dpeek(0xfffc) << endl;
   myBankInfo[myConsole.cartridge().startBank()].addressList.push_back(myDebugger.dpeek(0xfffc));
   addLabel("START", myDebugger.dpeek(0xfffc));
 
@@ -68,6 +67,8 @@ cerr << "start @ " << HEX4 << myDebugger.dpeek(0xfffc) << endl;
   // Add settings for Distella
   DiStella::settings.gfx_format =
     myOSystem.settings().getInt("gfxformat") == 16 ? kBASE_16 : kBASE_2;
+  DiStella::settings.show_addresses =
+    myOSystem.settings().getBool("showaddr");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

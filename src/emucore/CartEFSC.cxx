@@ -29,6 +29,7 @@ CartridgeEFSC::CartridgeEFSC(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
+  createCodeAccessBase(65536);
 
   // This cart contains 128 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 128, 0x80, 0x00);
@@ -66,7 +67,7 @@ void CartridgeEFSC::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FE0 & ~mask); i < 0x2000; i += (1 << shift))
@@ -86,6 +87,7 @@ void CartridgeEFSC::install(System& system)
   for(uInt32 k = 0x1080; k < 0x1100; k += (1 << shift))
   {
     access.directPeekBase = &myRAM[k & 0x007F];
+    access.codeAccessBase = &myCodeAccessBase[0x80 + (k & 0x007F)];
     mySystem->setPageAccess(k >> shift, access);
   }
 
@@ -147,13 +149,14 @@ bool CartridgeEFSC::bank(uInt16 bank)
   uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1100; address < (0x1FE0U & ~mask);
       address += (1 << shift))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;

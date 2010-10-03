@@ -28,6 +28,7 @@
 //        accurate the emulation is
 //        Bankchange and RAM modification cannot be completed until
 //        adequate test ROMs are available
+// TODO (2010-10-03) - support CodeAccessBase functionality somehow
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeMC::CartridgeMC(const uInt8* image, uInt32 size,
@@ -81,7 +82,7 @@ void CartridgeMC::install(System& system)
   // TODO: These TIA accesses may need to be chained, however, at this
   //       point Chris isn't sure if the hardware will allow it or not
   //
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READWRITE);
+  System::PageAccess access(0, 0, 0, this, System::PA_READWRITE);
 
   for(uInt32 i = 0x00; i < 0x40; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);

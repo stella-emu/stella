@@ -29,6 +29,7 @@ CartridgeUA::CartridgeUA(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);
+  createCodeAccessBase(8192);
 
   // Remember startup bank
   myStartBank = 0;
@@ -61,7 +62,7 @@ void CartridgeUA::install(System& system)
   myHotSpotPageAccess = mySystem->getPageAccess(0x0220 >> shift);
 
   // Set the page accessing methods for the hot spots
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
   mySystem->setPageAccess(0x0220 >> shift, access);
   mySystem->setPageAccess(0x0240 >> shift, access);
 
@@ -141,12 +142,13 @@ bool CartridgeUA::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;

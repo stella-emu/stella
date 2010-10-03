@@ -62,6 +62,7 @@ class DiStella
     // standalone Distella
     typedef struct {
       BaseFormat gfx_format;
+      bool show_addresses;
     } Settings;
     static Settings settings;
 

@@ -23,6 +23,8 @@
 #include "System.hxx"
 #include "CartFE.hxx"
 
+// TODO (2010-10-03) - support CodeAccessBase functionality somehow
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFE::CartridgeFE(const uInt8* image, const Settings& settings)
   : Cartridge(settings),
@@ -54,7 +56,7 @@ void CartridgeFE::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map all of the accesses to call peek and poke
   for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))

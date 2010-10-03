@@ -24,6 +24,8 @@
 #include "System.hxx"
 #include "CartAR.hxx"
 
+// TODO (2010-10-03) - support CodeAccessBase functionality somehow
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)

@@ -133,6 +133,7 @@ Settings::Settings(OSystem* osystem)
   // Debugger options
   setInternal("resolvedata", "auto");
   setInternal("gfxformat", "2");
+  setInternal("showaddr", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -436,6 +437,7 @@ void Settings::usage()
     << "   -resolvedata  <never|       Set automatic code vs. data determination in the disassembler\n"
     << "                  always|auto>\n"
     << "   -gfxformat    <2|16>        Set base to use for displaying GFX sections in the disassembler\n"
+    << "   -showaddr     <1|0>         Show opcode addresses in the disassembler\n"
     << "   -debuggerres  <WxH>         The resolution to use in debugger mode\n"
     << "   -break        <address>     Set a breakpoint at 'address'\n"
     << "   -debug                      Start in debugger mode\n"

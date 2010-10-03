@@ -29,6 +29,7 @@ CartridgeF0::CartridgeF0(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 65536);
+  createCodeAccessBase(65536);
 
   // Remember startup bank
   myStartBank = 1;
@@ -57,7 +58,7 @@ void CartridgeF0::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert((0x1000 & mask) == 0);
 
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FF0 & ~mask); i < 0x2000; i += (1 << shift))
@@ -105,13 +106,14 @@ void CartridgeF0::incbank()
   uInt16 mask = mySystem->pageMask();
 
   // Setup the page access methods for the current bank
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map ROM image into the system
   for(uInt32 address = 0x1000; address < (0x1FF0U & ~mask);
       address += (1 << shift))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   myBankChanged = true;

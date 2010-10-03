@@ -175,6 +175,22 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         runtoPC(myRomList->getSelected());
       else if(rmb == "disasm")
         invalidate();
+      else if(rmb == "showaddr")
+      {
+        if(DiStella::settings.show_addresses)
+          return;
+        DiStella::settings.show_addresses = true;
+        instance().settings().setString("showaddr", "true");
+        invalidate();
+      }
+      else if(rmb == "hideaddr")
+      {
+        if(!DiStella::settings.show_addresses)
+          return;
+        DiStella::settings.show_addresses = false;
+        instance().settings().setString("showaddr", "false");
+        invalidate();
+      }
       else if(rmb == "gfxbin")
       {
         DiStella::settings.gfx_format = kBASE_2;

@@ -38,6 +38,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   mySize = BSPF_max(minsize, size);
   myImage = new uInt8[mySize];
   memcpy(myImage, image, size);
+  createCodeAccessBase(4096 * 6);
 
   // Pointer to the program ROM (24K @ 0 byte offset)
   myProgramImage = myImage;
@@ -109,10 +110,10 @@ void CartridgeDPCPlus::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  System::PageAccess access(0, 0, myCodeAccessBase, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Map all of the accesses to call peek and poke
-  for(uInt32 i = 0x1000; i < 0x2000; i += (1 << shift))
+  for(uInt32 i = 0x1000; i < 0x1080; i += (1 << shift))
     mySystem->setPageAccess(i >> shift, access);
 
   // Install pages for the startup bank
@@ -550,7 +551,18 @@ bool CartridgeDPCPlus::bank(uInt16 bank)
 
   // Remember what bank we're in
   myCurrentBank = bank;
+  uInt16 offset = myCurrentBank << 12;
+  uInt16 shift = mySystem->pageShift();
 
+  // Setup the page access methods for the current bank
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+
+  // Map Program ROM image into the system
+  for(uInt32 address = 0x1080; address < 0x2000; address += (1 << shift))
+  {
+    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    mySystem->setPageAccess(address >> shift, access);
+  }
   return myBankChanged = true;
 }
 
