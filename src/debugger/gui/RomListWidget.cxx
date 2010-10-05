@@ -64,11 +64,9 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
   l.push_back("Save ROM", "saverom");
   l.push_back("Set PC", "setpc");
   l.push_back("RunTo PC", "runtopc");
-  l.push_back("------------------", "");
-  l.push_back("Show PC addresses", "showaddr");
-  l.push_back("Hide PC addresses", "hideaddr");
-  l.push_back("Show GFX as binary", "gfxbin");
-  l.push_back("Show GFX as hex", "gfxhex");
+  l.push_back("---------------------", "");
+  l.push_back("Toggle PC addresses", "pcaddr");
+  l.push_back("Toggle GFX binary/hex", "gfx");
   l.push_back("Re-disassemble", "disasm");
   myMenu = new ContextMenu(this, font, l);
 

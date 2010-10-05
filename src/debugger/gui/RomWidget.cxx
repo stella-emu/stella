@@ -175,35 +175,28 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         runtoPC(myRomList->getSelected());
       else if(rmb == "disasm")
         invalidate();
-      else if(rmb == "showaddr")
+      else if(rmb == "pcaddr")
       {
-        if(DiStella::settings.show_addresses)
-          return;
-        DiStella::settings.show_addresses = true;
-        instance().settings().setString("showaddr", "true");
+        DiStella::settings.show_addresses = !DiStella::settings.show_addresses;
+        instance().settings().setString("showaddr",
+            DiStella::settings.show_addresses ? "true" : "false");
         invalidate();
       }
-      else if(rmb == "hideaddr")
+      else if(rmb == "gfx")
       {
-        if(!DiStella::settings.show_addresses)
-          return;
-        DiStella::settings.show_addresses = false;
-        instance().settings().setString("showaddr", "false");
+        if(DiStella::settings.gfx_format == kBASE_16)
+        {
+          DiStella::settings.gfx_format = kBASE_2;
+          instance().settings().setString("gfxformat", "2");
+        }
+        else
+        {
+          DiStella::settings.gfx_format = kBASE_16;
+          instance().settings().setString("gfxformat", "16");
+        }
         invalidate();
       }
-      else if(rmb == "gfxbin")
-      {
-        DiStella::settings.gfx_format = kBASE_2;
-        instance().settings().setString("gfxformat", "2");
-        invalidate();
-      }
-      else if(rmb == "gfxhex")
-      {
-        DiStella::settings.gfx_format = kBASE_16;
-        instance().settings().setString("gfxformat", "16");
-        invalidate();
-      }
-      break;
+      break;  // kCMenuItemSelectedCmd
     }
 
     case kDGItemDataChangedCmd:
