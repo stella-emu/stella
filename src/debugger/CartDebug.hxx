@@ -54,11 +54,15 @@ class CartDebug : public DebuggerSystem
 
   public:
     enum DisasmType {
-      GFX   = 1 << 0,
-      DATA  = 1 << 1,
-      CODE  = 1 << 2,
-      BLOCK = 1 << 3,
-      NONE  = 1 << 4
+      NONE   = 0,
+      VALID  = 1 << 0,  /* addresses that can have a label placed in front of it. A good counterexample
+                           would be "FF00: LDA $FE00"; $FF01 would be in the middle of a multi-byte
+                           instruction, and therefore cannot be labelled. */
+      SKIP   = 1 << 1,  /* TODO - document this */
+      CODE   = 1 << 2,  /* disassemble-able code segments */
+      GFX    = 1 << 3,  /* addresses loaded into GRPx registers */
+      DATA   = 1 << 4,  /* code somewhere in the program references it, i.e. LDA $F372 referenced $F372 */
+      ROW    = 1 << 5   /* all other addresses */
     };
     struct DisassemblyTag {
       DisasmType type;

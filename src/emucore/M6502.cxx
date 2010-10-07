@@ -387,11 +387,11 @@ bool M6502::load(Serializer& in)
     if(in.getString() != CPU)
       return false;
 
-    A = (uInt8) in.getByte();    // Accumulator
-    X = (uInt8) in.getByte();    // X index register
-    Y = (uInt8) in.getByte();    // Y index register
-    SP = (uInt8) in.getByte();   // Stack Pointer
-    IR = (uInt8) in.getByte();   // Instruction register
+    A = (uInt8) in.getByte();   // Accumulator
+    X = (uInt8) in.getByte();   // X index register
+    Y = (uInt8) in.getByte();   // Y index register
+    SP = (uInt8) in.getByte();  // Stack Pointer
+    IR = (uInt8) in.getByte();  // Instruction register
     PC = (uInt16) in.getInt();  // Program Counter
 
     N = in.getBool();     // N flag for processor status register

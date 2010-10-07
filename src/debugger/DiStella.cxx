@@ -100,13 +100,13 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       myPCBeg = myPC;
       myAddressQueue.pop();
       disasm(myPC, 1);
-      for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
-        mark(k, REACHABLE);
+      for (uInt16 k = myPCBeg; k <= myPCEnd; k++)
+        mark(k, CartDebug::CODE);
 
       // When we get to this point, all addresses have been processed
       // starting from the initial one in the address list
       // If so, process the next one in the list that hasn't already
-      // been marked as REACHABLE
+      // been marked as CODE
       // If it *has* been marked, it can be removed from consideration
       // in all subsequent passes
       //
@@ -123,7 +123,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         while(it != addresses.end())
         {
           uInt16 addr = *it;
-          if(!check_bit(labels[addr-myOffset], REACHABLE))
+          if(!check_bit(labels[addr-myOffset], CartDebug::CODE))
           {
 cerr << "(list) marking " << HEX4 << addr << " as CODE\n";
             myAddressQueue.push(addr);
@@ -135,11 +135,11 @@ cerr << "(list) marking " << HEX4 << addr << " as CODE\n";
         }
 
         // Stella itself can provide hints on whether an address has ever
-        // been referenced as CODE
+        // been referenced as CartDebug::CODE
         while(it == addresses.end() && codeAccessPoint <= myAppData.end)
         {
           if(Debugger::debugger().isCode(codeAccessPoint+myOffset) &&
-             !check_bit(labels[codeAccessPoint], REACHABLE))
+             !check_bit(labels[codeAccessPoint], CartDebug::CODE))
           {
 cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
             myAddressQueue.push(codeAccessPoint+myOffset);
@@ -153,8 +153,8 @@ cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
 
     for (int k = 0; k <= myAppData.end; k++)
     {
-      if (!check_bit(labels[k], REACHABLE))
-        mark(k+myOffset, DATA);
+      if (!check_bit(labels[k], CartDebug::CODE))
+        mark(k+myOffset, CartDebug::ROW);
     }
   }
 
@@ -189,14 +189,14 @@ void DiStella::disasm(uInt32 distart, int pass)
   myPC = distart - myOffset;
   while(myPC <= myAppData.end)
   {
-    if(check_bit(labels[myPC], GFX))
-      /* && !check_bit(labels[myPC], REACHABLE))*/
+    if(check_bit(labels[myPC], CartDebug::GFX))
+      /* && !check_bit(labels[myPC], CartDebug::CODE))*/
     {
       if (pass == 2)
-        mark(myPC+myOffset,VALID_ENTRY);
+        mark(myPC+myOffset, CartDebug::VALID);
       else if (pass == 3)
       {
-        if (check_bit(labels[myPC],REFERENCED))
+        if (check_bit(labels[myPC], CartDebug::DATA))
           myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
@@ -214,10 +214,10 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
       myPC++;
     }
-    else if (check_bit(labels[myPC], DATA) && !check_bit(labels[myPC], GFX))
-        /* && !check_bit(labels[myPC],REACHABLE)) {  */
+    else if (check_bit(labels[myPC], CartDebug::ROW) && !check_bit(labels[myPC], CartDebug::GFX))
+        /* && !check_bit(labels[myPC], CartDebug::CODE)) {  */
     {
-      mark(myPC+myOffset, VALID_ENTRY);
+      mark(myPC+myOffset, CartDebug::VALID);
       if (pass == 3)
       {
         bytes = 1;
@@ -226,15 +226,15 @@ void DiStella::disasm(uInt32 distart, int pass)
       }
       myPC++;
 
-      while (check_bit(labels[myPC], DATA) && !check_bit(labels[myPC], REFERENCED)
-             && !check_bit(labels[myPC], GFX) && pass == 3 && myPC <= myAppData.end)
+      while (check_bit(labels[myPC], CartDebug::ROW) && !check_bit(labels[myPC], CartDebug::DATA)
+             && !check_bit(labels[myPC], CartDebug::GFX) && pass == 3 && myPC <= myAppData.end)
       {
         if (pass == 3)
         {
           bytes++;
           if (bytes == 17)
           {
-            addEntry(CartDebug::DATA);
+            addEntry(CartDebug::ROW);
             myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
             bytes = 1;
           }
@@ -246,7 +246,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
       if (pass == 3)
       {
-        addEntry(CartDebug::DATA);
+        addEntry(CartDebug::ROW);
         myDisasmBuf << "    '     ' ";
         addEntry(CartDebug::NONE);
       }
@@ -256,10 +256,10 @@ void DiStella::disasm(uInt32 distart, int pass)
       op = Debugger::debugger().peek(myPC+myOffset);
       /* version 2.1 bug fix */
       if (pass == 2)
-        mark(myPC+myOffset, VALID_ENTRY);
+        mark(myPC+myOffset, CartDebug::VALID);
       else if (pass == 3)
       {
-        if (check_bit(labels[myPC], REFERENCED))
+        if (check_bit(labels[myPC], CartDebug::DATA))
           myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
@@ -308,18 +308,18 @@ void DiStella::disasm(uInt32 distart, int pass)
               /* Line information is already printed; append .byte since last instruction will
                  put recompilable object larger that original binary file */
               myDisasmBuf << ".byte $" << HEX2 << (int)op;
-              addEntry(CartDebug::DATA);
+              addEntry(CartDebug::ROW);
 
               if (myPC == myAppData.end)
               {
-                if (check_bit(labels[myPC],REFERENCED))
+                if (check_bit(labels[myPC], CartDebug::DATA))
                   myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
                 else
                   myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
                 op = Debugger::debugger().peek(myPC+myOffset);  myPC++;
                 myDisasmBuf << ".byte $" << HEX2 << (int)op;
-                addEntry(CartDebug::DATA);
+                addEntry(CartDebug::ROW);
               }
             }
             myPCEnd = myAppData.end + myOffset;
@@ -339,7 +339,7 @@ void DiStella::disasm(uInt32 distart, int pass)
                 /* Line information is already printed, but we can remove the
                    Instruction (i.e. BMI) by simply clearing the buffer to print */
                 myDisasmBuf << ".byte $" << HEX2 << (int)op;
-                addEntry(CartDebug::DATA);
+                addEntry(CartDebug::ROW);
                 nextline.str("");
                 nextlinebytes.str("");
               }
@@ -376,15 +376,15 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ABSOLUTE:
         {
           ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
-          labfound = mark(ad, REFERENCED);
+          labfound = mark(ad, CartDebug::DATA);
           if (pass == 1)
           {
-            if ((addbranch) && !check_bit(labels[ad & myAppData.end], REACHABLE))
+            if ((addbranch) && !check_bit(labels[ad & myAppData.end], CartDebug::CODE))
             {
               if (ad > 0xfff)
                 myAddressQueue.push((ad & myAppData.end) + myOffset);
 
-              mark(ad, REACHABLE);
+              mark(ad, CartDebug::CODE);
             }
           }
           else if (pass == 3)
@@ -422,7 +422,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ZERO_PAGE:
         {
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-          labfound = mark(d1, REFERENCED);
+          labfound = mark(d1, CartDebug::DATA);
           if (pass == 3)
           {
             if (labfound == 2)
@@ -450,7 +450,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ABSOLUTE_X:
         {
           ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
-          labfound = mark(ad, REFERENCED);
+          labfound = mark(ad, CartDebug::DATA);
           if (pass == 3)
           {
             if (ad < 0x100)
@@ -486,7 +486,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ABSOLUTE_Y:
         {
           ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
-          labfound = mark(ad, REFERENCED);
+          labfound = mark(ad, CartDebug::DATA);
           if (pass == 3)
           {
             if (ad < 0x100)
@@ -544,7 +544,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ZERO_PAGE_X:
         {
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-          labfound = mark(d1, REFERENCED);
+          labfound = mark(d1, CartDebug::DATA);
           if (pass == 3)
           {
             if (labfound == 2)
@@ -561,7 +561,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ZERO_PAGE_Y:
         {
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
-          labfound = mark(d1,REFERENCED);
+          labfound = mark(d1, CartDebug::DATA);
           if (pass == 3)
           {
             if (labfound == 2)
@@ -583,13 +583,13 @@ void DiStella::disasm(uInt32 distart, int pass)
           d1 = Debugger::debugger().peek(myPC+myOffset);  myPC++;
           ad = ((myPC + (Int8)d1) & 0xfff) + myOffset;
 
-          labfound = mark(ad, REFERENCED);
+          labfound = mark(ad, CartDebug::DATA);
           if (pass == 1)
           {
-            if ((addbranch) && !check_bit(labels[ad-myOffset], REACHABLE))
+            if ((addbranch) && !check_bit(labels[ad-myOffset], CartDebug::CODE))
             {
               myAddressQueue.push(ad);
-              mark(ad, REACHABLE);
+              mark(ad, CartDebug::CODE);
             }
           }
           else if (pass == 3)
@@ -609,7 +609,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         case ABS_INDIRECT:
         {
           ad = Debugger::debugger().dpeek(myPC+myOffset);  myPC+=2;
-          labfound = mark(ad, REFERENCED);
+          labfound = mark(ad, CartDebug::DATA);
           if (pass == 3)
           {
             if (ad < 0x100)
@@ -666,7 +666,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::mark(uInt32 address, MarkType bit)
+int DiStella::mark(uInt16 address, uInt8 bit)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...
@@ -695,21 +695,21 @@ int DiStella::mark(uInt32 address, MarkType bit)
                     with the appropriate bit; return 2.
       $0280-$0297 = system equates (INPT0, etc...); mark the array's element
                     with the appropriate bit; return 3.
-      $1000-$1FFF = CODE/DATA, mark the code/data array for the mirrored address
+      $1000-$1FFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $3000-$3FFF = CODE/DATA, mark the code/data array for the mirrored address
+      $3000-$3FFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $5000-$5FFF = CODE/DATA, mark the code/data array for the mirrored address
+      $5000-$5FFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $7000-$7FFF = CODE/DATA, mark the code/data array for the mirrored address
+      $7000-$7FFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $9000-$9FFF = CODE/DATA, mark the code/data array for the mirrored address
+      $9000-$9FFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $B000-$BFFF = CODE/DATA, mark the code/data array for the mirrored address
+      $B000-$BFFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $D000-$DFFF = CODE/DATA, mark the code/data array for the mirrored address
+      $D000-$DFFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the mirrored address
                     with the appropriate bit; return 4.
-      $F000-$FFFF = CODE/DATA, mark the code/data array for the address
+      $F000-$FFFF = CartDebug::CODE/CartDebug::ROW, mark the code/data array for the address
                     with the appropriate bit; return 1.
       Anything else = invalid, return 0.
     ===========================================================
@@ -739,7 +739,7 @@ int DiStella::mark(uInt32 address, MarkType bit)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DiStella::check_range(uInt32 beg, uInt32 end)
+bool DiStella::check_range(uInt16 beg, uInt16 end) const
 {
   if(beg > end)
   {
@@ -806,22 +806,25 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   myDisasmBuf.seekg(11, ios::beg);
   switch(tag.type)
   {
-    case CartDebug::BLOCK:
-      // TODO - handle this
+    case CartDebug::SKIP:  // TODO - handle this
+      tag.disasm = " ";
       break;
     case CartDebug::CODE:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.ccount, '\'');
       getline(myDisasmBuf, tag.bytes);
       break;
-    case CartDebug::DATA:
-      getline(myDisasmBuf, tag.disasm);
-      break;
     case CartDebug::GFX:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.bytes);
       break;
-    case CartDebug::NONE:
+    case CartDebug::DATA:  // TODO - handle this
+      tag.disasm = " ";
+      break;
+    case CartDebug::ROW:
+      getline(myDisasmBuf, tag.disasm);
+      break;
+    default:  // should never happen
       tag.disasm = " ";
       break;
   }
@@ -833,8 +836,8 @@ DONE_WITH_ADD:
 
 #if 0
   // debugging output
-  cerr << (tag.type == CartDebug::CODE ? "CODE" : (tag.type == CartDebug::DATA ? "DATA" :
-          (tag.type == CartDebug::GFX ? "GFX " : "NONE"))) << "|"
+  cerr << (tag.type == CartDebug::CODE ? "CartDebug::CODE" : (tag.type == CartDebug::ROW ? "CartDebug::ROW" :
+          (tag.type == CartDebug::GFX ? "CartDebug::GFX " : "NONE"))) << "|"
        << hex << setw(4) << setfill('0') << tag.address << "|"
        << tag.label << "|" << tag.disasm << "|" << tag.ccount << "|" << "|"
        << tag.bytes << endl;
@@ -850,25 +853,8 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
   {
     const CartDebug::DirectiveTag tag = *i;
     if(check_range(tag.start, tag.end))
-    {
-      MarkType type;
-      switch(tag.type)
-      {
-        case CartDebug::DATA :
-          type = DATA;
-          break;
-        case CartDebug::GFX  :
-          type = GFX;
-          break;
-        case CartDebug::CODE :
-          type = REACHABLE;
-          break;
-        default:
-          continue;  // skip this tag
-      }
-      for(uInt32 k = tag.start; k <= tag.end; ++k)
-        mark(k, type);
-    }
+      for(uInt16 k = tag.start; k <= tag.end; ++k)
+        mark(k, tag.type);
   }
 }
 

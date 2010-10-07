@@ -67,18 +67,10 @@ class DiStella
     static Settings settings;
 
   private:
+// TODO - place this comment whereever the array is located
     // Marked bits
     //   This is a reference sheet of bits that can be set for a given address, which
     //   are stored in the labels[] array.
-    enum MarkType {
-      REFERENCED  = 1 << 0,  /* code somewhere in the program references it, i.e. LDA $F372 referenced $F372 */
-      VALID_ENTRY = 1 << 1,  /* addresses that can have a label placed in front of it. A good counterexample
-                                would be "FF00: LDA $FE00"; $FF01 would be in the middle of a multi-byte
-                                instruction, and therefore cannot be labelled. */
-      DATA        = 1 << 2,
-      GFX         = 1 << 3,
-      REACHABLE   = 1 << 4   /* disassemble-able code segments */
-    };
 
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
@@ -91,9 +83,9 @@ class DiStella
 
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
-    int mark(uInt32 address, MarkType bit);
-    bool check_range(uInt32 start, uInt32 end);
-    inline int check_bit(uInt8 bitflags, int i) const { return (bitflags & i); }
+    int mark(uInt16 address, uInt8 bit);
+    bool check_range(uInt16 start, uInt16 end) const;
+    inline uInt8 check_bit(uInt8 bitflags, uInt8 i) const { return (bitflags & i); }
 
   private:
     const CartDebug& myDbg;

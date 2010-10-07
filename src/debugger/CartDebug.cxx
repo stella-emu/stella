@@ -352,12 +352,6 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 bool CartDebug::addDirective(CartDebug::DisasmType type,
                              uInt16 start, uInt16 end, int bank)
 {
-#define PRINT_TAG(d) \
-  cerr << (d.type == CartDebug::CODE ? "CODE" : \
-           d.type == CartDebug::DATA ? "DATA" : \
-           "GFX") \
-       << " " << hex << d.start << " - " << hex << d.end << endl;
-
 #define PRINT_LIST(header) \
   cerr << header << endl; \
   for(DirectiveList::const_iterator d = list.begin(); d != list.end(); ++d) \
@@ -753,26 +747,32 @@ string CartDebug::loadConfigFile(string file)
           buf >> hex >> start;
 // TODO - figure out what to do with this
         }
-        else if(BSPF_startsWithIgnoreCase(directive, "BLOCK"))
+        else if(BSPF_startsWithIgnoreCase(directive, "SKIP"))
         {
           buf >> hex >> start;
           buf >> hex >> end;
-//          addDirective(CartDebug::BLOCK, start, end, currentbank);
+//          addDirective(CartDebug::SKIP, start, end, currentbank);
         }
         else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
         {
           buf >> hex >> start >> hex >> end;
           addDirective(CartDebug::CODE, start, end, currentbank);
         }
+        else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
+        {
+          buf >> hex >> start >> hex >> end;
+          addDirective(CartDebug::GFX, start, end, currentbank);
+        }
         else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
         {
           buf >> hex >> start >> hex >> end;
           addDirective(CartDebug::DATA, start, end, currentbank);
         }
-        else if(BSPF_startsWithIgnoreCase(directive, "GFX"))
+        else if(BSPF_startsWithIgnoreCase(directive, "ROW"))
         {
-          buf >> hex >> start >> hex >> end;
-          addDirective(CartDebug::GFX, start, end, currentbank);
+          buf >> hex >> start;
+          buf >> hex >> end;
+          addDirective(CartDebug::ROW, start, end, currentbank);
         }
       }
     }
@@ -1000,20 +1000,13 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 {
   switch(type)
   {
-    case CartDebug::BLOCK:
-      buf << "BLOCK";
-      break;
-    case CartDebug::CODE:
-      buf << "CODE";
-      break;
-    case CartDebug::DATA:
-      buf << "DATA";
-      break;
-    case CartDebug::GFX:
-      buf << "GFX";
-      break;
-    default:
-      break;
+    case CartDebug::NONE:   buf << "NONE";   break;
+    case CartDebug::VALID:  buf << "VALID";  break;
+    case CartDebug::SKIP:   buf << "SKIP";   break;
+    case CartDebug::CODE:   buf << "CODE";   break;
+    case CartDebug::GFX:    buf << "GFX";    break;
+    case CartDebug::DATA:   buf << "DATA";   break;
+    case CartDebug::ROW:    buf << "ROW";    break;
   }
 }
 
