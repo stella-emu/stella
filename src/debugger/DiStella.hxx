@@ -83,9 +83,9 @@ class DiStella
 
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
-    int mark(uInt16 address, uInt8 bit);
     bool check_range(uInt16 start, uInt16 end) const;
-    inline uInt8 check_bit(uInt8 bitflags, uInt8 i) const { return (bitflags & i); }
+    int mark(uInt16 address, uInt8 mask);
+    bool check_bit(uInt16 address, uInt8 mask) const;
 
   private:
     const CartDebug& myDbg;

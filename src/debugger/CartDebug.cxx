@@ -352,10 +352,14 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 bool CartDebug::addDirective(CartDebug::DisasmType type,
                              uInt16 start, uInt16 end, int bank)
 {
+#define PRINT_TAG(tag) \
+  disasmTypeAsString(cerr, tag.type); \
+  cerr << ": start = " << tag.start << ", end = " << tag.end << endl;
+
 #define PRINT_LIST(header) \
   cerr << header << endl; \
-  for(DirectiveList::const_iterator d = list.begin(); d != list.end(); ++d) \
-    PRINT_TAG((*d)); \
+  for(DirectiveList::const_iterator d = list.begin(); d != list.end(); ++d) { \
+    PRINT_TAG((*d)); } \
   cerr << endl;
 
   if(end < start || start == 0 || end == 0)
@@ -396,7 +400,7 @@ bool CartDebug::addDirective(CartDebug::DisasmType type,
     // Case 1: remove range that is completely inside new range
     if(tag.start <= i->start && tag.end >= i->end)
     {
-      list.erase(i);
+      i = list.erase(i);
     }
     // Case 2: split the old range
     else if(tag.start >= i->start && tag.end <= i->end)
@@ -1000,13 +1004,12 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 {
   switch(type)
   {
-    case CartDebug::NONE:   buf << "NONE";   break;
-    case CartDebug::VALID:  buf << "VALID";  break;
     case CartDebug::SKIP:   buf << "SKIP";   break;
     case CartDebug::CODE:   buf << "CODE";   break;
     case CartDebug::GFX:    buf << "GFX";    break;
     case CartDebug::DATA:   buf << "DATA";   break;
     case CartDebug::ROW:    buf << "ROW";    break;
+    default:                                 break;
   }
 }
 

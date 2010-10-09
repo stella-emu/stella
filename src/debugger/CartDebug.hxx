@@ -54,15 +54,22 @@ class CartDebug : public DebuggerSystem
 
   public:
     enum DisasmType {
-      NONE   = 0,
-      VALID  = 1 << 0,  /* addresses that can have a label placed in front of it. A good counterexample
-                           would be "FF00: LDA $FE00"; $FF01 would be in the middle of a multi-byte
-                           instruction, and therefore cannot be labelled. */
-      SKIP   = 1 << 1,  /* TODO - document this */
-      CODE   = 1 << 2,  /* disassemble-able code segments */
-      GFX    = 1 << 3,  /* addresses loaded into GRPx registers */
-      DATA   = 1 << 4,  /* code somewhere in the program references it, i.e. LDA $F372 referenced $F372 */
-      ROW    = 1 << 5   /* all other addresses */
+      NONE        = 0,
+      VALID_ENTRY = 1 << 0, /* addresses that can have a label placed in front of it.
+                               A good counterexample would be "FF00: LDA $FE00"; $FF01
+                               would be in the middle of a multi-byte instruction, and
+                               therefore cannot be labelled. */
+      REFERENCED  = 1 << 1, /* code somewhere in the program references it,
+                               i.e. LDA $F372 referenced $F372 */
+
+      // The following correspond to specific types that can be set within the
+      // debugger, or specified in a Distella cfg file
+      //
+      SKIP   = 1 << 2,  // TODO - document this
+      CODE   = 1 << 3,  // disassemble-able code segments
+      GFX    = 1 << 4,  // addresses loaded into GRPx registers
+      DATA   = 1 << 5,  // addresses loaded into registers other than GRPx
+      ROW    = 1 << 6   // all other addresses
     };
     struct DisassemblyTag {
       DisasmType type;

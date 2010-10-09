@@ -477,9 +477,9 @@ void RomListWidget::drawWidget(bool hilite)
     // Draw labels
     s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth, kTextColor);
 
-    // Bytes are only editable if they represent code or graphics
+    // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (CartDebug::CODE | CartDebug::GFX))
+    if(dlist[pos].type & (CartDebug::CODE | CartDebug::GFX | CartDebug::DATA))
     {
       if(dlist[pos].type == CartDebug::CODE)
       {
