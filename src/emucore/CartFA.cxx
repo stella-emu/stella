@@ -69,15 +69,12 @@ void CartridgeFA::install(System& system)
 
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-  // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
-
   // Set the page accessing method for the RAM writing pages
   access.type = System::PA_WRITE;
   for(uInt32 j = 0x1000; j < 0x1100; j += (1 << shift))
   {
     access.directPokeBase = &myRAM[j & 0x00FF];
+    access.codeAccessBase = &myCodeAccessBase[j & 0x00FF];
     mySystem->setPageAccess(j >> shift, access);
   }
  
@@ -184,10 +181,16 @@ bool CartridgeFA::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
-  // Setup the page access methods for the current bank
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-  // Map ROM image into the system
+  // Set the page accessing methods for the hot spots
+  for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
+  {
+    access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
+    mySystem->setPageAccess(i >> shift, access);
+  }
+
+  // Setup the page access methods for the current bank
   for(uInt32 address = 0x1200; address < (0x1FF8U & ~mask);
       address += (1 << shift))
   {

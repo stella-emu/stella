@@ -92,10 +92,6 @@ void CartridgeDPC::install(System& system)
 
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-  // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
-    mySystem->setPageAccess(i >> shift, access);
-
   // Set the page accessing method for the DPC reading & writing pages
   access.type = System::PA_READWRITE;
   for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
@@ -422,10 +418,16 @@ bool CartridgeDPC::bank(uInt16 bank)
   uInt16 shift = mySystem->pageShift();
   uInt16 mask = mySystem->pageMask();
 
-  // Setup the page access methods for the current bank
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
-  // Map Program ROM image into the system
+  // Set the page accessing methods for the hot spots
+  for(uInt32 i = (0x1FF8 & ~mask); i < 0x2000; i += (1 << shift))
+  {
+    access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
+    mySystem->setPageAccess(i >> shift, access);
+  }
+
+  // Setup the page access methods for the current bank
   for(uInt32 address = 0x1080; address < (0x1FF8U & ~mask);
       address += (1 << shift))
   {

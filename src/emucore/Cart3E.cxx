@@ -24,7 +24,7 @@
 #include "TIA.hxx"
 #include "Cart3E.hxx"
 
-// TODO - add support for code stored in RAM
+// TODO (2010-10-10) - support CodeAccessBase functionality somehow
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,

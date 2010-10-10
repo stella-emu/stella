@@ -72,7 +72,7 @@ void CartridgeE0::install(System& system)
 
   // Set the page accessing methods for the hot spots in the last segment
   access.directPeekBase = 0;
-  access.codeAccessBase = 0;
+  access.codeAccessBase = &myCodeAccessBase[8128];
   access.type = System::PA_READ;
   for(uInt32 j = (0x1FE0 & ~mask); j < 0x2000; j += (1 << shift))
     mySystem->setPageAccess(j >> shift, access);

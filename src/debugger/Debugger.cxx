@@ -613,6 +613,9 @@ void Debugger::setStartState()
 
   // Save initial state, but don't add it to the rewind list
   saveOldState(false);
+
+  // Force a re-disassemble
+  myRom->invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

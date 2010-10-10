@@ -256,11 +256,12 @@ class System : public Serializable
       the address.
 
       @param address  The address from which the value should be loaded
-      @param isCode   Indicates that this address is part of an instruction
+      @param flags    Indicates that this address has the given flags
+                      for type of access (CODE, DATA, GFX, etc)
 
       @return The byte at the specified address
     */
-    uInt8 peek(uInt16 address, bool isCode = false);
+    uInt8 peek(uInt16 address, uInt8 flags = 0);
 
     /**
       Change the byte at the specified address to the given value.
@@ -290,11 +291,12 @@ class System : public Serializable
     void unlockDataBus();
 
     /**
-      Answer whether or not the given address has ever been used as
-      code.  That is, it has ever been stored in either the IR or the PC,
-      or otherwise been executed.
+      Access and modify the disassembly type flags for the given
+      address.  Note that while any flag can be used, the disassembly
+      only really acts on SKIP/CODE/GFX/DATA/ROW.
     */
-    bool isCode(uInt16 address);
+    uInt8 getAddressDisasmType(uInt16 address);
+    void setAddressDisasmType(uInt16 address, uInt8 flags);
 
   public:
     /**

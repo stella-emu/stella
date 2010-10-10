@@ -211,11 +211,12 @@ class M6502 : public Serializable
       find them itself.
 
       @param address  The address from which the value should be loaded
-      @param isCode   Indicates that this address is part of an instruction
+      @param flags    Indicates that this address has the given flags
+                      for type of access (CODE, DATA, GFX, etc)
 
       @return The byte at the specified address
     */
-    inline uInt8 peek(uInt16 address, bool isCode);
+    inline uInt8 peek(uInt16 address, uInt8 flags);
 
     /**
       Change the byte at the specified address to the given value and

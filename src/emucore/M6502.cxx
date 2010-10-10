@@ -23,6 +23,23 @@
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
   #include "Expression.hxx"
+  #include "CartDebug.hxx"
+
+  // Flags for disassembly types
+  #define DISASM_SKIP  CartDebug::SKIP
+  #define DISASM_CODE  CartDebug::CODE
+  #define DISASM_GFX   CartDebug::GFX
+  #define DISASM_DATA  CartDebug::DATA
+  #define DISASM_ROW   CartDebug::ROW
+  #define DISASM_NONE  0
+#else
+  // Flags for disassembly types
+  #define DISASM_SKIP  0
+  #define DISASM_CODE  0
+  #define DISASM_GFX   0
+  #define DISASM_DATA  0
+  #define DISASM_ROW   0
+  #define DISASM_NONE  0
 #endif
 
 #include "M6502.hxx"
@@ -152,7 +169,7 @@ void M6502::PS(uInt8 ps)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-inline uInt8 M6502::peek(uInt16 address, bool isCode)
+inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
 {
   if(address != myLastAddress)
   {
@@ -170,7 +187,7 @@ inline uInt8 M6502::peek(uInt16 address, bool isCode)
   }
 #endif
 
-  uInt8 result = mySystem->peek(address, isCode);
+  uInt8 result = mySystem->peek(address, flags);
   myLastAccessWasRead = true;
   myLastPeekAddress = address;
   return result;
@@ -245,9 +262,10 @@ bool M6502::execute(uInt32 number)
       myLastPeekAddress = myLastPokeAddress = 0;
 
       // Fetch instruction at the program counter
-      IR = peek(PC++, true);  // This address represents a code section
+      IR = peek(PC++, DISASM_CODE);  // This address represents a code section
 
 #ifdef DEBUG_OUTPUT
+if(PC >= 0xfafe && PC <= 0xfb10)
       debugStream << ::hex << setw(2) << (int)A << " "
                   << ::hex << setw(2) << (int)X << " "
                   << ::hex << setw(2) << (int)Y << " "

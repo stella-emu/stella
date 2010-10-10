@@ -92,8 +92,6 @@ class Debugger : public DialogContainer
     virtual ~Debugger();
 
   public:
-	 OSystem *getOSystem() { return myOSystem; }
-
     /**
       Updates the basedialog to be of the type defined for this derived class.
     */
@@ -284,7 +282,10 @@ class Debugger : public DialogContainer
     /* These are now exposed so Expressions can use them. */
     int peek(int addr) { return mySystem->peek(addr); }
     int dpeek(int addr) { return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8); }
-    int isCode(int addr) { return mySystem->isCode(addr); }
+    inline int getAddressDisasmType(uInt16 addr)
+    { return mySystem->getAddressDisasmType(addr); }
+    inline void setAddressDisasmType(uInt16 addr, uInt8 flags)
+    { mySystem->setAddressDisasmType(addr, flags); }
 
     void setBreakPoint(int bp, bool set);
 

@@ -19,7 +19,7 @@
 
 #include <cassert>
 #include <iostream>
-
+#include "Debugger.hxx"
 #include "Device.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
@@ -212,13 +212,16 @@ void System::clearDirtyPages()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::peek(uInt16 addr, bool isCode)
+uInt8 System::peek(uInt16 addr, uInt8 flags)
 {
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
 
-  uInt8 result;
- 
+  // Set access type
+  if(access.codeAccessBase)
+    *(access.codeAccessBase + (addr & myPageMask)) |= flags;
+
   // See if this page uses direct accessing or not 
+  uInt8 result;
   if(access.directPeekBase)
   {
     result = *(access.directPeekBase + (addr & myPageMask));
@@ -230,15 +233,8 @@ uInt8 System::peek(uInt16 addr, bool isCode)
 
 #ifdef DEBUGGER_SUPPORT
   if(!myDataBusLocked)
-  {
-    if(access.codeAccessBase)
-      *(access.codeAccessBase + (addr & myPageMask)) = isCode;
-
-    myDataBusState = result;
-  }
-#else
-  myDataBusState = result;
 #endif
+    myDataBusState = result;
 
   return result;
 }
@@ -269,17 +265,28 @@ void System::poke(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool System::isCode(uInt16 addr)
+uInt8 System::getAddressDisasmType(uInt16 addr)
 {
 #ifdef DEBUGGER_SUPPORT
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
 
   if(access.codeAccessBase)
-    return *(access.codeAccessBase + (addr & myPageMask)) ? true : false;
+    return *(access.codeAccessBase + (addr & myPageMask));
   else
-    return false;
+    return 0;
 #else
-  return false;
+  return 0;
+#endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void System::setAddressDisasmType(uInt16 addr, uInt8 flags)
+{
+#ifdef DEBUGGER_SUPPORT
+  PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
+
+  if(access.codeAccessBase)
+    *(access.codeAccessBase + (addr & myPageMask)) |= flags;
 #endif
 }
 

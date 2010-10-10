@@ -746,7 +746,7 @@ void DebuggerParser::executeCheat()
   for(int arg = 0; arg < argCount; arg++)
   {
     const string& cheat = argStrings[arg];
-    const Cheat* c = debugger->getOSystem()->cheat().add("DBG", cheat);
+    const Cheat* c = debugger->myOSystem->cheat().add("DBG", cheat);
     if(c && c->enabled())
       commandResult << "Cheat code " << cheat << " enabled" << endl;
     else
@@ -1044,6 +1044,34 @@ void DebuggerParser::executeJump()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "lastaddr"
+void DebuggerParser::executeLastAddress()
+{
+  commandResult << red("not implemented yet");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "lasta"
+void DebuggerParser::executeLastAccAddress()
+{
+  commandResult << red("not implemented yet");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "lastx"
+void DebuggerParser::executeLastXAddress()
+{
+  commandResult << red("not implemented yet");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "lasty"
+void DebuggerParser::executeLastYAddress()
+{
+  commandResult << red("not implemented yet");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
@@ -1269,7 +1297,7 @@ void DebuggerParser::executeRunTo()
   ostringstream buf;
   buf << "RunTo searching through " << max_iterations << " disassembled instructions";
   ProgressDialog progress(debugger->myBaseDialog,
-      debugger->getOSystem()->consoleFont(), buf.str());
+      debugger->myOSystem->consoleFont(), buf.str());
   progress.setRange(0, max_iterations, 5);
 
   bool done = false;
@@ -1466,6 +1494,33 @@ void DebuggerParser::executeTrapwrite()
     debugger->toggleWriteTrap(i);
     commandResult << trapStatus(i) << endl;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "type"
+void DebuggerParser::executeType()
+{
+  uInt8 flags = debugger->getAddressDisasmType(args[0]);
+  if(flags)
+  {
+    commandResult << Debugger::to_bin_8(flags) << ": ";
+    if(flags & CartDebug::SKIP)
+      commandResult << "SKIP ";
+    if(flags & CartDebug::CODE)
+      commandResult << "CODE ";
+    if(flags & CartDebug::GFX)
+      commandResult << "GFX ";
+    if(flags & CartDebug::DATA)
+      commandResult << "DATA ";
+    if(flags & CartDebug::ROW)
+      commandResult << "ROW ";
+    if(flags & CartDebug::REFERENCED)
+      commandResult << "*REFERENCED ";
+    if(flags & CartDebug::VALID_ENTRY)
+      commandResult << "*VALID_ENTRY ";
+  }
+  else
+    commandResult << "no flags set";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1780,6 +1835,42 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "lastaddr",
+    "Show last accessed address",
+    false,
+    false,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeLastAddress
+  },
+
+  {
+    "lasta",
+    "Show last accessed address for accumulator",
+    false,
+    false,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeLastAccAddress
+  },
+
+  {
+    "lastx",
+    "Show last accessed address for register X",
+    false,
+    false,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeLastXAddress
+  },
+
+  {
+    "lasty",
+    "Show last accessed address for register Y",
+    false,
+    false,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeLastYAddress
+  },
+
+  {
     "listbreaks",
     "List breakpoints",
     false,
@@ -2056,6 +2147,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeTrapwrite
+  },
+
+  {
+    "type",
+    "Show disassemly type for address xx",
+    true,
+    false,
+    { kARG_WORD, kARG_END_ARGS },
+    &DebuggerParser::executeType
   },
 
   {

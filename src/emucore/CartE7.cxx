@@ -29,7 +29,7 @@ CartridgeE7::CartridgeE7(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 16384);
-  createCodeAccessBase(16384 + 1024);
+  createCodeAccessBase(16384 + 2048);
 
   // This cart can address a 1024 byte bank of RAM @ 0x1000
   // and 256 bytes @ 0x1800
@@ -79,7 +79,10 @@ void CartridgeE7::install(System& system)
 
   // Set the page accessing methods for the hot spots
   for(uInt32 i = (0x1FE0 & ~mask); i < 0x2000; i += (1 << shift))
+  {
+    access.codeAccessBase = &myCodeAccessBase[8128];
     mySystem->setPageAccess(i >> shift, access);
+  }
 
   // Setup the second segment to always point to the last ROM slice
   for(uInt32 j = 0x1A00; j < (0x1FE0U & ~mask); j += (1 << shift))
@@ -179,6 +182,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
   for(uInt32 j = 0x1800; j < 0x1900; j += (1 << shift))
   {
     access.directPokeBase = &myRAM[1024 + offset + (j & 0x00FF)];
+    access.codeAccessBase = &myCodeAccessBase[8192 + 1024 + offset + (j & 0x00FF)];
     mySystem->setPageAccess(j >> shift, access);
   }
 
@@ -188,7 +192,7 @@ void CartridgeE7::bankRAM(uInt16 bank)
   for(uInt32 k = 0x1900; k < 0x1A00; k += (1 << shift))
   {
     access.directPeekBase = &myRAM[1024 + offset + (k & 0x00FF)];
-    access.codeAccessBase = &myCodeAccessBase[k & 0x0FFF];
+    access.codeAccessBase = &myCodeAccessBase[8192 + 1024 + offset + (k & 0x00FF)];
     mySystem->setPageAccess(k >> shift, access);
   }
   myBankChanged = true;
@@ -225,6 +229,7 @@ bool CartridgeE7::bank(uInt16 slice)
     for(uInt32 j = 0x1000; j < 0x1400; j += (1 << shift))
     {
       access.directPokeBase = &myRAM[j & 0x03FF];
+      access.codeAccessBase = &myCodeAccessBase[8192 + (j & 0x03FF)];
       mySystem->setPageAccess(j >> shift, access);
     }
 
