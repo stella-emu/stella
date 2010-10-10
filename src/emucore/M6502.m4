@@ -230,7 +230,7 @@ define(M6502_INDIRECTY_READMODIFYWRITE, `{
 define(M6502_BCC, `{
   if(!C)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -241,7 +241,7 @@ define(M6502_BCC, `{
 define(M6502_BCS, `{
   if(C)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -252,7 +252,7 @@ define(M6502_BCS, `{
 define(M6502_BEQ, `{
   if(!notZ)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -263,7 +263,7 @@ define(M6502_BEQ, `{
 define(M6502_BMI, `{
   if(N)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -274,7 +274,7 @@ define(M6502_BMI, `{
 define(M6502_BNE, `{
   if(notZ)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -285,7 +285,7 @@ define(M6502_BNE, `{
 define(M6502_BPL, `{
   if(!N)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -296,7 +296,7 @@ define(M6502_BPL, `{
 define(M6502_BVC, `{
   if(!V)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -307,7 +307,7 @@ define(M6502_BVC, `{
 define(M6502_BVS, `{
   if(V)
   {
-    peek(PC, DISASM_NONE);
+    peek(PC, DISASM_CODE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
