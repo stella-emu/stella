@@ -31,6 +31,21 @@
   #define NOTSAMEPAGE(_addr1, _addr2) (((_addr1) ^ (_addr2)) & 0xff00)
 #endif
 
+#ifndef SET_LAST_PEEK
+  #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+#endif
+
+#ifndef CLEAR_LAST_PEEK
+  #define CLEAR_LAST_PEEK(_addr) _addr = 0;
+#endif
+
+#ifndef CHECK_GFX_WRITE
+  #define CHECK_GFX_WRITE(_addr) \
+  if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
+    mySystem->setAddressDisasmType(_addr, DISASM_GFX);
+#endif
+
+
 define(M6502_IMPLIED, `{
   peek(PC, DISASM_NONE);
 }')
@@ -1504,49 +1519,49 @@ break;
 // LDA
 case 0xa9:
 M6502_IMMEDIATE_READ
-  myLastPeekAddressA = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xa5:
 M6502_ZERO_READ
-  myLastPeekAddressA = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xb5:
 M6502_ZEROX_READ
-  myLastPeekAddressA = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xad:
 M6502_ABSOLUTE_READ
-  myLastPeekAddressA = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xbd:
 M6502_ABSOLUTEX_READ
-  myLastPeekAddressA = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xb9:
 M6502_ABSOLUTEY_READ
-  myLastPeekAddressA = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xa1:
 M6502_INDIRECTX_READ
-  myLastPeekAddressA = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 
 case 0xb1:
 M6502_INDIRECTY_READ
-  myLastPeekAddressA = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressA)
 M6502_LDA
 break;
 //////////////////////////////////////////////////
@@ -1556,31 +1571,31 @@ break;
 // LDX
 case 0xa2:
 M6502_IMMEDIATE_READ
-  myLastPeekAddressX = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressX)
 M6502_LDX
 break;
 
 case 0xa6:
 M6502_ZERO_READ
-  myLastPeekAddressX = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressX)
 M6502_LDX
 break;
 
 case 0xb6:
 M6502_ZEROY_READ
-  myLastPeekAddressX = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressX)
 M6502_LDX
 break;
 
 case 0xae:
 M6502_ABSOLUTE_READ
-  myLastPeekAddressX = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressX)
 M6502_LDX
 break;
 
 case 0xbe:
 M6502_ABSOLUTEY_READ
-  myLastPeekAddressX = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressX)
 M6502_LDX
 break;
 //////////////////////////////////////////////////
@@ -1590,31 +1605,31 @@ break;
 // LDY
 case 0xa0:
 M6502_IMMEDIATE_READ
-  myLastPeekAddressY = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressY)
 M6502_LDY
 break;
 
 case 0xa4:
 M6502_ZERO_READ
-  myLastPeekAddressY = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressY)
 M6502_LDY
 break;
 
 case 0xb4:
 M6502_ZEROX_READ
-  myLastPeekAddressY = 0;
+CLEAR_LAST_PEEK(myLastPeekAddressY)
 M6502_LDY
 break;
 
 case 0xac:
 M6502_ABSOLUTE_READ
-  myLastPeekAddressY = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressY)
 M6502_LDY
 break;
 
 case 0xbc:
 M6502_ABSOLUTEX_READ
-  myLastPeekAddressY = intermediateAddress;
+SET_LAST_PEEK(myLastPeekAddressY)
 M6502_LDY
 break;
 //////////////////////////////////////////////////
@@ -2100,8 +2115,7 @@ break;
 // STA
 case 0x85:
 M6502_ZERO_WRITE
-  if((operandAddress == 0x1B || operandAddress == 0x1C) && myLastPeekAddressA)
-    mySystem->setAddressDisasmType(myLastPeekAddressA, DISASM_GFX);
+CHECK_GFX_WRITE(myLastPeekAddressA)
 M6502_STA
 break;
 
@@ -2141,8 +2155,7 @@ break;
 // STX
 case 0x86:
 M6502_ZERO_WRITE
-  if((operandAddress == 0x1B || operandAddress == 0x1C) && myLastPeekAddressX)
-    mySystem->setAddressDisasmType(myLastPeekAddressX, DISASM_GFX);
+CHECK_GFX_WRITE(myLastPeekAddressX)
 M6502_STX
 break;
 
@@ -2162,8 +2175,7 @@ break;
 // STY
 case 0x84:
 M6502_ZERO_WRITE
-  if((operandAddress == 0x1B || operandAddress == 0x1C) && myLastPeekAddressY)
-    mySystem->setAddressDisasmType(myLastPeekAddressY, DISASM_GFX);
+CHECK_GFX_WRITE(myLastPeekAddressY)
 M6502_STY
 break;
 
