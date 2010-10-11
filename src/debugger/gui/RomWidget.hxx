@@ -42,7 +42,8 @@ class RomWidget : public Widget, public CommandSender
     RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
     virtual ~RomWidget();
 
-    void invalidate() { myListIsDirty = true; loadConfig(); }
+    void invalidate(bool forcereload = true)
+	{ myListIsDirty = true; if(forcereload) loadConfig(); }
 
     void scrollTo(int line) { myRomList->setSelected(line); }
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
