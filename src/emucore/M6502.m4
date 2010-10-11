@@ -36,7 +36,7 @@ define(M6502_IMPLIED, `{
 }')
 
 define(M6502_IMMEDIATE_READ, `{
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }')
 
 define(M6502_ABSOLUTE_READ, `{

@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2146 2010-10-10 22:06:54Z stephena $
+// $Id: M6502.m4 2147 2010-10-11 00:44:25Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2146 2010-10-10 22:06:54Z stephena $
+  @version $Id: M6502.m4 2147 2010-10-11 00:44:25Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -248,7 +248,7 @@
 
 case 0x69:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(!D)
@@ -572,7 +572,7 @@ break;
 
 case 0x4b:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   A &= operand;
@@ -591,7 +591,7 @@ break;
 case 0x0b:
 case 0x2b:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   A &= operand;
@@ -604,7 +604,7 @@ break;
 
 case 0x29:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   A &= operand;
@@ -728,7 +728,7 @@ break;
 
 case 0x8b:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   // NOTE: The implementation of this instruction is based on
@@ -743,7 +743,7 @@ break;
 
 case 0x6b:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   // NOTE: The implementation of this instruction is based on
@@ -884,7 +884,7 @@ break;
 
 case 0x90:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(!C)
@@ -901,7 +901,7 @@ break;
 
 case 0xb0:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(C)
@@ -918,7 +918,7 @@ break;
 
 case 0xf0:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(!notZ)
@@ -960,7 +960,7 @@ break;
 
 case 0x30:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(N)
@@ -977,7 +977,7 @@ break;
 
 case 0xD0:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(notZ)
@@ -994,7 +994,7 @@ break;
 
 case 0x10:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(!N)
@@ -1029,7 +1029,7 @@ break;
 
 case 0x50:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(!V)
@@ -1046,7 +1046,7 @@ break;
 
 case 0x70:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   if(V)
@@ -1103,7 +1103,7 @@ break;
 
 case 0xc9:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)A - (uInt16)operand;
@@ -1243,7 +1243,7 @@ break;
 
 case 0xe0:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)X - (uInt16)operand;
@@ -1285,7 +1285,7 @@ break;
 
 case 0xc0:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)Y - (uInt16)operand;
@@ -1557,7 +1557,7 @@ break;
 
 case 0x49:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   A ^= operand;
@@ -2221,7 +2221,7 @@ break;
 // LDA
 case 0xa9:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
   myLastPeekAddressA = 0;
 {
@@ -2356,7 +2356,7 @@ break;
 // LDX
 case 0xa2:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
   myLastPeekAddressX = 0;
 {
@@ -2433,7 +2433,7 @@ break;
 // LDY
 case 0xa0:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
   myLastPeekAddressY = 0;
 {
@@ -2603,7 +2603,7 @@ break;
 
 case 0xab:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   // NOTE: The implementation of this instruction is based on
@@ -2636,7 +2636,7 @@ case 0x89:
 case 0xc2:
 case 0xe2:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
 }
@@ -2702,7 +2702,7 @@ break;
 
 case 0x09:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   A |= operand;
@@ -3627,7 +3627,7 @@ break;
 case 0xe9:
 case 0xeb:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
@@ -3927,7 +3927,7 @@ break;
 
 case 0xcb:
 {
-  operand = peek(PC++, DISASM_CODE);
+  operand = peek(PC++, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)(X & A) - (uInt16)operand;
