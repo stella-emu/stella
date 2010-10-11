@@ -301,6 +301,10 @@ class M6502 : public Serializable
     /// by a peek or poke command
     uInt16 myLastPeekAddress, myLastPokeAddress;
 
+    /// Indicates the last address which was accessed by a peek command
+    /// for the CPU registers (A/X/Y)
+    uInt16 myLastPeekAddressA, myLastPeekAddressX, myLastPeekAddressY;
+
 #ifdef DEBUGGER_SUPPORT
     /// Pointer to the debugger for this processor or the null pointer
     Debugger* myDebugger;

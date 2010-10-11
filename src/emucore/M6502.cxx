@@ -54,7 +54,10 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     myNumberOfDistinctAccesses(0),
     myLastAddress(0),
     myLastPeekAddress(0),
-    myLastPokeAddress(0)
+    myLastPokeAddress(0),
+    myLastPeekAddressA(0),
+    myLastPeekAddressX(0),
+    myLastPeekAddressY(0)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger    = NULL;
@@ -113,6 +116,9 @@ void M6502::reset()
   PC = (uInt16)mySystem->peek(0xfffc) | ((uInt16)mySystem->peek(0xfffd) << 8);
 
   myTotalInstructionCount = 0;
+
+  myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
+  myLastPeekAddressA = myLastPeekAddressX = myLastPeekAddressY = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -255,7 +261,7 @@ bool M6502::execute(uInt32 number)
           return true;
       }
 #endif
-      uInt16 operandAddress = 0;
+      uInt16 operandAddress = 0, intermediateAddress = 0;
       uInt8 operand = 0;
 
       // Reset the peek/poke address pointers
@@ -265,7 +271,6 @@ bool M6502::execute(uInt32 number)
       IR = peek(PC++, DISASM_CODE);  // This address represents a code section
 
 #ifdef DEBUG_OUTPUT
-if(PC >= 0xfafe && PC <= 0xfb10)
       debugStream << ::hex << setw(2) << (int)A << " "
                   << ::hex << setw(2) << (int)X << " "
                   << ::hex << setw(2) << (int)Y << " "

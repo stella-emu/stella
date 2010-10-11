@@ -40,9 +40,9 @@ define(M6502_IMMEDIATE_READ, `{
 }')
 
 define(M6502_ABSOLUTE_READ, `{
-  uInt16 address = peek(PC++, DISASM_CODE);
-  address |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
-  operand = peek(address, DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ABSOLUTE_WRITE, `{
@@ -60,9 +60,13 @@ define(M6502_ABSOLUTE_READMODIFYWRITE, `{
 define(M6502_ABSOLUTEX_READ, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = ((uInt16)peek(PC++, DISASM_CODE) << 8);
-  operand = peek(high | (uInt8)(low + X), DISASM_DATA);
+  intermediateAddress = high | (uInt8)(low + X);
+  operand = peek(intermediateAddress, DISASM_DATA);
   if((low + X) > 0xFF)
-    operand = peek((high | low) + X, DISASM_DATA);
+  {
+    intermediateAddress = (high | low) + X;
+    operand = peek(intermediateAddress, DISASM_DATA);
+  }
 }')
 
 define(M6502_ABSOLUTEX_WRITE, `{
@@ -84,9 +88,13 @@ define(M6502_ABSOLUTEX_READMODIFYWRITE, `{
 define(M6502_ABSOLUTEY_READ, `{
   uInt16 low = peek(PC++, DISASM_CODE);
   uInt16 high = ((uInt16)peek(PC++, DISASM_CODE) << 8);
-  operand = peek(high | (uInt8)(low + Y), DISASM_DATA);
+  intermediateAddress = high | (uInt8)(low + Y);
+  operand = peek(intermediateAddress, DISASM_DATA);
   if((low + Y) > 0xFF)
-    operand = peek((high | low) + Y, DISASM_DATA);
+  {
+    intermediateAddress = (high | low) + Y;
+    operand = peek(intermediateAddress, DISASM_DATA);
+  }
 }')
 
 define(M6502_ABSOLUTEY_WRITE, `{
@@ -176,9 +184,9 @@ define(M6502_INDIRECTX_READ, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
   peek(pointer, DISASM_DATA);
   pointer += X;
-  uInt16 address = peek(pointer++, DISASM_DATA);
-  address |= ((uInt16)peek(pointer, DISASM_DATA) << 8);
-  operand = peek(address, DISASM_DATA);
+  intermediateAddress = peek(pointer++, DISASM_DATA);
+  intermediateAddress |= ((uInt16)peek(pointer, DISASM_DATA) << 8);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_INDIRECTX_WRITE, `{
@@ -203,9 +211,13 @@ define(M6502_INDIRECTY_READ, `{
   uInt8 pointer = peek(PC++, DISASM_CODE);
   uInt16 low = peek(pointer++, DISASM_DATA);
   uInt16 high = ((uInt16)peek(pointer, DISASM_DATA) << 8);
-  operand = peek(high | (uInt8)(low + Y), DISASM_DATA);
+  intermediateAddress = high | (uInt8)(low + Y);
+  operand = peek(intermediateAddress, DISASM_DATA);
   if((low + Y) > 0xFF)
-    operand = peek((high | low) + Y, DISASM_DATA);
+  {
+    intermediateAddress = (high | low) + Y;
+    operand = peek(intermediateAddress, DISASM_DATA);
+  }
 }')
 
 define(M6502_INDIRECTY_WRITE, `{
@@ -1488,97 +1500,124 @@ M6502_LAX
 break;
 
 
+//////////////////////////////////////////////////
+// LDA
 case 0xa9:
 M6502_IMMEDIATE_READ
+  myLastPeekAddressA = 0;
 M6502_LDA
 break;
 
 case 0xa5:
 M6502_ZERO_READ
+  myLastPeekAddressA = 0;
 M6502_LDA
 break;
 
 case 0xb5:
 M6502_ZEROX_READ
+  myLastPeekAddressA = 0;
 M6502_LDA
 break;
 
 case 0xad:
 M6502_ABSOLUTE_READ
+  myLastPeekAddressA = intermediateAddress;
 M6502_LDA
 break;
 
 case 0xbd:
 M6502_ABSOLUTEX_READ
+  myLastPeekAddressA = intermediateAddress;
 M6502_LDA
 break;
 
 case 0xb9:
 M6502_ABSOLUTEY_READ
+  myLastPeekAddressA = intermediateAddress;
 M6502_LDA
 break;
 
 case 0xa1:
 M6502_INDIRECTX_READ
+  myLastPeekAddressA = intermediateAddress;
 M6502_LDA
 break;
 
 case 0xb1:
 M6502_INDIRECTY_READ
+  myLastPeekAddressA = intermediateAddress;
 M6502_LDA
 break;
+//////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////
+// LDX
 case 0xa2:
 M6502_IMMEDIATE_READ
+  myLastPeekAddressX = 0;
 M6502_LDX
 break;
 
 case 0xa6:
 M6502_ZERO_READ
+  myLastPeekAddressX = 0;
 M6502_LDX
 break;
 
 case 0xb6:
 M6502_ZEROY_READ
+  myLastPeekAddressX = 0;
 M6502_LDX
 break;
 
 case 0xae:
 M6502_ABSOLUTE_READ
+  myLastPeekAddressX = intermediateAddress;
 M6502_LDX
 break;
 
 case 0xbe:
 M6502_ABSOLUTEY_READ
+  myLastPeekAddressX = intermediateAddress;
 M6502_LDX
 break;
+//////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////
+// LDY
 case 0xa0:
 M6502_IMMEDIATE_READ
+  myLastPeekAddressY = 0;
 M6502_LDY
 break;
 
 case 0xa4:
 M6502_ZERO_READ
+  myLastPeekAddressY = 0;
 M6502_LDY
 break;
 
 case 0xb4:
 M6502_ZEROX_READ
+  myLastPeekAddressY = 0;
 M6502_LDY
 break;
 
 case 0xac:
 M6502_ABSOLUTE_READ
+  myLastPeekAddressY = intermediateAddress;
 M6502_LDY
 break;
 
 case 0xbc:
 M6502_ABSOLUTEX_READ
+  myLastPeekAddressY = intermediateAddress;
 M6502_LDY
 break;
+//////////////////////////////////////////////////
 
 
 case 0x4a:
@@ -2057,8 +2096,12 @@ M6502_SRE
 break;
 
 
+//////////////////////////////////////////////////
+// STA
 case 0x85:
 M6502_ZERO_WRITE
+  if((operandAddress == 0x1B || operandAddress == 0x1C) && myLastPeekAddressA)
+    mySystem->setAddressDisasmType(myLastPeekAddressA, DISASM_GFX);
 M6502_STA
 break;
 
@@ -2091,10 +2134,15 @@ case 0x91:
 M6502_INDIRECTY_WRITE
 M6502_STA
 break;
+//////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////
+// STX
 case 0x86:
 M6502_ZERO_WRITE
+  if((operandAddress == 0x1B || operandAddress == 0x1C) && myLastPeekAddressX)
+    mySystem->setAddressDisasmType(myLastPeekAddressX, DISASM_GFX);
 M6502_STX
 break;
 
@@ -2107,10 +2155,15 @@ case 0x8e:
 M6502_ABSOLUTE_WRITE
 M6502_STX
 break;
+//////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////
+// STY
 case 0x84:
 M6502_ZERO_WRITE
+  if((operandAddress == 0x1B || operandAddress == 0x1C) && myLastPeekAddressY)
+    mySystem->setAddressDisasmType(myLastPeekAddressY, DISASM_GFX);
 M6502_STY
 break;
 
@@ -2123,6 +2176,7 @@ case 0x8c:
 M6502_ABSOLUTE_WRITE
 M6502_STY
 break;
+//////////////////////////////////////////////////
 
 
 case 0xaa:
