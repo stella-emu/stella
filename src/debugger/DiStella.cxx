@@ -919,13 +919,12 @@ DONE_WITH_ADD:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 {
-
   for(CartDebug::DirectiveList::const_iterator i = directives.begin();
       i != directives.end(); ++i)
   {
     const CartDebug::DirectiveTag tag = *i;
     if(check_range(tag.start, tag.end))
-      for(uInt16 k = tag.start; k <= tag.end; ++k)
+      for(uInt32 k = tag.start; k <= tag.end; ++k)
         mark(k, tag.type);
   }
 }

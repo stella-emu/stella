@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2150 2010-10-11 14:51:48Z stephena $
+// $Id: M6502.m4 2151 2010-10-11 15:11:10Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2150 2010-10-11 14:51:48Z stephena $
+  @version $Id: M6502.m4 2151 2010-10-11 15:11:10Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -32,17 +32,29 @@
 #endif
 
 #ifndef SET_LAST_PEEK
-  #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+  #ifdef DEBUGGER_SUPPORT
+    #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+  #else
+    #define SET_LAST_PEEK(_addr)
+  #endif
 #endif
 
 #ifndef CLEAR_LAST_PEEK
-  #define CLEAR_LAST_PEEK(_addr) _addr = 0;
+  #ifdef DEBUGGER_SUPPORT
+    #define CLEAR_LAST_PEEK(_addr) _addr = 0;
+  #else
+    #define CLEAR_LAST_PEEK(_addr)
+  #endif
 #endif
 
 #ifndef CHECK_GFX_WRITE
-  #define CHECK_GFX_WRITE(_addr) \
-  if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
-    mySystem->setAddressDisasmType(_addr, DISASM_GFX);
+  #ifdef DEBUGGER_SUPPORT
+    #define CHECK_GFX_WRITE(_addr) \
+    if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
+      mySystem->setAddressDisasmType(_addr, DISASM_GFX);
+  #else
+    #define CHECK_GFX_WRITE(_addr)
+  #endif
 #endif
 
 

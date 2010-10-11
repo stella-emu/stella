@@ -19,7 +19,7 @@
 
 #include <cassert>
 #include <iostream>
-#include "Debugger.hxx"
+
 #include "Device.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
@@ -216,9 +216,11 @@ uInt8 System::peek(uInt16 addr, uInt8 flags)
 {
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
 
+#ifdef DEBUGGER_SUPPORT
   // Set access type
   if(access.codeAccessBase)
     *(access.codeAccessBase + (addr & myPageMask)) |= flags;
+#endif
 
   // See if this page uses direct accessing or not 
   uInt8 result;

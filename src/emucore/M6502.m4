@@ -32,17 +32,29 @@
 #endif
 
 #ifndef SET_LAST_PEEK
-  #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+  #ifdef DEBUGGER_SUPPORT
+    #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+  #else
+    #define SET_LAST_PEEK(_addr)
+  #endif
 #endif
 
 #ifndef CLEAR_LAST_PEEK
-  #define CLEAR_LAST_PEEK(_addr) _addr = 0;
+  #ifdef DEBUGGER_SUPPORT
+    #define CLEAR_LAST_PEEK(_addr) _addr = 0;
+  #else
+    #define CLEAR_LAST_PEEK(_addr)
+  #endif
 #endif
 
 #ifndef CHECK_GFX_WRITE
-  #define CHECK_GFX_WRITE(_addr) \
-  if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
-    mySystem->setAddressDisasmType(_addr, DISASM_GFX);
+  #ifdef DEBUGGER_SUPPORT
+    #define CHECK_GFX_WRITE(_addr) \
+    if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
+      mySystem->setAddressDisasmType(_addr, DISASM_GFX);
+  #else
+    #define CHECK_GFX_WRITE(_addr)
+  #endif
 #endif
 
 
