@@ -1044,34 +1044,6 @@ void DebuggerParser::executeJump()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "lastaddr"
-void DebuggerParser::executeLastAddress()
-{
-  commandResult << red("not implemented yet");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "lasta"
-void DebuggerParser::executeLastAccAddress()
-{
-  commandResult << red("not implemented yet");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "lastx"
-void DebuggerParser::executeLastXAddress()
-{
-  commandResult << red("not implemented yet");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "lasty"
-void DebuggerParser::executeLastYAddress()
-{
-  commandResult << red("not implemented yet");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "listbreaks"
 void DebuggerParser::executeListbreaks()
 {
@@ -1832,42 +1804,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeJump
-  },
-
-  {
-    "lastaddr",
-    "Show last accessed address",
-    false,
-    false,
-    { kARG_END_ARGS },
-    &DebuggerParser::executeLastAddress
-  },
-
-  {
-    "lasta",
-    "Show last accessed address for accumulator",
-    false,
-    false,
-    { kARG_END_ARGS },
-    &DebuggerParser::executeLastAccAddress
-  },
-
-  {
-    "lastx",
-    "Show last accessed address for register X",
-    false,
-    false,
-    { kARG_END_ARGS },
-    &DebuggerParser::executeLastXAddress
-  },
-
-  {
-    "lasty",
-    "Show last accessed address for register Y",
-    false,
-    false,
-    { kARG_END_ARGS },
-    &DebuggerParser::executeLastYAddress
   },
 
   {

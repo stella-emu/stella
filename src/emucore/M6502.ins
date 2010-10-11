@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2151 2010-10-11 15:11:10Z stephena $
+// $Id: M6502.m4 2152 2010-10-11 23:06:37Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2151 2010-10-11 15:11:10Z stephena $
+  @version $Id: M6502.m4 2152 2010-10-11 23:06:37Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -50,7 +50,9 @@
 #ifndef CHECK_GFX_WRITE
   #ifdef DEBUGGER_SUPPORT
     #define CHECK_GFX_WRITE(_addr) \
-    if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
+    if((operandAddress == 0x1B || operandAddress == 0x1C || \
+        operandAddress == 0x0D || operandAddress == 0x0E || operandAddress == 0x0F) && \
+        _addr) \
       mySystem->setAddressDisasmType(_addr, DISASM_GFX);
   #else
     #define CHECK_GFX_WRITE(_addr)
