@@ -726,7 +726,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::mark(uInt16 address, uInt8 mask)
+int DiStella::mark(uInt32 address, uInt8 mask)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...

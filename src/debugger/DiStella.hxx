@@ -84,7 +84,7 @@ class DiStella
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
     bool check_range(uInt16 start, uInt16 end) const;
-    int mark(uInt16 address, uInt8 mask);
+    int mark(uInt32 address, uInt8 mask);
     bool check_bit(uInt16 address, uInt8 mask) const;
 
   private:
