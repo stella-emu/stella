@@ -22,9 +22,9 @@
 
 class Console;
 class Settings;
+class Sound;
 
 #include "bspf.hxx"
-#include "Sound.hxx"
 #include "Device.hxx"
 #include "System.hxx"
 #include "TIATables.hxx"

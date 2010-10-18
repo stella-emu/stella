@@ -25,7 +25,7 @@
 #ifndef WIDGET_HXX
 #define WIDGET_HXX
 
-#include <assert.h>
+#include <cassert>
 
 #include "bspf.hxx"
 

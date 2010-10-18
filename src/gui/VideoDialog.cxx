@@ -31,6 +31,7 @@
 #include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "Console.hxx"
+#include "TIA.hxx"
 #include "Settings.hxx"
 #include "StringList.hxx"
 #include "Widget.hxx"

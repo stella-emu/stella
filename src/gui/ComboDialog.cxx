@@ -23,6 +23,7 @@
 
 #include "Control.hxx"
 #include "Dialog.hxx"
+#include "DialogContainer.hxx"
 #include "EventHandler.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"

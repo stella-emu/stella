@@ -20,8 +20,11 @@
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "System.hxx"
+#include "FSNode.hxx"
 #include "DiStella.hxx"
+#include "Debugger.hxx"
 #include "CpuDebug.hxx"
+#include "OSystem.hxx"
 #include "Settings.hxx"
 #include "CartDebug.hxx"
 

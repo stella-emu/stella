@@ -26,7 +26,9 @@
 #include "Debugger.hxx"
 #include "FrameBuffer.hxx"
 #include "DataGridWidget.hxx"
+#include "DataGridOpsWidget.hxx"
 #include "RamWidget.hxx"
+#include "ScrollBarWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
@@ -591,6 +593,12 @@ GUI::Rect DataGridWidget::getEditRect() const
   r.right += coloffset - 5;
 
   return r;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int DataGridWidget::getWidth() const
+{
+  return _w + (_scrollBar ? kScrollBarWidth : 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

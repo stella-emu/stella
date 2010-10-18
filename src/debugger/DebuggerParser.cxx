@@ -31,10 +31,13 @@
 #include "M6502.hxx"
 #include "Expression.hxx"
 #include "FSNode.hxx"
+#include "PromptWidget.hxx"
 #include "RomWidget.hxx"
 #include "ProgressDialog.hxx"
+#include "PackedBitArray.hxx"
 
 #ifdef CHEATCODE_SUPPORT
+  #include "Cheat.hxx"
   #include "CheatManager.hxx"
 #endif
 

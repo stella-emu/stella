@@ -23,7 +23,6 @@
 #ifndef DATA_GRID_OPS_WIDGET_HXX
 #define DATA_GRID_OPS_WIDGET_HXX
 
-#include "GuiObject.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 

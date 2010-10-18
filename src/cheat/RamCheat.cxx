@@ -19,6 +19,7 @@
 
 #include "Console.hxx"
 #include "System.hxx"
+#include "OSystem.hxx"
 #include "CheatManager.hxx"
 
 #include "RamCheat.hxx"

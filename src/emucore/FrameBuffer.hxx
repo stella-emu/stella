@@ -26,6 +26,7 @@
 class FBSurface;
 class OSystem;
 class Console;
+class Settings;
 
 namespace GUI {
   class Font;
@@ -33,8 +34,8 @@ namespace GUI {
 }
 
 #include "EventHandler.hxx"
-#include "Settings.hxx"
 #include "Rect.hxx"
+#include "StringList.hxx"
 #include "bspf.hxx"
 
 // Different types of framebuffer derived objects

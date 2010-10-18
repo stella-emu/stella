@@ -24,6 +24,7 @@
   #include "Debugger.hxx"
   #include "Expression.hxx"
   #include "CartDebug.hxx"
+  #include "PackedBitArray.hxx"
 
   // Flags for disassembly types
   #define DISASM_SKIP  CartDebug::SKIP

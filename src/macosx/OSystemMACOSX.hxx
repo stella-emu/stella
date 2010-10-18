@@ -21,6 +21,7 @@
 #define OSYSTEM_MACOSX_HXX
 
 #include "bspf.hxx"
+#include "OSystem.hxx"
 
 
 /**

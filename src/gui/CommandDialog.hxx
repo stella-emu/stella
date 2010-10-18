@@ -26,8 +26,8 @@
 class Properties;
 class CommandSender;
 class DialogContainer;
+class OSystem;
 
-#include "OSystem.hxx"
 #include "Dialog.hxx"
 
 class CommandDialog : public Dialog

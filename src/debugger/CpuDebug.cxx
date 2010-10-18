@@ -21,6 +21,7 @@
 
 #include "Array.hxx"
 #include "M6502.hxx"
+#include "Debugger.hxx"
 #include "CartDebug.hxx"
 #include "TIADebug.hxx"
 

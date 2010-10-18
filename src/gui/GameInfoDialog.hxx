@@ -31,11 +31,9 @@ class StaticTextWidget;
 class TabWidget;
 class SliderWidget;
 
-#include "Array.hxx"
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "Props.hxx"
-#include "StringList.hxx"
 
 class GameInfoDialog : public Dialog, public CommandSender
 {

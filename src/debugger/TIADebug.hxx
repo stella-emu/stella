@@ -22,13 +22,14 @@
 
 class Debugger;
 class TiaDebug;
+class TIA;
 
 #include "Array.hxx"
 #include "DebuggerSystem.hxx"
-#include "TIA.hxx"
 
 // pointer types for TIADebug instance methods
 // (used by TiaMethodExpression)
+class TIADebug;
 typedef int (TIADebug::*TIADEBUG_INT_METHOD)();
 
 // call the pointed-to method on the (global) debugger object.

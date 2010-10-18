@@ -45,6 +45,7 @@
 #include "EventHandler.hxx"
 
 #ifdef CHEATCODE_SUPPORT
+  #include "Cheat.hxx"
   #include "CheatManager.hxx"
 #endif
 #ifdef DEBUGGER_SUPPORT

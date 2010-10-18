@@ -31,8 +31,8 @@ class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
 class TabWidget;
+class OSystem;
 
-#include "OSystem.hxx"
 #include "bspf.hxx"
 
 class UIDialog : public Dialog

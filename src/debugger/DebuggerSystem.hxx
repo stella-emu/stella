@@ -20,7 +20,8 @@
 #ifndef DEBUGGER_SYSTEM_HXX
 #define DEBUGGER_SYSTEM_HXX
 
-#include "Debugger.hxx"
+class Debugger;
+
 #include "Console.hxx"
 
 /**

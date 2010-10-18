@@ -22,11 +22,11 @@
 
 class OSystem;
 class Console;
-class System;
 class CartDebug;
 class CpuDebug;
 class RiotDebug;
 class TIADebug;
+class M6502;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
@@ -34,15 +34,16 @@ class EditTextWidget;
 class RomWidget;
 class Expression;
 class Serializer;
+class PackedBitArray;
+class PromptWidget;
+class ButtonWidget;
 
 #include <map>
 
 #include "Array.hxx"
 #include "DialogContainer.hxx"
-#include "M6502.hxx"
 #include "DebuggerParser.hxx"
-#include "PackedBitArray.hxx"
-#include "PromptWidget.hxx"
+#include "System.hxx"
 #include "Rect.hxx"
 #include "Stack.hxx"
 #include "bspf.hxx"

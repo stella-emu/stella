@@ -35,7 +35,6 @@ class StaticTextWidget;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
-#include "FSNode.hxx"
 
 class FileSnapDialog : public Dialog, public CommandSender
 {

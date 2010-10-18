@@ -23,7 +23,7 @@
 #ifndef PARSER_HXX
 #define PARSER_HXX
 
-#include "Expression.hxx"
+class Expression;
 
 //#ifdef __cplusplus
 //extern "C" {

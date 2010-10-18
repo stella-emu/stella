@@ -23,7 +23,8 @@
 #ifndef SCROLL_BAR_WIDGET_HXX
 #define SCROLL_BAR_WIDGET_HXX
 
-#include "GuiObject.hxx"
+class GuiObject;
+
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "bspf.hxx"

@@ -23,10 +23,10 @@
 class PopUpWidget;
 class EditTextWidget;
 class StaticTextWidget;
+class StringMap;
+class OSystem;
 
 #include "Dialog.hxx"
-#include "DialogContainer.hxx"
-#include "OSystem.hxx"
 #include "bspf.hxx"
 
 class ComboDialog : public Dialog

@@ -23,12 +23,12 @@
 #include <sstream>
 
 class Debugger;
+class FilesystemNode;
 struct Command;
 
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "FrameBuffer.hxx"
-#include "FSNode.hxx"
 
 typedef enum {
 	kBASE_16,

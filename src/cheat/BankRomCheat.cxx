@@ -18,6 +18,8 @@
 //============================================================================
 
 #include "Console.hxx"
+#include "Cart.hxx"
+#include "OSystem.hxx"
 #include "BankRomCheat.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

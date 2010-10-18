@@ -40,7 +40,6 @@ namespace GUI {
 }
 
 #include "Array.hxx"
-#include "EventHandler.hxx"
 #include "FrameBuffer.hxx"
 #include "bspf.hxx"
 

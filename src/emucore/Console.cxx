@@ -25,8 +25,8 @@
 #include "AtariVox.hxx"
 #include "Booster.hxx"
 #include "Cart.hxx"
-#include "Console.hxx"
 #include "Control.hxx"
+#include "Cart.hxx"
 #include "Driving.hxx"
 #include "Event.hxx"
 #include "EventHandler.hxx"
@@ -60,6 +60,8 @@
 #ifdef CHEATCODE_SUPPORT
   #include "CheatManager.hxx"
 #endif
+
+#include "Console.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)

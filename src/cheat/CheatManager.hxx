@@ -22,11 +22,11 @@
 
 #include <map>
 
-#include "OSystem.hxx"
+class Cheat;
+class OSystem;
+
 #include "bspf.hxx"
 #include "Array.hxx"
-
-#include "Cheat.hxx"
 
 typedef Common::Array<Cheat*> CheatList;
 typedef map<string,string> CheatCodeMap;

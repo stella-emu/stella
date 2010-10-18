@@ -30,8 +30,8 @@ class PopUpWidget;
 class SliderWidget;
 class StaticTextWidget;
 class CheckboxWidget;
+class OSystem;
 
-#include "OSystem.hxx"
 #include "bspf.hxx"
 
 class AudioDialog : public Dialog

@@ -23,6 +23,7 @@
 #include <SDL_syswm.h>
 #include <sstream>
 #include <time.h>
+#include <fstream>
 
 #include "bspf.hxx"
 

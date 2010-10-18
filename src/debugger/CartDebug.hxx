@@ -21,7 +21,6 @@
 #define CART_DEBUG_HXX
 
 class Settings;
-class System;
 
 #include <map>
 #include <set>
@@ -30,10 +29,11 @@ class System;
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Cart.hxx"
-#include "StringList.hxx"
 #include "DebuggerSystem.hxx"
+#include "System.hxx"
 
 // pointer types for CartDebug instance methods
+class CartDebug;
 typedef int (CartDebug::*CARTDEBUG_INT_METHOD)();
 
 // call the pointed-to method on the (global) CPU debugger object.

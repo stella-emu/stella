@@ -27,9 +27,9 @@ class DialogContainer;
 class CommandSender;
 class ButtonWidget;
 class StaticTextWidget;
+class OSystem;
 
-#include "OSystem.hxx"
-#include "Props.hxx"
+#include "Dialog.hxx"
 #include "bspf.hxx"
 
 class HelpDialog : public Dialog

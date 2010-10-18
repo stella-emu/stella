@@ -43,7 +43,7 @@ class RomWidget : public Widget, public CommandSender
     virtual ~RomWidget();
 
     void invalidate(bool forcereload = true)
-	{ myListIsDirty = true; if(forcereload) loadConfig(); }
+    { myListIsDirty = true; if(forcereload) loadConfig(); }
 
     void scrollTo(int line) { myRomList->setSelected(line); }
     void handleCommand(CommandSender* sender, int cmd, int data, int id);

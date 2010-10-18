@@ -26,13 +26,12 @@ class Console;
 class OSystem;
 class DialogContainer;
 class EventMappingWidget;
+class StringMap;
+class StringList;
 
 #include "Array.hxx"
 #include "Event.hxx"
-#include "Control.hxx"
-#include "StringList.hxx"
 #include "bspf.hxx"
-
 
 enum MouseButton {
   EVENT_LBUTTONDOWN,

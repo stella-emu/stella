@@ -24,6 +24,7 @@
 
 #include "bspf.hxx"
 
+#include "Cheat.hxx"
 #include "CheatManager.hxx"
 #include "CheckListWidget.hxx"
 #include "DialogContainer.hxx"

@@ -22,6 +22,7 @@
 
 #include "OSystem.hxx"
 #include "Console.hxx"
+#include "TIA.hxx"
 #include "FrameBuffer.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"

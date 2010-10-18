@@ -23,10 +23,10 @@
 #ifndef PROGRESS_DIALOG_HXX
 #define PROGRESS_DIALOG_HXX
 
+class GuiObject;
 class StaticTextWidget;
 class SliderWidget;
 
-#include "GuiObject.hxx"
 #include "bspf.hxx"
 
 class ProgressDialog : public Dialog

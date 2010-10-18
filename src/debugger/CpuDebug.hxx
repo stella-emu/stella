@@ -23,6 +23,7 @@
 class EquateList;
 
 #include "Array.hxx"
+#include "M6502.hxx"
 #include "System.hxx"
 #include "DebuggerSystem.hxx"
 

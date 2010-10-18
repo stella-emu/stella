@@ -23,7 +23,6 @@
 #ifndef TOGGLE_PIXEL_WIDGET_HXX
 #define TOGGLE_PIXEL_WIDGET_HXX
 
-#include "FrameBuffer.hxx"
 #include "ToggleWidget.hxx"
 
 /* TogglePixelWidget */

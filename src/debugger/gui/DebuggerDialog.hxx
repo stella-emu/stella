@@ -28,6 +28,7 @@ class OSystem;
 class DialogContainer;
 class ButtonWidget;
 class CpuWidget;
+class PromptWidget;
 class RamWidget;
 class RomWidget;
 class TabWidget;
@@ -37,7 +38,6 @@ class TiaOutputWidget;
 class TiaZoomWidget;
 
 #include "Dialog.hxx"
-#include "PromptWidget.hxx"
 
 class DebuggerDialog : public Dialog
 {

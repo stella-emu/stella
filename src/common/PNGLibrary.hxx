@@ -22,9 +22,10 @@
 
 #include <png.h>
 
+class FrameBuffer;
+class FBSurface;
+
 #include "bspf.hxx"
-#include "FrameBuffer.hxx"
-#include "StringList.hxx"
 
 /**
   This class implements a thin wrapper around the libpng library, and

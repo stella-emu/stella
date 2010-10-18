@@ -25,15 +25,14 @@ class Event;
 class Switches;
 class System;
 class TIA;
+class M6532;
+class Cartridge;
 
 #include "bspf.hxx"
 #include "Control.hxx"
 #include "Props.hxx"
-#include "TIA.hxx"
-#include "Cart.hxx"
+#include "TIATables.hxx"
 #include "FrameBuffer.hxx"
-#include "M6532.hxx"
-#include "AtariVox.hxx"
 #include "Serializable.hxx"
 
 /**
@@ -87,7 +86,7 @@ class Console : public Serializable
 
       @return The specified controller
     */
-    Controller& controller(Controller::Jack jack) const
+    inline Controller& controller(Controller::Jack jack) const
     {
       return (jack == Controller::Left) ? *myControllers[0] : *myControllers[1];
     }

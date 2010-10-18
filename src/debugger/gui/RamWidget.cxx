@@ -253,6 +253,12 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void RamWidget::setOpsWidget(DataGridOpsWidget* w)
+{
+  myRamGrid->setOpsWidget(w);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RamWidget::loadConfig()
 {
   fillGrid(true);

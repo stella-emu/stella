@@ -27,11 +27,11 @@ class CommandSender;
 class DialogContainer;
 class CheckboxWidget;
 class PopUpWidget;
+class OSystem;
+class StringList;
 
-#include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "Settings.hxx"
-#include "StringList.hxx"
 #include "bspf.hxx"
 
 class LauncherFilterDialog : public Dialog, public CommandSender

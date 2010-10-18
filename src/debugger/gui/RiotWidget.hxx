@@ -30,7 +30,6 @@ class PopUpWidget;
 class ToggleBitWidget;
 
 #include "Array.hxx"
-#include "Widget.hxx"
 #include "Command.hxx"
 
 class RiotWidget : public Widget, public CommandSender

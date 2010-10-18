@@ -25,14 +25,13 @@
 
 class GuiObject;
 class ButtonWidget;
+class DataGridWidget;
+class DataGridOpsWidget;
 class EditTextWidget;
 class ToggleBitWidget;
 
-#include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "DataGridWidget.hxx"
-
 
 class CpuWidget : public Widget, public CommandSender
 {

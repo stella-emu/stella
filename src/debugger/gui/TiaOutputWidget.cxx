@@ -31,6 +31,7 @@
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 #include "TIADebug.hxx"
+#include "TIA.hxx"
 
 #include "TiaOutputWidget.hxx"
 

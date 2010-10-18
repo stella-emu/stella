@@ -29,8 +29,6 @@ class GuiObject;
 #include "Widget.hxx"
 #include "Command.hxx"
 
-#include "bspf.hxx"
-
 /**
   Displays a color from the TIA palette.  This class will eventually
   be expanded with a TIA palette table, to set the color visually.

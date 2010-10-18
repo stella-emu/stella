@@ -20,8 +20,9 @@
 #ifndef CHEAT_HXX
 #define CHEAT_HXX
 
+class OSystem;
+
 #include "StringList.hxx"
-#include "OSystem.hxx"
 #include "bspf.hxx"
 
 class Cheat

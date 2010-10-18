@@ -25,7 +25,6 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
-#include "Settings.hxx"
 
 /**
   This is the cartridge class for Arcadia (aka Starpath) Supercharger 

@@ -19,6 +19,7 @@
 
 #include "System.hxx"
 #include "Debugger.hxx"
+#include "TIA.hxx"
 
 #include "TIADebug.hxx"
 

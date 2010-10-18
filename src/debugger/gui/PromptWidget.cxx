@@ -513,6 +513,12 @@ void PromptWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int PromptWidget::getWidth() const
+{
+  return _w + kScrollBarWidth;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PromptWidget::specialKeys(int keycode)
 {
   bool handled = false;

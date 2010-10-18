@@ -17,6 +17,7 @@
 // $Id$
 //============================================================================
 
+#include <fstream>
 #include <sstream>
 
 #include "OSystem.hxx"

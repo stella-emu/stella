@@ -23,7 +23,6 @@
 #ifndef TOGGLE_WIDGET_HXX
 #define TOGGLE_WIDGET_HXX
 
-#include "GuiObject.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "Array.hxx"

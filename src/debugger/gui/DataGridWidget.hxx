@@ -23,16 +23,15 @@
 #ifndef DATA_GRID_WIDGET_HXX
 #define DATA_GRID_WIDGET_HXX
 
-#include "GuiObject.hxx"
+class DataGridOpsWidget;
+class ScrollBarWidget;
+
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "Debugger.hxx"
-#include "StringList.hxx"
 #include "EditableWidget.hxx"
 #include "Array.hxx"
 #include "Rect.hxx"
-#include "DataGridOpsWidget.hxx"
-#include "ScrollBarWidget.hxx"
 
 // Some special commands
 enum {
@@ -82,7 +81,7 @@ class DataGridWidget : public EditableWidget
     virtual bool wantsFocus() { return true; }
 
     // Account for the extra width of embedded scrollbar
-    virtual int getWidth() const { return _w + (_scrollBar ? kScrollBarWidth : 0); }
+    virtual int getWidth() const;
 
     void startEditMode();
     void endEditMode();

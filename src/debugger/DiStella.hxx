@@ -25,8 +25,8 @@
 
 #include "Array.hxx"
 #include "bspf.hxx"
-
 #include "CartDebug.hxx"
+#include "DebuggerParser.hxx"
 
 /**
   This class is a wrapper around the Distella code.  Much of the code remains

@@ -22,6 +22,7 @@
 #include "OSystem.hxx"
 #include "Settings.hxx"
 #include "Console.hxx"
+#include "Cart.hxx"
 #include "Control.hxx"
 #include "Switches.hxx"
 #include "System.hxx"

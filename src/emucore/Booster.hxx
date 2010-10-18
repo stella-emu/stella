@@ -20,7 +20,6 @@
 #ifndef BOOSTERGRIP_HXX
 #define BOOSTERGRIP_HXX
 
-#include "bspf.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
 

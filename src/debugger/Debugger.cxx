@@ -37,6 +37,7 @@
 #include "System.hxx"
 #include "M6502.hxx"
 #include "Cart.hxx"
+#include "TIA.hxx"
 
 #include "CartDebug.hxx"
 #include "CpuDebug.hxx"
@@ -50,7 +51,7 @@
 
 #include "RomWidget.hxx"
 #include "Expression.hxx"
-
+#include "PackedBitArray.hxx"
 #include "YaccParser.hxx"
 
 #include "Debugger.hxx"

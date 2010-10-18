@@ -25,10 +25,10 @@
 
 #include <stdarg.h>
 
-#include "GuiObject.hxx"
+class ScrollBarWidget;
+
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "ScrollBarWidget.hxx"
 #include "bspf.hxx"
 
 class PromptWidget : public Widget, public CommandSender
@@ -77,7 +77,7 @@ class PromptWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     // Account for the extra width of embedded scrollbar
-    virtual int getWidth() const { return _w + kScrollBarWidth; }
+    virtual int getWidth() const;
 
     virtual bool wantsFocus() { return true; }
 

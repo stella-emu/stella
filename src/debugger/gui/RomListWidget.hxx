@@ -26,10 +26,9 @@
 class ContextMenu;
 class ScrollBarWidget;
 class PackedBitArray;
+class CheckListWidget;
 
 #include "Array.hxx"
-#include "StringList.hxx"
-#include "CheckListWidget.hxx"
 #include "CartDebug.hxx"
 #include "EditableWidget.hxx"
 

@@ -20,6 +20,7 @@
 #include <sstream>
 
 #include "System.hxx"
+#include "M6532.hxx"
 #include "Debugger.hxx"
 #include "Switches.hxx"
 

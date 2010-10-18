@@ -25,19 +25,16 @@
 
 class DialogContainer;
 class CommandSender;
+class Widget;
 class ButtonWidget;
 class StaticTextWidget;
 class CheckListWidget;
+class EditTextWidget;
 class InputTextDialog;
 class OptionsDialog;
+class OSystem;
 
-#include "OSystem.hxx"
 #include "Dialog.hxx"
-#include "Widget.hxx"
-#include "CheatManager.hxx"
-#include "EditTextWidget.hxx"
-#include "Props.hxx"
-#include "bspf.hxx"
 
 class CheatCodeDialog : public Dialog
 {

@@ -24,8 +24,6 @@
 #define CONTEXT_MENU_HXX
 
 #include "bspf.hxx"
-
-#include "Array.hxx"
 #include "Command.hxx"
 #include "Dialog.hxx"
 

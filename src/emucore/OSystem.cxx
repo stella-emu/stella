@@ -30,6 +30,7 @@
 #include "bspf.hxx"
 
 #include "MediaFactory.hxx"
+#include "Sound.hxx"
 
 #ifdef DEBUGGER_SUPPORT
   #include "Debugger.hxx"
@@ -51,6 +52,7 @@
 #include "FSNode.hxx"
 #include "unzip.h"
 #include "MD5.hxx"
+#include "Cart.hxx"
 #include "Settings.hxx"
 #include "PropsSet.hxx"
 #include "EventHandler.hxx"

@@ -23,6 +23,7 @@
 #include "bspf.hxx"
 #include "Debugger.hxx"
 #include "ContextMenu.hxx"
+#include "PackedBitArray.hxx"
 #include "Widget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "RomListWidget.hxx"

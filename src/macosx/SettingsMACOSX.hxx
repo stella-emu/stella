@@ -22,6 +22,8 @@
 
 class OSystem;
 
+#include "Settings.hxx"
+
 /**
   This class defines Macintosh OSX system specific settings.
 

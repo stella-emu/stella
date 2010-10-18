@@ -20,6 +20,7 @@
 #include <fstream>
 #include <cmath>
 
+#include "FrameBuffer.hxx"
 #include "bspf.hxx"
 #include "PNGLibrary.hxx"
 

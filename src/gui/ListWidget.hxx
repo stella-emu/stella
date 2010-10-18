@@ -23,14 +23,15 @@
 #ifndef LIST_WIDGET_HXX
 #define LIST_WIDGET_HXX
 
-#include "GuiObject.hxx"
+class GuiObject;
+class StringList;
+
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "EditableWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Rect.hxx"
 
-class StringList;
 
 // Some special commands
 enum {

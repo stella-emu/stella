@@ -27,8 +27,8 @@ class CommandSender;
 class DialogContainer;
 class CheckboxWidget;
 class PopUpWidget;
+class OSystem;
 
-#include "OSystem.hxx"
 #include "Dialog.hxx"
 #include "bspf.hxx"
 

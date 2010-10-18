@@ -26,14 +26,13 @@
 class GuiObject;
 class InputTextDialog;
 class ButtonWidget;
+class DataGridOpsWidget;
 class EditTextWidget;
 class StaticTextWidget;
 
 #include "Array.hxx"
 #include "Widget.hxx"
 #include "Command.hxx"
-#include "DataGridWidget.hxx"
-
 
 class RamWidget : public Widget, public CommandSender
 {
@@ -44,7 +43,7 @@ class RamWidget : public Widget, public CommandSender
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void loadConfig();
-    void setOpsWidget(DataGridOpsWidget* w) { myRamGrid->setOpsWidget(w); }
+    void setOpsWidget(DataGridOpsWidget* w);
 
   private:
     void fillGrid(bool updateOld);
