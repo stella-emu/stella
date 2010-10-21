@@ -30,6 +30,7 @@
   #define DISASM_SKIP  CartDebug::SKIP
   #define DISASM_CODE  CartDebug::CODE
   #define DISASM_GFX   CartDebug::GFX
+  #define DISASM_PGFX  CartDebug::PGFX
   #define DISASM_DATA  CartDebug::DATA
   #define DISASM_ROW   CartDebug::ROW
   #define DISASM_NONE  0
@@ -38,6 +39,7 @@
   #define DISASM_SKIP  0
   #define DISASM_CODE  0
   #define DISASM_GFX   0
+  #define DISASM_PGFX  0
   #define DISASM_DATA  0
   #define DISASM_ROW   0
   #define DISASM_NONE  0

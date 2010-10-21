@@ -68,8 +68,9 @@ class CartDebug : public DebuggerSystem
       SKIP   = 1 << 2,  // TODO - document this
       CODE   = 1 << 3,  // disassemble-able code segments
       GFX    = 1 << 4,  // addresses loaded into GRPx registers
-      DATA   = 1 << 5,  // addresses loaded into registers other than GRPx
-      ROW    = 1 << 6   // all other addresses
+      PGFX   = 1 << 5,  // addresses loaded into PFx registers
+      DATA   = 1 << 6,  // addresses loaded into registers other than GRPx / PFx
+      ROW    = 1 << 7   // all other addresses
     };
     struct DisassemblyTag {
       DisasmType type;

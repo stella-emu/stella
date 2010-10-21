@@ -50,10 +50,10 @@
 #ifndef CHECK_GFX_WRITE
   #ifdef DEBUGGER_SUPPORT
     #define CHECK_GFX_WRITE(_addr) \
-    if((operandAddress == 0x1B || operandAddress == 0x1C || \
-        operandAddress == 0x0D || operandAddress == 0x0E || operandAddress == 0x0F) && \
-        _addr) \
-      mySystem->setAddressDisasmType(_addr, DISASM_GFX);
+    if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
+      mySystem->setAddressDisasmType(_addr, DISASM_GFX); \
+    else if((operandAddress == 0x0D || operandAddress == 0x0E || operandAddress == 0x0F) && _addr) \
+      mySystem->setAddressDisasmType(_addr, DISASM_PGFX);
   #else
     #define CHECK_GFX_WRITE(_addr)
   #endif

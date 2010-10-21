@@ -34,7 +34,7 @@ namespace GUI {
    ascent: 11
    descent: 2
    first char: 0 (0x00)
-   last char: 126 (0x7e)
+   last char: 128 (0x80)
    default char: 0 (0x00)
    proportional: no
    Public domain font.  Share and enjoy.
@@ -3114,6 +3114,70 @@ static const uInt16 _console_font_bits[] = {
 0x0000,
 0x0000,
 0x0000,
+
+/* Character 127 (0x7f): large centered ellipse
+   width 8
+   +--------+
+   |        |
+   |        |
+   |  ****  |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   |  ****  |
+   |        |
+   |        |
+   +--------+
+*/
+0x0000,
+0x0000,
+0x3c00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x3c00,
+0x0000,
+0x0000,
+
+/* Character 128 (0x80): large centered circle
+   width 8
+   +--------+
+   |        |
+   |        |
+   |        |
+   |        |
+   |  ****  |
+   | ****** |
+   | ****** |
+   | ****** |
+   |  ****  |
+   |        |
+   |        |
+   |        |
+   |        |
+   +--------+
+*/
+0x0000,
+0x0000,
+0x0000,
+0x0000,
+0x3c00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x3c00,
+0x0000,
+0x0000,
+0x0000,
+0x0000
 };
 
 /* Character->glyph mapping. */
@@ -3245,22 +3309,25 @@ static const uInt32 _console_sysfont_offset[] = {
 	1209,	/* (0x7c) */
 	1222,	/* (0x7d) */
 	1235,	/* (0x7e) */
+	1248,	/* (0x7f) */
+	1261,	/* (0x80) */
 };
 
 static const FontDesc consoleDesc = {
-	"8x13",
-	8,
-	13,
-	8, 13, 0, -1,
-	11,
-	0,
-	127,
-	_console_font_bits,
-	_console_sysfont_offset,  /* encode table */
-	0,  /* fixed width*/
-	0,
-	0,
-	sizeof(_console_font_bits)/sizeof(uInt16)
+	"8x13",                   /* font name */
+	8,                        /* max width in pixels */
+	13,                       /* height in pixels */
+	8, 13, 0, -1,             /* max bounding box */
+	11,                       /* ascent (baseline) height */
+	0,                        /* first character in bitmap */
+	129,                      /* font size in glyphs */
+	_console_font_bits,       /* 16-bit right-padded bitmap data */
+	_console_sysfont_offset,  /* offsets into bitmap data*/
+	0,  /* fixed width*/      /* character widths or NULL if fixed */
+	0,                        /* character bounding box or NULL if fixed */
+	0,                        /* default char (not glyph index) */
+	sizeof(_console_font_bits)/sizeof(uInt16) /* # words of bitmap_t bits */
+
 };
 
 } // End of namespace GUI

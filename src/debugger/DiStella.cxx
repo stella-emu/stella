@@ -154,7 +154,8 @@ cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
 
     for (int k = 0; k <= myAppData.end; k++)
     {
-      if (!check_bit(k, CartDebug::SKIP|CartDebug::CODE|CartDebug::GFX|CartDebug::DATA))
+      if (!check_bit(k, CartDebug::SKIP|CartDebug::CODE|CartDebug::GFX|
+                        CartDebug::PGFX|CartDebug::DATA))
         mark(k+myOffset, CartDebug::ROW);
     }
   }
@@ -190,7 +191,7 @@ void DiStella::disasm(uInt32 distart, int pass)
   myPC = distart - myOffset;
   while(myPC <= myAppData.end)
   {
-    if(check_bit(myPC, CartDebug::GFX) && !check_bit(myPC, CartDebug::CODE))
+    if(check_bit(myPC, CartDebug::GFX|CartDebug::PGFX) && !check_bit(myPC, CartDebug::CODE))
     {
       if (pass == 2)
         mark(myPC+myOffset, CartDebug::VALID_ENTRY);
@@ -201,10 +202,11 @@ void DiStella::disasm(uInt32 distart, int pass)
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
+        const string& bit_string = check_bit(myPC, CartDebug::GFX) ? "\x7f" : "\x80";
         uInt8 byte = Debugger::debugger().peek(myPC+myOffset);
         myDisasmBuf << ".byte $" << HEX2 << (int)byte << "  |";
         for(uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
-          myDisasmBuf << ((c > 127) ? "X" : " ");
+          myDisasmBuf << ((c > 127) ? bit_string : " ");
         myDisasmBuf << "|  $" << HEX4 << myPC+myOffset << "'";
         if(settings.gfx_format == kBASE_2)
           myDisasmBuf << Debugger::to_bin_8(byte);
@@ -215,7 +217,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       myPC++;
     }
     else if (check_bit(myPC, CartDebug::DATA) &&
-             !check_bit(myPC, CartDebug::CODE|CartDebug::GFX))
+             !check_bit(myPC, CartDebug::CODE|CartDebug::GFX|CartDebug::PGFX))
     {
       if (pass == 2)
         mark(myPC+myOffset, CartDebug::VALID_ENTRY);
@@ -235,7 +237,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       myPC++;
     }
     else if (check_bit(myPC, CartDebug::ROW) &&
-             !check_bit(myPC, CartDebug::CODE|CartDebug::DATA|CartDebug::GFX))
+             !check_bit(myPC, CartDebug::CODE|CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX))
     {
       mark(myPC+myOffset, CartDebug::VALID_ENTRY);
       if (pass == 3)
@@ -247,7 +249,7 @@ void DiStella::disasm(uInt32 distart, int pass)
       myPC++;
 
       while (check_bit(myPC, CartDebug::ROW) &&
-             !check_bit(myPC, CartDebug::CODE|CartDebug::DATA|CartDebug::GFX)
+             !check_bit(myPC, CartDebug::CODE|CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX)
              && pass == 3 && myPC <= myAppData.end)
       {
         bytes++;
@@ -886,6 +888,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       getline(myDisasmBuf, tag.bytes);
       break;
     case CartDebug::GFX:
+    case CartDebug::PGFX:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.bytes);
       break;
