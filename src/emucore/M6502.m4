@@ -139,7 +139,8 @@ define(M6502_ABSOLUTEY_READMODIFYWRITE, `{
 }')
 
 define(M6502_ZERO_READ, `{
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ZERO_WRITE, `{
@@ -153,10 +154,10 @@ define(M6502_ZERO_READMODIFYWRITE, `{
 }')
 
 define(M6502_ZEROX_READ, `{
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ZEROX_WRITE, `{
@@ -174,10 +175,10 @@ define(M6502_ZEROX_READMODIFYWRITE, `{
 }')
 
 define(M6502_ZEROY_READ, `{
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += Y;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += Y;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }')
 
 define(M6502_ZEROY_WRITE, `{
@@ -1535,13 +1536,13 @@ break;
 
 case 0xa5:
 M6502_ZERO_READ
-CLEAR_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xb5:
 M6502_ZEROX_READ
-CLEAR_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
@@ -1587,13 +1588,13 @@ break;
 
 case 0xa6:
 M6502_ZERO_READ
-CLEAR_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
 case 0xb6:
 M6502_ZEROY_READ
-CLEAR_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
@@ -1621,13 +1622,13 @@ break;
 
 case 0xa4:
 M6502_ZERO_READ
-CLEAR_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 
 case 0xb4:
 M6502_ZEROX_READ
-CLEAR_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 

@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2156 2010-10-21 17:46:23Z stephena $
+// $Id: M6502.m4 2157 2010-10-21 21:01:00Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2156 2010-10-21 17:46:23Z stephena $
+  @version $Id: M6502.m4 2157 2010-10-21 21:01:00Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -309,7 +309,8 @@ break;
 
 case 0x65:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   if(!D)
@@ -345,10 +346,10 @@ break;
 
 case 0x75:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   if(!D)
@@ -640,7 +641,8 @@ break;
 
 case 0x25:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A &= operand;
@@ -651,10 +653,10 @@ break;
 
 case 0x35:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A &= operand;
@@ -960,7 +962,8 @@ break;
 
 case 0x24:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   notZ = (A & operand);
@@ -1141,7 +1144,8 @@ break;
 
 case 0xc5:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)A - (uInt16)operand;
@@ -1154,10 +1158,10 @@ break;
 
 case 0xd5:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)A - (uInt16)operand;
@@ -1281,7 +1285,8 @@ break;
 
 case 0xe4:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)X - (uInt16)operand;
@@ -1323,7 +1328,8 @@ break;
 
 case 0xc4:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   uInt16 value = (uInt16)Y - (uInt16)operand;
@@ -1593,7 +1599,8 @@ break;
 
 case 0x45:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A ^= operand;
@@ -1604,10 +1611,10 @@ break;
 
 case 0x55:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A ^= operand;
@@ -2178,7 +2185,8 @@ break;
 
 case 0xa7:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A = operand;
@@ -2190,10 +2198,10 @@ break;
 
 case 0xb7:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += Y;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += Y;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A = operand;
@@ -2258,9 +2266,10 @@ break;
 
 case 0xa5:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2270,12 +2279,12 @@ break;
 
 case 0xb5:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2393,9 +2402,10 @@ break;
 
 case 0xa6:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2405,12 +2415,12 @@ break;
 
 case 0xb6:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += Y;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += Y;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2470,9 +2480,10 @@ break;
 
 case 0xa4:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2482,12 +2493,12 @@ break;
 
 case 0xb4:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2671,7 +2682,8 @@ case 0x04:
 case 0x44:
 case 0x64:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
 }
@@ -2684,10 +2696,10 @@ case 0x74:
 case 0xd4:
 case 0xf4:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
 }
@@ -2738,7 +2750,8 @@ break;
 
 case 0x05:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A |= operand;
@@ -2749,10 +2762,10 @@ break;
 
 case 0x15:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   A |= operand;
@@ -3685,7 +3698,8 @@ break;
 
 case 0xe5:
 {
-  operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
@@ -3718,10 +3732,10 @@ break;
 
 case 0xf5:
 {
-  uInt8 address = peek(PC++, DISASM_CODE);
-  peek(address, DISASM_DATA);
-  address += X;
-  operand = peek(address, DISASM_DATA); 
+  intermediateAddress = peek(PC++, DISASM_CODE);
+  peek(intermediateAddress, DISASM_DATA);
+  intermediateAddress += X;
+  operand = peek(intermediateAddress, DISASM_DATA);
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
