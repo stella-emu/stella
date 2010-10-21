@@ -58,9 +58,10 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     myLastAddress(0),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
-    myLastPeekAddressA(0),
-    myLastPeekAddressX(0),
-    myLastPeekAddressY(0)
+    myLastSrcAddressA(0),
+    myLastSrcAddressX(0),
+    myLastSrcAddressY(0),
+    myDataAddressForPoke(0)
 {
 #ifdef DEBUGGER_SUPPORT
   myDebugger    = NULL;
@@ -121,7 +122,8 @@ void M6502::reset()
   myTotalInstructionCount = 0;
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
-  myLastPeekAddressA = myLastPeekAddressX = myLastPeekAddressY = 0;
+  myLastSrcAddressA = myLastSrcAddressX = myLastSrcAddressY = 0;
+  myDataAddressForPoke = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -268,7 +270,7 @@ bool M6502::execute(uInt32 number)
       uInt8 operand = 0;
 
       // Reset the peek/poke address pointers
-      myLastPeekAddress = myLastPokeAddress = 0;
+      myLastPeekAddress = myLastPokeAddress = myDataAddressForPoke = 0;
 
       // Fetch instruction at the program counter
       IR = peek(PC++, DISASM_CODE);  // This address represents a code section
@@ -390,9 +392,14 @@ bool M6502::save(Serializer& out) const
 
     // Indicates the number of distinct memory accesses
     out.putInt(myNumberOfDistinctAccesses);
-    // Indicates the last address which was accessed
+    // Indicates the last address(es) which was accessed
     out.putInt(myLastAddress);
-
+    out.putInt(myLastPeekAddress);
+    out.putInt(myLastPokeAddress);
+    out.putInt(myLastSrcAddressA);
+    out.putInt(myLastSrcAddressX);
+    out.putInt(myLastSrcAddressY);
+    out.putInt(myDataAddressForPoke);
   }
   catch(const char* msg)
   {
@@ -432,8 +439,14 @@ bool M6502::load(Serializer& in)
 
     // Indicates the number of distinct memory accesses
     myNumberOfDistinctAccesses = (uInt32) in.getInt();
-    // Indicates the last address which was accessed
+    // Indicates the last address(es) which was accessed
     myLastAddress = (uInt16) in.getInt();
+    myLastPeekAddress = (uInt16) in.getInt();
+    myLastPokeAddress = (uInt16) in.getInt();
+    myLastSrcAddressA = (uInt16) in.getInt();
+    myLastSrcAddressX = (uInt16) in.getInt();
+    myLastSrcAddressY = (uInt16) in.getInt();
+    myDataAddressForPoke = (uInt16) in.getInt();
   }
   catch(const char* msg)
   {

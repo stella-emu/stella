@@ -43,6 +43,10 @@ const DebuggerState& CpuDebug::getState()
   myState.X  = mySystem.m6502().X;
   myState.Y  = mySystem.m6502().Y;
 
+  myState.srcA = mySystem.m6502().lastSrcAddressA();
+  myState.srcX = mySystem.m6502().lastSrcAddressX();
+  myState.srcY = mySystem.m6502().lastSrcAddressY();
+
   Debugger::set_bits(myState.PS, myState.PSbits);
 
   return myState;
@@ -57,6 +61,10 @@ void CpuDebug::saveOldState()
   myOldState.A  = mySystem.m6502().A;
   myOldState.X  = mySystem.m6502().X;
   myOldState.Y  = mySystem.m6502().Y;
+
+  myOldState.srcA = mySystem.m6502().lastSrcAddressA();
+  myOldState.srcX = mySystem.m6502().lastSrcAddressX();
+  myOldState.srcY = mySystem.m6502().lastSrcAddressY();
 
   Debugger::set_bits(myOldState.PS, myOldState.PSbits);
 }

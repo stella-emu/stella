@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2153 2010-10-11 23:32:37Z stephena $
+// $Id: M6502.m4 2156 2010-10-21 17:46:23Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2153 2010-10-11 23:32:37Z stephena $
+  @version $Id: M6502.m4 2156 2010-10-21 17:46:23Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -47,15 +47,11 @@
   #endif
 #endif
 
-#ifndef CHECK_GFX_WRITE
+#ifndef SET_LAST_POKE
   #ifdef DEBUGGER_SUPPORT
-    #define CHECK_GFX_WRITE(_addr) \
-    if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
-      mySystem->setAddressDisasmType(_addr, DISASM_GFX); \
-    else if((operandAddress == 0x0D || operandAddress == 0x0E || operandAddress == 0x0F) && _addr) \
-      mySystem->setAddressDisasmType(_addr, DISASM_PGFX);
+    #define SET_LAST_POKE(_addr) myDataAddressForPoke = _addr;
   #else
-    #define CHECK_GFX_WRITE(_addr)
+    #define SET_LAST_POKE(_addr)
   #endif
 #endif
 
@@ -277,7 +273,7 @@
 
 case 0x69:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(!D)
@@ -601,7 +597,7 @@ break;
 
 case 0x4b:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   A &= operand;
@@ -620,7 +616,7 @@ break;
 case 0x0b:
 case 0x2b:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   A &= operand;
@@ -633,7 +629,7 @@ break;
 
 case 0x29:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   A &= operand;
@@ -757,7 +753,7 @@ break;
 
 case 0x8b:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   // NOTE: The implementation of this instruction is based on
@@ -772,7 +768,7 @@ break;
 
 case 0x6b:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   // NOTE: The implementation of this instruction is based on
@@ -913,12 +909,12 @@ break;
 
 case 0x90:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(!C)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -930,12 +926,12 @@ break;
 
 case 0xb0:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(C)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -947,12 +943,12 @@ break;
 
 case 0xf0:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(!notZ)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -989,12 +985,12 @@ break;
 
 case 0x30:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(N)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -1006,12 +1002,12 @@ break;
 
 case 0xD0:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(notZ)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -1023,12 +1019,12 @@ break;
 
 case 0x10:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(!N)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -1058,12 +1054,12 @@ break;
 
 case 0x50:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(!V)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -1075,12 +1071,12 @@ break;
 
 case 0x70:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   if(V)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -1132,7 +1128,7 @@ break;
 
 case 0xc9:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   uInt16 value = (uInt16)A - (uInt16)operand;
@@ -1272,7 +1268,7 @@ break;
 
 case 0xe0:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   uInt16 value = (uInt16)X - (uInt16)operand;
@@ -1314,7 +1310,7 @@ break;
 
 case 0xc0:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   uInt16 value = (uInt16)Y - (uInt16)operand;
@@ -1586,7 +1582,7 @@ break;
 
 case 0x49:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   A ^= operand;
@@ -2250,9 +2246,9 @@ break;
 // LDA
 case 0xa9:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
-CLEAR_LAST_PEEK(myLastPeekAddressA)
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2264,7 +2260,7 @@ case 0xa5:
 {
   operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastPeekAddressA)
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2279,7 +2275,7 @@ case 0xb5:
   address += X;
   operand = peek(address, DISASM_DATA); 
 }
-CLEAR_LAST_PEEK(myLastPeekAddressA)
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2293,7 +2289,7 @@ case 0xad:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2313,7 +2309,7 @@ case 0xbd:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2333,7 +2329,7 @@ case 0xb9:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2350,7 +2346,7 @@ case 0xa1:
   intermediateAddress |= ((uInt16)peek(pointer, DISASM_DATA) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2371,7 +2367,7 @@ case 0xb1:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 {
   A = operand;
   notZ = A;
@@ -2385,9 +2381,9 @@ break;
 // LDX
 case 0xa2:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
-CLEAR_LAST_PEEK(myLastPeekAddressX)
+CLEAR_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2399,7 +2395,7 @@ case 0xa6:
 {
   operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastPeekAddressX)
+CLEAR_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2414,7 +2410,7 @@ case 0xb6:
   address += Y;
   operand = peek(address, DISASM_DATA); 
 }
-CLEAR_LAST_PEEK(myLastPeekAddressX)
+CLEAR_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2428,7 +2424,7 @@ case 0xae:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastPeekAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2448,7 +2444,7 @@ case 0xbe:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastPeekAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 {
   X = operand;
   notZ = X;
@@ -2462,9 +2458,9 @@ break;
 // LDY
 case 0xa0:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
-CLEAR_LAST_PEEK(myLastPeekAddressY)
+CLEAR_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2476,7 +2472,7 @@ case 0xa4:
 {
   operand = peek(peek(PC++, DISASM_CODE), DISASM_DATA);
 }
-CLEAR_LAST_PEEK(myLastPeekAddressY)
+CLEAR_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2491,7 +2487,7 @@ case 0xb4:
   address += X;
   operand = peek(address, DISASM_DATA); 
 }
-CLEAR_LAST_PEEK(myLastPeekAddressY)
+CLEAR_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2505,7 +2501,7 @@ case 0xac:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastPeekAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2525,7 +2521,7 @@ case 0xbc:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastPeekAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 {
   Y = operand;
   notZ = Y;
@@ -2632,7 +2628,7 @@ break;
 
 case 0xab:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   // NOTE: The implementation of this instruction is based on
@@ -2665,7 +2661,7 @@ case 0x89:
 case 0xc2:
 case 0xe2:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
 }
@@ -2731,7 +2727,7 @@ break;
 
 case 0x09:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   A |= operand;
@@ -3656,7 +3652,7 @@ break;
 case 0xe9:
 case 0xeb:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   // N, V, Z, C flags are the same in either mode (C calculated at the end)
@@ -3956,7 +3952,7 @@ break;
 
 case 0xcb:
 {
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }
 {
   uInt16 value = (uInt16)(X & A) - (uInt16)operand;
@@ -4383,7 +4379,7 @@ case 0x85:
 {
   operandAddress = peek(PC++, DISASM_CODE);
 }
-CHECK_GFX_WRITE(myLastPeekAddressA)
+SET_LAST_POKE(myLastSrcAddressA)
 {
   poke(operandAddress, A);
 }
@@ -4468,7 +4464,7 @@ case 0x86:
 {
   operandAddress = peek(PC++, DISASM_CODE);
 }
-CHECK_GFX_WRITE(myLastPeekAddressX)
+SET_LAST_POKE(myLastSrcAddressX)
 {
   poke(operandAddress, X);
 }
@@ -4503,7 +4499,7 @@ case 0x84:
 {
   operandAddress = peek(PC++, DISASM_CODE);
 }
-CHECK_GFX_WRITE(myLastPeekAddressY)
+SET_LAST_POKE(myLastSrcAddressY)
 {
   poke(operandAddress, Y);
 }

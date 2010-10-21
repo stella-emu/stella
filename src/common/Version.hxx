@@ -22,7 +22,7 @@
 
 #include <cstdlib>
 
-#define STELLA_VERSION "3.3_test8"
+#define STELLA_VERSION "3.3_test9"
 #define STELLA_BUILD atoi("$Rev$" + 6)
 
 #endif

@@ -147,6 +147,26 @@ class M6502 : public Serializable
         myLastPeekAddress;
     }
 
+    /**                                                                    
+      Return the source of the address that was used for a write/poke.
+      Note that this isn't the same as the address that is poked, but
+      is instead the address of the *data* that is poked (if any).
+
+      @return The address of the data used in the last poke, else 0
+    */
+    uInt16 lastDataAddressForPoke() const { return myDataAddressForPoke; }
+
+    /**                                                                    
+      Return the last data address used as part of a peek operation for
+      the A/X/Y registers.  Note that if an address wasn't used (as in
+      immediate mode), then the address is zero.
+
+      @return The address of the data used in the last peek, else 0
+    */
+    uInt16 lastSrcAddressA() const { return myLastSrcAddressA; }
+    uInt16 lastSrcAddressX() const { return myLastSrcAddressX; }
+    uInt16 lastSrcAddressY() const { return myLastSrcAddressY; }
+
     /**
       Get the total number of instructions executed so far.
 
@@ -301,9 +321,15 @@ class M6502 : public Serializable
     /// by a peek or poke command
     uInt16 myLastPeekAddress, myLastPokeAddress;
 
-    /// Indicates the last address which was accessed by a peek command
+    /// Indicates the last address used to access data by a peek command
     /// for the CPU registers (A/X/Y)
-    uInt16 myLastPeekAddressA, myLastPeekAddressX, myLastPeekAddressY;
+    uInt16 myLastSrcAddressA, myLastSrcAddressX, myLastSrcAddressY;
+
+    /// Indicates the data address used by the last command that performed
+    /// a poke (currently, the last address used by STx)
+    /// If an address wasn't used (ie, as in immediate mode), the address
+    /// is set to zero
+    uInt16 myDataAddressForPoke;
 
 #ifdef DEBUGGER_SUPPORT
     /// Pointer to the debugger for this processor or the null pointer

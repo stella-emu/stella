@@ -23,6 +23,10 @@
 
 #include "bspf.hxx"
 
+#ifdef DEBUGGER_SUPPORT
+  #include "CartDebug.hxx"
+#endif
+
 #include "Console.hxx"
 #include "Control.hxx"
 #include "Device.hxx"
@@ -1468,6 +1472,11 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       else
         myEnabledObjects |= PFBit;
 
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAddressDisasmType(dataAddr, CartDebug::PGFX);
+    #endif
       break;
     }
 
@@ -1480,6 +1489,11 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       else
         myEnabledObjects |= PFBit;
 
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAddressDisasmType(dataAddr, CartDebug::PGFX);
+    #endif
       break;
     }
 
@@ -1492,6 +1506,11 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       else
         myEnabledObjects |= PFBit;
 
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAddressDisasmType(dataAddr, CartDebug::PGFX);
+    #endif
       break;
     }
 
@@ -1727,6 +1746,11 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       else
         myEnabledObjects &= ~P1Bit;
 
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAddressDisasmType(dataAddr, CartDebug::GFX);
+    #endif
       break;
     }
 
@@ -1765,6 +1789,11 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       else
         myEnabledObjects &= ~BLBit;
 
+    #ifdef DEBUGGER_SUPPORT
+      uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
+      if(dataAddr)
+        mySystem->setAddressDisasmType(dataAddr, CartDebug::GFX);
+    #endif
       break;
     }
 

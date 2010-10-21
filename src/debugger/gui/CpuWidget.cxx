@@ -80,6 +80,15 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     new DataGridWidget(boss, font, xpos, ypos, 1, 4, 8, 8, kBASE_2);
   myCpuGridBinValue->setEditable(false);
 
+  // Create a label and 1x3 grid showing the source of data for A/X/Y registers
+  xpos += myCpuGridBinValue->getWidth() + 20;
+  new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(), ypos+1,
+                       font.getStringWidth("Data Src"), fontHeight, "Data Src",
+                       kTextAlignLeft);
+  myCpuDataSrcGrid = 
+    new DataGridWidget(boss, font, xpos, ypos+lineHeight, 1, 3, 4, 16, kBASE_16);
+  myCpuDataSrcGrid->setEditable(false);
+
   // Add labels for other CPU registers
   xpos = x;
   string labels[4] = { "SP:", "A:", "X:", "Y:" };
@@ -275,6 +284,21 @@ void CpuWidget::fillGrid()
   myCpuGrid->setList(alist, vlist, changed);
   myCpuGridDecValue->setList(alist, vlist, changed);
   myCpuGridBinValue->setList(alist, vlist, changed);
+
+  // Update the data sources for the A/X/Y registers
+  alist.clear(); vlist.clear(); changed.clear();
+  alist.push_back(0);
+  alist.push_back(0);
+  alist.push_back(0);
+
+  vlist.push_back(state.srcA);
+  vlist.push_back(state.srcX);
+  vlist.push_back(state.srcY);
+
+  changed.push_back(state.srcA  != oldstate.srcA);
+  changed.push_back(state.srcX  != oldstate.srcX);
+  changed.push_back(state.srcY  != oldstate.srcY);
+  myCpuDataSrcGrid->setList(alist, vlist, changed);
 
   // Update the PS register booleans
   changed.clear();

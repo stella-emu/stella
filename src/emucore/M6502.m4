@@ -47,15 +47,11 @@
   #endif
 #endif
 
-#ifndef CHECK_GFX_WRITE
+#ifndef SET_LAST_POKE
   #ifdef DEBUGGER_SUPPORT
-    #define CHECK_GFX_WRITE(_addr) \
-    if((operandAddress == 0x1B || operandAddress == 0x1C) && _addr) \
-      mySystem->setAddressDisasmType(_addr, DISASM_GFX); \
-    else if((operandAddress == 0x0D || operandAddress == 0x0E || operandAddress == 0x0F) && _addr) \
-      mySystem->setAddressDisasmType(_addr, DISASM_PGFX);
+    #define SET_LAST_POKE(_addr) myDataAddressForPoke = _addr;
   #else
-    #define CHECK_GFX_WRITE(_addr)
+    #define SET_LAST_POKE(_addr)
   #endif
 #endif
 
@@ -65,7 +61,7 @@ define(M6502_IMPLIED, `{
 }')
 
 define(M6502_IMMEDIATE_READ, `{
-  operand = peek(PC++, DISASM_DATA);
+  operand = peek(PC++, DISASM_CODE);
 }')
 
 define(M6502_ABSOLUTE_READ, `{
@@ -271,7 +267,7 @@ define(M6502_INDIRECTY_READMODIFYWRITE, `{
 define(M6502_BCC, `{
   if(!C)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -282,7 +278,7 @@ define(M6502_BCC, `{
 define(M6502_BCS, `{
   if(C)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -293,7 +289,7 @@ define(M6502_BCS, `{
 define(M6502_BEQ, `{
   if(!notZ)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -304,7 +300,7 @@ define(M6502_BEQ, `{
 define(M6502_BMI, `{
   if(N)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -315,7 +311,7 @@ define(M6502_BMI, `{
 define(M6502_BNE, `{
   if(notZ)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -326,7 +322,7 @@ define(M6502_BNE, `{
 define(M6502_BPL, `{
   if(!N)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -337,7 +333,7 @@ define(M6502_BPL, `{
 define(M6502_BVC, `{
   if(!V)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -348,7 +344,7 @@ define(M6502_BVC, `{
 define(M6502_BVS, `{
   if(V)
   {
-    peek(PC, DISASM_CODE);
+    peek(PC, DISASM_DATA);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
       peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
@@ -1533,49 +1529,49 @@ break;
 // LDA
 case 0xa9:
 M6502_IMMEDIATE_READ
-CLEAR_LAST_PEEK(myLastPeekAddressA)
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xa5:
 M6502_ZERO_READ
-CLEAR_LAST_PEEK(myLastPeekAddressA)
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xb5:
 M6502_ZEROX_READ
-CLEAR_LAST_PEEK(myLastPeekAddressA)
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xad:
 M6502_ABSOLUTE_READ
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xbd:
 M6502_ABSOLUTEX_READ
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xb9:
 M6502_ABSOLUTEY_READ
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xa1:
 M6502_INDIRECTX_READ
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 
 case 0xb1:
 M6502_INDIRECTY_READ
-SET_LAST_PEEK(myLastPeekAddressA)
+SET_LAST_PEEK(myLastSrcAddressA)
 M6502_LDA
 break;
 //////////////////////////////////////////////////
@@ -1585,31 +1581,31 @@ break;
 // LDX
 case 0xa2:
 M6502_IMMEDIATE_READ
-CLEAR_LAST_PEEK(myLastPeekAddressX)
+CLEAR_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
 case 0xa6:
 M6502_ZERO_READ
-CLEAR_LAST_PEEK(myLastPeekAddressX)
+CLEAR_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
 case 0xb6:
 M6502_ZEROY_READ
-CLEAR_LAST_PEEK(myLastPeekAddressX)
+CLEAR_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
 case 0xae:
 M6502_ABSOLUTE_READ
-SET_LAST_PEEK(myLastPeekAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 
 case 0xbe:
 M6502_ABSOLUTEY_READ
-SET_LAST_PEEK(myLastPeekAddressX)
+SET_LAST_PEEK(myLastSrcAddressX)
 M6502_LDX
 break;
 //////////////////////////////////////////////////
@@ -1619,31 +1615,31 @@ break;
 // LDY
 case 0xa0:
 M6502_IMMEDIATE_READ
-CLEAR_LAST_PEEK(myLastPeekAddressY)
+CLEAR_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 
 case 0xa4:
 M6502_ZERO_READ
-CLEAR_LAST_PEEK(myLastPeekAddressY)
+CLEAR_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 
 case 0xb4:
 M6502_ZEROX_READ
-CLEAR_LAST_PEEK(myLastPeekAddressY)
+CLEAR_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 
 case 0xac:
 M6502_ABSOLUTE_READ
-SET_LAST_PEEK(myLastPeekAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 
 case 0xbc:
 M6502_ABSOLUTEX_READ
-SET_LAST_PEEK(myLastPeekAddressY)
+SET_LAST_PEEK(myLastSrcAddressY)
 M6502_LDY
 break;
 //////////////////////////////////////////////////
@@ -2129,7 +2125,7 @@ break;
 // STA
 case 0x85:
 M6502_ZERO_WRITE
-CHECK_GFX_WRITE(myLastPeekAddressA)
+SET_LAST_POKE(myLastSrcAddressA)
 M6502_STA
 break;
 
@@ -2169,7 +2165,7 @@ break;
 // STX
 case 0x86:
 M6502_ZERO_WRITE
-CHECK_GFX_WRITE(myLastPeekAddressX)
+SET_LAST_POKE(myLastSrcAddressX)
 M6502_STX
 break;
 
@@ -2189,7 +2185,7 @@ break;
 // STY
 case 0x84:
 M6502_ZERO_WRITE
-CHECK_GFX_WRITE(myLastPeekAddressY)
+SET_LAST_POKE(myLastSrcAddressY)
 M6502_STY
 break;
 
