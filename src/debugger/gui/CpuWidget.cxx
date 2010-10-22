@@ -83,7 +83,7 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   // Create a label and 1x3 grid showing the source of data for A/X/Y registers
   xpos += myCpuGridBinValue->getWidth() + 20;
   new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(), ypos+1,
-                       font.getStringWidth("Data Src"), fontHeight, "Data Src",
+                       font.getStringWidth("Src Addr"), fontHeight, "Src Addr",
                        kTextAlignLeft);
   myCpuDataSrcGrid = 
     new DataGridWidget(boss, font, xpos, ypos+lineHeight, 1, 3, 4, 16, kBASE_16);
