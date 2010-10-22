@@ -1010,9 +1010,12 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
     case CartDebug::SKIP:   buf << "SKIP";   break;
     case CartDebug::CODE:   buf << "CODE";   break;
     case CartDebug::GFX:    buf << "GFX";    break;
+    case CartDebug::PGFX:   buf << "PGFX";   break;
     case CartDebug::DATA:   buf << "DATA";   break;
     case CartDebug::ROW:    buf << "ROW";    break;
-    default:                                 break;
+    case CartDebug::REFERENCED:
+    case CartDebug::VALID_ENTRY:
+    case CartDebug::NONE:                    break;
   }
 }
 

@@ -1017,6 +1017,7 @@ void DebuggerParser::executeHelp()
     if(len > clen)  clen = len;
   }
 
+  commandResult << setfill(' ');
   for(int i = 0; i < kNumCommands; ++i)
     commandResult << setw(clen) << right << commands[i].cmdString
                   << " - " << commands[i].description << endl;

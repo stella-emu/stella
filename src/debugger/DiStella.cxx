@@ -695,6 +695,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 
       if (pass == 1)
       {
+        // RTS/JMP/RTI always indicate the end of a block of CODE
         if (!strcmp(ourLookup[op].mnemonic,"RTS") ||
             !strcmp(ourLookup[op].mnemonic,"JMP") ||
             /* !strcmp(ourLookup[op].mnemonic,"BRK") || */
@@ -779,7 +780,7 @@ int DiStella::mark(uInt32 address, uInt8 mask)
 
   if (address >= myOffset && address <= myAppData.end + myOffset)
   {
-    Debugger::debugger().setAddressDisasmType(address | myOffset, mask);
+//    Debugger::debugger().setAddressDisasmType(address | myOffset, mask);
     labels[address-myOffset] = labels[address-myOffset] | mask;
     return 1;
   }
@@ -794,7 +795,7 @@ int DiStella::mark(uInt32 address, uInt8 mask)
   else if (address > 0x1000)
   {
     /* 2K & 4K case */
-    Debugger::debugger().setAddressDisasmType(address | myOffset, mask);
+//    Debugger::debugger().setAddressDisasmType(address | myOffset, mask);
     labels[address & myAppData.end] = labels[address & myAppData.end] | mask;
     return 4;
   }
