@@ -770,6 +770,11 @@ string CartDebug::loadConfigFile(string file)
           buf >> hex >> start >> hex >> end;
           addDirective(CartDebug::GFX, start, end, currentbank);
         }
+        else if(BSPF_startsWithIgnoreCase(directive, "PGFX"))
+        {
+          buf >> hex >> start >> hex >> end;
+          addDirective(CartDebug::PGFX, start, end, currentbank);
+        }
         else if(BSPF_startsWithIgnoreCase(directive, "DATA"))
         {
           buf >> hex >> start >> hex >> end;

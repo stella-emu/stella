@@ -820,8 +820,8 @@ void DebuggerParser::executeCode()
 
   bool result = debugger->cartDebug().addDirective(
                   CartDebug::CODE, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " CODE directive on range $" << hex << args[0]
-                << " $" << hex << args[1];
+  commandResult << (result ? "added" : "removed") << " CODE directive on range $"
+                << hex << args[0] << " $" << hex << args[1];
   debugger->myRom->invalidate();
 }
 
@@ -861,8 +861,8 @@ void DebuggerParser::executeData()
 
   bool result = debugger->cartDebug().addDirective(
                   CartDebug::DATA, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " DATA directive on range $" << hex << args[0]
-                << " $" << hex << args[1];
+  commandResult << (result ? "added" : "removed") << " DATA directive on range $"
+                << hex << args[0] << " $" << hex << args[1];
   debugger->myRom->invalidate();
 }
 
@@ -1000,8 +1000,8 @@ void DebuggerParser::executeGfx()
 
   bool result = debugger->cartDebug().addDirective(
                   CartDebug::GFX, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " GFX directive on range $" << hex << args[0]
-                << " $" << hex << args[1];
+  commandResult << (result ? "added" : "removed") << " GFX directive on range $"
+                << hex << args[0] << " $" << hex << args[1];
   debugger->myRom->invalidate();
 }
 
@@ -1180,6 +1180,28 @@ void DebuggerParser::executePc()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "pgfx"
+void DebuggerParser::executePGfx()
+{
+  if(argCount != 2)
+  {
+    commandResult << red("Specify start and end of range only");
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  bool result = debugger->cartDebug().addDirective(
+                  CartDebug::PGFX, args[0], args[1]);
+  commandResult << (result ? "added" : "removed") << " PGFX directive on range $"
+                << hex << args[0] << " $" << hex << args[1];
+  debugger->myRom->invalidate();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "print"
 void DebuggerParser::executePrint()
 {
@@ -1248,6 +1270,28 @@ void DebuggerParser::executeRom()
 
   commandResult << "changed " << debugger->valueToString( args.size() - 1 )
                 << " location(s)";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "row"
+void DebuggerParser::executeRow()
+{
+  if(argCount != 2)
+  {
+    commandResult << red("Specify start and end of range only");
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  bool result = debugger->cartDebug().addDirective(
+                  CartDebug::ROW, args[0], args[1]);
+  commandResult << (result ? "added" : "removed") << " ROW directive on range $"
+                << hex << args[0] << " $" << hex << args[1];
+  debugger->myRom->invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1401,6 +1445,31 @@ void DebuggerParser::executeScanline()
   debugger->nextScanline(count);
   commandResult << "advanced " << debugger->valueToString(count) << " scanline";
   if(count != 1) commandResult << "s";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "skip"
+void DebuggerParser::executeSkip()
+{
+  commandResult << red("Not yet implemented");
+/*
+  if(argCount != 2)
+  {
+    commandResult << red("Specify start and end of range only");
+    return;
+  }
+  else if(args[1] < args[0])
+  {
+    commandResult << red("Start address must be <= end address");
+    return;
+  }
+
+  bool result = debugger->cartDebug().addDirective(
+                  CartDebug::SKIP, args[0], args[1]);
+  commandResult << (result ? "added" : "removed") << " SKIP directive on range $"
+                << hex << args[0] << " $" << hex << args[1];
+  debugger->myRom->invalidate();
+*/
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1892,6 +1961,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
   },
 
   {
+    "pgfx",
+    "Mark 'PGFX' range in disassembly",
+    true,
+    false,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executePGfx
+  },
+
+  {
     "print",
     "Evaluate/print expression xx in hex/dec/binary",
     true,
@@ -1943,6 +2021,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeRom
+  },
+
+  {
+    "row",
+    "Mark 'ROW' range in disassembly",
+    true,
+    false,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeRow
   },
 
   {
@@ -2033,6 +2120,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeScanline
+  },
+
+  {
+    "skip",
+    "Mark 'SKIP' range in disassembly",
+    true,
+    false,
+    { kARG_WORD, kARG_MULTI_BYTE },
+    &DebuggerParser::executeSkip
   },
 
   {
