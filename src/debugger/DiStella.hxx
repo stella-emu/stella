@@ -84,7 +84,7 @@ class DiStella
     // These functions are part of the original Distella code
     void disasm(uInt32 distart, int pass);
     bool check_range(uInt16 start, uInt16 end) const;
-    int mark(uInt32 address, uInt8 mask);
+    int mark(uInt32 address, uInt8 mask, bool directive = false);
     bool check_bit(uInt16 address, uInt8 mask) const;
 
   private:
@@ -100,8 +100,11 @@ class DiStella
       uInt16 length;
     } myAppData;
 
-    /* Stores info on how each address is marked */
-    uInt8 labels[0x1000];
+    /* Stores info on how each address is marked, both in the general
+       case as well as when manual directives are enabled (in which case
+       the directives take priority
+       The address mark type is defined in CartDebug.hxx */
+    uInt8 labels[0x1000], directives[0x1000];
 
     /**
       Enumeration of the 6502 addressing modes

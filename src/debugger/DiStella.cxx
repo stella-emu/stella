@@ -83,6 +83,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   info.offset = myOffset;
 
   memset(labels, 0, 0x1000);
+  memset(directives, 0, 0x1000);
   myAddressQueue.push(start);
 
   // Process any directives first, as they override automatic code determination
@@ -126,7 +127,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
           uInt16 addr = *it;
           if(!check_bit(addr-myOffset, CartDebug::CODE))
           {
-cerr << "(list) marking " << HEX4 << addr << " as CODE\n";
+//cerr << "(list) marking " << HEX4 << addr << " as CODE\n";
             myAddressQueue.push(addr);
             ++it;
             break;
@@ -142,7 +143,7 @@ cerr << "(list) marking " << HEX4 << addr << " as CODE\n";
           if((Debugger::debugger().getAddressDisasmType(codeAccessPoint+myOffset) & CartDebug::CODE)
              && !(labels[codeAccessPoint & myAppData.end] & CartDebug::CODE))
           {
-cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
+//cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
             myAddressQueue.push(codeAccessPoint+myOffset);
             ++codeAccessPoint;
             break;
@@ -729,7 +730,7 @@ void DiStella::disasm(uInt32 distart, int pass)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int DiStella::mark(uInt32 address, uInt8 mask)
+int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
 {
   /*-----------------------------------------------------------------------
     For any given offset and code range...
@@ -780,8 +781,8 @@ int DiStella::mark(uInt32 address, uInt8 mask)
 
   if (address >= myOffset && address <= myAppData.end + myOffset)
   {
-//    Debugger::debugger().setAddressDisasmType(address | myOffset, mask);
     labels[address-myOffset] = labels[address-myOffset] | mask;
+    if(directive)  directives[address-myOffset] = mask;
     return 1;
   }
   else if (address >= 0 && address <= 0x3f)
@@ -795,8 +796,8 @@ int DiStella::mark(uInt32 address, uInt8 mask)
   else if (address > 0x1000)
   {
     /* 2K & 4K case */
-//    Debugger::debugger().setAddressDisasmType(address | myOffset, mask);
     labels[address & myAppData.end] = labels[address & myAppData.end] | mask;
+    if(directive)  directives[address & myAppData.end] = mask;
     return 4;
   }
   else
@@ -806,10 +807,24 @@ int DiStella::mark(uInt32 address, uInt8 mask)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool DiStella::check_bit(uInt16 address, uInt8 mask) const
 {
-  if(Debugger::debugger().getAddressDisasmType(address | myOffset) & mask)
+  // The REFERENCED and VALID_ENTRY flags are needed for any inspection of
+  // an address
+  // Since they're set only in the labels array (as the lower two bits),
+  // they must be included in the other bitfields
+  uInt8 label     = labels[address & myAppData.end],
+        lastbits  = label & 0x03,
+        directive = directives[address & myAppData.end] & 0xFC,
+        debugger  = Debugger::debugger().getAddressDisasmType(address | myOffset) & 0xFC;
+
+  // Any address marked by a manual directive always takes priority
+  if(directive)
+    return (directive | lastbits) & mask;
+  // Next, the results from a dynamic/runtime analysis are used
+  else if((debugger | lastbits) & mask)
     return true;
+  // Otherwise, default to static analysis from Distella
   else
-    return labels[address & myAppData.end] & mask;
+    return label & mask;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -860,6 +875,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   if(tag.address)
   {
     tag.label = myDbg.getLabel(tag.address, true);
+    tag.hllabel = true;
     if(tag.label == EmptyString)
     {
       if(myDisasmBuf.peek() != ' ')
@@ -868,8 +884,9 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       {
         // Have addresses indented, to differentiate from actual labels
         char address[8];
-        sprintf(address, "  $%X", tag.address);
+        sprintf(address, " %X", tag.address);
         tag.label = address;
+        tag.hllabel = false;
       }
     }
   }
@@ -887,6 +904,14 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.ccount, '\'');
       getline(myDisasmBuf, tag.bytes);
+
+      // Make note of when we override CODE sections from the debugger
+      // It could mean that the code hasn't been accessed up to this point,
+      // but it could also indicate that code will *never* be accessed
+      // Since it is impossible to tell the difference, marking the address
+      // in the disassembly at least tells the user about it
+      if(!(Debugger::debugger().getAddressDisasmType(tag.address) & CartDebug::CODE))
+        tag.ccount += " *";
       break;
     case CartDebug::GFX:
     case CartDebug::PGFX:
@@ -909,15 +934,6 @@ void DiStella::addEntry(CartDebug::DisasmType type)
 DONE_WITH_ADD:
   myDisasmBuf.clear();
   myDisasmBuf.str("");
-
-#if 0
-  // debugging output
-  cerr << (tag.type == CartDebug::CODE ? "CartDebug::CODE" : (tag.type == CartDebug::ROW ? "CartDebug::ROW" :
-          (tag.type == CartDebug::GFX ? "CartDebug::GFX " : "NONE"))) << "|"
-       << hex << setw(4) << setfill('0') << tag.address << "|"
-       << tag.label << "|" << tag.disasm << "|" << tag.ccount << "|" << "|"
-       << tag.bytes << endl;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -929,7 +945,7 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
     const CartDebug::DirectiveTag tag = *i;
     if(check_range(tag.start, tag.end))
       for(uInt32 k = tag.start; k <= tag.end; ++k)
-        mark(k, tag.type);
+        mark(k, tag.type, true);
   }
 }
 

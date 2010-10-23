@@ -302,7 +302,7 @@ void Cartridge::createCodeAccessBase(uInt32 size)
 {
 #ifdef DEBUGGER_SUPPORT
   myCodeAccessBase = new uInt8[size];
-  memset(myCodeAccessBase, 0, size);
+  memset(myCodeAccessBase, CartDebug::ROW, size);
 #else
   myCodeAccessBase = NULL;
 #endif

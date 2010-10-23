@@ -446,7 +446,7 @@ void RomListWidget::drawWidget(bool hilite)
   s.vLine(_x + CheckboxWidget::boxSize() + 5, _y, _y + _h - 1, kColor);
 
   // Draw the list items
-  int ccountw = _fontWidth << 1,
+  int ccountw = _fontWidth << 2,
       large_disasmw = _w - l.x() - _labelWidth,
       medium_disasmw = large_disasmw - r.width(),
       small_disasmw = medium_disasmw - (ccountw << 1),
@@ -476,11 +476,12 @@ void RomListWidget::drawWidget(bool hilite)
     }
 
     // Draw labels
-    s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth, kTextColor);
+    s.drawString(_font, dlist[pos].label, xpos, ypos, _labelWidth,
+                 dlist[pos].hllabel ? kTextColor : kColor);
 
     // Bytes are only editable if they represent code, graphics, or accessible data
     // Otherwise, the disassembly should get all remaining space
-    if(dlist[pos].type & (CartDebug::CODE | CartDebug::GFX | CartDebug::DATA))
+    if(dlist[pos].type & (CartDebug::CODE|CartDebug::GFX|CartDebug::PGFX|CartDebug::DATA))
     {
       if(dlist[pos].type == CartDebug::CODE)
       {

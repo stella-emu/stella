@@ -79,6 +79,7 @@ class CartDebug : public DebuggerSystem
       string disasm;
       string ccount;
       string bytes;
+      bool hllabel;
     };
     typedef Common::Array<DisassemblyTag> DisassemblyList;
     typedef struct {
