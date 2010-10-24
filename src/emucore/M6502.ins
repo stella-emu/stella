@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2157 2010-10-21 21:01:00Z stephena $
+// $Id: M6502.m4 2158 2010-10-21 21:16:55Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2157 2010-10-21 21:01:00Z stephena $
+  @version $Id: M6502.m4 2158 2010-10-21 21:16:55Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -916,10 +916,10 @@ case 0x90:
 {
   if(!C)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -933,10 +933,10 @@ case 0xb0:
 {
   if(C)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -950,10 +950,10 @@ case 0xf0:
 {
   if(!notZ)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -993,10 +993,10 @@ case 0x30:
 {
   if(N)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -1010,10 +1010,10 @@ case 0xD0:
 {
   if(notZ)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -1027,10 +1027,10 @@ case 0x10:
 {
   if(!N)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -1062,10 +1062,10 @@ case 0x50:
 {
   if(!V)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }
@@ -1079,10 +1079,10 @@ case 0x70:
 {
   if(V)
   {
-    peek(PC, DISASM_DATA);
+    peek(PC, DISASM_NONE);
     uInt16 address = PC + (Int8)operand;
     if(NOTSAMEPAGE(PC, address))
-      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_DATA);
+      peek((PC & 0xFF00) | (address & 0x00FF), DISASM_NONE);
     PC = address;
   }
 }

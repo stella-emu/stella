@@ -102,8 +102,25 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
       myAddressQueue.pop();
       disasm(myPC, 1);
       if(myPCBeg <= myPCEnd)
+      {
+        // Tentatively mark all addresses in the range as CODE
+        // Note that this is a 'best-effort' approach, since
+        // Distella will normally keep going until the end of the
+        // range or branch is encountered
+        // However, addresses *specifically* marked as DATA/GFX/PGFX
+        // in the emulation core indicate that the CODE range has finished
+        // Therefore, we stop at the first such address encountered
         for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
+        {
+          if(Debugger::debugger().getAddressDisasmType(k) &
+             (CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX))
+          {
+            myPCEnd = k - 1;
+            break;
+          }
           mark(k, CartDebug::CODE);
+        }
+      }
 
       // When we get to this point, all addresses have been processed
       // starting from the initial one in the address list
