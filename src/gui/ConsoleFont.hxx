@@ -3115,37 +3115,37 @@ static const uInt16 _console_font_bits[] = {
 0x0000,
 0x0000,
 
-/* Character 127 (0x7f): large centered ellipse
+/* Character 127 (0x7f): large centered rounded rectangle
    width 8
    +--------+
-   |        |
-   |        |
-   |        |
    |  ****  |
    | ****** |
    | ****** |
    | ****** |
    | ****** |
    | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
+   | ****** |
    |  ****  |
-   |        |
-   |        |
-   |        |
    +--------+
 */
-0x0000,
-0x0000,
-0x0000,
 0x3c00,
 0x7e00,
 0x7e00,
 0x7e00,
 0x7e00,
 0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
+0x7e00,
 0x3c00,
-0x0000,
-0x0000,
-0x0000,
 
 /* Character 128 (0x80): large centered circle
    width 8
