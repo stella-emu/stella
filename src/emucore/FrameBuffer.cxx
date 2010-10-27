@@ -449,6 +449,7 @@ void FrameBuffer::refresh()
       drawTIA(true);
       if(doubleBuffered)
       {
+        postFrameUpdate();
         invalidate();
         drawTIA(true);
       }
