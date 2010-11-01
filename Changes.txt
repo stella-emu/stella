@@ -12,12 +12,85 @@
                                Release History
 ===========================================================================
 
+3.2.2 to 3.3: (November xx, 2010)
+
+  * Added the following Distella 'directives', which are used to override
+    and specifically tell the debugger how to treat address space (SKIP,
+    CODE, GFX, PGFX, DATA, ROW).  See the debugger documentation for more
+    information.
+
+  * Disassembly from the debugger is now tracked by the emulation core,
+    and accented by the built-in Distella code.  Basically, the emulation
+    core knows when an address is referenced as code, making for very
+    accurate disassembled output.  Related to this, the emulation core now
+    tracks accesses to GRPx and PFx registers, automatically marking the
+    addresses as GFX or PGFX sections.  Most bankswitch schemes have been
+    modified for this functionality, except for 3E, 4A50, AR, FE and MC.
+
+  * Improved output of graphics output in the disassembler, by marking
+    such addresses with a bitmap of the data they represent.  This
+    allows player graphics (GFX directive) and playfield graphics (PGFX
+    directive) to really stand out in the disassembly.  Related to this,
+    added ability to edit such graphics in either binary or hexidecimal.
+
+  * Added preliminary support for Distella configuration files.  Much
+    more work is required in this area, since Stella now contains
+    directives that don't yet exist in the standalone Distella program.
+    Configuration files are automatically loaded, and debugger commands
+    now exist to load and save configuration directives directly from
+    the debugger.
+
+  * Added 'data source' address output for the CPU A/X/Y registers.  This
+    is useful for quickly seeing what an operand address resolves into
+    with an LDx command.
+
+  * Many commands in the debugger prompt are now case-insensitive;
+    further improvements will be made in a future release.
+
+  * Many improvements to the built-in Distella disassembler.  When passing
+    a relative branch or jump, data is now disassembled as code only if
+    the emulation core hasn't detected it as data.  Such 'preliminary'
+    code is marked with a '*' in the disassembler, indicating that it is
+    tentative code, and hasn't actually been executed yet.  This allows to
+    quickly see possible code paths, and at the same time eliminate
+    disassembly of addresses that are never used as code sections.
+
+  * Program counter/instruction addresses can now be toggled in the
+    disassembly.
+
+  * Fixed bug in several text input fields, whereby binary data couldn't
+    be input (a '\' was required, but the character was blocked).
+
+  * Fixed issues with PAL ROMs on screenmodes smaller than a PAL ROM
+    would require.  In this case, the image is centered and clipped to
+    the screen resolution.  This prevents the message "PAL ROM not
+    supported" from appearing.
+
+  * Fixed bug in fullscreen OpenGL mode when using ATI video cards;
+    the desktop background was 'bleeding through', resulting in a very
+    annoying flickering.
+
+  * Application window centering now also works when switching between
+    video modes, not just when starting the application.
+
+  * Added support for building a Windows version compatible with Windows
+    98 and 2000 (compiled with Visual Studio 2005).
+
+  * Fixed build issues for Innosetup in Windows XP.
+
+  * Fixed bug in OSX version where the name of the application wasn't
+    being shown in Activity Monitor.
+
+  * State files from older versions will no longer work in this release,
+    because of the extensive changes to the debugger and disassembler.
+
+-Have fun!
+
+
 3.2.1 to 3.2.2: (September 17, 2010)
 
   * Fixed bug with window centering; if enabled and the the window was
     larger than the desktop, the window would be moved offscreen.
-
--Have fun!
 
 
 3.2 to 3.2.1: (August 25, 2010)
