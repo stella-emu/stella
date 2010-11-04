@@ -822,10 +822,6 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
     FilesystemNode node(file);
     file = node.getDisplayName();
 
-    // Remove extension
-    string::size_type pos = file.find_last_of(".");
-    if(pos != string::npos)  file = file.substr(0, pos);
-
     props.set(Cartridge_MD5, md5);
     props.set(Cartridge_Name, file);
     myPropSet->insert(props, false);

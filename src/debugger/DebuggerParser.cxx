@@ -133,7 +133,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
   {
     ifstream in(file.getPath().c_str());
     if(!in.is_open())
-      return red("file \'" + file.getRelativePath() + "\' not found.");
+      return red("autoexec file \'" + file.getRelativePath() + "\' not found");
 
     ostringstream buf;
     int count = 0;
@@ -151,7 +151,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
     return buf.str();
   }
   else
-    return red("file \'" + file.getRelativePath() + "\' not found.");
+    return red("autoexec file \'" + file.getRelativePath() + "\' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -343,7 +343,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
           verb += c;
         break;
       case kIN_SPACE:
-        if(c == '\'')
+        if(c == '{')
           state = kIN_BRACE;
         else if(c != ' ') {
           state = kIN_ARG;
@@ -351,7 +351,7 @@ bool DebuggerParser::getArgs(const string& command, string& verb)
         }
         break;
       case kIN_BRACE:
-        if(c == '\'') {
+        if(c == '}') {
           state = kIN_SPACE;
           argStrings.push_back(curArg);
           //  cerr << "{" << curArg << "}" << endl;
@@ -1545,27 +1545,37 @@ void DebuggerParser::executeTrapwrite()
 // "type"
 void DebuggerParser::executeType()
 {
-  uInt8 flags = debugger->getAddressDisasmType(args[0]);
-  if(flags)
+  uInt32 beg = args[0];
+  uInt32 end = argCount >= 2 ? args[1] : beg;
+  if(beg > end)  BSPF_swap(beg, end);
+
+  for(uInt32 i = beg; i <= end; ++i)
   {
-    commandResult << Debugger::to_bin_8(flags) << ": ";
-    if(flags & CartDebug::SKIP)
-      commandResult << "SKIP ";
-    if(flags & CartDebug::CODE)
-      commandResult << "CODE ";
-    if(flags & CartDebug::GFX)
-      commandResult << "GFX ";
-    if(flags & CartDebug::DATA)
-      commandResult << "DATA ";
-    if(flags & CartDebug::ROW)
-      commandResult << "ROW ";
-    if(flags & CartDebug::REFERENCED)
-      commandResult << "*REFERENCED ";
-    if(flags & CartDebug::VALID_ENTRY)
-      commandResult << "*VALID_ENTRY ";
+    commandResult << HEX4 << i << " => ";
+    uInt8 flags = debugger->getAddressDisasmType(i);
+    if(flags)
+    {
+      string bin = Debugger::to_bin_8(flags);
+      commandResult << bin << ": ";
+      if(flags & CartDebug::SKIP)
+        commandResult << "SKIP ";
+      if(flags & CartDebug::CODE)
+        commandResult << "CODE ";
+      if(flags & CartDebug::GFX)
+        commandResult << "GFX ";
+      if(flags & CartDebug::DATA)
+        commandResult << "DATA ";
+      if(flags & CartDebug::ROW)
+        commandResult << "ROW ";
+      if(flags & CartDebug::REFERENCED)
+        commandResult << "*REFERENCED ";
+      if(flags & CartDebug::VALID_ENTRY)
+        commandResult << "*VALID_ENTRY ";
+    }
+    else
+      commandResult << "no flags set";
+    commandResult << endl;
   }
-  else
-    commandResult << "no flags set";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2187,12 +2197,13 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
 
   {
     "type",
-    "Show disassemly type for address xx",
+    "Show disassembly type for address xx [to yy]",
     true,
     false,
-    { kARG_WORD, kARG_END_ARGS },
+    { kARG_WORD, kARG_MULTI_BYTE },
     &DebuggerParser::executeType
   },
+
 
   {
     "undef",

@@ -293,10 +293,6 @@ class CartDebug : public DebuggerSystem
     // Convert disassembly enum type to corresponding string and append to buf
     void disasmTypeAsString(ostream& buf, DisasmType type) const;
 
-    // Extract labels and values from the given character stream
-    string extractLabel(const char* c) const;
-    int extractValue(const char* c) const;
-
   private:
     const OSystem& myOSystem;
 

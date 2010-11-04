@@ -603,7 +603,6 @@ int CartDebug::getAddress(const string& label) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::loadSymbolFile(string file)
 {
-  // TODO - use similar load logic as loadconfig command
   if(file == "")
     file = myOSystem.romFile();
 
@@ -613,48 +612,33 @@ string CartDebug::loadSymbolFile(string file)
   else
     file += ".sym";
 
-  // TODO - rewrite this to use C++ streams
-
-  int pos = 0, lines = 0, curVal;
-  string curLabel;
-  char line[1024];
-
-  ifstream in(file.c_str());
-  if(!in.is_open())
-    return "Unable to read symbols from " + file;
-
-  myUserAddresses.clear();
-  myUserLabels.clear();
-
-  while( !in.eof() )
+  FilesystemNode node(file);
+  if(node.exists() && !node.isDirectory())
   {
-    curVal = 0;
-    curLabel = "";
+    ifstream in(node.getPath().c_str());
+    if(!in.is_open())
+      return DebuggerParser::red("symbol file '" + node.getPath() + "' not found");
 
-    int got = in.get();
+    myUserAddresses.clear();
+    myUserLabels.clear();
 
-    if(got == -1 || got == '\r' || got == '\n' || pos == 1023) {
-      line[pos] = '\0';
-      pos = 0;
-
-      if(strlen(line) > 0 && line[0] != '-')
-      {
-        curLabel = extractLabel(line);
-        if((curVal = extractValue(line)) < 0)
-          return "invalid symbol file";
-  
-        addLabel(curLabel, curVal);
-  
-        lines++;
-      }
-    }
-    else
+    while(!in.eof())
     {
-      line[pos++] = got;
+      string label;
+      int value = -1;
+
+      getline(in, label);
+      stringstream buf;
+      buf << label;
+      buf >> label >> hex >> value;
+
+      if(label.length() > 0 && label[0] != '-' && value >= 0)
+        addLabel(label, value);
     }
+    in.close();
+    return "loaded " + file + " OK";
   }
-  in.close();
-  return "loaded " + file + " OK";
+  return DebuggerParser::red("symbol file '" + node.getPath() + "' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -756,8 +740,7 @@ string CartDebug::loadConfigFile(string file)
         }
         else if(BSPF_startsWithIgnoreCase(directive, "SKIP"))
         {
-          buf >> hex >> start;
-          buf >> hex >> end;
+          buf >> hex >> start >> hex >> end;
 //          addDirective(CartDebug::SKIP, start, end, currentbank);
         }
         else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
@@ -1022,47 +1005,6 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
     case CartDebug::VALID_ENTRY:
     case CartDebug::NONE:                    break;
   }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CartDebug::extractLabel(const char *c) const
-{
-  string l = "";
-  while(*c != ' ')
-    l += *c++;
-
-  return l;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int CartDebug::extractValue(const char *c) const
-{
-  while(*c != ' ')
-  {
-    if(*c == '\0')
-      return -1;
-    c++;
-  }
-
-  while(*c == ' ')
-  {
-    if(*c == '\0')
-      return -1;
-    c++;
-  }
-
-  int ret = 0;
-  for(int i=0; i<4; i++)
-  {
-    if(*c >= '0' && *c <= '9')
-      ret = (ret << 4) + (*c) - '0';
-    else if(*c >= 'a' && *c <= 'f')
-      ret = (ret << 4) + (*c) - 'a' + 10;
-    else
-      return -1;
-    c++;
-  }
-  return ret;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

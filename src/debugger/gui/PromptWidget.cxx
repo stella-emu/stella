@@ -207,7 +207,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       for (i = 0; i < len; i++)
       {
         str[i] = buffer(_promptStartPos + i) & 0x7f;
-        if(strchr("\'*@<> ", str[i]) != NULL )
+        if(strchr("{*@<> ", str[i]) != NULL )
         {
           lastDelimPos = i;
           delimiter = str[i];

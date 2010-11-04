@@ -387,9 +387,9 @@ we want to apply the ! to the result of the &amp;, not just the first term
 <p>"breakif !(*SWCHB&amp;1)" will do the job for us. However, it's an ugly mess
 of letters, numbers, and punctuation. We can do a little better:</p>
 
-<p>"breakif &apos; !(*SWCHB &amp; 1 ) &apos;" is a lot more readable, isn't it? If
+<p>"breakif { !(*SWCHB &amp; 1 ) }" is a lot more readable, isn't it? If
 you're going to use readable expressions with spaces in them,
-enclose the entire expression in single quotes.</p>
+enclose the entire expression in curly braces.</p>
 
 <p>Remember that Stella only checks for input once per frame, so a break
 condition that depends on input (like SWCHB) will always happen at the
