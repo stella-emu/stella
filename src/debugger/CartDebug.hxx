@@ -63,14 +63,15 @@ class CartDebug : public DebuggerSystem
                                i.e. LDA $F372 referenced $F372 */
 
       // The following correspond to specific types that can be set within the
-      // debugger, or specified in a Distella cfg file
+      // debugger, or specified in a Distella cfg file, and are listed in order
+      // of decreasing hierarchy
       //
-      SKIP   = 1 << 2,  // TODO - document this
-      CODE   = 1 << 3,  // disassemble-able code segments
-      GFX    = 1 << 4,  // addresses loaded into GRPx registers
-      PGFX   = 1 << 5,  // addresses loaded into PFx registers
-      DATA   = 1 << 6,  // addresses loaded into registers other than GRPx / PFx
-      ROW    = 1 << 7   // all other addresses
+      SKIP   = 1 << 7,  // TODO - document this
+      CODE   = 1 << 6,  // disassemble-able code segments
+      GFX    = 1 << 5,  // addresses loaded into GRPx registers
+      PGFX   = 1 << 4,  // addresses loaded into PFx registers
+      DATA   = 1 << 3,  // addresses loaded into registers other than GRPx / PFx
+      ROW    = 1 << 2   // all other addresses
     };
     struct DisassemblyTag {
       DisasmType type;
