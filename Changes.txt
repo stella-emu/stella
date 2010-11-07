@@ -26,6 +26,8 @@
     tracks accesses to GRPx and PFx registers, automatically marking the
     addresses as GFX or PGFX sections.  Most bankswitch schemes have been
     modified for this functionality, except for 3E, 4A50, AR, FE and MC.
+    This will be improved in future releases, as there are many ways to
+    store data in the graphics registers.
 
   * Improved output of graphics output in the disassembler, by marking
     such addresses with a bitmap of the data they represent.  This
@@ -39,6 +41,17 @@
     Configuration files are automatically loaded, and debugger commands
     now exist to load and save configuration directives directly from
     the debugger.
+
+  * Added the following commands to the debugger prompt:
+     - clearconfig, listconfig, loadconfig, saveconfig
+       (used for Distella configuration files)
+     - skip, code, data, gfx, pgfx, row
+       (directives used to override automatic disassembly types)
+     - jump (jumps to a specific address in the disassembly)
+     - type (gives detailed info for disassembly type of an address)
+
+  * The debugger prompt commands 'trap', 'trapread' and 'trapwrite' now
+    accept a range of addresses as well as a single address.
 
   * Added 'data source' address output for the CPU A/X/Y registers.  This
     is useful for quickly seeing what an operand address resolves into
@@ -69,6 +82,9 @@
   * Fixed bug in fullscreen OpenGL mode when using ATI video cards;
     the desktop background was 'bleeding through', resulting in a very
     annoying flickering.
+
+  * Fixed crashes when opening windows larger than the desktop resolution;
+    this is now allowed only in windowed mode.
 
   * Application window centering now also works when switching between
     video modes, not just when starting the application.

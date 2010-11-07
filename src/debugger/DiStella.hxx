@@ -48,11 +48,14 @@ class DiStella
 
       @param dbg         The CartDebug instance containing all label information
       @param list        The results of the disassembly are placed here
-      @param addresses   The address(es) at which to start disassembly
+      @param info        Various info about the current bank
+      @param labels      Array storing label info determined by Distella
+      @param directives  Array storing directive info determined by Distella
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             CartDebug::BankInfo& info, bool resolvedata);
+             CartDebug::BankInfo& info, uInt8* labels, uInt8* directives,
+             bool resolvedata);
 
     ~DiStella();
 
@@ -67,11 +70,6 @@ class DiStella
     static Settings settings;
 
   private:
-// TODO - place this comment whereever the array is located
-    // Marked bits
-    //   This is a reference sheet of bits that can be set for a given address, which
-    //   are stored in the labels[] array.
-
     // Indicate that a new line of disassembly has been completed
     // In the original Distella code, this indicated a new line to be printed
     // Here, we add a new entry to the DisassemblyList
@@ -104,7 +102,7 @@ class DiStella
        case as well as when manual directives are enabled (in which case
        the directives take priority
        The address mark type is defined in CartDebug.hxx */
-    uInt8 labels[0x1000], directives[0x1000];
+    uInt8 *myLabels, *myDirectives;
 
     /**
       Enumeration of the 6502 addressing modes

@@ -281,7 +281,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 sea
 
   myDisassembly.list.clear();
   myDisassembly.fieldwidth = 10 + myLabelLength;
-  DiStella distella(*this, myDisassembly.list, info, resolvedata);
+  DiStella distella(*this, myDisassembly.list, info,
+                    myDisLabels, myDisDirectives, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
@@ -317,7 +318,8 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   Disassembly disasm;
   BankInfo info;
   info.addressList.push_back(start);
-  DiStella distella(*this, disasm.list, info, false);
+  DiStella distella(*this, disasm.list, info, (uInt8*)myDisLabels,
+                    (uInt8*)myDisDirectives, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -952,7 +954,8 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 {
   // Disassemble the bank, then scan it for an up-to-date description
   DisassemblyList list;
-  DiStella distella(*this, list, info, true);
+  DiStella distella(*this, list, info, (uInt8*)myDisLabels,
+                    (uInt8*)myDisDirectives, true);
 
   if(list.size() == 0)
     return;
@@ -991,6 +994,32 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
+{
+  if(!(addr & 0x1000))
+  {
+    buf << DebuggerParser::red("type only defined for cart address space");
+    return;
+  }
+
+  uInt8 directive = myDisDirectives[addr & 0xFFF] & 0xFC,
+        debugger  = myDebugger.getAddressDisasmType(addr) & 0xFC,
+        label     = myDisLabels[addr & 0xFFF];
+
+  string s1 = Debugger::to_bin_8(directive),
+         s2 = Debugger::to_bin_8(debugger),
+         s3 = Debugger::to_bin_8(label);
+
+  buf << endl << "directive: " << s1 << " ";
+  disasmTypeAsString(buf, directive);
+  buf << endl << "emulation: " << s2 << " ";
+  disasmTypeAsString(buf, debugger);
+  buf << endl << "tentative: " << s3 << " ";
+  disasmTypeAsString(buf, label);
+  buf << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 {
   switch(type)
@@ -1005,6 +1034,32 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
     case CartDebug::VALID_ENTRY:
     case CartDebug::NONE:                    break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
+{
+  if(flags)
+  {
+    if(flags & CartDebug::SKIP)
+      buf << "SKIP ";
+    if(flags & CartDebug::CODE)
+      buf << "CODE ";
+    if(flags & CartDebug::GFX)
+      buf << "GFX ";
+    if(flags & CartDebug::PGFX)
+      buf << "PGFX ";
+    if(flags & CartDebug::DATA)
+      buf << "DATA ";
+    if(flags & CartDebug::ROW)
+      buf << "ROW ";
+    if(flags & CartDebug::REFERENCED)
+      buf << "*REFERENCED ";
+    if(flags & CartDebug::VALID_ENTRY)
+      buf << "*VALID_ENTRY ";
+  }
+  else
+    buf << "no flags set";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

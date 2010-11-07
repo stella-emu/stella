@@ -23,9 +23,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   CartDebug::BankInfo& info, bool resolvedata)
+                   CartDebug::BankInfo& info, uInt8* labels, uInt8* directives,
+                   bool resolvedata)
   : myDbg(dbg),
-    myList(list)
+    myList(list),
+    myLabels(labels),
+    myDirectives(directives)
 {
   CartDebug::AddressList& addresses = info.addressList;
   if(addresses.size() == 0)
@@ -158,7 +161,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         while(it == addresses.end() && codeAccessPoint <= myAppData.end)
         {
           if((Debugger::debugger().getAddressDisasmType(codeAccessPoint+myOffset) & CartDebug::CODE)
-             && !(labels[codeAccessPoint & myAppData.end] & CartDebug::CODE))
+             && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE))
           {
 //cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
             myAddressQueue.push(codeAccessPoint+myOffset);
@@ -798,8 +801,8 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
 
   if (address >= myOffset && address <= myAppData.end + myOffset)
   {
-    labels[address-myOffset] = labels[address-myOffset] | mask;
-    if(directive)  directives[address-myOffset] = mask;
+    myLabels[address-myOffset] = myLabels[address-myOffset] | mask;
+    if(directive)  myDirectives[address-myOffset] = mask;
     return 1;
   }
   else if (address >= 0 && address <= 0x3f)
@@ -813,8 +816,8 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
   else if (address > 0x1000)
   {
     /* 2K & 4K case */
-    labels[address & myAppData.end] = labels[address & myAppData.end] | mask;
-    if(directive)  directives[address & myAppData.end] = mask;
+    myLabels[address & myAppData.end] = myLabels[address & myAppData.end] | mask;
+    if(directive)  myDirectives[address & myAppData.end] = mask;
     return 4;
   }
   else
@@ -828,9 +831,9 @@ bool DiStella::check_bit(uInt16 address, uInt8 mask) const
   // an address
   // Since they're set only in the labels array (as the lower two bits),
   // they must be included in the other bitfields
-  uInt8 label     = labels[address & myAppData.end],
+  uInt8 label     = myLabels[address & myAppData.end],
         lastbits  = label & 0x03,
-        directive = directives[address & myAppData.end] & 0xFC,
+        directive = myDirectives[address & myAppData.end] & 0xFC,
         debugger  = Debugger::debugger().getAddressDisasmType(address | myOffset) & 0xFC;
 
   // Any address marked by a manual directive always takes priority

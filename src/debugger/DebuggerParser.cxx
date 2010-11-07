@@ -1551,29 +1551,8 @@ void DebuggerParser::executeType()
 
   for(uInt32 i = beg; i <= end; ++i)
   {
-    commandResult << HEX4 << i << " => ";
-    uInt8 flags = debugger->getAddressDisasmType(i);
-    if(flags)
-    {
-      string bin = Debugger::to_bin_8(flags);
-      commandResult << bin << ": ";
-      if(flags & CartDebug::SKIP)
-        commandResult << "SKIP ";
-      if(flags & CartDebug::CODE)
-        commandResult << "CODE ";
-      if(flags & CartDebug::GFX)
-        commandResult << "GFX ";
-      if(flags & CartDebug::DATA)
-        commandResult << "DATA ";
-      if(flags & CartDebug::ROW)
-        commandResult << "ROW ";
-      if(flags & CartDebug::REFERENCED)
-        commandResult << "*REFERENCED ";
-      if(flags & CartDebug::VALID_ENTRY)
-        commandResult << "*VALID_ENTRY ";
-    }
-    else
-      commandResult << "no flags set";
+    commandResult << HEX4 << i << ": ";
+    debugger->cartDebug().addressTypeAsString(commandResult, i);
     commandResult << endl;
   }
 }

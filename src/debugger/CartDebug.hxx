@@ -252,6 +252,9 @@ class CartDebug : public DebuggerSystem
     */
     void getCompletions(const char* in, StringList& list) const;
 
+    // Convert given address to corresponding disassembly type and append to buf
+    void addressTypeAsString(ostream& buf, uInt16 addr) const;
+
   private:
     typedef map<uInt16, string> AddrToLabel;
     typedef map<string, uInt16> LabelToAddr;
@@ -282,6 +285,9 @@ class CartDebug : public DebuggerSystem
       DirectiveList directiveList; // overrides for automatic code determination
     } BankInfo;
 
+    // Address type information determined by Distella
+    uInt8 myDisLabels[0x1000], myDisDirectives[0x1000];
+
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
     bool fillDisassemblyList(BankInfo& bankinfo, bool resolvedata, uInt16 search);
@@ -292,6 +298,10 @@ class CartDebug : public DebuggerSystem
 
     // Convert disassembly enum type to corresponding string and append to buf
     void disasmTypeAsString(ostream& buf, DisasmType type) const;
+
+    // Convert all disassembly types in 'flags' to corresponding string and
+    // append to buf
+    void disasmTypeAsString(ostream& buf, uInt8 flags) const;
 
   private:
     const OSystem& myOSystem;
