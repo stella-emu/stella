@@ -14,7 +14,7 @@
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
 //
-// $Id: M6502.m4 2158 2010-10-21 21:16:55Z stephena $
+// $Id: M6502.m4 2163 2010-10-24 14:55:42Z stephena $
 //============================================================================
 
 /** 
@@ -24,7 +24,7 @@
     'm4 M6502.m4 > M6502.ins'
 
   @author  Bradford W. Mott
-  @version $Id: M6502.m4 2158 2010-10-21 21:16:55Z stephena $
+  @version $Id: M6502.m4 2163 2010-10-24 14:55:42Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -2116,7 +2116,7 @@ break;
 case 0x20:
 {
   uInt8 low = peek(PC++, DISASM_CODE);
-  peek(0x0100 + SP, DISASM_DATA);
+  peek(0x0100 + SP, DISASM_NONE);
 
   // It seems that the 650x does not push the address of the next instruction
   // on the stack it actually pushes the address of the next instruction
@@ -3597,10 +3597,10 @@ case 0x40:
   peek(PC, DISASM_NONE);
 }
 {
-  peek(0x0100 + SP++, DISASM_DATA);
-  PS(peek(0x0100 + SP++, DISASM_DATA));
-  PC = peek(0x0100 + SP++, DISASM_CODE);
-  PC |= ((uInt16)peek(0x0100 + SP, DISASM_CODE) << 8);
+  peek(0x0100 + SP++, DISASM_NONE);
+  PS(peek(0x0100 + SP++, DISASM_NONE));
+  PC = peek(0x0100 + SP++, DISASM_NONE);
+  PC |= ((uInt16)peek(0x0100 + SP, DISASM_NONE) << 8);
 }
 break;
 
@@ -3610,9 +3610,9 @@ case 0x60:
   peek(PC, DISASM_NONE);
 }
 {
-  peek(0x0100 + SP++, DISASM_DATA);
-  PC = peek(0x0100 + SP++, DISASM_CODE);
-  PC |= ((uInt16)peek(0x0100 + SP, DISASM_CODE) << 8);
+  peek(0x0100 + SP++, DISASM_NONE);
+  PC = peek(0x0100 + SP++, DISASM_NONE);
+  PC |= ((uInt16)peek(0x0100 + SP, DISASM_NONE) << 8);
   peek(PC++, DISASM_CODE);
 }
 break;

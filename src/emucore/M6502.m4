@@ -637,7 +637,7 @@ define(M6502_JMP, `{
 
 define(M6502_JSR, `{
   uInt8 low = peek(PC++, DISASM_CODE);
-  peek(0x0100 + SP, DISASM_DATA);
+  peek(0x0100 + SP, DISASM_NONE);
 
   // It seems that the 650x does not push the address of the next instruction
   // on the stack it actually pushes the address of the next instruction
@@ -838,16 +838,16 @@ define(M6502_RRA, `{
 }')
 
 define(M6502_RTI, `{
-  peek(0x0100 + SP++, DISASM_DATA);
-  PS(peek(0x0100 + SP++, DISASM_DATA));
-  PC = peek(0x0100 + SP++, DISASM_CODE);
-  PC |= ((uInt16)peek(0x0100 + SP, DISASM_CODE) << 8);
+  peek(0x0100 + SP++, DISASM_NONE);
+  PS(peek(0x0100 + SP++, DISASM_NONE));
+  PC = peek(0x0100 + SP++, DISASM_NONE);
+  PC |= ((uInt16)peek(0x0100 + SP, DISASM_NONE) << 8);
 }')
 
 define(M6502_RTS, `{
-  peek(0x0100 + SP++, DISASM_DATA);
-  PC = peek(0x0100 + SP++, DISASM_CODE);
-  PC |= ((uInt16)peek(0x0100 + SP, DISASM_CODE) << 8);
+  peek(0x0100 + SP++, DISASM_NONE);
+  PC = peek(0x0100 + SP++, DISASM_NONE);
+  PC |= ((uInt16)peek(0x0100 + SP, DISASM_NONE) << 8);
   peek(PC++, DISASM_CODE);
 }')
 

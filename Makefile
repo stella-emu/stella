@@ -188,6 +188,10 @@ uninstall:
 	rm -f  "$(DESTDIR)$(DATADIR)/icons/mini/stella.png"
 	rm -f  "$(DESTDIR)$(DATADIR)/icons/large/stella.png"
 
+# Special rule for M6502.ins, generated from m4 (there's probably a better way to do this ...)
+src/emucore/M6502.ins: src/emucore/M6502.m4
+	m4 src/emucore/M6502.m4 > src/emucore/M6502.ins
+
 # Special rule for Win32 icon stuff (there's probably a better way to do this ...)
 src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
 	$(WINDRES) --include-dir src/win32 src/win32/stella.rc src/win32/stella_icon.o 

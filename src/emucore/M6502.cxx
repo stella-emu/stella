@@ -196,6 +196,7 @@ inline uInt8 M6502::peek(uInt16 address, uInt8 flags)
     myHitTrapInfo.message = "RTrap: ";
     myHitTrapInfo.address = address;
   }
+//cerr << "addr = " << HEX4 << address << ", flags = " << Debugger::to_bin_8(flags) << endl;
 #endif
 
   uInt8 result = mySystem->peek(address, flags);

@@ -453,7 +453,9 @@ void DiStella::disasm(uInt32 distart, int pass)
               }
             }
             else if(ad > 0xfff)
+            {
               mark(ad, CartDebug::DATA);
+            }
           }
           else if (pass == 3)
           {
@@ -521,7 +523,11 @@ void DiStella::disasm(uInt32 distart, int pass)
           labfound = mark(ad, CartDebug::REFERENCED);
           if (pass == 2 && !check_bit(ad & myAppData.end, CartDebug::CODE))
           {
-            mark(ad, CartDebug::DATA);
+            // Since we can't know what address is being accessed unless we also
+            // know the current X value, this is marked as ROW instead of DATA
+            // The processing is left here, however, in case future versions of
+            // the code can somehow track access to CPU registers
+            mark(ad, CartDebug::ROW);
           }
           else if (pass == 3)
           {
@@ -561,7 +567,11 @@ void DiStella::disasm(uInt32 distart, int pass)
           labfound = mark(ad, CartDebug::REFERENCED);
           if (pass == 2 && !check_bit(ad & myAppData.end, CartDebug::CODE))
           {
-            mark(ad, CartDebug::DATA);
+            // Since we can't know what address is being accessed unless we also
+            // know the current Y value, this is marked as ROW instead of DATA
+            // The processing is left here, however, in case future versions of
+            // the code can somehow track access to CPU registers
+            mark(ad, CartDebug::ROW);
           }
           else if (pass == 3)
           {
@@ -688,7 +698,11 @@ void DiStella::disasm(uInt32 distart, int pass)
           labfound = mark(ad, CartDebug::REFERENCED);
           if (pass == 2 && !check_bit(ad & myAppData.end, CartDebug::CODE))
           {
-            mark(ad, CartDebug::DATA);
+            // Since we can't know what address is being accessed unless we also
+            // know the current X value, this is marked as ROW instead of DATA
+            // The processing is left here, however, in case future versions of
+            // the code can somehow track access to CPU registers
+            mark(ad, CartDebug::ROW);
           }
           else if (pass == 3)
           {
