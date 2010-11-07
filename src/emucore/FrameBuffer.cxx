@@ -43,6 +43,7 @@
 FrameBuffer::FrameBuffer(OSystem* osystem)
   : myOSystem(osystem),
     myScreen(0),
+    mySDLFlags(0),
     myRedrawEntireFrame(true),
     myUsePhosphor(false),
     myPhosphorBlend(77),
@@ -93,14 +94,8 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
   // If the WINDOWED_SUPPORT macro is defined, we treat the system as the
   // former type; if not, as the latter type
 
-  // Initialize SDL flags and set fullscreen flag
-  // This must be done before any modes are initialized
-  mySDLFlags = 0;
-
+  uInt32 flags = mySDLFlags;
 #ifdef WINDOWED_SUPPORT
-  if(myOSystem->settings().getString("fullscreen") == "1")
-    mySDLFlags = SDL_FULLSCREEN;
-
   // We assume that a desktop size of at least 640x480 means that we're
   // running on a 'large' system, and the window size requirements can
   // be relaxed
@@ -108,6 +103,16 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
   if(myOSystem->desktopWidth() < 640 && myOSystem->desktopHeight() < 480 &&
       (myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height))
     return kFailTooLarge;
+
+  if(myOSystem->settings().getString("fullscreen") == "1")
+  {
+    if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
+      return kFailTooLarge;
+
+    flags |= SDL_FULLSCREEN;
+  }
+  else
+    flags &= ~SDL_FULLSCREEN;
 #else
   // Make sure this mode is even possible
   // We only really need to worry about it in non-windowed environments,
@@ -115,6 +120,9 @@ FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 h
   if(myOSystem->desktopWidth() < width || myOSystem->desktopHeight() < height)
     return kFailTooLarge;
 #endif
+
+  // Only update the actual flags if no errors were detected
+  mySDLFlags = flags;
 
   // Set the available video modes for this framebuffer
   setAvailableVidModes(width, height);
@@ -1194,19 +1202,25 @@ void FrameBuffer::VideoModeList::print()
   for(Common::Array<VideoMode>::const_iterator i = myModeList.begin();
       i != myModeList.end(); ++i)
   {
-    cerr << "  Mode " << i << endl
-         << "    screen w = " << i->screen_w << endl
-         << "    screen h = " << i->screen_h << endl
-         << "    image x  = " << i->image_x << endl
-         << "    image y  = " << i->image_y << endl
-         << "    image w  = " << i->image_w << endl
-         << "    image h  = " << i->image_h << endl
-         << "    gfx id   = " << i->gfxmode.type << endl
-         << "    gfx name = " << i->gfxmode.name << endl
-         << "    gfx desc = " << i->gfxmode.description << endl
-         << "    gfx zoom = " << i->gfxmode.zoom << endl
-         << endl;
+    cerr << "  Mode " << i << endl;
+    print(*i);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::VideoModeList::print(const VideoMode& mode)
+{
+  cerr << "    screen w = " << mode.screen_w << endl
+       << "    screen h = " << mode.screen_h << endl
+       << "    image x  = " << mode.image_x << endl
+       << "    image y  = " << mode.image_y << endl
+       << "    image w  = " << mode.image_w << endl
+       << "    image h  = " << mode.image_h << endl
+       << "    gfx id   = " << mode.gfxmode.type << endl
+       << "    gfx name = " << mode.gfxmode.name << endl
+       << "    gfx desc = " << mode.gfxmode.description << endl
+       << "    gfx zoom = " << mode.gfxmode.zoom << endl
+       << endl;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

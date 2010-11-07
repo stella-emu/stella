@@ -546,6 +546,7 @@ class FrameBuffer
         void setByGfxMode(GfxID id);
         void setByGfxMode(const string& name);
         void print();
+        static void print(const VideoMode& mode);
 
       private:
         void set(const GraphicsMode& gfxmode);
