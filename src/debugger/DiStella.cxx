@@ -930,7 +930,8 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       // but it could also indicate that code will *never* be accessed
       // Since it is impossible to tell the difference, marking the address
       // in the disassembly at least tells the user about it
-      if(!(Debugger::debugger().getAddressDisasmType(tag.address) & CartDebug::CODE))
+      if(!(Debugger::debugger().getAddressDisasmType(tag.address) & CartDebug::CODE)
+         && myAppData.length >= 4096)
         tag.ccount += " *";
       break;
     case CartDebug::GFX:
