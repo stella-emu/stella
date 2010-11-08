@@ -33,9 +33,9 @@
 
 #ifndef SET_LAST_PEEK
   #ifdef DEBUGGER_SUPPORT
-    #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+    #define SET_LAST_PEEK(_addr1, _addr2) _addr1 = _addr2;
   #else
-    #define SET_LAST_PEEK(_addr)
+    #define SET_LAST_PEEK(_addr1, _addr2)
   #endif
 #endif
 
@@ -1495,35 +1495,50 @@ M6502_LAS
 break;
 
 
+//////////////////////////////////////////////////
+// LAX
 case 0xaf:
 M6502_ABSOLUTE_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LAX
 break;
 
 case 0xbf:
 M6502_ABSOLUTEY_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LAX
 break;
 
 case 0xa7:
 M6502_ZERO_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LAX
 break;
 
 case 0xb7:
 M6502_ZEROY_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)  // TODO - check this
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LAX
 break;
 
 case 0xa3:
 M6502_INDIRECTX_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)  // TODO - check this
 M6502_LAX
 break;
 
 case 0xb3:
 M6502_INDIRECTY_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)  // TODO - check this
 M6502_LAX
 break;
+//////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////
@@ -1536,43 +1551,43 @@ break;
 
 case 0xa5:
 M6502_ZERO_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 
 case 0xb5:
 M6502_ZEROX_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 
 case 0xad:
 M6502_ABSOLUTE_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 
 case 0xbd:
 M6502_ABSOLUTEX_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 
 case 0xb9:
 M6502_ABSOLUTEY_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 
 case 0xa1:
 M6502_INDIRECTX_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 
 case 0xb1:
 M6502_INDIRECTY_READ
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_LDA
 break;
 //////////////////////////////////////////////////
@@ -1588,25 +1603,25 @@ break;
 
 case 0xa6:
 M6502_ZERO_READ
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LDX
 break;
 
 case 0xb6:
 M6502_ZEROY_READ
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LDX
 break;
 
 case 0xae:
 M6502_ABSOLUTE_READ
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LDX
 break;
 
 case 0xbe:
 M6502_ABSOLUTEY_READ
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 M6502_LDX
 break;
 //////////////////////////////////////////////////
@@ -1622,25 +1637,25 @@ break;
 
 case 0xa4:
 M6502_ZERO_READ
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 M6502_LDY
 break;
 
 case 0xb4:
 M6502_ZEROX_READ
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 M6502_LDY
 break;
 
 case 0xac:
 M6502_ABSOLUTE_READ
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 M6502_LDY
 break;
 
 case 0xbc:
 M6502_ABSOLUTEX_READ
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 M6502_LDY
 break;
 //////////////////////////////////////////////////
@@ -1775,24 +1790,28 @@ break;
 
 case 0x48:
 M6502_IMPLIED
+// TODO - add tracking for this opcode
 M6502_PHA
 break;
 
 
 case 0x08:
 M6502_IMPLIED
+// TODO - add tracking for this opcode
 M6502_PHP
 break;
 
 
 case 0x68:
 M6502_IMPLIED
+// TODO - add tracking for this opcode
 M6502_PLA
 break;
 
 
 case 0x28:
 M6502_IMPLIED
+// TODO - add tracking for this opcode
 M6502_PLP
 break;
 
@@ -2202,39 +2221,46 @@ break;
 //////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////
+// Remaining MOVE opcodes
 case 0xaa:
 M6502_IMPLIED
+SET_LAST_PEEK(myLastSrcAddressX, myLastSrcAddressA)
 M6502_TAX
 break;
 
 
 case 0xa8:
 M6502_IMPLIED
+SET_LAST_PEEK(myLastSrcAddressY, myLastSrcAddressA)
 M6502_TAY
 break;
 
 
 case 0xba:
 M6502_IMPLIED
+// TODO - add tracking for this opcode
 M6502_TSX
 break;
 
 
 case 0x8a:
 M6502_IMPLIED
+SET_LAST_PEEK(myLastSrcAddressA, myLastSrcAddressX)
 M6502_TXA
 break;
 
 
 case 0x9a:
 M6502_IMPLIED
+// TODO - add tracking for this opcode
 M6502_TXS
 break;
 
 
 case 0x98:
 M6502_IMPLIED
+SET_LAST_PEEK(myLastSrcAddressA, myLastSrcAddressY)
 M6502_TYA
 break;
-
-
+//////////////////////////////////////////////////

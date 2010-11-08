@@ -33,9 +33,9 @@
 
 #ifndef SET_LAST_PEEK
   #ifdef DEBUGGER_SUPPORT
-    #define SET_LAST_PEEK(_addr) _addr = intermediateAddress;
+    #define SET_LAST_PEEK(_addr1, _addr2) _addr1 = _addr2;
   #else
-    #define SET_LAST_PEEK(_addr)
+    #define SET_LAST_PEEK(_addr1, _addr2)
   #endif
 #endif
 
@@ -2149,12 +2149,16 @@ case 0xbb:
 break;
 
 
+//////////////////////////////////////////////////
+// LAX
 case 0xaf:
 {
   intermediateAddress = peek(PC++, DISASM_CODE);
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
   X = operand;
@@ -2175,6 +2179,8 @@ case 0xbf:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
   X = operand;
@@ -2188,6 +2194,8 @@ case 0xa7:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
   X = operand;
@@ -2203,6 +2211,8 @@ case 0xb7:
   intermediateAddress += Y;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)  // TODO - check this
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   A = operand;
   X = operand;
@@ -2220,6 +2230,8 @@ case 0xa3:
   intermediateAddress |= ((uInt16)peek(pointer, DISASM_DATA) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)  // TODO - check this
 {
   A = operand;
   X = operand;
@@ -2241,6 +2253,8 @@ case 0xb3:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)  // TODO - check this
 {
   A = operand;
   X = operand;
@@ -2248,6 +2262,7 @@ case 0xb3:
   N = A & 0x80;
 }
 break;
+//////////////////////////////////////////////////
 
 
 //////////////////////////////////////////////////
@@ -2269,7 +2284,7 @@ case 0xa5:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2284,7 +2299,7 @@ case 0xb5:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2298,7 +2313,7 @@ case 0xad:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2318,7 +2333,7 @@ case 0xbd:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2338,7 +2353,7 @@ case 0xb9:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2355,7 +2370,7 @@ case 0xa1:
   intermediateAddress |= ((uInt16)peek(pointer, DISASM_DATA) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2376,7 +2391,7 @@ case 0xb1:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastSrcAddressA)
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A = operand;
   notZ = A;
@@ -2405,7 +2420,7 @@ case 0xa6:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   X = operand;
   notZ = X;
@@ -2420,7 +2435,7 @@ case 0xb6:
   intermediateAddress += Y;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   X = operand;
   notZ = X;
@@ -2434,7 +2449,7 @@ case 0xae:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   X = operand;
   notZ = X;
@@ -2454,7 +2469,7 @@ case 0xbe:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastSrcAddressX)
+SET_LAST_PEEK(myLastSrcAddressX, intermediateAddress)
 {
   X = operand;
   notZ = X;
@@ -2483,7 +2498,7 @@ case 0xa4:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 {
   Y = operand;
   notZ = Y;
@@ -2498,7 +2513,7 @@ case 0xb4:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 {
   Y = operand;
   notZ = Y;
@@ -2512,7 +2527,7 @@ case 0xac:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 {
   Y = operand;
   notZ = Y;
@@ -2532,7 +2547,7 @@ case 0xbc:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
-SET_LAST_PEEK(myLastSrcAddressY)
+SET_LAST_PEEK(myLastSrcAddressY, intermediateAddress)
 {
   Y = operand;
   notZ = Y;
@@ -2866,6 +2881,7 @@ case 0x48:
 {
   peek(PC, DISASM_NONE);
 }
+// TODO - add tracking for this opcode
 {
   poke(0x0100 + SP--, A);
 }
@@ -2876,6 +2892,7 @@ case 0x08:
 {
   peek(PC, DISASM_NONE);
 }
+// TODO - add tracking for this opcode
 {
   poke(0x0100 + SP--, PS());
 }
@@ -2886,6 +2903,7 @@ case 0x68:
 {
   peek(PC, DISASM_NONE);
 }
+// TODO - add tracking for this opcode
 {
   peek(0x0100 + SP++, DISASM_NONE);
   A = peek(0x0100 + SP, DISASM_NONE);
@@ -2899,6 +2917,7 @@ case 0x28:
 {
   peek(PC, DISASM_NONE);
 }
+// TODO - add tracking for this opcode
 {
   peek(0x0100 + SP++, DISASM_NONE);
   PS(peek(0x0100 + SP, DISASM_NONE));
@@ -4542,10 +4561,13 @@ break;
 //////////////////////////////////////////////////
 
 
+//////////////////////////////////////////////////
+// Remaining MOVE opcodes
 case 0xaa:
 {
   peek(PC, DISASM_NONE);
 }
+SET_LAST_PEEK(myLastSrcAddressX, myLastSrcAddressA)
 {
   X = A;
   notZ = X;
@@ -4558,6 +4580,7 @@ case 0xa8:
 {
   peek(PC, DISASM_NONE);
 }
+SET_LAST_PEEK(myLastSrcAddressY, myLastSrcAddressA)
 {
   Y = A;
   notZ = Y;
@@ -4570,6 +4593,7 @@ case 0xba:
 {
   peek(PC, DISASM_NONE);
 }
+// TODO - add tracking for this opcode
 {
   X = SP;
   notZ = X;
@@ -4582,6 +4606,7 @@ case 0x8a:
 {
   peek(PC, DISASM_NONE);
 }
+SET_LAST_PEEK(myLastSrcAddressA, myLastSrcAddressX)
 {
   A = X;
   notZ = A;
@@ -4594,6 +4619,7 @@ case 0x9a:
 {
   peek(PC, DISASM_NONE);
 }
+// TODO - add tracking for this opcode
 {
   SP = X;
 }
@@ -4604,11 +4630,11 @@ case 0x98:
 {
   peek(PC, DISASM_NONE);
 }
+SET_LAST_PEEK(myLastSrcAddressA, myLastSrcAddressY)
 {
   A = Y;
   notZ = A;
   N = A & 0x80;
 }
 break;
-
-
+//////////////////////////////////////////////////
