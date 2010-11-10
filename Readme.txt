@@ -9,4 +9,4 @@ the Stella Website at:
 Enjoy,
 
 The Stella Team
-November xx, 2010
+November 15, 2010

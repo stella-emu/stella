@@ -27,7 +27,7 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 		breakpoints as you want.</li>
 
 	<li>Conditional breakpoints - Break running program when some arbitrary
-		condition is true (e.g. "breakif &apos;a == $7f &amp;&amp; c&apos;" will break when the	Accumulator value is $7f and the Carry flag is true, no matter where
+		condition is true (e.g. "breakif {a == $7f &amp;&amp; c}" will break when the	Accumulator value is $7f and the Carry flag is true, no matter where
 		in the program this happens). Unlike the cond breaks in PCAE, Stella's
 		are *fast*: the emulation will run at full speed unless you use lots
 		of breakif's at the same time, or have a slow CPU.</li>
@@ -41,8 +41,22 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Frame advance (automatic breakpoint at beginning of next frame)
 		You can advance multiple frames with one command.</li>
 
-	<li>Disassembly from Distella, with support for determining code vs.
-    data sections.</li>
+  <li>Supports Distella 'configuration directives', which may be used to
+    override automatic code/data determination in the disassembly.  For now,
+    the following directives are supported: CODE, GFX, PGFX, DATA, ROW.
+    These directives can be entered at the debugger prompt, or (automatically)
+    loaded and saved in configuration files.</li>
+
+	<li>Extensive disassembly support, both from the emulation core and with help
+    from Distella.  Where possible, the disassembly differentiates between code,
+    player graphics and playfield graphics (ie, addresses stored in GRPx and PFx)
+    and data (addresses used as an operand of a command).  Code sections are also
+    differentiated between actual code, and 'tentative' code (ie, areas that may
+    represent code sections, but haven't actually been executed yet).  Such
+    tentative code is marked with a '*' symbol.</li>
+
+  <li>Supports visual representation of the bitmap data of graphics areas,
+    as well as the ability to directly edit these areas in either hex or binary.</li>
 
 	<li>Support for DASM symbol files (created with DASM's -s option),
 		including automatically loading symbol files if they're named
@@ -68,6 +82,8 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
     currently selected bank, and manually change banks.</li>
 	<li>Registers/memory that get changed by the CPU during debugging are
 		highlighted when they're displayed.<li>
+  <li>Data sources for the CPU SP/A/X/Y registers, showing the resolved/source
+    address of of load operands.</li>
 	<li>Scanline advance (like frame advance, break at beginning
 		of next scanline).</li>
 	<li>TIA display is updated during step/trace, so we can see our
@@ -98,8 +114,9 @@ feature that no other 2600 debugger has; it's <b>completely</b> cross-platform.<
 	<li>Possibly support for recording and playing back input files, like
 		MAME. This isn't a debugger feature per se, but it'll make it easier
 		to reliably trigger a bug so you can debug it.</li>
+<!--
 	<li>Graphics ROM view, so you can see your sprite data (it might still
-		be upside-down though :)</li>
+		be upside-down though :)</li> -->
 	<li>Various new GUI enhancements</li>
 </ul>
 
@@ -415,7 +432,7 @@ if we wanted to use it again.</p>
 "breakif function_name":</p>
 
 <pre>
-	function gameReset &apos; !(*SWCHB &amp; 1 ) &apos;
+	function gameReset { !(*SWCHB &amp; 1 ) }
 	breakif gameReset
 </pre>
 
@@ -426,7 +443,7 @@ if the Game Select switch is pressed. We want to break when the user
 presses both Select and Reset:</p>
 
 <pre>
-	breakif &apos; gameReset &amp;&amp; gameSelect &apos;
+	breakif { gameReset &amp;&amp; gameSelect }
 </pre>
 
 <p>User-defined functions appear in "listfunctions", which shows the label
@@ -534,7 +551,7 @@ beginning of the 64th scanline.</p>
 (non-bankswitched) ROMs, it will always contain 0. One useful use is:</p>
 
 <pre>
-    breakif &apos; pc==myLabel &amp;&amp; _bank==1 &apos;
+    breakif { pc==myLabel &amp;&amp; _bank==1 }
 </pre>
 
 <p>This is similar to setting a regular breakpoint, but it will only trigger
@@ -605,11 +622,14 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
             c - Carry Flag: set (0 or 1), or toggle (no arg)
         cheat - Use a cheat code (see manual for cheat types)
   clearbreaks - Clear all breakpoints
+  clearconfig - Clear Distella config directives [bank xx]
    cleartraps - Clear all traps
  clearwatches - Clear all watches
           cls - Clear prompt area of text and erase history
+         code - Mark 'CODE' range in disassembly
     colortest - Show value xx as TIA color
             d - Decimal Flag: set (0 or 1), or toggle (no arg)
+         data - Mark 'DATA' range in disassembly
        define - Define label xx for address yy
    delbreakif - Delete conditional breakif xx
   delfunction - Delete function with label xx
@@ -619,25 +639,32 @@ can also get rid of all traps at once with the "cleartraps" command.</p>
          exec - Execute script file xx
         frame - Advance emulation by xx frames (default=1)
      function - Define function name xx for expression yy
+          gfx - Mark 'CFX' range in disassembly
          help - This cruft
+         jump - Scroll disassembly to address xx
    listbreaks - List breakpoints
+   listconfig - List Distella config directives [bank xx]
 listfunctions - List user-defined functions
     listtraps - List traps
+   loadconfig - Load Distella config file [from file xx]
     loadstate - Load emulator state xx (0-9)
       loadsym - Load symbol file named xx
             n - Negative Flag: set (0 or 1), or toggle (no arg)
            pc - Set Program Counter to address xx
+         pgfx - Mark 'PGFX' range in disassembly
         print - Evaluate/print expression xx in hex/dec/binary
           ram - Show ZP RAM, or set address xx to yy1 [yy2 ...]
         reset - Reset 6507 to init vector (excluding TIA/RIOT)
        rewind - Rewind state to last step/trace/scanline/frame
          riot - Show RIOT timer/input status
           rom - Set ROM address xx to yy1 [yy2 ...]
+          row - Mark 'ROW' range in disassembly
           run - Exit debugger, return to emulator
         runto - Run until string xx in disassembly
       runtopc - Run until PC is set to value xx
             s - Set Stack Pointer to value xx
          save - Save breaks, watches, traps to file xx
+   saveconfig - Save Distella config file [to file xx]
       saverom - Save (possibly patched) ROM to file xx
       saveses - Save console session to file xx
     savestate - Save emulator state xx (valid args 0-9)
@@ -645,9 +672,10 @@ listfunctions - List user-defined functions
          step - Single step CPU [with count xx]
           tia - Show TIA state (NOT FINISHED YET)
         trace - Single step CPU over subroutines [with count xx]
-         trap - Trap read and write accesses to address xx
-     trapread - Trap read accesses to address xx
-    trapwrite - Trap write accesses to address xx
+         trap - Trap read/write access to address(es) xx [to yy]
+     trapread - Trap read access to address(es) xx [to yy]
+    trapwrite - Trap write access to address(es) xx [to yy]
+         type - Show disassembly type for address xx [to yy]
         undef - Undefine label xx (if defined)
             v - Overflow Flag: set (0 or 1), or toggle (no arg)
         watch - Print contents of address xx before every prompt
@@ -827,6 +855,11 @@ Selected registers here can also be changed by using the "Data Operations" butto
 further described in (J).  All items are shown in hex.  Any label defined for the
 current PC value is shown to the right.  Decimal and binary equivalents
 are shown for SP/A/X/Y to the right (first decimal, then binary).</p>
+<p>The column to the far right shows the 'source' of contents of the respective
+registers.  For example, consider the command 'LDA ($80),Y'.  The operand of
+the command resolves to some address, which isn't always easy to determine at
+first glance.  The 'Src Addr' area shows the actual resulting operand/address
+being used with the given opcode.</p>
 <p>There's not much else to say about the CPU widget: if you know 6502
 assembly, it's pretty self-explanatory. If you don't, well, you should
 learn :)</p>
@@ -929,6 +962,22 @@ decreased by 1:</p>
 <p>The ROM Widget is a disassembly of the current bank of ROM. If a symbol
 file is loaded, the disassembly will have labels.  Even without a symbol file, the standard
 TIA/RIOT labels will still be present.</p>
+<p>The disassembly is often quite extensive, and whenever possible tries to automatically
+differentiate between code, graphics, data and unused bytes.  There are actually two
+levels of disassembly in Stella.  First, the emulation core tracks accesses as a game
+is running, making for very accurate results.  This is known as a <b>dynamic</b> analysis.
+Second, the built-in Distella code does a <b>static</b> analysis, which tentatively fills
+in sections that the dynamic disassembler missed (usually because the addresses haven't
+been accessed at runtime yet).</p>
+<p>As such, code can be marked in two ways (absolute, when done by the emulation core),
+and tentative (when done by Distella, and the emulation core hasn't accessed it yet).
+Such 'tentative' code is marked with the '*' symbol, indicating that it has the potential
+to be accessed as code sometime during the program run.  This gives very useful information,
+since it can indicate areas toggled by an option in the game (ie, when a player dies,
+when difficulty level changes, etc).  It can also indicate whether blocks of code after
+a relative jump are in fact code, or simply data.</p>
+
+
 <p><img src="graphics/debugger_rom.png"></p>
 
 <p>The top area contains two items:
@@ -947,7 +996,9 @@ If set to 'Never', the entire address space is treated as code.  If set to
 The 'Automatic' setting is a combination of the previous two.  First, an
 attempt is made to resolve data sections.  If this results in the current program
 counter not being present in the disassembly, then a second disassembly is
-done, without resolving data sections.</li>
+done, without resolving data sections.  Note that this option applies only to
+addresses determined by Distella; addresses marked as code or graphics by the
+emulation core will stay as such, no matter what this setting says.</li>
 </ul>
 
 <p>Each line of disassembly has four fields:</p>
@@ -962,16 +1013,37 @@ by the "break" command, <b>not</b> the conditional "breakif" breakpoints
 Counter isn't necessarily involved).</li>
 <li><b>Labels</b>: Any labels assigned to the given address, either generated
 automatically by Distella, read from a DASM symbol file or custom
-labels created by the user.</li>
-<li><b>Instruction</b>: This is a standard 6502 mnemonic (possibly with operand).
-This field also contains the cycle count for the instruction (separated by a
-semicolon).</li>
-<li><b>Hex bytes</b>: These are the raw machine code bytes for the instruction.
-Note that only instructions that have been fully disassembled will have
-bytes in this field.</li>
+labels created by the user.  If 'PC addresses' is enabled, the address will
+be shown in grey.</li>
+<li><b>Disassembled bytes</b>: This is either a standard 6502 mnemonic (possibly with operand),
+or information about graphics and/or data.  For instructions, the cycle count will be
+included, separated by a semicolon.  For graphics, a bitmap of the data, and the address
+of the data is included.  For actual data, only the address is included.</li>
+<li><b>Hex bytes</b>: These are the raw machine bytes for the code/graphics/data.
+Note that only code, graphics or data will show bytes and can be edited.</li>
 </ul>
 
-<p>The 6502 mnemonic will be UPPERCASE for all standard instructions,
+<p>At this point, we should explain the various 'types' that the disassembler
+can use.  These are known as 'directives', and partly correspond to configuration
+options from the standalone Distella program.  They are listed in order of
+decreasing hierarchy:</p>
+<table border="1" cellpadding="3">
+<tr><td><b>CODE</b></td><td>Addresses which have appeared in the program counter, or
+which tentatively can appear in the program counter.  These can be edited in hex.</td></tr>
+<tr><td><b>GFX</b></td><td>Addresses which contain data stored in the player graphics registers
+(GRP0/GRP1).  These addresses are shown with a bitmap of the graphics, which
+can be edited in either hex or binary.  The bitmap is shown as large blocks.</td></tr>
+<tr><td><b>PGFX</b></td><td>Addresses which contain data stored in the playfield graphics registers
+(PF0/PF1/PF2).  These addresses are shown with a bitmap of the graphics, which
+can be edited in either hex or binary.  The bitmap is shown as small dashes.</td></tr>
+<tr><td><b>DATA</b></td><td>Addresses used as an operand for some opcode.</li>.  These can be edited
+in hex.</td></tr>
+<tr><td><b>ROW</b></td><td>Addresses not used as any of the above.  These are shown up
+to 16 per line, and cannot be edited.</td></tr>
+</table>
+
+
+<p>For code sections, the 6502 mnemonic will be UPPERCASE for all standard instructions,
 or lowercase for "illegal" 6502 instructions (like "dcp"). If resolving
 of data sections has been disabled for any reason, you'll likely see a lot
 of illegal opcodes if you scroll to a data table in ROM.  This can also
@@ -999,7 +1071,7 @@ bytes in the ROM Widget are editable. Double-click on them to edit
 them. When you're done, press Enter to accept the changes (in which case
 the cart will be re-disasembled) or Escape to cancel them.
 Note that only instructions that have been fully disassembled
-can be edited.  In particular, blank lines or lines with '.byte' directives
+can be edited.  In particular, blank lines or 'ROW' directives
 cannot be edited.  If you wish to edit the latter, then the 'Resolve data'
 item should be set to 'Never' first.  Also note that certain ROMs can have
 sections of address space swapped in and out dynamically.  As such, changing
@@ -1023,6 +1095,15 @@ disassembly line where the mouse was clicked.</li>
 
 <li><b>RunTo PC</b>: Single-step through code until the Program Counter
 matches the address of the disassembly line where the mouse was clicked.</li>
+
+<li><b>Toggle PC addresses</b>: Show or hide blank labels as Program Counter
+addresses.</li>
+
+<li><b>Toggle GFX binary/hex</b>: Switch between editing GFX and PGFX sections
+in either hexidecimal or binary.</li>
+
+<li><b>Re-disassemble</b>: Self-explanatory; force the current bank to be
+disassembled, regardless of whether anything has changed.</li>
 </ul>
 
 <h3>Limitations</h3>
@@ -1070,6 +1151,56 @@ can update them just by re-running the relevant commands in the prompt.</p>
 
 <p>You can also use the Step, Trace, Scan+1, Frame+1 and Rewind buttons from
 anywhere in the GUI via the keyboard, with Alt-S, Alt-T, Alt-L, Alt-F and Alt-R.</p>
+
+
+<!-- /////////////////////////////////////////////////////////////////////////  -->
+<br>
+<h2>Distella Configuration Files</h2>
+<p>As mentioned in ROM Listing (M), Stella supports the following directives:
+CODE/GFX/PGFX/DATA/ROW.  While the debugger will try to automatically mark address
+space with the appropriate directive, there are times when it will fail.  There are
+several options in this case:</p>
+<ol>
+<li><b>Manually set the directives</b>: Directives can be set in the debugger
+prompt with the code/gfx/pgfx/data/row commands.  These accept an address range
+for the given directive type.  Setting a range with the same type a second time
+will remove that directive from the range.</li>
+<li><b>Use configuration files</b>: Configuration files can be used to automatically
+load a list of directives when a ROM is loaded.  These files can be generated with the
+'saveconfig' command, and loaded with the 'loadconfig' command.  There are also
+'listconfig' and 'clearconfig' commands to show and erase (respectively) the current
+directive listing.  Upon opening the debugger for the first time, Stella attempts
+to load a configuration file from several places.  For this example, assume a ROM
+named "rr.a26", with properties entry "River Raid".  Attempts will be made as follows:
+<ul>
+<li>ROM dir based on properties entry name: <i>River Raid.cfg</i></li>
+<li>ROM dir based on actual ROM name: <i>rr.cfg</i></li>
+<li>CFG dir based on properties entry name: <i>configdir/River Raid.cfg</i></li>
+</ul>
+<p>The location of 'configdir' will depend on the version of Stella, as follows:</p>
+
+	<p><table cellpadding="5" border="1">
+		<tr>
+			<td><b>Linux/Unix</b></td>
+			<td><i>~/.stella/cfg/</i></td>
+		</tr>
+		<tr>
+			<td><b>Macintosh</b></td>
+			<td><i>~/Library/Application Support/Stella/cfg/</i></td>
+		</tr>
+		<tr>
+			<td><b>Windows</b></td>
+			<td><i>%APPDATA%\Stella\cfg\</i>&nbsp;&nbsp;&nbsp;
+				<b>OR</b><br>
+				<i>_BASEDIR_\cfg\</i>
+					(if a file named 'basedir.txt' exists in the application
+					directory containing the full pathname for _BASEDIR_)
+			</td>
+		</tr>
+	</table>
+</table>
+</li>
+</ol>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->

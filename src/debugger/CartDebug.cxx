@@ -737,13 +737,14 @@ string CartDebug::loadConfigFile(string file)
         buf >> directive;
         if(BSPF_startsWithIgnoreCase(directive, "ORG"))
         {
+          // TODO - figure out what to do with this
           buf >> hex >> start;
-// TODO - figure out what to do with this
         }
         else if(BSPF_startsWithIgnoreCase(directive, "SKIP"))
         {
+          // For now, treat this as CODE
           buf >> hex >> start >> hex >> end;
-//          addDirective(CartDebug::SKIP, start, end, currentbank);
+          addDirective(CartDebug::CODE, start, end, currentbank);
         }
         else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
         {

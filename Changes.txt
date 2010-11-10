@@ -12,11 +12,11 @@
                                Release History
 ===========================================================================
 
-3.2.2 to 3.3: (November xx, 2010)
+3.2.2 to 3.3: (November 15, 2010)
 
   * Added the following Distella 'directives', which are used to override
-    and specifically tell the debugger how to treat address space (SKIP,
-    CODE, GFX, PGFX, DATA, ROW).  See the debugger documentation for more
+    and specifically tell the debugger how to treat address space (CODE,
+    GFX, PGFX, DATA, ROW).  See the debugger documentation for more
     information.
 
   * Disassembly from the debugger is now tracked by the emulation core,
@@ -45,7 +45,7 @@
   * Added the following commands to the debugger prompt:
      - clearconfig, listconfig, loadconfig, saveconfig
        (used for Distella configuration files)
-     - skip, code, data, gfx, pgfx, row
+     - code, data, gfx, pgfx, row
        (directives used to override automatic disassembly types)
      - jump (jumps to a specific address in the disassembly)
      - type (gives detailed info for disassembly type of an address)
@@ -53,9 +53,9 @@
   * The debugger prompt commands 'trap', 'trapread' and 'trapwrite' now
     accept a range of addresses as well as a single address.
 
-  * Added 'data source' address output for the CPU A/X/Y registers.  This
-    is useful for quickly seeing what an operand address resolves into
-    with an LDx command.
+  * Added 'data source' address output for the CPU SP/A/X/Y registers.
+    This is useful for quickly seeing what an operand address resolves
+    into with various load commands.
 
   * Many commands in the debugger prompt are now case-insensitive;
     further improvements will be made in a future release.
@@ -70,6 +70,9 @@
 
   * Program counter/instruction addresses can now be toggled in the
     disassembly.
+
+  * Disassembled instructions involving relative branches now show only
+    one byte for the operand, not two bytes.
 
   * Fixed bug in several text input fields, whereby binary data couldn't
     be input (a '\' was required, but the character was blocked).
@@ -90,7 +93,8 @@
     video modes, not just when starting the application.
 
   * Added support for building a Windows version compatible with Windows
-    98 and 2000 (compiled with Visual Studio 2005).
+    98 and 2000 (compiled with Visual Studio 2005).  Testing is very
+    limited, since I no longer have access to these systems.
 
   * Fixed build issues for Innosetup in Windows XP.
 
