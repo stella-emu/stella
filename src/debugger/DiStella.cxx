@@ -85,8 +85,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   info.end    = myAppData.end;
   info.offset = myOffset;
 
-  memset(labels, 0, 0x1000);
-  memset(directives, 0, 0x1000);
+  memset(myLabels, 0, 0x1000);
+  memset(myDirectives, 0, 0x1000);
   myAddressQueue.push(start);
 
   // Process any directives first, as they override automatic code determination

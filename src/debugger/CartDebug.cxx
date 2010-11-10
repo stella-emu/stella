@@ -291,8 +291,8 @@ bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 sea
   {
     const DisassemblyTag& tag = myDisassembly.list[i];
 
-    // Only addresses marked as 'CODE' can possibly be in the program counter
-    if(tag.type == CODE)
+    // Addresses marked as 'ROW' normally won't have an address
+    if(tag.address)
     {
       // Create a mapping from addresses to line numbers
       myAddrToLineList.insert(make_pair(tag.address, i));
