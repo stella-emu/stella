@@ -37,7 +37,7 @@ class CpuState : public DebuggerState
 {
   public:
     int PC, SP, PS, A, X, Y;
-    int srcA, srcX, srcY;
+    int srcS, srcA, srcX, srcY;
     BoolArray PSbits;
 };
 

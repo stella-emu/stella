@@ -13,6 +13,8 @@
 //
 // See the file "License.txt" for information on usage and redistribution of
 // this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id: M6502.m4 2175 2010-11-08 22:25:19Z stephena $
 //============================================================================
 
 /** 
@@ -21,7 +23,8 @@
   Recompile with the following:
     'm4 M6502.m4 > M6502.ins'
 
-  @author  Bradford W. Mott and Stephen Anthony
+  @author  Bradford W. Mott
+  @version $Id: M6502.m4 2175 2010-11-08 22:25:19Z stephena $
 */
 
 #ifndef NOTSAMEPAGE
@@ -2749,10 +2752,13 @@ case 0xfc:
 break;
 
 
+//////////////////////////////////////////////////
+// ORA
 case 0x09:
 {
   operand = peek(PC++, DISASM_CODE);
 }
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 {
   A |= operand;
   notZ = A;
@@ -2765,6 +2771,7 @@ case 0x05:
   intermediateAddress = peek(PC++, DISASM_CODE);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
@@ -2779,6 +2786,7 @@ case 0x15:
   intermediateAddress += X;
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
@@ -2792,6 +2800,7 @@ case 0x0d:
   intermediateAddress |= ((uInt16)peek(PC++, DISASM_CODE) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
@@ -2811,6 +2820,7 @@ case 0x1d:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
@@ -2830,6 +2840,7 @@ case 0x19:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
@@ -2846,6 +2857,7 @@ case 0x01:
   intermediateAddress |= ((uInt16)peek(pointer, DISASM_DATA) << 8);
   operand = peek(intermediateAddress, DISASM_DATA);
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
@@ -2866,12 +2878,14 @@ case 0x11:
     operand = peek(intermediateAddress, DISASM_DATA);
   }
 }
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 {
   A |= operand;
   notZ = A;
   N = A & 0x80;
 }
 break;
+//////////////////////////////////////////////////
 
 
 case 0x48:
@@ -4590,7 +4604,7 @@ case 0xba:
 {
   peek(PC, DISASM_NONE);
 }
-// TODO - add tracking for this opcode
+SET_LAST_PEEK(myLastSrcAddressX, myLastSrcAddressS)
 {
   X = SP;
   notZ = X;
@@ -4616,7 +4630,7 @@ case 0x9a:
 {
   peek(PC, DISASM_NONE);
 }
-// TODO - add tracking for this opcode
+SET_LAST_PEEK(myLastSrcAddressS, myLastSrcAddressX)
 {
   SP = X;
 }

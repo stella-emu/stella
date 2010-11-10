@@ -82,12 +82,13 @@ CpuWidget::CpuWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create a label and 1x3 grid showing the source of data for A/X/Y registers
   xpos += myCpuGridBinValue->getWidth() + 20;
-  new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(), ypos+1,
+  myCpuDataSrcGrid = 
+    new DataGridWidget(boss, font, xpos, ypos, 1, 4, 4, 16, kBASE_16);
+  myCpuDataSrcGrid->setEditable(false);
+  new StaticTextWidget(boss, font, xpos-font.getMaxCharWidth(),
+                       ypos+myCpuDataSrcGrid->getHeight() + 4,
                        font.getStringWidth("Src Addr"), fontHeight, "Src Addr",
                        kTextAlignLeft);
-  myCpuDataSrcGrid = 
-    new DataGridWidget(boss, font, xpos, ypos+lineHeight, 1, 3, 4, 16, kBASE_16);
-  myCpuDataSrcGrid->setEditable(false);
 
   // Add labels for other CPU registers
   xpos = x;
@@ -291,10 +292,12 @@ void CpuWidget::fillGrid()
   alist.push_back(0);
   alist.push_back(0);
 
+  vlist.push_back(state.srcS);
   vlist.push_back(state.srcA);
   vlist.push_back(state.srcX);
   vlist.push_back(state.srcY);
 
+  changed.push_back(state.srcS  != oldstate.srcS);
   changed.push_back(state.srcA  != oldstate.srcA);
   changed.push_back(state.srcX  != oldstate.srcX);
   changed.push_back(state.srcY  != oldstate.srcY);

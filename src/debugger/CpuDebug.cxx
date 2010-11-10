@@ -43,6 +43,7 @@ const DebuggerState& CpuDebug::getState()
   myState.X  = mySystem.m6502().X;
   myState.Y  = mySystem.m6502().Y;
 
+  myState.srcS = mySystem.m6502().lastSrcAddressS();
   myState.srcA = mySystem.m6502().lastSrcAddressA();
   myState.srcX = mySystem.m6502().lastSrcAddressX();
   myState.srcY = mySystem.m6502().lastSrcAddressY();
@@ -62,6 +63,7 @@ void CpuDebug::saveOldState()
   myOldState.X  = mySystem.m6502().X;
   myOldState.Y  = mySystem.m6502().Y;
 
+  myOldState.srcS = mySystem.m6502().lastSrcAddressS();
   myOldState.srcA = mySystem.m6502().lastSrcAddressA();
   myOldState.srcX = mySystem.m6502().lastSrcAddressX();
   myOldState.srcY = mySystem.m6502().lastSrcAddressY();

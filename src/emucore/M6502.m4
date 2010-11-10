@@ -1747,45 +1747,56 @@ M6502_NOP
 break;
 
 
+//////////////////////////////////////////////////
+// ORA
 case 0x09:
 M6502_IMMEDIATE_READ
+CLEAR_LAST_PEEK(myLastSrcAddressA)
 M6502_ORA
 break;
 
 case 0x05:
 M6502_ZERO_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
 
 case 0x15:
 M6502_ZEROX_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
 
 case 0x0d:
 M6502_ABSOLUTE_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
 
 case 0x1d:
 M6502_ABSOLUTEX_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
 
 case 0x19:
 M6502_ABSOLUTEY_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
 
 case 0x01:
 M6502_INDIRECTX_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
 
 case 0x11:
 M6502_INDIRECTY_READ
+SET_LAST_PEEK(myLastSrcAddressA, intermediateAddress)
 M6502_ORA
 break;
+//////////////////////////////////////////////////
 
 
 case 0x48:
@@ -2239,7 +2250,7 @@ break;
 
 case 0xba:
 M6502_IMPLIED
-// TODO - add tracking for this opcode
+SET_LAST_PEEK(myLastSrcAddressX, myLastSrcAddressS)
 M6502_TSX
 break;
 
@@ -2253,7 +2264,7 @@ break;
 
 case 0x9a:
 M6502_IMPLIED
-// TODO - add tracking for this opcode
+SET_LAST_PEEK(myLastSrcAddressS, myLastSrcAddressX)
 M6502_TXS
 break;
 

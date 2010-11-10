@@ -58,6 +58,7 @@ M6502::M6502(uInt32 systemCyclesPerProcessorCycle)
     myLastAddress(0),
     myLastPeekAddress(0),
     myLastPokeAddress(0),
+    myLastSrcAddressS(0),
     myLastSrcAddressA(0),
     myLastSrcAddressX(0),
     myLastSrcAddressY(0),
@@ -122,7 +123,8 @@ void M6502::reset()
   myTotalInstructionCount = 0;
 
   myLastAddress = myLastPeekAddress = myLastPokeAddress = 0;
-  myLastSrcAddressA = myLastSrcAddressX = myLastSrcAddressY = 0;
+  myLastSrcAddressS = myLastSrcAddressA =
+    myLastSrcAddressX = myLastSrcAddressY = 0;
   myDataAddressForPoke = 0;
 }
 
@@ -397,6 +399,7 @@ bool M6502::save(Serializer& out) const
     out.putInt(myLastAddress);
     out.putInt(myLastPeekAddress);
     out.putInt(myLastPokeAddress);
+    out.putInt(myLastSrcAddressS);
     out.putInt(myLastSrcAddressA);
     out.putInt(myLastSrcAddressX);
     out.putInt(myLastSrcAddressY);
@@ -444,6 +447,7 @@ bool M6502::load(Serializer& in)
     myLastAddress = (uInt16) in.getInt();
     myLastPeekAddress = (uInt16) in.getInt();
     myLastPokeAddress = (uInt16) in.getInt();
+    myLastSrcAddressS = (uInt16) in.getInt();
     myLastSrcAddressA = (uInt16) in.getInt();
     myLastSrcAddressX = (uInt16) in.getInt();
     myLastSrcAddressY = (uInt16) in.getInt();
