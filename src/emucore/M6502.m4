@@ -23,8 +23,7 @@
   Recompile with the following:
     'm4 M6502.m4 > M6502.ins'
 
-  @author  Bradford W. Mott
-  @version $Id$
+  @author  Bradford W. Mott and Stephen Anthony
 */
 
 #ifndef NOTSAMEPAGE
