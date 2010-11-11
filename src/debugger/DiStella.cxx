@@ -223,7 +223,8 @@ void DiStella::disasm(uInt32 distart, int pass)
         else
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
-        const string& bit_string = check_bit(myPC, CartDebug::GFX) ? "\x7f" : "\x80";
+        bool isPGfx = check_bit(myPC, CartDebug::PGFX);
+        const string& bit_string = isPGfx ? "\x80" : "\x7f";
         uInt8 byte = Debugger::debugger().peek(myPC+myOffset);
         myDisasmBuf << ".byte $" << HEX2 << (int)byte << "  |";
         for(uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
@@ -233,7 +234,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           myDisasmBuf << Debugger::to_bin_8(byte);
         else
           myDisasmBuf << HEX2 << (int)byte;
-        addEntry(CartDebug::GFX);
+        addEntry(isPGfx ? CartDebug::PGFX : CartDebug::GFX);
       }
       myPC++;
     }
