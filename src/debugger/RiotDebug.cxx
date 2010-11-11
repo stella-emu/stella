@@ -315,55 +315,54 @@ string RiotDebug::switchesString()
 string RiotDebug::toString()
 {
   // TODO: keyboard controllers?
+  ostringstream buf;
 
   const RiotState& state    = (RiotState&) getState();
   const RiotState& oldstate = (RiotState&) getOldState();
-  string ret;
 
-  ret += myDebugger.valueToString(0x280) + "/SWCHA(R)=" +
-         myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R) + " ";
-  ret += myDebugger.valueToString(0x280) + "/SWCHA(W)=" +
-         myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W) + " ";
-  ret += myDebugger.valueToString(0x281) + "/SWACNT=" +
-         myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) + " ";
-  ret += myDebugger.valueToString(0x282) + "/SWCHB=" +
-         myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) + " ";
-  ret += "\n";
+  buf << myDebugger.valueToString(0x280) + "/SWCHA(R)="
+      << myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R) << " "
+      << myDebugger.valueToString(0x280) + "/SWCHA(W)="
+      << myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W) << " "
+      << myDebugger.valueToString(0x281) + "/SWACNT="
+      << myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) << " "
+      << myDebugger.valueToString(0x282) + "/SWCHB="
+      << myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) << " "
+      << endl
 
-  // These are squirrely: some symbol files will define these as
-  // 0x284-0x287. Doesn't actually matter, these registers repeat
-  // every 16 bytes.
-  ret += myDebugger.valueToString(0x294) + "/TIM1T=" +
-         myDebugger.invIfChanged(state.TIM1T, oldstate.TIM1T) + " ";
-  ret += myDebugger.valueToString(0x295) + "/TIM8T=" +
-         myDebugger.invIfChanged(state.TIM8T, oldstate.TIM8T) + " ";
-  ret += myDebugger.valueToString(0x296) + "/TIM64T=" +
-         myDebugger.invIfChanged(state.TIM64T, oldstate.TIM64T) + " ";
-  ret += myDebugger.valueToString(0x297) + "/TIM1024T=" +
-         myDebugger.invIfChanged(state.TIM1024T, oldstate.TIM1024T) + " ";
-  ret += "\n";
+      // These are squirrely: some symbol files will define these as
+      // 0x284-0x287. Doesn't actually matter, these registers repeat
+      // every 16 bytes.
+      << myDebugger.valueToString(0x294) + "/TIM1T="
+      << myDebugger.invIfChanged(state.TIM1T, oldstate.TIM1T) << " "
+      << myDebugger.valueToString(0x295) + "/TIM8T="
+      << myDebugger.invIfChanged(state.TIM8T, oldstate.TIM8T) << " "
+      << myDebugger.valueToString(0x296) + "/TIM64T="
+      << myDebugger.invIfChanged(state.TIM64T, oldstate.TIM64T) << " "
+      << myDebugger.valueToString(0x297) + "/TIM1024T="
+      << myDebugger.invIfChanged(state.TIM1024T, oldstate.TIM1024T) << " "
+      << endl
 
-  ret += myDebugger.valueToString(0x284) + "/INTIM=" +
-         myDebugger.invIfChanged(state.INTIM, oldstate.INTIM) + " ";
-  ret += myDebugger.valueToString(0x285) + "/TIMINT=" +
-         myDebugger.invIfChanged(state.TIMINT, oldstate.TIMINT) + " ";
-  ret += "Timer_Clocks=" +
-         myDebugger.invIfChanged(state.TIMCLKS, oldstate.TIMCLKS) + " ";
-  ret += "\n";
+      << myDebugger.valueToString(0x284) + "/INTIM="
+      << myDebugger.invIfChanged(state.INTIM, oldstate.INTIM) << " "
+      << myDebugger.valueToString(0x285) + "/TIMINT="
+      << myDebugger.invIfChanged(state.TIMINT, oldstate.TIMINT) << " "
+      << "Timer_Clocks="
+      << myDebugger.invIfChanged(state.TIMCLKS, oldstate.TIMCLKS) << " "
+      << endl
 
-  ret += "Left/P0diff: " + diffP0String() + "   Right/P1diff: " + diffP0String();
-  ret += "\n";
+      << "Left/P0diff: " << diffP0String() << "   Right/P1diff: " << diffP0String()
+      << endl
+      << "TVType: " << tvTypeString() << "   Switches: " << switchesString()
+      << endl
 
-  ret += "TVType: " + tvTypeString() + "   Switches: " + switchesString();
-  ret += "\n";
+      // Yes, the fire buttons are in the TIA, but we might as well
+      // show them here for convenience.
+      << "Left/P0 stick:  " << dirP0String()
+      << ((mySystem.peek(0x03c) & 0x80) ? "" : "(button) ")
+      << endl
+      << "Right/P1 stick: " << dirP1String()
+      << ((mySystem.peek(0x03d) & 0x80) ? "" : "(button) ");
 
-  // Yes, the fire buttons are in the TIA, but we might as well
-  // show them here for convenience.
-  ret += "Left/P0 stick:  " + dirP0String();
-  ret += (mySystem.peek(0x03c) & 0x80) ? "" : "(button) ";
-  ret += "\n";
-  ret += "Right/P1 stick: " + dirP1String();
-  ret += (mySystem.peek(0x03d) & 0x80) ? "" : "(button) ";
-
-  return ret;
+  return buf.str();
 }

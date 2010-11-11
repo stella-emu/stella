@@ -155,8 +155,7 @@ int CartDebug::readFromWritePort()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::toString()
 {
-  string result;
-  char buf[128];
+  ostringstream buf;
   uInt32 bytesPerLine;
 
   switch(myDebugger.parser().base())
@@ -186,27 +185,26 @@ string CartDebug::toString()
     // bytes have been previously output
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
-      sprintf(buf, "%04x: (rport = %04x, wport = %04x)\n",
+      char port[50];
+      sprintf(port, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
-      buf[2] = buf[3] = 'x';
-      result += DebuggerParser::red(buf);
+      port[2] = port[3] = 'x';
+      buf << DebuggerParser::red(port);
       bytesSoFar = 0;
     }
     curraddr = state.rport[i];
-    sprintf(buf, "%.2x: ", curraddr & 0x00ff);
-    result += buf;
+    buf << HEX2 << (curraddr & 0x00ff) << ": ";
 
     for(uInt8 j = 0; j < bytesPerLine; ++j)
     {
-      result += myDebugger.invIfChanged(state.ram[i+j], oldstate.ram[i+j]);
-      result += " ";
+      buf << myDebugger.invIfChanged(state.ram[i+j], oldstate.ram[i+j]) << " ";
 
-      if(j == 0x07) result += " ";
+      if(j == 0x07) buf << " ";
     }
-    result += "\n";
+    buf << endl;
   }
 
-  return result;
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -317,9 +315,10 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   Disassembly disasm;
   BankInfo info;
+  uInt8 labels[0x1000], directives[0x1000];
   info.addressList.push_back(start);
-  DiStella distella(*this, disasm.list, info, (uInt8*)myDisLabels,
-                    (uInt8*)myDisDirectives, false);
+  DiStella distella(*this, disasm.list, info, (uInt8*)labels,
+                    (uInt8*)directives, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -334,7 +333,8 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
     if((tag.address & 0xfff) >= start)
     {
       if(begin == list_size) begin = end;
-      length = BSPF_max(length, (uInt32)tag.disasm.length());
+      if(tag.type != CartDebug::ROW)
+        length = BSPF_max(length, (uInt32)tag.disasm.length());
 
       --lines;
     }
@@ -344,8 +344,15 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   for(uInt32 i = begin; i < end; ++i)
   {
     const CartDebug::DisassemblyTag& tag = disasm.list[i];
-    buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
-           << ":  " << tag.disasm << setw(length - tag.disasm.length() + 1)
+    if(tag.type == CartDebug::NONE)
+      continue;
+    else if(tag.address)
+      buffer << uppercase << hex << setw(4) << setfill('0') << tag.address
+           << ":  ";
+    else
+      buffer << "       ";
+
+    buffer << tag.disasm << setw(length - tag.disasm.length() + 1)
            << setfill(' ') << " "
            << tag.ccount << "   " << tag.bytes << endl;
   }

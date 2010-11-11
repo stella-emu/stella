@@ -735,20 +735,15 @@ string TIADebug::booleanWithLabel(string label, bool value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string TIADebug::toString()
 {
-  string ret;
-  char buf[128];
+  ostringstream buf;
 
-  sprintf(buf, "%.2x: ", 0);
-  ret += buf;
+  buf << "00: ";
   for (uInt8 j = 0; j < 0x010; j++)
   {
-    sprintf(buf, "%.2x ", mySystem.peek(j));
-    ret += buf;
-
-    if(j == 0x07) ret += "- ";
+    buf << HEX2 << (int)mySystem.peek(j) << " ";
+    if(j == 0x07) buf << "- ";
   }
-
-  ret += "\n";
+  buf << endl;
 
   // TODO: inverse video for changed regs. Core needs to track this.
   // TODO: strobes? WSYNC RSYNC RESP0/1 RESM0/1 RESBL HMOVE HMCLR CXCLR
@@ -757,190 +752,100 @@ string TIADebug::toString()
 //  const TiaState& oldstate = (TiaState&) getOldState();
 
   // build up output, then return it.
-  ret += "scanline ";
-
-  ret += myDebugger.valueToString(myTIA.scanlines());
-  ret += " ";
-
-  ret += booleanWithLabel("vsync", vsync());
-  ret += " ";
-
-  ret += booleanWithLabel("vblank", vblank());
-  ret += "\n";
-
-  ret += booleanWithLabel("inpt0", myTIA.peek(0x08) & 0x80);
-  ret += " ";
-  ret += booleanWithLabel("inpt1", myTIA.peek(0x09) & 0x80);
-  ret += " ";
-  ret += booleanWithLabel("inpt2", myTIA.peek(0x0a) & 0x80);
-  ret += " ";
-  ret += booleanWithLabel("inpt3", myTIA.peek(0x0b) & 0x80);
-  ret += " ";
-  ret += booleanWithLabel("inpt4", myTIA.peek(0x0c) & 0x80);
-  ret += " ";
-  ret += booleanWithLabel("inpt5", myTIA.peek(0x0d) & 0x80);
-  ret += " ";
-  ret += booleanWithLabel("dump_gnd_0123", myTIA.myDumpEnabled);
-  ret += "\n";
-
-  ret += "COLUP0: ";
-  ret += myDebugger.valueToString(state.coluRegs[0]);
-  ret += "/";
-  ret += colorSwatch(state.coluRegs[0]);
-
-  ret += "COLUP1: ";
-  ret += myDebugger.valueToString(state.coluRegs[1]);
-  ret += "/";
-  ret += colorSwatch(state.coluRegs[1]);
-
-  ret += "COLUPF: ";
-  ret += myDebugger.valueToString(state.coluRegs[2]);
-  ret += "/";
-  ret += colorSwatch(state.coluRegs[2]);
-
-  ret += "COLUBK: ";
-  ret += myDebugger.valueToString(state.coluRegs[3]);
-  ret += "/";
-  ret += colorSwatch(state.coluRegs[3]);
-
-  ret += "\n";
-
-  ret += "P0: GR=";
-  ret += Debugger::to_bin_8(state.gr[P0]);
-  ret += "/";
-  ret += myDebugger.valueToString(state.gr[P0]);
-  ret += " pos=";
-  ret += myDebugger.valueToString(state.pos[P0]);
-  ret += " HM=";
-  ret += myDebugger.valueToString(state.hm[P0]);
-  ret += " ";
-  ret += nusizP0String();
-  ret += " ";
-  ret += booleanWithLabel("reflect", refP0());
-  ret += " ";
-  ret += booleanWithLabel("delay", vdelP0());
-  ret += "\n";
-
-  ret += "P1: GR=";
-  ret += Debugger::to_bin_8(state.gr[P1]);
-  ret += "/";
-  ret += myDebugger.valueToString(state.gr[P1]);
-  ret += " pos=";
-  ret += myDebugger.valueToString(state.pos[P1]);
-  ret += " HM=";
-  ret += myDebugger.valueToString(state.hm[P1]);
-  ret += " ";
-  ret += nusizP1String();
-  ret += " ";
-  ret += booleanWithLabel("reflect", refP1());
-  ret += " ";
-  ret += booleanWithLabel("delay", vdelP1());
-  ret += "\n";
-
-  ret += "M0: ";
-  ret += (myTIA.myENAM0 ? " ENABLED" : "disabled");
-  ret += " pos=";
-  ret += myDebugger.valueToString(state.pos[M0]);
-  ret += " HM=";
-  ret += myDebugger.valueToString(state.hm[M0]);
-  ret += " size=";
-  ret += myDebugger.valueToString(state.size[M0]);
-  ret += " ";
-  ret += booleanWithLabel("reset", resMP0());
-  ret += "\n";
-
-  ret += "M1: ";
-  ret += (myTIA.myENAM1 ? " ENABLED" : "disabled");
-  ret += " pos=";
-  ret += myDebugger.valueToString(state.pos[M1]);
-  ret += " HM=";
-  ret += myDebugger.valueToString(state.hm[M1]);
-  ret += " size=";
-  ret += myDebugger.valueToString(state.size[M1]);
-  ret += " ";
-  ret += booleanWithLabel("reset", resMP1());
-  ret += "\n";
-
-  ret += "BL: ";
-  ret += (myTIA.myENABL ? " ENABLED" : "disabled");
-  ret += " pos=";
-  ret += myDebugger.valueToString(state.pos[BL]);
-  ret += " HM=";
-  ret += myDebugger.valueToString(state.hm[BL]);
-  ret += " size=";
-  ret += myDebugger.valueToString(state.size[BL]);
-  ret += " ";
-  ret += booleanWithLabel("delay", vdelBL());
-  ret += "\n";
-
-  ret += "PF0: ";
-  ret += Debugger::to_bin_8(state.pf[0]);
-  ret += "/";
-  ret += myDebugger.valueToString(state.pf[0]);
-  ret += " PF1: ";
-  ret += Debugger::to_bin_8(state.pf[1]);
-  ret += "/";
-  ret += myDebugger.valueToString(state.pf[1]);
-  ret += " PF2: ";
-  ret += Debugger::to_bin_8(state.pf[2]);
-  ret += "/";
-  ret += myDebugger.valueToString(state.pf[2]);
-  ret += "\n     ";
-  ret += booleanWithLabel("reflect",  refPF());
-  ret += " ";
-  ret += booleanWithLabel("score",    scorePF());
-  ret += " ";
-  ret += booleanWithLabel("priority", priorityPF());
-  ret += "\n";
-
-  ret += "Collisions: ";
-  ret += booleanWithLabel("m0_p1 ", collM0_P1());
-  ret += booleanWithLabel("m0_p0 ", collM0_P0());
-  ret += booleanWithLabel("m1_p0 ", collM1_P0());
-  ret += booleanWithLabel("m1_p1 ", collM1_P1());
-  ret += booleanWithLabel("p0_pf ", collP0_PF());
-  ret += booleanWithLabel("p0_bl ", collP0_BL());
-  ret += booleanWithLabel("p1_pf ", collP1_PF());
-  ret += "\n            ";
-  ret += booleanWithLabel("p1_bl ", collP1_BL());
-  ret += booleanWithLabel("m0_pf ", collM0_PF());
-  ret += booleanWithLabel("m0_bl ", collM0_BL());
-  ret += booleanWithLabel("m1_pf ", collM1_PF());
-  ret += booleanWithLabel("m1_bl ", collM1_BL());
-  ret += booleanWithLabel("bl_pf ", collBL_PF());
-  ret += booleanWithLabel("p0_p1 ", collP0_P1());
-  ret += booleanWithLabel("m0_m1 ", collM0_M1());
-  ret += "\n";
-
-  ret += "AUDF0: ";
-  ret += myDebugger.valueToString(myTIA.myAUDF0);
-  ret += "/";
-  ret += audFreq(myTIA.myAUDF0);
-  ret += " ";
-
-  ret += "AUDC0: ";
-  ret += myDebugger.valueToString(myTIA.myAUDC0);
-  ret += " ";
-
-  ret += "AUDV0: ";
-  ret += myDebugger.valueToString(myTIA.myAUDV0);
-  ret += "\n";
-
-  ret += "AUDF1: ";
-  ret += myDebugger.valueToString(myTIA.myAUDF1);
-  ret += "/";
-  ret += audFreq(myTIA.myAUDF1);
-  ret += " ";
-
-  ret += "AUDC1: ";
-  ret += myDebugger.valueToString(myTIA.myAUDC1);
-  ret += " ";
-
-  ret += "AUDV1: ";
-  ret += myDebugger.valueToString(myTIA.myAUDV1);
-  //ret += "\n";
-
-  // note: last "ret +=" line should not contain \n, caller will add.
-
-  return ret;
+  buf << "scanline " << myDebugger.valueToString(myTIA.scanlines()) << " "
+      << booleanWithLabel("vsync", vsync()) << " "
+      << booleanWithLabel("vblank", vblank())
+      << endl
+      << booleanWithLabel("inpt0", myTIA.peek(0x08) & 0x80) << " "
+      << booleanWithLabel("inpt1", myTIA.peek(0x09) & 0x80) << " "
+      << booleanWithLabel("inpt2", myTIA.peek(0x0a) & 0x80) << " "
+      << booleanWithLabel("inpt3", myTIA.peek(0x0b) & 0x80) << " "
+      << booleanWithLabel("inpt4", myTIA.peek(0x0c) & 0x80) << " "
+      << booleanWithLabel("inpt5", myTIA.peek(0x0d) & 0x80) << " "
+      << booleanWithLabel("dump_gnd_0123", myTIA.myDumpEnabled)
+      << endl
+      << "COLUxx: "
+      << "P0=" << myDebugger.valueToString(state.coluRegs[0]) << "/"
+      << colorSwatch(state.coluRegs[0])
+      << "P1=" << myDebugger.valueToString(state.coluRegs[1]) << "/"
+      << colorSwatch(state.coluRegs[1])
+      << "PF=" << myDebugger.valueToString(state.coluRegs[2]) << "/"
+      << colorSwatch(state.coluRegs[2])
+      << "BK=" << myDebugger.valueToString(state.coluRegs[3]) << "/"
+      << colorSwatch(state.coluRegs[3])
+      << endl
+      << "P0: GR=" << string(Debugger::to_bin_8(state.gr[P0]))
+      << " pos=" << myDebugger.valueToString(state.pos[P0])
+      << " HM=" << myDebugger.valueToString(state.hm[P0]) << " "
+      << nusizP0String() << " "
+      << booleanWithLabel("refl", refP0()) << " "
+      << booleanWithLabel("delay", vdelP0())
+      << endl
+      << "P1: GR=" << string(Debugger::to_bin_8(state.gr[P1]))
+      << " pos=" << myDebugger.valueToString(state.pos[P1])
+      << " HM=" << myDebugger.valueToString(state.hm[P1]) << " "
+      << nusizP1String() << " "
+      << booleanWithLabel("refl", refP1()) << " "
+      << booleanWithLabel("delay", vdelP1())
+      << endl
+      << "M0: " << (myTIA.myENAM0 ? " ENABLED" : "disabled")
+      << " pos=" << myDebugger.valueToString(state.pos[M0])
+      << " HM=" << myDebugger.valueToString(state.hm[M0])
+      << " size=" << myDebugger.valueToString(state.size[M0]) << " "
+      << booleanWithLabel("reset", resMP0())
+      << endl
+      << "M1: " << (myTIA.myENAM1 ? " ENABLED" : "disabled")
+      << " pos=" << myDebugger.valueToString(state.pos[M1])
+      << " HM=" << myDebugger.valueToString(state.hm[M1])
+      << " size=" << myDebugger.valueToString(state.size[M1]) << " "
+      << booleanWithLabel("reset", resMP0())
+      << endl
+      << "BL: " << (myTIA.myENABL ? " ENABLED" : "disabled")
+      << " pos=" << myDebugger.valueToString(state.pos[BL])
+      << " HM=" << myDebugger.valueToString(state.hm[BL])
+      << " size=" << myDebugger.valueToString(state.size[BL]) << " "
+      << booleanWithLabel("delay", vdelBL())
+      << endl
+      << "PF0: " << string(Debugger::to_bin_8(state.pf[0])) << "/"
+      << myDebugger.valueToString(state.pf[0])
+      << " PF1: " << string(Debugger::to_bin_8(state.pf[1])) << "/"
+      << myDebugger.valueToString(state.pf[1])
+      << " PF2: " << string(Debugger::to_bin_8(state.pf[2])) << "/"
+      << myDebugger.valueToString(state.pf[2])
+      << endl << "     "
+      << booleanWithLabel("reflect",  refPF()) << " "
+      << booleanWithLabel("score",    scorePF()) << " "
+      << booleanWithLabel("priority", priorityPF())
+      << endl
+      << "Collisions: "
+      << booleanWithLabel("m0_p1 ", collM0_P1())
+      << booleanWithLabel("m0_p0 ", collM0_P0())
+      << booleanWithLabel("m1_p0 ", collM1_P0())
+      << booleanWithLabel("m1_p1 ", collM1_P1())
+      << booleanWithLabel("p0_pf ", collP0_PF())
+      << booleanWithLabel("p0_bl ", collP0_BL())
+      << booleanWithLabel("p1_pf ", collP1_PF())
+      << endl << "            "
+      << booleanWithLabel("p1_bl ", collP1_BL())
+      << booleanWithLabel("m0_pf ", collM0_PF())
+      << booleanWithLabel("m0_bl ", collM0_BL())
+      << booleanWithLabel("m1_pf ", collM1_PF())
+      << booleanWithLabel("m1_bl ", collM1_BL())
+      << booleanWithLabel("bl_pf ", collBL_PF())
+      << booleanWithLabel("p0_p1 ", collP0_P1())
+      << endl << "            "
+      << booleanWithLabel("m0_m1 ", collM0_M1())
+      << endl
+      << "AUDF0: " << myDebugger.valueToString(myTIA.myAUDF0)
+      << "/" << audFreq(myTIA.myAUDF0) << " "
+      << "AUDC0: " << myDebugger.valueToString(myTIA.myAUDC0) << " "
+      << "AUDV0: " << myDebugger.valueToString(myTIA.myAUDV0)
+      << endl
+      << "AUDF1: " << myDebugger.valueToString(myTIA.myAUDF1)
+      << "/" << audFreq(myTIA.myAUDF1) << " "
+      << "AUDC1: " << myDebugger.valueToString(myTIA.myAUDC1) << " "
+      << "AUDV1: " << myDebugger.valueToString(myTIA.myAUDV1)
+      ;
+  // note: last line should not contain \n, caller will add.
+  return buf.str();
 }

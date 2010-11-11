@@ -789,7 +789,8 @@ void PromptWidget::putcharIntern(int c)
                       // OverlayColor contains 256 of them
     _textcolor = (c & 0x7f) << 1;
   }
-  else if(c < ' ') { // More colors (the regular GUI ones)
+  else if(c < 0x1e) { // first actual character is large dash
+    // More colors (the regular GUI ones)
     _textcolor = c + 0x100;
   }
   else if(c == 0x7f) { // toggle inverse video (DEL char)

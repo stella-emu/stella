@@ -75,6 +75,7 @@ void CpuDebug::saveOldState()
 string CpuDebug::toString()
 {
   // TODO - this doesn't seem to be used anywhere ??
+  //        if it's ever used, convert to C++ stringstream
   string result;
   char buf[255];
 

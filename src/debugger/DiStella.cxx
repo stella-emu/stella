@@ -224,7 +224,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           myDisasmBuf << HEX4 << myPC+myOffset << "'     '";
 
         bool isPGfx = check_bit(myPC, CartDebug::PGFX);
-        const string& bit_string = isPGfx ? "\x80" : "\x7f";
+        const string& bit_string = isPGfx ? "\x1f" : "\x1e";
         uInt8 byte = Debugger::debugger().peek(myPC+myOffset);
         myDisasmBuf << ".byte $" << HEX2 << (int)byte << "  |";
         for(uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
@@ -275,7 +275,7 @@ void DiStella::disasm(uInt32 distart, int pass)
              && pass == 3 && myPC <= myAppData.end)
       {
         bytes++;
-        if (bytes == 17)
+        if (bytes == 9) // TODO - perhaps make this configurable to size of output area
         {
           addEntry(CartDebug::ROW);
           myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
