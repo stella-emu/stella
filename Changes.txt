@@ -24,10 +24,9 @@
     core knows when an address is referenced as code, making for very
     accurate disassembled output.  Related to this, the emulation core now
     tracks accesses to GRPx and PFx registers, automatically marking the
-    addresses as GFX or PGFX sections.  Most bankswitch schemes have been
-    modified for this functionality, except for 3E, 4A50, AR, FE and MC.
-    This will be improved in future releases, as there are many ways to
-    store data in the graphics registers.
+    addresses as GFX or PGFX sections.  This will be improved in future
+    releases, as there are many ways to store data in the graphics
+    registers.
 
   * Improved output of graphics output in the disassembler, by marking
     such addresses with a bitmap of the data they represent.  This
@@ -58,7 +57,7 @@
     into with various load commands.
 
   * Many commands in the debugger prompt are now case-insensitive;
-    further improvements will be made in a future release.
+    further improvements will be made in future releases.
 
   * Many improvements to the built-in Distella disassembler.  When passing
     a relative branch or jump, data is now disassembled as code only if
@@ -86,8 +85,8 @@
     the desktop background was 'bleeding through', resulting in a very
     annoying flickering.
 
-  * Fixed crashes when opening windows larger than the desktop resolution;
-    this is now allowed only in windowed mode.
+  * Fixed crashes when opening windows larger than the desktop resolution
+    in fullscreen mode; this is now allowed only in windowed mode.
 
   * Application window centering now also works when switching between
     video modes, not just when starting the application.
