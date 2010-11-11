@@ -25,8 +25,6 @@
 #include "TIA.hxx"
 #include "Cart4A50.hxx"
 
-// TODO (2010-10-03) - support CodeAccessBase functionality somehow
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
                              const Settings& settings)
@@ -39,6 +37,15 @@ Cartridge4A50::Cartridge4A50(const uInt8* image, uInt32 size,
   else                    size = 131072;
   for(uInt32 slice = 0; slice < 131072 / size; ++slice)
     memcpy(myImage + (slice*size), image, size);
+
+  // We use System::PageAccess.codeAccessBase, but don't allow its use
+  // through a pointer, since the address space of 4A50 carts can change
+  // at the instruction level, and PageAccess is normally defined at an
+  // interval of 64 bytes
+  //
+  // Instead, access will be through the getAccessFlags and setAccessFlags
+  // methods below
+  createCodeAccessBase(131072 + 32768);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -193,6 +200,69 @@ bool Cartridge4A50::poke(uInt16 address, uInt8 value)
 
   return myBankChanged;
 } 
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Cartridge4A50::getAccessFlags(uInt16 address)
+{
+  if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
+  {
+    if(myIsRomLow)
+      return myCodeAccessBase[(address & 0x7ff) + mySliceLow];
+    else
+      return myCodeAccessBase[131072 + (address & 0x7ff) + mySliceLow];
+  }
+  else if(((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
+          ((address & 0x1fff) <= 0x1dff))
+  {
+    if(myIsRomMiddle)
+      return myCodeAccessBase[(address & 0x7ff) + mySliceMiddle + 0x10000];
+    else
+      return myCodeAccessBase[131072 + (address & 0x7ff) + mySliceMiddle];
+  }
+  else if((address & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
+  {
+    if(myIsRomHigh)
+      return myCodeAccessBase[(address & 0xff) + mySliceHigh + 0x10000];
+    else
+      return myCodeAccessBase[131072 + (address & 0xff) + mySliceHigh];
+  }
+  else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
+  {
+    return myCodeAccessBase[(address & 0xff) + 0x1ff00];
+  }
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Cartridge4A50::setAccessFlags(uInt16 address, uInt8 flags)
+{
+  if((address & 0x1800) == 0x1000)           // 2K region from 0x1000 - 0x17ff
+  {
+    if(myIsRomLow)
+      myCodeAccessBase[(address & 0x7ff) + mySliceLow] |= flags;
+    else
+      myCodeAccessBase[131072 + (address & 0x7ff) + mySliceLow] |= flags;
+  }
+  else if(((address & 0x1fff) >= 0x1800) &&  // 1.5K region from 0x1800 - 0x1dff
+          ((address & 0x1fff) <= 0x1dff))
+  {
+    if(myIsRomMiddle)
+      myCodeAccessBase[(address & 0x7ff) + mySliceMiddle + 0x10000] |= flags;
+    else
+      myCodeAccessBase[131072 + (address & 0x7ff) + mySliceMiddle] |= flags;
+  }
+  else if((address & 0x1f00) == 0x1e00)      // 256B region from 0x1e00 - 0x1eff
+  {
+    if(myIsRomHigh)
+      myCodeAccessBase[(address & 0xff) + mySliceHigh + 0x10000] |= flags;
+    else
+      myCodeAccessBase[131072 + (address & 0xff) + mySliceHigh] |= flags;
+  }
+  else if((address & 0x1f00) == 0x1f00)      // 256B region from 0x1f00 - 0x1fff
+  {
+    myCodeAccessBase[(address & 0xff) + 0x1ff00] |= flags;
+  }
+}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Cartridge4A50::checkBankSwitch(uInt16 address, uInt8 value)

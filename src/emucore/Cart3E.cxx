@@ -24,8 +24,6 @@
 #include "TIA.hxx"
 #include "Cart3E.hxx"
 
-// TODO (2010-10-10) - support CodeAccessBase functionality somehow
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,
                          const Settings& settings)
@@ -37,7 +35,7 @@ Cartridge3E::Cartridge3E(const uInt8* image, uInt32 size,
 
   // Copy the ROM image into my buffer
   memcpy(myImage, image, mySize);
-  createCodeAccessBase(mySize);
+  createCodeAccessBase(mySize + 32768);
 
   // This cart can address a 1024 byte bank of RAM @ 0x1000
   // However, it may not be addressable all the time (it may be swapped out)
@@ -210,6 +208,7 @@ bool Cartridge3E::bank(uInt16 bank)
     for(address = 0x1000; address < 0x1400; address += (1 << shift))
     {
       access.directPeekBase = &myRam[offset + (address & 0x03FF)];
+      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (address & 0x03FF)];
       mySystem->setPageAccess(address >> shift, access);
     }
 
@@ -220,6 +219,7 @@ bool Cartridge3E::bank(uInt16 bank)
     for(address = 0x1400; address < 0x1800; address += (1 << shift))
     {
       access.directPokeBase = &myRam[offset + (address & 0x03FF)];
+      access.codeAccessBase = &myCodeAccessBase[mySize + offset + (address & 0x03FF)];
       mySystem->setPageAccess(address >> shift, access);
     }
   }

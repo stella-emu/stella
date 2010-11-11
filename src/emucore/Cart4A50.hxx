@@ -153,6 +153,15 @@ class Cartridge4A50 : public Cartridge
 
   private:
     /**
+      Query/change the given address type to use the given disassembly flags
+
+      @param address The address to modify
+      @param flags A bitfield of DisasmType directives for the given address
+    */
+    uInt8 getAccessFlags(uInt16 address);
+    void setAccessFlags(uInt16 address, uInt8 flags);
+
+    /**
       Check all possible hotspots
     */
     void checkBankSwitch(uInt16 address, uInt8 value);

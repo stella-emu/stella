@@ -23,8 +23,6 @@
 #include "System.hxx"
 #include "CartFE.hxx"
 
-// TODO (2010-10-03) - support CodeAccessBase functionality somehow
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeFE::CartridgeFE(const uInt8* image, const Settings& settings)
   : Cartridge(settings),
@@ -34,6 +32,15 @@ CartridgeFE::CartridgeFE(const uInt8* image, const Settings& settings)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, 8192);
+
+  // We use System::PageAccess.codeAccessBase, but don't allow its use
+  // through a pointer, since the address space of FE carts can change
+  // at the instruction level, and PageAccess is normally defined at an
+  // interval of 64 bytes
+  //
+  // Instead, access will be through the getAccessFlags and setAccessFlags
+  // methods below
+  createCodeAccessBase(8192);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -80,6 +87,20 @@ uInt8 CartridgeFE::peek(uInt16 address)
 bool CartridgeFE::poke(uInt16, uInt8)
 {
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeFE::getAccessFlags(uInt16 address)
+{
+  return myCodeAccessBase[(address & 0x0FFF) +
+            (((address & 0x2000) == 0) ? 4096 : 0)];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFE::setAccessFlags(uInt16 address, uInt8 flags)
+{
+  myCodeAccessBase[(address & 0x0FFF) +
+      (((address & 0x2000) == 0) ? 4096 : 0)] |= flags;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

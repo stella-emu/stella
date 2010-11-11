@@ -160,6 +160,16 @@ class CartridgeFE : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
+    /**
+      Query/change the given address type to use the given disassembly flags
+
+      @param address The address to modify
+      @param flags A bitfield of DisasmType directives for the given address
+    */
+    uInt8 getAccessFlags(uInt16 address);
+    void setAccessFlags(uInt16 address, uInt8 flags);
+
+  private:
     // The 8K ROM image of the cartridge
     uInt8 myImage[8192];
 

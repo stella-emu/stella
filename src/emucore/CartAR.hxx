@@ -151,6 +151,15 @@ class CartridgeAR : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
+    /**
+      Query/change the given address type to use the given disassembly flags
+
+      @param address The address to modify
+      @param flags A bitfield of DisasmType directives for the given address
+    */
+    uInt8 getAccessFlags(uInt16 address);
+    void setAccessFlags(uInt16 address, uInt8 flags);
+
     // Handle a change to the bank configuration
     bool bankConfiguration(uInt8 configuration);
 
@@ -175,6 +184,9 @@ class CartridgeAR : public Cartridge
 
     // The 256 byte header for the current 8448 byte load
     uInt8 myHeader[256];
+
+    // Size of the ROM image
+    uInt32 mySize;
 
     // All of the 8448 byte loads associated with the game 
     uInt8* myLoadImages;

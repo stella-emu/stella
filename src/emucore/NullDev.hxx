@@ -101,5 +101,5 @@ class NullDevice : public Device
     */
     bool poke(uInt16 address, uInt8 value);
 };
+
 #endif
- 

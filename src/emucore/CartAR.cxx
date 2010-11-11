@@ -24,25 +24,29 @@
 #include "System.hxx"
 #include "CartAR.hxx"
 
-// TODO (2010-10-03) - support CodeAccessBase functionality somehow
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartridgeAR::CartridgeAR(const uInt8* image, uInt32 size,
                          const Settings& settings)
   : Cartridge(settings),
-    my6502(0)
+    my6502(0),
+    mySize(BSPF_max(size, 8448u))
 {
-  // Minimum size supported internally is 8448 bytes
-  uInt32 minsize = BSPF_max(size, 8448u);
-
   // Create a load image buffer and copy the given image
-  myLoadImages = new uInt8[minsize];
-  myNumberOfLoadImages = minsize / 8448;
+  myLoadImages = new uInt8[mySize];
+  myNumberOfLoadImages = mySize / 8448;
   memcpy(myLoadImages, image, size);
 
   // Add header if image doesn't include it
   if(size < 8448)
     memcpy(myLoadImages+8192, ourDefaultHeader, 256);
+
+  // We use System::PageAccess.codeAccessBase, but don't allow its use
+  // through a pointer, since the AR scheme doesn't support bankswitching
+  // in the normal sense
+  //
+  // Instead, access will be through the getAccessFlags and setAccessFlags
+  // methods below
+  createCodeAccessBase(mySize);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -214,6 +218,20 @@ bool CartridgeAR::poke(uInt16 addr, uInt8)
   }
 
   return modified;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeAR::getAccessFlags(uInt16 address)
+{
+  return myCodeAccessBase[(address & 0x07FF) +
+           myImageOffset[(address & 0x0800) ? 1 : 0]];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeAR::setAccessFlags(uInt16 address, uInt8 flags)
+{
+  myCodeAccessBase[(address & 0x07FF) +
+    myImageOffset[(address & 0x0800) ? 1 : 0]] |= flags;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -440,7 +458,7 @@ bool CartridgeAR::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeAR::getImage(int& size) const
 {
-  size = myNumberOfLoadImages * 8448;
+  size = mySize;
   return myLoadImages;
 }
 
