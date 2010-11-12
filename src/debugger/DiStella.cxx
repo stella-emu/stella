@@ -115,7 +115,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         // Therefore, we stop at the first such address encountered
         for (uInt32 k = myPCBeg; k <= myPCEnd; k++)
         {
-          if(Debugger::debugger().getAddressDisasmType(k) &
+          if(Debugger::debugger().getAccessFlags(k) &
              (CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX))
           {
             myPCEnd = k - 1;
@@ -147,7 +147,6 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
           uInt16 addr = *it;
           if(!check_bit(addr-myOffset, CartDebug::CODE))
           {
-//cerr << "(list) marking " << HEX4 << addr << " as CODE\n";
             myAddressQueue.push(addr);
             ++it;
             break;
@@ -160,10 +159,9 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         // been referenced as CODE
         while(it == addresses.end() && codeAccessPoint <= myAppData.end)
         {
-          if((Debugger::debugger().getAddressDisasmType(codeAccessPoint+myOffset) & CartDebug::CODE)
+          if((Debugger::debugger().getAccessFlags(codeAccessPoint+myOffset) & CartDebug::CODE)
              && !(myLabels[codeAccessPoint & myAppData.end] & CartDebug::CODE))
           {
-//cerr << "(emul) marking " << HEX4 << (codeAccessPoint+myOffset) << " as CODE\n";
             myAddressQueue.push(codeAccessPoint+myOffset);
             ++codeAccessPoint;
             break;
@@ -849,7 +847,7 @@ bool DiStella::check_bit(uInt16 address, uInt8 mask) const
   uInt8 label     = myLabels[address & myAppData.end],
         lastbits  = label & 0x03,
         directive = myDirectives[address & myAppData.end] & 0xFC,
-        debugger  = Debugger::debugger().getAddressDisasmType(address | myOffset) & 0xFC;
+        debugger  = Debugger::debugger().getAccessFlags(address | myOffset) & 0xFC;
 
   // Any address marked by a manual directive always takes priority
   if(directive)
@@ -945,7 +943,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       // but it could also indicate that code will *never* be accessed
       // Since it is impossible to tell the difference, marking the address
       // in the disassembly at least tells the user about it
-      if(!(Debugger::debugger().getAddressDisasmType(tag.address) & CartDebug::CODE)
+      if(!(Debugger::debugger().getAccessFlags(tag.address) & CartDebug::CODE)
          && myAppData.length >= 4096)
         tag.ccount += " *";
       break;

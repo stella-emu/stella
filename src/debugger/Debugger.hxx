@@ -283,10 +283,10 @@ class Debugger : public DialogContainer
     /* These are now exposed so Expressions can use them. */
     int peek(int addr) { return mySystem->peek(addr); }
     int dpeek(int addr) { return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8); }
-    inline int getAddressDisasmType(uInt16 addr)
-    { return mySystem->getAddressDisasmType(addr); }
-    inline void setAddressDisasmType(uInt16 addr, uInt8 flags)
-    { mySystem->setAddressDisasmType(addr, flags); }
+    inline int getAccessFlags(uInt16 addr)
+    { return mySystem->getAccessFlags(addr); }
+    inline void setAccessFlags(uInt16 addr, uInt8 flags)
+    { mySystem->setAccessFlags(addr, flags); }
 
     void setBreakPoint(int bp, bool set);
 

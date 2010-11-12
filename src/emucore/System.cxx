@@ -265,7 +265,7 @@ void System::poke(uInt16 addr, uInt8 value)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 System::getAddressDisasmType(uInt16 addr)
+uInt8 System::getAccessFlags(uInt16 addr)
 {
 #ifdef DEBUGGER_SUPPORT
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];
@@ -280,7 +280,7 @@ uInt8 System::getAddressDisasmType(uInt16 addr)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::setAddressDisasmType(uInt16 addr, uInt8 flags)
+void System::setAccessFlags(uInt16 addr, uInt8 flags)
 {
 #ifdef DEBUGGER_SUPPORT
   PageAccess& access = myPageAccessTable[(addr & myAddressMask) >> myPageShift];

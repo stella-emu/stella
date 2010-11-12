@@ -293,10 +293,10 @@ class System : public Serializable
     /**
       Access and modify the disassembly type flags for the given
       address.  Note that while any flag can be used, the disassembly
-      only really acts on SKIP/CODE/GFX/DATA/ROW.
+      only really acts on SKIP/CODE/GFX/PGFX/DATA/ROW.
     */
-    uInt8 getAddressDisasmType(uInt16 address);
-    void setAddressDisasmType(uInt16 address, uInt8 flags);
+    uInt8 getAccessFlags(uInt16 address);
+    void setAccessFlags(uInt16 address, uInt8 flags);
 
   public:
     /**

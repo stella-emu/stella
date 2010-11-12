@@ -1475,7 +1475,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAddressDisasmType(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
     #endif
       break;
     }
@@ -1492,7 +1492,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAddressDisasmType(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
     #endif
       break;
     }
@@ -1509,7 +1509,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAddressDisasmType(dataAddr, CartDebug::PGFX);
+        mySystem->setAccessFlags(dataAddr, CartDebug::PGFX);
     #endif
       break;
     }
@@ -1749,7 +1749,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAddressDisasmType(dataAddr, CartDebug::GFX);
+        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
     #endif
       break;
     }
@@ -1792,7 +1792,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     #ifdef DEBUGGER_SUPPORT
       uInt16 dataAddr = mySystem->m6502().lastDataAddressForPoke();
       if(dataAddr)
-        mySystem->setAddressDisasmType(dataAddr, CartDebug::GFX);
+        mySystem->setAccessFlags(dataAddr, CartDebug::GFX);
     #endif
       break;
     }

@@ -1011,7 +1011,7 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
   }
 
   uInt8 directive = myDisDirectives[addr & 0xFFF] & 0xFC,
-        debugger  = myDebugger.getAddressDisasmType(addr) & 0xFC,
+        debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
         label     = myDisLabels[addr & 0xFFF];
 
   string s1 = Debugger::to_bin_8(directive),
