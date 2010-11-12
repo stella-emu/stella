@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.2.2 to 3.3: (November 15, 2010)
+3.2.2 to 3.3: (November 12, 2010)
 
   * Added the following Distella 'directives', which are used to override
     and specifically tell the debugger how to treat address space (CODE,
