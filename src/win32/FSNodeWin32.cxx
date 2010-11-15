@@ -243,7 +243,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
   if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
     _path = myHomeFinder.getHomePath();
-    // Skip over the tilda.  We know that p contains at least
+    // Skip over the tilde.  We know that p contains at least
     // two chars, so this is safe:
     _path += p.c_str() + 1;
   }
@@ -253,7 +253,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
     char path[MAX_PATH];
     GetCurrentDirectory(MAX_PATH, path);
     _path = path;
-    // Skip over the tilda.  We know that p contains at least
+    // Skip over the dot.  We know that p contains at least
     // two chars, so this is safe:
     _path += p.c_str() + 1;
   }

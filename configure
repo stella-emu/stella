@@ -472,7 +472,7 @@ else
 	echo_n "Checking hosttype... "
 	echo $_host_os
 	case $_host_os in
-		linux* | openbsd* | freebsd* | netbsd* | bsd* | sunos* | hpux* | beos*)
+		linux* | openbsd* | freebsd* | kfreebsd* | netbsd* | bsd* | gnu0.3 | sunos* | hpux* | beos*)
 			DEFINES="$DEFINES -DUNIX"
 			_host_os=unix
 			;;

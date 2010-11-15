@@ -134,7 +134,11 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
   if ( p.length() >= 2 && p[0] == '~' && p[1] == '/')
   {
     const char *home = getenv("HOME");
+#ifdef MAXPATHLEN
     if (home != NULL && strlen(home) < MAXPATHLEN)
+#else // No MAXPATHLEN, as happens on Hurd
+    if (home != NULL)
+#endif
     {
       _path = home;
       // Skip over the tilde.  We know that p contains at least
@@ -145,14 +149,22 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
   // Expand "./" to the current directory
   else if ( p.length() >= 2 && p[0] == '.' && p[1] == '/')
   {
+#ifdef MAXPATHLEN
     char buf[MAXPATHLEN];
     char* ret = getcwd(buf, MAXPATHLEN);
-    if (ret == buf)
+#else // No MAXPATHLEN, as happens on Hurd
+    char* ret = get_current_dir_name();
+    char* buf = ret;
+#endif
+    if (ret == buf && ret != NULL)
     {
       _path = buf;
-      // Skip over the tilda.  We know that p contains at least
+      // Skip over the dot.  We know that p contains at least
       // two chars, so this is safe:
       _path += p.c_str() + 1;
+#ifndef MAXPATHLEN
+      free(ret);
+#endif
     }
   }
   else
