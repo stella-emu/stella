@@ -1,4 +1,4 @@
-===========================================================================
+ ===========================================================================
 
      SSSS    tt          lll  lll
     SS  SS   tt           ll   ll
@@ -11,6 +11,13 @@
 ===========================================================================
                                Release History
 ===========================================================================
+
+3.3 to 3.4: (xx. xx, 2010)
+
+  * Updated built-in version of the PNG library to the latest version.
+
+-Have fun!
+
 
 3.2.2 to 3.3: (November 12, 2010)
 
@@ -102,8 +109,6 @@
 
   * State files from older versions will no longer work in this release,
     because of the extensive changes to the debugger and disassembler.
-
--Have fun!
 
 
 3.2.1 to 3.2.2: (September 17, 2010)
