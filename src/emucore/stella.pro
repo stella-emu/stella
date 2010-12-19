@@ -13,7 +13,7 @@
 ""
 
 "Cartridge.MD5" "00b7b4cbec81570642283e7fc1ef17af"
-"Cartridge.Manufacturer" "Sega - Beck-Tech"
+"Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech - Teldec"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega)"
 "Display.YStart" "36"
@@ -48,7 +48,7 @@
 "Cartridge.MD5" "00ce76ad69cdc2fa36ada01ae092d5a6"
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP214"
-"Cartridge.Name" "Cosmic Avenger (4 Game in One Light Green) (1983) (BitCorp) (PAL)"
+"Cartridge.Name" "Cosmic Avenger (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cartridge.Note" "AKA StarMaster"
 ""
 
@@ -104,7 +104,7 @@
 "Cartridge.MD5" "02a5fc90a0d183f870e8eebac1f16591"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "771-422"
-"Cartridge.Name" "2 Pak Special Yellow - Star Warrior, Frogger (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Star Warrior, Frogger (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "012020625a3227815e47b37fd025e480"
@@ -147,9 +147,9 @@
 ""
 
 "Cartridge.MD5" "012b8e6ef3b5fd5aabc94075c527709d"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (1983) (Starpath)"
+"Cartridge.Name" "Party Mix (1983) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -309,7 +309,7 @@
 ""
 
 "Cartridge.MD5" "03c3f7ba4585e349dd12bfa7b34b7729"
-"Cartridge.Manufacturer" "Sega, Robert Zdybel"
+"Cartridge.Manufacturer" "Sega, Jeff Lorenz"
 "Cartridge.ModelNo" "004-01"
 "Cartridge.Name" "Star Trek - Strategic Operations Simulator (1983) (Sega)"
 "Display.Phosphor" "YES"
@@ -331,9 +331,9 @@
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (1983) (Starpath)"
+"Cartridge.Name" "Survival Island (1983) (Arcadia)"
 "Cartridge.Note" "AKA Jungle Raid"
 "Display.YStart" "30"
 ""
@@ -355,7 +355,7 @@
 ""
 
 "Cartridge.MD5" "04b488d4eef622d022a0021375e7e339"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83107"
 "Cartridge.Name" "Tennis (1983) (Home Vision) (PAL) (4K)"
 ""
@@ -736,9 +736,9 @@
 ""
 
 "Cartridge.MD5" "08f4dc6f118f7c98e2406c180c08e78e"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix - Tug of War (2 of 3) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Party Mix - Tug of War (2 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -837,13 +837,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "0a05790ac65f08f214321598c31f16b8"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]"
-"Cartridge.Rarity" "Prototype"
-""
-
 "Cartridge.MD5" "0abf64ca504a116adca80f77f85e00fb"
 "Cartridge.Name" "Cube Conquest (Billy Eno) (PD)"
 ""
@@ -921,7 +914,7 @@
 ""
 
 "Cartridge.MD5" "0b17ed42984000da8b727ca46143f87a"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (05-17-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controller"
@@ -946,9 +939,9 @@
 ""
 
 "Cartridge.MD5" "0bf1e354304f46c0caf8fc0f6f5e9525"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
-"Cartridge.Name" "Official Frogger (1983) (Starpath) [a]"
+"Cartridge.Name" "Official Frogger (1983) (Arcadia) [a]"
 "Display.YStart" "32"
 ""
 
@@ -1194,9 +1187,9 @@
 ""
 
 "Cartridge.MD5" "0e86470791b26292abe1c64545c47985"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -1246,7 +1239,7 @@
 ""
 
 "Cartridge.MD5" "0f39fc03d579d0d93a6b729a3746843e"
-"Cartridge.Manufacturer" "Atari, Nick 'Sandy Maiwald' Turner"
+"Cartridge.Manufacturer" "Atari, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
 "Cartridge.ModelNo" "CX26111"
 "Cartridge.Name" "Snoopy and the Red Baron (05-27-1983) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -1310,15 +1303,6 @@
 
 "Cartridge.MD5" "0fd518e9435f5ab0893d79ee0d63fc92"
 "Cartridge.Name" "Greeting Cart Jeri Ryan (SnailSoft)(PD)"
-""
-
-"Cartridge.MD5" "0ff1faa9643e91b814e92b7cb3b5d31f"
-"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
-"Cartridge.ModelNo" "AR-4000, AR-4100"
-"Cartridge.Name" "Phaser Patrol (1982) (Arcadia) (Prototype) [a]"
-"Cartridge.Rarity" "Prototype"
-"Display.YStart" "24"
-"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "103e9d616328969f5d7b4e0a381b25d5"
@@ -1486,12 +1470,6 @@
 "Cartridge.Name" "Cosmic Commuter (1984) (Activision)"
 ""
 
-"Cartridge.MD5" "12cd04d3298633413a756795c49dc0c6"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath)"
-""
-
 "Cartridge.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
 "Cartridge.Manufacturer" "Epyx, Steven A. Baker, Tod Frye, Peter Engelbrite"
 "Cartridge.ModelNo" "80561-00250"
@@ -1504,7 +1482,7 @@
 ""
 
 "Cartridge.MD5" "130c5742cd6cbe4877704d733d5b08ca"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83109"
 "Cartridge.Name" "World End (1983) (Home Vision) (PAL)"
 ""
@@ -1678,7 +1656,7 @@
 "Cartridge.MD5" "153f40e335e5cb90f5ce02e54934ab62"
 "Cartridge.Manufacturer" "Absolute Entertainment, Alex DeMeo"
 "Cartridge.ModelNo" "EAZ-041-04I"
-"Cartridge.Name" "Title Match Pro Wrestling (1987) (Absolute) (PAL) [a]"
+"Cartridge.Name" "Title Match Pro Wrestling (1987) (Absolute) (PAL)"
 ""
 
 "Cartridge.MD5" "152c253478b009c275e18cd731b48561"
@@ -1689,11 +1667,6 @@
 "Cartridge.Manufacturer" "Parker Brothers, Laura Nikolich"
 "Cartridge.Name" "Care Bears (1983) (Parker Bros) (Prototype)"
 "Cartridge.Rarity" "Prototype"
-""
-
-"Cartridge.MD5" "152e55f88af3ff647e75a3070b7b6842"
-"Cartridge.Name" "Turmoil (1983) (Unknown) (Hack)"
-"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "1542662f665d2ffaa77b4b897dd2e2af"
@@ -1910,7 +1883,7 @@
 ""
 
 "Cartridge.MD5" "1802cc46b879b229272501998c5de04f"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -1941,13 +1914,13 @@
 
 "Cartridge.MD5" "5b9c2e0012fbfd29efd3306359bbfc4a"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Light Green - Hoppy, Alien Force (1992) (HES) (PAL) [a]"
+"Cartridge.Name" "2 Pak Special - Hoppy, Alien Force (1992) (HES) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "2e842c2ee22e9dad9df16eed091315c4"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "0701-157"
-"Cartridge.Name" "2 Pak Special Red - Motocross, Boom Bang (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Motocross, Boom Bang (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "291bcdb05f2b37cdf9452d2bf08e0321"
@@ -2015,7 +1988,7 @@
 ""
 
 "Cartridge.MD5" "18f299edb5ba709a64c80c8c9cec24f2"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83111"
 "Cartridge.Name" "Asteroid Fire (1983) (Home Vision) (PAL)"
 "Cartridge.Rarity" "Extremely Rare"
@@ -2139,7 +2112,7 @@
 ""
 
 "Cartridge.MD5" "1a613ce60fc834d4970e1e674b9196b3"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83135"
 "Cartridge.Name" "Tanks War (1983) (Home Vision) (PAL)"
 "Cartridge.Note" "AKA Phantom Tank"
@@ -2304,13 +2277,12 @@
 ""
 
 "Cartridge.MD5" "1e060a8025512ad2127e3da11e212ccc"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "13"
-"Cartridge.Name" "Sweat! (4 of 4) (1983) (Starpath) (Prototype)"
-"Cartridge.Note" "Uses the Paddle Controllers"
+"Cartridge.Name" "Sweat! - The Decathlon Game (3 of 3) (1983) (Arcadia) (Prototype)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "1e1817d9cbcc3ba75043b7db4e6c228f"
@@ -2390,9 +2362,9 @@
 ""
 
 "Cartridge.MD5" "1ee2cfc7d0333b96bd11f7f3ec8ce8bc"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "200a9d2a7cb4441ce4f002df6aa47e38"
@@ -2713,7 +2685,7 @@
 ""
 
 "Cartridge.MD5" "23d445ea19a18fb78d5035878d9fb649"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "CBS Electronics, Sylvia Day, Henry Will IV"
 "Cartridge.ModelNo" "4L1818, 4L1819, 4L1820"
 "Cartridge.Name" "Mouse Trap (1982) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
@@ -2728,7 +2700,7 @@
 ""
 
 "Cartridge.MD5" "2432f33fd278dea5fe6ae94073627fcc"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "CBS Electronics, Tom DiDomenico"
 "Cartridge.ModelNo" "4L2477, 4L2482, 4L2485, 4L4171"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
@@ -2794,7 +2766,7 @@
 ""
 
 "Cartridge.MD5" "245f07c8603077a0caf5f83ee6cf8b43"
-"Cartridge.Manufacturer" "HomeVision - Thomas Jentzsch"
+"Cartridge.Manufacturer" "Home Vision - Thomas Jentzsch"
 "Cartridge.Name" "Parachute (Thomas Jentzsch)"
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
@@ -2992,9 +2964,9 @@
 ""
 
 "Cartridge.MD5" "271bfd5dc2673d382019f1fb6cab9332"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "26f4f8b098609164effef7809e0121e1"
@@ -3035,9 +3007,9 @@
 ""
 
 "Cartridge.MD5" "277c7281ac945b8331e2e6fcad560c11"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (2 of 3) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Survival Island (2 of 3) (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "281ff9bd0470643853de5cbd6d9e17f5"
@@ -3160,10 +3132,10 @@
 ""
 
 "Cartridge.MD5" "28d5df3ed036ed63d33a31d0d8b85c47"
-"Cartridge.Manufacturer" "Bit Corporation"
-"Cartridge.ModelNo" "PG204"
-"Cartridge.Name" "Open, Sesame! (1982) (BitCorp) (PAL)"
-"Display.Height" "256"
+"Cartridge.Manufacturer" "Goliath"
+"Cartridge.ModelNo" "5"
+"Cartridge.Name" "Open Sesame (1983) (Goliath) (PAL) [a]"
+"Cartridge.Note" "AKA Open, Sesame!"
 "Display.Phosphor" "YES"
 ""
 
@@ -3287,7 +3259,7 @@
 ""
 
 "Cartridge.MD5" "2cb42cf62b2f25f59f909b5447821b14"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari) (PAL) [a]"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -3329,7 +3301,7 @@
 "Cartridge.MD5" "2a360bc85bf22de438651cf92ffda1de"
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP213"
-"Cartridge.Name" "Spy Vs. Spy (4 Game in One Light Green) (1983) (BitCorp) (PAL)"
+"Cartridge.Name" "Spy Vs. Spy (4 Game in One) (1983) (BitCorp) (PAL)"
 "Cartridge.Note" "AKA Chopper Command"
 ""
 
@@ -3370,10 +3342,10 @@
 ""
 
 "Cartridge.MD5" "2b1589c7e1f394ae6a1c046944f06688"
-"Cartridge.Manufacturer" "Carrere Video, Todd Marshall, Wes Trager, Henry Will - Teldec"
+"Cartridge.Manufacturer" "Carrere Video, Todd Marshall, Wes Trager, Henry Will IV - Teldec"
 "Cartridge.ModelNo" "USC2003"
 "Cartridge.Name" "Eggomania (1983) (Carrere Video) (PAL)"
-"Cartridge.Note" "Uses the Paddle Controllers"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 ""
 
@@ -3537,7 +3509,7 @@
 ""
 
 "Cartridge.MD5" "2d76c5d1aad506442b9e9fb67765e051"
-"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ed Salvo"
+"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ernie Runyon, Ed Salvo"
 "Cartridge.ModelNo" "AP-2004"
 "Cartridge.Name" "Lost Luggage (1981) (Apollo) [no opening scene]"
 ""
@@ -3548,7 +3520,7 @@
 ""
 
 "Cartridge.MD5" "2d2c5f0761e609e3c5228766f446f7f8"
-"Cartridge.Manufacturer" "Atari - Axlon, Nolan Bushnell, Steve DeFrisco"
+"Cartridge.Manufacturer" "Atari - Axlon, Steve DeFrisco"
 "Cartridge.ModelNo" "CX26170, CX26170P"
 "Cartridge.Name" "Secret Quest (1989) (Atari) (PAL)"
 ""
@@ -3575,9 +3547,9 @@
 ""
 
 "Cartridge.MD5" "2d9e65959808a6098c16c82a59c9d9dc"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "2e1401b931c9eb064af5e0a7184e598d"
@@ -3691,7 +3663,7 @@
 ""
 
 "Cartridge.MD5" "2f0546c4d238551c7d64d884b618100c"
-"Cartridge.Manufacturer" "Sega, Stance Nixon"
+"Cartridge.Manufacturer" "Sega, Jeff Lorenz"
 "Cartridge.Name" "Ixion (1984) (Sega) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
@@ -3817,15 +3789,15 @@
 ""
 
 "Cartridge.MD5" "3105967f7222cc36a5ac6e5f6e89a0b4"
-"Cartridge.Manufacturer" "Sega - Bally Midway"
+"Cartridge.Manufacturer" "Sega, Jeff Lorenz - Bally Midway"
 "Cartridge.ModelNo" "011-01, 011-02"
 "Cartridge.Name" "Spy Hunter (1984) (Sega)"
-"Cartridge.Note" "Uses Joystick Coupler"
+"Cartridge.Note" "Uses Joystick Coupler (Dual Control Module)"
 "Display.YStart" "29"
 ""
 
 "Cartridge.MD5" "30f0b49661cfcfd4ec63395fab837dc3"
-"Cartridge.Manufacturer" "Sega, Robert Zdybel - Teldec"
+"Cartridge.Manufacturer" "Sega, Jeff Lorenz - Teldec"
 "Cartridge.ModelNo" "004-01"
 "Cartridge.Name" "Star Trek - Strategic Operations Simulator (1983) (Sega) (PAL)"
 "Display.Phosphor" "YES"
@@ -4025,7 +3997,7 @@
 ""
 
 "Cartridge.MD5" "33d68c3cd74e5bc4cf0df3716c5848bc"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "CBS Electronics, Tom DiDomenico"
 "Cartridge.ModelNo" "4L 2486 5000"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics)"
 "Display.YStart" "32"
@@ -4037,7 +4009,7 @@
 ""
 
 "Cartridge.MD5" "335a7c5cfa6fee0f35f5824d1fa09aed"
-"Cartridge.Manufacturer" "Sega - Beck-Tech - Teldec"
+"Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech - Teldec"
 "Cartridge.ModelNo" "006-01 - 3.60105 VG"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) (PAL)"
 ""
@@ -4063,13 +4035,6 @@
 "Cartridge.Manufacturer" "Atari, Robert C. Polaro"
 "Cartridge.Name" "Dukes of Hazzard (1980) (Atari) (Prototype) (4K)"
 "Cartridge.Note" "AKA Stunt Cycle"
-"Cartridge.Rarity" "Prototype"
-""
-
-"Cartridge.MD5" "34303a7d4c9ad4500ca7f2ede9709595"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Excalibur V39 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -4110,7 +4075,7 @@
 ""
 
 "Cartridge.MD5" "345488d3b014b684a181108f0ef823cb"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "CBS Electronics, Tom DiDomenico"
 "Cartridge.ModelNo" "4L 2486 5000"
 "Cartridge.Name" "Blueprint (1983) (CBS Electronics) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -4180,9 +4145,9 @@
 ""
 
 "Cartridge.MD5" "3576037c9281656655fa114a835be553"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "35b10a248a7e67493ec43aeb9743538c"
@@ -4250,9 +4215,10 @@
 ""
 
 "Cartridge.MD5" "36306070f0c90a72461551a7a4f3a209"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Roger Booth, Sylvia Day, Ron Dubren, Todd Marshall, Wes Trager, Henry Will"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Roger Booth, Sylvia Day, Ron Dubren, Todd Marshall, Wes Trager, Henry Will IV"
 "Cartridge.ModelNo" "VC1007"
 "Cartridge.Name" "Name This Game (1982) (U.S. Games)"
+"Cartridge.Note" "AKA Guardians of Treasure, Octopussy"
 ""
 
 "Cartridge.MD5" "36a701c60a9f9768d057bc2a83526a80"
@@ -4292,9 +4258,9 @@
 ""
 
 "Cartridge.MD5" "36e47ed74968c365121eab60f48c6517"
-"Cartridge.Manufacturer" "Spectravideo - Quelle"
-"Cartridge.ModelNo" "SA-210 - 413.582 8"
-"Cartridge.Name" "Master Builder (1983) (Spectravideo) (PAL)"
+"Cartridge.Manufacturer" "Quelle"
+"Cartridge.ModelNo" "343.373 7"
+"Cartridge.Name" "Master Builder (1983) (Quelle) (PAL)"
 ""
 
 "Cartridge.MD5" "36c993dc328933e4dd6374a8ffe224f4"
@@ -4305,9 +4271,9 @@
 ""
 
 "Cartridge.MD5" "36c31bb5daeb103f488c66de67ac5075"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix - Bop a Buggy (1 of 3) (1983) (Starpath)"
+"Cartridge.Name" "Party Mix - Bop a Buggy (1 of 3) (1983) (Arcadia)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -4746,14 +4712,15 @@
 
 "Cartridge.MD5" "3caa902ac0ce4509308990645876426a"
 "Cartridge.Manufacturer" "Atari - GCC, Dave Payne"
-"Cartridge.ModelNo" "CX2669"
+"Cartridge.ModelNo" "CX2669, CX2669P"
 "Cartridge.Name" "Vanguard (1982) (Atari) (PAL)"
 ""
 
 "Cartridge.MD5" "3d1e83afdb4265fa2fb84819c9cfd39c"
-"Cartridge.Manufacturer" "Coleco"
+"Cartridge.Manufacturer" "Coleco, Henry Will IV"
 "Cartridge.ModelNo" "2465"
 "Cartridge.Name" "Smurf - Rescue in Gargamel's Castle (1982) (Coleco)"
+"Cartridge.Note" "AKA Smurf, Smurf Action"
 ""
 
 "Cartridge.MD5" "3cdd91e1c28d28e856c0063d602da166"
@@ -4819,7 +4786,7 @@
 ""
 
 "Cartridge.MD5" "3e03086da53ecc29d855d8edf10962cb"
-"Cartridge.Manufacturer" "CBS Electronics, Alex Leavens"
+"Cartridge.Manufacturer" "CBS Electronics, Joe Gaucher, Alex Leavens"
 "Cartridge.ModelNo" "4L1751, 4L1752, 4L1753, 4L2275"
 "Cartridge.Name" "Gorf (1982) (CBS Electronics) (PAL)"
 "Display.Phosphor" "YES"
@@ -5093,9 +5060,9 @@
 ""
 
 "Cartridge.MD5" "41810dd94bd0de1110bedc5092bef5b0"
-"Cartridge.Manufacturer" "Imagic, Bob Smith"
-"Cartridge.Name" "Dragonfire (1982) (Cheese)"
-"Cartridge.Rarity" "720020-1A, IA3611, IA3611C"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Dragon Treasure (Funvision)"
+"Cartridge.Note" "AKA Dragonfire"
 ""
 
 "Cartridge.MD5" "40aa851e8d0f1c555176a5e209a5fabb"
@@ -5186,8 +5153,9 @@
 ""
 
 "Cartridge.MD5" "4191b671bcd8237fc8e297b4947f2990"
-"Cartridge.Manufacturer" "Exus"
+"Cartridge.Manufacturer" "Exus Corporation"
 "Cartridge.Name" "Video Jogger (1983) (Exus)"
+"Cartridge.Note" "AKA Foot Craz"
 ""
 
 "Cartridge.MD5" "428b2d36f5d716765460701f7016ac91"
@@ -5230,7 +5198,7 @@
 ""
 
 "Cartridge.MD5" "42b2c3b4545f1499a083cfbc4a3b7640"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Todd Marshall, Wes Trager, Henry Will"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Todd Marshall, Wes Trager, Henry Will IV"
 "Cartridge.ModelNo" "VC2003"
 "Cartridge.Name" "Eggomania (1982) (U.S. Games)"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -5412,7 +5380,7 @@
 ""
 
 "Cartridge.MD5" "45cb0f41774b78def53331e4c3bf3362"
-"Cartridge.Manufacturer" "Carrere Video, Roger Booth, Sylvia Day, Todd Marshall, Wes Trager, Henry Will - Teldec"
+"Cartridge.Manufacturer" "Carrere Video, Roger Booth, Sylvia Day, Todd Marshall, Wes Trager, Henry Will IV - Teldec"
 "Cartridge.ModelNo" "USC1007"
 "Cartridge.Name" "Octopus (1983) (Carrere Video) (PAL)"
 "Cartridge.Note" "AKA Name This Game"
@@ -5452,7 +5420,7 @@
 ""
 
 "Cartridge.MD5" "468f2dec984f3d4114ea84f05edf82b6"
-"Cartridge.Manufacturer" "Tigervision, Bill Hogue - Teldec"
+"Cartridge.Manufacturer" "Tigervision - Teldec"
 "Cartridge.ModelNo" "7-011 - 3.60015 VG"
 "Cartridge.Name" "Miner 2049er Volume II (1983) (Tigervision) (PAL)"
 "Display.Phosphor" "YES"
@@ -5703,7 +5671,7 @@
 "Cartridge.MD5" "4d2cef8f19cafeec72d142e34a1bbc03"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "771-422"
-"Cartridge.Name" "2 Pak Special Yellow - Star Warrior, Frogger (1990) (HES) (PAL) [a]"
+"Cartridge.Name" "2 Pak Special - Star Warrior, Frogger (1990) (HES) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "4b27f5397c442d25f0c418ccdacf1926"
@@ -5718,7 +5686,7 @@
 ""
 
 "Cartridge.MD5" "4ac9f40ddfcf194bd8732a75b3f2f214"
-"Cartridge.Manufacturer" "Atari, Stephen Keith, Preston Stuart"
+"Cartridge.Manufacturer" "Atari, Stephan R. Keith, Preston Stuart"
 "Cartridge.ModelNo" "CX26106"
 "Cartridge.Name" "Grover's Music Maker (12-29-1982) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -5751,9 +5719,9 @@
 ""
 
 "Cartridge.MD5" "4a9009620038f7f30aaeb2a00ae58fde"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (3 of 3) (1983) (Starpath)"
+"Cartridge.Name" "Survival Island (3 of 3) (1983) (Arcadia)"
 ""
 
 "Cartridge.MD5" "4b143d7dcf6c96796c37090cba045f4f"
@@ -5800,7 +5768,7 @@
 ""
 
 "Cartridge.MD5" "4b9581c3100a1ef05eac1535d25385aa"
-"Cartridge.Name" "IQ-180 (Unknown)"
+"Cartridge.Name" "IQ 180 (Unknown)"
 "Display.YStart" "20"
 "Display.Height" "235"
 ""
@@ -5821,9 +5789,9 @@
 ""
 
 "Cartridge.MD5" "4c0fb2544ae0f8b5f7ae8bce7bd7f134"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (Preview) (1983) (Starpath)"
+"Cartridge.Name" "Party Mix (Preview) (1983) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -5858,9 +5826,9 @@
 ""
 
 "Cartridge.MD5" "4c462b2b6fb0a19a1437eb2c3dc20783"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (1 of 3) (1983) (Starpath)"
+"Cartridge.Name" "Survival Island (1 of 3) (1983) (Arcadia)"
 "Display.YStart" "28"
 ""
 
@@ -5914,8 +5882,8 @@
 ""
 
 "Cartridge.MD5" "4cabc895ea546022c2ecaa5129036634"
-"Cartridge.Manufacturer" "Zellers"
-"Cartridge.Name" "Ocean City Defender (Zellers)"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Ocean City (Funvision)"
 "Cartridge.Note" "AKA Atlantis"
 ""
 
@@ -5990,7 +5958,7 @@
 ""
 
 "Cartridge.MD5" "4df6124093ccb4f0b6c26a719f4b7706"
-"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart - Sears"
+"Cartridge.Manufacturer" "Atari, Brad Stewart - Sears"
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -6352,9 +6320,9 @@
 ""
 
 "Cartridge.MD5" "528400fad9a77fd5ad7fc5fdc2b7d69d"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum, Jon Leupp"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum, Jon Leupp"
 "Cartridge.ModelNo" "AR-4201"
-"Cartridge.Name" "Sword of Saros (1983) (Starpath)"
+"Cartridge.Name" "Sword of Saros (1983) (Arcadia)"
 ""
 
 "Cartridge.MD5" "52b448757081fd9fabf859f4e2f91f6b"
@@ -6445,15 +6413,6 @@
 "Cartridge.Name" "Stampede (1981) (Activision) (8K)"
 ""
 
-"Cartridge.MD5" "53f9ccd88c523bdd493ea1138cb112ff"
-"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
-"Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball (Frantic) (1982) (Arcadia) (Prototype)"
-"Cartridge.Note" "Uses the paddle controllers"
-"Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
-""
-
 "Cartridge.MD5" "5428cdfada281c569c74c7308c7f2c26"
 "Cartridge.Manufacturer" "Activision, Larry Kaplan, David Crane"
 "Cartridge.ModelNo" "AG-010, AG-010-04"
@@ -6504,9 +6463,9 @@
 ""
 
 "Cartridge.MD5" "545048ccb045f9efc6cf2b125cd0dfa8"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum, Jon Leupp"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum, Jon Leupp"
 "Cartridge.ModelNo" "AR-4201"
-"Cartridge.Name" "Sword of Saros (1983) (Starpath) [a]"
+"Cartridge.Name" "Sword of Saros (1983) (Arcadia) [a]"
 ""
 
 "Cartridge.MD5" "5494b9ee403d9757f0fd1f749e80214a"
@@ -6524,7 +6483,7 @@
 ""
 
 "Cartridge.MD5" "55ef7b65066428367844342ed59f956c"
-"Cartridge.Manufacturer" "Atari, Alex Leavens"
+"Cartridge.Manufacturer" "Atari, Joe Gaucher, Alex Leavens"
 "Cartridge.ModelNo" "CX2683"
 "Cartridge.Name" "Crazy Climber (1982) (Atari)"
 ""
@@ -6597,18 +6556,10 @@
 ""
 
 "Cartridge.MD5" "5678ebaa09ca3b699516dba4671643ed"
-"Cartridge.Manufacturer" "Coleco"
+"Cartridge.Manufacturer" "Coleco, Sylvia Day, Henry Will IV"
 "Cartridge.ModelNo" "2459"
 "Cartridge.Name" "Mouse Trap (1982) (Coleco)"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "56606b4d9109e2db36dea47cf7c8cca6"
-"Cartridge.Manufacturer" "Atari"
-"Cartridge.ModelNo" "CX2694"
-"Cartridge.Name" "Pole Position (1983) (Atari) [b1]"
-"Cartridge.Note" "Game crashes after car starts first turn (bad rom dump)"
-"Cartridge.Rarity" "Common"
 ""
 
 "Cartridge.MD5" "568371fbae6f5e5b936af80031cd8888"
@@ -6616,8 +6567,8 @@
 ""
 
 "Cartridge.MD5" "572d0a4633d6a9407d3ba83083536e0f"
-"Cartridge.Manufacturer" "Zellers"
-"Cartridge.Name" "Busy Police (Zellers)"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Busy Police (Funvision)"
 "Cartridge.Note" "AKA Keystone Kapers"
 ""
 
@@ -6647,7 +6598,7 @@
 ""
 
 "Cartridge.MD5" "57939b326df86b74ca6404f64f89fce9"
-"Cartridge.Manufacturer" "Atari, Nick 'Sandy Maiwald' Turner"
+"Cartridge.Manufacturer" "Atari, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
 "Cartridge.ModelNo" "CX26111"
 "Cartridge.Name" "Snoopy and the Red Baron (1983) (Atari)"
 ""
@@ -6752,7 +6703,7 @@
 
 "Cartridge.MD5" "5961d259115e99c30b64fe7058256bcf"
 "Cartridge.Manufacturer" "Universal Gamex Corporation, Alan Roberts, H.K. Poon"
-"Cartridge.ModelNo" "1005"
+"Cartridge.ModelNo" "GX-001"
 "Cartridge.Name" "X-Man (1983) (Universal)"
 "Display.YStart" "30"
 ""
@@ -6764,7 +6715,7 @@
 ""
 
 "Cartridge.MD5" "598a4e6e12f8238b7e7555f5a7777b46"
-"Cartridge.Manufacturer" "Tigervision, Bill Hogue"
+"Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -6883,6 +6834,7 @@
 "Cartridge.Manufacturer" "Sega"
 "Cartridge.ModelNo" "002-01"
 "Cartridge.Name" "Sub-Scan (1982) (Sega)"
+"Cartridge.Note" "AKA Subterfuge"
 ""
 
 "Cartridge.MD5" "5b98e0536c3f60547dd708ae22adb04b"
@@ -6913,9 +6865,9 @@
 ""
 
 "Cartridge.MD5" "5b7ea6aa6b35dc947c65ce665fde624b"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Starpath)"
+"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "5babe0cad3ec99d76b0aa1d36a695d2f"
@@ -7023,7 +6975,7 @@
 ""
 
 "Cartridge.MD5" "5d2cc33ca798783dee435eb29debf6d6"
-"Cartridge.Manufacturer" "Activision, Mike Reidel"
+"Cartridge.Manufacturer" "Activision, Mike Riedel"
 "Cartridge.ModelNo" "AK-043-04"
 "Cartridge.Name" "Commando (1988) (Activision)"
 ""
@@ -7160,25 +7112,18 @@
 ""
 
 "Cartridge.MD5" "5ec73ac7d2ac95ac9530c6d33e713d14"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "13"
-"Cartridge.Name" "Sweat! (3 of 4) (1983) (Starpath) (Prototype)"
-"Cartridge.Note" "Uses the Paddle Controllers"
+"Cartridge.Name" "Sweat! - The Decathlon Game (2 of 3) (1983) (Arcadia) (Prototype)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "5ef303b9f0aa8cf20720c560e5f9baa1"
 "Cartridge.Manufacturer" "Atari, Jim Huether"
 "Cartridge.ModelNo" "CX2629, CX2629P"
 "Cartridge.Name" "Sky Diver (1979) (Atari) (PAL) (4K)"
-""
-
-"Cartridge.MD5" "60345ae60f7c7010346de7aff9bfe6ea"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AIX-010"
-"Cartridge.Name" "Atlantis (1988) (Activision) [different font]"
 ""
 
 "Cartridge.MD5" "600d48eef5c0ec27db554b7328b3251c"
@@ -7225,7 +7170,7 @@
 "Cartridge.MD5" "5f39353f7c6925779b0169a87ff86f1e"
 "Cartridge.Manufacturer" "Atari - GCC, Betty Ryan Tylko, Douglas B. Macrae"
 "Cartridge.ModelNo" "CX2694"
-"Cartridge.Name" "Pole Position (1983) (Atari)"
+"Cartridge.Name" "Pole Position (1983) (Atari) [a]"
 ""
 
 "Cartridge.MD5" "5f708ca39627697e859d1c53f8d8d7d2"
@@ -7373,7 +7318,7 @@
 ""
 
 "Cartridge.MD5" "61631c2f96221527e7da9802b4704f93"
-"Cartridge.Manufacturer" "Activision, Mike Reidel"
+"Cartridge.Manufacturer" "Activision, Mike Riedel"
 "Cartridge.ModelNo" "AK-043-04"
 "Cartridge.Name" "Commando (1988) (Activision) [different logo]"
 ""
@@ -7572,9 +7517,9 @@
 ""
 
 "Cartridge.MD5" "64198bb6470c78ac24fcf13fe76ab28c"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath) [a]"
+"Cartridge.Name" "Escape from the Mindmaster (1982) (Arcadia) [a]"
 ""
 
 "Cartridge.MD5" "63e783994df824caf289b69a084cbf3e"
@@ -7762,7 +7707,7 @@
 ""
 
 "Cartridge.MD5" "665b8f8ead0eef220ed53886fbd61ec9"
-"Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn"
+"Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn, Jack Woodman"
 "Cartridge.ModelNo" "1003"
 "Cartridge.Name" "Fast Food (1982) (Telesys)"
 ""
@@ -7853,7 +7798,7 @@
 ""
 
 "Cartridge.MD5" "66b89ba44e7ae0b51f9ef000ebba1eb7"
-"Cartridge.Manufacturer" "Atari, Stephen Keith, Preston Stuart"
+"Cartridge.Manufacturer" "Atari, Stephan R. Keith, Preston Stuart"
 "Cartridge.ModelNo" "CX26106"
 "Cartridge.Name" "Grover's Music Maker (01-18-1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Keypad Controller"
@@ -7879,9 +7824,9 @@
 ""
 
 "Cartridge.MD5" "66c4e0298d4120df333bc2f3e163657e"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Dragonstomper (2 of 3) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "6706a00f9635508cfeda20639156e66e"
@@ -8085,9 +8030,9 @@
 ""
 
 "Cartridge.MD5" "691d67910b08b63de8631901d1887c1f"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (1983) (Starpath) [a]"
+"Cartridge.Name" "Survival Island (1983) (Arcadia) [a]"
 "Display.YStart" "30"
 ""
 
@@ -8184,15 +8129,6 @@
 "Cartridge.Rarity" "Hack"
 ""
 
-"Cartridge.MD5" "6a9e891186fdaf14ab9c78c2b7f8c244"
-"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission (1982) (Arcadia) (Prototype)"
-"Cartridge.Note" "Meteoroids"
-"Cartridge.Rarity" "Prototype"
-"Display.Phosphor" "YES"
-""
-
 "Cartridge.MD5" "6ac3fd31a51730358708c7fdc62487f8"
 "Cartridge.Manufacturer" "Matthias Jaap"
 "Cartridge.Name" "PC Invaders (Matthias Jaap) (Hack)"
@@ -8219,6 +8155,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG203"
 "Cartridge.Name" "Phantom Tank (1982) (BitCorp) (PAL)"
+"Cartridge.Note" "AKA Phantom-Panzer"
 ""
 
 "Cartridge.MD5" "6b7e1c11448c4d3f28160d2de884ebc8"
@@ -8319,7 +8256,7 @@
 ""
 
 "Cartridge.MD5" "6c76fe09aa8b39ee52035e0da6d0808b"
-"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart"
+"Cartridge.Manufacturer" "Atari, Brad Stewart"
 "Cartridge.ModelNo" "CX2622, CX2622P"
 "Cartridge.Name" "Breakout (1978) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -8362,14 +8299,6 @@
 "Cartridge.Name" "Space Treat (NTSC) (13-08-2002) (Fabrizio Zavagli)"
 ""
 
-"Cartridge.MD5" "6cab04277e7cd552a3e40b3c0e6e1e3d"
-"Cartridge.Manufacturer" "Telegames"
-"Cartridge.ModelNo" "7062 A305"
-"Cartridge.Name" "Targ (1989) (Telegames) (Prototype)"
-"Cartridge.Note" "Universal Chaos Beta"
-"Cartridge.Rarity" "Prototype"
-""
-
 "Cartridge.MD5" "6ccd8ca17a0e4429b446cdcb66327bf1"
 "Cartridge.Name" "RPG Engine (12-05-2003) (Paul Slocum) (PD)"
 "Display.Phosphor" "YES"
@@ -8380,8 +8309,9 @@
 ""
 
 "Cartridge.MD5" "6ce2110ac5dd89ab398d9452891752ab"
-"Cartridge.Manufacturer" "Polyvox"
-"Cartridge.Name" "River Raid (Polyvox)"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Persian Gulf War (Funvision)"
+"Cartridge.Note" "AKA River Raid"
 ""
 
 "Cartridge.MD5" "6cf054cd23a02e09298d2c6f787eb21d"
@@ -8492,9 +8422,9 @@
 ""
 
 "Cartridge.MD5" "6ed5012793f5ddf4353a48c11ea9b8d3"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Starpath)"
+"Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Arcadia)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -8629,12 +8559,6 @@
 "Cartridge.Name" "Ram It (1982) (Telesys)"
 ""
 
-"Cartridge.MD5" "7146dd477e019f81eac654a79be96cb5"
-"Cartridge.Manufacturer" "Atari, Dan Hitchens"
-"Cartridge.ModelNo" "CX2685"
-"Cartridge.Name" "Gravitar (1983) (Atari)"
-""
-
 "Cartridge.MD5" "713095cd968b1aff45a2562ea4bbcbfe"
 "Cartridge.Name" "Image - Qb (16-02-2003) (TJ)"
 ""
@@ -8642,15 +8566,6 @@
 "Cartridge.MD5" "70d14c66c319683b4c19abbe0e3db57c"
 "Cartridge.Name" "Oystron (V2.82) (Piero Cavina) (PD)"
 "Cartridge.Rarity" "New Release"
-""
-
-"Cartridge.MD5" "712924a2c7b692f6e7b009285c2169a7"
-"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Meteoroids (1982) (Arcadia) (Prototype)"
-"Cartridge.Note" "Suicide Mission Beta"
-"Cartridge.Rarity" "Prototype"
-"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "71464c54da46adae9447926fdbfc1abe"
@@ -8665,7 +8580,7 @@
 ""
 
 "Cartridge.MD5" "714e13c08508ee9a7785ceac908ae831"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83123"
 "Cartridge.Name" "Parachute (1983) (Home Vision) (PAL)"
 ""
@@ -8673,13 +8588,13 @@
 "Cartridge.MD5" "7732e4e4cc2644f163d6650ddcc9d9df"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "771-333"
-"Cartridge.Name" "2 Pak Special Black - Challenge, Surfing (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Challenge, Surfing (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "72fd08deed1d6195942e0c6f392e9848"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "0701-406"
-"Cartridge.Name" "2 Pak Special Dark Blue - Wall Defender, Planet Patrol (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Wall Defender, Planet Patrol (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "71f09f128e76eb14e244be8f44848759"
@@ -8770,9 +8685,9 @@
 ""
 
 "Cartridge.MD5" "72305c997f2cec414fe6f8c946172f83"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4000, AR-4100"
-"Cartridge.Name" "Phaser Patrol (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Phaser Patrol (1982) (Arcadia) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -8868,7 +8783,7 @@
 ""
 
 "Cartridge.MD5" "73c545db2afd5783d37c46004e4024c2"
-"Cartridge.Manufacturer" "CBS Electronics"
+"Cartridge.Manufacturer" "CBS Electronics, Henry Will IV"
 "Cartridge.ModelNo" "4L1767, 4L1768, 4L1769, 4L1770"
 "Cartridge.Name" "Smurf (1982) (CBS Electronics) (PAL)"
 ""
@@ -8937,9 +8852,9 @@
 ""
 
 "Cartridge.MD5" "7481f0771bff13885b2ff2570cf90d7b"
-"Cartridge.Manufacturer" "Starpath Corporation, Brian McGhie"
+"Cartridge.Manufacturer" "Arcadia Corporation, Brian McGhie"
 "Cartridge.ModelNo" "AR-4104"
-"Cartridge.Name" "Rabbit Transit (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Rabbit Transit (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "74f623833429d35341b7a84bc09793c0"
@@ -9023,9 +8938,9 @@
 ""
 
 "Cartridge.MD5" "75e276ba12dc4504659481c31345703a"
-"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
+"Cartridge.Manufacturer" "Arcadia Corporation, Kevin Norman"
 "Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Killer Satellites (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "75b22fdf632d76e246433db1ebccd3c4"
@@ -9118,9 +9033,9 @@
 ""
 
 "Cartridge.MD5" "76c685d1a60c0107aa54a772113a2972"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (3 of 3) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Survival Island (3 of 3) (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "76f66ce3b83d7a104a899b4b3354a2f2"
@@ -9220,9 +9135,9 @@
 ""
 
 "Cartridge.MD5" "78b84cfb1c57b0488d674d2374e656e6"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Starpath)"
+"Cartridge.Name" "Dragonstomper (1 of 3) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "791bc8aceb6b0f4d9990d6062b30adfa"
@@ -9252,7 +9167,7 @@
 
 "Cartridge.MD5" "7f430c33044e0354815392b53a9a772d"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Magenta - Cavern Blaster, City War (1992) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Cavern Blaster, City War (1992) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "7a93d0c029eaa72236523eedc3f19645"
@@ -9349,9 +9264,9 @@
 ""
 
 "Cartridge.MD5" "7a7f6ab9215a3a6b5940b8737f116359"
-"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
+"Cartridge.Manufacturer" "Arcadia Corporation, Kevin Norman"
 "Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites (1983) (Starpath)"
+"Cartridge.Name" "Killer Satellites (1983) (Arcadia)"
 ""
 
 "Cartridge.MD5" "7a64b5a6e90619c6aacf244cdd7502f8"
@@ -9367,9 +9282,9 @@
 ""
 
 "Cartridge.MD5" "7a63d7ea3f2851bcf04f0bb4ba1a3929"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Starpath)"
+"Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "7b6f3348dbf71ada88db0fdaf7feefe0"
@@ -9465,9 +9380,9 @@
 ""
 
 "Cartridge.MD5" "7ba07d4ea18bf3b3245c374d8720ad30"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4101"
-"Cartridge.Name" "Communist Mutants from Space (Preview) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Communist Mutants from Space (Preview) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "7b79beb378d1b4471def90ceccf413de"
@@ -9495,7 +9410,7 @@
 ""
 
 "Cartridge.MD5" "7c00e7a205d3fda98eb20da7c9c50a55"
-"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ed Salvo"
+"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ernie Runyon, Ed Salvo"
 "Cartridge.ModelNo" "AP-2004"
 "Cartridge.Name" "Lost Luggage (1981) (Apollo)"
 ""
@@ -9613,9 +9528,9 @@
 ""
 
 "Cartridge.MD5" "7d940d749e55b96b7b746519fa06f2de"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (Preview) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Party Mix (Preview) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -9753,9 +9668,9 @@
 ""
 
 "Cartridge.MD5" "7ef3ca08abde439c6ccca84693839c57"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Party Mix (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -9879,7 +9794,7 @@
 
 "Cartridge.MD5" "8c8a26ed57870daba8e13162d497bad1"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Green - Dolphin, Oink (1990) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Dolphin, Oink (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "8aad33da907bed78b76b87fceaa838c1"
@@ -9893,7 +9808,7 @@
 "Cartridge.MD5" "89a68746eff7f266bbf08de2483abe55"
 "Cartridge.Manufacturer" "Atari, Jerome Domurat, Steve Woita"
 "Cartridge.ModelNo" "CX2696"
-"Cartridge.Name" "Asterix (07-27-1983) (Atari) (Prototype)"
+"Cartridge.Name" "Asterix (1983) (Atari)"
 "Cartridge.Note" "AKA Taz"
 "Cartridge.Rarity" "Extremely Rare"
 ""
@@ -9905,9 +9820,9 @@
 ""
 
 "Cartridge.MD5" "81f4f0285f651399a12ff2e2f35bab77"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath)"
+"Cartridge.Name" "Escape from the Mindmaster (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "80e52315919bd8a8b82a407ccd9bb13f"
@@ -10011,7 +9926,7 @@
 ""
 
 "Cartridge.MD5" "81b3bf17cf01039d311b4cd738ae608e"
-"Cartridge.Manufacturer" "CBS Electronics, Alex Leavens"
+"Cartridge.Manufacturer" "CBS Electronics, Joe Gaucher, Alex Leavens"
 "Cartridge.ModelNo" "M8776, M8793"
 "Cartridge.Name" "Gorf (1982) (CBS Electronics)"
 "Display.Phosphor" "YES"
@@ -10213,9 +10128,9 @@
 ""
 
 "Cartridge.MD5" "84db818cd4111542a15c2a795369a256"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Survival Island (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "8538c5e3ee83267774480649f83fa8d6"
@@ -10336,9 +10251,10 @@
 ""
 
 "Cartridge.MD5" "85e564dae5687e431955056fbda10978"
-"Cartridge.Manufacturer" "Milton Bradley"
+"Cartridge.Manufacturer" "Milton Bradley Company"
 "Cartridge.ModelNo" "4362"
 "Cartridge.Name" "Survival Run (1983) (Milton Bradley)"
+"Cartridge.Note" "AKA Cosmic Commander"
 "Display.YStart" "29"
 "Display.Height" "225"
 "Display.Phosphor" "YES"
@@ -10355,7 +10271,7 @@
 ""
 
 "Cartridge.MD5" "8654d7f0fb351960016e06646f639b02"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp. - R.J.P.G."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp. - R.J.P.G."
 "Cartridge.ModelNo" "VCS83106"
 "Cartridge.Name" "Ski Hunt (1983) (Home Vision) (PAL)"
 ""
@@ -10443,9 +10359,9 @@
 ""
 
 "Cartridge.MD5" "8786f4609a66fbea2cd9aa48ca7aa11c"
-"Cartridge.Manufacturer" "Puzzy - Bit Corporation"
-"Cartridge.ModelNo" "PG204"
-"Cartridge.Name" "Open Sesame (1982) (Puzzy) (PAL)"
+"Cartridge.Manufacturer" "Goliath"
+"Cartridge.ModelNo" "5"
+"Cartridge.Name" "Open Sesame (1983) (Goliath) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -10613,13 +10529,6 @@
 "Cartridge.Name" "Pooyan (Unknown) (PAL)"
 ""
 
-"Cartridge.MD5" "8a183b6357987db5170c5cf9f4a113e5"
-"Cartridge.Manufacturer" "Atari, Alex Leavens"
-"Cartridge.ModelNo" "CX2679"
-"Cartridge.Name" "RealSports Basketball (1983) (Atari) (Prototype) (PAL)"
-"Cartridge.Rarity" "Prototype"
-""
-
 "Cartridge.MD5" "8a159ee58b2f0a54805162984b0f07e5"
 "Cartridge.Manufacturer" "Atari - Sculptured Software, Inc., Steve Aguirre"
 "Cartridge.ModelNo" "CX26162"
@@ -10666,7 +10575,7 @@
 "Cartridge.MD5" "8ac18076d01a6b63acf6e2cab4968940"
 "Cartridge.Manufacturer" "Atari, Dan Hitchens"
 "Cartridge.ModelNo" "CX2685"
-"Cartridge.Name" "Gravitar (04-08-1983) (Atari) (Prototype)"
+"Cartridge.Name" "Gravitar (1983) (Atari)"
 ""
 
 "Cartridge.MD5" "8ae7809702b7d618e45daa2ddb0ece26"
@@ -10680,9 +10589,9 @@
 ""
 
 "Cartridge.MD5" "8b04e9d132b8e30d447acaa6bd049c32"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Dragonstomper (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "8af58a9b90b25907da0251ec0facf3b8"
@@ -10707,9 +10616,9 @@
 ""
 
 "Cartridge.MD5" "8b7ca29a55432f886cee3d452fb00481"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum, Jon Leupp"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum, Jon Leupp"
 "Cartridge.ModelNo" "AR-4201"
-"Cartridge.Name" "Sword of Saros (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Sword of Saros (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "8b8152d6081f31365406cb716bd95567"
@@ -10757,7 +10666,8 @@
 "Cartridge.MD5" "8bc0d2052b4f259e7a50a7c771b45241"
 "Cartridge.Manufacturer" "Xonox - K-Tel Software, Anthony R. Henderson"
 "Cartridge.ModelNo" "99007, 6240"
-"Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
+"Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox) [a]"
+"Cartridge.Note" "AKA Thundarr the Barbarian"
 "Display.YStart" "24"
 ""
 
@@ -10766,10 +10676,10 @@
 ""
 
 "Cartridge.MD5" "8c2fa33048f055f38358d51eefe417db"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83137"
 "Cartridge.Name" "Teddy Apple (1983) (Home Vision) (PAL)"
-"Cartridge.Note" "AKA Open, Sesame!"
+"Cartridge.Note" "AKA Open Sesame"
 "Display.YStart" "42"
 "Display.Phosphor" "YES"
 ""
@@ -11063,9 +10973,9 @@
 ""
 
 "Cartridge.MD5" "90ccf4f30a5ad8c801090b388ddd5613"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1982) (Starpath)"
+"Cartridge.Name" "Dragonstomper (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "90b1799dddb8bf748ee286d22e609480"
@@ -11181,16 +11091,11 @@
 "Display.YStart" "28"
 ""
 
-"Cartridge.MD5" "925dda3c61b81eeb7bd8467b6e99dedc"
-"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
-"Cartridge.Name" "Labyrinth (1982) (Arcadia)"
-"Cartridge.Note" "Escape from the Mindmaster Beta"
-""
-
 "Cartridge.MD5" "929e8a84ed50601d9af8c49b0425c7ea"
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG205"
 "Cartridge.Name" "Dancing Plate (1982) (BitCorp) (PAL)"
+"Cartridge.Note" "AKA Dancing Plates, Tanzende Teller"
 "Display.Phosphor" "YES"
 ""
 
@@ -11443,12 +11348,6 @@
 "Cartridge.Name" "Pigs in Space (1983) (Atari) (PAL)"
 ""
 
-"Cartridge.MD5" "95c4576d6a14e2debfa0fd6f6ec254ab"
-"Cartridge.Name" "River Raid (1982) (Unknown) (Hack)"
-"Cartridge.Rarity" "Hack"
-"Display.YStart" "10"
-""
-
 "Cartridge.MD5" "95fd6097dc27c20666f039cfe34f7c69"
 "Cartridge.Name" "Oh No! (Version 1) (17-01-2003) (AD)"
 ""
@@ -11616,7 +11515,7 @@
 ""
 
 "Cartridge.MD5" "9a25b3cfe2bbb847b66a97282200cca2"
-"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart - Sears"
+"Cartridge.Manufacturer" "Atari, Brad Stewart - Sears"
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -11733,13 +11632,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "9a1df209ee7d4d2788905f03658f5a1c"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Excalibur V36 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
-"Cartridge.Rarity" "Prototype"
-""
-
 "Cartridge.MD5" "9ab72d3fd2cc1a0c9adb504502579037"
 "Cartridge.Manufacturer" "Epyx, Steven A. Baker, Peter Engelbrite"
 "Cartridge.ModelNo" "80561-00286"
@@ -11789,9 +11681,9 @@
 ""
 
 "Cartridge.MD5" "9c27ef3bd01c611cdb80182a59463a82"
-"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
+"Cartridge.Manufacturer" "Arcadia Corporation, Kevin Norman"
 "Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites (1983) (Starpath) [a]"
+"Cartridge.Name" "Killer Satellites (1983) (Arcadia) [a]"
 ""
 
 "Cartridge.MD5" "9d4bc7c6fe9a7c8c4aa24a237c340adb"
@@ -11826,9 +11718,10 @@
 ""
 
 "Cartridge.MD5" "9c6faa4ff7f2ae549bbcb14f582b70e4"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Garry Kitchen - Vidtec"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Garry Kitchen, Paul Willson - Vidtec"
 "Cartridge.ModelNo" "VC1002"
 "Cartridge.Name" "Sneak 'n Peek (1982) (U.S. Games)"
+"Cartridge.Note" "AKA Hide 'n Seek"
 "Display.YStart" "30"
 "Display.Height" "218"
 ""
@@ -12117,9 +12010,9 @@
 ""
 
 "Cartridge.MD5" "a075ad332942740c386f4c3814925ece"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "a15b5831a1fab52e4c416068c85ec011"
@@ -12269,9 +12162,9 @@
 ""
 
 "Cartridge.MD5" "a302b922a8dbec47743f28b7f91d4cd8"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath) [a]"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "a2eb84cfeed55acd7fece7fefdc83fbb"
@@ -12298,9 +12191,9 @@
 ""
 
 "Cartridge.MD5" "a3d7c299fbcd7b637898ee0fdcfc47fc"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball (Preview) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Fireball (Preview) (1982) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 ""
@@ -12362,13 +12255,13 @@
 
 "Cartridge.MD5" "ab434f4c942d6472e75d5490cc4dd128"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Light Green - Hoppy, Alien Force (1991) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Hoppy, Alien Force (1992) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "a94b8ca630f467b574b614808d813919"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "773-883"
-"Cartridge.Name" "2 Pak Special Orange - Space Voyage, Fire Alert (1992) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Space Voyage, Fire Alert (1992) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "a5855d73d304d83ef07dde03e379619f"
@@ -12435,7 +12328,7 @@
 ""
 
 "Cartridge.MD5" "a499d720e7ee35c62424de882a3351b6"
-"Cartridge.Manufacturer" "Sega - Bally Midway - Beck-Tech"
+"Cartridge.Manufacturer" "Sega, Phat Ho - Bally Midway - Beck-Tech"
 "Cartridge.ModelNo" "009-01"
 "Cartridge.Name" "Up 'n Down (1984) (Sega)"
 "Display.YStart" "30"
@@ -12507,9 +12400,8 @@
 "Cartridge.MD5" "a4ff39d513b993159911efe01ac12eba"
 "Cartridge.Manufacturer" "Atari - GCC, Betty Ryan Tylko, Douglas B. Macrae"
 "Cartridge.ModelNo" "CX2694"
-"Cartridge.Name" "Pole Position (05-22-1983) (Atari) (Prototype)"
+"Cartridge.Name" "Pole Position (1983) (Atari)"
 "Cartridge.Note" "AKA RealSports Driving"
-"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "a5262fe6d01d6a1253692682a47f79dd"
@@ -12517,7 +12409,7 @@
 ""
 
 "Cartridge.MD5" "a56b642a3d3ab9bbeee63cd44eb73216"
-"Cartridge.Manufacturer" "Carrere Video, Sylvia Day - Teldec"
+"Cartridge.Manufacturer" "Carrere Video, Sylvia Day, Henry Will IV - Teldec"
 "Cartridge.ModelNo" "USC2001"
 "Cartridge.Name" "Gopher (1983) (Carrere Video) (PAL)"
 ""
@@ -12574,9 +12466,9 @@
 ""
 
 "Cartridge.MD5" "a74689a08746a667a299b0507e1e6dd9"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
-"Cartridge.Name" "Official Frogger, The (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Official Frogger, The (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "a68a396ff1f3b311712f6bdf05dcefab"
@@ -12620,9 +12512,9 @@
 ""
 
 "Cartridge.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
-"Cartridge.Manufacturer" "Starpath Corporation, Brian McGhie"
+"Cartridge.Manufacturer" "Arcadia Corporation, Brian McGhie"
 "Cartridge.ModelNo" "AR-4104"
-"Cartridge.Name" "Rabbit Transit (1983) (Starpath) [a]"
+"Cartridge.Name" "Rabbit Transit (1983) (Arcadia) [a]"
 ""
 
 "Cartridge.MD5" "a7cf2b9afdbb3a161bf418dbcf0321dc"
@@ -12641,14 +12533,13 @@
 "Controller.Left" "PADDLES"
 ""
 
-"Cartridge.MD5" "a7c8342eaa9317e90c5baaa3bf37c878"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.MD5" "c7600d72247c5dfa1ec1a88d23e6c85e"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "13"
-"Cartridge.Name" "Sweat! (1 of 4) (1983) (Starpath) (Prototype)"
-"Cartridge.Note" "Uses the Paddle Controllers"
+"Cartridge.Name" "Sweat! - The Decathlon Game (1 of 3) (1983) (Arcadia) (Prototype)"
+"Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "a81b29177f258494b499fbac69789cef"
@@ -12840,7 +12731,7 @@
 ""
 
 "Cartridge.MD5" "aab840db22075aa0f6a6b83a597f8890"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp. - R.J.P.G."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp. - R.J.P.G."
 "Cartridge.ModelNo" "VCS83124"
 "Cartridge.Name" "Racing Car (1983) (Home Vision) (PAL)"
 "Console.SwapPorts" "YES"
@@ -12875,9 +12766,9 @@
 ""
 
 "Cartridge.MD5" "aaea37b65db9e492798f0105a6915e96"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix - Tug of War (2 of 3) (1983) (Starpath)"
+"Cartridge.Name" "Party Mix - Tug of War (2 of 3) (1983) (Arcadia)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -12886,7 +12777,7 @@
 
 "Cartridge.MD5" "ab301d3d7f2f4fe3fdd8a3540b7a74f5"
 "Cartridge.Manufacturer" "Jone Yuan Telephonic Enterprise Co"
-"Cartridge.Name" "IQ-180 (Jone Yuan)"
+"Cartridge.Name" "IQ 180 (Jone Yuan)"
 "Cartridge.Note" "2600 Screen Search Console"
 "Display.YStart" "27"
 "Display.Height" "230"
@@ -13222,7 +13113,7 @@
 ""
 
 "Cartridge.MD5" "afd2cf258d51ae4965ee21abba3627ab"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (12-08-1982) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Keypad Controller"
@@ -13249,9 +13140,9 @@
 ""
 
 "Cartridge.MD5" "aff8cba0f2d2eb239953dd7116894a08"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "b00a8bc9d7fe7080980a514005cbad13"
@@ -13536,9 +13427,9 @@
 ""
 
 "Cartridge.MD5" "b31dc989f594764eacfa7931cead0050"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (2 of 3) (1983) (Starpath)"
+"Cartridge.Name" "Survival Island (2 of 3) (1983) (Arcadia)"
 ""
 
 "Cartridge.MD5" "b31f178aa0d569cccac7959f84e0a724"
@@ -13585,9 +13476,9 @@
 ""
 
 "Cartridge.MD5" "b4f05e544834d0238a0c263491775edf"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Hales, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission (Preview) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Suicide Mission (Preview) (1982) (Arcadia) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -13716,9 +13607,9 @@
 ""
 
 "Cartridge.MD5" "b6e40bce550672e5495a8cdde7075b8b"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Mundry, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Mundry, Scott Nelson"
 "Cartridge.ModelNo" "AR-4401"
-"Cartridge.Name" "Survival Island (1 of 3) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Survival Island (1 of 3) (1983) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "b7345220a0c587f3b0c47af33ebe533c"
@@ -13907,7 +13798,7 @@
 ""
 
 "Cartridge.MD5" "ba257438f8a78862a9e014d831143690"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Henry Will"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Henry Will IV"
 "Cartridge.ModelNo" "VC2002"
 "Cartridge.Name" "Squeeze Box (1982) (U.S. Games)"
 ""
@@ -13973,12 +13864,6 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "bcb2967b6a9254bcccaf906468a22241"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AIX-006"
-"Cartridge.Name" "Demon Attack (1988) (Activision)"
-""
-
 "Cartridge.MD5" "bc526185ad324241782dc68ba5d0540b"
 "Cartridge.Name" "Dodge Demo 1 (PD)"
 ""
@@ -13986,12 +13871,6 @@
 "Cartridge.MD5" "bb745c893999b0efc96ea9029e3c62ca"
 "Cartridge.Manufacturer" "Play Video"
 "Cartridge.Name" "Planet Patrol (1982) (Play Video) (PAL)"
-""
-
-"Cartridge.MD5" "bc24440b59092559a1ec26055fd1270e"
-"Cartridge.Manufacturer" "Activision, Bob Whitehead"
-"Cartridge.ModelNo" "AG-034-04"
-"Cartridge.Name" "Private Eye (1983) (Activision) [a]"
 ""
 
 "Cartridge.MD5" "bb9f06b288b5275bc0d38b6731b2526a"
@@ -14220,13 +14099,6 @@
 "Cartridge.Name" "Droid Demo 22 (David Conrad Schweinsberg) (PD)"
 ""
 
-"Cartridge.MD5" "bfb7850e3ca39f417f8e4bd5ae39f24b"
-"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
-"Cartridge.Rarity" "Prototype"
-""
-
 "Cartridge.MD5" "bfcabc6995ef42d0b6c06786993dc4d6"
 "Cartridge.Name" "Star Fire - Creating a Universe (09-09-2002) (MP)"
 ""
@@ -14292,7 +14164,7 @@
 ""
 
 "Cartridge.MD5" "c16c79aad6272baffb8aae9a7fff0864"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Sylvia Day"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Sylvia Day, Henry Will IV"
 "Cartridge.ModelNo" "VC2001"
 "Cartridge.Name" "Gopher (1982) (U.S. Games)"
 "Cartridge.Note" "AKA Gopher Attack"
@@ -14343,10 +14215,7 @@
 ""
 
 "Cartridge.MD5" "c16fbfdbfdf5590cc8179e4b0f5f5aeb"
-"Cartridge.Manufacturer" "Bomb - Onbase"
-"Cartridge.ModelNo" "CA285"
-"Cartridge.Name" "Wall-Defender (1983) (Bomb)"
-"Cartridge.Note" "AKA Wall Break"
+"Cartridge.Name" "Wall Break (Unknown)"
 "Display.YStart" "30"
 ""
 
@@ -14501,7 +14370,7 @@
 ""
 
 "Cartridge.MD5" "c31a17942d162b80962cb1f7571cd1d5"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83112"
 "Cartridge.Name" "Sky Alien (1983) (Home Vision) (PAL)"
 ""
@@ -14575,13 +14444,6 @@
 "Display.YStart" "30"
 ""
 
-"Cartridge.MD5" "c43e6587fc21bc6d7bb7e7fb2be3e4ac"
-"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Labyrinth (1982) (Arcadia) [a3]"
-"Cartridge.Note" "Escape from the Mindmaster Beta"
-""
-
 "Cartridge.MD5" "c469151655e333793472777052013f4f"
 "Cartridge.Name" "Base Attack (Unknown) (Hack)"
 "Cartridge.Rarity" "Hack"
@@ -14617,8 +14479,8 @@
 ""
 
 "Cartridge.MD5" "c47b7389e76974fd0de3f088fea35576"
-"Cartridge.Manufacturer" "Zellers"
-"Cartridge.Name" "Farmer Dan (Zellers)"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Mighty Mouse (Funvision)"
 "Cartridge.Note" "AKA Gopher"
 ""
 
@@ -14668,7 +14530,7 @@
 ""
 
 "Cartridge.MD5" "c517144e3d3ac5c06f2f682ebf212dd7"
-"Cartridge.Manufacturer" "Tigervision, Bill Hogue - Teldec"
+"Cartridge.Manufacturer" "Tigervision - Teldec"
 "Cartridge.ModelNo" "7-008 - 3.60006 VG"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision) (PAL)"
 ""
@@ -14705,6 +14567,7 @@
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PG202"
 "Cartridge.Name" "Space Tunnel (1982) (BitCorp) (PAL)"
+"Cartridge.Note" "AKA Weltraum-Tunnel"
 "Display.Height" "256"
 ""
 
@@ -14732,7 +14595,7 @@
 ""
 
 "Cartridge.MD5" "c738fc3f5aae1e8f86f7249f6c82ac81"
-"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart - Sears"
+"Cartridge.Manufacturer" "Atari, Brad Stewart - Sears"
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -14769,7 +14632,7 @@
 ""
 
 "Cartridge.MD5" "c5fe45f2734afd47e27ca3b04a90213c"
-"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart"
+"Cartridge.Manufacturer" "Atari, Brad Stewart"
 "Cartridge.ModelNo" "CX2622, CX2622P"
 "Cartridge.Name" "Breakout (1978) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -14837,9 +14700,9 @@
 ""
 
 "Cartridge.MD5" "c73ae5ba5a0a3f3ac77f0a9e14770e73"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
-"Cartridge.Name" "Official Frogger, The (1983) (Starpath)"
+"Cartridge.Name" "Official Frogger, The (1983) (Arcadia)"
 "Display.YStart" "32"
 ""
 
@@ -14980,9 +14843,9 @@
 ""
 
 "Cartridge.MD5" "c9e721eb29c940c2e743485b044c0a3f"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Escape from the Mindmaster (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "cf3a9ada2692bb42f81192897752b912"
@@ -14995,12 +14858,6 @@
 "Cartridge.Name" "Asteroids (1981) (Atari) [no copyright]"
 "Cartridge.Rarity" "Common"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "cb8afcbc4a779b588b0428ea7af211d5"
-"Cartridge.Manufacturer" "Activision"
-"Cartridge.ModelNo" "AIX-010"
-"Cartridge.Name" "Atlantis (1988) (Activision)"
 ""
 
 "Cartridge.MD5" "ca7abc774a2fa95014688bc0849eee47"
@@ -15085,11 +14942,6 @@
 "Cartridge.Note" "Uses Keypad Controllers"
 "Controller.Left" "KEYBOARD"
 "Controller.Right" "KEYBOARD"
-""
-
-"Cartridge.MD5" "cb8bf5a0df683cbf6ce50d614b12dd20"
-"Cartridge.Name" "Fast Eddie (1983) (Unknown) (Hack)"
-"Cartridge.Rarity" "Hack"
 ""
 
 "Cartridge.MD5" "cbad928e10aeee848786cc55394fb692"
@@ -15180,16 +15032,9 @@
 ""
 
 "Cartridge.MD5" "cc1939e4769d0c157ace326efcfdcf80"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
-"Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Starpath) (PAL)"
-""
-
-"Cartridge.MD5" "cc3a5b86700dd6dfc2f2163b25996d11"
 "Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Labyrinth (1982) (Arcadia) [a1]"
-"Cartridge.Note" "Escape from the Mindmaster Beta"
+"Cartridge.Name" "Escape from the Mindmaster (3 of 4) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "cc724ebe74a109e39c0b2784ddc980ca"
@@ -15200,7 +15045,7 @@
 ""
 
 "Cartridge.MD5" "ccb5fa954fb76f09caae9a8c66462190"
-"Cartridge.Manufacturer" "Answer Software Corporation"
+"Cartridge.Manufacturer" "Answer Software Corporation - TY Associates"
 "Cartridge.ModelNo" "ASC1001"
 "Cartridge.Name" "Malagai (1983) (Answer Software)"
 "Display.Phosphor" "YES"
@@ -15291,9 +15136,9 @@
 ""
 
 "Cartridge.MD5" "cd399bc422992a361ba932cc50f48b65"
-"Cartridge.Manufacturer" "Starpath Corporation, Brian McGhie"
+"Cartridge.Manufacturer" "Arcadia Corporation, Brian McGhie"
 "Cartridge.ModelNo" "AR-4104"
-"Cartridge.Name" "Rabbit Transit (Preview) (1983) (Starpath)"
+"Cartridge.Name" "Rabbit Transit (Preview) (1983) (Arcadia)"
 ""
 
 "Cartridge.MD5" "cd4423bd9f0763409bae9111f888f7c2"
@@ -15310,22 +15155,14 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "cd850ff1694019d015e4c937427ea479"
-"Cartridge.Manufacturer" "Starpath Corporation, Kevin Norman"
-"Cartridge.ModelNo" "AR-4103"
-"Cartridge.Name" "Killer Satellites (1983) (Starpath) (Prototype)"
-"Cartridge.Rarity" "Prototype"
-"Display.YStart" "30"
-""
-
 "Cartridge.MD5" "cd8fa2e9f6255ef3d3b9b5a4f24a54f7"
 "Cartridge.Name" "Daredevil (V2) (Stunt_Cycle_Rules!) (PD)"
 ""
 
 "Cartridge.MD5" "cdb81bf33d830ee4ee0606ee99e84dba"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "AR-4300"
-"Cartridge.Name" "Fireball (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Fireball (1982) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 ""
@@ -15357,9 +15194,8 @@
 ""
 
 "Cartridge.MD5" "ce243747bf34a2de366f846b3f4ca772"
-"Cartridge.Manufacturer" "Goliath - Hot Shot"
-"Cartridge.ModelNo" "83-116"
-"Cartridge.Name" "Felix Return (1983) (Goliath) (PAL)"
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
+"Cartridge.Name" "Jacky Jump (1983) (Home Vision) (PAL)"
 "Cartridge.Note" "AKA Bobby Is Going Home"
 "Display.YStart" "39"
 "Display.Height" "256"
@@ -15392,9 +15228,9 @@
 ""
 
 "Cartridge.MD5" "cedbd67d1ff321c996051eec843f8716"
-"Cartridge.Manufacturer" "Froggo"
-"Cartridge.ModelNo" "FG1001"
-"Cartridge.Name" "Karate (1987) (Froggo)"
+"Cartridge.Manufacturer" "Ultravision"
+"Cartridge.ModelNo" "1044"
+"Cartridge.Name" "Karate (1982) (Ultravision)"
 "Display.YStart" "25"
 ""
 
@@ -15415,9 +15251,10 @@
 ""
 
 "Cartridge.MD5" "cef2287d5fd80216b2200fb2ef1adfa8"
-"Cartridge.Manufacturer" "Milton Bradley"
+"Cartridge.Manufacturer" "Milton Bradley Company"
 "Cartridge.ModelNo" "4363"
 "Cartridge.Name" "Spitfire Attack (1983) (Milton Bradley)"
+"Cartridge.Note" "AKA Flight Commander)"
 "Display.YStart" "28"
 ""
 
@@ -15441,7 +15278,7 @@
 ""
 
 "Cartridge.MD5" "cf507910d6e74568a68ac949537bccf9"
-"Cartridge.Manufacturer" "Sega"
+"Cartridge.Manufacturer" "Sega, Jeff Lorenz"
 "Cartridge.ModelNo" "003-01"
 "Cartridge.Name" "Thunderground (1983) (Sega)"
 "Display.Phosphor" "YES"
@@ -15602,7 +15439,7 @@
 ""
 
 "Cartridge.MD5" "d078d25873c5b99f78fa267245a2af02"
-"Cartridge.Manufacturer" "Sega - Beck-Tech"
+"Cartridge.Manufacturer" "Sega, Steve Beck, Phat Ho - Beck-Tech"
 "Cartridge.ModelNo" "006-01"
 "Cartridge.Name" "Congo Bongo (1983) (Sega) [a]"
 "Display.YStart" "36"
@@ -15639,9 +15476,10 @@
 ""
 
 "Cartridge.MD5" "d0b26e908370683ad99bc6b52137a784"
-"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ed Salvo - RCA Video Jeux"
+"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ernie Runyon, Ed Salvo - RCA Video Jeux"
 "Cartridge.ModelNo" "AP-2004"
 "Cartridge.Name" "Lost Luggage (1981) (Apollo) (PAL)"
+"Cartridge.Note" "AKA La valise piegee"
 ""
 
 "Cartridge.MD5" "d0b9f705aa5f61f47a748a66009ae2d2"
@@ -15711,9 +15549,9 @@
 ""
 
 "Cartridge.MD5" "d1a1841b7f2007a24439ac248374630a"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Starpath)"
+"Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "d1d704a7146e95709b57b6d4cac3f788"
@@ -15949,12 +15787,6 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4101"
 "Cartridge.Name" "Communist Mutants from Space (Preview) (1982) (Arcadia)"
-""
-
-"Cartridge.MD5" "d536a84d4e1f170305e17f7078296a50"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1982) (Starpath) [a2]"
 ""
 
 "Cartridge.MD5" "d4aa89e96d2902692f5c45f36903d336"
@@ -16554,7 +16386,7 @@
 "Cartridge.Manufacturer" "Suntek"
 "Cartridge.ModelNo" "SS-033"
 "Cartridge.Name" "I.Q. Memory Teaser (Suntek) (PAL)"
-"Cartridge.Note" "AKA IQ-180"
+"Cartridge.Note" "AKA IQ 180"
 ""
 
 "Cartridge.MD5" "dca90ea1084a2fdbe300d7178ca1a138"
@@ -16620,7 +16452,7 @@
 ""
 
 "Cartridge.MD5" "de1e9fb700baf8d2e5ae242bffe2dbda"
-"Cartridge.Manufacturer" "Activision, Mike Reidel"
+"Cartridge.Manufacturer" "Activision, Mike Riedel"
 "Cartridge.ModelNo" "EAK-043-04I"
 "Cartridge.Name" "Commando (1988) (Activision) (PAL)"
 ""
@@ -16643,9 +16475,9 @@
 ""
 
 "Cartridge.MD5" "dd8a2124d4eda200df715c698a6ea887"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Starpath)"
+"Cartridge.Name" "Dragonstomper (3 of 3) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "de0173ed6be9de6fd049803811e5f1a8"
@@ -16814,16 +16646,6 @@
 "Cartridge.Manufacturer" "Puzzy - Bit Corporation"
 "Cartridge.ModelNo" "PG201"
 "Cartridge.Name" "Sea Monster (1982) (Puzzy) (PAL)"
-""
-
-"Cartridge.MD5" "df87b2645532deac4fe0bfa059bc5404"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
-"Cartridge.ModelNo" "13"
-"Cartridge.Name" "Sweat! (2 of 4) (1983) (Starpath) (Prototype)"
-"Cartridge.Note" "Uses the Paddle Controllers"
-"Cartridge.Rarity" "Prototype"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "dfad86dd85a11c80259f3ddb6151f48f"
@@ -17072,9 +16894,9 @@
 ""
 
 "Cartridge.MD5" "e2c89f270f72cd256ed667507fa038a2"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4101"
-"Cartridge.Name" "Communist Mutants from Space (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Communist Mutants from Space (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "e2b682f6e6d76b35c180c7d847e93b4f"
@@ -17234,12 +17056,6 @@
 "Cartridge.Name" "Pitfall! (No Walls Hack)"
 ""
 
-"Cartridge.MD5" "e4519d584bb1663ff2734f16c983fa2b"
-"Cartridge.Manufacturer" "Atari, Peter C. Niday, Robert Vieira"
-"Cartridge.ModelNo" "CX26109"
-"Cartridge.Name" "Sorcerer's Apprentice (1983) (Atari) (PAL) [a]"
-""
-
 "Cartridge.MD5" "e434c0e161dd3c3fb435eb6bad2e182c"
 "Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein"
 "Cartridge.ModelNo" "CX2681"
@@ -17308,9 +17124,9 @@
 ""
 
 "Cartridge.MD5" "e51c23389e43ab328ccfb05be7d451da"
-"Cartridge.Manufacturer" "Starpath Corporation, Scott Nelson"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
 "Cartridge.ModelNo" "13"
-"Cartridge.Name" "Sweat! - The Decathlon Game (1983) (Starpath) (Prototype)"
+"Cartridge.Name" "Sweat! - The Decathlon Game (1983) (Arcadia) (Prototype)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
@@ -17366,7 +17182,7 @@
 "Cartridge.MD5" "e73838c43040bcbc83e4204a3e72eef4"
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.Name" "Apples and Dolls (CCE)"
-"Cartridge.Note" "AKA Open, Sesame!"
+"Cartridge.Note" "AKA Open Sesame"
 "Display.Phosphor" "YES"
 ""
 
@@ -17418,7 +17234,7 @@
 ""
 
 "Cartridge.MD5" "e64a8008812327853877a37befeb6465"
-"Cartridge.Manufacturer" "Answer Software Corporation"
+"Cartridge.Manufacturer" "Answer Software Corporation - TY Associates"
 "Cartridge.ModelNo" "ASC1002"
 "Cartridge.Name" "Gauntlet (1983) (Answer Software)"
 ""
@@ -17506,12 +17322,6 @@
 "Cartridge.Note" "AKA Keystone Kapers"
 ""
 
-"Cartridge.MD5" "e79c4432c518ca3e497f673a167ee526"
-"Cartridge.Manufacturer" "Funvision - Fund. Int'l Co."
-"Cartridge.Name" "Ocean City (Funvision)"
-"Cartridge.Note" "AKA Atlantis"
-""
-
 "Cartridge.MD5" "e7a758bb0b43d0f7004e92b9abf4bc83"
 "Cartridge.Name" "Troll's Adventure (Hack)"
 "Cartridge.Note" "Hack of Adventure"
@@ -17553,9 +17363,9 @@
 ""
 
 "Cartridge.MD5" "e823b13751e4388f1f2a375d3560a8d7"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
-"Cartridge.Name" "Official Frogger (Preview) (1983) (Starpath) [a]"
+"Cartridge.Name" "Official Frogger (Preview) (1983) (Arcadia) [a]"
 "Display.YStart" "32"
 ""
 
@@ -17820,9 +17630,9 @@
 ""
 
 "Cartridge.MD5" "eb92193f06b645df0b2a15d077ce435f"
-"Cartridge.Manufacturer" "Starpath Corporation, Steve Hales, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4102"
-"Cartridge.Name" "Suicide Mission (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Suicide Mission (1982) (Arcadia) (PAL)"
 "Display.Phosphor" "YES"
 ""
 
@@ -17857,21 +17667,16 @@
 ""
 
 "Cartridge.MD5" "ec3beb6d8b5689e867bafb5d5f507491"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Henry Will - Vidtec"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Henry Will IV - Vidtec"
 "Cartridge.ModelNo" "VC1003"
 "Cartridge.Name" "Word Zapper (1982) (U.S. Games)"
+"Cartridge.Note" "AKA Word Grabber"
 ""
 
 "Cartridge.MD5" "ecf51385384b468834611d44a8429c03"
 "Cartridge.Manufacturer" "20th Century Fox Video Games, Douglas 'Dallas North' Neubauer"
 "Cartridge.ModelNo" "11105"
 "Cartridge.Name" "Mega Force (1982) (20th Century Fox) (PAL)"
-""
-
-"Cartridge.MD5" "ec5d04b7e6cc6641d74d3ba7bb41ebc9"
-"Cartridge.Manufacturer" "Absolute Entertainment, Alex DeMeo"
-"Cartridge.ModelNo" "EAZ-041-04I"
-"Cartridge.Name" "Title Match Pro Wrestling (1987) (Absolute) (PAL)"
 ""
 
 "Cartridge.MD5" "ec5c861b487a5075876ab01155e74c6c"
@@ -17936,7 +17741,8 @@
 
 "Cartridge.MD5" "ed1306436ce237afc5a7ed3f77134202"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Green - Dolphin, Pigs 'n' Wolf (1990) (HES) (PAL)"
+"Cartridge.ModelNo" "771-341"
+"Cartridge.Name" "2 Pak Special - Dolphin, Pigs 'n' Wolf (1990) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "ed5ccfc93ad4561075436ee42a15438a"
@@ -17978,8 +17784,9 @@
 ""
 
 "Cartridge.MD5" "ee659ae50e9df886ac4f8d7ad10d046a"
-"Cartridge.Manufacturer" "Exus"
+"Cartridge.Manufacturer" "Exus Corporation"
 "Cartridge.Name" "Video Reflex (1983) (Exus)"
+"Cartridge.Note" "AKA Foot Craz"
 ""
 
 "Cartridge.MD5" "f0541d2f7cda5ec7bab6d62b6128b823"
@@ -18142,9 +17949,9 @@
 ""
 
 "Cartridge.MD5" "f0536303f49006806bac3aec15738336"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Starpath)"
+"Cartridge.Name" "Escape from the Mindmaster (4 of 4) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "f060826626aac9e0d8cda0282f4b7fc3"
@@ -18207,16 +18014,10 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "f0ee2b055fed6c1df4f3cbb2e12b2c15"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
-"Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (1982) (Starpath) [a1]"
-""
-
 "Cartridge.MD5" "f1127ade54037236e75a133b1dfc389d"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Starpath)"
+"Cartridge.Name" "Escape from the Mindmaster (Preview) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "f10e3f45fb01416c87e5835ab270b53a"
@@ -18282,7 +18083,7 @@
 ""
 
 "Cartridge.MD5" "f283cc294ece520c2badf9da20cfc025"
-"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
 "Cartridge.ModelNo" "CX26104"
 "Cartridge.Name" "Big Bird's Egg Catch (1983) (Atari) (PAL)"
 "Cartridge.Note" "Uses Kids/Keypad Controllers"
@@ -18390,7 +18191,7 @@
 ""
 
 "Cartridge.MD5" "f34f08e5eb96e500e851a80be3277a56"
-"Cartridge.Manufacturer" "Atari, Steve Jobs, Brad Stewart - Sears"
+"Cartridge.Manufacturer" "Atari, Brad Stewart - Sears"
 "Cartridge.ModelNo" "CX2622 - 6-99813, 49-75107"
 "Cartridge.Name" "Breakout (1978) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
@@ -18466,7 +18267,7 @@
 ""
 
 "Cartridge.MD5" "f457674cef449cfd85f21db2b4f631a7"
-"Cartridge.Manufacturer" "U.S. Games Corporation, Wes Trager"
+"Cartridge.Manufacturer" "U.S. Games Corporation, Wes Trager, Henry Will IV"
 "Cartridge.ModelNo" "VC1004"
 "Cartridge.Name" "Commando Raid (1982) (U.S. Games)"
 ""
@@ -18560,9 +18361,9 @@
 ""
 
 "Cartridge.MD5" "f5d103a9ae36d1d4ee7eef657b75d2b3"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4105"
-"Cartridge.Name" "Official Frogger, The (Preview) (1983) (Starpath)"
+"Cartridge.Name" "Official Frogger, The (Preview) (1983) (Arcadia)"
 "Display.YStart" "32"
 ""
 
@@ -18625,7 +18426,7 @@
 "Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
 "Cartridge.ModelNo" "710-111 - GN-010"
 "Cartridge.Name" "I Want My Mommy (1983) (ZiMAG)"
-"Cartridge.Note" "AKA Open, Sesame!"
+"Cartridge.Note" "AKA Open Sesame"
 "Display.Phosphor" "YES"
 ""
 
@@ -18788,7 +18589,7 @@
 
 "Cartridge.MD5" "f8c1c4a41303bd40b0d6c81bfaf8573b"
 "Cartridge.Manufacturer" "HES"
-"Cartridge.Name" "2 Pak Special Light Blue - Dungeon Master, Creature Strike (1992) (HES) (PAL)"
+"Cartridge.Name" "2 Pak Special - Dungeon Master, Creature Strike (1992) (HES) (PAL)"
 ""
 
 "Cartridge.MD5" "f8240e62d8c0a64a61e19388414e3104"
@@ -18831,9 +18632,7 @@
 ""
 
 "Cartridge.MD5" "f8582bc6ca7046adb8e18164e8cecdbc"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
-"Cartridge.ModelNo" "VCS83105"
-"Cartridge.Name" "Panda Chase (1983) (Home Vision) (PAL)"
+"Cartridge.Name" "Panda Chase (Unknown) (PAL)"
 ""
 
 "Cartridge.MD5" "f847fb8dba6c6d66d13724dbe5d95c4d"
@@ -18843,7 +18642,7 @@
 ""
 
 "Cartridge.MD5" "f844f4c6f3baaaf5322657442d6f29eb"
-"Cartridge.Manufacturer" "Atari, Nick 'Sandy Maiwald' Turner"
+"Cartridge.Manufacturer" "Atari, Richard Dobbis, Nick 'Sandy Maiwald' Turner"
 "Cartridge.ModelNo" "CX26111"
 "Cartridge.Name" "Snoopy and the Red Baron (1983) (Atari) (PAL)"
 ""
@@ -18860,7 +18659,7 @@
 ""
 
 "Cartridge.MD5" "f965cc981cbb0822f955641f8d84e774"
-"Cartridge.Manufacturer" "Answer Software Corporation"
+"Cartridge.Manufacturer" "Answer Software Corporation - TY Associates"
 "Cartridge.ModelNo" "ASC2001"
 "Cartridge.Name" "Confrontation (1983) (Answer) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -18982,7 +18781,7 @@
 ""
 
 "Cartridge.MD5" "fa0570561aa80896f0ead05c46351389"
-"Cartridge.Manufacturer" "Tigervision, Bill Hogue"
+"Cartridge.Manufacturer" "Tigervision"
 "Cartridge.ModelNo" "7-008"
 "Cartridge.Name" "Miner 2049er (1982) (Tigervision)"
 "Display.YStart" "31"
@@ -19112,9 +18911,9 @@
 ""
 
 "Cartridge.MD5" "fb4ca865abc02d66e39651bd9ade140a"
-"Cartridge.Manufacturer" "Starpath Corporation, Brian McGhie"
+"Cartridge.Manufacturer" "Arcadia Corporation, Brian McGhie"
 "Cartridge.ModelNo" "AR-4104"
-"Cartridge.Name" "Rabbit Transit (1983) (Starpath)"
+"Cartridge.Name" "Rabbit Transit (1983) (Arcadia)"
 ""
 
 "Cartridge.MD5" "fb27afe896e7c928089307b32e5642ee"
@@ -19129,16 +18928,16 @@
 ""
 
 "Cartridge.MD5" "fb833ed50c865a9a505a125fc9d79a7e"
-"Cartridge.Manufacturer" "Home Vision - Gem Int'l Corp."
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.Name" "Zoo Fun (1983) (Home Vision) (PAL)"
 "Cartridge.Note" "AKA Panda Chase"
 "Display.YStart" "30"
 ""
 
 "Cartridge.MD5" "fbac6476e7b2b20d246202af81662c88"
-"Cartridge.Manufacturer" "Starpath Corporation, Stephen Harland Landrum"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
 "Cartridge.ModelNo" "AR-4400"
-"Cartridge.Name" "Dragonstomper (Preview) (1982) (Starpath) (PAL)"
+"Cartridge.Name" "Dragonstomper (Preview) (1982) (Arcadia) (PAL)"
 ""
 
 "Cartridge.MD5" "fb91dfc36cddaa54b09924ae8fd96199"
@@ -19192,7 +18991,7 @@
 ""
 
 "Cartridge.MD5" "fc24a94d4371c69bc58f5245ada43c44"
-"Cartridge.Manufacturer" "Atari - Axlon, Nolan Bushnell, Steve DeFrisco"
+"Cartridge.Manufacturer" "Atari - Axlon, Steve DeFrisco"
 "Cartridge.ModelNo" "CX26170"
 "Cartridge.Name" "Secret Quest (1989) (Atari)"
 ""
@@ -19210,7 +19009,7 @@
 "Cartridge.MD5" "fd7464edaa8cc264b97ba0d13e7f0678"
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "771-333"
-"Cartridge.Name" "2 Pak Special Black - Challenge, Surfing (1990) (HES) (PAL) [a]"
+"Cartridge.Name" "2 Pak Special - Challenge, Surfing (1990) (HES) (PAL) [a]"
 ""
 
 "Cartridge.MD5" "fcea12625c071ddc49f4e409f4038c60"
@@ -19296,9 +19095,9 @@
 ""
 
 "Cartridge.MD5" "fdf0de38517e0cf7f0885f98ccc95836"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
-"Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Starpath)"
+"Cartridge.Name" "Escape from the Mindmaster (2 of 4) (1982) (Arcadia)"
 ""
 
 "Cartridge.MD5" "fec0c2e2ab0588ed20c750b58cf3baa3"
@@ -19309,7 +19108,7 @@
 ""
 
 "Cartridge.MD5" "fe67087f9c22655ce519616fc6c6ef4d"
-"Cartridge.Manufacturer" "Atari, Robert Neve"
+"Cartridge.Manufacturer" "Atari, Randy Bowker"
 "Cartridge.ModelNo" "CX26142"
 "Cartridge.Name" "Crack'ed (11-28-1988) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -19350,15 +19149,6 @@
 "Cartridge.Note" "Home Run, Canyon Bomber, Sky Diver, Night Driver"
 "Cartridge.Rarity" "Prototype"
 "Cartridge.Type" "4IN1"
-""
-
-"Cartridge.MD5" "fe940ab8eaa07e4db801f1728e391dbd"
-"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
-"Cartridge.ModelNo" "AR-4000, AR-4100"
-"Cartridge.Name" "Phaser Patrol (1982) (Arcadia) (Prototype)"
-"Cartridge.Rarity" "Prototype"
-"Display.YStart" "24"
-"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "feba8686fd0376015258d1152923958a"
@@ -19432,9 +19222,9 @@
 ""
 
 "Cartridge.MD5" "ff86fc8ffa717bb095e8471638c1c31c"
-"Cartridge.Manufacturer" "Starpath Corporation, Dennis Caswell"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4302"
-"Cartridge.Name" "Party Mix - Bop a Buggy (1 of 3) (1983) (Starpath) (PAL)"
+"Cartridge.Name" "Party Mix - Bop a Buggy (1 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
@@ -19476,56 +19266,8 @@
 "Cartridge.Type" "2IN1"
 ""
 
-"Cartridge.MD5" "d42fc569dc779ff1c81ba232f8cf5baf"
-"Cartridge.Manufacturer" "neotokeo2001"
-"Cartridge.Name" "Burger King Kaboom! (Hack) [a1]"
-"Cartridge.Note" "Hack of Kaboom!"
-"Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
-""
-
-"Cartridge.MD5" "ef74c7d079c817aad7df025bda8c2b19"
-"Cartridge.Manufacturer" "neotokeo2001"
-"Cartridge.Name" "Burger King Kaboom! (Hack)"
-"Cartridge.Note" "Hack of Kaboom!"
-"Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
-""
-
 "Cartridge.MD5" "54da3b0b3f43f5b37911c135b9432b49"
 "Cartridge.Name" "Halloween III Revision (Hack)"
-"Cartridge.Note" "Hack of Kaboom!"
-"Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
-""
-
-"Cartridge.MD5" "17decf903ac4343bd92c2b42295fca4a"
-"Cartridge.Manufacturer" "neotokeo2001"
-"Cartridge.Name" "Kaboom! Black (Hack)"
-"Cartridge.Note" "Hack of Kaboom!"
-"Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
-""
-
-"Cartridge.MD5" "4da42927c6db4895e3190f525895b926"
-"Cartridge.Manufacturer" "neotokeo2001"
-"Cartridge.Name" "Kaboom! Black (Hack) [a]"
-"Cartridge.Note" "Hack of Kaboom!"
-"Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
-""
-
-"Cartridge.MD5" "874cb30ffa88d8353207808f6129b812"
-"Cartridge.Manufacturer" "Trained by sdamon"
-"Cartridge.Name" "Kaboom! (Hack) [t1]"
-"Cartridge.Note" "Hack of Kaboom!"
-"Cartridge.Rarity" "Hack"
-"Controller.Left" "PADDLES"
-""
-
-"Cartridge.MD5" "225a113564226b446f92653808489fa2"
-"Cartridge.Manufacturer" "Jess Ragan"
-"Cartridge.Name" "Kabul! (Jess Ragan) (Hack) [o1]"
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
@@ -19612,4 +19354,269 @@
 "Cartridge.Manufacturer" "Ed Fries"
 "Cartridge.Name" "Halo 2600 (2010) (Ed Fries)"
 "Cartridge.Rarity" "Homebrew"
+""
+
+"Cartridge.MD5" "01f584bf67b0e464014a8c8b5ea470e3"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
+"Cartridge.ModelNo" "5 AR-4200"
+"Cartridge.Name" "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia)"
+""
+
+"Cartridge.MD5" "03ff9e8a7af437f16447fe88cea3226c"
+"Cartridge.Manufacturer" "Bomb - Onbase"
+"Cartridge.ModelNo" "CA285"
+"Cartridge.Name" "Wall-Defender (1983) (Bomb)"
+"Cartridge.Note" "AKA Wall Break"
+"Display.YStart" "30"
+""
+
+"Cartridge.MD5" "08bf437d012db07b05ff57a0c745c49e"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
+"Cartridge.ModelNo" "4 AR-4102"
+"Cartridge.Name" "Meteoroids (1982) (Arcadia) (Prototype)"
+"Cartridge.Note" "Suicide Mission Beta"
+"Cartridge.Rarity" "Prototype"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "0e713d4e272ea7322c5b27d645f56dd0"
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
+"Cartridge.ModelNo" "VCS83105"
+"Cartridge.Name" "Panda Chase (1983) (Home Vision) (PAL)"
+""
+
+"Cartridge.MD5" "101ab60f4000a5d13792ef0abad5f74b"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Peter C. Niday, Robert Vieira"
+"Cartridge.ModelNo" "CX26109"
+"Cartridge.Name" "Sorcerer's Apprentice (1983) (Atari) [a]"
+""
+
+"Cartridge.MD5" "151fa3218d8d7600114eb5bcd79c85cb"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu - Children's Computer Workshop"
+"Cartridge.ModelNo" "CX26104"
+"Cartridge.Name" "Big Bird's Egg Catch (05-02-1983) (Atari) (Prototype)"
+"Cartridge.Note" "Uses the Keypad Controller"
+"Cartridge.Rarity" "Prototype"
+"Controller.Left" "KEYBOARD"
+""
+
+"Cartridge.MD5" "1b4b06c2a14ed3ee73b7d0fd61b6aaf5"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype) [a]"
+""
+
+"Cartridge.MD5" "1ea980574416bfd504f62575ba524005"
+"Cartridge.Manufacturer" "Atari - GCC, Mark Ackerman, Glenn Parker"
+"Cartridge.ModelNo" "CX2675"
+"Cartridge.Name" "Ms. Pac-Man (1982) (Atari) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "2eaf8fa9e9fdf1fcfc896926a4bdbf85"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Name" "Excalibur Version 39 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+""
+
+"Cartridge.MD5" "32dcd1b535f564ee38143a70a8146efe"
+"Cartridge.Manufacturer" "Xonox - K-Tel Software, Anthony R. Henderson"
+"Cartridge.ModelNo" "99007, 6240"
+"Cartridge.Name" "Tomarc the Barbarian (1983) (Xonox)"
+"Cartridge.Note" "AKA Thundarr the Barbarian"
+"Display.YStart" "24"
+""
+
+"Cartridge.MD5" "3ad58b53a1e972396890bd86c735e78d"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Name" "Excalibur Version 36 (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+""
+
+"Cartridge.MD5" "43c6cfffeddab6b3787357fed9d44529"
+"Cartridge.Manufacturer" "20th Century Fox Video Games, Frank Cohen, Douglas 'Dallas North' Neubauer"
+"Cartridge.ModelNo" "11111"
+"Cartridge.Name" "M.A.S.H (1983) (20th Century Fox) (PAL)"
+""
+
+"Cartridge.MD5" "48411c9ef7e2cef1d6b2bee0e6055c27"
+"Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn, Jack Woodman"
+"Cartridge.ModelNo" "1003"
+"Cartridge.Name" "Fast Food (1982) (Telesys) (PAL)"
+""
+
+"Cartridge.MD5" "4981cefe5493ea512284e7f9f27d1e54"
+"Cartridge.Manufacturer" "Home Vision - Gem International Corp."
+"Cartridge.ModelNo" "VCS83136"
+"Cartridge.Name" "Cosmic War (1983) (Home Vision) (PAL)"
+"Cartridge.Note" "AKA Space Tunnel"
+"Display.Height" "256"
+""
+
+"Cartridge.MD5" "5069fecbe4706371f17737b0357cfa68"
+"Cartridge.Manufacturer" "Apollo - Games by Apollo, Steve Stringfellow"
+"Cartridge.ModelNo" "AP-2005"
+"Cartridge.Name" "Shark Attack (1982) (Apollo) (PAL)"
+"Cartridge.Note" "AKA Lochjaw"
+""
+
+"Cartridge.MD5" "5438e84b90e50a5362f01cc843b358d4"
+"Cartridge.Manufacturer" "Arcadia Corporation, Scott Nelson"
+"Cartridge.ModelNo" "3 AR-4300"
+"Cartridge.Name" "Fireball (1982) (Arcadia) (Prototype)"
+"Cartridge.Note" "Uses the Paddle Controllers"
+"Controller.Left" "PADDLES"
+""
+
+"Cartridge.MD5" "5c3a6d27c026f59a96b7af91e8b1bf26"
+"Cartridge.Manufacturer" "PlayAround - J.H.M."
+"Cartridge.Name" "PlayAround Demo (PlayAround) (1982)"
+""
+
+"Cartridge.MD5" "5e201d6bfc520424a28f129ee5e56835"
+"Cartridge.Manufacturer" "Universal Gamex Corporation, Alan Roberts, H.K. Poon"
+"Cartridge.ModelNo" "GX-001"
+"Cartridge.Name" "X-Man (1983) (Universal) (PAL)"
+""
+
+"Cartridge.MD5" "6b4eb5b3df80995b8d9117cb7e9aeb3c"
+"Cartridge.Manufacturer" "Gameworld"
+"Cartridge.ModelNo" "133-006"
+"Cartridge.Name" "Journey Escape (1983) (Gameworld) (PAL)"
+"Cartridge.Note" "AKA Rock 'n' Roll Escape"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "710497df2caab69cdcc45e919c69e13f"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
+"Cartridge.ModelNo" "5 AR-4200"
+"Cartridge.Name" "Labyrinth (Escape from the Mindmaster Beta) (1982) (Arcadia) [a]"
+""
+
+"Cartridge.MD5" "7867ee819b53d69cfcfe740f7ddca574"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
+"Cartridge.ModelNo" "1 AR-4000, AR-4100"
+"Cartridge.Name" "Phaser Patrol (1982) (Arcadia) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+"Display.YStart" "24"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "7dfd100bda9abb0f3744361bc7112681"
+"Cartridge.Manufacturer" "Telesys, Don 'Donyo' Ruffcorn"
+"Cartridge.ModelNo" "1006"
+"Cartridge.Name" "Demolition Herby (1983) (Telesys) (PAL)"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "89eaba47a59cbfd26e74aad32f553cd7"
+"Cartridge.Manufacturer" "Apollo - Games by Apollo, Ed Salvo, Bryson Park"
+"Cartridge.ModelNo" "AP-2001"
+"Cartridge.Name" "Spacechase (1981) (Apollo) (PAL)"
+""
+
+"Cartridge.MD5" "8a183b6357987db5170c5cf9f4a113e5"
+"Cartridge.Manufacturer" "Atari, Joe Gaucher"
+"Cartridge.ModelNo" "CX2679"
+"Cartridge.Name" "RealSports Basketball (1983) (Atari) (Prototype) (PAL)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "8c7e5e2329f4f4e06cbcc994a30fd352"
+"Cartridge.Manufacturer" "Data Age"
+"Cartridge.ModelNo" "DA1004"
+"Cartridge.Name" "Airlock (1982) (Data Age) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "9afdfe1cff7f37f1c971fe3f0c900606"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Plug Attack (Funvision)"
+"Cartridge.Note" "AKA Plaque Attack"
+""
+
+"Cartridge.MD5" "9e437229136f1c5e6ef4c5f36178ed18"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Grand Prize (Funvision)"
+"Cartridge.Note" "AKA Enduro"
+""
+
+"Cartridge.MD5" "a7a58e9291aefa1064e933071f60d4ef"
+"Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
+"Cartridge.ModelNo" "1 AR-4000, AR-4100"
+"Cartridge.Name" "Phaser Patrol (1982) (Arcadia) (Prototype) [a]"
+"Cartridge.Rarity" "Prototype"
+"Display.YStart" "24"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "ad8072675109d13fdd31a2e0403d5cff"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Tank City (Funvision)"
+"Cartridge.Note" "AKA Thunderground"
+""
+
+"Cartridge.MD5" "b5657d4c1c732fbb6af150668464247f"
+"Cartridge.Manufacturer" "Arcadia Corporation, Stephen Harland Landrum"
+"Cartridge.ModelNo" "6 AR-4400"
+"Cartridge.Name" "Excalibur (Dragonstomper Beta) (1982) (Arcadia) (Prototype)"
+""
+
+"Cartridge.MD5" "b86a12e53ab107b6caedd4e0272aa034"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Treasure Hunting (Funvision)"
+"Cartridge.Note" "AKA Pitfall!"
+""
+
+"Cartridge.MD5" "bf52327c2197d9d2c4544be053caded1"
+"Cartridge.Manufacturer" "HES"
+"Cartridge.ModelNo" "AG-930-04, AZ-030"
+"Cartridge.Name" "Decathlon (HES) (PAL) (16K)"
+""
+
+"Cartridge.MD5" "c0a68837c60e15d1fc5a40c9a62894bc"
+"Cartridge.Manufacturer" "Arcadia Corporation, Kevin Norman"
+"Cartridge.ModelNo" "7 AR-4103"
+"Cartridge.Name" "Killer Satellites (1983) (Arcadia) (Prototype)"
+"Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "c1e6e4e7ef5f146388a090f1c469a2fa"
+"Cartridge.Manufacturer" "Bomb - Onbase"
+"Cartridge.ModelNo" "CA283"
+"Cartridge.Name" "Z-Tack (1983) (Bomb)"
+"Cartridge.Note" "AKA Base Attack"
+"Display.YStart" "30"
+""
+
+"Cartridge.MD5" "cc7138202cd8f6776212ebfc3a820ecc"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu, Preston Stuart, Bruce Williams"
+"Cartridge.ModelNo" "CX26101"
+"Cartridge.Name" "Oscar's Trash Race (03-30-1983) (Atari) (Prototype)"
+"Cartridge.Note" "Uses the Keypad Controllers"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+""
+
+"Cartridge.MD5" "cd98be8a48ebf610c9609a688b9c57f2"
+"Cartridge.Manufacturer" "Arcadia Corporation, Steve Hales, Stephen Harland Landrum"
+"Cartridge.ModelNo" "4 AR-4102"
+"Cartridge.Name" "Suicide Mission (1982) (Arcadia) (Prototype)"
+"Cartridge.Note" "AKA Meteoroids"
+"Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "df95e4af466c809619299f49ece92365"
+"Cartridge.Manufacturer" "Atari, Michael Callahan, Preston Stuart"
+"Cartridge.ModelNo" "CX26103"
+"Cartridge.Name" "Alpha Beam with Ernie (06-03-1983) (Atari) (Prototype) (PAL)"
+"Cartridge.Note" "Uses Keypad Controllers"
+"Cartridge.Rarity" "Prototype"
+"Controller.Left" "KEYBOARD"
+"Controller.Right" "KEYBOARD"
+""
+
+"Cartridge.MD5" "f539e32bf6ce39c8ca47cb0cdd2c5cb8"
+"Cartridge.Manufacturer" "Control Video Corporation"
+"Cartridge.Name" "GameLine Master Module ROM (1983) (Control Video)"
 ""

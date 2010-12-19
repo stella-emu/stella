@@ -86,6 +86,7 @@ foreach $line (<INFILE>) {
 			$index = $proptype{$key};
 			$props[$index] = $value;
 		} else {
+      print "ERROR: $line\n";
 			print "Invalid key = \'$key\' for md5 = \'$props[0]\', ignoring ...\n";
 		}
 	}
