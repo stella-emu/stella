@@ -19,6 +19,9 @@
   * Updated internal ROM properties database to ROM-Hunter version 6
     (thanks go to RomHunter for his tireless research in this area).
 
+  * The ROM audit dialog now automatically selects the current
+    directory in the ROM launcher.
+
 -Have fun!
 
 

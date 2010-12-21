@@ -21,6 +21,7 @@
 #include "Version.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "FSNode.hxx"
 #include "FrameBuffer.hxx"
 #include "bspf.hxx"
 
@@ -57,7 +58,19 @@ FBInitStatus Launcher::initializeVideo()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Launcher::selectedRomMD5()
+const string& Launcher::selectedRomMD5()
 {
   return ((LauncherDialog*)myBaseDialog)->selectedRomMD5();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const FilesystemNode& Launcher::currentNode() const
+{
+  return ((LauncherDialog*)myBaseDialog)->currentNode();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Launcher::reload()
+{
+  ((LauncherDialog*)myBaseDialog)->reload();
 }

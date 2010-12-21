@@ -67,7 +67,19 @@ class LauncherDialog : public Dialog
 
       @return md5sum if a valid ROM file, else the empty string
     */
-    string selectedRomMD5();
+    const string& selectedRomMD5();
+
+    /**
+      Get node for the currently selected directory
+
+      @return FilesystemNode currently active
+    */
+    const FilesystemNode& currentNode() const { return myCurrentNode; }
+
+    /**
+      Reload the current listing
+    */
+    void reload() { updateListing(); }
 
   protected:
     virtual void handleKeyDown(int ascii, int keycode, int modifiers);
@@ -83,7 +95,7 @@ class LauncherDialog : public Dialog
     void loadRomInfo();
     void handleContextMenu();
     void setListFilters();
-    bool matchPattern(const string& s, const string& pattern);
+    bool matchPattern(const string& s, const string& pattern) const;
 
   private:
     ButtonWidget* myStartButton;

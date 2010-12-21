@@ -213,13 +213,13 @@ LauncherDialog::~LauncherDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string LauncherDialog::selectedRomMD5()
+const string& LauncherDialog::selectedRomMD5()
 {
   string extension;
   int item = myList->getSelected();
   if(item < 0 || myGameList->isDir(item) ||
      !LauncherFilterDialog::isValidRomName(myGameList->name(item), extension))
-    return "";
+    return EmptyString;
 
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
@@ -433,7 +433,7 @@ void LauncherDialog::setListFilters()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherDialog::matchPattern(const string& s, const string& pattern)
+bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
 {
   // This method is modelled after strcasestr, which we don't use
   // because it isn't guaranteed to be available everywhere

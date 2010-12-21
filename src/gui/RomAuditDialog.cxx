@@ -22,6 +22,7 @@
 
 #include "bspf.hxx"
 
+#include "Launcher.hxx"
 #include "LauncherFilterDialog.hxx"
 #include "BrowserDialog.hxx"
 #include "DialogContainer.hxx"
@@ -107,7 +108,12 @@ RomAuditDialog::~RomAuditDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void RomAuditDialog::loadConfig()
 {
-  myRomPath->setEditString(instance().settings().getString("romdir"));
+  const string& currentdir =
+    instance().launcher().currentNode().getRelativePath();
+  const string& path = currentdir == "" ?
+    instance().settings().getString("romdir") : currentdir;
+
+  myRomPath->setEditString(path);
   myResults1->setLabel("");
   myResults2->setLabel("");
 }
@@ -192,6 +198,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kConfirmAuditCmd:
       auditRoms();
+      instance().launcher().reload();
       break;
 
     case kChooseAuditDirCmd:
@@ -202,7 +209,7 @@ void RomAuditDialog::handleCommand(CommandSender* sender, int cmd,
     case kAuditDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.getPath());
+      myRomPath->setEditString(dir.getRelativePath());
       myResults1->setLabel("");
       myResults2->setLabel("");
       break;

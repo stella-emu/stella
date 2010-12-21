@@ -22,6 +22,7 @@
 
 class Properties;
 class OSystem;
+class FilesystemNode;
 
 #include "DialogContainer.hxx"
 #include "FrameBuffer.hxx"
@@ -53,7 +54,17 @@ class Launcher : public DialogContainer
     /**
       Wrapper for LauncherDialog::selectedRomMD5() method.
     */
-    string selectedRomMD5();
+    const string& selectedRomMD5();
+
+    /**
+      Wrapper for LauncherDialog::currentNode() method.
+    */
+    const FilesystemNode& currentNode() const;
+
+    /**
+      Wrapper for LauncherDialog::reload() method.
+    */
+    void reload();
 
   private:
     // The width and height of this dialog
