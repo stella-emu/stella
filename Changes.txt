@@ -14,6 +14,10 @@
 
 3.3 to 3.4: (xx. xx, 2010)
 
+  * The mouse can now be used in joystick games (ie, moving the mouse
+    emulates joystick directions, and pressing a mouse button emulates
+    the joystick fire button).
+
   * Updated built-in version of the PNG library to the latest version.
 
   * Updated internal ROM properties database to ROM-Hunter version 6

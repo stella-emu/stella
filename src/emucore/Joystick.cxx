@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2010 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2011 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -85,6 +85,33 @@ void Joystick::update()
   }
   if(yaxis < -16384)
     myDigitalPinState[One] = false;
+
+  // The following code was taken from z26
+  // Mouse events
+#define MJ_Threshold 2
+  int mousex = myEvent.get(Event::MouseAxisXValue),
+      mousey = myEvent.get(Event::MouseAxisYValue);
+  if(mousex || mousey)
+  {
+    if((!(abs(mousey) > abs(mousex) << 1)) && (abs(mousex) >= MJ_Threshold))
+    {
+      if(mousex < 0)
+        myDigitalPinState[Three] = false;
+      else if (mousex > 0)
+        myDigitalPinState[Four] = false;
+    }
+
+    if((!(abs(mousex) > abs(mousey) << 1)) && (abs(mousey) >= MJ_Threshold))
+    {
+      if(mousey < 0)
+        myDigitalPinState[One] = false;
+      else if(mousey > 0)
+        myDigitalPinState[Two] = false;
+    }
+  }
+  // Get mouse button state
+  if(myEvent.get(Event::MouseButtonValue))
+    myDigitalPinState[Six] = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
