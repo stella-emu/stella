@@ -20,7 +20,8 @@
     (thanks go to RomHunter for his tireless research in this area).
 
   * The ROM audit dialog now automatically selects the current
-    directory in the ROM launcher.
+    directory in the ROM launcher, and reloads the directory after
+    the audit is complete.
 
 -Have fun!
 

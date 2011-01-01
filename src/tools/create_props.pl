@@ -108,7 +108,7 @@ print OUTFILE "//      SS   tt   eeeeee  ll   ll   aaaaa  --  \"An Atari 2600 VC
 print OUTFILE "//  SS  SS   tt   ee      ll   ll  aa  aa\n";
 print OUTFILE "//   SSSS     ttt  eeeee llll llll  aaaaa\n";
 print OUTFILE "//\n";
-print OUTFILE "// Copyright (c) 1995-2010 by Bradford W. Mott, Stephen Anthony\n";
+print OUTFILE "// Copyright (c) 1995-2011 by Bradford W. Mott, Stephen Anthony\n";
 print OUTFILE "// and the Stella Team\n";
 print OUTFILE "//\n";
 print OUTFILE "// See the file \"License.txt\" for information on usage and redistribution of\n";
