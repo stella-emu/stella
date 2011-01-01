@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3242
+#define DEF_PROPS_SIZE 3243
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3096,6 +3096,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "f34f08e5eb96e500e851a80be3277a56", "Atari, Brad Stewart - Sears", "CX2622 - 6-99813, 49-75107", "Breakout (1978) (Atari)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "PADDLES", "", "", "", "", "", "", "" }, 
   { "f367e58667a30e7482175809e3cec4d4", "ZiMAG - Emag - Vidco", "708-111 - GN-040", "Cosmic Corridor (1983) (ZiMAG)", "AKA Space Tunnel", "", "", "", "", "", "", "", "", "", "", "", "", "220", "", "" }, 
   { "f38358cd8f5ecfedffd5aca1aa939f18", "Universal Gamex Corporation, Alan Roberts", "1005", "X-Man (1983) (Universal) [a]", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "" }, 
+  { "f39e4bc99845edd8621b0f3c7b8c4fd9", "AtariAge", "", "Toyshop Trouble (AtariAge)", "F8 Emulator Release", "", "", "", "", "", "", "", "", "PADDLES", "", "", "33", "", "", "" }, 
   { "f3c431930e035a457fe370ed4d230659", "", "", "Crackpots (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f3cd0f886201d1376f3abab2df53b1b9", "Commavid, Ben Burch", "CM-010", "Rush Hour (1983) (Commavid) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "f3dfae774f3bd005a026e29894db40d3", "Quelle", "649635", "See Saw (Double-Game Package) (1983) (Quelle) (PAL)", "AKA Circus Atari", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
