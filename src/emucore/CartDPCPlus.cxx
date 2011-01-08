@@ -29,7 +29,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   : Cartridge(settings),
     myFastFetch(false),
     myLDAimmediate(false),
-    myParameter(0),
+    myParameterPointer(0),
     mySystemCycles(0),
     myFractionalClocks(0.0)
 {
@@ -124,14 +124,17 @@ void CartridgeDPCPlus::install(System& system)
 inline void CartridgeDPCPlus::clockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR)
-  myRandomNumber = ((myRandomNumber & 1) ? 0xa260012b: 0x00) ^ ((myRandomNumber >> 1) & 0x7FFFFFFF);
+  myRandomNumber = ((myRandomNumber & (1<<10)) ? 0x10adab1e: 0x00) ^
+                   ((myRandomNumber >> 11) | (myRandomNumber << 21));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void CartridgeDPCPlus::priorClockRandomNumberGenerator()
 {
   // Update random number generator (32-bit LFSR, reversed)
-  myRandomNumber = ((myRandomNumber & (1<<31)) ? 0x44c00257: 0x00) ^ (myRandomNumber << 1);
+  myRandomNumber = ((myRandomNumber & (1<<31)) ?
+    ((0x10adab1e^myRandomNumber) << 11) | ((0x10adab1e^myRandomNumber) >> 21) :
+    (myRandomNumber << 11) | (myRandomNumber >> 21));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,11 +165,22 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 inline void CartridgeDPCPlus::callFunction(uInt8 value)
 {
   //  myParameter
+  Int16 ROMdata = myParameter[1] * 256 + myParameter[0];
   switch (value)
   {
-    //case 0:     template for future special functions
-      // CallSpecialFunctionO(myParameter);
-      // break;
+    case 0: // Parameter Pointer reset
+      myParameterPointer=0;
+      break;
+    case 1: // Copy ROM to fetcher
+      for(int i = 0; i < myParameter[3]; ++i)
+        myDisplayImage[myCounters[myParameter[2]]+i] = myProgramImage[ROMdata+i];
+      myParameterPointer = 0;
+      break;
+    case 2: // Copy value to fetcher
+      for(int i = 0; i < myParameter[3]; ++i)
+        myDisplayImage[myCounters[myParameter[2]]+i] = myParameter[0];
+      myParameterPointer = 0;
+      break;
     case 255: // Call user writen ARM code (most likely be C compiled for ARM).
               // ARM code not supported by Stella at this time.
       break;
@@ -409,7 +423,7 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
             break;
 
           case 0x01:  // PARAMETER - set parameter used by CALLFUNCTION (not all functions use the parameter)
-            myParameter = value;
+            myParameter[myParameterPointer++] = value;
             break;
 
           case 0x02:  // CALLFUNCTION
@@ -642,7 +656,9 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putBool(myLDAimmediate);
 
     // Control Byte to update
-    out.putByte((char) myParameter);
+    out.putInt(8);
+    for(i = 0; i < 8; ++i)
+      out.putByte((char)myParameter[i]);
 
     // The music counters
     out.putInt(3);
@@ -717,7 +733,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
     myLDAimmediate = in.getBool();
 
     // Control Byte to update
-    myParameter = (uInt8) in.getByte();
+    limit = (uInt32) in.getInt();
+    for(i = 0; i < limit; ++i)
+      myParameter[i] = (uInt8) in.getByte();
 
     // The music mode counters for the data fetchers
     limit = (uInt32) in.getInt();

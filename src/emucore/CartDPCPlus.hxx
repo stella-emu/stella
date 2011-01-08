@@ -206,7 +206,10 @@ class CartridgeDPCPlus : public Cartridge
     bool myLDAimmediate;
 
     // Parameter for special functions
-    uInt8 myParameter;
+    uInt8 myParameter[8];
+
+    // Parameter pointer for special functions
+    uInt8 myParameterPointer;
 
     // The music mode counters
     uInt32 myMusicCounters[3];
