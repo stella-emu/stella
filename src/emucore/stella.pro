@@ -19628,3 +19628,9 @@
 "Controller.Right" "PADDLES"
 "Display.YStart" "33"
 ""
+
+"Cartridge.MD5" "5a9685c4d51a6c1d6a9544946d9e8dc3"
+"Cartridge.Manufacturer" "AtariAge"
+"Cartridge.Name" "Grandma's Revenge (AtariAge)"
+"Cartridge.Note" "Can use driving controller in right port"
+""

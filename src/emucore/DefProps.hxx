@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3243
+#define DEF_PROPS_SIZE 3244
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1171,6 +1171,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "5a81ad4e184050851e63c8e16e3dac77", "Jone Yuan Telephonic Enterprise Co", "Hack", "Sky Diver (Jone Yuan) (Hack)", "2600 Screen Search Console", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "5a8afe5422abbfb0a342fb15afd7415f", "Atari, Robert C. Polaro", "CX26155", "Sprint Master (1988) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "24", "", "", "" }, 
   { "5a93265095146458df2baf2162014889", "Activision, Steve Cartwright - Ariola", "EAX-031, EAX-031-04B - 711 031-717", "Frostbite (1983) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "5a9685c4d51a6c1d6a9544946d9e8dc3", "AtariAge", "", "Grandma's Revenge (AtariAge)", "Can use driving controller in right port", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "5a9d188245aff829efde816fcade0b16", "CCE", "C-808", "Phantom Tank (1983) (CCE) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "5acf9865a72c0ce944979f76ff9610f0", "", "", "Dodge Demo 2 (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "5ae73916fa1da8d38ceff674fa25a78a", "CCE", "", "Barnstorming (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

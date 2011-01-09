@@ -165,15 +165,15 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 inline void CartridgeDPCPlus::callFunction(uInt8 value)
 {
   //  myParameter
-  Int16 ROMdata = myParameter[1] * 256 + myParameter[0];
+  uInt16 ROMdata = (myParameter[1] << 8) + myParameter[0];
   switch (value)
   {
     case 0: // Parameter Pointer reset
-      myParameterPointer=0;
+      myParameterPointer = 0;
       break;
     case 1: // Copy ROM to fetcher
       for(int i = 0; i < myParameter[3]; ++i)
-        myDisplayImage[myCounters[myParameter[2]]+i] = myProgramImage[ROMdata+i];
+        myDisplayImage[myCounters[myParameter[2] & 0x7]+i] = myProgramImage[ROMdata+i];
       myParameterPointer = 0;
       break;
     case 2: // Copy value to fetcher
@@ -423,7 +423,8 @@ bool CartridgeDPCPlus::poke(uInt16 address, uInt8 value)
             break;
 
           case 0x01:  // PARAMETER - set parameter used by CALLFUNCTION (not all functions use the parameter)
-            myParameter[myParameterPointer++] = value;
+            if(myParameterPointer < 8)
+              myParameter[myParameterPointer++] = value;
             break;
 
           case 0x02:  // CALLFUNCTION
