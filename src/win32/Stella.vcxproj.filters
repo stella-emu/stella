@@ -267,6 +267,9 @@
     <ClCompile Include="..\emucore\System.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\Thumbulator.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
     <ClCompile Include="..\emucore\TIA.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -825,6 +828,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\System.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\Thumbulator.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\TIA.hxx">

@@ -283,6 +283,7 @@ SDLmain.lib
     <ClCompile Include="..\emucore\StateManager.cxx" />
     <ClCompile Include="..\emucore\Switches.cxx" />
     <ClCompile Include="..\emucore\System.cxx" />
+    <ClCompile Include="..\emucore\Thumbulator.cxx" />
     <ClCompile Include="..\emucore\TIA.cxx" />
     <ClCompile Include="..\emucore\TIASnd.cxx" />
     <ClCompile Include="..\emucore\TIATables.cxx" />
@@ -471,6 +472,7 @@ SDLmain.lib
     <ClInclude Include="..\emucore\StateManager.hxx" />
     <ClInclude Include="..\emucore\Switches.hxx" />
     <ClInclude Include="..\emucore\System.hxx" />
+    <ClInclude Include="..\emucore\Thumbulator.hxx" />
     <ClInclude Include="..\emucore\TIA.hxx" />
     <ClInclude Include="..\emucore\TIASnd.hxx" />
     <ClInclude Include="..\emucore\TIATables.hxx" />
