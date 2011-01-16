@@ -21,6 +21,7 @@
 #include <cstring>
 
 #include "System.hxx"
+#include "Thumbulator.hxx"
 #include "CartDPCPlus.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -37,17 +38,19 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   uInt32 minsize = 4096 * 6 + 4096 + 1024 + 255;
   mySize = BSPF_max(minsize, size);
   myImage = new uInt8[mySize];
+  myDPCRAM = new uInt8[8192];
   memcpy(myImage, image, size);
   createCodeAccessBase(4096 * 6);
 
   // Pointer to the program ROM (24K @ 0 byte offset)
   myProgramImage = myImage;
 
-  // Pointer to the display ROM (4K @ 24K offset)
-  myDisplayImage = myProgramImage + 4096 * 6;
+  // Pointer to the display RAM
+  myDisplayImage = myDPCRAM + 0xC00;
+  memset(myDPCRAM, 0, 8192);
 
   // Pointer to the Frequency ROM (1K @ 28K offset)
-  myFrequencyImage = myDisplayImage + 4096;
+  myFrequencyImage = myProgramImage + 0x7000;
 
   // If the image is larger than 29K, we assume any excess at the
   // beginning is ARM code, and skip over it
@@ -55,9 +58,16 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   {
     int offset = size - 29 * 1024;
     myProgramImage   += offset;
-    myDisplayImage   += offset;
+//    myDisplayImage   += offset;
     myFrequencyImage += offset;
   }
+
+  // Create Thumbulator ARM emulator
+  myThumbEmulator = new Thumbulator((uInt16*)(myProgramImage-0xC00),
+                                    (uInt16*)myDPCRAM);
+
+  // Copy DPC display data to Harmony RAM
+  memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1000);
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
@@ -77,6 +87,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 CartridgeDPCPlus::~CartridgeDPCPlus()
 {
   delete[] myImage;
+  delete[] myDPCRAM;
+
+  delete myThumbEmulator;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,8 +194,11 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
         myDisplayImage[myCounters[myParameter[2]]+i] = myParameter[0];
       myParameterPointer = 0;
       break;
+    case 254:
     case 255: // Call user writen ARM code (most likely be C compiled for ARM).
               // ARM code not supported by Stella at this time.
+
+      myThumbEmulator->run();
       break;
     // reserved
   }

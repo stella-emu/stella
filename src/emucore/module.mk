@@ -64,7 +64,8 @@ MODULE_OBJS := \
 	src/emucore/TIATables.o \
 	src/emucore/TrackBall.o \
 	src/emucore/unzip.o \
-	src/emucore/MediaFactory.o
+	src/emucore/MediaFactory.o \
+	src/emucore/Thumbulator.o
 
 MODULE_DIRS += \
 	src/emucore

@@ -21,6 +21,7 @@
 #define CARTRIDGE_DPC_PLUS_HXX
 
 class System;
+class Thumbulator;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
@@ -177,6 +178,12 @@ class CartridgeDPCPlus : public Cartridge
 
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage;
+
+    // Pointer to the DPC 8k RAM image
+    uInt8* myDPCRAM;
+
+    // Pointer to the Thumb ARM emulator object
+    Thumbulator* myThumbEmulator;
 
     // Pointer to the 1K frequency table
     uInt8* myFrequencyImage;
