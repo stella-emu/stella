@@ -68,8 +68,6 @@
 				GenerateDebugInformation="true"
 				ProgramDatabaseFile="$(OutDir)/Stella.pdb"
 				SubSystem="1"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -89,6 +87,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -148,8 +149,6 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				RandomizedBaseAddress="1"
-				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -169,6 +168,9 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
+			/>
+			<Tool
+				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -472,6 +474,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\System.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\Thumbulator.cxx"
 					>
 				</File>
 				<File
@@ -1246,6 +1252,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\System.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\Thumbulator.hxx"
 					>
 				</File>
 				<File
