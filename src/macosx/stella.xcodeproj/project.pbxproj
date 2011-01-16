@@ -289,6 +289,8 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
+		DC4AF1F312E39F700090B82E /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AF1F112E39F700090B82E /* Thumbulator.cxx */; };
+		DC4AF1F412E39F700090B82E /* Thumbulator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AF1F212E39F700090B82E /* Thumbulator.hxx */; };
 		DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */; };
 		DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4E0F117CFD004D1660 /* Rect.hxx */; };
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
@@ -694,6 +696,8 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RiotWidget.hxx; path = ../debugger/gui/RiotWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKey.cxx; path = ../emucore/SaveKey.cxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SaveKey.hxx; path = ../emucore/SaveKey.hxx; sourceTree = SOURCE_ROOT; };
+		DC4AF1F112E39F700090B82E /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Thumbulator.cxx; path = ../emucore/Thumbulator.cxx; sourceTree = SOURCE_ROOT; };
+		DC4AF1F212E39F700090B82E /* Thumbulator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Thumbulator.hxx; path = ../emucore/Thumbulator.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Stack.hxx; path = ../common/Stack.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4E0F117CFD004D1660 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Rect.hxx; path = ../gui/Rect.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaFont.hxx; path = ../gui/StellaFont.hxx; sourceTree = SOURCE_ROOT; };
@@ -972,6 +976,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DC4AF1F112E39F700090B82E /* Thumbulator.cxx */,
+				DC4AF1F212E39F700090B82E /* Thumbulator.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
 				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
@@ -1462,6 +1468,7 @@
 				DC3FE4A011C7D3FE00C91C72 /* PNGLibrary.hxx in Headers */,
 				DCB5CEE811F5B78C00C68D09 /* MessageBox.hxx in Headers */,
 				DCBD968A1210314C0087CEFD /* ComboDialog.hxx in Headers */,
+				DC4AF1F412E39F700090B82E /* Thumbulator.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1721,6 +1728,7 @@
 				DC3FE49F11C7D3FE00C91C72 /* PNGLibrary.cxx in Sources */,
 				DCB5CEE711F5B78C00C68D09 /* MessageBox.cxx in Sources */,
 				DCBD96891210314C0087CEFD /* ComboDialog.cxx in Sources */,
+				DC4AF1F312E39F700090B82E /* Thumbulator.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

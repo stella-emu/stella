@@ -311,6 +311,8 @@
 		DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527D810B9DA6A005E1287 /* bspf.hxx */; };
 		DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527D910B9DA6A005E1287 /* Snapshot.cxx */; };
 		DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */; };
+		DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD2839612E39F1200A808DC /* Thumbulator.cxx */; };
+		DCD2839912E39F1200A808DC /* Thumbulator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD2839712E39F1200A808DC /* Thumbulator.hxx */; };
 		DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */; };
 		DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */; };
 		DCD56D380B247D920092F9F8 /* Cart4A50.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D360B247D920092F9F8 /* Cart4A50.cxx */; };
@@ -715,6 +717,8 @@
 		DCC527D810B9DA6A005E1287 /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bspf.hxx; path = ../common/bspf.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527D910B9DA6A005E1287 /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
+		DCD2839612E39F1200A808DC /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Thumbulator.cxx; path = ../emucore/Thumbulator.cxx; sourceTree = SOURCE_ROOT; };
+		DCD2839712E39F1200A808DC /* Thumbulator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Thumbulator.hxx; path = ../emucore/Thumbulator.hxx; sourceTree = SOURCE_ROOT; };
 		DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Genesis.cxx; path = ../emucore/Genesis.cxx; sourceTree = SOURCE_ROOT; };
 		DCD3F7C411340AAF00DBA3AE /* Genesis.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Genesis.hxx; path = ../emucore/Genesis.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D360B247D920092F9F8 /* Cart4A50.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50.cxx; path = ../emucore/Cart4A50.cxx; sourceTree = SOURCE_ROOT; };
@@ -969,6 +973,8 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
+				DCD2839612E39F1200A808DC /* Thumbulator.cxx */,
+				DCD2839712E39F1200A808DC /* Thumbulator.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
 				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
@@ -1459,6 +1465,7 @@
 				DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */,
 				DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */,
 				DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */,
+				DCD2839912E39F1200A808DC /* Thumbulator.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1720,6 +1727,7 @@
 				DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */,
 				DC98F35611F5B56200AA520F /* MessageBox.cxx in Sources */,
 				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,
+				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
