@@ -100,13 +100,21 @@ if(addr<0x50)
 }
 
             addr>>=1;
+#ifdef __BIG_ENDIAN__
             data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
+#else
+            data=rom[addr];
+#endif
 if(DBUG) fprintf(stderr,"0x%04X\n",data);
             return(data);
         case 0x40000000: //RAM
             addr&=RAMADDMASK;
             addr>>=1;
+#ifdef __BIG_ENDIAN__
             data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
+#else
+            data=ram[addr];
+#endif
 if(DBUG) fprintf(stderr,"0x%04X\n",data);
             return(data);
     }
@@ -156,7 +164,11 @@ if(DBUG) fprintf(stderr,"write16(0x%08X,0x%08X)\n",addr,data);
         case 0x40000000: //RAM
             addr&=RAMADDMASK;
             addr>>=1;
+#ifdef __BIG_ENDIAN__
             ram[addr]=(((data&0xFFFF)>>8)|((data&0xffff)<<8))&0xffff;
+#else
+            ram[addr]=data&0xFFFF;
+#endif
             return;
     }
     fprintf(stderr,"write16(0x%08X,0x%08X), abort\n",addr,data);
@@ -208,13 +220,21 @@ if(DBUG) fprintf(stderr,"read16(0x%08X)=",addr);
         case 0x00000000: //ROM
             addr&=ROMADDMASK;
             addr>>=1;
+#ifdef __BIG_ENDIAN__
             data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
+#else
+            data=rom[addr];
+#endif
 if(DBUG) fprintf(stderr,"0x%04X\n",data);
             return(data);
         case 0x40000000: //RAM
             addr&=RAMADDMASK;
             addr>>=1;
+#ifdef __BIG_ENDIAN__
             data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
+#else
+            data=ram[addr];
+#endif
 if(DBUG) fprintf(stderr,"0x%04X\n",data);
             return(data);
     }
@@ -453,6 +473,7 @@ if(DISS) fprintf(stderr,"add r%u,r%u\n",rd,rm);
         ra=read_register(rd);
         rb=read_register(rm);
         rc=ra+rb;
+      if(rd==15) rc+=2;
 //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
         write_register(rd,rc);
         return(0);
