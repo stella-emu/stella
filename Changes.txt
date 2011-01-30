@@ -18,7 +18,8 @@
     emulates joystick directions, and pressing a mouse button emulates
     the joystick fire button).
 
-  * Updated built-in version of the PNG library to the latest version.
+  * Added preliminary support for emulating ARM code to the DPC+
+    bankswitching scheme (thanks to Batari).
 
   * Updated internal ROM properties database to ROM-Hunter version 6
     (thanks go to RomHunter for his tireless research in this area).
@@ -26,6 +27,8 @@
   * The ROM audit dialog now automatically selects the current
     directory in the ROM launcher, and reloads the directory after
     the audit is complete.
+
+  * Updated built-in version of the PNG library to the latest version.
 
 -Have fun!
 
