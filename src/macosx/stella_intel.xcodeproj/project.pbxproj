@@ -973,8 +973,6 @@
 		2D6050CC0898776500C6DE89 /* emucore */ = {
 			isa = PBXGroup;
 			children = (
-				DCD2839612E39F1200A808DC /* Thumbulator.cxx */,
-				DCD2839712E39F1200A808DC /* Thumbulator.hxx */,
 				DC487FB40DA5350900E12499 /* AtariVox.cxx */,
 				DC487FB50DA5350900E12499 /* AtariVox.hxx */,
 				2DE2DF100627AE07006BEC99 /* Booster.cxx */,
@@ -1097,6 +1095,8 @@
 				2DE2DF8F0627AE34006BEC99 /* Switches.hxx */,
 				DCC527CE10B9DA19005E1287 /* System.cxx */,
 				DCC527CF10B9DA19005E1287 /* System.hxx */,
+				DCD2839612E39F1200A808DC /* Thumbulator.cxx */,
+				DCD2839712E39F1200A808DC /* Thumbulator.hxx */,
 				2DE2DF900627AE34006BEC99 /* TIA.cxx */,
 				2DE2DF910627AE34006BEC99 /* TIA.hxx */,
 				2DE7242D08CE910900C889A8 /* TIASnd.cxx */,
