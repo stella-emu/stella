@@ -35,8 +35,8 @@ Thumbulator::Thumbulator(uInt16* rom_ptr, uInt16* ram_ptr)
   : rom(rom_ptr),
     ram(ram_ptr),
     copydata(0),
-    DBUG(1),  // dump detailed execution trace
-    DISS(1)   // dump Thumb instruction trace
+    DBUG(0),  // dump detailed execution trace
+    DISS(0)   // dump Thumb instruction trace
 {
 }
 
@@ -473,7 +473,6 @@ if(DISS) fprintf(stderr,"add r%u,r%u\n",rd,rm);
         ra=read_register(rd);
         rb=read_register(rm);
         rc=ra+rb;
-      if(rd==15) rc+=2;
 //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
         write_register(rd,rc);
         return(0);
