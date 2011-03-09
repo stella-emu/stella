@@ -48,714 +48,775 @@ Thumbulator::~Thumbulator()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::run( void )
 {
-    reset();
-    while(1)
+  reset();
+  for(;;)
+  {
+    if (execute()) break;
+    if (instructions > 500000) // way more than would otherwise be possible
     {
-        if(execute()) break;
-	if (instructions > 500000) // way more than would otherwise be possible
-	{
-	  DISS=1; // dump instructions
-	  DBUG=1;
-	}
-	if (instructions > 501000) // Stop dumping, quit executing
-	{
-	  DISS=0;
-	  DBUG=0;
-	  exit(1); // exit Stella
-	}
+      DISS=1; // dump instructions
+      DBUG=1;
     }
-    //dump_counters();
-    return 0;
+    if (instructions > 501000) // Stop dumping, quit executing
+    {
+      DISS=0;
+      DBUG=0;
+      // TODO - deal with this condition more elegantly
+      exit(1); // exit Stella
+    }
+  }
+  //dump_counters();
+  return 0;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::dump_counters ( void )
 {
-    printf("\n\n");
-    printf("instructions %lu\n",instructions);
-    printf("fetches      %lu\n",fetches);
-    printf("reads        %lu\n",reads);
-    printf("writes       %lu\n",writes);
-    printf("memcycles    %lu\n",fetches+reads+writes);
+  cout << endl << endl
+       << "instructions " << instructions << endl
+       << "fetches      " << fetches << endl
+       << "reads        " << reads << endl
+       << "writes       " << writes << endl
+       << "memcycles    " << (fetches+reads+writes) << endl;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::fetch16 ( uInt32 addr )
 {
-    uInt32 data;
+  uInt32 data;
 
-    fetches++;
+  fetches++;
 
+  if(DBUG)
+    fprintf(stderr,"fetch16(0x%08X)=",addr);
 
-if(DBUG) fprintf(stderr,"fetch16(0x%08X)=",addr);
-    switch(addr&0xF0000000)
-    {
-        case 0x00000000: //ROM
-            addr&=ROMADDMASK;
+  switch(addr&0xF0000000)
+  {
+    case 0x00000000: //ROM
+      addr &= ROMADDMASK;
+      if(addr<0x50)
+      {
+        fprintf(stderr,"fetch16(0x%08X), abort\n",addr);
+        exit(1);
+      }
 
-if(addr<0x50)
-{
-    fprintf(stderr,"fetch16(0x%08X), abort\n",addr);
-    exit(1);
+      addr>>=1;
+    #ifdef __BIG_ENDIAN__
+      data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
+    #else
+      data=rom[addr];
+    #endif
+      if(DBUG)
+        fprintf(stderr,"0x%04X\n",data);
+      return(data);
+
+    case 0x40000000: //RAM
+      addr &= RAMADDMASK;
+      addr>>=1;
+    #ifdef __BIG_ENDIAN__
+      data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
+    #else
+      data=ram[addr];
+    #endif
+      if(DBUG)
+        fprintf(stderr,"0x%04X\n",data);
+      return(data);
+  }
+  fprintf(stderr,"fetch16(0x%08X), abort\n",addr);
+  exit(1);
 }
 
-            addr>>=1;
-#ifdef __BIG_ENDIAN__
-            data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
-#else
-            data=rom[addr];
-#endif
-if(DBUG) fprintf(stderr,"0x%04X\n",data);
-            return(data);
-        case 0x40000000: //RAM
-            addr&=RAMADDMASK;
-            addr>>=1;
-#ifdef __BIG_ENDIAN__
-            data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
-#else
-            data=ram[addr];
-#endif
-if(DBUG) fprintf(stderr,"0x%04X\n",data);
-            return(data);
-    }
-    fprintf(stderr,"fetch16(0x%08X), abort\n",addr);
-    exit(1);
-}
-
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::fetch32 ( uInt32 addr )
 {
-    uInt32 data;
+  uInt32 data;
 
-if(DBUG) fprintf(stderr,"fetch32(0x%08X)=",addr);
-    switch(addr&0xF0000000)
-    {
-        case 0x00000000: //ROM
-            if(addr<0x50)
-            {
-                data=read32(addr);
-if(DBUG) fprintf(stderr,"0x%08X\n",data);
-                if(addr==0x00000000) return(data);
-                if(addr==0x00000004) return(data);
-                fprintf(stderr,"fetch32(0x%08X), abort\n",addr);
-                exit(1);
-            }
-        case 0x40000000: //RAM
-            data =fetch16(addr+2);
-            data<<=16;
-            data|=fetch16(addr+0);
-if(DBUG) fprintf(stderr,"0x%08X\n",data);
-            return(data);
-    }
-    fprintf(stderr,"fetch32(0x%08X), abort\n",addr);
-    exit(1);
+  if(DBUG)
+    fprintf(stderr,"fetch32(0x%08X)=",addr);
+
+  switch(addr&0xF0000000)
+  {
+    case 0x00000000: //ROM
+      if(addr<0x50)
+      {
+        data=read32(addr);
+        if(DBUG)
+          fprintf(stderr,"0x%08X\n",data);
+        if(addr==0x00000000) return(data);
+        if(addr==0x00000004) return(data);
+        fprintf(stderr,"fetch32(0x%08X), abort\n",addr);
+        exit(1);
+      }
+
+    case 0x40000000: //RAM
+      data =fetch16(addr+2);
+      data<<=16;
+      data|=fetch16(addr+0);
+      if(DBUG)
+        fprintf(stderr,"0x%08X\n",data);
+      return(data);
+  }
+  fprintf(stderr,"fetch32(0x%08X), abort\n",addr);
+  exit(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write16 ( uInt32 addr, uInt32 data )
 {
+  writes++;
 
-    writes++;
+  if(DBUG)
+    fprintf(stderr,"write16(0x%08X,0x%08X)\n",addr,data);
 
-
-if(DBUG) fprintf(stderr,"write16(0x%08X,0x%08X)\n",addr,data);
-    switch(addr&0xF0000000)
-    {
-        case 0x40000000: //RAM
-            addr&=RAMADDMASK;
-            addr>>=1;
-#ifdef __BIG_ENDIAN__
-            ram[addr]=(((data&0xFFFF)>>8)|((data&0xffff)<<8))&0xffff;
-#else
-            ram[addr]=data&0xFFFF;
-#endif
-            return;
-    }
-    fprintf(stderr,"write16(0x%08X,0x%08X), abort\n",addr,data);
-    exit(1);
+  switch(addr&0xF0000000)
+  {
+    case 0x40000000: //RAM
+      addr&=RAMADDMASK;
+      addr>>=1;
+    #ifdef __BIG_ENDIAN__
+      ram[addr]=(((data&0xFFFF)>>8)|((data&0xffff)<<8))&0xffff;
+    #else
+      ram[addr]=data&0xFFFF;
+    #endif
+      return;
+  }
+  fprintf(stderr,"write16(0x%08X,0x%08X), abort\n",addr,data);
+  exit(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write32 ( uInt32 addr, uInt32 data )
 {
-if(DBUG) fprintf(stderr,"write32(0x%08X,0x%08X)\n",addr,data);
-    switch(addr&0xF0000000)
-    {
-        case 0xF0000000: //halt
-            dump_counters();
-            exit(0);
-        case 0xE0000000: //periph
-            switch(addr)
-            {
-                case 0xE0000000:
-if(DISS) printf("uart: [");
-                    printf("%c",data&0xFF);
-if(DISS) printf("]\n");
-fflush(stdout);
-                    break;
-            }
-            return;
-        case 0xD0000000: //debug
-            fprintf(stderr,"[0x%08X][0x%08X] 0x%08X\n",read_register(14),addr,data);
-            return;
-        case 0x40000000: //RAM
-            write16(addr+0,(data>> 0)&0xFFFF);
-            write16(addr+2,(data>>16)&0xFFFF);
-            return;
-    }
-    fprintf(stderr,"write32(0x%08X,0x%08X), abort\n",addr,data);
-    exit(1);
+  if(DBUG)
+    fprintf(stderr,"write32(0x%08X,0x%08X)\n",addr,data);
+
+  switch(addr&0xF0000000)
+  {
+    case 0xF0000000: //halt
+      dump_counters();
+      exit(0);
+
+    case 0xE0000000: //periph
+      switch(addr)
+      {
+        case 0xE0000000:
+          if(DISS) printf("uart: [");
+          printf("%c",data&0xFF);
+          if(DISS) printf("]\n");
+          fflush(stdout);
+          break;
+      }
+      return;
+
+    case 0xD0000000: //debug
+      fprintf(stderr,"[0x%08X][0x%08X] 0x%08X\n",read_register(14),addr,data);
+      return;
+
+    case 0x40000000: //RAM
+      write16(addr+0,(data>> 0)&0xFFFF);
+      write16(addr+2,(data>>16)&0xFFFF);
+      return;
+  }
+  fprintf(stderr,"write32(0x%08X,0x%08X), abort\n",addr,data);
+  exit(1);
 }
 
-//-----------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read16 ( uInt32 addr )
 {
-    uInt32 data;
+  uInt32 data;
 
-    reads++;
+  reads++;
 
-if(DBUG) fprintf(stderr,"read16(0x%08X)=",addr);
-    switch(addr&0xF0000000)
-    {
-        case 0x00000000: //ROM
-            addr&=ROMADDMASK;
-            addr>>=1;
-#ifdef __BIG_ENDIAN__
-            data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
-#else
-            data=rom[addr];
-#endif
-if(DBUG) fprintf(stderr,"0x%04X\n",data);
-            return(data);
-        case 0x40000000: //RAM
-            addr&=RAMADDMASK;
-            addr>>=1;
-#ifdef __BIG_ENDIAN__
-            data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
-#else
-            data=ram[addr];
-#endif
-if(DBUG) fprintf(stderr,"0x%04X\n",data);
-            return(data);
-    }
-    fprintf(stderr,"read16(0x%08X), abort\n",addr);
-    exit(1);
+  if(DBUG)
+    fprintf(stderr,"read16(0x%08X)=",addr);
+
+  switch(addr&0xF0000000)
+  {
+    case 0x00000000: //ROM
+      addr&=ROMADDMASK;
+      addr>>=1;
+    #ifdef __BIG_ENDIAN__
+      data=((rom[addr]>>8)|(rom[addr]<<8))&0xffff;
+    #else
+      data=rom[addr];
+    #endif
+      if(DBUG)
+        fprintf(stderr,"0x%04X\n",data);
+      return(data);
+
+    case 0x40000000: //RAM
+      addr&=RAMADDMASK;
+      addr>>=1;
+    #ifdef __BIG_ENDIAN__
+      data=((ram[addr]>>8)|(ram[addr]<<8))&0xffff;
+    #else
+      data=ram[addr];
+    #endif
+      if(DBUG)
+        fprintf(stderr,"0x%04X\n",data);
+      return(data);
+  }
+  fprintf(stderr,"read16(0x%08X), abort\n",addr);
+  exit(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read32 ( uInt32 addr )
 {
-    uInt32 data;
+  uInt32 data;
 
-if(DBUG) fprintf(stderr,"read32(0x%08X)=",addr);
-    switch(addr&0xF0000000)
-    {
-        case 0x00000000: //ROM
-        case 0x40000000: //RAM
-            data =read16(addr+2);
-            data<<=16;
-            data|=read16(addr+0);
-if(DBUG) fprintf(stderr,"0x%08X\n",data);
-            return(data);
-    }
-    fprintf(stderr,"read32(0x%08X), abort\n",addr);
-    exit(1);
+  if(DBUG)
+    fprintf(stderr,"read32(0x%08X)=",addr);
+
+  switch(addr&0xF0000000)
+  {
+    case 0x00000000: //ROM
+    case 0x40000000: //RAM
+      data =read16(addr+2);
+      data<<=16;
+      data|=read16(addr+0);
+      if(DBUG)
+        fprintf(stderr,"0x%08X\n",data);
+      return(data);
+  }
+  fprintf(stderr,"read32(0x%08X), abort\n",addr);
+  exit(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read_register ( uInt32 reg )
 {
-    uInt32 data;
+  uInt32 data;
 
-    reg&=0xF;
-if(DBUG) fprintf(stderr,"read_register(%u)=",reg);
-    switch(cpsr&0x1F)
-    {
-        case MODE_SVC:
-            switch(reg)
-            {
-                default: data=reg_sys[reg]; break;
-                case 13: case 14: data=reg_svc[reg]; break;
-            }
-if(DBUG) fprintf(stderr,"0x%08X\n",data);
-            return(data);
-    }
-    fprintf(stderr,"invalid cpsr mode 0x%08X\n",cpsr);
-    exit(1);
+  reg&=0xF;
+  if(DBUG)
+    fprintf(stderr,"read_register(%u)=",reg);
+
+  switch(cpsr&0x1F)
+  {
+    case MODE_SVC:
+      switch(reg) // TODO (SA) - does this do anything other than default?
+      {
+        default: data=reg_sys[reg]; break;
+        case 13: case 14: data=reg_svc[reg]; break;
+      }
+      if(DBUG)
+        fprintf(stderr,"0x%08X\n",data);
+      return(data);
+  }
+  fprintf(stderr,"invalid cpsr mode 0x%08X\n",cpsr);
+  exit(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::write_register ( uInt32 reg, uInt32 data )
 {
-    reg&=0xF;
-if(DBUG) fprintf(stderr,"write_register(%u,0x%08X)\n",reg,data);
-    switch(cpsr&0x1F)
-    {
-        case MODE_SVC:
-            switch(reg)
-            {
-                default: reg_sys[reg]=data; break;
-                case 13: case 14: reg_svc[reg]=data; break;
-            }
-            return(data);
-    }
-    fprintf(stderr,"invalid cpsr mode 0x%08X\n",cpsr);
-    exit(1);
+  reg&=0xF;
+
+  if(DBUG)
+    fprintf(stderr,"write_register(%u,0x%08X)\n",reg,data);
+
+  switch(cpsr&0x1F)
+  {
+    case MODE_SVC:
+      switch(reg) // TODO (SA) - does this do anything other than default?
+      {
+        default: reg_sys[reg]=data; break;
+        case 13: case 14: reg_svc[reg]=data; break;
+      }
+      return(data);
+  }
+  fprintf(stderr,"invalid cpsr mode 0x%08X\n",cpsr);
+  exit(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_zflag ( uInt32 x )
 {
-    if(x==0) cpsr|=CPSR_Z; else cpsr&=~CPSR_Z;
+  if(x==0) cpsr|=CPSR_Z;
+  else     cpsr&=~CPSR_Z;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_nflag ( uInt32 x )
 {
-    if(x&0x80000000) cpsr|=CPSR_N; else cpsr&=~CPSR_N;
+  if(x&0x80000000) cpsr|=CPSR_N;
+  else             cpsr&=~CPSR_N;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_cflag ( uInt32 a, uInt32 b, uInt32 c )
 {
-    uInt32 rc;
+  uInt32 rc;
 
-    cpsr&=~CPSR_C;
-    rc=(a&0x7FFFFFFF)+(b&0x7FFFFFFF)+c; //carry in
-    rc = (rc>>31)+(a>>31)+(b>>31);  //carry out
-    if(rc&2) cpsr|=CPSR_C;
+  cpsr&=~CPSR_C;
+  rc=(a&0x7FFFFFFF)+(b&0x7FFFFFFF)+c; //carry in
+  rc = (rc>>31)+(a>>31)+(b>>31);  //carry out
+  if(rc&2)
+    cpsr|=CPSR_C;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_sub_vflag ( uInt32 a, uInt32 b, uInt32 c )
 {
-    cpsr&=~CPSR_V;
-    //if the sign bits are different
-    if((a&0x80000000)^(b&0x80000000))
-    {
-        //and result matches b
-        if((b&0x80000000)==(c&0x80000000)) cpsr|=CPSR_V;
-    }
+  cpsr&=~CPSR_V;
+
+  //if the sign bits are different
+  if((a&0x80000000)^(b&0x80000000))
+  {
+    //and result matches b
+    if((b&0x80000000)==(c&0x80000000))
+      cpsr|=CPSR_V;
+  }
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_add_vflag ( uInt32 a, uInt32 b, uInt32 c )
 {
-   cpsr&=~CPSR_V;
-   //if sign bits are the same
-   if((a&0x80000000)==(b&0x80000000))
-   {
-       //and the result is different
-       if((b&0x80000000)!=(c&0x80000000)) cpsr|=CPSR_V;
-   }
+  cpsr&=~CPSR_V;
+
+  //if sign bits are the same
+  if((a&0x80000000)==(b&0x80000000))
+  {
+    //and the result is different
+    if((b&0x80000000)!=(c&0x80000000))
+      cpsr|=CPSR_V;
+  }
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_cflag_bit ( uInt32 x )
 {
-   if(x) cpsr|=CPSR_C; else cpsr&=~CPSR_C;
+  if(x) cpsr|=CPSR_C;
+  else  cpsr&=~CPSR_C;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::do_vflag_bit ( uInt32 x )
 {
-   if(x) cpsr|=CPSR_V; else cpsr&=~CPSR_V;
+  if(x) cpsr|=CPSR_V;
+  else  cpsr&=~CPSR_V;
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::execute ( void )
 {
-    uInt32 pc;
-    uInt32 sp;
-    uInt32 inst;
+  uInt32 pc, sp, inst,
+         ra,rb,rc,
+         rm,rd,rn,rs,
+         op;
 
-    uInt32 ra,rb,rc;
-    uInt32 rm,rd,rn,rs;
-    uInt32 op;
+  pc=read_register(15);
+  inst=fetch16(pc-2);
+  pc+=2;
+  write_register(15,pc);
+  if(DISS)
+    fprintf(stderr,"0x%08X: 0x%04X ",(pc-5),inst);
 
-    pc=read_register(15);
-    inst=fetch16(pc-2);
-    pc+=2;
-    write_register(15,pc);
-if(DISS) fprintf(stderr,"0x%08X: 0x%04X ",(pc-5),inst);
+  instructions++;
 
-    instructions++;
+  //ADC
+  if((inst&0xFFC0)==0x4140)
+  {
+    rd=(inst>>0)&0x07;
+    rm=(inst>>3)&0x07;
+    if(DISS)
+      fprintf(stderr,"adc r%u,r%u\n",rd,rm);
+    ra=read_register(rd);
+    rb=read_register(rm);
+    rc=ra+rb;
+    if(cpsr&CPSR_C)
+      rc++;
+    write_register(rd,rc);
+    do_nflag(rc);
+    do_zflag(rc);
+    if(cpsr&CPSR_C) do_cflag(ra,rb,1);
+    else            do_cflag(ra,rb,0);
+    do_add_vflag(ra,rb,rc);
+    return(0);
+  }
 
-    //ADC
-    if((inst&0xFFC0)==0x4140)
+  //ADD(1) small immediate two registers
+  if((inst&0xFE00)==0x1C00)
+  {
+    rd=(inst>>0)&0x7;
+    rn=(inst>>3)&0x7;
+    rb=(inst>>6)&0x7;
+    if(rb)
     {
-        rd=(inst>>0)&0x07;
-        rm=(inst>>3)&0x07;
-if(DISS) fprintf(stderr,"adc r%u,r%u\n",rd,rm);
-        ra=read_register(rd);
-        rb=read_register(rm);
-        rc=ra+rb;
-        if(cpsr&CPSR_C) rc++;
-        write_register(rd,rc);
-        do_nflag(rc);
-        do_zflag(rc);
-        if(cpsr&CPSR_C) do_cflag(ra,rb,1);
-        else            do_cflag(ra,rb,0);
-        do_add_vflag(ra,rb,rc);
-        return(0);
+      if(DISS)
+        fprintf(stderr,"adds r%u,r%u,#0x%X\n",rd,rn,rb);
+      ra=read_register(rn);
+      rc=ra+rb;
+      //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
+      write_register(rd,rc);
+      do_nflag(rc);
+      do_zflag(rc);
+      do_cflag(ra,rb,0);
+      do_add_vflag(ra,rb,rc);
+      return(0);
     }
-
-    //ADD(1) small immediate two registers
-    if((inst&0xFE00)==0x1C00)
+    else
     {
-        rd=(inst>>0)&0x7;
-        rn=(inst>>3)&0x7;
-        rb=(inst>>6)&0x7;
-        if(rb)
+      //this is a mov
+    }
+  }
+
+  //ADD(2) big immediate one register
+  if((inst&0xF800)==0x3000)
+  {
+    rb=(inst>>0)&0xFF;
+    rd=(inst>>8)&0x7;
+    if(DISS)
+      fprintf(stderr,"adds r%u,#0x%02X\n",rd,rb);
+    ra=read_register(rd);
+    rc=ra+rb;
+    write_register(rd,rc);
+    do_nflag(rc);
+    do_zflag(rc);
+    do_cflag(ra,rb,0);
+    do_add_vflag(ra,-rb,rc);
+    return(0);
+  }
+
+  //ADD(3) three registers
+  if((inst&0xFE00)==0x1800)
+  {
+    rd=(inst>>0)&0x7;
+    rn=(inst>>3)&0x7;
+    rm=(inst>>6)&0x7;
+    if(DISS)
+      fprintf(stderr,"adds r%u,r%u,r%u\n",rd,rn,rm);
+    ra=read_register(rn);
+    rb=read_register(rm);
+    rc=ra+rb;
+    write_register(rd,rc);
+    do_nflag(rc);
+    do_zflag(rc);
+    do_cflag(ra,rb,0);
+    do_add_vflag(ra,rb,rc);
+    return(0);
+  }
+
+  //ADD(4) two registers one or both high no flags
+  if((inst&0xFF00)==0x4400)
+  {
+    if((inst>>6)&3)
+    {
+      //UNPREDICTABLE
+    }
+    rd=(inst>>0)&0x7;
+    rd|=(inst>>4)&0x8;
+    rm=(inst>>3)&0xF;
+    if(DISS)
+      fprintf(stderr,"add r%u,r%u\n",rd,rm);
+    ra=read_register(rd);
+    rb=read_register(rm);
+    rc=ra+rb;
+    //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
+    write_register(rd,rc);
+    return(0);
+  }
+
+  //ADD(5) rd = pc plus immediate
+  if((inst&0xF800)==0xA000)
+  {
+    rb=(inst>>0)&0xFF;
+    rd=(inst>>8)&0x7;
+    rb<<=2;
+    if(DISS)
+      fprintf(stderr,"add r%u,PC,#0x%02X\n",rd,rb);
+    ra=read_register(15);
+    rc=(ra&(~3))+rb;
+    write_register(rd,rc);
+    return(0);
+  }
+
+  //ADD(6) rd = sp plus immediate
+  if((inst&0xF800)==0xA800)
+  {
+    rb=(inst>>0)&0xFF;
+    rd=(inst>>8)&0x7;
+    rb<<=2;
+    if(DISS)
+      fprintf(stderr,"add r%u,SP,#0x%02X\n",rd,rb);
+    ra=read_register(13);
+    rc=ra+rb;
+    write_register(rd,rc);
+    return(0);
+  }
+
+  //ADD(7) sp plus immediate
+  if((inst&0xFF80)==0xB000)
+  {
+    rb=(inst>>0)&0x7F;
+    rb<<=2;
+    if(DISS)
+      fprintf(stderr,"add SP,#0x%02X\n",rb);
+    ra=read_register(13);
+    rc=ra+rb;
+    write_register(13,rc);
+    return(0);
+  }
+
+  //AND
+  if((inst&0xFFC0)==0x4000)
+  {
+    rd=(inst>>0)&0x7;
+    rm=(inst>>3)&0x7;
+    if(DISS)
+      fprintf(stderr,"ands r%u,r%u\n",rd,rm);
+    ra=read_register(rd);
+    rb=read_register(rm);
+    rc=ra&rb;
+    write_register(rd,rc);
+    do_nflag(rc);
+    do_zflag(rc);
+    return(0);
+  }
+
+  //ASR(1) two register immediate
+  if((inst&0xF800)==0x1000)
+  {
+    rd=(inst>>0)&0x07;
+    rm=(inst>>3)&0x07;
+    rb=(inst>>6)&0x1F;
+    if(DISS)
+      fprintf(stderr,"asrs r%u,r%u,#0x%X\n",rd,rm,rb);
+    rc=read_register(rm);
+    if(rb==0)
+    {
+      if(rc&0x80000000)
+      {
+        do_cflag_bit(1);
+        rc=~0;
+      }
+      else
+      {
+        do_cflag_bit(0);
+        rc=0;
+      }
+    }
+    else
+    {
+      do_cflag_bit(rc&(1<<(rb-1)));
+      ra=rc&0x80000000;
+      rc>>=rb;
+      if(ra) //asr, sign is shifted in
+      {
+        rc|=(~0)<<(32-rb);
+      }
+    }
+    write_register(rd,rc);
+    do_nflag(rc);
+    do_zflag(rc);
+    return(0);
+  }
+
+  //ASR(2) two register
+  if((inst&0xFFC0)==0x4100)
+  {
+    rd=(inst>>0)&0x07;
+    rs=(inst>>3)&0x07;
+    if(DISS)
+      fprintf(stderr,"asrs r%u,r%u\n",rd,rs);
+    rc=read_register(rd);
+    rb=read_register(rs);
+    rb&=0xFF;
+    if(rb==0)
+    {
+    }
+    else if(rb<32)
+    {
+      do_cflag_bit(rc&(1<<(rb-1)));
+      ra=rc&0x80000000;
+      rc>>=rb;
+      if(ra) //asr, sign is shifted in
+      {
+        rc|=(~0)<<(32-rb);
+      }
+    }
+    else
+    {
+      if(rc&0x80000000)
+      {
+        do_cflag_bit(1);
+        rc=(~0);
+      }
+      else
+      {
+        do_cflag_bit(0);
+        rc=0;
+      }
+    }
+    write_register(rd,rc);
+    do_nflag(rc);
+    do_zflag(rc);
+    return(0);
+  }
+
+  //B(1) conditional branch
+  if((inst&0xF000)==0xD000)
+  {
+    rb=(inst>>0)&0xFF;
+    if(rb&0x80)
+      rb|=(~0)<<8;
+    op=(inst>>8)&0xF;
+    rb<<=1;
+    rb+=pc;
+    rb+=2;
+    switch(op)
+    {
+      case 0x0: //b eq  z set
+        if(DISS)
+          fprintf(stderr,"beq 0x%08X\n",rb-3);
+        if(cpsr&CPSR_Z)
         {
-if(DISS) fprintf(stderr,"adds r%u,r%u,#0x%X\n",rd,rn,rb);
-            ra=read_register(rn);
-            rc=ra+rb;
-//fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
-            write_register(rd,rc);
-            do_nflag(rc);
-            do_zflag(rc);
-            do_cflag(ra,rb,0);
-            do_add_vflag(ra,rb,rc);
-            return(0);
+          write_register(15,rb);
         }
-        else
+        return(0);
+
+      case 0x1: //b ne  z clear
+        if(DISS)
+          fprintf(stderr,"bne 0x%08X\n",rb-3);
+        if(!(cpsr&CPSR_Z))
         {
-            //this is a mov
+          write_register(15,rb);
         }
-    }
-
-    //ADD(2) big immediate one register
-    if((inst&0xF800)==0x3000)
-    {
-        rb=(inst>>0)&0xFF;
-        rd=(inst>>8)&0x7;
-if(DISS) fprintf(stderr,"adds r%u,#0x%02X\n",rd,rb);
-        ra=read_register(rd);
-        rc=ra+rb;
-        write_register(rd,rc);
-        do_nflag(rc);
-        do_zflag(rc);
-        do_cflag(ra,rb,0);
-        do_add_vflag(ra,-rb,rc);
         return(0);
-    }
 
-    //ADD(3) three registers
-    if((inst&0xFE00)==0x1800)
-    {
-        rd=(inst>>0)&0x7;
-        rn=(inst>>3)&0x7;
-        rm=(inst>>6)&0x7;
-if(DISS) fprintf(stderr,"adds r%u,r%u,r%u\n",rd,rn,rm);
-        ra=read_register(rn);
-        rb=read_register(rm);
-        rc=ra+rb;
-        write_register(rd,rc);
-        do_nflag(rc);
-        do_zflag(rc);
-        do_cflag(ra,rb,0);
-        do_add_vflag(ra,rb,rc);
-        return(0);
-    }
-
-    //ADD(4) two registers one or both high no flags
-    if((inst&0xFF00)==0x4400)
-    {
-        if((inst>>6)&3)
+      case 0x2: //b cs c set
+        if(DISS)
+          fprintf(stderr,"bcs 0x%08X\n",rb-3);
+        if(cpsr&CPSR_C)
         {
-            //UNPREDICTABLE
+          write_register(15,rb);
         }
-        rd=(inst>>0)&0x7;
-        rd|=(inst>>4)&0x8;
-        rm=(inst>>3)&0xF;
-if(DISS) fprintf(stderr,"add r%u,r%u\n",rd,rm);
-        ra=read_register(rd);
-        rb=read_register(rm);
-        rc=ra+rb;
-//fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
-        write_register(rd,rc);
         return(0);
-    }
 
-    //ADD(5) rd = pc plus immediate
-    if((inst&0xF800)==0xA000)
-    {
-        rb=(inst>>0)&0xFF;
-        rd=(inst>>8)&0x7;
-        rb<<=2;
-if(DISS) fprintf(stderr,"add r%u,PC,#0x%02X\n",rd,rb);
-        ra=read_register(15);
-        rc=(ra&(~3))+rb;
-        write_register(rd,rc);
-        return(0);
-    }
-
-    //ADD(6) rd = sp plus immediate
-    if((inst&0xF800)==0xA800)
-    {
-        rb=(inst>>0)&0xFF;
-        rd=(inst>>8)&0x7;
-        rb<<=2;
-if(DISS) fprintf(stderr,"add r%u,SP,#0x%02X\n",rd,rb);
-        ra=read_register(13);
-        rc=ra+rb;
-        write_register(rd,rc);
-        return(0);
-    }
-
-    //ADD(7) sp plus immediate
-    if((inst&0xFF80)==0xB000)
-    {
-        rb=(inst>>0)&0x7F;
-        rb<<=2;
-if(DISS) fprintf(stderr,"add SP,#0x%02X\n",rb);
-        ra=read_register(13);
-        rc=ra+rb;
-        write_register(13,rc);
-        return(0);
-    }
-
-    //AND
-    if((inst&0xFFC0)==0x4000)
-    {
-        rd=(inst>>0)&0x7;
-        rm=(inst>>3)&0x7;
-if(DISS) fprintf(stderr,"ands r%u,r%u\n",rd,rm);
-        ra=read_register(rd);
-        rb=read_register(rm);
-        rc=ra&rb;
-        write_register(rd,rc);
-        do_nflag(rc);
-        do_zflag(rc);
-        return(0);
-    }
-
-    //ASR(1) two register immediate
-    if((inst&0xF800)==0x1000)
-    {
-        rd=(inst>>0)&0x07;
-        rm=(inst>>3)&0x07;
-        rb=(inst>>6)&0x1F;
-if(DISS) fprintf(stderr,"asrs r%u,r%u,#0x%X\n",rd,rm,rb);
-        rc=read_register(rm);
-        if(rb==0)
+      case 0x3: //b cc c clear
+        if(DISS)
+          fprintf(stderr,"bcc 0x%08X\n",rb-3);
+        if(!(cpsr&CPSR_C))
         {
-            if(rc&0x80000000)
-            {
-                do_cflag_bit(1);
-                rc=~0;
-            }
-            else
-            {
-                do_cflag_bit(0);
-                rc=0;
-            }
+          write_register(15,rb);
         }
-        else
-        {
-            do_cflag_bit(rc&(1<<(rb-1)));
-            ra=rc&0x80000000;
-            rc>>=rb;
-            if(ra) //asr, sign is shifted in
-            {
-                rc|=(~0)<<(32-rb);
-            }
-        }
-        write_register(rd,rc);
-        do_nflag(rc);
-        do_zflag(rc);
         return(0);
-    }
 
-    //ASR(2) two register
-    if((inst&0xFFC0)==0x4100)
-    {
-        rd=(inst>>0)&0x07;
-        rs=(inst>>3)&0x07;
-if(DISS) fprintf(stderr,"asrs r%u,r%u\n",rd,rs);
-        rc=read_register(rd);
-        rb=read_register(rs);
-        rb&=0xFF;
-        if(rb==0)
+      case 0x4: //b mi n set
+        if(DISS)
+          fprintf(stderr,"bmi 0x%08X\n",rb-3);
+        if(cpsr&CPSR_N)
         {
+          write_register(15,rb);
         }
-        else if(rb<32)
-        {
-            do_cflag_bit(rc&(1<<(rb-1)));
-            ra=rc&0x80000000;
-            rc>>=rb;
-            if(ra) //asr, sign is shifted in
-            {
-                rc|=(~0)<<(32-rb);
-            }
-        }
-        else
-        {
-            if(rc&0x80000000)
-            {
-                do_cflag_bit(1);
-                rc=(~0);
-            }
-            else
-            {
-                do_cflag_bit(0);
-                rc=0;
-            }
-        }
-        write_register(rd,rc);
-        do_nflag(rc);
-        do_zflag(rc);
         return(0);
-    }
 
-    //B(1) conditional branch
-    if((inst&0xF000)==0xD000)
-    {
-        rb=(inst>>0)&0xFF;
-        if(rb&0x80) rb|=(~0)<<8;
-        op=(inst>>8)&0xF;
-        rb<<=1;
-        rb+=pc;
-        rb+=2;
-        switch(op)
+      case 0x5: //b pl n clear
+        if(DISS)
+          fprintf(stderr,"bpl 0x%08X\n",rb-3);
+        if(!(cpsr&CPSR_N))
         {
-            case 0x0: //b eq  z set
-if(DISS) fprintf(stderr,"beq 0x%08X\n",rb-3);
-                if(cpsr&CPSR_Z)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x1: //b ne  z clear
-if(DISS) fprintf(stderr,"bne 0x%08X\n",rb-3);
-                if(!(cpsr&CPSR_Z))
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x2: //b cs c set
-if(DISS) fprintf(stderr,"bcs 0x%08X\n",rb-3);
-                if(cpsr&CPSR_C)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x3: //b cc c clear
-if(DISS) fprintf(stderr,"bcc 0x%08X\n",rb-3);
-                if(!(cpsr&CPSR_C))
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x4: //b mi n set
-if(DISS) fprintf(stderr,"bmi 0x%08X\n",rb-3);
-                if(cpsr&CPSR_N)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x5: //b pl n clear
-if(DISS) fprintf(stderr,"bpl 0x%08X\n",rb-3);
-                if(!(cpsr&CPSR_N))
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-
-            case 0x6: //b vs v set
-if(DISS) fprintf(stderr,"bvs 0x%08X\n",rb-3);
-                if(cpsr&CPSR_V)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x7: //b vc v clear
-if(DISS) fprintf(stderr,"bvc 0x%08X\n",rb-3);
-                if(!(cpsr&CPSR_V))
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-
-            case 0x8: //b hi c set z clear
-if(DISS) fprintf(stderr,"bhi 0x%08X\n",rb-3);
-                if((cpsr&CPSR_C)&&(!(cpsr&CPSR_Z)))
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0x9: //b ls c clear or z set
-if(DISS) fprintf(stderr,"bls 0x%08X\n",rb-3);
-                if((cpsr&CPSR_Z)||(!(cpsr&CPSR_C)))
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0xA: //b ge N == V
-if(DISS) fprintf(stderr,"bge 0x%08X\n",rb-3);
-                ra=0;
-                if(  (cpsr&CPSR_N) &&  (cpsr&CPSR_V) ) ra++;
-                if((!(cpsr&CPSR_N))&&(!(cpsr&CPSR_V))) ra++;
-                if(ra)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0xB: //b lt N != V
-if(DISS) fprintf(stderr,"blt 0x%08X\n",rb-3);
-                ra=0;
-                if((!(cpsr&CPSR_N))&&(cpsr&CPSR_V)) ra++;
-                if((!(cpsr&CPSR_V))&&(cpsr&CPSR_N)) ra++;
-                if(ra)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0xC: //b gt Z==0 and N == V
-if(DISS) fprintf(stderr,"bgt 0x%08X\n",rb-3);
-                ra=0;
-                if(  (cpsr&CPSR_N) &&  (cpsr&CPSR_V) ) ra++;
-                if((!(cpsr&CPSR_N))&&(!(cpsr&CPSR_V))) ra++;
-                if(cpsr&CPSR_Z) ra=0;
-                if(ra)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0xD: //b le Z==1 or N != V
-if(DISS) fprintf(stderr,"ble 0x%08X\n",rb-3);
-                ra=0;
-                if((!(cpsr&CPSR_N))&&(cpsr&CPSR_V)) ra++;
-                if((!(cpsr&CPSR_V))&&(cpsr&CPSR_N)) ra++;
-                if(cpsr&CPSR_Z) ra++;
-                if(ra)
-                {
-                    write_register(15,rb);
-                }
-                return(0);
-
-            case 0xE:
-                //undefined instruction
-                break;
-            case 0xF:
-                //swi
-                break;
+          write_register(15,rb);
         }
+        return(0);
+
+      case 0x6: //b vs v set
+        if(DISS)
+          fprintf(stderr,"bvs 0x%08X\n",rb-3);
+        if(cpsr&CPSR_V)
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0x7: //b vc v clear
+        if(DISS) 
+          fprintf(stderr,"bvc 0x%08X\n",rb-3);
+        if(!(cpsr&CPSR_V))
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0x8: //b hi c set z clear
+        if(DISS)
+          fprintf(stderr,"bhi 0x%08X\n",rb-3);
+        if((cpsr&CPSR_C)&&(!(cpsr&CPSR_Z)))
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0x9: //b ls c clear or z set
+        if(DISS)
+          fprintf(stderr,"bls 0x%08X\n",rb-3);
+        if((cpsr&CPSR_Z)||(!(cpsr&CPSR_C)))
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0xA: //b ge N == V
+        if(DISS)
+          fprintf(stderr,"bge 0x%08X\n",rb-3);
+        ra=0;
+        if(  (cpsr&CPSR_N) &&  (cpsr&CPSR_V) ) ra++;
+        if((!(cpsr&CPSR_N))&&(!(cpsr&CPSR_V))) ra++;
+        if(ra)
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0xB: //b lt N != V
+        if(DISS)
+          fprintf(stderr,"blt 0x%08X\n",rb-3);
+        ra=0;
+        if((!(cpsr&CPSR_N))&&(cpsr&CPSR_V)) ra++;
+        if((!(cpsr&CPSR_V))&&(cpsr&CPSR_N)) ra++;
+        if(ra)
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0xC: //b gt Z==0 and N == V
+        if(DISS)
+          fprintf(stderr,"bgt 0x%08X\n",rb-3);
+        ra=0;
+        if(  (cpsr&CPSR_N) &&  (cpsr&CPSR_V) ) ra++;
+        if((!(cpsr&CPSR_N))&&(!(cpsr&CPSR_V))) ra++;
+        if(cpsr&CPSR_Z) ra=0;
+        if(ra)
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0xD: //b le Z==1 or N != V
+        if(DISS)
+          fprintf(stderr,"ble 0x%08X\n",rb-3);
+        ra=0;
+        if((!(cpsr&CPSR_N))&&(cpsr&CPSR_V)) ra++;
+        if((!(cpsr&CPSR_V))&&(cpsr&CPSR_N)) ra++;
+        if(cpsr&CPSR_Z) ra++;
+        if(ra)
+        {
+          write_register(15,rb);
+        }
+        return(0);
+
+      case 0xE:
+        //undefined instruction
+        break;
+
+      case 0xF:
+        //swi
+        break;
     }
+  }
 
     //B(2) unconditional branch
     if((inst&0xF800)==0xE000)
@@ -1884,7 +1945,7 @@ if(DISS) fprintf(stderr,"uxth r%u,r%u\n",rd,rm);
     return(1);
 }
 
-//-------------------------------------------------------------------
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Thumbulator::reset ( void )
 {
     //memset(ram,0xFF,sizeof(ram));
