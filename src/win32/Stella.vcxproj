@@ -90,7 +90,7 @@
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -122,7 +122,7 @@ SDLmain.lib
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
@@ -152,7 +152,7 @@ SDLmain.lib
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
@@ -186,7 +186,7 @@ SDLmain.lib
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
       <PrecompiledHeader>
