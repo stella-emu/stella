@@ -62,9 +62,11 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
     myFrequencyImage += offset;
   }
 
+#ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = new Thumbulator((uInt16*)(myProgramImage-0xC00),
                                     (uInt16*)myDPCRAM);
+#endif
 
   // Copy DPC display data to Harmony RAM
   memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1000);
@@ -89,7 +91,9 @@ CartridgeDPCPlus::~CartridgeDPCPlus()
   delete[] myImage;
   delete[] myDPCRAM;
 
+#ifdef THUMB_SUPPORT
   delete myThumbEmulator;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -177,7 +181,7 @@ inline void CartridgeDPCPlus::updateMusicModeDataFetchers()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void CartridgeDPCPlus::callFunction(uInt8 value)
 {
-  //  myParameter
+  // myParameter
   uInt16 ROMdata = (myParameter[1] << 8) + myParameter[0];
   switch (value)
   {
@@ -194,12 +198,13 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
         myDisplayImage[myCounters[myParameter[2]]+i] = myParameter[0];
       myParameterPointer = 0;
       break;
+  #ifdef THUMB_SUPPORT
     case 254:
-    case 255: // Call user writen ARM code (most likely be C compiled for ARM).
-              // ARM code not supported by Stella at this time.
-
+    case 255:
+      // Call user written ARM code (most likely be C compiled for ARM)
       myThumbEmulator->run();
       break;
+  #endif
     // reserved
   }
 }

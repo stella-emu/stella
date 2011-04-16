@@ -24,6 +24,8 @@
 // Code is public domain and used with the author's consent
 //============================================================================
 
+#ifdef THUMB_SUPPORT
+
 #include "bspf.hxx"
 
 #define ROMADDMASK 0x7FFF
@@ -110,3 +112,5 @@ class Thumbulator
     Int32 DBUG; // dump detailed execution trace
     Int32 DISS; // dump Thumb instruction trace
 };
+
+#endif
