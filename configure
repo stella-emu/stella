@@ -26,6 +26,7 @@ _build_debugger=yes
 _build_snapshot=yes
 _build_joystick=yes
 _build_cheats=yes
+_build_thumb=yes
 _build_static=no
 _build_profile=no
 
@@ -233,6 +234,8 @@ for ac_option in $@; do
       --disable-joystick)       _build_joystick=no   ;;
       --enable-cheats)          _build_cheats=yes    ;;
       --disable-cheats)         _build_cheats=no     ;;
+      --enable-thumb)           _build_thumb=yes     ;;
+      --disable-thumb)          _build_thumb=no      ;;
       --enable-shared)          _build_static=no     ;;
       --enable-static)          _build_static=yes    ;;
       --disable-static)         _build_static=no     ;;
@@ -635,6 +638,14 @@ else
 	echo
 fi
 
+if test "$_build_thumb" = yes ; then
+	echo_n "   Thumb ARM emulation support enabled"
+	echo
+else
+	echo_n "   Thumb ARM emulation support disabled"
+	echo
+fi
+
 if test "$_build_static" = yes ; then
 	echo_n "   Static binary enabled"
 	echo
@@ -767,6 +778,10 @@ if test "$_build_cheats" = yes ; then
 	DEFINES="$DEFINES -DCHEATCODE_SUPPORT"
 	MODULES="$MODULES $CHEAT"
 	INCLUDES="$INCLUDES -I$CHEAT"
+fi
+
+if test "$_build_thumb" = yes ; then
+	DEFINES="$DEFINES -DTHUMB_SUPPORT"
 fi
 
 if test "$_build_profile" = no ; then
