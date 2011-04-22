@@ -397,6 +397,10 @@ SDLmain.lib
     <ClInclude Include="..\common\FrameBufferGL.hxx" />
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
     <ClInclude Include="..\common\GLShaderProgs.hxx" />
+    <ClInclude Include="..\libpng\pngdebug.h" />
+    <ClInclude Include="..\libpng\pnginfo.h" />
+    <ClInclude Include="..\libpng\pnglibconf.h" />
+    <ClInclude Include="..\libpng\pngstruct.h" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWin32.hxx" />
     <ClInclude Include="..\common\PNGLibrary.hxx" />

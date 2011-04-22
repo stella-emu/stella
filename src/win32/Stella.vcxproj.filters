@@ -1136,6 +1136,18 @@
     <ClInclude Include="..\libpng\pngpriv.h">
       <Filter>Header Files\libpng</Filter>
     </ClInclude>
+    <ClInclude Include="..\libpng\pngdebug.h">
+      <Filter>Header Files\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\pnginfo.h">
+      <Filter>Header Files\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\pnglibconf.h">
+      <Filter>Header Files\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\libpng\pngstruct.h">
+      <Filter>Header Files\libpng</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="stella.ico">
