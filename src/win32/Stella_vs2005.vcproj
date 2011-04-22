@@ -377,10 +377,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\Event.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\EventHandler.cxx"
 					>
 				</File>
