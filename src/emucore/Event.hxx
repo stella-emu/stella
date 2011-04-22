@@ -86,28 +86,27 @@ class Event
     /**
       Create a new event object
     */
-    Event();
- 
-    /**
-      Destructor
-    */
-    virtual ~Event();
+    Event() : myNumberOfTypes(Event::LastType) { clear(); }
 
   public:
     /**
       Get the value associated with the event of the specified type
     */
-    virtual Int32 get(Type type) const;
+    inline Int32 get(Type type) const { return myValues[type]; }
 
     /**
       Set the value associated with the event of the specified type
     */
-    virtual void set(Type type, Int32 value);
+    inline void set(Type type, Int32 value) { myValues[type] = value; }
 
     /**
       Clears the event array (resets to initial state)
     */
-    virtual void clear();
+    void clear()
+    {
+      for(int i = 0; i < myNumberOfTypes; ++i)
+        myValues[i] = Event::NoType;
+    }
 
   protected:
     // Number of event types there are

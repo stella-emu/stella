@@ -146,7 +146,6 @@
 		2D91748909BA90380026E9FF /* Console.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF380627AE07006BEC99 /* Console.cxx */; };
 		2D91748A09BA90380026E9FF /* Control.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3A0627AE07006BEC99 /* Control.cxx */; };
 		2D91748C09BA90380026E9FF /* Driving.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF3E0627AE07006BEC99 /* Driving.cxx */; };
-		2D91748D09BA90380026E9FF /* Event.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF400627AE07006BEC99 /* Event.cxx */; };
 		2D91748E09BA90380026E9FF /* Joystick.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF420627AE07006BEC99 /* Joystick.cxx */; };
 		2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF440627AE07006BEC99 /* Keyboard.cxx */; };
 		2D91749009BA90380026E9FF /* M6532.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE2DF7C0627AE33006BEC99 /* M6532.cxx */; };
@@ -275,6 +274,10 @@
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
 		DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */; };
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
+		DC69670B1361FD0A0036499D /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967071361FD0A0036499D /* pngdebug.h */; };
+		DC69670C1361FD0A0036499D /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967081361FD0A0036499D /* pnginfo.h */; };
+		DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967091361FD0A0036499D /* pnglibconf.h */; };
+		DC69670E1361FD0A0036499D /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = DC69670A1361FD0A0036499D /* pngstruct.h */; };
 		DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA011037FF200F199A7 /* CartDebug.cxx */; };
 		DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA111037FF200F199A7 /* CartDebug.hxx */; };
 		DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA211037FF200F199A7 /* DiStella.cxx */; };
@@ -604,7 +607,6 @@
 		2DE2DF3B0627AE07006BEC99 /* Control.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Control.hxx; path = ../emucore/Control.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF3E0627AE07006BEC99 /* Driving.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Driving.cxx; path = ../emucore/Driving.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF3F0627AE07006BEC99 /* Driving.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Driving.hxx; path = ../emucore/Driving.hxx; sourceTree = SOURCE_ROOT; };
-		2DE2DF400627AE07006BEC99 /* Event.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Event.cxx; path = ../emucore/Event.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF410627AE07006BEC99 /* Event.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Event.hxx; path = ../emucore/Event.hxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF420627AE07006BEC99 /* Joystick.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Joystick.cxx; path = ../emucore/Joystick.cxx; sourceTree = SOURCE_ROOT; };
 		2DE2DF430627AE07006BEC99 /* Joystick.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Joystick.hxx; path = ../emucore/Joystick.hxx; sourceTree = SOURCE_ROOT; };
@@ -679,6 +681,10 @@
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaMediumFont.hxx; path = ../gui/StellaMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherFilterDialog.cxx; path = ../gui/LauncherFilterDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC6967071361FD0A0036499D /* pngdebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngdebug.h; path = ../libpng/pngdebug.h; sourceTree = SOURCE_ROOT; };
+		DC6967081361FD0A0036499D /* pnginfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnginfo.h; path = ../libpng/pnginfo.h; sourceTree = SOURCE_ROOT; };
+		DC6967091361FD0A0036499D /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnglibconf.h; path = ../libpng/pnglibconf.h; sourceTree = SOURCE_ROOT; };
+		DC69670A1361FD0A0036499D /* pngstruct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngstruct.h; path = ../libpng/pngstruct.h; sourceTree = SOURCE_ROOT; };
 		DC6B2BA011037FF200F199A7 /* CartDebug.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDebug.cxx; path = ../debugger/CartDebug.cxx; sourceTree = SOURCE_ROOT; };
 		DC6B2BA111037FF200F199A7 /* CartDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebug.hxx; path = ../debugger/CartDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DC6B2BA211037FF200F199A7 /* DiStella.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiStella.cxx; path = ../debugger/DiStella.cxx; sourceTree = SOURCE_ROOT; };
@@ -1042,7 +1048,6 @@
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
-				2DE2DF400627AE07006BEC99 /* Event.cxx */,
 				2DE2DF410627AE07006BEC99 /* Event.hxx */,
 				2D733D6E062895B2006265D9 /* EventHandler.cxx */,
 				2D733D6F062895B2006265D9 /* EventHandler.hxx */,
@@ -1265,8 +1270,11 @@
 				DCD6FC5D11C281ED005DA767 /* png.c */,
 				DCD6FC5E11C281ED005DA767 /* png.h */,
 				DCD6FC5F11C281ED005DA767 /* pngconf.h */,
+				DC6967071361FD0A0036499D /* pngdebug.h */,
 				DCD6FC6011C281ED005DA767 /* pngerror.c */,
 				DCD6FC6111C281ED005DA767 /* pngget.c */,
+				DC6967081361FD0A0036499D /* pnginfo.h */,
+				DC6967091361FD0A0036499D /* pnglibconf.h */,
 				DCD6FC6211C281ED005DA767 /* pngmem.c */,
 				DCD6FC6311C281ED005DA767 /* pngpread.c */,
 				DCD6FC6411C281ED005DA767 /* pngpriv.h */,
@@ -1275,6 +1283,7 @@
 				DCD6FC6711C281ED005DA767 /* pngrtran.c */,
 				DCD6FC6811C281ED005DA767 /* pngrutil.c */,
 				DCD6FC6911C281ED005DA767 /* pngset.c */,
+				DC69670A1361FD0A0036499D /* pngstruct.h */,
 				DCD6FC6B11C281ED005DA767 /* pngtrans.c */,
 				DCD6FC6C11C281ED005DA767 /* pngwio.c */,
 				DCD6FC6D11C281ED005DA767 /* pngwrite.c */,
@@ -1466,6 +1475,10 @@
 				DC98F35711F5B56200AA520F /* MessageBox.hxx in Headers */,
 				DCFFE59E12100E1400DFA000 /* ComboDialog.hxx in Headers */,
 				DCD2839912E39F1200A808DC /* Thumbulator.hxx in Headers */,
+				DC69670B1361FD0A0036499D /* pngdebug.h in Headers */,
+				DC69670C1361FD0A0036499D /* pnginfo.h in Headers */,
+				DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */,
+				DC69670E1361FD0A0036499D /* pngstruct.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1583,7 +1596,6 @@
 				2D91748909BA90380026E9FF /* Console.cxx in Sources */,
 				2D91748A09BA90380026E9FF /* Control.cxx in Sources */,
 				2D91748C09BA90380026E9FF /* Driving.cxx in Sources */,
-				2D91748D09BA90380026E9FF /* Event.cxx in Sources */,
 				2D91748E09BA90380026E9FF /* Joystick.cxx in Sources */,
 				2D91748F09BA90380026E9FF /* Keyboard.cxx in Sources */,
 				2D91749009BA90380026E9FF /* M6532.cxx in Sources */,
