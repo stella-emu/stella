@@ -258,7 +258,6 @@ SDLmain.lib
     <ClCompile Include="..\emucore\Control.cxx" />
     <ClCompile Include="..\emucore\Device.cxx" />
     <ClCompile Include="..\emucore\Driving.cxx" />
-    <ClCompile Include="..\emucore\Event.cxx" />
     <ClCompile Include="..\emucore\EventHandler.cxx" />
     <ClCompile Include="..\emucore\FrameBuffer.cxx" />
     <ClCompile Include="..\emucore\FSNode.cxx" />
