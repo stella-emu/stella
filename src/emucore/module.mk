@@ -35,7 +35,6 @@ MODULE_OBJS := \
 	src/emucore/Control.o \
 	src/emucore/Device.o \
 	src/emucore/Driving.o \
-	src/emucore/Event.o \
 	src/emucore/EventHandler.o \
 	src/emucore/FrameBuffer.o \
 	src/emucore/FSNode.o \
