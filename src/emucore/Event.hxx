@@ -86,7 +86,7 @@ class Event
     /**
       Create a new event object
     */
-    Event() : myNumberOfTypes(Event::LastType) { clear(); }
+    Event() { clear(); }
 
   public:
     /**
@@ -104,14 +104,11 @@ class Event
     */
     void clear()
     {
-      for(int i = 0; i < myNumberOfTypes; ++i)
+      for(uInt32 i = 0; i < LastType; ++i)
         myValues[i] = Event::NoType;
     }
 
-  protected:
-    // Number of event types there are
-    const Int32 myNumberOfTypes;
-
+  private:
     // Array of values associated with each event type
     Int32 myValues[LastType];
 };
