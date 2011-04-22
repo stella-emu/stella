@@ -1679,7 +1679,23 @@
 					>
 				</File>
 				<File
+					RelativePath="..\libpng\pngdebug.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libpng\pnginfo.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libpng\pnglibconf.h"
+					>
+				</File>
+				<File
 					RelativePath="..\libpng\pngpriv.h"
+					>
+				</File>
+				<File
+					RelativePath="..\libpng\pngstruct.h"
 					>
 				</File>
 			</Filter>
