@@ -69,7 +69,7 @@ endif
 
 EXECUTABLE  := stella$(EXEEXT)
 
-all: tags $(EXECUTABLE)
+all: $(EXECUTABLE)
 
 
 ######################################################################
@@ -196,31 +196,4 @@ src/emucore/M6502.ins: src/emucore/M6502.m4
 src/win32/stella_icon.o: src/win32/stella.ico src/win32/stella.rc
 	$(WINDRES) --include-dir src/win32 src/win32/stella.rc src/win32/stella_icon.o 
 		
-# Special target to create a Win32 snapshot package
-win32dist: stella$(EXEEXT)
-	rm -rf $(DISTNAME)
-	mkdir -p $(DISTNAME)/docs/graphics
-	$(STRIP) stella$(EXEEXT) -o $(DISTNAME)/Stella$(EXEEXT)
-	cp /bin/SDL.dll $(DISTNAME)
-	cp Announce.txt Changes.txt Copyright.txt License.txt README-SDL.txt Readme.txt Todo.txt $(DISTNAME)/docs
-	cp -r docs/*.html $(DISTNAME)/docs
-	cp -r docs/graphics/*.png $(DISTNAME)/docs/graphics
-#	flip -m $(DISTNAME)/docs/*.txt
-#	zip -r $(DISTNAME)-win32.zip $(DISTNAME)
-
-# GP2X organize: groups necessary files into a gp2x folder for easy access.
-gp2x-organize:
-	mkdir -p "$(srcdir)/gp2x"
-	mkdir -p "$(srcdir)/gp2x/docs"
-	cp -v $(srcdir)/stella  $(srcdir)/gp2x
-	cp -v $(srcdir)/src/gp2x/stella.gpe $(srcdir)/gp2x
-	cp -v $(srcdir)/README-GP2X.txt $(srcdir)/gp2x
-	cp -v -r $(srcdir)/docs/* $(srcdir)/gp2x/docs
-	$(STRIP) $(srcdir)/gp2x/stella
-
-.PHONY: deb bundle test win32dist install uninstall
-
-# Use Exuberant ctags (the one from Slackware's vim package, for instance),
-# not the one from emacs!
-tags:
-	ctags `find . -name '*.[ch]xx' -o -name '*.c' -o -name '*.y'` || true
+.PHONY: deb bundle test install uninstall
