@@ -30,6 +30,14 @@
     Stelladaptor but improves handling of paddles.  Thanks go to XXX
     for a complimentary test sample of this device.
 
+  * Added new controller types 'Paddles_IAxis', 'Paddles_IDir', and
+    'Paddles_IAxDr', which invert the paddle axis, direction, and
+    axis+direction, respectively.  These are used for certain ROMs
+    that have the axis or direction inverted from normal (for example,
+    using the paddles causes on onscreen object to move up and down vs.
+    left and right).  All applicable ROMs in the internal database
+    have been updated.
+
   * Added preliminary support for emulating ARM code to the DPC+
     bankswitching scheme (thanks to Batari).
 

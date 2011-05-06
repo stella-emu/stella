@@ -55,40 +55,6 @@ void releaseCmdKeys(NSString *character, int keyCode)
   [NSApp postEvent:event2 atStart:NO];
 }
 
-void hideApp(void)
-{
-  [NSApp hide:nil];
-  releaseCmdKeys(@"h",QZ_h);
-}
-
-void showHelp(void)
-{
-  [NSApp showHelp:nil];
-  releaseCmdKeys(@"?",QZ_SLASH);
-}
-
-void miniturizeWindow(void)
-{
-  [[NSApp keyWindow] performMiniaturize:nil];
-  releaseCmdKeys(@"m",QZ_m);
-}
-
-void handleMacOSXKeypress(int key)
-{
-  switch(key)
-  {
-    case SDLK_h:
-      hideApp();
-      break;
-    case SDLK_m:
-      miniturizeWindow();
-      break;
-    case SDLK_SLASH:
-      showHelp();
-      break;
-  }
-}
-
 void setEmulationMenus(void)
 {
   [[Menus sharedInstance] setEmulationMenus];
@@ -149,25 +115,6 @@ static Menus *sharedInstance = nil;
 	SDL_PushEvent(&theEvent);
 }
 
-- (IBAction) paddleChange:(id) sender
-{
-  switch([sender tag])
-  {
-    case 0:
-      [self pushKeyEvent:SDLK_0:NO:NO:YES];
-      break;
-    case 1:
-      [self pushKeyEvent:SDLK_1:NO:NO:YES];
-      break;
-    case 2:
-      [self pushKeyEvent:SDLK_2:NO:NO:YES];
-      break;
-    case 3:
-      [self pushKeyEvent:SDLK_3:NO:NO:YES];
-      break;
-  }
-}
-
 - (IBAction)biggerScreen:(id)sender
 {
   [self pushKeyEvent:SDLK_EQUALS:NO:YES:NO];
@@ -181,15 +128,6 @@ static Menus *sharedInstance = nil;
 - (IBAction)fullScreen:(id)sender
 {
   [self pushKeyEvent:SDLK_RETURN:NO:YES:NO];
-}
-
-- (IBAction)openCart:(id)sender
-{
-  [self pushKeyEvent:SDLK_ESCAPE:NO:NO:NO];
-//  Fixme - This should work like the other keys, but instead
-//   if you send the LauncherOpen event, it crashes SDL in
-//    the poll loop.    
-//    macOSXSendMenuEvent(MENU_OPEN);
 }
 
 - (IBAction)restartGame:(id)sender
@@ -220,10 +158,6 @@ static Menus *sharedInstance = nil;
   [screenBiggerMenuItem setTarget:self];
   [screenSmallerMenuItem setTarget:self];
   [fullScreenMenuItem setTarget:self];
-  [mousePaddle0MenuItem setTarget:self];
-  [mousePaddle1MenuItem setTarget:self];
-  [mousePaddle2MenuItem setTarget:self];
-  [mousePaddle3MenuItem setTarget:self];
   [increaseVolumeMenuItem setTarget:self];
   [decreaseVolumeMenuItem setTarget:self];
 }
@@ -236,10 +170,6 @@ static Menus *sharedInstance = nil;
   [screenBiggerMenuItem setTarget:nil];
   [screenSmallerMenuItem setTarget:nil];
   [fullScreenMenuItem setTarget:self];
-  [mousePaddle0MenuItem setTarget:nil];
-  [mousePaddle1MenuItem setTarget:nil];
-  [mousePaddle2MenuItem setTarget:nil];
-  [mousePaddle3MenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }
@@ -252,10 +182,6 @@ static Menus *sharedInstance = nil;
   [screenBiggerMenuItem setTarget:self];
   [screenSmallerMenuItem setTarget:self];
   [fullScreenMenuItem setTarget:self];
-  [mousePaddle0MenuItem setTarget:nil];
-  [mousePaddle1MenuItem setTarget:nil];
-  [mousePaddle2MenuItem setTarget:nil];
-  [mousePaddle3MenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }
@@ -268,10 +194,6 @@ static Menus *sharedInstance = nil;
   [screenBiggerMenuItem setTarget:self];
   [screenSmallerMenuItem setTarget:self];
   [fullScreenMenuItem setTarget:self];
-  [mousePaddle0MenuItem setTarget:nil];
-  [mousePaddle1MenuItem setTarget:nil];
-  [mousePaddle2MenuItem setTarget:nil];
-  [mousePaddle3MenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }
@@ -284,10 +206,6 @@ static Menus *sharedInstance = nil;
   [screenBiggerMenuItem setTarget:self];
   [screenSmallerMenuItem setTarget:self];
   [fullScreenMenuItem setTarget:self];
-  [mousePaddle0MenuItem setTarget:nil];
-  [mousePaddle1MenuItem setTarget:nil];
-  [mousePaddle2MenuItem setTarget:nil];
-  [mousePaddle3MenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }

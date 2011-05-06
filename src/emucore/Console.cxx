@@ -635,12 +635,19 @@ void Console::setControllers(const string& rommd5)
   {
     myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent, *mySystem);
   }
-  else if(left == "PADDLES")
+  else if(BSPF_startsWithIgnoreCase(left, "PADDLES"))
   {
     Controller::setMouseIsController(swapPaddles ? 1 : 0);
+    bool swapAxis = false, swapDir = false;
+    if(left == "PADDLES_IAXIS")
+      swapAxis = true;
+    else if(left == "PADDLES_IDIR")
+      swapDir = true;
+    else if(left == "PADDLES_IAXDR")
+      swapAxis = swapDir = true;
     myControllers[leftPort] =
       new Paddles(Controller::Left, *myEvent, *mySystem,
-                  swapPaddles, false, false);
+                  swapPaddles, swapAxis, swapDir);
   }
   else if(left == "TRACKBALL22")
   {
@@ -679,13 +686,18 @@ void Console::setControllers(const string& rommd5)
   {
     myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent, *mySystem);
   }
-  else if(right == "PADDLES")
+  else if(BSPF_startsWithIgnoreCase(right, "PADDLES"))
   {
-    if(left != "PADDLES")
-      Controller::setMouseIsController(swapPaddles ? 3 : 2);
+    bool swapAxis = false, swapDir = false;
+    if(right == "PADDLES_IAXIS")
+      swapAxis = true;
+    else if(right == "PADDLES_IDIR")
+      swapDir = true;
+    else if(right == "PADDLES_IAXDR")
+      swapAxis = swapDir = true;
     myControllers[rightPort] =
       new Paddles(Controller::Right, *myEvent, *mySystem,
-                  swapPaddles, false, false);
+                  swapPaddles, swapAxis, swapDir);
   }
   else if(right == "TRACKBALL22")
   {

@@ -283,7 +283,7 @@ class Console : public Serializable
 
   private:
     /**
-      Adds the left and right controllers to the console
+      Adds the left and right controllers to the console.
     */
     void setControllers(const string& rommd5);
 

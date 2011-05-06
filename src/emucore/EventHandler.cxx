@@ -52,12 +52,6 @@
   #include "Debugger.hxx"
 #endif
 
-#ifdef MAC_OSX
-  extern "C" {
-    void handleMacOSXKeypress(int key);
-  }
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
   : myOSystem(osystem),
@@ -551,13 +545,6 @@ void EventHandler::poll(uInt64 time)
           {
             switch(int(key))
             {
-          #ifdef MAC_OSX
-              case SDLK_h:
-              case SDLK_m:
-              case SDLK_SLASH:
-                handleMacOSXKeypress(int(key));
-                break;
-          #endif
               case SDLK_0:  // Ctrl-0 sets the mouse to controller 0
                 setMouseControllerMode(0, true);
                 break;

@@ -224,17 +224,20 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "P0 Controller:", kTextAlignLeft);
   ctrls.clear();
-  ctrls.push_back("Joystick",       "JOYSTICK"    );
-  ctrls.push_back("Paddles",        "PADDLES"     );
-  ctrls.push_back("BoosterGrip",    "BOOSTERGRIP" );
-  ctrls.push_back("Driving",        "DRIVING"     );
-  ctrls.push_back("Keyboard",       "KEYBOARD"    );
-  ctrls.push_back("CX-22 Trakball", "TRACKBALL22" );
-  ctrls.push_back("CX-80 Mouse",    "TRACKBALL80" );
-  ctrls.push_back("AmigaMouse",     "AMIGAMOUSE"  );
-  ctrls.push_back("AtariVox",       "ATARIVOX"    );
-  ctrls.push_back("SaveKey",        "SAVEKEY"     );
-  ctrls.push_back("Sega Genesis",   "GENESIS"     );
+  ctrls.push_back("Joystick",       "JOYSTICK"     );
+  ctrls.push_back("Paddles",        "PADDLES"      );
+  ctrls.push_back("Paddles_IAxis",  "PADDLES_IAXIS");
+  ctrls.push_back("Paddles_IDir",   "PADDLES_IDIR" );
+  ctrls.push_back("Paddles_IAxDr",  "PADDLES_IAXDR");
+  ctrls.push_back("BoosterGrip",    "BOOSTERGRIP"  );
+  ctrls.push_back("Driving",        "DRIVING"      );
+  ctrls.push_back("Keyboard",       "KEYBOARD"     );
+  ctrls.push_back("CX-22 Trakball", "TRACKBALL22"  );
+  ctrls.push_back("CX-80 Mouse",    "TRACKBALL80"  );
+  ctrls.push_back("AmigaMouse",     "AMIGAMOUSE"   );
+  ctrls.push_back("AtariVox",       "ATARIVOX"     );
+  ctrls.push_back("SaveKey",        "SAVEKEY"      );
+  ctrls.push_back("Sega Genesis",   "GENESIS"      );
 // TODO  ctrls.push_back("KidVid",         "KIDVID"      );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,
                                    pwidth, lineHeight, ctrls, "", 0, 0);

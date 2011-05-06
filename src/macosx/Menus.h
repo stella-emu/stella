@@ -33,21 +33,15 @@
   IBOutlet id screenBiggerMenuItem;
   IBOutlet id screenSmallerMenuItem;
   IBOutlet id fullScreenMenuItem;
-  IBOutlet id mousePaddle0MenuItem;
-  IBOutlet id mousePaddle1MenuItem;
-  IBOutlet id mousePaddle2MenuItem;
-  IBOutlet id mousePaddle3MenuItem;
   IBOutlet id increaseVolumeMenuItem;
   IBOutlet id decreaseVolumeMenuItem;
 }
 
 + (Menus *)sharedInstance;
 - (void)pushKeyEvent:(int)key:(bool)shift:(bool)cmd:(bool)control;
-- (IBAction)paddleChange:(id) sender;
 - (IBAction)biggerScreen:(id)sender;
 - (IBAction)smallerScreen:(id)sender;
 - (IBAction)fullScreen:(id)sender;
-- (IBAction)openCart:(id)sender;
 - (IBAction)restartGame:(id)sender;
 - (IBAction)doPrefs:(id)sender;
 - (IBAction)volumePlus:(id)sender;
