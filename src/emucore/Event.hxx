@@ -40,8 +40,8 @@ class Event
     {
       NoType,
       ConsoleOn, ConsoleOff, ConsoleColor, ConsoleBlackWhite,
-      ConsoleLeftDifficultyA, ConsoleLeftDifficultyB,
-      ConsoleRightDifficultyA, ConsoleRightDifficultyB,
+      ConsoleLeftDiffA, ConsoleLeftDiffB,
+      ConsoleRightDiffA, ConsoleRightDiffB,
       ConsoleSelect, ConsoleReset,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,

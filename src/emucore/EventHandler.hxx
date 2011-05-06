@@ -185,12 +185,12 @@ class EventHandler
     void quit() { handleEvent(Event::Quit, 1); }
 
     /**
-      Sets the mouse to act as paddle 'num'
+      Sets the mouse to act as controller 'num'
 
-      @param num          The paddle which the mouse should emulate
+      @param num          The controller which the mouse should emulate
       @param showmessage  Print a message to the framebuffer
     */
-    void setPaddleMode(int num, bool showmessage = false);
+    void setMouseControllerMode(int num, bool showmessage = false);
 
     /**
       Set the number of seconds between taking a snapshot in
@@ -407,10 +407,12 @@ class EventHandler
       kNumJoyHats    = 16
     };
     enum JoyType {
-      JT_NONE,
-      JT_REGULAR,
-      JT_STELLADAPTOR_LEFT,
-      JT_STELLADAPTOR_RIGHT
+      JT_NONE               = 0,
+      JT_REGULAR            = 1,
+      JT_STELLADAPTOR_LEFT  = 2,
+      JT_STELLADAPTOR_RIGHT = 3,
+      JT_2600DAPTOR_LEFT    = 4,
+      JT_2600DAPTOR_RIGHT   = 5
     };
     struct Stella_Joystick {
       SDL_Joystick* stick;
@@ -459,9 +461,6 @@ class EventHandler
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
-
-    // Indicates whether the mouse cursor is grabbed
-    bool myGrabMouseFlag;
 
     // Indicates whether the mouse is enabled for game controller actions
     bool myMouseEnabled;

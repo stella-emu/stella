@@ -75,11 +75,10 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myUseVSyncCheckbox;
     CheckboxWidget*   myUIMessagesCheckbox;
     CheckboxWidget*   myCenterCheckbox;
-    CheckboxWidget*   myGrabmouseCheckbox;
     CheckboxWidget*   myFastSCBiosCheckbox;
 
     // TV effects options
-    PopUpWidget*	  myTexturePopup;
+    PopUpWidget*      myTexturePopup;
     PopUpWidget*      myBleedPopup;
     PopUpWidget*      myNoisePopup;
     CheckboxWidget*   myPhosphorCheckbox;

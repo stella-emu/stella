@@ -68,7 +68,8 @@ class Driving : public Controller
 
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
-    Event::Type myCWEvent, myCCWEvent, myFireEvent, myXAxisValue, myYAxisValue;
+    Event::Type myCWEvent, myCCWEvent, myFireEvent,
+                myXAxisValue, myYAxisValue, myAxisMouseMotion;
 };
 
 #endif

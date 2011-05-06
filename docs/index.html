@@ -1690,11 +1690,6 @@
     </tr>
 
     <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>
-      <td>Keeps the mouse in the game window.</td>
-    </tr>
-
-    <tr>
       <td><pre>-palette &lt;standard|z26|user&gt;</pre></td>
       <td>Set the palette to either normal Stella, the one used in the z26
         emulator, or a user-defined palette.</td>
@@ -1800,8 +1795,18 @@
     </tr>
 
     <tr>
-      <td><pre>-pspeed &lt;number&gt;</pre></td>
-      <td>Speed for digital emulation of paddles (1-15).</td>
+      <td><pre>-dsense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using a digital device
+      (ie, joystick digital axis or button, keyboard key, etc).
+      Valid range of values is from 1 to 10, with larger numbers causing
+      faster movement.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-msense &lt;number&gt;</pre></td>
+      <td>Sensitivity for emulation of paddles when using a mouse.
+      Valid range of values is from 1 to 10, with larger numbers causing
+      faster movement.</td>
     </tr>
 
     <tr>
@@ -2172,7 +2177,6 @@
           <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
           <tr><td>GL FS Stretch</td><td>stretch fullscreen OpenGL in emulation mode</td><td>-gl_fsmax</td></tr>
           <tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
-          <tr><td>Grab mouse</td><td>keep mouse in SDL window</td><td>-grabmouse</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>attempt to center application window</td><td>-center</td></tr>
           <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
@@ -2367,8 +2371,9 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
-          <tr><td>Joy deadzone</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
-          <tr><td>Paddle speed</td><td>Speed used when emulating a paddle using a digital device</td><td>-pspeed</td></tr>
+          <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
+          <tr><td>Digital paddle sensitivity</td><td>Sensitvity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
+          <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Use mouse as ...</td><td>Use the mouse for various controllers (paddles, driving, etc)</td><td>-usemouse</td></tr>
         </table>

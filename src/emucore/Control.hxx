@@ -192,6 +192,17 @@ class Controller : public Serializable
     */
     bool load(Serializer& in);
 
+    /**
+      Sets the mouse to emulate controller number 'X'.  Note that this
+      can accept values 0 to 3, since there can be up to four possible
+      controllers (when using paddles).  In all other cases when only
+      two controllers are present, it's up to the specific class to
+      decide how to use this data.
+
+      @param number  The controller number (0, 1, 2, 3)
+    */
+    static void setMouseIsController(int number);
+
   public:
     /// Constant which represents maximum resistance for analog pins
     static const Int32 maximumResistance;
@@ -220,6 +231,9 @@ class Controller : public Serializable
 
     /// The analog value on each analog pin
     Int32 myAnalogPinValue[2];
+
+    /// The controller number
+    static Int32 ourControlNum;
 
   protected:
     // Copy constructor isn't supported by controllers so make it private

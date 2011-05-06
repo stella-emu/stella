@@ -65,10 +65,22 @@ void Driving::update()
   
   // Digital events (from keyboard or joystick hats & buttons)
   myDigitalPinState[Six] = (myEvent.get(myFireEvent) == 0);
+  int d_axis = myEvent.get(myXAxisValue);
+  if(myEvent.get(myCCWEvent) != 0 || d_axis < -16384)     myCounter--;
+  else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)  myCounter++;
 
-  int xaxis = myEvent.get(myXAxisValue);
-  if(myEvent.get(myCCWEvent) != 0 || xaxis < -16384)     myCounter--;
-  else if(myEvent.get(myCWEvent) != 0 || xaxis > 16384)  myCounter++;
+  // Mouse motion and button events
+  // Since there are 4 possible controller numbers, we use 0 & 2
+  // for the left jack, and 1 & 3 for the right jack
+  if((myJack == Left && !(ourControlNum & 0x1)) ||
+     (myJack == Right && ourControlNum & 0x1))
+  {
+    int m_axis = myEvent.get(Event::MouseAxisXValue);
+    if(m_axis < -2)     myCounter--;
+    else if(m_axis > 2) myCounter++;
+    if(myEvent.get(Event::MouseButtonValue))
+      myDigitalPinState[Six] = false;
+  }
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
   myCounter &= 0x0f;

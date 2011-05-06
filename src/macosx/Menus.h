@@ -37,7 +37,6 @@
   IBOutlet id mousePaddle1MenuItem;
   IBOutlet id mousePaddle2MenuItem;
   IBOutlet id mousePaddle3MenuItem;
-  IBOutlet id grabMouseMenuItem;
   IBOutlet id increaseVolumeMenuItem;
   IBOutlet id decreaseVolumeMenuItem;
 }
@@ -50,7 +49,6 @@
 - (IBAction)fullScreen:(id)sender;
 - (IBAction)openCart:(id)sender;
 - (IBAction)restartGame:(id)sender;
-- (IBAction)grabMouse:(id)sender;
 - (IBAction)doPrefs:(id)sender;
 - (IBAction)volumePlus:(id)sender;
 - (IBAction)volumeMinus:(id)sender;

@@ -619,7 +619,8 @@ void Console::setControllers(const string& rommd5)
 
   // Also check if we should swap the paddles plugged into a jack
   bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
-  Paddles::setMouseIsPaddle(-1);  // Reset to defaults
+  // Set default controller for mouse
+  Controller::setMouseIsController(0);
 
   // Construct left controller
   if(left == "BOOSTERGRIP")
@@ -636,7 +637,10 @@ void Console::setControllers(const string& rommd5)
   }
   else if(left == "PADDLES")
   {
-    myControllers[leftPort] = new Paddles(Controller::Left, *myEvent, *mySystem, swapPaddles);
+    Controller::setMouseIsController(swapPaddles ? 1 : 0);
+    myControllers[leftPort] =
+      new Paddles(Controller::Left, *myEvent, *mySystem,
+                  swapPaddles, false, false);
   }
   else if(left == "TRACKBALL22")
   {
@@ -677,7 +681,11 @@ void Console::setControllers(const string& rommd5)
   }
   else if(right == "PADDLES")
   {
-    myControllers[rightPort] = new Paddles(Controller::Right, *myEvent, *mySystem, swapPaddles);
+    if(left != "PADDLES")
+      Controller::setMouseIsController(swapPaddles ? 3 : 2);
+    myControllers[rightPort] =
+      new Paddles(Controller::Right, *myEvent, *mySystem,
+                  swapPaddles, false, false);
   }
   else if(right == "TRACKBALL22")
   {

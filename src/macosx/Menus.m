@@ -197,11 +197,6 @@ static Menus *sharedInstance = nil;
   [self pushKeyEvent:SDLK_r:NO:NO:YES];
 }
 
-- (IBAction)grabMouse:(id)sender
-{
-  [self pushKeyEvent:SDLK_g:NO:NO:YES];
-}
-
 - (IBAction)doPrefs:(id)sender
 {
   [self pushKeyEvent:SDLK_TAB:NO:NO:NO];
@@ -229,7 +224,6 @@ static Menus *sharedInstance = nil;
   [mousePaddle1MenuItem setTarget:self];
   [mousePaddle2MenuItem setTarget:self];
   [mousePaddle3MenuItem setTarget:self];
-  [grabMouseMenuItem setTarget:self];
   [increaseVolumeMenuItem setTarget:self];
   [decreaseVolumeMenuItem setTarget:self];
 }
@@ -246,7 +240,6 @@ static Menus *sharedInstance = nil;
   [mousePaddle1MenuItem setTarget:nil];
   [mousePaddle2MenuItem setTarget:nil];
   [mousePaddle3MenuItem setTarget:nil];
-  [grabMouseMenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }
@@ -263,7 +256,6 @@ static Menus *sharedInstance = nil;
   [mousePaddle1MenuItem setTarget:nil];
   [mousePaddle2MenuItem setTarget:nil];
   [mousePaddle3MenuItem setTarget:nil];
-  [grabMouseMenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }
@@ -280,7 +272,6 @@ static Menus *sharedInstance = nil;
   [mousePaddle1MenuItem setTarget:nil];
   [mousePaddle2MenuItem setTarget:nil];
   [mousePaddle3MenuItem setTarget:nil];
-  [grabMouseMenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }
@@ -297,7 +288,6 @@ static Menus *sharedInstance = nil;
   [mousePaddle1MenuItem setTarget:nil];
   [mousePaddle2MenuItem setTarget:nil];
   [mousePaddle3MenuItem setTarget:nil];
-  [grabMouseMenuItem setTarget:nil];
   [increaseVolumeMenuItem setTarget:nil];
   [decreaseVolumeMenuItem setTarget:nil];
 }

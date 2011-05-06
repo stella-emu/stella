@@ -241,11 +241,6 @@ class FrameBuffer
     virtual void showCursor(bool show);
 
     /**
-      Grabs or ungrabs the mouse based on the given boolean value.
-    */
-    void grabMouse(bool grab);
-
-    /**
       Answers if the display is currently in fullscreen mode.
     */
     bool fullScreen() const;
@@ -470,6 +465,11 @@ class FrameBuffer
     uInt32 myZoomLevel;
 
   private:
+    /**
+      Grabs or ungrabs the mouse based on the given boolean value.
+    */
+    void grabMouse(bool grab);
+
     /**
       Set the icon for the main SDL window.
     */

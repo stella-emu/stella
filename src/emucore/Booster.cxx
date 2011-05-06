@@ -82,7 +82,7 @@ void BoosterGrip::update()
     if(xaxis < 16384+4096)
       myDigitalPinState[Three] = false;
   }
-  if(xaxis < -16384)
+  else if(xaxis < -16384)
     myDigitalPinState[Three] = false;
   if(yaxis > 16384-4096)
   {
@@ -91,6 +91,39 @@ void BoosterGrip::update()
     if(yaxis < 16384+4096)
       myDigitalPinState[One] = false;
   }
-  if(yaxis < -16384)
+  else if(yaxis < -16384)
     myDigitalPinState[One] = false;
+
+  // Mouse motion and button events
+  // Since there are 4 possible controller numbers, we use 0 & 2
+  // for the left jack, and 1 & 3 for the right jack
+  if((myJack == Left && !(ourControlNum & 0x1)) ||
+     (myJack == Right && ourControlNum & 0x1))
+  {
+    // The following code was taken from z26
+    #define MJ_Threshold 2
+    int mousex = myEvent.get(Event::MouseAxisXValue),
+        mousey = myEvent.get(Event::MouseAxisYValue);
+    if(mousex || mousey)
+    {
+      if((!(abs(mousey) > abs(mousex) << 1)) && (abs(mousex) >= MJ_Threshold))
+      {
+        if(mousex < 0)
+          myDigitalPinState[Three] = false;
+        else if (mousex > 0)
+          myDigitalPinState[Four] = false;
+      }
+
+      if((!(abs(mousex) > abs(mousey) << 1)) && (abs(mousey) >= MJ_Threshold))
+      {
+        if(mousey < 0)
+          myDigitalPinState[One] = false;
+        else if(mousey > 0)
+          myDigitalPinState[Two] = false;
+      }
+    }
+    // Get mouse button state
+    if(myEvent.get(Event::MouseButtonValue))
+      myDigitalPinState[Six] = false;
+  }
 }

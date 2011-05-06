@@ -140,13 +140,13 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                                   fwidth, fontHeight, "");
   wid.push_back(myAVoxPort);
 
-  lwidth = font.getStringWidth("Digital paddle speed: ");
+  lwidth = font.getStringWidth("Digital paddle sensitivity: ");
   pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
-  ypos += 2*lineHeight;
+  ypos += lineHeight + 5;
   myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                "Joystick deadzone: ", lwidth, kDeadzoneChanged);
+                                "Joystick deadzone size: ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
   xpos += myDeadzone->getWidth() + 5;
   myDeadzoneLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 5*fontWidth,
@@ -154,17 +154,29 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myDeadzoneLabel->setFlags(WIDGET_CLEARBG);
   wid.push_back(myDeadzone);
 
-  // Add paddle speed
+  // Add paddle speed (digital emulation)
   xpos = 5;  ypos += lineHeight + 3;
-  myPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                   "Digital paddle speed: ",
-                                   lwidth, kPSpeedChanged);
-  myPaddleSpeed->setMinValue(1); myPaddleSpeed->setMaxValue(15);
-  xpos += myPaddleSpeed->getWidth() + 5;
-  myPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
-                                       "", kTextAlignLeft);
-  myPaddleLabel->setFlags(WIDGET_CLEARBG);
-  wid.push_back(myPaddleSpeed);
+  myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                   "Digital paddle sensitivity: ",
+                                   lwidth, kDPSpeedChanged);
+  myDPaddleSpeed->setMinValue(1); myDPaddleSpeed->setMaxValue(10);
+  xpos += myDPaddleSpeed->getWidth() + 5;
+  myDPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                        "", kTextAlignLeft);
+  myDPaddleLabel->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myDPaddleSpeed);
+
+  // Add paddle speed (mouse emulation)
+  xpos = 5;  ypos += lineHeight + 3;
+  myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                                   "Mouse paddle sensitivity: ",
+                                   lwidth, kMPSpeedChanged);
+  myMPaddleSpeed->setMinValue(1); myMPaddleSpeed->setMaxValue(15);
+  xpos += myMPaddleSpeed->getWidth() + 5;
+  myMPaddleLabel = new StaticTextWidget(myTab, font, xpos, ypos+1, 24, lineHeight,
+                                        "", kTextAlignLeft);
+  myMPaddleSpeed->setFlags(WIDGET_CLEARBG);
+  wid.push_back(myMPaddleSpeed);
 
   // Add 'allow all 4 directions' for joystick
   xpos = 10;  ypos += 2*lineHeight;
@@ -201,9 +213,11 @@ void InputDialog::loadConfig()
   bool usemouse = instance().settings().getBool("usemouse");
   myMouseEnabled->setState(usemouse);
 
-  // Paddle speed
-  myPaddleSpeed->setValue(instance().settings().getInt("pspeed"));
-  myPaddleLabel->setLabel(instance().settings().getString("pspeed"));
+  // Paddle speed (digital and mouse)
+  myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
+  myDPaddleLabel->setLabel(instance().settings().getString("dsense"));
+  myMPaddleSpeed->setValue(instance().settings().getInt("msense"));
+  myMPaddleLabel->setLabel(instance().settings().getString("msense"));
 
   // AtariVox serial port
   myAVoxPort->setEditString(instance().settings().getString("avoxport"));
@@ -230,12 +244,15 @@ void InputDialog::saveConfig()
   // Mouse/paddle enabled
   bool usemouse = myMouseEnabled->getState();
   instance().settings().setBool("usemouse", usemouse);
-  instance().eventHandler().setPaddleMode(usemouse ? 0 : -1);
+  instance().eventHandler().setMouseControllerMode(usemouse ? 0 : -1);
 
-  // Paddle speed
-  int speed = myPaddleSpeed->getValue();
-  instance().settings().setInt("pspeed", speed);
-  Paddles::setDigitalSpeed(speed);
+  // Paddle speed (digital and mouse)
+  int sensitivity = myDPaddleSpeed->getValue();
+  instance().settings().setInt("dsense", sensitivity);
+  Paddles::setDigitalSensitivity(sensitivity);
+  sensitivity = myMPaddleSpeed->getValue();
+  instance().settings().setInt("msense", sensitivity);
+  Paddles::setMouseSensitivity(sensitivity);
 
   // AtariVox serial port
   instance().settings().setString("avoxport", myAVoxPort->getEditString());
@@ -272,9 +289,11 @@ void InputDialog::setDefaults()
       // Mouse/paddle enabled
       myMouseEnabled->setState(true);
 
-      // Paddle speed
-      myPaddleSpeed->setValue(6);
-      myPaddleLabel->setLabel("6");
+      // Paddle speed (digital and mouse)
+      myDPaddleSpeed->setValue(5);
+      myDPaddleLabel->setLabel("5");
+      myMPaddleSpeed->setValue(6);
+      myMPaddleLabel->setLabel("6");
 
       // AtariVox serial port
       myAVoxPort->setEditString("");
@@ -373,8 +392,12 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       myDeadzoneLabel->setValue(3200 + 1000*myDeadzone->getValue());
       break;
 
-    case kPSpeedChanged:
-      myPaddleLabel->setValue(myPaddleSpeed->getValue());
+    case kDPSpeedChanged:
+      myDPaddleLabel->setValue(myDPaddleSpeed->getValue());
+      break;
+
+    case kMPSpeedChanged:
+      myMPaddleLabel->setValue(myMPaddleSpeed->getValue());
       break;
 
     default:

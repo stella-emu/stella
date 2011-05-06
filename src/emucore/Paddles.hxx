@@ -39,9 +39,15 @@ class Paddles : public Controller
       @param jack   The jack the controller is plugged into
       @param event  The event object to use for events
       @param system The system using this controller
-      @param swap   Whether to swap the paddles plugged into this jack
+
+      @param swapport  Whether to swap the paddles plugged into this jack
+      @param swapaxis  Whether to swap the axis on the paddle (x <-> y)
+      @param swapdir   Whether to swap the direction for which an axis
+                       causes movement (lesser axis values cause paddle
+                       resistance to decrease instead of increase)
     */
-    Paddles(Jack jack, const Event& event, const System& system, bool swap);
+    Paddles(Jack jack, const Event& event, const System& system,
+            bool swapport, bool swapaxis, bool swapdir);
 
     /**
       Destructor
@@ -56,39 +62,50 @@ class Paddles : public Controller
     virtual void update();
 
     /**
-      Sets the speed for digital emulation of paddle movement.
-      This is only used for *digital* events (ie, buttons or keys
-      generating paddle movement events); axis events from joysticks,
-      Stelladaptors or the mouse are not modified.
+      Sets the sensitivity for digital emulation of paddle movement.
+      This is only used for *digital* events (ie, buttons or keys,
+      or digital joystick axis events); Stelladaptors or the mouse are
+      not modified.
+
+      @param sensitivity  Value from 1 to 10, with larger values
+                          causing more movement
     */
-    static void setDigitalSpeed(int speed) { _PADDLE_SPEED = speed; }
+    static void setDigitalSensitivity(int sensitivity);
 
     /**
-      Sets the mouse to emulate the paddle 'number' in the X or Y
-      axis.  X -> dir 0, Y -> dir 1
+      Sets the sensitivity for analog emulation of paddle movement
+      using a mouse.
+
+      @param sensitivity  Value from 1 to 10, with larger values
+                          causing more movement
     */
-    static void setMouseIsPaddle(int number, int dir = 0);
+    static void setMouseSensitivity(int sensitivity);
 
   private:
+    // Range of values over which digital and mouse movement is scaled
+    // to paddle resistance
+    enum {
+      TRIGRANGE = 4096,
+      TRIGMAX   = 3856,
+      TRIGMIN   = 1
+    };
+
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myP0AxisValue, myP1AxisValue,
                 myP0DecEvent1, myP0DecEvent2, myP0IncEvent1, myP0IncEvent2,
                 myP1DecEvent1, myP1DecEvent2, myP1IncEvent1, myP1IncEvent2,
-                myP0FireEvent1, myP0FireEvent2, myP1FireEvent1, myP1FireEvent2;
+                myP0FireEvent1, myP0FireEvent2, myP1FireEvent1, myP1FireEvent2,
+                myAxisMouseMotion;
 
-    int myKeyRepeat0;
-    int myPaddleRepeat0;
-    int myKeyRepeat1;
-    int myPaddleRepeat1;
+    bool myKeyRepeat0, myKeyRepeat1;
+    int myPaddleRepeat0, myPaddleRepeat1;
+    int myCharge[2], myLastCharge[2];
+    int myLastAxisX, myLastAxisY;
+    int myAxisDigitalZero, myAxisDigitalOne;
 
-    int myCharge[2];
-    int myLastCharge[2];
-    int myLeftMotion[2];
-
-    static int _PADDLE_SPEED;
-    static int _MOUSEX_PADDLE;
-    static int _MOUSEY_PADDLE;
+    static int _DIGITAL_SENSITIVITY, _DIGITAL_DISTANCE;
+    static int _MOUSE_SENSITIVITY;
 
     // Lookup table for associating paddle buttons with controller pins
     // Yes, this is hideously complex

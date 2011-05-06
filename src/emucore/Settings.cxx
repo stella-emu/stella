@@ -54,7 +54,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("fullscreen", "0");
   setInternal("fullres", "auto");
   setInternal("center", "false");
-  setInternal("grabmouse", "false");
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
   setInternal("timing", "sleep");
@@ -84,7 +83,8 @@ Settings::Settings(OSystem* osystem)
   setInternal("joydeadzone", "13");
   setInternal("joyallow4", "false");
   setInternal("usemouse", "true");
-  setInternal("pspeed", "6");
+  setInternal("dsense", "5");
+  setInternal("msense", "7");
   setInternal("sa1", "left");
   setInternal("sa2", "right");
   setInternal("ctrlcombo", "true");
@@ -284,9 +284,13 @@ void Settings::validate()
   if(i < 0)        setInternal("joydeadzone", "0");
   else if(i > 29)  setInternal("joydeadzone", "29");
 
-  i = getInt("pspeed");
-  if(i < 1)        setInternal("pspeed", "1");
-  else if(i > 15)  setInternal("pspeed", "15");
+  i = getInt("dsense");
+  if(i < 1)        setInternal("dsense", "1");
+  else if(i > 10)  setInternal("dsense", "10");
+
+  i = getInt("msense");
+  if(i < 1)        setInternal("msense", "1");
+  else if(i > 15)  setInternal("msense", "15");
 
   i = getInt("ssinterval");
   if(i < 1)        setInternal("ssinterval", "2");
@@ -366,7 +370,6 @@ void Settings::usage()
     << "  -fullscreen   <1|0|-1>       Use fullscreen mode (1 or 0), or disable switching to fullscreen entirely\n"
     << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
-    << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
@@ -389,7 +392,8 @@ void Settings::usage()
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
     << "  -usemouse     <1|0>          Use mouse for various controllers (paddle, driving, etc)\n"
-    << "  -pspeed       <number>       Speed of digital emulated paddle movement (1-15)\n"
+    << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
+    << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
     << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"

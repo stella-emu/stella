@@ -64,7 +64,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myEvent(NULL),
     myOverlay(NULL),
     myState(S_NONE),
-    myGrabMouseFlag(false),
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false)
 {
@@ -113,12 +112,12 @@ EventHandler::EventHandler(OSystem* osystem)
     ourMessageTable[i] = "";
 
   // Set unchanging messages
-  ourMessageTable[Event::ConsoleColor]            = "Color Mode";
-  ourMessageTable[Event::ConsoleBlackWhite]       = "BW Mode";
-  ourMessageTable[Event::ConsoleLeftDifficultyA]  = "Left Difficulty A";
-  ourMessageTable[Event::ConsoleLeftDifficultyB]  = "Left Difficulty B";
-  ourMessageTable[Event::ConsoleRightDifficultyA] = "Right Difficulty A";
-  ourMessageTable[Event::ConsoleRightDifficultyB] = "Right Difficulty B";
+  ourMessageTable[Event::ConsoleColor]      = "Color Mode";
+  ourMessageTable[Event::ConsoleBlackWhite] = "BW Mode";
+  ourMessageTable[Event::ConsoleLeftDiffA]  = "Left Difficulty A";
+  ourMessageTable[Event::ConsoleLeftDiffB]  = "Left Difficulty B";
+  ourMessageTable[Event::ConsoleRightDiffA] = "Right Difficulty A";
+  ourMessageTable[Event::ConsoleRightDiffB] = "Right Difficulty B";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -160,12 +159,12 @@ void EventHandler::initialize()
   setActionMappings(kEmulationMode);
   setActionMappings(kMenuMode);
 
-  myGrabMouseFlag = myOSystem->settings().getBool("grabmouse");
   myUseCtrlKeyFlag = myOSystem->settings().getBool("ctrlcombo");
 
   Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
-  Paddles::setDigitalSpeed(myOSystem->settings().getInt("pspeed"));
-  setPaddleMode(myOSystem->settings().getBool("usemouse") ? 0 : -1, false);
+  Paddles::setDigitalSensitivity(myOSystem->settings().getInt("dsense"));
+  Paddles::setMouseSensitivity(myOSystem->settings().getInt("msense"));
+  setMouseControllerMode(myOSystem->settings().getBool("usemouse") ? 0 : -1, false);
 
   // Set quick select delay when typing characters in listwidgets
   ListWidget::setQuickSelectDelay(myOSystem->settings().getInt("listdelay"));
@@ -230,7 +229,20 @@ void EventHandler::setupJoysticks()
 
     // Figure out what type of joystick this is
     ostringstream buf;
-    if(name.find("Stelladaptor", 0) != string::npos)
+    if(name.find("2600-daptor", 0) != string::npos)
+    {
+      saCount++;
+      if(saCount > 2)  // Ignore more than 2 Stelladaptors
+        continue;
+      else if(saCount == 1)  // Type will be set by mapStelladaptors()
+        ourJoysticks[i].name = "2600-daptor 1";
+      else if(saCount == 2)
+        ourJoysticks[i].name = "2600-daptor 2";
+
+      buf << "  " << i << ": " << ourJoysticks[i].name << endl;
+      myOSystem->logMessage(buf.str(), 1);
+    }
+    else if(name.find("Stelladaptor", 0) != string::npos)
     {
       saCount++;
       if(saCount > 2)  // Ignore more than 2 Stelladaptors
@@ -298,6 +310,32 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
       {
         ourJoysticks[i].type = JT_STELLADAPTOR_RIGHT;
         myOSystem->logMessage("  Stelladaptor 2 emulates right joystick port\n", 1);
+      }
+    }
+    else if(ourJoysticks[i].name == "2600-daptor 1")
+    {
+      if(sa1 == "left")
+      {
+        ourJoysticks[i].type = JT_2600DAPTOR_LEFT;
+        myOSystem->logMessage("  2600-daptor 1 emulates left joystick port\n", 1);
+      }
+      else if(sa1 == "right")
+      {
+        ourJoysticks[i].type = JT_2600DAPTOR_RIGHT;
+        myOSystem->logMessage("  2600-daptor 1 emulates right joystick port\n", 1);
+      }
+    }
+    else if(ourJoysticks[i].name == "2600-daptor 2")
+    {
+      if(sa2 == "left")
+      {
+        ourJoysticks[i].type = JT_2600DAPTOR_LEFT;
+        myOSystem->logMessage("  2600-daptor 2 emulates left joystick port\n", 1);
+      }
+      else if(sa2 == "right")
+      {
+        ourJoysticks[i].type = JT_2600DAPTOR_RIGHT;
+        myOSystem->logMessage("  2600-daptor 2 emulates right joystick port\n", 1);
       }
     }
   }
@@ -508,16 +546,6 @@ void EventHandler::poll(uInt64 time)
           {
             handleEvent(Event::Quit, 1);
           }
-          else if(key == SDLK_g)
-          {
-            // don't change grabmouse in fullscreen mode
-            if(!myOSystem->frameBuffer().fullScreen())
-            {
-              myGrabMouseFlag = !myGrabMouseFlag;
-              myOSystem->settings().setBool("grabmouse", myGrabMouseFlag);
-              myOSystem->frameBuffer().grabMouse(myGrabMouseFlag);
-            }
-          }
           // These only work when in emulation mode
           else if(myState == S_EMULATE)
           {
@@ -530,20 +558,20 @@ void EventHandler::poll(uInt64 time)
                 handleMacOSXKeypress(int(key));
                 break;
           #endif
-              case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
-                setPaddleMode(0, true);
+              case SDLK_0:  // Ctrl-0 sets the mouse to controller 0
+                setMouseControllerMode(0, true);
                 break;
 
-              case SDLK_1:  // Ctrl-1 sets the mouse to paddle 1
-                setPaddleMode(1, true);
+              case SDLK_1:  // Ctrl-1 sets the mouse to controller 1
+                setMouseControllerMode(1, true);
                 break;
 
-              case SDLK_2:  // Ctrl-2 sets the mouse to paddle 2
-                setPaddleMode(2, true);
+              case SDLK_2:  // Ctrl-2 sets the mouse to controller 2
+                setMouseControllerMode(2, true);
                 break;
 
-              case SDLK_3:  // Ctrl-3 sets the mouse to paddle 3
-                setPaddleMode(3, true);
+              case SDLK_3:  // Ctrl-3 sets the mouse to controller 3
+                setMouseControllerMode(3, true);
                   break;
 
               case SDLK_f:  // Ctrl-f toggles NTSC/PAL mode
@@ -730,16 +758,22 @@ void EventHandler::poll(uInt64 time)
             }
             break;  // Regular button
 
+          // These events don't have to pass through handleEvent, since
+          // they can never be remapped
           case JT_STELLADAPTOR_LEFT:
           case JT_STELLADAPTOR_RIGHT:
             // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
             // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
-
-            // These events don't have to pass through handleEvent, since
-            // they can never be remapped
             if(button < 2) myEvent->set(SA_Button[type-2][button], state);
             break;  // Stelladaptor button
+          case JT_2600DAPTOR_LEFT:
+          case JT_2600DAPTOR_RIGHT:
+            // The 'type-4' here refers to the fact that 'JT_2600DAPTOR_LEFT'
+            // and 'JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
+            // enum; subtracting four gives us Controller 0 and 1
+            if(button < 2) myEvent->set(SA_Button[type-4][button], state);
+            break;  // 2600DAPTOR button
         }
         break;  // SDL_JOYBUTTONUP, SDL_JOYBUTTONDOWN
       }  
@@ -820,19 +854,27 @@ void EventHandler::poll(uInt64 time)
             }
             break;  // Regular joystick axis
 
+          // Since the various controller classes deal with Stelladaptor
+          // devices differently, we send the raw X and Y axis data directly,
+          // and let the controller handle it
+          // These events don't have to pass through handleEvent, since
+          // they can never be remapped
           case JT_STELLADAPTOR_LEFT:
           case JT_STELLADAPTOR_RIGHT:
-            // Since the various controller classes deal with the
-            // Stelladaptor differently, we send the raw X and Y axis
-            // data directly, and let the controller handle it
             // The 'type-2' here refers to the fact that 'JT_STELLADAPTOR_LEFT'
             // and 'JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
-
-            // These events don't have to pass through handleEvent, since
-            // they can never be remapped
-            if(axis < 2) myEvent->set(SA_Axis[type-2][axis], value);
+            if(axis < 2)
+              myEvent->set(SA_Axis[type-2][axis], value);
             break;  // Stelladaptor axis
+          case JT_2600DAPTOR_LEFT:
+          case JT_2600DAPTOR_RIGHT:
+            // The 'type-4' here refers to the fact that 'JT_2600DAPTOR_LEFT'
+            // and 'JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
+            // enum; subtracting four gives us Controller 0 and 1
+            if(axis < 2)
+              myEvent->set(SA_Axis[type-4][axis], value);
+            break;  // 26000daptor axis
         }
         break;  // SDL_JOYAXISMOTION
       }
@@ -1621,10 +1663,10 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(SDLK_F2,        mode, Event::ConsoleReset,      event);
       SET_DEFAULT_KEY(SDLK_F3,        mode, Event::ConsoleColor,      event);
       SET_DEFAULT_KEY(SDLK_F4,        mode, Event::ConsoleBlackWhite, event);
-      SET_DEFAULT_KEY(SDLK_F5,        mode, Event::ConsoleLeftDifficultyA,  event);
-      SET_DEFAULT_KEY(SDLK_F6,        mode, Event::ConsoleLeftDifficultyB,  event);
-      SET_DEFAULT_KEY(SDLK_F7,        mode, Event::ConsoleRightDifficultyA, event);
-      SET_DEFAULT_KEY(SDLK_F8,        mode, Event::ConsoleRightDifficultyB, event);
+      SET_DEFAULT_KEY(SDLK_F5,        mode, Event::ConsoleLeftDiffA,  event);
+      SET_DEFAULT_KEY(SDLK_F6,        mode, Event::ConsoleLeftDiffB,  event);
+      SET_DEFAULT_KEY(SDLK_F7,        mode, Event::ConsoleRightDiffA, event);
+      SET_DEFAULT_KEY(SDLK_F8,        mode, Event::ConsoleRightDiffB, event);
       SET_DEFAULT_KEY(SDLK_F9,        mode, Event::SaveState,         event);
       SET_DEFAULT_KEY(SDLK_F10,       mode, Event::ChangeState,       event);
       SET_DEFAULT_KEY(SDLK_F11,       mode, Event::LoadState,         event);
@@ -2052,16 +2094,16 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setPaddleMode(int num, bool showmessage)
+void EventHandler::setMouseControllerMode(int num, bool showmessage)
 {
   if(num >= 0 && num <= 3)
   {
     myMouseEnabled = true;
-    Paddles::setMouseIsPaddle(num);
+    Controller::setMouseIsController(num);
     if(showmessage)
     {
       ostringstream buf;
-      buf << "Mouse is paddle " << num;
+      buf << "Mouse is controller " << num;
       myOSystem->frameBuffer().showMessage(buf.str());
     }
   }
@@ -2081,9 +2123,6 @@ void EventHandler::enterMenuMode(State state)
 {
   setEventState(state);
   myOverlay->reStack();
-
-  myOSystem->frameBuffer().setCursorState();
-
   myOSystem->sound().mute(true);
 }
 
@@ -2091,9 +2130,6 @@ void EventHandler::enterMenuMode(State state)
 void EventHandler::leaveMenuMode()
 {
   setEventState(S_EMULATE);
-
-  myOSystem->frameBuffer().setCursorState();
-
   myOSystem->sound().mute(false);
 }
 
@@ -2122,7 +2158,6 @@ bool EventHandler::enterDebugMode()
     return false;
   }
   myOverlay->reStack();
-  myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(true);
 #else
   myOSystem->frameBuffer().showMessage("Debugger support not included",
@@ -2145,7 +2180,6 @@ void EventHandler::leaveDebugMode()
 
   setEventState(S_EMULATE);
   myOSystem->createFrameBuffer();
-  myOSystem->frameBuffer().setCursorState();
   myOSystem->sound().mute(false);
 #endif
 }
@@ -2192,7 +2226,10 @@ void EventHandler::setEventState(State state)
   // Inform various subsystems about the new state
   myOSystem->stateChanged(myState);
   if(&myOSystem->frameBuffer())
+  {
     myOSystem->frameBuffer().stateChanged(myState);
+    myOSystem->frameBuffer().setCursorState();
+  }
 
   // Always clear any pending events when changing states
   myEvent->clear();
@@ -2436,106 +2473,106 @@ void EventHandler::setSDLMappings()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = {
-  { Event::ConsoleSelect,               "Select",                      0, true  },
-  { Event::ConsoleReset,                "Reset",                       0, true  },
-  { Event::ConsoleColor,                "Color TV",                    0, true  },
-  { Event::ConsoleBlackWhite,           "Black & White TV",            0, true  },
-  { Event::ConsoleLeftDifficultyA,      "P0 Difficulty A",             0, true  },
-  { Event::ConsoleLeftDifficultyB,      "P0 Difficulty B",             0, true  },
-  { Event::ConsoleRightDifficultyA,     "P1 Difficulty A",             0, true  },
-  { Event::ConsoleRightDifficultyB,     "P1 Difficulty B",             0, true  },
-  { Event::SaveState,                   "Save State",                  0, false },
-  { Event::ChangeState,                 "Change State",                0, false },
-  { Event::LoadState,                   "Load State",                  0, false },
-  { Event::TakeSnapshot,                "Snapshot",                    0, false },
-  { Event::Fry,                         "Fry cartridge",               0, false },
-  { Event::VolumeDecrease,              "Decrease volume",             0, false },
-  { Event::VolumeIncrease,              "Increase volume",             0, false },
-  { Event::PauseMode,                   "Pause",                       0, false },
-  { Event::MenuMode,                    "Enter options menu mode",     0, false },
-  { Event::CmdMenuMode,                 "Toggle command menu mode",    0, false },
-  { Event::DebuggerMode,                "Toggle debugger mode",        0, false },
-  { Event::LauncherMode,                "Enter ROM launcher",          0, false },
-  { Event::Quit,                        "Quit",                        0, false },
+  { Event::ConsoleSelect,       "Select",                      0, true  },
+  { Event::ConsoleReset,        "Reset",                       0, true  },
+  { Event::ConsoleColor,        "Color TV",                    0, true  },
+  { Event::ConsoleBlackWhite,   "Black & White TV",            0, true  },
+  { Event::ConsoleLeftDiffA,    "P0 Difficulty A",             0, true  },
+  { Event::ConsoleLeftDiffB,    "P0 Difficulty B",             0, true  },
+  { Event::ConsoleRightDiffA,   "P1 Difficulty A",             0, true  },
+  { Event::ConsoleRightDiffB,   "P1 Difficulty B",             0, true  },
+  { Event::SaveState,           "Save State",                  0, false },
+  { Event::ChangeState,         "Change State",                0, false },
+  { Event::LoadState,           "Load State",                  0, false },
+  { Event::TakeSnapshot,        "Snapshot",                    0, false },
+  { Event::Fry,                 "Fry cartridge",               0, false },
+  { Event::VolumeDecrease,      "Decrease volume",             0, false },
+  { Event::VolumeIncrease,      "Increase volume",             0, false },
+  { Event::PauseMode,           "Pause",                       0, false },
+  { Event::MenuMode,            "Enter options menu mode",     0, false },
+  { Event::CmdMenuMode,         "Toggle command menu mode",    0, false },
+  { Event::DebuggerMode,        "Toggle debugger mode",        0, false },
+  { Event::LauncherMode,        "Enter ROM launcher",          0, false },
+  { Event::Quit,                "Quit",                        0, false },
 
-  { Event::JoystickZeroUp,              "P0 Joystick Up",              0, true  },
-  { Event::JoystickZeroDown,            "P0 Joystick Down",            0, true  },
-  { Event::JoystickZeroLeft,            "P0 Joystick Left",            0, true  },
-  { Event::JoystickZeroRight,           "P0 Joystick Right",           0, true  },
-  { Event::JoystickZeroFire1,           "P0 Joystick Fire",            0, true  },
-  { Event::JoystickZeroFire2,           "P0 BoosterGrip Trigger",      0, true  },
-  { Event::JoystickZeroFire3,           "P0 BoosterGrip Booster",      0, true  },
+  { Event::JoystickZeroUp,      "P0 Joystick Up",              0, true  },
+  { Event::JoystickZeroDown,    "P0 Joystick Down",            0, true  },
+  { Event::JoystickZeroLeft,    "P0 Joystick Left",            0, true  },
+  { Event::JoystickZeroRight,   "P0 Joystick Right",           0, true  },
+  { Event::JoystickZeroFire1,   "P0 Joystick Fire",            0, true  },
+  { Event::JoystickZeroFire2,   "P0 BoosterGrip Trigger",      0, true  },
+  { Event::JoystickZeroFire3,   "P0 BoosterGrip Booster",      0, true  },
 
-  { Event::JoystickOneUp,               "P1 Joystick Up",              0, true  },
-  { Event::JoystickOneDown,             "P1 Joystick Down",            0, true  },
-  { Event::JoystickOneLeft,             "P1 Joystick Left",            0, true  },
-  { Event::JoystickOneRight,            "P1 Joystick Right",           0, true  },
-  { Event::JoystickOneFire1,            "P1 Joystick Fire",            0, true  },
-  { Event::JoystickOneFire2,            "P1 BoosterGrip Trigger",      0, true  },
-  { Event::JoystickOneFire3,            "P1 BoosterGrip Booster",      0, true  },
+  { Event::JoystickOneUp,       "P1 Joystick Up",              0, true  },
+  { Event::JoystickOneDown,     "P1 Joystick Down",            0, true  },
+  { Event::JoystickOneLeft,     "P1 Joystick Left",            0, true  },
+  { Event::JoystickOneRight,    "P1 Joystick Right",           0, true  },
+  { Event::JoystickOneFire1,    "P1 Joystick Fire",            0, true  },
+  { Event::JoystickOneFire2,    "P1 BoosterGrip Trigger",      0, true  },
+  { Event::JoystickOneFire3,    "P1 BoosterGrip Booster",      0, true  },
 
-  { Event::PaddleZeroAnalog,            "Paddle 0 Analog",             0, true  },
-  { Event::PaddleZeroDecrease,          "Paddle 0 Decrease",           0, true  },
-  { Event::PaddleZeroIncrease,          "Paddle 0 Increase",           0, true  },
-  { Event::PaddleZeroFire,              "Paddle 0 Fire",               0, true  },
+  { Event::PaddleZeroAnalog,    "Paddle 0 Analog",             0, true  },
+  { Event::PaddleZeroDecrease,  "Paddle 0 Decrease",           0, true  },
+  { Event::PaddleZeroIncrease,  "Paddle 0 Increase",           0, true  },
+  { Event::PaddleZeroFire,      "Paddle 0 Fire",               0, true  },
 
-  { Event::PaddleOneAnalog,             "Paddle 1 Analog",             0, true  },
-  { Event::PaddleOneDecrease,           "Paddle 1 Decrease",           0, true  },
-  { Event::PaddleOneIncrease,           "Paddle 1 Increase",           0, true  },
-  { Event::PaddleOneFire,               "Paddle 1 Fire",               0, true  },
+  { Event::PaddleOneAnalog,     "Paddle 1 Analog",             0, true  },
+  { Event::PaddleOneDecrease,   "Paddle 1 Decrease",           0, true  },
+  { Event::PaddleOneIncrease,   "Paddle 1 Increase",           0, true  },
+  { Event::PaddleOneFire,       "Paddle 1 Fire",               0, true  },
 
-  { Event::PaddleTwoAnalog,             "Paddle 2 Analog",             0, true  },
-  { Event::PaddleTwoDecrease,           "Paddle 2 Decrease",           0, true  },
-  { Event::PaddleTwoIncrease,           "Paddle 2 Increase",           0, true  },
-  { Event::PaddleTwoFire,               "Paddle 2 Fire",               0, true  },
+  { Event::PaddleTwoAnalog,     "Paddle 2 Analog",             0, true  },
+  { Event::PaddleTwoDecrease,   "Paddle 2 Decrease",           0, true  },
+  { Event::PaddleTwoIncrease,   "Paddle 2 Increase",           0, true  },
+  { Event::PaddleTwoFire,       "Paddle 2 Fire",               0, true  },
 
-  { Event::PaddleThreeAnalog,           "Paddle 3 Analog",             0, true  },
-  { Event::PaddleThreeDecrease,         "Paddle 3 Decrease",           0, true  },
-  { Event::PaddleThreeIncrease,         "Paddle 3 Increase",           0, true  },
-  { Event::PaddleThreeFire,             "Paddle 3 Fire",               0, true  },
+  { Event::PaddleThreeAnalog,   "Paddle 3 Analog",             0, true  },
+  { Event::PaddleThreeDecrease, "Paddle 3 Decrease",           0, true  },
+  { Event::PaddleThreeIncrease, "Paddle 3 Increase",           0, true  },
+  { Event::PaddleThreeFire,     "Paddle 3 Fire",               0, true  },
 
-  { Event::KeyboardZero1,               "P0 Keyboard 1",               0, true  },
-  { Event::KeyboardZero2,               "P0 Keyboard 2",               0, true  },
-  { Event::KeyboardZero3,               "P0 Keyboard 3",               0, true  },
-  { Event::KeyboardZero4,               "P0 Keyboard 4",               0, true  },
-  { Event::KeyboardZero5,               "P0 Keyboard 5",               0, true  },
-  { Event::KeyboardZero6,               "P0 Keyboard 6",               0, true  },
-  { Event::KeyboardZero7,               "P0 Keyboard 7",               0, true  },
-  { Event::KeyboardZero8,               "P0 Keyboard 8",               0, true  },
-  { Event::KeyboardZero9,               "P0 Keyboard 9",               0, true  },
-  { Event::KeyboardZeroStar,            "P0 Keyboard *",               0, true  },
-  { Event::KeyboardZero0,               "P0 Keyboard 0",               0, true  },
-  { Event::KeyboardZeroPound,           "P0 Keyboard #",               0, true  },
+  { Event::KeyboardZero1,       "P0 Keyboard 1",               0, true  },
+  { Event::KeyboardZero2,       "P0 Keyboard 2",               0, true  },
+  { Event::KeyboardZero3,       "P0 Keyboard 3",               0, true  },
+  { Event::KeyboardZero4,       "P0 Keyboard 4",               0, true  },
+  { Event::KeyboardZero5,       "P0 Keyboard 5",               0, true  },
+  { Event::KeyboardZero6,       "P0 Keyboard 6",               0, true  },
+  { Event::KeyboardZero7,       "P0 Keyboard 7",               0, true  },
+  { Event::KeyboardZero8,       "P0 Keyboard 8",               0, true  },
+  { Event::KeyboardZero9,       "P0 Keyboard 9",               0, true  },
+  { Event::KeyboardZeroStar,    "P0 Keyboard *",               0, true  },
+  { Event::KeyboardZero0,       "P0 Keyboard 0",               0, true  },
+  { Event::KeyboardZeroPound,   "P0 Keyboard #",               0, true  },
 
-  { Event::KeyboardOne1,                "P1 Keyboard 1",               0, true  },
-  { Event::KeyboardOne2,                "P1 Keyboard 2",               0, true  },
-  { Event::KeyboardOne3,                "P1 Keyboard 3",               0, true  },
-  { Event::KeyboardOne4,                "P1 Keyboard 4",               0, true  },
-  { Event::KeyboardOne5,                "P1 Keyboard 5",               0, true  },
-  { Event::KeyboardOne6,                "P1 Keyboard 6",               0, true  },
-  { Event::KeyboardOne7,                "P1 Keyboard 7",               0, true  },
-  { Event::KeyboardOne8,                "P1 Keyboard 8",               0, true  },
-  { Event::KeyboardOne9,                "P1 Keyboard 9",               0, true  },
-  { Event::KeyboardOneStar,             "P1 Keyboard *",               0, true  },
-  { Event::KeyboardOne0,                "P1 Keyboard 0",               0, true  },
-  { Event::KeyboardOnePound,            "P1 Keyboard #",               0, true  },
+  { Event::KeyboardOne1,        "P1 Keyboard 1",               0, true  },
+  { Event::KeyboardOne2,        "P1 Keyboard 2",               0, true  },
+  { Event::KeyboardOne3,        "P1 Keyboard 3",               0, true  },
+  { Event::KeyboardOne4,        "P1 Keyboard 4",               0, true  },
+  { Event::KeyboardOne5,        "P1 Keyboard 5",               0, true  },
+  { Event::KeyboardOne6,        "P1 Keyboard 6",               0, true  },
+  { Event::KeyboardOne7,        "P1 Keyboard 7",               0, true  },
+  { Event::KeyboardOne8,        "P1 Keyboard 8",               0, true  },
+  { Event::KeyboardOne9,        "P1 Keyboard 9",               0, true  },
+  { Event::KeyboardOneStar,     "P1 Keyboard *",               0, true  },
+  { Event::KeyboardOne0,        "P1 Keyboard 0",               0, true  },
+  { Event::KeyboardOnePound,    "P1 Keyboard #",               0, true  },
 
-  { Event::Combo1,                      "Combo 1",                     0, false },
-  { Event::Combo2,                      "Combo 2",                     0, false },
-  { Event::Combo3,                      "Combo 3",                     0, false },
-  { Event::Combo4,                      "Combo 4",                     0, false },
-  { Event::Combo5,                      "Combo 5",                     0, false },
-  { Event::Combo6,                      "Combo 6",                     0, false },
-  { Event::Combo7,                      "Combo 7",                     0, false },
-  { Event::Combo8,                      "Combo 8",                     0, false },
-  { Event::Combo9,                      "Combo 9",                     0, false },
-  { Event::Combo10,                     "Combo 10",                    0, false },
-  { Event::Combo11,                     "Combo 11",                    0, false },
-  { Event::Combo12,                     "Combo 12",                    0, false },
-  { Event::Combo13,                     "Combo 13",                    0, false },
-  { Event::Combo14,                     "Combo 14",                    0, false },
-  { Event::Combo15,                     "Combo 15",                    0, false },
-  { Event::Combo16,                     "Combo 16",                    0, false }
+  { Event::Combo1,              "Combo 1",                     0, false },
+  { Event::Combo2,              "Combo 2",                     0, false },
+  { Event::Combo3,              "Combo 3",                     0, false },
+  { Event::Combo4,              "Combo 4",                     0, false },
+  { Event::Combo5,              "Combo 5",                     0, false },
+  { Event::Combo6,              "Combo 6",                     0, false },
+  { Event::Combo7,              "Combo 7",                     0, false },
+  { Event::Combo8,              "Combo 8",                     0, false },
+  { Event::Combo9,              "Combo 9",                     0, false },
+  { Event::Combo10,             "Combo 10",                    0, false },
+  { Event::Combo11,             "Combo 11",                    0, false },
+  { Event::Combo12,             "Combo 12",                    0, false },
+  { Event::Combo13,             "Combo 13",                    0, false },
+  { Event::Combo14,             "Combo 14",                    0, false },
+  { Event::Combo15,             "Combo 15",                    0, false },
+  { Event::Combo16,             "Combo 16",                    0, false }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

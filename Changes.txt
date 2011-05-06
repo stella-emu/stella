@@ -12,11 +12,23 @@
                                Release History
 ===========================================================================
 
-3.3 to 3.4: (xx. xx, 2011)
+3.3 to 3.4: (May. xx, 2011)
 
-  * The mouse can now be used in joystick games (ie, moving the mouse
-    emulates joystick directions, and pressing a mouse button emulates
-    the joystick fire button).
+  * Many improvements to input handling, particularly with the mouse and
+    paddles:
+    - The mouse can now be used to emulate a joystick, booster-grip or
+      driving controller.
+
+    - The mouse now controls only one device at a time (1 of 4 paddles,
+      1 of 2 joysticks, etc), instead of devices from both virtual ports.
+
+    - The sensitivity for digital and mouse input (for paddles) can now
+      be set separately with the 'dsense' and 'msense' commandline
+      arguments, and from within the Input Settings UI.
+
+  * Added support for the 2600-daptor device, which is similar to a
+    Stelladaptor but improves handling of paddles.  Thanks go to XXX
+    for a complimentary test sample of this device.
 
   * Added preliminary support for emulating ARM code to the DPC+
     bankswitching scheme (thanks to Batari).
@@ -27,6 +39,9 @@
   * The ROM audit dialog now automatically selects the current
     directory in the ROM launcher, and reloads the directory after
     the audit is complete.
+
+  * Removed the 'grabmouse' functionality; the mouse is now always
+    grabbed while playing a game, and released otherwise.
 
   * Updated built-in version of the PNG library to the latest version.
 

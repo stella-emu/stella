@@ -213,12 +213,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myUseVSyncCheckbox);
   ypos += lineHeight + 4;
 
-  // Grab mouse (in windowed mode)
-  myGrabmouseCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                           "Grab mouse");
-  wid.push_back(myGrabmouseCheckbox);
-  ypos += lineHeight + 4;
-
   // Show UI messages onscreen
   myUIMessagesCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                             "Show UI messages");
@@ -344,7 +338,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 #endif
 #ifndef WINDOWED_SUPPORT
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
-  myGrabmouseCheckbox->clearFlags(WIDGET_ENABLED);
   myCenterCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #if !(defined(BSPF_WIN32) || (defined(BSPF_UNIX) && defined(HAVE_X11)))
@@ -424,9 +417,6 @@ void VideoDialog::loadConfig()
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
   myUseVSyncCheckbox->setEnabled(gl);
-
-  // Grab mouse
-  myGrabmouseCheckbox->setState(instance().settings().getBool("grabmouse"));
 
   // Show UI messages
   myUIMessagesCheckbox->setState(instance().settings().getBool("uimessages"));
@@ -522,10 +512,6 @@ void VideoDialog::saveConfig()
   // Use sync to vertical blank (GL mode only)
   instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
 
-  // Grab mouse
-  instance().settings().setBool("grabmouse", myGrabmouseCheckbox->getState());
-  instance().frameBuffer().setCursorState();
-
   // Show UI messages
   instance().settings().setBool("uimessages", myUIMessagesCheckbox->getState());
 
@@ -572,7 +558,6 @@ void VideoDialog::setDefaults()
   myColorLossCheckbox->setState(false);
   myGLStretchCheckbox->setState(false);
   myUseVSyncCheckbox->setState(true);
-  myGrabmouseCheckbox->setState(false);
   myUIMessagesCheckbox->setState(true);
   myCenterCheckbox->setState(false);
   myFastSCBiosCheckbox->setState(false);

@@ -126,22 +126,22 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kLeftDiffACmd:
-      event = Event::ConsoleLeftDifficultyA;
+      event = Event::ConsoleLeftDiffA;
       consoleCmd = true;
       break;
 
     case kLeftDiffBCmd:
-      event = Event::ConsoleLeftDifficultyB;
+      event = Event::ConsoleLeftDiffB;
       consoleCmd = true;
       break;
 
     case kRightDiffACmd:
-      event = Event::ConsoleRightDifficultyA;
+      event = Event::ConsoleRightDiffA;
       consoleCmd = true;
       break;
 
     case kRightDiffBCmd:
-      event = Event::ConsoleRightDifficultyB;
+      event = Event::ConsoleRightDiffB;
       consoleCmd = true;
       break;
 

@@ -59,7 +59,8 @@ class InputDialog : public Dialog
       kLeftChanged     = 'LCch',
       kRightChanged    = 'RCch',
       kDeadzoneChanged = 'DZch',
-      kPSpeedChanged   = 'PSch'
+      kDPSpeedChanged  = 'PDch',
+      kMPSpeedChanged  = 'PMch'
     };
 
     TabWidget* myTab;
@@ -74,8 +75,10 @@ class InputDialog : public Dialog
 
     SliderWidget*     myDeadzone;
     StaticTextWidget* myDeadzoneLabel;
-    SliderWidget*     myPaddleSpeed;
-    StaticTextWidget* myPaddleLabel;
+    SliderWidget*     myDPaddleSpeed;
+    SliderWidget*     myMPaddleSpeed;
+    StaticTextWidget* myDPaddleLabel;
+    StaticTextWidget* myMPaddleLabel;
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myMouseEnabled;
 };
