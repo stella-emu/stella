@@ -63,8 +63,7 @@ int Thumbulator::run( void )
     {
       DISS=0;
       DBUG=0;
-      // TODO - deal with this condition more elegantly
-      exit(1); // exit Stella
+      throw "instructions > 501000";
     }
   }
   //dump_counters();
@@ -98,8 +97,8 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
       addr &= ROMADDMASK;
       if(addr<0x50)
       {
-        fprintf(stderr,"fetch16(0x%08X), abort\n",addr);
-        exit(1);
+        sprintf(errorMsg,"fetch16(0x%08X), abort\n",addr);
+        throw errorMsg;
       }
 
       addr>>=1;
@@ -124,8 +123,8 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
         fprintf(stderr,"0x%04X\n",data);
       return(data);
   }
-  fprintf(stderr,"fetch16(0x%08X), abort\n",addr);
-  exit(1);
+  sprintf(errorMsg,"fetch16(0x%08X), abort\n",addr);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -146,8 +145,8 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
           fprintf(stderr,"0x%08X\n",data);
         if(addr==0x00000000) return(data);
         if(addr==0x00000004) return(data);
-        fprintf(stderr,"fetch32(0x%08X), abort\n",addr);
-        exit(1);
+        sprintf(errorMsg,"fetch32(0x%08X), abort\n",addr);
+        throw errorMsg;
       }
 
     case 0x40000000: //RAM
@@ -158,8 +157,8 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
         fprintf(stderr,"0x%08X\n",data);
       return(data);
   }
-  fprintf(stderr,"fetch32(0x%08X), abort\n",addr);
-  exit(1);
+  sprintf(errorMsg,"fetch32(0x%08X), abort\n",addr);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -182,8 +181,8 @@ void Thumbulator::write16 ( uInt32 addr, uInt32 data )
     #endif
       return;
   }
-  fprintf(stderr,"write16(0x%08X,0x%08X), abort\n",addr,data);
-  exit(1);
+  sprintf(errorMsg,"write16(0x%08X,0x%08X), abort\n",addr,data);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -196,7 +195,7 @@ void Thumbulator::write32 ( uInt32 addr, uInt32 data )
   {
     case 0xF0000000: //halt
       dump_counters();
-      exit(0);
+      throw "HALT";// exit(0);
 
     case 0xE0000000: //periph
       switch(addr)
@@ -219,8 +218,8 @@ void Thumbulator::write32 ( uInt32 addr, uInt32 data )
       write16(addr+2,(data>>16)&0xFFFF);
       return;
   }
-  fprintf(stderr,"write32(0x%08X,0x%08X), abort\n",addr,data);
-  exit(1);
+  sprintf(errorMsg,"write32(0x%08X,0x%08X), abort\n",addr,data);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,8 +258,8 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
         fprintf(stderr,"0x%04X\n",data);
       return(data);
   }
-  fprintf(stderr,"read16(0x%08X), abort\n",addr);
-  exit(1);
+  sprintf(errorMsg,"read16(0x%08X), abort\n",addr);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -282,8 +281,8 @@ uInt32 Thumbulator::read32 ( uInt32 addr )
         fprintf(stderr,"0x%08X\n",data);
       return(data);
   }
-  fprintf(stderr,"read32(0x%08X), abort\n",addr);
-  exit(1);
+  sprintf(errorMsg,"read32(0x%08X), abort\n",addr);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -307,8 +306,8 @@ uInt32 Thumbulator::read_register ( uInt32 reg )
         fprintf(stderr,"0x%08X\n",data);
       return(data);
   }
-  fprintf(stderr,"invalid cpsr mode 0x%08X\n",cpsr);
-  exit(1);
+  sprintf(errorMsg,"invalid cpsr mode 0x%08X\n",cpsr);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,8 +328,8 @@ uInt32 Thumbulator::write_register ( uInt32 reg, uInt32 data )
       }
       return(data);
   }
-  fprintf(stderr,"invalid cpsr mode 0x%08X\n",cpsr);
-  exit(1);
+  sprintf(errorMsg,"invalid cpsr mode 0x%08X\n",cpsr);
+  throw errorMsg;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

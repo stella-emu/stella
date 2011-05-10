@@ -626,7 +626,7 @@ string CartDebug::loadSymbolFile(string file)
   {
     ifstream in(node.getPath().c_str());
     if(!in.is_open())
-      return DebuggerParser::red("symbol file '" + node.getPath() + "' not found");
+      return DebuggerParser::red("symbol file '" + node.getRelativePath() + "' not found");
 
     myUserAddresses.clear();
     myUserLabels.clear();
@@ -645,9 +645,9 @@ string CartDebug::loadSymbolFile(string file)
         addLabel(label, value);
     }
     in.close();
-    return "loaded " + file + " OK";
+    return "loaded " + node.getRelativePath() + " OK";
   }
-  return DebuggerParser::red("symbol file '" + node.getPath() + "' not found");
+  return DebuggerParser::red("symbol file '" + node.getRelativePath() + "' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

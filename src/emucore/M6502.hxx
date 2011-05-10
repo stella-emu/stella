@@ -237,7 +237,7 @@ class M6502 : public Serializable
 
       @return The byte at the specified address
     */
-    inline uInt8 peek(uInt16 address, uInt8 flags);
+    uInt8 peek(uInt16 address, uInt8 flags);
 
     /**
       Change the byte at the specified address to the given value and
@@ -246,7 +246,7 @@ class M6502 : public Serializable
       @param address  The address where the value should be stored
       @param value    The value to be stored at the address
     */
-    inline void poke(uInt16 address, uInt8 value);
+    void poke(uInt16 address, uInt8 value);
 
     /**
       Get the 8-bit value of the Processor Status register.

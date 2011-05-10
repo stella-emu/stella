@@ -152,23 +152,23 @@ class CartridgeDPCPlus : public Cartridge
     /** 
       Clocks the random number generator to move it to its next state
     */
-    inline void clockRandomNumberGenerator();
+    void clockRandomNumberGenerator();
   
     /** 
       Clocks the random number generator to move it to its prior state
     */
-    inline void priorClockRandomNumberGenerator();
+    void priorClockRandomNumberGenerator();
 
     /** 
       Updates any data fetchers in music mode based on the number of
       CPU cycles which have passed since the last update.
     */
-    inline void updateMusicModeDataFetchers();
+    void updateMusicModeDataFetchers();
 
     /** 
       Call Special Functions
     */
-    inline void callFunction(uInt8 value);
+    void callFunction(uInt8 value);
 
   private:
     // The ROM image and size

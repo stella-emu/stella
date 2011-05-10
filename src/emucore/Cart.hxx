@@ -96,9 +96,9 @@ class Cartridge : public Device
       the banks before querying the cart state, otherwise reading values
       could inadvertantly cause a bankswitch to occur.
     */
-    inline void lockBank()   { myBankLocked = true;  }
-    inline void unlockBank() { myBankLocked = false; }
-    inline bool bankLocked() { return myBankLocked;  }
+    void lockBank()   { myBankLocked = true;  }
+    void unlockBank() { myBankLocked = false; }
+    bool bankLocked() { return myBankLocked;  }
 
     /**
       Get the default startup bank for a cart.  This is the bank where

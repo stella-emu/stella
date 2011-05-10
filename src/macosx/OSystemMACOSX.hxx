@@ -20,9 +20,7 @@
 #ifndef OSYSTEM_MACOSX_HXX
 #define OSYSTEM_MACOSX_HXX
 
-#include "bspf.hxx"
 #include "OSystem.hxx"
-
 
 /**
   This class defines UNIX-like OS's (MacOS X) system specific settings.
@@ -42,12 +40,6 @@ class OSystemMACOSX : public OSystem
       Destructor
     */
     virtual ~OSystemMACOSX();
-
-  public:
-    /**
-      Informs the OSystem of a change in EventHandler state.
-    */
-    void stateChanged(EventHandler::State state);
 };
 
 #endif

@@ -78,7 +78,6 @@
 		2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7508457B7D00812C11 /* OSystem.hxx */; };
 		2D91741C09BA90380026E9FF /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7708457B7D00812C11 /* unzip.h */; };
 		2D91741D09BA90380026E9FF /* Preferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEBE3084582C400812C11 /* Preferences.h */; };
-		2D91741E09BA90380026E9FF /* Menus.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D62C40E085011050063A4A3 /* Menus.h */; };
 		2D91741F09BA90380026E9FF /* AboutBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1A6CD4085135F9007CDBA8 /* AboutBox.h */; };
 		2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9217FA0857CC88001D664B /* ConsoleFont.hxx */; };
 		2D91742109BA90380026E9FF /* Font.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9217FC0857CC88001D664B /* Font.hxx */; };
@@ -191,7 +190,6 @@
 		2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7408457B7D00812C11 /* OSystem.cxx */; };
 		2D9174C109BA90380026E9FF /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7608457B7D00812C11 /* unzip.c */; };
 		2D9174C209BA90380026E9FF /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEBE4084582C400812C11 /* Preferences.m */; };
-		2D9174C309BA90380026E9FF /* Menus.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D47A45208491D4500ABFB6A /* Menus.m */; };
 		2D9174C409BA90380026E9FF /* AboutBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1A6CD5085135F9007CDBA8 /* AboutBox.m */; };
 		2D9174C509BA90380026E9FF /* Font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9217FB0857CC88001D664B /* Font.cxx */; };
 		2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D659E2D085D3DD6005D96C8 /* Debugger.cxx */; };
@@ -476,8 +474,6 @@
 		2D403BCE08611A69001E31A1 /* PackedBitArray.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = PackedBitArray.cxx; path = ../debugger/PackedBitArray.cxx; sourceTree = SOURCE_ROOT; };
 		2D403BCF08611A69001E31A1 /* PackedBitArray.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = PackedBitArray.hxx; path = ../debugger/PackedBitArray.hxx; sourceTree = SOURCE_ROOT; };
 		2D4764C806683C5F00F63D87 /* SDL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL.framework; sourceTree = SOURCE_ROOT; };
-		2D47A45208491D4500ABFB6A /* Menus.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Menus.m; sourceTree = SOURCE_ROOT; };
-		2D62C40E085011050063A4A3 /* Menus.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Menus.h; sourceTree = SOURCE_ROOT; };
 		2D659E2D085D3DD6005D96C8 /* Debugger.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Debugger.cxx; path = ../debugger/Debugger.cxx; sourceTree = SOURCE_ROOT; };
 		2D659E2E085D3DD6005D96C8 /* Debugger.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Debugger.hxx; path = ../debugger/Debugger.hxx; sourceTree = SOURCE_ROOT; };
 		2D659E31085D3DD6005D96C8 /* DebuggerParser.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = DebuggerParser.cxx; path = ../debugger/DebuggerParser.cxx; sourceTree = SOURCE_ROOT; };
@@ -796,8 +792,6 @@
 			children = (
 				2D1A6CD4085135F9007CDBA8 /* AboutBox.h */,
 				2D1A6CD5085135F9007CDBA8 /* AboutBox.m */,
-				2D62C40E085011050063A4A3 /* Menus.h */,
-				2D47A45208491D4500ABFB6A /* Menus.m */,
 				2DDBEBE3084582C400812C11 /* Preferences.h */,
 				2DDBEBE4084582C400812C11 /* Preferences.m */,
 				F5A47A9D01A0482F01D3D55B /* SDLMain.h */,
@@ -1370,7 +1364,6 @@
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
 				2D91741C09BA90380026E9FF /* unzip.h in Headers */,
 				2D91741D09BA90380026E9FF /* Preferences.h in Headers */,
-				2D91741E09BA90380026E9FF /* Menus.h in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
 				2D91742109BA90380026E9FF /* Font.hxx in Headers */,
@@ -1641,7 +1634,6 @@
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
 				2D9174C109BA90380026E9FF /* unzip.c in Sources */,
 				2D9174C209BA90380026E9FF /* Preferences.m in Sources */,
-				2D9174C309BA90380026E9FF /* Menus.m in Sources */,
 				2D9174C409BA90380026E9FF /* AboutBox.m in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
 				2D9174C609BA90380026E9FF /* Debugger.cxx in Sources */,

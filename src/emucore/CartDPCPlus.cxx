@@ -20,6 +20,9 @@
 #include <cassert>
 #include <cstring>
 
+#ifdef DEBUGGER_SUPPORT
+  #include "Debugger.hxx"
+#endif
 #include "System.hxx"
 #include "Thumbulator.hxx"
 #include "CartDPCPlus.hxx"
@@ -202,7 +205,15 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
     case 254:
     case 255:
       // Call user written ARM code (most likely be C compiled for ARM)
-      myThumbEmulator->run();
+      try {
+        myThumbEmulator->run();
+      }
+      catch(const char* msg) {
+        cerr << msg << endl;
+    #ifdef DEBUGGER_SUPPORT
+        Debugger::debugger().startWithFatalError(msg);
+    #endif
+      }
       break;
   #endif
     // reserved

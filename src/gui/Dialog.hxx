@@ -76,7 +76,7 @@ class Dialog : public GuiObject
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
 
-    inline FBSurface& surface() { return *_surface; }
+    FBSurface& surface() { return *_surface; }
 
   protected:
     virtual void draw();
@@ -106,7 +106,7 @@ class Dialog : public GuiObject
 
   private:
     void buildFocusWidgetList(int id);
-    inline bool handleNavEvent(Event::Type e);
+    bool handleNavEvent(Event::Type e);
 
   protected:
     Widget* _mouseWidget;

@@ -29,9 +29,8 @@
 
 namespace GUI {
 
-/*! @brief simple class for handling both 2D position and size
-
-	This small class is an helper for position and size values.
+/*
+  This small class is an helper for position and size values.
 */
 struct Point
 {
@@ -46,23 +45,22 @@ struct Point
   bool operator!=(const Point & p) const { return x != p.x || y != p.y; };
 };
 
-/*! 	@brief simple class for handling a rectangular zone.
+/*
+  This small class is an helper for rectangles.
+  Note: This implementation is built around the assumption that (top,left) is
+  part of the rectangle, but (bottom,right) is not! This is reflected in 
+  various methods, including contains(), intersects() and others.
 
-	This small class is an helper for rectangles.
-	Note: This implementation is built around the assumption that (top,left) is
-	part of the rectangle, but (bottom,right) is not! This is reflected in 
-	various methods, including contains(), intersects() and others.
-	
-	Another very wide spread approach to rectangle classes treats (bottom,right)
-	also as a part of the rectangle.
-	
-	Coneptually, both are sound, but the approach we use saves many intermediate
-	computations (like computing the height in our case is done by doing this:
-	  height = bottom - top;
-	while in the alternate system, it would be
-	  height = bottom - top + 1;
-	
-	When writing code using our Rect class, always keep this principle in mind!
+  Another very wide spread approach to rectangle classes treats (bottom,right)
+  also as a part of the rectangle.
+
+  Coneptually, both are sound, but the approach we use saves many intermediate
+  computations (like computing the height in our case is done by doing this:
+    height = bottom - top;
+  while in the alternate system, it would be
+    height = bottom - top + 1;
+
+  When writing code using our Rect class, always keep this principle in mind!
 */
 struct Rect
 {
@@ -75,109 +73,99 @@ struct Rect
   {
     assert(isValidRect());
   }
-	inline int x() const { return left; }
-	inline int y() const { return top; }
-	inline int width() const { return right - left; }
-	inline int height() const { return bottom - top; }
-	
-	void setWidth(int aWidth) {
-		right = left + aWidth;
-	}
+  int x() const { return left; }
+  int y() const { return top; }
+  int width() const { return right - left; }
+  int height() const { return bottom - top; }
 
-	void setHeight(int aHeight) {
-		bottom = top + aHeight;
-	}
+  void setWidth(int aWidth) { right = left + aWidth; }
+  void setHeight(int aHeight) { bottom = top + aHeight; }
 
-	/*!	@brief check if given position is inside this rectangle
+  /*
+    @param x the horizontal position to check
+    @param y the vertical position to check	
 
-		@param x the horizontal position to check
-		@param y the vertical position to check	
-		
-		@return true if the given position is inside this rectangle, false otherwise
-	*/
-	bool contains(int x, int y) const {
-		return (left <= x) && (x < right) && (top <= y) && (y < bottom);
-	}
+    @return true if the given position is inside this rectangle, false otherwise
+  */
+  bool contains(int x, int y) const {
+    return (left <= x) && (x < right) && (top <= y) && (y < bottom);
+  }
 
-	/*!	@brief check if given point is inside this rectangle
-		
-		@param p the point to check
-		
-		@return true if the given point is inside this rectangle, false otherwise
-	*/
-	bool contains(const Point & p) const {
-		return contains(p.x, p.y);
-	}
+  /*
+    @param p the point to check
 
-	/*!	@brief check if given rectangle intersects with this rectangle
-		
-		@param r the rectangle to check
-		
-		@return true if the given rectangle is inside the rectangle, false otherwise
-	*/
-	bool intersects(const Rect & r) const {
-		return (left < r.right) && (r.left < right) && (top < r.bottom) && (r.top < bottom);
-	}
+    @return true if the given point is inside this rectangle, false otherwise
+  */
+  bool contains(const Point & p) const { return contains(p.x, p.y); }
 
-	/*!	@brief extend this rectangle so that it contains r
-		
-		@param r the rectangle to extend by
-	*/
-	void extend(const Rect & r) {
-		left = BSPF_min(left, r.left);
-		right = BSPF_max(right, r.right);
-		top = BSPF_min(top, r.top);
-		bottom = BSPF_max(bottom, r.bottom);
-	}
-	
-	/*!	@brief extend this rectangle in all four directions by the given number of pixels
-		
-		@param offset the size to grow by
-	*/
-	void grow(int offset) {
-		top -= offset;
-		left -= offset;
-		bottom += offset;
-		right += offset;
-	}
-	
-	void clip(const Rect & r) {
-		assert(isValidRect());
-		assert(r.isValidRect());
+  /*
+    @param r the rectangle to check
 
-		if (top < r.top) top = r.top;
-		else if (top > r.bottom) top = r.bottom;
+    @return true if the given rectangle is inside the rectangle, false otherwise
+  */
+  bool intersects(const Rect & r) const {
+    return (left < r.right) && (r.left < right) && (top < r.bottom) && (r.top < bottom);
+  }
 
-		if (left < r.left) left = r.left;
-		else if (left > r.right) left = r.right;
+  /*
+    @param r the rectangle to extend by
+  */
+  void extend(const Rect & r) {
+    left = BSPF_min(left, r.left);
+    right = BSPF_max(right, r.right);
+    top = BSPF_min(top, r.top);
+    bottom = BSPF_max(bottom, r.bottom);
+  }
 
-		if (bottom > r.bottom) bottom = r.bottom;
-		else if (bottom < r.top) bottom = r.top;
+  /*
+    Extend this rectangle in all four directions by the given number of pixels
 
-		if (right > r.right) right = r.right;
-		else if (right < r.left) right = r.left;
-	}
-	
-	void clip(int maxw, int maxh) {
-		clip(Rect(0, 0, maxw, maxh));
-	}
-	
-	bool isValidRect() const {
-		return (left <= right && top <= bottom);
-	}
-	
-	void moveTo(int x, int y) {
-		bottom += y - top;
-		right += x - left;
-		top = y;
-		left = x;
-	}
-	
-	void moveTo(const Point & p) {
-		moveTo(p.x, p.y);
-	}
+    @param offset the size to grow by
+  */
+  void grow(int offset) {
+    top -= offset;
+    left -= offset;
+    bottom += offset;
+    right += offset;
+  }
+
+  void clip(const Rect & r) {
+    assert(isValidRect());
+    assert(r.isValidRect());
+
+    if (top < r.top) top = r.top;
+    else if (top > r.bottom) top = r.bottom;
+
+    if (left < r.left) left = r.left;
+    else if (left > r.right) left = r.right;
+
+    if (bottom > r.bottom) bottom = r.bottom;
+    else if (bottom < r.top) bottom = r.top;
+
+    if (right > r.right) right = r.right;
+    else if (right < r.left) right = r.left;
+  }
+
+  void clip(int maxw, int maxh) {
+    clip(Rect(0, 0, maxw, maxh));
+  }
+
+  bool isValidRect() const {
+    return (left <= right && top <= bottom);
+  }
+
+  void moveTo(int x, int y) {
+    bottom += y - top;
+    right += x - left;
+    top = y;
+    left = x;
+  }
+
+  void moveTo(const Point & p) {
+    moveTo(p.x, p.y);
+  }
 };
 
-}	// End of namespace Common
+}  // End of namespace Common
 
 #endif

@@ -92,12 +92,12 @@ class Event
     /**
       Get the value associated with the event of the specified type
     */
-    inline Int32 get(Type type) const { return myValues[type]; }
+    Int32 get(Type type) const { return myValues[type]; }
 
     /**
       Set the value associated with the event of the specified type
     */
-    inline void set(Type type, Int32 value) { myValues[type] = value; }
+    void set(Type type, Int32 value) { myValues[type] = value; }
 
     /**
       Clears the event array (resets to initial state)

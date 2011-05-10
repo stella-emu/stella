@@ -51,7 +51,7 @@ class PromptWidget : public Widget, public CommandSender
     void clearScreen();
 
   protected:
-    inline int &buffer(int idx) { return _buffer[idx % kBufferSize]; }
+    int& buffer(int idx) { return _buffer[idx % kBufferSize]; }
 
     void drawWidget(bool hilite);
     void drawCaret();

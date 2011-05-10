@@ -86,7 +86,7 @@ class Console : public Serializable
 
       @return The specified controller
     */
-    inline Controller& controller(Controller::Jack jack) const
+    Controller& controller(Controller::Jack jack) const
     {
       return (jack == Controller::Left) ? *myControllers[0] : *myControllers[1];
     }
@@ -166,7 +166,7 @@ class Console : public Serializable
     /**
       Query detailed information about this console.
     */
-    inline const ConsoleInfo& about() const { return myConsoleInfo; }
+    const ConsoleInfo& about() const { return myConsoleInfo; }
 
   public:
     /**

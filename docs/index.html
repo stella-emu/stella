@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.3</b></h4></center>
+  <center><h4><b>Release 3.4</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -37,7 +37,7 @@
         <li><a href="#Remapping">Event Remapping / Input Devices</a></li>
         <li><a href="#ROMInfo">ROM Launcher</a></li>
         <li><a href="#ROMAudit">ROM Audit Mode</a></li>
-        <li><a href="#Adaptor">Stelladaptor Support</a></li>
+        <li><a href="#Adaptor">Stelladaptor/2600-daptor Support</a></li>
         <li><a href="#AtariVox">AtariVox/SaveKey Support</a></li>
         <li><a href="#Debugger">Developer Options/Integrated Debugger</a></li>
         <li><a href="#Settings">Settings File</a></li>
@@ -52,7 +52,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - November 2010</b></center>
+  <center><b>February 1999 - May 2011</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -258,11 +258,13 @@
     <li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
       computer's mouse</li>
     <li>Support for real Atari 2600 controllers using the
-      <a href="http://www.stelladaptor.com">Stelladaptor</a></li>
+      <a href="http://www.stelladaptor.com">Stelladaptor</a> and
+      <a href="http://2600-daptor.com">2600-adaptor</a></li>
     <li>Support for the speech portion of a real  
       <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
-    <li>Supports EEPROM emulation for AtariVox and SaveKey controllers</li>
+    <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
+      AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
@@ -301,7 +303,8 @@
     <li>SDL version 1.2.10 or greater, latest version highly recommended</li>
     <li>CRT emulation effects require OpenGL 2.0 with GLSL (GL shading language) support</li>
     <li>Joysticks or gamepads are highly recommended</li>
-    <li>Mouse or Stelladaptor with real paddles required for paddle emulation</li>
+    <li>Mouse or <a href="http://www.stelladaptor.com">Stelladaptor</a> / 
+    <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
     <li>Some ROM images (See <a href="http://www.atariage.com">AtariAge</a> for more information)</li>
   </ul>
 
@@ -316,9 +319,6 @@
       but aren't as well tested as i386/x86_64</li>
     <li>GNU C++ compiler version 4.x and the make utility are required for compiling
       the Stella source code</li>
-    <li><b>NOTE:</b> There are potential issues with SDL 1.2.14 in windowed
-      OpenGL mode for Linux/UNIX.  If you have this configuration, you are
-      advised to use SDL 1.2.13 instead.
   </ul>
 
   <p>
@@ -339,7 +339,7 @@
   <p>
   <h3><b><u>Windows</u></b></h3>
 
-  <p>The Windows version of Stella is designed to work on Windows 2000/XP/Vista/7
+  <p>The Windows version of Stella is designed to work on Windows 98/2000/XP/Vista/7
   with the following:</p>
 
   <ul>
@@ -347,7 +347,9 @@
       recommended</li>
     <li>64-bit port has been tested on Windows Vista/7 only; it may work on
       WinXP64 as well, but isn't a priority</li>
-    <li>Visual C++ 2008 is required to compile the Stella source code</li>
+    <li>Visual C++ 2005 is required to compile the Stella source code for Windows 98 and 2000</li>
+    <li>Visual C++ 2010 is required to compile the Stella source code for Windows XP and above</li>
+    <li>It may be possible to compile using MinGW, but this hasn't been extensively tested since Stella version 3.0</li>
   </ul>
 
   <p>
@@ -444,7 +446,7 @@
         <li>For installation:
         <ul>
           <li>Run the script <b>Create_build.sh</b>, located in the src/macosx directory.
-            This will create a DMG file on your desktop.</li>
+            This will create a DMG installation archive on your desktop.</li>
             &nbsp;&nbsp;&nbsp;<b>OR</b>
           <li>Copy the <b>Stella.app</b> package to your 'Applications' folder.</li>
         </ul>
@@ -476,8 +478,10 @@
         <li>Extract files from the distribution using <b>Winzip</b>,
           <b>Total Commander</b>, or some other archiving program that supports
           gzipped tar files</li>
-        <li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
-          file using Visual C++ 2008</li>
+        <li>For Windows XP and above: open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
+          file using Visual C++ 2010</li>
+        <li>For Windows 98/2000: open the <b>stella-<i>release</i>/src/win32/Stella_vs2005.sln</b>
+          file using Visual C++ 2005</li>
         <li>Build the 'Stella' solution, making sure to correctly select either 'Win32'
           or 'x64' mode (depending on the version of Windows you have installed)</li>
         <li>For installation:
@@ -516,9 +520,9 @@
 
   <p><ul>
     <li>Search around the internet and find ROM images to download (websites such
-      as <a href="http://atariage.com">Atariage</a> and
+      as <a href="http://atariage.com">AtariAge</a> and
       <a href="http://www.atarimania.com/rom_collection_archive_atari_2600_roms.html">
-      AtariMania</a> may be useful)</li>
+      AtariMania/RomHunter</a> may be useful)</li>
 
     <li>You can purchase the Atari 2600 Action Packs by Activision and use
     their ROM images</li>
@@ -1440,12 +1444,6 @@
     </tr>
 
     <tr>
-      <td>Grab mouse (keep mouse in game window)</td>
-      <td>Control + g</td>
-      <td>Control + g</td>
-    </tr>
-
-    <tr>
       <td>Toggle display palette (<i>NTSC/PAL/SECAM</i>)</td>
       <td>Control + f</td>
       <td>Control + f</td>
@@ -1458,25 +1456,25 @@
     </tr>
 
     <tr>
-      <td>Set mouse to emulate paddle 0</td>
+      <td>Set mouse to emulate controller 0</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
     </tr>
 
     <tr>
-      <td>Set mouse to emulate paddle 1</td>
+      <td>Set mouse to emulate controller 1</td>
       <td>Control + 1</td>
       <td>Control + 1</td>
     </tr>
 
     <tr>
-      <td>Set mouse to emulate paddle 2</td>
+      <td>Set mouse to emulate controller 2</td>
       <td>Control + 2</td>
       <td>Control + 2</td>
     </tr>
 
     <tr>
-      <td>Set mouse to emulate paddle 3</td>
+      <td>Set mouse to emulate controller 3</td>
       <td>Control + 3</td>
       <td>Control + 3</td>
     </tr>
@@ -1811,12 +1809,12 @@
 
     <tr>
       <td><pre>-sa1 &lt;left|right&gt;</pre></td>
-      <td>Stelladaptor 1 emulates specified joystick port.</td>
+      <td>Stelladaptor/2600-daptor 1 emulates specified joystick port.</td>
     </tr>
 
     <tr>
       <td><pre>-sa2 &lt;left|right&gt;</pre></td>
-      <td>Stelladaptor 2 emulates specified joystick port.</td>
+      <td>Stelladaptor/2600-daptor 2 emulates specified joystick port.</td>
     </tr>
 
     <tr>
@@ -2369,7 +2367,7 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
+          <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
           <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitvity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
@@ -2521,13 +2519,14 @@
   </ul>
   </blockquote>
 
-  <h2><b><a name="Adaptor">6. Stelladaptor Support</a></b></h2>
+  <h2><b><a name="Adaptor">6. Stelladaptor/2600-daptor Support</a></b></h2>
   <blockquote>
 
   <p>Stella supports real Atari 2600 joysticks, paddles and driving controllers
-  using the <a href="http://www.stelladaptor.com">Stelladaptor</a> device.</p>
+  using the <a href="http://www.stelladaptor.com">Stelladaptor</a> and
+  <a href="http://2600-daptor.com">2600-adaptor</a> devices.</p>
 
-  <p>Stella can use up to <b>two</b> Stelladaptors; any extra ones are ignored.
+  <p>Stella can use up to <b>two</b> adaptors; any extra ones are ignored.
   Stelladaptor devices will be automatically detected and configured.  Devices
   can be plugged/unplugged while the emulator is running, although you will need
   to restart the game currently being emulated.</p>
@@ -2535,17 +2534,17 @@
   <p>The detection and configuration is as follows:
 
   <ul>
-    <li>The first Stelladaptor found will act as the <b>left game port</b>
+    <li>The first device found will act as the <b>left game port</b>
     on a real Atari.  Depending on the device, Stella will detect it as
     either the left joystick, paddles 0 & 1, or the left driving controller.</li>
 
-    <li>The second Stelladaptor found will act as the <b>right game port</b>
+    <li>The second device found will act as the <b>right game port</b>
     on a real Atari.  Depending on the device, Stella will detect it as
     either the right joystick, paddles 2 & 3, or the right driving controller.</li>
 
-    <li>Any other Stelladaptors will be ignored.</li>
+    <li>Any other devices will be ignored.</li>
 
-    <li>The assignment ordering of Stelladaptor to port can be redefined with
+    <li>The assignment ordering of Stelladaptor/2600-daptor to port can be redefined with
     'sa1' and 'sa2' (see description in 'Starting a Game').</li>
   </ul>
   </blockquote>
@@ -2955,7 +2954,6 @@ Ms Pac-Man (Stella extended codes):
       </table></td>
     </tr>
 
-
     <tr>
       <td VALIGN="TOP"><i>Console.LeftDifficulty:</i></td>
       <td>Indicates the default difficulty setting for the left
@@ -2983,20 +2981,27 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP"><i>Controller.Left:</i></td>
-      <td>Indicates what type of controller the left player
-      uses.  The value must be <b>BoosterGrip</b>, <b>Driving</b>,
-      <b>Keyboard</b>, <b>Paddles</b>, <b>Paddles_IAxis</b>, <b>Paddles_IDir</b>, <b>Paddles_IAxDr</b>, <b>Trackball22</b>,
-      <b>Trackball80</b>, <b>AmigaMouse</b>, <b>Genesis</b> or <b>Joystick</b>.</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP"><i>Controller.Right:</i></td>
-      <td>Indicates what type of controller the right player
-      uses.  The value must be <b>BoosterGrip</b>, <b>Driving</b>,
-      <b>Keyboard</b>, <b>Paddles</b>,<b>Paddles_IAxis</b>, <b>Paddles_IDir</b>, <b>Paddles_IAxDr</b>, <b>Trackball22</b>,
-      <b>Trackball80</b>, <b>AmigaMouse</b>, <b>AtariVox</b>,
-      <b>SaveKey</b>, <b>Genesis</b> or <b>Joystick</b>.</td>
+      <td VALIGN="TOP"><i>Controller.Left:</i><br><i>Controller.Right:</i></td>
+      <td>Indicates what type of controller the left and right player
+      uses.  The value must be one of the following types:
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Type&nbsp;</th><th>Description</th></tr>
+        <tr><td>Joystick </td><td>Atari's famous black joystick that was originally included with the system.</td></tr>
+        <tr><td>BoosterGrip </td><td>A controller add-in that plugs directly into the joystick port and provides a pass-through for the joystick. In doing so, it provides the two independent buttons.</td></tr>
+        <tr><td>Paddles </td><td>Standard paddle controllers for use with games such as Breakout and Warlords. One pair of controller per connector (allows for 4-player Warlords).</td></tr>
+        <tr><td>Paddles_IAxis </td><td>Same as Paddles, except the axes are inverted.</td></tr>
+        <tr><td>Paddles_IDir </td><td>Same as Paddles, except the direction of movement is inverted.</td></tr>
+        <tr><td>Paddles_IAxDr </td><td>Same as Paddles, except both the axes and direction of movement is inverted.</td></tr>
+        <tr><td>Driving </td><td>Looks like a paddle, but allows 360' movement. Only one unit per connector, unlike paddles which were sold in pairs.</td></tr>
+        <tr><td>Keyboard </td><td>Also known as the Star Raiders controller, functionally identical to the Kid's Controller and Keyboard Controller. Game included an overlay with commands, for use with Star Raiders.</td></tr>
+        <tr><td>Trackball22 </td><td>Standard Atari 2600 CX-22 trackball controller.</td></tr>
+        <tr><td>Trackball80 </td><td>Atari ST CX-80 trackball controller.</td></tr>
+        <tr><td>AmigaMouse</td><td>Commodore Amiga computer mouse.</td></tr>
+        <tr><td><a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
+      AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech / sound synthesizer with 32K EEPROM.</td></tr>
+        <tr><td><a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a></td><td>A 32K EEPROM for saving high scores, etc (the EEPROM portion of an AtariVox).</td></tr>
+        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving two extra buttons.</td></tr>
+      </table></td>
     </tr>
 
     <tr>
@@ -3172,7 +3177,7 @@ Ms Pac-Man (Stella extended codes):
       versions.  Added INI file support, faster startup, snapshot support,
       and pause functionality to core.  Converted Stella 1.1 manual to HTML.
       Ported codebase to SDL for Windows/MacOSX.  Added OpenGL support and
-      Stelladaptor support. Current maintainer for the Linux, MacOSX and Windows
+      Stelladaptor/2600-daptor support. Current maintainer for the Linux, MacOSX and Windows
       versions.</td>
     </tr>
 
@@ -3238,17 +3243,14 @@ Ms Pac-Man (Stella extended codes):
       <td VALIGN="TOP">Mark&nbsp;Grebe<br>
       (<a href="http://www.atarimac.com">http://www.atarimac.com</a>)</td>
       <td>Author of the Macintosh OSX version of Stella from releases
-      1.4 to 2.4.  Helped with Stelladaptor support.</td>
+      1.4 to 2.4; helped with Stelladaptor support</td>
     </tr>
 
     <tr>
-      <td VALIGN="TOP">Alex&nbsp;Herbert</td>
-      <td>Provided much information on AtariVox and SaveKey functionality</td>
-    </tr>
-
-    <tr>
-      <td VALIGN="TOP">Richard&nbsp;Hutchinson</td>
-      <td>Provided an AtariVox USB adaptor to help with AVox development</td>
+      <td VALIGN="TOP">Tom&nbsp;Hafner<br>
+      (<a href="http://2600-daptor.com">http://2600-daptor.com</a>)</td>
+      <td>Generously donated a 2600-daptor device and sample code to help with
+      development</td>
     </tr>
 
     <tr>
@@ -3258,8 +3260,18 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
+      <td VALIGN="TOP">Alex&nbsp;Herbert</td>
+      <td>Provided much information on AtariVox and SaveKey functionality</td>
+    </tr>
+
+    <tr>
       <td VALIGN="TOP">Kevin&nbsp;Horton</td>
       <td>Author of the definitive Atari 2600 bank-switching document</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP">Richard&nbsp;Hutchinson</td>
+      <td>Provided an AtariVox USB adaptor to help with AVox development</td>
     </tr>
 
     <tr>
@@ -3469,7 +3481,8 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
-      <td VALIGN="TOP">Albert&nbsp;Yarusso (aka Al from AtariAge)</td>
+      <td VALIGN="TOP">Albert&nbsp;Yarusso<br>
+<a href="http://atariage.com">http://atariage.com</a></td>
       <td>Provided helpful feedback for the MacOSX port, and generously
         donated an AtariVox device to help with development</td>
     </tr>

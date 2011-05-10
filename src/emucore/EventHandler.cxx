@@ -2124,7 +2124,7 @@ void EventHandler::leaveMenuMode()
 bool EventHandler::enterDebugMode()
 {
 #ifdef DEBUGGER_SUPPORT
-  if(myState == S_DEBUGGER)
+  if(myState == S_DEBUGGER || !(&myOSystem->console()))
     return false;
 
   // Make sure debugger starts in a consistent state

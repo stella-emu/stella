@@ -189,14 +189,14 @@ class FrameBuffer
       Note that this will take into account the current scaling (if any)
       as well as image 'centering'.
     */
-    inline const GUI::Rect& imageRect() const { return myImageRect; }
+    const GUI::Rect& imageRect() const { return myImageRect; }
 
     /**
       Returns the current dimensions of the framebuffer window.
       This is the entire area containing the framebuffer image as well as any
       'unusable' area.
     */
-    inline const GUI::Rect& screenRect() const { return myScreenRect; }
+    const GUI::Rect& screenRect() const { return myScreenRect; }
 
     /**
       Refresh display according to the current state, taking single vs.

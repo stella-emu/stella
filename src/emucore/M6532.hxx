@@ -130,7 +130,7 @@ class M6532 : public Device
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    inline Int32 timerClocks()
+    Int32 timerClocks()
       { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
 
     void setTimerRegister(uInt8 data, uInt8 interval);

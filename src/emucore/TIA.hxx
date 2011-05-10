@@ -187,9 +187,9 @@ class TIA : public Device
     /**
       Answers the width and height of the frame buffer
     */
-    inline uInt32 width() const  { return myFrameWidth;  }
-    inline uInt32 height() const { return myFrameHeight; }
-    inline uInt32 ystart() const { return myFrameYStart; }
+    uInt32 width() const  { return myFrameWidth;  }
+    uInt32 height() const { return myFrameHeight; }
+    uInt32 ystart() const { return myFrameYStart; }
 
     /**
       Changes the current Height/YStart properties.
@@ -220,7 +220,7 @@ class TIA : public Device
 
       @return The current color clock
     */
-    inline uInt32 clocksThisLine() const
+    uInt32 clocksThisLine() const
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228; }
 
     /**
@@ -230,7 +230,7 @@ class TIA : public Device
 
       @return The total number of scanlines generated
     */
-    inline uInt32 scanlines() const
+    uInt32 scanlines() const
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) / 228; }
 
     /**
@@ -239,14 +239,14 @@ class TIA : public Device
 
       @return If we're in partial frame mode
     */
-    inline bool partialFrame() const { return myPartialFrameFlag; }
+    bool partialFrame() const { return myPartialFrameFlag; }
 
     /**
       Answers the first scanline at which drawing occured in the last frame.
 
       @return The starting scanline
     */
-    inline uInt32 startScanline() const { return myStartScanline; }
+    uInt32 startScanline() const { return myStartScanline; }
 
     /**
       Answers the current position of the virtual 'electron beam' used to
@@ -359,10 +359,10 @@ class TIA : public Device
     void pokeHMBL(uInt8 value, Int32 clock);
 
     // Apply motion to registers when HMOVE is currently active
-    inline void applyActiveHMOVEMotion(int hpos, Int16& pos, Int32 motionClock);
+    void applyActiveHMOVEMotion(int hpos, Int16& pos, Int32 motionClock);
 
     // Apply motion to registers when HMOVE was previously active
-    inline void applyPreviousHMOVEMotion(int hpos, Int16& pos, uInt8 motion);
+    void applyPreviousHMOVEMotion(int hpos, Int16& pos, uInt8 motion);
 
   private:
     // Console the TIA is associated with

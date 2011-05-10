@@ -226,18 +226,32 @@ void Debugger::setConsole(Console* console)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::start(const string& message, int address)
 {
-  bool result = myOSystem->eventHandler().enterDebugMode();
+  if(myOSystem->eventHandler().enterDebugMode())
+  {
+    // This must be done *after* we enter debug mode,
+    // so the message isn't erased
+    ostringstream buf;
+    buf << message;
+    if(address > -1)
+      buf << valueToString(address);
 
-  // This must be done *after* we enter debug mode,
-  // so the message isn't erased
-  ostringstream buf;
-  buf << message;
-  if(address > -1)
-    buf << valueToString(address);
+    myMessage->setEditString(buf.str());
+    return true;
+  }
+  return false;
+}
 
-  myMessage->setEditString(buf.str());
-
-  return result;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Debugger::startWithFatalError(const string& message)
+{
+  if(myOSystem->eventHandler().enterDebugMode())
+  {
+    // This must be done *after* we enter debug mode,
+    // so the message isn't erased
+    myMessage->setEditString(message);
+    return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

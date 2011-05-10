@@ -111,6 +111,7 @@ class Thumbulator
 
     Int32 DBUG; // dump detailed execution trace
     Int32 DISS; // dump Thumb instruction trace
+    char errorMsg[100];
 };
 
 #endif

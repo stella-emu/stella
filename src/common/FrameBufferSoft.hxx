@@ -208,7 +208,7 @@ class FBSurfaceSoft : public FBSurface
     void reload();
 
   private:
-    inline void* getBasePtr(uInt32 x, uInt32 y) {
+    void* getBasePtr(uInt32 x, uInt32 y) {
       return static_cast<void *>(static_cast<uInt8*>(mySurface->pixels) +
           (myYOffset + y) * mySurface->pitch + (myXOffset + x) *
           mySurface->format->BytesPerPixel);

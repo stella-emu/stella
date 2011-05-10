@@ -116,6 +116,7 @@ class Debugger : public DialogContainer
       @param data     An address associated with the message
     */
     bool start(const string& message = "", int address = -1);
+    bool startWithFatalError(const string& message = "");
 
     /**
       Wrapper method for EventHandler::leaveDebugMode() for those classes
@@ -268,7 +269,7 @@ class Debugger : public DialogContainer
       everywhere, but I feel it's better to place it here then in
       YaccParser (which technically isn't related to it at all).
     */
-    inline static Debugger& debugger() { return *myStaticDebugger; }
+    static Debugger& debugger() { return *myStaticDebugger; }
 
     /**
       Get the dimensions of the various debugger dialog areas
@@ -283,10 +284,10 @@ class Debugger : public DialogContainer
     /* These are now exposed so Expressions can use them. */
     int peek(int addr) { return mySystem->peek(addr); }
     int dpeek(int addr) { return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8); }
-    inline int getAccessFlags(uInt16 addr)
-    { return mySystem->getAccessFlags(addr); }
-    inline void setAccessFlags(uInt16 addr, uInt8 flags)
-    { mySystem->setAccessFlags(addr, flags); }
+    int getAccessFlags(uInt16 addr)
+      { return mySystem->getAccessFlags(addr); }
+    void setAccessFlags(uInt16 addr, uInt8 flags)
+      { mySystem->setAccessFlags(addr, flags); }
 
     void setBreakPoint(int bp, bool set);
 

@@ -334,8 +334,8 @@ class FBSurfaceGL : public FBSurface
     */
     void renderThreeTexture(GLuint program, bool firstRender);
 
-    inline void* pixels() const { return myTexture->pixels; }
-    inline uInt32 pitch() const { return myPitch;           }
+    void* pixels() const { return myTexture->pixels; }
+    uInt32 pitch() const { return myPitch;           }
 
     static uInt32 power_of_two(uInt32 input)
     {

@@ -26,9 +26,9 @@
       be set separately with the 'dsense' and 'msense' commandline
       arguments, and from within the Input Settings UI.
 
-  * Added support for the 2600-daptor device, which is similar to a
-    Stelladaptor but improves handling of paddles.  Thanks go to XXX
-    for a complimentary test sample of this device.
+  * Added support for the 2600-daptor device (2600-daptor.com), which is
+    similar to a Stelladaptor but improves handling of paddles.  Thanks
+    go to Tom Hafner for a complimentary test sample of this device.
 
   * Added new controller types 'Paddles_IAxis', 'Paddles_IDir', and
     'Paddles_IAxDr', which invert the paddle axis, direction, and

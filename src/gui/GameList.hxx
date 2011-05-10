@@ -35,20 +35,20 @@ class GameList
     GameList();
     ~GameList();
 
-    inline const string& name(int i) const
-    { return i < (int)myArray.size() ? myArray[i]._name : EmptyString; }
-    inline const string& path(int i) const
-    { return i < (int)myArray.size() ? myArray[i]._path : EmptyString; }
-    inline const string& md5(int i) const
-    { return i < (int)myArray.size() ? myArray[i]._md5 : EmptyString; }
-    inline const bool isDir(int i) const
-    { return i < (int)myArray.size() ? myArray[i]._isdir: false; }
+    const string& name(int i) const
+      { return i < (int)myArray.size() ? myArray[i]._name : EmptyString; }
+    const string& path(int i) const
+      { return i < (int)myArray.size() ? myArray[i]._path : EmptyString; }
+    const string& md5(int i) const
+      { return i < (int)myArray.size() ? myArray[i]._md5 : EmptyString; }
+    const bool isDir(int i) const
+      { return i < (int)myArray.size() ? myArray[i]._isdir: false; }
 
-    inline void setMd5(int i, const string& md5)
-    { myArray[i]._md5 = md5; }
+    void setMd5(int i, const string& md5)
+      { myArray[i]._md5 = md5; }
 
-    inline int size() const { return myArray.size(); }
-    inline void clear() { myArray.clear(); }
+    int size() const { return myArray.size(); }
+    void clear() { myArray.clear(); }
 
     void appendGame(const string& name, const string& path, const string& md5,
                     bool isDir = false);

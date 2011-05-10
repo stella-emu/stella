@@ -92,77 +92,77 @@ class OSystem
 
       @return The event handler
     */
-    inline EventHandler& eventHandler() const { return *myEventHandler; }
+    EventHandler& eventHandler() const { return *myEventHandler; }
 
     /**
       Get the frame buffer of the system
 
       @return The frame buffer
     */
-    inline FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
+    FrameBuffer& frameBuffer() const { return *myFrameBuffer; }
 
     /**
       Get the sound object of the system
 
       @return The sound object
     */
-    inline Sound& sound() const { return *mySound; }
+    Sound& sound() const { return *mySound; }
 
     /**
       Get the settings object of the system
 
       @return The settings object
     */
-    inline Settings& settings() const { return *mySettings; }
+    Settings& settings() const { return *mySettings; }
 
     /**
       Get the set of game properties for the system
 
       @return The properties set object
     */
-    inline PropertiesSet& propSet() const { return *myPropSet; }
+    PropertiesSet& propSet() const { return *myPropSet; }
 
     /**
       Get the console of the system.
 
       @return The console object
     */
-    inline Console& console() const { return *myConsole; }
+    Console& console() const { return *myConsole; }
 
     /**
       Get the serial port of the system.
 
       @return The serial port object
     */
-    inline SerialPort& serialPort() const { return *mySerialPort; }
+    SerialPort& serialPort() const { return *mySerialPort; }
 
     /**
       Get the settings menu of the system.
 
       @return The settings menu object
     */
-    inline Menu& menu() const { return *myMenu; }
+    Menu& menu() const { return *myMenu; }
 
     /**
       Get the command menu of the system.
 
       @return The command menu object
     */
-    inline CommandMenu& commandMenu() const { return *myCommandMenu; }
+    CommandMenu& commandMenu() const { return *myCommandMenu; }
 
     /**
       Get the ROM launcher of the system.
 
       @return The launcher object
     */
-    inline Launcher& launcher() const { return *myLauncher; }
+    Launcher& launcher() const { return *myLauncher; }
 
     /**
       Get the state manager of the system.
 
       @return The statemanager object
     */
-    inline StateManager& state() const { return *myStateManager; }
+    StateManager& state() const { return *myStateManager; }
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -170,7 +170,7 @@ class OSystem
 
       @return The debugger object
     */
-    inline Debugger& debugger() const { return *myDebugger; }
+    Debugger& debugger() const { return *myDebugger; }
 #endif
 
 #ifdef CHEATCODE_SUPPORT
@@ -179,7 +179,7 @@ class OSystem
 
       @return The cheatmanager object
     */
-    inline CheatManager& cheat() const { return *myCheatManager; }
+    CheatManager& cheat() const { return *myCheatManager; }
 #endif
 
     /**
@@ -187,35 +187,35 @@ class OSystem
 
       @return The font reference
     */
-    inline const GUI::Font& font() const { return *myFont; }
+    const GUI::Font& font() const { return *myFont; }
 
     /**
       Get the info font object of the system
 
       @return The font reference
     */
-    inline const GUI::Font& infoFont() const { return *myInfoFont; }
+    const GUI::Font& infoFont() const { return *myInfoFont; }
 
     /**
       Get the small font object of the system
 
       @return The font reference
     */
-    inline const GUI::Font& smallFont() const { return *mySmallFont; }
+    const GUI::Font& smallFont() const { return *mySmallFont; }
 
     /**
       Get the launcher font object of the system
 
       @return The font reference
     */
-    inline const GUI::Font& launcherFont() const { return *myLauncherFont; }
+    const GUI::Font& launcherFont() const { return *myLauncherFont; }
 
     /**
       Get the console font object of the system
 
       @return The console font reference
     */
-    inline const GUI::Font& consoleFont() const { return *myConsoleFont; }
+    const GUI::Font& consoleFont() const { return *myConsoleFont; }
 
     /**
       Set the framerate for the video system.  It's placed in this class since
@@ -240,13 +240,13 @@ class OSystem
 
       @return  The video framerate currently in use
     */
-    inline float frameRate() const { return myDisplayFrameRate; }
+    float frameRate() const { return myDisplayFrameRate; }
 
     /**
       Get the maximum dimensions of a window for the video hardware.
     */
-    inline uInt32 desktopWidth() const  { return myDesktopWidth; }
-    inline uInt32 desktopHeight() const { return myDesktopHeight; }
+    uInt32 desktopWidth() const  { return myDesktopWidth; }
+    uInt32 desktopHeight() const { return myDesktopHeight; }
 
     /**
       Get the supported fullscreen resolutions for the video hardware.

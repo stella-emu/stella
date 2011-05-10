@@ -161,30 +161,21 @@ class System : public Serializable
 
       @return The total number of pages available
     */
-    inline uInt16 numberOfPages() const
-    {
-      return myNumberOfPages;
-    }
+    uInt16 numberOfPages() const { return myNumberOfPages; }
 
     /**
       Get the amount to right shift an address by to obtain its page.
 
       @return The amount to right shift an address by to get its page
     */
-    inline uInt16 pageShift() const
-    {
-      return myPageShift;
-    }
+    uInt16 pageShift() const { return myPageShift; }
 
     /**
       Get the mask to apply to an address to obtain its page offset.
 
       @return The mask to apply to an address to obtain its page offset
     */
-    inline uInt16 pageMask() const
-    {
-      return myPageMask;
-    }
+    uInt16 pageMask() const { return myPageMask; }
  
   public:
     /**
@@ -193,10 +184,7 @@ class System : public Serializable
 
       @return The number of system cycles which have passed
     */
-    inline uInt32 cycles() const 
-    { 
-      return myCycles; 
-    }
+    uInt32 cycles() const { return myCycles; }
 
     /**
       Increment the system cycles by the specified number of cycles.
@@ -223,10 +211,7 @@ class System : public Serializable
 
       @return  The data bus state
     */  
-    inline uInt8 getDataBusState() const
-    {
-      return myDataBusState;
-    }
+    uInt8 getDataBusState() const { return myDataBusState; }
 
     /**
       Get the current state of the data bus in the system, taking into
@@ -243,7 +228,7 @@ class System : public Serializable
       @param hmask  The bits which should always be driven high
       @return  The data bus state
     */  
-    inline uInt8 getDataBusState(uInt8 zmask, uInt8 hmask = 0x00)
+    uInt8 getDataBusState(uInt8 zmask, uInt8 hmask = 0x00)
     {
       // For the pins that are floating, randomly decide which are high or low
       // Otherwise, they're specifically driven high

@@ -170,7 +170,7 @@ class EventHandler
 
       @return The State type
     */
-    inline State state() const { return myState; }
+    State state() const { return myState; }
 
     /**
       Resets the state machine of the EventHandler to the defaults
@@ -201,7 +201,7 @@ class EventHandler
     */
     void setContinuousSnapshots(uInt32 interval);
 
-    inline bool kbdAlt(int mod) const
+    bool kbdAlt(int mod) const
     {
   #ifndef MAC_OSX
       return (mod & KMOD_ALT);
@@ -210,12 +210,12 @@ class EventHandler
   #endif
     }
 
-    inline bool kbdControl(int mod) const
+    bool kbdControl(int mod) const
     {
       return (mod & KMOD_CTRL) > 0;
     }
 
-    inline bool kbdShift(int mod) const
+    bool kbdShift(int mod) const
     {
       return (mod & KMOD_SHIFT);
     }
@@ -235,9 +235,9 @@ class EventHandler
     */
     void handleEvent(Event::Type type, Int32 value);
 
-    inline bool frying() const { return myFryingFlag; }
+    bool frying() const { return myFryingFlag; }
 
-    inline SDL_Joystick* getJoystick(int i) const { return ourJoysticks[i].stick; }
+    SDL_Joystick* getJoystick(int i) const { return ourJoysticks[i].stick; }
 
     StringList getActionList(EventMode mode) const;
     StringMap getComboList(EventMode mode) const;
@@ -246,13 +246,13 @@ class EventHandler
     StringList getComboListForEvent(Event::Type event) const;
     void setComboListForEvent(Event::Type event, const StringList& events);
 
-    inline Event::Type eventForKey(int key, EventMode mode) const
+    Event::Type eventForKey(int key, EventMode mode) const
       { return myKeyTable[key][mode]; }
-    inline Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
+    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
       { return myJoyTable[stick][button][mode]; }
-    inline Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
+    Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
       { return myJoyAxisTable[stick][axis][(value > 0)][mode]; }
-    inline Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const
+    Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const
       { return myJoyHatTable[stick][hat][value][mode]; }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
@@ -341,7 +341,7 @@ class EventHandler
       @param type  The event
       @return      True if the state changed, else false
     */
-    inline bool eventStateChange(Event::Type type);
+    bool eventStateChange(Event::Type type);
 
     /**
       The following methods take care of assigning action mappings.
@@ -379,7 +379,7 @@ class EventHandler
       @param event  The event to test for analog processing
       @return       True if analog, else false
     */
-    inline bool eventIsAnalog(Event::Type event) const;
+    bool eventIsAnalog(Event::Type event) const;
 
     void setEventState(State state);
 
