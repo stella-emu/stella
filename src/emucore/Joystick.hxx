@@ -52,7 +52,7 @@ class Joystick : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update();
+    void update();
 
     /**
       Sets the deadzone amount for real analog joysticks.

@@ -66,8 +66,15 @@ class System : public Serializable
     /**
       Reset the system cycle counter, the attached devices, and the
       attached processor of the system.
+
+      @param autodetect  A hint to devices that the system is currently
+                         in autodetect mode.  That is, the system is being
+                         run to autodetect certain device settings before
+                         actual emulation will begin.  Certain devices may
+                         use this hint to act differently under those
+                         circumstances.
     */
-    void reset();
+    void reset(bool autodetect = false);
 
     /**
       Attach the specified device and claim ownership of it.  The device 
@@ -203,6 +210,11 @@ class System : public Serializable
       reset to zero.
     */
     void resetCycles();
+
+    /**
+      Answers whether the system is currently in device autodetect mode.
+    */
+    bool autodectMode() const { return mySystemInAutodetect; }
 
   public:
     /**
@@ -471,6 +483,11 @@ class System : public Serializable
     // is true during normal emulation, and false when the
     // debugger is active.
     bool myDataBusLocked;
+
+    // Whether autodetection is currently running (ie, the emulation
+    // core is attempting to autodetect display settings, cart modes, etc)
+    // Some parts of the codebase need to act differently in such a case
+    bool mySystemInAutodetect;
 
   private:
     // Copy constructor isn't supported by this class so make it private

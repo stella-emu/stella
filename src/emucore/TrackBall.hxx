@@ -63,20 +63,20 @@ class TrackBall : public Controller
       @param pin The pin of the controller jack to read
       @return The state of the pin
     */
-    virtual bool read(DigitalPin pin);
+    bool read(DigitalPin pin);
 
     /**
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update();
+    void update();
 
     /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary 
       to override this method for devices that remember cycle counts.
     */
-    virtual void systemCyclesReset();
+    void systemCyclesReset();
 
   private:
     // Counter to iterate through the gray codes

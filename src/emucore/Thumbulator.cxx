@@ -26,8 +26,6 @@
 
 #ifdef THUMB_SUPPORT
 
-#include <cstdio>
-
 #include "bspf.hxx"
 #include "Thumbulator.hxx"
 
@@ -48,7 +46,7 @@ Thumbulator::~Thumbulator()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int Thumbulator::run( void )
+string Thumbulator::run( void ) throw(const string&)
 {
   reset();
   for(;;)
@@ -67,7 +65,26 @@ int Thumbulator::run( void )
     }
   }
   //dump_counters();
-  return 0;
+  return statusMsg.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* msg)
+    throw(const string&)
+{
+  statusMsg << opcode << "(" << HEX8 << v1 << "), " << msg << endl;
+  dump_regs();
+  throw statusMsg.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
+                                    const char* msg)
+     throw(const string&)
+{
+  statusMsg << opcode << "(" << HEX8 << v1 << "," << v2 << "), " << msg << endl;
+  dump_regs();
+  throw statusMsg.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,6 +99,21 @@ void Thumbulator::dump_counters ( void )
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Thumbulator::dump_regs( void )
+{
+  for (int cnt = 1; cnt < 14; cnt++)
+  {
+    statusMsg << "R" << cnt << " = " << HEX8 << reg_sys[cnt-1] << "  ";
+    if(cnt % 4 == 0) statusMsg << endl;
+  }
+  statusMsg << endl
+            << "SP = " << HEX8 << reg_svc[13] << "  "
+            << "LR = " << HEX8 << reg_svc[14] << "  "
+            << "PC = " << HEX8 << reg_sys[15] << "  "
+            << endl;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::fetch16 ( uInt32 addr )
 {
   uInt32 data;
@@ -89,17 +121,14 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
   fetches++;
 
   if(DBUG)
-    fprintf(stderr,"fetch16(0x%08X)=",addr);
+    statusMsg << "fetch16(" << HEX8 << addr << ")=";
 
   switch(addr&0xF0000000)
   {
     case 0x00000000: //ROM
       addr &= ROMADDMASK;
       if(addr<0x50)
-      {
-        sprintf(errorMsg,"fetch16(0x%08X), abort\n",addr);
-        throw errorMsg;
-      }
+        fatalError("fetch16", addr, "abort");
 
       addr>>=1;
     #ifdef __BIG_ENDIAN__
@@ -108,7 +137,7 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
       data=rom[addr];
     #endif
       if(DBUG)
-        fprintf(stderr,"0x%04X\n",data);
+        statusMsg << HEX4 << data << endl;
       return(data);
 
     case 0x40000000: //RAM
@@ -120,11 +149,10 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
       data=ram[addr];
     #endif
       if(DBUG)
-        fprintf(stderr,"0x%04X\n",data);
+        statusMsg << HEX4 << data << endl;
       return(data);
   }
-  sprintf(errorMsg,"fetch16(0x%08X), abort\n",addr);
-  throw errorMsg;
+  return fatalError("fetch16", addr, "abort");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -133,7 +161,7 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
   uInt32 data;
 
   if(DBUG)
-    fprintf(stderr,"fetch32(0x%08X)=",addr);
+    statusMsg << "fetch32(" << HEX8 << addr << ")=";
 
   switch(addr&0xF0000000)
   {
@@ -142,11 +170,10 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
       {
         data=read32(addr);
         if(DBUG)
-          fprintf(stderr,"0x%08X\n",data);
+          statusMsg << HEX8 << data << endl;
         if(addr==0x00000000) return(data);
         if(addr==0x00000004) return(data);
-        sprintf(errorMsg,"fetch32(0x%08X), abort\n",addr);
-        throw errorMsg;
+        fatalError("fetch32", addr, "abort");
       }
 
     case 0x40000000: //RAM
@@ -154,20 +181,26 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
       data<<=16;
       data|=fetch16(addr+0);
       if(DBUG)
-        fprintf(stderr,"0x%08X\n",data);
+        statusMsg << HEX8 << data << endl;;
       return(data);
   }
-  sprintf(errorMsg,"fetch32(0x%08X), abort\n",addr);
-  throw errorMsg;
+  return fatalError("fetch32", addr, "abort");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write16 ( uInt32 addr, uInt32 data )
 {
+  if((addr>0x40001fff)&&(addr<0x50000000))
+    fatalError("write16", addr, "abort - out of range");
+  else if((addr>0x40000028)&&(addr<0x40000c00))
+    fatalError("write16", addr, "to bankswitch code area");
+  if(addr&1)
+    fatalError("write16", addr, "abort - misaligned");
+
   writes++;
 
   if(DBUG)
-    fprintf(stderr,"write16(0x%08X,0x%08X)\n",addr,data);
+    statusMsg << "write16(" << HEX8 << addr << "," << HEX8 << data << ")" << endl;
 
   switch(addr&0xF0000000)
   {
@@ -181,15 +214,17 @@ void Thumbulator::write16 ( uInt32 addr, uInt32 data )
     #endif
       return;
   }
-  sprintf(errorMsg,"write16(0x%08X,0x%08X), abort\n",addr,data);
-  throw errorMsg;
+  fatalError("write16", addr, data, "abort");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Thumbulator::write32 ( uInt32 addr, uInt32 data )
 {
+  if(addr&3)
+    fatalError("write32", addr, "abort - misaligned");
+
   if(DBUG)
-    fprintf(stderr,"write32(0x%08X,0x%08X)\n",addr,data);
+    statusMsg << "write32(" << HEX8 << addr << "," << HEX8 << data << ")" << endl;
 
   switch(addr&0xF0000000)
   {
@@ -210,7 +245,8 @@ void Thumbulator::write32 ( uInt32 addr, uInt32 data )
       return;
 
     case 0xD0000000: //debug
-      fprintf(stderr,"[0x%08X][0x%08X] 0x%08X\n",read_register(14),addr,data);
+      statusMsg << "[" << HEX8 << read_register(14) << "]["
+                << addr << "] " << data << endl;
       return;
 
     case 0x40000000: //RAM
@@ -218,8 +254,7 @@ void Thumbulator::write32 ( uInt32 addr, uInt32 data )
       write16(addr+2,(data>>16)&0xFFFF);
       return;
   }
-  sprintf(errorMsg,"write32(0x%08X,0x%08X), abort\n",addr,data);
-  throw errorMsg;
+  fatalError("write32", addr, data, "abort");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -227,10 +262,17 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
 {
   uInt32 data;
 
+  if((addr>0x40001fff)&&(addr<0x50000000))
+    fatalError("read16", addr, "abort - out of range");
+  else if((addr>0x7fff)&&(addr<0x10000000))
+    fatalError("read16", addr, "abort - out of range");
+  if(addr&1)
+    fatalError("read16", addr, "abort - misaligned");
+
   reads++;
 
   if(DBUG)
-    fprintf(stderr,"read16(0x%08X)=",addr);
+    statusMsg << "read16(" << HEX8 << addr << ")=";
 
   switch(addr&0xF0000000)
   {
@@ -243,7 +285,7 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
       data=rom[addr];
     #endif
       if(DBUG)
-        fprintf(stderr,"0x%04X\n",data);
+        statusMsg << HEX4 << data << endl;
       return(data);
 
     case 0x40000000: //RAM
@@ -255,21 +297,22 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
       data=ram[addr];
     #endif
       if(DBUG)
-        fprintf(stderr,"0x%04X\n",data);
+        statusMsg << HEX4 << data << endl;
       return(data);
   }
-  sprintf(errorMsg,"read16(0x%08X), abort\n",addr);
-  throw errorMsg;
+  return fatalError("read16", addr, "abort");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read32 ( uInt32 addr )
 {
-  uInt32 data;
+  if(addr&3)
+    fatalError("read32", addr, "abort - misaligned");
 
   if(DBUG)
-    fprintf(stderr,"read32(0x%08X)=",addr);
+    statusMsg << "read32(" << HEX8 << addr << ")=";
 
+  uInt32 data;
   switch(addr&0xF0000000)
   {
     case 0x00000000: //ROM
@@ -278,11 +321,10 @@ uInt32 Thumbulator::read32 ( uInt32 addr )
       data<<=16;
       data|=read16(addr+0);
       if(DBUG)
-        fprintf(stderr,"0x%08X\n",data);
+        statusMsg << HEX8 << data << endl;
       return(data);
   }
-  sprintf(errorMsg,"read32(0x%08X), abort\n",addr);
-  throw errorMsg;
+  return fatalError("read32", addr, "abort");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -292,7 +334,7 @@ uInt32 Thumbulator::read_register ( uInt32 reg )
 
   reg&=0xF;
   if(DBUG)
-    fprintf(stderr,"read_register(%u)=",reg);
+    statusMsg << "read_register(" << dec << reg << ")=";
 
   switch(cpsr&0x1F)
   {
@@ -303,11 +345,10 @@ uInt32 Thumbulator::read_register ( uInt32 reg )
         case 13: case 14: data=reg_svc[reg]; break;
       }
       if(DBUG)
-        fprintf(stderr,"0x%08X\n",data);
+        statusMsg << HEX8 << data << endl;
       return(data);
   }
-  sprintf(errorMsg,"invalid cpsr mode 0x%08X\n",cpsr);
-  throw errorMsg;
+  return fatalError("read_register", cpsr, "invalid cpsr mode");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -316,7 +357,8 @@ uInt32 Thumbulator::write_register ( uInt32 reg, uInt32 data )
   reg&=0xF;
 
   if(DBUG)
-    fprintf(stderr,"write_register(%u,0x%08X)\n",reg,data);
+    statusMsg << "write_register(" << dec << reg << ","
+                                   << HEX8 << data << ")" << endl;
 
   switch(cpsr&0x1F)
   {
@@ -328,8 +370,7 @@ uInt32 Thumbulator::write_register ( uInt32 reg, uInt32 data )
       }
       return(data);
   }
-  sprintf(errorMsg,"invalid cpsr mode 0x%08X\n",cpsr);
-  throw errorMsg;
+  return fatalError("write_register", cpsr, "invalid cpsr mode");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -413,7 +454,7 @@ int Thumbulator::execute ( void )
   pc+=2;
   write_register(15,pc);
   if(DISS)
-    fprintf(stderr,"0x%08X: 0x%04X ",(pc-5),inst);
+    statusMsg << HEX8 << (pc-5) << ": " << HEX4 << inst << " ";
 
   instructions++;
 
@@ -423,7 +464,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x07;
     rm=(inst>>3)&0x07;
     if(DISS)
-      fprintf(stderr,"adc r%u,r%u\n",rd,rm);
+      statusMsg << "adc r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra+rb;
@@ -447,7 +488,8 @@ int Thumbulator::execute ( void )
     if(rb)
     {
       if(DISS)
-        fprintf(stderr,"adds r%u,r%u,#0x%X\n",rd,rn,rb);
+        statusMsg << "adds r" << dec << rd << ",r" << dec << rn << ","
+                              << "#0x" << HEX2 << rb << endl;
       ra=read_register(rn);
       rc=ra+rb;
       //fprintf(stderr,"0x%08X = 0x%08X + 0x%08X\n",rc,ra,rb);
@@ -470,7 +512,7 @@ int Thumbulator::execute ( void )
     rb=(inst>>0)&0xFF;
     rd=(inst>>8)&0x7;
     if(DISS)
-      fprintf(stderr,"adds r%u,#0x%02X\n",rd,rb);
+      statusMsg << "adds r" << dec << rd << ",#0x" << HEX2 << rb << endl;
     ra=read_register(rd);
     rc=ra+rb;
     write_register(rd,rc);
@@ -488,7 +530,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"adds r%u,r%u,r%u\n",rd,rn,rm);
+      statusMsg << "adds r" << dec << rd << ",r" << dec << rn
+                            << ",r" << rm << endl;
     ra=read_register(rn);
     rb=read_register(rm);
     rc=ra+rb;
@@ -511,7 +554,7 @@ int Thumbulator::execute ( void )
     rd|=(inst>>4)&0x8;
     rm=(inst>>3)&0xF;
     if(DISS)
-      fprintf(stderr,"add r%u,r%u\n",rd,rm);
+      statusMsg << "add r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra+rb;
@@ -527,7 +570,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>8)&0x7;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"add r%u,PC,#0x%02X\n",rd,rb);
+      statusMsg << "add r" << dec << rd << ",PC,#0x" << HEX2 << rb << endl;
     ra=read_register(15);
     rc=(ra&(~3))+rb;
     write_register(rd,rc);
@@ -541,7 +584,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>8)&0x7;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"add r%u,SP,#0x%02X\n",rd,rb);
+      statusMsg << "add r" << dec << rd << ",SP,#0x" << HEX2 << rb << endl;
     ra=read_register(13);
     rc=ra+rb;
     write_register(rd,rc);
@@ -554,7 +597,7 @@ int Thumbulator::execute ( void )
     rb=(inst>>0)&0x7F;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"add SP,#0x%02X\n",rb);
+      statusMsg << "add SP,#0x" << HEX2 << rb << endl;
     ra=read_register(13);
     rc=ra+rb;
     write_register(13,rc);
@@ -567,7 +610,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"ands r%u,r%u\n",rd,rm);
+      statusMsg << "ands r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra&rb;
@@ -584,7 +627,8 @@ int Thumbulator::execute ( void )
     rm=(inst>>3)&0x07;
     rb=(inst>>6)&0x1F;
     if(DISS)
-      fprintf(stderr,"asrs r%u,r%u,#0x%X\n",rd,rm,rb);
+      statusMsg << "asrs r" << dec << rd << ",r" << dec << rm
+                << ",#0x" << HEX2 << rb << endl;
     rc=read_register(rm);
     if(rb==0)
     {
@@ -621,7 +665,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x07;
     rs=(inst>>3)&0x07;
     if(DISS)
-      fprintf(stderr,"asrs r%u,r%u\n",rd,rs);
+      statusMsg << "asrs r" << dec << rd << ",r" << dec << rs << endl;
     rc=read_register(rd);
     rb=read_register(rs);
     rb&=0xFF;
@@ -671,7 +715,7 @@ int Thumbulator::execute ( void )
     {
       case 0x0: //b eq  z set
         if(DISS)
-          fprintf(stderr,"beq 0x%08X\n",rb-3);
+          statusMsg << "beq 0x" << HEX8 << (rb-3) << endl;
         if(cpsr&CPSR_Z)
         {
           write_register(15,rb);
@@ -680,7 +724,7 @@ int Thumbulator::execute ( void )
 
       case 0x1: //b ne  z clear
         if(DISS)
-          fprintf(stderr,"bne 0x%08X\n",rb-3);
+          statusMsg << "bne 0x" << HEX8 << (rb-3) << endl;
         if(!(cpsr&CPSR_Z))
         {
           write_register(15,rb);
@@ -689,7 +733,7 @@ int Thumbulator::execute ( void )
 
       case 0x2: //b cs c set
         if(DISS)
-          fprintf(stderr,"bcs 0x%08X\n",rb-3);
+          statusMsg << "bcs 0x" << HEX8 << (rb-3) << endl;
         if(cpsr&CPSR_C)
         {
           write_register(15,rb);
@@ -698,7 +742,7 @@ int Thumbulator::execute ( void )
 
       case 0x3: //b cc c clear
         if(DISS)
-          fprintf(stderr,"bcc 0x%08X\n",rb-3);
+          statusMsg << "bcc 0x" << HEX8 << (rb-3) << endl;
         if(!(cpsr&CPSR_C))
         {
           write_register(15,rb);
@@ -707,7 +751,7 @@ int Thumbulator::execute ( void )
 
       case 0x4: //b mi n set
         if(DISS)
-          fprintf(stderr,"bmi 0x%08X\n",rb-3);
+          statusMsg << "bmi 0x" << HEX8 << (rb-3) << endl;
         if(cpsr&CPSR_N)
         {
           write_register(15,rb);
@@ -716,7 +760,7 @@ int Thumbulator::execute ( void )
 
       case 0x5: //b pl n clear
         if(DISS)
-          fprintf(stderr,"bpl 0x%08X\n",rb-3);
+          statusMsg << "bpl 0x" << HEX8 << (rb-3) << endl;
         if(!(cpsr&CPSR_N))
         {
           write_register(15,rb);
@@ -725,7 +769,7 @@ int Thumbulator::execute ( void )
 
       case 0x6: //b vs v set
         if(DISS)
-          fprintf(stderr,"bvs 0x%08X\n",rb-3);
+          statusMsg << "bvs 0x" << HEX8 << (rb-3) << endl;
         if(cpsr&CPSR_V)
         {
           write_register(15,rb);
@@ -734,7 +778,7 @@ int Thumbulator::execute ( void )
 
       case 0x7: //b vc v clear
         if(DISS) 
-          fprintf(stderr,"bvc 0x%08X\n",rb-3);
+          statusMsg << "bvc 0x" << HEX8 << (rb-3) << endl;
         if(!(cpsr&CPSR_V))
         {
           write_register(15,rb);
@@ -743,7 +787,7 @@ int Thumbulator::execute ( void )
 
       case 0x8: //b hi c set z clear
         if(DISS)
-          fprintf(stderr,"bhi 0x%08X\n",rb-3);
+          statusMsg << "bhi 0x" << HEX8 << (rb-3) << endl;
         if((cpsr&CPSR_C)&&(!(cpsr&CPSR_Z)))
         {
           write_register(15,rb);
@@ -752,7 +796,7 @@ int Thumbulator::execute ( void )
 
       case 0x9: //b ls c clear or z set
         if(DISS)
-          fprintf(stderr,"bls 0x%08X\n",rb-3);
+          statusMsg << "bls 0x" << HEX8 << (rb-3) << endl;
         if((cpsr&CPSR_Z)||(!(cpsr&CPSR_C)))
         {
           write_register(15,rb);
@@ -761,7 +805,7 @@ int Thumbulator::execute ( void )
 
       case 0xA: //b ge N == V
         if(DISS)
-          fprintf(stderr,"bge 0x%08X\n",rb-3);
+          statusMsg << "bge 0x" << HEX8 << (rb-3) << endl;
         ra=0;
         if(  (cpsr&CPSR_N) &&  (cpsr&CPSR_V) ) ra++;
         if((!(cpsr&CPSR_N))&&(!(cpsr&CPSR_V))) ra++;
@@ -773,7 +817,7 @@ int Thumbulator::execute ( void )
 
       case 0xB: //b lt N != V
         if(DISS)
-          fprintf(stderr,"blt 0x%08X\n",rb-3);
+          statusMsg << "blt 0x" << HEX8 << (rb-3) << endl;
         ra=0;
         if((!(cpsr&CPSR_N))&&(cpsr&CPSR_V)) ra++;
         if((!(cpsr&CPSR_V))&&(cpsr&CPSR_N)) ra++;
@@ -785,7 +829,7 @@ int Thumbulator::execute ( void )
 
       case 0xC: //b gt Z==0 and N == V
         if(DISS)
-          fprintf(stderr,"bgt 0x%08X\n",rb-3);
+          statusMsg << "bgt 0x" << HEX8 << (rb-3) << endl;
         ra=0;
         if(  (cpsr&CPSR_N) &&  (cpsr&CPSR_V) ) ra++;
         if((!(cpsr&CPSR_N))&&(!(cpsr&CPSR_V))) ra++;
@@ -798,7 +842,7 @@ int Thumbulator::execute ( void )
 
       case 0xD: //b le Z==1 or N != V
         if(DISS)
-          fprintf(stderr,"ble 0x%08X\n",rb-3);
+          statusMsg << "ble 0x" << HEX8 << (rb-3) << endl;
         ra=0;
         if((!(cpsr&CPSR_N))&&(cpsr&CPSR_V)) ra++;
         if((!(cpsr&CPSR_V))&&(cpsr&CPSR_N)) ra++;
@@ -829,7 +873,7 @@ int Thumbulator::execute ( void )
     rb+=pc;
     rb+=2;
     if(DISS)
-      fprintf(stderr,"B 0x%08X\n",rb-3);
+      statusMsg << "B 0x" << HEX8 << (rb-3) << endl;
     write_register(15,rb);
     return(0);
   }
@@ -840,7 +884,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"bics r%u,r%u\n",rd,rm);
+      statusMsg << "bics r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra&(~rb);
@@ -854,7 +898,7 @@ int Thumbulator::execute ( void )
   if((inst&0xFF00)==0xBE00)
   {
     rb=(inst>>0)&0xFF;
-    fprintf(stderr,"bkpt 0x%02X\n",rb);
+    statusMsg << "bkpt 0x" << HEX2 << rb << endl;
     return(1);
   }
 
@@ -864,7 +908,7 @@ int Thumbulator::execute ( void )
     if((inst&0x1800)==0x1000) //H=b10
     {
       if(DISS)
-        fprintf(stderr,"\n");
+        statusMsg << endl;
       halfadd=inst;
       return(0);
     }
@@ -879,7 +923,7 @@ int Thumbulator::execute ( void )
       rb<<=1;
       rb+=pc;
       if(DISS)
-        fprintf(stderr,"bl 0x%08X\n",rb-3);
+        statusMsg << "bl 0x" << HEX8 << (rb-3) << endl;
       write_register(14,pc-2);
       write_register(15,rb);
       return(0);
@@ -897,7 +941,7 @@ int Thumbulator::execute ( void )
   {
     rm=(inst>>3)&0xF;
     if(DISS)
-      fprintf(stderr,"blx r%u\n",rm);
+      statusMsg << "blx r" << dec << rm << endl;
     rc=read_register(rm);
     //fprintf(stderr,"blx r%u 0x%X 0x%X\n",rm,rc,pc);
     rc+=2;
@@ -920,7 +964,7 @@ int Thumbulator::execute ( void )
   {
     rm=(inst>>3)&0xF;
     if(DISS)
-      fprintf(stderr,"bx r%u\n",rm);
+      statusMsg << "bx r" << dec << rm << endl;
     rc=read_register(rm);
     rc+=2;
     //fprintf(stderr,"bx r%u 0x%X 0x%X\n",rm,rc,pc);
@@ -943,7 +987,7 @@ int Thumbulator::execute ( void )
     rn=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"cmns r%u,r%u\n",rn,rm);
+      statusMsg << "cmns r" << dec << rn << ",r" << dec << rm << endl;
     ra=read_register(rn);
     rb=read_register(rm);
     rc=ra+rb;
@@ -960,7 +1004,7 @@ int Thumbulator::execute ( void )
     rb=(inst>>0)&0xFF;
     rn=(inst>>8)&0x07;
     if(DISS)
-      fprintf(stderr,"cmp r%u,#0x%02X\n",rn,rb);
+      statusMsg << "cmp r" << dec << rn << ",#0x" << HEX2 << rb << endl;
     ra=read_register(rn);
     rc=ra-rb;
     //fprintf(stderr,"0x%08X 0x%08X\n",ra,rb);
@@ -977,7 +1021,7 @@ int Thumbulator::execute ( void )
     rn=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"cmps r%u,r%u\n",rn,rm);
+      statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << endl;
     ra=read_register(rn);
     rb=read_register(rm);
     rc=ra-rb;
@@ -1004,7 +1048,7 @@ int Thumbulator::execute ( void )
     }
     rm=(inst>>3)&0xF;
     if(DISS)
-      fprintf(stderr,"cmps r%u,r%u\n",rn,rm);
+      statusMsg << "cmps r" << dec << rn << ",r" << dec << rm << endl;
     ra=read_register(rn);
     rb=read_register(rm);
     rc=ra-rb;
@@ -1014,11 +1058,11 @@ int Thumbulator::execute ( void )
     do_sub_vflag(ra,rb,rc);
 
 #if 0
-    if(cpsr&CPSR_N) fprintf(stderr,"N"); else fprintf(stderr,"n");
-    if(cpsr&CPSR_Z) fprintf(stderr,"Z"); else fprintf(stderr,"z");
-    if(cpsr&CPSR_C) fprintf(stderr,"C"); else fprintf(stderr,"c");
-    if(cpsr&CPSR_V) fprintf(stderr,"V"); else fprintf(stderr,"v");
-    fprintf(stderr," -- 0x%08X 0x%08X\n",ra,rb);
+    if(cpsr&CPSR_N) statusMsg << "N"; else statusMsg << "n";
+    if(cpsr&CPSR_Z) statusMsg << "Z"; else statusMsg << "z";
+    if(cpsr&CPSR_C) statusMsg << "C"; else statusMsg << "c";
+    if(cpsr&CPSR_V) statusMsg << "V"; else statusMsg << "v";
+    statusMsg << " -- 0x" << HEX8 << ra << " 0x" << HEX8 << rb << endl;
 #endif
     return(0);
   }
@@ -1027,7 +1071,7 @@ int Thumbulator::execute ( void )
   if((inst&0xFFE8)==0xB660)
   {
     if(DISS)
-      fprintf(stderr,"cps TODO\n");
+      statusMsg << "cps TODO" << endl;
     return(1);
   }
 
@@ -1039,7 +1083,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"cpy r%u,r%u\n",rd,rm);
+      statusMsg << "cpy r" << dec << rd << ",r" << dec << rm << endl;
     rc=read_register(rm);
     write_register(rd,rc);
     return(0);
@@ -1051,7 +1095,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"eors r%u,r%u\n",rd,rm);
+      statusMsg << "eors r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra^rb;
@@ -1067,17 +1111,17 @@ int Thumbulator::execute ( void )
     rn=(inst>>8)&0x7;
     if(DISS)
     {
-      fprintf(stderr,"ldmia r%u!,{",rn);
+      statusMsg << "ldmia r" << dec << rn << "!,{";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
       {
         if(inst&rb)
         {
-          if(rc) fprintf(stderr,",");
-          fprintf(stderr,"r%u",ra);
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
           rc++;
         }
       }
-      fprintf(stderr,"}\n");
+      statusMsg << "}" << endl;
     }
     sp=read_register(rn);
     for(ra=0,rb=0x01;rb;rb=(rb<<1)&0xFF,ra++)
@@ -1100,7 +1144,8 @@ int Thumbulator::execute ( void )
     rb=(inst>>6)&0x1F;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"ldr r%u,[r%u,#0x%X]\n",rd,rn,rb);
+      statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn
+                << ",#0x" << HEX2 << rb << "]" << endl;
     rb=read_register(rn)+rb;
     rc=read32(rb);
     write_register(rd,rc);
@@ -1114,7 +1159,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"ldr r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "ldr r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read32(rb);
     write_register(rd,rc);
@@ -1128,12 +1174,12 @@ int Thumbulator::execute ( void )
     rd=(inst>>8)&0x07;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"ldr r%u,[PC+#0x%X] ",rd,rb);
+      statusMsg << "ldr r" << dec << rd << ",[PC+#0x" << HEX2 << rb << "] ";
     ra=read_register(15);
     ra&=~3;
     rb+=ra;
     if(DISS)
-      fprintf(stderr,";@ 0x%X\n",rb);
+      statusMsg << ";@ 0x" << HEX2 << rb << endl;
     rc=read32(rb);
     write_register(rd,rc);
     return(0);
@@ -1146,7 +1192,8 @@ int Thumbulator::execute ( void )
     rd=(inst>>8)&0x07;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"ldr r%u,[SP+#0x%X]\n",rd,rb);
+      statusMsg << "ldr r" << dec << rd << ",[SP+#0x" << HEX2 << rb
+                << "]" << endl;
     ra=read_register(13);
     //ra&=~3;
     rb+=ra;
@@ -1162,7 +1209,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x07;
     rb=(inst>>6)&0x1F;
     if(DISS)
-      fprintf(stderr,"ldrb r%u,[r%u,#0x%X]\n",rd,rn,rb);
+      statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn
+                << ",#0x" << HEX2 << rb << "]" << endl;
     rb=read_register(rn)+rb;
     rc=read16(rb&(~1));
     if(rb&1)
@@ -1183,7 +1231,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"ldrb r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "ldrb r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read16(rb&(~1));
     if(rb&1)
@@ -1205,7 +1254,8 @@ int Thumbulator::execute ( void )
     rb=(inst>>6)&0x1F;
     rb<<=1;
     if(DISS)
-      fprintf(stderr,"ldrh r%u,[r%u,#0x%X]\n",rd,rn,rb);
+      statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn
+                << ",#0x" << HEX2 << rb << "]" << endl;
     rb=read_register(rn)+rb;
     rc=read16(rb);
     write_register(rd,rc&0xFFFF);
@@ -1219,7 +1269,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"ldrh r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "ldrh r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read16(rb);
     write_register(rd,rc&0xFFFF);
@@ -1233,7 +1284,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"ldrsb r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "ldrsb r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read16(rb&(~1));
     if(rb&1)
@@ -1256,7 +1308,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"ldrsh r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "ldrsh r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read16(rb);
     rc&=0xFFFF;
@@ -1272,7 +1325,8 @@ int Thumbulator::execute ( void )
     rm=(inst>>3)&0x07;
     rb=(inst>>6)&0x1F;
     if(DISS)
-      fprintf(stderr,"lsls r%u,r%u,#0x%X\n",rd,rm,rb);
+      statusMsg << "lsls r" << dec << rd << ",r" << dec << rm
+                << ",#0x" << HEX2 << rb << endl;
     rc=read_register(rm);
     if(rb==0)
     {
@@ -1298,7 +1352,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x07;
     rs=(inst>>3)&0x07;
     if(DISS)
-      fprintf(stderr,"lsls r%u,r%u\n",rd,rs);
+      statusMsg << "lsls r" << dec << rd << ",r" << dec << rs << endl;
     rc=read_register(rd);
     rb=read_register(rs);
     rb&=0xFF;
@@ -1333,7 +1387,8 @@ int Thumbulator::execute ( void )
     rm=(inst>>3)&0x07;
     rb=(inst>>6)&0x1F;
     if(DISS)
-      fprintf(stderr,"lsrs r%u,r%u,#0x%X\n",rd,rm,rb);
+      statusMsg << "lsrs r" << dec << rd << ",r" << dec << rm
+                << ",#0x" << HEX2 << rb << endl;
     rc=read_register(rm);
     if(rb==0)
     {
@@ -1357,7 +1412,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x07;
     rs=(inst>>3)&0x07;
     if(DISS)
-      fprintf(stderr,"lsrs r%u,r%u\n",rd,rs);
+      statusMsg << "lsrs r" << dec << rd << ",r" << dec << rs << endl;
     rc=read_register(rd);
     rb=read_register(rs);
     rb&=0xFF;
@@ -1391,7 +1446,7 @@ int Thumbulator::execute ( void )
     rb=(inst>>0)&0xFF;
     rd=(inst>>8)&0x07;
     if(DISS)
-      fprintf(stderr,"movs r%u,#0x%02X\n",rd,rb);
+      statusMsg << "movs r" << dec << rd << ",#0x" << HEX2 << rb << endl;
     write_register(rd,rb);
     do_nflag(rb);
     do_zflag(rb);
@@ -1404,7 +1459,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&7;
     rn=(inst>>3)&7;
     if(DISS)
-      fprintf(stderr,"movs r%u,r%u\n",rd,rn);
+      statusMsg << "movs r" << dec << rd << ",r" << dec << rn << endl;
     rc=read_register(rn);
     //fprintf(stderr,"0x%08X\n",rc);
     write_register(rd,rc);
@@ -1422,7 +1477,7 @@ int Thumbulator::execute ( void )
     rd|=(inst>>4)&0x8;
     rm=(inst>>3)&0xF;
     if(DISS)
-      fprintf(stderr,"mov r%u,r%u\n",rd,rm);
+      statusMsg << "mov r" << dec << rd << ",r" << dec << rm << endl;
     rc=read_register(rm);
     if (rd==15) rc+=2; // fxq fix for MOV R15
     write_register(rd,rc);
@@ -1435,7 +1490,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"muls r%u,r%u\n",rd,rm);
+      statusMsg << "muls r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra*rb;
@@ -1451,7 +1506,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"mvns r%u,r%u\n",rd,rm);
+      statusMsg << "mvns r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rm);
     rc=(~ra);
     write_register(rd,rc);
@@ -1466,7 +1521,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"negs r%u,r%u\n",rd,rm);
+      statusMsg << "negs r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rm);
     rc=0-ra;
     write_register(rd,rc);
@@ -1483,7 +1538,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"orrs r%u,r%u\n",rd,rm);
+      statusMsg << "orrs r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra|rb;
@@ -1498,22 +1553,22 @@ int Thumbulator::execute ( void )
   {
     if(DISS)
     {
-      fprintf(stderr,"pop {");
+      statusMsg << "pop {";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
       {
         if(inst&rb)
         {
-          if(rc) fprintf(stderr,",");
-          fprintf(stderr,"r%u",ra);
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
           rc++;
         }
       }
       if(inst&0x100)
       {
-        if(rc) fprintf(stderr,",");
-        fprintf(stderr,"pc");
+        if(rc) statusMsg << ",";
+        statusMsg << "pc";
       }
-      fprintf(stderr,"}\n");
+      statusMsg << "}" << endl;
     }
 
     sp=read_register(13);
@@ -1541,22 +1596,22 @@ int Thumbulator::execute ( void )
   {
     if(DISS)
     {
-      fprintf(stderr,"push {");
+      statusMsg << "push {";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
       {
         if(inst&rb)
         {
-          if(rc) fprintf(stderr,",");
-          fprintf(stderr,"r%u",ra);
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
           rc++;
         }
       }
       if(inst&0x100)
       {
-        if(rc) fprintf(stderr,",");
-        fprintf(stderr,"lr");
+        if(rc) statusMsg << ",";
+        statusMsg << "lr";
       }
-      fprintf(stderr,"}\n");
+      statusMsg << "}" << endl;
     }
 
     sp=read_register(13);
@@ -1594,7 +1649,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rn=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"rev r%u,r%u\n",rd,rn);
+      statusMsg << "rev r" << dec << rd << ",r" << dec << rn << endl;
     ra=read_register(rn);
     rc =((ra>> 0)&0xFF)<<24;
     rc|=((ra>> 8)&0xFF)<<16;
@@ -1610,7 +1665,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rn=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"rev16 r%u,r%u\n",rd,rn);
+      statusMsg << "rev16 r" << dec << rd << ",r" << dec << rn << endl;
     ra=read_register(rn);
     rc =((ra>> 0)&0xFF)<< 8;
     rc|=((ra>> 8)&0xFF)<< 0;
@@ -1626,7 +1681,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rn=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"revsh r%u,r%u\n",rd,rn);
+      statusMsg << "revsh r" << dec << rd << ",r" << dec << rn << endl;
     ra=read_register(rn);
     rc =((ra>> 0)&0xFF)<< 8;
     rc|=((ra>> 8)&0xFF)<< 0;
@@ -1642,7 +1697,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rs=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"rors r%u,r%u\n",rd,rs);
+      statusMsg << "rors r" << dec << rd << ",r" << dec << rs << endl;
     rc=read_register(rd);
     ra=read_register(rs);
     ra&=0xFF;
@@ -1676,7 +1731,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"sbc r%u,r%u\n",rd,rm);
+      statusMsg << "sbc r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rd);
     rb=read_register(rm);
     rc=ra-rb;
@@ -1692,7 +1747,7 @@ int Thumbulator::execute ( void )
   //SETEND
   if((inst&0xFFF7)==0xB650)
   {
-    fprintf(stderr,"setend not implemented\n");
+    statusMsg << "setend not implemented" << endl;
     return(1);
   }
 
@@ -1702,17 +1757,17 @@ int Thumbulator::execute ( void )
     rn=(inst>>8)&0x7;
     if(DISS)
     {
-      fprintf(stderr,"stmia r%u!,{",rn);
+      statusMsg << "stmia r" << dec << rn << "!,{";
       for(ra=0,rb=0x01,rc=0;rb;rb=(rb<<1)&0xFF,ra++)
       {
         if(inst&rb)
         {
-          if(rc) fprintf(stderr,",");
-          fprintf(stderr,"r%u",ra);
+          if(rc) statusMsg << ",";
+          statusMsg << "r" << dec << ra;
           rc++;
         }
       }
-      fprintf(stderr,"}\n");
+      statusMsg << "}" << endl;
     }
     sp=read_register(rn);
     for(ra=0,rb=0x01;rb;rb=(rb<<1)&0xFF,ra++)
@@ -1735,7 +1790,8 @@ int Thumbulator::execute ( void )
     rb=(inst>>6)&0x1F;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"str r%u,[r%u,#0x%X]\n",rd,rn,rb);
+      statusMsg << "str r" << dec << rd << ",[r" << dec << rn
+                << ",#0x" << HEX2 << rb << "]" << endl;
     rb=read_register(rn)+rb;
     rc=read_register(rd);
     write32(rb,rc);
@@ -1749,7 +1805,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"str r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "str r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read_register(rd);
     write32(rb,rc);
@@ -1763,7 +1820,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>8)&0x07;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"str r%u,[SP,#0x%X]\n",rd,rb);
+      statusMsg << "str r" << dec << rd << ",[SP,#0x" << HEX2 << rb << "]" << endl;
     rb=read_register(13)+rb;
     //fprintf(stderr,"0x%08X\n",rb);
     rc=read_register(rd);
@@ -1778,7 +1835,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x07;
     rb=(inst>>6)&0x1F;
     if(DISS)
-      fprintf(stderr,"strb r%u,[r%u,#0x%X]\n",rd,rn,rb);
+      statusMsg << "strb r" << dec << rd << ",[r" << dec << rn
+                << ",#0x" << HEX8 << rb << "]" << endl;
     rb=read_register(rn)+rb;
     rc=read_register(rd);
     ra=read16(rb&(~1));
@@ -1803,7 +1861,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"strb r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "strb r" << dec << rd << ",[r" << dec << rn
+                << ",r" << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read_register(rd);
     ra=read16(rb&(~1));
@@ -1829,7 +1888,8 @@ int Thumbulator::execute ( void )
     rb=(inst>>6)&0x1F;
     rb<<=1;
     if(DISS)
-      fprintf(stderr,"strh r%u,[r%u,#0x%X]\n",rd,rn,rb);
+      statusMsg << "strh r" << dec << rd << ",[r" << dec << rn
+                << ",#0x" << HEX2 << rb << "]" << endl;
     rb=read_register(rn)+rb;
     rc=read_register(rd);
     write16(rb,rc&0xFFFF);
@@ -1843,7 +1903,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"strh r%u,[r%u,r%u]\n",rd,rn,rm);
+      statusMsg << "strh r" << dec << rd << ",[r" << dec << rn
+                << ",r" << dec << rm << "]" << endl;
     rb=read_register(rn)+read_register(rm);
     rc=read_register(rd);
     write16(rb,rc&0xFFFF);
@@ -1857,7 +1918,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&7;
     rb=(inst>>6)&7;
     if(DISS)
-      fprintf(stderr,"subs r%u,r%u,#0x%X\n",rd,rn,rb);
+      statusMsg << "subs r" << dec << rd << ",r" << dec << rn
+                << ",#0x" << HEX2 << rb << endl;
     ra=read_register(rn);
     rc=ra-rb;
     write_register(rd,rc);
@@ -1874,7 +1936,7 @@ int Thumbulator::execute ( void )
     rb=(inst>>0)&0xFF;
     rd=(inst>>8)&0x07;
     if(DISS)
-      fprintf(stderr,"subs r%u,#0x%02X\n",rd,rb);
+      statusMsg << "subs r" << dec << rd << ",#0x" << HEX2 << rb << endl;
     ra=read_register(rd);
     rc=ra-rb;
     write_register(rd,rc);
@@ -1892,7 +1954,8 @@ int Thumbulator::execute ( void )
     rn=(inst>>3)&0x7;
     rm=(inst>>6)&0x7;
     if(DISS)
-      fprintf(stderr,"subs r%u,r%u,r%u\n",rd,rn,rm);
+      statusMsg << "subs r" << dec << rd << ",r" << dec << rn
+                << ",r" << dec << rm << endl;
     ra=read_register(rn);
     rb=read_register(rm);
     rc=ra-rb;
@@ -1910,7 +1973,7 @@ int Thumbulator::execute ( void )
     rb=inst&0x7F;
     rb<<=2;
     if(DISS)
-      fprintf(stderr,"sub SP,#0x%02X\n",rb);
+      statusMsg << "sub SP,#0x" << HEX2 << rb << endl;
     ra=read_register(13);
     ra-=rb;
     write_register(13,ra);
@@ -1922,8 +1985,8 @@ int Thumbulator::execute ( void )
   {
     rb=inst&0xFF;
     if(DISS)
-      fprintf(stderr,"swi 0x%02X\n",rb);
-    fprintf(stderr,"\n\nswi 0x%02X\n",rb);
+      statusMsg << "swi 0x" << HEX2 << rb << endl;
+    statusMsg << endl << endl << "swi 0x" << HEX2 << rb << endl;
     return(1);
   }
 
@@ -1933,7 +1996,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"sxtb r%u,r%u\n",rd,rm);
+      statusMsg << "sxtb r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rm);
     rc=ra&0xFF;
     if(rc&0x80) rc|=(~0)<<8;
@@ -1947,7 +2010,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"sxth r%u,r%u\n",rd,rm);
+      statusMsg << "sxth r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rm);
     rc=ra&0xFFFF;
     if(rc&0x8000) rc|=(~0)<<16;
@@ -1961,7 +2024,7 @@ int Thumbulator::execute ( void )
     rn=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"tst r%u,r%u\n",rn,rm);
+      statusMsg << "tst r" << dec << rn << ",r" << dec << rm << endl;
     ra=read_register(rn);
     rb=read_register(rm);
     rc=ra&rb;
@@ -1976,7 +2039,7 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"uxtb r%u,r%u\n",rd,rm);
+      statusMsg << "uxtb r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rm);
     rc=ra&0xFF;
     write_register(rd,rc);
@@ -1989,14 +2052,14 @@ int Thumbulator::execute ( void )
     rd=(inst>>0)&0x7;
     rm=(inst>>3)&0x7;
     if(DISS)
-      fprintf(stderr,"uxth r%u,r%u\n",rd,rm);
+      statusMsg << "uxth r" << dec << rd << ",r" << dec << rm << endl;
     ra=read_register(rm);
     rc=ra&0xFFFF;
     write_register(rd,rc);
     return(0);
   }
 
-  fprintf(stderr,"invalid instruction 0x%08X 0x%04X\n",pc,inst);
+  statusMsg << "invalid instruction " << HEX8 << pc << " " << HEX4 << inst << endl;
   return(1);
 }
 
@@ -2016,6 +2079,8 @@ int Thumbulator::reset ( void )
   fetches=0;
   reads=0;
   writes=0;
+
+  statusMsg.str("");
 
   return(0);
 }

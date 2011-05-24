@@ -120,7 +120,7 @@ class Array
       return _data[idx];
     }
 
-    Array<T>& operator  =(const Array<T>& array)
+    Array<T>& operator =(const Array<T>& array)
     {
       if (_data)
         delete [] _data;

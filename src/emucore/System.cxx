@@ -37,7 +37,8 @@ System::System(uInt16 n, uInt16 m)
     myTIA(0),
     myCycles(0),
     myDataBusState(0),
-    myDataBusLocked(false)
+    myDataBusLocked(false),
+    mySystemInAutodetect(false)
 {
   // Make sure the arguments are reasonable
   assert((1 <= m) && (m <= n) && (n <= 16));
@@ -85,22 +86,21 @@ System::~System()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void System::reset()
+void System::reset(bool autodetect)
 {
+  // Provide hint to devices that autodetection is active (or not)
+  mySystemInAutodetect = autodetect;
+
   // Reset system cycle counter
   resetCycles();
 
   // First we reset the devices attached to myself
   for(uInt32 i = 0; i < myNumberOfDevices; ++i)
-  {
     myDevices[i]->reset();
-  }
 
   // Now we reset the processor if it exists
   if(myM6502 != 0)
-  {
     myM6502->reset();
-  }
 
   // There are no dirty pages upon startup
   clearDirtyPages();

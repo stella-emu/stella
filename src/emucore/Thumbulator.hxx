@@ -65,7 +65,15 @@ class Thumbulator
     Thumbulator(uInt16* rom, uInt16* ram);
     ~Thumbulator();
 
-    int run();
+    /**
+      Run the ARM code, and return when finished.  An exception is thrown
+      in case of any fatal errors/aborts, containing the actual error,
+      and the contents of the registers at that point in time.
+
+      @return  The results of any debugging output (if enabled),
+               otherwise an empty string
+    */
+    string run() throw(const string&);
 
   private:
     uInt32 read_register ( uInt32 reg );
@@ -85,7 +93,10 @@ class Thumbulator
     void do_cflag_bit ( uInt32 x );
     void do_vflag_bit ( uInt32 x );
 
+    int fatalError(const char* opcode, uInt32 v1, const char* msg) throw(const string&);
+    int fatalError(const char* opcode, uInt32 v1, uInt32 v2, const char* msg) throw(const string&);
     void dump_counters ( void );
+    void dump_regs( void );
     int execute ( void );
     int reset ( void );
 
@@ -111,7 +122,7 @@ class Thumbulator
 
     Int32 DBUG; // dump detailed execution trace
     Int32 DISS; // dump Thumb instruction trace
-    char errorMsg[100];
+    ostringstream statusMsg;
 };
 
 #endif

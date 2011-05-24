@@ -37,6 +37,7 @@ PNGLibrary::~PNGLibrary()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PNGLibrary::readImage(const FrameBuffer& fb, FBSurface& surface)
+    throw(const char*)
 {
   #define readImageERROR(s) { err_message = s; goto done; }
 

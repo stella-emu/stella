@@ -53,7 +53,7 @@ class Driving : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update();
+    void update();
 
   private:
     // Counter to iterate through the gray codes

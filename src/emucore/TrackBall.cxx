@@ -68,8 +68,8 @@ bool TrackBall::read(DigitalPin pin)
   // Only update the controller pins when an SWCHA read is actually
   // different from a previous one
   // This is done since Stella tends to read several pins consecutively
-  // in the same processor 'cycle', and it would be inefficient/incorrect
-  // to do this work multiple times per processor cycle
+  // in the same processor 'cycle', and it would be incorrect to do this
+  // work multiple times per processor cycle
   if(myCyclesWhenSWCHARead != mySystem.cycles())
   {
     int scanline = ((System&)mySystem).tia().scanlines();

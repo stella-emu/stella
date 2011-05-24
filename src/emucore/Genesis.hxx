@@ -55,7 +55,7 @@ class Genesis : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    virtual void update();
+    void update();
 
   private:
     // Pre-compute the events we care about based on given port

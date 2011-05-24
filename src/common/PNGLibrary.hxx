@@ -51,7 +51,7 @@ class PNGLibrary
       @return  On success, the FBSurface containing image data and a
                result of true, otherwise an exception is thrown.
     */
-    bool readImage(const FrameBuffer& fb, FBSurface& surface);
+    bool readImage(const FrameBuffer& fb, FBSurface& surface) throw(const char*);
 
   private:
     /**

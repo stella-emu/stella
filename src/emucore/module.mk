@@ -33,7 +33,6 @@ MODULE_OBJS := \
 	src/emucore/CartX07.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
-	src/emucore/Device.o \
 	src/emucore/Driving.o \
 	src/emucore/EventHandler.o \
 	src/emucore/FrameBuffer.o \

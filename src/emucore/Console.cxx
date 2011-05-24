@@ -132,7 +132,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     // The 'fastscbios' option must be changed before the system is reset
     bool fastscbios = myOSystem->settings().getBool("fastscbios");
     myOSystem->settings().setBool("fastscbios", true);
-    mySystem->reset();
+    mySystem->reset(true);  // autodetect in reset enabled
     int palCount = 0;
     for(int i = 0; i < 60; ++i)
     {

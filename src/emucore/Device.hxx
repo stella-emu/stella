@@ -38,12 +38,12 @@ class Device : public Serializable
     /**
       Create a new device
     */
-    Device();
+    Device() : mySystem(0) { }
 
     /**
       Destructor
     */
-    virtual ~Device();
+    virtual ~Device() { }
 
   public:
     /**
@@ -60,7 +60,7 @@ class Device : public Serializable
       system resets its cycle counter to zero.  It may be necessary 
       to override this method for devices that remember cycle counts.
     */
-    virtual void systemCyclesReset();
+    virtual void systemCyclesReset() { }
 
     /**
       Install device in the specified system.  Invoked by the system

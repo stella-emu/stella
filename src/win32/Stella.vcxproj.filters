@@ -186,9 +186,6 @@
     <ClCompile Include="..\emucore\Control.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\Device.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\Driving.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>

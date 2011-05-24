@@ -208,11 +208,14 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       try {
         myThumbEmulator->run();
       }
-      catch(const char* msg) {
-        cerr << msg << endl;
-    #ifdef DEBUGGER_SUPPORT
-        Debugger::debugger().startWithFatalError(msg);
-    #endif
+      catch(const string& error) {
+        if(!mySystem->autodectMode())
+        {
+          cerr << error << endl;
+      #ifdef DEBUGGER_SUPPORT
+          Debugger::debugger().startWithFatalError(error);
+      #endif
+        }
       }
       break;
   #endif

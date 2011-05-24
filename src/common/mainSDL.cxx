@@ -84,6 +84,8 @@ int stellaMain(int argc, char* argv[])
 int main(int argc, char* argv[])
 #endif
 {
+  ios_base::sync_with_stdio(false);
+
   // Create the parent OSystem object and settings
 #if defined(UNIX)
   theOSystem = new OSystemUNIX();

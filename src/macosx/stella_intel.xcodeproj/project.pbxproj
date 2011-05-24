@@ -301,7 +301,6 @@
 		DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */; };
 		DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */; };
 		DCB9DA5F0FCD527000B192F6 /* GLShaderProgs.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */; };
-		DCC527D010B9DA19005E1287 /* Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527C810B9DA19005E1287 /* Device.cxx */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
@@ -708,7 +707,6 @@
 		DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDPCPlus.hxx; path = ../emucore/CartDPCPlus.hxx; sourceTree = SOURCE_ROOT; };
 		DCB9DA5E0FCD527000B192F6 /* GLShaderProgs.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GLShaderProgs.hxx; path = ../common/GLShaderProgs.hxx; sourceTree = SOURCE_ROOT; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		DCC527C810B9DA19005E1287 /* Device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Device.cxx; path = ../emucore/Device.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
@@ -1038,7 +1036,6 @@
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
-				DCC527C810B9DA19005E1287 /* Device.cxx */,
 				DCC527C910B9DA19005E1287 /* Device.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
@@ -1704,7 +1701,6 @@
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
-				DCC527D010B9DA19005E1287 /* Device.cxx in Sources */,
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
 				DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,

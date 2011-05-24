@@ -67,6 +67,7 @@
 #include <iostream>
 #include <iomanip>
 #include <string>
+#include <sstream>
 #include <cstring>
 #include <cctype>
 using namespace std;
@@ -110,6 +111,11 @@ using namespace std;
   #define BSPF_ARCH "NOARCH"
 #endif
 
+// Used for stringstreams
+#define HEX8 uppercase << hex << setw(8) << setfill('0')
+#define HEX4 uppercase << hex << setw(4) << setfill('0')
+#define HEX2 uppercase << hex << setw(2) << setfill('0')
+
 // Some convenience functions
 template<typename T> inline void BSPF_swap(T& a, T& b) { T tmp = a; a = b; b = tmp; }
 template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
@@ -150,9 +156,5 @@ inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2)
 }
 
 static const string EmptyString("");
-
-#ifdef _WIN32_WCE
-  #include "missing.h"
-#endif
 
 #endif

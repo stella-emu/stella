@@ -369,10 +369,6 @@
 					>
 				</File>
 				<File
-					RelativePath="..\emucore\Device.cxx"
-					>
-				</File>
-				<File
 					RelativePath="..\emucore\Driving.cxx"
 					>
 				</File>
