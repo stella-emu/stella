@@ -76,7 +76,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 
   // Initialize the DPC data fetcher registers
   for(uInt16 i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 0;
+    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 
+    myFractionalCounters[i] = 0;
 
   // Set waveforms to first waveform entry
   myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;

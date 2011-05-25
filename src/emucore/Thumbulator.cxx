@@ -236,10 +236,9 @@ void Thumbulator::write32 ( uInt32 addr, uInt32 data )
       switch(addr)
       {
         case 0xE0000000:
-          if(DISS) printf("uart: [");
-          printf("%c",data&0xFF);
-          if(DISS) printf("]\n");
-          fflush(stdout);
+          if(DISS) statusMsg << "uart: [";
+          statusMsg << char(data&0xFF);
+          if(DISS) statusMsg << "]" << endl;
           break;
       }
       return;
