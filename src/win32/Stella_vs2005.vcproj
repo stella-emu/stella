@@ -988,6 +988,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\StringList.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\StringParser.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\Version.hxx"
 				>
 			</File>
@@ -1584,10 +1592,6 @@
 				</File>
 				<File
 					RelativePath="..\gui\StellaFont.hxx"
-					>
-				</File>
-				<File
-					RelativePath="..\gui\StringList.hxx"
 					>
 				</File>
 				<File
