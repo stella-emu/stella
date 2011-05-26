@@ -212,9 +212,10 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
       catch(const string& error) {
         if(!mySystem->autodectMode())
         {
-          cerr << error << endl;
       #ifdef DEBUGGER_SUPPORT
           Debugger::debugger().startWithFatalError(error);
+      #else
+          cout << error << endl;
       #endif
         }
       }

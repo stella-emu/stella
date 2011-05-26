@@ -42,6 +42,7 @@ class ButtonWidget;
 
 #include "Array.hxx"
 #include "DialogContainer.hxx"
+#include "DebuggerDialog.hxx"
 #include "DebuggerParser.hxx"
 #include "System.hxx"
 #include "Rect.hxx"
@@ -119,7 +120,7 @@ class Debugger : public DialogContainer
       Wrapper method for EventHandler::leaveDebugMode() for those classes
       that don't have access to EventHandler.
     */
-    void quit();
+    void quit(bool exitrom);
 
     bool addFunction(const string& name, const string& def,
                      Expression* exp, bool builtin = false);
@@ -344,7 +345,8 @@ class Debugger : public DialogContainer
     void reset();
     void clearAllBreakPoints();
 
-    PromptWidget *prompt() { return myPrompt; }
+    PromptWidget& prompt() { return myDialog->prompt(); }
+    RomWidget& rom() { return myDialog->rom(); };
 
     void saveState(int state);
     void loadState(int state);
@@ -353,22 +355,16 @@ class Debugger : public DialogContainer
     Console* myConsole;
     System*  mySystem;
 
+    DebuggerDialog* myDialog;
     DebuggerParser* myParser;
     CartDebug*      myCartDebug;
     CpuDebug*       myCpuDebug;
     RiotDebug*      myRiotDebug;
     TIADebug*       myTiaDebug;
 
-    TiaInfoWidget*   myTiaInfo;
-    TiaOutputWidget* myTiaOutput;
-    TiaZoomWidget*   myTiaZoom;
-    RomWidget*       myRom;
-    EditTextWidget*  myMessage;
-
     PackedBitArray* myBreakPoints;
     PackedBitArray* myReadTraps;
     PackedBitArray* myWriteTraps;
-    PromptWidget*   myPrompt;
 
     static Debugger* myStaticDebugger;
 

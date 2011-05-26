@@ -36,6 +36,7 @@ class EditTextWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
+class MessageBox;
 
 #include "Dialog.hxx"
 
@@ -46,19 +47,31 @@ class DebuggerDialog : public Dialog
                           int x, int y, int w, int h);
     ~DebuggerDialog();
 
-    PromptWidget* prompt()       { return myPrompt;       }
-    TiaInfoWidget* tiaInfo()     { return myTiaInfo;      }
-    TiaOutputWidget* tiaOutput() { return myTiaOutput;    }
-    TiaZoomWidget* tiaZoom()     { return myTiaZoom;      }
-    RomWidget* rom()             { return myRom;          }
-    EditTextWidget* message()    { return myMessageBox;   }
-    ButtonWidget* rewindButton() { return myRewindButton; }
+    PromptWidget& prompt()       { return *myPrompt;       }
+    TiaInfoWidget& tiaInfo()     { return *myTiaInfo;      }
+    TiaOutputWidget& tiaOutput() { return *myTiaOutput;    }
+    TiaZoomWidget& tiaZoom()     { return *myTiaZoom;      }
+    RomWidget& rom()             { return *myRom;          }
+    EditTextWidget& message()    { return *myMessageBox;   }
+    ButtonWidget& rewindButton() { return *myRewindButton; }
 
-    virtual void loadConfig();
-    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void loadConfig();
+    void handleKeyDown(int ascii, int keycode, int modifiers);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
+    void showFatalMessage(const string& msg);
 
   private:
+    enum {
+      kDDStepCmd      = 'DDst',
+      kDDTraceCmd     = 'DDtr',
+      kDDAdvCmd       = 'DDav',
+      kDDSAdvCmd      = 'DDsv',
+      kDDRewindCmd    = 'DDrw',
+      kDDExitCmd      = 'DDex',
+      kDDExitFatalCmd = 'DDer'
+    };
+
     TabWidget* myTab;
 
     PromptWidget*    myPrompt;
@@ -70,6 +83,7 @@ class DebuggerDialog : public Dialog
     RomWidget*       myRom;
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
+    MessageBox*      myFatalError;
 
   private:
     void addTiaArea();
@@ -82,7 +96,8 @@ class DebuggerDialog : public Dialog
     void doScanlineAdvance();
     void doAdvance();
     void doRewind();
-    void doExit();
+    void doExitDebugger();
+    void doExitRom();
 };
 
 #endif

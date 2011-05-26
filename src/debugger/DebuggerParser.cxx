@@ -699,7 +699,7 @@ void DebuggerParser::executeBreak()
   else
     bp = args[0];
   debugger->toggleBreakPoint(bp);
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 
   if(debugger->breakPoint(bp))
     commandResult << "Set";
@@ -799,7 +799,7 @@ void DebuggerParser::executeClearwatches()
 // "cls"
 void DebuggerParser::executeCls()
 {
-  debugger->prompt()->clearScreen();
+  debugger->prompt().clearScreen();
   commandResult << "";
 }
 
@@ -822,7 +822,7 @@ void DebuggerParser::executeCode()
                   CartDebug::CODE, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " CODE directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -863,7 +863,7 @@ void DebuggerParser::executeData()
                   CartDebug::DATA, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " DATA directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -872,7 +872,7 @@ void DebuggerParser::executeDefine()
 {
   // TODO: check if label already defined?
   debugger->cartDebug().addLabel(argStrings[0], args[1]);
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -953,6 +953,13 @@ void DebuggerParser::executeExec()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "exitrom"
+void DebuggerParser::executeExitRom()
+{
+  debugger->quit(true);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "frame"
 void DebuggerParser::executeFrame()
 {
@@ -1002,7 +1009,7 @@ void DebuggerParser::executeGfx()
                   CartDebug::GFX, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " GFX directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1040,7 +1047,7 @@ void DebuggerParser::executeJump()
 
   if(line >= 0 && address >= 0)
   {
-    debugger->myRom->scrollTo(line);
+    debugger->rom().scrollTo(line);
     commandResult << "disassembly scrolled to address $" << HEX4 << address;
   }
   else
@@ -1141,7 +1148,7 @@ void DebuggerParser::executeLoadconfig()
   else
     commandResult << debugger->cartDebug().loadConfigFile();
 
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1159,7 +1166,7 @@ void DebuggerParser::executeLoadstate()
 void DebuggerParser::executeLoadsym()
 {
   commandResult << debugger->cartDebug().loadSymbolFile(argStrings[0]);
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1198,7 +1205,7 @@ void DebuggerParser::executePGfx()
                   CartDebug::PGFX, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " PGFX directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1223,7 +1230,7 @@ void DebuggerParser::executeRam()
 void DebuggerParser::executeReset()
 {
   debugger->reset();
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
   commandResult << "reset CPU";
 }
 
@@ -1233,7 +1240,7 @@ void DebuggerParser::executeRewind()
 {
   if(debugger->rewindState())
   {
-    debugger->myRom->invalidate();
+    debugger->rom().invalidate();
     commandResult << "rewind by one level";
   }
   else
@@ -1266,7 +1273,7 @@ void DebuggerParser::executeRom()
   // The RomWidget is a special case, since we don't want to re-disassemble
   // any more than necessary.  So we only do it by calling the following
   // method ...
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 
   commandResult << "changed " << debugger->valueToString( args.size() - 1 )
                 << " location(s)";
@@ -1291,7 +1298,7 @@ void DebuggerParser::executeRow()
                   CartDebug::ROW, args[0], args[1]);
   commandResult << (result ? "added" : "removed") << " ROW directive on range $"
                 << hex << args[0] << " $" << hex << args[1];
-  debugger->myRom->invalidate();
+  debugger->rom().invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1299,7 +1306,7 @@ void DebuggerParser::executeRow()
 void DebuggerParser::executeRun()
 {
   debugger->saveOldState();
-  debugger->quit();
+  debugger->quit(false);
   commandResult << "_EXIT_DEBUGGER";  // See PromptWidget for more info
 }
 
@@ -1420,7 +1427,7 @@ void DebuggerParser::executeSaverom()
 // "saveses"
 void DebuggerParser::executeSaveses()
 {
-  if(debugger->prompt()->saveBuffer(argStrings[0]))
+  if(debugger->prompt().saveBuffer(argStrings[0]))
     commandResult << "saved session to file " << argStrings[0];
   else
     commandResult << red("I/O error");
@@ -1563,7 +1570,7 @@ void DebuggerParser::executeUndef()
 {
   if(debugger->cartDebug().removeLabel(argStrings[0]))
   {
-    debugger->myRom->invalidate();
+    debugger->rom().invalidate();
     commandResult << argStrings[0] + " now undefined";
   }
   else
@@ -1821,6 +1828,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_FILE, kARG_END_ARGS },
     &DebuggerParser::executeExec
+  },
+
+  {
+    "exitrom",
+    "Exit emulator, return to ROM launcher",
+    false,
+    false,
+    { kARG_END_ARGS },
+    &DebuggerParser::executeExitRom
   },
 
   {

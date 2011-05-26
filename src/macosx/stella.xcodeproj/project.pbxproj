@@ -69,7 +69,6 @@
 		2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC7084578BF00812C11 /* PopUpWidget.hxx */; };
 		2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */; };
 		2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */; };
-		2D91741509BA90380026E9FF /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACF084578BF00812C11 /* StringList.hxx */; };
 		2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD1084578BF00812C11 /* TabWidget.hxx */; };
 		2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD3084578BF00812C11 /* VideoDialog.hxx */; };
 		2D91741809BA90380026E9FF /* Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD5084578BF00812C11 /* Widget.hxx */; };
@@ -251,6 +250,8 @@
 		DC17E80C1361FDB500397A9E /* pngstruct.h in Headers */ = {isa = PBXBuildFile; fileRef = DC17E8081361FDB500397A9E /* pngstruct.h */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
+		DC20D6F3138EB130002A7428 /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC20D6F1138EB130002A7428 /* StringList.hxx */; };
+		DC20D6F4138EB130002A7428 /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC20D6F2138EB130002A7428 /* StringParser.hxx */; };
 		DC3FE47C11C7D35600C91C72 /* png.c in Sources */ = {isa = PBXBuildFile; fileRef = DC3FE46A11C7D35600C91C72 /* png.c */; };
 		DC3FE47D11C7D35600C91C72 /* png.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3FE46B11C7D35600C91C72 /* png.h */; };
 		DC3FE47E11C7D35600C91C72 /* pngconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3FE46C11C7D35600C91C72 /* pngconf.h */; };
@@ -336,7 +337,6 @@
 		DCE9CC2B1103812700C86671 /* CartDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9CC271103812700C86671 /* CartDebug.hxx */; };
 		DCE9CC2C1103812700C86671 /* DiStella.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE9CC281103812700C86671 /* DiStella.cxx */; };
 		DCE9CC2D1103812700C86671 /* DiStella.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE9CC291103812700C86671 /* DiStella.hxx */; };
-		DCECDAFA10B9DBDC00AF4E1B /* Device.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCECDAF210B9DBDC00AF4E1B /* Device.cxx */; };
 		DCECDAFB10B9DBDC00AF4E1B /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDAF310B9DBDC00AF4E1B /* Device.hxx */; };
 		DCECDAFC10B9DBDC00AF4E1B /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCECDAF410B9DBDC00AF4E1B /* M6502.cxx */; };
 		DCECDAFD10B9DBDC00AF4E1B /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDAF510B9DBDC00AF4E1B /* M6502.hxx */; };
@@ -547,7 +547,6 @@
 		2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ProgressDialog.hxx; path = ../gui/ProgressDialog.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ScrollBarWidget.cxx; path = ../gui/ScrollBarWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ScrollBarWidget.hxx; path = ../gui/ScrollBarWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2DDBEACF084578BF00812C11 /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../gui/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD0084578BF00812C11 /* TabWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TabWidget.cxx; path = ../gui/TabWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD1084578BF00812C11 /* TabWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TabWidget.hxx; path = ../gui/TabWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD2084578BF00812C11 /* VideoDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = VideoDialog.cxx; path = ../gui/VideoDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -658,6 +657,8 @@
 		DC17E8081361FDB500397A9E /* pngstruct.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngstruct.h; path = ../libpng/pngstruct.h; sourceTree = SOURCE_ROOT; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
+		DC20D6F1138EB130002A7428 /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../common/StringList.hxx; sourceTree = SOURCE_ROOT; };
+		DC20D6F2138EB130002A7428 /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringParser.hxx; path = ../common/StringParser.hxx; sourceTree = SOURCE_ROOT; };
 		DC3FE46A11C7D35600C91C72 /* png.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = png.c; path = ../libpng/png.c; sourceTree = SOURCE_ROOT; };
 		DC3FE46B11C7D35600C91C72 /* png.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = png.h; path = ../libpng/png.h; sourceTree = SOURCE_ROOT; };
 		DC3FE46C11C7D35600C91C72 /* pngconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngconf.h; path = ../libpng/pngconf.h; sourceTree = SOURCE_ROOT; };
@@ -744,7 +745,6 @@
 		DCE9CC271103812700C86671 /* CartDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebug.hxx; path = ../debugger/CartDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DCE9CC281103812700C86671 /* DiStella.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiStella.cxx; path = ../debugger/DiStella.cxx; sourceTree = SOURCE_ROOT; };
 		DCE9CC291103812700C86671 /* DiStella.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DiStella.hxx; path = ../debugger/DiStella.hxx; sourceTree = SOURCE_ROOT; };
-		DCECDAF210B9DBDC00AF4E1B /* Device.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Device.cxx; path = ../emucore/Device.cxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF310B9DBDC00AF4E1B /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF410B9DBDC00AF4E1B /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF510B9DBDC00AF4E1B /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
@@ -946,6 +946,8 @@
 				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
 				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
+				DC20D6F1138EB130002A7428 /* StringList.hxx */,
+				DC20D6F2138EB130002A7428 /* StringParser.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 			);
 			name = common;
@@ -1041,7 +1043,6 @@
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
 				2DE2DF3B0627AE07006BEC99 /* Control.hxx */,
 				DC932D3F0F278A5200FEFEFC /* DefProps.hxx */,
-				DCECDAF210B9DBDC00AF4E1B /* Device.cxx */,
 				DCECDAF310B9DBDC00AF4E1B /* Device.hxx */,
 				2DE2DF3E0627AE07006BEC99 /* Driving.cxx */,
 				2DE2DF3F0627AE07006BEC99 /* Driving.hxx */,
@@ -1189,7 +1190,6 @@
 				DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */,
 				DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */,
 				DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */,
-				2DDBEACF084578BF00812C11 /* StringList.hxx */,
 				2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */,
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
@@ -1358,7 +1358,6 @@
 				2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */,
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
-				2D91741509BA90380026E9FF /* StringList.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
 				2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
@@ -1475,6 +1474,8 @@
 				DC17E80A1361FDB500397A9E /* pnginfo.h in Headers */,
 				DC17E80B1361FDB500397A9E /* pnglibconf.h in Headers */,
 				DC17E80C1361FDB500397A9E /* pngstruct.h in Headers */,
+				DC20D6F3138EB130002A7428 /* StringList.hxx in Headers */,
+				DC20D6F4138EB130002A7428 /* StringParser.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1705,7 +1706,6 @@
 				DCF467C40F939A1400B25D7A /* CartEFSC.cxx in Sources */,
 				DCF7B0DD10A762FC007A2870 /* CartF0.cxx in Sources */,
 				DCF7B0DF10A762FC007A2870 /* CartFA.cxx in Sources */,
-				DCECDAFA10B9DBDC00AF4E1B /* Device.cxx in Sources */,
 				DCECDAFC10B9DBDC00AF4E1B /* M6502.cxx in Sources */,
 				DCECDAFE10B9DBDC00AF4E1B /* NullDev.cxx in Sources */,
 				DCECDB0010B9DBDC00AF4E1B /* System.cxx in Sources */,

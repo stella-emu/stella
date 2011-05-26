@@ -1034,7 +1034,8 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
 
     case Event::LauncherMode:
-      if((myState == S_EMULATE || myState == S_CMDMENU) && state)
+      if((myState == S_EMULATE || myState == S_CMDMENU ||
+          myState == S_DEBUGGER) && state)
       {
         myOSystem->settings().saveConfig();
 

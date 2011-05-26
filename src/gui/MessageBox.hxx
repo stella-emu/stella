@@ -36,14 +36,19 @@ class MessageBox : public Dialog, public CommandSender
 {
   public:
     MessageBox(GuiObject* boss, const GUI::Font& font, const StringList& text,
-               int max_w, int max_h, int cmd = 0);
+               int max_w, int max_h, int cmd = 0,
+               const string& okText = "", const string& cancelText = "");
+    MessageBox(GuiObject* boss, const GUI::Font& font, const string& text,
+               int max_w, int max_h, int cmd = 0,
+               const string& okText = "", const string& cancelText = "");
     virtual ~MessageBox();
 
     /** Place the input dialog onscreen and center it */
     void show() { parent().addDialog(this); }
 
   private:
-    virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
+    void addText(const GUI::Font& font, const StringList& text);
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
     int myCmd;

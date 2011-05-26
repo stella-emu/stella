@@ -112,15 +112,12 @@ Debugger::Debugger(OSystem* osystem)
   : DialogContainer(osystem),
     myConsole(NULL),
     mySystem(NULL),
+    myDialog(NULL),
     myParser(NULL),
     myCartDebug(NULL),
     myCpuDebug(NULL),
     myRiotDebug(NULL),
     myTiaDebug(NULL),
-    myTiaInfo(NULL),
-    myTiaOutput(NULL),
-    myTiaZoom(NULL),
-    myRom(NULL),
     myBreakPoints(NULL),
     myReadTraps(NULL),
     myWriteTraps(NULL),
@@ -172,19 +169,12 @@ void Debugger::initialize()
 
   const GUI::Rect& r = getDialogBounds();
 
-  delete myBaseDialog;
-  DebuggerDialog *dd = new DebuggerDialog(myOSystem, this,
-                           r.left, r.top, r.width(), r.height());
-  myBaseDialog = dd;
+  delete myBaseDialog;  myBaseDialog = myDialog = NULL;
+  myDialog = new DebuggerDialog(myOSystem, this,
+      r.left, r.top, r.width(), r.height());
+  myBaseDialog = myDialog;
 
-  myPrompt    = dd->prompt();
-  myTiaInfo   = dd->tiaInfo();
-  myTiaOutput = dd->tiaOutput();
-  myTiaZoom   = dd->tiaZoom();
-  myRom       = dd->rom();
-  myMessage   = dd->message();
-
-  myRewindManager = new RewindManager(*myOSystem, *dd->rewindButton());
+  myRewindManager = new RewindManager(*myOSystem, myDialog->rewindButton());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -235,7 +225,7 @@ bool Debugger::start(const string& message, int address)
     if(address > -1)
       buf << valueToString(address);
 
-    myMessage->setEditString(buf.str());
+    myDialog->message().setEditString(buf.str());
     return true;
   }
   return false;
@@ -247,17 +237,20 @@ bool Debugger::startWithFatalError(const string& message)
   if(myOSystem->eventHandler().enterDebugMode())
   {
     // This must be done *after* we enter debug mode,
-    // so the message isn't erased
-    myMessage->setEditString(message);
+    // so the dialog is properly shown
+    myDialog->showFatalMessage(message);
     return true;
   }
   return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::quit()
+void Debugger::quit(bool exitrom)
 {
-  myOSystem->eventHandler().leaveDebugMode();
+  if(exitrom)
+    myOSystem->eventHandler().handleEvent(Event::LauncherMode, 1);
+  else
+    myOSystem->eventHandler().leaveDebugMode();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -630,7 +623,7 @@ void Debugger::setStartState()
   saveOldState(false);
 
   // Set the 're-disassemble' flag, but don't do it until the next scheduled time 
-  myRom->invalidate(false);
+  myDialog->rom().invalidate(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

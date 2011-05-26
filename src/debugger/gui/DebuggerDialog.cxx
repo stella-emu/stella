@@ -35,26 +35,19 @@
 #include "TiaWidget.hxx"
 #include "DataGridOpsWidget.hxx"
 #include "EditTextWidget.hxx"
+#include "MessageBox.hxx"
 #include "Rect.hxx"
 #include "Debugger.hxx"
 #include "DebuggerParser.hxx"
 
 #include "DebuggerDialog.hxx"
 
-enum {
-  kDDStepCmd   = 'DDst',
-  kDDTraceCmd  = 'DDtr',
-  kDDAdvCmd    = 'DDav',
-  kDDSAdvCmd   = 'DDsv',
-  kDDRewindCmd = 'DDrw',
-  kDDExitCmd   = 'DDex'
-};
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h, true),  // use base surface
-    myTab(NULL)
+    myTab(NULL),
+    myFatalError(NULL)
 {
   addTiaArea();
   addTabArea();
@@ -145,7 +138,11 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kDDExitCmd:
-      doExit();
+      doExitDebugger();
+      break;
+
+    case kDDExitFatalCmd:
+      doExitRom();
       break;
 
     default:
@@ -154,9 +151,22 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::showFatalMessage(const string& msg)
+{
+  const GUI::Rect& r = instance().debugger().getDialogBounds();
+
+  delete myFatalError;
+  myFatalError =
+    new MessageBox(this, instance().consoleFont(), msg,
+                   r.width(), r.height(), kDDExitFatalCmd,
+                   "Exit ROM", "Continue");
+  myFatalError->show();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTiaArea()
 {
-  GUI::Rect r = instance().debugger().getTiaBounds();
+  const GUI::Rect& r = instance().debugger().getTiaBounds();
 
   myTiaOutput = new TiaOutputWidget(this, instance().consoleFont(),
                                     r.left, r.top, r.width(), r.height());
@@ -165,7 +175,7 @@ void DebuggerDialog::addTiaArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addTabArea()
 {
-  GUI::Rect r = instance().debugger().getTabBounds();
+  const GUI::Rect& r = instance().debugger().getTabBounds();
 
   const int vBorder = 4;
 
@@ -214,7 +224,7 @@ void DebuggerDialog::addStatusArea()
 {
   const GUI::Font& font = instance().consoleFont();
   const int lineHeight = font.getLineHeight();
-  GUI::Rect r = instance().debugger().getStatusBounds();
+  const GUI::Rect& r = instance().debugger().getStatusBounds();
   int xpos, ypos;
 
   xpos = r.left;  ypos = r.top;
@@ -237,7 +247,7 @@ void DebuggerDialog::addStatusArea()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DebuggerDialog::addRomArea()
 {
-  GUI::Rect r = instance().debugger().getRomBounds();
+  const GUI::Rect& r = instance().debugger().getRomBounds();
   int xpos, ypos;
 
   xpos = r.left + 10;  ypos = 10;
@@ -320,7 +330,13 @@ void DebuggerDialog::doRewind()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::doExit()
+void DebuggerDialog::doExitDebugger()
 {
   instance().debugger().parser().run("run");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DebuggerDialog::doExitRom()
+{
+  instance().debugger().parser().run("exitrom");
 }

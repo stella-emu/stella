@@ -69,7 +69,6 @@
 		2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC7084578BF00812C11 /* PopUpWidget.hxx */; };
 		2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */; };
 		2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */; };
-		2D91741509BA90380026E9FF /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEACF084578BF00812C11 /* StringList.hxx */; };
 		2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD1084578BF00812C11 /* TabWidget.hxx */; };
 		2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD3084578BF00812C11 /* VideoDialog.hxx */; };
 		2D91741809BA90380026E9FF /* Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEAD5084578BF00812C11 /* Widget.hxx */; };
@@ -280,6 +279,8 @@
 		DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA111037FF200F199A7 /* CartDebug.hxx */; };
 		DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6B2BA211037FF200F199A7 /* DiStella.cxx */; };
 		DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6B2BA311037FF200F199A7 /* DiStella.hxx */; };
+		DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D69F138D4D7E00F05C5C /* StringList.hxx */; };
+		DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */; };
 		DC8078DB0B4BD5F3005E9305 /* DebuggerExpressions.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */; };
 		DC8078E80B4BD697005E9305 /* FileSnapDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */; };
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
@@ -543,7 +544,6 @@
 		2DDBEAC9084578BF00812C11 /* ProgressDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ProgressDialog.hxx; path = ../gui/ProgressDialog.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACA084578BF00812C11 /* ScrollBarWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = ScrollBarWidget.cxx; path = ../gui/ScrollBarWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEACB084578BF00812C11 /* ScrollBarWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ScrollBarWidget.hxx; path = ../gui/ScrollBarWidget.hxx; sourceTree = SOURCE_ROOT; };
-		2DDBEACF084578BF00812C11 /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../gui/StringList.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD0084578BF00812C11 /* TabWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TabWidget.cxx; path = ../gui/TabWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD1084578BF00812C11 /* TabWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = TabWidget.hxx; path = ../gui/TabWidget.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEAD2084578BF00812C11 /* VideoDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = VideoDialog.cxx; path = ../gui/VideoDialog.cxx; sourceTree = SOURCE_ROOT; };
@@ -684,6 +684,8 @@
 		DC6B2BA111037FF200F199A7 /* CartDebug.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebug.hxx; path = ../debugger/CartDebug.hxx; sourceTree = SOURCE_ROOT; };
 		DC6B2BA211037FF200F199A7 /* DiStella.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DiStella.cxx; path = ../debugger/DiStella.cxx; sourceTree = SOURCE_ROOT; };
 		DC6B2BA311037FF200F199A7 /* DiStella.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DiStella.hxx; path = ../debugger/DiStella.hxx; sourceTree = SOURCE_ROOT; };
+		DC74D69F138D4D7E00F05C5C /* StringList.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringList.hxx; path = ../common/StringList.hxx; sourceTree = SOURCE_ROOT; };
+		DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StringParser.hxx; path = ../common/StringParser.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078DA0B4BD5F3005E9305 /* DebuggerExpressions.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = DebuggerExpressions.hxx; path = ../debugger/DebuggerExpressions.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E40B4BD697005E9305 /* FileSnapDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = FileSnapDialog.cxx; path = ../gui/FileSnapDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
@@ -941,6 +943,8 @@
 				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
 				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
+				DC74D69F138D4D7E00F05C5C /* StringList.hxx */,
+				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 			);
 			name = common;
@@ -1183,7 +1187,6 @@
 				DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */,
 				DC5D2C500F117CFD004D1660 /* StellaLargeFont.hxx */,
 				DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */,
-				2DDBEACF084578BF00812C11 /* StringList.hxx */,
 				2DEF21FA08BC033500B246B4 /* StringListWidget.cxx */,
 				2DEF21FB08BC033500B246B4 /* StringListWidget.hxx */,
 				2DDBEAD0084578BF00812C11 /* TabWidget.cxx */,
@@ -1352,7 +1355,6 @@
 				2D91741109BA90380026E9FF /* PopUpWidget.hxx in Headers */,
 				2D91741209BA90380026E9FF /* ProgressDialog.hxx in Headers */,
 				2D91741309BA90380026E9FF /* ScrollBarWidget.hxx in Headers */,
-				2D91741509BA90380026E9FF /* StringList.hxx in Headers */,
 				2D91741609BA90380026E9FF /* TabWidget.hxx in Headers */,
 				2D91741709BA90380026E9FF /* VideoDialog.hxx in Headers */,
 				2D91741809BA90380026E9FF /* Widget.hxx in Headers */,
@@ -1469,6 +1471,8 @@
 				DC69670C1361FD0A0036499D /* pnginfo.h in Headers */,
 				DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */,
 				DC69670E1361FD0A0036499D /* pngstruct.h in Headers */,
+				DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */,
+				DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

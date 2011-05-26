@@ -21,28 +21,60 @@
 #include "OSystem.hxx"
 #include "Version.hxx"
 #include "Widget.hxx"
+#include "StringParser.hxx"
 
 #include "MessageBox.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
-                       const StringList& text, int max_w, int max_h, int cmd)
-  : Dialog(&boss->instance(), &boss->parent(), 0, 0, 16, 16),
+                       const StringList& text, int max_w, int max_h, int cmd,
+                       const string& okText, const string& cancelText)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, max_w, max_h),
     CommandSender(boss),
     myCmd(cmd)
+{
+  addText(font, text);
+
+  WidgetArray wid;
+  addOKCancelBGroup(wid, font, okText, cancelText);
+  addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
+                       const string& text, int max_w, int max_h, int cmd,
+                       const string& okText, const string& cancelText)
+  : Dialog(&boss->instance(), &boss->parent(), 0, 0, max_w, max_h),
+    CommandSender(boss),
+    myCmd(cmd)
+{
+  StringParser p(text);
+  addText(font, p.stringList());
+
+  WidgetArray wid;
+  addOKCancelBGroup(wid, font, okText, cancelText);
+  addToFocusList(wid);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MessageBox::~MessageBox()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MessageBox::addText(const GUI::Font& font, const StringList& text)
 {
   const int lineHeight = font.getLineHeight(),
             fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight();
   int xpos, ypos;
-  WidgetArray wid;
 
   // Set real dimensions
   int str_w = 0;
   for(uInt32 i = 0; i < text.size(); ++i)
     str_w = BSPF_max((int)text[i].length(), str_w);
-  _w = BSPF_min(str_w * fontWidth + 20, max_w);
-  _h = BSPF_min(((text.size() + 2) * lineHeight + 20), (uInt32)max_h);
+  _w = BSPF_min(str_w * fontWidth + 20, _w);
+  _h = BSPF_min(((text.size() + 2) * lineHeight + 20), (uInt32)_h);
 
   xpos = 10;  ypos = 10;
   for(uInt32 i = 0; i < text.size(); ++i)
@@ -51,15 +83,6 @@ MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                          fontHeight, text[i], kTextAlignLeft);
     ypos += fontHeight;
   }
-
-  addOKCancelBGroup(wid, font);
-
-  addToFocusList(wid);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MessageBox::~MessageBox()
-{
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
