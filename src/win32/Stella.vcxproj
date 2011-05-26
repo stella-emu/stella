@@ -395,6 +395,8 @@ SDLmain.lib
     <ClInclude Include="..\common\FrameBufferGL.hxx" />
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
     <ClInclude Include="..\common\GLShaderProgs.hxx" />
+    <ClInclude Include="..\common\StringList.hxx" />
+    <ClInclude Include="..\common\StringParser.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
@@ -556,7 +558,6 @@ SDLmain.lib
     <ClInclude Include="..\gui\ScrollBarWidget.hxx" />
     <ClInclude Include="..\gui\Stack.hxx" />
     <ClInclude Include="..\gui\StellaFont.hxx" />
-    <ClInclude Include="..\gui\StringList.hxx" />
     <ClInclude Include="..\gui\StringListWidget.hxx" />
     <ClInclude Include="..\gui\TabWidget.hxx" />
     <ClInclude Include="..\gui\UIDialog.hxx" />

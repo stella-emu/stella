@@ -1070,9 +1070,6 @@
     <ClInclude Include="..\gui\StellaFont.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
-    <ClInclude Include="..\gui\StringList.hxx">
-      <Filter>Header Files\gui</Filter>
-    </ClInclude>
     <ClInclude Include="..\gui\StringListWidget.hxx">
       <Filter>Header Files\gui</Filter>
     </ClInclude>
@@ -1141,6 +1138,12 @@
     </ClInclude>
     <ClInclude Include="..\libpng\pngstruct.h">
       <Filter>Header Files\libpng</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\StringList.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\StringParser.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
