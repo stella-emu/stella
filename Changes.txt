@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.3 to 3.4: (May. xx, 2011)
+3.3 to 3.4: (May. 29, 2011)
 
   * Many improvements to input handling, particularly with the mouse and
     paddles:
@@ -39,7 +39,8 @@
     have been updated.
 
   * Added preliminary support for emulating ARM code to the DPC+
-    bankswitching scheme (thanks to Batari).
+    bankswitching scheme (thanks to Batari).  Related to this, fatal
+    errors in the DPC+ ARM code are now caught and shown in the debugger.
 
   * Updated internal ROM properties database to ROM-Hunter version 6
     (thanks go to RomHunter for his tireless research in this area).
