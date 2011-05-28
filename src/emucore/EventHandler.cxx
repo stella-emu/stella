@@ -646,8 +646,12 @@ void EventHandler::poll(uInt64 time)
           if(myMouseEnabled)
           {
             int x = event.motion.xrel, y = event.motion.yrel;
-            myEvent->set(Event::MouseAxisXValue, x);
-            myEvent->set(Event::MouseAxisYValue, y);
+            // Filter out extremely large movement, which is usually caused
+            // by a screen being re-created
+            if(abs(x) < 100)
+              myEvent->set(Event::MouseAxisXValue, x);
+            if(abs(y) < 100)
+              myEvent->set(Event::MouseAxisYValue, y);
           }
         }
         else if(myOverlay)
