@@ -642,7 +642,7 @@ define(M6502_JSR, `{
   poke(0x0100 + SP--, PC >> 8);
   poke(0x0100 + SP--, PC & 0xff);
 
-  PC = low | ((uInt16)peek(PC++, DISASM_CODE) << 8); 
+  PC = (low | ((uInt16)peek(PC, DISASM_CODE) << 8));
 }')
 
 define(M6502_LAS, `{

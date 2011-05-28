@@ -47,6 +47,8 @@
 #define CALL_METHOD(method) ( (this->*method)() )
 
 
+// TODO - use C++ streams instead of nasty C-strings and pointers
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DebuggerParser::DebuggerParser(Debugger* d)
   : debugger(d)
