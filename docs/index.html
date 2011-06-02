@@ -52,7 +52,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - May 2011</b></center>
+  <center><b>February 1999 - June 2011</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -1584,7 +1584,7 @@
 
     <tr>
       <td><pre>-video &lt;soft|gl&gt;</pre></td>
-      <td>Use SDL software or OpenGL rendering mode.</td>
+      <td>Use software or OpenGL rendering mode.</td>
     </tr>
 
     <tr>
@@ -1790,6 +1790,11 @@
     <tr>
       <td><pre>-usemouse &lt;1|0&gt;</pre></td>
       <td>Enable using the mouse for various controllers (paddle, driving, etc).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>	 
+      <td>Keeps the mouse in the game window in emulation mode.</td>	 
     </tr>
 
     <tr>
@@ -2374,6 +2379,7 @@
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
           <tr><td>Use mouse as ...</td><td>Use the mouse for various controllers (paddles, driving, etc)</td><td>-usemouse</td></tr>
+          <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
         </table>
       </td>
     </tr>
@@ -2567,7 +2573,7 @@
   <p>Note that you must use the entire name of the port as specified by
   your operating system.  For example, in Windows this would be COM1,
   COM2, etc; Linux and MacOSX tend to use names similar to '/dev/xxxxxx'.
-  For now, only Linux/UNIX, MacOSX, and Win32 are supported.</p>
+  For now, only Linux/UNIX, MacOSX, and Windows are supported.</p>
 
   <p>Support for the EEPROM portion of the AtariVox and SaveKey is currently
   emulated.  That is, a file will be created on your computer simulating the

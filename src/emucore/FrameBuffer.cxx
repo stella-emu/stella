@@ -743,11 +743,12 @@ cerr << "New mode:" << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setCursorState()
 {
-  // Always grab mouse in fullscreen or during emulation,
+  // Always grab mouse in fullscreen or during emulation (if enabled),
   // and don't show the cursor during emulation
   bool emulation =
       myOSystem->eventHandler().state() == EventHandler::S_EMULATE;
-  grabMouse(fullScreen() || emulation);
+  grabMouse(fullScreen() ||
+    (emulation && myOSystem->settings().getBool("grabmouse")));
   showCursor(!emulation);
 }
 

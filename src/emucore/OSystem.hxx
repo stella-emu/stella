@@ -386,6 +386,13 @@ class OSystem
     */
     void logMessage(const string& message, uInt8 level);
 
+    /**
+      Get the system messages logged up to this point.
+
+      @return The list of log messages
+    */
+    const string& logMessages() const { return myLogMessages; }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
@@ -519,6 +526,9 @@ class OSystem
 
     // Pointer to the StateManager object
     StateManager* myStateManager;
+
+    // The list of log messages
+    string myLogMessages;
 
     // Maximum dimensions of the desktop area
     uInt32 myDesktopWidth, myDesktopHeight;

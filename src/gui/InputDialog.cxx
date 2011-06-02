@@ -49,7 +49,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = BSPF_min(50 * fontWidth + 10, max_w);
-  _h = BSPF_min(12 * (lineHeight + 4) + 10, max_h);
+  _h = BSPF_min(13 * (lineHeight + 4) + 10, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -190,6 +190,15 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                      "Use mouse as a controller");
   wid.push_back(myMouseEnabled);
 
+  // Grab mouse (in windowed mode)	 
+  ypos += lineHeight + 4;
+  myGrabMouse = new CheckboxWidget(myTab, font, xpos, ypos,
+	                "Grab mouse in emulation mode");
+  wid.push_back(myGrabMouse);
+#ifndef WINDOWED_SUPPORT
+  myGrabMouse->clearFlags(WIDGET_ENABLED);	 
+#endif
+
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
 }
@@ -210,8 +219,10 @@ void InputDialog::loadConfig()
   myDeadzoneLabel->setValue(Joystick::deadzone());
 
   // Mouse/paddle enabled
-  bool usemouse = instance().settings().getBool("usemouse");
-  myMouseEnabled->setState(usemouse);
+  myMouseEnabled->setState(instance().settings().getBool("usemouse"));
+
+  // Grab mouse
+  myGrabMouse->setState(instance().settings().getBool("grabmouse"));
 
   // Paddle speed (digital and mouse)
   myDPaddleSpeed->setValue(instance().settings().getInt("dsense"));
@@ -245,6 +256,10 @@ void InputDialog::saveConfig()
   bool usemouse = myMouseEnabled->getState();
   instance().settings().setBool("usemouse", usemouse);
   instance().eventHandler().setMouseControllerMode(usemouse ? 0 : -1);
+
+  // Grab mouse	 
+  instance().settings().setBool("grabmouse", myGrabMouse->getState());	 
+  instance().frameBuffer().setCursorState();
 
   // Paddle speed (digital and mouse)
   int sensitivity = myDPaddleSpeed->getValue();
@@ -288,6 +303,9 @@ void InputDialog::setDefaults()
 
       // Mouse/paddle enabled
       myMouseEnabled->setState(true);
+
+      // Grab mouse
+      myGrabMouse->setState(true);
 
       // Paddle speed (digital and mouse)
       myDPaddleSpeed->setValue(5);

@@ -643,9 +643,16 @@ string OSystem::MD5FromFile(const string& filename)
 void OSystem::logMessage(const string& message, uInt8 level)
 {
   if(level == 0)
-    cerr << message;
+  {
+    cout << message << flush;
+    myLogMessages += message;
+  }
   else if(level <= (uInt8)mySettings->getInt("showinfo"))
-    cout << message;
+  {
+    if(1) // TODO - messages should be output to console
+      cout << message << flush;
+    myLogMessages += message;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

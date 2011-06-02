@@ -54,6 +54,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("fullscreen", "0");
   setInternal("fullres", "auto");
   setInternal("center", "false");
+  setInternal("grabmouse", "true");
   setInternal("palette", "standard");
   setInternal("colorloss", "false");
   setInternal("timing", "sleep");
@@ -370,6 +371,7 @@ void Settings::usage()
     << "  -fullscreen   <1|0|-1>       Use fullscreen mode (1 or 0), or disable switching to fullscreen entirely\n"
     << "  -fullres      <auto|WxH>     The resolution to use in fullscreen mode\n"
     << "  -center       <1|0>          Centers game window (if possible)\n"
+    << "  -grabmouse    <1|0>          Keeps the mouse in the game window\n"
     << "  -palette      <standard|     Use the specified color palette\n"
     << "                 z26|\n"
     << "                 user>\n"
@@ -463,7 +465,7 @@ void Settings::usage()
     << "   -pp          <arg>          Sets the 'Display.Phosphor' property\n"
     << "   -ppblend     <arg>          Sets the 'Display.PPBlend' property\n"
   #endif
-    << endl;
+    << endl << flush;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
