@@ -648,9 +648,9 @@ void EventHandler::poll(uInt64 time)
             int x = event.motion.xrel, y = event.motion.yrel;
             // Filter out extremely large movement, which is usually caused
             // by a screen being re-created
-            if(abs(x) < 100)
+            if(abs(x) < 50)
               myEvent->set(Event::MouseAxisXValue, x);
-            if(abs(y) < 100)
+            if(abs(y) < 50)
               myEvent->set(Event::MouseAxisYValue, y);
           }
         }

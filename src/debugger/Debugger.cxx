@@ -683,7 +683,7 @@ GUI::Rect Debugger::getStatusBounds() const
   int x1 = tia.right + 1;
   int y1 = 0;
   int x2 = tia.right + 225 + (dlg.width() > 1030 ?
-           (int) (0.3 * (dlg.width() - 1030)) : 0);
+           (int) (0.35 * (dlg.width() - 1030)) : 0);
   int y2 = tia.bottom;
   GUI::Rect r(x1, y1, x2, y2);
 
