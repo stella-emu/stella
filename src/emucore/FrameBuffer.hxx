@@ -236,6 +236,12 @@ class FrameBuffer
     void setCursorState();
 
     /**
+      Toggles the use of grabmouse (only has effect in emulation mode).
+      The method changes the 'grabmouse' setting and saves it.
+    */
+    void toggleGrabMouse();
+
+    /**
       Shows or hides the cursor based on the given boolean value.
     */
     virtual void showCursor(bool show);
@@ -488,7 +494,7 @@ class FrameBuffer
 
       @return  Averaged value of the two colors
     */
-    uInt8 getPhosphor(uInt8 c1, uInt8 c2);
+    uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
 
     /**
       Calculate the maximum level by which the base window can be zoomed and

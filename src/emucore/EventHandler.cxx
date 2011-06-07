@@ -59,7 +59,8 @@ EventHandler::EventHandler(OSystem* osystem)
     myOverlay(NULL),
     myState(S_NONE),
     myAllowAllDirectionsFlag(false),
-    myFryingFlag(false)
+    myFryingFlag(false),
+    mySkipMouseMotion(true)
 {
   // Create the event object which will be used for this handler
   myEvent = new Event();
@@ -565,6 +566,11 @@ void EventHandler::poll(uInt64 time)
                 myOSystem->console().toggleFormat();
                 break;
 
+              case SDLK_g:  // Ctrl-g (un)grabs mouse
+                if(!myOSystem->frameBuffer().fullScreen())
+                  myOSystem->frameBuffer().toggleGrabMouse();
+                break;
+
               case SDLK_l:  // Ctrl-l toggles PAL color-loss effect
                 myOSystem->console().toggleColorLoss();
                 break;
@@ -645,20 +651,17 @@ void EventHandler::poll(uInt64 time)
         {
           if(myMouseEnabled)
           {
-            int x = event.motion.xrel, y = event.motion.yrel;
-            // Filter out extremely large movement, which is usually caused
-            // by a screen being re-created
-            if(abs(x) < 50)
-              myEvent->set(Event::MouseAxisXValue, x);
-            if(abs(y) < 50)
-              myEvent->set(Event::MouseAxisYValue, y);
+            if(!mySkipMouseMotion)
+            {
+              myEvent->set(Event::MouseAxisXValue, event.motion.xrel);
+              myEvent->set(Event::MouseAxisYValue, event.motion.yrel);
+            }
+            mySkipMouseMotion = false;
           }
         }
         else if(myOverlay)
-        {
-          int x = event.motion.x, y = event.motion.y;
-          myOverlay->handleMouseMotionEvent(x, y, 0);
-        }
+          myOverlay->handleMouseMotionEvent(event.motion.x, event.motion.y, 0);
+
         break;  // SDL_MOUSEMOTION
 
       case SDL_MOUSEBUTTONUP:
@@ -2179,6 +2182,7 @@ void EventHandler::leaveDebugMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setEventState(State state)
 {
+cerr << "setEventState:" << state << endl;
   myState = state;
 
   switch(myState)
@@ -2225,6 +2229,10 @@ void EventHandler::setEventState(State state)
 
   // Always clear any pending events when changing states
   myEvent->clear();
+
+  // Sometimes an extraneous mouse motion event is generated
+  // after a state change, which should be surpressed
+  mySkipMouseMotion = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

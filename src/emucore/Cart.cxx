@@ -325,17 +325,11 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   else if((size == 2048) ||
           (size == 4096 && memcmp(image, image + 2048, 2048) == 0))
   {
-    if(isProbablyCV(image, size))
-      type = "CV";
-    else
-      type = "2K";
+    type = isProbablyCV(image, size) ? "CV" : "2K";
   }
   else if(size == 4096)
   {
-    if(isProbablyCV(image, size))
-      type = "CV";
-    else
-      type = "4K";
+    type = isProbablyCV(image, size) ? "CV" : "4K";
   }
   else if(size == 8*1024)  // 8K
   {
@@ -405,11 +399,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else if(isProbably4A50(image, size))
       type = "4A50";
     else if(isProbablyEF(image, size))
-    {
-      type = "EF";
-      if(isProbablySC(image, size))
-        type = "EFSC";
-    }
+      type = isProbablySC(image, size) ? "EFSC" : "EF";
     else if(isProbablyX07(image, size))
       type = "X07";
     else
@@ -548,8 +538,16 @@ bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
   // 4A50 carts store address $4A50 at the NMI vector, which
   // in this scheme is always in the last page of ROM at
   // $1FFA - $1FFB (at least this is true in rev 1 of the format)
-  int idx = size - 6;  // $1FFA
-  return (image[idx] == 0x50 && image[idx+1] == 0x4A);
+  if(image[size-6] == 0x50 && image[size-5] == 0x4A)
+    return true;
+
+  // Program starts at $1Fxx with NOP $6Exx or NOP $6Fxx?
+  if(((image[0xfffd] & 0x1f) == 0x1f) &&
+      (image[image[0xfffd] * 256 + image[0xfffc]] == 0x0c) &&
+      ((image[image[0xfffd] * 256 + image[0xfffc] + 2] & 0xfe) == 0x6e))
+    return true;
+
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

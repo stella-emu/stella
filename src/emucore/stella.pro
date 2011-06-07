@@ -7940,7 +7940,6 @@
 
 "Cartridge.MD5" "6847ce70819b74febcfd03e99610243b"
 "Cartridge.Name" "Ruby Runner 4A50"
-"Cartridge.Type" "4A50"
 ""
 
 "Cartridge.MD5" "68c80e7e1d30df98a0cf67ecbf39cc67"

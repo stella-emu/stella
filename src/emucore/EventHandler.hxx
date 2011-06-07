@@ -477,6 +477,11 @@ class EventHandler
     // a Ctrl combo when it isn't wanted)
     bool myUseCtrlKeyFlag;
 
+    // A bug in the SDL video handler creates an extraneous mouse motion
+    // event after a video state change
+    // We detect when this happens and discard the event
+    bool mySkipMouseMotion;
+
     // Used for continuous snapshot mode
     uInt32 myContSnapshotInterval;
     uInt32 myContSnapshotCounter;

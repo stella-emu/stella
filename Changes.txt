@@ -16,10 +16,19 @@
 
   * Re-enabled 'grabmouse' commandline argument and associated
     functionality with the following changes:
-      - it doesn't have a hotkey anymore
       - it is changed in the "Input Settings' UI, not in 'Video Settings'
       - it only has meaning while in emulation mode
       - it is enabled by default
+
+  * Fixed bug with emulation of paddles using the mouse in Warlords;
+    movement was being filtered out if the mouse was moved too fast.
+
+  * Fixed bug whereby switching to the debugger and back again would
+    sometimes cause an extra mouse motion event (which would cause the
+    emulation to think the mouse was moved and move the player
+    accordingly).
+
+  * Tweaked bankswitch autodetection code for 4A50 bankswitching.
 
 -Have fun!
 

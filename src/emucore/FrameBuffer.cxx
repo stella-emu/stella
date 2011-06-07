@@ -67,7 +67,8 @@ FrameBuffer::~FrameBuffer(void)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBInitStatus FrameBuffer::initialize(const string& title, uInt32 width, uInt32 height)
+FBInitStatus FrameBuffer::initialize(const string& title,
+                                     uInt32 width, uInt32 height)
 {
   ostringstream buf;
 
@@ -286,7 +287,6 @@ void FrameBuffer::update()
 
     default:
       return;
-      break;
   }
 
   // Draw any pending messages
@@ -753,6 +753,14 @@ void FrameBuffer::setCursorState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleGrabMouse()
+{
+  bool state = myOSystem->settings().getBool("grabmouse");
+  myOSystem->settings().setBool("grabmouse", !state);
+  setCursorState();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showCursor(bool show)
 {
   SDL_ShowCursor(show ? SDL_ENABLE : SDL_DISABLE);
@@ -842,7 +850,7 @@ void FrameBuffer::setWindowIcon()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2)
+uInt8 FrameBuffer::getPhosphor(uInt8 c1, uInt8 c2) const
 {
   if(c2 > c1)
     BSPF_swap(c1, c2);
