@@ -479,7 +479,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   // Do a little error checking; it shouldn't be necessary
   if(myConsole) deleteConsole();
 
-  bool retval = false, showmessage = false;
+  bool showmessage = false;
 
   // If a blank ROM has been given, we reload the current one (assuming one exists)
   if(romfile == "")
@@ -546,25 +546,24 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     resetLoopTiming();
 
     myFrameBuffer->setCursorState();
-    retval = true;
+
+    // Also check if certain virtual buttons should be held down
+    // These must be checked each time a new console is being created
+    if(mySettings->getBool("holdreset"))
+      myEventHandler->handleEvent(Event::ConsoleReset, 1);
+    if(mySettings->getBool("holdselect"))
+      myEventHandler->handleEvent(Event::ConsoleSelect, 1);
+    if(mySettings->getBool("holdbutton0"))
+      myEventHandler->handleEvent(Event::JoystickZeroFire1, 1);
+
+    return true;
   }
   else
   {
     buf << "ERROR: Couldn't create console for " << myRomFile << endl;
     logMessage(buf.str(), 0);
-    retval = false;
+    return false;
   }
-
-  // Also check if certain virtual buttons should be held down
-  // These must be checked each time a new console is being created
-  if(mySettings->getBool("holdreset"))
-    myEventHandler->handleEvent(Event::ConsoleReset, 1);
-  if(mySettings->getBool("holdselect"))
-    myEventHandler->handleEvent(Event::ConsoleSelect, 1);
-  if(mySettings->getBool("holdbutton0"))
-    myEventHandler->handleEvent(Event::JoystickZeroFire1, 1);
-
-  return retval;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -813,6 +812,13 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
     gzclose(f);
   }
 
+  // Zero-byte files should be automatically discarded
+  if(size == 0)
+  {
+    delete[] image;
+    return (uInt8*) 0;
+  }
+
   // If we get to this point, we know we have a valid file to open
   // Now we make sure that the file has a valid properties entry
   // To save time, only generate an MD5 if we really need one
@@ -868,7 +874,7 @@ void OSystem::validatePath(const string& setting, const string& partialpath,
 {
   const string& s = mySettings->getString(setting) != "" ?
     mySettings->getString(setting) : myBaseDir + partialpath;
-  FilesystemNode node = FilesystemNode(s);
+  FilesystemNode node(s);
   if(!node.isDirectory())
   {
     AbstractFilesystemNode::makeDir(s);

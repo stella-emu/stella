@@ -818,11 +818,20 @@ void EventHandler::poll(uInt64 time)
                     handleEvent(eventAxisNeg, 1);
                   else
                   {
-                    // Turn off both events, since we don't know exactly which one
-                    // was previously activated.
-                    handleEvent(eventAxisNeg, 0);
-                    handleEvent(eventAxisPos, 0);
+                    // Treat any deadzone value as zero
+                    value = 0;
+
+                    // Now filter out consecutive, similar values
+                    // (only pass on the event if the state has changed)
+                    if(myAxisLastValue[stick][axis] != value)
+                    {
+                      // Turn off both events, since we don't know exactly which one
+                      // was previously activated.
+                      handleEvent(eventAxisNeg, 0);
+                      handleEvent(eventAxisPos, 0);
+                    }
                   }
+                  myAxisLastValue[stick][axis] = value;
                   break;
                 }
               }

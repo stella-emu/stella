@@ -538,14 +538,11 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           if(LauncherFilterDialog::isValidRomName(rom, extension))
           {
             if(instance().createConsole(rom, md5))
-            {
-            #if !defined(GP2X)   // Quick GP2X hack to spare flash-card saves
               instance().settings().setString("lastrom", myList->getSelectedString());
-            #endif
-            }
             else
               instance().frameBuffer().showMessage(
-                  "Error creating console (screen too small)", kMiddleCenter, true);
+                  "Error creating console (check ROM file)",
+                  kMiddleCenter, true);
           }
           else
             instance().frameBuffer().showMessage("Not a valid ROM file",

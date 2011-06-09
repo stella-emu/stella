@@ -20,19 +20,29 @@
       - it only has meaning while in emulation mode
       - it is enabled by default
 
-  * Fixed bug with emulation of paddles using the mouse in Warlords;
-    movement was being filtered out if the mouse was moved too fast.
+  * Fixed bug with emulation of paddles using the mouse most evident in
+    Warlords; movement was being filtered out if the mouse was moved too
+    fast.  There's still more work required in this area, however.
 
-  * Fixed bug whereby switching to the debugger and back again would
+  * Fixed bug with analog axes on gamepad devices, whereby jittering in
+    these axes would override input from digital axis, hat or keyboard
+    input.
+
+  * Fixed bug when switching to the debugger and back again would
     sometimes cause an extra mouse motion event (which would cause the
     emulation to think the mouse was moved and move the player
     accordingly).
 
-  * Tweaked bankswitch autodetection code for 4A50 bankswitching.
+  * Tweaked bankswitch autodetection code for 4A50 bankswitching; several
+    more test ROMs are automatically detected.
 
   * The 'saverom' debugger command now saves ROMs in your home
     directory by default if you don't specify a valid path.  This fixes
-    a bug whereby ROMs were saved and couldn't later be located.
+    a bug whereby ROMs were saved in strange locations and couldn't later
+    be found.
+
+  * Zero-byte ROMs are no longer loaded and mis-detected as Supercharger
+    images.
 
 -Have fun!
 
