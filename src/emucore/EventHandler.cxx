@@ -2182,7 +2182,6 @@ void EventHandler::leaveDebugMode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setEventState(State state)
 {
-cerr << "setEventState:" << state << endl;
   myState = state;
 
   switch(myState)
@@ -2231,7 +2230,7 @@ cerr << "setEventState:" << state << endl;
   myEvent->clear();
 
   // Sometimes an extraneous mouse motion event is generated
-  // after a state change, which should be surpressed
+  // after a state change, which should be supressed
   mySkipMouseMotion = true;
 }
 

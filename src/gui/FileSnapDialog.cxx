@@ -225,31 +225,31 @@ void FileSnapDialog::setDefaults()
   const string& basedir = instance().baseDir();
 
   node = FilesystemNode("~");
-  myRomPath->setEditString(node.getRelativePath());
+  myRomPath->setEditString(node.getPath(false));
 
   const string& statedir = basedir + "state";
   node = FilesystemNode(statedir);
-  myStatePath->setEditString(node.getRelativePath());
+  myStatePath->setEditString(node.getPath(false));
 
   const string& cheatfile = basedir + "stella.cht";
   node = FilesystemNode(cheatfile);
-  myCheatFile->setEditString(node.getRelativePath());
+  myCheatFile->setEditString(node.getPath(false));
 
   const string& palettefile = basedir + "stella.pal";
   node = FilesystemNode(palettefile);
-  myPaletteFile->setEditString(node.getRelativePath());
+  myPaletteFile->setEditString(node.getPath(false));
 
   const string& propsfile = basedir + "stella.pro";
   node = FilesystemNode(propsfile);
-  myPropsFile->setEditString(node.getRelativePath());
+  myPropsFile->setEditString(node.getPath(false));
 
   const string& eepromdir = basedir;
   node = FilesystemNode(eepromdir);
-  myEEPROMPath->setEditString(node.getRelativePath());
+  myEEPROMPath->setEditString(node.getPath(false));
 
   const string& ssdir = basedir + "snapshots";
   node = FilesystemNode(ssdir);
-  mySnapPath->setEditString(node.getRelativePath());
+  mySnapPath->setEditString(node.getPath(false));
 
   mySnapSingle->setState(false);
   mySnap1x->setState(false);
@@ -311,49 +311,49 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
     case kRomDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myRomPath->setEditString(dir.getRelativePath());
+      myRomPath->setEditString(dir.getPath(false));
       break;
     }
 
     case kStateDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myStatePath->setEditString(dir.getRelativePath());
+      myStatePath->setEditString(dir.getPath(false));
       break;
     }
 
     case kCheatFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myCheatFile->setEditString(dir.getRelativePath());
+      myCheatFile->setEditString(dir.getPath(false));
       break;
     }
 
     case kPaletteFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPaletteFile->setEditString(dir.getRelativePath());
+      myPaletteFile->setEditString(dir.getPath(false));
       break;
     }
 
     case kPropsFileChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myPropsFile->setEditString(dir.getRelativePath());
+      myPropsFile->setEditString(dir.getPath(false));
       break;
     }
 
     case kSnapDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      mySnapPath->setEditString(dir.getRelativePath());
+      mySnapPath->setEditString(dir.getPath(false));
       break;
     }
 
     case kEEPROMDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myEEPROMPath->setEditString(dir.getRelativePath());
+      myEEPROMPath->setEditString(dir.getPath(false));
       break;
     }
 

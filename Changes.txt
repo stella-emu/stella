@@ -30,6 +30,10 @@
 
   * Tweaked bankswitch autodetection code for 4A50 bankswitching.
 
+  * The 'saverom' debugger command now saves ROMs in your home
+    directory by default if you don't specify a valid path.  This fixes
+    a bug whereby ROMs were saved and couldn't later be located.
+
 -Have fun!
 
 

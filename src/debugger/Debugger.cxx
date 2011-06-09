@@ -825,13 +825,16 @@ void Debugger::getCompletions(const char* in, StringList& list) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Debugger::saveROM(const string& filename) const
+string Debugger::saveROM(const string& filename) const
 {
-  ofstream out(filename.c_str(), ios::out | ios::binary);
-  if(out.is_open())
-    return myConsole->cartridge().save(out);
+  string path = AbstractFilesystemNode::getAbsolutePath(filename, "~", "a26");
+  FilesystemNode node(path);
+
+  ofstream out(node.getPath(true).c_str(), ios::out | ios::binary);
+  if(out.is_open() && myConsole->cartridge().save(out))
+    return node.getPath(false);
   else
-    return false;
+    return "";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

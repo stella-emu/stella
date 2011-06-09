@@ -135,7 +135,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
   {
     ifstream in(file.getPath().c_str());
     if(!in.is_open())
-      return red("autoexec file \'" + file.getRelativePath() + "\' not found");
+      return red("autoexec file \'" + file.getPath(false) + "\' not found");
 
     ostringstream buf;
     int count = 0;
@@ -148,12 +148,12 @@ string DebuggerParser::exec(const FilesystemNode& file)
       count++;
     }
     buf << "Executed " << debugger->valueToString(count) << " commands from \""
-        << file.getRelativePath() << "\"";
+        << file.getPath(false) << "\"";
 
     return buf.str();
   }
   else
-    return red("autoexec file \'" + file.getRelativePath() + "\' not found");
+    return red("autoexec file \'" + file.getPath(false) + "\' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1419,8 +1419,9 @@ void DebuggerParser::executeSaveconfig()
 // "saverom"
 void DebuggerParser::executeSaverom()
 {
-  if(debugger->saveROM(argStrings[0]))
-    commandResult << "saved ROM as " << argStrings[0];
+  const string& result = debugger->saveROM(argStrings[0]);
+  if(result != "")
+    commandResult << "saved ROM as " << result;
   else
     commandResult << red("failed to save ROM");
 }

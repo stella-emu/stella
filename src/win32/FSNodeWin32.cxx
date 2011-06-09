@@ -91,17 +91,16 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
      */
     WindowsFilesystemNode(const string& path);
 
-    virtual bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
-    virtual string getDisplayName() const { return _displayName; }
-    virtual string getName() const   { return _displayName; }
-    virtual string getPath() const   { return _path; }
-    virtual string getRelativePath() const;
-    virtual bool isDirectory() const { return _isDirectory; }
-    virtual bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
-    virtual bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
+    bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
+    string getDisplayName() const { return _displayName; }
+    string getName() const   { return _displayName; }
+    string getPath(bool fqn) const;
+    bool isDirectory() const { return _isDirectory; }
+    bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
+    bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
 
-    virtual bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
-    virtual AbstractFilesystemNode* getParent() const;
+    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
+    AbstractFilesystemNode* getParent() const;
 
   protected:
     string _displayName;
@@ -286,22 +285,16 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string WindowsFilesystemNode::getRelativePath() const
+string WindowsFilesystemNode::getPath(bool fqn) const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
-  if(home != "")
-  {
-    // Windows file system not case sensitive
-    int len = home.length();
-    if(BSPF_strncasecmp(home.c_str(), _path.substr(0, len).c_str(), len) == 0)
-    {
-      string path = "~";
-      const char* offset = _path.c_str() + len;
-      if(*offset != '\\') path += '\\';
-      path += offset;
-      return path;
-    }
+  if(!fqn && home != "" && BSPF_startsWithIgnoreCase(_path, home))
+    string path = "~";
+    const char* offset = _path.c_str() + home.length();
+    if(*offset != '\\') path += '\\';
+    path += offset;
+    return path;
   }
   return _path;
 }
@@ -422,4 +415,13 @@ bool AbstractFilesystemNode::renameFile(const string& oldfile,
                                         const string& newfile)
 {
   return MoveFile(oldfile.c_str(), newfile.c_str()) != 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AbstractFilesystemNode::getAbsolutePath(const string& p,
+                                               const string& startpath,
+                                               const string& ext)
+{
+  assert(false);
+  return "";
 }

@@ -58,17 +58,16 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
      */
     POSIXFilesystemNode(const string& path, bool verify);
 
-    virtual bool exists() const { return access(_path.c_str(), F_OK) == 0; }
-    virtual string getDisplayName() const { return _displayName; }
-    virtual string getName() const   { return _displayName; }
-    virtual string getPath() const   { return _path; }
-    virtual string getRelativePath() const;
-    virtual bool isDirectory() const { return _isDirectory; }
-    virtual bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
-    virtual bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
+    bool exists() const { return access(_path.c_str(), F_OK) == 0; }
+    string getDisplayName() const { return _displayName; }
+    string getName() const   { return _displayName; }
+    string getPath(bool fqn) const;
+    bool isDirectory() const { return _isDirectory; }
+    bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
+    bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
 
-    virtual bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
-    virtual AbstractFilesystemNode* getParent() const;
+    bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
+    AbstractFilesystemNode* getParent() const;
 
   protected:
     string _displayName;
@@ -183,21 +182,17 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string POSIXFilesystemNode::getRelativePath() const
+string POSIXFilesystemNode::getPath(bool fqn) const
 {
   // If the path starts with the home directory, replace it with '~'
   const char* home = getenv("HOME");
-  if(home != NULL)
+  if(!fqn && home != NULL && BSPF_startsWithIgnoreCase(_path, home))
   {
-    int len = strlen(home);
-    if(strncmp(_path.c_str(), home, len) == 0)
-    {
-      string path = "~";
-      const char* offset = _path.c_str() + len;
-      if(*offset != '/') path += "/";
-      path += offset;
-      return path;
-    }
+    string path = "~";
+    const char* offset = _path.c_str() + strlen(home);
+    if(*offset != '/') path += "/";
+    path += offset;
+    return path;
   }
   return _path;
 }
@@ -302,12 +297,6 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
-{
-  return new POSIXFilesystemNode("./", true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
 {
   return new POSIXFilesystemNode("~/", true);
@@ -330,4 +319,30 @@ bool AbstractFilesystemNode::renameFile(const string& oldfile,
                                         const string& newfile)
 {
   return rename(oldfile.c_str(), newfile.c_str()) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string AbstractFilesystemNode::getAbsolutePath(const string& p,
+                                               const string& startpath,
+                                               const string& ext)
+{
+  // Does p start with the root directory or the given startpath?
+  // If not, it isn't an absolute path
+  string path = FilesystemNode(p).getPath(false);
+  if(!BSPF_startsWithIgnoreCase(p, startpath+"/") &&
+     !BSPF_startsWithIgnoreCase(p, "/"))
+    path = startpath + "/" + p;
+
+  // Does the path have a valid extension?
+  // If not, we add the given one
+  string::size_type idx = path.find_last_of('.');
+  if(idx != string::npos)
+  {
+    if(!BSPF_equalsIgnoreCase(path.c_str() + idx + 1, ext))
+      path = path.replace(idx+1, ext.length(), ext);
+  }
+  else
+    path += "." + ext;
+
+  return path;
 }

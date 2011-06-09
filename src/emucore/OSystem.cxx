@@ -325,19 +325,19 @@ void OSystem::setConfigPaths()
   if(s == "") s = myBaseDir + "stella.cht";
   node = FilesystemNode(s);
   myCheatFile = node.getPath();
-  mySettings->setString("cheatfile", node.getRelativePath());
+  mySettings->setString("cheatfile", node.getPath(false));
 
   s = mySettings->getString("palettefile");
   if(s == "") s = myBaseDir + "stella.pal";
   node = FilesystemNode(s);
   myPaletteFile = node.getPath();
-  mySettings->setString("palettefile", node.getRelativePath());
+  mySettings->setString("palettefile", node.getPath(false));
 
   s = mySettings->getString("propsfile");
   if(s == "") s = myBaseDir + "stella.pro";
   node = FilesystemNode(s);
   myPropertiesFile = node.getPath();
-  mySettings->setString("propsfile", node.getRelativePath());
+  mySettings->setString("propsfile", node.getPath(false));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -875,7 +875,7 @@ void OSystem::validatePath(const string& setting, const string& partialpath,
     node = FilesystemNode(node.getPath());
   }
   fullpath = node.getPath();
-  mySettings->setString(setting, node.getRelativePath());
+  mySettings->setString(setting, node.getPath(false));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

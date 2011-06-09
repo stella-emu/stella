@@ -289,7 +289,7 @@ class Debugger : public DialogContainer
 
     void setBreakPoint(int bp, bool set);
 
-    bool saveROM(const string& filename) const;
+    string saveROM(const string& filename) const;
 
     bool setBank(int bank);
     bool patchROM(int addr, int value);

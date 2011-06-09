@@ -116,8 +116,8 @@ class FilesystemNode
      * Create a new FilesystemNode referring to the specified path. This is
      * the counterpart to the path() method.
      *
-     * If path is empty or equals ".", then a node representing the "current
-     * directory" will be created. If that is not possible (since e.g. the
+     * If path is empty or equals "." or "~", then a node representing the
+     * "home directory" will be created. If that is not possible (since e.g. the
      * operating system doesn't support the concept), some other directory is
      * used (usually the root directory).
      */
@@ -166,7 +166,11 @@ class FilesystemNode
     virtual string getName() const;
 
     /**
-     * Return a string representation of the file which can be passed to fopen().
+     * Return a string representation of the file with the following properties:
+     *  1) can be passed to fopen() if fqn is true
+     *  2) contains the '~' symbol (if applicable), and is suitable for archiving
+     *     (i.e. writing to the config file) if fqn is false
+     *
      * This will usually be a 'path' (hence the name of the method), but can
      * be anything that fulfills the above criterions.
      *
@@ -175,19 +179,7 @@ class FilesystemNode
      *
      * @return the 'path' represented by this filesystem node
      */
-    virtual string getPath() const;
-
-    /**
-     * Return a string representation of the file which contains the '~'
-     * symbol (if applicable), and is suitable for archiving (i.e. writing
-     * to the config file).
-     *
-     * @note Do not assume that this string contains (back)slashes or any
-     *       other kind of 'path separators'.
-     *
-     * @return the 'path' represented by this filesystem node
-     */
-    virtual string getRelativePath() const;
+    virtual string getPath(bool fqn = true) const;
 
     /**
      * Determine whether this node has a parent.
@@ -302,14 +294,10 @@ class AbstractFilesystemNode
     virtual string getName() const = 0;
 
     /**
-     * Returns the 'path' of the current node, usable in fopen().
+     * Returns the 'path' of the current node, usable in fopen() or 
+       containing '~' and for archiving.
      */
-    virtual string getPath() const = 0;
-
-    /**
-     * Returns the 'path' of the current node, containing '~' and for archiving.
-     */
-    virtual string getRelativePath() const = 0;
+    virtual string getPath(bool fqn = true) const = 0;
 
     /**
      * Indicates whether this path refers to a directory or not.
@@ -356,20 +344,20 @@ class AbstractFilesystemNode
      */
     static bool renameFile(const string& oldfile, const string& newfile);
 
+    /**
+      Create an absolute pathname from the given path (if it isn't already
+      absolute), pre-pending 'startpath' when necessary.  If the path doesn't
+      have an extension matching 'ext', append it to the path.
+     */
+    static string getAbsolutePath(const string& p, const string& startpath,
+                                  const string& ext);
+
   protected:
     /**
      * The parent node of this directory.
      * The parent of the root is the root itself.
      */
     virtual AbstractFilesystemNode* getParent() const = 0;
-
-    /**
-     * Returns a node representing the "current directory".
-     * If your system does not support this concept, you can either try to
-     * emulate it or simply return some "sensible" default directory node,
-     * e.g. the same value as getRoot() returns.
-     */
-    static AbstractFilesystemNode* makeCurrentDirectoryFileNode();
 
     /**
      * Returns a node representing the "home directory".

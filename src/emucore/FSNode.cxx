@@ -39,9 +39,7 @@ FilesystemNode::FilesystemNode(AbstractFilesystemNode *realNode)
 FilesystemNode::FilesystemNode(const string& p)
 {
   AbstractFilesystemNode* tmp = 0;
-  if (p.empty() || p == ".")
-    tmp = AbstractFilesystemNode::makeCurrentDirectoryFileNode();
-  else if (p == "~")
+  if (p.empty() || p == "." || p == "~")
     tmp = AbstractFilesystemNode::makeHomeDirectoryFileNode();
   else
     tmp = AbstractFilesystemNode::makeFileNodePath(p);
@@ -124,17 +122,10 @@ FilesystemNode FilesystemNode::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getPath() const
+string FilesystemNode::getPath(bool fqn) const
 {
   assert(_realNode);
-  return _realNode->getPath();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getRelativePath() const
-{
-  assert(_realNode);
-  return _realNode->getRelativePath();
+  return _realNode->getPath(fqn);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
