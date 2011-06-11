@@ -41,6 +41,9 @@
     a bug whereby ROMs were saved in strange locations and couldn't later
     be found.
 
+  * Fixed bug in automatically executing the debugger 'autoexec.stella'
+    file; any commands it contained weren't actually being executed.
+
   * Zero-byte ROMs are no longer loaded and mis-detected as Supercharger
     images.
 

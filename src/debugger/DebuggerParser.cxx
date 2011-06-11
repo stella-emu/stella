@@ -139,12 +139,13 @@ string DebuggerParser::exec(const FilesystemNode& file)
 
     ostringstream buf;
     int count = 0;
-    char buffer[256];
+    string command;
     while( !in.eof() )
     {
-      if(!in.getline(buffer, 255))
+      if(!getline(in, command))
         break;
 
+      run(command);
       count++;
     }
     buf << "Executed " << debugger->valueToString(count) << " commands from \""
@@ -433,7 +434,7 @@ bool DebuggerParser::validateArgs(int cmd)
   while(*p != kARG_END_ARGS && *p != kARG_MULTI_BYTE)
   {
     count++;
-    *p++;
+    p++;
   }
 
   // Evil hack: some commands intentionally take multiple arguments
@@ -497,7 +498,7 @@ bool DebuggerParser::validateArgs(int cmd)
         break;
     }
     curCount++;
-    *p++;
+    p++;
 
   } while(*p != kARG_END_ARGS && curCount < argRequiredCount);
 
