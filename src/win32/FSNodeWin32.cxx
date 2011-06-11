@@ -114,17 +114,17 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
      * Adds a single WindowsFilesystemNode to a given list.
      * This method is used by getChildren() to populate the directory entries list.
      *
-     * @param list List to put the file entry node in.
-     * @param mode Mode to use while adding the file entry to the list.
-     * @param base String with the directory being listed.
-     * @param find_data Describes a file that the FindFirstFile, FindFirstFileEx, or FindNextFile functions find.
+     * @param list       List to put the file entry node in.
+     * @param mode       Mode to use while adding the file entry to the list.
+     * @param base       String with the directory being listed.
+     * @param find_data  Describes a file that the FindFirstFile, FindFirstFileEx, or FindNextFile functions find.
      */
     static void addFile(AbstractFSList& list, ListMode mode, const char* base, WIN32_FIND_DATA* find_data);
 
     /**
      * Converts a Unicode string to Ascii format.
      *
-     * @param str String to convert from Unicode to Ascii.
+     * @param str  String to convert from Unicode to Ascii.
      * @return str in Ascii format.
      */
     static char* toAscii(TCHAR *str);
@@ -132,7 +132,7 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     /**
      * Converts an Ascii string to Unicode format.
      *
-     * @param str String to convert from Ascii to Unicode.
+     * @param str  String to convert from Ascii to Unicode.
      * @return str in Unicode format.
      */
     static const TCHAR* toUnicode(const char* str);
@@ -238,21 +238,11 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 {
-  // Expand "~\" to the 'My Documents' directory
-  if ( p.length() >= 2 && p[0] == '~' && p[1] == '\\')
+  // Expand '~\' and '.\' to the users 'home' directory
+  if ( p.length() >= 2 && (p[0] == '~' || p[0] == '.') && p[1] == '\\')
   {
     _path = myHomeFinder.getHomePath();
-    // Skip over the tilde.  We know that p contains at least
-    // two chars, so this is safe:
-    _path += p.c_str() + 1;
-  }
-  // Expand ".\" to the current directory
-  else if ( p.length() >= 2 && p[0] == '.' && p[1] == '\\')
-  {
-    char path[MAX_PATH];
-    GetCurrentDirectory(MAX_PATH, path);
-    _path = path;
-    // Skip over the dot.  We know that p contains at least
+    // Skip over the tilde/dot.  We know that p contains at least
     // two chars, so this is safe:
     _path += p.c_str() + 1;
   }
@@ -290,6 +280,7 @@ string WindowsFilesystemNode::getPath(bool fqn) const
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
   if(!fqn && home != "" && BSPF_startsWithIgnoreCase(_path, home))
+  {
     string path = "~";
     const char* offset = _path.c_str() + home.length();
     if(*offset != '\\') path += '\\';
@@ -387,12 +378,6 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode* AbstractFilesystemNode::makeCurrentDirectoryFileNode()
-{
-  return new WindowsFilesystemNode(".\\");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
 {
   return new WindowsFilesystemNode("~\\");
@@ -422,6 +407,23 @@ string AbstractFilesystemNode::getAbsolutePath(const string& p,
                                                const string& startpath,
                                                const string& ext)
 {
-  assert(false);
-  return "";
+  // Does p start with a drive letter or the given startpath?
+  // If not, it isn't an absolute path
+  string path = FilesystemNode(p).getPath(false);
+  bool startsWithDrive = path.length() >= 2 && path[1] == ':';
+  if(!BSPF_startsWithIgnoreCase(p, startpath+"\\") && !startsWithDrive)
+    path = startpath + "\\" + p;
+
+  // Does the path have a valid extension?
+  // If not, we add the given one
+  string::size_type idx = path.find_last_of('.');
+  if(idx != string::npos)
+  {
+    if(!BSPF_equalsIgnoreCase(path.c_str() + idx + 1, ext))
+      path = path.replace(idx+1, ext.length(), ext);
+  }
+  else
+    path += "." + ext;
+
+  return path;
 }

@@ -72,7 +72,7 @@ OSystemWin32::OSystemWin32()
     FilesystemNode appdata(homefinder.getAppDataPath());
     if(appdata.isDirectory())
     {
-      basedir = appdata.getRelativePath();
+      basedir = appdata.getPath(false);
       if(basedir.length() > 1 && basedir[basedir.length()-1] != '\\')
         basedir += '\\';
       basedir += "Stella";
