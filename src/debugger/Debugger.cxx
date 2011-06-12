@@ -323,11 +323,11 @@ string Debugger::valueToString(int value, BaseFormat outputBase)
     case kBASE_16:
     default:
       if(value < 0x100)
-        sprintf(buf, "%02x", value);
+        sprintf(buf, "%02X", value);
       else if(value < 0x10000)
-        sprintf(buf, "%04x", value);
+        sprintf(buf, "%04X", value);
       else
-        sprintf(buf, "%08x", value);
+        sprintf(buf, "%08X", value);
       break;
   }
 

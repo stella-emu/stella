@@ -188,19 +188,19 @@ class Debugger : public DialogContainer
     static char* to_hex_4(int i)
     {
       static char out[2];
-      sprintf(out, "%1x", i);
+      sprintf(out, "%1X", i);
       return out;
     }
     static char* to_hex_8(int i)
     {
       static char out[3];
-      sprintf(out, "%02x", i);
+      sprintf(out, "%02X", i);
       return out;
     }
     static char* to_hex_16(int i)
     {
       static char out[5];
-      sprintf(out, "%04x", i);
+      sprintf(out, "%04X", i);
       return out;
     }
     static char* to_bin(int dec, int places, char *buf) {
