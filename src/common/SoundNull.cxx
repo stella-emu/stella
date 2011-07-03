@@ -38,17 +38,16 @@ SoundNull::~SoundNull()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SoundNull::load(Serializer& in)
 {
-  const string& soundDevice = "TIASound";
-  if(in.getString() != soundDevice)
+  if(in.getString() != "TIASound")
     return false;
 
-  uInt8 reg;
-  reg = (uInt8) in.getByte();
-  reg = (uInt8) in.getByte();
-  reg = (uInt8) in.getByte();
-  reg = (uInt8) in.getByte();
-  reg = (uInt8) in.getByte();
-  reg = (uInt8) in.getByte();
+  // Read sound registers and discard
+  in.getByte();
+  in.getByte();
+  in.getByte();
+  in.getByte();
+  in.getByte();
+  in.getByte();
 
   // myLastRegisterSetCycle
   in.getInt();
@@ -61,13 +60,12 @@ bool SoundNull::save(Serializer& out) const
 {
   out.putString("TIASound");
 
-  uInt8 reg = 0;
-  out.putByte((char)reg);
-  out.putByte((char)reg);
-  out.putByte((char)reg);
-  out.putByte((char)reg);
-  out.putByte((char)reg);
-  out.putByte((char)reg);
+  out.putByte(0);
+  out.putByte(0);
+  out.putByte(0);
+  out.putByte(0);
+  out.putByte(0);
+  out.putByte(0);
 
   // myLastRegisterSetCycle
   out.putInt(0);

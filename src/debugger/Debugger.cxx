@@ -293,45 +293,60 @@ const string Debugger::run(const string& command)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Debugger::valueToString(int value, BaseFormat outputBase)
+string Debugger::valueToString(int value, BaseFormat outputBase) const
 {
-  char buf[32];
+  static char vToS_buf[32];
 
   if(outputBase == kBASE_DEFAULT)
     outputBase = myParser->base();
 
   switch(outputBase)
   {
-    case kBASE_2:
+    case kBASE_2:     // base 2:  8 or 16 bits (depending on value)
+    case kBASE_2_8:   // base 2:  1 byte (8 bits) wide
+    case kBASE_2_16:  // base 2:  2 bytes (16 bits) wide
+    {
+      int places = (outputBase == kBASE_2_8 ||
+               (outputBase == kBASE_2 && value < 0x100)) ? 8 : 16;
+      vToS_buf[places] = '\0';
+      int bit = 1;
+      while(--places >= 0) {
+        if(value & bit) vToS_buf[places] = '1';
+        else            vToS_buf[places] = '0';
+        bit <<= 1;
+      }
+      break;
+    }
+
+    case kBASE_10:    // base 10: 3 or 5 bytes (depending on value)
       if(value < 0x100)
-        Debugger::to_bin(value, 8, buf);
+        snprintf(vToS_buf, 4, "%3d", value);
       else
-        Debugger::to_bin(value, 16, buf);
+        snprintf(vToS_buf, 6, "%5d", value);
       break;
 
-    case kBASE_10:
-      if(value < 0x100)
-        sprintf(buf, "%3d", value);
-      else
-        sprintf(buf, "%5d", value);
+    case kBASE_16_1:  // base 16: 1 byte wide
+      snprintf(vToS_buf, 2, "%1X", value);
+      break;
+    case kBASE_16_2:  // base 16: 2 bytes wide
+      snprintf(vToS_buf, 3, "%02X", value);
+      break;
+    case kBASE_16_4:  // base 16: 4 bytes wide
+      snprintf(vToS_buf, 5, "%04X", value);
       break;
 
-    case kBASE_16_4:
-      strcpy(buf, Debugger::to_hex_4(value));
-      break;
-
-    case kBASE_16:
+    case kBASE_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:
       if(value < 0x100)
-        sprintf(buf, "%02X", value);
+        snprintf(vToS_buf, 3, "%02X", value);
       else if(value < 0x10000)
-        sprintf(buf, "%04X", value);
+        snprintf(vToS_buf, 5, "%04X", value);
       else
-        sprintf(buf, "%08X", value);
+        snprintf(vToS_buf, 9, "%08X", value);
       break;
   }
 
-  return string(buf);
+  return string(vToS_buf);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

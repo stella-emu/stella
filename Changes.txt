@@ -12,6 +12,17 @@
                                Release History
 ===========================================================================
 
+3.4.1 to 4.x: (XXXX xx, 2011)
+
+  * The debugger 'print' command now indicates "special" addresses if they
+    are read-only (R), write-only (W) or read-write (R/W).
+
+  * Fixed a bug in scrolling the mouse-wheel in certain debugger UI items
+    would cause the program to crash; scrolling now works as expected.
+
+-Have fun!
+
+
 3.4 to 3.4.1: (June 11, 2011)
 
   * Re-enabled 'grabmouse' commandline argument and associated
@@ -46,8 +57,6 @@
 
   * Zero-byte ROMs are no longer loaded and mis-detected as Supercharger
     images.
-
--Have fun!
 
 
 3.3 to 3.4: (May. 29, 2011)

@@ -774,14 +774,14 @@ string TIADebug::toString()
       << "BK=" << myDebugger.valueToString(state.coluRegs[3]) << "/"
       << colorSwatch(state.coluRegs[3])
       << endl
-      << "P0: GR=" << string(Debugger::to_bin_8(state.gr[P0]))
+      << "P0: GR=" << myDebugger.valueToString(state.gr[P0], kBASE_2_8)
       << " pos=" << myDebugger.valueToString(state.pos[P0])
       << " HM=" << myDebugger.valueToString(state.hm[P0]) << " "
       << nusizP0String() << " "
       << booleanWithLabel("refl", refP0()) << " "
       << booleanWithLabel("delay", vdelP0())
       << endl
-      << "P1: GR=" << string(Debugger::to_bin_8(state.gr[P1]))
+      << "P1: GR=" << myDebugger.valueToString(state.gr[P1], kBASE_2_8)
       << " pos=" << myDebugger.valueToString(state.pos[P1])
       << " HM=" << myDebugger.valueToString(state.hm[P1]) << " "
       << nusizP1String() << " "
@@ -806,11 +806,11 @@ string TIADebug::toString()
       << " size=" << myDebugger.valueToString(state.size[BL]) << " "
       << booleanWithLabel("delay", vdelBL())
       << endl
-      << "PF0: " << string(Debugger::to_bin_8(state.pf[0])) << "/"
+      << "PF0: " << myDebugger.valueToString(state.pf[0], kBASE_2_8) << "/"
       << myDebugger.valueToString(state.pf[0])
-      << " PF1: " << string(Debugger::to_bin_8(state.pf[1])) << "/"
+      << " PF1: " << myDebugger.valueToString(state.pf[1], kBASE_2_8) << "/"
       << myDebugger.valueToString(state.pf[1])
-      << " PF2: " << string(Debugger::to_bin_8(state.pf[2])) << "/"
+      << " PF2: " << myDebugger.valueToString(state.pf[2], kBASE_2_8) << "/"
       << myDebugger.valueToString(state.pf[2])
       << endl << "     "
       << booleanWithLabel("reflect",  refPF()) << " "

@@ -229,7 +229,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           myDisasmBuf << ((c > 127) ? bit_string : " ");
         myDisasmBuf << "|  $" << HEX4 << myPC+myOffset << "'";
         if(settings.gfx_format == kBASE_2)
-          myDisasmBuf << Debugger::to_bin_8(byte);
+          myDisasmBuf << Debugger::debugger().valueToString(byte, kBASE_2_8);
         else
           myDisasmBuf << HEX2 << (int)byte;
         addEntry(isPGfx ? CartDebug::PGFX : CartDebug::GFX);

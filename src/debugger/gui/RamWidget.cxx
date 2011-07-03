@@ -96,7 +96,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
     new StaticTextWidget(boss, font, xpos + col*myRamGrid->colWidth() + lwidth + 8,
                          ypos - lineHeight,
                          fontWidth, fontHeight,
-                         Debugger::to_hex_4(col),
+                         instance().debugger().valueToString(col, kBASE_16_1),
                          kTextAlignLeft);
   }
   for(int row = 0; row < 8; ++row)

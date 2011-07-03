@@ -66,7 +66,8 @@ AudioWidget::AudioWidget(GuiObject* boss, const GUI::Font& font,
   {
     new StaticTextWidget(boss, font, xpos + col*myAudF->colWidth() + 7,
                          ypos - lineHeight, fontWidth, fontHeight,
-                         Debugger::to_hex_4(col), kTextAlignLeft);
+                         instance().debugger().valueToString(col, kBASE_16_1),
+                         kTextAlignLeft);
   }
 
   // AudC registers

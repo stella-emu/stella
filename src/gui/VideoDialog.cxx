@@ -240,71 +240,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.clear();
   tabID = myTab->addTab(" TV Effects ");
   xpos = ypos = 8;
-  lwidth = font.getStringWidth("TV Color Texture: ");
-  pwidth = font.getStringWidth("Staggered");
-
-  // Use TV color texture effect
-  items.clear();
-  items.push_back("Off", "off");
-  items.push_back("Normal", "normal");
-  items.push_back("Staggered", "stag");
-  myTexturePopup =
-    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                    "TV Color Texture: ", lwidth);
-  wid.push_back(myTexturePopup);
-  ypos += lineHeight + 4;
-
-  // Use color bleed effect
-  items.clear();
-  items.push_back("Off", "off");
-  items.push_back("Low", "low");
-  items.push_back("Medium", "medium");
-  items.push_back("High", "high");
-  myBleedPopup =
-    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                    "TV Color Bleed: ", lwidth);
-  wid.push_back(myBleedPopup);
-  ypos += lineHeight + 4;
-
-  // Use image noise effect
-  items.clear();
-  items.push_back("Off", "off");
-  items.push_back("Low", "low");
-  items.push_back("Medium", "medium");
-  items.push_back("High", "high");
-  myNoisePopup =
-    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                    "TV Image Noise: ", lwidth);
-  wid.push_back(myNoisePopup);
-  ypos += lineHeight + 4;
-
-  // Use phosphor burn-off effect
-  ypos += 4;
-  myPhosphorCheckbox =
-    new CheckboxWidget(myTab, font, xpos, ypos, "TV Phosphor Burn-off");
-  wid.push_back(myPhosphorCheckbox);
-  ypos += lineHeight + 4;
-
-  // OpenGL information
-  // Add message concerning GLSL requirement
-  ypos += lineHeight + 4;
-  lwidth = font.getStringWidth("(*) TV effects require OpenGL 2.0+ & GLSL");
-  new StaticTextWidget(myTab, font, 10, ypos, lwidth, fontHeight,
-                       "(*) TV effects require OpenGL 2.0+ & GLSL",
-                       kTextAlignLeft);
-  ypos += lineHeight + 4;
-  new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
-                       lwidth, fontHeight, "\'gl_texrect\' must be disabled",
-                       kTextAlignLeft);
-  ypos += lineHeight + 10;
-
-  myGLVersionInfo =
-    new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
-                         lwidth, fontHeight, "", kTextAlignLeft);
-  ypos += lineHeight + 4;
-  myGLTexRectInfo =
-    new StaticTextWidget(myTab, font, 10+font.getStringWidth("(*) "), ypos,
-                         lwidth, fontHeight, "", kTextAlignLeft);
+  // TODO ...
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
@@ -427,41 +363,6 @@ void VideoDialog::loadConfig()
   // Fast loading of Supercharger BIOS
   myFastSCBiosCheckbox->setState(instance().settings().getBool("fastscbios"));
 
-#ifdef DISPLAY_OPENGL
-  //////////////////////////////////////////////////////////////////////
-  // TV effects are only enabled in OpenGL mode, and only if GLSL is
-  // available; for now, 'gl_texrect' must also be disabled
-  bool tv = gl && FrameBufferGL::isGLSLAvailable() &&
-            !instance().settings().getBool("gl_texrect");
-  //////////////////////////////////////////////////////////////////////
-
-  // TV color texture effect
-  myTexturePopup->setSelected(instance().settings().getString("tv_tex"), "off");
-  myTexturePopup->setEnabled(tv);
-
-  // TV color bleed effect
-  myBleedPopup->setSelected(instance().settings().getString("tv_bleed"), "off");
-  myBleedPopup->setEnabled(tv);
-
-  // TV random noise effect
-  myNoisePopup->setSelected(instance().settings().getString("tv_noise"), "off");
-  myNoisePopup->setEnabled(tv);
-
-  // TV phosphor burn-off effect
-  myPhosphorCheckbox->setState(instance().settings().getBool("tv_phos"));
-  myPhosphorCheckbox->setEnabled(tv);
-
-  char buf[30];
-  if(gl) sprintf(buf, "OpenGL version detected: %3.1f", FrameBufferGL::glVersion());
-  else   sprintf(buf, "OpenGL version detected: None");
-  myGLVersionInfo->setLabel(buf);
-  sprintf(buf, "OpenGL texrect enabled: %s",
-          instance().settings().getBool("gl_texrect") ? "Yes" : "No");
-  myGLTexRectInfo->setLabel(buf);
-#else
-  myGLVersionInfo->setLabel("OpenGL mode not supported");
-#endif
-
   myTab->loadConfig();
 }
 
@@ -521,18 +422,6 @@ void VideoDialog::saveConfig()
   // Fast loading of Supercharger BIOS
   instance().settings().setBool("fastscbios", myFastSCBiosCheckbox->getState());
 
-  // TV color texture effect
-  instance().settings().setString("tv_tex", myTexturePopup->getSelectedTag());
-
-  // TV color bleed effect
-  instance().settings().setString("tv_bleed", myBleedPopup->getSelectedTag());
-
-  // TV image noise effect
-  instance().settings().setString("tv_noise", myNoisePopup->getSelectedTag());
-
-  // TV phosphor burn-off effect
-  instance().settings().setBool("tv_phos", myPhosphorCheckbox->getState());
-
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
 }
@@ -561,11 +450,6 @@ void VideoDialog::setDefaults()
   myUIMessagesCheckbox->setState(true);
   myCenterCheckbox->setState(false);
   myFastSCBiosCheckbox->setState(false);
-
-  myTexturePopup->setSelected("off", "");
-  myBleedPopup->setSelected("off", "");
-  myNoisePopup->setSelected("off", "");
-  myPhosphorCheckbox->setState(false);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleFullscreenChange(true);

@@ -265,7 +265,11 @@ int DebuggerParser::decipher_arg(const string &str)
       } else { // must be hex.
         result = 0;
         while(*a != '\0') {
-          int hex = Debugger::conv_hex_digit(*a++);
+          int hex = -1;
+          char d = *a++;
+          if(d >= '0' && d <= '9')  hex = d - '0';
+          else if(d >= 'a' && d <= 'f') hex = d - 'a' + 10;
+          else if(d >= 'A' && d <= 'F') hex = d - 'A' + 10;
           if(hex < 0)
             return -1;
 
@@ -525,30 +529,38 @@ cerr << "curCount         = " << curCount << endl
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::eval()
 {
-  char buf[50];
-  string ret;
-  for(int i=0; i<argCount; i++) {
-    // TODO - technically, we should determine if the label is read or write
-    const string& label = debugger->cartDebug().getLabel(args[i], true);
-    if(label != "") {
-      ret += label;
-      ret += ": ";
+  ostringstream buf;
+  for(int i = 0; i < argCount; ++i)
+  {
+    string rlabel = debugger->cartDebug().getLabel(args[i], true);
+    string wlabel = debugger->cartDebug().getLabel(args[i], false);
+    bool validR = rlabel != "" && rlabel[0] != '$',
+         validW = wlabel != "" && wlabel[0] != '$';
+    if(validR && validW)
+    {
+      if(rlabel == wlabel)
+        buf << rlabel << "(R/W): ";
+      else
+        buf << rlabel << "(R) / " << wlabel << "(W): ";
     }
-    ret += "$";
-    if(args[i] < 0x100) {
-      ret += Debugger::to_hex_8(args[i]);
-      ret += " %";
-      ret += Debugger::to_bin_8(args[i]);
-    } else {
-      ret += Debugger::to_hex_16(args[i]);
-      ret += " %";
-      ret += Debugger::to_bin_16(args[i]);
-    }
-    sprintf(buf, " #%d", args[i]);
-    ret += buf;
-    if(i != argCount - 1) ret += "\n";
+    else if(validR)
+      buf << rlabel << "(R): ";
+    else if(validW)
+      buf << wlabel << "(W): ";
+
+    if(args[i] < 0x100)
+      buf << "$" << debugger->valueToString(args[i], kBASE_16_2)
+          << " %" << debugger->valueToString(args[i], kBASE_2_8);
+    else
+      buf << "$" << debugger->valueToString(args[i], kBASE_16_4)
+          << " %" << debugger->valueToString(args[i], kBASE_2_16);
+
+    buf << " #" << (int) args[i]; 
+    if(i != argCount - 1)
+      buf << endl;
   }
-  return ret;
+
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

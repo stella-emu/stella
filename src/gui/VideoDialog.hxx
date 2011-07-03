@@ -78,13 +78,7 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myFastSCBiosCheckbox;
 
     // TV effects options
-    PopUpWidget*      myTexturePopup;
-    PopUpWidget*      myBleedPopup;
-    PopUpWidget*      myNoisePopup;
-    CheckboxWidget*   myPhosphorCheckbox;
-
-    StaticTextWidget* myGLVersionInfo;
-    StaticTextWidget* myGLTexRectInfo;
+    // TODO ...
 
     enum {
       kNAspectRatioChanged = 'VDan',

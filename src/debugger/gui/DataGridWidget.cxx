@@ -244,7 +244,15 @@ void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::handleMouseWheel(int x, int y, int direction)
 {
-  _scrollBar->handleMouseWheel(x, y, direction);
+  if(_scrollBar)
+    _scrollBar->handleMouseWheel(x, y, direction);
+  else if(_editable)
+  {
+    if(direction > 0)
+      decrementCell();
+    else if(direction < 0)
+      incrementCell();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

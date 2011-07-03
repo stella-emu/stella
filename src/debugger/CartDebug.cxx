@@ -1014,15 +1014,11 @@ void CartDebug::addressTypeAsString(ostream& buf, uInt16 addr) const
         debugger  = myDebugger.getAccessFlags(addr) & 0xFC,
         label     = myDisLabels[addr & 0xFFF];
 
-  string s1 = Debugger::to_bin_8(directive),
-         s2 = Debugger::to_bin_8(debugger),
-         s3 = Debugger::to_bin_8(label);
-
-  buf << endl << "directive: " << s1 << " ";
+  buf << endl << "directive: " << myDebugger.valueToString(directive, kBASE_2_8) << " ";
   disasmTypeAsString(buf, directive);
-  buf << endl << "emulation: " << s2 << " ";
+  buf << endl << "emulation: " << myDebugger.valueToString(debugger, kBASE_2_8) << " ";
   disasmTypeAsString(buf, debugger);
-  buf << endl << "tentative: " << s3 << " ";
+  buf << endl << "tentative: " << myDebugger.valueToString(label, kBASE_2_8) << " ";
   disasmTypeAsString(buf, label);
   buf << endl;
 }

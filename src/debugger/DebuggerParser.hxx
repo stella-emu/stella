@@ -30,12 +30,19 @@ struct Command;
 #include "Array.hxx"
 #include "FrameBuffer.hxx"
 
+// The base to use for conversion from integers to strings
+// Note that the actual number of places will be determined by
+// the magnitude of the value itself in the general case
 typedef enum {
-	kBASE_16,
-	kBASE_16_4,
-	kBASE_10,
-	kBASE_2,
-	kBASE_DEFAULT
+  kBASE_16,   // base 16: 2, 4, 8 bytes (depending on value)
+  kBASE_16_1, // base 16: 1 byte wide
+  kBASE_16_2, // base 16: 2 bytes wide
+  kBASE_16_4, // base 16: 4 bytes wide
+  kBASE_10,   // base 10: 3 or 5 bytes (depending on value)
+  kBASE_2,    // base 2:  8 or 16 bits (depending on value)
+  kBASE_2_8,  // base 2:  1 byte (8 bits) wide
+  kBASE_2_16, // base 2:  2 bytes (16 bits) wide
+  kBASE_DEFAULT
 } BaseFormat;
 
 class DebuggerParser
@@ -62,7 +69,7 @@ class DebuggerParser
 
     /** Get/set the number base when parsing numeric values */
     void setBase(BaseFormat base) { defaultBase = base; }
-    BaseFormat base()             { return defaultBase; }
+    BaseFormat base() const       { return defaultBase; }
 
     static inline string red(const string& msg = "")
     {

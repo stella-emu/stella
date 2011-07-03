@@ -182,51 +182,7 @@ class Debugger : public DialogContainer
     */
     int stringToValue(const string& stringval)
         { return myParser->decipher_arg(stringval); }
-    string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT);
-
-    /** Convenience methods to convert to/from base values */
-    static char* to_hex_4(int i)
-    {
-      static char out[2];
-      sprintf(out, "%1X", i);
-      return out;
-    }
-    static char* to_hex_8(int i)
-    {
-      static char out[3];
-      sprintf(out, "%02X", i);
-      return out;
-    }
-    static char* to_hex_16(int i)
-    {
-      static char out[5];
-      sprintf(out, "%04X", i);
-      return out;
-    }
-    static char* to_bin(int dec, int places, char *buf) {
-      int bit = 1;
-      buf[places] = '\0';
-      while(--places >= 0) {
-        if(dec & bit) buf[places] = '1';
-        else          buf[places] = '0';
-        bit <<= 1;
-      }
-      return buf;
-    }
-    static char* to_bin_8(int dec) {
-      static char buf[9];
-      return to_bin(dec, 8, buf);
-    }
-    static char* to_bin_16(int dec) {
-      static char buf[17];
-      return to_bin(dec, 16, buf);
-    }
-    static int conv_hex_digit(char d) {
-      if(d >= '0' && d <= '9')      return d - '0';
-      else if(d >= 'a' && d <= 'f') return d - 'a' + 10;
-      else if(d >= 'A' && d <= 'F') return d - 'A' + 10;
-      else                          return -1;
-    }
+    string valueToString(int value, BaseFormat outputBase = kBASE_DEFAULT) const;
 
     /* Convenience methods to get/set bit(s) in an 8-bit register */
     static uInt8 set_bit(uInt8 input, uInt8 bit, bool on)
