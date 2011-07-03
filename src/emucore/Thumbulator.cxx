@@ -46,7 +46,7 @@ Thumbulator::~Thumbulator()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string Thumbulator::run( void ) throw(const string&)
+string Thumbulator::run( void )
 {
   reset();
   for(;;)
@@ -70,7 +70,6 @@ string Thumbulator::run( void ) throw(const string&)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* msg)
-    throw(const string&)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << HEX8 << v1 << "), " << msg << endl;
@@ -81,7 +80,6 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* ms
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
                                     const char* msg)
-     throw(const string&)
 {
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << HEX8 << v1 << "," << v2 << "), " << msg << endl;

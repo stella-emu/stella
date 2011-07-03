@@ -115,9 +115,8 @@ void RomInfoWidget::parseProperties()
   // Read the PNG file
   try
   {
-    PNGLibrary png(filename);
     mySurfaceIsValid =
-      png.readImage(instance().frameBuffer(), *mySurface);
+      myPNGLib.readImage(filename, instance().frameBuffer(), *mySurface);
   }
   catch(const char* msg)
   {

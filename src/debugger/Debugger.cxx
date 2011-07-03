@@ -320,29 +320,29 @@ string Debugger::valueToString(int value, BaseFormat outputBase) const
 
     case kBASE_10:    // base 10: 3 or 5 bytes (depending on value)
       if(value < 0x100)
-        snprintf(vToS_buf, 4, "%3d", value);
+        BSPF_snprintf(vToS_buf, 4, "%3d", value);
       else
-        snprintf(vToS_buf, 6, "%5d", value);
+        BSPF_snprintf(vToS_buf, 6, "%5d", value);
       break;
 
     case kBASE_16_1:  // base 16: 1 byte wide
-      snprintf(vToS_buf, 2, "%1X", value);
+      BSPF_snprintf(vToS_buf, 2, "%1X", value);
       break;
     case kBASE_16_2:  // base 16: 2 bytes wide
-      snprintf(vToS_buf, 3, "%02X", value);
+      BSPF_snprintf(vToS_buf, 3, "%02X", value);
       break;
     case kBASE_16_4:  // base 16: 4 bytes wide
-      snprintf(vToS_buf, 5, "%04X", value);
+      BSPF_snprintf(vToS_buf, 5, "%04X", value);
       break;
 
     case kBASE_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:
       if(value < 0x100)
-        snprintf(vToS_buf, 3, "%02X", value);
+        BSPF_snprintf(vToS_buf, 3, "%02X", value);
       else if(value < 0x10000)
-        snprintf(vToS_buf, 5, "%04X", value);
+        BSPF_snprintf(vToS_buf, 5, "%04X", value);
       else
-        snprintf(vToS_buf, 9, "%08X", value);
+        BSPF_snprintf(vToS_buf, 9, "%08X", value);
       break;
   }
 

@@ -66,14 +66,14 @@ class Thumbulator
     ~Thumbulator();
 
     /**
-      Run the ARM code, and return when finished.  An exception is thrown
-      in case of any fatal errors/aborts, containing the actual error,
+      Run the ARM code, and return when finished.  A string exception is
+      thrown in case of any fatal errors/aborts, containing the actual error,
       and the contents of the registers at that point in time.
 
       @return  The results of any debugging output (if enabled),
                otherwise an empty string
     */
-    string run() throw(const string&);
+    string run();
 
   private:
     uInt32 read_register ( uInt32 reg );
@@ -93,8 +93,12 @@ class Thumbulator
     void do_cflag_bit ( uInt32 x );
     void do_vflag_bit ( uInt32 x );
 
-    int fatalError(const char* opcode, uInt32 v1, const char* msg) throw(const string&);
-    int fatalError(const char* opcode, uInt32 v1, uInt32 v2, const char* msg) throw(const string&);
+    // Throw a string exception containing an error referencing the given
+    // message and variables
+    // Note that the return value is never used in these methods
+    int fatalError(const char* opcode, uInt32 v1, const char* msg);
+    int fatalError(const char* opcode, uInt32 v1, uInt32 v2, const char* msg);
+
     void dump_counters ( void );
     void dump_regs( void );
     int execute ( void );

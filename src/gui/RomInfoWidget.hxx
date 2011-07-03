@@ -26,6 +26,7 @@
 #include "Widget.hxx"
 #include "Command.hxx"
 #include "StringList.hxx"
+#include "PNGLibrary.hxx"
 #include "bspf.hxx"
 
 
@@ -50,6 +51,9 @@ class RomInfoWidget : public Widget
     // Surface id and pointer holding the scaled PNG image
     FBSurface* mySurface;
     int mySurfaceID;
+
+    // PNG object responsible for actually loading the PNG image
+    PNGLibrary myPNGLib;
 
     // How much to zoom the PNG image
     int myZoomLevel;
