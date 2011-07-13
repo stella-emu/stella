@@ -303,12 +303,12 @@ void RamWidget::fillGrid(bool updateOld)
 
   // Update RAM labels
   char buf[5];
-  sprintf(buf, "%04x", state.rport[start] & 0xff00);
+  BSPF_snprintf(buf, 5, "%04X", state.rport[start] & 0xff00);
   buf[2] = buf[3] = 'x';
   myRamStart->setLabel(buf);
   for(uInt32 i = start, row = 0; i < start + 16*8; i += 16, ++row)
   {
-    sprintf(buf, "%02x:", state.rport[i] & 0x00ff);
+    BSPF_snprintf(buf, 3, "%02X:", state.rport[i] & 0x00ff);
     myRamLabels[row]->setLabel(buf);
   }
 }

@@ -323,7 +323,7 @@ StaticTextWidget::StaticTextWidget(GuiObject *boss, const GUI::Font& font,
 void StaticTextWidget::setValue(int value)
 {
   char buf[256];
-  sprintf(buf, "%d", value);
+  BSPF_snprintf(buf, 255, "%d", value);
   _label = buf;
 
   setDirty(); draw();
@@ -333,6 +333,7 @@ void StaticTextWidget::setValue(int value)
 void StaticTextWidget::setLabel(const string& label)
 {
   _label = label;
+
   setDirty(); draw();
 }
 

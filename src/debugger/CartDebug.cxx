@@ -185,8 +185,8 @@ string CartDebug::toString()
     // bytes have been previously output
     if(state.rport[i] - curraddr > bytesPerLine || bytesSoFar >= 256)
     {
-      char port[50];
-      sprintf(port, "%04x: (rport = %04x, wport = %04x)\n",
+      char port[37];
+      BSPF_snprintf(port, 36, "%04x: (rport = %04x, wport = %04x)\n",
               state.rport[i], state.rport[i], state.wport[i]);
       port[2] = port[3] = 'x';
       buf << DebuggerParser::red(port);

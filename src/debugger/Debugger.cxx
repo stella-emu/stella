@@ -372,22 +372,19 @@ void Debugger::reset()
 /* Element 0 of args is the address. The remaining elements are the data
    to poke, starting at the given address.
 */
-const string Debugger::setRAM(IntArray& args)
+string Debugger::setRAM(IntArray& args)
 {
-  char buf[10];
+  ostringstream buf;
 
   int count = args.size();
   int address = args[0];
-  for(int i=1; i<count; i++)
+  for(int i = 1; i < count; ++i)
     mySystem->poke(address++, args[i]);
 
-  string ret = "changed ";
-  sprintf(buf, "%d", count-1);
-  ret += buf;
-  ret += " location";
-  if(count != 0)
-    ret += "s";
-  return ret;
+  buf << "changed " << (count-1) << " location";
+  if(count != 2)
+    buf << "s";
+  return buf.str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

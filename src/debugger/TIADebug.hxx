@@ -169,6 +169,7 @@ class TIADebug : public DebuggerSystem
     /** Get/set specific bits in the collision register (used by collXX_XX) */
     bool collision(int collID, int newVal);
 
+    string audFreq(uInt8 div);
     string booleanWithLabel(string label, bool value);
 
   private:

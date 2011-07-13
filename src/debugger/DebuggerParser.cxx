@@ -292,31 +292,25 @@ int DebuggerParser::decipher_arg(const string &str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string DebuggerParser::showWatches()
 {
-  string ret;
-  char buf[10];
-
-  for(unsigned int i=0; i<watches.size(); i++) {
-    if(watches[i] != "") {
+  ostringstream buf;
+  for(unsigned int i = 0; i < watches.size(); i++)
+  {
+    if(watches[i] != "")
+    {
       // Clear the args, since we're going to pass them to eval()
       argStrings.clear();
       args.clear();
 
-      sprintf(buf, "%d", i+1);
       argCount = 1;
       argStrings.push_back(watches[i]);
       args.push_back(decipher_arg(argStrings[0]));
-      if(args[0] < 0) {
-        ret += "BAD WATCH ";
-        ret += buf;
-        ret += ": " + argStrings[0] + "\n";
-      } else {
-        ret += " watch #";
-        ret += buf;
-        ret += " (" + argStrings[0] + ") -> " + eval() + "\n";
-      }
+      if(args[0] < 0)
+        buf << "BAD WATCH " << (i+1) << ": " << argStrings[0] << endl;
+      else
+        buf << " watch #" << (i+1) << " (" << argStrings[0] << ") -> " << eval() << endl;
     }
   }
-  return ret;
+  return buf.str();
 }
 
 

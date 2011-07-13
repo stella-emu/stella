@@ -698,14 +698,14 @@ string TIADebug::colorSwatch(uInt8 c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string audFreq(uInt8 div)
+string TIADebug::audFreq(uInt8 div)
 {
   string ret;
-  char buf[20];
+  char buf[10];
 
   double hz = 30000.0;
   if(div) hz /= div;
-  sprintf(buf, "%5.1f", hz);
+  BSPF_snprintf(buf, 9, "%5.1f", hz);
   ret += buf;
   ret += "Hz";
 

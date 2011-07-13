@@ -50,7 +50,7 @@ class CpuDebug : public DebuggerSystem
     const DebuggerState& getOldState() { return myOldState; }
 
     void saveOldState();
-    string toString();
+    string toString() { return ""; } // Not needed, since CPU stuff is always visible
 
     // I know, we ain't supposed to do this...
     M6502& m6502() { return mySystem.m6502(); }

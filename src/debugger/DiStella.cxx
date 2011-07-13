@@ -916,8 +916,8 @@ void DiStella::addEntry(CartDebug::DisasmType type)
       else if(settings.show_addresses && tag.type == CartDebug::CODE)
       {
         // Have addresses indented, to differentiate from actual labels
-        char address[8];
-        sprintf(address, " %X", tag.address);
+        char address[7];
+        BSPF_snprintf(address, 6, " %4X", tag.address);
         tag.label = address;
         tag.hllabel = false;
       }

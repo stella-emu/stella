@@ -296,7 +296,7 @@ class Debugger : public DialogContainer
     void reloadROM();
 
     // Set a bunch of RAM locations at once
-    const string setRAM(IntArray& args);
+    string setRAM(IntArray& args);
 
     void reset();
     void clearAllBreakPoints();

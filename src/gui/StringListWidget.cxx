@@ -79,7 +79,7 @@ void StringListWidget::drawWidget(bool hilite)
     if (_numberingMode != kListNumberingOff)
     {
       char temp[10];
-      sprintf(temp, "%2d. ", (pos + _numberingMode));
+      BSPF_snprintf(temp, 9, "%2d. ", (pos + _numberingMode));
       buffer = temp;
       s.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
     }
@@ -120,7 +120,7 @@ GUI::Rect StringListWidget::getEditRect() const
   {
     char temp[10];
     // FIXME: Assumes that all digits have the same width.
-    sprintf(temp, "%2d. ", (_list.size() - 1 + _numberingMode));
+    BSPF_snprintf(temp, 9, "%2d. ", (_list.size() - 1 + _numberingMode));
     r.left += _font->getStringWidth(temp);
   }
 	

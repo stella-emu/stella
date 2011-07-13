@@ -72,65 +72,6 @@ void CpuDebug::saveOldState()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string CpuDebug::toString()
-{
-  // TODO - this doesn't seem to be used anywhere ??
-  //        if it's ever used, convert to C++ stringstream
-  string result;
-  char buf[255];
-
-  const CpuState& state = (CpuState&) getState();
-  const CpuState& oldstate = (CpuState&) getOldState();
-
-  result += "\nPC=";
-  result += myDebugger.invIfChanged(state.PC, oldstate.PC);
-  result += " A=";
-  result += myDebugger.invIfChanged(state.A, oldstate.A);
-  result += " X=";
-  result += myDebugger.invIfChanged(state.X, oldstate.X);
-  result += " Y=";
-  result += myDebugger.invIfChanged(state.Y, oldstate.Y);
-  result += " S=";
-  result += myDebugger.invIfChanged(state.SP, oldstate.SP);
-  result += " P=";
-  result += myDebugger.invIfChanged(state.PS, oldstate.PS);
-  result += "/";
-
-  // NV-BDIZC
-  buf[0] = n() ? 'N' : 'n';
-  buf[1] = v() ? 'V' : 'v';
-  buf[2] = '-';
-  buf[3] = b() ? 'B' : 'b';
-  buf[4] = d() ? 'D' : 'd';
-  buf[5] = i() ? 'I' : 'i';
-  buf[6] = z() ? 'Z' : 'z';
-  buf[7] = c() ? 'C' : 'c';
-  buf[8] = '\0';
-
-  result += buf;
-  result += "\n  FrameCyc:";
-  sprintf(buf, "%d", mySystem.cycles());
-  result += buf;
-  result += " Frame:";
-  sprintf(buf, "%d", myDebugger.tiaDebug().frameCount());
-  result += buf;
-  result += " ScanLine:";
-  sprintf(buf, "%d", myDebugger.tiaDebug().scanlines());
-  result += buf;
-  result += " Clk/Pix/Cyc:";
-  int clk = myDebugger.tiaDebug().clocksThisLine();
-  sprintf(buf, "%d/%d/%d", clk, clk-68, clk/3);
-  result += buf;
-  result += " 6502Ins:";
-  sprintf(buf, "%d", mySystem.m6502().totalInstructionCount());
-  result += buf;
-  result += "\n  ";
-
-  result += myDebugger.cartDebug().disassemble(state.PC, 1);
-  return result;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CpuDebug::setPC(int pc)
 {
   mySystem.m6502().PC = pc;

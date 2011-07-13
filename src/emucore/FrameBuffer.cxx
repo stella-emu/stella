@@ -221,7 +221,7 @@ void FrameBuffer::update()
       {
         const ConsoleInfo& info = myOSystem->console().about();
         char msg[30];
-        sprintf(msg, "%u @ %2.2ffps => %s",
+        BSPF_snprintf(msg, 29, "%u @ %2.2ffps => %s",
                 myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
