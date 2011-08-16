@@ -71,11 +71,6 @@ class FrameBufferGL : public FrameBuffer
     static float glVersion() { return myGLVersion; }
 
     /**
-      Indicates whether GL shading language was detected and enabled.
-    */
-    static bool isGLSLAvailable() { return myGLSLAvailable; }
-
-    /**
       Indicates whether GL FBO functionality was detected and enabled.
     */
     static bool isFBOAvailable() { return myFBOAvailable; }
@@ -181,7 +176,7 @@ class FrameBufferGL : public FrameBuffer
 
   private:
     enum GLFunctionality {
-      kGL_BASIC, kGL_SHADER
+      kGL_FULL, kGL_ES
     };
     bool loadFuncs(GLFunctionality functionality);
 
@@ -207,9 +202,6 @@ class FrameBufferGL : public FrameBuffer
     // The name of the texture filtering to use
     string myFilterParamName;
 
-    // Optional GL extensions that may increase performance
-    bool myHaveTexRectEXT;
-
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
 
@@ -222,11 +214,8 @@ class FrameBufferGL : public FrameBuffer
     // Indicates the OpenGL version found (0 indicates none)
     static float myGLVersion;
 
-    // Indicates whether GLSL functions were properly loaded
-    static bool myGLSLAvailable;
-
-    // Indicates whether Frame Buffer Object functions were properly loaded
-    static bool myFBOAvailable;
+    // Indicates whether Frame/Pixel Buffer Object functions were properly loaded
+    static bool myFBOAvailable, myPBOAvailable;
 };
 
 /**
@@ -243,7 +232,7 @@ class FBSurfaceGL : public FBSurface
     FBSurfaceGL(FrameBufferGL& buffer,
                 uInt32 baseWidth, uInt32 baseHeight,
                 uInt32 scaleWidth, uInt32 scaleHeight,
-                bool allowFiltering = false);
+                bool allowFiltering);
     virtual ~FBSurfaceGL();
 
     void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
@@ -267,6 +256,7 @@ class FBSurfaceGL : public FBSurface
 
   private:
     void setFilter(const string& name);
+    void updateCoords();
 
     void* pixels() const { return myTexture->pixels; }
     uInt32 pitch() const { return myPitch;           }
@@ -284,12 +274,13 @@ class FBSurfaceGL : public FBSurface
     SDL_Surface* myTexture;
 
     GLuint  myTexID;
-    GLenum  myTexTarget;
     GLsizei myTexWidth;
     GLsizei myTexHeight;
-    GLfloat myTexCoord[4];
+    GLshort myVertCoord[8];
+    GLshort myXOrig, myYOrig, myWidth, myHeight;
+    GLfloat myTexCoord[8];
+    GLfloat myTexCoordW, myTexCoordH;
 
-    uInt32 myXOrig, myYOrig, myWidth, myHeight;
     bool mySurfaceIsDirty;
     uInt32 myPitch;
 };

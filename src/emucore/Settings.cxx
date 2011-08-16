@@ -46,8 +46,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_fsmax", "false");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
-  setInternal("gl_texrect", "false");
-//  setInternal("gl_accel", "true");
 
   // Framebuffer-related options
   setInternal("tia_filter", "zoom2x");
@@ -61,11 +59,13 @@ Settings::Settings(OSystem* osystem)
   setInternal("uimessages", "true");
 
   // TV filter options
+#if 0
   setInternal("tv_tex", "off");
   setInternal("tv_bleed", "off");
   setInternal("tv_noise", "off");
 //  setInternal("tv_curve", "false");  // not yet implemented
   setInternal("tv_phos", "false");
+#endif
 
   // Sound options
   setInternal("sound", "true");
@@ -352,7 +352,6 @@ void Settings::usage()
     << "  -gl_aspectp   <number>       Scale the TIA width by the given percentage in PAL mode\n"
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
-    << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
 #if 0
     << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
     << "  -tv_tex       <off|type>     OpenGL TV texturing, type is one of the following:\n"

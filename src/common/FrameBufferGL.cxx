@@ -48,12 +48,12 @@ OGL_DECLARE(void,glShadeModel,(GLenum));
 OGL_DECLARE(void,glMatrixMode,(GLenum));
 OGL_DECLARE(void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
 OGL_DECLARE(void,glViewport,(GLint, GLint, GLsizei, GLsizei));
-OGL_DECLARE(void,glPushMatrix,(void));
 OGL_DECLARE(void,glLoadIdentity,(void));
-OGL_DECLARE(void,glBegin,(GLenum));
-OGL_DECLARE(void,glEnd,(void));
-OGL_DECLARE(void,glVertex2i,(GLint, GLint));
-OGL_DECLARE(void,glTexCoord2f,(GLfloat, GLfloat));
+OGL_DECLARE(void,glEnableClientState,(GLenum));
+OGL_DECLARE(void,glDisableClientState,(GLenum));
+OGL_DECLARE(void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));
+OGL_DECLARE(void,glTexCoordPointer,(GLint,GLenum,GLsizei,const GLvoid*));
+OGL_DECLARE(void,glDrawArrays,(GLenum,GLint,GLsizei));
 OGL_DECLARE(void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
 OGL_DECLARE(void,glPixelStorei,(GLenum, GLint));
 OGL_DECLARE(void,glTexEnvf,(GLenum, GLenum, GLfloat));
@@ -64,32 +64,13 @@ OGL_DECLARE(void,glBindTexture,(GLenum, GLuint));
 OGL_DECLARE(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
 OGL_DECLARE(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
 OGL_DECLARE(void,glTexParameteri,(GLenum, GLenum, GLint));
-OGL_DECLARE(GLuint,glCreateShader,(GLenum));
-OGL_DECLARE(void,glDeleteShader,(GLuint));
-OGL_DECLARE(void,glShaderSource,(GLuint, int, const char**, int));
-OGL_DECLARE(void,glCompileShader,(GLuint));
-OGL_DECLARE(GLuint,glCreateProgram,(void));
-OGL_DECLARE(void,glDeleteProgram,(GLuint));
-OGL_DECLARE(void,glAttachShader,(GLuint, GLuint));
-OGL_DECLARE(void,glLinkProgram,(GLuint));
-OGL_DECLARE(void,glUseProgram,(GLuint));
-OGL_DECLARE(GLint,glGetUniformLocation,(GLuint, const char*));
-OGL_DECLARE(void,glUniform1i,(GLint, GLint));
-OGL_DECLARE(void,glUniform1f,(GLint, GLfloat));
-OGL_DECLARE(void,glCopyTexImage2D,(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint));
-OGL_DECLARE(void,glCopyTexSubImage2D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei));
-OGL_DECLARE(void,glGetIntegerv,(GLenum, GLint*));
-OGL_DECLARE(void,glTexEnvi,(GLenum, GLenum, GLint));
-OGL_DECLARE(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
 OGL_DECLARE(GLenum,glGetError,(void));
-
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myTiaSurface(NULL),
     myFilterParamName("GL_NEAREST"),
-    myHaveTexRectEXT(false),
     myDirtyFlag(true)
 {
   // We need a pixel format for palette value calculations
@@ -97,7 +78,7 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   // since the structure may be needed before any FBSurface's have
   // been created
   SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 16,
-                     0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+                     0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
   myPixelFormat = *(s->format);
   SDL_FreeSurface(s);
 }
@@ -137,7 +118,7 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
     // If anything fails, we'll know it immediately, and return false
     switch(functionality)
     {
-      case kGL_BASIC:
+      case kGL_FULL:
         OGL_INIT(void,glClear,(GLbitfield));
         OGL_INIT(void,glEnable,(GLenum));
         OGL_INIT(void,glDisable,(GLenum));
@@ -149,13 +130,14 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(void,glMatrixMode,(GLenum));
         OGL_INIT(void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
         OGL_INIT(void,glViewport,(GLint, GLint, GLsizei, GLsizei));
-        OGL_INIT(void,glPushMatrix,(void));
         OGL_INIT(void,glLoadIdentity,(void));
 
-        OGL_INIT(void,glBegin,(GLenum));
-        OGL_INIT(void,glEnd,(void));
-        OGL_INIT(void,glVertex2i,(GLint, GLint));
-        OGL_INIT(void,glTexCoord2f,(GLfloat, GLfloat));
+        OGL_INIT(void,glEnableClientState,(GLenum));
+        OGL_INIT(void,glDisableClientState,(GLenum));
+        OGL_INIT(void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));
+        OGL_INIT(void,glTexCoordPointer,(GLint,GLenum,GLsizei,const GLvoid*));
+        OGL_INIT(void,glDrawArrays,(GLenum,GLint,GLsizei));
+        OGL_INIT(GLenum,glGetError,(void));
 
         OGL_INIT(void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
         OGL_INIT(void,glPixelStorei,(GLenum, GLint));
@@ -168,28 +150,11 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
         OGL_INIT(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
         OGL_INIT(void,glTexParameteri,(GLenum, GLenum, GLint));
-        break; // kGLBasic
+        break; // kGLFull
 
-      case kGL_SHADER:
-        OGL_INIT(GLuint,glCreateShader,(GLenum));
-        OGL_INIT(void,glDeleteShader,(GLuint));
-        OGL_INIT(void,glShaderSource,(GLuint, int, const char**, int));
-        OGL_INIT(void,glCompileShader,(GLuint));
-        OGL_INIT(GLuint,glCreateProgram,(void));
-        OGL_INIT(void,glDeleteProgram,(GLuint));
-        OGL_INIT(void,glAttachShader,(GLuint, GLuint));
-        OGL_INIT(void,glLinkProgram,(GLuint));
-        OGL_INIT(void,glUseProgram,(GLuint));
-        OGL_INIT(GLint,glGetUniformLocation,(GLuint, const char*));
-        OGL_INIT(void,glUniform1i,(GLint, GLint));
-        OGL_INIT(void,glUniform1f,(GLint, GLfloat));
-        OGL_INIT(void,glCopyTexImage2D,(GLenum, GLint, GLenum, GLint, GLint, GLsizei, GLsizei, GLint));
-        OGL_INIT(void,glCopyTexSubImage2D,(GLenum, GLint, GLint, GLint, GLint, GLint, GLsizei, GLsizei));
-        OGL_INIT(void,glGetIntegerv,(GLenum, GLint*));
-        OGL_INIT(void,glTexEnvi,(GLenum, GLenum, GLint));
-        OGL_INIT(void,glMultiTexCoord2f,(GLenum, GLfloat, GLfloat));
-        OGL_INIT(GLenum,glGetError,(void));
-        break;  // kGLShader
+      case kGL_ES:
+        // TODO - merge with full so there's only one implementation
+        break;  // kGLES
     }
   }
   else
@@ -236,9 +201,6 @@ bool FrameBufferGL::initSubsystem(VideoMode& mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FrameBufferGL::about() const
 {
-  const string& extensions =
-    myHaveTexRectEXT ? "GL_TEXTURE_RECTANGLE_ARB" : "None";
-
   ostringstream out;
   out << "Video rendering: OpenGL mode" << endl
       << "  Vendor:     " << p_glGetString(GL_VENDOR) << endl
@@ -246,9 +208,7 @@ string FrameBufferGL::about() const
       << "  Version:    " << p_glGetString(GL_VERSION) << endl
       << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
       << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << endl
-      << "  Filter:     " << myFilterParamName << endl
-      << "  Extensions: " << extensions << endl;
-
+      << "  Filter:     " << myFilterParamName << endl;
   return out.str();
 }
 
@@ -307,8 +267,6 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   SDL_GL_SetAttribute( SDL_GL_BLUE_SIZE,  myRGB[2] );
   SDL_GL_SetAttribute( SDL_GL_ALPHA_SIZE, myRGB[3] );
   SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );
-//  if(myOSystem->settings().getBool("gl_accel"))
-//    SDL_GL_SetAttribute( SDL_GL_ACCELERATED_VISUAL, 1 );
 
   // There's no guarantee this is supported on all hardware
   // We leave it to the user to test and decide
@@ -326,33 +284,18 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   mySDLFlags = myScreen->flags;
 
   // Load OpenGL function pointers
-  // Basic functionaity is an absolute requirement
-  // TV effects require GLSL, but not having them still allows basic GL support
-  myGLSLAvailable = myFBOAvailable = false;
-  if(loadFuncs(kGL_BASIC))
+  myFBOAvailable = myPBOAvailable = false;
+  if(loadFuncs(kGL_FULL))
   {
     // Grab OpenGL version number
     string version((const char *)p_glGetString(GL_VERSION));
     myGLVersion = atof(version.substr(0, 3).c_str());
-
-    // TV effects depend on the GLSL functions being available
-    myGLSLAvailable = loadFuncs(kGL_SHADER);
   }
   else
     return false;
 
-  // Check for some extensions that can potentially speed up operation
-  // Don't use it if we've been instructed not to
-  if(myOSystem->settings().getBool("gl_texrect"))
-  {
-    const char* extensions = (const char *) p_glGetString(GL_EXTENSIONS);
-    myHaveTexRectEXT = strstr(extensions, "ARB_texture_rectangle") != NULL;
-  }
-  else
-    myHaveTexRectEXT = false;
-
-  // Initialize GL display
-  p_glViewport(0, 0, mode.screen_w, mode.screen_h);
+  // Optimization hints
+  // TODO - more testing required for OpenGL ES
   p_glShadeModel(GL_FLAT);
   p_glDisable(GL_CULL_FACE);
   p_glDisable(GL_DEPTH_TEST);
@@ -360,11 +303,11 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_glDisable(GL_LIGHTING);
   p_glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_FASTEST);
 
+  // Initialize GL display
+  p_glViewport(0, 0, mode.screen_w, mode.screen_h);
   p_glMatrixMode(GL_PROJECTION);
-  p_glLoadIdentity();
   p_glOrtho(0.0, mode.screen_w, mode.screen_h, 0.0, -1.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
-  p_glPushMatrix();
   p_glLoadIdentity();
 
 /*
@@ -407,14 +350,10 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     // Note that this may change in the future, when we add more
     // complex filters/scalers, but for now it's fine
     //
-    // Also note that TV filtering is only available with OpenGL 2.0+
-    // The hint we provide here is only that GLSL is available and
-    // TV effects *can* be applied to this surface
-    // The specific TV effect settings still determine whether any
-    // filtering *will* be applied in such a case
+    // Also note that TV filtering is always available since we'll always
+    // have access to Blargg filtering
     myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
-                                     mode.image_w, mode.image_h,
-                                     myGLSLAvailable);
+                                     mode.image_w, mode.image_h, true);
     myTiaSurface->setPos(mode.image_x, mode.image_y);
     myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
   }
@@ -526,7 +465,7 @@ FBSurface* FrameBufferGL::createSurface(int w, int h, bool isBase) const
   // Also, since this method will only be called for use in external
   // dialogs which cannot be scaled, the base and scaled parameters
   // are equal
-  return new FBSurfaceGL((FrameBufferGL&)*this, w, h, w, h);
+  return new FBSurfaceGL((FrameBufferGL&)*this, w, h, w, h, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -560,32 +499,19 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
     myHeight(scaleHeight)
 {
   // Fill buffer struct with valid data
-  // This changes depending on the texturing used
-  myTexCoord[0] = 0.0f;
-  myTexCoord[1] = 0.0f;
-  if(myFB.myHaveTexRectEXT)
-  {
-    myTexWidth    = baseWidth;
-    myTexHeight   = baseHeight;
-    myTexTarget   = GL_TEXTURE_RECTANGLE_ARB;
-    myTexCoord[2] = (GLfloat) myTexWidth;
-    myTexCoord[3] = (GLfloat) myTexHeight;
-  }
-  else
-  {
-    myTexWidth    = power_of_two(baseWidth);
-    myTexHeight   = power_of_two(baseHeight);
-    myTexTarget   = GL_TEXTURE_2D;
-    myTexCoord[2] = (GLfloat) baseWidth / myTexWidth;
-    myTexCoord[3] = (GLfloat) baseHeight / myTexHeight;
-  }
+  myTexWidth  = power_of_two(baseWidth);
+  myTexHeight = power_of_two(baseHeight);
+  myTexCoordW = (GLfloat) baseWidth / myTexWidth;
+  myTexCoordH = (GLfloat) baseHeight / myTexHeight;
 
   // Based on experimentation, the following is the fastest 16-bit
   // format for OpenGL (on all platforms)
   myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
                   myTexWidth, myTexHeight, 16,
-                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+                  0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
   myPitch = myTexture->pitch >> 1;
+
+  updateCoords();
 
   // Associate the SDL surface with a GL texture object
   reload();
@@ -743,6 +669,8 @@ void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 {
   myXOrig = x;
   myYOrig = y;
+
+  updateCoords();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -752,11 +680,9 @@ void FBSurfaceGL::setWidth(uInt32 w)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
   // and it's the only thing that uses it
   myWidth = w;
+  myTexCoordW = (GLfloat) myWidth / myTexWidth;
 
-  if(myFB.myHaveTexRectEXT)
-    myTexCoord[2] = (GLfloat) myWidth;
-  else
-    myTexCoord[2] = (GLfloat) myWidth / myTexWidth;
+  updateCoords();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -766,11 +692,9 @@ void FBSurfaceGL::setHeight(uInt32 h)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
   // and it's the only thing that uses it
   myHeight = h;
+  myTexCoordH = (GLfloat) myHeight / myTexHeight;
 
-  if(myFB.myHaveTexRectEXT)
-    myTexCoord[3] = (GLfloat) myHeight;
-  else
-    myTexCoord[3] = (GLfloat) myHeight / myTexHeight;
+  updateCoords();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -788,24 +712,17 @@ void FBSurfaceGL::update()
     // Texturemap complete texture to surface so we have free scaling
     // and antialiasing
     p_glActiveTexture(GL_TEXTURE0);
-    p_glBindTexture(myTexTarget, myTexID);
-    p_glTexSubImage2D(myTexTarget, 0, 0, 0, myTexWidth, myTexHeight,
-                      GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, myTexture->pixels);
+    p_glBindTexture(GL_TEXTURE_2D, myTexID);
+    p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexWidth, myTexHeight,
+                      GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, myTexture->pixels);
 
-    // Pass in texture as a variable
-    p_glBegin(GL_QUADS);
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[1]);
-      p_glVertex2i(myXOrig, myYOrig);
-
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[1]);
-      p_glVertex2i(myXOrig + myWidth, myYOrig);
-
-      p_glTexCoord2f(myTexCoord[2], myTexCoord[3]);
-      p_glVertex2i(myXOrig + myWidth, myYOrig + myHeight);
-
-      p_glTexCoord2f(myTexCoord[0], myTexCoord[3]);
-      p_glVertex2i(myXOrig, myYOrig + myHeight);
-    p_glEnd();
+    p_glEnableClientState(GL_VERTEX_ARRAY);
+    p_glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+    p_glVertexPointer(2, GL_SHORT, 0, myVertCoord);
+    p_glTexCoordPointer(2, GL_FLOAT, 0, myTexCoord); 
+    p_glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+    p_glDisableClientState(GL_VERTEX_ARRAY);
+    p_glDisableClientState(GL_TEXTURE_COORD_ARRAY);
 
     mySurfaceIsDirty = false;
 
@@ -833,19 +750,19 @@ void FBSurfaceGL::reload()
   // new texture ID, so that's what we do here
 
   p_glActiveTexture(GL_TEXTURE0);
-  p_glEnable(myTexTarget);
+  p_glEnable(GL_TEXTURE_2D);
 
   p_glGenTextures(1, &myTexID);
-  p_glBindTexture(myTexTarget, myTexID);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  p_glBindTexture(GL_TEXTURE_2D, myTexID);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
   // Finally, create the texture in the most optimal format
-  p_glTexImage2D(myTexTarget, 0, GL_RGB5,
+  p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  myTexWidth, myTexHeight, 0,
-                 GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV, myTexture->pixels);
+                 GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, myTexture->pixels);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -856,14 +773,49 @@ void FBSurfaceGL::setFilter(const string& name)
   if(name == "linear")
     filter = GL_LINEAR;
 
-  p_glBindTexture(myTexTarget, myTexID);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_MIN_FILTER, filter);
-  p_glTexParameteri(myTexTarget, GL_TEXTURE_MAG_FILTER, filter);
+  p_glBindTexture(GL_TEXTURE_2D, myTexID);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
+  p_glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
 
   // The filtering has changed, so redraw the entire screen
   mySurfaceIsDirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceGL::updateCoords()
+{
+  // Vertex coordinates
+  // Upper left (x,y)
+  myVertCoord[0] = myXOrig;
+  myVertCoord[1] = myYOrig;
+  // Upper right (x+w,y)
+  myVertCoord[2] = myXOrig + myWidth;
+  myVertCoord[3] = myYOrig;
+  // Lower left (x,y+h)
+  myVertCoord[4] = myXOrig;
+  myVertCoord[5] = myYOrig + myHeight;
+  // Lower right (x+w,y+h)
+  myVertCoord[6] = myXOrig + myWidth;
+  myVertCoord[7] = myYOrig + myHeight;
+
+  // Texture coordinates
+  // Upper left (x,y)
+  myTexCoord[0] = 0.0f;
+  myTexCoord[1] = 0.0f;
+  // Upper right (x+w,y)
+  myTexCoord[2] = myTexCoordW;
+  myTexCoord[3] = 0.0f;
+  // Lower left (x,y+h)
+  myTexCoord[4] = 0.0f;
+  myTexCoord[5] = myTexCoordH;
+  // Lower right (x+w,y+h)
+  myTexCoord[6] = myTexCoordW;
+  myTexCoord[7] = myTexCoordH;
+
+  // TODO - perhaps use VBO to store these, since they're static most
+  //        of the time
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -873,9 +825,9 @@ bool FrameBufferGL::myLibraryLoaded = false;
 float FrameBufferGL::myGLVersion = 0.0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myGLSLAvailable = false;
+bool FrameBufferGL::myFBOAvailable = false;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myFBOAvailable = false;
+bool FrameBufferGL::myPBOAvailable = false;
 
 #endif  // DISPLAY_OPENGL

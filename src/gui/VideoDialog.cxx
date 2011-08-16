@@ -266,11 +266,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
-
-  myTexturePopup->clearFlags(WIDGET_ENABLED);
-  myBleedPopup->clearFlags(WIDGET_ENABLED);
-  myNoisePopup->clearFlags(WIDGET_ENABLED);
-  myPhosphorCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
