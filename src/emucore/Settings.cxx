@@ -121,7 +121,8 @@ Settings::Settings(OSystem* osystem)
 
   // Misc options
   setInternal("autoslot", "false");
-  setInternal("showinfo", "1");
+  setInternal("loglevel", "1");
+  setInternal("logtoconsole", "0");
   setInternal("tiadriven", "false");
   setInternal("ramrandom", "true");
   setInternal("avoxport", "");
@@ -321,9 +322,9 @@ void Settings::validate()
   if(s != "low" && s != "medium" && s != "high")
     setInternal("tv_noise", "off");
 
-  i = getInt("showinfo");
+  i = getInt("loglevel");
   if(i < 0 || i > 2)
-    setInternal("showinfo", "1");
+    setInternal("loglevel", "1");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -352,7 +353,8 @@ void Settings::usage()
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
     << "  -gl_texrect   <1|0>          Enable GL_TEXTURE_RECTANGLE extension\n"
-//    << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
+#if 0
+    << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
     << "  -tv_tex       <off|type>     OpenGL TV texturing, type is one of the following:\n"
     << "                 normal         Aligned in a grid\n"
     << "                 stag           Aligned in a staggered grid\n"
@@ -365,6 +367,7 @@ void Settings::usage()
     << "                 medium         \n"
     << "                 high           \n"
     << "  -tv_phos      <1|0>          OpenGL TV phosphor burn-off\n"
+#endif
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
@@ -390,7 +393,8 @@ void Settings::usage()
     << endl
   #endif
     << "  -cheat        <code>         Use the specified cheatcode (see manual for description)\n"
-    << "  -showinfo     <0|1|2>        Shows some application/game info on commandline\n"
+    << "  -loglevel     <0|1|2>        Set level of logging during application run\n"
+    << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
     << "  -usemouse     <1|0>          Use mouse for various controllers (paddle, driving, etc)\n"

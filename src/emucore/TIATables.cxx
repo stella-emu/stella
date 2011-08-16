@@ -616,10 +616,53 @@ uInt8 TIATables::DisabledMask[640];
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int16 TIATables::PokeDelay[64] = {
-   0,  1,  0,  0,  8,  8,  0,  0,  0,  0,  0,  1,  1, -1, -1, -1,
-   0,  0,  8,  8,  0,  0,  0,  0,  0,  0,  0,  1,  1,  1,  1,  1,
-   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  3,  0,  0,  0,  0,  0,
-   0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,
+  0,  // VSYNC
+  1,  // VBLANK (0) / 1
+  0,  // WSYNC
+  0,  // RSYNC
+  0,  // NUSIZ0 (0) / 8    TODO - calculate this instead of hardcoding
+  0,  // NUSIZ1 (0) / 8    TODO - calculate this instead of hardcoding
+  0,  // COLUP0
+  0,  // COLUP1
+  0,  // COLUPF
+  0,  // COLUBK
+  0,  // CTRLPF
+  1,  // REFP0
+  1,  // REFP1
+ -1,  // PF0    (4) / -1
+ -1,  // PF1    (4) / -1
+ -1,  // PF2    (4) / -1
+  0,  // RESP0
+  0,  // RESP1
+  8,  // RESM0  (0) / 8
+  8,  // RESM1  (0) / 8
+  0,  // RESBL
+  0,  // AUDC0  (-1) / 0
+  0,  // AUDC1  (-1) / 0
+  0,  // AUDF0  (-1) / 0
+  0,  // AUDF1  (-1) / 0
+  0,  // AUDV0  (-1) / 0
+  0,  // AUDV1  (-1) / 0
+  1,  // GRP0
+  1,  // GRP1
+  1,  // ENAM0
+  1,  // ENAM1
+  1,  // ENABL
+  0,  // HMP0
+  0,  // HMP1
+  0,  // HMM0
+  0,  // HMM1
+  0,  // HMBL
+  0,  // VDELP0
+  0,  // VDELP1
+  0,  // VDELBL
+  0,  // RESMP0
+  0,  // RESMP1
+  3,  // HMOVE
+  0,  // HMCLR
+  0,  // CXCLR
+      // remaining values are undefined TIA write locations
+  0,  0,  0, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

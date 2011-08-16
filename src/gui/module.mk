@@ -24,6 +24,7 @@ MODULE_OBJS := \
 	src/gui/Launcher.o \
 	src/gui/LauncherDialog.o \
 	src/gui/LauncherFilterDialog.o \
+	src/gui/LoggerDialog.o \
 	src/gui/ListWidget.o \
 	src/gui/Menu.o \
 	src/gui/MessageBox.o \

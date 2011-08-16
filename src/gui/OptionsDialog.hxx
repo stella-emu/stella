@@ -36,6 +36,7 @@ class GameInfoDialog;
 class CheatCodeDialog;
 class HelpDialog;
 class AboutDialog;
+class LoggerDialog;
 class OSystem;
 
 #include "Dialog.hxx"
@@ -61,6 +62,7 @@ class OptionsDialog : public Dialog
     RomAuditDialog*  myRomAuditDialog;
     GameInfoDialog*  myGameInfoDialog;
     CheatCodeDialog* myCheatCodeDialog;
+    LoggerDialog*    myLoggerDialog;
     HelpDialog*      myHelpDialog;
     AboutDialog*     myAboutDialog;
 
@@ -71,6 +73,7 @@ class OptionsDialog : public Dialog
     ButtonWidget* myRomAuditButton;
     ButtonWidget* myGameInfoButton;
     ButtonWidget* myCheatCodeButton;
+    ButtonWidget* myLoggerButton;
     ButtonWidget* myHelpButton;
     ButtonWidget* myAboutButton;
 
@@ -86,6 +89,7 @@ class OptionsDialog : public Dialog
       kAuditCmd    = 'RAUD',
       kInfoCmd     = 'INFO',
       kCheatCmd    = 'CHET',
+      kLoggerCmd   = 'LOGG',
       kHelpCmd     = 'HELP',
       kAboutCmd    = 'ABOU',
       kExitCmd     = 'EXIM'

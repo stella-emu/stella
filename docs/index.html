@@ -1766,8 +1766,13 @@
     </tr>
 
     <tr>
-      <td><pre>-showinfo &lt;0|1|2&gt;</pre></td>
-      <td>Shows some application & game info on the commandline while Stella is running.  Zero completely disables output (except for serious errors), while the remaining numbers show increasingly more detail.</td>
+      <td><pre>-loglevel &lt;0|1|2&gt;</pre></td>
+      <td>Indicates level of logging to perform while the application is running.  Zero completely disables logging (except for serious errors), while the remaining numbers show increasingly more detail.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-logtoconsole &lt;1|0&gt;</pre></td>
+      <td>Indicates that logged output should be printed to the console/commandline as it's being collected.  An internal log will still be kept, and the amount of logging is still controlled by 'loglevel'.</td>
     </tr>
 
     <tr>
@@ -2267,7 +2272,7 @@
           <tr><td>Interface Palette</td><td>palette to use for UI elements</td><td>-uipalette</td></tr>
           <tr><td>List quick delay</td><td>time to wait between keypresses in listwidget</td><td>-listdelay</td></tr>
           <tr><td>Mouse wheel scroll</td><td>number of lines mouse scroll will move in listwidget</td><td>-mscroll</td></tr>
-          <tr><td>Show Info level</td><td>amount of logging information to display</td><td>-showinfo</td></tr>
+          <tr><td>FIXME</td><td>fix this snapshot</td><td>...</td></tr>
         </table>
       </td>
     </tr>
@@ -2694,8 +2699,8 @@
     </tr>
 
     <tr>
-      <td>-showinfo 1</td>
-      <td>showinfo = 1 (or showinfo = true)</td>
+      <td>-center 1</td>
+      <td>center = 1 (or center = true)</td>
     </tr>
   </table>
 

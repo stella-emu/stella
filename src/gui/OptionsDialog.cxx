@@ -32,6 +32,7 @@
 #include "FileSnapDialog.hxx"
 #include "RomAuditDialog.hxx"
 #include "GameInfoDialog.hxx"
+#include "LoggerDialog.hxx"
 #include "HelpDialog.hxx"
 #include "AboutDialog.hxx"
 #include "OptionsDialog.hxx"
@@ -57,6 +58,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
     myFileSnapDialog(NULL),
     myGameInfoDialog(NULL),
     myCheatCodeDialog(NULL),
+    myLoggerDialog(NULL),
     myHelpDialog(NULL),
     myAboutDialog(NULL),
     myIsGlobal(global)
@@ -106,6 +108,9 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #endif
   wid.push_back(myCheatCodeButton);
 
+  myLoggerButton = addODButton("System Logs", kLoggerCmd);
+  wid.push_back(myLoggerButton);
+
   myHelpButton = addODButton("Help", kHelpCmd);
   wid.push_back(myHelpButton);
 
@@ -127,6 +132,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
 #ifdef CHEATCODE_SUPPORT
   myCheatCodeDialog = new CheatCodeDialog(osystem, parent, font);
 #endif
+  myLoggerDialog = new LoggerDialog(osystem, parent, font, max_w, max_h);
   myHelpDialog = new HelpDialog(osystem, parent, font);
   myAboutDialog = new AboutDialog(osystem, parent, font);
 
@@ -159,6 +165,7 @@ OptionsDialog::~OptionsDialog()
 #ifdef CHEATCODE_SUPPORT
   delete myCheatCodeDialog;
 #endif
+  delete myLoggerDialog;
   delete myHelpDialog;
   delete myAboutDialog;
 }
@@ -224,6 +231,10 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       parent().addDialog(myCheatCodeDialog);
       break;
 #endif
+
+    case kLoggerCmd:
+      parent().addDialog(myLoggerDialog);
+      break;
 
     case kHelpCmd:
       parent().addDialog(myHelpDialog);

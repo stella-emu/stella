@@ -62,7 +62,6 @@ class UIDialog : public Dialog
     PopUpWidget*      myPalettePopup;
     PopUpWidget*      myListDelayPopup;
     PopUpWidget*      myWheelLinesPopup;
-    PopUpWidget*      myShowInfoPopup;
     
   private:
     void loadConfig();

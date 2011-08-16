@@ -646,9 +646,9 @@ void OSystem::logMessage(const string& message, uInt8 level)
     cout << message << flush;
     myLogMessages += message;
   }
-  else if(level <= (uInt8)mySettings->getInt("showinfo"))
+  else if(level <= (uInt8)mySettings->getInt("loglevel"))
   {
-    if(1) // TODO - messages should be output to console
+    if(mySettings->getBool("logtoconsole"))
       cout << message << flush;
     myLogMessages += message;
   }

@@ -378,11 +378,11 @@ class OSystem
     void quit() { myQuitLoop = true; }
 
     /**
-      Output a message to the a log (normally stdout).
+      Append a message to the internal log.
 
-      @param message  The message to be output
-      @param level    If 0, always output the message, only output when
-                      level is less than or equal to that in 'showinfo'
+      @param message  The message to be appended
+      @param level    If 0, always output the message, only append when
+                      level is less than or equal to that in 'loglevel'
     */
     void logMessage(const string& message, uInt8 level);
 

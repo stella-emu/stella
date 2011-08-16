@@ -251,16 +251,6 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myWheelLinesPopup);
   ypos += lineHeight + 4;
 
-  // Amount of output to show with 'showinfo'
-  items.clear();
-  items.push_back("None", "0");
-  items.push_back("Basic", "1");
-  items.push_back("Verbose", "2");
-  myShowInfoPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
-                                    items, "Show Info level: ", lwidth);
-  wid.push_back(myShowInfoPopup);
-  ypos += lineHeight + 4;
-
   // Add items for tab 2
   addToFocusList(wid, tabID);
 
@@ -333,10 +323,6 @@ void UIDialog::loadConfig()
   const string& mw = instance().settings().getString("mwheel");
   myWheelLinesPopup->setSelected(mw, "1");
 
-  // Showinfo
-  const string& si = instance().settings().getString("showinfo");
-  myShowInfoPopup->setSelected(si, "1");
-
   myTab->loadConfig();
 }
 
@@ -372,10 +358,6 @@ void UIDialog::saveConfig()
   instance().settings().setString("mwheel",
     myWheelLinesPopup->getSelectedTag());
   ScrollBarWidget::setWheelLines(atoi(myWheelLinesPopup->getSelectedTag().c_str()));
-
-  // Show info
-  instance().settings().setString("showinfo",
-    myShowInfoPopup->getSelectedTag());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -407,7 +389,6 @@ void UIDialog::setDefaults()
       myPalettePopup->setSelected("1", "1");
       myListDelayPopup->setSelected("300", "300");
       myWheelLinesPopup->setSelected("4", "4");
-      myShowInfoPopup->setSelected("1", "1");
       break;
 
     default:
