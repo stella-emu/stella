@@ -737,6 +737,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\gui\LoggerDialog.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\gui\Menu.cxx"
 					>
 				</File>
@@ -1548,6 +1552,10 @@
 				</File>
 				<File
 					RelativePath="..\gui\ListWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\gui\LoggerDialog.hxx"
 					>
 				</File>
 				<File

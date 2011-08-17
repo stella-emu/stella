@@ -50,7 +50,11 @@ SoundSDL::SoundSDL(OSystem* osystem)
 SoundSDL::~SoundSDL()
 {
   // Close the SDL audio system if it's initialized
-  close();
+  if(myIsInitializedFlag)
+  {
+    SDL_CloseAudio();
+    myIsInitializedFlag = false;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -75,8 +79,9 @@ void SoundSDL::open()
   myRegWriteQueue.clear();
   myTIASound.reset();
 
-  if(SDL_WasInit(SDL_INIT_AUDIO) == 0)
+  if(!myIsInitializedFlag && SDL_WasInit(SDL_INIT_AUDIO) == 0)
   {
+cerr << "SoundSDL::open()\n";
     myIsInitializedFlag = false;
     myIsMuted = false;
     myLastRegisterSetCycle = 0;
@@ -158,8 +163,8 @@ void SoundSDL::close()
 {
   if(myIsInitializedFlag)
   {
-    SDL_CloseAudio();
-    myIsInitializedFlag = false;
+cerr << "SoundSDL::close()\n";
+    SDL_PauseAudio(1);
   }
 }
 
