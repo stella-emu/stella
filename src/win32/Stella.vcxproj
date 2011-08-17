@@ -213,6 +213,7 @@ SDLmain.lib
   <ItemGroup>
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
+    <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="FSNodeWin32.cxx" />
     <ClCompile Include="..\common\mainSDL.cxx" />
     <ClCompile Include="OSystemWin32.cxx" />
@@ -397,6 +398,7 @@ SDLmain.lib
     <ClInclude Include="..\common\GLShaderProgs.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
+    <ClInclude Include="..\gui\LoggerDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />

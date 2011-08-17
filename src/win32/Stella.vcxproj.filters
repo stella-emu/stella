@@ -582,6 +582,9 @@
     <ClCompile Include="..\libpng\pngwutil.c">
       <Filter>Source Files\libpng</Filter>
     </ClCompile>
+    <ClCompile Include="..\gui\LoggerDialog.cxx">
+      <Filter>Source Files\gui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1144,6 +1147,9 @@
     </ClInclude>
     <ClInclude Include="..\common\StringParser.hxx">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\gui\LoggerDialog.hxx">
+      <Filter>Header Files\gui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
