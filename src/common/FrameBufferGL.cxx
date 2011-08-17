@@ -306,6 +306,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   // Initialize GL display
   p_glViewport(0, 0, mode.screen_w, mode.screen_h);
   p_glMatrixMode(GL_PROJECTION);
+  p_glLoadIdentity();
   p_glOrtho(0.0, mode.screen_w, mode.screen_h, 0.0, -1.0, 1.0);
   p_glMatrixMode(GL_MODELVIEW);
   p_glLoadIdentity();
