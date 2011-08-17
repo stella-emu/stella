@@ -719,7 +719,7 @@ void FBSurfaceGL::update()
     p_glEnableClientState(GL_VERTEX_ARRAY);
     p_glEnableClientState(GL_TEXTURE_COORD_ARRAY);
     p_glVertexPointer(2, GL_SHORT, 0, myVertCoord);
-    p_glTexCoordPointer(2, GL_FLOAT, 0, myTexCoord); 
+    p_glTexCoordPointer(2, GL_FLOAT, 0, myTexCoord);
     p_glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     p_glDisableClientState(GL_VERTEX_ARRAY);
     p_glDisableClientState(GL_TEXTURE_COORD_ARRAY);
