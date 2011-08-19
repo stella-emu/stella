@@ -539,7 +539,7 @@ FBSurface* FrameBuffer::surface(int id) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FrameBuffer::resetSurfaces()
+void FrameBuffer::resetSurfaces(FBSurface* tiasurface)
 {
   // Free all resources for each surface, then reload them
   // Due to possible timing and/or synchronization issues, all free()'s
@@ -550,8 +550,12 @@ void FrameBuffer::resetSurfaces()
   map<int,FBSurface*>::iterator iter;
   for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
     iter->second->free();
+  if(tiasurface)
+    tiasurface->free();
   for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
     iter->second->reload();
+  if(tiasurface)
+    tiasurface->reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

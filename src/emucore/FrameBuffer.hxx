@@ -430,7 +430,7 @@ class FrameBuffer
       Issues a 'free' and 'reload' instruction to all surfaces that the
       framebuffer knows about.
     */
-    void resetSurfaces();
+    void resetSurfaces(FBSurface* tiasurface = (FBSurface*)0);
 
   protected:
     // The parent system for the framebuffer

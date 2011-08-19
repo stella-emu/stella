@@ -176,7 +176,7 @@ class FrameBufferGL : public FrameBuffer
 
   private:
     enum GLFunctionality {
-      kGL_FULL, kGL_ES
+      kGL_BASIC, kGL_VBO, kGL_FBO
     };
     bool loadFuncs(GLFunctionality functionality);
 
@@ -214,8 +214,8 @@ class FrameBufferGL : public FrameBuffer
     // Indicates the OpenGL version found (0 indicates none)
     static float myGLVersion;
 
-    // Indicates whether Frame/Pixel Buffer Object functions were properly loaded
-    static bool myFBOAvailable, myPBOAvailable;
+    // Indicates whether Vertex/Frame Buffer Object functions were properly loaded
+    static bool myVBOAvailable, myFBOAvailable;
 };
 
 /**
@@ -273,13 +273,12 @@ class FBSurfaceGL : public FBSurface
     FrameBufferGL& myFB;
     SDL_Surface* myTexture;
 
-    GLuint  myTexID;
+    GLuint  myTexID, myVBOID;
     GLsizei myTexWidth;
     GLsizei myTexHeight;
-    GLshort myVertCoord[8];
-    GLshort myXOrig, myYOrig, myWidth, myHeight;
-    GLfloat myTexCoord[8];
+    GLuint  myXOrig, myYOrig, myWidth, myHeight;
     GLfloat myTexCoordW, myTexCoordH;
+    GLfloat myCoord[16];
 
     bool mySurfaceIsDirty;
     uInt32 myPitch;

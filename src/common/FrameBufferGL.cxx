@@ -65,6 +65,10 @@ OGL_DECLARE(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GL
 OGL_DECLARE(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
 OGL_DECLARE(void,glTexParameteri,(GLenum, GLenum, GLint));
 OGL_DECLARE(GLenum,glGetError,(void));
+OGL_DECLARE(void,glGenBuffers,(GLsizei,GLuint*));
+OGL_DECLARE(void,glBindBuffer,(GLenum,GLuint));
+OGL_DECLARE(void,glBufferData,(GLenum,GLsizei,const void*,GLenum));
+OGL_DECLARE(void,glDeleteBuffers,(GLsizei, const GLuint*));
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
@@ -118,7 +122,7 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
     // If anything fails, we'll know it immediately, and return false
     switch(functionality)
     {
-      case kGL_FULL:
+      case kGL_BASIC:
         OGL_INIT(void,glClear,(GLbitfield));
         OGL_INIT(void,glEnable,(GLenum));
         OGL_INIT(void,glDisable,(GLenum));
@@ -150,11 +154,18 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
         OGL_INIT(void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
         OGL_INIT(void,glTexParameteri,(GLenum, GLenum, GLint));
-        break; // kGLFull
+        break; // kGL_Full
 
-      case kGL_ES:
-        // TODO - merge with full so there's only one implementation
-        break;  // kGLES
+      case kGL_VBO:
+        OGL_INIT(void,glGenBuffers,(GLsizei,GLuint*));
+        OGL_INIT(void,glBindBuffer,(GLenum,GLuint));
+        OGL_INIT(void,glBufferData,(GLenum,GLsizei,const void*,GLenum));
+        OGL_INIT(void,glDeleteBuffers,(GLsizei, const GLuint*));
+        break;  // kGL_VBO
+
+      case kGL_FBO:
+        return false;  // TODO - implement this
+        break;  // kGL_FBO
     }
   }
   else
@@ -208,7 +219,11 @@ string FrameBufferGL::about() const
       << "  Version:    " << p_glGetString(GL_VERSION) << endl
       << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
       << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << endl
-      << "  Filter:     " << myFilterParamName << endl;
+      << "  Filter:     " << myFilterParamName << endl
+      << "  Extensions: ";
+  if(myVBOAvailable) out << "VBO ";
+  if(myFBOAvailable) out << "FBO ";
+  out << endl;
   return out.str();
 }
 
@@ -284,12 +299,14 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   mySDLFlags = myScreen->flags;
 
   // Load OpenGL function pointers
-  myFBOAvailable = myPBOAvailable = false;
-  if(loadFuncs(kGL_FULL))
+  if(loadFuncs(kGL_BASIC))
   {
     // Grab OpenGL version number
     string version((const char *)p_glGetString(GL_VERSION));
     myGLVersion = atof(version.substr(0, 3).c_str());
+
+    myVBOAvailable = myOSystem->settings().getBool("gl_vbo") && loadFuncs(kGL_VBO);
+    myFBOAvailable = false;
   }
   else
     return false;
@@ -334,15 +351,21 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
   // In this way, all free()'s come before all reload()'s
   ////////////////////////////////////////////////////////////////////
 
-  // The framebuffer only takes responsibility for TIA surfaces
-  // Other surfaces (such as the ones used for dialogs) are allocated
-  // in the Dialog class
-  delete myTiaSurface;  myTiaSurface = NULL;
+  // We try to re-use the TIA surface whenever possible
+  if(!inUIMode && !(myTiaSurface &&
+      myTiaSurface->getWidth() == mode.image_w &&
+      myTiaSurface->getHeight() == mode.image_h))
+  {
+    delete myTiaSurface;  myTiaSurface = NULL;
+  }
 
   // Any previously allocated textures currently in use by various UI items
   // need to be refreshed as well (only seems to be required for OSX)
-  resetSurfaces();
+  resetSurfaces(myTiaSurface);
 
+  // The framebuffer only takes responsibility for TIA surfaces
+  // Other surfaces (such as the ones used for dialogs) are allocated
+  // in the Dialog class
   if(!inUIMode)
   {
     // The actual TIA image is only half of that specified by baseWidth
@@ -353,8 +376,10 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     //
     // Also note that TV filtering is always available since we'll always
     // have access to Blargg filtering
-    myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
+    if(!myTiaSurface)
+      myTiaSurface = new FBSurfaceGL(*this, baseWidth>>1, baseHeight,
                                      mode.image_w, mode.image_h, true);
+
     myTiaSurface->setPos(mode.image_x, mode.image_y);
     myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
   }
@@ -444,7 +469,7 @@ void FrameBufferGL::postFrameUpdate()
 {
   if(myDirtyFlag)
   {
-    // Now show all changes made to the texture
+    // Now show all changes made to the texture(s)
     SDL_GL_SwapBuffers();
     myDirtyFlag = false;
   }
@@ -494,6 +519,7 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
   : myFB(buffer),
     myTexture(NULL),
     myTexID(0),
+    myVBOID(0),
     myXOrig(0),
     myYOrig(0),
     myWidth(scaleWidth),
@@ -512,9 +538,8 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
                   0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
   myPitch = myTexture->pitch >> 1;
 
-  updateCoords();
-
   // Associate the SDL surface with a GL texture object
+  updateCoords();
   reload();
 }
 
@@ -668,10 +693,12 @@ void FBSurfaceGL::getPos(uInt32& x, uInt32& y) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::setPos(uInt32 x, uInt32 y)
 {
-  myXOrig = x;
-  myYOrig = y;
-
-  updateCoords();
+  if(myXOrig != x || myYOrig != y)
+  {
+    myXOrig = x;
+    myYOrig = y;
+    updateCoords();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -680,10 +707,12 @@ void FBSurfaceGL::setWidth(uInt32 w)
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
   // and it's the only thing that uses it
-  myWidth = w;
-  myTexCoordW = (GLfloat) myWidth / myTexWidth;
-
-  updateCoords();
+  if(myWidth != w)
+  {
+    myWidth = w;
+    myTexCoordW = (GLfloat) myWidth / myTexWidth;
+    updateCoords();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -692,10 +721,12 @@ void FBSurfaceGL::setHeight(uInt32 h)
   // This method can't be used with 'scaled' surface (aka TIA surfaces)
   // That shouldn't really matter, though, as all the UI stuff isn't scaled,
   // and it's the only thing that uses it
-  myHeight = h;
-  myTexCoordH = (GLfloat) myHeight / myTexHeight;
-
-  updateCoords();
+  if(myHeight != h)
+  {
+    myHeight = h;
+    myTexCoordH = (GLfloat) myHeight / myTexHeight;
+    updateCoords();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -719,8 +750,17 @@ void FBSurfaceGL::update()
 
     p_glEnableClientState(GL_VERTEX_ARRAY);
     p_glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-    p_glVertexPointer(2, GL_SHORT, 0, myVertCoord);
-    p_glTexCoordPointer(2, GL_FLOAT, 0, myTexCoord);
+    if(myFB.myVBOAvailable)
+    {
+      p_glBindBuffer(GL_ARRAY_BUFFER, myVBOID);
+      p_glVertexPointer(2, GL_FLOAT, 0, (const GLvoid*)0);
+      p_glTexCoordPointer(2, GL_FLOAT, 0, (const GLvoid*)(8*sizeof(GLfloat)));
+    }
+    else
+    {
+      p_glVertexPointer(2, GL_FLOAT, 0, myCoord);
+      p_glTexCoordPointer(2, GL_FLOAT, 0, myCoord+8);
+    }
     p_glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
     p_glDisableClientState(GL_VERTEX_ARRAY);
     p_glDisableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -736,6 +776,8 @@ void FBSurfaceGL::update()
 void FBSurfaceGL::free()
 {
   p_glDeleteTextures(1, &myTexID);
+  if(myFB.myVBOAvailable)
+    p_glDeleteBuffers(1, &myVBOID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -764,6 +806,14 @@ void FBSurfaceGL::reload()
   p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  myTexWidth, myTexHeight, 0,
                  GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, myTexture->pixels);
+
+  // Cache vertex and texture coordinates using vertex buffer object
+  if(myFB.myVBOAvailable)
+  {
+    p_glGenBuffers(1, &myVBOID);
+    p_glBindBuffer(GL_ARRAY_BUFFER, myVBOID);
+    p_glBufferData(GL_ARRAY_BUFFER, 16*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -789,34 +839,38 @@ void FBSurfaceGL::updateCoords()
 {
   // Vertex coordinates
   // Upper left (x,y)
-  myVertCoord[0] = myXOrig;
-  myVertCoord[1] = myYOrig;
+  myCoord[0] = myXOrig;
+  myCoord[1] = myYOrig;
   // Upper right (x+w,y)
-  myVertCoord[2] = myXOrig + myWidth;
-  myVertCoord[3] = myYOrig;
+  myCoord[2] = myXOrig + myWidth;
+  myCoord[3] = myYOrig;
   // Lower left (x,y+h)
-  myVertCoord[4] = myXOrig;
-  myVertCoord[5] = myYOrig + myHeight;
+  myCoord[4] = myXOrig;
+  myCoord[5] = myYOrig + myHeight;
   // Lower right (x+w,y+h)
-  myVertCoord[6] = myXOrig + myWidth;
-  myVertCoord[7] = myYOrig + myHeight;
+  myCoord[6] = myXOrig + myWidth;
+  myCoord[7] = myYOrig + myHeight;
 
   // Texture coordinates
   // Upper left (x,y)
-  myTexCoord[0] = 0.0f;
-  myTexCoord[1] = 0.0f;
+  myCoord[8] = 0.0f;
+  myCoord[9] = 0.0f;
   // Upper right (x+w,y)
-  myTexCoord[2] = myTexCoordW;
-  myTexCoord[3] = 0.0f;
+  myCoord[10] = myTexCoordW;
+  myCoord[11] = 0.0f;
   // Lower left (x,y+h)
-  myTexCoord[4] = 0.0f;
-  myTexCoord[5] = myTexCoordH;
+  myCoord[12] = 0.0f;
+  myCoord[13] = myTexCoordH;
   // Lower right (x+w,y+h)
-  myTexCoord[6] = myTexCoordW;
-  myTexCoord[7] = myTexCoordH;
+  myCoord[14] = myTexCoordW;
+  myCoord[15] = myTexCoordH;
 
-  // TODO - perhaps use VBO to store these, since they're static most
-  //        of the time
+  // Cache vertex and texture coordinates using vertex buffer object
+  if(myFB.myVBOAvailable)
+  {
+    p_glBindBuffer(GL_ARRAY_BUFFER, myVBOID);
+    p_glBufferData(GL_ARRAY_BUFFER, 16*sizeof(GLfloat), myCoord, GL_STATIC_DRAW);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -826,9 +880,9 @@ bool FrameBufferGL::myLibraryLoaded = false;
 float FrameBufferGL::myGLVersion = 0.0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myFBOAvailable = false;
+bool FrameBufferGL::myVBOAvailable = false;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FrameBufferGL::myPBOAvailable = false;
+bool FrameBufferGL::myFBOAvailable = false;
 
 #endif  // DISPLAY_OPENGL

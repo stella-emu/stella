@@ -46,6 +46,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_fsmax", "false");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "false");
+  setInternal("gl_vbo", "true");
 
   // Framebuffer-related options
   setInternal("tia_filter", "zoom2x");
@@ -351,7 +352,8 @@ void Settings::usage()
     << "  -gl_aspectn   <number>       Scale the TIA width by the given percentage in NTSC mode\n"
     << "  -gl_aspectp   <number>       Scale the TIA width by the given percentage in PAL mode\n"
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
-    << "  -gl_vsync     <1|0>          Enable synchronize to vertical blank interrupt\n"
+    << "  -gl_vsync     <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
+    << "  -gl_vbo       <1|0>          Enable 'vertex buffer objects'\n"
 #if 0
     << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
     << "  -tv_tex       <off|type>     OpenGL TV texturing, type is one of the following:\n"

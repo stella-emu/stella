@@ -203,9 +203,12 @@ bool OSystem::create()
   // Get updated paths for all configuration files
   setConfigPaths();
   ostringstream buf;
-  buf << "Base directory:       '" << myBaseDir << "'" << endl
-      << "Configuration file:   '" << myConfigFile << "'" << endl
-      << "User game properties: '" << myPropertiesFile << "'" << endl
+  buf << "Base directory:       '"
+      << FilesystemNode(myBaseDir).getPath(false) << "'" << endl
+      << "Configuration file:   '"
+      << FilesystemNode(myConfigFile).getPath(false) << "'" << endl
+      << "User game properties: '"
+      << FilesystemNode(myPropertiesFile).getPath(false) << "'" << endl
       << endl;
   logMessage(buf.str(), 1);
 
@@ -538,7 +541,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
         myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
-        << "  ROM file: " << myRomFile << endl << endl
+        << "  ROM file: " << FilesystemNode(myRomFile).getPath(false) << endl << endl
         << getROMInfo(myConsole) << endl;
     logMessage(buf.str(), 1);
 
