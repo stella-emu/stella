@@ -599,9 +599,6 @@
     <ClInclude Include="..\common\FrameBufferSoft.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\common\GLShaderProgs.hxx">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="HomeFinder.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>

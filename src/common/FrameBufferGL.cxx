@@ -839,17 +839,17 @@ void FBSurfaceGL::updateCoords()
 {
   // Vertex coordinates
   // Upper left (x,y)
-  myCoord[0] = myXOrig;
-  myCoord[1] = myYOrig;
+  myCoord[0] = (GLfloat)myXOrig;
+  myCoord[1] = (GLfloat)myYOrig;
   // Upper right (x+w,y)
-  myCoord[2] = myXOrig + myWidth;
-  myCoord[3] = myYOrig;
+  myCoord[2] = (GLfloat)(myXOrig + myWidth);
+  myCoord[3] = (GLfloat)myYOrig;
   // Lower left (x,y+h)
-  myCoord[4] = myXOrig;
-  myCoord[5] = myYOrig + myHeight;
+  myCoord[4] = (GLfloat)myXOrig;
+  myCoord[5] = (GLfloat)(myYOrig + myHeight);
   // Lower right (x+w,y+h)
-  myCoord[6] = myXOrig + myWidth;
-  myCoord[7] = myYOrig + myHeight;
+  myCoord[6] = (GLfloat)(myXOrig + myWidth);
+  myCoord[7] = (GLfloat)(myYOrig + myHeight);
 
   // Texture coordinates
   // Upper left (x,y)

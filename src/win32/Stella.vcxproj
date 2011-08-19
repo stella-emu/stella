@@ -395,7 +395,6 @@ SDLmain.lib
     <ClInclude Include="..\common\bspf.hxx" />
     <ClInclude Include="..\common\FrameBufferGL.hxx" />
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
-    <ClInclude Include="..\common\GLShaderProgs.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
