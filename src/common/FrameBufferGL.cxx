@@ -82,7 +82,11 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   // since the structure may be needed before any FBSurface's have
   // been created
   SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 16,
+#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
+                     0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+#else
                      0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
+#endif
   myPixelFormat = *(s->format);
   SDL_FreeSurface(s);
 }
@@ -218,7 +222,12 @@ string FrameBufferGL::about() const
       << "  Renderer:   " << p_glGetString(GL_RENDERER) << endl
       << "  Version:    " << p_glGetString(GL_VERSION) << endl
       << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
-      << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << endl
+      << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << ", "
+#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
+      << "GL_BGRA" << endl
+#else
+      << "GL_RGBA" << endl
+#endif
       << "  Filter:     " << myFilterParamName << endl
       << "  Extensions: ";
   if(myVBOAvailable) out << "VBO ";
@@ -531,11 +540,15 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer,
   myTexCoordW = (GLfloat) baseWidth / myTexWidth;
   myTexCoordH = (GLfloat) baseHeight / myTexHeight;
 
-  // Based on experimentation, the following is the fastest 16-bit
-  // format for OpenGL (on all platforms)
+  // Based on experimentation, the following are the fastest 16-bit
+  // formats for OpenGL (on all platforms)
   myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
                   myTexWidth, myTexHeight, 16,
+#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
+                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+#else
                   0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
+#endif
   myPitch = myTexture->pitch >> 1;
 
   // Associate the SDL surface with a GL texture object
@@ -746,7 +759,12 @@ void FBSurfaceGL::update()
     p_glActiveTexture(GL_TEXTURE0);
     p_glBindTexture(GL_TEXTURE_2D, myTexID);
     p_glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexWidth, myTexHeight,
-                      GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, myTexture->pixels);
+#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
+                      GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+#else
+                      GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
+#endif
+                      myTexture->pixels);
 
     p_glEnableClientState(GL_VERTEX_ARRAY);
     p_glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -805,7 +823,12 @@ void FBSurfaceGL::reload()
   // Finally, create the texture in the most optimal format
   p_glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
                  myTexWidth, myTexHeight, 0,
-                 GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1, myTexture->pixels);
+#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
+                 GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+#else
+                 GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
+#endif
+                 myTexture->pixels);
 
   // Cache vertex and texture coordinates using vertex buffer object
   if(myFB.myVBOAvailable)
