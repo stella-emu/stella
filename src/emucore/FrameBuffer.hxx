@@ -648,7 +648,7 @@ class FBSurface
       @param x2    The second x coordinate
       @param color The color of the line
     */
-    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color) = 0;
+    virtual void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color) { }
 
     /**
       This method should be called to draw a vertical line.
@@ -658,7 +658,7 @@ class FBSurface
       @param y2    The second y coordinate
       @param color The color of the line
     */
-    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color) = 0;
+    virtual void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color) { }
 
     /**
       This method should be called to draw a filled rectangle.
@@ -670,7 +670,7 @@ class FBSurface
       @param color  
     */
     virtual void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                          uInt32 color) = 0;
+                          uInt32 color) { }
 
     /**
       This method should be called to draw the specified character.
@@ -682,7 +682,7 @@ class FBSurface
       @param color  The color of the character
     */
     virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
-                          uInt32 color) = 0;
+                          uInt32 color) { }
 
     /**
       This method should be called to draw the bitmap image.
@@ -694,7 +694,7 @@ class FBSurface
       @param h      The height of the data image
     */
     virtual void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color,
-                            uInt32 h = 8) = 0;
+                            uInt32 h = 8) { }
 
     /**
       This method should be called to convert and copy a given row of pixel
@@ -705,7 +705,7 @@ class FBSurface
       @param row      The row of the surface the data should be placed in
       @param rowbytes The number of bytes in row of 'data'
     */
-    virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels) = 0;
+    virtual void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels) { }
 
     /**
       This method should be called copy the contents of the given
@@ -715,7 +715,7 @@ class FBSurface
       @param x       The x coordinate
       @param y       The y coordinate
     */
-    virtual void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y) = 0;
+    virtual void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y) { }
 
     /**
       This method should be called to add a dirty rectangle
@@ -726,33 +726,33 @@ class FBSurface
       @param w      The width of the area
       @param h      The height of the area
     */
-    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) = 0;
+    virtual void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h) { }
 
     /**
       This method answers the current position of the surface.
     */
-    virtual void getPos(uInt32& x, uInt32& y) const = 0;
+    virtual void getPos(uInt32& x, uInt32& y) const { }
 
     /**
       This method should be called to set the position of the surface.
     */
-    virtual void setPos(uInt32 x, uInt32 y) = 0;
+    virtual void setPos(uInt32 x, uInt32 y) { }
 
     /**
       This method answers the current dimensions of the surface.
     */
-    virtual uInt32 getWidth() const = 0;
-    virtual uInt32 getHeight() const = 0;
+    virtual uInt32 getWidth() const { return 0; }
+    virtual uInt32 getHeight() const { return 0; }
 
     /**
       This method sets the width of the drawable area of the surface.
     */
-    virtual void setWidth(uInt32 w) = 0;
+    virtual void setWidth(uInt32 w) { }
 
     /**
       This method sets the width of the drawable area of the surface.
     */
-    virtual void setHeight(uInt32 h) = 0;
+    virtual void setHeight(uInt32 h) { }
 
     /**
       This method should be called to translate the given coordinates
@@ -761,24 +761,24 @@ class FBSurface
       @param x  X coordinate to translate
       @param y  Y coordinate to translate
     */
-    virtual void translateCoords(Int32& x, Int32& y) const = 0;
+    virtual void translateCoords(Int32& x, Int32& y) const { }
 
     /**
       This method should be called to draw the surface to the screen.
     */
-    virtual void update() = 0;
+    virtual void update() { }
 
     /**
       This method should be called to free any resources being used by
       the surface.
     */
-    virtual void free() = 0;
+    virtual void free() { }
 
     /**
       This method should be called to reload the surface data/state.
       It will normally be called after free().
     */
-    virtual void reload() = 0;
+    virtual void reload() { }
 
     /**
       This method should be called to draw a rectangular box with sides
@@ -791,8 +791,8 @@ class FBSurface
       @param colorA Lighter color for outside line.
       @param colorB Darker color for inside line.
     */
-    void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-             uInt32 colorA, uInt32 colorB);
+    virtual void box(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                     uInt32 colorA, uInt32 colorB);
 
     /**
       This method should be called to draw a framed rectangle.
@@ -804,8 +804,8 @@ class FBSurface
       @param h      The height of the area
       @param color  The color of the surrounding frame
     */
-    void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
-                   uInt32 color, FrameStyle style = kSolidLine);
+    virtual void frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
+                           uInt32 color, FrameStyle style = kSolidLine);
 
     /**
       This method should be called to draw the specified string.
@@ -821,9 +821,10 @@ class FBSurface
       @param deltax 
       @param useEllipsis  Whether to use '...' when the string is too long
     */
-    void drawString(const GUI::Font* font, const string& str, int x, int y, int w,
-                    uInt32 color, TextAlignment align = kTextAlignLeft,
-                    int deltax = 0, bool useEllipsis = true);
+    virtual void drawString(
+        const GUI::Font* font, const string& str, int x, int y, int w,
+        uInt32 color, TextAlignment align = kTextAlignLeft,
+        int deltax = 0, bool useEllipsis = true);
 };
 
 #endif

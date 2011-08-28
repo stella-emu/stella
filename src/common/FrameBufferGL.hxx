@@ -28,9 +28,17 @@
 
 class OSystem;
 class FBSurfaceGL;
+class FBSurfaceTIA;
+class TIA;
 
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
+
+// Make sure we have access to the most common pixel format
+// (it isn't available in certain versions of OpenGL ES
+#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
+  #define HAVE_GL_BGRA
+#endif
 
 /**
   This class implements an SDL OpenGL framebuffer.
@@ -41,6 +49,7 @@ class FBSurfaceGL;
 class FrameBufferGL : public FrameBuffer
 {
   friend class FBSurfaceGL;
+  friend class FBSurfaceTIA;
 
   public:
     /**
@@ -180,15 +189,18 @@ class FrameBufferGL : public FrameBuffer
     };
     bool loadFuncs(GLFunctionality functionality);
 
-    /**
-      Enable/disable texture effect.
-    */
-    void enableTexture(bool enable);
+    static uInt32 power_of_two(uInt32 input)
+    {
+      uInt32 value = 1;
+      while( value < input )
+        value <<= 1;
+      return value;
+    }
 
   private:
     // The lower-most base surface (will always be a TIA surface,
     // since Dialog surfaces are allocated by the Dialog class directly).
-    FBSurfaceGL* myTiaSurface;
+    FBSurfaceTIA* myTiaSurface;
 
     // Used by mapRGB (when palettes are created)
     SDL_PixelFormat myPixelFormat;
@@ -205,9 +217,6 @@ class FrameBufferGL : public FrameBuffer
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
 
-    // Indicates whether or not the phosphor filter is enabled
-    bool myUseGLPhosphor;
-
     // Indicates if the OpenGL library has been properly loaded
     static bool myLibraryLoaded;
 
@@ -216,72 +225,45 @@ class FrameBufferGL : public FrameBuffer
 
     // Indicates whether Vertex/Frame Buffer Object functions were properly loaded
     static bool myVBOAvailable, myFBOAvailable;
-};
 
-/**
-  A surface suitable for OpenGL rendering mode.
-
-  @author  Stephen Anthony
-  @version $Id$
-*/
-class FBSurfaceGL : public FBSurface
-{
-  friend class FrameBufferGL;
-
-  public:
-    FBSurfaceGL(FrameBufferGL& buffer,
-                uInt32 baseWidth, uInt32 baseHeight,
-                uInt32 scaleWidth, uInt32 scaleHeight,
-                bool allowFiltering);
-    virtual ~FBSurfaceGL();
-
-    void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
-    void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
-    void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
-    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, uInt32 color);
-    void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color, uInt32 h = 8);
-    void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
-    void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);
-    void addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h);
-    void getPos(uInt32& x, uInt32& y) const;
-    void setPos(uInt32 x, uInt32 y);
-    uInt32 getWidth()  const { return myWidth;  }
-    uInt32 getHeight() const { return myHeight; }
-    void setWidth(uInt32 w);
-    void setHeight(uInt32 h);
-    void translateCoords(Int32& x, Int32& y) const;
-    void update();
-    void free();
-    void reload();
-
-  private:
-    void setFilter(const string& name);
-    void updateCoords();
-
-    void* pixels() const { return myTexture->pixels; }
-    uInt32 pitch() const { return myPitch;           }
-
-    static uInt32 power_of_two(uInt32 input)
-    {
-      uInt32 value = 1;
-      while( value < input )
-        value <<= 1;
-      return value;
-    }
-
-  private:
-    FrameBufferGL& myFB;
-    SDL_Surface* myTexture;
-
-    GLuint  myTexID, myVBOID;
-    GLsizei myTexWidth;
-    GLsizei myTexHeight;
-    GLuint  myXOrig, myYOrig, myWidth, myHeight;
-    GLfloat myTexCoordW, myTexCoordH;
-    GLfloat myCoord[16];
-
-    bool mySurfaceIsDirty;
-    uInt32 myPitch;
+    // Structure containing dynamically-loaded OpenGL function pointers
+    #define OGL_DECLARE(NAME,RET,FUNC,PARAMS) RET (APIENTRY* NAME) PARAMS
+    typedef struct {
+      OGL_DECLARE(Clear,void,glClear,(GLbitfield));
+      OGL_DECLARE(Enable,void,glEnable,(GLenum));
+      OGL_DECLARE(Disable,void,glDisable,(GLenum));
+      OGL_DECLARE(PushAttrib,void,glPushAttrib,(GLbitfield));
+      OGL_DECLARE(GetString,const GLubyte*,glGetString,(GLenum));
+      OGL_DECLARE(Hint,void,glHint,(GLenum, GLenum));
+      OGL_DECLARE(ShadeModel,void,glShadeModel,(GLenum));
+      OGL_DECLARE(MatrixMode,void,glMatrixMode,(GLenum));
+      OGL_DECLARE(Ortho,void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
+      OGL_DECLARE(Viewport,void,glViewport,(GLint, GLint, GLsizei, GLsizei));
+      OGL_DECLARE(LoadIdentity,void,glLoadIdentity,(void));
+      OGL_DECLARE(EnableClientState,void,glEnableClientState,(GLenum));
+      OGL_DECLARE(DisableClientState,void,glDisableClientState,(GLenum));
+      OGL_DECLARE(VertexPointer,void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));
+      OGL_DECLARE(TexCoordPointer,void,glTexCoordPointer,(GLint,GLenum,GLsizei,const GLvoid*));
+      OGL_DECLARE(DrawArrays,void,glDrawArrays,(GLenum,GLint,GLsizei));
+      OGL_DECLARE(ReadPixels,void,glReadPixels,(GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, GLvoid*));
+      OGL_DECLARE(PixelStorei,void,glPixelStorei,(GLenum, GLint));
+      OGL_DECLARE(TexEnvf,void,glTexEnvf,(GLenum, GLenum, GLfloat));
+      OGL_DECLARE(GenTextures,void,glGenTextures,(GLsizei, GLuint*));
+      OGL_DECLARE(DeleteTextures,void,glDeleteTextures,(GLsizei, const GLuint*));
+      OGL_DECLARE(ActiveTexture,void,glActiveTexture,(GLenum));
+      OGL_DECLARE(BindTexture,void,glBindTexture,(GLenum, GLuint));
+      OGL_DECLARE(TexImage2D,void,glTexImage2D,(GLenum, GLint, GLint, GLsizei, GLsizei, GLint, GLenum, GLenum, const GLvoid*));
+      OGL_DECLARE(TexSubImage2D,void,glTexSubImage2D,(GLenum, GLint, GLint, GLint, GLsizei, GLsizei, GLenum, GLenum, const GLvoid*));
+      OGL_DECLARE(TexParameteri,void,glTexParameteri,(GLenum, GLenum, GLint));
+      OGL_DECLARE(GetError,GLenum,glGetError,(void));
+      OGL_DECLARE(Color4f,void,glColor4f,(GLfloat,GLfloat,GLfloat,GLfloat));
+      OGL_DECLARE(BlendFunc,void,glBlendFunc,(GLenum,GLenum));
+      OGL_DECLARE(GenBuffers,void,glGenBuffers,(GLsizei,GLuint*));
+      OGL_DECLARE(BindBuffer,void,glBindBuffer,(GLenum,GLuint));
+      OGL_DECLARE(BufferData,void,glBufferData,(GLenum,GLsizei,const void*,GLenum));
+      OGL_DECLARE(DeleteBuffers,void,glDeleteBuffers,(GLsizei, const GLuint*));
+    } GLpointers;
+    GLpointers p_gl;
 };
 
 #endif  // DISPLAY_OPENGL
