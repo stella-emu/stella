@@ -186,6 +186,14 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\common\FBSurfaceGL.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\FBSurfaceTIA.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\FrameBufferGL.cxx"
 				>
 			</File>
@@ -933,6 +941,14 @@
 			</File>
 			<File
 				RelativePath="..\common\bspf.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\FBSurfaceGL.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\FBSurfaceTIA.hxx"
 				>
 			</File>
 			<File
