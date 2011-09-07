@@ -311,6 +311,10 @@
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
 		DC84E11C1135988E00CA7C9D /* Genesis.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC84E11A1135988E00CA7C9D /* Genesis.cxx */; };
 		DC84E11D1135988E00CA7C9D /* Genesis.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC84E11B1135988E00CA7C9D /* Genesis.hxx */; };
+		DC8AE5C31417804C00335D45 /* FBSurfaceGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8AE5BF1417804C00335D45 /* FBSurfaceGL.cxx */; };
+		DC8AE5C41417804C00335D45 /* FBSurfaceGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */; };
+		DC8AE5C51417804C00335D45 /* FBSurfaceTIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8AE5C11417804C00335D45 /* FBSurfaceTIA.cxx */; };
+		DC8AE5C61417804C00335D45 /* FBSurfaceTIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8AE5C21417804C00335D45 /* FBSurfaceTIA.hxx */; };
 		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
 		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
@@ -720,6 +724,10 @@
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC84E11A1135988E00CA7C9D /* Genesis.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Genesis.cxx; path = ../emucore/Genesis.cxx; sourceTree = SOURCE_ROOT; };
 		DC84E11B1135988E00CA7C9D /* Genesis.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Genesis.hxx; path = ../emucore/Genesis.hxx; sourceTree = SOURCE_ROOT; };
+		DC8AE5BF1417804C00335D45 /* FBSurfaceGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceGL.cxx; path = ../common/FBSurfaceGL.cxx; sourceTree = SOURCE_ROOT; };
+		DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceGL.hxx; path = ../common/FBSurfaceGL.hxx; sourceTree = SOURCE_ROOT; };
+		DC8AE5C11417804C00335D45 /* FBSurfaceTIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceTIA.cxx; path = ../common/FBSurfaceTIA.cxx; sourceTree = SOURCE_ROOT; };
+		DC8AE5C21417804C00335D45 /* FBSurfaceTIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceTIA.hxx; path = ../common/FBSurfaceTIA.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefProps.hxx; path = ../emucore/DefProps.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Serializable.hxx; path = ../emucore/Serializable.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
@@ -930,6 +938,10 @@
 			children = (
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
 				DCECDB0210B9DC0400AF4E1B /* bspf.hxx */,
+				DC8AE5BF1417804C00335D45 /* FBSurfaceGL.cxx */,
+				DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */,
+				DC8AE5C11417804C00335D45 /* FBSurfaceTIA.cxx */,
+				DC8AE5C21417804C00335D45 /* FBSurfaceTIA.hxx */,
 				2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */,
 				2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */,
 				2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */,
@@ -1479,6 +1491,8 @@
 				DC20D6F3138EB130002A7428 /* StringList.hxx in Headers */,
 				DC20D6F4138EB130002A7428 /* StringParser.hxx in Headers */,
 				DC7A769B13FEA40300ED8633 /* LoggerDialog.hxx in Headers */,
+				DC8AE5C41417804C00335D45 /* FBSurfaceGL.hxx in Headers */,
+				DC8AE5C61417804C00335D45 /* FBSurfaceTIA.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1737,6 +1751,8 @@
 				DCBD96891210314C0087CEFD /* ComboDialog.cxx in Sources */,
 				DC4AF1F312E39F700090B82E /* Thumbulator.cxx in Sources */,
 				DC7A769A13FEA40300ED8633 /* LoggerDialog.cxx in Sources */,
+				DC8AE5C31417804C00335D45 /* FBSurfaceGL.cxx in Sources */,
+				DC8AE5C51417804C00335D45 /* FBSurfaceTIA.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

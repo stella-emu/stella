@@ -245,6 +245,10 @@
 		DC173F770E2CAC1E00320F94 /* ContextMenu.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */; };
 		DC1FC18A0DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */; };
 		DC1FC18B0DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */; };
+		DC3EE2DA1417801800F9DA4A /* FBSurfaceGL.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */; };
+		DC3EE2DB1417801800F9DA4A /* FBSurfaceGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */; };
+		DC3EE2DC1417801800F9DA4A /* FBSurfaceTIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */; };
+		DC3EE2DD1417801800F9DA4A /* FBSurfaceTIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */; };
 		DC4613670D92C03600D8DAB9 /* RomAuditDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */; };
 		DC4613680D92C03600D8DAB9 /* RomAuditDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */; };
 		DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */; };
@@ -651,6 +655,10 @@
 		DC173F750E2CAC1E00320F94 /* ContextMenu.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = ContextMenu.hxx; path = ../gui/ContextMenu.hxx; sourceTree = SOURCE_ROOT; };
 		DC1FC1880DB3B2C7009B3DF7 /* SerialPortMACOSX.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; path = SerialPortMACOSX.cxx; sourceTree = "<group>"; };
 		DC1FC1890DB3B2C7009B3DF7 /* SerialPortMACOSX.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; path = SerialPortMACOSX.hxx; sourceTree = "<group>"; };
+		DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceGL.cxx; path = ../common/FBSurfaceGL.cxx; sourceTree = SOURCE_ROOT; };
+		DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceGL.hxx; path = ../common/FBSurfaceGL.hxx; sourceTree = SOURCE_ROOT; };
+		DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceTIA.cxx; path = ../common/FBSurfaceTIA.cxx; sourceTree = SOURCE_ROOT; };
+		DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceTIA.hxx; path = ../common/FBSurfaceTIA.hxx; sourceTree = SOURCE_ROOT; };
 		DC4613650D92C03600D8DAB9 /* RomAuditDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomAuditDialog.cxx; path = ../gui/RomAuditDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC4613660D92C03600D8DAB9 /* RomAuditDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomAuditDialog.hxx; path = ../gui/RomAuditDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC47454A09C34BFA00EDDA3A /* BankRomCheat.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = BankRomCheat.cxx; path = ../cheat/BankRomCheat.cxx; sourceTree = SOURCE_ROOT; };
@@ -927,6 +935,10 @@
 			children = (
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
 				DCC527D810B9DA6A005E1287 /* bspf.hxx */,
+				DC3EE2D61417801800F9DA4A /* FBSurfaceGL.cxx */,
+				DC3EE2D71417801800F9DA4A /* FBSurfaceGL.hxx */,
+				DC3EE2D81417801800F9DA4A /* FBSurfaceTIA.cxx */,
+				DC3EE2D91417801800F9DA4A /* FBSurfaceTIA.hxx */,
 				2D733D5D062893E7006265D9 /* FrameBufferGL.cxx */,
 				2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */,
 				2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */,
@@ -1476,6 +1488,8 @@
 				DC74D6A1138D4D7E00F05C5C /* StringList.hxx in Headers */,
 				DC74D6A2138D4D7E00F05C5C /* StringParser.hxx in Headers */,
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
+				DC3EE2DB1417801800F9DA4A /* FBSurfaceGL.hxx in Headers */,
+				DC3EE2DD1417801800F9DA4A /* FBSurfaceTIA.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1736,6 +1750,8 @@
 				DCFFE59D12100E1400DFA000 /* ComboDialog.cxx in Sources */,
 				DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */,
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
+				DC3EE2DA1417801800F9DA4A /* FBSurfaceGL.cxx in Sources */,
+				DC3EE2DC1417801800F9DA4A /* FBSurfaceTIA.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
