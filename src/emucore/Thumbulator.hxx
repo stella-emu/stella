@@ -118,6 +118,7 @@ class Thumbulator
     //uInt32 reg_und[16]; //Undefined mode
     uInt32 reg_irq[16]; //Interrupt mode
     //uInt32 reg_fiq[16]; //Fast Interrupt mode
+    uInt32 mamcr;
 
     uInt64 instructions;
     uInt64 fetches;

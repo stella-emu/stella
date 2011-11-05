@@ -22,7 +22,7 @@
 
 #include <cstdlib>
 
-#define STELLA_VERSION "3.4.2_svn"
+#define STELLA_VERSION "3.5_svn_test1"
 #define STELLA_BUILD atoi("$Rev$" + 6)
 
 #endif

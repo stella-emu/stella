@@ -291,11 +291,11 @@ uInt8 CartridgeDPCPlus::peek(uInt16 address)
             // Update the music data fetchers (counter & flag)
             updateMusicModeDataFetchers();
 
-            // using myProgramImage[] instead of myDisplayImage[] because waveforms
-            // could also be in the 1K Frequency table.
-            uInt32 i = myProgramImage[6*4096 + (myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
-                       myProgramImage[6*4096 + (myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
-                       myProgramImage[6*4096 + (myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
+            // using myDisplayImage[] instead of myProgramImage[] because waveforms
+            // can be modified during runtime.
+            uInt32 i = myDisplayImage[(myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
+                       myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
+                       myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
 
             result = (uInt8)i;
             break;

@@ -213,6 +213,13 @@ void Thumbulator::write16 ( uInt32 addr, uInt32 data )
       ram[addr]=data&0xFFFF;
     #endif
       return;
+
+    case 0xE0000000: //MAMCR
+      if(addr == 0xE01FC000)
+      {
+        mamcr = data;
+        return;
+      }
   }
   fatalError("write16", addr, data, "abort");
 }
@@ -298,6 +305,10 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
       if(DBUG)
         statusMsg << HEX4 << data << endl;
       return(data);
+
+    case 0xE0000000: //MAMCR
+      if(addr == 0xE01FC000)
+        return mamcr;
   }
   return fatalError("read16", addr, "abort");
 }
@@ -2072,6 +2083,7 @@ int Thumbulator::reset ( void )
   reg_svc[14]=0x00000c00; //lr (duz this use odd addrs)
 	reg_sys[15]=0x00000c0b; // entry point of 0xc09+2
   //  reg_sys[15]+=2;
+  mamcr = 0;
 
   // fxq: don't care about below so much (maybe to guess timing???)
   instructions=0;
