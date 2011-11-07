@@ -68,7 +68,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator
   myThumbEmulator = new Thumbulator((uInt16*)(myProgramImage-0xC00),
-                                    (uInt16*)myDPCRAM);
+                                    (uInt16*)myDPCRAM,
+                                     settings.getBool("thumb.trapfatal"));
 #endif
 
   // Copy DPC display data to Harmony RAM

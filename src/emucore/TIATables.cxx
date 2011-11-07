@@ -620,8 +620,8 @@ const Int16 TIATables::PokeDelay[64] = {
   1,  // VBLANK (0) / 1
   0,  // WSYNC
   0,  // RSYNC
-  0,  // NUSIZ0 (0) / 8    TODO - calculate this instead of hardcoding
-  0,  // NUSIZ1 (0) / 8    TODO - calculate this instead of hardcoding
+  8,  // NUSIZ0 (0) / 8    TODO - calculate this instead of hardcoding
+  8,  // NUSIZ1 (0) / 8    TODO - calculate this instead of hardcoding
   0,  // COLUP0
   0,  // COLUP1
   0,  // COLUPF

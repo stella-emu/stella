@@ -137,6 +137,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("resolvedata", "auto");
   setInternal("gfxformat", "2");
   setInternal("showaddr", "true");
+
+  // Thumb ARM emulation options
+  setInternal("thumb.trapfatal", "true");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

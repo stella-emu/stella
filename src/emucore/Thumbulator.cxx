@@ -31,13 +31,14 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Thumbulator(uInt16* rom_ptr, uInt16* ram_ptr)
+Thumbulator::Thumbulator(uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
   : rom(rom_ptr),
     ram(ram_ptr),
     copydata(0),
     DBUG(0),  // dump detailed execution trace
     DISS(0)   // dump Thumb instruction trace
 {
+  trapFatalErrors(traponfatal);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -74,7 +75,9 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, const char* ms
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << HEX8 << v1 << "), " << msg << endl;
   dump_regs();
-  throw statusMsg.str();
+  if(trapOnFatal)
+    throw statusMsg.str();
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -84,7 +87,9 @@ inline int Thumbulator::fatalError(const char* opcode, uInt32 v1, uInt32 v2,
   statusMsg << "Thumb ARM emulation fatal error: " << endl
             << opcode << "(" << HEX8 << v1 << "," << v2 << "), " << msg << endl;
   dump_regs();
-  throw statusMsg.str();
+  if(trapOnFatal)
+    throw statusMsg.str();
+  return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -116,13 +121,9 @@ void Thumbulator::dump_regs( void )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::fetch16 ( uInt32 addr )
 {
-  uInt32 data;
-
   fetches++;
 
-  if(DBUG)
-    statusMsg << "fetch16(" << HEX8 << addr << ")=";
-
+  uInt32 data;
   switch(addr&0xF0000000)
   {
     case 0x00000000: //ROM
@@ -137,7 +138,7 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
       data=rom[addr];
     #endif
       if(DBUG)
-        statusMsg << HEX4 << data << endl;
+        statusMsg << "fetch16(" << HEX8 << addr << ")=" << HEX4 << data << endl;
       return(data);
 
     case 0x40000000: //RAM
@@ -149,7 +150,7 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
       data=ram[addr];
     #endif
       if(DBUG)
-        statusMsg << HEX4 << data << endl;
+        statusMsg << "fetch16(" << HEX8 << addr << ")=" << HEX4 << data << endl;
       return(data);
   }
   return fatalError("fetch16", addr, "abort");
@@ -159,10 +160,6 @@ uInt32 Thumbulator::fetch16 ( uInt32 addr )
 uInt32 Thumbulator::fetch32 ( uInt32 addr )
 {
   uInt32 data;
-
-  if(DBUG)
-    statusMsg << "fetch32(" << HEX8 << addr << ")=";
-
   switch(addr&0xF0000000)
   {
     case 0x00000000: //ROM
@@ -170,7 +167,7 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
       {
         data=read32(addr);
         if(DBUG)
-          statusMsg << HEX8 << data << endl;
+          statusMsg << "fetch32(" << HEX8 << addr << ")=" << HEX8 << data << endl;
         if(addr==0x00000000) return(data);
         if(addr==0x00000004) return(data);
         fatalError("fetch32", addr, "abort");
@@ -181,7 +178,7 @@ uInt32 Thumbulator::fetch32 ( uInt32 addr )
       data<<=16;
       data|=fetch16(addr+0);
       if(DBUG)
-        statusMsg << HEX8 << data << endl;;
+        statusMsg << "fetch32(" << HEX8 << addr << ")=" << HEX8 << data << endl;;
       return(data);
   }
   return fatalError("fetch32", addr, "abort");
@@ -217,6 +214,8 @@ void Thumbulator::write16 ( uInt32 addr, uInt32 data )
     case 0xE0000000: //MAMCR
       if(addr == 0xE01FC000)
       {
+        if(DBUG)
+          statusMsg << "write16(" << HEX8 << "MAMCR" << "," << HEX8 << data << ") *" << endl;
         mamcr = data;
         return;
       }
@@ -277,9 +276,6 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
 
   reads++;
 
-  if(DBUG)
-    statusMsg << "read16(" << HEX8 << addr << ")=";
-
   switch(addr&0xF0000000)
   {
     case 0x00000000: //ROM
@@ -291,7 +287,7 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
       data=rom[addr];
     #endif
       if(DBUG)
-        statusMsg << HEX4 << data << endl;
+        statusMsg << "read16(" << HEX8 << addr << ")=" << HEX4 << data << endl;
       return(data);
 
     case 0x40000000: //RAM
@@ -303,12 +299,16 @@ uInt32 Thumbulator::read16 ( uInt32 addr )
       data=ram[addr];
     #endif
       if(DBUG)
-        statusMsg << HEX4 << data << endl;
+        statusMsg << "read16(" << HEX8 << addr << ")=" << HEX4 << data << endl;
       return(data);
 
     case 0xE0000000: //MAMCR
       if(addr == 0xE01FC000)
+      {
+        if(DBUG)
+          statusMsg << "read16(" << "MAMCR" << addr << ")=" << mamcr << " *";
         return mamcr;
+      }
   }
   return fatalError("read16", addr, "abort");
 }
@@ -319,9 +319,6 @@ uInt32 Thumbulator::read32 ( uInt32 addr )
   if(addr&3)
     fatalError("read32", addr, "abort - misaligned");
 
-  if(DBUG)
-    statusMsg << "read32(" << HEX8 << addr << ")=";
-
   uInt32 data;
   switch(addr&0xF0000000)
   {
@@ -331,7 +328,7 @@ uInt32 Thumbulator::read32 ( uInt32 addr )
       data<<=16;
       data|=read16(addr+0);
       if(DBUG)
-        statusMsg << HEX8 << data << endl;
+        statusMsg << "read32(" << HEX8 << addr << ")=" << HEX8 << data << endl;
       return(data);
   }
   return fatalError("read32", addr, "abort");
@@ -340,12 +337,9 @@ uInt32 Thumbulator::read32 ( uInt32 addr )
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Thumbulator::read_register ( uInt32 reg )
 {
-  uInt32 data;
-
   reg&=0xF;
-  if(DBUG)
-    statusMsg << "read_register(" << dec << reg << ")=";
 
+  uInt32 data;
   switch(cpsr&0x1F)
   {
     case MODE_SVC:
@@ -355,7 +349,7 @@ uInt32 Thumbulator::read_register ( uInt32 reg )
         case 13: case 14: data=reg_svc[reg]; break;
       }
       if(DBUG)
-        statusMsg << HEX8 << data << endl;
+        statusMsg << "read_register(" << dec << reg << ")=" << HEX8 << data << endl;
       return(data);
   }
   return fatalError("read_register", cpsr, "invalid cpsr mode");
@@ -369,7 +363,6 @@ uInt32 Thumbulator::write_register ( uInt32 reg, uInt32 data )
   if(DBUG)
     statusMsg << "write_register(" << dec << reg << ","
                                    << HEX8 << data << ")" << endl;
-
   switch(cpsr&0x1F)
   {
     case MODE_SVC:
@@ -2095,5 +2088,8 @@ int Thumbulator::reset ( void )
 
   return(0);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Thumbulator::trapOnFatal = true;
 
 #endif

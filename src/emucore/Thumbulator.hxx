@@ -62,18 +62,32 @@
 class Thumbulator
 {
   public:
-    Thumbulator(uInt16* rom, uInt16* ram);
+    Thumbulator(uInt16* rom, uInt16* ram, bool traponfatal);
     ~Thumbulator();
 
     /**
       Run the ARM code, and return when finished.  A string exception is
-      thrown in case of any fatal errors/aborts, containing the actual error,
-      and the contents of the registers at that point in time.
+      thrown in case of any fatal errors/aborts (if enabled), containing the
+      actual error, and the contents of the registers at that point in time.
 
       @return  The results of any debugging output (if enabled),
                otherwise an empty string
     */
     string run();
+
+    /**
+      Normally when a fatal error is encountered, the ARM emulation
+      immediately throws an exception and exits.  This method allows execution
+      to continue, and simply log the error.
+
+      Note that this is meant for developers only, and should normally be
+      always enabled.  It can be used to temporarily ignore illegal reads
+      and writes, but a ROM which consistently performs these operations
+      should be fixed, as it can cause crashes on real hardware.
+
+      @param enable  Enable (the default) or disable exceptions on fatal errors
+    */
+    static void trapFatalErrors(bool enable) { trapOnFatal = enable; }
 
   private:
     uInt32 read_register ( uInt32 reg );
@@ -128,6 +142,8 @@ class Thumbulator
     Int32 DBUG; // dump detailed execution trace
     Int32 DISS; // dump Thumb instruction trace
     ostringstream statusMsg;
+
+    static bool trapOnFatal;
 };
 
 #endif
