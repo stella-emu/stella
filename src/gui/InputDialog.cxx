@@ -46,6 +46,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   const int vBorder = 4;
   int xpos, ypos, tabID;
   WidgetArray wid;
+  StringList actions;
 
   // Set real dimensions
   _w = BSPF_min(50 * fontWidth + 10, max_w);
@@ -60,21 +61,22 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab("Emul. Events");
-  const StringList& eactions = instance().eventHandler().getActionList(kEmulationMode);
+  instance().eventHandler().getActionList(kEmulationMode, actions);
   myEmulEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - ypos,
-                                             eactions, kEmulationMode);
+                                             actions, kEmulationMode);
   myTab->setParentWidget(tabID, myEmulEventMapper);
   addToFocusList(myEmulEventMapper->getFocusList(), tabID);
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab("UI Events");
-  const StringList& mactions = instance().eventHandler().getActionList(kMenuMode);
+  actions.clear();
+  instance().eventHandler().getActionList(kMenuMode, actions);
   myMenuEventMapper = new EventMappingWidget(myTab, font, 2, 2,
                                              myTab->getWidth(),
                                              myTab->getHeight() - ypos,
-                                             mactions, kMenuMode);
+                                             actions, kMenuMode);
   myTab->setParentWidget(tabID, myMenuEventMapper);
   addToFocusList(myMenuEventMapper->getFocusList(), tabID);
 

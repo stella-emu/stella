@@ -574,7 +574,8 @@ void Settings::setString(const string& key, const string& value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::getSize(const string& key, int& x, int& y) const
 {
-  char c;
+  char c = '\0';
+  x = y = -1;
   string size = getString(key);
   istringstream buf(size);
   buf >> x >> c >> y;

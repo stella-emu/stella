@@ -1361,6 +1361,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case NUSIZ0:  // Number-size of player-missle 0
     {
+      // TODO - 08-11-2009: determine correct delay instead of always
+      //                    using '8' in TIATables::PokeDelay
       myNUSIZ0 = value;
       mySuppressP0 = 0;
       break;
@@ -1368,6 +1370,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case NUSIZ1:  // Number-size of player-missle 1
     {
+      // TODO - 08-11-2009: determine correct delay instead of always
+      //                    using '8' in TIATables::PokeDelay
       myNUSIZ1 = value;
       mySuppressP1 = 0;
       break;

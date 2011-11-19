@@ -111,8 +111,8 @@ void ComboDialog::show(Event::Type event, const string& name)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ComboDialog::loadConfig()
 {
-  const StringList& events =
-    instance().eventHandler().getComboListForEvent(myComboEvent);
+  StringList events;
+  instance().eventHandler().getComboListForEvent(myComboEvent, events);
 
   int size = BSPF_min(events.size(), 8u);
   for(int i = 0; i < size; ++i)

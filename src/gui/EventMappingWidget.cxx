@@ -98,8 +98,9 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
     myComboButton->setTarget(this);
     addFocusWidget(myComboButton);
 
-    myComboDialog = new ComboDialog(boss, font,
-      instance().eventHandler().getComboList(mode));
+    StringMap combolist;
+    instance().eventHandler().getComboList(mode, combolist);
+    myComboDialog = new ComboDialog(boss, font, combolist);
   }
   else
     myComboButton = NULL;

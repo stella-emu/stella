@@ -12,13 +12,46 @@
                                Release History
 ===========================================================================
 
-3.4.1 to 4.x: (XXXX xx, 2011)
+3.4.1 to 3.5: (December xx, 2011)
+
+  * Replaced NTSC TV filtering with Blargg NTSC filters.  These filters
+    work in OpenGL mode only, but in contrast to the old filters, they
+    now work with OpenGL 1.x / OpenGL ES.
+
+  * Huge restructuring of the OpenGL code, making it compatible with 
+    OpenGL 2.x+ features (such as vertex buffer objects), while at the
+    same time keeping compatibility with OpenGL 1.5 / OpenGL ES.
+
+  * Added logging facility, whereby the output of the application is
+    available within Stella itself.  This can still be printed to the
+    console, or also saved to a file.  Add the 'loglevel' and
+    'logtoconsole' commandline arguments which control these settings,
+    and removed the 'showinfo' argument as it's now redundant.
+
+  * Updated DPC+ bankswitching scheme to latest code provided by
+    SpiceWare.
+
+  * Added MAMCR handling to the Thumb ARM emulation code.  Note that
+    MAMCR isn't actually emulated, it is just ignored for now.  This
+    fixes a bug whereby accessing MAMCR would crash the ARM emulation.
+
+  * Added 'thumb.trapfatal' commandline argument, which causes the
+    Thumb ARM emulation to either trap on a fatal error (throw an
+    exception to the debugger and exit emulation) or simply log the
+    error and continue.  This should normally always be enabled, but
+    can be disabled by developers for testing reasons.
 
   * The debugger 'print' command now indicates "special" addresses if they
     are read-only (R), write-only (W) or read-write (R/W).
 
   * Fixed a bug in scrolling the mouse-wheel in certain debugger UI items
     would cause the program to crash; scrolling now works as expected.
+
+  * Fixed compile issues in the latest versions of Ubuntu and Debian, and
+    fixed UNIX desktop file so that Stella will launch with a ROM when
+    selected from its icon.  Thanks go to Stephen Kitt for this code.
+
+  * Updated include PNG library to latest stable version.
 
 -Have fun!
 

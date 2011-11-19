@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.4.1</b></h4></center>
+  <center><h4><b>Release 3.5</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -52,7 +52,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - June 2011</b></center>
+  <center><b>February 1999 - December 2011</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -266,6 +266,7 @@
     <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
+    <li>Supports DPC+ bankswitching scheme from the Harmony cart, including emulation of the ARM processor</li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual A26/BIN/ROM formats</li>
@@ -277,7 +278,7 @@
     <li>TIA emulation supports full collision checking, with ability to disable
       both TIA sprites and collisions for each object separately</li>
     <li>Built-in extensive debugger, including the Distella disassembler</li>
-    <li>Emulation of CRT TV systems with OpenGL shaders, including texturing,
+    <li>FIXME - change to Blargg - Emulation of CRT TV systems with OpenGL shaders, including texturing,
       colour bleed, RF noise, and phosphor burn-off</li>
     <li>Built-in ROM database with information compiled by RomHunter</li>
   </ul>
@@ -1975,6 +1976,15 @@
       <td><pre>-maxres &lt;WxH&gt;</pre></td>
       <td>Useful for developers, this sets the maximum size of window that
       can be created, allowing to simulate testing on 'smaller' systems.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-thumb.trapfatal &lt;true|false&gt;</pre></td>
+      <td>Useful for developers, the default of true allows the Thumb ARM emulation to
+      throw an exception and enter the debugger on fatal errors.  When disabled, such
+      fatal errors are simply logged, and emulation continues.  Do not use this
+      unless you know exactly what you're doing, as it changes the behaviour as compared
+      to real hardware.</td>
     </tr>
 
     <tr>

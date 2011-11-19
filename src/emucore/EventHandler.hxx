@@ -239,11 +239,11 @@ class EventHandler
 
     SDL_Joystick* getJoystick(int i) const { return ourJoysticks[i].stick; }
 
-    StringList getActionList(EventMode mode) const;
-    StringMap getComboList(EventMode mode) const;
+    void getActionList(EventMode mode, StringList& list) const;
+    void getComboList(EventMode mode, StringMap& map) const;
 
     /** Used to access the list of events assigned to a specific combo event. */
-    StringList getComboListForEvent(Event::Type event) const;
+    void getComboListForEvent(Event::Type event, StringList& list) const;
     void setComboListForEvent(Event::Type event, const StringList& events);
 
     Event::Type eventForKey(int key, EventMode mode) const

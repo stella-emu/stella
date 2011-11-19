@@ -1876,10 +1876,8 @@ inline bool EventHandler::eventIsAnalog(Event::Type event) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getActionList(EventMode mode) const
+void EventHandler::getActionList(EventMode mode, StringList& l) const
 {
-  StringList l;
-
   switch(mode)
   {
     case kEmulationMode:
@@ -1893,16 +1891,13 @@ StringList EventHandler::getActionList(EventMode mode) const
     default:
       break;
   }
-
-  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringMap EventHandler::getComboList(EventMode) const
+void EventHandler::getComboList(EventMode, StringMap& l) const
 {
   // For now, this only works in emulation mode
 
-  StringMap l;
   ostringstream buf;
 
   l.push_back("None", "-1");
@@ -1913,14 +1908,11 @@ StringMap EventHandler::getComboList(EventMode) const
       l.push_back(EventHandler::ourEmulActionList[i].action, buf.str());
       buf.str("");
     }
-
-  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-StringList EventHandler::getComboListForEvent(Event::Type event) const
+void EventHandler::getComboListForEvent(Event::Type event, StringList& l) const
 {
-  StringList l;
   ostringstream buf;
   if(event >= Event::Combo1 && event <= Event::Combo16)
   {
@@ -1943,7 +1935,6 @@ StringList EventHandler::getComboListForEvent(Event::Type event) const
         l.push_back("-1");
     }
   }
-  return l;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
