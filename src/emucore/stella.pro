@@ -5960,6 +5960,7 @@
 "Cartridge.Name" "Breakout (1978) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "4dd6f53684ccbb569fe9f41498d80018"
@@ -11508,6 +11509,7 @@
 "Cartridge.Name" "Breakout (1978) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "9905f9f4706223dadee84f6867ede8e3"
@@ -14586,6 +14588,7 @@
 "Cartridge.Name" "Breakout (1978) (Atari) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "c68a6bafb667bad2f6d020f879be1d11"
@@ -18182,6 +18185,7 @@
 "Cartridge.Name" "Breakout (1978) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.Right" "PADDLES"
 ""
 
 "Cartridge.MD5" "f344ac1279152157d63e64aa39479599"
