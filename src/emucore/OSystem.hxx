@@ -463,6 +463,15 @@ class OSystem
     virtual void stateChanged(EventHandler::State state);
 
     /**
+      Returns the default path for the snapshot directory.
+      Since this varies greatly among different systems and is the one
+      directory that most end-users care about (vs. config file stuff
+      that usually isn't user-modifiable), we create a special method
+      for it.
+    */
+    virtual string defaultSnapDir() { return "~"; }
+
+    /**
       Set the position of the application window, generally using
       platform-specific code.  Note that this method is only ever
       called for windowed mode, so no provisions need be made
@@ -660,9 +669,13 @@ class OSystem
       Validate the directory name, and create it if necessary.
       Also, update the settings with the new name.  For now, validation
       means that the path must always end with the appropriate separator.
+
+      @param path     The actual path being accessed and created
+      @param setting  The setting corresponding to the path being considered
+      @param defaultpath  The default path to use if the settings don't exist
     */
-    void validatePath(const string& setting, const string& partialpath,
-                      string& fullpath);
+    void validatePath(string& path, const string& setting,
+                      const string& defaultpath);
 
     // Copy constructor isn't supported by this class so make it private
     OSystem(const OSystem&);

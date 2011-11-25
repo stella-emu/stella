@@ -41,6 +41,10 @@
     error and continue.  This should normally always be enabled, but
     can be disabled by developers for testing reasons.
 
+  * Updated default snapshot directory to be much saner and easier to
+    find.  For most systems, it now defaults to the users 'Desktop.
+    Note that the commandline argument has changed to 'snapdir'.
+
   * The debugger 'print' command now indicates "special" addresses if they
     are read-only (R), write-only (W) or read-write (R/W).
 

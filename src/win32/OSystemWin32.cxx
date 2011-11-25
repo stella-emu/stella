@@ -91,6 +91,14 @@ OSystemWin32::~OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystemWin32::defaultSnapDir()
+{
+  HomeFinder homefinder;
+  FilesystemNode desktop(homefinder.getDesktopPath());
+  return desktop.isDirectory() ? desktop.getPath(false) : "~";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystemWin32::setAppWindowPos(int x, int y, int w, int h)
 {
   SDL_SysWMinfo sdl_info;

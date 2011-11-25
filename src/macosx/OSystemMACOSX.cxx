@@ -17,6 +17,7 @@
 // $Id$
 //============================================================================
 
+#include "FSNode.hxx"
 #include "OSystemMACOSX.hxx"
 
 /**
@@ -42,4 +43,11 @@ OSystemMACOSX::OSystemMACOSX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystemMACOSX::~OSystemMACOSX()
 {
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystemMACOSX::defaultSnapDir()
+{
+  FilesystemNode desktop("~/Desktop");
+  return desktop.isDirectory() ? desktop.getPath(false) : "~";
 }

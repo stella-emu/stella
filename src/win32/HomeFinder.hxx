@@ -23,7 +23,7 @@
 #include <shlobj.h>
 
 /*
- * Used to determine the location of the 'HOME' and 'APPDATA' folders.
+ * Used to determine the location of the various Win32 user/system folders.
  *
  * Win98 and earlier don't have SHGetFolderPath in shell32.dll.
  * Microsoft recommend that we load shfolder.dll at run time and
@@ -70,6 +70,18 @@ class HomeFinder
       char folder_path[MAX_PATH];
       HRESULT const result = (myFolderPathFunc)
           (NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
+
+      return (result == 0) ? folder_path : "";
+    }
+
+    /** Wrapper for SHGetFolderPathA, returning the 'DESKTOPDIRECTORY' folder
+        (or an empty string if the folder couldn't be determined. */
+    string getDesktopPath() const
+    {
+      if(!myFolderPathFunc) return "";
+      char folder_path[MAX_PATH];
+      HRESULT const result = (myFolderPathFunc)
+          (NULL, CSIDL_DESKTOPDIRECTORY | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
 
       return (result == 0) ? folder_path : "";
     }

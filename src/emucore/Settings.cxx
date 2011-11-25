@@ -92,7 +92,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("ctrlcombo", "true");
 
   // Snapshot options
-  setInternal("ssdir", "");
+  setInternal("snapdir", "");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
   setInternal("ssinterval", "2");
@@ -411,7 +411,7 @@ void Settings::usage()
     << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
-    << "  -ssdir        <path>         The directory to save snapshot files to\n"
+    << "  -snapdir      <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
     << "  -ssinterval   <number        Number of seconds between snapshots in continuous snapshot mode\n"

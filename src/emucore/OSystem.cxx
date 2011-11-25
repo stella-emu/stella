@@ -316,13 +316,10 @@ void OSystem::setConfigPaths()
   FilesystemNode node;
   string s;
 
-  validatePath("statedir", "state", myStateDir);
-
-  validatePath("ssdir", "snapshots", mySnapshotDir);
-
-  validatePath("eepromdir", "", myEEPROMDir);
-
-  validatePath("cfgdir", "cfg", myCfgDir);
+  validatePath(myStateDir, "statedir", myBaseDir + "statedir");
+  validatePath(mySnapshotDir, "snapdir", defaultSnapDir());
+  validatePath(myEEPROMDir, "eepromdir", myBaseDir);
+  validatePath(myCfgDir, "cfgdir", myBaseDir + "cfg");
 
   s = mySettings->getString("cheatfile");
   if(s == "") s = myBaseDir + "stella.cht";
@@ -872,18 +869,18 @@ void OSystem::resetLoopTiming()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::validatePath(const string& setting, const string& partialpath,
-                           string& fullpath)
+void OSystem::validatePath(string& path, const string& setting,
+                           const string& defaultpath)
 {
-  const string& s = mySettings->getString(setting) != "" ?
-    mySettings->getString(setting) : myBaseDir + partialpath;
+  const string& s = mySettings->getString(setting) == "" ? defaultpath :
+                    mySettings->getString(setting);
   FilesystemNode node(s);
   if(!node.isDirectory())
   {
     AbstractFilesystemNode::makeDir(s);
     node = FilesystemNode(node.getPath());
   }
-  fullpath = node.getPath();
+  path = node.getPath();
   mySettings->setString(setting, node.getPath(false));
 }
 

@@ -40,6 +40,11 @@ class OSystemMACOSX : public OSystem
       Destructor
     */
     virtual ~OSystemMACOSX();
+
+    /**
+      Returns the default path for the snapshot directory.
+    */
+    string defaultSnapDir();
 };
 
 #endif

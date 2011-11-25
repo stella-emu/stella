@@ -44,6 +44,11 @@ class OSystemWin32 : public OSystem
 
   public:
     /**
+      Returns the default path for the snapshot directory.
+    */
+    string defaultSnapDir();
+
+    /**
       Move window to given position.  The width and height are also
       required for the underlying function, but the window size itself
       absolutely must not be changed.

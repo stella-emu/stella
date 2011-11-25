@@ -113,7 +113,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
     items.push_back(instance().supportedResolutions()[i].name,
                     instance().supportedResolutions()[i].name);
   myFSResPopup = new PopUpWidget(myTab, font, xpos, ypos, pwidth,
-                                 lineHeight, items, "FS Res: ", lwidth);
+                                 lineHeight, items, "Fullscrn Res: ", lwidth);
   wid.push_back(myFSResPopup);
   ypos += lineHeight + 4;
 
@@ -195,22 +195,37 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myFullscreenPopup);
   ypos += lineHeight + 4;
 
-  // PAL color-loss effect
-  myColorLossCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                           "PAL color-loss");
-  wid.push_back(myColorLossCheckbox);
-  ypos += lineHeight + 4;
-
   // GL FS stretch
   myGLStretchCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                            "GL FS Stretch");
   wid.push_back(myGLStretchCheckbox);
   ypos += lineHeight + 4;
 
+  // Use VBO in OpenGL
+  myUseVBOCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                        "GL VBO");
+  wid.push_back(myUseVBOCheckbox);
+  ypos += lineHeight + 4;
+
   // Use sync to vblank in OpenGL
   myUseVSyncCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                           "GL VSync");
   wid.push_back(myUseVSyncCheckbox);
+  ypos += lineHeight + 4;
+
+  ypos += lineHeight;
+
+  // PAL color-loss effect
+  myColorLossCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                           "PAL color-loss");
+  wid.push_back(myColorLossCheckbox);
+  ypos += lineHeight + 4;
+
+  // Skip progress load bars for SuperCharger ROMs
+  // Doesn't really belong here, but I couldn't find a better place for it
+  myFastSCBiosCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
+                                            "Fast SC/AR BIOS");
+  wid.push_back(myFastSCBiosCheckbox);
   ypos += lineHeight + 4;
 
   // Show UI messages onscreen
@@ -225,16 +240,10 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myCenterCheckbox);
   ypos += lineHeight + 4;
 
-  // Skip progress load bars for SuperCharger ROMs
-  // Doesn't really belong here, but I couldn't find a better place for it
-  myFastSCBiosCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                            "Fast SC/AR BIOS");
-  wid.push_back(myFastSCBiosCheckbox);
-  ypos += lineHeight + 4;
-
   // Add items for tab 0
   addToFocusList(wid, tabID);
 
+#if 0
   //////////////////////////////////////////////////////////
   // 2) TV effects options
   wid.clear();
@@ -244,6 +253,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
+#endif
 
   // Activate the first tab
   myTab->setActiveTab(0);
@@ -265,6 +275,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPAspectRatioSlider->clearFlags(WIDGET_ENABLED);
   myPAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
+  myUseVBOCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
@@ -345,6 +356,10 @@ void VideoDialog::loadConfig()
   myGLStretchCheckbox->setState(instance().settings().getBool("gl_fsmax"));
   myGLStretchCheckbox->setEnabled(gl);
 
+  // Use VBO (GL mode only)
+  myUseVBOCheckbox->setState(instance().settings().getBool("gl_vbo"));
+  myUseVBOCheckbox->setEnabled(gl);
+
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
   myUseVSyncCheckbox->setEnabled(gl);
@@ -405,6 +420,9 @@ void VideoDialog::saveConfig()
   // GL stretch setting
   instance().settings().setBool("gl_fsmax", myGLStretchCheckbox->getState());
 
+  // Use VBO (GL mode only)
+  instance().settings().setBool("gl_vbo", myUseVBOCheckbox->getState());
+
   // Use sync to vertical blank (GL mode only)
   instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
 
@@ -441,6 +459,7 @@ void VideoDialog::setDefaults()
   myFullscreenPopup->setSelected("0", "");
   myColorLossCheckbox->setState(false);
   myGLStretchCheckbox->setState(false);
+  myUseVBOCheckbox->setState(true);
   myUseVSyncCheckbox->setState(true);
   myUIMessagesCheckbox->setState(true);
   myCenterCheckbox->setState(false);
