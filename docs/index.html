@@ -42,6 +42,7 @@
         <li><a href="#Debugger">Developer Options/Integrated Debugger</a></li>
         <li><a href="#Settings">Settings File</a></li>
         <li><a href="#Cheats">Cheatcode Manager</a></li>
+        <li><a href="#Logs">Viewing the System Log</a></li>
         <li><a href="#Properties">Game Properties</a></li>
         <li><a href="#Palette">Palette Support</a></li>
       </ul>
@@ -278,8 +279,10 @@
     <li>TIA emulation supports full collision checking, with ability to disable
       both TIA sprites and collisions for each object separately</li>
     <li>Built-in extensive debugger, including the Distella disassembler</li>
-    <li>FIXME - change to Blargg - Emulation of CRT TV systems with OpenGL shaders, including texturing,
+<!-- FIXME 
+    <li>Emulation of CRT TV systems with OpenGL shaders, including texturing,
       colour bleed, RF noise, and phosphor burn-off</li>
+-->
     <li>Built-in ROM database with information compiled by RomHunter</li>
   </ul>
 
@@ -299,10 +302,12 @@
   <p>
   <h3><b><u>General</u> (required for all versions of Stella)</b></h3>
   <ul>
-    <li>Enough RAM for the OS + 16MB RAM for the emulation; 32MB highly recommended</li>
-    <li>15 bit color minimum; 16 bit color graphics card highly recommended</li>
+    <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
+    <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>SDL version 1.2.10 or greater, latest version highly recommended</li>
+<!-- FIXME
     <li>CRT emulation effects require OpenGL 2.0 with GLSL (GL shading language) support</li>
+-->
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.stelladaptor.com">Stelladaptor</a> / 
     <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
@@ -314,7 +319,9 @@
   <p>The Linux version of Stella is designed to work on a Linux Workstation with
   the following:</p>
   <ul>
-    <li>Linux Kernel 2.4.x, Linux Kernel 2.6.x is highly recommended</li>
+    <li>Pentium class machine required; OpenGL accelerated video card highly
+      recommended</li>
+    <li>Linux Kernel 2.4.x, Linux Kernel 2.6.x/3.x is highly recommended</li>
     <li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc) have been confirmed to work,
       but aren't as well tested as i386/x86_64</li>
@@ -607,7 +614,7 @@
 
   <p>At this point, you may want to set the locations for snapshots and other
   external paths.  This is described in more detail in
-  <b>Advanced Configuration - <a href="#ConfigFiles">Config Files</a></b>.
+  <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>.
   These settings are optional, and can be left at the defaults if you won't be using
   snapshots in the ROM launcher.</p>
 
@@ -1617,12 +1624,17 @@
     </tr>
 
     <tr>
+      <td><pre>-gl_vbo &lt;1|0&gt;</pre></td>
+      <td>OpenGL mode only.  Use the Vertex Buffer Object extension, if available.  This is enabled by default.</td>
+    </tr>
+
+    <tr>
       <td><pre>-gl_vsync &lt;1|0&gt;</pre></td>
       <td>OpenGL mode only. Synchronize screen updates to the vertical blank
         period.  This can result in smoother updates, and eliminate tearing.</td>
     </tr>
 
-<!--
+<!-- FIXME
     <tr>
       <td><pre>-tv_tex &lt;off|normal|stag&gt;</pre></td>
       <td>OpenGL 2.0 mode only. Enable TV texturing.  The GL_TEXTURE_RECTANGLE
@@ -1979,15 +1991,6 @@
     </tr>
 
     <tr>
-      <td><pre>-thumb.trapfatal &lt;true|false&gt;</pre></td>
-      <td>Useful for developers, the default of true allows the Thumb ARM emulation to
-      throw an exception and enter the debugger on fatal errors.  When disabled, such
-      fatal errors are simply logged, and emulation continues.  Do not use this
-      unless you know exactly what you're doing, as it changes the behaviour as compared
-      to real hardware.</td>
-    </tr>
-
-    <tr>
       <td><pre>-help</pre></td>
       <td>Prints a help message describing these options, and then
         exit Stella.</td>
@@ -2148,6 +2151,15 @@
       <td>Set "Display.PPBlend" property, used for phosphor effect (0-100).
         Default is 77.</td>
     </tr>
+
+    <tr>
+      <td><pre>-thumb.trapfatal &lt;true|false&gt;</pre></td>
+      <td>The default of true allows the Thumb ARM emulation to
+      throw an exception and enter the debugger on fatal errors.  When disabled, such
+      fatal errors are simply logged, and emulation continues.  Do not use this
+      unless you know exactly what you're doing, as it changes the behaviour as compared
+      to real hardware.</td>
+    </tr>
   </table>
   </blockquote>
 
@@ -2173,24 +2185,26 @@
           <tr><td>Renderer (*)</td><td>use specified rendering mode (requires restart)</td><td>-video</td></tr>
           <tr><td>TIA Filter</td><td>filter for emulation mode </td><td>-tia_filter</td></tr>
           <tr><td>TIA Palette</td><td>palette for emulation mode</td><td>-palette</td></tr>
-          <tr><td>FS Res</td><td>resolution for fullscreen mode</td><td>-fullres</td></tr>
+          <tr><td>Fullscrn Res</td><td>resolution for fullscreen mode</td><td>-fullres</td></tr>
           <tr><td>Timing (*)</td><td>how to wait between frames (requires restart)</td><td>-timing</td></tr>
           <tr><td>GL Filter</td><td>OpenGL filter mode</td><td>-gl_filter</td></tr>
           <tr><td>GL Aspect (N)</td><td>OpenGL width of TIA image in NTSC mode</td><td>-gl_aspectn</td></tr>
           <tr><td>GL Aspect (P)</td><td>OpenGL width of TIA image in PAL mode</td><td>-gl_aspectp</td></tr>
           <tr><td>Framerate</td><td>frames per second in emulation mode</td><td>-framerate</td></tr>
           <tr><td>Fullscreen mode</td><td>self-explanatory</td><td>-fullscreen</td></tr>
-          <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
           <tr><td>GL FS Stretch</td><td>stretch fullscreen OpenGL in emulation mode</td><td>-gl_fsmax</td></tr>
+          <tr><td>GL VBO</td><td>enable OpenGL Vertex Buffer Objects</td><td>-gl_vbo</td></tr>
           <tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
+          <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
+          <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>attempt to center application window</td><td>-center</td></tr>
-          <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
         </table>
       </td>
     </tr>
   </table>
   <br>
+<!-- FIXME
   <p><b>Video Settings</b> dialog (TV Effects):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2208,6 +2222,7 @@
     </tr>
   </table>
   <br>
+-->
   <p><b>Audio Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2270,14 +2285,13 @@
           <tr><td>Interface Palette</td><td>palette to use for UI elements</td><td>-uipalette</td></tr>
           <tr><td>List quick delay</td><td>time to wait between keypresses in listwidget</td><td>-listdelay</td></tr>
           <tr><td>Mouse wheel scroll</td><td>number of lines mouse scroll will move in listwidget</td><td>-mscroll</td></tr>
-          <tr><td>FIXME</td><td>fix this snapshot</td><td>...</td></tr>
         </table>
       </td>
     </tr>
   </table>
   <br>
   <a name="ConfigFiles"></a>
-  <p><b>Config Files</b> dialog:</p>
+  <p><b>Config Paths</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
       <td><img src="graphics/launcher_options_files.png"></td>
@@ -2286,11 +2300,11 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Rom path</td><td>specifies location of ROM files</td><td>-romdir</td></tr>
-          <tr><td>State path</td><td>specifies location of state files</td><td>-statedir</td></tr>
+          <tr><td>Snapshot path</td><td>specifies where to load/save snapshots</td><td>-snapdir</td></tr>
           <tr><td>Cheat file</td><td>specifies location of cheatfile database</td><td>-cheatfile</td></tr>
           <tr><td>Palette file</td><td>specifies location of user palette</td><td>-palettefile</td></tr>
           <tr><td>Properties file </td><td>specifies location of external stella.pro database</td><td>-propsfile</td></tr>
-          <tr><td>Snapshot path</td><td>specifies where to load/save snapshots</td><td>-snapdir</td></tr>
+          <tr><td>State path</td><td>specifies location of state files</td><td>-statedir</td></tr>
           <tr><td>EEPROM path</td><td>specifies location of EEPROM files</td><td>-eepromdir</td></tr>
           <tr><td>Overwrite snapshots</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
           <tr><td>Snapshot in 1x mode</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
@@ -2586,7 +2600,7 @@
 
   <p>The location of the EEPROM files are configurable through the
   '<i>-eepromdir</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigFiles">Config Files</a></b>).
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).
   If the path for these files hasn't been set, the default location will depend on the
   version of Stella, as follows:</p>
 
@@ -2826,7 +2840,38 @@ Ms Pac-Man (Stella extended codes):
   <p>Stella will require a restart for changes to this file to take effect.</p>
   </blockquote>
 
-  <h2><b><a name="Properties">11. Game Properties</a></b></h2>
+  <h2><b><a name="Logs">11. Viewing the System Log</a></b></h2>
+  <blockquote>
+
+  <p>Stella maintains a log of its operations when the program first starts up, and
+  while it is running.  In older releases, this information was only viewable from the
+  commandline.  However, the current release allows
+  you to see this information from within the UI.  This can be selected from the main
+  Options menu, where it is labelled "System Logs".  Clicking on the button will show
+  a window similar to the following:</p>
+  <table border="5" cellpadding="2" frame="box" rules="none">
+    <tr>
+      <td><img src="graphics/logs.png"></td>
+      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td valign="top">
+        <table border="1" cellpadding="4">
+          <tr><th>Item</th><th>For more information,<br>see Commandline</th></tr>
+          <tr><td>Log level</td><td>-loglevel</td></tr>
+          <tr><td>Print to console</td><td>-logtoconsole</td></tr>
+        </table>
+        <p></p>
+      </td>
+    </tr>
+  </table>
+
+  <p>The log levels are self-explanatory (None, Basic, Verbose).  The "Print to console"
+  option emulates the behaviour of older versions of Stella, whereby the logged output
+  is also shown on the commandline from which Stella was launched (if it was launched
+  in that fashion).  Finally, the current contents of the system log can be saved to your
+  home directory by clicking the "Save log to disk" button.</p>
+  </blockquote>
+
+  <h2><b><a name="Properties">12. Game Properties</a></b></h2>
   <blockquote>
 
   <p>Stella uses game properties to specify the "best" emulator settings for a
@@ -3088,7 +3133,7 @@ Ms Pac-Man (Stella extended codes):
   <p>Stella will require a restart for changes to this file to take effect.</p>
   </blockquote>
 
-  <h2><b><a name="Palette">12. Palette Support</a></b></h2>
+  <h2><b><a name="Palette">13. Palette Support</a></b></h2>
   <blockquote>
 
   <p>An Atari 2600 palette consists of 128 colours, which are different

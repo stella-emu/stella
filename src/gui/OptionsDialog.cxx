@@ -90,7 +90,7 @@ OptionsDialog::OptionsDialog(OSystem* osystem, DialogContainer* parent,
   myUIButton = addODButton("UI Settings", kUsrIfaceCmd);
   wid.push_back(myUIButton);
 
-  myFileSnapButton = addODButton("Config Files", kFileSnapCmd);
+  myFileSnapButton = addODButton("Config Paths", kFileSnapCmd);
   wid.push_back(myFileSnapButton);
 
   myRomAuditButton = addODButton("Audit ROMs", kAuditCmd);
