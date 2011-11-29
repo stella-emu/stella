@@ -35,8 +35,7 @@ PropertiesSet::PropertiesSet(OSystem* osystem)
   : myOSystem(osystem),
     mySize(0)
 {
-  const string& props = myOSystem->propertiesFile();
-  load(props);
+  load(myOSystem->propertiesFile());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -128,7 +127,7 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
     while(low <= high)
     {
       int i = (low + high) / 2;
-      int cmp = strncmp(md5.c_str(), DefProps[i][Cartridge_MD5], 32);
+      int cmp = BSPF_strncasecmp(md5.c_str(), DefProps[i][Cartridge_MD5], 32);
 
       if(cmp == 0)  // found it
       {

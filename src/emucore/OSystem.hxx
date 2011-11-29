@@ -419,7 +419,7 @@ class OSystem
     virtual void mainLoop();
 
     /**
-      This method determines the default mapping of joystick buttons to
+      This method determines the default mapping of joystick actions to
       Stella events for a specific system/platform.
 
       @param event  The event which to (re)set (Event::NoType resets all)
@@ -428,34 +428,9 @@ class OSystem
     virtual void setDefaultJoymap(Event::Type event, EventMode mode);
 
     /**
-      This method determines the default mapping of joystick axis to
-      Stella events for a specific system/platform.
-
-      @param event  The event which to (re)set (Event::NoType resets all)
-      @param mode   The mode for which the defaults are set
-    */
-    virtual void setDefaultJoyAxisMap(Event::Type event, EventMode mode);
-
-    /**
-      This method determines the default mapping of joystick hats to
-      Stella events for a specific system/platform.
-
-      @param event  The event which to (re)set (Event::NoType resets all)
-      @param mode   The mode for which the defaults are set
-    */
-    virtual void setDefaultJoyHatMap(Event::Type event, EventMode mode);
-
-    /**
       This method creates events from platform-specific hardware.
     */
     virtual void pollEvent();
-
-    /**
-      This method answers whether the given button as already been
-      handled by the pollEvent() method, and as such should be ignored
-      in the main event handler.
-    */
-    virtual bool joyButtonHandled(int button);
 
     /**
       Informs the OSystem of a change in EventHandler state.

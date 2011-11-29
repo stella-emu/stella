@@ -20,6 +20,7 @@
 #ifndef EVENTHANDLER_HXX
 #define EVENTHANDLER_HXX
 
+#include <map>
 #include <SDL.h>
 
 class Console;
@@ -131,41 +132,6 @@ class EventHandler
     void poll(uInt64 time);
 
     /**
-      Set the default action for a joystick button to the given event
-
-      @param event  The event we are assigning
-      @param mode   The mode where this event is active
-      @param stick  The joystick number
-      @param button The joystick button
-    */
-    void setDefaultJoyMapping(Event::Type event, EventMode mode,
-                              int stick, int button);
-
-    /**
-      Set the default for a joystick axis to the given event
-
-      @param event  The event we are assigning
-      @param mode   The mode where this event is active
-      @param stick  The joystick number
-      @param axis   The joystick axis
-      @param value  The value on the given axis
-    */
-    void setDefaultJoyAxisMapping(Event::Type event, EventMode mode,
-                                  int stick, int axis, int value);
-
-    /**
-      Set the default for a joystick hat to the given event
-
-      @param event  The event we are assigning
-      @param mode   The mode where this event is active
-      @param stick  The joystick number
-      @param axis   The joystick axis
-      @param value  The value on the given axis
-    */
-    void setDefaultJoyHatMapping(Event::Type event, EventMode mode,
-                                 int stick, int hat, int value);
-
-    /**
       Returns the current state of the EventHandler
 
       @return The State type
@@ -237,8 +203,6 @@ class EventHandler
 
     bool frying() const { return myFryingFlag; }
 
-    SDL_Joystick* getJoystick(int i) const { return ourJoysticks[i].stick; }
-
     void getActionList(EventMode mode, StringList& list) const;
     void getComboList(EventMode mode, StringMap& map) const;
 
@@ -248,12 +212,12 @@ class EventHandler
 
     Event::Type eventForKey(int key, EventMode mode) const
       { return myKeyTable[key][mode]; }
-    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
-      { return myJoyTable[stick][button][mode]; }
     Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
-      { return myJoyAxisTable[stick][axis][(value > 0)][mode]; }
+      { return myJoysticks[stick].axisTable[axis][(value > 0)][mode]; }
+    Event::Type eventForJoyButton(int stick, int button, EventMode mode) const
+      { return myJoysticks[stick].btnTable[button][mode]; }
     Event::Type eventForJoyHat(int stick, int hat, int value, EventMode mode) const
-      { return myJoyHatTable[stick][hat][value][mode]; }
+      { return myJoysticks[stick].hatTable[hat][value][mode]; }
 
     Event::Type eventAtIndex(int idx, EventMode mode) const;
     string actionAtIndex(int idx, EventMode mode) const;
@@ -269,17 +233,6 @@ class EventHandler
     bool addKeyMapping(Event::Type event, EventMode mode, int key);
 
     /**
-      Bind a joystick button to an event/action and regenerate the
-      mapping array(s)
-
-      @param event  The event we are remapping
-      @param mode   The mode where this event is active
-      @param stick  The joystick number
-      @param button The joystick button
-    */
-    bool addJoyMapping(Event::Type event, EventMode mode, int stick, int button);
-
-    /**
       Bind a joystick axis direction to an event/action and regenerate
       the mapping array(s)
 
@@ -288,9 +241,28 @@ class EventHandler
       @param stick  The joystick number
       @param axis   The joystick axis
       @param value  The value on the given axis
+      @param updateMenus  Whether to update the action mappings (normally
+                          we want to do this, unless there are a batch of
+                          'adds', in which case it's delayed until the end
     */
     bool addJoyAxisMapping(Event::Type event, EventMode mode,
-                           int stick, int axis, int value);
+                           int stick, int axis, int value,
+                           bool updateMenus = true);
+
+    /**
+      Bind a joystick button to an event/action and regenerate the
+      mapping array(s)
+
+      @param event  The event we are remapping
+      @param mode   The mode where this event is active
+      @param stick  The joystick number
+      @param button The joystick button
+      @param updateMenus  Whether to update the action mappings (normally
+                          we want to do this, unless there are a batch of
+                          'adds', in which case it's delayed until the end
+    */
+    bool addJoyButtonMapping(Event::Type event, EventMode mode, int stick, int button,
+                             bool updateMenus = true);
 
     /**
       Bind a joystick hat direction to an event/action and regenerate
@@ -301,9 +273,13 @@ class EventHandler
       @param stick  The joystick number
       @param axis   The joystick hat
       @param value  The value on the given hat
+      @param updateMenus  Whether to update the action mappings (normally
+                          we want to do this, unless there are a batch of
+                          'adds', in which case it's delayed until the end
     */
     bool addJoyHatMapping(Event::Type event, EventMode mode,
-                          int stick, int hat, int value);
+                          int stick, int hat, int value,
+                          bool updateMenus = true);
 
     /**
       Erase the specified mapping
@@ -335,6 +311,13 @@ class EventHandler
     void allowAllDirections(bool allow) { myAllowAllDirectionsFlag = allow; }
 
   private:
+    enum {
+      kComboSize          = 16,
+      kEventsPerCombo     = 8,
+      kEmulActionListSize = 75 + kComboSize,
+      kMenuActionListSize = 14
+    };
+
     /**
       Detects and changes the eventhandler state
 
@@ -350,28 +333,11 @@ class EventHandler
     void setSDLMappings();
     void setKeymap();
     void setJoymap();
-    void setJoyAxisMap();
-    void setJoyHatMap();
     void setDefaultKeymap(Event::Type, EventMode mode);
     void setDefaultJoymap(Event::Type, EventMode mode);
-    void setDefaultJoyAxisMap(Event::Type, EventMode mode);
-    void setDefaultJoyHatMap(Event::Type, EventMode mode);
     void saveKeyMapping();
     void saveJoyMapping();
-    void saveJoyAxisMapping();
-    void saveJoyHatMapping();
     void saveComboMapping();
-
-    /**
-      Tests if a mapping list is valid, both by length and by event count.
-
-      @param list    The string containing the mappings, separated by ':'
-      @param map     The result of parsing the string for int mappings
-      @param length  The number of items that should be in the list
-
-      @return      True if valid list, else false
-    */
-    bool isValidList(string& list, IntArray& map, uInt32 length) const;
 
     /**
       Tests if a given event should use continuous/analog values.
@@ -384,13 +350,6 @@ class EventHandler
     void setEventState(State state);
 
   private:
-    enum {
-      kComboSize          = 16,
-      kEventsPerCombo     = 8,
-      kEmulActionListSize = 75 + kComboSize,
-      kMenuActionListSize = 14
-    };
-
     // Structure used for action menu items
     struct ActionList {
       Event::Type event;
@@ -399,26 +358,6 @@ class EventHandler
       bool allow_combo;
     };
 
-    // Joystick related items
-    enum {
-      kNumJoysticks  = 8,
-      kNumJoyButtons = 24,
-      kNumJoyAxis    = 16,
-      kNumJoyHats    = 16
-    };
-    enum JoyType {
-      JT_NONE               = 0,
-      JT_REGULAR            = 1,
-      JT_STELLADAPTOR_LEFT  = 2,
-      JT_STELLADAPTOR_RIGHT = 3,
-      JT_2600DAPTOR_LEFT    = 4,
-      JT_2600DAPTOR_RIGHT   = 5
-    };
-    struct Stella_Joystick {
-      SDL_Joystick* stick;
-      JoyType       type;
-      string        name;
-    };
     struct JoyMouse {   // Used for joystick to mouse emulation
       bool active;
       int x, y, x_amt, y_amt, amt, val, old_val;
@@ -436,17 +375,6 @@ class EventHandler
     // Array of key events, indexed by SDLKey
     Event::Type myKeyTable[SDLK_LAST][kNumModes];
 
-    // Array of joystick button events
-    Event::Type myJoyTable[kNumJoysticks][kNumJoyButtons][kNumModes];
-
-    // Array of joystick axis events
-    Event::Type myJoyAxisTable[kNumJoysticks][kNumJoyAxis][2][kNumModes];
-
-    // Array of joystick hat events (we don't record diagonals)
-    // Note that the array contains 4 directions, as defined in the JoyHat enum
-    // (the center isn't considered a direction)
-    Event::Type myJoyHatTable[kNumJoysticks][kNumJoyHats][4][kNumModes];
-
     // The event(s) assigned to each combination event
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
@@ -455,9 +383,6 @@ class EventHandler
 
     // Array of strings which correspond to the given SDL key
     string ourSDLMapping[SDLK_LAST];
-
-    // Array of joysticks available to Stella
-    Stella_Joystick ourJoysticks[kNumJoysticks];
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
@@ -489,10 +414,6 @@ class EventHandler
     // Indicates which paddle the mouse currently emulates
     Int8 myPaddleMode;
 
-    // Keeps track of last axis values (used to emulate digital state
-    // for analog sticks)
-    int myAxisLastValue[kNumJoysticks][kNumJoyAxis];
-
     // Holds static strings for the remap menu (emulation and menu events)
     static ActionList ourEmulActionList[kEmulActionListSize];
     static ActionList ourMenuActionList[kMenuActionListSize];
@@ -500,6 +421,50 @@ class EventHandler
     // Static lookup tables for Stelladaptor axis/button support
     static const Event::Type SA_Axis[2][2];
     static const Event::Type SA_Button[2][2];
+
+    // Thin wrapper holding all information about an SDL joystick in Stella.
+    // A StellaJoystick holds its own event mapping information, space for
+    // which is dynamically allocated based on the actual number of buttons,
+    // axes, etc that the device contains.
+    class StellaJoystick
+    {
+      public:
+        StellaJoystick();
+        virtual ~StellaJoystick();
+        string setStick(int i);
+        string getMap() const;
+        bool setMap(const string& map);
+        void eraseMap(EventMode mode);
+        void eraseEvent(Event::Type event, EventMode mode);
+        string about() const;
+
+      public:
+        enum JoyType {
+          JT_NONE               = 0,
+          JT_REGULAR            = 1,
+          JT_STELLADAPTOR_LEFT  = 2,
+          JT_STELLADAPTOR_RIGHT = 3,
+          JT_2600DAPTOR_LEFT    = 4,
+          JT_2600DAPTOR_RIGHT   = 5
+        };
+
+        JoyType type;
+        string name;
+        int numAxes, numButtons, numHats;
+        Event::Type (*axisTable)[2][kNumModes];
+        Event::Type (*btnTable)[kNumModes];
+        Event::Type (*hatTable)[4][kNumModes];
+        int* axisLastValue;
+
+      private:
+        void getValues(string& list, IntArray& map);
+
+      private:
+        SDL_Joystick* stick;
+    };
+    StellaJoystick* myJoysticks;
+    uInt32 myNumJoysticks;
+    map<string,string> myJoystickMap;
 };
 
 #endif

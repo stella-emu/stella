@@ -272,7 +272,7 @@ void EventMappingWidget::handleJoyDown(int stick, int button)
   {
     Event::Type event =
       instance().eventHandler().eventAtIndex(myActionSelected, myEventMode);
-    if(instance().eventHandler().addJoyMapping(event, myEventMode, stick, button))
+    if(instance().eventHandler().addJoyButtonMapping(event, myEventMode, stick, button))
       stopRemapping();
   }
 }

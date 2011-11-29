@@ -887,38 +887,17 @@ void OSystem::validatePath(string& path, const string& setting,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setDefaultJoymap(Event::Type event, EventMode mode)
 {
-#define SET_DEFAULT_BTN(sdb_event, sdb_mode, sdb_stick, sdb_button, sdb_cmp_event) \
-  if(eraseAll || sdb_cmp_event == sdb_event) \
-    myEventHandler->setDefaultJoyMapping(sdb_event, sdb_mode, sdb_stick, sdb_button);
-
-  bool eraseAll = (event == Event::NoType);
-  switch(mode)
-  {
-    case kEmulationMode:  // Default emulation events
-      // Left joystick (assume joystick zero, button zero)
-      SET_DEFAULT_BTN(Event::JoystickZeroFire1, mode, 0, 0, event);
-      // Right joystick (assume joystick one, button zero)
-      SET_DEFAULT_BTN(Event::JoystickOneFire1, mode, 1, 0, event);
-      break;
-
-    case kMenuMode:  // Default menu/UI events
-      // Left joystick (assume joystick zero, button zero)
-      SET_DEFAULT_BTN(Event::UISelect, mode, 0, 0, event);
-      // Right joystick (assume joystick one, button zero)
-      SET_DEFAULT_BTN(Event::UISelect, mode, 1, 0, event);
-      break;
-
-    default:
-      break;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setDefaultJoyAxisMap(Event::Type event, EventMode mode)
-{
 #define SET_DEFAULT_AXIS(sda_event, sda_mode, sda_stick, sda_axis, sda_val, sda_cmp_event) \
   if(eraseAll || sda_cmp_event == sda_event) \
-    myEventHandler->setDefaultJoyAxisMapping(sda_event, sda_mode, sda_stick, sda_axis, sda_val);
+    myEventHandler->addJoyAxisMapping(sda_event, sda_mode, sda_stick, sda_axis, sda_val, false);
+
+#define SET_DEFAULT_BTN(sdb_event, sdb_mode, sdb_stick, sdb_button, sdb_cmp_event) \
+  if(eraseAll || sdb_cmp_event == sdb_event) \
+    myEventHandler->addJoyButtonMapping(sdb_event, sdb_mode, sdb_stick, sdb_button, false);
+
+#define SET_DEFAULT_HAT(sdh_event, sdh_mode, sdh_stick, sdh_hat, sdh_dir, sdh_cmp_event) \
+  if(eraseAll || sdh_cmp_event == sdh_event) \
+    myEventHandler->addJoyHatMapping(sdh_event, sdh_mode, sdh_stick, sdh_hat, sdh_dir, false);
 
   bool eraseAll = (event == Event::NoType);
   switch(mode)
@@ -936,6 +915,19 @@ void OSystem::setDefaultJoyAxisMap(Event::Type event, EventMode mode)
       // Right joystick left/right directions (assume joystick one)
       SET_DEFAULT_AXIS(Event::JoystickOneUp, mode, 1, 1, 0, event);
       SET_DEFAULT_AXIS(Event::JoystickOneDown, mode, 1, 1, 1, event);
+
+      // Left joystick (assume joystick zero, button zero)
+      SET_DEFAULT_BTN(Event::JoystickZeroFire1, mode, 0, 0, event);
+      // Right joystick (assume joystick one, button zero)
+      SET_DEFAULT_BTN(Event::JoystickOneFire1, mode, 1, 0, event);
+
+      // Left joystick left/right directions (assume joystick zero and hat 0)
+      SET_DEFAULT_HAT(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT, event);
+      SET_DEFAULT_HAT(Event::JoystickZeroRight, mode, 0, 0, EVENT_HATRIGHT, event);
+      // Left joystick up/down directions (assume joystick zero and hat 0)
+      SET_DEFAULT_HAT(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP, event);
+      SET_DEFAULT_HAT(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN, event);
+
       break;
 
     case kMenuMode:  // Default menu/UI events
@@ -943,37 +935,17 @@ void OSystem::setDefaultJoyAxisMap(Event::Type event, EventMode mode)
       SET_DEFAULT_AXIS(Event::UIRight, mode, 0, 0, 1, event);
       SET_DEFAULT_AXIS(Event::UIUp, mode, 0, 1, 0, event);
       SET_DEFAULT_AXIS(Event::UIDown, mode, 0, 1, 1, event);
-      break;
 
-    default:
-      break;
-  }
-}
+      // Left joystick (assume joystick zero, button zero)
+      SET_DEFAULT_BTN(Event::UISelect, mode, 0, 0, event);
+      // Right joystick (assume joystick one, button zero)
+      SET_DEFAULT_BTN(Event::UISelect, mode, 1, 0, event);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::setDefaultJoyHatMap(Event::Type event, EventMode mode)
-{
-#define SET_DEFAULT_HAT(sdh_event, sdh_mode, sdh_stick, sdh_hat, sdh_dir, sdh_cmp_event) \
-  if(eraseAll || sdh_cmp_event == sdh_event) \
-    myEventHandler->setDefaultJoyHatMapping(sdh_event, sdh_mode, sdh_stick, sdh_hat, sdh_dir);
-
-  bool eraseAll = (event == Event::NoType);
-  switch(mode)
-  {
-    case kEmulationMode:  // Default emulation events
-      // Left joystick left/right directions (assume joystick zero and hat 0)
-      SET_DEFAULT_HAT(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT, event);
-      SET_DEFAULT_HAT(Event::JoystickZeroRight, mode, 0, 0, EVENT_HATRIGHT, event);
-      // Left joystick up/down directions (assume joystick zero and hat 0)
-      SET_DEFAULT_HAT(Event::JoystickZeroUp, mode, 0, 0, EVENT_HATUP, event);
-      SET_DEFAULT_HAT(Event::JoystickZeroDown, mode, 0, 0, EVENT_HATDOWN, event);
-      break;
-
-    case kMenuMode:  // Default menu/UI events
       SET_DEFAULT_HAT(Event::UILeft, mode, 0, 0, EVENT_HATLEFT, event);
       SET_DEFAULT_HAT(Event::UIRight, mode, 0, 0, EVENT_HATRIGHT, event);
       SET_DEFAULT_HAT(Event::UIUp, mode, 0, 0, EVENT_HATUP, event);
       SET_DEFAULT_HAT(Event::UIDown, mode, 0, 0, EVENT_HATDOWN, event);
+
       break;
 
     default:
@@ -984,14 +956,6 @@ void OSystem::setDefaultJoyHatMap(Event::Type event, EventMode mode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::pollEvent()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::joyButtonHandled(int button)
-{
-  // Since we don't do any platform-specific event polling,
-  // no button is ever handled at this level
-  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

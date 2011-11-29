@@ -14,9 +14,23 @@
 
 3.4.1 to 3.5: (December xx, 2011)
 
+    FIXME (will I have time for this?)
   * Replaced NTSC TV filtering with Blargg NTSC filters.  These filters
     work in OpenGL mode only, but in contrast to the old filters, they
     now work with OpenGL 1.x / OpenGL ES.
+
+  * Added several improvements to the joystick management code.  Joystick
+    event mapping is now saved per device, meaning that if you map events
+    to a certain joystick device, remove the device and then later insert
+    it again, Stella will remember the original mapping.
+
+  * The total number of joysticks present and their associated properties
+    (number of axes, buttons, hats, etc) is now dynamic.  That is, there's
+    no longer a hard-coded limit on number of joysticks that Stella can
+    use, or the number of buttons, etc that it contains.  This fixes a
+    serious bug with PS3 controllers with 27 buttons, whereby adding a
+    mapping for joystick 0 would inadvertantly change settings for
+    joystick 1, and could potentially lead to a segfault.
 
   * Huge restructuring of the OpenGL code, making it compatible with 
     OpenGL 2.x+ features (such as vertex buffer objects), while at the
@@ -45,11 +59,12 @@
     find.  For most systems, it now defaults to the users 'Desktop.
     Note that the commandline argument has changed to 'snapdir'.
 
-  * The debugger 'print' command now indicates "special" addresses if they
-    are read-only (R), write-only (W) or read-write (R/W).
+  * The debugger 'print' command now indicates "special" addresses if
+    they are read-only (R), write-only (W) or read-write (R/W).
 
-  * Fixed a bug in scrolling the mouse-wheel in certain debugger UI items
-    would cause the program to crash; scrolling now works as expected.
+  * Fixed a bug where scrolling the mouse-wheel in certain debugger UI
+    items would cause the program to crash; scrolling now works as
+    expected.
 
   * Fixed compile issues in the latest versions of Ubuntu and Debian, and
     fixed UNIX desktop file so that Stella will launch with a ROM when
