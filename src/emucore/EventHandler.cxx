@@ -1649,6 +1649,11 @@ void EventHandler::saveKeyMapping()
 void EventHandler::saveJoyMapping()
 {
 #ifdef JOYSTICK_SUPPORT
+  // Don't update the joymap at all if it hasn't been modified during the
+  // program run
+  if(myNumJoysticks == 0)
+    return;
+
   // Save the joystick mapping hash table, making sure to update it with
   // any changes that have been made during the program run
   for(uInt32 i = 0; i < myNumJoysticks; ++i)
