@@ -55,7 +55,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("center", "false");
   setInternal("grabmouse", "true");
   setInternal("palette", "standard");
-  setInternal("colorloss", "false");
+  setInternal("colorloss", "true");
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
