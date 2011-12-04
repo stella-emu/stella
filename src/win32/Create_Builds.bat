@@ -4,9 +4,9 @@ echo Stella build script for creating win32 and x64 builds.
 echo This will create installers (based on InnoSetup) for both 32 and 64-bit,
 echo as well as a ZIP archive containing both versions.
 echo.
-echo  ! InnoSetup should be linked to this directory as 'iscc.lnk' (for EXE files)
-echo  ! The 'zip.exe' utility must be available  (for ZIP files)
-echo  ! The 'flip.exe' utility must be available (for readable TXT files)
+echo  ! InnoSetup must be linked to this directory as 'iscc.lnk' (for EXE files)
+echo  ! 'zip.exe' must be installed in this directory (for ZIP files)
+echo  ! 'flip.exe' must be be installed in this directory (for readable TXT files)
 echo.
 echo  !!! Make sure the code has already been compiled in Visual Studio
 echo  !!! before launching this command.
@@ -138,7 +138,8 @@ if %HAVE_ISCC% == 1 (
 
 :: Cleanup time
 echo Cleaning up files, ...
-pause 5
 rmdir %STELLA_DIR% /s /q
 
 :done
+echo.
+pause 5

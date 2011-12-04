@@ -84,6 +84,14 @@
     <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
     <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
     <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|x64'">C:\Users\stephen\Source\sdl\lib64;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\stephen\Source\sdl\lib32;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\stephen\Source\sdl\lib32;$(LibraryPath)</LibraryPath>
+    <IncludePath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\stephen\Source\sdl\include;$(IncludePath)</IncludePath>
+    <LibraryPath Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">C:\Users\stephen\Source\sdl\lib64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -182,7 +190,7 @@ SDLmain.lib
     </Midl>
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
-      <Optimization>Disabled</Optimization>
+      <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
       <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -217,7 +225,11 @@ SDLmain.lib
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="FSNodeWin32.cxx" />
-    <ClCompile Include="..\common\mainSDL.cxx" />
+    <ClCompile Include="..\common\mainSDL.cxx">
+      <Optimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Full</Optimization>
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</WholeProgramOptimization>
+      <WholeProgramOptimization Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</WholeProgramOptimization>
+    </ClCompile>
     <ClCompile Include="OSystemWin32.cxx" />
     <ClCompile Include="..\common\PNGLibrary.cxx" />
     <ClCompile Include="..\common\RectList.cxx" />
