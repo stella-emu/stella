@@ -228,10 +228,10 @@ void EventHandler::setupJoysticks()
   ostringstream buf;
   buf << "Joystick devices found:" << endl;
   for(uInt32 i = 0; i < myNumJoysticks; ++i)
-    buf << "  " << i << ": " << myJoysticks[i].about() << endl;
+    buf << "  " << i << ": " << myJoysticks[i].about() << endl << endl;
   myOSystem->logMessage(buf.str(), 1);
 #else
-  myOSystem->logMessage("No joysticks present.\n", 1);
+  myOSystem->logMessage("No joysticks present.\n\n", 1);
 #endif
 }
 
