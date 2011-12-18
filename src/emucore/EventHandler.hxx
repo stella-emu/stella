@@ -431,6 +431,7 @@ class EventHandler
       public:
         StellaJoystick();
         virtual ~StellaJoystick();
+
         string setStick(int i);
         string getMap() const;
         bool setMap(const string& map);
@@ -457,7 +458,7 @@ class EventHandler
         int* axisLastValue;
 
       private:
-        void getValues(string& list, IntArray& map);
+        void getValues(const string& list, IntArray& map);
 
       private:
         SDL_Joystick* stick;

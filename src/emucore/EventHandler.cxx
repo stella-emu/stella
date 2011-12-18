@@ -160,9 +160,9 @@ void EventHandler::setupJoysticks()
   // Keep track of how many Stelladaptors we've found
   int saCount = 0;
 
-  // Open up to 6 regular joysticks and 2 Stelladaptor devices
-  myNumJoysticks = SDL_NumJoysticks();
-  myJoysticks = new StellaJoystick[myNumJoysticks];
+  // Open all SDL joysticks (only the first 2 Stelladaptor devices are used)
+  if((myNumJoysticks = SDL_NumJoysticks()) > 0)
+    myJoysticks = new StellaJoystick[myNumJoysticks];
   for(uInt32 i = 0; i < myNumJoysticks; ++i)
   {
     string name = myJoysticks[i].setStick(i);
@@ -1328,10 +1328,7 @@ void EventHandler::setJoymap()
     {
       map<string,string>::const_iterator iter = myJoystickMap.find(joy.name);
       if(iter != myJoystickMap.end())
-      {
         joy.setMap(iter->second);
-        break;
-      }
     }
   }
 #endif
@@ -2634,7 +2631,7 @@ void EventHandler::StellaJoystick::eraseEvent(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::StellaJoystick::getValues(string& list, IntArray& map)
+void EventHandler::StellaJoystick::getValues(const string& list, IntArray& map)
 {
   map.clear();
   istringstream buf(list);

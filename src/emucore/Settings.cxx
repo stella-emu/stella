@@ -59,15 +59,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
-  // TV filter options
-#if 0
-  setInternal("tv_tex", "off");
-  setInternal("tv_bleed", "off");
-  setInternal("tv_noise", "off");
-//  setInternal("tv_curve", "false");  // not yet implemented
-  setInternal("tv_phos", "false");
-#endif
-
   // Sound options
   setInternal("sound", "true");
   setInternal("fragsize", "512");
@@ -312,18 +303,6 @@ void Settings::validate()
   if(i < 0)       setInternal("romviewer", "0");
   else if(i > 2)  setInternal("romviewer", "2");
 
-  s = getString("tv_tex");
-  if(s != "normal" && s != "stag")
-    setInternal("tv_tex", "off");
-
-  s = getString("tv_bleed");
-  if(s != "low" && s != "medium" && s != "high")
-    setInternal("tv_bleed", "off");
-
-  s = getString("tv_noise");
-  if(s != "low" && s != "medium" && s != "high")
-    setInternal("tv_noise", "off");
-
   i = getInt("loglevel");
   if(i < 0 || i > 2)
     setInternal("loglevel", "1");
@@ -355,21 +334,6 @@ void Settings::usage()
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -gl_vbo       <1|0>          Enable 'vertex buffer objects'\n"
-#if 0
-    << "  -gl_accel     <1|0>          Enable SDL_GL_ACCELERATED_VISUAL\n"
-    << "  -tv_tex       <off|type>     OpenGL TV texturing, type is one of the following:\n"
-    << "                 normal         Aligned in a grid\n"
-    << "                 stag           Aligned in a staggered grid\n"
-    << "  -tv_bleed     <off|type>     OpenGL TV color bleed, type is one of the following:\n"
-    << "                 low            \n"
-    << "                 medium         \n"
-    << "                 high           \n"
-    << "  -tv_noise     <off|type>     OpenGL TV RF noise emulation, type is one of the following:\n"
-    << "                 low            \n"
-    << "                 medium         \n"
-    << "                 high           \n"
-    << "  -tv_phos      <1|0>          OpenGL TV phosphor burn-off\n"
-#endif
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
