@@ -48,7 +48,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
-  int lwidth = font.getStringWidth("Fragment Size: "),
+  int lwidth = font.getStringWidth("Sample Size (*): "),
       pwidth = font.getStringWidth("512 bytes");
   WidgetArray wid;
   StringMap items;
@@ -82,7 +82,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   items.push_back("4 KB", "4096");
   myFragsizePopup = new PopUpWidget(this, font, xpos, ypos,
                                     pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                    items, "Fragment size: ", lwidth);
+                                    items, "Sample size (*): ", lwidth);
   wid.push_back(myFragsizePopup);
   ypos += lineHeight + 4;
 
@@ -95,7 +95,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   items.push_back("48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                items, "Output freq: ", lwidth);
+                                items, "Output freq (*): ", lwidth);
   wid.push_back(myFreqPopup);
   ypos += lineHeight + 4;
 
@@ -108,16 +108,22 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Clip volume
-  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+50, ypos,
+  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+10, ypos,
                                             "Clip volume", 0);
   wid.push_back(myClipVolumeCheckbox);
-  ypos += lineHeight + 4;
+  xpos += myClipVolumeCheckbox->getWidth() + 20;
 
   // Enable sound
-  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos+50, ypos,
+  mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);
+
+  // Add message concerning usage
   ypos += lineHeight + 12;
+  const GUI::Font& infofont = instance().infoFont();
+  new StaticTextWidget(this, infofont, 10, ypos,
+        font.getStringWidth("(*) Requires application restart"), fontHeight,
+        "(*) Requires application restart", kTextAlignLeft);
 
   // Add Defaults, OK and Cancel buttons
   ButtonWidget* b;

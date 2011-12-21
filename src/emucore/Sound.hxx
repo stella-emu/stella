@@ -90,13 +90,6 @@ class Sound : public Serializable
     virtual void close() = 0;
 
     /**
-      Return true iff the sound device was successfully initialized.
-
-      @return true iff the sound device was successfully initialized.
-    */
-    virtual bool isSuccessfullyInitialized() const = 0;
-
-    /**
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false

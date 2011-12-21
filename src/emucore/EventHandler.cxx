@@ -2649,9 +2649,9 @@ string EventHandler::StellaJoystick::about() const
   buf << name;
   if(type == JT_REGULAR)
     buf << " with:" << endl << "     "
-        << SDL_JoystickNumAxes(stick)    << " axes, "
-        << SDL_JoystickNumButtons(stick) << " buttons, "
-        << SDL_JoystickNumHats(stick)    << " hats";
+        << numAxes    << " axes, "
+        << numButtons << " buttons, "
+        << numHats    << " hats";
 
   return buf.str();
 }

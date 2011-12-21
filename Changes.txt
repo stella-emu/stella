@@ -14,27 +14,30 @@
 
 3.4.1 to 3.5: (December xx, 2011)
 
-    FIXME (will I have time for this?)
-  * Replaced NTSC TV filtering with Blargg NTSC filters.  These filters
-    work in OpenGL mode only, but in contrast to the old filters, they
-    now work with OpenGL 1.x / OpenGL ES.
-
   * Added several improvements to the joystick management code.  Joystick
     event mapping is now saved per device, meaning that if you map events
     to a certain joystick device, remove the device and then later insert
     it again, Stella will remember the original mapping.
 
   * The total number of joysticks present and their associated properties
-    (number of axes, buttons, hats, etc) is now dynamic.  That is, there's
-    no longer a hard-coded limit on number of joysticks that Stella can
-    use, or the number of buttons, etc that it contains.  This fixes a
-    serious bug with PS3 controllers with 27 buttons, whereby adding a
+    (number of axes, buttons and hats) is now dynamic.  That is, there's
+    no longer a hard-coded limit on the number of joysticks that Stella
+    can use, or the number of buttons, etc that it contains.  This fixes
+    a serious bug with PS3 controllers with 27 buttons, whereby adding a
     mapping for joystick 0 would inadvertantly change settings for
-    joystick 1, and could potentially lead to a segfault.
+    joystick 1, and could potentially lead to a program crash.
 
   * Huge restructuring of the OpenGL code, making it compatible with 
     OpenGL 2.x+ features (such as vertex buffer objects), while at the
     same time keeping compatibility with OpenGL 1.5 / OpenGL ES.
+    Because of the required changes, TV effects were removed (they will
+    be added again for the next release).
+
+  * Improvements to audio handling, particularly for certain cases of
+    Windows, ATI video cards, and OpenGL mode.  The sound device is now
+    opened only once when Stella starts, and is paused between loading
+    different ROMs.  This fixes a problem whereby sound could possibly
+    not be functional after loading the first ROM.
 
   * Added logging facility, whereby the output of the application is
     available within Stella itself.  This can still be printed to the
@@ -56,7 +59,7 @@
     can be disabled by developers for testing reasons.
 
   * Updated default snapshot directory to be much saner and easier to
-    find.  For most systems, it now defaults to the users 'Desktop.
+    find.  For most systems, it now defaults to the users 'Desktop'.
     Note that the commandline argument has changed to 'snapdir'.
 
   * The debugger 'print' command now indicates "special" addresses if
@@ -71,6 +74,9 @@
     selected from its icon.  Thanks go to Stephen Kitt for this code.
 
   * Updated include PNG library to latest stable version.
+
+  * Updated the credits list in the documentation, listing people that
+    have donated hardware to the Stella team.
 
 -Have fun!
 

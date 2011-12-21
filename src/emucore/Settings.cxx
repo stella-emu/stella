@@ -41,11 +41,11 @@ Settings::Settings(OSystem* osystem)
 
   // OpenGL specific options
   setInternal("gl_filter", "nearest");
-  setInternal("gl_aspectn", "100");
+  setInternal("gl_aspectn", "90");
   setInternal("gl_aspectp", "100");
-  setInternal("gl_fsmax", "false");
+  setInternal("gl_fsmax", "true");
   setInternal("gl_lib", "libGL.so");
-  setInternal("gl_vsync", "false");
+  setInternal("gl_vsync", "true");
   setInternal("gl_vbo", "true");
 
   // Framebuffer-related options
@@ -99,7 +99,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("uselauncher", "true");
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "medium");
-  setInternal("launcherexts", "allfiles");
+  setInternal("launcherexts", "allroms");
   setInternal("romviewer", "0");
   setInternal("lastrom", "");
 

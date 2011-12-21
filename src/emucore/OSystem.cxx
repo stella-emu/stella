@@ -464,8 +464,8 @@ fallback:
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createSound()
 {
-  delete mySound;  mySound = NULL;
-  mySound = MediaFactory::createAudio(this);
+  if(!mySound)
+    mySound = MediaFactory::createAudio(this);
 #ifndef SOUND_SUPPORT
   mySettings->setBool("sound", false);
 #endif

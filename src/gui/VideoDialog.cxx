@@ -449,16 +449,16 @@ void VideoDialog::setDefaults()
   myFSResPopup->setSelected("auto", "");
   myFrameTimingPopup->setSelected("sleep", "");
   myGLFilterPopup->setSelected("nearest", "");
-  myNAspectRatioSlider->setValue(100);
-  myNAspectRatioLabel->setLabel("100");
+  myNAspectRatioSlider->setValue(90);
+  myNAspectRatioLabel->setLabel("90");
   myPAspectRatioSlider->setValue(100);
   myPAspectRatioLabel->setLabel("100");
   myFrameRateSlider->setValue(0);
   myFrameRateLabel->setLabel("Auto");
 
   myFullscreenPopup->setSelected("0", "");
-  myColorLossCheckbox->setState(false);
-  myGLStretchCheckbox->setState(false);
+  myColorLossCheckbox->setState(true);
+  myGLStretchCheckbox->setState(true);
   myUseVBOCheckbox->setState(true);
   myUseVSyncCheckbox->setState(true);
   myUIMessagesCheckbox->setState(true);

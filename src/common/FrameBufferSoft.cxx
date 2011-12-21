@@ -69,15 +69,15 @@ string FrameBufferSoft::about() const
 {
   ostringstream buf;
 
-  buf << "Video rendering: Software mode" << endl
+  buf << "Video rendering: Software mode" << endl << setfill('0') 
       << "  Color: " << (int)myFormat->BitsPerPixel << " bit" << endl
-      << "  Rmask = " << hex << setw(4) << (int)myFormat->Rmask
+      << "  Rmask = " << hex << setw(8) << (int)myFormat->Rmask
       << ", Rshift = "<< dec << setw(2) << (int)myFormat->Rshift
       << ", Rloss = " << dec << setw(2) << (int)myFormat->Rloss << endl
-      << "  Gmask = " << hex << setw(4) << (int)myFormat->Gmask
+      << "  Gmask = " << hex << setw(8) << (int)myFormat->Gmask
       << ", Gshift = "<< dec << setw(2) << (int)myFormat->Gshift
       << ", Gloss = " << dec << setw(2) << (int)myFormat->Gloss << endl
-      << "  Bmask = " << hex << setw(4) << (int)myFormat->Bmask
+      << "  Bmask = " << hex << setw(8) << (int)myFormat->Bmask
       << ", Bshift = "<< dec << setw(2) << (int)myFormat->Bshift
       << ", Bloss = " << dec << setw(2) << (int)myFormat->Bloss << endl;
 

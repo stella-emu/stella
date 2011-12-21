@@ -267,7 +267,7 @@
     <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
-    <li>Supports DPC+ bankswitching scheme from the Harmony cart, including emulation of the ARM processor</li>
+    <li>Supports DPC+ bankswitching scheme from the Harmony cart, including partial emulation of the ARM processor</li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual A26/BIN/ROM formats</li>
@@ -2232,8 +2232,8 @@
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Volume</td><td>self-explanatory</td><td>-volume</td></tr>
-          <tr><td>Fragment size</td><td>set size of audio buffers</td><td>-fragsize</td></tr>
-          <tr><td>Output freq</td><td>change sound output frequency (advanced)</td><td>-freq</td></tr>
+          <tr><td>Sample size (*)</td><td>set size of audio buffers</td><td>-fragsize</td></tr>
+          <tr><td>Output freq (*)</td><td>change sound output frequency (advanced)</td><td>-freq</td></tr>
           <tr><td>TIA freq</td><td>change TIA output frequency (advanced)</td><td>-tiafreq</td></tr>
           <tr><td>Clip volume</td><td>Eliminate popping in sound generation (advanced)</td><td>-clipvol</td></tr>
           <tr><td>Enable sound</td><td>self-explanatory</td><td>-sound</td></tr>
@@ -3264,6 +3264,12 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
+      <td VALIGN="TOP">"Uncle"&nbsp;Carmine<br>
+      (<a href="http://www.carmine.com">http://www.carmine.com</a>)</td>
+      <td>Generously donated several 2600 games and manuals to help with development</td>
+    </tr>
+
+    <tr>
       <td VALIGN="TOP">Piero&nbsp;Cavina</td>
       <td>Allowed "Oystron" to be included in the Stella distribution</td>
     </tr>
@@ -3345,6 +3351,12 @@ Ms Pac-Man (Stella extended codes):
     </tr>
 
     <tr>
+      <td VALIGN="TOP">Nick&nbsp;Montfort and Ian&nbsp;Bogost<br>
+      (<a href="http://mitpress.mit.edu/catalog/item/default.asp?ttype=2&tid=11696">Racing the Beam</a>)</td>
+      <td>Specifically mentioned Stella in their book</td>
+    </tr>
+
+    <tr>
       <td VALIGN="TOP">Kostas&nbsp;Nakos</td>
       <td>Author/maintainer of the WinCE version of Stella from releases 2.0
       to  2.3.5</td>
@@ -3411,6 +3423,12 @@ Ms Pac-Man (Stella extended codes):
     <tr>
       <td VALIGN="TOP">Jim&nbsp;Pragit</td>
       <td>Author of the "Game Menu" emulator game shell</td>
+    </tr>
+
+    <tr>
+      <td VALIGN="TOP">James&nbsp;Randall aka&nbsp;'toymailman'</td>
+      <td>Generously donated a 7800 console and several games and manuals to help
+      with development</td>
     </tr>
 
     <tr>
@@ -3536,7 +3554,7 @@ Ms Pac-Man (Stella extended codes):
 
     <tr>
       <td VALIGN="TOP">Albert&nbsp;Yarusso<br>
-<a href="http://atariage.com">http://atariage.com</a></td>
+      (<a href="http://atariage.com">http://atariage.com</a>)</td>
       <td>Provided helpful feedback for the MacOSX port, and generously
         donated an AtariVox device to help with development</td>
     </tr>

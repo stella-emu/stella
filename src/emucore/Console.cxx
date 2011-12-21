@@ -487,10 +487,9 @@ void Console::initializeAudio()
   int framerate = myOSystem->settings().getInt("framerate");
   if(framerate > 0) myFramerate = float(framerate);
   const string& sound = myProperties.get(Cartridge_Sound);
-  uInt32 channels = (sound == "STEREO" ? 2 : 1);
 
   myOSystem->sound().close();
-  myOSystem->sound().setChannels(channels);
+  myOSystem->sound().setChannels(sound == "STEREO" ? 2 : 1);
   myOSystem->sound().setFrameRate(myFramerate);
   myOSystem->sound().open();
 

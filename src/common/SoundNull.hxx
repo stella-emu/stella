@@ -91,13 +91,6 @@ class SoundNull : public Sound
     void close() { }
 
     /**
-      Return true iff the sound device was successfully initialized.
-
-      @return true iff the sound device was successfully initialized.
-    */
-    bool isSuccessfullyInitialized() const { return false; }
-
-    /**
       Set the mute state of the sound object.  While muted no sound is played.
 
       @param state Mutes sound if true, unmute if false

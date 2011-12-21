@@ -32,7 +32,8 @@ class StringListWidget;
 class LoggerDialog : public Dialog
 {
   public:
-    LoggerDialog(OSystem* osystem, DialogContainer* parent, const GUI::Font& font, int max_w, int max_h);
+    LoggerDialog(OSystem* osystem, DialogContainer* parent,
+                 const GUI::Font& font, int max_w, int max_h);
     virtual ~LoggerDialog();
 
   protected:

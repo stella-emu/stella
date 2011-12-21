@@ -54,7 +54,7 @@ class SoundSDL : public Sound
     /**
       Enables/disables the sound subsystem.
 
-      @param state True or false, to enable or disable the sound system
+      @param state  True or false, to enable or disable the sound system
     */
     void setEnabled(bool state);
 
@@ -62,14 +62,18 @@ class SoundSDL : public Sound
       The system cycle counter is being adjusting by the specified amount. Any
       members using the system cycle counter should be adjusted as needed.
 
-      @param amount The amount the cycle counter is being adjusted by
+      @param amount  The amount the cycle counter is being adjusted by
     */
     void adjustCycleCounter(Int32 amount);
 
     /**
-      Sets the number of channels (mono or stereo sound).
+      Sets the number of channels (mono or stereo sound).  Note that this
+      determines how the emulation should 'mix' the channels of the TIA sound
+      system (of which there are always two).  It does not specify the actual
+      number of hardware channels that SDL should use; it will always attempt
+      to use two channels in hardware.
 
-      @param channels The number of channels
+      @param channels  The number of channels
     */
     void setChannels(uInt32 channels);
 
@@ -94,16 +98,9 @@ class SoundSDL : public Sound
     void close();
 
     /**
-      Return true iff the sound device was successfully initialized.
-
-      @return true iff the sound device was successfully initialized.
-    */
-    bool isSuccessfullyInitialized() const;
-
-    /**
       Set the mute state of the sound object.  While muted no sound is played.
 
-      @param state Mutes sound if true, unmute if false
+      @param state  Mutes sound if true, unmute if false
     */
     void mute(bool state);
 
@@ -115,9 +112,9 @@ class SoundSDL : public Sound
     /**
       Sets the sound register to a given value.
 
-      @param addr  The register address
-      @param value The value to save into the register
-      @param cycle The system cycle at which the register is being updated
+      @param addr   The register address
+      @param value  The value to save into the register
+      @param cycle  The system cycle at which the register is being updated
     */
     void set(uInt16 addr, uInt8 value, Int32 cycle);
 
@@ -126,15 +123,15 @@ class SoundSDL : public Sound
       volume is given as a percentage from 0 to 100.  Values outside
       this range indicate that the volume shouldn't be changed at all.
 
-      @param percent The new volume percentage level for the sound device
+      @param percent  The new volume percentage level for the sound device
     */
     void setVolume(Int32 percent);
 
     /**
       Adjusts the volume of the sound device based on the given direction.
 
-      @param direction Increase or decrease the current volume by a predefined
-          amount based on the direction (1 = increase, -1 = decrease)
+      @param direction  Increase or decrease the current volume by a predefined
+                        amount based on the direction (1 = increase, -1 = decrease)
     */
     void adjustVolume(Int8 direction);
 
@@ -142,23 +139,23 @@ class SoundSDL : public Sound
     /**
       Saves the current state of this device to the given Serializer.
 
-      @param out The serializer device to save to.
-      @return The result of the save.  True on success, false on failure.
+      @param out  The serializer device to save to.
+      @return  The result of the save.  True on success, false on failure.
     */
     bool save(Serializer& out) const;
 
     /**
       Loads the current state of this device from the given Serializer.
 
-      @param in The Serializer device to load from.
-      @return The result of the load.  True on success, false on failure.
+      @param in  The Serializer device to load from.
+      @return  The result of the load.  True on success, false on failure.
     */
     bool load(Serializer& in);
 
     /**
       Get a descriptor for this console class (used in error checking).
 
-      @return The name of the object
+      @return  The name of the object
     */
     string name() const { return "TIASound"; }
 
@@ -166,8 +163,8 @@ class SoundSDL : public Sound
     /**
       Invoked by the sound callback to process the next sound fragment.
 
-      @param stream Pointer to the start of the fragment
-      @param length Length of the fragment
+      @param stream  Pointer to the start of the fragment
+      @param length  Length of the fragment
     */
     void processFragment(uInt8* stream, Int32 length);
 
@@ -223,14 +220,14 @@ class SoundSDL : public Sound
         /**
           Return the item at the front on the queue.
 
-          @return The item at the front of the queue.
+          @return  The item at the front of the queue.
         */
         RegWrite& front();
 
         /**
           Answers the number of items currently in the queue.
 
-          @return The number of items in the queue.
+          @return  The number of items in the queue.
         */
         uInt32 size() const;
 
