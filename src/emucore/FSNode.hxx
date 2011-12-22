@@ -153,7 +153,7 @@ class FilesystemNode
      *
      * @return the display name
      */
-    virtual string getDisplayName() const;
+    virtual const string& getDisplayName() const;
 
     /**
      * Return a string representation of the name of the file. This is can be
@@ -163,7 +163,7 @@ class FilesystemNode
      *
      * @return the file name
      */
-    virtual string getName() const;
+    virtual const string& getName() const;
 
     /**
      * Return a string representation of the file which can be passed to fopen().
@@ -175,7 +175,7 @@ class FilesystemNode
      *
      * @return the 'path' represented by this filesystem node
      */
-    virtual string getPath() const;
+    virtual const string& getPath() const;
 
     /**
      * Return a string representation of the file which contains the '~'
@@ -288,7 +288,7 @@ class AbstractFilesystemNode
      *
      * @note By default, this method returns the value of getName().
      */
-    virtual string getDisplayName() const { return getName(); }
+    virtual const string& getDisplayName() const { return getName(); }
 
     /**
      * Returns the last component of the path pointed by this FilesystemNode.
@@ -299,12 +299,12 @@ class AbstractFilesystemNode
      *
      * @note This method is very architecture dependent, please check the concrete implementation for more information.
      */
-    virtual string getName() const = 0;
+    virtual const string& getName() const = 0;
 
     /**
      * Returns the 'path' of the current node, usable in fopen().
      */
-    virtual string getPath() const = 0;
+    virtual const string& getPath() const = 0;
 
     /**
      * Returns the 'path' of the current node, containing '~' and for archiving.

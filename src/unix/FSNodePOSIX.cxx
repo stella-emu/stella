@@ -59,9 +59,9 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     POSIXFilesystemNode(const string& path, bool verify);
 
     bool exists() const { return access(_path.c_str(), F_OK) == 0; }
-    string getDisplayName() const { return _displayName; }
-    string getName() const   { return _displayName; }
-    string getPath() const   { return _path; }
+    const string& getDisplayName() const { return _displayName; }
+    const string& getName() const   { return _displayName; }
+    const string& getPath() const   { return _path; }
     string getRelativePath() const;
     bool isDirectory() const { return _isDirectory; }
     bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }

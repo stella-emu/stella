@@ -86,14 +86,14 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getDisplayName() const
+const string& FilesystemNode::getDisplayName() const
 {
   assert(_realNode);
   return _realNode->getDisplayName();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getName() const
+const string& FilesystemNode::getName() const
 {
   assert(_realNode);
   return _realNode->getName();
@@ -122,7 +122,7 @@ FilesystemNode FilesystemNode::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getPath() const
+const string& FilesystemNode::getPath() const
 {
   assert(_realNode);
   return _realNode->getPath();
