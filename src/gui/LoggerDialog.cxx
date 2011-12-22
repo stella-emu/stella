@@ -119,7 +119,7 @@ void LoggerDialog::saveLogFile()
   string path = AbstractFilesystemNode::getAbsolutePath("stella", "~", "log");
   FilesystemNode node(path);
 
-  ofstream out(node.getPath(true).c_str(), ios::out);
+  ofstream out(node.getPath().c_str(), ios::out);
   if(out.is_open())
   {
     out << instance().logMessages();

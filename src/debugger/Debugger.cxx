@@ -842,9 +842,9 @@ string Debugger::saveROM(const string& filename) const
   string path = AbstractFilesystemNode::getAbsolutePath(filename, "~", "a26");
   FilesystemNode node(path);
 
-  ofstream out(node.getPath(true).c_str(), ios::out | ios::binary);
+  ofstream out(node.getPath().c_str(), ios::out | ios::binary);
   if(out.is_open() && myConsole->cartridge().save(out))
-    return node.getPath(false);
+    return node.getRelativePath();
   else
     return "";
 }

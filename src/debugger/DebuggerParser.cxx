@@ -135,7 +135,7 @@ string DebuggerParser::exec(const FilesystemNode& file)
   {
     ifstream in(file.getPath().c_str());
     if(!in.is_open())
-      return red("autoexec file \'" + file.getPath(false) + "\' not found");
+      return red("autoexec file \'" + file.getRelativePath() + "\' not found");
 
     ostringstream buf;
     int count = 0;
@@ -149,12 +149,12 @@ string DebuggerParser::exec(const FilesystemNode& file)
       count++;
     }
     buf << "Executed " << debugger->valueToString(count) << " commands from \""
-        << file.getPath(false) << "\"";
+        << file.getRelativePath() << "\"";
 
     return buf.str();
   }
   else
-    return red("autoexec file \'" + file.getPath(false) + "\' not found");
+    return red("autoexec file \'" + file.getRelativePath() + "\' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

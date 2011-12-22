@@ -293,7 +293,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
-  myDir->setLabel(myCurrentNode.getPath(false));
+  myDir->setLabel(myCurrentNode.getRelativePath());
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
@@ -583,7 +583,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kStartupRomDirChosenCmd:
     {
       FilesystemNode dir(myRomDir->getResult());
-      instance().settings().setString("romdir", dir.getPath(false));
+      instance().settings().setString("romdir", dir.getRelativePath());
       // fall through to the next case
     }
     case kRomDirChosenCmd:

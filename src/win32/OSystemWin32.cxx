@@ -72,7 +72,7 @@ OSystemWin32::OSystemWin32()
     FilesystemNode appdata(homefinder.getAppDataPath());
     if(appdata.isDirectory())
     {
-      basedir = appdata.getPath(false);
+      basedir = appdata.getRelativePath();
       if(basedir.length() > 1 && basedir[basedir.length()-1] != '\\')
         basedir += '\\';
       basedir += "Stella";
@@ -95,7 +95,7 @@ string OSystemWin32::defaultSnapDir()
 {
   HomeFinder homefinder;
   FilesystemNode desktop(homefinder.getDesktopPath());
-  return desktop.isDirectory() ? desktop.getPath(false) : "~";
+  return desktop.isDirectory() ? desktop.getRelativePath() : "~";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

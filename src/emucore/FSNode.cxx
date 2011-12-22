@@ -122,10 +122,17 @@ FilesystemNode FilesystemNode::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getPath(bool fqn) const
+string FilesystemNode::getPath() const
 {
   assert(_realNode);
-  return _realNode->getPath(fqn);
+  return _realNode->getPath();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::getRelativePath() const
+{
+  assert(_realNode);
+  return _realNode->getRelativePath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

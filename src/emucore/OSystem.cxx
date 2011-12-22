@@ -204,11 +204,11 @@ bool OSystem::create()
   setConfigPaths();
   ostringstream buf;
   buf << "Base directory:       '"
-      << FilesystemNode(myBaseDir).getPath(false) << "'" << endl
+      << FilesystemNode(myBaseDir).getRelativePath() << "'" << endl
       << "Configuration file:   '"
-      << FilesystemNode(myConfigFile).getPath(false) << "'" << endl
+      << FilesystemNode(myConfigFile).getRelativePath() << "'" << endl
       << "User game properties: '"
-      << FilesystemNode(myPropertiesFile).getPath(false) << "'" << endl
+      << FilesystemNode(myPropertiesFile).getRelativePath() << "'" << endl
       << endl;
   logMessage(buf.str(), 1);
 
@@ -325,19 +325,19 @@ void OSystem::setConfigPaths()
   if(s == "") s = myBaseDir + "stella.cht";
   node = FilesystemNode(s);
   myCheatFile = node.getPath();
-  mySettings->setString("cheatfile", node.getPath(false));
+  mySettings->setString("cheatfile", node.getRelativePath());
 
   s = mySettings->getString("palettefile");
   if(s == "") s = myBaseDir + "stella.pal";
   node = FilesystemNode(s);
   myPaletteFile = node.getPath();
-  mySettings->setString("palettefile", node.getPath(false));
+  mySettings->setString("palettefile", node.getRelativePath());
 
   s = mySettings->getString("propsfile");
   if(s == "") s = myBaseDir + "stella.pro";
   node = FilesystemNode(s);
   myPropertiesFile = node.getPath();
-  mySettings->setString("propsfile", node.getPath(false));
+  mySettings->setString("propsfile", node.getRelativePath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -538,7 +538,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
         myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
-        << "  ROM file: " << FilesystemNode(myRomFile).getPath(false) << endl << endl
+        << "  ROM file: " << FilesystemNode(myRomFile).getRelativePath() << endl << endl
         << getROMInfo(myConsole) << endl;
     logMessage(buf.str(), 1);
 
@@ -881,7 +881,7 @@ void OSystem::validatePath(string& path, const string& setting,
     node = FilesystemNode(node.getPath());
   }
   path = node.getPath();
-  mySettings->setString(setting, node.getPath(false));
+  mySettings->setString(setting, node.getRelativePath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

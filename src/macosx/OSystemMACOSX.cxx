@@ -49,5 +49,5 @@ OSystemMACOSX::~OSystemMACOSX()
 string OSystemMACOSX::defaultSnapDir()
 {
   FilesystemNode desktop("~/Desktop");
-  return desktop.isDirectory() ? desktop.getPath(false) : "~";
+  return desktop.isDirectory() ? desktop.getRelativePath() : "~";
 }

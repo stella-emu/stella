@@ -52,38 +52,59 @@ class HomeFinder
 
     /** Wrapper for SHGetFolderPathA, returning the 'HOME/User' folder
         (or an empty string if the folder couldn't be determined. */
-    string getHomePath() const
+    const string& getHomePath() const
     {
-      if(!myFolderPathFunc) return "";
-      char folder_path[MAX_PATH];
-      HRESULT const result = (myFolderPathFunc)
-          (NULL, CSIDL_PROFILE | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
-
-      return (result == 0) ? folder_path : "";
+      if(ourHomePath == "")
+      {
+        if(!myFolderPathFunc)
+          ourHomePath = "";
+        else
+        {
+          char folder_path[MAX_PATH];
+          HRESULT const result = (myFolderPathFunc)
+              (NULL, CSIDL_PROFILE | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
+          ourHomePath = (result == 0) ? folder_path : "";
+        }
+      }
+      return ourHomePath;
     }
 
     /** Wrapper for SHGetFolderPathA, returning the 'APPDATA' folder
         (or an empty string if the folder couldn't be determined. */
-    string getAppDataPath() const
+    const string& getAppDataPath() const
     {
-      if(!myFolderPathFunc) return "";
-      char folder_path[MAX_PATH];
-      HRESULT const result = (myFolderPathFunc)
-          (NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
-
-      return (result == 0) ? folder_path : "";
+      if(ourAppDataPath == "")
+      {
+        if(!myFolderPathFunc)
+          ourAppDataPath = "";
+        else
+        {
+          char folder_path[MAX_PATH];
+          HRESULT const result = (myFolderPathFunc)
+              (NULL, CSIDL_APPDATA | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
+          ourAppDataPath = (result == 0) ? folder_path : "";
+        }
+      }
+      return ourAppDataPath;
     }
 
     /** Wrapper for SHGetFolderPathA, returning the 'DESKTOPDIRECTORY' folder
         (or an empty string if the folder couldn't be determined. */
-    string getDesktopPath() const
+    const string& getDesktopPath() const
     {
-      if(!myFolderPathFunc) return "";
-      char folder_path[MAX_PATH];
-      HRESULT const result = (myFolderPathFunc)
-          (NULL, CSIDL_DESKTOPDIRECTORY | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
-
-      return (result == 0) ? folder_path : "";
+      if(ourDesktopPath == "")
+      {
+        if(!myFolderPathFunc)
+          ourDesktopPath = "";
+        else
+        {
+          char folder_path[MAX_PATH];
+          HRESULT const result = (myFolderPathFunc)
+              (NULL, CSIDL_DESKTOPDIRECTORY | CSIDL_FLAG_CREATE, NULL, 0, folder_path);
+          ourDesktopPath = (result == 0) ? folder_path : "";
+        }
+      }
+      return ourDesktopPath;
     }
 
     private:
@@ -91,6 +112,12 @@ class HomeFinder
 
       HMODULE myFolderModule;
       function_pointer myFolderPathFunc;
+
+      static string ourHomePath, ourAppDataPath, ourDesktopPath;
 };
+
+__declspec(selectany) string HomeFinder::ourHomePath = "";
+__declspec(selectany) string HomeFinder::ourAppDataPath = "";
+__declspec(selectany) string HomeFinder::ourDesktopPath = "";
 
 #endif

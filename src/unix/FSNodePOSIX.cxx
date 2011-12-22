@@ -61,7 +61,8 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     bool exists() const { return access(_path.c_str(), F_OK) == 0; }
     string getDisplayName() const { return _displayName; }
     string getName() const   { return _displayName; }
-    string getPath(bool fqn) const;
+    string getPath() const   { return _path; }
+    string getRelativePath() const;
     bool isDirectory() const { return _isDirectory; }
     bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
@@ -161,11 +162,11 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string POSIXFilesystemNode::getPath(bool fqn) const
+string POSIXFilesystemNode::getRelativePath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const char* home = getenv("HOME");
-  if(!fqn && home != NULL && BSPF_startsWithIgnoreCase(_path, home))
+  if(home != NULL && BSPF_startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + strlen(home);
@@ -307,7 +308,7 @@ string AbstractFilesystemNode::getAbsolutePath(const string& p,
 {
   // Does p start with the root directory or the given startpath?
   // If not, it isn't an absolute path
-  string path = FilesystemNode(p).getPath(false);
+  string path = FilesystemNode(p).getRelativePath();
   if(!BSPF_startsWithIgnoreCase(p, startpath+"/") &&
      !BSPF_startsWithIgnoreCase(p, "/"))
     path = startpath + "/" + p;

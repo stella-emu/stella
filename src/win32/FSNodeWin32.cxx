@@ -94,7 +94,8 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
     string getDisplayName() const { return _displayName; }
     string getName() const   { return _displayName; }
-    string getPath(bool fqn) const;
+    string getPath() const   { return _path; }
+    string getRelativePath() const;
     bool isDirectory() const { return _isDirectory; }
     bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
@@ -275,11 +276,11 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string WindowsFilesystemNode::getPath(bool fqn) const
+string WindowsFilesystemNode::getRelativePath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
-  if(!fqn && home != "" && BSPF_startsWithIgnoreCase(_path, home))
+  if(home != "" && BSPF_startsWithIgnoreCase(_path, home))
   {
     string path = "~";
     const char* offset = _path.c_str() + home.length();
@@ -409,7 +410,7 @@ string AbstractFilesystemNode::getAbsolutePath(const string& p,
 {
   // Does p start with a drive letter or the given startpath?
   // If not, it isn't an absolute path
-  string path = FilesystemNode(p).getPath(false);
+  string path = FilesystemNode(p).getRelativePath();
   bool startsWithDrive = path.length() >= 2 && path[1] == ':';
   if(!BSPF_startsWithIgnoreCase(p, startpath+"\\") && !startsWithDrive)
     path = startpath + "\\" + p;

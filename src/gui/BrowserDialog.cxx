@@ -164,7 +164,7 @@ void BrowserDialog::updateListing()
   _nodeList->clear();
 
   // Update the path display
-  _currentPath->setLabel(_node.getPath(false));
+  _currentPath->setLabel(_node.getRelativePath());
 
   // Read in the data from the file system
   FSList content;
