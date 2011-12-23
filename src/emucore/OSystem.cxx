@@ -510,7 +510,6 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif
-    bool audiofirst = mySettings->getBool("audiofirst");
     //////////////////////////////////////////////////////////////////////////
     // For some reason, ATI video drivers for OpenGL in Win32 cause problems
     // if the sound isn't initialized before the video
@@ -520,7 +519,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     // http://www.atariage.com/forums/index.php?showtopic=126090&view=findpost&p=1648693
     // Hopefully it won't break anything else
     //////////////////////////////////////////////////////////////////////////
-    if(audiofirst)  myConsole->initializeAudio();
+    myConsole->initializeAudio();
     myEventHandler->reset(EventHandler::S_EMULATE);
     if(createFrameBuffer() != kSuccess)  // Takes care of initializeVideo()
     {
@@ -528,7 +527,6 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
       myEventHandler->reset(EventHandler::S_LAUNCHER);
       return false;
     }
-    if(!audiofirst)  myConsole->initializeAudio();
 
     if(showmessage)
     {

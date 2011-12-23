@@ -102,7 +102,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   for(int row = 0; row < 8; ++row)
   {
     myRamLabels[row] =
-      new StaticTextWidget(boss, font, xpos + 5, ypos + row*lineHeight + 2,
+      new StaticTextWidget(boss, font, xpos + 8, ypos + row*lineHeight + 2,
                            3*fontWidth, fontHeight, "", kTextAlignLeft);
   }
 
@@ -308,7 +308,7 @@ void RamWidget::fillGrid(bool updateOld)
   myRamStart->setLabel(buf);
   for(uInt32 i = start, row = 0; i < start + 16*8; i += 16, ++row)
   {
-    BSPF_snprintf(buf, 3, "%02X:", state.rport[i] & 0x00ff);
+    BSPF_snprintf(buf, 3, "%02X", state.rport[i] & 0x00ff);
     myRamLabels[row]->setLabel(buf);
   }
 }

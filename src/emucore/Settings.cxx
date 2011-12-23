@@ -117,7 +117,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("ramrandom", "true");
   setInternal("avoxport", "");
   setInternal("stats", "false");
-  setInternal("audiofirst", "true");
   setInternal("fastscbios", "false");
   setExternal("romloadcount", "0");
   setExternal("maxres", "");
@@ -371,7 +370,6 @@ void Settings::usage()
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"
-    << "  -audiofirst   <1|0>          Initial audio before video (required for some ATI video cards)\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
     << "  -snapdir      <path>         The directory to save snapshot files to\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"

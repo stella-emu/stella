@@ -37,7 +37,11 @@
     Windows, ATI video cards, and OpenGL mode.  The sound device is now
     opened only once when Stella starts, and is paused between loading
     different ROMs.  This fixes a problem whereby sound could possibly
-    not be functional after loading the first ROM.
+    not be functional after loading the first ROM.  Related to this,
+    removed the 'audiofirst' commandline argument as it's now redundant.
+
+  * Fixed bug with displaying the ROM launcher in Windows XP; the initial
+    load was sometimes taking up to 30 seconds to complete.
 
   * Added logging facility, whereby the output of the application is
     available within Stella itself.  This can still be printed to the
@@ -69,11 +73,14 @@
     items would cause the program to crash; scrolling now works as
     expected.
 
+  * Fixed minor display issue in the debugger RAM area; some addresses
+    were being displayed as '...'.
+
   * Fixed compile issues in the latest versions of Ubuntu and Debian, and
     fixed UNIX desktop file so that Stella will launch with a ROM when
     selected from its icon.  Thanks go to Stephen Kitt for this code.
 
-  * Updated include PNG library to latest stable version.
+  * Updated included PNG library to latest stable version.
 
   * Updated the credits list in the documentation, listing people that
     have donated hardware to the Stella team.
