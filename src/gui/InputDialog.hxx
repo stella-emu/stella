@@ -56,11 +56,10 @@ class InputDialog : public Dialog
 
   private:
     enum {
-      kLeftChanged     = 'LCch',
-      kRightChanged    = 'RCch',
       kDeadzoneChanged = 'DZch',
       kDPSpeedChanged  = 'PDch',
-      kMPSpeedChanged  = 'PMch'
+      kMPSpeedChanged  = 'PMch',
+      kMPCtrlChanged   = 'PMcl'
     };
 
     TabWidget* myTab;
@@ -68,8 +67,7 @@ class InputDialog : public Dialog
     EventMappingWidget* myEmulEventMapper;
     EventMappingWidget* myMenuEventMapper;
 
-    PopUpWidget* myLeftPort;
-    PopUpWidget* myRightPort;
+    PopUpWidget* mySAPort;
 
     EditTextWidget*   myAVoxPort;
 
@@ -80,8 +78,10 @@ class InputDialog : public Dialog
     StaticTextWidget* myDPaddleLabel;
     StaticTextWidget* myMPaddleLabel;
     CheckboxWidget*   myAllowAll4;
-    CheckboxWidget*   myMouseEnabled;
     CheckboxWidget*   myGrabMouse;
+    PopUpWidget*      myMouseControl;
+    PopUpWidget*      myMouseX;
+    PopUpWidget*      myMouseY;
 };
 
 #endif

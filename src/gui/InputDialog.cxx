@@ -50,7 +50,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = BSPF_min(50 * fontWidth + 10, max_w);
-  _h = BSPF_min(13 * (lineHeight + 4) + 10, max_h);
+  _h = BSPF_min(14 * (lineHeight + 4) + 14, max_h);
 
   // The tab widget
   xpos = 2; ypos = vBorder;
@@ -117,27 +117,22 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Stelladaptor mappings
   xpos = 5;  ypos = 5;
-  lwidth = font.getStringWidth("Stelladaptor 2 is: ");
-  pwidth = font.getStringWidth("right virtual port");
+  lwidth = font.getStringWidth("Stelladaptor port order: ");
+  pwidth = font.getStringWidth("left / right");
 
   items.clear();
-  items.push_back("left virtual port", "left");
-  items.push_back("right virtual port", "right");
-  myLeftPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                               "Stelladaptor 1 is: ", lwidth, kLeftChanged);
-  wid.push_back(myLeftPort);
-
-  ypos += lineHeight + 5;
-  // ... use items from above
-  myRightPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                                "Stelladaptor 2 is: ", lwidth, kRightChanged);
-  wid.push_back(myRightPort);
+  items.push_back("left / right", "leftright");
+  items.push_back("right / left", "rightleft");
+  mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                             "Stelladaptor port order: ", lwidth);
+  wid.push_back(mySAPort);
 
   // Add AtariVox serial port
-  xpos = 5;  ypos += 2*lineHeight;
+  ypos += lineHeight + 5;
+  lwidth = font.getStringWidth("AVox serial port: ");
   int fwidth = _w - xpos - lwidth - 20;
   new StaticTextWidget(myTab, font, xpos, ypos, lwidth, fontHeight,
-                       "AVox serial port:", kTextAlignLeft);
+                       "AVox serial port: ", kTextAlignLeft);
   myAVoxPort = new EditTextWidget(myTab, font, xpos+lwidth, ypos,
                                   fwidth, fontHeight, "");
   wid.push_back(myAVoxPort);
@@ -146,7 +141,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   pwidth = font.getMaxCharWidth() * 8;
 
   // Add joystick deadzone setting
-  ypos += lineHeight + 5;
+  ypos += lineHeight + 8;
   myDeadzone = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                 "Joystick deadzone size: ", lwidth, kDeadzoneChanged);
   myDeadzone->setMinValue(0); myDeadzone->setMaxValue(29);
@@ -157,7 +152,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myDeadzone);
 
   // Add paddle speed (digital emulation)
-  xpos = 5;  ypos += lineHeight + 3;
+  xpos = 5;  ypos += lineHeight + 4;
   myDPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    "Digital paddle sensitivity: ",
                                    lwidth, kDPSpeedChanged);
@@ -169,7 +164,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myDPaddleSpeed);
 
   // Add paddle speed (mouse emulation)
-  xpos = 5;  ypos += lineHeight + 3;
+  xpos = 5;  ypos += lineHeight + 4;
   myMPaddleSpeed = new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                                    "Mouse paddle sensitivity: ",
                                    lwidth, kMPSpeedChanged);
@@ -181,16 +176,10 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myMPaddleSpeed);
 
   // Add 'allow all 4 directions' for joystick
-  xpos = 10;  ypos += 2*lineHeight;
+  xpos = 10;  ypos += lineHeight + 8;
   myAllowAll4 = new CheckboxWidget(myTab, font, xpos, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
-
-  // Add mouse enable/disable
-  xpos = 10;  ypos += lineHeight + 4;
-  myMouseEnabled = new CheckboxWidget(myTab, font, xpos, ypos,
-                     "Use mouse as a controller");
-  wid.push_back(myMouseEnabled);
 
   // Grab mouse (in windowed mode)	 
   ypos += lineHeight + 4;
@@ -198,8 +187,40 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 	                "Grab mouse in emulation mode");
   wid.push_back(myGrabMouse);
 #ifndef WINDOWED_SUPPORT
-  myGrabMouse->clearFlags(WIDGET_ENABLED);	 
+  myGrabMouse->clearFlags(WIDGET_ENABLED);
 #endif
+
+  // Mouse is controller type
+  ypos += lineHeight + 8;
+  lwidth = font.getStringWidth("Use mouse as a controller: ");
+  pwidth = font.getStringWidth("Specific axis");
+  items.clear();
+  items.push_back("Automatic", "auto");
+  items.push_back("Specific axis", "paddle");
+  myMouseControl =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                   "Use mouse as a controller: ", lwidth, kMPCtrlChanged);
+  wid.push_back(myMouseControl);
+
+  // Mouse controller specific axis
+  lwidth = font.getStringWidth("X-Axis is: ");
+  pwidth = font.getStringWidth("Paddle 3");
+  items.clear();
+  items.push_back("not used", BSPF_toString(Controller::NoControl));
+  items.push_back("Paddle 0", BSPF_toString(Controller::Paddle0));
+  items.push_back("Paddle 1", BSPF_toString(Controller::Paddle1));
+  items.push_back("Paddle 2", BSPF_toString(Controller::Paddle2));
+  items.push_back("Paddle 3", BSPF_toString(Controller::Paddle3));
+
+  xpos = 45;  ypos += lineHeight + 4;
+  myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+               "X-Axis is: ", lwidth);
+  wid.push_back(myMouseX);
+
+  ypos += lineHeight + 4;
+  myMouseY = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+               "Y-Axis is: ", lwidth);
+  wid.push_back(myMouseY);
 
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
@@ -210,18 +231,12 @@ void InputDialog::loadConfig()
 {
   // Left & right ports
   const string& sa1 = instance().settings().getString("sa1");
-  int lport = sa1 == "right" ? 1 : 0;
-  myLeftPort->setSelected(lport);
-  const string& sa2 = instance().settings().getString("sa2");
-  int rport = sa2 == "right" ? 1 : 0;
-  myRightPort->setSelected(rport);
+  int portorder = sa1 == "right" ? 1 : 0;
+  mySAPort->setSelected(portorder);
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
   myDeadzoneLabel->setValue(Joystick::deadzone());
-
-  // Mouse/paddle enabled
-  myMouseEnabled->setState(instance().settings().getBool("usemouse"));
 
   // Grab mouse
   myGrabMouse->setState(instance().settings().getBool("grabmouse"));
@@ -238,6 +253,24 @@ void InputDialog::loadConfig()
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
 
+  // Mouse is controller type
+  const string& mcontrol = instance().settings().getString("mcontrol");
+  bool autoAxis = mcontrol == "auto";
+  if(autoAxis)
+  {
+    myMouseControl->setSelected(0);
+    myMouseX->setSelected(0);
+    myMouseY->setSelected(0);
+  }
+  else
+  {
+    myMouseControl->setSelected(1);
+    myMouseX->setSelected(BSPF_toString(mcontrol[0] - '0'), "");
+    myMouseY->setSelected(BSPF_toString(mcontrol[1] - '0'), "");
+  }
+  myMouseX->setEnabled(!autoAxis);
+  myMouseY->setEnabled(!autoAxis);
+
   myTab->loadConfig();
 }
 
@@ -245,19 +278,16 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  const string& sa1 = myLeftPort->getSelectedTag();
-  const string& sa2 = myRightPort->getSelectedTag();
-  instance().eventHandler().mapStelladaptors(sa1, sa2);
+  int sa_order = mySAPort->getSelected();
+  if(sa_order == 0)
+    instance().eventHandler().mapStelladaptors("left", "right");
+  else
+    instance().eventHandler().mapStelladaptors("right", "left");
 
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();
   instance().settings().setInt("joydeadzone", deadzone);
   Joystick::setDeadZone(deadzone);
-
-  // Mouse/paddle enabled
-  bool usemouse = myMouseEnabled->getState();
-  instance().settings().setBool("usemouse", usemouse);
-  instance().eventHandler().setMouseControllerMode(usemouse ? 0 : -1);
 
   // Grab mouse	 
   instance().settings().setBool("grabmouse", myGrabMouse->getState());	 
@@ -278,6 +308,13 @@ void InputDialog::saveConfig()
   bool allowall4 = myAllowAll4->getState();
   instance().settings().setBool("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
+
+  // Mouse is controller type
+  string mcontrol = myMouseControl->getSelectedTag();
+  if(mcontrol != "auto")
+    mcontrol = myMouseX->getSelectedTag() + myMouseY->getSelectedTag();
+  instance().settings().setString("mcontrol", mcontrol);
+  instance().eventHandler().setMouseControllerMode(mcontrol);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -296,15 +333,11 @@ void InputDialog::setDefaults()
     case 2:  // Virtual devices
     {
       // Left & right ports
-      myLeftPort->setSelected("left", "left");
-      myRightPort->setSelected("right", "right");
+      mySAPort->setSelected("leftright", "leftright");
 
       // Joystick deadzone
       myDeadzone->setValue(0);
       myDeadzoneLabel->setValue(3200);
-
-      // Mouse/paddle enabled
-      myMouseEnabled->setState(true);
 
       // Grab mouse
       myGrabMouse->setState(true);
@@ -320,6 +353,13 @@ void InputDialog::setDefaults()
 
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
+
+      // Mouse is controller type
+      myMouseControl->setSelected(0);
+      myMouseX->setSelected(0);
+      myMouseY->setSelected(0);
+      myMouseX->setEnabled(false);
+      myMouseY->setEnabled(false);
       break;
     }
 
@@ -398,16 +438,6 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
       setDefaults();
       break;
 
-    case kLeftChanged:
-      myRightPort->setSelected(
-        myLeftPort->getSelected() == 1 ? 0 : 1);
-      break;
-
-    case kRightChanged:
-      myLeftPort->setSelected(
-        myRightPort->getSelected() == 1 ? 0 : 1);
-      break;
-
     case kDeadzoneChanged:
       myDeadzoneLabel->setValue(3200 + 1000*myDeadzone->getValue());
       break;
@@ -419,6 +449,14 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kMPSpeedChanged:
       myMPaddleLabel->setValue(myMPaddleSpeed->getValue());
       break;
+
+    case kMPCtrlChanged:
+    {
+      bool state = myMouseControl->getSelectedTag() != "auto";
+      myMouseX->setEnabled(state);
+      myMouseY->setEnabled(state);
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

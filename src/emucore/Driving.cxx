@@ -25,7 +25,8 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Driving::Driving(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Driving),
-    myCounter(0)
+    myCounter(0),
+    myControlID(-1)
 {
   if(myJack == Left)
   {
@@ -72,8 +73,7 @@ void Driving::update()
   // Mouse motion and button events
   // Since there are 4 possible controller numbers, we use 0 & 2
   // for the left jack, and 1 & 3 for the right jack
-  if((myJack == Left && !(ourControlNum & 0x1)) ||
-     (myJack == Right && ourControlNum & 0x1))
+  if(myControlID > -1)
   {
     int m_axis = myEvent.get(Event::MouseAxisXValue);
     if(m_axis < -2)     myCounter--;
@@ -111,4 +111,19 @@ void Driving::update()
   uInt8 gray = graytable[myGrayIndex];
   myDigitalPinState[One] = (gray & 0x1) != 0;
   myDigitalPinState[Two] = (gray & 0x2) != 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Driving::setMouseControl(
+    MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
+{
+  // In 'automatic' mode, both axes on the mouse map to a single normal joystick
+  if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
+  {
+    myControlID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
+                   (myJack == Right && (ctrlID == 2 || ctrlID == 3))
+                  ) ? ctrlID & 0x01 : -1;
+  }
+  else  // Otherwise, joysticks are not used in 'non-auto' mode
+    myControlID = -1;
 }

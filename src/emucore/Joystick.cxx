@@ -22,7 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Joystick::Joystick(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Joystick)
+  : Controller(jack, event, system, Controller::Joystick),
+    myControlID(-1)
 {
   if(myJack == Left)
   {
@@ -89,8 +90,7 @@ void Joystick::update()
   // Mouse motion and button events
   // Since there are 4 possible controller numbers, we use 0 & 2
   // for the left jack, and 1 & 3 for the right jack
-  if((myJack == Left && !(ourControlNum & 0x1)) ||
-     (myJack == Right && ourControlNum & 0x1))
+  if(myControlID > -1)
   {
     // The following code was taken from z26
     #define MJ_Threshold 2
@@ -118,6 +118,21 @@ void Joystick::update()
     if(myEvent.get(Event::MouseButtonValue))
       myDigitalPinState[Six] = false;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Joystick::setMouseControl(
+    MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
+{
+  // In 'automatic' mode, both axes on the mouse map to a single normal joystick
+  if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
+  {
+    myControlID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
+                   (myJack == Right && (ctrlID == 2 || ctrlID == 3))
+                  ) ? ctrlID & 0x01 : -1;
+  }
+  else  // Otherwise, joysticks are not used in 'non-auto' mode
+    myControlID = -1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

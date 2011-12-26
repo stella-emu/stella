@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.4.1 to 3.5: (December xx, 2011)
+3.4.1 to 3.5: (December 31, 2011)
 
   * Added several improvements to the joystick management code.  Joystick
     event mapping is now saved per device, meaning that if you map events
@@ -26,6 +26,11 @@
     a serious bug with PS3 controllers with 27 buttons, whereby adding a
     mapping for joystick 0 would inadvertantly change settings for
     joystick 1, and could potentially lead to a program crash.
+
+  * Added 'mcontrol' commandline argument, which can specify to use each
+    mouse axis as a separate paddle.  The old (and default) behaviour can
+    be activated by setting this argument to 'auto'.  Related to this,
+    removed redundant 'usemouse' argument.
 
   * Huge restructuring of the OpenGL code, making it compatible with 
     OpenGL 2.x+ features (such as vertex buffer objects), while at the

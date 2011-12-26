@@ -183,21 +183,10 @@ string Controller::about() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Controller::setMouseIsController(int number)
-{
-  ourControlNum = number;
-  if(ourControlNum < 0)       ourControlNum = 0;
-  else if (ourControlNum > 3) ourControlNum = 3;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int32 Controller::maximumResistance = 0x7FFFFFFF;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const Int32 Controller::minimumResistance = 0x00000000;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 Controller::ourControlNum = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Controller::Controller(const Controller& c)

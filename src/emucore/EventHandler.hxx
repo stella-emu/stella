@@ -151,12 +151,13 @@ class EventHandler
     void quit() { handleEvent(Event::Quit, 1); }
 
     /**
-      Sets the mouse to act as controller 'num'
+      Sets the mouse axis to act as controller 'mode', where the mode is
+      defined from the Controller::MouseAxisControl enum
 
-      @param num          The controller which the mouse should emulate
-      @param showmessage  Print a message to the framebuffer
+      @param mode     The controller which the mouse axes should emulate
+      @param message  Print the (non-empty) message to the framebuffer
     */
-    void setMouseControllerMode(int num, bool showmessage = false);
+    void setMouseControllerMode(const string& mode, const string& message = "");
 
     /**
       Set the number of seconds between taking a snapshot in
@@ -338,6 +339,7 @@ class EventHandler
     void saveKeyMapping();
     void saveJoyMapping();
     void saveComboMapping();
+    void setMouseAsPaddle(int paddle, const string& message);
 
     /**
       Tests if a given event should use continuous/analog values.
@@ -386,9 +388,6 @@ class EventHandler
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;
-
-    // Indicates whether the mouse is enabled for game controller actions
-    bool myMouseEnabled;
 
     // Indicates whether the joystick emulates 'impossible' directions
     bool myAllowAllDirectionsFlag;

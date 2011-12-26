@@ -171,11 +171,7 @@ install: all
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/applications"
 	$(INSTALL) -c -m 644 "$(srcdir)/src/unix/stella.desktop" "$(DESTDIR)$(DATADIR)/applications"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
-	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/mini"
-	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/large"
 	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons/mini"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons/large"
 
 install-strip: install
 	$(STRIP) stella$(EXEEXT)
@@ -185,8 +181,6 @@ uninstall:
 	rm -rf "$(DESTDIR)$(DOCDIR)/"
 	rm -f  "$(DESTDIR)$(DATADIR)/applications/stella.desktop"
 	rm -f  "$(DESTDIR)$(DATADIR)/icons/stella.png"
-	rm -f  "$(DESTDIR)$(DATADIR)/icons/mini/stella.png"
-	rm -f  "$(DESTDIR)$(DATADIR)/icons/large/stella.png"
 
 # Special rule for M6502.ins, generated from m4 (there's probably a better way to do this ...)
 src/emucore/M6502.ins: src/emucore/M6502.m4

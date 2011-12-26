@@ -125,7 +125,6 @@ void EventHandler::initialize()
   Joystick::setDeadZone(myOSystem->settings().getInt("joydeadzone"));
   Paddles::setDigitalSensitivity(myOSystem->settings().getInt("dsense"));
   Paddles::setMouseSensitivity(myOSystem->settings().getInt("msense"));
-  setMouseControllerMode(myOSystem->settings().getBool("usemouse") ? 0 : -1, false);
 
   // Set quick select delay when typing characters in listwidgets
   ListWidget::setQuickSelectDelay(myOSystem->settings().getInt("listdelay"));
@@ -504,21 +503,21 @@ void EventHandler::poll(uInt64 time)
           {
             switch(int(key))
             {
-              case SDLK_0:  // Ctrl-0 sets the mouse to controller 0
-                setMouseControllerMode(0, true);
+              case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
+                setMouseAsPaddle(0, "Mouse is paddle 0");
                 break;
 
-              case SDLK_1:  // Ctrl-1 sets the mouse to controller 1
-                setMouseControllerMode(1, true);
+              case SDLK_1:  // Ctrl-1 sets the mouse to paddle 1
+                setMouseAsPaddle(1, "Mouse is paddle 1");
                 break;
 
-              case SDLK_2:  // Ctrl-2 sets the mouse to controller 2
-                setMouseControllerMode(2, true);
+              case SDLK_2:  // Ctrl-2 sets the mouse to paddle 2
+                setMouseAsPaddle(2, "Mouse is paddle 2");
                 break;
 
-              case SDLK_3:  // Ctrl-3 sets the mouse to controller 3
-                setMouseControllerMode(3, true);
-                  break;
+              case SDLK_3:  // Ctrl-3 sets the mouse to paddle 3
+                setMouseAsPaddle(3, "Mouse is paddle 3");
+                break;
 
               case SDLK_f:  // Ctrl-f toggles NTSC/PAL mode
                 myOSystem->console().toggleFormat();
@@ -607,15 +606,12 @@ void EventHandler::poll(uInt64 time)
         // Determine which mode we're in, then send the event to the appropriate place
         if(myState == S_EMULATE)
         {
-          if(myMouseEnabled)
+          if(!mySkipMouseMotion)
           {
-            if(!mySkipMouseMotion)
-            {
-              myEvent->set(Event::MouseAxisXValue, event.motion.xrel);
-              myEvent->set(Event::MouseAxisYValue, event.motion.yrel);
-            }
-            mySkipMouseMotion = false;
+            myEvent->set(Event::MouseAxisXValue, event.motion.xrel);
+            myEvent->set(Event::MouseAxisYValue, event.motion.yrel);
           }
+          mySkipMouseMotion = false;
         }
         else if(myOverlay)
           myOverlay->handleMouseMotionEvent(event.motion.x, event.motion.y, 0);
@@ -630,8 +626,7 @@ void EventHandler::poll(uInt64 time)
         // Determine which mode we're in, then send the event to the appropriate place
         if(myState == S_EMULATE)
         {
-          if(myMouseEnabled)
-            myEvent->set(Event::MouseButtonValue, state);
+          myEvent->set(Event::MouseButtonValue, state);
         }
         else if(myOverlay)
         {
@@ -1924,21 +1919,52 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMouseControllerMode(int num, bool showmessage)
+void EventHandler::setMouseControllerMode(const string& mode,
+                                          const string& message)
 {
-  if(num >= 0 && num <= 3)
+  if(!&myOSystem->console())
+    return;
+
+  Controller& lc = myOSystem->console().controller(Controller::Left);
+  Controller& rc = myOSystem->console().controller(Controller::Right);
+  if(mode == "auto")
   {
-    myMouseEnabled = true;
-    Controller::setMouseIsController(num);
-    if(showmessage)
-    {
-      ostringstream buf;
-      buf << "Mouse is controller " << num;
-      myOSystem->frameBuffer().showMessage(buf.str());
-    }
+    bool swap = myOSystem->console().properties().get(Controller_SwapPaddles) == "YES";
+    lc.setMouseControl(Controller::Automatic, Controller::Automatic, swap ? 1 : 0);
+    rc.setMouseControl(Controller::Automatic, Controller::Automatic, swap ? 1 : 0);
   }
   else
-    myMouseEnabled = false;
+  {
+    Controller::MouseAxisControl xaxis = (Controller::MouseAxisControl)
+      ((int)mode[0] - '0');
+    Controller::MouseAxisControl yaxis = (Controller::MouseAxisControl)
+      ((int)mode[1] - '0');
+
+    lc.setMouseControl(xaxis, yaxis);
+    rc.setMouseControl(xaxis, yaxis);
+  }
+
+  if(message != "")
+    myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::setMouseAsPaddle(int paddle, const string& message)
+{
+  if(myOSystem->settings().getString("mcontrol") == "auto")
+  {
+    myOSystem->console().controller(Controller::Left).setMouseControl(
+        Controller::Automatic, Controller::Automatic, paddle);
+    myOSystem->console().controller(Controller::Right).setMouseControl(
+        Controller::Automatic, Controller::Automatic, paddle);
+
+    myOSystem->frameBuffer().showMessage(message);
+  }
+  else
+  {
+    myOSystem->frameBuffer().showMessage(
+        "Mouse axis mode not auto, paddle not changed");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

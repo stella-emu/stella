@@ -71,10 +71,17 @@ class Controller : public Serializable
     /**
       Enumeration of the controller jacks
     */
-    enum Jack
-    {
-      Left, Right
-    };
+    enum Jack { Left, Right };
+
+    /**
+      Enumeration of the digital pins of a controller port
+    */
+    enum DigitalPin { One, Two, Three, Four, Six };
+
+    /**
+      Enumeration of the analog pins of a controller port
+    */
+    enum AnalogPin { Five, Nine };
 
     /**
       Enumeration of the controller types
@@ -84,6 +91,15 @@ class Controller : public Serializable
       BoosterGrip, Driving, Keyboard, Paddles, Joystick,
       TrackBall22, TrackBall80, AmigaMouse, AtariVox, SaveKey,
       KidVid, Genesis
+    };
+
+    /**
+      Enumeration of mouse axis control types
+    */
+    enum MouseAxisControl
+    {
+      Paddle0 = 0, Paddle1, Paddle2, Paddle3,
+      Automatic, NoControl
     };
 
   public:
@@ -108,24 +124,6 @@ class Controller : public Serializable
     */
     const Type type() const;
 
-  public:
-    /**
-      Enumeration of the digital pins of a controller port
-    */
-    enum DigitalPin
-    {
-      One, Two, Three, Four, Six
-    };
-
-    /**
-      Enumeration of the analog pins of a controller port
-    */
-    enum AnalogPin
-    {
-      Five, Nine
-    };
-
-  public:
     /**
       Read the value of the specified digital pin for this controller.
 
@@ -162,9 +160,28 @@ class Controller : public Serializable
     /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary 
-      to override this method for devices that remember cycle counts.
+      to override this method for controllers that remember cycle counts.
     */
     virtual void systemCyclesReset() { };
+
+    /**
+      Determines how this controller will treat values received from the
+      X and Y axis of the mouse.  Since not all controllers use the mouse,
+      it's up to the specific class to decide how to use this data.
+
+      If either of the axis is set to 'Automatic', then we automatically
+      use this number for the control type as follows:
+        0 - paddle 0, joystick 0 (and controllers similar to a joystick)
+        1 - paddle 1, joystick 1 (and controllers similar to a joystick)
+        2 - paddle 2, joystick 0 (and controllers similar to a joystick)
+        3 - paddle 3, joystick 1 (and controllers similar to a joystick)
+
+      @param xaxis   How the controller should use x-axis data
+      @param yaxis   How the controller should use y-axis data
+      @param ctrlID  The controller ID to use axis 'auto' mode
+    */
+    virtual void setMouseControl(
+        MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID = -1) { };
 
     /**
       Returns the name of this controller.
@@ -191,17 +208,6 @@ class Controller : public Serializable
       @return The result of the load.  True on success, false on failure.
     */
     bool load(Serializer& in);
-
-    /**
-      Sets the mouse to emulate controller number 'X'.  Note that this
-      can accept values 0 to 3, since there can be up to four possible
-      controllers (when using paddles).  In all other cases when only
-      two controllers are present, it's up to the specific class to
-      decide how to use this data.
-
-      @param number  The controller number (0, 1, 2, 3)
-    */
-    static void setMouseIsController(int number);
 
   public:
     /// Constant which represents maximum resistance for analog pins
@@ -231,9 +237,6 @@ class Controller : public Serializable
 
     /// The analog value on each analog pin
     Int32 myAnalogPinValue[2];
-
-    /// The controller number
-    static Int32 ourControlNum;
 
   protected:
     // Copy constructor isn't supported by controllers so make it private

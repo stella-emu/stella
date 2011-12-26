@@ -618,8 +618,6 @@ void Console::setControllers(const string& rommd5)
 
   // Also check if we should swap the paddles plugged into a jack
   bool swapPaddles = myProperties.get(Controller_SwapPaddles) == "YES";
-  // Set default controller for mouse
-  Controller::setMouseIsController(0);
 
   // Construct left controller
   if(left == "BOOSTERGRIP")
@@ -636,7 +634,6 @@ void Console::setControllers(const string& rommd5)
   }
   else if(BSPF_startsWithIgnoreCase(left, "PADDLES"))
   {
-    Controller::setMouseIsController(swapPaddles ? 1 : 0);
     bool swapAxis = false, swapDir = false;
     if(left == "PADDLES_IAXIS")
       swapAxis = true;

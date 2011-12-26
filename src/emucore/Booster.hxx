@@ -55,12 +55,34 @@ class BoosterGrip : public Controller
     */
     void update();
 
+    /**
+      Determines how this controller will treat values received from the
+      X and Y axis of the mouse.  Since not all controllers use the mouse,
+      it's up to the specific class to decide how to use this data.
+
+      If either of the axis is set to 'Automatic', then we automatically
+      use this number for the control type as follows:
+        0 - paddle 0, joystick 0 (and controllers similar to a joystick)
+        1 - paddle 1, joystick 1 (and controllers similar to a joystick)
+        2 - paddle 2, joystick 0 (and controllers similar to a joystick)
+        3 - paddle 3, joystick 1 (and controllers similar to a joystick)
+
+      @param xaxis   How the controller should use x-axis data
+      @param yaxis   How the controller should use y-axis data
+      @param ctrlID  The controller ID to use axis 'auto' mode
+    */
+    void setMouseControl(
+        MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID = -1);
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
                 myFireEvent, myBoosterEvent, myTriggerEvent,
                 myXAxisValue, myYAxisValue;
+
+    // Controller to emulate in mouse axis 'automatic' mode
+    int myControlID;  
 };
 
 #endif

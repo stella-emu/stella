@@ -62,6 +62,25 @@ class Paddles : public Controller
     void update();
 
     /**
+      Determines how this controller will treat values received from the
+      X and Y axis of the mouse.  Since not all controllers use the mouse,
+      it's up to the specific class to decide how to use this data.
+
+      If either of the axis is set to 'Automatic', then we automatically
+      use this number for the control type as follows:
+        0 - paddle 0, joystick 0 (and controllers similar to a joystick)
+        1 - paddle 1, joystick 1 (and controllers similar to a joystick)
+        2 - paddle 2, joystick 0 (and controllers similar to a joystick)
+        3 - paddle 3, joystick 1 (and controllers similar to a joystick)
+
+      @param xaxis   How the controller should use x-axis data
+      @param yaxis   How the controller should use y-axis data
+      @param ctrlID  The controller ID to use axis 'auto' mode
+    */
+    void setMouseControl(
+        MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID = -1);
+
+    /**
       Sets the sensitivity for digital emulation of paddle movement.
       This is only used for *digital* events (ie, buttons or keys,
       or digital joystick axis events); Stelladaptors or the mouse are
@@ -97,6 +116,10 @@ class Paddles : public Controller
                 myP1DecEvent1, myP1DecEvent2, myP1IncEvent1, myP1IncEvent2,
                 myP0FireEvent1, myP0FireEvent2, myP1FireEvent1, myP1FireEvent2,
                 myAxisMouseMotion;
+
+    // The following are used for the various mouse-axis modes
+    int myMPaddleID;                // paddle to emulate in 'automatic' mode
+    int myMPaddleIDX, myMPaddleIDY; // paddles to emulate in 'specific axis' mode
 
     bool myKeyRepeat0, myKeyRepeat1;
     int myPaddleRepeat0, myPaddleRepeat1;

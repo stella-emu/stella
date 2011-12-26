@@ -25,7 +25,10 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, const System& system,
                  bool swapport, bool swapaxis, bool swapdir)
-  : Controller(jack, event, system, Controller::Paddles)
+  : Controller(jack, event, system, Controller::Paddles),
+    myMPaddleID(-1),
+    myMPaddleIDX(-1),
+    myMPaddleIDY(-1)
 {
   // The following logic reflects that mapping paddles to different
   // devices can be extremely complex
@@ -281,18 +284,40 @@ void Paddles::update()
 
   // Mouse motion events give relative movement
   // That is, they're only relevant if they're non-zero
-  if((myJack == Left && ourControlNum <= 1) ||
-     (myJack == Right && ourControlNum > 1))
+  if(myMPaddleID > -1)
   {
-    int num = ourControlNum & 0x01;
-    myCharge[num] -=
+    // We're in auto mode, where a single axis is used for one paddle only
+    myCharge[myMPaddleID] -=
         ((myEvent.get(myAxisMouseMotion) >> 1) * _MOUSE_SENSITIVITY);
-    if(myCharge[num] < TRIGMIN)
-      myCharge[num] = TRIGMIN;
-    if(myCharge[num] > TRIGMAX)
-      myCharge[num] = TRIGMAX;
+    if(myCharge[myMPaddleID] < TRIGMIN)
+      myCharge[myMPaddleID] = TRIGMIN;
+    if(myCharge[myMPaddleID] > TRIGMAX)
+      myCharge[myMPaddleID] = TRIGMAX;
     if(myEvent.get(Event::MouseButtonValue))
-      myDigitalPinState[ourButtonPin[num]] = false;
+      myDigitalPinState[ourButtonPin[myMPaddleID]] = false;
+  }
+  else
+  {
+    // Test for 'untied' mouse axis mode, where each axis is potentially
+    // mapped to a separate paddle
+    if(myMPaddleIDX > -1)
+    {
+      myCharge[myMPaddleIDX] -=
+          ((myEvent.get(Event::MouseAxisXValue) >> 1) * _MOUSE_SENSITIVITY);
+      if(myCharge[myMPaddleIDX] < TRIGMIN)
+        myCharge[myMPaddleIDX] = TRIGMIN;
+      if(myCharge[myMPaddleIDX] > TRIGMAX)
+        myCharge[myMPaddleIDX] = TRIGMAX;
+    }
+    if(myMPaddleIDY > -1)
+    {
+      myCharge[myMPaddleIDY] -=
+          ((myEvent.get(Event::MouseAxisYValue) >> 1) * _MOUSE_SENSITIVITY);
+      if(myCharge[myMPaddleIDY] < TRIGMIN)
+        myCharge[myMPaddleIDY] = TRIGMIN;
+      if(myCharge[myMPaddleIDY] > TRIGMAX)
+        myCharge[myMPaddleIDY] = TRIGMAX;
+    }
   }
 
   // Finally, consider digital input, where movement happens
@@ -348,6 +373,57 @@ void Paddles::update()
 
   myLastCharge[1] = myCharge[1];
   myLastCharge[0] = myCharge[0];
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Paddles::setMouseControl(
+    MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
+{
+  // In 'automatic' mode, both axes on the mouse map to a single paddle
+  // This overrides any other mode
+  if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
+  {
+    myMPaddleID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
+                   (myJack == Right && (ctrlID == 2 || ctrlID == 3))
+                  ) ? ctrlID & 0x01 : -1;
+    myMPaddleIDX = myMPaddleIDY = -1;
+  }
+  else
+  {
+    // The following is somewhat complex, but we need to pre-process as much
+    // as possible, so that ::update() can run quickly
+    myMPaddleID = -1;
+    if(myJack == Left)
+    {
+      switch(xaxis)
+      {
+        case Controller::Paddle0:  myMPaddleIDX = 0;  break;
+        case Controller::Paddle1:  myMPaddleIDX = 1;  break;
+        default:                   myMPaddleIDX = -1; break;
+      }
+      switch(yaxis)
+      {
+        case Controller::Paddle0:  myMPaddleIDY = 0;  break;
+        case Controller::Paddle1:  myMPaddleIDY = 1;  break;
+        default:                   myMPaddleIDY = -1; break;
+      }
+    }
+    else  // myJack == Right
+    {
+      switch(xaxis)
+      {
+        case Controller::Paddle2:  myMPaddleIDX = 0;  break;
+        case Controller::Paddle3:  myMPaddleIDX = 1;  break;
+        default:                   myMPaddleIDX = -1; break;
+      }
+      switch(yaxis)
+      {
+        case Controller::Paddle2:  myMPaddleIDY = 0;  break;
+        case Controller::Paddle3:  myMPaddleIDY = 1;  break;
+        default:                   myMPaddleIDY = -1; break;
+      }
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

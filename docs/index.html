@@ -1794,13 +1794,15 @@
     </tr>
 
     <tr>
-      <td><pre>-usemouse &lt;1|0&gt;</pre></td>
-      <td>Enable using the mouse for various controllers (paddle, driving, etc).</td>
+      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>	 
+      <td>Keeps the mouse in the game window in emulation mode.</td>	 
     </tr>
 
     <tr>
-      <td><pre>-grabmouse &lt;1|0&gt;</pre></td>	 
-      <td>Keeps the mouse in the game window in emulation mode.</td>	 
+      <td><pre>-mcontrol &lt;auto|XY&gt;</pre></td>
+      <td>Enable using the mouse axes for various controllers automatically (paddle, driving, etc),
+        or specifically use each axis for a particular paddle.  In the latter case, XY indicates
+        how to use the X/Y axis (ie, 02 is paddle0/paddle2, etc).</td>
     </tr>
 
     <tr>
@@ -2387,8 +2389,8 @@
           <tr><td>Digital paddle sensitivity</td><td>Sensitvity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
           <tr><td>Mouse paddle sensitivity</td><td>Sensitivity used when emulating a paddle using a mouse</td><td>-msense</td></tr>
           <tr><td>Allow all 4 ...</td><td>Allow all 4 joystick directions to be pressed simultaneously</td><td>-joyallow4</td></tr>
-          <tr><td>Use mouse as ...</td><td>Use the mouse for various controllers (paddles, driving, etc)</td><td>-usemouse</td></tr>
           <tr><td>Grab mouse ...</td><td>Keep mouse in window in emulation mode</td><td>-grabmouse</td></tr>
+          <tr><td>Use mouse as ...</td><td>Mouse axes are either automatically or specifically mapped to certain actions</td><td>-mcontrol</td></tr>
         </table>
       </td>
     </tr>

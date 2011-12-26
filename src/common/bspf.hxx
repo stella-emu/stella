@@ -122,6 +122,14 @@ template<typename T> inline T BSPF_abs (T x) { return (x>=0) ? x : -x; }
 template<typename T> inline T BSPF_min (T a, T b) { return (a<b) ? a : b; }
 template<typename T> inline T BSPF_max (T a, T b) { return (a>b) ? a : b; }
 
+// Convert integer to string
+inline string BSPF_toString(int num)
+{
+  ostringstream buf;
+  buf << num;
+  return buf.str();
+}
+
 // Test whether two strings are equal (case insensitive)
 inline bool BSPF_equalsIgnoreCase(const string& s1, const string& s2)
 {
