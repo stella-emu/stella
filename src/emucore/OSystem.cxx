@@ -203,7 +203,10 @@ bool OSystem::create()
   // Get updated paths for all configuration files
   setConfigPaths();
   ostringstream buf;
-  buf << "Base directory:       '"
+  buf << "Stella " << STELLA_VERSION << endl
+      << "  Features: " << myFeatures << endl
+      << "  " << myBuildInfo << endl << endl
+      << "Base directory:       '"
       << FilesystemNode(myBaseDir).getRelativePath() << "'" << endl
       << "Configuration file:   '"
       << FilesystemNode(myConfigFile).getRelativePath() << "'" << endl
