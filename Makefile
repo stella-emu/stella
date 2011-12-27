@@ -170,8 +170,20 @@ install: all
 	$(INSTALL) -c -m 644 $(wildcard $(srcdir)/docs/graphics/*.png) "$(DESTDIR)$(DOCDIR)/graphics"
 	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/applications"
 	$(INSTALL) -c -m 644 "$(srcdir)/src/unix/stella.desktop" "$(DESTDIR)$(DATADIR)/applications"
-	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons"
-	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella.png" "$(DESTDIR)$(DATADIR)/icons"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/16x16/apps"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/22x22/apps"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/24x24/apps"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/32x32/apps"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/48x48/apps"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/64x64/apps"
+	$(INSTALL) -d "$(DESTDIR)$(DATADIR)/icons/hicolor/128x128/apps"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-16x16.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/16x16/apps/stella.png"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-22x22.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/22x22/apps/stella.png"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-24x24.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/24x24/apps/stella.png"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-32x32.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/32x32/apps/stella.png"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-48x48.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/48x48/apps/stella.png"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-64x64.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/64x64/apps/stella.png"
+	$(INSTALL) -c -m 644 "$(srcdir)/src/common/stella-128x128.png" "$(DESTDIR)$(DATADIR)/icons/hicolor/128x128/apps/stella.png"
 
 install-strip: install
 	$(STRIP) stella$(EXEEXT)
@@ -180,7 +192,13 @@ uninstall:
 	rm -f  "$(DESTDIR)$(BINDIR)/stella$(EXEEXT)"
 	rm -rf "$(DESTDIR)$(DOCDIR)/"
 	rm -f  "$(DESTDIR)$(DATADIR)/applications/stella.desktop"
-	rm -f  "$(DESTDIR)$(DATADIR)/icons/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/16x16/apps/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/22x22/apps/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/24x24/apps/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/32x32/apps/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/48x48/apps/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/64x64/apps/stella.png"
+	rm -f  "$(DESTDIR)$(DATADIR)/icons/hicolor/128x128/apps/stella.png"
 
 # Special rule for M6502.ins, generated from m4 (there's probably a better way to do this ...)
 src/emucore/M6502.ins: src/emucore/M6502.m4

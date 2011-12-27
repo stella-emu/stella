@@ -795,7 +795,7 @@ void FrameBuffer::setWindowTitle(const string& title)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::setWindowIcon()
 {
-#ifndef MAC_OSX
+#if !defined(BSPF_MAC_OSX) && !defined(BSPF_UNIX)
   #include "stella.xpm"   // The Stella icon
 
   // Set the window icon
