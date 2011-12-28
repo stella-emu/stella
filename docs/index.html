@@ -229,7 +229,8 @@
 
   <p>
   Stella is a freely distributed multi-platform Atari 2600 VCS emulator; originally
-  developed for Linux by Bradford W. Mott.  Stella allows you to enjoy all of
+  developed for Linux by Bradford W. Mott, it is now maintained by Stephen Anthony.
+  Stella allows you to enjoy all of
   your favorite 2600 games once again by emulating the 2600's hardware with
   software.  Stella is written in C++, which allows it to be ported to other
   operating systems and architectures.  Since its original release Stella has
@@ -246,15 +247,15 @@
     <li>High speed emulation using optimized C++ code</li>
     <li>Supports high quality sound emulation using code derived from Ron Fries'
       TIA Sound Emulation library, including stereo sound support</li>
-    <li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard
-      or joysticks</li>
+    <li>Emulates the Atari 2600 Joystick Controllers using your computer's keyboard,
+      joysticks or mouse</li>
     <li>Emulates the Atari 2600 Keyboard Controllers using your computer's keyboard</li>
     <li>Emulates the Atari 2600 Paddle Controllers using your computer's mouse, keyboard
       or joysticks</li>
-    <li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard
-      or joysticks</li>
-    <li>Emulates the CBS BoosterGrip Controller using your computer's keyboard or
-      joysticks</li>
+    <li>Emulates the Atari 2600 Driving Controllers using your computer's keyboard,
+      joysticks or mouse</li>
+    <li>Emulates the CBS BoosterGrip Controller using your computer's keyboard,
+      joysticks or mouse</li>
     <li>Emulates the Sega Genesis Controller using your computer's keyboard or
       joysticks</li>
     <li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
@@ -339,7 +340,7 @@
     <li>MacOSX 10.4 (Tiger) or above</li>
     <li>PPC G4 or Intel processor, 500MHz or above</li>
     <li>OpenGL capable video card; software rendering mode is still available,
-      but as of MacOSX 10.4 is substandard compared to OpenGL</li>
+      but as of MacOSX 10.4 is substandard (and untested) compared to OpenGL</li>
     <li>Xcode 3.2 is required to compile the Stella source code (SDL 1.2.14 also
       required to compile the 64-bit version)</li>
     <li>The 64-bit version requires at minimum Snow Leopard (10.6) and Intel CPU/architecture</li>
@@ -1900,7 +1901,7 @@
       <td><pre>-mcontrol &lt;auto|XY&gt;</pre></td>
       <td>Enable using the mouse axes for various controllers automatically (paddle, driving, etc),
         or specifically use each axis for a particular paddle.  In the latter case, XY indicates
-        how to use the X/Y axis (ie, 02 is paddle0/paddle2, etc).</td>
+        how to use the X/Y axis (ie, 02 is paddle0/paddle2).</td>
     </tr>
 
     <tr>
@@ -2382,7 +2383,7 @@
     </tr>
   </table>
   <br>
-  <a name="ConfigFiles"></a>
+  <a name="ConfigPaths"></a>
   <p><b>Config Paths</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2642,7 +2643,8 @@
   <a href="http://2600-daptor.com">2600-adaptor</a> devices.</p>
 
   <p>Stella can use up to <b>two</b> adaptors; any extra ones are ignored.
-  Stelladaptor devices will be automatically detected and configured.  Devices
+  Stelladaptor devices will be automatically detected and configured.  Stelladaptor
+  devices must be plugged in before starting the application; actual controllers
   can be plugged/unplugged while the emulator is running, although you will need
   to restart the game currently being emulated.</p>
 
@@ -2906,7 +2908,7 @@ Ms Pac-Man (Stella extended codes):
 
   <p>The name of the cheat database file is configurable through the
   '<i>-cheatfile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigFiles">Config Files</a></b>).  If the
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).  If the
   path for this file hasn't been set, the default filename will depend on the
   version of Stella, as follows:</p>
 
@@ -3198,7 +3200,7 @@ Ms Pac-Man (Stella extended codes):
 -->
   <p>The name of the properties file is configurable through the
   '<i>-propsfile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigFiles">Config Files</a></b>).  If the
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).  If the
   path for this file hasn't been set, the default filename will depend on the
   version of Stella, as follows:</p>
 
@@ -3263,7 +3265,7 @@ Ms Pac-Man (Stella extended codes):
 
   <p>The name of the palette file is configurable through the
   '<i>-palettefile</i>' commandline argument and within the application itself
-  (see <b>Advanced Configuration - <a href="#ConfigFiles">Config Files</a></b>).  If the
+  (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).  If the
   path for this file hasn't been set, the default filename will depend on the
   version of Stella, as follows:</p>
 
