@@ -117,7 +117,7 @@ void Driving::update()
 void Driving::setMouseControl(
     MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
 {
-  // In 'automatic' mode, both axes on the mouse map to a single normal joystick
+  // In 'automatic' mode, only the X-axis is used
   if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
   {
     myControlID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
