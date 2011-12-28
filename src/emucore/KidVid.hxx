@@ -97,11 +97,11 @@ class KidVid : public Controller
     // Is the tape currently 'busy' / in use?
     bool myTapeBusy;
 
-    // TODO - document the following
     uInt32 myFilePointer, mySongCounter;
     bool myBeep, mySharedData;
     uInt8 mySampleByte;
-    uInt32 myGame, myTape, myIdx, myBlock, myBlockIdx;
+    uInt32 myGame, myTape;
+    uInt32 myIdx, myBlock, myBlockIdx;
 
     // Number of blocks and data on tape
     static const uInt8 ourKVBlocks[6];
