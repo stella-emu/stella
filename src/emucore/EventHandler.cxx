@@ -63,6 +63,7 @@ EventHandler::EventHandler(OSystem* osystem)
     myAllowAllDirectionsFlag(false),
     myFryingFlag(false),
     mySkipMouseMotion(true),
+    myJoysticks(NULL),
     myNumJoysticks(0)
 {
   // Create the event object which will be used for this handler
