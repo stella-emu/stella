@@ -281,7 +281,8 @@ void Settings::validate()
   s = getString("mcontrol");
   if(s != "auto")
   {
-    if(s.length() != 2 || s[0] < '0' || s[0] > '9' || s[1] < '0' || s[1] > '9')
+    // Note: these constants are from Controller::MouseAxisType enum
+    if(s.length() != 2 || s[0] < '0' || s[0] > '5' || s[1] < '0' || s[1] > '5')
       setInternal("mcontrol", "auto");
   }
 
