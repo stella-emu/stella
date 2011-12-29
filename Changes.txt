@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.4.1 to 3.5: (December 31, 2011)
+3.4.1 to 3.5: (December 29, 2011)
 
   * Stella is now DonationWare!  Please see the DonationWare link on the
     main webpage for more information.
