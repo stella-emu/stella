@@ -27,26 +27,16 @@
 #include "Settings.hxx"
 
 #include "FrameBuffer.hxx"
+#include "FrameBufferSoft.hxx"
 #ifdef DISPLAY_OPENGL
   #include "FrameBufferGL.hxx"
 #endif
 
-#if defined(GP2X)
-  #include "FrameBufferGP2X.hxx"
-#elif defined (_WIN32_WCE)
-  #include "FrameBufferWinCE.hxx"
-#else
-  #include "FrameBufferSoft.hxx"
-#endif
-
 #include "Sound.hxx"
-#include "SoundNull.hxx"
 #ifdef SOUND_SUPPORT
-  #ifndef _WIN32_WCE
-    #include "SoundSDL.hxx"
-  #else
-    #include "SoundWinCE.hxx"
-  #endif
+  #include "SoundSDL.hxx"
+#else
+  #include "SoundNull.hxx"
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -67,15 +57,7 @@ FrameBuffer* MediaFactory::createVideo(OSystem* osystem)
   // If OpenGL failed, or if it wasn't requested, create the appropriate
   // software framebuffer
   if(!fb)
-  {
-   #if defined (GP2X)
-    fb = new FrameBufferGP2X(osystem);
-   #elif defined (_WIN32_WCE)
-    fb = new FrameBufferWinCE(osystem);
-   #else
     fb = new FrameBufferSoft(osystem);
-   #endif
-  }
 
   // This should never happen
   assert(fb != NULL);
@@ -89,11 +71,7 @@ Sound* MediaFactory::createAudio(OSystem* osystem)
   Sound* sound = (Sound*) NULL;
 
 #ifdef SOUND_SUPPORT
-  #if defined (_WIN32_WCE)
-    sound = new SoundWinCE(osystem);
-  #else
-    sound = new SoundSDL(osystem);
-  #endif
+  sound = new SoundSDL(osystem);
 #else
   sound = new SoundNull(osystem);
 #endif

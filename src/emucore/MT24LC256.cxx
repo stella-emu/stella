@@ -134,7 +134,7 @@ void MT24LC256::update()
   (jpee_mdat && jpee_sdat && jpee_mclk && (jpee_data_start(),1), jpee_mdat = 0))
 
   // These pins have to be updated at the same time
-  // However, there's no guarantee that the writeSDA() and writeSDL()
+  // However, there's no guarantee that the writeSDA() and writeSCL()
   // methods will be called at the same time or in the correct order, so
   // we only do the write when they have the same 'timestamp'
   if(myCyclesWhenSDASet == myCyclesWhenSCLSet)

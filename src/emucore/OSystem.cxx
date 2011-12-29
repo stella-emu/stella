@@ -446,7 +446,7 @@ FBInitStatus OSystem::createFrameBuffer()
   // Otherwise, pass the error to the parent
 fallback:
   if(fbstatus == kFailNotSupported && myFrameBuffer &&
-     myFrameBuffer->type() == kGLBuffer)
+     myFrameBuffer->type() == kDoubleBuffer)
   {
     logMessage("ERROR: OpenGL mode failed, fallback to software\n", 0);
     delete myFrameBuffer; myFrameBuffer = NULL;

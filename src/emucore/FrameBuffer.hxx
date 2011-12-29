@@ -41,7 +41,7 @@ namespace GUI {
 // Different types of framebuffer derived objects
 enum BufferType {
   kSoftBuffer,
-  kGLBuffer
+  kDoubleBuffer
 };
 
 // Return values for initialization of framebuffer window

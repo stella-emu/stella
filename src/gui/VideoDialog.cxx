@@ -295,7 +295,7 @@ VideoDialog::~VideoDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::loadConfig()
 {
-  bool gl = (instance().frameBuffer().type() == kGLBuffer);
+  bool gl = (instance().frameBuffer().type() == kDoubleBuffer);
 
   // Renderer settings
   myRenderer->setLabel(gl ? "OpenGL" : "Software");

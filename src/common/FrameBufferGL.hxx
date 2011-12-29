@@ -116,7 +116,7 @@ class FrameBufferGL : public FrameBuffer
     /**
       This method is called to query the type of the FrameBuffer.
     */
-    BufferType type() const { return kGLBuffer; }
+    BufferType type() const { return kDoubleBuffer; }
 
     /**
       This method is called to get the specified scanline data.

@@ -255,7 +255,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->menu().draw(myMsg.enabled && type() == kGLBuffer);
+      myOSystem->menu().draw(myMsg.enabled && type() == kDoubleBuffer);
       break;  // S_MENU
     }
 
@@ -263,7 +263,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->commandMenu().draw(myMsg.enabled && type() == kGLBuffer);
+      myOSystem->commandMenu().draw(myMsg.enabled && type() == kDoubleBuffer);
       break;  // S_CMDMENU
     }
 
@@ -271,7 +271,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->launcher().draw(myMsg.enabled && type() == kGLBuffer);
+      myOSystem->launcher().draw(myMsg.enabled && type() == kDoubleBuffer);
       break;  // S_LAUNCHER
     }
 
@@ -280,7 +280,7 @@ void FrameBuffer::update()
     {
       // When onscreen messages are enabled in double-buffer mode,
       // a full redraw is required
-      myOSystem->debugger().draw(myMsg.enabled && type() == kGLBuffer);
+      myOSystem->debugger().draw(myMsg.enabled && type() == kDoubleBuffer);
       break;  // S_DEBUGGER
     }
 #endif
@@ -448,7 +448,7 @@ void FrameBuffer::refresh()
   // This method is in essence a FULL refresh, putting all rendering
   // buffers in a known, fully redrawn state
 
-  bool doubleBuffered = (type() == kGLBuffer);
+  bool doubleBuffered = (type() == kDoubleBuffer);
   switch(myOSystem->eventHandler().state())
   {
     case EventHandler::S_EMULATE:
