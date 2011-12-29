@@ -14,6 +14,9 @@
 
 3.4.1 to 3.5: (December 31, 2011)
 
+  * Stella is now DonationWare!  Please see the DonationWare link on the
+    main webpage for more information.
+
   * Added several improvements to the joystick management code.  Joystick
     event mapping is now saved per device, meaning that if you map events
     to a certain joystick device, remove the device and then later insert
