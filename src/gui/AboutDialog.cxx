@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2011 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -32,7 +32,8 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
                          const GUI::Font& font)
   : Dialog(osystem, parent, 0, 0, 0, 0),
     myPage(1),
-    myNumPages(5)
+    myNumPages(4),
+    myLinesPerPage(12)
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
@@ -44,7 +45,7 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 52 * fontWidth + 8;
-  _h = 11 * lineHeight + 20;
+  _h = 14 * lineHeight + 20;
 
   // Add Previous, Next and Close buttons
   xpos = 10;  ypos = _h - buttonHeight - 10;
@@ -73,10 +74,11 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
   myTitle->setTextColor(kTextColorEm);
 
   xpos = 10;  ypos += lineHeight + 4;
-  for(int i = 0; i < kLINES_PER_PAGE; i++)
+  for(int i = 0; i < myLinesPerPage; i++)
   {
-    myDesc[i] = new StaticTextWidget(this, font, xpos, ypos, _w - 20,
-                                     fontHeight, "", kTextAlignLeft);
+    myDesc.push_back(new StaticTextWidget(this, font, xpos, ypos, _w - 20,
+                                          fontHeight, "", kTextAlignLeft));
+    myDescStr.push_back("");
     ypos += fontHeight;
   }
 
@@ -86,6 +88,8 @@ AboutDialog::AboutDialog(OSystem* osystem, DialogContainer* parent,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AboutDialog::~AboutDialog()
 {
+  myDesc.clear();
+  myDescStr.clear();
 }
 
 // The following commands can be put at the start of a line (all subject to change):
@@ -112,11 +116,14 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT(string("\\C\\c2Features: ") + instance().features());
       ADD_ATEXT(string("\\C\\c2") + instance().buildInfo());
       ADD_ALINE;
-      ADD_ATEXT("\\CCopyright (C) 1995-2011 The Stella Team");
-      ADD_ATEXT("\\Chttp://stella.sourceforge.net");
+      ADD_ATEXT("\\CCopyright (C) 1995-2012 The Stella Team");
+      ADD_ATEXT("\\C(http://stella.sf.net)");
       ADD_ALINE;
-      ADD_ATEXT("Stella is free software released under the GNU GPL");
-      ADD_ATEXT("See manual for further details");
+      ADD_ATEXT("\\CStella is now DonationWare!");
+      ADD_ATEXT("\\C(http://stella.sf.net/donations.php)");
+      ADD_ALINE;
+      ADD_ATEXT("\\CStella is free software released under the GNU GPL");
+      ADD_ATEXT("\\CSee manual for further details");
       break;
 
     case 2:
@@ -125,24 +132,16 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\L\\c2""    Original author");
       ADD_ATEXT("\\L\\c0""  Stephen Anthony");
       ADD_ATEXT("\\L\\c2""    Lead developer, Linux/MacOS X/Win32 maintainer");
-      ADD_ATEXT("\\L\\c0""  Mark Grebe");
-      ADD_ATEXT("\\L\\c2""    Original author for MacOS X port");
+      ADD_ATEXT("\\L\\c0""  Eckhard Stolberg");
+      ADD_ATEXT("\\L\\c2""    Emulation core development");
       ADD_ATEXT("\\L\\c0""  Brian Watson");
       ADD_ATEXT("\\L\\c2""    Emulation core enhancement, debugger support");
       break;
 
     case 3:
-      title = "The Stella Team";
-      ADD_ATEXT("\\L\\c0""  Eckhard Stolberg");
-      ADD_ATEXT("\\L\\c2""    Emulation core development");
-      ADD_ATEXT("\\L\\c0""  Kostas Nakos");
-      ADD_ATEXT("\\L\\c2""    Author/maintainer for WinCE port");
-      break;
-
-    case 4:
       title = "Contributors";
-      ADD_ATEXT("\\L\\c0""  See Stella manual for contribution details");
-      ADD_ATEXT("\\L\\c0""  and for many other people not listed here");
+      ADD_ATEXT("\\L\\c0""  See http://stella.sf.net/credits.php for");
+      ADD_ATEXT("\\L\\c0""  people that have contributed to Stella");
       ADD_ALINE;
       ADD_ATEXT("\\L\\c0""  Thanks to the ScummVM project for the GUI code");
       ADD_ALINE;
@@ -150,7 +149,7 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
       ADD_ATEXT("\\L\\c0""  Atari Team for the CRT Simulation effects");
       break;
 
-    case 5:
+    case 4:
       title = "Cast of thousands";
       ADD_ATEXT("\\L\\c0""Special thanks to AtariAge for introducing the");
       ADD_ATEXT("\\L\\c0""Atari 2600 to a whole new generation");
@@ -170,10 +169,10 @@ void AboutDialog::updateStrings(int page, int lines, string& title)
 void AboutDialog::displayInfo()
 {
   string titleStr;
-  updateStrings(myPage, kLINES_PER_PAGE, titleStr);
+  updateStrings(myPage, myLinesPerPage, titleStr);
 
   myTitle->setLabel(titleStr);
-  for(int i = 0; i < kLINES_PER_PAGE; i++)
+  for(int i = 0; i < myLinesPerPage; i++)
   {
     const char* str = myDescStr[i].c_str();
     TextAlignment align = kTextAlignCenter;

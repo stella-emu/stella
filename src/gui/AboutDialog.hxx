@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2011 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -22,6 +22,8 @@
 
 #ifndef ABOUT_DIALOG_HXX
 #define ABOUT_DIALOG_HXX
+
+#include "Array.hxx"
 
 class OSystem;
 class DialogContainer;
@@ -38,16 +40,16 @@ class AboutDialog : public Dialog
     ~AboutDialog();
 
   protected:
-    enum { kLINES_PER_PAGE = 9 };
     ButtonWidget* myNextButton;
     ButtonWidget* myPrevButton;
 
     StaticTextWidget* myTitle;
-    StaticTextWidget* myDesc[kLINES_PER_PAGE];
-    string myDescStr[kLINES_PER_PAGE];
+    Common::Array<StaticTextWidget*> myDesc;
+    Common::Array<string> myDescStr;
 
     int myPage;
     int myNumPages;
+    int myLinesPerPage;
 
   private:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);

@@ -38,7 +38,6 @@ SoundSDL::SoundSDL(OSystem* osystem)
     myIsEnabled(false),
     myIsInitializedFlag(false),
     myLastRegisterSetCycle(0),
-    myDisplayFrameRate(60.0),
     myNumChannels(0),
     myFragmentSizeLogBase2(0),
     myIsMuted(true),
@@ -79,6 +78,11 @@ SoundSDL::SoundSDL(OSystem* osystem)
     SDL_CloseAudio();
     return;
   }
+
+  // Pre-compute fragment-related variables as much as possible
+  myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
+  myFragmentSizeLogDiv1 = myFragmentSizeLogBase2 / 60.0;
+  myFragmentSizeLogDiv2 = (myFragmentSizeLogBase2 - 1) / 60.0;
 
   myIsInitializedFlag = true;
   SDL_PauseAudio(1);
@@ -124,8 +128,6 @@ void SoundSDL::open()
   myRegWriteQueue.clear();
   myTIASound.reset();
 
-  myFragmentSizeLogBase2 = log((double)myHardwareSpec.samples) / log(2.0);
-
   // Now initialize the TIASound object which will actually generate sound
   int tiafreq = myOSystem->settings().getInt("tiafreq");
   myTIASound.outputFrequency(myHardwareSpec.freq);
@@ -164,6 +166,8 @@ void SoundSDL::open()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::close()
 {
+  myTIASound.reset();
+  myIsEnabled = false;
   mute(true);
   myOSystem->logMessage("SoundSDL::close\n", 2);
 }
@@ -247,8 +251,10 @@ void SoundSDL::setChannels(uInt32 channels)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::setFrameRate(float framerate)
 {
+  // Recalculate since frame rate has changed
   // FIXME - should we clear out the queue or adjust the values in it?
-  myDisplayFrameRate = framerate;
+  myFragmentSizeLogDiv1 = myFragmentSizeLogBase2 / framerate;
+  myFragmentSizeLogDiv2 = (myFragmentSizeLogBase2 - 1) / framerate;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -280,18 +286,14 @@ void SoundSDL::set(uInt16 addr, uInt8 value, Int32 cycle)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::processFragment(uInt8* stream, Int32 length)
 {
-  if(!myIsEnabled)
-    return;
-
   uInt32 channels = myHardwareSpec.channels;
   length = length / channels;
 
   // If there are excessive items on the queue then we'll remove some
-  if(myRegWriteQueue.duration() > 
-      (myFragmentSizeLogBase2 / myDisplayFrameRate))
+  if(myRegWriteQueue.duration() > myFragmentSizeLogDiv1)
   {
     double removed = 0.0;
-    while(removed < ((myFragmentSizeLogBase2 - 1) / myDisplayFrameRate))
+    while(removed < myFragmentSizeLogDiv2)
     {
       RegWrite& info = myRegWriteQueue.front();
       removed += info.delta;
@@ -371,7 +373,8 @@ void SoundSDL::processFragment(uInt8* stream, Int32 length)
 void SoundSDL::callback(void* udata, uInt8* stream, int len)
 {
   SoundSDL* sound = (SoundSDL*)udata;
-  sound->processFragment(stream, (Int32)len);
+  if(sound->myIsEnabled)
+    sound->processFragment(stream, (Int32)len);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

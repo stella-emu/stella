@@ -8,7 +8,7 @@
 //  SS  SS   tt   ee      ll   ll  aa  aa
 //   SSSS     ttt  eeeee llll llll  aaaaa
 //
-// Copyright (c) 1995-2011 by Bradford W. Mott, Stephen Anthony
+// Copyright (c) 1995-2012 by Bradford W. Mott, Stephen Anthony
 // and the Stella Team
 //
 // See the file "License.txt" for information on usage and redistribution of
@@ -256,14 +256,17 @@ class SoundSDL : public Sound
     // Indicates the cycle when a sound register was last set
     Int32 myLastRegisterSetCycle;
 
-    // Indicates the base framerate depending on if the ROM is NTSC or PAL
-    float myDisplayFrameRate;
-
     // Indicates the number of channels (mono or stereo)
     uInt32 myNumChannels;
 
     // Log base 2 of the selected fragment size
     double myFragmentSizeLogBase2;
+
+    // The myFragmentSizeLogBase2 variable is used in only two places,
+    // both of which involve an expensive division in the sound
+    // processing callback
+    // These are pre-computed to speed up the callback as much as possible
+    double myFragmentSizeLogDiv1, myFragmentSizeLogDiv2;
 
     // Indicates if the sound is currently muted
     bool myIsMuted;
