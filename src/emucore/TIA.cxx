@@ -62,54 +62,8 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   // Make sure all TIA bits are enabled
   enableBits(true);
 
-  for(uInt16 x = 0; x < 2; ++x)
-  {
-    for(uInt16 enabled = 0; enabled < 256; ++enabled)
-    {
-      if(enabled & PriorityBit)
-      {
-        // Priority from highest to lowest:
-        //   PF/BL => P0/M0 => P1/M1 => BK
-        uInt8 color = _BK;
-
-        if((enabled & M1Bit) != 0)
-          color = _M1;
-        if((enabled & P1Bit) != 0)
-          color = _P1;
-        if((enabled & M0Bit) != 0)
-          color = _M0;
-        if((enabled & P0Bit) != 0)
-          color = _P0;
-        if((enabled & BLBit) != 0)
-          color = _BL;
-        if((enabled & PFBit) != 0)
-          color = _PF;  // NOTE: Playfield has priority so ScoreBit isn't used
-
-        myPriorityEncoder[x][enabled] = color;
-      }
-      else
-      {
-        // Priority from highest to lowest:
-        //   P0/M0 => P1/M1 => PF/BL => BK
-        uInt8 color = _BK;
-
-        if((enabled & BLBit) != 0)
-          color = _BL;
-        if((enabled & PFBit) != 0)
-          color = (enabled & ScoreBit) ? ((x == 0) ? _P0 : _P1) : _PF;
-        if((enabled & M1Bit) != 0)
-          color = _M1;
-        if((enabled & P1Bit) != 0)
-          color = _P1;
-        if((enabled & M0Bit) != 0)
-          color = _M0;
-        if((enabled & P0Bit) != 0)
-          color = _P0;
-
-        myPriorityEncoder[x][enabled] = color;
-      }
-    }
-  }
+  // Turn off debug colours (this also sets up the PriorityEncoder)
+  toggleFixedColors(0);
 
   // Compute all of the mask tables
   TIATables::computeAllTables();
@@ -137,7 +91,6 @@ void TIA::reset()
   myAllowHMOVEBlanks = true;
 
   // Some default values for the registers
-  myColorPtr = myColor;
   myVSYNC = myVBLANK = 0;
   myNUSIZ0 = myNUSIZ1 = 0;
   myColor[_P0] = myColor[_P1] = myColor[_PF] = myColor[_BK] = 0;
@@ -221,6 +174,7 @@ void TIA::reset()
   myCurrentPFMask = TIATables::PFMask[0];
 
   // Recalculate the size of the display
+  toggleFixedColors(0);
   frameReset();
 }
 
@@ -515,8 +469,8 @@ bool TIA::load(Serializer& in)
 
     // Reset TIA bits to be on
     enableBits(true);
+    toggleFixedColors(0);
     myAllowHMOVEBlanks = true;
-    myColorPtr = myColor;
   }
   catch(const char* msg)
   {
@@ -805,6 +759,58 @@ bool TIA::toggleFixedColors(uInt8 mode)
             (myColorPtr == myColor ? true : false);
   if(on)  myColorPtr = myFixedColor;
   else    myColorPtr = myColor;
+
+  // Set PriorityEncoder
+  // This needs to be done here, since toggling debug colours also changes
+  // how colours are interpreted in PF 'score' mode
+  for(uInt16 x = 0; x < 2; ++x)
+  {
+    for(uInt16 enabled = 0; enabled < 256; ++enabled)
+    {
+      if(enabled & PriorityBit)
+      {
+        // Priority from highest to lowest:
+        //   PF/BL => P0/M0 => P1/M1 => BK
+        uInt8 color = _BK;
+
+        if((enabled & M1Bit) != 0)
+          color = _M1;
+        if((enabled & P1Bit) != 0)
+          color = _P1;
+        if((enabled & M0Bit) != 0)
+          color = _M0;
+        if((enabled & P0Bit) != 0)
+          color = _P0;
+        if((enabled & BLBit) != 0)
+          color = _BL;
+        if((enabled & PFBit) != 0)
+          color = _PF;  // NOTE: Playfield has priority so ScoreBit isn't used
+
+        myPriorityEncoder[x][enabled] = color;
+      }
+      else
+      {
+        // Priority from highest to lowest:
+        //   P0/M0 => P1/M1 => PF/BL => BK
+        uInt8 color = _BK;
+
+        if((enabled & BLBit) != 0)
+          color = _BL;
+        if((enabled & PFBit) != 0)
+          color = (!on && (enabled & ScoreBit)) ? ((x == 0) ? _P0 : _P1) : _PF;
+        if((enabled & M1Bit) != 0)
+          color = _M1;
+        if((enabled & P1Bit) != 0)
+          color = _P1;
+        if((enabled & M0Bit) != 0)
+          color = _M0;
+        if((enabled & P0Bit) != 0)
+          color = _P0;
+
+        myPriorityEncoder[x][enabled] = color;
+      }
+    }
+  }
 
   return on;
 }
