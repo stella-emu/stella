@@ -116,10 +116,18 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   CREATE_IO_REGS("SWCHA(R):", mySWCHAReadBits, 0);
   mySWCHAReadBits->setEditable(false);
 
-  // SWCHB bits in 'peek' mode
+  // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
-  CREATE_IO_REGS("SWCHB:", mySWCHBBits, 0);
-  mySWCHBBits->setEditable(false);
+  CREATE_IO_REGS("SWCHB(W):", mySWCHBWriteBits, kSWCHBBitsID);
+
+  // SWBCNT bits
+  xpos = 10;  ypos += lineHeight + 5;
+  CREATE_IO_REGS("SWBCNT:", mySWBCNTBits, kSWBCNTBitsID);
+
+  // SWCHB bits in 'peek' mode
+  xpos = 10;  ypos += lineHeight + 5;
+  CREATE_IO_REGS("SWCHB(R):", mySWCHBReadBits, 0);
+  mySWCHBReadBits->setEditable(false);
 
   // Timer registers (R/W)
   const char* writeNames[] = { "TIM1T:", "TIM8T:", "TIM64T:", "TIM1024T:" };
@@ -231,8 +239,14 @@ void RiotWidget::loadConfig()
   // Update the SWCHA register booleans (peek mode)
   IO_REGS_UPDATE(mySWCHAReadBits, swchaReadBits);
 
-  // Update the SWCHB register booleans
-  IO_REGS_UPDATE(mySWCHBBits, swchbBits);
+  // Update the SWCHB register booleans (poke mode)
+  IO_REGS_UPDATE(mySWCHBWriteBits, swchbWriteBits);
+
+  // Update the SWBCNT register booleans
+  IO_REGS_UPDATE(mySWBCNTBits, swbcntBits);
+
+  // Update the SWCHB register booleans (peek mode)
+  IO_REGS_UPDATE(mySWCHBReadBits, swchbReadBits);
 
   // Update timer write registers
   alist.clear();  vlist.clear();  changed.clear();

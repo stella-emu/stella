@@ -29,11 +29,13 @@ class RiotDebug;
 class RiotState : public DebuggerState
 {
   public:
-    uInt8 SWCHA_R, SWCHA_W, SWACNT, SWCHB;
+    uInt8 SWCHA_R, SWCHA_W, SWACNT, SWCHB_R, SWCHB_W, SWBCNT;
     BoolArray swchaReadBits;
     BoolArray swchaWriteBits;
     BoolArray swacntBits;
-    BoolArray swchbBits;
+    BoolArray swchbReadBits;
+    BoolArray swchbWriteBits;
+    BoolArray swbcntBits;
 
     uInt8 TIM1T, TIM8T, TIM64T, TIM1024T, INTIM, TIMINT;
     Int32 TIMCLKS;
@@ -57,6 +59,7 @@ class RiotDebug : public DebuggerSystem
     uInt8 swcha(int newVal = -1);
     uInt8 swacnt(int newVal = -1);
     uInt8 swchb(int newVal = -1);
+    uInt8 swbcnt(int newVal = -1);
 
     /* Timer registers & associated clock */
     uInt8 tim1T(int newVal = -1);

@@ -39,11 +39,15 @@ const DebuggerState& RiotDebug::getState()
   myState.SWCHA_R = swcha();
   myState.SWCHA_W = mySystem.m6532().myOutA;
   myState.SWACNT  = swacnt();
-  myState.SWCHB   = swchb();
+  myState.SWCHB_R = swchb();
+  myState.SWCHB_W = mySystem.m6532().myOutB;
+  myState.SWBCNT  = swbcnt();
   Debugger::set_bits(myState.SWCHA_R, myState.swchaReadBits);
   Debugger::set_bits(myState.SWCHA_W, myState.swchaWriteBits);
   Debugger::set_bits(myState.SWACNT, myState.swacntBits);
-  Debugger::set_bits(myState.SWCHB, myState.swchbBits);
+  Debugger::set_bits(myState.SWCHB_R, myState.swchbReadBits);
+  Debugger::set_bits(myState.SWCHB_W, myState.swchbWriteBits);
+  Debugger::set_bits(myState.SWBCNT, myState.swbcntBits);
 
   // Timer registers
   myState.TIM1T    = tim1T();
@@ -78,11 +82,15 @@ void RiotDebug::saveOldState()
   myOldState.SWCHA_R = swcha();
   myOldState.SWCHA_W = mySystem.m6532().myOutA;
   myOldState.SWACNT  = swacnt();
-  myOldState.SWCHB   = swchb();
+  myOldState.SWCHB_R = swchb();
+  myOldState.SWCHB_W = mySystem.m6532().myOutB;
+  myOldState.SWBCNT  = swbcnt();
   Debugger::set_bits(myOldState.SWCHA_R, myOldState.swchaReadBits);
   Debugger::set_bits(myOldState.SWCHA_W, myOldState.swchaWriteBits);
   Debugger::set_bits(myOldState.SWACNT, myOldState.swacntBits);
-  Debugger::set_bits(myOldState.SWCHB, myOldState.swchbBits);
+  Debugger::set_bits(myOldState.SWCHB_R, myOldState.swchbReadBits);
+  Debugger::set_bits(myOldState.SWCHB_W, myOldState.swchbWriteBits);
+  Debugger::set_bits(myOldState.SWBCNT, myOldState.swbcntBits);
 
   // Timer registers
   myOldState.TIM1T    = tim1T();
@@ -130,6 +138,15 @@ uInt8 RiotDebug::swacnt(int newVal)
     mySystem.poke(0x281, newVal);
 
   return mySystem.peek(0x281);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 RiotDebug::swbcnt(int newVal)
+{
+  if(newVal > -1)
+    mySystem.poke(0x283, newVal);
+
+  return mySystem.peek(0x283);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -326,8 +343,12 @@ string RiotDebug::toString()
       << myDebugger.invIfChanged(state.SWCHA_W, oldstate.SWCHA_W) << " "
       << myDebugger.valueToString(0x281) + "/SWACNT="
       << myDebugger.invIfChanged(state.SWACNT, oldstate.SWACNT) << " "
-      << myDebugger.valueToString(0x282) + "/SWCHB="
-      << myDebugger.invIfChanged(state.SWCHB, oldstate.SWCHB) << " "
+      << myDebugger.valueToString(0x282) + "/SWCHB(R)="
+      << myDebugger.invIfChanged(state.SWCHB_R, oldstate.SWCHB_R) << " "
+      << myDebugger.valueToString(0x282) + "/SWCHB(W)="
+      << myDebugger.invIfChanged(state.SWCHB_W, oldstate.SWCHB_W) << " "
+      << myDebugger.valueToString(0x283) + "/SWBCNT="
+      << myDebugger.invIfChanged(state.SWBCNT, oldstate.SWBCNT) << " "
       << endl
 
       // These are squirrely: some symbol files will define these as

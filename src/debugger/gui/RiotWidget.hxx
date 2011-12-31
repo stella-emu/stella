@@ -48,7 +48,9 @@ class RiotWidget : public Widget, public CommandSender
     ToggleBitWidget* mySWCHAReadBits;
     ToggleBitWidget* mySWCHAWriteBits;
     ToggleBitWidget* mySWACNTBits;
-    ToggleBitWidget* mySWCHBBits;
+    ToggleBitWidget* mySWCHBReadBits;
+    ToggleBitWidget* mySWCHBWriteBits;
+    ToggleBitWidget* mySWBCNTBits;
 
     DataGridWidget* myTimWrite;
     DataGridWidget* myTimRead;
@@ -63,8 +65,8 @@ class RiotWidget : public Widget, public CommandSender
     // ID's for the various widgets
     // We need ID's, since there are more than one of several types of widgets
     enum {
-      kTim1TID, kTim8TID, kTim64TID, kTim1024TID,
-      kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kTimWriteID,
+      kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
+      kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
       kP0PinsID, kP1PinsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID
     };
