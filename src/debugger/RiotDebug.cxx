@@ -128,6 +128,9 @@ uInt8 RiotDebug::swcha(int newVal)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotDebug::swchb(int newVal)
 {
+  if(newVal > -1)
+    mySystem.poke(0x282, newVal);
+
   return mySystem.peek(0x282);
 }
 

@@ -334,6 +334,14 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
           value = Debugger::get_bits((BoolArray&)mySWACNTBits->getState());
           riot.swacnt(value & 0xff);
           break;
+        case kSWCHBBitsID:
+          value = Debugger::get_bits((BoolArray&)mySWCHBWriteBits->getState());
+          riot.swchb(value & 0xff);
+          break;
+        case kSWBCNTBitsID:
+          value = Debugger::get_bits((BoolArray&)mySWBCNTBits->getState());
+          riot.swbcnt(value & 0xff);
+          break;
       }
       break;
 
