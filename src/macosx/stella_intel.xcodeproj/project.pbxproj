@@ -292,6 +292,12 @@
 		DC8078E90B4BD697005E9305 /* FileSnapDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */; };
 		DC8078EA0B4BD697005E9305 /* UIDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8078E60B4BD697005E9305 /* UIDialog.cxx */; };
 		DC8078EB0B4BD697005E9305 /* UIDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8078E70B4BD697005E9305 /* UIDialog.hxx */; };
+		DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA714B25DE7006440EE /* CartCM.cxx */; };
+		DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BA814B25DE7006440EE /* CartCM.hxx */; };
+		DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BA914B25DE7006440EE /* CompuMate.cxx */; };
+		DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */; };
+		DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8C1BAB14B25DE7006440EE /* MindLink.cxx */; };
+		DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8C1BAC14B25DE7006440EE /* MindLink.hxx */; };
 		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
 		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
@@ -702,6 +708,12 @@
 		DC8078E50B4BD697005E9305 /* FileSnapDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FileSnapDialog.hxx; path = ../gui/FileSnapDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC8078E60B4BD697005E9305 /* UIDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = UIDialog.cxx; path = ../gui/UIDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC8078E70B4BD697005E9305 /* UIDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = UIDialog.hxx; path = ../gui/UIDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC8C1BA714B25DE7006440EE /* CartCM.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCM.cxx; path = ../emucore/CartCM.cxx; sourceTree = SOURCE_ROOT; };
+		DC8C1BA814B25DE7006440EE /* CartCM.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCM.hxx; path = ../emucore/CartCM.hxx; sourceTree = SOURCE_ROOT; };
+		DC8C1BA914B25DE7006440EE /* CompuMate.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CompuMate.cxx; path = ../emucore/CompuMate.cxx; sourceTree = SOURCE_ROOT; };
+		DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CompuMate.hxx; path = ../emucore/CompuMate.hxx; sourceTree = SOURCE_ROOT; };
+		DC8C1BAB14B25DE7006440EE /* MindLink.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = MindLink.cxx; path = ../emucore/MindLink.cxx; sourceTree = SOURCE_ROOT; };
+		DC8C1BAC14B25DE7006440EE /* MindLink.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = MindLink.hxx; path = ../emucore/MindLink.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefProps.hxx; path = ../emucore/DefProps.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Serializable.hxx; path = ../emucore/Serializable.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
@@ -1008,6 +1020,8 @@
 				2DE2DF190627AE07006BEC99 /* Cart4K.hxx */,
 				2DE2DF1A0627AE07006BEC99 /* CartAR.cxx */,
 				2DE2DF1B0627AE07006BEC99 /* CartAR.hxx */,
+				DC8C1BA714B25DE7006440EE /* CartCM.cxx */,
+				DC8C1BA814B25DE7006440EE /* CartCM.hxx */,
 				2DE2DF1C0627AE07006BEC99 /* CartCV.cxx */,
 				2DE2DF1D0627AE07006BEC99 /* CartCV.hxx */,
 				2DE2DF1E0627AE07006BEC99 /* CartDPC.cxx */,
@@ -1048,6 +1062,8 @@
 				2DDBEB7108457B7D00812C11 /* CartUA.hxx */,
 				DCA23AE70D75B22500F77B33 /* CartX07.cxx */,
 				DCA23AE80D75B22500F77B33 /* CartX07.hxx */,
+				DC8C1BA914B25DE7006440EE /* CompuMate.cxx */,
+				DC8C1BAA14B25DE7006440EE /* CompuMate.hxx */,
 				2DE2DF380627AE07006BEC99 /* Console.cxx */,
 				2DE2DF390627AE07006BEC99 /* Console.hxx */,
 				2DE2DF3A0627AE07006BEC99 /* Control.cxx */,
@@ -1079,6 +1095,8 @@
 				2DE2DF7F0627AE34006BEC99 /* MD5.hxx */,
 				2D05FF5A096E261E00A518FE /* MediaFactory.cxx */,
 				2D05FF5B096E261E00A518FE /* MediaFactory.hxx */,
+				DC8C1BAB14B25DE7006440EE /* MindLink.cxx */,
+				DC8C1BAC14B25DE7006440EE /* MindLink.hxx */,
 				DC11F78B0DB36933003B505E /* MT24LC256.cxx */,
 				DC11F78C0DB36933003B505E /* MT24LC256.hxx */,
 				DCC527CC10B9DA19005E1287 /* NullDev.cxx */,
@@ -1490,6 +1508,9 @@
 				DC6C726313CDEA0A008A5975 /* LoggerDialog.hxx in Headers */,
 				DC3EE2DB1417801800F9DA4A /* FBSurfaceGL.hxx in Headers */,
 				DC3EE2DD1417801800F9DA4A /* FBSurfaceTIA.hxx in Headers */,
+				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
+				DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */,
+				DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1752,6 +1773,9 @@
 				DC6C726213CDEA0A008A5975 /* LoggerDialog.cxx in Sources */,
 				DC3EE2DA1417801800F9DA4A /* FBSurfaceGL.cxx in Sources */,
 				DC3EE2DC1417801800F9DA4A /* FBSurfaceTIA.cxx in Sources */,
+				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
+				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
+				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
