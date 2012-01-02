@@ -34,6 +34,8 @@
 #include "Keyboard.hxx"
 #include "KidVid.hxx"
 #include "Genesis.hxx"
+#include "MindLink.hxx"
+#include "CompuMate.hxx"
 #include "M6502.hxx"
 #include "M6532.hxx"
 #include "Paddles.hxx"
@@ -664,6 +666,14 @@ void Console::setControllers(const string& rommd5)
   {
     myControllers[leftPort] = new Genesis(Controller::Left, *myEvent, *mySystem);
   }
+  else if(left == "COMPUMATE")
+  {
+    myControllers[leftPort] = new CompuMate(Controller::Left, *myEvent, *mySystem);
+  }
+  else if(left == "MINDLINK")
+  {
+    myControllers[leftPort] = new MindLink(Controller::Left, *myEvent, *mySystem);
+  }
   else
   {
     myControllers[leftPort] = new Joystick(Controller::Left, *myEvent, *mySystem);
@@ -723,13 +733,21 @@ void Console::setControllers(const string& rommd5)
     myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
                                            eepromfile);
   }
+  else if(right == "GENESIS")
+  {
+    myControllers[rightPort] = new Genesis(Controller::Right, *myEvent, *mySystem);
+  }
+  else if(right == "COMPUMATE")
+  {
+    myControllers[rightPort] = new CompuMate(Controller::Right, *myEvent, *mySystem);
+  }
   else if(right == "KIDVID")
   {
     myControllers[rightPort] = new KidVid(Controller::Right, *myEvent, *mySystem, rommd5);
   }
-  else if(right == "GENESIS")
+  else if(right == "MINDLINK")
   {
-    myControllers[rightPort] = new Genesis(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new MindLink(Controller::Right, *myEvent, *mySystem);
   }
   else
   {

@@ -119,19 +119,8 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      uInt8 value = 0x00;
-
-      Controller& port0 = myConsole.controller(Controller::Left);
-      if(port0.read(Controller::One))   value |= 0x10;
-      if(port0.read(Controller::Two))   value |= 0x20;
-      if(port0.read(Controller::Three)) value |= 0x40;
-      if(port0.read(Controller::Four))  value |= 0x80;
-
-      Controller& port1 = myConsole.controller(Controller::Right);
-      if(port1.read(Controller::One))   value |= 0x01;
-      if(port1.read(Controller::Two))   value |= 0x02;
-      if(port1.read(Controller::Three)) value |= 0x04;
-      if(port1.read(Controller::Four))  value |= 0x08;
+      uInt8 value = myConsole.controller(Controller::Left).read() |
+                    myConsole.controller(Controller::Right).read();
 
       // Each pin is high (1) by default and will only go low (0) if either
       //  (a) External device drives the pin low
@@ -231,14 +220,14 @@ bool M6532::poke(uInt16 addr, uInt8 value)
       case 0:     // SWCHA - Port A I/O Register (Joystick)
       {
         myOutA = value;
-        setPinState();
+        setPinState(true);
         break;
       }
 
       case 1:     // SWACNT - Port A Data Direction Register 
       {
         myDDRA = value;
-        setPinState();
+        setPinState(false);
         break;
       }
 
@@ -271,7 +260,7 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6532::setPinState()
+void M6532::setPinState(bool swcha)
 {
   /*
     When a bit in the DDR is set as input, +5V is placed on its output
@@ -290,12 +279,14 @@ void M6532::setPinState()
   port0.write(Controller::Two, a & 0x20);
   port0.write(Controller::Three, a & 0x40);
   port0.write(Controller::Four, a & 0x80);
+  if(swcha)  port0.controlWrite();
 
   Controller& port1 = myConsole.controller(Controller::Right);
   port1.write(Controller::One, a & 0x01);
   port1.write(Controller::Two, a & 0x02);
   port1.write(Controller::Three, a & 0x04);
   port1.write(Controller::Four, a & 0x08);
+  if(swcha)  port1.controlWrite();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

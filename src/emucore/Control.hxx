@@ -90,7 +90,7 @@ class Controller : public Serializable
     {
       BoosterGrip, Driving, Keyboard, Paddles, Joystick,
       TrackBall22, TrackBall80, AmigaMouse, AtariVox, SaveKey,
-      KidVid, Genesis
+      KidVid, Genesis, MindLink, CompuMate
     };
 
     /**
@@ -125,6 +125,19 @@ class Controller : public Serializable
     const Type type() const;
 
     /**
+      Read the entire state of all digital pins for this controller.
+
+      Note that this method must take into account the location of the
+      pin data in the bitfield, and zero the remaining data:
+
+        Left port : upper 4 bits valid, lower 4 bits zero'ed
+        Right port: lower 4 bits valid, upper 4 bits zero'ed
+
+      @return The state of all digital pins
+    */
+    virtual uInt8 read();
+
+    /**
       Read the value of the specified digital pin for this controller.
 
       @param pin The pin of the controller jack to read
@@ -152,10 +165,17 @@ class Controller : public Serializable
     virtual void write(DigitalPin pin, bool value) { };
 
     /**
+      Called after *all* digital pins have been written on Port A.
+      Most controllers don't do anything in this case.
+    */
+    virtual void controlWrite() { };
+
+    /**
       Update the entire digital and analog pin state according to the
       events currently set.
     */
     virtual void update() = 0;
+
 
     /**
       Notification method invoked by the system right before the

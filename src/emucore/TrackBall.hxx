@@ -58,12 +58,20 @@ class TrackBall : public Controller
 
   public:
     /**
-      Read the value of the specified digital pin for this controller.
+      Read the entire state of all digital pins for this controller.
 
-      @param pin The pin of the controller jack to read
-      @return The state of the pin
+      Note that this method must take into account the location of the
+      pin data in the bitfield, and zero the remaining data:
+
+        Left port : upper 4 bits valid, lower 4 bits zero'ed
+        Right port: lower 4 bits valid, upper 4 bits zero'ed
+
+      This method completely takes over reading of the port;
+      it doesn't call Controller::read() at all.
+
+      @return The state of all digital pins
     */
-    bool read(DigitalPin pin);
+    uInt8 read();
 
     /**
       Update the entire digital and analog pin state according to the
@@ -71,23 +79,9 @@ class TrackBall : public Controller
     */
     void update();
 
-    /**
-      Notification method invoked by the system right before the
-      system resets its cycle counter to zero.  It may be necessary 
-      to override this method for devices that remember cycle counts.
-    */
-    void systemCyclesReset();
-
   private:
     // Counter to iterate through the gray codes
     int myHCounter, myVCounter;
-
-    // Indicates the processor cycle when SWCHA was last read
-    uInt32 myCyclesWhenSWCHARead;
-
-    // Masks to indicate how to access the pins (differentiate between
-    // left and right ports)
-    uInt8 myPin1Mask, myPin2Mask, myPin3Mask, myPin4Mask;
 
     // How many new horizontal and vertical values this frame
     int myTrakBallCountH, myTrakBallCountV;

@@ -31,6 +31,7 @@ MODULE_OBJS := \
 	src/emucore/CartUA.o \
 	src/emucore/Cart0840.o \
 	src/emucore/CartX07.o \
+	src/emucore/CompuMate.o \
 	src/emucore/Console.o \
 	src/emucore/Control.o \
 	src/emucore/Driving.o \
@@ -41,6 +42,7 @@ MODULE_OBJS := \
 	src/emucore/Joystick.o \
 	src/emucore/Keyboard.o \
 	src/emucore/KidVid.o \
+	src/emucore/MindLink.o \
 	src/emucore/M6502.o \
 	src/emucore/M6532.o \
 	src/emucore/MT24LC256.o \

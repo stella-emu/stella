@@ -134,7 +134,7 @@ class M6532 : public Device
       { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
 
     void setTimerRegister(uInt8 data, uInt8 interval);
-    void setPinState();
+    void setPinState(bool shcha);
 
   private:
     // Reference to the console

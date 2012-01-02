@@ -77,6 +77,12 @@ Controller::Controller(Jack jack, const Event& event, const System& system,
     case Genesis:
       myName = "Genesis";
       break;
+    case MindLink:
+      myName = "MindLink";
+      break;
+    case CompuMate:
+      myName = "CompuMate";
+      break;
   }
 }
  
@@ -89,6 +95,18 @@ Controller::~Controller()
 const Controller::Type Controller::type() const
 {
   return myType;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 Controller::read()
+{
+  uInt8 ioport = 0x00;
+  if(myDigitalPinState[One])   ioport |= 0x01;
+  if(myDigitalPinState[Two])   ioport |= 0x02;
+  if(myDigitalPinState[Three]) ioport |= 0x04;
+  if(myDigitalPinState[Four])  ioport |= 0x08;
+
+  return myJack == Left ? (ioport << 4) : ioport;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
