@@ -223,6 +223,7 @@ SDLmain.lib
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
+    <ClCompile Include="..\emucore\CartCM.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -415,6 +416,7 @@ SDLmain.lib
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
+    <ClInclude Include="..\emucore\CartCM.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />

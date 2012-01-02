@@ -597,6 +597,9 @@
     <ClCompile Include="..\emucore\MindLink.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
+    <ClCompile Include="..\emucore\CartCM.cxx">
+      <Filter>Source Files\emucore</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1170,6 +1173,9 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\MindLink.hxx">
+      <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\emucore\CartCM.hxx">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
   </ItemGroup>
