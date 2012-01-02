@@ -65,9 +65,10 @@ class CartridgeE7 : public Cartridge
       Create a new cartridge using the specified image
 
       @param image     Pointer to the ROM image
+      @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
     */
-    CartridgeE7(const uInt8* image, const Settings& settings);
+    CartridgeE7(const uInt8* image, uInt32 size, const Settings& settings);
  
     /**
       Destructor

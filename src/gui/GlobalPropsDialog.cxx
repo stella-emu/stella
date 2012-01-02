@@ -44,7 +44,7 @@ GlobalPropsDialog::
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   int lwidth = font.getStringWidth("Right Difficulty: "),
-      pwidth = font.getStringWidth("EFSC (64K H. Runner + ram)");
+      pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   WidgetArray wid;
   StringMap items;
 
@@ -79,6 +79,7 @@ GlobalPropsDialog::
   items.push_back("4K (4K Atari)",              "4K"   );
   items.push_back("AR (Supercharger)",          "AR"   );
   items.push_back("CV (Commavid extra ram)",    "CV"   );
+  items.push_back("CM (SpectraVideo CompuMate)","CM"   );
   items.push_back("DPC (Pitfall II)",           "DPC"  );
   items.push_back("DPC+ (Enhanced DPC)",        "DPC+" );
   items.push_back("E0 (8K Parker Bros)",        "E0"   );

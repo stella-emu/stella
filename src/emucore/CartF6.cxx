@@ -24,11 +24,11 @@
 #include "CartF6.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6::CartridgeF6(const uInt8* image, const Settings& settings)
+CartridgeF6::CartridgeF6(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, 16384);
+  memcpy(myImage, image, BSPF_min(16384u, size));
   createCodeAccessBase(16384);
 
   // Remember startup bank

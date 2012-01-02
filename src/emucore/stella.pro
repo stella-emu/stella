@@ -12103,6 +12103,7 @@
 "Cartridge.ModelNo" "2511"
 "Cartridge.Name" "Smurfs Save the Day (1983) (Coleco)"
 "Cartridge.Note" "Uses the Kid Vid Controller"
+"Controller.Right" "KIDVID"
 ""
 
 "Cartridge.MD5" "a20d931a8fddcd6f6116ed21ff5c4832"
@@ -17331,6 +17332,9 @@
 "Cartridge.Manufacturer" "Spectravideo - Universum"
 "Cartridge.ModelNo" "SV-010"
 "Cartridge.Name" "CompuMate (1983) (Spectravideo) (PAL)"
+"Cartridge.Type" "CM"
+"Controller.Left" "COMPUMATE"
+"Controller.Right" "COMPUMATE"
 "Display.Phosphor" "YES"
 ""
 
@@ -17783,6 +17787,7 @@
 "Cartridge.Name" "Bionic Breakthrough (1984) (Atari) (Prototype)"
 "Cartridge.Note" "Uses Mindlink Controller (left only)"
 "Cartridge.Rarity" "Prototype"
+"Controller.Left" "MINDLINK"
 ""
 
 "Cartridge.MD5" "eeb92f3f46df841487d1504f2896d61a"
@@ -19320,6 +19325,7 @@
 "Cartridge.Name" "Stay Frosty (SpiceWare)"
 "Cartridge.Note" "Part of Stella's Stocking 2007 Xmas compilation"
 "Cartridge.Rarity" "Homebrew"
+"Cartridge.Sound" "STEREO"
 "Display.Phosphor" "YES"
 ""
 

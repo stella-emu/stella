@@ -47,6 +47,7 @@
 #include "CartFE.hxx"
 #include "CartMC.hxx"
 #include "CartCV.hxx"
+#include "CartCM.hxx"
 #include "CartUA.hxx"
 #include "CartSB.hxx"
 #include "CartX07.hxx"
@@ -145,7 +146,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "4A50")
     cartridge = new Cartridge4A50(image, size, settings);
   else if(type == "4K")
-    cartridge = new Cartridge4K(image, settings);
+    cartridge = new Cartridge4K(image, size, settings);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size, settings);
   else if(type == "DPC")
@@ -153,43 +154,45 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "DPC+")
     cartridge = new CartridgeDPCPlus(image, size, settings);
   else if(type == "E0")
-    cartridge = new CartridgeE0(image, settings);
+    cartridge = new CartridgeE0(image, size, settings);
   else if(type == "E7")
-    cartridge = new CartridgeE7(image, settings);
+    cartridge = new CartridgeE7(image, size, settings);
   else if(type == "EF")
-    cartridge = new CartridgeEF(image, settings);
+    cartridge = new CartridgeEF(image, size, settings);
   else if(type == "EFSC")
-    cartridge = new CartridgeEFSC(image, settings);
+    cartridge = new CartridgeEFSC(image, size, settings);
   else if(type == "F4")
-    cartridge = new CartridgeF4(image, settings);
+    cartridge = new CartridgeF4(image, size, settings);
   else if(type == "F4SC")
-    cartridge = new CartridgeF4SC(image, settings);
+    cartridge = new CartridgeF4SC(image, size, settings);
   else if(type == "F6")
-    cartridge = new CartridgeF6(image, settings);
+    cartridge = new CartridgeF6(image, size, settings);
   else if(type == "F6SC")
-    cartridge = new CartridgeF6SC(image, settings);
+    cartridge = new CartridgeF6SC(image, size, settings);
   else if(type == "F8")
-    cartridge = new CartridgeF8(image, md5, settings);
+    cartridge = new CartridgeF8(image, size, md5, settings);
   else if(type == "F8SC")
-    cartridge = new CartridgeF8SC(image, settings);
+    cartridge = new CartridgeF8SC(image, size, settings);
   else if(type == "FA" || type == "FASC")
-    cartridge = new CartridgeFA(image, settings);
+    cartridge = new CartridgeFA(image, size, settings);
   else if(type == "FE")
-    cartridge = new CartridgeFE(image, settings);
+    cartridge = new CartridgeFE(image, size, settings);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size, settings);
   else if(type == "F0" || type == "MB")
-    cartridge = new CartridgeF0(image, settings);
+    cartridge = new CartridgeF0(image, size, settings);
   else if(type == "CV")
     cartridge = new CartridgeCV(image, size, settings);
+  else if(type == "CM")
+    cartridge = new CartridgeCM(image, size, settings);
   else if(type == "UA")
-    cartridge = new CartridgeUA(image, settings);
+    cartridge = new CartridgeUA(image, size, settings);
   else if(type == "0840")
-    cartridge = new Cartridge0840(image, settings);
+    cartridge = new Cartridge0840(image, size, settings);
   else if(type == "SB")
     cartridge = new CartridgeSB(image, size, settings);
   else if(type == "X07")
-    cartridge = new CartridgeX07(image, settings);
+    cartridge = new CartridgeX07(image, size, settings);
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 

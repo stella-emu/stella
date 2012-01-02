@@ -24,11 +24,11 @@
 #include "CartFA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA::CartridgeFA(const uInt8* image, const Settings& settings)
+CartridgeFA::CartridgeFA(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, 12288);
+  memcpy(myImage, image, BSPF_min(12288u, size));
   createCodeAccessBase(12288);
 
   // This cart contains 256 bytes extended RAM @ 0x1000

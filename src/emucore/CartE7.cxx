@@ -24,11 +24,11 @@
 #include "CartE7.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeE7::CartridgeE7(const uInt8* image, const Settings& settings)
+CartridgeE7::CartridgeE7(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, 16384);
+  memcpy(myImage, image, BSPF_min(16384u, size));
   createCodeAccessBase(16384 + 2048);
 
   // This cart can address a 1024 byte bank of RAM @ 0x1000

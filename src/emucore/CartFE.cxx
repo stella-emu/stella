@@ -24,14 +24,14 @@
 #include "CartFE.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFE::CartridgeFE(const uInt8* image, const Settings& settings)
+CartridgeFE::CartridgeFE(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings),
     myLastAddress1(0),
     myLastAddress2(0),
     myLastAddressChanged(false)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, 8192);
+  memcpy(myImage, image, BSPF_min(8192u, size));
 
   // We use System::PageAccess.codeAccessBase, but don't allow its use
   // through a pointer, since the address space of FE carts can change

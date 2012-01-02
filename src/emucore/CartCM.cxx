@@ -21,125 +21,83 @@
 #include <cstring>
 
 #include "System.hxx"
-#include "Cart4K.hxx"
+#include "CartCM.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::Cartridge4K(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeCM::CartridgeCM(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, BSPF_min(4096u, size));
-  createCodeAccessBase(4096);
+  memcpy(myImage, image, BSPF_min(16384u, size));
+  createCodeAccessBase(16384);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge4K::~Cartridge4K()
+CartridgeCM::~CartridgeCM()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::reset()
+void CartridgeCM::reset()
 {
-  myBankChanged = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge4K::install(System& system)
+void CartridgeCM::install(System& system)
 {
-  mySystem = &system;
-  uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  // Make sure the system we're being installed in has a page size that'll work
-  assert((0x1000 & mask) == 0);
-
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
-
-  // Map ROM image into the system
-  for(uInt32 address = 0x1000; address < 0x2000; address += (1 << shift))
-  {
-    access.directPeekBase = &myImage[address & 0x0FFF];
-    access.codeAccessBase = &myCodeAccessBase[address & 0x0FFF];
-    mySystem->setPageAccess(address >> mySystem->pageShift(), access);
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 Cartridge4K::peek(uInt16 address)
+uInt8 CartridgeCM::peek(uInt16 address)
 {
-  return myImage[address & 0x0FFF];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::poke(uInt16, uInt8)
-{
-  // This is ROM so poking has no effect :-)
-  return false;
-} 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::bank(uInt16)
-{
-  // Doesn't support bankswitching
-  return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge4K::bank() const
-{
-  // Doesn't support bankswitching
   return 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt16 Cartridge4K::bankCount() const
+bool CartridgeCM::poke(uInt16 address, uInt8)
 {
-  return 1;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::patch(uInt16 address, uInt8 value)
+bool CartridgeCM::bank(uInt16 bank)
+{ 
+  return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeCM::bank() const
 {
-  myImage[address & 0x0FFF] = value;
-  return myBankChanged = true;
+  return 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt16 CartridgeCM::bankCount() const
+{
+  return 4;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool CartridgeCM::patch(uInt16 address, uInt8 value)
+{
+  return false;
 } 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const uInt8* Cartridge4K::getImage(int& size) const
+const uInt8* CartridgeCM::getImage(int& size) const
 {
-  size = 4096;
+  size = 16384;
   return myImage;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::save(Serializer& out) const
+bool CartridgeCM::save(Serializer& out) const
 {
-  try
-  {
-    out.putString(name());
-  }
-  catch(const char* msg)
-  {
-    cerr << "ERROR: Cartridge4K::save" << endl << "  " << msg << endl;
-    return false;
-  }
-
-  return true;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool Cartridge4K::load(Serializer& in)
+bool CartridgeCM::load(Serializer& in)
 {
-  try
-  {
-    if(in.getString() != name())
-      return false;
-  }
-  catch(const char* msg)
-  {
-    cerr << "ERROR: Cartridge4K::load" << endl << "  " << msg << endl;
-    return false;
-  }
-
-  return true;
+  return false;
 }

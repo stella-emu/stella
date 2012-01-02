@@ -24,11 +24,11 @@
 #include "CartEFSC.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeEFSC::CartridgeEFSC(const uInt8* image, const Settings& settings)
+CartridgeEFSC::CartridgeEFSC(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, 65536);
+  memcpy(myImage, image, BSPF_min(65536u, size));
   createCodeAccessBase(65536);
 
   // This cart contains 128 bytes extended RAM @ 0x1000

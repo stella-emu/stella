@@ -133,7 +133,7 @@ GameInfoDialog::GameInfoDialog(
   ypos += lineHeight + 3;
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Type:", kTextAlignLeft);
-  pwidth = font.getStringWidth("EFSC (64K H. Runner + ram)");
+  pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
   items.push_back("Auto-detect",          "AUTO-DETECT");
   items.push_back("0840 (8K ECONObank)",        "0840" );
@@ -149,6 +149,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("4K (4K Atari)",              "4K"   );
   items.push_back("AR (Supercharger)",          "AR"   );
   items.push_back("CV (Commavid extra ram)",    "CV"   );
+  items.push_back("CM (SpectraVideo CompuMate)","CM"   );
   items.push_back("DPC (Pitfall II)",           "DPC"  );
   items.push_back("DPC+ (Enhanced DPC)",        "DPC+" );
   items.push_back("E0 (8K Parker Bros)",        "E0"   );

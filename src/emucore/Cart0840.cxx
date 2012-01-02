@@ -24,11 +24,11 @@
 #include "Cart0840.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840::Cartridge0840(const uInt8* image, const Settings& settings)
+Cartridge0840::Cartridge0840(const uInt8* image, uInt32 size, const Settings& settings)
   : Cartridge(settings)
 {
   // Copy the ROM image into my buffer
-  memcpy(myImage, image, 8192);
+  memcpy(myImage, image, BSPF_min(8192u, size));
   createCodeAccessBase(8192);
 
   // Remember startup bank
