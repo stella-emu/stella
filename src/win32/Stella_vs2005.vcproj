@@ -369,6 +369,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\CompuMate.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Console.cxx"
 					>
 				</File>
@@ -422,6 +426,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\MediaFactory.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\MindLink.cxx"
 					>
 				</File>
 				<File
@@ -1147,6 +1155,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\CompuMate.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\Console.hxx"
 					>
 				</File>
@@ -1212,6 +1224,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\MediaFactory.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\MindLink.hxx"
 					>
 				</File>
 				<File
