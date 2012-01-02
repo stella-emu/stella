@@ -732,13 +732,10 @@ in another part of the debugger).</p>
 <p>As with the TIA tab, most of the values here will be self-explanatory to a 2600
 programmer, and almost all can be modified.  However, the SWCHx registers need
 further explanation:<p>
-<p>SWCHA(W) can be directly modified; here, the (W) stands for write.  Similarly,
-SWACNT can be directly modified.  However, the results of reading back from
-the SWCHA register are influenced by SWACNT, and SWCHA(R) is a read-only display
+<p>SWCHx(W) can be modified; here, the (W) stands for write.  Similarly,
+SWACNT/SWBCNT can be directly modified.  However, the results of reading back from
+the SWCHx register are influenced by SWACNT/SWBCNT, and SWCHx(R) is a read-only display
 reflecting this result.</p>
-<p>SWCHB cannot be directly modified; it will be indirectly modified by setting
-the various difficulty switches, color/BW button, select/reset, etc.  SWBCNT
-is hardwired as read-only, and is not shown.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->

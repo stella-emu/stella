@@ -1166,6 +1166,7 @@
 "Cartridge.Name" "Mind Maze (10-10-1984) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Mindlink Controller"
 "Cartridge.Rarity" "Prototype"
+"Controller.Left" "MINDLINK"
 ""
 
 "Cartridge.MD5" "0e7e73421606873b544e858c59dc283e"
@@ -1375,6 +1376,7 @@
 "Cartridge.Name" "Bionic Breakthrough (06-22-1984) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Mindlink Controller"
 "Cartridge.Rarity" "Prototype"
+"Controller.Left" "MINDLINK"
 ""
 
 "Cartridge.MD5" "10eae73a07b3da044b72473d8d366267"
@@ -4767,6 +4769,7 @@
 "Cartridge.Name" "Telepathy (1983) (Atari) (Prototype)"
 "Cartridge.Note" "Uses the Mindlink Controller"
 "Cartridge.Rarity" "Prototype"
+"Controller.Left" "MINDLINK"
 ""
 
 "Cartridge.MD5" "3d7749fb9c2f91a276dfe494495234c5"

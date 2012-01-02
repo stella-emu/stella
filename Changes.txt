@@ -12,6 +12,29 @@
                                Release History
 ===========================================================================
 
+3.5 to 3.5.1: (January xx, 2012)
+
+  * Fixed bug in sound restructuring introduced in the last release; in
+    some cases, there could be some sound 'crackling' when starting a
+    ROM after at least one ROM had already been loaded.
+
+  * Fixed bug in 'Fixed Debug Colors' mode; under certain circumstances,
+    playfield graphics could be colored as being player graphics.
+
+  * Added ability to modify the SWCHB/SWBCNT port B registers to the
+    debugger I/O tab.
+
+  * Added CompuMate bankswitching support to the emulation core;
+    the SpectraVision Compumate ROM now works.
+    (FIXME - this may not be complete)
+
+  * Added emulation for MindLink controller; Bionic Breakthrough, Mind
+    Maze and Telepathy ROMs now work.
+    (FIXME - this may not be complete)
+
+-Have fun!
+
+
 3.4.1 to 3.5: (December 29, 2011)
 
   * Stella is now DonationWare!  Please see the DonationWare link on the
@@ -92,8 +115,6 @@
 
   * Updated the credits list in the documentation, listing people that
     have donated hardware to the Stella team.
-
--Have fun!
 
 
 3.4 to 3.4.1: (June 11, 2011)
