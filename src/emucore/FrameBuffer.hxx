@@ -140,12 +140,10 @@ class FrameBuffer
       @param message  The message to be shown
       @param position Onscreen position for the message
       @param force    Force showing this message, even if messages are disabled
-      @param color    Color of text in the message
     */
     void showMessage(const string& message,
                      MessagePosition position = kBottomCenter,
-                     bool force = false,
-                     uInt32 color = kTextColorHi);
+                     bool force = false);
 
     /**
       Toggles showing or hiding framerate statistics.

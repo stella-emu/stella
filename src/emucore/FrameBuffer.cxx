@@ -302,7 +302,7 @@ void FrameBuffer::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBuffer::showMessage(const string& message, MessagePosition position,
-                              bool force, uInt32 color)
+                              bool force)
 {
   // Only show messages if they've been enabled
   if(!(force || myOSystem->settings().getBool("uimessages")))
@@ -318,7 +318,7 @@ void FrameBuffer::showMessage(const string& message, MessagePosition position,
   // Precompute the message coordinates
   myMsg.text    = message;
   myMsg.counter = uInt32(myOSystem->frameRate()) << 1; // Show message for 2 seconds
-  myMsg.color   = color;
+  myMsg.color   = kBtnTextColor;
 
   myMsg.w = myOSystem->font().getStringWidth(myMsg.text) + 10;
   myMsg.h = myOSystem->font().getFontHeight() + 8;
@@ -416,8 +416,8 @@ inline void FrameBuffer::drawMessage()
   }
 
   myMsg.surface->setPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
-  myMsg.surface->fillRect(0, 0, myMsg.w-2, myMsg.h-4, kBGColor);
-  myMsg.surface->box(0, 0, myMsg.w, myMsg.h-2, kColor, kShadowColor);
+  myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
+  myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
   myMsg.surface->drawString(&myOSystem->font(), myMsg.text, 4, 4,
                                myMsg.w, myMsg.color, kTextAlignLeft);
   myMsg.counter--;

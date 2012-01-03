@@ -254,7 +254,7 @@ void Dialog::drawDialog()
   {
 //    cerr << "Dialog::drawDialog(): w = " << _w << ", h = " << _h << " @ " << &s << endl << endl;
 
-    s.fillRect(_x+1, _y+1, _w-2, _h-2, kDlgColor);
+    s.fillRect(_x, _y, _w, _h, kDlgColor);
     s.box(_x, _y, _w, _h, kColor, kShadowColor);
 
     // Make all child widget dirty
