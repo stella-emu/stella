@@ -447,7 +447,6 @@ class TIA : public Device
     uInt32 myColor[8];
     uInt32 myFixedColor[8];
     uInt32* myColorPtr;
-    enum { _BK, _PF, _P0, _P1, _M0, _M1, _BL, _HBLANK };
 
     uInt8 myCTRLPF;       // Playfield control register
 

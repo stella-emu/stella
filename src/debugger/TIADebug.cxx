@@ -425,7 +425,7 @@ uInt8 TIADebug::coluP0(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUP0, newVal);
 
-  return myTIA.myColor[TIA::_P0] & 0xff;
+  return myTIA.myColor[P0Color] & 0xff;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -434,7 +434,7 @@ uInt8 TIADebug::coluP1(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUP1, newVal);
 
-  return myTIA.myColor[TIA::_P1] & 0xff;
+  return myTIA.myColor[P1Color] & 0xff;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -443,7 +443,7 @@ uInt8 TIADebug::coluPF(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUPF, newVal);
 
-  return myTIA.myColor[TIA::_PF] & 0xff;
+  return myTIA.myColor[PFColor] & 0xff;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -452,7 +452,7 @@ uInt8 TIADebug::coluBK(int newVal)
   if(newVal > -1)
     mySystem.poke(COLUBK, newVal);
 
-  return myTIA.myColor[TIA::_BK] & 0xff;
+  return myTIA.myColor[BKColor] & 0xff;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

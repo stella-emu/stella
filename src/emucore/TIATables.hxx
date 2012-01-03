@@ -33,6 +33,17 @@ enum TIABit {
   PriorityBit = 0x80   // Bit for Playfield priority
 };
 
+enum TIAColor {
+  BKColor     = 0,  // Color index for Background
+  PFColor     = 1,  // Color index for Playfield
+  P0Color     = 2,  // Color index for Player 0
+  P1Color     = 3,  // Color index for Player 1
+  M0Color     = 4,  // Color index for Missle 0
+  M1Color     = 5,  // Color index for Missle 1
+  BLColor     = 6,  // Color index for Ball
+  HBLANKColor = 7   // Color index for HMove blank area
+};
+
 enum CollisionBit
 {
   Cx_M0P1 = 1 << 0,   // Missle0 - Player1   collision

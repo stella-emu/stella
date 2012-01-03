@@ -93,8 +93,8 @@ void TIA::reset()
   // Some default values for the registers
   myVSYNC = myVBLANK = 0;
   myNUSIZ0 = myNUSIZ1 = 0;
-  myColor[_P0] = myColor[_P1] = myColor[_PF] = myColor[_BK] = 0;
-  myColor[_M0] = myColor[_M1] = myColor[_BL] = myColor[_HBLANK] = 0;
+  myColor[P0Color] = myColor[P1Color] = myColor[PFColor] = myColor[BKColor] = 0;
+  myColor[M0Color] = myColor[M1Color] = myColor[BLColor] = myColor[HBLANKColor] = 0;
 
   myPlayfieldPriorityAndScore = 0;
   myCTRLPF = 0;
@@ -141,27 +141,27 @@ void TIA::reset()
 
   if(myFramerate > 55.0)  // NTSC
   {
-    myFixedColor[_P0] = 0x30303030;
-    myFixedColor[_P1] = 0x16161616;
-    myFixedColor[_M0] = 0x38383838;
-    myFixedColor[_M1] = 0x12121212;
-    myFixedColor[_BL] = 0x7e7e7e7e;
-    myFixedColor[_PF] = 0x76767676;
-    myFixedColor[_BK] = 0x0a0a0a0a;
-    myFixedColor[_HBLANK] = 0x0e0e0e0e;
+    myFixedColor[P0Color]     = 0x30303030;
+    myFixedColor[P1Color]     = 0x16161616;
+    myFixedColor[M0Color]     = 0x38383838;
+    myFixedColor[M1Color]     = 0x12121212;
+    myFixedColor[BLColor]     = 0x7e7e7e7e;
+    myFixedColor[PFColor]     = 0x76767676;
+    myFixedColor[BKColor]     = 0x0a0a0a0a;
+    myFixedColor[HBLANKColor] = 0x0e0e0e0e;
     myColorLossEnabled = false;
     myMaximumNumberOfScanlines = 290;
   }
   else
   {
-    myFixedColor[_P0] = 0x62626262;
-    myFixedColor[_P1] = 0x26262626;
-    myFixedColor[_M0] = 0x68686868;
-    myFixedColor[_M1] = 0x2e2e2e2e;
-    myFixedColor[_BL] = 0xdededede;
-    myFixedColor[_PF] = 0xd8d8d8d8;
-    myFixedColor[_BK] = 0x1c1c1c1c;
-    myFixedColor[_HBLANK] = 0x0e0e0e0e;
+    myFixedColor[P0Color]     = 0x62626262;
+    myFixedColor[P1Color]     = 0x26262626;
+    myFixedColor[M0Color]     = 0x68686868;
+    myFixedColor[M1Color]     = 0x2e2e2e2e;
+    myFixedColor[BLColor]     = 0xdededede;
+    myFixedColor[PFColor]     = 0xd8d8d8d8;
+    myFixedColor[BKColor]     = 0x1c1c1c1c;
+    myFixedColor[HBLANKColor] = 0x0e0e0e0e;
     myColorLossEnabled = mySettings.getBool("colorloss");
     myMaximumNumberOfScanlines = 342;
   }
@@ -284,13 +284,13 @@ bool TIA::save(Serializer& out) const
     out.putByte((char)myNUSIZ0);
     out.putByte((char)myNUSIZ1);
 
-    out.putInt(myColor[_P0]);
-    out.putInt(myColor[_P1]);
-    out.putInt(myColor[_PF]);
-    out.putInt(myColor[_BK]);
-    out.putInt(myColor[_M0]);
-    out.putInt(myColor[_M1]);
-    out.putInt(myColor[_BL]);
+    out.putInt(myColor[P0Color]);
+    out.putInt(myColor[P1Color]);
+    out.putInt(myColor[PFColor]);
+    out.putInt(myColor[BKColor]);
+    out.putInt(myColor[M0Color]);
+    out.putInt(myColor[M1Color]);
+    out.putInt(myColor[BLColor]);
 
     out.putByte((char)myCTRLPF);
     out.putByte((char)myPlayfieldPriorityAndScore);
@@ -393,13 +393,13 @@ bool TIA::load(Serializer& in)
     myNUSIZ0 = (uInt8) in.getByte();
     myNUSIZ1 = (uInt8) in.getByte();
 
-    myColor[_P0] = (uInt32) in.getInt();
-    myColor[_P1] = (uInt32) in.getInt();
-    myColor[_PF] = (uInt32) in.getInt();
-    myColor[_BK] = (uInt32) in.getInt();
-    myColor[_M0] = (uInt32) in.getInt();
-    myColor[_M1] = (uInt32) in.getInt();
-    myColor[_BL] = (uInt32) in.getInt();
+    myColor[P0Color] = (uInt32) in.getInt();
+    myColor[P1Color] = (uInt32) in.getInt();
+    myColor[PFColor] = (uInt32) in.getInt();
+    myColor[BKColor] = (uInt32) in.getInt();
+    myColor[M0Color] = (uInt32) in.getInt();
+    myColor[M1Color] = (uInt32) in.getInt();
+    myColor[BLColor] = (uInt32) in.getInt();
 
     myCTRLPF = (uInt8) in.getByte();
     myPlayfieldPriorityAndScore = (uInt8) in.getByte();
@@ -583,23 +583,23 @@ inline void TIA::startFrame()
   {
     if(myScanlineCountForLastFrame & 0x01)
     {
-      myColor[_P0] |= 0x01010101;
-      myColor[_P1] |= 0x01010101;
-      myColor[_PF] |= 0x01010101;
-      myColor[_BK] |= 0x01010101;
-      myColor[_M0] |= 0x01010101;
-      myColor[_M1] |= 0x01010101;
-      myColor[_BL] |= 0x01010101;
+      myColor[P0Color] |= 0x01010101;
+      myColor[P1Color] |= 0x01010101;
+      myColor[PFColor] |= 0x01010101;
+      myColor[BKColor] |= 0x01010101;
+      myColor[M0Color] |= 0x01010101;
+      myColor[M1Color] |= 0x01010101;
+      myColor[BLColor] |= 0x01010101;
     }
     else
     {
-      myColor[_P0] &= 0xfefefefe;
-      myColor[_P1] &= 0xfefefefe;
-      myColor[_PF] &= 0xfefefefe;
-      myColor[_BK] &= 0xfefefefe;
-      myColor[_M0] &= 0xfefefefe;
-      myColor[_M1] &= 0xfefefefe;
-      myColor[_BL] &= 0xfefefefe;
+      myColor[P0Color] &= 0xfefefefe;
+      myColor[P1Color] &= 0xfefefefe;
+      myColor[PFColor] &= 0xfefefefe;
+      myColor[BKColor] &= 0xfefefefe;
+      myColor[M0Color] &= 0xfefefefe;
+      myColor[M1Color] &= 0xfefefefe;
+      myColor[BLColor] &= 0xfefefefe;
     }
   }   
   myStartScanline = 0x7FFFFFFF;
@@ -771,20 +771,20 @@ bool TIA::toggleFixedColors(uInt8 mode)
       {
         // Priority from highest to lowest:
         //   PF/BL => P0/M0 => P1/M1 => BK
-        uInt8 color = _BK;
+        uInt8 color = BKColor;
 
         if((enabled & M1Bit) != 0)
-          color = _M1;
+          color = M1Color;
         if((enabled & P1Bit) != 0)
-          color = _P1;
+          color = P1Color;
         if((enabled & M0Bit) != 0)
-          color = _M0;
+          color = M0Color;
         if((enabled & P0Bit) != 0)
-          color = _P0;
+          color = P0Color;
         if((enabled & BLBit) != 0)
-          color = _BL;
+          color = BLColor;
         if((enabled & PFBit) != 0)
-          color = _PF;  // NOTE: Playfield has priority so ScoreBit isn't used
+          color = PFColor;  // NOTE: Playfield has priority so ScoreBit isn't used
 
         myPriorityEncoder[x][enabled] = color;
       }
@@ -792,20 +792,20 @@ bool TIA::toggleFixedColors(uInt8 mode)
       {
         // Priority from highest to lowest:
         //   P0/M0 => P1/M1 => PF/BL => BK
-        uInt8 color = _BK;
+        uInt8 color = BKColor;
 
         if((enabled & BLBit) != 0)
-          color = _BL;
+          color = BLColor;
         if((enabled & PFBit) != 0)
-          color = (!on && (enabled & ScoreBit)) ? ((x == 0) ? _P0 : _P1) : _PF;
+          color = (!on && (enabled & ScoreBit)) ? ((x == 0) ? P0Color : P1Color) : PFColor;
         if((enabled & M1Bit) != 0)
-          color = _M1;
+          color = M1Color;
         if((enabled & P1Bit) != 0)
-          color = _P1;
+          color = P1Color;
         if((enabled & M0Bit) != 0)
-          color = _M0;
+          color = M0Color;
         if((enabled & P0Bit) != 0)
-          color = _P0;
+          color = P0Color;
 
         myPriorityEncoder[x][enabled] = color;
       }
@@ -1100,7 +1100,7 @@ void TIA::updateFrame(Int32 clock)
         (clocksFromStartOfScanLine < (HBLANK + 8)))
     {
       Int32 blanks = (HBLANK + 8) - clocksFromStartOfScanLine;
-      memset(oldFramePointer, myColorPtr[_HBLANK], blanks);
+      memset(oldFramePointer, myColorPtr[HBLANKColor], blanks);
 
       if((clocksToUpdate + clocksFromStartOfScanLine) >= (HBLANK + 8))
         myHMOVEBlankEnabled = false;
@@ -1390,7 +1390,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myColor[_P0] = myColor[_M0] =
+      myColor[P0Color] = myColor[M0Color] =
           (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
@@ -1402,7 +1402,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myColor[_P1] = myColor[_M1] =
+      myColor[P1Color] = myColor[M1Color] =
           (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
@@ -1414,7 +1414,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myColor[_PF] = myColor[_BL] =
+      myColor[PFColor] = myColor[BLColor] =
           (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
@@ -1426,7 +1426,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       {
         color |= 0x01;
       }
-      myColor[_BK] = (((((color << 8) | color) << 8) | color) << 8) | color;
+      myColor[BKColor] = (((((color << 8) | color) << 8) | color) << 8) | color;
       break;
     }
 
