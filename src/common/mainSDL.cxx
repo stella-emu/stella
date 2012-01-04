@@ -109,7 +109,6 @@ int main(int argc, char* argv[])
   // Take care of commandline arguments
   theOSystem->logMessage("Loading commandline arguments ...\n", 2);
   string romfile = theOSystem->settings().loadCommandLine(argc, argv);
-  FilesystemNode romnode(romfile);
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
@@ -137,7 +136,8 @@ int main(int argc, char* argv[])
   else if(theOSystem->settings().getBool("rominfo"))
   {
     theOSystem->logMessage("Showing output from 'rominfo' ...\n", 2);
-    if(argc > 1 && romnode.exists())
+    FilesystemNode romnode(romfile);
+    if(argc > 1 && romnode.exists() && !romnode.isDirectory())
       theOSystem->logMessage(theOSystem->getROMInfo(romfile), 0);
     else
       theOSystem->logMessage("ERROR: ROM doesn't exist\n", 0);
@@ -163,14 +163,19 @@ int main(int argc, char* argv[])
   //// Main loop ////
   // First we check if a ROM is specified on the commandline.  If so, and if
   //   the ROM actually exists, use it to create a new console.
+  // Next we check if a directory is specified on the commandline.  If so,
+  //   open the rom launcher in that directory.
   // If not, use the built-in ROM launcher.  In this case, we enter 'launcher'
   //   mode and let the main event loop take care of opening a new console/ROM.
-  if(argc == 1 || romfile == "" || !romnode.exists() || romnode.isDirectory())
+  FilesystemNode romnode(romfile);
+  if(romfile == "" || romnode.isDirectory())
   {
     theOSystem->logMessage("Attempting to use ROM launcher ...\n", 2);
     if(theOSystem->settings().getBool("uselauncher"))
     {
-      if(!theOSystem->createLauncher())
+      bool launcherOpened = romfile != "" ?
+        theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
+      if(!launcherOpened)
         return Cleanup();
     }
     else
@@ -180,7 +185,7 @@ int main(int argc, char* argv[])
       return Cleanup();
     }
   }
-  else if(theOSystem->createConsole(romfile))
+  else if(theOSystem->createConsole(romnode.getPath()))
   {
     if(theOSystem->settings().getBool("takesnapshot"))
     {

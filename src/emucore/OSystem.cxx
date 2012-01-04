@@ -592,8 +592,10 @@ void OSystem::deleteConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createLauncher()
+bool OSystem::createLauncher(const string& startdir)
 {
+  mySettings->setString("tmpromdir", startdir);
+
   myEventHandler->reset(EventHandler::S_LAUNCHER);
   if(createFrameBuffer() != kSuccess)
   {

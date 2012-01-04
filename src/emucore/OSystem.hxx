@@ -338,9 +338,12 @@ class OSystem
     /**
       Creates a new ROM launcher, to select a new ROM to emulate.
 
+      @param startdir  The directory to use when opening the launcher;
+                       if blank, use 'romdir' setting.
+
       @return  True on successful creation, otherwise false
     */
-    bool createLauncher();
+    bool createLauncher(const string& startdir = "");
 
     /**
       Gets all possible info about the ROM by creating a temporary
