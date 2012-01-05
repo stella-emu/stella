@@ -124,8 +124,8 @@ void TiaZoomWidget::recalc()
 
   // Only redraw when necessary
   int oldXoff = myXoff, oldYoff = myYoff;
-  myXoff = myXCenter - (myNumCols >> 1);
-  myYoff = myYCenter - (myNumRows >> 1);
+  myXoff = BSPF_max(0, myXCenter - (myNumCols >> 1));
+  myYoff = BSPF_max(0, myYCenter - (myNumRows >> 1));
   if(oldXoff != myXoff || oldYoff != myYoff)
   {
     setDirty(); draw();
