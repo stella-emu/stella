@@ -70,13 +70,8 @@ class RiotDebug : public DebuggerSystem
     uInt8 timint();
     Int32 timClocks();
 
-    /* Controller pins, from the POV of 'outside' the system
-       (ie, state is determined by what the controller sends to the RIOT)
-       Setting a pin to false is the same as if the external controller
-       pulled the pin low
-    */
-    void setP0Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6);
-    void setP1Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6);
+    /* Controller ports */
+    Controller& controller(Controller::Jack jack) const;
 
     /* Console switches */
     bool diffP0(int newVal = -1);

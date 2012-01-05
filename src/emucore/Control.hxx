@@ -120,9 +120,14 @@ class Controller : public Serializable
     virtual ~Controller();
 
     /**
+      Returns the jack that this controller is plugged into.
+    */
+    const Jack jack() const { return myJack; }
+
+    /**
       Returns the type of this controller.
     */
-    const Type type() const;
+    const Type type() const { return myType; }
 
     /**
       Read the entire state of all digital pins for this controller.

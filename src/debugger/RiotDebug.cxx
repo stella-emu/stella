@@ -207,25 +207,9 @@ Int32 RiotDebug::timClocks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RiotDebug::setP0Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6)
+Controller& RiotDebug::controller(Controller::Jack jack) const
 {
-  Controller& port0 = myConsole.controller(Controller::Left);
-  port0.myDigitalPinState[Controller::One]   = Pin1;
-  port0.myDigitalPinState[Controller::Two]   = Pin2;
-  port0.myDigitalPinState[Controller::Three] = Pin3;
-  port0.myDigitalPinState[Controller::Four]  = Pin4;
-  port0.myDigitalPinState[Controller::Six]   = Pin6;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void RiotDebug::setP1Pins(bool Pin1, bool Pin2, bool Pin3, bool Pin4, bool Pin6)
-{
-  Controller& port1 = myConsole.controller(Controller::Right);
-  port1.myDigitalPinState[Controller::One]   = Pin1;
-  port1.myDigitalPinState[Controller::Two]   = Pin2;
-  port1.myDigitalPinState[Controller::Three] = Pin3;
-  port1.myDigitalPinState[Controller::Four]  = Pin4;
-  port1.myDigitalPinState[Controller::Six]   = Pin6;
+  return myConsole.controller(jack);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

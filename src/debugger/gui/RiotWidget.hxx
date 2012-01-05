@@ -28,8 +28,10 @@ class ButtonWidget;
 class DataGridWidget;
 class PopUpWidget;
 class ToggleBitWidget;
+class ControllerWidget;
 
 #include "Array.hxx"
+#include "Control.hxx"
 #include "Command.hxx"
 
 class RiotWidget : public Widget, public CommandSender
@@ -43,6 +45,8 @@ class RiotWidget : public Widget, public CommandSender
     void loadConfig();
 
   private:
+    ControllerWidget* addControlWidget(GuiObject* boss, const GUI::Font& font,
+        int x, int y, Controller& controller);
 
   private:
     ToggleBitWidget* mySWCHAReadBits;
@@ -55,8 +59,7 @@ class RiotWidget : public Widget, public CommandSender
     DataGridWidget* myTimWrite;
     DataGridWidget* myTimRead;
 
-    CheckboxWidget* myP0Pins[5], *myP1Pins[5];
-
+    ControllerWidget *myLeftControl, *myRightControl;
     PopUpWidget *myP0Diff, *myP1Diff;
     PopUpWidget *myTVType;
     CheckboxWidget* mySelect;
@@ -67,7 +70,6 @@ class RiotWidget : public Widget, public CommandSender
     enum {
       kTim1TID, kTim8TID, kTim64TID, kTim1024TID, kTimWriteID,
       kSWCHABitsID, kSWACNTBitsID, kSWCHBBitsID, kSWBCNTBitsID,
-      kP0PinsID, kP1PinsID,
       kP0DiffChanged, kP1DiffChanged, kTVTypeChanged, kSelectID, kResetID
     };
 };

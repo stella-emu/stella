@@ -323,6 +323,9 @@
 		DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527D810B9DA6A005E1287 /* bspf.hxx */; };
 		DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527D910B9DA6A005E1287 /* Snapshot.cxx */; };
 		DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */; };
+		DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */; };
+		DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */; };
+		DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */; };
 		DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD2839612E39F1200A808DC /* Thumbulator.cxx */; };
 		DCD2839912E39F1200A808DC /* Thumbulator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD2839712E39F1200A808DC /* Thumbulator.hxx */; };
 		DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */; };
@@ -741,6 +744,9 @@
 		DCC527D810B9DA6A005E1287 /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bspf.hxx; path = ../common/bspf.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527D910B9DA6A005E1287 /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
+		DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControllerWidget.hxx; path = ../debugger/gui/ControllerWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JoystickWidget.cxx; path = ../debugger/gui/JoystickWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JoystickWidget.hxx; path = ../debugger/gui/JoystickWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCD2839612E39F1200A808DC /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Thumbulator.cxx; path = ../emucore/Thumbulator.cxx; sourceTree = SOURCE_ROOT; };
 		DCD2839712E39F1200A808DC /* Thumbulator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Thumbulator.hxx; path = ../emucore/Thumbulator.hxx; sourceTree = SOURCE_ROOT; };
 		DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Genesis.cxx; path = ../emucore/Genesis.cxx; sourceTree = SOURCE_ROOT; };
@@ -908,6 +914,7 @@
 				2D2331900900B5EF00613B1F /* AudioWidget.hxx */,
 				2D20F9E408C603EC00A73076 /* ColorWidget.cxx */,
 				2D20F9E508C603EC00A73076 /* ColorWidget.hxx */,
+				DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */,
 				2D20F9E608C603EC00A73076 /* CpuWidget.cxx */,
 				2D20F9E708C603EC00A73076 /* CpuWidget.hxx */,
 				2D20F9E808C603EC00A73076 /* DataGridOpsWidget.cxx */,
@@ -916,6 +923,8 @@
 				2D20F9EB08C603EC00A73076 /* DataGridWidget.hxx */,
 				2D20F9EC08C603EC00A73076 /* DebuggerDialog.cxx */,
 				2D20F9ED08C603EC00A73076 /* DebuggerDialog.hxx */,
+				DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */,
+				DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */,
 				2D20F9EE08C603EC00A73076 /* PromptWidget.cxx */,
 				2D20F9EF08C603EC00A73076 /* PromptWidget.hxx */,
 				2D20F9F008C603EC00A73076 /* RamWidget.cxx */,
@@ -1511,6 +1520,8 @@
 				DC8C1BAE14B25DE7006440EE /* CartCM.hxx in Headers */,
 				DC8C1BB014B25DE7006440EE /* CompuMate.hxx in Headers */,
 				DC8C1BB214B25DE7006440EE /* MindLink.hxx in Headers */,
+				DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */,
+				DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1776,6 +1787,7 @@
 				DC8C1BAD14B25DE7006440EE /* CartCM.cxx in Sources */,
 				DC8C1BAF14B25DE7006440EE /* CompuMate.cxx in Sources */,
 				DC8C1BB114B25DE7006440EE /* MindLink.cxx in Sources */,
+				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

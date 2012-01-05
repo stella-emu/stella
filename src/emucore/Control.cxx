@@ -92,12 +92,6 @@ Controller::~Controller()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const Controller::Type Controller::type() const
-{
-  return myType;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 Controller::read()
 {
   uInt8 ioport = 0x00;

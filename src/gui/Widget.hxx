@@ -77,7 +77,8 @@ enum {
   kTiaZoomWidget      = 'TIAZ',
   kToggleBitWidget    = 'TGLB',
   kTogglePixelWidget  = 'TGLP',
-  kToggleWidget       = 'TOGL'
+  kToggleWidget       = 'TOGL',
+  kControllerWidget   = 'CTRL'
 };
 
 /**

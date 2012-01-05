@@ -30,6 +30,9 @@
 #include "ToggleBitWidget.hxx"
 #include "Widget.hxx"
 
+#include "ControllerWidget.hxx"
+#include "JoystickWidget.hxx"
+
 #include "RiotWidget.hxx"
 
 #define CREATE_IO_REGS(desc, bits, bitsID)                               \
@@ -42,42 +45,6 @@
   addFocusWidget(bits);                                                  \
   xpos += bits->getWidth() + 5;                                          \
   bits->setList(off, on);
-
-#define CREATE_PORT_PINS(label, pins, pinsID)                      \
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, 14*fontWidth, \
-                           fontHeight, label, kTextAlignLeft);     \
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 5;        \
-  pins[0] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
-                               kCheckActionCmd);                   \
-  pins[0]->setID(pinsID);                                          \
-  pins[0]->setTarget(this);                                        \
-  addFocusWidget(pins[0]);                                         \
-  ypos += pins[0]->getHeight() * 2 + 10;                           \
-  pins[1] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
-                               kCheckActionCmd);                   \
-  pins[1]->setID(pinsID);                                          \
-  pins[1]->setTarget(this);                                        \
-  addFocusWidget(pins[1]);                                         \
-  xpos -= pins[0]->getWidth() + 5;                                 \
-  ypos -= pins[0]->getHeight() + 5;                                \
-  pins[2] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
-                               kCheckActionCmd);                   \
-  pins[2]->setID(pinsID);                                          \
-  pins[2]->setTarget(this);                                        \
-  addFocusWidget(pins[2]);                                         \
-  xpos += (pins[0]->getWidth() + 5) * 2;                           \
-  pins[3] = new CheckboxWidget(boss, font, xpos, ypos, "",         \
-                               kCheckActionCmd);                   \
-  pins[3]->setID(pinsID);                                          \
-  pins[3]->setTarget(this);                                        \
-  addFocusWidget(pins[3]);                                         \
-  xpos -= (pins[0]->getWidth() + 5) * 2;                           \
-  ypos = 20 + (pins[0]->getHeight() + 10) * 3;                     \
-  pins[4] = new CheckboxWidget(boss, font, xpos, ypos, "Fire",     \
-                               kCheckActionCmd);                   \
-  pins[4]->setID(pinsID);                                          \
-  pins[4]->setTarget(this);                                        \
-  addFocusWidget(pins[4]);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
@@ -157,16 +124,20 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   myTimRead->setEditable(false);
   addFocusWidget(myTimRead);
 
-  // Controller port pins (for now, only the latched pins)
+  // Controller ports
+  const RiotDebug& riot = instance().debugger().riotDebug();
   xpos = col;  ypos = 10;
-  CREATE_PORT_PINS("P0 Controller:", myP0Pins, kP0PinsID);
-  xpos = col + font.getStringWidth("P0 Controller:") + 20;  ypos = 10;
-  CREATE_PORT_PINS("P1 Controller:", myP1Pins, kP1PinsID);
+  myLeftControl = addControlWidget(boss, font, xpos, ypos,
+      riot.controller(Controller::Left));
+  xpos += col + myLeftControl->getWidth() + 15;
+  myRightControl = addControlWidget(boss, font, xpos, ypos,
+      riot.controller(Controller::Right));
+//FIXME - add focus to these widget??
 
   // PO & P1 difficulty switches
   int pwidth = font.getStringWidth("B/easy");
   lwidth = font.getStringWidth("P0 Diff: ");
-  xpos = col;  ypos += 3 * lineHeight;
+  xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
   items.clear();
   items.push_back("B/easy", "b");
   items.push_back("A/hard", "a");
@@ -270,21 +241,8 @@ void RiotWidget::loadConfig()
     changed.push_back(state.TIMCLKS != oldstate.TIMCLKS);
   myTimRead->setList(alist, vlist, changed);
 
-  // Update port pins
-  // We invert the booleans, since in the UI it makes more sense that
-  // if, for example, the 'up' checkbox is set, it means 'go up'
-  myP0Pins[0]->setState(!state.P0_PIN1);
-  myP0Pins[1]->setState(!state.P0_PIN2);
-  myP0Pins[2]->setState(!state.P0_PIN3);
-  myP0Pins[3]->setState(!state.P0_PIN4);
-  myP0Pins[4]->setState(!state.P0_PIN6);
-  myP1Pins[0]->setState(!state.P1_PIN1);
-  myP1Pins[1]->setState(!state.P1_PIN2);
-  myP1Pins[2]->setState(!state.P1_PIN3);
-  myP1Pins[3]->setState(!state.P1_PIN4);
-  myP1Pins[4]->setState(!state.P1_PIN6);
-
-  // Console switches (invert reset/select for same reason as the pins)
+  // Console switches (inverted, since 'selected' in the UI
+  // means 'grounded' in the system)
   myP0Diff->setSelected((int)riot.diffP0());
   myP1Diff->setSelected((int)riot.diffP1());
   myTVType->setSelected((int)riot.tvType());
@@ -348,16 +306,6 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kCheckActionCmd:
       switch(id)
       {
-        case kP0PinsID:
-          riot.setP0Pins(!myP0Pins[0]->getState(), !myP0Pins[1]->getState(),
-                         !myP0Pins[2]->getState(), !myP0Pins[3]->getState(),
-                         !myP0Pins[4]->getState());
-          break;
-        case kP1PinsID:
-          riot.setP1Pins(!myP1Pins[0]->getState(), !myP1Pins[1]->getState(),
-                         !myP1Pins[2]->getState(), !myP1Pins[3]->getState(),
-                         !myP1Pins[4]->getState());
-          break;
         case kSelectID:
           riot.select(!mySelect->getState());
           break;
@@ -378,5 +326,18 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
     case kTVTypeChanged:
       riot.tvType((bool)myTVType->getSelected());
       break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font& font,
+        int x, int y, Controller& controller)
+{
+  switch(controller.type())
+  {
+    case Controller::Joystick:
+      return new JoystickWidget(boss, font, x, y, controller);
+    default:
+      return new ControllerWidget(boss, font, x, y, controller);
   }
 }
