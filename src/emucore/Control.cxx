@@ -95,10 +95,10 @@ Controller::~Controller()
 uInt8 Controller::read()
 {
   uInt8 ioport = 0x00;
-  if(myDigitalPinState[One])   ioport |= 0x01;
-  if(myDigitalPinState[Two])   ioport |= 0x02;
-  if(myDigitalPinState[Three]) ioport |= 0x04;
-  if(myDigitalPinState[Four])  ioport |= 0x08;
+  if(read(One))   ioport |= 0x01;
+  if(read(Two))   ioport |= 0x02;
+  if(read(Three)) ioport |= 0x04;
+  if(read(Four))  ioport |= 0x08;
 
   return myJack == Left ? (ioport << 4) : ioport;
 }
