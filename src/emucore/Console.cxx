@@ -92,6 +92,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Construct the system and components
   mySystem = new System(13, 6);
 
+#if 0
   // The real controllers for this console will be added later
   // For now, we just add dummy joystick controllers, since autodetection
   // runs the emulation for a while, and this may interfere with 'smart'
@@ -101,6 +102,19 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // (particularly the M6532)
   myControllers[0] = new Joystick(Controller::Left, *myEvent, *mySystem);
   myControllers[1] = new Joystick(Controller::Right, *myEvent, *mySystem);
+#endif
+  const string& md5 = myProperties.get(Cartridge_MD5);
+
+  // Add the real controllers for this system
+  setControllers(md5);
+
+  // Bumper Bash always requires all 4 directions
+  // Other ROMs can use it if the setting is enabled
+  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
+                   md5 == "1bf503c724001b09be79c515ecfcbd03" ||
+                   myOSystem->settings().getBool("joyallow4");
+  myOSystem->eventHandler().allowAllDirections(joyallow4);
+
 
   M6502* m6502 = new M6502(1);
 #ifdef DEBUGGER_SUPPORT
@@ -197,18 +211,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     myTIA->setYStart(ystart);
     myTIA->setHeight(height);
   }
-
-  const string& md5 = myProperties.get(Cartridge_MD5);
-
-  // Add the real controllers for this system
-  setControllers(md5);
-
-  // Bumper Bash always requires all 4 directions
-  // Other ROMs can use it if the setting is enabled
-  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
-                   md5 == "1bf503c724001b09be79c515ecfcbd03" ||
-                   myOSystem->settings().getBool("joyallow4");
-  myOSystem->eventHandler().allowAllDirections(joyallow4);
 
   // Reset the system to its power-on state
   mySystem->reset();

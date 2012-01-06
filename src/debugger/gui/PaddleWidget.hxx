@@ -17,28 +17,29 @@
 // $Id$
 //============================================================================
 
-#ifndef JOYSTICK_WIDGET_HXX
-#define JOYSTICK_WIDGET_HXX
+#ifndef PADDLE_WIDGET_HXX
+#define PADDLE_WIDGET_HXX
 
 #include "Control.hxx"
 #include "Event.hxx"
 #include "ControllerWidget.hxx"
 
-class JoystickWidget : public ControllerWidget
+class PaddleWidget : public ControllerWidget
 {
   public:
-    JoystickWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
-                   Controller& controller);
-    virtual ~JoystickWidget();
+    PaddleWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
+                 Controller& controller);
+    virtual ~PaddleWidget();
 
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
-    enum { kJUp = 0, kJDown, kJLeft, kJRight, kJFire };
+    enum { kP0Changed = 'P0ch', kP1Changed = 'P1ch',
+           kP0Fire = 'P0fr', kP1Fire = 'P1fr' };
 
-    CheckboxWidget* myPins[5];
-    static Controller::DigitalPin ourPinNo[5];
+    SliderWidget *myP0Resistance, *myP1Resistance;
+    CheckboxWidget *myP0Fire, *myP1Fire;
 };
 
 #endif

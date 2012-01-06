@@ -135,6 +135,18 @@ Int32 Controller::read(AnalogPin pin)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::set(DigitalPin pin, bool value)
+{
+  myDigitalPinState[pin] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Controller::set(AnalogPin pin, Int32 value)
+{
+  myAnalogPinValue[pin] = value;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Controller::save(Serializer& out) const
 {
   try

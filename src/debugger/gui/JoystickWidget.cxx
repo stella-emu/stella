@@ -26,68 +26,46 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
-  bool leftport = _controller.jack() == Controller::Left;
-  if(leftport)
-  {
-    myPinEvent[kJUp]    = Event::JoystickZeroUp;
-    myPinEvent[kJDown]  = Event::JoystickZeroDown;
-    myPinEvent[kJLeft]  = Event::JoystickZeroLeft;
-    myPinEvent[kJRight] = Event::JoystickZeroRight;
-    myPinEvent[kJFire]  = Event::JoystickZeroFire1;
-  }
-  else
-  {
-    myPinEvent[kJUp]    = Event::JoystickOneUp;
-    myPinEvent[kJDown]  = Event::JoystickOneDown;
-    myPinEvent[kJLeft]  = Event::JoystickOneLeft;
-    myPinEvent[kJRight] = Event::JoystickOneRight;
-    myPinEvent[kJFire]  = Event::JoystickOneFire1;
-  }
+  bool leftport = myController.jack() == Controller::Left;
   const string& label = leftport ? "Left (Joystick):" : "Right (Joystick):";
 
-  const int fontWidth  = font.getMaxCharWidth(),
+  const int /*fontWidth  = font.getMaxCharWidth(),*/
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Joystick):");
   StaticTextWidget* t;
 
+  _w = lwidth + 10;
+  _h = 6 * lineHeight;
+
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
                            fontHeight, label, kTextAlignLeft);
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 5;
+  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "", kCheckActionCmd);
   myPins[kJUp]->setID(kJUp);
   myPins[kJUp]->setTarget(this);
-  addFocusWidget(myPins[kJUp]);
 
   ypos += myPins[kJUp]->getHeight() * 2 + 10;
   myPins[kJDown] = new CheckboxWidget(boss, font, xpos, ypos, "", kCheckActionCmd);
   myPins[kJDown]->setID(kJDown);
   myPins[kJDown]->setTarget(this);
-  addFocusWidget(myPins[kJDown]);
 
   xpos -= myPins[kJUp]->getWidth() + 5;
   ypos -= myPins[kJUp]->getHeight() + 5;
   myPins[kJLeft] = new CheckboxWidget(boss, font, xpos, ypos, "", kCheckActionCmd);
   myPins[kJLeft]->setID(kJLeft);
   myPins[kJLeft]->setTarget(this);
-  addFocusWidget(myPins[kJLeft]);
-
-  _w = xpos;
 
   xpos += (myPins[kJUp]->getWidth() + 5) * 2;
   myPins[kJRight] = new CheckboxWidget(boss, font, xpos, ypos, "", kCheckActionCmd);
   myPins[kJRight]->setID(kJRight);
   myPins[kJRight]->setTarget(this);
-  addFocusWidget(myPins[kJRight]);
 
   xpos -= (myPins[kJUp]->getWidth() + 5) * 2;
   ypos = 20 + (myPins[kJUp]->getHeight() + 10) * 3;
   myPins[kJFire] = new CheckboxWidget(boss, font, xpos, ypos, "Fire", kCheckActionCmd);
   myPins[kJFire]->setID(kJFire);
   myPins[kJFire]->setTarget(this);
-  addFocusWidget(myPins[kJFire]);
-
-  _h = ypos;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,10 +76,23 @@ JoystickWidget::~JoystickWidget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoystickWidget::loadConfig()
 {
+  myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));
+  myPins[kJDown]->setState(!myController.read(ourPinNo[kJDown]));
+  myPins[kJLeft]->setState(!myController.read(ourPinNo[kJLeft]));
+  myPins[kJRight]->setState(!myController.read(ourPinNo[kJRight]));
+  myPins[kJFire]->setState(!myController.read(ourPinNo[kJFire]));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void JoystickWidget::handleCommand(
     CommandSender* sender, int cmd, int data, int id)
 {
+  if(cmd == kCheckActionCmd)
+    myController.set(ourPinNo[id], !myPins[id]->getState());
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Controller::DigitalPin JoystickWidget::ourPinNo[5] = {
+  Controller::One, Controller::Two, Controller::Three, Controller::Four,
+  Controller::Six
+};

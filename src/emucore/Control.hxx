@@ -181,7 +181,6 @@ class Controller : public Serializable
     */
     virtual void update() = 0;
 
-
     /**
       Notification method invoked by the system right before the
       system resets its cycle counter to zero.  It may be necessary 
@@ -217,6 +216,18 @@ class Controller : public Serializable
       Returns more detailed information about this controller.
     */
     virtual string about() const;
+
+    /**
+      The following two functions are used by the debugger to set
+      the specified pins to the given value.  Note that this isn't the
+      same as a write; the debugger is allowed special access and is
+      actually 'below' the controller level.
+
+      @param pin The pin of the controller jack to modify
+      @param value The value to set on the pin
+    */
+    void set(DigitalPin pin, bool value);
+    void set(AnalogPin pin, Int32 value);
 
     /**
       Saves the current state of this controller to the given Serializer.

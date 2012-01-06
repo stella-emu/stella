@@ -32,6 +32,7 @@
 
 #include "ControllerWidget.hxx"
 #include "JoystickWidget.hxx"
+#include "PaddleWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -129,10 +130,9 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   xpos = col;  ypos = 10;
   myLeftControl = addControlWidget(boss, font, xpos, ypos,
       riot.controller(Controller::Left));
-  xpos += col + myLeftControl->getWidth() + 15;
+  xpos += myLeftControl->getWidth() + 15;
   myRightControl = addControlWidget(boss, font, xpos, ypos,
       riot.controller(Controller::Right));
-//FIXME - add focus to these widget??
 
   // PO & P1 difficulty switches
   int pwidth = font.getStringWidth("B/easy");
@@ -248,6 +248,9 @@ void RiotWidget::loadConfig()
   myTVType->setSelected((int)riot.tvType());
   mySelect->setState(!riot.select());
   myReset->setState(!riot.reset());
+
+  myLeftControl->loadConfig();
+  myRightControl->loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -337,6 +340,8 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
   {
     case Controller::Joystick:
       return new JoystickWidget(boss, font, x, y, controller);
+    case Controller::Paddles:
+      return new PaddleWidget(boss, font, x, y, controller);
     default:
       return new ControllerWidget(boss, font, x, y, controller);
   }
