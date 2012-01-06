@@ -68,12 +68,25 @@ cc_check() {
 	echo >> "$TMPLOG"
 	cat "$TMPC" >> "$TMPLOG"
 	echo >> "$TMPLOG"
-	echo "$CXX $TMPC -o $TMPO$EXEEXT $@" >> "$TMPLOG"
+	echo "$CXX $TMPC $LDFLAGS -o $TMPO$EXEEXT $@" >> "$TMPLOG"
 	rm -f "$TMPO$EXEEXT"
-	( $CXX "$TMPC" -o "$TMPO$EXEEXT" "$@" ) >> "$TMPLOG" 2>&1
+	( $CXX "$TMPC" $LDFLAGS -o "$TMPO$EXEEXT" "$@" ) >> "$TMPLOG" 2>&1
 	TMP="$?"
 	echo >> "$TMPLOG"
 	return "$TMP"
+}
+
+cc_check_define() {
+cat > $TMPC << EOF
+int main(void) {
+	#ifndef $1
+	syntax error
+	#endif
+	return 0;
+}
+EOF
+	cc_check -c
+	return $?
 }
 
 echocheck () {
@@ -99,11 +112,18 @@ EOF
 
 if test -n "$_host"; then
 	# In cross-compiling mode, we cannot run the result
-	eval "$1 -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
+	eval "$1 $LDFLAGS -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
 else
-	eval "$1 -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && eval "./tmp_cxx_compiler 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
+	eval "$1 $LDFLAGS -o tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp 2> /dev/null" && eval "./tmp_cxx_compiler 2> /dev/null" && rm -f tmp_cxx_compiler$EXEEXT tmp_cxx_compiler.cpp
 fi
 }
+
+# Add a line of data to config.mk.
+add_line_to_config_mk() {
+	_config_mk_data="$_config_mk_data"'
+'"$1"
+}
+
 
 #
 # Determine sdl-config
@@ -376,56 +396,101 @@ fi
 
 echocheck "compiler version"
 
-cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
-cxx_version=`( $CXX -dumpversion ) 2>&1`
-if test "$?" -gt 0; then
-	cxx_version="not found"
+have_gcc=no
+cc_check_define __GNUC__ && have_gcc=yes
+
+if test "$have_gcc" = yes; then
+	cxx_name=`( $cc -v ) 2>&1 | tail -n 1 | cut -d ' ' -f 1`
+	cxx_version=`( $CXX -dumpversion ) 2>&1`
+	if test "$?" -gt 0; then
+		cxx_version="not found"
+	fi
+
+	case $cxx_version in
+		2.95.[2-9]|2.95.[2-9][-.]*|3.[0-9]|3.[0-9].[0-9]|3.[0-9].[0-9][-.]*|4.[0-9]|4.[0-9].[0-9]|4.[0-9].[0-9][-.]*)
+			_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
+			_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
+			cxx_version="$cxx_version, ok"
+			cxx_verc_fail=no
+			;;
+		# whacky beos version strings
+		2.9-beos-991026*|2.9-beos-000224*)	
+			_cxx_major=2
+			_cxx_minor=95
+			cxx_version="$cxx_version, ok"
+			cxx_verc_fail=no
+			;;
+		3_4)
+			_cxx_major=3
+			_mxx_minor=4
+			;;
+		'not found')
+			cxx_verc_fail=yes
+			;;
+		*)
+			cxx_version="$cxx_version, bad"
+			cxx_verc_fail=yes
+			;;
+	esac
+	if test "$_cxx_major" -ge "3" ; then
+		CXXFLAGS="$CXXFLAGS"
+		_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
+		add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MMD -MF "$(*D)/$(DEPDIR)/$(*F).d" -MQ "$@" -MP'
+	fi;
+	_make_def_HAVE_GCC='HAVE_GCC = 1'
+	echo "$cxx_version"
+else
+	cxx_version=`( $CXX -version ) 2>&1`
+	if test "$?" -eq 0; then
+		cxx_version="`echo "${cxx_version}" | sed -ne 's/^.*[^0-9]\([0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\).*$/\1/gp'`"
+		if test -z "${cxx_version}"; then
+			cxx_version="not found"
+			cxx_verc_fail=yes
+		fi
+		echo non-gcc compiler version ${cxx_version}
+	else
+		cxx_version="not found"
+		cxx_verc_fail=yes
+		echo found non-gcc compiler version ${cxx_version}
+	fi
+
+	CXXFLAGS="$CXXFLAGS"
+	case $_host_os in
+		irix*)
+			case $cxx_version in
+				7.4.4*)
+					# We just assume this is SGI MIPSpro
+					_cxx_major=7
+					_cxx_minor=4
+					cxx_verc_fail=no
+					add_line_to_config_mk 'CXX_UPDATE_DEP_FLAG = -MDupdate "$(*D)/$(DEPDIR)/$(*F).d"'
+					add_line_to_config_mk '-include Makedepend'
+					;;
+				*)
+					cxx_version="$cxx_version, bad"
+					cxx_verc_fail=yes
+					;;
+			esac
+		;;
+		*)
+			cxx_version="$cxx_version, bad"
+			cxx_verc_fail=yes
+		;;
+	esac
+
 fi
 
-case $cxx_version in
-	2.95.[2-9]|2.95.[2-9][-.]*|3.[0-9]|3.[0-9].[0-9]|3.[0-9].[0-9][-.]*|4.[0-9]|4.[0-9].[0-9]|4.[0-9].[0-9][-.]*)
-		_cxx_major=`echo $cxx_version | cut -d '.' -f 1`
-		_cxx_minor=`echo $cxx_version | cut -d '.' -f 2`
-		cxx_version="$cxx_version, ok"
-		cxx_verc_fail=no
-		;;
-	# whacky beos version strings
-	2.9-beos-991026*|2.9-beos-000224*)	
-		_cxx_major=2
-		_cxx_minor=95
-		cxx_version="$cxx_version, ok"
-		cxx_verc_fail=no
-		;;
-	3_4)
-		_cxx_major=3
-		_mxx_minor=4
-		;;
-	'not found')
-		cxx_verc_fail=yes
-		;;
-	*)
-		cxx_version="$cxx_version, bad"
-		cxx_verc_fail=yes
-		;;
-esac
-
-echo "$cxx_version"
 
 if test "$cxx_verc_fail" = yes ; then
 	echo
 	echo "The version of your compiler is not supported at this time"
 	echo "Please ensure you are using GCC 2.95.x or GCC 3.x"
-	exit 1	
+	#exit 1	
 fi
 
 #
 # Do CXXFLAGS now we know the compiler version
 #
-
-if test "$_cxx_major" -ge "3" ; then
-	CXXFLAGS="$CXXFLAGS"
-	_make_def_HAVE_GCC3='HAVE_GCC3 = 1'
-fi;
 
 if test -n "$_host"; then
 	# Cross-compiling mode - add your target here if needed
@@ -821,12 +886,14 @@ DOCDIR := $_docdir
 DATADIR := $_datadir
 PROFILE := $_build_profile
 
+$_make_def_HAVE_GCC
 $_make_def_HAVE_GCC3
 
 INCLUDES += $INCLUDES
 OBJS += $OBJS
 DEFINES += $DEFINES
 LDFLAGS += $LDFLAGS
+$_config_mk_data
 EOF
 
 # This should be taken care of elsewhere, but I'm not sure where

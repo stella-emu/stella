@@ -49,13 +49,18 @@ ifdef CXXFLAGS
 else
   CXXFLAGS:= -O2
 endif
-CXXFLAGS+= -Wall -Wno-multichar -Wunused -fno-rtti
+CXXFLAGS+= -Wall 
+ifdef HAVE_GCC
+  CXXFLAGS+= -Wno-multichar -Wunused -fno-rtti
+endif
 
 ifdef PROFILE
   PROF:= -g -pg -fprofile-arcs -ftest-coverage
   CXXFLAGS+= $(PROF)
 else
-  CXXFLAGS+= -fomit-frame-pointer
+  ifdef HAVE_GCC
+    CXXFLAGS+= -fomit-frame-pointer
+  endif
 endif
 
 # Even more warnings...
@@ -121,19 +126,22 @@ clean:
 .PHONY: all clean dist distclean
 
 .SUFFIXES: .cxx
-ifndef HAVE_GCC3
+
+
+ifndef CXX_UPDATE_DEP_FLAG
 # If you use GCC, disable the above and enable this for intelligent
 # dependency tracking. 
+CXX_UPDATE_DEP_FLAG = -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2"
 .cxx.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
 	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
 	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
 
 .c.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d2" $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 	$(ECHO) "$(*D)/" > $(*D)/$(DEPDIR)/$(*F).d
 	$(CAT) "$(*D)/$(DEPDIR)/$(*F).d2" >> "$(*D)/$(DEPDIR)/$(*F).d"
 	$(RM) "$(*D)/$(DEPDIR)/$(*F).d2"
@@ -144,11 +152,11 @@ else
 # which ensures a smooth compilation even if said headers become obsolete.
 .cxx.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 
 .c.o:
 	$(MKDIR) $(*D)/$(DEPDIR)
-	$(CXX) -Wp,-MMD,"$(*D)/$(DEPDIR)/$(*F).d",-MQ,"$@",-MP $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
+	$(CXX) $(CXX_UPDATE_DEP_FLAG) $(CXXFLAGS) $(CPPFLAGS) -c $(<) -o $*.o
 endif
 
 # Include the dependency tracking files. We add /dev/null at the end
