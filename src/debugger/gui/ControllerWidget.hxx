@@ -36,21 +36,8 @@ class ControllerWidget : public Widget, public CommandSender
         myController(controller)
     {
       _type = kControllerWidget;
-/* FIXME - add this to controllers that won't have their own widget class
-
-      bool leftport = controller.jack() == Controller::Left;
-      const string& label = leftport ? "Left (Unknown):" : "Right (Unknown):";
-      const int fontHeight = font.getFontHeight(),
-                lineHeight = font.getLineHeight(),
-                lwidth = font.getStringWidth("Controller not implemented");
-      new StaticTextWidget(boss, font, x, y+2, lwidth,
-                           fontHeight, label, kTextAlignLeft);
-      new StaticTextWidget(boss, font, x, y+2+2*lineHeight, lwidth,
-                           fontHeight, "Controller not implemented",
-                           kTextAlignLeft);
-      _w = lwidth + 10;
-      _h = 6 * lineHeight;
-*/
+      _w = 18 * font.getMaxCharWidth();
+      _h = 8 * font.getLineHeight();
     }
 
     virtual ~ControllerWidget() { };

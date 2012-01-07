@@ -30,9 +30,10 @@
 #include "ToggleBitWidget.hxx"
 #include "Widget.hxx"
 
-#include "ControllerWidget.hxx"
+#include "NullControlWidget.hxx"
 #include "JoystickWidget.hxx"
 #include "PaddleWidget.hxx"
+#include "BoosterWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -342,7 +343,9 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new JoystickWidget(boss, font, x, y, controller);
     case Controller::Paddles:
       return new PaddleWidget(boss, font, x, y, controller);
+    case Controller::BoosterGrip:
+      return new BoosterWidget(boss, font, x, y, controller);
     default:
-      return new ControllerWidget(boss, font, x, y, controller);
+      return new NullControlWidget(boss, font, x, y, controller);
   }
 }

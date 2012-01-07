@@ -33,16 +33,11 @@ PaddleWidget::PaddleWidget(GuiObject* boss, const GUI::Font& font,
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight();
   int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Paddles):");
-  StaticTextWidget* t;
 
-  _w = lwidth + 10;
-  _h = 6 * lineHeight;
+  new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
+                       fontHeight, label, kTextAlignLeft);
 
-  t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
-                           fontHeight, label, kTextAlignLeft);
-
-  xpos = x;  ypos += t->getHeight() + 10;
-
+  ypos += lineHeight + 10;
   const string& p0string = leftport ? "P0 pot: " : "P2 pot: ";
   const string& p1string = leftport ? "P1 pot: " : "P3 pot: ";
   lwidth = font.getStringWidth("P3 pot: ");

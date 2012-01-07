@@ -19,18 +19,18 @@
 
 #include "OSystem.hxx"
 #include "EventHandler.hxx"
-#include "JoystickWidget.hxx"
+#include "BoosterWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, Controller& controller)
+BoosterWidget::BoosterWidget(GuiObject* boss, const GUI::Font& font,
+                             int x, int y, Controller& controller)
   : ControllerWidget(boss, font, x, y, controller)
 {
   bool leftport = myController.jack() == Controller::Left;
-  const string& label = leftport ? "Left (Joystick):" : "Right (Joystick):";
+  const string& label = leftport ? "Left (Booster):" : "Right (Booster):";
 
   const int fontHeight = font.getFontHeight();
-  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Joystick):");
+  int xpos = x, ypos = y, lwidth = font.getStringWidth("Right (Booster):");
   StaticTextWidget* t;
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
@@ -61,33 +61,69 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   myPins[kJFire] = new CheckboxWidget(boss, font, xpos, ypos, "Fire", kCheckActionCmd);
   myPins[kJFire]->setID(kJFire);
   myPins[kJFire]->setTarget(this);
+
+  ypos += myPins[kJFire]->getHeight() + 5;
+  myPins[kJBooster] = new CheckboxWidget(boss, font, xpos, ypos, "Booster", kCheckActionCmd);
+  myPins[kJBooster]->setID(kJBooster);
+  myPins[kJBooster]->setTarget(this);
+
+  ypos += myPins[kJBooster]->getHeight() + 5;
+  myPins[kJTrigger] = new CheckboxWidget(boss, font, xpos, ypos, "Trigger", kCheckActionCmd);
+  myPins[kJTrigger]->setID(kJTrigger);
+  myPins[kJTrigger]->setTarget(this);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-JoystickWidget::~JoystickWidget()
+BoosterWidget::~BoosterWidget()
 {
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoystickWidget::loadConfig()
+void BoosterWidget::loadConfig()
 {
   myPins[kJUp]->setState(!myController.read(ourPinNo[kJUp]));
   myPins[kJDown]->setState(!myController.read(ourPinNo[kJDown]));
   myPins[kJLeft]->setState(!myController.read(ourPinNo[kJLeft]));
   myPins[kJRight]->setState(!myController.read(ourPinNo[kJRight]));
   myPins[kJFire]->setState(!myController.read(ourPinNo[kJFire]));
+
+  myPins[kJBooster]->setState(
+    myController.read(Controller::Five) == Controller::minimumResistance);
+  myPins[kJTrigger]->setState(
+    myController.read(Controller::Nine) == Controller::minimumResistance);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void JoystickWidget::handleCommand(
+void BoosterWidget::handleCommand(
     CommandSender* sender, int cmd, int data, int id)
 {
   if(cmd == kCheckActionCmd)
-    myController.set(ourPinNo[id], !myPins[id]->getState());
+  {
+    switch(id)
+    {
+      case kJUp:
+      case kJDown:
+      case kJLeft:
+      case kJRight:
+      case kJFire:
+        myController.set(ourPinNo[id], !myPins[id]->getState());
+        break;
+      case kJBooster:
+        myController.set(Controller::Five,
+          myPins[id]->getState() ? Controller::minimumResistance :
+                                   Controller::maximumResistance);
+        break;
+      case kJTrigger:
+        myController.set(Controller::Nine,
+          myPins[id]->getState() ? Controller::minimumResistance :
+                                   Controller::maximumResistance);
+        break;
+    }
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Controller::DigitalPin JoystickWidget::ourPinNo[5] = {
+Controller::DigitalPin BoosterWidget::ourPinNo[5] = {
   Controller::One, Controller::Two, Controller::Three, Controller::Four,
   Controller::Six
 };

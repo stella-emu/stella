@@ -20,7 +20,8 @@ MODULE_OBJS := \
 	src/debugger/gui/TogglePixelWidget.o \
 	src/debugger/gui/ToggleWidget.o \
 	src/debugger/gui/JoystickWidget.o \
-	src/debugger/gui/PaddleWidget.o
+	src/debugger/gui/PaddleWidget.o \
+	src/debugger/gui/BoosterWidget.o
 
 MODULE_DIRS += \
 	src/debugger/gui
