@@ -124,10 +124,6 @@ void SoundSDL::open()
     return;
   }
 
-  // Make sure the sound queue is clear
-  myRegWriteQueue.clear();
-  myTIASound.reset();
-
   // Now initialize the TIASound object which will actually generate sound
   int tiafreq = myOSystem->settings().getInt("tiafreq");
   myTIASound.outputFrequency(myHardwareSpec.freq);
@@ -166,10 +162,15 @@ void SoundSDL::open()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::close()
 {
-  myTIASound.reset();
-  myIsEnabled = false;
-  mute(true);
-  myOSystem->logMessage("SoundSDL::close\n", 2);
+  if(myIsInitializedFlag)
+  {
+    myIsEnabled = false;
+    SDL_PauseAudio(1);
+    myLastRegisterSetCycle = 0;
+    myTIASound.reset();
+    myRegWriteQueue.clear();
+    myOSystem->logMessage("SoundSDL::close\n", 2);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -188,11 +189,10 @@ void SoundSDL::reset()
   if(myIsInitializedFlag)
   {
     SDL_PauseAudio(1);
-    myIsMuted = false;
     myLastRegisterSetCycle = 0;
     myTIASound.reset();
     myRegWriteQueue.clear();
-    SDL_PauseAudio(0);
+    mute(myIsMuted);
   }
 }
 
