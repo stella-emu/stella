@@ -19258,6 +19258,14 @@
 "Cartridge.Rarity" "New Release"
 ""
 
+"Cartridge.MD5" "37e828675d556775ae8285c0caf7d11c"
+"Cartridge.Manufacturer" "AtariAge - Fred Quimby"
+"Cartridge.Name" "Gingerbread Man (Fred Quimby) (Genesis)"
+"Cartridge.Note" "Uses the Sega Genesis controller (left only)"
+"Cartridge.Rarity" "New Release"
+"Controller.Left" "GENESIS"
+""
+
 "Cartridge.MD5" "9c40bf810f761ffc9c1b69c4647a8b84"
 "Cartridge.Name" "2 in 1 - Frostbite, River Raid (Unknown)"
 "Cartridge.Type" "2IN1"

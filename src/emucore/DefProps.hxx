@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3244
+#define DEF_PROPS_SIZE 3245
 
 static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -750,6 +750,7 @@ static const char* DefProps[DEF_PROPS_SIZE][20] = {
   { "378c118b3bda502c73e76190ca089eef", "Atari, Alan Miller", "CX2662P", "Hangman (1978) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "37ab3affc7987995784b59fcd3fcbd31", "", "", "Sprite Test (29-11-2002) (Eric Ball)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "37b98344c8e0746c486caf5aaeec892a", "K-Tel Vision", "6", "Spider Maze (1982) (K-Tel Vision) (PAL)", "AKA Spider Kong", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "37e828675d556775ae8285c0caf7d11c", "AtariAge - Fred Quimby", "", "Gingerbread Man (Fred Quimby) (Genesis)", "Uses the Sega Genesis controller (left only)", "New Release", "", "", "", "", "", "", "GENESIS", "", "", "", "", "", "", "" }, 
   { "37f42ab50018497114f6b0f4f01aa9a1", "", "", "Droid Demo 2-M (David Conrad Schweinsberg) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "37fd7fa52d358f66984948999f1213c5", "Rainbow Vision - Suntek", "SS-004", "Pyramid War (Rainbow Vision) (PAL) [a2]", "AKA Chopper Command", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "384db97670817103dd8c0bbdef132445", "Atari - Sears", "CX2626 - 6-99829, 49-75116", "Miniature Golf (1979) (Atari) (4K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
