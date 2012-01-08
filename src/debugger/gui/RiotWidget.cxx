@@ -34,7 +34,9 @@
 #include "JoystickWidget.hxx"
 #include "PaddleWidget.hxx"
 #include "BoosterWidget.hxx"
+#include "DrivingWidget.hxx"
 #include "GenesisWidget.hxx"
+#include "KeyboardWidget.hxx"
 
 #include "RiotWidget.hxx"
 
@@ -401,8 +403,12 @@ ControllerWidget* RiotWidget::addControlWidget(GuiObject* boss, const GUI::Font&
       return new PaddleWidget(boss, font, x, y, controller);
     case Controller::BoosterGrip:
       return new BoosterWidget(boss, font, x, y, controller);
+    case Controller::Driving:
+      return new DrivingWidget(boss, font, x, y, controller);
     case Controller::Genesis:
       return new GenesisWidget(boss, font, x, y, controller);
+    case Controller::Keyboard:
+      return new KeyboardWidget(boss, font, x, y, controller);
     default:
       return new NullControlWidget(boss, font, x, y, controller);
   }

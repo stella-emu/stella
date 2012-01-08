@@ -331,6 +331,12 @@
 		DCCF4AD114B7E6C300814FAB /* BoosterWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF4ACE14B7E6C300814FAB /* BoosterWidget.cxx */; };
 		DCCF4AD214B7E6C300814FAB /* BoosterWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4ACF14B7E6C300814FAB /* BoosterWidget.hxx */; };
 		DCCF4AD314B7E6C300814FAB /* NullControlWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */; };
+		DCCF4ADC14B9433100814FAB /* GenesisWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF4ADA14B9433100814FAB /* GenesisWidget.cxx */; };
+		DCCF4ADD14B9433100814FAB /* GenesisWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4ADB14B9433100814FAB /* GenesisWidget.hxx */; };
+		DCCF4B0214BA27EB00814FAB /* DrivingWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF4AFE14BA27EB00814FAB /* DrivingWidget.cxx */; };
+		DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */; };
+		DCCF4B0414BA27EB00814FAB /* KeyboardWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */; };
+		DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */; };
 		DCD2839812E39F1200A808DC /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD2839612E39F1200A808DC /* Thumbulator.cxx */; };
 		DCD2839912E39F1200A808DC /* Thumbulator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD2839712E39F1200A808DC /* Thumbulator.hxx */; };
 		DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */; };
@@ -757,6 +763,12 @@
 		DCCF4ACE14B7E6C300814FAB /* BoosterWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = BoosterWidget.cxx; path = ../debugger/gui/BoosterWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCCF4ACF14B7E6C300814FAB /* BoosterWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = BoosterWidget.hxx; path = ../debugger/gui/BoosterWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NullControlWidget.hxx; path = ../debugger/gui/NullControlWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCCF4ADA14B9433100814FAB /* GenesisWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = GenesisWidget.cxx; path = ../debugger/gui/GenesisWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCCF4ADB14B9433100814FAB /* GenesisWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = GenesisWidget.hxx; path = ../debugger/gui/GenesisWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCCF4AFE14BA27EB00814FAB /* DrivingWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DrivingWidget.cxx; path = ../debugger/gui/DrivingWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DrivingWidget.hxx; path = ../debugger/gui/DrivingWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = KeyboardWidget.cxx; path = ../debugger/gui/KeyboardWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = KeyboardWidget.hxx; path = ../debugger/gui/KeyboardWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCD2839612E39F1200A808DC /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Thumbulator.cxx; path = ../emucore/Thumbulator.cxx; sourceTree = SOURCE_ROOT; };
 		DCD2839712E39F1200A808DC /* Thumbulator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Thumbulator.hxx; path = ../emucore/Thumbulator.hxx; sourceTree = SOURCE_ROOT; };
 		DCD3F7C311340AAF00DBA3AE /* Genesis.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Genesis.cxx; path = ../emucore/Genesis.cxx; sourceTree = SOURCE_ROOT; };
@@ -935,8 +947,14 @@
 				2D20F9EB08C603EC00A73076 /* DataGridWidget.hxx */,
 				2D20F9EC08C603EC00A73076 /* DebuggerDialog.cxx */,
 				2D20F9ED08C603EC00A73076 /* DebuggerDialog.hxx */,
+				DCCF4AFE14BA27EB00814FAB /* DrivingWidget.cxx */,
+				DCCF4AFF14BA27EB00814FAB /* DrivingWidget.hxx */,
+				DCCF4ADA14B9433100814FAB /* GenesisWidget.cxx */,
+				DCCF4ADB14B9433100814FAB /* GenesisWidget.hxx */,
 				DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */,
 				DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */,
+				DCCF4B0014BA27EB00814FAB /* KeyboardWidget.cxx */,
+				DCCF4B0114BA27EB00814FAB /* KeyboardWidget.hxx */,
 				DCCF4AD014B7E6C300814FAB /* NullControlWidget.hxx */,
 				DCCF49B514B7544A00814FAB /* PaddleWidget.cxx */,
 				DCCF49B614B7544A00814FAB /* PaddleWidget.hxx */,
@@ -1540,6 +1558,9 @@
 				DCCF49B814B7544A00814FAB /* PaddleWidget.hxx in Headers */,
 				DCCF4AD214B7E6C300814FAB /* BoosterWidget.hxx in Headers */,
 				DCCF4AD314B7E6C300814FAB /* NullControlWidget.hxx in Headers */,
+				DCCF4ADD14B9433100814FAB /* GenesisWidget.hxx in Headers */,
+				DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */,
+				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1808,6 +1829,9 @@
 				DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */,
 				DCCF49B714B7544A00814FAB /* PaddleWidget.cxx in Sources */,
 				DCCF4AD114B7E6C300814FAB /* BoosterWidget.cxx in Sources */,
+				DCCF4ADC14B9433100814FAB /* GenesisWidget.cxx in Sources */,
+				DCCF4B0214BA27EB00814FAB /* DrivingWidget.cxx in Sources */,
+				DCCF4B0414BA27EB00814FAB /* KeyboardWidget.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

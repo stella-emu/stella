@@ -22,6 +22,8 @@ MODULE_OBJS := \
 	src/debugger/gui/JoystickWidget.o \
 	src/debugger/gui/PaddleWidget.o \
 	src/debugger/gui/BoosterWidget.o \
+	src/debugger/gui/DrivingWidget.o \
+	src/debugger/gui/KeyboardWidget.o \
 	src/debugger/gui/GenesisWidget.o
 
 MODULE_DIRS += \
