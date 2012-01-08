@@ -545,6 +545,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\gui\BoosterWidget.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\CartDebug.cxx"
 					>
 				</File>
@@ -585,11 +589,31 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\gui\DrivingWidget.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\Expression.cxx"
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\gui\GenesisWidget.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\JoystickWidget.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\KeyboardWidget.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\PackedBitArray.cxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\PaddleWidget.cxx"
 					>
 				</File>
 				<File
@@ -1331,11 +1355,19 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\gui\BoosterWidget.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\CartDebug.hxx"
 					>
 				</File>
 				<File
 					RelativePath="..\debugger\gui\ColorWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\ControllerWidget.hxx"
 					>
 				</File>
 				<File
@@ -1379,6 +1411,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\gui\DrivingWidget.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\Equate.hxx"
 					>
 				</File>
@@ -1387,7 +1423,27 @@
 					>
 				</File>
 				<File
+					RelativePath="..\debugger\gui\GenesisWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\JoystickWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\KeyboardWidget.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\NullControlWidget.hxx"
+					>
+				</File>
+				<File
 					RelativePath="..\debugger\PackedBitArray.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\debugger\gui\PaddleWidget.hxx"
 					>
 				</File>
 				<File
