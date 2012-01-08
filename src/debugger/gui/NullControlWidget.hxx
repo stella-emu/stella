@@ -43,9 +43,9 @@ class NullControlWidget : public ControllerWidget
       new StaticTextWidget(boss, font, x, y+2, lwidth,
                            fontHeight, buf.str(), kTextAlignLeft);
       new StaticTextWidget(boss, font, x, y+2+2*lineHeight, lwidth,
-                           fontHeight, "Controller", kTextAlignCenter);
+                           fontHeight, "Controller input", kTextAlignCenter);
       new StaticTextWidget(boss, font, x, y+2+3*lineHeight, lwidth,
-                           fontHeight, "not implemented",
+                           fontHeight, "not available",
                            kTextAlignCenter);
     }
 

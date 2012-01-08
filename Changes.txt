@@ -31,6 +31,9 @@
       - added ability to modify the SWCHB/SWBCNT port B registers.
       - added ability to view TIA INPTx and VBLANK latch/dump bits.
 
+  * Updated ROM properties database for all Sega Genesis controller
+    compatible ROMs.
+
   * Added CompuMate bankswitching support to the emulation core;
     the SpectraVision Compumate ROM now works.
     (FIXME - this may not be complete)
