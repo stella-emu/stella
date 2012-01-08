@@ -92,20 +92,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Construct the system and components
   mySystem = new System(13, 6);
 
-#if 0
-  // The real controllers for this console will be added later
-  // For now, we just add dummy joystick controllers, since autodetection
-  // runs the emulation for a while, and this may interfere with 'smart'
-  // controllers such as the AVox and SaveKey
-  // Note that the controllers must be added directly after the system
-  // has been created, and before any other device is added
-  // (particularly the M6532)
-  myControllers[0] = new Joystick(Controller::Left, *myEvent, *mySystem);
-  myControllers[1] = new Joystick(Controller::Right, *myEvent, *mySystem);
-#endif
+  // Add the controllers for this system
   const string& md5 = myProperties.get(Cartridge_MD5);
-
-  // Add the real controllers for this system
   setControllers(md5);
 
   // Bumper Bash always requires all 4 directions
@@ -214,6 +202,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // Reset the system to its power-on state
   mySystem->reset();
+  myControllers[0]->enable(true);
+  myControllers[1]->enable(true);
 
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
@@ -755,6 +745,9 @@ void Console::setControllers(const string& rommd5)
   {
     myControllers[rightPort] = new Joystick(Controller::Right, *myEvent, *mySystem);
   }
+
+  myControllers[leftPort]->enable(false);
+  myControllers[rightPort]->enable(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

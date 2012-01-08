@@ -106,32 +106,13 @@ uInt8 Controller::read()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Controller::read(DigitalPin pin)
 {
-  switch(pin)
-  {
-    case One:
-    case Two:
-    case Three:
-    case Four:
-    case Six:
-      return myDigitalPinState[pin];
-
-    default:
-      return true;
-  }
+  return myDigitalPinState[pin];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Int32 Controller::read(AnalogPin pin)
 {
-  switch(pin)
-  {
-    case Five:
-    case Nine:
-      return myAnalogPinValue[pin];
-
-    default:
-      return maximumResistance;
-  }
+  return myAnalogPinValue[pin];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
