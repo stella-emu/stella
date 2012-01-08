@@ -223,6 +223,12 @@ SDLmain.lib
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
+    <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\JoystickWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
+    <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
     <ClCompile Include="..\emucore\CartCM.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
@@ -416,6 +422,14 @@ SDLmain.lib
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
+    <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\GenesisWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\JoystickWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\KeyboardWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
+    <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
     <ClInclude Include="..\emucore\CartCM.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
