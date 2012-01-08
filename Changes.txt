@@ -34,6 +34,9 @@
   * Updated ROM properties database for all Sega Genesis controller
     compatible ROMs.
 
+  * Fixed compile issues in Irix when using the default compiler
+    instead of gcc.  Thanks go to Rainer M. Canavan for this code.
+
   * Added CompuMate bankswitching support to the emulation core;
     the SpectraVision Compumate ROM now works.
     (FIXME - this may not be complete)
