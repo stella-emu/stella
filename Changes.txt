@@ -14,6 +14,9 @@
 
 3.5 to 3.5.1: (January xx, 2012)
 
+  * Due to changes in the debugger, old state files will not work with
+    this release.
+
   * Fixed bug in sound restructuring introduced in the last release; in
     some cases, there could be some sound 'crackling' when starting a
     ROM after at least one ROM had already been loaded.
@@ -21,8 +24,12 @@
   * Fixed bug in 'Fixed Debug Colors' mode; under certain circumstances,
     playfield graphics could be colored as being player graphics.
 
-  * Added ability to modify the SWCHB/SWBCNT port B registers to the
-    debugger I/O tab.
+  * Several significant improvements to the debugger I/O tab:
+      - added controller input widgets for many of the built-in
+        controllers, allowing to control joysticks, paddles, etc
+        from within the debugger.
+      - added ability to modify the SWCHB/SWBCNT port B registers.
+      - added ability to view TIA INPTx and VBLANK latch/dump bits.
 
   * Added CompuMate bankswitching support to the emulation core;
     the SpectraVision Compumate ROM now works.

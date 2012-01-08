@@ -311,6 +311,7 @@ bool System::save(Serializer& out) const
   {
     out.putString(name());
     out.putInt(myCycles);
+    out.putByte(myDataBusState);
 
     if(!myM6502->save(out))
       return false;
@@ -338,6 +339,7 @@ bool System::load(Serializer& in)
       return false;
 
     myCycles = (uInt32) in.getInt();
+    myDataBusState = (uInt8) in.getByte();
 
     // Next, load state for the CPU
     if(!myM6502->load(in))

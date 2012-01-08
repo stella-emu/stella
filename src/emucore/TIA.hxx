@@ -47,6 +47,7 @@ class TIA : public Device
 {
   public:
     friend class TIADebug;
+    friend class RiotDebug;
 
     /**
       Create a new TIA for the specified console

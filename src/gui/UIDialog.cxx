@@ -173,7 +173,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
-  myDebuggerHeightSlider->setMinValue(620);
+  myDebuggerHeightSlider->setMinValue(700);
   myDebuggerHeightSlider->setMaxValue(1200);
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
@@ -381,8 +381,8 @@ void UIDialog::setDefaults()
     case 1:  // Debugger options
       myDebuggerWidthSlider->setValue(1050);
       myDebuggerWidthLabel->setValue(1050);
-      myDebuggerHeightSlider->setValue(690);
-      myDebuggerHeightLabel->setValue(690);
+      myDebuggerHeightSlider->setValue(700);
+      myDebuggerHeightLabel->setValue(700);
       break;
 
     case 2:  // Misc. options

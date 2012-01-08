@@ -21,6 +21,7 @@
 
 #include "System.hxx"
 #include "M6532.hxx"
+#include "TIA.hxx"
 #include "Debugger.hxx"
 #include "Switches.hxx"
 
@@ -49,6 +50,14 @@ const DebuggerState& RiotDebug::getState()
   Debugger::set_bits(myState.SWCHB_W, myState.swchbWriteBits);
   Debugger::set_bits(myState.SWBCNT, myState.swbcntBits);
 
+  // TIA INPTx registers
+  myState.INPT0 = inpt(0);
+  myState.INPT1 = inpt(1);
+  myState.INPT2 = inpt(2);
+  myState.INPT3 = inpt(3);
+  myState.INPT4 = inpt(4);
+  myState.INPT5 = inpt(5);
+
   // Timer registers
   myState.TIM1T    = tim1T();
   myState.TIM8T    = tim8T();
@@ -57,20 +66,6 @@ const DebuggerState& RiotDebug::getState()
   myState.INTIM    = intim();
   myState.TIMINT   = timint();
   myState.TIMCLKS  = timClocks();
-
-  // Controller port pins
-  const Controller& port0 = myConsole.controller(Controller::Left);
-  myState.P0_PIN1 = port0.myDigitalPinState[Controller::One];
-  myState.P0_PIN2 = port0.myDigitalPinState[Controller::Two];
-  myState.P0_PIN3 = port0.myDigitalPinState[Controller::Three];
-  myState.P0_PIN4 = port0.myDigitalPinState[Controller::Four];
-  myState.P0_PIN6 = port0.myDigitalPinState[Controller::Six];
-  const Controller& port1 = myConsole.controller(Controller::Right);
-  myState.P1_PIN1 = port1.myDigitalPinState[Controller::One];
-  myState.P1_PIN2 = port1.myDigitalPinState[Controller::Two];
-  myState.P1_PIN3 = port1.myDigitalPinState[Controller::Three];
-  myState.P1_PIN4 = port1.myDigitalPinState[Controller::Four];
-  myState.P1_PIN6 = port1.myDigitalPinState[Controller::Six];
 
   return myState;
 }
@@ -92,6 +87,14 @@ void RiotDebug::saveOldState()
   Debugger::set_bits(myOldState.SWCHB_W, myOldState.swchbWriteBits);
   Debugger::set_bits(myOldState.SWBCNT, myOldState.swbcntBits);
 
+  // TIA INPTx registers
+  myOldState.INPT0 = inpt(0);
+  myOldState.INPT1 = inpt(1);
+  myOldState.INPT2 = inpt(2);
+  myOldState.INPT3 = inpt(3);
+  myOldState.INPT4 = inpt(4);
+  myOldState.INPT5 = inpt(5);
+
   // Timer registers
   myOldState.TIM1T    = tim1T();
   myOldState.TIM8T    = tim8T();
@@ -100,20 +103,6 @@ void RiotDebug::saveOldState()
   myOldState.INTIM    = intim();
   myOldState.TIMINT   = timint();
   myOldState.TIMCLKS  = timClocks();
-
-  // Controller port pins
-  const Controller& port0 = myConsole.controller(Controller::Left);
-  myOldState.P0_PIN1 = port0.myDigitalPinState[Controller::One];
-  myOldState.P0_PIN2 = port0.myDigitalPinState[Controller::Two];
-  myOldState.P0_PIN3 = port0.myDigitalPinState[Controller::Three];
-  myOldState.P0_PIN4 = port0.myDigitalPinState[Controller::Four];
-  myOldState.P0_PIN6 = port0.myDigitalPinState[Controller::Six];
-  const Controller& port1 = myConsole.controller(Controller::Right);
-  myOldState.P1_PIN1 = port1.myDigitalPinState[Controller::One];
-  myOldState.P1_PIN2 = port1.myDigitalPinState[Controller::Two];
-  myOldState.P1_PIN3 = port1.myDigitalPinState[Controller::Three];
-  myOldState.P1_PIN4 = port1.myDigitalPinState[Controller::Four];
-  myOldState.P1_PIN6 = port1.myDigitalPinState[Controller::Six];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -151,6 +140,25 @@ uInt8 RiotDebug::swbcnt(int newVal)
 
   return mySystem.peek(0x283);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 RiotDebug::inpt(int x)
+{
+  static TIARegister _inpt[6] = { INPT0, INPT1, INPT2, INPT3, INPT4, INPT5 };
+  return mySystem.peek(_inpt[x]);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool RiotDebug::vblank(int bit)
+{
+  if(bit == 6)       // latches
+    return mySystem.tia().myVBLANK & 0x40;
+  else if(bit == 7)  // dump to ground
+    return mySystem.tia().myDumpEnabled;
+  else
+    return true;
+}
+
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 RiotDebug::tim1T(int newVal)

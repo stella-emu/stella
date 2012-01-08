@@ -164,7 +164,7 @@ void Debugger::initialize()
   myWidth = BSPF_max(w, 0);
   myHeight = BSPF_max(h, 0);
   myWidth = BSPF_max(myWidth, 1050u);
-  myHeight = BSPF_max(myHeight, 620u);
+  myHeight = BSPF_max(myHeight, 700u);
   myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
 
   const GUI::Rect& r = getDialogBounds();

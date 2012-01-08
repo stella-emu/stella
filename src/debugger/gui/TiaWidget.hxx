@@ -51,11 +51,6 @@ class TiaWidget : public Widget, public CommandSender
     void changeColorRegs();
 
   private:
-    DataGridWidget* myRamGrid;
-    EditTextWidget* myBinValue;
-    EditTextWidget* myDecValue;
-    EditTextWidget* myLabel;
-
     DataGridWidget* myColorRegs;
 
     ColorWidget* myCOLUP0Color;

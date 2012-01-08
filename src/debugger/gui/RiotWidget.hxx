@@ -56,6 +56,11 @@ class RiotWidget : public Widget, public CommandSender
     ToggleBitWidget* mySWCHBWriteBits;
     ToggleBitWidget* mySWBCNTBits;
 
+    DataGridWidget* myLeftINPT;
+    DataGridWidget* myRightINPT;
+    CheckboxWidget* myINPTLatch;
+    CheckboxWidget* myINPTDump;
+
     DataGridWidget* myTimWrite;
     DataGridWidget* myTimRead;
 

@@ -1327,7 +1327,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         myDumpDisabledCycle = mySystem->cycles();
       }
 
-      // Are the latches for I4 and I5 being set?
+      // Are the latches for I4 and I5 being reset?
       if (!(myVBLANK & 0x40))
         myINPT4 = myINPT5 = 0x80;
 

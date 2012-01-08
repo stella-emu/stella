@@ -38,14 +38,14 @@
 
 #include "RiotWidget.hxx"
 
-#define CREATE_IO_REGS(desc, bits, bitsID)                               \
+#define CREATE_IO_REGS(desc, bits, bitsID, editable)                     \
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth, fontHeight, \
                            desc, kTextAlignLeft);                        \
   xpos += t->getWidth() + 5;                                             \
   bits = new ToggleBitWidget(boss, font, xpos, ypos, 8, 1);              \
   bits->setTarget(this);                                                 \
   bits->setID(bitsID);                                                   \
-  addFocusWidget(bits);                                                  \
+  if(editable) addFocusWidget(bits); else bits->setEditable(false);      \
   xpos += bits->getWidth() + 5;                                          \
   bits->setList(off, on);
 
@@ -74,30 +74,28 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   }
 
   // SWCHA bits in 'poke' mode
-  CREATE_IO_REGS("SWCHA(W):", mySWCHAWriteBits, kSWCHABitsID);
+  CREATE_IO_REGS("SWCHA(W):", mySWCHAWriteBits, kSWCHABitsID, true);
   col = xpos + 20;  // remember this for adding widgets to the second column
 
   // SWACNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWACNT:", mySWACNTBits, kSWACNTBitsID);
+  CREATE_IO_REGS("SWACNT:", mySWACNTBits, kSWACNTBitsID, true);
 
   // SWCHA bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHA(R):", mySWCHAReadBits, 0);
-  mySWCHAReadBits->setEditable(false);
+  CREATE_IO_REGS("SWCHA(R):", mySWCHAReadBits, 0, false);
 
   // SWCHB bits in 'poke' mode
   xpos = 10;  ypos += 2 * lineHeight;
-  CREATE_IO_REGS("SWCHB(W):", mySWCHBWriteBits, kSWCHBBitsID);
+  CREATE_IO_REGS("SWCHB(W):", mySWCHBWriteBits, kSWCHBBitsID, true);
 
   // SWBCNT bits
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWBCNT:", mySWBCNTBits, kSWBCNTBitsID);
+  CREATE_IO_REGS("SWBCNT:", mySWBCNTBits, kSWBCNTBitsID, true);
 
   // SWCHB bits in 'peek' mode
   xpos = 10;  ypos += lineHeight + 5;
-  CREATE_IO_REGS("SWCHB(R):", mySWCHBReadBits, 0);
-  mySWCHBReadBits->setEditable(false);
+  CREATE_IO_REGS("SWCHB(R):", mySWCHBReadBits, 0, false);
 
   // Timer registers (R/W)
   const char* writeNames[] = { "TIM1T:", "TIM8T:", "TIM64T:", "TIM1024T:" };
@@ -125,7 +123,6 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   myTimRead = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 8, 32, kBASE_16);
   myTimRead->setTarget(this);
   myTimRead->setEditable(false);
-  addFocusWidget(myTimRead);
 
   // Controller ports
   const RiotDebug& riot = instance().debugger().riotDebug();
@@ -136,10 +133,46 @@ RiotWidget::RiotWidget(GuiObject* boss, const GUI::Font& font,
   myRightControl = addControlWidget(boss, font, xpos, ypos,
       riot.controller(Controller::Right));
 
+  // TIA INPTx registers (R), left port
+  const char* contLeftReadNames[] = { "INPT0:", "INPT1:", "INPT4:" };
+  xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
+  for(int row = 0; row < 3; ++row)
+  {
+    new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+                         6*fontWidth, fontHeight, contLeftReadNames[row], kTextAlignLeft);
+  }
+  xpos += 6*fontWidth + 5;
+  myLeftINPT = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 2, 8, kBASE_16);
+  myLeftINPT->setTarget(this);
+  myLeftINPT->setEditable(false);
+
+  // TIA INPTx registers (R), right port
+  const char* contRightReadNames[] = { "INPT2:", "INPT3:", "INPT5:" };
+  xpos = col + myLeftControl->getWidth() + 15;
+  for(int row = 0; row < 3; ++row)
+  {
+    new StaticTextWidget(boss, font, xpos, ypos + row*lineHeight + 2,
+                         6*fontWidth, fontHeight, contRightReadNames[row], kTextAlignLeft);
+  }
+  xpos += 6*fontWidth + 5;
+  myRightINPT = new DataGridWidget(boss, font, xpos, ypos, 1, 3, 2, 8, kBASE_16);
+  myRightINPT->setTarget(this);
+  myRightINPT->setEditable(false);
+
+  // TIA INPTx VBLANK bits (D6-latch, D7-dump) (R)
+  xpos = col + 20;  ypos += myLeftINPT->getHeight() + lineHeight;
+  myINPTLatch = new CheckboxWidget(boss, font, xpos, ypos, "INPT latch (VBlank D6)");
+  myINPTLatch->setTarget(this);
+  myINPTLatch->setEditable(false);
+  ypos += lineHeight + 5;
+  myINPTDump = new CheckboxWidget(boss, font, xpos, ypos, "INPT dump to gnd (VBlank D7)");
+  myINPTDump->setTarget(this);
+  myINPTDump->setEditable(false);
+
   // PO & P1 difficulty switches
   int pwidth = font.getStringWidth("B/easy");
   lwidth = font.getStringWidth("P0 Diff: ");
-  xpos = col;  ypos += myLeftControl->getHeight() + 2 * lineHeight;
+  xpos = col;  ypos += 2 * lineHeight;
   items.clear();
   items.push_back("B/easy", "b");
   items.push_back("A/hard", "a");
@@ -220,6 +253,28 @@ void RiotWidget::loadConfig()
 
   // Update the SWCHB register booleans (peek mode)
   IO_REGS_UPDATE(mySWCHBReadBits, swchbReadBits);
+
+  // Update TIA INPTx registers
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(0);  vlist.push_back(state.INPT0);
+    changed.push_back(state.INPT0 != oldstate.INPT0);
+  alist.push_back(1);  vlist.push_back(state.INPT1);
+    changed.push_back(state.INPT1 != oldstate.INPT1);
+  alist.push_back(4);  vlist.push_back(state.INPT4);
+    changed.push_back(state.INPT4 != oldstate.INPT4);
+  myLeftINPT->setList(alist, vlist, changed);
+  alist.clear();  vlist.clear();  changed.clear();
+  alist.push_back(2);  vlist.push_back(state.INPT2);
+    changed.push_back(state.INPT2 != oldstate.INPT2);
+  alist.push_back(3);  vlist.push_back(state.INPT3);
+    changed.push_back(state.INPT3 != oldstate.INPT3);
+  alist.push_back(5);  vlist.push_back(state.INPT5);
+    changed.push_back(state.INPT5 != oldstate.INPT5);
+  myRightINPT->setList(alist, vlist, changed);
+
+  // Update TIA VBLANK bits
+  myINPTLatch->setState(riot.vblank(6));
+  myINPTDump->setState(riot.vblank(7));
 
   // Update timer write registers
   alist.clear();  vlist.clear();  changed.clear();

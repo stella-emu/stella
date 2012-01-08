@@ -40,8 +40,8 @@ class RiotState : public DebuggerState
     uInt8 TIM1T, TIM8T, TIM64T, TIM1024T, INTIM, TIMINT;
     Int32 TIMCLKS;
 
-    bool P0_PIN1, P0_PIN2, P0_PIN3, P0_PIN4, P0_PIN6;
-    bool P1_PIN1, P1_PIN2, P1_PIN3, P1_PIN4, P1_PIN6;
+    // These are actually from the TIA, but are I/O related
+    uInt8 INPT0, INPT1, INPT2, INPT3, INPT4, INPT5;
 };
 
 class RiotDebug : public DebuggerSystem
@@ -60,6 +60,11 @@ class RiotDebug : public DebuggerSystem
     uInt8 swacnt(int newVal = -1);
     uInt8 swchb(int newVal = -1);
     uInt8 swbcnt(int newVal = -1);
+
+    /* TIA INPTx and VBLANK registers
+       Techically not part of the RIOT, but more appropriately placed here */
+    uInt8 inpt(int x);
+    bool vblank(int bit);
 
     /* Timer registers & associated clock */
     uInt8 tim1T(int newVal = -1);
