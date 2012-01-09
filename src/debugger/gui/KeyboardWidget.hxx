@@ -35,6 +35,10 @@ class KeyboardWidget : public ControllerWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    CheckboxWidget* myBox[12];
+    Event::Type* myEvent;
+
+    static Event::Type ourLeftEvents[12], ourRightEvents[12];
 };
 
 #endif

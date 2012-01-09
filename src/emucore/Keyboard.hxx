@@ -62,12 +62,9 @@ class Keyboard : public Controller
       Update the entire digital and analog pin state according to the
       events currently set.
     */
-    void update();
+    void update() { }
 
   private:
-    // State of the output pins
-    uInt8 myPinState;
-
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myOneEvent, myTwoEvent, myThreeEvent,

@@ -313,17 +313,17 @@ class Console : public Serializable
     // Pointer to the osystem object
     OSystem* myOSystem;
 
-    // Pointers to the left and right controllers
-    Controller* myControllers[2];
-
-    // Pointer to the event object to use
-    Event* myEvent;
-
-    // Pointer to the TIA object 
-    TIA* myTIA;
+    // Reference to the event object to use
+    Event& myEvent;
 
     // Properties for the game
     Properties myProperties;
+
+    // Pointers to the left and right controllers
+    Controller* myControllers[2];
+
+    // Pointer to the TIA object 
+    TIA* myTIA;
 
     // Pointer to the switches on the front of the console
     Switches* mySwitches;

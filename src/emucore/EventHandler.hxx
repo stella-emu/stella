@@ -101,7 +101,7 @@ class EventHandler
 
       @return The event object
     */
-    Event* event() { return myEvent; }
+    Event& event() { return myEvent; }
 
     /**
       Initialize state of this eventhandler.
@@ -369,7 +369,7 @@ class EventHandler
     OSystem* myOSystem;
 
     // Global Event object
-    Event* myEvent;
+    Event myEvent;
 
     // Indicates current overlay object
     DialogContainer* myOverlay;

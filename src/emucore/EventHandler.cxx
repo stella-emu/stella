@@ -57,7 +57,6 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::EventHandler(OSystem* osystem)
   : myOSystem(osystem),
-    myEvent(NULL),
     myOverlay(NULL),
     myState(S_NONE),
     myAllowAllDirectionsFlag(false),
@@ -66,9 +65,6 @@ EventHandler::EventHandler(OSystem* osystem)
     myJoysticks(NULL),
     myNumJoysticks(0)
 {
-  // Create the event object which will be used for this handler
-  myEvent = new Event();
-
   // Erase the key mapping array
   for(int i = 0; i < SDLK_LAST; ++i)
   {
@@ -107,7 +103,6 @@ EventHandler::~EventHandler()
       free(ourMenuActionList[i].key);
 
   delete[] myJoysticks;
-  delete myEvent;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -609,8 +604,8 @@ void EventHandler::poll(uInt64 time)
         {
           if(!mySkipMouseMotion)
           {
-            myEvent->set(Event::MouseAxisXValue, event.motion.xrel);
-            myEvent->set(Event::MouseAxisYValue, event.motion.yrel);
+            myEvent.set(Event::MouseAxisXValue, event.motion.xrel);
+            myEvent.set(Event::MouseAxisYValue, event.motion.yrel);
           }
           mySkipMouseMotion = false;
         }
@@ -627,7 +622,7 @@ void EventHandler::poll(uInt64 time)
         // Determine which mode we're in, then send the event to the appropriate place
         if(myState == S_EMULATE)
         {
-          myEvent->set(Event::MouseButtonValue, state);
+          myEvent.set(Event::MouseButtonValue, state);
         }
         else if(myOverlay)
         {
@@ -705,14 +700,14 @@ void EventHandler::poll(uInt64 time)
             // The 'type-2' here refers to the fact that 'StellaJoystick::JT_STELLADAPTOR_LEFT'
             // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
-            if(button < 2) myEvent->set(SA_Button[joy.type-2][button], state);
+            if(button < 2) myEvent.set(SA_Button[joy.type-2][button], state);
             break;  // Stelladaptor button
           case StellaJoystick::JT_2600DAPTOR_LEFT:
           case StellaJoystick::JT_2600DAPTOR_RIGHT:
             // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
             // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
             // enum; subtracting four gives us Controller 0 and 1
-            if(button < 2) myEvent->set(SA_Button[joy.type-4][button], state);
+            if(button < 2) myEvent.set(SA_Button[joy.type-4][button], state);
             break;  // 2600DAPTOR button
           default:
             break;
@@ -746,16 +741,16 @@ void EventHandler::poll(uInt64 time)
               switch((int)eventAxisNeg)
               {
                 case Event::PaddleZeroAnalog:
-                  myEvent->set(Event::SALeftAxis0Value, value);
+                  myEvent.set(Event::SALeftAxis0Value, value);
                   break;
                 case Event::PaddleOneAnalog:
-                  myEvent->set(Event::SALeftAxis1Value, value);
+                  myEvent.set(Event::SALeftAxis1Value, value);
                   break;
                 case Event::PaddleTwoAnalog:
-                  myEvent->set(Event::SARightAxis0Value, value);
+                  myEvent.set(Event::SARightAxis0Value, value);
                   break;
                 case Event::PaddleThreeAnalog:
-                  myEvent->set(Event::SARightAxis1Value, value);
+                  myEvent.set(Event::SARightAxis1Value, value);
                   break;
                 default:
                 {
@@ -816,7 +811,7 @@ void EventHandler::poll(uInt64 time)
             // and 'StellaJoystick::JT_STELLADAPTOR_RIGHT' are at index 2 and 3 in the JoyType
             // enum; subtracting two gives us Controller 0 and 1
             if(axis < 2)
-              myEvent->set(SA_Axis[type-2][axis], value);
+              myEvent.set(SA_Axis[type-2][axis], value);
             break;  // Stelladaptor axis
           case StellaJoystick::JT_2600DAPTOR_LEFT:
           case StellaJoystick::JT_2600DAPTOR_RIGHT:
@@ -824,7 +819,7 @@ void EventHandler::poll(uInt64 time)
             // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
             // enum; subtracting four gives us Controller 0 and 1
             if(axis < 2)
-              myEvent->set(SA_Axis[type-4][axis], value);
+              myEvent.set(SA_Axis[type-4][axis], value);
             break;  // 26000daptor axis
         }
         break;  // SDL_JOYAXISMOTION
@@ -916,8 +911,8 @@ void EventHandler::poll(uInt64 time)
 
   // Turn off all mouse-related items; if they haven't been taken care of
   // in the previous ::update() methods, they're now invalid
-  myEvent->set(Event::MouseAxisXValue, 0);
-  myEvent->set(Event::MouseAxisYValue, 0);
+  myEvent.set(Event::MouseAxisXValue, 0);
+  myEvent.set(Event::MouseAxisYValue, 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -931,42 +926,42 @@ void EventHandler::handleEvent(Event::Type event, int state)
     // If enabled, make sure 'impossible' joystick directions aren't allowed
     case Event::JoystickZeroUp:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickZeroDown, 0);
+        myEvent.set(Event::JoystickZeroDown, 0);
       break;
 
     case Event::JoystickZeroDown:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickZeroUp, 0);
+        myEvent.set(Event::JoystickZeroUp, 0);
       break;
 
     case Event::JoystickZeroLeft:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickZeroRight, 0);
+        myEvent.set(Event::JoystickZeroRight, 0);
       break;
 
     case Event::JoystickZeroRight:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickZeroLeft, 0);
+        myEvent.set(Event::JoystickZeroLeft, 0);
       break;
 
     case Event::JoystickOneUp:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickOneDown, 0);
+        myEvent.set(Event::JoystickOneDown, 0);
       break;
 
     case Event::JoystickOneDown:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickOneUp, 0);
+        myEvent.set(Event::JoystickOneUp, 0);
       break;
 
     case Event::JoystickOneLeft:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickOneRight, 0);
+        myEvent.set(Event::JoystickOneRight, 0);
       break;
 
     case Event::JoystickOneRight:
       if(!myAllowAllDirectionsFlag && state)
-        myEvent->set(Event::JoystickOneLeft, 0);
+        myEvent.set(Event::JoystickOneLeft, 0);
       break;
     ////////////////////////////////////////////////////////////////////////
 
@@ -1061,7 +1056,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
     myOSystem->frameBuffer().showMessage(ourMessageTable[event]);
 
   // Otherwise, pass it to the emulation core
-  myEvent->set(event, state);
+  myEvent.set(event, state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2089,7 +2084,7 @@ void EventHandler::setEventState(State state)
   }
 
   // Always clear any pending events when changing states
-  myEvent->clear();
+  myEvent.clear();
 
   // Sometimes an extraneous mouse motion event is generated
   // after a state change, which should be supressed

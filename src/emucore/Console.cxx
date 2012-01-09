@@ -68,26 +68,21 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   : myOSystem(osystem),
+    myEvent(osystem->eventHandler().event()),
     myProperties(props),
+    myTIA(0),
+    mySwitches(0),
+    mySystem(0),
+    myCart(cart),
     myDisplayFormat("NTSC"),
     myFramerate(60.0),
     myUserPaletteDefined(false)
 {
-  myControllers[0] = 0;
-  myControllers[1] = 0;
-  myTIA = 0;
-  mySwitches = 0;
-  mySystem = 0;
-  myEvent = 0;
-
-  // Attach the event subsystem to the current console
-  myEvent = myOSystem->eventHandler().event();
-
   // Load user-defined palette for this ROM
   loadUserPalette();
 
   // Create switches for the console
-  mySwitches = new Switches(*myEvent, myProperties);
+  mySwitches = new Switches(myEvent, myProperties);
 
   // Construct the system and components
   mySystem = new System(13, 6);
@@ -109,7 +104,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   m6502->attach(myOSystem->debugger());
 #endif
 
-  myCart = cart;
   myRiot = new M6532(*this, myOSystem->settings());
   myTIA  = new TIA(*this, myOSystem->sound(), myOSystem->settings());
 
@@ -592,8 +586,7 @@ void Console::changeHeight(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setControllers(const string& rommd5)
 {
-  delete myControllers[0];
-  delete myControllers[1];
+  myControllers[0] = myControllers[1] = 0;
 
   // Setup the controllers based on properties
   const string& left  = myProperties.get(Controller_Left);
@@ -616,15 +609,15 @@ void Console::setControllers(const string& rommd5)
   // Construct left controller
   if(left == "BOOSTERGRIP")
   {
-    myControllers[leftPort] = new BoosterGrip(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new BoosterGrip(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "DRIVING")
   {
-    myControllers[leftPort] = new Driving(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new Driving(Controller::Left, myEvent, *mySystem);
   }
   else if((left == "KEYBOARD") || (left == "KEYPAD"))
   {
-    myControllers[leftPort] = new Keyboard(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new Keyboard(Controller::Left, myEvent, *mySystem);
   }
   else if(BSPF_startsWithIgnoreCase(left, "PADDLES"))
   {
@@ -636,53 +629,53 @@ void Console::setControllers(const string& rommd5)
     else if(left == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
     myControllers[leftPort] =
-      new Paddles(Controller::Left, *myEvent, *mySystem,
+      new Paddles(Controller::Left, myEvent, *mySystem,
                   swapPaddles, swapAxis, swapDir);
   }
   else if(left == "TRACKBALL22")
   {
-    myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+    myControllers[leftPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
                                             Controller::TrackBall22);
   }
   else if(left == "TRACKBALL80")
   {
-    myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+    myControllers[leftPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
                                             Controller::TrackBall80);
   }
   else if(left == "AMIGAMOUSE")
   {
-    myControllers[leftPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+    myControllers[leftPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
                                             Controller::AmigaMouse);
   }
   else if(left == "GENESIS")
   {
-    myControllers[leftPort] = new Genesis(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new Genesis(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "COMPUMATE")
   {
-    myControllers[leftPort] = new CompuMate(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new CompuMate(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "MINDLINK")
   {
-    myControllers[leftPort] = new MindLink(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new MindLink(Controller::Left, myEvent, *mySystem);
   }
   else
   {
-    myControllers[leftPort] = new Joystick(Controller::Left, *myEvent, *mySystem);
+    myControllers[leftPort] = new Joystick(Controller::Left, myEvent, *mySystem);
   }
  
   // Construct right controller
   if(right == "BOOSTERGRIP")
   {
-    myControllers[rightPort] = new BoosterGrip(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new BoosterGrip(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "DRIVING")
   {
-    myControllers[rightPort] = new Driving(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new Driving(Controller::Right, myEvent, *mySystem);
   }
   else if((right == "KEYBOARD") || (right == "KEYPAD"))
   {
-    myControllers[rightPort] = new Keyboard(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new Keyboard(Controller::Right, myEvent, *mySystem);
   }
   else if(BSPF_startsWithIgnoreCase(right, "PADDLES"))
   {
@@ -694,56 +687,56 @@ void Console::setControllers(const string& rommd5)
     else if(right == "PADDLES_IAXDR")
       swapAxis = swapDir = true;
     myControllers[rightPort] =
-      new Paddles(Controller::Right, *myEvent, *mySystem,
+      new Paddles(Controller::Right, myEvent, *mySystem,
                   swapPaddles, swapAxis, swapDir);
   }
   else if(right == "TRACKBALL22")
   {
-    myControllers[rightPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+    myControllers[rightPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
                                              Controller::TrackBall22);
   }
   else if(right == "TRACKBALL80")
   {
-    myControllers[rightPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+    myControllers[rightPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
                                              Controller::TrackBall80);
   }
   else if(right == "AMIGAMOUSE")
   {
-    myControllers[rightPort] = new TrackBall(Controller::Left, *myEvent, *mySystem,
+    myControllers[rightPort] = new TrackBall(Controller::Left, myEvent, *mySystem,
                                              Controller::AmigaMouse);
   }
   else if(right == "ATARIVOX")
   {
     const string& eepromfile = myOSystem->eepromDir() + "atarivox_eeprom.dat";
-    myControllers[rightPort] = new AtariVox(Controller::Right, *myEvent,
+    myControllers[rightPort] = new AtariVox(Controller::Right, myEvent,
                    *mySystem, myOSystem->serialPort(),
                    myOSystem->settings().getString("avoxport"), eepromfile);
   }
   else if(right == "SAVEKEY")
   {
     const string& eepromfile = myOSystem->eepromDir() + "savekey_eeprom.dat";
-    myControllers[rightPort] = new SaveKey(Controller::Right, *myEvent, *mySystem,
+    myControllers[rightPort] = new SaveKey(Controller::Right, myEvent, *mySystem,
                                            eepromfile);
   }
   else if(right == "GENESIS")
   {
-    myControllers[rightPort] = new Genesis(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new Genesis(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "COMPUMATE")
   {
-    myControllers[rightPort] = new CompuMate(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new CompuMate(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "KIDVID")
   {
-    myControllers[rightPort] = new KidVid(Controller::Right, *myEvent, *mySystem, rommd5);
+    myControllers[rightPort] = new KidVid(Controller::Right, myEvent, *mySystem, rommd5);
   }
   else if(right == "MINDLINK")
   {
-    myControllers[rightPort] = new MindLink(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new MindLink(Controller::Right, myEvent, *mySystem);
   }
   else
   {
-    myControllers[rightPort] = new Joystick(Controller::Right, *myEvent, *mySystem);
+    myControllers[rightPort] = new Joystick(Controller::Right, myEvent, *mySystem);
   }
 
   myControllers[leftPort]->enable(false);
@@ -1130,7 +1123,8 @@ uInt32 Console::ourUserSECAMPalette[256] = { 0 }; // filled from external file
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Console::Console(const Console& console)
-  : myOSystem(console.myOSystem)
+  : myOSystem(console.myOSystem),
+    myEvent(console.myEvent)
 {
   assert(false);
 }
