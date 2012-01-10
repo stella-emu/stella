@@ -38,7 +38,7 @@ DrivingWidget::DrivingWidget(GuiObject* boss, const GUI::Font& font,
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
                            fontHeight, label, kTextAlignLeft);
 
-  ypos += t->getHeight() + 10;
+  ypos += t->getHeight() + 20;
   myGreyUp = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
                               "Grey code +", kGreyUpCmd);
   myGreyUp->setTarget(this);

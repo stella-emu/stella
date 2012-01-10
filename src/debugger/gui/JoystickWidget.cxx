@@ -35,7 +35,7 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
 
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
                            fontHeight, label, kTextAlignLeft);
-  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 10;
+  xpos += t->getWidth()/2 - 5;  ypos += t->getHeight() + 20;
   myPins[kJUp] = new CheckboxWidget(boss, font, xpos, ypos, "", kCheckActionCmd);
   myPins[kJUp]->setID(kJUp);
   myPins[kJUp]->setTarget(this);
@@ -57,7 +57,7 @@ JoystickWidget::JoystickWidget(GuiObject* boss, const GUI::Font& font,
   myPins[kJRight]->setTarget(this);
 
   xpos -= (myPins[kJUp]->getWidth() + 5) * 2;
-  ypos = 20 + (myPins[kJUp]->getHeight() + 10) * 3;
+  ypos = 30 + (myPins[kJUp]->getHeight() + 10) * 3;
   myPins[kJFire] = new CheckboxWidget(boss, font, xpos, ypos, "Fire", kCheckActionCmd);
   myPins[kJFire]->setID(kJFire);
   myPins[kJFire]->setTarget(this);

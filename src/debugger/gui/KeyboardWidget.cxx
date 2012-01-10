@@ -36,7 +36,7 @@ KeyboardWidget::KeyboardWidget(GuiObject* boss, const GUI::Font& font,
   t = new StaticTextWidget(boss, font, xpos, ypos+2, lwidth,
                            fontHeight, label, kTextAlignLeft);
 
-  xpos += 30;  ypos += t->getHeight() + 10;
+  xpos += 30;  ypos += t->getHeight() + 20;
 
   for(int i = 0; i < 12; ++i)
   {
