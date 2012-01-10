@@ -55,6 +55,7 @@ class DataGridWidget : public EditableWidget
                  const BoolArray& changed);
     /** Convenience method for when the datagrid contains only one value */
     void setList(int a, int v, bool changed);
+    void setList(int a, int v); // automatically calculate if changed
 
     void setHiliteList(const BoolArray& hilitelist);
     void setNumRows(int rows);

@@ -20,6 +20,10 @@
 #ifndef DRIVING_WIDGET_HXX
 #define DRIVING_WIDGET_HXX
 
+class ButtonWidget;
+class CheckboxWidget;
+class DataGridWidget;
+
 #include "Control.hxx"
 #include "Event.hxx"
 #include "ControllerWidget.hxx"
@@ -35,6 +39,18 @@ class DrivingWidget : public ControllerWidget
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    enum {
+      kGreyUpCmd   = 'DWup',
+      kGreyDownCmd = 'DWdn',
+      kFireCmd     = 'DWfr'
+    };
+    ButtonWidget *myGreyUp, *myGreyDown;
+    DataGridWidget* myGreyValue;
+    CheckboxWidget* myFire;
+
+    int myGreyIndex;
+
+    static uInt8 ourGreyTable[4];
 };
 
 #endif

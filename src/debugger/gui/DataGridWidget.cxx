@@ -147,6 +147,20 @@ void DataGridWidget::setList(int a, int v, bool c)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void DataGridWidget::setList(int a, int v)
+{
+  IntArray alist, vlist;
+  BoolArray changed;
+
+  alist.push_back(a);
+  vlist.push_back(v);
+  bool diff = _addrList.size() == 1 ? getSelectedValue() != v : false;
+  changed.push_back(diff);
+
+  setList(alist, vlist, changed);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DataGridWidget::setHiliteList(const BoolArray& hilitelist)
 {
   assert(hilitelist.size() == uInt32(_rows * _cols));
