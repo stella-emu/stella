@@ -89,13 +89,6 @@ class AtariVox : public Controller
     */
     void systemCyclesReset();
 
-    /**
-      Notification to controllers that they should enable or disable
-      reads and writes on their pins.  Most controllers do not
-      implement this.
-    */
-    void enable(bool state) { myIsEnabled = state; }
-
     string about() const;
 
   private:
@@ -125,9 +118,6 @@ class AtariVox : public Controller
     // driver code sends data at 62 CPU cycles per bit, which is
     // "close enough".
     uInt32 myLastDataWriteCycle;
-
-    // Whether we should process reads and writes
-    bool myIsEnabled;
 
     // Holds information concerning serial port usage
     string myAboutString;

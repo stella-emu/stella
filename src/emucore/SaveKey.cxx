@@ -25,8 +25,7 @@
 SaveKey::SaveKey(Jack jack, const Event& event, const System& system,
                  const string& eepromfile)
   : Controller(jack, event, system, Controller::SaveKey),
-    myEEPROM(NULL),
-    myIsEnabled(false)
+    myEEPROM(NULL)
 {
   myEEPROM = new MT24LC256(eepromfile, system);
 
@@ -43,9 +42,6 @@ SaveKey::~SaveKey()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool SaveKey::read(DigitalPin pin)
 {
-  if(!myIsEnabled)
-    return Controller::read(pin);
-
   // We need to override the Controller::read() method, since the timing
   // of the actual read is important for the EEPROM (we can't just read
   // 60 times per second in the ::update() method)
@@ -64,9 +60,6 @@ bool SaveKey::read(DigitalPin pin)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SaveKey::write(DigitalPin pin, bool value)
 {
-  if(!myIsEnabled)
-    return;
-
   // Change the pin state based on value
   switch(pin)
   {

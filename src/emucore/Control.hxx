@@ -189,13 +189,6 @@ class Controller : public Serializable
     virtual void systemCyclesReset() { };
 
     /**
-      Notification to controllers that they should enable or disable
-      reads and writes on their pins.  Most controllers do not
-      implement this.
-    */
-    virtual void enable(bool state) { };
-
-    /**
       Determines how this controller will treat values received from the
       X and Y axis of the mouse.  Since not all controllers use the mouse,
       it's up to the specific class to decide how to use this data.

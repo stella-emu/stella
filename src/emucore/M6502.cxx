@@ -462,56 +462,6 @@ bool M6502::load(Serializer& in)
   return true;
 }
 
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-ostream& operator<<(ostream& out, const M6502::AddressingMode& mode)
-{
-  switch(mode)
-  {
-    case M6502::Absolute:
-      out << "$nnnn  ";
-      break;
-    case M6502::AbsoluteX:
-      out << "$nnnn,X";
-      break;
-    case M6502::AbsoluteY:
-      out << "$nnnn,Y";
-      break;
-    case M6502::Implied:
-      out << "implied";
-      break;
-    case M6502::Immediate:
-      out << "#$nn   ";
-      break;
-    case M6502::Indirect:
-      out << "($nnnn)";
-      break;
-    case M6502::IndirectX:
-      out << "($nn,X)";
-      break;
-    case M6502::IndirectY:
-      out << "($nn),Y";
-      break;
-    case M6502::Invalid:
-      out << "invalid";
-      break;
-    case M6502::Relative:
-      out << "$nn    ";
-      break;
-    case M6502::Zero:
-      out << "$nn    ";
-      break;
-    case M6502::ZeroX:
-      out << "$nn,X  ";
-      break;
-    case M6502::ZeroY:
-      out << "$nn,Y  ";
-      break;
-  }
-  return out;
-}
-#endif
-
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void M6502::attach(Debugger& debugger)
@@ -577,7 +527,6 @@ void M6502::setTraps(PackedBitArray *read, PackedBitArray *write)
   myReadTraps = read;
   myWriteTraps = write;
 }
-
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

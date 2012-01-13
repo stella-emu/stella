@@ -93,18 +93,15 @@ class Debugger : public DialogContainer
   public:
     /**
       Updates the basedialog to be of the type defined for this derived class.
+
+      @param console  The console to use for this debugging session.
     */
-    void initialize();
+    void initialize(Console* console);
 
     /**
       Initialize the video subsystem wrt this class.
     */
     FBInitStatus initializeVideo();
-
-    /**
-      Inform this object of a console change.
-    */
-    void setConsole(Console* console);
 
     /**
       Wrapper method for EventHandler::enterDebugMode() for those classes
@@ -292,8 +289,6 @@ class Debugger : public DialogContainer
     bool readTrap(int t);
     bool writeTrap(int t);
     void clearAllTraps();
-
-    void reloadROM();
 
     // Set a bunch of RAM locations at once
     string setRAM(IntArray& args);

@@ -31,8 +31,7 @@ AtariVox::AtariVox(Jack jack, const Event& event, const System& system,
     myEEPROM(NULL),
     myShiftCount(0),
     myShiftRegister(0),
-    myLastDataWriteCycle(0),
-    myIsEnabled(false)
+    myLastDataWriteCycle(0)
 {
   if(mySerialPort.openPort(portname))
     myAboutString = " (using serial port \'" + portname + "\')";
@@ -57,9 +56,6 @@ AtariVox::~AtariVox()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool AtariVox::read(DigitalPin pin)
 {
-  if(!myIsEnabled)
-    return Controller::read(pin);
-
   // We need to override the Controller::read() method, since the timing
   // of the actual read is important for the EEPROM (we can't just read
   // 60 times per second in the ::update() method)
@@ -83,9 +79,6 @@ bool AtariVox::read(DigitalPin pin)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void AtariVox::write(DigitalPin pin, bool value)
 {
-  if(!myIsEnabled)
-    return;
-
   // Change the pin state based on value
   switch(pin)
   {

@@ -85,19 +85,9 @@ class SaveKey : public Controller
     */
     void systemCyclesReset();
 
-    /**
-      Notification to controllers that they should enable or disable
-      reads and writes on their pins.  Most controllers do not
-      implement this.
-    */
-    void enable(bool state) { myIsEnabled = state; }
-
   private:
     // The EEPROM used in the SaveKey
     MT24LC256* myEEPROM;
-
-    // Whether we should process reads and writes
-    bool myIsEnabled;
 };
 
 #endif

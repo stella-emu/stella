@@ -156,8 +156,31 @@ Debugger::~Debugger()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::initialize()
+void Debugger::initialize(Console* console)
 {
+  assert(console);
+
+  // Keep pointers to these items for efficiency
+  myConsole = console;
+  mySystem = &(myConsole->system());
+
+  // Create debugger subsystems
+  delete myCpuDebug;
+  myCpuDebug = new CpuDebug(*this, *myConsole);
+
+  delete myCartDebug;
+  myCartDebug = new CartDebug(*this, *myConsole, *myOSystem);
+
+  delete myRiotDebug;
+  myRiotDebug = new RiotDebug(*this, *myConsole);
+
+  delete myTiaDebug;
+  myTiaDebug = new TIADebug(*this, *myConsole);
+
+  // Initialize breakpoints to known state
+  clearAllBreakPoints();
+  clearAllTraps();
+
   // Get the dialog size
   int w, h;
   myOSystem->settings().getSize("debuggerres", w, h);
@@ -184,33 +207,6 @@ FBInitStatus Debugger::initializeVideo()
 
   string title = string("Stella ") + STELLA_VERSION + ": Debugger mode";
   return myOSystem->frameBuffer().initialize(title, r.width(), r.height());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::setConsole(Console* console)
-{
-  assert(console);
-
-  // Keep pointers to these items for efficiency
-  myConsole = console;
-  mySystem = &(myConsole->system());
-
-  // Create debugger subsystems
-  delete myCpuDebug;
-  myCpuDebug = new CpuDebug(*this, *myConsole);
-
-  delete myCartDebug;
-  myCartDebug = new CartDebug(*this, *myConsole, *myOSystem);
-
-  delete myRiotDebug;
-  myRiotDebug = new RiotDebug(*this, *myConsole);
-
-  delete myTiaDebug;
-  myTiaDebug = new TIADebug(*this, *myConsole);
-
-  // Initialize breakpoints to known state
-  clearAllBreakPoints();
-  clearAllTraps();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -583,12 +579,6 @@ void Debugger::clearAllTraps()
 string Debugger::showWatches()
 {
   return myParser->showWatches();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::reloadROM()
-{
-  myOSystem->createConsole();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

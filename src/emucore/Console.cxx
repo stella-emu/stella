@@ -87,17 +87,15 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Construct the system and components
   mySystem = new System(13, 6);
 
-  // Add the controllers for this system
-  const string& md5 = myProperties.get(Cartridge_MD5);
-  setControllers(md5);
-
-  // Bumper Bash always requires all 4 directions
-  // Other ROMs can use it if the setting is enabled
-  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
-                   md5 == "1bf503c724001b09be79c515ecfcbd03" ||
-                   myOSystem->settings().getBool("joyallow4");
-  myOSystem->eventHandler().allowAllDirections(joyallow4);
-
+  // The real controllers for this console will be added later
+  // For now, we just add dummy joystick controllers, since autodetection
+  // runs the emulation for a while, and this may interfere with 'smart'
+  // controllers such as the AVox and SaveKey
+  // Note that the controllers must be added directly after the system
+  // has been created, and before any other device is added
+  // (particularly the M6532)
+  myControllers[0] = new Joystick(Controller::Left, myEvent, *mySystem);
+  myControllers[1] = new Joystick(Controller::Right, myEvent, *mySystem);
 
   M6502* m6502 = new M6502(1);
 #ifdef DEBUGGER_SUPPORT
@@ -111,12 +109,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   mySystem->attach(myRiot);
   mySystem->attach(myTIA);
   mySystem->attach(myCart);
-
-#ifdef DEBUGGER_SUPPORT
-  // The debugger must be added before we run the console for the first time
-  myOSystem->debugger().setConsole(this);
-  myOSystem->debugger().initialize();
-#endif
 
   // Auto-detect NTSC/PAL mode if it's requested
   string autodetected = "";
@@ -194,10 +186,24 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     myTIA->setHeight(height);
   }
 
+  // Add the real controllers for this system
+  // This must be done before the debugger is initialized
+  const string& md5 = myProperties.get(Cartridge_MD5);
+  setControllers(md5);
+
+  // Bumper Bash always requires all 4 directions
+  // Other ROMs can use it if the setting is enabled
+  bool joyallow4 = md5 == "aa1c41f86ec44c0a44eb64c332ce08af" ||
+                   md5 == "1bf503c724001b09be79c515ecfcbd03" ||
+                   myOSystem->settings().getBool("joyallow4");
+  myOSystem->eventHandler().allowAllDirections(joyallow4);
+
   // Reset the system to its power-on state
   mySystem->reset();
-  myControllers[0]->enable(true);
-  myControllers[1]->enable(true);
+
+#ifdef DEBUGGER_SUPPORT
+  myOSystem->debugger().initialize(this);
+#endif
 
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
@@ -586,7 +592,8 @@ void Console::changeHeight(int direction)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setControllers(const string& rommd5)
 {
-  myControllers[0] = myControllers[1] = 0;
+  delete myControllers[0];
+  delete myControllers[1];
 
   // Setup the controllers based on properties
   const string& left  = myProperties.get(Controller_Left);
@@ -738,9 +745,6 @@ void Console::setControllers(const string& rommd5)
   {
     myControllers[rightPort] = new Joystick(Controller::Right, myEvent, *mySystem);
   }
-
-  myControllers[leftPort]->enable(false);
-  myControllers[rightPort]->enable(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
