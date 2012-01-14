@@ -162,10 +162,6 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   else
     return kFailTooLarge;
 
-  // Enable unicode so we can see translated key events
-  // (lowercase vs. uppercase characters)
-  SDL_EnableUNICODE(1);
-
   // Erase any messages from a previous run
   myMsg.counter = 0;
 

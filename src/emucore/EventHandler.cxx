@@ -2032,32 +2032,41 @@ void EventHandler::setEventState(State state)
 {
   myState = state;
 
+  // Only enable Unicode in GUI modes, since there we need it for ascii data
+  // Otherwise, it causes a performance hit, so leave it off
   switch(myState)
   {
     case S_EMULATE:
       myOverlay = NULL;
       myOSystem->sound().mute(false);
+      SDL_EnableUNICODE(0);
       break;
 
     case S_PAUSE:
+      myOverlay = NULL;
       myOSystem->sound().mute(true);
+      SDL_EnableUNICODE(0);
       break;
 
     case S_MENU:
       myOverlay = &myOSystem->menu();
+      SDL_EnableUNICODE(1);
       break;
 
     case S_CMDMENU:
       myOverlay = &myOSystem->commandMenu();
+      SDL_EnableUNICODE(1);
       break;
 
     case S_LAUNCHER:
       myOverlay = &myOSystem->launcher();
+      SDL_EnableUNICODE(1);
       break;
 
 #ifdef DEBUGGER_SUPPORT
     case S_DEBUGGER:
       myOverlay = &myOSystem->debugger();
+      SDL_EnableUNICODE(1);
       break;
 #endif
 
