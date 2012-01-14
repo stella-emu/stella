@@ -231,8 +231,9 @@ bool Console::save(Serializer& out) const
     if(!mySystem->save(out))
       return false;
 
-    // Now save the console switches
-    if(!mySwitches->save(out))
+    // Now save the console controllers and switches
+    if(!(myControllers[0]->save(out) && myControllers[1]->save(out) &&
+         mySwitches->save(out)))
       return false;
   }
   catch(const char* msg)
@@ -253,8 +254,9 @@ bool Console::load(Serializer& in)
     if(!mySystem->load(in))
       return false;
 
-    // Then load the console switches
-    if(!mySwitches->load(in))
+    // Then load the console controllers and switches
+    if(!(myControllers[0]->load(in) && myControllers[1]->load(in) &&
+         mySwitches->load(in)))
       return false;
   }
   catch(const char* msg)
