@@ -47,8 +47,8 @@ class TiaOutputWidget : public Widget, public CommandSender
 /*
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);
-    virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
-    virtual bool handleKeyUp(int ascii, int keycode, int modifiers);
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
+    virtual bool handleKeyUp(StellaKey key, StellaMod mod, char ascii);
 */
 
   protected:

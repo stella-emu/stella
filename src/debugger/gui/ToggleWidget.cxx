@@ -97,93 +97,92 @@ int ToggleWidget::findItem(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ToggleWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Ignore all mod keys
-  if(instance().eventHandler().kbdControl(modifiers) ||
-     instance().eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdControl(mod) ||
+     instance().eventHandler().kbdAlt(mod))
     return true;
 
   bool handled = true;
   bool dirty = false, toggle = false;
 
-  switch(ascii)
+  switch(key)
   {
-	case '\n':  // enter/return
-	case '\r':
-	  if (_currentRow >= 0 && _currentCol >= 0)
-	  {
-		dirty = true;
+    case KBDK_RETURN:
+      if (_currentRow >= 0 && _currentCol >= 0)
+      {
+        dirty = true;
         toggle = true;
-	  }
-	  break;
+      }
+      break;
 
-	case 256+17:  // up arrow
-	  if (_currentRow > 0)
-	  {
-		_currentRow--;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_UP:
+      if (_currentRow > 0)
+      {
+        _currentRow--;
+        dirty = true;
+      }
+      break;
 
-	case 256+18:  // down arrow
-	  if (_currentRow < (int) _rows - 1)
-	  {
-		_currentRow++;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_DOWN:
+      if (_currentRow < (int) _rows - 1)
+      {
+        _currentRow++;
+        dirty = true;
+      }
+      break;
 
-	case 256+20:  // left arrow
-	  if (_currentCol > 0)
-	  {
-		_currentCol--;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_LEFT:
+      if (_currentCol > 0)
+      {
+        _currentCol--;
+        dirty = true;
+      }
+      break;
 
-	case 256+19:  // right arrow
-	  if (_currentCol < (int) _cols - 1)
-	  {
-		_currentCol++;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_RIGHT:
+      if (_currentCol < (int) _cols - 1)
+      {
+        _currentCol++;
+        dirty = true;
+      }
+      break;
 
-	case 256+24:  // pageup
-	  if (_currentRow > 0)
-	  {
-		_currentRow = 0;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_PAGEUP:
+      if (_currentRow > 0)
+      {
+        _currentRow = 0;
+        dirty = true;
+      }
+      break;
 
-	case 256+25:  // pagedown
-	  if (_currentRow < (int) _rows - 1)
-	  {
-		_currentRow = _rows - 1;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_PAGEDOWN:
+      if (_currentRow < (int) _rows - 1)
+      {
+        _currentRow = _rows - 1;
+        dirty = true;
+      }
+      break;
 
-	case 256+22:  // home
-	  if (_currentCol > 0)
-	  {
-		_currentCol = 0;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_HOME:
+      if (_currentCol > 0)
+      {
+        _currentCol = 0;
+        dirty = true;
+      }
+      break;
 
-	case 256+23:  // end
-	  if (_currentCol < (int) _cols - 1)
-	  {
-		_currentCol = _cols - 1;
-		dirty = true;
-	  }
-	  break;
+    case KBDK_END:
+      if (_currentCol < (int) _cols - 1)
+      {
+        _currentCol = _cols - 1;
+        dirty = true;
+      }
+      break;
 
-	default:
-	  handled = false;
+    default:
+      handled = false;
   }
 
   if (dirty)
@@ -205,7 +204,7 @@ bool ToggleWidget::handleKeyDown(int ascii, int keycode, int modifiers)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ToggleWidget::handleCommand(CommandSender* sender, int cmd,
-                                    int data, int id)
+                                 int data, int id)
 {
   switch (cmd)
   {

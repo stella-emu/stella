@@ -90,72 +90,71 @@ bool EditableWidget::tryInsertChar(char c, int pos)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool EditableWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   if(!_editable)
     return true;
 
   // Ignore all alt-mod keys
-  if(instance().eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdAlt(mod))
     return true;
 
   bool handled = true;
   bool dirty = false;
 
-  switch (ascii)
+  switch(key)
   {
-    case '\n':  // enter/return
-    case '\r':
+    case KBDK_RETURN:
       // confirm edit and exit editmode
       endEditMode();
       sendCommand(kEditAcceptCmd, 0, _id);
       dirty = true;
       break;
 
-    case 27:    // escape
+    case KBDK_ESCAPE:
       abortEditMode();
       sendCommand(kEditCancelCmd, 0, _id);
       dirty = true;
       break;
 
-    case 8:     // backspace
+    case KBDK_BACKSPACE:
       dirty = killChar(-1);
       if(dirty)  sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 127:   // delete
+    case KBDK_DELETE:
       dirty = killChar(+1);
       if(dirty)  sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 256 + 20:  // left arrow
-      if(instance().eventHandler().kbdControl(modifiers))
-        dirty = specialKeys(ascii, keycode);
+    case KBDK_LEFT:
+      if(instance().eventHandler().kbdControl(mod))
+        dirty = specialKeys(key, ascii);
       else if(_caretPos > 0)
         dirty = setCaretPos(_caretPos - 1);
       break;
 
-    case 256 + 19:  // right arrow
-      if(instance().eventHandler().kbdControl(modifiers))
-        dirty = specialKeys(ascii, keycode);
+    case KBDK_RIGHT:
+      if(instance().eventHandler().kbdControl(mod))
+        dirty = specialKeys(key, ascii);
       else if(_caretPos < (int)_editString.size())
         dirty = setCaretPos(_caretPos + 1);
       break;
 
-    case 256 + 22:  // home
+    case KBDK_HOME:
       dirty = setCaretPos(0);
       break;
 
-    case 256 + 23:  // end
+    case KBDK_END:
       dirty = setCaretPos(_editString.size());
       break;
 
     default:
-      if (instance().eventHandler().kbdControl(modifiers))
+      if (instance().eventHandler().kbdControl(mod))
       {
-        dirty = specialKeys(ascii, keycode);
+        dirty = specialKeys(key, ascii);
       }
-      else if (tryInsertChar((char)ascii, _caretPos))
+      else if (tryInsertChar(ascii, _caretPos))
       {
         _caretPos++;
         sendCommand(kEditChangedCmd, ascii, _id);
@@ -253,55 +252,55 @@ bool EditableWidget::adjustOffset()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EditableWidget::specialKeys(int ascii, int keycode)
+bool EditableWidget::specialKeys(StellaKey key, char ascii)
 {
   bool handled = true;
 
-  switch (keycode)
+  switch (key)
   {
-    case 'a':
+    case KBDK_a:
       setCaretPos(0);
       break;
 
-    case 'c':
+    case KBDK_c:
       copySelectedText();
       if(handled) sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 'e':
+    case KBDK_e:
       setCaretPos(_editString.size());
       break;
 
-    case 'd':
+    case KBDK_d:
       handled = killChar(+1);
       if(handled) sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 'k':
+    case KBDK_k:
       handled = killLine(+1);
       if(handled) sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 'u':
+    case KBDK_u:
       handled = killLine(-1);
       if(handled) sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 'v':
+    case KBDK_v:
       pasteSelectedText();
       if(handled) sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 'w':
+    case KBDK_w:
       handled = killLastWord();
       if(handled) sendCommand(kEditChangedCmd, ascii, _id);
       break;
 
-    case 256 + 20:  // left arrow
+    case KBDK_LEFT:
       handled = moveWord(-1);
       break;
 
-    case 256 + 19:  // right arrow
+    case KBDK_RIGHT:
       handled = moveWord(+1);
       break;
 

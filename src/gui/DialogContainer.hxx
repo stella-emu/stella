@@ -66,12 +66,12 @@ class DialogContainer
     /**
       Handle a keyboard event.
 
-      @param ascii    ASCII translation
       @param key      Actual key symbol
       @param mod      Modifiers
-      @param state    Pressed or released
+      @param ascii    ASCII translation
+      @param state    Pressed (true) or released (false)
     */
-    void handleKeyEvent(int ascii, int key, int mod, uInt8 state);
+    void handleKeyEvent(StellaKey key, StellaMod mod, char ascii, bool state);
 
     /**
       Handle a mouse motion event.
@@ -164,8 +164,8 @@ class DialogContainer
 
     // For continuous 'key down' events
     struct {
-      int ascii;
-      int keycode;
+      StellaKey keycode;
+      char ascii;
       int flags;
     } myCurrentKeyDown;
     uInt64 myKeyRepeatTime;

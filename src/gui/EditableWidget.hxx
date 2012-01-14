@@ -49,7 +49,7 @@ class EditableWidget : public Widget, public CommandSender
     bool isEditable() const	 { return _editable; }
     void setEditable(bool editable);
 
-    virtual bool handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod, char ascii);
 
     // We only want to focus this widget when we can edit its contents
     virtual bool wantsFocus() { return _editable; }
@@ -69,7 +69,7 @@ class EditableWidget : public Widget, public CommandSender
 
   private:
     // Line editing
-    bool specialKeys(int ascii, int keycode);
+    bool specialKeys(StellaKey key, char ascii);
     bool killChar(int direction);
     bool killLine(int direction);
     bool killLastWord();

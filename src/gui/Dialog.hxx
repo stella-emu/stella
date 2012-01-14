@@ -31,6 +31,7 @@ class TabWidget;
 #include "Command.hxx"
 #include "Widget.hxx"
 #include "GuiObject.hxx"
+#include "StellaKeys.hxx"
 
 #include "bspf.hxx"
 
@@ -82,8 +83,8 @@ class Dialog : public GuiObject
     virtual void draw();
     void releaseFocus();
 
-    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
-    virtual void handleKeyUp(int ascii, int keycode, int modifiers);
+    virtual void handleKeyDown(StellaKey key, StellaMod modifiers, char ascii);
+    virtual void handleKeyUp(StellaKey key, StellaMod modifiers, char ascii);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleMouseUp(int x, int y, int button, int clickCount);
     virtual void handleMouseWheel(int x, int y, int direction);

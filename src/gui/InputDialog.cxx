@@ -371,15 +371,15 @@ void InputDialog::setDefaults()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void InputDialog::handleKeyDown(int ascii, int keycode, int modifiers)
+void InputDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Remap key events in remap mode, otherwise pass to parent dialog
   if(myEmulEventMapper->remapMode())
-    myEmulEventMapper->handleKeyDown(ascii, keycode, modifiers);
+    myEmulEventMapper->handleKeyDown(key, mod, ascii);
   else if(myMenuEventMapper->remapMode())
-    myMenuEventMapper->handleKeyDown(ascii, keycode, modifiers);
+    myMenuEventMapper->handleKeyDown(key, mod, ascii);
   else
-    Dialog::handleKeyDown(ascii, keycode, modifiers);
+    Dialog::handleKeyDown(key, mod, ascii);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

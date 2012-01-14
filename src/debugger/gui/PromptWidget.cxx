@@ -141,16 +141,15 @@ void PromptWidget::printPrompt()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool PromptWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   int i;
   bool handled = true;
   bool dirty = false;
   
-  switch(ascii)
+  switch(key)
   {
-    case '\n': // enter/return
-    case '\r':
+    case KBDK_RETURN:
     {
       nextLine();
 
@@ -188,7 +187,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
     }
 
-    case '\t':   // tab
+    case KBDK_TAB:
     {
       // Tab completion: we complete either commands or labels, but not
       // both at once.
@@ -289,7 +288,7 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
     }
 
-    case 8:  // backspace
+    case KBDK_BACKSPACE:
       if (_currentPos > _promptStartPos)
         killChar(-1);
 
@@ -297,13 +296,13 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       dirty = true;
       break;
 
-    case 127:
+    case KBDK_DELETE:
       killChar(+1);
       dirty = true;
       break;
 
-    case 256 + 24:  // pageup
-      if (instance().eventHandler().kbdShift(modifiers))
+    case KBDK_PAGEUP:
+      if (instance().eventHandler().kbdShift(mod))
       {
         // Don't scroll up when at top of buffer
         if(_scrollLine < _linesPerPage)
@@ -318,8 +317,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       break;
 
-    case 256 + 25:  // pagedown
-      if (instance().eventHandler().kbdShift(modifiers))
+    case KBDK_PAGEDOWN:
+      if (instance().eventHandler().kbdShift(mod))
       {
         // Don't scroll down when at bottom of buffer
         if(_scrollLine >= _promptEndPos / _lineWidth)
@@ -334,8 +333,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       }
       break;
 
-    case 256 + 22:  // home
-      if (instance().eventHandler().kbdShift(modifiers))
+    case KBDK_HOME:
+      if (instance().eventHandler().kbdShift(mod))
       {
         _scrollLine = _firstLineInBuffer + _linesPerPage - 1;
         updateScrollBuffer();
@@ -346,8 +345,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       dirty = true;
       break;
 
-    case 256 + 23:  // end
-      if (instance().eventHandler().kbdShift(modifiers))
+    case KBDK_END:
+      if (instance().eventHandler().kbdShift(mod))
       {
         _scrollLine = _promptEndPos / _lineWidth;
         if (_scrollLine < _linesPerPage - 1)
@@ -360,8 +359,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       dirty = true;
       break;
 
-    case 273:  // cursor up
-      if (instance().eventHandler().kbdShift(modifiers))
+    case KBDK_UP:
+      if (instance().eventHandler().kbdShift(mod))
       {
         if(_scrollLine <= _firstLineInBuffer + _linesPerPage - 1)
           break;
@@ -375,8 +374,8 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         historyScroll(+1);
       break;
 
-    case 274:  // cursor down
-      if (instance().eventHandler().kbdShift(modifiers))
+    case KBDK_DOWN:
+      if (instance().eventHandler().kbdShift(mod))
       {
         // Don't scroll down when at bottom of buffer
         if(_scrollLine >= _promptEndPos / _lineWidth)
@@ -391,14 +390,14 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         historyScroll(-1);
       break;
 
-    case 275:  // cursor right
+    case KBDK_RIGHT:
       if (_currentPos < _promptEndPos)
         _currentPos++;
 
       dirty = true;
       break;
 
-    case 276:  // cursor left
+    case KBDK_LEFT:
       if (_currentPos > _promptStartPos)
         _currentPos--;
 
@@ -406,11 +405,11 @@ bool PromptWidget::handleKeyDown(int ascii, int keycode, int modifiers)
       break;
 
     default:
-      if (instance().eventHandler().kbdControl(modifiers))
+      if (instance().eventHandler().kbdControl(mod))
       {
-        specialKeys(keycode);
+        specialKeys(key);
       }
-      else if (instance().eventHandler().kbdAlt(modifiers))
+      else if (instance().eventHandler().kbdAlt(mod))
       {
       }
       else if (isprint(ascii))

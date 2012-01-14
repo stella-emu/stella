@@ -282,7 +282,7 @@ void Dialog::drawDialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
+void Dialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Test for TAB character
   // Shift-left/shift-right cursor selects next tab
@@ -293,46 +293,46 @@ void Dialog::handleKeyDown(int ascii, int keycode, int modifiers)
   // Detect selection of previous and next tab headers and objects
   // For some strange reason, 'tab' needs to be interpreted as keycode,
   // not ascii??
-  if(instance().eventHandler().kbdShift(modifiers))
+  if(instance().eventHandler().kbdShift(mod))
   {
-    if(ascii == 256+20 && _ourTab)      // left arrow
+    if(key == KBDK_LEFT && _ourTab)       // left arrow
     {
       _ourTab->cycleTab(-1);
       return;
     }
-    else if(ascii == 256+19 && _ourTab) // right arrow
+    else if(key == KBDK_RIGHT && _ourTab) // right arrow
     {
       _ourTab->cycleTab(+1);
       return;
     }
-    else if(keycode == 9)     // tab
+    else if(key == KBDK_TAB)     // tab
       e = Event::UINavPrev;
   }
-  else if(keycode == 9)       // tab
+  else if(key == KBDK_TAB)       // tab
     e = Event::UINavNext;
 
   // Check the keytable now, since we might get one of the above events,
   // which must always be processed before any widget sees it.
   if(e == Event::NoType)
-    e = instance().eventHandler().eventForKey(keycode, kMenuMode);
+    e = instance().eventHandler().eventForKey(key, kMenuMode);
 
   // Unless a widget has claimed all responsibility for data, we assume
   // that if an event exists for the given data, it should have priority.
   if(!handleNavEvent(e) && _focusedWidget)
   {
     if(_focusedWidget->wantsRaw() || e == Event::NoType)
-      _focusedWidget->handleKeyDown(ascii, keycode, modifiers);
+      _focusedWidget->handleKeyDown(key, mod, ascii);
     else
       _focusedWidget->handleEvent(e);
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::handleKeyUp(int ascii, int keycode, int modifiers)
+void Dialog::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
 {
   // Focused widget receives keyup events
   if(_focusedWidget)
-    _focusedWidget->handleKeyUp(ascii, keycode, modifiers);
+    _focusedWidget->handleKeyUp(key, mod, ascii);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

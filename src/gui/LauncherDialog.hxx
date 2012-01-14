@@ -82,7 +82,7 @@ class LauncherDialog : public Dialog
     void reload() { updateListing(); }
 
   protected:
-    virtual void handleKeyDown(int ascii, int keycode, int modifiers);
+    virtual void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
     virtual void handleMouseDown(int x, int y, int button, int clickCount);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 

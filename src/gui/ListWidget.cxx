@@ -40,8 +40,8 @@ ListWidget::ListWidget(GuiObject* boss, const GUI::Font& font,
     _currentPos(0),
     _selectedItem(-1),
     _highlightedItem(-1),
-    _currentKeyDown(0),
     _editMode(false),
+    _currentKeyDown(KBDK_UNKNOWN),
     _quickSelect(quickSelect),
     _quickSelectTime(0)
 {
@@ -210,17 +210,17 @@ int ListWidget::findItem(int x, int y) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Ignore all Alt-mod keys
-  if(instance().eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdAlt(mod))
     return true;
 
   bool handled = true;
   int oldSelectedItem = _selectedItem;
 
   if (!_editMode && _quickSelect &&
-      ((isalnum((char)ascii)) || isspace((char)ascii)))
+      ((isalnum(ascii)) || isspace(ascii)))
   {
     // Quick selection mode: Go to first list item starting with this key
     // (or a substring accumulated from the last couple key presses).
@@ -229,9 +229,9 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     // method "enableQuickSelect()" or so ?
     uInt64 time = instance().getTicks() / 1000;
     if (_quickSelectTime < time)
-      _quickSelectStr = (char)ascii;
+      _quickSelectStr = ascii;
     else
-      _quickSelectStr += (char)ascii;
+      _quickSelectStr += ascii;
     _quickSelectTime = time + _QUICK_SELECT_DELAY;
 
     // FIXME: This is bad slow code (it scans the list linearly each time a
@@ -253,14 +253,14 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   else if (_editMode)
   {
     // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
+    handled = EditableWidget::handleKeyDown(key, mod, ascii);
   }
   else
   {
     // not editmode
-    switch (keycode)
+    switch(key)
     {
-      case ' ':  // space
+      case KBDK_SPACE:
         // Snap list back to currently highlighted line
         if(_highlightedItem >= 0)
         {
@@ -282,15 +282,15 @@ bool ListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
   }
 
-  _currentKeyDown = keycode;
+  _currentKeyDown = key;
   return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
+bool ListWidget::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
 {
-  if (keycode == _currentKeyDown)
-    _currentKeyDown = 0;
+  if (key == _currentKeyDown)
+    _currentKeyDown = KBDK_UNKNOWN;
   return true;
 }
 

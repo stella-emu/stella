@@ -36,6 +36,7 @@
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "Rect.hxx"
+#include "StellaKeys.hxx"
 
 enum {
   WIDGET_ENABLED       = 1 << 0,
@@ -98,8 +99,8 @@ class Widget : public GuiObject
     virtual int getAbsX() const  { return _x + _boss->getChildX(); }
     virtual int getAbsY() const  { return _y + _boss->getChildY(); }
 
-    virtual bool handleKeyDown(int ascii, int keycode, int modifiers) { return false; }
-    virtual bool handleKeyUp(int ascii, int keycode, int modifiers)   { return false; }
+    virtual bool handleKeyDown(StellaKey key, StellaMod mod, char ascii) { return false; }
+    virtual bool handleKeyUp(StellaKey key, StellaMod mod, char ascii)   { return false; }
     virtual void handleMouseDown(int x, int y, int button, int clickCount) {}
     virtual void handleMouseUp(int x, int y, int button, int clickCount) {}
     virtual void handleMouseEntered(int button) {}

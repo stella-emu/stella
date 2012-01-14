@@ -76,7 +76,7 @@ class ContextMenu : public Dialog, public CommandSender
     void handleMouseMoved(int x, int y, int button);
     bool handleMouseClicks(int x, int y, int button);
     void handleMouseWheel(int x, int y, int direction);
-    void handleKeyDown(int ascii, int keycode, int modifiers);  // Scroll through entries with arrow keys etc
+    void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
     void handleJoyDown(int stick, int button);
     void handleJoyAxis(int stick, int axis, int value);
     bool handleJoyHat(int stick, int hat, int value);

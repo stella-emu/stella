@@ -32,6 +32,7 @@ class StringList;
 
 #include "Array.hxx"
 #include "Event.hxx"
+#include "StellaKeys.hxx"
 #include "bspf.hxx"
 
 enum MouseButton {
@@ -168,7 +169,7 @@ class EventHandler
     */
     void setContinuousSnapshots(uInt32 interval);
 
-    bool kbdAlt(int mod) const
+    inline bool kbdAlt(int mod) const
     {
   #ifndef MAC_OSX
       return (mod & KMOD_ALT);
@@ -177,12 +178,12 @@ class EventHandler
   #endif
     }
 
-    bool kbdControl(int mod) const
+    inline bool kbdControl(int mod) const
     {
       return (mod & KMOD_CTRL) > 0;
     }
 
-    bool kbdShift(int mod) const
+    inline bool kbdShift(int mod) const
     {
       return (mod & KMOD_SHIFT);
     }
@@ -211,7 +212,7 @@ class EventHandler
     void getComboListForEvent(Event::Type event, StringList& list) const;
     void setComboListForEvent(Event::Type event, const StringList& events);
 
-    Event::Type eventForKey(int key, EventMode mode) const
+    Event::Type eventForKey(StellaKey key, EventMode mode) const
       { return myKeyTable[key][mode]; }
     Event::Type eventForJoyAxis(int stick, int axis, int value, EventMode mode) const
       { return myJoysticks[stick].axisTable[axis][(value > 0)][mode]; }
@@ -231,7 +232,7 @@ class EventHandler
       @param mode   The mode where this event is active
       @param key    The key to bind to this event
     */
-    bool addKeyMapping(Event::Type event, EventMode mode, int key);
+    bool addKeyMapping(Event::Type event, EventMode mode, StellaKey key);
 
     /**
       Bind a joystick axis direction to an event/action and regenerate
@@ -374,8 +375,8 @@ class EventHandler
     // Indicates current overlay object
     DialogContainer* myOverlay;
 
-    // Array of key events, indexed by SDLKey
-    Event::Type myKeyTable[SDLK_LAST][kNumModes];
+    // Array of key events, indexed by StellaKey
+    Event::Type myKeyTable[KBDK_LAST][kNumModes];
 
     // The event(s) assigned to each combination event
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
@@ -383,8 +384,8 @@ class EventHandler
     // Array of messages for each Event
     string ourMessageTable[Event::LastType];
 
-    // Array of strings which correspond to the given SDL key
-    string ourSDLMapping[SDLK_LAST];
+    // Array of strings which correspond to the given StellaKey
+    string ourKBDKMapping[KBDK_LAST];
 
     // Indicates the current state of the system (ie, which mode is current)
     State myState;

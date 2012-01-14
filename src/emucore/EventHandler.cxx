@@ -66,9 +66,9 @@ EventHandler::EventHandler(OSystem* osystem)
     myNumJoysticks(0)
 {
   // Erase the key mapping array
-  for(int i = 0; i < SDLK_LAST; ++i)
+  for(int i = 0; i < KBDK_LAST; ++i)
   {
-    ourSDLMapping[i] = "";
+    ourKBDKMapping[i] = "";
     for(int m = 0; m < kNumModes; ++m)
       myKeyTable[i][m] = Event::NoType;
   }
@@ -310,10 +310,9 @@ void EventHandler::poll(uInt64 time)
       case SDL_KEYUP:
       case SDL_KEYDOWN:
       {
-        int ascii   = event.key.keysym.unicode;
-        SDLKey key  = event.key.keysym.sym;
-        SDLMod mod  = event.key.keysym.mod;
-        uInt8 state = event.key.type == SDL_KEYDOWN ? 1 : 0;
+        StellaKey key  = (StellaKey)event.key.keysym.sym;
+        StellaMod mod  = event.key.keysym.mod;
+        bool state = event.key.type == SDL_KEYDOWN;
         bool handled = true;
 
         // An attempt to speed up event processing
@@ -323,13 +322,13 @@ void EventHandler::poll(uInt64 time)
         {
       #ifdef MAC_OSX
           // These keys work in all states
-          if(key == SDLK_q)
+          if(key == KBDK_q)
           {
             handleEvent(Event::Quit, 1);
           }
           else
       #endif
-          if(key == SDLK_RETURN)
+          if(key == KBDK_RETURN)
           {
             myOSystem->frameBuffer().toggleFullscreen();
           }
@@ -338,103 +337,103 @@ void EventHandler::poll(uInt64 time)
           {
             switch(int(key))
             {
-              case SDLK_EQUALS:
+              case KBDK_EQUALS:
                 myOSystem->frameBuffer().changeVidMode(+1);
                 break;
 
-              case SDLK_MINUS:
+              case KBDK_MINUS:
                 myOSystem->frameBuffer().changeVidMode(-1);
                 break;
 
-              case SDLK_LEFTBRACKET:
+              case KBDK_LEFTBRACKET:
                 myOSystem->sound().adjustVolume(-1);
                 break;
 
-              case SDLK_RIGHTBRACKET:
+              case KBDK_RIGHTBRACKET:
                 myOSystem->sound().adjustVolume(+1);
                 break;
 
-              case SDLK_PAGEUP:    // Alt-PageUp increases YStart
+              case KBDK_PAGEUP:    // Alt-PageUp increases YStart
                 myOSystem->console().changeYStart(+1);
                 break;
 
-              case SDLK_PAGEDOWN:  // Alt-PageDown decreases YStart
+              case KBDK_PAGEDOWN:  // Alt-PageDown decreases YStart
                 myOSystem->console().changeYStart(-1);
                 break;
 
-              case SDLK_z:
+              case KBDK_z:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleP0Collision();
                 else
                   myOSystem->console().toggleP0Bit();
                 break;
 
-              case SDLK_x:
+              case KBDK_x:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleP1Collision();
                 else
                   myOSystem->console().toggleP1Bit();
                 break;
 
-              case SDLK_c:
+              case KBDK_c:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleM0Collision();
                 else
                   myOSystem->console().toggleM0Bit();
                 break;
 
-              case SDLK_v:
+              case KBDK_v:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleM1Collision();
                 else
                   myOSystem->console().toggleM1Bit();
                 break;
 
-              case SDLK_b:
+              case KBDK_b:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleBLCollision();
                 else
                   myOSystem->console().toggleBLBit();
                 break;
 
-              case SDLK_n:
+              case KBDK_n:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().togglePFCollision();
                 else
                   myOSystem->console().togglePFBit();
                 break;
 
-              case SDLK_m:
+              case KBDK_m:
                 myOSystem->console().toggleHMOVE();
                 break;
 
-              case SDLK_COMMA:
+              case KBDK_COMMA:
                 myOSystem->console().toggleFixedColors();
                 break;
 
-              case SDLK_PERIOD:
+              case KBDK_PERIOD:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().enableCollisions(false);
                 else
                   myOSystem->console().enableBits(false);
                 break;
 
-              case SDLK_SLASH:
+              case KBDK_SLASH:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().enableCollisions(true);
                 else
                   myOSystem->console().enableBits(true);
                 break;
 
-              case SDLK_p:  // Alt-p toggles phosphor effect
+              case KBDK_p:  // Alt-p toggles phosphor effect
                 myOSystem->console().togglePhosphor();
                 break;
 
-              case SDLK_l:
+              case KBDK_l:
                 myOSystem->frameBuffer().toggleFrameStats();
                 break;
 
-              case SDLK_s:  // TODO - make this remappable
+              case KBDK_s:  // TODO - make this remappable
                 if(myContSnapshotInterval == 0)
                 {
                   ostringstream buf;
@@ -455,21 +454,21 @@ void EventHandler::poll(uInt64 time)
                 break;
 #if 0
 // these will be removed when a UI is added for event recording
-              case SDLK_e:  // Alt-e starts/stops event recording
+              case KBDK_e:  // Alt-e starts/stops event recording
                 if(myOSystem->state().toggleRecordMode())
                   myOSystem->frameBuffer().showMessage("Recording started");
                 else
                   myOSystem->frameBuffer().showMessage("Recording stopped");
                 break;
 
-              case SDLK_r:  // Alt-r starts/stops rewind mode
+              case KBDK_r:  // Alt-r starts/stops rewind mode
                 if(myOSystem->state().toggleRewindMode())
                   myOSystem->frameBuffer().showMessage("Rewind mode started");
                 else
                   myOSystem->frameBuffer().showMessage("Rewind mode stopped");
                 break;
 /*
-              case SDLK_l:  // Alt-l loads a recording
+              case KBDK_l:  // Alt-l loads a recording
                 if(myEventStreamer->loadRecording())
                   myOSystem->frameBuffer().showMessage("Playing recording");
                 else
@@ -490,7 +489,7 @@ void EventHandler::poll(uInt64 time)
         else if(kbdControl(mod) && state && myUseCtrlKeyFlag)
         {
           // These keys work in all states
-          if(key == SDLK_q)
+          if(key == KBDK_q)
           {
             handleEvent(Event::Quit, 1);
           }
@@ -499,53 +498,53 @@ void EventHandler::poll(uInt64 time)
           {
             switch(int(key))
             {
-              case SDLK_0:  // Ctrl-0 sets the mouse to paddle 0
+              case KBDK_0:  // Ctrl-0 sets the mouse to paddle 0
                 setMouseAsPaddle(0, "Mouse is paddle 0");
                 break;
 
-              case SDLK_1:  // Ctrl-1 sets the mouse to paddle 1
+              case KBDK_1:  // Ctrl-1 sets the mouse to paddle 1
                 setMouseAsPaddle(1, "Mouse is paddle 1");
                 break;
 
-              case SDLK_2:  // Ctrl-2 sets the mouse to paddle 2
+              case KBDK_2:  // Ctrl-2 sets the mouse to paddle 2
                 setMouseAsPaddle(2, "Mouse is paddle 2");
                 break;
 
-              case SDLK_3:  // Ctrl-3 sets the mouse to paddle 3
+              case KBDK_3:  // Ctrl-3 sets the mouse to paddle 3
                 setMouseAsPaddle(3, "Mouse is paddle 3");
                 break;
 
-              case SDLK_f:  // Ctrl-f toggles NTSC/PAL mode
+              case KBDK_f:  // Ctrl-f toggles NTSC/PAL mode
                 myOSystem->console().toggleFormat();
                 break;
 
-              case SDLK_g:  // Ctrl-g (un)grabs mouse
+              case KBDK_g:  // Ctrl-g (un)grabs mouse
                 if(!myOSystem->frameBuffer().fullScreen())
                   myOSystem->frameBuffer().toggleGrabMouse();
                 break;
 
-              case SDLK_l:  // Ctrl-l toggles PAL color-loss effect
+              case KBDK_l:  // Ctrl-l toggles PAL color-loss effect
                 myOSystem->console().toggleColorLoss();
                 break;
 
-              case SDLK_p:  // Ctrl-p toggles different palettes
+              case KBDK_p:  // Ctrl-p toggles different palettes
                 myOSystem->console().togglePalette();
                 break;
 
-              case SDLK_r:  // Ctrl-r reloads the currently loaded ROM
+              case KBDK_r:  // Ctrl-r reloads the currently loaded ROM
                 myOSystem->deleteConsole();
                 myOSystem->createConsole();
                 break;
 
-              case SDLK_PAGEUP:    // Ctrl-PageUp increases Height
+              case KBDK_PAGEUP:    // Ctrl-PageUp increases Height
                 myOSystem->console().changeHeight(+1);
                 break;
 
-              case SDLK_PAGEDOWN:  // Ctrl-PageDown decreases Height
+              case KBDK_PAGEDOWN:  // Ctrl-PageDown decreases Height
                 myOSystem->console().changeHeight(-1);
                 break;
 
-              case SDLK_s:         // Ctrl-s saves properties to a file
+              case KBDK_s:         // Ctrl-s saves properties to a file
               {
                 string filename = myOSystem->baseDir() +
                     myOSystem->console().properties().get(Cartridge_Name) + ".pro";
@@ -585,15 +584,7 @@ void EventHandler::poll(uInt64 time)
         if(myState == S_EMULATE)
           handleEvent(myKeyTable[key][kEmulationMode], state);
         else if(myOverlay != NULL)
-        {
-          // Assign ascii field if it doesn't exist
-          // Make sure 'state change' keys (Shift, Ctrl, etc) are excluded
-          if(!ascii || ascii >= SDLK_LAST ||
-              key == SDLK_BACKSPACE || key == SDLK_DELETE) ascii = key;
-          if(key > SDLK_F15 && key < SDLK_HELP) ascii = 0;
-
-          myOverlay->handleKeyEvent(ascii, key, mod, state);
-        }
+          myOverlay->handleKeyEvent(key, mod, event.key.keysym.unicode & 0x7f, state);
 
         break;  // SDL_KEYUP, SDL_KEYDOWN
       }
@@ -1137,14 +1128,14 @@ void EventHandler::setActionMappings(EventMode mode)
     free(list[i].key);  list[i].key = NULL;
     list[i].key = strdup("None");
     string key = "";
-    for(int j = 0; j < SDLK_LAST; ++j)   // key mapping
+    for(int j = 0; j < KBDK_LAST; ++j)   // key mapping
     {
       if(myKeyTable[j][mode] == event)
       {
         if(key == "")
-          key = key + ourSDLMapping[j];
+          key = key + ourKBDKMapping[j];
         else
-          key = key + ", " + ourSDLMapping[j];
+          key = key + ", " + ourKBDKMapping[j];
       }
     }
 
@@ -1268,12 +1259,12 @@ void EventHandler::setKeymap()
       map.push_back(value);
 
   // Only fill the key mapping array if the data is valid
-  if(event == Event::LastType && map.size() == SDLK_LAST * kNumModes)
+  if(event == Event::LastType && map.size() == KBDK_LAST * kNumModes)
   {
     // Fill the keymap table with events
     IntArray::const_iterator event = map.begin();
     for(int mode = 0; mode < kNumModes; ++mode)
-      for(int i = 0; i < SDLK_LAST; ++i)
+      for(int i = 0; i < KBDK_LAST; ++i)
         myKeyTable[i][mode] = (Event::Type) *event++;
   }
   else
@@ -1369,10 +1360,10 @@ void EventHandler::setComboMap()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, int key)
+bool EventHandler::addKeyMapping(Event::Type event, EventMode mode, StellaKey key)
 {
   // These keys cannot be remapped
-  if(key == SDLK_TAB || eventIsAnalog(event))
+  if(key == KBDK_TAB || eventIsAnalog(event))
     return false;
   else
   {
@@ -1473,8 +1464,8 @@ bool EventHandler::addJoyHatMapping(Event::Type event, EventMode mode,
 void EventHandler::eraseMapping(Event::Type event, EventMode mode)
 {
   // Erase the KeyEvent arrays
-  for(int i = 0; i < SDLK_LAST; ++i)
-    if(myKeyTable[i][mode] == event && i != SDLK_TAB)
+  for(int i = 0; i < KBDK_LAST; ++i)
+    if(myKeyTable[i][mode] == event && i != KBDK_TAB)
       myKeyTable[i][mode] = Event::NoType;
 
 #ifdef JOYSTICK_SUPPORT
@@ -1506,92 +1497,92 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
   if(eraseAll)
   {
     // Erase all mappings
-    for(int i = 0; i < SDLK_LAST; ++i)
+    for(int i = 0; i < KBDK_LAST; ++i)
       myKeyTable[i][mode] = Event::NoType;
   }
 
   switch(mode)
   {
     case kEmulationMode:
-      SET_DEFAULT_KEY(SDLK_1,         mode, Event::KeyboardZero1,     event);
-      SET_DEFAULT_KEY(SDLK_2,         mode, Event::KeyboardZero2,     event);
-      SET_DEFAULT_KEY(SDLK_3,         mode, Event::KeyboardZero3,     event);
-      SET_DEFAULT_KEY(SDLK_q,         mode, Event::KeyboardZero4,     event);
-      SET_DEFAULT_KEY(SDLK_w,         mode, Event::KeyboardZero5,     event);
-      SET_DEFAULT_KEY(SDLK_e,         mode, Event::KeyboardZero6,     event);
-      SET_DEFAULT_KEY(SDLK_a,         mode, Event::KeyboardZero7,     event);
-      SET_DEFAULT_KEY(SDLK_s,         mode, Event::KeyboardZero8,     event);
-      SET_DEFAULT_KEY(SDLK_d,         mode, Event::KeyboardZero9,     event);
-      SET_DEFAULT_KEY(SDLK_z,         mode, Event::KeyboardZeroStar,  event);
-      SET_DEFAULT_KEY(SDLK_x,         mode, Event::KeyboardZero0,     event);
-      SET_DEFAULT_KEY(SDLK_c,         mode, Event::KeyboardZeroPound, event);
+      SET_DEFAULT_KEY(KBDK_1,         mode, Event::KeyboardZero1,     event);
+      SET_DEFAULT_KEY(KBDK_2,         mode, Event::KeyboardZero2,     event);
+      SET_DEFAULT_KEY(KBDK_3,         mode, Event::KeyboardZero3,     event);
+      SET_DEFAULT_KEY(KBDK_q,         mode, Event::KeyboardZero4,     event);
+      SET_DEFAULT_KEY(KBDK_w,         mode, Event::KeyboardZero5,     event);
+      SET_DEFAULT_KEY(KBDK_e,         mode, Event::KeyboardZero6,     event);
+      SET_DEFAULT_KEY(KBDK_a,         mode, Event::KeyboardZero7,     event);
+      SET_DEFAULT_KEY(KBDK_s,         mode, Event::KeyboardZero8,     event);
+      SET_DEFAULT_KEY(KBDK_d,         mode, Event::KeyboardZero9,     event);
+      SET_DEFAULT_KEY(KBDK_z,         mode, Event::KeyboardZeroStar,  event);
+      SET_DEFAULT_KEY(KBDK_x,         mode, Event::KeyboardZero0,     event);
+      SET_DEFAULT_KEY(KBDK_c,         mode, Event::KeyboardZeroPound, event);
 
-      SET_DEFAULT_KEY(SDLK_8,         mode, Event::KeyboardOne1,      event);
-      SET_DEFAULT_KEY(SDLK_9,         mode, Event::KeyboardOne2,      event);
-      SET_DEFAULT_KEY(SDLK_0,         mode, Event::KeyboardOne3,      event);
-      SET_DEFAULT_KEY(SDLK_i,         mode, Event::KeyboardOne4,      event);
-      SET_DEFAULT_KEY(SDLK_o,         mode, Event::KeyboardOne5,      event);
-      SET_DEFAULT_KEY(SDLK_p,         mode, Event::KeyboardOne6,      event);
-      SET_DEFAULT_KEY(SDLK_k,         mode, Event::KeyboardOne7,      event);
-      SET_DEFAULT_KEY(SDLK_l,         mode, Event::KeyboardOne8,      event);
-      SET_DEFAULT_KEY(SDLK_SEMICOLON, mode, Event::KeyboardOne9,      event);
-      SET_DEFAULT_KEY(SDLK_COMMA,     mode, Event::KeyboardOneStar,   event);
-      SET_DEFAULT_KEY(SDLK_PERIOD,    mode, Event::KeyboardOne0,      event);
-      SET_DEFAULT_KEY(SDLK_SLASH,     mode, Event::KeyboardOnePound,  event);
+      SET_DEFAULT_KEY(KBDK_8,         mode, Event::KeyboardOne1,      event);
+      SET_DEFAULT_KEY(KBDK_9,         mode, Event::KeyboardOne2,      event);
+      SET_DEFAULT_KEY(KBDK_0,         mode, Event::KeyboardOne3,      event);
+      SET_DEFAULT_KEY(KBDK_i,         mode, Event::KeyboardOne4,      event);
+      SET_DEFAULT_KEY(KBDK_o,         mode, Event::KeyboardOne5,      event);
+      SET_DEFAULT_KEY(KBDK_p,         mode, Event::KeyboardOne6,      event);
+      SET_DEFAULT_KEY(KBDK_k,         mode, Event::KeyboardOne7,      event);
+      SET_DEFAULT_KEY(KBDK_l,         mode, Event::KeyboardOne8,      event);
+      SET_DEFAULT_KEY(KBDK_SEMICOLON, mode, Event::KeyboardOne9,      event);
+      SET_DEFAULT_KEY(KBDK_COMMA,     mode, Event::KeyboardOneStar,   event);
+      SET_DEFAULT_KEY(KBDK_PERIOD,    mode, Event::KeyboardOne0,      event);
+      SET_DEFAULT_KEY(KBDK_SLASH,     mode, Event::KeyboardOnePound,  event);
 
-      SET_DEFAULT_KEY(SDLK_UP,        mode, Event::JoystickZeroUp,    event);
-      SET_DEFAULT_KEY(SDLK_DOWN,      mode, Event::JoystickZeroDown,  event);
-      SET_DEFAULT_KEY(SDLK_LEFT,      mode, Event::JoystickZeroLeft,  event);
-      SET_DEFAULT_KEY(SDLK_RIGHT,     mode, Event::JoystickZeroRight, event);
-      SET_DEFAULT_KEY(SDLK_SPACE,     mode, Event::JoystickZeroFire1, event);
-      SET_DEFAULT_KEY(SDLK_LCTRL,     mode, Event::JoystickZeroFire1, event);
-      SET_DEFAULT_KEY(SDLK_4,         mode, Event::JoystickZeroFire2, event);
-      SET_DEFAULT_KEY(SDLK_5,         mode, Event::JoystickZeroFire3, event);
+      SET_DEFAULT_KEY(KBDK_UP,        mode, Event::JoystickZeroUp,    event);
+      SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::JoystickZeroDown,  event);
+      SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::JoystickZeroLeft,  event);
+      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::JoystickZeroRight, event);
+      SET_DEFAULT_KEY(KBDK_SPACE,     mode, Event::JoystickZeroFire1, event);
+      SET_DEFAULT_KEY(KBDK_LCTRL,     mode, Event::JoystickZeroFire1, event);
+      SET_DEFAULT_KEY(KBDK_4,         mode, Event::JoystickZeroFire2, event);
+      SET_DEFAULT_KEY(KBDK_5,         mode, Event::JoystickZeroFire3, event);
 
-      SET_DEFAULT_KEY(SDLK_y,         mode, Event::JoystickOneUp,     event);
-      SET_DEFAULT_KEY(SDLK_h,         mode, Event::JoystickOneDown,   event);
-      SET_DEFAULT_KEY(SDLK_g,         mode, Event::JoystickOneLeft,   event);
-      SET_DEFAULT_KEY(SDLK_j,         mode, Event::JoystickOneRight,  event);
-      SET_DEFAULT_KEY(SDLK_f,         mode, Event::JoystickOneFire1,  event);
-      SET_DEFAULT_KEY(SDLK_6,         mode, Event::JoystickOneFire2,  event);
-      SET_DEFAULT_KEY(SDLK_7,         mode, Event::JoystickOneFire3,  event);
+      SET_DEFAULT_KEY(KBDK_y,         mode, Event::JoystickOneUp,     event);
+      SET_DEFAULT_KEY(KBDK_h,         mode, Event::JoystickOneDown,   event);
+      SET_DEFAULT_KEY(KBDK_g,         mode, Event::JoystickOneLeft,   event);
+      SET_DEFAULT_KEY(KBDK_j,         mode, Event::JoystickOneRight,  event);
+      SET_DEFAULT_KEY(KBDK_f,         mode, Event::JoystickOneFire1,  event);
+      SET_DEFAULT_KEY(KBDK_6,         mode, Event::JoystickOneFire2,  event);
+      SET_DEFAULT_KEY(KBDK_7,         mode, Event::JoystickOneFire3,  event);
 
 
-      SET_DEFAULT_KEY(SDLK_F1,        mode, Event::ConsoleSelect,     event);
-      SET_DEFAULT_KEY(SDLK_F2,        mode, Event::ConsoleReset,      event);
-      SET_DEFAULT_KEY(SDLK_F3,        mode, Event::ConsoleColor,      event);
-      SET_DEFAULT_KEY(SDLK_F4,        mode, Event::ConsoleBlackWhite, event);
-      SET_DEFAULT_KEY(SDLK_F5,        mode, Event::ConsoleLeftDiffA,  event);
-      SET_DEFAULT_KEY(SDLK_F6,        mode, Event::ConsoleLeftDiffB,  event);
-      SET_DEFAULT_KEY(SDLK_F7,        mode, Event::ConsoleRightDiffA, event);
-      SET_DEFAULT_KEY(SDLK_F8,        mode, Event::ConsoleRightDiffB, event);
-      SET_DEFAULT_KEY(SDLK_F9,        mode, Event::SaveState,         event);
-      SET_DEFAULT_KEY(SDLK_F10,       mode, Event::ChangeState,       event);
-      SET_DEFAULT_KEY(SDLK_F11,       mode, Event::LoadState,         event);
-      SET_DEFAULT_KEY(SDLK_F12,       mode, Event::TakeSnapshot,      event);
-      SET_DEFAULT_KEY(SDLK_BACKSPACE, mode, Event::Fry,               event);
-      SET_DEFAULT_KEY(SDLK_PAUSE,     mode, Event::PauseMode,         event);
-      SET_DEFAULT_KEY(SDLK_TAB,       mode, Event::MenuMode,          event);
-      SET_DEFAULT_KEY(SDLK_BACKSLASH, mode, Event::CmdMenuMode,       event);
-      SET_DEFAULT_KEY(SDLK_BACKQUOTE, mode, Event::DebuggerMode,      event);
-      SET_DEFAULT_KEY(SDLK_ESCAPE,    mode, Event::LauncherMode,      event);
+      SET_DEFAULT_KEY(KBDK_F1,        mode, Event::ConsoleSelect,     event);
+      SET_DEFAULT_KEY(KBDK_F2,        mode, Event::ConsoleReset,      event);
+      SET_DEFAULT_KEY(KBDK_F3,        mode, Event::ConsoleColor,      event);
+      SET_DEFAULT_KEY(KBDK_F4,        mode, Event::ConsoleBlackWhite, event);
+      SET_DEFAULT_KEY(KBDK_F5,        mode, Event::ConsoleLeftDiffA,  event);
+      SET_DEFAULT_KEY(KBDK_F6,        mode, Event::ConsoleLeftDiffB,  event);
+      SET_DEFAULT_KEY(KBDK_F7,        mode, Event::ConsoleRightDiffA, event);
+      SET_DEFAULT_KEY(KBDK_F8,        mode, Event::ConsoleRightDiffB, event);
+      SET_DEFAULT_KEY(KBDK_F9,        mode, Event::SaveState,         event);
+      SET_DEFAULT_KEY(KBDK_F10,       mode, Event::ChangeState,       event);
+      SET_DEFAULT_KEY(KBDK_F11,       mode, Event::LoadState,         event);
+      SET_DEFAULT_KEY(KBDK_F12,       mode, Event::TakeSnapshot,      event);
+      SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::Fry,               event);
+      SET_DEFAULT_KEY(KBDK_PAUSE,     mode, Event::PauseMode,         event);
+      SET_DEFAULT_KEY(KBDK_TAB,       mode, Event::MenuMode,          event);
+      SET_DEFAULT_KEY(KBDK_BACKSLASH, mode, Event::CmdMenuMode,       event);
+      SET_DEFAULT_KEY(KBDK_BACKQUOTE, mode, Event::DebuggerMode,      event);
+      SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::LauncherMode,      event);
       break;
 
     case kMenuMode:
-      SET_DEFAULT_KEY(SDLK_UP,        mode, Event::UIUp,      event);
-      SET_DEFAULT_KEY(SDLK_DOWN,      mode, Event::UIDown,    event);
-      SET_DEFAULT_KEY(SDLK_LEFT,      mode, Event::UILeft,    event);
-      SET_DEFAULT_KEY(SDLK_RIGHT,     mode, Event::UIRight,   event);
+      SET_DEFAULT_KEY(KBDK_UP,        mode, Event::UIUp,      event);
+      SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::UIDown,    event);
+      SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::UILeft,    event);
+      SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::UIRight,   event);
 
-      SET_DEFAULT_KEY(SDLK_HOME,      mode, Event::UIHome,    event);
-      SET_DEFAULT_KEY(SDLK_END,       mode, Event::UIEnd,     event);
-      SET_DEFAULT_KEY(SDLK_PAGEUP,    mode, Event::UIPgUp,    event);
-      SET_DEFAULT_KEY(SDLK_PAGEDOWN,  mode, Event::UIPgDown,  event);
+      SET_DEFAULT_KEY(KBDK_HOME,      mode, Event::UIHome,    event);
+      SET_DEFAULT_KEY(KBDK_END,       mode, Event::UIEnd,     event);
+      SET_DEFAULT_KEY(KBDK_PAGEUP,    mode, Event::UIPgUp,    event);
+      SET_DEFAULT_KEY(KBDK_PAGEDOWN,  mode, Event::UIPgDown,  event);
 
-      SET_DEFAULT_KEY(SDLK_RETURN,    mode, Event::UISelect,  event);
-      SET_DEFAULT_KEY(SDLK_ESCAPE,    mode, Event::UICancel,  event);
+      SET_DEFAULT_KEY(KBDK_RETURN,    mode, Event::UISelect,  event);
+      SET_DEFAULT_KEY(KBDK_ESCAPE,    mode, Event::UICancel,  event);
 
-      SET_DEFAULT_KEY(SDLK_BACKSPACE, mode, Event::UIPrevDir, event);
+      SET_DEFAULT_KEY(KBDK_BACKSPACE, mode, Event::UIPrevDir, event);
       break;
 
     default:
@@ -1627,7 +1618,7 @@ void EventHandler::saveKeyMapping()
   ostringstream keybuf;
   keybuf << Event::LastType;
   for(int mode = 0; mode < kNumModes; ++mode)
-    for(int i = 0; i < SDLK_LAST; ++i)
+    for(int i = 0; i < KBDK_LAST; ++i)
       keybuf << ":" << myKeyTable[i][mode];
 
   myOSystem->settings().setString("keymap", keybuf.str());
@@ -2094,237 +2085,237 @@ void EventHandler::setEventState(State state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EventHandler::setSDLMappings()
 {
-  ourSDLMapping[ SDLK_BACKSPACE ]    = "BACKSPACE";
-  ourSDLMapping[ SDLK_TAB ]          = "TAB";
-  ourSDLMapping[ SDLK_CLEAR ]        = "CLEAR";
-  ourSDLMapping[ SDLK_RETURN ]       = "RETURN";
-  ourSDLMapping[ SDLK_PAUSE ]        = "PAUSE";
-  ourSDLMapping[ SDLK_ESCAPE ]       = "ESCAPE";
-  ourSDLMapping[ SDLK_SPACE ]        = "SPACE";
-  ourSDLMapping[ SDLK_EXCLAIM ]      = "!";
-  ourSDLMapping[ SDLK_QUOTEDBL ]     = "\"";
-  ourSDLMapping[ SDLK_HASH ]         = "#";
-  ourSDLMapping[ SDLK_DOLLAR ]       = "$";
-  ourSDLMapping[ SDLK_AMPERSAND ]    = "&";
-  ourSDLMapping[ SDLK_QUOTE ]        = "\'";
-  ourSDLMapping[ SDLK_LEFTPAREN ]    = "(";
-  ourSDLMapping[ SDLK_RIGHTPAREN ]   = ")";
-  ourSDLMapping[ SDLK_ASTERISK ]     = "*";
-  ourSDLMapping[ SDLK_PLUS ]         = "+";
-  ourSDLMapping[ SDLK_COMMA ]        = "COMMA";
-  ourSDLMapping[ SDLK_MINUS ]        = "-";
-  ourSDLMapping[ SDLK_PERIOD ]       = ".";
-  ourSDLMapping[ SDLK_SLASH ]        = "/";
-  ourSDLMapping[ SDLK_0 ]            = "0";
-  ourSDLMapping[ SDLK_1 ]            = "1";
-  ourSDLMapping[ SDLK_2 ]            = "2";
-  ourSDLMapping[ SDLK_3 ]            = "3";
-  ourSDLMapping[ SDLK_4 ]            = "4";
-  ourSDLMapping[ SDLK_5 ]            = "5";
-  ourSDLMapping[ SDLK_6 ]            = "6";
-  ourSDLMapping[ SDLK_7 ]            = "7";
-  ourSDLMapping[ SDLK_8 ]            = "8";
-  ourSDLMapping[ SDLK_9 ]            = "9";
-  ourSDLMapping[ SDLK_COLON ]        = ":";
-  ourSDLMapping[ SDLK_SEMICOLON ]    = ";";
-  ourSDLMapping[ SDLK_LESS ]         = "<";
-  ourSDLMapping[ SDLK_EQUALS ]       = "=";
-  ourSDLMapping[ SDLK_GREATER ]      = ">";
-  ourSDLMapping[ SDLK_QUESTION ]     = "?";
-  ourSDLMapping[ SDLK_AT ]           = "@";
-  ourSDLMapping[ SDLK_LEFTBRACKET ]  = "[";
-  ourSDLMapping[ SDLK_BACKSLASH ]    = "\\";
-  ourSDLMapping[ SDLK_RIGHTBRACKET ] = "]";
-  ourSDLMapping[ SDLK_CARET ]        = "^";
-  ourSDLMapping[ SDLK_UNDERSCORE ]   = "_";
-  ourSDLMapping[ SDLK_BACKQUOTE ]    = "`";
-  ourSDLMapping[ SDLK_a ]            = "A";
-  ourSDLMapping[ SDLK_b ]            = "B";
-  ourSDLMapping[ SDLK_c ]            = "C";
-  ourSDLMapping[ SDLK_d ]            = "D";
-  ourSDLMapping[ SDLK_e ]            = "E";
-  ourSDLMapping[ SDLK_f ]            = "F";
-  ourSDLMapping[ SDLK_g ]            = "G";
-  ourSDLMapping[ SDLK_h ]            = "H";
-  ourSDLMapping[ SDLK_i ]            = "I";
-  ourSDLMapping[ SDLK_j ]            = "J";
-  ourSDLMapping[ SDLK_k ]            = "K";
-  ourSDLMapping[ SDLK_l ]            = "L";
-  ourSDLMapping[ SDLK_m ]            = "M";
-  ourSDLMapping[ SDLK_n ]            = "N";
-  ourSDLMapping[ SDLK_o ]            = "O";
-  ourSDLMapping[ SDLK_p ]            = "P";
-  ourSDLMapping[ SDLK_q ]            = "Q";
-  ourSDLMapping[ SDLK_r ]            = "R";
-  ourSDLMapping[ SDLK_s ]            = "S";
-  ourSDLMapping[ SDLK_t ]            = "T";
-  ourSDLMapping[ SDLK_u ]            = "U";
-  ourSDLMapping[ SDLK_v ]            = "V";
-  ourSDLMapping[ SDLK_w ]            = "W";
-  ourSDLMapping[ SDLK_x ]            = "X";
-  ourSDLMapping[ SDLK_y ]            = "Y";
-  ourSDLMapping[ SDLK_z ]            = "Z";
-  ourSDLMapping[ SDLK_DELETE ]       = "DELETE";
-  ourSDLMapping[ SDLK_WORLD_0 ]      = "WORLD_0";
-  ourSDLMapping[ SDLK_WORLD_1 ]      = "WORLD_1";
-  ourSDLMapping[ SDLK_WORLD_2 ]      = "WORLD_2";
-  ourSDLMapping[ SDLK_WORLD_3 ]      = "WORLD_3";
-  ourSDLMapping[ SDLK_WORLD_4 ]      = "WORLD_4";
-  ourSDLMapping[ SDLK_WORLD_5 ]      = "WORLD_5";
-  ourSDLMapping[ SDLK_WORLD_6 ]      = "WORLD_6";
-  ourSDLMapping[ SDLK_WORLD_7 ]      = "WORLD_7";
-  ourSDLMapping[ SDLK_WORLD_8 ]      = "WORLD_8";
-  ourSDLMapping[ SDLK_WORLD_9 ]      = "WORLD_9";
-  ourSDLMapping[ SDLK_WORLD_10 ]     = "WORLD_10";
-  ourSDLMapping[ SDLK_WORLD_11 ]     = "WORLD_11";
-  ourSDLMapping[ SDLK_WORLD_12 ]     = "WORLD_12";
-  ourSDLMapping[ SDLK_WORLD_13 ]     = "WORLD_13";
-  ourSDLMapping[ SDLK_WORLD_14 ]     = "WORLD_14";
-  ourSDLMapping[ SDLK_WORLD_15 ]     = "WORLD_15";
-  ourSDLMapping[ SDLK_WORLD_16 ]     = "WORLD_16";
-  ourSDLMapping[ SDLK_WORLD_17 ]     = "WORLD_17";
-  ourSDLMapping[ SDLK_WORLD_18 ]     = "WORLD_18";
-  ourSDLMapping[ SDLK_WORLD_19 ]     = "WORLD_19";
-  ourSDLMapping[ SDLK_WORLD_20 ]     = "WORLD_20";
-  ourSDLMapping[ SDLK_WORLD_21 ]     = "WORLD_21";
-  ourSDLMapping[ SDLK_WORLD_22 ]     = "WORLD_22";
-  ourSDLMapping[ SDLK_WORLD_23 ]     = "WORLD_23";
-  ourSDLMapping[ SDLK_WORLD_24 ]     = "WORLD_24";
-  ourSDLMapping[ SDLK_WORLD_25 ]     = "WORLD_25";
-  ourSDLMapping[ SDLK_WORLD_26 ]     = "WORLD_26";
-  ourSDLMapping[ SDLK_WORLD_27 ]     = "WORLD_27";
-  ourSDLMapping[ SDLK_WORLD_28 ]     = "WORLD_28";
-  ourSDLMapping[ SDLK_WORLD_29 ]     = "WORLD_29";
-  ourSDLMapping[ SDLK_WORLD_30 ]     = "WORLD_30";
-  ourSDLMapping[ SDLK_WORLD_31 ]     = "WORLD_31";
-  ourSDLMapping[ SDLK_WORLD_32 ]     = "WORLD_32";
-  ourSDLMapping[ SDLK_WORLD_33 ]     = "WORLD_33";
-  ourSDLMapping[ SDLK_WORLD_34 ]     = "WORLD_34";
-  ourSDLMapping[ SDLK_WORLD_35 ]     = "WORLD_35";
-  ourSDLMapping[ SDLK_WORLD_36 ]     = "WORLD_36";
-  ourSDLMapping[ SDLK_WORLD_37 ]     = "WORLD_37";
-  ourSDLMapping[ SDLK_WORLD_38 ]     = "WORLD_38";
-  ourSDLMapping[ SDLK_WORLD_39 ]     = "WORLD_39";
-  ourSDLMapping[ SDLK_WORLD_40 ]     = "WORLD_40";
-  ourSDLMapping[ SDLK_WORLD_41 ]     = "WORLD_41";
-  ourSDLMapping[ SDLK_WORLD_42 ]     = "WORLD_42";
-  ourSDLMapping[ SDLK_WORLD_43 ]     = "WORLD_43";
-  ourSDLMapping[ SDLK_WORLD_44 ]     = "WORLD_44";
-  ourSDLMapping[ SDLK_WORLD_45 ]     = "WORLD_45";
-  ourSDLMapping[ SDLK_WORLD_46 ]     = "WORLD_46";
-  ourSDLMapping[ SDLK_WORLD_47 ]     = "WORLD_47";
-  ourSDLMapping[ SDLK_WORLD_48 ]     = "WORLD_48";
-  ourSDLMapping[ SDLK_WORLD_49 ]     = "WORLD_49";
-  ourSDLMapping[ SDLK_WORLD_50 ]     = "WORLD_50";
-  ourSDLMapping[ SDLK_WORLD_51 ]     = "WORLD_51";
-  ourSDLMapping[ SDLK_WORLD_52 ]     = "WORLD_52";
-  ourSDLMapping[ SDLK_WORLD_53 ]     = "WORLD_53";
-  ourSDLMapping[ SDLK_WORLD_54 ]     = "WORLD_54";
-  ourSDLMapping[ SDLK_WORLD_55 ]     = "WORLD_55";
-  ourSDLMapping[ SDLK_WORLD_56 ]     = "WORLD_56";
-  ourSDLMapping[ SDLK_WORLD_57 ]     = "WORLD_57";
-  ourSDLMapping[ SDLK_WORLD_58 ]     = "WORLD_58";
-  ourSDLMapping[ SDLK_WORLD_59 ]     = "WORLD_59";
-  ourSDLMapping[ SDLK_WORLD_60 ]     = "WORLD_60";
-  ourSDLMapping[ SDLK_WORLD_61 ]     = "WORLD_61";
-  ourSDLMapping[ SDLK_WORLD_62 ]     = "WORLD_62";
-  ourSDLMapping[ SDLK_WORLD_63 ]     = "WORLD_63";
-  ourSDLMapping[ SDLK_WORLD_64 ]     = "WORLD_64";
-  ourSDLMapping[ SDLK_WORLD_65 ]     = "WORLD_65";
-  ourSDLMapping[ SDLK_WORLD_66 ]     = "WORLD_66";
-  ourSDLMapping[ SDLK_WORLD_67 ]     = "WORLD_67";
-  ourSDLMapping[ SDLK_WORLD_68 ]     = "WORLD_68";
-  ourSDLMapping[ SDLK_WORLD_69 ]     = "WORLD_69";
-  ourSDLMapping[ SDLK_WORLD_70 ]     = "WORLD_70";
-  ourSDLMapping[ SDLK_WORLD_71 ]     = "WORLD_71";
-  ourSDLMapping[ SDLK_WORLD_72 ]     = "WORLD_72";
-  ourSDLMapping[ SDLK_WORLD_73 ]     = "WORLD_73";
-  ourSDLMapping[ SDLK_WORLD_74 ]     = "WORLD_74";
-  ourSDLMapping[ SDLK_WORLD_75 ]     = "WORLD_75";
-  ourSDLMapping[ SDLK_WORLD_76 ]     = "WORLD_76";
-  ourSDLMapping[ SDLK_WORLD_77 ]     = "WORLD_77";
-  ourSDLMapping[ SDLK_WORLD_78 ]     = "WORLD_78";
-  ourSDLMapping[ SDLK_WORLD_79 ]     = "WORLD_79";
-  ourSDLMapping[ SDLK_WORLD_80 ]     = "WORLD_80";
-  ourSDLMapping[ SDLK_WORLD_81 ]     = "WORLD_81";
-  ourSDLMapping[ SDLK_WORLD_82 ]     = "WORLD_82";
-  ourSDLMapping[ SDLK_WORLD_83 ]     = "WORLD_83";
-  ourSDLMapping[ SDLK_WORLD_84 ]     = "WORLD_84";
-  ourSDLMapping[ SDLK_WORLD_85 ]     = "WORLD_85";
-  ourSDLMapping[ SDLK_WORLD_86 ]     = "WORLD_86";
-  ourSDLMapping[ SDLK_WORLD_87 ]     = "WORLD_87";
-  ourSDLMapping[ SDLK_WORLD_88 ]     = "WORLD_88";
-  ourSDLMapping[ SDLK_WORLD_89 ]     = "WORLD_89";
-  ourSDLMapping[ SDLK_WORLD_90 ]     = "WORLD_90";
-  ourSDLMapping[ SDLK_WORLD_91 ]     = "WORLD_91";
-  ourSDLMapping[ SDLK_WORLD_92 ]     = "WORLD_92";
-  ourSDLMapping[ SDLK_WORLD_93 ]     = "WORLD_93";
-  ourSDLMapping[ SDLK_WORLD_94 ]     = "WORLD_94";
-  ourSDLMapping[ SDLK_WORLD_95 ]     = "WORLD_95";
-  ourSDLMapping[ SDLK_KP0 ]          = "KP0";
-  ourSDLMapping[ SDLK_KP1 ]          = "KP1";
-  ourSDLMapping[ SDLK_KP2 ]          = "KP2";
-  ourSDLMapping[ SDLK_KP3 ]          = "KP3";
-  ourSDLMapping[ SDLK_KP4 ]          = "KP4";
-  ourSDLMapping[ SDLK_KP5 ]          = "KP5";
-  ourSDLMapping[ SDLK_KP6 ]          = "KP6";
-  ourSDLMapping[ SDLK_KP7 ]          = "KP7";
-  ourSDLMapping[ SDLK_KP8 ]          = "KP8";
-  ourSDLMapping[ SDLK_KP9 ]          = "KP9";
-  ourSDLMapping[ SDLK_KP_PERIOD ]    = "KP .";
-  ourSDLMapping[ SDLK_KP_DIVIDE ]    = "KP /";
-  ourSDLMapping[ SDLK_KP_MULTIPLY ]  = "KP *";
-  ourSDLMapping[ SDLK_KP_MINUS ]     = "KP -";
-  ourSDLMapping[ SDLK_KP_PLUS ]      = "KP +";
-  ourSDLMapping[ SDLK_KP_ENTER ]     = "KP ENTER";
-  ourSDLMapping[ SDLK_KP_EQUALS ]    = "KP =";
-  ourSDLMapping[ SDLK_UP ]           = "UP";
-  ourSDLMapping[ SDLK_DOWN ]         = "DOWN";
-  ourSDLMapping[ SDLK_RIGHT ]        = "RIGHT";
-  ourSDLMapping[ SDLK_LEFT ]         = "LEFT";
-  ourSDLMapping[ SDLK_INSERT ]       = "INS";
-  ourSDLMapping[ SDLK_HOME ]         = "HOME";
-  ourSDLMapping[ SDLK_END ]          = "END";
-  ourSDLMapping[ SDLK_PAGEUP ]       = "PGUP";
-  ourSDLMapping[ SDLK_PAGEDOWN ]     = "PGDN";
-  ourSDLMapping[ SDLK_F1 ]           = "F1";
-  ourSDLMapping[ SDLK_F2 ]           = "F2";
-  ourSDLMapping[ SDLK_F3 ]           = "F3";
-  ourSDLMapping[ SDLK_F4 ]           = "F4";
-  ourSDLMapping[ SDLK_F5 ]           = "F5";
-  ourSDLMapping[ SDLK_F6 ]           = "F6";
-  ourSDLMapping[ SDLK_F7 ]           = "F7";
-  ourSDLMapping[ SDLK_F8 ]           = "F8";
-  ourSDLMapping[ SDLK_F9 ]           = "F9";
-  ourSDLMapping[ SDLK_F10 ]          = "F10";
-  ourSDLMapping[ SDLK_F11 ]          = "F11";
-  ourSDLMapping[ SDLK_F12 ]          = "F12";
-  ourSDLMapping[ SDLK_F13 ]          = "F13";
-  ourSDLMapping[ SDLK_F14 ]          = "F14";
-  ourSDLMapping[ SDLK_F15 ]          = "F15";
-  ourSDLMapping[ SDLK_NUMLOCK ]      = "NUMLOCK";
-  ourSDLMapping[ SDLK_CAPSLOCK ]     = "CAPSLOCK";
-  ourSDLMapping[ SDLK_SCROLLOCK ]    = "SCROLLOCK";
-  ourSDLMapping[ SDLK_RSHIFT ]       = "RSHIFT";
-  ourSDLMapping[ SDLK_LSHIFT ]       = "LSHIFT";
-  ourSDLMapping[ SDLK_RCTRL ]        = "RCTRL";
-  ourSDLMapping[ SDLK_LCTRL ]        = "LCTRL";
-  ourSDLMapping[ SDLK_RALT ]         = "RALT";
-  ourSDLMapping[ SDLK_LALT ]         = "LALT";
-  ourSDLMapping[ SDLK_RMETA ]        = "RMETA";
-  ourSDLMapping[ SDLK_LMETA ]        = "LMETA";
-  ourSDLMapping[ SDLK_LSUPER ]       = "LSUPER";
-  ourSDLMapping[ SDLK_RSUPER ]       = "RSUPER";
-  ourSDLMapping[ SDLK_MODE ]         = "MODE";
-  ourSDLMapping[ SDLK_COMPOSE ]      = "COMPOSE";
-  ourSDLMapping[ SDLK_HELP ]         = "HELP";
-  ourSDLMapping[ SDLK_PRINT ]        = "PRINT";
-  ourSDLMapping[ SDLK_SYSREQ ]       = "SYSREQ";
-  ourSDLMapping[ SDLK_BREAK ]        = "BREAK";
-  ourSDLMapping[ SDLK_MENU ]         = "MENU";
-  ourSDLMapping[ SDLK_POWER ]        = "POWER";
-  ourSDLMapping[ SDLK_EURO ]         = "EURO";
-  ourSDLMapping[ SDLK_UNDO ]         = "UNDO";
+  ourKBDKMapping[ KBDK_BACKSPACE ]    = "BACKSPACE";
+  ourKBDKMapping[ KBDK_TAB ]          = "TAB";
+  ourKBDKMapping[ KBDK_CLEAR ]        = "CLEAR";
+  ourKBDKMapping[ KBDK_RETURN ]       = "RETURN";
+  ourKBDKMapping[ KBDK_PAUSE ]        = "PAUSE";
+  ourKBDKMapping[ KBDK_ESCAPE ]       = "ESCAPE";
+  ourKBDKMapping[ KBDK_SPACE ]        = "SPACE";
+  ourKBDKMapping[ KBDK_EXCLAIM ]      = "!";
+  ourKBDKMapping[ KBDK_QUOTEDBL ]     = "\"";
+  ourKBDKMapping[ KBDK_HASH ]         = "#";
+  ourKBDKMapping[ KBDK_DOLLAR ]       = "$";
+  ourKBDKMapping[ KBDK_AMPERSAND ]    = "&";
+  ourKBDKMapping[ KBDK_QUOTE ]        = "\'";
+  ourKBDKMapping[ KBDK_LEFTPAREN ]    = "(";
+  ourKBDKMapping[ KBDK_RIGHTPAREN ]   = ")";
+  ourKBDKMapping[ KBDK_ASTERISK ]     = "*";
+  ourKBDKMapping[ KBDK_PLUS ]         = "+";
+  ourKBDKMapping[ KBDK_COMMA ]        = "COMMA";
+  ourKBDKMapping[ KBDK_MINUS ]        = "-";
+  ourKBDKMapping[ KBDK_PERIOD ]       = ".";
+  ourKBDKMapping[ KBDK_SLASH ]        = "/";
+  ourKBDKMapping[ KBDK_0 ]            = "0";
+  ourKBDKMapping[ KBDK_1 ]            = "1";
+  ourKBDKMapping[ KBDK_2 ]            = "2";
+  ourKBDKMapping[ KBDK_3 ]            = "3";
+  ourKBDKMapping[ KBDK_4 ]            = "4";
+  ourKBDKMapping[ KBDK_5 ]            = "5";
+  ourKBDKMapping[ KBDK_6 ]            = "6";
+  ourKBDKMapping[ KBDK_7 ]            = "7";
+  ourKBDKMapping[ KBDK_8 ]            = "8";
+  ourKBDKMapping[ KBDK_9 ]            = "9";
+  ourKBDKMapping[ KBDK_COLON ]        = ":";
+  ourKBDKMapping[ KBDK_SEMICOLON ]    = ";";
+  ourKBDKMapping[ KBDK_LESS ]         = "<";
+  ourKBDKMapping[ KBDK_EQUALS ]       = "=";
+  ourKBDKMapping[ KBDK_GREATER ]      = ">";
+  ourKBDKMapping[ KBDK_QUESTION ]     = "?";
+  ourKBDKMapping[ KBDK_AT ]           = "@";
+  ourKBDKMapping[ KBDK_LEFTBRACKET ]  = "[";
+  ourKBDKMapping[ KBDK_BACKSLASH ]    = "\\";
+  ourKBDKMapping[ KBDK_RIGHTBRACKET ] = "]";
+  ourKBDKMapping[ KBDK_CARET ]        = "^";
+  ourKBDKMapping[ KBDK_UNDERSCORE ]   = "_";
+  ourKBDKMapping[ KBDK_BACKQUOTE ]    = "`";
+  ourKBDKMapping[ KBDK_a ]            = "A";
+  ourKBDKMapping[ KBDK_b ]            = "B";
+  ourKBDKMapping[ KBDK_c ]            = "C";
+  ourKBDKMapping[ KBDK_d ]            = "D";
+  ourKBDKMapping[ KBDK_e ]            = "E";
+  ourKBDKMapping[ KBDK_f ]            = "F";
+  ourKBDKMapping[ KBDK_g ]            = "G";
+  ourKBDKMapping[ KBDK_h ]            = "H";
+  ourKBDKMapping[ KBDK_i ]            = "I";
+  ourKBDKMapping[ KBDK_j ]            = "J";
+  ourKBDKMapping[ KBDK_k ]            = "K";
+  ourKBDKMapping[ KBDK_l ]            = "L";
+  ourKBDKMapping[ KBDK_m ]            = "M";
+  ourKBDKMapping[ KBDK_n ]            = "N";
+  ourKBDKMapping[ KBDK_o ]            = "O";
+  ourKBDKMapping[ KBDK_p ]            = "P";
+  ourKBDKMapping[ KBDK_q ]            = "Q";
+  ourKBDKMapping[ KBDK_r ]            = "R";
+  ourKBDKMapping[ KBDK_s ]            = "S";
+  ourKBDKMapping[ KBDK_t ]            = "T";
+  ourKBDKMapping[ KBDK_u ]            = "U";
+  ourKBDKMapping[ KBDK_v ]            = "V";
+  ourKBDKMapping[ KBDK_w ]            = "W";
+  ourKBDKMapping[ KBDK_x ]            = "X";
+  ourKBDKMapping[ KBDK_y ]            = "Y";
+  ourKBDKMapping[ KBDK_z ]            = "Z";
+  ourKBDKMapping[ KBDK_DELETE ]       = "DELETE";
+  ourKBDKMapping[ KBDK_WORLD_0 ]      = "WORLD_0";
+  ourKBDKMapping[ KBDK_WORLD_1 ]      = "WORLD_1";
+  ourKBDKMapping[ KBDK_WORLD_2 ]      = "WORLD_2";
+  ourKBDKMapping[ KBDK_WORLD_3 ]      = "WORLD_3";
+  ourKBDKMapping[ KBDK_WORLD_4 ]      = "WORLD_4";
+  ourKBDKMapping[ KBDK_WORLD_5 ]      = "WORLD_5";
+  ourKBDKMapping[ KBDK_WORLD_6 ]      = "WORLD_6";
+  ourKBDKMapping[ KBDK_WORLD_7 ]      = "WORLD_7";
+  ourKBDKMapping[ KBDK_WORLD_8 ]      = "WORLD_8";
+  ourKBDKMapping[ KBDK_WORLD_9 ]      = "WORLD_9";
+  ourKBDKMapping[ KBDK_WORLD_10 ]     = "WORLD_10";
+  ourKBDKMapping[ KBDK_WORLD_11 ]     = "WORLD_11";
+  ourKBDKMapping[ KBDK_WORLD_12 ]     = "WORLD_12";
+  ourKBDKMapping[ KBDK_WORLD_13 ]     = "WORLD_13";
+  ourKBDKMapping[ KBDK_WORLD_14 ]     = "WORLD_14";
+  ourKBDKMapping[ KBDK_WORLD_15 ]     = "WORLD_15";
+  ourKBDKMapping[ KBDK_WORLD_16 ]     = "WORLD_16";
+  ourKBDKMapping[ KBDK_WORLD_17 ]     = "WORLD_17";
+  ourKBDKMapping[ KBDK_WORLD_18 ]     = "WORLD_18";
+  ourKBDKMapping[ KBDK_WORLD_19 ]     = "WORLD_19";
+  ourKBDKMapping[ KBDK_WORLD_20 ]     = "WORLD_20";
+  ourKBDKMapping[ KBDK_WORLD_21 ]     = "WORLD_21";
+  ourKBDKMapping[ KBDK_WORLD_22 ]     = "WORLD_22";
+  ourKBDKMapping[ KBDK_WORLD_23 ]     = "WORLD_23";
+  ourKBDKMapping[ KBDK_WORLD_24 ]     = "WORLD_24";
+  ourKBDKMapping[ KBDK_WORLD_25 ]     = "WORLD_25";
+  ourKBDKMapping[ KBDK_WORLD_26 ]     = "WORLD_26";
+  ourKBDKMapping[ KBDK_WORLD_27 ]     = "WORLD_27";
+  ourKBDKMapping[ KBDK_WORLD_28 ]     = "WORLD_28";
+  ourKBDKMapping[ KBDK_WORLD_29 ]     = "WORLD_29";
+  ourKBDKMapping[ KBDK_WORLD_30 ]     = "WORLD_30";
+  ourKBDKMapping[ KBDK_WORLD_31 ]     = "WORLD_31";
+  ourKBDKMapping[ KBDK_WORLD_32 ]     = "WORLD_32";
+  ourKBDKMapping[ KBDK_WORLD_33 ]     = "WORLD_33";
+  ourKBDKMapping[ KBDK_WORLD_34 ]     = "WORLD_34";
+  ourKBDKMapping[ KBDK_WORLD_35 ]     = "WORLD_35";
+  ourKBDKMapping[ KBDK_WORLD_36 ]     = "WORLD_36";
+  ourKBDKMapping[ KBDK_WORLD_37 ]     = "WORLD_37";
+  ourKBDKMapping[ KBDK_WORLD_38 ]     = "WORLD_38";
+  ourKBDKMapping[ KBDK_WORLD_39 ]     = "WORLD_39";
+  ourKBDKMapping[ KBDK_WORLD_40 ]     = "WORLD_40";
+  ourKBDKMapping[ KBDK_WORLD_41 ]     = "WORLD_41";
+  ourKBDKMapping[ KBDK_WORLD_42 ]     = "WORLD_42";
+  ourKBDKMapping[ KBDK_WORLD_43 ]     = "WORLD_43";
+  ourKBDKMapping[ KBDK_WORLD_44 ]     = "WORLD_44";
+  ourKBDKMapping[ KBDK_WORLD_45 ]     = "WORLD_45";
+  ourKBDKMapping[ KBDK_WORLD_46 ]     = "WORLD_46";
+  ourKBDKMapping[ KBDK_WORLD_47 ]     = "WORLD_47";
+  ourKBDKMapping[ KBDK_WORLD_48 ]     = "WORLD_48";
+  ourKBDKMapping[ KBDK_WORLD_49 ]     = "WORLD_49";
+  ourKBDKMapping[ KBDK_WORLD_50 ]     = "WORLD_50";
+  ourKBDKMapping[ KBDK_WORLD_51 ]     = "WORLD_51";
+  ourKBDKMapping[ KBDK_WORLD_52 ]     = "WORLD_52";
+  ourKBDKMapping[ KBDK_WORLD_53 ]     = "WORLD_53";
+  ourKBDKMapping[ KBDK_WORLD_54 ]     = "WORLD_54";
+  ourKBDKMapping[ KBDK_WORLD_55 ]     = "WORLD_55";
+  ourKBDKMapping[ KBDK_WORLD_56 ]     = "WORLD_56";
+  ourKBDKMapping[ KBDK_WORLD_57 ]     = "WORLD_57";
+  ourKBDKMapping[ KBDK_WORLD_58 ]     = "WORLD_58";
+  ourKBDKMapping[ KBDK_WORLD_59 ]     = "WORLD_59";
+  ourKBDKMapping[ KBDK_WORLD_60 ]     = "WORLD_60";
+  ourKBDKMapping[ KBDK_WORLD_61 ]     = "WORLD_61";
+  ourKBDKMapping[ KBDK_WORLD_62 ]     = "WORLD_62";
+  ourKBDKMapping[ KBDK_WORLD_63 ]     = "WORLD_63";
+  ourKBDKMapping[ KBDK_WORLD_64 ]     = "WORLD_64";
+  ourKBDKMapping[ KBDK_WORLD_65 ]     = "WORLD_65";
+  ourKBDKMapping[ KBDK_WORLD_66 ]     = "WORLD_66";
+  ourKBDKMapping[ KBDK_WORLD_67 ]     = "WORLD_67";
+  ourKBDKMapping[ KBDK_WORLD_68 ]     = "WORLD_68";
+  ourKBDKMapping[ KBDK_WORLD_69 ]     = "WORLD_69";
+  ourKBDKMapping[ KBDK_WORLD_70 ]     = "WORLD_70";
+  ourKBDKMapping[ KBDK_WORLD_71 ]     = "WORLD_71";
+  ourKBDKMapping[ KBDK_WORLD_72 ]     = "WORLD_72";
+  ourKBDKMapping[ KBDK_WORLD_73 ]     = "WORLD_73";
+  ourKBDKMapping[ KBDK_WORLD_74 ]     = "WORLD_74";
+  ourKBDKMapping[ KBDK_WORLD_75 ]     = "WORLD_75";
+  ourKBDKMapping[ KBDK_WORLD_76 ]     = "WORLD_76";
+  ourKBDKMapping[ KBDK_WORLD_77 ]     = "WORLD_77";
+  ourKBDKMapping[ KBDK_WORLD_78 ]     = "WORLD_78";
+  ourKBDKMapping[ KBDK_WORLD_79 ]     = "WORLD_79";
+  ourKBDKMapping[ KBDK_WORLD_80 ]     = "WORLD_80";
+  ourKBDKMapping[ KBDK_WORLD_81 ]     = "WORLD_81";
+  ourKBDKMapping[ KBDK_WORLD_82 ]     = "WORLD_82";
+  ourKBDKMapping[ KBDK_WORLD_83 ]     = "WORLD_83";
+  ourKBDKMapping[ KBDK_WORLD_84 ]     = "WORLD_84";
+  ourKBDKMapping[ KBDK_WORLD_85 ]     = "WORLD_85";
+  ourKBDKMapping[ KBDK_WORLD_86 ]     = "WORLD_86";
+  ourKBDKMapping[ KBDK_WORLD_87 ]     = "WORLD_87";
+  ourKBDKMapping[ KBDK_WORLD_88 ]     = "WORLD_88";
+  ourKBDKMapping[ KBDK_WORLD_89 ]     = "WORLD_89";
+  ourKBDKMapping[ KBDK_WORLD_90 ]     = "WORLD_90";
+  ourKBDKMapping[ KBDK_WORLD_91 ]     = "WORLD_91";
+  ourKBDKMapping[ KBDK_WORLD_92 ]     = "WORLD_92";
+  ourKBDKMapping[ KBDK_WORLD_93 ]     = "WORLD_93";
+  ourKBDKMapping[ KBDK_WORLD_94 ]     = "WORLD_94";
+  ourKBDKMapping[ KBDK_WORLD_95 ]     = "WORLD_95";
+  ourKBDKMapping[ KBDK_KP0 ]          = "KP0";
+  ourKBDKMapping[ KBDK_KP1 ]          = "KP1";
+  ourKBDKMapping[ KBDK_KP2 ]          = "KP2";
+  ourKBDKMapping[ KBDK_KP3 ]          = "KP3";
+  ourKBDKMapping[ KBDK_KP4 ]          = "KP4";
+  ourKBDKMapping[ KBDK_KP5 ]          = "KP5";
+  ourKBDKMapping[ KBDK_KP6 ]          = "KP6";
+  ourKBDKMapping[ KBDK_KP7 ]          = "KP7";
+  ourKBDKMapping[ KBDK_KP8 ]          = "KP8";
+  ourKBDKMapping[ KBDK_KP9 ]          = "KP9";
+  ourKBDKMapping[ KBDK_KP_PERIOD ]    = "KP .";
+  ourKBDKMapping[ KBDK_KP_DIVIDE ]    = "KP /";
+  ourKBDKMapping[ KBDK_KP_MULTIPLY ]  = "KP *";
+  ourKBDKMapping[ KBDK_KP_MINUS ]     = "KP -";
+  ourKBDKMapping[ KBDK_KP_PLUS ]      = "KP +";
+  ourKBDKMapping[ KBDK_KP_ENTER ]     = "KP ENTER";
+  ourKBDKMapping[ KBDK_KP_EQUALS ]    = "KP =";
+  ourKBDKMapping[ KBDK_UP ]           = "UP";
+  ourKBDKMapping[ KBDK_DOWN ]         = "DOWN";
+  ourKBDKMapping[ KBDK_RIGHT ]        = "RIGHT";
+  ourKBDKMapping[ KBDK_LEFT ]         = "LEFT";
+  ourKBDKMapping[ KBDK_INSERT ]       = "INS";
+  ourKBDKMapping[ KBDK_HOME ]         = "HOME";
+  ourKBDKMapping[ KBDK_END ]          = "END";
+  ourKBDKMapping[ KBDK_PAGEUP ]       = "PGUP";
+  ourKBDKMapping[ KBDK_PAGEDOWN ]     = "PGDN";
+  ourKBDKMapping[ KBDK_F1 ]           = "F1";
+  ourKBDKMapping[ KBDK_F2 ]           = "F2";
+  ourKBDKMapping[ KBDK_F3 ]           = "F3";
+  ourKBDKMapping[ KBDK_F4 ]           = "F4";
+  ourKBDKMapping[ KBDK_F5 ]           = "F5";
+  ourKBDKMapping[ KBDK_F6 ]           = "F6";
+  ourKBDKMapping[ KBDK_F7 ]           = "F7";
+  ourKBDKMapping[ KBDK_F8 ]           = "F8";
+  ourKBDKMapping[ KBDK_F9 ]           = "F9";
+  ourKBDKMapping[ KBDK_F10 ]          = "F10";
+  ourKBDKMapping[ KBDK_F11 ]          = "F11";
+  ourKBDKMapping[ KBDK_F12 ]          = "F12";
+  ourKBDKMapping[ KBDK_F13 ]          = "F13";
+  ourKBDKMapping[ KBDK_F14 ]          = "F14";
+  ourKBDKMapping[ KBDK_F15 ]          = "F15";
+  ourKBDKMapping[ KBDK_NUMLOCK ]      = "NUMLOCK";
+  ourKBDKMapping[ KBDK_CAPSLOCK ]     = "CAPSLOCK";
+  ourKBDKMapping[ KBDK_SCROLLOCK ]    = "SCROLLOCK";
+  ourKBDKMapping[ KBDK_RSHIFT ]       = "RSHIFT";
+  ourKBDKMapping[ KBDK_LSHIFT ]       = "LSHIFT";
+  ourKBDKMapping[ KBDK_RCTRL ]        = "RCTRL";
+  ourKBDKMapping[ KBDK_LCTRL ]        = "LCTRL";
+  ourKBDKMapping[ KBDK_RALT ]         = "RALT";
+  ourKBDKMapping[ KBDK_LALT ]         = "LALT";
+  ourKBDKMapping[ KBDK_RMETA ]        = "RMETA";
+  ourKBDKMapping[ KBDK_LMETA ]        = "LMETA";
+  ourKBDKMapping[ KBDK_LSUPER ]       = "LSUPER";
+  ourKBDKMapping[ KBDK_RSUPER ]       = "RSUPER";
+  ourKBDKMapping[ KBDK_MODE ]         = "MODE";
+  ourKBDKMapping[ KBDK_COMPOSE ]      = "COMPOSE";
+  ourKBDKMapping[ KBDK_HELP ]         = "HELP";
+  ourKBDKMapping[ KBDK_PRINT ]        = "PRINT";
+  ourKBDKMapping[ KBDK_SYSREQ ]       = "SYSREQ";
+  ourKBDKMapping[ KBDK_BREAK ]        = "BREAK";
+  ourKBDKMapping[ KBDK_MENU ]         = "MENU";
+  ourKBDKMapping[ KBDK_POWER ]        = "POWER";
+  ourKBDKMapping[ KBDK_EURO ]         = "EURO";
+  ourKBDKMapping[ KBDK_UNDO ]         = "UNDO";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

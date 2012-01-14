@@ -78,12 +78,12 @@ void DebuggerDialog::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
+void DebuggerDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
-  bool handled = instance().eventHandler().kbdAlt(modifiers);
+  bool handled = instance().eventHandler().kbdAlt(mod);
   if(handled)
   {
-    switch(keycode)
+    switch(ascii)
     {
       case 's':
         doStep();
@@ -106,7 +106,7 @@ void DebuggerDialog::handleKeyDown(int ascii, int keycode, int modifiers)
     }
   }
   if(!handled)
-    Dialog::handleKeyDown(ascii, keycode, modifiers);
+    Dialog::handleKeyDown(key, mod, ascii);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -47,6 +47,7 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
     _bits(bits),
     _base(base),
     _selectedItem(0),
+    _currentKeyDown(KBDK_UNKNOWN),
     _opsWidget(NULL),
     _scrollBar(NULL)
 {
@@ -54,8 +55,6 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
            WIDGET_WANTS_RAWDATA;
   _type = kDataGridWidget;
   _editMode = false;
-
-  _currentKeyDown = 0;
 
   // The item is selected, thus _bgcolor is used to draw the caret and
   // _textcolorhi to erase it
@@ -282,11 +281,11 @@ int DataGridWidget::findItem(int x, int y)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Ignore all mod keys
-  if(instance().eventHandler().kbdControl(modifiers) ||
-     instance().eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdControl(mod) ||
+     instance().eventHandler().kbdAlt(mod))
     return true;
 
   bool handled = true;
@@ -295,17 +294,16 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   if (_editMode)
   {
     // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
+    handled = EditableWidget::handleKeyDown(key, mod, ascii);
     if(handled)
       setDirty(); draw();
   }
   else
   {
     // not editmode
-    switch(ascii)
+    switch(key)
     {
-      case '\n':  // enter/return
-      case '\r':
+      case KBDK_RETURN:
         if (_currentRow >= 0 && _currentCol >= 0)
         {
           dirty = true;
@@ -314,7 +312,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+17:  // up arrow
+      case KBDK_UP:
         if (_currentRow > 0)
         {
           _currentRow--;
@@ -328,7 +326,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+18:  // down arrow
+      case KBDK_DOWN:
         if (_currentRow < (int) _rows - 1)
         {
           _currentRow++;
@@ -342,7 +340,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+20:  // left arrow
+      case KBDK_LEFT:
         if (_currentCol > 0)
         {
           _currentCol--;
@@ -356,7 +354,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+19:  // right arrow
+      case KBDK_RIGHT:
         if (_currentCol < (int) _cols - 1)
         {
           _currentCol++;
@@ -370,8 +368,8 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+24:  // pageup
-        if(instance().eventHandler().kbdShift(modifiers) && _scrollBar)
+      case KBDK_PAGEUP:
+        if(instance().eventHandler().kbdShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, -1);
         else if (_currentRow > 0)
         {
@@ -380,8 +378,8 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+25:	// pagedown
-        if(instance().eventHandler().kbdShift(modifiers) && _scrollBar)
+      case KBDK_PAGEDOWN:
+        if(instance().eventHandler().kbdShift(mod) && _scrollBar)
           handleMouseWheel(0, 0, +1);
         else if (_currentRow < (int) _rows - 1)
         {
@@ -390,7 +388,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+22:  // home
+      case KBDK_HOME:
         if (_currentCol > 0)
         {
           _currentCol = 0;
@@ -398,7 +396,7 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 256+23:  // end
+      case KBDK_END:
         if (_currentCol < (int) _cols - 1)
         {
           _currentCol = _cols - 1;
@@ -406,47 +404,57 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
         }
         break;
 
-      case 'n': // negate
+      case KBDK_n: // negate
         if(_editable)
           negateCell();
         break;
 
-      case 'i': // invert
-      case '!':
-        if(_editable)
-          invertCell();
-        break;
-
-      case '-': // decrement
-        if(_editable)
-          decrementCell();
-        break;
-
-      case '+': // increment
-      case '=':
-        if(_editable)
-          incrementCell();
-        break;
-
-      case '<': // shift left
-      case ',':
-        if(_editable)
-          lshiftCell();
-        break;
-
-      case '>': // shift right
-      case '.':
-        if(_editable)
-          rshiftCell();
-        break;
-
-      case 'z': // zero
-        if(_editable)
-          zeroCell();
-        break;
-
       default:
         handled = false;
+    }
+    if(!handled)
+    {
+      handled = true;
+
+      switch(ascii)
+      {
+        case 'i': // invert
+        case '!':
+          if(_editable)
+            invertCell();
+          break;
+
+        case '-': // decrement
+          if(_editable)
+            decrementCell();
+          break;
+
+        case '+': // increment
+        case '=':
+          if(_editable)
+            incrementCell();
+          break;
+
+        case '<': // shift left
+        case ',':
+          if(_editable)
+            lshiftCell();
+          break;
+
+        case '>': // shift right
+        case '.':
+          if(_editable)
+            rshiftCell();
+          break;
+
+        case 'z': // zero
+          if(_editable)
+            zeroCell();
+          break;
+
+        default:
+          handled = false;
+      }
     }
   }
 
@@ -461,15 +469,15 @@ bool DataGridWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     setDirty(); draw();
   }
 
-  _currentKeyDown = keycode;
+  _currentKeyDown = key;
   return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool DataGridWidget::handleKeyUp(int ascii, int keycode, int modifiers)
+bool DataGridWidget::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
 {
-  if (keycode == _currentKeyDown)
-    _currentKeyDown = 0;
+  if (key == _currentKeyDown)
+    _currentKeyDown = KBDK_UNKNOWN;
   return true;
 }
 

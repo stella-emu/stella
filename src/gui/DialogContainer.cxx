@@ -56,8 +56,8 @@ void DialogContainer::updateTime(uInt64 time)
   // Key still pressed
   if(myCurrentKeyDown.keycode != 0 && myKeyRepeatTime < myTime)
   {
-    activeDialog->handleKeyDown(myCurrentKeyDown.ascii, myCurrentKeyDown.keycode,
-                                myCurrentKeyDown.flags);
+    activeDialog->handleKeyDown(myCurrentKeyDown.keycode, myCurrentKeyDown.flags,
+                                myCurrentKeyDown.ascii);
     myKeyRepeatTime = myTime + kRepeatSustainDelay;
   }
 
@@ -151,29 +151,30 @@ void DialogContainer::reStack()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::handleKeyEvent(int ascii, int key, int mod, uInt8 state)
+void DialogContainer::handleKeyEvent(StellaKey key, StellaMod mod,
+                                     char ascii, bool state)
 {
   if(myDialogStack.empty())
     return;
 
   // Send the event to the dialog box on the top of the stack
   Dialog* activeDialog = myDialogStack.top();
-  if(state == 1)
+  if(state)
   {
-    myCurrentKeyDown.ascii   = ascii;
     myCurrentKeyDown.keycode = key;
     myCurrentKeyDown.flags   = mod;
+    myCurrentKeyDown.ascii   = ascii;
     myKeyRepeatTime = myTime + kRepeatInitialDelay;
 
-    activeDialog->handleKeyDown(ascii, key, mod);
+    activeDialog->handleKeyDown(key, mod, ascii);
   }
   else
   {
-    activeDialog->handleKeyUp(ascii, key, mod);
+    activeDialog->handleKeyUp(key, mod, ascii);
 
     // Only stop firing events if it's the current key
     if (key == myCurrentKeyDown.keycode)
-      myCurrentKeyDown.keycode = 0;
+      myCurrentKeyDown.keycode = KBDK_UNKNOWN;
   }
 }
 
@@ -338,7 +339,7 @@ void DialogContainer::handleJoyHatEvent(int stick, int hat, JoyHat value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void DialogContainer::reset()
 {
-  myCurrentKeyDown.keycode = 0;
+  myCurrentKeyDown.keycode = KBDK_UNKNOWN;
   myCurrentMouseDown.button = -1;
   myLastClick.x = myLastClick.y = 0;
   myLastClick.time = 0;

@@ -56,7 +56,7 @@ class DebuggerDialog : public Dialog
     ButtonWidget& rewindButton() { return *myRewindButton; }
 
     void loadConfig();
-    void handleKeyDown(int ascii, int keycode, int modifiers);
+    void handleKeyDown(StellaKey key, StellaMod mod, char ascii);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
     void showFatalMessage(const string& msg);

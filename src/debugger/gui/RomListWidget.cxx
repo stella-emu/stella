@@ -38,8 +38,8 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     _currentPos(0),
     _selectedItem(-1),
     _highlightedItem(-1),
-    _currentKeyDown(0),
-    _editMode(false)
+    _editMode(false),
+    _currentKeyDown(KBDK_UNKNOWN)
 {
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG | WIDGET_RETAIN_FOCUS;
   _type = kRomListWidget;
@@ -284,10 +284,10 @@ void RomListWidget::handleMouseWheel(int x, int y, int direction)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
+bool RomListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Ignore all Alt-mod keys
-  if(instance().eventHandler().kbdAlt(modifiers))
+  if(instance().eventHandler().kbdAlt(mod))
     return true;
 
   bool handled = true;
@@ -296,14 +296,14 @@ bool RomListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
   if (_editMode)
   {
     // Class EditableWidget handles all text editing related key presses for us
-    handled = EditableWidget::handleKeyDown(ascii, keycode, modifiers);
+    handled = EditableWidget::handleKeyDown(key, mod, ascii);
   }
   else
   {
     // not editmode
-    switch (keycode)
+    switch (key)
     {
-      case ' ':  // space
+      case KBDK_SPACE:
         // Snap list back to currently highlighted line
         if(_highlightedItem >= 0)
         {
@@ -323,15 +323,15 @@ bool RomListWidget::handleKeyDown(int ascii, int keycode, int modifiers)
     scrollToSelected();
   }
 
-  _currentKeyDown = keycode;
+  _currentKeyDown = key;
   return handled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool RomListWidget::handleKeyUp(int ascii, int keycode, int modifiers)
+bool RomListWidget::handleKeyUp(StellaKey key, StellaMod mod, char ascii)
 {
-  if (keycode == _currentKeyDown)
-    _currentKeyDown = 0;
+  if (key == _currentKeyDown)
+    _currentKeyDown = KBDK_UNKNOWN;
   return true;
 }
 
