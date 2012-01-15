@@ -268,6 +268,7 @@
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
+		DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */; };
 		DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */; };
 		DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4E0F117CFD004D1660 /* Rect.hxx */; };
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
@@ -698,6 +699,7 @@
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RiotWidget.hxx; path = ../debugger/gui/RiotWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKey.cxx; path = ../emucore/SaveKey.cxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SaveKey.hxx; path = ../emucore/SaveKey.hxx; sourceTree = SOURCE_ROOT; };
+		DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaKeys.hxx; path = ../common/StellaKeys.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Stack.hxx; path = ../common/Stack.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4E0F117CFD004D1660 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Rect.hxx; path = ../gui/Rect.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaFont.hxx; path = ../gui/StellaFont.hxx; sourceTree = SOURCE_ROOT; };
@@ -1010,6 +1012,7 @@
 				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
 				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
+				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D69F138D4D7E00F05C5C /* StringList.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
@@ -1561,6 +1564,7 @@
 				DCCF4ADD14B9433100814FAB /* GenesisWidget.hxx in Headers */,
 				DCCF4B0314BA27EB00814FAB /* DrivingWidget.hxx in Headers */,
 				DCCF4B0514BA27EB00814FAB /* KeyboardWidget.hxx in Headers */,
+				DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

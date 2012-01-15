@@ -313,6 +313,7 @@
 		DC4AC6F40DC8DAEF00CD3AD2 /* SaveKey.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */; };
 		DC4AF1F312E39F700090B82E /* Thumbulator.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AF1F112E39F700090B82E /* Thumbulator.cxx */; };
 		DC4AF1F412E39F700090B82E /* Thumbulator.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AF1F212E39F700090B82E /* Thumbulator.hxx */; };
+		DC5C76B014C2709E0031EBC7 /* StellaKeys.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5C76AF14C2709E0031EBC7 /* StellaKeys.hxx */; };
 		DC5D1AA7102C6FC900E59AC1 /* Stack.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */; };
 		DC5D2C520F117CFD004D1660 /* Rect.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4E0F117CFD004D1660 /* Rect.hxx */; };
 		DC5D2C530F117CFD004D1660 /* StellaFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */; };
@@ -746,6 +747,7 @@
 		DC4AC6F20DC8DAEF00CD3AD2 /* SaveKey.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = SaveKey.hxx; path = ../emucore/SaveKey.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AF1F112E39F700090B82E /* Thumbulator.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Thumbulator.cxx; path = ../emucore/Thumbulator.cxx; sourceTree = SOURCE_ROOT; };
 		DC4AF1F212E39F700090B82E /* Thumbulator.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Thumbulator.hxx; path = ../emucore/Thumbulator.hxx; sourceTree = SOURCE_ROOT; };
+		DC5C76AF14C2709E0031EBC7 /* StellaKeys.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaKeys.hxx; path = ../common/StellaKeys.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Stack.hxx; path = ../common/Stack.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4E0F117CFD004D1660 /* Rect.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Rect.hxx; path = ../gui/Rect.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C4F0F117CFD004D1660 /* StellaFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaFont.hxx; path = ../gui/StellaFont.hxx; sourceTree = SOURCE_ROOT; };
@@ -1013,6 +1015,7 @@
 				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
 				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
 				DC5D1AA6102C6FC900E59AC1 /* Stack.hxx */,
+				DC5C76AF14C2709E0031EBC7 /* StellaKeys.hxx */,
 				DC20D6F1138EB130002A7428 /* StringList.hxx */,
 				DC20D6F2138EB130002A7428 /* StringParser.hxx */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
@@ -1564,6 +1567,7 @@
 				DC0B000314BA2BEB00CF5E7E /* KeyboardWidget.hxx in Headers */,
 				DC0B000414BA2BEB00CF5E7E /* NullControlWidget.hxx in Headers */,
 				DC0B000614BA2BEB00CF5E7E /* PaddleWidget.hxx in Headers */,
+				DC5C76B014C2709E0031EBC7 /* StellaKeys.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
