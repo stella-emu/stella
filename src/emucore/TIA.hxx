@@ -225,6 +225,14 @@ class TIA : public Device
       { return ((mySystem->cycles() * 3) - myClockWhenFrameStarted) % 228; }
 
     /**
+      Answers the scanline at which the current frame began drawing.
+
+      @return The starting scanline
+    */
+    uInt32 startLine() const
+      { return myStartScanline; }
+
+    /**
       Answers the total number of scanlines the TIA generated in producing
       the current frame buffer. For partial frames, this will be the
       current scanline.

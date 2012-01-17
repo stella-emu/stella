@@ -296,7 +296,8 @@ void Cartridge::registerRamArea(uInt16 start, uInt16 size,
 void Cartridge::triggerReadFromWritePort(uInt16 address)
 {
 #ifdef DEBUGGER_SUPPORT
-  Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
+  if(!mySystem->autodectMode())
+    Debugger::debugger().cartDebug().triggerReadFromWritePort(address);
 #endif
 }
 

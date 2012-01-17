@@ -217,11 +217,11 @@ class M6502 : public Serializable
     void setBreakPoints(PackedBitArray* bp);
     void setTraps(PackedBitArray* read, PackedBitArray* write);
 
-    unsigned int addCondBreak(Expression* e, const string& name);
-    void delCondBreak(unsigned int brk);
+    uInt32 addCondBreak(Expression* e, const string& name);
+    void delCondBreak(uInt32 brk);
     void clearCondBreaks();
     const StringList& getCondBreakNames() const;
-    int evalCondBreaks();
+    Int32 evalCondBreaks();
 #endif
 
   private:

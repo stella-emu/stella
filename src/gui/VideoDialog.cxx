@@ -416,6 +416,8 @@ void VideoDialog::saveConfig()
 
   // PAL color-loss effect
   instance().settings().setBool("colorloss", myColorLossCheckbox->getState());
+  if(&instance().console())
+    instance().console().toggleColorLoss(myColorLossCheckbox->getState());
 
   // GL stretch setting
   instance().settings().setBool("gl_fsmax", myGLStretchCheckbox->getState());

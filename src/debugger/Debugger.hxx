@@ -83,7 +83,7 @@ class Debugger : public DialogContainer
     /**
       Create a new debugger parent object
     */
-    Debugger(OSystem* osystem);
+    Debugger(OSystem& osystem, Console& console);
 
     /**
       Destructor
@@ -92,11 +92,9 @@ class Debugger : public DialogContainer
 
   public:
     /**
-      Updates the basedialog to be of the type defined for this derived class.
-
-      @param console  The console to use for this debugging session.
+      Initialize the debugger dialog container.
     */
-    void initialize(Console* console);
+    void initialize();
 
     /**
       Initialize the video subsystem wrt this class.
@@ -233,12 +231,12 @@ class Debugger : public DialogContainer
     GUI::Rect getTabBounds() const;
 
     /* These are now exposed so Expressions can use them. */
-    int peek(int addr) { return mySystem->peek(addr); }
-    int dpeek(int addr) { return mySystem->peek(addr) | (mySystem->peek(addr+1) << 8); }
+    int peek(int addr) { return mySystem.peek(addr); }
+    int dpeek(int addr) { return mySystem.peek(addr) | (mySystem.peek(addr+1) << 8); }
     int getAccessFlags(uInt16 addr)
-      { return mySystem->getAccessFlags(addr); }
+      { return mySystem.getAccessFlags(addr); }
     void setAccessFlags(uInt16 addr, uInt8 flags)
-      { mySystem->setAccessFlags(addr, flags); }
+      { mySystem.setAccessFlags(addr, flags); }
 
     void setBreakPoint(int bp, bool set);
 
@@ -303,8 +301,8 @@ class Debugger : public DialogContainer
     void loadState(int state);
 
   private:
-    Console* myConsole;
-    System*  mySystem;
+    Console& myConsole;
+    System&  mySystem;
 
     DebuggerDialog* myDialog;
     DebuggerParser* myParser;

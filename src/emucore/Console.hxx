@@ -88,7 +88,7 @@ class Console : public Serializable
     */
     Controller& controller(Controller::Jack jack) const
     {
-      return (jack == Controller::Left) ? *myControllers[0] : *myControllers[1];
+      return *myControllers[jack];
     }
 
     /**
@@ -204,6 +204,7 @@ class Console : public Serializable
       Toggles the PAL color-loss effect.
     */
     void toggleColorLoss();
+    void toggleColorLoss(bool state);
 
     /**
       Initialize the video subsystem wrt this class.

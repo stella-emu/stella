@@ -37,6 +37,9 @@
   * Fixed compile issues in Irix when using the default compiler
     instead of gcc.  Thanks go to Rainer M. Canavan for this code.
 
+  * Fixed bug in PAL color-loss setting in Video Settings; changing the
+    settings wouldn't take effect until the ROM was reloaded.
+
   * Added CompuMate bankswitching support to the emulation core;
     the SpectraVision Compumate ROM now works.
     (FIXME - this may not be complete)

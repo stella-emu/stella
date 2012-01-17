@@ -50,6 +50,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myFrameYStart(34),
     myFrameHeight(210),
     myMaximumNumberOfScanlines(262),
+    myStartScanline(0),
     myColorLossEnabled(false),
     myPartialFrameFlag(false),
     myAutoFrameEnabled(false),
@@ -601,8 +602,8 @@ inline void TIA::startFrame()
       myColor[M1Color] &= 0xfefefefe;
       myColor[BLColor] &= 0xfefefefe;
     }
-  }   
-  myStartScanline = 0x7FFFFFFF;
+  }
+  myStartScanline = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1331,12 +1332,10 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       if (!(myVBLANK & 0x40))
         myINPT4 = myINPT5 = 0x80;
 
-#if 0 // TODO - this isn't yet complete
       // Check for the first scanline at which VBLANK is disabled.
       // Usually, this will be the first scanline to start drawing.
-      if(myStartScanline == 0x7FFFFFFF && !(value & 0x10))
+      if(myStartScanline == 0 && !(value & 0x10))
         myStartScanline = scanlines();
-#endif
 
       myVBLANK = value;
       break;

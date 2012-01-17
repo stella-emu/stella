@@ -245,7 +245,7 @@ bool M6502::execute(uInt32 number)
 #ifdef DEBUGGER_SUPPORT
       if(myJustHitTrapFlag)
       {
-        if(myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address))
+        if(myDebugger && myDebugger->start(myHitTrapInfo.message, myHitTrapInfo.address))
         {
           myJustHitTrapFlag = false;
           return true;
@@ -256,7 +256,7 @@ bool M6502::execute(uInt32 number)
       {
         if(myBreakPoints->isSet(PC))
         {
-          if(myDebugger->start("BP: ", PC))
+          if(myDebugger && myDebugger->start("BP: ", PC))
             return true;
         }
       }
@@ -265,7 +265,7 @@ bool M6502::execute(uInt32 number)
       if(cond > -1)
       {
         string buf = "CBP: " + myBreakCondNames[cond];
-        if(myDebugger->start(buf))
+        if(myDebugger && myDebugger->start(buf))
           return true;
       }
 #endif
@@ -471,7 +471,7 @@ void M6502::attach(Debugger& debugger)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-unsigned int M6502::addCondBreak(Expression *e, const string& name)
+uInt32 M6502::addCondBreak(Expression *e, const string& name)
 {
   myBreakConds.push_back(e);
   myBreakCondNames.push_back(name);
@@ -479,7 +479,7 @@ unsigned int M6502::addCondBreak(Expression *e, const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void M6502::delCondBreak(unsigned int brk)
+void M6502::delCondBreak(uInt32 brk)
 {
   if(brk < myBreakConds.size())
   {
@@ -506,7 +506,7 @@ const StringList& M6502::getCondBreakNames() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int M6502::evalCondBreaks()
+Int32 M6502::evalCondBreaks()
 {
   for(uInt32 i = 0; i < myBreakConds.size(); i++)
     if(myBreakConds[i]->evaluate())

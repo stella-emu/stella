@@ -280,9 +280,6 @@ bool OSystem::create()
   myMenu = new Menu(this);
   myCommandMenu = new CommandMenu(this);
   myLauncher = new Launcher(this);
-#ifdef DEBUGGER_SUPPORT
-  myDebugger = new Debugger(this);
-#endif
   myStateManager = new StateManager(this);
 
   // Create the sound object; the sound subsystem isn't actually
@@ -309,6 +306,16 @@ bool OSystem::create()
 
   return true;
 }
+
+#ifdef DEBUGGER_SUPPORT
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::createDebugger(Console& console)
+{
+  delete myDebugger;  myDebugger = NULL;
+  myDebugger = new Debugger(*this, console);
+  myDebugger->initialize();
+}
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::setConfigPaths()
@@ -588,6 +595,7 @@ void OSystem::deleteConsole()
     logMessage(buf.str(), 1);
 
     delete myConsole;  myConsole = NULL;
+    delete myDebugger; myDebugger = NULL;
   }
 }
 

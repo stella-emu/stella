@@ -98,9 +98,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myControllers[1] = new Joystick(Controller::Right, myEvent, *mySystem);
 
   M6502* m6502 = new M6502(1);
-#ifdef DEBUGGER_SUPPORT
-  m6502->attach(myOSystem->debugger());
-#endif
 
   myRiot = new M6532(*this, myOSystem->settings());
   myTIA  = new TIA(*this, myOSystem->sound(), myOSystem->settings());
@@ -116,10 +113,16 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   if(myDisplayFormat == "AUTO-DETECT" ||
      myOSystem->settings().getBool("rominfo"))
   {
-    // Run the system for 60 frames, looking for PAL scanline patterns
+    // Run the TIA, looking for PAL scanline patterns
     // We turn off the SuperCharger progress bars, otherwise the SC BIOS
     // will take over 250 frames!
     // The 'fastscbios' option must be changed before the system is reset
+
+    // The algorithm used is as follows:
+    //   Run for 60 frames, only consider frames in appropriate scanline range
+    //   If there's a frame that starts drawing at scanline 50 or
+    //   has more than 287 scanlines, count it as PAL
+    //   If at least 20 PAL frames are found, then the format is PAL, else NTSC
     bool fastscbios = myOSystem->settings().getBool("fastscbios");
     myOSystem->settings().setBool("fastscbios", true);
     mySystem->reset(true);  // autodetect in reset enabled
@@ -127,10 +130,13 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     for(int i = 0; i < 60; ++i)
     {
       myTIA->update();
-      if(myTIA->scanlines() > 285)
+      int lines = myTIA->scanlines() - myTIA->startLine();
+      if((lines >= 180 && lines <= 342) &&
+         (myTIA->startLine() >= 50 || myTIA->scanlines() >= 287))
         ++palCount;
     }
-    myDisplayFormat = (palCount >= 20) ? "PAL" : "NTSC";
+
+    myDisplayFormat = (palCount >= 25) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       autodetected = "*";
 
@@ -202,7 +208,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   mySystem->reset();
 
 #ifdef DEBUGGER_SUPPORT
-  myOSystem->debugger().initialize(this);
+  myOSystem->createDebugger(*this);
+  m6502->attach(myOSystem->debugger());
 #endif
 
   // Finally, add remaining info about the console
@@ -329,6 +336,12 @@ void Console::toggleColorLoss()
   string message = string("PAL color-loss ") +
                    (colorloss ? "enabled" : "disabled");
   myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleColorLoss(bool state)
+{
+  myTIA->enableColorLoss(state);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

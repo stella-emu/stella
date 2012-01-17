@@ -56,7 +56,7 @@
 
 #include "Debugger.hxx"
 
-Debugger* Debugger::myStaticDebugger;
+Debugger* Debugger::myStaticDebugger = 0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 static const char* builtin_functions[][3] = {
@@ -108,10 +108,10 @@ static const char* pseudo_registers[][2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Debugger::Debugger(OSystem* osystem)
-  : DialogContainer(osystem),
-    myConsole(NULL),
-    mySystem(NULL),
+Debugger::Debugger(OSystem& osystem, Console& console)
+  : DialogContainer(&osystem),
+    myConsole(console),
+    mySystem(console.system()),
     myDialog(NULL),
     myParser(NULL),
     myCartDebug(NULL),
@@ -127,6 +127,13 @@ Debugger::Debugger(OSystem* osystem)
 {
   // Init parser
   myParser = new DebuggerParser(this);
+
+  // Create debugger subsystems
+  myCpuDebug  = new CpuDebug(*this, myConsole);
+  myCartDebug = new CartDebug(*this, myConsole, osystem);
+  myRiotDebug = new RiotDebug(*this, myConsole);
+  myTiaDebug  = new TIADebug(*this, myConsole);
+
   myBreakPoints = new PackedBitArray(0x10000);
   myReadTraps = new PackedBitArray(0x10000);
   myWriteTraps = new PackedBitArray(0x10000);
@@ -142,45 +149,21 @@ Debugger::Debugger(OSystem* osystem)
 Debugger::~Debugger()
 {
   delete myParser;
-
   delete myCartDebug;
   delete myCpuDebug;
   delete myRiotDebug;
   delete myTiaDebug;
-
   delete myBreakPoints;
   delete myReadTraps;
   delete myWriteTraps;
-
   delete myRewindManager;
+
+  myStaticDebugger = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Debugger::initialize(Console* console)
+void Debugger::initialize()
 {
-  assert(console);
-
-  // Keep pointers to these items for efficiency
-  myConsole = console;
-  mySystem = &(myConsole->system());
-
-  // Create debugger subsystems
-  delete myCpuDebug;
-  myCpuDebug = new CpuDebug(*this, *myConsole);
-
-  delete myCartDebug;
-  myCartDebug = new CartDebug(*this, *myConsole, *myOSystem);
-
-  delete myRiotDebug;
-  myRiotDebug = new RiotDebug(*this, *myConsole);
-
-  delete myTiaDebug;
-  myTiaDebug = new TIADebug(*this, *myConsole);
-
-  // Initialize breakpoints to known state
-  clearAllBreakPoints();
-  clearAllTraps();
-
   // Get the dialog size
   int w, h;
   myOSystem->settings().getSize("debuggerres", w, h);
@@ -375,7 +358,7 @@ string Debugger::setRAM(IntArray& args)
   int count = args.size();
   int address = args[0];
   for(int i = 1; i < count; ++i)
-    mySystem->poke(address++, args[i]);
+    mySystem.poke(address++, args[i]);
 
   buf << "changed " << (count-1) << " location";
   if(count != 2)
@@ -386,7 +369,7 @@ string Debugger::setRAM(IntArray& args)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::saveState(int state)
 {
-  mySystem->clearDirtyPages();
+  mySystem.clearDirtyPages();
 
   unlockBankswitchState();
   myOSystem->state().saveState(state);
@@ -396,7 +379,7 @@ void Debugger::saveState(int state)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::loadState(int state)
 {
-  mySystem->clearDirtyPages();
+  mySystem.clearDirtyPages();
 
   unlockBankswitchState();
   myOSystem->state().loadState(state);
@@ -407,15 +390,15 @@ void Debugger::loadState(int state)
 int Debugger::step()
 {
   saveOldState();
-  mySystem->clearDirtyPages();
+  mySystem.clearDirtyPages();
 
-  int cyc = mySystem->cycles();
+  int cyc = mySystem.cycles();
 
   unlockBankswitchState();
   myOSystem->console().tia().updateScanlineByStep();
   lockBankswitchState();
 
-  return mySystem->cycles() - cyc;
+  return mySystem.cycles() - cyc;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -432,19 +415,19 @@ int Debugger::step()
 int Debugger::trace()
 {
   // 32 is the 6502 JSR instruction:
-  if(mySystem->peek(myCpuDebug->pc()) == 32)
+  if(mySystem.peek(myCpuDebug->pc()) == 32)
   {
     saveOldState();
-    mySystem->clearDirtyPages();
+    mySystem.clearDirtyPages();
 
-    int cyc = mySystem->cycles();
+    int cyc = mySystem.cycles();
     int targetPC = myCpuDebug->pc() + 3; // return address
 
     unlockBankswitchState();
     myOSystem->console().tia().updateScanlineByTrace(targetPC);
     lockBankswitchState();
 
-    return mySystem->cycles() - cyc;
+    return mySystem.cycles() - cyc;
   }
   else
     return step();
@@ -453,7 +436,7 @@ int Debugger::trace()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleBreakPoint(int bp)
 {
-  mySystem->m6502().setBreakPoints(myBreakPoints);
+  mySystem.m6502().setBreakPoints(myBreakPoints);
   if(bp < 0) bp = myCpuDebug->pc();
   myBreakPoints->toggle(bp);
 }
@@ -461,7 +444,7 @@ void Debugger::toggleBreakPoint(int bp)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::setBreakPoint(int bp, bool set)
 {
-  mySystem->m6502().setBreakPoints(myBreakPoints);
+  mySystem.m6502().setBreakPoints(myBreakPoints);
   if(bp < 0) bp = myCpuDebug->pc();
   if(set)
     myBreakPoints->set(bp);
@@ -479,14 +462,14 @@ bool Debugger::breakPoint(int bp)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleReadTrap(int t)
 {
-  mySystem->m6502().setTraps(myReadTraps, myWriteTraps);
+  mySystem.m6502().setTraps(myReadTraps, myWriteTraps);
   myReadTraps->toggle(t);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::toggleWriteTrap(int t)
 {
-  mySystem->m6502().setTraps(myReadTraps, myWriteTraps);
+  mySystem.m6502().setTraps(myReadTraps, myWriteTraps);
   myWriteTraps->toggle(t);
 }
 
@@ -512,14 +495,14 @@ bool Debugger::writeTrap(int t)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int Debugger::cycles()
 {
-  return mySystem->cycles();
+  return mySystem.cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::nextScanline(int lines)
 {
   saveOldState();
-  mySystem->clearDirtyPages();
+  mySystem.clearDirtyPages();
 
   unlockBankswitchState();
   while(lines)
@@ -534,7 +517,7 @@ void Debugger::nextScanline(int lines)
 void Debugger::nextFrame(int frames)
 {
   saveOldState();
-  mySystem->clearDirtyPages();
+  mySystem.clearDirtyPages();
 
   unlockBankswitchState();
   while(frames)
@@ -548,7 +531,7 @@ void Debugger::nextFrame(int frames)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::rewindState()
 {
-  mySystem->clearDirtyPages();
+  mySystem.clearDirtyPages();
 
   unlockBankswitchState();
   bool result = myRewindManager->rewindState();
@@ -562,7 +545,7 @@ void Debugger::clearAllBreakPoints()
 {
   delete myBreakPoints;
   myBreakPoints = new PackedBitArray(0x10000);
-  mySystem->m6502().setBreakPoints(NULL);
+  mySystem.m6502().setBreakPoints(NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -572,7 +555,7 @@ void Debugger::clearAllTraps()
   delete myWriteTraps;
   myReadTraps = new PackedBitArray(0x10000);
   myWriteTraps = new PackedBitArray(0x10000);
-  mySystem->m6502().setTraps(NULL, NULL);
+  mySystem.m6502().setTraps(NULL, NULL);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -584,11 +567,11 @@ string Debugger::showWatches()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::setBank(int bank)
 {
-  if(myConsole->cartridge().bankCount() > 1)
+  if(myConsole.cartridge().bankCount() > 1)
   {
-    myConsole->cartridge().unlockBank();
-    bool status = myConsole->cartridge().bank(bank);
-    myConsole->cartridge().lockBank();
+    myConsole.cartridge().unlockBank();
+    bool status = myConsole.cartridge().bank(bank);
+    myConsole.cartridge().lockBank();
     return status;
   }
   return false;
@@ -597,7 +580,7 @@ bool Debugger::setBank(int bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Debugger::patchROM(int addr, int value)
 {
-  return myConsole->cartridge().patch(addr, value);
+  return myConsole.cartridge().patch(addr, value);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -638,7 +621,7 @@ void Debugger::setQuitState()
   // sitting at a breakpoint/trap, this will get us past it.
   // Somehow this feels like a hack to me, but I don't know why
   //	if(myBreakPoints->isSet(myCpuDebug->pc()))
-  mySystem->m6502().execute(1);
+  mySystem.m6502().execute(1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -833,7 +816,7 @@ string Debugger::saveROM(const string& filename) const
   FilesystemNode node(path);
 
   ofstream out(node.getPath().c_str(), ios::out | ios::binary);
-  if(out.is_open() && myConsole->cartridge().save(out))
+  if(out.is_open() && myConsole.cartridge().save(out))
     return node.getRelativePath();
   else
     return "";
@@ -842,15 +825,15 @@ string Debugger::saveROM(const string& filename) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::lockBankswitchState()
 {
-  mySystem->lockDataBus();
-  myConsole->cartridge().lockBank();
+  mySystem.lockDataBus();
+  myConsole.cartridge().lockBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Debugger::unlockBankswitchState()
 {
-  mySystem->unlockDataBus();
-  myConsole->cartridge().unlockBank();
+  mySystem.unlockDataBus();
+  myConsole.cartridge().unlockBank();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

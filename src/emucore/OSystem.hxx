@@ -166,6 +166,11 @@ class OSystem
 
 #ifdef DEBUGGER_SUPPORT
     /**
+      Create all child objects which belong to this OSystem
+    */
+    void createDebugger(Console& console);
+
+    /**
       Get the ROM debugger of the system.
 
       @return The debugger object
