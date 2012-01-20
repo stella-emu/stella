@@ -22,7 +22,7 @@
     ROM after at least one ROM had already been loaded.
 
   * Fixed bug in 'Fixed Debug Colors' mode; under certain circumstances,
-    playfield graphics could be colored as being player graphics.
+    playfield graphics could be coloured as being player graphics.
 
   * Several significant improvements to the debugger I/O tab:
       - added controller input widgets for many of the built-in
@@ -31,22 +31,19 @@
       - added ability to modify the SWCHB/SWBCNT port B registers.
       - added ability to view TIA INPTx and VBLANK latch/dump bits.
 
+  * Fixed bug in PAL color-loss setting in Video Settings; changing the
+    settings wouldn't take effect until the ROM was reloaded.
+
+  * Fixed bugs with cheatcode handling; loading a ROM with a cheat
+    disabled would sometimes trash the emulation.  More work is
+    required in this area, including the ability to create more
+    advanced types of cheats.
+
   * Updated ROM properties database for all Sega Genesis controller
     compatible ROMs.
 
   * Fixed compile issues in Irix when using the default compiler
     instead of gcc.  Thanks go to Rainer M. Canavan for this code.
-
-  * Fixed bug in PAL color-loss setting in Video Settings; changing the
-    settings wouldn't take effect until the ROM was reloaded.
-
-  * Added CompuMate bankswitching support to the emulation core;
-    the SpectraVision Compumate ROM now works.
-    (FIXME - this may not be complete)
-
-  * Added emulation for MindLink controller; Bionic Breakthrough, Mind
-    Maze and Telepathy ROMs now work.
-    (FIXME - this may not be complete)
 
 -Have fun!
 

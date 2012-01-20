@@ -92,6 +92,7 @@ void CheatManager::remove(int idx)
 
   // Then remove it from the cheatlist entirely
   myCheatList.remove_at(idx);
+  c->disable();
   delete c;
 }
 
@@ -297,7 +298,7 @@ void CheatManager::loadCheats(const string& md5sum)
 
   // Set up any cheatcodes that was on the command line
   // (and remove the key from the settings, so they won't get set again)
-  string cheats = myOSystem->settings().getString("cheat");
+  const string& cheats = myOSystem->settings().getString("cheat");
   if(cheats != "")
     myOSystem->settings().setString("cheat", "");
 

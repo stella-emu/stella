@@ -33,6 +33,10 @@ BankRomCheat::BankRomCheat(OSystem* os, const string& name, const string& code)
   address = 0xf000 + unhex(myCode.substr(2, 3));
   value = unhex(myCode.substr(5, 2));
   count = unhex(myCode.substr(7, 1)) + 1;
+
+  // Back up original data; we need this if the cheat is ever disabled
+  for(int i = 0; i < count; ++i)
+    savedRom[i] = myOSystem->console().cartridge().peek(address + i);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -52,7 +56,8 @@ bool BankRomCheat::disable()
 {
   int oldBank = myOSystem->console().cartridge().bank();
   myOSystem->console().cartridge().bank(bank);
-  for(int i=0; i<count; i++)
+
+  for(int i = 0; i < count; ++i)
 		myOSystem->console().cartridge().patch(address + i, savedRom[i]);
 
   myOSystem->console().cartridge().bank(oldBank);
@@ -68,11 +73,9 @@ void BankRomCheat::evaluate()
     int oldBank = myOSystem->console().cartridge().bank();
     myOSystem->console().cartridge().bank(bank);
 
-    for(int i=0; i<count; i++)
-    {
-      savedRom[i] = myOSystem->console().cartridge().peek(address + i);
+    for(int i = 0; i < count; ++i)
       myOSystem->console().cartridge().patch(address + i, value);
-    }
+
     myOSystem->console().cartridge().bank(oldBank);
 
     myEnabled = true;
