@@ -353,6 +353,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\CartFA2.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\CartFE.cxx"
 					>
 				</File>
@@ -1044,6 +1048,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\StellaKeys.hxx"
+				>
+			</File>
+			<File
 				RelativePath="..\common\StringList.hxx"
 				>
 			</File>
@@ -1164,6 +1172,10 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartFA.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartFA2.hxx"
 					>
 				</File>
 				<File
