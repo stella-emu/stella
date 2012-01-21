@@ -164,6 +164,7 @@ GameInfoDialog::GameInfoDialog(
   items.push_back("F8 (8K Atari)",              "F8"   );
   items.push_back("F8SC (8K Atari + ram)",      "F8SC" );
   items.push_back("FA (CBS RAM Plus)",          "FA"   );
+  items.push_back("FA2 (CBS RAM Plus 24K)",     "FA2"  );
   items.push_back("FE (8K Decathlon)",          "FE"   );
   items.push_back("MC (C. Wilkson Megacart)",   "MC"   );
   items.push_back("SB (128-256K SUPERbank)",    "SB"   );
