@@ -230,6 +230,7 @@ SDLmain.lib
     <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
     <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
     <ClCompile Include="..\emucore\CartCM.cxx" />
+    <ClCompile Include="..\emucore\CartFA2.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
@@ -420,6 +421,7 @@ SDLmain.lib
     <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
     <ClInclude Include="..\common\FrameBufferGL.hxx" />
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
+    <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
@@ -431,6 +433,7 @@ SDLmain.lib
     <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
     <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
     <ClInclude Include="..\emucore\CartCM.hxx" />
+    <ClInclude Include="..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
