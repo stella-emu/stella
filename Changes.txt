@@ -42,6 +42,9 @@
   * Updated ROM properties database for all Sega Genesis controller
     compatible ROMs.
 
+  * Added 'FA2' bankswitch scheme, thanks to code from Chris D.
+    Walton.  This scheme will be used in an upcoming 'Star Castle' ROM.
+
   * Fixed compile issues in Irix when using the default compiler
     instead of gcc.  Thanks go to Rainer M. Canavan for this code.
 

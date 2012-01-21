@@ -44,6 +44,7 @@
 #include "CartF8.hxx"
 #include "CartF8SC.hxx"
 #include "CartFA.hxx"
+#include "CartFA2.hxx"
 #include "CartFE.hxx"
 #include "CartMC.hxx"
 #include "CartCV.hxx"
@@ -175,6 +176,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeF8SC(image, size, settings);
   else if(type == "FA" || type == "FASC")
     cartridge = new CartridgeFA(image, size, settings);
+  else if(type == "FA2")
+    cartridge = new CartridgeFA2(image, size, settings);
   else if(type == "FE")
     cartridge = new CartridgeFE(image, size, settings);
   else if(type == "MC")
@@ -376,6 +379,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else
       type = "F6";
+  }
+  else if(size == 24*1024)  // 24K
+  {
+    type = "FA2";
   }
   else if(size == 29*1024)  // 29K
   {
