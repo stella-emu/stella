@@ -336,6 +336,8 @@
 		DC8AE5C41417804C00335D45 /* FBSurfaceGL.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */; };
 		DC8AE5C51417804C00335D45 /* FBSurfaceTIA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC8AE5C11417804C00335D45 /* FBSurfaceTIA.cxx */; };
 		DC8AE5C61417804C00335D45 /* FBSurfaceTIA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC8AE5C21417804C00335D45 /* FBSurfaceTIA.hxx */; };
+		DC922D0614CAFB1E006EB471 /* CartFA2.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC922D0414CAFB1E006EB471 /* CartFA2.cxx */; };
+		DC922D0714CAFB1E006EB471 /* CartFA2.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC922D0514CAFB1E006EB471 /* CartFA2.hxx */; };
 		DC932D440F278A5200FEFEFC /* DefProps.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D3F0F278A5200FEFEFC /* DefProps.hxx */; };
 		DC932D450F278A5200FEFEFC /* Serializable.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D400F278A5200FEFEFC /* Serializable.hxx */; };
 		DC932D460F278A5200FEFEFC /* SerialPort.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC932D410F278A5200FEFEFC /* SerialPort.hxx */; };
@@ -770,6 +772,8 @@
 		DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceGL.hxx; path = ../common/FBSurfaceGL.hxx; sourceTree = SOURCE_ROOT; };
 		DC8AE5C11417804C00335D45 /* FBSurfaceTIA.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FBSurfaceTIA.cxx; path = ../common/FBSurfaceTIA.cxx; sourceTree = SOURCE_ROOT; };
 		DC8AE5C21417804C00335D45 /* FBSurfaceTIA.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FBSurfaceTIA.hxx; path = ../common/FBSurfaceTIA.hxx; sourceTree = SOURCE_ROOT; };
+		DC922D0414CAFB1E006EB471 /* CartFA2.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA2.cxx; path = ../emucore/CartFA2.cxx; sourceTree = SOURCE_ROOT; };
+		DC922D0514CAFB1E006EB471 /* CartFA2.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA2.hxx; path = ../emucore/CartFA2.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D3F0F278A5200FEFEFC /* DefProps.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = DefProps.hxx; path = ../emucore/DefProps.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D400F278A5200FEFEFC /* Serializable.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Serializable.hxx; path = ../emucore/Serializable.hxx; sourceTree = SOURCE_ROOT; };
 		DC932D410F278A5200FEFEFC /* SerialPort.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SerialPort.hxx; path = ../emucore/SerialPort.hxx; sourceTree = SOURCE_ROOT; };
@@ -1100,6 +1104,8 @@
 				2DE2DF2F0627AE07006BEC99 /* CartF8SC.hxx */,
 				DCF7B0DB10A762FC007A2870 /* CartFA.cxx */,
 				DCF7B0DC10A762FC007A2870 /* CartFA.hxx */,
+				DC922D0414CAFB1E006EB471 /* CartFA2.cxx */,
+				DC922D0514CAFB1E006EB471 /* CartFA2.hxx */,
 				2DE2DF320627AE07006BEC99 /* CartFE.cxx */,
 				2DE2DF330627AE07006BEC99 /* CartFE.hxx */,
 				2DE2DF360627AE07006BEC99 /* CartMC.cxx */,
@@ -1568,6 +1574,7 @@
 				DC0B000414BA2BEB00CF5E7E /* NullControlWidget.hxx in Headers */,
 				DC0B000614BA2BEB00CF5E7E /* PaddleWidget.hxx in Headers */,
 				DC5C76B014C2709E0031EBC7 /* StellaKeys.hxx in Headers */,
+				DC922D0714CAFB1E006EB471 /* CartFA2.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1837,6 +1844,7 @@
 				DC0B000014BA2BEB00CF5E7E /* JoystickWidget.cxx in Sources */,
 				DC0B000214BA2BEB00CF5E7E /* KeyboardWidget.cxx in Sources */,
 				DC0B000514BA2BEB00CF5E7E /* PaddleWidget.cxx in Sources */,
+				DC922D0614CAFB1E006EB471 /* CartFA2.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
