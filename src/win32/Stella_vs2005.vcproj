@@ -210,6 +210,10 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\MouseControl.cxx"
+				>
+			</File>
+			<File
 				RelativePath="..\win32\OSystemWin32.cxx"
 				>
 			</File>
@@ -1005,6 +1009,10 @@
 			</File>
 			<File
 				RelativePath=".\HomeFinder.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\MouseControl.hxx"
 				>
 			</File>
 			<File
