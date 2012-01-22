@@ -38,6 +38,7 @@ enum PropertyType {
   Controller_Left,
   Controller_Right,
   Controller_SwapPaddles,
+  Controller_MouseAxis,
   Display_Format,
   Display_YStart,
   Display_Height,

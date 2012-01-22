@@ -131,7 +131,9 @@ void TrackBall::update()
   if(myTrakBallLinesV == 0) myTrakBallLinesV = 1;
 
   // Get mouse button state
-  myDigitalPinState[Six] = (myEvent.get(Event::MouseButtonValue) == 0);
+  myDigitalPinState[Six] =
+    (myEvent.get(Event::MouseButtonLeftValue) == 0) ||
+    (myEvent.get(Event::MouseButtonRightValue) == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

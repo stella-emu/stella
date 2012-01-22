@@ -29,6 +29,7 @@ class DialogContainer;
 class EventMappingWidget;
 class StringMap;
 class StringList;
+class MouseControl;
 
 #include "Array.hxx"
 #include "Event.hxx"
@@ -152,13 +153,12 @@ class EventHandler
     void quit() { handleEvent(Event::Quit, 1); }
 
     /**
-      Sets the mouse axis to act as controller 'mode', where the mode is
-      defined from the Controller::MouseAxisControl enum
+      Sets the mouse axes and buttons to act as controller 'mode', where
+      the mode is defined from the Controller::MouseAxisControl enum
 
-      @param mode     The controller which the mouse axes should emulate
-      @param message  Print the (non-empty) message to the framebuffer
+      @param mode  The controller which the mouse axes should emulate
     */
-    void setMouseControllerMode(const string& mode, const string& message = "");
+    void setMouseControllerMode(const string& mode);
 
     /**
       Set the number of seconds between taking a snapshot in
@@ -375,6 +375,10 @@ class EventHandler
     // Indicates current overlay object
     DialogContainer* myOverlay;
 
+    // MouseControl object, which takes care of switching the mouse between
+    // all possible controller modes
+    MouseControl* myMouseControl;
+
     // Array of key events, indexed by StellaKey
     Event::Type myKeyTable[KBDK_LAST][kNumModes];
 
@@ -410,9 +414,6 @@ class EventHandler
     // Used for continuous snapshot mode
     uInt32 myContSnapshotInterval;
     uInt32 myContSnapshotCounter;
-
-    // Indicates which paddle the mouse currently emulates
-    Int8 myPaddleMode;
 
     // Holds static strings for the remap menu (emulation and menu events)
     static ActionList ourEmulActionList[kEmulActionListSize];

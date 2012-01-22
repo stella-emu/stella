@@ -70,7 +70,8 @@ class Event
       SALeftAxis0Value, SALeftAxis1Value,
       SARightAxis0Value, SARightAxis1Value,
 
-      MouseAxisXValue, MouseAxisYValue, MouseButtonValue,
+      MouseAxisXValue, MouseAxisYValue,
+      MouseButtonLeftValue, MouseButtonRightValue,
 
       ChangeState, LoadState, SaveState, TakeSnapshot, Quit,
       PauseMode, MenuMode, CmdMenuMode, DebuggerMode, LauncherMode,

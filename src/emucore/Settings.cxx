@@ -279,12 +279,8 @@ void Settings::validate()
   else if(i > 29)  setInternal("joydeadzone", "29");
 
   s = getString("mcontrol");
-  if(s != "auto")
-  {
-    // Note: these constants are from Controller::MouseAxisType enum
-    if(s.length() != 2 || s[0] < '0' || s[0] > '5' || s[1] < '0' || s[1] > '5')
-      setInternal("mcontrol", "auto");
-  }
+  if(s != "never" && s != "auto" && s != "rom")
+    setInternal("mcontrol", "auto");
 
   if(i < 1)        setInternal("dsense", "1");
   else if(i > 10)  setInternal("dsense", "10");
@@ -373,7 +369,8 @@ void Settings::usage()
     << "  -logtoconsole <1|0>          Log output to console/commandline\n"
     << "  -joydeadzone  <number>       Sets 'deadzone' area for analog joysticks (0-29)\n"
     << "  -joyallow4    <1|0>          Allow all 4 directions on a joystick to be pressed simultaneously\n"
-    << "  -mcontrol     <auto|XY>      Use mouse axes as specified paddle controller type (see manual)\n"
+    << "  -mcontrol     <never|auto|   Use mouse axes as specified controller type (see manual)\n"
+    << "                 rom>\n"
     << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
     << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
     << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"

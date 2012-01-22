@@ -78,7 +78,7 @@ void Driving::update()
     int m_axis = myEvent.get(Event::MouseAxisXValue);
     if(m_axis < -2)     myCounter--;
     else if(m_axis > 2) myCounter++;
-    if(myEvent.get(Event::MouseButtonValue))
+    if(myEvent.get(Event::MouseButtonLeftValue))
       myDigitalPinState[Six] = false;
   }
 
@@ -115,10 +115,10 @@ void Driving::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Driving::setMouseControl(
-    MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
+    MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID)
 {
   // In 'automatic' mode, only the X-axis is used
-  if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
+  if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
   {
     myControlID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
                    (myJack == Right && (ctrlID == 2 || ctrlID == 3))

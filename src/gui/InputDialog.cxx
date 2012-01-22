@@ -204,13 +204,15 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 
   // Mouse controller specific axis
   lwidth = font.getStringWidth("X-Axis is: ");
-  pwidth = font.getStringWidth("Paddle 3");
+  pwidth = font.getStringWidth("Driving 0");
   items.clear();
-  items.push_back("not used", BSPF_toString(Controller::NoControl));
-  items.push_back("Paddle 0", BSPF_toString(Controller::Paddle0));
-  items.push_back("Paddle 1", BSPF_toString(Controller::Paddle1));
-  items.push_back("Paddle 2", BSPF_toString(Controller::Paddle2));
-  items.push_back("Paddle 3", BSPF_toString(Controller::Paddle3));
+  items.push_back("not used",  BSPF_toString(MouseControl::NoControl));
+  items.push_back("Paddle 0",  BSPF_toString(MouseControl::Paddle0));
+  items.push_back("Paddle 1",  BSPF_toString(MouseControl::Paddle1));
+  items.push_back("Paddle 2",  BSPF_toString(MouseControl::Paddle2));
+  items.push_back("Paddle 3",  BSPF_toString(MouseControl::Paddle3));
+  items.push_back("Driving 0", BSPF_toString(MouseControl::Driving0));
+  items.push_back("Driving 1", BSPF_toString(MouseControl::Driving1));
 
   xpos = 45;  ypos += lineHeight + 4;
   myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,

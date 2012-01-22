@@ -26,6 +26,7 @@ class System;
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
+#include "MouseControl.hxx"
 
 /**
   A controller is a device that plugs into either the left or right 
@@ -91,15 +92,6 @@ class Controller : public Serializable
       BoosterGrip, Driving, Keyboard, Paddles, Joystick,
       TrackBall22, TrackBall80, AmigaMouse, AtariVox, SaveKey,
       KidVid, Genesis, MindLink, CompuMate
-    };
-
-    /**
-      Enumeration of mouse axis control types
-    */
-    enum MouseAxisControl
-    {
-      Paddle0 = 0, Paddle1, Paddle2, Paddle3,
-      Automatic, NoControl
     };
 
   public:
@@ -190,22 +182,21 @@ class Controller : public Serializable
 
     /**
       Determines how this controller will treat values received from the
-      X and Y axis of the mouse.  Since not all controllers use the mouse,
-      it's up to the specific class to decide how to use this data.
+      X/Y axis and left/right buttons of the mouse.  Since not all controllers
+      use the mouse, it's up to the specific class to decide how to use this data.
 
       If either of the axis is set to 'Automatic', then we automatically
-      use this number for the control type as follows:
-        0 - paddle 0, joystick 0 (and controllers similar to a joystick)
-        1 - paddle 1, joystick 1 (and controllers similar to a joystick)
-        2 - paddle 2, joystick 0 (and controllers similar to a joystick)
-        3 - paddle 3, joystick 1 (and controllers similar to a joystick)
+      use the ctrlID for the control type.
+
+      In the current implementation, the left button is tied to the X axis,
+      and the right one tied to the Y axis.
 
       @param xaxis   How the controller should use x-axis data
       @param yaxis   How the controller should use y-axis data
       @param ctrlID  The controller ID to use axis 'auto' mode
     */
     virtual void setMouseControl(
-        MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID = -1) { };
+        MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID = -1) { };
 
     /**
       Returns the name of this controller.

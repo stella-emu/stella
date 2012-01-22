@@ -115,21 +115,22 @@ void Joystick::update()
       }
     }
     // Get mouse button state
-    if(myEvent.get(Event::MouseButtonValue))
+    if(myEvent.get(Event::MouseButtonLeftValue) ||
+       myEvent.get(Event::MouseButtonRightValue))
       myDigitalPinState[Six] = false;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Joystick::setMouseControl(
-    MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
+    MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID)
 {
   // In 'automatic' mode, both axes on the mouse map to a single normal joystick
-  if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
+  if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
   {
-    myControlID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
-                   (myJack == Right && (ctrlID == 2 || ctrlID == 3))
-                  ) ? ctrlID & 0x01 : -1;
+    myControlID = ((myJack == Left && ctrlID == 0) ||
+                   (myJack == Right && ctrlID == 1)
+                  ) ? ctrlID : -1;
   }
   else  // Otherwise, joysticks are not used in 'non-auto' mode
     myControlID = -1;

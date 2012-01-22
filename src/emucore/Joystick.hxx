@@ -56,22 +56,21 @@ class Joystick : public Controller
 
     /**
       Determines how this controller will treat values received from the
-      X and Y axis of the mouse.  Since not all controllers use the mouse,
-      it's up to the specific class to decide how to use this data.
+      X/Y axis and left/right buttons of the mouse.  Since not all controllers
+      use the mouse, it's up to the specific class to decide how to use this data.
 
       If either of the axis is set to 'Automatic', then we automatically
-      use this number for the control type as follows:
-        0 - paddle 0, joystick 0 (and controllers similar to a joystick)
-        1 - paddle 1, joystick 1 (and controllers similar to a joystick)
-        2 - paddle 2, joystick 0 (and controllers similar to a joystick)
-        3 - paddle 3, joystick 1 (and controllers similar to a joystick)
+      use the ctrlID for the control type.
+
+      In the current implementation, the left button is tied to the X axis,
+      and the right one tied to the Y axis.
 
       @param xaxis   How the controller should use x-axis data
       @param yaxis   How the controller should use y-axis data
       @param ctrlID  The controller ID to use axis 'auto' mode
     */
     void setMouseControl(
-        MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID = -1);
+        MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID = -1);
 
     /**
       Sets the deadzone amount for real analog joysticks.

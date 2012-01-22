@@ -30,9 +30,9 @@ class Sound;
 #include "TIATables.hxx"
 
 /**
-  This class is a device that emulates the Television Interface Adapator 
+  This class is a device that emulates the Television Interface Adaptor 
   found in the Atari 2600 and 7800 consoles.  The Television Interface 
-  Adapator is an integrated circuit designed to interface between an 
+  Adaptor is an integrated circuit designed to interface between an 
   eight bit microprocessor and a television video modulator. It converts 
   eight bit parallel data into serial outputs for the color, luminosity, 
   and composite sync required by a video modulator.  

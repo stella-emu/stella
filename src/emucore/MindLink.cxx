@@ -66,7 +66,8 @@ void MindLink::update()
   myMindlinkShift = 1;
   nextMindlinkBit();
 
-  if(myEvent.get(Event::MouseButtonValue))
+  if(myEvent.get(Event::MouseButtonLeftValue) ||
+     myEvent.get(Event::MouseButtonRightValue))
     myMindlinkPos |= 0x4000; /* this bit starts a game */
 
 //cerr << HEX4 << (int)myMindlinkPos << " : " << HEX2 << (int)myIOPort << endl;

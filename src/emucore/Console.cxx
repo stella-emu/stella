@@ -119,10 +119,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     // The 'fastscbios' option must be changed before the system is reset
 
     // The algorithm used is as follows:
-    //   Run for 60 frames, only consider frames in appropriate scanline range
-    //   If there's a frame that starts drawing at scanline 50 or
-    //   has more than 287 scanlines, count it as PAL
-    //   If at least 20 PAL frames are found, then the format is PAL, else NTSC
+    //   Run for 60 frames; if there's a frame that has more than 287
+    //   scanlines, count it as PAL
+    //   If at least 25 PAL frames are found, then the format is PAL, else NTSC
     bool fastscbios = myOSystem->settings().getBool("fastscbios");
     myOSystem->settings().setBool("fastscbios", true);
     mySystem->reset(true);  // autodetect in reset enabled
@@ -130,12 +129,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     for(int i = 0; i < 60; ++i)
     {
       myTIA->update();
-      int lines = myTIA->scanlines() - myTIA->startLine();
-      if((lines >= 180 && lines <= 342) &&
-         (myTIA->startLine() >= 50 || myTIA->scanlines() >= 287))
+      if(myTIA->scanlines() >= 287)
         ++palCount;
     }
-
     myDisplayFormat = (palCount >= 25) ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
       autodetected = "*";

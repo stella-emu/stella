@@ -293,7 +293,8 @@ void Paddles::update()
       myCharge[myMPaddleID] = TRIGMIN;
     if(myCharge[myMPaddleID] > TRIGMAX)
       myCharge[myMPaddleID] = TRIGMAX;
-    if(myEvent.get(Event::MouseButtonValue))
+    if(myEvent.get(Event::MouseButtonLeftValue) ||
+       myEvent.get(Event::MouseButtonRightValue))
       myDigitalPinState[ourButtonPin[myMPaddleID]] = false;
   }
   else
@@ -308,6 +309,8 @@ void Paddles::update()
         myCharge[myMPaddleIDX] = TRIGMIN;
       if(myCharge[myMPaddleIDX] > TRIGMAX)
         myCharge[myMPaddleIDX] = TRIGMAX;
+      if(myEvent.get(Event::MouseButtonLeftValue))
+        myDigitalPinState[ourButtonPin[myMPaddleIDX]] = false;
     }
     if(myMPaddleIDY > -1)
     {
@@ -317,6 +320,8 @@ void Paddles::update()
         myCharge[myMPaddleIDY] = TRIGMIN;
       if(myCharge[myMPaddleIDY] > TRIGMAX)
         myCharge[myMPaddleIDY] = TRIGMAX;
+      if(myEvent.get(Event::MouseButtonRightValue))
+        myDigitalPinState[ourButtonPin[myMPaddleIDY]] = false;
     }
   }
 
@@ -377,11 +382,11 @@ void Paddles::update()
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Paddles::setMouseControl(
-    MouseAxisControl xaxis, MouseAxisControl yaxis, int ctrlID)
+    MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID)
 {
   // In 'automatic' mode, both axes on the mouse map to a single paddle
   // This overrides any other mode
-  if(xaxis == Controller::Automatic || yaxis == Controller::Automatic)
+  if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
   {
     myMPaddleID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
                    (myJack == Right && (ctrlID == 2 || ctrlID == 3))
@@ -397,30 +402,30 @@ void Paddles::setMouseControl(
     {
       switch(xaxis)
       {
-        case Controller::Paddle0:  myMPaddleIDX = 0;  break;
-        case Controller::Paddle1:  myMPaddleIDX = 1;  break;
-        default:                   myMPaddleIDX = -1; break;
+        case MouseControl::Paddle0:  myMPaddleIDX = 0;  break;
+        case MouseControl::Paddle1:  myMPaddleIDX = 1;  break;
+        default:                     myMPaddleIDX = -1; break;
       }
       switch(yaxis)
       {
-        case Controller::Paddle0:  myMPaddleIDY = 0;  break;
-        case Controller::Paddle1:  myMPaddleIDY = 1;  break;
-        default:                   myMPaddleIDY = -1; break;
+        case MouseControl::Paddle0:  myMPaddleIDY = 0;  break;
+        case MouseControl::Paddle1:  myMPaddleIDY = 1;  break;
+        default:                     myMPaddleIDY = -1; break;
       }
     }
     else  // myJack == Right
     {
       switch(xaxis)
       {
-        case Controller::Paddle2:  myMPaddleIDX = 0;  break;
-        case Controller::Paddle3:  myMPaddleIDX = 1;  break;
-        default:                   myMPaddleIDX = -1; break;
+        case MouseControl::Paddle2:  myMPaddleIDX = 0;  break;
+        case MouseControl::Paddle3:  myMPaddleIDX = 1;  break;
+        default:                     myMPaddleIDX = -1; break;
       }
       switch(yaxis)
       {
-        case Controller::Paddle2:  myMPaddleIDY = 0;  break;
-        case Controller::Paddle3:  myMPaddleIDY = 1;  break;
-        default:                   myMPaddleIDY = -1; break;
+        case MouseControl::Paddle2:  myMPaddleIDY = 0;  break;
+        case MouseControl::Paddle3:  myMPaddleIDY = 1;  break;
+        default:                     myMPaddleIDY = -1; break;
       }
     }
   }

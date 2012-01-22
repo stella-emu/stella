@@ -19,11 +19,12 @@ my %proptype = (
 "Controller.Left"         => 12,
 "Controller.Right"        => 13,
 "Controller.SwapPaddles"  => 14,
-"Display.Format"          => 15,
-"Display.YStart"          => 16,
-"Display.Height"          => 17,
-"Display.Phosphor"        => 18,
-"Display.PPBlend"         => 19
+"Controller.MouseAxis"    => 15,
+"Display.Format"          => 16,
+"Display.YStart"          => 17,
+"Display.Height"          => 18,
+"Display.Phosphor"        => 19,
+"Display.PPBlend"         => 20
 );
 
 my @prop_defaults = (
@@ -42,6 +43,7 @@ my @prop_defaults = (
   "JOYSTICK",
   "JOYSTICK",
   "NO",
+  "AUTO",
   "AUTO-DETECT",
   "34",
   "210",
