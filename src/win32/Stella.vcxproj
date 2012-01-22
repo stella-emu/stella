@@ -223,6 +223,7 @@ SDLmain.lib
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
+    <ClCompile Include="..\common\MouseControl.cxx" />
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
@@ -421,6 +422,7 @@ SDLmain.lib
     <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
     <ClInclude Include="..\common\FrameBufferGL.hxx" />
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
+    <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
