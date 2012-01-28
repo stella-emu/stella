@@ -123,12 +123,7 @@ class Controller : public Serializable
 
     /**
       Read the entire state of all digital pins for this controller.
-
-      Note that this method must take into account the location of the
-      pin data in the bitfield, and zero the remaining data:
-
-        Left port : upper 4 bits valid, lower 4 bits zero'ed
-        Right port: lower 4 bits valid, upper 4 bits zero'ed
+      Note that this method must use the lower 4 bits, and zero the upper bits.
 
       @return The state of all digital pins
     */

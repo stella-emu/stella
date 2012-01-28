@@ -109,7 +109,7 @@ uInt8 TrackBall::read()
   myDigitalPinState[Three] = IOPortA & 0x40;
   myDigitalPinState[Four]  = IOPortA & 0x80;
 
-  return myJack == Left ? IOPortA : (IOPortA >> 4);
+  return (IOPortA >> 4);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,9 +131,8 @@ void TrackBall::update()
   if(myTrakBallLinesV == 0) myTrakBallLinesV = 1;
 
   // Get mouse button state
-  myDigitalPinState[Six] =
-    (myEvent.get(Event::MouseButtonLeftValue) == 0) ||
-    (myEvent.get(Event::MouseButtonRightValue) == 0);
+  myDigitalPinState[Six] = (myEvent.get(Event::MouseButtonLeftValue) == 0) &&
+                           (myEvent.get(Event::MouseButtonRightValue) == 0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

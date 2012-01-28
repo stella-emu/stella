@@ -99,8 +99,7 @@ uInt8 Controller::read()
   if(read(Two))   ioport |= 0x02;
   if(read(Three)) ioport |= 0x04;
   if(read(Four))  ioport |= 0x08;
-
-  return myJack == Left ? (ioport << 4) : ioport;
+  return ioport;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
