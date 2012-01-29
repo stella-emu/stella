@@ -50,6 +50,7 @@ TiaOutputWidget::TiaOutputWidget(GuiObject* boss, const GUI::Font& font,
   l.push_back("Fill to scanline", "scanline");
   l.push_back("Set breakpoint", "bp");
   l.push_back("Set zoom position", "zoom");
+  l.push_back("Toggle fixed debug colors", "fixed");
   myMenu = new ContextMenu(this, font, l);
 }
 
@@ -113,6 +114,10 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
       {
         if(myZoom)
           myZoom->setPos(myClickX, myClickY);
+      }
+      else if(rmb == "fixed")
+      {
+        instance().console().tia().toggleFixedColors();
       }
       break;
     }
