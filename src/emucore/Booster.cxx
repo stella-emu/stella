@@ -96,8 +96,6 @@ void BoosterGrip::update()
     myDigitalPinState[One] = false;
 
   // Mouse motion and button events
-  // Since there are 4 possible controller numbers, we use 0 & 2
-  // for the left jack, and 1 & 3 for the right jack
   if(myControlID > -1)
   {
     // The following code was taken from z26

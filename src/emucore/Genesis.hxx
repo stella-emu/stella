@@ -57,11 +57,32 @@ class Genesis : public Controller
     */
     void update();
 
+    /**
+      Determines how this controller will treat values received from the
+      X/Y axis and left/right buttons of the mouse.  Since not all controllers
+      use the mouse, it's up to the specific class to decide how to use this data.
+
+      If either of the axis is set to 'Automatic', then we automatically
+      use the ctrlID for the control type.
+
+      In the current implementation, the left button is tied to the X axis,
+      and the right one tied to the Y axis.
+
+      @param xaxis   How the controller should use x-axis data
+      @param yaxis   How the controller should use y-axis data
+      @param ctrlID  The controller ID to use axis 'auto' mode
+    */
+    void setMouseControl(
+        MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID = -1);
+
   private:
     // Pre-compute the events we care about based on given port
     // This will eliminate test for left or right port in update()
     Event::Type myUpEvent, myDownEvent, myLeftEvent, myRightEvent,
                 myFire1Event, myFire2Event;
+
+    // Controller to emulate in mouse axis 'automatic' mode
+    int myControlID;  
 };
 
 #endif

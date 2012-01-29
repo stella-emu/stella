@@ -73,8 +73,6 @@ void Driving::update()
   else if(myEvent.get(myCWEvent) != 0 || d_axis > 16384)  myCounter++;
 
   // Mouse motion and button events
-  // Since there are 4 possible controller numbers, we use 0 & 2
-  // for the left jack, and 1 & 3 for the right jack
   if(myControlID > -1)
   {
     int m_axis = myEvent.get(Event::MouseAxisXValue);

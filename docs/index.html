@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.5</b></h4></center>
+  <center><h4><b>Release 3.5.5</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - December 2011</b></center>
+  <center><b>February 1999 - February 2012</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -256,8 +256,8 @@
       joysticks or mouse</li>
     <li>Emulates the CBS BoosterGrip Controller using your computer's keyboard,
       joysticks or mouse</li>
-    <li>Emulates the Sega Genesis Controller using your computer's keyboard or
-      joysticks</li>
+    <li>Emulates the Sega Genesis Controller using your computer's keyboard,
+      joysticks or mouse</li>
     <li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
       computer's mouse</li>
     <li>Support for real Atari 2600 controllers using the
@@ -1466,27 +1466,9 @@
     </tr>
 
     <tr>
-      <td>Set mouse to emulate controller 0</td>
+      <td>Switch mouse between controller emulation modes</td>
       <td>Control + 0</td>
       <td>Control + 0</td>
-    </tr>
-
-    <tr>
-      <td>Set mouse to emulate controller 1</td>
-      <td>Control + 1</td>
-      <td>Control + 1</td>
-    </tr>
-
-    <tr>
-      <td>Set mouse to emulate controller 2</td>
-      <td>Control + 2</td>
-      <td>Control + 2</td>
-    </tr>
-
-    <tr>
-      <td>Set mouse to emulate controller 3</td>
-      <td>Control + 3</td>
-      <td>Control + 3</td>
     </tr>
 
     <tr>
@@ -1595,7 +1577,7 @@
       <td> &#x2713;</td>
       <td> &#x2713;</td>
       <td> &#x2713;</td>
-      <td> &#x2713; (+ extra)</td>
+      <td> &#x2713;</td>
       <td> &#x2713;</td>
     </tr>
     <tr>
@@ -1610,7 +1592,7 @@
       <th> Genesis</th>
       <td> &#x2713;</td>
       <td> &#x2713; (+ extra)</td>
-      <td> &#x2715;</td>
+      <td> &#x2713;</td>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
     </tr>
@@ -1898,10 +1880,9 @@
     </tr>
 
     <tr>
-      <td><pre>-mcontrol &lt;auto|XY&gt;</pre></td>
-      <td>Enable using the mouse axes for various controllers automatically (paddle, driving, etc),
-        or specifically use each axis for a particular paddle.  In the latter case, XY indicates
-        how to use the X/Y axis (ie, 02 is paddle0/paddle2).</td>
+      <td><pre>-mcontrol &lt;never|auto|rom&gt;</pre></td>
+      <td>Disable mouse input entirely, enable using the mouse axes for various controllers automatically (paddle, driving, etc),
+        or use the settings specified by the current ROM.</td>
     </tr>
 
     <tr>
@@ -2216,6 +2197,12 @@
     <tr>
       <td><pre>-cp &lt;Yes|No&gt;</pre></td>
       <td>Set "Controller.SwapPaddles" property.</td>
+    </tr>
+
+    <tr>
+      <td><pre>-ma &lt;Auto|XY&gt;</pre></td>
+      <td>Set "Controller.MouseAxis" property.
+        See the <i>Game Properties</i> section for valid types.</td>
     </tr>
 
     <tr>
@@ -3149,7 +3136,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td><a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech / sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td><a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a></td><td>A 32K EEPROM for saving high scores, etc (the EEPROM portion of an AtariVox).</td></tr>
-        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving two extra buttons.</td></tr>
+        <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
       </table></td>
     </tr>
 
@@ -3162,6 +3149,30 @@ Ms Pac-Man (Stella extended codes):
       which can be set using both 'Controller.SwapPaddles' and
       'Console.SwapPorts'.  The value must be <b>Yes</b> or <b>No</b>.</td>
     </tr>
+
+    <tr>
+      <td VALIGN="TOP"><i>Controller.MouseAxis:</i></td>
+      <td>Indicates how the mouse should emulate virtual controllers.
+      In 'Auto' mode, the system decides how to best use the mouse.  Otherwise,
+      XY indicates how to use the X/Y axis (ie, 02 is paddle0/paddle2).
+      Currently, the mouse X-axis and left button are tied together, as are the
+      Y-axis and right button.  The value must be <b>Auto</b> or <b>XY</b>, as follows:
+      <table cellpadding="2" border="1">
+        <tr><th>&nbsp;Id&nbsp;</th><th>Controller</th></tr>
+        <tr><td>0 </td><td>Paddle 0</td></tr>
+        <tr><td>1 </td><td>Paddle 1</td></tr>
+        <tr><td>2 </td><td>Paddle 2</td></tr>
+        <tr><td>3 </td><td>Paddle 3</td></tr>
+        <tr><td>4 </td><td>Driving 0</td></tr>
+        <tr><td>5 </td><td>Driving 1</td></tr>
+        <tr><td>7 </td><td>Axis disabled</td></tr>
+      </table></td>
+    </tr>
+
+<!--
+  In the latter case, XY indicates
+        how to use the X/Y axis (ie, 02 is paddle0/paddle2).
+-->
 
     <tr>
       <td VALIGN="TOP"><i>Display.Format:</i></td>

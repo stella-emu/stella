@@ -22,7 +22,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Genesis::Genesis(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::Genesis)
+  : Controller(jack, event, system, Controller::Genesis),
+    myControlID(-1)
 {
   if(myJack == Left)
   {
@@ -69,4 +70,51 @@ void Genesis::update()
   // in that the logic is inverted
   myAnalogPinValue[Five] = (myEvent.get(myFire2Event) == 0) ?
                             minimumResistance : maximumResistance;
+
+  // Mouse motion and button events
+  if(myControlID > -1)
+  {
+    // The following code was taken from z26
+    #define MJ_Threshold 2
+    int mousex = myEvent.get(Event::MouseAxisXValue),
+        mousey = myEvent.get(Event::MouseAxisYValue);
+    if(mousex || mousey)
+    {
+      if((!(abs(mousey) > abs(mousex) << 1)) && (abs(mousex) >= MJ_Threshold))
+      {
+        if(mousex < 0)
+          myDigitalPinState[Three] = false;
+        else if (mousex > 0)
+          myDigitalPinState[Four] = false;
+      }
+
+      if((!(abs(mousex) > abs(mousey) << 1)) && (abs(mousey) >= MJ_Threshold))
+      {
+        if(mousey < 0)
+          myDigitalPinState[One] = false;
+        else if(mousey > 0)
+          myDigitalPinState[Two] = false;
+      }
+    }
+    // Get mouse button state
+    if(myEvent.get(Event::MouseButtonLeftValue))
+      myDigitalPinState[Six] = false;
+    if(myEvent.get(Event::MouseButtonRightValue))
+      myAnalogPinValue[Five] = maximumResistance;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Genesis::setMouseControl(
+    MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID)
+{
+  // In 'automatic' mode, both axes on the mouse map to a single Genesis
+  if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
+  {
+    myControlID = ((myJack == Left && ctrlID == 0) ||
+                   (myJack == Right && ctrlID == 1)
+                  ) ? ctrlID : -1;
+  }
+  else  // Otherwise, Genesis controllers are not used in 'non-auto' mode
+    myControlID = -1;
 }
