@@ -29,7 +29,7 @@
       - added ability to view TIA INPTx and VBLANK latch/dump bits.
 
   * Reworked 'mcontrol' argument, and added ability to map the mouse
-    axes separately for paddles 0-4 or driving controllers 0-1.  In
+    axes separately for paddles 0-3 or driving controllers 0-1.  In
     such modes, the left mouse button is tied to the x-axis, and the
     right button is tied to the y-axis.
 
