@@ -175,11 +175,11 @@ void MouseControl::addRightControllerModes(bool noswap)
 void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
 {
   ostringstream msg;
-  msg << "Mouse is Paddle " << lname << " controller" << "(" << lport << ")";
+  msg << "Mouse is Paddle " << lname << " controller";
   MouseMode mode0(Automatic, Automatic, lport, msg.str());
 
   msg.str("");
-  msg << "Mouse is Paddle " << rname << " controller" << "(" << rport << ")";
+  msg << "Mouse is Paddle " << rname << " controller";
   MouseMode mode1(Automatic, Automatic, rport, msg.str());
 
   if(BSPF_equalsIgnoreCase(myProps.get(Controller_SwapPaddles), "NO"))
