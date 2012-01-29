@@ -976,7 +976,7 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
   for(CartDebug::DirectiveList::const_iterator i = directives.begin();
       i != directives.end(); ++i)
   {
-    const CartDebug::DirectiveTag tag = *i;
+    const CartDebug::DirectiveTag& tag = *i;
     if(check_range(tag.start, tag.end))
       for(uInt32 k = tag.start; k <= tag.end; ++k)
         mark(k, tag.type, true);

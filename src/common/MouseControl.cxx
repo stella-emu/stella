@@ -30,17 +30,94 @@ MouseControl::MouseControl(Console& console, const string& mode)
     myRightController(console.controller(Controller::Right)),
     myCurrentModeNum(0)
 {
-cerr << "MouseControl c'tor: using mode = " << mode << endl;
-
-  if(mode == "never")
+  if(BSPF_equalsIgnoreCase(mode, "never"))
   {
-    MouseMode mmode;
-    myModeList.push_back(mmode);
+    myModeList.push_back(MouseMode("Mouse input is disabled"));
     return;
   }
+  else if(!BSPF_equalsIgnoreCase(mode, "auto") && mode.length() == 2 &&
+          mode[0] >= '0' && mode[0] <= '5' &&
+          mode[1] >= '0' && mode[1] <= '5')
+  {
+    Axis xaxis = (Axis) ((int)mode[0] - '0');
+    Axis yaxis = (Axis) ((int)mode[1] - '0');
+    ostringstream msg;
+    msg << "Mouse X-axis is ";
+    switch(xaxis)
+    {
+      case Paddle0:
+        msg << "Paddle 0";  break;
+      case Paddle1:
+        msg << "Paddle 1";  break;
+      case Paddle2:
+        msg << "Paddle 2";  break;
+      case Paddle3:
+        msg << "Paddle 3";  break;
+      case Driving0:
+        msg << "Driving 0"; break;
+      case Driving1:
+        msg << "Driving 1"; break;
+      default:              break;
+    }
+    msg << ", Y-axis is ";
+    switch(yaxis)
+    {
+      case Paddle0:
+        msg << "Paddle 0";  break;
+      case Paddle1:
+        msg << "Paddle 1";  break;
+      case Paddle2:
+        msg << "Paddle 2";  break;
+      case Paddle3:
+        msg << "Paddle 3";  break;
+      case Driving0:
+        msg << "Driving 0"; break;
+      case Driving1:
+        msg << "Driving 1"; break;
+      default:              break;
+    }
+    myModeList.push_back(MouseMode(xaxis, yaxis, -1, msg.str()));
+  }
 
-  // First consider the possible modes for the mouse based on the left
+  // Now consider the possible modes for the mouse based on the left
   // and right controllers
+  bool noswap = BSPF_equalsIgnoreCase(myProps.get(Console_SwapPorts), "NO");
+  if(noswap)
+  {
+    addLeftControllerModes(noswap);
+    addRightControllerModes(noswap);
+  }
+  else
+  {
+    addRightControllerModes(noswap);
+    addLeftControllerModes(noswap);
+  }
+
+  // If the mouse isn't used at all, we still need one item in the list
+  if(myModeList.size() == 0)
+    myModeList.push_back(MouseMode("Mouse not used for current controllers"));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+MouseControl::~MouseControl()
+{
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& MouseControl::next()
+{
+  const MouseMode& mode = myModeList[myCurrentModeNum];
+  myCurrentModeNum = (myCurrentModeNum + 1) % myModeList.size();
+
+  myLeftController.setMouseControl(mode.xaxis, mode.yaxis, mode.controlID);
+  myRightController.setMouseControl(mode.xaxis, mode.yaxis, mode.controlID);
+
+  return mode.message;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MouseControl::addLeftControllerModes(bool noswap)
+{
   switch(myLeftController.type())
   {
     case Controller::Joystick:
@@ -54,21 +131,21 @@ cerr << "MouseControl c'tor: using mode = " << mode << endl;
     {
       ostringstream msg;
       msg << "Mouse is left " << myLeftController.name() << " controller";
-      MouseMode mmode(Automatic, Automatic, 0, msg.str());
-      myModeList.push_back(mmode);
+      myModeList.push_back(MouseMode(Automatic, Automatic, noswap ? 0 : 1, msg.str()));
       break;
     }
     case Controller::Paddles:
-    {
-      MouseMode mmode0(Automatic, Automatic, 0, "Mouse is Paddle 0 controller");
-      MouseMode mmode1(Automatic, Automatic, 1, "Mouse is Paddle 1 controller");
-      myModeList.push_back(mmode0);
-      myModeList.push_back(mmode1);
+      if(noswap)  addPaddleModes(0, 1, 0, 1);
+      else        addPaddleModes(2, 3, 0, 1);
       break;
-    }
     default:
       break;
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void MouseControl::addRightControllerModes(bool noswap)
+{
   switch(myRightController.type())
   {
     case Controller::Joystick:
@@ -82,91 +159,37 @@ cerr << "MouseControl c'tor: using mode = " << mode << endl;
     {
       ostringstream msg;
       msg << "Mouse is right " << myRightController.name() << " controller";
-      MouseMode mmode(Automatic, Automatic, 1, msg.str());
-      myModeList.push_back(mmode);
+      myModeList.push_back(MouseMode(Automatic, Automatic, noswap ? 1 : 0, msg.str()));
       break;
     }
     case Controller::Paddles:
-    {
-      MouseMode mmode0(Automatic, Automatic, 2, "Mouse is Paddle 2 controller");
-      MouseMode mmode1(Automatic, Automatic, 3, "Mouse is Paddle 3 controller");
-      myModeList.push_back(mmode0);
-      myModeList.push_back(mmode1);
+      if(noswap)  addPaddleModes(2, 3, 2, 3);
+      else        addPaddleModes(0, 1, 2, 3);
       break;
-    }
     default:
       break;
   }
-
-  // Now add per-ROM setting (if one exists)
-  if(mode != "auto")
-  {
-/*
-    // Note: these constants are from Controller::MouseAxisType enum
-    if(s.length() != 2 || s[0] < '0' || s[0] > '7' || s[1] < '0' || s[1] > '7')
-      setInternal("mcontrol", "auto");
-*/
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-MouseControl::~MouseControl()
+void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
 {
-}
+  ostringstream msg;
+  msg << "Mouse is Paddle " << lname << " controller" << "(" << lport << ")";
+  MouseMode mode0(Automatic, Automatic, lport, msg.str());
 
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void MouseControl::setMode(const string& mode)
-{
-cerr << "MouseControl::setMode: " << mode << endl;
+  msg.str("");
+  msg << "Mouse is Paddle " << rname << " controller" << "(" << rport << ")";
+  MouseMode mode1(Automatic, Automatic, rport, msg.str());
 
-
-  if(!&myOSystem->console())
-    return;
-
-  Controller& lc = myOSystem->console().controller(Controller::Left);
-  Controller& rc = myOSystem->console().controller(Controller::Right);
-  if(mode == "auto")
+  if(BSPF_equalsIgnoreCase(myProps.get(Controller_SwapPaddles), "NO"))
   {
-    bool swap = myOSystem->console().properties().get(Controller_SwapPaddles) == "YES";
-    lc.setMouseControl(Controller::Automatic, Controller::Automatic, swap ? 1 : 0);
-    rc.setMouseControl(Controller::Automatic, Controller::Automatic, swap ? 1 : 0);
+    myModeList.push_back(mode0);
+    myModeList.push_back(mode1);
   }
   else
   {
-    Controller::MouseAxisControl xaxis = (Controller::MouseAxisControl)
-      ((int)mode[0] - '0');
-    Controller::MouseAxisControl yaxis = (Controller::MouseAxisControl)
-      ((int)mode[1] - '0');
-
-    lc.setMouseControl(xaxis, yaxis);
-    rc.setMouseControl(xaxis, yaxis);
+    myModeList.push_back(mode1);
+    myModeList.push_back(mode0);
   }
-}
-#endif
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& MouseControl::next()
-{
-  const MouseMode& mode = myModeList[myCurrentModeNum];
-  myCurrentModeNum = (myCurrentModeNum + 1) % myModeList.size();
-
-  return mode.message;
-
-#if 0
-  if(myOSystem->settings().getString("mcontrol") == "auto")
-  {
-    myOSystem->console().controller(Controller::Left).setMouseControl(
-        Controller::Automatic, Controller::Automatic, paddle);
-    myOSystem->console().controller(Controller::Right).setMouseControl(
-        Controller::Automatic, Controller::Automatic, paddle);
-
-    myOSystem->frameBuffer().showMessage(message);
-  }
-  else
-  {
-    myOSystem->frameBuffer().showMessage(
-        "Mouse axis mode not auto, paddle not changed");
-  }
-#endif
 }

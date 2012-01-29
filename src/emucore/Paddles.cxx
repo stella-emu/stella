@@ -24,7 +24,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Paddles::Paddles(Jack jack, const Event& event, const System& system,
-                 bool swapport, bool swapaxis, bool swapdir)
+                 bool swappaddle, bool swapaxis, bool swapdir)
   : Controller(jack, event, system, Controller::Paddles),
     myMPaddleID(-1),
     myMPaddleIDX(-1),
@@ -46,7 +46,7 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   // Consider whether this is the left or right port
   if(myJack == Left)
   {
-    if(!swapport)  // First paddle is 0, second is 1
+    if(!swappaddle)  // First paddle is 0, second is 1
     {
       // These aren't affected by changes in axis orientation
       myP0AxisValue  = Event::SALeftAxis0Value;
@@ -121,7 +121,7 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   }
   else    // Jack is right port
   {
-    if(!swapport)  // First paddle is 2, second is 3
+    if(!swappaddle)  // First paddle is 2, second is 3
     {
       // These aren't affected by changes in axis orientation
       myP0AxisValue  = Event::SARightAxis0Value;

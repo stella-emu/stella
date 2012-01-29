@@ -40,14 +40,14 @@ class Paddles : public Controller
       @param event  The event object to use for events
       @param system The system using this controller
 
-      @param swapport  Whether to swap the paddles plugged into this jack
-      @param swapaxis  Whether to swap the axis on the paddle (x <-> y)
-      @param swapdir   Whether to swap the direction for which an axis
-                       causes movement (lesser axis values cause paddle
-                       resistance to decrease instead of increase)
+      @param swappaddle Whether to swap the paddles plugged into this jack
+      @param swapaxis   Whether to swap the axis on the paddle (x <-> y)
+      @param swapdir    Whether to swap the direction for which an axis
+                        causes movement (lesser axis values cause paddle
+                        resistance to decrease instead of increase)
     */
     Paddles(Jack jack, const Event& event, const System& system,
-            bool swapport, bool swapaxis, bool swapdir);
+            bool swappaddle, bool swapaxis, bool swapdir);
 
     /**
       Destructor
@@ -125,6 +125,8 @@ class Paddles : public Controller
     int myCharge[2], myLastCharge[2];
     int myLastAxisX, myLastAxisY;
     int myAxisDigitalZero, myAxisDigitalOne;
+
+    bool mySwapPorts;
 
     static int _DIGITAL_SENSITIVITY, _DIGITAL_DISTANCE;
     static int _MOUSE_SENSITIVITY;

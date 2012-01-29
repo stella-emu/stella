@@ -73,6 +73,11 @@ class MouseControl
     const string& next();
 
   private:
+    void addLeftControllerModes(bool noswap);
+    void addRightControllerModes(bool noswap);
+    void addPaddleModes(int lport, int rport, int lname, int rname);
+
+  private:
     const Properties& myProps;
     Controller& myLeftController;
     Controller& myRightController;
@@ -86,12 +91,23 @@ class MouseControl
         : xaxis(NoControl),
           yaxis(NoControl),
           controlID(-1),
-          message("Mouse input is disabled")  { }
+          message("")  { }
+      MouseMode(const string& msg)
+        : xaxis(NoControl),
+          yaxis(NoControl),
+          controlID(-1),
+          message(msg)  { }
       MouseMode(Axis x, Axis y, int id, const string& msg)
         : xaxis(x),
           yaxis(y),
           controlID(id),
           message(msg)  { }
+      friend ostream& operator<<(ostream& os, const MouseMode& mm)
+      {
+        os << "xaxis=" << mm.xaxis << ", yaxis=" << mm.yaxis
+           << ", id=" << mm.controlID << ", msg=" << mm.message;
+        return os;
+      }
     };
 
     int myCurrentModeNum;
