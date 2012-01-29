@@ -76,6 +76,9 @@ class GameInfoDialog : public Dialog, public CommandSender
     PopUpWidget* mySwapPaddles;
     PopUpWidget* myLeftPort;
     PopUpWidget* myRightPort;
+    PopUpWidget* myMouseControl;
+    PopUpWidget* myMouseX;
+    PopUpWidget* myMouseY;
 
     // Display properties
     PopUpWidget*      myFormat;
@@ -89,7 +92,8 @@ class GameInfoDialog : public Dialog, public CommandSender
       kLeftCChanged    = 'LCch',
       kRightCChanged   = 'RCch',
       kPhosphorChanged = 'PPch',
-      kPPBlendChanged  = 'PBch'
+      kPPBlendChanged  = 'PBch',
+      kMCtrlChanged    = 'MCch'
     };
 
     // Game properties for currently loaded ROM

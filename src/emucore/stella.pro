@@ -153,6 +153,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 "Display.YStart" "24"
 ""
 
@@ -429,8 +430,8 @@
 "Cartridge.Name" "Star Wars - Jedi Arena (1983) (Parker Bros) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "05c60458ec69e7fe8b1be973852d84f1"
@@ -650,6 +651,7 @@
 "Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
 "Display.YStart" "28"
 ""
 
@@ -742,6 +744,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "02"
 ""
 
 "Cartridge.MD5" "0c7926d660f903a2d6910c254660c32c"
@@ -873,6 +876,7 @@
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "0b33252b680b65001e91a411e56e72e9"
@@ -1011,6 +1015,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "0c7bd935d9a7f2522155e48315f44fa0"
@@ -1193,6 +1198,7 @@
 "Cartridge.Name" "Party Mix - Down on the Line (3 of 3) (1983) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "0ef64cdbecccb7049752a3de0b7ade14"
@@ -2408,6 +2414,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "1f5a2927a0b2faf87540b01d9d7d7fd1"
@@ -3478,6 +3485,7 @@
 "Cartridge.Note" "Uses the Joystick (left) or Steering (right) Controller"
 "Cartridge.Rarity" "Hack"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "54"
 "Display.Phosphor" "YES"
 ""
 
@@ -3681,6 +3689,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 "Display.YStart" "42"
 ""
 
@@ -3743,6 +3752,7 @@
 "Cartridge.Name" "Circus Atari (1980) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "30c92c685224dc7a72b9bbe5eb62d004"
@@ -4276,6 +4286,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 "Display.YStart" "30"
 ""
 
@@ -4380,6 +4391,7 @@
 "Cartridge.Name" "Fireball (1982) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "3856b9425cc0185ed770376a62af0282"
@@ -4504,8 +4516,8 @@
 "Cartridge.Name" "Street Racer (1977) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "3947eb7305b0c904256cdbc5c5956c0f"
@@ -5964,6 +5976,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "4dd6f53684ccbb569fe9f41498d80018"
@@ -6023,6 +6036,7 @@
 "Cartridge.Note" "Uses Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
 ""
 
 "Cartridge.MD5" "4f634893d54e9cabe106e0ec0b7bdcdf"
@@ -6419,6 +6433,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "542c6dd5f7280179b51917a4cba4faff"
@@ -7273,6 +7288,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 "Display.YStart" "38"
 ""
 
@@ -7313,6 +7329,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "61631c2f96221527e7da9802b4704f93"
@@ -7769,6 +7786,7 @@
 "Cartridge.Name" "Fireball (Preview) (1982) (Arcadia)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "66b92ede655b73b402ecd1f4d8cd9c50"
@@ -7860,6 +7878,7 @@
 "Cartridge.Name" "Fireball (1982) (Arcadia) [a]"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "67cf913d1df0bf2d7ae668060d0b6694"
@@ -7894,7 +7913,7 @@
 "Cartridge.Name" "Warplock (1982) (Data Age)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 "Display.Phosphor" "YES"
 ""
 
@@ -8087,6 +8106,7 @@
 "Cartridge.Note" "Uses the Paddle Controller (left only)"
 "Cartridge.Rarity" "Prototype"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "6a3b0c33cf74b1e213a629e3c142b73c"
@@ -8178,6 +8198,7 @@
 "Cartridge.Rarity" "New Release (Hack)"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
 "Display.YStart" "24"
 ""
 
@@ -8202,6 +8223,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Cartridge.Rarity" "New Release"
 "Controller.Left" "PADDLES_IAXDR"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "6bb09bc915a7411fe160d0b2e4d66047"
@@ -8257,6 +8279,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "6c658b52d03e01828b9d2d4718a998ac"
@@ -8423,6 +8446,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES_IAXIS"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 "Display.YStart" "30"
 ""
 
@@ -8497,8 +8521,8 @@
 "Cartridge.Name" "Street Racer (1977) (Atari) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "6ffc95108e5add6f9b8abcaf330be835"
@@ -9308,6 +9332,7 @@
 "Cartridge.Name" "Guardian (1982) (Apollo)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "7b33407b2b198af74906b936ce1eecbb"
@@ -9667,6 +9692,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "7f0209cfcc3d181715463f4d6451cecf"
@@ -9891,6 +9917,7 @@
 "Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
 ""
 
 "Cartridge.MD5" "814210c0e121f7dbc25661b93c06311c"
@@ -10415,6 +10442,7 @@
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "88a6c9c88cb329ee5fa7d168bd6c7c63"
@@ -10544,8 +10572,8 @@
 "Cartridge.Name" "Street Racer (128-in-1 Junior Console) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "8a9d874a38608964f33ec0c35cab618d"
@@ -11430,6 +11458,7 @@
 "Cartridge.Name" "Solar Storm (1983) (Imagic)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "9813b9e4b8a6fd919c86a40c6bda8c93"
@@ -11513,6 +11542,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "9905f9f4706223dadee84f6867ede8e3"
@@ -12189,6 +12219,7 @@
 "Cartridge.Name" "Fireball (Preview) (1982) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "a3b9d2be822eab07e7f4b10593fb5eaa"
@@ -12244,6 +12275,7 @@
 "Cartridge.Sound" "STEREO"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "ab434f4c942d6472e75d5490cc4dd128"
@@ -12524,6 +12556,7 @@
 "Cartridge.Name" "Circus Atari (1980) (Atari)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "c7600d72247c5dfa1ec1a88d23e6c85e"
@@ -12765,6 +12798,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "02"
 "Display.YStart" "30"
 ""
 
@@ -13063,6 +13097,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "aed82052f7589df05a3f417bb4e45f0c"
@@ -13167,6 +13202,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "b227175699e372b8fe10ce243ad6dda5"
@@ -13740,6 +13776,7 @@
 "Cartridge.Name" "Action Force (1983) (Parker Bros) (PAL)"
 "Cartridge.Note" "AKA G.I. Joe - Cobra Strike"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "b9d1e3be30b131324482345959aed5e5"
@@ -14029,6 +14066,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "bf6b753ec11acfec3b40f8a4c476e77d"
@@ -14107,6 +14145,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "ca4f8c5b4d6fb9d608bb96bc7ebd26c7"
@@ -14534,6 +14573,7 @@
 "Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
 "Display.YStart" "28"
 ""
 
@@ -14593,6 +14633,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "c68a6bafb667bad2f6d020f879be1d11"
@@ -14631,6 +14672,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "c5dd8399257d8862f3952be75c23e0eb"
@@ -14830,8 +14872,8 @@
 "Cartridge.Name" "Star Wars - Jedi Arena (1983) (Parker Bros)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 "Display.YStart" "30"
 ""
 
@@ -14989,6 +15031,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "cc74ddb45d7bc4d04c2e6f1907416699"
@@ -15158,6 +15201,7 @@
 "Cartridge.Name" "Fireball (1982) (Arcadia) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "cd9fea12051e414a6dfe17052067da8e"
@@ -15358,6 +15402,7 @@
 "Cartridge.Sound" "STEREO"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "eafe8b40313a65792e88ff9f2fe2655c"
@@ -15559,7 +15604,7 @@
 "Cartridge.Name" "Warplock (1983) (Gameworld) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 "Display.Phosphor" "YES"
 ""
 
@@ -15640,6 +15685,7 @@
 "Cartridge.Name" "Action Force (1983) (Parker Bros) (PAL) [a]"
 "Cartridge.Note" "AKA G.I. Joe - Cobra Strike"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "d341d39774277cee6a1d378a013f92ac"
@@ -15734,7 +15780,6 @@
 "Cartridge.Note" "Uses the Paddle Controllers (right only)"
 "Console.SwapPorts" "YES"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
 "Display.Height" "215"
 "Display.Phosphor" "YES"
@@ -15882,6 +15927,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "d632b74fea533d593af82cf16e7c5e4a"
@@ -16197,6 +16243,7 @@
 "Cartridge.Note" "Uses the Driving Controllers"
 "Controller.Left" "DRIVING"
 "Controller.Right" "DRIVING"
+"Controller.MouseAxis" "45"
 "Display.YStart" "28"
 ""
 
@@ -16353,6 +16400,7 @@
 "Cartridge.Name" "Kaboom! (CCE)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "dbdd21e1ee3d72119e8cd14d943c585b"
@@ -16746,8 +16794,8 @@
 "Cartridge.Name" "Street Racer (1977) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (swapped)"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "e1143b72a30d4d3fee385eec38b4aa4d"
@@ -16767,6 +16815,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (16K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "e1486c7822c07117b4f94a32e5ed68c1"
@@ -17061,6 +17110,7 @@
 "Cartridge.Name" "Kaboom! (CCE) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "e4b12deaafd1dbf5ac31afe4b8e9c233"
@@ -17254,6 +17304,7 @@
 "Cartridge.Name" "Solar Storm (1983) (Imagic) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "e66e5af5dea661d58420088368e4ef0d"
@@ -17757,6 +17808,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (8K)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "ee28424af389a7f3672182009472500c"
@@ -17777,6 +17829,7 @@
 "Cartridge.Name" "Super Breakout (1982 - 1981) (Atari) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "ee659ae50e9df886ac4f8d7ad10d046a"
@@ -17860,8 +17913,9 @@
 "Cartridge.MD5" "eee7695ae3eea7818321df0b790b31f3"
 "Cartridge.Name" "Sound Paddle V2 (Dennis Caswell & Jim Nitchals) (PD)"
 "Cartridge.Note" "Uses the Paddle Controllers"
+"Console.SwapPorts" "YES"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "ef5c02c95a1e7ed24f24193935755cd3"
@@ -18194,6 +18248,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "f344ac1279152157d63e64aa39479599"
@@ -18544,8 +18599,9 @@
 "Cartridge.MD5" "f78c125b5da483c41e51522947d6c4ce"
 "Cartridge.Name" "Sound Paddle V1 (Dennis Caswell & Jim Nitchals) (PD)"
 "Cartridge.Note" "Uses the Paddle Controllers"
+"Console.SwapPorts" "YES"
 "Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "f7e07080ed8396b68f2e5788a5c245e2"
@@ -18673,6 +18729,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "f90b5da189f24d7e1a2117d8c8abc952"
@@ -18727,6 +18784,7 @@
 "Cartridge.Name" "Kaboom! (1981) (Activision) (PAL)"
 "Cartridge.Note" "Uses the Paddle Controllers (left only)"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "f9de91d868d6ebfb0076af9063d7195e"
@@ -19127,6 +19185,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "fe9ae625d924b54c9f8a14ac9a0f6c6d"
@@ -19171,6 +19230,7 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
+"Controller.MouseAxis" "10"
 "Display.YStart" "42"
 ""
 
@@ -19225,6 +19285,7 @@
 "Cartridge.Note" "Uses Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "ffe51989ba6da2c6ae5a12d277862e16"
@@ -19284,6 +19345,7 @@
 "Cartridge.Note" "Hack of Kaboom!"
 "Cartridge.Rarity" "Hack"
 "Controller.Left" "PADDLES"
+"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "81073d0377a2badef8d5e74fc44fc323"

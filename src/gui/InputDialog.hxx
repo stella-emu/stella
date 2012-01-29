@@ -58,8 +58,7 @@ class InputDialog : public Dialog
     enum {
       kDeadzoneChanged = 'DZch',
       kDPSpeedChanged  = 'PDch',
-      kMPSpeedChanged  = 'PMch',
-      kMPCtrlChanged   = 'PMcl'
+      kMPSpeedChanged  = 'PMch'
     };
 
     TabWidget* myTab;
@@ -80,8 +79,6 @@ class InputDialog : public Dialog
     CheckboxWidget*   myAllowAll4;
     CheckboxWidget*   myGrabMouse;
     PopUpWidget*      myMouseControl;
-    PopUpWidget*      myMouseX;
-    PopUpWidget*      myMouseY;
 };
 
 #endif

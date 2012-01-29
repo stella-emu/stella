@@ -719,6 +719,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5,
     s = mySettings->getString("bc");
     if(s != "") { props.set(Controller_Left, s); props.set(Controller_Right, s); }
     CMDLINE_PROPS_UPDATE("cp", Controller_SwapPaddles);
+    CMDLINE_PROPS_UPDATE("ma", Controller_MouseAxis);
     CMDLINE_PROPS_UPDATE("format", Display_Format);
     CMDLINE_PROPS_UPDATE("ystart", Display_YStart);
     CMDLINE_PROPS_UPDATE("height", Display_Height);

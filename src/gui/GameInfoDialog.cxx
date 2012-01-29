@@ -287,6 +287,37 @@ GameInfoDialog::GameInfoDialog(
                                   pwidth, lineHeight, items, "", 0, 0);
   wid.push_back(mySwapPaddles);
 
+  ypos += lineHeight + 8;
+  lwidth = font.getStringWidth("Mouse axis mode: ");
+  pwidth = font.getStringWidth("Specific axis");
+  items.clear();
+  items.push_back("Automatic", "auto");
+  items.push_back("Specific axis", "specific");
+  myMouseControl =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+                   "Mouse axis mode: ", lwidth, kMCtrlChanged);
+  wid.push_back(myMouseControl);
+
+  // Mouse controller specific axis
+  lwidth = font.getStringWidth("X-Axis is: ");
+  pwidth = font.getStringWidth("Driving 0");
+  items.clear();
+  items.push_back("Paddle 0",  BSPF_toString(MouseControl::Paddle0));
+  items.push_back("Paddle 1",  BSPF_toString(MouseControl::Paddle1));
+  items.push_back("Paddle 2",  BSPF_toString(MouseControl::Paddle2));
+  items.push_back("Paddle 3",  BSPF_toString(MouseControl::Paddle3));
+  items.push_back("Driving 0", BSPF_toString(MouseControl::Driving0));
+  items.push_back("Driving 1", BSPF_toString(MouseControl::Driving1));
+
+  xpos = 45;  ypos += lineHeight + 4;
+  myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+               "X-Axis is: ", lwidth);
+  wid.push_back(myMouseX);
+
+  ypos += lineHeight + 4;
+  myMouseY = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
+               "Y-Axis is: ", lwidth);
+  wid.push_back(myMouseY);
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
@@ -433,6 +464,22 @@ void GameInfoDialog::loadView()
   myP0Controller->setSelected(myGameProperties.get(Controller_Left), "JOYSTICK");
   myP1Controller->setSelected(myGameProperties.get(Controller_Right), "JOYSTICK");
   mySwapPaddles->setSelected(myGameProperties.get(Controller_SwapPaddles), "NO");
+  const string& mcontrol = myGameProperties.get(Controller_MouseAxis);
+  bool autoAxis = BSPF_equalsIgnoreCase(mcontrol, "auto");
+  if(autoAxis)
+  {
+    myMouseControl->setSelected(0);
+    myMouseX->setSelected(0);
+    myMouseY->setSelected(0);
+  }
+  else
+  {
+    myMouseControl->setSelected(1);
+    myMouseX->setSelected(BSPF_toString(mcontrol[0] - '0'), "");
+    myMouseY->setSelected(BSPF_toString(mcontrol[1] - '0'), "");
+  }
+  myMouseX->setEnabled(!autoAxis);
+  myMouseY->setEnabled(!autoAxis);
 
   // Display properties
   myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO-DETECT");
@@ -477,6 +524,10 @@ void GameInfoDialog::saveConfig()
   myGameProperties.set(Console_SwapPorts,
     myLeftPort->getSelectedTag() == "L" ? "NO" : "YES");
   myGameProperties.set(Controller_SwapPaddles, mySwapPaddles->getSelectedTag());
+  string mcontrol = myMouseControl->getSelectedTag();
+  if(mcontrol != "auto")
+    mcontrol = myMouseX->getSelectedTag() + myMouseY->getSelectedTag();
+  myGameProperties.set(Controller_MouseAxis, mcontrol);
 
   // Display properties
   myGameProperties.set(Display_Format, myFormat->getSelectedTag());
@@ -545,6 +596,14 @@ void GameInfoDialog::handleCommand(CommandSender* sender, int cmd,
     case kPPBlendChanged:
       myPPBlendLabel->setValue(myPPBlend->getValue());
       break;
+
+    case kMCtrlChanged:
+    {
+      bool state = myMouseControl->getSelectedTag() != "auto";
+      myMouseX->setEnabled(state);
+      myMouseY->setEnabled(state);
+      break;
+    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

@@ -1913,7 +1913,7 @@ void EventHandler::takeSnapshot(uInt32 number)
 void EventHandler::setMouseControllerMode(const string& mode)
 {
   delete myMouseControl;  myMouseControl = NULL;
-  if(myState == S_EMULATE)
+  if(&myOSystem->console())
   {
     const string& control = mode == "rom" ?
       myOSystem->console().properties().get(Controller_MouseAxis) : mode;

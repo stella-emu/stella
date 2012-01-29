@@ -176,7 +176,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myMPaddleSpeed);
 
   // Add 'allow all 4 directions' for joystick
-  xpos = 10;  ypos += lineHeight + 8;
+  xpos = 10;  ypos += lineHeight + 12;
   myAllowAll4 = new CheckboxWidget(myTab, font, xpos, ypos,
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
@@ -191,38 +191,17 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 #endif
 
   // Mouse is controller type
-  ypos += lineHeight + 8;
+  ypos += lineHeight + 12;
   lwidth = font.getStringWidth("Use mouse as a controller: ");
-  pwidth = font.getStringWidth("Specific axis");
+  pwidth = font.getStringWidth("Automatic");
   items.clear();
+  items.push_back("Never", "never");
   items.push_back("Automatic", "auto");
-  items.push_back("Specific axis", "paddle");
+  items.push_back("By ROM", "rom");
   myMouseControl =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                   "Use mouse as a controller: ", lwidth, kMPCtrlChanged);
+                   "Use mouse as a controller: ", lwidth);
   wid.push_back(myMouseControl);
-
-  // Mouse controller specific axis
-  lwidth = font.getStringWidth("X-Axis is: ");
-  pwidth = font.getStringWidth("Driving 0");
-  items.clear();
-  items.push_back("not used",  BSPF_toString(MouseControl::NoControl));
-  items.push_back("Paddle 0",  BSPF_toString(MouseControl::Paddle0));
-  items.push_back("Paddle 1",  BSPF_toString(MouseControl::Paddle1));
-  items.push_back("Paddle 2",  BSPF_toString(MouseControl::Paddle2));
-  items.push_back("Paddle 3",  BSPF_toString(MouseControl::Paddle3));
-  items.push_back("Driving 0", BSPF_toString(MouseControl::Driving0));
-  items.push_back("Driving 1", BSPF_toString(MouseControl::Driving1));
-
-  xpos = 45;  ypos += lineHeight + 4;
-  myMouseX = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-               "X-Axis is: ", lwidth);
-  wid.push_back(myMouseX);
-
-  ypos += lineHeight + 4;
-  myMouseY = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-               "Y-Axis is: ", lwidth);
-  wid.push_back(myMouseY);
 
   // Add items for virtual device ports
   addToFocusList(wid, tabID);
@@ -256,22 +235,8 @@ void InputDialog::loadConfig()
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
 
   // Mouse is controller type
-  const string& mcontrol = instance().settings().getString("mcontrol");
-  bool autoAxis = mcontrol == "auto";
-  if(autoAxis)
-  {
-    myMouseControl->setSelected(0);
-    myMouseX->setSelected(0);
-    myMouseY->setSelected(0);
-  }
-  else
-  {
-    myMouseControl->setSelected(1);
-    myMouseX->setSelected(BSPF_toString(mcontrol[0] - '0'), "");
-    myMouseY->setSelected(BSPF_toString(mcontrol[1] - '0'), "");
-  }
-  myMouseX->setEnabled(!autoAxis);
-  myMouseY->setEnabled(!autoAxis);
+  myMouseControl->setSelected(
+    instance().settings().getString("mcontrol"), "auto");
 
   myTab->loadConfig();
 }
@@ -312,9 +277,7 @@ void InputDialog::saveConfig()
   instance().eventHandler().allowAllDirections(allowall4);
 
   // Mouse is controller type
-  string mcontrol = myMouseControl->getSelectedTag();
-  if(mcontrol != "auto")
-    mcontrol = myMouseX->getSelectedTag() + myMouseY->getSelectedTag();
+  const string& mcontrol = myMouseControl->getSelectedTag();
   instance().settings().setString("mcontrol", mcontrol);
   instance().eventHandler().setMouseControllerMode(mcontrol);
 }
@@ -357,11 +320,7 @@ void InputDialog::setDefaults()
       myAllowAll4->setState(false);
 
       // Mouse is controller type
-      myMouseControl->setSelected(0);
-      myMouseX->setSelected(0);
-      myMouseY->setSelected(0);
-      myMouseX->setEnabled(false);
-      myMouseY->setEnabled(false);
+      myMouseControl->setSelected(1);
       break;
     }
 
@@ -451,14 +410,6 @@ void InputDialog::handleCommand(CommandSender* sender, int cmd,
     case kMPSpeedChanged:
       myMPaddleLabel->setValue(myMPaddleSpeed->getValue());
       break;
-
-    case kMPCtrlChanged:
-    {
-      bool state = myMouseControl->getSelectedTag() != "auto";
-      myMouseX->setEnabled(state);
-      myMouseY->setEnabled(state);
-      break;
-    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);
