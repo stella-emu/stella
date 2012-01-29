@@ -90,7 +90,10 @@ class Driving : public Controller
                 myXAxisValue, myYAxisValue, myAxisMouseMotion;
 
     // Controller to emulate in mouse axis 'automatic' mode
-    int myControlID;  
+    int myControlID;
+
+    // Controller to emulate in mouse axis 'specific' mode
+    int myControlIDX, myControlIDY;
 };
 
 #endif

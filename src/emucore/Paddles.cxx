@@ -384,7 +384,8 @@ void Paddles::update()
 void Paddles::setMouseControl(
     MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID)
 {
-  // In 'automatic' mode, both axes on the mouse map to a single paddle
+  // In 'automatic' mode, both axes on the mouse map to a single paddle,
+  // and the paddle axis and direction settings are taken into account
   // This overrides any other mode
   if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
   {

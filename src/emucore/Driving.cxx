@@ -26,7 +26,9 @@
 Driving::Driving(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::Driving),
     myCounter(0),
-    myControlID(-1)
+    myControlID(-1),
+    myControlIDX(-1),
+    myControlIDY(-1)
 {
   if(myJack == Left)
   {
@@ -78,8 +80,30 @@ void Driving::update()
     int m_axis = myEvent.get(Event::MouseAxisXValue);
     if(m_axis < -2)     myCounter--;
     else if(m_axis > 2) myCounter++;
-    if(myEvent.get(Event::MouseButtonLeftValue))
+    if(myEvent.get(Event::MouseButtonLeftValue) ||
+       myEvent.get(Event::MouseButtonRightValue))
       myDigitalPinState[Six] = false;
+  }
+  else
+  {
+    // Test for 'untied' mouse axis mode, where each axis is potentially
+    // mapped to a separate driving controller
+    if(myControlIDX > -1)
+    {
+      int m_axis = myEvent.get(Event::MouseAxisXValue);
+      if(m_axis < -2)     myCounter--;
+      else if(m_axis > 2) myCounter++;
+      if(myEvent.get(Event::MouseButtonLeftValue))
+        myDigitalPinState[Six] = false;
+    }
+    if(myControlIDY > -1)
+    {
+      int m_axis = myEvent.get(Event::MouseAxisYValue);
+      if(m_axis < -2)     myCounter--;
+      else if(m_axis > 2) myCounter++;
+      if(myEvent.get(Event::MouseButtonRightValue))
+        myDigitalPinState[Six] = false;
+    }
   }
 
   // Only consider the lower-most bits (corresponding to pins 1 & 2)
@@ -120,10 +144,25 @@ void Driving::setMouseControl(
   // In 'automatic' mode, only the X-axis is used
   if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
   {
-    myControlID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
-                   (myJack == Right && (ctrlID == 2 || ctrlID == 3))
-                  ) ? ctrlID & 0x01 : -1;
+    myControlID = ((myJack == Left && ctrlID == 0) ||
+                   (myJack == Right && ctrlID == 1)
+                  ) ? ctrlID : -1;
+    myControlIDX = myControlIDY = -1;
   }
-  else  // Otherwise, joysticks are not used in 'non-auto' mode
+  else
+  {
+    // The following is somewhat complex, but we need to pre-process as much
+    // as possible, so that ::update() can run quickly
     myControlID = -1;
+    if(myJack == Left)
+    {
+      myControlIDX = xaxis == MouseControl::Driving0 ? 0 : -1;
+      myControlIDY = yaxis == MouseControl::Driving0 ? 0 : -1;
+    }
+    else  // myJack == Right
+    {
+      myControlIDX = xaxis == MouseControl::Driving1 ? 1 : -1;
+      myControlIDY = yaxis == MouseControl::Driving1 ? 1 : -1;
+    }
+  }
 }
