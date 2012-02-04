@@ -47,7 +47,7 @@ class M6532 : public Device
       Create a new 6532 for the specified console
 
       @param console  The console the 6532 is associated with
-      @param randRam  Randomize or zero RAM on reset
+      @param settings The settings used by the system
     */
     M6532(const Console& console, const Settings& settings);
  

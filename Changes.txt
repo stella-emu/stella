@@ -60,8 +60,16 @@
   * Added 'FA2' bankswitch scheme, thanks to code from Chris D.
     Walton.  This scheme will be used in an upcoming 'Star Castle' ROM.
 
+  * Updated internal ROM properties database to ROM-Hunter version 7
+    (thanks go to RomHunter for his tireless research in this area).
+
+  * Added several PERL tools to help in automation of analyzing RomHunter
+    ROM set releases.
+
   * Fixed compile issues in Irix when using the default compiler
     instead of gcc.  Thanks go to Rainer M. Canavan for this code.
+
+  * Updated included PNG library to latest stable version.
 
 -Have fun!
 

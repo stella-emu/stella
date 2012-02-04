@@ -119,7 +119,7 @@ uInt8 M6532::peek(uInt16 addr)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
     {
-      uInt8 value = (myConsole.controller(Controller::Left).read() << 4)|
+      uInt8 value = (myConsole.controller(Controller::Left).read() << 4) |
                      myConsole.controller(Controller::Right).read();
 
       // Each pin is high (1) by default and will only go low (0) if either
