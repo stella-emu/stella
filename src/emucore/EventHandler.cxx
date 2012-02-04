@@ -79,18 +79,6 @@ EventHandler::EventHandler(OSystem* osystem)
   for(int i = 0; i < kComboSize; ++i)
     for(int j = 0; j < kEventsPerCombo; ++j)
       myComboTable[i][j] = Event::NoType;
-
-  // Erase the Message array
-  for(int i = 0; i < Event::LastType; ++i)
-    ourMessageTable[i] = "";
-
-  // Set unchanging messages
-  ourMessageTable[Event::ConsoleColor]      = "Color Mode";
-  ourMessageTable[Event::ConsoleBlackWhite] = "BW Mode";
-  ourMessageTable[Event::ConsoleLeftDiffA]  = "Left Difficulty A";
-  ourMessageTable[Event::ConsoleLeftDiffB]  = "Left Difficulty B";
-  ourMessageTable[Event::ConsoleRightDiffA] = "Right Difficulty A";
-  ourMessageTable[Event::ConsoleRightDiffB] = "Right Difficulty B";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1040,15 +1028,32 @@ void EventHandler::handleEvent(Event::Type event, int state)
       return;
     ////////////////////////////////////////////////////////////////////////
 
+    // Events which generate messages
+    case Event::ConsoleColor:
+      if(state) myOSystem->frameBuffer().showMessage("Color Mode");
+      break;
+    case Event::ConsoleBlackWhite:
+      if(state) myOSystem->frameBuffer().showMessage("BW Mode");
+      break;
+    case Event::ConsoleLeftDiffA:
+      if(state) myOSystem->frameBuffer().showMessage("Left Difficulty A");
+      break;
+    case Event::ConsoleLeftDiffB:
+      if(state) myOSystem->frameBuffer().showMessage("Left Difficulty B");
+      break;
+    case Event::ConsoleRightDiffA:
+      if(state) myOSystem->frameBuffer().showMessage("Right Difficulty A");
+      break;
+    case Event::ConsoleRightDiffB:
+      if(state) myOSystem->frameBuffer().showMessage("Right Difficulty B");
+      break;
+
     case Event::NoType:  // Ignore unmapped events
       return;
 
     default:
       break;
   }
-
-  if(state && ourMessageTable[event] != "")
-    myOSystem->frameBuffer().showMessage(ourMessageTable[event]);
 
   // Otherwise, pass it to the emulation core
   myEvent.set(event, state);

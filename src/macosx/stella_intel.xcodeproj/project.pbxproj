@@ -2032,6 +2032,8 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "@loader_path";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
 			};
@@ -2048,6 +2050,8 @@
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "@loader_path";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = "";
 				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";
@@ -2059,6 +2063,8 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				INSTALL_PATH = "@loader_path";
+				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = "";
 				VALID_ARCHS = "i386 x86_64";

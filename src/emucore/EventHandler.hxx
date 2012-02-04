@@ -385,9 +385,6 @@ class EventHandler
     // The event(s) assigned to each combination event
     Event::Type myComboTable[kComboSize][kEventsPerCombo];
 
-    // Array of messages for each Event
-    string ourMessageTable[Event::LastType];
-
     // Array of strings which correspond to the given StellaKey
     string ourKBDKMapping[KBDK_LAST];
 
