@@ -1,5 +1,8 @@
 #!/usr/bin/perl
 
+# Locate the 'PropSet' module
+use FindBin;
+use lib "$FindBin::Bin";
 use PropSet;
 
 usage() if @ARGV != 2;
@@ -48,13 +51,13 @@ print OUTFILE "static const char* DefProps[DEF_PROPS_SIZE][" . $typesize . "] = 
 my $idx = 0;
 for my $key ( sort keys %propset )
 {
-	print OUTFILE PropSet::build_prop_string(@{ $propset{$key} });
+  print OUTFILE PropSet::build_prop_string(@{ $propset{$key} });
 
-	if ($idx+1 < $setsize) {
-		print OUTFILE ", ";
-	}
-	print OUTFILE "\n";
-	$idx++;
+  if ($idx+1 < $setsize) {
+    print OUTFILE ", ";
+  }
+  print OUTFILE "\n";
+  $idx++;
 }
 
 print OUTFILE "};\n";
@@ -65,6 +68,8 @@ close(OUTFILE);
 
 
 sub usage {
-	print "create_props.pl <INPUT STELLA PROPS> <OUTPUT C++ header>\n";
-	exit(0);
+  print "create_props.pl <INPUT properties file> <OUTPUT C++ header>\n";
+  print "\n";
+  print "Convert the given properties file into a C++ compatible header file.\n";
+  exit(0);
 }

@@ -1936,7 +1936,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "947317a89af38a49c4864d6bdd6a91fb", "CBS Electronics, Bob Curtiss", "4L 2487 5000", "Solar Fox (1983) (CBS Electronics)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "94b92a882f6dbaa6993a46e2dcc58402", "Activision, Larry Miller", "AX-026, AX-026-04", "Enduro (1983) (Activision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "94d90f63678e086f6b6d5e1bc6c4c8c2", "Digivision", "", "Seaquest (Digivision)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "94e3fbc19107a169909e274187247a9d", "", "2402-044-01", "Freeway (Unknown)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "94e3fbc19107a169909e274187247a9d", "", "2402-044-01", "2-in-1 Freeway and Tennis (Unknown)", "", "", "", "2IN1", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "94e4c9b924286038527f49cdc20fda69", "Retroactive", "", "Qb (V2.12) (Stella) (2001) (Retroactive)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "94e7cc6342d11e508e7e8b2ddf53c255", "", "", "Missile Command (208 in 1) (Unknown) (PAL) (Hack)", "", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "94ff6b7489ed401dcaaf952fece10f67", "Atari - GCC, Mark Ackerman, Noellie Alito", "CX2692", "Moon Patrol (07-31-1983) (Atari) (Prototype)", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
