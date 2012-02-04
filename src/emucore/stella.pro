@@ -98,15 +98,15 @@
 "Display.YStart" "30"
 ""
 
-"Cartridge.MD5" "fb09ee4ccd47ae74a3c314f0d8a40344"
-"Cartridge.Name" "Titans (SnailSoft)"
-""
-
 "Cartridge.MD5" "6272f348a9a7f2d500a4006aa93e0d08"
 "Cartridge.Manufacturer" "Atari, Jerome Domurat, Michael Sierchio"
 "Cartridge.ModelNo" "CX2667, CX2667P"
 "Cartridge.Name" "RealSports Soccer (1983) (Atari) (PAL) [a]"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "fb09ee4ccd47ae74a3c314f0d8a40344"
+"Cartridge.Name" "Titans (SnailSoft)"
 ""
 
 "Cartridge.MD5" "65bd29e8ab1b847309775b0de6b2e4fe"
@@ -402,14 +402,6 @@
 "Controller.MouseAxis" "01"
 ""
 
-"Cartridge.MD5" "c246e05b52f68ab2e9aee40f278cd158"
-"Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
-"Cartridge.Note" "NTSC Conversion"
-"Cartridge.Rarity" "Homebrew"
-"Display.Height" "230"
-""
-
 "Cartridge.MD5" "7b5207e68ee85b16998bea861987c690"
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX26163P"
@@ -419,6 +411,14 @@
 
 "Cartridge.MD5" "f1beca5a198cf08190487e5c27b8e540"
 "Cartridge.Name" "Fu Kung! (V0.16) (2003) (AD)"
+""
+
+"Cartridge.MD5" "c246e05b52f68ab2e9aee40f278cd158"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "cba56e939252b05df7b7de87307d12ca"
@@ -693,7 +693,7 @@
 
 "Cartridge.MD5" "25bb080457351be724aac8a02021aa92"
 "Cartridge.Manufacturer" "CBS Electronics"
-"Cartridge.ModelNo" "4L1784,  4L1786, 4L2277"
+"Cartridge.ModelNo" "4L1784, 4L1786, 4L1787, 4L2277"
 "Cartridge.Name" "Zaxxon (1982) (CBS Electronics) (PAL)"
 ""
 
@@ -760,11 +760,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
-"Cartridge.Manufacturer" "Tron"
-"Cartridge.Name" "H.E.R.O. (Tron)"
-""
-
 "Cartridge.MD5" "81414174f1816d5c1e583af427ac89fc"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Treasure Below (Thomas Jentzsch)"
@@ -780,6 +775,11 @@
 "Cartridge.ModelNo" "PGP235"
 "Cartridge.Name" "Fussball (Ariola) (PAL)"
 "Cartridge.Note" "AKA International Soccer"
+""
+
+"Cartridge.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
+"Cartridge.Manufacturer" "Tron"
+"Cartridge.Name" "H.E.R.O. (Tron)"
 ""
 
 "Cartridge.MD5" "521f4dd1eb84a09b2b19959a41839aad"
@@ -899,7 +899,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AX-018, AX-018-04"
 "Cartridge.Name" "Pitfall! (1982) (Activision) (Prototype)"
-"Cartridge.Note" "Pitfall Harry's Jungle Adventure"
+"Cartridge.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -1728,6 +1728,7 @@
 "Cartridge.Manufacturer" "CommaVid, Irwin Gaines - Ariola"
 "Cartridge.ModelNo" "CM-005 - 712 005-720"
 "Cartridge.Name" "Mines of Minos (1982) (CommaVid) (PAL)"
+"Cartridge.Note" "AKA Im Labyrinth des Roboters"
 "Display.Phosphor" "YES"
 ""
 
@@ -1885,6 +1886,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane - Ariola"
 "Cartridge.ModelNo" "EAX-018, EAX-018-04B, EAX-018-04I - 711 018-725"
 "Cartridge.Name" "Pitfall! (1982) (Activision) (PAL)"
+"Cartridge.Note" "Abenteuer im Urwald (Jungle Runner)"
 ""
 
 "Cartridge.MD5" "80e5400470ac788143e6db9bc8dd88cf"
@@ -2008,7 +2010,7 @@
 "Cartridge.MD5" "ebf2dff78a08733251bf3838f02f7938"
 "Cartridge.Manufacturer" "Commavid, Ben Burch"
 "Cartridge.ModelNo" "CM-010"
-"Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype) [a1]"
+"Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype) [a2]"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "30"
 "Display.Height" "220"
@@ -2630,6 +2632,16 @@
 "Cartridge.Manufacturer" "Activision, Bob Whitehead"
 "Cartridge.ModelNo" "AG-019"
 "Cartridge.Name" "Sky Jinks (1982) (Activision) (4K)"
+""
+
+"Cartridge.MD5" "b98cc2c6f7a0f05176f74f0f62c45488"
+"Cartridge.Manufacturer" "Spectravideo"
+"Cartridge.ModelNo" "SV-010"
+"Cartridge.Name" "CompuMate (1983) (Spectravideo)"
+"Cartridge.Type" "CM"
+"Controller.Left" "COMPUMATE"
+"Controller.Right" "COMPUMATE"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "76f53abbbf39a0063f24036d6ee0968a"
@@ -3353,6 +3365,12 @@
 
 "Cartridge.MD5" "7511c34518a9a124ea773f5b0b5c9a48"
 "Cartridge.Name" "Donkey Kong (208 in 1) (Unknown) (PAL)"
+""
+
+"Cartridge.MD5" "cfb83a3b0513acaf8be4cae1512281dc"
+"Cartridge.Manufacturer" "Starpath Corporation"
+"Cartridge.Name" "Going-Up (1983) (Starpath) (Prototype)"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "9f59eddf9ba91a7d93bce7ee4b7693bc"
@@ -4530,7 +4548,7 @@
 ""
 
 "Cartridge.MD5" "a336beac1f0a835614200ecd9c41fd70"
-"Cartridge.Manufacturer" "Atari, Robert Vieira"
+"Cartridge.Manufacturer" "Atari, Christopher H. Omarzu, Robert Vieira"
 "Cartridge.ModelNo" "CX26121"
 "Cartridge.Name" "Zoo Keeper Sounds (1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
@@ -6258,16 +6276,16 @@
 "Cartridge.Rarity" "Hack"
 ""
 
-"Cartridge.MD5" "9afdfe1cff7f37f1c971fe3f0c900606"
-"Cartridge.Manufacturer" "Funvision - Fund. International Co."
-"Cartridge.Name" "Plug Attack (Funvision)"
-"Cartridge.Note" "AKA Plaque Attack"
-""
-
 "Cartridge.MD5" "be35d8b37bbc03848a5f020662a99909"
 "Cartridge.Manufacturer" "Atari, Joe Decuir, Steve Mayer, Larry Wagner - Sears"
 "Cartridge.ModelNo" "CX2601 - 99801, 6-99801, 49-75124"
 "Cartridge.Name" "Combat (1977) (Atari) (4K) [a]"
+""
+
+"Cartridge.MD5" "9afdfe1cff7f37f1c971fe3f0c900606"
+"Cartridge.Manufacturer" "Funvision - Fund. International Co."
+"Cartridge.Name" "Plug Attack (Funvision)"
+"Cartridge.Note" "AKA Plaque Attack"
 ""
 
 "Cartridge.MD5" "5b574faa56836da0866ba32ae32547f2"
@@ -6536,8 +6554,8 @@
 ""
 
 "Cartridge.MD5" "5f950a2d1eb331a1276819520705df94"
-"Cartridge.Manufacturer" "Universal"
-"Cartridge.Name" "Unknown Universal Game (1983) (Universal) (Prototype)"
+"Cartridge.Manufacturer" "20th Century Fox Video Games"
+"Cartridge.Name" "Unknown 20th Century Fox Game (1983) (20th Century Fox) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "28"
 "Display.Phosphor" "YES"
@@ -6854,6 +6872,13 @@
 "Controller.Left" "GENESIS"
 ""
 
+"Cartridge.MD5" "3b040ed7d1ef8acb4efdeebebdaa2052"
+"Cartridge.Manufacturer" "Tigervision"
+"Cartridge.ModelNo" "7-008"
+"Cartridge.Name" "Miner 2049er (1982) (Tigervision) [fixed]"
+"Display.YStart" "31"
+""
+
 "Cartridge.MD5" "dbb10b904242fcfb8428f372e00c01af"
 "Cartridge.Manufacturer" "Atari, John Dunn"
 "Cartridge.ModelNo" "CX2631, CX2631P"
@@ -6907,6 +6932,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AX-018, AX-018-04"
 "Cartridge.Name" "Pitfall! (1981) (Activision) (Prototype)"
+"Cartridge.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -8376,6 +8402,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane - Ariola"
 "Cartridge.ModelNo" "EAB-035-04 - 711 035-720"
 "Cartridge.Name" "Pitfall II (1983) (Activision) (PAL)"
+"Cartridge.Note" "Lost Caverns"
 ""
 
 "Cartridge.MD5" "9295570a141cdec18074c55dc7229d08"
@@ -8588,6 +8615,12 @@
 "Cartridge.ModelNo" "PB5540"
 "Cartridge.Name" "Star Wars - The Arcade Game (04-05-1984) (Parker Bros) (Prototype) (8K)"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "cade123747426df69570a2bc871d3baf"
+"Cartridge.Manufacturer" "Gakken"
+"Cartridge.ModelNo" "011"
+"Cartridge.Name" "Marine Wars (1983) (Gakken) (PAL)"
 ""
 
 "Cartridge.MD5" "2e663eaa0d6b723b645e643750b942fd"
@@ -9343,9 +9376,9 @@
 
 "Cartridge.MD5" "73aa02458b413091ac940c0489301710"
 "Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "463.574 4 - 781393"
-"Cartridge.Name" "Boom Bang (1983) (Quelle) (PAL)"
-"Cartridge.Note" "AKA Crackpots"
+"Cartridge.ModelNo" "463.574 4 - 781393, 986153"
+"Cartridge.Name" "Kampf dem Steinfresser (1983) (Quelle) (PAL)"
+"Cartridge.Note" "Boom Bang (AKA Crackpots)"
 ""
 
 "Cartridge.MD5" "2e7e9c6dcfcceaffc6fa73f0d08a402a"
@@ -9978,6 +10011,14 @@
 "Cartridge.Name" "Jungle Fever (1982) (PlayAround)"
 "Display.YStart" "24"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "4a5fddf89801336637ac8e57a7c9a881"
+"Cartridge.Manufacturer" "Amiga"
+"Cartridge.ModelNo" "1125"
+"Cartridge.Name" "Power Play Arcade Video Game Album IV (1984) (Amiga) (Prototype)"
+"Cartridge.Note" "Atlantis, Cosmic Ark, Dragonfire"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "299eb1ad959176b2c89f36082ee5e861"
@@ -12456,18 +12497,18 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "5069fecbe4706371f17737b0357cfa68"
-"Cartridge.Manufacturer" "Apollo - Games by Apollo, Steve Stringfellow"
-"Cartridge.ModelNo" "AP-2005"
-"Cartridge.Name" "Shark Attack (1982) (Apollo) (PAL)"
-"Cartridge.Note" "AKA Lochjaw"
-""
-
 "Cartridge.MD5" "dd7598b8bcb81590428900f71b720efb"
 "Cartridge.Manufacturer" "Xonox - K-Tel Software"
 "Cartridge.ModelNo" "99005, 6220, 6250"
 "Cartridge.Name" "Robin Hood (1983) (Xonox) (PAL)"
 "Display.YStart" "30"
+""
+
+"Cartridge.MD5" "5069fecbe4706371f17737b0357cfa68"
+"Cartridge.Manufacturer" "Apollo - Games by Apollo, Steve Stringfellow"
+"Cartridge.ModelNo" "AP-2005"
+"Cartridge.Name" "Shark Attack (1982) (Apollo) (PAL)"
+"Cartridge.Note" "AKA Lochjaw"
 ""
 
 "Cartridge.MD5" "abc64037ca5d5b04ae8a7eedbca3ed74"
@@ -13634,7 +13675,7 @@
 ""
 
 "Cartridge.MD5" "038e1e79c3d4410defde4bfe0b99cc32"
-"Cartridge.Manufacturer" "Atari, Gary Shannon"
+"Cartridge.Manufacturer" "Atari, Tod Frye, Gary Shannon"
 "Cartridge.Name" "Aquaventure (08-12-1983) (Atari) (Prototype)"
 "Cartridge.Note" "AKA Sea Sentinel"
 "Cartridge.Rarity" "Unbelievably Rare"
@@ -13719,6 +13760,14 @@
 "Cartridge.Manufacturer" "20th Century Fox Video Games - Sirius, Mark Turmell"
 "Cartridge.ModelNo" "11003"
 "Cartridge.Name" "Fast Eddie (1982) (20th Century Fox)"
+""
+
+"Cartridge.MD5" "bbf8c7c9ed280151934aabe138e41ba7"
+"Cartridge.Manufacturer" "Amiga"
+"Cartridge.ModelNo" "1130"
+"Cartridge.Name" "Power Play Arcade Video Game Album V (1984) (Amiga) (Prototype)"
+"Cartridge.Note" "Mogul Maniac, Surf's Up, Off Your Rocker, S.A.C. Alert"
+"Cartridge.Rarity" "Prototype"
 ""
 
 "Cartridge.MD5" "493daaf9fb1ba450eba6b8ed53ffb37d"
@@ -15147,7 +15196,7 @@
 
 "Cartridge.MD5" "a20b7abbcdf90fbc29ac0fafa195bd12"
 "Cartridge.Manufacturer" "Quelle"
-"Cartridge.ModelNo" "719.383 2 - 649635 - 781393"
+"Cartridge.ModelNo" "719.383 2 - 649635, 781393, 781784"
 "Cartridge.Name" "Motocross (1983) (Quelle) (PAL)"
 ""
 
@@ -15369,6 +15418,15 @@
 "Cartridge.Name" "UFO Patrol (Suntek) (PAL)"
 "Cartridge.Note" "AKA X'Mission"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "025668e36a788e8af8ac4f1be7e72043"
+"Cartridge.Manufacturer" "Atari, Jerome Domurat, Howard Scott Warshaw"
+"Cartridge.ModelNo" "CX2659"
+"Cartridge.Name" "Raiders of the Lost Ark (06-14-82) (Atari) (Prototype)"
+"Cartridge.Note" "Console ports are swapped"
+"Cartridge.Rarity" "Prototype"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "37fd7fa52d358f66984948999f1213c5"
@@ -15715,7 +15773,7 @@
 
 "Cartridge.MD5" "3ef9573536730dcd6d9c20b6822dbdc4"
 "Cartridge.Manufacturer" "Atari, Larry Wagner, Bob Whitehead"
-"Cartridge.ModelNo" "CX2645"
+"Cartridge.ModelNo" "CX2645, CX2645P"
 "Cartridge.Name" "Video Chess (1979) (Atari) (PAL)"
 ""
 
@@ -16473,7 +16531,7 @@
 "Cartridge.MD5" "b9b4612358a0b2c1b4d66bb146767306"
 "Cartridge.Manufacturer" "Commavid, Ben Burch"
 "Cartridge.ModelNo" "CM-010"
-"Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype) [a3]"
+"Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype)"
 "Cartridge.Rarity" "Prototype"
 "Display.YStart" "20"
 "Display.Height" "230"
@@ -16887,7 +16945,7 @@
 ""
 
 "Cartridge.MD5" "f93d7fee92717e161e6763a88a293ffa"
-"Cartridge.Manufacturer" "20th Century Fox Video Games - Lazer Micro Systems - Dunhill Electronic Media Corp., B. Winston Hendrickson, Randy Hyde, Mark V. Rhoads, John Simonds"
+"Cartridge.Manufacturer" "20th Century Fox Video Games - Lazer Micro Systems - Dunhill Electronic Media Corp., B. Winston Hendrickson, Randall Hyde, Mark V. Rhoads, John Simonds"
 "Cartridge.ModelNo" "11013"
 "Cartridge.Name" "Porky's (1983) (20th Century Fox)"
 "Cartridge.Rarity" "Rare"
@@ -17701,6 +17759,14 @@
 "Cartridge.Rarity" "Homebrew"
 ""
 
+"Cartridge.MD5" "82de957d155fc041fc6afb8315a28550"
+"Cartridge.Manufacturer" "Coleco, Joseph Biel"
+"Cartridge.ModelNo" "2457"
+"Cartridge.Name" "Venture (1982) (Coleco) (Prototype)"
+"Cartridge.Note" "2K"
+"Cartridge.Rarity" "Prototype"
+""
+
 "Cartridge.MD5" "5db9e5bf663cad6bf159bc395f6ead53"
 "Cartridge.Manufacturer" "Goliath - Hot Shot"
 "Cartridge.ModelNo" "83-212"
@@ -17879,7 +17945,7 @@
 "Cartridge.MD5" "aad61898633f470ce528e3d7ef3d0adb"
 "Cartridge.Manufacturer" "Commavid, Ben Burch"
 "Cartridge.ModelNo" "CM-010"
-"Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype) [a2]"
+"Cartridge.Name" "Rush Hour (1983) (Commavid) (Prototype) [a1]"
 "Cartridge.Rarity" "Prototype"
 ""
 
@@ -19191,6 +19257,7 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AX-018, AX-018-04"
 "Cartridge.Name" "Pitfall! (1982) (Activision)"
+"Cartridge.Note" "Pitfall Harry's Jungle Adventure (Jungle Runner)"
 ""
 
 "Cartridge.MD5" "468f2dec984f3d4114ea84f05edf82b6"
