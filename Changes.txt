@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.5 to 3.5.5: (February xx, 2012)
+3.5 to 3.5.5: (February 4, 2012)
 
   * Due to changes in the debugger, old state files will not work with
     this release.
