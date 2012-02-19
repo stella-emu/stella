@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+3.5.5 to 3.6: (March xx, 2012)
+
+
+
+  * Updated included PNG library to latest stable version.
+
+-Have fun!
+
+
 3.5 to 3.5.5: (February 4, 2012)
 
   * Due to changes in the debugger, old state files will not work with
@@ -70,8 +79,6 @@
     instead of gcc.  Thanks go to Rainer M. Canavan for this code.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 3.4.1 to 3.5: (December 29, 2011)
