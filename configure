@@ -20,6 +20,7 @@ _zlib=auto
 
 # default option behaviour yes/no
 _build_gl=yes
+_build_tv=yes
 _build_windowed=yes
 _build_sound=yes
 _build_debugger=yes
@@ -244,6 +245,8 @@ for ac_option in $@; do
     case "$ac_option" in
       --enable-gl)              _build_gl=yes        ;;
       --disable-gl)             _build_gl=no         ;;
+      --enable-tv)              _build_tv=yes        ;;
+      --disable-tv)             _build_tv=no         ;;
       --enable-windowed)        _build_windowed=yes  ;;
       --disable-windowed)       _build_windowed=no   ;;
       --enable-sound)           _build_sound=yes     ;;
@@ -655,6 +658,14 @@ else
 	echo
 fi
 
+if test "$_build_tv" = "yes" ; then
+	echo_n "   TV filtering enabled"
+	echo
+else
+	echo_n "   TV filtering disabled"
+	echo
+fi
+
 if test "$_build_windowed" = "yes" ; then
 	echo_n "   Windowed rendering modes enabled"
 	echo
@@ -737,6 +748,7 @@ find_sdlconfig
 SRC="src"
 CORE="$SRC/emucore"
 COMMON="$SRC/common"
+TV="$SRC/common/tv_filters"
 GUI="$SRC/gui"
 DBG="$SRC/debugger"
 DBGGUI="$SRC/debugger/gui"
@@ -815,6 +827,12 @@ fi
 
 if test "$_build_gl" = yes ; then
 	DEFINES="$DEFINES -DDISPLAY_OPENGL"
+fi
+
+if test "$_build_tv" = yes ; then
+	DEFINES="$DEFINES -DDISPLAY_TV"
+	MODULES="$MODULES $TV"
+	INCLUDES="$INCLUDES -I$TV"
 fi
 
 if test "$_build_windowed" = yes ; then
