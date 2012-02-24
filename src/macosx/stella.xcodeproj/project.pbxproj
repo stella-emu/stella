@@ -307,6 +307,8 @@
 		DC47455F09C34BFA00EDDA3A /* RamCheat.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC47455409C34BFA00EDDA3A /* RamCheat.hxx */; };
 		DC487FB60DA5350900E12499 /* AtariVox.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC487FB40DA5350900E12499 /* AtariVox.cxx */; };
 		DC487FB70DA5350900E12499 /* AtariVox.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC487FB50DA5350900E12499 /* AtariVox.hxx */; };
+		DC49F90514F7D0DB000704B0 /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC49F90314F7D0DB000704B0 /* NTSCFilter.cxx */; };
+		DC49F90614F7D0DB000704B0 /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC49F90414F7D0DB000704B0 /* NTSCFilter.hxx */; };
 		DC4AC6EF0DC8DACB00CD3AD2 /* RiotWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */; };
 		DC4AC6F00DC8DACB00CD3AD2 /* RiotWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */; };
 		DC4AC6F30DC8DAEF00CD3AD2 /* SaveKey.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */; };
@@ -397,7 +399,7 @@
 /* Begin PBXBuildRule section */
 		2D91751B09BA90380026E9FF /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.gcc.4_0;
 			fileType = sourcecode.c;
 			isEditable = 1;
 			outputFiles = (
@@ -405,16 +407,16 @@
 		};
 		2D91751C09BA90380026E9FF /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
+			compilerSpec = com.apple.compilers.gcc.4_0;
+			fileType = sourcecode.cpp;
 			isEditable = 1;
 			outputFiles = (
 			);
 		};
 		2D91751D09BA90390026E9FF /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
+			compilerSpec = com.apple.compilers.gcc.4_0;
+			fileType = sourcecode.asm;
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -745,6 +747,8 @@
 		DC47455409C34BFA00EDDA3A /* RamCheat.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RamCheat.hxx; path = ../cheat/RamCheat.hxx; sourceTree = SOURCE_ROOT; };
 		DC487FB40DA5350900E12499 /* AtariVox.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = AtariVox.cxx; path = ../emucore/AtariVox.cxx; sourceTree = SOURCE_ROOT; };
 		DC487FB50DA5350900E12499 /* AtariVox.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = AtariVox.hxx; path = ../emucore/AtariVox.hxx; sourceTree = SOURCE_ROOT; };
+		DC49F90314F7D0DB000704B0 /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NTSCFilter.cxx; path = ../common/tv_filters/NTSCFilter.cxx; sourceTree = SOURCE_ROOT; };
+		DC49F90414F7D0DB000704B0 /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NTSCFilter.hxx; path = ../common/tv_filters/NTSCFilter.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6ED0DC8DACB00CD3AD2 /* RiotWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RiotWidget.cxx; path = ../debugger/gui/RiotWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6EE0DC8DACB00CD3AD2 /* RiotWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RiotWidget.hxx; path = ../debugger/gui/RiotWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DC4AC6F10DC8DAEF00CD3AD2 /* SaveKey.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = SaveKey.cxx; path = ../emucore/SaveKey.cxx; sourceTree = SOURCE_ROOT; };
@@ -1013,6 +1017,8 @@
 				2DDBEA0A0845700300812C11 /* mainSDL.cxx */,
 				DCAE2A9114CCCCBD004327BB /* MouseControl.cxx */,
 				DCAE2A9214CCCCBD004327BB /* MouseControl.hxx */,
+				DC49F90314F7D0DB000704B0 /* NTSCFilter.cxx */,
+				DC49F90414F7D0DB000704B0 /* NTSCFilter.hxx */,
 				DC3FE49D11C7D3FE00C91C72 /* PNGLibrary.cxx */,
 				DC3FE49E11C7D3FE00C91C72 /* PNGLibrary.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
@@ -1582,6 +1588,7 @@
 				DC5C76B014C2709E0031EBC7 /* StellaKeys.hxx in Headers */,
 				DC922D0714CAFB1E006EB471 /* CartFA2.hxx in Headers */,
 				DCAE2A9414CCCCBD004327BB /* MouseControl.hxx in Headers */,
+				DC49F90614F7D0DB000704B0 /* NTSCFilter.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1853,6 +1860,7 @@
 				DC0B000514BA2BEB00CF5E7E /* PaddleWidget.cxx in Sources */,
 				DC922D0614CAFB1E006EB471 /* CartFA2.cxx in Sources */,
 				DCAE2A9314CCCCBD004327BB /* MouseControl.cxx in Sources */,
+				DC49F90514F7D0DB000704B0 /* NTSCFilter.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1873,6 +1881,10 @@
 		2D91751709BA90380026E9FF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
@@ -1882,22 +1894,25 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MAC_OSX,
-					JOYSTICK_SUPPORT,
-					SOUND_SUPPORT,
-					WINDOWED_SUPPORT,
+					HAVE_INTTYPES,
+					HAVE_GETTIMEOFDAY,
 					DISPLAY_OPENGL,
+					DISPLAY_TV,
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
+					JOYSTICK_SUPPORT,
+					SOUND_SUPPORT,
 					THUMB_SUPPORT,
-					HAVE_GETTIMEOFDAY,
+					WINDOWED_SUPPORT,
 					BSPF_MAC_OSX,
-					HAVE_INTTYPES,
+					MAC_OSX,
 				);
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					./SDL.framework/Headers,
 					../cheat,
 					../common,
+					../common/tv_filters,
 					../debugger,
 					../debugger/gui,
 					../emucore,
@@ -1906,7 +1921,8 @@
 					.,
 				);
 				INFOPLIST_FILE = "Info-Stella.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -1916,6 +1932,7 @@
 				);
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "i386 ppc";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1940,22 +1957,25 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MAC_OSX,
-					JOYSTICK_SUPPORT,
-					SOUND_SUPPORT,
-					WINDOWED_SUPPORT,
+					HAVE_INTTYPES,
+					HAVE_GETTIMEOFDAY,
 					DISPLAY_OPENGL,
+					DISPLAY_TV,
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
+					JOYSTICK_SUPPORT,
+					SOUND_SUPPORT,
 					THUMB_SUPPORT,
-					HAVE_GETTIMEOFDAY,
+					WINDOWED_SUPPORT,
 					BSPF_MAC_OSX,
-					HAVE_INTTYPES,
+					MAC_OSX,
 				);
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					./SDL.framework/Headers,
 					../cheat,
 					../common,
+					../common/tv_filters,
 					../debugger,
 					../debugger/gui,
 					../emucore,
@@ -1964,7 +1984,8 @@
 					.,
 				);
 				INFOPLIST_FILE = "Info-Stella.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = "$(LIBRARY_SEARCH_PATHS)";
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -1974,6 +1995,7 @@
 				);
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "i386 ppc";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -1986,6 +2008,10 @@
 		2D91751909BA90380026E9FF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ARCHS = (
+					i386,
+					ppc,
+				);
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(HOME)/Library/Frameworks",
 					.,
@@ -1993,22 +2019,25 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MAC_OSX,
-					JOYSTICK_SUPPORT,
-					SOUND_SUPPORT,
-					WINDOWED_SUPPORT,
+					HAVE_INTTYPES,
+					HAVE_GETTIMEOFDAY,
 					DISPLAY_OPENGL,
+					DISPLAY_TV,
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
+					JOYSTICK_SUPPORT,
+					SOUND_SUPPORT,
 					THUMB_SUPPORT,
-					HAVE_GETTIMEOFDAY,
+					WINDOWED_SUPPORT,
 					BSPF_MAC_OSX,
-					HAVE_INTTYPES,
+					MAC_OSX,
 				);
+				GCC_VERSION = 4.0;
 				HEADER_SEARCH_PATHS = (
 					./SDL.framework/Headers,
 					../cheat,
 					../common,
+					../common/tv_filters,
 					../debugger,
 					../debugger/gui,
 					../emucore,
@@ -2017,7 +2046,8 @@
 					.,
 				);
 				INFOPLIST_FILE = "Info-Stella.plist";
-				INSTALL_PATH = "$(HOME)/Applications";
+				INSTALL_PATH = "";
+				LD_RUNPATH_SEARCH_PATHS = "";
 				LIBRARY_SEARCH_PATHS = .;
 				OTHER_CFLAGS = "";
 				OTHER_LDFLAGS = (
@@ -2027,6 +2057,7 @@
 				);
 				PRODUCT_NAME = Stella;
 				SECTORDER_FLAGS = "";
+				VALID_ARCHS = "i386 ppc";
 				WARNING_CFLAGS = (
 					"-Wmost",
 					"-Wno-four-char-constants",
@@ -2039,7 +2070,10 @@
 		2D91752209BA903B0026E9FF /* Development */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					i386,
+					ppc,
+				);
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
@@ -2049,13 +2083,17 @@
 				GCC_VERSION = 4.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = Development;
 		};
 		2D91752309BA903B0026E9FF /* Deployment */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					i386,
+					ppc,
+				);
 				FRAMEWORK_SEARCH_PATHS = (
 					.,
 					"$(HOME)/Library/Frameworks",
@@ -2065,17 +2103,26 @@
 				GCC_VERSION = 4.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = Deployment;
 		};
 		2D91752409BA903B0026E9FF /* Default */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					i386,
+					ppc,
+				);
+				FRAMEWORK_SEARCH_PATHS = (
+					.,
+					"$(HOME)/Library/Frameworks",
+				);
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = 4.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.4;
 				SDKROOT = macosx10.4;
+				VALID_ARCHS = "i386 ppc";
 			};
 			name = Default;
 		};
