@@ -280,6 +280,8 @@
 		DC5D2C550F117CFD004D1660 /* StellaMediumFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */; };
 		DC5D2C600F129B1E004D1660 /* LauncherFilterDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */; };
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
+		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
+		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
 		DC69670B1361FD0A0036499D /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967071361FD0A0036499D /* pngdebug.h */; };
 		DC69670C1361FD0A0036499D /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967081361FD0A0036499D /* pnginfo.h */; };
 		DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967091361FD0A0036499D /* pnglibconf.h */; };
@@ -396,24 +398,24 @@
 /* Begin PBXBuildRule section */
 		2D91751B09BA90380026E9FF /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
+			compilerSpec = com.apple.compilers.llvm.clang.1_0;
 			fileType = sourcecode.c;
 			isEditable = 1;
 			outputFiles = (
 			);
 		};
-		2D91751C09BA90380026E9FF /* PBXBuildRule */ = {
+		DC5EE7DF14F7C32D001C628C /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
+			compilerSpec = com.apple.compilers.llvm.clang.1_0;
+			fileType = sourcecode.asm;
 			isEditable = 1;
 			outputFiles = (
 			);
 		};
-		2D91751D09BA90390026E9FF /* PBXBuildRule */ = {
+		DC5EE7E014F7C32D001C628C /* PBXBuildRule */ = {
 			isa = PBXBuildRule;
-			compilerSpec = com.apple.compilers.gcc.3_3;
-			fileType = sourcecode.c;
+			compilerSpec = com.apple.compilers.llvm.clang.1_0;
+			fileType = sourcecode.cpp;
 			isEditable = 1;
 			outputFiles = (
 			);
@@ -715,6 +717,8 @@
 		DC5D2C510F117CFD004D1660 /* StellaMediumFont.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = StellaMediumFont.hxx; path = ../gui/StellaMediumFont.hxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5E0F129B1E004D1660 /* LauncherFilterDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LauncherFilterDialog.cxx; path = ../gui/LauncherFilterDialog.cxx; sourceTree = SOURCE_ROOT; };
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
+		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NTSCFilter.cxx; path = ../common/tv_filters/NTSCFilter.cxx; sourceTree = SOURCE_ROOT; };
+		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NTSCFilter.hxx; path = ../common/tv_filters/NTSCFilter.hxx; sourceTree = SOURCE_ROOT; };
 		DC6967071361FD0A0036499D /* pngdebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngdebug.h; path = ../libpng/pngdebug.h; sourceTree = SOURCE_ROOT; };
 		DC6967081361FD0A0036499D /* pnginfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnginfo.h; path = ../libpng/pnginfo.h; sourceTree = SOURCE_ROOT; };
 		DC6967091361FD0A0036499D /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnglibconf.h; path = ../libpng/pnglibconf.h; sourceTree = SOURCE_ROOT; };
@@ -1010,6 +1014,8 @@
 				2DDBEA0A0845700300812C11 /* mainSDL.cxx */,
 				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
+				DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */,
+				DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
@@ -1579,6 +1585,7 @@
 				DC5C768F14C26F7C0031EBC7 /* StellaKeys.hxx in Headers */,
 				DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */,
 				DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */,
+				DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1598,9 +1605,9 @@
 				DCCC0C9609C354660088BFF1 /* CopyFiles */,
 			);
 			buildRules = (
+				DC5EE7DF14F7C32D001C628C /* PBXBuildRule */,
+				DC5EE7E014F7C32D001C628C /* PBXBuildRule */,
 				2D91751B09BA90380026E9FF /* PBXBuildRule */,
-				2D91751C09BA90380026E9FF /* PBXBuildRule */,
-				2D91751D09BA90390026E9FF /* PBXBuildRule */,
 			);
 			dependencies = (
 			);
@@ -1852,6 +1859,7 @@
 				DCCF4B0414BA27EB00814FAB /* KeyboardWidget.cxx in Sources */,
 				DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */,
 				DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */,
+				DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1870,22 +1878,24 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MAC_OSX,
-					JOYSTICK_SUPPORT,
-					SOUND_SUPPORT,
-					WINDOWED_SUPPORT,
+					HAVE_INTTYPES,
+					HAVE_GETTIMEOFDAY,
 					DISPLAY_OPENGL,
+					DISPLAY_TV,
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
+					JOYSTICK_SUPPORT,
+					SOUND_SUPPORT,
 					THUMB_SUPPORT,
-					HAVE_GETTIMEOFDAY,
+					WINDOWED_SUPPORT,
 					BSPF_MAC_OSX,
-					HAVE_INTTYPES,
+					MAC_OSX,
 				);
 				HEADER_SEARCH_PATHS = (
 					./SDL.framework/Headers,
 					../cheat,
 					../common,
+					../common/tv_filters,
 					../debugger,
 					../debugger/gui,
 					../emucore,
@@ -1924,22 +1934,24 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MAC_OSX,
-					JOYSTICK_SUPPORT,
-					SOUND_SUPPORT,
-					WINDOWED_SUPPORT,
+					HAVE_INTTYPES,
+					HAVE_GETTIMEOFDAY,
 					DISPLAY_OPENGL,
+					DISPLAY_TV,
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
+					JOYSTICK_SUPPORT,
+					SOUND_SUPPORT,
 					THUMB_SUPPORT,
-					HAVE_GETTIMEOFDAY,
+					WINDOWED_SUPPORT,
 					BSPF_MAC_OSX,
-					HAVE_INTTYPES,
+					MAC_OSX,
 				);
 				HEADER_SEARCH_PATHS = (
 					./SDL.framework/Headers,
 					../cheat,
 					../common,
+					../common/tv_filters,
 					../debugger,
 					../debugger/gui,
 					../emucore,
@@ -1977,22 +1989,24 @@
 				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_PREPROCESSOR_DEFINITIONS = (
-					MAC_OSX,
-					JOYSTICK_SUPPORT,
-					SOUND_SUPPORT,
-					WINDOWED_SUPPORT,
+					HAVE_INTTYPES,
+					HAVE_GETTIMEOFDAY,
 					DISPLAY_OPENGL,
+					DISPLAY_TV,
 					CHEATCODE_SUPPORT,
 					DEBUGGER_SUPPORT,
+					JOYSTICK_SUPPORT,
+					SOUND_SUPPORT,
 					THUMB_SUPPORT,
-					HAVE_GETTIMEOFDAY,
+					WINDOWED_SUPPORT,
 					BSPF_MAC_OSX,
-					HAVE_INTTYPES,
+					MAC_OSX,
 				);
 				HEADER_SEARCH_PATHS = (
 					./SDL.framework/Headers,
 					../cheat,
 					../common,
+					../common/tv_filters,
 					../debugger,
 					../debugger/gui,
 					../emucore,
@@ -2032,9 +2046,10 @@
 				);
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INSTALL_PATH = "@loader_path";
+				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				SDKROOT = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx10.6;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Development;
@@ -2050,10 +2065,10 @@
 				GCC_ENABLE_CPP_RTTI = NO;
 				GCC_OPTIMIZATION_LEVEL = 3;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INSTALL_PATH = "@loader_path";
+				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = "";
-				SDKROOT = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx10.6;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Deployment;
@@ -2063,10 +2078,10 @@
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				INSTALL_PATH = "@loader_path";
+				INSTALL_PATH = "@rpath";
 				LD_RUNPATH_SEARCH_PATHS = "@loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.4;
-				SDKROOT = "";
+				MACOSX_DEPLOYMENT_TARGET = 10.6;
+				SDKROOT = macosx10.6;
 				VALID_ARCHS = "i386 x86_64";
 			};
 			name = Default;
