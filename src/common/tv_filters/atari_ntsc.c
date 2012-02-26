@@ -19,8 +19,6 @@
 
 /* Based on nes_ntsc 0.2.2. http://www.slack.net/~ant/ */
 
-#ifdef DISPLAY_TV
-
 #include "atari_ntsc.h"
 
 /* Copyright (C) 2006-2007 Shay Green. This module is free software; you
@@ -393,5 +391,3 @@ void atari_ntsc_blit_bgra32( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* in
 }
 
 #endif
-
-#endif // DISPLAY_TV

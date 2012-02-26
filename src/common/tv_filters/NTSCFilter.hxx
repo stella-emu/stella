@@ -20,8 +20,6 @@
 #ifndef NTSC_FILTER_HXX
 #define NTSC_FILTER_HXX
 
-#ifdef DISPLAY_TV
-
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "atari_ntsc.h"
@@ -67,6 +65,11 @@ class NTSCFilter
     };
 
   public:
+    /* Informs the NTSC filter about the current TIA palette.  The filter
+       uses this as a baseline for calculating its own internal palette
+       in YIQ format.
+    */
+    void setTIAPalette(const uInt32* palette);
 
     /* Restores default values for NTSC-filter-specific colour controls.
        updateFilter should be called afterwards to apply changes. */
@@ -95,7 +98,7 @@ class NTSCFilter
        are provided as parameters, because NTSC_FILTER needs to set these values
        according to its internal setup (burst_phase etc).
     */
-    static void updateYIQTable(double yiq_table[768], double start_angle);
+    void updateYIQTable(double yiq_table[768], double start_angle);
 
   private:
     // Pointer to the NTSC filter structure
@@ -104,13 +107,13 @@ class NTSCFilter
     // Contains controls used to adjust the palette in the NTSC filter
     atari_ntsc_setup_t mySetup;
 
+    uInt8 myTIAPalette[384];  // 128 colours by 3 components per colour
+
     int myCurrentModeNum;
     Common::Array<atari_ntsc_setup_t> myModeList;
 
     static atari_ntsc_setup_t const * const presets[PRESET_SIZE];
     static char const * const preset_cfg_strings[PRESET_SIZE];
 };
-
-#endif // DISPLAY_TV
 
 #endif

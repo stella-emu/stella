@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#ifdef DISPLAY_TV
-
 #include "NTSCFilter.hxx"
 
 #include <cstring>
@@ -38,9 +36,24 @@ NTSCFilter::~NTSCFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NTSCFilter::setTIAPalette(const uInt32* palette)
+{
+  // The TIA palette consists of 128 colours, but the palette array actually
+  // contains 256 entries, where only every second value is a valid colour
+  uInt8* ptr = myTIAPalette;
+  for(int i = 0; i < 256; i+=2)
+  {
+    *ptr++ = (palette[i] >> 16) & 0xff;
+    *ptr++ = (palette[i] >> 8) & 0xff;
+    *ptr++ = palette[i] & 0xff;
+  }
+  updateFilter();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::updateFilter()
 {
-  double yiq_table[768];
+  double yiq_table[384];
 
   updateYIQTable(yiq_table, mySetup.burst_phase * M_PI);
 
@@ -231,16 +244,16 @@ int NTSCFilter::FILTER_NTSC_Initialise(int *argc, char *argv[])
 #endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::updateYIQTable(double yiq_table[768], double start_angle)
+void NTSCFilter::updateYIQTable(double yiq_table[384], double start_angle)
 {
   const double start_saturation = 0.0; // calculated internally
 	const double gamma = 1; // 1 - COLOURS_NTSC_setup.gamma / 2.0;
-  unsigned char *ext_ptr = NULL; //FIXME COLOURS_NTSC_external.palette;
+  uInt8* ext_ptr = myTIAPalette;
 	int n;
 
 	start_angle = - ((213.0f) * M_PI / 180.0f) - start_angle;
 
-	for (n = 0; n < 256; n ++) {
+	for (n = 0; n < 128; n ++) {
 		/* Convert RGB values from external palette to YIQ. */
 		double r = (double)*ext_ptr++ / 255.0;
 		double g = (double)*ext_ptr++ / 255.0;
@@ -288,5 +301,3 @@ static char const * const preset_cfg_strings[NTSCFilter::PRESET_SIZE] = {
   "RGB",
   "MONOCHROME"
 };
-
-#endif // DISPLAY_TV

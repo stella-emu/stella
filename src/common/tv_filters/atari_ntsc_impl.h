@@ -17,8 +17,6 @@
 // $Id$
 //============================================================================
 
-#ifdef DISPLAY_TV
-
 /* Based on nes_ntsc 0.2.2. http://www.slack.net/~ant/ */
 
 /* Common implementation of NTSC filters */
@@ -474,5 +472,3 @@ static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out );
   #endif
 
 #endif
-
-#endif // DISPLAY_TV

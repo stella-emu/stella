@@ -95,7 +95,8 @@ MODULES := $(MODULES)
 MODULES += \
 	src/emucore \
 	src/gui \
-	src/common
+	src/common \
+	src/common/tv_filters
 
 ######################################################################
 # The build rules follow - normally you should have no need to
