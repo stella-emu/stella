@@ -41,7 +41,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng"
+				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				MinimalRebuild="false"
 				BasicRuntimeChecks="3"
@@ -122,7 +122,7 @@
 				Name="VCCLCompilerTool"
 				OmitFramePointers="true"
 				WholeProgramOptimization="false"
-				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng"
+				AdditionalIncludeDirectories="..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng"
 				PreprocessorDefinitions="BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT"
 				RuntimeLibrary="0"
 				RuntimeTypeInfo="false"
@@ -186,6 +186,10 @@
 			UniqueIdentifier="{4FC737F1-C7A5-4376-A066-2A32D752A2FF}"
 			>
 			<File
+				RelativePath="..\common\tv_filters\atari_ntsc.c"
+				>
+			</File>
+			<File
 				RelativePath="..\common\FBSurfaceGL.cxx"
 				>
 			</File>
@@ -211,6 +215,10 @@
 			</File>
 			<File
 				RelativePath="..\common\MouseControl.cxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\tv_filters\NTSCFilter.cxx"
 				>
 			</File>
 			<File
@@ -984,6 +992,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\common\tv_filters\atari_ntsc.h"
+				>
+			</File>
+			<File
+				RelativePath="..\common\tv_filters\atari_ntsc_impl.h"
+				>
+			</File>
+			<File
 				RelativePath="..\common\bspf.hxx"
 				>
 			</File>
@@ -1013,6 +1029,10 @@
 			</File>
 			<File
 				RelativePath="..\common\MouseControl.hxx"
+				>
+			</File>
+			<File
+				RelativePath="..\common\tv_filters\NTSCFilter.hxx"
 				>
 			</File>
 			<File

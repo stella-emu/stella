@@ -17,11 +17,15 @@
 // $Id$
 //============================================================================
 
-#include "NTSCFilter.hxx"
-
 #include <cstring>
 #include <cmath>
 #include <cstdlib>
+
+#include "NTSCFilter.hxx"
+
+#ifndef M_PI
+  #define M_PI 3.141592653589793
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
