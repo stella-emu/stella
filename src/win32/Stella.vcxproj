@@ -97,7 +97,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -129,7 +129,7 @@ SDLmain.lib
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MinimalRebuild>false</MinimalRebuild>
       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
@@ -159,7 +159,7 @@ SDLmain.lib
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <OmitFramePointers>true</OmitFramePointers>
       <WholeProgramOptimization>false</WholeProgramOptimization>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -193,7 +193,7 @@ SDLmain.lib
       <Optimization>Full</Optimization>
       <InlineFunctionExpansion>Default</InlineFunctionExpansion>
       <OmitFramePointers>true</OmitFramePointers>
-      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\yacc;..\emucore;..\common;..\common\tv_filters;..\gui;..\debugger\gui;..\debugger;..\win32;..\cheat;..\zlib;..\libpng;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>BSPF_WIN32;WIN32;NDEBUG;JOYSTICK_SUPPORT;DEBUGGER_SUPPORT;THUMB_SUPPORT;DISPLAY_OPENGL;WINDOWED_SUPPORT;SOUND_SUPPORT;CHEATCODE_SUPPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <RuntimeTypeInfo>false</RuntimeTypeInfo>
@@ -224,6 +224,8 @@ SDLmain.lib
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
+    <ClCompile Include="..\common\tv_filters\atari_ntsc.c" />
+    <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
@@ -426,6 +428,9 @@ SDLmain.lib
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
     <ClInclude Include="..\common\StringParser.hxx" />
+    <ClInclude Include="..\common\tv_filters\atari_ntsc.h" />
+    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.h" />
+    <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />

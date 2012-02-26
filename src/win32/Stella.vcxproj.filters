@@ -624,6 +624,12 @@
     <ClCompile Include="..\common\MouseControl.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\tv_filters\atari_ntsc.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -1233,6 +1239,15 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\common\MouseControl.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tv_filters\atari_ntsc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
