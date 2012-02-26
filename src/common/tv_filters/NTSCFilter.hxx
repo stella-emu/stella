@@ -24,21 +24,27 @@
 
 #include "bspf.hxx"
 #include "Array.hxx"
+#include "atari_ntsc.h"
 
-// Although the blitter supports 15 and 16 bit, we always use 16-bit
-#ifndef ATARI_NTSC_RGB_BITS
-  #define ATARI_NTSC_RGB_BITS 16
-#endif
-
+// Limits for the adjustable values.
+#define FILTER_NTSC_SHARPNESS_MIN -1.0
+#define FILTER_NTSC_SHARPNESS_MAX 1.0
+#define FILTER_NTSC_RESOLUTION_MIN -1.0
+#define FILTER_NTSC_RESOLUTION_MAX 1.0
+#define FILTER_NTSC_ARTIFACTS_MIN -1.0
+#define FILTER_NTSC_ARTIFACTS_MAX 1.0
+#define FILTER_NTSC_FRINGING_MIN -1.0
+#define FILTER_NTSC_FRINGING_MAX 1.0
+#define FILTER_NTSC_BLEED_MIN -1.0
+#define FILTER_NTSC_BLEED_MAX 1.0
+#define FILTER_NTSC_BURST_PHASE_MIN -1.0
+#define FILTER_NTSC_BURST_PHASE_MAX 1.0
 
 /**
-  This class is based on the Blargg NTSC filter code from Atari800MacX.
+  This class is based on the Blargg NTSC filter code from Atari800,
+  and is derived from 'filter_ntsc.(h|c)'.
 
-  Original code based on implementation from http://www.slack.net/~ant
-  Based on algorithm by NewRisingSun
-  License note by Perry: Expat License. 
-    http://www.gnu.org/licenses/license-list.html#GPLCompatibleLicenses
-  "This is a simple, permissive non-copyleft free software license, compatible with the GNU GPL."
+  Original code based on implementation from http://www.slack.net/~ant.
 
   Atari TIA NTSC composite video to RGB emulator/blitter.
 */
@@ -48,112 +54,61 @@ class NTSCFilter
     NTSCFilter();
     virtual ~NTSCFilter();
 
+    /* Set/get one of the available preset adjustments: Composite, S-Video, RGB,
+       Monochrome. */
+    enum {
+      PRESET_COMPOSITE,
+      PRESET_SVIDEO,
+      PRESET_RGB,
+      PRESET_MONOCHROME,
+      PRESET_CUSTOM,
+      /* Number of "normal" (not including CUSTOM) values in enumerator */
+      PRESET_SIZE = PRESET_CUSTOM
+    };
+
   public:
-    /**
-      Cycle through each available NTSC preset mode
 
-      @return  A message explaining the current NTSC preset mode
+    /* Restores default values for NTSC-filter-specific colour controls.
+       updateFilter should be called afterwards to apply changes. */
+    void restoreDefaults();
+
+    /* updateFilter should be called afterwards these functions to apply changes. */
+    void setPreset(int preset);
+    int getPreset();
+    void nextPreset();
+
+#if 0 // FIXME
+    /* Read/write to configuration file. */
+    int FILTER_NTSC_ReadConfig(char *option, char *ptr);
+    void FILTER_NTSC_WriteConfig(FILE *fp);
+
+    /* NTSC filter initialisation and processing of command-line arguments. */
+    int FILTER_NTSC_Initialise(int *argc, char *argv[]);
+#endif
+  private:
+    /* Reinitialises the an NTSC filter. Should be called after changing
+       palette setup or loading/unloading an external palette. */
+    void updateFilter();
+
+    // The following function is originally from colours_ntsc.
+    /* Creates YIQ_TABLE from external palette. START_ANGLE and START_SATURATIION
+       are provided as parameters, because NTSC_FILTER needs to set these values
+       according to its internal setup (burst_phase etc).
     */
-    const string& next();
-
-    /* Blit one or more scanlines of Atari 8-bit palette values to 16-bit 5-6-5 RGB output.
-       For every 7 output pixels, reads approximately 4 source pixels. Use constants below for
-       definite input and output pixel counts. */
-    void atari_ntsc_blit( unsigned char const* atari_in, long in_pitch,
-                          int out_width, int out_height, unsigned short* rgb_out, long out_pitch );
-
-    // Atari800 Initialise function by perrym
-    // void ATARI_NTSC_DEFAULTS_Initialise(int *argc, char *argv[], atari_ntsc_setup_t *atari_ntsc_setup);
+    static void updateYIQTable(double yiq_table[768], double start_angle);
 
   private:
-    /* Picture parameters, ranging from -1.0 to 1.0 where 0.0 is normal. To easily
-       clear all fields, make it a static object then set whatever fields you want:
-        static snes_ntsc_setup_t setup;
-        setup.hue = ...
-    */
-    struct atari_ntsc_setup_t
-    {
-      float hue;
-      float saturation;
-      float contrast;
-      float brightness;
-      float sharpness;
-      float burst_phase;     // not in radians; -1.0 = -180 degrees, 1.0 = +180 degrees
-      float gaussian_factor;
-      float gamma_adj;       // gamma adjustment
-      float saturation_ramp; // lower saturation for higher luma values
-    };
+    // Pointer to the NTSC filter structure
+    atari_ntsc_t myFilter;
 
-    enum {
-      atari_ntsc_entry_size  = 56,
-      atari_ntsc_color_count = 256,
-
-      // Useful values to use for output width and number of input pixels read
-      atari_ntsc_min_out_width  = 570, // minimum width that doesn't cut off active area
-      atari_ntsc_min_in_width   = 320,
-      atari_ntsc_full_out_width = 598, // room for 8-pixel left & right overscan borders
-      atari_ntsc_full_in_width  = 336,
-
-      // Originally present in .c file
-      composite_border = 6,
-      center_offset    = 1,
-      alignment_count  = 4,  // different pixel alignments with respect to yiq quads */
-      rgb_kernel_size  = atari_ntsc_entry_size / alignment_count,
-
-      // Originally present in .c file
-      composite_size = composite_border + 8 + composite_border,
-      rgb_pad = (center_offset + composite_border + 7) / 8 * 8 - center_offset - composite_border,
-      rgb_size = (rgb_pad + composite_size + 7) / 8 * 8,
-      rescaled_size = rgb_size / 8 * 7,
-      ntsc_kernel_size = composite_size * 2
-    };
-    typedef uInt32 ntsc_rgb_t;
-
-    // Caller must allocate space for blitter data, which uses 56 KB of memory.
-    struct atari_ntsc_t
-    {
-      ntsc_rgb_t table [atari_ntsc_color_count] [atari_ntsc_entry_size];
-    };
-
-    // Originall present in .c file
-    struct ntsc_to_rgb_t
-    {
-      float composite [composite_size];
-      float to_rgb [6];
-      float brightness;
-      float contrast;
-      float sharpness;
-      short rgb [rgb_size] [3];
-      short rescaled [rescaled_size + 1] [3]; /* extra space for sharpen */
-      float kernel [ntsc_kernel_size];
-    };
-
-    atari_ntsc_t* myNTSCEmu;
+    // Contains controls used to adjust the palette in the NTSC filter
+    atari_ntsc_setup_t mySetup;
 
     int myCurrentModeNum;
     Common::Array<atari_ntsc_setup_t> myModeList;
 
-  private:
-    /* Initialize and adjust parameters. Can be called multiple times on the same
-       atari_ntsc_t object. */
-    void atari_ntsc_init( atari_ntsc_setup_t const* setup );
-
-    static void rotate_matrix( float const* in, float s, float c, float* out );
-    static void ntsc_to_rgb_init( ntsc_to_rgb_t* ntsc, atari_ntsc_setup_t const* setup, float hue );
-
-    /* Convert NTSC composite signal to RGB, where composite signal contains
-       only four non-zero samples beginning at offset */
-    static void ntsc_to_rgb( ntsc_to_rgb_t const* ntsc, int offset, short* out );
-
-    /* Rescale pixels to NTSC aspect ratio using linear interpolation,
-       with 7 output pixels for every 8 input pixels, linear interpolation */
-    static void rescale( short const* in, int count, short* out );
-
-    /* Sharpen image using (level-1)/2, level, (level-1)/2 convolution kernel */
-    static void sharpen( short const* in, float level, int count, short* out );
-
-    /* Generate pixel and capture into table */
-    static ntsc_rgb_t* gen_pixel( ntsc_to_rgb_t* ntsc, int ntsc_pos, int rescaled_pos, ntsc_rgb_t* out );
+    static atari_ntsc_setup_t const * const presets[PRESET_SIZE];
+    static char const * const preset_cfg_strings[PRESET_SIZE];
 };
 
 #endif // DISPLAY_TV
