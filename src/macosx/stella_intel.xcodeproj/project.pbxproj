@@ -320,6 +320,9 @@
 		DCA23AEA0D75B22500F77B33 /* CartX07.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCA23AE80D75B22500F77B33 /* CartX07.hxx */; };
 		DCAD60A81152F8BD00BC4184 /* CartDPCPlus.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */; };
 		DCAD60A91152F8BD00BC4184 /* CartDPCPlus.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */; };
+		DCC467F014FBECC700E15508 /* atari_ntsc_impl.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC467ED14FBECC700E15508 /* atari_ntsc_impl.h */; };
+		DCC467F114FBECC700E15508 /* atari_ntsc.c in Sources */ = {isa = PBXBuildFile; fileRef = DCC467EE14FBECC700E15508 /* atari_ntsc.c */; };
+		DCC467F214FBECC700E15508 /* atari_ntsc.h in Headers */ = {isa = PBXBuildFile; fileRef = DCC467EF14FBECC700E15508 /* atari_ntsc.h */; };
 		DCC527D110B9DA19005E1287 /* Device.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527C910B9DA19005E1287 /* Device.hxx */; };
 		DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CA10B9DA19005E1287 /* M6502.cxx */; };
 		DCC527D310B9DA19005E1287 /* M6502.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CB10B9DA19005E1287 /* M6502.hxx */; };
@@ -759,6 +762,9 @@
 		DCAD60A61152F8BD00BC4184 /* CartDPCPlus.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDPCPlus.cxx; path = ../emucore/CartDPCPlus.cxx; sourceTree = SOURCE_ROOT; };
 		DCAD60A71152F8BD00BC4184 /* CartDPCPlus.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDPCPlus.hxx; path = ../emucore/CartDPCPlus.hxx; sourceTree = SOURCE_ROOT; };
 		DCBA710010DED62E0077193B /* Stella.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Stella.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		DCC467ED14FBECC700E15508 /* atari_ntsc_impl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = atari_ntsc_impl.h; path = ../common/tv_filters/atari_ntsc_impl.h; sourceTree = SOURCE_ROOT; };
+		DCC467EE14FBECC700E15508 /* atari_ntsc.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = atari_ntsc.c; path = ../common/tv_filters/atari_ntsc.c; sourceTree = SOURCE_ROOT; };
+		DCC467EF14FBECC700E15508 /* atari_ntsc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = atari_ntsc.h; path = ../common/tv_filters/atari_ntsc.h; sourceTree = SOURCE_ROOT; };
 		DCC527C910B9DA19005E1287 /* Device.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Device.hxx; path = ../emucore/Device.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527CA10B9DA19005E1287 /* M6502.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = M6502.cxx; path = ../emucore/M6502.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CB10B9DA19005E1287 /* M6502.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = M6502.hxx; path = ../emucore/M6502.hxx; sourceTree = SOURCE_ROOT; };
@@ -1014,8 +1020,6 @@
 				2DDBEA0A0845700300812C11 /* mainSDL.cxx */,
 				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
-				DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */,
-				DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */,
 				DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */,
 				DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
@@ -1031,6 +1035,7 @@
 				DC5C768E14C26F7C0031EBC7 /* StellaKeys.hxx */,
 				DC74D69F138D4D7E00F05C5C /* StringList.hxx */,
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
+				DCC467EA14FBEC9600E15508 /* tv_filters */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 			);
 			name = common;
@@ -1336,6 +1341,18 @@
 			name = yacc;
 			sourceTree = "<group>";
 		};
+		DCC467EA14FBEC9600E15508 /* tv_filters */ = {
+			isa = PBXGroup;
+			children = (
+				DCC467EE14FBECC700E15508 /* atari_ntsc.c */,
+				DCC467EF14FBECC700E15508 /* atari_ntsc.h */,
+				DCC467ED14FBECC700E15508 /* atari_ntsc_impl.h */,
+				DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */,
+				DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */,
+			);
+			name = tv_filters;
+			sourceTree = "<group>";
+		};
 		DCCC0C9109C3541E0088BFF1 /* cheat */ = {
 			isa = PBXGroup;
 			children = (
@@ -1586,6 +1603,8 @@
 				DC36D2C914CAFAB0007DC821 /* CartFA2.hxx in Headers */,
 				DC56FCDF14CCCC4900A31CC3 /* MouseControl.hxx in Headers */,
 				DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */,
+				DCC467F014FBECC700E15508 /* atari_ntsc_impl.h in Headers */,
+				DCC467F214FBECC700E15508 /* atari_ntsc.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1860,6 +1879,7 @@
 				DC36D2C814CAFAB0007DC821 /* CartFA2.cxx in Sources */,
 				DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */,
 				DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */,
+				DCC467F114FBECC700E15508 /* atari_ntsc.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
