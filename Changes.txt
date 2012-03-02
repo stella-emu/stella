@@ -14,7 +14,10 @@
 
 3.5.5 to 3.6: (March xx, 2012)
 
-
+  * Added support for 2600-daptor II device, including native support
+    for 7800 controllers, BoosterGrip and Keypad controllers.  Special
+    thanks go to Tom Hafner for a complimentary test sample of this
+    device.
 
   * Updated included PNG library to latest stable version.
 

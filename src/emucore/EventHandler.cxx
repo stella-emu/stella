@@ -167,9 +167,17 @@ void EventHandler::setupJoysticks()
         continue;
       }
       else if(saCount == 1)  // Type will be set by mapStelladaptors()
-        myJoysticks[i].name = "2600-daptor 1";
+        myJoysticks[i].name = myJoysticks[i].numButtons > 2 ? "2600-daptorII 1" : "2600-daptor 1";
       else if(saCount == 2)
-        myJoysticks[i].name = "2600-daptor 2";
+        myJoysticks[i].name = myJoysticks[i].numButtons > 2 ? "2600-daptorII 2" : "2600-daptor 2";
+
+      // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
+      // determines how those 12 buttons are used (not all buttons are used in all modes)
+      if(myJoysticks[i].numAxes == 3)
+      {
+        // TODO - stubbed out for now, until we find a way to reliably get info
+        //        from the Z axis
+      }
     }
     else if(name.find("Stelladaptor", 0) != string::npos)
     {
@@ -227,55 +235,29 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
 #ifdef JOYSTICK_SUPPORT
   for(uInt32 i = 0; i < myNumJoysticks; i++)
   {
-    if(myJoysticks[i].name == "Stelladaptor 1")
+    if(BSPF_startsWithIgnoreCase(myJoysticks[i].name, "Stelladaptor"))
     {
       if(sa1 == "left")
       {
-        myJoysticks[i].name = "Stelladaptor 1 (emulates left joystick port)";
+        myJoysticks[i].name += " (emulates left joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_LEFT;
       }
       else if(sa1 == "right")
       {
-        myJoysticks[i].name = "Stelladaptor 1 (emulates right joystick port)";
+        myJoysticks[i].name += " (emulates right joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
       }
     }
-    else if(myJoysticks[i].name == "Stelladaptor 2")
-    {
-      if(sa2 == "left")
-      {
-        myJoysticks[i].name = "Stelladaptor 2 (emulates left joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_LEFT;
-      }
-      else if(sa2 == "right")
-      {
-        myJoysticks[i].name = "Stelladaptor 2 (emulates right joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
-      }
-    }
-    else if(myJoysticks[i].name == "2600-daptor 1")
+    else if(BSPF_startsWithIgnoreCase(myJoysticks[i].name, "2600-daptor"))
     {
       if(sa1 == "left")
       {
-        myJoysticks[i].name = "2600-daptor 1 (emulates left joystick port)";
+        myJoysticks[i].name += " (emulates left joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_LEFT;
       }
       else if(sa1 == "right")
       {
-        myJoysticks[i].name = "2600-daptor 1 (emulates right joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_RIGHT;
-      }
-    }
-    else if(myJoysticks[i].name == "2600-daptor 2")
-    {
-      if(sa2 == "left")
-      {
-        myJoysticks[i].name = "2600-daptor 2 (emulates left joystick port)";
-        myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_LEFT;
-      }
-      else if(sa2 == "right")
-      {
-        myJoysticks[i].name = "2600-daptor 2 (emulates right joystick port)";
+        myJoysticks[i].name += " (emulates right joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_RIGHT;
       }
     }
@@ -690,7 +672,25 @@ void EventHandler::poll(uInt64 time)
             // The 'type-4' here refers to the fact that 'StellaJoystick::JT_2600DAPTOR_LEFT'
             // and 'StellaJoystick::JT_2600DAPTOR_RIGHT' are at index 4 and 5 in the JoyType
             // enum; subtracting four gives us Controller 0 and 1
-            if(button < 2) myEvent.set(SA_Button[joy.type-4][button], state);
+            if(myState == S_EMULATE)
+            {
+              switch(myOSystem->console().controller(Controller::Left).type())
+              {
+                case Controller::Keyboard:
+                  if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
+                  break;
+                default:
+                  if(button < 2) myEvent.set(SA_Button[joy.type-4][button], state);
+              }
+              switch(myOSystem->console().controller(Controller::Right).type())
+              {
+                case Controller::Keyboard:
+                  if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
+                  break;
+                default:
+                  if(button < 2) myEvent.set(SA_Button[joy.type-4][button], state);
+              }
+            }
             break;  // 2600DAPTOR button
           default:
             break;
@@ -2443,17 +2443,30 @@ const Event::Type EventHandler::SA_Button[2][2] = {
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// Used by the 2600-daptor to map button presses to keypad keys
+const Event::Type EventHandler::SA_Key[2][12] = {
+  { Event::KeyboardZero1,    Event::KeyboardZero2,  Event::KeyboardZero3,
+    Event::KeyboardZero4,    Event::KeyboardZero5,  Event::KeyboardZero6,
+    Event::KeyboardZero7,    Event::KeyboardZero8,  Event::KeyboardZero9,
+    Event::KeyboardZeroStar, Event::KeyboardZero0,  Event::KeyboardZeroPound },
+  { Event::KeyboardOne1,     Event::KeyboardOne2,  Event::KeyboardOne3,
+    Event::KeyboardOne4,     Event::KeyboardOne5,  Event::KeyboardOne6,
+    Event::KeyboardOne7,     Event::KeyboardOne8,  Event::KeyboardOne9,
+    Event::KeyboardOneStar,  Event::KeyboardOne0,  Event::KeyboardOnePound }
+};
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EventHandler::StellaJoystick::StellaJoystick()
   : type(JT_NONE),
     name("None"),
+    stick(NULL),
     numAxes(0),
     numButtons(0),
     numHats(0),
     axisTable(NULL),
     btnTable(NULL),
     hatTable(NULL),
-    axisLastValue(NULL),
-    stick(NULL)
+    axisLastValue(NULL)
 {
 }
 

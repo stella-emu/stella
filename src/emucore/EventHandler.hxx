@@ -416,9 +416,10 @@ class EventHandler
     static ActionList ourEmulActionList[kEmulActionListSize];
     static ActionList ourMenuActionList[kMenuActionListSize];
 
-    // Static lookup tables for Stelladaptor axis/button support
+    // Static lookup tables for Stelladaptor/2600-daptor axis/button support
     static const Event::Type SA_Axis[2][2];
     static const Event::Type SA_Button[2][2];
+    static const Event::Type SA_Key[2][12];
 
     // Thin wrapper holding all information about an SDL joystick in Stella.
     // A StellaJoystick holds its own event mapping information, space for
@@ -449,6 +450,7 @@ class EventHandler
 
         JoyType type;
         string name;
+        SDL_Joystick* stick;
         int numAxes, numButtons, numHats;
         Event::Type (*axisTable)[2][kNumModes];
         Event::Type (*btnTable)[kNumModes];
@@ -457,9 +459,6 @@ class EventHandler
 
       private:
         void getValues(const string& list, IntArray& map);
-
-      private:
-        SDL_Joystick* stick;
     };
     StellaJoystick* myJoysticks;
     uInt32 myNumJoysticks;
