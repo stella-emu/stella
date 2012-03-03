@@ -422,7 +422,7 @@ class EventHandler
 
     // Static lookup tables for Stelladaptor/2600-daptor axis/button support
     static const Event::Type SA_Axis[2][2];
-    static const Event::Type SA_Button[2][2];
+    static const Event::Type SA_Button[2][4];
     static const Event::Type SA_Key[2][12];
 
     // Thin wrapper holding all information about an SDL joystick in Stella.

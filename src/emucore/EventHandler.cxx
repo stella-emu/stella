@@ -712,7 +712,7 @@ void EventHandler::poll(uInt64 time)
                   if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
                   break;
                 default:
-                  if(button < 2) myEvent.set(SA_Button[joy.type-4][button], state);
+                  if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
               }
               switch(myOSystem->console().controller(Controller::Right).type())
               {
@@ -720,7 +720,7 @@ void EventHandler::poll(uInt64 time)
                   if(button < 12) myEvent.set(SA_Key[joy.type-4][button], state);
                   break;
                 default:
-                  if(button < 2) myEvent.set(SA_Button[joy.type-4][button], state);
+                  if(button < 4) myEvent.set(SA_Button[joy.type-4][button], state);
               }
             }
             break;  // 2600DAPTOR button
@@ -2468,10 +2468,12 @@ const Event::Type EventHandler::SA_Axis[2][2] = {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // Used by the Stelladaptor to map button presses to joystick or paddles
-//  (driving controllers are considered the same as joysticks)
-const Event::Type EventHandler::SA_Button[2][2] = {
-  { Event::JoystickZeroFire1, Event::JoystickZeroFire3 },
-  { Event::JoystickOneFire1,  Event::JoystickOneFire3  }
+//  (driving controllers and boostergrip are considered the same as joysticks)
+const Event::Type EventHandler::SA_Button[2][4] = {
+  { Event::JoystickZeroFire1, Event::JoystickZeroFire3,
+    Event::JoystickZeroFire2, Event::JoystickZeroFire3 },
+  { Event::JoystickOneFire1,  Event::JoystickOneFire3,
+    Event::JoystickOneFire2,  Event::JoystickOneFire3  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -2481,10 +2483,10 @@ const Event::Type EventHandler::SA_Key[2][12] = {
     Event::KeyboardZero4,    Event::KeyboardZero5,  Event::KeyboardZero6,
     Event::KeyboardZero7,    Event::KeyboardZero8,  Event::KeyboardZero9,
     Event::KeyboardZeroStar, Event::KeyboardZero0,  Event::KeyboardZeroPound },
-  { Event::KeyboardOne1,     Event::KeyboardOne2,  Event::KeyboardOne3,
-    Event::KeyboardOne4,     Event::KeyboardOne5,  Event::KeyboardOne6,
-    Event::KeyboardOne7,     Event::KeyboardOne8,  Event::KeyboardOne9,
-    Event::KeyboardOneStar,  Event::KeyboardOne0,  Event::KeyboardOnePound }
+  { Event::KeyboardOne1,     Event::KeyboardOne2,   Event::KeyboardOne3,
+    Event::KeyboardOne4,     Event::KeyboardOne5,   Event::KeyboardOne6,
+    Event::KeyboardOne7,     Event::KeyboardOne8,   Event::KeyboardOne9,
+    Event::KeyboardOneStar,  Event::KeyboardOne0,   Event::KeyboardOnePound  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
