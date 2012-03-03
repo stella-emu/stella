@@ -201,12 +201,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myGLStretchCheckbox);
   ypos += lineHeight + 4;
 
-  // Use VBO in OpenGL
-  myUseVBOCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
-                                        "GL VBO");
-  wid.push_back(myUseVBOCheckbox);
-  ypos += lineHeight + 4;
-
   // Use sync to vblank in OpenGL
   myUseVSyncCheckbox = new CheckboxWidget(myTab, font, xpos, ypos,
                                           "GL VSync");
@@ -275,7 +269,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPAspectRatioSlider->clearFlags(WIDGET_ENABLED);
   myPAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
-  myUseVBOCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
@@ -356,10 +349,6 @@ void VideoDialog::loadConfig()
   myGLStretchCheckbox->setState(instance().settings().getBool("gl_fsmax"));
   myGLStretchCheckbox->setEnabled(gl);
 
-  // Use VBO (GL mode only)
-  myUseVBOCheckbox->setState(instance().settings().getBool("gl_vbo"));
-  myUseVBOCheckbox->setEnabled(gl);
-
   // Use sync to vertical blank (GL mode only)
   myUseVSyncCheckbox->setState(instance().settings().getBool("gl_vsync"));
   myUseVSyncCheckbox->setEnabled(gl);
@@ -422,9 +411,6 @@ void VideoDialog::saveConfig()
   // GL stretch setting
   instance().settings().setBool("gl_fsmax", myGLStretchCheckbox->getState());
 
-  // Use VBO (GL mode only)
-  instance().settings().setBool("gl_vbo", myUseVBOCheckbox->getState());
-
   // Use sync to vertical blank (GL mode only)
   instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());
 
@@ -461,7 +447,6 @@ void VideoDialog::setDefaults()
   myFullscreenPopup->setSelected("0", "");
   myColorLossCheckbox->setState(true);
   myGLStretchCheckbox->setState(true);
-  myUseVBOCheckbox->setState(true);
   myUseVSyncCheckbox->setState(true);
   myUIMessagesCheckbox->setState(true);
   myCenterCheckbox->setState(false);
