@@ -19,6 +19,9 @@
     thanks go to Tom Hafner for a complimentary test sample of this
     device.
 
+  * Added ability to dynamically swap the port order of Stelladaptor/
+    2600-daptor devices with the 'Control-1' key combo.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!
