@@ -1472,6 +1472,12 @@
     </tr>
 
     <tr>
+      <td>Swap Stelladaptor/2600-daptor port ordering</td>
+      <td>Control + 1</td>
+      <td>Control + 1</td>
+    </tr>
+
+    <tr>
       <td>Reload current ROM (singlecart ROM, TIA mode)<br>
         Load next game in ROM (multicart ROM, TIA mode)</td>
       <td>Control + r</td>
@@ -1602,7 +1608,7 @@
       <td> &#x2713;</td>
       <td> &#x2715;</td>
       <td> &#x2715;</td>
-      <td> &#x2715;</td>
+      <td> &#x2713; (2600-daptor II)</td>
     </tr>
     <tr>
       <th> Driving</th>
@@ -1901,13 +1907,10 @@
     </tr>
 
     <tr>
-      <td><pre>-sa1 &lt;left|right&gt;</pre></td>
-      <td>Stelladaptor/2600-daptor 1 emulates specified joystick port.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-sa2 &lt;left|right&gt;</pre></td>
-      <td>Stelladaptor/2600-daptor 2 emulates specified joystick port.</td>
+      <td><pre>-saport &lt;lr|rl&gt;</pre></td>
+      <td>Determines how to enumerate the Stelladaptor/2600-daptor devices in the
+      order they are found: 'lr' means first is left port, second is right port,
+      'rl' means the opposite.</td>
     </tr>
 
     <tr>
@@ -2469,7 +2472,7 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-sa1 &amp; -sa2</td></tr>
+          <tr><td>Stelladaptor X is</td><td>Specifies which virtual port each Stelladaptor/2600-daptor uses (See <b>Advanced Configuration - <a href="#Adaptor">Stelladaptor/2600-daptor Support</a></b>)</td><td>-saport</td></tr>
           <tr><td>AVox serial port</td><td>Described in further detail in <b>Advanced Configuration - <a href="#AtariVox">AtariVox/SaveKey Support</a></b> </td><td>-avoxport</td></tr>
           <tr><td>Joy deadzone size</td><td>Deadzone area for axes on joysticks/gamepads</td><td>-joydeadzone</td></tr>
           <tr><td>Digital paddle sensitivity</td><td>Sensitvity used when emulating a paddle using a digital device</td><td>-dsense</td></tr>
@@ -2640,16 +2643,18 @@
   <ul>
     <li>The first device found will act as the <b>left game port</b>
     on a real Atari.  Depending on the device, Stella will detect it as
-    either the left joystick, paddles 0 & 1, or the left driving controller.</li>
+    either the left joystick, paddles 0 & 1, the left driving controller,
+    left keypad, etc.</li>
 
     <li>The second device found will act as the <b>right game port</b>
     on a real Atari.  Depending on the device, Stella will detect it as
-    either the right joystick, paddles 2 & 3, or the right driving controller.</li>
+    either the right joystick, paddles 2 & 3, the right driving controller,
+    right keypad, etc.</li>
 
     <li>Any other devices will be ignored.</li>
 
     <li>The assignment ordering of Stelladaptor/2600-daptor to port can be redefined with
-    'sa1' and 'sa2' (see description in 'Starting a Game').</li>
+    'saport' (see description in 'Starting a Game').</li>
   </ul>
   </blockquote>
 

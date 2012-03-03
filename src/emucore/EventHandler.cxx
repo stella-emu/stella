@@ -161,15 +161,11 @@ void EventHandler::setupJoysticks()
     if(name.find("2600-daptor", 0) != string::npos)
     {
       saCount++;
-      if(saCount > 2)  // Ignore more than 2 Stelladaptors
+      if(saCount > 2)  // Ignore more than 2 2600-daptors
       {
         myJoysticks[i].type = StellaJoystick::JT_NONE;
         continue;
       }
-      else if(saCount == 1)  // Type will be set by mapStelladaptors()
-        myJoysticks[i].name = myJoysticks[i].numButtons > 2 ? "2600-daptorII 1" : "2600-daptor 1";
-      else if(saCount == 2)
-        myJoysticks[i].name = myJoysticks[i].numButtons > 2 ? "2600-daptorII 2" : "2600-daptor 2";
 
       // 2600-daptorII devices have 3 axes and 12 buttons, and the value of the z-axis
       // determines how those 12 buttons are used (not all buttons are used in all modes)
@@ -177,17 +173,18 @@ void EventHandler::setupJoysticks()
       {
         // TODO - stubbed out for now, until we find a way to reliably get info
         //        from the Z axis
+        myJoysticks[i].name = "2600-daptor II";
       }
+      else
+        myJoysticks[i].name = "2600-daptor";
     }
     else if(name.find("Stelladaptor", 0) != string::npos)
     {
       saCount++;
       if(saCount > 2)  // Ignore more than 2 Stelladaptors
         continue;
-      else if(saCount == 1)  // Type will be set by mapStelladaptors()
-        myJoysticks[i].name = "Stelladaptor 1";
-      else if(saCount == 2)
-        myJoysticks[i].name = "Stelladaptor 2";
+      else             // Type will be set by mapStelladaptors()
+        myJoysticks[i].name = "Stelladaptor";
     }
     else
     {
@@ -211,9 +208,7 @@ void EventHandler::setupJoysticks()
   }
 
   // Map the stelladaptors we've found according to the specified ports
-  const string& sa1 = myOSystem->settings().getString("sa1");
-  const string& sa2 = myOSystem->settings().getString("sa2");
-  mapStelladaptors(sa1, sa2);
+  mapStelladaptors(myOSystem->settings().getString("saport"));
 
   setJoymap();
   setActionMappings(kEmulationMode);
@@ -230,19 +225,36 @@ void EventHandler::setupJoysticks()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
+void EventHandler::mapStelladaptors(const string& saport)
 {
 #ifdef JOYSTICK_SUPPORT
+  // saport will have two values:
+  //   'lr' means treat first valid adaptor as left port, second as right port
+  //   'rl' means treat first valid adaptor as right port, second as left port
+  // We know there will be only two such devices (at most), since the logic
+  // in setupJoysticks take care of that
+  int saCount = 0;
+  int saOrder[2];
+  if(BSPF_equalsIgnoreCase(saport, "lr"))
+  {
+    saOrder[0] = 1; saOrder[1] = 2;
+  }
+  else
+  {
+    saOrder[0] = 2; saOrder[1] = 1;
+  }
+
   for(uInt32 i = 0; i < myNumJoysticks; i++)
   {
     if(BSPF_startsWithIgnoreCase(myJoysticks[i].name, "Stelladaptor"))
     {
-      if(sa1 == "left")
+      saCount++;
+      if(saOrder[saCount-1] == 1)
       {
         myJoysticks[i].name += " (emulates left joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_LEFT;
       }
-      else if(sa1 == "right")
+      else if(saOrder[saCount-1] == 2)
       {
         myJoysticks[i].name += " (emulates right joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_STELLADAPTOR_RIGHT;
@@ -250,21 +262,37 @@ void EventHandler::mapStelladaptors(const string& sa1, const string& sa2)
     }
     else if(BSPF_startsWithIgnoreCase(myJoysticks[i].name, "2600-daptor"))
     {
-      if(sa1 == "left")
+      saCount++;
+      if(saOrder[saCount-1] == 1)
       {
         myJoysticks[i].name += " (emulates left joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_LEFT;
       }
-      else if(sa1 == "right")
+      else if(saOrder[saCount-1] == 2)
       {
         myJoysticks[i].name += " (emulates right joystick port)";
         myJoysticks[i].type = StellaJoystick::JT_2600DAPTOR_RIGHT;
       }
     }
   }
-  myOSystem->settings().setString("sa1", sa1);
-  myOSystem->settings().setString("sa2", sa2);
+  myOSystem->settings().setString("saport", saport);
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void EventHandler::toggleSAPortOrder()
+{
+  const string& saport = myOSystem->settings().getString("saport");
+  if(saport == "lr")
+  {
+    mapStelladaptors("rl");
+    myOSystem->frameBuffer().showMessage("Stelladaptor ports right/left");
+  }
+  else
+  {
+    mapStelladaptors("lr");
+    myOSystem->frameBuffer().showMessage("Stelladaptor ports left/right");
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -477,6 +505,10 @@ void EventHandler::poll(uInt64 time)
                   const string& message = myMouseControl->next();
                   myOSystem->frameBuffer().showMessage(message);
                 }
+                break;
+
+              case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
+                toggleSAPortOrder();
                 break;
 
               case KBDK_f:  // Ctrl-f toggles NTSC/PAL mode

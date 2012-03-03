@@ -118,12 +118,16 @@ class EventHandler
     void setupJoysticks();
 
     /**
-      Maps the given stelladaptors to specified ports on a real 2600
+      Maps the given Stelladaptor/2600-daptor(s) to specified ports on a real 2600.
 
-      @param sa1  Port for the first Stelladaptor to emulate (left or right)
-      @param sa2  Port for the second Stelladaptor to emulate (left or right)
+      @param saport  How to map the ports ('lr' or 'rl')
     */
-    void mapStelladaptors(const string& sa1, const string& sa2);
+    void mapStelladaptors(const string& saport);
+
+    /**
+      Swaps the ordering of Stelladaptor/2600-daptor(s) devices.
+    */
+    void toggleSAPortOrder();
 
     /**
       Collects and dispatches any pending events.  This method should be

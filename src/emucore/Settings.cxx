@@ -76,8 +76,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("mcontrol", "auto");
   setInternal("dsense", "5");
   setInternal("msense", "7");
-  setInternal("sa1", "left");
-  setInternal("sa2", "right");
+  setInternal("saport", "lr");
   setInternal("ctrlcombo", "true");
 
   // Snapshot options
@@ -373,8 +372,7 @@ void Settings::usage()
     << "                 rom>\n"
     << "  -dsense       <number>       Sensitivity of digital emulated paddle movement (1-10)\n"
     << "  -msense       <number>       Sensitivity of mouse emulated paddle movement (1-15)\n"
-    << "  -sa1          <left|right>   Stelladaptor 1 emulates specified joystick port\n"
-    << "  -sa2          <left|right>   Stelladaptor 2 emulates specified joystick port\n"
+    << "  -saport       <lr|rl>        How to assign virtual ports to multiple Stelladaptor/2600-daptors\n"
     << "  -ctrlcombo    <1|0>          Use key combos involving the Control key (Control-Q for quit may be disabled!)\n"
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"

@@ -121,8 +121,8 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   pwidth = font.getStringWidth("left / right");
 
   items.clear();
-  items.push_back("left / right", "leftright");
-  items.push_back("right / left", "rightleft");
+  items.push_back("left / right", "lr");
+  items.push_back("right / left", "rl");
   mySAPort = new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
                              "Stelladaptor port order: ", lwidth);
   wid.push_back(mySAPort);
@@ -211,9 +211,8 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
 void InputDialog::loadConfig()
 {
   // Left & right ports
-  const string& sa1 = instance().settings().getString("sa1");
-  int portorder = sa1 == "right" ? 1 : 0;
-  mySAPort->setSelected(portorder);
+  const string& saport = instance().settings().getString("saport");
+  mySAPort->setSelected(BSPF_equalsIgnoreCase(saport, "rl") ? 1 : 0);
 
   // Joystick deadzone
   myDeadzone->setValue(instance().settings().getInt("joydeadzone"));
@@ -245,11 +244,7 @@ void InputDialog::loadConfig()
 void InputDialog::saveConfig()
 {
   // Left & right ports
-  int sa_order = mySAPort->getSelected();
-  if(sa_order == 0)
-    instance().eventHandler().mapStelladaptors("left", "right");
-  else
-    instance().eventHandler().mapStelladaptors("right", "left");
+  instance().eventHandler().mapStelladaptors(mySAPort->getSelectedTag());
 
   // Joystick deadzone
   int deadzone = myDeadzone->getValue();
@@ -298,7 +293,7 @@ void InputDialog::setDefaults()
     case 2:  // Virtual devices
     {
       // Left & right ports
-      mySAPort->setSelected("leftright", "leftright");
+      mySAPort->setSelected("lr", "lr");
 
       // Joystick deadzone
       myDeadzone->setValue(0);
