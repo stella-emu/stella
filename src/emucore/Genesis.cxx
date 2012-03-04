@@ -31,8 +31,8 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myDownEvent    = Event::JoystickZeroDown;
     myLeftEvent    = Event::JoystickZeroLeft;
     myRightEvent   = Event::JoystickZeroRight;
-    myFire1Event   = Event::JoystickZeroFire1;
-    myFire2Event   = Event::JoystickZeroFire3;
+    myFire1Event   = Event::JoystickZeroFire;
+    myFire2Event   = Event::JoystickZeroFire5;
   }
   else
   {
@@ -40,8 +40,8 @@ Genesis::Genesis(Jack jack, const Event& event, const System& system)
     myDownEvent    = Event::JoystickOneDown;
     myLeftEvent    = Event::JoystickOneLeft;
     myRightEvent   = Event::JoystickOneRight;
-    myFire1Event   = Event::JoystickOneFire1;
-    myFire2Event   = Event::JoystickOneFire3;
+    myFire1Event   = Event::JoystickOneFire;
+    myFire2Event   = Event::JoystickOneFire5;
   }
 
   // Analog pin 9 is not connected to this controller at all

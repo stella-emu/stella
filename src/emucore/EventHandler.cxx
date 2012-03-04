@@ -1575,18 +1575,18 @@ void EventHandler::setDefaultKeymap(Event::Type event, EventMode mode)
       SET_DEFAULT_KEY(KBDK_DOWN,      mode, Event::JoystickZeroDown,  event);
       SET_DEFAULT_KEY(KBDK_LEFT,      mode, Event::JoystickZeroLeft,  event);
       SET_DEFAULT_KEY(KBDK_RIGHT,     mode, Event::JoystickZeroRight, event);
-      SET_DEFAULT_KEY(KBDK_SPACE,     mode, Event::JoystickZeroFire1, event);
-      SET_DEFAULT_KEY(KBDK_LCTRL,     mode, Event::JoystickZeroFire1, event);
-      SET_DEFAULT_KEY(KBDK_4,         mode, Event::JoystickZeroFire2, event);
-      SET_DEFAULT_KEY(KBDK_5,         mode, Event::JoystickZeroFire3, event);
+      SET_DEFAULT_KEY(KBDK_SPACE,     mode, Event::JoystickZeroFire,  event);
+      SET_DEFAULT_KEY(KBDK_LCTRL,     mode, Event::JoystickZeroFire,  event);
+      SET_DEFAULT_KEY(KBDK_4,         mode, Event::JoystickZeroFire5, event);
+      SET_DEFAULT_KEY(KBDK_5,         mode, Event::JoystickZeroFire9, event);
 
       SET_DEFAULT_KEY(KBDK_y,         mode, Event::JoystickOneUp,     event);
       SET_DEFAULT_KEY(KBDK_h,         mode, Event::JoystickOneDown,   event);
       SET_DEFAULT_KEY(KBDK_g,         mode, Event::JoystickOneLeft,   event);
       SET_DEFAULT_KEY(KBDK_j,         mode, Event::JoystickOneRight,  event);
-      SET_DEFAULT_KEY(KBDK_f,         mode, Event::JoystickOneFire1,  event);
-      SET_DEFAULT_KEY(KBDK_6,         mode, Event::JoystickOneFire2,  event);
-      SET_DEFAULT_KEY(KBDK_7,         mode, Event::JoystickOneFire3,  event);
+      SET_DEFAULT_KEY(KBDK_f,         mode, Event::JoystickOneFire,   event);
+      SET_DEFAULT_KEY(KBDK_6,         mode, Event::JoystickOneFire5,  event);
+      SET_DEFAULT_KEY(KBDK_7,         mode, Event::JoystickOneFire9,  event);
 
 
       SET_DEFAULT_KEY(KBDK_F1,        mode, Event::ConsoleSelect,     event);
@@ -2361,17 +2361,17 @@ EventHandler::ActionList EventHandler::ourEmulActionList[kEmulActionListSize] = 
   { Event::JoystickZeroDown,    "P0 Joystick Down",            0, true  },
   { Event::JoystickZeroLeft,    "P0 Joystick Left",            0, true  },
   { Event::JoystickZeroRight,   "P0 Joystick Right",           0, true  },
-  { Event::JoystickZeroFire1,   "P0 Joystick Fire",            0, true  },
-  { Event::JoystickZeroFire2,   "P0 BoosterGrip Trigger",      0, true  },
-  { Event::JoystickZeroFire3,   "P0 BoosterGrip Booster",      0, true  },
+  { Event::JoystickZeroFire,    "P0 Joystick Fire",            0, true  },
+  { Event::JoystickZeroFire5,   "P0 Booster Top Trigger",      0, true  },
+  { Event::JoystickZeroFire9,   "P0 Booster Handle Grip",      0, true  },
 
   { Event::JoystickOneUp,       "P1 Joystick Up",              0, true  },
   { Event::JoystickOneDown,     "P1 Joystick Down",            0, true  },
   { Event::JoystickOneLeft,     "P1 Joystick Left",            0, true  },
   { Event::JoystickOneRight,    "P1 Joystick Right",           0, true  },
-  { Event::JoystickOneFire1,    "P1 Joystick Fire",            0, true  },
-  { Event::JoystickOneFire2,    "P1 BoosterGrip Trigger",      0, true  },
-  { Event::JoystickOneFire3,    "P1 BoosterGrip Booster",      0, true  },
+  { Event::JoystickOneFire,     "P1 Joystick Fire",            0, true  },
+  { Event::JoystickOneFire5,    "P1 Booster Top Trigger",      0, true  },
+  { Event::JoystickOneFire9,    "P1 Booster Handle Grip",      0, true  },
 
   { Event::PaddleZeroAnalog,    "Paddle 0 Analog",             0, true  },
   { Event::PaddleZeroDecrease,  "Paddle 0 Decrease",           0, true  },
@@ -2470,10 +2470,10 @@ const Event::Type EventHandler::SA_Axis[2][2] = {
 // Used by the Stelladaptor to map button presses to joystick or paddles
 //  (driving controllers and boostergrip are considered the same as joysticks)
 const Event::Type EventHandler::SA_Button[2][4] = {
-  { Event::JoystickZeroFire1, Event::JoystickZeroFire3,
-    Event::JoystickZeroFire2, Event::JoystickZeroFire3 },
-  { Event::JoystickOneFire1,  Event::JoystickOneFire3,
-    Event::JoystickOneFire2,  Event::JoystickOneFire3  }
+  { Event::JoystickZeroFire,  Event::JoystickZeroFire9,
+    Event::JoystickZeroFire5, Event::JoystickZeroFire9 },
+  { Event::JoystickOneFire,   Event::JoystickOneFire9,
+    Event::JoystickOneFire5,  Event::JoystickOneFire9  }
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -22,6 +22,10 @@
   * Added ability to dynamically swap the port order of Stelladaptor/
     2600-daptor devices with the 'Control-1' key combo.
 
+  * Fixed bug in BoosterGrip controller emulation; the functionality
+    of the booster and trigger buttons was reversed.  Related to this,
+    renamed these actions in the Event Mapping dialog to be more clear.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

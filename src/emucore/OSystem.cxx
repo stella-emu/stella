@@ -563,7 +563,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     if(mySettings->getBool("holdselect"))
       myEventHandler->handleEvent(Event::ConsoleSelect, 1);
     if(mySettings->getBool("holdbutton0"))
-      myEventHandler->handleEvent(Event::JoystickZeroFire1, 1);
+      myEventHandler->handleEvent(Event::JoystickZeroFire, 1);
 
     return true;
   }
@@ -930,9 +930,9 @@ void OSystem::setDefaultJoymap(Event::Type event, EventMode mode)
       SET_DEFAULT_AXIS(Event::JoystickOneDown, mode, 1, 1, 1, event);
 
       // Left joystick (assume joystick zero, button zero)
-      SET_DEFAULT_BTN(Event::JoystickZeroFire1, mode, 0, 0, event);
+      SET_DEFAULT_BTN(Event::JoystickZeroFire, mode, 0, 0, event);
       // Right joystick (assume joystick one, button zero)
-      SET_DEFAULT_BTN(Event::JoystickOneFire1, mode, 1, 0, event);
+      SET_DEFAULT_BTN(Event::JoystickOneFire, mode, 1, 0, event);
 
       // Left joystick left/right directions (assume joystick zero and hat 0)
       SET_DEFAULT_HAT(Event::JoystickZeroLeft, mode, 0, 0, EVENT_HATLEFT, event);

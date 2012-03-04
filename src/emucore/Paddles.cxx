@@ -52,9 +52,9 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       myP0AxisValue  = Event::SALeftAxis0Value;
       myP1AxisValue  = Event::SALeftAxis1Value;
       myP0FireEvent1 = Event::PaddleZeroFire;
-      myP0FireEvent2 = Event::JoystickZeroFire1;
+      myP0FireEvent2 = Event::JoystickZeroFire;
       myP1FireEvent1 = Event::PaddleOneFire;
-      myP1FireEvent2 = Event::JoystickZeroFire3;
+      myP1FireEvent2 = Event::JoystickZeroFire9;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
@@ -88,9 +88,9 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       myP0AxisValue  = Event::SALeftAxis1Value;
       myP1AxisValue  = Event::SALeftAxis0Value;
       myP0FireEvent1 = Event::PaddleOneFire;
-      myP0FireEvent2 = Event::JoystickZeroFire3;
+      myP0FireEvent2 = Event::JoystickZeroFire9;
       myP1FireEvent1 = Event::PaddleZeroFire;
-      myP1FireEvent2 = Event::JoystickZeroFire1;
+      myP1FireEvent2 = Event::JoystickZeroFire;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
@@ -127,9 +127,9 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       myP0AxisValue  = Event::SARightAxis0Value;
       myP1AxisValue  = Event::SARightAxis1Value;
       myP0FireEvent1 = Event::PaddleTwoFire;
-      myP0FireEvent2 = Event::JoystickOneFire1;
+      myP0FireEvent2 = Event::JoystickOneFire;
       myP1FireEvent1 = Event::PaddleThreeFire;
-      myP1FireEvent2 = Event::JoystickOneFire3;
+      myP1FireEvent2 = Event::JoystickOneFire9;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can
@@ -163,9 +163,9 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
       myP0AxisValue  = Event::SARightAxis1Value;
       myP1AxisValue  = Event::SARightAxis0Value;
       myP0FireEvent1 = Event::PaddleThreeFire;
-      myP0FireEvent2 = Event::JoystickOneFire3;
+      myP0FireEvent2 = Event::JoystickOneFire9;
       myP1FireEvent1 = Event::PaddleTwoFire;
-      myP1FireEvent2 = Event::JoystickOneFire1;
+      myP1FireEvent2 = Event::JoystickOneFire;
 
       // Direction of movement is swapped
       // That is, moving in a certain direction on an axis can

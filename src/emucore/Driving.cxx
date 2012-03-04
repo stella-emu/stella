@@ -34,7 +34,7 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
   {
     myCCWEvent   = Event::JoystickZeroLeft;
     myCWEvent    = Event::JoystickZeroRight;
-    myFireEvent  = Event::JoystickZeroFire1;
+    myFireEvent  = Event::JoystickZeroFire;
     myXAxisValue = Event::SALeftAxis0Value;
     myYAxisValue = Event::SALeftAxis1Value;
   }
@@ -42,7 +42,7 @@ Driving::Driving(Jack jack, const Event& event, const System& system)
   {
     myCCWEvent   = Event::JoystickOneLeft;
     myCWEvent    = Event::JoystickOneRight;
-    myFireEvent  = Event::JoystickOneFire1;
+    myFireEvent  = Event::JoystickOneFire;
     myXAxisValue = Event::SARightAxis0Value;
     myYAxisValue = Event::SARightAxis1Value;
   }

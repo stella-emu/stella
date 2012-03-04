@@ -45,9 +45,9 @@ class Event
       ConsoleSelect, ConsoleReset,
 
       JoystickZeroUp, JoystickZeroDown, JoystickZeroLeft, JoystickZeroRight,
-        JoystickZeroFire1, JoystickZeroFire2, JoystickZeroFire3,
+        JoystickZeroFire, JoystickZeroFire5, JoystickZeroFire9,
       JoystickOneUp, JoystickOneDown, JoystickOneLeft, JoystickOneRight,
-        JoystickOneFire1, JoystickOneFire2, JoystickOneFire3,
+        JoystickOneFire, JoystickOneFire5, JoystickOneFire9,
 
       PaddleZeroDecrease, PaddleZeroIncrease, PaddleZeroAnalog, PaddleZeroFire,
       PaddleOneDecrease, PaddleOneIncrease, PaddleOneAnalog, PaddleOneFire,
