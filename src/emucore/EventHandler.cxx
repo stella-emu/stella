@@ -276,6 +276,19 @@ void EventHandler::mapStelladaptors(const string& saport)
     }
   }
   myOSystem->settings().setString("saport", saport);
+
+  // We're potentially swapping out an input device behind the back of
+  // the Event system, so we make sure all Stelladaptor-generated events
+  // are reset
+  for(int i = 0; i < 2; ++i)
+  {
+    for(int j = 0; j < 2; ++j)
+      myEvent.set(SA_Axis[i][j], 0);
+    for(int j = 0; j < 4; ++j)
+      myEvent.set(SA_Button[i][j], 0);
+    for(int j = 0; j < 12; ++j)
+      myEvent.set(SA_Key[i][j], 0);
+  }
 #endif
 }
 

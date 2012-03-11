@@ -20,7 +20,9 @@
     device.
 
   * Added ability to dynamically swap the port order of Stelladaptor/
-    2600-daptor devices with the 'Control-1' key combo.
+    2600-daptor devices with the 'Control-1' key combo (useful if you
+    have only one 2600-daptor and want to use it as a left port
+    normally, but as a right port for Star Raiders, etc).
 
   * Fixed bug in BoosterGrip controller emulation; the functionality
     of the booster and trigger buttons was reversed.  Related to this,
