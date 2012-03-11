@@ -27,36 +27,76 @@ class System;
 
 /**
   Cartridge class used for SpectraVideo CompuMate bankswitched games.
-  There are 4 4K banks selectable at $1000 - $1FFFF.
+
+  This is more than just a cartridge mapper - it's also a "computer" add-on.  
+  There's two 8K EPROMs soldered on top of each other.  There's two short
+  wires with DB-9's on them which you plug into the two controller ports.
+  A 42 or so key membrane keyboard with audio in and audio out, and 2K of RAM.
+
+  There are 4 4K banks selectable at $1000 - $1FFF, and 2K RAM at
+  $1800 - $1FFF (R/W 'line' is available at SWCHA D5, so there's no separate
+  read and write ports).
 
   Bankswitching is done though the controller ports
-    INPT0: D7 = CTRL key input (0 on startup / 1 = key pressed)
-    INPT1: D7 = always HIGH input (tested at startup)
-    INPT2: D7 = always HIGH input (tested at startup)
-    INPT3: D7 = SHIFT key input (0 on startup / 1 = key pressed)
-    INPT4: D7 = keyboard row 1 input (0 = key pressed)
-    INPT5: D7 = keyboard row 3 input (0 = key pressed)
-    SWCHA: D7 = tape recorder I/O ?
-           D6 = 1 -> increase key collumn (0 to 9)
-           D5 = 1 -> reset key collumn to 0 (if D4 = 0)
-           D5 = 0 -> enable RAM writing (if D4 = 1)
-           D4 = 1 -> map 2K of RAM at $1800 - $1fff
-           D3 = keyboard row 4 input (0 = key pressed)
-           D2 = keyboard row 2 input (0 = key pressed)
+    SWCHA: D7 = Audio input from tape player
+           D6 = Audio out to tape player and 4017 CLK
+                1 -> increase key column (0 to 9)
+           D5 = 4017 RST, and RAM direction. (high = write, low = read)
+                1 -> reset key column to 0 (if D4 = 0)
+                0 -> enable RAM writing (if D4 = 1)
+           D4 = RAM enable: 1 = disable RAM, 0 = enable RAM
+           D3 = keyboard row 1 input (0 = key pressed)
+           D2 = keyboard row 1 input (0 = key pressed)
            D1 = bank select high bit
            D0 = bank select low bit
 
-  Keyboard column numbering:
-    column 0 = 7 U J M
-    column 1 = 6 Y H N
-    column 2 = 8 I K ,
-    column 3 = 2 W S X
-    column 4 = 3 E D C
-    column 5 = 0 P ENTER SPACE
-    column 6 = 9 O L .
-    column 7 = 5 T G B
-    column 8 = 1 Q A Z
-    column 9 = 4 R F V
+    INPT0: D7 = CTRL key input (0 on startup / 1 = key pressed)
+    INPT1: D7 = always HIGH input (pulled high thru 20K resistor)
+    INPT2: D7 = always HIGH input (pulled high thru 20K resistor)
+    INPT3: D7 = SHIFT key input (0 on startup / 1 = key pressed)
+    INPT4: D7 = keyboard row 0 input (0 = key pressed)
+    INPT5: D7 = keyboard row 2 input (0 = key pressed)
+
+  The keyboard's composed of a 4017 1 of 10 counter, driving the 10 columns of
+  the keyboard.  It has 4 rows.  The 4 row outputs are buffered by inverters.
+
+  Bit 5 of portA controls the reset line on the 4017.  Pulling it high will reset
+  scanning to column 0.  Pulling it low will allow the counter to be clocked.
+
+  Bit 6 of portA clocks the 4017.  Each rising edge advances the column one
+  count.
+
+  There's 10 columns labelled 0-9, and 4 rows, labelled 0-3.
+
+                           Column
+
+    0     1     2     3     4     5     6     7     8     9
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+  | 7 | | 6 | | 8 | | 2 | | 3 | | 0 | | 9 | | 5 | | 1 | | 4 |  0
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+  | U | | Y | | I | | W | | E | | P | | O | | T | | Q | | R |  1
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+     Row
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+  | J | | H | | K | | S | | D | |ent| | L | | G | | A | | F |  2
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
+  | M | | N | | < | | X | | C | |spc| | > | | B | | Z | | V |  3
+  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
+
+  Function and Shift are separate keys that are read by 2 of the paddle inputs.
+  These two buttons pull the specific paddle input low when pressed.
+
+  Because the inputs are inverted, a low indicates a pressed button, and a high 
+  is an unpressed one.
+
+  The audio input/output are designed to drive a tape player.  The audio output is 
+  buffered through an inverter and 2 resistors and a capacitor to reduce the level
+  to feed it into the tape player.
+
+  The audio input is passed through a .1uf capacitor and is pulled to 1/2 supply
+  by two 20K resistors, then it goes through a hex inverting schmitt trigger to
+  square it up.  This then runs into bit 7 of portA.
 
   @author  Stephen Anthony & z26 team
   @version $Id$
@@ -172,6 +212,15 @@ class CartridgeCM : public Cartridge
 
     // The 16K ROM image of the cartridge
     uInt8 myImage[16384];
+
+    // The 2K of RAM
+    uInt8 myRAM[2048];
+
+    // RAM read/write state
+    uInt8 myRamState;
+
+    // Column currently active
+    uInt8 myColumn;
 };
 
 #endif
