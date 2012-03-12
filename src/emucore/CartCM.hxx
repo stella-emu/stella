@@ -98,6 +98,11 @@ class System;
   by two 20K resistors, then it goes through a hex inverting schmitt trigger to
   square it up.  This then runs into bit 7 of portA.
 
+  This code was heavily borrowed from z26, and uses conventions defined
+  there.  Specifically, IOPortA is treated as a complete uInt8, whereas
+  the Stella core actually stores this information in boolean arrays
+  addressable by DigitalPin number.
+
   @author  Stephen Anthony & z26 team
   @version $Id$
 */
