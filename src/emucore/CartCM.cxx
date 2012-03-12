@@ -246,7 +246,6 @@ bool CartridgeCM::load(Serializer& in)
   }
 
   // Remember what bank we were in
-  myRamState = (uInt8) in.getByte();
   bank(myCurrentBank);
 
   return true;
