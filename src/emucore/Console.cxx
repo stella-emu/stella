@@ -617,7 +617,7 @@ void Console::setControllers(const string& rommd5)
   if(left == "COMPUMATE" || right == "COMPUMATE")
   {
     delete myCMHandler;
-    myCMHandler = new CompuMate(myEvent, *mySystem);
+    myCMHandler = new CompuMate(*((CartridgeCM*)myCart), myEvent, *mySystem);
     myControllers[0] = myCMHandler->leftController();
     myControllers[1] = myCMHandler->rightController();
     return;

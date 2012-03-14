@@ -21,6 +21,7 @@
 #define COMPUMATE_HXX
 
 #include "bspf.hxx"
+#include "CartCM.hxx"
 #include "Control.hxx"
 #include "Event.hxx"
 
@@ -32,8 +33,8 @@
   unique for the 2600 in that it requires close co-operation between the
   cartridge and the left and right controllers.
 
-  This class acts as a 'parent' for both the left and right CMControl's,
-  taking care of their creation and communication between them.
+  This class acts as a 'parent' for cartridge and both the left and right
+  CMControl's, taking care of their creation and communication between them.
 
   @author  Stephen Anthony
   @version $Id$
@@ -46,22 +47,17 @@ class CompuMate
       Note that this class creates CMControl controllers for both ports,
       but does not take responsibility for their deletion.
 
+      @param cart   The CompuMate cartridge
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    CompuMate(const Event& event, const System& system);
+    CompuMate(CartridgeCM& cart, const Event& event, const System& system);
 
     /**
       Destructor
       Controllers are deleted outside this class
     */
     virtual ~CompuMate() { }
-
-  public:
-    /**
-      Called by the controller(s) when all pins have been written
-    */
-    void update();
 
     /**
       Return the left and right CompuMate controllers
@@ -70,6 +66,12 @@ class CompuMate
     Controller* rightController() { return (Controller*) myRightController; }
 
   private:
+    /**
+      Called by the controller(s) when all pins have been written
+      This method keeps track of consecutive calls, and only updates once
+    */
+    void update();
+
     // The actual CompuMate controller
     // More information about these scheme can be found in CartCM.hxx
     class CMControl : public Controller
@@ -122,7 +124,9 @@ class CompuMate
     };
 
   private:
-    // System object
+    // Cart, Event and System objects
+    CartridgeCM& myCart;
+    const Event& myEvent;
     const System& mySystem;
 
     // Left and right controllers
@@ -132,8 +136,8 @@ class CompuMate
     // Multiple calls at the same cycle should be ignored
     uInt32 myCycleAtLastUpdate;
 
-    // Internal state of the port pins
-    uInt8 myIOPort;
+    // Column currently active
+    uInt8 myColumn;
 };
 
 #endif

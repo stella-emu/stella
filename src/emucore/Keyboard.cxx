@@ -64,16 +64,7 @@ Keyboard::~Keyboard()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Keyboard::write(DigitalPin pin, bool value)
 {
-  switch(pin)
-  {
-    case One:
-    case Two:
-    case Three:
-    case Four:
-      myDigitalPinState[pin] = value;
-    default:
-      break;
-  } 
+  myDigitalPinState[pin] = value;
 
   // Set defaults
   myDigitalPinState[Six] = true;

@@ -108,6 +108,8 @@ class System;
 */
 class CartridgeCM : public Cartridge
 {
+  friend class CompuMate;
+
   public:
     /**
       Create a new cartridge using the specified image
