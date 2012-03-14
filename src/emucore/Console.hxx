@@ -27,6 +27,7 @@ class System;
 class TIA;
 class M6532;
 class Cartridge;
+class CompuMate;
 
 #include "bspf.hxx"
 #include "Control.hxx"
@@ -338,6 +339,9 @@ class Console : public Serializable
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)
     M6532 *myRiot;
+
+    // Pointer to CompuMate handler (only used in CompuMate ROMs)
+    CompuMate* myCMHandler;
 
     // The currently defined display format (NTSC/PAL/SECAM)
     string myDisplayFormat;

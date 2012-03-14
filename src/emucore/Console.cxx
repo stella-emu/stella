@@ -74,6 +74,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     mySwitches(0),
     mySystem(0),
     myCart(cart),
+    myCMHandler(0),
     myDisplayFormat("NTSC"),
     myFramerate(60.0),
     myUserPaletteDefined(false)
@@ -221,6 +222,7 @@ Console::~Console()
 {
   delete mySystem;
   delete mySwitches;
+  delete myCMHandler;
   delete myControllers[0];
   delete myControllers[1];
 }
@@ -610,6 +612,17 @@ void Console::setControllers(const string& rommd5)
   const string& left  = myProperties.get(Controller_Left);
   const string& right = myProperties.get(Controller_Right);
 
+  // Check for CompuMate controllers; they are special in that a handler
+  // creates them for us, and also that they must be used in both ports
+  if(left == "COMPUMATE" || right == "COMPUMATE")
+  {
+    delete myCMHandler;
+    myCMHandler = new CompuMate(myEvent, *mySystem);
+    myControllers[0] = myCMHandler->leftController();
+    myControllers[1] = myCMHandler->rightController();
+    return;
+  }
+
   // Swap the ports if necessary
   int leftPort, rightPort;
   if(myProperties.get(Console_SwapPorts) == "NO")
@@ -668,10 +681,6 @@ void Console::setControllers(const string& rommd5)
   else if(left == "GENESIS")
   {
     myControllers[leftPort] = new Genesis(Controller::Left, myEvent, *mySystem);
-  }
-  else if(left == "COMPUMATE")
-  {
-    myControllers[leftPort] = new CompuMate(Controller::Left, myEvent, *mySystem);
   }
   else if(left == "MINDLINK")
   {
@@ -739,10 +748,6 @@ void Console::setControllers(const string& rommd5)
   else if(right == "GENESIS")
   {
     myControllers[rightPort] = new Genesis(Controller::Right, myEvent, *mySystem);
-  }
-  else if(right == "COMPUMATE")
-  {
-    myControllers[rightPort] = new CompuMate(Controller::Right, myEvent, *mySystem);
   }
   else if(right == "KIDVID")
   {

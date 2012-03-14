@@ -2641,6 +2641,7 @@
 "Cartridge.Type" "CM"
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
+"Display.Format" "NTSC"
 "Display.Phosphor" "YES"
 ""
 
@@ -5268,6 +5269,7 @@
 "Cartridge.Type" "CM"
 "Controller.Left" "COMPUMATE"
 "Controller.Right" "COMPUMATE"
+"Display.Format" "PAL"
 "Display.Phosphor" "YES"
 ""
 

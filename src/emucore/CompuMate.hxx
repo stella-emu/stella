@@ -25,116 +25,113 @@
 #include "Event.hxx"
 
 /**
-  Cartridge class used for SpectraVideo CompuMate bankswitched games.
+  Handler for SpectraVideo CompuMate bankswitched games.
 
-  This is more than just a cartridge mapper - it's also a "computer" add-on.  
-  There's two 8K EPROMs soldered on top of each other.  There's two short
-  wires with DB-9's on them which you plug into the two controller ports.
-  A 42 or so key membrane keyboard with audio in and audio out, and 2K of RAM.
+  The specifics of the CompuMate format can be found in both the Cart side
+  (CartCM) and the Controller side (CMControl).  The CompuMate device is
+  unique for the 2600 in that it requires close co-operation between the
+  cartridge and the left and right controllers.
 
-  There are 4 4K banks selectable at $1000 - $1FFF, and 2K RAM at
-  $1800 - $1FFF (R/W 'line' is available at SWCHA D5, so there's no separate
-  read and write ports).
+  This class acts as a 'parent' for both the left and right CMControl's,
+  taking care of their creation and communication between them.
 
-  Bankswitching is done though the controller ports
-    SWCHA: D7 = Audio input from tape player
-           D6 = Audio out to tape player and 4017 CLK
-                1 -> increase key column (0 to 9)
-           D5 = 4017 RST, and RAM direction. (high = write, low = read)
-                1 -> reset key column to 0 (if D4 = 0)
-                0 -> enable RAM writing (if D4 = 1)
-           D4 = RAM enable: 1 = disable RAM, 0 = enable RAM
-           D3 = keyboard row 1 input (0 = key pressed)
-           D2 = keyboard row 1 input (0 = key pressed)
-           D1 = bank select high bit
-           D0 = bank select low bit
-
-    INPT0: D7 = CTRL key input (0 on startup / 1 = key pressed)
-    INPT1: D7 = always HIGH input (pulled high thru 20K resistor)
-    INPT2: D7 = always HIGH input (pulled high thru 20K resistor)
-    INPT3: D7 = SHIFT key input (0 on startup / 1 = key pressed)
-    INPT4: D7 = keyboard row 0 input (0 = key pressed)
-    INPT5: D7 = keyboard row 2 input (0 = key pressed)
-
-  The keyboard's composed of a 4017 1 of 10 counter, driving the 10 columns of
-  the keyboard.  It has 4 rows.  The 4 row outputs are buffered by inverters.
-
-  Bit 5 of portA controls the reset line on the 4017.  Pulling it high will reset
-  scanning to column 0.  Pulling it low will allow the counter to be clocked.
-
-  Bit 6 of portA clocks the 4017.  Each rising edge advances the column one
-  count.
-
-  There's 10 columns labelled 0-9, and 4 rows, labelled 0-3.
-
-                           Column
-
-    0     1     2     3     4     5     6     7     8     9
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
-  | 7 | | 6 | | 8 | | 2 | | 3 | | 0 | | 9 | | 5 | | 1 | | 4 |  0
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
-  | U | | Y | | I | | W | | E | | P | | O | | T | | Q | | R |  1
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+     Row
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
-  | J | | H | | K | | S | | D | |ent| | L | | G | | A | | F |  2
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+
-  | M | | N | | < | | X | | C | |spc| | > | | B | | Z | | V |  3
-  +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ +---+ 
-
-  Function and Shift are separate keys that are read by 2 of the paddle inputs.
-  These two buttons pull the specific paddle input low when pressed.
-
-  Because the inputs are inverted, a low indicates a pressed button, and a high 
-  is an unpressed one.
-
-  The audio input/output are designed to drive a tape player.  The audio output is 
-  buffered through an inverter and 2 resistors and a capacitor to reduce the level
-  to feed it into the tape player.
-
-  The audio input is passed through a .1uf capacitor and is pulled to 1/2 supply
-  by two 20K resistors, then it goes through a hex inverting schmitt trigger to
-  square it up.  This then runs into bit 7 of portA.
-
-  This code was heavily borrowed from z26, and uses conventions defined
-  there.  Specifically, IOPortA is treated as a complete uInt8, whereas
-  the Stella core actually stores this information in boolean arrays
-  addressable by DigitalPin number.
-
-  @author  Stephen Anthony & z26 team
+  @author  Stephen Anthony
   @version $Id$
 */
-class CompuMate : public Controller
+class CompuMate
 {
   public:
     /**
-      Create a new MindLink controller plugged into the specified jack
+      Create a new CompuMate handler for both left and right ports.
+      Note that this class creates CMControl controllers for both ports,
+      but does not take responsibility for their deletion.
 
-      @param jack   The jack the controller is plugged into
       @param event  The event object to use for events
       @param system The system using this controller
     */
-    CompuMate(Jack jack, const Event& event, const System& system);
+    CompuMate(const Event& event, const System& system);
 
     /**
       Destructor
+      Controllers are deleted outside this class
     */
-    virtual ~CompuMate();
+    virtual ~CompuMate() { }
 
   public:
     /**
-      Called after *all* digital pins have been written on Port A.
-    */
-    void controlWrite();
-
-    /**
-      Update the entire digital and analog pin state according to the
-      events currently set.
+      Called by the controller(s) when all pins have been written
     */
     void update();
 
+    /**
+      Return the left and right CompuMate controllers
+    */
+    Controller* leftController() { return (Controller*) myLeftController; }
+    Controller* rightController() { return (Controller*) myRightController; }
+
   private:
+    // The actual CompuMate controller
+    // More information about these scheme can be found in CartCM.hxx
+    class CMControl : public Controller
+    {
+      public:
+        /**
+          Create a new CMControl controller plugged into the specified jack
+
+          @param handler  Class which coordinates between left & right controllers
+          @param jack     The jack the controller is plugged into
+          @param event    The event object to use for events
+          @param system   The system using this controller
+        */
+        CMControl(class CompuMate& handler, Controller::Jack jack, const Event& event,
+                  const System& system)
+          : Controller(jack, event, system, Controller::CompuMate),
+            myHandler(handler)
+        {
+          if(myJack == Left)
+          {
+            myAnalogPinValue[Five] = minimumResistance;
+            myAnalogPinValue[Nine] = maximumResistance;
+          }
+          else
+          {
+            myAnalogPinValue[Five] = maximumResistance;
+            myAnalogPinValue[Nine] = minimumResistance;
+          }
+        }
+
+        /**
+          Destructor
+        */
+        virtual ~CMControl() { }
+
+      public:
+        /**
+          Called after *all* digital pins have been written on Port A.
+        */
+        void controlWrite() { myHandler.update(); }
+
+        /**
+          Update the entire digital and analog pin state according to the
+          events currently set.
+        */
+        void update() { }
+
+      private:
+        class CompuMate& myHandler;
+    };
+
+  private:
+    // System object
+    const System& mySystem;
+
+    // Left and right controllers
+    CMControl *myLeftController, *myRightController;
+
+    // System cycle at which the update() method is called
+    // Multiple calls at the same cycle should be ignored
+    uInt32 myCycleAtLastUpdate;
+
     // Internal state of the port pins
     uInt8 myIOPort;
 };

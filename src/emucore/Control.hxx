@@ -67,6 +67,7 @@ class Controller : public Serializable
     Riot debug class needs special access to the underlying controller state
   */
   friend class RiotDebug;
+  friend class CompuMate;
 
   public:
     /**

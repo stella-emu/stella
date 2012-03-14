@@ -17,37 +17,34 @@
 // $Id$
 //============================================================================
 
-#include "Event.hxx"
+#include "Control.hxx"
+#include "System.hxx"
 #include "CompuMate.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::CompuMate(Jack jack, const Event& event, const System& system)
-  : Controller(jack, event, system, Controller::CompuMate),
+CompuMate::CompuMate(const Event& event, const System& system)
+  : mySystem(system),
+    myLeftController(0),
+    myRightController(0),
+    myCycleAtLastUpdate(0),
     myIOPort(0xff)
 {
-  if(myJack == Left)
-  {
-    myAnalogPinValue[Five] = minimumResistance;
-    myAnalogPinValue[Nine] = maximumResistance;
-  }
-  else
-  {
-    myAnalogPinValue[Five] = maximumResistance;
-    myAnalogPinValue[Nine] = minimumResistance;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CompuMate::~CompuMate()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CompuMate::controlWrite()
-{
+  myLeftController = new CMControl(*this, Controller::Left, event, system);
+  myRightController = new CMControl(*this, Controller::Right, event, system);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CompuMate::update()
 {
+  uInt32 cycle = mySystem.cycles();
+
+  // Only perform update once for both ports in the same cycle
+  if(myCycleAtLastUpdate != cycle)
+  {
+    myCycleAtLastUpdate = cycle;
+    return;
+  }
+  myCycleAtLastUpdate = cycle;
+
+  // TODO - handle SWCHA changes
 }

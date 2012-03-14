@@ -279,14 +279,18 @@ void M6532::setPinState(bool swcha)
   port0.write(Controller::Two, a & 0x20);
   port0.write(Controller::Three, a & 0x40);
   port0.write(Controller::Four, a & 0x80);
-  if(swcha)  port0.controlWrite();
 
   Controller& port1 = myConsole.controller(Controller::Right);
   port1.write(Controller::One, a & 0x01);
   port1.write(Controller::Two, a & 0x02);
   port1.write(Controller::Three, a & 0x04);
   port1.write(Controller::Four, a & 0x08);
-  if(swcha)  port1.controlWrite();
+
+  if(swcha)
+  {
+    port0.controlWrite();
+    port1.controlWrite();
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
