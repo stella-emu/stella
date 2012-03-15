@@ -240,7 +240,7 @@ GameInfoDialog::GameInfoDialog(
   ctrls.push_back("AtariVox",       "ATARIVOX"     );
   ctrls.push_back("SaveKey",        "SAVEKEY"      );
   ctrls.push_back("Sega Genesis",   "GENESIS"      );
-//  ctrls.push_back("CompuMate",      "COMPUMATE"    );
+  ctrls.push_back("CompuMate",      "COMPUMATE"    );
 //  ctrls.push_back("KidVid",         "KIDVID"      );
 //  ctrls.push_back("MindLink",       "MINDLINK"     );
   myP0Controller = new PopUpWidget(myTab, font, xpos+lwidth, ypos,

@@ -68,9 +68,9 @@ void CompuMate::update()
   rp.myDigitalPinState[Controller::Three] = true;
   rp.myDigitalPinState[Controller::Four] = true;
 
-  if (KeyTable[KBDK_LSHIFT])
+  if (KeyTable[KBDK_LSHIFT] || KeyTable[KBDK_RSHIFT])
     rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
-  if (KeyTable[KBDK_LCTRL])
+  if (KeyTable[KBDK_LCTRL] || KeyTable[KBDK_RCTRL])
     lp.myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
 
   switch(myCart.column())
@@ -108,8 +108,10 @@ void CompuMate::update()
     case 5:
       if (KeyTable[KBDK_0]) lp.myDigitalPinState[Controller::Six] = false;
       if (KeyTable[KBDK_p]) rp.myDigitalPinState[Controller::Three] = false;
-      if (KeyTable[KBDK_COLON]) rp.myDigitalPinState[Controller::Six] = false;
-      if (KeyTable[KBDK_SLASH]) rp.myDigitalPinState[Controller::Four] = false;
+      if (KeyTable[KBDK_SEMICOLON] || KeyTable[KBDK_RETURN])
+                            rp.myDigitalPinState[Controller::Six] = false;
+      if (KeyTable[KBDK_SLASH] || KeyTable[KBDK_SPACE])
+                            rp.myDigitalPinState[Controller::Four] = false;
       break;
     case 6:
       if (KeyTable[KBDK_9]) lp.myDigitalPinState[Controller::Six] = false;

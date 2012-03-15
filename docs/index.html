@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.5.5</b></h4></center>
+  <center><h4><b>Release 3.6</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - February 2012</b></center>
+  <center><b>February 1999 - March 2012</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -260,16 +260,18 @@
       joysticks or mouse</li>
     <li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
       computer's mouse</li>
+    <li>Emulates Spectravideo CompuMate system using your computer's keyboard</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.stelladaptor.com">Stelladaptor</a> and
-      <a href="http://2600-daptor.com">2600-adaptor</a></li>
+      <a href="http://2600-daptor.com">2600-adaptor/2600-daptor II</a></li>
     <li>Support for the speech portion of a real  
       <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
     <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
-    <li>Supports DPC+ bankswitching scheme from the Harmony cart, including partial emulation of the ARM processor</li>
+    <li>Supports DPC+ bankswitching scheme from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
+      including partial emulation of the ARM processor</li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual A26/BIN/ROM formats</li>
@@ -339,10 +341,9 @@
   <ul>
     <li>MacOSX 10.4 (Tiger) or above</li>
     <li>PPC G4 or Intel processor, 500MHz or above</li>
-    <li>OpenGL capable video card; software rendering mode is still available,
-      but as of MacOSX 10.4 is substandard (and untested) compared to OpenGL</li>
-    <li>Xcode 3.2 is required to compile the Stella source code (SDL 1.2.14 also
-      required to compile the 64-bit version)</li>
+    <li>OpenGL capable video card</li>
+    <li>Xcode 3.1 and SDL 1.2.14 required to compile a  10.4 compatible Universal Binary version;
+      Xcode 3.2 and SDL 1.2.15 required to compile the Intel/64-bit version</li>
     <li>The 64-bit version requires at minimum Snow Leopard (10.6) and Intel CPU/architecture</li>
   </ul>
 
@@ -366,7 +367,7 @@
   <h3><b><u>Other</u></b></h3>
 
   <p>Stella is extremely portable, and in its lifetime has been ported to almost every
-  platform where the SDL library exists.  It is 32/64 bit clean in Linux/Unix, MacOSX
+  platform where the SDL library exists.  It is 32/64-bit and endian clean in Linux/Unix, MacOSX
   and Windows.  The Stella Team is interested in hearing about any problems you may
   encounter with diverse operating systems and CPU types.</p>
   </blockquote>
@@ -1263,6 +1264,18 @@
         </table>
       </td>
     </tr>
+  </table>
+
+  <p><b>CompuMate Controller (cannot be remapped)</b></p>
+
+  <table BORDER=2 cellpadding=5>
+    <tr><th>CompuMate</th> <th>Key</th></tr>
+    <tr><td>0 - 9 </td><td>0 - 9 </td></tr>
+    <tr><td>A - Z </td><td>A - Z </td></tr>
+    <tr><td>Function </td><td>Control (left or right) </td></tr>
+    <tr><td>Shift </td><td>Shift (left or right) </td></tr>
+    <tr><td>Enter </td><td>; or Return/Enter </td></tr>
+    <tr><td>Space </td><td>/ or Space </td></tr>
   </table>
 
   <a name="DeveloperKeys"></a>
@@ -3071,6 +3084,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>4A50 </td><td>64K 4A50 + ram </td></tr>
         <tr><td>4K </td><td>4K Atari </td></tr>
         <tr><td>AR </td><td>Supercharger </td></tr>
+        <tr><td>CM &#185;</td><td>Spectravideo CompuMate </td></tr>
         <tr><td>CV </td><td>Commavid extra ram </td></tr>
         <tr><td>DPC </td><td>Pitfall II </td></tr>
         <tr><td>DPC+</td><td>Enhanced DPC </td></tr>
@@ -3142,6 +3156,7 @@ Ms Pac-Man (Stella extended codes):
       AtariVox</a></td><td>A SpeakJet based unlimited-vocabulary speech / sound synthesizer with 32K EEPROM.</td></tr>
         <tr><td><a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a></td><td>A 32K EEPROM for saving high scores, etc (the EEPROM portion of an AtariVox).</td></tr>
         <tr><td>Genesis </td><td>Sega Genesis controller, which can be used similar to a BoosterGrip, giving an extra button.</td></tr>
+        <tr><td>CompuMate </td><td>Spectravideo CompuMate (if either left or right is set, CompuMate is used for both).</td></tr>
       </table></td>
     </tr>
 
