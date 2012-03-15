@@ -108,8 +108,6 @@ class System;
 */
 class CartridgeCM : public Cartridge
 {
-  friend class CompuMate;
-
   public:
     /**
       Create a new cartridge using the specified image
@@ -212,6 +210,13 @@ class CartridgeCM : public Cartridge
       @return  True if the poke changed the device address space, else false
     */
     bool poke(uInt16 address, uInt8 value);
+
+    /**
+      Get the current keybord column
+
+      @return The column referenced by SWCHA D6 and D5
+    */
+    uInt8 column() const { return myColumn; }
 
   private:
     // Indicates which bank is currently active

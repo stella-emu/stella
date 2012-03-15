@@ -83,8 +83,7 @@ uInt8 CartridgeCM::peek(uInt16 address)
 {
   // NOTE: This does not handle accessing cart ROM/RAM, however, this function
   // should never be called for ROM/RAM because of the way page accessing
-  // has been setup
-  // It will only ever be called for RIOT reads
+  // has been setup (it will only ever be called for RIOT reads)
   return mySystem->m6532().peek(address);
 }
 
@@ -118,8 +117,8 @@ bool CartridgeCM::bank(uInt16 bank)
   uInt16 offset = myCurrentBank << 12;
   uInt16 shift = mySystem->pageShift();
 
-  // Although this scheme contains four 4K banks and one 2K bank, it's easier
-  // to think of things in terms of 2K slices, as follows:
+  // Although this scheme contains four 4K ROM banks and one 2K RAM bank,
+  // it's easier to think of things in terms of 2K slices, as follows:
   //
   // The lower 2K of cart address space always points to the lower 2K of the
   // current ROM bank

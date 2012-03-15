@@ -20,6 +20,8 @@
 #ifndef STELLA_KEYS_HXX
 #define STELLA_KEYS_HXX
 
+#include <SDL.h>
+
 /**
   This class implements a thin wrapper around the SDL keysym enumerations,
   such that SDL-specific code doesn't have to go into the internal parts of
@@ -309,5 +311,13 @@ typedef enum {
 // Just pass SDLMod directly as int (placeholder for now)
 // The underlying code doesn't need to know how it's implemented
 typedef int StellaMod;
+
+// Wrapper around the SDL_GetKeyState function
+// This can be used as-is since KBDK keys and SDL keys are the same
+class StellaKeys
+{
+  public:
+    static uInt8* GetKeyState() { return SDL_GetKeyState(NULL); }
+};
 
 #endif /* StellaKeys */

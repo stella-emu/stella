@@ -89,18 +89,7 @@ class CompuMate
                   const System& system)
           : Controller(jack, event, system, Controller::CompuMate),
             myHandler(handler)
-        {
-          if(myJack == Left)
-          {
-            myAnalogPinValue[Five] = minimumResistance;
-            myAnalogPinValue[Nine] = maximumResistance;
-          }
-          else
-          {
-            myAnalogPinValue[Five] = maximumResistance;
-            myAnalogPinValue[Nine] = minimumResistance;
-          }
-        }
+        { }
 
         /**
           Destructor
@@ -135,9 +124,6 @@ class CompuMate
     // System cycle at which the update() method is called
     // Multiple calls at the same cycle should be ignored
     uInt32 myCycleAtLastUpdate;
-
-    // Column currently active
-    uInt8 myColumn;
 };
 
 #endif
