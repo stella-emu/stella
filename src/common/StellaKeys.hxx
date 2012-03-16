@@ -317,7 +317,11 @@ typedef int StellaMod;
 class StellaKeys
 {
   public:
-    static uInt8* GetKeyState() { return SDL_GetKeyState(NULL); }
+    static uInt8* GetKeyState()
+    {
+      SDL_PumpEvents();
+      return SDL_GetKeyState(NULL);
+    }
 };
 
 #endif /* StellaKeys */
