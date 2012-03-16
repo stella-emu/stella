@@ -637,7 +637,7 @@ void DataGridWidget::startEditMode()
   if (_editable && !_editMode && _selectedItem >= 0)
   {
     _editMode = true;
-    setEditString("");  // Erase current entry when starting editing
+    setEditString("", true );  // Erase current entry when starting editing
   }
 }
 

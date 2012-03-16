@@ -51,7 +51,7 @@ EditableWidget::~EditableWidget()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EditableWidget::setEditString(const string& str)
+void EditableWidget::setEditString(const string& str, bool)
 {
   // TODO: We probably should filter the input string here,
   // e.g. using tryInsertChar.

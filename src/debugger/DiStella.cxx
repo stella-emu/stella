@@ -818,7 +818,7 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
     if(directive)  myDirectives[address-myOffset] = mask;
     return 1;
   }
-  else if (address >= 0 && address <= 0x3f)
+  else if (address <= 0x3f)
   {
     return 2;
   }

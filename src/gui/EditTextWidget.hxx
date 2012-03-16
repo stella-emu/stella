@@ -36,7 +36,7 @@ class EditTextWidget : public EditableWidget
 
     void setEditString(const string& str, bool changed = false);
 
-    virtual void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseDown(int x, int y, int button, int clickCount);
 
   protected:
     void drawWidget(bool hilite);

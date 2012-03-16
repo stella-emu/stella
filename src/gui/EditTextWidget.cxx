@@ -44,7 +44,7 @@ EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void EditTextWidget::setEditString(const string& str, bool changed)
 {
-  EditableWidget::setEditString(str);
+  EditableWidget::setEditString(str, changed);
   _backupString = str;
   _changed = changed;
 }

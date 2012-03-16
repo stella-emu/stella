@@ -150,8 +150,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
 
   // TODO - query these values directly from the TIA if value is 'AUTO'
   uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
-  if(ystart < 0)       ystart = 0;
-  else if(ystart > 64) ystart = 64;
+  if(ystart > 64) ystart = 64;
   uInt32 height = atoi(myProperties.get(Display_Height).c_str());
   if(height < 210)      height = 210;
   else if(height > 256) height = 256;
@@ -537,21 +536,21 @@ void Console::changeYStart(int direction)
 
   if(direction == +1)       // increase YStart
   {
-    ystart++;
-    if(ystart > 64)
+    if(ystart >= 64)
     {
       myOSystem->frameBuffer().showMessage("YStart at maximum");
       return;
     }
+    ystart++;
   }
   else if(direction == -1)  // decrease YStart
   {
-    ystart--;
-    if(ystart < 0)
+    if(ystart == 0)
     {
       myOSystem->frameBuffer().showMessage("YStart at minimum");
       return;
     }
+    ystart--;
   }
   else
     return;

@@ -149,7 +149,7 @@ uInt8 TIASound::get(uInt16 address) const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIASound::volume(uInt32 percent)
 {
-  if((percent >= 0) && (percent <= 100))
+  if(percent <= 100)
     myVolumePercentage = percent;
 }
 
