@@ -45,12 +45,12 @@ class System;
                 1 -> reset key column to 0 (if D4 = 0)
                 0 -> enable RAM writing (if D4 = 1)
            D4 = RAM enable: 1 = disable RAM, 0 = enable RAM
-           D3 = keyboard row 1 input (0 = key pressed)
+           D3 = keyboard row 3 input (0 = key pressed)
            D2 = keyboard row 1 input (0 = key pressed)
            D1 = bank select high bit
            D0 = bank select low bit
 
-    INPT0: D7 = CTRL key input (0 on startup / 1 = key pressed)
+    INPT0: D7 = FUNC key input (0 on startup / 1 = key pressed)
     INPT1: D7 = always HIGH input (pulled high thru 20K resistor)
     INPT2: D7 = always HIGH input (pulled high thru 20K resistor)
     INPT3: D7 = SHIFT key input (0 on startup / 1 = key pressed)
@@ -98,10 +98,7 @@ class System;
   by two 20K resistors, then it goes through a hex inverting schmitt trigger to
   square it up.  This then runs into bit 7 of portA.
 
-  This code was heavily borrowed from z26, and uses conventions defined
-  there.  Specifically, IOPortA is treated as a complete uInt8, whereas
-  the Stella core actually stores this information in boolean arrays
-  addressable by DigitalPin number.
+  This code was heavily borrowed from z26.
 
   @author  Stephen Anthony & z26 team
   @version $Id$

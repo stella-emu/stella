@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.5.5 to 3.6: (March 23, 2012)
+3.5.5 to 3.6: (March 16, 2012)
 
   * Added support for 2600-daptor II device, including native support
     for 7800 controllers, BoosterGrip and Keypad controllers.  Special
@@ -34,6 +34,9 @@
   * Fixed bug in BoosterGrip controller emulation; the functionality
     of the booster and trigger buttons was reversed.  Related to this,
     renamed these actions in the Event Mapping dialog to be more clear.
+
+  * Reverted to SDL 1.2.14 for the Windows 98/2k release, since SDL
+    1.2.15 isn't supported in that environment.
 
   * Updated included PNG library to latest stable version.
 
