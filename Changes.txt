@@ -12,12 +12,12 @@
                                Release History
 ===========================================================================
 
-3.5.5 to 3.6: (March xx, 2012)
+3.5.5 to 3.6: (March 23, 2012)
 
   * Added support for 2600-daptor II device, including native support
     for 7800 controllers, BoosterGrip and Keypad controllers.  Special
     thanks go to Tom Hafner for a complimentary test sample of this
-    device.
+    device, and also for donating a BoosterGrip controller.
 
   * Added ability to dynamically swap the port order of Stelladaptor/
     2600-daptor devices with the 'Control-1' key combo (useful if you
@@ -26,6 +26,10 @@
 
   * Added CompuMate bankswitching/controller support to the emulation
     core; the Spectravideo CompuMate ROMs (NTSC and PAL) now work.
+    Frequently used keys on the CompuMate are directly mapped to your
+    keyboard (ie, Func-Space for backspace is mapped to Backspace, etc).
+    Loading/saving from the cassette player is not yet supported, and
+    will come in a future release.
 
   * Fixed bug in BoosterGrip controller emulation; the functionality
     of the booster and trigger buttons was reversed.  Related to this,

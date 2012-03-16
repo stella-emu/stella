@@ -260,7 +260,9 @@
       joysticks or mouse</li>
     <li>Emulates CX-22 / CX-80 style trackballs and Amiga Mouse using your
       computer's mouse</li>
-    <li>Emulates Spectravideo CompuMate system using your computer's keyboard</li>
+    <li>Emulates Spectravideo CompuMate system using your computer's keyboard,
+      including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
+      to the actual keys on your keyboard.</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.stelladaptor.com">Stelladaptor</a> and
       <a href="http://2600-daptor.com">2600-adaptor/2600-daptor II</a></li>
@@ -306,6 +308,7 @@
   <p>
   <h3><b><u>General</u> (required for all versions of Stella)</b></h3>
   <ul>
+    <li>1GHz+ CPU</li>
     <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>SDL version 1.2.10 or greater, latest version highly recommended</li>
@@ -323,10 +326,9 @@
   <p>The Linux version of Stella is designed to work on a Linux Workstation with
   the following:</p>
   <ul>
-    <li>Pentium class machine required; OpenGL accelerated video card highly
-      recommended</li>
-    <li>Linux Kernel 2.4.x, Linux Kernel 2.6.x/3.x is highly recommended</li>
+    <li>Linux Kernel 2.6.x/3.x</li>
     <li>i386 or x86_64 class machine, with 32 or 64-bit distribution</li>
+    <li>OpenGL accelerated video card highly recommended</li>
     <li>Other architectures (MIPS, PPC, PPC64, etc) have been confirmed to work,
       but aren't as well tested as i386/x86_64</li>
     <li>GNU C++ compiler version 4.x and the make utility are required for compiling
@@ -340,7 +342,7 @@
   the following:</p>
   <ul>
     <li>MacOSX 10.4 (Tiger) or above</li>
-    <li>PPC G4 or Intel processor, 500MHz or above</li>
+    <li>PPC G4/G5 or Intel processor</li>
     <li>OpenGL capable video card</li>
     <li>Xcode 3.1 and SDL 1.2.14 required to compile a  10.4 compatible Universal Binary version;
       Xcode 3.2 and SDL 1.2.15 required to compile the Intel/64-bit version</li>
@@ -354,8 +356,7 @@
   with the following:</p>
 
   <ul>
-    <li>Pentium class machine required; OpenGL accelerated video card highly
-      recommended</li>
+    <li>OpenGL accelerated video card highly recommended</li>
     <li>64-bit port has been tested on Windows Vista/7 only; it may work on
       WinXP64 as well, but isn't a priority</li>
     <li>Visual C++ 2005 is required to compile the Stella source code for Windows 98 and 2000</li>
@@ -1274,10 +1275,11 @@
     <tr><td>A - Z </td><td>A - Z </td></tr>
     <tr><td>Comma </td><td>Comma </td></tr>
     <tr><td>Period </td><td>Period </td></tr>
-    <tr><td>Function </td><td>Control (left or right) </td></tr>
+    <tr><td>Func </td><td>Control (left or right) </td></tr>
     <tr><td>Shift </td><td>Shift (left or right) </td></tr>
     <tr><td>Enter </td><td>; or Return/Enter </td></tr>
     <tr><td>Space </td><td>/ or Space </td></tr>
+    <tr><td>Func-Space </td><td>Backspace </td></tr>
   </table>
 
   <a name="DeveloperKeys"></a>

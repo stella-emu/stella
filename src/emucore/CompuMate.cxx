@@ -65,14 +65,14 @@ void CompuMate::update()
   rp.myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
   rp.myAnalogPinValue[Controller::Five] = Controller::maximumResistance;
   rp.myDigitalPinState[Controller::Six] = true;
-  rp.myDigitalPinState[Controller::Three] = true;
-  rp.myDigitalPinState[Controller::Four] = true;
 
   if (KeyTable[KBDK_LSHIFT] || KeyTable[KBDK_RSHIFT])
     rp.myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
   if (KeyTable[KBDK_LCTRL] || KeyTable[KBDK_RCTRL])
     lp.myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
 
+  rp.myDigitalPinState[Controller::Three] = true;
+  rp.myDigitalPinState[Controller::Four] = true;
   switch(myCart.column())
   {
     case 0:
@@ -112,6 +112,12 @@ void CompuMate::update()
                             rp.myDigitalPinState[Controller::Six] = false;
       if (KeyTable[KBDK_SLASH] || KeyTable[KBDK_SPACE])
                             rp.myDigitalPinState[Controller::Four] = false;
+      // Emulate Ctrl-space (aka backspace) with the actual Backspace key
+      if (KeyTable[KBDK_BACKSPACE])
+      {
+        lp.myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
+        rp.myDigitalPinState[Controller::Four] = false;
+      }
       break;
     case 6:
       if (KeyTable[KBDK_9]) lp.myDigitalPinState[Controller::Six] = false;

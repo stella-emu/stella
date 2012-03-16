@@ -994,7 +994,7 @@ void EventHandler::handleEvent(Event::Type event, int state)
     ////////////////////////////////////////////////////////////////////////
 
     case Event::Fry:
-      myFryingFlag = bool(state);
+      if(myUseCtrlKeyFlag) myFryingFlag = bool(state);
       return;
 
     case Event::VolumeDecrease:
@@ -2051,6 +2051,10 @@ void EventHandler::setEventState(State state)
 {
   myState = state;
 
+  // Normally, the usage of Control key is determined by 'ctrlcombo'
+  // For certain ROMs it may be forced off, whatever the setting
+  myUseCtrlKeyFlag = myOSystem->settings().getBool("ctrlcombo");
+
   // Only enable Unicode in GUI modes, since there we need it for ascii data
   // Otherwise, it causes a performance hit, so leave it off
   switch(myState)
@@ -2059,6 +2063,9 @@ void EventHandler::setEventState(State state)
       myOverlay = NULL;
       myOSystem->sound().mute(false);
       SDL_EnableUNICODE(0);
+      if(myOSystem->console().controller(Controller::Left).type() ==
+            Controller::CompuMate)
+        myUseCtrlKeyFlag = false;
       break;
 
     case S_PAUSE:
