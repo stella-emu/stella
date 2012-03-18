@@ -1011,9 +1011,6 @@
 			isa = PBXGroup;
 			children = (
 				DCF467B10F93993B00B25D7A /* Array.hxx */,
-				DC752D931513E9F7005B0D24 /* atari_ntsc.c */,
-				DC752D941513E9F7005B0D24 /* atari_ntsc.h */,
-				DC752D921513E9F7005B0D24 /* atari_ntsc_impl.h */,
 				DCECDB0210B9DC0400AF4E1B /* bspf.hxx */,
 				DC8AE5BF1417804C00335D45 /* FBSurfaceGL.cxx */,
 				DC8AE5C01417804C00335D45 /* FBSurfaceGL.hxx */,
@@ -1026,8 +1023,6 @@
 				2DDBEA0A0845700300812C11 /* mainSDL.cxx */,
 				DCAE2A9114CCCCBD004327BB /* MouseControl.cxx */,
 				DCAE2A9214CCCCBD004327BB /* MouseControl.hxx */,
-				DC49F90314F7D0DB000704B0 /* NTSCFilter.cxx */,
-				DC49F90414F7D0DB000704B0 /* NTSCFilter.hxx */,
 				DC3FE49D11C7D3FE00C91C72 /* PNGLibrary.cxx */,
 				DC3FE49E11C7D3FE00C91C72 /* PNGLibrary.hxx */,
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
@@ -1043,6 +1038,7 @@
 				DC5C76AF14C2709E0031EBC7 /* StellaKeys.hxx */,
 				DC20D6F1138EB130002A7428 /* StringList.hxx */,
 				DC20D6F2138EB130002A7428 /* StringParser.hxx */,
+				DC881B87151676A200021371 /* tv_filters */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
 			);
 			name = common;
@@ -1375,6 +1371,18 @@
 				DC3FE47B11C7D35600C91C72 /* pngwutil.c */,
 			);
 			name = libpng;
+			sourceTree = "<group>";
+		};
+		DC881B87151676A200021371 /* tv_filters */ = {
+			isa = PBXGroup;
+			children = (
+				DC752D931513E9F7005B0D24 /* atari_ntsc.c */,
+				DC752D941513E9F7005B0D24 /* atari_ntsc.h */,
+				DC752D921513E9F7005B0D24 /* atari_ntsc_impl.h */,
+				DC49F90314F7D0DB000704B0 /* NTSCFilter.cxx */,
+				DC49F90414F7D0DB000704B0 /* NTSCFilter.hxx */,
+			);
+			name = tv_filters;
 			sourceTree = "<group>";
 		};
 		DCCC0C9109C3541E0088BFF1 /* cheat */ = {
