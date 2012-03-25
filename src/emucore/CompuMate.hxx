@@ -99,8 +99,10 @@ class CompuMate
       public:
         /**
           Called after *all* digital pins have been written on Port A.
+
+          @param value  The entire contents of the SWCHA register
         */
-        void controlWrite() { myHandler.update(); }
+        void controlWrite(uInt8) { myHandler.update(); }
 
         /**
           Update the entire digital and analog pin state according to the

@@ -59,9 +59,21 @@ class MindLink : public Controller
 
   public:
     /**
-      Called after *all* digital pins have been written on Port A.
+      Write the given value to the specified digital pin for this
+      controller.  Writing is only allowed to the pins associated
+      with the PIA.  Therefore you cannot write to pin six.
+
+      @param pin The pin of the controller jack to write to
+      @param value The value to write to the pin
     */
-    void controlWrite() { nextMindlinkBit(); }
+    void write(DigitalPin pin, bool value) { myDigitalPinState[pin] = value; }
+
+    /**
+      Called after *all* digital pins have been written on Port A.
+
+      @param value  The entire contents of the SWCHA register
+    */
+    void controlWrite(uInt8) { nextMindlinkBit(); }
 
     /**
       Update the entire digital and analog pin state according to the
@@ -73,20 +85,9 @@ class MindLink : public Controller
     void nextMindlinkBit();
 
   private:
-    uInt8 myMask1, myMask2, myMask3;
-
-    // Internal state of the port pins
-    uInt8 myIOPort;
-
     // Position value in Mindlink controller
     // Gets transferred bitwise (16 bits) 
     int myMindlinkPos;
-
-    // Position for player 1 (0x2800-0x3800)
-    int myMindlinkPos1;
-
-    // Position for player 2 (0x1000-0x2000)
-    int myMindlinkPos2;
 
     // Which bit to transfer next
     int myMindlinkShift;

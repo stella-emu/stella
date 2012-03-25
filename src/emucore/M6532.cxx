@@ -272,24 +272,24 @@ void M6532::setPinState(bool swcha)
       if(DDR bit is input)       set output as 1
       else if(DDR bit is output) set output as bit in ORA
   */
-  uInt8 a = myOutA | ~myDDRA;
-
   Controller& port0 = myConsole.controller(Controller::Left);
-  port0.write(Controller::One, a & 0x10);
-  port0.write(Controller::Two, a & 0x20);
-  port0.write(Controller::Three, a & 0x40);
-  port0.write(Controller::Four, a & 0x80);
-
   Controller& port1 = myConsole.controller(Controller::Right);
-  port1.write(Controller::One, a & 0x01);
-  port1.write(Controller::Two, a & 0x02);
-  port1.write(Controller::Three, a & 0x04);
-  port1.write(Controller::Four, a & 0x08);
+
+  uInt8 ioport = myOutA | ~myDDRA;
+
+  port0.write(Controller::One,   ioport & 0x10);
+  port0.write(Controller::Two,   ioport & 0x20);
+  port0.write(Controller::Three, ioport & 0x40);
+  port0.write(Controller::Four,  ioport & 0x80);
+  port1.write(Controller::One,   ioport & 0x01);
+  port1.write(Controller::Two,   ioport & 0x02);
+  port1.write(Controller::Three, ioport & 0x04);
+  port1.write(Controller::Four,  ioport & 0x08);
 
   if(swcha)
   {
-    port0.controlWrite();
-    port1.controlWrite();
+    port0.controlWrite(ioport);
+    port1.controlWrite(ioport);
   }
 }
 

@@ -18,6 +18,9 @@
     actual keyboard, instead of having to remember the weird combinations
     used on the original CompuMate keyboard.
 
+  * Added emulation for MindLink controller; the Bionic Breakthrough
+    ROM now works.
+
 -Have fun!
 
 
