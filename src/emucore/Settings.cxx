@@ -59,6 +59,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
+  // NTSC filtering options
+  setInternal("ntsc_filter", "false");
+
   // Sound options
   setInternal("sound", "true");
   setInternal("fragsize", "512");
@@ -339,6 +342,8 @@ void Settings::usage()
     << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
     << "  -gl_vsync     <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -gl_vbo       <1|0>          Enable 'vertex buffer objects'\n"
+    << endl
+    << "  -ntsc_filter  <1|0>          Enable Blargg NTSC filtering effects\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"

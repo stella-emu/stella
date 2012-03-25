@@ -25,6 +25,7 @@
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
 #include "FrameBufferGL.hxx"
+#include "NTSCFilter.hxx"
 
 /**
   A surface suitable for OpenGL rendering mode, but specifically for
@@ -56,6 +57,7 @@ class FBSurfaceTIA : public FBSurface
 
   private:
     void setTIA(const TIA& tia) { myTIA = &tia; }
+    void setTIAPalette(const uInt32* palette);
     void setFilter(const string& name);
     void updateCoords();
 
@@ -64,6 +66,7 @@ class FBSurfaceTIA : public FBSurface
     const FrameBufferGL::GLpointers& myGL;
     const TIA* myTIA;
     SDL_Surface* myTexture;
+    NTSCFilter myNTSCFilter;
     uInt32 myPitch;
 
     GLuint  myTexID[2], myVBOID;

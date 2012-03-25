@@ -79,11 +79,6 @@ class FrameBufferGL : public FrameBuffer
     */
     static float glVersion() { return myGLVersion; }
 
-    /**
-      Indicates whether GL FBO functionality was detected and enabled.
-    */
-    static bool isFBOAvailable() { return myFBOAvailable; }
-
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
     //////////////////////////////////////////////////////////////////////
@@ -91,6 +86,18 @@ class FrameBufferGL : public FrameBuffer
       Enable/disable phosphor effect.
     */
     void enablePhosphor(bool enable, int blend);
+
+    /**
+      Enable/disable NTSC filtering effects.
+    */
+    void enableNTSC(bool enable);
+
+    /**
+      Set up the TIA/emulation palette for a screen of any depth > 8.
+
+      @param palette  The array of colors
+    */
+    void setTIAPalette(const uInt32* palette);
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -185,9 +192,16 @@ class FrameBufferGL : public FrameBuffer
 
   private:
     enum GLFunctionality {
-      kGL_BASIC, kGL_VBO, kGL_FBO
+      kGL_BASIC, kGL_VBO
     };
     bool loadFuncs(GLFunctionality functionality);
+
+    enum FilterType {
+      kNone,
+      kPhosphor,
+      kBlarggNTSC
+    };
+    FilterType myFilterType;
 
     static uInt32 power_of_two(uInt32 input)
     {
@@ -223,8 +237,8 @@ class FrameBufferGL : public FrameBuffer
     // Indicates the OpenGL version found (0 indicates none)
     static float myGLVersion;
 
-    // Indicates whether Vertex/Frame Buffer Object functions were properly loaded
-    static bool myVBOAvailable, myFBOAvailable;
+    // Indicates whether Vertex Buffer Objects (VBO) are available
+    static bool myVBOAvailable;
 
     // Structure containing dynamically-loaded OpenGL function pointers
     #define OGL_DECLARE(NAME,RET,FUNC,PARAMS) RET (APIENTRY* NAME) PARAMS

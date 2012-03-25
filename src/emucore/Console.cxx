@@ -442,6 +442,24 @@ void Console::togglePhosphor()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleNTSC()
+{
+  ostringstream buf;
+  if(myOSystem->frameBuffer().type() == kDoubleBuffer)
+  {
+    bool state = !myOSystem->settings().getBool("ntsc_filter");
+    myOSystem->frameBuffer().enableNTSC(state);
+    myOSystem->settings().setBool("ntsc_filter", state);
+    buf << "NTSC filtering " << (state ? "enabled" : "disabled");
+    myOSystem->frameBuffer().showMessage(buf.str());
+  }
+  else
+    buf << "NTSC filtering not available";
+
+  myOSystem->frameBuffer().showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setProperties(const Properties& props)
 {
   myProperties = props;
@@ -468,6 +486,7 @@ FBInitStatus Console::initializeVideo(bool full)
   bool enable = myProperties.get(Display_Phosphor) == "YES";
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
   myOSystem->frameBuffer().enablePhosphor(enable, blend);
+  myOSystem->frameBuffer().enableNTSC(myOSystem->settings().getBool("ntsc_filter"));
   setPalette(myOSystem->settings().getString("palette"));
 
   // Set the correct framerate based on the format of the ROM

@@ -375,6 +375,10 @@ void EventHandler::poll(uInt64 time)
                 myOSystem->console().changeYStart(-1);
                 break;
 
+              case KBDK_f:  // Alt-f toggles NTSC filtering
+                myOSystem->console().toggleNTSC();
+                break;
+
               case KBDK_z:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleP0Collision();

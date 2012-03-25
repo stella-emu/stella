@@ -86,7 +86,7 @@ extern atari_ntsc_setup_t const atari_ntsc_svideo;    /* color bleeding only */
 extern atari_ntsc_setup_t const atari_ntsc_rgb;       /* crisp image */
 extern atari_ntsc_setup_t const atari_ntsc_monochrome;/* desaturated + artifacts */
 
-enum { atari_ntsc_palette_size = 256 };
+enum { atari_ntsc_palette_size = 128 };
 
 /* Initializes and adjusts parameters. Can be called multiple times on the same
 atari_ntsc_t object. Can pass NULL for either parameter. */

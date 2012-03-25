@@ -300,6 +300,11 @@ class FrameBuffer
     virtual void enablePhosphor(bool enable, int blend) = 0;
 
     /**
+      Enable/disable NTSC filtering effects.
+    */
+    virtual void enableNTSC(bool enable) = 0;
+
+    /**
       This method is called to retrieve the R/G/B data from the given pixel.
 
       @param pixel  The pixel containing R/G/B data

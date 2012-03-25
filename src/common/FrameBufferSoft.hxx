@@ -59,6 +59,11 @@ class FrameBufferSoft : public FrameBuffer
     void enablePhosphor(bool enable, int blend);
 
     /**
+      Enable/disable NTSC filtering effects (not supported in software mode).
+    */
+    void enableNTSC(bool enable) { }
+
+    /**
       This method is called to retrieve the R/G/B data from the given pixel.
 
       @param pixel  The pixel containing R/G/B data
