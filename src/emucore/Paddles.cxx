@@ -43,6 +43,7 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
 
   // As much as possible, precompute which events we care about for
   // a given port; this will speed up processing in update()
+
   // Consider whether this is the left or right port
   if(myJack == Left)
   {
@@ -221,7 +222,8 @@ Paddles::Paddles(Jack jack, const Event& event, const System& system,
   myKeyRepeat0 = myKeyRepeat1 = false;
   myPaddleRepeat0 = myPaddleRepeat1 = myLastAxisX = myLastAxisY = 0;
 
-  myCharge[0] = myCharge[1] = myLastCharge[0] = myLastCharge[1] = 0;
+  myCharge[0] = myCharge[1] = TRIGRANGE / 2;
+  myLastCharge[0] = myLastCharge[1] = 0;
 
   // Paranoid mode: defaults for the global variables should be set
   // before the first instance of this class is instantiated
