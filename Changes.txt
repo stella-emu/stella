@@ -21,6 +21,8 @@
   * Added emulation for MindLink controller; the Bionic Breakthrough
     ROM now works.
 
+  * Updated included PNG library to latest stable version.
+
 -Have fun!
 
 
