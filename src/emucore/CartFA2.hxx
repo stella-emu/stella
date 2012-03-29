@@ -29,7 +29,7 @@ class System;
   This is an extended version of the CBS RAM Plus bankswitching scheme
   supported by the Harmony cartridge.
   
-  There are six 4K banks and 256 bytes of RAM.
+  There are six (or seven) 4K banks and 256 bytes of RAM.
 
   @author  Chris D. Walton
   @version $Id$
@@ -143,11 +143,14 @@ class CartridgeFA2 : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // The 24K ROM image of the cartridge
-    uInt8 myImage[24576];
+    // The 24K/28K ROM image of the cartridge
+    uInt8* myImage;
 
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
+
+    // Size of the ROM image
+    uInt32 mySize;
 };
 
 #endif

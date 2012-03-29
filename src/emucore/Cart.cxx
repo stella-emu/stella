@@ -380,7 +380,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
     else
       type = "F6";
   }
-  else if(size == 24*1024)  // 24K
+  else if(size == 24*1024 || size == 28*1024)  // 24K & 28K
   {
     type = "FA2";
   }
