@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.6 to 3.6.1: (March 30, 2012)
+
+  * Extended FA2 bankswitch scheme to handle 28K ROMs (in addition to
+    the previously supported 24K ROMs).
+
+-Have fun!
+
+
 3.5.5 to 3.6: (March 16, 2012)
 
   * Added support for 2600-daptor II device, including native support
@@ -39,8 +47,6 @@
     1.2.15 isn't supported in that environment.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 3.5 to 3.5.5: (February 4, 2012)

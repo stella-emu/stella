@@ -1,5 +1,5 @@
 %define name    stella
-%define version 3.6
+%define version 3.6.1
 %define rel     1
 
 %define enable_gl 1
@@ -108,6 +108,9 @@ rm -rf $RPM_BUILD_DIR/%{name}-%{version}
 %_datadir/icons/large/%{name}.png
 
 %changelog
+* Fri Mar 30 2012 Stephen Anthony <stephena@users.sf.net> 3.6.1-1
+- Version 3.6.1 release
+
 * Fri Mar 16 2012 Stephen Anthony <stephena@users.sf.net> 3.6-1
 - Version 3.6 release
 
