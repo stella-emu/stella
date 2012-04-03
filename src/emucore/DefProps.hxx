@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3277
+#define DEF_PROPS_SIZE 3279
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -1892,6 +1892,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "90578a63441de4520be5324e8f015352", "Bit Corporation", "PGP204", "Open Sesame (4 Game in One Dark Green) (1983) (BitCorp) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "256", "YES", "" }, 
   { "9072c142728a3a3d994956d03bfacba2", "Fabrizio Zavagli", "", "Crash Dive (Fabrizio Zavagli) (PAL60)", "NTSC Conversion", "Hack", "", "", "", "", "", "", "", "", "", "", "PAL60", "30", "", "", "" }, 
   { "90b1799dddb8bf748ee286d22e609480", "", "", "Ship Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "90b647bfb6b18af35fcf613573ad2eec", "AtariAge (Chris Walton)", "", "Juno First (2009)", "AtariVox supported", "Homebrew", "", "", "", "", "", "", "", "ATARIVOX", "", "", "", "", "", "YES", "" }, 
   { "90ccf4f30a5ad8c801090b388ddd5613", "Arcadia Corporation, Stephen Harland Landrum", "AR-4400", "Dragonstomper (1982) (Arcadia)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "90d77e966793754ab4312c47b42900b1", "Imagic, Brad Stewart", "720105-2A, IA3400P, EIX-005-04I", "Fire Fighter (1982) (Imagic) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "90f502cbf4438a95f69f848cef36eb64", "Digitel", "", "River Raid II (1985) (Digitel)", "AKA River Raid", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3237,6 +3238,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "fa6fe97a10efb9e74c0b5a816e6e1958", "ZiMAG - Emag - Vidco", "707-111 - GN-030", "Tanks But No Tanks (1983) (ZiMAG)", "AKA Phantom Tank", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "" }, 
   { "fa7ce62e7fd77e02b3e2198d70742f80", "Atari, Peter C. Niday", "CX26108", "Donald Duck's Speedboat (04-18-1983) (Atari) (Prototype) (PAL)", "AKA Donald Duck's Regatta", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fa7e11a3dbea4365975cd2f094e61d25", "Tim Snider", "", "Mystery Science Theater 2600 (1999) (Tim Snider) (Hack)", "Hack of Megamania", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "fa98d48cd609c9babc819e0a1bd8d598", "AtariAge (Chris Walton)", "", "Juno First (2009) (PAL60)", "AtariVox supported", "Homebrew", "", "", "", "", "", "", "", "ATARIVOX", "", "", "PAL60", "", "", "YES", "" }, 
   { "fabca526d57de46768b392f758f1a008", "", "", "Laseresal 2600 (16-12-2001) (Andrew Wallace) (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fac28963307b6e85082ccd77c88325e7", "CCE", "", "Berzerk (CCE)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fadb89f9b23beb4d43a7895c532757e2", "Galaga Games", "", "River Raid (1984) (Galaga Games) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
