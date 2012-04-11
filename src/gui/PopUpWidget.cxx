@@ -59,12 +59,12 @@ PopUpWidget::PopUpWidget(GuiObject* boss, const GUI::Font& font,
   _textcolorhi = kTextColor;
 
   if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font->getStringWidth(_label);
+    _labelWidth = _font.getStringWidth(_label);
 
   _w = w + _labelWidth + 15;
 
   // vertically center the arrows and text
-  myTextY   = (_h - _font->getFontHeight()) / 2;
+  myTextY   = (_h - _font.getFontHeight()) / 2;
   myArrowsY = (_h - 8) / 2;
 
   myMenu = new ContextMenu(this, font, list, cmd);
@@ -147,7 +147,7 @@ void PopUpWidget::drawWidget(bool hilite)
 
   // Draw the selected entry, if any
   const string& name = myMenu->getSelectedName();
-  TextAlignment align = (_font->getStringWidth(name) > w-6) ?
+  TextAlignment align = (_font.getStringWidth(name) > w-6) ?
                          kTextAlignRight : kTextAlignLeft;
   s.drawString(_font, name, x+2, _y+myTextY, w-6,
                !isEnabled() ? kColor : kTextColor, align);

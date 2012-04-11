@@ -41,7 +41,7 @@ ContextMenu::ContextMenu(GuiObject* boss, const GUI::Font& font,
     _isScrolling(false),
     _scrollUpColor(kColor),
     _scrollDnColor(kColor),
-    _font(&font),
+    _font(font),
     _cmd(cmd),
     _xorig(0),
     _yorig(0)
@@ -65,7 +65,7 @@ void ContextMenu::addItems(const StringMap& items)
   int maxwidth = 0;
   for(unsigned int i = 0; i < _entries.size(); ++i)
   {
-    int length = _font->getStringWidth(_entries[i].first);
+    int length = _font.getStringWidth(_entries[i].first);
     if(length > maxwidth)
       maxwidth = length;
   }

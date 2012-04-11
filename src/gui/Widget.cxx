@@ -39,7 +39,7 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
   : GuiObject(boss->instance(), boss->parent(), boss->dialog(), x, y, w, h),
     _type(0),
     _boss(boss),
-    _font((GUI::Font*)&font),
+    _font(font),
     _id(-1),
     _flags(0),
     _hasFocus(false),
@@ -52,8 +52,8 @@ Widget::Widget(GuiObject* boss, const GUI::Font& font,
   _next = _boss->_firstWidget;
   _boss->_firstWidget = this;
 
-  _fontWidth  = _font->getMaxCharWidth();
-  _fontHeight = _font->getLineHeight();
+  _fontWidth  = _font.getMaxCharWidth();
+  _fontHeight = _font.getLineHeight();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -182,37 +182,23 @@ Widget* Widget::findWidgetInChain(Widget *w, int x, int y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Widget::isWidgetInChain(Widget* w, Widget* find)
 {
-  bool found = false;
-
   while(w)
   {
     // Stop as soon as we find the widget
-    if(w == find)
-    {
-      found = true;
-      break;
-    }
+    if(w == find)  return true;
     w = w->_next;
   }
-
-  return found;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Widget::isWidgetInChain(WidgetArray& list, Widget* find)
 {
-  bool found = false;
-
   for(int i = 0; i < (int)list.size(); ++i)
-  {
     if(list[i] == find)
-    {
-      found = true;
-      break;
-    }
-  }
+      return true;
 
-  return found;
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -469,7 +455,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
   if(_h > 14)  // center box
     _boxY = (_h - 14) / 2;
   else         // center text
-    _textY = (14 - _font->getFontHeight()) / 2;
+    _textY = (14 - _font.getFontHeight()) / 2;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -546,7 +532,7 @@ SliderWidget::SliderWidget(GuiObject *boss, const GUI::Font& font,
   _bgcolorhi = kDlgColor;
 
   if(!_label.empty() && _labelWidth == 0)
-    _labelWidth = _font->getStringWidth(_label);
+    _labelWidth = _font.getStringWidth(_label);
 
   _w = w + _labelWidth;
 }

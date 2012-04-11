@@ -133,9 +133,9 @@ class Widget : public GuiObject
     bool wantsRaw() const    { return _flags & WIDGET_WANTS_RAWDATA;   }
 
     void setID(int id)  { _id = id;   }
-    int  getID()        { return _id; }
+    int  getID() const  { return _id; }
 
-    virtual const GUI::Font* font() { return _font; }
+    virtual const GUI::Font& font() const { return _font; }
 
     void setTextColor(uInt32 color)   { _textcolor = color;   }
     void setTextColorHi(uInt32 color) { _textcolorhi = color; }
@@ -161,7 +161,7 @@ class Widget : public GuiObject
   protected:
     int        _type;
     GuiObject* _boss;
-    GUI::Font* _font;
+    const GUI::Font& _font;
     Widget*    _next;
     int        _id;
     int        _flags;

@@ -221,9 +221,9 @@ void FrameBuffer::update()
                 myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
-        myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
+        myStatsMsg.surface->drawString(myOSystem->consoleFont(),
           msg, 1, 1, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
-        myStatsMsg.surface->drawString(&myOSystem->consoleFont(),
+        myStatsMsg.surface->drawString(myOSystem->consoleFont(),
           info.BankSwitch, 1, 15, myStatsMsg.w, myStatsMsg.color, kTextAlignLeft);
         myStatsMsg.surface->addDirtyRect(0, 0, 0, 0);  // force a full draw
         myStatsMsg.surface->setPos(myImageRect.x() + 1, myImageRect.y() + 1);
@@ -414,7 +414,7 @@ inline void FrameBuffer::drawMessage()
   myMsg.surface->setPos(myMsg.x + myImageRect.x(), myMsg.y + myImageRect.y());
   myMsg.surface->fillRect(1, 1, myMsg.w-2, myMsg.h-2, kBtnColor);
   myMsg.surface->box(0, 0, myMsg.w, myMsg.h, kColor, kShadowColor);
-  myMsg.surface->drawString(&myOSystem->font(), myMsg.text, 4, 4,
+  myMsg.surface->drawString(myOSystem->font(), myMsg.text, 4, 4,
                                myMsg.w, myMsg.color, kTextAlignLeft);
   myMsg.counter--;
 
@@ -1275,14 +1275,14 @@ void FBSurface::frameRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurface::drawString(const GUI::Font* font, const string& s,
+void FBSurface::drawString(const GUI::Font& font, const string& s,
                            int x, int y, int w,
                            uInt32 color, TextAlignment align,
                            int deltax, bool useEllipsis)
 {
   const int leftX = x, rightX = x + w;
   unsigned int i;
-  int width = font->getStringWidth(s);
+  int width = font.getStringWidth(s);
   string str;
 	
   if(useEllipsis && width > w)
@@ -1293,7 +1293,7 @@ void FBSurface::drawString(const GUI::Font* font, const string& s,
     // What is best really depends on the context; but unless we want to
     // make this configurable, replacing the middle probably is a good
     // compromise.
-    const int ellipsisWidth = font->getStringWidth("...");
+    const int ellipsisWidth = font.getStringWidth("...");
 		
     // SLOW algorithm to remove enough of the middle. But it is good enough for now.
     const int halfWidth = (w - ellipsisWidth) / 2;
@@ -1301,7 +1301,7 @@ void FBSurface::drawString(const GUI::Font* font, const string& s,
 		
     for(i = 0; i < s.size(); ++i)
     {
-      int charWidth = font->getCharWidth(s[i]);
+      int charWidth = font.getCharWidth(s[i]);
       if(w2 + charWidth > halfWidth)
         break;
 
@@ -1321,13 +1321,13 @@ void FBSurface::drawString(const GUI::Font* font, const string& s,
     // (width + ellipsisWidth - w)
     int skip = width + ellipsisWidth - w;
     for(; i < s.size() && skip > 0; ++i)
-      skip -= font->getCharWidth(s[i]);
+      skip -= font.getCharWidth(s[i]);
 
     // Append the remaining chars, if any
     for(; i < s.size(); ++i)
       str += s[i];
 
-    width = font->getStringWidth(str);
+    width = font.getStringWidth(str);
   }
   else
     str = s;
@@ -1340,7 +1340,7 @@ void FBSurface::drawString(const GUI::Font* font, const string& s,
   x += deltax;
   for(i = 0; i < str.size(); ++i)
   {
-    w = font->getCharWidth(str[i]);
+    w = font.getCharWidth(str[i]);
     if(x+w > rightX)
       break;
     if(x >= leftX)

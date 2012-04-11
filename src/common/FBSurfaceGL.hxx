@@ -44,7 +44,7 @@ class FBSurfaceGL : public FBSurface
     void hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color);
     void vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color);
     void fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color);
-    void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y, uInt32 color);
+    void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y, uInt32 color);
     void drawBitmap(uInt32* bitmap, uInt32 x, uInt32 y, uInt32 color, uInt32 h = 8);
     void drawPixels(uInt32* data, uInt32 x, uInt32 y, uInt32 numpixels);
     void drawSurface(const FBSurface* surface, uInt32 x, uInt32 y);

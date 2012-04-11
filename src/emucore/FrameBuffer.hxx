@@ -684,7 +684,7 @@ class FBSurface
       @param y      The y coordinate
       @param color  The color of the character
     */
-    virtual void drawChar(const GUI::Font* font, uInt8 c, uInt32 x, uInt32 y,
+    virtual void drawChar(const GUI::Font& font, uInt8 c, uInt32 x, uInt32 y,
                           uInt32 color) { }
 
     /**
@@ -825,7 +825,7 @@ class FBSurface
       @param useEllipsis  Whether to use '...' when the string is too long
     */
     virtual void drawString(
-        const GUI::Font* font, const string& str, int x, int y, int w,
+        const GUI::Font& font, const string& str, int x, int y, int w,
         uInt32 color, TextAlignment align = kTextAlignLeft,
         int deltax = 0, bool useEllipsis = true);
 };

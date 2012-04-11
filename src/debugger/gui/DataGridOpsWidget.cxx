@@ -37,8 +37,8 @@ DataGridOpsWidget::DataGridOpsWidget(GuiObject* boss, const GUI::Font& font,
 {
   _type = kDataGridOpsWidget;
 
-  const int bwidth  = _font->getMaxCharWidth() * 4,
-            bheight = _font->getFontHeight() + 3,
+  const int bwidth  = _font.getMaxCharWidth() * 4,
+            bheight = _font.getFontHeight() + 3,
             space = 6;
   int xpos, ypos;
 

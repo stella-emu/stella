@@ -99,10 +99,10 @@ void FBSurfaceGL::fillRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h, uInt32 color)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceGL::drawChar(const GUI::Font* font, uInt8 chr,
+void FBSurfaceGL::drawChar(const GUI::Font& font, uInt8 chr,
                            uInt32 tx, uInt32 ty, uInt32 color)
 {
-  const FontDesc& desc = font->desc();
+  const FontDesc& desc = font.desc();
 
   // If this character is not included in the font, use the default char.
   if(chr < desc.firstchar || chr >= desc.firstchar + desc.size)

@@ -121,7 +121,7 @@ GUI::Rect StringListWidget::getEditRect() const
     char temp[10];
     // FIXME: Assumes that all digits have the same width.
     BSPF_snprintf(temp, 9, "%2d. ", (_list.size() - 1 + _numberingMode));
-    r.left += _font->getStringWidth(temp);
+    r.left += _font.getStringWidth(temp);
   }
 	
   return r;

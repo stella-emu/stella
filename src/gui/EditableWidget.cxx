@@ -58,7 +58,7 @@ void EditableWidget::setEditString(const string& str, bool)
   _editString = str;
   _caretPos = _editString.size();
 
-  _editScrollOffset = (_font->getStringWidth(_editString) - (getEditRect().width()));
+  _editScrollOffset = (_font.getStringWidth(_editString) - (getEditRect().width()));
   if (_editScrollOffset < 0)
     _editScrollOffset = 0;
 
@@ -177,7 +177,7 @@ int EditableWidget::getCaretOffset() const
 {
   int caretpos = 0;
   for (int i = 0; i < _caretPos; i++)
-    caretpos += _font->getCharWidth(_editString[i]);
+    caretpos += _font.getCharWidth(_editString[i]);
 
   caretpos -= _editScrollOffset;
 
@@ -238,7 +238,7 @@ bool EditableWidget::adjustOffset()
   }
   else if (_editScrollOffset > 0)
   {
-    const int strWidth = _font->getStringWidth(_editString);
+    const int strWidth = _font.getStringWidth(_editString);
     if (strWidth - _editScrollOffset < editWidth)
     {
       // scroll right
