@@ -43,8 +43,10 @@ class CartridgeFA2 : public Cartridge
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
       @param settings  A reference to the various settings (read-only)
+      @param flashfile The full pathname for the flash file storing internal RAM
     */
-    CartridgeFA2(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeFA2(const uInt8* image, uInt32 size, const Settings& settings,
+                 const string& flashfile);
  
     /**
       Destructor
@@ -140,6 +142,13 @@ class CartridgeFA2 : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
+    /**
+      Either load or save internal RAM to Harmony flash (represented by
+      a file in emulation).
+    */
+    uInt8 ramReadWrite();
+
+  private:
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
@@ -148,6 +157,13 @@ class CartridgeFA2 : public Cartridge
 
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
+
+    // An access has been made to load/save internal RAM
+    bool myRamRWFlag;
+
+    // Full pathname of the file to use when emulating load/save
+    // of internal RAM to Harmony cart flash
+    string myFlashFile;
 
     // Size of the ROM image
     uInt32 mySize;

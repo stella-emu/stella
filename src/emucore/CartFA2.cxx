@@ -20,12 +20,16 @@
 #include <cassert>
 #include <cstring>
 
+#include "Serializer.hxx"
 #include "System.hxx"
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const Settings& settings)
+CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size,
+                           const Settings& settings, const string& flashfile)
   : Cartridge(settings),
+    myRamRWFlag(false),
+    myFlashFile(flashfile),
     mySize(size)
 {
   // Allocate array for the ROM image
@@ -106,6 +110,12 @@ uInt8 CartridgeFA2::peek(uInt16 address)
   // Switch banks if necessary
   switch(address)
   {
+    case 0x0FF4:
+      // Load/save RAM to/from Harmony cart flash
+      if(mySize == 28*1024 && !bankLocked())
+        return ramReadWrite();
+      break;
+
     case 0x0FF5:
       // Set the current bank to the first 4k bank
       bank(0);
@@ -171,6 +181,12 @@ bool CartridgeFA2::poke(uInt16 address, uInt8)
   // Switch banks if necessary
   switch(address)
   {
+    case 0x0FF4:
+      // Load/save RAM to/from Harmony cart flash
+      if(mySize == 28*1024 && !bankLocked())
+        ramReadWrite();
+      break;
+
     case 0x0FF5:
       // Set the current bank to the first 4k bank
       bank(0);
@@ -231,14 +247,14 @@ bool CartridgeFA2::bank(uInt16 bank)
   System::PageAccess access(0, 0, 0, this, System::PA_READ);
 
   // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FF5 & ~mask); i < 0x2000; i += (1 << shift))
+  for(uInt32 i = (0x1FF4 & ~mask); i < 0x2000; i += (1 << shift))
   {
     access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
     mySystem->setPageAccess(i >> shift, access);
   }
 
   // Setup the page access methods for the current bank
-  for(uInt32 address = 0x1200; address < (0x1FF5U & ~mask);
+  for(uInt32 address = 0x1200; address < (0x1FF4U & ~mask);
       address += (1 << shift))
   {
     access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
@@ -331,4 +347,59 @@ bool CartridgeFA2::load(Serializer& in)
   bank(myCurrentBank);
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 CartridgeFA2::ramReadWrite()
+{
+  /* The following algorithm implements accessing Harmony cart flash
+
+    1. Wait for an access to hotspot location $1FF4 (return 1 on first access).
+
+    2. Read byte 256 of RAM+ memory to determine the operation requested
+       (1 = read, 2 = write).
+
+    3. Save or load the entire 256 bytes of RAM+ memory to a file.
+
+    4. Set byte 256 of RAM+ memory to zero to indicate success.
+
+    5. Return 0 on the next access to $1FF4.
+  */
+  if(!myRamRWFlag)
+  {
+    Serializer serializer(myFlashFile);
+    if(serializer.isValid())
+    {
+      if(myRAM[255] == 1)       // read
+      {
+        try
+        {
+          for(uInt32 i = 0; i < 256; ++i)
+            myRAM[i] = (uInt8) serializer.getByte();
+        }
+        catch(const char* msg)
+        {
+          memset(myRAM, 0, 256);
+        }
+      }
+      else if(myRAM[255] == 2)  // write
+      {
+        try
+        {
+          for(uInt32 i = 0; i < 256; ++i)
+            serializer.putByte((char)myRAM[i]);
+        }
+        catch(const char* msg)
+        {
+          // Maybe add logging here?
+        }
+      }
+    }
+    return 1;
+  }
+  else
+  {
+    myRamRWFlag = false;
+    return 0;
+  }
 }

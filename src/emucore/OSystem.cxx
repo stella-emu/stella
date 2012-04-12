@@ -693,7 +693,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5,
     string cartmd5 = md5;
     type = props.get(Cartridge_Type);
     Cartridge* cart =
-      Cartridge::create(image, size, cartmd5, type, id, *mySettings);
+      Cartridge::create(image, size, cartmd5, type, id, *this, *mySettings);
 
     // It's possible that the cart created was from a piece of the image,
     // and that the md5 (and hence the cart) has changed
