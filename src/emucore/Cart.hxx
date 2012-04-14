@@ -191,6 +191,14 @@ class Cartridge : public Device
     */
     virtual string name() const = 0;
 
+    /**
+      Informs the cartridge about the name of the ROM file used when
+      creating this cart.
+
+      @param name  The properties file name of the ROM
+    */
+    virtual void setRomName(const string& name) { }
+
   protected:
     /**
       Add the given area to the RamArea list for this cart.

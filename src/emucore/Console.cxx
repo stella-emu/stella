@@ -214,6 +214,8 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   myConsoleInfo.Control0   = myControllers[0]->about();
   myConsoleInfo.Control1   = myControllers[1]->about();
   myConsoleInfo.BankSwitch = cart->about();
+
+  myCart->setRomName(myConsoleInfo.CartName);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

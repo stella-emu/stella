@@ -62,7 +62,7 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
-     string& dtype, string& id, const OSystem& system, Settings& settings)
+     string& dtype, string& id, const OSystem& osystem, Settings& settings)
 {
   Cartridge* cartridge = 0;
   string type = dtype;
@@ -177,8 +177,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "FA" || type == "FASC")
     cartridge = new CartridgeFA(image, size, settings);
   else if(type == "FA2")
-    cartridge = new CartridgeFA2(image, size, settings,
-                    system.eepromDir() + "FA2_flash.dat");
+    cartridge = new CartridgeFA2(image, size, osystem);
   else if(type == "FE")
     cartridge = new CartridgeFE(image, size, settings);
   else if(type == "MC")

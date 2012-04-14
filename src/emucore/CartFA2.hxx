@@ -29,7 +29,9 @@ class System;
   This is an extended version of the CBS RAM Plus bankswitching scheme
   supported by the Harmony cartridge.
   
-  There are six (or seven) 4K banks and 256 bytes of RAM.
+  There are six (or seven) 4K banks and 256 bytes of RAM.  The 256 bytes
+  of RAM can be loaded/saved to Harmony cart flash, which is emulated by
+  storing in a file.
 
   @author  Chris D. Walton
   @version $Id$
@@ -42,11 +44,9 @@ class CartridgeFA2 : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
-      @param settings  A reference to the various settings (read-only)
-      @param flashfile The full pathname for the flash file storing internal RAM
+      @param osystem   A reference to the OSystem currently in use
     */
-    CartridgeFA2(const uInt8* image, uInt32 size, const Settings& settings,
-                 const string& flashfile);
+    CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osystem);
  
     /**
       Destructor
@@ -124,6 +124,14 @@ class CartridgeFA2 : public Cartridge
     */
     string name() const { return "CartridgeFA2"; }
 
+    /**
+      Informs the cartridge about the name of the ROM file used when
+      creating this cart.
+
+      @param name  The properties file name of the ROM
+    */
+    void setRomName(const string& name);
+
   public:
     /**
       Get the byte at the specified address.
@@ -145,10 +153,16 @@ class CartridgeFA2 : public Cartridge
     /**
       Either load or save internal RAM to Harmony flash (represented by
       a file in emulation).
+
+      @return  The value at $FF4 with bit 6 set or cleared (depending on
+               whether the RAM access was busy or successful)
     */
     uInt8 ramReadWrite();
 
   private:
+    // OSsytem currently in use
+    const OSystem& myOSystem;
+
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
@@ -158,8 +172,11 @@ class CartridgeFA2 : public Cartridge
     // The 256 bytes of RAM on the cartridge
     uInt8 myRAM[256];
 
-    // An access has been made to load/save internal RAM
-    bool myRamRWFlag;
+    // The time after which the first request of a load/save operation
+    // will actually be completed
+    // Due to flash RAM constraints, a read/write isn't instantaneous,
+    // so we need to emulate the delay as well
+    uInt64 myRamAccessTimeout;
 
     // Full pathname of the file to use when emulating load/save
     // of internal RAM to Harmony cart flash

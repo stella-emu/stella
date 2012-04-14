@@ -20,16 +20,16 @@
 #include <cassert>
 #include <cstring>
 
+#include "OSystem.hxx"
 #include "Serializer.hxx"
 #include "System.hxx"
 #include "CartFA2.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size,
-                           const Settings& settings, const string& flashfile)
-  : Cartridge(settings),
-    myRamRWFlag(false),
-    myFlashFile(flashfile),
+CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osystem)
+  : Cartridge(osystem.settings()),
+    myOSystem(osystem),
+    myRamAccessTimeout(0),
     mySize(size)
 {
   // Allocate array for the ROM image
@@ -350,23 +350,40 @@ bool CartridgeFA2::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2::setRomName(const string& name)
+{
+  myFlashFile = myOSystem.eepromDir() + name + "_flash.dat";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt8 CartridgeFA2::ramReadWrite()
 {
   /* The following algorithm implements accessing Harmony cart flash
 
-    1. Wait for an access to hotspot location $1FF4 (return 1 on first access).
+    1. Wait for an access to hotspot location $1FF4 (return 1 in bit 6
+       while busy).
 
     2. Read byte 256 of RAM+ memory to determine the operation requested
        (1 = read, 2 = write).
 
     3. Save or load the entire 256 bytes of RAM+ memory to a file.
 
-    4. Set byte 256 of RAM+ memory to zero to indicate success.
+    4. Set byte 256 of RAM+ memory to zero to indicate success (will
+       always happen in emulation).
 
-    5. Return 0 on the next access to $1FF4.
+    5. Return 0 (in bit 6) on the next access to $1FF4, if enough time has
+       passed to complete the operation on a real system (0.5 ms for read,
+       101 ms for write).
   */
-  if(!myRamRWFlag)
+
+  // First access sets the timer
+  if(myRamAccessTimeout == 0)
   {
+    // Remember when the first access was made
+    myRamAccessTimeout = myOSystem.getTicks();
+
+    // We go ahead and do the access now, and only return when a sufficient
+    // amount of time has passed
     Serializer serializer(myFlashFile);
     if(serializer.isValid())
     {
@@ -381,6 +398,7 @@ uInt8 CartridgeFA2::ramReadWrite()
         {
           memset(myRAM, 0, 256);
         }
+        myRamAccessTimeout += 500;  // Add 0.5 ms delay for read
       }
       else if(myRAM[255] == 2)  // write
       {
@@ -391,15 +409,27 @@ uInt8 CartridgeFA2::ramReadWrite()
         }
         catch(const char* msg)
         {
-          // Maybe add logging here?
+          // Maybe add logging here that save failed?
         }
+        myRamAccessTimeout += 101000;  // Add 101 ms delay for write
       }
     }
-    return 1;
+    // Bit 6 is 1, busy
+    return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
   }
   else
   {
-    myRamRWFlag = false;
-    return 0;
+    // Have we reached the timeout value yet?
+    if(myOSystem.getTicks() >= myRamAccessTimeout)
+    {
+      myRamAccessTimeout = 0;  // Turn off timer
+      myRAM[255] = 0;          // Successful operation
+
+      // Bit 6 is 0, ready/success
+      return myImage[(myCurrentBank << 12) + 0xFF4] & ~0x40;
+    }
+    else
+      // Bit 6 is 1, busy
+      return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
   }
 }
