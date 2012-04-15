@@ -71,15 +71,6 @@ class Array
         _data[_size++] = array._data[i];
     }
 
-    void push_back_unique(const T& element)
-    {
-      if(!contains(element))
-      {
-        ensureCapacity(_size + 1);
-        _data[_size++] = element;
-      }
-    }
-
     void insert_at(int idx, const T& element)
     {
       assert(idx >= 0 && idx <= _size);
@@ -169,15 +160,6 @@ class Array
     const_iterator end() const
     {
       return _data + _size;
-    }
-
-    bool contains(const T &key) const
-    {
-      for (const_iterator i = begin(); i != end(); ++i) {
-        if (*i == key)
-          return true;
-      }
-      return false;
     }
 
   protected:
