@@ -58,6 +58,13 @@ class Array
         delete [] _data;
     }
 
+    void reserve(int capacity)
+    {
+      if(capacity <= _capacity)
+        return;
+      ensureCapacity(capacity - 128);
+    }
+
     void push_back(const T& element)
     {
       ensureCapacity(_size + 1);
