@@ -168,6 +168,7 @@ void BrowserDialog::updateListing()
 
   // Read in the data from the file system
   FSList content;
+  content.reserve(2048);
   _node.getChildren(content, _mode);
 
   // Add '[..]' to indicate previous folder

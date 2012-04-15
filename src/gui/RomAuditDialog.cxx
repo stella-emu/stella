@@ -127,6 +127,7 @@ void RomAuditDialog::auditRoms()
 
   FilesystemNode node(auditPath);
   FSList files;
+  files.reserve(2048);
   node.getChildren(files, FilesystemNode::kListFilesOnly);
 
   // Create a progress dialog box to show the progress of processing

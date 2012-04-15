@@ -72,11 +72,11 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
     return false;
 
   AbstractFSList tmp;
+  tmp.reserve(fslist.capacity());
 
   if (!_realNode->getChildren(tmp, mode, hidden))
     return false;
 
-  fslist.clear();
   for (AbstractFSList::iterator i = tmp.begin(); i != tmp.end(); ++i)
   {
     fslist.push_back(FilesystemNode(*i));

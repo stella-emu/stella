@@ -131,7 +131,8 @@ class Array
       return *this;
     }
 
-    unsigned int size() const { return _size; }
+    unsigned int size() const     { return _size;     }
+    unsigned int capacity() const { return _capacity; }
 
     void clear()
     {

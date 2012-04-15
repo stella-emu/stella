@@ -345,7 +345,7 @@ void LauncherDialog::loadDirListing()
     return;
 
   FSList files;
-  files.reserve(1024);
+  files.reserve(2048);
   myCurrentNode.getChildren(files, FilesystemNode::kListAll);
 
   // Add '[..]' to indicate previous folder
