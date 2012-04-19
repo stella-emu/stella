@@ -21,6 +21,7 @@
 #define EVENT_HXX
 
 #include "bspf.hxx"
+#include "StellaKeys.hxx"
 
 class Event;
 
@@ -107,11 +108,27 @@ class Event
     {
       for(uInt32 i = 0; i < LastType; ++i)
         myValues[i] = Event::NoType;
+
+      for(uInt32 i = 0; i < KBDK_LAST; ++i)
+        myKeyTable[i] = false;
     }
+
+    /**
+      Get the keytable associated with this event
+    */
+    const bool* getKeys() const { return myKeyTable; }
+
+    /**
+      Set the value associated with the event of the specified type
+    */
+    void setKey(StellaKey key, bool state) { myKeyTable[key] = state; }
 
   private:
     // Array of values associated with each event type
     Int32 myValues[LastType];
+
+    // Array of keyboard key states
+    bool myKeyTable[KBDK_LAST];
 };
 
 #endif

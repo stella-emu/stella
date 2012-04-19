@@ -124,7 +124,7 @@ class CompuMate
     CMControl *myLeftController, *myRightController;
 
     // The keyboard state array (tells us the current state of the keyboard)
-    uInt8* myKeyTable;
+    const bool* myKeyTable;
 
     // System cycle at which the update() method is called
     // Multiple calls at the same cycle should be ignored

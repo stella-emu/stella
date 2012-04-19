@@ -312,16 +312,4 @@ typedef enum {
 // The underlying code doesn't need to know how it's implemented
 typedef int StellaMod;
 
-// Wrapper around the SDL_GetKeyState function
-// This can be used as-is since KBDK keys and SDL keys are the same
-class StellaKeys
-{
-  public:
-    // According to the SDL source code, this only needs to be called
-    // once, since it points to an internal static variable in SDL
-    // As such, it's not really a (current) state table, since that
-    // implies it needs to be called each time you want the state updated
-    static inline uInt8* GetKeyTable() { return SDL_GetKeyState(NULL); }
-};
-
 #endif /* StellaKeys */

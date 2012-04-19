@@ -329,6 +329,9 @@ void EventHandler::poll(uInt64 time)
         bool state = event.key.type == SDL_KEYDOWN;
         bool handled = true;
 
+        // Immediately store the key state
+        myEvent.setKey(key, state);
+
         // An attempt to speed up event processing
         // All SDL-specific event actions are accessed by either
         // Control or Alt/Cmd keys.  So we quickly check for those.

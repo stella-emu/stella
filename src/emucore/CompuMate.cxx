@@ -40,7 +40,7 @@ CompuMate::CompuMate(CartridgeCM& cart, const Event& event,
   myRightController->myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
   myRightController->myAnalogPinValue[Controller::Five] = Controller::maximumResistance;
 
-  myKeyTable = StellaKeys::GetKeyTable();
+  myKeyTable = event.getKeys();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
