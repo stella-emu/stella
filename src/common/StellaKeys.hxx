@@ -317,11 +317,11 @@ typedef int StellaMod;
 class StellaKeys
 {
   public:
-    static uInt8* GetKeyState()
-    {
-      SDL_PumpEvents();
-      return SDL_GetKeyState(NULL);
-    }
+    // According to the SDL source code, this only needs to be called
+    // once, since it points to an internal static variable in SDL
+    // As such, it's not really a (current) state table, since that
+    // implies it needs to be called each time you want the state updated
+    static inline uInt8* GetKeyTable() { return SDL_GetKeyState(NULL); }
 };
 
 #endif /* StellaKeys */
