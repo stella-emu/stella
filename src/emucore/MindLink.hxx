@@ -81,6 +81,25 @@ class MindLink : public Controller
     */
     void update();
 
+    /**
+      Determines how this controller will treat values received from the
+      X/Y axis and left/right buttons of the mouse.  Since not all controllers
+      use the mouse the same way (or at all), it's up to the specific class to
+      decide how to use this data.
+
+      In the current implementation, the left button is tied to the X axis,
+      and the right one tied to the Y axis.
+
+      @param xtype  The controller to use for x-axis data
+      @param xid    The controller ID to use for x-axis data (-1 for no id)
+      @param ytype  The controller to use for y-axis data
+      @param yid    The controller ID to use for y-axis data (-1 for no id)
+
+      @return  Whether the controller supports using the mouse
+    */
+    bool setMouseControl(
+      Controller::Type xtype, int xid, Controller::Type ytype, int yid);
+
   private:
     void nextMindlinkBit();
 
@@ -91,6 +110,9 @@ class MindLink : public Controller
 
     // Which bit to transfer next
     int myMindlinkShift;
+
+    // Whether to use the mouse to emulate this controller
+    int myMouseEnabled;  
 };
 
 #endif

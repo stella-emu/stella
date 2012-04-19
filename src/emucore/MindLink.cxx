@@ -24,7 +24,8 @@
 MindLink::MindLink(Jack jack, const Event& event, const System& system)
   : Controller(jack, event, system, Controller::MindLink),
     myMindlinkPos(0x2800),
-    myMindlinkShift(1)
+    myMindlinkShift(1),
+    myMouseEnabled(false)
 {
   myDigitalPinState[One]   = true;
   myDigitalPinState[Two]   = true;
@@ -47,6 +48,9 @@ void MindLink::update()
   myDigitalPinState[Two]   =
   myDigitalPinState[Three] =
   myDigitalPinState[Four]  = true;
+
+  if(!myMouseEnabled)
+    return;
 
   myMindlinkPos = (myMindlinkPos & 0x3fffffff) +
                   (myEvent.get(Event::MouseAxisXValue) << 3);
@@ -74,4 +78,17 @@ void MindLink::nextMindlinkBit()
       myDigitalPinState[Four] = true;
     myMindlinkShift <<= 1;
 	}
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MindLink::setMouseControl(
+    Controller::Type xtype, int xid, Controller::Type ytype, int yid)
+{
+  // Currently, the mindlink takes full control of the mouse, but only ever
+  // uses the x-axis, and both mouse buttons for the single mindlink button
+  // As well, there's no separate setting for x and y axis, so any
+  // combination of Controller and id is valid
+  myMouseEnabled = (xtype == myType || ytype == myType) &&
+                   (xid != -1 || yid != -1);
+  return true;
 }

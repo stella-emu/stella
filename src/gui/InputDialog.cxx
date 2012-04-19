@@ -181,7 +181,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
                   "Allow all 4 directions on joystick");
   wid.push_back(myAllowAll4);
 
-  // Grab mouse (in windowed mode)	 
+  // Grab mouse (in windowed mode)
   ypos += lineHeight + 4;
   myGrabMouse = new CheckboxWidget(myTab, font, xpos, ypos,
 	                "Grab mouse in emulation mode");
@@ -190,17 +190,10 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   myGrabMouse->clearFlags(WIDGET_ENABLED);
 #endif
 
-  // Mouse is controller type
-  ypos += lineHeight + 12;
-  lwidth = font.getStringWidth("Use mouse as a controller: ");
-  pwidth = font.getStringWidth("Automatic");
-  items.clear();
-  items.push_back("Never", "never");
-  items.push_back("Automatic", "auto");
-  items.push_back("By ROM", "rom");
-  myMouseControl =
-    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight, items,
-                   "Use mouse as a controller: ", lwidth);
+  // Use mouse as a controller
+  ypos += lineHeight + 4;
+  myMouseControl = new CheckboxWidget(myTab, font, xpos, ypos,
+                     "Use mouse as a controller");
   wid.push_back(myMouseControl);
 
   // Add items for virtual device ports
@@ -233,9 +226,8 @@ void InputDialog::loadConfig()
   // Allow all 4 joystick directions
   myAllowAll4->setState(instance().settings().getBool("joyallow4"));
 
-  // Mouse is controller type
-  myMouseControl->setSelected(
-    instance().settings().getString("mcontrol"), "auto");
+  // Use mouse as a controller
+  myMouseControl->setState(instance().settings().getBool("usemouse"));
 
   myTab->loadConfig();
 }
@@ -271,10 +263,10 @@ void InputDialog::saveConfig()
   instance().settings().setBool("joyallow4", allowall4);
   instance().eventHandler().allowAllDirections(allowall4);
 
-  // Mouse is controller type
-  const string& mcontrol = myMouseControl->getSelectedTag();
-  instance().settings().setString("mcontrol", mcontrol);
-  instance().eventHandler().setMouseControllerMode(mcontrol);
+  // Use mouse as a controller
+  bool usemouse = myMouseControl->getState();
+  instance().settings().setBool("usemouse", usemouse);
+  instance().eventHandler().setMouseControllerMode(usemouse);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -314,8 +306,8 @@ void InputDialog::setDefaults()
       // Allow all 4 joystick directions
       myAllowAll4->setState(false);
 
-      // Mouse is controller type
-      myMouseControl->setSelected(1);
+      // Use mouse as a controller
+      myMouseControl->setState(true);
       break;
     }
 

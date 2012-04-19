@@ -30,53 +30,117 @@ MouseControl::MouseControl(Console& console, const string& mode)
     myRightController(console.controller(Controller::Right)),
     myCurrentModeNum(0)
 {
-  if(BSPF_equalsIgnoreCase(mode, "never"))
+  if(BSPF_equalsIgnoreCase(mode, "none"))
   {
     myModeList.push_back(MouseMode("Mouse input is disabled"));
     return;
   }
   else if(!BSPF_equalsIgnoreCase(mode, "auto") && mode.length() == 2 &&
-          mode[0] >= '0' && mode[0] <= '5' &&
-          mode[1] >= '0' && mode[1] <= '5')
+          mode[0] >= '0' && mode[0] <= '8' &&
+          mode[1] >= '0' && mode[1] <= '8')
   {
     Axis xaxis = (Axis) ((int)mode[0] - '0');
     Axis yaxis = (Axis) ((int)mode[1] - '0');
     ostringstream msg;
     msg << "Mouse X-axis is ";
+    Controller::Type xtype = Controller::Joystick, ytype = Controller::Joystick;
+    int xid = -1, yid = -1;
     switch(xaxis)
     {
+      case NoControl:
+        msg << "not used";
+        break;
       case Paddle0:
-        msg << "Paddle 0";  break;
+        xtype = Controller::Paddles;
+        xid = 0;
+        msg << "Paddle 0";
+        break;
       case Paddle1:
-        msg << "Paddle 1";  break;
+        xtype = Controller::Paddles;
+        xid = 1;
+        msg << "Paddle 1";
+        break;
       case Paddle2:
-        msg << "Paddle 2";  break;
+        xtype = Controller::Paddles;
+        xid = 2;
+        msg << "Paddle 2";
+        break;
       case Paddle3:
-        msg << "Paddle 3";  break;
+        xtype = Controller::Paddles;
+        xid = 3;
+        msg << "Paddle 3";
+        break;
       case Driving0:
-        msg << "Driving 0"; break;
+        xtype = Controller::Driving;
+        xid = 0;
+        msg << "Driving 0";
+        break;
       case Driving1:
-        msg << "Driving 1"; break;
-      default:              break;
+        xtype = Controller::Driving;
+        xid = 1;
+        msg << "Driving 1";
+        break;
+      case MindLink0:
+        xtype = Controller::MindLink;
+        xid = 0;
+        msg << "MindLink 0";
+        break;
+      case MindLink1:
+        xtype = Controller::MindLink;
+        xid = 1;
+        msg << "MindLink 1";
+        break;
+      default:  break;
     }
     msg << ", Y-axis is ";
     switch(yaxis)
     {
+      case NoControl:
+        msg << "not used";
+        break;
       case Paddle0:
-        msg << "Paddle 0";  break;
+        ytype = Controller::Paddles;
+        yid = 0;
+        msg << "Paddle 0";
+        break;
       case Paddle1:
-        msg << "Paddle 1";  break;
+        ytype = Controller::Paddles;
+        yid = 1;
+        msg << "Paddle 1";
+        break;
       case Paddle2:
-        msg << "Paddle 2";  break;
+        ytype = Controller::Paddles;
+        yid = 2;
+        msg << "Paddle 2";
+        break;
       case Paddle3:
-        msg << "Paddle 3";  break;
+        ytype = Controller::Paddles;
+        yid = 3;
+        msg << "Paddle 3";
+        break;
       case Driving0:
-        msg << "Driving 0"; break;
+        ytype = Controller::Driving;
+        yid = 0;
+        msg << "Driving 0";
+        break;
       case Driving1:
-        msg << "Driving 1"; break;
-      default:              break;
+        ytype = Controller::Driving;
+        yid = 1;
+        msg << "Driving 1";
+        break;
+      case MindLink0:
+        ytype = Controller::MindLink;
+        yid = 0;
+        msg << "MindLink 0";
+        break;
+      case MindLink1:
+        ytype = Controller::MindLink;
+        yid = 1;
+        msg << "MindLink 1";
+        break;
+      default:  break;
     }
-    myModeList.push_back(MouseMode(xaxis, yaxis, -1, msg.str()));
+    myModeList.push_back(MouseMode(xtype, xid, ytype, yid, msg.str()));
   }
 
   // Now consider the possible modes for the mouse based on the left
@@ -96,6 +160,11 @@ MouseControl::MouseControl(Console& console, const string& mode)
   // If the mouse isn't used at all, we still need one item in the list
   if(myModeList.size() == 0)
     myModeList.push_back(MouseMode("Mouse not used for current controllers"));
+
+#if 0
+  for(unsigned int i = 0; i < myModeList.size(); ++i)
+    cerr << myModeList[i] << endl;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -109,8 +178,8 @@ const string& MouseControl::next()
   const MouseMode& mode = myModeList[myCurrentModeNum];
   myCurrentModeNum = (myCurrentModeNum + 1) % myModeList.size();
 
-  myLeftController.setMouseControl(mode.xaxis, mode.yaxis, mode.controlID);
-  myRightController.setMouseControl(mode.xaxis, mode.yaxis, mode.controlID);
+  myLeftController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
+  myRightController.setMouseControl(mode.xtype, mode.xid, mode.ytype, mode.yid);
 
   return mode.message;
 }
@@ -118,69 +187,56 @@ const string& MouseControl::next()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MouseControl::addLeftControllerModes(bool noswap)
 {
-  switch(myLeftController.type())
+  if(controllerSupportsMouse(myLeftController))
   {
-    case Controller::Joystick:
-    case Controller::BoosterGrip:
-    case Controller::Genesis:
-    case Controller::Driving:
-    case Controller::TrackBall22:
-    case Controller::TrackBall80:
-    case Controller::AmigaMouse:
-//    case Controller::Mindlink:
+    if(myLeftController.type() == Controller::Paddles)
+    {
+      if(noswap)  addPaddleModes(0, 1, 0, 1);
+      else        addPaddleModes(2, 3, 0, 1);
+    }
+    else
     {
       ostringstream msg;
       msg << "Mouse is left " << myLeftController.name() << " controller";
-      myModeList.push_back(MouseMode(Automatic, Automatic, noswap ? 0 : 1, msg.str()));
-      break;
+      Controller::Type type = myLeftController.type();
+      int id = noswap ? 0 : 1;
+      myModeList.push_back(MouseMode(type, id, type, id, msg.str()));
     }
-    case Controller::Paddles:
-      if(noswap)  addPaddleModes(0, 1, 0, 1);
-      else        addPaddleModes(2, 3, 0, 1);
-      break;
-    default:
-      break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MouseControl::addRightControllerModes(bool noswap)
 {
-  switch(myRightController.type())
+  if(controllerSupportsMouse(myRightController))
   {
-    case Controller::Joystick:
-    case Controller::BoosterGrip:
-    case Controller::Genesis:
-    case Controller::Driving:
-    case Controller::TrackBall22:
-    case Controller::TrackBall80:
-    case Controller::AmigaMouse:
-//    case Controller::Mindlink:
+    if(myRightController.type() == Controller::Paddles)
+    {
+      if(noswap)  addPaddleModes(2, 3, 2, 3);
+      else        addPaddleModes(0, 1, 2, 3);
+    }
+    else
     {
       ostringstream msg;
       msg << "Mouse is right " << myRightController.name() << " controller";
-      myModeList.push_back(MouseMode(Automatic, Automatic, noswap ? 1 : 0, msg.str()));
-      break;
+      Controller::Type type = myRightController.type();
+      int id = noswap ? 1 : 0;
+      myModeList.push_back(MouseMode(type, id, type, id, msg.str()));
     }
-    case Controller::Paddles:
-      if(noswap)  addPaddleModes(2, 3, 2, 3);
-      else        addPaddleModes(0, 1, 2, 3);
-      break;
-    default:
-      break;
   }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
 {
+  Controller::Type type = Controller::Paddles;
   ostringstream msg;
   msg << "Mouse is Paddle " << lname << " controller";
-  MouseMode mode0(Automatic, Automatic, lport, msg.str());
+  MouseMode mode0(type, lport, type, lport, msg.str());
 
   msg.str("");
   msg << "Mouse is Paddle " << rname << " controller";
-  MouseMode mode1(Automatic, Automatic, rport, msg.str());
+  MouseMode mode1(type, rport, type, rport, msg.str());
 
   if(BSPF_equalsIgnoreCase(myProps.get(Controller_SwapPaddles), "NO"))
   {
@@ -192,4 +248,14 @@ void MouseControl::addPaddleModes(int lport, int rport, int lname, int rname)
     myModeList.push_back(mode1);
     myModeList.push_back(mode0);
   }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool MouseControl::controllerSupportsMouse(Controller& controller)
+{
+  // Test whether the controller uses the mouse at all
+  // We can pass in dummy values here, since the controllers will be
+  // initialized by a call to next() once the system is up and running
+  return controller.setMouseControl(
+      Controller::Joystick, -1, Controller::Joystick, -1);
 }

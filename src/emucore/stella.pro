@@ -402,14 +402,6 @@
 "Controller.MouseAxis" "01"
 ""
 
-"Cartridge.MD5" "c246e05b52f68ab2e9aee40f278cd158"
-"Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
-"Cartridge.Note" "NTSC Conversion"
-"Cartridge.Rarity" "Homebrew"
-"Display.Height" "230"
-""
-
 "Cartridge.MD5" "7b5207e68ee85b16998bea861987c690"
 "Cartridge.Manufacturer" "Atari, Carol Shaw"
 "Cartridge.ModelNo" "CX26163P"
@@ -419,6 +411,14 @@
 
 "Cartridge.MD5" "f1beca5a198cf08190487e5c27b8e540"
 "Cartridge.Name" "Fu Kung! (V0.16) (2003) (AD)"
+""
+
+"Cartridge.MD5" "c246e05b52f68ab2e9aee40f278cd158"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "cba56e939252b05df7b7de87307d12ca"
@@ -760,11 +760,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
-"Cartridge.Manufacturer" "Tron"
-"Cartridge.Name" "H.E.R.O. (Tron)"
-""
-
 "Cartridge.MD5" "81414174f1816d5c1e583af427ac89fc"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Treasure Below (Thomas Jentzsch)"
@@ -780,6 +775,11 @@
 "Cartridge.ModelNo" "PGP235"
 "Cartridge.Name" "Fussball (Ariola) (PAL)"
 "Cartridge.Note" "AKA International Soccer"
+""
+
+"Cartridge.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
+"Cartridge.Manufacturer" "Tron"
+"Cartridge.Name" "H.E.R.O. (Tron)"
 ""
 
 "Cartridge.MD5" "521f4dd1eb84a09b2b19959a41839aad"
@@ -3581,7 +3581,10 @@
 "Cartridge.Manufacturer" "M Network, Hal Finney - INTV"
 "Cartridge.ModelNo" "MT5666"
 "Cartridge.Name" "Astroblast (1982) (M Network)"
+"Cartridge.Note" "Can also use left joystick"
 "Cartridge.Rarity" "Uncommon"
+"Controller.Left" "PADDLES"
+"Controller.SwapPaddles" "YES"
 ""
 
 "Cartridge.MD5" "db971b6afc9d243f614ebf380af0ac60"
@@ -5674,6 +5677,15 @@
 "Cartridge.ModelNo" "6082 A145"
 "Cartridge.Name" "Kung Fu Superkicks (1989) (Telegames) (PAL)"
 "Cartridge.Note" "AKA Chuck Norris Superkicks"
+""
+
+"Cartridge.MD5" "90b647bfb6b18af35fcf613573ad2eec"
+"Cartridge.Manufacturer" "AtariAge (Chris Walton)"
+"Cartridge.Name" "Juno First (2009)"
+"Cartridge.Note" "AtariVox supported"
+"Cartridge.Rarity" "Homebrew"
+"Controller.Right" "ATARIVOX"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "f8240e62d8c0a64a61e19388414e3104"
@@ -11041,7 +11053,10 @@
 "Cartridge.Manufacturer" "M Network, Hal Finney - INTV"
 "Cartridge.ModelNo" "MT5666"
 "Cartridge.Name" "Astroblast (1982) (M Network) [fixed]"
+"Cartridge.Note" "Can also use left joystick"
 "Cartridge.Rarity" "Uncommon"
+"Controller.Left" "PADDLES"
+"Controller.SwapPaddles" "YES"
 ""
 
 "Cartridge.MD5" "047ac3b9faea64522b7a23c4465a7aa8"
@@ -12621,7 +12636,6 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES"
 "Controller.Right" "PADDLES"
-"Controller.MouseAxis" "01"
 ""
 
 "Cartridge.MD5" "75028162bfc4cc8e74b04e320f9e6a3f"
@@ -14296,7 +14310,10 @@
 "Cartridge.MD5" "3d7aad37c55692814211c8b590a0334c"
 "Cartridge.Manufacturer" "Atari, Dan Oliver"
 "Cartridge.Name" "Telepathy (1983) (Atari) (Prototype)"
+"Cartridge.Note" "Uses both left joystick and right Mindlink controllers (press Fire on respective controller to begin)"
 "Cartridge.Rarity" "Prototype"
+"Controller.Right" "MINDLINK"
+"Controller.MouseAxis" "78"
 ""
 
 "Cartridge.MD5" "f777444fc21a5925e066b68b1d350575"
@@ -15889,6 +15906,9 @@
 "Cartridge.MD5" "46e9428848c9ea71a4d8f91ff81ac9cc"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.Name" "Astroblast (1989) (Telegames) (PAL)"
+"Cartridge.Note" "Can also use left joystick"
+"Controller.Left" "PADDLES"
+"Controller.SwapPaddles" "YES"
 ""
 
 "Cartridge.MD5" "43c7eb836378b1b3df6788d908940b59"
@@ -19568,6 +19588,16 @@
 "Cartridge.Rarity" "Hack"
 ""
 
+"Cartridge.MD5" "fa98d48cd609c9babc819e0a1bd8d598"
+"Cartridge.Manufacturer" "AtariAge (Chris Walton)"
+"Cartridge.Name" "Juno First (2009) (PAL60)"
+"Cartridge.Note" "AtariVox supported"
+"Cartridge.Rarity" "Homebrew"
+"Controller.Right" "ATARIVOX"
+"Display.Format" "PAL60"
+"Display.Phosphor" "YES"
+""
+
 "Cartridge.MD5" "c59633dbebd926c150fb6d30b0576405"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5861 A030"
@@ -19944,21 +19974,3 @@
 "Cartridge.Name" "Seaquest (Digivision)"
 ""
 
-"Cartridge.MD5" "90b647bfb6b18af35fcf613573ad2eec"
-"Cartridge.Manufacturer" "AtariAge (Chris Walton)"
-"Cartridge.Name" "Juno First (2009)"
-"Cartridge.Note" "AtariVox supported"
-"Cartridge.Rarity" "Homebrew"
-"Controller.Right" "ATARIVOX"
-"Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "fa98d48cd609c9babc819e0a1bd8d598"
-"Cartridge.Manufacturer" "AtariAge (Chris Walton)"
-"Cartridge.Name" "Juno First (2009) (PAL60)"
-"Cartridge.Note" "AtariVox supported"
-"Cartridge.Rarity" "Homebrew"
-"Controller.Right" "ATARIVOX"
-"Display.Format" "PAL60"
-"Display.Phosphor" "YES"
-""

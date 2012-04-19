@@ -157,12 +157,12 @@ class EventHandler
     void quit() { handleEvent(Event::Quit, 1); }
 
     /**
-      Sets the mouse axes and buttons to act as controller 'mode', where
-      the mode is defined from the Controller::MouseAxisControl enum
+      Sets the mouse axes and buttons to act as the controller specified in
+      the ROM properties, otherwise disable mouse control completely
 
-      @param mode  The controller which the mouse axes should emulate
+      @param enable  Whether to use the mouse to emulate controllers
     */
-    void setMouseControllerMode(const string& mode);
+    void setMouseControllerMode(bool enable);
 
     /**
       Set the number of seconds between taking a snapshot in

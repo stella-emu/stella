@@ -518,10 +518,7 @@ void EventHandler::poll(uInt64 time)
             {
               case KBDK_0:  // Ctrl-0 switches between mouse control modes
                 if(myMouseControl)
-                {
-                  const string& message = myMouseControl->next();
-                  myOSystem->frameBuffer().showMessage(message);
-                }
+                  myOSystem->frameBuffer().showMessage(myMouseControl->next());
                 break;
 
               case KBDK_1:  // Ctrl-1 swaps Stelladaptor/2600-daptor ports
@@ -1964,13 +1961,14 @@ void EventHandler::takeSnapshot(uInt32 number)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void EventHandler::setMouseControllerMode(const string& mode)
+void EventHandler::setMouseControllerMode(bool enable)
 {
-  delete myMouseControl;  myMouseControl = NULL;
   if(&myOSystem->console())
   {
-    const string& control = mode == "rom" ?
-      myOSystem->console().properties().get(Controller_MouseAxis) : mode;
+    delete myMouseControl;  myMouseControl = NULL;
+
+    const string& control = enable ?
+      myOSystem->console().properties().get(Controller_MouseAxis) : "none";
 
     myMouseControl = new MouseControl(myOSystem->console(), control);
     myMouseControl->next();  // set first available mode

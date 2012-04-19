@@ -26,7 +26,6 @@ class System;
 
 #include "Serializable.hxx"
 #include "bspf.hxx"
-#include "MouseControl.hxx"
 
 /**
   A controller is a device that plugs into either the left or right 
@@ -181,20 +180,22 @@ class Controller : public Serializable
     /**
       Determines how this controller will treat values received from the
       X/Y axis and left/right buttons of the mouse.  Since not all controllers
-      use the mouse, it's up to the specific class to decide how to use this data.
-
-      If either of the axis is set to 'Automatic', then we automatically
-      use the ctrlID for the control type.
+      use the mouse the same way (or at all), it's up to the specific class to
+      decide how to use this data.
 
       In the current implementation, the left button is tied to the X axis,
       and the right one tied to the Y axis.
 
-      @param xaxis   How the controller should use x-axis data
-      @param yaxis   How the controller should use y-axis data
-      @param ctrlID  The controller ID to use axis 'auto' mode
+      @param xtype  The controller to use for x-axis data
+      @param xid    The controller ID to use for x-axis data (-1 for no id)
+      @param ytype  The controller to use for y-axis data
+      @param yid    The controller ID to use for y-axis data (-1 for no id)
+
+      @return  Whether the controller supports using the mouse
     */
-    virtual void setMouseControl(
-        MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID = -1) { };
+    virtual bool setMouseControl(
+      Controller::Type xtype, int xid, Controller::Type ytype, int yid)
+    { return false; }
 
     /**
       Returns the name of this controller.

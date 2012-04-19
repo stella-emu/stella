@@ -383,17 +383,17 @@ void Paddles::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Paddles::setMouseControl(
-    MouseControl::Axis xaxis, MouseControl::Axis yaxis, int ctrlID)
+bool Paddles::setMouseControl(
+    Controller::Type xtype, int xid, Controller::Type ytype, int yid)
 {
   // In 'automatic' mode, both axes on the mouse map to a single paddle,
   // and the paddle axis and direction settings are taken into account
   // This overrides any other mode
-  if(xaxis == MouseControl::Automatic || yaxis == MouseControl::Automatic)
+  if(xtype == Controller::Paddles && ytype == Controller::Paddles && xid == yid)
   {
-    myMPaddleID = ((myJack == Left && (ctrlID == 0 || ctrlID == 1)) ||
-                   (myJack == Right && (ctrlID == 2 || ctrlID == 3))
-                  ) ? ctrlID & 0x01 : -1;
+    myMPaddleID = ((myJack == Left && (xid == 0 || xid == 1)) ||
+                   (myJack == Right && (xid == 2 || xid == 3))
+                  ) ? xid & 0x01 : -1;
     myMPaddleIDX = myMPaddleIDY = -1;
   }
   else
@@ -401,37 +401,19 @@ void Paddles::setMouseControl(
     // The following is somewhat complex, but we need to pre-process as much
     // as possible, so that ::update() can run quickly
     myMPaddleID = -1;
-    if(myJack == Left)
+    if(myJack == Left && xtype == Controller::Paddles)
     {
-      switch(xaxis)
-      {
-        case MouseControl::Paddle0:  myMPaddleIDX = 0;  break;
-        case MouseControl::Paddle1:  myMPaddleIDX = 1;  break;
-        default:                     myMPaddleIDX = -1; break;
-      }
-      switch(yaxis)
-      {
-        case MouseControl::Paddle0:  myMPaddleIDY = 0;  break;
-        case MouseControl::Paddle1:  myMPaddleIDY = 1;  break;
-        default:                     myMPaddleIDY = -1; break;
-      }
+      myMPaddleIDX = (xid == 0 || xid == 1) ? xid & 0x01 : -1;
+      myMPaddleIDY = (yid == 0 || yid == 1) ? yid & 0x01 : -1;
     }
-    else  // myJack == Right
+    else if(myJack == Right && ytype == Controller::Paddles)
     {
-      switch(xaxis)
-      {
-        case MouseControl::Paddle2:  myMPaddleIDX = 0;  break;
-        case MouseControl::Paddle3:  myMPaddleIDX = 1;  break;
-        default:                     myMPaddleIDX = -1; break;
-      }
-      switch(yaxis)
-      {
-        case MouseControl::Paddle2:  myMPaddleIDY = 0;  break;
-        case MouseControl::Paddle3:  myMPaddleIDY = 1;  break;
-        default:                     myMPaddleIDY = -1; break;
-      }
+      myMPaddleIDX = (xid == 2 || xid == 3) ? xid & 0x01 : -1;
+      myMPaddleIDY = (yid == 2 || yid == 3) ? yid & 0x01 : -1;
     }
   }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

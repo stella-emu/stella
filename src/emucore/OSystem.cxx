@@ -531,7 +531,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     //////////////////////////////////////////////////////////////////////////
     myConsole->initializeAudio();
     myEventHandler->reset(EventHandler::S_EMULATE);
-    myEventHandler->setMouseControllerMode(mySettings->getString("mcontrol"));
+    myEventHandler->setMouseControllerMode(mySettings->getBool("usemouse"));
     if(createFrameBuffer() != kSuccess)  // Takes care of initializeVideo()
     {
       logMessage("ERROR: Couldn't create framebuffer for console\n", 0);

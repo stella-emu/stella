@@ -16,16 +16,18 @@
 
   * Updated the CompuMate keyboard handler to recognize more keys on an
     actual keyboard, instead of having to remember the weird combinations
-    used on the original CompuMate keyboard.
+    used on the original CompuMate keyboard (although those original keys
+    will continue to work).
 
-  * Added emulation for MindLink controller; the Bionic Breakthrough
-    ROM now works.
+  * Added emulation for MindLink controller using the mouse; the 'Bionic
+    Breakthrough' and 'Telepathy' ROMs now work.
 
   * Updated FA2 bankswitch scheme (Star Castle) to emulate load/save
     high score functionality to the Harmony cart flash RAM.
 
-  * Updated internal database for 'Juno First' ROMs; they will now use
-    an AtariVox/SaveKey when possible.
+  * Several updates to the internal properties database:
+      - 'Juno First' ROMs now use an AtariVox/SaveKey when possible
+      - 'Astroblast' ROMs now use the paddles by default
 
   * Updated included PNG library to latest stable version.
 
