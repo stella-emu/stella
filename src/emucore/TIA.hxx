@@ -270,16 +270,8 @@ class TIA : public Device
     bool scanlinePos(uInt16& x, uInt16& y) const;
 
     /**
-      Enables/disables all TIABit bits.  Note that disabling a graphical
-      object also disables its collisions.
-
-      @param mode  Whether to enable or disable all bits
-    */
-    void enableBits(bool mode);
-
-    /**
-      Enables/disable/toggle the specified TIA bit.  Note that disabling a
-      graphical object also disables its collisions.
+      Enables/disable/toggle the specified (or all) TIA bit(s).  Note that
+      disabling a graphical object also disables its collisions.
 
       @param mode  1/0 indicates on/off, and values greater than 1 mean
                    flip the bit from its current state
@@ -287,16 +279,10 @@ class TIA : public Device
       @return  Whether the bit was enabled or disabled
     */
     bool toggleBit(TIABit b, uInt8 mode = 2);
+    bool toggleBits();
 
     /**
-      Enables/disables all TIABit collisions.
-
-      @param mode  Whether to enable or disable all collisions
-    */
-    void enableCollisions(bool mode);
-
-    /**
-      Enables/disable/toggle the specified TIA bit collision.
+      Enables/disable/toggle the specified (or all) TIA bit collision(s).
 
       @param mode  1/0 indicates on/off, and values greater than 1 mean
                    flip the collision from its current state
@@ -304,6 +290,7 @@ class TIA : public Device
       @return  Whether the collision was enabled or disabled
     */
     bool toggleCollision(TIABit b, uInt8 mode = 2);
+    bool toggleCollisions();
 
     /**
       Toggle the display of HMOVE blanks.
@@ -342,6 +329,21 @@ class TIA : public Device
 #endif
 
   private:
+    /**
+      Enables/disables all TIABit bits.  Note that disabling a graphical
+      object also disables its collisions.
+
+      @param mode  Whether to enable or disable all bits
+    */
+    void enableBits(bool mode);
+
+    /**
+      Enables/disables all TIABit collisions.
+
+      @param mode  Whether to enable or disable all collisions
+    */
+    void enableCollisions(bool mode);
+
     // Update the current frame buffer to the specified color clock
     void updateFrame(Int32 clock);
 
@@ -614,6 +616,9 @@ class TIA : public Device
 
     // The framerate currently in use by the Console
     float myFramerate;
+
+    // Whether TIA bits/collisions are currently enabled/disabled
+    bool myBitsEnabled, myCollisionsEnabled;
 
   private:
     // Copy constructor isn't supported by this class so make it private

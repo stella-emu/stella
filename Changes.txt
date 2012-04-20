@@ -36,6 +36,10 @@
       - 'Juno First' ROMs now use an AtariVox/SaveKey when possible
       - 'Astroblast' ROMs now use the paddles by default
 
+  * Changed key-combo for enabling TIA objects and collisions to be
+    toggled on and off with the Alt-period and Shift-Alt-period (instead
+    of having two separate keys to turn them on and off).
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

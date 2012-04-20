@@ -434,16 +434,9 @@ void EventHandler::poll(uInt64 time)
 
               case KBDK_PERIOD:
                 if(mod & KMOD_SHIFT)
-                  myOSystem->console().enableCollisions(false);
+                  myOSystem->console().toggleCollisions();
                 else
-                  myOSystem->console().enableBits(false);
-                break;
-
-              case KBDK_SLASH:
-                if(mod & KMOD_SHIFT)
-                  myOSystem->console().enableCollisions(true);
-                else
-                  myOSystem->console().enableBits(true);
+                  myOSystem->console().toggleBits();
                 break;
 
               case KBDK_p:  // Alt-p toggles phosphor effect

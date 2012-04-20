@@ -54,7 +54,10 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myColorLossEnabled(false),
     myPartialFrameFlag(false),
     myAutoFrameEnabled(false),
-    myFrameCounter(0)
+    myFrameCounter(0),
+    myBitsEnabled(true),
+    myCollisionsEnabled(true)
+   
 {
   // Allocate buffers for two frame buffers
   myCurrentFrameBuffer = new uInt8[160 * 320];
@@ -702,6 +705,14 @@ bool TIA::toggleBit(TIABit b, uInt8 mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::toggleBits()
+{
+  myBitsEnabled = !myBitsEnabled;
+  enableBits(myBitsEnabled);
+  return myBitsEnabled;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::enableCollisions(bool mode)
 {
   toggleCollision(P0Bit, mode ? 1 : 0);
@@ -742,6 +753,14 @@ bool TIA::toggleCollision(TIABit b, uInt8 mode)
   myCollisionEnabledMask = (enabled << 16) | mask;
 
   return on;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool TIA::toggleCollisions()
+{
+  myCollisionsEnabled = !myCollisionsEnabled;
+  enableCollisions(myCollisionsEnabled);
+  return myCollisionsEnabled;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

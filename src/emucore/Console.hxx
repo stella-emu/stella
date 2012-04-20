@@ -270,7 +270,7 @@ class Console : public Serializable
     void toggleBLBit() const { toggleTIABit(BLBit, "BL"); }
     void togglePFBit() const { toggleTIABit(PFBit, "PF"); }
     void toggleHMOVE() const;
-    void enableBits(bool enable) const;
+    void toggleBits() const;
 
     /**
       Toggles the TIA collisions specified in the method name.
@@ -281,7 +281,7 @@ class Console : public Serializable
     void toggleM1Collision() const { toggleTIACollision(M1Bit, "M1"); }
     void toggleBLCollision() const { toggleTIACollision(BLBit, "BL"); }
     void togglePFCollision() const { toggleTIACollision(PFBit, "PF"); }
-    void enableCollisions(bool enable) const;
+    void toggleCollisions() const;
 
     /**
       Toggles the TIA 'fixed debug colors' mode.
@@ -339,11 +339,11 @@ class Console : public Serializable
     System* mySystem;
 
     // Pointer to the Cartridge (the debugger needs it)
-    Cartridge *myCart;
+    Cartridge* myCart;
 
     // Pointer to the 6532 (aka RIOT) (the debugger needs it)
     // A RIOT of my own! (...with apologies to The Clash...)
-    M6532 *myRiot;
+    M6532* myRiot;
 
     // Pointer to CompuMate handler (only used in CompuMate ROMs)
     CompuMate* myCMHandler;

@@ -895,10 +895,26 @@ void Console::toggleTIABit(TIABit bit, const string& bitname, bool show) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleBits() const
+{
+  bool enabled = myTIA->toggleBits();
+  string message = string("TIA bits") + (enabled ? " enabled" : " disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::toggleTIACollision(TIABit bit, const string& bitname, bool show) const
 {
   bool result = myTIA->toggleCollision(bit);
   string message = bitname + (result ? " collision enabled" : " collision disabled");
+  myOSystem->frameBuffer().showMessage(message);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleCollisions() const
+{
+  bool enabled = myTIA->toggleCollisions();
+  string message = string("TIA collisions") + (enabled ? " enabled" : " disabled");
   myOSystem->frameBuffer().showMessage(message);
 }
 
@@ -909,22 +925,6 @@ void Console::toggleHMOVE() const
     myOSystem->frameBuffer().showMessage("HMOVE blanking enabled");
   else
     myOSystem->frameBuffer().showMessage("HMOVE blanking disabled");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::enableBits(bool enable) const
-{
-  myTIA->enableBits(enable);
-  string message = string("TIA bits") + (enable ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::enableCollisions(bool enable) const
-{
-  myTIA->enableCollisions(enable);
-  string message = string("TIA collisions") + (enable ? " enabled" : " disabled");
-  myOSystem->frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
