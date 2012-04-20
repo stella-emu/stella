@@ -402,13 +402,6 @@
 "Controller.MouseAxis" "01"
 ""
 
-"Cartridge.MD5" "7b5207e68ee85b16998bea861987c690"
-"Cartridge.Manufacturer" "Atari, Carol Shaw"
-"Cartridge.ModelNo" "CX26163P"
-"Cartridge.Name" "3-D Tic-Tac-Toe (32 in 1) (1988) (Atari) (PAL)"
-"Display.YStart" "62"
-""
-
 "Cartridge.MD5" "f1beca5a198cf08190487e5c27b8e540"
 "Cartridge.Name" "Fu Kung! (V0.16) (2003) (AD)"
 ""
@@ -419,6 +412,13 @@
 "Cartridge.Note" "NTSC Conversion"
 "Cartridge.Rarity" "Homebrew"
 "Display.Height" "230"
+""
+
+"Cartridge.MD5" "7b5207e68ee85b16998bea861987c690"
+"Cartridge.Manufacturer" "Atari, Carol Shaw"
+"Cartridge.ModelNo" "CX26163P"
+"Cartridge.Name" "3-D Tic-Tac-Toe (32 in 1) (1988) (Atari) (PAL)"
+"Display.YStart" "62"
 ""
 
 "Cartridge.MD5" "cba56e939252b05df7b7de87307d12ca"
@@ -760,16 +760,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "81414174f1816d5c1e583af427ac89fc"
-"Cartridge.Manufacturer" "Thomas Jentzsch"
-"Cartridge.Name" "Treasure Below (Thomas Jentzsch)"
-"Cartridge.Note" "NTSC Conversion"
-"Cartridge.Rarity" "Homebrew"
-"Console.RightDifficulty" "A"
-"Display.YStart" "20"
-"Display.Height" "230"
-""
-
 "Cartridge.MD5" "cd568d6acb2f14477ebf7e59fb382292"
 "Cartridge.Manufacturer" "Videospielkassette - Ariola"
 "Cartridge.ModelNo" "PGP235"
@@ -780,6 +770,16 @@
 "Cartridge.MD5" "bdf1996e2dd64baf8eff5511811ca6ca"
 "Cartridge.Manufacturer" "Tron"
 "Cartridge.Name" "H.E.R.O. (Tron)"
+""
+
+"Cartridge.MD5" "81414174f1816d5c1e583af427ac89fc"
+"Cartridge.Manufacturer" "Thomas Jentzsch"
+"Cartridge.Name" "Treasure Below (Thomas Jentzsch)"
+"Cartridge.Note" "NTSC Conversion"
+"Cartridge.Rarity" "Homebrew"
+"Console.RightDifficulty" "A"
+"Display.YStart" "20"
+"Display.Height" "230"
 ""
 
 "Cartridge.MD5" "521f4dd1eb84a09b2b19959a41839aad"
@@ -2617,9 +2617,8 @@
 "Cartridge.ModelNo" "CX2621, CX2621P"
 "Cartridge.Name" "Video Olympics (1977) (Atari) (PAL) (4K)"
 "Cartridge.Note" "Uses the Paddle Controllers"
-"Controller.Left" "PADDLES"
-"Controller.Right" "PADDLES"
-"Controller.MouseAxis" "10"
+"Controller.Left" "PADDLES_IAXDR"
+"Controller.SwapPaddles" "YES"
 ""
 
 "Cartridge.MD5" "b2d5d200f0af8485413fad957828582a"
@@ -5025,7 +5024,6 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "3556e125681aea864e17b09f3f3b2a75"
@@ -5535,7 +5533,6 @@
 "Cartridge.Note" "Uses the Paddle Controllers"
 "Controller.Left" "PADDLES_IAXDR"
 "Controller.SwapPaddles" "YES"
-"Controller.MouseAxis" "10"
 ""
 
 "Cartridge.MD5" "afd2cf258d51ae4965ee21abba3627ab"
@@ -9246,6 +9243,7 @@
 "Cartridge.Manufacturer" "Atari, Peter C. Niday, Howard Scott Warshaw"
 "Cartridge.Name" "Mind Maze (10-10-1984) (Atari) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+"Controller.Right" "MINDLINK"
 ""
 
 "Cartridge.MD5" "eb503cc64c3560cd78b7051188b7ba56"
@@ -15960,7 +15958,7 @@
 "Cartridge.Note" "Uses the Joystick (left) or Steering (right) Controller"
 "Cartridge.Rarity" "Hack"
 "Controller.Right" "DRIVING"
-"Controller.MouseAxis" "54"
+"Controller.MouseAxis" "58"
 "Display.Phosphor" "YES"
 ""
 

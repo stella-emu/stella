@@ -104,8 +104,6 @@ class Array
       return tmp;
     }
 
-    // TODO: insert, remove, ...
-
     T& operator [](int idx)
     {
       assert(idx >= 0 && idx < _size);

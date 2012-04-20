@@ -351,6 +351,14 @@ class OSystem
     bool createLauncher(const string& startdir = "");
 
     /**
+      Answers whether the ROM launcher was actually successfully used
+      at some point since the app started.
+
+      @return  True on success, otherwise false
+    */
+    bool launcherUsed() const { return myLauncherUsed; }
+
+    /**
       Gets all possible info about the ROM by creating a temporary
       Console object and querying it.
 
@@ -509,6 +517,7 @@ class OSystem
 
     // Pointer to the Launcher object
     Launcher* myLauncher;
+    bool myLauncherUsed;
 
     // Pointer to the Debugger object
     Debugger* myDebugger;

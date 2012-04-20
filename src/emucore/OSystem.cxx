@@ -86,6 +86,7 @@ OSystem::OSystem()
     myMenu(NULL),
     myCommandMenu(NULL),
     myLauncher(NULL),
+    myLauncherUsed(false),
     myDebugger(NULL),
     myCheatManager(NULL),
     myStateManager(NULL),
@@ -603,21 +604,24 @@ void OSystem::deleteConsole()
 bool OSystem::createLauncher(const string& startdir)
 {
   mySettings->setString("tmpromdir", startdir);
+  bool status = false;
 
   myEventHandler->reset(EventHandler::S_LAUNCHER);
-  if(createFrameBuffer() != kSuccess)
+  if(createFrameBuffer() == kSuccess)
   {
-    logMessage("ERROR: Couldn't create launcher\n", 0);
-    return false;
+    myLauncher->reStack();
+    myFrameBuffer->setCursorState();
+    myFrameBuffer->refresh();
+
+    setFramerate(60);
+    resetLoopTiming();
+    status = true;
   }
-  myLauncher->reStack();
-  myFrameBuffer->setCursorState();
-  myFrameBuffer->refresh();
+  else
+    logMessage("ERROR: Couldn't create launcher\n", 0);
 
-  setFramerate(60);
-  resetLoopTiming();
-
-  return true;
+  myLauncherUsed = myLauncherUsed || status;
+  return status;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

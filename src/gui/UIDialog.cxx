@@ -55,7 +55,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 37 * fontWidth + 10;
-  _h = 9 * (lineHeight + 4) + 10;
+  _h = 10 * (lineHeight + 4) + 10;
 
   // The tab widget
   xpos = ypos = vBorder;
@@ -67,7 +67,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   // 1) Launcher options
   wid.clear();
   tabID = myTab->addTab(" Launcher ");
-  lwidth = font.getStringWidth("Launcher Height: ");
+  lwidth = font.getStringWidth("Exit to Launcher: ");
 
   // Launcher width and height
   myLauncherWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
@@ -135,6 +135,17 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
     new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
                     "ROM Info viewer: ", lwidth);
   wid.push_back(myRomViewerPopup);
+  ypos += lineHeight + 4;
+
+  // Exit to Launcher
+  pwidth = font.getStringWidth("If in use");
+  items.clear();
+  items.push_back("If in use", "0");
+  items.push_back("Always", "1");
+  myLauncherExitPopup =
+    new PopUpWidget(myTab, font, xpos, ypos+1, pwidth, lineHeight, items,
+                    "Exit to Launcher: ", lwidth);
+  wid.push_back(myLauncherExitPopup);
   ypos += lineHeight + 4;
 
   // Add message concerning usage
@@ -291,11 +302,15 @@ void UIDialog::loadConfig()
 
   // Launcher font
   const string& font = instance().settings().getString("launcherfont");
-     myLauncherFontPopup->setSelected(font, "medium");
+  myLauncherFontPopup->setSelected(font, "medium");
 
   // ROM launcher info viewer
   const string& viewer = instance().settings().getString("romviewer");
   myRomViewerPopup->setSelected(viewer, "0");
+
+  // Exit to launcher
+  bool exitlauncher = instance().settings().getBool("exitlauncher");
+  myLauncherExitPopup->setSelected(exitlauncher ? "1" : "0", "0");
 
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
@@ -341,6 +356,10 @@ void UIDialog::saveConfig()
   instance().settings().setString("romviewer",
     myRomViewerPopup->getSelectedTag());
 
+  // Exit to Launcher
+  instance().settings().setString("exitlauncher",
+    myLauncherExitPopup->getSelectedTag());
+
   // Debugger size
   instance().settings().setSize("debuggerres", 
     myDebuggerWidthSlider->getValue(), myDebuggerHeightSlider->getValue());
@@ -375,6 +394,7 @@ void UIDialog::setDefaults()
       myLauncherHeightLabel->setValue(h);
       myLauncherFontPopup->setSelected("medium", "");
       myRomViewerPopup->setSelected("0", "");
+      myLauncherExitPopup->setSelected("0", "");
       break;
     }
 

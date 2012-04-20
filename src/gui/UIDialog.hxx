@@ -49,6 +49,7 @@ class UIDialog : public Dialog
     StaticTextWidget* myLauncherWidthLabel;
     SliderWidget*     myLauncherHeightSlider;
     StaticTextWidget* myLauncherHeightLabel;
+    PopUpWidget*      myLauncherExitPopup;
     PopUpWidget*      myLauncherFontPopup;
     PopUpWidget*      myRomViewerPopup;
 

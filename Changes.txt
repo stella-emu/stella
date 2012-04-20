@@ -27,6 +27,11 @@
   * Updated FA2 bankswitch scheme (Star Castle) to emulate load/save
     high score functionality to the Harmony cart flash RAM.
 
+  * Replaced commandline argument 'uselauncher' with 'exitlauncher'.  The
+    new option specifies the behaviour of the ROM launcher when exiting
+    a ROM (always exit to launcher, or only when the launcher was actually
+    used).  This setting can now be changed in the GUI.
+
   * Several updates to the internal properties database:
       - 'Juno First' ROMs now use an AtariVox/SaveKey when possible
       - 'Astroblast' ROMs now use the paddles by default

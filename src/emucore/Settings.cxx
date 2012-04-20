@@ -98,7 +98,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("cfgdir", "");
 
   // ROM browser options
-  setInternal("uselauncher", "true");
+  setInternal("exitlauncher", "false");
   setInternal("launcherres", "640x480");
   setInternal("launcherfont", "medium");
   setInternal("launcherexts", "allroms");
@@ -384,7 +384,7 @@ void Settings::usage()
     << endl
     << "  -rominfo      <rom>          Display detailed information for the given ROM\n"
     << "  -listrominfo                 Display contents of stella.pro, one line per ROM entry\n"
-    << "  -uselauncher  <1|0>          Use the built-in ROM launcher\n"
+    << "  -exitlauncher <1|0>          On exiting a ROM, go back to the ROM launcher\n"
     << "  -launcherres  <WxH>          The resolution to use in ROM launcher mode\n"
     << "  -launcherfont <small|medium| Use the specified font in the ROM launcher\n"
     << "                 large>\n"

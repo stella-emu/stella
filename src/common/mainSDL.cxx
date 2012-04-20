@@ -171,14 +171,9 @@ int main(int argc, char* argv[])
   if(romfile == "" || romnode.isDirectory())
   {
     theOSystem->logMessage("Attempting to use ROM launcher ...\n", 2);
-    if(theOSystem->settings().getBool("uselauncher"))
-    {
-      bool launcherOpened = romfile != "" ?
-        theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
-      if(!launcherOpened)
-        return Cleanup();
-    }
-    else
+    bool launcherOpened = romfile != "" ?
+      theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
+    if(!launcherOpened)
     {
       theOSystem->logMessage("Launcher could not be started, showing usage\n", 2);
       theOSystem->settings().usage();

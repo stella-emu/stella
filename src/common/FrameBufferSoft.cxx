@@ -750,7 +750,6 @@ void FBSurfaceSoft::addDirtyRect(uInt32 x, uInt32 y, uInt32 w, uInt32 h)
   if(myIsBaseSurface)
   {
     // Add a dirty rect to the UI rectangle list
-    // TODO - intelligent merging of rectangles, to avoid overlap
     SDL_Rect temp;
     temp.x = x + myXOrig;  temp.y = y + myYOrig;  temp.w = w;  temp.h = h;
     myFB.myRectList->add(&temp);
