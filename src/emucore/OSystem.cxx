@@ -758,6 +758,26 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
 
   uInt8* image = 0;
 
+  // Split zip file path and file name within zip archive
+  string fileInZip = "";
+  FilesystemNode fileNode(file);
+  if (!fileNode.exists())
+  {
+    size_t slashPos = file.rfind(BSPF_PATH_SEPARATOR);
+    if(slashPos != string::npos)
+    {
+      string parent = file.substr(0, slashPos);
+      string name = file.substr(slashPos+1);
+      FilesystemNode parentNode(parent);
+      if(parentNode.exists() && !parentNode.isDirectory() &&
+         BSPF_endsWithIgnoreCase(parent, ".zip"))
+      {
+        fileInZip = name;
+        file = parent;
+      }
+    }
+  }
+
   // Try to open the file as a zipped archive
   // If that fails, we assume it's just a gzipped or normal data file
   unzFile tz;
@@ -784,8 +804,11 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
           if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
              BSPF_equalsIgnoreCase(ext, ".rom"))
           {
-            file = filename;
-            break;
+            if(fileInZip.empty() || fileInZip == filename) 
+            {
+              file = filename;
+              break;
+            }
           }
         }
 

@@ -44,6 +44,7 @@
 #include "StringList.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
+#include "unzip.h"
 
 #include "LauncherDialog.hxx"
 
@@ -341,12 +342,55 @@ void LauncherDialog::updateListing(const string& nameToSelect)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadDirListing()
 {
-  if(!myCurrentNode.isDirectory())
+  if(!myCurrentNode.isDirectory() && !myCurrentNode.exists())
     return;
 
   FSList files;
   files.reserve(2048);
-  myCurrentNode.getChildren(files, FilesystemNode::kListAll);
+
+  if(myCurrentNode.isDirectory())
+  {
+    myCurrentNode.getChildren(files, FilesystemNode::kListAll);
+  }
+  else
+  {
+    unzFile tz;
+    if((tz = unzOpen(myCurrentNode.getPath().c_str())) != NULL)
+    {
+      if(unzGoToFirstFile(tz) == UNZ_OK)
+      {
+        unz_file_info ufo;
+
+        for(;;)  // Loop through all files for valid 2600 images
+        {
+          // Longer filenames might be possible, but I don't
+          // think people would name files that long in zip files...
+          char filename[1024];
+
+          unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
+          filename[1023] = '\0';
+
+          if(strlen(filename) >= 4)
+          {
+            // Grab 3-character extension
+            const char* ext = filename + strlen(filename) - 4;
+
+            if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
+               BSPF_equalsIgnoreCase(ext, ".rom"))
+            {
+              FilesystemNode newFile(AbstractFilesystemNode::getAbsolutePath(
+                  filename, myCurrentNode.getPath(), ""));
+              files.push_back(newFile);
+            }
+          }
+
+          // Scan the next file in the zip
+          if(unzGoToNextFile(tz) != UNZ_OK)
+            break;
+        }
+      }
+    }
+  }
 
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
@@ -364,7 +408,9 @@ void LauncherDialog::loadDirListing()
     // that we want - if there are no extensions, it implies show all files
     // In this way, showing all files is on the 'fast code path'
     if(isDir)
+    {
       name = " [" + name + "]";
+    }
     else if(myRomExts.size() > 0)
     {
       // Skip over those names we've filtered out
@@ -479,6 +525,46 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+int LauncherDialog::filesInArchive(const string& archive)
+{
+  int count = -1;
+  unzFile tz;
+  if((tz = unzOpen(archive.c_str())) != NULL)
+  {
+    count = 0;
+    if(unzGoToFirstFile(tz) == UNZ_OK)
+    {
+      unz_file_info ufo;
+
+      for(;;)  // Loop through all files for valid 2600 images
+      {
+        // Longer filenames might be possible, but I don't
+        // think people would name files that long in zip files...
+        char filename[1024];
+
+        unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
+        filename[1023] = '\0';
+
+        if(strlen(filename) >= 4)
+        {
+          // Grab 3-character extension
+          const char* ext = filename + strlen(filename) - 4;
+
+          if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
+             BSPF_equalsIgnoreCase(ext, ".rom"))
+            ++count;
+        }
+
+        // Scan the next file in the zip
+        if(unzGoToNextFile(tz) != UNZ_OK)
+          break;
+      }
+    }
+  }
+  return count;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
   // Grab the key before passing it to the actual dialog and check for
@@ -519,8 +605,18 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         const string& md5 = myGameList->md5(item);
         string extension;
 
+        int numFilesInArchive = filesInArchive(rom);
+        bool isArchive = !myGameList->isDir(item) &&
+                         BSPF_endsWithIgnoreCase(rom, ".zip");
+
         // Directory's should be selected (ie, enter them and redisplay)
-        if(myGameList->isDir(item))
+        // Archives should be entered if they contain more than 1 file
+        if(isArchive && numFilesInArchive < 1)
+        {
+          instance().frameBuffer().showMessage("Archive does not contain any valid ROM files",
+                                               kMiddleCenter, true);
+        }
+        else if((isArchive && numFilesInArchive > 1) || myGameList->isDir(item))
         {
           string dirname = "";
           if(myGameList->name(item) == " [..]")

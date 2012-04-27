@@ -96,6 +96,7 @@ class LauncherDialog : public Dialog
     void handleContextMenu();
     void setListFilters();
     bool matchPattern(const string& s, const string& pattern) const;
+    int filesInArchive(const string& archive);
 
   private:
     ButtonWidget* myStartButton;

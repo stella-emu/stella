@@ -130,6 +130,20 @@ inline string BSPF_toString(int num)
   return buf.str();
 }
 
+// Test whether two characters are equal (case insensitive)
+static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
+{
+  return toupper((unsigned char)ch1) == toupper((unsigned char)ch2);
+}
+// Find location (if any) of the second string within the first,
+// starting from 'startpos' in the first string
+inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2, int startpos = 0)
+{
+  string::const_iterator pos = std::search(s1.begin()+startpos, s1.end(),
+    s2.begin(), s2.end(), BSPF_equalsIgnoreCaseChar);
+  return pos == s1.end() ? string::npos : pos - (s1.begin()+startpos);
+}
+
 // Test whether two strings are equal (case insensitive)
 inline bool BSPF_equalsIgnoreCase(const string& s1, const string& s2)
 {
@@ -150,17 +164,12 @@ inline bool BSPF_startsWithIgnoreCase(const char* s1, const char* s2)
   return BSPF_strncasecmp(s1, s2, strlen(s2)) == 0;
 }
 
-// Test whether two characters are equal (case insensitive)
-static bool BSPF_equalsIgnoreCaseChar(char ch1, char ch2)
+// Test whether the first string ends with the second one (case insensitive)
+inline bool BSPF_endsWithIgnoreCase(const string& s1, const string& s2)
 {
-  return toupper((unsigned char)ch1) == toupper((unsigned char)ch2);
-}
-// Find location (if any) of the second string within the first
-inline size_t BSPF_findIgnoreCase(const string& s1, const string& s2)
-{
-  string::const_iterator pos = std::search(s1.begin(), s1.end(),
-    s2.begin(), s2.end(), BSPF_equalsIgnoreCaseChar);
-  return pos == s1.end() ? string::npos : pos - s1.begin();
+  return (s1.length() >= s2.length()) ?
+      (BSPF_findIgnoreCase(s1, s2, s1.length() - s2.length()) != string::npos) :
+      false;
 }
 
 static const string EmptyString("");
