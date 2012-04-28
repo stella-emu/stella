@@ -24,6 +24,8 @@
 #include <assert.h>
 #include <math.h>
 
+#include "bspf.hxx"
+
 /* Copyright (C) 2006 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
@@ -453,22 +455,8 @@ static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out );
   #endif
 #endif
 
-#include <limits.h>
-
 #if ATARI_NTSC_OUT_DEPTH <= 16
-  #if USHRT_MAX == 0xFFFF
-    typedef unsigned short atari_ntsc_out_t;
-  #else
-    #error "Need 16-bit int type"
-  #endif
-
+  typedef uInt16 atari_ntsc_out_t;
 #else
-  #if UINT_MAX == 0xFFFFFFFF
-    typedef unsigned int  atari_ntsc_out_t;
-  #elif ULONG_MAX == 0xFFFFFFFF
-    typedef unsigned long atari_ntsc_out_t;
-  #else
-    #error "Need 32-bit int type"
-  #endif
-
+  typedef uInt32 atari_ntsc_out_t;
 #endif

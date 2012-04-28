@@ -62,18 +62,13 @@ typedef struct atari_ntsc_setup_t
   double artifacts;  /* artifacts caused by color changes */
   double fringing;   /* color artifacts caused by brightness changes */
   double bleed;      /* color bleed (color resolution reduction) */
-/* Atari change: no alternating burst phases - remove merge_fields field. */
   float const* decoder_matrix; /* optional RGB decoder matrix, 6 elements */
   
+  /* You can replace the standard TI color generation with an RGB palette. */
+  unsigned char const* palette;/* optional RGB palette in, 3 bytes per color */
   unsigned char* palette_out;  /* optional RGB palette out, 3 bytes per color */
-  
-  /* You can replace the standard NES color generation with an RGB palette. The
-  first replaces all color generation, while the second replaces only the core
-  64-color generation and does standard color emphasis calculations on it. */
-  unsigned char const* palette;/* optional 256-entry RGB palette in, 3 bytes per color */
-/* Atari change: only one palette - remove base_palette field. */
 
-/* Atari change: additional setup fields */
+  /* Atari change: additional setup fields */
   double burst_phase; /* Phase at which colorburst signal is turned on;
                         this defines colors of artifacts.
             In radians; -1.0 = -180 degrees, 1.0 = +180 degrees */
@@ -93,7 +88,7 @@ atari_ntsc_t object. Can pass NULL for either parameter. */
 typedef struct atari_ntsc_t atari_ntsc_t;
 void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup );
 
-/* Filters one or more rows of pixels. Input pixels are 6/9-bit palette indicies.
+/* Filters one or more rows of pixels. Input pixels are 8-bit Atari palette colors.
 In_row_width is the number of pixels to get to the next input row. Out_pitch
 is the number of *bytes* to get to the next output row. Output pixel format
 is set by ATARI_NTSC_OUT_DEPTH (defaults to 16-bit RGB). */
@@ -115,7 +110,7 @@ void atari_ntsc_blit_bgra32( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* at
 
 /* Number of output pixels written by blitter for given input width. Width might
 be rounded down slightly; use ATARI_NTSC_IN_WIDTH() on result to find rounded
-value. Guaranteed not to round 256 down at all. */
+value. Guaranteed not to round 160 down at all. */
 #define ATARI_NTSC_OUT_WIDTH( in_width ) \
   ((((in_width) - 1) / atari_ntsc_in_chunk + 1)* atari_ntsc_out_chunk)
 
@@ -128,13 +123,13 @@ value. */
 
 /* Interface for user-defined custom blitters. */
 
-enum { atari_ntsc_in_chunk    = 4  }; /* number of input pixels read per chunk */
+enum { atari_ntsc_in_chunk    = 2  }; /* number of input pixels read per chunk */
 enum { atari_ntsc_out_chunk   = 7  }; /* number of output pixels generated per chunk */
 enum { atari_ntsc_black       = 0  }; /* palette index for black */
 enum { atari_ntsc_burst_count = 1  }; /* burst phase cycles through 0, 1, and 2 */
 
-/* Begins outputting row and starts three pixels. First pixel will be cut off a bit.
-Use nes_ntsc_black for unused pixels. Declares variables, so must be before first
+/* Begins outputting row and starts two pixels. First pixel will be cut off a bit.
+Use atari_ntsc_black for unused pixels. Declares variables, so must be before first
 statement in a block (unless you're using C++). */
 /* Atari change: no alternating burst phases; adapted to 4/7 pixel ratio. */
 #define ATARI_NTSC_BEGIN_ROW( ntsc, pixel0, pixel1, pixel2, pixel3 ) \
@@ -157,7 +152,7 @@ statement in a block (unless you're using C++). */
 
 
 /* private */
-enum { atari_ntsc_entry_size = 56 };
+enum { atari_ntsc_entry_size = 2 * 14 /* 56 */};
 typedef unsigned long atari_ntsc_rgb_t;
 struct atari_ntsc_t {
   atari_ntsc_rgb_t table [atari_ntsc_palette_size] [atari_ntsc_entry_size];
