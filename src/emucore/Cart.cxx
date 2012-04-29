@@ -30,6 +30,9 @@
 #include "Cart4A50.hxx"
 #include "Cart4K.hxx"
 #include "CartAR.hxx"
+#include "CartCM.hxx"
+#include "CartCTY.hxx"
+#include "CartCV.hxx"
 #include "CartDPC.hxx"
 #include "CartDPCPlus.hxx"
 #include "CartE0.hxx"
@@ -47,10 +50,8 @@
 #include "CartFA2.hxx"
 #include "CartFE.hxx"
 #include "CartMC.hxx"
-#include "CartCV.hxx"
-#include "CartCM.hxx"
-#include "CartUA.hxx"
 #include "CartSB.hxx"
+#include "CartUA.hxx"
 #include "CartX07.hxx"
 #include "MD5.hxx"
 #include "Props.hxx"
@@ -138,7 +139,9 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   }
 
   // We should know the cart's type by now so let's create it
-  if(type == "2K")
+  if(type == "0840")
+    cartridge = new Cartridge0840(image, size, settings);
+  else if(type == "2K")
     cartridge = new Cartridge2K(image, size, settings);
   else if(type == "3E")
     cartridge = new Cartridge3E(image, size, settings);
@@ -150,6 +153,12 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new Cartridge4K(image, size, settings);
   else if(type == "AR")
     cartridge = new CartridgeAR(image, size, settings);
+  else if(type == "CM")
+    cartridge = new CartridgeCM(image, size, settings);
+  else if(type == "CTY")
+    cartridge = new CartridgeCTY(image, size, settings);
+  else if(type == "CV")
+    cartridge = new CartridgeCV(image, size, settings);
   else if(type == "DPC")
     cartridge = new CartridgeDPC(image, size, settings);
   else if(type == "DPC+")
@@ -162,6 +171,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeEF(image, size, settings);
   else if(type == "EFSC")
     cartridge = new CartridgeEFSC(image, size, settings);
+  else if(type == "F0" || type == "MB")
+    cartridge = new CartridgeF0(image, size, settings);
   else if(type == "F4")
     cartridge = new CartridgeF4(image, size, settings);
   else if(type == "F4SC")
@@ -182,16 +193,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeFE(image, size, settings);
   else if(type == "MC")
     cartridge = new CartridgeMC(image, size, settings);
-  else if(type == "F0" || type == "MB")
-    cartridge = new CartridgeF0(image, size, settings);
-  else if(type == "CV")
-    cartridge = new CartridgeCV(image, size, settings);
-  else if(type == "CM")
-    cartridge = new CartridgeCM(image, size, settings);
   else if(type == "UA")
     cartridge = new CartridgeUA(image, size, settings);
-  else if(type == "0840")
-    cartridge = new Cartridge0840(image, size, settings);
   else if(type == "SB")
     cartridge = new CartridgeSB(image, size, settings);
   else if(type == "X07")
@@ -398,6 +401,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else if(isProbablyDPCplus(image, size))
       type = "DPC+";
+    else if(isProbablyCTY(image, size))
+      type = "CTY";
     else
       type = "F4";
   }
@@ -559,6 +564,12 @@ bool Cartridge::isProbably4A50(const uInt8* image, uInt32 size)
     return true;
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyCTY(const uInt8* image, uInt32 size)
+{
+  return false;  // TODO - add autodetection
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

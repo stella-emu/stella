@@ -21,6 +21,7 @@
 #include <cstring>
 
 #include "System.hxx"
+#include "CartCTYTunes.hxx"
 #include "CartCTY.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

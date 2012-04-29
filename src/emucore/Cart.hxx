@@ -292,6 +292,11 @@ class Cartridge : public Device
     static bool isProbably4A50(const uInt8* image, uInt32 size);
 
     /**
+      Returns true if the image is probably a CTY bankswitching cartridge
+    */
+    static bool isProbablyCTY(const uInt8* image, uInt32 size);
+
+    /**
       Returns true if the image is probably a CV bankswitching cartridge
     */
     static bool isProbablyCV(const uInt8* image, uInt32 size);

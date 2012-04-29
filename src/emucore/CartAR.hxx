@@ -219,7 +219,7 @@ class CartridgeAR : public Cartridge
 
     // Default 256-byte header to use if one isn't included in the ROM
     // This data comes from z26
-    static uInt8 ourDefaultHeader[256];
+    static const uInt8 ourDefaultHeader[256];
 };
 
 #endif

@@ -140,12 +140,15 @@ class CartridgeCTY : public Cartridge
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
-    // The 16K ROM image of the cartridge
+    // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
 
     // The 256 bytes of score-table RAM
     uInt8 myScoreRAM[256];
     uInt8* myScorePtr;
+
+    // The 8K Harmony RAM (used for tune data)
+    uInt8 myTuneRAM[8192];
 };
 
 #endif
