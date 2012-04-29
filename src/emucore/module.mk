@@ -3,15 +3,17 @@ MODULE := src/emucore
 MODULE_OBJS := \
 	src/emucore/AtariVox.o \
 	src/emucore/Booster.o \
+	src/emucore/Cart.o \
+	src/emucore/Cart0840.o \
 	src/emucore/Cart2K.o \
-	src/emucore/Cart3F.o \
 	src/emucore/Cart3E.o \
+	src/emucore/Cart3F.o \
 	src/emucore/Cart4A50.o \
 	src/emucore/Cart4K.o \
 	src/emucore/CartAR.o \
-	src/emucore/CartCV.o \
 	src/emucore/CartCM.o \
-	src/emucore/Cart.o \
+	src/emucore/CartCTY.o \
+	src/emucore/CartCV.o \
 	src/emucore/CartDPC.o \
 	src/emucore/CartDPCPlus.o \
 	src/emucore/CartE0.o \
@@ -31,7 +33,6 @@ MODULE_OBJS := \
 	src/emucore/CartMC.o \
 	src/emucore/CartSB.o \
 	src/emucore/CartUA.o \
-	src/emucore/Cart0840.o \
 	src/emucore/CartX07.o \
 	src/emucore/CompuMate.o \
 	src/emucore/Console.o \
