@@ -59,6 +59,8 @@ class NTSCFilter
       PRESET_SVIDEO,
       PRESET_RGB,
       PRESET_MONOCHROME,
+      PRESET_BAD,
+      PRESET_HORRIBLE,
       PRESET_CUSTOM,
       /* Number of "normal" (not including CUSTOM) values in enumerator */
       PRESET_SIZE = PRESET_CUSTOM

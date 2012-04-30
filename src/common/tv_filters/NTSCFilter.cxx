@@ -83,6 +83,7 @@ void NTSCFilter::updateFilter()
 void NTSCFilter::restoreDefaults()
 {
   mySetup = atari_ntsc_composite;
+  updateFilter();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -250,8 +251,8 @@ int NTSCFilter::FILTER_NTSC_Initialise(int *argc, char *argv[])
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::updateYIQTable(double yiq_table[384], double start_angle)
 {
-  const double start_saturation = 0.0; // calculated internally
-	const double gamma = 1; // 1 - COLOURS_NTSC_setup.gamma / 2.0;
+  // FIXME - const double start_saturation = 0.0; // calculated internally
+  // FIXME - const double gamma = 1; // 1 - COLOURS_NTSC_setup.gamma / 2.0;
   uInt8* ext_ptr = myTIAPalette;
 	int n;
 
@@ -295,7 +296,9 @@ atari_ntsc_setup_t const * const NTSCFilter::presets[NTSCFilter::PRESET_SIZE] = 
   &atari_ntsc_composite,
   &atari_ntsc_svideo,
   &atari_ntsc_rgb,
-  &atari_ntsc_monochrome
+  &atari_ntsc_monochrome,
+  &atari_ntsc_bad,
+  &atari_ntsc_horrible
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -303,5 +306,7 @@ static char const * const preset_cfg_strings[NTSCFilter::PRESET_SIZE] = {
   "COMPOSITE",
   "SVIDEO",
   "RGB",
-  "MONOCHROME"
+  "MONOCHROME",
+  "BAD",
+  "HORRIBLE"
 };

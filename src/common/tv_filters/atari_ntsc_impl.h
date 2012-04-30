@@ -26,7 +26,7 @@
 
 #include "bspf.hxx"
 
-/* Copyright (C) 2006 Shay Green. This module is free software; you
+/* Copyright (C) 2006-2009 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
 version 2.1 of the License, or (at your option) any later version. This
@@ -37,7 +37,9 @@ details. You should have received a copy of the GNU Lesser General Public
 License along with this module; if not, write to the Free Software Foundation,
 Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA */
 
-#define DISABLE_CORRECTION 0
+#ifndef DISABLE_CORRECTION
+  #define DISABLE_CORRECTION 0
+#endif
 
 #undef PI
 #define PI 3.14159265358979323846f
@@ -316,7 +318,9 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
   (type) (y + to_rgb [4] * i + to_rgb [5] * q)\
 )
 
-#define PACK_RGB( r, g, b ) ((r) << 21 | (g) << 11 | (b) << 1)
+#ifndef PACK_RGB
+  #define PACK_RGB( r, g, b ) ((r) << 21 | (g) << 11 | (b) << 1)
+#endif
 
 enum { rgb_kernel_size = burst_size / alignment_count };
 enum { rgb_bias = rgb_unit * 2 * atari_ntsc_rgb_builder };
