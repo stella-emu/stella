@@ -167,7 +167,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
 
   // Create surfaces for TIA statistics and general messages
   myStatsMsg.color = kBtnTextColor;
-  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 23 + 2;
+  myStatsMsg.w = myOSystem->consoleFont().getMaxCharWidth() * 24 + 2;
   myStatsMsg.h = (myOSystem->consoleFont().getFontHeight() + 2) * 2;
 
  if(myStatsMsg.surface == NULL)
@@ -217,7 +217,7 @@ void FrameBuffer::update()
       {
         const ConsoleInfo& info = myOSystem->console().about();
         char msg[30];
-        BSPF_snprintf(msg, 29, "%u @ %2.2ffps => %s",
+        BSPF_snprintf(msg, 30, "%3u @ %3.2ffps => %s",
                 myOSystem->console().tia().scanlines(),
                 myOSystem->console().getFramerate(), info.DisplayFormat.c_str());
         myStatsMsg.surface->fillRect(0, 0, myStatsMsg.w, myStatsMsg.h, kBGColor);
