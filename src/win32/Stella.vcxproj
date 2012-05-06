@@ -233,6 +233,7 @@ SDLmain.lib
     <ClCompile Include="..\debugger\gui\KeyboardWidget.cxx" />
     <ClCompile Include="..\debugger\gui\PaddleWidget.cxx" />
     <ClCompile Include="..\emucore\CartCM.cxx" />
+    <ClCompile Include="..\emucore\CartCTY.cxx" />
     <ClCompile Include="..\emucore\CartFA2.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
@@ -440,6 +441,8 @@ SDLmain.lib
     <ClInclude Include="..\debugger\gui\NullControlWidget.hxx" />
     <ClInclude Include="..\debugger\gui\PaddleWidget.hxx" />
     <ClInclude Include="..\emucore\CartCM.hxx" />
+    <ClInclude Include="..\emucore\CartCTY.hxx" />
+    <ClInclude Include="..\emucore\CartCTYTunes.hxx" />
     <ClInclude Include="..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />

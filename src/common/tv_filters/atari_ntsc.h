@@ -22,13 +22,13 @@
 #ifndef ATARI_NTSC_H
 #define ATARI_NTSC_H
 
-#ifdef __cplusplus
-  extern "C" {
-#endif
-
 /* Type of input and output pixel values. */
 typedef unsigned char  atari_ntsc_in_t;
 typedef unsigned short atari_ntsc_out_t;
+
+#ifdef __cplusplus
+  extern "C" {
+#endif
 
 /* Each raw pixel input value is passed through this. You might want to mask
    the pixel index if you use the high bits as flags, etc. */

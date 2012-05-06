@@ -72,14 +72,15 @@ static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out )
 
 void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup )
 {
-  int entry = 0;
+  atari_ntsc_in_t* palette;
+  int entry;
   init_t impl;
   if ( !setup )
     setup = &atari_ntsc_composite;
   init( &impl, setup );
 
   // Palette stores R/G/B data for 'atari_ntsc_palette_size' entries
-  atari_ntsc_in_t* palette = ( atari_ntsc_in_t*) setup->palette;
+  palette = (atari_ntsc_in_t*) setup->palette;
   
   // Burst-phase (TODO - how is this actually used?)
 //  float start_angle = - ((213.0f) * M_PI / 180.0f) - setup->burst_phase * M_PI;
