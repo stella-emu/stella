@@ -282,6 +282,9 @@
 		DC5D2C610F129B1E004D1660 /* LauncherFilterDialog.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */; };
 		DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */; };
 		DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */; };
+		DC67270B1556F4860023653B /* CartCTY.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DC6727081556F4860023653B /* CartCTY.cxx */; };
+		DC67270C1556F4860023653B /* CartCTY.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC6727091556F4860023653B /* CartCTY.hxx */; };
+		DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DC67270A1556F4860023653B /* CartCTYTunes.hxx */; };
 		DC69670B1361FD0A0036499D /* pngdebug.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967071361FD0A0036499D /* pngdebug.h */; };
 		DC69670C1361FD0A0036499D /* pnginfo.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967081361FD0A0036499D /* pnginfo.h */; };
 		DC69670D1361FD0A0036499D /* pnglibconf.h in Headers */ = {isa = PBXBuildFile; fileRef = DC6967091361FD0A0036499D /* pnglibconf.h */; };
@@ -722,6 +725,9 @@
 		DC5D2C5F0F129B1E004D1660 /* LauncherFilterDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = LauncherFilterDialog.hxx; path = ../gui/LauncherFilterDialog.hxx; sourceTree = SOURCE_ROOT; };
 		DC5EE7C014F7C165001C628C /* NTSCFilter.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = NTSCFilter.cxx; path = ../common/tv_filters/NTSCFilter.cxx; sourceTree = SOURCE_ROOT; };
 		DC5EE7C114F7C165001C628C /* NTSCFilter.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = NTSCFilter.hxx; path = ../common/tv_filters/NTSCFilter.hxx; sourceTree = SOURCE_ROOT; };
+		DC6727081556F4860023653B /* CartCTY.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCTY.cxx; path = ../emucore/CartCTY.cxx; sourceTree = SOURCE_ROOT; };
+		DC6727091556F4860023653B /* CartCTY.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTY.hxx; path = ../emucore/CartCTY.hxx; sourceTree = SOURCE_ROOT; };
+		DC67270A1556F4860023653B /* CartCTYTunes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTYTunes.hxx; path = ../emucore/CartCTYTunes.hxx; sourceTree = SOURCE_ROOT; };
 		DC6967071361FD0A0036499D /* pngdebug.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pngdebug.h; path = ../libpng/pngdebug.h; sourceTree = SOURCE_ROOT; };
 		DC6967081361FD0A0036499D /* pnginfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnginfo.h; path = ../libpng/pnginfo.h; sourceTree = SOURCE_ROOT; };
 		DC6967091361FD0A0036499D /* pnglibconf.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = pnglibconf.h; path = ../libpng/pnglibconf.h; sourceTree = SOURCE_ROOT; };
@@ -1088,6 +1094,9 @@
 				2DE2DF1B0627AE07006BEC99 /* CartAR.hxx */,
 				DC8C1BA714B25DE7006440EE /* CartCM.cxx */,
 				DC8C1BA814B25DE7006440EE /* CartCM.hxx */,
+				DC6727081556F4860023653B /* CartCTY.cxx */,
+				DC6727091556F4860023653B /* CartCTY.hxx */,
+				DC67270A1556F4860023653B /* CartCTYTunes.hxx */,
 				2DE2DF1C0627AE07006BEC99 /* CartCV.cxx */,
 				2DE2DF1D0627AE07006BEC99 /* CartCV.hxx */,
 				2DE2DF1E0627AE07006BEC99 /* CartDPC.cxx */,
@@ -1605,6 +1614,8 @@
 				DC5EE7C314F7C165001C628C /* NTSCFilter.hxx in Headers */,
 				DCC467F014FBECC700E15508 /* atari_ntsc_impl.h in Headers */,
 				DCC467F214FBECC700E15508 /* atari_ntsc.h in Headers */,
+				DC67270C1556F4860023653B /* CartCTY.hxx in Headers */,
+				DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1880,6 +1891,7 @@
 				DC56FCDE14CCCC4900A31CC3 /* MouseControl.cxx in Sources */,
 				DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */,
 				DCC467F114FBECC700E15508 /* atari_ntsc.c in Sources */,
+				DC67270B1556F4860023653B /* CartCTY.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

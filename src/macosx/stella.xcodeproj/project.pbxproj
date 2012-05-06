@@ -364,6 +364,9 @@
 		DCD56D390B247D920092F9F8 /* Cart4A50.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D370B247D920092F9F8 /* Cart4A50.hxx */; };
 		DCD56D3C0B247DB40092F9F8 /* RectList.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD56D3A0B247DB40092F9F8 /* RectList.cxx */; };
 		DCD56D3D0B247DB40092F9F8 /* RectList.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD56D3B0B247DB40092F9F8 /* RectList.hxx */; };
+		DCDBD3181556F60C00308CC4 /* CartCTY.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCDBD3151556F60C00308CC4 /* CartCTY.cxx */; };
+		DCDBD3191556F60C00308CC4 /* CartCTY.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDBD3161556F60C00308CC4 /* CartCTY.hxx */; };
+		DCDBD31A1556F60C00308CC4 /* CartCTYTunes.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCDBD3171556F60C00308CC4 /* CartCTYTunes.hxx */; };
 		DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */; };
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
@@ -807,6 +810,9 @@
 		DCD56D370B247D920092F9F8 /* Cart4A50.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50.hxx; path = ../emucore/Cart4A50.hxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3A0B247DB40092F9F8 /* RectList.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RectList.cxx; path = ../common/RectList.cxx; sourceTree = SOURCE_ROOT; };
 		DCD56D3B0B247DB40092F9F8 /* RectList.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RectList.hxx; path = ../common/RectList.hxx; sourceTree = SOURCE_ROOT; };
+		DCDBD3151556F60C00308CC4 /* CartCTY.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCTY.cxx; path = ../emucore/CartCTY.cxx; sourceTree = SOURCE_ROOT; };
+		DCDBD3161556F60C00308CC4 /* CartCTY.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTY.hxx; path = ../emucore/CartCTY.hxx; sourceTree = SOURCE_ROOT; };
+		DCDBD3171556F60C00308CC4 /* CartCTYTunes.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTYTunes.hxx; path = ../emucore/CartCTYTunes.hxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomInfoWidget.cxx; path = ../gui/RomInfoWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
@@ -1091,6 +1097,9 @@
 				2DE2DF1B0627AE07006BEC99 /* CartAR.hxx */,
 				DC3E4A6014B25EB30071D7BC /* CartCM.cxx */,
 				DC3E4A6114B25EB30071D7BC /* CartCM.hxx */,
+				DCDBD3151556F60C00308CC4 /* CartCTY.cxx */,
+				DCDBD3161556F60C00308CC4 /* CartCTY.hxx */,
+				DCDBD3171556F60C00308CC4 /* CartCTYTunes.hxx */,
 				2DE2DF1C0627AE07006BEC99 /* CartCV.cxx */,
 				2DE2DF1D0627AE07006BEC99 /* CartCV.hxx */,
 				2DE2DF1E0627AE07006BEC99 /* CartDPC.cxx */,
@@ -1608,6 +1617,8 @@
 				DC49F90614F7D0DB000704B0 /* NTSCFilter.hxx in Headers */,
 				DC752D951513E9F7005B0D24 /* atari_ntsc_impl.h in Headers */,
 				DC752D971513E9F7005B0D24 /* atari_ntsc.h in Headers */,
+				DCDBD3191556F60C00308CC4 /* CartCTY.hxx in Headers */,
+				DCDBD31A1556F60C00308CC4 /* CartCTYTunes.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1881,6 +1892,7 @@
 				DCAE2A9314CCCCBD004327BB /* MouseControl.cxx in Sources */,
 				DC49F90514F7D0DB000704B0 /* NTSCFilter.cxx in Sources */,
 				DC752D961513E9F7005B0D24 /* atari_ntsc.c in Sources */,
+				DCDBD3181556F60C00308CC4 /* CartCTY.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
