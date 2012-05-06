@@ -200,19 +200,16 @@ string FrameBufferGL::about() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::setVidMode(VideoMode& mode)
 {
-  bool inUIMode =
-    myOSystem->eventHandler().state() == EventHandler::S_LAUNCHER ||
-    myOSystem->eventHandler().state() == EventHandler::S_DEBUGGER;
+  bool inTIAMode =
+    myOSystem->eventHandler().state() != EventHandler::S_LAUNCHER &&
+    myOSystem->eventHandler().state() != EventHandler::S_DEBUGGER;
 
-  // Grab the initial width and height before it's updated below
-  uInt32 baseWidth = mode.image_w / mode.gfxmode.zoom;
+  // Grab the initial height before it's updated below
+  // We need it for the creating the TIA surface
   uInt32 baseHeight = mode.image_h / mode.gfxmode.zoom;
 
-  // Set the zoom level
-  myZoomLevel = mode.gfxmode.zoom;
-
   // Aspect ratio and fullscreen stretching only applies to the TIA
-  if(!inUIMode)
+  if(inTIAMode)
   {
     // Aspect ratio (depends on whether NTSC or PAL is detected)
     // Not available in 'small' resolutions
@@ -225,18 +222,36 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
     }
 
     // Fullscreen mode stretching
-    if(fullScreen() && myOSystem->settings().getBool("gl_fsmax") &&
+    if(fullScreen() &&
        (mode.image_w < mode.screen_w) && (mode.image_h < mode.screen_h))
     {
       float stretchFactor = 1.0;
       float scaleX = float(mode.image_w) / mode.screen_w;
       float scaleY = float(mode.image_h) / mode.screen_h;
 
-      if(scaleX > scaleY)
-        stretchFactor = float(mode.screen_w) / mode.image_w;
+      // Scale to actual or integral factors
+      if(myOSystem->settings().getBool("gl_fsscale"))
+      {
+        // Scale to full (non-integral) available space
+        if(scaleX > scaleY)
+          stretchFactor = float(mode.screen_w) / mode.image_w;
+        else
+          stretchFactor = float(mode.screen_h) / mode.image_h;
+      }
       else
-        stretchFactor = float(mode.screen_h) / mode.image_h;
-
+      {
+        // Only scale to an integral amount
+        if(scaleX > scaleY)
+        {
+          int bw = mode.image_w / mode.gfxmode.zoom;
+          stretchFactor = float(int(mode.screen_w / bw) * bw) / mode.image_w;
+        }
+        else
+        {
+          int bh = mode.image_h / mode.gfxmode.zoom;
+          stretchFactor = float(int(mode.screen_h / bh) * bh) / mode.image_h;
+        }
+      }
       mode.image_w = (Uint16) (stretchFactor * mode.image_w);
       mode.image_h = (Uint16) (stretchFactor * mode.image_h);
     }
@@ -296,61 +311,33 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_gl.MatrixMode(GL_MODELVIEW);
   p_gl.LoadIdentity();
 
-/*
+#if 0
 cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
-	<< "  screen w = " << mode.screen_w << endl
-	<< "  screen h = " << mode.screen_h << endl
-	<< "  image x  = " << mode.image_x << endl
-	<< "  image y  = " << mode.image_y << endl
-	<< "  image w  = " << mode.image_w << endl
-	<< "  image h  = " << mode.image_h << endl
-	<< "  base w   = " << baseWidth << endl
-	<< "  base h   = " << baseHeight << endl
-	<< endl;
-*/
+     << mode << endl;
+#endif
 
-  ////////////////////////////////////////////////////////////////////
-  // Note that the following must be done in the order given
-  // Basically, all surfaces must first be free'd before being
-  // recreated
-  // So, we delete the TIA surface first, then reset all other surfaces
-  // (which frees all surfaces and then reloads all surfaces), then
-  // re-create the TIA surface (if necessary)
-  // In this way, all free()'s come before all reload()'s
-  ////////////////////////////////////////////////////////////////////
-
-  // We try to re-use the TIA surface whenever possible
-  if(!inUIMode && !(myTiaSurface &&
-      myTiaSurface->getWidth() == mode.image_w &&
-      myTiaSurface->getHeight() == mode.image_h))
+  // The framebuffer only takes responsibility for TIA surfaces
+  // Other surfaces (such as the ones used for dialogs) are allocated
+  // in the Dialog class
+  if(inTIAMode)
   {
-    delete myTiaSurface;  myTiaSurface = NULL;
+    // Since we have free hardware stretching, the base TIA surface is created
+    // only once, and its texture coordinates changed when we want to draw a
+    // smaller or larger image
+    if(!myTiaSurface)
+      myTiaSurface = new FBSurfaceTIA(*this);
+
+    myTiaSurface->updateCoords(baseHeight, mode.image_x, mode.image_y,
+                               mode.image_w, mode.image_h);
+
+    myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
+    myTiaSurface->enableScanlines(myFilterType == kBlarggNTSC);
+    myTiaSurface->setTIA(myOSystem->console().tia());
   }
 
   // Any previously allocated textures currently in use by various UI items
   // need to be refreshed as well (only seems to be required for OSX)
   resetSurfaces(myTiaSurface);
-
-  // The framebuffer only takes responsibility for TIA surfaces
-  // Other surfaces (such as the ones used for dialogs) are allocated
-  // in the Dialog class
-  if(!inUIMode)
-  {
-    // The actual TIA image is only half of that specified by baseWidth
-    // The stretching can be done in hardware now that the TIA surface
-    // and other UI surfaces are no longer tied together
-    // Note that this may change in the future, when we add more
-    // complex filters/scalers, but for now it's fine
-    //
-    // Also note that TV filtering is always available since we'll always
-    // have access to Blargg filtering
-    if(!myTiaSurface)
-      myTiaSurface = new FBSurfaceTIA(*this, baseWidth>>1, baseHeight,
-            mode.image_x, mode.image_y, mode.image_w, mode.image_h);
-
-    myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
-    myTiaSurface->setTIA(myOSystem->console().tia());
-  }
 
   return true;
 }
@@ -392,12 +379,32 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::enableNTSC(bool enable)
 {
-  if(enable)
-    myFilterType = kBlarggNTSC;
-  else
-    myFilterType = myUsePhosphor ? kPhosphor : kNone;
+  if(myTiaSurface)
+  {
+    myFilterType = enable ? kBlarggNTSC : myUsePhosphor ? kPhosphor : kNone;
+    myTiaSurface->updateCoords();
+    myTiaSurface->enableScanlines(myFilterType == kBlarggNTSC);
+    myRedrawEntireFrame = true;
+  }
+}
 
-  myRedrawEntireFrame = true;
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt32 FrameBufferGL::changeScanlines(int relative, int absolute)
+{
+  uInt32 intensity = myTiaSurface->myScanlineIntensityI;
+  if(myTiaSurface)
+  {
+    if(relative == 0)  intensity = absolute;
+    else               intensity += relative;
+    intensity = BSPF_max(20u, intensity);
+    intensity = BSPF_min(100u, intensity);
+
+    myTiaSurface->myScanlineIntensityI = (GLuint)intensity;
+    myTiaSurface->myScanlineIntensityF = (GLfloat)intensity / 100;
+
+    myRedrawEntireFrame = true;
+  }
+  return intensity;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

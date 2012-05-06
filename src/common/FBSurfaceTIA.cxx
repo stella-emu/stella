@@ -27,24 +27,21 @@
 #include "FBSurfaceTIA.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer, uInt32 baseWidth, uInt32 baseHeight,
-                           uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH)
+FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer)
   : myFB(buffer),
     myGL(myFB.p_gl),
     myTexture(NULL),
     myVBOID(0),
-    myImageX(imgX),
-    myImageY(imgY),
-    myImageW(imgW),
-    myImageH(imgH)
+    myScanlinesEnabled(false),
+    myScanlineIntensityI(50),
+    myScanlineIntensityF(0.5)
 {
   myTexID[0] = myTexID[1] = 0;
 
-  // Fill buffer struct with valid data
-  myTexWidth  = FrameBufferGL::power_of_two(baseWidth);
-  myTexHeight = FrameBufferGL::power_of_two(baseHeight);
-  myTexCoordW = (GLfloat) baseWidth / myTexWidth;
-  myTexCoordH = (GLfloat) baseHeight / myTexHeight;
+  // Texture width is set to contain all possible sizes for a TIA image,
+  // including Blargg filtering
+  myTexWidth  = FrameBufferGL::power_of_two(ATARI_NTSC_OUT_WIDTH(160));
+  myTexHeight = FrameBufferGL::power_of_two(320);
 
   // Based on experimentation, the following are the fastest 16-bit
   // formats for OpenGL (on all platforms)
@@ -56,10 +53,6 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer, uInt32 baseWidth, uInt32 baseH
                   0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
 #endif
   myPitch = myTexture->pitch >> 1;
-
-  // Associate the SDL surface with a GL texture object
-  updateCoords();
-  reload();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -98,6 +91,8 @@ void FBSurfaceTIA::update()
   uInt32 height        = myTIA->height();
   uInt16* buffer       = (uInt16*) myTexture->pixels;
 
+  // TODO - Eventually 'phosphor' won't be a separate mode, and will become
+  //        a post-processing filter by blending several frames.
   switch(myFB.myFilterType)
   {
     case FrameBufferGL::kNone:
@@ -137,6 +132,14 @@ void FBSurfaceTIA::update()
 
     case FrameBufferGL::kBlarggNTSC:
     {
+#ifdef HAVE_GL_BGRA
+  #define BLIT16 blit_1555
+#else
+  #define BLIT16 blit_5551
+#endif
+      myFB.myNTSCFilter.BLIT16(currentFrame, width,
+                               myTexture->w, height,
+                               buffer, myTexture->pitch);
       break;
     }
   }
@@ -163,11 +166,10 @@ void FBSurfaceTIA::update()
     myGL.TexCoordPointer(2, GL_FLOAT, 0, (const GLvoid*)(8*sizeof(GLfloat)));
     myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-#if 0
-    if(1)//myFB.myScanlinesEnabled)
+    if(myScanlinesEnabled)
     {
       myGL.Enable(GL_BLEND);
-      myGL.Color4f(1.0f, 1.0f, 1.0f, 0.5f);
+      myGL.Color4f(1.0f, 1.0f, 1.0f, myScanlineIntensityF);
       myGL.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
       myGL.VertexPointer(2, GL_FLOAT, 0, (const GLvoid*)(16*sizeof(GLfloat)));
@@ -175,7 +177,6 @@ void FBSurfaceTIA::update()
       myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
       myGL.Disable(GL_BLEND);
     }
-#endif
   }
   else
   {
@@ -183,11 +184,10 @@ void FBSurfaceTIA::update()
     myGL.TexCoordPointer(2, GL_FLOAT, 0, myCoord+8);
     myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-#if 0
-    if(1)//myFB.myScanlinesEnabled)
+    if(myScanlinesEnabled)
     {
       myGL.Enable(GL_BLEND);
-      myGL.Color4f(1.0f, 1.0f, 1.0f, 0.5f);
+      myGL.Color4f(1.0f, 1.0f, 1.0f, myScanlineIntensityF);
       myGL.BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
       myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
       myGL.VertexPointer(2, GL_FLOAT, 0, myCoord+16);
@@ -195,7 +195,6 @@ void FBSurfaceTIA::update()
       myGL.DrawArrays(GL_TRIANGLE_STRIP, 0, 4);
       myGL.Disable(GL_BLEND);
     }
-#endif
   }
 
   myGL.DisableClientState(GL_VERTEX_ARRAY);
@@ -279,9 +278,7 @@ void FBSurfaceTIA::reload()
 void FBSurfaceTIA::setFilter(const string& name)
 {
   // We only do GL_NEAREST or GL_LINEAR for now
-  GLint filter = GL_NEAREST;
-  if(name == "linear")
-    filter = GL_LINEAR;
+  GLint filter = name == "linear" ? GL_LINEAR : GL_NEAREST;
 
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
@@ -291,8 +288,27 @@ void FBSurfaceTIA::setFilter(const string& name)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceTIA::updateCoords(uInt32 baseH,
+     uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH)
+{
+  myBaseH = baseH;
+  myImageX = imgX;  myImageY = imgY;
+  myImageW = imgW;  myImageH = imgH;
+
+  updateCoords();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::updateCoords()
 {
+  // Normal TIA rendering and TV effects use different widths
+  // We use the same buffer, and only pick the width we need
+  myBaseW = myFB.myFilterType == FrameBufferGL::kBlarggNTSC ?
+      ATARI_NTSC_OUT_WIDTH(160) : 160;
+
+  myTexCoordW = (GLfloat) myBaseW / myTexWidth;
+  myTexCoordH = (GLfloat) myBaseH / myTexHeight;
+
   // Vertex coordinates for texture 0 (main texture)
   // Upper left (x,y)
   myCoord[0] = (GLfloat)myImageX;
@@ -344,10 +360,10 @@ void FBSurfaceTIA::updateCoords()
   myCoord[27] = 0.0f;
   // Lower left (x,y+h)
   myCoord[28] = 0.0f;
-  myCoord[29] = (GLfloat)(myImageH/myFB.myZoomLevel);
+  myCoord[29] = GLfloat(myImageH) / (myImageH / myBaseH);
   // Lower right (x+w,y+h)
   myCoord[30] = 1.0f;
-  myCoord[31] = (GLfloat)(myImageH/myFB.myZoomLevel);
+  myCoord[31] = GLfloat(myImageH) / (myImageH / myBaseH);
 
   // Cache vertex and texture coordinates using vertex buffer object
   if(myFB.myVBOAvailable)
@@ -360,7 +376,7 @@ void FBSurfaceTIA::updateCoords()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::setTIAPalette(const uInt32* palette)
 {
-  myNTSCFilter.setTIAPalette(palette);
+  myFB.myNTSCFilter.setTIAPalette(palette);
 }
 
 #endif

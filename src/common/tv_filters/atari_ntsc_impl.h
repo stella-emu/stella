@@ -24,8 +24,6 @@
 #include <assert.h>
 #include <math.h>
 
-#include "bspf.hxx"
-
 /* Copyright (C) 2006-2009 Shay Green. This module is free software; you
 can redistribute it and/or modify it under the terms of the GNU Lesser
 General Public License as published by the Free Software Foundation; either
@@ -215,8 +213,6 @@ static void init_filters( init_t* impl, atari_ntsc_setup_t const* setup )
   #endif
 }
 
-/* Atari change: more accurate values taken from
-   http://en.wikipedia.org/wiki/YIQ */
 static float const default_decoder [6] =
   { 0.9563f, 0.6210f, -0.2721f, -0.6474f, -1.1070f, 1.7046f };
 
@@ -255,6 +251,7 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
   
   /* setup decoder matricies */
   {
+#if 0  // FIXME - research this
     /* Atari change:
        NTSC colorburst angle in YIQ colorspace. Colorburst is at
        180 degrees in YUV - that is, a gold color. In YIQ, gold is at
@@ -265,6 +262,9 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
        http://en.wikipedia.org/wiki/YIQ) */
     static float const colorburst_angle = (213.0f) * PI / 180.0f;
     float hue = (float) setup->hue * PI + PI / 180 * ext_decoder_hue - PI * setup->burst_phase - colorburst_angle;
+#else
+    float hue = (float) setup->hue * PI + PI / 180 * ext_decoder_hue;
+#endif
     float sat = (float) setup->saturation + 1;
     float const* decoder = setup->decoder_matrix;
     if ( !decoder )
@@ -304,14 +304,11 @@ static void init( init_t* impl, atari_ntsc_setup_t const* setup )
 
 /* kernel generation */
 
-/* Atari change: more accurate values taken from
-   http://en.wikipedia.org/wiki/YIQ */
 #define RGB_TO_YIQ( r, g, b, y, i ) (\
   (y = (r) * 0.299f + (g) * 0.587f + (b) * 0.114f),\
   (i = (r) * 0.595716f - (g) * 0.274453f - (b) * 0.321263f),\
   ((r) * 0.211456f - (g) * 0.522591f + (b) * 0.311135f)\
 )
-
 #define YIQ_TO_RGB( y, i, q, to_rgb, type, r, g ) (\
   r = (type) (y + to_rgb [0] * i + to_rgb [1] * q),\
   g = (type) (y + to_rgb [2] * i + to_rgb [3] * q),\
@@ -355,7 +352,6 @@ static void gen_kernel( init_t* impl, float y, float i, float q, atari_ntsc_rgb_
   /* generate for each scanline burst phase */
   float const* to_rgb = impl->to_rgb;
   int burst_remain = burst_count;
-
   y -= rgb_offset;
   do
   {
@@ -418,21 +414,19 @@ static void gen_kernel( init_t* impl, float y, float i, float q, atari_ntsc_rgb_
 
 static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out );
 
-/* Atari change: adjust DISTRIBUTE_ERROR to 4/7 pixel ratio. */
 #if DISABLE_CORRECTION
   #define CORRECT_ERROR( a ) { out [i] += rgb_bias; }
-  #define DISTRIBUTE_ERROR( a, b, c, d ) { out [i] += rgb_bias; }
+  #define DISTRIBUTE_ERROR( a, b, c ) { out [i] += rgb_bias; }
 #else
   #define CORRECT_ERROR( a ) { out [a] += error; }
-  #define DISTRIBUTE_ERROR( a, b, c, d ) {\
+  #define DISTRIBUTE_ERROR( a, b, c ) {\
     atari_ntsc_rgb_t fourth = (error + 2 * atari_ntsc_rgb_builder) >> 2;\
     fourth &= (rgb_bias >> 1) - atari_ntsc_rgb_builder;\
     fourth -= rgb_bias >> 2;\
     out [a] += fourth;\
     out [b] += fourth;\
     out [c] += fourth;\
-    out [d] += fourth;\
-    out [i] += error - (fourth * 4);\
+    out [i] += error - (fourth * 3);\
   }
 #endif
 
@@ -457,10 +451,4 @@ static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out );
     /* no support for restricted pointers */
     #define restrict
   #endif
-#endif
-
-#if ATARI_NTSC_OUT_DEPTH <= 16
-  typedef uInt16 atari_ntsc_out_t;
-#else
-  typedef uInt32 atari_ntsc_out_t;
 #endif

@@ -36,6 +36,7 @@ namespace GUI {
 #include "EventHandler.hxx"
 #include "Rect.hxx"
 #include "StringList.hxx"
+#include "NTSCFilter.hxx"
 #include "bspf.hxx"
 
 // Different types of framebuffer derived objects
@@ -285,12 +286,37 @@ class FrameBuffer
     void stateChanged(EventHandler::State state);
 
     /**
-      Get the zoom level.
+      Get the NTSCFilter object associated with the framebuffer
     */
-    uInt32 getZoomLevel() { return myZoomLevel; }
+    NTSCFilter& ntsc() { return myNTSCFilter; }
+
 
   //////////////////////////////////////////////////////////////////////
-  // The following methods are system-specific and must be implemented
+  // The following methods are system-specific and *may* be implemented
+  // in derived classes.
+  //////////////////////////////////////////////////////////////////////
+  public:
+    /**
+      Enable/disable NTSC filtering effects.
+    */
+    virtual void enableNTSC(bool enable) { }
+    virtual bool ntscEnabled() const { return false; }
+
+    /**
+      Change scanline intensity.
+      relative = -1 means decrease current intensity by 'directin
+      direction =  0 means to reload the current video mode
+      direction = +1 means go to the next higher video mode
+
+
+      @param relative  If non-zero, change current intensity by
+                       'relative' amount, otherwise set to 'absolute'
+      @return  New current intensity
+    */
+    virtual uInt32 changeScanlines(int relative, int absolute = 50) { return absolute; }
+
+  //////////////////////////////////////////////////////////////////////
+  // The following methods are system-specific and *must* be implemented
   // in derived classes.
   //////////////////////////////////////////////////////////////////////
   public:
@@ -298,11 +324,6 @@ class FrameBuffer
       Enable/disable phosphor effect.
     */
     virtual void enablePhosphor(bool enable, int blend) = 0;
-
-    /**
-      Enable/disable NTSC filtering effects.
-    */
-    virtual void enableNTSC(bool enable) = 0;
 
     /**
       This method is called to retrieve the R/G/B data from the given pixel.
@@ -374,6 +395,14 @@ class FrameBuffer
       uInt32 image_x, image_y, image_w, image_h;
       uInt32 screen_w, screen_h;
       GraphicsMode gfxmode;
+
+      friend ostream& operator<<(ostream& os, const VideoMode& vm)
+      {
+        os << "image_x=" << vm.image_x << "  image_y=" << vm.image_y
+           << "  image_w=" << vm.image_w << "  image_h=" << vm.image_h << endl
+           << "screen_w=" << vm.screen_w << "  screen_h=" << vm.screen_h; 
+        return os;
+      }
     };
 
     /**
@@ -451,6 +480,9 @@ class FrameBuffer
     // Indicates if the entire frame need to redrawn
     bool myRedrawEntireFrame;
 
+    // NTSC object to use in TIA rendering mode
+    NTSCFilter myNTSCFilter;
+
     // Use phosphor effect (aka no flicker on 30Hz screens)
     bool myUsePhosphor;
 
@@ -469,9 +501,6 @@ class FrameBuffer
 
     // Names of the TIA filters that can be used for this framebuffer
     StringMap myTIAFilters;
-
-    // Holds the zoom level being used
-    uInt32 myZoomLevel;
 
   private:
     /**

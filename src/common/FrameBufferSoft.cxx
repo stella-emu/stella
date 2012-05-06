@@ -34,6 +34,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferSoft::FrameBufferSoft(OSystem* osystem)
   : FrameBuffer(osystem),
+    myZoomLevel(2),
     myRenderType(kSoftZoom_16),
     myTiaDirty(false),
     myInUIMode(false),

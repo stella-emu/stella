@@ -31,29 +31,24 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-/* Atari change: removal and addition of structure fields.
-   Values of resolution and sharpness adjusted to make NTSC artifacts look better. */
-atari_ntsc_setup_t const atari_ntsc_composite  =
-  {  0.0,  0.0, 0.0, 0.0 , -0.5, .3, -0.1 ,  0.0,  0.0,  0.0, 0, 0, 0, 0. };
-atari_ntsc_setup_t const atari_ntsc_svideo     =
-  {  0.0,  0.0, 0.0, 0.0 , -0.3, .3,  0.2 , -1.0, -1.0,  0.0, 0, 0, 0, 0. };
-atari_ntsc_setup_t const atari_ntsc_rgb        =
-  {  0.0,  0.0, 0.0, 0.0 , -0.3, .3,  0.7 , -1.0, -1.0, -1.0, 0, 0, 0, 0. };
-atari_ntsc_setup_t const atari_ntsc_monochrome =
-  {  0.0, -1.0, 0.0, 0.0 , -0.3, .3,  0.2 , -0.2, -0.2, -1.0, 0, 0, 0, 0. };
-atari_ntsc_setup_t const atari_ntsc_bad        =
-  {  0.1, -0.3, 0.3, 0.25,  0.2,  0,  0.1 ,  0.5,  0.5,  0.5, 0, 0, 0, 0. };
-atari_ntsc_setup_t const atari_ntsc_horrible   =
-  { -0.1, -0.5, 0.6, 0.43,  0.4,  0,  0.05,  0.7, -0.8, -0.7, 0, 0, 0, 0. };
+atari_ntsc_setup_t const atari_ntsc_composite = {  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.15,  0.0,  0.0,  0.0, 0, 0, 0, 0 };
+atari_ntsc_setup_t const atari_ntsc_svideo    = {  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.45, -1.0, -1.0,  0.0, 0, 0, 0, 0 };
+atari_ntsc_setup_t const atari_ntsc_rgb       = {  0.0,  0.0, 0.0, 0.0,  0.2, 0.0, 0.70, -1.0, -1.0, -1.0, 0, 0, 0, 0 };
+atari_ntsc_setup_t const atari_ntsc_bad       = {  0.1, -0.3, 0.3, 0.25, 0.2, 0.0, 0.1,   0.5,  0.5,  0.5, 0, 0, 0, 0 };
+atari_ntsc_setup_t const atari_ntsc_horrible  = { -0.1, -0.5, 0.6, 0.43, 0.4, 0.0, 0.05,  0.7, -0.8, -0.7, 0, 0, 0, 0 };
 
 #define alignment_count 2
 #define burst_count     1
 #define rescale_in      8
 #define rescale_out     7
 
-#define artifacts_mid   1.0f
+#define artifacts_mid   1.5f
+#define artifacts_max   2.5f
 #define fringing_mid    1.0f
 #define std_decoder_hue 0
+
+#define gamma_size 256
+#define default_palette_contrast 1.0f
 
 #include "atari_ntsc_impl.h"
 
@@ -81,48 +76,43 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup )
   if ( !setup )
     setup = &atari_ntsc_composite;
   init( &impl, setup );
+
+  // Palette stores R/G/B data for 'atari_ntsc_palette_size' entries
+  atari_ntsc_in_t* palette = ( atari_ntsc_in_t*) setup->palette;
   
-  /* Atari change: no alternating burst phases - remove code for merge_fields. */
+  // Burst-phase (TODO - how is this actually used?)
+//  float start_angle = - ((213.0f) * M_PI / 180.0f) - setup->burst_phase * M_PI;
 
   for (int entry = 0; entry < atari_ntsc_palette_size; entry++ )
   {
-    double* yiq_ptr = setup->yiq_palette + 3 * entry;
-    double y = *yiq_ptr++;
-    double i = *yiq_ptr++;
-    double q = *yiq_ptr++;
+    float r = impl.to_float [*palette++];
+    float g = impl.to_float [*palette++];
+    float b = impl.to_float [*palette++];
 
-    i *= rgb_unit;
-    q *= rgb_unit;
-    y *= rgb_unit;
-    y += rgb_offset;
+    float y, i, q = RGB_TO_YIQ( r, g, b, y, i );
+			
+    // Generate kernel
+    int ir, ig, ib = YIQ_TO_RGB( y, i, q, impl.to_rgb, int, ir, ig );
+    atari_ntsc_rgb_t rgb = PACK_RGB( ir, ig, ib ); //(ib < 0x3E0 ? ib: 0x3E0)
 
-    /* Generate kernel */
-    int r, g, b = YIQ_TO_RGB( y, i, q, impl.to_rgb, int, r, g );
-    /* blue tends to overflow, so clamp it */
-    atari_ntsc_rgb_t rgb = PACK_RGB( r, g, (b < 0x3E0 ? b: 0x3E0) );
-      
-    if ( setup->palette_out )
-      RGB_PALETTE_OUT( rgb, &setup->palette_out [entry * 3] );
-      
     if ( ntsc )
     {
       atari_ntsc_rgb_t* kernel = ntsc->table [entry];
       gen_kernel( &impl, y, i, q, kernel );
-      /* Atari change: no alternating burst phases - remove code for merge_fields. */
       correct_errors( rgb, kernel );
     }
   }
 }
 
-void atari_ntsc_blit_rgb16( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* atari_in,
+void atari_ntsc_blit_5551( atari_ntsc_t const* ntsc, atari_ntsc_in_t const* atari_in,
     long in_row_width, int in_width, int in_height,
     void* rgb_out, long out_pitch )
 {
   int const chunk_count = (in_width - 1) / atari_ntsc_in_chunk;
   while ( in_height-- )
   {
-    ATARI_NTSC_IN_T const* line_in = atari_in;
-    ATARI_NTSC_BEGIN_ROW( ntsc, atari_ntsc_black, ATARI_NTSC_ADJ_IN( *(line_in[0]) ) );
+    atari_ntsc_in_t const* line_in = atari_in;
+    ATARI_NTSC_BEGIN_ROW( ntsc, atari_ntsc_black, ATARI_NTSC_ADJ_IN( line_in[0] ) );
     atari_ntsc_out_t* restrict line_out = (atari_ntsc_out_t*) rgb_out;
     int n;
     ++line_in;
@@ -130,16 +120,16 @@ void atari_ntsc_blit_rgb16( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* ata
     for ( n = chunk_count; n; --n )
     {
       /* order of input and output pixels must not be altered */
-      ATARI_NTSC_COLOR_IN( 0, ntsc, ATARI_NTSC_ADJ_IN( *(line_in [0]) ) ); //CHANGED TO DEREFERENCE POINTER
-      ATARI_NTSC_RGB_OUT_RGB16( 0, line_out [0] );
-      ATARI_NTSC_RGB_OUT_RGB16( 1, line_out [1] );
-      ATARI_NTSC_RGB_OUT_RGB16( 2, line_out [2] );
-      ATARI_NTSC_RGB_OUT_RGB16( 3, line_out [3] );
+      ATARI_NTSC_COLOR_IN( 0, ntsc, ATARI_NTSC_ADJ_IN( line_in[0] ) );
+      ATARI_NTSC_RGB_OUT_5551( 0, line_out [0] );
+      ATARI_NTSC_RGB_OUT_5551( 1, line_out [1] );
+      ATARI_NTSC_RGB_OUT_5551( 2, line_out [2] );
+      ATARI_NTSC_RGB_OUT_5551( 3, line_out [3] );
       
-      ATARI_NTSC_COLOR_IN( 1, ntsc, ATARI_NTSC_ADJ_IN( *(line_in [1]) ) ); //CHANGED TO DEREFERENCE POINTER
-      ATARI_NTSC_RGB_OUT_RGB16( 4, line_out [4] );
-      ATARI_NTSC_RGB_OUT_RGB16( 5, line_out [5] );
-      ATARI_NTSC_RGB_OUT_RGB16( 6, line_out [6] );
+      ATARI_NTSC_COLOR_IN( 1, ntsc, ATARI_NTSC_ADJ_IN( line_in[1] ) );
+      ATARI_NTSC_RGB_OUT_5551( 4, line_out [4] );
+      ATARI_NTSC_RGB_OUT_5551( 5, line_out [5] );
+      ATARI_NTSC_RGB_OUT_5551( 6, line_out [6] );
       
       line_in  += 2;
       line_out += 7;
@@ -147,30 +137,30 @@ void atari_ntsc_blit_rgb16( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* ata
     
     /* finish final pixels */
     ATARI_NTSC_COLOR_IN( 0, ntsc, atari_ntsc_black );
-    ATARI_NTSC_RGB_OUT_RGB16( 0, line_out [0] );
-    ATARI_NTSC_RGB_OUT_RGB16( 1, line_out [1] );
-    ATARI_NTSC_RGB_OUT_RGB16( 2, line_out [2] );
-    ATARI_NTSC_RGB_OUT_RGB16( 3, line_out [3] );
+    ATARI_NTSC_RGB_OUT_5551( 0, line_out [0] );
+    ATARI_NTSC_RGB_OUT_5551( 1, line_out [1] );
+    ATARI_NTSC_RGB_OUT_5551( 2, line_out [2] );
+    ATARI_NTSC_RGB_OUT_5551( 3, line_out [3] );
     
     ATARI_NTSC_COLOR_IN( 1, ntsc, atari_ntsc_black );
-    ATARI_NTSC_RGB_OUT_RGB16( 4, line_out [4] );
-    ATARI_NTSC_RGB_OUT_RGB16( 5, line_out [5] );
-    ATARI_NTSC_RGB_OUT_RGB16( 6, line_out [6] );
+    ATARI_NTSC_RGB_OUT_5551( 4, line_out [4] );
+    ATARI_NTSC_RGB_OUT_5551( 5, line_out [5] );
+    ATARI_NTSC_RGB_OUT_5551( 6, line_out [6] );
     
     atari_in += in_row_width;
     rgb_out = (char*) rgb_out + out_pitch;
   }
 }
 
-void atari_ntsc_blit_bgr16( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* atari_in,
+void atari_ntsc_blit_1555( atari_ntsc_t const* ntsc, atari_ntsc_in_t const* atari_in,
     long in_row_width, int in_width, int in_height,
     void* rgb_out, long out_pitch )
 {
   int const chunk_count = (in_width - 1) / atari_ntsc_in_chunk;
   while ( in_height-- )
   {
-    ATARI_NTSC_IN_T const* line_in = atari_in;
-    ATARI_NTSC_BEGIN_ROW( ntsc, atari_ntsc_black, ATARI_NTSC_ADJ_IN( *(line_in[0]) ) );
+    atari_ntsc_in_t const* line_in = atari_in;
+    ATARI_NTSC_BEGIN_ROW( ntsc, atari_ntsc_black, ATARI_NTSC_ADJ_IN( line_in[0] ) );
     atari_ntsc_out_t* restrict line_out = (atari_ntsc_out_t*) rgb_out;
     int n;
     ++line_in;
@@ -178,16 +168,16 @@ void atari_ntsc_blit_bgr16( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* ata
     for ( n = chunk_count; n; --n )
     {
       /* order of input and output pixels must not be altered */
-      ATARI_NTSC_COLOR_IN( 0, ntsc, ATARI_NTSC_ADJ_IN( *(line_in [0]) ) ); //CHANGED TO DEREFERENCE POINTER
-      ATARI_NTSC_RGB_OUT_BGR16( 0, line_out [0] );
-      ATARI_NTSC_RGB_OUT_BGR16( 1, line_out [1] );
-      ATARI_NTSC_RGB_OUT_BGR16( 2, line_out [2] );
-      ATARI_NTSC_RGB_OUT_BGR16( 3, line_out [3] );
+      ATARI_NTSC_COLOR_IN( 0, ntsc, ATARI_NTSC_ADJ_IN( line_in[0] ) );
+      ATARI_NTSC_RGB_OUT_1555( 0, line_out [0] );
+      ATARI_NTSC_RGB_OUT_1555( 1, line_out [1] );
+      ATARI_NTSC_RGB_OUT_1555( 2, line_out [2] );
+      ATARI_NTSC_RGB_OUT_1555( 3, line_out [3] );
       
-      ATARI_NTSC_COLOR_IN( 1, ntsc, ATARI_NTSC_ADJ_IN( *(line_in [1]) ) ); //CHANGED TO DEREFERENCE POINTER
-      ATARI_NTSC_RGB_OUT_BGR16( 4, line_out [4] );
-      ATARI_NTSC_RGB_OUT_BGR16( 5, line_out [5] );
-      ATARI_NTSC_RGB_OUT_BGR16( 6, line_out [6] );
+      ATARI_NTSC_COLOR_IN( 1, ntsc, ATARI_NTSC_ADJ_IN( line_in[1] ) );
+      ATARI_NTSC_RGB_OUT_1555( 4, line_out [4] );
+      ATARI_NTSC_RGB_OUT_1555( 5, line_out [5] );
+      ATARI_NTSC_RGB_OUT_1555( 6, line_out [6] );
       
       line_in  += 2;
       line_out += 7;
@@ -195,15 +185,15 @@ void atari_ntsc_blit_bgr16( atari_ntsc_t const* ntsc, ATARI_NTSC_IN_T const* ata
     
     /* finish final pixels */
     ATARI_NTSC_COLOR_IN( 0, ntsc, atari_ntsc_black );
-    ATARI_NTSC_RGB_OUT_BGR16( 0, line_out [0] );
-    ATARI_NTSC_RGB_OUT_BGR16( 1, line_out [1] );
-    ATARI_NTSC_RGB_OUT_BGR16( 2, line_out [2] );
-    ATARI_NTSC_RGB_OUT_BGR16( 3, line_out [3] );
+    ATARI_NTSC_RGB_OUT_1555( 0, line_out [0] );
+    ATARI_NTSC_RGB_OUT_1555( 1, line_out [1] );
+    ATARI_NTSC_RGB_OUT_1555( 2, line_out [2] );
+    ATARI_NTSC_RGB_OUT_1555( 3, line_out [3] );
     
     ATARI_NTSC_COLOR_IN( 1, ntsc, atari_ntsc_black );
-    ATARI_NTSC_RGB_OUT_BGR16( 4, line_out [4] );
-    ATARI_NTSC_RGB_OUT_BGR16( 5, line_out [5] );
-    ATARI_NTSC_RGB_OUT_BGR16( 6, line_out [6] );
+    ATARI_NTSC_RGB_OUT_1555( 4, line_out [4] );
+    ATARI_NTSC_RGB_OUT_1555( 5, line_out [5] );
+    ATARI_NTSC_RGB_OUT_1555( 6, line_out [6] );
     
     atari_in += in_row_width;
     rgb_out = (char*) rgb_out + out_pitch;

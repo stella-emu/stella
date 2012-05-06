@@ -346,7 +346,7 @@ void VideoDialog::loadConfig()
   myColorLossCheckbox->setState(instance().settings().getBool("colorloss"));
 
   // GL stretch setting (GL mode only)
-  myGLStretchCheckbox->setState(instance().settings().getBool("gl_fsmax"));
+  myGLStretchCheckbox->setState(instance().settings().getBool("gl_fsscale"));
   myGLStretchCheckbox->setEnabled(gl);
 
   // Use sync to vertical blank (GL mode only)
@@ -409,7 +409,7 @@ void VideoDialog::saveConfig()
     instance().console().toggleColorLoss(myColorLossCheckbox->getState());
 
   // GL stretch setting
-  instance().settings().setBool("gl_fsmax", myGLStretchCheckbox->getState());
+  instance().settings().setBool("gl_fsscale", myGLStretchCheckbox->getState());
 
   // Use sync to vertical blank (GL mode only)
   instance().settings().setBool("gl_vsync", myUseVSyncCheckbox->getState());

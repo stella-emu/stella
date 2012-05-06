@@ -25,7 +25,6 @@
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
 #include "FrameBufferGL.hxx"
-#include "NTSCFilter.hxx"
 
 /**
   A surface suitable for OpenGL rendering mode, but specifically for
@@ -40,8 +39,7 @@ class FBSurfaceTIA : public FBSurface
   friend class FrameBufferGL;
 
   public:
-    FBSurfaceTIA(FrameBufferGL& buffer, uInt32 baseWidth, uInt32 baseHeight,
-                 uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH);
+    FBSurfaceTIA(FrameBufferGL& buffer);
     virtual ~FBSurfaceTIA();
 
     // TIA surfaces don't implement most of the drawing primitives,
@@ -59,6 +57,8 @@ class FBSurfaceTIA : public FBSurface
     void setTIA(const TIA& tia) { myTIA = &tia; }
     void setTIAPalette(const uInt32* palette);
     void setFilter(const string& name);
+    void enableScanlines(bool enable) { myScanlinesEnabled = enable; }
+    void updateCoords(uInt32 baseH, uInt32 imgX, uInt32 imgY, uInt32 imgW, uInt32 imgH);
     void updateCoords();
 
   private:
@@ -66,15 +66,19 @@ class FBSurfaceTIA : public FBSurface
     const FrameBufferGL::GLpointers& myGL;
     const TIA* myTIA;
     SDL_Surface* myTexture;
-    NTSCFilter myNTSCFilter;
     uInt32 myPitch;
 
     GLuint  myTexID[2], myVBOID;
     GLsizei myTexWidth;
     GLsizei myTexHeight;
+    GLuint  myBaseW, myBaseH;
     GLuint  myImageX, myImageY, myImageW, myImageH;
     GLfloat myTexCoordW, myTexCoordH;
     GLfloat myCoord[32];
+
+    bool myScanlinesEnabled;
+    GLuint  myScanlineIntensityI;
+    GLfloat myScanlineIntensityF;
 };
 
 #endif  // DISPLAY_OPENGL

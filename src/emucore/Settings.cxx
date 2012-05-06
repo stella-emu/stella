@@ -43,7 +43,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("gl_filter", "nearest");
   setInternal("gl_aspectn", "90");
   setInternal("gl_aspectp", "100");
-  setInternal("gl_fsmax", "true");
+  setInternal("gl_fsscale", "false");
   setInternal("gl_lib", "libGL.so");
   setInternal("gl_vsync", "true");
   setInternal("gl_vbo", "true");
@@ -59,8 +59,9 @@ Settings::Settings(OSystem* osystem)
   setInternal("timing", "sleep");
   setInternal("uimessages", "true");
 
-  // NTSC filtering options
-  setInternal("ntsc_filter", "false");
+  // TV filtering options
+  setInternal("tv_filter", "0");
+  setInternal("tv_scanlines", "50");
 
   // Sound options
   setInternal("sound", "true");
@@ -265,6 +266,10 @@ void Settings::validate()
   if(i < 80 || i > 120)  setInternal("gl_aspectn", "100");
   i = getInt("gl_aspectp");
   if(i < 80 || i > 120)  setInternal("gl_aspectp", "100");
+
+  i = getInt("tv_filter");
+  if(i < 0 || i > 5)  setInternal("tv_filter", "0");
+
 #endif
 
 #ifdef SOUND_SUPPORT
@@ -335,11 +340,12 @@ void Settings::usage()
     << "                 linear          Blurred scaling (GL_LINEAR)\n"
     << "  -gl_aspectn   <number>       Scale the TIA width by the given percentage in NTSC mode\n"
     << "  -gl_aspectp   <number>       Scale the TIA width by the given percentage in PAL mode\n"
-    << "  -gl_fsmax     <1|0>          Stretch GL image in fullscreen emulation mode\n"
+    << "  -gl_fsscale   <1|0>          Stretch GL image in fullscreen emulation mode to max/integer scale\n"
     << "  -gl_vsync     <1|0>          Enable 'synchronize to vertical blank interrupt'\n"
     << "  -gl_vbo       <1|0>          Enable 'vertex buffer objects'\n"
     << endl
-    << "  -ntsc_filter  <1|0>          Enable Blargg NTSC filtering effects\n"
+    << "  -tv_filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
+    << "  -tv_scanlines <20-100>       Set scanline intensity to percentage\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"

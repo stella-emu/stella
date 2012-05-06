@@ -378,8 +378,35 @@ void EventHandler::poll(uInt64 time)
                 myOSystem->console().changeYStart(-1);
                 break;
 
-              case KBDK_f:  // Alt-f toggles NTSC filtering
-                myOSystem->console().toggleNTSC();
+              case KBDK_1:  // Alt-1 turns off NTSC filtering
+                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_OFF, true);
+                break;
+
+              case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
+                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_COMPOSITE, true);
+                break;
+
+              case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
+                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_SVIDEO, true);
+                break;
+
+              case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
+                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_RGB, true);
+                break;
+
+              case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
+                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_BAD, true);
+                break;
+
+              case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
+                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_CUSTOM, true);
+                break;
+
+              case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
+                if(mod & KMOD_SHIFT)
+                  myOSystem->console().changeScanlines(-5, true);
+                else
+                  myOSystem->console().changeScanlines(+5, true);
                 break;
 
               case KBDK_z:
@@ -440,7 +467,9 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case KBDK_p:  // Alt-p toggles phosphor effect
-                myOSystem->console().togglePhosphor();
+                // Currently, phosphor mode cannot be enabled with NTSC filtering
+                if(!myOSystem->frameBuffer().ntscEnabled())
+                  myOSystem->console().togglePhosphor();
                 break;
 
               case KBDK_l:

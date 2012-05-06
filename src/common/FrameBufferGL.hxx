@@ -91,6 +91,20 @@ class FrameBufferGL : public FrameBuffer
       Enable/disable NTSC filtering effects.
     */
     void enableNTSC(bool enable);
+    bool ntscEnabled() const { return myFilterType == kBlarggNTSC; }
+
+    /**
+      Change scanline intensity.
+      relative = -1 means decrease current intensity by 'directin
+      direction =  0 means to reload the current video mode
+      direction = +1 means go to the next higher video mode
+
+
+      @param relative  If non-zero, change current intensity by
+                       'relative' amount, otherwise set to 'absolute'
+      @return  New current intensity
+    */
+    uInt32 changeScanlines(int relative, int absolute = 50);
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.

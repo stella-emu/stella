@@ -22,29 +22,17 @@
 
 #include "bspf.hxx"
 #include "Array.hxx"
+#include "Settings.hxx"
 #include "atari_ntsc.h"
-
-// Limits for the adjustable values.
-#define FILTER_NTSC_SHARPNESS_MIN -1.0
-#define FILTER_NTSC_SHARPNESS_MAX 1.0
-#define FILTER_NTSC_RESOLUTION_MIN -1.0
-#define FILTER_NTSC_RESOLUTION_MAX 1.0
-#define FILTER_NTSC_ARTIFACTS_MIN -1.0
-#define FILTER_NTSC_ARTIFACTS_MAX 1.0
-#define FILTER_NTSC_FRINGING_MIN -1.0
-#define FILTER_NTSC_FRINGING_MAX 1.0
-#define FILTER_NTSC_BLEED_MIN -1.0
-#define FILTER_NTSC_BLEED_MAX 1.0
-#define FILTER_NTSC_BURST_PHASE_MIN -1.0
-#define FILTER_NTSC_BURST_PHASE_MAX 1.0
 
 /**
   This class is based on the Blargg NTSC filter code from Atari800,
-  and is derived from 'filter_ntsc.(h|c)'.
+  and is derived from 'filter_ntsc.(h|c)'.  Original code based on
+  implementation from http://www.slack.net/~ant.
 
-  Original code based on implementation from http://www.slack.net/~ant.
-
-  Atari TIA NTSC composite video to RGB emulator/blitter.
+  The class is basically a thin wrapper around atari_ntsc_xxx structs
+  and methods, so that the rest of the codebase isn't affected by
+  updated versions of Blargg code.
 */
 class NTSCFilter
 {
@@ -52,18 +40,23 @@ class NTSCFilter
     NTSCFilter();
     virtual ~NTSCFilter();
 
-    /* Set/get one of the available preset adjustments: Composite, S-Video, RGB,
-       Monochrome. */
-    enum {
+  public:
+    // Set one of the available preset adjustments (Composite, S-Video, RGB, etc)
+    enum Preset {
+      PRESET_OFF,
       PRESET_COMPOSITE,
       PRESET_SVIDEO,
       PRESET_RGB,
-      PRESET_MONOCHROME,
       PRESET_BAD,
-      PRESET_HORRIBLE,
-      PRESET_CUSTOM,
-      /* Number of "normal" (not including CUSTOM) values in enumerator */
-      PRESET_SIZE = PRESET_CUSTOM
+      PRESET_CUSTOM
+    };
+
+    /* Normally used in conjunction with custom mode, contains all
+       aspects currently adjustable in NTSC TV emulation. */
+    struct Adjustable {
+      double hue, saturation, contrast, brightness, gamma,
+             sharpness, resolution, artifacts, fringing, bleed,
+             burst_phase;
     };
 
   public:
@@ -73,49 +66,58 @@ class NTSCFilter
     */
     void setTIAPalette(const uInt32* palette);
 
-    /* Restores default values for NTSC-filter-specific colour controls.
-       updateFilter should be called afterwards to apply changes. */
-    void restoreDefaults();
+    // The following are meant to be used strictly for toggling from the GUI
+    string setPreset(Preset preset);
 
-    /* updateFilter should be called afterwards these functions to apply changes. */
-    void setPreset(int preset);
-    int getPreset();
-    void nextPreset();
+    // Reinitialises the NTSC filter (automatically called after settings
+    // have changed)
+    void updateFilter()
+    {
+      mySetup.palette = myTIAPalette;
+      atari_ntsc_init(&myFilter, &mySetup);
+    }
 
-#if 0 // FIXME
-    /* Read/write to configuration file. */
-    int FILTER_NTSC_ReadConfig(char *option, char *ptr);
-    void FILTER_NTSC_WriteConfig(FILE *fp);
+    // Load and save NTSC-related settings
+    void loadConfig(const Settings& settings);
+    void saveSettings(Settings& settings) const;
 
-    /* NTSC filter initialisation and processing of command-line arguments. */
-    int FILTER_NTSC_Initialise(int *argc, char *argv[]);
-#endif
+    // Perform Blargg filtering on input buffer, place results in
+    // output buffer
+    void blit_5551(uInt8* src_buf, long src_row_width,
+                   int src_width, int src_height,
+                   uInt16* dest_buf, long dest_pitch)
+    {
+      atari_ntsc_blit_5551(&myFilter, src_buf, src_row_width,
+                           src_width, src_height,
+                           dest_buf, dest_pitch);
+    }
+    void blit_1555(uInt8* src_buf, long src_row_width,
+                   int src_width, int src_height,
+                   uInt16* dest_buf, long dest_pitch)
+    {
+      atari_ntsc_blit_1555(&myFilter, src_buf, src_row_width,
+                           src_width, src_height,
+                           dest_buf, dest_pitch);
+    }
+
   private:
-    /* Reinitialises the an NTSC filter. Should be called after changing
-       palette setup or loading/unloading an external palette. */
-    void updateFilter();
-
-    // The following function is originally from colours_ntsc.
-    /* Creates YIQ_TABLE from external palette. START_ANGLE and START_SATURATIION
-       are provided as parameters, because NTSC_FILTER needs to set these values
-       according to its internal setup (burst_phase etc).
-    */
-    void updateYIQTable(double yiq_table[768], double start_angle);
-
-  private:
-    // Pointer to the NTSC filter structure
+    // The NTSC filter structure
     atari_ntsc_t myFilter;
 
     // Contains controls used to adjust the palette in the NTSC filter
+    // This is the main setup object used by the underlying ntsc code
     atari_ntsc_setup_t mySetup;
 
-    uInt8 myTIAPalette[384];  // 128 colours by 3 components per colour
+    // This setup is used only in custom mode (after it is modified,
+    // it is copied to mySetup)
+    atari_ntsc_setup_t myCustomSetup;
 
-    int myCurrentModeNum;
-    Common::Array<atari_ntsc_setup_t> myModeList;
+    // Contains adjustable settings for the current preset
+    // (including the custom mode)
+    Adjustable myAdjustables;
 
-    static atari_ntsc_setup_t const * const presets[PRESET_SIZE];
-    static char const * const preset_cfg_strings[PRESET_SIZE];
+    // 128 colours by 3 components per colour
+    uInt8 myTIAPalette[128 * 3];
 };
 
 #endif

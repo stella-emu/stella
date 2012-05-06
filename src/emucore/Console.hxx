@@ -35,6 +35,7 @@ class CompuMate;
 #include "TIATables.hxx"
 #include "FrameBuffer.hxx"
 #include "Serializable.hxx"
+#include "NTSCFilter.hxx"
 
 /**
   Contains detailed info about a console.
@@ -202,9 +203,14 @@ class Console : public Serializable
     void togglePhosphor();
 
     /**
-      Toggles NTSC filtering effects.
+      Toggles NTSC filtering effects to use the given preset.
     */
-    void toggleNTSC();
+    void toggleNTSC(NTSCFilter::Preset preset, bool show = false);
+
+    /**
+      Increase/decrease current scanline intensity by given amount.
+    */
+    void changeScanlines(int amount, bool show = false);
 
     /**
       Toggles the PAL color-loss effect.
