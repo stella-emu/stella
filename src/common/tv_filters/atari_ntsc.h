@@ -30,10 +30,6 @@ typedef unsigned short atari_ntsc_out_t;
   extern "C" {
 #endif
 
-/* Each raw pixel input value is passed through this. You might want to mask
-   the pixel index if you use the high bits as flags, etc. */
-#define ATARI_NTSC_ADJ_IN( in ) in
-
 /* Image parameters, ranging from -1.0 to 1.0. Actual internal values shown
    in parenthesis and should remain fairly stable in future versions. */
 typedef struct atari_ntsc_setup_t

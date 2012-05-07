@@ -369,11 +369,13 @@ void FrameBufferGL::postFrameUpdate()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::enablePhosphor(bool enable, int blend)
 {
-  myUsePhosphor   = enable;
-  myPhosphorBlend = blend;
-  myFilterType = enable ? kPhosphor : kNone;
-
-  myRedrawEntireFrame = true;
+  if(myTiaSurface)
+  {
+    myUsePhosphor   = enable;
+    myPhosphorBlend = blend;
+    myFilterType = enable ? kPhosphor : kNone;
+    myRedrawEntireFrame = true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -133,13 +133,11 @@ void FBSurfaceTIA::update()
     case FrameBufferGL::kBlarggNTSC:
     {
 #ifdef HAVE_GL_BGRA
-  #define BLIT16 blit_1555
+      myFB.myNTSCFilter.blit_1555
 #else
-  #define BLIT16 blit_5551
+      myFB.myNTSCFilter.blit_5551
 #endif
-      myFB.myNTSCFilter.BLIT16(currentFrame, width,
-                               myTexture->w, height,
-                               buffer, myTexture->pitch);
+        (currentFrame, width, height, buffer, myTexture->pitch);
       break;
     }
   }
