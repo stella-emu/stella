@@ -345,7 +345,7 @@ void Settings::usage()
     << "  -gl_vbo       <1|0>          Enable 'vertex buffer objects'\n"
     << endl
     << "  -tv_filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
-    << "  -tv_scanlines <20-100>       Set scanline intensity to percentage\n"
+    << "  -tv_scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"

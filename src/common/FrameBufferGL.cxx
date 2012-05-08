@@ -393,13 +393,13 @@ void FrameBufferGL::enableNTSC(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 FrameBufferGL::changeScanlines(int relative, int absolute)
 {
-  uInt32 intensity = myTiaSurface->myScanlineIntensityI;
+  int intensity = myTiaSurface->myScanlineIntensityI;
   if(myTiaSurface)
   {
     if(relative == 0)  intensity = absolute;
     else               intensity += relative;
-    intensity = BSPF_max(20u, intensity);
-    intensity = BSPF_min(100u, intensity);
+    intensity = BSPF_max(0, intensity);
+    intensity = BSPF_min(100, intensity);
 
     myTiaSurface->myScanlineIntensityI = (GLuint)intensity;
     myTiaSurface->myScanlineIntensityF = (GLfloat)intensity / 100;
