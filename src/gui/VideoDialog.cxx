@@ -317,6 +317,7 @@ void VideoDialog::loadConfig()
     instance().settings().getString("timing"), "sleep");
 
   // GL Filter setting
+// FIXME
   myGLFilterPopup->setSelected(
     instance().settings().getString("gl_filter"), "nearest");
   myGLFilterPopup->setEnabled(gl);

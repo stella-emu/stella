@@ -40,7 +40,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("video", "soft");
 
   // OpenGL specific options
-  setInternal("gl_filter", "nearest");
+  setInternal("gl_inter", "false");
   setInternal("gl_aspectn", "90");
   setInternal("gl_aspectp", "100");
   setInternal("gl_fsscale", "false");
@@ -62,6 +62,7 @@ Settings::Settings(OSystem* osystem)
   // TV filtering options
   setInternal("tv_filter", "0");
   setInternal("tv_scanlines", "50");
+  setInternal("tv_scaninter", "true");
 
   // Sound options
   setInternal("sound", "true");
@@ -259,9 +260,6 @@ void Settings::validate()
   if(s != "sleep" && s != "busy")  setInternal("timing", "sleep");
 
 #ifdef DISPLAY_OPENGL
-  s = getString("gl_filter");
-  if(s != "linear" && s != "nearest")  setInternal("gl_filter", "nearest");
-
   i = getInt("gl_aspectn");
   if(i < 80 || i > 120)  setInternal("gl_aspectn", "100");
   i = getInt("gl_aspectp");
@@ -335,9 +333,7 @@ void Settings::usage()
     << "                 gl              SDL OpenGL mode\n"
     << endl
     << "  -gl_lib       <name>         Specify the OpenGL library\n"
-    << "  -gl_filter    <type>         Type is one of the following:\n"
-    << "                 nearest         Normal scaling (GL_NEAREST)\n"
-    << "                 linear          Blurred scaling (GL_LINEAR)\n"
+    << "  -gl_inter     <1|0>          Enable interpolated (smooth) scaling\n"
     << "  -gl_aspectn   <number>       Scale the TIA width by the given percentage in NTSC mode\n"
     << "  -gl_aspectp   <number>       Scale the TIA width by the given percentage in PAL mode\n"
     << "  -gl_fsscale   <1|0>          Stretch GL image in fullscreen emulation mode to max/integer scale\n"
@@ -346,6 +342,7 @@ void Settings::usage()
     << endl
     << "  -tv_filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
     << "  -tv_scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
+    << "  -tv_scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"

@@ -491,6 +491,28 @@ void Console::changeScanlines(int amount, bool show)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::toggleScanlineInterpolation()
+{
+  ostringstream buf;
+  if(myOSystem->frameBuffer().type() == kDoubleBuffer)
+  {
+    if(myOSystem->frameBuffer().ntscEnabled())
+    {
+      bool enable = !myOSystem->settings().getBool("tv_scaninter");
+      myOSystem->frameBuffer().enableScanlineInterpolation(enable);
+      buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
+      myOSystem->settings().setBool("tv_scaninter", enable);
+    }
+    else
+      buf << "Scanlines only available in TV filtering mode";
+  }
+  else
+    buf << "Scanlines not available in software mode";
+
+  myOSystem->frameBuffer().showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setProperties(const Properties& props)
 {
   myProperties = props;
@@ -517,7 +539,6 @@ FBInitStatus Console::initializeVideo(bool full)
   bool enable = myProperties.get(Display_Phosphor) == "YES";
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
   myOSystem->frameBuffer().enablePhosphor(enable, blend);
-  myOSystem->frameBuffer().changeScanlines(0, myOSystem->settings().getInt("tv_scanlines"));
   toggleNTSC((NTSCFilter::Preset)myOSystem->settings().getInt("tv_filter"));
   setPalette(myOSystem->settings().getString("palette"));
 

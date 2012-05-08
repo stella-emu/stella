@@ -230,8 +230,8 @@ void FBSurfaceTIA::reload()
 
   // Base texture (@ index 0)
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[0]);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[0]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
@@ -247,10 +247,11 @@ void FBSurfaceTIA::reload()
 
   // Scanline texture (@ index 1)
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[1]);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[1]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
 #ifdef HAVE_GL_BGRA
   static uInt16 const scanline[4] = { 0x0000, 0x0000, 0x8000, 0x0000  };
   myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 2, 0,
@@ -273,16 +274,32 @@ void FBSurfaceTIA::reload()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void FBSurfaceTIA::setFilter(const string& name)
+void FBSurfaceTIA::setScanIntensity(uInt32 intensity)
 {
-  // We only do GL_NEAREST or GL_LINEAR for now
-  GLint filter = name == "linear" ? GL_LINEAR : GL_NEAREST;
+  myScanlineIntensityI = (GLuint)intensity;
+  myScanlineIntensityF = (GLfloat)intensity / 100;
+}
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceTIA::setTexInterpolation(bool enable)
+{
+  myTexFilter[0] = enable ? GL_LINEAR : GL_NEAREST;
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter);
-  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[0]);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[0]);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceTIA::setScanInterpolation(bool enable)
+{
+  myTexFilter[1] = enable ? GL_LINEAR : GL_NEAREST;
+  myGL.BindTexture(GL_TEXTURE_2D, myTexID[1]);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, myTexFilter[1]);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, myTexFilter[1]);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

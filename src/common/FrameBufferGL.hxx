@@ -94,7 +94,7 @@ class FrameBufferGL : public FrameBuffer
     bool ntscEnabled() const { return myFilterType == kBlarggNTSC; }
 
     /**
-      Change scanline intensity.
+      Change scanline intensity and interpolation.
       relative = -1 means decrease current intensity by 'directin
       direction =  0 means to reload the current video mode
       direction = +1 means go to the next higher video mode
@@ -105,6 +105,7 @@ class FrameBufferGL : public FrameBuffer
       @return  New current intensity
     */
     uInt32 changeScanlines(int relative, int absolute = 50);
+    void enableScanlineInterpolation(bool enable);
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.

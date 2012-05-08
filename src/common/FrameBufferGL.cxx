@@ -311,10 +311,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_gl.MatrixMode(GL_MODELVIEW);
   p_gl.LoadIdentity();
 
-#if 0
-cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
-     << mode << endl;
-#endif
+//cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl << mode << endl;
 
   // The framebuffer only takes responsibility for TIA surfaces
   // Other surfaces (such as the ones used for dialogs) are allocated
@@ -330,8 +327,10 @@ cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl
     myTiaSurface->updateCoords(baseHeight, mode.image_x, mode.image_y,
                                mode.image_w, mode.image_h);
 
-    myTiaSurface->setFilter(myOSystem->settings().getString("gl_filter"));
     myTiaSurface->enableScanlines(myFilterType == kBlarggNTSC);
+    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
+    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("gl_inter"));
+    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv_scaninter"));
     myTiaSurface->setTIA(myOSystem->console().tia());
   }
 
@@ -385,7 +384,12 @@ void FrameBufferGL::enableNTSC(bool enable)
   {
     myFilterType = enable ? kBlarggNTSC : myUsePhosphor ? kPhosphor : kNone;
     myTiaSurface->updateCoords();
+
     myTiaSurface->enableScanlines(myFilterType == kBlarggNTSC);
+    myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
+    myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("gl_inter"));
+    myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv_scaninter"));
+
     myRedrawEntireFrame = true;
   }
 }
@@ -401,12 +405,20 @@ uInt32 FrameBufferGL::changeScanlines(int relative, int absolute)
     intensity = BSPF_max(0, intensity);
     intensity = BSPF_min(100, intensity);
 
-    myTiaSurface->myScanlineIntensityI = (GLuint)intensity;
-    myTiaSurface->myScanlineIntensityF = (GLfloat)intensity / 100;
-
+    myTiaSurface->setScanIntensity(intensity);
     myRedrawEntireFrame = true;
   }
   return intensity;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBufferGL::enableScanlineInterpolation(bool enable)
+{
+  if(myTiaSurface)
+  {
+    myTiaSurface->setScanInterpolation(enable);
+    myRedrawEntireFrame = true;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

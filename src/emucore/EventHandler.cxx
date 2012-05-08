@@ -409,6 +409,10 @@ void EventHandler::poll(uInt64 time)
                   myOSystem->console().changeScanlines(+5, true);
                 break;
 
+              case KBDK_8:  // Alt-8 turns toggles scanline interpolation
+                myOSystem->console().toggleScanlineInterpolation();
+                break;
+
               case KBDK_z:
                 if(mod & KMOD_SHIFT)
                   myOSystem->console().toggleP0Collision();

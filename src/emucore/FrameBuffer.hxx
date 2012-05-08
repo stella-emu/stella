@@ -303,7 +303,7 @@ class FrameBuffer
     virtual bool ntscEnabled() const { return false; }
 
     /**
-      Change scanline intensity.
+      Change scanline intensity and interpolation.
       relative = -1 means decrease current intensity by 'directin
       direction =  0 means to reload the current video mode
       direction = +1 means go to the next higher video mode
@@ -314,6 +314,7 @@ class FrameBuffer
       @return  New current intensity
     */
     virtual uInt32 changeScanlines(int relative, int absolute = 50) { return absolute; }
+    virtual void enableScanlineInterpolation(bool enable) { }
 
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and *must* be implemented
