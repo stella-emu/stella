@@ -758,87 +758,13 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
 
   uInt8* image = 0;
 
-  // Split zip file path and file name within zip archive
-  string fileInZip = "";
-  FilesystemNode fileNode(file);
-  if (!fileNode.exists())
+  // First try to load as ZIP archive
+  if(loadFromZIP(file, &image, size))
   {
-    size_t slashPos = file.rfind(BSPF_PATH_SEPARATOR);
-    if(slashPos != string::npos)
-    {
-      string parent = file.substr(0, slashPos);
-      string name = file.substr(slashPos+1);
-      FilesystemNode parentNode(parent);
-      if(parentNode.exists() && !parentNode.isDirectory() &&
-         BSPF_endsWithIgnoreCase(parent, ".zip"))
-      {
-        fileInZip = name;
-        file = parent;
-      }
-    }
-  }
-
-  // Try to open the file as a zipped archive
-  // If that fails, we assume it's just a gzipped or normal data file
-  unzFile tz;
-  if((tz = unzOpen(file.c_str())) != NULL)
-  {
-    if(unzGoToFirstFile(tz) == UNZ_OK)
-    {
-      unz_file_info ufo;
-
-      for(;;)  // Loop through all files for valid 2600 images
-      {
-        // Longer filenames might be possible, but I don't
-        // think people would name files that long in zip files...
-        char filename[1024];
-
-        unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
-        filename[1023] = '\0';
-
-        if(strlen(filename) >= 4)
-        {
-          // Grab 3-character extension
-          const char* ext = filename + strlen(filename) - 4;
-
-          if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
-             BSPF_equalsIgnoreCase(ext, ".rom"))
-          {
-            if(fileInZip.empty() || fileInZip == filename) 
-            {
-              file = filename;
-              break;
-            }
-          }
-        }
-
-        // Scan the next file in the zip
-        if(unzGoToNextFile(tz) != UNZ_OK)
-          break;
-      }
-
-      // Now see if we got a valid image
-      if(ufo.uncompressed_size <= 0)
-      {
-        unzClose(tz);
-        return image;
-      }
-      size  = ufo.uncompressed_size;
-      image = new uInt8[size];
-
-      // We don't have to check for any return errors from these functions,
-      // since if there are, 'image' will not contain a valid ROM and the
-      // calling method can take care of it
-      unzOpenCurrentFile(tz);
-      unzReadCurrentFile(tz, image, size);
-      unzCloseCurrentFile(tz);
-      unzClose(tz);
-    }
-    else
-    {
-      unzClose(tz);
+    // Empty file means it *was* a ZIP file, but it didn't contain
+    // a valid ROM
+    if(image == 0)
       return image;
-    }
   }
   else
   {
@@ -881,6 +807,89 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
   }
 
   return image;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
+{
+  // First determine if this actually is a ZIP file
+  // by seeing if it contains the '.zip' extension
+  size_t extpos = BSPF_findIgnoreCase(filename, ".zip");
+  if(extpos == string::npos)
+    return false;
+
+  // Now get the file after the .zip extension (if any)
+  string archive = filename, fileinzip = "";
+  if(filename.size() > extpos + 4)
+  {
+    archive = filename.substr(0, extpos + 4);
+    fileinzip = filename.substr(extpos + 5);
+    if(fileinzip.size() == 0)
+      return true;  // This was a ZIP file, but invalid name
+  }
+
+  // Open archive
+  unzFile tz;
+  if((tz = unzOpen(archive.c_str())) != NULL)
+  {
+    if(unzGoToFirstFile(tz) == UNZ_OK)
+    {
+      unz_file_info ufo;
+
+      for(;;)  // Loop through all files for valid 2600 images
+      {
+        // Longer filenames might be possible, but I don't
+        // think people would name files that long in zip files...
+        char currfile[1024];
+
+        unzGetCurrentFileInfo(tz, &ufo, currfile, 1024, 0, 0, 0, 0);
+        currfile[1023] = '\0';
+
+        if(strlen(currfile) >= 4)
+        {
+          // Grab 3-character extension
+          const char* ext = currfile + strlen(currfile) - 4;
+
+          if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
+             BSPF_equalsIgnoreCase(ext, ".rom"))
+          {
+            // Either match the first file or the one we're looking for
+            if(fileinzip.empty() || fileinzip == currfile)
+              break;
+          }
+        }
+
+        // Scan the next file in the zip
+        if(unzGoToNextFile(tz) != UNZ_OK)
+          break;
+      }
+
+      // Now see if we got a valid image
+      if(ufo.uncompressed_size <= 0)
+      {
+        unzClose(tz);
+        return true;
+      }
+      size  = ufo.uncompressed_size;
+      *image = new uInt8[size];
+
+      // We don't have to check for any return errors from these functions,
+      // since if there are, 'image' will not contain a valid ROM and the
+      // calling method can take care of it
+      unzOpenCurrentFile(tz);
+      unzReadCurrentFile(tz, *image, size);
+      unzCloseCurrentFile(tz);
+      unzClose(tz);
+
+      return true;
+    }
+    else
+    {
+      unzClose(tz);
+      return true;
+    }
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

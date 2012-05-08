@@ -644,6 +644,21 @@ class OSystem
     uInt8* openROM(string rom, string& md5, uInt32& size);
 
     /**
+      Open the given ZIP archive, parsing filename for the contents of the
+      desired file to load.  If the filename ends in '.zip', use the first
+      file found in the archive, otherwise traverse the archive and use the
+      file specified after '.zip' in the filename.
+
+      @param name   The absolute pathname of the file
+      @param image  Pointer to the array, with size >=0 indicating valid data
+      @param size   The amount of data read into the image array
+
+      @return  True if this was a zip file (regardless of whether it
+               actually loaded any valid data, else false
+    */
+    bool loadFromZIP(const string& filename, uInt8** image, uInt32& size);
+
+    /**
       Gets all possible info about the given console.
 
       @param console  The console to use
