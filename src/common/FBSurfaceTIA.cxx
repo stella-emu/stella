@@ -19,6 +19,8 @@
 
 #ifdef DISPLAY_OPENGL
 
+#include <cmath>
+
 #include "Font.hxx"
 #include "FrameBufferGL.hxx"
 #include "TIA.hxx"
@@ -373,12 +375,16 @@ void FBSurfaceTIA::updateCoords()
   // Upper right (x+w,y)
   myCoord[26] = 1.0f;
   myCoord[27] = 0.0f;
+  // Scanline repeating is sensitive to non-integral vertical resolution,
+  // so rounding is performed to eliminate it
+  // This won't be 100% accurate, but non-integral scaling isn't 100%
+  // accurate anyway
   // Lower left (x,y+h)
   myCoord[28] = 0.0f;
-  myCoord[29] = GLfloat(myImageH) / (myImageH / myBaseH);
+  myCoord[29] = GLfloat(myImageH) / roundf((float)myImageH / myBaseH);
   // Lower right (x+w,y+h)
   myCoord[30] = 1.0f;
-  myCoord[31] = GLfloat(myImageH) / (myImageH / myBaseH);
+  myCoord[31] = myCoord[29];
 
   // Cache vertex and texture coordinates using vertex buffer object
   if(myFB.myVBOAvailable)
