@@ -381,7 +381,7 @@ void FBSurfaceTIA::updateCoords()
   // accurate anyway
   // Lower left (x,y+h)
   myCoord[28] = 0.0f;
-  myCoord[29] = GLfloat(myImageH) / roundf((float)myImageH / myBaseH);
+  myCoord[29] = GLfloat(myImageH) / floor(((float)myImageH / myBaseH) + 0.5);
   // Lower right (x+w,y+h)
   myCoord[30] = 1.0f;
   myCoord[31] = myCoord[29];
