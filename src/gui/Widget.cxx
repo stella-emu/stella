@@ -618,11 +618,13 @@ bool SliderWidget::handleEvent(Event::Type e)
   switch(e)
   {
     case Event::UIDown:
+    case Event::UILeft:
     case Event::UIPgDown:
       setValue(_value - _stepValue);
       break;
   
     case Event::UIUp:
+    case Event::UIRight:
     case Event::UIPgUp:
       setValue(_value + _stepValue);
       break;

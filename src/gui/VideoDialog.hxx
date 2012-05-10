@@ -49,6 +49,7 @@ class VideoDialog : public Dialog
     void setDefaults();
 
     void handleFullscreenChange(bool enable);
+    void handleTVModeChange(bool enable);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:

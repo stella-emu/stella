@@ -78,7 +78,7 @@ string NTSCFilter::setPreset(Preset preset)
       break;
     case PRESET_BAD:
       mySetup = atari_ntsc_bad;
-      msg = "BAD";
+      msg = "BAD ADJUST";
       break;
     case PRESET_CUSTOM:
       mySetup = myCustomSetup;

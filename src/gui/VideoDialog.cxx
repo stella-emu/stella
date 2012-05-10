@@ -250,10 +250,10 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   items.push_back("Composite", BSPF_toString(NTSCFilter::PRESET_COMPOSITE));
   items.push_back("S-Video", BSPF_toString(NTSCFilter::PRESET_SVIDEO));
   items.push_back("RGB", BSPF_toString(NTSCFilter::PRESET_RGB));
-  items.push_back("Badly adjusted", BSPF_toString(NTSCFilter::PRESET_BAD));
+  items.push_back("Bad adjust", BSPF_toString(NTSCFilter::PRESET_BAD));
   items.push_back("Custom", BSPF_toString(NTSCFilter::PRESET_CUSTOM));
   lwidth = font.getStringWidth("TV Mode: ");
-  pwidth = font.getStringWidth("Badly adjusted"),
+  pwidth = font.getStringWidth("Bad adjust"),
   myTVMode =
     new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
                     items, "TV Mode: ", lwidth, kTVModeChanged);
@@ -408,6 +408,12 @@ void VideoDialog::loadConfig()
   // Fast loading of Supercharger BIOS
   myFastSCBiosCheckbox->setState(instance().settings().getBool("fastscbios"));
 
+  // TV Mode
+  myTVMode->setSelected(
+    instance().settings().getString("tv_filter"), "0");
+  handleTVModeChange(instance().settings().getInt("tv_filter") ==
+                     (int)NTSCFilter::PRESET_CUSTOM);
+
   myTab->loadConfig();
 }
 
@@ -469,6 +475,12 @@ void VideoDialog::saveConfig()
   // Fast loading of Supercharger BIOS
   instance().settings().setBool("fastscbios", myFastSCBiosCheckbox->getState());
 
+  // TV Mode
+  instance().settings().setString("tv_filter", myTVMode->getSelectedTag());
+
+
+
+
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
 }
@@ -498,8 +510,11 @@ void VideoDialog::setDefaults()
   myCenterCheckbox->setState(false);
   myFastSCBiosCheckbox->setState(false);
 
+  myTVMode->setSelected("0", "0");
+
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleFullscreenChange(true);
+  handleTVModeChange(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -509,6 +524,31 @@ void VideoDialog::handleFullscreenChange(bool enable)
   myFSResPopup->setEnabled(enable);
   _dirty = true;
 #endif
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::handleTVModeChange(bool enable)
+{
+  myTVSharp->setEnabled(enable);
+  myTVSharpLabel->setEnabled(enable);
+  myTVRes->setEnabled(enable);
+  myTVResLabel->setEnabled(enable);
+  myTVArtifacts->setEnabled(enable);
+  myTVArtifactsLabel->setEnabled(enable);
+  myTVFringe->setEnabled(enable);
+  myTVFringeLabel->setEnabled(enable);
+  myTVBlend->setEnabled(enable);
+  myTVBlendLabel->setEnabled(enable);
+  myTVBright->setEnabled(enable);
+  myTVBrightLabel->setEnabled(enable);
+  myTVContrast->setEnabled(enable);
+  myTVContrastLabel->setEnabled(enable);
+  myTVSatur->setEnabled(enable);
+  myTVSaturLabel->setEnabled(enable);
+  myTVGamma->setEnabled(enable);
+  myTVGammaLabel->setEnabled(enable);
+
+  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -543,6 +583,30 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kFullScrChanged:
       handleFullscreenChange(myFullscreenPopup->getSelectedTag() != "-1");
+      break;
+
+    case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
+      break;
+    case kTVResChanged:  myTVResLabel->setValue(myTVRes->getValue());
+      break;
+    case kTVArtifactsChanged:  myTVArtifactsLabel->setValue(myTVArtifacts->getValue());
+      break;
+    case kTVFringeChanged:  myTVFringeLabel->setValue(myTVFringe->getValue());
+      break;
+    case kTVBlendChanged:  myTVBlendLabel->setValue(myTVBlend->getValue());
+      break;
+    case kTVBrightChanged:  myTVBrightLabel->setValue(myTVBright->getValue());
+      break;
+    case kTVContrastChanged:  myTVContrastLabel->setValue(myTVContrast->getValue());
+      break;
+    case kTVSaturChanged:  myTVSaturLabel->setValue(myTVSatur->getValue());
+      break;
+    case kTVGammaChanged:  myTVGammaLabel->setValue(myTVGamma->getValue());
+      break;
+
+    case kTVModeChanged:
+      handleTVModeChange(atoi(myTVMode->getSelectedTag().c_str()) == 
+                         (int)NTSCFilter::PRESET_CUSTOM);
       break;
 
     default:
