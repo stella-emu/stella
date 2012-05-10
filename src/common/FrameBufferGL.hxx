@@ -269,6 +269,7 @@ class FrameBufferGL : public FrameBuffer
       OGL_DECLARE(Ortho,void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
       OGL_DECLARE(Viewport,void,glViewport,(GLint, GLint, GLsizei, GLsizei));
       OGL_DECLARE(LoadIdentity,void,glLoadIdentity,(void));
+      OGL_DECLARE(Translatef,void,glTranslatef,(GLfloat,GLfloat,GLfloat));
       OGL_DECLARE(EnableClientState,void,glEnableClientState,(GLenum));
       OGL_DECLARE(DisableClientState,void,glDisableClientState,(GLenum));
       OGL_DECLARE(VertexPointer,void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));

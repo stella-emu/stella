@@ -106,6 +106,7 @@ bool FrameBufferGL::loadFuncs(GLFunctionality functionality)
         OGL_INIT(Ortho,void,glOrtho,(GLdouble, GLdouble, GLdouble, GLdouble, GLdouble, GLdouble));
         OGL_INIT(Viewport,void,glViewport,(GLint, GLint, GLsizei, GLsizei));
         OGL_INIT(LoadIdentity,void,glLoadIdentity,(void));
+        OGL_INIT(Translatef,void,glTranslatef,(GLfloat,GLfloat,GLfloat));
         OGL_INIT(EnableClientState,void,glEnableClientState,(GLenum));
         OGL_INIT(DisableClientState,void,glDisableClientState,(GLenum));
         OGL_INIT(VertexPointer,void,glVertexPointer,(GLint,GLenum,GLsizei,const GLvoid*));
@@ -310,6 +311,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_gl.Ortho(0.0, mode.screen_w, mode.screen_h, 0.0, -1.0, 1.0);
   p_gl.MatrixMode(GL_MODELVIEW);
   p_gl.LoadIdentity();
+  p_gl.Translatef(0.375, 0.375, 0.0);
 
 //cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl << mode << endl;
 
