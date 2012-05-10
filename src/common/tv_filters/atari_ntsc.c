@@ -31,11 +31,10 @@
    Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
 */
 
-atari_ntsc_setup_t const atari_ntsc_composite = {  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.15,  0.0,  0.0,  0.0, 0, 0, 0, 0 };
-atari_ntsc_setup_t const atari_ntsc_svideo    = {  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.45, -1.0, -1.0,  0.0, 0, 0, 0, 0 };
-atari_ntsc_setup_t const atari_ntsc_rgb       = {  0.0,  0.0, 0.0, 0.0,  0.2, 0.0, 0.70, -1.0, -1.0, -1.0, 0, 0, 0, 0 };
-atari_ntsc_setup_t const atari_ntsc_bad       = {  0.1, -0.3, 0.3, 0.25, 0.2, 0.0, 0.1,   0.5,  0.5,  0.5, 0, 0, 0, 0 };
-atari_ntsc_setup_t const atari_ntsc_horrible  = { -0.1, -0.5, 0.6, 0.43, 0.4, 0.0, 0.05,  0.7, -0.8, -0.7, 0, 0, 0, 0 };
+atari_ntsc_setup_t const atari_ntsc_composite = {  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.15,  0.0,  0.0,  0.0, 0 };
+atari_ntsc_setup_t const atari_ntsc_svideo    = {  0.0,  0.0, 0.0, 0.0,  0.0, 0.0, 0.45, -1.0, -1.0,  0.0, 0 };
+atari_ntsc_setup_t const atari_ntsc_rgb       = {  0.0,  0.0, 0.0, 0.0,  0.2, 0.0, 0.70, -1.0, -1.0, -1.0, 0 };
+atari_ntsc_setup_t const atari_ntsc_bad       = {  0.1, -0.3, 0.3, 0.25, 0.2, 0.0, 0.1,   0.5,  0.5,  0.5, 0 };
 
 #define alignment_count 2
 #define burst_count     1
@@ -48,7 +47,6 @@ atari_ntsc_setup_t const atari_ntsc_horrible  = { -0.1, -0.5, 0.6, 0.43, 0.4, 0.
 #define std_decoder_hue 0
 
 #define gamma_size 256
-#define default_palette_contrast 1.0f
 
 #include "atari_ntsc_impl.h"
 
@@ -70,9 +68,9 @@ static void correct_errors( atari_ntsc_rgb_t color, atari_ntsc_rgb_t* out )
   }
 }
 
-void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup )
+void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
+                      atari_ntsc_in_t const* palette )
 {
-  atari_ntsc_in_t* palette;
   int entry;
   init_t impl;
   if ( !setup )
@@ -80,11 +78,6 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup )
   init( &impl, setup );
 
   // Palette stores R/G/B data for 'atari_ntsc_palette_size' entries
-  palette = (atari_ntsc_in_t*) setup->palette;
-  
-  // Burst-phase (TODO - how is this actually used?)
-//  float start_angle = - ((213.0f) * M_PI / 180.0f) - setup->burst_phase * M_PI;
-
   for ( entry = 0; entry < atari_ntsc_palette_size; entry++ )
   {
     float r = impl.to_float [*palette++];
@@ -95,7 +88,7 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup )
       
     // Generate kernel
     int ir, ig, ib = YIQ_TO_RGB( y, i, q, impl.to_rgb, int, ir, ig );
-    atari_ntsc_rgb_t rgb = PACK_RGB( ir, ig, ib ); //(ib < 0x3E0 ? ib: 0x3E0)
+    atari_ntsc_rgb_t rgb = PACK_RGB( ir, ig, ib );
 
     if ( ntsc )
     {

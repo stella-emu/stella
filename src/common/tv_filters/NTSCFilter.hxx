@@ -54,9 +54,8 @@ class NTSCFilter
     /* Normally used in conjunction with custom mode, contains all
        aspects currently adjustable in NTSC TV emulation. */
     struct Adjustable {
-      double hue, saturation, contrast, brightness, gamma,
-             sharpness, resolution, artifacts, fringing, bleed,
-             burst_phase;
+      uInt32 hue, saturation, contrast, brightness, gamma,
+             sharpness, resolution, artifacts, fringing, bleed;
     };
 
   public:
@@ -73,8 +72,7 @@ class NTSCFilter
     // have changed)
     void updateFilter()
     {
-      mySetup.palette = myTIAPalette;
-      atari_ntsc_init(&myFilter, &mySetup);
+      atari_ntsc_init(&myFilter, &mySetup, myTIAPalette);
     }
 
     // Load and save NTSC-related settings

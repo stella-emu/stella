@@ -48,29 +48,21 @@ typedef struct atari_ntsc_setup_t
   double fringing;   /* color artifacts caused by brightness changes */
   double bleed;      /* color bleed (color resolution reduction) */
   float const* decoder_matrix; /* optional RGB decoder matrix, 6 elements */
-  
-  /* You can replace the standard TI color generation with an RGB palette. */
-  unsigned char const* palette;/* optional RGB palette in, 3 bytes per color */
-  unsigned char* palette_out;  /* optional RGB palette out, 3 bytes per color */
-
-  /* Atari change: additional setup fields */
-  double burst_phase; /* Phase at which colorburst signal is turned on;
-                         this defines colors of artifacts.
-            In radians; -1.0 = -180 degrees, 1.0 = +180 degrees */
 } atari_ntsc_setup_t;
 
 /* Video format presets */
 extern atari_ntsc_setup_t const atari_ntsc_composite; /* color bleeding + artifacts */
 extern atari_ntsc_setup_t const atari_ntsc_svideo;    /* color bleeding only */
 extern atari_ntsc_setup_t const atari_ntsc_rgb;       /* crisp image */
-extern atari_ntsc_setup_t const atari_ntsc_bad;
+extern atari_ntsc_setup_t const atari_ntsc_bad;       /* badly adjusted TV */
 
 enum { atari_ntsc_palette_size = 128 };
 
 /* Initializes and adjusts parameters. Can be called multiple times on the same
    atari_ntsc_t object. Can pass NULL for either parameter. */
 typedef struct atari_ntsc_t atari_ntsc_t;
-void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup );
+void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
+                      atari_ntsc_in_t const* palette );
 
 /* Filters one or more rows of pixels. Input pixels are 8-bit Atari palette colors.
    In_row_width is the number of pixels to get to the next input row. Out_pitch

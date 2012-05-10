@@ -78,13 +78,43 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myFastSCBiosCheckbox;
 
     // TV effects options
-    // TODO ...
+    PopUpWidget*      myTVMode;
+    SliderWidget*     myTVSharp;
+    StaticTextWidget* myTVSharpLabel;
+    SliderWidget*     myTVRes;
+    StaticTextWidget* myTVResLabel;
+    SliderWidget*     myTVArtifacts;
+    StaticTextWidget* myTVArtifactsLabel;
+    SliderWidget*     myTVFringe;
+    StaticTextWidget* myTVFringeLabel;
+    SliderWidget*     myTVBlend;
+    StaticTextWidget* myTVBlendLabel;
+    SliderWidget*     myTVBright;
+    StaticTextWidget* myTVBrightLabel;
+    SliderWidget*     myTVContrast;
+    StaticTextWidget* myTVContrastLabel;
+    SliderWidget*     myTVSatur;
+    StaticTextWidget* myTVSaturLabel;
+    SliderWidget*     myTVGamma;
+    StaticTextWidget* myTVGammaLabel;
 
     enum {
       kNAspectRatioChanged = 'VDan',
       kPAspectRatioChanged = 'VDap',
       kFrameRateChanged    = 'VDfr',
-      kFullScrChanged      = 'VDfs'
+      kFullScrChanged      = 'VDfs',
+
+      kTVModeChanged       = 'VDtv',
+      kTVSharpChanged      = 'TVsh',
+      kTVResChanged        = 'TVrs',
+      kTVArtifactsChanged  = 'TVar',
+      kTVFringeChanged     = 'TVfr',
+      kTVBlendChanged      = 'TVbl',
+      kTVBrightChanged     = 'TVbr',
+      kTVContrastChanged   = 'TVct',
+      kTVSaturChanged      = 'TVsa',
+      kTVGammaChanged      = 'TVga',
+      kTVScanChanged       = 'TVsc'
     };
 };
 

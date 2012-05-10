@@ -169,7 +169,7 @@ class Settings
     static string trim(string& str)
     {
       string::size_type first = str.find_first_not_of(' ');
-      return (first == string::npos) ? string() :
+      return (first == string::npos) ? EmptyString :
               str.substr(first, str.find_last_not_of(' ')-first+1);
     }
 

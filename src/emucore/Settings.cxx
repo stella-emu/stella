@@ -40,7 +40,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("video", "soft");
 
   // OpenGL specific options
-  setInternal("gl_inter", "false");
   setInternal("gl_aspectn", "90");
   setInternal("gl_aspectp", "100");
   setInternal("gl_fsscale", "false");
@@ -61,8 +60,19 @@ Settings::Settings(OSystem* osystem)
 
   // TV filtering options
   setInternal("tv_filter", "0");
-  setInternal("tv_scanlines", "50");
+  setInternal("tv_inter", "false");
+  setInternal("tv_scanlines", "40");
   setInternal("tv_scaninter", "true");
+  // TV options when using 'custom' mode
+  setInternal("tv_sharpness", "0.0");
+  setInternal("tv_resolution", "0.0");
+  setInternal("tv_artifacts", "0.0");
+  setInternal("tv_fringing", "0.0");
+  setInternal("tv_bleed", "0.0");
+  setInternal("tv_brightness", "0.0");
+  setInternal("tv_contrast", "0.0");
+  setInternal("tv_saturation", "0.0");
+  setInternal("tv_gamma", "0.0");
 
   // Sound options
   setInternal("sound", "true");

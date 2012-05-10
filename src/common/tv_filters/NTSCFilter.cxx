@@ -30,8 +30,6 @@
 #define FILTER_NTSC_FRINGING_MAX 1.0
 #define FILTER_NTSC_BLEED_MIN -1.0
 #define FILTER_NTSC_BLEED_MAX 1.0
-#define FILTER_NTSC_BURST_PHASE_MIN -1.0
-#define FILTER_NTSC_BURST_PHASE_MAX 1.0
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()

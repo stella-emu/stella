@@ -37,6 +37,7 @@
 #include "Widget.hxx"
 #include "TabWidget.hxx"
 #include "FrameBufferGL.hxx"
+#include "NTSCFilter.hxx"
 
 #include "VideoDialog.hxx"
 
@@ -237,17 +238,61 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // Add items for tab 0
   addToFocusList(wid, tabID);
 
-#if 0
   //////////////////////////////////////////////////////////
   // 2) TV effects options
   wid.clear();
   tabID = myTab->addTab(" TV Effects ");
-  xpos = ypos = 8;
-  // TODO ...
+  xpos = ypos = 5;
+
+  // TV Mode
+  items.clear();
+  items.push_back("Disabled", BSPF_toString(NTSCFilter::PRESET_OFF));
+  items.push_back("Composite", BSPF_toString(NTSCFilter::PRESET_COMPOSITE));
+  items.push_back("S-Video", BSPF_toString(NTSCFilter::PRESET_SVIDEO));
+  items.push_back("RGB", BSPF_toString(NTSCFilter::PRESET_RGB));
+  items.push_back("Badly adjusted", BSPF_toString(NTSCFilter::PRESET_BAD));
+  items.push_back("Custom", BSPF_toString(NTSCFilter::PRESET_CUSTOM));
+  lwidth = font.getStringWidth("TV Mode: ");
+  pwidth = font.getStringWidth("Badly adjusted"),
+  myTVMode =
+    new PopUpWidget(myTab, font, xpos, ypos, pwidth, lineHeight,
+                    items, "TV Mode: ", lwidth, kTVModeChanged);
+  wid.push_back(myTVMode);
+  ypos += lineHeight + 4;
+
+  // Custom adjustables (using macro voodoo)
+  xpos += 8; ypos += 4;
+  pwidth = lwidth;
+  lwidth = font.getStringWidth("Saturation: ");
+
+#define CREATE_CUSTOM_SLIDERS(obj, desc)                                 \
+  myTV ## obj =                                                          \
+    new SliderWidget(myTab, font, xpos, ypos, pwidth, lineHeight,        \
+                         desc, lwidth, kTV ## obj ##Changed);            \
+  myTV ## obj->setMinValue(0); myTV ## obj->setMaxValue(100);            \
+  wid.push_back(myTV ## obj);                                            \
+  myTV ## obj ## Label =                                                 \
+    new StaticTextWidget(myTab, font, xpos+myTV ## obj->getWidth()+4,    \
+                    ypos+1, fontWidth*3, fontHeight, "", kTextAlignLeft);\
+  myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
+  ypos += lineHeight + 4
+
+  CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness: ");
+  CREATE_CUSTOM_SLIDERS(Res, "Resolution: ");
+  CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts: ");
+  CREATE_CUSTOM_SLIDERS(Fringe, "Fringing: ");
+  CREATE_CUSTOM_SLIDERS(Blend, "Blending: ");
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness: ");
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast: ");
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation: ");
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma: ");
+
+
+
+
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
-#endif
 
   // Activate the first tab
   myTab->setActiveTab(0);
