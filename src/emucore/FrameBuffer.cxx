@@ -53,6 +53,9 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
   myMsg.surface   = myStatsMsg.surface = NULL;
   myMsg.surfaceID = myStatsMsg.surfaceID = -1;
   myMsg.enabled   = myStatsMsg.enabled = false;
+
+  // Load NTSC filter settings
+  myNTSCFilter.loadConfig(myOSystem->settings());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -40,6 +40,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("video", "soft");
 
   // OpenGL specific options
+  setInternal("gl_inter", "false");
   setInternal("gl_aspectn", "90");
   setInternal("gl_aspectp", "100");
   setInternal("gl_fsscale", "false");
@@ -60,19 +61,19 @@ Settings::Settings(OSystem* osystem)
 
   // TV filtering options
   setInternal("tv_filter", "0");
-  setInternal("tv_inter", "false");
   setInternal("tv_scanlines", "40");
   setInternal("tv_scaninter", "true");
   // TV options when using 'custom' mode
+  setInternal("tv_contrast", "0.0");
+  setInternal("tv_brightness", "0.0");
+  setInternal("tv_hue", "0.0");
+  setInternal("tv_saturation", "0.0");
+  setInternal("tv_gamma", "0.0");
   setInternal("tv_sharpness", "0.0");
   setInternal("tv_resolution", "0.0");
   setInternal("tv_artifacts", "0.0");
   setInternal("tv_fringing", "0.0");
   setInternal("tv_bleed", "0.0");
-  setInternal("tv_brightness", "0.0");
-  setInternal("tv_contrast", "0.0");
-  setInternal("tv_saturation", "0.0");
-  setInternal("tv_gamma", "0.0");
 
   // Sound options
   setInternal("sound", "true");
@@ -353,6 +354,16 @@ void Settings::usage()
     << "  -tv_filter    <0-5>          Set TV effects off (0) or to specified mode (1-5)\n"
     << "  -tv_scanlines <0-100>        Set scanline intensity to percentage (0 disables completely)\n"
     << "  -tv_scaninter <1|0>          Enable interpolated (smooth) scanlines\n"
+    << "  -tv_contrast    <value>      Set TV effects custom contrast to value 1.0 - 1.0\n"
+    << "  -tv_brightness  <value>      Set TV effects custom brightness to value 1.0 - 1.0\n"
+    << "  -tv_hue         <value>      Set TV effects custom hue to value 1.0 - 1.0\n"
+    << "  -tv_saturation  <value>      Set TV effects custom saturation to value 1.0 - 1.0\n"
+    << "  -tv_gamma       <value>      Set TV effects custom gamma to value 1.0 - 1.0\n"
+    << "  -tv_sharpness   <value>      Set TV effects custom sharpness to value 1.0 - 1.0\n"
+    << "  -tv_resolution  <value>      Set TV effects custom resolution to value 1.0 - 1.0\n"
+    << "  -tv_artifacts   <value>      Set TV effects custom artifacts to value 1.0 - 1.0\n"
+    << "  -tv_fringing    <value>      Set TV effects custom fringing to value 1.0 - 1.0\n"
+    << "  -tv_bleed       <value>      Set TV effects custom bleed to value 1.0 - 1.0\n"
     << endl
   #endif
     << "  -tia_filter   <filter>       Use the specified filter in emulation mode\n"
@@ -458,6 +469,10 @@ void Settings::usage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
+  // Ask all subsystems to save their settings
+  if(&(myOSystem->frameBuffer()))
+    myOSystem->frameBuffer().ntsc().saveConfig(*this);
+
   // Do a quick scan of the internal settings to see if any have
   // changed.  If not, we don't need to save them at all.
   bool settingsChanged = false;

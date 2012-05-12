@@ -19,22 +19,11 @@
 
 #include "NTSCFilter.hxx"
 
-// Limits for the adjustable values.
-#define FILTER_NTSC_SHARPNESS_MIN -1.0
-#define FILTER_NTSC_SHARPNESS_MAX 1.0
-#define FILTER_NTSC_RESOLUTION_MIN -1.0
-#define FILTER_NTSC_RESOLUTION_MAX 1.0
-#define FILTER_NTSC_ARTIFACTS_MIN -1.0
-#define FILTER_NTSC_ARTIFACTS_MAX 1.0
-#define FILTER_NTSC_FRINGING_MIN -1.0
-#define FILTER_NTSC_FRINGING_MAX 1.0
-#define FILTER_NTSC_BLEED_MIN -1.0
-#define FILTER_NTSC_BLEED_MAX 1.0
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
   : mySetup(atari_ntsc_composite),
-    myCustomSetup(atari_ntsc_composite)
+    myCustomSetup(atari_ntsc_composite),
+    myPreset(PRESET_OFF)
 {
 }
 
@@ -61,8 +50,9 @@ void NTSCFilter::setTIAPalette(const uInt32* palette)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setPreset(Preset preset)
 {
+  myPreset = preset;
   string msg = "disabled";
-  switch(preset)
+  switch(myPreset)
   {
     case PRESET_COMPOSITE:
       mySetup = atari_ntsc_composite;
@@ -91,20 +81,87 @@ string NTSCFilter::setPreset(Preset preset)
   return msg;
 }
 
-#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::updateAdjustables(const atari_ntsc_setup_t& setup)
+void NTSCFilter::loadConfig(const Settings& settings)
 {
-  myAdjustables.hue         = setup.hue;
-  myAdjustables.saturation  = setup.saturation;
-  myAdjustables.contrast    = setup.contrast;
-  myAdjustables.brightness  = setup.brightness;
-  myAdjustables.sharpness   = setup.sharpness;
-  myAdjustables.gamma       = setup.gamma;
-  myAdjustables.resolution  = setup.resolution;
-  myAdjustables.artifacts   = setup.artifacts;
-  myAdjustables.fringing    = setup.fringing;
-  myAdjustables.bleed       = setup.bleed;
-  myAdjustables.burst_phase = setup.burst_phase;
+  // Load adjustables for custom mode
+  myCustomSetup.hue = BSPF_clamp(settings.getFloat("tv_hue"), -1.0f, 1.0f);
+  myCustomSetup.saturation = BSPF_clamp(settings.getFloat("tv_saturation"), -1.0f, 1.0f);
+  myCustomSetup.contrast = BSPF_clamp(settings.getFloat("tv_contrast"), -1.0f, 1.0f);
+  myCustomSetup.brightness = BSPF_clamp(settings.getFloat("tv_brightness"), -1.0f, 1.0f);
+  myCustomSetup.sharpness = BSPF_clamp(settings.getFloat("tv_sharpness"), -1.0f, 1.0f);
+  myCustomSetup.gamma = BSPF_clamp(settings.getFloat("tv_gamma"), -1.0f, 1.0f);
+  myCustomSetup.resolution = BSPF_clamp(settings.getFloat("tv_resolution"), -1.0f, 1.0f);
+  myCustomSetup.artifacts = BSPF_clamp(settings.getFloat("tv_artifacts"), -1.0f, 1.0f);
+  myCustomSetup.fringing = BSPF_clamp(settings.getFloat("tv_fringing"), -1.0f, 1.0f);
+  myCustomSetup.bleed = BSPF_clamp(settings.getFloat("tv_bleed"), -1.0f, 1.0f);
 }
-#endif
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NTSCFilter::saveConfig(Settings& settings) const
+{
+  // Save adjustables for custom mode
+  settings.setFloat("tv_hue", myCustomSetup.hue);
+  settings.setFloat("tv_saturation", myCustomSetup.saturation);
+  settings.setFloat("tv_contrast", myCustomSetup.contrast);
+  settings.setFloat("tv_brightness", myCustomSetup.brightness);
+  settings.setFloat("tv_sharpness", myCustomSetup.sharpness);
+  settings.setFloat("tv_gamma", myCustomSetup.gamma);
+  settings.setFloat("tv_resolution", myCustomSetup.resolution);
+  settings.setFloat("tv_artifacts", myCustomSetup.artifacts);
+  settings.setFloat("tv_fringing", myCustomSetup.fringing);
+  settings.setFloat("tv_bleed", myCustomSetup.bleed);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset)
+{
+  switch(preset)
+  {
+    case PRESET_COMPOSITE:
+      convertToAdjustable(adjustable, atari_ntsc_composite);  break;
+    case PRESET_SVIDEO:
+      convertToAdjustable(adjustable, atari_ntsc_svideo);  break;
+    case PRESET_RGB:
+      convertToAdjustable(adjustable, atari_ntsc_rgb);  break;
+    case PRESET_BAD:
+      convertToAdjustable(adjustable, atari_ntsc_bad);  break;
+    case PRESET_CUSTOM:
+      convertToAdjustable(adjustable, myCustomSetup);  break;
+    default:
+      break;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NTSCFilter::setCustomAdjustables(Adjustable& adjustable)
+{
+#define SCALE_FROM_100(x) ((x/50.0)-1.0)
+  myCustomSetup.hue = SCALE_FROM_100(adjustable.hue);
+  myCustomSetup.saturation = SCALE_FROM_100(adjustable.saturation);
+  myCustomSetup.contrast = SCALE_FROM_100(adjustable.contrast);
+  myCustomSetup.brightness = SCALE_FROM_100(adjustable.brightness);
+  myCustomSetup.sharpness = SCALE_FROM_100(adjustable.sharpness);
+  myCustomSetup.gamma = SCALE_FROM_100(adjustable.gamma);
+  myCustomSetup.resolution = SCALE_FROM_100(adjustable.resolution);
+  myCustomSetup.artifacts = SCALE_FROM_100(adjustable.artifacts);
+  myCustomSetup.fringing = SCALE_FROM_100(adjustable.fringing);
+  myCustomSetup.bleed = SCALE_FROM_100(adjustable.bleed);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
+                                     const atari_ntsc_setup_t& setup) const
+{
+#define SCALE_TO_100(x) (uInt32)(50*(x+1.0))
+  adjustable.hue         = SCALE_TO_100(setup.hue);
+  adjustable.saturation  = SCALE_TO_100(setup.saturation);
+  adjustable.contrast    = SCALE_TO_100(setup.contrast);
+  adjustable.brightness  = SCALE_TO_100(setup.brightness);
+  adjustable.sharpness   = SCALE_TO_100(setup.sharpness);
+  adjustable.gamma       = SCALE_TO_100(setup.gamma);
+  adjustable.resolution  = SCALE_TO_100(setup.resolution);
+  adjustable.artifacts   = SCALE_TO_100(setup.artifacts);
+  adjustable.fringing    = SCALE_TO_100(setup.fringing);
+  adjustable.bleed       = SCALE_TO_100(setup.bleed);
+}

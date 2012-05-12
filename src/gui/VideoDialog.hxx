@@ -49,7 +49,8 @@ class VideoDialog : public Dialog
     void setDefaults();
 
     void handleFullscreenChange(bool enable);
-    void handleTVModeChange(bool enable);
+    void handleTVModeChange(NTSCFilter::Preset);
+    void loadTVAdjustables(NTSCFilter::Preset preset);
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
@@ -78,18 +79,20 @@ class VideoDialog : public Dialog
     CheckboxWidget*   myCenterCheckbox;
     CheckboxWidget*   myFastSCBiosCheckbox;
 
-    // TV effects options
+    // TV effects adjustables (custom mode)
     PopUpWidget*      myTVMode;
     SliderWidget*     myTVSharp;
     StaticTextWidget* myTVSharpLabel;
+    SliderWidget*     myTVHue;
+    StaticTextWidget* myTVHueLabel;
     SliderWidget*     myTVRes;
     StaticTextWidget* myTVResLabel;
     SliderWidget*     myTVArtifacts;
     StaticTextWidget* myTVArtifactsLabel;
     SliderWidget*     myTVFringe;
     StaticTextWidget* myTVFringeLabel;
-    SliderWidget*     myTVBlend;
-    StaticTextWidget* myTVBlendLabel;
+    SliderWidget*     myTVBleed;
+    StaticTextWidget* myTVBleedLabel;
     SliderWidget*     myTVBright;
     StaticTextWidget* myTVBrightLabel;
     SliderWidget*     myTVContrast;
@@ -99,6 +102,19 @@ class VideoDialog : public Dialog
     SliderWidget*     myTVGamma;
     StaticTextWidget* myTVGammaLabel;
 
+    // TV scanline intensity and interpolation
+    StaticTextWidget* myTVScanLabel;
+    SliderWidget*     myTVScanIntense;
+    StaticTextWidget* myTVScanIntenseLabel;
+    CheckboxWidget*   myTVScanInterpolate;
+
+    // TV effects adjustables presets (custom mode)
+    ButtonWidget*     myCloneComposite;
+    ButtonWidget*     myCloneSvideo;
+    ButtonWidget*     myCloneRGB;
+    ButtonWidget*     myCloneBad;
+    ButtonWidget*     myCloneCustom;
+
     enum {
       kNAspectRatioChanged = 'VDan',
       kPAspectRatioChanged = 'VDap',
@@ -107,15 +123,22 @@ class VideoDialog : public Dialog
 
       kTVModeChanged       = 'VDtv',
       kTVSharpChanged      = 'TVsh',
+      kTVHueChanged        = 'TVhu',
       kTVResChanged        = 'TVrs',
       kTVArtifactsChanged  = 'TVar',
       kTVFringeChanged     = 'TVfr',
-      kTVBlendChanged      = 'TVbl',
+      kTVBleedChanged      = 'TVbl',
       kTVBrightChanged     = 'TVbr',
       kTVContrastChanged   = 'TVct',
       kTVSaturChanged      = 'TVsa',
       kTVGammaChanged      = 'TVga',
-      kTVScanChanged       = 'TVsc'
+      kTVScanIntenseChanged= 'TVsc',
+
+      kCloneCompositeCmd   = 'CLcp',
+      kCloneSvideoCmd      = 'CLsv',
+      kCloneRGBCmd         = 'CLrb',
+      kCloneBadCmd         = 'CLbd',
+      kCloneCustomCmd      = 'CLcu'
     };
 };
 

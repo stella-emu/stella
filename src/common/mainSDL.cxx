@@ -66,6 +66,7 @@ OSystem* theOSystem = (OSystem*) NULL;
 int Cleanup()
 {
   theOSystem->logMessage("Cleanup from mainSDL\n", 2);
+  theOSystem->settings().saveConfig();
 
   if(theOSystem)
     delete theOSystem;

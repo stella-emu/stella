@@ -75,9 +75,19 @@ class NTSCFilter
       atari_ntsc_init(&myFilter, &mySetup, myTIAPalette);
     }
 
+    // Get adjustables for the given preset
+    // Values will be scaled to 0 - 100 range, independent of how
+    // they're actually stored internally
+    void getAdjustables(Adjustable& adjustable, Preset preset);
+
+    // Set custom adjustables to given values
+    // Values will be scaled to 0 - 100 range, independent of how
+    // they're actually stored internally
+    void setCustomAdjustables(Adjustable& adjustable);
+
     // Load and save NTSC-related settings
     void loadConfig(const Settings& settings);
-    void saveSettings(Settings& settings) const;
+    void saveConfig(Settings& settings) const;
 
     // Perform Blargg filtering on input buffer, place results in
     // output buffer
@@ -99,6 +109,11 @@ class NTSCFilter
     }
 
   private:
+    // Convert from atari_ntsc_setup_t values to equivalent adjustables
+    void convertToAdjustable(Adjustable& adjustable,
+                             const atari_ntsc_setup_t& setup) const;
+
+  private:
     // The NTSC filter structure
     atari_ntsc_t myFilter;
 
@@ -110,9 +125,8 @@ class NTSCFilter
     // it is copied to mySetup)
     atari_ntsc_setup_t myCustomSetup;
 
-    // Contains adjustable settings for the current preset
-    // (including the custom mode)
-    Adjustable myAdjustables;
+    // Current preset in use
+    Preset myPreset;
 
     // 128 colours by 3 components per colour
     uInt8 myTIAPalette[128 * 3];

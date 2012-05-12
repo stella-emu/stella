@@ -1055,8 +1055,6 @@ void EventHandler::handleEvent(Event::Type event, int state)
       if((myState == S_EMULATE || myState == S_CMDMENU ||
           myState == S_DEBUGGER) && state)
       {
-        myOSystem->settings().saveConfig();
-
         // Go back to the launcher, or immediately quit
         if(myOSystem->settings().getBool("exitlauncher") ||
            myOSystem->launcherUsed())
@@ -1074,7 +1072,6 @@ void EventHandler::handleEvent(Event::Type event, int state)
       {
         saveKeyMapping();
         saveJoyMapping();
-        myOSystem->settings().saveConfig();
         myOSystem->quit();
       }
       return;

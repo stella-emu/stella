@@ -242,7 +242,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   // 2) TV effects options
   wid.clear();
   tabID = myTab->addTab(" TV Effects ");
-  xpos = ypos = 5;
+  xpos = ypos = 8;
 
   // TV Mode
   items.clear();
@@ -262,6 +262,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Custom adjustables (using macro voodoo)
   xpos += 8; ypos += 4;
+  int orig_ypos = ypos;
   pwidth = lwidth;
   lwidth = font.getStringWidth("Saturation: ");
 
@@ -277,19 +278,52 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myTV ## obj->setFlags(WIDGET_CLEARBG);                                 \
   ypos += lineHeight + 4
 
+  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast: ");
+  CREATE_CUSTOM_SLIDERS(Bright, "Brightness: ");
+  CREATE_CUSTOM_SLIDERS(Hue, "Hue: ");
+  CREATE_CUSTOM_SLIDERS(Satur, "Saturation: ");
+  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma: ");
   CREATE_CUSTOM_SLIDERS(Sharp, "Sharpness: ");
   CREATE_CUSTOM_SLIDERS(Res, "Resolution: ");
   CREATE_CUSTOM_SLIDERS(Artifacts, "Artifacts: ");
   CREATE_CUSTOM_SLIDERS(Fringe, "Fringing: ");
-  CREATE_CUSTOM_SLIDERS(Blend, "Blending: ");
-  CREATE_CUSTOM_SLIDERS(Bright, "Brightness: ");
-  CREATE_CUSTOM_SLIDERS(Contrast, "Contrast: ");
-  CREATE_CUSTOM_SLIDERS(Satur, "Saturation: ");
-  CREATE_CUSTOM_SLIDERS(Gamma, "Gamma: ");
+  CREATE_CUSTOM_SLIDERS(Bleed, "Bleeding: ");
 
+  xpos += myTVContrast->getWidth() + myTVContrastLabel->getWidth() + 20;
+  ypos = orig_ypos;
 
+  // Scanline intensity and interpolation
+  myTVScanLabel = 
+    new StaticTextWidget(myTab, font, xpos, ypos, font.getStringWidth("Scanline settings:"),
+                         fontHeight, "Scanline settings:", kTextAlignLeft);
+  ypos += lineHeight;
 
+  xpos += 20;
+  lwidth = font.getStringWidth("Intensity: ");
+  pwidth = font.getMaxCharWidth() * 6;
+  CREATE_CUSTOM_SLIDERS(ScanIntense, "Intensity: ");
 
+  myTVScanInterpolate = new CheckboxWidget(myTab, font, xpos, ypos,
+                                           "Interpolation");
+  wid.push_back(myTVScanInterpolate);
+  ypos += lineHeight + 4;
+
+  // Adjustable presets
+  xpos -= 20;
+  int cloneWidth = font.getStringWidth("Clone Bad Adjust") + 20;
+#define CREATE_CLONE_BUTTON(obj, desc)                                 \
+  myClone ## obj =                                                     \
+    new ButtonWidget(myTab, font, xpos, ypos, cloneWidth, buttonHeight,\
+                     desc, kClone ## obj ##Cmd);                       \
+  wid.push_back(myClone ## obj);                                       \
+  ypos += lineHeight + 10
+
+  ypos += lineHeight;
+  CREATE_CLONE_BUTTON(Composite, "Clone Composite");
+  CREATE_CLONE_BUTTON(Svideo, "Clone S-Video");
+  CREATE_CLONE_BUTTON(RGB, "Clone RGB");
+  CREATE_CLONE_BUTTON(Bad, "Clone Bad Adjust");
+  CREATE_CLONE_BUTTON(Custom, "Revert");
 
   // Add items for tab 2
   addToFocusList(wid, tabID);
@@ -315,6 +349,39 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   myPAspectRatioLabel->clearFlags(WIDGET_ENABLED);
   myGLStretchCheckbox->clearFlags(WIDGET_ENABLED);
   myUseVSyncCheckbox->clearFlags(WIDGET_ENABLED);
+
+  myTVMode->clearFlags(WIDGET_ENABLED);
+  myTVSharp->clearFlags(WIDGET_ENABLED);
+  myTVSharpLabel->clearFlags(WIDGET_ENABLED);
+  myTVHue->clearFlags(WIDGET_ENABLED);
+  myTVHueLabel->clearFlags(WIDGET_ENABLED);
+  myTVRes->clearFlags(WIDGET_ENABLED);
+  myTVResLabel->clearFlags(WIDGET_ENABLED);
+  myTVArtifacts->clearFlags(WIDGET_ENABLED);
+  myTVArtifactsLabel->clearFlags(WIDGET_ENABLED);
+  myTVFringe->clearFlags(WIDGET_ENABLED);
+  myTVFringeLabel->clearFlags(WIDGET_ENABLED);
+  myTVBleed->clearFlags(WIDGET_ENABLED);
+  myTVBleedLabel->clearFlags(WIDGET_ENABLED);
+  myTVBright->clearFlags(WIDGET_ENABLED);
+  myTVBrightLabel->clearFlags(WIDGET_ENABLED);
+  myTVContrast->clearFlags(WIDGET_ENABLED);
+  myTVContrastLabel->clearFlags(WIDGET_ENABLED);
+  myTVSatur->clearFlags(WIDGET_ENABLED);
+  myTVSaturLabel->clearFlags(WIDGET_ENABLED);
+  myTVGamma->clearFlags(WIDGET_ENABLED);
+  myTVGammaLabel->clearFlags(WIDGET_ENABLED);
+
+  myTVScanLabel->clearFlags(WIDGET_ENABLED);
+  myTVScanIntense->clearFlags(WIDGET_ENABLED);
+  myTVScanIntenseLabel->clearFlags(WIDGET_ENABLED);
+  myTVScanInterpolate->clearFlags(WIDGET_ENABLED);
+
+  myCloneComposite->clearFlags(WIDGET_ENABLED);
+  myCloneSvideo->clearFlags(WIDGET_ENABLED);
+  myCloneRGB->clearFlags(WIDGET_ENABLED);
+  myCloneBad->clearFlags(WIDGET_ENABLED);
+  myCloneCustom->clearFlags(WIDGET_ENABLED);
 #endif
 #ifndef WINDOWED_SUPPORT
   myFullscreenCheckbox->clearFlags(WIDGET_ENABLED);
@@ -362,9 +429,9 @@ void VideoDialog::loadConfig()
     instance().settings().getString("timing"), "sleep");
 
   // GL Filter setting
-// FIXME
-  myGLFilterPopup->setSelected(
-    instance().settings().getString("gl_filter"), "nearest");
+  const string& gl_inter = instance().settings().getBool("gl_inter") ?
+                           "linear" : "nearest";
+  myGLFilterPopup->setSelected(gl_inter, "nearest");
   myGLFilterPopup->setEnabled(gl);
 
   // GL aspect ratio setting (NTSC and PAL)
@@ -411,8 +478,16 @@ void VideoDialog::loadConfig()
   // TV Mode
   myTVMode->setSelected(
     instance().settings().getString("tv_filter"), "0");
-  handleTVModeChange(instance().settings().getInt("tv_filter") ==
-                     (int)NTSCFilter::PRESET_CUSTOM);
+  int preset = instance().settings().getInt("tv_filter");
+  handleTVModeChange((NTSCFilter::Preset)preset);
+
+  // TV Custom adjustables
+  loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+
+  // TV scanline intensity and interpolation
+  myTVScanIntense->setValue(instance().settings().getInt("tv_scanlines"));
+  myTVScanIntenseLabel->setLabel(instance().settings().getString("tv_scanlines"));
+  myTVScanInterpolate->setState(instance().settings().getBool("tv_scaninter"));
 
   myTab->loadConfig();
 }
@@ -436,7 +511,8 @@ void VideoDialog::saveConfig()
   instance().settings().setString("timing", myFrameTimingPopup->getSelectedTag());
 
   // GL Filter setting
-  instance().settings().setString("gl_filter", myGLFilterPopup->getSelectedTag());
+  instance().settings().setBool("gl_inter",
+    myGLFilterPopup->getSelectedTag() == "linear" ? true : false);
 
   // GL aspect ratio setting (NTSC and PAL)
   instance().settings().setString("gl_aspectn", myNAspectRatioLabel->getLabel());
@@ -478,8 +554,23 @@ void VideoDialog::saveConfig()
   // TV Mode
   instance().settings().setString("tv_filter", myTVMode->getSelectedTag());
 
+  // TV Custom adjustables
+  NTSCFilter::Adjustable adj;
+  adj.hue         = myTVHue->getValue();
+  adj.saturation  = myTVSatur->getValue();
+  adj.contrast    = myTVContrast->getValue();
+  adj.brightness  = myTVBright->getValue();
+  adj.sharpness   = myTVSharp->getValue();
+  adj.gamma       = myTVGamma->getValue();
+  adj.resolution  = myTVRes->getValue();
+  adj.artifacts   = myTVArtifacts->getValue();
+  adj.fringing    = myTVFringe->getValue();
+  adj.bleed       = myTVBleed->getValue();
+  instance().frameBuffer().ntsc().setCustomAdjustables(adj);
 
-
+  // TV scanline intensity and interpolation
+  instance().settings().setString("tv_scanlines", myTVScanIntenseLabel->getLabel());
+  instance().settings().setBool("tv_scaninter", myTVScanInterpolate->getState());
 
   // Finally, issue a complete framebuffer re-initialization
   instance().createFrameBuffer();
@@ -512,9 +603,15 @@ void VideoDialog::setDefaults()
 
   myTVMode->setSelected("0", "0");
 
+  // TV scanline intensity and interpolation
+  myTVScanIntense->setValue(40);
+  myTVScanIntenseLabel->setLabel("40");
+  myTVScanInterpolate->setState(true);
+
   // Make sure that mutually-exclusive items are not enabled at the same time
   handleFullscreenChange(true);
-  handleTVModeChange(false);
+  handleTVModeChange(NTSCFilter::PRESET_OFF);
+  loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -527,18 +624,32 @@ void VideoDialog::handleFullscreenChange(bool enable)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void VideoDialog::handleTVModeChange(bool enable)
+void VideoDialog::handleTVModeChange(NTSCFilter::Preset preset)
 {
+  bool enable = true, scanenable = true;
+  if(!instance().frameBuffer().type() == kDoubleBuffer)
+  {
+    enable = scanenable = false;
+    myTVMode->setEnabled(enable);
+  }
+  else
+  {
+    enable = preset == NTSCFilter::PRESET_CUSTOM;
+    scanenable = preset != NTSCFilter::PRESET_OFF;
+  }
+
   myTVSharp->setEnabled(enable);
   myTVSharpLabel->setEnabled(enable);
+  myTVHue->setEnabled(enable);
+  myTVHueLabel->setEnabled(enable);
   myTVRes->setEnabled(enable);
   myTVResLabel->setEnabled(enable);
   myTVArtifacts->setEnabled(enable);
   myTVArtifactsLabel->setEnabled(enable);
   myTVFringe->setEnabled(enable);
   myTVFringeLabel->setEnabled(enable);
-  myTVBlend->setEnabled(enable);
-  myTVBlendLabel->setEnabled(enable);
+  myTVBleed->setEnabled(enable);
+  myTVBleedLabel->setEnabled(enable);
   myTVBright->setEnabled(enable);
   myTVBrightLabel->setEnabled(enable);
   myTVContrast->setEnabled(enable);
@@ -547,8 +658,45 @@ void VideoDialog::handleTVModeChange(bool enable)
   myTVSaturLabel->setEnabled(enable);
   myTVGamma->setEnabled(enable);
   myTVGammaLabel->setEnabled(enable);
+  myCloneComposite->setEnabled(enable);
+  myCloneSvideo->setEnabled(enable);
+  myCloneRGB->setEnabled(enable);
+  myCloneBad->setEnabled(enable);
+  myCloneCustom->setEnabled(enable);
+
+  myTVScanLabel->setEnabled(scanenable);
+  myTVScanIntense->setEnabled(scanenable);
+  myTVScanIntenseLabel->setEnabled(scanenable);
+  myTVScanInterpolate->setEnabled(scanenable);
 
   _dirty = true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void VideoDialog::loadTVAdjustables(NTSCFilter::Preset preset)
+{
+  NTSCFilter::Adjustable adj;
+  instance().frameBuffer().ntsc().getAdjustables(adj, (NTSCFilter::Preset)preset);
+  myTVSharp->setValue(adj.sharpness);
+  myTVSharpLabel->setValue(adj.sharpness);
+  myTVHue->setValue(adj.hue);
+  myTVHueLabel->setValue(adj.hue);
+  myTVRes->setValue(adj.resolution);
+  myTVResLabel->setValue(adj.resolution);
+  myTVArtifacts->setValue(adj.artifacts);
+  myTVArtifactsLabel->setValue(adj.artifacts);
+  myTVFringe->setValue(adj.fringing);
+  myTVFringeLabel->setValue(adj.fringing);
+  myTVBleed->setValue(adj.bleed);
+  myTVBleedLabel->setValue(adj.bleed);
+  myTVBright->setValue(adj.brightness);
+  myTVBrightLabel->setValue(adj.brightness);
+  myTVContrast->setValue(adj.contrast);
+  myTVContrastLabel->setValue(adj.contrast);
+  myTVSatur->setValue(adj.saturation);
+  myTVSaturLabel->setValue(adj.saturation);
+  myTVGamma->setValue(adj.gamma);
+  myTVGammaLabel->setValue(adj.gamma);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -585,7 +733,12 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       handleFullscreenChange(myFullscreenPopup->getSelectedTag() != "-1");
       break;
 
+    case kTVModeChanged:
+      handleTVModeChange((NTSCFilter::Preset)atoi(myTVMode->getSelectedTag().c_str()));
+
     case kTVSharpChanged:  myTVSharpLabel->setValue(myTVSharp->getValue());
+      break;
+    case kTVHueChanged:  myTVHueLabel->setValue(myTVHue->getValue());
       break;
     case kTVResChanged:  myTVResLabel->setValue(myTVRes->getValue());
       break;
@@ -593,7 +746,7 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     case kTVFringeChanged:  myTVFringeLabel->setValue(myTVFringe->getValue());
       break;
-    case kTVBlendChanged:  myTVBlendLabel->setValue(myTVBlend->getValue());
+    case kTVBleedChanged:  myTVBleedLabel->setValue(myTVBleed->getValue());
       break;
     case kTVBrightChanged:  myTVBrightLabel->setValue(myTVBright->getValue());
       break;
@@ -603,10 +756,18 @@ void VideoDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     case kTVGammaChanged:  myTVGammaLabel->setValue(myTVGamma->getValue());
       break;
+    case kTVScanIntenseChanged:  myTVScanIntenseLabel->setValue(myTVScanIntense->getValue());
+      break;
 
-    case kTVModeChanged:
-      handleTVModeChange(atoi(myTVMode->getSelectedTag().c_str()) == 
-                         (int)NTSCFilter::PRESET_CUSTOM);
+    case kCloneCompositeCmd: loadTVAdjustables(NTSCFilter::PRESET_COMPOSITE);
+      break;
+    case kCloneSvideoCmd: loadTVAdjustables(NTSCFilter::PRESET_SVIDEO);
+      break;
+    case kCloneRGBCmd: loadTVAdjustables(NTSCFilter::PRESET_RGB);
+      break;
+    case kCloneBadCmd: loadTVAdjustables(NTSCFilter::PRESET_BAD);
+      break;
+    case kCloneCustomCmd: loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
       break;
 
     default:
