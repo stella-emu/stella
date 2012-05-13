@@ -274,7 +274,7 @@
       AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
     <li>Supports DPC+ bankswitching scheme from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
-      including partial emulation of the ARM processor</li>
+      including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
     <li>Supports cartridge autodetection for almost all bankswitching schemes</li>
     <li>Supports Supercharger single-load and multi-load games</li>
     <li>Supports ROMs stored in ZIP and GZIP format, as well as the usual A26/BIN/ROM formats</li>
@@ -285,7 +285,10 @@
       some games</li>
     <li>TIA emulation supports full collision checking, with ability to disable
       both TIA sprites and collisions for each object separately</li>
-    <li>Built-in extensive debugger, including the Distella disassembler</li>
+    <li>Full system state save/load functionality</li>
+    <li>Cross-platform UI including a built-in ROM launcher frontend</li>
+    <li>Built-in extensive debugger, including static analysis with the Distella disassembler,
+      and dynamic analysis at runtime by tracking code/graphics/data sections</li>
     <li>Emulation of CRT TV systems using <a href="http://slack.net/~ant/libs/ntsc.html">
       Blargg filtering</a>, including presets for several common TV outputs
       (composite, S-video, RGB, etc), and ability to fully customize
@@ -313,7 +316,7 @@
     <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>SDL version 1.2.10 or greater, latest version highly recommended</li>
-    <li>CRT TV emulation effects require OpenGL/OpenGLES 1.2</li>
+    <li>CRT TV emulation effects require OpenGL 1.2/OpenGLES 1 or higher</li>
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.stelladaptor.com">Stelladaptor</a> / 
     <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
@@ -1805,10 +1808,9 @@
     </tr>
 
     <tr>
-      <td><pre>-gl_filter &lt;nearest|linear&gt;</pre></td>
-      <td>OpenGL mode only. Use GL_NEAREST or GL_LINEAR filtering.
-        GL_NEAREST results in a scaled, pixelated image, while
-        GL_LINEAR introduces blurring.</td>
+      <td><pre>-gl_inter &lt;1|0&gt;</pre></td>
+      <td>OpenGL mode only. Use interpolation for the TIA image (results in
+        blending/smoothing of the image).</td>
     </tr>
 
     <tr>
@@ -1821,13 +1823,15 @@
     </tr>
 
     <tr>
-      <td><pre>-gl_fsmax &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only. Stretch TIA image while in fullscreen mode.</td>
+      <td><pre>-gl_fsscale &lt;1|0&gt;</pre></td>
+      <td>OpenGL mode only. Stretch TIA image completely while in fullscreen mode
+        (vs. an integral stretch which won't necessarily completely fill the screen).</td>
     </tr>
 
     <tr>
       <td><pre>-gl_vbo &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only.  Use the Vertex Buffer Object extension, if available.  This is enabled by default.</td>
+      <td>OpenGL mode only.  Use the Vertex Buffer Object extension, if available.
+        This is enabled by default.</td>
     </tr>
 
     <tr>
@@ -1837,41 +1841,84 @@
     </tr>
 
     <tr>
-      <td><pre>-ntsc_filter &lt;1|0&gt;</pre></td>
-      <td>OpenGL mode only.  Enables Blargg NTSC filtering.</td>
-    </tr>
-
-<!-- FIXME
-    <tr>
-      <td><pre>-tv_tex &lt;off|normal|stag&gt;</pre></td>
-      <td>OpenGL 2.0 mode only. Enable TV texturing.  The GL_TEXTURE_RECTANGLE
-        extension must be disabled for this to work correctly.</td>
+      <td><pre>-tv_filter &lt;1 - 6&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects, 0 is disabled, next numbers in
+        sequence represent presets for 'composite', 's-video', 'RGB', 'bad adjust',
+        and 'custom' modes'.</td>
     </tr>
 
     <tr>
-      <td><pre>-tv_bleed &lt;off|low|medium|high&gt;</pre></td>
-      <td>OpenGL 2.0 mode only. Enable TV colour bleed emulation.  A fast
-        video card with at least 128MB RAM is required to use 'high'.
-        The GL_TEXTURE_RECTANGLE extension must be disabled for this to
-        work correctly.</td>
+      <td><pre>-tv_scanlines &lt;0 - 100&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects scanline intensity, where 0
+        means completely off.</td>
     </tr>
 
     <tr>
-      <td><pre>-tv_noise &lt;off|low|medium|high&gt;</pre></td>
-      <td>OpenGL 2.0 mode only. Enable TV radio frequency noise emulation.
-        A fast video card with at least 128MB RAM is required to use 'high'.
-        The GL_TEXTURE_RECTANGLE extension must be disabled for this to
-        work correctly.</td>
+      <td><pre>-tv_scaninter &lt;1|0&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects scanline interpolation, resulting
+        in blending/smoothing of the scanlines.</td>
     </tr>
 
     <tr>
-      <td><pre>-tv_phos &lt;1|0&gt;</pre></td>
-      <td>OpenGL 2.0 mode only. Enable phosphor effect of TV image.  This
-        is in addition to the currently emulated software phosphor
-        effect.  The GL_TEXTURE_RECTANGLE extension must be disabled
-        for this to work correctly.</td>
+      <td><pre>-tv_contrast &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'contrast'
+        (only available in custom mode, range -1.0 to 1.0).</td>
     </tr>
--->
+
+    <tr>
+      <td><pre>-tv_brightness &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'brightness'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_hue &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'hue'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_saturation &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'saturation'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_gamma &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'gamma'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_sharpness &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'sharpness'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_resolution &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'resolution'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_artifacts &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'artifacts'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_fringing &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'fringing'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
+    <tr>
+      <td><pre>-tv_bleed &lt;number&gt;</pre></td>
+      <td>OpenGL mode only.  Blargg TV effects 'bleed'
+        (only available in custom mode, range -1.0 to 1.0).</td>
+    </tr>
+
     <tr>
       <td><pre>-tia_filter &lt;filter&gt;</pre></td>
       <td>Use the specified filter while in TIA/emulation mode.  Currently,
@@ -2397,7 +2444,7 @@
           <tr><td>GL VBO</td><td>enable OpenGL Vertex Buffer Objects</td><td>-gl_vbo</td></tr>
           <tr><td>GL VSync</td><td>enable OpenGL vertical synchronization</td><td>-gl_vsync</td></tr>
           <tr><td>PAL color-loss</td><td>use PAL color-loss effect</td><td>-colorloss</td></tr>
-          <tr><td>Fast SC/AR BIOS</td><td>Skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
+          <tr><td>Fast SC/AR BIOS</td><td>skip progress loading bars for SuperCharger ROMs</td><td>-fastscbios</td></tr>
           <tr><td>Show UI messages</td><td>overlay UI messages onscreen</td><td>-uimessages</td></tr>
           <tr><td>Center window</td><td>attempt to center application window</td><td>-center</td></tr>
         </table>
@@ -2405,7 +2452,7 @@
     </tr>
   </table>
   <br>
-<!-- FIXME
+
   <p><b>Video Settings</b> dialog (TV Effects):</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2414,16 +2461,21 @@
       <td valign="top">
         <table border="1" cellpadding="4">
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
-          <tr><td>TV Color Texture</td><td>emulate TV pixel texturing</td><td>-tv_tex</td></tr>
-          <tr><td>TV Color Bleed</td><td>emulate TV color bleed</td><td>-tv_bleed</td></tr>
-          <tr><td>TV Image Noise</td><td>emulate TV RF image noise</td><td>-tv_noise</td></tr>
-          <tr><td>TV Phosphor Burn-off</td><td>emulate TV phosphor mixing</td><td>-tv_phos</td></tr>
+          <tr><td>TV Mode</td><td>disable TV effects, or select TV preset</td><td>-tv_filter</td></tr>
+          <tr><td>Scanline Intensity</td><td>sets scanline black-level intensity</td><td>-tv_scanlines</td></tr>
+          <tr><td>Scanline Interpolation</td><td>smooth/blend scanlines into image</td><td>-tv_scaninter</td></tr>
+          <tr><td>Adjustable sliders</td><td>set specific attribute in 'Custom' mode</td><td>-tv_contrast, tv_hue, etc.</td></tr>
+          <tr><td>Clone Composite</td><td>copy 'Composite' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone S-Video</td><td>copy 'S-Video' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone RGB</td><td>copy 'RGB' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Clone Bad Adjust</td><td>copy 'Bad Adjust' attributes to 'Custom' sliders</td><td>&nbsp;</td></tr>
+          <tr><td>Revert</td><td>revert attribute sliders to saved 'Custom' settings</td><td>&nbsp;</td></tr>
         </table>
       </td>
     </tr>
   </table>
   <br>
--->
+
   <p><b>Audio Settings</b> dialog:</p>
   <table border="5" cellpadding="2" frame="box" rules="none">
     <tr>
@@ -2772,7 +2824,8 @@
     <li>Any other devices will be ignored.</li>
 
     <li>The assignment ordering of Stelladaptor/2600-daptor to port can be redefined with
-    'saport' (see description in 'Starting a Game').</li>
+    'saport' (see description in 'Starting a Game') and dynamically with the 'Control-1' key
+    combo.</li>
   </ul>
   </blockquote>
 
@@ -3205,7 +3258,7 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>F8 </td><td>8K Atari </td></tr>
         <tr><td>F8SC </td><td>8K Atari + ram </td></tr>
         <tr><td>FA </td><td>CBS RAM Plus </td></tr>
-        <tr><td>FA2 </td><td>CBS RAM Plus 24K </td></tr>
+        <tr><td>FA2 </td><td>CBS RAM Plus 24/28K </td></tr>
         <tr><td>FE </td><td>8K Decathlon </td></tr>
         <tr><td>MC &#185;&#178;</td><td>C. Wilkson Megacart </td></tr>
         <tr><td>SB </td><td>128-256k SUPERbanking </td></tr>
@@ -3291,6 +3344,8 @@ Ms Pac-Man (Stella extended codes):
         <tr><td>3 </td><td>Paddle 3</td></tr>
         <tr><td>4 </td><td>Driving 0</td></tr>
         <tr><td>5 </td><td>Driving 1</td></tr>
+        <tr><td>6 </td><td>MindLink 0</td></tr>
+        <tr><td>7 </td><td>MindLink 1</td></tr>
       </table></td>
     </tr>
 
@@ -3446,7 +3501,7 @@ Ms Pac-Man (Stella extended codes):
   received over the years.  A (likely incomplete) list of the people who have
   played a part in bringing Stella to you is available on the main Stella 
   webpage <a href="http://stella.sf.net/credits.php">Credits List</a>.
-  If I've missed someone, please let us know.</p>
+  If we've missed someone, please let us know.</p>
 
 
 <!-- /////////////////////////////////////////////////////////////////////////  -->
