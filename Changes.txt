@@ -12,7 +12,15 @@
                                Release History
 ===========================================================================
 
-3.6.1 to 3.7: (May xx, 2012)
+3.6.1 to 3.7: (May 18, 2012)
+
+  * Added Blargg TV effects, with presets for Composite, S-video, RGB,
+    and badly adjusted TV, and well as a custom mode with full
+    configurability of contrast, brightness, gamma, etc.  Many
+    keyboard shortcuts and commandline arguments were added to support
+    this; see the documentation for a detailed explanation.  These
+    effects are OpenGL-only.  Special thanks to Ian Bogost and the
+    Georgia Tech Atari Team for the preliminary implementation.
 
   * Updated the CompuMate keyboard handler to recognize more keys on an
     actual keyboard, instead of having to remember the weird combinations

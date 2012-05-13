@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - April 2012</b></center>
+  <center><b>February 1999 - May 2012</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -262,7 +262,7 @@
       computer's mouse</li>
     <li>Emulates Spectravideo CompuMate system using your computer's keyboard,
       including mapping of CompuMate 'Backspace', 'Space' and 'Enter' functionality to
-      to the actual keys on your keyboard.</li>
+      to the actual keys on your keyboard</li>
     <li>Emulates the Mindlink Controller using your computer's mouse</li>
     <li>Support for real Atari 2600 controllers using the
       <a href="http://www.stelladaptor.com">Stelladaptor</a> and
@@ -286,10 +286,10 @@
     <li>TIA emulation supports full collision checking, with ability to disable
       both TIA sprites and collisions for each object separately</li>
     <li>Built-in extensive debugger, including the Distella disassembler</li>
-<!-- FIXME 
-    <li>Emulation of CRT TV systems with OpenGL shaders, including texturing,
-      colour bleed, RF noise, and phosphor burn-off</li>
--->
+    <li>Emulation of CRT TV systems using <a href="http://slack.net/~ant/libs/ntsc.html">
+      Blargg filtering</a>, including presets for several common TV outputs
+      (composite, S-video, RGB, etc), and ability to fully customize
+      many attributes (contrast, brightness, saturation, gamma, etc).</li>
     <li>Built-in ROM database with information compiled by RomHunter</li>
   </ul>
 
@@ -313,9 +313,7 @@
     <li>Enough RAM for the OS + 64MB RAM for the emulation; 128MB+ highly recommended</li>
     <li>15/16 bit color minimum; 24/32 bit color graphics card highly recommended</li>
     <li>SDL version 1.2.10 or greater, latest version highly recommended</li>
-<!-- FIXME
-    <li>CRT emulation effects require OpenGL 2.0 with GLSL (GL shading language) support</li>
--->
+    <li>CRT TV emulation effects require OpenGL/OpenGLES 1.2</li>
     <li>Joysticks or gamepads are highly recommended</li>
     <li>Mouse or <a href="http://www.stelladaptor.com">Stelladaptor</a> / 
     <a href="http://2600-daptor.com">2600-adaptor</a> with real paddles required for paddle emulation</li>
@@ -1294,6 +1292,90 @@
 
   </table>
 
+  <p><b>TV effects (only active in TIA mode when using OpenGL rendering)</b></p>
+
+  <table BORDER=2 cellpadding=5>
+    <tr>
+      <th>Function</th>
+      <th>Key (Standard)</th>
+      <th>Key (MacOSX)</th>
+    </tr>
+    <tr>
+      <td>Disable TV effects</td>
+      <td>Alt + 1</td>
+      <td>Cmd + 1</td>
+    </tr>
+    <tr>
+      <td>Select 'Composite' preset</td>
+      <td>Alt + 2</td>
+      <td>Cmd + 2</td>
+    </tr>
+    <tr>
+      <td>Select 'S-video' preset</td>
+      <td>Alt + 3</td>
+      <td>Cmd + 3</td>
+    </tr>
+    <tr>
+      <td>Select 'RGB' preset</td>
+      <td>Alt + 4</td>
+      <td>Cmd + 4</td>
+    </tr>
+    <tr>
+      <td>Select 'Badly adjusted' preset</td>
+      <td>Alt + 5</td>
+      <td>Cmd + 5</td>
+    </tr>
+    <tr>
+      <td>Select 'Custom' preset</td>
+      <td>Alt + 6</td>
+      <td>Cmd + 6</td>
+    </tr>
+    <tr>
+      <td>Decrease scanline intensity</td>
+      <td>Shift-Alt + 7</td>
+      <td>Shift-Cmd + 7</td>
+    </tr>
+    <tr>
+      <td>Increase scanline intensity</td>
+      <td>Alt + 7</td>
+      <td>Cmd + 7</td>
+    </tr>
+    <tr>
+      <td>Disable scanline interpolation</td>
+      <td>Shift-Alt + 8</td>
+      <td>Shift-Cmd + 8</td>
+    </tr>
+    <tr>
+      <td>Enable scanline interpolation</td>
+      <td>Alt + 8</td>
+      <td>Cmd + 8</td>
+    </tr>
+    <tr>
+      <td>Select previous 'Custom' mode attribute (*)</td>
+      <td>Shift-Alt + 9</td>
+      <td>Shift-Cmd + 9</td>
+    </tr>
+    <tr>
+      <td>Select next 'Custom' mode attribute (*)</td>
+      <td>Alt + 9</td>
+      <td>Cmd + 9</td>
+    </tr>
+    <tr>
+      <td>Decrease 'Custom' selected attribute value (*)</td>
+      <td>Shift-Alt + 0</td>
+      <td>Shift-Cmd + 0</td>
+    </tr>
+    <tr>
+      <td>Increase 'Custom' selected attribute value (*)</td>
+      <td>Alt + 0</td>
+      <td>Cmd + 0</td>
+    </tr>
+    <tr>
+      <td colspan="3"><center><font size="-1">
+      Items marked as (*) are only available in 'Custom' preset mode</font></center></td>
+    </tr>
+  </table>
+
   <a name="DeveloperKeys"></a>
   <p><b>Developer Keys in TIA mode (cannot be remapped)</b></p>
 
@@ -1474,12 +1556,6 @@
       <td>Toggle display palette (<i>NTSC/PAL/SECAM</i>)</td>
       <td>Control + f</td>
       <td>Control + f</td>
-    </tr>
-
-    <tr>
-      <td>Toggle Blargg NTSC filtering</td>
-      <td>Alt + f</td>
-      <td>Cmd + f</td>
     </tr>
 
     <tr>
