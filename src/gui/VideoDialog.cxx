@@ -579,39 +579,52 @@ void VideoDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void VideoDialog::setDefaults()
 {
-  myRendererPopup->setSelected("soft", "");
-  myTIAFilterPopup->setSelected(
-    instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x", "");
-  myTIAPalettePopup->setSelected("standard", "");
-  myFSResPopup->setSelected("auto", "");
-  myFrameTimingPopup->setSelected("sleep", "");
-  myGLFilterPopup->setSelected("nearest", "");
-  myNAspectRatioSlider->setValue(90);
-  myNAspectRatioLabel->setLabel("90");
-  myPAspectRatioSlider->setValue(100);
-  myPAspectRatioLabel->setLabel("100");
-  myFrameRateSlider->setValue(0);
-  myFrameRateLabel->setLabel("Auto");
+  switch(myTab->getActiveTab())
+  {
+    case 0:  // General
+    {
+      myRendererPopup->setSelected("soft", "");
+      myTIAFilterPopup->setSelected(
+        instance().desktopWidth() < 640 ? "zoom1x" : "zoom2x", "");
+      myTIAPalettePopup->setSelected("standard", "");
+      myFSResPopup->setSelected("auto", "");
+      myFrameTimingPopup->setSelected("sleep", "");
+      myGLFilterPopup->setSelected("nearest", "");
+      myNAspectRatioSlider->setValue(90);
+      myNAspectRatioLabel->setLabel("90");
+      myPAspectRatioSlider->setValue(100);
+      myPAspectRatioLabel->setLabel("100");
+      myFrameRateSlider->setValue(0);
+      myFrameRateLabel->setLabel("Auto");
 
-  myFullscreenPopup->setSelected("0", "");
-  myColorLossCheckbox->setState(true);
-  myGLStretchCheckbox->setState(true);
-  myUseVSyncCheckbox->setState(true);
-  myUIMessagesCheckbox->setState(true);
-  myCenterCheckbox->setState(false);
-  myFastSCBiosCheckbox->setState(false);
+      myFullscreenPopup->setSelected("0", "");
+      myColorLossCheckbox->setState(true);
+      myGLStretchCheckbox->setState(true);
+      myUseVSyncCheckbox->setState(true);
+      myUIMessagesCheckbox->setState(true);
+      myCenterCheckbox->setState(false);
+      myFastSCBiosCheckbox->setState(false);
+      break;
+    }
 
-  myTVMode->setSelected("0", "0");
+    case 1:  // TV effects
+    {
+      myTVMode->setSelected("0", "0");
 
-  // TV scanline intensity and interpolation
-  myTVScanIntense->setValue(40);
-  myTVScanIntenseLabel->setLabel("40");
-  myTVScanInterpolate->setState(true);
+      // TV scanline intensity and interpolation
+      myTVScanIntense->setValue(40);
+      myTVScanIntenseLabel->setLabel("40");
+      myTVScanInterpolate->setState(true);
 
-  // Make sure that mutually-exclusive items are not enabled at the same time
-  handleFullscreenChange(true);
-  handleTVModeChange(NTSCFilter::PRESET_OFF);
-  loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+      // Make sure that mutually-exclusive items are not enabled at the same time
+      handleFullscreenChange(true);
+      handleTVModeChange(NTSCFilter::PRESET_OFF);
+      loadTVAdjustables(NTSCFilter::PRESET_CUSTOM);
+      break;
+    }
+  }
+
+  _dirty = true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
