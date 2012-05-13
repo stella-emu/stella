@@ -66,7 +66,7 @@ OSystem* theOSystem = (OSystem*) NULL;
 int Cleanup()
 {
   theOSystem->logMessage("Cleanup from mainSDL\n", 2);
-  theOSystem->settings().saveConfig();
+  theOSystem->saveConfig();
 
   if(theOSystem)
     delete theOSystem;
@@ -104,7 +104,7 @@ int main(int argc, char* argv[])
   #error Unsupported platform!
 #endif
 
-  theOSystem->settings().loadConfig();
+  theOSystem->loadConfig();
   theOSystem->logMessage("Loading config options ...\n", 2);
 
   // Take care of commandline arguments

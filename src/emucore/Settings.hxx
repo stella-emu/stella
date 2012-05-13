@@ -33,6 +33,8 @@ class OSystem;
 */
 class Settings
 {
+  friend class OSystem;
+
   public:
     /**
       Create a new settings abstract class
@@ -45,16 +47,6 @@ class Settings
     virtual ~Settings();
 
   public:
-    /**
-      This method should be called to load the current settings from an rc file.
-    */
-    virtual void loadConfig();
-
-    /**
-      This method should be called to save the current settings to an rc file.
-    */
-    virtual void saveConfig();
-
     /**
       This method should be called to load the arguments from the commandline.
 
@@ -157,6 +149,17 @@ class Settings
       @param value The value to assign to the setting
     */
     void setSize(const string& key, const int value1, const int value2);
+
+  protected:
+    /**
+      This method will be called to load the current settings from an rc file.
+    */
+    virtual void loadConfig();
+
+    /**
+      This method will be called to save the current settings to an rc file.
+    */
+    virtual void saveConfig();
 
   private:
     // Copy constructor isn't supported by this class so make it private

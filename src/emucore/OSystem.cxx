@@ -308,6 +308,22 @@ bool OSystem::create()
   return true;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::loadConfig()
+{
+  mySettings->loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void OSystem::saveConfig()
+{
+  // Ask all subsystems to save their settings
+  if(myFrameBuffer)
+    myFrameBuffer->ntsc().saveConfig(*mySettings);
+
+  mySettings->saveConfig();
+}
+
 #ifdef DEBUGGER_SUPPORT
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::createDebugger(Console& console)

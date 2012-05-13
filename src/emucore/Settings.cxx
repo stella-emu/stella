@@ -469,10 +469,6 @@ void Settings::usage()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Settings::saveConfig()
 {
-  // Ask all subsystems to save their settings
-  if(&(myOSystem->frameBuffer()))
-    myOSystem->frameBuffer().ntsc().saveConfig(*this);
-
   // Do a quick scan of the internal settings to see if any have
   // changed.  If not, we don't need to save them at all.
   bool settingsChanged = false;

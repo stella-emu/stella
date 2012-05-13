@@ -50,6 +50,14 @@ struct Resolution {
 };
 typedef Common::Array<Resolution> ResolutionList;
 
+struct TimingInfo {
+  uInt64 start;
+  uInt64 current;
+  uInt64 virt;
+  uInt64 totalTime;
+  uInt64 totalFrames;
+};
+
 /**
   This class provides an interface for accessing operating system specific
   functions.  It also comprises an overall parent object, to which all the
@@ -163,6 +171,20 @@ class OSystem
       @return The statemanager object
     */
     StateManager& state() const { return *myStateManager; }
+
+    /**
+      This method should be called to load the current settings from an rc file.
+      It first loads the settings from the config file, then informs subsystems
+      about the new settings.
+    */
+    void loadConfig();
+
+    /**
+      This method should be called to save the current settings to an rc file.
+      It first asks each subsystem to update its settings, then it saves all
+      settings to the config file.
+    */
+    void saveConfig();
 
 #ifdef DEBUGGER_SUPPORT
     /**
@@ -409,6 +431,12 @@ class OSystem
     */
     const string& logMessages() const { return myLogMessages; }
 
+    /**
+      Return timing information (start time of console, current
+      number of frames rendered, etc.
+    */
+    const TimingInfo& timingInfo() const { return myTimingInfo; }
+
   public:
     //////////////////////////////////////////////////////////////////////
     // The following methods are system-specific and can be overrided in
@@ -584,13 +612,6 @@ class OSystem
     GUI::Font* myConsoleFont;
 
     // Indicates whether the main processing loop should proceed
-    struct TimingInfo {
-      uInt64 start;
-      uInt64 current;
-      uInt64 virt;
-      uInt64 totalTime;
-      uInt64 totalFrames;
-    };
     TimingInfo myTimingInfo;
 
     // Table of RGB values for GUI elements

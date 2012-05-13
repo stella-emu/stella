@@ -214,7 +214,7 @@ void FileSnapDialog::saveConfig()
   instance().settings().setString("ssinterval", mySnapInterval->getSelectedTag());
 
   // Flush changes to disk and inform the OSystem
-  instance().settings().saveConfig();
+  instance().saveConfig();
   instance().setConfigPaths();
 }
 
