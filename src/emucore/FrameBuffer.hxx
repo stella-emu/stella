@@ -290,6 +290,20 @@ class FrameBuffer
     */
     NTSCFilter& ntsc() { return myNTSCFilter; }
 
+    /**
+      Use NTSC filtering effects specified by the given preset.
+    */
+    void setNTSC(NTSCFilter::Preset preset, bool show = true);
+
+    /**
+      Increase/decrease current scanline intensity by given relative amount.
+    */
+    void setScanlineIntensity(int relative);
+
+    /**
+      Toggles interpolation/smoothing of scanlines in TV modes.
+    */
+    void toggleScanlineInterpolation();
 
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and *may* be implemented
@@ -302,18 +316,15 @@ class FrameBuffer
     virtual void enableNTSC(bool enable) { }
     virtual bool ntscEnabled() const { return false; }
 
+  private:
     /**
       Change scanline intensity and interpolation.
-      relative = -1 means decrease current intensity by 'directin
-      direction =  0 means to reload the current video mode
-      direction = +1 means go to the next higher video mode
-
 
       @param relative  If non-zero, change current intensity by
                        'relative' amount, otherwise set to 'absolute'
       @return  New current intensity
     */
-    virtual uInt32 changeScanlines(int relative, int absolute = 50) { return absolute; }
+    virtual uInt32 enableScanlines(int relative, int absolute = 50) { return absolute; }
     virtual void enableScanlineInterpolation(bool enable) { }
 
   //////////////////////////////////////////////////////////////////////

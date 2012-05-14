@@ -19,11 +19,14 @@
 
 #include "NTSCFilter.hxx"
 
+#define SCALE_FROM_100(x) ((x/50.0)-1.0)
+#define SCALE_TO_100(x) (uInt32)(50*(x+1.0))
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 NTSCFilter::NTSCFilter()
   : mySetup(atari_ntsc_composite),
-    myCustomSetup(atari_ntsc_composite),
-    myPreset(PRESET_OFF)
+    myPreset(PRESET_OFF),
+    myCurrentAdjustable(0)
 {
 }
 
@@ -82,6 +85,72 @@ string NTSCFilter::setPreset(Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string NTSCFilter::setNextAdjustable()
+{
+  if(myPreset != PRESET_CUSTOM)
+    return "'Custom' TV mode not selected";
+
+  myCurrentAdjustable = (myCurrentAdjustable + 1) % 10;
+  ostringstream buf;
+  buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type
+      << "' selected";
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string NTSCFilter::setPreviousAdjustable()
+{
+  if(myPreset != PRESET_CUSTOM)
+    return "'Custom' TV mode not selected";
+
+  if(myCurrentAdjustable == 0) myCurrentAdjustable = 9;
+  else                         myCurrentAdjustable--;
+  ostringstream buf;
+  buf << "Custom adjustable '" << ourCustomAdjustables[myCurrentAdjustable].type
+      << "' selected";
+
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string NTSCFilter::increaseAdjustable()
+{
+  if(myPreset != PRESET_CUSTOM)
+    return "'Custom' TV mode not selected";
+
+  uInt32 newval = SCALE_TO_100(*ourCustomAdjustables[myCurrentAdjustable].value);
+  newval += 2;  if(newval > 100) newval = 100;
+  *ourCustomAdjustables[myCurrentAdjustable].value = SCALE_FROM_100(newval);
+
+  ostringstream buf;
+  buf << "Custom '" << ourCustomAdjustables[myCurrentAdjustable].type
+      << "' set to " << newval;
+
+  setPreset(myPreset);
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string NTSCFilter::decreaseAdjustable()
+{
+  if(myPreset != PRESET_CUSTOM)
+    return "'Custom' TV mode not selected";
+
+  uInt32 newval = SCALE_TO_100(*ourCustomAdjustables[myCurrentAdjustable].value);
+  if(newval < 2) newval = 0;
+  else           newval -= 2;
+  *ourCustomAdjustables[myCurrentAdjustable].value = SCALE_FROM_100(newval);
+
+  ostringstream buf;
+  buf << "Custom '" << ourCustomAdjustables[myCurrentAdjustable].type
+      << "' set to " << newval;
+
+  setPreset(myPreset);
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::loadConfig(const Settings& settings)
 {
   // Load adjustables for custom mode
@@ -136,7 +205,6 @@ void NTSCFilter::getAdjustables(Adjustable& adjustable, Preset preset)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void NTSCFilter::setCustomAdjustables(Adjustable& adjustable)
 {
-#define SCALE_FROM_100(x) ((x/50.0)-1.0)
   myCustomSetup.hue = SCALE_FROM_100(adjustable.hue);
   myCustomSetup.saturation = SCALE_FROM_100(adjustable.saturation);
   myCustomSetup.contrast = SCALE_FROM_100(adjustable.contrast);
@@ -153,7 +221,6 @@ void NTSCFilter::setCustomAdjustables(Adjustable& adjustable)
 void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
                                      const atari_ntsc_setup_t& setup) const
 {
-#define SCALE_TO_100(x) (uInt32)(50*(x+1.0))
   adjustable.hue         = SCALE_TO_100(setup.hue);
   adjustable.saturation  = SCALE_TO_100(setup.saturation);
   adjustable.contrast    = SCALE_TO_100(setup.contrast);
@@ -165,3 +232,20 @@ void NTSCFilter::convertToAdjustable(Adjustable& adjustable,
   adjustable.fringing    = SCALE_TO_100(setup.fringing);
   adjustable.bleed       = SCALE_TO_100(setup.bleed);
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+atari_ntsc_setup_t NTSCFilter::myCustomSetup = atari_ntsc_composite;
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const NTSCFilter::AdjustableTag NTSCFilter::ourCustomAdjustables[10] = {
+  { "contrast", &myCustomSetup.contrast },
+  { "brightness", &myCustomSetup.brightness },
+  { "hue", &myCustomSetup.hue },
+  { "saturation", &myCustomSetup.saturation },
+  { "gamma", &myCustomSetup.gamma },
+  { "sharpness", &myCustomSetup.sharpness },
+  { "resolution", &myCustomSetup.resolution },
+  { "artifacts", &myCustomSetup.artifacts },
+  { "fringing", &myCustomSetup.fringing },
+  { "bleeding", &myCustomSetup.bleed }
+};

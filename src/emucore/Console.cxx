@@ -444,75 +444,6 @@ void Console::togglePhosphor()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleNTSC(NTSCFilter::Preset preset, bool show)
-{
-  ostringstream buf;
-  if(myOSystem->frameBuffer().type() == kDoubleBuffer)
-  {
-    if(preset == NTSCFilter::PRESET_OFF)
-    {
-      myOSystem->frameBuffer().enableNTSC(false);
-      buf << "TV filtering disabled";
-    }
-    else
-    {
-      myOSystem->frameBuffer().enableNTSC(true);
-      const string& mode = myOSystem->frameBuffer().ntsc().setPreset(preset);
-      buf << "TV filtering (" << mode << " mode)";
-    }
-    myOSystem->settings().setInt("tv_filter", (int)preset);
-    if(show) myOSystem->frameBuffer().showMessage(buf.str());
-  }
-  else
-    buf << "TV filtering not available in software mode";
-
-  if(show) myOSystem->frameBuffer().showMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::changeScanlines(int amount, bool show)
-{
-  ostringstream buf;
-  if(myOSystem->frameBuffer().type() == kDoubleBuffer)
-  {
-    if(myOSystem->frameBuffer().ntscEnabled())
-    {
-      uInt32 intensity = myOSystem->frameBuffer().changeScanlines(amount);
-      buf << "Scanline intensity at " << intensity  << "%";
-      myOSystem->settings().setInt("tv_scanlines", intensity);
-    }
-    else
-      buf << "Scanlines only available in TV filtering mode";
-  }
-  else
-    buf << "Scanlines not available in software mode";
-
-  if(show) myOSystem->frameBuffer().showMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleScanlineInterpolation()
-{
-  ostringstream buf;
-  if(myOSystem->frameBuffer().type() == kDoubleBuffer)
-  {
-    if(myOSystem->frameBuffer().ntscEnabled())
-    {
-      bool enable = !myOSystem->settings().getBool("tv_scaninter");
-      myOSystem->frameBuffer().enableScanlineInterpolation(enable);
-      buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
-      myOSystem->settings().setBool("tv_scaninter", enable);
-    }
-    else
-      buf << "Scanlines only available in TV filtering mode";
-  }
-  else
-    buf << "Scanlines not available in software mode";
-
-  myOSystem->frameBuffer().showMessage(buf.str());
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Console::setProperties(const Properties& props)
 {
   myProperties = props;
@@ -539,7 +470,8 @@ FBInitStatus Console::initializeVideo(bool full)
   bool enable = myProperties.get(Display_Phosphor) == "YES";
   int blend = atoi(myProperties.get(Display_PPBlend).c_str());
   myOSystem->frameBuffer().enablePhosphor(enable, blend);
-  toggleNTSC((NTSCFilter::Preset)myOSystem->settings().getInt("tv_filter"));
+  myOSystem->frameBuffer().setNTSC(
+    (NTSCFilter::Preset)myOSystem->settings().getInt("tv_filter"), false);
   setPalette(myOSystem->settings().getString("palette"));
 
   // Set the correct framerate based on the format of the ROM

@@ -85,6 +85,17 @@ class NTSCFilter
     // they're actually stored internally
     void setCustomAdjustables(Adjustable& adjustable);
 
+    // The following methods cycle through each custom adjustable
+    // They are used in conjunction with the increase/decrease
+    // methods, which change the currently selected adjustable
+    // Changes are made this way since otherwise 20 key-combinations
+    // would be needed to dynamically change each setting, and now
+    // only 4 combinations are necessary
+    string setNextAdjustable();
+    string setPreviousAdjustable();
+    string increaseAdjustable();
+    string decreaseAdjustable();
+
     // Load and save NTSC-related settings
     void loadConfig(const Settings& settings);
     void saveConfig(Settings& settings) const;
@@ -123,13 +134,20 @@ class NTSCFilter
 
     // This setup is used only in custom mode (after it is modified,
     // it is copied to mySetup)
-    atari_ntsc_setup_t myCustomSetup;
+    static atari_ntsc_setup_t myCustomSetup;
 
     // Current preset in use
     Preset myPreset;
 
     // 128 colours by 3 components per colour
     uInt8 myTIAPalette[128 * 3];
+
+    struct AdjustableTag {
+      const char* type;
+      double* value;
+    };
+    uInt32 myCurrentAdjustable;
+    static const AdjustableTag ourCustomAdjustables[10];
 };
 
 #endif

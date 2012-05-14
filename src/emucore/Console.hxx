@@ -203,21 +203,6 @@ class Console : public Serializable
     void togglePhosphor();
 
     /**
-      Toggles NTSC filtering effects to use the given preset.
-    */
-    void toggleNTSC(NTSCFilter::Preset preset, bool show = false);
-
-    /**
-      Increase/decrease current scanline intensity by given amount.
-    */
-    void changeScanlines(int amount, bool show = false);
-
-    /**
-      Toggles interpolation/smoothing of scanlines in TV modes.
-    */
-    void toggleScanlineInterpolation();
-
-    /**
       Toggles the PAL color-loss effect.
     */
     void toggleColorLoss();

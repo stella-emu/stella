@@ -94,20 +94,6 @@ class FrameBufferGL : public FrameBuffer
     bool ntscEnabled() const { return myFilterType == kBlarggNTSC; }
 
     /**
-      Change scanline intensity and interpolation.
-      relative = -1 means decrease current intensity by 'directin
-      direction =  0 means to reload the current video mode
-      direction = +1 means go to the next higher video mode
-
-
-      @param relative  If non-zero, change current intensity by
-                       'relative' amount, otherwise set to 'absolute'
-      @return  New current intensity
-    */
-    uInt32 changeScanlines(int relative, int absolute = 50);
-    void enableScanlineInterpolation(bool enable);
-
-    /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
 
       @param palette  The array of colors
@@ -204,6 +190,16 @@ class FrameBufferGL : public FrameBuffer
       This method is called after any drawing is done (per-frame).
     */
     void postFrameUpdate();
+
+    /**
+      Change scanline intensity and interpolation.
+
+      @param relative  If non-zero, change current intensity by
+                       'relative' amount, otherwise set to 'absolute'
+      @return  New current intensity
+    */
+    uInt32 enableScanlines(int relative, int absolute = 50);
+    void enableScanlineInterpolation(bool enable);
 
   private:
     enum GLFunctionality {

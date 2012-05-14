@@ -379,38 +379,62 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case KBDK_1:  // Alt-1 turns off NTSC filtering
-                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_OFF, true);
+                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_OFF);
                 break;
 
               case KBDK_2:  // Alt-2 turns on 'composite' NTSC filtering
-                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_COMPOSITE, true);
+                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_COMPOSITE);
                 break;
 
               case KBDK_3:  // Alt-3 turns on 'svideo' NTSC filtering
-                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_SVIDEO, true);
+                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_SVIDEO);
                 break;
 
               case KBDK_4:  // Alt-4 turns on 'rgb' NTSC filtering
-                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_RGB, true);
+                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_RGB);
                 break;
 
               case KBDK_5:  // Alt-5 turns on 'bad' NTSC filtering
-                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_BAD, true);
+                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_BAD);
                 break;
 
               case KBDK_6:  // Alt-6 turns on 'custom' NTSC filtering
-                myOSystem->console().toggleNTSC(NTSCFilter::PRESET_CUSTOM, true);
+                myOSystem->frameBuffer().setNTSC(NTSCFilter::PRESET_CUSTOM);
                 break;
 
               case KBDK_7:  // Alt-7 changes scanline intensity for NTSC filtering
                 if(mod & KMOD_SHIFT)
-                  myOSystem->console().changeScanlines(-5, true);
+                  myOSystem->frameBuffer().setScanlineIntensity(-5);
                 else
-                  myOSystem->console().changeScanlines(+5, true);
+                  myOSystem->frameBuffer().setScanlineIntensity(+5);
                 break;
 
               case KBDK_8:  // Alt-8 turns toggles scanline interpolation
-                myOSystem->console().toggleScanlineInterpolation();
+                myOSystem->frameBuffer().toggleScanlineInterpolation();
+                break;
+
+              case KBDK_9:  // Alt-9 selects various custom adjustables for NTSC filtering
+                if(myOSystem->frameBuffer().ntscEnabled())
+                {
+                  if(mod & KMOD_SHIFT)
+                    myOSystem->frameBuffer().showMessage(
+                      myOSystem->frameBuffer().ntsc().setPreviousAdjustable());
+                  else
+                    myOSystem->frameBuffer().showMessage(
+                      myOSystem->frameBuffer().ntsc().setNextAdjustable());
+                }
+                break;
+
+              case KBDK_0:  // Alt-0 changes custom adjustables for NTSC filtering
+                if(myOSystem->frameBuffer().ntscEnabled())
+                {
+                  if(mod & KMOD_SHIFT)
+                    myOSystem->frameBuffer().showMessage(
+                      myOSystem->frameBuffer().ntsc().decreaseAdjustable());
+                  else
+                    myOSystem->frameBuffer().showMessage(
+                      myOSystem->frameBuffer().ntsc().increaseAdjustable());
+                }
                 break;
 
               case KBDK_z:
@@ -471,7 +495,7 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case KBDK_p:  // Alt-p toggles phosphor effect
-                // Currently, phosphor mode cannot be enabled with NTSC filtering
+                // FIXME - Currently, phosphor mode cannot be enabled with NTSC filtering
                 if(!myOSystem->frameBuffer().ntscEnabled())
                   myOSystem->console().togglePhosphor();
                 break;

@@ -518,6 +518,74 @@ void FrameBuffer::refresh()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setNTSC(NTSCFilter::Preset preset, bool show)
+{
+  ostringstream buf;
+  if(type() == kDoubleBuffer)
+  {
+    if(preset == NTSCFilter::PRESET_OFF)
+    {
+      enableNTSC(false);
+      buf << "TV filtering disabled";
+    }
+    else
+    {
+      enableNTSC(true);
+      const string& mode = myNTSCFilter.setPreset(preset);
+      buf << "TV filtering (" << mode << " mode)";
+    }
+    myOSystem->settings().setInt("tv_filter", (int)preset);
+  }
+  else
+    buf << "TV filtering not available in software mode";
+
+  if(show) showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::setScanlineIntensity(int amount)
+{
+  ostringstream buf;
+  if(type() == kDoubleBuffer)
+  {
+    if(ntscEnabled())
+    {
+      uInt32 intensity = enableScanlines(amount);
+      buf << "Scanline intensity at " << intensity  << "%";
+      myOSystem->settings().setInt("tv_scanlines", intensity);
+    }
+    else
+      buf << "Scanlines only available in TV filtering mode";
+  }
+  else
+    buf << "Scanlines not available in software mode";
+
+  showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FrameBuffer::toggleScanlineInterpolation()
+{
+  ostringstream buf;
+  if(type() == kDoubleBuffer)
+  {
+    if(ntscEnabled())
+    {
+      bool enable = !myOSystem->settings().getBool("tv_scaninter");
+      enableScanlineInterpolation(enable);
+      buf << "Scanline interpolation " << (enable ? "enabled" : "disabled");
+      myOSystem->settings().setBool("tv_scaninter", enable);
+    }
+    else
+      buf << "Scanlines only available in TV filtering mode";
+  }
+  else
+    buf << "Scanlines not available in software mode";
+
+  showMessage(buf.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int FrameBuffer::allocateSurface(int w, int h, bool useBase)
 {
   // Create a new surface
