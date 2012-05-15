@@ -47,13 +47,10 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer)
 
   // Based on experimentation, the following are the fastest 16-bit
   // formats for OpenGL (on all platforms)
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myTexWidth, myTexHeight, 16,
-#ifdef HAVE_GL_BGRA
-                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-#else
-                  0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
-#endif
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight, 16,
+                  myFB.myPixelFormat.Rmask, myFB.myPixelFormat.Gmask,
+                  myFB.myPixelFormat.Bmask, 0x00000000);
+
   myPitch = myTexture->pitch >> 1;
 }
 
@@ -134,30 +131,21 @@ void FBSurfaceTIA::update()
 
     case FrameBufferGL::kBlarggNTSC:
     {
-#ifdef HAVE_GL_BGRA
       myFB.myNTSCFilter.blit_1555
-#else
-      myFB.myNTSCFilter.blit_5551
-#endif
         (currentFrame, width, height, buffer, myTexture->pitch);
       break;
     }
   }
 
-  // Texturemap complete texture to surface so we have free scaling
-  // and antialiasing
+  myGL.EnableClientState(GL_VERTEX_ARRAY);
+  myGL.EnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+  // Update TIA image (texture 0), then blend scanlines (texture 1)
   myGL.ActiveTexture(GL_TEXTURE0);
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
   myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexWidth, myTexHeight,
-#ifdef HAVE_GL_BGRA
                     GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
-#else
-                    GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-#endif
                     myTexture->pixels);
-
-  myGL.EnableClientState(GL_VERTEX_ARRAY);
-  myGL.EnableClientState(GL_TEXTURE_COORD_ARRAY);
 
   if(myFB.myVBOAvailable)
   {
@@ -238,13 +226,8 @@ void FBSurfaceTIA::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   // Create the texture in the most optimal format
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                 myTexWidth, myTexHeight, 0,
-#ifdef HAVE_GL_BGRA
+  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
                  GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
-#else
-                 GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-#endif
                  myTexture->pixels);
 
   // Scanline texture (@ index 1)
@@ -254,17 +237,10 @@ void FBSurfaceTIA::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-#ifdef HAVE_GL_BGRA
   static uInt16 const scanline[4] = { 0x0000, 0x0000, 0x8000, 0x0000  };
   myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 2, 0,
                  GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
                  scanline);
-#else
-  static uInt16 const scanline[4] = { 0x0000, 0x0000, 0x0001, 0x0000 };
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 2, 0,
-                 GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-                 scanline);
-#endif
 
   // Cache vertex and texture coordinates using vertex buffer object
   if(myFB.myVBOAvailable)

@@ -44,13 +44,10 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer, uInt32 width, uInt32 height)
 
   // Based on experimentation, the following are the fastest 16-bit
   // formats for OpenGL (on all platforms)
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE,
-                  myTexWidth, myTexHeight, 16,
-#ifdef HAVE_GL_BGRA
-                  0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-#else
-                  0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
-#endif
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight, 16,
+                  myFB.myPixelFormat.Rmask, myFB.myPixelFormat.Gmask,
+                  myFB.myPixelFormat.Bmask, 0x00000000);
+
   myPitch = myTexture->pitch >> 1;
 
   // Associate the SDL surface with a GL texture object
@@ -261,12 +258,8 @@ void FBSurfaceGL::update()
     myGL.ActiveTexture(GL_TEXTURE0);
     myGL.BindTexture(GL_TEXTURE_2D, myTexID);
     myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexWidth, myTexHeight,
-#ifdef HAVE_GL_BGRA
-                      GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
-#else
-                      GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-#endif
-                      myTexture->pixels);
+                       GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+                       myTexture->pixels);
 
     myGL.EnableClientState(GL_VERTEX_ARRAY);
     myGL.EnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -321,14 +314,9 @@ void FBSurfaceGL::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   // Create the texture in the most optimal format
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA,
-                 myTexWidth, myTexHeight, 0,
-#ifdef HAVE_GL_BGRA
-                 GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
-#else
-                 GL_RGBA, GL_UNSIGNED_SHORT_5_5_5_1,
-#endif
-                 myTexture->pixels);
+  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
+                  GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
+                  myTexture->pixels);
 
   // Cache vertex and texture coordinates using vertex buffer object
   if(myFB.myVBOAvailable)

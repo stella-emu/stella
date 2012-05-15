@@ -34,12 +34,6 @@ class TIA;
 #include "bspf.hxx"
 #include "FrameBuffer.hxx"
 
-// Make sure we have access to the most common pixel format
-// (it isn't available in certain versions of OpenGL ES
-#if defined(GL_BGRA) && defined(GL_UNSIGNED_SHORT_1_5_5_5_REV)
-  #define HAVE_GL_BGRA
-#endif
-
 /**
   This class implements an SDL OpenGL framebuffer.
 
@@ -70,14 +64,6 @@ class FrameBufferGL : public FrameBuffer
       @param library  The filename of the OpenGL library
     */
     static bool loadLibrary(const string& library);
-
-    /**
-      Return version of the OpenGL library found by the OSystem
-      (0 indicates that the libary was not loaded successfully).
-      This will not return a valid version number until setVidMode()
-      has been called at least once.
-    */
-    static float glVersion() { return myGLVersion; }
 
     //////////////////////////////////////////////////////////////////////
     // The following are derived from public methods in FrameBuffer.hxx
@@ -234,19 +220,13 @@ class FrameBufferGL : public FrameBuffer
     uInt32 myDepth;
 
     // The size of color components for OpenGL
-    uInt32 myRGB[4];
-
-    // The name of the texture filtering to use
-    string myFilterParamName;
+    Int32 myRGB[4];
 
     // Indicates that the texture has been modified, and should be redrawn
     bool myDirtyFlag;
 
     // Indicates if the OpenGL library has been properly loaded
     static bool myLibraryLoaded;
-
-    // Indicates the OpenGL version found (0 indicates none)
-    static float myGLVersion;
 
     // Indicates whether Vertex Buffer Objects (VBO) are available
     static bool myVBOAvailable;

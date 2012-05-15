@@ -42,7 +42,6 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
     myFilterType(kNone),
     myTiaSurface(NULL),
-    myFilterParamName("GL_NEAREST"),
     myDirtyFlag(true)
 {
   // We need a pixel format for palette value calculations
@@ -50,11 +49,8 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   // since the structure may be needed before any FBSurface's have
   // been created
   SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 16,
-#ifdef HAVE_GL_BGRA
-                     0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
-#else
-                     0x0000f800, 0x000007c0, 0x0000003e, 0x00000000);
-#endif
+                       0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+
   myPixelFormat = *(s->format);
   SDL_FreeSurface(s);
 }
@@ -168,10 +164,10 @@ bool FrameBufferGL::initSubsystem(VideoMode& mode)
     return false;
 
   // Now check to see what color components were actually created
-  SDL_GL_GetAttribute( SDL_GL_RED_SIZE, (int*)&myRGB[0] );
-  SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, (int*)&myRGB[1] );
-  SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, (int*)&myRGB[2] );
-  SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, (int*)&myRGB[3] );
+  SDL_GL_GetAttribute( SDL_GL_RED_SIZE, &myRGB[0] );
+  SDL_GL_GetAttribute( SDL_GL_GREEN_SIZE, &myRGB[1] );
+  SDL_GL_GetAttribute( SDL_GL_BLUE_SIZE, &myRGB[2] );
+  SDL_GL_GetAttribute( SDL_GL_ALPHA_SIZE, &myRGB[3] );
 
   return true;
 }
@@ -186,15 +182,9 @@ string FrameBufferGL::about() const
       << "  Version:    " << p_gl.GetString(GL_VERSION) << endl
       << "  Color:      " << myDepth << " bit, " << myRGB[0] << "-"
       << myRGB[1] << "-"  << myRGB[2] << "-" << myRGB[3] << ", "
-#ifdef HAVE_GL_BGRA
       << "GL_BGRA" << endl
-#else
-      << "GL_RGBA" << endl
-#endif
-      << "  Filter:     " << myFilterParamName << endl
-      << "  Extensions: ";
-  if(myVBOAvailable) out << "VBO ";
-  out << endl;
+      << "  Extensions: VBO " << (myVBOAvailable ? "enabled" : "disabled")
+      << endl;
   return out.str();
 }
 
@@ -286,13 +276,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
 
   // Load OpenGL function pointers
   if(loadFuncs(kGL_BASIC))
-  {
-    // Grab OpenGL version number
-    string version((const char *)p_gl.GetString(GL_VERSION));
-    myGLVersion = atof(version.substr(0, 3).c_str());
-
     myVBOAvailable = myOSystem->settings().getBool("gl_vbo") && loadFuncs(kGL_VBO);
-  }
   else
     return false;
 
@@ -311,7 +295,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
   p_gl.Ortho(0.0, mode.screen_w, mode.screen_h, 0.0, -1.0, 1.0);
   p_gl.MatrixMode(GL_MODELVIEW);
   p_gl.LoadIdentity();
-  p_gl.Translatef(0.375, 0.375, 0.0);
+  p_gl.Translatef(0.375, 0.375, 0.0);  // fix scanline mis-draw issues
 
 //cerr << "dimensions: " << (fullScreen() ? "(full)" : "") << endl << mode << endl;
 
@@ -426,8 +410,8 @@ void FrameBufferGL::enableScanlineInterpolation(bool enable)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FrameBufferGL::setTIAPalette(const uInt32* palette)
 {
-  myTiaSurface->setTIAPalette(palette);
   FrameBuffer::setTIAPalette(palette);
+  myTiaSurface->setTIAPalette(palette);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -453,9 +437,6 @@ void FrameBufferGL::scanline(uInt32 row, uInt8* data) const
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::myLibraryLoaded = false;
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-float FrameBufferGL::myGLVersion = 0.0;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::myVBOAvailable = false;
