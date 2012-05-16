@@ -623,7 +623,7 @@ string CartDebug::loadSymbolFile(string file)
     file += ".sym";
 
   FilesystemNode node(file);
-  if(node.exists() && !node.isDirectory())
+  if(node.exists() && node.isFile())
   {
     ifstream in(node.getPath().c_str());
     if(!in.is_open())
@@ -696,7 +696,7 @@ string CartDebug::loadConfigFile(string file)
     }
   }
 
-  if(node.exists() && !node.isDirectory())
+  if(node.exists() && node.isFile())
   {
     ifstream in(node.getPath().c_str());
     if(!in.is_open())
@@ -811,7 +811,7 @@ string CartDebug::saveConfigFile(string file)
         myOSystem.romFile()).getParent().getPath() + name + ".cfg");
   }
 
-  if(!node.isDirectory())
+  if(node.isFile())
   {
     ofstream out(node.getPath().c_str());
     if(!out.is_open())

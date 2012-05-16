@@ -861,7 +861,8 @@ bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
         unzGetCurrentFileInfo(tz, &ufo, currfile, 1024, 0, 0, 0, 0);
         currfile[1023] = '\0';
 
-        if(strlen(currfile) >= 4)
+        if(strlen(currfile) >= 4 &&
+           !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
         {
           // Grab 3-character extension
           const char* ext = currfile + strlen(currfile) - 4;

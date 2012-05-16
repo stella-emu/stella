@@ -53,8 +53,9 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     /**
      * Creates a POSIXFilesystemNode for a given path.
      *
-     * @param path String with the path the new node should point to.
-     * @param verify true if the isValid and isDirectory flags should be verified during the construction.
+     * @param path    String with the path the new node should point to.
+     * @param verify  true if the isValid and isDirectory/isFile flags should
+     *                be verified during the construction.
      */
     POSIXFilesystemNode(const string& path, bool verify);
 
@@ -64,6 +65,7 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     const string& getPath() const   { return _path; }
     string getRelativePath() const;
     bool isDirectory() const { return _isDirectory; }
+    bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
 
@@ -74,11 +76,13 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     string _displayName;
     string _path;
     bool _isDirectory;
+    bool _isFile;
     bool _isValid;
 
   private:
     /**
-     * Tests and sets the _isValid and _isDirectory flags, using the stat() function.
+     * Tests and sets the _isValid and _isDirectory/_isFile flags,
+     * using the stat() function.
      */
     virtual void setFlags();
 };
@@ -114,7 +118,13 @@ void POSIXFilesystemNode::setFlags()
   struct stat st;
 
   _isValid = (0 == stat(_path.c_str(), &st));
-  _isDirectory = _isValid ? S_ISDIR(st.st_mode) : false;
+  if(_isValid)
+  {
+    _isDirectory = S_ISDIR(st.st_mode);
+    _isFile = S_ISREG(st.st_mode);
+  }
+  else
+    _isDirectory = _isFile = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -125,6 +135,7 @@ POSIXFilesystemNode::POSIXFilesystemNode()
   _displayName = _path;
   _isValid = true;
   _isDirectory = true;
+  _isFile = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -229,12 +240,18 @@ bool POSIXFilesystemNode::getChildren(AbstractFSList& myList, ListMode mode,
       {
         struct stat st;
         if (stat(entry._path.c_str(), &st) == 0)
+        {
           entry._isDirectory = S_ISDIR(st.st_mode);
+          entry._isFile = S_ISREG(st.st_mode);
+        }
         else
-          entry._isDirectory = false;
+          entry._isDirectory = entry._isFile = false;
       }
       else
+      {
         entry._isDirectory = (dp->d_type == DT_DIR);
+        entry._isFile = (dp->d_type == DT_REG);
+      }
     }
 #endif
 
@@ -244,7 +261,7 @@ bool POSIXFilesystemNode::getChildren(AbstractFSList& myList, ListMode mode,
       continue;
 
     // Honor the chosen mode
-    if ((mode == FilesystemNode::kListFilesOnly && entry._isDirectory) ||
+    if ((mode == FilesystemNode::kListFilesOnly && !entry._isFile) ||
         (mode == FilesystemNode::kListDirectoriesOnly && !entry._isDirectory))
       continue;
 

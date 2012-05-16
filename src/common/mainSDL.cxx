@@ -138,7 +138,7 @@ int main(int argc, char* argv[])
   {
     theOSystem->logMessage("Showing output from 'rominfo' ...\n", 2);
     FilesystemNode romnode(romfile);
-    if(argc > 1 && romnode.exists() && !romnode.isDirectory())
+    if(argc > 1 && romnode.exists() && romnode.isFile())
       theOSystem->logMessage(theOSystem->getROMInfo(romfile), 0);
     else
       theOSystem->logMessage("ERROR: ROM doesn't exist\n", 0);

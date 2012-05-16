@@ -370,7 +370,8 @@ void LauncherDialog::loadDirListing()
           unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
           filename[1023] = '\0';
 
-          if(strlen(filename) >= 4)
+          if(strlen(filename) >= 4 &&
+             !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
           {
             // Grab 3-character extension
             const char* ext = filename + strlen(filename) - 4;
@@ -545,7 +546,8 @@ int LauncherDialog::filesInArchive(const string& archive)
         unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
         filename[1023] = '\0';
 
-        if(strlen(filename) >= 4)
+        if(strlen(filename) >= 4 &&
+           !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
         {
           // Grab 3-character extension
           const char* ext = filename + strlen(filename) - 4;

@@ -145,6 +145,15 @@ bool FilesystemNode::isDirectory() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::isFile() const
+{
+  if (_realNode == 0)
+    return false;
+
+  return _realNode->isFile();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::isReadable() const
 {
   if (_realNode == 0)

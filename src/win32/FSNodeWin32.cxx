@@ -97,6 +97,7 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     const string& getPath() const   { return _path; }
     string getRelativePath() const;
     bool isDirectory() const { return _isDirectory; }
+    bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
 
@@ -107,6 +108,7 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     string _displayName;
     string _path;
     bool _isDirectory;
+    bool _isFile;
     bool _isPseudoRoot;
     bool _isValid;
 
@@ -177,12 +179,14 @@ void WindowsFilesystemNode::addFile(AbstractFSList& list, ListMode mode,
     return;
 
   isDirectory = (find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? true : false);
+  isFile = (find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
-  if ((!isDirectory && mode == FilesystemNode::kListDirectoriesOnly) ||
+  if ((isFile && mode == FilesystemNode::kListDirectoriesOnly) ||
       (isDirectory && mode == FilesystemNode::kListFilesOnly))
     return;
 
   entry._isDirectory = isDirectory;
+  entry._isFile = isFile;
   entry._displayName = asciiName;
   entry._path = base;
   entry._path += asciiName;
@@ -221,19 +225,12 @@ const TCHAR* WindowsFilesystemNode::toUnicode(const char* str)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode()
 {
-  _isDirectory = true;
-#ifndef _WIN32_WCE
   // Create a virtual root directory for standard Windows system
+  _isDirectory = true;
+  _isFile = false;
   _isValid = false;
   _path = "";
   _isPseudoRoot = true;
-#else
-  _displayName = "Root";
-  // No need to create a pseudo root directory on Windows CE
-  _isValid = true;
-  _path = "\\";
-  _isPseudoRoot = false;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -260,12 +257,12 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 
   if (fileAttribs == INVALID_FILE_ATTRIBUTES)
   {
-    _isDirectory = false;
-    _isValid = false;
+    _isDirectory = _isFile = _isValid = false;
   }
   else
   {
     _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    _isFile = ((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
     _isValid = true;
 
     // Add a trailing backslash, if necessary
@@ -301,7 +298,6 @@ bool WindowsFilesystemNode::
 
   if (_isPseudoRoot)
   {
-#ifndef _WIN32_WCE
     // Drives enumeration
     TCHAR drive_buffer[100];
     GetLogicalDriveStrings(sizeof(drive_buffer) / sizeof(TCHAR), drive_buffer);
@@ -316,12 +312,12 @@ bool WindowsFilesystemNode::
       drive_name[1] = '\0';
       entry._displayName = drive_name;
       entry._isDirectory = true;
+      entry._isFile = false;
       entry._isValid = true;
       entry._isPseudoRoot = false;
       entry._path = toAscii(current_drive);
       myList.push_back(new WindowsFilesystemNode(entry));
     }
-#endif
   }
   else
   {
@@ -365,6 +361,7 @@ AbstractFilesystemNode* WindowsFilesystemNode::getParent() const
     p->_path = string(start, end - start);
     p->_isValid = true;
     p->_isDirectory = true;
+    p->_isFile = false;
     p->_displayName = lastPathComponent(p->_path);
     p->_isPseudoRoot = false;
   }

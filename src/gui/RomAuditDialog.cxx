@@ -142,7 +142,7 @@ void RomAuditDialog::auditRoms()
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
     string extension;
-    if(!files[idx].isDirectory() &&
+    if(files[idx].isFile() &&
        LauncherFilterDialog::isValidRomName(files[idx].getPath(), extension))
     {
       // Calculate the MD5 so we can get the rest of the info
