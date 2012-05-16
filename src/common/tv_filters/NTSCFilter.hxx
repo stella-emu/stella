@@ -140,7 +140,7 @@ class NTSCFilter
     Preset myPreset;
 
     // 128 colours by 3 components per colour
-    uInt8 myTIAPalette[128 * 3];
+    uInt8 myTIAPalette[256 * 3];
 
     struct AdjustableTag {
       const char* type;

@@ -41,7 +41,7 @@ void NTSCFilter::setTIAPalette(const uInt32* palette)
   // The TIA palette consists of 128 colours, but the palette array actually
   // contains 256 entries, where only every second value is a valid colour
   uInt8* ptr = myTIAPalette;
-  for(int i = 0; i < 256; i+=2)
+  for(int i = 0; i < 256; i++)
   {
     *ptr++ = (palette[i] >> 16) & 0xff;
     *ptr++ = (palette[i] >> 8) & 0xff;

@@ -56,7 +56,7 @@ extern atari_ntsc_setup_t const atari_ntsc_svideo;    /* color bleeding only */
 extern atari_ntsc_setup_t const atari_ntsc_rgb;       /* crisp image */
 extern atari_ntsc_setup_t const atari_ntsc_bad;       /* badly adjusted TV */
 
-enum { atari_ntsc_palette_size = 128 };
+enum { atari_ntsc_palette_size = 256 };
 
 /* Initializes and adjusts parameters. Can be called multiple times on the same
    atari_ntsc_t object. Can pass NULL for either parameter. */
@@ -130,7 +130,7 @@ struct atari_ntsc_t {
 	atari_ntsc_rgb_t table [atari_ntsc_palette_size] [atari_ntsc_entry_size];
 };
 
-#define ATARI_NTSC_ENTRY_( ntsc, n ) (ntsc)->table [n >> 1 & 0x7F]
+#define ATARI_NTSC_ENTRY_( ntsc, n ) (ntsc)->table [n]
 
 /* common 3->7 ntsc macros */
 #define ATARI_NTSC_BEGIN_ROW_6_( pixel0, pixel1, ENTRY, table ) \
