@@ -172,7 +172,7 @@ void WindowsFilesystemNode::addFile(AbstractFSList& list, ListMode mode,
 {
   WindowsFilesystemNode entry;
   char* asciiName = toAscii(find_data->cFileName);
-  bool isDirectory;
+  bool isDirectory, isFile;
 
   // Skip local directory (.) and parent (..)
   if (!strncmp(asciiName, ".", 1) || !strncmp(asciiName, "..", 2))

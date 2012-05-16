@@ -305,6 +305,10 @@
 					>
 				</File>
 				<File
+					RelativePath="..\emucore\CartCTY.cxx"
+					>
+				</File>
+				<File
 					RelativePath="..\emucore\CartCV.cxx"
 					>
 				</File>
@@ -1140,6 +1144,14 @@
 				</File>
 				<File
 					RelativePath="..\emucore\CartCM.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartCTY.hxx"
+					>
+				</File>
+				<File
+					RelativePath="..\emucore\CartCTYTunes.hxx"
 					>
 				</File>
 				<File
