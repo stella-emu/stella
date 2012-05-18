@@ -104,17 +104,17 @@ class NTSCFilter
     // output buffer
     // In the current implementation, the source pitch is always the
     // same as the actual width
-    void blit_5551(uInt8* src_buf, int src_width, int src_height,
-                   uInt16* dest_buf, long dest_pitch)
-    {
-      atari_ntsc_blit_5551(&myFilter, src_buf, src_width,
-                           src_width, src_height,
-                           dest_buf, dest_pitch);
-    }
     void blit_1555(uInt8* src_buf, int src_width, int src_height,
                    uInt16* dest_buf, long dest_pitch)
     {
       atari_ntsc_blit_1555(&myFilter, src_buf, src_width,
+                           src_width, src_height,
+                           dest_buf, dest_pitch);
+    }
+    void blit_8888(uInt8* src_buf, int src_width, int src_height,
+                   uInt32* dest_buf, long dest_pitch)
+    {
+      atari_ntsc_blit_8888(&myFilter, src_buf, src_width,
                            src_width, src_height,
                            dest_buf, dest_pitch);
     }

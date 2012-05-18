@@ -42,13 +42,12 @@ FBSurfaceGL::FBSurfaceGL(FrameBufferGL& buffer, uInt32 width, uInt32 height)
   myTexCoordW = (GLfloat) myImageW / myTexWidth;
   myTexCoordH = (GLfloat) myImageH / myTexHeight;
 
-  // Based on experimentation, the following are the fastest 16-bit
-  // formats for OpenGL (on all platforms)
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight, 16,
-                  myFB.myPixelFormat.Rmask, myFB.myPixelFormat.Gmask,
-                  myFB.myPixelFormat.Bmask, 0x00000000);
+  // Create a surface in the same format as the parent GL class
+  const SDL_PixelFormat& pf = myFB.myPixelFormat;
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight,
+                  pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
 
-  myPitch = myTexture->pitch >> 1;
+  myPitch = myTexture->pitch / pf.BytesPerPixel;
 
   // Associate the SDL surface with a GL texture object
   updateCoords();

@@ -45,13 +45,12 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer)
   myTexWidth  = FrameBufferGL::power_of_two(ATARI_NTSC_OUT_WIDTH(160));
   myTexHeight = FrameBufferGL::power_of_two(320);
 
-  // Based on experimentation, the following are the fastest 16-bit
-  // formats for OpenGL (on all platforms)
-  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight, 16,
-                  myFB.myPixelFormat.Rmask, myFB.myPixelFormat.Gmask,
-                  myFB.myPixelFormat.Bmask, 0x00000000);
+  // Create a surface in the same format as the parent GL class
+  const SDL_PixelFormat& pf = myFB.myPixelFormat;
+  myTexture = SDL_CreateRGBSurface(SDL_SWSURFACE, myTexWidth, myTexHeight,
+                  pf.BitsPerPixel, pf.Rmask, pf.Gmask, pf.Bmask, pf.Amask);
 
-  myPitch = myTexture->pitch >> 1;
+  myPitch = myTexture->pitch / pf.BytesPerPixel;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
