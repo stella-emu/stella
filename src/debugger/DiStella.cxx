@@ -826,7 +826,7 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
   {
     return 3;
   }
-  else if (address > 0x1000)
+  else if (address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
   {
     /* 2K & 4K case */
     myLabels[address & myAppData.end] = myLabels[address & myAppData.end] | mask;
