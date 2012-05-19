@@ -812,19 +812,21 @@ int DiStella::mark(uInt32 address, uInt8 mask, bool directive)
     ===========================================================
   -----------------------------------------------------------------------*/
 
-  if (address >= myOffset && address <= myAppData.end + myOffset)
-  {
-    myLabels[address-myOffset] = myLabels[address-myOffset] | mask;
-    if(directive)  myDirectives[address-myOffset] = mask;
-    return 1;
-  }
-  else if (address <= 0x3f)
+  // Check for equates before ROM/ZP-RAM accesses, because the original logic
+  // of Distella assumed either equates or ROM; it didn't take ZP-RAM into account
+  if (address <= 0x3f)
   {
     return 2;
   }
   else if (address >= 0x280 && address <= 0x297)
   {
     return 3;
+  }
+  else if (address >= myOffset && address <= myAppData.end + myOffset)
+  {
+    myLabels[address-myOffset] = myLabels[address-myOffset] | mask;
+    if(directive)  myDirectives[address-myOffset] = mask;
+    return 1;
   }
   else if (address > 0x1000 && myOffset != 0)  // Exclude zero-page accesses
   {
