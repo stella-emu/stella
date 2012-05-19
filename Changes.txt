@@ -40,6 +40,10 @@
     a multi-file archive before using each ROM.  Thanks go to Roland
     Schabenberger (webOS maintainer) for this idea and sample code.
 
+  * Fixed bug in disassembly of zero-page code; addresses no longer have
+    their high-byte truncated, and system equates (TIA and I/O registers)
+    are now properly marked as such.
+
   * Replaced commandline argument 'uselauncher' with 'exitlauncher'.  The
     new option specifies the behaviour of the ROM launcher when exiting
     a ROM (always exit to launcher, or only when the launcher was actually
@@ -50,8 +54,9 @@
       - 'Astroblast' ROMs now use the paddles by default
 
   * Changed key-combo for enabling TIA objects and collisions to be
-    toggled on and off with the Alt-period and Shift-Alt-period (instead
-    of having two separate keys to turn them on and off).
+    toggled on and off with the Alt-period and Shift-Alt-period
+    respectively (instead of having two separate keys to turn them on
+    and off).
 
   * Updated included PNG library to latest stable version.
 
