@@ -423,8 +423,8 @@ void CartridgeCTY::loadScore(uInt8 index)
     {
       memset(scoreRAM, 0, 256);
     }
-    // Grab 64B slice @ given index
-    memcpy(myRAM, scoreRAM + (index << 6), 64);
+    // Grab 60B slice @ given index (first 4 bytes are ignored)
+    memcpy(myRAM+4, scoreRAM + (index << 6) + 4, 60);
   }
 }
 
@@ -445,8 +445,8 @@ void CartridgeCTY::saveScore(uInt8 index)
       memset(scoreRAM, 0, 256);
     }
 
-    // Add 64B RAM to score table @ given index
-    memcpy(scoreRAM + (index << 6), myRAM, 64);
+    // Add 60B RAM to score table @ given index (first 4 bytes are ignored)
+    memcpy(scoreRAM + (index << 6) + 4, myRAM+4, 60);
 
     // Save score RAM
     serializer.reset();

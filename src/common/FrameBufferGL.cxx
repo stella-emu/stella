@@ -48,8 +48,8 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   // It's done this way (vs directly accessing a FBSurfaceGL object)
   // since the structure may be needed before any FBSurface's have
   // been created
-  SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 16,
-                       0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+  SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 32,
+                       0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
   myPixelFormat = *(s->format);
   SDL_FreeSurface(s);
