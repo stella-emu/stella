@@ -504,7 +504,7 @@ void EventHandler::poll(uInt64 time)
                 myOSystem->frameBuffer().toggleFrameStats();
                 break;
 
-              case KBDK_s:  // TODO - make this remappable
+              case KBDK_s:
                 if(myContSnapshotInterval == 0)
                 {
                   ostringstream buf;

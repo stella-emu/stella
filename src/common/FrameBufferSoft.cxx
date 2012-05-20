@@ -132,7 +132,6 @@ bool FrameBufferSoft::setVidMode(VideoMode& mode)
   mode.screen_w = myScreen->w;
   mode.screen_h = myScreen->h;
   myZoomLevel = mode.gfxmode.zoom;
-// FIXME - look at gfxmode directly
 
   // Erase old rects, since they've probably been scaled for
   // a different sized screen

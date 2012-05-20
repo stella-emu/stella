@@ -99,7 +99,6 @@ CommandDialog::~CommandDialog()
 void CommandDialog::handleCommand(CommandSender* sender, int cmd,
                                   int data, int id)
 {
-  // TODO - fix the logic here; it doesn't seem it needs to be this complex
   bool consoleCmd = false, stateCmd = false;
   Event::Type event = Event::NoType;
 

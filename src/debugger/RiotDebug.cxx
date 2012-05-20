@@ -326,12 +326,10 @@ string RiotDebug::switchesString()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string RiotDebug::toString()
 {
-  // TODO: keyboard controllers?
-  ostringstream buf;
-
   const RiotState& state    = (RiotState&) getState();
   const RiotState& oldstate = (RiotState&) getOldState();
 
+  ostringstream buf;
   buf << myDebugger.valueToString(0x280) + "/SWCHA(R)="
       << myDebugger.invIfChanged(state.SWCHA_R, oldstate.SWCHA_R) << " "
       << myDebugger.valueToString(0x280) + "/SWCHA(W)="

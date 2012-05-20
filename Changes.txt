@@ -44,8 +44,8 @@
     their high-byte truncated, and system equates (TIA and I/O registers)
     are now properly marked as such.
 
-  * Fixed bug in EFSC state saving; the Superchip RAM wasn't actually
-    being loaded and saved to state files.
+  * Fixed bug in EFSC bankswitch scheme state saving; the Superchip RAM
+    wasn't actually being loaded and saved to state files.
 
   * Improved speed of loading and saving state files, as well as slightly
     reducing their size.  Because of this, old state files will not work
