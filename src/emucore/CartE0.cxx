@@ -235,10 +235,7 @@ bool CartridgeE0::save(Serializer& out) const
   try
   {
     out.putString(name());
-
-    out.putInt(4);
-    for(uInt32 i = 0; i < 4; ++i)
-      out.putInt(myCurrentSlice[i]);
+    out.putShortArray(myCurrentSlice, 4);
   }
   catch(const char* msg)
   {
@@ -257,9 +254,7 @@ bool CartridgeE0::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 i = 0; i < limit; ++i)
-      myCurrentSlice[i] = (uInt16) in.getInt();
+    in.getShortArray(myCurrentSlice, 4);
   }
   catch(const char* msg)
   {

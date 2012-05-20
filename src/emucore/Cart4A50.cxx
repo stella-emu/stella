@@ -452,14 +452,12 @@ bool Cartridge4A50::save(Serializer& out) const
     out.putString(name());
 
     // The 32K bytes of RAM
-    out.putInt(32768);
-    for(uInt32 i = 0; i < 32768; ++i)
-      out.putByte((char)myRAM[i]);
+    out.putByteArray(myRAM, 32768);
 
     // Index pointers
-    out.putInt(mySliceLow);
-    out.putInt(mySliceMiddle);
-    out.putInt(mySliceHigh);
+    out.putShort(mySliceLow);
+    out.putShort(mySliceMiddle);
+    out.putShort(mySliceHigh);
 
     // Whether index pointers are for ROM or RAM
     out.putBool(myIsRomLow);
@@ -468,7 +466,7 @@ bool Cartridge4A50::save(Serializer& out) const
 
     // Last address and data values
     out.putByte(myLastData);
-    out.putInt(myLastAddress);
+    out.putShort(myLastAddress);
   }
   catch(const char* msg)
   {
@@ -487,14 +485,12 @@ bool Cartridge4A50::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getByte();
+    in.getByteArray(myRAM, 32768);
 
     // Index pointers
-    mySliceLow = (uInt16) in.getInt();
-    mySliceMiddle = (uInt16) in.getInt();
-    mySliceHigh = (uInt16) in.getInt();
+    mySliceLow = in.getShort();
+    mySliceMiddle = in.getShort();
+    mySliceHigh = in.getShort();
 
     // Whether index pointers are for ROM or RAM
     myIsRomLow = in.getBool();
@@ -502,8 +498,8 @@ bool Cartridge4A50::load(Serializer& in)
     myIsRomHigh = in.getBool();
 
     // Last address and data values
-    myLastData = (uInt8) in.getByte();
-    myLastAddress = (uInt16) in.getInt();
+    myLastData = in.getByte();
+    myLastAddress = in.getShort();
   }
   catch(const char* msg)
   {

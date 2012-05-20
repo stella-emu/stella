@@ -208,7 +208,8 @@ bool CartridgeEFSC::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myCurrentBank);
+    out.putShort(myCurrentBank);
+    out.putByteArray(myRAM, 128);
   }
   catch(const char* msg)
   {
@@ -227,7 +228,8 @@ bool CartridgeEFSC::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = (uInt16) in.getInt();
+    myCurrentBank = in.getShort();
+    in.getByteArray(myRAM, 128);
   }
   catch(const char* msg)
   {

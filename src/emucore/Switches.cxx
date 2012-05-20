@@ -113,7 +113,7 @@ bool Switches::save(Serializer& out) const
 {
   try
   {
-    out.putByte((char)mySwitches);
+    out.putByte(mySwitches);
   }
   catch(...)
   {
@@ -128,7 +128,7 @@ bool Switches::load(Serializer& in)
 {
   try
   {
-    mySwitches = (uInt8) in.getByte();
+    mySwitches = in.getByte();
   }
   catch(...)
   {

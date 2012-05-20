@@ -658,61 +658,41 @@ bool CartridgeDPCPlus::save(Serializer& out) const
 {
   try
   {
-    uInt32 i;
-
     out.putString(name());
 
     // Indicates which bank is currently active
-    out.putInt(myCurrentBank);
+    out.putShort(myCurrentBank);
 
     // The top registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putByte((char)myTops[i]);
+    out.putByteArray(myTops, 8);
 
     // The bottom registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putByte((char)myBottoms[i]);
+    out.putByteArray(myBottoms, 8);
 
     // The counter registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putInt(myCounters[i]);
+    out.putShortArray(myCounters, 8);
 
     // The counter registers for the fractional data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putInt(myFractionalCounters[i]);
+    out.putIntArray(myFractionalCounters, 8);
 
     // The fractional registers for the data fetchers
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putByte((char)myFractionalIncrements[i]);
+    out.putByteArray(myFractionalIncrements, 8);
 
     // The Fast Fetcher Enabled flag
     out.putBool(myFastFetch);
     out.putBool(myLDAimmediate);
 
     // Control Byte to update
-    out.putInt(8);
-    for(i = 0; i < 8; ++i)
-      out.putByte((char)myParameter[i]);
+    out.putByteArray(myParameter, 8);
 
     // The music counters
-    out.putInt(3);
-    for(i = 0; i < 3; ++i)
-      out.putInt(myMusicCounters[i]);
+    out.putIntArray(myMusicCounters, 3);
 
     // The music frequencies
-    out.putInt(3);
-    for(i = 0; i < 3; ++i)
-      out.putInt(myMusicFrequencies[i]);
+    out.putIntArray(myMusicFrequencies, 3);
 
     // The music waveforms
-    out.putInt(3);
-    for(i = 0; i < 3; ++i)
-      out.putInt(myMusicWaveforms[i]);
+    out.putShortArray(myMusicWaveforms, 3);
 
     // The random number generator register
     out.putInt(myRandomNumber);
@@ -737,65 +717,45 @@ bool CartridgeDPCPlus::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    uInt32 i, limit;
-
     // Indicates which bank is currently active
-    myCurrentBank = (uInt16) in.getInt();
+    myCurrentBank = in.getShort();
 
     // The top registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myTops[i] = (uInt8) in.getByte();
+    in.getByteArray(myTops, 8);
 
     // The bottom registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myBottoms[i] = (uInt8) in.getByte();
+    in.getByteArray(myBottoms, 8);
 
     // The counter registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myCounters[i] = (uInt16) in.getInt();
+    in.getShortArray(myCounters, 8);
 
     // The counter registers for the fractional data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myFractionalCounters[i] = (uInt32) in.getInt();
+    in.getIntArray(myFractionalCounters, 8);
 
     // The fractional registers for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myFractionalIncrements[i] = (uInt8) in.getByte();
+    in.getByteArray(myFractionalIncrements, 8);
 
     // The Fast Fetcher Enabled flag
     myFastFetch = in.getBool();
     myLDAimmediate = in.getBool();
 
     // Control Byte to update
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myParameter[i] = (uInt8) in.getByte();
+    in.getByteArray(myParameter, 8);
 
     // The music mode counters for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myMusicCounters[i] = (uInt32) in.getInt();
+    in.getIntArray(myMusicCounters, 3);
 
     // The music mode frequency addends for the data fetchers
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myMusicFrequencies[i] = (uInt32) in.getInt();
+    in.getIntArray(myMusicFrequencies, 3);
 
     // The music waveforms
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myMusicWaveforms[i] = (uInt16) in.getInt();
+    in.getShortArray(myMusicWaveforms, 3);
 
     // The random number generator register
-    myRandomNumber = (uInt32) in.getInt();
+    myRandomNumber = in.getInt();
 
     // Get system cycles and fractional clocks
-    mySystemCycles = in.getInt();
+    mySystemCycles = (Int32)in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
   }
   catch(const char* msg)

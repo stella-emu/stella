@@ -167,7 +167,7 @@ bool CartridgeE7::poke(uInt16 address, uInt8)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeE7::bankRAM(uInt16 bank)
-{ 
+{
   if(bankLocked()) return;
 
   // Remember what bank we're in
@@ -300,20 +300,10 @@ bool CartridgeE7::save(Serializer& out) const
 {
   try
   {
-    uInt32 i;
-
     out.putString(name());
-
-    out.putInt(2);
-    for(i = 0; i < 2; ++i)
-      out.putInt(myCurrentSlice[i]);
-
-    out.putInt(myCurrentRAM);
-
-    // The 2048 bytes of RAM
-    out.putInt(2048);
-    for(i = 0; i < 2048; ++i)
-      out.putByte((char)myRAM[i]);
+    out.putShortArray(myCurrentSlice, 2);
+    out.putShort(myCurrentRAM);
+    out.putByteArray(myRAM, 2048);
   }
   catch(const char* msg)
   {
@@ -332,18 +322,9 @@ bool CartridgeE7::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    uInt32 i, limit;
-
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myCurrentSlice[i] = (uInt16) in.getInt();
-
-    myCurrentRAM = (uInt16) in.getInt();
-
-    // The 2048 bytes of RAM
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getByte();
+    in.getShortArray(myCurrentSlice, 2);
+    myCurrentRAM = in.getShort();
+    in.getByteArray(myRAM, 2048);
   }
   catch(const char* msg)
   {

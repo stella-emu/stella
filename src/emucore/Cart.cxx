@@ -156,7 +156,7 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   else if(type == "CM")
     cartridge = new CartridgeCM(image, size, settings);
   else if(type == "CTY")
-    cartridge = new CartridgeCTY(image, size, settings);
+    cartridge = new CartridgeCTY(image, size, osystem);
   else if(type == "CV")
     cartridge = new CartridgeCV(image, size, settings);
   else if(type == "DPC")

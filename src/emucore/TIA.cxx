@@ -280,58 +280,52 @@ bool TIA::save(Serializer& out) const
     out.putInt(myScanlineCountForLastFrame);
     out.putInt(myVSYNCFinishClock);
 
-    out.putByte((char)myEnabledObjects);
-    out.putByte((char)myDisabledObjects);
+    out.putByte(myEnabledObjects);
+    out.putByte(myDisabledObjects);
 
-    out.putByte((char)myVSYNC);
-    out.putByte((char)myVBLANK);
-    out.putByte((char)myNUSIZ0);
-    out.putByte((char)myNUSIZ1);
+    out.putByte(myVSYNC);
+    out.putByte(myVBLANK);
+    out.putByte(myNUSIZ0);
+    out.putByte(myNUSIZ1);
 
-    out.putInt(myColor[P0Color]);
-    out.putInt(myColor[P1Color]);
-    out.putInt(myColor[PFColor]);
-    out.putInt(myColor[BKColor]);
-    out.putInt(myColor[M0Color]);
-    out.putInt(myColor[M1Color]);
-    out.putInt(myColor[BLColor]);
+    out.putIntArray(myColor, 8);
 
-    out.putByte((char)myCTRLPF);
-    out.putByte((char)myPlayfieldPriorityAndScore);
+    out.putByte(myCTRLPF);
+    out.putByte(myPlayfieldPriorityAndScore);
     out.putBool(myREFP0);
     out.putBool(myREFP1);
     out.putInt(myPF);
-    out.putByte((char)myGRP0);
-    out.putByte((char)myGRP1);
-    out.putByte((char)myDGRP0);
-    out.putByte((char)myDGRP1);
+    out.putByte(myGRP0);
+    out.putByte(myGRP1);
+    out.putByte(myDGRP0);
+    out.putByte(myDGRP1);
     out.putBool(myENAM0);
     out.putBool(myENAM1);
     out.putBool(myENABL);
     out.putBool(myDENABL);
-    out.putByte((char)myHMP0);
-    out.putByte((char)myHMP1);
-    out.putByte((char)myHMM0);
-    out.putByte((char)myHMM1);
-    out.putByte((char)myHMBL);
+    out.putByte(myHMP0);
+    out.putByte(myHMP1);
+    out.putByte(myHMM0);
+    out.putByte(myHMM1);
+    out.putByte(myHMBL);
     out.putBool(myVDELP0);
     out.putBool(myVDELP1);
     out.putBool(myVDELBL);
     out.putBool(myRESMP0);
     out.putBool(myRESMP1);
-    out.putInt(myCollision);
+    out.putShort(myCollision);
     out.putInt(myCollisionEnabledMask);
-    out.putByte((char)myCurrentGRP0);
-    out.putByte((char)myCurrentGRP1);
+    out.putByte(myCurrentGRP0);
+    out.putByte(myCurrentGRP1);
 
     out.putBool(myDumpEnabled);
     out.putInt(myDumpDisabledCycle);
 
-    out.putInt(myPOSP0);
-    out.putInt(myPOSP1);
-    out.putInt(myPOSM0);
-    out.putInt(myPOSM1);
-    out.putInt(myPOSBL);
+    out.putShort(myPOSP0);
+    out.putShort(myPOSP1);
+    out.putShort(myPOSM0);
+    out.putShort(myPOSM1);
+    out.putShort(myPOSBL);
 
     out.putInt(myMotionClockP0);
     out.putInt(myMotionClockP1);
@@ -386,61 +380,55 @@ bool TIA::load(Serializer& in)
     myClockStopDisplay = (Int32) in.getInt();
     myClockAtLastUpdate = (Int32) in.getInt();
     myClocksToEndOfScanLine = (Int32) in.getInt();
-    myScanlineCountForLastFrame = (uInt32) in.getInt();
+    myScanlineCountForLastFrame = in.getInt();
     myVSYNCFinishClock = (Int32) in.getInt();
 
-    myEnabledObjects = (uInt8) in.getByte();
-    myDisabledObjects = (uInt8) in.getByte();
+    myEnabledObjects = in.getByte();
+    myDisabledObjects = in.getByte();
 
-    myVSYNC = (uInt8) in.getByte();
-    myVBLANK = (uInt8) in.getByte();
-    myNUSIZ0 = (uInt8) in.getByte();
-    myNUSIZ1 = (uInt8) in.getByte();
+    myVSYNC = in.getByte();
+    myVBLANK = in.getByte();
+    myNUSIZ0 = in.getByte();
+    myNUSIZ1 = in.getByte();
 
-    myColor[P0Color] = (uInt32) in.getInt();
-    myColor[P1Color] = (uInt32) in.getInt();
-    myColor[PFColor] = (uInt32) in.getInt();
-    myColor[BKColor] = (uInt32) in.getInt();
-    myColor[M0Color] = (uInt32) in.getInt();
-    myColor[M1Color] = (uInt32) in.getInt();
-    myColor[BLColor] = (uInt32) in.getInt();
+    in.getIntArray(myColor, 8);
 
-    myCTRLPF = (uInt8) in.getByte();
-    myPlayfieldPriorityAndScore = (uInt8) in.getByte();
+    myCTRLPF = in.getByte();
+    myPlayfieldPriorityAndScore = in.getByte();
     myREFP0 = in.getBool();
     myREFP1 = in.getBool();
-    myPF = (uInt32) in.getInt();
-    myGRP0 = (uInt8) in.getByte();
-    myGRP1 = (uInt8) in.getByte();
-    myDGRP0 = (uInt8) in.getByte();
-    myDGRP1 = (uInt8) in.getByte();
+    myPF = in.getInt();
+    myGRP0 = in.getByte();
+    myGRP1 = in.getByte();
+    myDGRP0 = in.getByte();
+    myDGRP1 = in.getByte();
     myENAM0 = in.getBool();
     myENAM1 = in.getBool();
     myENABL = in.getBool();
     myDENABL = in.getBool();
-    myHMP0 = (uInt8) in.getByte();
-    myHMP1 = (uInt8) in.getByte();
-    myHMM0 = (uInt8) in.getByte();
-    myHMM1 = (uInt8) in.getByte();
-    myHMBL = (uInt8) in.getByte();
+    myHMP0 = in.getByte();
+    myHMP1 = in.getByte();
+    myHMM0 = in.getByte();
+    myHMM1 = in.getByte();
+    myHMBL = in.getByte();
     myVDELP0 = in.getBool();
     myVDELP1 = in.getBool();
     myVDELBL = in.getBool();
     myRESMP0 = in.getBool();
     myRESMP1 = in.getBool();
-    myCollision = (uInt16) in.getInt();
+    myCollision = in.getShort();
     myCollisionEnabledMask = in.getInt();
-    myCurrentGRP0 = (uInt8) in.getByte();
-    myCurrentGRP1 = (uInt8) in.getByte();
+    myCurrentGRP0 = in.getByte();
+    myCurrentGRP1 = in.getByte();
 
     myDumpEnabled = in.getBool();
     myDumpDisabledCycle = (Int32) in.getInt();
 
-    myPOSP0 = (Int16) in.getInt();
-    myPOSP1 = (Int16) in.getInt();
-    myPOSM0 = (Int16) in.getInt();
-    myPOSM1 = (Int16) in.getInt();
-    myPOSBL = (Int16) in.getInt();
+    myPOSP0 = (Int16) in.getShort();
+    myPOSP1 = (Int16) in.getShort();
+    myPOSM0 = (Int16) in.getShort();
+    myPOSM1 = (Int16) in.getShort();
+    myPOSBL = (Int16) in.getShort();
 
     myMotionClockP0 = (Int32) in.getInt();
     myMotionClockP1 = (Int32) in.getInt();
@@ -453,8 +441,8 @@ bool TIA::load(Serializer& in)
     myStartM0 = (Int32) in.getInt();
     myStartM1 = (Int32) in.getInt();
 
-    mySuppressP0 = (uInt8) in.getByte();
-    mySuppressP1 = (uInt8) in.getByte();
+    mySuppressP0 = in.getByte();
+    mySuppressP1 = in.getByte();
 
     myHMP0mmr = in.getBool();
     myHMP1mmr = in.getBool();
@@ -492,9 +480,7 @@ bool TIA::saveDisplay(Serializer& out) const
   {
     out.putBool(myPartialFrameFlag);
     out.putInt(myFramePointerClocks);
-
-    for(int i = 0; i < 160*320; ++i)
-      out.putByte(myCurrentFrameBuffer[i]);
+    out.putByteArray(myCurrentFrameBuffer, 160*320);
   }
   catch(const char* msg)
   {
@@ -511,13 +497,13 @@ bool TIA::loadDisplay(Serializer& in)
   try
   {
     myPartialFrameFlag = in.getBool();
-    myFramePointerClocks = (uInt32) in.getInt();
+    myFramePointerClocks = in.getInt();
 
     // Reset frame buffer pointer and data
     clearBuffers();
     myFramePointer = myCurrentFrameBuffer;
-    for(int i = 0; i < 160*320; ++i)
-      myCurrentFrameBuffer[i] = myPreviousFrameBuffer[i] = (uInt8) in.getByte();
+    in.getByteArray(myCurrentFrameBuffer, 160*320);
+    memcpy(myPreviousFrameBuffer, myCurrentFrameBuffer, 160*320);
 
     // If we're in partial frame mode, make sure to re-create the screen
     // as it existed when the state was saved

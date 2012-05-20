@@ -244,12 +244,8 @@ bool CartridgeFA::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myCurrentBank);
-
-    // The 256 bytes of RAM
-    out.putInt(256);
-    for(uInt32 i = 0; i < 256; ++i)
-      out.putByte((char)myRAM[i]);
+    out.putShort(myCurrentBank);
+    out.putByteArray(myRAM, 256);
   }
   catch(const char* msg)
   {
@@ -268,11 +264,8 @@ bool CartridgeFA::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = (uInt16) in.getInt();
-
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getByte();
+    myCurrentBank = in.getShort();
+    in.getByteArray(myRAM, 256);
   }
   catch(const char* msg)
   {

@@ -301,9 +301,7 @@ bool M6532::save(Serializer& out) const
     out.putString(name());
 
     // Output the RAM
-    out.putInt(128);
-    for(uInt32 t = 0; t < 128; ++t)
-      out.putByte((char)myRAM[t]);
+    out.putByteArray(myRAM, 128);
 
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
@@ -311,14 +309,11 @@ bool M6532::save(Serializer& out) const
     out.putBool(myInterruptEnabled);
     out.putBool(myInterruptTriggered);
 
-    out.putByte((char)myDDRA);
-    out.putByte((char)myDDRB);
-    out.putByte((char)myOutA);
-    out.putByte((char)myOutB);
-    out.putByte((char)myOutTimer[0]);
-    out.putByte((char)myOutTimer[1]);
-    out.putByte((char)myOutTimer[2]);
-    out.putByte((char)myOutTimer[3]);
+    out.putByte(myDDRA);
+    out.putByte(myDDRB);
+    out.putByte(myOutA);
+    out.putByte(myOutB);
+    out.putByteArray(myOutTimer, 4);
   }
   catch(const char* msg)
   {
@@ -338,24 +333,19 @@ bool M6532::load(Serializer& in)
       return false;
 
     // Input the RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 t = 0; t < limit; ++t)
-      myRAM[t] = (uInt8) in.getByte();
+    in.getByteArray(myRAM, 128);
 
-    myTimer = (uInt32) in.getInt();
-    myIntervalShift = (uInt32) in.getInt();
-    myCyclesWhenTimerSet = (uInt32) in.getInt();
+    myTimer = in.getInt();
+    myIntervalShift = in.getInt();
+    myCyclesWhenTimerSet = in.getInt();
     myInterruptEnabled = in.getBool();
     myInterruptTriggered = in.getBool();
 
-    myDDRA = (uInt8) in.getByte();
-    myDDRB = (uInt8) in.getByte();
-    myOutA = (uInt8) in.getByte();
-    myOutB = (uInt8) in.getByte();
-    myOutTimer[0] = (uInt8) in.getByte();
-    myOutTimer[1] = (uInt8) in.getByte();
-    myOutTimer[2] = (uInt8) in.getByte();
-    myOutTimer[3] = (uInt8) in.getByte();
+    myDDRA = in.getByte();
+    myDDRB = in.getByte();
+    myOutA = in.getByte();
+    myOutB = in.getByte();
+    in.getByteArray(myOutTimer, 4);
   }
   catch(const char* msg)
   {

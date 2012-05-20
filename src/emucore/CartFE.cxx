@@ -164,8 +164,8 @@ bool CartridgeFE::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myLastAddress1);
-    out.putInt(myLastAddress2);
+    out.putShort(myLastAddress1);
+    out.putShort(myLastAddress2);
   }
   catch(const char* msg)
   {
@@ -184,8 +184,8 @@ bool CartridgeFE::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myLastAddress1 = (uInt16)in.getInt();
-    myLastAddress2 = (uInt16)in.getInt();
+    myLastAddress1 = in.getShort();
+    myLastAddress2 = in.getShort();
   }
   catch(const char* msg)
   {

@@ -202,15 +202,10 @@ bool CartridgeCM::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myCurrentBank);
+    out.putShort(myCurrentBank);
     out.putByte(myRamState);
     out.putByte(myColumn);
-
-    // The 2048 bytes of RAM
-    out.putInt(2048);
-    for(uInt32 i = 0; i < 2048; ++i)
-      out.putByte((char)myRAM[i]);
-
+    out.putByteArray(myRAM, 2048);
   }
   catch(const char* msg)
   {
@@ -229,14 +224,10 @@ bool CartridgeCM::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = (uInt16) in.getInt();
-    myRamState = (uInt8) in.getByte();
-    myColumn = (uInt8) in.getByte();
-
-    // The 2048 bytes of RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getByte();
+    myCurrentBank = in.getShort();
+    myRamState = in.getByte();
+    myColumn = in.getByte();
+    in.getByteArray(myRAM, 2048);
   }
   catch(const char* msg)
   {

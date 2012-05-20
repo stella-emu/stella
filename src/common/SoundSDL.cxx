@@ -397,12 +397,12 @@ bool SoundSDL::save(Serializer& out) const
       reg6 = myTIASound.get(0x1a);
     }
 
-    out.putByte((char)reg1);
-    out.putByte((char)reg2);
-    out.putByte((char)reg3);
-    out.putByte((char)reg4);
-    out.putByte((char)reg5);
-    out.putByte((char)reg6);
+    out.putByte(reg1);
+    out.putByte(reg2);
+    out.putByte(reg3);
+    out.putByte(reg4);
+    out.putByte(reg5);
+    out.putByte(reg6);
 
     out.putInt(myLastRegisterSetCycle);
   }
@@ -425,12 +425,12 @@ bool SoundSDL::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    uInt8 reg1 = (uInt8) in.getByte(),
-          reg2 = (uInt8) in.getByte(),
-          reg3 = (uInt8) in.getByte(),
-          reg4 = (uInt8) in.getByte(),
-          reg5 = (uInt8) in.getByte(),
-          reg6 = (uInt8) in.getByte();
+    uInt8 reg1 = in.getByte(),
+          reg2 = in.getByte(),
+          reg3 = in.getByte(),
+          reg4 = in.getByte(),
+          reg5 = in.getByte(),
+          reg6 = in.getByte();
 
     myLastRegisterSetCycle = (Int32) in.getInt();
 

@@ -44,6 +44,13 @@
     their high-byte truncated, and system equates (TIA and I/O registers)
     are now properly marked as such.
 
+  * Fixed bug in EFSC state saving; the Superchip RAM wasn't actually
+    being loaded and saved to state files.
+
+  * Improved speed of loading and saving state files, as well as slightly
+    reducing their size.  Because of this, old state files will not work
+    with this release.
+
   * Replaced commandline argument 'uselauncher' with 'exitlauncher'.  The
     new option specifies the behaviour of the ROM launcher when exiting
     a ROM (always exit to launcher, or only when the launcher was actually
@@ -1948,7 +1955,7 @@
 
   * A new Windows port has been created, with the GUI based on StellaX.
     This is the first new release for Windows since Stella 1.2.
-    (software  mode is not yet optimized; OpenGL mode works much better)
+    (software mode is not yet optimized; OpenGL mode works much better)
 
   * A new Mac OSX port has been created by Mark Grebe. This is the first new
     release for Mac OSX since Stella 1.2.

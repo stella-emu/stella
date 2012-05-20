@@ -192,7 +192,7 @@ bool Cartridge3F::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putInt(myCurrentBank);
+    out.putShort(myCurrentBank);
   }
   catch(const char* msg)
   {
@@ -211,7 +211,7 @@ bool Cartridge3F::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = (uInt16) in.getInt();
+    myCurrentBank = in.getShort();
   }
   catch(const char* msg)
   {

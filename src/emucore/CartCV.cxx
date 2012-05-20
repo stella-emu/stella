@@ -204,11 +204,7 @@ bool CartridgeCV::save(Serializer& out) const
   try
   {
     out.putString(name());
-
-    // Output RAM
-    out.putInt(1024);
-    for(uInt32 addr = 0; addr < 1024; ++addr)
-      out.putByte((char)myRAM[addr]);
+    out.putByteArray(myRAM, 1024);
   }
   catch(const char* msg)
   {
@@ -227,10 +223,7 @@ bool CartridgeCV::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // Input RAM
-    uInt32 limit = (uInt32) in.getInt();
-    for(uInt32 addr = 0; addr < limit; ++addr)
-      myRAM[addr] = (uInt8) in.getByte();
+    in.getByteArray(myRAM, 1024);
   }
   catch(const char* msg)
   {

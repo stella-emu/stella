@@ -249,18 +249,13 @@ bool CartridgeMC::save(Serializer& out) const
 {
   try
   {
-    uInt32 i;
     out.putString(name());
 
     // The currentBlock array
-    out.putInt(4);
-    for(i = 0; i < 4; ++i)
-      out.putByte((char)myCurrentBlock[i]);
+    out.putByteArray(myCurrentBlock, 4);
 
     // The 32K of RAM
-    out.putInt(32 * 1024);
-    for(i = 0; i < 32 * 1024; ++i)
-      out.putByte((char)myRAM[i]);
+    out.putByteArray(myRAM, 32 * 1024);
   }
   catch(const char* msg)
   {
@@ -276,20 +271,14 @@ bool CartridgeMC::load(Serializer& in)
 {
   try
   {
-    uInt32 i, limit;
-
     if(in.getString() != name())
       return false;
 
     // The currentBlock array
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myCurrentBlock[i] = (uInt8) in.getByte();
+    in.getByteArray(myCurrentBlock, 4);
 
     // The 32K of RAM
-    limit = (uInt32) in.getInt();
-    for(i = 0; i < limit; ++i)
-      myRAM[i] = (uInt8) in.getByte();
+    in.getByteArray(myRAM, 32 * 1024);
   }
   catch(const char* msg)
   {

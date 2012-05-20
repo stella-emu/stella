@@ -39,9 +39,9 @@ class CartridgeCTY : public Cartridge
 
       @param image     Pointer to the ROM image
       @param size      The size of the ROM image
-      @param settings  A reference to the various settings (read-only)
+      @param osystem   A reference to the OSystem currently in use
     */
-    CartridgeCTY(const uInt8* image, uInt32 size, const Settings& settings);
+    CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osystem);
  
     /**
       Destructor
@@ -119,6 +119,14 @@ class CartridgeCTY : public Cartridge
     */
     string name() const { return "CartridgeCTY"; }
 
+    /**
+      Informs the cartridge about the name of the ROM file used when
+      creating this cart.
+
+      @param name  The properties file name of the ROM
+    */
+    void setRomName(const string& name);
+
   public:
     /**
       Get the byte at the specified address.
@@ -137,18 +145,52 @@ class CartridgeCTY : public Cartridge
     bool poke(uInt16 address, uInt8 value);
 
   private:
+    /**
+      Either load or save internal RAM to Harmony EEPROM (represented by
+      a file in emulation).
+
+      @return  The value at $FF4 with bit 6 set or cleared (depending on
+               whether the RAM access was busy or successful)
+    */
+    uInt8 ramReadWrite();
+
+    /**
+      Actions initiated by accessing $FF4 hotspot.
+    */
+    void loadTune(uInt8 index);
+    void loadScore(uInt8 index);
+    void saveScore(uInt8 index);
+    void wipeAllScores();
+
+  private:
+    // OSsytem currently in use
+    const OSystem& myOSystem;
+
     // Indicates which bank is currently active
     uInt16 myCurrentBank;
 
     // The 32K ROM image of the cartridge
     uInt8 myImage[32768];
 
-    // The 256 bytes of score-table RAM
-    uInt8 myScoreRAM[256];
-    uInt8* myScorePtr;
+    // The 64 bytes of RAM accessible at $1000 - $1080
+    uInt8 myRAM[64];
+
+    // Operation type (written to $1000, used by hotspot $1FF4)
+    uInt8 myOperationType;
 
     // The 8K Harmony RAM (used for tune data)
+    // Data is accessed from Harmony EEPROM
     uInt8 myTuneRAM[8192];
+
+    // The time after which the first request of a load/save operation
+    // will actually be completed
+    // Due to flash RAM constraints, a read/write isn't instantaneous,
+    // so we need to emulate the delay as well
+    uInt64 myRamAccessTimeout;
+
+    // Full pathname of the file to use when emulating load/save
+    // of internal RAM to Harmony cart flash
+    string myEEPROMFile;
 };
 
 #endif

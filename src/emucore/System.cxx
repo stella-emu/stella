@@ -338,8 +338,8 @@ bool System::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCycles = (uInt32) in.getInt();
-    myDataBusState = (uInt8) in.getByte();
+    myCycles = in.getInt();
+    myDataBusState = in.getByte();
 
     // Next, load state for the CPU
     if(!myM6502->load(in))
