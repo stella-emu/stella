@@ -31,6 +31,7 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
     myOperationType(0),
+    myLDAimmediate(false),
     myRamAccessTimeout(0)
 {
   // Copy the ROM image into my buffer
@@ -89,12 +90,21 @@ uInt8 CartridgeCTY::peek(uInt16 address)
 {
   uInt16 peekAddress = address;
   address &= 0x0FFF;
-  uInt8 peekValue = myImage[(myCurrentBank << 12) + address];
+  uInt8 peekValue = myImage[myCurrentBank + address];
 
   // In debugger/bank-locked mode, we ignore all hotspots and in general
   // anything that can change the internal state of the cart
   if(bankLocked())
     return peekValue;
+
+  // Check for aliasing to 'LDA #$F2'
+  if(myLDAimmediate && peekValue == 0xF2)
+  {
+    myLDAimmediate = false;
+    return 0xF2;  // FIXME - return frequency value here
+  }
+  else
+    myLDAimmediate = false;
 
   if(address < 0x0040)  // Write port is at $1000 - $103F (64 bytes)
   {
@@ -149,7 +159,11 @@ uInt8 CartridgeCTY::peek(uInt16 address)
       default:
         break;
     }
-    return myImage[(myCurrentBank << 12) + address];
+
+    // Is this instruction an immediate mode LDA?
+    myLDAimmediate = (peekValue == 0xA9);
+
+    return myImage[myCurrentBank + address];
   }
 }
 
@@ -211,26 +225,14 @@ bool CartridgeCTY::bank(uInt16 bank)
   if(bankLocked()) return false;
 
   // Remember what bank we're in
-  myCurrentBank = bank;
-  uInt16 offset = myCurrentBank << 12;
+  myCurrentBank = bank << 12;
   uInt16 shift = mySystem->pageShift();
-  uInt16 mask = mySystem->pageMask();
-
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
-
-  // Set the page accessing methods for the hot spots
-  for(uInt32 i = (0x1FF4 & ~mask); i < 0x2000; i += (1 << shift))
-  {
-    access.codeAccessBase = &myCodeAccessBase[offset + (i & 0x0FFF)];
-    mySystem->setPageAccess(i >> shift, access);
-  }
 
   // Setup the page access methods for the current bank
-  for(uInt32 address = 0x1080; address < (0x1FF4U & ~mask);
-      address += (1 << shift))
+  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  for(uInt32 address = 0x1080; address < 0x2000; address += (1 << shift))
   {
-    access.directPeekBase = &myImage[offset + (address & 0x0FFF)];
-    access.codeAccessBase = &myCodeAccessBase[offset + (address & 0x0FFF)];
+    access.codeAccessBase = &myCodeAccessBase[myCurrentBank + (address & 0x0FFF)];
     mySystem->setPageAccess(address >> shift, access);
   }
   return myBankChanged = true;
@@ -239,7 +241,7 @@ bool CartridgeCTY::bank(uInt16 bank)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt16 CartridgeCTY::bank() const
 {
-  return myCurrentBank;
+  return myCurrentBank >> 12;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -261,7 +263,7 @@ bool CartridgeCTY::patch(uInt16 address, uInt8 value)
     myRAM[address & 0x003F] = value;
   }
   else
-    myImage[(myCurrentBank << 12) + address] = value;
+    myImage[myCurrentBank + address] = value;
 
   return myBankChanged = true;
 } 
@@ -279,7 +281,7 @@ bool CartridgeCTY::save(Serializer& out) const
   try
   {
     out.putString(name());
-    out.putShort(myCurrentBank);
+    out.putShort(bank());
     out.putByte(myOperationType);
     out.putByteArray(myRAM, 64);
   }
@@ -300,7 +302,9 @@ bool CartridgeCTY::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    myCurrentBank = in.getShort();
+    // Remember what bank we were in
+    bank(in.getShort());
+
     myOperationType = in.getByte();
     in.getByteArray(myRAM, 64);
   }
@@ -309,10 +313,6 @@ bool CartridgeCTY::load(Serializer& in)
     cerr << "ERROR: CartridgeCTY::load" << endl << "  " << msg << endl;
     return false;
   }
-
-  // Remember what bank we were in
-  bank(myCurrentBank);
-
   return true;
 }
 
@@ -383,7 +383,7 @@ uInt8 CartridgeCTY::ramReadWrite()
         break;
     }
     // Bit 6 is 1, busy
-    return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
+    return myImage[myCurrentBank + 0xFF4] | 0x40;
   }
   else
   {
@@ -394,11 +394,11 @@ uInt8 CartridgeCTY::ramReadWrite()
       myRAM[0] = 0;            // Successful operation
 
       // Bit 6 is 0, ready/success
-      return myImage[(myCurrentBank << 12) + 0xFF4] & ~0x40;
+      return myImage[myCurrentBank + 0xFF4] & ~0x40;
     }
     else
       // Bit 6 is 1, busy
-      return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
+      return myImage[myCurrentBank + 0xFF4] | 0x40;
   }
 }
 

@@ -258,6 +258,9 @@ class CartridgeCTY : public Cartridge
     // Data is accessed from Harmony EEPROM
     uInt8 myTuneRAM[8192];
 
+    // Flags that last byte peeked was A9 (LDA #)
+    bool myLDAimmediate;
+
     // The time after which the first request of a load/save operation
     // will actually be completed
     // Due to Harmony EEPROM constraints, a read/write isn't instantaneous,

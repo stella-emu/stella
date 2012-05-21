@@ -127,8 +127,6 @@ class Paddles : public Controller
     int myLastAxisX, myLastAxisY;
     int myAxisDigitalZero, myAxisDigitalOne;
 
-    bool mySwapPorts;
-
     static int _DIGITAL_SENSITIVITY, _DIGITAL_DISTANCE;
     static int _MOUSE_SENSITIVITY;
 
