@@ -124,7 +124,7 @@ uInt8 Serializer::getByte(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::getByteArray(uInt8* array, uInt32 size)
 {
-  myStream->read((char*)array, (streamsize)size);
+  myStream->read((char*)array, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -162,8 +162,8 @@ string Serializer::getString(void)
 {
   int len = getInt();
   string str;
-  str.resize((string::size_type)len);
-  myStream->read(&str[0], (streamsize)len);
+  str.resize(len);
+  myStream->read(&str[0], len);
 
   return str;
 }
@@ -171,7 +171,7 @@ string Serializer::getString(void)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Serializer::getBool(void)
 {
-  return getByte() == (char)TruePattern;
+  return getByte() == TruePattern;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -183,7 +183,7 @@ void Serializer::putByte(uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Serializer::putByteArray(const uInt8* array, uInt32 size)
 {
-  myStream->write((char*)array, (streamsize)size);
+  myStream->write((char*)array, size);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,10 +215,7 @@ void Serializer::putString(const string& str)
 {
   int len = str.length();
   putInt(len);
-  myStream->write(str.data(), (streamsize)len);
-
-  if(myStream->bad())
-    throw "Serializer::putString() file write failed";
+  myStream->write(str.data(), len);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
