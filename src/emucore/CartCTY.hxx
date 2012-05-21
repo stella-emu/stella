@@ -26,7 +26,83 @@ class System;
 #include "Cart.hxx"
 
 /**
-  TODO - add description from cd-w.
+  The 'Chetiry' bankswitch scheme was developed by Chris D. Walton for a
+  Tetris clone game by the same name.  It makes use of a Harmony cart,
+  whereby ARM code in bank 0 is executed to implement the bankswitch scheme.
+  The implementation here does not execute this ARM code, and instead
+  implements the bankswitching directly.  Its functionality is similar to
+  several other schemes, as follows:
+
+  F4SC:
+    The scheme contains 8 4K banks, with the first bank being inaccessible
+    (due to containing ARM code).  The remaining banks (1 - 7) are accessed
+    at hotspots $FF5 - $FFB, exactly the same as F4SC.
+
+    There is 64 bytes of RAM (vs. 128 bytes in F4SC) at $1000 - $107F
+    ($1000 - $103F is write port, $1040 - $107F is read port).
+
+  FA2:
+    The first four bytes of RAM are actually a kind of hotspot, with the
+    following functionality.  Data is accessed from Harmony EEPROM in
+    the same fashion as the FA2 scheme.
+
+    Write Addresses:
+      $1000 = Operation Type (see discussion of hotspot $1FF4 below)
+      $1001 = Set Random Seed Value
+      $1002 = Reset Fetcher To Beginning Of Tune
+      $1003 = Advance Fetcher To Next Tune Position
+
+    Read Addresses:
+      $1040 = Error Code after operation
+      $1041 = Get Next Random Number (8-bit LFSR)
+      $1042 = Get Tune Position (Low Byte)
+      $1043 = Get Tune Position (High Byte)
+
+    RAM Load And Save Operations:
+
+      Address $1FF4 is used as a special hotspot to trigger loading and saving
+      of the RAM, similar to FA2 bankswitching. The operation to perform is
+      given using the first byte of the extra RAM. The format of this byte is
+      XXXXYYYY, where XXXX is an index and YYYY is the operation to perform.
+      There are 4 different operation types:
+
+        1 = Load Tune (index = tune)
+        2 = Load Score Table (index = table)
+        3 = Save Score Table (index = table)
+        4 = Wipe All Score Tables (set all 256 bytes of EEPROM to $00)
+
+      The score table functionality is based on 256 bytes from Harmony
+      EEPROM, of which there are 4 64-byte 'tables'.  The 'index' for
+      operations 2 and 3 can therefore be in the range 0 - 3, indicating
+      which table to use.  For this implementation, the 256 byte EEPROM
+      is serialized to a file.
+
+      The tune table functionality is also based on Harmony EEPROM, where
+      7 4K tunes are stored (28K total).  The 'index' for operation 1 can
+      therefore be in the range 0 - 6, indicating which tune to load.
+      For this implementation, the 28K tune data is in the 'CartCTYTunes'
+      header file.
+
+  DPC+:
+    The music functionality is quite similar to the DPC+ scheme.
+    
+    Fast Fetcher
+      The music frequency value is fetched using a fast fetcher operation.
+      This operation is aliased to the instruction "LDA #$F2". Whenever this
+      instruction is executed, the $F2 value is replaced with the frequency
+      value calculated from the tune data. The pointer to the tune data does
+      not advance until address $1003 is written. When a new tune is loaded,
+      the pointer is reset to the beginning of the tune. This also happens
+      when the end of the tune is reached or when address $1002 is written to.
+
+      The calculation of the frequency value is essentially the same as DPC.
+      There are 3 different channels that are combined together, and only a
+      square waveform is used.  The data is formatted so that the three notes
+      for each position appear consecutively (note0, note1, note2).  Moving
+      to the next tune position means incrementing by 3 bytes. The end of the
+      tune is marked by a note value of 1. A note value of 0 means that the
+      current value should not be updated, i.e continue with the previous
+      non-zero value.
 
   @author  Stephen Anthony and Chris D. Walton
   @version $Id$
@@ -184,12 +260,12 @@ class CartridgeCTY : public Cartridge
 
     // The time after which the first request of a load/save operation
     // will actually be completed
-    // Due to flash RAM constraints, a read/write isn't instantaneous,
+    // Due to Harmony EEPROM constraints, a read/write isn't instantaneous,
     // so we need to emulate the delay as well
     uInt64 myRamAccessTimeout;
 
     // Full pathname of the file to use when emulating load/save
-    // of internal RAM to Harmony cart flash
+    // of internal RAM to Harmony cart EEPROM
     string myEEPROMFile;
 };
 
