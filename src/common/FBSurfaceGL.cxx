@@ -256,7 +256,9 @@ void FBSurfaceGL::update()
     // and antialiasing
     myGL.ActiveTexture(GL_TEXTURE0);
     myGL.BindTexture(GL_TEXTURE_2D, myTexID);
-    myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexWidth, myTexHeight,
+    myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
+    myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
+    myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myImageW, myImageH,
                        GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
                        myTexture->pixels);
 
@@ -313,7 +315,9 @@ void FBSurfaceGL::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   // Create the texture in the most optimal format
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, myTexWidth, myTexHeight, 0,
+  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
+  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
                   GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
                   myTexture->pixels);
 

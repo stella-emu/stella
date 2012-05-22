@@ -34,6 +34,8 @@ FBSurfaceTIA::FBSurfaceTIA(FrameBufferGL& buffer)
     myGL(myFB.p_gl),
     myTexture(NULL),
     myVBOID(0),
+    myBaseW(0),
+    myBaseH(0),
     myScanlinesEnabled(false),
     myScanlineIntensityI(50),
     myScanlineIntensityF(0.5)
@@ -142,7 +144,9 @@ void FBSurfaceTIA::update()
   // Update TIA image (texture 0), then blend scanlines (texture 1)
   myGL.ActiveTexture(GL_TEXTURE0);
   myGL.BindTexture(GL_TEXTURE_2D, myTexID[0]);
-  myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myTexWidth, myTexHeight,
+  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
+  myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myBaseW, myBaseH,
                     GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
                     myTexture->pixels);
 
@@ -225,7 +229,9 @@ void FBSurfaceTIA::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
   // Create the texture in the most optimal format
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, myTexWidth, myTexHeight, 0,
+  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
+  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
                  GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
                  myTexture->pixels);
 
@@ -237,7 +243,9 @@ void FBSurfaceTIA::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
   static uInt32 const scanline[2] = { 0x00000000, 0xff000000 };
-  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, 1, 2, 0,
+  myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
+  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, 1);
+  myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 2, 0,
                  GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
                  scanline);
 
