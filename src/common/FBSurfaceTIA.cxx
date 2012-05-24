@@ -89,7 +89,7 @@ void FBSurfaceTIA::update()
   uInt8* previousFrame = myTIA->previousFrameBuffer();
   uInt32 width         = myTIA->width();
   uInt32 height        = myTIA->height();
-  uInt32* buffer       = (uInt32*) myTexture->pixels;
+  uInt16* buffer       = (uInt16*) myTexture->pixels;
 
   // TODO - Eventually 'phosphor' won't be a separate mode, and will become
   //        a post-processing filter by blending several frames.
@@ -103,7 +103,7 @@ void FBSurfaceTIA::update()
       {
         uInt32 pos = screenofsY;
         for(uInt32 x = 0; x < width; ++x)
-          buffer[pos++] = (uInt32) myFB.myDefPalette[currentFrame[bufofsY + x]];
+          buffer[pos++] = (uInt16) myFB.myDefPalette[currentFrame[bufofsY + x]];
 
         bufofsY    += width;
         screenofsY += myPitch;
@@ -121,7 +121,7 @@ void FBSurfaceTIA::update()
         for(uInt32 x = 0; x < width; ++x)
         {
           const uInt32 bufofs = bufofsY + x;
-          buffer[pos++] = (uInt32)
+          buffer[pos++] = (uInt16)
             myFB.myAvgPalette[currentFrame[bufofs]][previousFrame[bufofs]];
         }
         bufofsY    += width;
@@ -132,8 +132,7 @@ void FBSurfaceTIA::update()
 
     case FrameBufferGL::kBlarggNTSC:
     {
-      myFB.myNTSCFilter.blit_8888
-        (currentFrame, width, height, buffer, myTexture->pitch);
+      myFB.myNTSCFilter.blit(currentFrame, width, height, buffer, myTexture->pitch);
       break;
     }
   }
@@ -147,7 +146,7 @@ void FBSurfaceTIA::update()
   myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
   myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
   myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myBaseW, myBaseH,
-                    GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+                    GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
                     myTexture->pixels);
 
   if(myFB.myVBOAvailable)
@@ -232,7 +231,7 @@ void FBSurfaceTIA::reload()
   myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
   myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
   myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
-                 GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+                 GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
                  myTexture->pixels);
 
   // Scanline texture (@ index 1)
@@ -242,11 +241,11 @@ void FBSurfaceTIA::reload()
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
   myGL.TexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
-  static uInt32 const scanline[2] = { 0x00000000, 0xff000000 };
+  static uInt16 const scanline[4] = { 0x0000, 0x0000, 0x8000, 0x0000  };
   myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
-  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, 1);
+  myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, 2);
   myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 1, 2, 0,
-                 GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+                 GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
                  scanline);
 
   // Cache vertex and texture coordinates using vertex buffer object

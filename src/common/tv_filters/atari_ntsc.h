@@ -23,6 +23,7 @@
 #define ATARI_NTSC_H
 
 typedef unsigned char atari_ntsc_in_t;
+typedef unsigned short atari_ntsc_out_t;
 
 #ifdef __cplusplus
   extern "C" {
@@ -65,10 +66,7 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
 /* Filters one or more rows of pixels. Input pixels are 8-bit Atari palette colors.
    In_row_width is the number of pixels to get to the next input row. Out_pitch
    is the number of *bytes* to get to the next output row. */
-void atari_ntsc_blit_1555( atari_ntsc_t const* ntsc, atari_ntsc_in_t const* atari_in,
-    long in_row_width, int in_width, int in_height,
-    void* rgb_out, long out_pitch );
-void atari_ntsc_blit_8888( atari_ntsc_t const* ntsc, atari_ntsc_in_t const* atari_in,
+void atari_ntsc_blit( atari_ntsc_t const* ntsc, atari_ntsc_in_t const* atari_in,
     long in_row_width, int in_width, int in_height,
     void* rgb_out, long out_pitch );
 
@@ -103,7 +101,6 @@ enum { atari_ntsc_black     = 0  }; /* palette index for black */
 
 /* Generates output in the specified 16-bit format (x = junk bits).
     1555:                     xRRRRRGG GGGBBBBB (1-5-5-5 16-bit RGB)
-    8888:            RRRRRRRR GGGGGGGG BBBBBBBB (8-8-8-8 32-bit RGB)
     native: xxxRRRRR RRRxxGGG GGGGGxxB BBBBBBBx (native internal format)
 */
 #define ATARI_NTSC_RGB_OUT_1555( index, rgb_out ) {\

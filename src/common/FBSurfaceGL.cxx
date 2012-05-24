@@ -66,18 +66,18 @@ FBSurfaceGL::~FBSurfaceGL()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::hLine(uInt32 x, uInt32 y, uInt32 x2, uInt32 color)
 {
-  uInt32* buffer = (uInt32*) myTexture->pixels + y * myPitch + x;
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myPitch + x;
   while(x++ <= x2)
-    *buffer++ = (uInt32) myFB.myDefPalette[color];
+    *buffer++ = (uInt16) myFB.myDefPalette[color];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::vLine(uInt32 x, uInt32 y, uInt32 y2, uInt32 color)
 {
-  uInt32* buffer = (uInt32*) myTexture->pixels + y * myPitch + x;
+  uInt16* buffer = (uInt16*) myTexture->pixels + y * myPitch + x;
   while(y++ <= y2)
   {
-    *buffer = (uInt32) myFB.myDefPalette[color];
+    *buffer = (uInt16) myFB.myDefPalette[color];
     buffer += myPitch;
   }
 }
@@ -126,7 +126,7 @@ void FBSurfaceGL::drawChar(const GUI::Font& font, uInt8 chr,
   }
 
   const uInt16* tmp = desc.bits + (desc.offset ? desc.offset[chr] : (chr * desc.fbbh));
-  uInt32* buffer = (uInt32*) myTexture->pixels +
+  uInt16* buffer = (uInt16*) myTexture->pixels +
                    (ty + desc.ascent - bby - bbh) * myPitch +
                    tx + bbx;
 
@@ -137,7 +137,7 @@ void FBSurfaceGL::drawChar(const GUI::Font& font, uInt8 chr,
 
     for(int x = 0; x < bbw; x++, mask >>= 1)
       if(ptr & mask)
-        buffer[x] = (uInt32) myFB.myDefPalette[color];
+        buffer[x] = (uInt16) myFB.myDefPalette[color];
 
     buffer += myPitch;
   }
@@ -147,14 +147,14 @@ void FBSurfaceGL::drawChar(const GUI::Font& font, uInt8 chr,
 void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
                              uInt32 color, uInt32 h)
 {
-  uInt32* buffer = (uInt32*) myTexture->pixels + ty * myPitch + tx;
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myPitch + tx;
 
   for(uInt32 y = 0; y < h; ++y)
   {
     uInt32 mask = 0xF0000000;
     for(uInt32 x = 0; x < 8; ++x, mask >>= 4)
       if(bitmap[y] & mask)
-        buffer[x] = (uInt32) myFB.myDefPalette[color];
+        buffer[x] = (uInt16) myFB.myDefPalette[color];
 
     buffer += myPitch;
   }
@@ -163,10 +163,10 @@ void FBSurfaceGL::drawBitmap(uInt32* bitmap, uInt32 tx, uInt32 ty,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceGL::drawPixels(uInt32* data, uInt32 tx, uInt32 ty, uInt32 numpixels)
 {
-  uInt32* buffer = (uInt32*) myTexture->pixels + ty * myPitch + tx;
+  uInt16* buffer = (uInt16*) myTexture->pixels + ty * myPitch + tx;
 
   for(uInt32 i = 0; i < numpixels; ++i)
-    *buffer++ = (uInt32) data[i];
+    *buffer++ = (uInt16) data[i];
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -259,7 +259,7 @@ void FBSurfaceGL::update()
     myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
     myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
     myGL.TexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, myImageW, myImageH,
-                       GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+                       GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
                        myTexture->pixels);
 
     myGL.EnableClientState(GL_VERTEX_ARRAY);
@@ -318,7 +318,7 @@ void FBSurfaceGL::reload()
   myGL.PixelStorei(GL_UNPACK_ALIGNMENT, 1);
   myGL.PixelStorei(GL_UNPACK_ROW_LENGTH, myPitch);
   myGL.TexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, myTexWidth, myTexHeight, 0,
-                  GL_BGRA, GL_UNSIGNED_INT_8_8_8_8_REV,
+                  GL_BGRA, GL_UNSIGNED_SHORT_1_5_5_5_REV,
                   myTexture->pixels);
 
   // Cache vertex and texture coordinates using vertex buffer object

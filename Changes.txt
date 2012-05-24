@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.6.1 to 3.7: (June 1, 2012)
+3.6.1 to 3.7: (May 25, 2012)
 
   * Added Blargg TV effects, with presets for Composite, S-video, RGB,
     and badly adjusted TV, and well as a custom mode with full
