@@ -31,8 +31,12 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
   : Cartridge(osystem.settings()),
     myOSystem(osystem),
     myOperationType(0),
+    myCounter(0),
     myLDAimmediate(false),
-    myRamAccessTimeout(0)
+    myRandomNumber(0x2B435044),
+    myRamAccessTimeout(0),
+    mySystemCycles(0),
+    myFractionalClocks(0.0)
 {
   // Copy the ROM image into my buffer
   memcpy(myImage, image, BSPF_min(32768u, size));
@@ -40,6 +44,9 @@ CartridgeCTY::CartridgeCTY(const uInt8* image, uInt32 size, const OSystem& osyst
 
   // This cart contains 64 bytes extended RAM @ 0x1000
   registerRamArea(0x1000, 64, 0x40, 0x00);
+
+  // Point to the first tune
+  myFrequencyImage = CartCTYTunes;
 
   // Remember startup bank (not bank 0, since that's ARM code)
   myStartBank = 1;
@@ -62,8 +69,19 @@ void CartridgeCTY::reset()
 
   myRAM[0] = myRAM[1] = myRAM[2] = myRAM[3] = 0xFF;
 
+  // Update cycles to the current system cycles
+  mySystemCycles = mySystem->cycles();
+  myFractionalClocks = 0.0;
+
   // Upon reset we switch to the startup bank
   bank(myStartBank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeCTY::systemCyclesReset()
+{
+  // Adjust the cycle counter so that it reflects the new value
+  mySystemCycles -= mySystem->cycles();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -101,6 +119,18 @@ uInt8 CartridgeCTY::peek(uInt16 address)
   if(myLDAimmediate && peekValue == 0xF2)
   {
     myLDAimmediate = false;
+
+    // Update the music data fetchers (counter & flag)
+    updateMusicModeDataFetchers();
+
+#if 0
+    // using myDisplayImage[] instead of myProgramImage[] because waveforms
+    // can be modified during runtime.
+    uInt32 i = myDisplayImage[(myMusicWaveforms[0] << 5) + (myMusicCounters[0] >> 27)] +
+               myDisplayImage[(myMusicWaveforms[1] << 5) + (myMusicCounters[1] >> 27)] +
+               myDisplayImage[(myMusicWaveforms[2] << 5) + (myMusicCounters[2] >> 27)];
+    return = (uInt8)i;
+#endif
     return 0xF2;  // FIXME - return frequency value here
   }
   else
@@ -122,19 +152,18 @@ uInt8 CartridgeCTY::peek(uInt16 address)
   else if(address < 0x0080)  // Read port is at $1040 - $107F (64 bytes)
   {
     address -= 0x40;
-    switch(address)  // FIXME for actual return values (0-3)
+    switch(address)
     {
       case 0x00:  // Error code after operation
         return myRAM[0];
       case 0x01:  // Get next Random Number (8-bit LFSR)
-        cerr << "Get next Random Number (8-bit LFSR)\n";
-        return 0xFF;
+        myRandomNumber = ((myRandomNumber & (1<<10)) ? 0x10adab1e: 0x00) ^
+                         ((myRandomNumber >> 11) | (myRandomNumber << 21));
+        return myRandomNumber & 0xFF;
       case 0x02:  // Get Tune position (low byte)
-        cerr << "Get Tune position (low byte)\n";
-        return 0x00;
+        return myCounter & 0xFF;
       case 0x03:  // Get Tune position (high byte)
-        cerr << "Get Tune position (high byte)\n";
-        return 0x00;
+        return (myCounter >> 8) & 0xFF;
       default:
         return myRAM[address];
     }
@@ -180,14 +209,14 @@ bool CartridgeCTY::poke(uInt16 address, uInt8 value)
       case 0x00:  // Operation type for $1FF4
         myOperationType = value;
         break;
-      case 0x01:  // Set Random seed value
-        cerr << "Set random seed value = " << HEX2 << (int)value << endl;
+      case 0x01:  // Set Random seed value (reset)
+        myRandomNumber = 0x2B435044;
         break;
       case 0x02:  // Reset fetcher to beginning of tune
-        cerr << "Reset fetcher to beginning of tune\n";
+        myCounter = 0;
         break;
       case 0x03:  // Advance fetcher to next tune position
-        cerr << "Advance fetcher to next tune position\n";
+        myCounter = (myCounter + 3) & 0x0fff;
         break;
       default:
         myRAM[address] = value;
@@ -282,8 +311,15 @@ bool CartridgeCTY::save(Serializer& out) const
   {
     out.putString(name());
     out.putShort(bank());
-    out.putByte(myOperationType);
     out.putByteArray(myRAM, 64);
+
+    out.putByte(myOperationType);
+    out.putShort(myCounter);
+    out.putBool(myLDAimmediate);
+    out.putInt(myRandomNumber);
+    out.putInt(mySystemCycles);
+    out.putInt((uInt32)(myFractionalClocks * 100000000.0));
+
   }
   catch(const char* msg)
   {
@@ -304,9 +340,14 @@ bool CartridgeCTY::load(Serializer& in)
 
     // Remember what bank we were in
     bank(in.getShort());
+    in.getByteArray(myRAM, 64);
 
     myOperationType = in.getByte();
-    in.getByteArray(myRAM, 64);
+    myCounter = in.getShort();
+    myLDAimmediate = in.getBool();
+    myRandomNumber = in.getInt();
+    mySystemCycles = (Int32)in.getInt();
+    myFractionalClocks = (double)in.getInt() / 100000000.0;
   }
   catch(const char* msg)
   {
@@ -405,7 +446,13 @@ uInt8 CartridgeCTY::ramReadWrite()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::loadTune(uInt8 index)
 {
-  cerr << "load tune " << (int)index << endl;
+  // Each tune is offset by 4096 bytes
+  // Instead of copying non-modifiable data around (as would happen on the
+  // Harmony), we simply point to the appropriate tune
+  myFrequencyImage = CartCTYTunes + (index << 12);
+
+  // Reset to beginning of tune
+  myCounter = 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -480,5 +527,27 @@ void CartridgeCTY::wipeAllScores()
       // Maybe add logging here that save failed?
       cerr << name() << ": ERROR wiping score tables" << endl;
     }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void CartridgeCTY::updateMusicModeDataFetchers()
+{
+  // Calculate the number of cycles since the last update
+  Int32 cycles = mySystem->cycles() - mySystemCycles;
+  mySystemCycles = mySystem->cycles();
+
+  // Calculate the number of DPC OSC clocks since the last update
+  double clocks = ((20000.0 * cycles) / 1193191.66666667) + myFractionalClocks;
+  Int32 wholeClocks = (Int32)clocks;
+  myFractionalClocks = clocks - (double)wholeClocks;
+
+  if(wholeClocks <= 0)
+    return;
+
+  // Let's update counters and flags of the music mode data fetchers
+  for(int x = 0; x <= 2; ++x)
+  {
+//    myMusicCounters[x] += myMusicFrequencies[x];
   }
 }

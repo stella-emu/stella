@@ -131,6 +131,13 @@ class CartridgeCTY : public Cartridge
     void reset();
 
     /**
+      Notification method invoked by the system right before the
+      system resets its cycle counter to zero.  It may be necessary
+      to override this method for devices that remember cycle counts.
+    */
+    void systemCyclesReset();
+
+    /**
       Install cartridge in the specified system.  Invoked by the system
       when the cartridge is attached to it.
 
@@ -238,6 +245,12 @@ class CartridgeCTY : public Cartridge
     void saveScore(uInt8 index);
     void wipeAllScores();
 
+    /** 
+      Updates any data fetchers in music mode based on the number of
+      CPU cycles which have passed since the last update.
+    */
+    void updateMusicModeDataFetchers();
+
   private:
     // OSsytem currently in use
     const OSystem& myOSystem;
@@ -254,12 +267,18 @@ class CartridgeCTY : public Cartridge
     // Operation type (written to $1000, used by hotspot $1FF4)
     uInt8 myOperationType;
 
-    // The 8K Harmony RAM (used for tune data)
-    // Data is accessed from Harmony EEPROM
-    uInt8 myTuneRAM[8192];
+    // Pointer to the 28K frequency table (points to the start of one
+    // of seven 4K tunes in CartCTYTunes)
+    const uInt8* myFrequencyImage;
+
+    // The counter register for the data fetcher
+    uInt16 myCounter;
 
     // Flags that last byte peeked was A9 (LDA #)
     bool myLDAimmediate;
+
+    // The random number generator register
+    uInt32 myRandomNumber;
 
     // The time after which the first request of a load/save operation
     // will actually be completed
@@ -270,6 +289,12 @@ class CartridgeCTY : public Cartridge
     // Full pathname of the file to use when emulating load/save
     // of internal RAM to Harmony cart EEPROM
     string myEEPROMFile;
+
+    // System cycle count when the last update to music data fetchers occurred
+    Int32 mySystemCycles;
+
+    // Fractional DPC music OSC clocks unused during the last update
+    double myFractionalClocks;
 };
 
 #endif
