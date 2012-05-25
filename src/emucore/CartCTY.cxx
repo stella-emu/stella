@@ -192,7 +192,7 @@ uInt8 CartridgeCTY::peek(uInt16 address)
     // Is this instruction an immediate mode LDA?
     myLDAimmediate = (peekValue == 0xA9);
 
-    return myImage[myCurrentBank + address];
+    return peekValue;
   }
 }
 
@@ -466,7 +466,7 @@ void CartridgeCTY::loadScore(uInt8 index)
     {
       serializer.getByteArray(scoreRAM, 256);
     }
-    catch(const char* msg)
+    catch(...)
     {
       memset(scoreRAM, 0, 256);
     }
@@ -487,7 +487,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     {
       serializer.getByteArray(scoreRAM, 256);
     }
-    catch(const char* msg)
+    catch(...)
     {
       memset(scoreRAM, 0, 256);
     }
@@ -501,7 +501,7 @@ void CartridgeCTY::saveScore(uInt8 index)
     {
       serializer.putByteArray(scoreRAM, 256);
     }
-    catch(const char* msg)
+    catch(...)
     {
       // Maybe add logging here that save failed?
       cerr << name() << ": ERROR saving score table " << (int)index << endl;

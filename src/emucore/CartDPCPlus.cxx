@@ -41,7 +41,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   uInt32 minsize = 4096 * 6 + 4096 + 1024 + 255;
   mySize = BSPF_max(minsize, size);
   myImage = new uInt8[mySize];
-  myDPCRAM = new uInt8[8192];
   memcpy(myImage, image, size);
   createCodeAccessBase(4096 * 6);
 
@@ -94,7 +93,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 CartridgeDPCPlus::~CartridgeDPCPlus()
 {
   delete[] myImage;
-  delete[] myDPCRAM;
 
 #ifdef THUMB_SUPPORT
   delete myThumbEmulator;

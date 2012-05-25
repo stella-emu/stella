@@ -181,8 +181,8 @@ class CartridgeDPCPlus : public Cartridge
     // Pointer to the 4K display ROM image of the cartridge
     uInt8* myDisplayImage;
 
-    // Pointer to the DPC 8k RAM image
-    uInt8* myDPCRAM;
+    // The DPC 8k RAM image
+    uInt8 myDPCRAM[8192];
 
 #ifdef THUMB_SUPPORT
     // Pointer to the Thumb ARM emulator object
