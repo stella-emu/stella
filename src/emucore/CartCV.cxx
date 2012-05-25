@@ -206,9 +206,9 @@ bool CartridgeCV::save(Serializer& out) const
     out.putString(name());
     out.putByteArray(myRAM, 1024);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeCV::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeCV::save" << endl;
     return false;
   }
 
@@ -225,9 +225,9 @@ bool CartridgeCV::load(Serializer& in)
 
     in.getByteArray(myRAM, 1024);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeCV::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeCV::load" << endl;
     return false;
   }
 

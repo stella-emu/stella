@@ -405,9 +405,9 @@ bool M6502::save(Serializer& out) const
     out.putShort(myLastSrcAddressY);
     out.putShort(myDataAddressForPoke);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: M6502::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: M6502::save" << endl;
     return false;
   }
 
@@ -453,9 +453,9 @@ bool M6502::load(Serializer& in)
     myLastSrcAddressY = in.getShort();
     myDataAddressForPoke = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: M6502::laod" << endl << "  " << msg << endl;
+    cerr << "ERROR: M6502::laod" << endl;
     return false;
   }
 

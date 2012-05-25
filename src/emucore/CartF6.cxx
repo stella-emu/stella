@@ -193,9 +193,9 @@ bool CartridgeF6::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF6::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF6::save" << endl;
     return false;
   }
 
@@ -212,9 +212,9 @@ bool CartridgeF6::load(Serializer& in)
 
     myCurrentBank = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF6::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF6::load" << endl;
     return false;
   }
 

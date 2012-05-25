@@ -237,9 +237,9 @@ bool CartridgeF8SC::save(Serializer& out) const
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 128);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF8SC::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF8SC::save" << endl;
     return false;
   }
 
@@ -257,9 +257,9 @@ bool CartridgeF8SC::load(Serializer& in)
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 128);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF8SC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF8SC::load" << endl;
     return false;
   }
 

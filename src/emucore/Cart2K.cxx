@@ -141,9 +141,9 @@ bool Cartridge2K::save(Serializer& out) const
   {
     out.putString(name());
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Cartridge2K::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: Cartridge2K::save" << endl;
     return false;
   }
 
@@ -158,9 +158,9 @@ bool Cartridge2K::load(Serializer& in)
     if(in.getString() != name())
       return false;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Cartridge2K::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: Cartridge2K::load" << endl;
     return false;
   }
 

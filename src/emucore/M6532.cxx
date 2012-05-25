@@ -315,9 +315,9 @@ bool M6532::save(Serializer& out) const
     out.putByte(myOutB);
     out.putByteArray(myOutTimer, 4);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: M6532::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: M6532::save" << endl;
     return false;
   }
 
@@ -347,9 +347,9 @@ bool M6532::load(Serializer& in)
     myOutB = in.getByte();
     in.getByteArray(myOutTimer, 4);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: M6532::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: M6532::load" << endl;
     return false;
   }
 

@@ -167,9 +167,9 @@ bool CartridgeFE::save(Serializer& out) const
     out.putShort(myLastAddress1);
     out.putShort(myLastAddress2);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeFE::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFE::save" << endl;
     return false;
   }
 
@@ -187,9 +187,9 @@ bool CartridgeFE::load(Serializer& in)
     myLastAddress1 = in.getShort();
     myLastAddress2 = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF8SC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF8SC::load" << endl;
     return false;
   }
 

@@ -321,9 +321,9 @@ bool CartridgeCTY::save(Serializer& out) const
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
 
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeCTY::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeCTY::save" << endl;
     return false;
   }
 
@@ -349,9 +349,9 @@ bool CartridgeCTY::load(Serializer& in)
     mySystemCycles = (Int32)in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeCTY::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeCTY::load" << endl;
     return false;
   }
   return true;
@@ -522,7 +522,7 @@ void CartridgeCTY::wipeAllScores()
     {
       serializer.putByteArray(scoreRAM, 256);
     }
-    catch(const char* msg)
+    catch(...)
     {
       // Maybe add logging here that save failed?
       cerr << name() << ": ERROR wiping score tables" << endl;

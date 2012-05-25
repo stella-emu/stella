@@ -468,9 +468,9 @@ bool Cartridge4A50::save(Serializer& out) const
     out.putByte(myLastData);
     out.putShort(myLastAddress);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Cartridge4A40::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: Cartridge4A40::save" << endl;
     return false;
   }
 
@@ -501,9 +501,9 @@ bool Cartridge4A50::load(Serializer& in)
     myLastData = in.getByte();
     myLastAddress = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Cartridge4A50::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: Cartridge4A50::load" << endl;
     return false;
   }
 

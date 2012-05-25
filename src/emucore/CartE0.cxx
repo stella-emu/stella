@@ -237,9 +237,9 @@ bool CartridgeE0::save(Serializer& out) const
     out.putString(name());
     out.putShortArray(myCurrentSlice, 4);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeE0::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeE0::save" << endl;
     return false;
   }
 
@@ -256,9 +256,9 @@ bool CartridgeE0::load(Serializer& in)
 
     in.getShortArray(myCurrentSlice, 4);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeE0::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeE0::load" << endl;
     return false;
   }
 

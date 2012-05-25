@@ -356,9 +356,9 @@ bool TIA::save(Serializer& out) const
     // Save the sound sample stuff ...
     mySound.save(out);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: TIA::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: TIA::save" << endl;
     return false;
   }
 
@@ -464,9 +464,9 @@ bool TIA::load(Serializer& in)
     toggleFixedColors(0);
     myAllowHMOVEBlanks = true;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: TIA::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: TIA::load" << endl;
     return false;
   }
 
@@ -482,9 +482,9 @@ bool TIA::saveDisplay(Serializer& out) const
     out.putInt(myFramePointerClocks);
     out.putByteArray(myCurrentFrameBuffer, 160*320);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: TIA::saveDisplay" << endl << "  " << msg << endl;
+    cerr << "ERROR: TIA::saveDisplay" << endl;
     return false;
   }
 
@@ -510,9 +510,9 @@ bool TIA::loadDisplay(Serializer& in)
     if(myPartialFrameFlag)
       myFramePointer += myFramePointerClocks;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: TIA::loadDisplay" << endl << "  " << msg << endl;
+    cerr << "ERROR: TIA::loadDisplay" << endl;
     return false;
   }
 

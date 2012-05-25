@@ -310,9 +310,9 @@ bool CartridgeFA2::save(Serializer& out) const
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 256);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeFA2::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFA2::save" << endl;
     return false;
   }
 
@@ -330,9 +330,9 @@ bool CartridgeFA2::load(Serializer& in)
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 256);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeFA2::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFA2::load" << endl;
     return false;
   }
 
@@ -386,7 +386,7 @@ uInt8 CartridgeFA2::ramReadWrite()
         {
           serializer.getByteArray(myRAM, 256);
         }
-        catch(const char* msg)
+        catch(...)
         {
           memset(myRAM, 0, 256);
         }
@@ -398,9 +398,10 @@ uInt8 CartridgeFA2::ramReadWrite()
         {
           serializer.putByteArray(myRAM, 256);
         }
-        catch(const char* msg)
+        catch(...)
         {
           // Maybe add logging here that save failed?
+          cerr << name() << ": ERROR saving score table" << endl;
         }
         myRamAccessTimeout += 101000;  // Add 101 ms delay for write
       }

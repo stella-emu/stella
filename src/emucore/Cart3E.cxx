@@ -277,9 +277,9 @@ bool Cartridge3E::save(Serializer& out) const
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 32768);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Cartridge3E::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: Cartridge3E::save" << endl;
     return false;
   }
 
@@ -297,9 +297,9 @@ bool Cartridge3E::load(Serializer& in)
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 32768);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Cartridge3E::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: Cartridge3E::load" << endl;
     return false;
   }
 

@@ -180,9 +180,9 @@ bool CartridgeSB::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeSB::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeSB::save" << endl;
     return false;
   }
 
@@ -199,9 +199,9 @@ bool CartridgeSB::load(Serializer& in)
 
     myCurrentBank = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeSB::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeSB::load" << endl;
     return false;
   }
 

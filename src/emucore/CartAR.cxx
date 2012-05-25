@@ -503,9 +503,9 @@ bool CartridgeAR::save(Serializer& out) const
     // Indicates if a write is pending or not
     out.putBool(myWritePending);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeAR::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeAR::save" << endl;
     return false;
   }
 
@@ -554,9 +554,9 @@ bool CartridgeAR::load(Serializer& in)
     // Indicates if a write is pending or not
     myWritePending = in.getBool();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeAR::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeAR::load" << endl;
     return false;
   }
 

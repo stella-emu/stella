@@ -321,9 +321,9 @@ bool System::save(Serializer& out) const
       if(!myDevices[i]->save(out))
         return false;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: System::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: System::save" << endl;
     return false;
   }
 
@@ -350,9 +350,9 @@ bool System::load(Serializer& in)
       if(!myDevices[i]->load(in))
         return false;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: System::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: System::load" << endl;
     return false;
   }
 

@@ -148,9 +148,9 @@ bool CartridgeEF::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeEF::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeEF::save" << endl;
     return false;
   }
 
@@ -167,9 +167,9 @@ bool CartridgeEF::load(Serializer& in)
 
     myCurrentBank = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeEF::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeEF::load" << endl;
     return false;
   }
 

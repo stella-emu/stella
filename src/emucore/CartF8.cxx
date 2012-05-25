@@ -180,9 +180,9 @@ bool CartridgeF8::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF8::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF8::save" << endl;
     return false;
   }
 
@@ -199,9 +199,9 @@ bool CartridgeF8::load(Serializer& in)
 
     myCurrentBank = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF8SC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF8SC::load" << endl;
     return false;
   }
 

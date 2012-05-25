@@ -207,9 +207,9 @@ bool CartridgeCM::save(Serializer& out) const
     out.putByte(myColumn);
     out.putByteArray(myRAM, 2048);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeCM::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeCM::save" << endl;
     return false;
   }
 
@@ -229,9 +229,9 @@ bool CartridgeCM::load(Serializer& in)
     myColumn = in.getByte();
     in.getByteArray(myRAM, 2048);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeCM::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeCM::load" << endl;
     return false;
   }
 

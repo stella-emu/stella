@@ -257,9 +257,9 @@ bool CartridgeF6SC::save(Serializer& out) const
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 128);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF6SC::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF6SC::save" << endl;
     return false;
   }
 
@@ -277,9 +277,9 @@ bool CartridgeF6SC::load(Serializer& in)
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 128);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeF6SC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeF6SC::load" << endl;
     return false;
   }
 

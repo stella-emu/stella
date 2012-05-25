@@ -211,9 +211,9 @@ bool CartridgeEFSC::save(Serializer& out) const
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 128);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeEFSC::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeEFSC::save" << endl;
     return false;
   }
 
@@ -231,9 +231,9 @@ bool CartridgeEFSC::load(Serializer& in)
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 128);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeEFSC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeEFSC::load" << endl;
     return false;
   }
 

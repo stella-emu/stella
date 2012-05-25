@@ -188,9 +188,9 @@ bool CartridgeUA::save(Serializer& out) const
     out.putString(name());
     out.putShort(myCurrentBank);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeUA::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeUA::save" << endl;
     return false;
   }
 
@@ -207,9 +207,9 @@ bool CartridgeUA::load(Serializer& in)
 
     myCurrentBank = in.getShort();
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeUA::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeUA::load" << endl;
     return false;
   }
 

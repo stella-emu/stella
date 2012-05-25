@@ -257,9 +257,9 @@ bool CartridgeMC::save(Serializer& out) const
     // The 32K of RAM
     out.putByteArray(myRAM, 32 * 1024);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeMC::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeMC::save" << endl;
     return false;
   }
 
@@ -280,9 +280,9 @@ bool CartridgeMC::load(Serializer& in)
     // The 32K of RAM
     in.getByteArray(myRAM, 32 * 1024);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeMC::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeMC::load" << endl;
     return false;
   }
 

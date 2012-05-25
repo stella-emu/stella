@@ -247,9 +247,9 @@ bool CartridgeFA::save(Serializer& out) const
     out.putShort(myCurrentBank);
     out.putByteArray(myRAM, 256);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeFA::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFA::save" << endl;
     return false;
   }
 
@@ -267,9 +267,9 @@ bool CartridgeFA::load(Serializer& in)
     myCurrentBank = in.getShort();
     in.getByteArray(myRAM, 256);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeFA::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeFA::load" << endl;
     return false;
   }
 

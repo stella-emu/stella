@@ -242,9 +242,9 @@ bool Console::save(Serializer& out) const
          mySwitches->save(out)))
       return false;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Console::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: Console::save" << endl;
     return false;
   }
 
@@ -265,9 +265,9 @@ bool Console::load(Serializer& in)
          mySwitches->load(in)))
       return false;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: Console::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: Console::load" << endl;
     return false;
   }
 

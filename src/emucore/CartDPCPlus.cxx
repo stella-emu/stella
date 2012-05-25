@@ -698,9 +698,9 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     out.putInt(mySystemCycles);
     out.putInt((uInt32)(myFractionalClocks * 100000000.0));
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeDPCPlus::save" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeDPCPlus::save" << endl;
     return false;
   }
 
@@ -756,9 +756,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
     mySystemCycles = (Int32)in.getInt();
     myFractionalClocks = (double)in.getInt() / 100000000.0;
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: CartridgeDPCPlus::load" << endl << "  " << msg << endl;
+    cerr << "ERROR: CartridgeDPCPlus::load" << endl;
     return false;
   }
 

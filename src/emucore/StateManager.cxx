@@ -314,9 +314,9 @@ bool StateManager::saveState(Serializer& out)
       }
     }
   }
-  catch(const char* msg)
+  catch(...)
   {
-    cerr << "ERROR: StateManager::saveState(Serializer&)" << endl << "  " << msg << endl;
+    cerr << "ERROR: StateManager::saveState(Serializer&)" << endl;
   }
   return false;
 }

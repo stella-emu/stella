@@ -406,11 +406,9 @@ bool SoundSDL::save(Serializer& out) const
 
     out.putInt(myLastRegisterSetCycle);
   }
-  catch(const char* msg)
+  catch(...)
   {
-    ostringstream buf;
-    buf << "ERROR: SoundSDL::save" << endl << "  " << msg << endl;
-    myOSystem->logMessage(buf.str(), 0);
+    myOSystem->logMessage("ERROR: SoundSDL::save", 0);
     return false;
   }
 
@@ -449,11 +447,9 @@ bool SoundSDL::load(Serializer& in)
       if(!myIsMuted) SDL_PauseAudio(0);
     }
   }
-  catch(const char* msg)
+  catch(...)
   {
-    ostringstream buf;
-    buf << "ERROR: SoundSDL::load" << endl << "  " << msg << endl;
-    myOSystem->logMessage(buf.str(), 0);
+    myOSystem->logMessage("ERROR: SoundSDL::load", 0);
     return false;
   }
 
