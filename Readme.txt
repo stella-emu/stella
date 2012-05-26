@@ -9,4 +9,4 @@ the Stella Website at:
 Enjoy,
 
 The Stella Team
-May 25, 2012
+June 1, 2012

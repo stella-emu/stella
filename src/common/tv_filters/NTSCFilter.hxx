@@ -20,9 +20,10 @@
 #ifndef NTSC_FILTER_HXX
 #define NTSC_FILTER_HXX
 
+class FrameBuffer;
+class Settings;
+
 #include "bspf.hxx"
-#include "Array.hxx"
-#include "Settings.hxx"
 #include "atari_ntsc.h"
 
 /**
@@ -63,7 +64,7 @@ class NTSCFilter
        uses this as a baseline for calculating its own internal palette
        in YIQ format.
     */
-    void setTIAPalette(const uInt32* palette);
+    void setTIAPalette(const FrameBuffer& fb, const uInt32* palette);
 
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);
@@ -104,11 +105,18 @@ class NTSCFilter
     // output buffer
     // In the current implementation, the source pitch is always the
     // same as the actual width
-    inline void blit(uInt8* src_buf, int src_width, int src_height,
-                     uInt16* dest_buf, long dest_pitch)
+    inline void blit_single(uInt8* src_buf, int src_width, int src_height,
+                            uInt32* dest_buf, long dest_pitch)
     {
-      atari_ntsc_blit(&myFilter, src_buf, src_width, src_width, src_height,
-                      dest_buf, dest_pitch);
+      atari_ntsc_blit_single(&myFilter, src_buf, src_width, src_width, src_height,
+                             dest_buf, dest_pitch);
+    }
+    inline void blit_double(uInt8* src_buf, uInt8* src_back_buf,
+                            int src_width, int src_height,
+                            uInt32* dest_buf, long dest_pitch)
+    {
+      atari_ntsc_blit_double(&myFilter, src_buf, src_back_buf, src_width, src_width,
+                             src_height, dest_buf, dest_pitch);
     }
 
   private:
@@ -131,8 +139,17 @@ class NTSCFilter
     // Current preset in use
     Preset myPreset;
 
-    // 128 colours by 3 components per colour
-    uInt8 myTIAPalette[256 * 3];
+    // The base 2600 palette contains 128 colours
+    // However, 'phosphor' mode needs a 128x128 matrix to simulate
+    // low-flicker output, so we need 128x128 + 128, or 129x128
+    // Note that this is a huge hack, which hopefully will go
+    // away once the phosphor effect can be more properly emulated
+    // Memory layout is as follows:
+    //
+    //    128x128 in first bytes of array
+    //    128     in last bytes of array
+    //    Each colour is represented by 3 bytes, in R,G,B order
+    uInt8 myTIAPalette[atari_ntsc_palette_size * 3];
 
     struct AdjustableTag {
       const char* type;

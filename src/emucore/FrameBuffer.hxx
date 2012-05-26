@@ -305,6 +305,16 @@ class FrameBuffer
     */
     void toggleScanlineInterpolation();
 
+    /**
+      Used to calculate an averaged color for the 'phosphor' effect.
+
+      @param c1  Color 1
+      @param c2  Color 2
+
+      @return  Averaged value of the two colors
+    */
+    uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
+
   //////////////////////////////////////////////////////////////////////
   // The following methods are system-specific and *may* be implemented
   // in derived classes.
@@ -529,16 +539,6 @@ class FrameBuffer
       Draw pending messages.
     */
     void drawMessage();
-
-    /**
-      Used to calculate an averaged color for the 'phosphor' effect.
-
-      @param c1  Color 1
-      @param c2  Color 2
-
-      @return  Averaged value of the two colors
-    */
-    uInt8 getPhosphor(uInt8 c1, uInt8 c2) const;
 
     /**
       Calculate the maximum level by which the base window can be zoomed and

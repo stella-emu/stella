@@ -77,7 +77,7 @@ class FrameBufferGL : public FrameBuffer
       Enable/disable NTSC filtering effects.
     */
     void enableNTSC(bool enable);
-    bool ntscEnabled() const { return myFilterType == kBlarggNTSC; }
+    bool ntscEnabled() const { return myFilterType & 0x10; }
 
     /**
       Set up the TIA/emulation palette for a screen of any depth > 8.
@@ -193,10 +193,13 @@ class FrameBufferGL : public FrameBuffer
     };
     bool loadFuncs(GLFunctionality functionality);
 
+    // Enumeration created such that phosphor off/on is in LSB,
+    // and Blargg off/on is in MSB
     enum FilterType {
-      kNone,
-      kPhosphor,
-      kBlarggNTSC
+      kNormal         = 0x00,
+      kPhosphor       = 0x01,
+      kBlarggNormal   = 0x10,
+      kBlarggPhosphor = 0x11
     };
     FilterType myFilterType;
 

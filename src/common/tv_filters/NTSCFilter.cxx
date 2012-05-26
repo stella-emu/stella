@@ -17,6 +17,9 @@
 // $Id$
 //============================================================================
 
+#include "FrameBuffer.hxx"
+#include "Settings.hxx"
+
 #include "NTSCFilter.hxx"
 
 #define SCALE_FROM_100(x) ((x/50.0)-1.0)
@@ -36,10 +39,35 @@ NTSCFilter::~NTSCFilter()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void NTSCFilter::setTIAPalette(const uInt32* palette)
+void NTSCFilter::setTIAPalette(const FrameBuffer& fb, const uInt32* palette)
 {
+  // Normal TIA palette contains 256 colours, where every odd indexed colour
+  // is used for PAL colour-loss effect
+  // This can't be emulated here, since the memory requirements would be too
+  // great (a 4x increase)
+  // Therefore, we need to skip every second index, since the array passed to
+  // the Blargg code assumes 128 colours
   uInt8* ptr = myTIAPalette;
-  for(int i = 0; i < 256; i++)
+
+  // Set palette for phosphor effect
+  for(int i = 0; i < 256; i+=2)
+  {
+    for(int j = 0; j < 256; j+=2)
+    {
+      uInt8 ri = (palette[i] >> 16) & 0xff;
+      uInt8 gi = (palette[i] >> 8) & 0xff;
+      uInt8 bi = palette[i] & 0xff;
+      uInt8 rj = (palette[j] >> 16) & 0xff;
+      uInt8 gj = (palette[j] >> 8) & 0xff;
+      uInt8 bj = palette[j] & 0xff;
+
+      *ptr++ = fb.getPhosphor(ri, rj);
+      *ptr++ = fb.getPhosphor(gi, gj);
+      *ptr++ = fb.getPhosphor(bi, bj);
+    }
+  }
+  // Set palette for normal fill
+  for(int i = 0; i < 256; i+=2)
   {
     *ptr++ = (palette[i] >> 16) & 0xff;
     *ptr++ = (palette[i] >> 8) & 0xff;

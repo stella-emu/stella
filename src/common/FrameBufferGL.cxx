@@ -40,7 +40,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FrameBufferGL::FrameBufferGL(OSystem* osystem)
   : FrameBuffer(osystem),
-    myFilterType(kNone),
+    myFilterType(kNormal),
     myTiaSurface(NULL),
     myDirtyFlag(true)
 {
@@ -48,8 +48,9 @@ FrameBufferGL::FrameBufferGL(OSystem* osystem)
   // It's done this way (vs directly accessing a FBSurfaceGL object)
   // since the structure may be needed before any FBSurface's have
   // been created
-  SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1,16,
-                       0x00007c00, 0x000003e0, 0x0000001f, 0x00000000);
+  // Note: alpha disabled for now, since it's not used
+  SDL_Surface* s = SDL_CreateRGBSurface(SDL_SWSURFACE, 1, 1, 32,
+                       0x00ff0000, 0x0000ff00, 0x000000ff, 0x00000000);
 
   myPixelFormat = *(s->format);
   SDL_FreeSurface(s);
@@ -313,7 +314,7 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
     myTiaSurface->updateCoords(baseHeight, mode.image_x, mode.image_y,
                                mode.image_w, mode.image_h);
 
-    myTiaSurface->enableScanlines(myFilterType == kBlarggNTSC);
+    myTiaSurface->enableScanlines(ntscEnabled());
     myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
     myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("gl_inter"));
     myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv_scaninter"));
@@ -358,7 +359,7 @@ void FrameBufferGL::enablePhosphor(bool enable, int blend)
   {
     myUsePhosphor   = enable;
     myPhosphorBlend = blend;
-    myFilterType = enable ? kPhosphor : kNone;
+    myFilterType = FilterType(enable ? myFilterType | 0x01 : myFilterType & 0x10);
     myRedrawEntireFrame = true;
   }
 }
@@ -368,10 +369,10 @@ void FrameBufferGL::enableNTSC(bool enable)
 {
   if(myTiaSurface)
   {
-    myFilterType = enable ? kBlarggNTSC : myUsePhosphor ? kPhosphor : kNone;
+    myFilterType = FilterType(enable ? myFilterType | 0x10 : myFilterType & 0x01);
     myTiaSurface->updateCoords();
 
-    myTiaSurface->enableScanlines(myFilterType == kBlarggNTSC);
+    myTiaSurface->enableScanlines(ntscEnabled());
     myTiaSurface->setScanIntensity(myOSystem->settings().getInt("tv_scanlines"));
     myTiaSurface->setTexInterpolation(myOSystem->settings().getBool("gl_inter"));
     myTiaSurface->setScanInterpolation(myOSystem->settings().getBool("tv_scaninter"));

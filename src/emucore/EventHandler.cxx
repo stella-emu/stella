@@ -495,9 +495,7 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case KBDK_p:  // Alt-p toggles phosphor effect
-                // FIXME - Currently, phosphor mode cannot be enabled with NTSC filtering
-                if(!myOSystem->frameBuffer().ntscEnabled())
-                  myOSystem->console().togglePhosphor();
+                myOSystem->console().togglePhosphor();
                 break;
 
               case KBDK_l:

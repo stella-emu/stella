@@ -23,7 +23,7 @@
 #define ATARI_NTSC_H
 
 typedef unsigned char atari_ntsc_in_t;
-typedef unsigned short atari_ntsc_out_t;
+typedef unsigned int atari_ntsc_out_t;
 
 #ifdef __cplusplus
   extern "C" {
@@ -55,7 +55,7 @@ extern atari_ntsc_setup_t const atari_ntsc_svideo;    /* color bleeding only */
 extern atari_ntsc_setup_t const atari_ntsc_rgb;       /* crisp image */
 extern atari_ntsc_setup_t const atari_ntsc_bad;       /* badly adjusted TV */
 
-enum { atari_ntsc_palette_size = 256 };
+enum { atari_ntsc_palette_size = 129 * 128 };
 
 /* Initializes and adjusts parameters. Can be called multiple times on the same
    atari_ntsc_t object. Can pass NULL for either parameter. */
@@ -66,7 +66,12 @@ void atari_ntsc_init( atari_ntsc_t* ntsc, atari_ntsc_setup_t const* setup,
 /* Filters one or more rows of pixels. Input pixels are 8-bit Atari palette colors.
    In_row_width is the number of pixels to get to the next input row. Out_pitch
    is the number of *bytes* to get to the next output row. */
-void atari_ntsc_blit( atari_ntsc_t const* ntsc, atari_ntsc_in_t const* atari_in,
+void atari_ntsc_blit_single( atari_ntsc_t const* ntsc,
+    atari_ntsc_in_t const* atari_in,
+    long in_row_width, int in_width, int in_height,
+    void* rgb_out, long out_pitch );
+void atari_ntsc_blit_double( atari_ntsc_t const* ntsc,
+    atari_ntsc_in_t const* atari_in1, atari_ntsc_in_t const* atari_in2,
     long in_row_width, int in_width, int in_height,
     void* rgb_out, long out_pitch );
 
@@ -99,23 +104,16 @@ enum { atari_ntsc_black     = 0  }; /* palette index for black */
 #define ATARI_NTSC_COLOR_IN( in_index, ntsc, color_in ) \
 	ATARI_NTSC_COLOR_IN_( in_index, color_in, ATARI_NTSC_ENTRY_, ntsc )
 
-/* Generates output in the specified 16-bit format (x = junk bits).
-    1555:                     xRRRRRGG GGGBBBBB (1-5-5-5 16-bit RGB)
+/* Generates output in the specified 32-bit format (x = junk bits).
     native: xxxRRRRR RRRxxGGG GGGGGxxB BBBBBBBx (native internal format)
+    8888:   00000000 RRRRRRRR GGGGGGGG BBBBBBBB (8-8-8-8 32-bit ARGB)
 */
-#define ATARI_NTSC_RGB_OUT_1555( index, rgb_out ) {\
-  atari_ntsc_rgb_t raw_ =\
-    kernel0  [index       ] + kernel1  [(index+10)%7+14] +\
-    kernelx0 [(index+7)%14] + kernelx1 [(index+ 3)%7+14+7];\
-  ATARI_NTSC_CLAMP_( raw_, 0 );\
-  rgb_out = (raw_>>(14)& 0x7C00)|(raw_>>(9)&0x03E0)|(raw_>>(4)&0x001F);\
-}
 #define ATARI_NTSC_RGB_OUT_8888( index, rgb_out ) {\
   atari_ntsc_rgb_t raw_ =\
     kernel0  [index       ] + kernel1  [(index+10)%7+14] +\
     kernelx0 [(index+7)%14] + kernelx1 [(index+ 3)%7+14+7];\
   ATARI_NTSC_CLAMP_( raw_, 0 );\
-  rgb_out = (raw_>>(5)& 0x00FF0000)|(raw_>>(3)&0x0000FF00)|(raw_>>(1)&0x000000FF);\
+  rgb_out = (raw_>>5 & 0x00FF0000)|(raw_>>3 & 0x0000FF00)|(raw_>>1 & 0x000000FF);\
 }
 
 /* private */
