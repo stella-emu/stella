@@ -40,9 +40,13 @@
     a multi-file archive before using each ROM.  Thanks go to Roland
     Schabenberger (webOS maintainer) for this idea and sample code.
 
-  * Fixed bug in disassembly of zero-page code; addresses no longer have
-    their high-byte truncated, and system equates (TIA and I/O registers)
-    are now properly marked as such.
+  * Fixed several bugs in debugger disassembly:
+      - Zero-page code addresses no longer have their high-byte
+        truncated, and system equates (TIA and I/O registers) are now
+        properly marked as such.
+      - The Distella '-r' option (Relocate calls out of address range)
+        is no longer the default, resulting in output more consistent
+        with normal usage of Distella.
 
   * Fixed bug in EFSC bankswitch scheme state saving; the Superchip RAM
     wasn't actually being loaded and saved to state files.
