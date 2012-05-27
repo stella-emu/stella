@@ -1084,7 +1084,7 @@ graphically differentiate between RAM and ROM areas.</p>
 <p>The ROM listing also contains a context menu, accessible by right-clicking
 anywhere in the listing:</p>
 <p><img src="graphics/debugger_romcmenu.png"></p>
-<p>Currently, there are three options:</p>
+<p>The following options are available:</p>
 <ul>
 <li><b>Save ROM</b>: A textbox will appear for you to enter filename,
 and then the ROM will be saved. Note that the filename is considered
@@ -1102,6 +1102,9 @@ addresses.</li>
 
 <li><b>Toggle GFX binary/hex</b>: Switch between editing GFX and PGFX sections
 in either hexidecimal or binary.</li>
+
+<li><b>Toggle address relocation</b>: Corresponds to the Distella '-r' option
+(Relocate calls out of address range).</li>
 
 <li><b>Re-disassemble</b>: Self-explanatory; force the current bank to be
 disassembled, regardless of whether anything has changed.</li>

@@ -104,7 +104,8 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   mySaveRom->setTarget(this);
 
   // By default, we try to automatically determine code vs. data sections
-  myResolveData->setSelected(instance().settings().getString("resolvedata"), "auto");
+  myResolveData->setSelected(
+    instance().settings().getString("dis.resolvedata"), "auto");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -178,8 +179,8 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       else if(rmb == "pcaddr")
       {
         DiStella::settings.show_addresses = !DiStella::settings.show_addresses;
-        instance().settings().setString("showaddr",
-            DiStella::settings.show_addresses ? "true" : "false");
+        instance().settings().setBool("dis.showaddr",
+            DiStella::settings.show_addresses);
         invalidate();
       }
       else if(rmb == "gfx")
@@ -187,13 +188,20 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         if(DiStella::settings.gfx_format == kBASE_16)
         {
           DiStella::settings.gfx_format = kBASE_2;
-          instance().settings().setString("gfxformat", "2");
+          instance().settings().setString("dis.gfxformat", "2");
         }
         else
         {
           DiStella::settings.gfx_format = kBASE_16;
-          instance().settings().setString("gfxformat", "16");
+          instance().settings().setString("dis.gfxformat", "16");
         }
+        invalidate();
+      }
+      else if(rmb == "relocate")
+      {
+        DiStella::settings.rflag = !DiStella::settings.rflag;
+        instance().settings().setBool("dis.relocate",
+            DiStella::settings.rflag);
         invalidate();
       }
       break;  // kCMenuItemSelectedCmd
@@ -204,7 +212,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
 
     case kResolveDataChanged:
-      instance().settings().setString("resolvedata", myResolveData->getSelectedTag());
+      instance().settings().setString("dis.resolvedata", myResolveData->getSelectedTag());
       invalidate();
       loadConfig();
       break;

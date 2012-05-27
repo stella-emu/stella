@@ -69,11 +69,11 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
 
   // Add settings for Distella
   DiStella::settings.gfx_format =
-    myOSystem.settings().getInt("gfxformat") == 16 ? kBASE_16 : kBASE_2;
+    myOSystem.settings().getInt("dis.gfxformat") == 16 ? kBASE_16 : kBASE_2;
   DiStella::settings.show_addresses =
-    myOSystem.settings().getBool("showaddr");
+    myOSystem.settings().getBool("dis.showaddr");
+  DiStella::settings.rflag = myOSystem.settings().getBool("dis.relocate");
   DiStella::settings.fflag = true;  // Not currently configurable
-  DiStella::settings.rflag = false; // Not currently configurable
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
