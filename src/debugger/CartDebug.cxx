@@ -72,6 +72,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     myOSystem.settings().getInt("gfxformat") == 16 ? kBASE_16 : kBASE_2;
   DiStella::settings.show_addresses =
     myOSystem.settings().getBool("showaddr");
+  DiStella::settings.fflag = true;  // Not currently configurable
+  DiStella::settings.rflag = false; // Not currently configurable
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

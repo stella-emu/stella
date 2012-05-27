@@ -458,7 +458,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100)
+            if (ad < 0x100 && settings.fflag)
               nextline << ".w  ";
             else
               nextline << "    ";
@@ -473,7 +473,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << CartDebug::ourIOMnemonic[ad-0x280];
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 4)
+            else if (labfound == 4 && settings.rflag)
             {
               int tmp = (ad & myAppData.end)+myOffset;
               USER_OR_AUTO_LABEL("", tmp, "");
@@ -530,7 +530,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100)
+            if (ad < 0x100 && settings.fflag)
               nextline << ".wx ";
             else
               nextline << "    ";
@@ -545,7 +545,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",X";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 4)
+            else if (labfound == 4 && settings.rflag)
             {
               int tmp = (ad & myAppData.end)+myOffset;
               USER_OR_AUTO_LABEL("", tmp, ",X");
@@ -574,7 +574,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100)
+            if (ad < 0x100 && settings.fflag)
               nextline << ".wy ";
             else
               nextline << "    ";
@@ -589,7 +589,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",Y";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 4)
+            else if (labfound == 4 && settings.rflag)
             {
               int tmp = (ad & myAppData.end)+myOffset;
               USER_OR_AUTO_LABEL("", tmp, ",Y");
@@ -705,7 +705,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100)
+            if (ad < 0x100 && settings.fflag)
               nextline << ".ind ";
             else
               nextline << "     ";

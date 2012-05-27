@@ -66,6 +66,8 @@ class DiStella
     typedef struct {
       BaseFormat gfx_format;
       bool show_addresses;
+      bool fflag;  // Forces correct address length (-f in Distella)
+      bool rflag;  // Relocate calls out of address range (-r in Distella)
     } Settings;
     static Settings settings;
 
