@@ -236,17 +236,24 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 {
-  // Expand '~\' and '.\' to the users 'home' directory
-  if ( p.length() >= 2 && (p[0] == '~' || p[0] == '.') && p[1] == '\\')
+  // Expand '~\' to the users 'home' directory
+  if (p.length() >= 2 && p[0] == '~' && p[1] == '\\')
   {
     _path = myHomeFinder.getHomePath();
     // Skip over the tilde/dot.  We know that p contains at least
     // two chars, so this is safe:
     _path += p.c_str() + 1;
   }
+  // Expand '.\' to the current working directory,
+  // likewise if the path is relative (second character not a colon)
+  else if ((p.length() >= 2 && ((p[0] == '.' && p[1] == '\\') ||
+           p[1] != ':'))
+  {
+    // TODO - implement this
+    _path = p;
+  }
   else
   {
-    assert(p.size() > 0);
     _path = p;
   }
 

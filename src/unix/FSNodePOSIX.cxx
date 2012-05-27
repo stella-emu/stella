@@ -141,8 +141,8 @@ POSIXFilesystemNode::POSIXFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
 {
-  // Expand '~/' and './' to the value of the HOME env variable
-  if ( p.length() >= 2 && (p[0] == '~' || p[0] == '.') && p[1] == '/')
+  // Expand '~/' to the HOME environment variable
+  if (p.length() >= 2 && p[0] == '~' && p[1] == '/')
   {
     const char *home = getenv("HOME");
 #ifdef MAXPATHLEN
@@ -156,6 +156,28 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
       // two chars, so this is safe:
       _path += p.c_str() + 1;
     }
+  }
+  // Expand './' to the current working directory,
+  // likewise if the path is relative (doesn't start with '/')
+  else if ((p.length() >= 2 && p[0] == '.' && p[1] == '/') ||
+           (p.length() >= 1 && p[0] != '/'))
+  {
+    char* cwd = get_current_dir_name();
+#ifdef MAXPATHLEN
+    if (cwd != NULL && strlen(cwd) < MAXPATHLEN)
+#else // No MAXPATHLEN, as happens on Hurd
+    if (cwd != NULL)
+#endif
+    {
+      _path = cwd;
+      if(p[0] == '.')
+        // Skip over the tilde/dot.  We know that p contains at least
+        // two chars, so this is safe:
+        _path = _path + (p.c_str() + 1);
+      else
+        _path = _path + '/' + p;
+    }
+    free(cwd);
   }
   else
     _path = p;
