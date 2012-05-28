@@ -156,6 +156,8 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
       // two chars, so this is safe:
       _path += p.c_str() + 1;
     }
+    else
+      _path = p;
   }
   // Expand './' to the current working directory,
   // likewise if the path is relative (doesn't start with '/')
@@ -180,6 +182,8 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
       else
         _path = _path + '/' + p;
     }
+    else
+      _path = p;
   }
   else
     _path = p;
