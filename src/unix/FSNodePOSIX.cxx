@@ -162,10 +162,13 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
   else if ((p.length() >= 2 && p[0] == '.' && p[1] == '/') ||
            (p.length() >= 1 && p[0] != '/'))
   {
-    char* cwd = get_current_dir_name();
 #ifdef MAXPATHLEN
+    char buf[MAXPATHLEN];
+    const char* cwd = getcwd(buf, MAXPATHLEN);
     if (cwd != NULL && strlen(cwd) < MAXPATHLEN)
 #else // No MAXPATHLEN, as happens on Hurd
+    char buf[1024];
+    const char* cwd = getcwd(buf, 1024);
     if (cwd != NULL)
 #endif
     {
@@ -177,7 +180,6 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
       else
         _path = _path + '/' + p;
     }
-    free(cwd);
   }
   else
     _path = p;
