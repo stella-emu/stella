@@ -74,6 +74,12 @@
     respectively (instead of having two separate keys to turn them on
     and off).
 
+  * When working on the commandline, relative filenames are now
+    correctly handled (current working directory is used).
+
+  * The Windows 98/ME/2000 builds have been discontinued, due to code and
+    features that are only available on Windows XP/SP3 and later.
+
   * Updated included PNG library to latest stable version.
 
 -Have fun!

@@ -29,10 +29,7 @@ distributions currently available are:
       Stella-3.7-x64.exe     (64-bit EXE installer)
       Stella-3.7-windows.zip (32/64 bit versions)
 
-  * Binaries for Windows 98/2000 :
-      Stella-3.7_98_2k-windows.zip (32-bit for Windows 98/2000)
-
-  * Binary distribution for MacOSX 32-bit & 64-bit :
+  * Binary distribution for MacOS X 32-bit & 64-bit :
       Stella-3.7-macosx.dmg (32-bit Universal Binary)
       Stella-3.7_intel-macosx.dmg (32/64-bit Intel/OSX 10.6+)
 
@@ -46,9 +43,6 @@ distributions currently available are:
 
   * Source code distribution for all platforms :
       stella-3.7-src.tar.gz
-
-PLEASE DO NOT WRITE ASKING FOR ROM IMAGES TO USE WITH STELLA! ALL SUCH
-REQUESTS WILL BE IGNORED!
 
 
 Distribution Site
