@@ -19978,6 +19978,7 @@
 "Cartridge.Name" "Star Castle 2600 (SolidCorp)"
 "Cartridge.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""
 
 "Cartridge.MD5" "54bafc299423f5a50b8bc3a797914706"
@@ -19986,4 +19987,5 @@
 "Cartridge.Name" "Star Castle 2600 (SolidCorp) (PAL)"
 "Cartridge.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cartridge.Rarity" "Homebrew"
+"Display.Phosphor" "YES"
 ""

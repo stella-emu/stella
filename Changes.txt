@@ -68,6 +68,7 @@
   * Several updates to the internal properties database:
       - 'Juno First' ROMs now use an AtariVox/SaveKey when possible
       - 'Astroblast' ROMs now use the paddles by default
+      - 'Star Castle 2600' ROMs added
 
   * Changed key-combo for enabling TIA objects and collisions to be
     toggled on and off with the Alt-period and Shift-Alt-period

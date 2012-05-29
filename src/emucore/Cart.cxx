@@ -578,8 +578,8 @@ bool Cartridge::isProbablyCV(const uInt8* image, uInt32 size)
   // CV RAM access occurs at addresses $f3ff and $f400
   // These signatures are attributed to the MESS project
   uInt8 signature[2][3] = {
-    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF
-    { 0x99, 0x00, 0xF4 }   // STA $F400
+    { 0x9D, 0xFF, 0xF3 },  // STA $F3FF.X
+    { 0x99, 0x00, 0xF4 }   // STA $F400.Y
   };
   if(searchForBytes(image, size, signature[0], 3, 1))
     return true;
