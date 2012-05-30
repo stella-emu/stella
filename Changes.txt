@@ -36,8 +36,8 @@
     high score functionality to the Harmony cart flash RAM.
 
   * Added ability for ROM launcher to 'descend' into ZIP files when it
-    contains more than one ROM file.  This means you no longer have to unzip
-    a multi-file archive before using each ROM.  Thanks go to Roland
+    contains more than one ROM file.  This means you no longer have to
+    unzip a multi-file archive before using each ROM.  Thanks go to Roland
     Schabenberger (webOS maintainer) for this idea and sample code.
 
   * Several improvements to the debugger/disassembler:
