@@ -63,6 +63,9 @@
 
 static HomeFinder myHomeFinder;
 
+// TODO - fix isFile() functionality so that it actually determines if something
+//        is a file; for now, it assumes a file if it isn't a directory
+
 /*
  * Implementation of the Stella file system API based on Windows API.
  *
@@ -179,7 +182,7 @@ void WindowsFilesystemNode::addFile(AbstractFSList& list, ListMode mode,
     return;
 
   isDirectory = (find_data->dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY ? true : false);
-  isFile = (find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
+  isFile = !isDirectory;//(find_data->dwFileAttributes & FILE_ATTRIBUTE_NORMAL ? true : false);
 
   if ((isFile && mode == FilesystemNode::kListDirectoriesOnly) ||
       (isDirectory && mode == FilesystemNode::kListFilesOnly))
@@ -277,7 +280,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
   else
   {
     _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    _isFile = ((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
+    _isFile = !_isDirectory;//((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
     _isValid = true;
 
     // Add a trailing backslash, if necessary
