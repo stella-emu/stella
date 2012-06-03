@@ -62,7 +62,7 @@
 class Thumbulator
 {
   public:
-    Thumbulator(uInt16* rom, uInt16* ram, bool traponfatal);
+    Thumbulator(const uInt16* rom, uInt16* ram, bool traponfatal);
     ~Thumbulator();
 
     /**
@@ -119,7 +119,7 @@ class Thumbulator
     int reset ( void );
 
   private:
-    uInt16* rom;
+    const uInt16* rom;
     uInt16* ram;
     Int32 copydata;
 

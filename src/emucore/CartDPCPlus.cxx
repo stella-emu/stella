@@ -49,7 +49,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
 
   // Pointer to the display RAM
   myDisplayImage = myDPCRAM + 0xC00;
-  memset(myDPCRAM, 0, 8192);
 
   // Pointer to the Frequency ROM (1K @ 28K offset)
   myFrequencyImage = myProgramImage + 0x7000;
@@ -70,6 +69,9 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
                                     (uInt16*)myDPCRAM,
                                      settings.getBool("thumb.trapfatal"));
 #endif
+
+  // Reset various ROM and RAM locations
+  memset(myDPCRAM, 0, 8192);
 
   // Copy DPC display data to Harmony RAM
   memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1000);
@@ -105,6 +107,23 @@ void CartridgeDPCPlus::reset()
   // Update cycles to the current system cycles
   mySystemCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
+
+  // Reset various ROM and RAM locations
+  memset(myDPCRAM, 0, 8192);
+
+  // Copy initial DPC display data and Frequency table state to Harmony RAM
+  memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1400);
+
+  // Initialize the DPC data fetcher registers
+  for(uInt16 i = 0; i < 8; ++i)
+    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 
+    myFractionalCounters[i] = 0;
+
+  // Set waveforms to first waveform entry
+  myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;
+
+  // Initialize the DPC's random number generator register (must be non-zero)
+  myRandomNumber = 0x2B435044; // "DPC+"
 
   // Upon reset we switch to the startup bank
   bank(myStartBank);
@@ -209,7 +228,7 @@ inline void CartridgeDPCPlus::callFunction(uInt8 value)
         myThumbEmulator->run();
       }
       catch(const string& error) {
-        if(!mySystem->autodectMode())
+        if(!mySystem->autodetectMode())
         {
       #ifdef DEBUGGER_SUPPORT
           Debugger::debugger().startWithFatalError(error);
@@ -661,6 +680,9 @@ bool CartridgeDPCPlus::save(Serializer& out) const
     // Indicates which bank is currently active
     out.putShort(myCurrentBank);
 
+    // Harmony RAM
+    out.putByteArray(myDPCRAM, 8192);
+
     // The top registers for the data fetchers
     out.putByteArray(myTops, 8);
 
@@ -717,6 +739,9 @@ bool CartridgeDPCPlus::load(Serializer& in)
 
     // Indicates which bank is currently active
     myCurrentBank = in.getShort();
+
+    // Harmony RAM
+    in.getByteArray(myDPCRAM, 8192);
 
     // The top registers for the data fetchers
     in.getByteArray(myTops, 8);

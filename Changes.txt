@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.7 to 3.7.1: (xxxx xx, 2012)
+
+  * Fixed several bugs in DPC+ bankswitching scheme, including ability to
+    load and save state files.
+
+-Have fun!
+
+
 3.6.1 to 3.7: (June 1, 2012)
 
   * Added Blargg TV effects, with presets for Composite, S-video, RGB,
@@ -82,8 +90,6 @@
     features that are only available on Windows XP/SP3 and later.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 3.6 to 3.6.1: (March 30, 2012)

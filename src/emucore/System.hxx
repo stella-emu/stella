@@ -214,7 +214,7 @@ class System : public Serializable
     /**
       Answers whether the system is currently in device autodetect mode.
     */
-    bool autodectMode() const { return mySystemInAutodetect; }
+    bool autodetectMode() const { return mySystemInAutodetect; }
 
   public:
     /**

@@ -31,7 +31,7 @@
 
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Thumbulator::Thumbulator(uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
+Thumbulator::Thumbulator(const uInt16* rom_ptr, uInt16* ram_ptr, bool traponfatal)
   : rom(rom_ptr),
     ram(ram_ptr),
     copydata(0),
