@@ -150,6 +150,11 @@ class CartridgeDPCPlus : public Cartridge
 
   private:
     /** 
+      Sets the initial state of the DPC pointers and RAM
+    */
+    void setInitialState();
+
+    /** 
       Clocks the random number generator to move it to its next state
     */
     void clockRandomNumberGenerator();

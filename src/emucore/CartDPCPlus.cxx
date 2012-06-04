@@ -60,7 +60,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
     int offset = size - 29 * 1024;
     myProgramImage   += offset;
 //    myDisplayImage   += offset;
-    myFrequencyImage += offset;
+//    myFrequencyImage += offset;
   }
 
 #ifdef THUMB_SUPPORT
@@ -69,23 +69,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
                                     (uInt16*)myDPCRAM,
                                      settings.getBool("thumb.trapfatal"));
 #endif
-
-  // Reset various ROM and RAM locations
-  memset(myDPCRAM, 0, 8192);
-
-  // Copy DPC display data to Harmony RAM
-  memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1000);
-
-  // Initialize the DPC data fetcher registers
-  for(uInt16 i = 0; i < 8; ++i)
-    myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 
-    myFractionalCounters[i] = 0;
-
-  // Set waveforms to first waveform entry
-  myMusicWaveforms[0] = myMusicWaveforms[1] = myMusicWaveforms[2] = 0;
-
-  // Initialize the DPC's random number generator register (must be non-zero)
-  myRandomNumber = 0x2B435044; // "DPC+"
+  setInitialState();
 
   // DPC+ always starts in bank 5
   myStartBank = 5;
@@ -108,6 +92,15 @@ void CartridgeDPCPlus::reset()
   mySystemCycles = mySystem->cycles();
   myFractionalClocks = 0.0;
 
+  setInitialState();
+
+  // Upon reset we switch to the startup bank
+  bank(myStartBank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPCPlus::setInitialState()
+{
   // Reset various ROM and RAM locations
   memset(myDPCRAM, 0, 8192);
 
@@ -124,9 +117,6 @@ void CartridgeDPCPlus::reset()
 
   // Initialize the DPC's random number generator register (must be non-zero)
   myRandomNumber = 0x2B435044; // "DPC+"
-
-  // Upon reset we switch to the startup bank
-  bank(myStartBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
