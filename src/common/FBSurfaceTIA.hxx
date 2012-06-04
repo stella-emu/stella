@@ -50,6 +50,7 @@ class FBSurfaceTIA : public FBSurface
     uInt32 getHeight() const { return myImageH; }
     void translateCoords(Int32& x, Int32& y) const;
     void update();
+    void invalidate();
     void free();
     void reload();
 

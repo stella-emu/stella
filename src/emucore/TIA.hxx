@@ -188,9 +188,9 @@ class TIA : public Device
     /**
       Answers the width and height of the frame buffer
     */
-    uInt32 width() const  { return myFrameWidth;  }
-    uInt32 height() const { return myFrameHeight; }
-    uInt32 ystart() const { return myFrameYStart; }
+    inline uInt32 width() const  { return 160;           }
+    inline uInt32 height() const { return myFrameHeight; }
+    inline uInt32 ystart() const { return myFrameYStart; }
 
     /**
       Changes the current Height/YStart properties.
@@ -403,17 +403,11 @@ class TIA : public Device
     // (this is used when loading state files with a 'partial' frame)
     uInt32 myFramePointerClocks;
 
-    // Indicates the width of the visible scanline
-    uInt32 myFrameWidth;
-
     // Indicated what scanline the frame should start being drawn at
     uInt32 myFrameYStart;
 
     // Indicates the height of the frame in scanlines
     uInt32 myFrameHeight;
-
-    // Indicates offset in color clocks when display should begin
-    uInt32 myStartDisplayOffset;
 
     // Indicates offset in color clocks when display should stop
     uInt32 myStopDisplayOffset;

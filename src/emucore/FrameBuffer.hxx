@@ -813,6 +813,12 @@ class FBSurface
     virtual void update() { }
 
     /**
+      This method should be called to reset the surface to empty
+      pixels / colour black.
+    */
+    virtual void invalidate() { }
+
+    /**
       This method should be called to free any resources being used by
       the surface.
     */

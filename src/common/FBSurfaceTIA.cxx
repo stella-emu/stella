@@ -200,6 +200,12 @@ void FBSurfaceTIA::update()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FBSurfaceTIA::invalidate()
+{
+  SDL_FillRect(myTexture, NULL, 0);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceTIA::free()
 {
   myGL.DeleteTextures(2, myTexID);

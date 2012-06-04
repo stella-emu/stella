@@ -332,6 +332,8 @@ bool FrameBufferGL::setVidMode(VideoMode& mode)
 void FrameBufferGL::invalidate()
 {
   p_gl.Clear(GL_COLOR_BUFFER_BIT);
+  if(myTiaSurface)
+    myTiaSurface->invalidate();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

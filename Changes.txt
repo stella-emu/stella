@@ -14,8 +14,13 @@
 
 3.7 to 3.7.1: (xxxx xx, 2012)
 
+  * Improved TIA emulation with ROMs that have too few or too many
+    scanlines; the output is now blanked as on a real TV.  Special thanks
+    to Omegamatrix of AtariAge for test ROMs in this area.
+
   * Fixed several bugs in DPC+ bankswitching scheme, including ability to
-    load and save state files.
+    load and save state files.  As well, ROMs now work correctly after
+    console format autodetection.
 
 -Have fun!
 

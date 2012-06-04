@@ -46,7 +46,6 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
   : myConsole(console),
     mySound(sound),
     mySettings(settings),
-    myFrameWidth(160),
     myFrameYStart(34),
     myFrameHeight(210),
     myMaximumNumberOfScanlines(262),
@@ -194,8 +193,7 @@ void TIA::frameReset()
   // Calculate color clock offsets for starting and stopping frame drawing
   // Note that although we always start drawing at scanline zero, the
   // framebuffer that is exposed outside the class actually starts at 'ystart'
-  myFramePointerOffset = myFrameWidth * myFrameYStart;
-  myStartDisplayOffset = 0;
+  myFramePointerOffset = 160 * myFrameYStart;
 
   // NTSC screens will process at least 262 scanlines,
   // while PAL will have at least 312
@@ -209,7 +207,7 @@ void TIA::frameReset()
 
   // Reasonable values to start and stop the current frame drawing
   myClockWhenFrameStarted = mySystem->cycles() * 3;
-  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
+  myClockStartDisplay = myClockWhenFrameStarted;
   myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
   myClockAtLastUpdate = myClockWhenFrameStarted;
   myClocksToEndOfScanLine = 228;
@@ -558,7 +556,7 @@ inline void TIA::startFrame()
 
   // Setup clocks that'll be used for drawing this frame
   myClockWhenFrameStarted = -1 * clocks;
-  myClockStartDisplay = myClockWhenFrameStarted + myStartDisplayOffset;
+  myClockStartDisplay = myClockWhenFrameStarted;
   myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
   myClockAtLastUpdate = myClockStartDisplay;
   myClocksToEndOfScanLine = 228;
@@ -622,21 +620,31 @@ inline void TIA::endFrame()
       myStopDisplayOffset = offset;
   }
 
-  // This is a bit of a hack for those ROMs which generate too many
-  // scanlines each frame, usually caused by VBLANK taking too long
-  // When this happens, the frame pointers sometimes get 'confused',
-  // and the framebuffer class doesn't properly overwrite data from
-  // the previous frame, causing graphical garbage
-  //
-  // We basically erase the entire contents of both buffers, making
-  // sure that they're also different from one another
-  // This will force the framebuffer class to completely re-render
-  // the screen
-  if(previousCount > myMaximumNumberOfScanlines &&
-     myScanlineCountForLastFrame <= myMaximumNumberOfScanlines)
+  // The following handle cases where scanlines either go too high or too
+  // low compared to the previous frame, in which case certain portions
+  // of the framebuffer are cleared to zero (black pixels)
+  // Due to the FrameBuffer class (potentially) doing dirty-rectangle
+  // updates, each internal buffer must be set slightly differently,
+  // otherwise they won't know anything has changed
+  // Hence, the front buffer is set to pixel 0, and the back to pixel 1
+
+  // Did we generate too many scanlines?
+  // (usually caused by VBLANK taking too long)
+  // If so, blank entire viewable area
+  if(myScanlineCountForLastFrame > 342 && previousCount <= 342)
   {
     memset(myCurrentFrameBuffer, 0, 160 * 320);
     memset(myPreviousFrameBuffer, 1, 160 * 320);
+  }
+  // Did the number of scanlines decrease?
+  // If so, blank scanlines that weren't rendered this frame
+  else if(myScanlineCountForLastFrame < previousCount &&
+          myScanlineCountForLastFrame < 320 && previousCount < 320)
+  {
+    uInt32 offset = myScanlineCountForLastFrame * 160,
+           stride = (previousCount - myScanlineCountForLastFrame) * 160;
+    memset(myCurrentFrameBuffer + offset, 0, stride);
+    memset(myPreviousFrameBuffer + offset, 1, stride);
   }
 }
 
