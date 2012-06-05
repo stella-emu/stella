@@ -576,8 +576,8 @@ void EventHandler::poll(uInt64 time)
                 toggleSAPortOrder();
                 break;
 
-              case KBDK_f:  // Ctrl-f toggles NTSC/PAL mode
-                myOSystem->console().toggleFormat();
+              case KBDK_f:  // (Shift) Ctrl-f toggles NTSC/PAL/SECAM mode
+                myOSystem->console().toggleFormat(mod & KMOD_SHIFT ? -1 : 1);
                 break;
 
               case KBDK_g:  // Ctrl-g (un)grabs mouse

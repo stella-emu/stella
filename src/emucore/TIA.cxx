@@ -54,6 +54,7 @@ TIA::TIA(Console& console, Sound& sound, Settings& settings)
     myPartialFrameFlag(false),
     myAutoFrameEnabled(false),
     myFrameCounter(0),
+    myPALFrameCounter(0),
     myBitsEnabled(true),
     myCollisionsEnabled(true)
    
@@ -137,8 +138,35 @@ void TIA::reset()
   // Should undriven pins be randomly driven high or low?
   myTIAPinsDriven = mySettings.getBool("tiadriven");
 
-  myFrameCounter = 0;
+  myFrameCounter = myPALFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
+
+  myCurrentP0Mask = &TIATables::PxMask[0][0][0][0];
+  myCurrentP1Mask = &TIATables::PxMask[0][0][0][0];
+  myCurrentM0Mask = &TIATables::MxMask[0][0][0][0];
+  myCurrentM1Mask = &TIATables::MxMask[0][0][0][0];
+  myCurrentBLMask = &TIATables::BLMask[0][0][0];
+  myCurrentPFMask = TIATables::PFMask[0];
+
+  // Recalculate the size of the display
+  toggleFixedColors(0);
+  frameReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void TIA::frameReset()
+{
+  // Clear frame buffers
+  clearBuffers();
+
+  // Reset pixel pointer and drawing flag
+  myFramePointer = myCurrentFrameBuffer;
+
+  // Calculate color clock offsets for starting and stopping frame drawing
+  // Note that although we always start drawing at scanline zero, the
+  // framebuffer that is exposed outside the class actually starts at 'ystart'
+  myFramePointerOffset = 160 * myFrameYStart;
+
   myAutoFrameEnabled = (mySettings.getInt("framerate") <= 0);
   myFramerate = myConsole.getFramerate();
 
@@ -168,32 +196,6 @@ void TIA::reset()
     myColorLossEnabled = mySettings.getBool("colorloss");
     myMaximumNumberOfScanlines = 342;
   }
-
-  myCurrentP0Mask = &TIATables::PxMask[0][0][0][0];
-  myCurrentP1Mask = &TIATables::PxMask[0][0][0][0];
-  myCurrentM0Mask = &TIATables::MxMask[0][0][0][0];
-  myCurrentM1Mask = &TIATables::MxMask[0][0][0][0];
-  myCurrentBLMask = &TIATables::BLMask[0][0][0];
-  myCurrentPFMask = TIATables::PFMask[0];
-
-  // Recalculate the size of the display
-  toggleFixedColors(0);
-  frameReset();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIA::frameReset()
-{
-  // Clear frame buffers
-  clearBuffers();
-
-  // Reset pixel pointer and drawing flag
-  myFramePointer = myCurrentFrameBuffer;
-
-  // Calculate color clock offsets for starting and stopping frame drawing
-  // Note that although we always start drawing at scanline zero, the
-  // framebuffer that is exposed outside the class actually starts at 'ystart'
-  myFramePointerOffset = 160 * myFrameYStart;
 
   // NTSC screens will process at least 262 scanlines,
   // while PAL will have at least 312
@@ -350,6 +352,7 @@ bool TIA::save(Serializer& out) const
     out.putBool(myHMOVEBlankEnabled);
 
     out.putInt(myFrameCounter);
+    out.putInt(myPALFrameCounter);
 
     // Save the sound sample stuff ...
     mySound.save(out);
@@ -452,7 +455,8 @@ bool TIA::load(Serializer& in)
     myPreviousHMOVEPos = (Int32) in.getInt();
     myHMOVEBlankEnabled = in.getBool();
 
-    myFrameCounter = (Int32) in.getInt();
+    myFrameCounter = in.getInt();
+    myPALFrameCounter = in.getInt();
 
     // Load the sound sample stuff ...
     mySound.load(in);
@@ -603,6 +607,8 @@ inline void TIA::endFrame()
 
   // Stats counters
   myFrameCounter++;
+  if(myScanlineCountForLastFrame >= 287)
+    myPALFrameCounter++;
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
   if(myFrameCounter % 8 == 0 && myAutoFrameEnabled &&

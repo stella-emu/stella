@@ -182,8 +182,10 @@ class Console : public Serializable
   public:
     /**
       Toggle between NTSC/PAL/SECAM (and variants) display format.
+
+      @param direction +1 indicates increase, -1 indicates decrease.
     */
-    void toggleFormat();
+    void toggleFormat(int direction = 1);
 
     /**
       Toggle between the available palettes.
@@ -286,6 +288,12 @@ class Console : public Serializable
 
   private:
     /**
+      Sets various properties of the TIA (YStart, Height, etc) based on
+      the current display format.
+    */
+    void setTIAProperties();
+
+    /**
       Adds the left and right controllers to the console.
     */
     void setControllers(const string& rommd5);
@@ -349,6 +357,9 @@ class Console : public Serializable
 
     // The currently defined display framerate
     float myFramerate;
+
+    // Display format currently in use
+    uInt32 myCurrentFormat;
 
     // Indicates whether an external palette was found and
     // successfully loaded

@@ -18,9 +18,18 @@
     scanlines; the output is now blanked as on a real TV.  Special thanks
     to Omegamatrix of AtariAge for test ROMs in this area.
 
+  * Modified hotkey for "Change console palette" (Control-f) to also
+    change the display properties of the TIA.  This allows you to switch
+    between NTSC/PAL/SECAM (and variants) modes dynamically.  Related to
+    this, added Shift-Control-f key to step backwards through the
+    available modes.
+
   * Fixed several bugs in DPC+ bankswitching scheme, including ability to
     load and save state files.  As well, ROMs now work correctly after
     console format autodetection.
+
+  * Note: because of the TIA changes, the state file format has changed
+          again, and old state files will not work with this release.
 
 -Have fun!
 

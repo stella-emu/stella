@@ -77,6 +77,7 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     myCMHandler(0),
     myDisplayFormat("NTSC"),
     myFramerate(60.0),
+    myCurrentFormat(0),
     myUserPaletteDefined(false)
 {
   // Load user-defined palette for this ROM
@@ -118,24 +119,17 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     // We turn off the SuperCharger progress bars, otherwise the SC BIOS
     // will take over 250 frames!
     // The 'fastscbios' option must be changed before the system is reset
-
-    // The algorithm used is as follows:
-    //   Run for 60 frames; if there's a frame that has more than 287
-    //   scanlines, count it as PAL
-    //   If at least 25 PAL frames are found, then the format is PAL, else NTSC
     bool fastscbios = myOSystem->settings().getBool("fastscbios");
     myOSystem->settings().setBool("fastscbios", true);
     mySystem->reset(true);  // autodetect in reset enabled
-    int palCount = 0;
     for(int i = 0; i < 60; ++i)
-    {
       myTIA->update();
-      if(myTIA->scanlines() >= 287)
-        ++palCount;
-    }
-    myDisplayFormat = (palCount >= 25) ? "PAL" : "NTSC";
+    myDisplayFormat = myTIA->isPAL() ? "PAL" : "NTSC";
     if(myProperties.get(Display_Format) == "AUTO-DETECT")
+    {
       autodetected = "*";
+      myCurrentFormat = 0;
+    }
 
     // Don't forget to reset the SC progress bars again
     myOSystem->settings().setBool("fastscbios", fastscbios);
@@ -145,48 +139,15 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Set up the correct properties used when toggling format
   // Note that this can be overridden if a format is forced
   //   For example, if a PAL ROM is forced to be NTSC, it will use NTSC-like
-  //   properties (60Hz, 262 scanlines, etc) and cycle between NTSC-like modes
+  //   properties (60Hz, 262 scanlines, etc), but likely result in flicker
   // The TIA will self-adjust the framerate if necessary
-
-  // TODO - query these values directly from the TIA if value is 'AUTO'
-  uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
-  if(ystart > 64) ystart = 64;
-  uInt32 height = atoi(myProperties.get(Display_Height).c_str());
-  if(height < 210)      height = 210;
-  else if(height > 256) height = 256;
-
-  if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
-     myDisplayFormat == "SECAM60")
-  {
-    // Assume we've got ~262 scanlines (NTSC-like format)
-    myFramerate = 60.0;
-    myConsoleInfo.InitialFrameRate = "60";
-  }
-  else
-  {
-    // Assume we've got ~312 scanlines (PAL-like format)
-    myFramerate = 50.0;
-    myConsoleInfo.InitialFrameRate = "50";
-
-    // PAL ROMs normally need at least 250 lines
-    height = BSPF_max(height, 250u);
-  }
-
-  // Make sure these values fit within the bounds of the desktop
-  // If not, attempt to center vertically
-  if(height <= myOSystem->desktopHeight())
-  {
-    myTIA->setYStart(ystart);
-    myTIA->setHeight(height);
-  }
-  else
-  {
-    ystart += height - myOSystem->desktopHeight();
-    ystart = BSPF_min(ystart, 64u);
-    height = myOSystem->desktopHeight();
-    myTIA->setYStart(ystart);
-    myTIA->setHeight(height);
-  }
+  setTIAProperties();
+  if(myDisplayFormat == "NTSC")         myCurrentFormat = 1;
+  else if(myDisplayFormat == "PAL")     myCurrentFormat = 2;
+  else if(myDisplayFormat == "SECAM")   myCurrentFormat = 3;
+  else if(myDisplayFormat == "NTSC50")  myCurrentFormat = 4;
+  else if(myDisplayFormat == "PAL60")   myCurrentFormat = 5;
+  else if(myDisplayFormat == "SECAM60") myCurrentFormat = 6;
 
   // Add the real controllers for this system
   // This must be done before the debugger is initialized
@@ -275,54 +236,56 @@ bool Console::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Console::toggleFormat()
+void Console::toggleFormat(int direction)
 {
-  string format, message;
+  string saveformat, message;
 
-  if(myDisplayFormat.compare(0, 4, "NTSC") == 0)
-  {
-    if(myFramerate > 55.0)
-    {
-      format  = "PAL60";
-      message = "PAL palette (PAL60)";
-    }
-    else
-    {
-      format  = "PAL";
-      message = "PAL palette (PAL)";
-    }
-  }
-  else if(myDisplayFormat.compare(0, 3, "PAL") == 0)
-  {
-    if(myFramerate > 55.0)
-    {
-      format  = "SECAM";
-      message = "SECAM palette (SECAM60)";
-    }
-    else
-    {
-      format  = "SECAM";
-      message = "SECAM palette (SECAM)";
-    }
-  }
-  else if(myDisplayFormat.compare(0, 5, "SECAM") == 0)
-  {
-    if(myFramerate > 55.0)
-    {
-      format  = "NTSC";
-      message = "NTSC palette (NTSC)";
-    }
-    else
-    {
-      format  = "NTSC50";
-      message = "NTSC palette (NTSC50)";
-    }
-  }
+  if(direction == 1)
+    myCurrentFormat = (myCurrentFormat + 1) % 7;
+  else if(direction == -1)
+    myCurrentFormat = myCurrentFormat > 0 ? (myCurrentFormat - 1) : 6;
 
-  myDisplayFormat = format;
-  myProperties.set(Display_Format, myDisplayFormat);
-  myOSystem->frameBuffer().showMessage(message);
+  switch(myCurrentFormat)
+  {
+    case 0:  // auto-detect
+      myTIA->update();
+      myDisplayFormat = myTIA->isPAL() ? "PAL" : "NTSC";
+      message = "Auto-detect mode: " + myDisplayFormat;
+      saveformat = "AUTO-DETECT";
+      break;
+    case 1:
+      saveformat = myDisplayFormat  = "NTSC";
+      message = "NTSC mode";
+      break;
+    case 2:
+      saveformat = myDisplayFormat  = "PAL";
+      message = "PAL mode";
+      break;
+    case 3:
+      saveformat = myDisplayFormat  = "SECAM";
+      message = "SECAM mode";
+      break;
+    case 4:
+      saveformat = myDisplayFormat  = "NTSC50";
+      message = "NTSC50 mode";
+      break;
+    case 5:
+      saveformat = myDisplayFormat  = "PAL60";
+      message = "PAL60 mode";
+      break;
+    case 6:
+      saveformat = myDisplayFormat  = "SECAM60";
+      message = "SECAM60 mode";
+      break;
+  }
+  myProperties.set(Display_Format, saveformat);
+
   setPalette(myOSystem->settings().getString("palette"));
+  setTIAProperties();
+  myTIA->frameReset();
+  initializeVideo();  // takes care of refreshing the screen
+
+  myOSystem->frameBuffer().showMessage(message);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -603,6 +566,50 @@ void Console::changeHeight(int direction)
   val << height;
   myOSystem->frameBuffer().showMessage("Height " + val.str());
   myProperties.set(Display_Height, val.str());
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::setTIAProperties()
+{
+  // TODO - query these values directly from the TIA if value is 'AUTO'
+  uInt32 ystart = atoi(myProperties.get(Display_YStart).c_str());
+  if(ystart > 64) ystart = 64;
+  uInt32 height = atoi(myProperties.get(Display_Height).c_str());
+  if(height < 210)      height = 210;
+  else if(height > 256) height = 256;
+
+  if(myDisplayFormat == "NTSC" || myDisplayFormat == "PAL60" ||
+     myDisplayFormat == "SECAM60")
+  {
+    // Assume we've got ~262 scanlines (NTSC-like format)
+    myFramerate = 60.0;
+    myConsoleInfo.InitialFrameRate = "60";
+  }
+  else
+  {
+    // Assume we've got ~312 scanlines (PAL-like format)
+    myFramerate = 50.0;
+    myConsoleInfo.InitialFrameRate = "50";
+
+    // PAL ROMs normally need at least 250 lines
+    height = BSPF_max(height, 250u);
+  }
+
+  // Make sure these values fit within the bounds of the desktop
+  // If not, attempt to center vertically
+  if(height <= myOSystem->desktopHeight())
+  {
+    myTIA->setYStart(ystart);
+    myTIA->setHeight(height);
+  }
+  else
+  {
+    ystart += height - myOSystem->desktopHeight();
+    ystart = BSPF_min(ystart, 64u);
+    height = myOSystem->desktopHeight();
+    myTIA->setYStart(ystart);
+    myTIA->setHeight(height);
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

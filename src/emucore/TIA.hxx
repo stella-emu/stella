@@ -217,6 +217,13 @@ class TIA : public Device
       { myColorLossEnabled = myFramerate <= 55 ? mode : false; }
 
     /**
+      Answers whether this TIA runs at NTSC or PAL scanrates,
+      based on how many frames of out the total count are PAL frames.
+    */
+    bool isPAL()
+      { return float(myPALFrameCounter) / myFrameCounter >= (25.0/60.0); }
+
+    /**
       Answers the current color clock we've gotten to on this scanline.
 
       @return The current color clock
@@ -605,8 +612,11 @@ class TIA : public Device
     // Automatic framerate correction based on number of scanlines
     bool myAutoFrameEnabled;
 
-    // Number of frames displayed by this TIA
-    int myFrameCounter;
+    // Number of total frames displayed by this TIA
+    uInt32 myFrameCounter;
+
+    // Number of PAL frames displayed by this TIA
+    uInt32 myPALFrameCounter;
 
     // The framerate currently in use by the Console
     float myFramerate;
