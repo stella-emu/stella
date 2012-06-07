@@ -184,7 +184,7 @@ void GlobalPropsDialog::loadConfig()
 {
   Settings& settings = instance().settings();
 
-  myBSType->setSelected(settings.getString("bs"), "DEFAULT");
+  myBSType->setSelected(settings.getString("bs"), "AUTO-DETECT");
   myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");
   myRightDiff->setSelected(settings.getString("rd"), "DEFAULT");
   myTVType->setSelected(settings.getString("tv"), "DEFAULT");
@@ -201,7 +201,7 @@ void GlobalPropsDialog::saveConfig()
   string s;
 
   s = myBSType->getSelectedTag();
-  if(s == "DEFAULT") s = "";
+  if(s == "AUTO-DETECT") s = "";
   settings.setString("bs", s);
 
   s = myLeftDiff->getSelectedTag();
@@ -224,7 +224,7 @@ void GlobalPropsDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalPropsDialog::setDefaults()
 {
-  myBSType->setSelected("DEFAULT", "");
+  myBSType->setSelected("AUTO-DETECT", "");
   myLeftDiff->setSelected("DEFAULT", "");
   myRightDiff->setSelected("DEFAULT", "");
   myTVType->setSelected("DEFAULT", "");

@@ -95,7 +95,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 2, md5, id, settings);
       buf << id;
     }
-
+    else
+      dtype = "WRONG_SIZE";
   }
   else if(type == "4IN1")
   {
@@ -106,6 +107,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 4, md5, id, settings);
       buf << id;
     }
+    else
+      dtype = "WRONG_SIZE";
   }
   else if(type == "8IN1")
   {
@@ -116,6 +119,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 8, md5, id, settings);
       buf << id;
     }
+    else
+      dtype = "WRONG_SIZE";
   }
   else if(type == "16IN1")
   {
@@ -126,6 +131,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 16, md5, id, settings);
       buf << id;
     }
+    else
+      dtype = "WRONG_SIZE";
   }
   else if(type == "32IN1")
   {
@@ -136,6 +143,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 32, md5, id, settings);
       buf << id;
     }
+    else
+      dtype = "WRONG_SIZE";
   }
   else if(type == "64IN1")
   {
@@ -146,6 +155,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 64, md5, id, settings);
       buf << id;
     }
+    else
+      dtype = "WRONG_SIZE";
   }
   else if(type == "128IN1")
   {
@@ -156,6 +167,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       type = createFromMultiCart(image, size, 128, md5, id, settings);
       buf << id;
     }
+    else
+      dtype = "WRONG_SIZE";
   }
 
   // We should know the cart's type by now so let's create it
@@ -219,6 +232,8 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
     cartridge = new CartridgeSB(image, size, settings);
   else if(type == "X07")
     cartridge = new CartridgeX07(image, size, settings);
+  else if(dtype == "WRONG_SIZE")
+    cerr << "ERROR: Invalid cartridge size for type " << type << " ..." << endl;
   else
     cerr << "ERROR: Invalid cartridge type " << type << " ..." << endl;
 

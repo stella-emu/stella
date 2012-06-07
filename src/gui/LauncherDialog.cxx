@@ -642,7 +642,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
               instance().settings().setString("lastrom", myList->getSelectedString());
             else
               instance().frameBuffer().showMessage(
-                  "Error creating console (check ROM file)",
+                  "Error creating console (check ROM file/bankswitch scheme)",
                   kMiddleCenter, true);
           }
           else
