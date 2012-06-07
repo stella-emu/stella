@@ -39,8 +39,6 @@
     introduced in the last release.  The new functionality should be much
     more robust.
 
-  * Updated included ZLib library to latest stable version.
-
 -Have fun!
 
 
