@@ -27,6 +27,10 @@
     this, added Shift-Control-f key to step backwards through the
     available modes.
 
+  * Added '64in1' and '128in1' multicart bankswitching schemes, which work
+    the same as the 2in1/4in1/etc ones (Control-r switches to each
+    consecutive game in the ROM).
+
   * Fixed several bugs in DPC+ bankswitching scheme, including ability
     to load and save state files.  As well, ROMs now work correctly after
     console format autodetection.

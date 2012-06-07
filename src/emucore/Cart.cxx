@@ -137,6 +137,26 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
       buf << id;
     }
   }
+  else if(type == "64IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 64*2048 || size == 64*4096)
+    {
+      dtype = type;
+      type = createFromMultiCart(image, size, 64, md5, id, settings);
+      buf << id;
+    }
+  }
+  else if(type == "128IN1")
+  {
+    // Make sure we have a valid sized image
+    if(size == 128*2048 || size == 128*4096)
+    {
+      dtype = type;
+      type = createFromMultiCart(image, size, 128, md5, id, settings);
+      buf << id;
+    }
+  }
 
   // We should know the cart's type by now so let's create it
   if(type == "0840")
