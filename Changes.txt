@@ -14,22 +14,28 @@
 
 3.7 to 3.7.1: (xxxx xx, 2012)
 
+  * Note: because of TIA changes, the state file format has changed again,
+          and old state files will not work with this release.
+
   * Improved TIA emulation with ROMs that have too few or too many
-    scanlines; the output is now blanked as on a real TV.  Special thanks
-    to Omegamatrix of AtariAge for test ROMs in this area.
+    scanlines; the output is now more accurate compared to a real TV.
+    Special thanks to Omegamatrix of AtariAge for test ROMs in this area.
 
   * Modified hotkey for "Change console palette" (Control-f) to also
     change the display properties of the TIA.  This allows you to switch
-    between NTSC/PAL/SECAM (and variants) modes dynamically.  Related to
+    between NTSC/PAL/SECAM (and variant) modes dynamically.  Related to
     this, added Shift-Control-f key to step backwards through the
     available modes.
 
-  * Fixed several bugs in DPC+ bankswitching scheme, including ability to
-    load and save state files.  As well, ROMs now work correctly after
+  * Fixed several bugs in DPC+ bankswitching scheme, including ability
+    to load and save state files.  As well, ROMs now work correctly after
     console format autodetection.
 
-  * Note: because of the TIA changes, the state file format has changed
-          again, and old state files will not work with this release.
+  * Fixed bugs in handling relative filenames on the commandline,
+    introduced in the last release.  The new functionality should be much
+    more robust.
+
+  * Updated included ZLib library to latest stable version.
 
 -Have fun!
 

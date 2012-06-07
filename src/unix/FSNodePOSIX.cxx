@@ -33,6 +33,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cstring>
+#include <cstdlib>
 #include <unistd.h>
 
 #include <sstream>
@@ -141,52 +142,30 @@ POSIXFilesystemNode::POSIXFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
 {
-  // Expand '~/' to the HOME environment variable
-  if (p.length() >= 2 && p[0] == '~' && p[1] == '/')
+  // Expand '~' to the HOME environment variable
+  _path = p;
+  size_t home_pos = _path.find_first_of("~");
+  if(home_pos != string::npos)
   {
-    const char *home = getenv("HOME");
+    const char* home = getenv("HOME");
 #ifdef MAXPATHLEN
     if (home != NULL && strlen(home) < MAXPATHLEN)
 #else // No MAXPATHLEN, as happens on Hurd
     if (home != NULL)
 #endif
     {
-      _path = home;
-      // Skip over the tilde/dot.  We know that p contains at least
-      // two chars, so this is safe:
-      _path += p.c_str() + 1;
+      _path.replace(home_pos, 1, home);
     }
-    else
-      _path = p;
   }
-  // Expand './' to the current working directory,
-  // likewise if the path is relative (doesn't start with '/')
-  else if ((p.length() >= 2 && p[0] == '.' && p[1] == '/') ||
-           (p.length() >= 1 && p[0] != '/'))
-  {
+
+  // Get absolute path  
 #ifdef MAXPATHLEN
-    char buf[MAXPATHLEN];
-    const char* cwd = getcwd(buf, MAXPATHLEN);
-    if (cwd != NULL && strlen(cwd) < MAXPATHLEN)
+  char buf[MAXPATHLEN];
 #else // No MAXPATHLEN, as happens on Hurd
-    char buf[1024];
-    const char* cwd = getcwd(buf, 1024);
-    if (cwd != NULL)
+  char buf[1024];
 #endif
-    {
-      _path = cwd;
-      if(p[0] == '.')
-        // Skip over the tilde/dot.  We know that p contains at least
-        // two chars, so this is safe:
-        _path = _path + (p.c_str() + 1);
-      else
-        _path = _path + '/' + p;
-    }
-    else
-      _path = p;
-  }
-  else
-    _path = p;
+  if(realpath(_path.c_str(), buf))
+    _path = buf;
 
   _displayName = lastPathComponent(_path);
 

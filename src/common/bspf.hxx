@@ -91,6 +91,7 @@ using namespace std;
   #define BSPF_snprintf _snprintf
   #define BSPF_vsnprintf _vsnprintf
 #else
+  #define HAVE_UNISTD_H   // needed for building zlib
   #include <strings.h>
   #define BSPF_strcasecmp strcasecmp
   #define BSPF_strncasecmp strncasecmp
