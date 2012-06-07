@@ -239,34 +239,16 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 {
-  // Expand '~\' to the users 'home' directory
-  if (p.length() >= 2 && p[0] == '~' && p[1] == '\\')
-  {
-    _path = myHomeFinder.getHomePath();
-    // Skip over the tilde/dot.  We know that p contains at least
-    // two chars, so this is safe:
-    _path += p.c_str() + 1;
-  }
-  // Expand '.\' to the current working directory,
-  // likewise if the path is relative (second character not a colon)
-  else if ((p.length() >= 2 && ((p[0] == '.' && p[1] == '\\') ||
-           p[1] != ':')))
-  {
-    char buf[4096];
-    if(GetCurrentDirectory(4096, buf) > 0)
-      _path = buf;
+  // Expand '~' to the users 'home' directory
+  _path = p;
+  size_t home_pos = _path.find_first_of("~");
+  if(home_pos != string::npos)
+    _path.replace(home_pos, 1, myHomeFinder.getHomePath());
 
-    if(p[0] == '.')
-      // Skip over the tilde/dot.  We know that p contains at least
-      // two chars, so this is safe:
-      _path = _path + (p.c_str() + 1);
-    else
-      _path = _path + '\\' + p;
-  }
-  else
-  {
-    _path = p;
-  }
+  // Get absolute path  
+  TCHAR buf[4096];
+  if(GetFullPathName(_path.c_str(), 4096, buf, NULL))
+    _path = buf;
 
   _displayName = lastPathComponent(_path);
 
