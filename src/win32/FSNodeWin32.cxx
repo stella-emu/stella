@@ -239,11 +239,12 @@ WindowsFilesystemNode::WindowsFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 {
+  // Default to home directory
+  _path = p.length() > 0 ? p : "~";
+
   // Expand '~' to the users 'home' directory
-  _path = p;
-  size_t home_pos = _path.find_first_of("~");
-  if(home_pos != string::npos)
-    _path.replace(home_pos, 1, myHomeFinder.getHomePath());
+  if(_path[0] == '~')
+    _path.replace(0, 1, myHomeFinder.getHomePath());
 
   // Get absolute path  
   TCHAR buf[4096];

@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.7.1 to 3.7.2: (June 10, 2012)
+
+  * Fixed bug in handling filenames with the '~' character, as is used
+    extensively by RomHunter rom-sets.
+
+-Have fun!
+
+
 3.7 to 3.7.1: (June 8, 2012)
 
   * Note: because of TIA changes, the state file format has changed again,
@@ -38,8 +46,6 @@
   * Fixed bugs in handling relative filenames on the commandline,
     introduced in the last release.  The new functionality should be much
     more robust.
-
--Have fun!
 
 
 3.6.1 to 3.7: (June 1, 2012)

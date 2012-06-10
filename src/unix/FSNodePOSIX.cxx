@@ -142,10 +142,11 @@ POSIXFilesystemNode::POSIXFilesystemNode()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
 {
+  // Default to home directory
+  _path = p.length() > 0 ? p : "~";
+
   // Expand '~' to the HOME environment variable
-  _path = p;
-  size_t home_pos = _path.find_first_of("~");
-  if(home_pos != string::npos)
+  if(_path[0] == '~')
   {
     const char* home = getenv("HOME");
 #ifdef MAXPATHLEN
@@ -154,7 +155,7 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
     if (home != NULL)
 #endif
     {
-      _path.replace(home_pos, 1, home);
+      _path.replace(0, 1, home);
     }
   }
 
