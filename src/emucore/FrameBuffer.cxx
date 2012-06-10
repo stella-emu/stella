@@ -180,7 +180,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   }
   if(myMsg.surface == NULL)
   {
-    myMsg.surfaceID = allocateSurface(500, myOSystem->font().getFontHeight()+10);
+    myMsg.surfaceID = allocateSurface(640, myOSystem->font().getFontHeight()+10);
     myMsg.surface   = surface(myMsg.surfaceID);
   }
 

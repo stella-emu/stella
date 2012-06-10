@@ -802,13 +802,13 @@ void FBSurfaceSoft::setPos(uInt32 x, uInt32 y)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSoft::setWidth(uInt32 w)
 {
-  myWidth = w;
+  myWidth = BSPF_min(w, (uInt32)mySurface->w);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void FBSurfaceSoft::setHeight(uInt32 h)
 {
-  myHeight = h;
+  myHeight = BSPF_min(h, (uInt32)mySurface->h);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

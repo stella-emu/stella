@@ -220,7 +220,7 @@ void FBSurfaceGL::setWidth(uInt32 w)
   // and it's the only thing that uses it
   if(myImageW != w)
   {
-    myImageW = w;
+    myImageW = BSPF_min(w, (uInt32)myTexWidth);
     myTexCoordW = (GLfloat) myImageW / myTexWidth;
     updateCoords();
   }
@@ -234,7 +234,7 @@ void FBSurfaceGL::setHeight(uInt32 h)
   // and it's the only thing that uses it
   if(myImageH != h)
   {
-    myImageH = h;
+    myImageH = BSPF_min(h, (uInt32)myTexHeight);
     myTexCoordH = (GLfloat) myImageH / myTexHeight;
     updateCoords();
   }
