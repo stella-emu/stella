@@ -377,12 +377,6 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
-{
-  return new WindowsFilesystemNode("~\\");
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeFileNodePath(const string& path)
 {
   return new WindowsFilesystemNode(path);

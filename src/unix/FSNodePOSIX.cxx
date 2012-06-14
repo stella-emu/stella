@@ -302,12 +302,6 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode* AbstractFilesystemNode::makeHomeDirectoryFileNode()
-{
-  return new POSIXFilesystemNode("~/", true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeFileNodePath(const string& path)
 {
   return new POSIXFilesystemNode(path, true);

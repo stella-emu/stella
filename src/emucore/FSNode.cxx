@@ -38,12 +38,7 @@ FilesystemNode::FilesystemNode(AbstractFilesystemNode *realNode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const string& p)
 {
-  AbstractFilesystemNode* tmp = 0;
-  if (p.empty() || p == "." || p == "~")
-    tmp = AbstractFilesystemNode::makeHomeDirectoryFileNode();
-  else
-    tmp = AbstractFilesystemNode::makeFileNodePath(p);
-
+  AbstractFilesystemNode* tmp = AbstractFilesystemNode::makeFileNodePath(p);
   _realNode = Common::SharedPtr<AbstractFilesystemNode>(tmp);
 }
 
@@ -78,9 +73,7 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
     return false;
 
   for (AbstractFSList::iterator i = tmp.begin(); i != tmp.end(); ++i)
-  {
     fslist.push_back(FilesystemNode(*i));
-  }
 
   return true;
 }
