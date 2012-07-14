@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3281
+#define DEF_PROPS_SIZE 3282
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2784,7 +2784,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "da64f33d0521d5c9958e5d2d4434ff95", "", "", "Star Fire - Return of the Starfield (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "da66d75e4b47fab99733529743f86f4f", "Digitel", "", "Chopper Command (1983) (Digitel)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "da732c57697ad7d7af414998fa527e75", "Atari, Glenn Axworthy", "CX26129", "Midnight Magic (1984) (Atari) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
-  { "da79aad11572c80a96e261e4ac6392d0", "Salu - Ubi Soft, Dennis M. Kiss", "460673", "Pick 'n' Pile (1990) (Salu) (PAL)", "", "", "", "", "", "", "", "YES", "", "", "", "", "PAL", "38", "256", "YES", "" }, 
+  { "da79aad11572c80a96e261e4ac6392d0", "Salu - Ubi Soft, Dennis M. Kiss", "460673", "Pick 'n' Pile (1990) (Salu) (PAL)", "", "", "", "", "", "", "", "YES", "", "", "", "", "", "38", "256", "YES", "" }, 
   { "da7a17dcdaa62d6971393c0a6faf202a", "", "", "Flag Capture (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "dab844deed4c752632b5e786b0f47999", "", "", "Super Challenge Baseball (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "dac38b4dd3da73bb7b2e9d70c61d2b7c", "", "", "Hangman Monkey Biglist3 (Hack)", "Hack of Hangman", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -3256,6 +3256,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "fb531febf8e155328ec0cd39ef77a122", "", "", "Worm War I (208 in 1) (Unknown) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "fb5c8af97bd8ffe88323656f462645a7", "", "", "Interlace Demo (Glenn Saunders)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 
   { "fb833ed50c865a9a505a125fc9d79a7e", "Home Vision - Gem International Corp.", "", "Zoo Fun (1983) (Home Vision) (PAL)", "AKA Panda Chase", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "" }, 
+  { "fb884ffd89013331a6f01ae3f6abd214", "Activision, David Crane", "", "Venetian Blinds Demo (1982) (Activision) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fb88c400d602fe759ae74ef1716ee84e", "20th Century Fox Video Games, Bill Aspromonte", "11031", "Crash Dive (1983) (20th Century Fox)", "AKA Voyage to the Bottom of the Sea", "", "", "", "", "", "", "", "", "", "", "", "", "30", "", "", "" }, 
   { "fb91da78455d9b1606913fbf8c859772", "", "", "Split Screen (Ballblazer) Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "fb91dfc36cddaa54b09924ae8fd96199", "Parker Brothers, Mark Lesser", "PB5590", "Frogger II (1984) (Parker Bros) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 

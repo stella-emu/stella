@@ -136,7 +136,7 @@ GameInfoDialog::GameInfoDialog(
                        "Type:", kTextAlignLeft);
   pwidth = font.getStringWidth("CM (SpectraVideo CompuMate)");
   items.clear();
-  items.push_back("Auto-detect",           "AUTO-DETECT");
+  items.push_back("Auto-detect",                 "AUTO" );
   items.push_back("0840 (8K ECONObank)",         "0840" );
   items.push_back("2IN1 Multicart (4-32K)",      "2IN1" );
   items.push_back("4IN1 Multicart (8-32K)",      "4IN1" );
@@ -339,7 +339,7 @@ GameInfoDialog::GameInfoDialog(
   new StaticTextWidget(myTab, font, xpos, ypos+1, lwidth, fontHeight,
                        "Format:", kTextAlignLeft);
   items.clear();
-  items.push_back("Auto-detect", "AUTO-DETECT");
+  items.push_back("Auto-detect", "AUTO");
   items.push_back("NTSC",    "NTSC");
   items.push_back("PAL",     "PAL");
   items.push_back("SECAM",   "SECAM");
@@ -455,7 +455,7 @@ void GameInfoDialog::loadView()
   myRarity->setEditString(myGameProperties.get(Cartridge_Rarity));
   myNote->setEditString(myGameProperties.get(Cartridge_Note));
   mySound->setSelected(myGameProperties.get(Cartridge_Sound), "MONO");
-  myType->setSelected(myGameProperties.get(Cartridge_Type), "AUTO-DETECT");
+  myType->setSelected(myGameProperties.get(Cartridge_Type), "AUTO");
 
   // Console properties
   myLeftDiff->setSelected(myGameProperties.get(Console_LeftDifficulty), "B");
@@ -488,7 +488,7 @@ void GameInfoDialog::loadView()
   myMouseY->setEnabled(!autoAxis);
 
   // Display properties
-  myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO-DETECT");
+  myFormat->setSelected(myGameProperties.get(Display_Format), "AUTO");
   myYStart->setEditString(myGameProperties.get(Display_YStart));
   myHeight->setEditString(myGameProperties.get(Display_Height));
 

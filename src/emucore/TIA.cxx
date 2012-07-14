@@ -141,12 +141,12 @@ void TIA::reset()
   myFrameCounter = myPALFrameCounter = 0;
   myScanlineCountForLastFrame = 0;
 
-  myCurrentP0Mask = &TIATables::PxMask[0][0][0][0];
-  myCurrentP1Mask = &TIATables::PxMask[0][0][0][0];
-  myCurrentM0Mask = &TIATables::MxMask[0][0][0][0];
-  myCurrentM1Mask = &TIATables::MxMask[0][0][0][0];
-  myCurrentBLMask = &TIATables::BLMask[0][0][0];
-  myCurrentPFMask = TIATables::PFMask[0];
+  myP0Mask = &TIATables::PxMask[0][0][0][0];
+  myP1Mask = &TIATables::PxMask[0][0][0][0];
+  myM0Mask = &TIATables::MxMask[0][0][0][0];
+  myM1Mask = &TIATables::MxMask[0][0][0][0];
+  myBLMask = &TIATables::BLMask[0][0][0];
+  myPFMask = TIATables::PFMask[0];
 
   // Recalculate the size of the display
   toggleFixedColors(0);
@@ -600,6 +600,18 @@ inline void TIA::startFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void TIA::endFrame()
 {
+  // The TIA may generate frames that are 'invisible' to TV (they complete
+  // before the first visible scanline)
+  // Such 'short' frames can't simply be eliminated, since they're running
+  // code at that point; however, they are not shown at all, otherwise the
+  // double-buffering of the video output will get confused
+  if(scanlines() <= myStartScanline)
+  {
+    // Skip display of this frame, as if it wasn't generated at all
+    startFrame();
+    return;
+  }
+
   // This stuff should only happen at the end of a frame
   // Compute the number of scanlines in the frame
   uInt32 previousCount = myScanlineCountForLastFrame;
@@ -1024,12 +1036,12 @@ void TIA::updateFrame(Int32 clock)
       else
       {
         // Update masks
-        myCurrentBLMask = &TIATables::BLMask[myPOSBL & 0x03]
-            [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
-        myCurrentP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
+        myP0Mask = &TIATables::PxMask[myPOSP0 & 0x03]
             [mySuppressP0][myNUSIZ0 & 0x07][160 - (myPOSP0 & 0xFC)];
-        myCurrentP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
+        myP1Mask = &TIATables::PxMask[myPOSP1 & 0x03]
             [mySuppressP1][myNUSIZ1 & 0x07][160 - (myPOSP1 & 0xFC)];
+        myBLMask = &TIATables::BLMask[myPOSBL & 0x03]
+            [(myCTRLPF & 0x30) >> 4][160 - (myPOSBL & 0xFC)];
 
         // TODO - 08-27-2009: Simulate the weird effects of Cosmic Ark and
         // Stay Frosty.  The movement itself is well understood, but there
@@ -1045,21 +1057,23 @@ void TIA::updateFrame(Int32 clock)
             case 3:
               // Stretch this missle so it's 2 pixels wide and shifted one
               // pixel to the left
-              myCurrentM0Mask = &TIATables::MxMask[(myPOSM0-1) & 0x03]
-                  [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4)|1][160 - ((myPOSM0-1) & 0xFC)];
+              myM0Mask = &TIATables::MxMask[(myPOSM0-1) & 0x03]
+                  [myNUSIZ0 & 0x07][((myNUSIZ0 & 0x30) >> 4)|1]
+                  [160 - ((myPOSM0-1) & 0xFC)];
               break;
             case 2:
               // Missle is disabled on this line
-              myCurrentM0Mask = &TIATables::DisabledMask[0];
+              myM0Mask = &TIATables::DisabledMask[0];
               break;
             default:
-              myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
-                  [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
+              myM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+                  [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4]
+                  [160 - (myPOSM0 & 0xFC)];
               break;
           }
         }
         else
-          myCurrentM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
+          myM0Mask = &TIATables::MxMask[myPOSM0 & 0x03]
               [myNUSIZ0 & 0x07][(myNUSIZ0 & 0x30) >> 4][160 - (myPOSM0 & 0xFC)];
         if(myHMM1mmr)
         {
@@ -1068,21 +1082,23 @@ void TIA::updateFrame(Int32 clock)
             case 3:
               // Stretch this missle so it's 2 pixels wide and shifted one
               // pixel to the left
-              myCurrentM1Mask = &TIATables::MxMask[(myPOSM1-1) & 0x03]
-                  [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4)|1][160 - ((myPOSM1-1) & 0xFC)];
+              myM1Mask = &TIATables::MxMask[(myPOSM1-1) & 0x03]
+                  [myNUSIZ1 & 0x07][((myNUSIZ1 & 0x30) >> 4)|1]
+                  [160 - ((myPOSM1-1) & 0xFC)];
               break;
             case 2:
               // Missle is disabled on this line
-              myCurrentM1Mask = &TIATables::DisabledMask[0];
+              myM1Mask = &TIATables::DisabledMask[0];
               break;
             default:
-              myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
-                  [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
+              myM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+                  [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4]
+                  [160 - (myPOSM1 & 0xFC)];
               break;
           }
         }
         else
-          myCurrentM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
+          myM1Mask = &TIATables::MxMask[myPOSM1 & 0x03]
               [myNUSIZ1 & 0x07][(myNUSIZ1 & 0x30) >> 4][160 - (myPOSM1 & 0xFC)];
 
         uInt8 enabledObjects = myEnabledObjects & myDisabledObjects;
@@ -1090,21 +1106,21 @@ void TIA::updateFrame(Int32 clock)
         for(; myFramePointer < ending; ++myFramePointer, ++hpos)
         {
           uInt8 enabled = ((enabledObjects & PFBit) &&
-                           (myPF & myCurrentPFMask[hpos])) ? PFBit : 0;
+                           (myPF & myPFMask[hpos])) ? PFBit : 0;
 
-          if((enabledObjects & BLBit) && myCurrentBLMask[hpos])
+          if((enabledObjects & BLBit) && myBLMask[hpos])
             enabled |= BLBit;
 
-          if((enabledObjects & P1Bit) && (myCurrentGRP1 & myCurrentP1Mask[hpos]))
+          if((enabledObjects & P1Bit) && (myCurrentGRP1 & myP1Mask[hpos]))
             enabled |= P1Bit;
 
-          if((enabledObjects & M1Bit) && myCurrentM1Mask[hpos])
+          if((enabledObjects & M1Bit) && myM1Mask[hpos])
             enabled |= M1Bit;
 
-          if((enabledObjects & P0Bit) && (myCurrentGRP0 & myCurrentP0Mask[hpos]))
+          if((enabledObjects & P0Bit) && (myCurrentGRP0 & myP0Mask[hpos]))
             enabled |= P0Bit;
 
-          if((enabledObjects & M0Bit) && myCurrentM0Mask[hpos])
+          if((enabledObjects & M0Bit) && myM0Mask[hpos])
             enabled |= M0Bit;
 
           myCollision |= TIATables::CollisionMask[enabled];
@@ -1130,7 +1146,7 @@ void TIA::updateFrame(Int32 clock)
     if(myClocksToEndOfScanLine == 228)
     {
       // Yes, so set PF mask based on current CTRLPF reflection state 
-      myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
+      myPFMask = TIATables::PFMask[myCTRLPF & 0x01];
 
       // TODO - 01-21-99: These should be reset right after the first copy
       // of the player has passed.  However, for now we'll just reset at the
@@ -1460,7 +1476,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       // Update the playfield mask based on reflection state if 
       // we're still on the left hand side of the playfield
       if(((clock - myClockWhenFrameStarted) % 228) < (68 + 79))
-        myCurrentPFMask = TIATables::PFMask[myCTRLPF & 0x01];
+        myPFMask = TIATables::PFMask[myCTRLPF & 0x01];
 
       break;
     }

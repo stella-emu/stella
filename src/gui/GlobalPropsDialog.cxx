@@ -64,7 +64,7 @@ GlobalPropsDialog::
   new StaticTextWidget(this, font, xpos, ypos+1, lwidth, fontHeight,
                        "Bankswitch type:", kTextAlignLeft);
   items.clear();
-  items.push_back("Auto-detect",           "AUTO-DETECT");
+  items.push_back("Auto-detect",                 "AUTO" );
   items.push_back("0840 (8K ECONObank)",         "0840" );
   items.push_back("2IN1 Multicart (4-32K)",      "2IN1" );
   items.push_back("4IN1 Multicart (8-32K)",      "4IN1" );
@@ -184,7 +184,7 @@ void GlobalPropsDialog::loadConfig()
 {
   Settings& settings = instance().settings();
 
-  myBSType->setSelected(settings.getString("bs"), "AUTO-DETECT");
+  myBSType->setSelected(settings.getString("bs"), "AUTO");
   myLeftDiff->setSelected(settings.getString("ld"), "DEFAULT");
   myRightDiff->setSelected(settings.getString("rd"), "DEFAULT");
   myTVType->setSelected(settings.getString("tv"), "DEFAULT");
@@ -201,7 +201,7 @@ void GlobalPropsDialog::saveConfig()
   string s;
 
   s = myBSType->getSelectedTag();
-  if(s == "AUTO-DETECT") s = "";
+  if(s == "AUTO") s = "";
   settings.setString("bs", s);
 
   s = myLeftDiff->getSelectedTag();
@@ -224,7 +224,7 @@ void GlobalPropsDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void GlobalPropsDialog::setDefaults()
 {
-  myBSType->setSelected("AUTO-DETECT", "");
+  myBSType->setSelected("AUTO", "");
   myLeftDiff->setSelected("DEFAULT", "");
   myRightDiff->setSelected("DEFAULT", "");
   myTVType->setSelected("DEFAULT", "");

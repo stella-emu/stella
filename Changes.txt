@@ -12,12 +12,22 @@
                                Release History
 ===========================================================================
 
+3.7.2 to 3.8: (xxx xx, 2012)
+
+  * Improved handling of 'illegal' VSYNC signals, which sometimes created
+    'short' frames that caused massive flickering.
+
+  * The ROM properties database now uses 'Auto' instead of 'Auto-select'
+    everywhere.  This makes for less typing when running from the
+    commandline.
+
+-Have fun!
+
+
 3.7.1 to 3.7.2: (June 10, 2012)
 
   * Fixed bug in handling filenames with the '~' character, as is used
     extensively by RomHunter rom-sets.
-
--Have fun!
 
 
 3.7 to 3.7.1: (June 8, 2012)

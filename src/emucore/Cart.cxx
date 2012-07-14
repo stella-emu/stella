@@ -74,11 +74,11 @@ Cartridge* Cartridge::create(const uInt8* image, uInt32 size, string& md5,
   // See if we should try to auto-detect the cartridge type
   // If we ask for extended info, always do an autodetect
   string autodetect = "";
-  if(type == "AUTO-DETECT" || settings.getBool("rominfo"))
+  if(type == "AUTO" || settings.getBool("rominfo"))
   {
     const string& detected = autodetectType(image, size);
     autodetect = "*";
-    if(type != "AUTO-DETECT" && type != detected)
+    if(type != "AUTO" && type != detected)
       cerr << "Auto-detection not consistent: " << type << ", " << detected << endl;
 
     type = detected;

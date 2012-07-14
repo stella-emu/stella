@@ -8051,7 +8051,6 @@
 "Cartridge.ModelNo" "460673"
 "Cartridge.Name" "Pick 'n' Pile (1990) (Salu) (PAL)"
 "Console.SwapPorts" "YES"
-"Display.Format" "PAL"
 "Display.YStart" "38"
 "Display.Height" "256"
 "Display.Phosphor" "YES"
@@ -19988,4 +19987,9 @@
 "Cartridge.Note" "http://starcastle2600.blogspot.com/p/star-castle-2600-story.html"
 "Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
+""
+
+"Cartridge.MD5" "fb884ffd89013331a6f01ae3f6abd214"
+"Cartridge.Manufacturer" "Activision, David Crane"
+"Cartridge.Name" "Venetian Blinds Demo (1982) (Activision) (PAL)"
 ""
