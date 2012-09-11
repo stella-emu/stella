@@ -20,12 +20,15 @@
 #include <cassert>
 #include <iostream>
 
+#include "Debugger.hxx"
 #include "Console.hxx"
 #include "Settings.hxx"
 #include "Switches.hxx"
 #include "System.hxx"
 
 #include "M6532.hxx"
+
+#define TIMER_BIT 0x80
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const Console& console, const Settings& settings)
@@ -54,14 +57,15 @@ void M6532::reset()
   myTimer = (0xff - (mySystem->randGenerator().next() % 0xfe)) << 10;
   myIntervalShift = 10;
   myCyclesWhenTimerSet = 0;
-  myInterruptEnabled = false;
-  myInterruptTriggered = false;
 
   // Zero the I/O registers
   myDDRA = myDDRB = myOutA = myOutB = 0x00;
 
   // Zero the timer registers
   myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x00;
+
+  // Zero the interrupt flag register
+  myInterruptFlag = 0x00;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -115,6 +119,8 @@ uInt8 M6532::peek(uInt16 addr)
     return myRAM[addr & 0x007f];
   }
 
+//cerr << Debugger::debugger().valueToString(addr&0xff, kBASE_2_8) << endl;
+
   switch(addr & 0x07)
   {
     case 0x00:    // SWCHA - Port A I/O Register (Joystick)
@@ -147,38 +153,16 @@ uInt8 M6532::peek(uInt16 addr)
     case 0x04:    // Timer Output
     case 0x06:
     {
-      myInterruptTriggered = false;
-      Int32 timer = timerClocks();
-
-      // See if the timer has expired yet?
-      // Note that this constant comes from z26, and corresponds to
-      // 256 intervals of T1024T (ie, the maximum that the timer should hold)
-      // I'm not sure why this is required, but quite a few PAL ROMs fail
-      // if we just check >= 0.
-      if(!(timer & 0x40000))
-      {
-        return (timer >> myIntervalShift) & 0xff;
-      }
-      else
-      {
-        if(timer != -1)
-          myInterruptTriggered = true;
-
-        // According to the M6532 documentation, the timer continues to count
-        // down to -255 timer clocks after wraparound.  However, it isn't
-        // entirely clear what happens *after* if reaches -255.
-        // For now, we'll let it continuously wrap around.
-        return timer & 0xff;
-      }
+      // Update timer state and return the resulting clock
+      return updateTimer();
     }
 
     case 0x05:    // Interrupt Flag
     case 0x07:
     {
-      if((timerClocks() >= 0) || (myInterruptEnabled && myInterruptTriggered))
-        return 0x00;
-      else
-        return 0x80;
+      // Update timer state and return the resulting flag(s)
+      updateTimer();
+      return myInterruptFlag;
     }
 
     default:
@@ -208,10 +192,7 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   if((addr & 0x04) != 0)
   {
     if((addr & 0x10) != 0)
-    {
-      myInterruptEnabled = (addr & 0x08);
       setTimerRegister(value, addr & 0x03);
-    }
   }
   else
   {
@@ -252,11 +233,13 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
 {
   static const uInt8 shift[] = { 0, 3, 6, 10 };
 
-  myInterruptTriggered = false;
   myIntervalShift = shift[interval];
   myOutTimer[interval] = value;
   myTimer = value << myIntervalShift;
   myCyclesWhenTimerSet = mySystem->cycles();
+
+  // Interrupt timer flag is reset when writing to the timer
+  myInterruptFlag &= ~TIMER_BIT;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -294,6 +277,32 @@ void M6532::setPinState(bool swcha)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 M6532::updateTimer()
+{
+  // Get number of clocks since timer was set
+  Int32 timer = timerClocks();
+
+  if(timer >= 0)
+  {
+    // Timer hasn't expired yet
+    myInterruptFlag &= ~TIMER_BIT;
+
+    return (timer >> myIntervalShift) & 0xff;
+  }
+  else
+  {
+    if(timer < 0)
+      myInterruptFlag |= TIMER_BIT;
+
+    // According to the M6532 documentation, the timer continues to count
+    // down to -255 timer clocks after wraparound.  However, it isn't
+    // entirely clear what happens *after* if reaches -255.
+    // For now, we'll let it continuously wrap around.
+    return timer & 0xff;
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6532::save(Serializer& out) const
 {
   try
@@ -306,13 +315,12 @@ bool M6532::save(Serializer& out) const
     out.putInt(myTimer);
     out.putInt(myIntervalShift);
     out.putInt(myCyclesWhenTimerSet);
-    out.putBool(myInterruptEnabled);
-    out.putBool(myInterruptTriggered);
 
     out.putByte(myDDRA);
     out.putByte(myDDRB);
     out.putByte(myOutA);
     out.putByte(myOutB);
+    out.putByte(myInterruptFlag);
     out.putByteArray(myOutTimer, 4);
   }
   catch(...)
@@ -338,13 +346,12 @@ bool M6532::load(Serializer& in)
     myTimer = in.getInt();
     myIntervalShift = in.getInt();
     myCyclesWhenTimerSet = in.getInt();
-    myInterruptEnabled = in.getBool();
-    myInterruptTriggered = in.getBool();
 
     myDDRA = in.getByte();
     myDDRB = in.getByte();
     myOutA = in.getByte();
     myOutB = in.getByte();
+    myInterruptFlag = in.getByte();
     in.getByteArray(myOutTimer, 4);
   }
   catch(...)

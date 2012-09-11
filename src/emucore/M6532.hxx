@@ -29,7 +29,15 @@ class Settings;
 #include "System.hxx"
 
 /**
-  RIOT
+  This class models the M6532 RAM-I/O-Timer (aka RIOT) chip in the 2600
+  console.  Note that only the functionality used by the console is
+  emulated here; several aspects of the chip are completely ignored:
+
+    - Pin 25 (IRQ) is not connected at all, therefore all related
+      items are ignored (A3 determining IRQ enable/disable, etc).
+
+    - D6 of the Interrupt Flag is ignored, including PA7 interrupt flag (A1)
+      and negative/positive edge-detection (A0)
 
   @author  Bradford W. Mott
   @version $Id$
@@ -135,6 +143,7 @@ class M6532 : public Device
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
+    uInt8 updateTimer();
 
   private:
     // Reference to the console
@@ -155,12 +164,6 @@ class M6532 : public Device
     // Indicates the number of cycles when the timer was last set
     Int32 myCyclesWhenTimerSet;
 
-    // Indicates if a timer interrupt has been enabled
-    bool myInterruptEnabled;
-
-    // Indicates if a read from timer has taken place after interrupt occured
-    bool myInterruptTriggered;
-
     // Data Direction Register for Port A
     uInt8 myDDRA;
 
@@ -172,6 +175,9 @@ class M6532 : public Device
 
     // Last value written to Port B
     uInt8 myOutB;
+
+    // Interrupt Flag Register
+    uInt8 myInterruptFlag;
 
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
