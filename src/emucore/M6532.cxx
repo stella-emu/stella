@@ -20,7 +20,6 @@
 #include <cassert>
 #include <iostream>
 
-#include "Debugger.hxx"
 #include "Console.hxx"
 #include "Settings.hxx"
 #include "Switches.hxx"
@@ -118,8 +117,6 @@ uInt8 M6532::peek(uInt16 addr)
   {
     return myRAM[addr & 0x007f];
   }
-
-//cerr << Debugger::debugger().valueToString(addr&0xff, kBASE_2_8) << endl;
 
   switch(addr & 0x07)
   {
@@ -291,8 +288,8 @@ uInt8 M6532::updateTimer()
   }
   else
   {
-    if(timer < 0)
-      myInterruptFlag |= TIMER_BIT;
+    // Timer has expired, set flag
+    myInterruptFlag |= TIMER_BIT;
 
     // According to the M6532 documentation, the timer continues to count
     // down to -255 timer clocks after wraparound.  However, it isn't
