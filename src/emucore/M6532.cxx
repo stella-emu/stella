@@ -27,8 +27,6 @@
 
 #include "M6532.hxx"
 
-#define TIMER_BIT 0x80
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const Console& console, const Settings& settings)
   : myConsole(console),
@@ -63,8 +61,9 @@ void M6532::reset()
   // Zero the timer registers
   myOutTimer[0] = myOutTimer[1] = myOutTimer[2] = myOutTimer[3] = 0x00;
 
-  // Zero the interrupt flag register
+  // Zero the interrupt flag register and mark D7 as invalid
   myInterruptFlag = 0x00;
+  myTimerFlagValid = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -147,18 +146,41 @@ uInt8 M6532::peek(uInt16 addr)
       return myDDRB;
     }
 
-    case 0x04:    // Timer Output
+    case 0x04:    // INTIM - Timer Output
     case 0x06:
     {
-      // Update timer state and return the resulting clock
-      return updateTimer();
+      // Timer Flag is always cleared when accessing INTIM
+      myInterruptFlag &= ~TimerBit;
+
+      // Get number of clocks since timer was set
+      Int32 timer = timerClocks();  
+      if(timer >= 0)
+      {
+        // Return at 'divide by TIMxT' interval rate
+        return (timer >> myIntervalShift) & 0xff;
+      }
+      else
+      {
+        // Return at 'divide by 1' rate
+        uInt8 divByOne = timer & 0xff;
+
+        // Timer flag has been updated; don't update it again on TIMINT read
+        if(divByOne != 0 && divByOne != 255)
+          myTimerFlagValid = true;
+
+        return divByOne;
+      }
     }
 
-    case 0x05:    // Interrupt Flag
+    case 0x05:    // TIMINT/INSTAT - Interrupt Flag
     case 0x07:
     {
-      // Update timer state and return the resulting flag(s)
-      updateTimer();
+      // Update timer flag if it is invalid and timer has expired
+      if(!myTimerFlagValid && timerClocks() < 0)
+      {
+        myInterruptFlag |= TimerBit;
+        myTimerFlagValid = true;
+      }
       return myInterruptFlag;
     }
 
@@ -188,7 +210,7 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   // A2 distinguishes I/O registers from the timer
   if((addr & 0x04) != 0)
   {
-    if((addr & 0x10) != 0)
+    if((addr & 0x10) != 0)  // TIMxT (x = 1, 8, 64, 1024)
       setTimerRegister(value, addr & 0x03);
   }
   else
@@ -235,8 +257,9 @@ void M6532::setTimerRegister(uInt8 value, uInt8 interval)
   myTimer = value << myIntervalShift;
   myCyclesWhenTimerSet = mySystem->cycles();
 
-  // Interrupt timer flag is reset when writing to the timer
-  myInterruptFlag &= ~TIMER_BIT;
+  // Interrupt timer flag is cleared (and invalid) when writing to the timer
+  myInterruptFlag &= ~TimerBit;
+  myTimerFlagValid = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -274,32 +297,6 @@ void M6532::setPinState(bool swcha)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 M6532::updateTimer()
-{
-  // Get number of clocks since timer was set
-  Int32 timer = timerClocks();
-
-  if(timer >= 0)
-  {
-    // Timer hasn't expired yet
-    myInterruptFlag &= ~TIMER_BIT;
-
-    return (timer >> myIntervalShift) & 0xff;
-  }
-  else
-  {
-    // Timer has expired, set flag
-    myInterruptFlag |= TIMER_BIT;
-
-    // According to the M6532 documentation, the timer continues to count
-    // down to -255 timer clocks after wraparound.  However, it isn't
-    // entirely clear what happens *after* if reaches -255.
-    // For now, we'll let it continuously wrap around.
-    return timer & 0xff;
-  }
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool M6532::save(Serializer& out) const
 {
   try
@@ -318,6 +315,7 @@ bool M6532::save(Serializer& out) const
     out.putByte(myOutA);
     out.putByte(myOutB);
     out.putByte(myInterruptFlag);
+    out.putBool(myTimerFlagValid);
     out.putByteArray(myOutTimer, 4);
   }
   catch(...)
@@ -349,6 +347,7 @@ bool M6532::load(Serializer& in)
     myOutA = in.getByte();
     myOutB = in.getByte();
     myInterruptFlag = in.getByte();
+    myTimerFlagValid = in.getBool();
     in.getByteArray(myOutTimer, 4);
   }
   catch(...)

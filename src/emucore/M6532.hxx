@@ -143,9 +143,15 @@ class M6532 : public Device
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
-    uInt8 updateTimer();
 
   private:
+    // Accessible bits in the interrupt flag register
+    // All other bits are always zeroed
+    enum {
+      TimerBit = 0x80,
+      PA7Bit = 0x40
+    };
+
     // Reference to the console
     const Console& myConsole;
 
@@ -178,6 +184,10 @@ class M6532 : public Device
 
     // Interrupt Flag Register
     uInt8 myInterruptFlag;
+
+    // Whether the timer flag (as currently set) can be used
+    // If it isn't valid, it will be updated as required
+    bool myTimerFlagValid;
 
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
