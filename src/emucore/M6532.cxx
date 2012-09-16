@@ -64,6 +64,9 @@ void M6532::reset()
   // Zero the interrupt flag register and mark D7 as invalid
   myInterruptFlag = 0x00;
   myTimerFlagValid = false;
+
+  // Edge-detect set to negative (high to low)
+  myEdgeDetectPositive = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -76,6 +79,29 @@ void M6532::systemCyclesReset()
   // We should also inform any 'smart' controllers as well
   myConsole.controller(Controller::Left).systemCyclesReset();
   myConsole.controller(Controller::Right).systemCyclesReset();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void M6532::update()
+{
+  Controller& port0 = myConsole.controller(Controller::Left);
+  Controller& port1 = myConsole.controller(Controller::Right);
+
+  // Get current PA7 state
+  bool prevPA7 = port0.myDigitalPinState[Controller::Four];
+
+  // Update entire port state
+  port0.update();
+  port1.update();
+  myConsole.switches().update();
+
+  // Get new PA7 state
+  bool currPA7 = port0.myDigitalPinState[Controller::Four];
+
+  // PA7 Flag is set on active transition in appropriate direction
+  if((!myEdgeDetectPositive && prevPA7 && !currPA7) ||
+     (myEdgeDetectPositive && !prevPA7 && currPA7))
+    myInterruptFlag |= PA7Bit;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -181,7 +207,10 @@ uInt8 M6532::peek(uInt16 addr)
         myInterruptFlag |= TimerBit;
         myTimerFlagValid = true;
       }
-      return myInterruptFlag;
+      // PA7 Flag is always cleared after accessing TIMINT
+      uInt8 result = myInterruptFlag;
+      myInterruptFlag &= ~PA7Bit;
+      return result;
     }
 
     default:
@@ -208,10 +237,17 @@ bool M6532::poke(uInt16 addr, uInt8 value)
   }
 
   // A2 distinguishes I/O registers from the timer
+  // A2 = 1 is write to timer
+  // A2 = 0 is write to I/O
   if((addr & 0x04) != 0)
   {
-    if((addr & 0x10) != 0)  // TIMxT (x = 1, 8, 64, 1024)
-      setTimerRegister(value, addr & 0x03);
+    // A4 = 1 is write to TIMxT (x = 1, 8, 64, 1024)
+    // A4 = 0 is write to edge detect control
+    if((addr & 0x10) != 0)
+      setTimerRegister(value, addr & 0x03);  // A1A0 determines interval
+    else {
+      myEdgeDetectPositive = addr & 0x01;    // A0 determines direction
+cerr << "myEdgeDetectPositive: " << myEdgeDetectPositive << endl; }
   }
   else
   {
@@ -303,7 +339,6 @@ bool M6532::save(Serializer& out) const
   {
     out.putString(name());
 
-    // Output the RAM
     out.putByteArray(myRAM, 128);
 
     out.putInt(myTimer);
@@ -314,8 +349,10 @@ bool M6532::save(Serializer& out) const
     out.putByte(myDDRB);
     out.putByte(myOutA);
     out.putByte(myOutB);
+
     out.putByte(myInterruptFlag);
     out.putBool(myTimerFlagValid);
+    out.putBool(myEdgeDetectPositive);
     out.putByteArray(myOutTimer, 4);
   }
   catch(...)
@@ -335,7 +372,6 @@ bool M6532::load(Serializer& in)
     if(in.getString() != name())
       return false;
 
-    // Input the RAM
     in.getByteArray(myRAM, 128);
 
     myTimer = in.getInt();
@@ -346,8 +382,10 @@ bool M6532::load(Serializer& in)
     myDDRB = in.getByte();
     myOutA = in.getByte();
     myOutB = in.getByte();
+
     myInterruptFlag = in.getByte();
     myTimerFlagValid = in.getBool();
+    myEdgeDetectPositive = in.getBool();
     in.getByteArray(myOutTimer, 4);
   }
   catch(...)

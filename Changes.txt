@@ -14,8 +14,15 @@
 
 3.7.2 to 3.8: (xxx xx, 2012)
 
+  * Note: because of TIA/RIOT changes, the state file format has changed
+          again, and old state files will not work with this release.
+
   * Improved handling of 'illegal' VSYNC signals, which sometimes created
     'short' frames that caused massive flickering.
+
+  * Improved emulation of RIOT chip, in particular the behaviour of
+    reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
+    properly set on active transition of the PA7 pin.
 
   * The ROM properties database now uses 'Auto' instead of 'Auto-select'
     everywhere.  This makes for less typing when running from the

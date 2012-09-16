@@ -42,7 +42,7 @@
 #include "Snapshot.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
-#include "Switches.hxx"
+#include "M6532.hxx"
 #include "MouseControl.hxx"
 
 #include "EventHandler.hxx"
@@ -955,9 +955,7 @@ void EventHandler::poll(uInt64 time)
   // related to emulation
   if(myState == S_EMULATE)
   {
-    myOSystem->console().controller(Controller::Left).update();
-    myOSystem->console().controller(Controller::Right).update();
-    myOSystem->console().switches().update();
+    myOSystem->console().riot().update();
 
 #if 0
     // Now check if the StateManager should be saving or loading state

@@ -30,16 +30,13 @@ class Settings;
 
 /**
   This class models the M6532 RAM-I/O-Timer (aka RIOT) chip in the 2600
-  console.  Note that only the functionality used by the console is
-  emulated here; several aspects of the chip are completely ignored:
+  console.  Note that since the M6507 CPU doesn't contain an interrupt line,
+  the following functionality relating to the RIOT IRQ line is not emulated:
 
-    - Pin 25 (IRQ) is not connected at all, therefore all related
-      items are ignored (A3 determining IRQ enable/disable, etc).
+    - A3 to enable/disable interrupt from timer to IRQ
+    - A1 to enable/disable interrupt from PA7 to IRQ
 
-    - D6 of the Interrupt Flag is ignored, including PA7 interrupt flag (A1)
-      and negative/positive edge-detection (A0)
-
-  @author  Bradford W. Mott
+  @author  Bradford W. Mott and Stephen Anthony
   @version $Id$
 */
 class M6532 : public Device
@@ -76,6 +73,11 @@ class M6532 : public Device
       to override this method for devices that remember cycle counts.
     */
     void systemCyclesReset();
+
+    /**
+      Update the entire digital and analog pin state of ports A and B.
+    */
+    void update();
 
     /**
       Install 6532 in the specified system.  Invoked by the system
@@ -188,6 +190,10 @@ class M6532 : public Device
     // Whether the timer flag (as currently set) can be used
     // If it isn't valid, it will be updated as required
     bool myTimerFlagValid;
+
+    // Used to determine whether an active transition on PA7 has occurred
+    // True is positive edge-detect, false is negative edge-detect
+    bool myEdgeDetectPositive;
 
     // Last value written to the timer registers
     uInt8 myOutTimer[4];
