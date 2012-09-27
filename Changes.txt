@@ -28,6 +28,8 @@
     everywhere.  This makes for less typing when running from the
     commandline.
 
+  * Updated included PNG library to latest stable version.
+
 -Have fun!
 
 

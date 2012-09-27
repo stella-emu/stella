@@ -245,9 +245,8 @@ bool M6532::poke(uInt16 addr, uInt8 value)
     // A4 = 0 is write to edge detect control
     if((addr & 0x10) != 0)
       setTimerRegister(value, addr & 0x03);  // A1A0 determines interval
-    else {
+    else
       myEdgeDetectPositive = addr & 0x01;    // A0 determines direction
-cerr << "myEdgeDetectPositive: " << myEdgeDetectPositive << endl; }
   }
   else
   {
