@@ -24,6 +24,9 @@
     reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
     properly set on active transition of the PA7 pin.
 
+  * Fixed bug in DPC+ bankswitch scheme; the music in "Stay Frosty 2"
+    wasn't playing correctly.
+
   * The ROM properties database now uses 'Auto' instead of 'Auto-select'
     everywhere.  This makes for less typing when running from the
     commandline.

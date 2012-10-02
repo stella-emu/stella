@@ -50,8 +50,8 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   // Pointer to the display RAM
   myDisplayImage = myDPCRAM + 0xC00;
 
-  // Pointer to the Frequency ROM (1K @ 28K offset)
-  myFrequencyImage = myProgramImage + 0x7000;
+  // Pointer to the Frequency RAM
+  myFrequencyImage = myDisplayImage + 0x1000;
 
   // If the image is larger than 29K, we assume any excess at the
   // beginning is ARM code, and skip over it
@@ -59,8 +59,6 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   {
     int offset = size - 29 * 1024;
     myProgramImage   += offset;
-//    myDisplayImage   += offset;
-//    myFrequencyImage += offset;
   }
 
 #ifdef THUMB_SUPPORT
