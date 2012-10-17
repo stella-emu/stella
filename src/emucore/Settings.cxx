@@ -61,7 +61,7 @@ Settings::Settings(OSystem* osystem)
 
   // TV filtering options
   setInternal("tv_filter", "0");
-  setInternal("tv_scanlines", "40");
+  setInternal("tv_scanlines", "25");
   setInternal("tv_scaninter", "true");
   // TV options when using 'custom' mode
   setInternal("tv_contrast", "0.0");

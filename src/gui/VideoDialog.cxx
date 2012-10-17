@@ -612,8 +612,8 @@ void VideoDialog::setDefaults()
       myTVMode->setSelected("0", "0");
 
       // TV scanline intensity and interpolation
-      myTVScanIntense->setValue(40);
-      myTVScanIntenseLabel->setLabel("40");
+      myTVScanIntense->setValue(25);
+      myTVScanIntenseLabel->setLabel("25");
       myTVScanInterpolate->setState(true);
 
       // Make sure that mutually-exclusive items are not enabled at the same time
