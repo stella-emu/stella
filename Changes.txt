@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.7.2 to 3.8: (xxx xx, 2012)
+3.7.2 to 3.7.3: (xxx xx, 2012)
 
   * Note: because of TIA/RIOT changes, the state file format has changed
           again, and old state files will not work with this release.
