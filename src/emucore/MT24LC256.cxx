@@ -33,9 +33,9 @@
   #define JPEE_LOG1(msg,arg1) sprintf(jpee_msg,(msg),(arg1)), jpee_logproc(jpee_msg)
   #define JPEE_LOG2(msg,arg1,arg2) sprintf(jpee_msg,(msg),(arg1),(arg2)), jpee_logproc(jpee_msg)
 #else
-  #define JPEE_LOG0(msg)
-  #define JPEE_LOG1(msg,arg1)
-  #define JPEE_LOG2(msg,arg1,arg2)
+  #define JPEE_LOG0(msg) { }
+  #define JPEE_LOG1(msg,arg1) { }
+  #define JPEE_LOG2(msg,arg1,arg2) { }
 #endif
 
 /*

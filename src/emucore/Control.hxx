@@ -115,12 +115,12 @@ class Controller : public Serializable
     /**
       Returns the jack that this controller is plugged into.
     */
-    const Jack jack() const { return myJack; }
+    Jack jack() const { return myJack; }
 
     /**
       Returns the type of this controller.
     */
-    const Type type() const { return myType; }
+    Type type() const { return myType; }
 
     /**
       Read the entire state of all digital pins for this controller.

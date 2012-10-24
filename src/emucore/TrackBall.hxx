@@ -57,6 +57,8 @@ class TrackBall : public Controller
     virtual ~TrackBall();
 
   public:
+    using Controller::read;
+
     /**
       Read the entire state of all digital pins for this controller.
       Note that this method must use the lower 4 bits, and zero the upper bits.

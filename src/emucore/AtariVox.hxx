@@ -58,6 +58,8 @@ class AtariVox : public Controller
     virtual ~AtariVox();
 
   public:
+    using Controller::read;
+
     /**
       Read the value of the specified digital pin for this controller.
 
