@@ -623,7 +623,7 @@ inline void TIA::endFrame()
     myPALFrameCounter++;
 
   // Recalculate framerate. attempting to auto-correct for scanline 'jumps'
-  if(myFrameCounter % 8 == 0 && myAutoFrameEnabled)
+  if(myAutoFrameEnabled)
   {
     myFramerate = (myScanlineCountForLastFrame > 285 ? 15600.0 : 15720.0) /
                    myScanlineCountForLastFrame;
