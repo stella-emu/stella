@@ -612,10 +612,40 @@ inline void TIA::endFrame()
     return;
   }
 
-  // This stuff should only happen at the end of a frame
   // Compute the number of scanlines in the frame
   uInt32 previousCount = myScanlineCountForLastFrame;
   myScanlineCountForLastFrame = scanlines();
+
+  // The following handle cases where scanlines either go too high or too
+  // low compared to the previous frame, in which case certain portions
+  // of the framebuffer are cleared to zero (black pixels)
+  // Due to the FrameBuffer class (potentially) doing dirty-rectangle
+  // updates, each internal buffer must be set slightly differently,
+  // otherwise they won't know anything has changed
+  // Hence, the front buffer is set to pixel 0, and the back to pixel 1
+
+  // Did we generate too many scanlines?
+  // (usually caused by VBLANK/VSYNC taking too long or not occurring at all)
+  // If so, blank entire viewable area
+  if(myScanlineCountForLastFrame > 342)
+  {
+    myScanlineCountForLastFrame = 342;
+    if(previousCount <= 342)
+    {
+      memset(myCurrentFrameBuffer, 0, 160 * 320);
+      memset(myPreviousFrameBuffer, 1, 160 * 320);
+    }
+  }
+  // Did the number of scanlines decrease?
+  // If so, blank scanlines that weren't rendered this frame
+  else if(myScanlineCountForLastFrame < previousCount &&
+          myScanlineCountForLastFrame < 320 && previousCount < 320)
+  {
+    uInt32 offset = myScanlineCountForLastFrame * 160,
+           stride = (previousCount - myScanlineCountForLastFrame) * 160;
+    memset(myCurrentFrameBuffer + offset, 0, stride);
+    memset(myPreviousFrameBuffer + offset, 1, stride);
+  }
 
   // Stats counters
   myFrameCounter++;
@@ -635,33 +665,6 @@ inline void TIA::endFrame()
     uInt32 offset = 228 * myScanlineCountForLastFrame;
     if(offset > myStopDisplayOffset && offset < 228 * 320)
       myStopDisplayOffset = offset;
-  }
-
-  // The following handle cases where scanlines either go too high or too
-  // low compared to the previous frame, in which case certain portions
-  // of the framebuffer are cleared to zero (black pixels)
-  // Due to the FrameBuffer class (potentially) doing dirty-rectangle
-  // updates, each internal buffer must be set slightly differently,
-  // otherwise they won't know anything has changed
-  // Hence, the front buffer is set to pixel 0, and the back to pixel 1
-
-  // Did we generate too many scanlines?
-  // (usually caused by VBLANK taking too long)
-  // If so, blank entire viewable area
-  if(myScanlineCountForLastFrame > 342 && previousCount <= 342)
-  {
-    memset(myCurrentFrameBuffer, 0, 160 * 320);
-    memset(myPreviousFrameBuffer, 1, 160 * 320);
-  }
-  // Did the number of scanlines decrease?
-  // If so, blank scanlines that weren't rendered this frame
-  else if(myScanlineCountForLastFrame < previousCount &&
-          myScanlineCountForLastFrame < 320 && previousCount < 320)
-  {
-    uInt32 offset = myScanlineCountForLastFrame * 160,
-           stride = (previousCount - myScanlineCountForLastFrame) * 160;
-    memset(myCurrentFrameBuffer + offset, 0, stride);
-    memset(myPreviousFrameBuffer + offset, 1, stride);
   }
 }
 

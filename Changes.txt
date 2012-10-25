@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.7.2 to 3.7.3: (xxx xx, 2012)
+3.7.2 to 3.7.3: (October 26, 2012)
 
   * Note: because of TIA/RIOT changes, the state file format has changed
           again, and old state files will not work with this release.
@@ -20,6 +20,10 @@
   * Improved handling of 'illegal' VSYNC signals, which sometimes created
     'short' frames that caused massive flickering.  Also improved
     related behaviour when VSYNC isn't used at all.
+
+  * Improved sound generation with ROMs that have irregular scanline
+    counts.  This fixes many demo ROMs as well as Quadrun, where
+    previously there would be 'gaps' in the sound output.
 
   * Improved emulation of RIOT chip, in particular the behaviour of
     reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
