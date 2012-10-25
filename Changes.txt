@@ -18,7 +18,8 @@
           again, and old state files will not work with this release.
 
   * Improved handling of 'illegal' VSYNC signals, which sometimes created
-    'short' frames that caused massive flickering.
+    'short' frames that caused massive flickering.  Also improved
+    related behaviour when VSYNC isn't used at all.
 
   * Improved emulation of RIOT chip, in particular the behaviour of
     reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
