@@ -1317,7 +1317,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
   updateFrame(clock + delay);
 
   // If a VSYNC hasn't been generated in time go ahead and end the frame
-  if(((clock - myClockWhenFrameStarted) / 228) > (Int32)myMaximumNumberOfScanlines)
+  if(((clock - myClockWhenFrameStarted) / 228) >= (Int32)myMaximumNumberOfScanlines)
   {
     mySystem->m6502().stop();
     myPartialFrameFlag = false;
