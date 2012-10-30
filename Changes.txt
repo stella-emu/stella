@@ -12,6 +12,14 @@
                                Release History
 ===========================================================================
 
+3.7.3 to 3.7.4: (October 31, 2012)
+
+  * Fixed screen blanking regression in 'Video Chess', and improved
+    behaviour of ROMs that don't use VSYNC.
+
+-Have fun!
+
+
 3.7.2 to 3.7.3: (October 26, 2012)
 
   * Note: because of TIA/RIOT changes, the state file format has changed
@@ -37,8 +45,6 @@
     commandline.
 
   * Updated included PNG library to latest stable version.
-
--Have fun!
 
 
 3.7.1 to 3.7.2: (June 10, 2012)

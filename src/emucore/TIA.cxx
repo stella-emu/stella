@@ -559,7 +559,7 @@ inline void TIA::startFrame()
   mySystem->resetCycles();
 
   // Setup clocks that'll be used for drawing this frame
-  myClockWhenFrameStarted = -1 * clocks;
+  myClockWhenFrameStarted = -clocks;
   myClockStartDisplay = myClockWhenFrameStarted;
   myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
   myClockAtLastUpdate = myClockStartDisplay;
@@ -600,12 +600,14 @@ inline void TIA::startFrame()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 inline void TIA::endFrame()
 {
+  uInt32 currentlines = scanlines();
+
   // The TIA may generate frames that are 'invisible' to TV (they complete
   // before the first visible scanline)
   // Such 'short' frames can't simply be eliminated, since they're running
   // code at that point; however, they are not shown at all, otherwise the
   // double-buffering of the video output will get confused
-  if(scanlines() <= myStartScanline)
+  if(currentlines <= myStartScanline)
   {
     // Skip display of this frame, as if it wasn't generated at all
     startFrame();
@@ -614,7 +616,7 @@ inline void TIA::endFrame()
 
   // Compute the number of scanlines in the frame
   uInt32 previousCount = myScanlineCountForLastFrame;
-  myScanlineCountForLastFrame = scanlines();
+  myScanlineCountForLastFrame = currentlines;
 
   // The following handle cases where scanlines either go too high or too
   // low compared to the previous frame, in which case certain portions
@@ -627,10 +629,10 @@ inline void TIA::endFrame()
   // Did we generate too many scanlines?
   // (usually caused by VBLANK/VSYNC taking too long or not occurring at all)
   // If so, blank entire viewable area
-  if(myScanlineCountForLastFrame > 342)
+  if(myScanlineCountForLastFrame > myMaximumNumberOfScanlines+1)
   {
-    myScanlineCountForLastFrame = 342;
-    if(previousCount <= 342)
+    myScanlineCountForLastFrame = myMaximumNumberOfScanlines;
+    if(previousCount < myMaximumNumberOfScanlines)
     {
       memset(myCurrentFrameBuffer, 0, 160 * 320);
       memset(myPreviousFrameBuffer, 1, 160 * 320);
