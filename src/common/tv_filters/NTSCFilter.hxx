@@ -69,6 +69,9 @@ class NTSCFilter
     // The following are meant to be used strictly for toggling from the GUI
     string setPreset(Preset preset);
 
+    // Get current preset info encoded as a string
+    string getPreset() const;
+
     // Reinitialises the NTSC filter (automatically called after settings
     // have changed)
     inline void updateFilter()

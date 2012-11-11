@@ -325,6 +325,10 @@ class FrameBuffer
     */
     virtual void enableNTSC(bool enable) { }
     virtual bool ntscEnabled() const { return false; }
+    /**
+      This method is called to query the TV effects in use by the FrameBuffer.
+    */
+    virtual string effectsInfo() const { return "None / not available"; }
 
   private:
     /**

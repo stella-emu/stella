@@ -113,6 +113,11 @@ class FrameBufferGL : public FrameBuffer
     BufferType type() const { return kDoubleBuffer; }
 
     /**
+      This method is called to query the TV effects in use by the FrameBuffer.
+    */
+    string effectsInfo() const;
+
+    /**
       This method is called to get the specified scanline data.
 
       @param row  The row we are looking for

@@ -53,7 +53,8 @@ string Snapshot::savePNG(const FrameBuffer& framebuffer, const Properties& props
     buf_ptr += pitch;                    // add pitch
   }
 
-  return saveBufferToPNG(out, buffer, width, height, props);
+  return saveBufferToPNG(out, buffer, width, height,
+                         props, framebuffer.effectsInfo());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -86,13 +87,15 @@ string Snapshot::savePNG(const FrameBuffer& framebuffer, const TIA& tia,
     }
   }
 
-  return saveBufferToPNG(out, buffer, width<<1, height, props);
+  return saveBufferToPNG(out, buffer, width << 1, height,
+                         props, framebuffer.effectsInfo());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string Snapshot::saveBufferToPNG(ofstream& out, uInt8* buffer,
                                  uInt32 width, uInt32 height,
-                                 const Properties& props)
+                                 const Properties& props,
+                                 const string& effectsInfo)
 {
   uInt8* compmem = (uInt8*) NULL;
 
@@ -130,10 +133,14 @@ string Snapshot::saveBufferToPNG(ofstream& out, uInt8* buffer,
     writePNGChunk(out, "IDAT", compmem, compmemsize);
 
     // Add some info about this snapshot
-    writePNGText(out, "Software", string("Stella ") + STELLA_VERSION);
+    ostringstream text;
+    text << "Stella " << STELLA_VERSION << " (Build " << STELLA_BUILD << ") ["
+         << BSPF_ARCH << "]";
+
+    writePNGText(out, "Software", text.str());
     writePNGText(out, "ROM Name", props.get(Cartridge_Name));
     writePNGText(out, "ROM MD5", props.get(Cartridge_MD5));
-    writePNGText(out, "Display Format", props.get(Display_Format));
+    writePNGText(out, "TV Effects", effectsInfo);
 
     // Finish up
     writePNGChunk(out, "IEND", 0, 0);

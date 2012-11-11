@@ -111,6 +111,20 @@ string NTSCFilter::setPreset(Preset preset)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string NTSCFilter::getPreset() const
+{
+  switch(myPreset)
+  {
+    case PRESET_COMPOSITE:  return "COMPOSITE";
+    case PRESET_SVIDEO:     return "S-VIDEO";
+    case PRESET_RGB:        return "RGB";
+    case PRESET_BAD:        return "BAD ADJUST";
+    case PRESET_CUSTOM:     return "CUSTOM";
+    default:                return "Disabled";
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string NTSCFilter::setNextAdjustable()
 {
   if(myPreset != PRESET_CUSTOM)

@@ -56,7 +56,8 @@ class Snapshot
   private:
     static string saveBufferToPNG(ofstream& out, uInt8* buffer,
                                   uInt32 width, uInt32 height,
-                                  const Properties& props);
+                                  const Properties& props,
+                                  const string& effectsInfo);
     static void writePNGChunk(ofstream& out, const char* type, uInt8* data, int size);
     static void writePNGText(ofstream& out, const string& key, const string& text);
 };

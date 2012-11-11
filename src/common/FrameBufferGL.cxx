@@ -439,6 +439,32 @@ void FrameBufferGL::scanline(uInt32 row, uInt8* data) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FrameBufferGL::effectsInfo() const
+{
+  ostringstream buf;
+  switch(myFilterType)
+  {
+    case kNormal:
+      buf << "Disabled, normal mode";
+      break;
+    case kPhosphor:
+      buf << "Disabled, phosphor mode";
+      break;
+    case kBlarggNormal:
+      buf << myNTSCFilter.getPreset() << ", scanlines="
+          << myTiaSurface->myScanlineIntensityI << "/"
+          << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
+      break;
+    case kBlarggPhosphor:
+      buf << myNTSCFilter.getPreset() << ", phosphor, scanlines="
+          << myTiaSurface->myScanlineIntensityI << "/"
+          << (myTiaSurface->myTexFilter[1] == GL_LINEAR ? "inter" : "nointer");
+      break;
+  }
+  return buf.str();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FrameBufferGL::myLibraryLoaded = false;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

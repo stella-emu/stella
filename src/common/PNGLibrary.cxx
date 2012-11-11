@@ -242,13 +242,15 @@ void PNGLibrary::png_io_flush(png_structp ctx)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_user_warn(png_structp ctx, png_const_charp str)
 {
-  cout << "PNGLibrary warning: " << str << endl;
+  const string& msg = string("PNGLibrary warning: ") + str;
+  throw msg.c_str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PNGLibrary::png_user_error(png_structp ctx, png_const_charp str)
 {
-  cout << "PNGLibrary error: " << str << endl;
+  const string& msg = string("PNGLibrary error: ") + str;
+  throw msg.c_str();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
