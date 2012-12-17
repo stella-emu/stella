@@ -75,9 +75,9 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
     mySystem(0),
     myCart(cart),
     myCMHandler(0),
-    myDisplayFormat("NTSC"),
-    myFramerate(60.0),
-    myCurrentFormat(0),
+    myDisplayFormat(""),  // Unknown TV format @ start
+    myFramerate(0.0),     // Unknown framerate @ start
+    myCurrentFormat(0),   // Unknown format @ start
     myUserPaletteDefined(false)
 {
   // Load user-defined palette for this ROM
@@ -596,19 +596,14 @@ void Console::setTIAProperties()
 
   // Make sure these values fit within the bounds of the desktop
   // If not, attempt to center vertically
-  if(height <= myOSystem->desktopHeight())
-  {
-    myTIA->setYStart(ystart);
-    myTIA->setHeight(height);
-  }
-  else
+  if(height > myOSystem->desktopHeight())
   {
     ystart += height - myOSystem->desktopHeight();
     ystart = BSPF_min(ystart, 64u);
     height = myOSystem->desktopHeight();
-    myTIA->setYStart(ystart);
-    myTIA->setHeight(height);
   }
+  myTIA->setYStart(ystart);
+  myTIA->setHeight(height);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

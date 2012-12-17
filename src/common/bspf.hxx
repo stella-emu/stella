@@ -85,8 +85,8 @@ using namespace std;
 
 // I wish Windows had a complete POSIX layer
 #if defined BSPF_WIN32 && !defined __GNUG__
-  #define BSPF_strcasecmp stricmp
-  #define BSPF_strncasecmp strnicmp
+  #define BSPF_strcasecmp _stricmp
+  #define BSPF_strncasecmp _strnicmp
   #define BSPF_isblank(c) ((c == ' ') || (c == '\t'))
   #define BSPF_snprintf _snprintf
   #define BSPF_vsnprintf _vsnprintf
