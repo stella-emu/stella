@@ -57,7 +57,7 @@ bool FrameBufferSoft::initSubsystem(VideoMode& mode)
 
   if(!myRectList)
   {
-    myOSystem->logMessage("ERROR: Unable to get memory for SDL rects\n", 0);
+    myOSystem->logMessage("ERROR: Unable to get memory for SDL rects", 0);
     return false;
   }
 

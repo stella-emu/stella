@@ -416,7 +416,8 @@ class OSystem
     void quit() { myQuitLoop = true; }
 
     /**
-      Append a message to the internal log.
+      Append a message to the internal log
+      (a newline is automatically added).
 
       @param message  The message to be appended
       @param level    If 0, always output the message, only append when

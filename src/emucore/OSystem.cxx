@@ -212,8 +212,7 @@ bool OSystem::create()
       << "Configuration file:   '"
       << FilesystemNode(myConfigFile).getRelativePath() << "'" << endl
       << "User game properties: '"
-      << FilesystemNode(myPropertiesFile).getRelativePath() << "'" << endl
-      << endl;
+      << FilesystemNode(myPropertiesFile).getRelativePath() << "'" << endl;
   logMessage(buf.str(), 1);
 
   // Get relevant information about the video hardware
@@ -448,7 +447,7 @@ FBInitStatus OSystem::createFrameBuffer()
 #endif
 
     default:  // Should never happen
-      logMessage("ERROR: Unknown emulation state in createFrameBuffer()\n", 0);
+      logMessage("ERROR: Unknown emulation state in createFrameBuffer()", 0);
       break;
   }
 
@@ -472,7 +471,7 @@ fallback:
   if(fbstatus == kFailNotSupported && myFrameBuffer &&
      myFrameBuffer->type() == kDoubleBuffer)
   {
-    logMessage("ERROR: OpenGL mode failed, fallback to software\n", 0);
+    logMessage("ERROR: OpenGL mode failed, fallback to software", 0);
     delete myFrameBuffer; myFrameBuffer = NULL;
     mySettings->setString("video", "soft");
     FBInitStatus newstatus = createFrameBuffer();
@@ -514,7 +513,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     showmessage = true;  // we show a message if a ROM is being reloaded
     if(myRomFile == "")
     {
-      logMessage("ERROR: Rom file not specified ...\n", 0);
+      logMessage("ERROR: Rom file not specified ...", 0);
       return false;
     }
   }
@@ -551,7 +550,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
     myEventHandler->setMouseControllerMode(mySettings->getBool("usemouse"));
     if(createFrameBuffer() != kSuccess)  // Takes care of initializeVideo()
     {
-      logMessage("ERROR: Couldn't create framebuffer for console\n", 0);
+      logMessage("ERROR: Couldn't create framebuffer for console", 0);
       myEventHandler->reset(EventHandler::S_LAUNCHER);
       return false;
     }
@@ -634,7 +633,7 @@ bool OSystem::createLauncher(const string& startdir)
     status = true;
   }
   else
-    logMessage("ERROR: Couldn't create launcher\n", 0);
+    logMessage("ERROR: Couldn't create launcher", 0);
 
   myLauncherUsed = myLauncherUsed || status;
   return status;
@@ -675,14 +674,14 @@ void OSystem::logMessage(const string& message, uInt8 level)
 {
   if(level == 0)
   {
-    cout << message << flush;
-    myLogMessages += message;
+    cout << message << endl << flush;
+    myLogMessages += message + "\n";
   }
   else if(level <= (uInt8)mySettings->getInt("loglevel"))
   {
     if(mySettings->getBool("logtoconsole"))
-      cout << message << flush;
-    myLogMessages += message;
+      cout << message << endl << flush;
+    myLogMessages += message + "\n";
   }
 }
 

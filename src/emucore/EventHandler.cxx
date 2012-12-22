@@ -136,7 +136,7 @@ void EventHandler::setupJoysticks()
   // Initialize the joystick subsystem
   if((SDL_InitSubSystem(SDL_INIT_JOYSTICK) == -1) || (SDL_NumJoysticks() <= 0))
   {
-    myOSystem->logMessage("No joysticks present.\n\n", 1);
+    myOSystem->logMessage("No joysticks present.", 1);
     return;
   }
 
@@ -220,7 +220,7 @@ void EventHandler::setupJoysticks()
     buf << "  " << i << ": " << myJoysticks[i].about() << endl << endl;
   myOSystem->logMessage(buf.str(), 1);
 #else
-  myOSystem->logMessage("No joysticks present.\n\n", 1);
+  myOSystem->logMessage("No joysticks present.", 1);
 #endif
 }
 

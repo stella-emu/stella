@@ -158,7 +158,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
     }
     else
     {
-      myOSystem->logMessage("ERROR: Couldn't initialize video subsystem\n", 0);
+      myOSystem->logMessage("ERROR: Couldn't initialize video subsystem", 0);
       return kFailNotSupported;
     }
   }
@@ -187,7 +187,7 @@ FBInitStatus FrameBuffer::initialize(const string& title,
   // Finally, show some information about the framebuffer,
   // but only on the first initialization
   if(myInitializedCount == 1)
-    myOSystem->logMessage(about() + "\n", 1);
+    myOSystem->logMessage(about(), 1);
 
   return kSuccess;
 }
@@ -873,7 +873,7 @@ void FrameBuffer::setWindowIcon()
   sscanf(stella_icon[0], "%u %u %u %u", &w, &h, &ncols, &nbytes);
   if((w != 32) || (h != 32) || (ncols > 255) || (nbytes > 1))
   {
-    myOSystem->logMessage("ERROR: Couldn't load the application icon.\n", 0);
+    myOSystem->logMessage("ERROR: Couldn't load the application icon.", 0);
     return;
   }
 
@@ -895,7 +895,7 @@ void FrameBuffer::setWindowIcon()
     }
     else
     {
-      myOSystem->logMessage("ERROR: Couldn't load the application icon.\n", 0);
+      myOSystem->logMessage("ERROR: Couldn't load the application icon.", 0);
       return;
     }
     rgba[code] = col;

@@ -162,7 +162,7 @@ void Settings::loadConfig()
   ifstream in(myOSystem->configFile().c_str());
   if(!in || !in.is_open())
   {
-    myOSystem->logMessage("ERROR: Couldn't load settings file\n", 0);
+    myOSystem->logMessage("ERROR: Couldn't load settings file", 0);
     return;
   }
 
@@ -491,7 +491,7 @@ void Settings::saveConfig()
   ofstream out(myOSystem->configFile().c_str());
   if(!out || !out.is_open())
   {
-    myOSystem->logMessage("ERROR: Couldn't save settings file\n", 0);
+    myOSystem->logMessage("ERROR: Couldn't save settings file", 0);
     return;
   }
 

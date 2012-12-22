@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.7.4 to 3.8: (December xx, 2012)
+3.7.4 to 3.7.5: (December 22, 2012)
 
   * Improved regressions in PAL format autodetection, introduced in the
     past several releases.

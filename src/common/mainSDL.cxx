@@ -44,9 +44,6 @@
   extern "C" {
     int stellaMain(int argc, char* argv[]);
   }
-#elif defined(GP2X)
-  #include "SettingsGP2X.hxx"
-  #include "OSystemGP2X.hxx"
 #else
   #error Unsupported platform!
 #endif
@@ -65,7 +62,7 @@ OSystem* theOSystem = (OSystem*) NULL;
 // Does general Cleanup in case any operation failed (or at end of program)
 int Cleanup()
 {
-  theOSystem->logMessage("Cleanup from mainSDL\n", 2);
+  theOSystem->logMessage("Cleanup from mainSDL", 2);
   theOSystem->saveConfig();
 
   if(theOSystem)
@@ -97,31 +94,28 @@ int main(int argc, char* argv[])
 #elif defined(MAC_OSX)
   theOSystem = new OSystemMACOSX();
   SettingsMACOSX settings(theOSystem);
-#elif defined(GP2X)
-  theOSystem = new OSystemGP2X();
-  SettingsGP2X settings(theOSystem);
 #else
   #error Unsupported platform!
 #endif
 
   theOSystem->loadConfig();
-  theOSystem->logMessage("Loading config options ...\n", 2);
+  theOSystem->logMessage("Loading config options ...", 2);
 
   // Take care of commandline arguments
-  theOSystem->logMessage("Loading commandline arguments ...\n", 2);
+  theOSystem->logMessage("Loading commandline arguments ...", 2);
   string romfile = theOSystem->settings().loadCommandLine(argc, argv);
 
   // Finally, make sure the settings are valid
   // We do it once here, so the rest of the program can assume valid settings
-  theOSystem->logMessage("Validating config options ...\n", 2);
+  theOSystem->logMessage("Validating config options ...", 2);
   theOSystem->settings().validate();
 
   // Create the full OSystem after the settings, since settings are
   // probably needed for defaults
-  theOSystem->logMessage("Creating the OSystem ...\n", 2);
+  theOSystem->logMessage("Creating the OSystem ...", 2);
   if(!theOSystem->create())
   {
-    theOSystem->logMessage("ERROR: Couldn't create OSystem\n", 0);
+    theOSystem->logMessage("ERROR: Couldn't create OSystem", 0);
     return Cleanup();
   }
 
@@ -130,24 +124,24 @@ int main(int argc, char* argv[])
   // If so, show the information and immediately exit
   if(theOSystem->settings().getBool("listrominfo"))
   {
-    theOSystem->logMessage("Showing output from 'listrominfo' ...\n", 2);
+    theOSystem->logMessage("Showing output from 'listrominfo' ...", 2);
     theOSystem->propSet().print();
     return Cleanup();
   }
   else if(theOSystem->settings().getBool("rominfo"))
   {
-    theOSystem->logMessage("Showing output from 'rominfo' ...\n", 2);
+    theOSystem->logMessage("Showing output from 'rominfo' ...", 2);
     FilesystemNode romnode(romfile);
     if(argc > 1 && romnode.exists() && romnode.isFile())
       theOSystem->logMessage(theOSystem->getROMInfo(romfile), 0);
     else
-      theOSystem->logMessage("ERROR: ROM doesn't exist\n", 0);
+      theOSystem->logMessage("ERROR: ROM doesn't exist", 0);
 
     return Cleanup();
   }
   else if(theOSystem->settings().getBool("help"))
   {
-    theOSystem->logMessage("Displaying usage\n", 2);
+    theOSystem->logMessage("Displaying usage", 2);
     theOSystem->settings().usage();
     return Cleanup();
   }
@@ -171,12 +165,12 @@ int main(int argc, char* argv[])
   FilesystemNode romnode(romfile);
   if(romfile == "" || romnode.isDirectory())
   {
-    theOSystem->logMessage("Attempting to use ROM launcher ...\n", 2);
+    theOSystem->logMessage("Attempting to use ROM launcher ...", 2);
     bool launcherOpened = romfile != "" ?
       theOSystem->createLauncher(romnode.getPath()) : theOSystem->createLauncher();
     if(!launcherOpened)
     {
-      theOSystem->logMessage("Launcher could not be started, showing usage\n", 2);
+      theOSystem->logMessage("Launcher could not be started, showing usage", 2);
       theOSystem->settings().usage();
       return Cleanup();
     }
@@ -185,7 +179,7 @@ int main(int argc, char* argv[])
   {
     if(theOSystem->settings().getBool("takesnapshot"))
     {
-      theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...\n", 2);
+      theOSystem->logMessage("Taking snapshots with 'takesnapshot' ...", 2);
       for(int i = 0; i < 30; ++i)  theOSystem->frameBuffer().update();
       theOSystem->eventHandler().takeSnapshot();
       return Cleanup();
@@ -216,9 +210,9 @@ int main(int argc, char* argv[])
   while(SDL_PollEvent(&event)) /* swallow event */ ;
 
   // Start the main loop, and don't exit until the user issues a QUIT command
-  theOSystem->logMessage("Starting main loop ...\n", 2);
+  theOSystem->logMessage("Starting main loop ...", 2);
   theOSystem->mainLoop();
-  theOSystem->logMessage("Finished main loop ...\n", 2);
+  theOSystem->logMessage("Finished main loop ...", 2);
 
   // Cleanup time ...
   return Cleanup();

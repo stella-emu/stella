@@ -43,7 +43,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
     myIsMuted(true),
     myVolume(100)
 {
-  myOSystem->logMessage("SoundSDL::SoundSDL started ...\n", 2);
+  myOSystem->logMessage("SoundSDL::SoundSDL started ...", 2);
 
   // The sound system is opened only once per program run, to eliminate
   // issues with opening and closing it multiple times
@@ -87,7 +87,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
   myIsInitializedFlag = true;
   SDL_PauseAudio(1);
 
-  myOSystem->logMessage("SoundSDL::SoundSDL initialized\n", 2);
+  myOSystem->logMessage("SoundSDL::SoundSDL initialized", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -100,7 +100,7 @@ SoundSDL::~SoundSDL()
     myIsEnabled = myIsInitializedFlag = false;
   }
 
-  myOSystem->logMessage("SoundSDL destroyed\n", 2);
+  myOSystem->logMessage("SoundSDL destroyed", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -108,19 +108,19 @@ void SoundSDL::setEnabled(bool state)
 {
   myOSystem->settings().setBool("sound", state);
 
-  myOSystem->logMessage(state ? "SoundSDL::setEnabled(true)\n" : 
-                                "SoundSDL::setEnabled(false)\n", 2);
+  myOSystem->logMessage(state ? "SoundSDL::setEnabled(true)" : 
+                                "SoundSDL::setEnabled(false)", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void SoundSDL::open()
 {
-  myOSystem->logMessage("SoundSDL::open started ...\n", 2);
+  myOSystem->logMessage("SoundSDL::open started ...", 2);
   myIsEnabled = false;
   mute(true);
   if(!myIsInitializedFlag || !myOSystem->settings().getBool("sound"))
   {
-    myOSystem->logMessage("Sound disabled\n\n", 1);
+    myOSystem->logMessage("Sound disabled\n", 1);
     return;
   }
 
@@ -156,7 +156,7 @@ void SoundSDL::open()
   myIsEnabled = true;
   mute(false);
 
-  myOSystem->logMessage("SoundSDL::open finished\n", 2);
+  myOSystem->logMessage("SoundSDL::open finished", 2);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -169,7 +169,7 @@ void SoundSDL::close()
     myLastRegisterSetCycle = 0;
     myTIASound.reset();
     myRegWriteQueue.clear();
-    myOSystem->logMessage("SoundSDL::close\n", 2);
+    myOSystem->logMessage("SoundSDL::close", 2);
   }
 }
 
