@@ -139,8 +139,6 @@ class Thumbulator
     uInt64 reads;
     uInt64 writes;
 
-    Int32 DBUG; // dump detailed execution trace
-    Int32 DISS; // dump Thumb instruction trace
     ostringstream statusMsg;
 
     static bool trapOnFatal;
