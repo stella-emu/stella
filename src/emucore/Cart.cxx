@@ -754,12 +754,15 @@ bool Cartridge::isProbablyUA(const uInt8* image, uInt32 size)
 bool Cartridge::isProbablyX07(const uInt8* image, uInt32 size)
 {
   // X07 bankswitching switches to bank 0, 1, 2, etc by accessing address 0x08xd
-  uInt8 signature[3][3] = {
+  uInt8 signature[6][3] = {
     { 0xAD, 0x0D, 0x08 },  // LDA $080D
     { 0xAD, 0x1D, 0x08 },  // LDA $081D
-    { 0xAD, 0x2D, 0x08 }   // LDA $082D
+    { 0xAD, 0x2D, 0x08 },  // LDA $082D
+    { 0x0C, 0x0D, 0x08 },  // NOP $080D
+    { 0x0C, 0x1D, 0x08 },  // NOP $081D
+    { 0x0C, 0x2D, 0x08 }   // NOP $082D
   };
-  for(uInt32 i = 0; i < 3; ++i)
+  for(uInt32 i = 0; i < 6; ++i)
     if(searchForBytes(image, size, signature[i], 3, 1))
       return true;
 

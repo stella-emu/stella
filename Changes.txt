@@ -23,6 +23,9 @@
       - The 'volume clipping' option has been removed, since in 16-bit
         mode it's no longer needed.
 
+  * Improved bankswitch autodetection for X07 ROMs (although there's only
+    two known ROMs in existence, so the detection probably isn't robust).
+
 -Have fun!
 
 
