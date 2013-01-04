@@ -46,7 +46,6 @@ class AudioDialog : public Dialog
     PopUpWidget*      myFragsizePopup;
     PopUpWidget*      myFreqPopup;
     PopUpWidget*      myTiaFreqPopup;
-    CheckboxWidget*   myClipVolumeCheckbox;
     CheckboxWidget*   mySoundEnableCheckbox;
 
   private:

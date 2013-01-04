@@ -107,13 +107,8 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   wid.push_back(myTiaFreqPopup);
   ypos += lineHeight + 4;
 
-  // Clip volume
-  myClipVolumeCheckbox = new CheckboxWidget(this, font, xpos+10, ypos,
-                                            "Clip volume", 0);
-  wid.push_back(myClipVolumeCheckbox);
-  xpos += myClipVolumeCheckbox->getWidth() + 20;
-
   // Enable sound
+  xpos = (_w - (font.getStringWidth("Enable sound") + 10)) / 2;
   mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);
@@ -156,9 +151,6 @@ void AudioDialog::loadConfig()
   // TIA frequency
   myTiaFreqPopup->setSelected(instance().settings().getString("tiafreq"), "31400");
 
-  // Clip volume
-  myClipVolumeCheckbox->setState(instance().settings().getBool("clipvol"));
-
   // Enable sound
   bool b = instance().settings().getBool("sound");
   mySoundEnableCheckbox->setState(b);
@@ -185,9 +177,6 @@ void AudioDialog::saveConfig()
   // TIA frequency
   settings.setString("tiafreq", myTiaFreqPopup->getSelectedTag());
 
-  // Enable/disable volume clipping (requires a restart to take effect)
-  settings.setBool("clipvol", myClipVolumeCheckbox->getState());
-
   // Enable/disable sound (requires a restart to take effect)
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());
 
@@ -207,7 +196,6 @@ void AudioDialog::setDefaults()
   myFreqPopup->setSelected("31400", "");
   myTiaFreqPopup->setSelected("31400", "");
 
-  myClipVolumeCheckbox->setState(true);
   mySoundEnableCheckbox->setState(true);
 
   // Make sure that mutually-exclusive items are not enabled at the same time
@@ -224,7 +212,6 @@ void AudioDialog::handleSoundEnableChange(bool active)
   myFragsizePopup->setEnabled(active);
   myFreqPopup->setEnabled(active);
   myTiaFreqPopup->setEnabled(active);
-  myClipVolumeCheckbox->setEnabled(active);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

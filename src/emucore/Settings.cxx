@@ -81,7 +81,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("freq", "31400");
   setInternal("tiafreq", "31400");
   setInternal("volume", "100");
-  setInternal("clipvol", "true");
 
   // Input event options
   setInternal("keymap", "");

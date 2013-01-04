@@ -162,11 +162,13 @@ class SoundSDL : public Sound
   protected:
     /**
       Invoked by the sound callback to process the next sound fragment.
+      The stream is 16-bits (even though the callback is 8-bits), since
+      the TIASnd class always generates signed 16-bit stereo samples.
 
       @param stream  Pointer to the start of the fragment
       @param length  Length of the fragment
     */
-    void processFragment(uInt8* stream, Int32 length);
+    void processFragment(Int16* stream, uInt32 length);
 
   protected:
     // Struct to hold information regarding a TIA sound register write
