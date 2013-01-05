@@ -2930,7 +2930,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "e6de4ef9ab62e2196962aa6b0dedac59", "Imagic, Wilfredo 'Willy' Aguilar, Michael Becker, Dennis Koble", "720113-2A, 13206", "Solar Storm (1983) (Imagic) (PAL)", "Uses the Paddle Controllers", "", "", "", "", "", "", "", "PADDLES", "", "", "01", "", "", "", "", "" }, 
   { "e6e5bb0e4f4350da573023256268313d", "Thomas Jentzsch", "", "Missile Control (Thomas Jentzsch)", "NTSC Conversion", "Homebrew", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e6f49a1053c79211f82be4d90dc9fe3d", "", "", "Gunfight 2600 - Little progress... (2001) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
-  { "e723ad8f406cb258b89681ef4cef0eff", "Thomas Jentzsch", "", "Sadoom (TJ) (PAL) (Hack)", "Hack of Kaboom!", "Hack", "", "", "", "", "", "", "PADDLES", "", "", "", "PAL60", "", "", "", "" }, 
+  { "e723ad8f406cb258b89681ef4cef0eff", "Thomas Jentzsch", "", "Sadoom (TJ) (PAL) (Hack)", "Hack of Kaboom!", "Hack", "", "", "", "", "", "", "PADDLES", "", "", "", "", "", "", "", "" }, 
   { "e72eb8d4410152bdcb69e7fba327b420", "Atari, Douglas Neubauer", "CX26136", "Solaris (1986) (Atari)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e72ee2d6e501f07ec5e8a0efbe520bee", "Imagic, Dave Johnson", "720119-2A, 13211, EIX-004-04I", "Quick Step! (1983) (Imagic) (PAL)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "e73838c43040bcbc83e4204a3e72eef4", "CCE", "", "Apples and Dolls (CCE)", "AKA Open Sesame", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "YES", "" }, 

@@ -5,16 +5,33 @@ use FindBin;
 use lib "$FindBin::Bin";
 use PropSet;
 
-usage() if @ARGV != 2;
+my $infile  = "";
+my $outfile = "";
 
-my %propset = PropSet::load_prop_set($ARGV[0]);
+if (@ARGV != 2)
+{
+  if (@ARGV == 1 && $ARGV[0] == "-help")
+  {
+    usage();
+  }
+  # Saves me from having to type these paths *every single time*
+  $infile  = "src/emucore/stella.pro";
+  $outfile = "src/emucore/DefProps.hxx";
+}
+else
+{
+  $infile  = $ARGV[0];
+  $outfile = $ARGV[1];
+}
+
+my %propset = PropSet::load_prop_set($infile);
 my $setsize = keys (%propset);
 my $typesize = PropSet::num_prop_types();
 
 printf "Valid properties found: $setsize\n";
 
 # Construct the output file in C++ format
-open(OUTFILE, ">$ARGV[1]");
+open(OUTFILE, ">$outfile");
 print OUTFILE "//============================================================================\n";
 print OUTFILE "//\n";
 print OUTFILE "//   SSSS    tt          lll  lll\n";
