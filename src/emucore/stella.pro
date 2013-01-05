@@ -315,10 +315,6 @@
 "Cartridge.Name" "Ship Demo (V 15) (PD)"
 ""
 
-"Cartridge.MD5" "3349fbd01dde378b31f72bd8dc793dc5"
-"Cartridge.Name" "Greeting Cart (RSIDDALL) (PD)"
-""
-
 "Cartridge.MD5" "769ddc995dbb9edb8167efcea9f34a7c"
 "Cartridge.Name" "H.E.R.O. (Genesis)"
 "Cartridge.Note" "Genesis controller (B is laser, C is dynamite)"
@@ -381,10 +377,6 @@
 "Cartridge.Name" "Demo Image Series #4 - Donald (19-02-2003) (AD)"
 ""
 
-"Cartridge.MD5" "e1c8d02ca138083db868501360cf12a8"
-"Cartridge.Name" "Image - Baboon (10-02-2003) (AD)"
-""
-
 "Cartridge.MD5" "ac9adbd6de786a242e19d4bec527982b"
 "Cartridge.Manufacturer" "Activision, Alan Miller - Ariola"
 "Cartridge.ModelNo" "EAG-012-04I, EAX-012, EAX-012-04B - 711 012-720"
@@ -432,17 +424,9 @@
 "Display.YStart" "50"
 ""
 
-"Cartridge.MD5" "075ec8eb0aa39f0539bbaf5980203edb"
-"Cartridge.Name" "Image - Megaman (AD)"
-""
-
 "Cartridge.MD5" "3f01bd6d059396f495a4cde7de0ab180"
 "Cartridge.Name" "Qb (Special Edition) (NTSC) (Retroactive)"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "713095cd968b1aff45a2562ea4bbcbfe"
-"Cartridge.Name" "Image - Qb (16-02-2003) (TJ)"
 ""
 
 "Cartridge.MD5" "045035f995272eb2deb8820111745a07"
@@ -826,10 +810,6 @@
 "Cartridge.Rarity" "Extremely Rare"
 ""
 
-"Cartridge.MD5" "c4be1f4024fa8840fcfcbbbc9befff11"
-"Cartridge.Name" "Greeting Cart 2600 (PD)"
-""
-
 "Cartridge.MD5" "2bee7f226d506c217163bad4ab1768c0"
 "Cartridge.Manufacturer" "Xonox - K-Tel Software - Beck-Tech"
 "Cartridge.ModelNo" "6210, 06002, 06004, 99002"
@@ -1136,10 +1116,6 @@
 "Cartridge.Name" "Candi (Hack) [a]"
 "Cartridge.Note" "Hack of Space Invaders"
 "Cartridge.Rarity" "Hack"
-""
-
-"Cartridge.MD5" "00df776eb994d729db9eb13b17887aa6"
-"Cartridge.Name" "Greeting Cart Atari Coin (V2) (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "a779b9fa02c62d00d7c31ed51268f18a"
@@ -1513,10 +1489,6 @@
 "Cartridge.Name" "Snoopy and the Red Baron (CCE)"
 ""
 
-"Cartridge.MD5" "fa2f5f409cff75c9b9b9a5af84bd9909"
-"Cartridge.Name" "Greeting Cart Brook Burke Closeup(PD)"
-""
-
 "Cartridge.MD5" "f0a6e99f5875891246c3dbecbf2d2cea"
 "Cartridge.Manufacturer" "Atari, James Andreasen - Sears"
 "Cartridge.ModelNo" "CX2654 - 49-75141"
@@ -1634,10 +1606,6 @@
 
 "Cartridge.MD5" "12d7e0d6b187889f8d150bf7034d1db2"
 "Cartridge.Name" "Poker Squares (V0.0e) (2001) (B. Watson)"
-""
-
-"Cartridge.MD5" "39bf392448c8bd39d48acc95ed3b423f"
-"Cartridge.Name" "Greeting Cart Barb (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "fb0e84cee4c108d24253bcb7e382cffd"
@@ -2345,10 +2313,6 @@
 "Cartridge.Name" "Spider Kong (Unknown) (PAL)"
 ""
 
-"Cartridge.MD5" "25a943e9d5e312b516660b0627352448"
-"Cartridge.Name" "Image - Baboon (Interlaced Demo 1) (15-02-2003) (TJ)"
-""
-
 "Cartridge.MD5" "324cb4a749bcac4f3db9da842b85d2f7"
 "Cartridge.Manufacturer" "Dennis Debro"
 "Cartridge.Name" "Climber 5 (01-05-2003) (Dennis Debro)"
@@ -2433,10 +2397,6 @@
 "Cartridge.Manufacturer" "Home Vision - Gem International Corp."
 "Cartridge.ModelNo" "VCS83109"
 "Cartridge.Name" "World End (1983) (Home Vision) (PAL)"
-""
-
-"Cartridge.MD5" "836b955663d013300eaaa39f2403068f"
-"Cartridge.Name" "Greeting Cart Moon(PD)"
 ""
 
 "Cartridge.MD5" "490e3cc59d82f85fae817cdf767ea7a0"
@@ -4204,10 +4164,6 @@
 "Cartridge.Rarity" "Hack"
 ""
 
-"Cartridge.MD5" "119305fe8e3c6cb878e8b610af8f0663"
-"Cartridge.Name" "Greeting Cart Ali Landry Closeup (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "3b8aacf5f5638492b926b5124de19f18"
 "Cartridge.Manufacturer" "Atari, Tod Frye - Sears"
 "Cartridge.ModelNo" "CX2646 - 49-75185"
@@ -4575,10 +4531,6 @@
 "Cartridge.Name" "Phantom II & Pirate (PAL60)"
 "Cartridge.Rarity" "Homebrew"
 "Display.Format" "PAL60"
-""
-
-"Cartridge.MD5" "dd1ecb349691aa4805eb9835dc87c094"
-"Cartridge.Name" "Greeting Cart Original(PD)"
 ""
 
 "Cartridge.MD5" "b3203e383b435f7e43f9492893c7469f"
@@ -5000,10 +4952,6 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (2.12) (Retroactive) (PAL)"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "25bcf07491f65012a70a528959c4881c"
-"Cartridge.Name" "Greeting Cart Brook Burke Blue Bikini(PD)"
 ""
 
 "Cartridge.MD5" "2d69a5f23784f1c2230143292a073b53"
@@ -5461,10 +5409,6 @@
 "Cartridge.Name" "Star Fire (MP) (2002) (PD)"
 "Cartridge.Note" "Won't work with Stella < V1.2"
 "Cartridge.Rarity" "New Release"
-""
-
-"Cartridge.MD5" "bf6b753ec11acfec3b40f8a4c476e77d"
-"Cartridge.Name" "Image - Girl (AD)"
 ""
 
 "Cartridge.MD5" "f0541d2f7cda5ec7bab6d62b6128b823"
@@ -5972,10 +5916,6 @@
 "Cartridge.Rarity" "Homebrew"
 ""
 
-"Cartridge.MD5" "01acf9881a2f8bfa2d49982b1b10fb64"
-"Cartridge.Name" "Image - Woody (19-02-2003) (AD)"
-""
-
 "Cartridge.MD5" "9c40bf810f761ffc9c1b69c4647a8b84"
 "Cartridge.Name" "2 in 1 - Frostbite, River Raid (Unknown)"
 "Cartridge.Type" "2IN1"
@@ -6102,10 +6042,6 @@
 "Cartridge.ModelNo" "CX26152"
 "Cartridge.Name" "Super Baseball (1988) (Atari)"
 "Display.YStart" "30"
-""
-
-"Cartridge.MD5" "e45449bde2f467a52da36ddd5b427d76"
-"Cartridge.Name" "Image - Qb Cover Art (09-02-2003) (AD)"
 ""
 
 "Cartridge.MD5" "3d2652cbea462a886a41791dd7c8d073"
@@ -6590,10 +6526,6 @@
 "Cartridge.Name" "Diagnostic Test Cartridge 2.6 (1982) (Atari)"
 ""
 
-"Cartridge.MD5" "a899a3e3fec8d466f45c2c3beb2961fd"
-"Cartridge.Name" "Greeting Cart Cathy (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "6604f72a966ca6b2df6a94ee4a68eb82"
 "Cartridge.Name" "MegaMania (208 in 1) (Unknown) (PAL)"
 ""
@@ -6740,10 +6672,6 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (V0.05) (Macintosh) (2001) (Retroactive)"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "747d3031eb37e32abc7f6e5ee928cd8f"
-"Cartridge.Name" "Greeting Cart Goth (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "9d522a3759aa855668e75962c84546f7"
@@ -7180,10 +7108,6 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "3b37ebc0674e3d5e49ffbdc4b65607a6"
-"Cartridge.Name" "Greeting Cart Decepticon(PD)"
-""
-
 "Cartridge.MD5" "5494b9ee403d9757f0fd1f749e80214a"
 "Cartridge.Manufacturer" "Larry Petit"
 "Cartridge.Name" "Xenophobe Arcade (2003) (Larry Petit) (Hack)"
@@ -7234,10 +7158,6 @@
 "Cartridge.Manufacturer" "Zirok"
 "Cartridge.Name" "Keystone Keypers (1983) (Zirok)"
 "Cartridge.Note" "AKA Keystone Kapers"
-""
-
-"Cartridge.MD5" "b1c4f026a854385259020744e589faa6"
-"Cartridge.Name" "Greeting Cart Blond on Brunette (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "4c0fb2544ae0f8b5f7ae8bce7bd7f134"
@@ -7407,10 +7327,6 @@
 "Cartridge.Rarity" "Extremely Rare"
 "Display.Format" "NTSC50"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "feeae23f2eeac44b81a43e8292d0c574"
-"Cartridge.Name" "Greeting Cart Halle Berry (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "3f251c50aa7237e61a38ab42315ebed4"
@@ -7863,10 +7779,6 @@
 "Cartridge.MD5" "f5a3e051730d45fea518f2e8b926565b"
 "Cartridge.Manufacturer" "Robby"
 "Cartridge.Name" "Keystone Kapers (Robby)"
-""
-
-"Cartridge.MD5" "27c8a76cf59a9fc6b667468ef1e3f9e9"
-"Cartridge.Name" "Greeting Cart Atari-Troll(PD)"
 ""
 
 "Cartridge.MD5" "056f5d886a4e7e6fdd83650554997d0d"
@@ -8925,10 +8837,6 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "6b853585764b8cfdc73310e372c828d9"
-"Cartridge.Name" "Image - Baboon (Interlaced Demo 2) (15-02-2003) (TJ)"
-""
-
 "Cartridge.MD5" "291bcdb05f2b37cdf9452d2bf08e0321"
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
@@ -9044,10 +8952,6 @@
 "Cartridge.Manufacturer" "Epyx, Steven A. Baker, Peter Engelbrite"
 "Cartridge.ModelNo" "80561-00286"
 "Cartridge.Name" "California Games (1988) (Epyx)"
-""
-
-"Cartridge.MD5" "9041cfd144df075552efebbb81df625d"
-"Cartridge.Name" "Greeting Cart Ann R (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "dca941dab5c6f859b71883b13ade9744"
@@ -9946,10 +9850,6 @@
 "Cartridge.Rarity" "Hack"
 ""
 
-"Cartridge.MD5" "a68a396ff1f3b311712f6bdf05dcefab"
-"Cartridge.Name" "Greeting Cart Amy (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "12bca8305d5ab8ea51fe1cfd95d7ab0e"
 "Cartridge.Manufacturer" "Epyx, Steven A. Baker, Tod Frye, Peter Engelbrite"
 "Cartridge.ModelNo" "80561-00250"
@@ -9996,10 +9896,6 @@
 "Cartridge.Name" "Space Invaders (1978) (Atari) [h1]"
 "Cartridge.Note" "Hack of Space Invaders (Atari)"
 "Cartridge.Rarity" "New Release (Hack)"
-""
-
-"Cartridge.MD5" "1623da579aa30b957bb8fa6ccd89b30a"
-"Cartridge.Name" "Image - USA Flag (15-02-2003) (AD)"
 ""
 
 "Cartridge.MD5" "3b966bf3c2ca34ac6ca1de4cf6383582"
@@ -10185,10 +10081,6 @@
 "Cartridge.Manufacturer" "Erik Eid"
 "Cartridge.Name" "Euchre (Beta) (PAL) (12-09-2002) (Erik Eid)"
 "Cartridge.Rarity" "New Release"
-""
-
-"Cartridge.MD5" "b9040a7af6d0d13e7d8fea72b2fb7432"
-"Cartridge.Name" "Image - Samantha Fox (09-02-2003) (AD)"
 ""
 
 "Cartridge.MD5" "a9e3c23599c0d77151602f8e31daf879"
@@ -11023,10 +10915,6 @@
 "Display.Phosphor" "YES"
 ""
 
-"Cartridge.MD5" "42e8d67213227dee01e72c788712c002"
-"Cartridge.Name" "Greeting Cart Amy in thong (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "b1a6c96e9093352106bc335e96caa154"
 "Cartridge.Manufacturer" "Joe Grand"
 "Cartridge.Name" "SCSIcide Pre-release 1 (Joe Grand)"
@@ -11450,10 +11338,6 @@
 "Cartridge.Name" "Text Screen (25-01-2003) (AD)"
 ""
 
-"Cartridge.MD5" "40b58f2f93e503b14a5d1d0ae2ca5aa0"
-"Cartridge.Name" "Greeting Cart Tanya (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "37ab3affc7987995784b59fcd3fcbd31"
 "Cartridge.Name" "Sprite Test (29-11-2002) (Eric Ball)"
 ""
@@ -11689,10 +11573,6 @@
 "Cartridge.Name" "Miniature Golf (1979) (Atari) (4K)"
 ""
 
-"Cartridge.MD5" "a641d14c516d00da81cd12c2dbaa06db"
-"Cartridge.Name" "Image - Baboon2 (AD)"
-""
-
 "Cartridge.MD5" "2a360bc85bf22de438651cf92ffda1de"
 "Cartridge.Manufacturer" "Bit Corporation"
 "Cartridge.ModelNo" "PGP213"
@@ -11755,10 +11635,6 @@
 
 "Cartridge.MD5" "5c73693a89b06e5a09f1721a13176f95"
 "Cartridge.Name" "Wavy Line Test 2 (PD)"
-""
-
-"Cartridge.MD5" "0fd518e9435f5ab0893d79ee0d63fc92"
-"Cartridge.Name" "Greeting Cart Jeri Ryan (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "813985a940aa739cc28df19e0edd4722"
@@ -12853,10 +12729,6 @@
 "Display.Height" "215"
 ""
 
-"Cartridge.MD5" "180c234496f31a8671226277e0afbf2f"
-"Cartridge.Name" "Greeting Cart Mario And Luigi(PD)"
-""
-
 "Cartridge.MD5" "5336f86f6b982cc925532f2e80aa1e17"
 "Cartridge.Manufacturer" "Parker Brothers, Ray Miller, Todd Marshall"
 "Cartridge.ModelNo" "PB5060"
@@ -13196,10 +13068,6 @@
 "Cartridge.Manufacturer" "Arcadia Corporation, Dennis Caswell"
 "Cartridge.ModelNo" "AR-4200"
 "Cartridge.Name" "Escape from the Mindmaster (1 of 4) (1982) (Arcadia)"
-""
-
-"Cartridge.MD5" "27a3c5216b6c6e96e321634973b73784"
-"Cartridge.Name" "Greeting Cart Atari Coin (V1) (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "c77d3b47f2293e69419b92522c6f6647"
@@ -13898,10 +13766,6 @@
 "Cartridge.ModelNo" "CX2655, CX2655P"
 "Cartridge.Name" "Yars' Revenge (1982) (Atari) (PAL)"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "083b17a1a6b3efc464ba7e789f1e194d"
-"Cartridge.Name" "Greeting Cart (AD)"
 ""
 
 "Cartridge.MD5" "0cb7af80fd0ddef84844481d85e5d29b"
@@ -14849,10 +14713,6 @@
 "Controller.Right" "BOOSTERGRIP"
 ""
 
-"Cartridge.MD5" "ba638f02faac0878c3b0f9669923485f"
-"Cartridge.Name" "Image - Baboon (10-02-2003) (TJ)"
-""
-
 "Cartridge.MD5" "0685bd0bcb975ceef7041749a5454a48"
 "Cartridge.Manufacturer" "Piero Cavina"
 "Cartridge.Name" "11 Sprite Demo (Piero Cavina) (PD)"
@@ -14976,10 +14836,6 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26177"
 "Cartridge.Name" "Ikari Warriors (1989) (Atari) (PAL)"
-""
-
-"Cartridge.MD5" "df4aea767cdf6a3f138255092e84d713"
-"Cartridge.Name" "Image - Samantha Fox (Colour) (09-02-2003) (AD)"
 ""
 
 "Cartridge.MD5" "f283cc294ece520c2badf9da20cfc025"
@@ -15271,18 +15127,10 @@
 "Controller.Left" "PADDLES_IAXDR"
 ""
 
-"Cartridge.MD5" "85dcc70a0adeb2e001e5df387612de24"
-"Cartridge.Name" "Greeting Cart Gene (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "9d37a1be4a6e898026414b8fee2fc826"
 "Cartridge.Manufacturer" "M Network, David Rolfe - INTV"
 "Cartridge.ModelNo" "MT5665"
 "Cartridge.Name" "Super Challenge Baseball (1982) (M Network)"
-""
-
-"Cartridge.MD5" "8ae7809702b7d618e45daa2ddb0ece26"
-"Cartridge.Name" "Greeting Cart Blue-Ribbon Award(PD)"
 ""
 
 "Cartridge.MD5" "d8e4c8e2d210270cd1e0f6d1b4582b91"
@@ -15459,10 +15307,6 @@
 "Cartridge.Manufacturer" "CBS Electronics, Dan Kitchen, Garry Kitchen"
 "Cartridge.ModelNo" "4L1700, 4L1701, 4L1702, 4L1802, 4L2274"
 "Cartridge.Name" "Donkey Kong (1982) (CBS Electronics) (PAL) [a2]"
-""
-
-"Cartridge.MD5" "a6637741b3e1111ebb0d4c9712a871b6"
-"Cartridge.Name" "Greeting Cart Cindy Margolis (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "f3dfae774f3bd005a026e29894db40d3"
@@ -15650,10 +15494,6 @@
 "Cartridge.ModelNo" "CM-008 - 712 008-720"
 "Cartridge.Name" "Cakewalk (1983) (CommaVid) (PAL)"
 "Cartridge.Note" "AKA Alarm in der Backstube"
-""
-
-"Cartridge.MD5" "a1ccf58ca588bd3e0fb35a1e2a41b423"
-"Cartridge.Name" "Greeting Cart Green Dress (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "6a9b30ca46b0dba9e719f4cbd340e01c"
@@ -16040,10 +15880,6 @@
 "Cartridge.Name" "RealSports Tennis (1983) (Atari) (PAL)"
 ""
 
-"Cartridge.MD5" "df94affaece8b9a02da82e971ea9c0ca"
-"Cartridge.Name" "Image - Nude2 (AD)"
-""
-
 "Cartridge.MD5" "3b9480bb6fb1e358c9c0a64e86945aee"
 "Cartridge.Name" "Title Match Pro Wrestling (2002) (Skyworks)"
 ""
@@ -16322,10 +16158,6 @@
 "Cartridge.Manufacturer" "Activision, Steve 'Jessica' Kitchen - Ariola"
 "Cartridge.ModelNo" "EAZ-033 - 711 033-725"
 "Cartridge.Name" "Space Shuttle (1983) (Activision) (PAL)"
-""
-
-"Cartridge.MD5" "d84cda16d9303a7e2a658b168966c973"
-"Cartridge.Name" "Image - Clown (10-02-2003) (AD)"
 ""
 
 "Cartridge.MD5" "0375f589f7da06d2d2be532e0d4d4b94"
@@ -16707,10 +16539,6 @@
 "Cartridge.Manufacturer" "Activision, David Crane"
 "Cartridge.ModelNo" "AG-008"
 "Cartridge.Name" "Laser Blast (1981) (Activision) (16K)"
-""
-
-"Cartridge.MD5" "6f5b3021a88930a9bba3770094c95f3d"
-"Cartridge.Name" "Image - Clown (09-02-2003) (TJ)"
 ""
 
 "Cartridge.MD5" "7ad782952e5147b88b65a25cadcdf9e0"
@@ -17200,10 +17028,6 @@
 "Cartridge.Name" "Gopher (Unknown) (PAL)"
 ""
 
-"Cartridge.MD5" "99112a46486b52b1110bae607bfa8cd6"
-"Cartridge.Name" "Greeting Cart Ali Landry Bikini (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "640a08e9ca019172d612df22a9190afb"
 "Cartridge.Manufacturer" "Atari - GCC, Mike Feinstein, Kevin Osborn"
 "Cartridge.ModelNo" "CX2691, CX2691P"
@@ -17554,10 +17378,6 @@
 "Cartridge.Rarity" "Prototype"
 ""
 
-"Cartridge.MD5" "1e4990f2bfc79b47b9b091f0a1538eeb"
-"Cartridge.Name" "Greeting Cart Sue (SnailSoft)(PD)"
-""
-
 "Cartridge.MD5" "ae0d4f3396cb49de0fabdff03cb2756f"
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (V2.02) (PAL) (2001) (Retroactive)"
@@ -17869,10 +17689,6 @@
 "Cartridge.Note" "AKA Kool Aid Pitcher Man"
 ""
 
-"Cartridge.MD5" "bdbac0c6cd0fab9c81c3be0bedb0ddd4"
-"Cartridge.Name" "Greeting Cart The Snail(PD)"
-""
-
 "Cartridge.MD5" "140909d204abd6841c64cdad4d7765b4"
 "Cartridge.Name" "Moving Blue Ladder Demo (PD)"
 ""
@@ -17927,10 +17743,6 @@
 "Cartridge.Manufacturer" "Activision, Dan Kitchen"
 "Cartridge.ModelNo" "EAX-039-04B, EAX-039-04I"
 "Cartridge.Name" "Kung-Fu Master (1987) (Activision) (PAL)"
-""
-
-"Cartridge.MD5" "4dd6f53684ccbb569fe9f41498d80018"
-"Cartridge.Name" "Image - Nude1 (AD)"
 ""
 
 "Cartridge.MD5" "896ec58f26e930e02f5e4f046602c3a1"
@@ -18360,10 +18172,6 @@
 "Cartridge.Manufacturer" "HES"
 "Cartridge.ModelNo" "773-883"
 "Cartridge.Name" "2 Pak Special - Space Voyage, Fire Alert (1992) (HES) (PAL)"
-""
-
-"Cartridge.MD5" "b28b3d07ffd5f56938a922b7448730b9"
-"Cartridge.Name" "Greeting Cart Autobots(PD)"
 ""
 
 "Cartridge.MD5" "45a4f55bb9a5083d470ad479afd8bca2"
@@ -18855,10 +18663,6 @@
 "Cartridge.Note" "Genesis controller (B jumps left, C jumps right)"
 "Cartridge.Rarity" "Homebrew"
 "Controller.Left" "GENESIS"
-""
-
-"Cartridge.MD5" "be3343494301a3a8b1b2a2f8d7473c45"
-"Cartridge.Name" "Image - Clown (Full Screen) (12-02-2003) (AD)"
 ""
 
 "Cartridge.MD5" "8917f7c1ac5eb05b82331cf01c495af2"
@@ -19447,10 +19251,6 @@
 "Cartridge.MD5" "9cbb07f1993a027bc2f87d5205457ec9"
 "Cartridge.Name" "Eckhard Stolberg's Scrolling Text Demo 1 (PD)"
 "Cartridge.Rarity" "New Release"
-""
-
-"Cartridge.MD5" "f8ad87b3ecfc04c9e76d2cebef76a6cb"
-"Cartridge.Name" "Greeting Cart Carmon (SnailSoft)(PD)"
 ""
 
 "Cartridge.MD5" "36c29ceee2c151b23a1ad7aa04bd529d"

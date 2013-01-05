@@ -163,7 +163,7 @@ class M6532 : public Device
     // An amazing 128 bytes of RAM
     uInt8 myRAM[128];
 
-    // Current value of my Timer
+    // Current value of the timer
     uInt32 myTimer;
 
     // Log base 2 of the number of cycles in a timer interval

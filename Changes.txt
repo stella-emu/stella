@@ -26,6 +26,9 @@
   * Improved bankswitch autodetection for X07 ROMs (although there's only
     two known ROMs in existence, so the detection probably isn't robust).
 
+  * Tweaked bankswitch autodetection for the 0840, F8 and FE schemes;
+    several homebrews that didn't run before now work correctly.
+
 -Have fun!
 
 

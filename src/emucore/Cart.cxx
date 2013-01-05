@@ -378,6 +378,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 8*1024)  // 8K
   {
+    // First check for *potential* F8
+    uInt8 signature[] = { 0x8D, 0xF9, 0x1F };  // STA $1FF9
+    bool f8 = searchForBytes(image, size, signature, 3, 2);
+
     if(isProbablySC(image, size))
       type = "F8SC";
     else if(memcmp(image, image + 4096, 4096) == 0)
@@ -390,7 +394,7 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "3F";
     else if(isProbablyUA(image, size))
       type = "UA";
-    else if(isProbablyFE(image, size))
+    else if(isProbablyFE(image, size) && !f8)
       type = "FE";
     else if(isProbably0840(image, size))
       type = "0840";
@@ -413,8 +417,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "E7";
     else if(isProbably3E(image, size))
       type = "3E";
+  /* no known 16K 3F ROMS
     else if(isProbably3F(image, size))
       type = "3F";
+  */
     else
       type = "F6";
   }
@@ -542,13 +548,14 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
 bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
 {
   // 0840 cart bankswitching is triggered by accessing addresses 0x0800
-  // or 0x0840
-  uInt8 signature1[2][3] = {
+  // or 0x0840 at least twice
+  uInt8 signature1[3][3] = {
     { 0xAD, 0x00, 0x08 },  // LDA $0800
-    { 0xAD, 0x40, 0x08 }   // LDA $0840
+    { 0xAD, 0x40, 0x08 },  // LDA $0840
+    { 0x2C, 0x00, 0x08 }   // BIT $0800
   };
-  for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature1[i], 3, 1))
+  for(uInt32 i = 0; i < 3; ++i)
+    if(searchForBytes(image, size, signature1[i], 3, 2))
       return true;
 
   uInt8 signature2[2][4] = {
@@ -556,7 +563,7 @@ bool Cartridge::isProbably0840(const uInt8* image, uInt32 size)
     { 0x0C, 0xFF, 0x0F, 0x4C }   // NOP $0FFF; JMP ...
   };
   for(uInt32 i = 0; i < 2; ++i)
-    if(searchForBytes(image, size, signature2[i], 4, 1))
+    if(searchForBytes(image, size, signature2[i], 4, 2))
       return true;
 
   return false;
