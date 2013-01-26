@@ -29,6 +29,9 @@
   * Tweaked bankswitch autodetection for the 0840, F8 and FE schemes;
     several homebrews that didn't run before now work correctly.
 
+  * Fixed regression in M6532 INTIM reads; at least one known ROM
+    (Mr. Roboto Berzerk hack) wasn't working properly.
+
 -Have fun!
 
 

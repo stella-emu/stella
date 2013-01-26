@@ -180,7 +180,12 @@ uInt8 M6532::peek(uInt16 addr)
 
       // Get number of clocks since timer was set
       Int32 timer = timerClocks();  
-      if(timer >= 0)
+
+      // Note that this constant comes from z26, and corresponds to
+      // 256 intervals of T1024T (ie, the maximum that the timer should hold)
+      // I'm not sure why this is required, but quite a few ROMs fail
+      // if we just check >= 0.
+      if(!(timer & 0x40000))
       {
         // Return at 'divide by TIMxT' interval rate
         return (timer >> myIntervalShift) & 0xff;
