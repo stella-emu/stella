@@ -55,7 +55,7 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
 
   // Set real dimensions
   _w = 35 * fontWidth + 10;
-  _h = 8 * (lineHeight + 4) + 10;
+  _h = 7 * (lineHeight + 4) + 10;
 
   // Volume
   xpos = 3 * fontWidth;  ypos = 10;
@@ -95,20 +95,13 @@ AudioDialog::AudioDialog(OSystem* osystem, DialogContainer* parent,
   items.push_back("48000 Hz", "48000");
   myFreqPopup = new PopUpWidget(this, font, xpos, ypos,
                                 pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                items, "Output freq (*): ", lwidth);
+                                items, "Frequency (*): ", lwidth);
   wid.push_back(myFreqPopup);
-  ypos += lineHeight + 4;
-
-  // TIA frequency
-  // ... use same items as above
-  myTiaFreqPopup = new PopUpWidget(this, font, xpos, ypos,
-                                   pwidth + myVolumeLabel->getWidth() - 4, lineHeight,
-                                   items, "TIA freq: ", lwidth);
-  wid.push_back(myTiaFreqPopup);
   ypos += lineHeight + 4;
 
   // Enable sound
   xpos = (_w - (font.getStringWidth("Enable sound") + 10)) / 2;
+  ypos += 4;
   mySoundEnableCheckbox = new CheckboxWidget(this, font, xpos, ypos,
                                              "Enable sound", kSoundEnableChanged);
   wid.push_back(mySoundEnableCheckbox);
@@ -148,9 +141,6 @@ void AudioDialog::loadConfig()
   // Output frequency
   myFreqPopup->setSelected(instance().settings().getString("freq"), "31400");
 
-  // TIA frequency
-  myTiaFreqPopup->setSelected(instance().settings().getString("tiafreq"), "31400");
-
   // Enable sound
   bool b = instance().settings().getBool("sound");
   mySoundEnableCheckbox->setState(b);
@@ -174,9 +164,6 @@ void AudioDialog::saveConfig()
   // Output frequency
   settings.setString("freq", myFreqPopup->getSelectedTag());
 
-  // TIA frequency
-  settings.setString("tiafreq", myTiaFreqPopup->getSelectedTag());
-
   // Enable/disable sound (requires a restart to take effect)
   instance().sound().setEnabled(mySoundEnableCheckbox->getState());
 
@@ -194,7 +181,6 @@ void AudioDialog::setDefaults()
 
   myFragsizePopup->setSelected("512", "");
   myFreqPopup->setSelected("31400", "");
-  myTiaFreqPopup->setSelected("31400", "");
 
   mySoundEnableCheckbox->setState(true);
 
@@ -211,7 +197,6 @@ void AudioDialog::handleSoundEnableChange(bool active)
   myVolumeLabel->setEnabled(active);
   myFragsizePopup->setEnabled(active);
   myFreqPopup->setEnabled(active);
-  myTiaFreqPopup->setEnabled(active);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

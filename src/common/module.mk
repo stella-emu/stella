@@ -2,7 +2,6 @@ MODULE := src/common
 
 MODULE_OBJS := \
 	src/common/mainSDL.o \
-	src/common/SoundNull.o \
 	src/common/SoundSDL.o \
 	src/common/FrameBufferSoft.o \
 	src/common/FrameBufferGL.o \

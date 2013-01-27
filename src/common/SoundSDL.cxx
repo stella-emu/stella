@@ -125,9 +125,7 @@ void SoundSDL::open()
   }
 
   // Now initialize the TIASound object which will actually generate sound
-  int tiafreq = myOSystem->settings().getInt("tiafreq");
   myTIASound.outputFrequency(myHardwareSpec.freq);
-  myTIASound.tiaFrequency(tiafreq);
   const string& chanResult =
       myTIASound.channels(myHardwareSpec.channels, myNumChannels == 2);
 

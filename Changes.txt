@@ -12,16 +12,17 @@
                                Release History
 ===========================================================================
 
-3.7.5 to 3.8: (January xx, 2013)
+3.7.5 to 3.8: (February xx, 2013)
 
   * Huge changes to the sound system:
-      - The sound code now uses signed 16-bit samples instead of unsigned
-        8-bit samples, making it more compatible with a wider variety of
+      - The sound code now uses 16-bit signed samples instead of 8-bit
+        unsigned samples, making it more compatible with a wider variety of
         systems.
       - Improved sound output for several ROMs, including "Space Rocks"
         (the 'heartbeat' sound can now be clearly heard).
       - The 'volume clipping' option has been removed, since in 16-bit
         mode it's no longer needed.
+      - The 'Tia freq' option has been removed.
 
   * Improved bankswitch autodetection for X07 ROMs (although there's only
     two known ROMs in existence, so the detection probably isn't robust).
@@ -69,7 +70,7 @@
     reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
     properly set on active transition of the PA7 pin.
 
-  * Fixed bug in DPC+ bankswitch scheme; the music in "Stay Frosty 2"
+  * Fixed bug in DPC+ bankswitch scheme; the music several DPC+ ROMS
     wasn't playing correctly.
 
   * The ROM properties database now uses 'Auto' instead of 'Auto-select'

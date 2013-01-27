@@ -79,7 +79,6 @@ Settings::Settings(OSystem* osystem)
   setInternal("sound", "true");
   setInternal("fragsize", "512");
   setInternal("freq", "31400");
-  setInternal("tiafreq", "31400");
   setInternal("volume", "100");
 
   // Input event options
@@ -285,9 +284,8 @@ void Settings::validate()
   i = getInt("volume");
   if(i < 0 || i > 100)    setInternal("volume", "100");
   i = getInt("freq");
-  if(i < 0 || i > 48000)  setInternal("freq", "31400");
-  i = getInt("tiafreq");
-  if(i < 0 || i > 48000)  setInternal("tiafreq", "31400");
+  if(!(i == 11025 || i == 22050 || i == 31400 || i == 44100 || i == 48000))
+    setInternal("freq", "31400");
 #endif
 
   i = getInt("joydeadzone");
@@ -382,8 +380,7 @@ void Settings::usage()
   #ifdef SOUND_SUPPORT
     << "  -sound        <1|0>          Enable sound generation\n"
     << "  -fragsize     <number>       The size of sound fragments (must be a power of two)\n"
-    << "  -freq         <number>       Set sound sample output frequency (0 - 48000)\n"
-    << "  -tiafreq      <number>       Set sound sample generation frequency (0 - 48000)\n"
+    << "  -freq         <number>       Set sound sample output frequency (11025|22050|31400|44100|48000)\n"
     << "  -volume       <number>       Set the volume (0 - 100)\n"
     << "  -clipvol      <1|0>          Enable volume clipping (eliminates popping)\n"
     << endl

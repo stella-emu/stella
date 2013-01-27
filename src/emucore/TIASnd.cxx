@@ -21,10 +21,9 @@
 #include "TIASnd.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-TIASound::TIASound(Int32 outputFrequency, Int32 tiaFrequency)
+TIASound::TIASound(Int32 outputFrequency)
   : myChannelMode(Hardware2Stereo),
     myOutputFrequency(outputFrequency),
-    myTIAFrequency(tiaFrequency),
     myOutputCounter(0),
     myVolumePercentage(100)
 {
@@ -66,12 +65,6 @@ void TIASound::reset()
 void TIASound::outputFrequency(Int32 freq)
 {
   myOutputFrequency = freq;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void TIASound::tiaFrequency(Int32 freq)
-{
-  myTIAFrequency = freq;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -352,31 +345,31 @@ void TIASound::process(Int16* buffer, uInt32 samples)
     switch(myChannelMode)
     {
       case Hardware2Mono:  // mono sampling with 2 hardware channels
-        while((samples > 0) && (myOutputCounter >= myTIAFrequency))
+        while((samples > 0) && (myOutputCounter >= 31400))
         {
           Int16 byte = v0 + v1;
           *(buffer++) = byte;
           *(buffer++) = byte;
-          myOutputCounter -= myTIAFrequency;
+          myOutputCounter -= 31400;
           samples--;
         }
         break;
 
       case Hardware2Stereo:  // stereo sampling with 2 hardware channels
-        while((samples > 0) && (myOutputCounter >= myTIAFrequency))
+        while((samples > 0) && (myOutputCounter >= 31400))
         {
           *(buffer++) = v0;
           *(buffer++) = v1;
-          myOutputCounter -= myTIAFrequency;
+          myOutputCounter -= 31400;
           samples--;
         }
         break;
 
       case Hardware1:  // mono/stereo sampling with only 1 hardware channel
-        while((samples > 0) && (myOutputCounter >= myTIAFrequency))
+        while((samples > 0) && (myOutputCounter >= 31400))
         {
           *(buffer++) = v0 + v1;
-          myOutputCounter -= myTIAFrequency;
+          myOutputCounter -= 31400;
           samples--;
         }
         break;

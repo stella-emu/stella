@@ -24,6 +24,7 @@ class OSystem;
 
 #include "bspf.hxx"
 #include "Sound.hxx"
+#include "OSystem.hxx"
 
 /**
   This class implements a Null sound object, where-by sound generation
@@ -39,7 +40,10 @@ class SoundNull : public Sound
       Create a new sound object.  The init method must be invoked before
       using the object.
     */
-    SoundNull(OSystem* osystem);
+    SoundNull(OSystem* osystem) : Sound(osystem)
+    {
+      myOSystem->logMessage("Sound disabled.\n", 1);
+    }
  
     /**
       Destructor
@@ -128,14 +132,25 @@ class SoundNull : public Sound
     */
     void adjustVolume(Int8 direction) { }
 
-public:
+  public:
     /**
       Saves the current state of this device to the given Serializer.
 
       @param out The serializer device to save to.
       @return The result of the save.  True on success, false on failure.
     */
-    bool save(Serializer& out) const;
+    bool save(Serializer& out) const
+    {
+      out.putString("TIASound");
+
+      for(int = 0; i < 6; ++i)
+        out.putByte(0);
+
+      // myLastRegisterSetCycle
+      out.putInt(0);
+
+      return true;
+    }
 
     /**
       Loads the current state of this device from the given Serializer.
@@ -143,7 +158,20 @@ public:
       @param in The Serializer device to load from.
       @return The result of the load.  True on success, false on failure.
     */
-    bool load(Serializer& in);
+    bool load(Serializer& in)
+    {
+      if(in.getString() != "TIASound")
+        return false;
+
+      // Read sound registers and discard
+      for(int = 0; i < 6; ++i)
+        in.getByte();
+
+      // myLastRegisterSetCycle
+      in.getInt();
+
+      return true;
+    }
 
     /**
       Get a descriptor for this console class (used in error checking).

@@ -26,6 +26,9 @@
   This class implements a fairly accurate emulation of the TIA sound
   hardware.  This class uses code/ideas from z26 and MESS.
 
+  Currently, the sound generation routines work at 31400Hz only.
+  Resampling can be done by passing in a different output frequency.
+
   @author  Bradford W. Mott, Stephen Anthony, z26 and MESS teams
   @version $Id$
 */
@@ -35,7 +38,7 @@ class TIASound
     /**
       Create a new TIA Sound object using the specified output frequency
     */
-    TIASound(Int32 outputFrequency = 31400, Int32 tiaFrequency = 31400);
+    TIASound(Int32 outputFrequency = 31400);
 
     /**
       Destructor
@@ -52,11 +55,6 @@ class TIASound
       Set the frequency output samples should be generated at
     */
     void outputFrequency(Int32 freq);
-
-    /**
-      Set the frequency the of the TIA device
-    */
-    void tiaFrequency(Int32 freq);
 
     /**
       Selects the number of audio channels per sample.  There are two factors
@@ -159,7 +157,6 @@ class TIASound
 
     ChannelMode myChannelMode;
     Int32  myOutputFrequency;
-    Int32  myTIAFrequency;
     Int32  myOutputCounter;
     uInt32 myVolumePercentage;
 

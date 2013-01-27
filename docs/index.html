@@ -10,7 +10,7 @@
   <br><br>
   <center><h2><b>A multi-platform Atari 2600 VCS emulator</b></h2></center>
 
-  <center><h4><b>Release 3.7.5</b></h4></center>
+  <center><h4><b>Release 3.8</b></h4></center>
   <br><br>
 
   <center><h2><b>User's Guide</b></h2></center>
@@ -54,7 +54,7 @@
 
   <br><br><br>
 
-  <center><b>February 1999 - December 2012</b></center>
+  <center><b>February 1999 - February 2013</b></center>
     <center><b>The Stella Team</b></center>
   <center><b><a href="http://stella.sourceforge.net">Stella Homepage</a></b></center>
 
@@ -1995,14 +1995,7 @@
 
     <tr>
       <td><pre>-freq &lt;number&gt;</pre></td>
-      <td>Set sound sample output frequency (0 - 48000).
-        Default is 31400.  Do not change unless you experience sound
-        issues.</td>
-    </tr>
-
-    <tr>
-      <td><pre>-tiafreq &lt;number&gt;</pre></td>
-      <td>Set sound sample generation frequency (0 - 48000).
+      <td>Set sound sample output frequency (11025,22050,31400,44100,48000)
         Default is 31400.  Do not change unless you experience sound
         issues.</td>
     </tr>
@@ -2494,9 +2487,7 @@
           <tr><th>Item</th><th>Brief description</th><th>For more information,<br>see <a href="#CommandLine">CommandLine</a></th></tr>
           <tr><td>Volume</td><td>self-explanatory</td><td>-volume</td></tr>
           <tr><td>Sample size (*)</td><td>set size of audio buffers</td><td>-fragsize</td></tr>
-          <tr><td>Output freq (*)</td><td>change sound output frequency (advanced)</td><td>-freq</td></tr>
-          <tr><td>TIA freq</td><td>change TIA output frequency (advanced)</td><td>-tiafreq</td></tr>
-          <tr><td>Clip volume</td><td>Eliminate popping in sound generation (advanced)</td><td>-clipvol</td></tr>
+          <tr><td>Frequency (*)</td><td>change sound output frequency</td><td>-freq</td></tr>
           <tr><td>Enable sound</td><td>self-explanatory</td><td>-sound</td></tr>
         </table>
       </td>
