@@ -250,8 +250,6 @@ SDLmain.lib
     <ClCompile Include="SDL_win32_main.c" />
     <ClCompile Include="SerialPortWin32.cxx" />
     <ClCompile Include="SettingsWin32.cxx" />
-    <ClCompile Include="..\common\Snapshot.cxx" />
-    <ClCompile Include="..\common\SoundNull.cxx" />
     <ClCompile Include="..\common\SoundSDL.cxx" />
     <ClCompile Include="..\emucore\AtariVox.cxx" />
     <ClCompile Include="..\emucore\Booster.cxx" />
@@ -458,8 +456,6 @@ SDLmain.lib
     <ClInclude Include="SerialPortWin32.hxx" />
     <ClInclude Include="SettingsWin32.hxx" />
     <ClInclude Include="..\common\SharedPtr.hxx" />
-    <ClInclude Include="..\common\Snapshot.hxx" />
-    <ClInclude Include="..\common\SoundNull.hxx" />
     <ClInclude Include="..\common\SoundSDL.hxx" />
     <ClInclude Include="..\common\Stack.hxx" />
     <ClInclude Include="..\common\Version.hxx" />
