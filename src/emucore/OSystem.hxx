@@ -41,6 +41,7 @@ namespace GUI {
 
 #include "Array.hxx"
 #include "FrameBuffer.hxx"
+#include "PNGLibrary.hxx"
 #include "bspf.hxx"
 
 struct Resolution {
@@ -171,6 +172,13 @@ class OSystem
       @return The statemanager object
     */
     StateManager& state() const { return *myStateManager; }
+
+    /**
+      Get the PNG handler of the system.
+
+      @return The PNGlib object
+    */
+    PNGLibrary& png() const { return *myPNGLib; }
 
     /**
       This method should be called to load the current settings from an rc file.
@@ -556,6 +564,9 @@ class OSystem
 
     // Pointer to the StateManager object
     StateManager* myStateManager;
+
+    // PNG object responsible for loading/saving PNG images
+    PNGLibrary* myPNGLib;
 
     // The list of log messages
     string myLogMessages;

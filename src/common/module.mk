@@ -9,8 +9,7 @@ MODULE_OBJS := \
 	src/common/FBSurfaceTIA.o \
 	src/common/PNGLibrary.o \
 	src/common/MouseControl.o \
-	src/common/RectList.o \
-	src/common/Snapshot.o
+	src/common/RectList.o
 
 MODULE_DIRS += \
 	src/common

@@ -24,7 +24,10 @@
 
 class FrameBuffer;
 class FBSurface;
+class Properties;
+class TIA;
 
+#include <fstream>
 #include "bspf.hxx"
 
 /**
@@ -38,13 +41,13 @@ class PNGLibrary
 {
   public:
     PNGLibrary();
-    ~PNGLibrary();
+    virtual ~PNGLibrary();
 
     /**
       Read a PNG image from the specified file into a FBSurface structure,
       scaling the image to the surface bounds.
 
-      @param filename  The filename to load from
+      @param filename  The filename to load the PNG image
       @param fb        The main framebuffer of the application
       @param surface   The FBSurface into which to place the PNG data
 
@@ -52,7 +55,30 @@ class PNGLibrary
                result of true, otherwise a const char* exception is thrown
                containing a more detailed error message.
     */
-    bool readImage(const string& filename, const FrameBuffer& fb, FBSurface& surface);
+    bool loadImage(const string& filename, const FrameBuffer& fb, FBSurface& surface);
+
+    /**
+      Save the current TIA image to a PNG file using data from the Framebuffer.
+      Any postprocessing/filtering will be included.
+
+      @param filename    The filename to save the PNG image
+      @param framebuffer The framebuffer containing the image data
+      @param props       The properties object containing info about the ROM
+    */
+    string saveImage(const string& filename, const FrameBuffer& framebuffer,
+                     const Properties& props);
+
+    /**
+      Save the current TIA image to a PNG file using data directly from
+      the TIA framebuffer.  No filtering or scaling will be included.
+
+      @param filename    The filename to save the PNG image
+      @param framebuffer The framebuffer containing the image data
+      @param mediasrc    Source of the raw TIA data
+      @param props       The properties object containing info about the ROM
+    */
+    string saveImage(const string& filename, const FrameBuffer& framebuffer,
+                     const TIA& tia, const Properties& props);
 
   private:
     // The following data remains between invocations of allocateStorage,
@@ -85,6 +111,13 @@ class PNGLibrary
       @param surface The FBSurface into which to place the PNG data
     */
     void scaleImagetoSurface(const FrameBuffer& fb, FBSurface& surface);
+
+    string saveBufferToPNG(ofstream& out, uInt8* buffer,
+                           uInt32 width, uInt32 height,
+                           const Properties& props,
+                           const string& effectsInfo);
+    void writePNGChunk(ofstream& out, const char* type, uInt8* data, int size);
+    void writePNGText(ofstream& out, const string& key, const string& text);
 
     static void png_read_data(png_structp ctx, png_bytep area, png_size_t size);
     static void png_write_data(png_structp ctx, png_bytep area, png_size_t size);

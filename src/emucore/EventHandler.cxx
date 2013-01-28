@@ -39,7 +39,6 @@
 #include "ListWidget.hxx"
 #include "ScrollBarWidget.hxx"
 #include "Settings.hxx"
-#include "Snapshot.hxx"
 #include "Sound.hxx"
 #include "StateManager.hxx"
 #include "M6532.hxx"
@@ -1986,9 +1985,10 @@ void EventHandler::takeSnapshot(uInt32 number)
   // Now create a PNG snapshot
   if(myOSystem->settings().getBool("ss1x"))
   {
-    string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
-                   myOSystem->console().tia(),
-                   myOSystem->console().properties(), filename);
+    string msg =
+      myOSystem->png().saveImage(filename, myOSystem->frameBuffer(),
+                                 myOSystem->console().tia(),
+                                 myOSystem->console().properties());
     if(showmessage)
       myOSystem->frameBuffer().showMessage(msg);
   }
@@ -1997,8 +1997,9 @@ void EventHandler::takeSnapshot(uInt32 number)
     // Make sure we have a 'clean' image, with no onscreen messages
     myOSystem->frameBuffer().enableMessages(false);
 
-    string msg = Snapshot::savePNG(myOSystem->frameBuffer(),
-                   myOSystem->console().properties(), filename);
+    string msg =
+      myOSystem->png().saveImage(filename, myOSystem->frameBuffer(),
+                                 myOSystem->console().properties());
 
     // Re-enable old messages
     myOSystem->frameBuffer().enableMessages(true);

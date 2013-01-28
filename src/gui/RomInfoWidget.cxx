@@ -19,7 +19,6 @@
 
 #include "FrameBuffer.hxx"
 #include "OSystem.hxx"
-#include "PNGLibrary.hxx"
 #include "Settings.hxx"
 #include "Widget.hxx"
 
@@ -116,7 +115,7 @@ void RomInfoWidget::parseProperties()
   try
   {
     mySurfaceIsValid =
-      myPNGLib.readImage(filename, instance().frameBuffer(), *mySurface);
+      instance().png().loadImage(filename, instance().frameBuffer(), *mySurface);
   }
   catch(const char* msg)
   {

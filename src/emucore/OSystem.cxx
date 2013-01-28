@@ -90,6 +90,7 @@ OSystem::OSystem()
     myDebugger(NULL),
     myCheatManager(NULL),
     myStateManager(NULL),
+    myPNGLib(NULL),
     myQuitLoop(false),
     myRomFile(""),
     myRomMD5(""),
@@ -196,6 +197,7 @@ OSystem::~OSystem()
   delete myEventHandler;
 
   delete mySerialPort;
+  delete myPNGLib;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -303,6 +305,9 @@ bool OSystem::create()
 
   // Let the random class know about us; it needs access to getTicks()
   Random::setSystem(this);
+
+  // Create PNG handler
+  myPNGLib = new PNGLibrary();
 
   return true;
 }
