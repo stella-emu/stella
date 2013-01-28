@@ -334,8 +334,6 @@
 		DCC527D610B9DA19005E1287 /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527CE10B9DA19005E1287 /* System.cxx */; };
 		DCC527D710B9DA19005E1287 /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527CF10B9DA19005E1287 /* System.hxx */; };
 		DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527D810B9DA6A005E1287 /* bspf.hxx */; };
-		DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCC527D910B9DA6A005E1287 /* Snapshot.cxx */; };
-		DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */; };
 		DCCF47DE14B60DEE00814FAB /* ControllerWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */; };
 		DCCF47DF14B60DEE00814FAB /* JoystickWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */; };
 		DCCF47E014B60DEE00814FAB /* JoystickWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */; };
@@ -778,8 +776,6 @@
 		DCC527CE10B9DA19005E1287 /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = System.cxx; path = ../emucore/System.cxx; sourceTree = SOURCE_ROOT; };
 		DCC527CF10B9DA19005E1287 /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = System.hxx; path = ../emucore/System.hxx; sourceTree = SOURCE_ROOT; };
 		DCC527D810B9DA6A005E1287 /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bspf.hxx; path = ../common/bspf.hxx; sourceTree = SOURCE_ROOT; };
-		DCC527D910B9DA6A005E1287 /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
-		DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
 		DCCF47DB14B60DEE00814FAB /* ControllerWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ControllerWidget.hxx; path = ../debugger/gui/ControllerWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCCF47DC14B60DEE00814FAB /* JoystickWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = JoystickWidget.cxx; path = ../debugger/gui/JoystickWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCCF47DD14B60DEE00814FAB /* JoystickWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = JoystickWidget.hxx; path = ../debugger/gui/JoystickWidget.hxx; sourceTree = SOURCE_ROOT; };
@@ -1029,8 +1025,6 @@
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
 				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				DCF467B20F93993B00B25D7A /* SharedPtr.hxx */,
-				DCC527D910B9DA6A005E1287 /* Snapshot.cxx */,
-				DCC527DA10B9DA6A005E1287 /* Snapshot.hxx */,
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
 				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
 				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
@@ -1573,7 +1567,6 @@
 				DCC527D510B9DA19005E1287 /* NullDev.hxx in Headers */,
 				DCC527D710B9DA19005E1287 /* System.hxx in Headers */,
 				DCC527DB10B9DA6A005E1287 /* bspf.hxx in Headers */,
-				DCC527DD10B9DA6A005E1287 /* Snapshot.hxx in Headers */,
 				DC6B2BA511037FF200F199A7 /* CartDebug.hxx in Headers */,
 				DC6B2BA711037FF200F199A7 /* DiStella.hxx in Headers */,
 				DCD3F7C611340AAF00DBA3AE /* Genesis.hxx in Headers */,
@@ -1847,7 +1840,6 @@
 				DCC527D210B9DA19005E1287 /* M6502.cxx in Sources */,
 				DCC527D410B9DA19005E1287 /* NullDev.cxx in Sources */,
 				DCC527D610B9DA19005E1287 /* System.cxx in Sources */,
-				DCC527DC10B9DA6A005E1287 /* Snapshot.cxx in Sources */,
 				DC6B2BA411037FF200F199A7 /* CartDebug.cxx in Sources */,
 				DC6B2BA611037FF200F199A7 /* DiStella.cxx in Sources */,
 				DCD3F7C511340AAF00DBA3AE /* Genesis.cxx in Sources */,

@@ -383,8 +383,6 @@
 		DCECDB0010B9DBDC00AF4E1B /* System.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCECDAF810B9DBDC00AF4E1B /* System.cxx */; };
 		DCECDB0110B9DBDC00AF4E1B /* System.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDAF910B9DBDC00AF4E1B /* System.hxx */; };
 		DCECDB0510B9DC0400AF4E1B /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDB0210B9DC0400AF4E1B /* bspf.hxx */; };
-		DCECDB0610B9DC0400AF4E1B /* Snapshot.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCECDB0310B9DC0400AF4E1B /* Snapshot.cxx */; };
-		DCECDB0710B9DC0400AF4E1B /* Snapshot.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDB0410B9DC0400AF4E1B /* Snapshot.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
 		DCF467B50F93993B00B25D7A /* Array.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B10F93993B00B25D7A /* Array.hxx */; };
@@ -828,8 +826,6 @@
 		DCECDAF810B9DBDC00AF4E1B /* System.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = System.cxx; path = ../emucore/System.cxx; sourceTree = SOURCE_ROOT; };
 		DCECDAF910B9DBDC00AF4E1B /* System.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = System.hxx; path = ../emucore/System.hxx; sourceTree = SOURCE_ROOT; };
 		DCECDB0210B9DC0400AF4E1B /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bspf.hxx; path = ../common/bspf.hxx; sourceTree = SOURCE_ROOT; };
-		DCECDB0310B9DC0400AF4E1B /* Snapshot.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Snapshot.cxx; path = ../common/Snapshot.cxx; sourceTree = SOURCE_ROOT; };
-		DCECDB0410B9DC0400AF4E1B /* Snapshot.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Snapshot.hxx; path = ../common/Snapshot.hxx; sourceTree = SOURCE_ROOT; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
 		DCF467B10F93993B00B25D7A /* Array.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Array.hxx; path = ../common/Array.hxx; sourceTree = SOURCE_ROOT; };
@@ -1032,8 +1028,6 @@
 				DCD56D3A0B247DB40092F9F8 /* RectList.cxx */,
 				DCD56D3B0B247DB40092F9F8 /* RectList.hxx */,
 				DCF467B20F93993B00B25D7A /* SharedPtr.hxx */,
-				DCECDB0310B9DC0400AF4E1B /* Snapshot.cxx */,
-				DCECDB0410B9DC0400AF4E1B /* Snapshot.hxx */,
 				DCF467B40F93993B00B25D7A /* SoundNull.hxx */,
 				2DDA34020665817D00CDD299 /* SoundSDL.cxx */,
 				2DDA34030665817D00CDD299 /* SoundSDL.hxx */,
@@ -1576,7 +1570,6 @@
 				DCECDAFF10B9DBDC00AF4E1B /* NullDev.hxx in Headers */,
 				DCECDB0110B9DBDC00AF4E1B /* System.hxx in Headers */,
 				DCECDB0510B9DC0400AF4E1B /* bspf.hxx in Headers */,
-				DCECDB0710B9DC0400AF4E1B /* Snapshot.hxx in Headers */,
 				DCE9CC2B1103812700C86671 /* CartDebug.hxx in Headers */,
 				DCE9CC2D1103812700C86671 /* DiStella.hxx in Headers */,
 				DC84E11D1135988E00CA7C9D /* Genesis.hxx in Headers */,
@@ -1848,7 +1841,6 @@
 				DCECDAFC10B9DBDC00AF4E1B /* M6502.cxx in Sources */,
 				DCECDAFE10B9DBDC00AF4E1B /* NullDev.cxx in Sources */,
 				DCECDB0010B9DBDC00AF4E1B /* System.cxx in Sources */,
-				DCECDB0610B9DC0400AF4E1B /* Snapshot.cxx in Sources */,
 				DCE9CC2A1103812700C86671 /* CartDebug.cxx in Sources */,
 				DCE9CC2C1103812700C86671 /* DiStella.cxx in Sources */,
 				DC84E11C1135988E00CA7C9D /* Genesis.cxx in Sources */,
