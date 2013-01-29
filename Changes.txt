@@ -30,7 +30,7 @@
   * Tweaked bankswitch autodetection for the 0840, F8 and FE schemes;
     several homebrews that didn't run before now work correctly.
 
-  * Fixed regression in M6532 INTIM reads; at least one known ROM
+  * Fixed regression in RIOT INTIM reads; at least one known ROM
     (Mr. Roboto Berzerk hack) wasn't working properly.
 
   * Fixed ZIP file handling in Windows when the archive contained
@@ -73,8 +73,8 @@
     reading from TIMINT.  Also, D6 of the Interrupt Flag register is now
     properly set on active transition of the PA7 pin.
 
-  * Fixed bug in DPC+ bankswitch scheme; the music several DPC+ ROMS
-    wasn't playing correctly.
+  * Fixed bug in DPC+ bankswitch scheme; the music in several ROMS wasn't
+    playing correctly.
 
   * The ROM properties database now uses 'Auto' instead of 'Auto-select'
     everywhere.  This makes for less typing when running from the
