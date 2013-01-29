@@ -52,6 +52,12 @@ bool FilesystemNode::operator<(const FilesystemNode& node) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::operator==(const FilesystemNode& node) const
+{
+  return BSPF_strcasecmp(getDisplayName().c_str(), node.getDisplayName().c_str()) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::exists() const
 {
   if (_realNode == 0)

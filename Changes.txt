@@ -33,6 +33,9 @@
   * Fixed regression in M6532 INTIM reads; at least one known ROM
     (Mr. Roboto Berzerk hack) wasn't working properly.
 
+  * Fixed ZIP file handling in Windows when the archive contained
+    multiple files; in several cases the ROM wasn't being loaded at all.
+
 -Have fun!
 
 

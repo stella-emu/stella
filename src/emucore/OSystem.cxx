@@ -849,7 +849,9 @@ bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
   }
 
   // Open archive
+  FilesystemNode searchnode(fileinzip);
   unzFile tz;
+  bool found = false;
   if((tz = unzOpen(archive.c_str())) != NULL)
   {
     if(unzGoToFirstFile(tz) == UNZ_OK)
@@ -875,8 +877,11 @@ bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
              BSPF_equalsIgnoreCase(ext, ".rom"))
           {
             // Either match the first file or the one we're looking for
-            if(fileinzip.empty() || fileinzip == currfile)
+            if(fileinzip.empty() || searchnode == FilesystemNode(currfile))
+            {
+              found = true;
               break;
+            }
           }
         }
 
@@ -886,7 +891,7 @@ bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
       }
 
       // Now see if we got a valid image
-      if(ufo.uncompressed_size <= 0)
+      if(!found || ufo.uncompressed_size <= 0)
       {
         unzClose(tz);
         return true;

@@ -132,6 +132,12 @@ class FilesystemNode
     bool operator<(const FilesystemNode& node) const;
 
     /**
+     * Compare the name of this node to the name of another, testing for
+     * equality
+     */
+    bool operator==(const FilesystemNode& node) const;
+
+    /**
      * Indicates whether the object referred by this path exists in the filesystem or not.
      *
      * @return bool true if the path exists, false otherwise.
