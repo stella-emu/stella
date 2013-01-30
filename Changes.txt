@@ -36,7 +36,7 @@
   * Fixed ZIP file handling in Windows when the archive contained
     multiple files; in several cases the ROM wasn't being loaded at all.
 
-  * Updated included PNG library to latest stable version.
+  * Updated included PNG and ZLIB libraries to latest stable version.
 
 -Have fun!
 
