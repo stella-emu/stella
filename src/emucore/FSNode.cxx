@@ -43,27 +43,9 @@ FilesystemNode::FilesystemNode(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::operator<(const FilesystemNode& node) const
-{
-  if (isDirectory() != node.isDirectory())
-    return isDirectory();
-
-  return BSPF_strcasecmp(getDisplayName().c_str(), node.getDisplayName().c_str()) < 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNode::operator==(const FilesystemNode& node) const
-{
-  return BSPF_strcasecmp(getDisplayName().c_str(), node.getDisplayName().c_str()) == 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::exists() const
 {
-  if (_realNode == 0)
-    return false;
-
-  return _realNode->exists();
+  return _realNode ? _realNode->exists() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,13 +67,6 @@ bool FilesystemNode::getChildren(FSList& fslist, ListMode mode, bool hidden) con
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const string& FilesystemNode::getDisplayName() const
-{
-  assert(_realNode);
-  return _realNode->getDisplayName();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getName() const
 {
   assert(_realNode);
@@ -101,10 +76,7 @@ const string& FilesystemNode::getName() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::hasParent() const
 {
-  if (_realNode == 0)
-    return false;
-  
-  return _realNode->getParent() != 0;
+  return _realNode ? (_realNode->getParent() != 0) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -137,35 +109,35 @@ string FilesystemNode::getRelativePath() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::isDirectory() const
 {
-  if (_realNode == 0)
-    return false;
-
-  return _realNode->isDirectory();
+  return _realNode ? _realNode->isDirectory() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::isFile() const
 {
-  if (_realNode == 0)
-    return false;
-
-  return _realNode->isFile();
+  return _realNode ? _realNode->isFile() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::isReadable() const
 {
-  if (_realNode == 0)
-    return false;
-
-  return _realNode->isReadable();
+  return _realNode ? _realNode->isReadable() : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::isWritable() const
 {
-  if (_realNode == 0)
-    return false;
+  return _realNode ? _realNode->isWritable() : false;
+}
 
-  return _realNode->isWritable();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::makeDir()
+{
+  return (_realNode && !_realNode->exists()) ? _realNode->makeDir() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::rename(const string& newfile)
+{
+  return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
 }

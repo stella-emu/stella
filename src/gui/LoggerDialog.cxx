@@ -116,8 +116,9 @@ void LoggerDialog::saveConfig()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LoggerDialog::saveLogFile()
 {
-  string path = AbstractFilesystemNode::getAbsolutePath("stella", "~", "log");
-  FilesystemNode node(path);
+  ostringstream path;
+  path << "~" << BSPF_PATH_SEPARATOR << "stella.log";
+  FilesystemNode node(path.str());
 
   ofstream out(node.getPath().c_str(), ios::out);
   if(out.is_open())

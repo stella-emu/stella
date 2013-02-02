@@ -69,7 +69,8 @@ static HomeFinder myHomeFinder;
 /*
  * Implementation of the Stella file system API based on Windows API.
  *
- * Parts of this class are documented in the base interface class, AbstractFilesystemNode.
+ * Parts of this class are documented in the base interface class,
+ * AbstractFilesystemNode.
  */
 class WindowsFilesystemNode : public AbstractFilesystemNode
 {
@@ -95,7 +96,6 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     WindowsFilesystemNode(const string& path);
 
     bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
-    const string& getDisplayName() const { return _displayName; }
     const string& getName() const   { return _displayName; }
     const string& getPath() const   { return _path; }
     string getRelativePath() const;
@@ -103,6 +103,8 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
+    bool makeDir();
+    bool rename(const string& newfile);
 
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
     AbstractFilesystemNode* getParent() const;
@@ -116,6 +118,12 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     bool _isValid;
 
   private:
+    /**
+     * Tests and sets the _isValid and _isDirectory/_isFile flags,
+     * using the GetFileAttributes() function.
+     */
+    virtual void setFlags();
+
     /**
      * Adds a single WindowsFilesystemNode to a given list.
      * This method is used by getChildren() to populate the directory entries list.
@@ -167,6 +175,36 @@ const char* lastPathComponent(const string& str)
     --cur;
 
   return cur + 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void WindowsFilesystemNode::setFlags()
+{
+  // Get absolute path
+  TCHAR buf[4096];
+  if(GetFullPathName(_path.c_str(), 4096, buf, NULL))
+    _path = buf;
+
+  _displayName = lastPathComponent(_path);
+
+  // Check whether it is a directory, and whether the file actually exists
+  DWORD fileAttribs = GetFileAttributes(toUnicode(_path.c_str()));
+
+  if (fileAttribs == INVALID_FILE_ATTRIBUTES)
+  {
+    _isDirectory = _isFile = _isValid = false;
+  }
+  else
+  {
+    _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
+    _isFile = !_isDirectory;//((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
+    _isValid = true;
+
+    // Add a trailing backslash, if necessary
+    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '\\')
+      _path += '\\';
+  }
+  _isPseudoRoot = false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -246,31 +284,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
   if(_path[0] == '~')
     _path.replace(0, 1, myHomeFinder.getHomePath());
 
-  // Get absolute path  
-  TCHAR buf[4096];
-  if(GetFullPathName(_path.c_str(), 4096, buf, NULL))
-    _path = buf;
-
-  _displayName = lastPathComponent(_path);
-
-  // Check whether it is a directory, and whether the file actually exists
-  DWORD fileAttribs = GetFileAttributes(toUnicode(_path.c_str()));
-
-  if (fileAttribs == INVALID_FILE_ATTRIBUTES)
-  {
-    _isDirectory = _isFile = _isValid = false;
-  }
-  else
-  {
-    _isDirectory = ((fileAttribs & FILE_ATTRIBUTE_DIRECTORY) != 0);
-    _isFile = !_isDirectory;//((fileAttribs & FILE_ATTRIBUTE_NORMAL) != 0);
-    _isValid = true;
-
-    // Add a trailing backslash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '\\')
-      _path += '\\';
-  }
-  _isPseudoRoot = false;
+  setFlags();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -346,10 +360,32 @@ bool WindowsFilesystemNode::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool WindowsFilesystemNode::makeDir()
+{
+  if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
+  {
+    setFlags();
+    return true;
+  }
+  else
+    return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool WindowsFilesystemNode::rename(const string& newfile)
+{
+  if(!_isPseudoRoot && MoveFile(_path.c_str(), newfile.c_str()) != 0)
+  {
+    setFlags();
+    return true;
+  }
+  else
+    return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* WindowsFilesystemNode::getParent() const
 {
-//  assert(_isValid || _isPseudoRoot);
-
   if (!_isValid || _isPseudoRoot)
     return 0;
 
@@ -371,29 +407,10 @@ AbstractFilesystemNode* WindowsFilesystemNode::getParent() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
-{
-  return new WindowsFilesystemNode();
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeFileNodePath(const string& path)
 {
   return new WindowsFilesystemNode(path);
 } 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractFilesystemNode::makeDir(const string& path)
-{
-  return CreateDirectory(path.c_str(), NULL) != 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractFilesystemNode::renameFile(const string& oldfile,
-                                        const string& newfile)
-{
-  return MoveFile(oldfile.c_str(), newfile.c_str()) != 0;
-}
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string AbstractFilesystemNode::getAbsolutePath(const string& p,

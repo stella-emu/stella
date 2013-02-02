@@ -38,6 +38,10 @@
 
 #include <sstream>
 
+#ifndef MAXPATHLEN // No MAXPATHLEN, as happens on Hurd
+  #define MAXPATHLEN 1024
+#endif
+
 /*
  * Implementation of the Stella file system API based on POSIX (for Linux and OSX)
  *
@@ -58,10 +62,9 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
      * @param verify  true if the isValid and isDirectory/isFile flags should
      *                be verified during the construction.
      */
-    POSIXFilesystemNode(const string& path, bool verify);
+    POSIXFilesystemNode(const string& path, bool verify = true);
 
     bool exists() const { return access(_path.c_str(), F_OK) == 0; }
-    const string& getDisplayName() const { return _displayName; }
     const string& getName() const   { return _displayName; }
     const string& getPath() const   { return _path; }
     string getRelativePath() const;
@@ -69,6 +72,8 @@ class POSIXFilesystemNode : public AbstractFilesystemNode
     bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return access(_path.c_str(), W_OK) == 0; }
+    bool makeDir();
+    bool rename(const string& newfile);
 
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
     AbstractFilesystemNode* getParent() const;
@@ -149,22 +154,14 @@ POSIXFilesystemNode::POSIXFilesystemNode(const string& p, bool verify)
   if(_path[0] == '~')
   {
     const char* home = getenv("HOME");
-#ifdef MAXPATHLEN
     if (home != NULL && strlen(home) < MAXPATHLEN)
-#else // No MAXPATHLEN, as happens on Hurd
-    if (home != NULL)
-#endif
     {
       _path.replace(0, 1, home);
     }
   }
 
   // Get absolute path  
-#ifdef MAXPATHLEN
   char buf[MAXPATHLEN];
-#else // No MAXPATHLEN, as happens on Hurd
-  char buf[1024];
-#endif
   if(realpath(_path.c_str(), buf))
     _path = buf;
 
@@ -284,6 +281,54 @@ bool POSIXFilesystemNode::getChildren(AbstractFSList& myList, ListMode mode,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool POSIXFilesystemNode::makeDir()
+{
+  if(mkdir(_path.c_str(), 0777) == 0)
+  {
+    // Get absolute path  
+    char buf[MAXPATHLEN];
+    if(realpath(_path.c_str(), buf))
+      _path = buf;
+
+    _displayName = lastPathComponent(_path);
+    setFlags();
+
+    // Add a trailing slash, if necessary
+    if (_path.length() > 0 && _path[_path.length()-1] != '/')
+      _path += '/';
+    
+    return true;
+  }
+  else
+    return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool POSIXFilesystemNode::rename(const string& newfile)
+{
+  if(std::rename(_path.c_str(), newfile.c_str()) == 0)
+  {
+    _path = newfile;
+
+    // Get absolute path  
+    char buf[MAXPATHLEN];
+    if(realpath(_path.c_str(), buf))
+      _path = buf;
+
+    _displayName = lastPathComponent(_path);
+    setFlags();
+
+    // Add a trailing slash, if necessary
+    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
+      _path += '/';
+    
+    return true;
+  }
+  else
+    return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* POSIXFilesystemNode::getParent() const
 {
   if (_path == "/")
@@ -292,32 +337,13 @@ AbstractFilesystemNode* POSIXFilesystemNode::getParent() const
   const char *start = _path.c_str();
   const char *end = lastPathComponent(_path);
 
-  return new POSIXFilesystemNode(string(start, end - start), true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFilesystemNode* AbstractFilesystemNode::makeRootFileNode()
-{
-  return new POSIXFilesystemNode();
+  return new POSIXFilesystemNode(string(start, end - start));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 AbstractFilesystemNode* AbstractFilesystemNode::makeFileNodePath(const string& path)
 {
-  return new POSIXFilesystemNode(path, true);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractFilesystemNode::makeDir(const string& path)
-{
-  return mkdir(path.c_str(), 0777) == 0;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool AbstractFilesystemNode::renameFile(const string& oldfile,
-                                        const string& newfile)
-{
-  return rename(oldfile.c_str(), newfile.c_str()) == 0;
+  return new POSIXFilesystemNode(path);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

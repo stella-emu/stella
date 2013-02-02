@@ -401,18 +401,15 @@ void LauncherDialog::loadDirListing()
   bool domatch = myPattern && myPattern->getEditString() != "";
   for(unsigned int idx = 0; idx < files.size(); idx++)
   {
-    string name = files[idx].getDisplayName();
     bool isDir = files[idx].isDirectory();
+    const string& name = isDir ? (" [" + files[idx].getName() + "]")
+                               : files[idx].getName();
 
     // Honour the filtering settings
     // Showing only certain ROM extensions is determined by the extension
     // that we want - if there are no extensions, it implies show all files
     // In this way, showing all files is on the 'fast code path'
-    if(isDir)
-    {
-      name = " [" + name + "]";
-    }
-    else if(myRomExts.size() > 0)
+    if(!isDir && myRomExts.size() > 0)
     {
       // Skip over those names we've filtered out
       if(!LauncherFilterDialog::isValidRomName(name, myRomExts))

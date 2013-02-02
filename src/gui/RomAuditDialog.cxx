@@ -152,13 +152,12 @@ void RomAuditDialog::auditRoms()
       const string& name = props.get(Cartridge_Name);
 
       // Only rename the file if we found a valid properties entry
-      if(name != "" && name != files[idx].getDisplayName())
+      if(name != "" && name != files[idx].getName())
       {
         const string& newfile = node.getPath() + name + "." + extension;
 
-        if(files[idx].getPath() != newfile)
-          if(AbstractFilesystemNode::renameFile(files[idx].getPath(), newfile))
-            renamed++;
+        if(files[idx].getPath() != newfile && files[idx].rename(newfile))
+          renamed++;
       }
       else
         notfound++;

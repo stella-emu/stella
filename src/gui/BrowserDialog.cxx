@@ -178,7 +178,7 @@ void BrowserDialog::updateListing()
   // Now add the directory entries
   for(unsigned int idx = 0; idx < content.size(); idx++)
   {
-    string name = content[idx].getDisplayName();
+    string name = content[idx].getName();
     bool isDir = content[idx].isDirectory();
     if(isDir)
       name = " [" + name + "]";

@@ -386,10 +386,7 @@ void OSystem::setBaseDir(const string& basedir)
   FilesystemNode node(basedir);
   myBaseDir = node.getPath();
   if(!node.isDirectory())
-  {
-    AbstractFilesystemNode::makeDir(myBaseDir);
-    myBaseDir = FilesystemNode(node.getPath()).getPath();
-  }
+    node.makeDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -819,7 +816,7 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
   {
     // Get the filename from the rom pathname
     FilesystemNode node(file);
-    file = node.getDisplayName();
+    file = node.getName();
 
     props.set(Cartridge_MD5, md5);
     props.set(Cartridge_Name, file);
@@ -951,10 +948,7 @@ void OSystem::validatePath(string& path, const string& setting,
                     mySettings->getString(setting);
   FilesystemNode node(s);
   if(!node.isDirectory())
-  {
-    AbstractFilesystemNode::makeDir(s);
-    node = FilesystemNode(node.getPath());
-  }
+    node.makeDir();
   path = node.getPath();
   mySettings->setString(setting, node.getRelativePath());
 }
