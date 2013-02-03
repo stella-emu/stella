@@ -296,7 +296,7 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   myPrevDirButton->setEnabled(myCurrentNode.hasParent());
 
   // Show current directory
-  myDir->setLabel(myCurrentNode.getRelativePath());
+  myDir->setLabel(myCurrentNode.getShortPath());
 
   // Now fill the list widget with the contents of the GameList
   StringList l;
@@ -379,7 +379,7 @@ void LauncherDialog::loadDirListing()
             if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
                BSPF_equalsIgnoreCase(ext, ".rom"))
             {
-              FilesystemNode newFile(AbstractFilesystemNode::getAbsolutePath(
+              FilesystemNode newFile(FilesystemNode::createAbsolutePath(
                   filename, myCurrentNode.getPath(), ""));
               files.push_back(newFile);
             }
@@ -681,7 +681,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     case kStartupRomDirChosenCmd:
     {
       FilesystemNode dir(myRomDir->getResult());
-      instance().settings().setString("romdir", dir.getRelativePath());
+      instance().settings().setString("romdir", dir.getShortPath());
       // fall through to the next case
     }
     case kRomDirChosenCmd:

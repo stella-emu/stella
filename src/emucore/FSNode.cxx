@@ -100,10 +100,10 @@ const string& FilesystemNode::getPath() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string FilesystemNode::getRelativePath() const
+string FilesystemNode::getShortPath() const
 {
   assert(_realNode);
-  return _realNode->getRelativePath();
+  return _realNode->getShortPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -131,6 +131,12 @@ bool FilesystemNode::isWritable() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::isAbsolute() const
+{
+  return _realNode ? _realNode->isAbsolute() : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNode::makeDir()
 {
   return (_realNode && !_realNode->exists()) ? _realNode->makeDir() : false;
@@ -140,4 +146,31 @@ bool FilesystemNode::makeDir()
 bool FilesystemNode::rename(const string& newfile)
 {
   return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string FilesystemNode::createAbsolutePath(
+    const string& p, const string& startpath, const string& ext)
+{
+  FilesystemNode node(p);
+  string path = node.getShortPath();
+
+  // Is path already absolute, or does it start with the given startpath?
+  // If not, we prepend the given startpath
+  if(!BSPF_startsWithIgnoreCase(p, startpath+BSPF_PATH_SEPARATOR) &&
+     !node.isAbsolute())
+    path = startpath + BSPF_PATH_SEPARATOR + p;
+
+  // Does the path have a valid extension?
+  // If not, we append the given extension
+  string::size_type idx = path.find_last_of('.');
+  if(idx != string::npos)
+  {
+    if(!BSPF_equalsIgnoreCase(path.c_str() + idx + 1, ext))
+      path = path.replace(idx+1, ext.length(), ext);
+  }
+  else
+    path += "." + ext;
+
+  return path;
 }

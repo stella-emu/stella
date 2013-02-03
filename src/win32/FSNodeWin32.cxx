@@ -98,11 +98,12 @@ class WindowsFilesystemNode : public AbstractFilesystemNode
     bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
     const string& getName() const   { return _displayName; }
     const string& getPath() const   { return _path; }
-    string getRelativePath() const;
+    string getShortPath() const;
     bool isDirectory() const { return _isDirectory; }
     bool isFile() const      { return _isFile;      }
     bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
     bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
+    bool isAbsolute() const;
     bool makeDir();
     bool rename(const string& newfile);
 
@@ -288,7 +289,7 @@ WindowsFilesystemNode::WindowsFilesystemNode(const string& p)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string WindowsFilesystemNode::getRelativePath() const
+string WindowsFilesystemNode::getShortPath() const
 {
   // If the path starts with the home directory, replace it with '~'
   const string& home = myHomeFinder.getHomePath();
@@ -360,6 +361,12 @@ bool WindowsFilesystemNode::
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool WindowsFilesystemNode::isAbsolute() const
+{
+  return _path.length() >= 2 && (_path[0] == '~' || _path[1] == ':');
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool WindowsFilesystemNode::makeDir()
 {
   if(!_isPseudoRoot && CreateDirectory(_path.c_str(), NULL) != 0)
@@ -411,29 +418,3 @@ AbstractFilesystemNode* AbstractFilesystemNode::makeFileNodePath(const string& p
 {
   return new WindowsFilesystemNode(path);
 } 
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string AbstractFilesystemNode::getAbsolutePath(const string& p,
-                                               const string& startpath,
-                                               const string& ext)
-{
-  // Does p start with a drive letter or the given startpath?
-  // If not, it isn't an absolute path
-  string path = FilesystemNode(p).getRelativePath();
-  bool startsWithDrive = path.length() >= 2 && path[1] == ':';
-  if(!BSPF_startsWithIgnoreCase(p, startpath+"\\") && !startsWithDrive)
-    path = startpath + "\\" + p;
-
-  // Does the path have a valid extension?
-  // If not, we add the given one
-  string::size_type idx = path.find_last_of('.');
-  if(idx != string::npos)
-  {
-    if(!BSPF_equalsIgnoreCase(path.c_str() + idx + 1, ext))
-      path = path.replace(idx+1, ext.length(), ext);
-  }
-  else
-    path += "." + ext;
-
-  return path;
-}

@@ -210,11 +210,11 @@ bool OSystem::create()
       << "  Features: " << myFeatures << endl
       << "  " << myBuildInfo << endl << endl
       << "Base directory:       '"
-      << FilesystemNode(myBaseDir).getRelativePath() << "'" << endl
+      << FilesystemNode(myBaseDir).getShortPath() << "'" << endl
       << "Configuration file:   '"
-      << FilesystemNode(myConfigFile).getRelativePath() << "'" << endl
+      << FilesystemNode(myConfigFile).getShortPath() << "'" << endl
       << "User game properties: '"
-      << FilesystemNode(myPropertiesFile).getRelativePath() << "'" << endl;
+      << FilesystemNode(myPropertiesFile).getShortPath() << "'" << endl;
   logMessage(buf.str(), 1);
 
   // Get relevant information about the video hardware
@@ -356,19 +356,19 @@ void OSystem::setConfigPaths()
   if(s == "") s = myBaseDir + "stella.cht";
   node = FilesystemNode(s);
   myCheatFile = node.getPath();
-  mySettings->setString("cheatfile", node.getRelativePath());
+  mySettings->setString("cheatfile", node.getShortPath());
 
   s = mySettings->getString("palettefile");
   if(s == "") s = myBaseDir + "stella.pal";
   node = FilesystemNode(s);
   myPaletteFile = node.getPath();
-  mySettings->setString("palettefile", node.getRelativePath());
+  mySettings->setString("palettefile", node.getShortPath());
 
   s = mySettings->getString("propsfile");
   if(s == "") s = myBaseDir + "stella.pro";
   node = FilesystemNode(s);
   myPropertiesFile = node.getPath();
-  mySettings->setString("propsfile", node.getRelativePath());
+  mySettings->setString("propsfile", node.getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -565,7 +565,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
         myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
-        << "  ROM file: " << FilesystemNode(myRomFile).getRelativePath() << endl << endl
+        << "  ROM file: " << FilesystemNode(myRomFile).getShortPath() << endl << endl
         << getROMInfo(myConsole) << endl;
     logMessage(buf.str(), 1);
 
@@ -950,7 +950,7 @@ void OSystem::validatePath(string& path, const string& setting,
   if(!node.isDirectory())
     node.makeDir();
   path = node.getPath();
-  mySettings->setString(setting, node.getRelativePath());
+  mySettings->setString(setting, node.getShortPath());
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

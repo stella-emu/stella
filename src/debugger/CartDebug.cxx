@@ -629,7 +629,7 @@ string CartDebug::loadSymbolFile(string file)
   {
     ifstream in(node.getPath().c_str());
     if(!in.is_open())
-      return DebuggerParser::red("symbol file '" + node.getRelativePath() + "' not found");
+      return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not found");
 
     myUserAddresses.clear();
     myUserLabels.clear();
@@ -648,9 +648,9 @@ string CartDebug::loadSymbolFile(string file)
         addLabel(label, value);
     }
     in.close();
-    return "loaded " + node.getRelativePath() + " OK";
+    return "loaded " + node.getShortPath() + " OK";
   }
-  return DebuggerParser::red("symbol file '" + node.getRelativePath() + "' not found");
+  return DebuggerParser::red("symbol file '" + node.getShortPath() + "' not found");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -786,7 +786,7 @@ string CartDebug::loadConfigFile(string file)
     }
     in.close();
 
-    return "loaded " + node.getRelativePath() + " OK";
+    return "loaded " + node.getShortPath() + " OK";
   }
   else
     return DebuggerParser::red("config file not found");
@@ -830,7 +830,7 @@ string CartDebug::saveConfigFile(string file)
     }
     out.close();
 
-    return "saved " + node.getRelativePath() + " OK";
+    return "saved " + node.getShortPath() + " OK";
   }
   else
     return DebuggerParser::red("config file not found");

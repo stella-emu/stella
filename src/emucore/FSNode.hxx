@@ -150,9 +150,6 @@ class FilesystemNode
      * This will usually be a 'path' (hence the name of the method), but can
      * be anything that fulfills the above criterions.
      *
-     * @note Do not assume that this string contains (back)slashes or any
-     *       other kind of 'path separators'.
-     *
      * @return the 'path' represented by this filesystem node
      */
     virtual const string& getPath() const;
@@ -162,12 +159,9 @@ class FilesystemNode
      * symbol (if applicable), and is suitable for archiving (i.e. writing
      * to the config file).
      *
-     * @note Do not assume that this string contains (back)slashes or any
-     *       other kind of 'path separators'.
-     *
      * @return the 'path' represented by this filesystem node
      */
-    virtual string getRelativePath() const;
+    virtual string getShortPath() const;
 
     /**
      * Determine whether this node has a parent.
@@ -220,6 +214,13 @@ class FilesystemNode
     virtual bool isWritable() const;
 
     /**
+     * Indicates whether the path is a fully-qualified, absolute pathname.
+     *
+     * @return bool true if the object contains an absolute path, false otherwise.
+     */
+    virtual bool isAbsolute() const;
+
+    /**
      * Create a directory from the current node path.
      *
      * @return bool true if the directory was created, false otherwise.
@@ -232,6 +233,15 @@ class FilesystemNode
      * @return bool true if the node was renamed, false otherwise.
      */
     virtual bool rename(const string& newfile);
+
+    // TODO - this function is deprecated, and will be removed soon ...
+    /**
+      Create an absolute pathname from the given path (if it isn't already
+      absolute), pre-pending 'startpath' when necessary.  If the path doesn't
+      have an extension matching 'ext', append it to the path.
+     */
+    static string createAbsolutePath(const string& p, const string& startpath,
+                                     const string& ext);
 
   private:
     Common::SharedPtr<AbstractFilesystemNode> _realNode;
@@ -302,7 +312,7 @@ class AbstractFilesystemNode
      * Returns the 'path' of the current node, containing '~' and for archiving.
      */
 
-    virtual string getRelativePath() const = 0;
+    virtual string getShortPath() const = 0;
 
     /**
      * Indicates whether this path refers to a directory or not.
@@ -342,6 +352,13 @@ class AbstractFilesystemNode
     virtual bool isWritable() const = 0;
 
     /**
+     * Indicates whether the path is a fully-qualified, absolute pathname.
+     *
+     * @return bool true if the object contains an absolute path, false otherwise.
+     */
+    virtual bool isAbsolute() const = 0;
+
+    /**
      * Create a directory from the current node path.
      *
      * @return bool true if the directory was created, false otherwise.
@@ -355,14 +372,6 @@ class AbstractFilesystemNode
      */
     virtual bool rename(const string& newfile) = 0;
 
-    /**
-      Create an absolute pathname from the given path (if it isn't already
-      absolute), pre-pending 'startpath' when necessary.  If the path doesn't
-      have an extension matching 'ext', append it to the path.
-     */
-    static string getAbsolutePath(const string& p, const string& startpath,
-                                  const string& ext);
-
   protected:
     /**
      * The parent node of this directory.
@@ -373,10 +382,6 @@ class AbstractFilesystemNode
     /**
      * Construct a node based on a path; the path is in the same format as it
      * would be for calls to fopen().
-     *
-     * Furthermore getNodeForPath(oldNode.path()) should create a new node
-     * identical to oldNode. Hence, we can use the "path" value for persistent
-     * storage e.g. in the config file.
      *
      * @param path The path string to create a FilesystemNode for.
      */
