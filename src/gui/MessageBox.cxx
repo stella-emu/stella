@@ -25,6 +25,8 @@
 
 #include "MessageBox.hxx"
 
+namespace GUI {
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 MessageBox::MessageBox(GuiObject* boss, const GUI::Font& font,
                        const StringList& text, int max_w, int max_h, int cmd,
@@ -107,3 +109,5 @@ void MessageBox::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
   }
 }
+
+}  // namespace GUI

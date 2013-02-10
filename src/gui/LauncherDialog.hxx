@@ -34,7 +34,6 @@ class BrowserDialog;
 class OptionsDialog;
 class GlobalPropsDialog;
 class LauncherFilterDialog;
-class MessageBox;
 class OSystem;
 class Properties;
 class EditTextWidget;
@@ -46,6 +45,7 @@ class StringListWidget;
 #include "FSNode.hxx"
 #include "StringList.hxx"
 #include "Stack.hxx"
+#include "MessageBox.hxx"
 
 // These must be accessible from dialogs created by this class
 enum {
@@ -118,8 +118,8 @@ class LauncherDialog : public Dialog
     GlobalPropsDialog*    myGlobalProps;
     LauncherFilterDialog* myFilters;
 
-    MessageBox*    myFirstRunMsg;
-    BrowserDialog* myRomDir;
+    GUI::MessageBox* myFirstRunMsg;
+    BrowserDialog*   myRomDir;
 
     int mySelectedItem;
     int myRomInfoSize;

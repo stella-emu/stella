@@ -29,11 +29,11 @@ class DialogContainer;
 class BrowserDialog;
 class EditTextWidget;
 class StaticTextWidget;
-class MessageBox;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
 #include "FSNode.hxx"
+#include "MessageBox.hxx"
 
 class RomAuditDialog : public Dialog
 {
@@ -68,7 +68,7 @@ class RomAuditDialog : public Dialog
     BrowserDialog* myBrowser;
 
     // Show a message about the dangers of using this function
-    MessageBox* myConfirmMsg;
+    GUI::MessageBox* myConfirmMsg;
 
     // Maximum width and height for this dialog
     int myMaxWidth, myMaxHeight;

@@ -251,8 +251,8 @@ void LauncherDialog::loadConfig()
       msg.push_back("");
       msg.push_back("Click 'OK' to select a default ROM directory,");
       msg.push_back("or 'Cancel' to browse the filesystem manually.");
-      myFirstRunMsg = new MessageBox(this, instance().font(), msg,
-                                     _w, _h, kFirstRunMsgChosenCmd);
+      myFirstRunMsg = new GUI::MessageBox(this, instance().font(), msg,
+                                          _w, _h, kFirstRunMsgChosenCmd);
     }
     myFirstRunMsg->show();
   }

@@ -166,6 +166,6 @@ struct Rect
   }
 };
 
-}  // End of namespace Common
+}  // End of namespace GUI
 
 #endif

@@ -27,6 +27,8 @@ class StaticTextWidget;
 #include "Command.hxx"
 #include "DialogContainer.hxx"
 
+namespace GUI {
+
 /**
  * Show a simple message box containing the given text, with buttons 
  * prompting the user to accept or reject.  If the user selects 'OK',
@@ -53,5 +55,7 @@ class MessageBox : public Dialog, public CommandSender
   private:
     int myCmd;
 };
+
+}  // namespace GUI
 
 #endif

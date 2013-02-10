@@ -36,9 +36,9 @@ class EditTextWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
-class MessageBox;
 
 #include "Dialog.hxx"
+#include "MessageBox.hxx"
 
 class DebuggerDialog : public Dialog
 {
@@ -83,7 +83,7 @@ class DebuggerDialog : public Dialog
     RomWidget*       myRom;
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
-    MessageBox*      myFatalError;
+    GUI::MessageBox* myFatalError;
 
   private:
     void addTiaArea();
