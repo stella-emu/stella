@@ -23,43 +23,7 @@
 #ifndef FS_NODE_WIN32_HXX
 #define FS_NODE_WIN32_HXX
 
-#include <cassert>
-#include <shlobj.h>
-
-#ifdef ARRAYSIZE
-  #undef ARRAYSIZE
-#endif
-#ifdef _WIN32_WCE
-  #include <windows.h>
-  // winnt.h defines ARRAYSIZE, but we want our own one...
-  #undef ARRAYSIZE
-  #undef GetCurrentDirectory
-#endif
-
-#include <io.h>
-#include <stdio.h>
-#include <stdlib.h>
-#ifndef _WIN32_WCE
-  #include <windows.h>
-  // winnt.h defines ARRAYSIZE, but we want our own one...
-  #undef ARRAYSIZE
-#endif
 #include <tchar.h>
-
-// F_OK, R_OK and W_OK are not defined under MSVC, so we define them here
-// For more information on the modes used by MSVC, check:
-// http://msdn2.microsoft.com/en-us/library/1w06ktdy(VS.80).aspx
-#ifndef F_OK
-  #define F_OK 0
-#endif
-
-#ifndef R_OK
-  #define R_OK 4
-#endif
-
-#ifndef W_OK
-  #define W_OK 2
-#endif
 
 #include "FSNode.hxx"
 #include "HomeFinder.hxx"
@@ -98,14 +62,14 @@ class FilesystemNodeWin32 : public AbstractFSNode
      */
     FilesystemNodeWin32(const string& path);
 
-    bool exists() const { return _access(_path.c_str(), F_OK) == 0; }
+    bool exists() const;
     const string& getName() const   { return _displayName; }
     const string& getPath() const   { return _path; }
     string getShortPath() const;
     bool isDirectory() const { return _isDirectory; }
     bool isFile() const      { return _isFile;      }
-    bool isReadable() const  { return _access(_path.c_str(), R_OK) == 0; }
-    bool isWritable() const  { return _access(_path.c_str(), W_OK) == 0; }
+    bool isReadable() const;
+    bool isWritable() const;
     bool isAbsolute() const;
     bool makeDir();
     bool rename(const string& newfile);

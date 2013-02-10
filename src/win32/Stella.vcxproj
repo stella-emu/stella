@@ -223,6 +223,7 @@ SDLmain.lib
     <ClCompile Include="..\common\FBSurfaceTIA.cxx" />
     <ClCompile Include="..\common\FrameBufferGL.cxx" />
     <ClCompile Include="..\common\FrameBufferSoft.cxx" />
+    <ClCompile Include="..\common\FSNodeZIP.cxx" />
     <ClCompile Include="..\common\MouseControl.cxx" />
     <ClCompile Include="..\common\tv_filters\atari_ntsc.c" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
@@ -294,7 +295,6 @@ SDLmain.lib
     <ClCompile Include="..\emucore\M6502.cxx" />
     <ClCompile Include="..\emucore\M6532.cxx" />
     <ClCompile Include="..\emucore\MD5.cxx" />
-    <ClCompile Include="..\emucore\MediaFactory.cxx" />
     <ClCompile Include="..\emucore\MT24LC256.cxx" />
     <ClCompile Include="..\emucore\NullDev.cxx" />
     <ClCompile Include="..\emucore\OSystem.cxx" />
@@ -423,6 +423,8 @@ SDLmain.lib
     <ClInclude Include="..\common\FBSurfaceTIA.hxx" />
     <ClInclude Include="..\common\FrameBufferGL.hxx" />
     <ClInclude Include="..\common\FrameBufferSoft.hxx" />
+    <ClInclude Include="..\common\FSNodeFactory.hxx" />
+    <ClInclude Include="..\common\FSNodeZIP.hxx" />
     <ClInclude Include="..\common\MouseControl.hxx" />
     <ClInclude Include="..\common\StellaKeys.hxx" />
     <ClInclude Include="..\common\StringList.hxx" />
@@ -449,6 +451,7 @@ SDLmain.lib
     <ClInclude Include="..\libpng\pnginfo.h" />
     <ClInclude Include="..\libpng\pnglibconf.h" />
     <ClInclude Include="..\libpng\pngstruct.h" />
+    <ClInclude Include="FSNodeWin32.hxx" />
     <ClInclude Include="HomeFinder.hxx" />
     <ClInclude Include="OSystemWin32.hxx" />
     <ClInclude Include="..\common\PNGLibrary.hxx" />

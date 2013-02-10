@@ -213,9 +213,6 @@
     <ClCompile Include="..\emucore\MD5.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\MediaFactory.cxx">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\emucore\MT24LC256.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
@@ -626,6 +623,9 @@
     </ClCompile>
     <ClCompile Include="..\emucore\CartCTY.cxx">
       <Filter>Source Files\emucore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\common\FSNodeZIP.cxx">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1246,6 +1246,15 @@
     </ClInclude>
     <ClInclude Include="..\emucore\CartCTYTunes.hxx">
       <Filter>Header Files\emucore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\FSNodeFactory.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\FSNodeZIP.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FSNodeWin32.hxx">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

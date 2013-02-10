@@ -20,6 +20,44 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include <cassert>
+#include <shlobj.h>
+
+#ifdef ARRAYSIZE
+  #undef ARRAYSIZE
+#endif
+#ifdef _WIN32_WCE
+  #include <windows.h>
+  // winnt.h defines ARRAYSIZE, but we want our own one...
+  #undef ARRAYSIZE
+  #undef GetCurrentDirectory
+#endif
+
+#include <io.h>
+#include <stdio.h>
+#ifndef _WIN32_WCE
+  #include <windows.h>
+  // winnt.h defines ARRAYSIZE, but we want our own one...
+  #undef ARRAYSIZE
+#endif
+
+// F_OK, R_OK and W_OK are not defined under MSVC, so we define them here
+// For more information on the modes used by MSVC, check:
+// http://msdn2.microsoft.com/en-us/library/1w06ktdy(VS.80).aspx
+#ifndef F_OK
+  #define F_OK 0
+#endif
+
+#ifndef R_OK
+  #define R_OK 4
+#endif
+
+#ifndef W_OK
+  #define W_OK 2
+#endif
+
+#include "FSNodeWin32.hxx"
+
 /**
  * Returns the last component of a given path.
  *
@@ -43,6 +81,24 @@ const char* lastPathComponent(const string& str)
     --cur;
 
   return cur + 1;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodeWin32::exists() const
+{
+  return _access(_path.c_str(), F_OK) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodeWin32::isReadable() const
+{
+  return _access(_path.c_str(), R_OK) == 0;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodeWin32::isWritable() const
+{
+  return _access(_path.c_str(), W_OK) == 0;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -279,9 +335,3 @@ AbstractFSNode* FilesystemNodeWin32::getParent() const
 
   return p;
 }
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-AbstractFSNode* AbstractFSNode::makeFileNodePath(const string& path)
-{
-  return new FilesystemNodeWin32(path);
-} 
