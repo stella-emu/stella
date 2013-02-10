@@ -7,6 +7,7 @@ MODULE_OBJS := \
 	src/common/FrameBufferGL.o \
 	src/common/FBSurfaceGL.o \
 	src/common/FBSurfaceTIA.o \
+	src/common/FSNodeZIP.o \
 	src/common/PNGLibrary.o \
 	src/common/MouseControl.o \
 	src/common/RectList.o

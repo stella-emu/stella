@@ -373,11 +373,13 @@ void LauncherDialog::loadDirListing()
           if(strlen(filename) >= 4 &&
              !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
           {
+#if 0
             // Grab 3-character extension
             const char* ext = filename + strlen(filename) - 4;
 
             if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
                BSPF_equalsIgnoreCase(ext, ".rom"))
+#endif
             {
               FilesystemNode newFile(FilesystemNode::createAbsolutePath(
                   filename, myCurrentNode.getPath(), ""));

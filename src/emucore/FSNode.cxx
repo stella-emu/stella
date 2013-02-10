@@ -22,6 +22,7 @@
 
 #include "bspf.hxx"
 #include "SharedPtr.hxx"
+#include "FSNodeFactory.hxx"
 #include "FSNode.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -30,7 +31,7 @@ FilesystemNode::FilesystemNode()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FilesystemNode::FilesystemNode(AbstractFilesystemNode *realNode) 
+FilesystemNode::FilesystemNode(AbstractFSNode *realNode) 
   : _realNode(realNode)
 {
 }
@@ -38,8 +39,15 @@ FilesystemNode::FilesystemNode(AbstractFilesystemNode *realNode)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNode::FilesystemNode(const string& p)
 {
-  AbstractFilesystemNode* tmp = AbstractFilesystemNode::makeFileNodePath(p);
-  _realNode = Common::SharedPtr<AbstractFilesystemNode>(tmp);
+  AbstractFSNode* tmp = 0;
+
+  // Is this potentially a ZIP archive?
+  if(BSPF_containsIgnoreCase(p, ".zip"))
+    tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::ZIP);
+  else
+    tmp = FilesystemNodeFactory::create(p, FilesystemNodeFactory::SYSTEM);
+
+  _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -85,7 +93,7 @@ FilesystemNode FilesystemNode::getParent() const
   if (_realNode == 0)
     return *this;
 
-  AbstractFilesystemNode* node = _realNode->getParent();
+  AbstractFSNode* node = _realNode->getParent();
   if (node == 0)
     return *this;
   else
@@ -95,14 +103,12 @@ FilesystemNode FilesystemNode::getParent() const
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& FilesystemNode::getPath() const
 {
-  assert(_realNode);
   return _realNode->getPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string FilesystemNode::getShortPath() const
 {
-  assert(_realNode);
   return _realNode->getShortPath();
 }
 

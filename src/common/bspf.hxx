@@ -174,6 +174,12 @@ inline bool BSPF_endsWithIgnoreCase(const string& s1, const string& s2)
       false;
 }
 
+// Test whether the first string contains the second one (case insensitive)
+inline bool BSPF_containsIgnoreCase(const string& s1, const string& s2)
+{
+  return BSPF_findIgnoreCase(s1, s2) != string::npos;
+}
+
 static const string EmptyString("");
 
 #endif

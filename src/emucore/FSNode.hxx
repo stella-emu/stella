@@ -51,7 +51,7 @@
 #include "SharedPtr.hxx"
 
 class FilesystemNode;
-class AbstractFilesystemNode;
+class AbstractFSNode;
 
 /**
  * List of multiple file system nodes. E.g. the contents of a given directory.
@@ -61,7 +61,7 @@ class AbstractFilesystemNode;
 class FSList : public Common::Array<FilesystemNode> { };
 
 /**
- * This class acts as a wrapper around the AbstractFilesystemNode class defined
+ * This class acts as a wrapper around the AbstractFSNode class defined
  * in backends/fs.
  */
 class FilesystemNode
@@ -244,8 +244,8 @@ class FilesystemNode
                                      const string& ext);
 
   private:
-    Common::SharedPtr<AbstractFilesystemNode> _realNode;
-    FilesystemNode(AbstractFilesystemNode* realNode);
+    Common::SharedPtr<AbstractFSNode> _realNode;
+    FilesystemNode(AbstractFSNode* realNode);
 };
 
 
@@ -258,9 +258,9 @@ class FilesystemNode
  * the semantics.
  */
 
-typedef Common::Array<AbstractFilesystemNode *>	AbstractFSList;
+typedef Common::Array<AbstractFSNode *>	AbstractFSList;
 
-class AbstractFilesystemNode
+class AbstractFSNode
 {
   protected:
     friend class FilesystemNode;
@@ -270,7 +270,7 @@ class AbstractFilesystemNode
     /**
      * Destructor.
      */
-    virtual ~AbstractFilesystemNode() {}
+    virtual ~AbstractFSNode() {}
 
     /*
      * Indicates whether the object referred by this path exists in the
@@ -372,20 +372,11 @@ class AbstractFilesystemNode
      */
     virtual bool rename(const string& newfile) = 0;
 
-  protected:
     /**
      * The parent node of this directory.
      * The parent of the root is the root itself.
      */
-    virtual AbstractFilesystemNode* getParent() const = 0;
-
-    /**
-     * Construct a node based on a path; the path is in the same format as it
-     * would be for calls to fopen().
-     *
-     * @param path The path string to create a FilesystemNode for.
-     */
-    static AbstractFilesystemNode* makeFileNodePath(const string& path);
+    virtual AbstractFSNode* getParent() const = 0;
 };
 
 #endif
