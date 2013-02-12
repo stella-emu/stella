@@ -593,8 +593,7 @@ void EventHandler::poll(uInt64 time)
                 break;
 
               case KBDK_r:  // Ctrl-r reloads the currently loaded ROM
-                myOSystem->deleteConsole();
-                myOSystem->createConsole();
+                myOSystem->reloadConsole();
                 break;
 
               case KBDK_PAGEUP:    // Ctrl-PageUp increases Height

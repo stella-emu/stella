@@ -177,8 +177,7 @@ void CommandDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kReloadRomCmd:
       instance().eventHandler().leaveMenuMode();
-      instance().deleteConsole();
-      instance().createConsole();
+      instance().reloadConsole();
       break;
 
     case kExitCmd:

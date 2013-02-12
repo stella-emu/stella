@@ -144,8 +144,9 @@ bool LauncherFilterDialog::isValidRomName(const string& name,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool LauncherFilterDialog::isValidRomName(const string& name, string& ext)
+bool LauncherFilterDialog::isValidRomName(const FilesystemNode& node, string& ext)
 {
+  const string& name = node.getPath();
   string::size_type idx = name.find_last_of('.');
   if(idx != string::npos)
   {

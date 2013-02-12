@@ -40,6 +40,7 @@ namespace GUI {
 }
 
 #include "Array.hxx"
+#include "FSNode.hxx"
 #include "FrameBuffer.hxx"
 #include "PNGLibrary.hxx"
 #include "ZipHandler.hxx"
@@ -363,24 +364,32 @@ class OSystem
 
       @return String representing the full path of the ROM file.
     */
-    const string& romFile() const { return myRomFile; }
+    const string& romFile() const { return myRomFile.getPath(); }
 
     /**
       Creates a new game console from the specified romfile, and correctly
       initializes the system state to start emulation of the Console.
 
-      @param romfile  The full pathname of the ROM to use
-      @param md5      The MD5sum of the ROM
+      @param rom  The FSNode of the ROM to use (contains path, etc)
+      @param md5  The MD5sum of the ROM
 
       @return  True on successful creation, otherwise false
     */
-    bool createConsole(const string& romfile = "", const string& md5 = "");
+    bool createConsole(const FilesystemNode& rom, const string& md5 = "");
 
     /**
       Deletes the currently defined console, if it exists.
       Also prints some statistics (fps, total frames, etc).
     */
     void deleteConsole();
+
+    /**
+      Reloads the current console (essentially deletes and re-creates it).
+      This can be thought of as a real console off/on toggle.
+
+      @return  True on successful creation, otherwise false
+    */
+    bool reloadConsole();
 
     /**
       Creates a new ROM launcher, to select a new ROM to emulate.
@@ -404,10 +413,10 @@ class OSystem
       Gets all possible info about the ROM by creating a temporary
       Console object and querying it.
 
-      @param romfile  The full pathname of the ROM to use
+      @param romfile  The file node of the ROM to use
       @return  Some information about this ROM
     */
-    string getROMInfo(const string& romfile);
+    string getROMInfo(const FilesystemNode& romfile);
 
     /**
       The features which are conditionally compiled into Stella.
@@ -426,9 +435,9 @@ class OSystem
     /**
       Calculate the MD5sum of the given file.
 
-      @param filename  Filename of potential ROM file
+      @param file  File node of potential ROM file
     */
-    string MD5FromFile(const string& filename);
+    string MD5FromFile(const FilesystemNode& file);
 
     /**
       Issue a quit event to the OSystem.
@@ -617,7 +626,7 @@ class OSystem
     string myPaletteFile;
     string myPropertiesFile;
 
-    string myRomFile;
+    FilesystemNode myRomFile;
     string myRomMD5;
 
     string myFeatures;
@@ -666,7 +675,7 @@ class OSystem
     /**
       Creates an actual Console object based on the given info.
 
-      @param romfile  The full pathname of the ROM to use
+      @param romfile  The file node of the ROM to use (contains path)
       @param md5      The MD5sum of the ROM
       @param type     The bankswitch type of the ROM
       @param id       The additional id (if any) used by the ROM
@@ -674,14 +683,15 @@ class OSystem
       @return  The actual Console object, otherwise NULL
                (calling method is responsible for deleting it)
     */
-    Console* openConsole(const string& romfile, string& md5, string& type, string& id);
+    Console* openConsole(const FilesystemNode& romfile, string& md5,
+                         string& type, string& id);
 
     /**
       Open the given ROM and return an array containing its contents.
       Also, the properties database is updated with a valid ROM name
       for this ROM (if necessary).
 
-      @param rom    The absolute pathname of the ROM file
+      @param rom    The file node of the ROM to open (contains path)
       @param md5    The md5 calculated from the ROM file
                     (will be recalculated if necessary)
       @param size   The amount of data read into the image array
@@ -689,7 +699,7 @@ class OSystem
       @return  Pointer to the array, with size >=0 indicating valid data
                (calling method is responsible for deleting it)
     */
-    uInt8* openROM(string rom, string& md5, uInt32& size);
+    uInt8* openROM(const FilesystemNode& rom, string& md5, uInt32& size);
 
     /**
       Open the given ZIP archive, parsing filename for the contents of the

@@ -215,16 +215,19 @@ LauncherDialog::~LauncherDialog()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const string& LauncherDialog::selectedRomMD5()
 {
-  string extension;
   int item = myList->getSelected();
-  if(item < 0 || myGameList->isDir(item) ||
-     !LauncherFilterDialog::isValidRomName(myGameList->name(item), extension))
+  if(item < 0)
+    return EmptyString;
+
+  string extension;
+  const FilesystemNode node(myGameList->path(item));
+  if(node.isDirectory() || !LauncherFilterDialog::isValidRomName(node, extension))
     return EmptyString;
 
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
   {
-    const string& md5 = instance().MD5FromFile(myGameList->path(item));
+    const string& md5 = instance().MD5FromFile(node);
     myGameList->setMd5(item, md5);
   }
   return myGameList->md5(item);
@@ -437,12 +440,12 @@ void LauncherDialog::loadRomInfo()
   if(item < 0) return;
 
   string extension;
-  if(!myGameList->isDir(item) &&
-     LauncherFilterDialog::isValidRomName(myGameList->name(item), extension))
+  const FilesystemNode node(myGameList->path(item));
+  if(!node.isDirectory() && LauncherFilterDialog::isValidRomName(node, extension))
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
-      myGameList->setMd5(item, instance().MD5FromFile(myGameList->path(item)));
+      myGameList->setMd5(item, instance().MD5FromFile(node));
 
     // Get the properties for this entry
     Properties props;
@@ -604,13 +607,9 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       int item = myList->getSelected();
       if(item >= 0)
       {
-        const string& rom = myGameList->path(item);
-        const string& md5 = myGameList->md5(item);
-        string extension;
+        const FilesystemNode romnode(myGameList->path(item));
 
-        const FilesystemNode romnode(rom);
-
-        int numFilesInArchive = filesInArchive(rom);
+        int numFilesInArchive = -1;//filesInArchive(rom);
         bool isArchive = false;//!myGameList->isDir(item) && BSPF_endsWithIgnoreCase(rom, ".zip");
 
         // Directory's should be selected (ie, enter them and redisplay)
@@ -638,9 +637,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         }
         else
         {
-          if(LauncherFilterDialog::isValidRomName(rom, extension))
+          string extension;
+          if(LauncherFilterDialog::isValidRomName(romnode, extension))
           {
-            if(instance().createConsole(romnode.getPath(), md5))
+            if(instance().createConsole(romnode, myGameList->md5(item)))
               instance().settings().setString("lastrom", myList->getSelectedString());
             else
               instance().frameBuffer().showMessage(

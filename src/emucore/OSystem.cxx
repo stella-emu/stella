@@ -503,7 +503,7 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createConsole(const string& romfile, const string& md5sum)
+bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum)
 {
   ostringstream buf;
 
@@ -512,19 +512,14 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
 
   bool showmessage = false;
 
-  // If a blank ROM has been given, we reload the current one (assuming one exists)
-  if(romfile == "")
+  // If same ROM has been given, we reload the current one (assuming one exists)
+  if(rom == myRomFile)
   {
     showmessage = true;  // we show a message if a ROM is being reloaded
-    if(myRomFile == "")
-    {
-      logMessage("ERROR: Rom file not specified ...", 0);
-      return false;
-    }
   }
   else
   {
-    myRomFile = romfile;
+    myRomFile = rom;
     myRomMD5  = md5sum;
 
     // Each time a new console is loaded, we simulate a cart removal
@@ -568,7 +563,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
         myFrameBuffer->showMessage("Multicart " + type + ", loading ROM" + id);
     }
     buf << "Game console created:" << endl
-        << "  ROM file: " << FilesystemNode(myRomFile).getShortPath() << endl << endl
+        << "  ROM file: " << myRomFile.getShortPath() << endl << endl
         << getROMInfo(myConsole) << endl;
     logMessage(buf.str(), 1);
 
@@ -590,7 +585,7 @@ bool OSystem::createConsole(const string& romfile, const string& md5sum)
   }
   else
   {
-    buf << "ERROR: Couldn't create console for " << myRomFile << endl;
+    buf << "ERROR: Couldn't create console for " << myRomFile.getShortPath() << endl;
     logMessage(buf.str(), 0);
     return false;
   }
@@ -621,6 +616,13 @@ void OSystem::deleteConsole()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool OSystem::reloadConsole()
+{
+  deleteConsole();
+  return createConsole(myRomFile);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::createLauncher(const string& startdir)
 {
   mySettings->setString("tmpromdir", startdir);
@@ -645,7 +647,7 @@ bool OSystem::createLauncher(const string& startdir)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::getROMInfo(const string& romfile)
+string OSystem::getROMInfo(const FilesystemNode& romfile)
 {
   string md5, type, id, result = "";
   Console* console = openConsole(romfile, md5, type, id);
@@ -655,19 +657,19 @@ string OSystem::getROMInfo(const string& romfile)
     delete console;
   }
   else
-    result = "ERROR: Couldn't get ROM info for " + romfile + " ...";
+    result = "ERROR: Couldn't get ROM info for " + romfile.getShortPath() + " ...";
 
   return result;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::MD5FromFile(const string& filename)
+string OSystem::MD5FromFile(const FilesystemNode& file)
 {
   string md5 = "";
 
   uInt8* image = 0;
   uInt32 size  = 0;
-  if((image = openROM(filename, md5, size)) != 0)
+  if((image = openROM(file, md5, size)) != 0)
     if(image != 0 && size > 0)
       delete[] image;
 
@@ -691,7 +693,7 @@ void OSystem::logMessage(const string& message, uInt8 level)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Console* OSystem::openConsole(const string& romfile, string& md5,
+Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
                               string& type, string& id)
 {
 #define CMDLINE_PROPS_UPDATE(cl_name, prop_name) \
@@ -757,7 +759,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5,
   else
   {
     ostringstream buf;
-    buf << "ERROR: Couldn't open \'" << romfile << "\'" << endl;
+    buf << "ERROR: Couldn't open \'" << romfile.getShortPath() << "\'" << endl;
     logMessage(buf.str(), 0);
   }
 
@@ -769,7 +771,7 @@ Console* OSystem::openConsole(const string& romfile, string& md5,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
+uInt8* OSystem::openROM(const FilesystemNode& romfile, string& md5, uInt32& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
@@ -778,6 +780,8 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
 
   uInt8* image = 0;
 
+// FIXME - this entire code to be replaced by romfile.read(...)
+#if 0
   // First try to load as ZIP archive
   if(loadFromZIP(file, &image, size))
   {
@@ -787,9 +791,10 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
       return image;
   }
   else
+#endif
   {
     // Assume the file is either gzip'ed or not compressed at all
-    gzFile f = gzopen(file.c_str(), "rb");
+    gzFile f = gzopen(romfile.getPath().c_str(), "rb");
     if(!f)
       return image;
 
@@ -817,12 +822,8 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
   Properties props;
   if(!myPropSet->getMD5(md5, props))
   {
-    // Get the filename from the rom pathname
-    FilesystemNode node(file);
-    file = node.getName();
-
     props.set(Cartridge_MD5, md5);
-    props.set(Cartridge_Name, file);
+    props.set(Cartridge_Name, romfile.getName());
     myPropSet->insert(props, false);
   }
 

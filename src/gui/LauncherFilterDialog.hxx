@@ -31,6 +31,7 @@ class OSystem;
 class StringList;
 
 #include "Dialog.hxx"
+#include "FSNode.hxx"
 #include "Settings.hxx"
 #include "bspf.hxx"
 
@@ -55,10 +56,10 @@ class LauncherFilterDialog : public Dialog, public CommandSender
     /**
       Is this a valid ROM filename (does it have a valid extension?).
 
-      @param name  Filename of potential ROM file
+      @param name  File node of potential ROM file
       @param ext   The extension extracted from the given file
      */
-    static bool isValidRomName(const string& name, string& ext);
+    static bool isValidRomName(const FilesystemNode& name, string& ext);
 
   private:
     void loadConfig();

@@ -133,7 +133,7 @@ int main(int argc, char* argv[])
     theOSystem->logMessage("Showing output from 'rominfo' ...", 2);
     FilesystemNode romnode(romfile);
     if(argc > 1 && romnode.exists() && romnode.isFile())
-      theOSystem->logMessage(theOSystem->getROMInfo(romfile), 0);
+      theOSystem->logMessage(theOSystem->getROMInfo(romnode), 0);
     else
       theOSystem->logMessage("ERROR: ROM doesn't exist", 0);
 
@@ -175,7 +175,7 @@ int main(int argc, char* argv[])
       return Cleanup();
     }
   }
-  else if(theOSystem->createConsole(romnode.getPath()))
+  else if(theOSystem->createConsole(romnode))
   {
     if(theOSystem->settings().getBool("takesnapshot"))
     {
