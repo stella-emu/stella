@@ -167,8 +167,10 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
   {
     zip_file *cached = myZipCache[cachenum];
 
-    /* if we have a valid entry and it matches our filename, use it and remove from the cache */
-    if (cached != NULL && cached->filename != NULL && strcmp(filename, cached->filename) == 0)
+    /* if we have a valid entry and it matches our filename, use it and remove
+       from the cache */
+    if (cached != NULL && cached->filename != NULL &&
+        strcmp(filename, cached->filename) == 0)
     {
       *zip = cached;
       myZipCache[cachenum] = NULL;
@@ -195,7 +197,8 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
     goto error;
 
   /* verify that we can work with this zipfile (no disk spanning allowed) */
-  if (newzip->ecd.disk_number != newzip->ecd.cd_start_disk_number || newzip->ecd.cd_disk_entries != newzip->ecd.cd_total_entries)
+  if (newzip->ecd.disk_number != newzip->ecd.cd_start_disk_number ||
+      newzip->ecd.cd_disk_entries != newzip->ecd.cd_total_entries)
   {
     ziperr = ZIPERR_UNSUPPORTED;
     goto error;
@@ -210,7 +213,8 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
   }
 
   /* read the central directory */
-  success = stream_read(newzip->file, newzip->cd, newzip->ecd.cd_start_disk_offset, newzip->ecd.cd_size, read_length);
+  success = stream_read(newzip->file, newzip->cd, newzip->ecd.cd_start_disk_offset,
+                        newzip->ecd.cd_size, read_length);
   if (!success || read_length != newzip->ecd.cd_size)
   {
     ziperr = success ? ZIPERR_FILE_TRUNCATED : ZIPERR_FILE_ERROR;
@@ -275,7 +279,6 @@ void ZipHandler::zip_file_cache_clear(void)
   for (int cachenum = 0; cachenum < ZIP_CACHE_SIZE; cachenum++)
     if (myZipCache[cachenum] != NULL)
     {
-cerr << "free cache: " << myZipCache[cachenum]->filename << endl;
       free_zip_file(myZipCache[cachenum]);
       myZipCache[cachenum] = NULL;
     }
@@ -345,39 +348,40 @@ const ZipHandler::zip_file_header* ZipHandler::zip_file_next_file(zip_file *zip)
     zip_file_decompress - decompress a file
     from a ZIP into the target buffer
 -------------------------------------------------*/
-ZipHandler::zip_error ZipHandler::zip_file_decompress(zip_file *zip, void *buffer, uInt32 length)
+ZipHandler::zip_error
+    ZipHandler::zip_file_decompress(zip_file *zip, void *buffer, uInt32 length)
 {
-    zip_error ziperr;
-    uInt64 offset;
+  zip_error ziperr;
+  uInt64 offset;
 
-    /* if we don't have enough buffer, error */
-    if (length < zip->header.uncompressed_length)
-      return ZIPERR_BUFFER_TOO_SMALL;
+  /* if we don't have enough buffer, error */
+  if (length < zip->header.uncompressed_length)
+    return ZIPERR_BUFFER_TOO_SMALL;
 
-    /* make sure the info in the header aligns with what we know */
+  /* make sure the info in the header aligns with what we know */
   if (zip->header.start_disk_number != zip->ecd.disk_number)
     return ZIPERR_UNSUPPORTED;
 
-    /* get the compressed data offset */
-    ziperr = get_compressed_data_offset(zip, &offset);
-    if (ziperr != ZIPERR_NONE)
-      return ziperr;
+  /* get the compressed data offset */
+  ziperr = get_compressed_data_offset(zip, &offset);
+  if (ziperr != ZIPERR_NONE)
+    return ziperr;
 
-    /* handle compression types */
-    switch (zip->header.compression)
-    {
-      case 0:
-        ziperr = decompress_data_type_0(zip, offset, buffer, length);
-        break;
+  /* handle compression types */
+  switch (zip->header.compression)
+  {
+    case 0:
+      ziperr = decompress_data_type_0(zip, offset, buffer, length);
+      break;
 
     case 8:
-        ziperr = decompress_data_type_8(zip, offset, buffer, length);
-        break;
+      ziperr = decompress_data_type_8(zip, offset, buffer, length);
+      break;
 
-      default:
-        ziperr = ZIPERR_UNSUPPORTED;
-        break;
-    }
+    default:
+      ziperr = ZIPERR_UNSUPPORTED;
+      break;
+  }
   return ziperr;
 }
 
@@ -393,7 +397,6 @@ void ZipHandler::free_zip_file(zip_file *zip)
 {
   if (zip != NULL)
   {
-if (zip->file) cerr << "free: " << zip->filename << endl;
     if (zip->file)
       stream_close(&zip->file);
     if (zip->filename != NULL)
@@ -435,7 +438,8 @@ ZipHandler::zip_error ZipHandler::read_ecd(zip_file *zip)
       return ZIPERR_OUT_OF_MEMORY;
 
     /* read in one buffers' worth of data */
-    bool success = stream_read(zip->file, buffer, zip->length - buflen, buflen, read_length);
+    bool success = stream_read(zip->file, buffer, zip->length - buflen,
+                               buflen, read_length);
     if (!success || read_length != buflen)
     {
       free(buffer);
@@ -444,7 +448,8 @@ ZipHandler::zip_error ZipHandler::read_ecd(zip_file *zip)
 
     /* find the ECD signature */
     for (offset = buflen - 22; offset >= 0; offset--)
-      if (buffer[offset + 0] == 'P' && buffer[offset + 1] == 'K' && buffer[offset + 2] == 0x05 && buffer[offset + 3] == 0x06)
+      if (buffer[offset + 0] == 'P' && buffer[offset + 1] == 'K' &&
+          buffer[offset + 2] == 0x05 && buffer[offset + 3] == 0x06)
         break;
 
     /* if we found it, fill out the data */
@@ -485,7 +490,8 @@ ZipHandler::zip_error ZipHandler::read_ecd(zip_file *zip)
     get_compressed_data_offset - return the
     offset of the compressed data
 -------------------------------------------------*/
-ZipHandler::zip_error ZipHandler::get_compressed_data_offset(zip_file *zip, uInt64 *offset)
+ZipHandler::zip_error
+    ZipHandler::get_compressed_data_offset(zip_file *zip, uInt64 *offset)
 {
   uInt32 read_length;
 
@@ -494,7 +500,8 @@ ZipHandler::zip_error ZipHandler::get_compressed_data_offset(zip_file *zip, uInt
     return ZIPERR_FILE_ERROR;
 
   /* now go read the fixed-sized part of the local file header */
-  bool success = stream_read(zip->file, zip->buffer, zip->header.local_header_offset, ZIPNAME, read_length);
+  bool success = stream_read(zip->file, zip->buffer, zip->header.local_header_offset,
+                             ZIPNAME, read_length);
   if (!success || read_length != ZIPNAME)
     return success ? ZIPERR_FILE_TRUNCATED : ZIPERR_FILE_ERROR;
 
@@ -514,12 +521,15 @@ ZipHandler::zip_error ZipHandler::get_compressed_data_offset(zip_file *zip, uInt
     decompress_data_type_0 - "decompress"
     type 0 data (which is uncompressed)
 -------------------------------------------------*/
-ZipHandler::zip_error ZipHandler::decompress_data_type_0(zip_file *zip, uInt64 offset, void *buffer, uInt32 length)
+ZipHandler::zip_error
+    ZipHandler::decompress_data_type_0(zip_file *zip, uInt64 offset,
+                                       void *buffer, uInt32 length)
 {
   uInt32 read_length;
 
   /* the data is uncompressed; just read it */
-  bool success = stream_read(zip->file, buffer, offset, zip->header.compressed_length, read_length);
+  bool success = stream_read(zip->file, buffer, offset, zip->header.compressed_length,
+                             read_length);
   if (!success)
     return ZIPERR_FILE_ERROR;
   else if (read_length != zip->header.compressed_length)
@@ -532,7 +542,9 @@ ZipHandler::zip_error ZipHandler::decompress_data_type_0(zip_file *zip, uInt64 o
     decompress_data_type_8 - decompress
     type 8 data (which is deflated)
 -------------------------------------------------*/
-ZipHandler::zip_error ZipHandler::decompress_data_type_8(zip_file *zip, uInt64 offset, void *buffer, uInt32 length)
+ZipHandler::zip_error
+    ZipHandler::decompress_data_type_8(zip_file *zip, uInt64 offset,
+                                       void *buffer, uInt32 length)
 {
   uInt32 input_remaining = zip->header.compressed_length;
   uInt32 read_length;
@@ -557,7 +569,9 @@ ZipHandler::zip_error ZipHandler::decompress_data_type_8(zip_file *zip, uInt64 o
   while (1)
   {
     /* read in the next chunk of data */
-    bool success = stream_read(zip->file, zip->buffer, offset, BSPF_min(input_remaining, (uInt32)sizeof(zip->buffer)), read_length);
+    bool success = stream_read(zip->file, zip->buffer, offset,
+                      BSPF_min(input_remaining, (uInt32)sizeof(zip->buffer)),
+                      read_length);
     if (!success)
     {
       inflateEnd(&stream);

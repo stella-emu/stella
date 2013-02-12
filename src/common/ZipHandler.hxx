@@ -86,7 +86,8 @@ class ZipHandler
     // Replaces functionaity of various osd_xxxx functions
     static bool stream_open(const char* filename, fstream** stream, uInt64& length);
     static void stream_close(fstream** stream);
-    static bool stream_read(fstream* stream, void* buffer, uInt64 offset, uInt32 length, uInt32& actual);
+    static bool stream_read(fstream* stream, void* buffer, uInt64 offset,
+                            uInt32 length, uInt32& actual);
 
     /* Error types */
     enum zip_error
@@ -253,8 +254,10 @@ class ZipHandler
     static zip_error get_compressed_data_offset(zip_file *zip, uInt64 *offset);
 
     /* decompression interfaces */
-    static zip_error decompress_data_type_0(zip_file *zip, uInt64 offset, void *buffer, uInt32 length);
-    static zip_error decompress_data_type_8(zip_file *zip, uInt64 offset, void *buffer, uInt32 length);
+    static zip_error decompress_data_type_0(zip_file *zip, uInt64 offset,
+                                            void *buffer, uInt32 length);
+    static zip_error decompress_data_type_8(zip_file *zip, uInt64 offset,
+                                            void *buffer, uInt32 length);
 
   private:
     zip_file* myZip;
