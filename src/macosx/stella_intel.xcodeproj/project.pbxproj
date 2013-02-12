@@ -75,7 +75,6 @@
 		2D91741909BA90380026E9FF /* CartUA.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7108457B7D00812C11 /* CartUA.hxx */; };
 		2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7308457B7D00812C11 /* FSNode.hxx */; };
 		2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7508457B7D00812C11 /* OSystem.hxx */; };
-		2D91741C09BA90380026E9FF /* unzip.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEB7708457B7D00812C11 /* unzip.h */; };
 		2D91741D09BA90380026E9FF /* Preferences.h in Headers */ = {isa = PBXBuildFile; fileRef = 2DDBEBE3084582C400812C11 /* Preferences.h */; };
 		2D91741F09BA90380026E9FF /* AboutBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D1A6CD4085135F9007CDBA8 /* AboutBox.h */; };
 		2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */ = {isa = PBXBuildFile; fileRef = 2D9217FA0857CC88001D664B /* ConsoleFont.hxx */; };
@@ -187,7 +186,6 @@
 		2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7008457B7D00812C11 /* CartUA.cxx */; };
 		2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7208457B7D00812C11 /* FSNode.cxx */; };
 		2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7408457B7D00812C11 /* OSystem.cxx */; };
-		2D9174C109BA90380026E9FF /* unzip.c in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEB7608457B7D00812C11 /* unzip.c */; };
 		2D9174C209BA90380026E9FF /* Preferences.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DDBEBE4084582C400812C11 /* Preferences.m */; };
 		2D9174C409BA90380026E9FF /* AboutBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D1A6CD5085135F9007CDBA8 /* AboutBox.m */; };
 		2D9174C509BA90380026E9FF /* Font.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D9217FB0857CC88001D664B /* Font.cxx */; };
@@ -224,7 +222,6 @@
 		2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D6CC10308C811A600B8F642 /* TiaZoomWidget.cxx */; };
 		2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2DE7242D08CE910900C889A8 /* TIASnd.cxx */; };
 		2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D23318F0900B5EF00613B1F /* AudioWidget.cxx */; };
-		2D91750A09BA90380026E9FF /* MediaFactory.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5A096E261E00A518FE /* MediaFactory.cxx */; };
 		2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */; };
 		2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */ = {isa = PBXBuildFile; fileRef = 2D05FF60096E269100A518FE /* InputDialog.cxx */; };
 		2D91750F09BA90380026E9FF /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -376,6 +373,12 @@
 		DCD6FC8211C281ED005DA767 /* pngwutil.c in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC6F11C281ED005DA767 /* pngwutil.c */; };
 		DCD6FC9311C28C6F005DA767 /* PNGLibrary.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */; };
 		DCD6FC9411C28C6F005DA767 /* PNGLibrary.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */; };
+		DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */; };
+		DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */; };
+		DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */; };
+		DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */; };
+		DCE395F216CB0B5F008DB1E5 /* ZipHandler.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */; };
+		DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */; };
 		DCE3BBF90C95CEDC00A671DF /* RomInfoWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */; };
 		DCE3BBFA0C95CEDC00A671DF /* RomInfoWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */; };
 		DCE6EB220DD9ADA00047AC28 /* TrackBall.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */; };
@@ -453,7 +456,6 @@
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		2D02207F08A301F200B9C76B /* InputTextDialog.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = InputTextDialog.cxx; path = ../gui/InputTextDialog.cxx; sourceTree = SOURCE_ROOT; };
 		2D02208008A301F200B9C76B /* InputTextDialog.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = InputTextDialog.hxx; path = ../gui/InputTextDialog.hxx; sourceTree = SOURCE_ROOT; };
-		2D05FF5A096E261E00A518FE /* MediaFactory.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = MediaFactory.cxx; path = ../emucore/MediaFactory.cxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5B096E261E00A518FE /* MediaFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = MediaFactory.hxx; path = ../emucore/MediaFactory.hxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5E096E269100A518FE /* EventMappingWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = EventMappingWidget.cxx; path = ../gui/EventMappingWidget.cxx; sourceTree = SOURCE_ROOT; };
 		2D05FF5F096E269100A518FE /* EventMappingWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = EventMappingWidget.hxx; path = ../gui/EventMappingWidget.hxx; sourceTree = SOURCE_ROOT; };
@@ -591,8 +593,6 @@
 		2DDBEB7308457B7D00812C11 /* FSNode.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = FSNode.hxx; path = ../emucore/FSNode.hxx; sourceTree = SOURCE_ROOT; };
 		2DDBEB7408457B7D00812C11 /* OSystem.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = OSystem.cxx; path = ../emucore/OSystem.cxx; sourceTree = SOURCE_ROOT; };
 		2DDBEB7508457B7D00812C11 /* OSystem.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = OSystem.hxx; path = ../emucore/OSystem.hxx; sourceTree = SOURCE_ROOT; };
-		2DDBEB7608457B7D00812C11 /* unzip.c */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.c; name = unzip.c; path = ../emucore/unzip.c; sourceTree = SOURCE_ROOT; };
-		2DDBEB7708457B7D00812C11 /* unzip.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = unzip.h; path = ../emucore/unzip.h; sourceTree = SOURCE_ROOT; };
 		2DDBEBE3084582C400812C11 /* Preferences.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = Preferences.h; sourceTree = SOURCE_ROOT; };
 		2DDBEBE4084582C400812C11 /* Preferences.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = Preferences.m; sourceTree = SOURCE_ROOT; };
 		2DE2DF100627AE07006BEC99 /* Booster.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Booster.cxx; path = ../emucore/Booster.cxx; sourceTree = SOURCE_ROOT; };
@@ -818,6 +818,12 @@
 		DCD6FC6F11C281ED005DA767 /* pngwutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = pngwutil.c; path = ../libpng/pngwutil.c; sourceTree = SOURCE_ROOT; };
 		DCD6FC9111C28C6F005DA767 /* PNGLibrary.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = PNGLibrary.cxx; path = ../common/PNGLibrary.cxx; sourceTree = SOURCE_ROOT; };
 		DCD6FC9211C28C6F005DA767 /* PNGLibrary.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = PNGLibrary.hxx; path = ../common/PNGLibrary.hxx; sourceTree = SOURCE_ROOT; };
+		DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FSNodePOSIX.hxx; path = ../unix/FSNodePOSIX.hxx; sourceTree = SOURCE_ROOT; };
+		DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FSNodeFactory.hxx; path = ../common/FSNodeFactory.hxx; sourceTree = SOURCE_ROOT; };
+		DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = FSNodeZIP.cxx; path = ../common/FSNodeZIP.cxx; sourceTree = SOURCE_ROOT; };
+		DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = FSNodeZIP.hxx; path = ../common/FSNodeZIP.hxx; sourceTree = SOURCE_ROOT; };
+		DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = ZipHandler.cxx; path = ../common/ZipHandler.cxx; sourceTree = SOURCE_ROOT; };
+		DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = ZipHandler.hxx; path = ../common/ZipHandler.hxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF50C95CEDC00A671DF /* RomInfoWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = RomInfoWidget.cxx; path = ../gui/RomInfoWidget.cxx; sourceTree = SOURCE_ROOT; };
 		DCE3BBF60C95CEDC00A671DF /* RomInfoWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = RomInfoWidget.hxx; path = ../gui/RomInfoWidget.hxx; sourceTree = SOURCE_ROOT; };
 		DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = TrackBall.cxx; path = ../emucore/TrackBall.cxx; sourceTree = SOURCE_ROOT; };
@@ -1017,6 +1023,9 @@
 				2D733D5E062893E7006265D9 /* FrameBufferGL.hxx */,
 				2D733D61062893E7006265D9 /* FrameBufferSoft.cxx */,
 				2D733D62062893E7006265D9 /* FrameBufferSoft.hxx */,
+				DCE395EA16CB0B5F008DB1E5 /* FSNodeFactory.hxx */,
+				DCE395EB16CB0B5F008DB1E5 /* FSNodeZIP.cxx */,
+				DCE395EC16CB0B5F008DB1E5 /* FSNodeZIP.hxx */,
 				2DDBEA0A0845700300812C11 /* mainSDL.cxx */,
 				DC56FCDC14CCCC4900A31CC3 /* MouseControl.cxx */,
 				DC56FCDD14CCCC4900A31CC3 /* MouseControl.hxx */,
@@ -1034,6 +1043,8 @@
 				DC74D6A0138D4D7E00F05C5C /* StringParser.hxx */,
 				DCC467EA14FBEC9600E15508 /* tv_filters */,
 				DCF467BC0F9399F500B25D7A /* Version.hxx */,
+				DCE395ED16CB0B5F008DB1E5 /* ZipHandler.cxx */,
+				DCE395EE16CB0B5F008DB1E5 /* ZipHandler.hxx */,
 			);
 			name = common;
 			sourceTree = "<group>";
@@ -1056,6 +1067,7 @@
 			isa = PBXGroup;
 			children = (
 				2DDBEA0C0845708800812C11 /* FSNodePOSIX.cxx */,
+				DCE395DA16CB0B2B008DB1E5 /* FSNodePOSIX.hxx */,
 			);
 			name = unix;
 			sourceTree = "<group>";
@@ -1161,7 +1173,6 @@
 				2DE2DF7D0627AE33006BEC99 /* M6532.hxx */,
 				2DE2DF7E0627AE33006BEC99 /* MD5.cxx */,
 				2DE2DF7F0627AE34006BEC99 /* MD5.hxx */,
-				2D05FF5A096E261E00A518FE /* MediaFactory.cxx */,
 				2D05FF5B096E261E00A518FE /* MediaFactory.hxx */,
 				DC8C1BAB14B25DE7006440EE /* MindLink.cxx */,
 				DC8C1BAC14B25DE7006440EE /* MindLink.hxx */,
@@ -1204,8 +1215,6 @@
 				DC932D430F278A5200FEFEFC /* TIATables.hxx */,
 				DCE6EB200DD9ADA00047AC28 /* TrackBall.cxx */,
 				DCE6EB210DD9ADA00047AC28 /* TrackBall.hxx */,
-				2DDBEB7608457B7D00812C11 /* unzip.c */,
-				2DDBEB7708457B7D00812C11 /* unzip.h */,
 			);
 			name = emucore;
 			sourceTree = "<group>";
@@ -1474,7 +1483,6 @@
 				2D91741909BA90380026E9FF /* CartUA.hxx in Headers */,
 				2D91741A09BA90380026E9FF /* FSNode.hxx in Headers */,
 				2D91741B09BA90380026E9FF /* OSystem.hxx in Headers */,
-				2D91741C09BA90380026E9FF /* unzip.h in Headers */,
 				2D91741D09BA90380026E9FF /* Preferences.h in Headers */,
 				2D91741F09BA90380026E9FF /* AboutBox.h in Headers */,
 				2D91742009BA90380026E9FF /* ConsoleFont.hxx in Headers */,
@@ -1606,6 +1614,10 @@
 				DCC467F214FBECC700E15508 /* atari_ntsc.h in Headers */,
 				DC67270C1556F4860023653B /* CartCTY.hxx in Headers */,
 				DC67270D1556F4860023653B /* CartCTYTunes.hxx in Headers */,
+				DCE395DB16CB0B2B008DB1E5 /* FSNodePOSIX.hxx in Headers */,
+				DCE395EF16CB0B5F008DB1E5 /* FSNodeFactory.hxx in Headers */,
+				DCE395F116CB0B5F008DB1E5 /* FSNodeZIP.hxx in Headers */,
+				DCE395F316CB0B5F008DB1E5 /* ZipHandler.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1766,7 +1778,6 @@
 				2D9174BE09BA90380026E9FF /* CartUA.cxx in Sources */,
 				2D9174BF09BA90380026E9FF /* FSNode.cxx in Sources */,
 				2D9174C009BA90380026E9FF /* OSystem.cxx in Sources */,
-				2D9174C109BA90380026E9FF /* unzip.c in Sources */,
 				2D9174C209BA90380026E9FF /* Preferences.m in Sources */,
 				2D9174C409BA90380026E9FF /* AboutBox.m in Sources */,
 				2D9174C509BA90380026E9FF /* Font.cxx in Sources */,
@@ -1803,7 +1814,6 @@
 				2D91750609BA90380026E9FF /* TiaZoomWidget.cxx in Sources */,
 				2D91750709BA90380026E9FF /* TIASnd.cxx in Sources */,
 				2D91750809BA90380026E9FF /* AudioWidget.cxx in Sources */,
-				2D91750A09BA90380026E9FF /* MediaFactory.cxx in Sources */,
 				2D91750B09BA90380026E9FF /* EventMappingWidget.cxx in Sources */,
 				2D91750C09BA90380026E9FF /* InputDialog.cxx in Sources */,
 				DC47455509C34BFA00EDDA3A /* BankRomCheat.cxx in Sources */,
@@ -1880,6 +1890,8 @@
 				DC5EE7C214F7C165001C628C /* NTSCFilter.cxx in Sources */,
 				DCC467F114FBECC700E15508 /* atari_ntsc.c in Sources */,
 				DC67270B1556F4860023653B /* CartCTY.cxx in Sources */,
+				DCE395F016CB0B5F008DB1E5 /* FSNodeZIP.cxx in Sources */,
+				DCE395F216CB0B5F008DB1E5 /* ZipHandler.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
