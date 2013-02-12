@@ -50,7 +50,6 @@
 #endif
 
 #include "FSNode.hxx"
-#include "unzip.h"
 #include "MD5.hxx"
 #include "Cart.hxx"
 #include "Settings.hxx"
@@ -198,6 +197,7 @@ OSystem::~OSystem()
 
   delete mySerialPort;
   delete myPNGLib;
+  delete myZipHandler;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -308,6 +308,9 @@ bool OSystem::create()
 
   // Create PNG handler
   myPNGLib = new PNGLibrary();
+
+  // Create ZIP handler
+  myZipHandler = new ZipHandler();
 
   return true;
 }
@@ -829,6 +832,8 @@ uInt8* OSystem::openROM(string file, string& md5, uInt32& size)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
 {
+return false;
+#if 0   // FIXME
   // First determine if this actually is a ZIP file
   // by seeing if it contains the '.zip' extension
   size_t extpos = BSPF_findIgnoreCase(filename, ".zip");
@@ -913,6 +918,7 @@ bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
     }
   }
   return false;
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -1247,3 +1253,6 @@ OSystem& OSystem::operator = (const OSystem&)
   assert(false);
   return *this;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+ZipHandler* OSystem::myZipHandler = 0;

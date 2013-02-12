@@ -21,6 +21,7 @@
 //============================================================================
 
 #include "bspf.hxx"
+#include "OSystem.hxx"
 #include "FSNodeFactory.hxx"
 #include "FSNodeZIP.hxx"
 
@@ -45,54 +46,70 @@ FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
     // Not a ZIP file
     _path = _shortPath = _virtualFile = "";
     _isValid = _isDirectory = _isFile = _isVirtual = false;
-    cerr << "Not a ZIP file\n";
     return;
   }
 
   _zipFile = p.substr(0, pos+4);
+  if(pos+5 < p.length())
+    _virtualFile = p.substr(pos+5);
 
-  // A ZIP file is, behind the scenes, still a real file in the filesystem
-  // Hence, we need to create a real filesystem node for it
-  AbstractFSNode* tmp = FilesystemNodeFactory::create(_zipFile,
-                          FilesystemNodeFactory::SYSTEM);
+  AbstractFSNode* tmp = FilesystemNodeFactory::create(
+                            _zipFile, FilesystemNodeFactory::SYSTEM);
   _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
+
+  setFlags(_zipFile, _virtualFile, _realNode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+FilesystemNodeZIP::FilesystemNodeZIP(const string& zipfile, const string& virtualfile,
+    Common::SharedPtr<AbstractFSNode> realnode)
+{
+  setFlags(zipfile, virtualfile, realnode);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void FilesystemNodeZIP::setFlags(const string& zipfile,
+                                 const string& virtualfile,
+                                 Common::SharedPtr<AbstractFSNode> realnode)
+{
+  _zipFile = zipfile;
+  _virtualFile = virtualfile;
+  _realNode = realnode;
+
   _path = _realNode->getPath();
   _shortPath = _realNode->getShortPath();
 
   // Is a file component present?
-  if(pos+5 < p.length())
+  if(_virtualFile.size() != 0)
   {
     _isVirtual = true;
-    _virtualFile = p.substr(pos+5);
     _path += (BSPF_PATH_SEPARATOR + _virtualFile);
     _shortPath += (BSPF_PATH_SEPARATOR + _virtualFile);
   }
   else
-  {
     _isVirtual = false;
-    _virtualFile = "";
-  }
 
-cerr << "FilesystemNodeZIP: " << p << endl
-  << "path: " << _path << endl
-  << "spath: " << getShortPath() << endl
-  << "zipFile: " << _zipFile << endl
-  << "virtualFile: " << _virtualFile << endl
-  << endl;
-
+  _isDirectory = !_isVirtual;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
                                     bool hidden) const
 {
-cerr << "getChildren: " << _path << endl;
+  assert(_isDirectory);
 
   // Files within ZIP archives don't contain children
   if(_isVirtual)
     return false;
 
-  return false;
+  ZipHandler& zip = OSystem::zip(_path);
+  while(zip.hasNext())
+  {
+    FilesystemNodeZIP entry(_path, zip.next(), _realNode);
+    myList.push_back(new FilesystemNodeZIP(entry));
+  }
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

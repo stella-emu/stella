@@ -42,9 +42,8 @@ class FilesystemNodeZIP : public AbstractFSNode
     /**
      * Creates a FilesystemNodeZIP for a given path.
      *
-     * @param path    String with the path the new node should point to.
-     * @param verify  true if the isValid and isDirectory/isFile flags should
-     *                be verified during the construction.
+     * @param path  String with the path the new node should point to.
+     * @param node  Raw pointer to use for the internal FSNode
      */
     FilesystemNodeZIP(const string& path);
 
@@ -66,6 +65,13 @@ class FilesystemNodeZIP : public AbstractFSNode
 
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
     AbstractFSNode* getParent() const;
+
+  private:
+    FilesystemNodeZIP(const string& zipfile, const string& virtualfile,
+        Common::SharedPtr<AbstractFSNode> realnode);
+
+    void setFlags(const string& zipfile, const string& virtualfile,
+        Common::SharedPtr<AbstractFSNode> realnode);
 
   protected:
     Common::SharedPtr<AbstractFSNode> _realNode;

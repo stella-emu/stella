@@ -44,7 +44,6 @@
 #include "StringList.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
-#include "unzip.h"
 
 #include "LauncherDialog.hxx"
 
@@ -349,9 +348,9 @@ void LauncherDialog::loadDirListing()
   files.reserve(2048);
 
   if(myCurrentNode.isDirectory())
-  {
     myCurrentNode.getChildren(files, FilesystemNode::kListAll);
-  }
+
+#if 0
   else
   {
     unzFile tz;
@@ -394,6 +393,7 @@ void LauncherDialog::loadDirListing()
       }
     }
   }
+#endif
 
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
@@ -528,6 +528,7 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
 int LauncherDialog::filesInArchive(const string& archive)
 {
   int count = -1;
+#if 0
   unzFile tz;
   if((tz = unzOpen(archive.c_str())) != NULL)
   {
@@ -562,6 +563,7 @@ int LauncherDialog::filesInArchive(const string& archive)
       }
     }
   }
+#endif
   return count;
 }
 
@@ -606,9 +608,10 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         const string& md5 = myGameList->md5(item);
         string extension;
 
+        const FilesystemNode romnode(rom);
+
         int numFilesInArchive = filesInArchive(rom);
-        bool isArchive = !myGameList->isDir(item) &&
-                         BSPF_endsWithIgnoreCase(rom, ".zip");
+        bool isArchive = false;//!myGameList->isDir(item) && BSPF_endsWithIgnoreCase(rom, ".zip");
 
         // Directory's should be selected (ie, enter them and redisplay)
         // Archives should be entered if they contain more than 1 file
@@ -617,7 +620,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           instance().frameBuffer().showMessage("Archive does not contain any valid ROM files",
                                                kMiddleCenter, true);
         }
-        else if((isArchive && numFilesInArchive > 1) || myGameList->isDir(item))
+        else if(/*(isArchive && numFilesInArchive > 1) ||*/ romnode.isDirectory())
         {
           string dirname = "";
           if(myGameList->name(item) == " [..]")
@@ -628,7 +631,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
           }
           else
           {
-            myCurrentNode = FilesystemNode(rom);
+            myCurrentNode = romnode;
             myNodeNames.push(myGameList->name(item));
           }
           updateListing(dirname);
@@ -637,7 +640,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         {
           if(LauncherFilterDialog::isValidRomName(rom, extension))
           {
-            if(instance().createConsole(rom, md5))
+            if(instance().createConsole(romnode.getPath(), md5))
               instance().settings().setString("lastrom", myList->getSelectedString());
             else
               instance().frameBuffer().showMessage(

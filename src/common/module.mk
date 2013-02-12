@@ -10,7 +10,8 @@ MODULE_OBJS := \
 	src/common/FSNodeZIP.o \
 	src/common/PNGLibrary.o \
 	src/common/MouseControl.o \
-	src/common/RectList.o
+	src/common/RectList.o \
+	src/common/ZipHandler.o
 
 MODULE_DIRS += \
 	src/common
