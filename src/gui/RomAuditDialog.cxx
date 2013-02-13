@@ -30,6 +30,7 @@
 #include "ProgressDialog.hxx"
 #include "FSNode.hxx"
 #include "MessageBox.hxx"
+#include "MD5.hxx"
 #include "Props.hxx"
 #include "PropsSet.hxx"
 #include "Settings.hxx"
@@ -147,7 +148,7 @@ void RomAuditDialog::auditRoms()
     {
       // Calculate the MD5 so we can get the rest of the info
       // from the PropertiesSet (stella.pro)
-      const string& md5 = instance().MD5FromFile(files[idx]);
+      const string& md5 = MD5(files[idx]);
       instance().propSet().getMD5(md5, props);
       const string& name = props.get(Cartridge_Name);
 

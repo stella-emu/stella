@@ -20,7 +20,6 @@
 #include <cassert>
 #include <sstream>
 #include <fstream>
-#include <zlib.h>
 
 #include <ctime>
 #ifdef HAVE_GETTIMEOFDAY
@@ -70,8 +69,6 @@
 #include "Version.hxx"
 
 #include "OSystem.hxx"
-
-#define MAX_ROM_SIZE  512 * 1024
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 OSystem::OSystem()
@@ -663,20 +660,6 @@ string OSystem::getROMInfo(const FilesystemNode& romfile)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystem::MD5FromFile(const FilesystemNode& file)
-{
-  string md5 = "";
-
-  uInt8* image = 0;
-  uInt32 size  = 0;
-  if((image = openROM(file, md5, size)) != 0)
-    if(image != 0 && size > 0)
-      delete[] image;
-
-  return md5;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void OSystem::logMessage(const string& message, uInt8 level)
 {
   if(level == 0)
@@ -725,7 +708,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
     // and that the md5 (and hence the cart) has changed
     if(props.get(Cartridge_MD5) != cartmd5)
     {
-      string name = props.get(Cartridge_Name);
+      const string& name = props.get(Cartridge_Name);
       if(!myPropSet->getMD5(cartmd5, props))
       {
         // Cart md5 wasn't found, so we create a new props for it
@@ -771,7 +754,7 @@ Console* OSystem::openConsole(const FilesystemNode& romfile, string& md5,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8* OSystem::openROM(const FilesystemNode& romfile, string& md5, uInt32& size)
+uInt8* OSystem::openROM(const FilesystemNode& rom, string& md5, uInt32& size)
 {
   // This method has a documented side-effect:
   // It not only loads a ROM and creates an array with its contents,
@@ -779,32 +762,7 @@ uInt8* OSystem::openROM(const FilesystemNode& romfile, string& md5, uInt32& size
   // contain a valid name
 
   uInt8* image = 0;
-
-// FIXME - this entire code to be replaced by romfile.read(...)
-#if 0
-  // First try to load as ZIP archive
-  if(loadFromZIP(file, &image, size))
-  {
-    // Empty file means it *was* a ZIP file, but it didn't contain
-    // a valid ROM
-    if(image == 0)
-      return image;
-  }
-  else
-#endif
-  {
-    // Assume the file is either gzip'ed or not compressed at all
-    gzFile f = gzopen(romfile.getPath().c_str(), "rb");
-    if(!f)
-      return image;
-
-    image = new uInt8[MAX_ROM_SIZE];
-    size = gzread(f, image, MAX_ROM_SIZE);
-    gzclose(f);
-  }
-
-  // Zero-byte files should be automatically discarded
-  if(size == 0)
+  if(!rom.read(image, size))
   {
     delete[] image;
     return (uInt8*) 0;
@@ -820,106 +778,9 @@ uInt8* OSystem::openROM(const FilesystemNode& romfile, string& md5, uInt32& size
   // be an entry in stella.pro.  In that case, we use the rom name
   // and reinsert the properties object
   Properties props;
-  if(!myPropSet->getMD5(md5, props))
-  {
-    props.set(Cartridge_MD5, md5);
-    props.set(Cartridge_Name, romfile.getName());
-    myPropSet->insert(props, false);
-  }
+  myPropSet->getMD5WithInsert(rom, md5, props);
 
   return image;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::loadFromZIP(const string& filename, uInt8** image, uInt32& size)
-{
-return false;
-#if 0   // FIXME
-  // First determine if this actually is a ZIP file
-  // by seeing if it contains the '.zip' extension
-  size_t extpos = BSPF_findIgnoreCase(filename, ".zip");
-  if(extpos == string::npos)
-    return false;
-
-  // Now get the file after the .zip extension (if any)
-  string archive = filename, fileinzip = "";
-  if(filename.size() > extpos + 4)
-  {
-    archive = filename.substr(0, extpos + 4);
-    fileinzip = filename.substr(extpos + 5);
-    if(fileinzip.size() == 0)
-      return true;  // This was a ZIP file, but invalid name
-  }
-
-  // Open archive
-  FilesystemNode searchnode(fileinzip);
-  unzFile tz;
-  bool found = false;
-  if((tz = unzOpen(archive.c_str())) != NULL)
-  {
-    if(unzGoToFirstFile(tz) == UNZ_OK)
-    {
-      unz_file_info ufo;
-
-      for(;;)  // Loop through all files for valid 2600 images
-      {
-        // Longer filenames might be possible, but I don't
-        // think people would name files that long in zip files...
-        char currfile[1024];
-
-        unzGetCurrentFileInfo(tz, &ufo, currfile, 1024, 0, 0, 0, 0);
-        currfile[1023] = '\0';
-
-        if(strlen(currfile) >= 4 &&
-           !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
-        {
-          // Grab 3-character extension
-          const char* ext = currfile + strlen(currfile) - 4;
-
-          if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
-             BSPF_equalsIgnoreCase(ext, ".rom"))
-          {
-            // Either match the first file or the one we're looking for
-            if(fileinzip.empty() || searchnode == FilesystemNode(currfile))
-            {
-              found = true;
-              break;
-            }
-          }
-        }
-
-        // Scan the next file in the zip
-        if(unzGoToNextFile(tz) != UNZ_OK)
-          break;
-      }
-
-      // Now see if we got a valid image
-      if(!found || ufo.uncompressed_size <= 0)
-      {
-        unzClose(tz);
-        return true;
-      }
-      size  = ufo.uncompressed_size;
-      *image = new uInt8[size];
-
-      // We don't have to check for any return errors from these functions,
-      // since if there are, 'image' will not contain a valid ROM and the
-      // calling method can take care of it
-      unzOpenCurrentFile(tz);
-      unzReadCurrentFile(tz, *image, size);
-      unzCloseCurrentFile(tz);
-      unzClose(tz);
-
-      return true;
-    }
-    else
-    {
-      unzClose(tz);
-      return true;
-    }
-  }
-  return false;
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

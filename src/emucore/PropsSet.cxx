@@ -149,6 +149,23 @@ bool PropertiesSet::getMD5(const string& md5, Properties& properties,
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PropertiesSet::getMD5WithInsert(const FilesystemNode& rom,
+                                     const string& md5, Properties& properties)
+{
+  if(!getMD5(md5, properties))
+  {
+    // Create a name suitable for using in properties
+    size_t pos = rom.getName().find_last_of("/\\");
+    const string& name = pos == string::npos ? rom.getName() :
+                         rom.getName().substr(pos+1);
+
+    properties.set(Cartridge_MD5, md5);
+    properties.set(Cartridge_Name, name);
+    insert(properties, false);
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void PropertiesSet::insert(const Properties& properties, bool save)
 {
   // Note that the following code is optimized for insertion when an item

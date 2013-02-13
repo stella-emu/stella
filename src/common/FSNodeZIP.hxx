@@ -66,6 +66,8 @@ class FilesystemNodeZIP : public AbstractFSNode
     bool getChildren(AbstractFSList& list, ListMode mode, bool hidden) const;
     AbstractFSNode* getParent() const;
 
+    bool read(uInt8*& image, uInt32& size) const;
+
   private:
     FilesystemNodeZIP(const string& zipfile, const string& virtualfile,
         Common::SharedPtr<AbstractFSNode> realnode);

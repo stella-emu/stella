@@ -80,7 +80,7 @@ class ZipHandler
     string next();    // Get next file
 
     // Decompress the currently selected file, return false on any errors
-    bool decompress(uInt8* buffer, uInt32 length);
+    bool decompress(uInt8*& image, uInt32& length);
     
   private:
     // Replaces functionaity of various osd_xxxx functions

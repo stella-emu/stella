@@ -20,6 +20,8 @@
 //   Copyright (C) 2002-2004 The ScummVM project
 //============================================================================
 
+#include <zlib.h>
+
 #include "bspf.hxx"
 #include "SharedPtr.hxx"
 #include "FSNodeFactory.hxx"
@@ -152,6 +154,26 @@ bool FilesystemNode::makeDir()
 bool FilesystemNode::rename(const string& newfile)
 {
   return (_realNode && _realNode->exists()) ? _realNode->rename(newfile) : false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNode::read(uInt8*& image, uInt32& size) const
+{
+  // First let the private subclass attempt to open the file
+  if(_realNode->read(image, size))
+    return true;
+
+  // Otherwise, assume the file is either gzip'ed or not compressed at all
+  gzFile f = gzopen(getPath().c_str(), "rb");
+  if(f)
+  {
+    image = new uInt8[512 * 1024];
+    size = gzread(f, image, 512 * 1024);
+    gzclose(f);
+
+    return true;
+  }
+  return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

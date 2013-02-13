@@ -228,11 +228,22 @@ class FilesystemNode
     virtual bool makeDir();
 
     /**
-      Rename the current node path with the new given name.
+     * Rename the current node path with the new given name.
      *
      * @return bool true if the node was renamed, false otherwise.
      */
     virtual bool rename(const string& newfile);
+
+    /**
+     * Read data (binary format) into the given buffer.
+     *
+     * @param buffer  The buffer to containing the data
+     *                This will be allocated by the method, and must be
+     *                freed by the caller.
+     * @param size    Holds the size of the created buffer.
+     * @return  True if the read succeeded, else false for any reason
+     */
+    virtual bool read(uInt8*& buffer, uInt32& size) const;
 
     // TODO - this function is deprecated, and will be removed soon ...
     /**
@@ -366,11 +377,22 @@ class AbstractFSNode
     virtual bool makeDir() = 0;
 
     /**
-      Rename the current node path with the new given name.
+     * Rename the current node path with the new given name.
      *
      * @return bool true if the node was renamed, false otherwise.
      */
     virtual bool rename(const string& newfile) = 0;
+
+    /**
+     * Read data (binary format) into the given buffer.
+     *
+     * @param buffer  The buffer to containing the data
+     *                This will be allocated by the method, and must be
+     *                freed by the caller.
+     * @param size    Holds the size of the created buffer.
+     * @return  True if the read succeeded, else false for any reason
+     */
+    virtual bool read(uInt8*& buffer, uInt32& size) const { return false; }
 
     /**
      * The parent node of this directory.

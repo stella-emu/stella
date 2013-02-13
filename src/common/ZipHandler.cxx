@@ -82,9 +82,22 @@ string ZipHandler::next()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool ZipHandler::decompress(uInt8* buffer, uInt32 length)
+bool ZipHandler::decompress(uInt8*& image, uInt32& length)
 {
-  return myZip && (zip_file_decompress(myZip, buffer, length) == ZIPERR_NONE);
+  if(myZip)
+  {
+    length = myZip->header.uncompressed_length;
+    image = new uInt8[length];
+    if(zip_file_decompress(myZip, image, length) != ZIPERR_NONE)
+    {
+      delete[] image;  image = 0;
+      length = 0;
+      return false;
+    }
+    return true;
+  }
+  else
+    return false;
 }
 
 /*-------------------------------------------------

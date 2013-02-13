@@ -345,3 +345,16 @@ string MD5(const uInt8* buffer, uInt32 length)
 
   return result;
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string MD5(const FilesystemNode& node)
+{
+  uInt8* image = 0;
+  uInt32 size = 0;
+  if(!node.read(image, size))
+    return EmptyString;
+
+  const string& md5 = MD5(image, size);
+  delete[] image;
+  return md5;
+}

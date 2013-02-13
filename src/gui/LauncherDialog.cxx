@@ -226,10 +226,8 @@ const string& LauncherDialog::selectedRomMD5()
 
   // Make sure we have a valid md5 for this ROM
   if(myGameList->md5(item) == "")
-  {
-    const string& md5 = instance().MD5FromFile(node);
-    myGameList->setMd5(item, md5);
-  }
+    myGameList->setMd5(item, MD5(node));
+
   return myGameList->md5(item);
 }
 
@@ -353,51 +351,6 @@ void LauncherDialog::loadDirListing()
   if(myCurrentNode.isDirectory())
     myCurrentNode.getChildren(files, FilesystemNode::kListAll);
 
-#if 0
-  else
-  {
-    unzFile tz;
-    if((tz = unzOpen(myCurrentNode.getPath().c_str())) != NULL)
-    {
-      if(unzGoToFirstFile(tz) == UNZ_OK)
-      {
-        unz_file_info ufo;
-
-        for(;;)  // Loop through all files for valid 2600 images
-        {
-          // Longer filenames might be possible, but I don't
-          // think people would name files that long in zip files...
-          char filename[1024];
-
-          unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
-          filename[1023] = '\0';
-
-          if(strlen(filename) >= 4 &&
-             !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
-          {
-#if 0
-            // Grab 3-character extension
-            const char* ext = filename + strlen(filename) - 4;
-
-            if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
-               BSPF_equalsIgnoreCase(ext, ".rom"))
-#endif
-            {
-              FilesystemNode newFile(FilesystemNode::createAbsolutePath(
-                  filename, myCurrentNode.getPath(), ""));
-              files.push_back(newFile);
-            }
-          }
-
-          // Scan the next file in the zip
-          if(unzGoToNextFile(tz) != UNZ_OK)
-            break;
-        }
-      }
-    }
-  }
-#endif
-
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
     myGameList->appendGame(" [..]", "", "", true);
@@ -445,11 +398,11 @@ void LauncherDialog::loadRomInfo()
   {
     // Make sure we have a valid md5 for this ROM
     if(myGameList->md5(item) == "")
-      myGameList->setMd5(item, instance().MD5FromFile(node));
+      myGameList->setMd5(item, MD5(node));
 
     // Get the properties for this entry
     Properties props;
-    instance().propSet().getMD5(myGameList->md5(item), props);
+    instance().propSet().getMD5WithInsert(node, myGameList->md5(item), props);
 
     myRomInfoWidget->setProperties(props);
   }
@@ -527,11 +480,12 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
   return false;
 }
 
+#if 0
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 int LauncherDialog::filesInArchive(const string& archive)
 {
   int count = -1;
-#if 0
+
   unzFile tz;
   if((tz = unzOpen(archive.c_str())) != NULL)
   {
@@ -566,9 +520,9 @@ int LauncherDialog::filesInArchive(const string& archive)
       }
     }
   }
-#endif
   return count;
 }
+#endif
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)

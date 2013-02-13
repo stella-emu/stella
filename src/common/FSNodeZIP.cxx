@@ -83,8 +83,8 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
   if(_virtualFile.size() != 0)
   {
     _isVirtual = true;
-    _path += (BSPF_PATH_SEPARATOR + _virtualFile);
-    _shortPath += (BSPF_PATH_SEPARATOR + _virtualFile);
+    _path += ("/" + _virtualFile);
+    _shortPath += ("/" + _virtualFile);
   }
   else
     _isVirtual = false;
@@ -110,6 +110,32 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
   }
 
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool FilesystemNodeZIP::read(uInt8*& image, uInt32& size) const
+{
+cerr << "FilesystemNodeZIP::read" << endl
+  << "  zfile: " << _zipFile << endl
+  << "  vfile: " << _virtualFile << endl
+  << endl;
+
+  ZipHandler& zip = OSystem::zip(_zipFile);
+  bool found = false;
+  while(zip.hasNext() && !found)
+  {
+const string& next = zip.next();
+cerr << "searching: " << next << endl;
+    found = _virtualFile == next;
+  }
+
+  if(found)
+  {
+cerr << "decompressing ...\n";
+    return zip.decompress(image, size);
+  }
+  else
+    return false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
