@@ -267,9 +267,6 @@
     <ClCompile Include="..\emucore\TrackBall.cxx">
       <Filter>Source Files\emucore</Filter>
     </ClCompile>
-    <ClCompile Include="..\emucore\unzip.c">
-      <Filter>Source Files\emucore</Filter>
-    </ClCompile>
     <ClCompile Include="..\cheat\BankRomCheat.cxx">
       <Filter>Source Files\cheat</Filter>
     </ClCompile>
@@ -627,6 +624,9 @@
     <ClCompile Include="..\common\FSNodeZIP.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\common\ZipHandler.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\common\Array.hxx">
@@ -873,9 +873,6 @@
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\emucore\TrackBall.hxx">
-      <Filter>Header Files\emucore</Filter>
-    </ClInclude>
-    <ClInclude Include="..\emucore\unzip.h">
       <Filter>Header Files\emucore</Filter>
     </ClInclude>
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx">
@@ -1254,6 +1251,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="FSNodeWin32.hxx">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\common\ZipHandler.hxx">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

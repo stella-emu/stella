@@ -227,6 +227,7 @@ SDLmain.lib
     <ClCompile Include="..\common\MouseControl.cxx" />
     <ClCompile Include="..\common\tv_filters\atari_ntsc.c" />
     <ClCompile Include="..\common\tv_filters\NTSCFilter.cxx" />
+    <ClCompile Include="..\common\ZipHandler.cxx" />
     <ClCompile Include="..\debugger\gui\BoosterWidget.cxx" />
     <ClCompile Include="..\debugger\gui\DrivingWidget.cxx" />
     <ClCompile Include="..\debugger\gui\GenesisWidget.cxx" />
@@ -313,7 +314,6 @@ SDLmain.lib
     <ClCompile Include="..\emucore\TIASnd.cxx" />
     <ClCompile Include="..\emucore\TIATables.cxx" />
     <ClCompile Include="..\emucore\TrackBall.cxx" />
-    <ClCompile Include="..\emucore\unzip.c" />
     <ClCompile Include="..\cheat\BankRomCheat.cxx" />
     <ClCompile Include="..\cheat\CheatCodeDialog.cxx" />
     <ClCompile Include="..\cheat\CheatManager.cxx" />
@@ -432,6 +432,7 @@ SDLmain.lib
     <ClInclude Include="..\common\tv_filters\atari_ntsc.h" />
     <ClInclude Include="..\common\tv_filters\atari_ntsc_impl.h" />
     <ClInclude Include="..\common\tv_filters\NTSCFilter.hxx" />
+    <ClInclude Include="..\common\ZipHandler.hxx" />
     <ClInclude Include="..\debugger\gui\BoosterWidget.hxx" />
     <ClInclude Include="..\debugger\gui\ControllerWidget.hxx" />
     <ClInclude Include="..\debugger\gui\DrivingWidget.hxx" />
@@ -530,7 +531,6 @@ SDLmain.lib
     <ClInclude Include="..\emucore\TIASnd.hxx" />
     <ClInclude Include="..\emucore\TIATables.hxx" />
     <ClInclude Include="..\emucore\TrackBall.hxx" />
-    <ClInclude Include="..\emucore\unzip.h" />
     <ClInclude Include="..\debugger\gui\AudioWidget.hxx" />
     <ClInclude Include="..\debugger\CartDebug.hxx" />
     <ClInclude Include="..\debugger\gui\ColorWidget.hxx" />
