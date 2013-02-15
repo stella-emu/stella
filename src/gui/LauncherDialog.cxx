@@ -342,14 +342,12 @@ void LauncherDialog::updateListing(const string& nameToSelect)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::loadDirListing()
 {
-  if(!myCurrentNode.isDirectory() && !myCurrentNode.exists())
+  if(!myCurrentNode.isDirectory())
     return;
 
   FSList files;
   files.reserve(2048);
-
-  if(myCurrentNode.isDirectory())
-    myCurrentNode.getChildren(files, FilesystemNode::kListAll);
+  myCurrentNode.getChildren(files, FilesystemNode::kListAll);
 
   // Add '[..]' to indicate previous folder
   if(myCurrentNode.hasParent())
@@ -480,50 +478,6 @@ bool LauncherDialog::matchPattern(const string& s, const string& pattern) const
   return false;
 }
 
-#if 0
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int LauncherDialog::filesInArchive(const string& archive)
-{
-  int count = -1;
-
-  unzFile tz;
-  if((tz = unzOpen(archive.c_str())) != NULL)
-  {
-    count = 0;
-    if(unzGoToFirstFile(tz) == UNZ_OK)
-    {
-      unz_file_info ufo;
-
-      for(;;)  // Loop through all files for valid 2600 images
-      {
-        // Longer filenames might be possible, but I don't
-        // think people would name files that long in zip files...
-        char filename[1024];
-
-        unzGetCurrentFileInfo(tz, &ufo, filename, 1024, 0, 0, 0, 0);
-        filename[1023] = '\0';
-
-        if(strlen(filename) >= 4 &&
-           !BSPF_startsWithIgnoreCase(filename, "__MACOSX"))
-        {
-          // Grab 3-character extension
-          const char* ext = filename + strlen(filename) - 4;
-
-          if(BSPF_equalsIgnoreCase(ext, ".a26") || BSPF_equalsIgnoreCase(ext, ".bin") ||
-             BSPF_equalsIgnoreCase(ext, ".rom"))
-            ++count;
-        }
-
-        // Scan the next file in the zip
-        if(unzGoToNextFile(tz) != UNZ_OK)
-          break;
-      }
-    }
-  }
-  return count;
-}
-#endif
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void LauncherDialog::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
 {
@@ -563,17 +517,16 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       {
         const FilesystemNode romnode(myGameList->path(item));
 
-        int numFilesInArchive = -1;//filesInArchive(rom);
-        bool isArchive = false;//!myGameList->isDir(item) && BSPF_endsWithIgnoreCase(rom, ".zip");
-
-        // Directory's should be selected (ie, enter them and redisplay)
-        // Archives should be entered if they contain more than 1 file
-        if(isArchive && numFilesInArchive < 1)
+        // If a node isn't a file or directory, there's nothing we can
+        // do with it
+        if(!romnode.isDirectory() && !romnode.isFile())
         {
-          instance().frameBuffer().showMessage("Archive does not contain any valid ROM files",
-                                               kMiddleCenter, true);
+          instance().frameBuffer().showMessage(
+            "Invalid file or doesn't contain any valid ROM files",
+            kMiddleCenter, true);
         }
-        else if(/*(isArchive && numFilesInArchive > 1) ||*/ romnode.isDirectory())
+        // Directory's should be selected (ie, enter them and redisplay)
+        else if(romnode.isDirectory())
         {
           string dirname = "";
           if(myGameList->name(item) == " [..]")

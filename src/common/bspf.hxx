@@ -169,9 +169,12 @@ inline bool BSPF_startsWithIgnoreCase(const char* s1, const char* s2)
 // Test whether the first string ends with the second one (case insensitive)
 inline bool BSPF_endsWithIgnoreCase(const string& s1, const string& s2)
 {
-  return (s1.length() >= s2.length()) ?
-      (BSPF_findIgnoreCase(s1, s2, s1.length() - s2.length()) != string::npos) :
-      false;
+  if(s1.length() >= s2.length())
+  {
+    const char* end = s1.c_str() + s1.length() - s2.length();
+    return BSPF_equalsIgnoreCase(end, s2.c_str());
+  }
+  return false;
 }
 
 // Test whether the first string contains the second one (case insensitive)

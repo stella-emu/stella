@@ -23,6 +23,26 @@
       - The 'volume clipping' option has been removed, since in 16-bit
         mode it's no longer needed.
       - The 'Tia freq' option has been removed.
+      - Selecting more common sample rates (other than 31400) now works
+        much better, but there are still a few ROMS (like Quadrun) where
+        31400Hz still works best.
+
+  * Many changes to handling ZIP archives:
+      - Files in multiple levels are now recognized.  This fixes issues
+        in Windows where such files couldn't be loaded at all, and in all
+        systems where ROMs with the same name (but different directories)
+        weren't being recognized.
+      - ZIP contents are now handled more intelligently.  Archives
+        containing only one ROM are automatically loaded, whereas those
+        with multiple files are treated as directories.
+      - Opening an archive from the commandline now works as in the UI,
+        where opening a multi-ROM archive will pop up the UI and show the
+        archive contents (as a directory).
+      - The ZIP code behind the scenes is now much faster by making use
+        of caching (the old code was actually from 1998!).
+      - This new 'archive' infrastructure may eventually lead to 7-Zip
+        support, as well as 'virtual' formats (such as showing the list
+        of files for 2in1/4in1/8in1/etc within the UI.
 
   * Improved bankswitch autodetection for X07 ROMs (although there's only
     two known ROMs in existence, so the detection probably isn't robust).
@@ -32,9 +52,6 @@
 
   * Fixed regression in RIOT INTIM reads; at least one known ROM
     (Mr. Roboto Berzerk hack) wasn't working properly.
-
-  * Fixed ZIP file handling in Windows when the archive contained
-    multiple files; in several cases the ROM wasn't being loaded at all.
 
   * Updated included PNG and ZLIB libraries to latest stable version.
 

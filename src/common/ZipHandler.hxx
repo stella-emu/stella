@@ -81,7 +81,11 @@ class ZipHandler
 
     // Decompress the currently selected file, return false on any errors
     bool decompress(uInt8*& image, uInt32& length);
-    
+
+    // Answer the number of ROM files found in the archive
+    // Currently, this means files with extension a26/bin/rom
+    uInt16 romFiles() const { return myZip ? myZip->romfiles : 0; }
+
   private:
     // Replaces functionaity of various osd_xxxx functions
     static bool stream_open(const char* filename, fstream** stream, uInt64& length);
@@ -153,6 +157,7 @@ class ZipHandler
       const char*     filename;   /* copy of ZIP filename (for caching) */
       fstream*        file;       /* C++ fstream file handle */
       uInt64          length;     /* length of zip file */
+      uInt16          romfiles;   /* number of ROM files in central directory */
 
       zip_ecd         ecd;        /* end of central directory */
 

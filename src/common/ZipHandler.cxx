@@ -17,11 +17,11 @@
 // $Id$
 //============================================================================
 
-#include "ZipHandler.hxx"
-
 #include <cctype>
 #include <cstdlib>
 #include <zlib.h>
+
+#include "ZipHandler.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 ZipHandler::ZipHandler()
@@ -69,13 +69,18 @@ string ZipHandler::next()
 {
   if(myZip)
   {
+    bool valid = false;
     const zip_file_header* header = NULL;
     do {
       header = zip_file_next_file(myZip);
-    }
-    while(header && header->uncompressed_length == 0);
 
-    return header ? header->filename : EmptyString;
+      // Ignore zero-length files and '__MACOSX' virtual directories
+      valid = header && (header->uncompressed_length > 0) &&
+              !BSPF_startsWithIgnoreCase(header->filename, "__MACOSX");
+    }
+    while(!valid && myZip->cd_pos < myZip->ecd.cd_size);
+
+    return valid ? header->filename : EmptyString;
   }
   else
     return EmptyString;
@@ -245,6 +250,16 @@ ZipHandler::zip_error ZipHandler::zip_file_open(const char *filename, zip_file *
   strcpy(string, filename);
   newzip->filename = string;
   *zip = newzip;
+
+  // Count ROM files (we do it at this level so it will be cached)
+  while(hasNext())
+  {
+    const std::string& file = next();
+    if(BSPF_endsWithIgnoreCase(file, ".a26") ||
+       BSPF_endsWithIgnoreCase(file, ".bin") ||
+       BSPF_endsWithIgnoreCase(file, ".rom"))
+      (*zip)->romfiles++;
+  }
 
   return ZIPERR_NONE;
 

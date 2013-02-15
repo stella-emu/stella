@@ -30,7 +30,8 @@ FilesystemNodeZIP::FilesystemNodeZIP()
 {
   // We need a name, else the node is invalid
   _path = _shortPath = _virtualFile = "";
-  _isValid = _isDirectory = _isFile = _isVirtual = false;
+  _isValid = false;
+  _numFiles = 0;
 
   AbstractFSNode* tmp = 0;
   _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
@@ -39,22 +40,46 @@ FilesystemNodeZIP::FilesystemNodeZIP()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 FilesystemNodeZIP::FilesystemNodeZIP(const string& p)
 {
+  _path = _shortPath = _virtualFile = "";
+  _isValid = false;
+
   // Extract ZIP file and virtual file (if specified)
   size_t pos = BSPF_findIgnoreCase(p, ".zip");
   if(pos == string::npos)
-  {
-    // Not a ZIP file
-    _path = _shortPath = _virtualFile = "";
-    _isValid = _isDirectory = _isFile = _isVirtual = false;
     return;
-  }
 
   _zipFile = p.substr(0, pos+4);
+
+  // Open file at least once to initialize the virtual file count
+  ZipHandler& zip = OSystem::zip(_zipFile);
+  _numFiles = zip.romFiles();
+  if(_numFiles == 0)
+    return;
+
+  // We always need a virtual file
+  // Either one is given, or we use the first one
   if(pos+5 < p.length())
     _virtualFile = p.substr(pos+5);
+  else if(_numFiles == 1)
+  {
+    bool found = false;
+    while(zip.hasNext() && !found)
+    {
+      const std::string& file = zip.next();
+      if(BSPF_endsWithIgnoreCase(file, ".a26") ||
+         BSPF_endsWithIgnoreCase(file, ".bin") ||
+         BSPF_endsWithIgnoreCase(file, ".rom"))
+      {
+        _virtualFile = file;
+        found = true;
+      }
+    }
+    if(!found)
+      return;
+  }
 
-  AbstractFSNode* tmp = FilesystemNodeFactory::create(
-                            _zipFile, FilesystemNodeFactory::SYSTEM);
+  AbstractFSNode* tmp =
+    FilesystemNodeFactory::create(_zipFile, FilesystemNodeFactory::SYSTEM);
   _realNode = Common::SharedPtr<AbstractFSNode>(tmp);
 
   setFlags(_zipFile, _virtualFile, _realNode);
@@ -82,27 +107,22 @@ void FilesystemNodeZIP::setFlags(const string& zipfile,
   // Is a file component present?
   if(_virtualFile.size() != 0)
   {
-    _isVirtual = true;
     _path += ("/" + _virtualFile);
     _shortPath += ("/" + _virtualFile);
+    _numFiles = 1;
   }
-  else
-    _isVirtual = false;
-
-  _isDirectory = !_isVirtual;
+  _isValid = _realNode->isFile() && _realNode->isReadable();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
                                     bool hidden) const
 {
-  assert(_isDirectory);
-
   // Files within ZIP archives don't contain children
-  if(_isVirtual)
+  if(!isDirectory() || !_isValid)
     return false;
 
-  ZipHandler& zip = OSystem::zip(_path);
+  ZipHandler& zip = OSystem::zip(_zipFile);
   while(zip.hasNext())
   {
     FilesystemNodeZIP entry(_path, zip.next(), _realNode);
@@ -115,33 +135,16 @@ bool FilesystemNodeZIP::getChildren(AbstractFSList& myList, ListMode mode,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool FilesystemNodeZIP::read(uInt8*& image, uInt32& size) const
 {
-cerr << "FilesystemNodeZIP::read" << endl
-  << "  zfile: " << _zipFile << endl
-  << "  vfile: " << _virtualFile << endl
-  << endl;
+  if(!_isValid)
+    return false;
 
   ZipHandler& zip = OSystem::zip(_zipFile);
+
   bool found = false;
   while(zip.hasNext() && !found)
-  {
-const string& next = zip.next();
-cerr << "searching: " << next << endl;
-    found = _virtualFile == next;
-  }
+    found = zip.next() == _virtualFile;
 
-  if(found)
-  {
-cerr << "decompressing ...\n";
-    return zip.decompress(image, size);
-  }
-  else
-    return false;
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool FilesystemNodeZIP::isAbsolute() const
-{
-  return false;
+  return found ? zip.decompress(image, size) : false;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

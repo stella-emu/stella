@@ -28,6 +28,10 @@
 
 /*
  * Implementation of the Stella file system API based on ZIP archives.
+ * ZIP archives are treated as directories if the contain more than one ROM
+ * file, as a file if they contain a single ROM file, and as neither if the
+ * archive is empty.  Hence, if a ZIP archive isn't a directory *or* a file,
+ * it is invalid.
  *
  * Parts of this class are documented in the base interface class, AbstractFSNode.
  */
@@ -47,15 +51,15 @@ class FilesystemNodeZIP : public AbstractFSNode
      */
     FilesystemNodeZIP(const string& path);
 
-    bool exists() const { return false; }
+    bool exists() const      { return _realNode->exists();     }
     const string& getName() const { return _virtualFile; }
     const string& getPath() const { return _path;        }
     string getShortPath() const   { return _shortPath;   }
-    bool isDirectory() const { return _isDirectory; }
-    bool isFile() const      { return _isFile;      }
-    bool isReadable() const  { return false; }
+    bool isDirectory() const { return _numFiles > 1;           }
+    bool isFile() const      { return _numFiles == 1;          }
+    bool isReadable() const  { return _realNode->isReadable(); }
     bool isWritable() const  { return false; }
-    bool isAbsolute() const;
+    bool isAbsolute() const  { return _realNode->isAbsolute(); }
 
     //////////////////////////////////////////////////////////
     // For now, ZIP files cannot be modified in any way
@@ -79,10 +83,8 @@ class FilesystemNodeZIP : public AbstractFSNode
     Common::SharedPtr<AbstractFSNode> _realNode;
     string _zipFile, _virtualFile;
     string _path, _shortPath;
-    bool _isDirectory;
-    bool _isFile;
     bool _isValid;
-    bool _isVirtual;
+    uInt32 _numFiles;
 };
 
 #endif
