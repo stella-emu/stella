@@ -314,9 +314,11 @@ class OSystem
     const string& stateDir() const { return myStateDir; }
 
     /**
-      Return the full/complete directory name for storing PNG snapshots.
+      Return the full/complete directory name for saving and loading
+      PNG snapshots.
     */
-    const string& snapshotDir() const { return mySnapshotDir; }
+    const string& snapshotSaveDir() const { return mySnapshotSaveDir; }
+    const string& snapshotLoadDir() const { return mySnapshotLoadDir; }
 
     /**
       Return the full/complete directory name for storing EEPROM files.
@@ -505,13 +507,14 @@ class OSystem
     virtual void stateChanged(EventHandler::State state);
 
     /**
-      Returns the default path for the snapshot directory.
+      Returns the default save and load paths for the snapshot directory.
       Since this varies greatly among different systems and is the one
       directory that most end-users care about (vs. config file stuff
       that usually isn't user-modifiable), we create a special method
       for it.
     */
-    virtual string defaultSnapDir() { return "~"; }
+    virtual string defaultSnapSaveDir() { return "~"; }
+    virtual string defaultSnapLoadDir() { return "~"; }
 
     /**
       Set the position of the application window, generally using
@@ -610,7 +613,8 @@ class OSystem
     enum { kNumUIPalettes = 2 };
     string myBaseDir;
     string myStateDir;
-    string mySnapshotDir;
+    string mySnapshotSaveDir;
+    string mySnapshotLoadDir;
     string myEEPROMDir;
     string myCfgDir;
 

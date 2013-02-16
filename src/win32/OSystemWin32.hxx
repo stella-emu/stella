@@ -44,9 +44,10 @@ class OSystemWin32 : public OSystem
 
   public:
     /**
-      Returns the default path for the snapshot directory.
+      Returns the default paths for the snapshot directory.
     */
-    string defaultSnapDir();
+    string defaultSnapSaveDir();
+    string defaultSnapLoadDir();
 
     /**
       Move window to given position.  The width and height are also

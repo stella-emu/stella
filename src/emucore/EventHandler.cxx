@@ -1948,7 +1948,7 @@ void EventHandler::takeSnapshot(uInt32 number)
   // Figure out the correct snapshot name
   string filename;
   bool showmessage = number == 0;
-  string sspath = myOSystem->snapshotDir() +
+  string sspath = myOSystem->snapshotSaveDir() +
       myOSystem->console().properties().get(Cartridge_Name);
 
   // Check whether we want multiple snapshots created

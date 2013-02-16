@@ -91,11 +91,17 @@ OSystemWin32::~OSystemWin32()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemWin32::defaultSnapDir()
+string OSystemWin32::defaultSnapSaveDir()
 {
   HomeFinder homefinder;
   FilesystemNode desktop(homefinder.getDesktopPath());
   return desktop.isDirectory() ? desktop.getShortPath() : "~";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystemWin32::defaultSnapLoadDir()
+{
+  return defaultSnapSaveDir();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -58,7 +58,8 @@ class FileSnapDialog : public Dialog, public CommandSender
       kChooseCheatFileCmd   = 'LOcf', // cheatfile (stella.cht)
       kChoosePaletteFileCmd = 'LOpf', // palette file (stella.pal)
       kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
-      kChooseSnapDirCmd     = 'LOsn', // snapshot dir
+      kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
+      kChooseSnapLoadDirCmd = 'LOsl', // snapshot dir (load files)
       kChooseEEPROMDirCmd   = 'LOee', // eeprom dir
       kStateDirChosenCmd    = 'LOsc', // state dir changed
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
@@ -76,7 +77,8 @@ class FileSnapDialog : public Dialog, public CommandSender
     EditTextWidget* myCheatFile;
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;
-    EditTextWidget* mySnapPath;
+    EditTextWidget* mySnapSavePath;
+    EditTextWidget* mySnapLoadPath;
 
     // Other snapshot settings
     CheckboxWidget* mySnapSingle;

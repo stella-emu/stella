@@ -49,10 +49,11 @@ class StringListWidget;
 
 // These must be accessible from dialogs created by this class
 enum {
-  kRomDirChosenCmd  = 'romc',  // rom chosen
-  kSnapDirChosenCmd = 'snpc',  // snap chosen
-  kReloadRomDirCmd  = 'rdrl',  // reload the current listing
-  kReloadFiltersCmd = 'rlfl'   // reload filtering options and current listing
+  kRomDirChosenCmd      = 'romc',  // rom chosen
+  kSnapSaveDirChosenCmd = 'snsc',  // snap chosen (save files)
+  kSnapLoadDirChosenCmd = 'snlc',  // snap chosen (load files)
+  kReloadRomDirCmd      = 'rdrl',  // reload the current listing
+  kReloadFiltersCmd     = 'rlfl'   // reload filtering options and current listing
 };
 
 class LauncherDialog : public Dialog

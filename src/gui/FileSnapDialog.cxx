@@ -43,7 +43,7 @@ FileSnapDialog::FileSnapDialog(
 {
   const int lineHeight   = font.getLineHeight(),
             fontWidth    = font.getMaxCharWidth(),
-            buttonWidth  = font.getStringWidth("Properties file:") + 20,
+            buttonWidth  = font.getStringWidth("Snapshot load path:") + 20,
             buttonHeight = font.getLineHeight() + 4;
   const int vBorder = 8;
   int xpos, ypos;
@@ -51,8 +51,8 @@ FileSnapDialog::FileSnapDialog(
   ButtonWidget* b;
 
   // Set real dimensions
-  _w = 52 * fontWidth + 8;
-  _h = 12 * (lineHeight + 4) + 10;
+  _w = 56 * fontWidth + 8;
+  _h = 13 * (lineHeight + 4) + 10;
 
   xpos = vBorder;  ypos = vBorder;
 
@@ -66,15 +66,25 @@ FileSnapDialog::FileSnapDialog(
                                  _w - xpos - 10, lineHeight, "");
   wid.push_back(myRomPath);
 
-  // Snapshot path
+  // Snapshot path (save files)
   xpos = vBorder;  ypos += romButton->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "Snapshot path:", kChooseSnapDirCmd);
+                       "Snapshot save path:", kChooseSnapSaveDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
-  mySnapPath = new EditTextWidget(this, font, xpos, ypos + 2,
+  mySnapSavePath = new EditTextWidget(this, font, xpos, ypos + 2,
                                   _w - xpos - 10, lineHeight, "");
-  wid.push_back(mySnapPath);
+  wid.push_back(mySnapSavePath);
+
+  // Snapshot path (load files)
+  xpos = vBorder;  ypos += romButton->getHeight() + 3;
+  b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
+                       "Snapshot load path:", kChooseSnapLoadDirCmd);
+  wid.push_back(b);
+  xpos += buttonWidth + 10;
+  mySnapLoadPath = new EditTextWidget(this, font, xpos, ypos + 2,
+                                  _w - xpos - 10, lineHeight, "");
+  wid.push_back(mySnapLoadPath);
 
   // Cheat file
   xpos = vBorder;  ypos += b->getHeight() + 3;
@@ -188,7 +198,8 @@ void FileSnapDialog::loadConfig()
 {
   const Settings& settings = instance().settings();
   myRomPath->setEditString(settings.getString("romdir"));
-  mySnapPath->setEditString(settings.getString("snapdir"));
+  mySnapSavePath->setEditString(settings.getString("snapsavedir"));
+  mySnapLoadPath->setEditString(settings.getString("snaploaddir"));
   myCheatFile->setEditString(settings.getString("cheatfile"));
   myPaletteFile->setEditString(settings.getString("palettefile"));
   myPropsFile->setEditString(settings.getString("propsfile"));
@@ -203,7 +214,8 @@ void FileSnapDialog::loadConfig()
 void FileSnapDialog::saveConfig()
 {
   instance().settings().setString("romdir", myRomPath->getEditString());
-  instance().settings().setString("snapdir", mySnapPath->getEditString());
+  instance().settings().setString("snapsavedir", mySnapSavePath->getEditString());
+  instance().settings().setString("snaploaddir", mySnapLoadPath->getEditString());
   instance().settings().setString("cheatfile", myCheatFile->getEditString());
   instance().settings().setString("palettefile", myPaletteFile->getEditString());
   instance().settings().setString("propsfile", myPropsFile->getEditString());
@@ -227,7 +239,8 @@ void FileSnapDialog::setDefaults()
   node = FilesystemNode("~");
   myRomPath->setEditString(node.getShortPath());
 
-  mySnapPath->setEditString(instance().defaultSnapDir());
+  mySnapSavePath->setEditString(instance().defaultSnapSaveDir());
+  mySnapLoadPath->setEditString(instance().defaultSnapLoadDir());
  
   const string& cheatfile = basedir + "stella.cht";
   node = FilesystemNode(cheatfile);
@@ -276,9 +289,14 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
                       FilesystemNode::kListDirectoriesOnly, kRomDirChosenCmd);
       break;
 
-    case kChooseSnapDirCmd:
-      myBrowser->show("Select snapshot directory:", mySnapPath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kSnapDirChosenCmd);
+    case kChooseSnapSaveDirCmd:
+      myBrowser->show("Select snapshot save directory:", mySnapSavePath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kSnapSaveDirChosenCmd);
+      break;
+
+    case kChooseSnapLoadDirCmd:
+      myBrowser->show("Select snapshot load directory:", mySnapLoadPath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kSnapLoadDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
@@ -313,10 +331,17 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kSnapDirChosenCmd:
+    case kSnapSaveDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      mySnapPath->setEditString(dir.getShortPath());
+      mySnapSavePath->setEditString(dir.getShortPath());
+      break;
+    }
+
+    case kSnapLoadDirChosenCmd:
+    {
+      FilesystemNode dir(myBrowser->getResult());
+      mySnapLoadPath->setEditString(dir.getShortPath());
       break;
     }
 

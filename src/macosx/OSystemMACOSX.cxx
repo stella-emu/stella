@@ -46,8 +46,14 @@ OSystemMACOSX::~OSystemMACOSX()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-string OSystemMACOSX::defaultSnapDir()
+string OSystemMACOSX::defaultSnapSaveDir()
 {
   FilesystemNode desktop("~/Desktop");
   return desktop.isDirectory() ? desktop.getShortPath() : "~";
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string OSystemMACOSX::defaultSnapLoadDir()
+{
+  return defaultSnapSaveDir();
 }

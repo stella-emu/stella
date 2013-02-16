@@ -108,7 +108,7 @@ void RomInfoWidget::parseProperties()
   myRomInfo.clear();
 
   // Get a valid filename representing a snapshot file for this rom
-  const string& filename = instance().snapshotDir() +
+  const string& filename = instance().snapshotLoadDir() +
       myProperties.get(Cartridge_Name) + ".png";
 
   // Read the PNG file

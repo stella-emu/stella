@@ -53,6 +53,11 @@
   * Fixed regression in RIOT INTIM reads; at least one known ROM
     (Mr. Roboto Berzerk hack) wasn't working properly.
 
+  * Added support for different directories for saving/loading PNG
+    files.  These are set with the 'snapsavedir' and 'snaploaddir'
+    commandline arguments (which replace the old 'snapdir'), and are
+    also available within the UI.
+
   * Updated included PNG and ZLIB libraries to latest stable version.
 
 -Have fun!

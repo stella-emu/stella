@@ -42,9 +42,10 @@ class OSystemMACOSX : public OSystem
     virtual ~OSystemMACOSX();
 
     /**
-      Returns the default path for the snapshot directory.
+      Returns the default paths for the snapshot directory.
     */
-    string defaultSnapDir();
+    string defaultSnapSaveDir();
+    string defaultSnapLoadDir();
 };
 
 #endif

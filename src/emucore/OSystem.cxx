@@ -348,7 +348,8 @@ void OSystem::setConfigPaths()
   string s;
 
   validatePath(myStateDir, "statedir", myBaseDir + "statedir");
-  validatePath(mySnapshotDir, "snapdir", defaultSnapDir());
+  validatePath(mySnapshotSaveDir, "snapsavedir", defaultSnapSaveDir());
+  validatePath(mySnapshotLoadDir, "snaploaddir", defaultSnapLoadDir());
   validatePath(myEEPROMDir, "eepromdir", myBaseDir);
   validatePath(myCfgDir, "cfgdir", myBaseDir + "cfg");
 

@@ -174,7 +174,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
 
   // Add message concerning usage
   const GUI::Font& infofont = instance().infoFont();
-  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight()- 10;
+  ypos = myTab->getHeight() - 5 - fontHeight - infofont.getFontHeight() - 10;
   new StaticTextWidget(myTab, infofont, 10, ypos,
         font.getStringWidth("(*) Requires application restart"), fontHeight,
         "(*) Requires application restart", kTextAlignLeft);

@@ -94,7 +94,8 @@ Settings::Settings(OSystem* osystem)
   setInternal("ctrlcombo", "true");
 
   // Snapshot options
-  setInternal("snapdir", "");
+  setInternal("snapsavedir", "");
+  setInternal("snaploaddir", "");
   setInternal("sssingle", "false");
   setInternal("ss1x", "false");
   setInternal("ssinterval", "2");
@@ -398,7 +399,8 @@ void Settings::usage()
     << "  -autoslot     <1|0>          Automatically switch to next save slot when state saving\n"
     << "  -stats        <1|0>          Overlay console info during emulation\n"
     << "  -fastscbios   <1|0>          Disable Supercharger BIOS progress loading bars\n"
-    << "  -snapdir      <path>         The directory to save snapshot files to\n"
+    << "  -snapsavedir  <path>         The directory to save snapshot files to\n"
+    << "  -snaploaddir  <path>         The directory to load snapshot files from\n"
     << "  -sssingle     <1|0>          Generate single snapshot instead of many\n"
     << "  -ss1x         <1|0>          Generate TIA snapshot in 1x mode (ignore scaling/effects)\n"
     << "  -ssinterval   <number        Number of seconds between snapshots in continuous snapshot mode\n"
