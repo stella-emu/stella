@@ -345,7 +345,7 @@ bool CartridgeFA2::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeFA2::setRomName(const string& name)
 {
-  myFlashFile = myOSystem.eepromDir() + name + "_flash.dat";
+  myFlashFile = myOSystem.nvramDir() + name + "_flash.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

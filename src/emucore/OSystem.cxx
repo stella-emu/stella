@@ -347,10 +347,10 @@ void OSystem::setConfigPaths()
   FilesystemNode node;
   string s;
 
-  validatePath(myStateDir, "statedir", myBaseDir + "statedir");
+  validatePath(myStateDir, "statedir", myBaseDir + "state");
   validatePath(mySnapshotSaveDir, "snapsavedir", defaultSnapSaveDir());
   validatePath(mySnapshotLoadDir, "snaploaddir", defaultSnapLoadDir());
-  validatePath(myEEPROMDir, "eepromdir", myBaseDir);
+  validatePath(myNVRamDir, "nvramdir", myBaseDir + "nvram");
   validatePath(myCfgDir, "cfgdir", myBaseDir + "cfg");
 
   s = mySettings->getString("cheatfile");

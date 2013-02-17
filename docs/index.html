@@ -271,7 +271,8 @@
       <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
       AtariVox</a> device connected to your PC using a USB adaptor</li>
     <li>Supports EEPROM emulation for <a href="http://www.richard.hutchinson.dsl.pipex.com/new_page_5.htm">
-      AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers</li>
+      AtariVox</a> and <a href="http://www.vectrex.biz/MemCard.htm">SaveKey</a> controllers,
+      as well as FLASH support in various cartridge schemes</li>
     <li>Supports all known bankswitching schemes (let us know if there's one we missed)</li>
     <li>Supports DPC+ bankswitching scheme from the <a href="http://harmony.atariage.com">Harmony Cart</a>,
       including <a href="http://thumbulator.blogspot.ca">partial emulation of the ARM processor</a></li>
@@ -2213,8 +2214,8 @@
     </tr>
 
     <tr>
-      <td><pre>-eepromdir &lt;dir&gt;</pre></td>
-      <td>Set the directory in which to access EEPROM files.</td>
+      <td><pre>-nvramdir &lt;dir&gt;</pre></td>
+      <td>Set the directory in which to access non-volatile (flash/EEPROM) files.</td>
     </tr>
 
     <tr>
@@ -2563,7 +2564,7 @@
           <tr><td>Palette file</td><td>specifies location of user palette</td><td>-palettefile</td></tr>
           <tr><td>Properties file </td><td>specifies location of external stella.pro database</td><td>-propsfile</td></tr>
           <tr><td>State path</td><td>specifies location of state files</td><td>-statedir</td></tr>
-          <tr><td>EEPROM path</td><td>specifies location of EEPROM files</td><td>-eepromdir</td></tr>
+          <tr><td>NVRAM path</td><td>specifies location of NVRAM (flash/EEPROM) files</td><td>-nvramdir</td></tr>
           <tr><td>Overwrite snapshots</td><td>whether to overwrite old snapshots</td><td>-sssingle</td></tr>
           <tr><td>Snapshot in 1x mode</td><td>save snapshot in 1x mode, without filtering</td><td>-ss1x</td></tr>
           <tr><td>Continuous snapshot interval</td><td>interval (in seconds) between snapshot</td><td>-ssinterval</td></tr>
@@ -2861,7 +2862,7 @@
   writing to a real EEPROM many times will eventually wear it out.</p>
 
   <p>The location of the EEPROM files are configurable through the
-  '<i>-eepromdir</i>' commandline argument and within the application itself
+  '<i>-nvramdir</i>' commandline argument and within the application itself
   (see <b>Advanced Configuration - <a href="#ConfigPaths">Config Paths</a></b>).
   If the path for these files hasn't been set, the default location will depend on the
   version of Stella, as follows:</p>
@@ -2869,21 +2870,21 @@
   <p><table cellpadding="5" border="1">
     <tr>
       <td><b>Linux/Unix</b></td>
-      <td><i>~/.stella/atarivox_eeprom.dat<br>
-        ~/.stella/savekey_eeprom.dat</i></td>
+      <td><i>~/.stella/nvram/atarivox_eeprom.dat<br>
+        ~/.stella/nvram/savekey_eeprom.dat</i></td>
     </tr>
     <tr>
       <td><b>Macintosh</b></td>
-      <td><i>~/Library/Application Support/Stella/atarivox_eeprom.dat<br>
-        ~/Library/Application Support/Stella/savekey_eeprom.dat</i></td>
+      <td><i>~/Library/Application Support/Stella/nvram/atarivox_eeprom.dat<br>
+        ~/Library/Application Support/Stella/nvram/savekey_eeprom.dat</i></td>
     </tr>
     <tr>
       <td><b>Windows</b></td>
-      <td><i>%APPDATA%\Stella\atarivox_eeprom.dat<br>
-        %APPDATA%\Stella\savekey_eeprom.dat</i>&nbsp;&nbsp;&nbsp;
+      <td><i>%APPDATA%\Stella\nvram\atarivox_eeprom.dat<br>
+        %APPDATA%\Stella\nvram\savekey_eeprom.dat</i>&nbsp;&nbsp;&nbsp;
         <b>OR</b><br>
-        <i>_BASEDIR_\atarivox_eeprom.dat<br>
-          _BASEDIR_\savekey_eeprom.dat<br></i>
+        <i>_BASEDIR_\nvram\atarivox_eeprom.dat<br>
+          _BASEDIR_\nvram\savekey_eeprom.dat<br></i>
           (if a file named 'basedir.txt' exists in the application
           directory containing the full pathname for _BASEDIR_)
       </td>

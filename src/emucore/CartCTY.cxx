@@ -360,7 +360,7 @@ bool CartridgeCTY::load(Serializer& in)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeCTY::setRomName(const string& name)
 {
-  myEEPROMFile = myOSystem.eepromDir() + name + "_eeprom.dat";
+  myEEPROMFile = myOSystem.nvramDir() + name + "_eeprom.dat";
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -126,15 +126,15 @@ FileSnapDialog::FileSnapDialog(
                                    _w - xpos - 10, lineHeight, "");
   wid.push_back(myStatePath);
 
-  // EEPROM directory
+  // NVRAM directory
   xpos = vBorder;  ypos += b->getHeight() + 3;
   b = new ButtonWidget(this, font, xpos, ypos, buttonWidth, buttonHeight,
-                       "EEPROM path:", kChooseEEPROMDirCmd);
+                       "NVRAM path:", kChooseNVRamDirCmd);
   wid.push_back(b);
   xpos += buttonWidth + 10;
-  myEEPROMPath = new EditTextWidget(this, font, xpos, ypos + 2,
-                                    _w - xpos - 10, lineHeight, "");
-  wid.push_back(myEEPROMPath);
+  myNVRamPath = new EditTextWidget(this, font, xpos, ypos + 2,
+                                   _w - xpos - 10, lineHeight, "");
+  wid.push_back(myNVRamPath);
 
   // Snapshot single or multiple saves
   xpos = 30;  ypos += b->getHeight() + 5;
@@ -203,7 +203,7 @@ void FileSnapDialog::loadConfig()
   myCheatFile->setEditString(settings.getString("cheatfile"));
   myPaletteFile->setEditString(settings.getString("palettefile"));
   myPropsFile->setEditString(settings.getString("propsfile"));
-  myEEPROMPath->setEditString(settings.getString("eepromdir"));
+  myNVRamPath->setEditString(settings.getString("nvramdir"));
   myStatePath->setEditString(settings.getString("statedir"));
   mySnapSingle->setState(settings.getBool("sssingle"));
   mySnap1x->setState(settings.getBool("ss1x"));
@@ -220,7 +220,7 @@ void FileSnapDialog::saveConfig()
   instance().settings().setString("palettefile", myPaletteFile->getEditString());
   instance().settings().setString("propsfile", myPropsFile->getEditString());
   instance().settings().setString("statedir", myStatePath->getEditString());
-  instance().settings().setString("eepromdir", myEEPROMPath->getEditString());
+  instance().settings().setString("nvramdir", myNVRamPath->getEditString());
   instance().settings().setBool("sssingle", mySnapSingle->getState());
   instance().settings().setBool("ss1x", mySnap1x->getState());
   instance().settings().setString("ssinterval", mySnapInterval->getSelectedTag());
@@ -254,9 +254,9 @@ void FileSnapDialog::setDefaults()
   node = FilesystemNode(propsfile);
   myPropsFile->setEditString(node.getShortPath());
 
-  const string& eepromdir = basedir;
-  node = FilesystemNode(eepromdir);
-  myEEPROMPath->setEditString(node.getShortPath());
+  const string& nvramdir = basedir + "nvram";
+  node = FilesystemNode(nvramdir);
+  myNVRamPath->setEditString(node.getShortPath());
 
   const string& statedir = basedir + "state";
   node = FilesystemNode(statedir);
@@ -314,9 +314,9 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
                       FilesystemNode::kListAll, kPropsFileChosenCmd);
       break;
 
-    case kChooseEEPROMDirCmd:
-      myBrowser->show("Select EEPROM directory:", myEEPROMPath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kEEPROMDirChosenCmd);
+    case kChooseNVRamDirCmd:
+      myBrowser->show("Select NVRAM directory:", myNVRamPath->getEditString(),
+                      FilesystemNode::kListDirectoriesOnly, kNVRamDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
@@ -366,10 +366,10 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kEEPROMDirChosenCmd:
+    case kNVRamDirChosenCmd:
     {
       FilesystemNode dir(myBrowser->getResult());
-      myEEPROMPath->setEditString(dir.getShortPath());
+      myNVRamPath->setEditString(dir.getShortPath());
       break;
     }
 

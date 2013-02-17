@@ -321,9 +321,10 @@ class OSystem
     const string& snapshotLoadDir() const { return mySnapshotLoadDir; }
 
     /**
-      Return the full/complete directory name for storing EEPROM files.
+      Return the full/complete directory name for storing nvram
+      (flash/EEPROM) files.
     */
-    const string& eepromDir() const { return myEEPROMDir; }
+    const string& nvramDir() const { return myNVRamDir; }
 
     /**
       Return the full/complete directory name for storing Distella cfg files.
@@ -615,7 +616,7 @@ class OSystem
     string myStateDir;
     string mySnapshotSaveDir;
     string mySnapshotLoadDir;
-    string myEEPROMDir;
+    string myNVRamDir;
     string myCfgDir;
 
     string myCheatFile;

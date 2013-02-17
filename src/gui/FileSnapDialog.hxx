@@ -60,12 +60,12 @@ class FileSnapDialog : public Dialog, public CommandSender
       kChoosePropsFileCmd   = 'LOpr', // properties file (stella.pro)
       kChooseSnapSaveDirCmd = 'LOss', // snapshot dir (save files)
       kChooseSnapLoadDirCmd = 'LOsl', // snapshot dir (load files)
-      kChooseEEPROMDirCmd   = 'LOee', // eeprom dir
+      kChooseNVRamDirCmd   =  'LOnv', // nvram (flash/eeprom) dir
       kStateDirChosenCmd    = 'LOsc', // state dir changed
       kCheatFileChosenCmd   = 'LOcc', // cheatfile changed
       kPaletteFileChosenCmd = 'LOpc', // palette file changed
       kPropsFileChosenCmd   = 'LOrc', // properties file changed
-      kEEPROMDirChosenCmd   = 'LOec'  // eeprom dir changed
+      kNVRamDirChosenCmd    = 'LOnc'  // nvram (flash/eeprom) dir changed
     };
 
     BrowserDialog* myBrowser;
@@ -73,7 +73,7 @@ class FileSnapDialog : public Dialog, public CommandSender
     // Config paths
     EditTextWidget* myRomPath;
     EditTextWidget* myStatePath;
-    EditTextWidget* myEEPROMPath;
+    EditTextWidget* myNVRamPath;
     EditTextWidget* myCheatFile;
     EditTextWidget* myPaletteFile;
     EditTextWidget* myPropsFile;

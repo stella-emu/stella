@@ -106,7 +106,7 @@ Settings::Settings(OSystem* osystem)
   setInternal("cheatfile", "");
   setInternal("palettefile", "");
   setInternal("propsfile", "");
-  setInternal("eepromdir", "");
+  setInternal("nvramdir", "");
   setInternal("cfgdir", "");
 
   // ROM browser options
@@ -418,11 +418,11 @@ void Settings::usage()
     << "  -uipalette    <1|2>          Used the specified palette for UI elements\n"
     << "  -listdelay    <delay>        Time to wait between keypresses in list widgets (300-1000)\n"
     << "  -mwheel       <lines>        Number of lines the mouse wheel will scroll in UI\n"
-    << "  -statedir     <dir>          Directory in which to save state files\n"
+    << "  -statedir     <dir>          Directory in which to save/load state files\n"
     << "  -cheatfile    <file>         Full pathname of cheatfile database\n"
     << "  -palettefile  <file>         Full pathname of user-defined palette file\n"
     << "  -propsfile    <file>         Full pathname of ROM properties file\n"
-    << "  -eepromdir    <dir>          Directory in which to save EEPROM files\n"
+    << "  -nvramdir     <dir>          Directory in which to save/load flash/EEPROM files\n"
     << "  -cfgdir       <dir>          Directory in which to save Distella config files\n"
     << "  -avoxport     <name>         The name of the serial port where an AtariVox is connected\n"
     << "  -maxres       <WxH>          Used by developers to force the maximum size of the application window\n"
