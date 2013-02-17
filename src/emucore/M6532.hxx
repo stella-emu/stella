@@ -140,11 +140,17 @@ class M6532 : public Device
     bool poke(uInt16 address, uInt8 value);
 
   private:
-    Int32 timerClocks()
+    Int32 timerClocks() const
       { return myTimer - (mySystem->cycles() - myCyclesWhenTimerSet); }
 
     void setTimerRegister(uInt8 data, uInt8 interval);
     void setPinState(bool shcha);
+
+    // The following are used by the debugger to read INTIM/TIMINT
+    // We need separate methods to do this, so the state of the system
+    // isn't changed
+    uInt8 intim() const;
+    uInt8 timint() const;
 
   private:
     // Accessible bits in the interrupt flag register

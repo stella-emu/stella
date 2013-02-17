@@ -53,6 +53,10 @@
   * Fixed regression in RIOT INTIM reads; at least one known ROM
     (Mr. Roboto Berzerk hack) wasn't working properly.
 
+  * Fixed bug in the debugger with RIOT INTIM/TIMINT display; reads
+    were being done multiple times, changing the state of the
+    registers and resulting in incorrect emulation.
+
   * Added support for different directories for saving/loading PNG
     files.  These are set with the 'snapsavedir' and 'snaploaddir'
     commandline arguments (which replace the old 'snapdir'), and are

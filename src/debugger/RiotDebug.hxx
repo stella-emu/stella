@@ -24,6 +24,7 @@ class Debugger;
 class RiotDebug;
 
 #include "Array.hxx"
+#include "M6532.hxx"
 #include "DebuggerSystem.hxx"
 
 class RiotState : public DebuggerState
@@ -71,9 +72,9 @@ class RiotDebug : public DebuggerSystem
     uInt8 tim8T(int newVal = -1);
     uInt8 tim64T(int newVal = -1);
     uInt8 tim1024T(int newVal = -1);
-    uInt8 intim();
-    uInt8 timint();
-    Int32 timClocks();
+    uInt8 intim() const     { return mySystem.m6532().intim();       }
+    uInt8 timint() const    { return mySystem.m6532().timint();      }
+    Int32 timClocks() const { return mySystem.m6532().timerClocks(); }
 
     /* Controller ports */
     Controller& controller(Controller::Jack jack) const;

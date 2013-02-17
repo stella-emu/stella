@@ -20,7 +20,6 @@
 #include <sstream>
 
 #include "System.hxx"
-#include "M6532.hxx"
 #include "TIA.hxx"
 #include "Debugger.hxx"
 #include "Switches.hxx"
@@ -129,7 +128,7 @@ uInt8 RiotDebug::swacnt(int newVal)
   if(newVal > -1)
     mySystem.poke(0x281, newVal);
 
-  return mySystem.peek(0x281);
+  return mySystem.m6532().myDDRA;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -138,7 +137,7 @@ uInt8 RiotDebug::swbcnt(int newVal)
   if(newVal > -1)
     mySystem.poke(0x283, newVal);
 
-  return mySystem.peek(0x283);
+  return mySystem.m6532().myDDRB;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -194,24 +193,6 @@ uInt8 RiotDebug::tim1024T(int newVal)
     mySystem.poke(0x297, newVal);
 
   return mySystem.m6532().myOutTimer[3];
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 RiotDebug::intim()
-{
-  return mySystem.peek(0x284);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-uInt8 RiotDebug::timint()
-{
-  return mySystem.peek(0x285);
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Int32 RiotDebug::timClocks()
-{
-  return mySystem.m6532().timerClocks();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

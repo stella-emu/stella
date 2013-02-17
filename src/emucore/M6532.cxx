@@ -402,6 +402,34 @@ bool M6532::load(Serializer& in)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 M6532::intim() const
+{
+  // This method is documented in ::peek(0x284), and exists so that the
+  // debugger can read INTIM without changing the state of the system
+
+  // Get number of clocks since timer was set
+  Int32 timer = timerClocks();  
+  if(!(timer & 0x40000))
+    return (timer >> myIntervalShift) & 0xff;
+  else
+    return timer & 0xff;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+uInt8 M6532::timint() const
+{
+  // This method is documented in ::peek(0x285), and exists so that the
+  // debugger can read TIMINT without changing the state of the system
+
+  // Update timer flag if it is invalid and timer has expired
+  uInt8 interrupt = myInterruptFlag;
+  if(timerClocks() < 0)
+    interrupt |= TimerBit;
+
+  return interrupt;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 M6532::M6532(const M6532& c)
   : myConsole(c.myConsole),
     mySettings(c.mySettings)
