@@ -44,6 +44,9 @@
         support, as well as 'virtual' formats (such as showing the list
         of files for 2in1/4in1/8in1/etc within the UI).
 
+  * Improved bankswitch autodetection for FA2 ROMs; 29K and 32K versions
+    (meant for Harmony cart) are now recognized.
+
   * Improved bankswitch autodetection for X07 ROMs (although there's only
     two known ROMs in existence, so the detection probably isn't robust).
 

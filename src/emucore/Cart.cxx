@@ -430,7 +430,12 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 29*1024)  // 29K
   {
-    type = "DPC+";
+    if(isProbablyDPCplus(image, size))
+      type = "DPC+";
+    else if(isProbablyARM(image, size))
+      type = "FA2";
+    else
+      type = "4K";  // probably a bad ROM
   }
   else if(size == 32*1024)  // 32K
   {
@@ -444,6 +449,8 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
       type = "DPC+";
     else if(isProbablyCTY(image, size))
       type = "CTY";
+    else if(isProbablyFA2(image, size))
+      type = "FA2";
     else
       type = "F4";
   }
@@ -542,6 +549,21 @@ bool Cartridge::isProbablySC(const uInt8* image, uInt32 size)
     }
   }
   return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyARM(const uInt8* image, uInt32 size)
+{
+  // ARM code contains the following 'loader' patterns in the first 1K
+  // Thanks to Thomas Jentzsch of AtariAge for this advice
+  uInt8 signature[2][4] = {
+    { 0xA0, 0xC1, 0x1F, 0xE0 },
+    { 0x00, 0x80, 0x02, 0xE0 }
+  };
+  if(searchForBytes(image, 1024, signature[0], 4, 1))
+    return true;
+  else
+    return searchForBytes(image, 1024, signature[1], 4, 1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -705,6 +727,21 @@ bool Cartridge::isProbablyEF(const uInt8* image, uInt32 size)
       return true;
 
   return false;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool Cartridge::isProbablyFA2(const uInt8* image, uInt32 size)
+{
+  // This currently tests only the 32K version of FA2; the 24 and 28K
+  // versions are easy, in that they're the only possibility with those
+  // file sizes
+
+  // 32K version has all zeros in 29K-32K area
+  for(uInt32 i = 29*1024; i < 32*1024; ++i)
+    if(image[i] != 0)
+      return false;
+
+  return true;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

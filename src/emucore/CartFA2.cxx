@@ -32,6 +32,13 @@ CartridgeFA2::CartridgeFA2(const uInt8* image, uInt32 size, const OSystem& osyst
     myRamAccessTimeout(0),
     mySize(size)
 {
+  // 29/32K version of FA2 has valid data @ 1K - 29K
+  if(size >= 29 * 1024)
+  {
+    image += 1024;
+    mySize = 28 * 1024; 
+  }
+
   // Allocate array for the ROM image
   myImage = new uInt8[mySize];
 

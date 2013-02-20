@@ -272,6 +272,11 @@ class Cartridge : public Device
     static bool isProbablySC(const uInt8* image, uInt32 size);
 
     /**
+      Returns true if the image probably contains ARM code in the first 1K
+    */
+    static bool isProbablyARM(const uInt8* image, uInt32 size);
+
+    /**
       Returns true if the image is probably a 0840 bankswitching cartridge
     */
     static bool isProbably0840(const uInt8* image, uInt32 size);
@@ -325,6 +330,11 @@ class Cartridge : public Device
       Returns true if the image is probably an F6 bankswitching cartridge
     */
     static bool isProbablyF6(const uInt8* image, uInt32 size);
+
+    /**
+      Returns true if the image is probably an FA2 bankswitching cartridge
+    */
+    static bool isProbablyFA2(const uInt8* image, uInt32 size);
 
     /**
       Returns true if the image is probably an FE bankswitching cartridge
