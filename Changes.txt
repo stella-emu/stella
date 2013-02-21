@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.7.5 to 3.8: (February xx, 2013)
+3.7.5 to 3.8: (February 21, 2013)
 
   * Huge changes to the sound system:
       - The sound code now uses 16-bit signed samples instead of 8-bit
