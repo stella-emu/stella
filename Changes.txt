@@ -60,6 +60,10 @@
     were being done multiple times, changing the state of the
     registers and resulting in incorrect emulation.
 
+  * Worked around bug in debugger disassembly of zero-page RAM; for now,
+    the resolving of address vs. data sections is turned off in such a
+    case.  This fixes lockups in 'Meltdown' ROM.
+
   * Added support for different directories for saving/loading PNG
     files.  These are set with the 'snapsavedir' and 'snaploaddir'
     commandline arguments (which replace the old 'snapdir'), and are

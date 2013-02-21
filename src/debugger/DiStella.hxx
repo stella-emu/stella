@@ -34,9 +34,7 @@
   DisassemblyList structure rather than being printed.
 
   All 7800-related stuff has been removed, as well as all commandline options.
-  For now, the only configurable item is whether to automatically determine
-  code vs. data sections (which is on by default).  Over time, some of the
-  configurability of Distella may be added again.
+  Over time, some of the configurability of Distella may be added again.
 
   @author  Stephen Anthony
 */

@@ -39,7 +39,8 @@
 #include "TIA.hxx"
 
 #define HBLANK 68
-#define USE_MMR_LATCHES
+
+#define CLAMP_POS(reg) if(reg < 0) { reg += 160; }  reg %= 160;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 TIA::TIA(Console& console, Sound& sound, Settings& settings)
@@ -953,33 +954,32 @@ void TIA::updateFrame(Int32 clock)
       {
         if(myCurrentHMOVEPos >= 97 && myCurrentHMOVEPos < 157)
         {
-          myPOSP0 -= myMotionClockP0;
-          myPOSP1 -= myMotionClockP1;
-          myPOSM0 -= myMotionClockM0;
-          myPOSM1 -= myMotionClockM1;
-          myPOSBL -= myMotionClockBL;
+          myPOSP0 -= myMotionClockP0;  if(myPOSP0 < 0) myPOSP0 += 160;
+          myPOSP1 -= myMotionClockP1;  if(myPOSP1 < 0) myPOSP1 += 160;
+          myPOSM0 -= myMotionClockM0;  if(myPOSM0 < 0) myPOSM0 += 160;
+          myPOSM1 -= myMotionClockM1;  if(myPOSM1 < 0) myPOSM1 += 160;
+          myPOSBL -= myMotionClockBL;  if(myPOSBL < 0) myPOSBL += 160;
+
           myPreviousHMOVEPos = myCurrentHMOVEPos;
-          posChanged = true;
         }
         // Indicate that the HMOVE has been completed
         myCurrentHMOVEPos = 0x7FFFFFFF;
+        posChanged = true;
       }
-#ifdef USE_MMR_LATCHES
+
       // Apply extra clocks for 'more motion required/mmr'
-      if(myHMP0mmr) { myPOSP0 -= 17; posChanged = true; }
-      if(myHMP1mmr) { myPOSP1 -= 17; posChanged = true; }
-      if(myHMM0mmr) { myPOSM0 -= 17; posChanged = true; }
-      if(myHMM1mmr) { myPOSM1 -= 17; posChanged = true; }
-      if(myHMBLmmr) { myPOSBL -= 17; posChanged = true; }
-#endif
-      // Make sure positions are in range
+      if(myHMP0mmr) { myPOSP0 -= 17;  if(myPOSP0 < 0) myPOSP0 += 160;  posChanged = true; }
+      if(myHMP1mmr) { myPOSP1 -= 17;  if(myPOSP1 < 0) myPOSP1 += 160;  posChanged = true; }
+      if(myHMM0mmr) { myPOSM0 -= 17;  if(myPOSM0 < 0) myPOSM0 += 160;  posChanged = true; }
+      if(myHMM1mmr) { myPOSM1 -= 17;  if(myPOSM1 < 0) myPOSM1 += 160;  posChanged = true; }
+      if(myHMBLmmr) { myPOSBL -= 17;  if(myPOSBL < 0) myPOSBL += 160;  posChanged = true; }
+
+      // Scanline change, so reset PF mask based on current CTRLPF reflection state 
+      myPFMask = TIATables::PFMask[myCTRLPF & 0x01];
+
+      // TODO - handle changes to player timing
       if(posChanged)
       {
-        if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
-        if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
-        if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
-        if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
-        if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
       }
     }
 
@@ -1146,17 +1146,17 @@ void TIA::updateFrame(Int32 clock)
         myHMOVEBlankEnabled = false;
     }
 
+// TODO - this needs to be updated to actually do as the comment suggests
+#if 1
     // See if we're at the end of a scanline
     if(myClocksToEndOfScanLine == 228)
     {
-      // Yes, so set PF mask based on current CTRLPF reflection state 
-      myPFMask = TIATables::PFMask[myCTRLPF & 0x01];
-
       // TODO - 01-21-99: These should be reset right after the first copy
       // of the player has passed.  However, for now we'll just reset at the
       // end of the scanline since the other way would be too slow.
       mySuppressP0 = mySuppressP1 = 0;
     }
+#endif
   }
 }
 
@@ -1407,6 +1407,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     {
       // TODO - 08-11-2009: determine correct delay instead of always
       //                    using '8' in TIATables::PokeDelay
+      updateFrame(clock + 8);
+
       myNUSIZ0 = value;
       mySuppressP0 = 0;
       break;
@@ -1416,6 +1418,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
     {
       // TODO - 08-11-2009: determine correct delay instead of always
       //                    using '8' in TIATables::PokeDelay
+      updateFrame(clock + 8);
+
       myNUSIZ1 = value;
       mySuppressP1 = 0;
       break;
@@ -1577,6 +1581,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       }
       if(myPOSP0 != newx)
       {
+        // TODO - update player timing
+
         // Find out under what condition the player is being reset
         delay = TIATables::PxPosResetWhen[myNUSIZ0 & 7][myPOSP0][newx];
 
@@ -1625,6 +1631,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       }
       if(myPOSP1 != newx)
       {
+        // TODO - update player timing
+
         // Find out under what condition the player is being reset
         delay = TIATables::PxPosResetWhen[myNUSIZ1 & 7][myPOSP1][newx];
 
@@ -1951,6 +1959,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         uInt16 middle = 4;
         switch(myNUSIZ0 & 0x07)
         {
+          // 1-pixel delay is taken care of in TIATables::PxMask
           case 0x05: middle = 8;  break;  // double size
           case 0x07: middle = 16; break;  // quad size
         }
@@ -1959,9 +1968,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         {
           myPOSM0 -= (8 - myMotionClockP0);
           myPOSM0 += (8 - myMotionClockM0);
-          if(myPOSM0 < 0)  myPOSM0 += 160;
         }
-        myPOSM0 %= 160;
+        CLAMP_POS(myPOSM0);
       }
       myRESMP0 = value & 0x02;
 
@@ -1980,6 +1988,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         uInt16 middle = 4;
         switch(myNUSIZ1 & 0x07)
         {
+          // 1-pixel delay is taken care of in TIATables::PxMask
           case 0x05: middle = 8;  break;  // double size
           case 0x07: middle = 16; break;  // quad size
         }
@@ -1988,9 +1997,8 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         {
           myPOSM1 -= (8 - myMotionClockP1);
           myPOSM1 += (8 - myMotionClockM1);
-          if(myPOSM1 < 0)  myPOSM1 += 160;
         }
-        myPOSM1 %= 160;
+        CLAMP_POS(myPOSM1);
       }
       myRESMP1 = value & 0x02;
 
@@ -2010,7 +2018,6 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       myHMOVEBlankEnabled = myAllowHMOVEBlanks ? 
         TIATables::HMOVEBlankEnableCycles[((clock - myClockWhenFrameStarted) % 228) / 3] : false;
 
-#ifdef USE_MMR_LATCHES
       // Do we have to undo some of the already applied cycles from an
       // active graphics latch?
       if(hpos + HBLANK < 17 * 4)
@@ -2023,7 +2030,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
         if(myHMBLmmr)  myPOSBL = (myPOSBL + cycle_fix) % 160;
       }
       myHMP0mmr = myHMP1mmr = myHMM0mmr = myHMM1mmr = myHMBLmmr = false;
-#endif
+
       // Can HMOVE activities be ignored?
       if(hpos >= -5 && hpos < 97 )
       {
@@ -2080,12 +2087,13 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       }
 
       // Make sure positions are in range
-      if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
-      if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
-      if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
-      if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
-      if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
+      CLAMP_POS(myPOSP0);
+      CLAMP_POS(myPOSP1);
+      CLAMP_POS(myPOSM0);
+      CLAMP_POS(myPOSM1);
+      CLAMP_POS(myPOSBL);
 
+      // TODO - handle late HMOVE's
       mySuppressP0 = mySuppressP1 = 0;
       break;
     }
@@ -2170,7 +2178,8 @@ void TIA::pokeHMP0(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMP0mmr = true;
     }
-    if(myPOSP0 < 0) { myPOSP0 += 160; }  myPOSP0 %= 160;
+    CLAMP_POS(myPOSP0);
+    // TODO - adjust player timing
   }
   myHMP0 = value;
 }
@@ -2203,7 +2212,8 @@ void TIA::pokeHMP1(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMP1mmr = true;
     }
-    if(myPOSP1 < 0) { myPOSP1 += 160; }  myPOSP1 %= 160;
+    CLAMP_POS(myPOSP1);
+    // TODO - adjust player timing
   }
   myHMP1 = value;
 }
@@ -2236,7 +2246,7 @@ void TIA::pokeHMM0(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMM0mmr = true;
     }
-    if(myPOSM0 < 0) { myPOSM0 += 160; }  myPOSM0 %= 160;
+    CLAMP_POS(myPOSM0);
   }
   myHMM0 = value;
 }
@@ -2269,7 +2279,7 @@ void TIA::pokeHMM1(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMM1mmr = true;
     }
-    if(myPOSM1 < 0) { myPOSM1 += 160; }  myPOSM1 %= 160;
+    CLAMP_POS(myPOSM1);
   }
   myHMM1 = value;
 }
@@ -2302,7 +2312,7 @@ void TIA::pokeHMBL(uInt8 value, Int32 clock)
       if(value != 0x70 && value != 0x80)
         myHMBLmmr = true;
     }
-    if(myPOSBL < 0) { myPOSBL += 160; }  myPOSBL %= 160;
+    CLAMP_POS(myPOSBL);
   }
   myHMBL = value;
 }

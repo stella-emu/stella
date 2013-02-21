@@ -53,9 +53,8 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
           Offset to code = $D000
           Code range = $D000-$DFFF
       =============================================*/
-      myAppData.start  = 0x0000;
-      myAppData.end    = 0x0FFF;
-
+      myAppData.start = 0x0000;
+      myAppData.end   = 0x0FFF;
       myOffset = (start - (start % 0x1000));
     }
     else  // 2K ROM space
@@ -65,19 +64,20 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         starts.  For a 2K game, it is usually 0xf800,
         but can also be 0xf000.
       =============================================*/
-      myAppData.start  = 0x0000;
-      myAppData.end    = 0x07FF;
-
+      myAppData.start = 0x0000;
+      myAppData.end   = 0x07FF;
       myOffset = (start & 0xF800);
     }
   }
   else  // ZP RAM
   {
     // For now, we assume all accesses below $1000 are zero-page 
-    myAppData.start  = 0x0080;
-    myAppData.end    = 0x00FF;
-
+    myAppData.start = 0x0080;
+    myAppData.end   = 0x00FF;
     myOffset = 0;
+
+    // Resolve data is never used in ZP RAM mode
+    resolvedata = false;
   }
   myAppData.length = info.size;
 
