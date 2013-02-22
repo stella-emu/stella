@@ -868,9 +868,9 @@ void TIA::updateScanline()
 
   int clock;
   do {
-	  mySystem->m6502().execute(1);
-	  clock = mySystem->cycles() * 3;
-	  updateFrame(clock);
+    mySystem->m6502().execute(1);
+    clock = mySystem->cycles() * 3;
+    updateFrame(clock);
   } while(clock < endClock);
 
   // if we finished the frame, get ready for the next one
