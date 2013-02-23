@@ -560,7 +560,7 @@ inline void TIA::startFrame()
   mySystem->resetCycles();
 
   // Setup clocks that'll be used for drawing this frame
-  myClockWhenFrameStarted = -clocks;
+  myClockWhenFrameStarted = -1 * clocks;
   myClockStartDisplay = myClockWhenFrameStarted;
   myClockStopDisplay = myClockWhenFrameStarted + myStopDisplayOffset;
   myClockAtLastUpdate = myClockStartDisplay;
