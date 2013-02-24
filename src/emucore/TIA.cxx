@@ -1219,18 +1219,11 @@ inline void TIA::waitHorizontalRSync()
   // Since the horizontal sync counter counts once every 4 pixels, one more CPU
   // cycle occurs before the counter warps around to zero. Therefore the positioning
   // code will hit RESPx one cycle sooner after a RSYNC than after a WSYNC.
-  //
-  // Essentially, HBLANK is completed after HBLANK/3 cycles have elapsed, after
-  // which point objects moved with RSYNC trail those moved with WSYNC by
-  // 3 pixels (or 1 cycle)
 
   uInt32 cyclesToEndOfLine = 76 - ((mySystem->cycles() - 
       (myClockWhenFrameStarted / 3)) % 76);
 
-  if((cyclesToEndOfLine > HBLANK/3) && (cyclesToEndOfLine < 76))
-    mySystem->incrementCycles(cyclesToEndOfLine - 1);
-  else
-    mySystem->incrementCycles(cyclesToEndOfLine);
+  mySystem->incrementCycles(cyclesToEndOfLine-1);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
