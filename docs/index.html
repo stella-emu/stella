@@ -389,52 +389,21 @@
   <h3><b><u>Linux/UNIX</u></b></h3>
   <ul>
     <li><b>Binary DEB</b> (stella-<i>release</i>-1_arch.deb)
-      <ol>
+      <ul>
         <li>Install the binary DEB with the following command:
           <pre>   dpkg -i stella-<i>release</i>-1_arch.deb</pre></li>
-      </ol>
+      </ul>
     </li>
     <li><b>Binary RPM</b> (stella-<i>release</i>-1.arch.rpm)
-      <ol>
+      <ul>
         <li>Install the binary RPM with the following command:
           <pre>   rpm -Uvh stella-<i>release</i>-1.arch.rpm</pre></li>
-      </ol>
+      </ul>
     </li>
-    <li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
+    <li><b>Building and installing from source code</b>
     <ul>
-      <li>Debian-based distributions:
-      <ol>
-        <li>Extract files from the distribution:
-          <pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-        <li>Change directories to the stella-<i>release</i> directory</li>
-        <li>Build the executable with the following command:
-          <pre>   dpkg-buildpackage</pre></li>
-        <li>Install the executable as indicated in the previous section</li>
-      </ol>
-      </li>
-      <li>RPM-based distributions:
-      <ol>
-        <li>Extract files from the distribution:
-          <pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-        <li>Change directories to the stella-<i>release</i>/src/unix directory</li>
-        <li>Build the executable with the following command:
-          <pre>   rpmbuild -ba stella.spec</pre></li>
-        <li>Install the executable as indicated in the previous section</li>
-      </ol>
-      </li>
-      <li>Generic build:
-      <ol>
-        <li>Extract files from the distribution:
-          <pre>   tar zxvf stella-release-src.tar.gz</pre></li>
-        <li>Change directories to the stella-<i>release</i> directory</li>
-        <li>Configure the build with the following command:
-          <pre>   ./configure (--help for list of options)</pre></li>
-        <li>Build the executable with the following command:
-          <pre>   make</pre></li>
-        <li>Install the executable with the following command:
-          <pre>   make install</pre></li>
-      </ol>
-      </li>
+      <li>See the developers build instructions at the
+      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
     </ul>
     </li>
   </ul>
@@ -443,30 +412,17 @@
   <h3><b><u>Macintosh</u></b></h3>
   <ul>
     <li><b>Binary DMG file</b> (Stella-<i>release</i>-macosx.dmg)
-      <ol>
+      <ul>
         <li>Double-click the disk image, open the 'Stella' folder, then copy the
         <b>Stella.app</b> package to your 'Applications' folder.</li>
-      </ol>
+      </ul>
     </li>
-    <li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
-      <ol>
-        <li>Extract files from the distribution using an archiving program that supports
-          gzipped tar files</li>
-        <li>Open the <b>stella-<i>release</i>/src/macosx/stella.xcodeproj</b>
-          file using Xcode 3.2</li>
-        <li>Make sure you have the SDL runtime library/framework installed in src/macosx (located at
-        <a href="http://www.libsdl.org/download-1.2.php">libsdl.org</a>)</li>
-        <li>Build the 'Stella' project (making sure to select 'Deployment' mode)</li>
-        <li>For installation:
-        <ul>
-          <li>Run the script <b>Create_build.sh</b>, located in the src/macosx directory.
-            This will create a DMG installation archive on your desktop.</li>
-            &nbsp;&nbsp;&nbsp;<b>OR</b>
-          <li>Copy the <b>Stella.app</b> package to your 'Applications' folder.</li>
-        </ul>
-        <li>For compiling the Intel/Snow Leopard version, open the <b>stella-<i>release</i>/src/macosx/stella_intel.xcodeproj</b> file instead, and continue from
-          step 2 above.</li>
-      </ol>
+    <br/>
+    <li><b>Building and installing from source code</b>
+    <ul>
+      <li>See the developers build instructions at the
+      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
+    </ul>
     </li>
   </ul>
 
@@ -478,37 +434,19 @@
         <li>Double-click on the installer and follow the onscreen instructions</li>
       </ol>
     </li>
+    <br/>
     <li><b>Binary ZIP file</b> (stella-<i>release</i>-windows.zip)
       <ol>
         <li>Unzip the binary ZIP file using <b>Winzip</b> or <b>Total Commander</b></li>
         <li>Copy the contents of either 32-bit or 64-bit directory somewhere on your system</li>
       </ol>
     </li>
-    <li><b>Compressed tarball : building from source code</b> (stella-<i>release</i>-src.tar.gz)
-      <ol>
-        <li>Make sure you have library and header files installed for SDL for
-          the correct architecture (32-bit, 64-bit or both), and that Visual Studio
-          is properly configured to find them</li>
-        <li>Extract files from the distribution using <b>Winzip</b>,
-          <b>Total Commander</b>, or some other archiving program that supports
-          gzipped tar files</li>
-        <li>Open the <b>stella-<i>release</i>/src/win32/Stella.sln</b>
-          file using Visual C++ 2010</li>
-        <li>Build the 'Stella' solution, making sure to correctly select either 'Win32'
-          or 'x64' mode (depending on the version of Windows you have installed)</li>
-        <li>For installation:
-        <ul>
-          <li>Double-click on <b>Create_builds.bat</b> to generate ZIP and EXE files;
-          you must have the 'flip' and 'zip' applications installed on your system,
-          as well as the InnoSetup application.  This will generate the EXE and ZIP
-          files, which can be installed as explained above</li>
-          &nbsp;&nbsp;&nbsp;<b>OR</b>
-          <li>Manually copy the <b>Stella.exe</b> and <b>SDL.dll</b> files somewhere
-            on your system (they may be located in the 'Release' or 'x64\Release'
-            directories)</li>
-        </ul>
-        </li>
-      </ol>
+    <br/>
+    <li><b>Building and installing from source code</b>
+    <ul>
+      <li>See the developers build instructions at the
+      <a href="http://stella.sourceforge.net/development.php">Stella Development Page</a>.
+    </ul>
     </li>
   </ul>
   </blockquote>

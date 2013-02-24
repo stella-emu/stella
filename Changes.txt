@@ -12,6 +12,15 @@
                                Release History
 ===========================================================================
 
+3.8 to 3.9: (XXXXX xx, 2013)
+
+  * Added support for TIA RSYNC writes, thanks to Omegamatrix of AtariAge.
+    This allows the recently released "Extra Terrestrials" ROM to run, as
+    well as improving emulation of "Fatal Run" and several other test ROMs.
+
+-Have fun!
+
+
 3.7.5 to 3.8: (February 21, 2013)
 
   * Huge changes to the sound system:
@@ -77,8 +86,6 @@
     the newer 'Star Castle' FA2 ROMs.
 
   * Updated included PNG and ZLIB libraries to latest stable version.
-
--Have fun!
 
 
 3.7.4 to 3.7.5: (December 22, 2012)

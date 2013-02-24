@@ -357,6 +357,9 @@ class TIA : public Device
     // Waste cycles until the current scanline is finished
     void waitHorizontalSync();
 
+    // Reset horizontal sync counter
+    void waitHorizontalRSync();
+
     // Clear both internal TIA buffers to black (palette color 0)
     void clearBuffers();
 

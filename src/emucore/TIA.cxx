@@ -1171,6 +1171,69 @@ inline void TIA::waitHorizontalSync()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+inline void TIA::waitHorizontalRSync()
+{
+  // 02-23-2013: RSYNC has now been updated to work correctly with
+  // Extra-Terrestrials. Fatal Run also uses RSYNC (in its VSYNC routine),
+  // and the NTSC prototype now displays 262 scanlines instead of 261.
+  // What is not emulated correctly is the "real time" effects. For example
+  // the VSYNC signal may not be 3 complete scanlines, although Stella will
+  // now count it as such.
+  //
+  // There are two extreme cases to demonstrate this "real time" variance
+  // effect over a proper three line VSYNC. 3*76 = 228 cycles properly needed:
+  //
+  // ======  SHORT TIME CASE  ======
+  // 
+  //     lda    #3      ;2  @67
+  //     sta    VSYNC   ;3  @70      vsync starts
+  //     sta    RSYNC   ;3  @73  +3
+  //     sta    WSYNC   ;3  @76  +6
+  // ------------------------------
+  //     sta    WSYNC   ;3  @76  +82
+  // ------------------------------
+  //     lda    #0      ;2  @2   +84
+  //     sta    VSYNC                vsync ends
+  //
+  // ======  LONG TIME CASE  ======
+  //
+  //    lda    #3      ;2  @70
+  //    sta    VSYNC   ;3  @73      vsync starts
+  //    sta    RSYNC   ;3  @74  +3
+  //    sta    WSYNC   ;3  @..  +81  2 cycles are added to previous line, and then
+  //                                 WSYNC halts the new line delaying 78 cycles total!
+  //------------------------------
+  //    sta    WSYNC   ;3  @76  +157
+  //------------------------------
+  //    lda    #0      ;2  @2   +159
+  //    sta    VSYNC                vsync ends
+
+  // The significance of the 'magic numbers' below is as follows (thanks to
+  // Eckhard Stolberg and Omegamatrix for explanation and implementation)
+  //
+  // Objects always get positioned three pixels further to the right after a
+  // WSYNC than they do after a RSYNC, but this is to be expected.  Triggering
+  // WSYNC will halt the CPU until the horizontal sync counter wraps around to zero.
+  // Triggering RSYNC will reset the horizontal sync counter to zero immediately.
+  // But the warp-around will actually happen after one more cycle of this counter.
+  // Since the horizontal sync counter counts once every 4 pixels, one more CPU
+  // cycle occurs before the counter warps around to zero. Therefore the positioning
+  // code will hit RESPx one cycle sooner after a RSYNC than after a WSYNC.
+  //
+  // Essentially, HBLANK is completed after HBLANK/3 cycles have elapsed, after
+  // which point objects moved with RSYNC trail those moved with WSYNC by
+  // 3 pixels (or 1 cycle)
+
+  uInt32 cyclesToEndOfLine = 76 - ((mySystem->cycles() - 
+      (myClockWhenFrameStarted / 3)) % 76);
+
+  if((cyclesToEndOfLine > HBLANK/3) && (cyclesToEndOfLine < 76))
+    mySystem->incrementCycles(cyclesToEndOfLine - 1);
+  else
+    mySystem->incrementCycles(cyclesToEndOfLine);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void TIA::clearBuffers()
 {
   memset(myCurrentFrameBuffer, 0, 160 * 320);
@@ -1399,7 +1462,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
 
     case RSYNC:   // Reset horizontal sync counter
     {
-//      cerr << "TIA Poke: " << hex << addr << endl;
+      waitHorizontalRSync();
       break;
     }
 
