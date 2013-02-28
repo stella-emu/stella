@@ -18,6 +18,9 @@
     This allows the recently released "Extra Terrestrials" ROM to run, as
     well as improving emulation of "Fatal Run" and several other test ROMs.
 
+  * Fixed typo in TIA HMOVE writes, thanks to Thomas Jentzsch.  This fixes
+    the constant collision issues in "Kool-Aid Man".
+
 -Have fun!
 
 
