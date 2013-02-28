@@ -2078,7 +2078,7 @@ bool TIA::poke(uInt16 addr, uInt8 value)
       // active graphics latch?
       if(hpos + HBLANK < 17 * 4)
       {
-        Int16 cycle_fix = 17 - ((hpos + VBLANK + 7) / 4);
+        Int16 cycle_fix = 17 - ((hpos + HBLANK + 7) / 4);
         if(myHMP0mmr)  myPOSP0 = (myPOSP0 + cycle_fix) % 160;
         if(myHMP1mmr)  myPOSP1 = (myPOSP1 + cycle_fix) % 160;
         if(myHMM0mmr)  myPOSM0 = (myPOSM0 + cycle_fix) % 160;
