@@ -988,7 +988,9 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::Settings DiStella::settings = {
   kBASE_2,  // gfx_format
-  true      // show_addresses
+  true,     // show_addresses
+  true,     // fflag (-f in Distella)
+  false     // rflag (-r in Distella)
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
