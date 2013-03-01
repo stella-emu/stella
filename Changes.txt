@@ -24,6 +24,8 @@
   * Fixed sound issues on OSX PPC machines (all sound was in little-endian
     format, but PPC is big-endian).
 
+  * The OSX DMG archive now contains proper modification dates.
+
 -Have fun!
 
 
