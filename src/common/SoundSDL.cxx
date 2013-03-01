@@ -51,7 +51,7 @@ SoundSDL::SoundSDL(OSystem* osystem)
   // whereby sound stopped working after the first video change
   SDL_AudioSpec desired;
   desired.freq   = myOSystem->settings().getInt("freq");
-  desired.format = AUDIO_S16;
+  desired.format = AUDIO_S16SYS;
   desired.channels = 2;
   desired.samples  = myOSystem->settings().getInt("fragsize");
   desired.callback = callback;

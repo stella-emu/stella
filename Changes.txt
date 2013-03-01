@@ -21,6 +21,9 @@
   * Fixed typo in TIA HMOVE writes, thanks to Thomas Jentzsch.  This fixes
     the constant collision issues in "Kool-Aid Man".
 
+  * Fixed sound issues on OSX PPC machines (all sound was in little-endian
+    format, but PPC is big-endian).
+
 -Have fun!
 
 
