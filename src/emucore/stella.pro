@@ -23,17 +23,17 @@
 "Cartridge.Name" "Commando Raid (208 in 1) (Unknown) (PAL)"
 ""
 
-"Cartridge.MD5" "2d9e5d8d083b6367eda880e80dfdfaeb"
-"Cartridge.Manufacturer" "Selchow & Righter - QDI"
-"Cartridge.ModelNo" "87"
-"Cartridge.Name" "Glib (1983) (Selchow & Righter)"
-""
-
 "Cartridge.MD5" "b86552198f52cfce721bafb496363099"
 "Cartridge.Manufacturer" "Apollo, Tim Martin"
 "Cartridge.ModelNo" "AP-2007"
 "Cartridge.Name" "Kyphus (1982) (Apollo) (Prototype)"
 "Cartridge.Rarity" "Prototype"
+""
+
+"Cartridge.MD5" "2d9e5d8d083b6367eda880e80dfdfaeb"
+"Cartridge.Manufacturer" "Selchow & Righter - QDI"
+"Cartridge.ModelNo" "87"
+"Cartridge.Name" "Glib (1983) (Selchow & Righter)"
 ""
 
 "Cartridge.MD5" "c31a17942d162b80962cb1f7571cd1d5"
@@ -8031,6 +8031,14 @@
 "Cartridge.MD5" "bb745c893999b0efc96ea9029e3c62ca"
 "Cartridge.Manufacturer" "Play Video"
 "Cartridge.Name" "Planet Patrol (1982) (Play Video) (PAL)"
+""
+
+"Cartridge.MD5" "ebd2488dcace40474c1a78fa53ebfadf"
+"Cartridge.Manufacturer" "Skill Screen Games"
+"Cartridge.ModelNo" "SSG001"
+"Cartridge.Name" "Extra Terrestrials (1983) (SSG)"
+"Cartridge.Note" "The only Canadian-designed and manufactured Atari 2600 game from the 1980's"
+"Cartridge.Rarity" "Extremely Rare"
 ""
 
 "Cartridge.MD5" "d078674afdf24a4547b4b32890fdc614"

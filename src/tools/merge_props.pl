@@ -5,10 +5,29 @@ use FindBin;
 use lib "$FindBin::Bin";
 use PropSet;
 
-usage() if @ARGV != 2;
+my $usr_file  = "";
+my $sys_file = "";
 
-my %usr_propset = PropSet::load_prop_set($ARGV[0]);
-my %sys_propset = PropSet::load_prop_set($ARGV[1]);
+if (@ARGV != 2)
+{
+  if (@ARGV == 1 && $ARGV[0] == "-help")
+  {
+    usage();
+  }
+  # Saves me from having to type these paths *every single time*
+  $usr_file  = "$ENV{HOME}/.stella/stella.pro";
+  $sys_file = "src/emucore/stella.pro";
+}
+else
+{
+  $usr_file = $ARGV[0];
+  $sys_file = $ARGV[1];
+}
+
+print "$usr_file\n";
+
+my %usr_propset = PropSet::load_prop_set($usr_file);
+my %sys_propset = PropSet::load_prop_set($sys_file);
 
 print "\n";
 print "Valid properties found in user file: " . keys (%usr_propset) . "\n";
@@ -28,8 +47,8 @@ print "Updated properties found in system file: " . keys (%sys_propset) . "\n";
 print "\n";
 
 # Write both files back to disk
-PropSet::save_prop_set($ARGV[0], \%usr_propset);
-PropSet::save_prop_set($ARGV[1], \%sys_propset);
+PropSet::save_prop_set($usr_file, \%usr_propset);
+PropSet::save_prop_set($sys_file, \%sys_propset);
 
 
 sub usage {

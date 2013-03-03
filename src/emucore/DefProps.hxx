@@ -27,7 +27,7 @@
   regenerated and the application recompiled.
 */
 
-#define DEF_PROPS_SIZE 3238
+#define DEF_PROPS_SIZE 3239
 
 static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "000509d1ed2b8d30a9d94be1b3b5febb", "Greg Zumwalt", "", "Jungle Jane (2003) (Greg Zumwalt) (Hack)", "Hack of Pitfall!", "Hack", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
@@ -2991,6 +2991,7 @@ static const char* DefProps[DEF_PROPS_SIZE][21] = {
   { "eb9f8b84c193d9d93a58fca112aa39ed", "", "", "Register Twiddler Demo (PD)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "ebcb084a91d41865b2c1915779001ca7", "JVP", "", "Bob Is Going Home (JVP)", "AKA Bobby Is Going Home", "", "", "", "", "", "", "", "", "", "", "", "", "31", "", "", "" }, 
   { "ebcbc8a181a738e13df6216e5c329230", "Activision, Steve Cartwright", "AX-022", "Seaquest (1983) (Activision) (16K)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
+  { "ebd2488dcace40474c1a78fa53ebfadf", "Skill Screen Games", "SSG001", "Extra Terrestrials (1983) (SSG)", "The only Canadian-designed and manufactured Atari 2600 game from the 1980's", "Extremely Rare", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "ebf2dff78a08733251bf3838f02f7938", "Commavid, Ben Burch", "CM-010", "Rush Hour (1983) (Commavid) (Prototype) [a2]", "", "Prototype", "", "", "", "", "", "", "", "", "", "", "", "30", "220", "", "" }, 
   { "ebf9038e927e6a0db3e0d170c59911e6", "", "", "Pac-2600 (PD)", "", "New Release", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 
   { "ec26fdc87b1d35f1d60ea89cda4f4dd4", "", "", "Star Fire - Crash Scene (04-11-2002) (MP)", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "" }, 

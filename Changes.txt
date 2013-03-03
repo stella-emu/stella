@@ -12,14 +12,15 @@
                                Release History
 ===========================================================================
 
-3.8 to 3.9: (XXXXX xx, 2013)
+3.8 to 3.8.1: (March 3, 2013)
 
   * Added support for TIA RSYNC writes, thanks to Omegamatrix of AtariAge.
     This allows the recently released "Extra Terrestrials" ROM to run, as
     well as improving emulation of "Fatal Run" and several other test ROMs.
 
   * Fixed typo in TIA HMOVE writes, thanks to Thomas Jentzsch.  This fixes
-    the constant collision issues in "Kool-Aid Man".
+    the constant collision issues in "Kool-Aid Man", and several other
+    homebrew ROMs.
 
   * Fixed sound issues on OSX PPC machines (all sound was in little-endian
     format, but PPC is big-endian).
