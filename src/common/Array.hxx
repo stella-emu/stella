@@ -132,15 +132,18 @@ class Array
     unsigned int size() const     { return _size;     }
     unsigned int capacity() const { return _capacity; }
 
-    void clear()
+    void clear(bool fullerase = true)
     {
-      if(_data)
+      if(fullerase)
       {
-        delete [] _data;
-        _data = 0;
+        if(_data)
+        {
+          delete [] _data;
+          _data = 0;
+        }
+        _capacity = 0;
       }
       _size = 0;
-      _capacity = 0;
     }
 	
     bool isEmpty() const

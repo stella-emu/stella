@@ -230,10 +230,11 @@ class CartDebug : public DebuggerSystem
     string loadSymbolFile(string file = "");
 
     /**
-      Load/save Distella config file (Distella directives)
+      Load/save Distella config file (Distella directives) and disassembly
     */
     string loadConfigFile(string file = "");
     string saveConfigFile(string file = "");
+    string saveDisassembly(string file = "");
 
     /**
       Show Distella directives (both set by the user and determined by Distella)

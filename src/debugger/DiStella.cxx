@@ -23,10 +23,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-                   CartDebug::BankInfo& info, uInt8* labels, uInt8* directives,
-                   bool resolvedata)
+                   CartDebug::BankInfo& info, const DiStella::Settings& settings,
+                   uInt8* labels, uInt8* directives, bool resolvedata)
   : myDbg(dbg),
     myList(list),
+    mySettings(settings),
     myLabels(labels),
     myDirectives(directives)
 {
@@ -228,7 +229,7 @@ void DiStella::disasm(uInt32 distart, int pass)
         for(uInt8 i = 0, c = byte; i < 8; ++i, c <<= 1)
           myDisasmBuf << ((c > 127) ? bit_string : " ");
         myDisasmBuf << "|  $" << HEX4 << myPC+myOffset << "'";
-        if(settings.gfx_format == kBASE_2)
+        if(mySettings.gfx_format == kBASE_2)
           myDisasmBuf << Debugger::debugger().valueToString(byte, kBASE_2_8);
         else
           myDisasmBuf << HEX2 << (int)byte;
@@ -458,7 +459,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100 && settings.fflag)
+            if (ad < 0x100 && mySettings.fflag)
               nextline << ".w  ";
             else
               nextline << "    ";
@@ -473,7 +474,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << CartDebug::ourIOMnemonic[ad-0x280];
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 4 && settings.rflag)
+            else if (labfound == 4 && mySettings.rflag)
             {
               int tmp = (ad & myAppData.end)+myOffset;
               USER_OR_AUTO_LABEL("", tmp, "");
@@ -530,7 +531,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100 && settings.fflag)
+            if (ad < 0x100 && mySettings.fflag)
               nextline << ".wx ";
             else
               nextline << "    ";
@@ -545,7 +546,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",X";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 4 && settings.rflag)
+            else if (labfound == 4 && mySettings.rflag)
             {
               int tmp = (ad & myAppData.end)+myOffset;
               USER_OR_AUTO_LABEL("", tmp, ",X");
@@ -574,7 +575,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100 && settings.fflag)
+            if (ad < 0x100 && mySettings.fflag)
               nextline << ".wy ";
             else
               nextline << "    ";
@@ -589,7 +590,7 @@ void DiStella::disasm(uInt32 distart, int pass)
               nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",Y";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
             }
-            else if (labfound == 4 && settings.rflag)
+            else if (labfound == 4 && mySettings.rflag)
             {
               int tmp = (ad & myAppData.end)+myOffset;
               USER_OR_AUTO_LABEL("", tmp, ",Y");
@@ -705,7 +706,7 @@ void DiStella::disasm(uInt32 distart, int pass)
           }
           else if (pass == 3)
           {
-            if (ad < 0x100 && settings.fflag)
+            if (ad < 0x100 && mySettings.fflag)
               nextline << ".ind ";
             else
               nextline << "     ";
@@ -915,7 +916,7 @@ void DiStella::addEntry(CartDebug::DisasmType type)
     {
       if(myDisasmBuf.peek() != ' ')
         getline(myDisasmBuf, tag.label, '\'');
-      else if(settings.show_addresses && tag.type == CartDebug::CODE)
+      else if(mySettings.show_addresses && tag.type == CartDebug::CODE)
       {
         // Have addresses indented, to differentiate from actual labels
         char address[7];

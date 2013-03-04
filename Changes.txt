@@ -12,6 +12,13 @@
                                Release History
 ===========================================================================
 
+3.8.1 to 3.9: (XXXXX xx, 2013)
+
+  * Disassembly from debugger ...
+
+-Have fun!
+
+
 3.8 to 3.8.1: (March 3, 2013)
 
   * Added support for TIA RSYNC writes, thanks to Omegamatrix of AtariAge.
@@ -26,8 +33,6 @@
     format, but PPC is big-endian).
 
   * The OSX DMG archive now contains proper modification dates.
-
--Have fun!
 
 
 3.7.5 to 3.8: (February 21, 2013)

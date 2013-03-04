@@ -1423,6 +1423,16 @@ void DebuggerParser::executeSaveconfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+// "savedis"
+void DebuggerParser::executeSavedisassembly()
+{
+  if(argCount == 1)
+    commandResult << debugger->cartDebug().saveDisassembly(argStrings[0]);
+  else
+    commandResult << debugger->cartDebug().saveDisassembly();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "saverom"
 void DebuggerParser::executeSaverom()
 {
@@ -2099,6 +2109,15 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     false,
     { kARG_FILE, kARG_MULTI_BYTE },
     &DebuggerParser::executeSaveconfig
+  },
+
+  {
+    "savedis",
+    "Save Distella disassembly [to file xx]",
+    false,
+    false,
+    { kARG_FILE, kARG_MULTI_BYTE },
+    &DebuggerParser::executeSavedisassembly
   },
 
   {

@@ -41,23 +41,6 @@
 class DiStella
 {
   public:
-    /**
-      Disassemble the current state of the System from the given start address.
-
-      @param dbg         The CartDebug instance containing all label information
-      @param list        The results of the disassembly are placed here
-      @param info        Various info about the current bank
-      @param labels      Array storing label info determined by Distella
-      @param directives  Array storing directive info determined by Distella
-      @param resolvedata If enabled, try to determine code vs. data sections
-    */
-    DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
-             CartDebug::BankInfo& info, uInt8* labels, uInt8* directives,
-             bool resolvedata);
-
-    ~DiStella();
-
-  public:
     // A list of options that can be applied to the disassembly
     // This will eventually grow to include all options supported by
     // standalone Distella
@@ -67,7 +50,25 @@ class DiStella
       bool fflag;  // Forces correct address length (-f in Distella)
       bool rflag;  // Relocate calls out of address range (-r in Distella)
     } Settings;
-    static Settings settings;
+    static Settings settings;  // Default settings
+
+  public:
+    /**
+      Disassemble the current state of the System from the given start address.
+
+      @param dbg         The CartDebug instance containing all label information
+      @param list        The results of the disassembly are placed here
+      @param info        Various info about the current bank
+      @param settings    The various distella flags/options to use
+      @param labels      Array storing label info determined by Distella
+      @param directives  Array storing directive info determined by Distella
+      @param resolvedata If enabled, try to determine code vs. data sections
+    */
+    DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
+             CartDebug::BankInfo& info, const DiStella::Settings& settings,
+             uInt8* labels, uInt8* directives, bool resolvedata);
+
+    ~DiStella();
 
   private:
     // Indicate that a new line of disassembly has been completed
@@ -88,6 +89,7 @@ class DiStella
   private:
     const CartDebug& myDbg;
     CartDebug::DisassemblyList& myList;
+    const Settings& mySettings;
     stringstream myDisasmBuf;
     queue<uInt16> myAddressQueue;
     uInt16 myOffset, myPC, myPCBeg, myPCEnd;

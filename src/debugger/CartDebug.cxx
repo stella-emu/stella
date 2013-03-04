@@ -17,6 +17,8 @@
 // $Id$
 //============================================================================
 
+#include <time.h>
+
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "System.hxx"
@@ -26,6 +28,7 @@
 #include "CpuDebug.hxx"
 #include "OSystem.hxx"
 #include "Settings.hxx"
+#include "Version.hxx"
 #include "CartDebug.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -277,16 +280,15 @@ bool CartDebug::disassemble(const string& resolvedata, bool force)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool CartDebug::fillDisassemblyList(BankInfo& info, bool resolvedata, uInt16 search)
 {
-  bool found = false;
-
   myDisassembly.list.clear();
   myDisassembly.list.reserve(2048);
   myDisassembly.fieldwidth = 10 + myLabelLength;
-  DiStella distella(*this, myDisassembly.list, info,
+  DiStella distella(*this, myDisassembly.list, info, DiStella::settings,
                     myDisLabels, myDisDirectives, resolvedata);
 
   // Parts of the disassembly will be accessed later in different ways
   // We place those parts in separate maps, to speed up access
+  bool found = false;
   myAddrToLineList.clear();
   for(uInt32 i = 0; i < myDisassembly.list.size(); ++i)
   {
@@ -320,8 +322,8 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
   BankInfo info;
   uInt8 labels[0x1000], directives[0x1000];
   info.addressList.push_back(start);
-  DiStella distella(*this, disasm.list, info, (uInt8*)labels,
-                    (uInt8*)directives, false);
+  DiStella distella(*this, disasm.list, info, DiStella::settings,
+                    (uInt8*)labels, (uInt8*)directives, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -837,6 +839,119 @@ string CartDebug::saveConfigFile(string file)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+string CartDebug::saveDisassembly(string file)
+{
+#define ALIGN(x) setfill(' ') << left << setw(x)
+
+  if(myConsole.cartridge().bankCount() > 1)
+    return DebuggerParser::red("multi-bank ROM not yet supported");
+
+  // Output stream for disassembly
+  ostringstream buf;
+
+  // Some boilerplate, similar to what DiStella adds
+  time_t currtime;
+  time(&currtime);
+  buf << "; Disassembly of " << file << "\n"
+      << "; Disassembled " << ctime(&currtime)
+      << "; Using Stella " << STELLA_VERSION << "\n"
+      << ";\n"
+      << "; Command Line arguments: TODO - add args\n"
+      << "\n"
+      << "; Legend: * = CODE not yet run (preliminary code)\n"
+      << ";         D = DATA directive (referenced in some way)\n"
+      << ";         G = GFX directive, shown as 'X' (stored in player, missile, ball)\n"
+      << ";         P = PGFX directive, shown as 'x' (stored in playfield)\n"
+      << "\n"
+      << "      processor 6502\n"
+      << " TODO - add equates\n"
+      << "\n";
+      
+  // Use specific settings for disassembly output
+  // This will most likely differ from what you see in the debugger
+  DiStella::Settings settings;
+  settings.gfx_format = DiStella::settings.gfx_format;
+  settings.show_addresses = false;
+  settings.fflag = DiStella::settings.fflag;
+  settings.rflag = DiStella::settings.rflag;
+
+  Disassembly disasm;
+  disasm.list.reserve(2048);
+  disasm.fieldwidth = 10 + myLabelLength;
+  for(int bank = 0; bank < myConsole.cartridge().bankCount(); ++bank)
+  {
+    BankInfo& info = myBankInfo[bank];
+    // Disassemble bank
+    disasm.list.clear(false);  // don't fully de-allocate space
+    DiStella distella(*this, disasm.list, info, settings,
+                      myDisLabels, myDisDirectives, true);
+
+    buf << "      ORG $" << HEX4 << info.offset << "\n\n";
+
+    // Format in 'distella' style
+    for(uInt32 i = 0; i < disasm.list.size(); ++i)
+    {
+      const DisassemblyTag& tag = disasm.list[i];
+
+      // Add label (if any)
+      if(tag.label != "")
+        buf << ALIGN(7) << (tag.label+":");
+      else
+        buf << "       ";
+
+      switch(tag.type)
+      {
+        case CartDebug::CODE:
+        {
+          buf << ALIGN(16) << tag.disasm << tag.ccount << "\n";
+          break;
+        }
+        case CartDebug::NONE:
+        {
+          buf << "\n";
+          break;
+        }
+        case CartDebug::ROW:
+        {
+          buf << tag.disasm << "\n";
+          break;
+        }
+        case CartDebug::GFX:
+        {
+          buf << tag.disasm.substr(0, 9) << " ; |";
+          for(int i = 12; i < 20; ++i)
+            buf << ((tag.disasm[i] == '\x1e') ? "X" : " ");
+          buf << "| $" << HEX4 << tag.address << " (G)\n";
+          break;
+        }
+        case CartDebug::PGFX:
+        {
+          buf << tag.disasm.substr(0, 9) << " ; |";
+          for(int i = 12; i < 20; ++i)
+            buf << ((tag.disasm[i] == '\x1f') ? "x" : " ");
+          buf << "| $" << HEX4 << tag.address << " (P)\n";
+          break;
+        }
+        case CartDebug::DATA:
+        {
+          buf << tag.disasm.substr(0, 9) << " ;  $" << HEX4 << tag.address << " (D)\n";
+          break;
+        }
+        default:
+        {
+          buf << "\n";
+          break;
+        }
+      }
+    }
+  }
+
+  cout << buf.str() << endl;  // TODO - redirect to file
+
+  return DebuggerParser::red("not save to file yet");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 string CartDebug::listConfig(int bank)
 {
   uInt32 startbank = 0, endbank = bankCount();
@@ -965,8 +1080,8 @@ void CartDebug::getBankDirectives(ostream& buf, BankInfo& info) const
 {
   // Disassemble the bank, then scan it for an up-to-date description
   DisassemblyList list;
-  DiStella distella(*this, list, info, (uInt8*)myDisLabels,
-                    (uInt8*)myDisDirectives, true);
+  DiStella distella(*this, list, info, DiStella::settings,
+                    (uInt8*)myDisLabels, (uInt8*)myDisDirectives, true);
 
   if(list.size() == 0)
     return;
