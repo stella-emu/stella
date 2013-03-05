@@ -290,6 +290,14 @@ class CartDebug : public DebuggerSystem
     // Address type information determined by Distella
     uInt8 myDisLabels[0x1000], myDisDirectives[0x1000];
 
+    // Information on equates used in the disassembly
+    typedef struct {
+      bool TIARead[16];
+      bool TIAWrite[64];
+      bool IOReadWrite[24];
+    } ReservedEquates;
+    ReservedEquates myReserved;
+
     // Actually call DiStella to fill the DisassemblyList structure
     // Return whether the search address was actually in the list
     bool fillDisassemblyList(BankInfo& bankinfo, bool resolvedata, uInt16 search);

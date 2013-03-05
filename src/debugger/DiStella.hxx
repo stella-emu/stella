@@ -62,11 +62,13 @@ class DiStella
       @param settings    The various distella flags/options to use
       @param labels      Array storing label info determined by Distella
       @param directives  Array storing directive info determined by Distella
+      @param reserved    The TIA/RIOT addresses referenced in the disassembled code
       @param resolvedata If enabled, try to determine code vs. data sections
     */
     DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
              CartDebug::BankInfo& info, const DiStella::Settings& settings,
-             uInt8* labels, uInt8* directives, bool resolvedata);
+             uInt8* labels, uInt8* directives,
+             CartDebug::ReservedEquates& reserved, bool resolvedata);
 
     ~DiStella();
 
@@ -90,6 +92,7 @@ class DiStella
     const CartDebug& myDbg;
     CartDebug::DisassemblyList& myList;
     const Settings& mySettings;
+    CartDebug::ReservedEquates& myReserved;
     stringstream myDisasmBuf;
     queue<uInt16> myAddressQueue;
     uInt16 myOffset, myPC, myPCBeg, myPCEnd;
@@ -103,7 +106,8 @@ class DiStella
     /* Stores info on how each address is marked, both in the general
        case as well as when manual directives are enabled (in which case
        the directives take priority
-       The address mark type is defined in CartDebug.hxx */
+       The address mark type is defined in CartDebug.hxx
+    */
     uInt8 *myLabels, *myDirectives;
 
     /**

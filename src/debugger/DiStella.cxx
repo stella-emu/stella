@@ -24,10 +24,12 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
                    CartDebug::BankInfo& info, const DiStella::Settings& settings,
-                   uInt8* labels, uInt8* directives, bool resolvedata)
+                   uInt8* labels, uInt8* directives,
+                   CartDebug::ReservedEquates& reserved, bool resolvedata)
   : myDbg(dbg),
     myList(list),
     mySettings(settings),
+    myReserved(reserved),
     myLabels(labels),
     myDirectives(directives)
 {
@@ -473,6 +475,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               nextline << CartDebug::ourIOMnemonic[ad-0x280];
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              myReserved.IOReadWrite[ad-0x280] = true;
             }
             else if (labfound == 4 && mySettings.rflag)
             {
@@ -496,8 +499,18 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (labfound == 2)
-              nextline << "    " << (ourLookup[op].rw_mode == READ ?
-                CartDebug::ourTIAMnemonicR[d1&0x0f] : CartDebug::ourTIAMnemonicW[d1&0x3f]);
+            {
+              if(ourLookup[op].rw_mode == READ)
+              {
+                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x0f];
+                myReserved.TIARead[d1&0x0f] = true;
+              }
+              else
+              {
+                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x3f];
+                myReserved.TIAWrite[d1&0x3f] = true;
+              }
+            }
             else
               nextline << "    $" << HEX2 << (int)d1;
 
@@ -545,6 +558,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",X";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              myReserved.IOReadWrite[ad-0x280] = true;
             }
             else if (labfound == 4 && mySettings.rflag)
             {
@@ -589,6 +603,7 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               nextline << CartDebug::ourIOMnemonic[ad-0x280] << ",Y";
               nextlinebytes << HEX2 << (int)(ad&0xff) << " " << HEX2 << (int)(ad>>8);
+              myReserved.IOReadWrite[ad-0x280] = true;
             }
             else if (labfound == 4 && mySettings.rflag)
             {
@@ -634,9 +649,18 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (labfound == 2)
-              nextline << "    " << (ourLookup[op].rw_mode == READ ?
-                CartDebug::ourTIAMnemonicR[d1&0x0f] :
-                CartDebug::ourTIAMnemonicW[d1&0x3f])  << ",X";
+            {
+              if(ourLookup[op].rw_mode == READ)
+              {
+                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x0f] << ",X";
+                myReserved.TIARead[d1&0x0f] = true;
+              }
+              else
+              {
+                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x3f] << ",X";
+                myReserved.TIAWrite[d1&0x3f] = true;
+              }
+            }
             else
               nextline << "    $" << HEX2 << (int)d1 << ",X";
           }
@@ -651,9 +675,18 @@ void DiStella::disasm(uInt32 distart, int pass)
           if (pass == 3)
           {
             if (labfound == 2)
-              nextline << "    " << (ourLookup[op].rw_mode == READ ?
-                CartDebug::ourTIAMnemonicR[d1&0x0f] :
-                CartDebug::ourTIAMnemonicW[d1&0x3f])  << ",Y";
+            {
+              if(ourLookup[op].rw_mode == READ)
+              {
+                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x0f] << ",Y";
+                myReserved.TIARead[d1&0x0f] = true;
+              }
+              else
+              {
+                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x3f] << ",Y";
+                myReserved.TIAWrite[d1&0x3f] = true;
+              }
+            }
             else
               nextline << "    $" << HEX2 << (int)d1 << ",Y";
           }
@@ -716,7 +749,10 @@ void DiStella::disasm(uInt32 distart, int pass)
             USER_OR_AUTO_LABEL("(", ad, ")");
           }
           else if (labfound == 3)
+          {
             nextline << "(" << CartDebug::ourIOMnemonic[ad-0x280] << ")";
+            myReserved.IOReadWrite[ad-0x280] = true;
+          }
           else
             nextline << "($" << HEX4 << ad << ")";
 
