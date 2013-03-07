@@ -16,6 +16,9 @@
 
   * Disassembly from debugger ...
 
+  * Fixed redundant "New console created" message when entering the same
+    ROM multiple times from the ROM launcher.
+
 -Have fun!
 
 

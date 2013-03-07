@@ -501,17 +501,16 @@ void OSystem::createSound()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum)
+bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
+                            bool newrom)
 {
-  ostringstream buf;
-
   // Do a little error checking; it shouldn't be necessary
   if(myConsole) deleteConsole();
 
   bool showmessage = false;
 
   // If same ROM has been given, we reload the current one (assuming one exists)
-  if(rom == myRomFile)
+  if(!newrom && rom == myRomFile)
   {
     showmessage = true;  // we show a message if a ROM is being reloaded
   }
@@ -527,6 +526,7 @@ bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum)
   }
 
   // Create an instance of the 2600 game console
+  ostringstream buf;
   string type, id;
   myConsole = openConsole(myRomFile, myRomMD5, type, id);
   if(myConsole)
@@ -617,7 +617,7 @@ void OSystem::deleteConsole()
 bool OSystem::reloadConsole()
 {
   deleteConsole();
-  return createConsole(myRomFile);
+  return createConsole(myRomFile, myRomMD5, false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

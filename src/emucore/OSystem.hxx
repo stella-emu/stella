@@ -373,12 +373,14 @@ class OSystem
       Creates a new game console from the specified romfile, and correctly
       initializes the system state to start emulation of the Console.
 
-      @param rom  The FSNode of the ROM to use (contains path, etc)
-      @param md5  The MD5sum of the ROM
+      @param rom     The FSNode of the ROM to use (contains path, etc)
+      @param md5     The MD5sum of the ROM
+      @param newrom  Whether this is a new ROM, or a reload of current one
 
       @return  True on successful creation, otherwise false
     */
-    bool createConsole(const FilesystemNode& rom, const string& md5 = "");
+    bool createConsole(const FilesystemNode& rom, const string& md5 = "",
+                       bool newrom = true);
 
     /**
       Deletes the currently defined console, if it exists.
