@@ -46,9 +46,11 @@ class DiStella
     // standalone Distella
     typedef struct {
       BaseFormat gfx_format;
-      bool show_addresses;
+      bool show_addresses;  // Show PC addresses (always off for external output)
+      bool aflag;  // Turns 'A' off in accumulator instructions (-a in Distella)
       bool fflag;  // Forces correct address length (-f in Distella)
       bool rflag;  // Relocate calls out of address range (-r in Distella)
+      int bwidth;  // Number of bytes to use per line (with .byte xxx)
     } Settings;
     static Settings settings;  // Default settings
 

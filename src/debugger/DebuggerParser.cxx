@@ -1475,31 +1475,6 @@ void DebuggerParser::executeScanline()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "skip"
-void DebuggerParser::executeSkip()
-{
-  commandResult << red("Not yet implemented");
-/*
-  if(argCount != 2)
-  {
-    commandResult << red("Specify start and end of range only");
-    return;
-  }
-  else if(args[1] < args[0])
-  {
-    commandResult << red("Start address must be <= end address");
-    return;
-  }
-
-  bool result = debugger->cartDebug().addDirective(
-                  CartDebug::SKIP, args[0], args[1]);
-  commandResult << (result ? "added" : "removed") << " SKIP directive on range $"
-                << hex << args[0] << " $" << hex << args[1];
-  debugger->myRom->invalidate();
-*/
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 // "step"
 void DebuggerParser::executeStep()
 {
@@ -2154,15 +2129,6 @@ DebuggerParser::Command DebuggerParser::commands[kNumCommands] = {
     true,
     { kARG_WORD, kARG_END_ARGS },
     &DebuggerParser::executeScanline
-  },
-
-  {
-    "skip",
-    "Mark 'SKIP' range in disassembly",
-    true,
-    false,
-    { kARG_WORD, kARG_MULTI_BYTE },
-    &DebuggerParser::executeSkip
   },
 
   {

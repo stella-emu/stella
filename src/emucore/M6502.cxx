@@ -27,7 +27,6 @@
   #include "PackedBitArray.hxx"
 
   // Flags for disassembly types
-  #define DISASM_SKIP  CartDebug::SKIP
   #define DISASM_CODE  CartDebug::CODE
   #define DISASM_GFX   CartDebug::GFX
   #define DISASM_PGFX  CartDebug::PGFX
@@ -36,7 +35,6 @@
   #define DISASM_NONE  0
 #else
   // Flags for disassembly types
-  #define DISASM_SKIP  0
   #define DISASM_CODE  0
   #define DISASM_GFX   0
   #define DISASM_PGFX  0

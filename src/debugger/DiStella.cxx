@@ -173,11 +173,10 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
         }
       }
     }
-
     for (int k = 0; k <= myAppData.end; k++)
     {
-      if (!check_bit(k, CartDebug::SKIP|CartDebug::CODE|CartDebug::GFX|
-                        CartDebug::PGFX|CartDebug::DATA))
+      if (!check_bit(k, CartDebug::CODE | CartDebug::GFX |
+                        CartDebug::PGFX | CartDebug::DATA))
         mark(k+myOffset, CartDebug::ROW);
     }
   }
@@ -215,9 +214,9 @@ void DiStella::disasm(uInt32 distart, int pass)
   {
     if(check_bit(myPC, CartDebug::GFX|CartDebug::PGFX) && !check_bit(myPC, CartDebug::CODE))
     {
-      if (pass == 2)
-        mark(myPC+myOffset, CartDebug::VALID_ENTRY);
-      else if (pass == 3)
+      mark(myPC+myOffset, CartDebug::VALID_ENTRY);
+
+      if (pass == 3)
       {
         if (check_bit(myPC, CartDebug::REFERENCED))
           myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'";
@@ -262,40 +261,65 @@ void DiStella::disasm(uInt32 distart, int pass)
     else if (check_bit(myPC, CartDebug::ROW) &&
              !check_bit(myPC, CartDebug::CODE|CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX))
     {
-      mark(myPC+myOffset, CartDebug::VALID_ENTRY);
+      if (pass == 2)
+        mark(myPC+myOffset, CartDebug::VALID_ENTRY);
+
       if (pass == 3)
       {
-        bytes = 1;
-        myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4 << myPC+myOffset << "'.byte "
-              << "$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
-      }
-      myPC++;
-
-      while (check_bit(myPC, CartDebug::ROW) &&
-             !check_bit(myPC, CartDebug::CODE|CartDebug::DATA|CartDebug::GFX|CartDebug::PGFX)
-             && pass == 3 && myPC <= myAppData.end)
-      {
-        bytes++;
-        if (bytes == 9) // TODO - perhaps make this configurable to size of output area
+        bool row = check_bit(myPC, CartDebug::ROW) &&
+                  !check_bit(myPC, CartDebug::CODE | CartDebug::DATA |
+                                   CartDebug::GFX | CartDebug::PGFX);
+        bool referenced = check_bit(myPC, CartDebug::REFERENCED);
+        bool line_empty = true;
+        while (row && myPC <= myAppData.end)
         {
-          addEntry(CartDebug::ROW);
-          myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
-          bytes = 1;
+          if(referenced)        // start a new line with a label
+          {
+            if(!line_empty)
+            {
+              addEntry(CartDebug::ROW);
+              line_empty = true;
+            }
+            myDisasmBuf << HEX4 << myPC+myOffset << "'L" << HEX4
+                        << myPC+myOffset << "'.byte " << "$" << HEX2
+                        << (int)Debugger::debugger().peek(myPC+myOffset);
+            myPC++;
+            bytes = 1;
+            line_empty = false;
+          }
+          else if(line_empty)   // start a new line without a label
+          {
+            myDisasmBuf << "    '     '.byte $" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
+            myPC++;
+            bytes = 1;
+            line_empty = false;
+          }
+          // Otherwise, append bytes to the current line, up until the maximum
+          else if(++bytes == mySettings.bwidth)
+          {
+            addEntry(CartDebug::ROW);
+            line_empty = true;
+          }
+          else
+          {
+            myDisasmBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
+            myPC++;
+          }
+
+          row = check_bit(myPC, CartDebug::ROW) &&
+               !check_bit(myPC, CartDebug::CODE | CartDebug::DATA |
+                                CartDebug::GFX | CartDebug::PGFX);
+          referenced = check_bit(myPC, CartDebug::REFERENCED);
         }
-        else
-          myDisasmBuf << ",$" << HEX2 << (int)Debugger::debugger().peek(myPC+myOffset);
-
-        myPC++;
-      }
-
-      if (pass == 3)
-      {
-        addEntry(CartDebug::ROW);
+        if(!line_empty)
+          addEntry(CartDebug::ROW);
         myDisasmBuf << "    '     ' ";
         addEntry(CartDebug::NONE);
       }
+      else
+        myPC++;
     }
-    else  // The following sections must be SKIP or CODE
+    else  // The following sections must be CODE
     {
       // Add label (if any)
       //
@@ -316,15 +340,15 @@ void DiStella::disasm(uInt32 distart, int pass)
       addr_mode = ourLookup[op].addr_mode;
       myPC++;
 
-#if 0
-      // FIXME - the following condition is never true
-      if (ourLookup[op].mnemonic[0] == '.')
+      // Undefined opcodes are in lowercase letters
+      // Original Distella has those opcodes starting with a '.'
+      if (islower(ourLookup[op].mnemonic[0]))
       {
         addr_mode = IMPLIED;
         if (pass == 3)
           nextline << ".byte $" << HEX2 << (int)op << " ;";
       }
-#endif
+
       if (pass == 1)
       {
         /* M_REL covers BPL, BMI, BVC, BVS, BCC, BCS, BNE, BEQ
@@ -433,7 +457,7 @@ void DiStella::disasm(uInt32 distart, int pass)
     #endif
         case ACCUMULATOR:
         {
-          if (pass == 3)
+          if (pass == 3 && mySettings.aflag)
             nextline << "    A";
           break;
         }
@@ -969,9 +993,6 @@ void DiStella::addEntry(CartDebug::DisasmType type)
   myDisasmBuf.seekg(11, ios::beg);
   switch(tag.type)
   {
-    case CartDebug::SKIP:  // TODO - handle this
-      tag.disasm = " ";
-      break;
     case CartDebug::CODE:
       getline(myDisasmBuf, tag.disasm, '\'');
       getline(myDisasmBuf, tag.ccount, '\'');
@@ -1025,9 +1046,11 @@ void DiStella::processDirectives(const CartDebug::DirectiveList& directives)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 DiStella::Settings DiStella::settings = {
   kBASE_2,  // gfx_format
-  true,     // show_addresses
+  true,     // show_addresses (not used externally; always off)
+  false,    // aflag (-a in Distella)
   true,     // fflag (-f in Distella)
-  false     // rflag (-r in Distella)
+  false,    // rflag (-r in Distella)
+  9         // number of bytes to use with .byte directive
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

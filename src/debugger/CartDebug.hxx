@@ -55,18 +55,17 @@ class CartDebug : public DebuggerSystem
   public:
     enum DisasmType {
       NONE        = 0,
-      VALID_ENTRY = 1 << 0, /* addresses that can have a label placed in front of it.
+      REFERENCED  = 1 << 0, /* code somewhere in the program references it,
+                               i.e. LDA $F372 referenced $F372 */
+      VALID_ENTRY = 1 << 1, /* addresses that can have a label placed in front of it.
                                A good counterexample would be "FF00: LDA $FE00"; $FF01
                                would be in the middle of a multi-byte instruction, and
                                therefore cannot be labelled. */
-      REFERENCED  = 1 << 1, /* code somewhere in the program references it,
-                               i.e. LDA $F372 referenced $F372 */
 
       // The following correspond to specific types that can be set within the
       // debugger, or specified in a Distella cfg file, and are listed in order
       // of decreasing hierarchy
       //
-      SKIP   = 1 << 7,  // TODO - document this
       CODE   = 1 << 6,  // disassemble-able code segments
       GFX    = 1 << 5,  // addresses loaded into GRPx registers
       PGFX   = 1 << 4,  // addresses loaded into PFx registers

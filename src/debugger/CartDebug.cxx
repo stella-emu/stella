@@ -84,8 +84,10 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     myOSystem.settings().getInt("dis.gfxformat") == 16 ? kBASE_16 : kBASE_2;
   DiStella::settings.show_addresses =
     myOSystem.settings().getBool("dis.showaddr");
-  DiStella::settings.rflag = myOSystem.settings().getBool("dis.relocate");
+  DiStella::settings.aflag = false; // Not currently configurable
   DiStella::settings.fflag = true;  // Not currently configurable
+  DiStella::settings.rflag = myOSystem.settings().getBool("dis.relocate");
+  DiStella::settings.bwidth = 9;  // TODO - configure based on window size
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -329,10 +331,10 @@ string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   Disassembly disasm;
   BankInfo info;
-  uInt8 labels[0x1000], directives[0x1000];
   info.addressList.push_back(start);
   DiStella distella(*this, disasm.list, info, DiStella::settings,
-                    labels, directives, (ReservedEquates&)myReserved, false);
+                    (uInt8*)myDisLabels, (uInt8*)myDisDirectives,
+                    (ReservedEquates&)myReserved, false);
 
   // Fill the string with disassembled data
   start &= 0xFFF;
@@ -761,12 +763,6 @@ string CartDebug::loadConfigFile(string file)
           // TODO - figure out what to do with this
           buf >> hex >> start;
         }
-        else if(BSPF_startsWithIgnoreCase(directive, "SKIP"))
-        {
-          // For now, treat this as CODE
-          buf >> hex >> start >> hex >> end;
-          addDirective(CartDebug::CODE, start, end, currentbank);
-        }
         else if(BSPF_startsWithIgnoreCase(directive, "CODE"))
         {
           buf >> hex >> start >> hex >> end;
@@ -864,7 +860,7 @@ string CartDebug::saveDisassembly(string file)
   buf << "; Disassembly of " << file << "\n"
       << "; Disassembled " << ctime(&currtime)
       << "; Using Stella " << STELLA_VERSION << "\n;\n"
-      << "; Command Line arguments: TODO - add args\n;\n"
+      << "; Settings used: TODO - add args\n;\n"
       << "; Legend: * = CODE not yet run (preliminary code)\n"
       << ";         D = DATA directive (referenced in some way)\n"
       << ";         G = GFX directive, shown as '#' (stored in player, missile, ball)\n"
@@ -874,12 +870,12 @@ string CartDebug::saveDisassembly(string file)
   for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
     if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr][0] != '$')
       buf << ALIGN(7) << ourTIAMnemonicR[addr] << " =  $"
-          << HEX2 << addr << " ; (R)\n";
+          << HEX2 << right << addr << " ; (R)\n";
 
   for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
     if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr][0] != '$')
       buf << ALIGN(7) << ourTIAMnemonicW[addr] << " =  $"
-          << HEX2 << addr << " ; (W)\n";
+          << HEX2 << right << addr << " ; (W)\n";
 
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
     if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr][0] != '$')
@@ -893,8 +889,10 @@ string CartDebug::saveDisassembly(string file)
   DiStella::Settings settings;
   settings.gfx_format = DiStella::settings.gfx_format;
   settings.show_addresses = false;
+  settings.aflag = false; // Otherwise DASM gets confused
   settings.fflag = DiStella::settings.fflag;
   settings.rflag = DiStella::settings.rflag;
+  settings.bwidth = 17;  // default from Distella
 
   Disassembly disasm;
   disasm.list.reserve(2048);
@@ -1168,7 +1166,6 @@ void CartDebug::disasmTypeAsString(ostream& buf, DisasmType type) const
 {
   switch(type)
   {
-    case CartDebug::SKIP:   buf << "SKIP";   break;
     case CartDebug::CODE:   buf << "CODE";   break;
     case CartDebug::GFX:    buf << "GFX";    break;
     case CartDebug::PGFX:   buf << "PGFX";   break;
@@ -1185,8 +1182,6 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
 {
   if(flags)
   {
-    if(flags & CartDebug::SKIP)
-      buf << "SKIP ";
     if(flags & CartDebug::CODE)
       buf << "CODE ";
     if(flags & CartDebug::GFX)

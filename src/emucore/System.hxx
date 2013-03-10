@@ -290,7 +290,7 @@ class System : public Serializable
     /**
       Access and modify the disassembly type flags for the given
       address.  Note that while any flag can be used, the disassembly
-      only really acts on SKIP/CODE/GFX/PGFX/DATA/ROW.
+      only really acts on CODE/GFX/PGFX/DATA/ROW.
     */
     uInt8 getAccessFlags(uInt16 address);
     void setAccessFlags(uInt16 address, uInt8 flags);
