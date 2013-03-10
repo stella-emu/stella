@@ -19,6 +19,10 @@
   * Fixed redundant "New console created" message when entering the same
     ROM multiple times from the ROM launcher.
 
+  * Updated profile database for "BasketBall" ROMs; the joysticks are now
+    swapped by dedault, which allows one and two-player games to work
+    correctly.
+
 -Have fun!
 
 

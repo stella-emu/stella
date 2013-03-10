@@ -50,6 +50,13 @@ print "\n";
 PropSet::save_prop_set($usr_file, \%usr_propset);
 PropSet::save_prop_set($sys_file, \%sys_propset);
 
+print "\nRun create_props [yN]: ";
+chomp ($input = <STDIN>);
+if($input eq 'y')
+{ 
+  system("./src/tools/create_props.pl");
+}
+
 
 sub usage {
   print "merge_props.pl <USER properties file> <SYSTEM properties file>\n";

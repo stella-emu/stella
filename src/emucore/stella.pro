@@ -98,15 +98,15 @@
 "Display.YStart" "30"
 ""
 
+"Cartridge.MD5" "fb09ee4ccd47ae74a3c314f0d8a40344"
+"Cartridge.Name" "Titans (SnailSoft)"
+""
+
 "Cartridge.MD5" "6272f348a9a7f2d500a4006aa93e0d08"
 "Cartridge.Manufacturer" "Atari, Jerome Domurat, Michael Sierchio"
 "Cartridge.ModelNo" "CX2667, CX2667P"
 "Cartridge.Name" "RealSports Soccer (1983) (Atari) (PAL) [a]"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "fb09ee4ccd47ae74a3c314f0d8a40344"
-"Cartridge.Name" "Titans (SnailSoft)"
 ""
 
 "Cartridge.MD5" "65bd29e8ab1b847309775b0de6b2e4fe"
@@ -394,6 +394,10 @@
 "Controller.MouseAxis" "01"
 ""
 
+"Cartridge.MD5" "f1beca5a198cf08190487e5c27b8e540"
+"Cartridge.Name" "Fu Kung! (V0.16) (2003) (AD)"
+""
+
 "Cartridge.MD5" "c246e05b52f68ab2e9aee40f278cd158"
 "Cartridge.Manufacturer" "Thomas Jentzsch"
 "Cartridge.Name" "Star Wars - Ewok Adventure (Thomas Jentzsch) (Prototype)"
@@ -407,10 +411,6 @@
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "3-D Tic-Tac-Toe (32 in 1) (1988) (Atari) (PAL)"
 "Display.YStart" "62"
-""
-
-"Cartridge.MD5" "f1beca5a198cf08190487e5c27b8e540"
-"Cartridge.Name" "Fu Kung! (V0.16) (2003) (AD)"
 ""
 
 "Cartridge.MD5" "cba56e939252b05df7b7de87307d12ca"
@@ -1530,6 +1530,8 @@
 "Cartridge.Manufacturer" "Atari, Alan Miller"
 "Cartridge.ModelNo" "CX2624, CX2624P"
 "Cartridge.Name" "Basketball (1978) (Atari) (PAL)"
+"Cartridge.Note" "Console ports are swapped"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "205070b6a0d454961dd9196a8e81d877"
@@ -6257,6 +6259,8 @@
 "Cartridge.Manufacturer" "Atari, Alan Miller"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Basketball (32 in 1) (1988) (Atari) (PAL)"
+"Cartridge.Note" "Console ports are swapped"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "5f9b62350b31be8bd270d9a241cbd50e"
@@ -10697,7 +10701,9 @@
 "Cartridge.Manufacturer" "Atari, Alan Miller - Sears"
 "Cartridge.ModelNo" "CX2624 - 6-99826, 49-75113"
 "Cartridge.Name" "Basketball (1978) (Atari)"
+"Cartridge.Note" "Console ports are swapped"
 "Cartridge.Rarity" "Common"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "dbc7485ad5814d466de780a3e7ed3b46"
@@ -10772,7 +10778,9 @@
 
 "Cartridge.MD5" "5d132d121aabc5235dd039dfc46aa024"
 "Cartridge.Name" "Basketball (208 in 1) (Unknown) (PAL) (Hack)"
+"Cartridge.Note" "Console ports are swapped"
 "Cartridge.Rarity" "Hack"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "4f89b897444e7c3b36aed469b8836839"
@@ -14150,6 +14158,8 @@
 
 "Cartridge.MD5" "77be57d872e3f5b7ecf8d19d97f73281"
 "Cartridge.Name" "Basketball (208 in 1) (Unknown) (PAL)"
+"Cartridge.Note" "Console ports are swapped"
+"Console.SwapPorts" "YES"
 ""
 
 "Cartridge.MD5" "6bb22efa892b89b69b9bf5ea547e62b8"
