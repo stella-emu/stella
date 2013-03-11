@@ -291,9 +291,10 @@ class CartDebug : public DebuggerSystem
 
     // Information on equates used in the disassembly
     typedef struct {
-      bool TIARead[16];
-      bool TIAWrite[64];
+      bool TIARead[64];
+      bool TIAWrite[128];
       bool IOReadWrite[24];
+      AddrToLabel Label;
     } ReservedEquates;
     ReservedEquates myReserved;
 
@@ -347,8 +348,8 @@ class CartDebug : public DebuggerSystem
     uInt16 myLabelLength;
 
     /// Table of instruction mnemonics
-    static const char* ourTIAMnemonicR[16];  // read mode
-    static const char* ourTIAMnemonicW[64];  // write mode
+    static const char* ourTIAMnemonicR[64];  // read mode
+    static const char* ourTIAMnemonicW[128]; // write mode
     static const char* ourIOMnemonic[24];
 };
 

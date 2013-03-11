@@ -184,6 +184,22 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   // Second pass
   disasm(myOffset, 2);
 
+  // Add reserved line equates
+  ostringstream reservedLabel;
+  for (int k = 0; k <= myAppData.end; k++)
+  {
+    if ((myLabels[k] & (CartDebug::REFERENCED | CartDebug::VALID_ENTRY)) ==
+        CartDebug::REFERENCED)
+    {
+      // If we have a piece of code referenced somewhere else, but cannot
+      // locate the label in code (i.e because the address is inside of a
+      // multi-byte instruction, then we make note of that address for reference
+      reservedLabel.str("");
+      reservedLabel << "L" << HEX4 << (k+myOffset);
+      myReserved.Label.insert(make_pair(k+myOffset, reservedLabel.str()));
+    }
+  }
+
   // Third pass
   disasm(myOffset, 3);
 }
@@ -526,13 +542,13 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               if(ourLookup[op].rw_mode == READ)
               {
-                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x0f];
-                myReserved.TIARead[d1&0x0f] = true;
+                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x3f];
+                myReserved.TIARead[d1&0x3f] = true;
               }
               else
               {
-                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x3f];
-                myReserved.TIAWrite[d1&0x3f] = true;
+                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x7f];
+                myReserved.TIAWrite[d1&0x7f] = true;
               }
             }
             else
@@ -676,13 +692,13 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               if(ourLookup[op].rw_mode == READ)
               {
-                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x0f] << ",X";
-                myReserved.TIARead[d1&0x0f] = true;
+                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x3f] << ",X";
+                myReserved.TIARead[d1&0x3f] = true;
               }
               else
               {
-                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x3f] << ",X";
-                myReserved.TIAWrite[d1&0x3f] = true;
+                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x7f] << ",X";
+                myReserved.TIAWrite[d1&0x7f] = true;
               }
             }
             else
@@ -702,13 +718,13 @@ void DiStella::disasm(uInt32 distart, int pass)
             {
               if(ourLookup[op].rw_mode == READ)
               {
-                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x0f] << ",Y";
-                myReserved.TIARead[d1&0x0f] = true;
+                nextline << "    " << CartDebug::ourTIAMnemonicR[d1&0x3f] << ",Y";
+                myReserved.TIARead[d1&0x3f] = true;
               }
               else
               {
-                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x3f] << ",Y";
-                myReserved.TIAWrite[d1&0x3f] = true;
+                nextline << "    " << CartDebug::ourTIAMnemonicW[d1&0x7f] << ",Y";
+                myReserved.TIAWrite[d1&0x7f] = true;
               }
             }
             else

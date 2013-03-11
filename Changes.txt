@@ -14,7 +14,21 @@
 
 3.8.1 to 3.9: (XXXXX xx, 2013)
 
-  * Disassembly from debugger ...
+  * Greatly extended functionality of the debugger disassembly:
+      - The debugger now generates DASM-compatible disassembled code,
+        which can be saved to an external file.  This disassembly is
+        based on both a static and runtime analysis, and is extremely
+        accurate.  It also automatically differentiates between the
+        directives CODE/PGFX/GFX/DATA/ROW, whereas normal Distella
+        only differentiates between CODE and ROW.  For now, only
+        single-bank (4K) ROMs are supported.
+
+      - The disassembly now recognizes various TIA read/write mirrors,
+        and marks them as such (for example, INPT4.30 instead of INPT4
+        for address $3C).
+
+      - Fixed labelling in ROW directives; it wasn't accurately setting
+        a label in the case where it occurred in the middle of the data.
 
   * Fixed redundant "New console created" message when entering the same
     ROM multiple times from the ROM launcher.

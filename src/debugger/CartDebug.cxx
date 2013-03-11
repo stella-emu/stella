@@ -36,7 +36,7 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
     myOSystem(osystem),
     myRWPortAddress(0),
-    myLabelLength(5)   // longest pre-defined label
+    myLabelLength(8)   // longest pre-defined label
 {
   // Zero-page RAM is always present
   addRamArea(0x80, 128, 0, 0);
@@ -63,12 +63,12 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   addLabel("START", myDebugger.dpeek(0xfffc));
 
   // Add system equates
-  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
   {
     mySystemAddresses.insert(make_pair(ourTIAMnemonicR[addr], addr));
     myReserved.TIARead[addr] = false;
   }
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x7F; ++addr)
   {
     mySystemAddresses.insert(make_pair(ourTIAMnemonicW[addr], addr));
     myReserved.TIAWrite[addr] = false;
@@ -78,6 +78,8 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     mySystemAddresses.insert(make_pair(ourIOMnemonic[addr-0x280], addr));
     myReserved.IOReadWrite[addr-0x280] = false;
   }
+
+  myReserved.Label.clear();
 
   // Add settings for Distella
   DiStella::settings.gfx_format =
@@ -581,7 +583,7 @@ const string& CartDebug::getLabel(uInt16 addr, bool isRead, int places) const
   {
     case ADDR_TIA:
       return result =
-        (isRead ? ourTIAMnemonicR[addr&0x0f] : ourTIAMnemonicW[addr&0x3f]);
+        (isRead ? ourTIAMnemonicR[addr&0x3f] : ourTIAMnemonicW[addr&0x7f]);
 
     case ADDR_RIOT:
     {
@@ -867,20 +869,24 @@ string CartDebug::saveDisassembly(string file)
       << ";         P = PGFX directive, shown as '*' (stored in playfield)\n"
       << "\n      processor 6502\n\n";
 
-  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
     if(myReserved.TIARead[addr] && ourTIAMnemonicR[addr][0] != '$')
-      buf << ALIGN(7) << ourTIAMnemonicR[addr] << " =  $"
+      buf << ALIGN(10) << ourTIAMnemonicR[addr] << " =  $"
           << HEX2 << right << addr << " ; (R)\n";
 
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x7F; ++addr)
     if(myReserved.TIAWrite[addr] && ourTIAMnemonicW[addr][0] != '$')
-      buf << ALIGN(7) << ourTIAMnemonicW[addr] << " =  $"
+      buf << ALIGN(10) << ourTIAMnemonicW[addr] << " =  $"
           << HEX2 << right << addr << " ; (W)\n";
 
   for(uInt16 addr = 0x00; addr <= 0x17; ++addr)
     if(myReserved.IOReadWrite[addr] && ourIOMnemonic[addr][0] != '$')
-      buf << ALIGN(7) << ourIOMnemonic[addr] << " =  $"
+      buf << ALIGN(10) << ourIOMnemonic[addr] << " =  $"
           << HEX4 << right << (addr+0x280) << "\n";
+
+  AddrToLabel::const_iterator iter;
+  for(iter = myReserved.Label.begin(); iter != myReserved.Label.end(); ++iter)
+      buf << ALIGN(10) << iter->second << " =  $" << iter->first << "\n";
 
   buf << "\n";
 
@@ -922,7 +928,7 @@ string CartDebug::saveDisassembly(string file)
       {
         case CartDebug::CODE:
         {
-          buf << ALIGN(16) << tag.disasm << tag.ccount << "\n";
+          buf << ALIGN(19) << tag.disasm << tag.ccount << "\n";
           break;
         }
         case CartDebug::NONE:
@@ -1032,10 +1038,10 @@ string CartDebug::clearConfig(int bank)
 void CartDebug::getCompletions(const char* in, StringList& completions) const
 {
   // First scan system equates
-  for(uInt16 addr = 0x00; addr <= 0x0F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
     if(BSPF_startsWithIgnoreCase(ourTIAMnemonicR[addr], in))
       completions.push_back(ourTIAMnemonicR[addr]);
-  for(uInt16 addr = 0x00; addr <= 0x3F; ++addr)
+  for(uInt16 addr = 0x00; addr <= 0x7F; ++addr)
     if(BSPF_startsWithIgnoreCase(ourTIAMnemonicW[addr], in))
       completions.push_back(ourTIAMnemonicW[addr]);
   for(uInt16 addr = 0; addr <= 0x297-0x280; ++addr)
@@ -1202,13 +1208,27 @@ void CartDebug::disasmTypeAsString(ostream& buf, uInt8 flags) const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourTIAMnemonicR[16] = {
+const char* CartDebug::ourTIAMnemonicR[64] = {
+// Standard $00-based TIA read locations:
   "CXM0P", "CXM1P", "CXP0FB", "CXP1FB", "CXM0FB", "CXM1FB", "CXBLPF", "CXPPMM",
-  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$0E", "$0F"
+  "INPT0", "INPT1", "INPT2", "INPT3", "INPT4", "INPT5", "$0E", "$0F",
+// Mirrored $10-based TIA read locations:
+  "CXM0P.10", "CXM1P.10", "CXP0FB.10", "CXP1FB.10", "CXM0FB.10", "CXM1FB.10",
+  "CXBLPF.10", "CXPPMM.10", "INPT0.10", "INPT1.10", "INPT2.10", "INPT3.10",
+  "INPT4.10", "INPT5.10", "$1E", "$1F",
+// Mirrored $20-based TIA read locations:
+  "CXM0P.20", "CXM1P.20", "CXP0FB.20", "CXP1FB.20", "CXM0FB.20", "CXM1FB.20",
+  "CXBLPF.20", "CXPPMM.20", "INPT0.20", "INPT1.20", "INPT2.20", "INPT3.20",
+  "INPT4.20", "INPT5.20", "$2E", "$2F",
+// Mirrored $30-based TIA read locations:
+  "CXM0P.30", "CXM1P.30", "CXP0FB.30", "CXP1FB.30", "CXM0FB.30", "CXM1FB.30",
+  "CXBLPF.30", "CXPPMM.30", "INPT0.30", "INPT1.30", "INPT2.30", "INPT3.30",
+  "INPT4.30", "INPT5.30", "$3E", "$3F",
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-const char* CartDebug::ourTIAMnemonicW[64] = {
+const char* CartDebug::ourTIAMnemonicW[128] = {
+// Standard $00-based TIA write locations:
   "VSYNC", "VBLANK", "WSYNC", "RSYNC", "NUSIZ0", "NUSIZ1", "COLUP0", "COLUP1",
   "COLUPF", "COLUBK", "CTRLPF", "REFP0", "REFP1", "PF0", "PF1", "PF2",
   "RESP0", "RESP1", "RESM0", "RESM1", "RESBL", "AUDC0", "AUDC1", "AUDF0",
@@ -1216,7 +1236,18 @@ const char* CartDebug::ourTIAMnemonicW[64] = {
   "HMP0", "HMP1", "HMM0", "HMM1", "HMBL", "VDELP0", "VDELP1", "VDELBL",
   "RESMP0", "RESMP1", "HMOVE", "HMCLR", "CXCLR", "$2D", "$2E", "$2F",
   "$30", "$31", "$32", "$33", "$34", "$35", "$36", "$37",
-  "$38", "$39", "$3A", "$3B", "$3C", "$3D", "$3E", "$3F"
+  "$38", "$39", "$3A", "$3B", "$3C", "$3D", "$3E", "$3F",
+// Mirrored $40-based TIA write locations:
+  "VSYNC.40", "VBLANK.40", "WSYNC.40", "RSYNC.40", "NUSIZ0.40", "NUSIZ1.40",
+  "COLUP0.40", "COLUP1.40", "COLUPF.40", "COLUBK.40", "CTRLPF.40", "REFP0.40",
+  "REFP1.40", "PF0.40", "PF1.40", "PF2.40", "RESP0.40", "RESP1.40", "RESM0.40",
+  "RESM1.40", "RESBL.40", "AUDC0.40", "AUDC1.40", "AUDF0.40", "AUDF1.40",
+  "AUDV0.40", "AUDV1.40", "GRP0.40", "GRP1.40", "ENAM0.40", "ENAM1.40",
+  "ENABL.40", "HMP0.40", "HMP1.40", "HMM0.40", "HMM1.40", "HMBL.40",
+  "VDELP0.40", "VDELP1.40", "VDELBL.40", "RESMP0.40", "RESMP1.40", "HMOVE.40",
+  "HMCLR.40", "CXCLR.40", "$6D", "$6E", "$6F",
+  "$70", "$71", "$72", "$73", "$74", "$75", "$76", "$77",
+  "$78", "$79", "$7A", "$7B", "$7C", "$7D", "$7E", "$7F"
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
