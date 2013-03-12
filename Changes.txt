@@ -37,6 +37,10 @@
     swapped by default, which allows one and two-player games to work
     correctly.
 
+  * Changed colour of the 'current PC indicator' in the debugger to
+    match the one used for line selection.  This makes it easier to
+    see for those with problems seeing lighter colours.
+
 -Have fun!
 
 

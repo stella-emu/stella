@@ -465,7 +465,7 @@ void RomListWidget::drawWidget(bool hilite)
 
     // Draw highlighted item in a frame
     if (_highlightedItem == pos)
-      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kDbgColorHi);
+      s.frameRect(_x + l.x() - 3, ypos - 1, _w - l.x(), _fontHeight, kTextColorHi);
 
     // Draw the selected item inverted, on a highlighted background.
     if (_selectedItem == pos && _hasFocus)
