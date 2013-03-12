@@ -356,9 +356,9 @@ void DiStella::disasm(uInt32 distart, int pass)
       addr_mode = ourLookup[op].addr_mode;
       myPC++;
 
-      // Undefined opcodes are in lowercase letters
-      // Original Distella has those opcodes starting with a '.'
-      if (islower(ourLookup[op].mnemonic[0]))
+      // Undefined opcodes start with a '.'
+      // These are undefined wrt DASM
+      if (ourLookup[op].mnemonic[0] == '.')
       {
         addr_mode = IMPLIED;
         if (pass == 3)
@@ -1075,7 +1075,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 00 */ { "BRK", IMPLIED,     M_NONE, NONE,  7 }, /* Pseudo Absolute */
   /* 01 */ { "ORA", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* 02 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 02 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 03 */ { "slo", INDIRECT_X,  M_INDX, WRITE, 8 },
 
   /* 04 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
@@ -1095,7 +1095,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 10 */ { "BPL", RELATIVE,    M_REL,  READ,  2 },
   /* 11 */ { "ORA", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 12 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 12 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 13 */ { "slo", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
   /* 14 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
@@ -1105,7 +1105,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 18 */ { "CLC", IMPLIED,     M_NONE, NONE,  2 },
   /* 19 */ { "ORA", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 1a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 1a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
   /* 1b */ { "slo", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
   /* 1c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
@@ -1115,7 +1115,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 20 */ { "JSR", ABSOLUTE,    M_ADDR, READ,  6 },
   /* 21 */ { "AND", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect ,X) */
-  /* 22 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 22 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 23 */ { "rla", INDIRECT_X,  M_INDX, WRITE, 8 },
 
   /* 24 */ { "BIT", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
@@ -1126,7 +1126,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /* 28 */ { "PLP", IMPLIED,     M_NONE, NONE,  4 },
   /* 29 */ { "AND", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
   /* 2a */ { "ROL", ACCUMULATOR, M_AC,   WRITE, 2 }, /* Accumulator */
-  /* 2b */ { "anc", IMMEDIATE,   M_ACIM, READ,  2 },
+  /* 2b */ { ".anc",IMMEDIATE,   M_ACIM, READ,  2 },
 
   /* 2c */ { "BIT", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
   /* 2d */ { "AND", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
@@ -1135,30 +1135,30 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 30 */ { "BMI", RELATIVE,    M_REL,  READ,  2 },
   /* 31 */ { "AND", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 32 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 32 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 33 */ { "rla", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 34 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 34 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
   /* 35 */ { "AND", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
   /* 36 */ { "ROL", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
   /* 37 */ { "rla", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
   /* 38 */ { "SEC", IMPLIED,     M_NONE, NONE,  2 },
   /* 39 */ { "AND", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 3a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 3a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
   /* 3b */ { "rla", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 3c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 3c */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
   /* 3d */ { "AND", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
   /* 3e */ { "ROL", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
   /* 3f */ { "rla", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
   /* 40 */ { "RTI", IMPLIED,     M_NONE, NONE,  6 },
   /* 41 */ { "EOR", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* 42 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 42 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 43 */ { "sre", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* 44 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
+  /* 44 */ { ".nop",ZERO_PAGE,   M_NONE, NONE,  3 },
   /* 45 */ { "EOR", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
   /* 46 */ { "LSR", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
   /* 47 */ { "sre", ZERO_PAGE,   M_ZERO, WRITE, 5 },
@@ -1175,30 +1175,30 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 50 */ { "BVC", RELATIVE,    M_REL,  READ,  2 },
   /* 51 */ { "EOR", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 52 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 52 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 53 */ { "sre", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 54 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 54 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
   /* 55 */ { "EOR", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
   /* 56 */ { "LSR", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
   /* 57 */ { "sre", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
   /* 58 */ { "CLI", IMPLIED,     M_NONE, NONE,  2 },
   /* 59 */ { "EOR", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 5a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 5a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
   /* 5b */ { "sre", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 5c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 5c */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
   /* 5d */ { "EOR", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
   /* 5e */ { "LSR", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
   /* 5f */ { "sre", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
   /* 60 */ { "RTS", IMPLIED,     M_NONE, NONE,  6 },
   /* 61 */ { "ADC", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* 62 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* 62 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* 63 */ { "rra", INDIRECT_X,  M_INDX, WRITE, 8 },
 
-  /* 64 */ { "nop", ZERO_PAGE,   M_NONE, NONE,  3 },
+  /* 64 */ { ".nop",ZERO_PAGE,   M_NONE, NONE,  3 },
   /* 65 */ { "ADC", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
   /* 66 */ { "ROR", ZERO_PAGE,   M_ZERO, WRITE, 5 }, /* Zeropage */
   /* 67 */ { "rra", ZERO_PAGE,   M_ZERO, WRITE, 5 },
@@ -1215,20 +1215,20 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 70 */ { "BVS", RELATIVE,    M_REL,  READ,  2 },
   /* 71 */ { "ADC", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* 72 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
+  /* 72 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
   /* 73 */ { "rra", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* 74 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* 74 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
   /* 75 */ { "ADC", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
   /* 76 */ { "ROR", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
   /* 77 */ { "rra", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
   /* 78 */ { "SEI", IMPLIED,     M_NONE, NONE,  2 },
   /* 79 */ { "ADC", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* 7a */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* 7a */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
   /* 7b */ { "rra", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* 7c */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* 7c */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
   /* 7d */ { "ADC", ABSOLUTE_X,  M_ABSX, READ,  4 },  /* Absolute,X */
   /* 7e */ { "ROR", ABSOLUTE_X,  M_ABSX, WRITE, 7 },  /* Absolute,X */
   /* 7f */ { "rra", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
@@ -1237,7 +1237,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 80 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
   /* 81 */ { "STA", INDIRECT_X,  M_AC,   WRITE, 6 }, /* (Indirect,X) */
-  /* 82 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* 82 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 },
   /* 83 */ { "sax", INDIRECT_X,  M_ANXR, WRITE, 6 },
 
   /* 84 */ { "STY", ZERO_PAGE,   M_YR,   WRITE, 3 }, /* Zeropage */
@@ -1246,7 +1246,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /* 87 */ { "sax", ZERO_PAGE,   M_ANXR, WRITE, 3 },
 
   /* 88 */ { "DEY", IMPLIED,     M_YR,   NONE,  2 },
-  /* 89 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* 89 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 },
   /* 8a */ { "TXA", IMPLIED,     M_XR,   NONE,  2 },
   /****  very abnormal: usually AC = AC | #$EE & XR & #$oper  ****/
   /* 8b */ { "ane", IMMEDIATE,   M_AXIM, READ,  2 },
@@ -1258,7 +1258,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* 90 */ { "BCC", RELATIVE,    M_REL,  READ,  2 },
   /* 91 */ { "STA", INDIRECT_Y,  M_AC,   WRITE, 6 }, /* (Indirect),Y */
-  /* 92 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
+  /* 92 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT relative? */
   /* 93 */ { "sha", INDIRECT_Y,  M_ANXR, WRITE, 6 },
 
   /* 94 */ { "STY", ZERO_PAGE_X, M_YR,   WRITE, 4 }, /* Zeropage,X */
@@ -1299,7 +1299,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* b0 */ { "BCS", RELATIVE,    M_REL,  READ,  2 },
   /* b1 */ { "LDA", INDIRECT_Y,  M_INDY, READ,  5 }, /* (indirect),Y */
-  /* b2 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* b2 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* b3 */ { "lax", INDIRECT_Y,  M_INDY, READ,  5 },
 
   /* b4 */ { "LDY", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
@@ -1319,7 +1319,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* c0 */ { "CPY", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
   /* c1 */ { "CMP", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* c2 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 }, /* occasional TILT */
+  /* c2 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 }, /* occasional TILT */
   /* c3 */ { "dcp", INDIRECT_X,  M_INDX, WRITE, 8 },
 
   /* c4 */ { "CPY", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
@@ -1339,27 +1339,27 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* d0 */ { "BNE", RELATIVE,    M_REL,  READ,  2 },
   /* d1 */ { "CMP", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* d2 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* d2 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* d3 */ { "dcp", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* d4 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* d4 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
   /* d5 */ { "CMP", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
   /* d6 */ { "DEC", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
   /* d7 */ { "dcp", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
   /* d8 */ { "CLD", IMPLIED,     M_NONE, NONE,  2 },
   /* d9 */ { "CMP", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* da */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* da */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
   /* db */ { "dcp", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* dc */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* dc */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
   /* dd */ { "CMP", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
   /* de */ { "DEC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
   /* df */ { "dcp", ABSOLUTE_X,  M_ABSX, WRITE, 7 },
 
   /* e0 */ { "CPX", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
   /* e1 */ { "SBC", INDIRECT_X,  M_INDX, READ,  6 }, /* (Indirect,X) */
-  /* e2 */ { "nop", IMMEDIATE,   M_NONE, NONE,  2 },
+  /* e2 */ { ".nop",IMMEDIATE,   M_NONE, NONE,  2 },
   /* e3 */ { "isb", INDIRECT_X,  M_INDX, WRITE, 8 },
 
   /* e4 */ { "CPX", ZERO_PAGE,   M_ZERO, READ,  3 }, /* Zeropage */
@@ -1370,7 +1370,7 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
   /* e8 */ { "INX", IMPLIED,     M_XR,   NONE,  2 },
   /* e9 */ { "SBC", IMMEDIATE,   M_IMM,  READ,  2 }, /* Immediate */
   /* ea */ { "NOP", IMPLIED,     M_NONE, NONE,  2 },
-  /* eb */ { "sbc", IMMEDIATE,   M_IMM,  READ,  2 }, /* same as e9 */
+  /* eb */ { ".sbc",IMMEDIATE,   M_IMM,  READ,  2 }, /* same as e9 */
 
   /* ec */ { "CPX", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
   /* ed */ { "SBC", ABSOLUTE,    M_ABS,  READ,  4 }, /* Absolute */
@@ -1379,20 +1379,20 @@ const DiStella::Instruction_tag DiStella::ourLookup[256] = {
 
   /* f0 */ { "BEQ", RELATIVE,    M_REL,  READ,  2 },
   /* f1 */ { "SBC", INDIRECT_Y,  M_INDY, READ,  5 }, /* (Indirect),Y */
-  /* f2 */ { "jam", IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
+  /* f2 */ { ".jam",IMPLIED,     M_NONE, NONE,  0 }, /* TILT */
   /* f3 */ { "isb", INDIRECT_Y,  M_INDY, WRITE, 8 },
 
-  /* f4 */ { "nop", ZERO_PAGE_X, M_NONE, NONE,  4 },
+  /* f4 */ { ".nop",ZERO_PAGE_X, M_NONE, NONE,  4 },
   /* f5 */ { "SBC", ZERO_PAGE_X, M_ZERX, READ,  4 }, /* Zeropage,X */
   /* f6 */ { "INC", ZERO_PAGE_X, M_ZERX, WRITE, 6 }, /* Zeropage,X */
   /* f7 */ { "isb", ZERO_PAGE_X, M_ZERX, WRITE, 6 },
 
   /* f8 */ { "SED", IMPLIED,     M_NONE, NONE,  2 },
   /* f9 */ { "SBC", ABSOLUTE_Y,  M_ABSY, READ,  4 }, /* Absolute,Y */
-  /* fa */ { "nop", IMPLIED,     M_NONE, NONE,  2 },
+  /* fa */ { ".nop",IMPLIED,     M_NONE, NONE,  2 },
   /* fb */ { "isb", ABSOLUTE_Y,  M_ABSY, WRITE, 7 },
 
-  /* fc */ { "nop", ABSOLUTE_X,  M_NONE, NONE,  4 },
+  /* fc */ { ".nop",ABSOLUTE_X,  M_NONE, NONE,  4 },
   /* fd */ { "SBC", ABSOLUTE_X,  M_ABSX, READ,  4 }, /* Absolute,X */
   /* fe */ { "INC", ABSOLUTE_X,  M_ABSX, WRITE, 7 }, /* Absolute,X */
   /* ff */ { "isb", ABSOLUTE_X,  M_ABSX, WRITE, 7 }

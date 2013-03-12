@@ -18,9 +18,9 @@
       - The debugger now generates DASM-compatible disassembled code,
         which can be saved to an external file.  This disassembly is
         based on both a static and runtime analysis, and is extremely
-        accurate.  It also automatically differentiates between the
-        directives CODE/PGFX/GFX/DATA/ROW, whereas normal Distella
-        only differentiates between CODE and ROW.  For now, only
+        accurate.  It also automatically differentiates between
+        CODE/PGFX/GFX/DATA/ROW areas, whereas normal Distella
+        only differentiates between CODE/GFX/ROW.  For now, only
         single-bank (4K) ROMs are supported.
 
       - The disassembly now recognizes various TIA read/write mirrors,
@@ -34,7 +34,7 @@
     ROM multiple times from the ROM launcher.
 
   * Updated profile database for "BasketBall" ROMs; the joysticks are now
-    swapped by dedault, which allows one and two-player games to work
+    swapped by default, which allows one and two-player games to work
     correctly.
 
 -Have fun!
