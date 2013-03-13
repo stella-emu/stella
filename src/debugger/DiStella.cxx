@@ -43,6 +43,7 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
   CartDebug::AddressList::iterator it = addresses.begin();
   uInt16 start = *it++;
 
+  myOffset = info.offset;
   if(start & 0x1000)
   {
     if(info.size == 4096)  // 4K ROM space
@@ -56,37 +57,36 @@ DiStella::DiStella(const CartDebug& dbg, CartDebug::DisassemblyList& list,
           Offset to code = $D000
           Code range = $D000-$DFFF
       =============================================*/
-      myAppData.start = 0x0000;
-      myAppData.end   = 0x0FFF;
-      myOffset = (start - (start % 0x1000));
+      info.start  = myAppData.start = 0x0000;
+      info.end    = myAppData.end   = 0x0FFF;
+
+      // Keep previous offset; it may be different between banks
+      if(info.offset == 0)
+        info.offset = myOffset = (start - (start % 0x1000));
     }
-    else  // 2K ROM space
+    else  // 2K ROM space (also includes 'Sub2K' ROMs)
     {
       /*============================================
         The offset is the address where the code segment
         starts.  For a 2K game, it is usually 0xf800,
         but can also be 0xf000.
       =============================================*/
-      myAppData.start = 0x0000;
-      myAppData.end   = 0x07FF;
-      myOffset = (start & 0xF800);
+      info.start  = myAppData.start = 0x0000;
+      info.end    = myAppData.end   = info.size - 1;
+      info.offset = myOffset        = (start - (start % info.size));
     }
   }
   else  // ZP RAM
   {
     // For now, we assume all accesses below $1000 are zero-page 
-    myAppData.start = 0x0080;
-    myAppData.end   = 0x00FF;
-    myOffset = 0;
+    info.start  = myAppData.start = 0x0080;
+    info.end    = myAppData.end   = 0x00FF;
+    info.offset = myOffset        = 0;
 
     // Resolve data is never used in ZP RAM mode
     resolvedata = false;
   }
   myAppData.length = info.size;
-
-  info.start  = myAppData.start;
-  info.end    = myAppData.end;
-  info.offset = myOffset;
 
   memset(myLabels, 0, 0x1000);
   memset(myDirectives, 0, 0x1000);

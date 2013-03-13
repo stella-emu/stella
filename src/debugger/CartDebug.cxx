@@ -47,12 +47,16 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
     addRamArea(i->start, i->size, i->roffset, i->woffset);
 
   // Create bank information for each potential bank, and an extra one for ZP RAM
-  uInt16 banksize =
-    !BSPF_equalsIgnoreCase(myConsole.cartridge().name(), "Cartridge2K") ? 4096 : 2048;
+  // Banksizes greater than 4096 indicate multi-bank ROMs, but we handle only
+  // 4K pieces at a time
+  // Banksizes less than 4K use the actual value
+  int banksize = 4096;
+  myConsole.cartridge().getImage(banksize);
+  banksize = BSPF_min(banksize, 4096);
   BankInfo info;
   for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
   {
-    info.size = banksize;   // TODO - get this from Cart class
+    info.size = banksize;
     myBankInfo.push_back(info);
   }
   info.size = 128;  // ZP RAM
