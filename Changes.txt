@@ -29,7 +29,7 @@
 
       - ROMS less than 2K in size (so called 'Sub2K' ROMs) now show only
         the actual data in the binary.  This means, for example, that a
-        256byte ROM will show only 256 bytes in the disassembly, instead
+        256 byte ROM will show only 256 bytes in the disassembly, instead
         of padding garbage/duplicated data to 2K boundary.
 
       - Fixed labelling in ROW directives; it wasn't accurately setting
