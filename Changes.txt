@@ -12,7 +12,7 @@
                                Release History
 ===========================================================================
 
-3.8.1 to 3.9: (XXXXX xx, 2013)
+3.8.1 to 3.9: (XXXXX xxx, 2013)
 
   * Greatly extended functionality of the debugger disassembly:
       - The debugger now generates DASM-compatible disassembled code,
