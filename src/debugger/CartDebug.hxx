@@ -82,10 +82,10 @@ class CartDebug : public DebuggerSystem
       bool hllabel;
     };
     typedef Common::Array<DisassemblyTag> DisassemblyList;
-    typedef struct {
+    struct Disassembly {
       DisassemblyList list;
       int fieldwidth;
-    } Disassembly;
+    };
 
   public:
     CartDebug(Debugger& dbg, Console& console, const OSystem& osystem);
@@ -269,33 +269,35 @@ class CartDebug : public DebuggerSystem
     };
     AddrType addressType(uInt16 addr) const;
 
-    typedef struct {
+    struct DirectiveTag {
       DisasmType type;
       uInt16 start;
       uInt16 end;
-    } DirectiveTag;
+    };
     typedef list<uInt16> AddressList;
     typedef list<DirectiveTag> DirectiveList;
 
-    typedef struct {
+    struct BankInfo {
       uInt16 start;                // start of address space
       uInt16 end;                  // end of address space
       uInt16 offset;               // ORG value
       uInt16 size;                 // size of a bank (in bytes)
       AddressList addressList;     // addresses which PC has hit
       DirectiveList directiveList; // overrides for automatic code determination
-    } BankInfo;
+
+      BankInfo() : start(0), end(0), offset(0), size(0) { }
+    };
 
     // Address type information determined by Distella
     uInt8 myDisLabels[0x1000], myDisDirectives[0x1000];
 
     // Information on equates used in the disassembly
-    typedef struct {
+    struct ReservedEquates {
       bool TIARead[64];
       bool TIAWrite[128];
       bool IOReadWrite[24];
       AddrToLabel Label;
-    } ReservedEquates;
+    };
     ReservedEquates myReserved;
 
     // Actually call DiStella to fill the DisassemblyList structure

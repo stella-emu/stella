@@ -50,14 +50,14 @@ CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   // Banksizes greater than 4096 indicate multi-bank ROMs, but we handle only
   // 4K pieces at a time
   // Banksizes less than 4K use the actual value
-  BankInfo info;
-  info.start = info.end = info.offset = 0;
   int banksize = 0;
   myConsole.cartridge().getImage(banksize);
-  info.size = BSPF_min(banksize, 4096);
 
+  BankInfo info;
+  info.size = BSPF_min(banksize, 4096);
   for(int i = 0; i < myConsole.cartridge().bankCount(); ++i)
     myBankInfo.push_back(info);
+
   info.size = 128;  // ZP RAM
   myBankInfo.push_back(info);
 
