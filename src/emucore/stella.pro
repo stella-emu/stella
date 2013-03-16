@@ -2300,10 +2300,6 @@
 "Cartridge.Name" "Poker Card Demo (PD)"
 ""
 
-"Cartridge.MD5" "2c3d5df0a55500cd59916dbb4fee3fa4"
-"Cartridge.Name" "Death Derby (Experiment 02) (PD)"
-""
-
 "Cartridge.MD5" "034c1434280b0f2c9f229777d790d1e1"
 "Cartridge.Manufacturer" "Telegames"
 "Cartridge.ModelNo" "5665 A016"
@@ -3342,10 +3338,6 @@
 "Cartridge.Note" "AKA Math Gran Prix"
 ""
 
-"Cartridge.MD5" "831a0c908b1797093290b688baf5ba76"
-"Cartridge.Name" "Death Derby (2LK Demo) (26-01-2003) (TJ)"
-""
-
 "Cartridge.MD5" "6a2c68f7a77736ba02c0f21a6ba0985b"
 "Cartridge.Manufacturer" "Atari, Larry Wagner, Bob Whitehead"
 "Cartridge.Name" "Computer Chess (07-07-1978) (Atari) (Prototype)"
@@ -4364,10 +4356,6 @@
 "Cartridge.Name" "Climber 5 (20-03-2003) (Dennis Debro)"
 "Cartridge.Rarity" "Homebrew"
 "Display.YStart" "28"
-""
-
-"Cartridge.MD5" "f96a763ced577e383d1102c4d0949525"
-"Cartridge.Name" "Death Derby (v0005) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "d82675ce67caf16afe5ed6b6fac8aa37"
@@ -5672,10 +5660,6 @@
 "Cartridge.ModelNo" "AX-013"
 "Cartridge.Name" "Barnstorming (1982) (Activision)"
 "Cartridge.Rarity" "Uncommon"
-""
-
-"Cartridge.MD5" "f53f81fae276d72dbdba7064786a8266"
-"Cartridge.Name" "Death Derby (v0011) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "d1d704a7146e95709b57b6d4cac3f788"
@@ -7453,10 +7437,6 @@
 "Cartridge.Name" "RealSports Tennis (1983) (Atari)"
 ""
 
-"Cartridge.MD5" "aea308e30cd92cc73dc0c7f53f69ec56"
-"Cartridge.Name" "Death Derby (2LK_12) (24-02-2003) (Glenn Saunders)"
-""
-
 "Cartridge.MD5" "d9fbf1113114fb3a3c97550a0689f10f"
 "Cartridge.Manufacturer" "ZiMAG - Emag - Vidco"
 "Cartridge.ModelNo" "713-111 - GN-050"
@@ -7957,10 +7937,6 @@
 "Cartridge.Manufacturer" "Retroactive"
 "Cartridge.Name" "Qb (2.11) (Retroactive)"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "13782adc70e285d51e2f4dd9c3094166"
-"Cartridge.Name" "Death Derby (21-01-2003) (TJ)"
 ""
 
 "Cartridge.MD5" "ae83541cf4a4c0bce0adccd2c1bf6288"
@@ -9241,10 +9217,6 @@
 "Cartridge.Note" "AKA The Challenge of.... Nexar"
 ""
 
-"Cartridge.MD5" "e847e1b57a704ad9f029cc2d564bde11"
-"Cartridge.Name" "Death Derby (v0007) (2001) (Glenn Saunders) (PD)"
-""
-
 "Cartridge.MD5" "4689081b7363721858756fe781cc7713"
 "Cartridge.Name" "Oystron (V2.6) (Piero Cavina) (PD)"
 "Cartridge.Rarity" "New Release"
@@ -9638,10 +9610,6 @@
 "Cartridge.Name" "Inv Demo 3 (2001) (Erik Mooney) (PD)"
 ""
 
-"Cartridge.MD5" "2e1401b931c9eb064af5e0a7184e598d"
-"Cartridge.Name" "Death Derby (v0008) (2001) (Glenn Saunders) (PD)"
-""
-
 "Cartridge.MD5" "0d786a41695e5fc8cffd05a6dbb3f659"
 "Cartridge.Name" "Scrolling Playfield With Score (10-02-2003) (Aaron Bergstrom)"
 ""
@@ -9892,10 +9860,6 @@
 "Cartridge.Type" "2IN1"
 ""
 
-"Cartridge.MD5" "1edfbde1dba5498c14dcb80277cd9b99"
-"Cartridge.Name" "Death Derby (v0006) (2001) (Glenn Saunders) (PD)"
-""
-
 "Cartridge.MD5" "2a33e21447bf9e13dcfed85077ff6b40"
 "Cartridge.Name" "Backwards Cannonball v2 (Hack)"
 "Cartridge.Note" "Hack of Human Cannonball"
@@ -9995,10 +9959,6 @@
 "Cartridge.Name" "Power Play Arcade Video Game Album IV (1984) (Amiga) (Prototype)"
 "Cartridge.Note" "Atlantis, Cosmic Ark, Dragonfire"
 "Cartridge.Rarity" "Prototype"
-""
-
-"Cartridge.MD5" "299eb1ad959176b2c89f36082ee5e861"
-"Cartridge.Name" "Death Derby (14-01-2003) (TJ)"
 ""
 
 "Cartridge.MD5" "9193b6fff6897d43274741d4f9855b6d"
@@ -10764,10 +10724,6 @@
 "Cartridge.Manufacturer" "Atari"
 "Cartridge.ModelNo" "CX26163P"
 "Cartridge.Name" "Homerun (32 in 1) (1988) (Atari) (PAL) (4K)"
-""
-
-"Cartridge.MD5" "2fa5f90deb8b84ecaf64f5fb11c0fd93"
-"Cartridge.Name" "Death Derby (19-01-2003) (TJ) [a1]"
 ""
 
 "Cartridge.MD5" "074ec425ec20579e64a7ded592155d48"
@@ -12932,10 +12888,6 @@
 "Cartridge.Name" "Mario Bros. (Zirok)"
 ""
 
-"Cartridge.MD5" "19829cfe884e30219c868b2d9a5b3540"
-"Cartridge.Name" "Death Derby (v0003) (2001) (Glenn Saunders) (PD)"
-""
-
 "Cartridge.MD5" "4d0a28443f7df5f883cf669894164cfa"
 "Cartridge.Name" "Beast Invaders (Hack)"
 "Cartridge.Note" "Hack of Space Invaders"
@@ -13531,10 +13483,6 @@
 "Cartridge.Name" "Bermuda (Unknown) (PAL)"
 "Cartridge.Note" "AKA River Raid"
 "Display.YStart" "10"
-""
-
-"Cartridge.MD5" "17754da584db6f22838eea255e68b31e"
-"Cartridge.Name" "Death Derby (v0010) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "097936b07e0e0117b9026ae6835eb168"
@@ -14608,10 +14556,6 @@
 "Cartridge.Manufacturer" "Activision, Alan Miller - Ariola"
 "Cartridge.ModelNo" "EAG-007, EAG-007-04I, PAG-007 - 711 007-720"
 "Cartridge.Name" "Tennis (1981) (Activision) (PAL) (4K)"
-""
-
-"Cartridge.MD5" "5d1260152596d91adc8cf5741adb719a"
-"Cartridge.Name" "Death Derby (200204) (TJ)"
 ""
 
 "Cartridge.MD5" "ff7627207e8aa03730c35c735a82c26c"
@@ -15824,10 +15768,6 @@
 "Controller.SwapPaddles" "YES"
 ""
 
-"Cartridge.MD5" "43c7eb836378b1b3df6788d908940b59"
-"Cartridge.Name" "Death Derby (2LK_16) (24-03-2003) (Glenn Saunders)"
-""
-
 "Cartridge.MD5" "5bba254e18257e578c245ed96f6b003b"
 "Cartridge.Name" "Music Effects Demo (21-01-2003) (Paul Slocum)"
 "Display.Phosphor" "YES"
@@ -15835,10 +15775,6 @@
 
 "Cartridge.MD5" "635cc7a0db33773959d739d04eff96c2"
 "Cartridge.Name" "Minesweeper (V.90) (Soren Gust) (PD)"
-""
-
-"Cartridge.MD5" "d05e371765929bf5d39c91c6ea189bec"
-"Cartridge.Name" "Death Derby (v0005 New Build) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "0d5af65ad3f19558e6f8e29bf2a9d0f8"
@@ -16431,10 +16367,6 @@
 "Cartridge.Manufacturer" "CCE"
 "Cartridge.ModelNo" "C-1002"
 "Cartridge.Name" "Pole Position (1983) (CCE)"
-""
-
-"Cartridge.MD5" "aacbf0dd6021bc5f4cee6c96ff37e84f"
-"Cartridge.Name" "Death Derby (v0001) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "2e842c2ee22e9dad9df16eed091315c4"
@@ -17705,10 +17637,6 @@
 "Display.Height" "256"
 ""
 
-"Cartridge.MD5" "a19215975aeca1d98328173a124c47f7"
-"Cartridge.Name" "Death Derby (12-01-2003) (TJ)"
-""
-
 "Cartridge.MD5" "36547bc6faa5132b87504e18d088e1d7"
 "Cartridge.Name" "Cosmic Swarm (Unknown) (PAL) (4K)"
 "Display.Phosphor" "YES"
@@ -18108,10 +18036,6 @@
 "Display.Height" "256"
 ""
 
-"Cartridge.MD5" "84ea80e31b306059f56fdce2f07b758f"
-"Cartridge.Name" "Death Derby (19-01-2003) (TJ)"
-""
-
 "Cartridge.MD5" "b9232c1de494875efe1858fc8390616d"
 "Cartridge.Manufacturer" "Panda"
 "Cartridge.ModelNo" "110"
@@ -18235,10 +18159,6 @@
 "Cartridge.Name" "Dark Mage (rough beta) (Greg Troutman) (PD)"
 "Cartridge.Rarity" "Homebrew"
 "Display.Phosphor" "YES"
-""
-
-"Cartridge.MD5" "ff4ed162386c795b4fb434903295b571"
-"Cartridge.Name" "Death Derby (v0002) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "6dda84fb8e442ecf34241ac0d1d91d69"
@@ -18380,10 +18300,6 @@
 "Cartridge.Manufacturer" "Activision, Steve Cartwright - Ariola"
 "Cartridge.ModelNo" "EAX-031, EAX-031-04B - 711 031-717"
 "Cartridge.Name" "Frostbite (1983) (Activision) (PAL) (8K)"
-""
-
-"Cartridge.MD5" "cc1727dadf82e8fbf152e47d7e88d6c9"
-"Cartridge.Name" "Death Derby (v0004) (2001) (Glenn Saunders) (PD)"
 ""
 
 "Cartridge.MD5" "d7f5bf138cfc7feab7b8ef1534c8b477"
