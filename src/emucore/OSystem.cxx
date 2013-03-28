@@ -997,7 +997,12 @@ bool OSystem::queryVideoHardware()
   }
 
   // Various parts of the codebase assume a minimum screen size of 320x240
-  assert(myDesktopWidth >= 320 && myDesktopHeight >= 240);
+  if(!(myDesktopWidth >= 320 && myDesktopHeight >= 240))
+  {
+    logMessage("ERROR: queryVideoHardware failed, "
+               "window 320x240 or larger required", 0);
+    return false;
+  }
 
   // Then get the valid fullscreen modes
   // If there are any errors, just use the desktop resolution
