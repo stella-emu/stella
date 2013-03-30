@@ -46,6 +46,8 @@
     match the one used for line selection.  This makes it easier to
     see for those with problems seeing lighter colours.
 
+  * Updated included PNG library to latest stable version.
+
 -Have fun!
 
 
