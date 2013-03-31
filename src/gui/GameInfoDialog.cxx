@@ -178,7 +178,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myType);
 
   // Add items for tab 0
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // 2) Console properties
@@ -216,7 +216,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myTVType);
 
   // Add items for tab 1
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // 3) Controller properties
@@ -326,7 +326,7 @@ GameInfoDialog::GameInfoDialog(
   wid.push_back(myMouseY);
 
   // Add items for tab 2
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // 4) Display properties
@@ -389,7 +389,7 @@ GameInfoDialog::GameInfoDialog(
   myPPBlendLabel->setFlags(WIDGET_CLEARBG);
 
   // Add items for tab 3
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
 
   // Activate the first tab

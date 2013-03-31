@@ -39,6 +39,7 @@ SerialPortMACOSX::SerialPortMACOSX()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 SerialPortMACOSX::~SerialPortMACOSX()
 {
+  closePort();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -65,7 +66,10 @@ bool SerialPortMACOSX::openPort(const string& device)
 void SerialPortMACOSX::closePort()
 {
   if(myHandle)
+  {
     close(myHandle);
+    myHandle = 0;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

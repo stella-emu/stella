@@ -39,7 +39,7 @@ class StringList;
 class RomWidget : public Widget, public CommandSender
 {
   public:
-    RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y);
+    RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     virtual ~RomWidget();
 
     void invalidate(bool forcereload = true)

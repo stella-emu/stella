@@ -173,7 +173,7 @@ class FrameBuffer
 
       @return  A unique ID used to identify this surface
     */
-    int allocateSurface(int w, int h, bool useBase = false);
+    uInt32 allocateSurface(int w, int h, bool useBase = false);
 
     /**
       Retrieve the surface associated with the given ID.
@@ -181,7 +181,7 @@ class FrameBuffer
       @param id  The ID for the surface to retrieve.
       @return    A pointer to a valid surface object, or NULL.
     */
-    FBSurface* surface(int id) const;
+    FBSurface* surface(uInt32 id) const;
 
     /**
       Returns the current dimensions of the framebuffer image.
@@ -633,7 +633,6 @@ class FrameBuffer
       MessagePosition position;
       uInt32 color;
       FBSurface* surface;
-      int surfaceID;
       bool enabled;
     };
     Message myMsg;
@@ -645,7 +644,7 @@ class FrameBuffer
     VideoModeList* myCurrentModeList;
 
     // Holds a reference to all the surfaces that have been created
-    map<int,FBSurface*> mySurfaceList;
+    map<uInt32,FBSurface*> mySurfaceList;
 
     // Holds static strings for the remap menu (emulation and menu events)
     static GraphicsMode ourGraphicsModes[GFX_NumModes];

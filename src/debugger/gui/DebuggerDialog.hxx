@@ -72,7 +72,7 @@ class DebuggerDialog : public Dialog
       kDDExitFatalCmd = 'DDer'
     };
 
-    TabWidget* myTab;
+    TabWidget *myTab, *myRomTab;
 
     PromptWidget*    myPrompt;
     TiaInfoWidget*   myTiaInfo;

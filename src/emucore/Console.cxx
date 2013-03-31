@@ -163,11 +163,6 @@ Console::Console(OSystem* osystem, Cartridge* cart, const Properties& props)
   // Reset the system to its power-on state
   mySystem->reset();
 
-#ifdef DEBUGGER_SUPPORT
-  myOSystem->createDebugger(*this);
-  m6502->attach(myOSystem->debugger());
-#endif
-
   // Finally, add remaining info about the console
   myConsoleInfo.CartName   = myProperties.get(Cartridge_Name);
   myConsoleInfo.CartMD5    = myProperties.get(Cartridge_MD5);
@@ -918,6 +913,15 @@ void Console::toggleFixedColors() const
     myOSystem->frameBuffer().showMessage("Fixed debug colors enabled");
   else
     myOSystem->frameBuffer().showMessage("Fixed debug colors disabled");
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::addDebugger()
+{
+#ifdef DEBUGGER_SUPPORT
+  myOSystem->createDebugger(*this);
+  mySystem->m6502().attach(myOSystem->debugger());
+#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

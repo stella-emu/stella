@@ -67,7 +67,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
                                              myTab->getHeight() - ypos,
                                              actions, kEmulationMode);
   myTab->setParentWidget(tabID, myEmulEventMapper);
-  addToFocusList(myEmulEventMapper->getFocusList(), tabID);
+  addToFocusList(myEmulEventMapper->getFocusList(), myTab, tabID);
 
   // 2) Event mapper for UI actions
   tabID = myTab->addTab("UI Events");
@@ -78,7 +78,7 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
                                              myTab->getHeight() - ypos,
                                              actions, kMenuMode);
   myTab->setParentWidget(tabID, myMenuEventMapper);
-  addToFocusList(myMenuEventMapper->getFocusList(), tabID);
+  addToFocusList(myMenuEventMapper->getFocusList(), myTab, tabID);
 
   // 3) Devices & ports
   addDevicePortTab(font);
@@ -197,7 +197,7 @@ void InputDialog::addDevicePortTab(const GUI::Font& font)
   wid.push_back(myMouseControl);
 
   // Add items for virtual device ports
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

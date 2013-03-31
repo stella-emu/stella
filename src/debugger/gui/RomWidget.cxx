@@ -38,8 +38,9 @@
 #include "RomWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
-  : Widget(boss, font, x, y, 16, 16),
+RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font,
+                     int x, int y, int w, int h)
+  : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
     myListIsDirty(true),
     myCurrentBank(-1)
@@ -85,17 +86,11 @@ RomWidget::RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   // Create rom listing
   xpos = x;  ypos += myBank->getHeight() + 4;
-  const GUI::Rect& dialog = instance().debugger().getDialogBounds();
-  int w = dialog.width() - x - 5, h = dialog.height() - ypos - 3;
 
-  myRomList = new RomListWidget(boss, font, xpos, ypos, w, h);
+  myRomList = new RomListWidget(boss, font, xpos, ypos, _w - 4, _h - ypos - 2);
   myRomList->setTarget(this);
   myRomList->myMenu->setTarget(this);
   addFocusWidget(myRomList);
-
-  // Calculate real dimensions
-  _w = myRomList->getWidth();
-  _h = myRomList->getHeight();
 
   // Create dialog box for save ROM (get name)
   StringList label;

@@ -39,6 +39,8 @@ TabWidget::TabWidget(GuiObject* boss, const GUI::Font& font,
     _activeTab(-1),
     _firstTime(true)
 {
+  _id = 0;  // For dialogs with multiple tab widgets, they should specifically
+            // call ::setID to differentiate among them
   _flags = WIDGET_ENABLED | WIDGET_CLEARBG;
   _type = kTabWidget;
   _bgcolor = kDlgColor;
@@ -112,7 +114,7 @@ void TabWidget::setActiveTab(int tabID, bool show)
 
   // Let parent know about the tab change
   if(show)
-    sendCommand(kTabChangedCmd, _activeTab, -1);
+    sendCommand(kTabChangedCmd, _activeTab, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

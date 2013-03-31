@@ -170,6 +170,11 @@ class Console : public Serializable
     */
     const ConsoleInfo& about() const { return myConsoleInfo; }
 
+    /**
+      Set up the console to use the debugger.
+    */
+    void addDebugger();
+
   public:
     /**
       Overloaded assignment operator

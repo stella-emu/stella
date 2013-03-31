@@ -236,7 +236,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Add items for tab 0
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////
   // 2) TV effects options
@@ -326,7 +326,7 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   CREATE_CLONE_BUTTON(Custom, "Revert");
 
   // Add items for tab 2
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   // Activate the first tab
   myTab->setActiveTab(0);

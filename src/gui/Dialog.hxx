@@ -45,12 +45,6 @@ class Dialog : public GuiObject
 {
   friend class DialogContainer;
 
-  struct Focus {
-    Widget* focusedWidget;
-    WidgetArray focusList;
-  };
-  typedef Common::Array<Focus> FocusList;
-
   public:
     Dialog(OSystem* instance, DialogContainer* parent,
            int x, int y, int w, int h, bool isBase = false);
@@ -69,10 +63,11 @@ class Dialog : public GuiObject
     virtual void setDefaults() {}
 
     void addFocusWidget(Widget* w);
-    void addToFocusList(WidgetArray& list, int id = -1);
-    void addBGroupToFocusList(WidgetArray& list) { _ourButtonGroup = list; }
+    void addToFocusList(WidgetArray& list);
+    void addToFocusList(WidgetArray& list, TabWidget* w, int tabId);
+    void addBGroupToFocusList(WidgetArray& list) { _buttonGroup = list; }
     void redrawFocus();
-    void addTabWidget(TabWidget* w) { _ourTab = w; }
+    void addTabWidget(TabWidget* w);
     void addOKWidget(Widget* w)     { _okWidget = w; }
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
@@ -102,12 +97,10 @@ class Dialog : public GuiObject
                            const string& okText = "",
                            const string& cancelText = "");
 
-    void setResult(int result) { _result = result; }
-    int getResult() const { return _result; }
-
   private:
-    void buildFocusWidgetList(int id);
+    void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);
+    bool cycleTab(int direction);
 
   protected:
     Widget* _mouseWidget;
@@ -119,14 +112,36 @@ class Dialog : public GuiObject
     bool    _isBase;
 
   private:
-    FocusList   _ourFocusList;
-    TabWidget*  _ourTab;
-    WidgetArray _ourButtonGroup;
+    struct Focus {
+      Widget* widget;
+      WidgetArray list;
+
+      Focus(Widget* w = 0);
+      virtual ~Focus();
+    };
+    typedef Common::Array<Focus> FocusList;
+
+    struct TabFocus {
+      TabWidget* widget;
+      FocusList focus;
+      uInt32 currentTab;
+
+      TabFocus(TabWidget* w = 0);
+      virtual ~TabFocus();
+
+      void appendFocusList(WidgetArray& list);
+      void saveCurrentFocus(Widget* w);
+      Widget* getNewFocus();
+    };
+    typedef Common::Array<TabFocus> TabFocusList;
+
+    Focus        _myFocus;    // focus for base dialog
+    TabFocusList _myTabList;  // focus for each tab (if any)
+
+    WidgetArray _buttonGroup;
     FBSurface*  _surface;
 
-    int _result;
-    int _focusID;
-    int _surfaceID;
+    int _tabID;
 };
 
 #endif

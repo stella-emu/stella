@@ -164,6 +164,12 @@ struct Rect
   void moveTo(const Point & p) {
     moveTo(p.x, p.y);
   }
+
+  friend ostream& operator<<(ostream& os, const Rect& r) {
+    os << "x=" << r.x() << ", y=" << r.y()
+       << ", w=" << r.width() << ", h=" << r.height();
+    return os;
+  }
 };
 
 }  // End of namespace GUI

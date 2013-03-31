@@ -47,6 +47,7 @@ DebuggerDialog::DebuggerDialog(OSystem* osystem, DialogContainer* parent,
                                int x, int y, int w, int h)
   : Dialog(osystem, parent, x, y, w, h, true),  // use base surface
     myTab(NULL),
+    myRomTab(NULL),
     myFatalError(NULL)
 {
   addTiaArea();
@@ -72,7 +73,9 @@ void DebuggerDialog::loadConfig()
   myTiaZoom->loadConfig();
   myCpu->loadConfig();
   myRam->loadConfig();
-  myRom->loadConfig();
+
+  myRomTab->loadConfig();
+//  myRom->loadConfig();
 
   myMessageBox->setEditString("");
 }
@@ -176,12 +179,14 @@ void DebuggerDialog::addTiaArea()
 void DebuggerDialog::addTabArea()
 {
   const GUI::Rect& r = instance().debugger().getTabBounds();
-
   const int vBorder = 4;
 
   // The tab widget
+  // Since there are two tab widgets in this dialog, we specifically
+  // assign an ID of 0
   myTab = new TabWidget(this, instance().consoleFont(), r.left, r.top + vBorder,
                         r.width(), r.height() - vBorder);
+  myTab->setID(0);
   addTabWidget(myTab);
 
   const int widWidth  = r.width() - vBorder;
@@ -193,28 +198,28 @@ void DebuggerDialog::addTabArea()
   myPrompt = new PromptWidget(myTab, instance().consoleFont(),
                               2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, myPrompt);
-  addToFocusList(myPrompt->getFocusList(), tabID);
+  addToFocusList(myPrompt->getFocusList(), myTab, tabID);
 
   // The TIA tab
   tabID = myTab->addTab("TIA");
   TiaWidget* tia = new TiaWidget(myTab, instance().consoleFont(),
                                  2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, tia);
-  addToFocusList(tia->getFocusList(), tabID);
+  addToFocusList(tia->getFocusList(), myTab, tabID);
 
   // The input/output tab (includes RIOT and INPTx from TIA)
   tabID = myTab->addTab("I/O");
   RiotWidget* riot = new RiotWidget(myTab, instance().consoleFont(),
                                     2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, riot);
-  addToFocusList(riot->getFocusList(), tabID);
+  addToFocusList(riot->getFocusList(), myTab, tabID);
 
   // The Audio tab
   tabID = myTab->addTab("Audio");
   AudioWidget* aud = new AudioWidget(myTab, instance().consoleFont(),
                                      2, 2, widWidth, widHeight);
   myTab->setParentWidget(tabID, aud);
-  addToFocusList(aud->getFocusList(), tabID);
+  addToFocusList(aud->getFocusList(), myTab, tabID);
 
   myTab->setActiveTab(0);
 }
@@ -248,6 +253,8 @@ void DebuggerDialog::addStatusArea()
 void DebuggerDialog::addRomArea()
 {
   const GUI::Rect& r = instance().debugger().getRomBounds();
+  const int vBorder = 4;
+
   int xpos, ypos;
 
   xpos = r.left + 10;  ypos = 10;
@@ -289,14 +296,45 @@ void DebuggerDialog::addRomArea()
                      bwidth, bheight, "<", kDDRewindCmd);
   myRewindButton->clearFlags(WIDGET_ENABLED);
 
-  xpos = r.left + 10;  ypos += myRam->getHeight() + 5;
-  myRom = new RomWidget(this, instance().consoleFont(), xpos, ypos);
-  addToFocusList(myRom->getFocusList());
-
   // Add the DataGridOpsWidget to any widgets which contain a
   // DataGridWidget which we want controlled
   myCpu->setOpsWidget(ops);
   myRam->setOpsWidget(ops);
+
+  ////////////////////////////////////////////////////////////////////
+  // Disassembly area
+
+  xpos = r.left + vBorder;  ypos += myRam->getHeight() + 5;
+  const int tabWidth  = r.width() - vBorder;
+  const int tabHeight = r.height() - ypos;
+  int tabID;
+
+  // Since there are two tab widgets in this dialog, we specifically
+  // assign an ID of 1
+  myRomTab = new TabWidget(
+      this, instance().consoleFont(), xpos, ypos, tabWidth, tabHeight);
+  myRomTab->setID(1);
+  addTabWidget(myRomTab);
+
+  // The main disassembly tab
+  tabID = myRomTab->addTab("   Disassembly   ");
+  myRom = new RomWidget(myRomTab, instance().consoleFont(),
+                        2, 2, tabWidth - 1,
+                        tabHeight - myRomTab->getTabHeight() - 2);
+  myRomTab->setParentWidget(tabID, myRom);
+  addToFocusList(myRom->getFocusList(), myRomTab, tabID);
+
+  // The 'cart-specific' information tab
+  tabID = myRomTab->addTab(instance().console().cartridge().name());
+#if 0
+  myRom = new RomWidget(myRomTab, instance().consoleFont(),
+                        2, 2, tabWidth - 1,
+                        tabHeight - myRomTab->getTabHeight() - 2);
+  myRomTab->setParentWidget(tabID, myRom);
+  addToFocusList(myRom->getFocusList(), myRomTab, tabID);
+#endif
+
+  myRomTab->setActiveTab(0);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

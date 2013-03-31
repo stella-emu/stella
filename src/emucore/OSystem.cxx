@@ -531,6 +531,9 @@ bool OSystem::createConsole(const FilesystemNode& rom, const string& md5sum,
   myConsole = openConsole(myRomFile, myRomMD5, type, id);
   if(myConsole)
   {
+  #ifdef DEBUGGER_SUPPORT
+    myConsole->addDebugger();
+  #endif
   #ifdef CHEATCODE_SUPPORT
     myCheatManager->loadCheats(myRomMD5);
   #endif

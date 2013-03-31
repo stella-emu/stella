@@ -49,7 +49,10 @@ bool SerialPortWin32::openPort(const string& device)
       FillMemory(&dcb, sizeof(dcb), 0);
       dcb.DCBlength = sizeof(dcb);
       if(!BuildCommDCB("19200,n,8,1", &dcb))
+      {
+        closePort()
         return false;
+      }
 
       memset(&dcb, 0, sizeof(DCB));
       dcb.BaudRate = CBR_19200;

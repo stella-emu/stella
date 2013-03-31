@@ -50,9 +50,8 @@ FrameBuffer::FrameBuffer(OSystem* osystem)
     myInitializedCount(0),
     myPausedCount(0)
 {
-  myMsg.surface   = myStatsMsg.surface = NULL;
-  myMsg.surfaceID = myStatsMsg.surfaceID = -1;
-  myMsg.enabled   = myStatsMsg.enabled = false;
+  myMsg.surface = myStatsMsg.surface = NULL;
+  myMsg.enabled = myStatsMsg.enabled = false;
 
   // Load NTSC filter settings
   myNTSCFilter.loadConfig(myOSystem->settings());
@@ -175,13 +174,13 @@ FBInitStatus FrameBuffer::initialize(const string& title,
 
  if(myStatsMsg.surface == NULL)
   {
-    myStatsMsg.surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
-    myStatsMsg.surface   = surface(myStatsMsg.surfaceID);
+    uInt32 surfaceID = allocateSurface(myStatsMsg.w, myStatsMsg.h);
+    myStatsMsg.surface = surface(surfaceID);
   }
   if(myMsg.surface == NULL)
   {
-    myMsg.surfaceID = allocateSurface(640, myOSystem->font().getFontHeight()+10);
-    myMsg.surface   = surface(myMsg.surfaceID);
+    uInt32 surfaceID = allocateSurface(640, myOSystem->font().getFontHeight()+10);
+    myMsg.surface = surface(surfaceID);
   }
 
   // Finally, show some information about the framebuffer,
@@ -586,22 +585,22 @@ void FrameBuffer::toggleScanlineInterpolation()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-int FrameBuffer::allocateSurface(int w, int h, bool useBase)
+uInt32 FrameBuffer::allocateSurface(int w, int h, bool useBase)
 {
   // Create a new surface
   FBSurface* surface = createSurface(w, h, useBase);
 
   // Add it to the list
-  mySurfaceList.insert(make_pair(int(mySurfaceList.size()), surface));
+  mySurfaceList.insert(make_pair(mySurfaceList.size(), surface));
 
   // Return a reference to it
   return mySurfaceList.size() - 1;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-FBSurface* FrameBuffer::surface(int id) const
+FBSurface* FrameBuffer::surface(uInt32 id) const
 {
-  map<int,FBSurface*>::const_iterator iter = mySurfaceList.find(id);
+  map<uInt32,FBSurface*>::const_iterator iter = mySurfaceList.find(id);
   return iter != mySurfaceList.end() ? iter->second : NULL;
 }
 
@@ -614,7 +613,7 @@ void FrameBuffer::resetSurfaces(FBSurface* tiasurface)
   // Any derived FrameBuffer classes that call this method should be
   // aware of these restrictions, and act accordingly
 
-  map<int,FBSurface*>::iterator iter;
+  map<uInt32,FBSurface*>::iterator iter;
   for(iter = mySurfaceList.begin(); iter != mySurfaceList.end(); ++iter)
     iter->second->free();
   if(tiasurface)

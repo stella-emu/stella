@@ -156,7 +156,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
                        kTextAlignLeft);
 
   // Add items for tab 0
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////
   // 2) Debugger options
@@ -211,7 +211,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   }
 
   // Add items for tab 1
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   //////////////////////////////////////////////////////////
   // 3) Misc. options
@@ -263,7 +263,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   ypos += lineHeight + 4;
 
   // Add items for tab 2
-  addToFocusList(wid, tabID);
+  addToFocusList(wid, myTab, tabID);
 
   // Activate the first tab
   myTab->setActiveTab(0);
