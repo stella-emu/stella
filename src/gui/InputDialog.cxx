@@ -56,8 +56,6 @@ InputDialog::InputDialog(OSystem* osystem, DialogContainer* parent,
   xpos = 2; ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
-  wid.push_back(myTab);
-  addToFocusList(wid);
 
   // 1) Event mapper for emulation actions
   tabID = myTab->addTab("Emul. Events");

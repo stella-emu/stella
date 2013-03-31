@@ -92,7 +92,6 @@ RomAuditDialog::RomAuditDialog(OSystem* osystem, DialogContainer* parent,
                        kTextAlignLeft);
 
   // Add OK and Cancel buttons
-  wid.clear();
   addOKCancelBGroup(wid, font, "Audit", "Done");
   addBGroupToFocusList(wid);
 

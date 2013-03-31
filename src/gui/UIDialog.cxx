@@ -61,7 +61,6 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   xpos = ypos = vBorder;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
-  addFocusWidget(myTab);
 
   //////////////////////////////////////////////////////////
   // 1) Launcher options

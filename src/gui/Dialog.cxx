@@ -212,7 +212,8 @@ void Dialog::setFocus(Widget* w)
     // Redraw widgets for new focus
     _focusedWidget = Widget::setFocusForChain(this, getFocusList(), w, 0);
 
-cerr << "set focus for " << _focusedWidget << endl;
+    // Update current tab based on new focused widget
+    getTabIdForWidget(_focusedWidget);
   }
 }
 
@@ -228,7 +229,6 @@ void Dialog::buildCurrentFocusList(int tabID)
   Widget* tabFocusWidget = 0;
   if(tabID >= 0 && tabID < (int)_myTabList.size())
   {
-cerr << "save tab, move to next\n";
     // Save focus in previously selected tab column,
     // and get focus for new tab column
     TabFocus& tabfocus = _myTabList[tabID];
@@ -238,24 +238,12 @@ cerr << "save tab, move to next\n";
     _tabID = tabID;
   }
 
-  // Special case for dialogs containing only one tab widget, with all items
-  // arranged in separate tabs
-  bool containsSingleTab = _myFocus.list.size() == 1 && _myTabList.size() == 1;
-
-  // A dialog containing only one tabwidget should be added first
-  if(containsSingleTab)
-  {
-    _focusList.push_back(_myFocus.list);
-    _focusedWidget = _focusList[0];
-  }
-
-  // Now add appropriate items from tablist (if present)
+  // Add appropriate items from tablist (if present)
   for(uInt32 id = 0; id < _myTabList.size(); ++id)
     _myTabList[id].appendFocusList(_focusList);
 
   // Add remaining items from main focus list
-  if(!containsSingleTab)
-    _focusList.push_back(_myFocus.list);
+  _focusList.push_back(_myFocus.list);
 
   // Add button group at end of current focus list
   // We do it this way for TabWidget, so that buttons are scanned
@@ -266,9 +254,7 @@ cerr << "save tab, move to next\n";
   // Finally, the moment we've all been waiting for :)
   // Set the actual focus widget
   if(tabFocusWidget)
-{cerr << "tab focus changed\n";
     _focusedWidget = tabFocusWidget;
-}
   else if(!_focusedWidget && _focusList.size() > 0)
     _focusedWidget = _focusList[0];
 }
@@ -549,6 +535,9 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, -1);
+        // Update current tab based on new focused widget
+        getTabIdForWidget(_focusedWidget);
+
         return true;
       }
       break;
@@ -558,6 +547,9 @@ bool Dialog::handleNavEvent(Event::Type e)
       {
         _focusedWidget = Widget::setFocusForChain(this, getFocusList(),
                                                   _focusedWidget, +1);
+        // Update current tab based on new focused widget
+        getTabIdForWidget(_focusedWidget);
+
         return true;
       }
       break;
@@ -588,29 +580,30 @@ bool Dialog::handleNavEvent(Event::Type e)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Dialog::getTabIdForWidget(Widget* w)
+{
+  if(_myTabList.size() == 0)
+    return;
+
+  for(uInt32 id = 0; id < _myTabList.size(); ++id)
+  {
+    if(w->_boss == _myTabList[id].widget)
+    {
+      _tabID = id;
+      return;
+    }
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool Dialog::cycleTab(int direction)
 {
-cerr << "cycle " << (direction < 0 ? "left" : "right") << ", tabID = " << _tabID << endl;
-
   if(_tabID >= 0 && _tabID < (int)_myTabList.size())
   {
     _myTabList[_tabID].widget->cycleTab(direction);
     return true;
   }
   return false;
-
-#if 0
-    if(key == KBDK_LEFT && _ourTab)       // left arrow
-    {
-      _ourTab->cycleTab(-1);
-      return;
-    }
-    else if(key == KBDK_RIGHT && _ourTab) // right arrow
-    {
-      _ourTab->cycleTab(+1);
-      return;
-    }
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -711,27 +704,9 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::TabFocus::saveCurrentFocus(Widget* w)
 {
-#if 1
-  if(currentTab >= 0 && currentTab < focus.size())
-  {
-    cerr << "chain len = " << focus[currentTab].list.size() << endl;
-
-    if(Widget::isWidgetInChain(focus[currentTab].list, w))
-    {
-      cerr << "saving widget\n";
-      focus[currentTab].widget = w;
-    }
-    else
-      cerr << "not in chain\n";
-}
-
-#else
   if(currentTab >= 0 && currentTab < focus.size() &&
       Widget::isWidgetInChain(focus[currentTab].list, w))
-{cerr << "saving widget\n";
     focus[currentTab].widget = w;
-}
-#endif
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

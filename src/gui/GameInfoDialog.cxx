@@ -70,7 +70,6 @@ GameInfoDialog::GameInfoDialog(
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos,
                         _h - buttonHeight - fontHeight - ifont.getLineHeight() - 20);
   addTabWidget(myTab);
-  addFocusWidget(myTab);
 
   // 1) Cartridge properties
   wid.clear();

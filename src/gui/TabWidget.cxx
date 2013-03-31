@@ -73,14 +73,7 @@ int TabWidget::getChildY() const
 int TabWidget::addTab(const string& title)
 {
   // Add a new tab page
-  Tab newTab;
-  newTab.title = title;
-  newTab.firstWidget = NULL;
-  newTab.parentWidget = NULL;
-  newTab.enabled = true;
-
-  _tabs.push_back(newTab);
-
+  _tabs.push_back(Tab(title));
   int numTabs = _tabs.size();
 
   // Determine the new tab width
@@ -145,7 +138,7 @@ void TabWidget::updateActiveTab()
 void TabWidget::activateTabs()
 {
   for(unsigned int i = 0; i <_tabs.size(); ++i)
-    sendCommand(kTabChangedCmd, i-1, -1);
+    sendCommand(kTabChangedCmd, i-1, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -315,7 +308,7 @@ void TabWidget::drawWidget(bool hilite)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Widget *TabWidget::findWidget(int x, int y)
+Widget* TabWidget::findWidget(int x, int y)
 {
   if (y < _tabHeight)
   {

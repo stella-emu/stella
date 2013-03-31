@@ -129,7 +129,7 @@ class CartridgeDPCPlus : public Cartridge
 
       @return The name of the object
     */
-    string name() const { return "CartridgeDPCPlus"; }
+    string name() const { return "CartridgeDPC+"; }
 
   public:
     /**

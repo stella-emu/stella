@@ -100,6 +100,7 @@ class Dialog : public GuiObject
   private:
     void buildCurrentFocusList(int tabID = -1);
     bool handleNavEvent(Event::Type e);
+    void getTabIdForWidget(Widget* w);
     bool cycleTab(int direction);
 
   protected:

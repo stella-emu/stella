@@ -31,14 +31,6 @@
 
 class TabWidget : public Widget, public CommandSender
 {
-  struct Tab {
-    string title;
-    Widget* firstWidget;
-    Widget* parentWidget;
-    bool enabled;
-  };
-  typedef Common::Array<Tab> TabList;
-
   public:
     TabWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     ~TabWidget();
@@ -77,7 +69,18 @@ class TabWidget : public Widget, public CommandSender
     virtual void drawWidget(bool hilite);
     virtual Widget* findWidget(int x, int y);
 
-  protected:
+  private:
+    struct Tab {
+      string title;
+      Widget* firstWidget;
+      Widget* parentWidget;
+      bool enabled;
+
+      Tab(const string& t = "", Widget* first = 0, Widget* parent = 0, bool e = true)
+        : title(t), firstWidget(first), parentWidget(parent), enabled(e) { }
+    };
+    typedef Common::Array<Tab> TabList;
+
     TabList _tabs;
     int     _tabWidth;
     int     _tabHeight;

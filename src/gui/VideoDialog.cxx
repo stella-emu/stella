@@ -66,7 +66,6 @@ VideoDialog::VideoDialog(OSystem* osystem, DialogContainer* parent,
   xpos = ypos = 5;
   myTab = new TabWidget(this, font, xpos, ypos, _w - 2*xpos, _h - buttonHeight - 20);
   addTabWidget(myTab);
-  addFocusWidget(myTab);
 
   //////////////////////////////////////////////////////////
   // 1) General options
