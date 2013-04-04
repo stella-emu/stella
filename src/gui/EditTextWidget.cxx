@@ -31,7 +31,7 @@
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditTextWidget::EditTextWidget(GuiObject* boss, const GUI::Font& font,
                                int x, int y, int w, int h, const string& text)
-  : EditableWidget(boss, font, x, y - 1, w, h + 2),
+  : EditableWidget(boss, font, x, y - 1, w, h + 2, text),
     _editable(true),
     _changed(false)
 {

@@ -75,7 +75,6 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   ypos += lineHeight;
   _fileList = new StringListWidget(this, font, xpos, ypos,
                                    _w - 2 * xpos, _h - buttonHeight - ypos - 20);
-  _fileList->setNumberingMode(kListNumberingOff);
   _fileList->setEditable(false);
 
   // Buttons

@@ -25,18 +25,19 @@
 
 class Cartridge;
 class Properties;
+class CartDebugWidget;
+class GuiObject;
 
 #include "bspf.hxx"
 #include "Array.hxx"
 #include "Device.hxx"
 #include "Settings.hxx"
+#include "Font.hxx"
 
-#ifdef DEBUGGER_SUPPORT
 struct RamArea {
   uInt16 start;  uInt16 size;  uInt16 roffset;  uInt16 woffset;
 };
 typedef Common::Array<RamArea> RamAreaList;
-#endif
 
 /**
   A cartridge is a device which contains the machine code for a 
@@ -122,9 +123,7 @@ class Cartridge : public Device
     */
     virtual bool bankChanged();
 
-#ifdef DEBUGGER_SUPPORT
     const RamAreaList& ramAreas() { return myRamAreaList; }
-#endif
 
   public:
     //////////////////////////////////////////////////////////////////////
@@ -198,6 +197,15 @@ class Cartridge : public Device
       @param name  The properties file name of the ROM
     */
     virtual void setRomName(const string& name) { }
+
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.  This will need to be overridden and implemented by
+      each specific cart type, since the bankswitching/inner workings
+      of each cart type can be very different from each other.
+    */
+    virtual CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h) { return NULL; }
 
   protected:
     /**
@@ -371,10 +379,8 @@ class Cartridge : public Device
     uInt8* myCodeAccessBase;
 
   private:
-#ifdef DEBUGGER_SUPPORT
     // Contains RamArea entries for those carts with accessible RAM.
     RamAreaList myRamAreaList;
-#endif
 
     // If myBankLocked is true, ignore attempts at bankswitching. This is used
     // by the debugger, when disassembling/dumping ROM.

@@ -31,8 +31,6 @@ class NullControlWidget : public ControllerWidget
                       Controller& controller)
       : ControllerWidget(boss, font, x, y, controller)
     {
-      _type = kControllerWidget;
-
       bool leftport = controller.jack() == Controller::Left;
       ostringstream buf;
       buf << (leftport ? "Left (" : "Right (")

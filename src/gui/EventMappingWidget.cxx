@@ -54,7 +54,6 @@ EventMappingWidget::EventMappingWidget(GuiObject* boss, const GUI::Font& font,
   myActionsList = new StringListWidget(boss, font, xpos, ypos,
                                        _w - buttonWidth - 20, _h - 3*lineHeight);
   myActionsList->setTarget(this);
-  myActionsList->setNumberingMode(kListNumberingOff);
   myActionsList->setEditable(false);
   myActionsList->setList(actions);
   addFocusWidget(myActionsList);

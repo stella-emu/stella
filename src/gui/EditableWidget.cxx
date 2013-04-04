@@ -26,10 +26,11 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 EditableWidget::EditableWidget(GuiObject* boss, const GUI::Font& font,
-                               int x, int y, int w, int h)
+                               int x, int y, int w, int h, const string& str)
   : Widget(boss, font, x, y, w, h),
     CommandSender(boss),
-    _editable(true)
+    _editable(true),
+    _editString(str)
 {
   _caretVisible = false;
   _caretTime = 0;

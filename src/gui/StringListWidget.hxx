@@ -36,11 +36,11 @@ class StringListWidget : public ListWidget
 {
   public:
     StringListWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h);
+                     int x, int y, int w, int h, bool hilite = true,
+                     NumberingMode mode = kListNumberingOff);
     virtual ~StringListWidget();
 
     void setList(const StringList& list);
-    void setNumberingMode(NumberingMode numberingMode) { _numberingMode = numberingMode; }
 
   protected:
     void drawWidget(bool hilite);
@@ -48,6 +48,7 @@ class StringListWidget : public ListWidget
 
   protected:
     NumberingMode _numberingMode;
+    bool _hilite;
 };
 
 #endif

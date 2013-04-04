@@ -27,8 +27,12 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h)
-  : ListWidget(boss, font, x, y, w, h)
+                                   int x, int y, int w, int h, bool hilite,
+                                   NumberingMode mode)
+  : ListWidget(boss, font, x, y, w, h),
+    _numberingMode(mode),
+    _hilite(hilite)
+
 {
 }
 
@@ -67,7 +71,7 @@ void StringListWidget::drawWidget(bool hilite)
     const int y = _y + 2 + _fontHeight * i;
 
     // Draw the selected item inverted, on a highlighted background.
-    if (_selectedItem == pos)
+    if (_selectedItem == pos && _hilite)
     {
       if (_hasFocus && !_editMode)
         s.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);

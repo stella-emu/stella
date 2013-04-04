@@ -36,6 +36,7 @@ class EditTextWidget;
 class TiaInfoWidget;
 class TiaOutputWidget;
 class TiaZoomWidget;
+class CartDebugWidget;
 
 #include "Dialog.hxx"
 #include "MessageBox.hxx"
@@ -81,6 +82,7 @@ class DebuggerDialog : public Dialog
     CpuWidget*       myCpu;
     RamWidget*       myRam;
     RomWidget*       myRom;
+    CartDebugWidget* myCartDebug;
     EditTextWidget*  myMessageBox;
     ButtonWidget*    myRewindButton;
     GUI::MessageBox* myFatalError;

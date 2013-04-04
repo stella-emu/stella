@@ -110,7 +110,6 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   int listWidth = _w - (romWidth > 0 ? romWidth+5 : 0) - 20;
   myList = new StringListWidget(this, font, xpos, ypos,
                                 listWidth, _h - 28 - bheight - 2*fontHeight);
-  myList->setNumberingMode(kListNumberingOff);
   myList->setEditable(false);
   wid.push_back(myList);
   if(myPattern)  wid.push_back(myPattern);  // Add after the list for tab order

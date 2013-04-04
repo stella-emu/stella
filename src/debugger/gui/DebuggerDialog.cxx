@@ -33,6 +33,7 @@
 #include "RiotWidget.hxx"
 #include "RomWidget.hxx"
 #include "TiaWidget.hxx"
+#include "CartDebugWidget.hxx"
 #include "DataGridOpsWidget.hxx"
 #include "EditTextWidget.hxx"
 #include "MessageBox.hxx"
@@ -73,9 +74,7 @@ void DebuggerDialog::loadConfig()
   myTiaZoom->loadConfig();
   myCpu->loadConfig();
   myRam->loadConfig();
-
   myRomTab->loadConfig();
-//  myRom->loadConfig();
 
   myMessageBox->setEditString("");
 }
@@ -326,13 +325,14 @@ void DebuggerDialog::addRomArea()
 
   // The 'cart-specific' information tab
   tabID = myRomTab->addTab(instance().console().cartridge().name());
-#if 0
-  myRom = new RomWidget(myRomTab, instance().consoleFont(),
-                        2, 2, tabWidth - 1,
-                        tabHeight - myRomTab->getTabHeight() - 2);
-  myRomTab->setParentWidget(tabID, myRom);
-  addToFocusList(myRom->getFocusList(), myRomTab, tabID);
-#endif
+  myCartDebug = instance().console().cartridge().debugWidget(
+        myRomTab, instance().consoleFont(), 2, 2, tabWidth - 1,
+        tabHeight - myRomTab->getTabHeight() - 2);
+  if(myCartDebug)  // TODO - make this always non-null
+  {
+    myRomTab->setParentWidget(tabID, myCartDebug);
+    addToFocusList(myCartDebug->getFocusList(), myRomTab, tabID);
+  }
 
   myRomTab->setActiveTab(0);
 }

@@ -79,7 +79,8 @@ enum {
   kToggleBitWidget    = 'TGLB',
   kTogglePixelWidget  = 'TGLP',
   kToggleWidget       = 'TOGL',
-  kControllerWidget   = 'CTRL'
+  kControllerWidget   = 'CTRL',
+  kCartDebugWidget    = 'CDBG'
 };
 
 /**

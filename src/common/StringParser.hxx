@@ -24,20 +24,30 @@
 #include "bspf.hxx"
 
 /**
-  This class converts a string into a StringList by splitting on a delimiter.
-  By default, the delimiter is a newline.
+  This class converts a string into a StringList by splitting on a delimiter
+  and size.
 
   @author Stephen Anthony
 */
 class StringParser
 {
   public:
-    StringParser(const string& str, char delim = '\n')
+    /**
+      Split the given string based on delimiter (by default, the newline
+      character, and by desired length (by default, not used).
+
+      @param str    The string to split
+      @param len    The maximum length of string to generate (0 means unlimited)
+      @param delim  The character indicating the end of a line (newline by default)
+    */
+    StringParser(const string& str, uInt32 len = 0, char delim = '\n')
     {
       stringstream buf(str);
       string line;
       while(std::getline(buf, line, delim))
+      {
         myStringList.push_back(line);
+      }
     }
 
     const StringList& stringList() const { return myStringList; }

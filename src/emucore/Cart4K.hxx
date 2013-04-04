@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "Cart4KWidget.hxx"
+#endif
 
 /**
   This is the standard Atari 4K cartridge.  These cartridges are 
@@ -119,6 +122,18 @@ class Cartridge4K : public Cartridge
       @return The name of the object
     */
     string name() const { return "Cartridge4K"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new Cartridge4KWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**
