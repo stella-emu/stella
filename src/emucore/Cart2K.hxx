@@ -38,7 +38,7 @@ class System;
 */
 class Cartridge2K : public Cartridge
 {
-  friend class Cart2KWidget;
+  friend class Cartridge2KWidget;
 
   public:
     /**

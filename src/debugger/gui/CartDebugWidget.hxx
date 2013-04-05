@@ -54,15 +54,19 @@ class CartDebugWidget : public Widget, public CommandSender
                 fwidth = _w - lwidth - 30;
       EditTextWidget* w = 0;
       StringListWidget* sw = 0;
+      ostringstream buf;
 
       int x = 10, y = 10;
 
       // Add ROM size, manufacturer and bankswitch info
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "ROM Size: ", kTextAlignLeft);
+      buf << bytes << " bytes";
+      if(bytes >= 1024)
+        buf << " / " << (bytes/1024) << "KB";
+
       w = new EditTextWidget(_boss, _font, x+lwidth, y,
-            fwidth, myFontHeight, BSPF_toString(bytes) + " bytes / " +
-            BSPF_toString((bytes/1024)) + "KB");
+            fwidth, myFontHeight, buf.str());
       w->setEditable(false);
       y += myLineHeight + 4;
 

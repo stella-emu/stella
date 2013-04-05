@@ -26,7 +26,12 @@ Cartridge4KWidget::Cartridge4KWidget(
       int x, int y, int w, int h, Cartridge4K& cart)
   : CartDebugWidget(boss, font, x, y, w, h)
 {
-  uInt16 offset = (cart.myImage[0xFFD] << 8) | cart.myImage[0xFFC];
-  addBaseInformation(4096, "Atari", "Standard 4K cartridge, non-bankswitched\n"
-                     "Accessible @ $1000 - $1FFF");
+  // Eventually, we should query this from the debugger/disassembler
+  uInt16 start = (cart.myImage[0xFFD] << 8) | cart.myImage[0xFFC];
+  start -= start % 0x1000;
+
+  ostringstream info;
+  info << "Standard 4K cartridge, non-bankswitched\n"
+       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + 0xFFF);
+  addBaseInformation(4096, "Atari", info.str());
 }

@@ -26,6 +26,13 @@ Cartridge2KWidget::Cartridge2KWidget(
       int x, int y, int w, int h, Cartridge2K& cart)
   : CartDebugWidget(boss, font, x, y, w, h)
 {
-  addBaseInformation(2048, "Atari", "Standard 2K cartridge, non-bankswitched\n"
-                     "Accessible @ $1000 - $1FFF");
+  // Eventually, we should query this from the debugger/disassembler
+  uInt16 size = cart.mySize;
+  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-2];
+  start -= start % size;
+
+  ostringstream info;
+  info << "Standard 2K cartridge, non-bankswitched\n"
+       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + size - 1);
+  addBaseInformation(size, "Atari", info.str());
 }
