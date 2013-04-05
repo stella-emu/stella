@@ -37,6 +37,8 @@ class System;
 */
 class Cartridge4K : public Cartridge
 {
+  friend class Cartridge4KWidget;
+
   public:
     /**
       Create a new cartridge using the specified image

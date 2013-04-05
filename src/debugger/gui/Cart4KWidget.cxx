@@ -17,23 +17,16 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGE4K_WIDGET_HXX
-#define CARTRIDGE4K_WIDGET_HXX
+#include "Cart4K.hxx"
+#include "Cart4KWidget.hxx"
 
-class Cartridge4K;
-#include "CartDebugWidget.hxx"
-
-class Cartridge4KWidget : public CartDebugWidget
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+Cartridge4KWidget::Cartridge4KWidget(
+      GuiObject* boss, const GUI::Font& font,
+      int x, int y, int w, int h, Cartridge4K& cart)
+  : CartDebugWidget(boss, font, x, y, w, h)
 {
-  public:
-    Cartridge4KWidget(GuiObject* boss, const GUI::Font& font,
-                      int x, int y, int w, int h,
-                      Cartridge4K& cart);
-    virtual ~Cartridge4KWidget() { }
-
-    // No implementation for non-bankswitched ROMs
-    void loadConfig() { }
-    void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
-};
-
-#endif
+  uInt16 offset = (cart.myImage[0xFFD] << 8) | cart.myImage[0xFFC];
+  addBaseInformation(4096, "Atari", "Standard 4K cartridge, non-bankswitched\n"
+                     "Accessible @ $1000 - $1FFF");
+}

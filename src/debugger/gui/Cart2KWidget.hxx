@@ -17,19 +17,19 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGE4K_WIDGET_HXX
-#define CARTRIDGE4K_WIDGET_HXX
+#ifndef CARTRIDGE2K_WIDGET_HXX
+#define CARTRIDGE2K_WIDGET_HXX
 
-class Cartridge4K;
+class Cartridge2K;
 #include "CartDebugWidget.hxx"
 
-class Cartridge4KWidget : public CartDebugWidget
+class Cartridge2KWidget : public CartDebugWidget
 {
   public:
-    Cartridge4KWidget(GuiObject* boss, const GUI::Font& font,
+    Cartridge2KWidget(GuiObject* boss, const GUI::Font& font,
                       int x, int y, int w, int h,
-                      Cartridge4K& cart);
-    virtual ~Cartridge4KWidget() { }
+                      Cartridge2K& cart);
+    virtual ~Cartridge2KWidget() { }
 
     // No implementation for non-bankswitched ROMs
     void loadConfig() { }
