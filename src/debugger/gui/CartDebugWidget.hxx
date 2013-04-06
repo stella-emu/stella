@@ -25,6 +25,8 @@ class ButtonWidget;
 
 #include "Font.hxx"
 #include "Command.hxx"
+#include "Debugger.hxx"
+#include "RomWidget.hxx"
 #include "Widget.hxx"
 #include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
@@ -81,7 +83,7 @@ class CartDebugWidget : public Widget, public CommandSender
       const StringList& sl = bs.stringList();
       uInt32 lines = sl.size();
       if(lines < 3) lines = 3;
-      if(lines > 6) lines = 6;
+//      if(lines > 6) lines = 6;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "Description: ", kTextAlignLeft);
@@ -92,6 +94,12 @@ class CartDebugWidget : public Widget, public CommandSender
       y += sw->getHeight() + 4;
 
       return y;
+    }
+
+    // Inform the ROM Widget that the underlying cart has somehow changed
+    void invalidate()
+    {
+      Debugger::debugger().rom().invalidate();
     }
 
     virtual void loadConfig() { };

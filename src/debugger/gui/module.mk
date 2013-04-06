@@ -21,6 +21,9 @@ MODULE_OBJS := \
 	src/debugger/gui/ToggleWidget.o \
 	src/debugger/gui/Cart2KWidget.o \
 	src/debugger/gui/Cart4KWidget.o \
+	src/debugger/gui/CartF4Widget.o \
+	src/debugger/gui/CartF6Widget.o \
+	src/debugger/gui/CartF8Widget.o \
 	src/debugger/gui/JoystickWidget.o \
 	src/debugger/gui/PaddleWidget.o \
 	src/debugger/gui/BoosterWidget.o \

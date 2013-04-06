@@ -638,7 +638,7 @@ void DebuggerParser::executeA()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-// "bank"	 
+// "bank"
 void DebuggerParser::executeBank()
 {
   int banks = debugger->cartDebug().bankCount();
