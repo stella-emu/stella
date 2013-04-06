@@ -26,7 +26,7 @@ class System;
 #include "Cart.hxx"
 
 /**
-  Bankswitching method used by Activison's Robot Tank and Decathlon.
+  Bankswitching method used by Activision's Robot Tank and Decathlon.
 
   Kevin Horton describes FE as follows:
 

@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartFAWidget.hxx"
+#endif
 
 /**
   Cartridge class used for CBS' RAM Plus cartridges.  There are
@@ -34,6 +37,8 @@ class System;
 */
 class CartridgeFA : public Cartridge
 {
+  friend class CartridgeFAWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -119,6 +124,18 @@ class CartridgeFA : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeFA"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeFAWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

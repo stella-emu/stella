@@ -129,15 +129,12 @@ bool CartridgeFE::bankChanged()
   if(myLastAddressChanged)
   {
     // A bankswitch occurs when the addresses transition from state to another
-    bool a1 = ((myLastAddress1 & 0x2000) == 0),
-         a2 = ((myLastAddress2 & 0x2000) == 0);
-    myBankChanged = (a1 && !a2) || (a2 && !a1);
+    myBankChanged = ((myLastAddress1 & 0x2000) == 0) !=
+                    ((myLastAddress2 & 0x2000) == 0);
     myLastAddressChanged = false;
   }
   else
-  {
     myBankChanged = false;
-  }
 
   // In any event, let the base class know about it
   return Cartridge::bankChanged();
