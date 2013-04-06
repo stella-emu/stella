@@ -17,25 +17,27 @@
 // $Id$
 //============================================================================
 
-#include "CartF6.hxx"
+#include "CartF8SC.hxx"
 #include "PopUpWidget.hxx"
-#include "CartF6Widget.hxx"
+#include "CartF8SCWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6Widget::CartridgeF6Widget(
+CartridgeF8SCWidget::CartridgeF8SCWidget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, CartridgeF6& cart)
+      int x, int y, int w, int h, CartridgeF8SC& cart)
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = 4 * 4096;
+  uInt16 size = 8192;
 
   ostringstream info;
-  info << "Standard F6 cartridge, four 4K banks\n"
+  info << "Standard F8SC cartridge, two 4K banks\n"
+       << "128 bytes RAM @ $F000 - $F0FF\n"
+       << "  $F080 - $F0FF (R), $F000 - $F07F (W)\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF6; i < 4; ++i, offset += 0x1000)
+  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 2; ++i, offset += 0x1000)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
@@ -47,10 +49,8 @@ CartridgeF6Widget::CartridgeF6Widget(
       ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
 
   StringMap items;
-  items.push_back("0 ($FF6)", "0");
-  items.push_back("1 ($FF7)", "1");
-  items.push_back("2 ($FF8)", "2");
-  items.push_back("3 ($FF9)", "3");
+  items.push_back("0 ($FF8)", "0");
+  items.push_back("1 ($FF9)", "1");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
@@ -60,13 +60,13 @@ CartridgeF6Widget::CartridgeF6Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::loadConfig()
+void CartridgeF8SCWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::handleCommand(CommandSender* sender,
+void CartridgeF8SCWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)

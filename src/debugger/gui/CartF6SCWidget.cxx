@@ -17,21 +17,23 @@
 // $Id$
 //============================================================================
 
-#include "CartF6.hxx"
+#include "CartF6SC.hxx"
 #include "PopUpWidget.hxx"
-#include "CartF6Widget.hxx"
+#include "CartF6SCWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6Widget::CartridgeF6Widget(
+CartridgeF6SCWidget::CartridgeF6SCWidget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, CartridgeF6& cart)
+      int x, int y, int w, int h, CartridgeF6SC& cart)
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
   uInt16 size = 4 * 4096;
 
   ostringstream info;
-  info << "Standard F6 cartridge, four 4K banks\n"
+  info << "Standard F6SC cartridge, four 4K banks\n"
+       << "128 bytes RAM @ $F000 - $F0FF\n"
+       << "  $F080 - $F0FF (R), $F000 - $F07F (W)\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
@@ -60,13 +62,13 @@ CartridgeF6Widget::CartridgeF6Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::loadConfig()
+void CartridgeF6SCWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::handleCommand(CommandSender* sender,
+void CartridgeF6SCWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)

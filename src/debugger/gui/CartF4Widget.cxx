@@ -56,7 +56,7 @@ CartridgeF4Widget::CartridgeF4Widget(
   items.push_back("6 ($FFA)", "2");
   items.push_back("7 ($FFB)", "3");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("1 ($FF9)"),
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);

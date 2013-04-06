@@ -50,7 +50,7 @@ CartridgeF8Widget::CartridgeF8Widget(
   items.push_back("0 ($FF8)", "0");
   items.push_back("1 ($FF9)", "1");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FF8) "),
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);

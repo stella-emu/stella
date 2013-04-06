@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartF8SCWidget.hxx"
+#endif
 
 /**
   Cartridge class used for Atari's 8K bankswitched games with
@@ -34,6 +37,8 @@ class System;
 */
 class CartridgeF8SC : public Cartridge
 {
+  friend class CartridgeF8SCWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -119,6 +124,18 @@ class CartridgeF8SC : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeF8SC"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeF8SCWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**
