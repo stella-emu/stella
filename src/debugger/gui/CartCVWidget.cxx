@@ -17,22 +17,25 @@
 // $Id$
 //============================================================================
 
-#include "Cart2K.hxx"
-#include "Cart2KWidget.hxx"
+#include "CartCV.hxx"
+#include "CartCVWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2KWidget::Cartridge2KWidget(
+CartridgeCVWidget::CartridgeCVWidget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, Cartridge2K& cart)
+      int x, int y, int w, int h, CartridgeCV& cart)
   : CartDebugWidget(boss, font, x, y, w, h)
 {
   // Eventually, we should query this from the debugger/disassembler
-  uInt16 size = cart.mySize;
+  uInt16 size = 2048;
   uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
   start -= start % size;
 
   ostringstream info;
-  info << "Standard 2K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + size - 1);
-  addBaseInformation(size, "Atari", info.str());
+  info << "CV 2K ROM + 1K RAM , non-bankswitched\n"
+       << "1024 bytes RAM @ $F000 - $F7FF\n"
+       << "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
+       << "ROM accessible @ $" << HEX4 << start << " - " << "$" << (start + size - 1);
+
+  addBaseInformation(cart.mySize, "CommaVid", info.str());
 }

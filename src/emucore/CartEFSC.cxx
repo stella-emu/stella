@@ -35,7 +35,7 @@ CartridgeEFSC::CartridgeEFSC(const uInt8* image, uInt32 size, const Settings& se
   registerRamArea(0x1000, 128, 0x80, 0x00);
 
   // Remember startup bank
-  myStartBank = 1;
+  myStartBank = 15;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

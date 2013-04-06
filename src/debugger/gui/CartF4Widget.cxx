@@ -51,10 +51,10 @@ CartridgeF4Widget::CartridgeF4Widget(
   items.push_back("1 ($FF5)", "1");
   items.push_back("2 ($FF6)", "2");
   items.push_back("3 ($FF7)", "3");
-  items.push_back("4 ($FF8)", "0");
-  items.push_back("5 ($FF9)", "1");
-  items.push_back("6 ($FFA)", "2");
-  items.push_back("7 ($FFB)", "3");
+  items.push_back("4 ($FF8)", "4");
+  items.push_back("5 ($FF9)", "5");
+  items.push_back("6 ($FFA)", "6");
+  items.push_back("7 ($FFB)", "7");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
@@ -67,6 +67,8 @@ CartridgeF4Widget::CartridgeF4Widget(
 void CartridgeF4Widget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
+
+  CartDebugWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

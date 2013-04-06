@@ -17,42 +17,41 @@
 // $Id$
 //============================================================================
 
-#include "CartF6.hxx"
+#include "Cart0840.hxx"
 #include "PopUpWidget.hxx"
-#include "CartF6Widget.hxx"
+#include "Cart0840Widget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6Widget::CartridgeF6Widget(
+Cartridge0840Widget::Cartridge0840Widget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, CartridgeF6& cart)
+      int x, int y, int w, int h, Cartridge0840& cart)
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = 4 * 4096;
+  uInt16 size = 2 * 4096;
 
   ostringstream info;
-  info << "Standard F6 cartridge, four 4K banks\n"
+  info << "0840 Econobanking, two 4K banks\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF6; i < 4; ++i, offset += 0x1000)
+  for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < 2;
+      ++i, offset += 0x1000, spot += 0x40)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
     info << "Bank " << i << " @ $" << HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
+         << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
   }
 
   int xpos = 10,
-      ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
 
   StringMap items;
-  items.push_back("0 ($FF6)", "0");
-  items.push_back("1 ($FF7)", "1");
-  items.push_back("2 ($FF8)", "2");
-  items.push_back("3 ($FF9)", "3");
+  items.push_back("0 ($800)", "0");
+  items.push_back("1 ($840)", "1");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($800) "),
                     myLineHeight, items, "Set bank: ",
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
@@ -60,7 +59,7 @@ CartridgeF6Widget::CartridgeF6Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::loadConfig()
+void Cartridge0840Widget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
 
@@ -68,7 +67,7 @@ void CartridgeF6Widget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::handleCommand(CommandSender* sender,
+void Cartridge0840Widget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)

@@ -19,14 +19,20 @@ MODULE_OBJS := \
 	src/debugger/gui/ToggleBitWidget.o \
 	src/debugger/gui/TogglePixelWidget.o \
 	src/debugger/gui/ToggleWidget.o \
+	src/debugger/gui/Cart0840Widget.o \
 	src/debugger/gui/Cart2KWidget.o \
 	src/debugger/gui/Cart4KWidget.o \
+	src/debugger/gui/CartCVWidget.o \
+	src/debugger/gui/CartEFWidget.o \
+	src/debugger/gui/CartEFSCWidget.o \
+	src/debugger/gui/CartF0Widget.o \
 	src/debugger/gui/CartF4Widget.o \
 	src/debugger/gui/CartF6Widget.o \
 	src/debugger/gui/CartF8Widget.o \
 	src/debugger/gui/CartF4SCWidget.o \
 	src/debugger/gui/CartF6SCWidget.o \
 	src/debugger/gui/CartF8SCWidget.o \
+	src/debugger/gui/CartUAWidget.o \
 	src/debugger/gui/JoystickWidget.o \
 	src/debugger/gui/PaddleWidget.o \
 	src/debugger/gui/BoosterWidget.o \

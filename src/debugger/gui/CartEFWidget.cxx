@@ -17,42 +17,55 @@
 // $Id$
 //============================================================================
 
-#include "CartF6.hxx"
+#include "CartEF.hxx"
 #include "PopUpWidget.hxx"
-#include "CartF6Widget.hxx"
+#include "CartEFWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6Widget::CartridgeF6Widget(
+CartridgeEFWidget::CartridgeEFWidget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, CartridgeF6& cart)
+      int x, int y, int w, int h, CartridgeEF& cart)
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = 4 * 4096;
+  uInt32 size = 16 * 4096;
 
   ostringstream info;
-  info << "Standard F6 cartridge, four 4K banks\n"
+  info << "64K H. Runner EF cartridge, 16 4K banks\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF6; i < 4; ++i, offset += 0x1000)
+  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFE0; i < 16; ++i, offset += 0x1000)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << start << " - "
+    info << "Bank " << dec << i << " @ $" << HEX4 << start << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
-      ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "Paul Slocum / Homestar Runner",
+                                info.str()) + myLineHeight;
 
   StringMap items;
-  items.push_back("0 ($FF6)", "0");
-  items.push_back("1 ($FF7)", "1");
-  items.push_back("2 ($FF8)", "2");
-  items.push_back("3 ($FF9)", "3");
+  items.push_back(" 0 ($FE0)", "0");
+  items.push_back(" 1 ($FE1)", "1");
+  items.push_back(" 2 ($FE2)", "2");
+  items.push_back(" 3 ($FE3)", "3");
+  items.push_back(" 4 ($FE4)", "4");
+  items.push_back(" 5 ($FE5)", "5");
+  items.push_back(" 6 ($FE6)", "6");
+  items.push_back(" 7 ($FE7)", "7");
+  items.push_back(" 8 ($FE8)", "8");
+  items.push_back(" 9 ($FE9)", "9");
+  items.push_back("10 ($FEA)", "10");
+  items.push_back("11 ($FEB)", "11");
+  items.push_back("12 ($FEC)", "12");
+  items.push_back("13 ($FED)", "13");
+  items.push_back("14 ($FEE)", "14");
+  items.push_back("15 ($FEF)", "15");
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("15 ($FE0) "),
                     myLineHeight, items, "Set bank: ",
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
@@ -60,7 +73,7 @@ CartridgeF6Widget::CartridgeF6Widget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::loadConfig()
+void CartridgeEFWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
 
@@ -68,7 +81,7 @@ void CartridgeF6Widget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6Widget::handleCommand(CommandSender* sender,
+void CartridgeEFWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)

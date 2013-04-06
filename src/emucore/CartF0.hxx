@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartF0Widget.hxx"
+#endif
 
 /**
   Cartridge class used for Dynacom Megaboy
@@ -35,6 +38,8 @@ class System;
 */
 class CartridgeF0 : public Cartridge
 {
+  friend class CartridgeF0Widget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -120,6 +125,18 @@ class CartridgeF0 : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeF0"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeF0Widget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

@@ -17,22 +17,30 @@
 // $Id$
 //============================================================================
 
-#include "Cart2K.hxx"
-#include "Cart2KWidget.hxx"
+#ifndef CARTRIDGEUA_WIDGET_HXX
+#define CARTRIDGEUA_WIDGET_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2KWidget::Cartridge2KWidget(
-      GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, Cartridge2K& cart)
-  : CartDebugWidget(boss, font, x, y, w, h)
+class CartridgeUA;
+class PopUpWidget;
+
+#include "CartDebugWidget.hxx"
+
+class CartridgeUAWidget : public CartDebugWidget
 {
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 size = cart.mySize;
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
-  start -= start % size;
+  public:
+    CartridgeUAWidget(GuiObject* boss, const GUI::Font& font,
+                      int x, int y, int w, int h,
+                      CartridgeUA& cart);
+    virtual ~CartridgeUAWidget() { }
 
-  ostringstream info;
-  info << "Standard 2K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + size - 1);
-  addBaseInformation(size, "Atari", info.str());
-}
+    void loadConfig();
+    void handleCommand(CommandSender* sender, int cmd, int data, int id);
+
+  private:
+    CartridgeUA& myCart;
+    PopUpWidget* myBank;
+
+    enum { kBankChanged = 'bkCH' };
+};
+
+#endif

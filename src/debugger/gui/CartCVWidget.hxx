@@ -17,22 +17,23 @@
 // $Id$
 //============================================================================
 
-#include "Cart2K.hxx"
-#include "Cart2KWidget.hxx"
+#ifndef CARTRIDGECV_WIDGET_HXX
+#define CARTRIDGECV_WIDGET_HXX
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge2KWidget::Cartridge2KWidget(
-      GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, Cartridge2K& cart)
-  : CartDebugWidget(boss, font, x, y, w, h)
+class CartridgeCV;
+#include "CartDebugWidget.hxx"
+
+class CartridgeCVWidget : public CartDebugWidget
 {
-  // Eventually, we should query this from the debugger/disassembler
-  uInt16 size = cart.mySize;
-  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
-  start -= start % size;
+  public:
+    CartridgeCVWidget(GuiObject* boss, const GUI::Font& font,
+                      int x, int y, int w, int h,
+                      CartridgeCV& cart);
+    virtual ~CartridgeCVWidget() { }
 
-  ostringstream info;
-  info << "Standard 2K cartridge, non-bankswitched\n"
-       << "Accessible @ $" << HEX4 << start << " - " << "$" << (start + size - 1);
-  addBaseInformation(size, "Atari", info.str());
-}
+    // No implementation for non-bankswitched ROMs
+    void loadConfig() { }
+    void handleCommand(CommandSender* sender, int cmd, int data, int id) { }
+};
+
+#endif

@@ -55,7 +55,6 @@ class CartDebugWidget : public Widget, public CommandSender
       const int lwidth = _font.getStringWidth("Manufacturer: "),
                 fwidth = _w - lwidth - 30;
       EditTextWidget* w = 0;
-      StringListWidget* sw = 0;
       ostringstream buf;
 
       int x = 10, y = 10;
@@ -83,15 +82,16 @@ class CartDebugWidget : public Widget, public CommandSender
       const StringList& sl = bs.stringList();
       uInt32 lines = sl.size();
       if(lines < 3) lines = 3;
-//      if(lines > 6) lines = 6;
+      if(lines > 10) lines = 10;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "Description: ", kTextAlignLeft);
-      sw = new StringListWidget(_boss, _font, x+lwidth, y,
-            fwidth, lines * myLineHeight, false);
-      sw->setEditable(false);
-      sw->setList(sl);
-      y += sw->getHeight() + 4;
+      myDesc = new StringListWidget(_boss, _font, x+lwidth, y,
+                   fwidth, lines * myLineHeight, false);
+      myDesc->setEditable(false);
+      myDesc->setList(sl);
+      addFocusWidget(myDesc);
+      y += myDesc->getHeight() + 4;
 
       return y;
     }
@@ -102,13 +102,15 @@ class CartDebugWidget : public Widget, public CommandSender
       Debugger::debugger().rom().invalidate();
     }
 
-    virtual void loadConfig() { };
+    virtual void loadConfig() { myDesc->setSelected(0); }
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { };
 
   protected:
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
     int myFontWidth, myFontHeight, myLineHeight;
+
+    StringListWidget* myDesc;
 };
 
 #endif

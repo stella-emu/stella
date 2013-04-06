@@ -63,6 +63,8 @@ CartridgeF8SCWidget::CartridgeF8SCWidget(
 void CartridgeF8SCWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
+
+  CartDebugWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

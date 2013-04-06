@@ -32,7 +32,7 @@ CartridgeF0::CartridgeF0(const uInt8* image, uInt32 size, const Settings& settin
   createCodeAccessBase(65536);
 
   // Remember startup bank
-  myStartBank = 1;
+  myStartBank = 15;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -43,8 +43,8 @@ CartridgeF0::~CartridgeF0()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeF0::reset()
 {
-  // Upon reset we switch to bank 1
-  myCurrentBank = 0;
+  // Upon reset we switch to bank 15
+  myCurrentBank = 14;
   incbank();
 }
 

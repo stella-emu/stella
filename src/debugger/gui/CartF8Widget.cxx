@@ -28,7 +28,7 @@ CartridgeF8Widget::CartridgeF8Widget(
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = 8192;
+  uInt16 size = 2 * 4096;
 
   ostringstream info;
   info << "Standard F8 cartridge, two 4K banks\n"
@@ -61,6 +61,8 @@ CartridgeF8Widget::CartridgeF8Widget(
 void CartridgeF8Widget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
+
+  CartDebugWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

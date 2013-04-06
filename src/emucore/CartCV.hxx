@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartCVWidget.hxx"
+#endif
 
 /**
   Cartridge class used for Commavid's extra-RAM games.
@@ -37,6 +40,8 @@ class System;
 */
 class CartridgeCV : public Cartridge
 {
+  friend class CartridgeCVWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -122,6 +127,18 @@ class CartridgeCV : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeCV"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeCVWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

@@ -23,8 +23,10 @@
 class System;
 
 #include "bspf.hxx"
-#include "System.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartUAWidget.hxx"
+#endif
 
 /**
   Cartridge class used for UA Limited's 8K bankswitched games.  There
@@ -35,6 +37,8 @@ class System;
 */
 class CartridgeUA : public Cartridge
 {
+  friend class CartridgeUAWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -120,6 +124,18 @@ class CartridgeUA : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeUA"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeUAWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

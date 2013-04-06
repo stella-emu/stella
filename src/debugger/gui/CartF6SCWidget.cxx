@@ -65,6 +65,8 @@ CartridgeF6SCWidget::CartridgeF6SCWidget(
 void CartridgeF6SCWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
+
+  CartDebugWidget::loadConfig();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
