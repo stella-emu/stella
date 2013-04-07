@@ -17,49 +17,51 @@
 // $Id$
 //============================================================================
 
-#include "Cart0840.hxx"
+#include "Cart3F.hxx"
 #include "PopUpWidget.hxx"
-#include "Cart0840Widget.hxx"
+#include "Cart3FWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-Cartridge0840Widget::Cartridge0840Widget(
+Cartridge3FWidget::Cartridge3FWidget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, Cartridge0840& cart)
+      int x, int y, int w, int h, Cartridge3F& cart)
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = 2 * 4096;
+  uInt32 size = cart.mySize;
 
   ostringstream info;
-  info << "0840 ECONObanking, two 4K banks\n"
-       << "Startup bank = " << cart.myStartBank << "\n";
+  info << "Tigervision 3F cartridge, 2-256 2K banks\n"
+       << "Startup bank = " << cart.myStartBank << "\n"
+       << "First 2K bank selected by writing to $3F\n"
+       << "Last 2K always points to last 2K of ROM\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0x800; i < 2;
-      ++i, offset += 0x1000, spot += 0x40)
-  {
-    uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
-    start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << start << " - "
-         << "$" << (start + 0xFFF) << " (hotspot = $" << spot << ")\n";
-  }
+  uInt16 start = (cart.myImage[size-3] << 8) | cart.myImage[size-4];
+  start -= start % 0x1000;
+  info << "Bank RORG" << " = $" << HEX4 << start << "\n";
 
   int xpos = 10,
-      ypos = addBaseInformation(size, "Fred X. Quimby", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "TigerVision", info.str()) + myLineHeight;
 
   StringMap items;
-  items.push_back("0 ($800)", "0");
-  items.push_back("1 ($840)", "1");
+  for(uInt16 i = 0; i < cart.bankCount(); ++i)
+  {
+    const string& b = BSPF_toString(i);
+    items.push_back(b + " ($3F)", b);
+  }
+  ostringstream label;
+  label << "Set bank ($" << HEX4 << start << " - $" << (start+0x7FF) << "): ";
   myBank =
-    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($800) "),
-                    myLineHeight, items, "Set bank: ",
-                    font.getStringWidth("Set bank: "), kBankChanged);
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($3F) "),
+                    myLineHeight, items, label.str(),
+                    font.getStringWidth(label.str()), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840Widget::loadConfig()
+void Cartridge3FWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
 
@@ -67,7 +69,7 @@ void Cartridge0840Widget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Cartridge0840Widget::handleCommand(CommandSender* sender,
+void Cartridge3FWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)

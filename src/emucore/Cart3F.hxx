@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "Cart3FWidget.hxx"
+#endif
 
 /**
   This is the cartridge class for Tigervision's bankswitched 
@@ -40,6 +43,8 @@ class System;
 */
 class Cartridge3F : public Cartridge
 {
+  friend class Cartridge3FWidget;
+
   public:
     /**
       Create a new cartridge using the specified image and size
@@ -125,6 +130,18 @@ class Cartridge3F : public Cartridge
       @return The name of the object
     */
     string name() const { return "Cartridge3F"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new Cartridge3FWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

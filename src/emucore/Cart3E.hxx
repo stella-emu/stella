@@ -47,7 +47,7 @@ class System;
   instead, store the RAM bank number into $3E.
 
   This implementation of 3E bankswitching numbers the ROM banks 0 to
-  256, and the RAM banks 256 to 287. This is done because the public
+  255, and the RAM banks 256 to 287. This is done because the public
   bankswitching interface requires us to use one bank number, not one
   bank number plus the knowledge of whether it's RAM or ROM.
 
