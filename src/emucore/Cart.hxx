@@ -141,12 +141,17 @@ class Cartridge : public Device
     virtual uInt16 bank() const = 0;
 
     /**
-      Query the number of banks supported by the cartridge.  Note that
-      we're counting the number of 4K 'blocks' that can be swapped into
-      the 4K address space in the 2600.  As such, it's possible to have
-      a ROM that is larger than 4K *but* only consists of 1 bank.
-      Such cases occur when pages of ROM can be swapped in and out,
-      yet the 4K image is considered the same.
+      Query the number of 'banks' supported by the cartridge.  Note that
+      this information is cart-specific, where each cart basically defines
+      what a 'bank' is.
+
+      For the normal Atari-manufactured carts, a standard bank is a 4K
+      block that is directly accessible in the 4K address space.  In other
+      cases where ROMs have 2K blocks in some preset area, the bankCount
+      is the number of such blocks.  Finally, in some esoteric schemes,
+      the number of ways that the addressing can change (multiple ROM and
+      RAM slices at multiple access points) is so complicated that the
+      cart will report having only one 'virtual' bank.
     */
     virtual uInt16 bankCount() const = 0;
 
