@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartX07Widget.hxx"
+#endif
 
 /**
   Bankswitching method as defined/created by John Payson (aka Supercat)
@@ -44,6 +47,8 @@ class System;
 */
 class CartridgeX07 : public Cartridge
 {
+  friend class CartridgeX07Widget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -129,6 +134,18 @@ class CartridgeX07 : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeX07"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeX07Widget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**
