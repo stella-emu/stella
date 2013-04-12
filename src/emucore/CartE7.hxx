@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartE7Widget.hxx"
+#endif
 
 /**
   This is the cartridge class for M-Network bankswitched games.  
@@ -60,6 +63,8 @@ class System;
 */
 class CartridgeE7 : public Cartridge
 {
+  friend class CartridgeE7Widget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -145,6 +150,18 @@ class CartridgeE7 : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeE7"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeE7Widget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**
