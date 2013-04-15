@@ -92,6 +92,18 @@ void PopUpWidget::handleMouseDown(int x, int y, int button, int clickCount)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void PopUpWidget::handleMouseWheel(int x, int y, int direction)
+{
+  if(isEnabled() && !myMenu->isVisible())
+  {
+    if(direction < 0)
+      myMenu->sendSelectionUp();
+    else
+      myMenu->sendSelectionDown();
+  }
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 bool PopUpWidget::handleEvent(Event::Type e)
 {
   if(!isEnabled())
@@ -102,6 +114,18 @@ bool PopUpWidget::handleEvent(Event::Type e)
     case Event::UISelect:
       handleMouseDown(0, 0, 1, 0);
       return true;
+    case Event::UIUp:
+    case Event::UILeft:
+    case Event::UIPgUp:
+      return myMenu->sendSelectionUp();
+    case Event::UIDown:
+    case Event::UIRight:
+    case Event::UIPgDown:
+      return myMenu->sendSelectionDown();
+    case Event::UIHome:
+      return myMenu->sendSelectionFirst();
+    case Event::UIEnd:
+      return myMenu->sendSelectionLast();
     default:
       return false;
   }

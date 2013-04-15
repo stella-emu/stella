@@ -430,12 +430,10 @@ string Cartridge::autodetectType(const uInt8* image, uInt32 size)
   }
   else if(size == 29*1024)  // 29K
   {
-    if(isProbablyDPCplus(image, size))
-      type = "DPC+";
-    else if(isProbablyARM(image, size))
+    if(isProbablyARM(image, size))
       type = "FA2";
-    else
-      type = "4K";  // probably a bad ROM
+    else /*if(isProbablyDPCplus(image, size))*/
+      type = "DPC+";
   }
   else if(size == 32*1024)  // 32K
   {

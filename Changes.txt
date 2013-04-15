@@ -15,6 +15,11 @@
 3.8.1 to 3.9: (XXXXX xxx, 2013)
 
   * Greatly extended functionality of the debugger disassembly:
+      - There is now a new tab which lists information specific to the
+        cartridge bankswitching scheme in use.  This includes the ability
+        to modify internal state even for esoteric ROMs which don't
+        follow the standard layout of 4K per bank.
+
       - The debugger now generates DASM-compatible disassembled code,
         which can be saved to an external file.  This disassembly is
         based on both a static and runtime analysis, and is extremely
@@ -45,6 +50,10 @@
   * Changed colour of the 'current PC indicator' in the debugger to
     match the one used for line selection.  This makes it easier to
     see for those with problems seeing lighter colours.
+
+  * Improved functionality of the various pop-up dialogs and context
+    menus in the UI; they can now be navigated more fully by the keyboard
+    and mouse.
 
   * Updated included PNG library to latest stable version.
 

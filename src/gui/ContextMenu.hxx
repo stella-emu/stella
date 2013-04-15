@@ -37,6 +37,9 @@ enum {
  *
  * Implementation wise, when the user selects an item, then the given 'cmd'
  * is broadcast, with data being equal to the tag value of the selected entry.
+ *
+ * There are also several utility methods (named as sendSelectionXXX) that
+ * allow to cycle through the current items without actually opening the dialog.
  */
 class ContextMenu : public Dialog, public CommandSender
 {
@@ -71,6 +74,16 @@ class ContextMenu : public Dialog, public CommandSender
     /** This dialog uses its own positioning, so we override Dialog::center() */
     void center();
 
+    /** The following methods are used when we want to select *and*
+        send a command for the new selection.  They are only to be used
+        when the dialog *isn't* open, and are basically a shortcut so
+        that a PopUpWidget has some basic functionality without forcing
+        to open its associated ContextMenu. */
+    bool sendSelectionUp();
+    bool sendSelectionDown();
+    bool sendSelectionFirst();
+    bool sendSelectionLast();
+
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
     void handleMouseMoved(int x, int y, int button);
@@ -92,6 +105,11 @@ class ContextMenu : public Dialog, public CommandSender
 	
     void moveUp();
     void moveDown();
+    void movePgUp();
+    void movePgDown();
+    void moveToFirst();
+    void moveToLast();
+    void moveToSelected();
     void scrollUp(int distance = 1);
     void scrollDown(int distance = 1);
     void sendSelection();

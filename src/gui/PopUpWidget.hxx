@@ -68,6 +68,7 @@ class PopUpWidget : public Widget, public CommandSender
 
   protected:
     void handleMouseDown(int x, int y, int button, int clickCount);
+    void handleMouseWheel(int x, int y, int direction);
     bool handleEvent(Event::Type e);
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
     void drawWidget(bool hilite);

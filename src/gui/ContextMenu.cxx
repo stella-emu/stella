@@ -88,6 +88,7 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
   recalc(instance().frameBuffer().imageRect());
   parent().addDialog(this);
   setSelected(item);
+  moveToSelected();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -195,6 +196,50 @@ const string& ContextMenu::getSelectedTag() const
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionUp()
+{
+  if(isVisible() || _selectedItem <= 0)
+    return false;
+
+  _selectedItem--;
+  sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionDown()
+{
+  if(isVisible() || _selectedItem >= (int)_entries.size() - 1)
+    return false;
+
+  _selectedItem++;
+  sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionFirst()
+{
+  if(isVisible())
+    return false;
+
+  _selectedItem = 0;
+  sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+bool ContextMenu::sendSelectionLast()
+{
+  if(isVisible())
+    return false;
+
+  _selectedItem = _entries.size() - 1;
+  sendCommand(_cmd ? _cmd : kCMenuItemSelectedCmd, _selectedItem, -1);
+  return true;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::handleMouseDown(int x, int y, int button, int clickCount)
 {
   // Compute over which item the mouse is...
@@ -286,6 +331,18 @@ void ContextMenu::handleEvent(Event::Type e)
     case Event::UIDown:
     case Event::UIRight:
       moveDown();
+      break;
+    case Event::UIPgUp:
+      movePgUp();
+      break;
+    case Event::UIPgDown:
+      movePgDown();
+      break;
+    case Event::UIHome:
+      moveToFirst();
+      break;
+    case Event::UIEnd:
+      moveToLast();
       break;
     case Event::UICancel:
       close();
@@ -383,6 +440,69 @@ void ContextMenu::moveDown()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::movePgUp()
+{
+  if(_firstEntry == 0)
+    moveToFirst();
+  else
+    scrollUp(_numEntries);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::movePgDown()
+{
+  if(_firstEntry == (int)(_entries.size() - _numEntries))
+    moveToLast();
+  else
+    scrollDown(_numEntries);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::moveToFirst()
+{
+  _firstEntry = 0;
+  _scrollUpColor = kColor;
+  _scrollDnColor = kScrollColor;
+
+  drawCurrentSelection(_firstEntry + (_showScroll ? 1 : 0));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::moveToLast()
+{
+  _firstEntry = _entries.size() - _numEntries;
+  _scrollUpColor = kScrollColor;
+  _scrollDnColor = kColor;
+
+  drawCurrentSelection(_numEntries - (_showScroll ? 0 : 1));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ContextMenu::moveToSelected()
+{
+  if(_selectedItem < 0 || _selectedItem >= (int)_entries.size())
+    return;
+
+  // First jump immediately to the item
+  _firstEntry = _selectedItem;
+  int offset = 0;
+
+  // Now check if we've gone past the current 'window' size, and scale
+  // back accordingly
+  int max_offset = _entries.size() - _numEntries;
+  if(_firstEntry > max_offset)
+  {
+    offset = _firstEntry - max_offset;
+    _firstEntry -= offset;
+  }
+
+  _scrollUpColor = _firstEntry > 0 ? kScrollColor : kColor;
+  _scrollDnColor = _firstEntry < max_offset ? kScrollColor : kColor;
+
+  drawCurrentSelection(offset + (_showScroll ? 1 : 0));
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ContextMenu::scrollUp(int distance)
 {
   if(_firstEntry == 0)
@@ -404,7 +524,7 @@ void ContextMenu::scrollDown(int distance)
 
   _firstEntry = BSPF_min(_firstEntry + distance, max_offset);
   _scrollUpColor = kScrollColor;
-  _scrollDnColor = (_firstEntry < max_offset) ? kScrollColor : kColor;
+  _scrollDnColor = _firstEntry < max_offset ? kScrollColor : kColor;
 
   setDirty();
 }
