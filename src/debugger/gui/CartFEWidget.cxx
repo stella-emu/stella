@@ -33,8 +33,8 @@ CartridgeFEWidget::CartridgeFEWidget(
     "Bank 0 @ $F000 - $FFFF (A13 = 1)\n"
     "Bank 1 @ $D000 - $DFFF (A13 = 0)\n"
     "\n"
-    "Changing banks is not supported, since it "
-    "would immediately switch on the next address\n";
+    "Changing banks is not currently supported, since it "
+    "would immediately switch on the next address change\n";
 
   addBaseInformation(2 * 4096, "Activision", info);
 }

@@ -1,0 +1,119 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2013 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id$
+//============================================================================
+
+#include "CartMC.hxx"
+#include "PopUpWidget.hxx"
+#include "CartMCWidget.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartridgeMCWidget::CartridgeMCWidget(
+      GuiObject* boss, const GUI::Font& font,
+      int x, int y, int w, int h, CartridgeMC& cart)
+  : CartDebugWidget(boss, font, x, y, w, h),
+    myCart(cart)
+{
+#define ROM_BLOCKS
+
+  uInt32 size = 128 * 1024;
+
+  string info =
+    "MC cartridge, 128 1K slices ROM + 32 1K RAM\n"
+    "Write $80 - $FF into a hotspot for ROM (128)\n"
+    "Write $00 - $3F into a hotspot for RAM (32)\n"
+    "Segment 0 @ $F000 - $F3FF (hotspot = $3C)\n"
+    "Segment 1 @ $F400 - $F7FF (hotspot = $3D)\n"
+    "Segment 2 @ $F800 - $FBFF (hotspot = $3E)\n"
+    "Segment 3 @ $FC00 - $FFFF (hotspot = $3F)\n"
+    "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
+
+  int xpos = 10,
+      ypos = addBaseInformation(size, "Chris Wilkson's Megacart", info) +
+             myLineHeight;
+
+  StringMap items;
+  // Add 128 1K 'ROM' blocks
+  for(uInt32 i = 0x80; i <= 0xFF; ++i)
+  {
+    const string& b = BSPF_toString(i);
+    items.push_back(b + " (ROM)", b);
+  }
+  // Add 64 512B 'RAM' blocks
+  for(uInt32 i = 0x00; i <= 0x3F; ++i)
+  {
+    const string& b = BSPF_toString(i);
+    items.push_back(b + " (RAM)", b);
+  }
+
+  const int lwidth = font.getStringWidth("Set slice for segment X ($3X): "),
+            fwidth = font.getStringWidth("255 (ROM)");
+
+  mySlice0 =
+    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+                    myLineHeight, items, "Set slice for segment 0 ($3C): ",
+                    lwidth, kSlice0Changed);
+  mySlice0->setTarget(this);
+  addFocusWidget(mySlice0);
+  ypos += mySlice0->getHeight() + 4;
+
+  mySlice1 =
+    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+                    myLineHeight, items, "Set slice for segment 1 ($3D): ",
+                    lwidth, kSlice1Changed);
+  mySlice1->setTarget(this);
+  addFocusWidget(mySlice1);
+  ypos += mySlice1->getHeight() + 4;
+
+  mySlice2 =
+    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+                    myLineHeight, items, "Set slice for segment 2 ($3E): ",
+                    lwidth, kSlice2Changed);
+  mySlice2->setTarget(this);
+  addFocusWidget(mySlice2);
+  ypos += mySlice2->getHeight() + 4;
+
+  mySlice3 =
+    new PopUpWidget(boss, font, xpos, ypos-2, fwidth,
+                    myLineHeight, items, "Set slice for segment 3 ($3F): ",
+                    lwidth, kSlice3Changed);
+  mySlice3->setTarget(this);
+  addFocusWidget(mySlice3);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMCWidget::loadConfig()
+{
+  const string& b0 = BSPF_toString(myCart.myCurrentBlock[0]);
+  const string& b1 = BSPF_toString(myCart.myCurrentBlock[1]);
+  const string& b2 = BSPF_toString(myCart.myCurrentBlock[2]);
+  const string& b3 = BSPF_toString(myCart.myCurrentBlock[3]);
+
+  mySlice0->setSelected(b0, b0);
+  mySlice1->setSelected(b1, b1);
+  mySlice2->setSelected(b2, b2);
+  mySlice3->setSelected(b3, b3);
+
+  CartDebugWidget::loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeMCWidget::handleCommand(CommandSender* sender,
+                                      int cmd, int data, int id)
+{
+  // TODO - implement this
+}
