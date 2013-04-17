@@ -41,7 +41,8 @@ class CartDebugWidget : public Widget, public CommandSender
         CommandSender(boss),
         myFontWidth(font.getMaxCharWidth()),
         myFontHeight(font.getFontHeight()),
-        myLineHeight(font.getLineHeight())
+        myLineHeight(font.getLineHeight()),
+        myButtonHeight(myLineHeight + 4)
     {
       _type = kCartDebugWidget;
     }
@@ -108,7 +109,7 @@ class CartDebugWidget : public Widget, public CommandSender
   protected:
     // These will be needed by most of the child classes;
     // we may as well make them protected variables
-    int myFontWidth, myFontHeight, myLineHeight;
+    int myFontWidth, myFontHeight, myLineHeight, myButtonHeight;
 
   private:
     StringListWidget* myDesc;

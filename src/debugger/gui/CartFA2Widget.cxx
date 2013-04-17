@@ -34,8 +34,7 @@ CartridgeFA2Widget::CartridgeFA2Widget(
   info << "Modified FA RAM+, six or seven 4K banks\n"
        << "256 bytes RAM @ $F000 - $F1FF\n"
        << "  $F100 - $F1FF (R), $F000 - $F0FF (W)\n"
-       << "RAM can be loaded/saved to Harmony flash by accessing $FF4 "
-          "(not currently accessible)\n"
+       << "RAM can be loaded/saved to Harmony flash by accessing $FF4\n"
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
@@ -68,6 +67,34 @@ CartridgeFA2Widget::CartridgeFA2Widget(
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+  ypos += myLineHeight + 20;
+
+  const int bwidth = font.getStringWidth("Erase") + 20;
+
+  StaticTextWidget* t = new StaticTextWidget(boss, font, xpos, ypos,
+      font.getStringWidth("Harmony Flash: "),
+      myFontHeight, "Harmony Flash: ", kTextAlignLeft);
+
+  xpos += t->getWidth() + 4;
+  myFlashErase =
+    new ButtonWidget(boss, font, xpos, ypos-4, bwidth, myButtonHeight,
+                     "Erase", kFlashErase);
+  myFlashErase->setTarget(this);
+  addFocusWidget(myFlashErase);
+  xpos += myFlashErase->getWidth() + 8;
+
+  myFlashLoad =
+    new ButtonWidget(boss, font, xpos, ypos-4, bwidth, myButtonHeight,
+                     "Load", kFlashLoad);
+  myFlashLoad->setTarget(this);
+  addFocusWidget(myFlashLoad);
+  xpos += myFlashLoad->getWidth() + 8;
+
+  myFlashSave =
+    new ButtonWidget(boss, font, xpos, ypos-4, bwidth, myButtonHeight,
+                     "Save", kFlashSave);
+  myFlashSave->setTarget(this);
+  addFocusWidget(myFlashSave);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -82,11 +109,25 @@ void CartridgeFA2Widget::loadConfig()
 void CartridgeFA2Widget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
-  if(cmd == kBankChanged)
+  switch(cmd)
   {
-    myCart.unlockBank();
-    myCart.bank(myBank->getSelected());
-    myCart.lockBank();
-    invalidate();
+    case kBankChanged:
+      myCart.unlockBank();
+      myCart.bank(myBank->getSelected());
+      myCart.lockBank();
+      invalidate();
+      break;
+
+    case kFlashErase:
+      myCart.flash(0);
+      break;
+
+    case kFlashLoad:
+      myCart.flash(1);
+      break;
+
+    case kFlashSave:
+      myCart.flash(2);
+      break;
   }
 }

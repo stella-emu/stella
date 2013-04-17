@@ -180,6 +180,15 @@ class CartridgeFA2 : public Cartridge
     */
     uInt8 ramReadWrite();
 
+    /**
+      Modify Harmony flash directly (represented by a file in emulation),
+      ignoring any timing emulation.  This is for use strictly in the
+      debugger, so you can have low-level access to the Flash media.
+
+      @param operation  0 for erase, 1 for read, 2 for write
+    */
+    void flash(uInt8 operation);
+
   private:
     // OSsytem currently in use
     const OSystem& myOSystem;

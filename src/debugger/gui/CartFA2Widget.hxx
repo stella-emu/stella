@@ -21,6 +21,7 @@
 #define CARTRIDGEFA2_WIDGET_HXX
 
 class CartridgeFA2;
+class ButtonWidget;
 class PopUpWidget;
 
 #include "CartDebugWidget.hxx"
@@ -39,8 +40,14 @@ class CartridgeFA2Widget : public CartDebugWidget
   private:
     CartridgeFA2& myCart;
     PopUpWidget* myBank;
+    ButtonWidget *myFlashErase, *myFlashLoad, *myFlashSave;
 
-    enum { kBankChanged = 'bkCH' };
+    enum {
+      kBankChanged = 'bkCH',
+      kFlashErase  = 'flER',
+      kFlashLoad   = 'flLD',
+      kFlashSave   = 'flSV'
+    };
 };
 
 #endif

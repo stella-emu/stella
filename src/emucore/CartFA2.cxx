@@ -432,3 +432,47 @@ uInt8 CartridgeFA2::ramReadWrite()
       return myImage[(myCurrentBank << 12) + 0xFF4] | 0x40;
   }
 }
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeFA2::flash(uInt8 operation)
+{
+  Serializer serializer(myFlashFile);
+  if(serializer.isValid())
+  {
+    if(operation == 0)       // erase
+    {
+      try
+      {
+        uInt8 buf[256];
+        memset(buf, 0, 256);
+        serializer.putByteArray(buf, 256);
+      }
+      catch(...)
+      {
+      }
+    }
+    else if(operation == 1)  // read
+    {
+      try
+      {
+        serializer.getByteArray(myRAM, 256);
+      }
+      catch(...)
+      {
+        memset(myRAM, 0, 256);
+      }
+    }
+    else if(operation == 2)  // write
+    {
+      try
+      {
+        serializer.putByteArray(myRAM, 256);
+      }
+      catch(...)
+      {
+        // Maybe add logging here that save failed?
+        cerr << name() << ": ERROR saving score table" << endl;
+      }
+    }
+  }
+}
