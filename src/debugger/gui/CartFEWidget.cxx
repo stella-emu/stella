@@ -26,17 +26,15 @@ CartridgeFEWidget::CartridgeFEWidget(
       int x, int y, int w, int h, CartridgeFE& cart)
   : CartDebugWidget(boss, font, x, y, w, h)
 {
-  uInt16 size = 2 * 4096;
+  string info = 
+    "FE cartridge, two 4K banks\n"
+    "Doesn't support bankswitching with hotspots, "
+    "but instead watches A13 of called addresses:\n"
+    "Bank 0 @ $F000 - $FFFF (A13 = 1)\n"
+    "Bank 1 @ $D000 - $DFFF (A13 = 0)\n"
+    "\n"
+    "Changing banks is not supported, since it "
+    "would immediately switch on the next address\n";
 
-  ostringstream info;
-  info << "FE cartridge, two 4K banks\n"
-       << "Doesn't support bankswitching with hotspots,\n"
-       << "but instead watches A13 of called addresses:\n"
-       << "Bank 0 @ $F000 - $FFFF (A13 = 1)\n"
-       << "Bank 1 @ $D000 - $DFFF (A13 = 0)\n"
-       << "\n"
-       << "Changing banks is not supported, since it\n"
-       << "would immediately switch on the next address\n";
-
-  addBaseInformation(size, "Activision", info.str());
+  addBaseInformation(2 * 4096, "Activision", info);
 }

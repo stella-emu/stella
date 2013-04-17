@@ -33,20 +33,51 @@ class StringParser
 {
   public:
     /**
-      Split the given string based on delimiter (by default, the newline
-      character, and by desired length (by default, not used).
+      Split the given string based on the newline character.
 
-      @param str    The string to split
-      @param len    The maximum length of string to generate (0 means unlimited)
-      @param delim  The character indicating the end of a line (newline by default)
+      @param str  The string to split
     */
-    StringParser(const string& str, uInt32 len = 0, char delim = '\n')
+    StringParser(const string& str)
     {
       stringstream buf(str);
       string line;
-      while(std::getline(buf, line, delim))
-      {
+
+      while(std::getline(buf, line, '\n'))
         myStringList.push_back(line);
+    }
+
+    /**
+      Split the given string based on the newline character, making sure that
+      no string is longer than maximum string length.
+
+      @param str    The string to split
+      @param maxlen The maximum length of string to generate
+    */
+    StringParser(const string& str, uInt16 maxlen)
+    {
+      stringstream buf(str);
+      string line;
+
+      while(std::getline(buf, line, '\n'))
+      {
+        size_t beg = 0, len = maxlen, size = line.size();
+
+        if(size <= len)
+          myStringList.push_back(line);
+        else
+        {
+          while((beg+maxlen) < size)
+          {
+            size_t spos = line.find_last_of(' ', beg+len);
+            if(spos > beg)
+              len = spos - beg;
+
+            myStringList.push_back(line.substr(beg, len));
+            beg += len + 1;
+            len = maxlen;
+          }
+          myStringList.push_back(line.substr(beg));
+        }
       }
     }
 

@@ -33,12 +33,12 @@ Cartridge3EWidget::Cartridge3EWidget(
   uInt32 size = cart.mySize;
 
   ostringstream info;
-  info << "Tigervision 3E cartridge - (3E + RAM)\n"
+  info << "3E cartridge - (3F + RAM)\n"
        << "  2-256 2K ROM (currently " << myNumRomBanks << "), 32 1K RAM\n"
-       << "(ROM) First 2K selected by writing to $3F\n"
-       << "(RAM) First 2K selected by writing to $3E\n"
-       << "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
-       << "Last 2K always points to last 2K of ROM\n";
+       << "First 2K (ROM) selected by writing to $3F\n"
+          "First 2K (RAM) selected by writing to $3E\n"
+          "  $F000 - $F3FF (R), $F400 - $F7FF (W)\n"
+          "Last 2K always points to last 2K of ROM\n";
   if(cart.myStartBank < myNumRomBanks)
     info << "Startup bank = " << cart.myStartBank << " (ROM)\n";
   else

@@ -53,7 +53,7 @@ class CartDebugWidget : public Widget, public CommandSender
         const string& desc)
     {
       const int lwidth = _font.getStringWidth("Manufacturer: "),
-                fwidth = _w - lwidth - 30;
+                fwidth = _w - lwidth - 20;
       EditTextWidget* w = 0;
       ostringstream buf;
 
@@ -78,7 +78,7 @@ class CartDebugWidget : public Widget, public CommandSender
       w->setEditable(false);
       y += myLineHeight + 4;
 
-      StringParser bs(desc);
+      StringParser bs(desc, (fwidth - kScrollBarWidth) / myFontWidth);
       const StringList& sl = bs.stringList();
       uInt32 lines = sl.size();
       if(lines < 3) lines = 3;
@@ -110,6 +110,7 @@ class CartDebugWidget : public Widget, public CommandSender
     // we may as well make them protected variables
     int myFontWidth, myFontHeight, myLineHeight;
 
+  private:
     StringListWidget* myDesc;
 };
 

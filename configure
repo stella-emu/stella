@@ -213,6 +213,8 @@ Optional Features:
   --disable-joystick
   --enable-cheats        enable/disable cheatcode support [enabled]
   --disable-cheats
+  --enable-thumb         enable/disable Thumb ARM support [enabled]
+  --disable-thumb
   --enable-shared        build shared binary [enabled]
   --enable-static        build static binary (if possible) [disabled]
   --disable-static

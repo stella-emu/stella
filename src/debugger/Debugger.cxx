@@ -121,8 +121,8 @@ Debugger::Debugger(OSystem& osystem, Console& console)
     myBreakPoints(NULL),
     myReadTraps(NULL),
     myWriteTraps(NULL),
-    myWidth(1050),
-    myHeight(620),
+    myWidth(1080),
+    myHeight(720),
     myRewindManager(NULL)
 {
   // Init parser
@@ -169,8 +169,8 @@ void Debugger::initialize()
   myOSystem->settings().getSize("debuggerres", w, h);
   myWidth = BSPF_max(w, 0);
   myHeight = BSPF_max(h, 0);
-  myWidth = BSPF_max(myWidth, 1050u);
-  myHeight = BSPF_max(myHeight, 700u);
+  myWidth = BSPF_max(myWidth, 1080u);
+  myHeight = BSPF_max(myHeight, 720u);
   myOSystem->settings().setSize("debuggerres", myWidth, myHeight);
 
   const GUI::Rect& r = getDialogBounds();

@@ -612,7 +612,9 @@ void OSystem::deleteConsole()
     logMessage(buf.str(), 1);
 
     delete myConsole;  myConsole = NULL;
+  #ifdef DEBUGGER_SUPPORT
     delete myDebugger; myDebugger = NULL;
+  #endif
   }
 }
 

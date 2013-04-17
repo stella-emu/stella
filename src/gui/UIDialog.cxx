@@ -169,7 +169,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerWidthSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                            lineHeight, "Debugger Width: ",
                                            lwidth, kDWidthChanged);
-  myDebuggerWidthSlider->setMinValue(1050);
+  myDebuggerWidthSlider->setMinValue(1080);
   myDebuggerWidthSlider->setMaxValue(1920);
   myDebuggerWidthSlider->setStepValue(10);
   wid.push_back(myDebuggerWidthSlider);
@@ -183,7 +183,7 @@ UIDialog::UIDialog(OSystem* osystem, DialogContainer* parent,
   myDebuggerHeightSlider = new SliderWidget(myTab, font, xpos, ypos, pwidth,
                                             lineHeight, "Debugger Height: ",
                                             lwidth, kDHeightChanged);
-  myDebuggerHeightSlider->setMinValue(700);
+  myDebuggerHeightSlider->setMinValue(720);
   myDebuggerHeightSlider->setMaxValue(1200);
   myDebuggerHeightSlider->setStepValue(10);
   wid.push_back(myDebuggerHeightSlider);
@@ -314,8 +314,8 @@ void UIDialog::loadConfig()
 #ifdef DEBUGGER_SUPPORT
   // Debugger size
   instance().settings().getSize("debuggerres", w, h);
-  w = BSPF_max(w, 1050);
-  h = BSPF_max(h, 620);
+  w = BSPF_max(w, 1080);
+  h = BSPF_max(h, 720);
   w = BSPF_min(w, 1920);
   h = BSPF_min(h, 1200);
 
@@ -398,10 +398,10 @@ void UIDialog::setDefaults()
     }
 
     case 1:  // Debugger options
-      myDebuggerWidthSlider->setValue(1050);
-      myDebuggerWidthLabel->setValue(1050);
-      myDebuggerHeightSlider->setValue(700);
-      myDebuggerHeightLabel->setValue(700);
+      myDebuggerWidthSlider->setValue(1080);
+      myDebuggerWidthLabel->setValue(1080);
+      myDebuggerHeightSlider->setValue(720);
+      myDebuggerHeightLabel->setValue(720);
       break;
 
     case 2:  // Misc. options

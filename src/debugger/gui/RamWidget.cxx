@@ -46,7 +46,7 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
   const int fontWidth  = font.getMaxCharWidth(),
             fontHeight = font.getFontHeight(),
             lineHeight = font.getLineHeight(),
-            bwidth  = 44,//font.getStringWidth("Undo  "),
+            bwidth  = font.getStringWidth("Compare "),
             bheight = lineHeight + 2;
   int xpos, ypos, lwidth;
 
@@ -66,22 +66,22 @@ RamWidget::RamWidget(GuiObject* boss, const GUI::Font& font, int x, int y)
 
   ypos += bheight + 4;
   myRevertButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Rev", kRevertCmd);
+                                    "Revert", kRevertCmd);
   myRevertButton->setTarget(this);
 
   ypos += 2 * bheight + 2;
   mySearchButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                    "Srch", kSearchCmd);
+                                    "Search", kSearchCmd);
   mySearchButton->setTarget(this);
 
   ypos += bheight + 4;
   myCompareButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Cmp", kCmpCmd);
+                                     "Compare", kCmpCmd);
   myCompareButton->setTarget(this);
 
   ypos += bheight + 4;
   myRestartButton = new ButtonWidget(boss, font, xpos, ypos, bwidth, bheight,
-                                     "Rset", kRestartCmd);
+                                     "Reset", kRestartCmd);
   myRestartButton->setTarget(this);
 
   // Labels for RAM grid

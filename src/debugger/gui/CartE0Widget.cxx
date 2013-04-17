@@ -30,17 +30,17 @@ CartridgeE0Widget::CartridgeE0Widget(
 {
   uInt32 size = 8 * 1024;
 
-  ostringstream info;
-  info << "Parker Bros E0 cartridge, 8 1K slices\n"
-       << "Segment 0 accessible @ $F000 - $F3FF\n"
-       << "  Hotspots $FE0 to $FE7\n"
-       << "Segment 1 accessible @ $F400 - $F7FF\n"
-       << "  Hotspots $FE8 to $FEF\n"
-       << "Segment 2 accessible @ $F800 - $FBFF\n"
-       << "  Hotspots $FF0 to $FF7\n"
-       << "Segment 3 accessible @ $FC00 - $FFFF\n"
-       << "  Always points to last 1K of ROM\n"
-       << "Startup slices = 0 / 1 / 2\n";
+  string info =
+    "E0 cartridge, eight 1K slices\n"
+    "Segment 0 accessible @ $F000 - $F3FF\n"
+    "  Hotspots $FE0 to $FE7\n"
+    "Segment 1 accessible @ $F400 - $F7FF\n"
+    "  Hotspots $FE8 to $FEF\n"
+    "Segment 2 accessible @ $F800 - $FBFF\n"
+    "  Hotspots $FF0 to $FF7\n"
+    "Segment 3 accessible @ $FC00 - $FFFF\n"
+    "  Always points to last 1K of ROM\n"
+    "Startup slices = 0 / 1 / 2\n";
 
 #if 0
   // Eventually, we should query this from the debugger/disassembler
@@ -49,7 +49,7 @@ CartridgeE0Widget::CartridgeE0Widget(
   info << "Bank RORG" << " = $" << HEX4 << start << "\n";
 #endif
   int xpos = 10,
-      ypos = addBaseInformation(size, "Parker Brothers", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "Parker Brothers", info) + myLineHeight;
 
   StringMap items0, items1, items2;
   items0.push_back("0 ($FE0)", "0");
