@@ -90,10 +90,9 @@ void CartridgeDPC::install(System& system)
   // Make sure the system we're being installed in has a page size that'll work
   assert(((0x1080 & mask) == 0) && ((0x1100 & mask) == 0));
 
-  System::PageAccess access(0, 0, 0, this, System::PA_READ);
+  System::PageAccess access(0, 0, 0, this, System::PA_READWRITE);
 
   // Set the page accessing method for the DPC reading & writing pages
-  access.type = System::PA_READWRITE;
   for(uInt32 j = 0x1000; j < 0x1080; j += (1 << shift))
     mySystem->setPageAccess(j >> shift, access);
 

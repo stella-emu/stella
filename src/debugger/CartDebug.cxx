@@ -335,8 +335,18 @@ int CartDebug::addressToLine(uInt16 address) const
 string CartDebug::disassemble(uInt16 start, uInt16 lines) const
 {
   Disassembly disasm;
+
   BankInfo info;
   info.addressList.push_back(start);
+  if(start & 0x1000)
+  {
+    int banksize = 0;
+    myConsole.cartridge().getImage(banksize);
+    info.size = BSPF_min(banksize, 4096);
+  }
+  else
+    info.size = 128;
+
   DiStella distella(*this, disasm.list, info, DiStella::settings,
                     (uInt8*)myDisLabels, (uInt8*)myDisDirectives,
                     (ReservedEquates&)myReserved, false);
