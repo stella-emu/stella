@@ -50,7 +50,7 @@ class CartDebugWidget : public Widget, public CommandSender
 
   public:
     int addBaseInformation(int bytes, const string& manufacturer,
-        const string& desc)
+        const string& desc, const uInt16 maxlines = 10)
     {
       const int lwidth = _font.getStringWidth("Manufacturer: "),
                 fwidth = _w - lwidth - 20;
@@ -82,7 +82,7 @@ class CartDebugWidget : public Widget, public CommandSender
       const StringList& sl = bs.stringList();
       uInt32 lines = sl.size();
       if(lines < 3) lines = 3;
-      if(lines > 10) lines = 10;
+      if(lines > maxlines) lines = maxlines;
 
       new StaticTextWidget(_boss, _font, x, y, lwidth,
             myFontHeight, "Description: ", kTextAlignLeft);

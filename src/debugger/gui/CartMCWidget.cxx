@@ -115,5 +115,24 @@ void CartridgeMCWidget::loadConfig()
 void CartridgeMCWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
-  // TODO - implement this
+  myCart.unlockBank();
+
+  switch(cmd)
+  {
+    case kSlice0Changed:
+      myCart.myCurrentBlock[0] = atoi(mySlice0->getSelectedTag().c_str());
+      break;
+    case kSlice1Changed:
+      myCart.myCurrentBlock[1] = atoi(mySlice1->getSelectedTag().c_str());
+      break;
+    case kSlice2Changed:
+      myCart.myCurrentBlock[2] = atoi(mySlice2->getSelectedTag().c_str());
+      break;
+    case kSlice3Changed:
+      myCart.myCurrentBlock[3] = atoi(mySlice3->getSelectedTag().c_str());
+      break;
+  }
+
+  myCart.lockBank();
+  invalidate();
 }

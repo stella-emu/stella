@@ -50,7 +50,7 @@ CartridgeE7Widget::CartridgeE7Widget(
   info << "Bank RORG" << " = $" << HEX4 << start << "\n";
 #endif
   int xpos = 10,
-      ypos = addBaseInformation(size, "M-Network", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "M-Network", info.str(), 15) + myLineHeight;
 
   StringMap items0, items1;
   items0.push_back("0 - ROM ($FE0)", "0");

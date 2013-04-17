@@ -46,7 +46,7 @@ CartridgeF4SCWidget::CartridgeF4SCWidget(
   }
 
   int xpos = 10,
-      ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "Atari", info.str(), 15) + myLineHeight;
 
   StringMap items;
   items.push_back("0 ($FF4)", "0");

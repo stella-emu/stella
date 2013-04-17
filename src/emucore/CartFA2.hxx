@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartFA2Widget.hxx"
+#endif
 
 /**
   This is an extended version of the CBS RAM Plus bankswitching scheme
@@ -33,11 +36,17 @@ class System;
   of RAM can be loaded/saved to Harmony cart flash, which is emulated by
   storing in a file.
 
+  For 29K versions of the scheme, the first 1K is ARM code
+  (implements actual bankswitching on the Harmony cart), which is
+  completely ignored by the emulator.
+
   @author  Chris D. Walton
   @version $Id$
 */
 class CartridgeFA2 : public Cartridge
 {
+  friend class CartridgeFA2Widget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -131,6 +140,18 @@ class CartridgeFA2 : public Cartridge
       @param name  The properties file name of the ROM
     */
     void setRomName(const string& name);
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeFA2Widget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**
