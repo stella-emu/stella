@@ -41,7 +41,7 @@ CartridgeF4SCWidget::CartridgeF4SCWidget(
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << start << " - "
+    info << "Bank " << i << " @ $" << HEX4 << (start + 0x100) << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 

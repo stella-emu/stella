@@ -27,11 +27,12 @@
 CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
                            const Settings& settings)
   : Cartridge(settings),
+    mySize(size),
     mySystemCycles(0),
     myFractionalClocks(0.0)
 {
   // Make a copy of the entire image
-  memcpy(myImage, image, BSPF_min(size, 8192u + 2048u + 255u));
+  memcpy(myImage, image, BSPF_min(size, 8192u + 2048u + 256u));
   createCodeAccessBase(8192);
 
   // Pointer to the program ROM (8K @ 0 byte offset)
@@ -467,7 +468,7 @@ bool CartridgeDPC::patch(uInt16 address, uInt8 value)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 const uInt8* CartridgeDPC::getImage(int& size) const
 {
-  size = 8192 + 2048 + 255;
+  size = mySize;
   return myImage;
 }
 

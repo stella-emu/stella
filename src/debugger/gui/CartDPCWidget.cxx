@@ -17,42 +17,42 @@
 // $Id$
 //============================================================================
 
-#include "CartF6SC.hxx"
+#include "CartDPC.hxx"
 #include "PopUpWidget.hxx"
-#include "CartF6SCWidget.hxx"
+#include "CartDPCWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-CartridgeF6SCWidget::CartridgeF6SCWidget(
+CartridgeDPCWidget::CartridgeDPCWidget(
       GuiObject* boss, const GUI::Font& font,
-      int x, int y, int w, int h, CartridgeF6SC& cart)
+      int x, int y, int w, int h, CartridgeDPC& cart)
   : CartDebugWidget(boss, font, x, y, w, h),
     myCart(cart)
 {
-  uInt16 size = 4 * 4096;
+  uInt16 size = cart.mySize;
 
   ostringstream info;
-  info << "Standard F6SC cartridge, four 4K banks\n"
-       << "128 bytes RAM @ $F000 - $F0FF\n"
-       << "  $F080 - $F0FF (R), $F000 - $F07F (W)\n"
+  info << "DPC cartridge, two 4K banks + 2K display bank\n"
+       << "DPC registers accessible @ $F000 - $F07F\n"
+       << "  $F000 - $F03F (R), $F040 - $F07F (W)\n"
+
        << "Startup bank = " << cart.myStartBank << "\n";
 
   // Eventually, we should query this from the debugger/disassembler
-  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF6; i < 4; ++i, offset += 0x1000)
+  for(uInt32 i = 0, offset = 0xFFC, spot = 0xFF8; i < 2; ++i, offset += 0x1000)
   {
     uInt16 start = (cart.myImage[offset+1] << 8) | cart.myImage[offset];
     start -= start % 0x1000;
-    info << "Bank " << i << " @ $" << HEX4 << (start + 0x100) << " - "
+    info << "Bank " << i << " @ $" << HEX4 << (start + 0x80) << " - "
          << "$" << (start + 0xFFF) << " (hotspot = $" << (spot+i) << ")\n";
   }
 
   int xpos = 10,
-      ypos = addBaseInformation(size, "Atari", info.str()) + myLineHeight;
+      ypos = addBaseInformation(size, "Activision (Pitfall II)", info.str()) +
+              myLineHeight;
 
   StringMap items;
-  items.push_back("0 ($FF6)", "0");
-  items.push_back("1 ($FF7)", "1");
-  items.push_back("2 ($FF8)", "2");
-  items.push_back("3 ($FF9)", "3");
+  items.push_back("0 ($FF8)", "0");
+  items.push_back("1 ($FF9)", "1");
   myBank =
     new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth("0 ($FFx) "),
                     myLineHeight, items, "Set bank: ",
@@ -62,7 +62,7 @@ CartridgeF6SCWidget::CartridgeF6SCWidget(
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6SCWidget::loadConfig()
+void CartridgeDPCWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
 
@@ -70,7 +70,7 @@ void CartridgeF6SCWidget::loadConfig()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CartridgeF6SCWidget::handleCommand(CommandSender* sender,
+void CartridgeDPCWidget::handleCommand(CommandSender* sender,
                                       int cmd, int data, int id)
 {
   if(cmd == kBankChanged)

@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartDPCWidget.hxx"
+#endif
 
 /**
   Cartridge class used for Pitfall II.  There are two 4K program banks, a 
@@ -35,6 +38,8 @@ class System;
 */
 class CartridgeDPC : public Cartridge
 {
+  friend class CartridgeDPCWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -128,6 +133,18 @@ class CartridgeDPC : public Cartridge
     */
     string name() const { return "CartridgeDPC"; }
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeDPCWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
+
   public:
     /**
       Get the byte at the specified address.
@@ -159,7 +176,10 @@ class CartridgeDPC : public Cartridge
 
   private:
     // The ROM image
-    uInt8 myImage[8192 + 2048 + 255];
+    uInt8 myImage[8192 + 2048 + 256];
+
+    // (Actual) Size of the ROM image
+    uInt32 mySize;
 
     // Pointer to the 8K program ROM image of the cartridge
     uInt8* myProgramImage;

@@ -40,7 +40,7 @@ CartridgeE7Widget::CartridgeE7Widget(
        << "  Hotspots $FE8 - $FEB (256B of RAM slice 1)\n"
        << "    $F400 - $F7FF (R), $F000 - $F3FF (W)\n"
        << "Upper 1.5K ROM accessible @ $FA00 - $FFFF\n"
-       << "  Always points to last 2K (1.5) of ROM\n"
+       << "  Always points to last 1.5K of ROM\n"
        << "Startup slices = " << cart.myStartBank << " / 0\n";
 
 #if 0
@@ -50,7 +50,8 @@ CartridgeE7Widget::CartridgeE7Widget(
   info << "Bank RORG" << " = $" << HEX4 << start << "\n";
 #endif
   int xpos = 10,
-      ypos = addBaseInformation(size, "M-Network", info.str(), 15) + myLineHeight;
+      ypos = addBaseInformation(size, "M-Network", info.str(), 15) +
+              myLineHeight;
 
   StringMap items0, items1;
   items0.push_back("0 - ROM ($FE0)", "0");
