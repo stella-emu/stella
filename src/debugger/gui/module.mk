@@ -23,6 +23,7 @@ MODULE_OBJS := \
 	src/debugger/gui/Cart2KWidget.o \
 	src/debugger/gui/Cart3EWidget.o \
 	src/debugger/gui/Cart3FWidget.o \
+	src/debugger/gui/Cart4A50Widget.o \
 	src/debugger/gui/Cart4KWidget.o \
 	src/debugger/gui/CartCVWidget.o \
 	src/debugger/gui/CartE0Widget.o \
