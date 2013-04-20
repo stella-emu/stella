@@ -30,11 +30,13 @@
 #include "Settings.hxx"
 #include "Version.hxx"
 #include "CartDebug.hxx"
+#include "CartDebugWidget.hxx"
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CartDebug::CartDebug(Debugger& dbg, Console& console, const OSystem& osystem)
   : DebuggerSystem(dbg, console),
     myOSystem(osystem),
+    myDebugWidget(0),
     myRWPortAddress(0),
     myLabelLength(8)   // longest pre-defined label
 {
@@ -147,6 +149,9 @@ void CartDebug::saveOldState()
   myOldState.ram.clear();
   for(uInt32 i = 0; i < myOldState.rport.size(); ++i)
     myOldState.ram.push_back(peek(myOldState.rport[i]));
+
+  if(myDebugWidget)
+    myDebugWidget->saveOldState();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -53,6 +53,7 @@ class DebuggerDialog : public Dialog
     TiaOutputWidget& tiaOutput() { return *myTiaOutput;    }
     TiaZoomWidget& tiaZoom()     { return *myTiaZoom;      }
     RomWidget& rom()             { return *myRom;          }
+    CartDebugWidget& cartDebug() { return *myCartDebug;    }
     EditTextWidget& message()    { return *myMessageBox;   }
     ButtonWidget& rewindButton() { return *myRewindButton; }
 

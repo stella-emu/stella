@@ -21,6 +21,7 @@
 #define CART_DEBUG_HXX
 
 class Settings;
+class CartDebugWidget;
 
 #include <map>
 #include <set>
@@ -96,6 +97,11 @@ class CartDebug : public DebuggerSystem
 
     void saveOldState();
     string toString();
+
+    // Used to get/set the debug widget, which contains cart-specific
+    // functionality
+    CartDebugWidget* getDebugWidget() const { return myDebugWidget; }
+    void setDebugWidget(CartDebugWidget* w) { myDebugWidget = w; }
 
     // The following assume that the given addresses are using the
     // correct read/write port ranges; no checking will be done to
@@ -320,6 +326,8 @@ class CartDebug : public DebuggerSystem
 
     CartState myState;
     CartState myOldState;
+
+    CartDebugWidget* myDebugWidget;
 
     // A complete record of relevant diassembly information for each bank
     Common::Array<BankInfo> myBankInfo;

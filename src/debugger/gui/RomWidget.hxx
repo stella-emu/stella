@@ -39,6 +39,13 @@ class StringList;
 class RomWidget : public Widget, public CommandSender
 {
   public:
+    enum {
+      kResolveDataChanged = 'ACrd',
+      kRomNameEntered     = 'RWrn',
+      kInvalidateListing  = 'INli'
+    };
+
+  public:
     RomWidget(GuiObject* boss, const GUI::Font& font, int x, int y, int w, int h);
     virtual ~RomWidget();
 
@@ -58,11 +65,6 @@ class RomWidget : public Widget, public CommandSender
     void saveROM(const string& rom);
 
   private:
-    enum {
-      kResolveDataChanged = 'ACrd',
-      kRomNameEntered  = 'RWrn'
-    };
-
     RomListWidget*   myRomList;
     DataGridWidget*  myBank;
     PopUpWidget*     myResolveData;

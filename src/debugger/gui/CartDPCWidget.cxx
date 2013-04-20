@@ -18,6 +18,7 @@
 //============================================================================
 
 #include "CartDPC.hxx"
+#include "DataGridWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "CartDPCWidget.hxx"
 
@@ -59,12 +60,152 @@ CartridgeDPCWidget::CartridgeDPCWidget(
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
+  ypos += myLineHeight + 12;
+
+  // Data fetchers
+  int lwidth = font.getStringWidth("Data Fetchers: ");
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Data Fetchers: ", kTextAlignLeft);
+
+  // Top registers
+  lwidth = font.getStringWidth("Counter Registers: ");
+  xpos = 18;  ypos += myLineHeight + 8;
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Top Registers: ", kTextAlignLeft);
+  xpos += lwidth;
+
+  myTops = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
+  myTops->setTarget(this);
+  myTops->setEditable(false);
+
+  // Bottom registers
+  xpos = 18;  ypos += myLineHeight + 8;
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Bottom Registers: ", kTextAlignLeft);
+  xpos += lwidth;
+
+  myBottoms = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
+  myBottoms->setTarget(this);
+  myBottoms->setEditable(false);
+
+  // Counter registers
+  xpos = 18;  ypos += myLineHeight + 8;
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Counter Registers: ", kTextAlignLeft);
+  xpos += lwidth;
+
+  myCounters = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 4, 16, kBASE_16_4);
+  myCounters->setTarget(this);
+  myCounters->setEditable(false);
+
+  // Flag registers
+  xpos = 18;  ypos += myLineHeight + 8;
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Bottom Registers: ", kTextAlignLeft);
+  xpos += lwidth;
+
+  myFlags = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
+  myFlags->setTarget(this);
+  myFlags->setEditable(false);
+
+  // Music mode
+  xpos = 10;  ypos += myLineHeight + 12;
+  lwidth = font.getStringWidth("Music mode (DF5/DF6/DF7): ");
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Music mode (DF5/DF6/DF7): ", kTextAlignLeft);
+  xpos += lwidth;
+
+  myMusicMode = new DataGridWidget(boss, font, xpos, ypos-2, 3, 1, 2, 8, kBASE_16);
+  myMusicMode->setTarget(this);
+  myMusicMode->setEditable(false);
+
+  // Current random number
+  xpos = 10;  ypos += myLineHeight + 8;
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Current random number: ", kTextAlignLeft);
+  xpos += lwidth;
+
+  myRandom = new DataGridWidget(boss, font, xpos, ypos-2, 1, 1, 2, 8, kBASE_16);
+  myRandom->setTarget(this);
+  myRandom->setEditable(false);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeDPCWidget::saveOldState()
+{
+  myOldState.tops.clear();
+  myOldState.bottoms.clear();
+  myOldState.counters.clear();
+  myOldState.flags.clear();
+  myOldState.music.clear();
+
+  for(int i = 0; i < 8; ++i)
+  {
+    myOldState.tops.push_back(myCart.myTops[i]);
+    myOldState.bottoms.push_back(myCart.myBottoms[i]);
+    myOldState.counters.push_back(myCart.myCounters[i]);
+    myOldState.flags.push_back(myCart.myFlags[i]);
+  }
+  for(int i = 0; i < 3; ++i)
+  {
+    myOldState.music.push_back(myCart.myMusicMode[i]);
+  }
+
+  myOldState.random = myCart.myRandomNumber;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void CartridgeDPCWidget::loadConfig()
 {
   myBank->setSelected(myCart.myCurrentBank);
+
+  // Get registers, using change tracking
+  IntArray alist;
+  IntArray vlist;
+  BoolArray changed;
+
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < 8; ++i)
+  {
+    alist.push_back(0);  vlist.push_back(myCart.myTops[i]);
+    changed.push_back(myCart.myTops[i] != myOldState.tops[i]);
+  }
+  myTops->setList(alist, vlist, changed);
+  
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < 8; ++i)
+  {
+    alist.push_back(0);  vlist.push_back(myCart.myBottoms[i]);
+    changed.push_back(myCart.myBottoms[i] != myOldState.bottoms[i]);
+  }
+  myBottoms->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < 8; ++i)
+  {
+    alist.push_back(0);  vlist.push_back(myCart.myCounters[i]);
+    changed.push_back(myCart.myCounters[i] != myOldState.counters[i]);
+  }
+  myCounters->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < 8; ++i)
+  {
+    alist.push_back(0);  vlist.push_back(myCart.myFlags[i]);
+    changed.push_back(myCart.myFlags[i] != myOldState.flags[i]);
+  }
+  myFlags->setList(alist, vlist, changed);
+
+  alist.clear();  vlist.clear();  changed.clear();
+  for(int i = 0; i < 3; ++i)
+  {
+    alist.push_back(0);  vlist.push_back(myCart.myMusicMode[i]);
+    changed.push_back(myCart.myMusicMode[i] != myOldState.music[i]);
+  }
+  myMusicMode->setList(alist, vlist, changed);
+
+  myRandom->setList(0, myCart.myRandomNumber,
+      myCart.myRandomNumber != myOldState.random);
 
   CartDebugWidget::loadConfig();
 }

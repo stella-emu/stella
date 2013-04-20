@@ -60,11 +60,17 @@ DataGridWidget::DataGridWidget(GuiObject* boss, const GUI::Font& font,
   // _textcolorhi to erase it
   _caretInverse = true;
 
-  // Make sure hilite list contains all false values
+  // Make sure all lists contain some default values
   _hiliteList.clear();
   int size = _rows * _cols;
   while(size--)
+  {
+    _addrList.push_back(0);
+    _valueList.push_back(0);
+    _valueStringList.push_back("");
+    _changedList.push_back(0);
     _hiliteList.push_back(false);
+  }
 
   // Set lower and upper bounds to sane values
   setRange(0, 1 << bits);
@@ -100,7 +106,6 @@ cerr << "alist.size() = "     << alist.size()
   assert(size == _rows * _cols);
 
   _addrList.clear();
-  _addrStringList.clear();
   _valueList.clear();
   _valueStringList.clear();
   _changedList.clear();
@@ -127,7 +132,7 @@ cerr << "_addrList.size() = "     << _addrList.size()
   _editMode = false;
 
   // Send item selected signal for starting with cell 0
-  sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+  sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
   setDirty(); draw();
 }
@@ -200,7 +205,7 @@ void DataGridWidget::setValue(int position, int value, bool changed)
     _changedList[position] = changed;
     _valueList[position] = value;
 
-    sendCommand(kDGItemDataChangedCmd, position, _id);
+    sendCommand(DataGridWidget::kItemDataChangedCmd, position, _id);
 
     setDirty(); draw();
   }
@@ -234,7 +239,7 @@ void DataGridWidget::handleMouseDown(int x, int y, int button, int clickCount)
     _currentRow = _selectedItem / _cols;
     _currentCol = _selectedItem - (_currentRow * _cols);
 
-    sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
     setDirty(); draw();
   }
 }
@@ -246,7 +251,7 @@ void DataGridWidget::handleMouseUp(int x, int y, int button, int clickCount)
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kDGItemDoubleClickedCmd, _selectedItem, _id);
+    sendCommand(DataGridWidget::kItemDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -464,7 +469,7 @@ bool DataGridWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     _selectedItem = _currentRow*_cols + _currentCol;
 
     if(_selectedItem != oldItem)
-      sendCommand(kDGSelectionChangedCmd, _selectedItem, _id);
+      sendCommand(DataGridWidget::kSelectionChangedCmd, _selectedItem, _id);
 
     setDirty(); draw();
   }

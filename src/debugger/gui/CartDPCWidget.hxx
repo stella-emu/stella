@@ -22,6 +22,7 @@
 
 class CartridgeDPC;
 class PopUpWidget;
+class DataGridWidget;
 
 #include "CartDebugWidget.hxx"
 
@@ -33,12 +34,33 @@ class CartridgeDPCWidget : public CartDebugWidget
                        CartridgeDPC& cart);
     virtual ~CartridgeDPCWidget() { }
 
+    void saveOldState();
+
     void loadConfig();
     void handleCommand(CommandSender* sender, int cmd, int data, int id);
 
   private:
+    struct CartState {
+      ByteArray tops;
+      ByteArray bottoms;
+      IntArray counters;
+      ByteArray flags;
+      BoolArray music;
+      uInt8 random;
+    };
+
+  private:
     CartridgeDPC& myCart;
     PopUpWidget* myBank;
+
+    DataGridWidget* myTops;
+    DataGridWidget* myBottoms;
+    DataGridWidget* myCounters;
+    DataGridWidget* myFlags;
+    DataGridWidget* myMusicMode;
+    DataGridWidget* myRandom;
+
+    CartState myState, myOldState;
 
     enum { kBankChanged = 'bkCH' };
 };

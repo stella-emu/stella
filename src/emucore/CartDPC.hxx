@@ -30,8 +30,12 @@ class System;
 
 /**
   Cartridge class used for Pitfall II.  There are two 4K program banks, a 
-  2K display bank, and the DPC chip.  For complete details on the DPC chip 
-  see David P. Crane's United States Patent Number 4,644,495.
+  2K display bank, and the DPC chip.  The bankswitching itself is the same
+  as F8 scheme (hotspots at $1FF8 and $1FF9).  DPC chip access is mapped to
+  $1000 - $1080 ($1000 - $103F is read port, $1040 - $107F is write port).
+
+  For complete details on the DPC chip see David P. Crane's United States
+  Patent Number 4,644,495.
 
   @author  Bradford W. Mott
   @version $Id$

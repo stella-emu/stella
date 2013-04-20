@@ -56,10 +56,7 @@ CartridgeDPCPlus::CartridgeDPCPlus(const uInt8* image, uInt32 size,
   // If the image is larger than 29K, we assume any excess at the
   // beginning is ARM code, and skip over it
   if(size > 29 * 1024)
-  {
-    int offset = size - 29 * 1024;
-    myProgramImage   += offset;
-  }
+    myProgramImage += (size - 29 * 1024);
 
 #ifdef THUMB_SUPPORT
   // Create Thumbulator ARM emulator

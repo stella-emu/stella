@@ -79,7 +79,7 @@ void ToggleWidget::handleMouseUp(int x, int y, int button, int clickCount)
   {
     _stateList[_selectedItem] = !_stateList[_selectedItem];
     _changedList[_selectedItem] = !_changedList[_selectedItem];
-    sendCommand(kTWItemDataChangedCmd, _selectedItem, _id);
+    sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
     setDirty(); draw();
   }
 }
@@ -193,7 +193,7 @@ bool ToggleWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     {
       _stateList[_selectedItem] = !_stateList[_selectedItem];
       _changedList[_selectedItem] = !_changedList[_selectedItem];
-      sendCommand(kTWItemDataChangedCmd, _selectedItem, _id);
+      sendCommand(ToggleWidget::kItemDataChangedCmd, _selectedItem, _id);
     }
 
     setDirty(); draw();

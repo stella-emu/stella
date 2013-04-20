@@ -42,7 +42,7 @@ CartridgeDPC::CartridgeDPC(const uInt8* image, uInt32 size,
   myDisplayImage = myProgramImage + 8192;
 
   // Initialize the DPC data fetcher registers
-  for(uInt16 i = 0; i < 8; ++i)
+  for(int i = 0; i < 8; ++i)
     myTops[i] = myBottoms[i] = myCounters[i] = myFlags[i] = 0;
 
   // None of the data fetchers are in music mode

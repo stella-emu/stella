@@ -40,6 +40,7 @@
 #include "TIA.hxx"
 
 #include "CartDebug.hxx"
+#include "CartDebugWidget.hxx"
 #include "CpuDebug.hxx"
 #include "RiotDebug.hxx"
 #include "TIADebug.hxx"
@@ -181,6 +182,7 @@ void Debugger::initialize()
   myBaseDialog = myDialog;
 
   myRewindManager = new RewindManager(*myOSystem, myDialog->rewindButton());
+  myCartDebug->setDebugWidget(&(myDialog->cartDebug()));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

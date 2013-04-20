@@ -27,15 +27,16 @@
 #include "Command.hxx"
 #include "Array.hxx"
 
-// Some special commands
-enum {
-  kTWItemDataChangedCmd   = 'TWch',
-  kTWSelectionChangedCmd  = 'TWsc'
-};
-
 /* ToggleWidget */
 class ToggleWidget : public Widget, public CommandSender
 {
+  public:
+    // Commands emitted by this commandsender
+    enum {
+      kItemDataChangedCmd   = 'TWch',
+      kSelectionChangedCmd  = 'TWsc'
+    };
+
   public:
     ToggleWidget(GuiObject* boss, const GUI::Font& font,
                  int x, int y, int cols, int rows);

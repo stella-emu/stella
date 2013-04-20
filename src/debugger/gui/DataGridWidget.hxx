@@ -33,17 +33,18 @@ class ScrollBarWidget;
 #include "Array.hxx"
 #include "Rect.hxx"
 
-// Some special commands
-enum {
-  kDGItemDoubleClickedCmd = 'DGdb',
-  kDGItemActivatedCmd     = 'DGac',
-  kDGItemDataChangedCmd   = 'DGch',
-  kDGSelectionChangedCmd  = 'DGsc'
-};
-
 /* DataGridWidget */
 class DataGridWidget : public EditableWidget
 {
+  public:
+    // Commands emitted by this commandsender
+    enum {
+      kItemDoubleClickedCmd = 'DGdb',
+      kItemActivatedCmd     = 'DGac',
+      kItemDataChangedCmd   = 'DGch',
+      kSelectionChangedCmd  = 'DGsc'
+    };
+
   public:
     DataGridWidget(GuiObject* boss, const GUI::Font& font,
                    int x, int y, int cols, int rows,
@@ -120,7 +121,6 @@ class DataGridWidget : public EditableWidget
 
     IntArray    _addrList;
     IntArray    _valueList;
-    StringList  _addrStringList;
     StringList  _valueStringList;
     BoolArray   _changedList;
     BoolArray   _hiliteList;

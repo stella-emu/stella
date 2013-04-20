@@ -147,6 +147,10 @@ void DebuggerDialog::handleCommand(CommandSender* sender, int cmd,
       doExitRom();
       break;
 
+    case RomWidget::kInvalidateListing:
+      myRom->invalidate();
+      break;
+
     default:
       Dialog::handleCommand(sender, cmd, data, id);
   }

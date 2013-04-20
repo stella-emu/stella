@@ -320,7 +320,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 
   switch(cmd)
   {
-    case kDGItemDataChangedCmd:
+    case DataGridWidget::kItemDataChangedCmd:
       switch(id)
       {
         case kTimWriteID:
@@ -343,7 +343,7 @@ void RiotWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kTWItemDataChangedCmd:
+    case ToggleWidget::kItemDataChangedCmd:
       switch(id)
       {
         case kSWCHABitsID:

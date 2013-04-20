@@ -582,7 +582,7 @@ bool Dialog::handleNavEvent(Event::Type e)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::getTabIdForWidget(Widget* w)
 {
-  if(_myTabList.size() == 0)
+  if(_myTabList.size() == 0 || !w)
     return;
 
   for(uInt32 id = 0; id < _myTabList.size(); ++id)

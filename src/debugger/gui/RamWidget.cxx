@@ -164,7 +164,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
   const CartState& state = (CartState&) dbg.getState();
   switch(cmd)
   {
-    case kDGItemDataChangedCmd:
+    case DataGridWidget::kItemDataChangedCmd:
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();
@@ -189,7 +189,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;
     }
 
-    case kDGSelectionChangedCmd:
+    case DataGridWidget::kSelectionChangedCmd:
     {
       addr  = myRamGrid->getSelectedAddr();
       value = myRamGrid->getSelectedValue();

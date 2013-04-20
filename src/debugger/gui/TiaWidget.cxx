@@ -585,7 +585,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       tia.strobeCxclr();
       break;
 
-    case kDGItemDataChangedCmd:
+    case DataGridWidget::kItemDataChangedCmd:
       switch(id)
       {
         case kColorRegsID:
@@ -660,7 +660,7 @@ void TiaWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       }
       break;
 
-    case kTWItemDataChangedCmd:
+    case ToggleWidget::kItemDataChangedCmd:
       switch(id)
       {
         case kGRP0ID:

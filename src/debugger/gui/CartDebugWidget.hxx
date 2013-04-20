@@ -100,8 +100,12 @@ class CartDebugWidget : public Widget, public CommandSender
     // Inform the ROM Widget that the underlying cart has somehow changed
     void invalidate()
     {
-      Debugger::debugger().rom().invalidate();
+      sendCommand(RomWidget::kInvalidateListing, -1, -1);
     }
+
+    // Some carts need to save old state in the debugger, so that we can
+    // implement change tracking; most carts probably won't do anything here
+    virtual void saveOldState() { }
 
     virtual void loadConfig() { myDesc->setSelected(0); }
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id) { };

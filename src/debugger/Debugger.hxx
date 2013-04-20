@@ -75,7 +75,6 @@ class Debugger : public DialogContainer
   // Make these friend classes, to ease communications with the debugger
   // Although it isn't enforced, these classes should use accessor methods
   // directly, and not touch the instance variables
-  friend class CartDebugWidget;
   friend class DebuggerDialog;
   friend class DebuggerParser;
   friend class EventHandler;

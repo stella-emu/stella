@@ -202,7 +202,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       break;  // kCMenuItemSelectedCmd
     }
 
-    case kDGItemDataChangedCmd:
+    case DataGridWidget::kItemDataChangedCmd:
       setBank(myBank->getSelectedValue());
       break;
 
