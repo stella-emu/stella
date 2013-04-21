@@ -103,7 +103,7 @@ void CartridgeDPCPlus::setInitialState()
   memcpy(myDisplayImage, myProgramImage + 0x6000, 0x1400);
 
   // Initialize the DPC data fetcher registers
-  for(uInt16 i = 0; i < 8; ++i)
+  for(int i = 0; i < 8; ++i)
     myTops[i] = myBottoms[i] = myCounters[i] = myFractionalIncrements[i] = 
     myFractionalCounters[i] = 0;
 

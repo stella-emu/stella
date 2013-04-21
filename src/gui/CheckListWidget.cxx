@@ -58,16 +58,16 @@ void CheckListWidget::setStyle(CheckStyle style)
 {
   for(unsigned int i = 0; i < _checkList.size(); ++i)
   {
-    if(style == kXFill)
+    if(style == XFill)
     {
       _checkList[i]->drawBox(true);
-      _checkList[i]->setFill(false);
+      _checkList[i]->setFill(CheckboxWidget::X);
       _checkList[i]->setTextColor(kTextColor);
     }
-    else if(style == kSolidFill)
+    else if(style == SolidFill)
     {
       _checkList[i]->drawBox(false);
-      _checkList[i]->setFill(true);
+      _checkList[i]->setFill(CheckboxWidget::Full);
       _checkList[i]->setTextColor(kTextColorEm);
     }
   }

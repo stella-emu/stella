@@ -32,21 +32,20 @@ class StringList;
 #include "ScrollBarWidget.hxx"
 #include "Rect.hxx"
 
-
-// Some special commands
-enum {
-  kListItemDoubleClickedCmd = 'LIdb',  // double click on item - 'data' will be item index
-  kListItemActivatedCmd     = 'LIac',  // item activated by return/enter - 'data' will be item index
-  kListItemDataChangedCmd   = 'LIch',  // item data changed - 'data' will be item index
-  kListItemRClickedCmd      = 'LIrc',  // right click on item - 'data' will be item index
-  kListSelectionChangedCmd  = 'Lsch',  // selection changed - 'data' will be item index
-  kListScrolledCmd          = 'Lscl',  // list scrolled - 'data' will be current position
-  kListPrevDirCmd           = 'Lpdr'   // request to go to parent list, if applicable
-};
-
 /** ListWidget */
 class ListWidget : public EditableWidget
 {
+  public:
+    enum {
+      kDoubleClickedCmd    = 'LIdb',  // double click on item - 'data' will be item index
+      kActivatedCmd        = 'LIac',  // item activated by return/enter - 'data' will be item index
+      kDataChangedCmd      = 'LIch',  // item data changed - 'data' will be item index
+      kRClickedCmd         = 'LIrc',  // right click on item - 'data' will be item index
+      kSelectionChangedCmd = 'Lsch',  // selection changed - 'data' will be item index
+      kScrolledCmd         = 'Lscl',  // list scrolled - 'data' will be current position
+      kPrevDirCmd          = 'Lpdr'   // request to go to parent list, if applicable
+  };
+
   public:
     ListWidget(GuiObject* boss, const GUI::Font& font,
                int x, int y, int w, int h, bool quickSelect = true);

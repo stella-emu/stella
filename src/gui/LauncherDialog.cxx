@@ -508,8 +508,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
   switch (cmd)
   {
     case kStartCmd:
-    case kListItemActivatedCmd:
-    case kListItemDoubleClickedCmd:
+    case ListWidget::kActivatedCmd:
+    case ListWidget::kDoubleClickedCmd:
     {
       int item = myList->getSelected();
       if(item >= 0)
@@ -566,12 +566,12 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kPrevDirCmd:
-    case kListPrevDirCmd:
+    case ListWidget::kPrevDirCmd:
       myCurrentNode = myCurrentNode.getParent();
       updateListing(myNodeNames.empty() ? "" : myNodeNames.pop());
       break;
 
-    case kListSelectionChangedCmd:
+    case ListWidget::kSelectionChangedCmd:
       loadRomInfo();
       break;
 

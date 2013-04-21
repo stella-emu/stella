@@ -315,6 +315,9 @@ string Debugger::valueToString(int value, BaseFormat outputBase) const
     case kBASE_16_4:  // base 16: 4 bytes wide
       BSPF_snprintf(vToS_buf, 5, "%04X", value);
       break;
+    case kBASE_16_8:  // base 16: 8 bytes wide
+      BSPF_snprintf(vToS_buf, 9, "%08X", value);
+      break;
 
     case kBASE_16:    // base 16: 2, 4, 8 bytes (depending on value)
     default:

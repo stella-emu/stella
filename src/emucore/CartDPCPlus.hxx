@@ -24,20 +24,29 @@ class System;
 #ifdef THUMB_SUPPORT
 class Thumbulator;
 #endif
+#ifdef DEBUGGER_SUPPORT
+  #include "CartDPCPlusWidget.hxx"
+#endif
 
 #include "bspf.hxx"
 #include "Cart.hxx"
 
 /**
-  Cartridge class used for DPC+.  There are six 4K program banks, a 4K
-  display bank, 1K frequency table and the DPC chip.  For complete details on
-  the DPC chip see David P. Crane's United States Patent Number 4,644,495.
+  Cartridge class used for DPC+, derived from Pitfall II.  There are six 4K
+  program banks, a 4K display bank, 1K frequency table and the DPC chip.
+  DPC chip access is mapped to $1000 - $1080 ($1000 - $103F is read port,
+  $1040 - $107F is write port).
 
-  @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony
+  For complete details on the DPC chip see David P. Crane's United States
+  Patent Number 4,644,495.
+
+  @author  Darrell Spice Jr, Fred Quimby, Stephen Anthony, Bradford W. Mott
   @version $Id$
 */
 class CartridgeDPCPlus : public Cartridge
 {
+  friend class CartridgeDPCPlusWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -130,6 +139,18 @@ class CartridgeDPCPlus : public Cartridge
       @return The name of the object
     */
     string name() const { return "CartridgeDPC+"; }
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeDPCPlusWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**

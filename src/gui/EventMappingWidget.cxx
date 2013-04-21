@@ -351,7 +351,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
 {
   switch(cmd)
   {
-    case kListSelectionChangedCmd:
+    case ListWidget::kSelectionChangedCmd:
       if(myActionsList->getSelected() >= 0)
       {
         myActionSelected = myActionsList->getSelected();
@@ -361,7 +361,7 @@ void EventMappingWidget::handleCommand(CommandSender* sender, int cmd,
       break;
 
 /*
-    case kListItemDoubleClickedCmd:
+    case ListWidget::kDoubleClickedCmd:
       if(myActionsList->getSelected() >= 0)
       {
         myActionSelected = myActionsList->getSelected();

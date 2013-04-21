@@ -81,7 +81,7 @@ void ListWidget::setSelected(int item)
       abortEditMode();
 
     _selectedItem = item;
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
 
     _currentPos = _selectedItem - _rows / 2;
     scrollToSelected();
@@ -154,7 +154,7 @@ void ListWidget::scrollBarRecalc()
 {
   _scrollBar->_currentPos = _currentPos;
   _scrollBar->recalc();
-  sendCommand(kListScrolledCmd, _currentPos, _id);
+  sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -174,7 +174,7 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
     if (_editMode)
       abortEditMode();
     _selectedItem = newSelectedItem;
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
     setDirty(); draw();
   }
 	
@@ -189,7 +189,7 @@ void ListWidget::handleMouseUp(int x, int y, int button, int clickCount)
   // send the double click command
   if (clickCount == 2 && (_selectedItem == findItem(x, y)))
   {
-    sendCommand(kListItemDoubleClickedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kDoubleClickedCmd, _selectedItem, _id);
 
     // Start edit mode
     if(_editable && !_editMode)
@@ -279,7 +279,7 @@ bool ListWidget::handleKeyDown(StellaKey key, StellaMod mod, char ascii)
     _scrollBar->draw();
     scrollToSelected();
 
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
   }
 
   _currentKeyDown = key;
@@ -311,7 +311,7 @@ bool ListWidget::handleEvent(Event::Type e)
         if (_editable)
           startEditMode();
         else
-          sendCommand(kListItemActivatedCmd, _selectedItem, _id);
+          sendCommand(ListWidget::kActivatedCmd, _selectedItem, _id);
       }
       break;
 
@@ -346,7 +346,7 @@ bool ListWidget::handleEvent(Event::Type e)
       break;
 
     case Event::UIPrevDir:
-      sendCommand(kListPrevDirCmd, _selectedItem, _id);
+      sendCommand(ListWidget::kPrevDirCmd, _selectedItem, _id);
       break;
 
     default:
@@ -358,7 +358,7 @@ bool ListWidget::handleEvent(Event::Type e)
     _scrollBar->draw();
     scrollToSelected();
 
-    sendCommand(kListSelectionChangedCmd, _selectedItem, _id);
+    sendCommand(ListWidget::kSelectionChangedCmd, _selectedItem, _id);
   }
 
   return handled;
@@ -385,7 +385,7 @@ void ListWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
         setDirty(); draw();
 
         // Let boss know the list has scrolled
-        sendCommand(kListScrolledCmd, _currentPos, _id);
+        sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
       }
       break;
   }
@@ -418,7 +418,7 @@ void ListWidget::scrollToCurrent(int item)
   setDirty(); draw();
 
   if(oldScrollPos != _currentPos)
-    sendCommand(kListScrolledCmd, _currentPos, _id);
+    sendCommand(ListWidget::kScrolledCmd, _currentPos, _id);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -443,7 +443,7 @@ void ListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   _editMode = false;
   _list[_selectedItem] = _editString;
-  sendCommand(kListItemDataChangedCmd, _selectedItem, _id);
+  sendCommand(ListWidget::kDataChangedCmd, _selectedItem, _id);
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

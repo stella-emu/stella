@@ -59,7 +59,7 @@ CheatCodeDialog::CheatCodeDialog(OSystem* osystem, DialogContainer* parent,
   myCheatList =
     new CheckListWidget(this, font, xpos, ypos, _w - buttonWidth - 25,
                         _h - 2*buttonHeight - 10);
-  myCheatList->setStyle(kXFill);
+  myCheatList->setStyle(CheckListWidget::XFill);
   myCheatList->setEditable(false);
   wid.push_back(myCheatList);
 
@@ -209,7 +209,7 @@ void CheatCodeDialog::handleCommand(CommandSender* sender, int cmd,
       close();
       break;
 
-    case kListItemDoubleClickedCmd:
+    case ListWidget::kDoubleClickedCmd:
       editCheat();
       break;
 

@@ -424,6 +424,18 @@ static unsigned int checked_img_o[8] =
 	0x00011000,
 };
 
+static unsigned int checked_img_full[8] =
+{
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
                                int x, int y, const string& label,
@@ -431,7 +443,6 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
   : ButtonWidget(boss, font, x, y, 16, 16, label, cmd),
     _state(false),
     _holdFocus(true),
-    _fillRect(false),
     _drawBox(true),
     _fillColor(kColor),
     _boxY(0),
@@ -456,6 +467,8 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
     _boxY = (_h - 14) / 2;
   else         // center text
     _textY = (14 - _font.getFontHeight()) / 2;
+
+  setFill(CheckboxWidget::X);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -474,6 +487,25 @@ void CheckboxWidget::handleMouseUp(int x, int y, int button, int clickCount)
 void CheckboxWidget::setEditable(bool editable)
 {
   _editable = editable;
+  if(!_editable)
+    setFill(CheckboxWidget::Full);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CheckboxWidget::setFill(FillType type)
+{
+  switch(type)
+  {
+    case CheckboxWidget::X:
+      _img = checked_img_x;
+      break;
+    case CheckboxWidget::O:
+      _img = checked_img_o;
+      break;
+    case CheckboxWidget::Full:
+      _img = checked_img_full;
+      break;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -500,11 +532,7 @@ void CheckboxWidget::drawWidget(bool hilite)
   if(isEnabled())
   {
     if(_state)
-    {
-      uInt32* img  = _fillRect ? checked_img_o : checked_img_x;
-	  uInt32 color = _fillRect ? kWidFrameColor : kCheckColor;
-	  s.drawBitmap(img, _x + 3, _y + _boxY + 3, color);
-    }
+      s.drawBitmap(_img, _x + 3, _y + _boxY + 3, kCheckColor);
   }
   else
     s.fillRect(_x + 2, _y + _boxY + 2, 10, 10, kColor);

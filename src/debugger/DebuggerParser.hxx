@@ -38,6 +38,7 @@ typedef enum {
   kBASE_16_1, // base 16: 1 byte wide
   kBASE_16_2, // base 16: 2 bytes wide
   kBASE_16_4, // base 16: 4 bytes wide
+  kBASE_16_8, // base 16: 8 bytes wide
   kBASE_10,   // base 10: 3 or 5 bytes (depending on value)
   kBASE_2,    // base 2:  8 or 16 bits (depending on value)
   kBASE_2_8,  // base 2:  1 byte (8 bits) wide

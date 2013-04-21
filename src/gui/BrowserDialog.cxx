@@ -213,7 +213,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kGoUpCmd:
-    case kListPrevDirCmd:
+    case ListWidget::kPrevDirCmd:
       _node = _node.getParent();
       updateListing();
       break;
@@ -223,8 +223,8 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       updateListing();
       break;
 
-    case kListItemActivatedCmd:
-    case kListItemDoubleClickedCmd:
+    case ListWidget::kActivatedCmd:
+    case ListWidget::kDoubleClickedCmd:
     {
       int item = _fileList->getSelected();
       if(item >= 0)

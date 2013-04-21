@@ -60,7 +60,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
                     font.getStringWidth("Set bank: "), kBankChanged);
   myBank->setTarget(this);
   addFocusWidget(myBank);
-  ypos += myLineHeight + 12;
+  ypos += myLineHeight + 8;
 
   // Data fetchers
   int lwidth = font.getStringWidth("Data Fetchers: ");
@@ -69,7 +69,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
 
   // Top registers
   lwidth = font.getStringWidth("Counter Registers: ");
-  xpos = 18;  ypos += myLineHeight + 8;
+  xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth,
         myFontHeight, "Top Registers: ", kTextAlignLeft);
   xpos += lwidth;
@@ -79,7 +79,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myTops->setEditable(false);
 
   // Bottom registers
-  xpos = 18;  ypos += myLineHeight + 8;
+  xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth,
         myFontHeight, "Bottom Registers: ", kTextAlignLeft);
   xpos += lwidth;
@@ -89,7 +89,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myBottoms->setEditable(false);
 
   // Counter registers
-  xpos = 18;  ypos += myLineHeight + 8;
+  xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth,
         myFontHeight, "Counter Registers: ", kTextAlignLeft);
   xpos += lwidth;
@@ -99,9 +99,9 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myCounters->setEditable(false);
 
   // Flag registers
-  xpos = 18;  ypos += myLineHeight + 8;
+  xpos = 18;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth,
-        myFontHeight, "Bottom Registers: ", kTextAlignLeft);
+        myFontHeight, "Flag Registers: ", kTextAlignLeft);
   xpos += lwidth;
 
   myFlags = new DataGridWidget(boss, font, xpos, ypos-2, 8, 1, 2, 8, kBASE_16);
@@ -120,7 +120,7 @@ CartridgeDPCWidget::CartridgeDPCWidget(
   myMusicMode->setEditable(false);
 
   // Current random number
-  xpos = 10;  ypos += myLineHeight + 8;
+  xpos = 10;  ypos += myLineHeight + 4;
   new StaticTextWidget(boss, font, xpos, ypos, lwidth,
         myFontHeight, "Current random number: ", kTextAlignLeft);
   xpos += lwidth;

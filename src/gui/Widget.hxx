@@ -243,6 +243,11 @@ class ButtonWidget : public StaticTextWidget, public CommandSender
 class CheckboxWidget : public ButtonWidget
 {
   public:
+    enum FillType {
+      X, O, Full
+    };
+
+  public:
     CheckboxWidget(GuiObject* boss, const GUI::Font& font, int x, int y,
                    const string& label, int cmd = 0);
 
@@ -251,7 +256,7 @@ class CheckboxWidget : public ButtonWidget
     virtual void handleMouseLeft(int button)	{}
 
     void setEditable(bool editable);
-    void setFill(bool fill) { _fillRect = fill; }
+    void setFill(FillType type);
     void drawBox(bool draw) { _drawBox = draw;  }
 
     void setState(bool state);
@@ -266,10 +271,10 @@ class CheckboxWidget : public ButtonWidget
   protected:
     bool _state;
     bool _holdFocus;
-    bool _fillRect;
     bool _drawBox;
 
-    uInt32 _fillColor;
+    uInt32* _img;
+    uInt32  _fillColor;
 
   private:
     int _boxY;

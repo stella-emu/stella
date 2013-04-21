@@ -96,7 +96,7 @@ RomListWidget::RomListWidget(GuiObject* boss, const GUI::Font& font,
     t->setTarget(this);
     t->setID(i);
     t->drawBox(false);
-    t->setFill(true);
+    t->setFill(CheckboxWidget::O);
     t->setTextColor(kTextColorEm);
     ypos += _fontHeight;
 
