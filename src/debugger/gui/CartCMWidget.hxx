@@ -17,22 +17,24 @@
 // $Id$
 //============================================================================
 
-#ifndef CARTRIDGEDPC_WIDGET_HXX
-#define CARTRIDGEDPC_WIDGET_HXX
+#ifndef CARTRIDGECM_WIDGET_HXX
+#define CARTRIDGECM_WIDGET_HXX
 
-class CartridgeDPC;
-class PopUpWidget;
+class CartridgeCM;
+class CheckboxWidget;
 class DataGridWidget;
+class PopUpWidget;
+class ToggleBitWidget;
 
 #include "CartDebugWidget.hxx"
 
-class CartridgeDPCWidget : public CartDebugWidget
+class CartridgeCMWidget : public CartDebugWidget
 {
   public:
-    CartridgeDPCWidget(GuiObject* boss, const GUI::Font& font,
-                       int x, int y, int w, int h,
-                       CartridgeDPC& cart);
-    virtual ~CartridgeDPCWidget() { }
+    CartridgeCMWidget(GuiObject* boss, const GUI::Font& font,
+                      int x, int y, int w, int h,
+                      CartridgeCM& cart);
+    virtual ~CartridgeCMWidget() { }
 
     void saveOldState();
 
@@ -41,24 +43,20 @@ class CartridgeDPCWidget : public CartDebugWidget
 
   private:
     struct CartState {
-      ByteArray tops;
-      ByteArray bottoms;
-      IntArray counters;
-      ByteArray flags;
-      BoolArray music;
-      uInt8 random;
+      uInt8 swcha;
+      uInt8 column;
     };
 
   private:
-    CartridgeDPC& myCart;
+    CartridgeCM& myCart;
     PopUpWidget* myBank;
 
-    DataGridWidget* myTops;
-    DataGridWidget* myBottoms;
-    DataGridWidget* myCounters;
-    DataGridWidget* myFlags;
-    DataGridWidget* myMusicMode;
-    DataGridWidget* myRandom;
+    ToggleBitWidget* mySWCHA;
+    DataGridWidget* myColumn;
+    CheckboxWidget *myAudIn, *myAudOut, *myIncrease, *myReset;
+    CheckboxWidget* myRow[4];
+    CheckboxWidget *myFunc, *myShift;
+    PopUpWidget* myRAM;
 
     CartState myOldState;
 

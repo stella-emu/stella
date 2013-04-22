@@ -38,6 +38,16 @@ ToggleBitWidget::ToggleBitWidget(GuiObject* boss, const GUI::Font& font,
   _rowHeight = font.getLineHeight();
   _colWidth  = colchars * font.getMaxCharWidth() + 8;
 
+  // Make sure all lists contain some default values
+  int size = _rows * _cols;
+  while(size--)
+  {
+    _offList.push_back("0");
+    _onList.push_back("1");
+    _stateList.push_back(false);
+    _changedList.push_back(false);
+  }
+
   // Calculate real dimensions
   _w = _colWidth  * cols + 1;
   _h = _rowHeight * rows + 1;

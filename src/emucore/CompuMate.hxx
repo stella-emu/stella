@@ -62,8 +62,8 @@ class CompuMate
     /**
       Return the left and right CompuMate controllers
     */
-    Controller* leftController() { return (Controller*) myLeftController; }
-    Controller* rightController() { return (Controller*) myRightController; }
+    Controller* leftController() { return myLeftController; }
+    Controller* rightController() { return myRightController; }
 
   private:
     /**

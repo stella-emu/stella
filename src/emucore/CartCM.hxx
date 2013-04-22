@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartCMWidget.hxx"
+#endif
 
 /**
   Cartridge class used for SpectraVideo CompuMate bankswitched games.
@@ -105,6 +108,8 @@ class System;
 */
 class CartridgeCM : public Cartridge
 {
+  friend class CartridgeCMWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -191,6 +196,18 @@ class CartridgeCM : public Cartridge
     */
     string name() const { return "CartridgeCM"; }
 
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeCMWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
+
   public:
     /**
       Get the byte at the specified address.
@@ -225,8 +242,8 @@ class CartridgeCM : public Cartridge
     // The 2K of RAM
     uInt8 myRAM[2048];
 
-    // RAM read/write state
-    uInt8 myRamState;
+    // Current copy of SWCHA (controls ROM/RAM accesses)
+    uInt8 mySWCHA;
 
     // Column currently active
     uInt8 myColumn;
