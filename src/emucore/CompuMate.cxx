@@ -39,8 +39,20 @@ CompuMate::CompuMate(CartridgeCM& cart, const Event& event,
   myLeftController->myAnalogPinValue[Controller::Five] = Controller::minimumResistance;
   myRightController->myAnalogPinValue[Controller::Nine] = Controller::minimumResistance;
   myRightController->myAnalogPinValue[Controller::Five] = Controller::maximumResistance;
+}
 
-  myKeyTable = event.getKeys();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CompuMate::enableKeyHandling(bool enable)
+{
+  if(enable)
+    myKeyTable = myEvent.getKeys();
+  else
+  {
+    for(uInt32 i = 0; i < KBDK_LAST; ++i)
+      myInternalKeyTable[i] = false;
+
+    myKeyTable = myInternalKeyTable;
+  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -897,16 +897,6 @@ void OSystem::setDefaultJoymap(Event::Type event, EventMode mode)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::pollEvent()
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void OSystem::stateChanged(EventHandler::State state)
-{
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt64 OSystem::getTicks() const
 {
 #ifdef HAVE_GETTIMEOFDAY

@@ -925,6 +925,14 @@ void Console::addDebugger()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void Console::stateChanged(EventHandler::State state)
+{
+  // For now, only the CompuMate cares about state changes
+  if(myCMHandler)
+    myCMHandler->enableKeyHandling(state == EventHandler::S_EMULATE);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 uInt32 Console::ourNTSCPalette[256] = {
   0x000000, 0, 0x4a4a4a, 0, 0x6f6f6f, 0, 0x8e8e8e, 0,
   0xaaaaaa, 0, 0xc0c0c0, 0, 0xd6d6d6, 0, 0xececec, 0,

@@ -502,12 +502,12 @@ class OSystem
     /**
       This method creates events from platform-specific hardware.
     */
-    virtual void pollEvent();
+    virtual void pollEvent() { }
 
     /**
       Informs the OSystem of a change in EventHandler state.
     */
-    virtual void stateChanged(EventHandler::State state);
+    virtual void stateChanged(EventHandler::State state) { }
 
     /**
       Returns the default save and load paths for the snapshot directory.

@@ -136,6 +136,14 @@ class Console : public Serializable
     M6532& riot() const { return *myRiot; }
 
     /**
+      Get the CompuMate handler used by the console
+      (only valid for CompuMate ROMs)
+
+      @return The CompuMate handler for this console (if it exists), otherwise 0
+    */
+    CompuMate* compumate() const { return myCMHandler; }
+
+    /**
       Saves the current state of this console class to the given Serializer.
 
       @param out The serializer device to save to.
@@ -174,6 +182,11 @@ class Console : public Serializable
       Set up the console to use the debugger.
     */
     void addDebugger();
+
+    /**
+      Informs the Console of a change in EventHandler state.
+    */
+    void stateChanged(EventHandler::State state);
 
   public:
     /**

@@ -2157,6 +2157,10 @@ void EventHandler::setEventState(State state)
     myOSystem->frameBuffer().stateChanged(myState);
     myOSystem->frameBuffer().setCursorState();
   }
+  if(&myOSystem->console())
+  {
+    myOSystem->console().stateChanged(myState);
+  }
 
   // Always clear any pending events when changing states
   myEvent.clear();
