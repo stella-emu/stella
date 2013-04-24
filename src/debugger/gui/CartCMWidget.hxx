@@ -23,6 +23,7 @@
 class CartridgeCM;
 class CheckboxWidget;
 class DataGridWidget;
+class EditTextWidget;
 class PopUpWidget;
 class ToggleBitWidget;
 
@@ -56,7 +57,7 @@ class CartridgeCMWidget : public CartDebugWidget
     CheckboxWidget *myAudIn, *myAudOut, *myIncrease, *myReset;
     CheckboxWidget* myRow[4];
     CheckboxWidget *myFunc, *myShift;
-    PopUpWidget* myRAM;
+    EditTextWidget* myRAM;
 
     CartState myOldState;
 

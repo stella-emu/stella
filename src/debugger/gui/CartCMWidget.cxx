@@ -20,6 +20,7 @@
 #include "CartCM.hxx"
 #include "RiotDebug.hxx"
 #include "DataGridWidget.hxx"
+#include "EditTextWidget.hxx"
 #include "PopUpWidget.hxx"
 #include "ToggleBitWidget.hxx"
 #include "CartCMWidget.hxx"
@@ -135,6 +136,14 @@ CartridgeCMWidget::CartridgeCMWidget(
   myAudOut->setTarget(this);
   myAudOut->setEditable(false);
 
+  // Ram state (combination of several bits in SWCHA)
+  ypos += myLineHeight + 8;
+  lwidth = font.getStringWidth("Ram State: ");
+  new StaticTextWidget(boss, font, xpos, ypos, lwidth,
+        myFontHeight, "Ram State: ", kTextAlignLeft);
+  myRAM = new EditTextWidget(boss, font, xpos+lwidth, ypos-1,
+              font.getStringWidth(" Write-only "), myLineHeight, "");
+  myRAM->setEditable(false);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -150,7 +159,7 @@ void CartridgeCMWidget::loadConfig()
   myBank->setSelected(myCart.myCurrentBank);
 
   RiotDebug& riot = Debugger::debugger().riotDebug();
-  const RiotState& state    = (RiotState&) riot.getState();
+  const RiotState& state = (RiotState&) riot.getState();
 
   uInt8 swcha = myCart.mySWCHA;
 
@@ -176,8 +185,14 @@ void CartridgeCMWidget::loadConfig()
   myFunc->setState(state.INPT0 & 0x80);
   myShift->setState(state.INPT3 & 0x80);
 
+  // Audio in and out (used for communicating with the external cassette)
   myAudIn->setState(swcha & 0x80);
   myAudOut->setState(swcha & 0x40);
+
+  // RAM state (several bits from SWCHA)
+  const string& ram = swcha & 0x10 ? " Inactive" :
+                        swcha & 0x20 ? " Read-only" : " Write-only";
+  myRAM->setEditString(ram, (swcha & 0x30) != (myOldState.swcha & 0x30));
 
   CartDebugWidget::loadConfig();
 }

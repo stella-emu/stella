@@ -400,40 +400,40 @@ void ButtonWidget::drawWidget(bool hilite)
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 /* 8x8 checkbox bitmap */
-static unsigned int checked_img_x[8] =
+static unsigned int checked_img_active[8] =
 {
-	0x00000000,
-	0x01000010,
-	0x00100100,
-	0x00011000,
-	0x00011000,
-	0x00100100,
-	0x01000010,
-	0x00000000,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111,
+	0x11111111
 };
 
-static unsigned int checked_img_o[8] =
+static unsigned int checked_img_inactive[8] =
+{
+	0x11111111,
+	0x11111111,
+	0x11100111,
+	0x11000011,
+	0x11000011,
+	0x11100111,
+	0x11111111,
+	0x11111111
+};
+
+static unsigned int checked_img_circle[8] =
 {
 	0x00011000,
-	0x00111100,
+	0x01111110,
 	0x01111110,
 	0x11111111,
 	0x11111111,
 	0x01111110,
-	0x00111100,
-	0x00011000,
-};
-
-static unsigned int checked_img_full[8] =
-{
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
-	0x11111111,
+	0x01111110,
+	0x00011000
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -468,7 +468,7 @@ CheckboxWidget::CheckboxWidget(GuiObject *boss, const GUI::Font& font,
   else         // center text
     _textY = (14 - _font.getFontHeight()) / 2;
 
-  setFill(CheckboxWidget::X);
+  setFill(CheckboxWidget::Normal);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -488,7 +488,7 @@ void CheckboxWidget::setEditable(bool editable)
 {
   _editable = editable;
   if(!_editable)
-    setFill(CheckboxWidget::Full);
+    setFill(CheckboxWidget::Inactive);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -496,14 +496,17 @@ void CheckboxWidget::setFill(FillType type)
 {
   switch(type)
   {
-    case CheckboxWidget::X:
-      _img = checked_img_x;
+    case CheckboxWidget::Normal:
+      _img = checked_img_active;
+      _drawBox = true;
       break;
-    case CheckboxWidget::O:
-      _img = checked_img_o;
+    case CheckboxWidget::Inactive:
+      _img = checked_img_inactive;
+      _drawBox = true;
       break;
-    case CheckboxWidget::Full:
-      _img = checked_img_full;
+    case CheckboxWidget::Circle:
+      _img = checked_img_circle;
+      _drawBox = false;
       break;
   }
 }

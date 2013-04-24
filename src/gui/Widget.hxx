@@ -244,7 +244,7 @@ class CheckboxWidget : public ButtonWidget
 {
   public:
     enum FillType {
-      X, O, Full
+      Normal, Inactive, Circle
     };
 
   public:
@@ -257,7 +257,6 @@ class CheckboxWidget : public ButtonWidget
 
     void setEditable(bool editable);
     void setFill(FillType type);
-    void drawBox(bool draw) { _drawBox = draw;  }
 
     void setState(bool state);
     void toggleState()     { setState(!_state); }

@@ -191,7 +191,7 @@ void TabWidget::handleMouseDown(int x, int y, int button, int clickCount)
   }
 
   // If a tab was clicked, switch to that pane
-  if (tabID >= 0 && tabID != _activeTab)
+  if (tabID >= 0)
   {
     setActiveTab(tabID, true);
     updateActiveTab();

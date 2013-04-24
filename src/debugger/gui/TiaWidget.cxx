@@ -863,8 +863,9 @@ void TiaWidget::fillGrid()
   myDelP0->setState(tia.vdelP0());
 
   // NUSIZ0 (player portion)
-  myNusizP0->setList(0, state.size[P0], state.size[P0] != oldstate.size[P0]);
-  myNusizP0Text->setEditString(tia.nusizP0String());
+  bool nusiz0changed = state.size[P0] != oldstate.size[P0];
+  myNusizP0->setList(0, state.size[P0], nusiz0changed);
+  myNusizP0Text->setEditString(tia.nusizP0String(), nusiz0changed);
 
   ////////////////////////////
   // P1 register info
@@ -884,8 +885,9 @@ void TiaWidget::fillGrid()
   myDelP1->setState(tia.vdelP1());
 
   // NUSIZ1 (player portion)
-  myNusizP1->setList(0, state.size[P1], state.size[P1] != oldstate.size[P1]);
-  myNusizP1Text->setEditString(tia.nusizP1String());
+  bool nusiz1changed = state.size[P1] != oldstate.size[P1];
+  myNusizP1->setList(0, state.size[P1], nusiz1changed);
+  myNusizP1Text->setEditString(tia.nusizP1String(), nusiz1changed);
 
   ////////////////////////////
   // M0 register info

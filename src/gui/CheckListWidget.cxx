@@ -40,6 +40,7 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
   for(int i = 0; i < _rows; ++i)
   {
     t = new CheckboxWidget(boss, font, _x + 2, ypos, "", kCheckActionCmd);
+    t->setTextColor(kTextColor);
     t->setTarget(this);
     t->setID(i);
     ypos += _fontHeight;
@@ -51,26 +52,6 @@ CheckListWidget::CheckListWidget(GuiObject* boss, const GUI::Font& font,
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 CheckListWidget::~CheckListWidget()
 {
-}
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void CheckListWidget::setStyle(CheckStyle style)
-{
-  for(unsigned int i = 0; i < _checkList.size(); ++i)
-  {
-    if(style == XFill)
-    {
-      _checkList[i]->drawBox(true);
-      _checkList[i]->setFill(CheckboxWidget::X);
-      _checkList[i]->setTextColor(kTextColor);
-    }
-    else if(style == SolidFill)
-    {
-      _checkList[i]->drawBox(false);
-      _checkList[i]->setFill(CheckboxWidget::Full);
-      _checkList[i]->setTextColor(kTextColorEm);
-    }
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
