@@ -24,6 +24,9 @@ class System;
 
 #include "bspf.hxx"
 #include "Cart.hxx"
+#ifdef DEBUGGER_SUPPORT
+  #include "CartCTYWidget.hxx"
+#endif
 
 /**
   The 'Chetiry' bankswitch scheme was developed by Chris D. Walton for a
@@ -109,6 +112,8 @@ class System;
 */
 class CartridgeCTY : public Cartridge
 {
+  friend class CartridgeCTYWidget;
+
   public:
     /**
       Create a new cartridge using the specified image
@@ -209,6 +214,18 @@ class CartridgeCTY : public Cartridge
       @param name  The properties file name of the ROM
     */
     void setRomName(const string& name);
+
+  #ifdef DEBUGGER_SUPPORT
+    /**
+      Get debugger widget responsible for accessing the inner workings
+      of the cart.
+    */
+    CartDebugWidget* debugWidget(GuiObject* boss,
+        const GUI::Font& font, int x, int y, int w, int h)
+    {
+      return new CartridgeCTYWidget(boss, font, x, y, w, h, *this);
+    }
+  #endif
 
   public:
     /**
