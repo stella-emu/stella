@@ -1,0 +1,100 @@
+//============================================================================
+//
+//   SSSS    tt          lll  lll       
+//  SS  SS   tt           ll   ll        
+//  SS     tttttt  eeee   ll   ll   aaaa 
+//   SSSS    tt   ee  ee  ll   ll      aa
+//      SS   tt   eeeeee  ll   ll   aaaaa  --  "An Atari 2600 VCS Emulator"
+//  SS  SS   tt   ee      ll   ll  aa  aa
+//   SSSS     ttt  eeeee llll llll  aaaaa
+//
+// Copyright (c) 1995-2013 by Bradford W. Mott, Stephen Anthony
+// and the Stella Team
+//
+// See the file "License.txt" for information on usage and redistribution of
+// this file, and for a DISCLAIMER OF ALL WARRANTIES.
+//
+// $Id$
+//============================================================================
+
+#include "CartAR.hxx"
+#include "PopUpWidget.hxx"
+#include "CartARWidget.hxx"
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+CartridgeARWidget::CartridgeARWidget(
+      GuiObject* boss, const GUI::Font& font,
+      int x, int y, int w, int h, CartridgeAR& cart)
+  : CartDebugWidget(boss, font, x, y, w, h),
+    myCart(cart)
+{
+  uInt16 size = myCart.mySize;
+
+  string info =
+    "Supercharger cartridge, four 2K slices (3 RAM, 1 ROM)\n"
+    "\nTHIS SCHEME IS NOT FULLY IMPLEMENTED OR TESTED\n";
+
+  int xpos = 10,
+      ypos = addBaseInformation(size, "Starpath", info) + myLineHeight;
+
+  StringMap items;
+  items.push_back("  0", "0");
+  items.push_back("  1", "1");
+  items.push_back("  2", "2");
+  items.push_back("  3", "3");
+  items.push_back("  4", "4");
+  items.push_back("  5", "5");
+  items.push_back("  6", "6");
+  items.push_back("  7", "7");
+  items.push_back("  8", "8");
+  items.push_back("  9", "9");
+  items.push_back(" 10", "10");
+  items.push_back(" 11", "11");
+  items.push_back(" 12", "12");
+  items.push_back(" 13", "13");
+  items.push_back(" 14", "14");
+  items.push_back(" 15", "15");
+  items.push_back(" 16", "16");
+  items.push_back(" 17", "17");
+  items.push_back(" 18", "18");
+  items.push_back(" 19", "19");
+  items.push_back(" 20", "20");
+  items.push_back(" 21", "21");
+  items.push_back(" 22", "22");
+  items.push_back(" 23", "23");
+  items.push_back(" 24", "24");
+  items.push_back(" 25", "25");
+  items.push_back(" 26", "26");
+  items.push_back(" 27", "27");
+  items.push_back(" 28", "28");
+  items.push_back(" 29", "29");
+  items.push_back(" 30", "30");
+  items.push_back(" 31", "31");
+  myBank =
+    new PopUpWidget(boss, font, xpos, ypos-2, font.getStringWidth(" XX "),
+                    myLineHeight, items, "Set bank: ",
+                    font.getStringWidth("Set bank: "), kBankChanged);
+  myBank->setTarget(this);
+  addFocusWidget(myBank);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARWidget::loadConfig()
+{
+  myBank->setSelected(myCart.myCurrentBank);
+
+  CartDebugWidget::loadConfig();
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void CartridgeARWidget::handleCommand(CommandSender* sender,
+                                      int cmd, int data, int id)
+{
+  if(cmd == kBankChanged)
+  {
+    myCart.unlockBank();
+    myCart.bank(myBank->getSelected());
+    myCart.lockBank();
+    invalidate();
+  }
+}

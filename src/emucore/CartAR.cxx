@@ -59,10 +59,12 @@ CartridgeAR::~CartridgeAR()
 void CartridgeAR::reset()
 {
   // Initialize RAM
+#if 0  // TODO - figure out actual behaviour of the real cart
   if(mySettings.getBool("ramrandom"))
     for(uInt32 i = 0; i < 6 * 1024; ++i)
       myImage[i] = mySystem->randGenerator().next();
   else
+#endif
     memset(myImage, 0, 6 * 1024);
 
   // Initialize SC BIOS ROM
