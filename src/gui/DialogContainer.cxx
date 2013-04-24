@@ -108,33 +108,30 @@ void DialogContainer::draw(bool full)
     }
   }
   else if(!myDialogStack.empty())
-  {
     myDialogStack.top()->drawDialog();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::addDialog(Dialog* d)
+void DialogContainer::addDialog(Dialog* d, bool refresh)
 {
   const GUI::Rect& screen = myOSystem->frameBuffer().screenRect();
   assert(d->getWidth() <= screen.width() && d->getHeight() <= screen.height());
 
   myDialogStack.push(d);
-  d->open();
 
-  myOSystem->frameBuffer().refresh();
+  if(refresh)
+    myOSystem->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::removeDialog()
+void DialogContainer::removeDialog(bool refresh)
 {
   if(!myDialogStack.empty())
   {
     myDialogStack.pop();
 
-    // We need to redraw the entire screen contents, since we don't know
-    // what was obscured
-    myOSystem->frameBuffer().refresh();
+    if(refresh)
+      myOSystem->frameBuffer().refresh();
   }
 }
 
@@ -143,8 +140,11 @@ void DialogContainer::reStack()
 {
   // Pop all items from the stack, and then add the base menu
   while(!myDialogStack.empty())
-    myDialogStack.pop();
-  addDialog(myBaseDialog);
+    myDialogStack.top()->close(false);  // don't force a refresh
+
+  myBaseDialog->open(false);  // don't force a refresh
+
+  myOSystem->frameBuffer().refresh();
 
   // Reset all continuous events
   reset();

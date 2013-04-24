@@ -230,7 +230,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        parent().removeDialog();
+        dialog().close();
       break;
     }
 
@@ -240,7 +240,7 @@ void RamWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       if(result != "")
         myInputBox->setTitle(result);
       else
-        parent().removeDialog();
+        dialog().close();
       break;
     }
 

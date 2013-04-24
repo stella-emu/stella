@@ -58,7 +58,7 @@ ProgressDialog::ProgressDialog(GuiObject* boss, const GUI::Font& font,
   mySlider->setMinValue(1);
   mySlider->setMaxValue(100);
 
-  parent().addDialog(this);
+  open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

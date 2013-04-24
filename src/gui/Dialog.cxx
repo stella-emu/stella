@@ -64,7 +64,7 @@ Dialog::~Dialog()
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::open()
+void Dialog::open(bool refresh)
 {
   // Make sure we have a valid surface to draw into
   // Technically, this shouldn't be needed until drawDialog(), but some
@@ -89,10 +89,12 @@ void Dialog::open()
   buildCurrentFocusList();
 
   _visible = true;
+
+  parent().addDialog(this, refresh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void Dialog::close()
+void Dialog::close(bool refresh)
 {
   if (_mouseWidget)
   {
@@ -101,9 +103,10 @@ void Dialog::close()
   }
 
   releaseFocus();
-  parent().removeDialog();
 
   _visible = false;
+
+  parent().removeDialog(refresh);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

@@ -133,7 +133,7 @@ void BrowserDialog::show(const string& title, const string& startpath,
   // Doing it this way has the unfortunate side effect that a previous
   // title is temporarily visible when re-using the browser for different
   // purposes
-  parent().addDialog(this);
+  open();
 
   _title->setLabel(title);
   _cmd = cmd;

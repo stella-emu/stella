@@ -103,7 +103,7 @@ InputTextDialog::~InputTextDialog()
 void InputTextDialog::show()
 {
   myEnableCenter = true;
-  parent().addDialog(this);
+  open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -112,7 +112,7 @@ void InputTextDialog::show(uInt32 x, uInt32 y)
   myXOrig = x;
   myYOrig = y;
   myEnableCenter = false;
-  parent().addDialog(this);
+  open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

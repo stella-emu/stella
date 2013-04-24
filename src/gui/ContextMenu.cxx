@@ -86,7 +86,7 @@ void ContextMenu::show(uInt32 x, uInt32 y, int item)
   _yorig = y;
 
   recalc(instance().frameBuffer().imageRect());
-  parent().addDialog(this);
+  open();
   setSelected(item);
   moveToSelected();
 }

@@ -199,49 +199,49 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kVidCmd:
-      parent().addDialog(myVideoDialog);
+      myVideoDialog->open();
       break;
 
     case kAudCmd:
-      parent().addDialog(myAudioDialog);
+      myAudioDialog->open();
       break;
 
     case kInptCmd:
-      parent().addDialog(myInputDialog);
+      myInputDialog->open();
       break;
 
     case kUsrIfaceCmd:
-      parent().addDialog(myUIDialog);
+      myUIDialog->open();
       break;
 
     case kFileSnapCmd:
-      parent().addDialog(myFileSnapDialog);
+      myFileSnapDialog->open();
       break;
 
     case kAuditCmd:
-      parent().addDialog(myRomAuditDialog);
+      myRomAuditDialog->open();
       break;
 
     case kInfoCmd:
-      parent().addDialog(myGameInfoDialog);
+      myGameInfoDialog->open();
       break;
 
 #ifdef CHEATCODE_SUPPORT
     case kCheatCmd:
-      parent().addDialog(myCheatCodeDialog);
+      myCheatCodeDialog->open();
       break;
 #endif
 
     case kLoggerCmd:
-      parent().addDialog(myLoggerDialog);
+      myLoggerDialog->open();
       break;
 
     case kHelpCmd:
-      parent().addDialog(myHelpDialog);
+      myHelpDialog->open();
       break;
 
     case kAboutCmd:
-      parent().addDialog(myAboutDialog);
+      open();
       break;
 
     case kExitCmd:

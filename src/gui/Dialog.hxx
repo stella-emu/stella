@@ -51,11 +51,12 @@ class Dialog : public GuiObject
 
     virtual ~Dialog();
 
+    void open(bool refresh = true);
+    void close(bool refresh = true);
+
     bool isVisible() const { return _visible; }
     bool isBase() const    { return _isBase;  }
 
-    virtual void open();
-    virtual void close();
     virtual void center();
     virtual void drawDialog();
     virtual void loadConfig() {}

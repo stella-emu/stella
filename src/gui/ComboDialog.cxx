@@ -102,7 +102,7 @@ void ComboDialog::show(Event::Type event, const string& name)
   {
     myComboEvent = event;
     myComboName->setLabel("Add events for " + name);
-    parent().addDialog(this);
+    open();
   }
   else
     myComboEvent = Event::NoType;

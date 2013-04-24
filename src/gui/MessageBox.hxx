@@ -46,7 +46,7 @@ class MessageBox : public Dialog, public CommandSender
     virtual ~MessageBox();
 
     /** Place the input dialog onscreen and center it */
-    void show() { parent().addDialog(this); }
+    void show() { open(); }
 
   private:
     void addText(const GUI::Font& font, const StringList& text);

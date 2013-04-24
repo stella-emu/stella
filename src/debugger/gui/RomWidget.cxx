@@ -220,7 +220,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       else
       {
         saveROM(rom);
-        parent().removeDialog();
+        dialog().close();
       }
       break;
     }

@@ -414,11 +414,11 @@ void LauncherDialog::handleContextMenu()
 
   if(cmd == "override")
   {
-    parent().addDialog(myGlobalProps);
+    myGlobalProps->open();
   }
   else if(cmd == "filter")
   {
-    parent().addDialog(myFilters);
+    myFilters->open();
   }
   else if(cmd == "reload")
   {
@@ -562,7 +562,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
     }
 
     case kOptionsCmd:
-      parent().addDialog(myOptions);
+      myOptions->open();
       break;
 
     case kPrevDirCmd:

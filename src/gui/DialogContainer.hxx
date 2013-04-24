@@ -42,6 +42,7 @@ class OSystem;
 class DialogContainer
 {
   friend class EventHandler;
+  friend class Dialog;
 
   public:
     /**
@@ -125,16 +126,6 @@ class DialogContainer
     void draw(bool full = false);
 
     /**
-      Add a dialog box to the stack.
-    */
-    void addDialog(Dialog* d);
-
-    /**
-      Remove the topmost dialog box from the stack.
-    */
-    void removeDialog();
-
-    /**
       Reset dialog stack to the main configuration menu.
     */
     void reStack();
@@ -146,6 +137,16 @@ class DialogContainer
 
   private:
     void reset();
+
+    /**
+      Add a dialog box to the stack.
+    */
+    void addDialog(Dialog* d, bool refresh);
+
+    /**
+      Remove the topmost dialog box from the stack.
+    */
+    void removeDialog(bool refresh);
 
   protected:
     OSystem* myOSystem;
