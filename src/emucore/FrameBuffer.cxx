@@ -591,7 +591,7 @@ uInt32 FrameBuffer::allocateSurface(int w, int h, bool useBase)
   FBSurface* surface = createSurface(w, h, useBase);
 
   // Add it to the list
-  mySurfaceList.insert(make_pair(mySurfaceList.size(), surface));
+  mySurfaceList.insert(make_pair((uInt32)mySurfaceList.size(), surface));
 
   // Return a reference to it
   return mySurfaceList.size() - 1;

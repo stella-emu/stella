@@ -50,7 +50,7 @@ bool SerialPortWin32::openPort(const string& device)
       dcb.DCBlength = sizeof(dcb);
       if(!BuildCommDCB("19200,n,8,1", &dcb))
       {
-        closePort()
+        closePort();
         return false;
       }
 
