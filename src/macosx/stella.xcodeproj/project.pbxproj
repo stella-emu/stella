@@ -388,6 +388,67 @@
 		DCECDB0510B9DC0400AF4E1B /* bspf.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCECDB0210B9DC0400AF4E1B /* bspf.hxx */; };
 		DCEECE560B5E5E540021D754 /* Cart0840.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCEECE540B5E5E540021D754 /* Cart0840.cxx */; };
 		DCEECE570B5E5E540021D754 /* Cart0840.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCEECE550B5E5E540021D754 /* Cart0840.hxx */; };
+		DCF28EE91729A5CD00DD0CA9 /* Cart2KWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EAC1729A5CD00DD0CA9 /* Cart2KWidget.cxx */; };
+		DCF28EEA1729A5CD00DD0CA9 /* Cart2KWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EAD1729A5CD00DD0CA9 /* Cart2KWidget.hxx */; };
+		DCF28EEB1729A5CD00DD0CA9 /* Cart3EWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EAE1729A5CD00DD0CA9 /* Cart3EWidget.cxx */; };
+		DCF28EEC1729A5CD00DD0CA9 /* Cart3EWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EAF1729A5CD00DD0CA9 /* Cart3EWidget.hxx */; };
+		DCF28EED1729A5CD00DD0CA9 /* Cart3FWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EB01729A5CD00DD0CA9 /* Cart3FWidget.cxx */; };
+		DCF28EEE1729A5CD00DD0CA9 /* Cart3FWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EB11729A5CD00DD0CA9 /* Cart3FWidget.hxx */; };
+		DCF28EEF1729A5CD00DD0CA9 /* Cart4A50Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EB21729A5CD00DD0CA9 /* Cart4A50Widget.cxx */; };
+		DCF28EF01729A5CD00DD0CA9 /* Cart4A50Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EB31729A5CD00DD0CA9 /* Cart4A50Widget.hxx */; };
+		DCF28EF11729A5CD00DD0CA9 /* Cart4KWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EB41729A5CD00DD0CA9 /* Cart4KWidget.cxx */; };
+		DCF28EF21729A5CD00DD0CA9 /* Cart4KWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EB51729A5CD00DD0CA9 /* Cart4KWidget.hxx */; };
+		DCF28EF31729A5CD00DD0CA9 /* Cart0840Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EB61729A5CD00DD0CA9 /* Cart0840Widget.cxx */; };
+		DCF28EF41729A5CD00DD0CA9 /* Cart0840Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EB71729A5CD00DD0CA9 /* Cart0840Widget.hxx */; };
+		DCF28EF51729A5CD00DD0CA9 /* CartARWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EB81729A5CD00DD0CA9 /* CartARWidget.cxx */; };
+		DCF28EF61729A5CD00DD0CA9 /* CartARWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EB91729A5CD00DD0CA9 /* CartARWidget.hxx */; };
+		DCF28EF71729A5CD00DD0CA9 /* CartCMWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EBA1729A5CD00DD0CA9 /* CartCMWidget.cxx */; };
+		DCF28EF81729A5CD00DD0CA9 /* CartCMWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EBB1729A5CD00DD0CA9 /* CartCMWidget.hxx */; };
+		DCF28EF91729A5CD00DD0CA9 /* CartCTYWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EBC1729A5CD00DD0CA9 /* CartCTYWidget.cxx */; };
+		DCF28EFA1729A5CD00DD0CA9 /* CartCTYWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EBD1729A5CD00DD0CA9 /* CartCTYWidget.hxx */; };
+		DCF28EFB1729A5CD00DD0CA9 /* CartCVWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EBE1729A5CD00DD0CA9 /* CartCVWidget.cxx */; };
+		DCF28EFC1729A5CD00DD0CA9 /* CartCVWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EBF1729A5CD00DD0CA9 /* CartCVWidget.hxx */; };
+		DCF28EFD1729A5CD00DD0CA9 /* CartDebugWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EC01729A5CD00DD0CA9 /* CartDebugWidget.hxx */; };
+		DCF28EFE1729A5CD00DD0CA9 /* CartDPCPlusWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EC11729A5CD00DD0CA9 /* CartDPCPlusWidget.cxx */; };
+		DCF28EFF1729A5CD00DD0CA9 /* CartDPCPlusWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EC21729A5CD00DD0CA9 /* CartDPCPlusWidget.hxx */; };
+		DCF28F001729A5CD00DD0CA9 /* CartDPCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EC31729A5CD00DD0CA9 /* CartDPCWidget.cxx */; };
+		DCF28F011729A5CD00DD0CA9 /* CartDPCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EC41729A5CD00DD0CA9 /* CartDPCWidget.hxx */; };
+		DCF28F021729A5CD00DD0CA9 /* CartE0Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EC51729A5CD00DD0CA9 /* CartE0Widget.cxx */; };
+		DCF28F031729A5CD00DD0CA9 /* CartE0Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EC61729A5CD00DD0CA9 /* CartE0Widget.hxx */; };
+		DCF28F041729A5CD00DD0CA9 /* CartE7Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EC71729A5CD00DD0CA9 /* CartE7Widget.cxx */; };
+		DCF28F051729A5CD00DD0CA9 /* CartE7Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EC81729A5CD00DD0CA9 /* CartE7Widget.hxx */; };
+		DCF28F061729A5CD00DD0CA9 /* CartEFSCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EC91729A5CD00DD0CA9 /* CartEFSCWidget.cxx */; };
+		DCF28F071729A5CD00DD0CA9 /* CartEFSCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ECA1729A5CD00DD0CA9 /* CartEFSCWidget.hxx */; };
+		DCF28F081729A5CD00DD0CA9 /* CartEFWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ECB1729A5CD00DD0CA9 /* CartEFWidget.cxx */; };
+		DCF28F091729A5CD00DD0CA9 /* CartEFWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ECC1729A5CD00DD0CA9 /* CartEFWidget.hxx */; };
+		DCF28F0A1729A5CD00DD0CA9 /* CartF0Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ECD1729A5CD00DD0CA9 /* CartF0Widget.cxx */; };
+		DCF28F0B1729A5CD00DD0CA9 /* CartF0Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ECE1729A5CD00DD0CA9 /* CartF0Widget.hxx */; };
+		DCF28F0C1729A5CD00DD0CA9 /* CartF4SCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ECF1729A5CD00DD0CA9 /* CartF4SCWidget.cxx */; };
+		DCF28F0D1729A5CD00DD0CA9 /* CartF4SCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ED01729A5CD00DD0CA9 /* CartF4SCWidget.hxx */; };
+		DCF28F0E1729A5CD00DD0CA9 /* CartF4Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ED11729A5CD00DD0CA9 /* CartF4Widget.cxx */; };
+		DCF28F0F1729A5CD00DD0CA9 /* CartF4Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ED21729A5CD00DD0CA9 /* CartF4Widget.hxx */; };
+		DCF28F101729A5CD00DD0CA9 /* CartF6SCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ED31729A5CD00DD0CA9 /* CartF6SCWidget.cxx */; };
+		DCF28F111729A5CD00DD0CA9 /* CartF6SCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ED41729A5CD00DD0CA9 /* CartF6SCWidget.hxx */; };
+		DCF28F121729A5CD00DD0CA9 /* CartF6Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ED51729A5CD00DD0CA9 /* CartF6Widget.cxx */; };
+		DCF28F131729A5CD00DD0CA9 /* CartF6Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ED61729A5CD00DD0CA9 /* CartF6Widget.hxx */; };
+		DCF28F141729A5CD00DD0CA9 /* CartF8SCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ED71729A5CD00DD0CA9 /* CartF8SCWidget.cxx */; };
+		DCF28F151729A5CD00DD0CA9 /* CartF8SCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28ED81729A5CD00DD0CA9 /* CartF8SCWidget.hxx */; };
+		DCF28F161729A5CD00DD0CA9 /* CartF8Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28ED91729A5CD00DD0CA9 /* CartF8Widget.cxx */; };
+		DCF28F171729A5CD00DD0CA9 /* CartF8Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EDA1729A5CD00DD0CA9 /* CartF8Widget.hxx */; };
+		DCF28F181729A5CD00DD0CA9 /* CartFA2Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EDB1729A5CD00DD0CA9 /* CartFA2Widget.cxx */; };
+		DCF28F191729A5CD00DD0CA9 /* CartFA2Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EDC1729A5CD00DD0CA9 /* CartFA2Widget.hxx */; };
+		DCF28F1A1729A5CD00DD0CA9 /* CartFAWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EDD1729A5CD00DD0CA9 /* CartFAWidget.cxx */; };
+		DCF28F1B1729A5CD00DD0CA9 /* CartFAWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EDE1729A5CD00DD0CA9 /* CartFAWidget.hxx */; };
+		DCF28F1C1729A5CD00DD0CA9 /* CartFEWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EDF1729A5CD00DD0CA9 /* CartFEWidget.cxx */; };
+		DCF28F1D1729A5CD00DD0CA9 /* CartFEWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EE01729A5CD00DD0CA9 /* CartFEWidget.hxx */; };
+		DCF28F1E1729A5CD00DD0CA9 /* CartMCWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EE11729A5CD00DD0CA9 /* CartMCWidget.cxx */; };
+		DCF28F1F1729A5CD00DD0CA9 /* CartMCWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EE21729A5CD00DD0CA9 /* CartMCWidget.hxx */; };
+		DCF28F201729A5CD00DD0CA9 /* CartSBWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EE31729A5CD00DD0CA9 /* CartSBWidget.cxx */; };
+		DCF28F211729A5CD00DD0CA9 /* CartSBWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EE41729A5CD00DD0CA9 /* CartSBWidget.hxx */; };
+		DCF28F221729A5CD00DD0CA9 /* CartUAWidget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EE51729A5CD00DD0CA9 /* CartUAWidget.cxx */; };
+		DCF28F231729A5CD00DD0CA9 /* CartUAWidget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EE61729A5CD00DD0CA9 /* CartUAWidget.hxx */; };
+		DCF28F241729A5CD00DD0CA9 /* CartX07Widget.cxx in Sources */ = {isa = PBXBuildFile; fileRef = DCF28EE71729A5CD00DD0CA9 /* CartX07Widget.cxx */; };
+		DCF28F251729A5CD00DD0CA9 /* CartX07Widget.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF28EE81729A5CD00DD0CA9 /* CartX07Widget.hxx */; };
 		DCF467B50F93993B00B25D7A /* Array.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B10F93993B00B25D7A /* Array.hxx */; };
 		DCF467B60F93993B00B25D7A /* SharedPtr.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B20F93993B00B25D7A /* SharedPtr.hxx */; };
 		DCF467B80F93993B00B25D7A /* SoundNull.hxx in Headers */ = {isa = PBXBuildFile; fileRef = DCF467B40F93993B00B25D7A /* SoundNull.hxx */; };
@@ -834,6 +895,67 @@
 		DCECDB0210B9DC0400AF4E1B /* bspf.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = bspf.hxx; path = ../common/bspf.hxx; sourceTree = SOURCE_ROOT; };
 		DCEECE540B5E5E540021D754 /* Cart0840.cxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840.cxx; path = ../emucore/Cart0840.cxx; sourceTree = SOURCE_ROOT; };
 		DCEECE550B5E5E540021D754 /* Cart0840.hxx */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.cpp.h; name = Cart0840.hxx; path = ../emucore/Cart0840.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EAC1729A5CD00DD0CA9 /* Cart2KWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart2KWidget.cxx; path = ../debugger/gui/Cart2KWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EAD1729A5CD00DD0CA9 /* Cart2KWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart2KWidget.hxx; path = ../debugger/gui/Cart2KWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EAE1729A5CD00DD0CA9 /* Cart3EWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart3EWidget.cxx; path = ../debugger/gui/Cart3EWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EAF1729A5CD00DD0CA9 /* Cart3EWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart3EWidget.hxx; path = ../debugger/gui/Cart3EWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB01729A5CD00DD0CA9 /* Cart3FWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart3FWidget.cxx; path = ../debugger/gui/Cart3FWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB11729A5CD00DD0CA9 /* Cart3FWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart3FWidget.hxx; path = ../debugger/gui/Cart3FWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB21729A5CD00DD0CA9 /* Cart4A50Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4A50Widget.cxx; path = ../debugger/gui/Cart4A50Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB31729A5CD00DD0CA9 /* Cart4A50Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart4A50Widget.hxx; path = ../debugger/gui/Cart4A50Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB41729A5CD00DD0CA9 /* Cart4KWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart4KWidget.cxx; path = ../debugger/gui/Cart4KWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB51729A5CD00DD0CA9 /* Cart4KWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart4KWidget.hxx; path = ../debugger/gui/Cart4KWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB61729A5CD00DD0CA9 /* Cart0840Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = Cart0840Widget.cxx; path = ../debugger/gui/Cart0840Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB71729A5CD00DD0CA9 /* Cart0840Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Cart0840Widget.hxx; path = ../debugger/gui/Cart0840Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB81729A5CD00DD0CA9 /* CartARWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartARWidget.cxx; path = ../debugger/gui/CartARWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EB91729A5CD00DD0CA9 /* CartARWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartARWidget.hxx; path = ../debugger/gui/CartARWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EBA1729A5CD00DD0CA9 /* CartCMWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCMWidget.cxx; path = ../debugger/gui/CartCMWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EBB1729A5CD00DD0CA9 /* CartCMWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCMWidget.hxx; path = ../debugger/gui/CartCMWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EBC1729A5CD00DD0CA9 /* CartCTYWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCTYWidget.cxx; path = ../debugger/gui/CartCTYWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EBD1729A5CD00DD0CA9 /* CartCTYWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCTYWidget.hxx; path = ../debugger/gui/CartCTYWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EBE1729A5CD00DD0CA9 /* CartCVWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartCVWidget.cxx; path = ../debugger/gui/CartCVWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EBF1729A5CD00DD0CA9 /* CartCVWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartCVWidget.hxx; path = ../debugger/gui/CartCVWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC01729A5CD00DD0CA9 /* CartDebugWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDebugWidget.hxx; path = ../debugger/gui/CartDebugWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC11729A5CD00DD0CA9 /* CartDPCPlusWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDPCPlusWidget.cxx; path = ../debugger/gui/CartDPCPlusWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC21729A5CD00DD0CA9 /* CartDPCPlusWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDPCPlusWidget.hxx; path = ../debugger/gui/CartDPCPlusWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC31729A5CD00DD0CA9 /* CartDPCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartDPCWidget.cxx; path = ../debugger/gui/CartDPCWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC41729A5CD00DD0CA9 /* CartDPCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartDPCWidget.hxx; path = ../debugger/gui/CartDPCWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC51729A5CD00DD0CA9 /* CartE0Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartE0Widget.cxx; path = ../debugger/gui/CartE0Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC61729A5CD00DD0CA9 /* CartE0Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartE0Widget.hxx; path = ../debugger/gui/CartE0Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC71729A5CD00DD0CA9 /* CartE7Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartE7Widget.cxx; path = ../debugger/gui/CartE7Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC81729A5CD00DD0CA9 /* CartE7Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartE7Widget.hxx; path = ../debugger/gui/CartE7Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EC91729A5CD00DD0CA9 /* CartEFSCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartEFSCWidget.cxx; path = ../debugger/gui/CartEFSCWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ECA1729A5CD00DD0CA9 /* CartEFSCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartEFSCWidget.hxx; path = ../debugger/gui/CartEFSCWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ECB1729A5CD00DD0CA9 /* CartEFWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartEFWidget.cxx; path = ../debugger/gui/CartEFWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ECC1729A5CD00DD0CA9 /* CartEFWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartEFWidget.hxx; path = ../debugger/gui/CartEFWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ECD1729A5CD00DD0CA9 /* CartF0Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF0Widget.cxx; path = ../debugger/gui/CartF0Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ECE1729A5CD00DD0CA9 /* CartF0Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF0Widget.hxx; path = ../debugger/gui/CartF0Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ECF1729A5CD00DD0CA9 /* CartF4SCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF4SCWidget.cxx; path = ../debugger/gui/CartF4SCWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED01729A5CD00DD0CA9 /* CartF4SCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF4SCWidget.hxx; path = ../debugger/gui/CartF4SCWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED11729A5CD00DD0CA9 /* CartF4Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF4Widget.cxx; path = ../debugger/gui/CartF4Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED21729A5CD00DD0CA9 /* CartF4Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF4Widget.hxx; path = ../debugger/gui/CartF4Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED31729A5CD00DD0CA9 /* CartF6SCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF6SCWidget.cxx; path = ../debugger/gui/CartF6SCWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED41729A5CD00DD0CA9 /* CartF6SCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF6SCWidget.hxx; path = ../debugger/gui/CartF6SCWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED51729A5CD00DD0CA9 /* CartF6Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF6Widget.cxx; path = ../debugger/gui/CartF6Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED61729A5CD00DD0CA9 /* CartF6Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF6Widget.hxx; path = ../debugger/gui/CartF6Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED71729A5CD00DD0CA9 /* CartF8SCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF8SCWidget.cxx; path = ../debugger/gui/CartF8SCWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED81729A5CD00DD0CA9 /* CartF8SCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF8SCWidget.hxx; path = ../debugger/gui/CartF8SCWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28ED91729A5CD00DD0CA9 /* CartF8Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartF8Widget.cxx; path = ../debugger/gui/CartF8Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EDA1729A5CD00DD0CA9 /* CartF8Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartF8Widget.hxx; path = ../debugger/gui/CartF8Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EDB1729A5CD00DD0CA9 /* CartFA2Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFA2Widget.cxx; path = ../debugger/gui/CartFA2Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EDC1729A5CD00DD0CA9 /* CartFA2Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFA2Widget.hxx; path = ../debugger/gui/CartFA2Widget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EDD1729A5CD00DD0CA9 /* CartFAWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFAWidget.cxx; path = ../debugger/gui/CartFAWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EDE1729A5CD00DD0CA9 /* CartFAWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFAWidget.hxx; path = ../debugger/gui/CartFAWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EDF1729A5CD00DD0CA9 /* CartFEWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartFEWidget.cxx; path = ../debugger/gui/CartFEWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE01729A5CD00DD0CA9 /* CartFEWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartFEWidget.hxx; path = ../debugger/gui/CartFEWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE11729A5CD00DD0CA9 /* CartMCWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartMCWidget.cxx; path = ../debugger/gui/CartMCWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE21729A5CD00DD0CA9 /* CartMCWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartMCWidget.hxx; path = ../debugger/gui/CartMCWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE31729A5CD00DD0CA9 /* CartSBWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartSBWidget.cxx; path = ../debugger/gui/CartSBWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE41729A5CD00DD0CA9 /* CartSBWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartSBWidget.hxx; path = ../debugger/gui/CartSBWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE51729A5CD00DD0CA9 /* CartUAWidget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartUAWidget.cxx; path = ../debugger/gui/CartUAWidget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE61729A5CD00DD0CA9 /* CartUAWidget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartUAWidget.hxx; path = ../debugger/gui/CartUAWidget.hxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE71729A5CD00DD0CA9 /* CartX07Widget.cxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = CartX07Widget.cxx; path = ../debugger/gui/CartX07Widget.cxx; sourceTree = SOURCE_ROOT; };
+		DCF28EE81729A5CD00DD0CA9 /* CartX07Widget.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = CartX07Widget.hxx; path = ../debugger/gui/CartX07Widget.hxx; sourceTree = SOURCE_ROOT; };
 		DCF467B10F93993B00B25D7A /* Array.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = Array.hxx; path = ../common/Array.hxx; sourceTree = SOURCE_ROOT; };
 		DCF467B20F93993B00B25D7A /* SharedPtr.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SharedPtr.hxx; path = ../common/SharedPtr.hxx; sourceTree = SOURCE_ROOT; };
 		DCF467B40F93993B00B25D7A /* SoundNull.hxx */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.h; name = SoundNull.hxx; path = ../common/SoundNull.hxx; sourceTree = SOURCE_ROOT; };
@@ -965,6 +1087,67 @@
 				2D2331900900B5EF00613B1F /* AudioWidget.hxx */,
 				DC0BFFEB14BA2BEB00CF5E7E /* BoosterWidget.cxx */,
 				DC0BFFEC14BA2BEB00CF5E7E /* BoosterWidget.hxx */,
+				DCF28EB61729A5CD00DD0CA9 /* Cart0840Widget.cxx */,
+				DCF28EB71729A5CD00DD0CA9 /* Cart0840Widget.hxx */,
+				DCF28EAC1729A5CD00DD0CA9 /* Cart2KWidget.cxx */,
+				DCF28EAD1729A5CD00DD0CA9 /* Cart2KWidget.hxx */,
+				DCF28EAE1729A5CD00DD0CA9 /* Cart3EWidget.cxx */,
+				DCF28EAF1729A5CD00DD0CA9 /* Cart3EWidget.hxx */,
+				DCF28EB01729A5CD00DD0CA9 /* Cart3FWidget.cxx */,
+				DCF28EB11729A5CD00DD0CA9 /* Cart3FWidget.hxx */,
+				DCF28EB21729A5CD00DD0CA9 /* Cart4A50Widget.cxx */,
+				DCF28EB31729A5CD00DD0CA9 /* Cart4A50Widget.hxx */,
+				DCF28EB41729A5CD00DD0CA9 /* Cart4KWidget.cxx */,
+				DCF28EB51729A5CD00DD0CA9 /* Cart4KWidget.hxx */,
+				DCF28EB81729A5CD00DD0CA9 /* CartARWidget.cxx */,
+				DCF28EB91729A5CD00DD0CA9 /* CartARWidget.hxx */,
+				DCF28EBA1729A5CD00DD0CA9 /* CartCMWidget.cxx */,
+				DCF28EBB1729A5CD00DD0CA9 /* CartCMWidget.hxx */,
+				DCF28EBC1729A5CD00DD0CA9 /* CartCTYWidget.cxx */,
+				DCF28EBD1729A5CD00DD0CA9 /* CartCTYWidget.hxx */,
+				DCF28EBE1729A5CD00DD0CA9 /* CartCVWidget.cxx */,
+				DCF28EBF1729A5CD00DD0CA9 /* CartCVWidget.hxx */,
+				DCF28EC01729A5CD00DD0CA9 /* CartDebugWidget.hxx */,
+				DCF28EC11729A5CD00DD0CA9 /* CartDPCPlusWidget.cxx */,
+				DCF28EC21729A5CD00DD0CA9 /* CartDPCPlusWidget.hxx */,
+				DCF28EC31729A5CD00DD0CA9 /* CartDPCWidget.cxx */,
+				DCF28EC41729A5CD00DD0CA9 /* CartDPCWidget.hxx */,
+				DCF28EC51729A5CD00DD0CA9 /* CartE0Widget.cxx */,
+				DCF28EC61729A5CD00DD0CA9 /* CartE0Widget.hxx */,
+				DCF28EC71729A5CD00DD0CA9 /* CartE7Widget.cxx */,
+				DCF28EC81729A5CD00DD0CA9 /* CartE7Widget.hxx */,
+				DCF28EC91729A5CD00DD0CA9 /* CartEFSCWidget.cxx */,
+				DCF28ECA1729A5CD00DD0CA9 /* CartEFSCWidget.hxx */,
+				DCF28ECB1729A5CD00DD0CA9 /* CartEFWidget.cxx */,
+				DCF28ECC1729A5CD00DD0CA9 /* CartEFWidget.hxx */,
+				DCF28ECD1729A5CD00DD0CA9 /* CartF0Widget.cxx */,
+				DCF28ECE1729A5CD00DD0CA9 /* CartF0Widget.hxx */,
+				DCF28ECF1729A5CD00DD0CA9 /* CartF4SCWidget.cxx */,
+				DCF28ED01729A5CD00DD0CA9 /* CartF4SCWidget.hxx */,
+				DCF28ED11729A5CD00DD0CA9 /* CartF4Widget.cxx */,
+				DCF28ED21729A5CD00DD0CA9 /* CartF4Widget.hxx */,
+				DCF28ED31729A5CD00DD0CA9 /* CartF6SCWidget.cxx */,
+				DCF28ED41729A5CD00DD0CA9 /* CartF6SCWidget.hxx */,
+				DCF28ED51729A5CD00DD0CA9 /* CartF6Widget.cxx */,
+				DCF28ED61729A5CD00DD0CA9 /* CartF6Widget.hxx */,
+				DCF28ED71729A5CD00DD0CA9 /* CartF8SCWidget.cxx */,
+				DCF28ED81729A5CD00DD0CA9 /* CartF8SCWidget.hxx */,
+				DCF28ED91729A5CD00DD0CA9 /* CartF8Widget.cxx */,
+				DCF28EDA1729A5CD00DD0CA9 /* CartF8Widget.hxx */,
+				DCF28EDB1729A5CD00DD0CA9 /* CartFA2Widget.cxx */,
+				DCF28EDC1729A5CD00DD0CA9 /* CartFA2Widget.hxx */,
+				DCF28EDD1729A5CD00DD0CA9 /* CartFAWidget.cxx */,
+				DCF28EDE1729A5CD00DD0CA9 /* CartFAWidget.hxx */,
+				DCF28EDF1729A5CD00DD0CA9 /* CartFEWidget.cxx */,
+				DCF28EE01729A5CD00DD0CA9 /* CartFEWidget.hxx */,
+				DCF28EE11729A5CD00DD0CA9 /* CartMCWidget.cxx */,
+				DCF28EE21729A5CD00DD0CA9 /* CartMCWidget.hxx */,
+				DCF28EE31729A5CD00DD0CA9 /* CartSBWidget.cxx */,
+				DCF28EE41729A5CD00DD0CA9 /* CartSBWidget.hxx */,
+				DCF28EE51729A5CD00DD0CA9 /* CartUAWidget.cxx */,
+				DCF28EE61729A5CD00DD0CA9 /* CartUAWidget.hxx */,
+				DCF28EE71729A5CD00DD0CA9 /* CartX07Widget.cxx */,
+				DCF28EE81729A5CD00DD0CA9 /* CartX07Widget.hxx */,
 				2D20F9E408C603EC00A73076 /* ColorWidget.cxx */,
 				2D20F9E508C603EC00A73076 /* ColorWidget.hxx */,
 				DC0BFFED14BA2BEB00CF5E7E /* ControllerWidget.hxx */,
@@ -1621,6 +1804,37 @@
 				DCA6277416CB0D45004E9AF0 /* FSNodeFactory.hxx in Headers */,
 				DCA6277616CB0D45004E9AF0 /* FSNodeZIP.hxx in Headers */,
 				DCA6277816CB0D45004E9AF0 /* ZipHandler.hxx in Headers */,
+				DCF28EEA1729A5CD00DD0CA9 /* Cart2KWidget.hxx in Headers */,
+				DCF28EEC1729A5CD00DD0CA9 /* Cart3EWidget.hxx in Headers */,
+				DCF28EEE1729A5CD00DD0CA9 /* Cart3FWidget.hxx in Headers */,
+				DCF28EF01729A5CD00DD0CA9 /* Cart4A50Widget.hxx in Headers */,
+				DCF28EF21729A5CD00DD0CA9 /* Cart4KWidget.hxx in Headers */,
+				DCF28EF41729A5CD00DD0CA9 /* Cart0840Widget.hxx in Headers */,
+				DCF28EF61729A5CD00DD0CA9 /* CartARWidget.hxx in Headers */,
+				DCF28EF81729A5CD00DD0CA9 /* CartCMWidget.hxx in Headers */,
+				DCF28EFA1729A5CD00DD0CA9 /* CartCTYWidget.hxx in Headers */,
+				DCF28EFC1729A5CD00DD0CA9 /* CartCVWidget.hxx in Headers */,
+				DCF28EFD1729A5CD00DD0CA9 /* CartDebugWidget.hxx in Headers */,
+				DCF28EFF1729A5CD00DD0CA9 /* CartDPCPlusWidget.hxx in Headers */,
+				DCF28F011729A5CD00DD0CA9 /* CartDPCWidget.hxx in Headers */,
+				DCF28F031729A5CD00DD0CA9 /* CartE0Widget.hxx in Headers */,
+				DCF28F051729A5CD00DD0CA9 /* CartE7Widget.hxx in Headers */,
+				DCF28F071729A5CD00DD0CA9 /* CartEFSCWidget.hxx in Headers */,
+				DCF28F091729A5CD00DD0CA9 /* CartEFWidget.hxx in Headers */,
+				DCF28F0B1729A5CD00DD0CA9 /* CartF0Widget.hxx in Headers */,
+				DCF28F0D1729A5CD00DD0CA9 /* CartF4SCWidget.hxx in Headers */,
+				DCF28F0F1729A5CD00DD0CA9 /* CartF4Widget.hxx in Headers */,
+				DCF28F111729A5CD00DD0CA9 /* CartF6SCWidget.hxx in Headers */,
+				DCF28F131729A5CD00DD0CA9 /* CartF6Widget.hxx in Headers */,
+				DCF28F151729A5CD00DD0CA9 /* CartF8SCWidget.hxx in Headers */,
+				DCF28F171729A5CD00DD0CA9 /* CartF8Widget.hxx in Headers */,
+				DCF28F191729A5CD00DD0CA9 /* CartFA2Widget.hxx in Headers */,
+				DCF28F1B1729A5CD00DD0CA9 /* CartFAWidget.hxx in Headers */,
+				DCF28F1D1729A5CD00DD0CA9 /* CartFEWidget.hxx in Headers */,
+				DCF28F1F1729A5CD00DD0CA9 /* CartMCWidget.hxx in Headers */,
+				DCF28F211729A5CD00DD0CA9 /* CartSBWidget.hxx in Headers */,
+				DCF28F231729A5CD00DD0CA9 /* CartUAWidget.hxx in Headers */,
+				DCF28F251729A5CD00DD0CA9 /* CartX07Widget.hxx in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1893,6 +2107,36 @@
 				DCDBD3181556F60C00308CC4 /* CartCTY.cxx in Sources */,
 				DCA6277516CB0D45004E9AF0 /* FSNodeZIP.cxx in Sources */,
 				DCA6277716CB0D45004E9AF0 /* ZipHandler.cxx in Sources */,
+				DCF28EE91729A5CD00DD0CA9 /* Cart2KWidget.cxx in Sources */,
+				DCF28EEB1729A5CD00DD0CA9 /* Cart3EWidget.cxx in Sources */,
+				DCF28EED1729A5CD00DD0CA9 /* Cart3FWidget.cxx in Sources */,
+				DCF28EEF1729A5CD00DD0CA9 /* Cart4A50Widget.cxx in Sources */,
+				DCF28EF11729A5CD00DD0CA9 /* Cart4KWidget.cxx in Sources */,
+				DCF28EF31729A5CD00DD0CA9 /* Cart0840Widget.cxx in Sources */,
+				DCF28EF51729A5CD00DD0CA9 /* CartARWidget.cxx in Sources */,
+				DCF28EF71729A5CD00DD0CA9 /* CartCMWidget.cxx in Sources */,
+				DCF28EF91729A5CD00DD0CA9 /* CartCTYWidget.cxx in Sources */,
+				DCF28EFB1729A5CD00DD0CA9 /* CartCVWidget.cxx in Sources */,
+				DCF28EFE1729A5CD00DD0CA9 /* CartDPCPlusWidget.cxx in Sources */,
+				DCF28F001729A5CD00DD0CA9 /* CartDPCWidget.cxx in Sources */,
+				DCF28F021729A5CD00DD0CA9 /* CartE0Widget.cxx in Sources */,
+				DCF28F041729A5CD00DD0CA9 /* CartE7Widget.cxx in Sources */,
+				DCF28F061729A5CD00DD0CA9 /* CartEFSCWidget.cxx in Sources */,
+				DCF28F081729A5CD00DD0CA9 /* CartEFWidget.cxx in Sources */,
+				DCF28F0A1729A5CD00DD0CA9 /* CartF0Widget.cxx in Sources */,
+				DCF28F0C1729A5CD00DD0CA9 /* CartF4SCWidget.cxx in Sources */,
+				DCF28F0E1729A5CD00DD0CA9 /* CartF4Widget.cxx in Sources */,
+				DCF28F101729A5CD00DD0CA9 /* CartF6SCWidget.cxx in Sources */,
+				DCF28F121729A5CD00DD0CA9 /* CartF6Widget.cxx in Sources */,
+				DCF28F141729A5CD00DD0CA9 /* CartF8SCWidget.cxx in Sources */,
+				DCF28F161729A5CD00DD0CA9 /* CartF8Widget.cxx in Sources */,
+				DCF28F181729A5CD00DD0CA9 /* CartFA2Widget.cxx in Sources */,
+				DCF28F1A1729A5CD00DD0CA9 /* CartFAWidget.cxx in Sources */,
+				DCF28F1C1729A5CD00DD0CA9 /* CartFEWidget.cxx in Sources */,
+				DCF28F1E1729A5CD00DD0CA9 /* CartMCWidget.cxx in Sources */,
+				DCF28F201729A5CD00DD0CA9 /* CartSBWidget.cxx in Sources */,
+				DCF28F221729A5CD00DD0CA9 /* CartUAWidget.cxx in Sources */,
+				DCF28F241729A5CD00DD0CA9 /* CartX07Widget.cxx in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
