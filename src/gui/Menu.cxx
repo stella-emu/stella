@@ -39,7 +39,7 @@ Menu::Menu(OSystem* osystem)
   }
   else
   {
-    dw = 640;  dh = 420;
+    dw = 480;  dh = 380;
   }
   myBaseDialog = new OptionsDialog(myOSystem, this, 0, dw, dh, false);  // in game mode
 }

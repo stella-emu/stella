@@ -141,12 +141,12 @@ class DialogContainer
     /**
       Add a dialog box to the stack.
     */
-    void addDialog(Dialog* d, bool refresh);
+    void addDialog(Dialog* d);
 
     /**
       Remove the topmost dialog box from the stack.
     */
-    void removeDialog(bool refresh);
+    void removeDialog();
 
   protected:
     OSystem* myOSystem;

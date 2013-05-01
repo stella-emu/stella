@@ -87,7 +87,7 @@ void TiaOutputWidget::handleCommand(CommandSender* sender, int cmd, int data, in
 
   switch(cmd)
   {
-    case kCMenuItemSelectedCmd:
+    case ContextMenu::kItemSelectedCmd:
     {
       const string& rmb = myMenu->getSelectedTag();
 

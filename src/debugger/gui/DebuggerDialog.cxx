@@ -308,8 +308,8 @@ void DebuggerDialog::addRomArea()
   // Disassembly area
 
   xpos = r.left + vBorder;  ypos += myRam->getHeight() + 5;
-  const int tabWidth  = r.width() - vBorder;
-  const int tabHeight = r.height() - ypos;
+  const int tabWidth  = r.width() - vBorder - 1;
+  const int tabHeight = r.height() - ypos - 1;
   int tabID;
 
   // Since there are two tab widgets in this dialog, we specifically

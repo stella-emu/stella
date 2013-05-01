@@ -32,16 +32,17 @@ class CheckListWidget;
 #include "CartDebug.hxx"
 #include "EditableWidget.hxx"
 
-// Some special commands for this widget
-enum {
-  kRLBreakpointChangedCmd = 'RLbp',  // click on the checkbox for a breakpoint
-  kRLRomChangedCmd        = 'RLpr'   // ROM item data changed - 'data' will be item index
-};
-
 /** RomListWidget */
 class RomListWidget : public EditableWidget
 {
   friend class RomWidget;
+
+  public:
+    enum {
+      kBreakpointChangedCmd = 'RLbp',  // click on the checkbox for a breakpoint
+      kRomChangedCmd        = 'RLpr'   // ROM item data changed - 'data' will be
+                                         // item index
+    };
 
   public:
     RomListWidget(GuiObject* boss, const GUI::Font& font,

@@ -80,6 +80,7 @@ void Dialog::open(bool refresh)
     uInt32 surfaceID = instance().frameBuffer().allocateSurface(_w, _h, _isBase);
     _surface = instance().frameBuffer().surface(surfaceID);
   }
+  parent().addDialog(this);
 
   center();
   loadConfig();
@@ -90,7 +91,8 @@ void Dialog::open(bool refresh)
 
   _visible = true;
 
-  parent().addDialog(this, refresh);
+  if(refresh)
+    instance().frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -106,7 +108,10 @@ void Dialog::close(bool refresh)
 
   _visible = false;
 
-  parent().removeDialog(refresh);
+  parent().removeDialog();
+
+  if(refresh)
+    instance().frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

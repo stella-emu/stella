@@ -27,10 +27,6 @@
 #include "Command.hxx"
 #include "Dialog.hxx"
 
-enum {
-  kCMenuItemSelectedCmd = 'CMsl'
-};
-
 /**
  * Popup context menu which, when clicked, "pop up" a list of items and
  * lets the user pick on of them.
@@ -43,6 +39,11 @@ enum {
  */
 class ContextMenu : public Dialog, public CommandSender
 {
+  public:
+    enum {
+      kItemSelectedCmd = 'CMsl'
+    };
+
   public:
     ContextMenu(GuiObject* boss, const GUI::Font& font,
                 const StringMap& items, int cmd = 0);

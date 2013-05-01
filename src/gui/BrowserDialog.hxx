@@ -37,6 +37,13 @@ class GameList;
 class BrowserDialog : public Dialog, public CommandSender
 {
   public:
+    enum ListMode {
+      kFileLoad,      // File selector, no input from user
+      kFileSave,      // File selector, filename changable by user
+      kDirectoryOpen  // Directories only, no input from user
+    };
+
+  public:
     BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
     virtual ~BrowserDialog();
 

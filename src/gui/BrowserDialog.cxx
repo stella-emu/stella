@@ -47,18 +47,17 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
     _fileList(NULL),
     _currentPath(NULL),
     _nodeList(NULL),
-    _mode(FilesystemNode::kListDirectoriesOnly)
+    _mode(FilesystemNode::kListAll)
 {
+  // Set real dimensions
+  _w = max_w;
+  _h = max_h;
+
   const int lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
             buttonHeight = font.getLineHeight() + 4;
   int xpos, ypos;
   ButtonWidget* b;
-
-  // Set real dimensions
-  // This is one dialog that can take as much space as is available
-  _w = BSPF_min(max_w, 480);
-  _h = BSPF_min(max_h, 380);
 
   xpos = 10;  ypos = 4;
   _title = new StaticTextWidget(this, font, xpos, ypos,
@@ -123,18 +122,6 @@ BrowserDialog::~BrowserDialog()
 void BrowserDialog::show(const string& title, const string& startpath,
                          FilesystemNode::ListMode mode, int cmd)
 {
-  // TODO - dialog has to be added before any settings are changed,
-  //        since (for example) changing the title triggers a redraw,
-  //        and the dialog must be added (so it exists) for that to happen
-  // Fixing this requires changes to the underlying widget classes
-  // (ie, changing a widgets contents should signal its dialog that a
-  // redraw is necessary; it shouldn't be responsible for redraw itself)
-  //
-  // Doing it this way has the unfortunate side effect that a previous
-  // title is temporarily visible when re-using the browser for different
-  // purposes
-  open();
-
   _title->setLabel(title);
   _cmd = cmd;
   _mode = mode;
@@ -151,6 +138,9 @@ void BrowserDialog::show(const string& title, const string& startpath,
 
   // Alway refresh file list
   updateListing();
+
+  // Finally, open the dialog after it has been fully updated
+  open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -208,7 +198,7 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
     case kChooseCmd:
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
-      if(_cmd) sendCommand(_cmd, 0, 0);
+      if(_cmd) sendCommand(_cmd, -1, -1);
       close();
       break;
 

@@ -200,7 +200,7 @@ void TiaZoomWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
 {
   switch(cmd)
   {
-    case kCMenuItemSelectedCmd:
+    case ContextMenu::kItemSelectedCmd:
     {
       int level = (int) atoi(myMenu->getSelectedTag().c_str());
       if(level > 0)

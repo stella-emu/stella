@@ -405,7 +405,8 @@ void RomListWidget::handleCommand(CommandSender* sender, int cmd, int data, int 
     case kCheckActionCmd:
       // We let the parent class handle this
       // Pass it as a kRLBreakpointChangedCmd command, since that's the intent
-      sendCommand(kRLBreakpointChangedCmd, myCheckList[id]->getState(), _currentPos+id);
+      sendCommand(RomListWidget::kBreakpointChangedCmd,
+                  myCheckList[id]->getState(), _currentPos+id);
       break;
 
     case kSetPositionCmd:
@@ -597,7 +598,7 @@ void RomListWidget::endEditMode()
   // Send a message that editing finished with a return/enter key press
   // The parent then calls getEditString() to get the newly entered data
   _editMode = false;
-  sendCommand(kRLRomChangedCmd, _selectedItem, _id);
+  sendCommand(RomListWidget::kRomChangedCmd, _selectedItem, _id);
 
   // Reset to normal data entry
   EditableWidget::endEditMode();

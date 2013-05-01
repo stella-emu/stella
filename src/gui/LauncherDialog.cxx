@@ -174,7 +174,7 @@ LauncherDialog::LauncherDialog(OSystem* osystem, DialogContainer* parent,
   mySelectedItem = 0;  // Highlight 'Rom Listing'
 
   // Create an options dialog, similar to the in-game one
-  myOptions = new OptionsDialog(osystem, parent, this, w, h, true);  // not in game mode
+  myOptions = new OptionsDialog(osystem, parent, this, w * 0.8, h * 0.8, true);
 
   // Create a game list, which contains all the information about a ROM that
   // the launcher needs
@@ -619,7 +619,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       updateListing();
       break;
 
-    case kCMenuItemSelectedCmd:
+    case ContextMenu::kItemSelectedCmd:
       handleContextMenu();
       break;
 

@@ -385,9 +385,10 @@ void OSystem::setUIPalette()
 void OSystem::setBaseDir(const string& basedir)
 {
   FilesystemNode node(basedir);
-  myBaseDir = node.getPath();
   if(!node.isDirectory())
     node.makeDir();
+
+  myBaseDir = node.getPath();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -823,6 +824,7 @@ void OSystem::validatePath(string& path, const string& setting,
   FilesystemNode node(s);
   if(!node.isDirectory())
     node.makeDir();
+
   path = node.getPath();
   mySettings->setString(setting, node.getShortPath());
 }

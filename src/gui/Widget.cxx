@@ -68,15 +68,12 @@ Widget::~Widget()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Widget::draw()
 {
-  if(!_dirty)
+  if(!_dirty || !isVisible() || !_boss->isVisible())
     return;
 
   _dirty = false;
-  
-  FBSurface& s = _boss->dialog().surface();
 
-  if(!isVisible() || !_boss->isVisible())
-    return;
+  FBSurface& s = _boss->dialog().surface();
 
   bool hasBorder = _flags & WIDGET_BORDER;
   int oldX = _x, oldY = _y, oldW = _w, oldH = _h;

@@ -57,6 +57,10 @@ void FilesystemNodePOSIX::setFlags()
   {
     _isDirectory = S_ISDIR(st.st_mode);
     _isFile = S_ISREG(st.st_mode);
+
+    // Add a trailing slash, if necessary
+    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
+      _path += '/';
   }
   else
     _isDirectory = _isFile = false;
@@ -94,14 +98,8 @@ FilesystemNodePOSIX::FilesystemNodePOSIX(const string& p, bool verify)
 
   _displayName = lastPathComponent(_path);
 
-  if (verify)
-  {
+  if(verify)
     setFlags();
-
-    // Add a trailing slash, if necessary
-    if (_isDirectory && _path.length() > 0 && _path[_path.length()-1] != '/')
-      _path += '/';
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -184,6 +182,9 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
         entry._isDirectory = (dp->d_type == DT_DIR);
         entry._isFile = (dp->d_type == DT_REG);
       }
+
+      if (entry._isDirectory)
+        entry._path += "/";
     }
 #endif
 
@@ -196,9 +197,6 @@ bool FilesystemNodePOSIX::getChildren(AbstractFSList& myList, ListMode mode,
     if ((mode == FilesystemNode::kListFilesOnly && !entry._isFile) ||
         (mode == FilesystemNode::kListDirectoriesOnly && !entry._isDirectory))
       continue;
-
-    if (entry._isDirectory)
-      entry._path += "/";
 
     myList.push_back(new FilesystemNodePOSIX(entry));
   }

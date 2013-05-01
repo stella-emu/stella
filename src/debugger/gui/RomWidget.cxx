@@ -139,7 +139,7 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
 {
   switch(cmd)
   {
-    case kRLBreakpointChangedCmd:
+    case RomListWidget::kBreakpointChangedCmd:
       // 'id' is the line in the disassemblylist to be accessed
       // 'data' is the state of the breakpoint at 'id'
       setBreak(id, data);
@@ -149,12 +149,12 @@ void RomWidget::handleCommand(CommandSender* sender, int cmd, int data, int id)
       myRomList->draw();
       break;
 
-    case kRLRomChangedCmd:
+    case RomListWidget::kRomChangedCmd:
       // 'data' is the line in the disassemblylist to be accessed
       patchROM(data, myRomList->getEditString());
       break;
 
-    case kCMenuItemSelectedCmd:
+    case ContextMenu::kItemSelectedCmd:
     {
       const string& rmb = myRomList->myMenu->getSelectedTag();
 

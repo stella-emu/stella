@@ -112,27 +112,19 @@ void DialogContainer::draw(bool full)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::addDialog(Dialog* d, bool refresh)
+void DialogContainer::addDialog(Dialog* d)
 {
   const GUI::Rect& screen = myOSystem->frameBuffer().screenRect();
   assert(d->getWidth() <= screen.width() && d->getHeight() <= screen.height());
 
   myDialogStack.push(d);
-
-  if(refresh)
-    myOSystem->frameBuffer().refresh();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void DialogContainer::removeDialog(bool refresh)
+void DialogContainer::removeDialog()
 {
   if(!myDialogStack.empty())
-  {
     myDialogStack.pop();
-
-    if(refresh)
-      myOSystem->frameBuffer().refresh();
-  }
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
