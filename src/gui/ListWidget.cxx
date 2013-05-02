@@ -112,6 +112,13 @@ void ListWidget::setHighlighted(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+const string& ListWidget::getSelectedString() const
+{
+  return (_selectedItem >= 0 && _selectedItem < (int)_list.size())
+            ? _list[_selectedItem] : EmptyString;
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::scrollTo(int item)
 {
   int size = _list.size();
@@ -166,8 +173,8 @@ void ListWidget::handleMouseDown(int x, int y, int button, int clickCount)
   // First check whether the selection changed
   int newSelectedItem;
   newSelectedItem = findItem(x, y);
-  if (newSelectedItem > (int)_list.size() - 1)
-    newSelectedItem = -1;
+  if (newSelectedItem >= (int)_list.size())
+    return;
 
   if (_selectedItem != newSelectedItem)
   {

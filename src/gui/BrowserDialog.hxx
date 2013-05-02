@@ -25,6 +25,7 @@
 
 class GuiObject;
 class ButtonWidget;
+class EditTextWidget;
 class StaticTextWidget;
 class StringListWidget;
 class GameList;
@@ -38,9 +39,9 @@ class BrowserDialog : public Dialog, public CommandSender
 {
   public:
     enum ListMode {
-      kFileLoad,      // File selector, no input from user
-      kFileSave,      // File selector, filename changable by user
-      kDirectoryOpen  // Directories only, no input from user
+      FileLoad,      // File selector, no input from user
+      FileSave,      // File selector, filename changable by user
+      DirectoryOpen  // Directories only, no input from user
     };
 
   public:
@@ -69,6 +70,8 @@ class BrowserDialog : public Dialog, public CommandSender
     StringListWidget* _fileList;
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
+    StaticTextWidget* _type;
+    EditTextWidget*   _selected;
     ButtonWidget*     _goUpButton;
     ButtonWidget*     _basedirButton;
 

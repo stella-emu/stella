@@ -173,7 +173,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
   switch(cmd)
   {
     case kOKCmd:
-    case kEditAcceptCmd:
+    case EditableWidget::kAcceptCmd:
     {
       // Send a signal to the calling class that a selection has been made
       // Since we aren't derived from a widget, we don't have a 'data' or 'id'
@@ -185,7 +185,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       break;
     }
 
-    case kEditChangedCmd:
+    case EditableWidget::kChangedCmd:
       // Erase the invalid message once editing is restarted
       if(myErrorFlag)
       {
@@ -194,7 +194,7 @@ void InputTextDialog::handleCommand(CommandSender* sender, int cmd,
       }
       break;
 
-    case kEditCancelCmd:
+    case EditableWidget::kCancelCmd:
       Dialog::handleCommand(sender, kCloseCmd, data, id);
       break;
 

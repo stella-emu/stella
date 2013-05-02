@@ -35,16 +35,16 @@ class GameList
     GameList();
     ~GameList();
 
-    const string& name(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._name : EmptyString; }
-    const string& path(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._path : EmptyString; }
-    const string& md5(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._md5 : EmptyString; }
-    const bool isDir(int i) const
-      { return i < (int)myArray.size() ? myArray[i]._isdir: false; }
+    const string& name(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._name : EmptyString; }
+    const string& path(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._path : EmptyString; }
+    const string& md5(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._md5 : EmptyString; }
+    const bool isDir(uInt32 i) const
+      { return i < myArray.size() ? myArray[i]._isdir: false; }
 
-    void setMd5(int i, const string& md5)
+    void setMd5(uInt32 i, const string& md5)
       { myArray[i]._md5 = md5; }
 
     int size() const { return myArray.size(); }
@@ -55,14 +55,18 @@ class GameList
     void sortByName();
 
   private:
-    class Entry {
-      public:
-        string _name;
-        string _path;
-        string _md5;
-        bool   _isdir;
+    struct Entry {
+      string _name;
+      string _path;
+      string _md5;
+      bool   _isdir;
 
-        bool operator < (const Entry& a) const;
+      Entry(string name, string path, string md5, bool isdir)
+      {
+        _name = name;  _path = path;  _md5 = md5;  _isdir = isdir;
+      }
+
+      bool operator < (const Entry& a) const;
     };
     vector<Entry> myArray;
 };

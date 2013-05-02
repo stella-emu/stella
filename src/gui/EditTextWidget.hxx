@@ -32,7 +32,7 @@ class EditTextWidget : public EditableWidget
 {
   public:
     EditTextWidget(GuiObject* boss, const GUI::Font& font,
-                   int x, int y, int w, int h, const string& text);
+                   int x, int y, int w, int h, const string& text = "");
 
     void setEditString(const string& str, bool changed = false);
 

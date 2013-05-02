@@ -40,6 +40,10 @@
       - Fixed labelling in ROW directives; it wasn't accurately setting
         a label in the case where it occurred in the middle of the data.
 
+  * Fixed bug in Linux/OSX versions when starting Stella for the first
+    time; it was previously creating mislabeled directories to store
+    settings, snapshots, etc.
+
   * Fixed redundant "New console created" message when entering the same
     ROM multiple times from the ROM launcher.
 

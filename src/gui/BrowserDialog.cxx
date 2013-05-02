@@ -28,6 +28,7 @@
 #include "GameList.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
+#include "EditTextWidget.hxx"
 #include "StringListWidget.hxx"
 #include "Widget.hxx"
 
@@ -55,7 +56,8 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
   const int lineHeight   = font.getLineHeight(),
             buttonWidth  = font.getStringWidth("Defaults") + 20,
-            buttonHeight = font.getLineHeight() + 4;
+            buttonHeight = font.getLineHeight() + 4,
+            selectHeight = lineHeight + 8;
   int xpos, ypos;
   ButtonWidget* b;
 
@@ -71,10 +73,20 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                                       "", kTextAlignLeft);
 
   // Add file list
-  ypos += lineHeight;
-  _fileList = new StringListWidget(this, font, xpos, ypos,
-                                   _w - 2 * xpos, _h - buttonHeight - ypos - 20);
+  ypos += lineHeight + 4;
+  _fileList = new StringListWidget(this, font, xpos, ypos, _w - 2 * xpos,
+                                   _h - selectHeight - buttonHeight - ypos - 20);
   _fileList->setEditable(false);
+
+  // Add currently selected item
+  ypos += _fileList->getHeight() + 4;
+
+  _type = new StaticTextWidget(this, font, xpos, ypos,
+                               font.getStringWidth("File: "), lineHeight,
+                               "", kTextAlignCenter);
+  _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos, 
+                                 _w - _type->getWidth() - 2 * xpos, lineHeight, "");
+  _selected->setEditable(false);
 
   // Buttons
   _goUpButton = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
@@ -212,6 +224,16 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       _node = FilesystemNode(instance().baseDir());
       updateListing();
       break;
+
+    case ListWidget::kSelectionChangedCmd:
+    {
+      int item = _fileList->getSelected();
+      if(item >= 0)
+      {
+        _selected->setEditString(_fileList->getSelectedString());
+      }
+      break;
+    }
 
     case ListWidget::kActivatedCmd:
     case ListWidget::kDoubleClickedCmd:

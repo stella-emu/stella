@@ -60,8 +60,8 @@ class ListWidget : public EditableWidget
     int getHighlighted() const     { return _highlightedItem; }
     void setHighlighted(int item);
 
-    const StringList& getList()	const        { return _list; }
-    const string& getSelectedString() const  { return _list[_selectedItem]; }
+    const StringList& getList()	const { return _list; }
+    const string& getSelectedString() const;
 
     void scrollTo(int item);
 

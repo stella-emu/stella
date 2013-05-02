@@ -623,8 +623,8 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
       handleContextMenu();
       break;
 
-    case kEditAcceptCmd:
-    case kEditChangedCmd:
+    case EditableWidget::kAcceptCmd:
+    case EditableWidget::kChangedCmd:
       // The updateListing() method knows what to do when the text changes
       updateListing();
       break;

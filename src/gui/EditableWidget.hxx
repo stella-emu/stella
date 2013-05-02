@@ -26,18 +26,19 @@
 #include "Widget.hxx"
 #include "Rect.hxx"
 
-enum {
-  kEditAcceptCmd  = 'EDac',
-  kEditCancelCmd  = 'EDcl',
-  kEditChangedCmd = 'EDch'
-};
-
 /**
  * Base class for widgets which need to edit text, like ListWidget and
  * EditTextWidget.
  */
 class EditableWidget : public Widget, public CommandSender
 {
+  public:
+    enum {
+      kAcceptCmd  = 'EDac',
+      kCancelCmd  = 'EDcl',
+      kChangedCmd = 'EDch'
+    };
+
   public:
     EditableWidget(GuiObject *boss, const GUI::Font& font,
                    int x, int y, int w, int h, const string& str = "");

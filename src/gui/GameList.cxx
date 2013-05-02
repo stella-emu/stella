@@ -40,13 +40,7 @@ GameList::~GameList()
 void GameList::appendGame(const string& name, const string& path,
                           const string& md5, bool isDir)
 {
-  Entry g;
-  g._name  = name;
-  g._path  = path;
-  g._md5   = md5;
-  g._isdir = isDir;
-
-  myArray.push_back(g);
+  myArray.push_back(Entry(name, path, md5, isDir));
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
