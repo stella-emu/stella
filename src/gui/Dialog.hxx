@@ -73,7 +73,7 @@ class Dialog : public GuiObject
     void addCancelWidget(Widget* w) { _cancelWidget = w; }
     void setFocus(Widget* w);
 
-    FBSurface& surface() { return *_surface; }
+    FBSurface& surface() const { return *_surface; }
 
   protected:
     virtual void draw();
