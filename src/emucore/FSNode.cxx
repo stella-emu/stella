@@ -96,10 +96,7 @@ FilesystemNode FilesystemNode::getParent() const
     return *this;
 
   AbstractFSNode* node = _realNode->getParent();
-  if (node == 0)
-    return *this;
-  else
-    return FilesystemNode(node);
+  return (node == 0) ? *this : FilesystemNode(node);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

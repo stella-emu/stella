@@ -579,9 +579,13 @@ ZipHandler::zip_error
   z_stream stream;
   int zerr;
 
+#if 0
+  // TODO - check newer versions of ZIP, and determine why this specific
+  //        version (0x14) is important
   /* make sure we don't need a newer mechanism */
   if (zip->header.version_needed > 0x14)
     return ZIPERR_UNSUPPORTED;
+#endif
 
   /* reset the stream */
   memset(&stream, 0, sizeof(stream));
