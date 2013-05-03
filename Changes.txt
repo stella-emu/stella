@@ -40,6 +40,9 @@
       - Fixed labelling in ROW directives; it wasn't accurately setting
         a label in the case where it occurred in the middle of the data.
 
+  * Fixed regression in handling ZIP files (as compared to version 3.7.5)
+    created with newer versions of the ZIP program.
+
   * Fixed bug in Linux/OSX versions when starting Stella for the first
     time; it was previously creating mislabeled directories to store
     settings, snapshots, etc.
