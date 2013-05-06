@@ -273,6 +273,7 @@ SDLmain.lib
     <ClCompile Include="..\emucore\CartFA2.cxx" />
     <ClCompile Include="..\emucore\CompuMate.cxx" />
     <ClCompile Include="..\emucore\MindLink.cxx" />
+    <ClCompile Include="..\gui\FileListWidget.cxx" />
     <ClCompile Include="..\gui\LoggerDialog.cxx" />
     <ClCompile Include="FSNodeWin32.cxx" />
     <ClCompile Include="..\common\mainSDL.cxx">
@@ -512,6 +513,7 @@ SDLmain.lib
     <ClInclude Include="..\emucore\CartFA2.hxx" />
     <ClInclude Include="..\emucore\CompuMate.hxx" />
     <ClInclude Include="..\emucore\MindLink.hxx" />
+    <ClInclude Include="..\gui\FileListWidget.hxx" />
     <ClInclude Include="..\gui\LoggerDialog.hxx" />
     <ClInclude Include="..\libpng\pngdebug.h" />
     <ClInclude Include="..\libpng\pnginfo.h" />
