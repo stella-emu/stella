@@ -26,9 +26,8 @@
 class GuiObject;
 class ButtonWidget;
 class EditTextWidget;
+class FileListWidget;
 class StaticTextWidget;
-class StringListWidget;
-class GameList;
 
 #include "Dialog.hxx"
 #include "Command.hxx"
@@ -39,24 +38,25 @@ class BrowserDialog : public Dialog, public CommandSender
 {
   public:
     enum ListMode {
-      FileLoad,      // File selector, no input from user
-      FileSave,      // File selector, filename changable by user
-      DirectoryOpen  // Directories only, no input from user
+      FileLoad,   // File selector, no input from user
+      FileSave,   // File selector, filename changable by user
+      Directories // Directories only, no input from user
     };
 
   public:
     BrowserDialog(GuiObject* boss, const GUI::Font& font, int max_w, int max_h);
     virtual ~BrowserDialog();
 
-    const FilesystemNode& getResult() { return _node; }
-
     /** Place the browser window onscreen, using the given attributes */
     void show(const string& title, const string& startpath,
-              FilesystemNode::ListMode mode, int cmd);
+              BrowserDialog::ListMode mode, int cmd);
+
+    /** Get resulting file node (called after receiving kChooseCmd */
+    const FilesystemNode& getResult() const;
 
   protected:
     virtual void handleCommand(CommandSender* sender, int cmd, int data, int id);
-    void updateListing();
+    void updateUI();
 
   private:
     enum {
@@ -67,7 +67,7 @@ class BrowserDialog : public Dialog, public CommandSender
 
     int	_cmd;
 
-    StringListWidget* _fileList;
+    FileListWidget*   _fileList;
     StaticTextWidget* _currentPath;
     StaticTextWidget* _title;
     StaticTextWidget* _type;
@@ -75,10 +75,7 @@ class BrowserDialog : public Dialog, public CommandSender
     ButtonWidget*     _goUpButton;
     ButtonWidget*     _basedirButton;
 
-    FilesystemNode _node;
-    GameList*      _nodeList;
-
-    FilesystemNode::ListMode _mode;
+    BrowserDialog::ListMode _mode;
 };
 
 #endif

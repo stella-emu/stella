@@ -241,7 +241,7 @@ void OptionsDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kAboutCmd:
-      open();
+      myAboutDialog->open();
       break;
 
     case kExitCmd:

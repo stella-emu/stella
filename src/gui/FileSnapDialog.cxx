@@ -286,42 +286,42 @@ void FileSnapDialog::handleCommand(CommandSender* sender, int cmd,
 
     case kChooseRomDirCmd:
       myBrowser->show("Select ROM directory:", myRomPath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kRomDirChosenCmd);
+                      BrowserDialog::Directories, kRomDirChosenCmd);
       break;
 
     case kChooseSnapSaveDirCmd:
       myBrowser->show("Select snapshot save directory:", mySnapSavePath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kSnapSaveDirChosenCmd);
+                      BrowserDialog::Directories, kSnapSaveDirChosenCmd);
       break;
 
     case kChooseSnapLoadDirCmd:
       myBrowser->show("Select snapshot load directory:", mySnapLoadPath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kSnapLoadDirChosenCmd);
+                      BrowserDialog::Directories, kSnapLoadDirChosenCmd);
       break;
 
     case kChooseCheatFileCmd:
       myBrowser->show("Select cheat file:", myCheatFile->getEditString(),
-                      FilesystemNode::kListAll, kCheatFileChosenCmd);
+                      BrowserDialog::FileLoad, kCheatFileChosenCmd);
       break;
 
     case kChoosePaletteFileCmd:
       myBrowser->show("Select palette file:", myPaletteFile->getEditString(),
-                      FilesystemNode::kListAll, kPaletteFileChosenCmd);
+                      BrowserDialog::FileLoad, kPaletteFileChosenCmd);
       break;
 
     case kChoosePropsFileCmd:
       myBrowser->show("Select properties file:", myPropsFile->getEditString(),
-                      FilesystemNode::kListAll, kPropsFileChosenCmd);
+                      BrowserDialog::FileLoad, kPropsFileChosenCmd);
       break;
 
     case kChooseNVRamDirCmd:
       myBrowser->show("Select NVRAM directory:", myNVRamPath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kNVRamDirChosenCmd);
+                      BrowserDialog::Directories, kNVRamDirChosenCmd);
       break;
 
     case kChooseStateDirCmd:
       myBrowser->show("Select state directory:", myStatePath->getEditString(),
-                      FilesystemNode::kListDirectoriesOnly, kStateDirChosenCmd);
+                      BrowserDialog::Directories, kStateDirChosenCmd);
       break;
 
     case kRomDirChosenCmd:

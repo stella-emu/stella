@@ -310,32 +310,9 @@ void LauncherDialog::updateListing(const string& nameToSelect)
   myRomCount->setLabel(buf.str());
 
   // Restore last selection
-  int selected = -1;
-  if(!myList->getList().isEmpty())
-  {
-    const string& find =
-      nameToSelect == "" ? instance().settings().getString("lastrom") : nameToSelect;
-
-    if(find == "")
-      selected = 0;
-    else
-    {
-      unsigned int itemToSelect = 0;
-      StringList::const_iterator iter;
-      for(iter = myList->getList().begin(); iter != myList->getList().end();
-          ++iter, ++itemToSelect)	 
-      {
-        if(find == *iter)
-        {
-          selected = itemToSelect;
-          break;
-        }
-      }
-      if(itemToSelect > myList->getList().size())
-        selected = 0;
-    }
-  }
-  myList->setSelected(selected);
+  const string& find =
+    nameToSelect == "" ? instance().settings().getString("lastrom") : nameToSelect;
+  myList->setSelected(find);
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -586,7 +563,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         myRomDir = new BrowserDialog(this, instance().font(), _w, _h);
 
       myRomDir->show("Select ROM directory:", "~",
-                     FilesystemNode::kListDirectoriesOnly, kStartupRomDirChosenCmd);
+                     BrowserDialog::Directories, kStartupRomDirChosenCmd);
       break;
 
     case kStartupRomDirChosenCmd:

@@ -13,6 +13,7 @@ MODULE_OBJS := \
 	src/gui/EditableWidget.o \
 	src/gui/EditTextWidget.o \
 	src/gui/EventMappingWidget.o \
+	src/gui/FileListWidget.o \
 	src/gui/FileSnapDialog.o \
 	src/gui/Font.o \
 	src/gui/GameInfoDialog.o \

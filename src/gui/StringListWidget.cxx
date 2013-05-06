@@ -27,12 +27,9 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 StringListWidget::StringListWidget(GuiObject* boss, const GUI::Font& font,
-                                   int x, int y, int w, int h, bool hilite,
-                                   NumberingMode mode)
+                                   int x, int y, int w, int h, bool hilite)
   : ListWidget(boss, font, x, y, w, h),
-    _numberingMode(mode),
     _hilite(hilite)
-
 {
 }
 
@@ -66,8 +63,6 @@ void StringListWidget::drawWidget(bool hilite)
   // Draw the list items
   for (i = 0, pos = _currentPos; i < _rows && pos < len; i++, pos++)
   {
-    const uInt32 textColor = (_selectedItem == pos && _editMode)
-                              ? kColor : kTextColor;
     const int y = _y + 2 + _fontHeight * i;
 
     // Draw the selected item inverted, on a highlighted background.
@@ -77,15 +72,6 @@ void StringListWidget::drawWidget(bool hilite)
         s.fillRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
       else
         s.frameRect(_x + 1, _y + 1 + _fontHeight * i, _w - 1, _fontHeight, kTextColorHi);
-    }
-
-    // If in numbering mode, we first print a number prefix
-    if (_numberingMode != kListNumberingOff)
-    {
-      char temp[10];
-      BSPF_snprintf(temp, 9, "%2d. ", (pos + _numberingMode));
-      buffer = temp;
-      s.drawString(_font, buffer, _x + 2, y, _w - 4, textColor);
     }
 
     GUI::Rect r(getEditRect());
@@ -115,18 +101,10 @@ void StringListWidget::drawWidget(bool hilite)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 GUI::Rect StringListWidget::getEditRect() const
 {
-  GUI::Rect r(2, 1, _w - 2 , _fontHeight);
+  GUI::Rect r(2, 1, _w - 2, _fontHeight);
   const int offset = (_selectedItem - _currentPos) * _fontHeight;
   r.top += offset;
   r.bottom += offset;
-
-  if (_numberingMode != kListNumberingOff)
-  {
-    char temp[10];
-    // FIXME: Assumes that all digits have the same width.
-    BSPF_snprintf(temp, 9, "%2d. ", (_list.size() - 1 + _numberingMode));
-    r.left += _font.getStringWidth(temp);
-  }
 	
   return r;
 }

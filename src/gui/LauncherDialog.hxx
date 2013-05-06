@@ -122,11 +122,9 @@ class LauncherDialog : public Dialog
     BrowserDialog*   myRomDir;
 
     int mySelectedItem;
-    int myRomInfoSize;
     FilesystemNode myCurrentNode;
     Common::FixedStack<string> myNodeNames;
 
-    bool myShowDirs;
     StringList myRomExts;
 
     enum {

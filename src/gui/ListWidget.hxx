@@ -54,8 +54,9 @@ class ListWidget : public EditableWidget
     int rows() const        { return _rows; }
     int currentPos() const  { return _currentPos; }
 
-    int getSelected() const        { return _selectedItem; }
-    void setSelected(int item);  // Use '-1' to indicate a redraw of an empty list
+    int getSelected() const { return _selectedItem; }
+    void setSelected(int item);
+    void setSelected(const string& item);
 
     int getHighlighted() const     { return _highlightedItem; }
     void setHighlighted(int item);

@@ -25,11 +25,10 @@
 #include "Dialog.hxx"
 #include "DialogContainer.hxx"
 #include "FSNode.hxx"
-#include "GameList.hxx"
 #include "GuiObject.hxx"
 #include "OSystem.hxx"
 #include "EditTextWidget.hxx"
-#include "StringListWidget.hxx"
+#include "FileListWidget.hxx"
 #include "Widget.hxx"
 
 #include "BrowserDialog.hxx"
@@ -44,11 +43,7 @@
 BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
                              int max_w, int max_h)
   : Dialog(&boss->instance(), &boss->parent(), 0, 0, 0, 0),
-    CommandSender(boss),
-    _fileList(NULL),
-    _currentPath(NULL),
-    _nodeList(NULL),
-    _mode(FilesystemNode::kListAll)
+    CommandSender(boss)
 {
   // Set real dimensions
   _w = max_w;
@@ -74,19 +69,21 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
 
   // Add file list
   ypos += lineHeight + 4;
-  _fileList = new StringListWidget(this, font, xpos, ypos, _w - 2 * xpos,
-                                   _h - selectHeight - buttonHeight - ypos - 20);
+  _fileList = new FileListWidget(this, font, xpos, ypos, _w - 2 * xpos,
+                                 _h - selectHeight - buttonHeight - ypos - 20);
   _fileList->setEditable(false);
+  addFocusWidget(_fileList);
 
   // Add currently selected item
   ypos += _fileList->getHeight() + 4;
 
   _type = new StaticTextWidget(this, font, xpos, ypos,
-                               font.getStringWidth("File: "), lineHeight,
-                               "", kTextAlignCenter);
+                               font.getStringWidth("Name: "), lineHeight,
+                               "Name:", kTextAlignCenter);
   _selected = new EditTextWidget(this, font, xpos + _type->getWidth(), ypos, 
                                  _w - _type->getWidth() - 2 * xpos, lineHeight, "");
   _selected->setEditable(false);
+  addFocusWidget(_selected);
 
   // Buttons
   _goUpButton = new ButtonWidget(this, font, 10, _h - buttonHeight - 10,
@@ -117,88 +114,74 @@ BrowserDialog::BrowserDialog(GuiObject* boss, const GUI::Font& font,
   addFocusWidget(b);
   addOKWidget(b);
 #endif
-
-  addFocusWidget(_fileList);
-
-  // Create a list of directory nodes
-  _nodeList = new GameList();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 BrowserDialog::~BrowserDialog()
 {
-  delete _nodeList;
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void BrowserDialog::show(const string& title, const string& startpath,
-                         FilesystemNode::ListMode mode, int cmd)
+                         BrowserDialog::ListMode mode, int cmd)
 {
   _title->setLabel(title);
   _cmd = cmd;
   _mode = mode;
 
-  // If no node has been set, or the last used one is now invalid,
-  // go back to the users home dir.
-  _node = FilesystemNode(startpath);
-  if(!_node.exists())
-    _node = FilesystemNode("~");
+  switch(_mode)
+  {
+    case FileLoad:   
+      _fileList->setFileListMode(FilesystemNode::kListAll);
+      _selected->setEditable(false);
+      break;
 
-  // Generally, we always want a directory listing 
-  if(!_node.isDirectory() && _node.hasParent())
-    _node = _node.getParent();
+    case FileSave:
+      _fileList->setFileListMode(FilesystemNode::kListAll);
+      _selected->setEditable(false);  // FIXME - disable user input for now
+      break;
 
-  // Alway refresh file list
-  updateListing();
+    case Directories:
+      _fileList->setFileListMode(FilesystemNode::kListDirectoriesOnly);
+      _selected->setEditable(false);
+      break;
+  }
+
+  // Set start path
+  _fileList->setLocation(FilesystemNode(startpath));
+
+  updateUI();
 
   // Finally, open the dialog after it has been fully updated
   open();
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-void BrowserDialog::updateListing()
+const FilesystemNode& BrowserDialog::getResult() const
 {
-  if(!_node.isDirectory())
-    return;
+  if(_mode == FileLoad || _mode == FileSave)
+    return _fileList->selected();
+  else
+    return _fileList->currentDir();
+}
 
-  // Start with empty list
-  _nodeList->clear();
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void BrowserDialog::updateUI()
+{
+  // Only hilite the 'up' button if there's a parent directory
+  _goUpButton->setEnabled(_fileList->currentDir().hasParent());
 
   // Update the path display
-  _currentPath->setLabel(_node.getShortPath());
+  _currentPath->setLabel(_fileList->currentDir().getShortPath());
 
-  // Read in the data from the file system
-  FSList content;
-  content.reserve(2048);
-  _node.getChildren(content, _mode);
+  // Enable/disable OK button based on current mode
+  bool enable = _mode == Directories || !_fileList->selected().isDirectory();
+  _okWidget->setEnabled(enable);
 
-  // Add '[..]' to indicate previous folder
-  if(_node.hasParent())
-    _nodeList->appendGame(" [..]", _node.getParent().getPath(), "", true);
-
-  // Now add the directory entries
-  for(unsigned int idx = 0; idx < content.size(); idx++)
-  {
-    string name = content[idx].getName();
-    bool isDir = content[idx].isDirectory();
-    if(isDir)
-      name = " [" + name + "]";
-
-    _nodeList->appendGame(name, content[idx].getPath(), "", isDir);
-  }
-  _nodeList->sortByName();
-
-  // Now fill the list widget with the contents of the GameList
-  StringList l;
-  for (int i = 0; i < (int) _nodeList->size(); ++i)
-    l.push_back(_nodeList->name(i));
-
-  _fileList->setList(l);
-  if(_fileList->getList().size() > 0)
-    _fileList->setSelected(0);
-
-  // Only hilite the 'up' button if there's a parent directory
-  _goUpButton->setEnabled(_node.hasParent());
+  if(!_fileList->selected().isDirectory())
+    _selected->setEditString(_fileList->getSelectedString());
+  else
+    _selected->setEditString("");
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -215,37 +198,17 @@ void BrowserDialog::handleCommand(CommandSender* sender, int cmd,
       break;
 
     case kGoUpCmd:
-    case ListWidget::kPrevDirCmd:
-      _node = _node.getParent();
-      updateListing();
+      _fileList->selectParent();
       break;
 
     case kBaseDirCmd:
-      _node = FilesystemNode(instance().baseDir());
-      updateListing();
+      _fileList->setLocation(FilesystemNode(instance().baseDir()));
       break;
 
-    case ListWidget::kSelectionChangedCmd:
-    {
-      int item = _fileList->getSelected();
-      if(item >= 0)
-      {
-        _selected->setEditString(_fileList->getSelectedString());
-      }
+    case FileListWidget::ItemChanged:
+    case FileListWidget::ItemActivated:
+      updateUI();
       break;
-    }
-
-    case ListWidget::kActivatedCmd:
-    case ListWidget::kDoubleClickedCmd:
-    {
-      int item = _fileList->getSelected();
-      if(item >= 0)
-      {
-        _node = FilesystemNode(_nodeList->path(item));
-        updateListing();
-      }
-      break;
-    }
 
     default:
       Dialog::handleCommand(sender, cmd, data, 0);

@@ -89,6 +89,33 @@ void ListWidget::setSelected(int item)
 }
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+void ListWidget::setSelected(const string& item)
+{
+  int selected = -1;
+  if(!_list.isEmpty())
+  {
+    if(item == "")
+      selected = 0;
+    else
+    {
+      uInt32 itemToSelect = 0;
+      StringList::const_iterator iter;
+      for(iter = _list.begin(); iter != _list.end(); ++iter, ++itemToSelect)
+      {
+        if(item == *iter)
+        {
+          selected = itemToSelect;
+          break;
+        }
+      }
+      if(itemToSelect > _list.size() || selected == -1)
+        selected = 0;
+    }
+  }
+  setSelected(selected);
+}
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void ListWidget::setHighlighted(int item)
 {
   if(item < -1 || item >= (int)_list.size())

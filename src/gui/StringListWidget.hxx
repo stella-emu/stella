@@ -25,19 +25,12 @@
 
 #include "ListWidget.hxx"
 
-enum NumberingMode {
-  kListNumberingOff  = -1,
-  kListNumberingZero = 0,
-  kListNumberingOne  = 1
-};
-
 /** StringListWidget */
 class StringListWidget : public ListWidget
 {
   public:
     StringListWidget(GuiObject* boss, const GUI::Font& font,
-                     int x, int y, int w, int h, bool hilite = true,
-                     NumberingMode mode = kListNumberingOff);
+                     int x, int y, int w, int h, bool hilite = true);
     virtual ~StringListWidget();
 
     void setList(const StringList& list);
@@ -47,7 +40,6 @@ class StringListWidget : public ListWidget
     GUI::Rect getEditRect() const;
 
   protected:
-    NumberingMode _numberingMode;
     bool _hilite;
 };
 
