@@ -705,7 +705,7 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 {
   int active = widget->getActiveTab();
 
-  if(active >= 0 && active < focus.size())
+  if(active >= 0 && active < (int)focus.size())
     list.push_back(focus[active].list);
 }
 
