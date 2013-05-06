@@ -703,7 +703,7 @@ Dialog::TabFocus::~TabFocus()
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 {
-  uInt32 active = widget->getActiveTab();
+  int active = widget->getActiveTab();
 
   if(active >= 0 && active < focus.size())
     list.push_back(focus[active].list);
@@ -712,7 +712,7 @@ void Dialog::TabFocus::appendFocusList(WidgetArray& list)
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 void Dialog::TabFocus::saveCurrentFocus(Widget* w)
 {
-  if(currentTab >= 0 && currentTab < focus.size() &&
+  if(currentTab < focus.size() &&
       Widget::isWidgetInChain(focus[currentTab].list, w))
     focus[currentTab].widget = w;
 }
@@ -722,6 +722,5 @@ Widget* Dialog::TabFocus::getNewFocus()
 {
   currentTab = widget->getActiveTab();
 
-  return (currentTab >= 0 && currentTab < focus.size()) ?
-      focus[currentTab].widget : 0;
+  return (currentTab < focus.size()) ? focus[currentTab].widget : 0;
 }
