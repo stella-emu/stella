@@ -498,7 +498,7 @@ void LauncherDialog::handleCommand(CommandSender* sender, int cmd,
         if(!romnode.isDirectory() && !romnode.isFile())
         {
           instance().frameBuffer().showMessage(
-            "Invalid file or doesn't contain any valid ROM files",
+            "Invalid file (check file size and/or contents)",
             kMiddleCenter, true);
         }
         // Directory's should be selected (ie, enter them and redisplay)
